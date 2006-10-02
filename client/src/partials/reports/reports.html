@@ -9,7 +9,8 @@
     <div class="toolbar">
       <div class="toolbar-item">
         <a
-          class="btn btn-default">
+          class="btn btn-default"
+          ng-click="ReportCtrl.createReport()">
           <span class="fa fa-plus"></span>
           {{ "FORM.BUTTONS.NEW" | translate }}
           {{ReportCtrl.report.title_key | translate}}
@@ -21,6 +22,7 @@
 
 <div class="flex-content">
   <div class="container-fluid">
+
     <div
       id="report-grid"
       class="grid-full-height"

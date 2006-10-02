@@ -367,7 +367,12 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/financialPatient/:uuid', financeReports.financialPatient);
 
   app.get('/reports/keys/:key', report.keys);
+
+  // list of saved reports
   app.get('/reports/saved/:reportId', report.list);
+
+  // lookup saved report document
+  app.get('/reports/archive/:uuid', report.sendArchived);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);

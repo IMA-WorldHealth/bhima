@@ -301,14 +301,15 @@ function document(req, res, next) {
   // weekly parameter
   session.weekly = params.weekly;
 
-  _.defaults(params, { orientation : 'landscape' });
+  // FIXME Manual assignment of user, should be done generically for PDF reports
+  _.defaults(params, { orientation : 'landscape', user : req.session.user });
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
   } catch (e) {
     return next(e);
   }
-  
+
   let promise = parseInt(params.weekly) ? processingWeekCashflow : processingCashflowReport;
 
   promise(params)
