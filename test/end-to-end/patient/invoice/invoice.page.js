@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global element, by */
 'use strict';
 
 const FU = require('../../shared/FormUtils');
@@ -41,6 +41,11 @@ function PatientInvoicePage() {
 
     // select the first enabled service in the list
     FU.select('PatientInvoiceCtrl.Invoice.details.service_id', 'Administration');
+  };
+
+  // this exposes the ability to set the service at any time
+  page.service = function service(name) {
+    FU.select('PatientInvoiceCtrl.Invoice.details.service_id', name);
   };
 
   // try to click the submit button
