@@ -13,40 +13,58 @@
 
 <main>
   <div class="container-fluid">
-    <div class="row">
-      
-      <!-- Find patient directive -->
-      <div class="col-md-12">
 
-        <!-- TODO Refactor initial patient UUID specification -->
-        <div 
-          find-patient 
-          init-lookup="PatientEditCtrl.referredPatient" 
-          on-search-complete="PatientEditCtrl.confirmPatient(patient)">
+    <div class="row" ng-if="PatientEditCtrl.unknownId">
+      <div class="col-md-12">
+        <div class="alert alert-danger">
+          <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_EDIT.PAGE_FAIL" | translate }}
         </div>
       </div>
     </div>
-
+        
     <!-- Only display patient edit information if have loaded a valid model -->
+    <div class="row" ng-if="PatientEditCtrl.medical">
+      
+      <!-- Find patient directive -->
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+
+            <h4>{{PatientEditCtrl.medical.name}}</h4>
+            <p><span class="glyphicon glyphicon-list-alt"></span> 
+            {{PatientEditCtrl.medical.displayAge }} 
+            {{PatientEditCtrl.medical.displayGender}}
+            </p> 
+            <p>
+              <span class="glyphicon glyphicon-info-sign"></span>  
+              {{ "PATIENT_EDIT.REGISTERED" | translate }} 
+              <span am-time-ago="PatientEditCtrl.medical.registration_date"></span>
+            </p>
+          </div>
+        </div> 
+      </div>
+    </div>
+
+
     <!-- ng-show is used as ng-if creates new scope - form values are not availble on the $scope object -->
     <div class="row" ng-show="PatientEditCtrl.medical">
       <div class="col-md-5 col-md-push-7">
         
         <div class="panel panel-default">
           <div class="panel-heading">
-            Financial Information
+            {{ "PATIENT_EDIT.FINANCIAL_INFO" | translate }}
           </div>
           <div class="panel-body">
             <form name="finance">
               
               <!-- Patient Group -->
               <div class="form-group"> 
-                <label class="control-label">Patient Groups</label>
+                <label class="control-label">{{ "PATIENT_EDIT.GROUPS_PATIENT.TITLE" | translate }}</label>
                 
                 <p 
                   class="text-success form-control-static" 
                   ng-if="PatientEditCtrl.updatedPatientGroups">
-                  <span class="glyphicon glyphicon-ok-sign"></span> Patient groups updated
+                  <span class="glyphicon glyphicon-ok-sign"></span> {{ "PATIENT_EDIT.GROUPS_PATIENT.UPDATED" | translate }}
                 </p>
 
                 <!-- Iterate through patient groups -->
@@ -57,7 +75,7 @@
                  </ul>
 
                  <p class="text-info form-control-static" ng-if="PatientEditCtrl.finance.patientGroups.length === 0">
-                 <span class="glyphicon glyphicon-info-sign"></span> This patient is not a member of any patient groups
+                 <span class="glyphicon glyphicon-info-sign"></span> {{ "PATIENT_EDIT.GROUPS_PATIENT.EMPTY" | translate }}
                  </p>
 
               </div>
@@ -65,18 +83,20 @@
               <div class="form-group">
 
                 <button 
+                  id="submission"
                   class="btn btn-warning btn-block"
-                  ng-click="PatientEditCtrl.updatePatientGroups()">Update Group Assignment</button>
+                  ng-click="PatientEditCtrl.updatePatientGroups()">{{ "PATIENT_EDIT.GROUPS_PATIENT.UPDATE" | translate }}
+</button>
               </div>
       
               <!-- Debtor Group -->
               <div class="form-group">
-                <label class="control-label">Debtor Group</label>
+                <label class="control-label">{{ "PATIENT_EDIT.GROUPS_DEBTOR.TITLE" | translate }}</label>
                 
                 <p 
                   class="text-success form-control-static" 
                   ng-if="PatientEditCtrl.updatedDebtorGroup">
-                  <span class="glyphicon glyphicon-ok-sign"></span> Debtor group updated
+                  <span class="glyphicon glyphicon-ok-sign"></span> {{ "PATIENT_EDIT.GROUPS_DEBTOR.UPDATED" | translate }}
                 </p>
 
                 <ul class="form-control-static">
@@ -89,7 +109,7 @@
 
                 <button 
                   class="btn btn-warning btn-block"
-                  ng-click="PatientEditCtrl.updateDebtorGroup()">Update Group</button>
+                  ng-click="PatientEditCtrl.updateDebtorGroup()">{{ "PATIENT_EDIT.GROUPS_DEBTOR.UPDATE" | translate }}</button>
               </div>
 
             </form>   
@@ -100,7 +120,7 @@
       <div class="col-md-7 col-md-pull-5">
         <div class="panel panel-default">
           <div class="panel-heading">
-            Patient Details
+            {{ "PATIENT_REG.PATIENT_DETAILS" | translate }}
           </div>
           <div class="panel-body">
             
@@ -163,7 +183,7 @@
                   <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
                   
                   <!-- TODO Translate -->
-                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">Hospital file number already exists</p>
+                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">{{ "UTIL.PATIENT_EXIST" | translate }}</p>
                 </div>
               </div>
 
@@ -226,28 +246,28 @@
             <!-- Submission -->
               <p 
                 class="text-success"
-                ng-if="PatientEditCtrl.updatedPatientDetails"><span class="glyphicon glyphicon-ok-sign"></span> Patient records updated</p>
+                ng-if="PatientEditCtrl.updatedPatientDetails"><span class="glyphicon glyphicon-ok-sign"></span> {{ "PATIENT_EDIT.RECORD_SUCCESS" | translate }}</p>
 
               <p 
                 class="text-danger"
                 ng-if="details.$submitted && details.$invalid">
-                <span class="glyphicon glyphicon-remove-sign"></span> Please resolve any errors on the form. (Marked in red)</p>
+                <span class="glyphicon glyphicon-remove-sign"></span> {{ "PATIENT_EDIT.RECORD_ERROR" | translate }}</p>
 
               <p 
                 class="text-warning"
                 ng-if="details.$submitted && !details.$dirty">
-                <span class="glyphicon glyphicon-info-sign"></span> No changes have been made to the form. Update the patients details and then press submit.</p>
+                <span class="glyphicon glyphicon-info-sign"></span> {{ "PATIENT_EDIT.RECORD_SAME" | translate }}</p>
 
               <button 
                 ng-click="PatientEditCtrl.updatePatient(PatientEditCtrl.medical)"
-                class="btn btn-sm btn-primary">Submit Changes</button>  
+                class="btn btn-sm btn-primary">{{ "PATIENT_EDIT.SUBMIT_CHANGES" | translate }}</button>  
           </div>
 
         </div>
 
         <div class="panel panel-default">
           <div class="panel-heading">
-            Optional Information
+            {{ "PATIENT_REG.OPTIONAL_INFO" | translate }}   
           </div>
           <div class="panel-body">
             <form name="optional" class="form-horizontal">
@@ -361,10 +381,9 @@
             <!-- Link to submission -->
             <div class="col-md-9 col-md-offset-3">
               <p class="text-center text-info">
-                <a href="" id="submissionLink"><span class="glyphicon glyphicon-circle-arrow-up"></span> Link to Submission</a>
+              <a href="" ng-click="PatientEditCtrl.scrollToSubmission()" id="submissionLink"><span class="glyphicon glyphicon-circle-arrow-up"></span> {{ "PATIENT_EDIT.LINK_SUBMISSION" | translate }}</a>
               </p>
             </div>
-
           </div>
         </div>
 

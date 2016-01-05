@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 ApplicationController.$inject = [
   '$location', '$timeout', '$translate', 'appcache', 'appstate',
-  'connect', 'util', 'SessionService', 'tmhDynamicLocale',
+  'connect', 'util', 'SessionService', 'tmhDynamicLocale', 'amMoment'
 ];
 
-function ApplicationController($location, $timeout, $translate, Appcache, appstate, connect, util, Session, tmhDynamicLocale) {
+function ApplicationController($location, $timeout, $translate, Appcache, appstate, connect, util, Session, tmhDynamicLocale, amMoment) {
   var vm = this;
 
   // useful for loading the language
@@ -17,6 +17,7 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
     if (language) {
       $translate.use(language.translateKey);
       tmhDynamicLocale.set(language.localeKey);
+      amMoment.changeLocale(language.translateKey); 
     }
   });
 

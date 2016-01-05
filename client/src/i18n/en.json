@@ -1782,7 +1782,33 @@
    "RESTART_SEARCH" : "Find another patient",
    "UPDATE_FAILED"  : "Patient update failed!",
    "UPDATE_PATIENT" : "Update Patient",
-   "UPDATE_SUCCESS" : "Patient details updated"
+   "UPDATE_SUCCESS" : "Patient details updated",
+   "FINANCIAL_INFO" : "Financial Information",
+   "RECORD_SUCCESS" : "Patient records updated",
+   "RECORD_ERROR"   : "Please resolve any errors on the form. (Marked in red)",
+   "RECORD_SAME"    : "No changes have been made to the form. Update the patients details and then press submit.",
+   "SUBMIT_CHANGES" : "Submit Changes",
+   "LINK_SUBMISSION": "Link to Submission",
+   "PAGE_FAIL"      : "Unable to locate patient",
+   "M"              : "Male",
+   "F"              : "Female",
+   "REGISTERED"     : "Registered",
+   "GROUPS_PATIENT" : {
+      "TITLE"         : "Patient Groups",
+      "UPDATED"       : "Patient group membership updated",
+      "EMPTY"         : "This patient is not a member of any patient groups",
+      "UPDATE"        : "Update Group Assignments", 
+      "MODAL_TTILE"   : "Update Patient Groups",
+      "MODAL_INFO"    : "Assign the patient to patient groups from the options below. Press 'confirm' to permenantly update the patient's subscribed groups.",
+      "MODAL_WARN"    : "No patient groups have been found. Patient groups must be registered with the system before they can be assigned to patients"
+    },
+   "GROUPS_DEBTOR"  : {
+      "TITLE"         : "Debtor Group",
+      "UPDATED"       : "Debtor group assignment updated",
+      "UPDATE"        : "Update Group",
+      "MODAL_TITLE"   : "Update Debtor Group",
+      "MODAL_INFO"    : "Assign a new debtor group from the options below. Press 'confirm' to permenantly update the patient's debtor group"
+    }
    },
 "PATIENT_GRP": {
    "HELP_TXT_1"    : "Patient groups are uses to assign the appropriate discounts to types of patients that merit them.  Use this module to register, modify, and remove patient groups and their benefits",
@@ -3234,6 +3260,7 @@
    "NO_DEPOT_SELECTED" : "No depot selected",
    "OFF"               : "Off",
    "ON"                : "On",
+   "PATIENT_EXIT"      : "Hospital file number already exists",
    "PATIENT_EXIST_A"   : "Patient with file number [",
    "PATIENT_EXIST_B"   : "] already exist",
    "PRINT"             : "Print",

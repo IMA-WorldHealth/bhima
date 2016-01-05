@@ -156,7 +156,7 @@ function update(req, res, next) {
 function handleFetchPatient(uuid) {
   var patientDetailQuery =
     'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, p.hospital_no, ' +
-      'p.sex, p.email, p.phone, p.dob, p.origin_location_id, p.reference, p.title, p.address_1, p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse, p.spouse_profession, ' +
+      'p.sex, p.registration_date, p.email, p.phone, p.dob, p.origin_location_id, p.reference, p.title, p.address_1, p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse, p.spouse_profession, ' +
       'p.spouse_employer, p.notes, proj.abbr, d.text, ' +
       'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.uuid as debitor_group_uuid, dg.locked, dg.name as debitor_group_name ' +
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +

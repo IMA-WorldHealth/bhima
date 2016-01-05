@@ -1,4 +1,4 @@
-var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid', 'ui.grid.autoResize']);
+var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid', 'ui.grid.autoResize', 'angularMoment']);
 
 function bhimaconfig($routeProvider) {
   // TODO: Dynamic routes loaded from unit database?
@@ -348,10 +348,18 @@ function bhimaconfig($routeProvider) {
     controller: 'PatientRegistrationController as PatientRegCtrl',
     templateUrl: 'partials/patients/registration/registration.html'
   })
-  .when('/patients/edit/:patientID?', {
+
+  /* Patient Edit */
+  .when('/patients/edit/', { 
+    controller  : 'PatientEditFind as PatientEditFindCtrl', 
+    templateUrl : 'partials/patients/edit/find.html'
+  })
+  .when('/patients/edit/:patientID', {
     controller: 'PatientEdit as PatientEditCtrl',
     templateUrl: 'partials/patients/edit/edit.html'
   })
+  
+  /* */
   .when('/patients/search/:patientID?', {
     controller: 'patientRecords',
     templateUrl: '/partials/patients/search/search.html'
@@ -831,12 +839,15 @@ function authConfig($httpProvider) {
 }
 
 // Redirect to login if not signed in.
-function startupConfig($rootScope, $location, SessionService) {
+function startupConfig($rootScope, $location, SessionService, amMoment) {
   $rootScope.$on('$routeChangeStart', function (event, next) {
     if (!SessionService.user) {
       $location.url('/login');
     }
   });
+
+  // TODO Hardcoded default translation/ localisation
+  amMoment.changeLocale('fr');
 }
 
 function localForageConfig($localForageProvider) {
@@ -854,4 +865,4 @@ bhima.config(['$httpProvider', authConfig]);
 bhima.config(['$localForageProvider', localForageConfig]);
 
 // run
-bhima.run(['$rootScope', '$location', 'SessionService', startupConfig]);
+bhima.run(['$rootScope', '$location', 'SessionService', 'amMoment', startupConfig]);

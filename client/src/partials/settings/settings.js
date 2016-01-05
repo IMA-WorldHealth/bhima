@@ -8,7 +8,8 @@ angular.module('bhima.controllers')
   'messenger',
   'tmhDynamicLocale',
   'store',
-  function($scope, $routeParams, $translate, $location, Appcache, messenger, tmhDynamicLocale, Store) {
+  'amMoment',
+  function($scope, $routeParams, $translate, $location, Appcache, messenger, tmhDynamicLocale, Store, amMoment) {
     
     // TODO issue discussing DB modelling of languages, quick suggestion (id, label, translateKey, localeKey)
     var languageStore = new Store({identifier : 'translateKey'});
@@ -46,6 +47,7 @@ angular.module('bhima.controllers')
       
       $translate.use(language.translateKey);
       tmhDynamicLocale.set(language.localeKey);
+      amMoment.changeLocale(language.translateKey);
 
       cache.put('language', language);
     };

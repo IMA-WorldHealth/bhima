@@ -1,23 +1,21 @@
 <div class="modal-header">
-  <h3 class="modal-title">Update Patient Groups</h3>
+  <h3 class="modal-title">{{ "PATIENT_EDIT.GROUPS_PATIENT.MODAL_TITLE" | translate }}</h3>
 </div>
 
 <div class="modal-body">
 
   <p class="text-info">
-  Assign the patient to patient groups from the options below. Press 'confirm' 
-  to permenantly update the patient's subscribed groups.
+  {{ "PATIENT_EDIT.GROUPS_PATIENT.MODAL_INFO" | translate }}   
   </p>
 
   <p class="text-warning" ng-if="UpdatePatientGroupsCtrl.patientGroups.length === 0">
-  No patient groups have been found. Patient groups must be registered with the system 
-  before they can be assigned to patients
+  {{ "PATIENT_EDIT.GROUPS_PATIENT.MODAL_WARN" | translate }}   
   </p>
 
   <form name="groupForm">
     <div class="form-group has-feedback">
     
-      <label class="control-label">Patient Groups</label>
+      <label class="control-label">{{ "PATIENT_EDIT.GROUPS_PATIENT.TITLE" | translate }}</label>
       
       <div 
         class="checkbox"
@@ -37,11 +35,11 @@
 <div class="modal-footer">
   <button 
     class="btn btn-default"
-    ng-click="UpdatePatientGroupsCtrl.close()">Cancel</button>
+    ng-click="UpdatePatientGroupsCtrl.closeModal()">{{ "UTIL.CANCEL" | translate }}</button>
   <button 
     class="btn btn-default"
     ng-click="UpdatePatientGroupsCtrl.confirmGroups()"
     ng-disabled="UpdatePatientGroupsCtrl.patientGroups.length === 0">
-      Confirm
+      {{ "UTIL.CONFIRM" | translate }}    
     </button>
 </div>
