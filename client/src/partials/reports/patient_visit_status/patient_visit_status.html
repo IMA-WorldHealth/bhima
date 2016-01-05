@@ -1,0 +1,295 @@
+<div ng-switch="state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "TREE.PATIENT_VISIT_STATUS" | translate }}
+          </div>
+
+          <div class="panel-body">
+            <form name="configForm" novalidate>
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'SELECT.PROJECT' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-home"></span>
+                    </span>
+
+                    <select class="form-bhima" ng-model="session.project" ng-options="project.id as project.name for project in projects.data">
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <span class="btn-group">
+                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" >{{ (session.selected.label | translate) || "..." }}</button>
+                  <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
+                  <ul class="dropdown-menu menu-sq">
+                    <li ng-repeat="opt in options">
+                      <a ng-click="search(opt)">{{ opt.label | translate }}</a>
+                    </li>
+                  </ul>
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_FROM' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_TO' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel-footer">
+            <div class="pull-right">
+              <button class="btn btn-sm btn-success" type="button" ng-click="generate()" ng-disabled="configForm.$invalid">
+                {{ "UTIL.GENERATE" | translate }}
+              </button>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div ng-switch-when="generate">
+    <header>
+      {{ projectSelected }} <small> {{ "PATIENT_REGISTRATIONS.TITLE" | translate }} {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small>
+    </header>
+
+    <nav>
+      <button
+        style="margin-left: 5px;"
+        ng-click="reconfigure()"
+        class="btn btn-sm btn-default pull-right">
+        <span class="glyphicon glyphicon-repeat"></span>
+      </button>
+
+      <div class="pull-right">
+        <button ng-click="printReport()" class="btn btn-default btn-sm square">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ 'UTIL.PRINT' | translate }}
+        </button>
+
+        <button ng-click="showDetails()" class="btn btn-default btn-sm square">
+          <span class="glyphicon glyphicon-list"></span>
+          {{ 'PATIENT_VISIT.DETAILS' | translate }}
+        </button>
+      </div>
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+
+          <h4 class="visible-print">
+            {{ "TREE.PATIENT_VISIT_STATUS" | translate }} <small> ({{ projectSelected }}) {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small>
+          </h4>
+
+          <!-- Synthetic patient visit data -->
+          <div class="row">
+            <div class="col-xs-12">
+              <table class="reportTable">
+                <thead>
+                  <tr>
+                    <th> <b>{{ "PATIENT_VISIT.CASES" | translate }}</b> </th>
+                    <th> {{ "PATIENT_RECORDS.MALE" | translate }} </th>
+                    <th> {{ "PATIENT_RECORDS.FEMALE" | translate }} </th>
+                    <th> {{ "COLUMNS.TOTAL" | translate }} </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td> {{ "PATIENT_VISIT.NEW_CASES" | translate }} </td>
+                    <td> <b>{{ session.count.maleNew }}</h4> </td>
+                    <td> <b>{{ session.count.femaleNew  }}</h4> </td>
+                    <td> <b>{{ patientsNewVisit.length }}</h4> </td>
+                  </tr>
+                  <tr>
+                    <td> {{ "PATIENT_VISIT.OLD_CASES" | translate }} </td>
+                    <td> <b>{{ session.count.maleOld }}</h4> </td>
+                    <td> <b>{{ session.count.femaleOld  }}</h4> </td>
+                    <td> <b>{{ patientsOldVisit.length }}</h4> </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3" class="text-right"> {{ "COLUMNS.TOTAL" | translate }} </td>
+                    <td> <b>{{ patientsNewVisit.length + patientsOldVisit.length }}</b> </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- chart of visit -->
+          <div class="row" style="margin-top:10px; margin-bottom:10px;">
+            <div class="col-xs-12">
+              <div class="pull-right btn-group">
+                <button type="button" class="hidden-print btn btn-default dropdown-toggle"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ "PATIENT_VISIT.GROUP_BY" | translate }} <span class="glyphicon glyphicon-chevron-down"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a ng-click="chartGroupBy('month')">{{ "PATIENT_VISIT.GROUP_BY_MONTH" | translate }}</a></li>
+                  <li><a ng-click="chartGroupBy('day')">{{ "PATIENT_VISIT.GROUP_BY_DAY" | translate }}</a></li>
+                </ul>
+              </div>
+
+              <h4><span class="glyphicon glyphicon-signal"></span> {{ "TREE.PATIENT_VISIT_STATUS" | translate }}</h4>
+            </div>
+          </div>
+
+          <!-- Bar Chart -->
+          <div class="row">
+            <div class="col-xs-8">
+              <canvas id="BarChart" width="600" height="400"></canvas>
+            </div>
+            <div class="col-xs-4">
+              <fieldset class="legend">
+                <legend>{{ "TREE.PATIENT_VISIT_STATUS" | translate }}</legend>
+                <div>
+                  <span class="legend-element" style="background-color:rgba(220,220,220,0.5)"><b>{{ patientsNewVisit.length }}</b></span>
+                  <span>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</span>
+                </div>
+                <div>
+                  <span class="legend-element" style="background-color:rgba(151,187,205,0.5)"><b>{{ patientsOldVisit.length }}</b></span>
+                  <span>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</span>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+
+          <!-- Line Chart -->
+          <div class="row">
+            <div class="col-xs-8">
+              <canvas id="LineChart" width="600" height="400"></canvas>
+            </div>
+            <div class="col-xs-4">
+              <fieldset class="legend">
+                <legend>{{ "TREE.PATIENT_VISIT_STATUS" | translate }}</legend>
+                <div>
+                  <span class="legend-element" style="background-color:rgba(220,220,220,0.5)"><b>{{ patientsNewVisit.length }}</b></span>
+                  <span>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</span>
+                </div>
+                <div>
+                  <span class="legend-element" style="background-color:rgba(151,187,205,0.5)"><b>{{ patientsOldVisit.length }}</b></span>
+                  <span>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</span>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+
+          <!-- details -->
+          <div class="row">
+            <div class="col-xs-12">
+              <div ng-if="!!session.details">
+                <hr>
+                <!-- new cases patient visit data -->
+                <h4>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</h4>
+                <table class="reportTable">
+                  <thead>
+                    <tr>
+                      <th>{{ "COLUMNS.NR" | translate }}</th>
+                      <th>{{ "COLUMNS.ID" | translate }}</th>
+                      <th>{{ "PATIENT_VISIT.FILE_NR" | translate }}</th>
+                      <th>{{ "COLUMNS.NAME" | translate }}</th>
+                      <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
+                      <th>{{ "COLUMNS.VISIT_DATE" | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="patient in patientsNewVisit | orderBy: 'reference'">
+                      <td>{{ $index }}</td>
+                      <td>{{ patient.abbr + patient.reference }}</td>
+                      <td>{{ patient.hospital_no }}</td>
+                      <td>{{ patient.middle_name + ' ' + patient.last_name + ' ' + patient.first_name }}</td>
+                      <td>{{ patient.registration_date | date }}</td>
+                      <td>{{ patient.date | date }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="6">
+                        <h6>
+                          {{ "COLUMNS.TOTAL" | translate }}:<b>{{ patientsNewVisit.length }}</b> |
+                          {{ "PATIENT_RECORDS.MALE" | translate }}: {{ session.count.maleNew }}</b> |
+                          {{ "PATIENT_RECORDS.FEMALE" | translate }}: {{ session.count.femaleNew }}
+                        </h6>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+
+                <hr>
+                <!-- old cases patient visit data -->
+                <h4>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</h4>
+                <table class="reportTable">
+                  <thead>
+                    <tr>
+                      <th>{{ "COLUMNS.NR" | translate }}</th>
+                      <th>{{ "COLUMNS.ID" | translate }}</th>
+                      <th>{{ "PATIENT_VISIT.FILE_NR" | translate }}</th>
+                      <th>{{ "COLUMNS.NAME" | translate }}</th>
+                      <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
+                      <th>{{ "COLUMNS.VISIT_DATE" | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="patient in patientsOldVisit | orderBy: 'reference'">
+                      <td>{{ $index }}</td>
+                      <td>{{ patient.abbr + patient.reference }}</td>
+                      <td>{{ patient.hospital_no }}</td>
+                      <td>{{ patient.middle_name + ' ' + patient.last_name + ' ' + patient.first_name }}</td>
+                      <td>{{ patient.registration_date | date }}</td>
+                      <td>{{ patient.date | date }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="6">
+                        <h6>
+                          {{ "COLUMNS.TOTAL" | translate }}:<b>{{ patientsOldVisit.length }}</b> |
+                          {{ "PATIENT_RECORDS.MALE" | translate }}: {{ session.count.maleOld }}</b> |
+                          {{ "PATIENT_RECORDS.FEMALE" | translate }}: {{ session.count.femaleOld }}
+                        </h6>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

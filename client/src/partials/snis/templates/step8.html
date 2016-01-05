@@ -1,0 +1,319 @@
+<div id="organisation" class="container">
+	<h2>{{ "SNIS.STEP8" | translate }}</h2>
+	<fieldset>
+		<legend></legend>
+		<h3 >8.1 Organes de gestion</h3>
+		<table>
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Programmes</td>
+					<td>Realis&eacute;s</td>
+					<td>PV + liste prés</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Activités du plan d’action</td>
+					<td><input type="text" ng-model="snis_report.act_plan_action_programmes"></td>
+					<td><input type="text" ng-model="snis_report.act_plan_action_realises"></td>
+					<td><input type="text" ng-model="snis_report.act_plan_action_pv_liste_pre"></td>
+				</tr>
+				<tr>
+					<td>Réunions du comité directeur (CODI)</td>
+					<td><input type="text" ng-model="snis_report.reu_codi_programmes"></td>
+					<td><input type="text" ng-model="snis_report.reu_codi_realises"></td>
+					<td><input type="text" ng-model="snis_report.reu_codi_pv_liste_pre"></td>
+				</tr>
+				<tr>
+					<td>Décisions du CODI du mois précédent</td>
+					<td><input type="text" ng-model="snis_report.decision_codi_precd_programmes"></td>
+					<td><input type="text" ng-model="snis_report.decision_codi_precd_realises"></td>
+					<td><input type="text" ng-model="snis_report.decision_codi_precd_pv_liste_pre"></td>
+				</tr>
+				<tr>
+					<td>Réunions du comité d’hygiène hospitalière</td>
+					<td><input type="text" ng-model="snis_report.reu_com_hyg_hosp_programmes"></td>
+					<td><input type="text" ng-model="snis_report.reu_com_hyg_hosp_realises"></td>
+					<td><input type="text" ng-model="snis_report.reu_com_hyg_hosp_pv_liste_pre"></td>
+				</tr>
+				<tr>
+					<td>Décisions du comité d’hygiène hospitalière</td>
+					<td><input type="text" ng-model="snis_report.dec_com_hyg_hosp_programmes"></td>
+					<td><input type="text" ng-model="snis_report.dec_com_hyg_hosp_realises"></td>
+					<td><input type="text" ng-model="snis_report.dec_com_hyg_hosp_pv_liste_pre"></td>
+				</tr>
+				<tr>
+					<td>Réunions d’analyse des données</td>
+					<td><input type="text" ng-model="snis_report.reu_analyse_donn_programmes"></td>
+					<td><input type="text" ng-model="snis_report.reu_analyse_donn_realises"></td>
+					<td><input type="text" ng-model="snis_report.reu_analyse_donn_pv_liste_pre"></td>
+				</tr>
+				<tr>
+					<td>Nb utilisateurs satisfaits des services de santé</td>
+					<td><input type="text" ng-model="snis_report.nb_util_satisf_serv_sante_programmes"></td>
+					<td><input type="text" ng-model="snis_report.nb_util_satisf_serv_sante_realises"></td>
+					<td><input type="text" ng-model="snis_report.nb_util_satisf_serv_sante_pv_liste_pre"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3>8.2. Supervisions reçues</h3>
+		<table class="cellmini-6em">
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>MCZ</td>
+					<td>AG</td>
+					<td>IS</td>
+					<td>MDH</td>
+					<td>Compt</td>
+					<td>TDR</td>
+					<td>Nut</td>
+					<td>DN</td>
+					<td>Autre</td>
+					<td>Total</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Nb de visites de super. prévues</td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_mcz"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_ag"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_is"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_mdh"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_compt"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_tdr"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_nut"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_dn"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_autre"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_prevu_total"></td>
+				</tr>
+				<tr>
+					<td>Nb de visites de super. reçues</td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_mcz"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_ag"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_is"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_mdh"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_compt"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_tdr"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_nut"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_dn"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_autre"></td>
+					<td><input type="text" ng-model="snis_report.nb_vis_super_recues_total"></td>
+				</tr>
+				<tr>
+					<td>Nb rétro-inform. écrites reçues</td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_mcz"></td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_ag"></td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_is"></td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_mdh"></td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_compt"></td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_tdr"></td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_nut"></td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_dn"></td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_autre"></td>
+					<td><input type="text" ng-model="snis_report.nb_retroinfo_ecrites_recues_total"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div class="row">
+			<div class="col-md-6">
+				<h3>8.3. Formations</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Nombre</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Formations programmées</td>
+							<td><input ng-model="snis_report.formations_programmes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Formations réalisées</td>
+							<td><input ng-model="snis_report.formations_realisees" type="text"></td>
+						</tr>
+						<tr>
+							<td>Confér., réunions scientifiques</td>
+							<td><input ng-model="snis_report.conf_reunions_scientifiques" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h3>8.3. Formations (suite)</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Masculin</td>
+							<td>Feminin</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Nb Personnes à former</td>
+							<td><input type="text" ng-model="snis_report.nb_person_a_former_masc"></td>
+							<td><input type="text" ng-model="snis_report.nb_person_a_former_fem"></td>
+						</tr>
+						<tr>
+							<td>Nb Personnes formées</td>
+							<td><input type="text" ng-model="snis_report.nb_person_former_masc"></td>
+							<td><input type="text" ng-model="snis_report.nb_person_former_fem"></td>
+						</tr>
+						<tr>
+							<td>Nb Stagiaires encadrés</td>
+							<td><input type="text" ng-model="snis_report.nb_stag_enc_masc"></td>
+							<td><input type="text" ng-model="snis_report.nb_stag_enc_fem"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<h3>8.3. Domaines de formation</h3>
+		<table>
+			<thead>
+				<tr class="age">
+					<td>&nbsp;</td>
+					<td colspan="2">Form&eacute;</td>
+					<td colspan="2">A Former</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Masculin</td>
+					<td>Feminin</td>
+					<td>Masculin</td>
+					<td>Feminin</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Management et SSP</td>
+					<td><input type="text" ng-model="snis_report.management_ssp_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.management_ssp_form_fem"></td>
+					<td><input type="text" ng-model="snis_report.management_ssp_a_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.management_ssp_a_form_fem"></td>
+				</tr>
+				<tr>
+					<td>SNIS</td>
+					<td><input type="text" ng-model="snis_report.snis_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.snis_form_fem"></td>
+					<td><input type="text" ng-model="snis_report.snis_a_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.snis_a_form_fem"></td>
+				</tr>
+				<tr>
+					<td>Surveillance épidémiologique</td>
+					<td><input type="text" ng-model="snis_report.survel_epidemio_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.survel_epidemio_form_fem"></td>
+					<td><input type="text" ng-model="snis_report.survel_epidemio_a_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.survel_epidemio_a_form_fem"></td>
+				</tr>
+				<tr>
+					<td>Assurance de qualité des soins</td>
+					<td><input type="text" ng-model="snis_report.assu_qual_soins_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.assu_qual_soins_form_fem"></td>
+					<td><input type="text" ng-model="snis_report.assu_qual_soins_a_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.assu_qual_soins_a_form_fem"></td>
+				</tr>
+				<tr>
+					<td>Tetu</td>
+					<td><input type="text" ng-model="snis_report.tetu_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.tetu_form_fem"></td>
+					<td><input type="text" ng-model="snis_report.tetu_a_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.tetu_a_form_fem"></td>
+				</tr>
+				<tr>
+					<td>Lutte contre la maladie</td>
+					<td><input type="text" ng-model="snis_report.lutte_contre_maladie_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.lutte_contre_maladie_form_fem"></td>
+					<td><input type="text" ng-model="snis_report.lutte_contre_maladie_a_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.lutte_contre_maladie_a_form_fem"></td>
+				</tr>
+				<tr>
+					<td>Autres domaines</td>
+					<td><input type="text" ng-model="snis_report.autres_domaines_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.autres_domaines_form_fem"></td>
+					<td><input type="text" ng-model="snis_report.autres_domaines_a_form_masc"></td>
+					<td><input type="text" ng-model="snis_report.autres_domaines_a_form_fem"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div class="row">
+			<div class="col-md-6">
+				<h3>8.4. Communication pour le changement de comp. (CCC)</h3>
+				<table class="cellmini-6em">
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Thème 1</td>
+							<td>Thème 2</td>
+							<td>Thème 3</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Nb séances prévues</td>
+							<td><input type="text" ng-model="snis_report.nb_seances_prevu_theme1_ccc"></td>
+							<td><input type="text" ng-model="snis_report.nb_seances_prevu_theme2_ccc"></td>
+							<td><input type="text" ng-model="snis_report.nb_seances_prevu_theme3_ccc"></td>
+						</tr>
+						<tr>
+							<td>Nb séances réalisées</td>
+							<td><input type="text" ng-model="snis_report.nb_seances_realises_theme1_ccc"></td>
+							<td><input type="text" ng-model="snis_report.nb_seances_realises_theme2_ccc"></td>
+							<td><input type="text" ng-model="snis_report.nb_seances_realises_theme3_ccc"></td>
+						</tr>
+						<tr>
+							<td>Nb de participants Hommes CCC</td>
+							<td><input type="text" ng-model="snis_report.nb_participants_hom_theme1_ccc"></td>
+							<td><input type="text" ng-model="snis_report.nb_participants_hom_theme2_ccc"></td>
+							<td><input type="text" ng-model="snis_report.nb_participants_hom_theme3_ccc"></td>
+						</tr>
+						<tr>
+							<td>Nb de participants Femmes CCC</td>
+							<td><input type="text" ng-model="snis_report.nb_participants_fem_theme1_ccc"></td>
+							<td><input type="text" ng-model="snis_report.nb_participants_fem_theme2_ccc"></td>
+							<td><input type="text" ng-model="snis_report.nb_participants_fem_theme3_ccc"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-md-6">
+				<h3>8.5. Recherche opérationnelle</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Nombre</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Nouvelles recherches programmées ce mois</td>
+							<td><input type="text" ng-model="snis_report.nouv_recher_prog_mois"></td>
+						</tr>
+						<tr>
+							<td>Recherches en cours</td>
+							<td><input type="text" ng-model="snis_report.recher_en_cours_mois"></td>
+						</tr>
+						<tr>
+							<td>Recherches terminées ce mois</td>
+							<td><input type="text" ng-model="snis_report.recher_term_mois"></td>
+						</tr>
+						<tr>
+							<td>Recherches diffusées ce mois</td>
+							<td><input type="text" ng-model="snis_report.recher_diff_mois"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</fieldset>
+</div>

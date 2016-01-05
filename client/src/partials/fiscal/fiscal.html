@@ -1,0 +1,105 @@
+<header data-header>
+  {{ 'FISCAL_YEAR.MANAGEMENT' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "FISCAL_YEAR.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button id="createFiscal" ng-click="createFiscalYear()" class="btn btn-sm btn-default">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{ 'FISCAL_YEAR.CREATE' | translate }}
+    </button>
+  </div>
+</nav>
+
+<main class="extend margin-top-10">
+  <div class="col-xs-4">
+    <div class="row">
+      <div class="panel panel-default" style="overflow-x: auto;">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-calendar"></span> {{ 'FISCAL_YEAR.RECORDS' | translate }}
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{ 'FISCAL_YEAR.DESCRIPTION' | translate }}</th>
+              <th>{{ 'FISCAL_YEAR.NUMBER_MONTHS' | translate }}</th>
+              <th>{{ 'FISCAL_YEAR.START_DATE' | translate }}</th>
+              <th>{{ 'FISCAL_YEAR.STATUS' | translate }}</th>
+              <th width="10%" colspan="2">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-if="fiscal.data.length === 0">
+              <td colspan="2">
+                <i>{{ 'FISCAL_YEAR.NO_RECORDS' | translate }}</i>
+              </tr>
+            </tr>
+            <tr ng-repeat="year in fiscal.data" 
+            ng-class="{'btn-primary': year.id === selected, 'btn-danger': year.id === selectedToLock}">
+              <td>{{ year.fiscal_year_txt }}</td>
+              <td>{{ year.number_of_months }}</td>
+              <td>{{ year.start_month}}/{{year.start_year }}</td>
+              <td>
+                <span ng-if="year.locked">
+                  <i class="glyphicon glyphicon-lock"></i> {{ 'FISCAL_YEAR.LOCKED_TRUE' | translate }}
+                </span>
+                <span ng-if="!year.locked">
+                  <i class="glyphicon glyphicon-lock-off"></i> {{ 'FISCAL_YEAR.LOCKED_FALSE' | translate }}
+                </span>
+              </td>
+              <td>
+                <a title="{{ 'FISCAL_YEAR.VIEW' | translate }}" ng-click="selectYear(year.id)">
+                  <i class="glyphicon glyphicon-eye-open"></i>
+                </a>
+              </td>
+              <td>
+                <a ng-if="!year.locked" title="{{ 'FISCAL_YEAR.LOCK' | translate }}" class="text-danger" ng-click="selectLock(year.id)">
+                  <i class="glyphicon glyphicon-lock"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- End columns 4 -->
+
+  <div class="col-xs-8">
+    <div ng-switch="active">
+
+      <!-- context: default help text -->
+      <div ng-switch-default>
+        <div class="alert alert-info">
+          <h4>{{ "FISCAL_YEAR.TITLE" | translate }}</h4>
+          <p>{{ "FISCAL_YEAR.HELP_TXT" | translate }}</p>
+          <ul class="list-plain">
+            <li><i class="glyphicon glyphicon-pencil"></i> {{ 'FISCAL_YEAR.EDIT' | translate }}</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- context: creating a new fiscal year -->
+      <div ng-switch-when="create">
+        <div ng-include="'partials/fiscal/fiscal.create.html'"></div>
+      </div>
+
+      <!-- context: updating a fiscal year -->
+      <div ng-switch-when="update">
+        <div ng-include="'partials/fiscal/fiscal.update.html'"></div>
+      </div>
+
+      <!-- context: updating a fiscal year -->
+      <div ng-switch-when="lock">
+        <div ng-include="'partials/fiscal/fiscal.lock.html'"></div>
+      </div>
+
+    </div>
+  </div>
+</main>

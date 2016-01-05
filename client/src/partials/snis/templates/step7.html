@@ -1,0 +1,2534 @@
+<div id="gestion-ressource" class="container">
+	<h2>{{ "SNIS.STEP7" | translate }}</h2>
+	<fieldset><legend></legend>
+		<h3>7.1. Gestion du personnel</h3>
+		<table>
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Nb Agents</td>
+					<td>Nb Jrs de<br>Travail<br>Pr&eacute;vu</td>
+					<td>Nb Jrs de<br>Travail<br>presté</td>
+					<td>Nb Jrs de<br>d'Absence<br>justifié</td>
+					<td>Nb Jrs de<br>d'Absence<br>non-justifié</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Chirurgien</td>
+					<td><input ng-model="snis_report.chirugien_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.chirugien_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.chirugien_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.chirugien_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.chirugien_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Gynécologue</td>
+					<td><input ng-model="snis_report.gynecologue_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.gynecologue_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.gynecologue_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.gynecologue_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.gynecologue_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Pédiatre</td>
+					<td><input ng-model="snis_report.pediatre_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.pediatre_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.pediatre_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.pediatre_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.pediatre_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Internistes</td>
+					<td><input ng-model="snis_report.internistes_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.internistes_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.internistes_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.internistes_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.internistes_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Autres médecins spécialistes</td>
+					<td><input ng-model="snis_report.med_specialiste_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.med_specialiste_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.med_specialiste_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.med_specialiste_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.med_specialiste_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Médecin généraliste</td>
+					<td><input ng-model="snis_report.med_generaliste_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.med_generaliste_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.med_generaliste_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.med_generaliste_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.med_generaliste_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Chirurgien dentiste</td>
+					<td><input ng-model="snis_report.chirugien_dent_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.chirugien_dent_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.chirugien_dent_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.chirugien_dent_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.chirugien_dent_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Anesthésiste réanimateur</td>
+					<td><input ng-model="snis_report.anesth_reanimateur_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.anesth_reanimateur_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.anesth_reanimateur_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.anesth_reanimateur_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.anesth_reanimateur_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Kinésithérapeute</td>
+					<td><input ng-model="snis_report.kinesithera_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.kinesithera_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.kinesithera_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.kinesithera_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.kinesithera_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Pharmacien</td>
+					<td><input ng-model="snis_report.pharmacien_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.pharmacien_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.pharmacien_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.pharmacien_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.pharmacien_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Infirmier L2</td>
+					<td><input ng-model="snis_report.infirmier_l2_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_l2_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_l2_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_l2_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_l2_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Infirmier A1</td>
+					<td><input ng-model="snis_report.infirmier_a1_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_a1_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_a1_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_a1_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_a1_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Infirmier A2</td>
+					<td><input ng-model="snis_report.infirmier_a2_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_a2_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_a2_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_a2_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_a2_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Autres infirmiers</td>
+					<td><input ng-model="snis_report.infirmier_autres_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_autres_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_autres_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_autres_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.infirmier_autres_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Accoucheur(se)/Sage-femmes</td>
+					<td><input ng-model="snis_report.accoucher_sage_femmes_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.accoucher_sage_femmes_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.accoucher_sage_femmes_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.accoucher_sage_femmes_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.accoucher_sage_femmes_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Nutritionnistes A2 /A1/ L2</td>
+					<td><input ng-model="snis_report.nutritionnistes_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.nutritionnistes_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.nutritionnistes_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.nutritionnistes_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.nutritionnistes_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Techniciens de laboratoire A2 A1 L2</td>
+					<td><input ng-model="snis_report.tech_labo_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.tech_labo_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.tech_labo_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.tech_labo_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.tech_labo_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Techniciens en radiologie A1 L2</td>
+					<td><input ng-model="snis_report.tech_radio_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.tech_radio_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.tech_radio_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.tech_radio_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.tech_radio_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Autres Techniciens L2 / A1/A2</td>
+					<td><input ng-model="snis_report.autres_tech_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.autres_tech_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.autres_tech_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.autres_tech_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.autres_tech_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Administrateur gestionnaire G3</td>
+					<td><input ng-model="snis_report.admin_gest_g3_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.admin_gest_g3_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.admin_gest_g3_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.admin_gest_g3_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.admin_gest_g3_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Administrateur gestionnaire L2</td>
+					<td><input ng-model="snis_report.admin_gest_l2_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.admin_gest_l2_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.admin_gest_l2_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.admin_gest_l2_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.admin_gest_l2_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Comptable</td>
+					<td><input ng-model="snis_report.comptable_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.comptable_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.comptable_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.comptable_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.comptable_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Personnel administratif</td>
+					<td><input ng-model="snis_report.pers_admin_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.pers_admin_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.pers_admin_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.pers_admin_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.pers_admin_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Stastisticien</td>
+					<td><input ng-model="snis_report.statisticien_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.statisticien_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.statisticien_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.statisticien_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.statisticien_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Technicien d’assainissement A1 L2</td>
+					<td><input ng-model="snis_report.tech_assainissement_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.tech_assainissement_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.tech_assainissement_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.tech_assainissement_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.tech_assainissement_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Personnel de maintenance</td>
+					<td><input ng-model="snis_report.pers_maintenance_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.pers_maintenance_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.pers_maintenance_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.pers_maintenance_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.pers_maintenance_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+				<tr>
+					<td>Autres personnel</td>
+					<td><input ng-model="snis_report.autres_pers_nb_agents" type="text"></td>
+					<td><input ng-model="snis_report.autres_pers_nb_jr_travail_prev" type="text"></td>
+					<td><input ng-model="snis_report.autres_pers_nb_jr_travail_prest" type="text"></td>
+					<td><input ng-model="snis_report.autres_pers_nb_jr_abs_just" type="text"></td>
+					<td><input ng-model="snis_report.autres_pers_nb_jr_abs_non_just" type="text"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3>7.2. Gestion des matériels, Hygiene, Eau et Assainissement</h3>
+
+		<div class="row">
+			<div class="col-md-6">
+				<h3>7.2.1 Materiels et equipements medicaux</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Nombre J<sup>rs</sup><br>Non-Fonctionnel</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Frigo</td>
+							<td><input ng-model="snis_report.frigo_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Congelateur</td>
+							<td><input ng-model="snis_report.congelateur_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Boîte isotherme</td>
+							<td><input ng-model="snis_report.boite_isotherme_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Balance Salter</td>
+							<td><input  ng-model="snis_report.balance_salter_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Balance pèse adulte</td>
+							<td><input ng-model="snis_report.balance_pese_adulte_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Balance pèse bébé</td>
+							<td><input  ng-model="snis_report.balance_pese_bebe_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Toise</td>
+							<td><input  ng-model="snis_report.toise_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Microscope</td>
+							<td><input ng-model="snis_report.microscope_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Centrifugeuse</td>
+							<td><input  ng-model="snis_report.centrifugeuse_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Stérilisateur</td>
+							<td><input ng-model="snis_report.sterilisateur_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Appareil de réanimation</td>
+							<td><input ng-model="snis_report.app_reanimation_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Couveuse</td>
+							<td><input ng-model="snis_report.couveuse_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Echographe</td>
+							<td><input ng-model="snis_report.echograph_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Radiographie</td>
+							<td><input  ng-model="snis_report.radiographie_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Echocardiographie</td>
+							<td><input ng-model="snis_report.echocardiographie_non_fonctionnel" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h3>7.2.3. Hygiene & Gestion des dechets</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Nombre J<sup>rs</sup><br>fonctionnels</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Incinérateur</td>
+							<td><input  ng-model="snis_report.incinerateur_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Latrines hygiénique</td>
+							<td><input ng-model="snis_report.latrines_hygienique_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Poubelles</td>
+							<td><input ng-model="snis_report.poubelles_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Fosse à placenta</td>
+							<td><input ng-model="snis_report.fosse_placenta_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Trou à ordures</td>
+							<td><input ng-model="snis_report.trou_ordures_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Eau courante (avec robinet)</td>
+							<td><input ng-model="snis_report.eau_courante_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Points d’eau existant</td>
+							<td><input ng-model="snis_report.point_eau_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Buanderie</td>
+							<td><input ng-model="snis_report.buanderie_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Unite de sterilisation</td>
+							<td><input ng-model="snis_report.unite_sterilisation_non_fonctionnel" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h3>7.2.2. Materiel et Equipement de bureau</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Nombre J<sup>rs</sup><br>Non-Fonctionnel</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Ordinateur</td>
+							<td><input ng-model="snis_report.ordinateur_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Photocopieuse</td>
+							<td><input ng-model="snis_report.photocopieuse_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Machine à écrire</td>
+							<td><input ng-model="snis_report.machine_ecrire_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Stencileuse</td>
+							<td><input ng-model="snis_report.stencileuse_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Moto</td>
+							<td><input ng-model="snis_report.moto_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Véhicule</td>
+							<td><input ng-model="snis_report.vehicule_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Hors-Bord</td>
+							<td><input ng-model="snis_report.hors_bord_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Phonie</td>
+							<td><input ng-model="snis_report.phonie_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Internet</td>
+							<td><input ng-model="snis_report.internet_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Electricité</td>
+							<td><input ng-model="snis_report.electricite_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Système solaire</td>
+							<td><input ng-model="snis_report.syst_solaire_non_fonctionnel" type="text"></td>
+						</tr>
+						<tr>
+							<td>Groupe électrogène</td>
+							<td><input ng-model="snis_report.group_electro_non_fonctionnel" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+				<p><em>Déclarer le nombre de jours durant lequel aucune unité n’a été fonctionnelle. (ex : nombre de jours sans aucun frigo fonctionnel)</em></p>
+			</div>
+		</div>
+
+		<h3>7.2.4. Gestion du matériel roulant et du carburant: Distances Parcourues</h3>
+		<table class="cellmini-6em">
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Vehic 1</td>
+					<td>Vehic 2</td>
+					<td>Vehic 3</td>
+					<td>Vehic 4</td>
+					<td>Hors-bord 1</td>
+					<td>Hors-bord 2</td>
+					<td>Moto 1</td>
+					<td>Moto 2</td>
+					<td>Moto 3</td>
+					<td>Moto 4</td>
+					<td>Moto 5</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Supervision</td>
+					<td><input ng-model="snis_report.supervison_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.supervison_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.supervison_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.supervison_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.supervison_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.supervison_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.supervison_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.supervison_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.supervison_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.supervison_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.supervison_moto_5" type="text"></td>
+				</tr>
+				<tr>
+					<td>Formation</td>
+					<td><input ng-model="snis_report.formation_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.formation_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.formation_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.formation_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.formation_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.formation_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.formation_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.formation_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.formation_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.formation_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.formation_moto_5" type="text"></td>
+				</tr>
+				<tr>
+					<td>Transp Medicaments</td>
+					<td><input ng-model="snis_report.transp_med_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.transp_med_moto_5" type="text"></td>
+				</tr>
+				<tr>
+					<td>Transp Malades</td>
+					<td><input ng-model="snis_report.transp_malade_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.transp_malade_moto_5" type="text"></td>
+				</tr>
+				<tr>
+					<td>Monitorage</td>
+					<td><input ng-model="snis_report.monitorage_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.monitorage_moto_5" type="text"></td>
+				</tr>
+				<tr>
+					<td>Administration</td>
+					<td><input ng-model="snis_report.adminstration_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.adminstration_moto_5" type="text"></td>
+				</tr>
+				<tr>
+					<td>Surveillance</td>
+					<td><input ng-model="snis_report.surveillance_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.surveillance_moto_5" type="text"></td>
+				</tr>
+				<tr>
+					<td>Autre</td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.autre_gest_mat_roul_moto_5" type="text"></td>
+				</tr>
+				<tr>
+					<td>Total (KM parcourus)</td>
+					<td><input ng-model="snis_report.total_km_parcourus_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.total_km_parcourus_moto_5" type="text"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3>7.2.4. Gestion du matériel roulant et du carburant (suite)</h3>
+		<table class="cellmini-5em">
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Vehic 1</td>
+					<td>Vehic 2</td>
+					<td>Vehic 3</td>
+					<td>Vehic 4</td>
+					<td>Hors-<br>bord 1</td>
+					<td>Hors-<br>bord 2</td>
+					<td>Moto 1</td>
+					<td>Moto 2</td>
+					<td>Moto 3</td>
+					<td>Moto 4</td>
+					<td>Moto 5</td>
+					<td>Groupe<br>Electrogene</td>
+					<td>Total</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Quantité du carburant consommée</td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_moto_5" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_group_electro" type="text"></td>
+					<td><input ng-model="snis_report.quant_carb_cons_gest_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Km parcourus</td>
+					<td><input ng-model="snis_report.km_parcourus_gest_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_moto_5" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_group_electro" type="text"></td>
+					<td><input ng-model="snis_report.km_parcourus_gest_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Cons. carburant au Km ou hre</td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_vehic_1" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_vehic_2" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_vehic_3" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_vehic_4" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_hors_bord_1" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_hors_bord_2" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_moto_1" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_moto_2" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_moto_3" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_moto_4" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_moto_5" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_group_electro" type="text"></td>
+					<td><input ng-model="snis_report.cons_carb_km_heure_gest_total" type="text"></td>
+				</tr>
+				
+			</tbody>
+		</table>
+
+		<h3>7.2.4.Gestion du matériel roulant et du carburant (Fin)</h3>
+		<table>
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Gasoil</td>
+					<td>Essence</td>
+					<td>P&eacute;trole</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Stock début du mois</td>
+					<td><input ng-model="snis_report.stock_mois_gasoir" type="text"></td>
+					<td><input ng-model="snis_report.stock_mois_essence" type="text"></td>
+					<td><input ng-model="snis_report.stock_mois_petrole" type="text"></td>
+				</tr>
+				<tr>
+					<td>Quantité reçue au cours du mois</td>
+					<td><input ng-model="snis_report.quant_recue_gasoir" type="text"></td>
+					<td><input ng-model="snis_report.quant_recue_essence" type="text"></td>
+					<td><input ng-model="snis_report.quant_recue_petrole" type="text"></td>
+				</tr>
+				<tr>
+					<td>Stock fin du mois</td>
+					<td><input ng-model="snis_report.stock_fin_mois_gasoir" type="text"></td>
+					<td><input ng-model="snis_report.stock_fin_mois_essence" type="text"></td>
+					<td><input ng-model="snis_report.stock_fin_mois_petrole" type="text"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3>7.3. Gestion de la pharmacie</h3>
+
+		<h3>7.3.1. Consommation des médicaments et autres intrants</h3>
+		<table class="cellmini">
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Stock Initial<br>D&eacute;but mois</td>
+					<td>Entr&eacute;es</td>
+					<td>Sorties hors<br>consommation</td>
+					<td>Qtés<br>consommées</td>
+					<td>Stock<br>disponible<br>(inv. physique)</td>
+					<td>Nb jours<br>rupture<br>de stock</td>
+					<td>Qté voie<br>péremption</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Aspirine Co 500mg</td>
+					<td><input ng-model="snis_report.aspirine_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.aspirine_entrees" type="text"></td>
+					<td><input ng-model="snis_report.aspirine_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.aspirine_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.aspirine_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.aspirine_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.aspirine_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Paracétamol  500 mg</td>
+					<td><input ng-model="snis_report.paracetamol_500mg_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.paracetamol_500mg_entrees" type="text"></td>
+					<td><input ng-model="snis_report.paracetamol_500mg_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.paracetamol_500mg_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.paracetamol_500mg_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.paracetamol_500mg_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.paracetamol_500mg_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Artémether inj 40 mg</td>
+					<td><input ng-model="snis_report.artemether_inj40_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj40_entrees" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj40_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj40_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj40_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj40_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj40_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Artémether inj 80 mg</td>
+					<td><input ng-model="snis_report.artemether_inj80_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj80_entrees" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj80_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj80_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj80_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj80_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.artemether_inj80_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Artésunate-Amodiaquine (12 -59 m)</td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_12_59_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_12_59_entrees" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_12_59_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_12_59_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_12_59_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_12_59_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_12_59_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Artésunate-Amodiaquine (2-11 m)</td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_2_11_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_2_11_entrees" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_2_11_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_2_11_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_2_11_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_2_11_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_2_11_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Artésunate-Amodiaquine (6-13 a)</td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_6_13_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_6_13_entrees" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_6_13_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_6_13_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_6_13_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_6_13_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_6_13_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Artésunate-Amodiaquine, (14a+)</td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_14a_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_14a_entrees" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_14a_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_14a_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_14a_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_14a_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.artesunate_amodiaquine_14a_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Luméfantrine + Artéméther</td>
+					<td><input ng-model="snis_report.lumefantrine_artenther_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.lumefantrine_artenther_entrees" type="text"></td>
+					<td><input ng-model="snis_report.lumefantrine_artenther_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.lumefantrine_artenther_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.lumefantrine_artenther_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.lumefantrine_artenther_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.lumefantrine_artenther_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Quinine amp 600 mg</td>
+					<td><input ng-model="snis_report.quinine_amp_600_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.quinine_amp_600_entrees" type="text"></td>
+					<td><input ng-model="snis_report.quinine_amp_600_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.quinine_amp_600_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.quinine_amp_600_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.quinine_amp_600_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.quinine_amp_600_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Quinine co 500 mg</td>
+					<td><input ng-model="snis_report.quinine_co_500g_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.quinine_co_500g_entrees" type="text"></td>
+					<td><input ng-model="snis_report.quinine_co_500g_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.quinine_co_500g_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.quinine_co_500g_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.quinine_co_500g_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.quinine_co_500g_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>TDR</td>
+					<td><input ng-model="snis_report.tdr_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.tdr_entrees" type="text"></td>
+					<td><input ng-model="snis_report.tdr_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.tdr_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.tdr_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.tdr_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.tdr_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>SP 500/25 mg, co</td>
+					<td><input ng-model="snis_report.sp_500_25g_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.sp_500_25g_entrees" type="text"></td>
+					<td><input ng-model="snis_report.sp_500_25g_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.sp_500_25g_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.sp_500_25g_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.sp_500_25g_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.sp_500_25g_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>MIILD</td>
+					<td><input ng-model="snis_report.miild_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.miild_entrees" type="text"></td>
+					<td><input ng-model="snis_report.miild_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.miild_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.miild_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.miild_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.miild_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Diazepam 5 mg amp</td>
+					<td><input ng-model="snis_report.diazepam_5mg_amp_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.diazepam_5mg_amp_entrees" type="text"></td>
+					<td><input ng-model="snis_report.diazepam_5mg_amp_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.diazepam_5mg_amp_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.diazepam_5mg_amp_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.diazepam_5mg_amp_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.diazepam_5mg_amp_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>SRO</td>
+					<td><input ng-model="snis_report.sro_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.sro_entrees" type="text"></td>
+					<td><input ng-model="snis_report.sro_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.sro_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.sro_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.sro_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.sro_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Zinc 20 mg</td>
+					<td><input ng-model="snis_report.zinc_20mg_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.zinc_20mg_entrees" type="text"></td>
+					<td><input ng-model="snis_report.zinc_20mg_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.zinc_20mg_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.zinc_20mg_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.zinc_20mg_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.zinc_20mg_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Amoxycilline caps 250 mg</td>
+					<td><input ng-model="snis_report.amoxyciline_c_250mg_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_250mg_entrees" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_250mg_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_250mg_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_250mg_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_250mg_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_250mg_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Amoxycilline caps 500 mg</td>
+					<td><input ng-model="snis_report.amoxyciline_c_500mg_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_500mg_entrees" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_500mg_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_500mg_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_500mg_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_500mg_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_c_500mg_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Amoxycilline 1g, Vial , Unité</td>
+					<td><input ng-model="snis_report.amoxyciline_1g_vial_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_1g_vial_entrees" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_1g_vial_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_1g_vial_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_1g_vial_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_1g_vial_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.amoxyciline_1g_vial_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Cotrimoxazole 480 mg</td>
+					<td><input ng-model="snis_report.cotrimoxazole_480mg_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.cotrimoxazole_480mg_entrees" type="text"></td>
+					<td><input ng-model="snis_report.cotrimoxazole_480mg_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.cotrimoxazole_480mg_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.cotrimoxazole_480mg_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.cotrimoxazole_480mg_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.cotrimoxazole_480mg_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Ceftriaxone 1 gr inj</td>
+					<td><input ng-model="snis_report.ceftriaxone_1gr_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.ceftriaxone_1gr_entrees" type="text"></td>
+					<td><input ng-model="snis_report.ceftriaxone_1gr_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.ceftriaxone_1gr_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.ceftriaxone_1gr_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.ceftriaxone_1gr_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.ceftriaxone_1gr_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Gentamycine</td>
+					<td><input ng-model="snis_report.gentamycine_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.gentamycine_entrees" type="text"></td>
+					<td><input ng-model="snis_report.gentamycine_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.gentamycine_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.gentamycine_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.gentamycine_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.gentamycine_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Ciprofloxacine, 2mg/ml, 100ml , Flacon, Unité</td>
+					<td><input ng-model="snis_report.Ciprofloxacine_2mg_ml_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.Ciprofloxacine_2mg_ml_entrees" type="text"></td>
+					<td><input ng-model="snis_report.Ciprofloxacine_2mg_ml_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.Ciprofloxacine_2mg_ml_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.Ciprofloxacine_2mg_ml_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.Ciprofloxacine_2mg_ml_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.Ciprofloxacine_2mg_ml_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Péniprocaïne+Benzyl 3+1 MIU, amp</td>
+					<td><input ng-model="snis_report.peniprocaine_benzyl_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.peniprocaine_benzyl_entrees" type="text"></td>
+					<td><input ng-model="snis_report.peniprocaine_benzyl_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.peniprocaine_benzyl_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.peniprocaine_benzyl_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.peniprocaine_benzyl_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.peniprocaine_benzyl_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Hydralazine</td>
+					<td><input ng-model="snis_report.hydralazine_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.hydralazine_entrees" type="text"></td>
+					<td><input ng-model="snis_report.hydralazine_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.hydralazine_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.hydralazine_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.hydralazine_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.hydralazine_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Hydrocortisone</td>
+					<td><input ng-model="snis_report.hydrocortisone_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_entrees" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Mebendazole 100 mg</td>
+					<td><input ng-model="snis_report.mebendazole_100mg_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.mebendazole_100mg_entrees" type="text"></td>
+					<td><input ng-model="snis_report.mebendazole_100mg_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.mebendazole_100mg_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.mebendazole_100mg_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.mebendazole_100mg_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.mebendazole_100mg_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Métronidazole 250 mg co</td>
+					<td><input ng-model="snis_report.metronidazole_250mg_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.metronidazole_250mg_entrees" type="text"></td>
+					<td><input ng-model="snis_report.metronidazole_250mg_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.metronidazole_250mg_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.metronidazole_250mg_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.metronidazole_250mg_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.metronidazole_250mg_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Preservatif feminin</td>
+					<td><input ng-model="snis_report.preservatif_feminin_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_feminin_entrees" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_feminin_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_feminin_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_feminin_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_feminin_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_feminin_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Preservatif masculin</td>
+					<td><input ng-model="snis_report.preservatif_masculin_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_masculin_entrees" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_masculin_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_masculin_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_masculin_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_masculin_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.preservatif_masculin_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Depo-Provera</td>
+					<td><input ng-model="snis_report.depo_provera_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.depo_provera_entrees" type="text"></td>
+					<td><input ng-model="snis_report.depo_provera_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.depo_provera_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.depo_provera_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.depo_provera_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.depo_provera_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>DIU</td>
+					<td><input ng-model="snis_report.diu_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.diu_entrees" type="text"></td>
+					<td><input ng-model="snis_report.diu_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.diu_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.diu_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.diu_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.diu_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Microgynon</td>
+					<td><input ng-model="snis_report.microgynon_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.microgynon_entrees" type="text"></td>
+					<td><input ng-model="snis_report.microgynon_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.microgynon_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.microgynon_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.microgynon_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.microgynon_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Implant</td>
+					<td><input ng-model="snis_report.implant_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.implant_entrees" type="text"></td>
+					<td><input ng-model="snis_report.implant_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.implant_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.implant_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.implant_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.implant_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Plaquettes des Pilules</td>
+					<td><input ng-model="snis_report.plaquettes_pilules_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.plaquettes_pilules_entrees" type="text"></td>
+					<td><input ng-model="snis_report.plaquettes_pilules_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.plaquettes_pilules_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.plaquettes_pilules_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.plaquettes_pilules_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.plaquettes_pilules_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Determine</td>
+					<td><input ng-model="snis_report.determine_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.determine_entrees" type="text"></td>
+					<td><input ng-model="snis_report.determine_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.determine_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.determine_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.determine_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.determine_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Double check</td>
+					<td><input ng-model="snis_report.double_check_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.double_check_entrees" type="text"></td>
+					<td><input ng-model="snis_report.double_check_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.double_check_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.double_check_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.double_check_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.double_check_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Kit PEP</td>
+					<td><input ng-model="snis_report.kit_pep_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.kit_pep_entrees" type="text"></td>
+					<td><input ng-model="snis_report.kit_pep_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.kit_pep_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.kit_pep_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.kit_pep_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.kit_pep_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Névirapine Sp</td>
+					<td><input ng-model="snis_report.neviragine_sp_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.neviragine_sp_entrees" type="text"></td>
+					<td><input ng-model="snis_report.neviragine_sp_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.neviragine_sp_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.neviragine_sp_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.neviragine_sp_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.neviragine_sp_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>AZT+3TC+ NVP Sirop (pédiatrique)</td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_sirop_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_sirop_entrees" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_sirop_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_sirop_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_sirop_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_sirop_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_sirop_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>AZT+3TC+EFV</td>
+					<td><input ng-model="snis_report.azt_3tc_efv_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_efv_entrees" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_efv_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_efv_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_efv_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_efv_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_efv_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>AZT+3TC+LPV/r (pour VIH 2)</td>
+					<td><input ng-model="snis_report.azt_3tc_lvp_r_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_lvp_r_entrees" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_lvp_r_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_lvp_r_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_lvp_r_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_lvp_r_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_lvp_r_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>AZT+3TC+NVP</td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_entrees" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.azt_3tc_nvp_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>ABC+ddI+LPV/r</td>
+					<td><input ng-model="snis_report.abc_ddi_lpv_r_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.abc_ddi_lpv_r_entrees" type="text"></td>
+					<td><input ng-model="snis_report.abc_ddi_lpv_r_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.abc_ddi_lpv_r_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.abc_ddi_lpv_r_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.abc_ddi_lpv_r_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.abc_ddi_lpv_r_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Kit groupage sanguin</td>
+					<td><input ng-model="snis_report.kit_groupage_sang_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.kit_groupage_sang_entrees" type="text"></td>
+					<td><input ng-model="snis_report.kit_groupage_sang_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.kit_groupage_sang_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.kit_groupage_sang_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.kit_groupage_sang_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.kit_groupage_sang_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Transfuseur avec filtre</td>
+					<td><input ng-model="snis_report.transfuseur_filtre_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.transfuseur_filtre_entrees" type="text"></td>
+					<td><input ng-model="snis_report.transfuseur_filtre_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.transfuseur_filtre_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.transfuseur_filtre_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.transfuseur_filtre_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.transfuseur_filtre_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Poche de transfusion, u.u., 250ml, Unité</td>
+					<td><input ng-model="snis_report.poche_transfusion_u_250_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_250_entrees" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_250_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_250_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_250_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_250_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_250_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Poche de transfusion, u.u., 450ml, Unité</td>
+					<td><input ng-model="snis_report.poche_transfusion_u_450_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_450_entrees" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_450_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_450_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_450_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_450_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.poche_transfusion_u_450_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Kit test sécurité transfusionnelle</td>
+					<td><input ng-model="snis_report.kit_sec_transf_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.kit_sec_transf_entrees" type="text"></td>
+					<td><input ng-model="snis_report.kit_sec_transf_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.kit_sec_transf_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.kit_sec_transf_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.kit_sec_transf_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.kit_sec_transf_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Kit test VIH pour site PTME</td>
+					<td><input ng-model="snis_report.kit_test_vih_ptme_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.kit_test_vih_ptme_entrees" type="text"></td>
+					<td><input ng-model="snis_report.kit_test_vih_ptme_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.kit_test_vih_ptme_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.kit_test_vih_ptme_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.kit_test_vih_ptme_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.kit_test_vih_ptme_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Test HCV Hepatitis C, Rapid for HCV</td>
+					<td><input ng-model="snis_report.test_hcv_hepatitis_c_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.test_hcv_hepatitis_c_entrees" type="text"></td>
+					<td><input ng-model="snis_report.test_hcv_hepatitis_c_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.test_hcv_hepatitis_c_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.test_hcv_hepatitis_c_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.test_hcv_hepatitis_c_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.test_hcv_hepatitis_c_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Test Hepatitis B HbsAg Determine</td>
+					<td><input ng-model="snis_report.test_hepatitisB_hbsAg_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.test_hepatitisB_hbsAg_entrees" type="text"></td>
+					<td><input ng-model="snis_report.test_hepatitisB_hbsAg_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.test_hepatitisB_hbsAg_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.test_hepatitisB_hbsAg_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.test_hepatitisB_hbsAg_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.test_hepatitisB_hbsAg_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Test HIV 1+2 (Determine)</td>
+					<td><input ng-model="snis_report.test_hiv_determine_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.test_hiv_determine_entrees" type="text"></td>
+					<td><input ng-model="snis_report.test_hiv_determine_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.test_hiv_determine_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.test_hiv_determine_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.test_hiv_determine_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.test_hiv_determine_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Test Kit, HIV 1+2, Eli sa, 192T Vironostika Uniform II plus 0 *</td>
+					<td><input ng-model="snis_report.test_kit_hiv_elisa_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.test_kit_hiv_elisa_entrees" type="text"></td>
+					<td><input ng-model="snis_report.test_kit_hiv_elisa_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.test_kit_hiv_elisa_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.test_kit_hiv_elisa_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.test_kit_hiv_elisa_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.test_kit_hiv_elisa_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Test Syphilis (RPR ou SD Bioline)</td>
+					<td><input ng-model="snis_report.test_syphilis_rpr_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.test_syphilis_rpr_entrees" type="text"></td>
+					<td><input ng-model="snis_report.test_syphilis_rpr_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.test_syphilis_rpr_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.test_syphilis_rpr_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.test_syphilis_rpr_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.test_syphilis_rpr_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Insuline</td>
+					<td><input ng-model="snis_report.insuline_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.insuline_entrees" type="text"></td>
+					<td><input ng-model="snis_report.insuline_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.insuline_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.insuline_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.insuline_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.insuline_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Morphine</td>
+					<td><input ng-model="snis_report.morphine_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.morphine_entrees" type="text"></td>
+					<td><input ng-model="snis_report.morphine_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.morphine_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.morphine_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.morphine_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.morphine_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Oxytocine 10 UI</td>
+					<td><input ng-model="snis_report.oxytocine_10_ui_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.oxytocine_10_ui_entrees" type="text"></td>
+					<td><input ng-model="snis_report.oxytocine_10_ui_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.oxytocine_10_ui_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.oxytocine_10_ui_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.oxytocine_10_ui_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.oxytocine_10_ui_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Methylergométrine amp 1 ml</td>
+					<td><input ng-model="snis_report.methylergometrine_1ml_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.methylergometrine_1ml_entrees" type="text"></td>
+					<td><input ng-model="snis_report.methylergometrine_1ml_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.methylergometrine_1ml_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.methylergometrine_1ml_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.methylergometrine_1ml_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.methylergometrine_1ml_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Misoprostol</td>
+					<td><input ng-model="snis_report.misoprostol_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.misoprostol_entrees" type="text"></td>
+					<td><input ng-model="snis_report.misoprostol_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.misoprostol_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.misoprostol_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.misoprostol_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.misoprostol_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Sulphate de magnésium</td>
+					<td><input ng-model="snis_report.sulphate_magnesium_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.sulphate_magnesium_entrees" type="text"></td>
+					<td><input ng-model="snis_report.sulphate_magnesium_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.sulphate_magnesium_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.sulphate_magnesium_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.sulphate_magnesium_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.sulphate_magnesium_qnt_v_peremp" type="text"></td>
+				</tr><tr>
+					<td>Salbutamol  4 mg, co</td>
+					<td><input ng-model="snis_report.salbutanol_4mg_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.salbutanol_4mg_entrees" type="text"></td>
+					<td><input ng-model="snis_report.salbutanol_4mg_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.salbutanol_4mg_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.salbutanol_4mg_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.salbutanol_4mg_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.salbutanol_4mg_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Na DCC co</td>
+					<td><input ng-model="snis_report.na_dcc_co_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.na_dcc_co_entrees" type="text"></td>
+					<td><input ng-model="snis_report.na_dcc_co_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.na_dcc_co_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.na_dcc_co_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.na_dcc_co_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.na_dcc_co_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>RH</td>
+					<td><input ng-model="snis_report.rh_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.rh_entrees" type="text"></td>
+					<td><input ng-model="snis_report.rh_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.rh_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.rh_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.rh_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.rh_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>RHZ</td>
+					<td><input ng-model="snis_report.rhz_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.rhz_entrees" type="text"></td>
+					<td><input ng-model="snis_report.rhz_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.rhz_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.rhz_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.rhz_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.rhz_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>RHZE</td>
+					<td><input ng-model="snis_report.rhze_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.rhze_entrees" type="text"></td>
+					<td><input ng-model="snis_report.rhze_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.rhze_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.rhze_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.rhze_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.rhze_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Compresses de gaze</td>
+					<td><input ng-model="snis_report.compresse_gaze_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.compresse_gaze_entrees" type="text"></td>
+					<td><input ng-model="snis_report.compresse_gaze_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.compresse_gaze_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.compresse_gaze_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.compresse_gaze_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.compresse_gaze_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Dakin (Na DCC co)</td>
+					<td><input ng-model="snis_report.dakin_na_dcc_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.dakin_na_dcc_entrees" type="text"></td>
+					<td><input ng-model="snis_report.dakin_na_dcc_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.dakin_na_dcc_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.dakin_na_dcc_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.dakin_na_dcc_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.dakin_na_dcc_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Aiguilles 21 G</td>
+					<td><input ng-model="snis_report.aiguille_21g_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.aiguille_21g_entrees" type="text"></td>
+					<td><input ng-model="snis_report.aiguille_21g_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.aiguille_21g_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.aiguille_21g_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.aiguille_21g_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.aiguille_21g_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Seringue 5 ml</td>
+					<td><input ng-model="snis_report.seringue_5ml_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.seringue_5ml_entrees" type="text"></td>
+					<td><input ng-model="snis_report.seringue_5ml_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.seringue_5ml_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.seringue_5ml_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.seringue_5ml_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.seringue_5ml_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Eau ppi 5 ml  fl</td>
+					<td><input ng-model="snis_report.eau_ppi_5ml_fl_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.eau_ppi_5ml_fl_entrees" type="text"></td>
+					<td><input ng-model="snis_report.eau_ppi_5ml_fl_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.eau_ppi_5ml_fl_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.eau_ppi_5ml_fl_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.eau_ppi_5ml_fl_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.eau_ppi_5ml_fl_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Lidocaïne 2%, fl</td>
+					<td><input ng-model="snis_report.lidocaine_2_fl_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.lidocaine_2_fl_entrees" type="text"></td>
+					<td><input ng-model="snis_report.lidocaine_2_fl_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.lidocaine_2_fl_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.lidocaine_2_fl_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.lidocaine_2_fl_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.lidocaine_2_fl_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Ketamine, 50mg/ml, 10ml , Vial, Unité</td>
+					<td><input ng-model="snis_report.ketamine_50mg_20ml_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.ketamine_50mg_20ml_entrees" type="text"></td>
+					<td><input ng-model="snis_report.ketamine_50mg_20ml_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.ketamine_50mg_20ml_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.ketamine_50mg_20ml_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.ketamine_50mg_20ml_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.ketamine_50mg_20ml_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Adrénaline</td>
+					<td><input ng-model="snis_report.adrenaline_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.adrenaline_entrees" type="text"></td>
+					<td><input ng-model="snis_report.adrenaline_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.adrenaline_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.adrenaline_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.adrenaline_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.adrenaline_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Atropine</td>
+					<td><input ng-model="snis_report.atropine_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.atropine_entrees" type="text"></td>
+					<td><input ng-model="snis_report.atropine_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.atropine_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.atropine_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.atropine_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.atropine_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Hydrocortisone</td>
+					<td><input ng-model="snis_report.hydrocortisone_2_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_2_entrees" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_2_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_2_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_2_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_2_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.hydrocortisone_2_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Sut., PGA, tressé, 75cm, déc.3 (2/0), ai g.1/2c, R, eff., 30mm, Un</td>
+					<td><input ng-model="snis_report.sut_pga_75_dec3_30_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec3_30_entrees" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec3_30_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec3_30_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec3_30_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec3_30_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec3_30_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Sut., PGA, tressé, 75cm, déc.4 (1), aig.1/2c, R, eff., 30mm, Un</td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_30_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_30_entrees" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_30_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_30_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_30_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_30_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_30_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Sut., PGA, tressé, 75cm, déc.4 (1), aig.1/2c, R, eff., 50mm, Un</td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_50_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_50_entrees" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_50_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_50_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_50_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_50_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_50_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Sut., PGA, tressé, 75cm, déc.4 (1), aig.3/8c, R, eff., 50mm, Un</td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_3_8_50_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_3_8_50_entrees" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_3_8_50_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_3_8_50_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_3_8_50_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_3_8_50_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.sut_pga_75_dec4_3_8_50_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Dextrose (Glucoce),50%, 50ml,Vial,Unité</td>
+					<td><input ng-model="snis_report.dextrose_50_vial_unite_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_50_vial_unite_entrees" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_50_vial_unite_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_50_vial_unite_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_50_vial_unite_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_50_vial_unite_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_50_vial_unite_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Dextrose (Glucose) + NaCl, 5%+0,9%, 500ml, Perfusion, Unité</td>
+					<td><input ng-model="snis_report.dextrose_nacl_500_perf_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_nacl_500_perf_entrees" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_nacl_500_perf_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_nacl_500_perf_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_nacl_500_perf_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_nacl_500_perf_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_nacl_500_perf_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Dextrose (Glucose), 5%, 500ml, Perfusion, Unité</td>
+					<td><input ng-model="snis_report.dextrose_500_perf_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_500_perf_entrees" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_500_perf_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_500_perf_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_500_perf_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_500_perf_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_500_perf_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Dextrose(Glucose)5% 250ml,Perfusion, Unité</td>
+					<td><input ng-model="snis_report.dextrose_250_perf_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_250_perf_entrees" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_250_perf_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_250_perf_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_250_perf_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_250_perf_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.dextrose_250_perf_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Ringer lactate (Sol uti on de Hartmann), 500ml, Perfusion, Uni té</td>
+					<td><input ng-model="snis_report.ringer_lactate_500_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.ringer_lactate_500_entrees" type="text"></td>
+					<td><input ng-model="snis_report.ringer_lactate_500_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.ringer_lactate_500_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.ringer_lactate_500_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.ringer_lactate_500_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.ringer_lactate_500_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Catheter Court IV avec site dinjection, U.U.,24G (0,7*19mm), jaune,Unit</td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_24g_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_24g_entrees" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_24g_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_24g_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_24g_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_24g_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_24g_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Catheter court IV, avec site di njection, uu 22G (0,8*25mm),bleu</td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_22g_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_22g_entrees" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_22g_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_22g_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_22g_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_22g_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_22g_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Catheter court IV, avec site dinjection,uu,20G(1.0*32mm),rose,U</td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_20g_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_20g_entrees" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_20g_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_20g_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_20g_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_20g_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.catheter_c_iv_dinjection_20g_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Sonde Urinaire</td>
+					<td><input ng-model="snis_report.sonde_urinaire_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.sonde_urinaire_entrees" type="text"></td>
+					<td><input ng-model="snis_report.sonde_urinaire_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.sonde_urinaire_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.sonde_urinaire_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.sonde_urinaire_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.sonde_urinaire_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Réactif radiologie</td>
+					<td><input ng-model="snis_report.reactif_radio_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.reactif_radio_entrees" type="text"></td>
+					<td><input ng-model="snis_report.reactif_radio_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.reactif_radio_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.reactif_radio_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.reactif_radio_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.reactif_radio_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Fiche Consultation curative</td>
+					<td><input ng-model="snis_report.fiche_consul_curative_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.fiche_consul_curative_entrees" type="text"></td>
+					<td><input ng-model="snis_report.fiche_consul_curative_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.fiche_consul_curative_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.fiche_consul_curative_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.fiche_consul_curative_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.fiche_consul_curative_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Fiche CPN</td>
+					<td><input ng-model="snis_report.fiche_cpn_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cpn_entrees" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cpn_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cpn_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cpn_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cpn_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cpn_qnt_v_peremp" type="text"></td>
+				</tr>
+				<tr>
+					<td>Fiche CPS</td>
+					<td><input ng-model="snis_report.fiche_cps_stock_debut_mois" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cps_entrees" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cps_sortie_h_consom" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cps_qnt_consomme" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cps_stock_dispo" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cps_nb_rupture_poste" type="text"></td>
+					<td><input ng-model="snis_report.fiche_cps_qnt_v_peremp" type="text"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3>7.3.2. Situation Générale des items en stock</h3>
+		<table>
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Nombre</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Items en stock</td>
+					<td><input ng-model="snis_report.items_en_stock_situation" type="text"></td>
+				</tr>
+				<tr>
+					<td>Items en sur stock</td>
+					<td><input ng-model="snis_report.items_sur_stock_situation" type="text"></td>
+				</tr>
+				<tr>
+					<td>Item dont une partie du stock est en voie de péremption</td>
+					<td><input ng-model="snis_report.items_voie_peremption_situation" type="text"></td>
+				</tr>
+				<tr>
+					<td>Item avec risque de perte par péremption</td>
+					<td><input ng-model="snis_report.items_risque_perte_peremption_situation" type="text"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div class="row">
+			<div class="col-md-6">
+				<h3>7.3.3. Valeur de la pharmacie</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Nombre</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Valeur du stock physique de médicaments (inventaire) (+)</td>
+							<td><input ng-model="snis_report.valeur_stock_physique_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Montant du compte pharmacie (solde fin du mois) (+)</td>
+							<td><input ng-model="snis_report.montant_compte_pharmacie_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Montant des commandes en cours (déjà payées BCZ, CDR) (+)</td>
+							<td><input ng-model="snis_report.montant_commande_en_cours_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Montant à recouvrer (créances=dette des malades) (+)</td>
+							<td><input ng-model="snis_report.montant_recouvre_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Montant à payer au tiers (dettes envers le fournisseur) (-)</td>
+							<td><input ng-model="snis_report.montant_payer_tiers_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Recettes totales mensuelles des médicaments</td>
+							<td><input ng-model="snis_report.recettes_tot_mensuelles_med_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Dépenses totales mensuelles des médicaments</td>
+							<td><input ng-model="snis_report.depenses_tot_mensuelles_med_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Valeur du stock sur fiche HGR</td>
+							<td><input ng-model="snis_report.val_stock_fiche_hgr_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Valeur médicaments achetés à la CDR</td>
+							<td><input ng-model="snis_report.val_med_achetes_cdr_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Valeur subsides en médicaments reçus</td>
+							<td><input ng-model="snis_report.val_subs_med_recus_pharmacie" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h3>7.3.3. Valeur de la pharmacie (suite)</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Nombre</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Articles hors usage</td>
+							<td><input ng-model="snis_report.article_hors_usage_pharmacie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Articles commandés au BCZS</td>
+							<td><input ng-model="snis_report.article_comd_bczs" type="text"></td>
+						</tr>
+						<tr>
+							<td>Articles complètement servis par BCZS</td>
+							<td><input ng-model="snis_report.article_complt_servis_bczs" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<h3>7.3.4. Valeur des médicaments consommés au coût d’achat</h3>
+		<table>
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Ambulatoire</td>
+					<td>Medecine Interne</td>
+					<td>Pediatrie</td>
+					<td>Gynecologie</td>
+					<td>Obstétrique</td>
+					<td>Total</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Médicament admin. aux malades</td>
+					<td><input ng-model="snis_report.med_admin_malade_ambulatoire" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_malade_med_intern" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_malade_pediatrie" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_malade_gynecologue" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_malade_obstetrique" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_malade_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Médicament admin. au personnel</td>
+					<td><input ng-model="snis_report.med_admin_personnel_ambulatoire" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_personnel_med_intern" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_personnel_pediatrie" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_personnel_gynecologue" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_personnel_obstetrique" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_personnel_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Médicament admin. aux indigents</td>
+					<td><input ng-model="snis_report.med_admin_indigents_ambulatoire" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_indigents_med_intern" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_indigents_pediatrie" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_indigents_gynecologue" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_indigents_obstetrique" type="text"></td>
+					<td><input ng-model="snis_report.med_admin_indigents_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Médicaments périmés, avariés, cassés</td>
+					<td><input ng-model="snis_report.med_perimes_avaries_ambulatoire" type="text"></td>
+					<td><input ng-model="snis_report.med_perimes_avaries_med_intern" type="text"></td>
+					<td><input ng-model="snis_report.med_perimes_avaries_pediatrie" type="text"></td>
+					<td><input ng-model="snis_report.med_perimes_avaries_gynecologue" type="text"></td>
+					<td><input ng-model="snis_report.med_perimes_avaries_obstetrique" type="text"></td>
+					<td><input ng-model="snis_report.med_perimes_avaries_total" type="text"></td>
+				</tr>
+			</tbody>
+		</table>
+
+
+		<h3>7.4.1. Valorisation des subventions reçues</h3>
+		<table>
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Etat</td>
+					<td>Partenaires</td>
+					<td>Autres</td>
+					<td>Total</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Salaire  personnel</td>
+					<td><input ng-model="snis_report.salaire_personnel_etat" type="text"></td>
+					<td><input ng-model="snis_report.salaire_personnel_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.salaire_personnel_autres" type="text"></td>
+					<td><input ng-model="snis_report.salaire_personnel_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Primes personnel</td>
+					<td><input ng-model="snis_report.primes_personnel_etat" type="text"></td>
+					<td><input ng-model="snis_report.primes_personnel_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.primes_personnel_autres" type="text"></td>
+					<td><input ng-model="snis_report.primes_personnel_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Personnel de la structure d’appui</td>
+					<td><input ng-model="snis_report.personnel_struct_appui_etat" type="text"></td>
+					<td><input ng-model="snis_report.personnel_struct_appui_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.personnel_struct_appui_autres" type="text"></td>
+					<td><input ng-model="snis_report.personnel_struct_appui_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Infrastructure - Construction</td>
+					<td><input ng-model="snis_report.infrastructure_constr_etat" type="text"></td>
+					<td><input ng-model="snis_report.infrastructure_constr_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.infrastructure_constr_autres" type="text"></td>
+					<td><input ng-model="snis_report.infrastructure_constr_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Infrastructure - Réhabilitation</td>
+					<td><input ng-model="snis_report.infrastructure_rehab_etat" type="text"></td>
+					<td><input ng-model="snis_report.infrastructure_rehab_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.infrastructure_rehab_autres" type="text"></td>
+					<td><input ng-model="snis_report.infrastructure_rehab_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Subvention Matériel - Véhicule</td>
+					<td><input ng-model="snis_report.subv_mat_vehicule_etat" type="text"></td>
+					<td><input ng-model="snis_report.subv_mat_vehicule_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.subv_mat_vehicule_autres" type="text"></td>
+					<td><input ng-model="snis_report.subv_mat_vehicule_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Matériel - Equipement médicaux</td>
+					<td><input ng-model="snis_report.mat_equipm_med_etat" type="text"></td>
+					<td><input ng-model="snis_report.mat_equipm_med_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.mat_equipm_med_autres" type="text"></td>
+					<td><input ng-model="snis_report.mat_equipm_med_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Matériel - Autre équipement</td>
+					<td><input ng-model="snis_report.mat_autre_equipmt_etat" type="text"></td>
+					<td><input ng-model="snis_report.mat_autre_equipmt_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.mat_autre_equipmt_autres" type="text"></td>
+					<td><input ng-model="snis_report.mat_autre_equipmt_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Matériel - Médicaments</td>
+					<td><input ng-model="snis_report.mat_medicaments_etat" type="text"></td>
+					<td><input ng-model="snis_report.mat_medicaments_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.mat_medicaments_autres" type="text"></td>
+					<td><input ng-model="snis_report.mat_medicaments_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Activités des Formations</td>
+					<td><input ng-model="snis_report.activites_formations_etat" type="text"></td>
+					<td><input ng-model="snis_report.activites_formations_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.activites_formations_autres" type="text"></td>
+					<td><input ng-model="snis_report.activites_formations_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Autres Activites</td>
+					<td><input ng-model="snis_report.autres_activites_etat" type="text"></td>
+					<td><input ng-model="snis_report.autres_activites_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.autres_activites_autres" type="text"></td>
+					<td><input ng-model="snis_report.autres_activites_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Activités de soins - Routine</td>
+					<td><input ng-model="snis_report.activites_soins_routine_etat" type="text"></td>
+					<td><input ng-model="snis_report.activites_soins_routine_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.activites_soins_routine_autres" type="text"></td>
+					<td><input ng-model="snis_report.activites_soins_routine_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Activités de soins - Urgence</td>
+					<td><input ng-model="snis_report.activites_soins_urgence_etat" type="text"></td>
+					<td><input ng-model="snis_report.activites_soins_urgence_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.activites_soins_urgence_autres" type="text"></td>
+					<td><input ng-model="snis_report.activites_soins_urgence_total" type="text"></td>
+				</tr>
+				<tr>
+					<td>Recherche</td>
+					<td><input ng-model="snis_report.recherche_etat" type="text"></td>
+					<td><input ng-model="snis_report.recherche_partenaires" type="text"></td>
+					<td><input ng-model="snis_report.recherche_autres" type="text"></td>
+					<td><input ng-model="snis_report.recherche_total" type="text"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3>7.4.2. Tableau de trésorerie</h3>
+		<div class="row">
+			<div class="col-md-6">
+				<h3>7.4.2.1. Recettes</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Solde mois précédent</td>
+							<td><input ng-model="snis_report.solde_mois_precedent_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Médicaments</td>
+							<td><input ng-model="snis_report.medicaments_recettes"  type="text"></td>
+						</tr>
+						<tr>
+							<td>Imprimés</td>
+							<td><input  ng-model="snis_report.imprimes_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Prestation des services</td>
+							<td><input ng-model="snis_report.prestation_services_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Consultations</td>
+							<td><input ng-model="snis_report.consultations_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Laboratoire</td>
+							<td><input ng-model="snis_report.laboratoire_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Chirurgie</td>
+							<td><input ng-model="snis_report.chirurgie_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Maternité</td>
+							<td><input ng-model="snis_report.maternite_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Médecine interne</td>
+							<td><input ng-model="snis_report.med_interne_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Gynéco obstétrique</td>
+							<td><input ng-model="snis_report.gyn_obs_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Pédiatrie</td>
+							<td><input ng-model="snis_report.pediatrie_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Imagerie</td>
+							<td><input ng-model="snis_report.imagerie_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Suivi médico-infirmier</td>
+							<td><input ng-model="snis_report.suivi_medico_infirmr_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>--- Autres prestation des services</td>
+							<td><input ng-model="snis_report.autres_prestation_services_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Sous-Total Contributions Locales (a)</td>
+							<td><input ng-model="snis_report.sous_total_contributions_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Subventions et subsides  Etat</td>
+							<td><input ng-model="snis_report.subventions_subsides_etat_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Subventions  et subsides  partenaires</td>
+							<td><input ng-model="snis_report.subventions_subsides_partenaires_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Subventions  et subsides  autres</td>
+							<td><input ng-model="snis_report.subventions_subsides_autres_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Sous-Total Appuis Extérieurs(b)</td>
+							<td><input ng-model="snis_report.sous_total_appui_ext_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Remb. Crédits patients</td>
+							<td><input ng-model="snis_report.remb_cred_patient_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Emprunts</td>
+							<td><input ng-model="snis_report.enmprunts_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Retour Prêts/ avances</td>
+							<td><input ng-model="snis_report.retout_pret_avance_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Sous-Total Recouvrements divers (c)</td>
+							<td><input ng-model="snis_report.s_total_recouvremet_divers_recettes" type="text"></td>
+						</tr>
+						<tr>
+							<td>TOTAL (a+b+c)</td>
+							<td><input ng-model="snis_report.total_abc_recettes" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-md-6">
+				<h3>7.4.2.2. Sorties du mois</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Salaires / Primes</td>
+							<td><input ng-model="snis_report.salaires_primes_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Transport personnel</td>
+							<td><input ng-model="snis_report.transport_pers_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Autres dépenses personnels</td>
+							<td><input ng-model="snis_report.autres_depenses_personnels_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Médicaments</td>
+							<td><input ng-model="snis_report.medicaments_personnels_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Fourniture et petit matériel</td>
+							<td><input ng-model="snis_report.fourniture_petit_materiel_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Consommations des services</td>
+							<td><input ng-model="snis_report.consom_services_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Consultations</td>
+							<td><input ng-model="snis_report.consultations_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Laboratoire</td>
+							<td><input ng-model="snis_report.labo_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Chirurgie</td>
+							<td><input ng-model="snis_report.chirurgie_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Maternité</td>
+							<td><input ng-model="snis_report.maternite_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Médecine interne</td>
+							<td><input ng-model="snis_report.med_intern_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Gynéco obstétrique</td>
+							<td><input ng-model="snis_report.gyn_obst_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Pédiatrie</td>
+							<td><input ng-model="snis_report.pediatrie_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Imagerie</td>
+							<td><input ng-model="snis_report.imagerie_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Suivi médico-infirmier</td>
+							<td><input ng-model="snis_report.suivi_medico_infirm_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Autres Consommations des services</td>
+							<td><input ng-model="snis_report.autres_cons_service_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Services extérieurs</td>
+							<td><input ng-model="snis_report.service_exterieur_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Contribution au BCZ</td>
+							<td><input ng-model="snis_report.contribution_bcz_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Contribution autres</td>
+							<td><input ng-model="snis_report.contribution_autres_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Impôt et taxes</td>
+							<td><input ng-model="snis_report.impot_taxes_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Investissement</td>
+							<td><input ng-model="snis_report.investissement_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Autres dépenses</td>
+							<td><input ng-model="snis_report.autres_depenses_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Total Charges Fixes (a)</td>
+							<td><input ng-model="snis_report.tot_charges_fixes_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Remboursement dettes</td>
+							<td><input ng-model="snis_report.rembourssement_dettes_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Remboursement emprunts</td>
+							<td><input ng-model="snis_report.rembourssement_emprunts_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Prêt / avances</td>
+							<td><input ng-model="snis_report.pret_avances_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Intérêts payés</td>
+							<td><input ng-model="snis_report.interets_payes_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Total Charges Ponctuelles (b)</td>
+							<td><input ng-model="snis_report.total_charges_ponctuelles_sorties" type="text"></td>
+						</tr>
+						<tr>
+							<td>Total (a+b)</td>
+							<td><input ng-model="snis_report.total_ab_sorties" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- exploitation -->
+		<h3>7.4.3. Compte d’exploitation de l’hôpital</h3>
+		<div class="row">
+			<div class="col-md-6"></div>
+			<div class="col-md-6">
+				<table>
+					<tr>
+						<td>Taux moyens de Change</td>
+						<td><input ng-model="snis_report.taux_moyens_change" type="text"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<h3>7.4.3.1. Charges</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Médicaments et autres stocks consommés</td>
+							<td><input ng-model="snis_report.med_stocks_consommes_charges" type="text"></td>
+						</tr>
+						<tr>
+							<td>Matières et fournitures consommées</td>
+							<td><input ng-model="snis_report.matieres_fourn_consommes_charges" type="text"></td>
+						</tr>
+						<tr>
+							<td>Transports consommés</td>
+							<td><input ng-model="snis_report.transport_consommes_charges" type="text"></td>
+						</tr>
+						<tr>
+							<td>Autres services consommés</td>
+							<td><input ng-model="snis_report.autres_services_consommes_charges" type="text"></td>
+						</tr>
+						<tr>
+							<td>Charges et pertes diverses</td>
+							<td><input ng-model="snis_report.charge_pertes_charges" type="text"></td>
+						</tr>
+						<tr>
+							<td>Charges du personnel</td>
+							<td><input ng-model="snis_report.charge_personnel_charges" type="text"></td>
+						</tr>
+						<tr>
+							<td>Contributions et taxes</td>
+							<td><input ng-model="snis_report.contri_taxes_charges" type="text"></td>
+						</tr>
+						<tr>
+							<td>Intérêts payés par l’institut</td>
+							<td><input ng-model="snis_report.interet_institut_charges" type="text"></td>
+						</tr>
+						<tr>
+							<td>Dotations aux amortissements et provisions</td>
+							<td><input ng-model="snis_report.dot_amortissemts_provision_charges" type="text"></td>
+						</tr>
+						<tr>
+							<td>Contribution sur les revenus</td>
+							<td><input ng-model="snis_report.contribution_rev_charges" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-md-6">
+				<h3>7.4.3.2. Produits</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Vente des médicaments et autres articles</td>
+							<td><input ng-model="snis_report.vente_med_articles" type="text"></td>
+						</tr>
+						<tr>
+							<td>Production des services</td>
+							<td><input ng-model="snis_report.prod_services_produits" type="text"></td>
+						</tr>
+						<tr>
+							<td>Production stockée</td>
+							<td><input ng-model="snis_report.prod_stockee_produits" type="text"></td>
+						</tr>
+						<tr>
+							<td>Travaux faits pour cpte propre</td>
+							<td><input ng-model="snis_report.trav_compt_propre_produits" type="text"></td>
+						</tr>
+						<tr>
+							<td>Produits et profits divers</td>
+							<td><input ng-model="snis_report.prod_profits_divers_produits" type="text"></td>
+						</tr>
+						<tr>
+							<td>Subventions d’exploitation</td>
+							<td><input ng-model="snis_report.subv_exploitation_produits" type="text"></td>
+						</tr>
+						<tr>
+							<td>Intérêts et dividendes reçus</td>
+							<td><input ng-model="snis_report.interet_divid_recus_produits" type="text"></td>
+						</tr>
+						<tr>
+							<td>Reprises sur amort. et provisions</td>
+							<td><input ng-model="snis_report.reprises_amort_provision_produits" type="text"></td>
+						</tr>
+						<tr>
+							<td>Autres produits</td>
+							<td><input ng-model="snis_report.autre_produits_produits" type="text"></td>
+						</tr>
+						<tr>
+							<td>Résultats</td>
+							<td><input ng-model="snis_report.resultat_produits" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- justification -->
+		<h3>7.4.4. Justification</h3>
+		<div class="row">
+			<div class="col-md-6">
+				<h3>7.4.4.1 Charges et pertes diverses</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Médic. avariés, périmés, cassés, volés</td>
+							<td><input ng-model="snis_report.med_avar_perm_pertes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Jetons de présence</td>
+							<td><input ng-model="snis_report.jetons_presence_pertes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Amendes payées</td>
+							<td><input ng-model="snis_report.amendes_payes_pertes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Remboursement trop perçu aux malades</td>
+							<td><input ng-model="snis_report.remboursement_trop_percu_pertes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Créances irrécouvrables</td>
+							<td><input ng-model="snis_report.creances_irrecouvrable_pertes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Pertes de change</td>
+							<td><input ng-model="snis_report.pertes_change_pertes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Subventions accordées</td>
+							<td><input ng-model="snis_report.subv_accordees_pertes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Dons et assistances sociales diverses</td>
+							<td><input ng-model="snis_report.dont_ass_sociales_pertes" type="text"></td>
+						</tr>
+						<tr>
+							<td>Autres charges</td>
+							<td><input ng-model="snis_report.autres_charges_pertes" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h3>7.4.4.2 Eléments constitutifs de la valeur de vente de médic. et autres articles(au P.V.) :cpte 70</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Médicaments administrés aux indigents</td>
+							<td><input type="text" ng-model="snis_report.med_admi_indigents_valeur_vente"></td>
+						</tr>
+						<tr>
+							<td>Médicaments administrés aux malades</td>
+							<td><input type="text" ng-model="snis_report.med_admi_malades_valeur_vente"></td>
+						</tr>
+						<tr>
+							<td>Autres articles</td>
+							<td><input type="text" ng-model="snis_report.autres_articles_valeur_vente"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<h3>7.4.4.3 Subventions d'exploitation</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Salaires Etat et prime</td>
+							<td><input ng-model="snis_report.salaire_etat_prime_subv_exploit" type="text"></td>
+						</tr>
+						<tr>
+							<td>Contribution population</td>
+							<td><input ng-model="snis_report.contribution_population_subv_exploit" type="text"></td>
+						</tr>
+						<tr>
+							<td>Subventions en médicaments</td>
+							<td><input ng-model="snis_report.sub_medicament_subv_exploit" type="text"></td>
+						</tr>
+						<tr>
+							<td>Autres travaux bénévoles</td>
+							<td><input ng-model="snis_report.autre_trav_benevoles_subv_exploit" type="text"></td>
+						</tr>
+						<tr>
+							<td>Autres subv. dexploitation</td>
+							<td><input ng-model="snis_report.autre_subv_exploitation_subv_exploit" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h3>7.4.4.4. Production des services</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Consultations curatives</td>
+							<td><input ng-model="snis_report.consult_curatives_prod_services" type="text"></td>
+						</tr>
+						<tr>
+							<td>Hospitalisation</td>
+							<td><input ng-model="snis_report.hospitalisation_prod_services" type="text"></td>
+						</tr>
+						<tr>
+							<td>Interventions chirurgicales</td>
+							<td><input ng-model="snis_report.interv_chirurgicales_prod_services" type="text"></td>
+						</tr>
+						<tr>
+							<td>Imagerie</td>
+							<td><input ng-model="snis_report.imagerie_prod_services" type="text"></td>
+						</tr>
+						<tr>
+							<td>Accouchements</td>
+							<td><input ng-model="snis_report.accouchements_prod_services" type="text"></td>
+						</tr>
+						<tr>
+							<td>Laboratoire</td>
+							<td><input ng-model="snis_report.laboratoire_prod_services" type="text"></td>
+						</tr>
+						<tr>
+							<td>Suivi médico-infirmier</td>
+							<td><input ng-model="snis_report.suiv_medico_infirmier_prod_services" type="text"></td>
+						</tr>
+						<tr>
+							<td>Autres productions</td>
+							<td><input ng-model="snis_report.autres_production_prod_services" type="text"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<h3>7.4.4.5. Synthèse données de trésorerie</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Report du mois précédent (1)</td>
+							<td><input type="text" ng-model="snis_report.report_mois_preced_synth_tresorerie"></td>
+						</tr>
+						<tr>
+							<td>Recettes totales du mois (2)</td>
+							<td><input ng-model="snis_report.report_totales_mois_synth_tresorerie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Dépenses totales du mois (3)</td>
+							<td><input ng-model="snis_report.depenses_total_mois_synth_tresorerie" type="text"></td>
+						</tr>
+						<tr>
+							<td>Total recettes propres du mois (A)</td>
+							<td><input type="text" ng-model="snis_report.total_rectt_propre_mois_synth_tresorerie"></td>
+						</tr>
+						<tr>
+							<td>Total facturé (70 à 71) (B)</td>
+							<td><input type="text" ng-model="snis_report.total_facture_70_71_synth_tresorerie"></td>
+						</tr>
+						<tr>
+							<td>Dettes recouvrées (C)</td>
+							<td><input type="text" ng-model="snis_report.dettes_recouvree_synth_tresorerie"></td>
+						</tr>
+						<tr>
+							<td>Dettes à recouvrer (cumul ) (D)</td>
+							<td><input type="text" ng-model="snis_report.dettes_recouvree_cumul_tresorerie"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-md-6">
+				<h3>7.4.4.6. Gestion des dettes et créance</h3>
+				<table>
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td>Montant</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Montant total des factures émises</td>
+							<td><input type="text" ng-model="snis_report.mnt_tot_fact_emis_gest_det_creance"></td>
+						</tr>
+						<tr>
+							<td>Montant total de factures payées</td>
+							<td><input type="text" ng-model="snis_report.mnt_tot_fact_pay_gest_det_creance"></td>
+						</tr>
+						<tr>
+							<td>Montant total des créances accordées</td>
+							<td><input type="text" ng-model="snis_report.mnt_tot_creanc_accor_gest_dette_creance"></td>
+						</tr>
+						<tr>
+							<td>Montant total des créances payées</td>
+							<td><input type="text" ng-model="snis_report.mnt_tot_creanc_payees"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<h3>7.4.4.7. Epargne/Réserve</h3>
+		<table>
+			<thead>
+				<tr>
+					<td>&nbsp;</td>
+					<td>Medicaments</td>
+					<td>Recettes</td>
+					<td>Autres</td>
+					<td>Total</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Epargne/Réserve</td>
+					<td><input type="text" ng-model="snis_report.epargne_reserve_med"></td>
+					<td><input type="text" ng-model="snis_report.epargne_reserve_rect"></td>
+					<td><input type="text" ng-model="snis_report.epargne_reserve_autres"></td>
+					<td><input type="text" ng-model="snis_report.epargne_reserve_total"></td>
+				</tr>
+			</tbody>
+		</table>
+	</fieldset>
+</div>

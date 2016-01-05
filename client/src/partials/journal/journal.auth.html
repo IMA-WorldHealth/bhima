@@ -1,0 +1,34 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h4>{{ 'POSTING_JOURNAL.EDIT.TITLE' | translate }} <small class="pull-right"> {{ session.timestamp | date }} </small></h4>
+  </div>
+
+  <div class="modal-body">
+    <form class="form-horizontal" novalidate>
+      <div class="form-group">
+        <label class="control-label col-xs-3" style="text-align:left; width: inherit;">{{ 'POSTING_JOURNAL.EDIT.ID' | translate }}</label>
+        <p class="form-control-static col-xs-9"><small>{{ session.uuid }}</small></p>
+      </div>
+    </form>
+    <div ng-switch="session.attempts">
+
+      <div ng-switch-when="0" class="box-error"> {{ 'POSTING_JOURNAL.EDIT.INVALID_SESSION' | translate }} </div>
+
+      <form novalidate ng-switch-default>
+        <div class="form-group">
+          <label>{{ 'POSTING_JOURNAL.EDIT.JUSTIFICATION' | translate }} <small> ({{ 'POSTING_JOURNAL.EDIT.MIN_CHARS' | translate }}) </small></label>
+          <textarea type="text" class="form-bhima" ng-model="session.justification" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>{{ 'POSTING_JOURNAL.EDIT.PIN' | translate }}</label>
+          <input type="password" class="form-bhima" ng-model="session.pin">
+          <div ng-if="session.$error" class="box-error"> {{ 'POSTING_JOURNAL.EDIT.INVALID_PIN' | translate }} {{ session.attempts }} {{ 'POSTING_JOURNAL.EDIT.ATTEMPTS_REMAINING' | translate }} </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer" style="margin-top: 0;">
+     <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()" ng-disabled="session.$invalid">
+     <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.CANCEL' | translate }}" ng-click="cancel()">
+  </div>
+</div>

@@ -1,0 +1,137 @@
+<header data-header>
+  {{"PURCHASE.VIEW.TITLE" | translate}}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/purchase_menu">{{ "PURCHASE_MENU.TITLE" | translate }}</a></li>
+      <li class="active">{{ "PURCHASE.VIEW.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="col-xs-4 hack-left">
+    <input type="search" ng-model="purchaseRecordsCtrl.purchase_filter.filter" class="form-bhima" placeholder="Filter Purchase Orders">
+  </div>
+
+  <div class="pull-right">
+    <select class="form-bhima" ng-model="purchaseRecordsCtrl.session.purchase_type">
+      <option value="direct">{{ "PURCHASE.DIRECT" | translate }}</option>
+      <option value="indirect" selected>{{ "PURCHASE.INDIRECT" | translate }}</option>
+    </select>
+  </div>
+</nav>
+
+<main>
+
+  <div class="row">
+    <div class="col-xs-12">
+
+      <div ng-if="purchaseRecordsCtrl.session.purchase_type==='indirect'">
+        <div ng-switch on="purchaseRecordsCtrl.indirect_purchase.data.length">
+          <div ng-switch-default></div>
+        </div>
+        <div class="invoice-table">
+          <table class="table table-bordered">
+
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.REFERENCE" | translate }}</th>
+                <th>{{ "COLUMNS.DATE" | translate }}</th>
+                <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+                <th>{{ "COLUMNS.DISCOUNT" | translate }}</th>
+                <th>{{ "COLUMNS.CREDITOR" | translate }}</th>
+                <th>{{ "COLUMNS.PURCHASER" | translate }}</th>
+                <th>{{ "COLUMNS.EMPLOYER" | translate }}</th>
+                <th>{{ "COLUMNS.PAID" | translate }}</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody ng-if="purchaseRecordsCtrl.indirect_purchase.data.length">
+              <tr ng-repeat="purchase in purchaseRecordsCtrl.indirect_purchase.data | filter: purchaseRecordsCtrl.purchase_filter.filter">
+                <td>{{purchase.reference}}</td>
+                <td>{{purchase.purchase_date | date : 'EEEE, dd/MM/yyyy'}}</td>
+                <td>{{purchase.cost | currency}}</td>
+                <td>{{purchase.discount}}</td>
+                <td>{{purchase.text}}</td>
+                <td>{{purchase.name}}</td>
+                <td>{{purchase.first}} {{purchase.last}}</td>
+                <td>
+                  <span ng-show="purchase.paid==1" class="glyphicon glyphicon-hand-right"></span>
+                  <span ng-show="purchase.paid==0" class="glyphicon glyphicon-hand-down"></span>
+                </td>
+                <td><a ng-href="#/invoice/purchase/{{purchase.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PURCHASE_RECORDS.VIEW_PURCHASE_DETAIL" | translate}}</a></td>
+              </tr>
+            </tbody>
+
+            <tbody ng-if="!purchaseRecordsCtrl.indirect_purchase.data.length">
+              <tr>
+              <td colspan="9" class="alert alert-info">
+                {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. 
+                {{"PURCHASE_RECORDS.REFERENCE" | translate}}
+                {{"PURCHASE_RECORDS.PURCHASE_ORDER" | translate}} {{"PURCHASE_RECORDS.TO_REQUEST" | translate}}.
+              </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div ng-if="purchaseRecordsCtrl.session.purchase_type==='direct'">
+        <div ng-switch on="purchaseRecordsCtrl.invoice_model.data.length">
+          <div class="alert alert-info" ng-switch-when="0">
+            {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. {{"PURCHASE_RECORDS.REFERENCE" | translate}}<strong><a href="/#/inventory/purchase">{{"PURCHASE_RECORDS.PURCHASE_ORDER" | translate}}</a></strong> {{"PURCHASE_RECORDS.TO_REQUEST" | translate}}.
+          </div>
+          <div ng-switch-default></div>
+        </div>
+        <div class="invoice-table">
+          <table class="table table-bordered">
+
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.REFERENCE" | translate }}</th>
+                <th>{{ "COLUMNS.DATE" | translate }}</th>
+                <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+                <th>{{ "COLUMNS.DISCOUNT" | translate }}</th>
+                <th>{{ "COLUMNS.CREDITOR" | translate }}</th>
+                <th>{{ "COLUMNS.SUPPLIER" | translate }}</th>
+                <th>{{ "COLUMNS.EMPLOYER" | translate }}</th>
+                <th>{{ "COLUMNS.CONFIRMED" | translate }}</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody ng-if="purchaseRecordsCtrl.direct_purchase.data.length">
+              <tr ng-repeat="purchase in purchaseRecordsCtrl.direct_purchase.data | filter: purchaseRecordsCtrl.purchase_filter.filter">
+                <td>{{purchase.reference}}</td>
+                <td>{{purchase.purchase_date | date : 'EEEE, dd/MM/yyyy'}}</td>
+                <td>{{purchase.cost | currency}}</td>
+                <td>{{purchase.discount}}</td>
+                <td>{{purchase.text}}</td>
+                <td><strong>{{purchase.name}}</strong></td>
+                <td>{{purchase.first}} {{purchase.last}}</td>
+                <td>
+                  <span ng-show="purchase.confirmed==1" class="glyphicon glyphicon-hand-right"></span>
+                  <span ng-show="purchase.confirmed==0" class="glyphicon glyphicon-hand-down"></span>
+                </td>
+                <td><a ng-href="#/invoice/purchase/{{purchase.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PURCHASE_RECORDS.VIEW_PURCHASE_DETAIL" | translate}}</a></td>
+              </tr>
+            </tbody>
+
+            <tbody ng-if="!purchaseRecordsCtrl.direct_purchase.data.length">
+              <tr>
+              <td colspan="9" class="alert alert-info">
+                {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. 
+                {{"PURCHASE_RECORDS.REFERENCE" | translate}}
+                {{"PURCHASE_RECORDS.PURCHASE_ORDER" | translate}} {{"PURCHASE_RECORDS.TO_REQUEST" | translate}}.
+              </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

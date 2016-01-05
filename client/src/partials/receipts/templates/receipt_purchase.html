@@ -1,0 +1,93 @@
+<!-- Purchase template -->
+<div ng-controller="receipt.purchase as ReceiptCtrl">
+  <div class="row customer-details">
+    <div class="col-xs-12">
+      <small style="float: right; color: grey; font-size: 14px"> {{ model.common.purchases[0].uuid }}</small>
+      <h4 class="invoice-header">{{ 'INVOICE.PURCHASE_ORDER' | translate }}: {{ model.common.enterprise.abbr + model.common.purchases[0].reference}}</h4>
+    </div>
+  </div>
+
+  <div class="row customer-details">
+    <div class="col-xs-4">
+      <address>
+        <strong>{{ model.common.enterprise.name }}</strong><br />
+        {{ model.common.location.name }} <br>
+        <abbr title="{{ 'ENTERPRISE.POST_OFFICE_BOX' | translate }}">{{ 'ENTERPRISE.PO_BOX' | translate }} :</abbr> {{ model.common.enterprise.po_box }}<br>
+        {{ model.common.location.sector_name }}<br>
+        <abbr title="{{ 'ENTERPRISE.PHONE' | translate }}">TEL. :</abbr> {{ model.common.enterprise.phone }}<br>
+        <i>EMAIL : </i> {{ model.common.enterprise.email }}
+      </address>
+    </div>
+    <div class="col-xs-4">
+      <i>{{ "INVOICE.PURCHASE_RECIPIENT" | translate }}</i><br>
+      <span><b>{{model.common.supplier[0].name}}</b></span><br>
+      <br>
+      <i>TEL. : </i> {{model.common.supplier[0].phone}}<br>
+      <i>EMAIL : </i> {{model.common.supplier[0].email}}
+    </div>
+    <div class="col-xs-4">
+      <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{ model.common.enterprise.abbr + model.common.purchases[0].reference}}</b>
+      <br>
+      <i>{{ 'INVOICE.CREATED' | translate }}</i> <b> : {{ model.common.purchases[0].purchase_date | date }}</b>
+      <br>
+      <div>
+        <i>{{ 'INVOICE.ISSUER' | translate }}</i>:
+        <b>{{model.common.header[0].first + ' ' + model.common.header[0].last }}</b>
+      </div>
+      <div ng-if="model.common.purchases[0].is_direct === 0">
+        <i>{{ 'INVOICE.BUYER' | translate }}</i>:
+        <b>{{model.common.purchases[0].prenom + ' ' + model.common.purchases[0].name + ' '+  model.common.purchases[0].postnom}}</b>
+      </div>
+      <div>
+        <i>{{ 'INVOICE.TO_DELIVER_TO' | translate }}</i>:
+        <b>{{model.common.header[0].prenom + ' ' + model.common.header[0].name + ' '+  model.common.header[0].postnom}}</b>
+      </div>
+
+      <div>
+        <i>{{ 'INVOICE.IS_VALID' | translate }}</i>:
+        <b ng-show="model.common.purchases[0].is_validate === 1">{{"INVOICE.YES_VALID" | translate}}</b>
+        <b ng-show="model.common.purchases[0].is_validate != 1">{{"INVOICE.NO_VALID" | translate}}</b>
+      </div>
+
+      <div>
+        <i>{{ 'INVOICE.IS_AUTHORIZED' | translate }}</i>:
+        <b ng-show="model.common.purchases[0].is_authorized == 1">{{"INVOICE.YES_AUTHORIZED" | translate}}</b>
+        <b ng-show="model.common.purchases[0].is_authorized != 1">{{"INVOICE.NO_AUTHORIZED" | translate}}</b>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th>{{'COLUMNS.ID_PRODUCT' | translate}}</th>
+            <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+            <th>{{'COLUMNS.QUANTITY' | translate}}</th>
+            <th>{{'COLUMNS.PURCHASE_PRICE' | translate}}</th>
+            <th>{{'INVOICE.AMOUNT' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr ng-repeat="item in model.common.purchases | orderBy : 'code'">
+            <td>{{ item.code }}</td>
+            <td>{{ item.text }}</td>
+            <td>{{ item.quantity }}</td>
+
+            <td>{{ item.unit_price | currency:item.currency_id }}</td>
+            <td>{{ item.total | currency:item.currency_id }}</td>
+          </tr>
+        </tbody>
+        <tbody class="totals">
+          <tr>
+            <td colspan="4" class="no-border">{{'INVOICE.PURCHASE_TOTAL' | translate}}</td>
+            <td>
+              {{ model.common.purchases[0].cost | currency:model.common.purchases[0].currency_id }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- End purchase template -->

@@ -1,0 +1,40 @@
+<header>
+  {{ "INVENTORY_VIEW.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active"><a href="#/inventory">{{ "INVENTORY.MAIN.TITLE" | translate }}</a></li>
+      <li>{{ "INVENTORY.REGISTER.VIEW" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-left dropdown">
+    <button class="btn btn-sm dropdown-toggle btn-default">
+      <span class="glyphicon glyphicon-signal"></span> {{ "INVENTORY_VIEW.GROUP_BY" | translate }}
+    </button>
+    <!-- TODO: Fix this like general ledger -->
+    <ul class="dropdown-menu">
+      <li ng-repeat="groupDefinition in groupDefinitions">
+        <a ng-click="groupby(groupDefinition)">{{groupDefinition.key | translate }}</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="pull-right">
+    <a href="#/inventory/register" class="btn btn-sm btn-default">
+      <span class="glyphicon glyphicon-file"></span> {{ "INVENTORY_VIEW.REGISTER" | translate }}
+    </a>
+  </div>
+</nav>
+
+
+<main class="extend">
+  <div class="row" style="height:99%;">
+    <div class="col-xs-12" style="height:100%;">
+      <div id="bhima-inventory-grid" class="grid" style="height: 100%; overflow: hidden; outline: 0px; position: relative; font-size: 8pt"></div>
+    </div>
+  </div>
+</main>

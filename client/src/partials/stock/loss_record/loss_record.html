@@ -1,0 +1,115 @@
+<header data-header>
+  {{ "STOCK.LOSS.LOSS_RECORDS" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a tabindex="-1" href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+      <li class="active">{{ "STOCK.LOSS.LOSS_RECORDS" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
+  </div>
+
+  <div class="pull-left">
+    <span class="btn-group">
+      <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
+      <button class="btn btn-sm btn-default dropdown-toggle"><span class="caret" data-caret="&#9660;"></span></button>
+
+      <ul class="dropdown-menu">
+        <li ng-repeat="item in period">
+          <a class="clk" ng-click="select(item)">{{item.key | translate}}</a>
+        </li>
+      </ul>
+    </span>
+  </div>
+
+  <div>
+    <div class="col-xs-2" style="padding-right: 0px;">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
+    </div>
+    <div class="col-xs-2">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
+    </div>
+  </div>
+</nav>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame" style="padding-top: 10px;">
+        <table class="reportTable">
+          <thead>
+            <tr>
+              <th>{{'COLUMNS.ENTRY_DATE' | translate}}</th>
+              <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>
+              <th>{{'COLUMNS.TRACKING_NUMBER' | translate}}</th>
+              <th>{{'COLUMNS.MEDECINE' | translate}}</th>
+              <th>{{'COLUMNS.QTY' | translate}}</th>
+              <th>{{'COLUMNS.UNIT_PRICE' | translate}}</th>
+              <th>{{'COLUMNS.COST' | translate}}</th>
+              <th>{{'COLUMNS.RECEIPT' | translate}}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr ng-if="model.loss.data.length===0 && !session.searching">
+              <td colspan="8"><strong> {{'STOCK.LOSS.NO_LOSS_RECORDS' | translate}} </strong></td>
+            </tr>
+
+            <tr ng-if="session.searching">
+              <td colspan="8"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
+            </tr>
+            
+            <tr ng-repeat-start="lossData in session.loss"></tr>
+            <tr ng-repeat="rec in lossData | orderBy: 'text'">
+              <td>{{ rec.entry_date | date }}</td>
+              <td>{{ rec.lot_number }}</td>
+              <td>{{ rec.tracking_number }}</td>
+              <td>{{ rec.text }}</td>
+              <td>{{ rec.quantity}}</td>
+              <td>{{ rec.unit_price | currency }}</td>
+              <td>{{ rec.quantity * rec.unit_price | currency}}</td>
+              <td>
+                <!-- FIXME Get one receipt cell by row -->
+                <a ng-href="#/invoice/loss/{{ rec.document_uuid}}">
+                  <i class="glyphicon glyphicon-list-alt"></i> {{'COLUMNS.RECEIPT' | translate}}
+                </a>
+              </td>
+            </tr>
+            <!-- hack: separate lines which have different document_uuid -->
+            <tr class="loss-record-line"><td colspan="8"></td></tr>
+            <tr ng-repeat-end></tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <table style="width: 99%" >
+    <tbody>
+      <td width="50%">
+        <span style="margin-right: 10px;">
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
+          <b>{{total.loss}}</b>
+          <span ng-if="session.searching">...</span>
+        </span>
+
+        <span style="float: right; margin-right: 5px;">
+          <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b>
+        </span>
+      </td>
+
+      <td width="20%">
+        <b>{{total.loss_amount | currency}}</b>
+        <span ng-if="session.searching">...</span>
+      </td>
+      
+    </tbody>
+  </table>
+</footer>

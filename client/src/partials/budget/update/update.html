@@ -1,0 +1,153 @@
+<header data-header>
+  {{ "BUDGET.EDIT.PAGE_TITLE" | translate }} <small><span ng-if="session.account.account_txt"> - {{session.account.account_txt}} [{{session.account.account_number}}]</span></small>
+</header>
+
+<nav>
+  <div class="pull-left">
+      <ol class="breadcrumb">
+        <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+        <li class="active">{{ "BUDGET.EDIT.PAGE_TITLE" | translate }}</li>
+      </ol>
+  </div>
+</nav>
+
+<main>  
+  <div ng-if="session.mode === 'search'">    
+    <div class="row">
+      <div class="col-xs-4">
+        <h4><b>{{ "SELECT.FISCAL_YEAR" | translate }}</b></h4>
+        <table class="table form-bhima-border" summary="{{SELECT.FISCAL_YEAR}}">
+          <thead>
+            <tr>
+              <th>{{ "FISCAL_YEAR.DESCRIPTION" | translate }}</th>
+              <th>{{ "FISCAL_YEAR.START_DATE" | translate }}</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="year in fiscal_years.data" ng-class="{'btn-primary': year.id === selected }" ng-click="selectYear(year.id)" style="cursor:pointer">
+              <td>{{ year.fiscal_year_txt }}</td>
+              <td>{{ year.start_month}}/{{year.start_year }}</td>
+              <td><span class="glyphicon glyphicon-ok" ng-if="year.id === session.fiscal_year.id"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-xs-7">
+  <!-- right column -->
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div find-account on-submit="submitAccount" on-reset="resetAccountSearch" where="accountWhere" enable-reset></div>
+      </div>
+    </div>
+    </div> <!-- end of search area -->
+      <div ng-if="session.mode === 'edit'">
+        <div class="row" ng-if="!session.found">
+          <div class="col-xs-1"></div>
+          <div class="col-xs-5">
+          <div>
+            <h3>{{ session.no_data_msg }}</h3>
+            <h3>{{ "BUDGET.EDIT.CREATE_QUESTION" | translate }}</h3>
+            <h3 class="center">
+              <button class="btn btn-sm btn-default" ng-click="createBudget()">
+                <span class="glyphicon glyphicon-plus-sign"></span> {{ "BUDGET.EDIT.CREATE" | translate }}
+              </button>
+            </h3>
+          </div>
+        </div>
+      </div> <!-- end create budget row -->
+      <div class="row panel panel-primary" ng-if="session.found" style="margin: 4px 4px auto 4px">
+        <div class="panel-heading">
+          <b>{{ "BUDGET.EDIT.BUDGET_DETAILS" | translate }}</b>
+        </div>
+        <div class="col-xs-5">
+          <form name="budget" style="margin-top: 10px">
+            <table class="table form-bhima-border" summary="{{ 'EDIT.BUDGET.EDIT' | translate }}">
+              <thead>
+              <tr>
+                <th colspan="5">
+                  <h4>{{ "BUDGET.EDIT.FISCAL_YEAR_LABEL" | translate }} {{ session.fiscal_year.fiscal_year_txt }}</h4>
+                </th>
+              </tr>
+              <tr>
+                <th>{{ "BUDGET.EDIT.PERIOD" | translate }}</th>
+                <th>{{ "BUDGET.EDIT.START"  | translate }}</th>
+                <th>{{ "BUDGET.EDIT.END"    | translate }}</th>
+                <th>{{ "BUDGET.EDIT.BUDGET" | translate }}</th>
+                <th>{{ "BUDGET.EDIT.FREEZE" | translate }}</th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="budget in budgets.data">
+                  <td>{{ budget.period_number }}</td>
+                  <td>{{ budget.period_start | date }}</td>
+                  <td>{{ budget.period_stop | date }}</td>
+                  <td><input type="number" 
+                       ng-model="budget.budget" 
+                       ng-change="recompute()" 
+                       ng-focus="startEditing(budget)"
+                       ng-blur="endEditing(budget)"
+                       min="0.0" 
+                       ng-disabled="session.totalBudget <= 0.0 || (session.autoAdjust && (budget.freeze && !budget.editing))"
+                       >
+                  </td>
+                  <td style="text-align: center">
+                    <input type="checkbox" 
+                     ng-model="budget.freeze">
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="vertical-align: middle">
+                    <b>{{ "BUDGET.EDIT.AUTO_ADJUST" | translate }}&nbsp;&nbsp;
+                    <input type="checkbox" 
+                     style="margin: 0"
+                     ng-disabled="session.totalBudget <= 0.0"
+                     ng-change="recompute()"
+                     ng-model="session.autoAdjust"></b>
+                  </td>
+                  <td style="vertical-align: middle">
+                    <span class="pull-right">{{ "BUDGET.EDIT.TOTAL" | translate }}</span>
+                  </td>
+                  <td style="vertical-align: middle">
+                    <input type="number"
+                     ng-class="{'form-bhima-red-border' : session.totalBudget <= 0}"
+                     ng-model="session.totalBudget" 
+                     ng-change="recompute()" 
+                     min="0.0">
+                  </td>
+                <td>&nbsp;</td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="col-xs-4">
+        <h4 class="box-error" ng-if="session.totalBudget > 0.0 && !session.validTotal">
+          {{ "BUDGET.EDIT.WARNING" | translate }} <br/>
+          {{ "BUDGET.EDIT.WARN_BAD_TOTALS" | translate }}
+        </h4>
+        <h4 class="box-error" ng-if="session.totalBudget <= 0.0">
+          {{ "BUDGET.EDIT.WARNING" | translate }} <br/>
+          {{ "BUDGET.EDIT.WARN_ZERO_TOTAL" | translate }}
+        </h4>
+      </div>
+    </div> <!-- end edit row -->
+  </div> <!-- end of edit area -->
+</main>
+<footer>
+  <div class="pull-right" ng-if="session.mode === 'edit'">
+    <button class="btn btn-default" 
+      style="margin-right: 20px"
+      ng-click="restartSearch()">
+      <span class="glyphicon glyphicon-refresh"></span> {{ "BUDGET.EDIT.RESTART_SEARCH" | translate }}</button>
+    <button id="submitBudget" 
+      ng-click="updateBudget()"
+      ng-disabled="!session.validTotal || budget.$invalid" 
+      class="btn btn-sm btn-success" 
+      style="margin-right: 10px">
+      <span class="glyphicon glyphicon-pencil"></span> {{ "BUDGET.EDIT.UPDATE_BUDGET" | translate }}
+    </button>
+  </div>
+</footer>

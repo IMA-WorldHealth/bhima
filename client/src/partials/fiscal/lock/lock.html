@@ -1,0 +1,62 @@
+<div class="panel panel-danger" ng-controller="FiscalLockController as FiscalCtrl">
+
+  <div class="panel-heading" ng-if="fiscal">
+    <i class="glyphicon glyphicon-lock"></i> <b>{{ 'FISCAL_YEAR.LOCK' | translate }} : {{ fiscal.fiscal_year_txt }}</b>
+  </div>
+
+  <div class="panel-body">
+    <div class="panel panel-danger" ng-show="session.remainData">
+      <div class="panel-heading">
+        {{session.message}}       
+      </div>    
+    </div>
+    <!-- Resultat -->
+    <table class="table table-condensed table-bordered">
+      <thead>
+        <tr>
+          <th>{{ 'FISCAL_YEAR.TOTAL_CHARGE' | translate }} </th>
+          <th>{{ 'FISCAL_YEAR.TOTAL_PROFIT' | translate }} </th>
+          <th>{{ 'FISCAL_YEAR.RESULT' | translate }}</th>
+          <th>{{ 'FISCAL_YEAR.OBSERVATION' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-class="{'success':session.observation==1, 'danger':session.observation==-1}">
+          <td>{{ session.charge | currency }}</td>
+          <td>{{ session.produit | currency }}</td>
+          <td>
+            {{ session.produit - session.charge | number:0 }} $
+          </td>
+          <td>
+            <span ng-if="session.observation==1">
+              {{ 'FISCAL_YEAR.BONUS' | translate }}
+            </span>
+            <span ng-if="session.observation==-1">
+              {{ 'FISCAL_YEAR.MALUS' | translate }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+    <div class="form-group">
+      <label>{{ 'FISCAL_YEAR.SELECT_RESULTAT_ACCOUNT' | translate }}
+      <span ng-if="session.resultat_account">:
+        <b>[{{session.resultat_account.account_number}}]</b>
+        {{session.resultat_account.account_txt}}
+      </span></label>
+      <select
+      class="form-bhima"
+      ng-model="session.resultat_account"
+      ng-options="ac as formatAccount(ac) for ac in resultatAccount.data">
+        <option value="" disabled>{{ 'FISCAL_YEAR.RESULTAT_ACCOUNTS' | translate }}</option>
+      </select>
+    </div>
+  </div>
+  <div class="panel-footer">
+    <button class="btn btn-sm btn-success" ng-click="closeFiscalYear(session.selectedToLock)" ng-disabled="formStepTwo.$invalid || session.remainData">
+      <i class="glyphicon glyphicon-ok-circle"></i>
+      {{ 'UTIL.SUBMIT' | translate }}
+    </button>
+  </div>
+</div>

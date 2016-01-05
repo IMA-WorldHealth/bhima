@@ -1,0 +1,216 @@
+body {
+  font-size : 12px;
+}
+
+table {
+  width : 100%;
+}
+
+/*
+ * Invoice table style
+ */
+
+
+ #bilan-reference {
+  text-align:  left;
+ }
+
+.invoice {
+  border-collapse : collapse;
+  border-spacing : 0;
+  border : 1px solid #9F9F9F;
+  border-top : 0;
+}
+
+.invoice thead > tr > th {
+  border       : 1px solid #9F9F9F;
+}
+
+.invoice tbody > tr > td {
+  border         : 1px solid #9F9F9F;
+  vertical-align : right;
+  padding: 1px;
+}
+
+/*
+ * Balance sheet style
+ */
+.balance thead > tr > th {
+  border-bottom : 1px solid #9f9f9f;
+  text-align    : center;
+}
+
+.variation thead > tr > th {
+  border-bottom : 1px solid #9f9f9f;
+  text-align    : center;
+}
+
+.variation tbody > tr > td {
+  border-bottom : 1px solid #9f9f9f;
+  text-align    : center;
+}
+
+.parent-backgroud {
+  background-color: #F3F3F3;  
+}
+
+.parent-content{
+  font-weight: bold;
+}
+
+
+.balance thead > tr > th,
+.balance tbody > tr > td {
+  margin : 0 1px; /* don't shove text right up against the border */
+}
+
+tr.outline {
+  border-top : 1px solid #9f9f9f;
+  border-bottom : 1px solid #9f9f9f;
+}
+
+/* TODO remove this rule */
+.center-text : {
+  text-align : center;
+  margin: 0 auto;
+}
+
+.contenu td {
+  text-align : center;
+}
+
+.total : {
+  font-weight: bold;
+}
+
+.front-matter h4,
+.front-matter h5 {
+  text-align:    center;
+  margin-bottom: 0;
+  margin-top:    0;
+  padding:       0;
+}
+
+.text-right {
+  text-align : right;
+}
+
+.text-center {
+  text-align : center;
+}
+
+.text-left {
+  text-align : left;
+}
+
+.text-condensed {
+  font-size : 0.75em;
+}
+
+.text-underline {
+  text-decoration : underline;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+/* generic report title */
+
+.clean-title {
+  text-align:     center;
+  text-transform: uppercase;
+  font-weight:    bold;
+  margin:         0;
+  padding:        0;
+  padding-bottom: 5px;
+}
+
+/* generic headers */
+
+hgroup h1,
+hgroup h2,
+hgroup h3,
+hgroup h4,
+hgroup h5,
+hgroup h6 {
+  margin:  0;
+  padding: 0;
+}
+
+hgroup {
+  margin-bottom: 5px;
+}
+
+/* generic pdf tables */
+
+table.clean-table {
+  border-collapse: collapse;
+}
+
+table.clean-table,
+table.clean-table td {
+  border: 1px solid grey;
+}
+
+table.clean-table td {
+  font-size: 10px;
+}
+
+table.clean-table th {
+  font-size:  12px;
+  text-align: center;
+}
+
+table.clean-table.compressed td {
+  font-size: 8px;
+}
+
+table.clean-table.compressed  th {
+  font-size:  10px;
+  text-align: center;
+}
+
+table.clean-table th.bilan-group-reference {
+  text-align: left;
+}
+
+table.clean-table th,
+table.clean-table td {
+  padding: 2px 2px; /* don't push text right up to borders */
+}
+
+table.clean-table thead tr:last-child {
+  border-bottom: 2px solid #333333 ;
+}
+
+table.clean-table tfoot tr:first-child {
+  border-top: 2px solid #333333;
+  border-bottom-width: 0;
+  padding-top: 10px;
+}
+
+.indicator {
+  padding: 0.5em;
+  border-left-width: 0.5em;
+  border-left-style: solid;
+}
+
+.indicator-warning {
+  border-color: #E0CB52;
+  background: #FCFAEE;
+}
+
+.indicator-success {
+  border-color: #52E052;
+  background: #E9FBE9;
+}
+
+.indicator-error {
+  border-color: #E05252;
+  background: #FBE9E9;
+}

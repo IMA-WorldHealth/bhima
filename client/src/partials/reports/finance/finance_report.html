@@ -1,0 +1,42 @@
+<header>
+  {{ "REPORT.FINANCE_REPORT" | translate }}
+</header>
+
+<nav>
+  <div class="pull-right">
+    <span class="dropdown">
+      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'UTIL.CONFIGURE' | translate}}</a>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header">{{ "REPORT.REPORT_YEARS" | translate }}</li>
+        <li ng-repeat="option in tableDefinition.options">
+          <a ng-click="toggleYear(option)" >
+            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !option.active, 'glyphicon-check' : !!option.active}"></i> {{option.id}}
+          </a>
+        </li>
+      </ul>
+    </span> 
+    <button ng-click="printReport()" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+      
+      <h4>{{ "REPORT.FINANCE_REPORT" | translate }} <small> {{timestamp | date}}</small></h4>
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "REPORT.ACCOUNT" | translate }}</th>
+            <th>{{ "REPORT.DESCRIPTION" | translate }}</th>
+            <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
+          </tr>
+        </thead>
+        <tr data-report-group-compile data-group-model="financeGroups.store" data-table-definition="tableDefinition"></tr> 
+      </table>
+    </div>
+  </div>
+</div>

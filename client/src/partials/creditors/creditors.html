@@ -1,0 +1,132 @@
+<header data-header>
+  {{ "SUPPLIER.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SUPPLIER.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
+  <div class="pull-right">
+    <a class="btn btn-default btn-sm" ng-click="createSupplier()">
+      <span class="glyphicon glyphicon-user"></span> {{ "SUPPLIER.TITLE" | translate }}
+    </a>
+
+    <a href="#/creditors/creditor_group" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-list-alt"></span> {{ "SUPPLIER.CREATE" | translate }}
+    </a>
+  </div>
+</nav>
+
+<main>
+  <div class="row margin-top-10" style="height: 99%">
+    <div class="col-xs-7">
+      <div class="panel panel-default" ng-class="{'panel-primary' : session.state===route.create, 'panel-success' : session.state===route.edit}">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-user"></span> {{ 'SUPPLIER.SUPPLIER_DETAILS' | translate }}
+        </div>
+        <div class="panel-body">
+          <form role="form" name="form" novalidate>
+            <fieldset>
+              <legend>Supplier</legend>
+
+              <div class="form-group">
+                <label for="name" class="control-label required">{{ "COLUMNS.NAME" | translate }}</label>
+                <input type="text" class="form-bhima" id="name" ng-model="session.supplier.name" required>
+              </div>
+
+              <div class="form-group">
+                <label for="Group" class="control-label required">{{ "COLUMNS.GROUP" | translate }}</label>
+                <select required class="form-bhima" id="groupselectID" ng-model="session.creditor.group_uuid" ng-options="group.uuid as group.name for group in creditGroup.data">
+                  <option value="" disabled="disabled">--Select Group--</option>
+                </select>
+              </div>
+
+              <div class="checkbox">
+                <label> {{ "SUPPLIER.INTL" | translate }}
+                  <input type="checkbox" id="internationalID" ng-true-value="1" ng-false-value="0" ng-model="session.supplier.international">
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label for="phone" class="control-label required">{{ "SUPPLIER.PHONE" | translate }}</label>
+                <input required type="text" class="form-bhima" id="phoneID" ng-model="session.supplier.phone">
+              </div>
+
+              <div class="form-group">
+                <label for="email" class="control-label">{{ "SUPPLIER.EMAIL" | translate }}</label>
+                <input type="email" class="form-bhima" id="emailID" ng-model="session.supplier.email">
+              </div>
+
+              <div class="form-group">
+                <label for="ad1" class="required">{{ "SUPPLIER.ADDR_1" | translate }}</label>
+                <input required type="text" class="form-bhima" id="ad1ID" ng-model="session.supplier.address_1">
+              </div>
+                                      
+            </fieldset>
+          </form>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "SUPPLIER.OPTIONAL_INFO" | translate }}
+        </div>
+
+        <div class="panel-body">
+          <form role="form">
+            <div class="form-group">
+              <label for="ad1">{{ "SUPPLIER.ADDR_2" | translate }}</label>
+              <input type="text" class="form-bhima" id="ad2ID" ng-model="session.supplier.address_2">
+            </div>
+            <div class="form-group">
+              <label for="fax">{{ "SUPPLIER.FAX" | translate }}</label>
+              <input type="text" class="form-bhima" id="faxID" ng-model="session.supplier.fax">
+            </div>
+            <div>
+              <label for="note">{{ "COLUMNS.NOTE" | translate }}</label>
+              <textarea ng-model="session.supplier.note" class="form-bhima" ng-model="session.supplier.note"></textarea>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-5" style="height: 100%;">
+      <div class="panel panel-default" style="height: 100%; overflow-y: auto;">
+        <div class="panel-heading">
+          {{ "SUPPLIER.REGISTERED" | translate }}
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.NAME" | translate }}</th>
+              <th>{{ "COLUMNS.PHONE" | translate }}</th>
+              <th><span class="glyphicon glyphicon-lock"></span></th>
+              <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-class="{'selected-success' : instance.uuid===session.selected}" ng-repeat="instance in supplier.data">
+              <td>{{ instance.name }}</td>
+              <td>{{ instance.phone }}</td>
+              <td><input type="checkbox" ng-model="instance.locked" ng-true-value="1" ng-false-value="0" ng-change="lock(creditor)" ng-checked="creditor.locked"></td>
+              <td><a class="menu-item" ng-click="editSupplier(instance.uuid)"><span class="glyphicon glyphicon-pencil"></span> {{ "COLUMNS.EDIT" | translate }}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="pull-right">
+    <button class="btn btn-success btn-sm" ng-click="session.state.method()" ng-disabled="form.$invalid" >
+      {{ session.state.button | translate }}
+    </button>
+  </div>
+</footer>

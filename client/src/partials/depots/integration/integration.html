@@ -1,0 +1,254 @@
+<header data-header>
+  {{ 'STOCK.INTEGRATION.TITLE' | translate }}
+</header>
+
+<nav>
+	<div class="pull-left">
+	    <ol class="breadcrumb">
+	      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+	      <li><a href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+	      <li class="active">{{ "STOCK.INTEGRATION.TITLE" | translate }}</li>
+	    </ol>
+	</div>
+
+    <div class="pull-right" style="margin-top:1px;">
+    	<span class="btn" style="margin-left:7px;">
+    	<b>[{{ session.depot.reference }}]</b> {{ session.depot.text }}
+    	</span>
+    </div>
+</nav>
+
+<main>
+  	<div class="row">
+	    <div class="col-xs-12">
+	    	<!-- insertions -->
+	      	<div class="panel panel-default square">
+		        <div class="panel-heading square">
+		          	<span class="glyphicon glyphicon-log-in"></span> {{ 'STOCK.INTEGRATION.TITLE' | translate }} : 
+		          	<strong>{{ session.depot.text }}</strong> {{ 'STOCK.INTEGRATION.MADE_BY' | translate }}
+		          	<strong>{{ session.user.first }} {{ session.user.last }}</strong>
+		        </div>
+
+		        <div class="panel-body">
+		          	<div class="row">
+
+					    <div ng-switch on="session.integration.step">
+						    <div ng-switch-default>
+						    	<div class="center">
+					  				<h3><strong>{{ session.depot.text }}</strong></h3>
+					  				<p>{{ "STOCK.INTEGRATION.DESCRIPTION" | translate }}</p>
+					  				<div class="center">
+					  					<button 
+					  					class="btn btn-success btn-lg" 
+					  					ng-click="acceptIntegration()"
+					  					ng-disabled="!!session.acceptIntegration">{{ "UTIL.REGISTER_NEW_STOCK" | translate }}</button>
+					  				</div>
+					  			</div>
+						    </div>
+
+					      	<!-- select inventories -->
+					      	<div ng-switch-when="select_inventories" 
+					      	class="panel panel-default square" 
+					      	ng-class="{'panel-success' : session.acceptIntegration}">
+						        <div class="panel-heading square">
+						          	<span class="glyphicon glyphicon-list"></span> {{ 'STOCK.INTEGRATION.ITEMS' | translate }}
+						          	<a ng-class="{'disabled' : !session.acceptIntegration}" class="pull-right menu-item" ng-click="addStockItem()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "STOCK.INTEGRATION.ITEMS" | translate }}</a>
+						        </div>
+
+						        <div ng-if="session.isValidExpirationDate==false" class="well text-warning">
+						        	<i class="glyphicon glyphicon-warning-sign"></i>
+						        	<strong>{{ 'STOCK.INTEGRATION.EXPIRATION_DATE' | translate | uppercase }} : </strong>
+						        	<span>{{ 'STOCK.INTEGRATION.EXPIRATION_INFO' | translate }} / </span>
+						        	<span>{{ 'STOCK.INTEGRATION.EXPIRATION_ALERT' | translate }}</span>
+						        </div>
+
+						        <div ng-if="session.isValid==false" class="well text-danger">
+						        	<i class="glyphicon glyphicon-warning-sign"></i>
+						        	<strong>{{ 'STOCK.INTEGRATION.LOT_QTY' | translate | uppercase }} : </strong>
+						        	<span>{{ 'STOCK.INTEGRATION.LOT_QTY_DESC' | translate }} </span>
+						        </div>
+
+						        <div ng-if="session.stockExist==false" class="well text-info">
+						        	<i class="glyphicon glyphicon-question-sign"></i>
+						        	<strong>{{ 'STOCK.INTEGRATION.STOCK_VOID' | translate | uppercase }} : </strong>
+						        	<span>{{ 'STOCK.INTEGRATION.STOCK_VOID_DESC' | translate }} </span>
+						        </div>
+
+					        	<table class='table table-condensed' ng-if="session.acceptIntegration">
+						          	<thead>
+							            <tr>
+							              	<th>{{ "DONATION_MANAGEMENT.ITEM" | translate }}</th>
+							             	<th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+							             	<th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+							             	<th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+							              	<th>{{ "COLUMNS.QTY" | translate }}</th>
+							              	<th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
+							              	<th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+							              	<th></th>
+							              	<th></th>
+							            </tr>
+						          	</thead>
+
+					          		<tbody>
+					            		<!-- FIXME: strange filter -->
+					            		<tr 
+					            			ng-class="{'incomplete-outline': !stockItem.isValidStock, 'complete-outline': stockItem.isValidStock}" 
+					            			ng-repeat="stockItem in session.stocks">
+					              			<td>
+								                <input
+								                	class="form-invoice"
+								                	type="text"
+								                	typeahead-template-url="invoiceListItem.html"
+								                	ng-model="selectedInventory"
+								                	typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory.data | filter:$viewValue | limitTo:10"
+								                	typeahead-on-select="updateStockItem(stockItem, selectedInventory)"
+								                	placeholder="Search Inventory">
+					              			</td>
+
+					              			<!-- -1 for no tab, 0 to allow -->
+					              			<td>
+					              				<input ng-show="stockItem.isSet" class="form-invoice" disabled value="{{stockItem.text}}">
+					              			</td>
+					              			<td>
+					              				<input 
+					              				ng-show="stockItem.isSet" 
+					              				class="form-invoice"
+					              				value="{{stockItem.lot_number}}" 
+					              				ng-model="stockItem.lot_number" required>
+					              			</td>
+					              			<td>
+					              				<input ng-show="stockItem.isSet" class="form-invoice" type="date" ng-model="stockItem.expiration_date">
+					              			</td>
+					              			<td>
+					              				<input type="number" ng-change="cacheQuantity(stockItem)" tabindex="{{session.tablock}}" ng-show="stockItem.isSet" class="form-invoice" ng-model="stockItem.quantity">
+					              			</td>
+					              			<td>
+					              				<input tabindex="{{session.tablock}}" ng-show="stockItem.isSet" class="form-invoice" ng-model="stockItem.purchase_price">
+					              			</td>
+					              			<td>
+					              				<input tabindex="{{session.tablock}}" ng-show="stockItem.isSet" class="form-invoice" disabled value="{{stockItem.quantity * stockItem.purchase_price | currency}}">
+					              			</td>
+					              			<td>
+					              				<span ng-if="stockItem.isSet && validExpiration(stockItem)==false" class="text-warning">
+					              					<i class="glyphicon glyphicon-warning-sign"></i>
+					              				</span>
+					              				<span ng-if="stockItem.isSet && valid(stockItem)==false" class="text-danger">
+					              					<i class="glyphicon glyphicon-warning-sign"></i>
+					              				</span>
+					              				<span ng-if="valid(stockItem)==true && validExpiration(stockItem)==true" class="text-success">
+					              					<i class="glyphicon glyphicon-ok-sign"></i>
+					              				</span>
+					              			</td>
+					              			<td>
+					              				<a ng-click="removeStockItem($index)">
+					              					<span class="glyphicon glyphicon-trash"></span>
+					              				</a>
+					              			</td>
+					            		</tr>
+
+					            		<tr>
+					              			<!-- Style hack -->
+					              			<td colspan="6" style="margin-right = 50px; text-align: right;">
+					              				<b> {{ "UTIL.TOTAL" | translate }}</b>
+					              			</td>
+					              			<td colspan="3">
+					              				<b>{{ session.totals.price | currency }}</b>
+					              			</td>
+					            		</tr>
+					          		</tbody>
+					        	</table>
+					      	</div>
+					      	<!-- fin select inventories -->
+
+					      	<!-- preview -->
+					      	<div ng-switch-when="preview_inventories" 
+					      	class="panel panel-default square" 
+					      	ng-class="{'panel-success' : session.acceptIntegration && session.isValid }">
+
+								<div class="row" style="padding:0 15px;">
+							    	<table class="table table-condensed">
+							      		<thead>
+							       		 	<tr>
+							          			<th style="width:3%;"><span class="glyphicon glyphicon-th"></span></th>
+							          			<th>{{ "COLUMNS.ITEM" | translate }}</th>
+								             	<th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+								             	<th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+								             	<th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+								              	<th>{{ "COLUMNS.QTY" | translate }}</th>
+								              	<th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
+								              	<th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+							          			<th style="width:3%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
+							        		</tr>
+							      		</thead>
+							      		<tbody ng-repeat="stockItem in session.stocks | orderBy:'code'">
+							        		<tr>
+							          			<td></td>
+							          			<td>{{ stockItem.code }}</td>
+							          			<td>{{ stockItem.text }}</td>
+							          			<td>{{ stockItem.lot_number }}</td>
+							          			<td>{{ stockItem.expiration_date | date }}</td>
+							          			<td>{{ stockItem.quantity }}</td>
+							          			<td>{{ stockItem.purchase_price | currency }}</td>
+							          			<td>{{ stockItem.quantity * stockItem.purchase_price | currency }}</td>
+							          			<td>
+							            			<div ng-show="stockItem.isValidStock" class="pull-right">
+							              				<span class="correct glyphicon glyphicon-ok-circle"></span>
+							            			</div>
+							          			</td>
+							        		</tr>
+							      		</tbody>
+							      		<tfoot>
+							        		<tr>
+							          			<th colspan="5">{{ "COLUMNS.SUMMARY" | translate }}</th>
+							          			<th colspan="2">{{ session.totals.quantity }}</th>
+							          			<th colspan="2">{{ session.totals.price | currency }}</th>
+							        		</tr>
+							      		</tfoot>
+							    	</table>
+								</div>
+					      	</div>
+					      <!-- fin preview -->
+					    </div>
+		          	</div>
+		        </div>
+
+		        <div class="panel-footer" style="padding:0 15px;">
+		        	<div ng-switch on="session.integration.step">
+		        		<div ng-switch-default></div>
+			        	<div ng-switch-when="select_inventories">
+			        		<div class="pull-right">
+					      		<button class="btn btn-sm btn-success" 
+					      		ng-click="preview()" 
+					      		ng-disabled="!session.isValid || !session.isValidExpirationDate || !session.stockExist">
+					        		{{ "STOCK.INTEGRATION.PREVIEW" | translate }} 
+					        		<span class="glyphicon glyphicon-arrow-right"></span>
+					      		</button>
+					    	</div>
+					    	<div class="clearfix"></div>
+			        	</div>
+			    		<div ng-switch-when="preview_inventories">
+			    			<div class="pull-right">
+			    				<button class="btn btn-sm btn-default" ng-click="cancel()">
+			    					<span class="glyphicon glyphicon-arrow-left"></span>
+					        		{{ "STOCK.INTEGRATION.CANCEL" | translate }}
+					      		</button>
+					      		<button class="btn btn-sm btn-success" ng-click="accept()">
+					        		{{ "STOCK.ENTRY.ENTER_STOCK" | translate }}
+					      		</button>
+					    	</div>
+					    	<div class="clearfix"></div>
+			    		</div>
+			    	</div>
+				</div>
+	      	</div>
+
+	    </div>
+  	</div>
+</main>
+
+<script type="text/ng-template" id="invoiceListItem.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.text}}</i></span>
+  </a>
+</script>

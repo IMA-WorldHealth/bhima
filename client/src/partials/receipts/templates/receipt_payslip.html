@@ -1,0 +1,126 @@
+<!-- payslip template -->
+<div ng-controller="receipt.payslip">
+<div class="row customer-details">
+  <div class="col-xs-12">
+
+    <small style="float: right; color: grey; font-size: 8px">{{ model.common.InvoiceId }}</small>
+    <h4 class="invoice-header">{{ 'PAYCHECK.PAYSLIP' | translate }} : {{ dataPaiements[0].paiement_date | date}}</h4>
+  </div>
+</div>
+
+<div class="row customer-details">
+  <div class="col-xs-4">
+    <span>
+      <b>{{model.common.enterprise.name}}</b>
+      </span>
+      <br>
+      {{model.common.location.name}}
+      <br>
+      {{ model.common.enterprise.po_box || 'B.P. 205'}}
+      <br>
+      {{model.common.location.sector_name}}
+      <br>
+      <i>TEL</i> {{model.common.enterprise.phone}}
+      <br>
+      <i>MAIL</i> {{model.common.enterprise.email}}
+  </div>
+  <div class="col-xs-4">
+
+  </div>
+  <div class="col-xs-4">
+     <b>{{ dataPaiements[0].name }} {{ dataPaiements[0].postnom }} {{ dataPaiements[0].prenom }}</b>
+    <br>
+    <i>{{'PAYCHECK.MATRICULE' | translate}}</i> : <b>{{ dataPaiements[0].code }}</b>
+    <br>
+    <i>{{ 'PAYCHECK.FAM_STATUS' | translate }}</i> : <b>{{ dataPaiements[0].nb_spouse }}</b> &nbsp&nbsp&nbsp&nbsp&nbsp <b>{{ dataPaiements[0].nb_enfant }}</b>
+    <br>
+    <i>{{'PAYCHECK.GRADE' | translate}}</i> : <b>{{ dataPaiements[0].codegrade }}</b>
+    <br>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+
+    <table class="invoiceTable">
+      <thead>
+        <tr>
+          <th>{{'COLUMNS.CODE' | translate}}</th>
+          <th>{{'COLUMNS.LABEL' | translate}}</th>
+          <th>{{'COLUMNS.TIMES' | translate}}</th>
+          <th>{{'COLUMNS.DAILY_RATE' | translate}}</th>
+          <th>{{'COLUMNS.AMOUNT_PAYABLE' | translate}}</th>
+          <th>{{'COLUMNS.AMOUNT_WITHHELD' | translate}}</th>
+          <th>{{'COLUMNS.NET_CASH' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody class="items">
+        <tr>
+          <td> </td>
+          <td>{{'COLUMNS.WORKING_DAY' | translate}}</td>
+          <td>{{ total_day }}</td>
+          <td>{{ daly_rate | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ amont_payable | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ item.localeTransaction | currency:dataPaiements[0].currency_id }}</span></td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="item in dataHollydays | orderBy:'label'">
+          <td> </td>
+          <td>{{ item.label }}</td>
+          <td>{{ item.hollyday_nbdays }} </td>
+          <td>{{ item.dailyHollyd | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ item.somHolly | currency:dataPaiements[0].currency_id }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="item in dataOffDays.data | orderBy:'label'">
+          <td> </td>
+          <td>{{ item.label }}</td>
+          <td> 1 </td>
+          <td>{{ item.rate_offDay | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ item.rate_offDay | currency:dataPaiements[0].currency_id }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="item in dataRubrics | orderBy:'label'">
+          <td> </td>
+          <td>{{ item.label }}</td>
+          <td>{{ total_day }}</td>
+          <td>{{ }}</td>
+          <td>{{ item.valueP | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ item.valueR | currency:dataPaiements[0].currency_id }}</td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="cotisation in dataCotisation | orderBy:'label'">
+          <td> </td>
+          <td>{{ cotisation.label }}</td>
+          <td> </td>
+          <td></td>
+          <td></span></td>
+          <td>{{ cotisation.value | currency:dataPaiements[0].currency_id }}</td>
+          <td></td>
+        </tr> 
+        <tr ng-repeat="tax in dataTaxes | orderBy:'label'">
+          <td> </td>
+          <td>{{ tax.label }}</td>
+          <td> </td>
+          <td></td>
+          <td></span></td>
+          <td>{{ tax.value | currency:dataPaiements[0].currency_id }}</td>
+          <td></td>
+        </tr>        
+      </tbody>
+      <tbody class="totals">
+        <tr>
+          <td colspan="4" class="no-border"><b>{{'INVOICE.TOTAL' | translate}}</b></td>
+          <td>{{ TotalPaid | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ TotalWithheld | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ TotalNet | currency:dataPaiements[0].currency_id }}</td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+</div>
+</div>
+<!-- End payslip template -->

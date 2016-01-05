@@ -1,0 +1,65 @@
+<header data-header>
+  {{ "STOCK.SEARCH.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
+      <li class="active">{{ "STOCK.SEARCH.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="col-xs-4 input-group">
+    <input class="form-bhima" ng-model="session.stockSearch" typeahead="stock as stock.text for stock in inventory.data | filter: $viewValue | limitTo:10" typeahead-on-select="loadStock(session.stockSearch.uuid)" typeahead-template-url="stockItem.html" placeholder="{{'UPDATE_STOCK.SEARCH_TEXT' | translate }}">
+  </div>
+</nav>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h3>{{ "STOCK.SEARCH.MANIFEST" | translate }}</h3>
+      <h5><strong>{{ selectedStock.code }}</strong> {{ selectedStock.text }}
+        <small class="pull-right">{{ selectedStock.uuid }}</small>
+      </h5>
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.DEPOT" | translate }}</th>
+            <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+            <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in session.stock.data track by item.tracking_number">
+            <td>{{ item.tracking_number }}</td>
+            <td>{{ item.text }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.expiration_date | date }}</td>
+          </tr>
+          <tr ng-if="!selectedStock">
+            <td colspan="4">
+              {{ "STOCK.SEARCH.NO_SELECTION" | translate }}
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr ng-if="selectedStock">
+            <th colspan="4">
+              <span class="glyphicon glyphicon-list-alt"></span> {{ session.totals.quantity }}
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/ng-template" id="stockItem.html">
+  <a>
+    <span><b>[{{ match.model.code }}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>

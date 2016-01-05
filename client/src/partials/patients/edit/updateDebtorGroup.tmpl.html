@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <h3 class="modal-title">Update Debtor Group</h3>
+</div>
+
+<div class="modal-body">
+
+  <p class="text-info">
+  Assign a new debtor group from the options below. Press 'confirm' 
+  to permenantly update the patient's debtor group
+  </p>
+  <form name="groupForm">
+    <div class="form-group has-feedback">
+    
+      <label for="debtor-group" class="control-label">Debtor Groups</label>
+      <select 
+        class="form-control" 
+        name="debtorGroup"
+        ng-options="group.uuid as group.name for group in UpdateDebtorGroupCtrl.debtorGroups | orderBy :'name'"
+        ng-model="UpdateDebtorGroupCtrl.debitor_group_uuid">
+      </select>
+
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button 
+    class="btn btn-default"
+    ng-click="UpdateDebtorGroupCtrl.close()">Cancel</button>
+  <button 
+    class="btn btn-default"
+    ng-click="UpdateDebtorGroupCtrl.confirmGroup()">Confirm</button>
+</div>

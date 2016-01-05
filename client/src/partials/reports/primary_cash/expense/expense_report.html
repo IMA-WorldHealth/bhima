@@ -1,0 +1,170 @@
+<div ng-switch="state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "PRIMARY_CASH.REPORT.EXPENSE.TITLE" | translate }}
+          </div>
+
+          <div class="panel-body">
+
+            <form name="configForm" novalidate>
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'SELECT.PRIMARY_CASH' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-briefcase"></span>
+                    </span>  
+                    <select
+                      class="form-bhima"
+                      ng-model="session.selectedCash"
+                      ng-options="cash as cash.text + ' ' + cash.symbol for cash in session.model.cashes.data" >
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_FROM' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
+                  </div>
+                </div>
+              </div>              
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_TO' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div> 
+              <div class="pull-right">
+                <button class="btn btn-sm btn-success" type="button" ng-click="setSelectedCash(session.selectedCash)" ng-disabled="configForm.$invalid">
+                  {{ "REPORT.GENERATE" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>  
+  </div>
+  <div ng-switch-when="generate">  
+    <header>
+      {{ "PRIMARY_CASH.REPORT.EXPENSE.TITLE" | translate }}: <b> {{ session.selectedCash.text }} {{ session.selectedCash.symbol }} </b> / {{ session.dateFrom | date }} - {{ session.dateTo | date }}
+    </header>
+
+    <nav>
+
+      <div class="pull-right">        
+        <button class="btn btn-sm btn-default" ng-click="print()">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ "UTIL.PRINT" | translate }}
+        </button>
+
+        <button
+          style="margin-left: 5px;"
+          ng-click="reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
+    
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+          
+          <h4 class="visible-print">
+            {{ "PRIMARY_CASH.REPORT.EXPENSE.TITLE" | translate }}: 
+            <small>
+              <b> {{ session.selectedCash.text }} {{ session.selectedCash.symbol }} </b> / {{ session.dateFrom | date }} - {{ session.dateTo | date }}
+            </small>
+          </h4>
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.TRANSACTION_NUMBER" | translate }}</th>           
+                <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+                <th>{{ "COLUMNS.DATE" | translate }}</th>
+                 <th>{{ "COLUMNS.SOURCE" | translate }}</th>
+                <th>{{ "COLUMNS.BY" | translate }}</th>
+                <th class="hidden-print">{{ "COLUMNS.ACTION" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='record in session.model.records.data'>
+                <td>{{ record.trans_id }}</td>
+                <td>{{ record.description }}</td>
+                <td>{{ record.credit | currency:record.currency_id }}</td>
+                <td>{{ record.trans_date | date }}</td>
+                <td>{{ record.service_txt }}</td>
+                <td>{{ record.first }} {{record.last}}</td>
+                <td class="hidden-print"  ng-if="record.primary_cash_uuid">
+                  <a ng-href="/#/invoice/{{record.service_txt}}/{{record.primary_cash_uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+                </td>
+                <td class="hidden-print" ng-if="!record.primary_cash_uuid">
+                  <a ng-href="/#/invoice/{{record.service_txt}}/{{record.inv_po_id}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+                </td>                
+              </tr>
+              <tr ng-if="!session.model.records.data.length">
+                <td colspan="6">
+                  <span class="glyphicon glyphicon-stats"></span>
+                  {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h6 class="visible-print">
+            {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : <b>{{ session.sum_credit | currency:session.currency }}</b>  
+          </h6>          
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <table style="width: 99%">
+        <tbody>
+          <td style="width:20%;">
+            <span style="margin-right: 10px;">
+              <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{ session.model.records.data.length }}</b>
+            </span>
+          </td>
+
+          <td style="width:30%;">
+            <span style="margin-right: 20px;">
+              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>  {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : <b>{{ session.sum_credit | currency:session.currency }}</b>
+            </span>
+          </td>
+
+          <td colspan="2">
+            <div class="hidden-print" style="width:15%;">
+              <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
+            </div>
+          </td>
+        </tbody>
+      </table>
+    </footer>  
+  </div>    
+</div>  

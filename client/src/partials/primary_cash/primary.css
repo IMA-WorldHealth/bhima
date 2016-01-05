@@ -1,0 +1,9 @@
+.primary_cash_list {
+  padding-left: 10px;
+  list-style : none;
+
+}
+
+.primary_cash_list li {
+  margin-bottom : 10px;
+}

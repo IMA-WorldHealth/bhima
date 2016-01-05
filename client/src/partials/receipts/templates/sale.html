@@ -1,0 +1,103 @@
+<!-- Patient Invoice template -->
+<div class="row customer-details">
+  <div class="col-xs-12">
+
+    <small style="float: right; color: grey; font-size: 8px">{{ invoice.uuid }}</small>
+    <h4 class="invoice-header">{{ 'INVOICE.PATIENT_INVOICE' | translate }}</h4>
+  </div>
+</div>
+
+<div class="row customer-details">
+  <!-- Temporary style; needs official markup and CSS -->
+  <div class="col-xs-4">
+    <span>
+      <b>{{project.enterprise_name}}</b>
+    </span>
+    <br>
+    {{project.village}}
+    <br>
+    <!-- hah -->
+    {{ project.po_box || 'B.P. 205'}}
+    <br>
+    {{project.sector}}
+    <br>
+    <i>TEL</i> {{project.phone}}
+    <br>
+    <i>FAX</i> {{project.email}}
+
+  </div>
+  <div class="col-xs-4">
+    <b>{{recipient.first_name}} {{recipient.last_name}}</b>
+    <br>
+    <!-- Debtor group name -->
+    {{recipient.name}}
+    <br>
+    <br>
+    <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+    <br>
+    {{recipient.registration_date | date}}
+  </div>
+  <div class="col-xs-4">
+    <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{invoice.hr_id}}</b>
+    <br>
+    <i>{{'INVOICE.CLIENT_ID' | translate}}</i> <b>{{recipient.hr_id}}</b>
+    <br>
+    <br>
+    <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
+    <br>
+    {{invoice.invoice_date | date}}
+    <br>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+
+    <table class="invoiceTable">
+      <thead>
+        <tr>
+          <th>{{'COLUMNS.CODE' | translate}}</th>
+          <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+          <th>{{'COLUMNS.QUANTITY' | translate}}</th>
+          <th>{{'INVOICE.TRANSACTION_PRICE' | translate}}</th>
+          <th>{{'INVOICE.AMOUNT' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody class="items">
+        <tr ng-repeat="item in model['invoiceItem'].data | orderBy : 'code'">
+            <td>{{ item.code }}</td>
+          <td>{{ item.text }}</td>
+          <td>{{ item.quantity }}</td>
+
+          <td>{{ item.localeTransaction | currency:session.currentCurrency.id }}</td>
+          <td>{{ item.localeCost | currency:session.currentCurrency.id }}</td>
+        </tr>
+      </tbody>
+      <tbody class="totals">
+        <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td>{{ invoice.localeCost | currency:session.currentCurrency.id }}</td></tr>
+        <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td>{{ invoice.ledger.localeCredit | currency:session.currentCurrency.id }}</td></tr>
+        <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td>{{ invoice.localeBalance | currency:session.currentCurrency.id }}</td></tr>
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box-wide">
+    <div class="col-xs-6">
+      <div class="pull-left">
+        <b>{{"INVOICE.SIGN_HEADER_BILLING" | translate}}</b>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="pull-right">
+       <b>{{"INVOICE.SIGN_CLIENT" | translate}}</b>
+      </div>
+    </div>  
+  </div>
+</div> 
+
+<!-- End Patient Invoice template -->

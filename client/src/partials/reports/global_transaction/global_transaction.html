@@ -1,0 +1,151 @@
+<div ng-switch="ReportCtrl.state">
+  <div ng-switch-default>
+    <main class="extend">
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            {{ "UTIL.CONFIGURE_REPORT" | translate }} :
+            <strong>{{ "ALLTRANSACTIONS.TITLE" | translate }}</strong>
+          </div>
+
+          <form class="panel-body" name="configForm" novalidate>
+
+            <div class="row">
+              <div class="col-xs-4">
+                <div class="form-group">
+                  <label class="required">{{ "UTIL.ACCOUNT" | translate }}</label>
+                  <select
+                    class="form-bhima"
+                    ng-options="account.id as account.display disable when (account.account_type_id===3) for account in ReportCtrl.accounts.data | orderBy:'account_number'"
+                    ng-model="ReportCtrl.model.account_id"
+                    required>
+                    <option value="">-- {{ "SELECT.ALL" | translate }} --</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-xs-4">
+                <label class="required">{{ "UTIL.SOURCE" | translate }}</label>
+                <select class="form-bhima" id="sources" name="sources"
+                  ng-model="ReportCtrl.model.source_id"
+                  ng-options="idx as source for (idx, source) in ReportCtrl.model.sources"
+                  required>
+                  <option value="" disabled>-- {{ "SELECT.SOURCE" | translate }} --</option>
+                </select>
+              </div>
+
+              <div class="col-xs-4">
+                <label class="required">{{ "UTIL.CURRENCY" | translate }}</label>
+                <select class="form-bhima"
+                  ng-model="ReportCtrl.model.c"
+                  ng-options="currency.id as currency.symbol for currency in ReportCtrl.currencies.data"
+                  required>
+                  <option value="" disabled>-- {{ "SELECT.CURRENCY" | translate }} --</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-4">
+                <div class="input-group">
+                  <span class="input-group-addon">{{ "UTIL.DATE_FROM" | translate }}</span>
+                  <input class="form-bhima" type="date" ng-model="ReportCtrl.session.dateFrom" rows="20" required>
+                </div>
+              </div>
+
+              <div class="col-xs-4">
+                <div class="input-group">
+                  <span class="input-group-addon">{{ "UTIL.DATE_TO" | translate }}</span>
+                  <input class="form-bhima" type="date" ng-model="ReportCtrl.session.dateTo" rows="20" required>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="panel-footer clearfix">
+            <div class="pull-right">
+              <button class="btn btn-sm btn-success" type="button" ng-click="ReportCtrl.generate()" ng-disabled="configForm.$invalid">
+                <span ng-if="!ReportCtrl.session.buttonLoader">{{ "UTIL.GENERATE" | translate }}</span>
+                <span ng-if="ReportCtrl.session.loaderState === 'loading' && ReportCtrl.session.buttonLoader">
+                  <loading-indicator></loading-indicator>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div ng-switch-when="generate">
+    <header>
+      {{ "ALLTRANSACTIONS.TITLE" | translate }}
+    </header>
+
+    <nav>
+      <button
+        style="margin-left: 5px;"
+        ng-click="ReportCtrl.reconfigure()"
+        class="btn btn-sm btn-default pull-right">
+        <i class="glyphicon glyphicon-repeat"></i>
+      </button>
+
+      <div class="pull-right">
+        <button ng-click="ReportCtrl.download()" class="btn btn-default btn-sm">
+          <i class="glyphicon glyphicon-save"></i>
+          {{ 'UTIL.EXPORT_TO_CSV' | translate }}
+        </button>
+
+        <button ng-click="ReportCtrl.printReport()" class="btn btn-default btn-sm">
+          <i class="glyphicon glyphicon-print"></i>
+          {{ 'UTIL.PRINT' | translate }}
+        </button>
+      </div>
+
+    </nav>
+
+    <div class="report report-compressed">
+      <div class="reportBody">
+        <div class="reportFrame">
+            <ng-include src="'partials/reports/templates/enterprise_header.html'"></ng-include>
+            <h4>{{ "ALLTRANSACTIONS.DEFAULT" | translate }} <small>{{ReportCtrl.session.account_number}}</small></h4>
+            <h4 class="visible-print"> {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }}</small></h4>
+            <table id="transactionsTable" class="reportTable">
+              <thead>
+                <tr>
+                  <th width="10%">{{ "COLUMNS.TRANS_ID" | translate }}</th>
+                  <th width="15%">{{ "COLUMNS.TRANSACTION_DATE" | translate }}</th>
+                  <th width="10%">{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}</th>
+                  <th width="45%">{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                  <th width="10%">{{ "COLUMNS.DEBIT" | translate }}</th>
+                  <th width="10%">{{ "COLUMNS.CREDIT" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="record in ::ReportCtrl.records | orderBy:'trans_id'">
+                  <td width="10%"> {{ record.trans_id }} </td>
+                  <td width="15%"> {{ record.trans_date | date }} </td>
+                  <td width="10%"> {{ record.account_number }} </td>
+                  <td width="30%"> {{ record.description}} </td>
+                  <td class="text-right"> {{ record.debit | currency:ReportCtrl.enterprise.currency_id }} </td>
+                  <td class="text-right"> {{ record.credit | currency:ReportCtrl.enterprise.currency_id }} </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="4">{{ "COLUMNS.TOTAL" | translate }} : {{ ReportCtrl.records.length }}</th>
+                  <th class="text-right">{{ ReportCtrl.session.somDebit | currency:ReportCtrl.model.c }}</th>
+                  <th class="text-right">{{ ReportCtrl.session.somCredit | currency:ReportCtrl.model.c }}</th>
+                </tr>
+                <tr>
+                  <th colspan="4">{{ "COLUMNS.SOLDE" | translate }} : </th>
+                  <th colspan="2" style="background-color:#ccc;" class="text-center">
+                    {{ReportCtrl.session.solde | currency:ReportCtrl.model.c}}
+                  </th>
+                </tr>
+              </tfoot>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

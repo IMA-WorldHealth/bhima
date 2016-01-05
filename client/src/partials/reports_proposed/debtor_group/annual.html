@@ -1,0 +1,53 @@
+<header data-header>
+  {{ 'DEBTOR_GROUP_ANNUAL_REPORT.TITLE' | translate }}
+</header>
+
+<main>
+  <div class="panel panel-default">
+    <div class="panel-heading">{{'DEBTOR_GROUP_ANNUAL_REPORT.DOCUMENT_CONFIG' | translate }}</div>
+    <div class="panel-body">
+      <form name="AnnualReportForm" novalidate>
+        <div class="form-group">
+          <label>{{ 'UTIL.LANGUAGE' | translate }}</label>
+
+          <div>
+            <span ng-repeat="language in AnnualCtrl.configuration.language.options">
+              <button
+                type="button"
+                class="btn btn-default btn-lg"
+                ng-class="{ 'active' : AnnualCtrl.configuration.language.selected === language }"
+                ng-click="AnnualCtrl.setLanguage(language)">{{ language.label }}
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : AnnualReportForm.$submitted && AnnualReportForm.$invalid }">
+          <label class="required">
+            {{ "COLUMNS.FISCAL_YEAR" | translate }}
+          </label>
+          <select class="form-bhima" name="fiscalYear" ng-model="AnnualCtrl.fiscalYearId" ng-options="fy.id as fy.fiscal_year_txt for fy in AnnualCtrl.fiscalYears" required>
+            <option value="" disabled="disabled">--{{ 'SELECT.FISCAL_YEAR' | translate }} --</option>
+          </select>
+          <p class="help-block" ng-if="AnnualReportForm.$submitted && AnnualReportForm.$invalid">
+            This is a required field!
+          </p>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-default"
+            ng-disabled="AnnualCtrl.state === 'loading'"
+            ng-click="AnnualCtrl.generateDocument(AnnualReportForm.$invalid)"
+            ng-if="!AnnualCtrl.generatedDocumentPath">
+              {{ (AnnualCtrl.state === 'loading') ? "UTIL.LOADING" : "REPORT.GENERATE" | translate }}
+          </button>
+
+          <a class="btn btn-success" ng-href="{{ AnnualCtrl.generatedDocumentPath }}" target="_blank"
+            ng-if="AnnualCtrl.generatedDocumentPath" ng-click="AnnualCtrl.clearPath()">
+            {{ "REPORT.DOCUMENT_BUILT" | translate }} - {{ "REPORT.OPEN_PDF_DOCUMENT" | translate }}
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

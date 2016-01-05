@@ -1,0 +1,104 @@
+<div ng-switch="ReportCtrl.state">
+  <main ng-switch-default>
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "UTIL.CONFIGURE_REPORT" | translate }}
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" novalidate>
+
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label class="required">
+                    {{ "UTIL.DEPOT" | translate }}
+                  </label>
+                  <select
+                    class="form-bhima"
+                    name="depot"
+                    ng-model="ReportCtrl.depot"
+                    ng-options="depot as depot.text for depot in ReportCtrl.depots"
+                    required>
+                    <option value="" disabled>-- {{ 'STOCK.ENTRY.SELECT_DEPOT' | translate }} --</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label class="required">
+                    {{ "COLUMNS.TYPE" | translate }}
+                  </label>
+                  <select
+                    class="form-bhima"
+                    name="type"
+                    ng-model="ReportCtrl.type"
+                    ng-options="type as type.key for type in ReportCtrl.types"
+                    required>
+                    <option value="" disabled>-- {{ 'SELECT.DISTRIBUTION_TYPE' | translate }} --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-2">
+                <div class="input-group">
+                  <span class="btn-group">
+
+                    <button class="btn btn-sm btn-default">
+                      {{ (ReportCtrl.selected.key | translate) || "..." }}
+                    </button>
+
+                    <button class="btn btn-sm btn-default dropdown-toggle">
+                      <span class="caret" data-caret="&#9660;"></span>
+                    </button>
+
+                    <ul class="dropdown-menu">
+                      <li ng-repeat="item in ReportCtrl.periods">
+                        <a class="clk" ng-click="ReportCtrl.select(item)">{{ item.key | translate }}</a>
+                      </li>
+                    </ul>
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-xs-5">
+                <div class="input-group">
+                  <span class="input-group-addon">{{ "UTIL.DATE_FROM" | translate }}</span>
+                  <div>
+                    <input class="form-bhima" type="date" ng-model="ReportCtrl.start" rows="20" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xs-5">
+                <div class="input-group">
+                  <span class="input-group-addon">{{ "UTIL.DATE_TO" | translate }}</span>
+                  <div>
+                    <input class="form-bhima" type="date" ng-model="ReportCtrl.end" rows="20" required>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel-footer">
+          <div class="pull-right">
+            <button class="btn btn-sm btn-success" type="button" ng-click="ReportCtrl.generate()" ng-disabled="ConfigForm.$invalid">
+              {{ "UTIL.GENERATE" | translate }}
+            </button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div ng-switch-when="generate">
+    <ng-include src="ReportCtrl.type.href"></ng-include>
+  </div>
+</div>

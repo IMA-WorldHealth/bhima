@@ -1,0 +1,21 @@
+/*Temporary fix for border-box bootstrap collision*/
+#account_grid, #account_grid div {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+#account_grid {
+  /*FIXME pretty gross*/
+  height: 600px;
+  font-size: 12px;
+}
+
+.grid_link { 
+  cursor: pointer;
+}
+
+.max-height-90 {
+	max-height: 400px;
+	overflow: auto;
+}

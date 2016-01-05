@@ -1,0 +1,34 @@
+<header data-header>
+  {{ 'TAXE_MANAGEMENT.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "TAXE_MANAGEMENT.TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <div class="row margin-top-10">
+    <div class="col-xs-6">
+
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-cog"></span> {{ 'TAXE_MANAGEMENT.OPTIONS' | translate }}
+        </div>
+
+        <div class="panel-body">
+          <ul class="primary_cash_list">
+            <li ng-repeat="item in configuration.operations">
+              <span style="color: rgb(7, 150, 35);" class="glyphicon glyphicon-asterisk"></span>
+              <a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,116 @@
+<header data-header>
+  {{ 'SECTOR.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SECTOR.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-default btn-sm" ng-click="setOp('Add')">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{'SECTOR.NEW_SECTOR' | translate}}
+    </button>
+    <a href="#/locations" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-globe"></span> {{'SECTOR.LOCATION_MANAGER' | translate}}
+    </a>
+  </div>
+</nav>
+
+<main>
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-default" style="max-height: 40em; overflow: auto;">
+        <div class="panel-heading">
+          <span>{{ 'SECTOR.REGISTERED' | translate}}</span>
+        </div>
+        <table class="table table-striped table-condensed">
+          <thead>
+            <tr>
+              <th>{{ 'SECTOR.NAME' | translate }}</th>
+              <th>{{ 'SECTOR.PROVINCE' | translate }}</th>
+              <th colspan="2">{{ 'SECTOR.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="sector in sectors.data | orderBy:'name'">
+              <td>{{ sector.name }}</td>
+              <td>{{ sector.province_name }}</td>
+              <td><a ng-click="setOp('Edit', sector)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a class="danger" ng-click="removeSector(sector.uuid)"><i class="glyphicon glyphicon-trash"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-6" ng-switch="op">
+      <div ng-switch-default>
+         <div class="alert alert-info">
+          <b>{{ 'SECTOR.CONFIG' | translate }}</b>
+          <p>{{ 'SECTOR.INFO' | translate }}</p>
+         </div>
+       </div>
+
+       <div ng-switch-when="Add">
+         <form class="form-horizontal" name="addForm" novalidate>
+          <fieldset>
+            <legend>{{'SECTOR.REGISTER' | translate}}</legend>
+            <div class="form-group">
+              <label class="col-xs-2"> {{'SECTOR.PROVINCE' | translate}}</label>
+              <div class="col-xs-10">
+                <select
+                  required
+                  class="form-bhima"
+                  name="provincename"
+                  id="provinceUUID"
+                  ng-model="add.province_uuid"
+                  ng-options="pro.uuid as pro.name for pro in provinces.data | orderBy:'name'"
+                >
+                  <option value="" disable="disabled">-- {{'SELECT.PROVINCE' | translate}}-- </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+               <label class="col-xs-2 control-label">{{'SECTOR.NAME_SECTOR' | translate}}</label>
+               <div class="col-xs-10">
+                  <input class="form-bhima" ng-model="add.name" required>
+               </div>
+            </div>
+          </fieldset>
+          <button class="btn btn-default btn-success" ng-click="addSector(add)" ng-disabled="addForm.$invalid " type="submit">{{ 'FORM.ADD' | translate }}</button>
+          <button class="btn btn-default btn-sm"  type="reset">{{ 'FORM.NEW_FORM' | translate }}</button>
+         </form>
+       </div>
+
+      <div ng-switch-when="Edit">
+        <form class="form-horizontal">
+          <fieldset>
+            <legend>{{ 'SECTOR.EDIT' | translate }}</legend>
+            <div class="form-group" name="editForm" novalidate>
+              <label class="col-xs-2"> {{ 'SECTOR.PROVINCE' | translate }} </label>
+              <div class="col-xs-10">
+                <select required class="form-bhima" id="provinceID" ng-model="sector.province_uuid" ng-options="pro.uuid as pro.name for pro in provinces.data | orderBy:'name'">
+                  <option value="" disable="disabled">-- Selectionner un Province -- </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+               <label class="col-xs-2 control-label">{{ 'SECTOR.NAME_SECTOR' | translate }}</label>
+               <div class="col-xs-10">
+                  <input class="form-bhima" ng-model="sector.name" required>
+               </div>
+            </div>
+          </fieldset>
+          <button class="btn btn-default btn-success" ng-click="editSector(sector)" ng-disabled="editForm.$invalid " type="submit">{{'FORM.ADD' | translate}}</button>
+          <button class="btn btn-default btn-sm"  type="reset">{{'FORM.NEW_FORM' | translate}}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>

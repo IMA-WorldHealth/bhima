@@ -1,0 +1,68 @@
+<div class="reportBody">
+  <div class="reportFrame" style="overflow: auto;">
+    <h3 style="text-align: center;">{{ "POSTING_JOURNAL.TITLE" | translate }}<small style="float:right;"> {{ timestamp | date:'dd-MM-yyyy HH:mm:ss' }}</small></h3>
+
+    <div class="summary">
+      <h5>{{ "POSTING_JOURNAL.RECORDS" | translate }}</h5>
+      <label style="padding: 0 5px;">
+        <span class="glyphicon glyphicon-tasks"></span> {{ journal.data.length }} {{ "POSTING_JOURNAL.LINES" | translate }}
+      </label>
+
+      <label style="padding: 0 5px;">
+        <span class="glyphicon glyphicon-calendar"></span> {{ min | date}} - {{ max | date }}
+      </label>
+    </div>
+
+    <table class="reportTable">
+      <thead style="font-size: 14px;">
+        <tr>
+          <th>{{ 'COLUMNS.TRANSACTION_ID' | translate }}</th>
+          <th>{{ 'COLUMNS.DATE' | translate }}</th>
+          <th>{{ 'COLUMNS.ACCOUNT_NUMBER' | translate }}</th>
+          <th>{{ 'COLUMNS.DEBIT' | translate }}</th>
+          <th>{{ 'COLUMNS.CREDIT' | translate }}</th>
+          <th>{{ 'COLUMNS.DESCRIPTION' | translate }}</th>
+          <th>{{ 'COLUMNS.DEB_CRED_UUID' | translate }}</th>
+          <th>D/C</th>
+          <th>{{ 'COLUMNS.INVOICE_ID' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in records">
+          <td>{{ row.trans_id }}</td>
+          <td>{{ row.trans_date | date }}</td>
+          <td>{{ row.account_number }}</td>
+          <td>{{ row.debit_equiv | currency:project.currency_id }}</td>
+          <td>{{ row.credit_equiv | currency:project.currency_id }}</td>
+          <td>{{ row.description }}</td>
+          <td>{{ row.deb_cred_uuid }}</td>
+          <td>{{ row.deb_cred_type }}</td>
+          <td>{{ row.inv_po_id }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="3">{{ "REPORT.TOTAL" | translate }}</th>
+          <th>{{ sums.debit | currency:project.currency_id }}</th>
+          <th>{{ sums.credit | currency:project.currency_id }}</th>
+          <th colspan="4"></th>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="signatures">
+      <h5>{{ "REPORT.SIGNATURES" | translate }}</h5>
+
+      <div class="signature-box">
+        <label>{{ "TRIAL_BALANCE.CHIEF_ACCOUNTANT" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+        <div class="signature-line"></div>
+      </div>
+
+      <div class="signature-box">
+        <label>{{ "TRIAL_BALANCE.FINANCE_OFFICER" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+        <div class="signature-line"></div>
+      </div>
+
+    </div>
+  </div>
+</div>

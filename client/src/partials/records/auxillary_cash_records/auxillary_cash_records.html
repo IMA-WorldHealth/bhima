@@ -1,0 +1,115 @@
+<header data-header>
+  {{'AUXILLARY_CASH_RECORD.TITLE' | translate}}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <span class="btn-group">
+      <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
+      <button class="btn btn-sm btn-default dropdown-toggle"><span class="caret" data-caret="&#9660;"></span></button>
+
+      <ul class="dropdown-menu">
+        <li ng-repeat="item in period">
+          <a class="clk" ng-click="select(item)">{{item.key | translate}}</a>
+        </li>
+      </ul>
+    </span>
+  </div>
+
+  <div>
+    <div class="col-xs-2">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
+    </div>
+    <div class="col-xs-2" style="padding-right: 0px;">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
+    </div>
+  </div>
+
+  <span class="pull-right">
+    <select class="form-bhima" ng-change="reset()" ng-model="session.user" ng-options="u.id as format(u) for u in  model.cash_user.data">
+      <option value="">{{ 'AUXILLARY_CASH_RECORD.ALL_USERS' | translate }}</option>
+    </select>
+  </span>
+
+  <span class="pull-right">
+    <select class="form-bhima" ng-change="reset()" ng-model="session.project" ng-options="item.id as item.name for item in model.project.data">
+      <option value="">{{ 'AUXILLARY_CASH_RECORD.ALL_PROJECTS' | translate }}</option>
+    </select>
+  </span>
+</nav>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame" style="padding-top: 10px;">
+      <h4 class="visible-print">{{ "AUXILLARY_CASH_RECORD.TITLE" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small><br>
+      {{ "AUXILLARY_CASH_RECORD.BY" | translate }} : {{ userSelected }} <br>
+      </h4>
+      <p class="visible-print">{{ "AUXILLARY_CASH_RECORD.TOTAL_OF" | translate }} <b>{{total.result.cash}}</b> {{ "AUXILLARY_CASH_RECORD.INVOICES" | translate }}, {{ "AUXILLARY_CASH_RECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "AUXILLARY_CASH_RECORD.PATIENTS" | translate}}</p>
+        <table class="reportTable">
+          <thead>
+            <tr>
+              <th width="20%">{{'COLUMNS.DATE' | translate}}</th>
+              <th width="10%">{{'COLUMNS.ID_CASH' | translate}}</th>
+              <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
+              <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th>
+              <th  width="30%" class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr ng-if="model.cash.data.length===0 && !session.searching">
+              <td colspan="5">{{'AUXILLARY_CASH_RECORD.UNFOUND' | translate}} <strong><a href="/#/cash">{{'AUXILLARY_CASH_RECORD.PATIENT_CASH' | translate}}</a></strong> {{'AUXILLARY_CASH_RECORD.GENERATE' | translate}}</td>
+            </tr>
+
+            <tr ng-if="session.searching">
+              <td colspan="5"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
+            </tr>
+
+            <tr ng-class="{'rowSelected': selected.uuid==receipt.uuid, 'creditInvoice': receipt.cashDiscardId}" ng-repeat="receipt in model.cash.data">
+              <td width="20%">{{receipt.date | date : 'EEEE, dd/MM/yyyy'}}</td>
+              <td width="10%">{{receipt.hr_id}}</td>
+              <td width="20%">[{{receipt.projectAbbr}}{{receipt.patientReference}}] {{receipt.last_name}} {{receipt.middle_name}} {{receipt.first_name}}</td>
+              <td width="20%">{{ receipt.cost | currency:receipt.currency_id }}</td>
+              <td width="30%" class="hidden-print">
+                <a ng-href="/#/invoice/{{receipt.receiptLocation}}/{{receipt.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'AUXILLARY_CASH_RECORD.RECEIPT' | translate}}</a>
+                | <a ng-href="/#/cash_discard/{{receipt.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'AUXILLARY_CASH_RECORD.CANCEL' | translate }}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h6 class="visible-print">
+          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{ session.sum | currency:session.currency }}</b>  
+        </h6>  
+    </div>
+  </div>
+</div>
+
+<footer>
+  <table style="width: 99%" class="hidden-print">
+    <tbody>
+      <td width="50%">
+        <span style="margin-right: 10px;">
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
+          <b>{{ session.sum | currency:session.currency }}</b>
+          <span ng-if="session.searching">...</span>
+        </span>
+
+        <span class="glyphicon glyphicon-user" style="color: #428bca"></span>
+        <b>{{total.result.patients}}</b>
+        <span ng-if="session.searching">...</span>
+
+        <span style="float: right; margin-right: 5px;">
+          <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b>
+        </span>
+      </td>
+      <td width="20%">
+        <b>{{ session.sum | currency:session.currency }}</b>
+        <span ng-if="session.searching">...</span>
+      </td>
+      <td width="20%">
+        <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in model.currencies.data" ng-change="convert()"></select>
+      </td>
+      <td></td>
+    </tbody>
+  </table>
+</footer>

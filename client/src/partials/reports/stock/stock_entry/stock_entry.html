@@ -1,0 +1,131 @@
+<main ng-if="ReportCtrl.state === 'default'">
+  <div class="col-xs-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <strong>{{ "REPORT.CONFIGURE_REPORT" | translate }}</strong> {{ "REPORT.STOCK_ENTRY" | translate }}
+      </div>
+
+      <form name="ConfigForm" class="panel-body" ng-submit="ReportCtrl.search()" novalidate>
+        <div class="form-group">
+          <label class="required">
+            {{ 'SELECT.DEPOT' | translate }}
+          </label>
+          <select name="depot" class="form-bhima" ng-model="ReportCtrl.depot" ng-options="depot as depot.text for depot in ReportCtrl.depots track by depot.uuid">
+            <option value="">{{ 'EXPIRING_REPORT.ALL_DEPOTS' | translate }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox">
+            <input
+              name="confirmed"
+              type="checkbox"
+              ng-true-value="1"
+              ng-false-value="0"
+              ng-model="ReportCtrl.confirmed">
+            {{ 'COLUMNS.CONFIRMED_STOCK_ONLY' | translate }}
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="required">
+            {{ 'COLUMNS.DATE_FROM' | translate }}
+          </label>
+          <input name="start" class="form-bhima" type="date" ng-model="ReportCtrl.start" required>
+        </div>
+
+        <div class="form-group">
+          <label class="required">
+            {{ 'COLUMNS.DATE_TO' | translate }}
+          </label>
+          <input name="end" class="form-bhima" type="date" ng-model="ReportCtrl.end" required>
+        </div>
+
+        <div class="pull-right">
+          <input class="btn btn-sm btn-success"
+            type="submit"
+            ng-disabled="ConfigForm.$invalid"
+            value="{{ 'REPORT.GENERATE' | translate }}">
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<div ng-if="ReportCtrl.state === 'generate'">
+  <header>
+    <strong>{{ "REPORT.STOCK_ENTRY" | translate }} :</strong>
+    {{ ReportCtrl.depot.text }} / {{ ReportCtrl.start == '00-00-0000' ? '' : ReportCtrl.start | date }} - {{ ReportCtrl.end | date }}
+  </header>
+
+  <nav>
+    <div class="pull-right">
+      <button class="btn btn-sm btn-default" ng-click="ReportCtrl.print()">
+        <span class="glyphicon glyphicon-print"></span>
+        {{ "UTIL.PRINT" | translate }}
+      </button>
+
+      <button
+        style="margin-left: 5px;"
+        ng-click="ReportCtrl.reconfigure()"
+        class="btn btn-sm btn-default pull-right">
+        <span class="glyphicon glyphicon-repeat"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="report">
+    <div class="reportBody">
+      <div class="reportFrame">
+
+        <ng-include src="'partials/reports/templates/enterprise_header.html'"></ng-include>
+
+        <h4 class="visible-print">
+          <strong>{{ "REPORT.STOCK_ENTRY" | translate }}</strong>
+          {{ ReportCtrl.depot.text }} / {{ ReportCtrl.start | date }} - {{ ReportCtrl.end | date }}
+        </h4>
+
+        <table class="reportTable">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.NR" | translate }}</th>
+              <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+              <th>{{ "COLUMNS.DESIGNATION" | translate }}</th>
+              <th>{{ "COLUMNS.ENTRY_DATE" | translate }}</th>
+              <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+              <th>{{ "COLUMNS.QUANTITY " | translate }}</th>
+              <th class="text-center">{{ "COLUMNS.CONFIRMED " | translate }}</th>
+              <th class="text-center hidden-print">{{ "COLUMNS.RECEIPT " | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="entry in ReportCtrl.stockEntries | orderBy:'expiration_date'">
+              <td>{{ $index + 1 }}</td>
+              <td>{{ entry.lot_number }}</td>
+              <td>{{ entry.text }}</td>
+              <td>{{ entry.entry_date | date }}</td>
+              <td>{{ entry.expiration_date | date }}</td>
+              <td>{{ entry.quantity }}</td>
+              <td class="text-center alert" ng-class="{'alert-success': entry.confirmed, 'alert-danger': !entry.confirmed}">
+                <span ng-if="entry.confirmed">{{ "UTIL.YES" | translate }}</span>
+                <span ng-if="!entry.confirmed">{{ "UTIL.NO" | translate }}</span>
+              </td>
+              <td class="text-center hidden-print">
+                <a ng-href="#/stock/entry/report/{{entry.document_id}}">
+                  <i class="glyphicon glyphicon-file"></i>
+                  {{ "UTIL.DOCUMENT " | translate }}
+                </a>
+              </td>
+            </tr>
+            <tr ng-if="!ReportCtrl.loading && ReportCtrl.stockEntries.length === 0">
+              <td colspan="8">
+                <span class="glyphicon glyphicon-stats"></span>
+                {{ "EXPIRING_REPORT.EMPTY_REPORT" | translate }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

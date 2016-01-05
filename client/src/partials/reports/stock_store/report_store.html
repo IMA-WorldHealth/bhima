@@ -1,0 +1,38 @@
+<main>
+  <div class="col-xs-12">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "STOCK_STATUS.TITLE" | translate }}
+    </div>
+
+    <div class="panel-body">
+      <form name="configForm"  ng-submit="submit()" novalidate>
+        <div class="form-group">
+          <label class="required">{{ "COLUMNS.DEPOT" | translate }}</label>
+          <select
+            class="form-control"
+            ng-model="session.depot"
+            ng-options="depot.uuid as depot.text for depot in depots.data">
+              <option value="" disabled>
+                -- {{ "SELECT.DEPOT" | translate }} --
+              </option>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel-footer">
+      <button
+        class="btn btn-sm btn-success pull-right"
+        type="button"
+        ng-click="submit()"
+        ng-disabled="configForm.$invalid">
+        {{ "REPORT.GENERATE" | translate }}
+      </button>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+
+  </div>
+</main>

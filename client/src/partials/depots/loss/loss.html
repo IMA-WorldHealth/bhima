@@ -1,0 +1,168 @@
+<header data-header>
+  {{ "DEPOT.DISTRIBUTION.LOSS.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left text-capitalize">
+    <ol class="breadcrumb" style="float: right;">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a tabindex="-1" href="#/depots">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+      <li class="active">{{ "DEPOT.DISTRIBUTION.LOSS.KEY" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <div class="row" ng-if="!LossCtrl.depotId">
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-warning-sign"></span>
+      {{ "DEPOT.DISTRIBUTION.LOSS.NO_DEPOT" | translate }}
+    </div>
+  </div>
+
+
+  <div class="row margin-top-10" ng-if="LossCtrl.depotId">
+    <div class="col-xs-12">
+      <form class="panel panel-default" name="LossForm" ng-submit="LossCtrl.submit(LossForm.$invalid)" novalidate>
+
+        <div class="panel-heading" class="text-capitalize">
+          <i class="glyphicon glyphicon-list-alt"></i>
+          {{ 'DEPOT.DISTRIBUTION.LOSS.FORM_TITLE'  | translate }}
+        </div>
+
+        <div class="panel-body">
+
+          <!-- error alert shown on submit error -->
+          <div class="alert alert-danger" ng-if="LossForm.$submitted && LossForm.$invalid">
+            <i class="glyphicon glyphicon-exclamation-sign"></i> {{ 'DEPOT.DISTRIBUTION.LOSS.SUBMIT_ERROR' | translate }}
+          </div>
+
+          <legend>{{ "COLUMNS.SUMMARY" | translate }}</legend>
+
+          <div class="row">
+            <div class="col-xs-3">
+              <label>{{ "COLUMNS.DEPOT" | translate }}</label>
+              <p class="form-control-static">[{{ LossCtrl.depot.reference }}] {{ LossCtrl.depot.text }}</p>
+            </div>
+
+            <div class="col-xs-3">
+              <label>{{ "COLUMNS.DATE" | translate }}</label>
+              <p class="form-control-static">{{ LossCtrl.date | date }}</p>
+            </div>
+          </div>
+
+          <div class="pull-right">
+            <a ng-click="LossCtrl.addInventoryItem({})">
+              <i class="glyphicon glyphicon-plus"></i> {{ "DISTRIBUTION_SERVICE.ADD_ROW" | translate }}
+            </a>
+          </div>
+        </div>
+
+
+        <table class='table table-condensed table-bordered'>
+          <thead>
+            <tr>
+              <th colspan="6"> {{ 'DEPOT.DISTRIBUTION.LOSS.FORM_TITLE' | translate }} </th>
+            </tr>
+          </thead>
+          <tbody ng-repeat="row in LossCtrl.queue"  ng-form="TableBodyForm">
+
+            <!-- header row to select inventory items -->
+            <tr ng-class="{'incomplete-outline': TableBodyForm.inventoryItem.$invalid, 'complete-outline': TableBodyForm.inventoryItem.$valid }">
+              <th colspan="6">
+                {{ 'COLUMNS.INVENTORY_ITEM'| translate }}:
+
+                <!-- FIXME style hacks -->
+                <input
+                  class="form-invoice"
+                  name="inventoryItem"
+                  type="text"
+                  style="width:50%; margin: 0 1em; border-bottom: 1px solid black;"
+                  typeahead-template-url="lotList.html"
+                  ng-model="row.inventoryItem"
+                  typeahead="item as item.fmtLabel for item in LossCtrl.inventory | filter:$viewValue | limitTo:8"
+                  typeahead-on-select="LossCtrl.selectInventoryItem(row)"
+                  placeholder="{{ 'DEPOT.DISTRIBUTION.TYPE_INVENTORY_ITEM' | translate }}"
+                  required
+                >
+                <a class="btn btn-xs btn-default pull-right" ng-click="LossCtrl.removeInventoryItem($index)">
+                  <i class="glyphicon glyphicon-trash text-danger"></i>
+                </a>
+              </th>
+            </tr>
+
+            <tr ng-repeat="item in row.staged" class="incomplete-outline" ng-class="{ 'complete-outline': RowForm.$valid && !!item.tracking_number }" ng-form="RowForm">
+              <th class="text-center" style="vertical-align:middle;">{{ $index + 1 }}</th>
+              <td class="text-center dropdown" style="width:33%">
+                <button class="btn btn-sm btn-default dropdown-toggle" style="width:100%;">
+                  {{ item.label || 'SELECT.LOT_NUMBER' | translate }}
+                  <span class="caret" data-caret="&#9660;"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li ng-repeat="lot in row.inventoryItem.lots | filter:{'used': false} | orderBy:'fmtLabel' track by lot.tracking_number">
+                    <a ng-click="LossCtrl.selectLot(item, lot, row)">{{ lot.fmtLabel }}</a>
+                  </li>
+                  <li ng-if="row.inventoryItem.lots.length === 0">
+                    <span><i class="text-danger glyphicon glyphicon-alert"></i> {{ 'DEPOT.NO_LOTS' | translate }}</span>
+                  </li>
+                </ul>
+              </td>
+
+              <td class="text-center">
+                <input name="quantity" class="form-bhima" type="number" ng-disabled="!row.inventoryItem.code || !item.tracking_number" ng-model="item.quantity" min="0" max="{{item.maxQuantity}}" ng-change="LossCtrl.totalInventoryItem(row)" required>
+              </td>
+
+              <td style="vertical-align:middle;" class="text-center">
+                {{ (item.unit_price || 0) | currency:LossCtrl.enterprise.currency_id }}
+              </td>
+
+              <td style="vertical-align:middle;" class="text-center">
+                {{ (item.unit_price * item.quantity || 0) | currency:LossCtrl.enterprise.currency_id }}
+              </td>
+
+              <td style="vertical-align:middle;" class="text-center">
+                <a ng-click="LossCtrl.removeLot(row, $index)" class="btn btn-xs btn-default pull-right">
+                  <i class="glyphicon glyphicon-trash text-danger"></i>
+                </a>
+              </td>
+            </tr>
+
+            <tr ng-if="row.staged.length > 0">
+              <th colspan="6">
+                {{ 'COLUMNS.TOTAL_ITEMS' | translate }}: {{ row.staged.length }} {{ 'COLUMNS.TOTAL_COST' | translate }}: {{ row.totalCost | currency:LossCtrl.enterprise.currency_id }}
+                <a class="btn btn-xs btn-default pull-right" ng-click="LossCtrl.addLot(row)">
+                  <i class="glyphicon glyphicon-plus"></i>
+                </a>
+              </th>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="4">{{ "COLUMNS.TOTAL" | translate }}</th>
+              <th colspan="2">{{ LossCtrl.totals.cost | currency:LossCtrl.enterprise.currency_id }}</th>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="panel-footer clearfix">
+          <button type="submit" class="btn btn-default pull-right">
+            <i class="glyphicon glyphicon-floppy-open"></i> {{ "UTIL.SUBMIT" | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script type="text/ng-template" id="lotList.html">
+  <a>
+    <span ng-if="match.model.lots.length === 0">
+      <i class="glyphicon glyphicon-warning-sign text-danger"></i>
+    </span>
+    <span ng-if="match.model.lots.length > 0">
+      <b>[{{ match.model.lots.length }}]</b>
+    </span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{ match.model.text }}</i></span>
+  </a>
+</script>

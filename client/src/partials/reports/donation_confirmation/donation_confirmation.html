@@ -1,0 +1,132 @@
+<div ng-switch="state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "DONATION_MANAGEMENT.REPORT_CONF" | translate }}
+          </div>
+
+          <div class="panel-body">
+            <form name="configForm" novalidate>              
+              <div class="form-group">
+                <label class="control-label required">
+                  {{ 'DONATION_MANAGEMENT.SELECT_TIME' | translate }}
+                </label>
+              </div>
+
+              <div class="form-group">
+                <span class="btn-group">
+                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
+                  <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
+                  <ul class="dropdown-menu menu-sq">
+                    <li ng-repeat="opt in options">
+                      <a class="clk" ng-click="search(opt)">{{ opt.label | translate }}</a>
+                    </li>
+                  </ul>
+                </span> 
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_FROM' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
+                  </div>
+                </div>
+              </div>              
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_TO' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div>               
+              <div class="pull-right">
+                <button class="btn btn-sm btn-success" type="button" ng-click="reset()" ng-disabled="configForm.$invalid">
+                  {{ "REPORT.GENERATE" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>  
+  </div>
+  <div ng-switch-when="generate">  
+    <header>
+      <b> {{ "DONATION_MANAGEMENT.REPORT_CONF" | translate }} </b> : <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
+    </header>
+
+    <nav>
+
+      <div class="pull-right">        
+        <button class="btn btn-sm btn-default" ng-click="print()">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ "UTIL.PRINT" | translate }}
+        </button>
+        <button
+          style="margin-left: 5px;"
+          ng-click="reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
+    
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          
+          
+          <h4 class="visible-print">
+            <b> {{ "PURCHASE.REPORT.TITLE" | translate }} </b>  <i> {{ typePurchase }}</i> <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
+          </h4>
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.REFERENCE_PURCHASE" | translate }}</th>
+                <th>{{ "COLUMNS.TRANSACTION_NUMBER" | translate }}</th>
+                <th>{{ "COLUMNS.DONOR" | translate }}</th>
+                <th>{{ "COLUMNS.CONFIRM_BY" | translate }}</th>
+                <th>{{ "COLUMNS.DATE" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='donations in donation_records'>
+                <td>
+                  <a ng-if="donations.uuid" ng-href="/#/invoice/confirm_donation/{{donations.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+                </td>
+                <td><b> {{ donations.journal_trans_id }} {{ donations.ledger_trans_id }} </b></td>                
+                <td> {{ donations.donor_name }} </td>
+                <td> {{ donations.first + ' ' + donations.last }} </td>
+                <td> {{ donations.date | date }} </td>
+              </tr>
+              <tr ng-if="!donation_records.length">
+                <td colspan="7">
+                  <span class="glyphicon glyphicon-stats"></span>
+                  {{ "PURCHASE.REPORT.EMPTY_REPORT" | translate }}
+                </td>
+              </tr>
+            </tbody>
+          </table>      
+        </div>
+      </div>
+    </div>
+  </div>    
+</div>  
+

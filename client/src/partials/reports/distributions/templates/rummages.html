@@ -1,0 +1,44 @@
+<!-- TODO: bhima currently doesn't support rummages-->  This is just a placeholder.
+
+<header>
+  {{ "DEPOT.DISTRIBUTION.RUMMAGE" | translate }}
+  <small>
+    {{ ReportCtrl.depot.text }} / {{ ReportCtrl.start | date }} - {{ ReportCtrl.end | date }}
+  </small>
+</header>
+
+<nav>
+  <button
+    style="margin-left: 5px;"
+    ng-click="ReportCtrl.reconfigure()"
+    class="btn btn-sm btn-default pull-right">
+    <span class="glyphicon glyphicon-repeat"></span>
+  </button>
+
+  <div class="pull-right">
+    <button ng-click="ReportCtrl.print()" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-print"></span>
+      {{ 'UTIL.PRINT' | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame" style="padding-top: 10px;">
+
+      <ng-include src="'partials/reports/templates/enterprise_header.html'"></ng-include>
+
+      <h4 class="visible-print">
+        {{ "DEPOT.DISTRIBUTION.RUMMAGE" | translate }}
+        <small>
+          {{ ReportCtrl.depot.text }} / {{ ReportCtrl.start | date }} - {{ ReportCtrl.end | date }}
+        </small>
+      </h4>
+
+      <table class="reportTable">
+        Unsupported report.  Please return to the depot management page.
+      </table>
+    </div>
+  </div>
+</div>

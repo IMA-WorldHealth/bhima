@@ -1,0 +1,83 @@
+<header data-header>
+  {{ "DONATION_MANAGEMENT.PROOF" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+      <li>{{ "DONATION_MANAGEMENT.TITLE" | translate }}</li>
+      <li class="active">{{ "DONATION_MANAGEMENT.REPORT" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="print()">
+      <span class="glyphicon glyphicon-print"></span>
+      {{ "UTIL.PRINT" | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>
+        {{ "STOCK.ENTRY.ENTRY_MANIFEST" | translate }} <small class="pull-right"> {{ session.documentId }}</small>
+      </h4>
+
+      <h5>
+        <label>{{ "COLUMNS.DONATION_DATE" | translate }}</label> {{ donations.data[0].date | date}}
+      </h5>
+
+      <h5><label>{{ "STOCK.ENTRY.ENTRY_DATE" | translate }}</label>  {{ session.timestamp | date }}</h5>
+
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.DEPOT" | translate }}</th>
+            <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
+            <th>{{ "COLUMNS.INVENTORY_ITEM" | translate }}</th>
+            <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+            <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="movement in donations.data | orderBy:'date'">
+            <td>{{ movement.reference }}</td>
+            <td>{{ movement.code }}</td>
+            <td>{{ movement.text }}</td>
+            <td>{{ movement.lot_number }}</td>
+            <td>{{ movement.quantity }}</td>
+            <td>{{ movement.expiration_date | date }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="6">
+              <span class="glyphicon glyphicon-list-alt"></span>
+              {{ donations.data.length }}
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="signatures">
+        <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+        <div class="signature-box">
+          <label>{{ "SIGNATURES.WAREHOUSE_MANAGER" | translate }}</label>
+          <div class="signature-line"></div>
+        </div>
+
+        <div class="signature-box pull-right">
+          <label>{{ "SIGNATURES.STOCK_MANAGER" | translate }}</label>
+          <div class="signature-line"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

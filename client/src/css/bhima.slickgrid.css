@@ -1,0 +1,187 @@
+.grid {
+  box-sizing: content-box;
+  position: relative;
+  border: 1px solid #dddddd;
+  border-collapse: collapse !important;
+}
+
+.grid input[type="checkbox"] {
+  vertical-align: baseline;
+  margin: 0;
+}
+.grid .slick-viewport {
+  border-top: 1px solid #dddddd;
+}
+
+.grid .grid-canvas .slick-row {
+  border: 0 none;
+  position: absolute;
+  width: 100%;
+}
+
+.grid .grid-canvas .slick-cell,
+.grid .grid-canvas .slick-headerrow-column {
+  border: 1px solid #dddddd;
+  border-left: 0;
+  border-top:0;
+}
+
+.grid .grid-canvas .slick-cell {
+  /*padding: 8px 7.5834px;
+  font-size: 14px;*/
+  padding: 8px;
+  line-height: 1.428571429;
+  vertical-align: top;
+}
+
+.grid .grid-canvas .slick-cell td {
+  font-size: 14px;
+}
+
+.grid .grid-canvas .slick-cell a,
+.grid .grid-canvas .slick-cell a:visited,
+.grid .grid-canvas .slick-cell .ui-widget-content a,
+.grid .grid-canvas .slick-cell .ui-widget-content a:visited {
+  color: #0088cc;
+  text-decoration: none;
+}
+
+.grid .grid-canvas .slick-cell a:hover,
+.grid .grid-canvas .slick-cell .ui-widget-content a:hover {
+  color: #005580;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.grid .grid-canvas .slick-cell table {
+  height: 100%;
+  border: 0 none;
+  padding: 0;
+  background: none;
+}
+.grid .grid-canvas .slick-cell td {
+  border: 0 none;
+  padding: 0;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.grid .slick-header {
+  border-top: 0;
+  border-bottom: 0;
+}
+
+.grid .slick-header-columns {
+  background: transparent;
+}
+
+.grid .slick-header-columns .slick-header-column {
+  height: 15px;
+  line-height: 15px;
+  margin: 0;
+  border: 0;
+  border-right: 1px solid #dddddd;
+  border-left: 0;
+  border-bottom: 1px solid #dddddd;
+  /* like TH  */
+
+  background  : transparent;
+  font-family : "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color       : #333333;
+  font-weight : bold;
+
+}
+
+.grid .slick-header-columns .slick-header-column.ui-state-default {
+  padding: 5px 7.5834px;
+  font-size: 12px;
+}
+.grid .slick-header-columns .slick-header-column.ui-state-default td {
+  font-size: 12px;
+}
+
+.grid .slick-header-columns .slick-header-column a,
+.grid .slick-header-columns .slick-header-column a:visited,
+.grid .slick-header-columns .slick-header-column a:hover {
+  color: #333333;
+}
+
+.grid .slick-header-columns .slick-header-column.ui-state-default {
+  background: transparent;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #333333;
+  font-weight: bold;
+}
+
+.grid .slick-header-columns .slick-header-column.ui-state-default a,
+.grid .slick-header-columns .slick-header-column.ui-state-default a:visited {
+  color: #333333;
+}
+.grid .slick-header-columns .slick-header-column.ui-state-default a:hover {
+  color: #333333;
+}
+.grid .slick-header-columns .slick-header-column.slick-header-column-sorted {
+  font-style: normal;
+  color: #333333;
+}
+
+.grid .slick-header-columns .slick-header-column:hover {
+  color: #333333;
+}
+
+.grid .slick-header-columns .slick-header-column .slick-sort-indicator-asc {
+  vertical-align: middle;
+}
+
+.grid .slick-header-columns .slick-header-column .slick-sort-indicator-desc {
+  vertical-align: middle;
+}
+
+.grid-col {
+  padding: 35px;
+}
+
+.info-col {
+  padding: 20px;
+}
+
+/* Style for column picker - should be elsewhere */
+.slick-columnpicker {
+  background: white;
+  border: 1px solid #dddddd;
+  list-style: none;
+  padding: 8px;
+}
+
+.slick-group {
+  color: #3a87ad;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+.slick-group-toggle {
+  /*width: 9px;*/
+  /*height: 9px;*/
+  margin-right: 5px;
+}
+
+.slick-group-toggle.expanded {
+  /*background: url("../lib/SlickGrid/images/collapse.gif") no-repeat center center;*/
+}
+
+.slick-group-toggle.collapsed {
+  /*background: url("../lib/SlickGrid/images/expand.gif") no-repeat center center;*/
+}
+
+/* FIXME: remove hacks here */
+
+.grid.danger .grid-canvas .slick-group {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+  color : white;
+}
+
+#general_ledger.grid .slick-header-columns .slick-header-column.ui-state-default {
+  height: 25px;
+  line-height:20px;
+}

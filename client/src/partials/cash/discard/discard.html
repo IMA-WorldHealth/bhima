@@ -1,0 +1,78 @@
+<header>
+  {{ "CASH_DISCARD.TITLE" | translate }}
+</header>
+
+<main>
+  <div class="panel panel-default">
+      <div ng-click="cash.visible=!cash.visible" class="panel-heading">
+        {{ "CASH_DISCARD.CASH_DETAILS" | translate }} ({{cash.uuid}})
+        <div class="pull-right">
+          <span  class="glyphicon" ng-class="{'glyphicon-eye-close': !sale.visible, 'glyphicon-eye-open': cash.visible}"></span>
+        </div>
+      </div>
+      <div ng-show="cash.visible">
+          <div class="row">
+          <div class="col-xs-12">
+            <table class="table table-bordered table-condensed">
+              <thead>
+                <tr>
+                  <th colspan="4">{{ "COLUMNS.RECEIPT_ID" | translate}} {{cash.id}} <small>{{cash.date | date}}</small></th>
+                </tr>
+                <tr>
+                  <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                  <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                  <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
+                  <th>{{ "COLUMNS.COST" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in model.cashItem.data">
+                  <td>{{item.text}}</td>
+                  <td>{{item.quantity}}</td>
+                  <td>{{item.transaction_price | currency}}</td>
+                  <td>{{item.credit - item.debit | currency}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <tr class="discardTable">
+            <th>{{ "COLUMNS.DATE" | translate }}</th>
+            <th>{{ "COLUMNS.DEBITOR" | translate }}</th>
+            <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
+            <th>{{ "COLUMNS.COST" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ cashDiscard.date | date }}</td>
+            <td>{{ cash.first_name }} {{cash.last_name}}</td>
+            <td>{{ cash.deb_cred_uuid }}</td>
+            <td>{{ cash.cost | currency:cash.currency_id }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <label>{{ "CASH_DISCARD.DESCRIPTION" | translate }}</label>
+      <input class="form-bhima" ng-model="cashDiscard.description"></input>
+    </div>
+  </div>
+
+  <div class="row creditSubmit">
+    <div class="col-xs-12">
+    <button ng-click="submitNote(cashDiscard)" class="btn btn-sm btn-success">
+      {{ "CASH_DISCARD.SUBMIT" | translate }}
+    </button>
+    </div>
+  </div>
+</main>

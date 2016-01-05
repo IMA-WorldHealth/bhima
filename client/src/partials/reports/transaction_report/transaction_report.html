@@ -1,0 +1,87 @@
+<nav>
+  <div class="pull-left">
+    <span class="dropdown">
+      <button class="btn btn-default btn-sm dropdown-toggle" ng-class="{ 'btn-primary' : !!search.group }">
+        {{ search.group || 'UTIL.CONFIGURE' | translate }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header"> {{ 'REPORT.CHOICE' | translate }} </li>
+        <li><a ng-click="search.group='individual'"> {{ 'REPORT.INDIVIDUAL' | translate }} </a></li>
+        <li><a ng-click="search.group='group'"> {{ 'REPORT.GROUP' | translate }} </a></li>
+      </ul>
+    </span>
+
+    <span class="dropdown">
+      <button class="btn btn-default btn-sm dropdown-toggle" ng-class="{ 'btn-primary' : !!search.type}">
+        {{ search.type || 'UTIL.CONFIGURE' | translate }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header"> {{ 'REPORT.CHOICE' | translate }} </li>
+        <li><a ng-click="search.type='debtor'"> {{ 'REPORT.DEBTOR' | translate }} </a></li>
+        <li><a ng-click="search.type='creditor'"> {{ 'REPORT.CREDITOR' | translate }} </a></li>
+      </ul>
+    </span>
+  </div>
+
+  <div class="pull-left">
+    <div class="col-xs-5">
+      <input type="date" class="form-bhima" ng-model="search.dateFrom">
+    </div>
+
+    <div class="col-xs-5">
+      <input type="date" class="form-bhima" ng-model="search.dateTo">
+    </div>
+
+    <input type="button" class="btn btn btn-success" value="{{ 'FORM.SEARCH' | translate }}">
+  </div>
+
+  <div class="pull-right">
+    <button ng-click="print()" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report" ng-switch="hasData">
+
+  <div class="reportBody">
+    <div class="reportFrame">
+      <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+
+      <div ng-switch-default class="hide-print">
+        <h3>Please select something.</h3>
+      </div>
+
+      <table ng-switch-when="true" class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ 'COLUMNS.ID' | translate }}</th>
+            <th>{{ 'COLUMNS.TRANS_ID' | translate }}</th>
+            <th>{{ 'COLUMNS.TRANS_DATE' | translate }}</th>
+            <th>{{ 'COLUMNS.ACCOUNT_NUMBER' | translate }}</th>
+            <th>{{ 'COLUMNS.DEBIT' | translate }}</th>
+            <th>{{ 'COLUMNS.CREDIT' | translate }}</th>
+            <th>{{ 'COLUMNS.CURRENCY' | translate }}</th>
+            <th>{{ 'COLUMNS.SERVICE' | translate }}</th>
+            <th>{{ 'COLUMNS.NAMES' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="t_report in model.transReport">
+            <td>{{ t_report.id }}</td>
+            <td>{{ t_report.trans_id} }</td>
+            <td>{{ t_report.trans_date | date }}</td>
+            <td>{{ t_report.account_number }}</td>
+            <td>{{ t_report.debit | currency }}</td>
+            <td>{{ t_report.credit | currency }}</td>
+            <td>{{ t_report.name }}</td>
+            <td>{{ t_report.service_txt }}</td>
+            <td>{{ t_report.names }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

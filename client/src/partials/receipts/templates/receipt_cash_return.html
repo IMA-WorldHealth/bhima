@@ -1,0 +1,89 @@
+<!-- Cash return receipt template -->
+<div ng-controller="receipt.cash_return">
+
+<div class="row customer-details">
+  <div class="col-xs-12">
+    <h4 class="invoice-header">{{'INVOICE.CASH_RETURN' | translate}}</h4>
+    <small class="pull-right" style="color: grey; font-size: 8px">{{ model.cash_return.document_uuid }}</small>
+  </div>
+</div>
+
+<div class="row customer-details">
+  <div class="col-xs-1">
+    <b>{{'INVOICE.TO' | translate}}</b>
+  </div>
+  <div class="col-xs-7">
+    <div class="row">
+      <b>{{model.recipient.last_name}} {{model.recipient.middle_name}} {{model.recipient.first_name}} </b>
+    </div>
+    <div class="row">
+      <i>{{model.common.location.name}}</i>
+      <br>
+      <i>{{model.common.location.sector_name}}</i>
+      <br>
+      <i>{{model.common.location.province_name}}</i>
+    </div>
+  </div>
+  <div style="text-align: left;" class="col-xs-4">
+    <div class="row">
+      <b>{{'COLUMNS.REFERENCE' | translate}} : {{  model.cash_return.reference }}</b>
+    </div>
+    <div class="row">
+      <b>{{'INVOICE.DATE' | translate}}</b>
+    </div>
+    <div class="row">
+      {{ model.cash_return.date | date}}
+    </div>
+    <div class="row">
+      <b>{{'COLUMNS.BY' | translate }}</b>: {{ model.user.first }} - {{ model.user.last }}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th>{{'COLUMNS.REFERENCE' | translate}}</th>
+            <th>{{ 'COLUMNS.TRANSACTION_ID' | translate }}</th>
+            <th>{{'CASH_RETURN.TITLE' | translate}}</th>
+            <th>{{'COLUMNS.DEBITOR' | translate }} / {{ 'COLUMNS.CREDITOR' | translate }}
+            <th>{{'INVOICE.AMOUNT' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr>
+            <td>{{ model.cash_return.reference }}</td>
+            <td>{{ trans_id }}</td>
+            <td>{{ model.cash_return.description }}</td>
+            <td>{{ model.recipient.text }}</td>
+            <td>{{ model.cash_return.cost | currency:model.cash_return.currency_id }}</td>
+          </tr>
+        </tbody>
+        <tbody class="totals">
+          <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td>{{ model.cash_return.cost | currency:model.cash_return.currency_id }}</td></tr>
+        </tbody>
+      </table>
+  </div>
+</div>
+
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box-wide">
+    <div class="col-xs-6">
+      <div class="pull-left">
+        <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="pull-right">
+       <b>{{"INVOICE.SIGN_EMPLOYEE" | translate}}</b>
+      </div>
+    </div>
+    <br>  
+  </div>
+</div> 
+
+<!-- End cash return template -->

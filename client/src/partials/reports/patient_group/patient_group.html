@@ -1,0 +1,66 @@
+<header>
+  {{ "REPORT.PATIENT_GROUP" | translate }}
+</header>
+
+<nav>
+  <div class="pull-right">
+    <button ng-click="printReport()" class="btn btn-default btn-sm square">
+      <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+      
+      <h3>{{ group.name }} <small class="pull-right">{{ group.uuid }}</small></h3>
+
+      <form class="form-horizontal">
+        <div class="form-group" ng-if="group.description">
+          <label class="col-xs-2 control-label">{{ "COLUMNS.DESCRIPTION" | translate }}:</label>
+          <p class="form-control-static">{{ group.description}}</p>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-2 control-label">{{ "COLUMNS.CREATED" | translate }} :</label>
+          <p class="form-control-static">{{ group.created | date }}</p>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-2 control-label">{{ "COLUMNS.MEMBERS" | translate }} :</label>
+          <p class="form-control-static">{{ group.members }}</p>
+        </div>
+      </form>
+
+
+      <h4><span class="glyphicon glyphicon-list-alt"></span> Price List</h4>
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <tr>
+            <td colspan="4">{{ priceList.title }}</td>
+          </tr>
+          <tr>
+            <th style="width: 8%;">{{ "COLUMNS.DISCOUNT" | translate }}</th>
+            <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+            <th>{{ "COLUMNS.APPLIES_GLOBALLY" | translate }}</th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="detail in priceListDetails">
+            <td style="text-align: center">
+              <span class="glyphicon" ng-class="{ 'glyphicon-plus-sign uif-green' : !!detail.isDiscount, 'glyphicon-minus-sign uif-red' : !detail.isDiscount }"></span>
+            </td>
+            <td>{{ detail.description }}</td>
+            <td style="text-align: center">
+              <span class="glyphicon" ng-class="{ 'glyphicon-ok uif-green' : !!detail.isGlobal, 'glyphicon-remove uif-red' : !detail.isGlobal }"></span>
+            </td>
+            <td>{{ detail.value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+@import "bootstrap.less";
+
+/**
+* gutter width halfed for container padding, odd values cause overflow scroll
+* bars with current application structure
+*/
+@grid-gutter-width: 10px;
+
+@border-radius-base: 2px;
+
+/* Wayne Niles mode */
+/* @padding-base-vertical: 3px; */
+/* @padding-base-horizontal: 6px; */
+
+/* bh-form-message directive style defns */
+.bh-form-message {
+  padding: @alert-padding;
+
+  // Provide class for links that match alerts
+  .message-link {
+    font-weight: @alert-link-font-weight;
+  }
+
+  // Improve alignment and spacing of inner content
+  > p,
+  > ul {
+    margin-bottom: 0;
+  }
+
+  > p + p {
+    margin-top: 5px;
+  }
+}
+
+// Alternate styles
+//
+// Generate contextual modifier classes for colorizing the message.
+.bh-form-message-success {
+  .bh-form-message-variant(@alert-success-text);
+}
+
+.bh-form-message-info {
+  .bh-form-message-variant(@alert-info-text);
+}
+
+.bh-form-message-warning {
+  .bh-form-message-variant(@alert-warning-text);
+}
+
+.bh-form-message-danger {
+  .bh-form-message-variant(@alert-danger-text);
+}
+
+.bh-form-message-variant(@text-color) {
+  color: @text-color;
+
+  .message-link {
+    color: darken(@text-color, 10%);
+  }
+}

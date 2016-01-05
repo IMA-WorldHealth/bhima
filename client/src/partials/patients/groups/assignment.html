@@ -1,0 +1,51 @@
+<header>
+  {{ "PATIENT_GRP_ASSIGNMENT.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PATIENT_GRP_ASSIGNMENT.TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <div class="row margin-top-10">
+    <div class="col-xs-7">
+      <find-patient on-search-complete="loadPatientGroups(patient)" enable-refresh="true"></find-patient>
+    </div> 
+  </div>
+
+  <div class="row">
+    <div class="col-xs-7"> 
+      <div class="panel panel-default" ng-show="print">
+        <div class="panel-heading">
+          <span><b>{{patient.first_name}}</b> {{ "PATIENT_GRP_ASSIGNMENT.PATIENT_GRP" | translate }}</span>
+          <span class="pull-right">
+            <a ng-click="checking()" class="menu-item"><b><i class="glyphicon glyphicon-floppy-save"></i> {{'FORM.SAVE_CHANGES' | translate}}</b></a>
+          </span>
+        </div>
+        <div class="panel-body">
+          <ul class="k-list">
+            <li>
+              <label class="checkbox">
+                <input type="checkbox" ng-model="all" ng-change="changeChildren(all)">
+                All
+              </label>
+            </li>
+            <ul class="k-list">
+              <li ng-repeat="pg in models.patient_group">
+                <label class="checkbox">
+                  <input type="checkbox" ng-model="pg.checked">
+                  {{pg.name}}
+                </label>       
+              </li>       
+            </ul>
+          </ul>
+        </div>
+      </div>   
+    </div>
+  </div>
+</main>

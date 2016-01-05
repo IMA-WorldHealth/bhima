@@ -1,0 +1,87 @@
+<!-- confirm.purchase template -->
+<div ng-controller="receipt.confirm_donation">
+  <div class="row customer-details">
+    <div class="col-xs-12">
+      <small style="float: right; color: grey; font-size: 14px">{{ model.confirmDonations.uuid }}</small>
+      <h4 class="invoice-header">{{ 'INVOICE.DONATION_CONFIRMATION' | translate }}</h4>
+    </div>
+  </div>
+  <div class="row customer-details">
+    <!-- Temporary style; needs official markup and CSS -->
+    <div class="col-xs-4">
+      <span>
+        <b>{{model.common.enterprise.name}}</b>
+      </span>
+      <br>
+      {{model.common.location.name}}
+      <br>
+      <!-- hah -->
+      {{ model.common.enterprise.po_box || 'B.P. 205'}}
+      <br>
+      {{model.common.location.sector_name}}
+      <br>
+      <i>TEL</i> {{model.common.enterprise.phone}}
+      <br>
+      <i>MAIL</i> {{model.common.enterprise.email}}
+    </div>
+
+    <div class="col-xs-4">
+      <i>{{'INVOICE.DATE_JUSTIFICATION' | translate}}</i>
+      <br>
+      {{model.confirmDonations.date | date}}
+      <br>
+      <i>{{ 'COLUMNS.TRANSACTION_ID' | translate }}</i> : <b>{{ trans_id }}<b>
+
+    </div>
+
+    <div class="col-xs-4">
+      <i>{{'INVOICE.DONOR' | translate}}</i> : <b>{{model.confirmDonations.name_donor}} </b>
+      <br>
+      <i>{{'INVOICE.EMPLOYEE_NAME' | translate}}</i>: <b>{{model.confirmDonations.name_employee}}</b> <b>{{model.confirmDonations.postnom}}</b> <b>{{model.confirmDonations.prenom}}</b>
+      <br>
+      <i>{{'INVOICE.CONFIRMED_BY' | translate}}</i>: <b>{{model.confirmDonations.first}}</b> <b>{{model.confirmDonations.last}}</b>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th>{{'COLUMNS.NR' | translate}}</th>
+            <th>{{'COLUMNS.WORDING' | translate}}</th>
+            <th>{{ 'RECEIPT.QUANTITY' | translate }} ({{ 'RECEIPT.LETTER' | translate }})</th>
+            <th>{{ 'RECEIPT.QUANTITY' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr ng-repeat="direct in model.donations | orderBy:'text' ">
+            <td>{{ $index + 1 }}</td>
+            <td>{{ direct.text }}</td>
+            <td> </td>
+            <td>{{ direct.quantity }}</td>
+          </tr>
+        </tbody>        
+      </table>
+    </div>
+  </div>
+
+  <div class="signatures">
+    <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+    <div class="signature-box-wide">
+      <div class="col-xs-6">
+        <div class="pull-left">
+          <b>{{"INVOICE.STOCK_ADMINISTRATOR" | translate}}</b>
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <div class="pull-right">
+         <b>{{"INVOICE.SIGN_EMPLOYEE" | translate}}</b>
+        </div>
+      </div>  
+    </div>
+  </div> 
+
+</div>
+<!-- End confirm.purchase template -->

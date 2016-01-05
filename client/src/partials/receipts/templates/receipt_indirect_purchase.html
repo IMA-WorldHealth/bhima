@@ -1,0 +1,93 @@
+<div ng-controller="receipt.indirect_purchase">
+  
+  <div class="row customer-details">
+    <div class="col-xs-12">
+      <p style="float: right; color: grey;">{{ model.indirectPurchase.uuid }}</p>
+      <h4 class="invoice-header">{{ 'INVOICE.INDIRECT_PURCHASE' | translate }}</h4>
+    </div>
+  </div>
+
+  <div class="row customer-details">
+    <div class="col-xs-4">
+      <span>
+        <b>{{model.common.enterprise.name}}</b>
+      </span>
+      <br>
+      {{model.common.location.name}}
+      <br>
+      {{ model.common.enterprise.po_box || 'B.P. 205'}}
+      <br>
+      {{model.common.location.sector_name}}
+      <br>
+      <i>TEL</i> {{model.common.enterprise.phone}}
+      <br>
+      <i>MAIL</i> {{model.common.enterprise.email}}
+    </div>
+
+    <div class="col-xs-4">
+      {{ "INVOICE.BENEFICIARY" | translate }}<br>
+      <b>{{model.indirectPurchase.prenom + '  ' + model.indirectPurchase.name + '  ' + model.indirectPurchase.postnom}} </b>
+      <br><br>
+      {{ 'INVOICE.DATE_EMIT' | translate }} : <br>
+      <b>{{model.indirectPurchase.purchase_date | date}}</b>
+    </div>
+
+    <div class="col-xs-4">
+      {{'RECEIPT.ID_BON_SORTI' | translate}} : <b>{{model.indirectPurchase.reference}}</b><br>
+      {{'RECEIPT.EMITTER' | translate}} : <b>{{model.userInfo.first + '  ' + model.userInfo.last}}</b><br>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th style="width:20%;">{{ 'COLUMNS.REFERENCE_PURCHASE' | translate }}</th>
+            <th style="width:20%;">{{ 'COLUMNS.TRANSACTION_ID' | translate }}</th>
+            <th style="width:20%;">{{ 'RECEIPT.LABEL' | translate}}</th>
+            <th style="width:20%;">{{ 'RECEIPT.AMOUNT' | translate}}</th>
+            <th style="width:20%;">{{ 'RECEIPT.AMOUNT' | translate }} ({{ 'RECEIPT.LETTER' | translate }})</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr>
+            <td>{{ model.indirectPurchase.reference }}</td>
+            <td>{{ trans_id }}</td>
+            <td>{{ 'INVOICE.INDIRECT_PURCHASE' | translate }}</td>
+            <td>{{ model.indirectPurchase.cost | currency }}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="signatures">
+    <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+    <div class="signature-box-wide">
+      <div class="col-xs-3">
+        <div class="pull-left">
+          <b>{{"RECEIPT.HEAD_PRIMARY_CASH" | translate}}</b>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div class="pull-right">
+         <b>{{"RECEIPT.BENEFICIARY" | translate}}</b>
+        </div>
+      </div>  
+      <div class="col-xs-3">
+        <div class="pull-left">
+          <b>{{"RECEIPT.FINANCE" | translate}}</b>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div class="pull-right">
+         <b>{{"RECEIPT.ADMINISTRATOR" | translate}}</b>
+        </div>
+      </div>  
+    </div>
+  </div> 
+</div> 
+

@@ -1,0 +1,74 @@
+<!-- distribution.html template -->
+<div ng-controller="receipt.loss">
+<div class="row customer-details">
+  <div class="col-xs-12">
+    <small style="float: right; color: grey; font-size: 8px">{{ model.loss[0].document_uuid }}</small>
+    <h4 class="invoice-header">{{ 'INVOICE.LOSS' | translate }}</h4>
+  </div>
+</div>
+
+<div class="row customer-details">
+  <!-- Temporary style; needs official markup and CSS -->
+  <div class="col-xs-4">
+    <span>
+      <b>{{ model.common.enterprise.name }}</b>
+    </span>
+    <br>
+    <address>
+      {{ model.common.location.name }}
+      <br> {{ model.common.enterprise.po_box }}
+      <br> {{ model.common.location.sector_name }}
+      <br><i>TEL</i> {{ model.common.enterprise.phone }}
+      <br><i>MAIL</i> {{ model.common.enterprise.email }}
+    </address>
+  </div>
+
+  <div class="col-xs-4">
+    {{ 'INVOICE.DOCUMENT_NUMBER' | translate }} :
+    <br> <strong>{{ model.loss[0].document_uuid }}</strong>
+    <br>
+    <br> <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+    <br> {{ model.loss[0].date | date }}
+  </div>
+
+  <div class="col-xs-4"></div>
+
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <table class="invoiceTable">
+      <thead>
+        <tr>
+          <th>{{ 'COLUMNS.ENTRY_DATE' | translate }}</th>
+          <th>{{ 'COLUMNS.LOT_NUMBER' | translate }}</th>
+          <th>{{ 'COLUMNS.INVENTORY_ITEM' | translate }}</th>
+          <th>{{ 'COLUMNS.QTY' | translate }}</th>
+          <th>{{ 'COLUMNS.UNIT_PRICE' | translate }}</th>
+          <th>{{ 'COLUMNS.COST' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody class="items">
+        <tr ng-repeat="rec in model.loss">
+          <td>{{ rec.entry_date | date }}</td>
+          <td>{{ rec.lot_number }}</td>
+          <td>{{ rec.text }}</td>
+          <td>{{ rec.quantity}}</td>
+          <td class="text-right">{{ rec.unit_price | currency:model.common.enterprise.currency_id }}</td>
+          <td class="text-right">{{ rec.quantity * rec.unit_price | currency:model.common.enterprise.currency_id }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box">
+    <label>{{ "SIGNATURES.RESPONSABLE" | translate }}</label>
+    <div class="signature-line"></div>
+  </div>
+</div>
+
+<!-- end distribution.html template  -->

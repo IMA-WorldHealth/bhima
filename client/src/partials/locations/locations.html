@@ -1,0 +1,71 @@
+<header data-header>
+  {{ 'LOCATION.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "LOCATION.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
+  <div class="pull-right">
+    <a href="#/locations/village/" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.MANAGE_VILLAGE' | translate }}
+    </a>
+    <a href="#/locations/sector/" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.MANAGE_SECTOR' | translate }}
+    </a>
+    <a href="#/locations/province/"  class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.MANAGE_PROVINCE' | translate }}
+    </a>
+    <a href="#/locations/country/" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.MANAGE_COUNTRY' | translate }}
+    </a>
+  </div>
+</nav>
+
+<main class="exnted">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-default" style="max-height: 525px; overflow: auto;">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.REGISTERED' | translate }}
+        </div>
+        <table class="table table-striped table-condensed">
+          <thead>
+            <tr>
+              <th>{{ 'LOCATION.VILLAGE' | translate }}</th>
+              <th>{{ 'LOCATION.SECTOR' | translate }}</th>
+              <th>{{ 'LOCATION.PROVINCE' | translate }}</th>
+              <th>{{ 'LOCATION.COUNTRY' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="location in locations ">
+              <td>{{ location.name }}</td>
+              <td>{{ location.sector_name }}</td>
+              <td>{{ location.province_name }}</td>
+              <td>{{ location.country_name }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <div class="alert alert-info">
+        <h4>{{ 'LOCATION.MANAGER_CONFIGURATION' | translate }}</h4>
+        <p>
+          {{ 'LOCATION.DESCRIPTION' | translate }}
+          <b>{{ 'LOCATION.INFO_CREATE' | translate }}</b>,
+          <b>{{ 'LOCATION.INFO_MODIFY' | translate }}</b>
+          {{ 'LOCATION.ET' | translate }}
+          <b> {{ 'LOCATION.REMOVE' | translate }}</b>
+          {{ 'LOCATION.LOCATION' | translate }}.
+        </p>
+      </div>
+    </div>
+  </div>
+</main>

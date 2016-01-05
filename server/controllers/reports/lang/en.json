@@ -1,0 +1,117 @@
+{
+  "INVOICE" : {
+    "TITLE" : "Patient Invoice",
+    "CODE" : "Code",
+    "DESCRIPTION" : "Description",
+    "QUANTITY" : "Quantity",
+    "PRICE" : "Transaction Price",
+    "AMOUNT" : "Amount",
+    "INVOICE_NUMBER" : "Invoice Number",
+    "INVOICE_DATE" : "Invoice Date",
+    "REGISTRATION_DATE" : "Date of Registration",
+    "TOTAL" : "Total",
+    "PAID" : "Amount Paid",
+    "BALANCE" : "Balance",
+    "PATIENT" : "Patient",
+    "GROUP" : "Group",
+    "PATIENT_CODE" : "Patient Code"
+  },
+
+	"BILAN" : {
+		"TITLE"                 : "BILAN",
+		"ENTERPRISE"            : "Enterprise",
+		"CLOS"                  : "Exercice closed As : ",
+		"DURATION"              : "Duration (In month) : ",
+		"REFERENCE"             : "Ref",
+		"ACTIF"                 : "Active",
+		"PASSIF"                : "PASSIVE",
+		"BRUT"                  : "Brut",
+		"AMORT_PROV"            : "Amort/Prov",
+		"NET"                   : "Net",
+		"TOTAL_GENERAL"         : "GENERAL TOTAL",
+		"PASSIVE"               : "Passive",
+		"DATE"                  : "Date : ",
+		"TOTAL"                 : "TOTAL",
+		"ACCOUNTING_DEPT"       : "Accounting Department"
+	},
+
+	"ACCOUNT_RESULT" : {
+		"TITLE"                 : "RESULT ACCOUNT",
+		"ENTERPRISE"            : "Enterprise",
+		"CLOS"                  : "Exercice closed As : ",
+		"DURATION"              : "Duration (In Month): ",
+		"REFERENCE"             : "Ref",
+		"CHARGE"                 : "Charge",
+		"NET"                   : "Net",
+		"TOTAL_GENERAL"         : "TOTAL GENERAL",
+		"PROFIT"                : "Profit",
+		"DATE"                  : "Date : ",
+		"TOTAL"                 : "TOTAL"
+	},
+
+	"EMPLOYEE_STATE" : {
+  		"TITLE" : "Employee State",
+		"ENTERPRISE" : "Enterprise",
+		"DEBIT" : "Debit",
+		"CREDIT" : "Credit",
+		"DATE" : "Date",
+		"CODE" : "Code",
+		"PRENOM" : "First Name",
+		"NOM" : "Name",
+		"POSTNOM" : "Last Name"
+	},
+
+	"DEBITOR_GROUP_REPORT" : {
+		"TITLE" : "Debtor Group Financial State",
+		"ENTERPRISE" : "Enterprise",
+		"DEBIT" : "Debit",
+		"CREDIT" : "Credit",
+		"DATE" : "Date",
+		"SALE_NUMBER" : "Sale Number",
+		"PATIENT" : "Patient",
+		"BILL_DATE" : "Date of Billing" ,
+		"AMOUNT_BILLED" : "Amount billed",
+		"AMOUNT_PAYED" : "Amount Payed ",
+		"DIFFERENCE" : "Difference",
+		"TRANS_NUMBER" : "Transaction Number",
+		"TOTAL_BILLED" : "Total Billed",
+		"TOTAL_PAYED" : "Total Payed",
+		"TOTAL_DIFFERENCE" : "Sold",
+		"BOX" : "BP",
+		"TEL" : "Tel"
+	},
+
+  "DEBTOR_GROUP_ANNUAL_REPORT" : {
+    "CREDIT" : "Credit",
+	  "DEBIT"  : "Debit",
+	  "BALANCE" : "Balance",
+	  "BILLED" : "Billed",
+	  "PAID" : "Paid",
+	  "ACCOUNT_NUMBER" : "Account Number",
+	  "DESIGNATION" : "Designation",
+	  "TITLE" : "Debtor Group Annual Report",
+	  "ACCOUNTING_DEPT" : "Accounting Department",
+	  "BILLING_OFFICE" :  "Office of Billing",
+	  "NO_DATA" : "No data found for the give fiscal year!",
+	  "TOTAL" : "Total"
+	},
+
+	"VARIATION_EXPLOITATION" : {
+		"TITLE" : "Income Expense Variation",
+		"ENTERPRISE" : "Enterprise",
+		"DEBIT" : "Debit",
+		"CREDIT" : "Credit",
+		"DATE" : "Date",
+		"BOX" : "BP",
+		"TEL" : "Tel",
+		"CADRE" : "Cadre",
+		"COMPTE" : "ACCOUNT",
+		"DESIGNATION" : "Name",
+		"PREVIOUS"    : "Previous",
+		"CURRENT" : "Current",
+		"VARIATION_PERCENT" : "Variation (%)",
+		"VARIATION_MONTANT" : "Variation (Amount)",
+		"INCOME_ACCOUNT" : "PROFIT ACCOUNT",
+		"EXPENSE_ACCOUNT" : "CHARGE ACCOUNT"
+	}
+}

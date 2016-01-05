@@ -1,0 +1,110 @@
+<header data-header>
+  {{ 'CASH_PURCHASE.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/primary_cash/">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
+      <li><a >{{ "PRIMARY_CASH.EXPENSES" | translate }}</a></li>
+      <li class="active">{{ "PRIMARY_CASH.EXPENSE.PURCHASE" | translate }}</li>
+    </ol>
+  </div>
+
+  <!-- FIXME style hack -->
+  <div class="pull-right" style="margin-top: 9px;">
+    <b>[{{PurchaseCtrl.cashbox.id}}] {{PurchaseCtrl.cashbox.text}}</b>
+  </div>
+</nav>
+
+<main>
+  <div class="row margin-top-10">
+
+    <div class="col-xs-5">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "CASH_PURCHASE.SELECT_PURCHASE" | translate }}
+        </div>
+
+        <div class="panel-body">
+
+          <div class="input-group" style="margin-bottom: 15px">
+            <span class="input-group-btn">
+              <button disabled class="square btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+            <input class="form-bhima" placeholder="{{'CASH_PURCHASE.FILTER' | translate }}" ng-model="PurchaseCtrl.session.filter">
+          </div>
+
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>{{"COLUMNS.DATE" | translate}}</th>
+                <th>{{"COLUMNS.REFERENCE" | translate}}</th>
+                <th>{{"COLUMNS.EMPLOYEE" | translate}}</th>
+                <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+              </tr>
+            </thead>
+
+            <tr ng-if="!PurchaseCtrl.purchase.data.length">
+              <td colspan="4">
+                <div class="alert alert-warning">{{ "CASH_PURCHASE.NOT_FOUND" | translate }}</div>
+              </td>
+            </tr>
+
+            <tr ng-repeat="item in PurchaseCtrl.purchase.data | filter : session.filter"
+                ng-class="{'selected-success': PurchaseCtrl.session.selected.uuid===item.uuid}">
+                <td>{{item.purchase_date | date}}</td>
+                <td><a href="/#/invoice/purchase/{{item.uuid}}">{{item.abbr}}{{item.reference}}</td>
+                <td>{{item.name}}</td>
+                <td><a class="menu-item" ng-click="PurchaseCtrl.confirmPurchase(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
+              </tr>
+            <tbody>
+
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-7">
+      <div class="panel" ng-class="{'panel-success': PurchaseCtrl.session.selected, 'panel-default' : !PurchaseCtrl.session.selected}">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-list-alt"></span>
+          {{ "CASH_PURCHASE.PAY" | translate }} : <small>{{PurchaseCtrl.session.selected.uuid}}</small>
+        </div>
+
+        <div class="panel-body" ng-if="PurchaseCtrl.session.selected">
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th colspan="2">{{ "CASH_PURCHASE.DETAILS" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{"COLUMNS.ID" | translate}}</td><td>{{PurchaseCtrl.session.selected.uuid}}</td>
+              </tr>
+              <tr>
+                <td>{{"COLUMNS.NOTE" | translate}}</td><td>{{PurchaseCtrl.session.selected.note}}</td>
+              </tr>
+              <tr>
+                <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{PurchaseCtrl.session.selected.name}}</td>
+              </tr>
+              <tr>
+                <td>{{"COLUMNS.COST" | translate}}</td><td><b>{{PurchaseCtrl.session.selected.cost | currency}}</b></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button ng-click="PurchaseCtrl.payPurchase()" class="square btn btn-success btn-sm">  {{ "CASH_PURCHASE.PAY" | translate }} : <b>{{session.selected.cost | currency}}</b> {{ "CASH_PURCHASE.TO" | translate }}
+          <b>{{PurchaseCtrl.session.selected.name}}</b>
+          </button>
+          <button disabled class="square btn btn-danger btn-sm">{{ "CASH_PURCHASE.DISCARD" | translate }} </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

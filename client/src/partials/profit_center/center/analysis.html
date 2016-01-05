@@ -1,0 +1,125 @@
+<header data-header>
+  {{'ANALYSIS_PROFIT_CENTER.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/profit_center">{{ "ANALYSIS_PROFIT_CENTER.PARENT" | translate }}</a></li>
+      <li class="active">{{ "ANALYSIS_PROFIT_CENTER.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <button ng-click="CenterCtrl.setAction('register')" class="btn btn-sm btn-default pull-right">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ 'ANALYSIS_PROFIT_CENTER.NEW' | translate }}
+  </button>
+</nav>
+
+<main>
+  <div class="col-xs-6">
+    <div class="panel panel-primary" style="height : 100%; overflow : auto;">
+      <div class="panel-heading">
+        {{ 'ANALYSIS_PROFIT_CENTER.REGISTERED' | translate }}
+
+        <!-- show loader for GET methods -->
+        <div class="pull-right">
+          <span ng-if="CenterCtrl.session.state === 'loading'">
+            <loading-indicator></loading-indicator>
+          </span>
+        </div>
+      </div>
+      <table class="table table-condensed table-striped">
+        <thead>
+          <tr>
+            <th>{{ 'COLUMNS.NAME' | translate }}</th>
+            <th colspan="2">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="pc in CenterCtrl.model.profit_centers.data  | orderBy:'text'">
+            <td>{{pc.text}}</td>
+            <td>
+              <a class="action" ng-click="CenterCtrl.setAction('edit', pc)"><i class="glyphicon glyphicon-pencil"></i></a>
+            </td>
+            <td>
+              <a class="action danger" ng-click="CenterCtrl.remove(pc)"><i class="glyphicon glyphicon-trash"></i></a>
+            </td>
+          </tr>
+
+          <tr ng-if="!CenterCtrl.model.profit_centers.data.length">
+            <td colspan="3">
+              <div class="alert alert-warning square">
+                {{ 'ANALYSIS_PROFIT_CENTER.NONE_FOUND' | translate }}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-xs-6" ng-switch="CenterCtrl.action">
+    <div ng-switch-default>
+      <div class="alert alert-info">
+        <b>{{ 'ANALYSIS_PROFIT_CENTER.INFO' | translate }}</b>
+        <p>{{ 'ANALYSIS_PROFIT_CENTER.INFO_DESCRIPTION' | translate }}</p>
+      </div>
+    </div>
+
+    <div ng-switch-when="register">
+      <form class="form-horizontal" name="newForm" novalidate>
+        <fieldset>
+          <legend>{{'ANALYSIS_PROFIT_CENTER.REGISTER' | translate}}</legend>
+          <div class="form-group required">
+            <label class="col-xs-2 control-label"> {{'ANALYSIS_PROFIT_CENTER.TEXT' | translate}} </label>
+            <div class="col-xs-10">
+              <input class="form-bhima" ng-model="CenterCtrl.register.text" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">{{'ANALYSIS_PROFIT_CENTER.NOTE' | translate}}</label>
+            <div class="col-xs-10">
+              <textarea class="form-control" ng-model="CenterCtrl.register.note" rows="3">
+              </textarea>
+            </div>
+          </div>
+
+          <div class="form-group pull-right">
+            <input ng-click="CenterCtrl.save()" ng-disabled="newForm.$invalid" class="btn btn-sm btn-success" type="submit" value="{{'FORM.SAVE' | translate}}">
+            <input class="btn btn-sm btn-default" type="reset" value="{{'FORM.RESET' | translate}}">
+          </div>
+        </fieldset>
+      </form>
+    </div>
+
+
+    <div ng-switch-when="edit">
+      <form class="form-horizontal">
+        <fieldset>
+          <legend>{{'ANALYSIS_PROFIT_CENTER.MODIFYING' | translate}}</legend>
+
+          <div class="form-group required">
+            <label class="col-xs-2 control-label">{{'ANALYSIS_PROFIT_CENTER.TEXT' | translate}}</label>
+            <div class="col-xs-10">
+              <input class="form-bhima" ng-model="CenterCtrl.selected.text" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">{{'ANALYSIS_PROFIT_CENTER.NOTE' | translate}}</label>
+            <div class="col-xs-10">
+              <textarea class="form-control" ng-model="CenterCtrl.selected.note" rows="3">
+              </textarea>
+            </div>
+          </div>
+
+          <div class="pull-right">
+            <input ng-click="CenterCtrl.edit()" class="btn btn-sm btn-success" type="submit" value="{{'FORM.SAVE' | translate}}">
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</main>

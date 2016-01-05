@@ -1,0 +1,97 @@
+<div class="panel panel-primary" ng-controller="fiscal.update">
+
+  <div class="panel-heading" ng-if="fiscal">
+    {{ fiscal.fiscal_year_txt }}
+  </div>
+
+  <div class="panel-body">
+    <form role="form" name="updateForm" ng-submit="submitEdits()" novalidate>
+      <div class="row">
+      <div class="col-xs-6">
+        <div class="form-group">
+          <label for="fiscal-name">
+            {{ 'FISCAL_YEAR.NAME' | translate }}
+          </label>
+          <input type="text" class="form-bhima" id="fiscal-name" ng-model="fiscal.fiscal_year_txt">
+        </div>
+        <div class="form-group">
+          <i class="glyphicon glyphicon-info-sign"></i>
+          {{ fiscal.locked ? 'FISCAL_YEAR.LOCKED' : 'FISCAL_YEAR.OPEN' | translate }}
+        </div>
+        <div class="form-group">
+          <label for="fiscal-months">
+            {{ 'FISCAL_YEAR.TOTAL_MONTH' | translate }}
+          </label>
+          <input type="text" class="form-bhima" id="fiscal-months" ng-model="fiscal.number_of_months" readonly>
+        </div>
+        <div class="form-group">
+          <label for="first-voucher">
+            {{ 'FISCAL_YEAR.FIRST_VOUCHER' | translate }}
+          </label>
+          <input type="number" class="form-bhima" id="first-voucher" ng-model="fiscal.transaction_start_number" readonly>
+        </div>
+        <div class="form-group">
+          <label for="last-voucher">
+            {{ 'FISCAL_YEAR.LAST_VOUCHER' | translate }}
+          </label>
+          <input type="number" class="form-bhima" id="last-voucher" ng-model="fiscal.transaction_stop_number" readonly>
+        </div>
+        <div class="form-group">
+          <label for="posting-from">
+            {{ 'FISCAL_YEAR.POSTING_FROM' | translate }}
+          </label>
+          <!-- TODO: This is temporary data - logic should be implemented -->
+          <!-- FIXME: Logic should all be taken care of in controller -->
+          <input type="text" class="form-bhima" id="posting-from" readonly value="{{ getFiscalStart() | date:'dd/MM/yyyy' }}">
+        </div>
+        <div class="form-group">
+          <label for="posting-to">
+            {{ 'FISCAL_YEAR.POSTING_TO' | translate }}
+          </label>
+          <input type="text" class="form-bhima" id="posting-to" readonly value="{{ getFiscalEnd() | date:'dd/MM/yyyy' }}">
+        </div>
+      </div>
+
+      <div class="col-xs-6">
+        <table class="table table-hover table-bordered">
+          <thead>
+            <tr>
+              <th colspan="3">{{ 'FISCAL_YEAR.PERIODS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="period in periods.data" class="primary">
+              <td>{{ period.period_start | date: 'MMM' }}</td>
+              <td>{{ period.period_start | date:'dd/MM/yyyy' }}</td>
+              <td>{{ period.period_stop | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12 border-top">
+          <div class="form-group">
+            <input class="btn btn-sm btn-default" type="button" value="{{ 'UTIL.CANCEL' | translate }}" ng-click="resetEdits()">
+
+            <input class="btn btn-sm btn-success pull-right" type="submit" value="{{ 'UTIL.SUBMIT' | translate }}" ng-disabled="updateForm.$invalid">
+          </div>
+
+          <div class="form-group" ng-if="session.saved">
+            <div class="alert alert-success">
+              <b><i class="glyphicon glyphicon-ok-circle"></i></b> Submitted Successfully.
+            </div>
+          </div>
+          <div class="form-group" ng-if="session.saveError">
+            <div class="alert alert-danger">
+              <b><i class="glyphicon glyphicon-remove-circle"></i></b> Submittion Error.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>

@@ -1,0 +1,137 @@
+<header data-header>
+  {{ 'CASH.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+      <ol class="breadcrumb">
+        <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+        <li class="active">{{ "CASH.TITLE" | translate }}</li>
+      </ol>
+  </div>
+  <div class="pull-right">
+    <span class="dropdown pull-right">
+      <button class="btn btn-primary dropdown-toggle">
+        {{ currency.symbol || "..." }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+
+      <ul class="dropdown-menu">
+        <li ng-repeat="currency in cashbox_accounts.data">
+          <a href="" ng-click="setCurrency(currency)">{{ currency.symbol }} </a>
+        </li>
+      </ul>
+    </span>
+
+    <span class="dropdown pull-right" style="padding-right: 5px;">
+      <button class="btn btn-primary dropdown-toggle">
+        {{ cashbox.text || "..." }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+
+      <ul class="dropdown-menu">
+        <li ng-repeat="box in cashboxes.data">
+          <a href="" ng-click="setCashBox(box)"> {{box.text}} - {{box.symbol}} </a>
+        </li>
+      </ul>
+    </span>
+
+  </div>
+</nav>
+
+<main class="container-fluid">
+
+  <find-patient on-search-complete="CashCtrl.loadInvoices(patient)" enable-refresh="true"></find-patient>
+
+  <div class="row">
+
+    <!-- Receipt Controls -->
+    <div class="col-md-6">
+      <div class="panel panel-primary" ng-if="CashCtrl.patient">
+        <div class="panel-heading">
+          <i class="glyphicon glyphicon-list"></i> {{ "CASH.DEBITOR_INVOICES" | translate }}
+        </div>
+        <table class="table table-condensed table-bordered">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
+              <th>{{ "COLUMNS.BALANCE" | translate }}</th>
+              <th>{{ "COLUMNS.DATE" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-if="session.loading">
+              <td class="text-center" colspan="3"></td>
+            </tr>
+            <tr ng-repeat="invoice in ledger" ng-click="add($index)" style="cursor : pointer;">
+              <td>{{ projects.get(invoice.project_id).abbr + invoice.reference }}</td>
+              <td>{{ invoice.locale | currency:currency.currency_id }}</td>
+              <td>{{ invoice.trans_date | date }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Receipt Preview -->
+    <div class="col-md-6" ng-if="CashCtrl.patient">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "CASH.PAYMENT" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }}</small>
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.SALE_ID" | translate }}</th>
+              <th>{{ "COLUMNS.DATE" | translate }}</th>
+              <th>{{ "COLUMNS.BALANCE" | translate }}</th>
+              <th>{{ "COLUMNS.PAID" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="invoice in queue">
+              <td>{{ projects.get(invoice.project_id).abbr + invoice.reference }}</td>
+              <td>{{ invoice.trans_date | date }}</td>
+              <td>{{ invoice.locale | currency:currency.currency_id }}</td>
+              <td>{{ invoice.allocated | currency:currency.currency_id }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr style="background-color: #f5f5f5; border-color: #ddd;">
+              <th colspan="2">Total:</th>
+              <td>{{ data.raw | currency:currency.currency_id }}</td>
+              <td colspan="3"></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <hr style="padding:0;margin:0;" />
+
+        <form class="panel-body" name="CashForm">
+
+          <div class="form-group">
+            <label>{{ "CASH.TOTAL_DUE" | translate }}</label>
+            <p class="form-control-static">{{ data.total | currency:currency.currency_id }}</p>
+          </div>
+
+          <div class="form-group">
+            <label> {{ "CASH.PAYMENT" | translate }}</label>
+            <div class="input-group">
+              <input type="number" ng-model="data.payment" class="form-control" min="0" required>
+              <span class="input-group-addon">{{ currency.symbol }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-footer">
+          <button type="button" class="btn btn-default" ng-class="{ 'btn-danger' : data.overdue > 0, 'btn-success':  data.overdue <= 0 }" ng-click="invoice()" ng-disabled="!data.payment">
+            {{ "CASH.PAY_INVOICES" | translate }}
+          </button>
+          <button type="button" class="btn btn-default" ng-click="clearSelection()">
+            {{ "CASH.CLEAR_SELECTION" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

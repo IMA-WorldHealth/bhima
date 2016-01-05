@@ -1,0 +1,96 @@
+<header data-header>
+  {{ "SUPPORT_PAYEMENT.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/primary_cash/">{{ 'PRIMARY_CASH.TITLE' | translate}}</a></li>
+      <li class="active">{{ 'SUPPORT_PAYEMENT.TITLE' | translate}}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right dropdown">
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ selectedItem.symbol || "SUPPORT_PAYEMENT.DEFAULT_CURRENCY" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li ng-repeat="box in model.cash_box.data">
+        <a ng-click="setCashAccount(box)">{{ box.symbol }}</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main class="extend margin-top-10">
+  <div class="row">
+    <div find-employee on-search-complete="initialiseEmployee" class="col-xs-6"></div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          {{ "SUPPORT_PAYEMENT.INFO" | translate }}
+        </div>
+
+        <table class="table table-condensed" ng-if="!!overviews.length" ng-show="noEmpty">
+          <thead>
+            <tr>
+              <th>{{ 'COLUMNS.REFERENCE' | translate }}</th>
+              <th>{{ 'COLUMNS.DESCRIPTION' | translate }}</th>
+              <th>{{ 'COLUMNS.AMOUNT' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="overview in overviews">
+              <td>{{ overview.reference }}</td>
+              <td>{{ overview.description }}</td>
+              <td align="right">{{ overview.balance | currency:enterprise.currency_id }}</td>
+            </tr>
+            <tr>
+              <td>{{ 'SUPPORT_PAYEMENT.TOT' | translate}}</td>
+              <td colspan="2" align="right">{{ som | currency:enterprise.currency_id }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="panel-body" ng-if="!overviews.length" ng-show="noEmpty">
+          <div class="alert alert-warning">
+            {{ 'SUPPORT_PAYEMENT.NO_RECORD' | translate }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading" >
+          {{ "SUPPORT_PAYEMENT.PAYEMENT" | translate}}
+        </div>
+        <div class="panel-body" ng-show="noEmpty">
+          <form>
+            <div class="form-group">
+              <div class="col-xs-4">
+                <label>{{ "SUPPORT_PAYEMENT.MONTANT" | translate }} </label>
+              </div>
+            </div>
+            <div class="input-group col-xs-8">
+              <input type="number" step="any" ng-model="data.payment"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ selectedItem.symbol }} </span>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel-footer" ng-show="noEmpty">
+          <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.payment < selectedItem.min_monentary_unit || data.payment > som, 'btn-success':  data.payment >= selectedItem.min_monentary_unit }" ng-click="pay()" ng-disabled="check()">
+            {{ "FORM.SUBMIT" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

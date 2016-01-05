@@ -1,0 +1,80 @@
+<div ng-controller="receipt.convention">
+  <div class="row customer-details">
+    <div class="col-xs-12">
+      <h4 class="invoice-header">{{'INVOICE.CONVENTION' | translate}}</h4>
+    </div>
+  </div>
+
+  <div class="row customer-details">
+    <div class="col-xs-4">
+      <span>
+        <b>{{model.common.enterprise.abbr}}</b>
+      </span>
+      <br>
+      {{model.common.location.name}}
+      <br>
+      {{ model.common.enterprise.po_box || 'B.P. 205'}}
+      <br>
+      {{model.common.location.sector_name}}
+      <br>
+      <i>TEL</i> {{model.common.enterprise.phone}}
+      <br>
+      <i>Email</i> {{model.common.enterprise.email}}
+    </div>
+
+    <div class="col-xs-4">
+      <span><b>{{ 'INVOICE.CONVENTION' | translate }}</b></span>
+      <br>
+      {{model.conventions[0].account_txt}}
+      <br>
+      <i>{{ 'INVOICE.DATE' | translate }}</i>
+      <br>
+      {{model.conventions[0].date | date}}
+      <br>
+      <h4><i>{{ 'COLUMNS.TRANSACTION_ID' | translate }}</i> : <b>{{ trans_id }}</b></h4>  
+      <h4><i>{{ 'COLUMNS.REFERENCE' | translate }}</i> : <b>{{ reference }}</b></h4>        
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th>{{'COLUMNS.NUM' | translate}}</th>
+            <th>{{'INVOICE.DESIGNATION' | translate}}</th>
+            <th>{{'INVOICE.AMOUNT' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr ng-repeat="convention in model.conventions">
+            <td>{{$index + 1}}</td>
+            <td>{{convention.note}}</td>
+            <td>{{ convention.debit  | currency:convention.currency_id }}</td>
+          </tr>
+        </tbody>
+        <tbody class="totals">
+          <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td>{{ model.conventions[0].cost  | currency:model.conventions[0].currency_id }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="signatures">
+    <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+    <div class="signature-box-wide">
+      <div class="col-xs-6">
+        <div class="pull-left">
+          <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <div class="pull-right">
+         <b>{{"SIGNATURES.CHIEF_ACCOUNTANT" | translate}}</b>
+        </div>
+      </div>  
+    </div>
+  </div> 
+
+</div>

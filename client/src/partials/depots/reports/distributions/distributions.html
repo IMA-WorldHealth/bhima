@@ -1,0 +1,61 @@
+<header data-header>
+  {{ DistributionsCtrl.title | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><a tabindex="-1" href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a tabindex="-1" href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+      <li class="active">{{ DistributionsCtrl.title | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-left">
+    <span class="btn-group">
+      <button ng-click="DistributionsCtrl.select(DistributionsCtrl.selected)" class="btn btn-sm btn-default">{{(DistributionsCtrl.selected.key | translate) || "..."}}</button>
+      <button class="btn btn-sm btn-default dropdown-toggle">
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+
+      <ul class="dropdown-menu">
+        <li ng-repeat="item in DistributionsCtrl.periods">
+          <a class="clk" ng-click="DistributionsCtrl.select(item)">
+            {{ item.key | translate }}
+          </a>
+        </li>
+      </ul>
+    </span>
+  </div>
+
+  <div>
+    <div class="col-xs-2">
+      <input class="form-bhima" ng-change="DistributionsCtrl.fetch()" type="date" ng-model="DistributionsCtrl.startDate" rows="20">
+    </div>
+    <div class="col-xs-2" style="padding-right: 0px;">
+      <input class="form-bhima" ng-change="DistributionsCtrl.fetch()" type="date" ng-model="DistributionsCtrl.endDate" rows="20">
+    </div>
+  </div>
+</nav>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame" style="padding-top: 10px;">
+      <h4 class="visible-print">{{ "DEPOT.DISTRIBUTIONS.KEY" | translate }} <small>{{ DistributionsCtrl.startDate | date }} - {{ DistributionsCtrl.endDate | date }}</small></h4>
+      <ng-include src="DistributionsCtrl.url"></ng-include>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <table style="width: 99%">
+    <tbody>
+      <td width="50%">
+        <span style="margin-right: 10px;" ng-if="!DistributionsCtrl.loading">
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
+          <b>{{ DistributionsCtrl.data.length }}</b>
+        </span>
+      </td>
+    </tbody>
+  </table>
+</footer>

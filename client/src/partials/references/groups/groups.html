@@ -1,0 +1,154 @@
+<header data-header>
+  {{ "REFERENCE_GROUP.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "REFERENCE_GROUP.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="new()">
+      <span class="glyphicon glyphicon-plus-sign"></span>
+       {{ "REFERENCE_GROUP.ADD" | translate }}
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="row margin-top-10">
+
+    <div class="col-xs-7">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-paperclip"></span>
+          {{ "REFERENCE_GROUP.REGISTERED" | translate }}
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.NR" | translate}}</th>
+              <th>{{ "COLUMNS.REFERENCE_GROUP" | translate}}</th>
+              <th>{{ "COLUMNS.LABEL" | translate}}</th>
+              <th>{{ "COLUMNS.POSITION" | translate}}</th>
+              <th>{{ "COLUMNS.BALANCE_SECTION" | translate}}</th> 
+              <th colspan="4">{{ "COLUMNS.ACTIONS" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="reference_group in reference_groups.data | orderBy:'text'">
+              <td>{{$index + 1}}</td>
+              <td>{{ reference_group.reference_group }}</td>
+              <td>{{ reference_group.text }}</td>
+              <td>{{ reference_group.position }}</td>
+              <td>{{ section_bilan.get(reference_group.section_bilan_id).text }} </td>
+              <td><a class="action" ng-click="edit(reference_group)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a class="action danger" ng-click="delete(reference_group)"><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+            <tr ng-if="!reference_groups.data.length">
+              <td colspan="8">{{ "REFERENCE_GROUP.NO_REFERENCES" | translate }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-5" ng-switch="session.action">
+      <div class="alert alert-info" ng-switch-default>
+        <h4>{{ "REFERENCE_GROUP.TITLE" | translate }}</h4>
+        <p>{{ "REFERENCE_GROUP.ALERT" | translate }}</p>
+      </div>
+
+      <div ng-switch-when="new">
+        <form novalidate class="form-horizontal" name="new">
+          <legend><h3>{{ "REFERENCE_GROUP.NEW_REFERENCE" | translate }} </h3></legend>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.new.reference_group" class="form-bhima" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.new.text" class="form-bhima" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="number" ng-model="session.new.position" class="form-bhima" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.BALANCE_SECTION" | translate }}</label>
+            <div class="col-xs-7">
+              <select class="form-bhima" ng-model="session.new.section_bilan_id" required> 
+                <option value="" disabled="disabled">--- {{ "SELECT.BALANCE_SECTION" | translate }} ---</option>
+                <option ng-repeat="section in section_bilan.data | orderBy:'text'" value="{{section.id}}">
+                  {{ section.text }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+          </div>   
+        </form>
+      </div>
+
+      <div ng-switch-when="edit">
+        <form novalidate class="form-horizontal" name="edit">
+          <legend><h3>{{ "REFERENCE_GROUP.UPD_REFERENCE" | translate }} </h3></legend>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.edit.reference_group" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.edit.text" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="number" ng-model="session.edit.position" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.BALANCE_SECTION" | translate }}</label>
+            <div class="col-xs-7">
+              <select class="form-bhima" ng-model="session.edit.section_bilan_id" required> 
+                <option value="" disabled="disabled"></option>
+                <option ng-repeat="section in section_bilan.data | orderBy:'text'" ng-selected="section.id" value="{{section.id}}">
+                  {{ section.text }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+          </div>   
+        </form>
+      </div>
+    </div>
+  </div>
+</main>

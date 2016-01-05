@@ -1,0 +1,99 @@
+<!-- Movement template -->
+<div ng-controller="receipt.movement">
+  <div class="row customer-details">
+    <div class="col-xs-12">
+
+      <small style="float: right; color: grey; font-size: 8px">{{ invoiceId }}</small>
+      <h4 class="invoice-header">{{ 'INVOICE.STOCK_MOVEMENT' | translate }}</h4>
+    </div>
+  </div>
+
+  <div class="row customer-details">
+
+    <div class="col-xs-6">
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th colspan="2">{{"INVOICE.ORIGIN_DEPOT" | translate}}</th>
+          </tr>
+        </thead>
+        <tbody ng-if="depotEntry" class="items">
+          <tr>
+            <td>{{"INVOICE.NAME" | translate}}</td><td>{{depotExit.text}}</td>
+          </tr>
+
+          <tr>
+            <td>{{"INVOICE.REFERENCE" | translate}}</td><td>{{depotExit.reference}}</td>
+          </tr>
+          <tr>
+            <td>{{"INVOICE.TRANSFERT_DATE" | translate}}</td><td>{{movement.data[0].date | date}}</td>
+          </tr>
+
+        </tbody>
+        <tbody ng-if="depotEntry===undefined" class="items">
+          <tr>
+            <td colspan="2">[...]</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-xs-6">
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th colspan="2">{{"INVOICE.DESTINATION_DEPOT" | translate}}</th>
+          </tr>
+        </thead>
+        <tbody ng-if="depotEntry" class="items">
+          <tr>
+            <td>{{"INVOICE.NAME" | translate}}</td><td>{{depotEntry.text}}</td>
+          </tr>
+
+          <tr>
+            <td>{{"INVOICE.REFERENCE" | translate}}</td><td>{{depotEntry.reference}}</td>
+          </tr>
+
+          <tr>
+            <td>{{"INVOICE.TRANSFERT_DATE" | translate}}</td><td>{{movement.data[0].date | date}}</td>
+          </tr>
+
+        </tbody>
+        <tbody ng-if="depotEntry===undefined" class="items">
+          <tr>
+            <td colspan="2">[{{"INVOICE.INITIAL_STOCK_ENTRY" | translate}}]</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>  
+  </div>
+
+  <!-- Lots -->
+  <div class="row" ng-repeat="item in movement.data" style="margin-bottom: 10px">
+    <div class="col-xs-12">
+
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th colspan="2">{{"INVOICE.LOT" | translate}} {{item.lot_number}}</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr>
+            <td>{{"INVOICE.ITEM" | translate}}</td><td>{{item.text}} <i>({{item.code}})</i></td>
+          </tr>
+          <tr>
+            <td>{{"INVOICE.EXPIRATION_DATE" | translate}}</td><td>{{item.expiration_date | date}}</td>
+          </tr>
+          <tr>
+            <td>{{"INVOICE.TRANSFERED_QTE" | translate}}</td><td><b>{{item.quantity}}</b></td>
+          </tr>
+          <tr>
+            <td>{{"INVOICE.TRACKING_NUMBER" | translate}}</td><td><small>{{item.tracking_number}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>    
+<!-- End Movement template -->

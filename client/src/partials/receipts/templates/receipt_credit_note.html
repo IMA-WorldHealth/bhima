@@ -1,0 +1,66 @@
+<!-- Credit template -->
+<div ng-controller="receipt.credit_note">
+  <div class="row customer-details">
+    <div class="col-xs-12">
+      <h4 class="invoice-header">{{'INVOICE.CREDIT_NOTE' | translate}}</h4>
+    </div>
+  </div>
+  <div class="row customer-details">
+    <div class="col-xs-1">
+      <b>{{'INVOICE.TO' | translate}}</b>
+    </div>
+    <div class="col-xs-7">
+      <div class="row">
+        {{model.creditNote.first_name}} {{model.creditNote.last_name}}
+      </div>
+      <div class="row">
+        <i>{{model.common.location.name}}</i>
+        <br>
+        <i>{{model.common.location.sector_name}}</i>
+        <br>
+        <i>{{model.common.location.province_name}}</i>
+      </div>
+    </div>
+    <div style="text-align: left;" class="col-xs-4">
+      <div class="row">
+        <b>{{'INVOICE.NOTE_ID' | translate}}</b>
+      </div>
+      <div class="row">
+        {{model.common.enterprise.abbr}}{{model.creditNote.reference}}
+      </div>
+      <div class="row">
+        <b>{{'INVOICE.DATE' | translate}}</b>
+      </div>
+      <div class="row">
+        {{model.creditNote.note_date | date}}
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="invoiceTable">
+        <thead>
+          <tr><th>{{'INVOICE.NOTE' | translate}}</th><th>{{ 'COLUMNS.DEBITOR' | translate }}<th>{{'INVOICE.AMOUNT' | translate}}</th></tr>
+        </thead>
+        <tbody class="items">
+          <tr><td>{{model.creditNote.description}}</td><td>{{model.creditNote.first_name}} {{model.creditNote.last_name}}</td><td>{{model.creditNote.cost | currency}}</td></tr>
+        </tbody>
+        <tbody class="totals">
+          <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL_CREDITED' | translate}}</td><td>{{model.creditNote.cost | currency}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="signatures">
+    <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+    <div class="signature-box">
+      <label>{{ "INVOICE.SIGN_HEADER_BILLING" | translate }}</label>
+      <div class="signature-line"></div>
+    </div>
+  </div>
+
+</div>
+<!-- End credit template -->

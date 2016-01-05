@@ -1,0 +1,68 @@
+<header>
+  {{ 'DEPOT.DISTRIBUTION.LOSSES' | translate }}
+  <small>
+    {{ ReportCtrl.depot.text }} / {{ ReportCtrl.start | date }} - {{ ReportCtrl.end | date }}
+  </small>
+</header>
+
+<nav>
+  <button
+    style="margin-left: 5px;"
+    ng-click="ReportCtrl.reconfigure()"
+    class="btn btn-sm btn-default pull-right">
+    <span class="glyphicon glyphicon-repeat"></span>
+  </button>
+
+  <div class="pull-right">
+    <button ng-click="ReportCtrl.print()" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-print"></span>
+      {{ 'UTIL.PRINT' | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame" style="padding-top: 10px;">
+
+      <ng-include src="'partials/reports/templates/enterprise_header.html'"></ng-include>
+
+      <h4 class="visible-print">
+        {{ 'DEPOT.DISTRIBUTION.LOSSES' | translate }}
+        <small>
+          {{ ReportCtrl.depot.text }} / {{ ReportCtrl.start | date }} - {{ ReportCtrl.end | date }}
+        </small>
+      </h4>
+
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{'COLUMNS.DATE' | translate }}</th>
+            <th>{{'COLUMNS.DEPOT' | translate }}</th>
+            <th>{{'COLUMNS.DRUGS' | translate }}</th>
+            <th>{{'COLUMNS.NUM_ITEMS' | translate }}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr ng-if="ReportCtrl.distributions.length === 0 && !ReportCtrl.loading">
+            <td colspan="4"><strong>{{ 'DEPOT.DISTRIBUTION.NO_ROWS' | translate }}</strong></td>
+          </tr>
+
+          <tr ng-if="ReportCtrl.loading">
+            <td colspan="4" style="text-align:center">
+              <loading-indicator></loading-indicator>
+            </td>
+          </tr>
+
+          <tr ng-repeat="distribution in ReportCtrl.distributions" ng-class="{ 'bg-danger' : distribution.canceled }">
+            <td>{{ distribution.date | date }}</td>
+            <td>{{ distribution.text }}</td>
+            <td>{{ distribution.label }}</td>
+            <td>{{ distribution.total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

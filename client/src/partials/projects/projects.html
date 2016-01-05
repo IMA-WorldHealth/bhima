@@ -1,0 +1,163 @@
+<header data-header>
+  {{ 'PROJECT.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PROJECT.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="new()">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROJECT.NEW' | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report visible-print">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{ enterprises.get(projects.data[0].enterprise_id).name }}</h4>
+      <h4>{{ "PROJECT.PRINT_TITLE" | translate }} <small> {{timestamp | date}}</small></h4>
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ 'COLUMNS.ID' | translate }}</th>
+            <th>{{ 'COLUMNS.NAME' | translate }}</th>
+            <th>{{ 'COLUMNS.ABBR' | translate }}</th>
+            <th>{{ 'COLUMNS.ENTERPRISE_ID' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat='project in projects.data'>
+            <td>{{ project.id }}</td>
+            <td>{{ project.name }}</td>
+            <td>{{ project.abbr }}</td>
+            <td>{{ project.enterprise_id }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<main class="hidden-print">
+  <div class="row">
+
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          {{ 'PROJECT.EXISTING' | translate }}
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{{ 'COLUMNS.ID' | translate }}</th>
+              <th>{{ 'COLUMNS.NAME' | translate }}</th>
+              <th>{{ 'COLUMNS.ABBR' | translate }}</th>
+              <th>{{ 'COLUMNS.ENTERPRISE_ID' | translate }}</th>
+              <th colspan="2">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="project in projects.data" ng-class="{'btn-primary' : editProject.id==project.id }">
+              <td>{{ project.id }}</td>
+              <td>{{ project.name }}</td>
+              <td>{{ project.abbr }}</td>
+              <td>{{ project.enterprise_id }}</td>
+              <td><a ng-click="edit(project)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a ng-click="delete(project)" disabled class="danger"><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-6" ng-switch="action">
+
+      <div ng-switch-default>
+        <div class="alert alert-info">
+          <h4>{{ 'PROJECT.TITLE' | translate }}</h4>
+          <p> {{ 'PROJECT.HELP_TXT_1' | translate }}</p>
+        </div>
+      </div>
+
+      <div ng-switch-when="new">
+        <form  novalidate name="new">
+          <fieldset>
+            <legend>{{ 'PROJECT.NEW' | translate }}</legend>
+
+            <div class="form-group">
+              <label>{{ 'COLUMNS.NAME' | translate }}</label>
+              <input class="form-bhima" ng-model="newProject.name" required>
+            </div>
+
+            <div class="form-group">
+              <label>{{ 'COLUMNS.ABBR' | translate }}</label>
+              <input class="form-bhima" ng-model="newProject.abbr" required>
+            </div>
+
+            <div class="form-group">
+              <label>{{ 'COLUMNS.ENTERPRISE' | translate }}</label>
+              <select class="form-bhima" ng-model="newProject.enterprise_id" ng-options="e.id as e.name for e in enterprises.data" required>
+                <option value="">{{ 'SELECT.ENTERPRISE' | translate }}</option>
+              </select>
+            </div>
+
+            <!-- zone de sante for snis -->
+            <div class="form-group">
+              <label>{{ 'COLUMNS.ZS' | translate }}</label>
+              <select class="form-bhima" ng-model="newProject.zs_id" ng-options="zone.id as fmtZone(zone) for zone in zs.data">
+                <option disabled="disabled" value="">-- {{ 'SELECT.ZS' | translate }} --</option>
+              </select>
+            </div>
+            <!-- end zone de sante for snis -->
+
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitNew()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.CLEAR' | translate }}" ng-click="cancelNew()">
+          </fieldset>
+        </form>
+      </div>
+
+      <div ng-switch-when="edit">
+        <form novalidate name="edit">
+          <fieldset>
+            <legend>{{ 'PROJECT.EDIT' | translate }}</legend>
+
+            <div class="form-group">
+              <label>{{ 'COLUMNS.NAME' | translate }}</label>
+              <input class="form-bhima" ng-model="editProject.name" required>
+            </div>
+
+            <div class="form-group">
+              <label>{{ 'COLUMNS.ABBR' | translate }}</label>
+              <input class="form-bhima" ng-model="editProject.abbr" required>
+            </div>
+
+            <div class="form-group">
+              <label>{{ 'COLUMNS.ENTERPRISE' | translate }}</label>
+              <select class="form-bhima" ng-model="editProject.enterprise_id" ng-options="e.id as e.name for e in enterprises.data" required>
+                <option value="">{{ 'SELECT.ENTERPRISE' | translate }}</option>
+              </select>
+            </div>
+
+            <!-- zone de sante for snis -->
+            <div class="form-group">
+              <label>{{ 'COLUMNS.ZS' | translate }}</label>
+              <select class="form-bhima" ng-model="editProject.zs_id" ng-options="zone.id as fmtZone(zone) for zone in zs.data">
+                <option disabled="disabled" value="">-- {{ 'SELECT.ZS' | translate }} --</option>
+              </select>
+            </div>
+            <!-- end zone de sante for snis -->
+
+            <input type="submit"  ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitEdit()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.CLEAR' | translate }}" ng-click="cancelEdit()">
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>

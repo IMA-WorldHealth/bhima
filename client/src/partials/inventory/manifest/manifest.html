@@ -1,0 +1,54 @@
+<header data-header>
+  {{ "INVENTORY.MANIFEST.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active"><a href="#/inventory">{{ "INVENTORY.MAIN.TITLE" | translate }}</a></li>
+      <li>{{ "INVENTORY.MANIFEST.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <button class="btn btn-sm btn-default pull-right" ng-click="print()">
+    <span class="glyphicon glyphicon-print"></span>
+    {{ "UTIL.PRINT" | translate }}
+  </button>
+</nav>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{ "INVENTORY.MANIFEST.TITLE" | translate }} <small> {{timestamp | date}}</small></h4>
+        <table class="reportTable">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.CODE" | translate }}</th>
+              <th>{{ "COLUMNS.TEXT" | translate }}</th>
+              <th>{{ "COLUMNS.PRICE" | translate }}</th>
+              <th>{{ "COLUMNS.UNIT" | translate }}</th>
+              <th>{{ "COLUMNS.WEIGHT" | translate }}</th>
+              <th>{{ "COLUMNS.TYPE" | translate }}</th>
+              <th>{{ "COLUMNS.CONSUMABLE" | translate }}</th>
+              <th>{{ "COLUMNS.GROUP" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='item in inventory.data | orderBy : "code"'>
+              <td>{{ item.code }}</td>
+              <td>{{ item.text }}</td>
+              <td>{{ item.price | currency:project.currency_id }}</td>
+              <td>{{ units.get(item.unit_id).text }}</td>
+              <td>{{ item.unit_weight }} kg</td>
+              <td>{{ types.get(item.type_id).text }}</td>
+              <td>
+                <span class="glyphicon" ng-class="{ 'glyphicon-ok' : !!item.consumable, 'glyphicon-remove' : !item.consumable }"></span>
+              </td>
+              <td>{{ item.name }}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>

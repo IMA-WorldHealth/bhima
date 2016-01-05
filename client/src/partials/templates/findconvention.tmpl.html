@@ -1,0 +1,37 @@
+<div id="findConvention" class="panel panel-default" ng-class="{'panel-success': findConvention.valid, 'panel-danger': findConvention.valid===false}">
+  <div class="panel-heading">
+    <div ng-switch="findConvention.submitSuccess">
+     <div ng-switch-when="false">
+       <span class="glyphicon glyphicon-search"></span> {{ "CFIND.TITLE" | translate }}
+     </div>
+     <div ng-switch-when="true">
+       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findConvention.debtor_group.name}}
+       <div class="pull-right">
+         <span ng-click="findConvention.refresh()" class="glyphicon glyphicon-repeat"></span>
+       </div>
+     </div>
+    </div>
+  </div>
+  <div class="panel-body find-collapse" ng-show="!findConvention.submitSuccess">
+    <div ng-switch on="findConvention.state">
+      <div ng-switch-when="name">
+        <div class="input-group">
+          <input
+          id="findSearch"
+          type="text"
+          ng-model="findConvention.selectedConvention"
+          typeahead="convention as convention.name for convention in conventionList | filter:$viewValue | limitTo:8"
+          placeholder="{{ 'CFIND.PLACEHOLDER' | translate }}"
+          typeahead-template-url="/partials/templates/debtorGroupListItem.tmpl.html"
+          class="form-bhima"
+          size="25">
+          <span class="input-group-btn">
+            <button id="submitSearch" ng-disabled="validateNameSearch(findConvention.selectedConvention)" ng-click="submitDebitorGroup(findConvention.selectedConvention)" class="btn btn-default">
+              {{ "FORM.SUBMIT" | translate }}
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,332 @@
+<header data-header>
+  {{ "DISTRIBUTION.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a tabindex="-1" href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+      <li class="active">{{ "STOCK.EXIT.KEY" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <!-- Section Header -->
+  <div
+    class="row"
+    ng-repeat-start="section in StockDistributionsCtrl.moduleDefinition">
+    <div
+      class="col-xs-12"
+      style="padding-bottom : 5px; margin-bottom: 5px;">
+      <div class="underline">
+        <span
+          class="label"
+          ng-class="
+            {'label-success' : StockDistributionsCtrl.session.index===$index,
+             'label-primary' : StockDistributionsCtrl.session.index<$index,
+             'label-default' : StockDistributionsCtrl.session.index>$index
+            }">
+          {{$index + 1}}</span>
+        <span ng-class="{'strike' : StockDistributionsCtrl.session.index>$index}">{{section.title}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Body -->
+  <ng-include 
+    ng-if="StockDistributionsCtrl.session.index >= $index"
+    ng-repeat-end
+    src="section.template">
+  </ng-include>
+</main>
+
+<footer>
+  <div class="pull-right">
+    <a
+      ng-disabled="!StockDistributionsCtrl.session.lotSelectionSuccess"
+      ng-click="StockDistributionsCtrl.submitConsumption()"
+      class="btn btn-default">
+      <span class="glyphicon glyphicon-floppy-open"></span>
+      {{ "DISTRIBUTION.SUBMIT" | translate }}
+      <span
+        class="glyphicon"
+        ng-class="{'glyphicon-ok-sign correct' : StockDistributionsCtrl.session.lotSelectionSuccess, 'glyphicon-remove-sign error' : StockDistributionsCtrl.session.lotSelectionFailure}"></span>
+    </a>
+  </div>
+</footer>
+
+<script type="text/ng-template" id="patientSearch.tmpl.html">
+  <div class="row">
+    <div class="col-xs-12">
+      <div find-patient on-search-complete="StockDistributionsCtrl.initialiseDistributionDetails(patient)" data-enable-refresh="false"></div>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="selectSale.tmpl.html">
+  <!-- Section complete -->
+  <div ng-if="StockDistributionsCtrl.session.index>$index">
+    <table class="table table-condensed table-bordered">
+      <thead>
+        <tr>
+          <th>{{"DISTRIBUTION.SALE" | translate}}</th>
+          <th>{{"DISTRIBUTION.DATE" | translate}}</th>
+          <th>{{"DISTRIBUTION.SALE_STATUS" | translate}}</th>
+          <th>{{"DISTRIBUTION.SALE_BALANCE" | translate}}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td width="10%"><b>'{{StockDistributionsCtrl.session.sale.abbr}} {{StockDistributionsCtrl.session.sale.reference}}'</b></td>
+          <td width="20%">{{StockDistributionsCtrl.session.sale.trans_date | date}}</td>
+          <td width="50%">
+            <div>
+              <div ng-if="StockDistributionsCtrl.session.sale.balance === StockDistributionsCtrl.session.sale.debit && !StockDistributionsCtrl.session.patient.is_convention">
+                <span
+                class="glyphicon"
+                ng-class="{
+                  'glyphicon-remove-sign error' : true
+                }"
+                ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
+              </div>
+
+              <div ng-if="StockDistributionsCtrl.session.sale.balance===StockDistributionsCtrl.session.sale.debit && StockDistributionsCtrl.session.patient.is_convention">
+                <span
+                class="glyphicon"
+                ng-class="{
+                  'glyphicon-ok-sign correct' : true
+                }"
+                ></span> {{ "DISTRIBUTION.INVOICE_CONVENTION" | translate }}
+              </div>
+
+              <div ng-if="StockDistributionsCtrl.session.sale.balance===0">
+                <span
+                class="glyphicon"
+                ng-class="{
+                  'glyphicon-ok-sign correct' : true
+                }"
+                ></span> {{ "DISTRIBUTION.INVOICE_PAID" | translate }}
+              </div>
+
+              <div ng-if="StockDistributionsCtrl.session.sale.balance !== 0 && StockDistributionsCtrl.session.sale.balance < StockDistributionsCtrl.session.sale.debit">
+                <span
+                class="glyphicon"
+                ng-class="{
+                  'glyphicon-minus-sign warn' : true
+                }"
+                ></span> {{ "DISTRIBUTION.INVOICE_PARTIALLY_PAID" | translate }}
+              </div>
+            </div>
+          </td>
+          <td width="20%">{{StockDistributionsCtrl.session.sale.balance | currency}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Section active -->
+  <div ng-if="StockDistributionsCtrl.session.index===$index">
+
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="alert alert-info">
+          <span class="glyphicon glyphicon-info-sign"></span>
+          {{(StockDistributionsCtrl.ledger.data.length ? 'DISTRIBUTION.SHOW_ALL_SALES' : 'DISTRIBUTION.NO_SALE_FOUND') | translate}}
+           <b>{{vm.session.patient.name}}
+          </b>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        <div ng-if="StockDistributionsCtrl.ledger.data.length" class="panel panel-default">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list"></span> {{"DISTRIBUTION.AVAILABLE" | translate}}
+          </div>
+          <div class="panel-body">
+            <div class="panel panel-default" ng-repeat="item in StockDistributionsCtrl.ledger.data | orderBy:['consumed', '-trans_date']">
+              <div class="panel-body">
+              
+                <div ng-if="!item.canceled && !item.reversing_stock" class="pull-right">
+                  <span
+                    class="glyphicon"
+                    ng-class="{
+                      'glyphicon-ok-sign correct' : !item.consumed,
+                      'glyphicon-minus-sign warn' : item.consumed}">
+                    </span>
+                  <span>{{(item.consumed ? 'DISTRIBUTION.CONSUMED' : 'DISTRIBUTION.NOT_CONSUMED') | translate}}</span>
+                </div>
+
+                <div ng-if="item.canceled && !item.reversing_stock" class="pull-right">
+                  <span
+                    class="glyphicon"
+                    ng-class="{
+                      'glyphicon-ok-sign correct' : !item.canceled,
+                      'glyphicon-warning-sign error' : item.canceled}">
+                   </span>
+                  <span>{{'DISTRIBUTION.CANCELED' | translate}}</span>
+                </div>
+
+                <div ng-if="item.reversing_stock" class="pull-right">
+                  <span
+                    class="glyphicon"
+                    ng-class="{
+                      'glyphicon-ok-sign correct' : !item.reversing_stock,
+                      'glyphicon-share error' : item.reversing_stock}">
+                   </span>
+                  <span>{{'DISTRIBUTION.REVERSE_CONSUMPTION' | translate}} </span>
+                </div>
+
+                <table class="table table-condensed table-bordered">
+                  <thead>
+                    <tr>
+                      <th>{{"DISTRIBUTION.SALE" | translate}}</th>
+                      <th>{{"DISTRIBUTION.DATE" | translate}}</th>
+                      <th>{{"DISTRIBUTION.SALE_STATUS" | translate}}</th>
+                      <th>{{"DISTRIBUTION.SALE_BALANCE" | translate}}</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td width="10%"><b>'{{item.abbr}} {{item.reference}}'</b></td>
+                      <td width="20%">{{item.trans_date | date}}</td>
+                      <td width="50%">
+                        <div>
+                          <div ng-if="item.balance === item.debit && !StockDistributionsCtrl.session.patient.is_convention">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-remove-sign error' : true
+                            }"
+                            ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
+                          </div>
+
+                          <div ng-if="item.balance === item.debit && StockDistributionsCtrl.session.patient.is_convention">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-ok-sign correct' : true
+                            }"
+                            ></span> {{ "DISTRIBUTION.INVOICE_CONVENTION" | translate }}
+                          </div>
+
+                          <div ng-if="item.balance===0 && !item.canceled">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-ok-sign correct' : true
+                            }"
+                            ></span> {{ "DISTRIBUTION.INVOICE_PAID" | translate }}
+                          </div>
+
+                          <div ng-if="item.balance===0 && item.canceled">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-warning-sign error' : true
+                            }"
+                            ></span> {{ "DISTRIBUTION.CANCELED" | translate }}
+                          </div>
+
+                          <div ng-if="item.balance !== 0 && item.balance <item.debit">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-minus-sign warn' : true
+                            }"
+                            ></span> {{ "DISTRIBUTION.INVOICE_PARTIALLY_PAID" | translate }}
+                          </div>
+                        </div>
+                      </td>
+                      <td width="20%">{{item.balance | currency}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div ng-if="!item.consumed && !item.canceled">
+                  <button
+                    ng-click="StockDistributionsCtrl.selectSale(item)"
+                    class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span>{{ "DISTRIBUTION.SELECT" | translate }}</button>
+                  <a ng-href="#/invoice/sale/{{item.inv_po_id}}" class="btn btn-default btn-sm">{{ "DISTRIBUTION.VIEW_SALE" | translate }}</a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="allocateLot.tmpl.html">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <span class="glyphicon glyphicon-list"></span> {{"DISTRIBUTION.ASSIGN" | translate}}
+    </div>
+
+    <div class="panel-body">
+      <table
+        class="table table-bordered"
+        ng-repeat="inventoryItem in StockDistributionsCtrl.session.sale.details | orderBy:'-consumable'">
+        <thead>
+        </thead>
+
+        <tbody>
+          <tr
+            ng-class="{'invalid' : !inventoryItem.consumable}"
+            >
+            <td colspan="2">
+              <span class="glyphicon glyphicon-tag"></span>
+              <span
+                ng-if="inventoryItem.consumable"><b>{{inventoryItem.quantity}} x </b></span>
+              <span>{{inventoryItem.text}} </span>
+              <span ng-if="!inventoryItem.consumable">({{"DISTRIBUTION.NOT_CONSUMABLE" | translate}})</span>
+            </td>
+          </tr>
+
+          <tr ng-if="inventoryItem.stockStatus">
+            <td colspan="2">
+              <span class="glyphicon {{inventoryItem.stockStatus.icon}}"></span> {{inventoryItem.stockStatus.alert}}
+            </td>
+          </tr>
+
+          <tr
+            ng-if="inventoryItem.recomendedLots">
+            <td><span class="glyphicon glyphicon-ok-sign correct"></span> <b>{{"DISTRIBUTION.RECOMANDED" | translate}}</b></td>
+            <td><b>Quantity <small>({{"DISTRIBUTION.SELECT_FROM" | translate}})</small></b></td>
+          </tr>
+
+          <tr
+            ng-if="inventoryItem.recomendedLots"
+            ng-repeat="recomended in inventoryItem.recomendedLots">
+            <td>
+              <table class="reportTable">
+                <tbody>
+                  <tr>
+                    <td width="30%">{{"DISTRIBUTION.LOT_NUMBER" | translate}}</td><td><b>{{recomended.details.lot_number}}</b></td>
+                  </tr>
+                  <tr>
+                    <td width="30%">{{"DISTRIBUTION.REMAINING_QUANTITY" | translate}}</td><td>{{recomended.details.quantity}}</td>
+                  </tr>
+                  <tr>
+                    <td width="30%">{{"DISTRIBUTION.EXP_DATE" | translate}}</td><td>{{recomended.details.expiration_date | date}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <td><b>{{recomended.quantity}}</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="newfile.html">
+  <p>Included</p>
+</script>

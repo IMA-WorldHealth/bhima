@@ -1,0 +1,25 @@
+#canvas-snis h2 { background-color: #efefef; border: 1px solid #ccc; padding: 5px 10px; }
+#canvas-snis h3 { padding-left: 10px; }
+#canvas-snis table td input[type="text"] { width: 6em; }
+#canvas-snis #identification .input-group-addon { min-width: 10em; }
+#canvas-snis #hospitalisation .cas-2 input[type="text"] { width: 6em; }
+#canvas-snis #hospitalisation table thead td { text-align: center; }
+#canvas-snis #hospitalisation table thead .age, thead { font-weight: bold; background-color: #efefef;text-align: center; }
+#canvas-snis #hospitalisation table thead .age { border-bottom: 1px solid #999; font-style: italic; }
+
+table thead .age { border-bottom: 1px solid #999; font-style: italic; }
+table thead .age td { border-right: 1px solid #999; }
+
+.no-padding { padding: 0px !important; }
+.text-nota { text-align: center; font-style: italic; }
+
+.cellmini input[type="text"] { width: 8em; }
+.cellmini-5em input[type="text"] { width: 5em; }
+.cellmini-6em input[type="text"] { width: 6em; }
+
+.nav-sm { font-size: 1em; }
+.nav-sm li { padding: 0px !important; margin: 2px !important; } 
+.nav-sm li a { padding: 3px !important; margin: 0px !important; }
+
+.separate-row tr { display: block; margin-bottom: 5em;font-style: italic;text-align: right; }
+.separate-row-2m tr { display: block; margin-bottom: 2em;font-style: italic;text-align: right; }

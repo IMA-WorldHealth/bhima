@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <h3 class="modal-title">Update Patient Groups</h3>
+</div>
+
+<div class="modal-body">
+
+  <p class="text-info">
+  Assign the patient to patient groups from the options below. Press 'confirm' 
+  to permenantly update the patient's subscribed groups.
+  </p>
+
+  <p class="text-warning" ng-if="UpdatePatientGroupsCtrl.patientGroups.length === 0">
+  No patient groups have been found. Patient groups must be registered with the system 
+  before they can be assigned to patients
+  </p>
+
+  <form name="groupForm">
+    <div class="form-group has-feedback">
+    
+      <label class="control-label">Patient Groups</label>
+      
+      <div 
+        class="checkbox"
+        ng-repeat="group in UpdatePatientGroupsCtrl.patientGroups | orderBy:'name'">
+        <label>
+        <input 
+          type="checkbox" 
+          name="subscribedGroups"
+          ng-model="UpdatePatientGroupsCtrl.subscribedGroups[group.uuid]">
+        {{group.name}}
+        </label>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button 
+    class="btn btn-default"
+    ng-click="UpdatePatientGroupsCtrl.close()">Cancel</button>
+  <button 
+    class="btn btn-default"
+    ng-click="UpdatePatientGroupsCtrl.confirmGroups()"
+    ng-disabled="UpdatePatientGroupsCtrl.patientGroups.length === 0">
+      Confirm
+    </button>
+</div>

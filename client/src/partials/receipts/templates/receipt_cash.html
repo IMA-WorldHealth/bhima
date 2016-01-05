@@ -1,0 +1,106 @@
+<!-- Cash receipt template -->
+<div ng-controller="ReceiptCashController as ReceiptCtrl">
+
+  <header>
+    <div class="pull-right">
+      <select class="form-bhima"
+        ng-change="ReceiptCtrl.updateCurrency(ReceiptCtrl.model.selectedCurrency.id)"
+        ng-model="ReceiptCtrl.model.selectedCurrency"
+        ng-options="currency.symbol for currency in ReceiptCtrl.model.currency.data">
+      </select>
+    </div>
+  </header>
+
+<div class="row customer-details">
+  <div class="col-xs-12">
+    <h4 class="invoice-header">{{'INVOICE.CASH_RECEIPT' | translate}}</h4>
+    <small class="pull-right" style="color: grey; font-size: 8px">{{ ReceiptCtrl.model.cash.cashTransaction.cash_uuid }}</small>
+  </div>
+</div>
+
+<div class="row customer-details">
+  <div class="col-xs-1">
+    <b>{{'INVOICE.TO' | translate}}</b>
+  </div>
+  <div class="col-xs-5">
+    {{ReceiptCtrl.model.cash.recipient.last_name}} {{ReceiptCtrl.model.cash.recipient.middle_name}} {{ReceiptCtrl.model.cash.recipient.first_name}}<br>
+
+    <i>{{'INVOICE.CLIENT_ID' | translate}}</i> : <b>{{ReceiptCtrl.model.cash.recipient.abbr}}{{ReceiptCtrl.model.cash.recipient.reference}}</b><br>
+
+    <p>
+      <i>{{ReceiptCtrl.model.cash.recipient.location.village}}</i>
+      <br>
+      <i>{{ReceiptCtrl.model.cash.recipient.location.sector}}</i>
+      <br>
+      <i>{{ReceiptCtrl.model.cash.recipient.location.province}}</i>
+    </p>
+  </div>
+  <div class="col-xs-3 text-right">
+    <p>
+      <b># {{'INVOICE.TRANS_ID' | translate}}</b><br>
+      <b class="big-text">{{ ReceiptCtrl.session.journalTransaction }}</b>
+    </p>
+
+    <b>{{'INVOICE.DATE' | translate}}</b><br>
+    {{ ReceiptCtrl.model.cash.cashTransaction.date | date}}
+  </div>
+  <div class="col-xs-3 text-right">
+    <p>
+      <b>{{'INVOICE.CASH_REF' | translate}}</b><br>
+      <b class="big-text">{{ ReceiptCtrl.model.cash.recipient.abbr + ReceiptCtrl.model.cash.cashTransaction.reference }}</b>
+    </p>
+
+    <p>
+      <b>{{'INVOICE.SALE_ID' | translate}}</b><br>
+      <b class="big-text">{{ ReceiptCtrl.model.cash.recipient.abbr + ReceiptCtrl.model.cash.cashTransaction.saleReference }}</b>
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <table class="invoiceTable">
+      <thead>
+        <tr>
+          <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+          <th>{{'INVOICE.AMOUNT' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody class="items">
+        <tr ng-repeat-start="invoice in ReceiptCtrl.model.cash.allData.cash.data">
+          <td colspan="2"><b>{{'INVOICE.INVOICE_ID' | translate}} {{ ReceiptCtrl.project.abbr + invoice.reference }}</b></td>
+        </tr>
+        <tr ng-repeat-end
+          ng-repeat="item in ReceiptCtrl.model.cash.allData['invoiceItem'].data | orderBy: 'code' | filter:{ sale_uuid: invoice.invoice_uuid}">
+          <td>{{item.text}}</td>
+          <td>{{item.localeCost | currency:ReceiptCtrl.session.currency_id }}</td>
+        </tr>
+      </tbody>
+      <tbody class="totals">
+      <tr>
+        <td class="no-border">{{'INVOICE.TOTAL' | translate }}</td>
+        <td>{{ReceiptCtrl.model.cash.invoice.localeCost | currency:ReceiptCtrl.session.currency_id }}</td>
+      </tr>
+      <tr>
+        <td class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate }}</td>
+        <td>{{ ReceiptCtrl.session.cashTransactionCost  | currency:ReceiptCtrl.session.currency_id }}</td>
+      </tr>
+      <tr>
+        <td class="no-border">{{'INVOICE.BALANCE_DUE' | translate }}</td>
+        <td>{{ ReceiptCtrl.model.cash.invoice.localeBalance | currency:ReceiptCtrl.session.currency_id }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box-wide">
+    <label>{{ "INVOICE.SIGN_HEADER_AUXI" | translate }}</label> <label style="float: right;">{{ "INVOICE.SIGN_CLIENT" | translate }}</label>
+    <br>
+    <div class="signature-line"></div>
+  </div>
+</div>
+<!-- End cash template

@@ -1,0 +1,72 @@
+<div class="reportBody">
+  <div class="reportFrame" style="overflow: auto;" ng-show="PrintCtrl.hasData">
+    <h3 style="text-align: center;">{{ "TRIAL_BALANCE.TITLE" | translate }}<small style="float:right;"> {{ PrintCtrl.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}</small></h3>
+
+    <div class="summary">
+      <h5>{{ "TRIAL_BALANCE.SUMMARY" | translate }}</h5>
+      <label style="padding: 0 5px;">
+        <span class="glyphicon glyphicon-calendar"></span> {{ PrintCtrl.metadata.mindate | date:'dd/MM/yyyy' }} - {{ PrintCtrl.metadata.maxdate | date:'dd/MM/yyyy' }}
+      </label>
+
+      <label style="padding: 0 5px;">
+        <span class="glyphicon glyphicon-tasks"></span> {{ PrintCtrl.metadata.transactions}} {{ "TRIAL_BALANCE.TRANSACTIONS" | translate }}
+      </label>
+
+      <label style="padding: 0 5px;">
+        <span class="glyphicon glyphicon-list"></span> {{ PrintCtrl.metadata.rows }} {{ "TRIAL_BALANCE.TRANSACTIONS" | translate }}
+      </label>
+
+      <label style="padding: 0 5px;" ng-if="PrintCtrl.hasExceptions" ng-class="{ 'text-warning' : PrintCtrl.hasExceptions, 'text-danger' : PrintCtrl.hasErrors }">
+        <span class="glyphicon glyphicon-exclamation-sign"></span> {{ PrintCtrl.exceptions.length }} {{ "TRIAL_BALANCE.EXCEPTIONS" | translate }}
+      </label>
+    </div>
+
+    <table class="reportTable">
+      <thead style="font-size: 14px;">
+        <tr>
+          <th>{{ 'TRIAL_BALANCE.ACCOUNT' | translate }}</th>
+          <th>{{ 'TRIAL_BALANCE.BEFORE' | translate }}</th>
+          <th>{{ 'TRIAL_BALANCE.DEBIT' | translate }}</th>
+          <th>{{ 'TRIAL_BALANCE.CREDIT' | translate }}</th>
+          <th>{{ 'TRIAL_BALANCE.AFTER' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="account in PrintCtrl.balances | orderBy:'account_number'">
+          <td><b>{{ account.account_number }}</b></td>
+          <td style="text-align:right;padding-right:5px;">{{ account.balance | currency:2 }}</td>
+          <td style="text-align:right;padding-right:5px;">{{ account.debit | currency:2 }}</td>
+          <td style="text-align:right;padding-right:5px;">{{ account.credit | currency:2 }}</td>
+          <td style="text-align:right;padding-right:5px;">{{ (account.balance + (account.credit - account.debit)) | currency:2 }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>{{ 'UTIL.TOTAL' | translate }}</th>
+          <th style="text-align:right;padding-right:5px;">{{ PrintCtrl.totals.before | currency:2 }}</th>
+          <th style="text-align:right;padding-right:5px;">{{ PrintCtrl.totals.debit | currency:2 }}</th>
+          <th style="text-align:right;padding-right:5px;">{{ PrintCtrl.totals.credit | currency:2 }}</th>
+          <th style="text-align:right;padding-right:5px;">{{ PrintCtrl.totals.after | currency:2 }}</th>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="signatures">
+      <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+      <div class="signature-box">
+        <label>{{ "SIGNATURES.CHIEF_ACCOUNTANT" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+        <div class="signature-line"></div>
+      </div>
+
+      <div class="signature-box">
+        <label>{{ "SIGNATURES.FINANCE_OFFICER" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+        <div class="signature-line"></div>
+      </div>
+
+    </div>
+  </div>
+  <div class="reportFrame" style="overflow: auto;" ng-hide="PrintCtrl.hasData">
+    <div class="alert alert-danger">{{ "TRIAL_BALANCE.NO_DATA" | translate }}</div>
+  </div>
+</div>

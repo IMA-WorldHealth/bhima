@@ -1,0 +1,75 @@
+<header data-header>
+  {{"PURCHASE_RECORDS.TITLE" | translate}}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/purchase_menu">{{ "PURCHASE_MENU.TITLE" | translate }}</a></li>
+      <li class="active">{{ "PURCHASE_RECORDS.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
+  <div class="col-xs-4 hack-left">
+    <input type="search" ng-model="purchase_filter.filter" class="form-bhima" placeholder="Filter Purchase Orders">
+  </div>
+
+  <div class="pull-right">
+    <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-search"></span> {{"PURCHASE_RECORDS.ADVANCE_SEARCH" | translate}}</a>
+  </div>
+</nav>
+
+<main>
+  <div class="row">
+    <div class="col-xs-12">
+
+      <div class="invoice-table">
+        <table class="table table-bordered" ng-table>
+
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.REFERENCE" | translate }}</th>
+              <th>{{ "COLUMNS.DATE" | translate }}</th>
+              <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+              <th>{{ "COLUMNS.DISCOUNT" | translate }}</th>
+              <th>{{ "COLUMNS.CREDITOR" | translate }}</th>
+              <th>{{ "COLUMNS.PURCHASER" | translate }} / {{ "COLUMNS.SUPPLIER" | translate }}</th>
+              <th>{{ "COLUMNS.EMPLOYER" | translate }}</th>
+              <th>{{ "COLUMNS.PAID" | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody ng-if="purchase_model.length">
+            <tr ng-repeat="purchase in purchase_model | filter: purchase_filter.filter">
+              <td>{{purchase.reference}}</td>
+              <td>{{purchase.purchase_date | date : 'EEEE, dd/MM/yyyy'}}</td>
+              <td>{{purchase.cost | currency}}</td>
+              <td>{{purchase.discount}}</td>
+              <td>{{purchase.text}}</td>
+              <td>{{purchase.name}}</td>
+              <td>{{purchase.first}} {{purchase.last}}</td>
+              <!--Multiple ng-shows - mutually exclusive but not good practice-->
+              <td>
+                <span ng-show="purchase.paid==1" class="glyphicon glyphicon-hand-right"></span>
+                <span ng-show="purchase.paid==0" class="glyphicon glyphicon-hand-down"></span>
+              </td>
+              <td><a ng-href="#/invoice/purchase/{{purchase.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PURCHASE_RECORDS.VIEW_PURCHASE_DETAIL" | translate}}</a></td>
+            </tr>
+          </tbody>
+
+          <tbody ng-if="!purchase_model.length">
+            <tr>
+              <td colspan="9" class="alert alert-info">
+                {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. 
+                {{"PURCHASE_RECORDS.REFERENCE" | translate}}
+                {{"PURCHASE_RECORDS.PURCHASE_ORDER" | translate}} {{"PURCHASE_RECORDS.TO_REQUEST" | translate}}.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>

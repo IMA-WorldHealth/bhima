@@ -1,0 +1,206 @@
+<header data-header>
+  {{ "STOCK.MOVEMENT.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <!-- <span class="label label&#45;success square">{{ "UTIL.NAVIGATION" | translate }}</span> -->
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+      <li class="active">{{ "STOCK.MOVEMENT.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right" style="margin-top: 6px;">
+    {{session.depot.text }} <b>{{session.depot.reference ? '[' + session.depot.reference + ']' : ''}}</b>
+  </div>
+</nav>
+
+<main>
+  <div class="row" ng-if="session.invalid">
+    <div class="col-xs-12">
+      <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-remove-sign"></span>{{ "STOCK.MOVEMENT.INVALID_SESSION" | translate }}
+      </div>
+    </div>
+  </div>
+
+  <div class="row" ng-if="session.warn">
+    <div class="col-xs-12">
+      <div class="alert alert-info">
+        <span class="glyphicon glyphicon-info-sign"></span> {{ "STOCK.MOVEMENT.ONLY_ONE_DEPOT" | translate }}
+      </div>
+    </div>
+  </div>
+
+  <div class="row" ng-if="session.configured">
+
+    <div class="col-xs-12">
+
+      <!-- Warnings -->
+      <!-- One || Zero depos registered -->
+
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-transfer"></span> {{ "STOCK.MOVEMENT.FORM" | translate }}
+          <span class='pull-right'>{{ session.doc.document_id }} </span>
+        </div>
+
+        <div class="panel-body">
+          <!-- Main content area -->
+
+          <div class="row">
+            <div class="col-xs-5">
+              <div class="panel square"
+                   ng-class=
+                   "{
+                    'panel-success' : session.from,
+                    'panel-warning' : !session.from
+                   }"
+                >
+                <div class="panel-heading square">
+                  {{ "STOCK.MOVEMENT.DEPOT_FROM" | translate }}
+                </div>
+
+                <!-- <div class="panel&#45;body"> -->
+                  <select
+                    class="form-bhima"
+                    ng-model="session.from"
+                    ng-options="depot as depot.text for depot in depotMap.from.model.data"
+                    >
+                    <option value="" disabled>--{{ "SELECT.DEPOT" | translate }}--</option>
+                  </select>
+                <!-- </div> -->
+              </div>
+            </div>
+
+            <div class="col-xs-2">
+              <div style="text-align: center; margin-top: 20px;">
+                <span style="font-size: 30px;" class="glyphicon glyphicon-arrow-right"></span>
+              </div>
+            </div>
+
+            <div class="col-xs-5">
+              <div class="panel square"
+                ng-class=
+                "{
+                  'panel-success' : session.to,
+                  'panel-warning' : !session.to
+                }"
+                >
+                <div class="panel-heading square">
+                  {{ "STOCK.MOVEMENT.DEPOT_TO" | translate }}
+                </div>
+                <!-- <div class="panel&#45;body"> -->
+                  <select
+                    class="form-bhima"
+                    ng-model="session.to"
+                    ng-options="depot as depot.text for depot in depotMap.to.model.data"
+                    >
+                    <option value="">--{{ "SELECT.DEPOT" | translate }}--</option>
+                  </select>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="panel panel-default square">
+                <div class="panel-heading">
+                  <span class="glyphicon glyphicon-list-alt"></span> {{ "STOCK.MOVEMENT.INVENTORY" | translate }}
+                </div>
+
+                <div ng-if="session.from && session.to">
+                  <table class="table table-bordered table-condensed">
+                    <thead>
+                      <tr>
+                        <th>{{ "COLUMNS.LOT_DETAILS" | translate }}</th>
+                        <!-- <th>{{ "COLUMNS.LOT_DETAILS" | translate }}</th> -->
+                        <th>{{ "COLUMNS.TRANSFER_QUANTITY" | translate }}</th>
+                        <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+                    </thead>
+                    <tbody>
+                      <tr ng-if="row.error" ng-repeat-start="row in session.rows"
+                        >
+                        <td colspan="4">
+                          <div class="alert alert-danger" style="margin-bottom: 0">
+                            <span class="glyphicon glyphicon-exclamation-sign"></span> <b>[Lot {{ row.lot.lot_number }}] ({{session.from.text }})</b>{{ "STOCK.MOVEMENT.INVALID_TRANSFERT_QTE" | translate }} (max : {{ row.lot.quantity}})
+                          </div>
+                        </td>
+                      </tr>
+                      <tr ng-repeat-end>
+                        <td width="55%">
+                          <div ng-if="!row.lot">
+                            <select
+                              class="form-bhima"
+                              ng-model="row.lot"
+                              ng-change="stockSelected(row)"
+                              ng-options="lot as (lot.label + ' (' + lot.lot_number + ')') for lot in lots.data"
+                              >
+                              <option value="">-- {{ "STOCK.MOVEMENT.SELECT_LOT" | translate }} {{ session.from.text }} --</option>
+                            </select>
+
+                          </div>
+                          <div ng-if="row.lot">
+                            <span class="glyphicon glyphicon-ok-circle correct"></span> <b>Lot {{ row.lot.lot_number }} ({{session.from.text }})</b>
+                            <br>
+
+                            <table class="reportTable">
+                              <tbody>
+                                <tr>
+                                  <td width="30%">{{ "COLUMNS.ITEM" | translate }}</td><td>{{ row.lot.label }}</td>
+                                </tr>
+                                <tr>
+                                  <td width="30%"><b>{{ "COLUMNS.QUANTITY" | translate }}</b></td><td><b>{{ row.lot.quantity}}</b></td>
+                                </tr>
+                                <tr>
+                                  <td width="30%">{{ "COLUMNS.EXPIRATION_DATE" | translate }}</td><td>{{ row.lot.expiration_date | date }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                        <td width="10%">
+                          <div class="input-group" >
+                            <span class="input-group-addon">
+                              <span
+                                ng-class=
+                                "{
+                                  'glyphicon-remove-circle error' : !row.validQuantity,
+                                  'glyphicon-ok-circle correct' : row.validQuantity
+                                }"
+                                class="glyphicon"></span>
+                            </span>
+                            <input ng-disabled="!row.lot" class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
+                          </div>
+                        </td>
+                        <td width="5%"><a class="danger action" ng-click="removeRow($index, row)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="4" style="text-align: right;"><a ng-click="addRow()" class="action"><span class="glyphicon glyphicon-plus"></span></a></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- End main content panel body -->
+      </div> <!-- End main content panel -->
+
+    </div> <!-- End full width column -->
+  </div> <!-- End row -->
+</main>
+
+<footer>
+  <div class="pull-right">
+    <button class="btn btn-sm btn-success" ng-click="submit()" ng-disabled="!session.valid">
+      {{ "FORM.SUBMIT" | translate }}
+    </button>
+  </div>
+</footer>

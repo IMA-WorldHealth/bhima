@@ -1,0 +1,33 @@
+<header data-header>
+  {{ "DAILY_CONSUMPTION.TITLE" | translate }}:<small> {{ session.DateFrom | date }} - {{ session.DateTo | date }}</small>
+</header>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame">
+       <h4 class="visible-print">{{ "DAILY_CONSUMPTION.TITLE" | translate }} <small> {{ session.DateFrom | date }} - {{ session.DateTo | date }}</small></h4>
+       <h4 class="visible-print"><br>{{ 'DAILY_CONSUMPTION.ITEMS' | translate }} : {{ drugs.data[0].text | uppercase }} </h4>
+        <table id="patientTable" class="reportTable">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.NR" | translate }}</th>
+              <th>{{ "COLUMNS.DATE" | translate }}</th>
+              <th>{{ "COLUMNS.QUANTITY" | translate }} {{ "COLUMNS.TOTAL" | translate }} {{ itemInConsumption }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="item in itemInConsumptions | orderBy:'text'">
+              <td>{{ $index + 1 }}</td>
+              <td>{{ item.date | date}}</td>
+              <td>{{ item.quantity}}</td>
+            </tr>
+            <tr ng-if="!itemInConsumptions.length">
+              <td colspan="4">{{ "DAILY_CONSUMPTION.NO_CONSUMPTION" | translate }}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+

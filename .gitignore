@@ -1,0 +1,39 @@
+# ignore editor-specific working files
+*.swp,*.swo,*.swn,.idea/
+
+# ignore assigned tasks
+\.tasks
+
+# ignore npm modules
+node_modules/
+.npm-debug.log
+
+# ignore bower
+bower_components
+client/vendor/
+
+# ignore gulp build
+client/dest/
+/*client/js/controllers/*/
+/*client/src/js/controllers/*/
+utilities/migrate/*
+bin/*
+
+# ignore log files
+*.log
+symmetric/*
+
+# ignore express-session
+sessions/*
+
+# ignore sensative plugin data
+plugins/mail/addresses/*
+
+# ignore PDF reports
+/server/controllers/reports_proposed/out/
+
+# ignore all gzipped files
+*.gz
+
+# ignore upload folder
+client/src/upload/

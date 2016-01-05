@@ -1,0 +1,126 @@
+<header data-header>
+  {{ 'ASSIGNING.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
+      <li><a href="#/cost_center">{{ "ASSIGNING.PARENT" | translate }}</a></li>
+      <li class="active">{{ "ASSIGNING.TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main class="extend margin-top-10">
+
+  <div class="panel panel-default" ng-if="action!='suivant'">
+    <div class="panel-heading">{{ 'ASSIGNING.CHOOSE' | translate }}</div>
+    <form class="panel-body">
+      <select class="form-bhima" ng-model="configuration.aux_cost_center" ng-change="performChange()" ng-options="cc as cc.text for cc in model.aux_cost_centers.data  | orderBy:'text'">
+        <option value="" disabled>-- {{ 'SELECT.COST_CENTER' | translate }} --</option>
+      </select>
+    </form>
+  </div>
+
+  <div ng-switch="action">
+    <div ng-switch-default class="row">
+      <div class="col-xs-6">
+        <div class="panel panel-default">
+          <div class="panel-heading clearfix">
+            <span>{{ 'ASSIGNING.INFO_COST_CENTER' | translate }} {{ selected.text }}</span>
+          </div>
+          <div class="panel-body">
+            <div ng-if="selected_aux_cost_center">
+              <div class="form-group">
+                <label>{{ "ASSIGNING.LABEL_CC" | translate }}</label>
+                <p class="form-control-static">{{ selected_aux_cost_center.text }}</p>
+              </div>
+
+              <div class="form-group">
+                <label>{{ "ASSIGNING.TYPE_CC" | translate }}</label>
+                <p class="form-control-static">{{ 'ASSIGNING.AUX_CC' | translate }}</p>
+              </div>
+
+              <div class="form-group">
+                <label>{{ "ASSIGNING.NOTE" | translate }}</label>
+                <p class="form-control-static">{{ selected_aux_cost_center.note }}</p>
+              </div>
+            </div>
+            <div ng-if="!selected_aux_cost_center" class="alert alert-warning">
+              {{ 'ASSIGNING.NO_CHOOSEN' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="col-xs-6">
+      <div class="panel panel-primary" style="max-height:500px; overflow:auto;">
+        <div class="panel-heading clearfix">
+          <span>
+            {{ 'ASSIGNING.ASSOCIATED_TO' | translate }} <b>{{ selected_aux_cost_center.text }}<span ng-if="!selected_aux_cost_center">{{ 'ASSIGNING.PLEASE_SELECT' | translate }}</span></b>
+          </span>
+          <span class="pull-right">
+            <button ng-disabled="!isForwardable()" class="btn btn-default" type="submit" ng-click="suivant()"> {{ 'ASSIGNING.NEXT' | translate }}</button>
+          </span>
+        </div>
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th><input type="checkbox" ng-model="cc.all" ng-change="checkAll()"/></th>
+              <th>{{ 'ASSIGNING.PRI_CENTERS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="pri_cost_center in model.pri_cost_centers.data | orderBy:'text'">
+              <td><input type="checkbox" ng-model="pri_cost_center.checked"/></td>
+              <td>{{ pri_cost_center.text }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div ng-switch-when="suivant">
+    <div class="panel panel-primary" style="max-height:600px; overflow:auto;">
+      <div class="panel-heading clearfix">
+        <span>
+          {{ 'ASSIGNING.AUX_CENTER' | translate }} : <b>{{ selected_aux_cost_center.text }}</b>
+          {{ 'ASSIGNING.COST' | translate }} : <b>{{ selected_aux_cost_center.cost | currency}}</b>
+        </span>
+
+        <span class="pull-right">
+          <button type="submit" ng-click="apply()" class="btn btn-default">Apply</button>
+        </span>
+      </div>
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <tr>
+            <th>{{ 'ASSIGNING.PRI_CENTERS' | translate }}</th>
+            <th>{{ 'ASSIGNING.INITIAL_COST' | translate }}</th>
+            <th>{{ 'ASSIGNING.COEFF' | translate }}</th>
+            <th>{{ 'ASSIGNING.AL_COST' | translate }}</th>
+            <th>{{ 'ASSIGNING.TOTAL' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="pcs in model.selected_pri_cost_centers track by pcs.id">
+            <td>{{ pcs.text }}</td>
+            <td class="text-right">{{ pcs.initial_cost | currency:enterprise.currency_id }}</td>
+            <td><input type="number" ng-model="pcs.criteriaValue" ng-change="calculate()" class="form-invoice"></td>
+            <td class="text-right">{{ pcs.allocatedCost | currency:enterprise.currency_id }}</td>
+            <td class="text-right">{{ pcs.totalCost | currency:enterprise.currency_id }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>{{ 'ASSIGNING.TOTALS' | translate }}</th>
+            <th colspan="3" class="text-right">{{ getTotalAllocatedCost() | currency:enterprise.currency_id }}</th>
+            <th colspan="4" class="text-right">{{ getTotal() | currency }}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</main>

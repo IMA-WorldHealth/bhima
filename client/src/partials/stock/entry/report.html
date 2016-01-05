@@ -1,0 +1,84 @@
+<header data-header>
+  {{ "STOCK.ENTRY.REVIEW" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+      <li><a ng-href="#/depots/entry/start/{{ session.depotEntry }}">{{ "STOCK.ENTRY.TITLE" | translate }}</a></li>
+      <li class="active">{{ "STOCK.ENTRY.REPORT" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="print()">
+      <span class="glyphicon glyphicon-print"></span>
+      {{ "UTIL.PRINT" | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{ "STOCK.ENTRY.ENTRY_MANIFEST" | translate }}
+        <small class="pull-right"> {{ session.documentId }}</small>
+      </h4>
+
+      <h5>
+        <label>{{ "COLUMNS.PURCHASE_DATE" | translate }}</label> {{ receipt.data[0].date | date}}
+      </h5>
+      <h5>
+        <label>{{ "STOCK.ENTRY.ENTRY_DATE" | translate }}</label>  {{ session.timestamp | date }}
+      </h5>
+
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.DEPOT" | translate }}</th>
+            <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
+            <th>{{ "COLUMNS.ITEM" | translate }}</th>
+            <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+            <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="movement in receipt.data | orderBy:'code'">
+            <td>{{ movement.text }}</td>
+            <td>{{ movement.code }}</td>
+            <td>{{ movement.inventory_text }}</td>
+            <td>{{ movement.lot_number }}</td>
+            <td>{{ movement.quantity }}</td>
+            <td>{{ movement.expiration_date | date }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="6">
+              <span class="glyphicon glyphicon-list-alt"></span>
+              {{ receipt.data.length }}
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="signatures">
+        <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+        <div class="signature-box">
+          <label>{{ "SIGNATURES.WAREHOUSE_MANAGER" | translate }}</label>
+          <div class="signature-line"></div>
+        </div>
+
+        <div class="signature-box pull-right">
+          <label>{{ "SIGNATURES.STOCK_MANAGER" | translate }}</label>
+          <div class="signature-line"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

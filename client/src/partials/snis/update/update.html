@@ -1,0 +1,71 @@
+<nav>
+	<div class="container no-padding">
+	    <ul class="nav nav-pills nav-sm" role="tablist">
+		  <li ng-class="{'active' : session.step==1}"><a ng-click="loadView(1)"><span class="badge">1</span> {{ "SNIS.STEP1" | translate }}</a></li>
+		  <li ng-class="{'active' : session.step==2}"><a ng-click="loadView(2)"><span class="badge">2</span> {{ "SNIS.STEP2" | translate }}</a></li>
+		  <li ng-class="{'active' : session.step==3}"><a ng-click="loadView(3)"><span class="badge">3</span> {{ "SNIS.STEP3" | translate }}</a></li>
+		  <li ng-class="{'active' : session.step==4}"><a ng-click="loadView(4)"><span class="badge">4</span> {{ "SNIS.STEP4" | translate }}</a></li>
+		  <li ng-class="{'active' : session.step==5}"><a ng-click="loadView(5)"><span class="badge">5</span> {{ "SNIS.STEP5" | translate }}</a></li>
+		  <li ng-class="{'active' : session.step==6}"><a ng-click="loadView(6)"><span class="badge">6</span> {{ "SNIS.STEP6" | translate }}</a></li>
+		  <li ng-class="{'active' : session.step==7}"><a ng-click="loadView(7)"><span class="badge">7</span> {{ "SNIS.STEP7" | translate }}</a></li>
+		  <li ng-class="{'active' : session.step==8}"><a ng-click="loadView(8)"><span class="badge">8</span> {{ "SNIS.STEP8" | translate }}</a></li>
+		  <li ng-class="{'active' : session.step==9}"><a ng-click="loadView(9)"><span class="badge">9</span> {{ "SNIS.STEP9" | translate }}</a></li>
+		</ul>
+		<h3 class="center" ng-if="identif.mois">{{ "SNIS.LABEL" | translate }} <b>{{ identif.mois | date:"MMMM yyyy" }}</b></h3>
+	</div>
+</nav>
+<main>
+	<div id="canvas-snis" ng-switch on="session.step">
+		<div ng-switch-default>
+			<ng-include src="'partials/snis/templates/step1.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="2">
+			<ng-include src="'partials/snis/templates/step2.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="3">
+			<ng-include src="'partials/snis/templates/step3.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="4">
+			<ng-include src="'partials/snis/templates/step4.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="5">
+			<ng-include src="'partials/snis/templates/step5.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="6">
+			<ng-include src="'partials/snis/templates/step6.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="7">
+			<ng-include src="'partials/snis/templates/step7.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="8">
+			<ng-include src="'partials/snis/templates/step8.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="9">
+			<ng-include src="'partials/snis/templates/step9.html'" scope="" onload="loading()"></ng-include>
+		</div>
+	</div>
+	<div class="container">
+		<p class="text-nota">PRIERE DE REMPLIR COMPLETEMENT ET TRANSMETTRE A TEMPS CE CANEVAS POUR CENTRALISATION ET ANALYSE.<br>LA DIVISION SNIS.</p>
+	</div>
+</main>
+<footer>
+	<div class="row">
+		<div class="col-xs-6">
+			<a href="#/snis/" class="btn btn-default pull-left"><i class="glyphicon glyphicon-chevron-left"></i> {{ "SNIS.BACK" | translate }}</a>
+		</div>
+		<div class="col-xs-6">
+			<div class="btn-group pull-right">
+				<button class="btn btn-default" ng-click="previous()" ng-disabled="session.step===1">
+					<i class="glyphicon glyphicon-chevron-left"></i> 
+					{{ "SNIS.PREVIOUS" | translate }} 
+				</button>
+
+				<button class="btn btn-success" ng-click="next()">
+					<span ng-if="session.step<9">{{ "SNIS.NEXT" | translate }}</span>
+					<span ng-if="session.step===9">{{ "SNIS.SUBMIT" | translate }}</span>
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+</footer>

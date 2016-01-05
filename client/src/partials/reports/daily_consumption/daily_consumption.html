@@ -1,0 +1,125 @@
+<div ng-switch="ReportCtrl.state">
+    <main ng-switch-default>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "DAILY_CONSUMPTION.CONFIGURE_REPORT" | translate }}
+        </div>
+
+        <form class="panel-body" name="ConfigForm" ng-submit="ReportCtrl.generate()" novalidate>
+          <div class="form-group">
+            <label class="required">
+              {{ "DAILY_CONSUMPTION.DATE_FROM" | translate }}
+            </label>
+            <input class="form-bhima" name="start" type="date" ng-model="ReportCtrl.start" ng-max="{{ ReportCtrl.end }}" required>
+          </div>
+
+          <div class="form-group">
+            <label class="required">
+              {{ "DAILY_CONSUMPTION.DATE_TO" | translate }}
+            </label>
+            <input class="form-bhima" name="end" type="date" ng-model="ReportCtrl.end" required>
+          </div>
+
+          <div class="pull-right">
+            <input
+              class="btn btn-sm btn-success"
+              type="submit"
+              ng-disabled="ConfigForm.$invalid"
+              value="{{ 'DAILY_CONSUMPTION.GENERATE' | translate }}">
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <div ng-switch-when="generate">
+      <header>
+        {{ "DAILY_CONSUMPTION.TITLE" | translate }}
+      </header>
+
+      <nav>
+        <button style="margin-left: 5px;"
+          ng-click="ReportCtrl.unfocus()"
+          ng-if="ReportCtrl.detailed"
+          class="btn btn-sm btn-default pull-right">
+          <i class="glyphicon glyphicon-arrow-left"></i>
+        </button>
+
+        <button style="margin-left: 5px;"
+          ng-click="ReportCtrl.reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <i class="glyphicon glyphicon-repeat"></i>
+        </button>
+
+        <div class="pull-right">
+          <button ng-click="ReportCtrl.print()" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-print"></span>
+            {{ 'UTIL.PRINT' | translate }}
+          </button>
+        </div>
+      </nav>
+
+      <article class="report report-compressed">
+        <div class="reportBody">
+          <div class="reportFrame">
+            <ng-include src="'partials/reports/templates/enterprise_header.html'"></ng-include>
+
+            <h4 class="visible-print">{{ "DAILY_CONSUMPTION.TITLE" | translate }} <small> {{ ReportCtrl.start | date }} - {{ ReportCtrl.end | date }}</small></h4>
+
+            <h5 class="hidden-print">
+              <i class="glyphicon glyphicon-calendar"></i> {{ ReportCtrl.start | date }} -- {{ ReportCtrl.end | date }}
+            </h5>
+
+            <table class="reportTable" ng-if="!ReportCtrl.detailed">
+              <thead>
+                <tr>
+                  <th>{{ "COLUMNS.CODE" | translate }}</th>
+                  <th>{{ "COLUMNS.DRUGS" | translate }}</th>
+                  <th>{{ "COLUMNS.QUANTITY" | translate }} {{ "COLUMNS.TOTAL" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="consumption in ReportCtrl.consumptions | orderBy:'code'">
+                  <td><a ng-click="ReportCtrl.focus(consumption)">{{ consumption.code }}</a></td>
+                  <td>{{ consumption.label }}</td>
+                  <td>{{ consumption.total }}</td>
+                </tr>
+
+                <tr ng-if="ReportCtrl.loading">
+                  <td colspan="4"><loading-indicator></loading-indicator></td>
+                </tr>
+
+                <tr ng-if="!ReportCtrl.loading && !ReportCtrl.consumptions.length">
+                  <td colspan="4">{{ "DAILY_CONSUMPTION.NO_CONSUMPTION" | translate }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table class="reportTable" ng-if="ReportCtrl.detailed">
+              <thead>
+                <tr style="background-color:#fff">
+                  <th colspan="3">[{{ ReportCtrl.detailed.code }}] {{ ReportCtrl.detailed.label }}</th>
+                </tr>
+                <tr>
+                  <th>{{ "COLUMNS.NR" | translate }}</th>
+                  <th>{{ "COLUMNS.DATE" | translate }}</th>
+                  <th>{{ "COLUMNS.QUANTITY" | translate }} {{ "COLUMNS.TOTAL" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="event in ReportCtrl.detailed.consumption | orderBy:'date'">
+                  <td>{{ $index + 1 }}</td>
+                  <td>{{ event.date | date }}</td>
+                  <td>{{ event.quantity }}</td>
+                </tr>
+                <tr>
+                  <th colspan="2"><i class="glyphicon glyphicon-list-alt"></i> {{ ReportCtrl.detailed.consumption.length }}</th>
+                  <th><span style="margin-left:1px;">{{ "COLUMNS.TOTAL" | translate }}: {{ ReportCtrl.detailed.total }}</span></th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>

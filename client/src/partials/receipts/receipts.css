@@ -1,0 +1,43 @@
+.invoiceTable {
+  border none;
+  width: 100%;
+}
+
+.invoiceTable thead > tr > th {
+  border: 1px solid black;
+  padding-left: 5px;
+}
+
+.invoiceTable tbody.items > tr > td {
+  border: 1px solid black;
+}
+
+.invoiceTable tbody.totals > tr > td {
+  border: 1px solid black;
+}
+
+.invoiceTable tbody > tr > td.no-border {
+  border: none;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.invoice-header {
+  font-size: 25px !important;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+.invoice-underline {
+  width : 100%;
+  border-bottom: 1px solid #cfcfcf;
+}
+
+.customer-details {
+  padding-top: 0px;
+  padding-bottom: 10px;
+}
+
+.customer-details .big-text {
+  font-size: 20px;
+}

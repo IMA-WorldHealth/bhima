@@ -1,0 +1,25 @@
+.po-header {
+  margin-top: 3px;
+}
+
+.po-note {
+  margin-top: 8px;
+}
+
+.purchase-header {
+  height: 350px;
+}
+
+.current {
+  background-color: #ebebeb;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  border: 1px solid #a2a2a2;
+
+}
+.filter {
+  max-width: 10px;
+}
+
+.po-alert { padding: 1px 5px !important; }
+.po-type-space { margin-right: 25px; }

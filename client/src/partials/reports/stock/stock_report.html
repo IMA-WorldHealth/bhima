@@ -1,0 +1,65 @@
+<header>
+  {{ "REPORT.STOCK" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+      <li><a href="#/depots_dashboard/">{{ "DASHBOARD.TITLE" | translate }}</a></li>
+      <li>{{ "REPORT.STOCK" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="print()">
+      <span class="glyphicon glyphicon-print"></span>
+      {{ "UTIL.PRINT" | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+      
+      <h4>{{ "STOCK.REPORT.TITLE" | translate }}</h4>
+
+      <label>{{ "STOCK.REPORT.DATE" | translate }}</label>  {{ session.timestamp | date }}
+
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
+            <th>{{ "COLUMNS.INVENTORY_ITEM" | translate }}</th>
+            <th>{{ "COLUMNS.STOCK_QTE" | translate }}</th>
+            <th>{{ "COLUMNS.STOCK_QTE_MIN" | translate }}</th>
+            <th>{{ "COLUMNS.STOCK_QTE_MAX" | translate }}</th>
+            <th>{{ "COLUMNS.STOCK_QTE_SEC" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="data in stock_inventory | orderBy:'code'">
+            <td>{{ data.code }}</td>
+            <td>{{ data.text }}</td>
+            <td>{{ data.stock }}</td>
+            <td>{{ data.stock_min }}</td>
+            <td>{{ data.stock_max }}</td>
+            <td>{{ data.stock_security }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="6">
+              <span class="glyphicon glyphicon-list-alt"></span>
+              {{ session.total }} {{ "STOCK.REPORT.ITEM_IN_STOCK" | translate }}
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+
+    </div>
+  </div>
+</div>

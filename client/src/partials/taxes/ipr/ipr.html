@@ -1,0 +1,219 @@
+<header data-header>
+  {{ "TAXES.IPR" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/taxes">{{"TAXE_MANAGEMENT.TITLE" | translate}}</a></li>
+      <li class="active">{{ "TAXES.IPR" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+	  <button class="btn btn-sm btn-default" ng-click="new()">
+	    <span class="glyphicon glyphicon-plus-sign"></span>
+	     {{ "TAXES.ADD" | translate }}
+	  </button>
+
+	  <button class="btn btn-sm btn-default" ng-click="toggleView()">
+	    <span class="glyphicon glyphicon-th-list"></span>
+	     {{session.view}}
+	  </button>
+  </div>
+</nav>
+
+<main>
+	<div class="row margin-top-10">
+		<div class="col-xs-12" ng-switch="session.show">
+			<div ng-switch-when="tableau">
+				<div class="row">
+					<div class="col-xs-12">
+					<table class="table table-condensed table-bordered center">
+						<thead>
+							<tr>
+								<td>Taux</td>
+								<td colspan="2">Tranche annuelle</td>
+								<td colspan="2">Tranche mensuelle</td>
+								<td colspan="2">Ecarts</td>
+								<td colspan="2">Impots</td>
+								<td colspan="2">Cumuls</td>
+							</tr>
+							<tr>
+								<td> </td>
+								<td>de</td>
+								<td>à</td>
+								<td>de</td>
+								<td>à</td>
+								<td>Annuels</td>
+								<td>Mensuels</td>
+								<td>Annuels</td>
+								<td>Mensuels</td>
+								<td>Annuels</td>
+								<td>Mensuels</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="value in session.table_ipr">
+								<td>{{value.taux}} % </td>
+								<td>{{value.tranche_annuelle_debut | number}}</td>
+								<td>{{value.tranche_annuelle_fin | number}}</td>
+								<td>{{value.tranche_mensuelle_debut | number}}</td>
+								<td>{{value.tranche_mensuelle_fin | number}}</td>
+								<td>{{value.ecart_annuel | number}}</td>
+								<td>{{value.ecart_mensuel | number}}</td>
+								<td>{{value.impot_annuel | number}}</td>
+								<td>{{value.impot_mensuel | number}}</td>
+								<td>{{value.cumul_annuel | number}}</td>
+								<td>{{value.cumul_mensuel | number}}</td>
+							</tr>
+						</tbody>
+					</table>
+					</div>
+				</div>
+			</div>
+
+			<div ng-switch-when="crud">
+				<div class="col-xs-6">
+			      <div class="panel panel-primary">
+			        <div class="panel-heading">
+			          <span class="glyphicon glyphicon-th-list"></span>
+			          {{ "TAXES.REGISTERED_TRANCHES" | translate }}
+			        </div>
+			        <table class="table table-condensed table-bordered center">
+			          <thead>
+			            <tr>
+			              <th style="width: 5%;text-align:center;">{{ "TAXES.CURRENCY" | translate}}</th>
+			              <th style="text-align:center;">{{ "TAXES.TAUX" | translate}}</th>
+			              <th style="text-align:center;" colspan="2">{{ "TAXES.ANNUAL_TRANCH" | translate}}</th>
+			              <th style="text-align:center;" colspan="2">{{ "COLUMNS.ACTIONS" | translate }}</th>
+			            </tr>
+			            <tr>
+			            	<td></td><td></td>
+			            	<td>{{ "TAXES.FROM" | translate}}</td>
+			            	<td>{{ "TAXES.TO" | translate}}</td>
+			            	<td></td><td></td>
+			            </tr>
+			          </thead>
+			          <tbody>
+			            <tr ng-repeat="tax in taxe_ipr.data">
+			              <td>{{tax.symbol}}</td>
+			              <td>{{tax.taux}} %</td>
+			              <td>{{tax.tranche_annuelle_debut}}</td>
+			              <td>{{tax.tranche_annuelle_fin}}</td>
+			              <td><a class="action" ng-click="edit(tax)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+			              <td><a class="action danger" ng-click="delete(tax)"><span class="glyphicon glyphicon-trash"></span></a></td>
+			            </tr>
+			            <tr ng-if="!taxe_ipr.data.length">
+			              <td colspan="5">{{ "TAXES.NO_TRANCHES" | translate }}</td>
+			            </tr>
+			          </tbody>
+			        </table>
+			      </div>
+			    </div>
+
+			    <div class="col-xs-6" ng-switch="session.action">
+			      <div class="alert alert-info" ng-switch-default>
+			        <h4>{{ "TAXES.TITLE" | translate }}</h4>
+			        <p>{{ "TAXES.INFO_IPR" | translate }}</p>
+			      </div>
+
+			      <div ng-switch-when="new">
+			        <form class="form-horizontal" name="new" novalidate>
+			          <legend><h3>{{ "TAXES.NEW_TRANCH" | translate }} </h3></legend>
+
+			          <div class="form-group">
+			            <label class="control-label col-xs-3 required">
+			            	{{ "TAXES.CURRENCY" | translate }}
+			            </label>
+			            <div class="col-xs-8">
+			              <select class="form-bhima" ng-model="session.new.currency_id" ng-options="cur.id as cur.symbol for cur in currency.data" required ng-disabled="session.currency_id">
+			              	<option value="" disabled="true">--- {{ "SELECT.CURRENCY" | translate }} ---</option>
+			              </select>
+			            </div>
+			          </div>
+
+			          <div class="form-group">
+			            <label class="control-label col-xs-3 required">{{ "TAXES.TAUX" | translate }}</label>
+			            <div class="col-xs-8">
+			              <input type="number" ng-model="session.new.taux" class="form-bhima" required>
+			            </div>
+			          </div>
+
+			          <div class="form-group">
+			            <label class="control-label col-xs-3 required">
+			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.FROM" | translate}}
+			            </label>
+			            <div class="col-xs-8">
+			              <input type="number" ng-model="session.new.tranche_annuelle_debut" class="form-bhima" required>
+			            </div>
+			          </div>
+
+			          <div class="form-group">
+			            <label class="control-label col-xs-3 required">
+			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.TO" | translate}}
+			            </label>
+			            <div class="col-xs-8">
+			              <input type="number" ng-model="session.new.tranche_annuelle_fin" class="form-bhima" required>
+			            </div>
+			          </div>
+
+			          <div class="form-group">
+			            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+			            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+			          </div>
+			        </form>
+			      </div>
+
+			      <div ng-switch-when="edit">
+			        <form novalidate class="form-horizontal" name="edit">
+			          <legend><h3>{{ "TAXES.EDIT_TRANCH" | translate }} </h3></legend>
+
+			          <div class="form-group">
+			            <label class="control-label col-xs-3 required">
+			            	{{ "TAXES.CURRENCY" | translate }}
+			            </label>
+			            <div class="col-xs-8">
+			              <select class="form-bhima" ng-model="session.edit.currency_id" ng-options="cur.id as cur.symbol for cur in currency.data" ng-disabled="session.currency_id">
+			              	<option value="" disabled="true">--- {{ "SELECT.CURRENCY" | translate }} ---</option>
+			              </select>
+			            </div>
+			          </div>
+
+			          <div class="form-group">
+			            <label class="control-label col-xs-3 required">{{ "TAXES.TAUX" | translate }}</label>
+			            <div class="col-xs-8">
+			              <input ng-model="session.edit.taux" class="form-bhima" required>
+			            </div>
+			          </div>
+
+			          <div class="form-group">
+			            <label class="control-label col-xs-3 required">
+			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.FROM" | translate}}
+			            </label>
+			            <div class="col-xs-8">
+			              <input type="number" ng-model="session.edit.tranche_annuelle_debut" class="form-bhima" required>
+			            </div>
+			          </div>
+
+			          <div class="form-group">
+			            <label class="control-label col-xs-3 required">
+			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.TO" | translate}}
+			            </label>
+			            <div class="col-xs-8">
+			              <input type="number" ng-model="session.edit.tranche_annuelle_fin" class="form-bhima" required>
+			            </div>
+			          </div>
+
+			          <div class="form-group">
+			            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+			            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+			          </div>
+			        </form>
+			      </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>

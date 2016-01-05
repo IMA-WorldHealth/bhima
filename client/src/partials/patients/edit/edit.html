@@ -1,0 +1,374 @@
+<header data-header>
+  {{ "PATIENT_EDIT.PAGE_TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PATIENT_EDIT.PAGE_TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      
+      <!-- Find patient directive -->
+      <div class="col-md-12">
+
+        <!-- TODO Refactor initial patient UUID specification -->
+        <div 
+          find-patient 
+          init-lookup="PatientEditCtrl.referredPatient" 
+          on-search-complete="PatientEditCtrl.confirmPatient(patient)">
+        </div>
+      </div>
+    </div>
+
+    <!-- Only display patient edit information if have loaded a valid model -->
+    <!-- ng-show is used as ng-if creates new scope - form values are not availble on the $scope object -->
+    <div class="row" ng-show="PatientEditCtrl.medical">
+      <div class="col-md-5 col-md-push-7">
+        
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Financial Information
+          </div>
+          <div class="panel-body">
+            <form name="finance">
+              
+              <!-- Patient Group -->
+              <div class="form-group"> 
+                <label class="control-label">Patient Groups</label>
+                
+                <p 
+                  class="text-success form-control-static" 
+                  ng-if="PatientEditCtrl.updatedPatientGroups">
+                  <span class="glyphicon glyphicon-ok-sign"></span> Patient groups updated
+                </p>
+
+                <!-- Iterate through patient groups -->
+                 <ul 
+                 class="form-control-static"
+                 ng-repeat="group in PatientEditCtrl.finance.patientGroups | orderBy:'name'">
+                 <li>{{group.name}}</li>
+                 </ul>
+
+                 <p class="text-info form-control-static" ng-if="PatientEditCtrl.finance.patientGroups.length === 0">
+                 <span class="glyphicon glyphicon-info-sign"></span> This patient is not a member of any patient groups
+                 </p>
+
+              </div>
+              
+              <div class="form-group">
+
+                <button 
+                  class="btn btn-warning btn-block"
+                  ng-click="PatientEditCtrl.updatePatientGroups()">Update Group Assignment</button>
+              </div>
+      
+              <!-- Debtor Group -->
+              <div class="form-group">
+                <label class="control-label">Debtor Group</label>
+                
+                <p 
+                  class="text-success form-control-static" 
+                  ng-if="PatientEditCtrl.updatedDebtorGroup">
+                  <span class="glyphicon glyphicon-ok-sign"></span> Debtor group updated
+                </p>
+
+                <ul class="form-control-static">
+                  <li>{{ PatientEditCtrl.medical.debitor_group_name }}</li>
+                </ul>
+
+              </div>
+              
+              <div class="form-group">
+
+                <button 
+                  class="btn btn-warning btn-block"
+                  ng-click="PatientEditCtrl.updateDebtorGroup()">Update Group</button>
+              </div>
+
+            </form>   
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-7 col-md-pull-5">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Patient Details
+          </div>
+          <div class="panel-body">
+            
+            <!-- Copied from patient registration -->
+            <!-- TODO Should this all be one page/operation - question of state complexity -->
+            <form name="details" class="form-horizontal">
+              
+              <!-- Last Name -->
+              <div 
+                class="form-group has-feedback"
+                ng-class="{'has-error' : details.last_name.$invalid && details.$submitted}">
+
+                <label for="second-name" class="col-md-3 control-label">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
+                <div class="col-md-9">
+                  <input id="second-name" class="form-control" name="last_name" ng-model="PatientEditCtrl.medical.last_name" required>
+                </div>
+              </div>
+              
+              <!-- Middle Name -->
+              <div 
+                class="form-group has-feedback"
+                ng-class="{'has-error' : details.middle_name.$invalid && details.$submitted}">
+
+                <label for="middle-name" class="col-md-3 control-label">{{ "INVOICE.MIDDLE_NAME" | translate }}</label>
+                <div class="col-md-9">
+                  <input id="middle-name" class="form-control" name="middle_name" ng-model="PatientEditCtrl.medical.middle_name" required>
+                </div>
+              </div>
+          
+              <!-- First Name -->
+              <div 
+                class="form-group has-feedback"
+                ng-class="{'has-error' : details.firstName.$invalid && details.$submitted}">
+
+                <label for="new-first-name" class="col-md-3 control-label">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
+                <div class="col-md-9">
+                  <input id="new-first-name" class="form-control" name="first_name" ng-model="PatientEditCtrl.medical.first_name">
+                </div>
+              </div>
+
+              <!-- Hospital File Number -->
+              <div 
+                class="form-group has-feedback"
+                ng-class="{'has-error' : details.hospital_no.$invalid && details.$submitted || details.$error.hospitalNumber}">
+                
+                <label for="new-hospital-number" class="col-md-3 control-label">{{ "INVOICE.HOSPITAL_FILE_NR" | translate }} </label>
+                <div class="col-md-9">
+
+                  <!-- One way bind hospital number to allow skipping the registered patients hospital number -->
+                  <input 
+                    id="new-hospital-number" 
+                    name="hospital_no" 
+                    class="form-control" 
+                    ng-model="PatientEditCtrl.medical.hospital_no" 
+                    hospital-number 
+                    registered-value="::PatientEditCtrl.medical.hospital_no"
+                    required>
+                  <span ng-if="details.$error.hospitalNumber" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                  <span ng-if="details.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
+                  <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
+                  
+                  <!-- TODO Translate -->
+                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">Hospital file number already exists</p>
+                </div>
+              </div>
+
+               <!-- Date of birth -->
+              <div class="form-group has-feedback"
+                ng-class="{'has-error' : details.dob.$invalid && details.$submitted}">
+                
+                <label for="patient-dob" class="col-md-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
+                <div class="col-md-9">
+                  <input required name="dob" id="patient-dob" type="date" class="form-control" ng-model="PatientEditCtrl.medical.dob" min="{{PatientEditCtrl.minDOB | date : 'yyyy-MM-dd'}}" max="{{PatientEditCtrl.maxDOB | date : 'yyyy-MM-dd'}}">
+                </div>
+              </div>
+      
+              <!-- Date of birth warning message -->
+              <div 
+                id="date-error"
+                class="alert alert-danger"
+                ng-if="details.dob.$error.min || details.dob.$error.max">
+                <p>{{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_LIMIT" | translate }} {{PatientEditCtrl.minDOB | date}} {{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_AND" | translate }} {{PatientEditCtrl.maxDOB | date}}</p>
+              </div>
+
+              <!-- Gender -->
+              <div id="gender" class="form-group has-feedback"
+                ng-class="{'has-error' : details.sex.$invalid && details.$submitted}">
+                <label for="male" class="col-md-3 control-label">Gender</label>
+                <div class="col-md-9">
+      
+                  <!-- ng-click registers element as dirty, this is a workaround for angular forms in radio buttons -->
+                  <label class="radio-inline">
+                    <input 
+                      type="radio" 
+                      name="sex" 
+                      id="male" 
+                      value="M" 
+                      ng-model="PatientEditCtrl.medical.sex" 
+                      ng-click="details.sex.$setDirty()"
+                      required>
+                    {{ "PATIENT_REG.MALE" | translate }}
+                  </label>
+
+                  <!-- ng-click registers element as dirty, this is a workaround for angular forms in radio buttons -->
+                  <label class="radio-inline">
+                    <input 
+                      type="radio" 
+                      name="sex" 
+                      id="female" 
+                      value="F" 
+                      ng-model="PatientEditCtrl.medical.sex" 
+                      ng-click="details.sex.$setDirty()"
+                      required>
+                    {{ "PATIENT_REG.FEMALE" | translate }}
+                  </label>  
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel-footer">
+          
+            <!-- Submission -->
+              <p 
+                class="text-success"
+                ng-if="PatientEditCtrl.updatedPatientDetails"><span class="glyphicon glyphicon-ok-sign"></span> Patient records updated</p>
+
+              <p 
+                class="text-danger"
+                ng-if="details.$submitted && details.$invalid">
+                <span class="glyphicon glyphicon-remove-sign"></span> Please resolve any errors on the form. (Marked in red)</p>
+
+              <p 
+                class="text-warning"
+                ng-if="details.$submitted && !details.$dirty">
+                <span class="glyphicon glyphicon-info-sign"></span> No changes have been made to the form. Update the patients details and then press submit.</p>
+
+              <button 
+                ng-click="PatientEditCtrl.updatePatient(PatientEditCtrl.medical)"
+                class="btn btn-sm btn-primary">Submit Changes</button>  
+          </div>
+
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Optional Information
+          </div>
+          <div class="panel-body">
+            <form name="optional" class="form-horizontal">
+                
+              <div class="form-group">
+                <label for="title" class="col-md-3 control-label">Title</label>
+                <div class="col-md-9">
+                  <input type="text" name="title" class="form-control" id="title" ng-model="PatientEditCtrl.medical.title">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="phone" class="col-md-3 control-label">{{ "PATIENT_REG.PHONE_NO" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="form-control" name="phone" ng-model="PatientEditCtrl.medical.phone">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email" class="col-md-3 control-label">{{ "PATIENT_REG.EMAIL" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="email" class="form-control" id="email" name="email" ng-model="PatientEditCtrl.medical.email">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="address1" class="col-md-3 control-label">{{ "PATIENT_REG.ADDRESS1" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="address1" name="address_1" ng-model="PatientEditCtrl.medical.address_1">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="address2" class="col-md-3 control-label">{{ "PATIENT_REG.ADDRESS2" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="address_2" id="address2" ng-model="PatientEditCtrl.medical.address_2">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="father_name" class="col-md-3 control-label">{{ "PATIENT_REG.FATHER_NAME" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="father_name" id="father_name" ng-model="PatientEditCtrl.medical.father_name">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="mother_name" class="col-md-3 control-label">{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="mother_name" name="mother_name" ng-model="PatientEditCtrl.medical.mother_name">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="religion" class="col-md-3 control-label">{{ "PATIENT_REG.RELIGION" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="religion" name="religion" ng-model="PatientEditCtrl.medical.religion">
+                </div>
+              </div>
+
+              <div class="form-group" >
+                <label for="marital" class="col-md-3 control-label">{{ "PATIENT_REG.MARITAL_STATUS" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="marital" name="marital_status" ng-model="PatientEditCtrl.medical.marital_status">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="profession" class="col-md-3 control-label">{{ "PATIENT_REG.PROFESSION" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="profession" name="profession" ng-model="PatientEditCtrl.medical.profession">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="employer" class="col-md-3 control-label">{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="employer" name="employer" ng-model="PatientEditCtrl.medical.employer">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="spouse" class="col-md-3 control-label">{{ "PATIENT_REG.SPOUSE" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="spouse" name="spouse" ng-model="PatientEditCtrl.medical.spouse">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="spouse_profession" class="col-md-3 control-label">{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="spouse_profession" name="spouse_profession" ng-model="PatientEditCtrl.medical.spouse_profession">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="spouse_employer" class="col-md-3 control-label">{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="spouse_employer" name="spouse_employer" ng-model="PatientEditCtrl.medical.spouse_employer">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="notes" class="col-md-3 control-label">{{ "PATIENT_REG.NOTES" | translate }}</label>
+                <div class="col-md-9">
+                  <textarea class="form-control" id="notes" name="notes" ng-model="PatientEditCtrl.medical.notes" rows="4"></textarea>
+                </div>
+              </div>
+            </form>
+          
+            <!-- Link to submission -->
+            <div class="col-md-9 col-md-offset-3">
+              <p class="text-center text-info">
+                <a href="" id="submissionLink"><span class="glyphicon glyphicon-circle-arrow-up"></span> Link to Submission</a>
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+      </div> 
+    </div>
+  </div>
+</main>

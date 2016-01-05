@@ -1,0 +1,41 @@
+<!-- Debtor template -->
+<div class="row customer-details">
+  <div class="col-xs-12">
+    <h4 class="invoice-header">{{'INVOICE.PATIENT' | translate}}</h4>
+  </div>
+  <div class="col-xs-12">
+    <h4 class="invoice-header"></h4>
+  </div>
+</div>
+<div class="row">
+  <!-- Patient Address -->
+  <div class="col-xs-8">
+    {{'INVOICE.ADDRESS' | translate}}
+  </div>
+  <!-- Patient ID, Phone -->
+  <div class="col-xs-4">
+    <div class="row">
+      {{'INVOICE.ID' | translate}}
+    </div>
+    <div class="row">
+      {{'INVOICE.PHONE' | translate}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <table class="invoiceTable">
+      <thead>
+        <tr><th>{{'INVOICE.DATE' | translate}}</th><th>{{'INVOICE.DESCRIPTION' | translate}}</th><th>{{'INVOICE.AMOUNT' | translate}}</th><th>{{'INVOICE.BALANCE_DUE' | translate}}</th></tr>
+      </thead>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    {{'INVOICE.BALANCE_DUE' | translate}}
+  </div>
+</div>
+<!-- End debtor template -->

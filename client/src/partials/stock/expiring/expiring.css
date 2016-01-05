@@ -1,0 +1,12 @@
+/*Temporary fix for border-box bootstrap collision*/
+#bhima-expiring-grid {
+  height: 100%;
+  width: 100%;
+  font-size: 8pt;
+}
+
+#bhima-expiring-grid, #bhima-expiring-grid div {
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+}

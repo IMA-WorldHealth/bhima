@@ -1,0 +1,96 @@
+<header data-header>
+  {{ 'DONATION_MANAGEMENT.CONFIRM.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "DONATION_MANAGEMENT.CONFIRM.TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main class="extend">
+  <div class="row margin-top-10">
+    <div class="col-xs-6">
+
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          {{ "DONATION_MANAGEMENT.CONFIRM.TITLE" | translate }}
+        </div>
+
+        <div class="panel-body">
+
+          <div class="input-group" style="margin-bottom: 15px">
+            <span class="input-group-btn">
+              <button disabled class="btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+             <input class="form-bhima" placeholder="{{'DONATION_MANAGEMENT.CONFIRM.FILTER' | translate }}" ng-model="session.filter">
+          </div>
+
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>{{"COLUMNS.DATE" | translate}}</th>
+                <th>{{"COLUMNS.DONOR" | translate}}</th>
+                <th>{{"COLUMNS.EMPLOYEE" | translate}}</th>
+                <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+              </tr>
+            </thead>
+
+            <tr ng-if="!donations.data.length">
+              <td colspan="4">
+                <div class="alert alert-warning square">{{ "DONATION_MANAGEMENT.CONFIRM.NOT_FOUND" | translate }}</div>
+              </td>
+            </tr>
+
+            <tr ng-repeat="item in donations.data | filter : session.filter"
+                ng-class="{'selected-success': session.selected.uuid===item.uuid}">
+                <td>{{item.date | date}}</td>
+                <td><strong>{{item.name}}</strong></td>
+                <td><strong>{{item.prenom + ' ' + item.nom_employee + ' ' + item.postnom}}</strong></td>
+                <td><a class="menu-item" ng-click="confirmDonation(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
+            </tr>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-default' : !session.selected}">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-list-alt"></span>
+          {{ "DONATION_MANAGEMENT.CONFIRM.CONFIRM_RECEPTION" | translate }} <small>{{session.selected.uuid}}</small>
+        </div>
+
+        <div class="panel-body" ng-if="session.selected">
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th colspan="2">{{ "DONATION_MANAGEMENT.CONFIRM.DETAILS" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{"COLUMNS.ID" | translate}}</td><td>{{session.selected.uuid}}</td>
+              </tr>
+              <tr>
+                <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{session.selected.prenom + ' ' + session.selected.nom_employee}}</td>
+              </tr>
+              <tr>
+                <td>{{"COLUMNS.DONOR" | translate}}</td><td>{{session.selected.name}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button ng-click="confirmReception()" class="square btn btn-success btn-sm">  {{ "DONATION_MANAGEMENT.CONFIRM.CONFIRM_RECEPTION_OF" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+

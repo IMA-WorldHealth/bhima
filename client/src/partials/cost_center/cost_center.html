@@ -1,0 +1,40 @@
+<header data-header>
+  {{ 'COST_CENTER.TITLE' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
+      <li class="active">{{ "COST_CENTER.TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main class="extend margin-top-10">
+  <div class="row">
+    <div class="col-xs-6">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="glyphicon glyphicon-cog"></i> {{ 'COST_CENTER.OPERATION' | translate }}
+        </div>
+
+        <div class="panel-body">
+          <ul class="primary_cash_list">
+            <li ng-repeat="item in CenterCtrl.configuration.operations">
+              <i style="color: rgb(7, 150, 35);" class="glyphicon glyphicon-asterisk"></i>
+              <a class="menu-item" ng-click="CenterCtrl.loadPath(item.link)">{{ item.key | translate }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="alert alert-info">
+        <h4>{{ "COST_CENTER.TITLE" | translate }}</h4>
+        <p>{{ "COST_CENTER.DESCRIPTION" | translate }}</p>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,82 @@
+<!-- cotisation payment template -->
+<div ng-controller="receipt.cotisation_payment">
+<div class="row customer-details">
+  <div class="col-xs-12">
+    <small style="float: right; color: grey; font-size: 8px">{{ model.cotisation.document_uuid }}</small>
+    <h4 class="invoice-header">{{ 'INVOICE.COTISATION_PAYMENT' | translate }}</h4>
+  </div>
+</div>
+
+<div class="row customer-details">
+  <div class="col-xs-6">
+    <span>
+      <b>{{model.common.enterprise.name}}</b>
+    </span>
+    <br>
+    {{model.common.location.name}}
+    <br>
+    <!-- hah -->
+    {{ model.common.enterprise.po_box || 'B.P. 205'}}
+    <br>
+    {{model.common.location.sector_name}}
+    <br>
+    <i>TEL</i> {{model.common.enterprise.phone}}
+    <br>
+    <i>MAIL</i> {{model.common.enterprise.email}}
+  </div>
+
+  <div class="col-xs-6">
+    <b>{{model.cotisation.account_txt}} </b>
+    <br>
+    <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+    <br>
+    {{model.cotisation.date | date}}
+  </div>          
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <table class="invoiceTable">
+      <thead>
+        <tr>
+          <th>{{ 'COLUMNS.REFERENCE' | translate }}</th>
+          <th>{{ 'INVOICE.DESCRIPTION' | translate}}</th>
+          <th>{{ 'COLUMNS.COST' | translate }}</th>
+          <th>{{ 'COLUMNS.BY' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody class="items">
+        <tr>
+          <td>{{ model.cotisation.reference }}</td>
+          <td>{{ model.cotisation.description }}</td>
+          <td>{{ model.cotisation.cost | currency:model.cotisation.currency_id }}</td>
+          <td>{{ model.cotisation.first}} &nbsp; {{ model.cotisation.last}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box-wide">
+    <div class="col-xs-4">
+      <div class="pull-left">
+        <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="pull-right">
+       <b>{{"INVOICE.THIRD" | translate}}</b>
+      </div>
+    </div>  
+    <div class="col-xs-4">
+      <div class="pull-right">
+       <b>{{"INVOICE.CHIEF_ACCOUNTANT" | translate}}</b>
+      </div>
+    </div>  
+  </div>
+</div> 
+
+<!-- end cotisation payment template -->

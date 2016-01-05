@@ -1,0 +1,143 @@
+<div ng-switch="ReportCtrl.state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }}
+          </div>
+
+          <div class="panel-body">
+            <form name="configForm" novalidate>
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'STOCK.INTEGRATION.STORE' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-briefcase"></span>
+                    </span>
+                    <select class="form-bhima" required ng-model="ReportCtrl.session.depot_entry" >
+                      <option ng-repeat="depot in ReportCtrl.depots" value="{{ depot.uuid }}">{{ depot.text}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <span class="btn-group">
+                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : ReportCtrl.session.active }">{{ (ReportCtrl.session.selected | translate) || "..." }}</button>
+                  <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
+                  <ul class="dropdown-menu menu-sq">
+                    <li ng-repeat="opt in ReportCtrl.options">
+                      <a class="clk" ng-click="ReportCtrl.search(opt)">{{ opt.label | translate }}</a>
+                    </li>
+                  </ul>
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_FROM' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    <input class="form-bhima" type="date" ng-model="ReportCtrl.session.dateFrom" rows="20" >
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_TO' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    <input class="form-bhima" type="date" ng-model="ReportCtrl.session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div>
+              <div class="pull-right">
+                <button class="btn btn-sm btn-success" type="button" ng-click="ReportCtrl.reset()" ng-disabled="configForm.$invalid">
+                  {{ "REPORT.GENERATE" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div ng-switch-when="generate">
+    <header>
+      <b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }} </b> : <small>  {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }} </small>
+    </header>
+
+    <nav>
+
+      <div class="pull-right">
+        <button class="btn btn-sm btn-default" ng-click="ReportCtrl.print()">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ "UTIL.PRINT" | translate }}
+        </button>
+        <button
+          style="margin-left: 5px;"
+          ng-click="ReportCtrl.reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
+
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <h4 class="visible-print">
+            <b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }} </b> {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }} </small>
+          </h4>
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.REFERENCE_PURCHASE" | translate }}</th>
+                <th>{{ "COLUMNS.TRANSACTION_NUMBER" | translate }}</th>
+                <th>{{ "COLUMNS.ISSUER" | translate }}</th>
+                <th>{{ "COLUMNS.DEPOT" | translate }}</th>
+                <th>{{ "COLUMNS.CONFIRM_BY" | translate }}</th>
+                <th>{{ "COLUMNS.DATE" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='integrations in ReportCtrl.integration_records | orderBy: "purchase_date" '>
+                <td>
+                  <a ng-if="integrations.uuid" ng-href="/#/invoice/confirm_integration/{{integrations.document_id}}">
+                    <span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}
+                  </a>
+                </td>
+                <td><b> {{ integrations.trans_id }} </b></td>
+                <td> {{ integrations.first + ' ' + integrations.last }} </td>
+                <td> {{ integrations.text }} </td>
+                <td> {{ integrations.confirmed_first }} {{ integrations.confirmed_last }} </td>
+                <td> {{ integrations.purchase_date | date }} </td>
+              </tr>
+              <tr ng-if="!ReportCtrl.integration_records.length">
+                <td colspan="7">
+                  <span class="glyphicon glyphicon-stats"></span>
+                  {{ "PURCHASE.REPORT.EMPTY_REPORT" | translate }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

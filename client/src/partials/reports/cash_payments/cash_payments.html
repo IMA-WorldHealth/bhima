@@ -1,0 +1,191 @@
+<div ng-switch="state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "CASH_PAYMENTS.TITLE" | translate }}
+          </div>
+
+          <div class="panel-body">
+            <form name="configForm" novalidate>              
+              <div class="form-group">
+                <label class="control-label required">
+                  {{ 'SELECT.PROJECT' | translate }}
+                </label>
+                <div>
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-home"></span>
+                    </span>  
+
+                    <select class="form-bhima" ng-model="session.project" required>
+                      <option ng-if="projects.data.length" value="{{ allProjectIds }}">
+                        {{ "CASH_PAYMENTS.ALL_PROJECTS" | translate }}
+                      </option>
+                      <option ng-repeat="project in projects.data" ng-value="project.id">
+                        {{ project.name }}
+                      </option>
+                    </select>                    
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <span class="btn-group">
+                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
+                  <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
+                  <ul class="dropdown-menu menu-sq">
+                    <li ng-repeat="opt in options">
+                      <a class="clk" ng-click="search(opt)">{{ opt.label | translate }}</a>
+                    </li>
+                  </ul>
+                </span> 
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_FROM' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
+                  </div>
+                </div>
+              </div>              
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_TO' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div>               
+              <div class="pull-right">
+                <button class="btn btn-sm btn-success" type="button" ng-click="reset()" ng-disabled="configForm.$invalid">
+                  {{ "REPORT.GENERATE" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>  
+  </div>
+  <div ng-switch-when="generate">  
+    <header>
+      <b> {{ projectSelected }} </b> : {{ "CASH_PAYMENTS.TITLE" | translate }} <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
+    </header>
+
+    <nav>
+
+      <div class="pull-right">        
+        <button class="btn btn-sm btn-default" ng-click="print()">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ "UTIL.PRINT" | translate }}
+        </button>
+        <button
+          style="margin-left: 5px;"
+          ng-click="reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
+    
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+          
+          <h4 class="visible-print">
+            <b> {{ projectSelected }} </b> : {{ "CASH_PAYMENTS.TITLE" | translate }} <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
+          </h4>
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
+                <th>{{ "COLUMNS.NAME" | translate }}</th>
+                <th>{{ "COLUMNS.SALE_ID" | translate }}</th>
+                <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
+                <th>{{ "COLUMNS.COST" | translate }}</th>
+                <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                <th>{{ "COLUMNS.DATE" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='payment in payments'>
+                <td>
+                  <!-- A FIXE : Naive Method for distinguish caution payment or cash payment -->
+                  <a ng-if="payment.uuid != payment.document_id" ng-href="/#/invoice/cash/{{payment.uuid}}">{{ payment.abbr + payment.reference }}</a>
+                  <a ng-if="payment.uuid === payment.document_id" ng-href="/#/invoice/caution/{{payment.uuid}}">{{ payment.abbr + payment.reference }}</a>
+                </td>
+                <td> {{ payment.first_name + ' ' + payment.last_name }} </td>
+                <td>
+                  <!-- A FIXE : Naive Method for distinguish caution payment or cash payment -->
+                   <a ng-if="payment.uuid != payment.document_id" ng-href="/#/invoice/sale/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a>
+                  <a ng-if="payment.uuid === payment.document_id" ng-href="/#/invoice/caution/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a>
+                </td>
+                <td> {{ projects.get(payment.debtor_project).abbr + payment.debtor_reference }} </td>
+                <td>{{ payment.cost | currency:payment.currency_id }}</td>
+                <td> {{ payment.description }} </td>
+                <td> {{ payment.date | date }} </td>
+              </tr>
+              <tr ng-if="!payments.length">
+                <td colspan="7">
+                  <span class="glyphicon glyphicon-stats"></span>
+                  {{ "PRIMARY_CASH.REPORT.INCOME.EMPTY_REPORT" | translate }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h6 class="visible-print">
+            {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{ session.sum | currency:session.currency }}</b>  
+          </h6>          
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <table style="width: 99%">
+        <tbody>
+          <td style="width:50%;">
+
+            <span style="margin-right: 10px;">
+              <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{ payments.length }}</b>
+              <span ng-if="session.searching">...</span>
+            </span>
+
+            <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{ session.unique_debitors }}</b>
+
+            <span ng-if="session.searching">...</span>
+            <span style="float: right; margin-right: 5px;">
+              <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b>
+            </span>
+          </td>
+          <td style="width:20%;">
+            <b>{{ session.sum | currency:session.currency }}</b>
+            <span ng-if="session.searching">...</span>
+          </td>
+          <td colspan="2">
+            <div class="hidden-print" style="width:25%;">
+              <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
+            </div>
+          </td>
+        </tbody>
+      </table>
+    </footer>
+  </div>    
+</div>  
+

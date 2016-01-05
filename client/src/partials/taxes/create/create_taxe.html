@@ -1,0 +1,209 @@
+<header data-header>
+  {{ "TAXE_MANAGEMENT.CREATE_TAXE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/taxes_management/">{{"TAXE_MANAGEMENT.TITLE" | translate}}</a></li>
+      <li class="active">{{ "TAXE_MANAGEMENT.CREATE_TAXE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="new()">
+      <span class="glyphicon glyphicon-plus-sign"></span>
+       {{ "TAXES.ADD" | translate }}
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="row margin-top-10">
+
+    <div class="col-xs-7">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-briefcase"></span>
+          {{ "TAXES.REGISTERED" | translate }}
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.LABEL" | translate}}</th>
+              <th>{{ "COLUMNS.ABBR" | translate}}</th>
+              <th>{{ "COLUMNS.STAFF_COST" | translate}}</th>
+              <th>{{ "COLUMNS.IS_PERCENT" | translate}}</th>
+              <th>{{ "COLUMNS.ACCOUNT_TO_CREDIT" | translate}}</th>
+              <th>{{ "COLUMNS.ACCOUNT_TO_DEBIT" | translate}}</th>
+              <th>{{ "COLUMNS.VALUE" | translate}}</th>
+              <th colspan="4">{{ "COLUMNS.ACTIONS" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="tax in taxes.data">
+              <td>{{ tax.label }}</td>
+              <td>{{ tax.abbr }}</td>
+              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!tax.is_employee}"></td>
+              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!tax.is_percent}"></td>
+              <td>{{ accounts.get(tax.four_account_id).account_number }}</td>
+              <td>{{ accounts.get(tax.six_account_id).account_number }}</td>
+              <td>{{ tax.value }}</td>
+              <td><a class="action" ng-click="edit(tax)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a class="action danger" ng-click="delete(tax)"><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+            <tr ng-if="!taxes.data.length">
+              <td colspan="4">{{ "TAXES.NO_TAXES" | translate }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-5" ng-switch="session.action">
+      <div class="alert alert-info" ng-switch-default>
+        <h4>{{ "TAXE_MANAGEMENT.CREATE_TAXE" | translate }}</h4>
+        <p>{{ "TAXES.ALERT" | translate }}</p>
+      </div>
+
+      <div ng-switch-when="new">
+        <form novalidate class="form-horizontal" name="new">
+          <legend><h3>{{ "TAXES.NEW_TAX" | translate }} </h3></legend>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.new.label" class="form-bhima" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.ABBR" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.new.abbr" class="form-bhima" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4">{{ "COLUMNS.STAFF_COST" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" id="internationalID" ng-true-value="1" ng-false-value="0" ng-model="session.new.is_employee">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4">{{ "COLUMNS.IS_PERCENT" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" id="internationalID" ng-true-value="1" ng-false-value="0" ng-model="session.new.is_percent">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4">{{ "COLUMNS.IS_IPR" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" id="internationalID" ng-true-value="1" ng-false-value="0" ng-model="session.new.is_ipr">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.VALUE" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.new.value" class="form-bhima" >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT_TO_CREDIT" | translate }}</label>
+            <div class="col-xs-7">
+              <select class="form-bhima" required ng-model="session.new.four_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT_TO_DEBIT" | translate }}</label>
+            <div class="col-xs-7">
+              <select class="form-bhima" required ng-model="session.new.six_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+          </div>
+        </form>
+      </div>
+
+      <div ng-switch-when="edit">
+        <form novalidate class="form-horizontal" name="edit">
+          <legend><h3>{{ "TAXES.UPDATE" | translate }} </h3></legend>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.edit.label" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.ABBR" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.edit.abbr" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4">{{ "COLUMNS.STAFF_COST" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" id="internationalID" ng-true-value="1" ng-false-value="0" ng-model="session.edit.is_employee">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4">{{ "COLUMNS.IS_PERCENT" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" id="internationalID" ng-true-value="1" ng-false-value="0" ng-model="session.edit.is_percent">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4">{{ "COLUMNS.IS_IPR" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" id="internationalID" ng-true-value="1" ng-false-value="0" ng-model="session.edit.is_ipr">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.VALUE" | translate }}</label>
+            <div class="col-xs-7">
+              <input ng-model="session.edit.value" class="form-bhima">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT_TO_CREDIT" | translate }}</label>
+            <div class="col-xs-7">
+              <select class="form-bhima" ng-model="session.edit.four_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT_TO_DEBIT" | translate }}</label>
+            <div class="col-xs-7">
+              <select class="form-bhima" required ng-model="session.edit.six_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
