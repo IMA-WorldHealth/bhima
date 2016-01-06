@@ -4,9 +4,9 @@
 
 <nav>
   <div class="pull-right">
-    <span class="dropdown">
-      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span>{{ "REPORT.VISIBLE_FISCAL_YEAR" | translate }}</a>
-      <ul class="dropdown-menu">
+    <span uib-dropdown class="dropdown">
+      <a uib-dropdown-toggle class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span>{{ "REPORT.VISIBLE_FISCAL_YEAR" | translate }}</a>
+      <ul class="uib-dropdown-menu" role="menu">
         <li class="dropdown-header">{{ "REPORT.CHOOSE_FISCAL_YEAR" | translate }}</li>
         <li ng-repeat="fy in models.fys">
           <a class="clk" ng-click="reload(fy)">
@@ -14,11 +14,11 @@
           </a>
         </li>
       </ul>
-    </span> 
+    </span>
 
-    <span class="dropdown">
-      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{ "REPORT.VISIBLE_PERIODS" | translate }}</a>
-      <ul class="dropdown-menu">
+    <span uib-dropdown class="dropdown">
+      <a uib-dropdown-toggle class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{ "REPORT.VISIBLE_PERIODS" | translate }}</a>
+      <ul class="uib-dropdown-menu" role="menu">
         <li class="dropdown-header">{{ "REPORT.CHOOSE_PERIOD" | translate }}</li>
         <li ng-repeat="p in models.periods">
           <a class="clk" ng-click="adjust(p)">

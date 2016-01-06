@@ -26,10 +26,10 @@
               </div>
 
               <div class="form-group">
-                <span class="btn-group">
-                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : ReportCtrl.session.active }">{{ (ReportCtrl.session.selected | translate) || "..." }}</button>
-                  <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
-                  <ul class="dropdown-menu menu-sq">
+                <span uib-dropdown class="btn-group">
+                  <button uib-dropdown-toggle class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : ReportCtrl.session.active }">{{ (ReportCtrl.session.selected | translate) || "..." }}</button>
+                  <button uib-dropdown-toggle class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
+                  <ul class="uib-dropdown-menu menu-sq" role="menu">
                     <li ng-repeat="opt in ReportCtrl.options">
                       <a class="clk" ng-click="ReportCtrl.search(opt)">{{ opt.label | translate }}</a>
                     </li>

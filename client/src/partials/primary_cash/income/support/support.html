@@ -11,12 +11,12 @@
     </ol>
   </div>
 
-  <div class="pull-right dropdown">
-    <button class="btn btn-sm btn-primary dropdown-toggle">
+  <div uib-dropdown class="pull-right dropdown">
+    <button uib-dropdown-toggle class="btn btn-sm btn-primary dropdown-toggle">
       {{ selectedItem.symbol || "SUPPORT_PAYEMENT.DEFAULT_CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
     </button>
-    <ul class="dropdown-menu">
+    <ul class="uib-dropdown-menu" role="menu">
       <li ng-repeat="box in model.cash_box.data">
         <a ng-click="setCashAccount(box)">{{ box.symbol }}</a>
       </li>

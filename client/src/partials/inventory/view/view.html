@@ -11,12 +11,12 @@
     </ol>
   </div>
 
-  <div class="pull-left dropdown">
-    <button class="btn btn-sm dropdown-toggle btn-default">
+  <div uib-dropdown class="pull-left dropdown">
+    <button uib-dropdown-toggle class="btn btn-sm dropdown-toggle btn-default">
       <span class="glyphicon glyphicon-signal"></span> {{ "INVENTORY_VIEW.GROUP_BY" | translate }}
     </button>
     <!-- TODO: Fix this like general ledger -->
-    <ul class="dropdown-menu">
+    <ul class="uib-dropdown-menu">
       <li ng-repeat="groupDefinition in groupDefinitions">
         <a ng-click="groupby(groupDefinition)">{{groupDefinition.key | translate }}</a>
       </li>

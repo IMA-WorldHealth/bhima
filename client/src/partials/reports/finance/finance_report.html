@@ -4,9 +4,9 @@
 
 <nav>
   <div class="pull-right">
-    <span class="dropdown">
-      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'UTIL.CONFIGURE' | translate}}</a>
-      <ul class="dropdown-menu">
+    <span uib-dropdown class="dropdown">
+      <a uib-dropdown-toggle class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'UTIL.CONFIGURE' | translate}}</a>
+      <ul class="uib-dropdown-menu" role="menu">
         <li class="dropdown-header">{{ "REPORT.REPORT_YEARS" | translate }}</li>
         <li ng-repeat="option in tableDefinition.options">
           <a ng-click="toggleYear(option)" >

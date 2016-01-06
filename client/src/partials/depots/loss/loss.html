@@ -93,12 +93,12 @@
 
             <tr ng-repeat="item in row.staged" class="incomplete-outline" ng-class="{ 'complete-outline': RowForm.$valid && !!item.tracking_number }" ng-form="RowForm">
               <th class="text-center" style="vertical-align:middle;">{{ $index + 1 }}</th>
-              <td class="text-center dropdown" style="width:33%">
-                <button class="btn btn-sm btn-default dropdown-toggle" style="width:100%;">
+              <td uib-dropdown class="text-center dropdown" style="width:33%">
+                <button uib-dropdown-toggle class="btn btn-sm btn-default dropdown-toggle" style="width:100%;">
                   {{ item.label || 'SELECT.LOT_NUMBER' | translate }}
                   <span class="caret" data-caret="&#9660;"></span>
                 </button>
-                <ul class="dropdown-menu">
+                <ul class="uib-dropdown-menu">
                   <li ng-repeat="lot in row.inventoryItem.lots | filter:{'used': false} | orderBy:'fmtLabel' track by lot.tracking_number">
                     <a ng-click="LossCtrl.selectLot(item, lot, row)">{{ lot.fmtLabel }}</a>
                   </li>
