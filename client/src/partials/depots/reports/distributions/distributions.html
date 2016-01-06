@@ -12,13 +12,13 @@
   </div>
 
   <div class="pull-left">
-    <span class="btn-group">
-      <button ng-click="DistributionsCtrl.select(DistributionsCtrl.selected)" class="btn btn-sm btn-default">{{(DistributionsCtrl.selected.key | translate) || "..."}}</button>
-      <button class="btn btn-sm btn-default dropdown-toggle">
+    <span uib-dropdown class="btn-group">
+      <button uib-dropdown-toggle ng-click="DistributionsCtrl.select(DistributionsCtrl.selected)" class="btn btn-sm btn-default">{{(DistributionsCtrl.selected.key | translate) || "..."}}</button>
+      <button uib-dropdown-toggle class="btn btn-sm btn-default dropdown-toggle">
         <span class="caret" data-caret="&#9660;"></span>
       </button>
 
-      <ul class="dropdown-menu">
+      <ul class="uib-dropdown-menu">
         <li ng-repeat="item in DistributionsCtrl.periods">
           <a class="clk" ng-click="DistributionsCtrl.select(item)">
             {{ item.key | translate }}

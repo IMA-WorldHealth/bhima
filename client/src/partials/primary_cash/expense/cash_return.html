@@ -11,12 +11,12 @@
     </ol>
   </div>
 
-  <div class="pull-right dropdown">
-    <button class="btn btn-sm btn-primary dropdown-toggle">
+  <div uib-dropdown class="pull-right dropdown">
+    <button uib-dropdown-toggle class="btn btn-sm btn-primary dropdown-toggle">
       {{ session.base.selectedItem.symbol || "CASH_RETURN.DEFAULT_CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
     </button>
-    <ul class="dropdown-menu">
+    <ul class="uib-dropdown-menu" role="menu">
       <li ng-repeat="box in cash_box.data">
         <a ng-click="setCashAccount(box)">{{ box.symbol }}</a>
       </li>
@@ -35,11 +35,11 @@
           <div class="form-group">
             <label>{{ "COLUMNS.DEBITOR" | translate }}/{{ "COLUMNS.CREDITOR" | translate }}</label>
             <div class="input-group">
-              <span class="input-group-btn dropdown">
-                <a class="btn btn-default btn-sm dropdown-toggle">
+              <span uib-dropdown class="input-group-btn dropdown">
+                <a uib-dropdown-toggle class="btn btn-default btn-sm dropdown-toggle">
                   {{ session.data.type || "..."  | uppercase }} <span class="caret" data-caret="&#9660;"></span>
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="uib-dropdown-menu" role="menu">
                   <li><a ng-click="setType('D')">{{ "COLUMNS.DEBTOR" | translate }}</a></li>
                   <li><a ng-click="setType('C')">{{ "COLUMNS.CREDITOR" | translate }}</a></li>
                 </ul>
