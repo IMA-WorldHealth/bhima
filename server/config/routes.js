@@ -49,6 +49,7 @@ var cashboxes      = require('../controllers/finance/cashboxes');
 var exchange       = require('../controllers/finance/exchange');
 var cashflow       = require('../controllers/cashflow');
 
+var patientInvoice = require('../controllers/finance/patientInvoice');
 
 var financeServices      = require('../controllers/categorised/financeServices');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
@@ -285,7 +286,7 @@ exports.configure = function (app) {
   // Patient invoice API 
   
   // TODO Decide if the route should be named patient invoice
-  // app.get('/sales', patientInvoice.list);
+  app.get('/sales', patientInvoice.list);
   // app.post('/sales', patientInvoice.create);
   // app.get('/sales/:uuid', patientInvoice.details);
 

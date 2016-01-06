@@ -31,7 +31,21 @@ describe('The /sales API', function () {
       .send(user);
   });
   
-  // it('GET /sales returns a list of patient invoice', function () { });
+  it('GET /sales returns a list of patient invoice', function () {
+    var INITIAL_PATIENT_INVOICES = 1;
+
+    return agent.get('/sales')
+      .then(function (res) { 
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.length(INITIAL_PATIENT_INVOICES);
+      })
+      .catch(handle);
+  });
   // it('GET /sales/:uuid returns a valid patient invoice', function () { });
   // it('GET /sales/:uuid returns 404 for an invalid patient invoice', function () { });
+  
+  function handle(error) {
+    throw error;
+  }
 });

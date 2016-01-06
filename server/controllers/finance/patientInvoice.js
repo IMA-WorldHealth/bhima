@@ -15,6 +15,7 @@ exports.details = details;
 exports.create = create;
 
 function list(req, res, next) { 
+
   // Retrieve all patient invoices 
 }
 
