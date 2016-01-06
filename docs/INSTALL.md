@@ -2,7 +2,7 @@ Bhima Installation Guide
 ===========================
 
 *NOTE* This guide is built for bhima version 2.X.  If you are attempting to build
-version 1.X, see [this repository]().
+version 1.X, see [this repository](https://github.com/IMA-WorldHealth/bhima-1.X).
 
 This guide will get you up and running with bhima locally.  Please note that
 bhima is under active development and should *not* be used commercially.
@@ -19,9 +19,9 @@ $ cd bhima-2.X
 ```
 
 ###### Building the source
-Bhima uses the [gulp](http://www.gulpjs.com) build tool to build from source.
+Bhima uses the [gulpjs](http://www.gulpjs.com) build tool to build from source.
 Install it globally with npm and install other all npm dependencies, then run
-the `gulp` command in the client directory as shown below.
+the `gulp build` command in the client directory as shown below.
 
 ```bash
 $ # Inside the bhima-2.X/ directory
@@ -31,6 +31,17 @@ $ bower install -f
 $ gulp build
 # lots of console output..
 ```
+
+Alternatively, you can use the installation script found in the `/sh` folder to
+download all dependencies, build the server and databases.  The syntax looks like
+this:
+
+```bash
+$ # inside the bhima-2.X directory
+$ ./sh/install.sh -d
+```
+
+For full usage information, use the `-h` help flag.
 
 ###### Creating a database
 Bhima database structure is contained in the file `server/sql/bhima.sql`.  For
