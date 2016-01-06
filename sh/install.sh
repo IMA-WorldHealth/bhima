@@ -42,7 +42,7 @@ done
 build_depends () {
   echo "Installing online dependencies ..."
   echo "Please put in your super user password to install global dependencies."
-  sudo npm install -g gulp bower
+  sudo npm install -g gulp bower mocha
   echo "Installing local dependencies ..."
   npm install
   bower install -f
@@ -88,4 +88,3 @@ main () {
 }
 
 main
-
