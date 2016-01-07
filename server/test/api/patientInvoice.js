@@ -31,7 +31,13 @@ describe('The /sales API', function () {
       .send(user);
   });
   
-  it('GET /sales returns a list of patient invoice', function () {
+  it('POST /sales will record a valid patient invoice and return success from the posting journal'), function () { 
+
+  });
+
+  it('GET /sales returns a list of patient invoices', function () {
+
+    // This value depends on the success of the previous test
     var INITIAL_PATIENT_INVOICES = 1;
 
     return agent.get('/sales')

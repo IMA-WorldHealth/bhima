@@ -99,7 +99,7 @@ exports.configure = function (app) {
   app.get('/report/serve/:target', reports.serve);
 
   app.post('/purchase', createPurchase.execute);
-  app.post('/sale/', createSale.execute);
+  // app.post('/sale/', createSale.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
   // trial balance routes
@@ -287,7 +287,7 @@ exports.configure = function (app) {
   
   // TODO Decide if the route should be named patient invoice
   app.get('/sales', patientInvoice.list);
-  // app.post('/sales', patientInvoice.create);
+  app.post('/sales', patientInvoice.create);
   // app.get('/sales/:uuid', patientInvoice.details);
 
   // Patients API
