@@ -7,7 +7,6 @@ chai.use(chaiHttp);
 
 // import test helpers
 var helpers = require('./helpers');
-
 helpers.configure(chai);
 
 /**

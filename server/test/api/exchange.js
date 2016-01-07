@@ -5,49 +5,34 @@ var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-// workaround for low node versions
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
-
-// environment variables - disable certificate errors
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-// base URL
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 /**
 * The /exchange API endpoint
 */
 describe('The /exchange API endpoint', function () {
-  var agent = chai.request.agent(url);
+  'use strict';
+
+  var agent = chai.request.agent(helpers.baseUrl);
 
   // constants
   var RATE = {
-    enterprise_currency_id : 2, // USD in test database
-    foreign_currency_id : 1,    // FC in test database
-    rate : 930,
-    date : new Date()
+    enterprise_currency_id: 2,    // USD in test database
+    foreign_currency_id:    1,    // FC in test database
+    rate:                   930,
+    date:                   new Date()
   };
 
-  // throw errors
-  function handler(err) { throw err; }
-
   // login before each request
-  beforeEach(function () {
-    return agent
-      .post('/login')
-      .send(user);
-  });
+  beforeEach(helpers.login(agent));
 
   it('GET /exchange returns a list of exchange rates', function () {
     return agent.get('/exchange')
       .then(function (res) {
         expect(res).to.have.status(200);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
 
@@ -66,6 +51,6 @@ describe('The /exchange API endpoint', function () {
         expect(res.body[0]).to.not.be.empty;
         expect(res.body[0]).to.contain.keys('currency_id', 'date', 'rate');
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 });

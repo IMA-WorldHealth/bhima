@@ -1,30 +1,22 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-// workaround for low node versions
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
-
-// environment variables - disable certificate errors
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-// base URL
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
+// import test helpers
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 /**
 * The /users API endpoint
 *
 * This test suite implements full CRUD on the /users HTTP API endpoint.
 */
-describe('The /users API endpoint', function () {
-  var agent = chai.request.agent(url);
+describe('(/users) Users and Permissions Interface ::', function () {
+  var agent = chai.request.agent(helpers.baseUrl);
+
   var newUser = {
     username : 'newUser',
     password : 'newUser',
@@ -33,20 +25,14 @@ describe('The /users API endpoint', function () {
     first: 'new',
     last: 'user'
   };
+
   var badUser = {
     username : 'username',
     password : 'password',
   };
 
-  // throw errors
-  function handler(err) { throw err; }
-
   // login before each request
-  beforeEach(function () {
-    return agent
-      .post('/login')
-      .send(user);
-  });
+  beforeEach(helpers.login(agent));
 
   it('GET /users returns a list of users', function () {
     return agent.get('/users')
@@ -55,7 +41,7 @@ describe('The /users API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(4);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('POST /users will add a valid user', function () {
@@ -68,7 +54,7 @@ describe('The /users API endpoint', function () {
         // cache the user id
         newUser.id = res.body.id;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('POST /users will reject an invalid user', function () {
@@ -80,7 +66,7 @@ describe('The /users API endpoint', function () {
         expect(res.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
         expect(res.body.missingKeys).to.have.length.above(2);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('POST /users with empty object will send 400 error code', function () {
@@ -89,7 +75,7 @@ describe('The /users API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(400);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /users/:id/projects should not find one project assigned to the new user', function () {
@@ -99,7 +85,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.be.json;
         expect(res.body).to.have.length(1);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /users/:id will find the newly added user', function () {
@@ -112,7 +98,7 @@ describe('The /users API endpoint', function () {
         expect(res.body.first).to.equal(newUser.first);
         expect(res.body.last).to.equal(newUser.last);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /users/:id will update the newly added user', function () {
@@ -131,7 +117,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body.email).to.equal('email@test.org');
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /users/:id with empty object will send 400 error code', function () {
@@ -141,7 +127,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(400);
         expect(res).to.be.json;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /users/:id will update a user\'s projects', function () {
@@ -160,7 +146,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body.email).to.equal('email@test.org');
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /users/:id will NOT update the new user\'s password', function () {
@@ -171,7 +157,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.be.json;
         expect(res.body.code).to.equal('ERR_CANNOT_UPDATE_PASSWORD');
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /users/:id/password will update the new user\'s password', function () {
@@ -181,7 +167,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /users/:id/permissions will have empty permissions for new user', function () {
@@ -190,7 +176,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('POST /users/:id/permissions will create user permissions', function () {
@@ -207,7 +193,7 @@ describe('The /users API endpoint', function () {
         expect(res.body[0]).to.have.keys('id', 'unit_id');
         expect(res.body[0].unit_id).to.equal(0);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   // a user is allowed to delete all permissions for a give user.
@@ -222,7 +208,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
 
@@ -233,7 +219,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
 
@@ -247,7 +233,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(404);
         expect(res.body).to.not.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('DELETE /users/:id will send back a 404 if the user does not exist', function () {
@@ -256,7 +242,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(404);
         expect(res.body).to.not.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /users/:id/permissions will be empty for deleted user', function () {
@@ -265,7 +251,7 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
 });
