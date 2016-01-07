@@ -1152,7 +1152,7 @@ CREATE TABLE `partial_paiement` (
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+-- TODO write schema change (transactions) into SQL update script
 DROP TABLE IF EXISTS `patient`;
 
 CREATE TABLE `patient` (
@@ -1198,6 +1198,9 @@ CREATE TABLE `patient` (
   FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
   FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TRIGGER calculate_reference BEFORE INSERT ON patient 
+FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM patient WHERE patient.project_id = new.project_id);
 
 DROP TABLE IF EXISTS `patient_group`;
 
