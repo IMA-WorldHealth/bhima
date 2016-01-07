@@ -46,7 +46,7 @@ CREATE TABLE `cash` (
   `date`            date NOT NULL,
   `debtor_uuid`     char(36) NOT NULL,
   `currency_id`     tinyint(3) unsigned NOT NULL,
-  `cost`            decimal(19,2) unsigned NOT NULL DEFAULT 0.00,
+  `amount`          decimal(19,2) unsigned NOT NULL DEFAULT 0.00,
   `user_id`         smallint(5) unsigned NOT NULL,
   `cashbox_id`      mediumint(8) unsigned NOT NULL,
   `description`     text,
@@ -95,7 +95,7 @@ CREATE TABLE `cash_discard` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- migrate data for cash
-INSERT INTO `cash` (uuid, project_id, reference, `date`, debtor_uuid, currency_id, cost, user_id, cashbox_id, description, is_caution)
+INSERT INTO `cash` (uuid, project_id, reference, `date`, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution)
   SELECT uuid, project_id, reference, `date`, deb_cred_uuid, currency_id, cost, user_id, cashbox_id, description, is_caution
   FROM `cash_migrate`;
 

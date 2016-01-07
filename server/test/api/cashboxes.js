@@ -184,7 +184,7 @@ describe('The /cashboxes API endpoint', function () {
       .catch(handler);
   });
 
-  it('PUT /cashboxes/:id/currencies/undefined should return a 200 code', function () {
+  it('PUT /cashboxes/:id/currencies/undefined should successfully return nothing', function () {
     return agent.put('/cashboxes/' + BOX.id + '/currencies/undefined')
       .send({ gain_exchange_account_id : 3635 })
       .then(function (res) {
