@@ -218,5 +218,5 @@ function PatientEdit($scope, $translate, $routeParams, $location, $anchorScroll,
   viewModel.scrollToSubmission = function scrollToSubmission() { 
     $location.hash('submission');
     $anchorScroll();
-  }
+  };
 }

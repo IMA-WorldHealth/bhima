@@ -9,6 +9,6 @@ function PatientEditFind($location) {
   
   viewModel.submitPatient = function (patient) {
     $location.path('patients/edit/'.concat(patient.uuid));
-  }
+  };
 }
  
