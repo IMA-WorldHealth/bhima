@@ -62,18 +62,12 @@ function create(req, res, next) {
   writeDebtorQuery = 'INSERT INTO debitor (uuid, group_uuid, text) VALUES ' +
     '(?, ?, ?)';
 
-  // calculateReferenceQuery = 'SET @reference = (SELECT MAX(reference) from patient WHERE project_id = ? LOCK IN SHARE MODE) + 1';
-  calculateReferenceQuery = 'SET @reference = (SELECT MAX(reference) from patient WHERE project_id = ? FOR UPDATE) + 1';
-  // calculateReferenceQuery = 'SET @reference = (SELECT MAX(reference) from patient WHERE project_id = ?) + 1';
-
-  // writePatientQuery = 'INSERT INTO patient SET ?';
-  writePatientQuery = 'INSERT INTO patient SET ?, reference = (SELECT @reference)';
+  writePatientQuery = 'INSERT INTO patient SET ?';
 
   transaction = db.transaction();
 
   transaction
     .addQuery(writeDebtorQuery, [finance.uuid, finance.debitor_group_uuid, generatePatientText(medical)])
-    .addQuery(calculateReferenceQuery, [req.session.project.id])
     .addQuery(writePatientQuery, [medical]);
 
   transaction.execute()
