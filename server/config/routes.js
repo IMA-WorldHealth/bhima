@@ -363,4 +363,10 @@ exports.configure = function (app) {
   // @todo - classify these
   app.get('/cashflow/report/', cashflow.getReport);
   //app.get('/stock/entries?', depot.getStockEntry);
+
+  // employees api
+  app.get('/employees', employees.list);
+  app.get('/employees/:id', employees.details);
+  app.put('/employees/:id', employees.update);
+  app.post('/employees', employees.create);
 };

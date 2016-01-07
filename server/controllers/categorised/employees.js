@@ -1,7 +1,24 @@
+/**
+* The /employees HTTP API endpoint
+*
+* This controller is responsible for implementing all crud on the
+* employees table through the /employees endpoint
+*
+* NOTE: This api does not handle the deletion of employees because
+* that subject is not in the actuality
+*/
+
+'use strict';
+
 var db = require('./../../lib/db');
 var util = require('./../../lib/util');
 var sanitize = require('./../../lib/sanitize');
 
+/**
+* GET /employees
+*
+* Returns an array of each employee in the database
+*/
 exports.list = function (req, res, next) {
   var sql =
     'SELECT ' +
@@ -21,10 +38,10 @@ exports.list = function (req, res, next) {
     ' ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC';
 
   db.exec(sql)
-  .then(function (result) {
-    res.send(result);
+  .then(function (rows) {
+    res.status(200).json(rows);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 };
 
@@ -45,7 +62,7 @@ exports.listHolidays = function (req, res, next) {
   .then(function (result) {
     res.send(result);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 };
 
@@ -63,16 +80,121 @@ exports.checkHoliday = function (req, res, next) {
   .then(function (result) {
     res.send(result);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 };
 
 exports.checkOffday = function (req, res, next) {
-  var sql ='SELECT * FROM offday WHERE date = "' + req.query.date + '" AND id <> "' + req.query.id +'"';
-  db.exec(sql)
+  var sql ='SELECT * FROM offday WHERE date = ? AND id <> ?';
+  db.exec(sql, [req.query.date, req.query.id])
   .then(function (result) {
     res.send(result);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
+  .done();
+};
+
+/**
+* GET /employees/:id
+*
+* Returns an object of details of an employee referenced by an `id` in the database
+*/
+exports.details = function (req, res, next) {
+  var sql =
+  'SELECT ' +
+  'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
+  'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
+  'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
+  'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
+  'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, employee.location_id, ' +
+  'grade.code AS code_grade, debitor.uuid as debitor_uuid, debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
+  'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
+  'FROM employee ' +
+  ' JOIN grade ON employee.grade_id = grade.uuid ' +
+  ' JOIN fonction ON employee.fonction_id = fonction.id ' +
+  ' JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
+  ' JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
+  ' JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
+  ' LEFT JOIN service ON service.id = employee.service_id ' +
+  'WHERE employee.id = ? ';
+
+  db.exec(sql, [req.params.id])
+  .then(function (rows) {
+    // send a 204 if rows is empty
+    if (!rows.length) {
+      return res.status(204).json({
+        code   : 'SUCCES_NO_CONTENT',
+        reason : 'No employee found by id ' + req.params.id
+      });
+    }
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+* PUT /employees/:id
+*
+* update details of an employee referenced by an `id` in the database
+*/
+exports.update = function (req, res, next) {
+  var sql = 'UPDATE employee SET ? WHERE employee.id = ?';
+
+  db.exec(sql, [req.body, req.params.id])
+  .then(function () {
+    // Return the employee informations updated
+    sql =
+      'SELECT ' +
+      'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
+      'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
+      'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
+      'fonction.id AS fonction_id, fonction.fonction_txt, ' +
+      'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, employee.location_id, ' +
+      'grade.code AS code_grade, debitor.uuid as debitor_uuid, debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
+      'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
+      'FROM employee ' +
+      ' JOIN grade ON employee.grade_id = grade.uuid ' +
+      ' JOIN fonction ON employee.fonction_id = fonction.id ' +
+      ' JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
+      ' JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
+      ' JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
+      'WHERE employee.id = ?; ';
+
+    return db.exec(sql, [req.params.id]);
+  })
+  .then(function (rows) {
+    res.status(200).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+* POST /employees/
+*
+* this funcion is responsible for creating a new employee in the database
+*/
+exports.create = function (req, res, next) {
+  var sql =
+      'INSERT INTO employee (' +
+      'code, prenom, name, postnom, sexe, dob, date_embauche, nb_spouse, nb_enfant, ' +
+      'grade_id, daily_salary, bank, bank_account, adresse, phone, email, ' +
+      'fonction_id, service_id, location_id, creditor_uuid, debitor_uuid) VALUES ' +
+      '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+  var data = [
+    req.body.code, req.body.prenom, req.body.name, req.body.postnom, req.body.sexe,
+    req.body.dob, req.body.date_embauche, req.body.nb_spouse, req.body.nb_enfant,
+    req.body.grade_id, req.body.daily_salary, req.body.bank, req.body.bank_account,
+    req.body.adresse, req.body.phone, req.body.email, req.body.fonction_id, req.body.service_id,
+    req.body.location_id, req.body.creditor_uuid, req.body.debitor_uuid
+  ];
+
+  db.exec(sql, data)
+  .then(function (row) {
+    res.status(201).json({ id: row.insertId });
+  })
+  .catch(next)
   .done();
 };
