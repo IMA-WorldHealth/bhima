@@ -11,6 +11,7 @@
 * looks up the correct account based on the cashbox_id + currency.
 */
 var db   = require('../../lib/db');
+var uuid = require('../../lib/guid');
 
 // check if an object is empty
 // TODO - can this be from a library?
@@ -126,11 +127,56 @@ exports.details = function details(req, res, next) {
 
 /**
  * POST /cash
- * Creates a cash payment against several sales or a cautionary payment.
+ * Creates a cash payment against several sales or a cautionary payment.  The
+ * API also supports future offline functionality by either accepting a UUID or
+ * generating it if it is not present.
  */
 exports.create = function create(req, res, next) {
   'use strict';
-  // TODO
+
+  var data = req.body.payment;
+
+  // generate a UUID if it not provided.
+  // @TODO - should we validate that this is an _actual_ uuid, or should this
+  // be sufficient?
+  data.uuid = data.uuid || uuid();
+
+  // account for the cash items
+  var items =  data.items;
+
+  // remove the cash items so that the SQL query is properly formatted
+  delete data.items;
+
+  if (items) {
+    items = items.map(function (item) {
+      item.uuid = item.uuid || uuid();
+      item.cash_uuid = data.uuid;
+      return item;
+    });
+  }
+
+  var writeCashSql =
+    'INSERT INTO cash SET ?;';
+
+  var writeCashItemsSql =
+    'INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) ' +
+    'VALUES (?);';
+
+  var transaction = db.transaction();
+  transaction.addQuery(writeCashSql, [ data ]);
+
+  // only add the "items" query if we are NOT making a caution
+  // cautions do not have items
+  if (!data.is_caution) {
+    transaction.addQuery(writeCashItemsSql, [items]);
+  }
+
+  transaction.execute()
+  .then(function () {
+    res.status(201).json({ uuid : data.uuid });
+  })
+  .catch(next)
+  .done();
 };
 
 
@@ -193,4 +239,5 @@ exports.update = function update(req, res, next) {
 exports.debitNote = function debitNote(req, res, next) {
   'use strict';
   // TODO
+  next();
 };

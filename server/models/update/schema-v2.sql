@@ -93,6 +93,8 @@ CREATE TABLE `cash_discard` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- new triggers to manage creation of references
+CREATE TRIGGER cash_calculate_reference BEFORE INSERT ON cash 
+FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM cash WHERE cash.project_id = new.project_id);
 
 -- migrate data for cash
 INSERT INTO `cash` (uuid, project_id, reference, `date`, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution)

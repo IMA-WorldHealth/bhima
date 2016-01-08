@@ -19,12 +19,15 @@ describe('(/cash) Cash Payments Interface ::', function () {
 
   var CASHBOX_ID  = 1;  // Test Primary Cashbox A
   var CURRENCY_ID = 2;  // Congolese Francs
+  var PROJECT_ID = 1;   // Test Project
   var DEBTOR_UUID =     // Patient/1/Patient
     'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
+  var USER_ID = 1;      // Test User
   var INVOICES = [      // sales defined in the database
-    '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',
-    'c44619e0-3a88-4754-a750-a414fc9567bf'
+    { invoice_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6', amount : 75.0 },
+    { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf', amount : 25.0 }
   ];
+
 
   // login before each request
   beforeEach(helpers.login(agent));
@@ -58,6 +61,8 @@ describe('(/cash) Cash Payments Interface ::', function () {
       currency_id: CURRENCY_ID,
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
+      project_id:  PROJECT_ID,
+      user_id  :   USER_ID,
       is_caution:  1
     };
 
@@ -71,11 +76,12 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res.body).to.not.be.empty;
           expect(res.body.uuid).to.be.defined;
 
+
           // store the payment id for later
           CAUTION_PAYMENT.uuid = res.body.uuid;
 
           // make sure the payment is retrievable
-          return agent.get('/cash/' + CAUTION_PAYMENT);
+          return agent.get('/cash/' + CAUTION_PAYMENT.uuid);
         })
         .then(function (res) {
           expect(res).to.have.status(200);
@@ -102,7 +108,9 @@ describe('(/cash) Cash Payments Interface ::', function () {
       currency_id: CURRENCY_ID,
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
-      invoices:    INVOICES,
+      items:       INVOICES,
+      project_id:  PROJECT_ID,
+      user_id  :   USER_ID,
       is_caution:  0
     };
 
@@ -133,60 +141,62 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res.body.cashbox_id).to.equal(SALE_PAYMENT.cashbox_id);
         })
         .catch(helpers.handler);
-
-      it('PUT /cash/:uuid should update editable fields on a previous cash payment', function () {
-        var desc = 'I\'m adding a description!';
-
-        return agent.put('/cash/' + SALE_PAYMENT.uuid)
-          .send({ description : desc })
-          .then(function (res) {
-            expect(res).to.have.status(200);
-            expect(res).to.be.json;
-            expect(res.body).to.not.be.empty;
-
-            return agent.get('/cash/' + SALE_PAYMENT.uuid);
-          })
-          .then(function (res) {
-            expect(res).to.have.status(200);
-            expect(res).to.be.json;
-            expect(res.body).to.not.be.empty;
-
-            expect(res.body.is_caution).to.equal(SALE_PAYMENT.is_caution);
-            expect(res.body.description).to.equal(desc);
-          })
-          .catch(helpers.handler);
-      });
-
-      it('PUT /cash/:uuid should not update non-editable fields on a previous cash payment', function () {
-        return agent.put('/cash/' + SALE_PAYMENT.uuid)
-          .send({ amount : 123000.13 })
-          .then(function (res) {
-            expect(res).to.have.status(400);
-            expect(res).to.be.json;
-
-            // expect to be an error
-            expect(res.body).to.contain.keys('code', 'reason');
-          })
-          .catch(helpers.handler);
-      });
-
-      // make sure we can find the cash payment
-      it('GET /cash/:uuid should return the full payment details of a cash payment', function () {
-        return agent.get('/cash/' + SALE_PAYMENT.uuid)
-          .then(function (res) {
-            expect(res).to.have.status(200);
-            expect(res.body).to.not.be.empty;
-            expect(res.body).to.have.keys(
-              'uuid', 'reference', 'date', 'debtor_uuid', 'currency_id',
-              'amount', 'user_id', 'description', 'is_caution', 'canceled'
-            );
-          })
-          .catch(helpers.handler);
-      });
-
     });
 
-    // The HTTP DELETE verb triggers a cash_discard record, but does not destroy any data
+    it('PUT /cash/:uuid should update editable fields on a previous cash payment', function () {
+      var desc = 'I\'m adding a description!';
+
+      return agent.put('/cash/' + SALE_PAYMENT.uuid)
+        .send({ description : desc })
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.not.be.empty;
+
+          return agent.get('/cash/' + SALE_PAYMENT.uuid);
+        })
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.not.be.empty;
+
+          expect(res.body.is_caution).to.equal(SALE_PAYMENT.is_caution);
+          expect(res.body.description).to.equal(desc);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('PUT /cash/:uuid should not update non-editable fields on a previous cash payment', function () {
+      return agent.put('/cash/' + SALE_PAYMENT.uuid)
+        .send({ amount : 123000.13 })
+        .then(function (res) {
+          expect(res).to.have.status(400);
+          expect(res).to.be.json;
+
+          // expect to be an error
+          expect(res.body).to.contain.keys('code', 'reason');
+        })
+        .catch(helpers.handler);
+    });
+
+    // make sure we can find the cash payment
+    it('GET /cash/:uuid should return the full payment details of a cash payment', function () {
+      return agent.get('/cash/' + SALE_PAYMENT.uuid)
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res.body).to.not.be.empty;
+          expect(res.body).to.have.keys(
+            'uuid', 'reference', 'date', 'debtor_uuid', 'currency_id',
+            'amount', 'user_id', 'description', 'is_caution', 'canceled'
+          );
+        })
+        .catch(helpers.handler);
+    });
+  });
+
+  // The HTTP DELETE verb triggers a cash_discard record, but does not destroy any data
+  // (proposed rename: debit_note)
+  describe('The Debit Note Interface ::', function () {
 
     it('DELETE /cash/:uuid should create a cash_discard record', function () {
       // TODO
@@ -208,7 +218,4 @@ describe('(/cash) Cash Payments Interface ::', function () {
       expect(true).to.be.false;
     });
   });
-
-  // General Cash Methods
-
 });
