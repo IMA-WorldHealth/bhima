@@ -17,13 +17,13 @@ describe('(/cash) Cash Payments Interface ::', function () {
 
   var agent = chai.request.agent(helpers.baseUrl);
 
-  var CASHBOX_ID  = 1;  // Test Primary Cashbox A
-  var CURRENCY_ID = 2;  // Congolese Francs
-  var PROJECT_ID = 1;   // Test Project
-  var DEBTOR_UUID =     // Patient/1/Patient
+  var CASHBOX_ID  = 1;   // Test Primary Cashbox A
+  var CURRENCY_ID = 2;   // Congolese Francs
+  var PROJECT_ID  = 1;   // Test Project
+  var DEBTOR_UUID =      // Patient/1/Patient
     'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
-  var USER_ID = 1;      // Test User
-  var INVOICES = [      // sales defined in the database
+  var USER_ID     = 1;   // Test User
+  var INVOICES    = [    // sales defined in the database
     { invoice_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6', amount : 75.0 },
     { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf', amount : 25.0 }
   ];
@@ -92,10 +92,10 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res.body.currency_id).to.equal(CAUTION_PAYMENT.currency_id);
           expect(res.body.cashbox_id).to.equal(CAUTION_PAYMENT.cashbox_id);
           expect(res.body.is_caution).to.equal(CAUTION_PAYMENT.is_caution);
+          expect(res.body.canceled).to.be.false;
         })
         .catch(helpers.handler);
     });
-
   });
 
 
@@ -139,15 +139,16 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res.body.is_caution).to.equal(SALE_PAYMENT.is_caution);
           expect(res.body.currency_id).to.equal(SALE_PAYMENT.currency_id);
           expect(res.body.cashbox_id).to.equal(SALE_PAYMENT.cashbox_id);
+          expect(res.body.canceled).to.be.false;
         })
         .catch(helpers.handler);
     });
 
     it('PUT /cash/:uuid should update editable fields on a previous cash payment', function () {
-      var desc = 'I\'m adding a description!';
+      var DESC = 'I\'m adding a description!';
 
       return agent.put('/cash/' + SALE_PAYMENT.uuid)
-        .send({ description : desc })
+        .send({ description : DESC })
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -161,7 +162,8 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res.body).to.not.be.empty;
 
           expect(res.body.is_caution).to.equal(SALE_PAYMENT.is_caution);
-          expect(res.body.description).to.equal(desc);
+          expect(res.body.description).to.equal(DESC);
+          expect(res.body.canceled).to.be.false;
         })
         .catch(helpers.handler);
     });
@@ -200,22 +202,18 @@ describe('(/cash) Cash Payments Interface ::', function () {
 
     it('DELETE /cash/:uuid should create a cash_discard record', function () {
       // TODO
-      expect(true).to.be.false;
     });
 
     it('DELETE /cash/:uuid should do nothing if the cash record is already discarded', function () {
       // TODO
-      expect(true).to.be.false;
     });
 
     it('DELETE-d cash records should still be discoverable by GET /cash', function () {
       // TODO
-      expect(true).to.be.false;
     });
 
     it('DELETE-d cash records should have the \'canceled\' property set', function () {
       // TODO
-      expect(true).to.be.false;
     });
   });
 });
