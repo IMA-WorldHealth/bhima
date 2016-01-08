@@ -88,6 +88,7 @@ describe('The /employees API endpoint :: ', function () {
       .then(function (res) {
         expect(res).to.have.status(201);
         expect(res).to.be.json;
+        expect(res.body.id).to.be.exist;
         employee.id = res.body.id;
       })
       .catch(handler);
@@ -136,21 +137,32 @@ describe('The /employees API endpoint :: ', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
+        expect(res.body.affectedRows).to.be.equals(1);
       })
       .catch(handler);
   });
 
-  it('PUT /employee/:id handle fake data ', function () {
-    return agent.put('/employees/' + employee.id)
-      .send([])
+  it('PUT /employee/:id should not update an existing employee with a fake Id ', function () {
+    return agent.put('/employees/fakeId')
+      .send(updateEmployee)
       .then(function (res) {
-        expect(res).to.not.have.status(200);
-        expect(res).to.be.json;
-        return agent.put('/employees/' + employee.id);
+        expect(res).to.have.status(204);
       })
+      .catch(handler);
+  });
+
+  it('PUT /employee/:id should not update an existing employee with a fake data ', function () {
+    return agent.put('/employees/' + employee.id)
       .send({})
       .then(function (res) {
-        expect(res).to.not.have.status(200);
+        expect(res).to.have.status(400);
+        return agent.get('/employees/' + employee.id)
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body[0]).to.be.a('object');
+        expect(res.body[0]).to.have.property('id');
       })
       .catch(handler);
   });
