@@ -11,11 +11,61 @@
 * looks up the correct account based on the cashbox_id + currency.
 */
 var db   = require('../../lib/db');
-var uuid = require('uuid');
 
 // check if an object is empty
+// TODO - can this be from a library?
 function empty(object) {
   return Object.keys(object).length === 0;
+}
+
+
+// looks up a single cash record and associated cash_items
+// sets the "canceled" flag if a cash_discard record exists.
+function lookupCashRecord(uuid, codes) {
+  'use strict';
+
+  var record;
+  var cashRecordSql =
+    'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference, ' +
+      'cash.date, cash.debtor_uuid, cash.currency_id, cash.amount, ' +
+      'cash.description, cash.cashbox_id, cash.is_caution ' +
+    'FROM cash JOIN project ON cash.project_id = project.id ' +
+    'WHERE cash.uuid = ?;';
+
+  var cashItemsRecordSql =
+    'SELECT cash_item.uuid, cash_item.amount, cash_item.invoice_uuid ' +
+    'FROM cash_item WHERE cash_item.cash_uuid = ?;';
+
+  var cashDiscardRecordSql =
+    'SELECT cash_uuid FROM cash_discard WHERE cash_uuid = ?;';
+
+  return db.exec(cashRecordSql, [uuid])
+  .then(function (rows) {
+
+    if (rows.length === 0) {
+      throw codes.ERR_NOT_FOUND;
+    }
+
+    // store the record for return
+    record = rows[0];
+
+    return db.exec(cashItemsRecordSql, [uuid]);
+  })
+  .then(function (rows) {
+
+    // bind the cash items to the "items" property and return
+    record.items = rows;
+
+    return db.exec(cashDiscardRecordSql, [uuid]);
+  })
+  .then(function (rows) {
+
+    // if a linked cash_discard record exists, it means that this cash record
+    // has been reversed and we'll report that using a 'canceled' flag.
+    record.canceled = rows.length > 0;
+
+    return record;
+  });
 }
 
 /**
@@ -29,7 +79,6 @@ function empty(object) {
  *
  * Lists the cash payments with optional filtering parameters.
  * @returns payments An array of { uuid, reference, date } JSON objects
- *
  */
 exports.list = function list(req, res, next) {
   'use strict';
@@ -37,10 +86,8 @@ exports.list = function list(req, res, next) {
   // base query
   var sql =
     'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference, ' +
-      'cash.date, cash.cost '  +
+      'cash.date, cash.amount '  +
     'FROM cash JOIN project ON cash.project_id = project.id;';
-
-  // TODO - var hasKeys = !empty(req.query);
 
   db.exec(sql)
   .then(function (rows) {
@@ -53,23 +100,27 @@ exports.list = function list(req, res, next) {
 /**
  * GET /cash/:uuid
  *
- * Get the details of a particular cash payment.
- *
+ * Get the details of a particular cash payment.  This endpoint will return a
+ * record in the following format:
+ * {
+ *   uuid : "..",
+ *   items : [ {}, {} ]    // items hitting invoices, if applicable
+ *   is_caution : true/false,
+ *   canceled: true/false, // indicates if a cash_discard record exists
+ *   ...
+ *  }
  */
 exports.details = function details(req, res, next) {
   'use strict';
 
-  var sql, cashPayment = {};
+  var uuid = req.params.uuid;
 
-  sql =
-    'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference, ' +
-      'cash.cost, cash.date, cash.description, cash.debit_account, ' +
-      'cash.credit_account, cash.currency_id, cash.type, cash.deb_cred_uuid, '  +
-      'cash.deb_cred_type '
-
-    ';';
-
-  // TODO
+  lookupCashRecord(uuid, req.codes)
+  .then(function (record) {
+    res.status(200).json(record);
+  })
+  .catch(next)
+  .done();
 };
 
 
@@ -79,8 +130,67 @@ exports.details = function details(req, res, next) {
  */
 exports.create = function create(req, res, next) {
   'use strict';
+  // TODO
+};
 
-  var uid = uuid();
 
+/**
+ * PUT /cash/:uuid
+ * Updates the non-financial details associated with a cash payment.
+ * NOTE - this will not update the cash_item or cash_discard tables.
+ */
+exports.update = function update(req, res, next) {
+  'use strict';
+
+  var uuid = req.params.uuid;
+  var updateSql = 'UPDATE cash SET ?;';
+
+  // protected database fields that are unavailable for updates.
+  var protect = [
+    'is_caution', 'amount', 'user_id', 'cashbox_id',
+    'currency_id', 'date', 'uuid', 'project_id'
+  ];
+
+  // loop through update keys and ensure that we are only updating non-protected
+  // fields
+  var keys = Object.keys(req.body);
+  var hasProtectedKey = keys.some(function (key) {
+      return protect.indexOf(key) > -1;
+  });
+
+  // if we have a protected key, emit an error
+  if (hasProtectedKey) {
+    return next('ERR_PROTECTED_FIELD');
+  }
+
+  // if checks pass, we are free to continue with our updates to the db
+  lookupCashRecord(uuid, req.codes)
+  .then(function (record) {
+
+    // if we get here, we know we have a cash record by this UUID.
+    // we can try to update it.
+    return db.exec(updateSql, [ req.body ]);
+  })
+  .then(function () {
+
+    // fetch the changed object from the database
+    return lookupCashRecord(uuid);
+  })
+  .then(function (record) {
+
+    // all updates completed successfull, return full object to client
+    res.status(200).json(record);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+ * DELETE /cash/:uuid
+ * Reverses a cash payment using the cash discard table
+ * @TODO - should this be implemented as a separate API?
+ */
+exports.debitNote = function debitNote(req, res, next) {
+  'use strict';
   // TODO
 };

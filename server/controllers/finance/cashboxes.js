@@ -74,7 +74,7 @@ function helperGetCashbox(id, codes) {
   return db.exec(sql, [id])
   .then(function (rows) {
 
-    if (!rows.length) {
+    if (rows.length === 0) {
       throw codes.NOT_FOUND;
     }
 

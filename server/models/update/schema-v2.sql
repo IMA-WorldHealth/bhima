@@ -6,8 +6,6 @@
 -- PREAMBLE
 --
 
-USE bhima;
-
 -- Foreign key checks will affect the character set upgrade
 SET foreign_key_checks = 0;
 
@@ -68,7 +66,7 @@ CREATE TABLE `cash` (
 CREATE TABLE `cash_item` (
   `uuid`            char(36) NOT NULL,
   `cash_uuid`       char(36) NOT NULL,
-  `allocated_cost`  decimal(19,2) unsigned NOT NULL DEFAULT 0.00,
+  `amount`          decimal(19,2) unsigned NOT NULL DEFAULT 0.00,
   `invoice_uuid`    char(36) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `cash_uuid` (`cash_uuid`),
@@ -94,12 +92,14 @@ CREATE TABLE `cash_discard` (
   FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- new triggers to manage creation of references
+
 -- migrate data for cash
 INSERT INTO `cash` (uuid, project_id, reference, `date`, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution)
-  SELECT uuid, project_id, reference, `date`, deb_cred_uuid, currency_id, cost, user_id, cashbox_id, description, is_caution
+  SELECT uuid, project_id, reference, `date`, `deb_cred_uuid`, currency_id, cost, user_id, cashbox_id, description, is_caution
   FROM `cash_migrate`;
 
-INSERT INTO `cash_item` (uuid, cash_uuid, allocated_cost, invoice_uuid)
+INSERT INTO `cash_item` (uuid, cash_uuid, amount, invoice_uuid)
   SELECT uuid, cash_uuid, allocated_cost, invoice_uuid
   FROM `cash_item_migrate`;
 

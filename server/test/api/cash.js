@@ -17,9 +17,14 @@ describe('(/cash) Cash Payments Interface ::', function () {
 
   var agent = chai.request.agent(helpers.baseUrl);
 
-  var CASHBOX_ID  = 1;   // Test Primary Cashbox A
+  var CASHBOX_ID  = 1;  // Test Primary Cashbox A
   var CURRENCY_ID = 2;  // Congolese Francs
-  var DEBTOR_UUID = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';  // Patient/1/Patient
+  var DEBTOR_UUID =     // Patient/1/Patient
+    'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
+  var INVOICES = [      // sales defined in the database
+    '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',
+    'c44619e0-3a88-4754-a750-a414fc9567bf'
+  ];
 
   // login before each request
   beforeEach(helpers.login(agent));
@@ -43,7 +48,6 @@ describe('(/cash) Cash Payments Interface ::', function () {
       })
       .catch(helpers.handler);
   });
-
 
   // Tests for the Caution Payment Interface
   //
@@ -98,7 +102,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
       currency_id: CURRENCY_ID,
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
-      invoices:    ['uuid1', 'uuid2'],
+      invoices:    INVOICES,
       is_caution:  0
     };
 
@@ -129,6 +133,57 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res.body.cashbox_id).to.equal(SALE_PAYMENT.cashbox_id);
         })
         .catch(helpers.handler);
+
+      it('PUT /cash/:uuid should update editable fields on a previous cash payment', function () {
+        var desc = 'I\'m adding a description!';
+
+        return agent.put('/cash/' + SALE_PAYMENT.uuid)
+          .send({ description : desc })
+          .then(function (res) {
+            expect(res).to.have.status(200);
+            expect(res).to.be.json;
+            expect(res.body).to.not.be.empty;
+
+            return agent.get('/cash/' + SALE_PAYMENT.uuid);
+          })
+          .then(function (res) {
+            expect(res).to.have.status(200);
+            expect(res).to.be.json;
+            expect(res.body).to.not.be.empty;
+
+            expect(res.body.is_caution).to.equal(SALE_PAYMENT.is_caution);
+            expect(res.body.description).to.equal(desc);
+          })
+          .catch(helpers.handler);
+      });
+
+      it('PUT /cash/:uuid should not update non-editable fields on a previous cash payment', function () {
+        return agent.put('/cash/' + SALE_PAYMENT.uuid)
+          .send({ amount : 123000.13 })
+          .then(function (res) {
+            expect(res).to.have.status(400);
+            expect(res).to.be.json;
+
+            // expect to be an error
+            expect(res.body).to.contain.keys('code', 'reason');
+          })
+          .catch(helpers.handler);
+      });
+
+      // make sure we can find the cash payment
+      it('GET /cash/:uuid should return the full payment details of a cash payment', function () {
+        return agent.get('/cash/' + SALE_PAYMENT.uuid)
+          .then(function (res) {
+            expect(res).to.have.status(200);
+            expect(res.body).to.not.be.empty;
+            expect(res.body).to.have.keys(
+              'uuid', 'reference', 'date', 'debtor_uuid', 'currency_id',
+              'amount', 'user_id', 'description', 'is_caution', 'canceled'
+            );
+          })
+          .catch(helpers.handler);
+      });
+
     });
 
     // The HTTP DELETE verb triggers a cash_discard record, but does not destroy any data
@@ -155,55 +210,5 @@ describe('(/cash) Cash Payments Interface ::', function () {
   });
 
   // General Cash Methods
-
-  it('PUT /cash/:uuid should update editable fields on a previous cash payment', function () {
-    var desc = 'I\'m adding a description!';
-
-    return agent.put('/cash/' + SALE_PAYMENT.uuid)
-      .send({ description : desc })
-      .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-
-        return agent.get('/cash/' + SALE_PAYMENT.uuid);
-      })
-      .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-
-        expect(res.body.is_caution).to.equal(SALE_PAYMENT.is_caution);
-        expect(res.body.description).to.equal(desc);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('PUT /cash/:uuid should not update non-editable fields on a previous cash payment', function () {
-    return agent.put('/cash/' + SALE_PAYMENT.uuid)
-      .send({ amount : 123000.13 })
-      .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res).to.be.json;
-
-        // expect to be an error
-        expect(res.body).to.contain.keys('code', 'reason');
-      })
-      .catch(helpers.handler);
-  });
-
-  // make sure we can find the cash payment
-  it('GET /cash/:uuid should return the full payment details of a cash payment', function () {
-    return agent.get('/cash/' + SALE_PAYMENT.uuid)
-      .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.keys(
-          'uuid', 'reference', 'date', 'debtor_uuid', 'currency_id',
-          'amount', 'user_id', 'description', 'is_caution', 'canceled'
-        );
-      })
-      .catch(helpers.handler);
-  });
 
 });
