@@ -222,7 +222,7 @@ describe('The /patients API', function () {
     // var NUMBER_OF_PATIENTS = 200;
     // var timeoutInterval = 30;
 
-    var NUMBER_OF_PATIENTS = 3;
+    var NUMBER_OF_PATIENTS = 2;
     var timeoutInterval = 0;
   
     var timeout = 0;
@@ -261,6 +261,7 @@ describe('The /patients API', function () {
           
           patientReference = patientDetail.body.reference;
           expect(references).to.not.include(patientReference);
+
           references.push(patientReference);
         });
       })
@@ -338,7 +339,7 @@ describe('The /patients API', function () {
       agent.post('/patients')
         .send(simultaneousRequest)
         .then(function (result) { 
-
+          
           deferred.resolve(result);
         })
         .catch(function (error) { 

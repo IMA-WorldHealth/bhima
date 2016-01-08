@@ -149,12 +149,12 @@
                         >
                       </div>
 
-                      <span class="input-group-btn dropdown" ng-if="!row.selectAccount">
-                        <a class="btn btn-sm btn-default dropdown-toggle">
+                      <span uib-dropdown class="input-group-btn dropdown" ng-if="!row.selectAccount">
+                        <a uib-dropdown-toggle class="btn btn-sm btn-default dropdown-toggle">
                           {{ row.deb_cred_type | uppercase }}
                           <span class="caret" data-caret="&#9660;"></span>
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="uib-dropdown-menu">
                           <li><a ng-click="TableCtrl.setDebtorOrCreditorType(row, 'D')">{{ "COLUMNS.DEBTOR" | translate }}</a></li>
                           <li><a ng-click="TableCtrl.setDebtorOrCreditorType(row, 'C')">{{ "COLUMNS.CREDITOR" | translate }}</a></li>
                         </ul>

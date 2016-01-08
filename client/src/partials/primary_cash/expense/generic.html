@@ -13,12 +13,12 @@
   </div>
 
   <div class="pull-right">
-    <div class="dropdown" style="display:inline-block;">
-      <button class="btn btn-sm btn-primary dropdown-toggle">
+    <div uib-dropdown class="dropdown" style="display:inline-block;">
+      <button uib-dropdown-toggle class="btn btn-sm btn-primary dropdown-toggle">
         {{ session.currency.symbol || "UTIL.CURRENCY" | translate }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>
-      <ul class="dropdown-menu">
+      <ul class="uib-dropdown-menu">
         <li ng-repeat="currency in currencies.data">
           <a ng-click="setCurrency(currency)">{{ currency.symbol }}</a>
         </li>
