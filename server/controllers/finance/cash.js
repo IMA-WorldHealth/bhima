@@ -29,7 +29,7 @@ function lookupCashRecord(uuid, codes) {
   var cashRecordSql =
     'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference, ' +
       'cash.date, cash.debtor_uuid, cash.currency_id, cash.amount, ' +
-      'cash.description, cash.cashbox_id, cash.is_caution ' +
+      'cash.description, cash.cashbox_id, cash.is_caution, cash.user_id ' +
     'FROM cash JOIN project ON cash.project_id = project.id ' +
     'WHERE cash.uuid = ?;';
 
@@ -147,11 +147,15 @@ exports.create = function create(req, res, next) {
   // remove the cash items so that the SQL query is properly formatted
   delete data.items;
 
+  // if items exist, tranform them into an array of arrays for db formatting
   if (items) {
     items = items.map(function (item) {
       item.uuid = item.uuid || uuid();
       item.cash_uuid = data.uuid;
-      return item;
+      return [
+        item.uuid, item.cash_uuid,
+        item.amount, item.invoice_uuid
+      ];
     });
   }
 
@@ -168,7 +172,7 @@ exports.create = function create(req, res, next) {
   // only add the "items" query if we are NOT making a caution
   // cautions do not have items
   if (!data.is_caution) {
-    transaction.addQuery(writeCashItemsSql, [items]);
+    transaction.addQuery(writeCashItemsSql, items);
   }
 
   transaction.execute()

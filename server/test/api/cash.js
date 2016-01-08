@@ -128,7 +128,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
           SALE_PAYMENT.uuid = res.body.uuid;
 
           // make sure the payment is retrievable
-          return agent.get('/cash/' + SALE_PAYMENT);
+          return agent.get('/cash/' + SALE_PAYMENT.uuid);
         })
         .then(function (res) {
           expect(res).to.have.status(200);
@@ -186,8 +186,8 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res).to.have.status(200);
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.keys(
-            'uuid', 'reference', 'date', 'debtor_uuid', 'currency_id',
-            'amount', 'user_id', 'description', 'is_caution', 'canceled'
+            'uuid', 'reference', 'date', 'debtor_uuid', 'currency_id', 'items',
+            'cashbox_id', 'amount', 'user_id', 'description', 'is_caution', 'canceled'
           );
         })
         .catch(helpers.handler);
@@ -196,7 +196,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
 
   // The HTTP DELETE verb triggers a cash_discard record, but does not destroy any data
   // (proposed rename: debit_note)
-  describe('The Debit Note Interface ::', function () {
+  describe.skip('The Debit Note Interface ::', function () {
 
     it('DELETE /cash/:uuid should create a cash_discard record', function () {
       // TODO

@@ -226,7 +226,7 @@ function queryConnection(connection, sql, params) {
     return deferred.resolve(result);
   });
 
-  console.log('[Transaction] Query :', qs.sql);
+  //console.log('[Transaction] Query :', qs.sql);
 
   return deferred.promise;
 }
