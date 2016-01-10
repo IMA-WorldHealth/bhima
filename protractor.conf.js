@@ -11,7 +11,7 @@ var q = require('q');
 var config = {
   
   seleniumPort:      4444,
-  seleniumServerJar: '/usr/local/lib/node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
+  seleniumServerJar: '/usr/local/lib/node_modules/protractor/selenium/selenium-server-standalone-2.48.2.jar',
   chromeDriver:      '/usr/local/lib/node_modules/protractor/selenium/chromedriver',
 
   specs: ['client/test/e2e/**/*.spec.js'],

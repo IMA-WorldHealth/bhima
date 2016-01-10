@@ -12,6 +12,7 @@ mysql -u $user -p$pw -e "CREATE DATABASE bhima_test;"
 #mysql -u $user -p$pw -e "GRANT ALL ON bhima_test.* TO 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
 mysql -u $user -p$pw bhima_test < server/models/schema.sql
 mysql -u $user -p$pw bhima_test < server/models/test/data.sql
+mysql -u $user -p$pw bhima_test < server/models/update/synt.sql
 
 echo "Building server ...."
 

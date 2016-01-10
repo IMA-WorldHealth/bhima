@@ -79,7 +79,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/support/support.html'
   })
   .when('/accounts', {
-    controller: 'AccountsController',
+    controller: 'AccountsController as AccountsCtrl',
     templateUrl: 'partials/accounts/accounts.html'
   })
   .when('/dashboards/finance', {

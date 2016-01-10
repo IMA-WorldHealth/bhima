@@ -56,3 +56,14 @@ INSERT INTO `patient` VALUES
 
 INSERT INTO `assignation_patient` VALUES 
   (UUID(), '112a9fb5-847d-4c6a-9b20-710fa8b4da24', '81af634f-321a-40de-bc6f-ceb1167a9f65');
+
+INSERT INTO `section_bilan` VALUES (1, 'Section Bilan 1', 1, 1);
+INSERT INTO `section_resultat` VALUES (1, 'Section Resultat 1', 1, 1);
+
+INSERT INTO `reference_group` VALUES (1, 'AA', 'Reference Group 1', 1, 1);
+INSERT INTO `reference` VALUES (1, 0, 'AB', 'Reference bilan 1', 1, 1, NULL);
+INSERT INTO `reference` VALUES (3, 0, 'AC', 'Reference resultat 1', 1, NULL, 1);
+INSERT INTO `reference` VALUES (4, 0, 'XX', 'Deletable reference 1', 1, NULL, NULL);
+
+
+
