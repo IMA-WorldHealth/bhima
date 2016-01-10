@@ -68,6 +68,7 @@ set foreign_key_checks = 1;
 -- END PRICE LIST UPDATES
 --
 
+
 --
 -- PREAMBLE
 --
@@ -189,3 +190,47 @@ DROP TABLE cash_migrate;
 
 -- restore foreign keys
 SET foreign_key_checks = 1;
+
+-- Creating a flag for title account
+-- By Dedrick Kitamuka
+-- 22-12-2015
+
+ALTER TABLE account ADD COLUMN is_title BOOLEAN DEFAULT 0;
+
+-- Removing constraint in account
+-- By Dedrick Kitamuka
+-- 22-12-2015
+-- ALTER TABLE account DROP FOREIGN KEY account_type_id;
+
+UPDATE account SET is_title = 1 WHERE account_type_id = 3;
+
+-- Updating the account type
+-- By Dedrick Kitamuka
+-- 22-12-2015
+
+UPDATE account SET account_type_id = 1 where classe > 5 AND account_type_id = 3;
+UPDATE account SET account_type_id = 2 where classe < 5 AND account_type_id = 3;
+
+-- Removing title account type
+-- By Dedrick Kitamuka
+-- 22-12-2015
+
+DELETE FROM account_type WHERE id = 3;
+
+-- SET locked to false for OHADA account
+-- By Dedrick Kitamuka
+-- 26-12-2015
+
+UPDATE account SET locked = 0 WHERE is_ohada = 1;
+
+-- SET locked to true for PCGC account
+-- By Dedrick Kitamuka
+-- 26-12-2015
+
+UPDATE account SET locked = 1 WHERE is_ohada = 0;
+
+-- Removing is_ohada column
+-- By Dedrick Kitamuka
+-- 26-12-2015
+
+ALTER TABLE account DROP COLUMN is_ohada;

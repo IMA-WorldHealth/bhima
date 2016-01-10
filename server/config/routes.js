@@ -49,7 +49,13 @@ var cashboxes      = require('../controllers/finance/cashboxes');
 var exchange       = require('../controllers/finance/exchange');
 var cash           = require('../controllers/finance/cash');
 var cashflow       = require('../controllers/cashflow');
+
 var priceList      = require('../controllers/finance/priceList');
+var account        = require('../controllers/finance/account');
+var accountType    = require('../controllers/finance/accountType');
+var costCenter     = require('../controllers/finance/costCenter');
+var profitCenter   = require('../controllers/finance/profitCenter');
+var reference      = require('../controllers/finance/reference');
 
 var patientInvoice = require('../controllers/finance/patientInvoice');
 
@@ -95,6 +101,29 @@ exports.configure = function (app) {
   app.get('/location/sector/:uuid', locations.lookupSector);
   app.get('/location/province/:uuid', locations.lookupProvince);
   app.get('/location/detail/:uuid', locations.lookupDetail);
+
+
+   //API for account routes crud
+  app.get('/accounts/:list_type', account.list);
+  app.post('/accounts', account.create);
+  app.put('/accounts/:uuid', account.update);
+
+  //API for account type routes crud
+  app.get('/accountTypes', accountType.list);
+
+  //API for cost_center routes crud
+  app.get('/cost_centers/:list_type', costCenter.list);
+
+  //API for profit_center routes crud
+  app.get('/profit_centers/:list_type', profitCenter.list);
+
+  //API for reference routes crud
+  app.get('/references/:list_type', reference.list);
+  app.get('/reference/:id', reference.getReference);
+  app.post('/references', reference.create);
+  app.put('/references/:id', reference.update);
+  app.delete('/references/:id', reference.remove);
+  
 
   // -> Add :route
   app.post('/report/build/:route', reports.build);
