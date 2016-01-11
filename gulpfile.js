@@ -9,7 +9,8 @@ var gulp       = require('gulp'),
     gulpif     = require('gulp-if'),
     concat     = require('gulp-concat'),
     uglify     = require('gulp-uglify'),
-    minifycss  = require('gulp-minify-css'),
+    cssnano    = require('gulp-cssnano'),
+    cssnano    = require('gulp-cssnano'),
     jshint     = require('gulp-jshint'),
     flatten    = require('gulp-flatten'),
     spawn      = require('child_process').spawn,
@@ -76,7 +77,7 @@ var paths = {
  * and writes them to the /bin/client/ folder.  There are tasks to do
  * the following:
  *   - [client-lint-js]     lint the client javascript code (via jshint)
- *   - [client-minify-css]  minify (via minify css) the css
+ *   - [client-minify-css]  minify (via css nano) the css
  *   - [client-minify-js]   minify (via uglify) the clientside js code
  *   - [client-lint-i18n]   compares translation files for missing values
  *   - [client-mv-static]   moves the static files (html, img) to the client
@@ -115,7 +116,7 @@ gulp.task('client-minify-js', function () {
 // writes output to style.min.css
 gulp.task('client-minify-css', function () {
   return gulp.src(paths.client.css)
-    .pipe(minifycss())
+    .pipe(cssnano())
     .pipe(concat('style.min.css'))
     .pipe(gulp.dest(CLIENT_FOLDER + 'css/'));
 });
