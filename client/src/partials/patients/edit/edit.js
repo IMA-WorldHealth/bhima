@@ -13,21 +13,31 @@
 angular.module('bhima.controllers')
 .controller('PatientEdit', PatientEdit);
 
-PatientEdit.$inject = ['$scope', '$routeParams', '$location', '$uibModal', 'Patients', 'util'];
+PatientEdit.$inject = ['$scope', '$translate', '$routeParams', '$location', '$anchorScroll', '$uibModal', 'Patients', 'util', 'moment'];
 
-function PatientEdit($scope, $routeParams, $location, $uibModal, patients, util) { 
+function PatientEdit($scope, $translate, $routeParams, $location, $anchorScroll, $uibModal, patients, util, moment) { 
   var viewModel = this;
   var referenceId = $routeParams.patientID;
 
   viewModel.patient = null;
-  
+  viewModel.unknownId = false;
+  viewModel.minDOB = util.minDOB;
+  viewModel.maxDOB = util.maxDOB;
+
   if (referenceId) { 
-    viewModel.referredPatient = referenceId;
+    buildPage(referenceId);
   }
 
   function buildPage(patientId) { 
-    collectPatient(patientId);
-    collectGroups(patientId);
+    collectPatient(patientId)
+      .then(function (result) { 
+        
+        return collectGroups(patientId); 
+      })
+      .catch(function (error) { 
+
+        viewModel.unknownId = true;        
+      });
   }
 
   function collectPatient(patientId) { 
@@ -35,13 +45,32 @@ function PatientEdit($scope, $routeParams, $location, $uibModal, patients, util)
     // TODO Full patient/details object should be passed through find patient directive
     // 1. Only download id + name in patient directive
     // 2. Download full patients/details on selection
-    patients.detail(patientId)
+    return patients.detail(patientId)
       .then(function (patient) { 
         
-        // Ensure HTML input can render the DOB
-        patient.dob = new Date(patient.dob);
+        console.log(patient);
+        formatPatientAttributes(patient);
         viewModel.medical = patient;
       });
+  }
+  
+  function formatPatientAttributes(patient) { 
+    
+    // Sanitise DOB for HTML Date Input 
+    patient.dob = new Date(patient.dob);
+
+    // Assign name
+    patient.name = patient.first_name.concat(
+          ' ', patient.middle_name, 
+          ' ', patient.last_name);
+
+    // Assign age 
+    // FIXME Translate value is not returned unless page is fully initialised - this will usually fail on refresh
+    /*$translate('PATIENT_EDIT.'.concat(patient.sex))
+      .then(function (res) { patient.displayGender = res; });*/
+    
+    patient.displayGender = patient.sex;
+    patient.displayAge = moment().diff(patient.dob, 'years');
   }
   
   function collectGroups(patientId) { 
@@ -96,12 +125,22 @@ function PatientEdit($scope, $routeParams, $location, $uibModal, patients, util)
 
     changedDefinition = angular.extend(changedDetails, changedOptional);
       
+    // TODO Use latest data formatting/ sanitastion standards
+    // Ensure date is submitted in a valid format
+    if (changedDefinition.dob) { 
+      changedDefinition.dob = util.sqlDate(changedDefinition.dob);
+    }
+
     console.log('sending', changedDefinition);
     patients.update(patient.uuid, changedDefinition)
       .then(function (updatedPatient) { 
         
-        // Update view
+        // Update status
         viewModel.updatedPatientDetails = true;
+  
+        // Update view
+        formatPatientAttributes(updatedPatient);
+        viewModel.medical = updatedPatient;
 
         // Reset forms dirty values
         $scope.details.$setPristine();
@@ -111,7 +150,7 @@ function PatientEdit($scope, $routeParams, $location, $uibModal, patients, util)
   };
   
   // Callback passed to find patient directive 
-  viewModel.confirmPatient = function confirmPatient(patient) {  
+  /*viewModel.confirmPatient = function confirmPatient(patient) {  
     var pageReferred = angular.isDefined(referenceId);
     
     if (pageReferred) { 
@@ -124,7 +163,7 @@ function PatientEdit($scope, $routeParams, $location, $uibModal, patients, util)
       // Navigate correctly using patient as reference
       $location.path('/patients/edit/'.concat(patient.uuid));
     }
-  };
+  };*/
 
   viewModel.updateDebtorGroup = function updateDebtorGroup() { 
 
@@ -174,5 +213,10 @@ function PatientEdit($scope, $routeParams, $location, $uibModal, patients, util)
         }
       }
     });
+  };
+
+  viewModel.scrollToSubmission = function scrollToSubmission() { 
+    $location.hash('submission');
+    $anchorScroll();
   };
 }

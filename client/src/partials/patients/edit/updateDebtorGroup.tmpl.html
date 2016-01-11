@@ -1,17 +1,16 @@
 <div class="modal-header">
-  <h3 class="modal-title">Update Debtor Group</h3>
+  <h3 class="modal-title">{{ "PATIENT_EDIT.GROUPS_DEBTOR.MODAL_TITLE" | translate }}</h3>
 </div>
 
 <div class="modal-body">
 
   <p class="text-info">
-  Assign a new debtor group from the options below. Press 'confirm' 
-  to permenantly update the patient's debtor group
+  {{ "PATIENT_EDIT.GROUPS_DEBTOR.MODAL_INFO" | translate }}
   </p>
   <form name="groupForm">
     <div class="form-group has-feedback">
     
-      <label for="debtor-group" class="control-label">Debtor Groups</label>
+      <label for="debtor-group" class="control-label">{{ "PATIENT_EDIT.GROUPS_DEBTOR.TITLE" | translate }}</label>
       <select 
         class="form-control" 
         name="debtorGroup"
@@ -26,8 +25,8 @@
 <div class="modal-footer">
   <button 
     class="btn btn-default"
-    ng-click="UpdateDebtorGroupCtrl.close()">Cancel</button>
+    ng-click="UpdateDebtorGroupCtrl.closeModal()">{{ "UTIL.CANCEL" | translate }}</button>
   <button 
     class="btn btn-default"
-    ng-click="UpdateDebtorGroupCtrl.confirmGroup()">Confirm</button>
+    ng-click="UpdateDebtorGroupCtrl.confirmGroup()">{{ "UTIL.CONFIRM" | translate }}</button>
 </div>

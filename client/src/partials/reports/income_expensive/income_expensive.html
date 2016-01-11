@@ -5,9 +5,9 @@
 <nav>
   <div class="pull-right">
 
-    <span class="dropdown">
-      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Fiscal Year</a>
-      <ul class="dropdown-menu">
+    <span uib-dropdown class="dropdown">
+      <a uib-dropdown-toggle class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Fiscal Year</a>
+      <ul class="uib-dropdown-menu" role="menu">
         <li class="dropdown-header">choose Fiscal Years</li>
         <li ng-repeat="fy in models.fys">
           <a ng-click="reload(fy)" >
@@ -15,11 +15,11 @@
           </a>
         </li>
       </ul>
-    </span> 
+    </span>  
 
-    <span class="dropdown">
-      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Periods</a>
-      <ul class="dropdown-menu">
+    <span uib-dropdown class="dropdown">
+      <a uib-dropdown-toggle class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Periods</a>
+      <ul class="uib-dropdown-menu" role="menu">
         <li class="dropdown-header">choose the period</li>
         <li ng-repeat="p in models.periods">
           <a ng-click="adjust(p)" >

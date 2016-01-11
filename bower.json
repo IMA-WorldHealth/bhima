@@ -34,6 +34,8 @@
     "slickgrid": "~2.1.0",
     "angular-mocks": "~1.4.7",
     "angular-ui-grid": "~3.0.7",
-    "bootstrap": "~3.3.6"
+    "bootstrap": "~3.3.6",
+    "angular-moment": "~0.10.3",
+    "moment": "~2.10.6"
   }
 }

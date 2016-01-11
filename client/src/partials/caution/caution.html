@@ -10,32 +10,33 @@
       </ol>
   </div>
   <div class="pull-right">
-    <span class="dropdown pull-right">
-      <button class="btn btn-sm btn-primary dropdown-toggle">
+    <span uib-dropdown class="dropdown pull-right">
+      <button uib-dropdown-toggle class="btn btn-sm btn-primary dropdown-toggle">
         {{ CautionCtrl.currency.symbol || "..." }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>
 
-      <ul class="dropdown-menu ">
+      <ul class="uib-dropdown-menu">
         <li ng-repeat="currency in CautionCtrl.cashbox_accounts.data">
         <a class="clk" ng-click="CautionCtrl.setCurrency(currency)">{{ currency.symbol }}</a>
         </li>
       </ul>
     </span>
 
-    <span class="dropdown pull-right" style="padding-right: 5px;">
-      <button class="btn btn-sm btn-primary dropdown-toggle">
+    <span uib-dropdown class="dropdown pull-right" style="padding-right: 5px;">
+      <button uib-dropdown-toggle class="btn btn-sm btn-primary dropdown-toggle">
         {{ CautionCtrl.cashbox.text || "..." }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>
 
-      <ul class="dropdown-menu">
+      <ul class="uib-dropdown-menu">
         <li ng-repeat="box in CautionCtrl.cashboxes.data">
           <a class="clk" ng-click="CautionCtrl.setCashBox(box)">{{ box.text }}</a>
         </li>
       </ul>
     </span>
   </div>
+
 </nav>
 
 <main>

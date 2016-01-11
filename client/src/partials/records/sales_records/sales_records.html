@@ -37,9 +37,9 @@
   <div class="pull-left">
 
     <!-- Up to date dropdown markdown -->
-    <div class="btn-group" uib-dropdown>
-      <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
-      <button class="btn btn-sm btn-default" uib-dropdown-toggle>
+    <div uib-dropdown class="btn-group">
+      <button uib-dropdown-toggle ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
+      <button uib-dropdown-toggle class="btn btn-sm btn-default">
         <span class="caret"></span>
       </button>
 

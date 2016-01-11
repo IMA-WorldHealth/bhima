@@ -3,11 +3,11 @@
 </header>
 
 <nav ng-controller="journal.utilities">
-  <div class="pull-left dropdown">
-    <button type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!!session.authenticated">
+  <div uib-dropdown class="pull-left dropdown">
+    <button uib-dropdown-toggle type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-th-list"></span> {{ 'POSTING_JOURNAL.GROUP_BY' | translate }}
     </button>
-    <ul class="dropdown-menu">
+    <ul class="uib-dropdown-menu" role="menu">
       <li><a class="clk" ng-click="groupBy('transaction')"><span class="glyphicon glyphicon-th-list"></span> {{ 'POSTING_JOURNAL.TRANSACTION' | translate }}</a></li>
       <li><a class="clk" ng-click="groupBy('account')"><span class="glyphicon glyphicon-euro"></span> {{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
       <li><a class="clk" ng-click="groupBy('deb_cred')"><span class="glyphicon glyphicon-user"></span> {{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li>
@@ -15,16 +15,16 @@
     </ul>
   </div>
 
-  <div class="pull-left dropdown input-group col-xs-4">
+  <div uib-dropdown class="pull-left dropdown input-group col-xs-4">
     <span class="input-group-btn dropdown-toggle" style="background : white;">
-      <button class="btn btn-sm btn-default" type="button" ng-class="{'active': !!filter.by && !!filter.param }">
+      <button uib-dropdown-toggle class="btn btn-sm btn-default" type="button" ng-class="{'active': !!filter.by && !!filter.param }">
         <span class="glyphicon glyphicon-filter"></span>
         <span class="caret" data-caret="&#9660;"></span>
         {{ filter.by.name }}
       </button>
     </span>
     <input class="form-bhima" ng-model="filter.param">
-    <ul class="dropdown-menu">
+    <ul class="uib-dropdown-menu">
       <li>
         <a ng-click="refreshFilter()" class="clk"><span class="glyphicon glyphicon-refresh"></span> {{ "POSTING_JOURNAL.REFRESH" | translate }}</a>
       </li>
@@ -34,11 +34,11 @@
     </ul>
   </div>
 
-  <div class="pull-right dropdown" style="padding-left:3px;">
-    <button class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!session.authenticated">
+  <div uib-dropdown class="pull-right dropdown" style="padding-left:3px;">
+    <button uib-dropdown-toggle class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-cog"></span> {{'POSTING_JOURNAL.CONFIGURE' | translate }}
     </button>
-    <ul class="dropdown-menu">
+    <ul class="uib-dropdown-menu">
       <li class="dropdown-header">{{ 'UTIL.TOGGLE' | translate }} {{ 'UTIL.COLUMNS' | translate }}</li>
       <li ng-repeat="column in columns | filter:{ id : '!_checkbox_selector' }">
         <a ng-click="column.visible=!column.visible" class="clk">

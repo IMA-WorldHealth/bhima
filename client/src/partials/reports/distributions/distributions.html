@@ -46,17 +46,17 @@
             <div class="row">
               <div class="col-xs-2">
                 <div class="input-group">
-                  <span class="btn-group">
+                  <span uib-dropdown class="btn-group">
 
-                    <button class="btn btn-sm btn-default">
+                    <button class="btn btn-sm btn-default" uib-dropdown-toggle>
                       {{ (ReportCtrl.selected.key | translate) || "..." }}
                     </button>
 
-                    <button class="btn btn-sm btn-default dropdown-toggle">
+                    <button class="btn btn-sm btn-default dropdown-toggle" uib-dropdown-toggle>
                       <span class="caret" data-caret="&#9660;"></span>
                     </button>
 
-                    <ul class="dropdown-menu">
+                    <ul class="uib-dropdown-menu" role="menu">
                       <li ng-repeat="item in ReportCtrl.periods">
                         <a class="clk" ng-click="ReportCtrl.select(item)">{{ item.key | translate }}</a>
                       </li>

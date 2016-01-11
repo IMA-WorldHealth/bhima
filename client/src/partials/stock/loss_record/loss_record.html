@@ -17,11 +17,11 @@
   </div>
 
   <div class="pull-left">
-    <span class="btn-group">
-      <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
-      <button class="btn btn-sm btn-default dropdown-toggle"><span class="caret" data-caret="&#9660;"></span></button>
+    <span uib-dropdown class="btn-group">
+      <button uib-dropdown-toggle ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
+      <button uib-dropdown-toggle class="btn btn-sm btn-default dropdown-toggle"><span class="caret" data-caret="&#9660;"></span></button>
 
-      <ul class="dropdown-menu">
+      <ul class="uib-dropdown-menu" role="menu">
         <li ng-repeat="item in period">
           <a class="clk" ng-click="select(item)">{{item.key | translate}}</a>
         </li>

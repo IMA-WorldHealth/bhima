@@ -53,7 +53,7 @@ describe('The /users API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(3);
+        expect(res.body).to.have.length(4);
       })
       .catch(handler);
   });

@@ -76,7 +76,7 @@
                   <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
                   
                   <!-- TODO Translate -->
-                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">Hospital file number already exists</p>
+                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">{{ "UTIL.PATIENT_EXIT" | translate }}</p>
                 </div>
               </div>
 
@@ -117,7 +117,7 @@
               <!-- Gender -->
               <div id="gender" class="form-group has-feedback"
                 ng-class="{'has-error' : details.genderOptions.$invalid && details.$submitted}">
-                <label for="male" class="col-md-3 control-label">Gender</label>
+                <label for="male" class="col-md-3 control-label"> {{ "PATIENT_REG.GENDER" | translate }} </label>
                 <div class="col-md-9">
                   <label class="radio-inline">
                     <input type="radio" name="genderOptions" id="male" value="M" ng-model="PatientRegCtrl.medical.sex" required>
@@ -138,7 +138,7 @@
               <!-- TODO Each individual select should be a form group -->
               <div class="row">
                 <div class="col-md-6">
-                  <h4>Origin Location</h4>
+                  <h4>{{ "PATIENT_REG.ORIGIN_LOCATION" | translate }}</h4>
                   <div location-select select-village="setOriginLocation"></div>
 
                   <!-- Input model used to attach location village to the forms scope - this is purely used for validation purposes -->
@@ -150,7 +150,7 @@
                 <div class="visible-sm-block visible-xs-block"><hr></div>
                 
                 <div class="col-md-6">
-                  <h4>Current Location</h4>
+                  <h4>{{ "PATIENT_REG.CURRENT_LOCATION" | translate }}</h4>
                   <div location-select select-village="setCurrentLocation"></div>
                   
                   <!-- Input model used to attach location village to the forms scope - this is purely used for validation purposes -->

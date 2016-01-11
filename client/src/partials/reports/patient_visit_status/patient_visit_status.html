@@ -26,10 +26,10 @@
               </div>
 
               <div class="form-group">
-                <span class="btn-group">
-                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" >{{ (session.selected.label | translate) || "..." }}</button>
-                  <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
-                  <ul class="dropdown-menu menu-sq">
+                <span uib-dropdown class="btn-group">
+                  <button uib-dropdown-toggle class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" >{{ (session.selected.label | translate) || "..." }}</button>
+                  <button uib-dropdown-toggle class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
+                  <ul class="uib-dropdown-menu menu-sq" role="menu">
                     <li ng-repeat="opt in options">
                       <a ng-click="search(opt)">{{ opt.label | translate }}</a>
                     </li>
@@ -151,12 +151,12 @@
           <!-- chart of visit -->
           <div class="row" style="margin-top:10px; margin-bottom:10px;">
             <div class="col-xs-12">
-              <div class="pull-right btn-group">
-                <button type="button" class="hidden-print btn btn-default dropdown-toggle"
+              <div uib-dropdown class="pull-right btn-group">
+                <button uib-dropdown-toggle type="button" class="hidden-print btn btn-default dropdown-toggle"
                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {{ "PATIENT_VISIT.GROUP_BY" | translate }} <span class="glyphicon glyphicon-chevron-down"></span>
                 </button>
-                <ul class="dropdown-menu">
+                <ul class="uib-dropdown-menu" role="menu">
                   <li><a ng-click="chartGroupBy('month')">{{ "PATIENT_VISIT.GROUP_BY_MONTH" | translate }}</a></li>
                   <li><a ng-click="chartGroupBy('day')">{{ "PATIENT_VISIT.GROUP_BY_DAY" | translate }}</a></li>
                 </ul>

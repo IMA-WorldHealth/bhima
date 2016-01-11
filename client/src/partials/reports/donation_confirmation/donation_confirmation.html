@@ -16,10 +16,10 @@
               </div>
 
               <div class="form-group">
-                <span class="btn-group">
-                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
-                  <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
-                  <ul class="dropdown-menu menu-sq">
+                <span class="btn-group" uib-dropdown>
+                  <button uib-dropdown-toggle class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
+                  <button uib-dropdown-toggle class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
+                  <ul class="uib-dropdown-menu menu-sq" role="menu">
                     <li ng-repeat="opt in options">
                       <a class="clk" ng-click="search(opt)">{{ opt.label | translate }}</a>
                     </li>
