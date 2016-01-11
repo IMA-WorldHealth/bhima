@@ -15,23 +15,20 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
-describe('The /references API endpoint', function () {
+describe('The /profit_center API endpoint', function () {
   var agent = chai.request.agent(url);
-  var new_reference = {
-    id : 2,
-    is_report : 0,
-    ref : 'AD',
-    text : 'Reference tested 1',
-    position: 2,
-    reference_group_id : 1,
-    section_resultat_id : 1
+  var new_profit_center = {
+    project_id : 1,
+    id : 200,
+    text : 'tested profit',
+    note : 'test inserted'
   };
 
-  var deletable_reference = {
-    id : 4
+  var deletable_profit_center = {
+    id : 2
   };
 
-  var fecthable_reference = {
+  var fecthable_profit_center = {
     id : 1
   };
 
@@ -45,18 +42,18 @@ describe('The /references API endpoint', function () {
       .send(user);
   });
 
-  it(' A GET /references/:liste_type returns a list of references', function () {
-    return agent.get('/references/detailed')
+  it(' A GET /profit_centers returns a list of profit centers', function () {
+    return agent.get('/profit_centers/detailed')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(3);
+        expect(res.body).to.have.length(2);
       })
       .catch(handler);
   });
 
-  it(' A GET /reference/:id returns one reference', function () {
-    return agent.get('/reference/'+ fecthable_reference.id)
+  it(' A GET /profit_center/:id returns one profit center', function () {
+    return agent.get('/profit_center/'+ fecthable_profit_center.id)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -65,27 +62,27 @@ describe('The /references API endpoint', function () {
       .catch(handler);
   });
 
-  it('A POST /references will add a reference', function () {
-    return agent.post('/references')
-      .send(new_reference)
+  it('A POST /profit_centers will add a cost center', function () {
+    return agent.post('/profit_centers')
+      .send(new_profit_center)
       .then(function (res) {
         expect(res).to.have.status(201);
-        new_reference.id = res.body.id;
+        new_profit_center.id = res.body.id;
       })
       .catch(handler);
   }); 
 
-  it('A PUT /references/:id will update the newly added reference', function () {
-    return agent.put('/references/'+ 2)
-      .send({ position : 3 })
+  it('A PUT /profit_centers/:id will update the newly added profit center', function () {
+    return agent.put('/profit_centers/'+ 200)
+      .send({ note : 'updated value for note' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.id).to.equal(new_reference.id);
-        expect(res.body.position).to.not.equal(new_reference.position);
+        expect(res.body.id).to.equal(new_profit_center.id);
+        expect(res.body.note).to.not.equal(new_profit_center.note);
 
         // re-query the database
-        return agent.get('/reference/'+ new_reference.id);
+        return agent.get('/profit_center/'+ new_profit_center.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -93,14 +90,14 @@ describe('The /references API endpoint', function () {
       .catch(handler);
   });
 
-   it(' A DELETE /references/:id will delete a reference', function () {
-    return agent.delete('/references/' + deletable_reference.id)
+   it(' A DELETE /profit_centers/:id will delete a profit_center', function () {
+    return agent.delete('/profit_centers/' + deletable_profit_center.id)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
 
         // re-query the database
-        return agent.get('/reference/' + deletable_reference.id);
+        return agent.get('/profit_center/' + deletable_profit_center.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
