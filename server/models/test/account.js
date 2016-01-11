@@ -15,18 +15,32 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
-describe('The /account_type API endpoint', function () {
+describe('The /account API endpoint', function () {
   var agent = chai.request.agent(url);
-  var new_account_type = {
-    id : 4,
-    type : 'test account type 1'
+  var new_account = {
+    id : 1000,
+    account_type_id : 1,
+    enterprise_id : 1,
+    account_number : 4000400
+    account_txt : 'Account for integration test',
+    parent : NULL,
+    locked : 0,
+    cc_id : NULL,
+    pc_id : NULL,
+    classe : 4,
+    is_asset : 0,
+    reference_id : NULL,
+    is_brut_link : 0,
+    is_used_budget : 0,
+    is_charge : 0,
+    is_title : 0
   };
 
-  var deletable_account_type = {
-    id : 3
+  var deletable_account = {
+    id : 2
   };
 
-  var fecthable_account_type = {
+  var fecthable_account = {
     id : 1
   };
 
@@ -40,8 +54,8 @@ describe('The /account_type API endpoint', function () {
       .send(user);
   });
 
-  it(' A GET /account_types returns a list of account type', function () {
-    return agent.get('/account_types')
+  it(' A GET /accounts returns a list of profit centers', function () {
+    return agent.get('/accounts/detailed')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -50,8 +64,8 @@ describe('The /account_type API endpoint', function () {
       .catch(handler);
   });
 
-  it(' A GET /account_types/:id returns one account type', function () {
-    return agent.get('/account_types/'+ fecthable_account_type.id)
+  it(' A GET /account/:id returns one profit center', function () {
+    return agent.get('/account/'+ fecthable_account.id)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -60,27 +74,27 @@ describe('The /account_type API endpoint', function () {
       .catch(handler);
   });
 
-  it('A POST /account_types will add an account_type', function () {
-    return agent.post('/account_types')
-      .send(new_account_type)
+  it('A POST /accounts will add a cost center', function () {
+    return agent.post('/accounts')
+      .send(new_account)
       .then(function (res) {
         expect(res).to.have.status(201);
-        new_account_type.id = res.body.id;
+        new_account.id = res.body.id;
       })
       .catch(handler);
   }); 
 
-  it('A PUT /account_types/:id will update the newly added account_type', function () {
-    return agent.put('/account_types/'+ 4)
-      .send({ type : 'updated value' })
+  it('A PUT /accounts/:id will update the newly added profit center', function () {
+    return agent.put('/accounts/'+ 200)
+      .send({ note : 'updated value for note' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.id).to.equal(new_account_type.id);
-        expect(res.body.position).to.not.equal(new_account_type.type);
+        expect(res.body.id).to.equal(new_account.id);
+        expect(res.body.note).to.not.equal(new_account.note);
 
         // re-query the database
-        return agent.get('/account_types/'+ new_account_type.id);
+        return agent.get('/account/'+ new_account.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -88,15 +102,14 @@ describe('The /account_type API endpoint', function () {
       .catch(handler);
   });
 
-   it(' A DELETE /account_types/:id will delete a account_type', function () {
-    this.timeout(60000);
-    return agent.delete('/account_types/' + deletable_account_type.id)
+   it(' A DELETE /accounts/:id will delete a account', function () {
+    return agent.delete('/accounts/' + deletable_account.id)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
 
         // re-query the database
-        return agent.get('/account_types/' + deletable_account_type.id);
+        return agent.get('/account/' + deletable_account.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);

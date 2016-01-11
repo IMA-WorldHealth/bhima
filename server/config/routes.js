@@ -98,11 +98,11 @@ exports.configure = function (app) {
   app.get('/location/province/:uuid', locations.lookupProvince);
   app.get('/location/detail/:uuid', locations.lookupDetail);
 
-
-   //API for account routes crud
+  //API for account routes crud
   app.get('/accounts/:list_type', account.list);
+  app.get('/account/:id', account.getAccount);
   app.post('/accounts', account.create);
-  app.put('/accounts/:uuid', account.update);
+  app.put('/accounts/:id', account.update);
 
   //API for account type routes crud
   app.get('/account_types', accountType.list);
