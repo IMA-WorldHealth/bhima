@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IMA-WorldHealth/bhima.git"
+    "url": "https://github.com/IMA-WorldHealth/bhima-2.X.git"
   },
   "keywords": [
     "bhima",
@@ -19,8 +19,8 @@
     "hospital information system",
     "rural accounting"
   ],
-  "author": "IMA World Health Web Development Team",
-  "license": "GPLv2",
+  "author": "IMA World Health",
+  "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/IMA-WorldHealth/bhima/issues"
   },
@@ -30,15 +30,17 @@
     "connect-multiparty": "^2.0.0",
     "csv": "^0.4.1",
     "dot": "^1.0.3",
+    "dotenv": "^1.2.0",
     "express": "^4.13.3",
     "express-session": "^1.11.3",
-    "fast-csv": "^0.6.0",
+    "fast-csv": "1.0.0",
     "later": "^1.2.0",
     "morgan": "^1.6.1",
     "mysql": "^2.9.0",
     "numeral": "^1.5.3",
+    "protractor": "^3.0.0",
     "q": "~1.4.1",
-    "session-file-store": "0.0.22",
+    "session-file-store": "0.0.24",
     "wkhtmltopdf": "^0.1.5"
   },
   "devDependencies": {
