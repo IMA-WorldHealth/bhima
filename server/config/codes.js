@@ -45,10 +45,5 @@ module.exports = {
     code : 'ERR_EMPTY_BODY',
     httpStatus : 400,
     reason : 'You cannot submit a PUT/POST request with an empty body to the server.'
-  },
-  'SUCCES_NO_CONTENT' : {
-    code : 'SUCCES_NO_CONTENT',
-    httpStatus : 204,
-    reason : 'Request is fully processed but there is not any result to return.'
   }
 };

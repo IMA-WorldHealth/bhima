@@ -69,9 +69,7 @@ describe('The /employees API endpoint :: ', function () {
       email : 'me@info.com',
       fonction_id : 1,
       service_id : 1,
-      location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
-      // creditor_uuid : creditor.uuid,
-      // debitor_uuid : debitor.uuid
+      location_id : 'ffe563ef-781c-4551-a080-7cec135351ff'
   };
 
   // login before each request
@@ -119,14 +117,9 @@ describe('The /employees API endpoint :: ', function () {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body[0]).to.be.a('object');
-        expect(res.body[0]).to.have.property('id');
-        expect(res.body[0]).to.have.property('code_employee');
-        expect(res.body[0]).to.have.property('name');
-        expect(res.body[0]).to.have.property('grade_id');
-        expect(res.body[0]).to.have.property('fonction_id');
-        expect(res.body[0]).to.have.property('service_id');
-        expect(res.body[0]).to.have.property('creditor_uuid');
-        expect(res.body[0]).to.have.property('debitor_uuid');
+        // add a missing property due to alias in db query
+        res.body[0].code = res.body[0].code_employee;
+        expect(res.body[0]).to.contain.all.keys(employee);
       })
       .catch(handler);
   });
@@ -137,7 +130,13 @@ describe('The /employees API endpoint :: ', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.affectedRows).to.be.equals(1);
+        expect(res.body[0]).to.be.a('object');
+        // add a missing property due to alias in db query
+        res.body[0].code = res.body[0].code_employee;
+        expect(res.body[0]).to.contain.all.keys(updateEmployee);
+        for(var i in updateEmployee) {
+          expect(res.body[0][i]).to.be.equals(updateEmployee[i]);
+        }
       })
       .catch(handler);
   });
@@ -146,16 +145,16 @@ describe('The /employees API endpoint :: ', function () {
     return agent.put('/employees/fakeId')
       .send(updateEmployee)
       .then(function (res) {
-        expect(res).to.have.status(204);
+        expect(res).to.have.status(404);
       })
       .catch(handler);
   });
 
-  it('PUT /employee/:id should not update an existing employee with a fake data ', function () {
+  it('PUT /employee/:idb should not update an existing employee with a fake data ', function () {
     return agent.put('/employees/' + employee.id)
       .send({})
       .then(function (res) {
-        expect(res).to.have.status(400);
+        expect(res).to.not.have.status(200);
         return agent.get('/employees/' + employee.id)
       })
       .then(function (res) {

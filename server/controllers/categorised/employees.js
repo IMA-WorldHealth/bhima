@@ -8,7 +8,7 @@
 *
 * @requires lib/db
 * @requires lib/util
-* @requires lib/sanitize
+* @requires config/codes
 *
 * NOTE: This api does not handle the deletion of employees because
 * that subject is not in the actuality.
@@ -18,7 +18,7 @@
 
 var db = require('./../../lib/db');
 var util = require('./../../lib/util');
-var sanitize = require('./../../lib/sanitize');
+var codes = require('./../../config/codes');
 
 /**
 * Returns an array of each employee in the database
@@ -66,15 +66,19 @@ exports.listHolidays = function (req, res, next) {
   var sql =
     'SELECT hollyday.id, hollyday.label, hollyday.dateFrom, hollyday.percentage, hollyday.dateTo ' +
     'FROM hollyday WHERE ' +
-    '((hollyday.dateFrom>=' + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + ' AND ' +
-    'hollyday.dateFrom<=' + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ') OR ' +
-    '(hollyday.dateTo>=' + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + ' AND ' +
-    'hollyday.dateTo<=' + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ') OR ' +
-    '(hollyday.dateFrom<=' + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + ' AND ' +
-    'hollyday.dateTo>=' + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ')) AND ' +
-    'hollyday.employee_id=' + sanitize.escape(req.params.employee_id) + ';';
+    '((hollyday.dateFrom>=? AND hollyday.dateFrom<=?) OR ' +
+    '(hollyday.dateTo>=? AND hollyday.dateTo<=?) OR ' +
+    '(hollyday.dateFrom<=? AND hollyday.dateTo>=?)) AND ' +
+    'hollyday.employee_id=? ;';
 
-  db.exec(sql)
+  var data = [
+    util.toMysqlDate(pp.dateFrom), util.toMysqlDate(pp.dateTo),
+    util.toMysqlDate(pp.dateFrom), util.toMysqlDate(pp.dateTo),
+    util.toMysqlDate(pp.dateFrom), util.toMysqlDate(pp.dateFrom),
+    req.params.employee_id
+  ];
+
+  db.exec(sql, data)
   .then(function (result) {
     res.send(result);
   })
@@ -86,16 +90,23 @@ exports.listHolidays = function (req, res, next) {
 * Check an existing holiday
 */
 exports.checkHoliday = function (req, res, next) {
-  var sql = 'SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM hollyday WHERE employee_id = "'+ req.query.employee_id +'"' +
-          ' AND ((dateFrom >= "' + req.query.dateFrom +'") OR (dateTo >= "' + req.query.dateFrom + '") OR (dateFrom >= "'+ req.query.dateTo +'")' +
-          ' OR (dateTo >= "' + req.query.dateTo + '"))' +
-          ' AND ((dateFrom <= "' + req.query.dateFrom +'") OR (dateTo <= "' + req.query.dateFrom + '") OR (dateFrom <= "'+ req.query.dateTo +'")' +
-          ' OR (dateTo <= "' + req.query.dateTo + '"))';
+  var sql =
+    'SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM hollyday WHERE employee_id = ?' +
+    ' AND ((dateFrom >= ?) OR (dateTo >= ?) OR (dateFrom >= ?) OR (dateTo >= ?))' +
+    ' AND ((dateFrom <= ?) OR (dateTo <= ?) OR (dateFrom <= ?) OR (dateTo <= ?))';
+
+  var data = [
+    req.query.employee_id,
+    req.query.dateFrom, req.query.dateFrom, req.query.dateTo, req.query.dateTo,
+    req.query.dateFrom, req.query.dateFrom, req.query.dateTo, req.query.dateTo
+  ];
+
   if (req.query.line !== ''){
-    sql += ' AND id <> "' + req.query.line + '"';
+    sql += ' AND id <> ?';
+    data.push(req.query.line);
   }
 
-  db.exec(sql)
+  db.exec(sql, data)
   .then(function (result) {
     res.send(result);
   })
@@ -149,12 +160,8 @@ exports.details = function (req, res, next) {
 
   db.exec(sql, [req.params.id])
   .then(function (rows) {
-    // send a 204 if rows is empty
     if (!rows.length) {
-      return res.status(204).json({
-        code   : 'SUCCES_NO_CONTENT',
-        reason : 'No employee found by id ' + req.params.id
-      });
+      throw codes.ERR_NOT_FOUND;
     }
     res.status(200).json(rows);
   })
@@ -179,8 +186,36 @@ exports.update = function (req, res, next) {
 
   db.exec(sql, [req.body, req.params.id])
   .then(function (row) {
-    if (!row.affectedRows) { return res.status(204).json(row); }
-    res.status(200).json(row);
+    if (!row.affectedRows) { throw codes.ERR_NOT_FOUND; }
+
+    var sql2 =
+    'SELECT ' +
+    'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
+    'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
+    'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
+    'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
+    'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, employee.location_id, ' +
+    'grade.code AS code_grade, debitor.uuid as debitor_uuid, debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
+    'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
+    'FROM employee ' +
+    ' JOIN grade ON employee.grade_id = grade.uuid ' +
+    ' JOIN fonction ON employee.fonction_id = fonction.id ' +
+    ' JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
+    ' JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
+    ' JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
+    ' LEFT JOIN service ON service.id = employee.service_id ' +
+    'WHERE employee.id = ? ';
+
+    return db.exec(sql2, [req.params.id]);
+  })
+  .then(function (rows) {
+    if (!rows.length) {
+      throw codes.ERR_NOT_FOUND;
+    }
+    // returing date in 'yyyy-mm-dd' format
+    rows[0].dob = util.toMysqlDate(rows[0].dob);
+    rows[0].date_embauche = util.toMysqlDate(rows[0].date_embauche);
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
