@@ -134,6 +134,7 @@ INSERT INTO `village` VALUES ('03a329b2-03fe-4f73-b40f-56a2870cc7e6','MUBUABUA',
 
 INSERT INTO `enterprise` VALUES (1,'Test Enterprise','TE','243 81 504 0540','enterprise@test.org','a0a8998d-af22-4a73-9071-bd43a23f77e3',NULL,2,'103');
 INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,759), (2,'Test Project B','TPB',1,759);
+
 INSERT INTO `account` VALUES
 (3626,3,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 14:25:12',1,NULL,1,NULL,NULL,0,NULL),
 (3627,2,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 14:26:13',1,1,1,NULL,0,0,NULL),
@@ -162,6 +163,7 @@ INSERT INTO `period` VALUES
 ( 0 , 1 ,0,'2016-10-01', '2016-10-31', 0 ),
 ( 11, 1 ,1,'2016-11-01', '2016-11-30', 0 ),
 ( 12 ,1 ,2,'2016-12-01', '2016-12-31', 0 );
+
 
 -- create test users
 INSERT INTO user (id, username, password, first, last, email) VALUES
