@@ -259,3 +259,9 @@ INSERT INTO `reference_group` VALUES (1, 'AA', 'Reference Group 1', 1, 1);
 INSERT INTO `reference` VALUES (1, 0, 'AB', 'Reference bilan 1', 1, 1, NULL);
 INSERT INTO `reference` VALUES (3, 0, 'AC', 'Reference resultat 1', 1, NULL, 1);
 INSERT INTO `reference` VALUES (4, 0, 'XX', 'Deletable reference 1', 1, NULL, NULL);
+
+INSERT INTO `cost_center` VALUES (1, 1, 'cost center 1', 'cost note', 1);
+INSERT INTO `cost_center` VALUES (1, 2, 'cost center 2', 'cost note 2', 0);
+
+INSERT INTO `profit_center` VALUES (1, 1, 'profit center 1', 'profit note');
+INSERT INTO `profit_center` VALUES (1, 2, 'profit center 2', 'profit note 2');

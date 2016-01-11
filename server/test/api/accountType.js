@@ -15,23 +15,18 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
-describe('The /references API endpoint', function () {
+describe('The /account_type API endpoint', function () {
   var agent = chai.request.agent(url);
-  var new_reference = {
-    id : 2,
-    is_report : 0,
-    ref : 'AD',
-    text : 'Reference tested 1',
-    position: 2,
-    reference_group_id : 1,
-    section_resultat_id : 1
+  var new_account_type = {
+    id : 4,
+    type : 'test account type 1'
   };
 
-  var deletable_reference = {
-    id : 4
+  var deletable_account_type = {
+    id : 3
   };
 
-  var fecthable_reference = {
+  var fecthable_account_type = {
     id : 1
   };
 
@@ -45,18 +40,18 @@ describe('The /references API endpoint', function () {
       .send(user);
   });
 
-  it(' A GET /references/:liste_type returns a list of references', function () {
-    return agent.get('/references/detailed')
+  it(' A GET /account_types returns a list of account type', function () {
+    return agent.get('/account_types')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(3);
+        expect(res.body).to.have.length(2);
       })
       .catch(handler);
   });
 
-  it(' A GET /reference/:id returns one reference', function () {
-    return agent.get('/reference/'+ fecthable_reference.id)
+  it(' A GET /account_types/:id returns one account type', function () {
+    return agent.get('/account_types/'+ fecthable_account_type.id)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -65,27 +60,27 @@ describe('The /references API endpoint', function () {
       .catch(handler);
   });
 
-  it('A POST /references will add a reference', function () {
-    return agent.post('/references')
-      .send(new_reference)
+  it('A POST /account_types will add an account_type', function () {
+    return agent.post('/account_types')
+      .send(new_account_type)
       .then(function (res) {
         expect(res).to.have.status(201);
-        new_reference.id = res.body.id;
+        new_account_type.id = res.body.id;
       })
       .catch(handler);
   }); 
 
-  it('A PUT /references/:id will update the newly added reference', function () {
-    return agent.put('/references/'+ 2)
-      .send({ position : 3 })
+  it('A PUT /account_types/:id will update the newly added account_type', function () {
+    return agent.put('/account_types/'+ 4)
+      .send({ type : 'updated value' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.id).to.equal(new_reference.id);
-        expect(res.body.position).to.not.equal(new_reference.position);
+        expect(res.body.id).to.equal(new_account_type.id);
+        expect(res.body.position).to.not.equal(new_account_type.type);
 
         // re-query the database
-        return agent.get('/reference/'+ new_reference.id);
+        return agent.get('/account_types/'+ new_account_type.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -93,14 +88,14 @@ describe('The /references API endpoint', function () {
       .catch(handler);
   });
 
-   it(' A DELETE /references/:id will delete a reference', function () {
-    return agent.delete('/references/' + deletable_reference.id)
+   it(' A DELETE /account_types/:id will delete a account_type', function () {
+    return agent.delete('/account_types/' + deletable_account_type.id)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
 
         // re-query the database
-        return agent.get('/reference/' + deletable_reference.id);
+        return agent.get('/account_types/' + deletable_account_type.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
