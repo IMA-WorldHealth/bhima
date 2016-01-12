@@ -5,8 +5,9 @@
   "main": "server/app.js",
   "scripts": {
     "test": "./sh/travis.sh",
-    "app": "gulp build && cd bin && node server/app.js",
-    "dev": "gulp build && cd bin && node server/app.js development"
+    "app": "gulp build && cd bin && NODE_ENV=production node server/app.js",
+    "dev": "gulp build && cd bin && NODE_ENV=development node server/app.js",
+    "start": "gulp build && cd bin && NODE_ENV=production node server/app.js"
   },
   "repository": {
     "type": "git",

@@ -62,7 +62,7 @@ var paths = {
   },
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
-    files      : ['server/*', 'server/**/*'],
+    files      : ['server/*', 'server/**/*', '.env.*'],
     plugins    : ['plugins/*', 'plugins/**/*'],
     unittest   : []
   }
