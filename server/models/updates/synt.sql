@@ -1,4 +1,3 @@
--- Reset employee state
 -- By: Dedrick Kitamuka
 -- Date: 2015-11-27
 

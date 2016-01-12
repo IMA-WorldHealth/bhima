@@ -27,13 +27,9 @@ describe('The /references API endpoint', function () {
     section_resultat_id : 1
   };
 
-  var deletable_reference = {
-    id : 4
-  };
+  var DELETABLE_REFERENCE_ID = 4;
 
-  var fecthable_reference = {
-    id : 1
-  };
+  var FETCHABLE_REFERENCE_ID = 1;
 
   // throw errors
   function handler(err) { throw err; }
@@ -46,7 +42,7 @@ describe('The /references API endpoint', function () {
   });
 
   it(' A GET /references/:liste_type returns a list of references', function () {
-    return agent.get('/references/detailed')
+    return agent.get('/references?list=full')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -56,7 +52,7 @@ describe('The /references API endpoint', function () {
   });
 
   it(' A GET /reference/:id returns one reference', function () {
-    return agent.get('/reference/'+ fecthable_reference.id)
+    return agent.get('/references/'+ FETCHABLE_REFERENCE_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -85,7 +81,7 @@ describe('The /references API endpoint', function () {
         expect(res.body.position).to.not.equal(new_reference.position);
 
         // re-query the database
-        return agent.get('/reference/'+ new_reference.id);
+        return agent.get('/references/'+ new_reference.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -94,13 +90,13 @@ describe('The /references API endpoint', function () {
   });
 
    it(' A DELETE /references/:id will delete a reference', function () {
-    return agent.delete('/references/' + deletable_reference.id)
+    return agent.delete('/references/' + DELETABLE_REFERENCE_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
 
         // re-query the database
-        return agent.get('/reference/' + deletable_reference.id);
+        return agent.get('/references/' + DELETABLE_REFERENCE_ID);
       })
       .then(function (res) {
         expect(res).to.have.status(200);

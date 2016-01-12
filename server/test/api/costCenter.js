@@ -25,13 +25,9 @@ describe('The /cost_center API endpoint', function () {
     is_principal : 1
   };
 
-  var deletable_cost_center = {
-    id : 2
-  };
+  var DELETABLE_COST_CENTER_ID = 2;
 
-  var fecthable_cost_center = {
-    id : 1
-  };
+  var FETCHABLE_COST_CENTER_ID = 1;
 
   // throw errors
   function handler(err) { throw err; }
@@ -44,7 +40,7 @@ describe('The /cost_center API endpoint', function () {
   });
 
   it(' A GET /cost_centers returns a list of cost centers', function () {
-    return agent.get('/cost_centers/detailed')
+    return agent.get('/cost_centers?list=full')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -54,7 +50,7 @@ describe('The /cost_center API endpoint', function () {
   });
 
   it(' A GET /cost_center/:id returns one cost center', function () {
-    return agent.get('/cost_center/'+ fecthable_cost_center.id)
+    return agent.get('/cost_centers/'+ FETCHABLE_COST_CENTER_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -83,7 +79,7 @@ describe('The /cost_center API endpoint', function () {
         expect(res.body.note).to.not.equal(new_cost_center.note);
 
         // re-query the database
-        return agent.get('/cost_center/'+ new_cost_center.id);
+        return agent.get('/cost_centers/'+ new_cost_center.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -92,13 +88,13 @@ describe('The /cost_center API endpoint', function () {
   });
 
    it(' A DELETE /cost_centers/:id will delete a cost_center', function () {
-    return agent.delete('/cost_centers/' + deletable_cost_center.id)
+    return agent.delete('/cost_centers/' + DELETABLE_COST_CENTER_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
 
         // re-query the database
-        return agent.get('/cost_center/' + deletable_cost_center.id);
+        return agent.get('/cost_centers/' + DELETABLE_COST_CENTER_ID);
       })
       .then(function (res) {
         expect(res).to.have.status(200);

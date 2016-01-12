@@ -39,7 +39,7 @@ function list (req, res, next){
   var sql = 
     'SELECT a.id, a.account_number, a.account_txt FROM account AS a';
 
-  if(req.params.list_type == 'detailed'){
+  if(req.query.list == 'full'){
     sql = 
       'SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset, ' + 
       'a.reference_id, a.is_brut_link, a.is_used_budget, a.is_charge, a.account_number, ' +

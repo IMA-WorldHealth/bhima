@@ -6,7 +6,7 @@ function list (req, res, next){
   var sql = 
     'SELECT p.id, p.text FROM profit_center AS p';
 
-  if(req.params.list_type == 'detailed'){
+  if(req.query.list == 'full'){
     sql = 
       'SELECT p.id, p.text, p.project_id, p.note, pr.name, pr.abbr, pr.enterprise_id, pr.zs_id ' +
       'FROM profit_center AS p JOIN project AS pr ON p.project_id = pr.id';
