@@ -14,7 +14,7 @@ Account.$inject = ['$http'];
 function Account($http) {  
   
   function list() { 
-    var path = '/accounts/detailed';
+    var path = '/accounts?list=\'full\'';
 
     return $http.get(path)
       .then(extractData);
@@ -25,7 +25,7 @@ function Account($http) {
     return $http.post(path, account).then(extractData);
   }
 
-  function getAccountDetails (list, id) {
+  function getAccountDetails (list, id) { 
     return list.filter(function (line){return line.id === id;})[0];
   }  
 

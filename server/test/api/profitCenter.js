@@ -24,13 +24,8 @@ describe('The /profit_center API endpoint', function () {
     note : 'test inserted'
   };
 
-  var deletable_profit_center = {
-    id : 2
-  };
-
-  var fecthable_profit_center = {
-    id : 1
-  };
+  var DELETABLE_PROFIT_CENTER_ID = 2;
+  var FETCHABLE_PROFIT_CENTER_ID = 1;
 
   // throw errors
   function handler(err) { throw err; }
@@ -43,7 +38,7 @@ describe('The /profit_center API endpoint', function () {
   });
 
   it(' A GET /profit_centers returns a list of profit centers', function () {
-    return agent.get('/profit_centers/detailed')
+    return agent.get('/profit_centers?list=full')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -53,7 +48,7 @@ describe('The /profit_center API endpoint', function () {
   });
 
   it(' A GET /profit_center/:id returns one profit center', function () {
-    return agent.get('/profit_center/'+ fecthable_profit_center.id)
+    return agent.get('/profit_centers/'+ FETCHABLE_PROFIT_CENTER_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -82,7 +77,7 @@ describe('The /profit_center API endpoint', function () {
         expect(res.body.note).to.not.equal(new_profit_center.note);
 
         // re-query the database
-        return agent.get('/profit_center/'+ new_profit_center.id);
+        return agent.get('/profit_centers/'+ new_profit_center.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -91,13 +86,13 @@ describe('The /profit_center API endpoint', function () {
   });
 
    it(' A DELETE /profit_centers/:id will delete a profit_center', function () {
-    return agent.delete('/profit_centers/' + deletable_profit_center.id)
+    return agent.delete('/profit_centers/' + DELETABLE_PROFIT_CENTER_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
 
         // re-query the database
-        return agent.get('/profit_center/' + deletable_profit_center.id);
+        return agent.get('/profit_centers/' + DELETABLE_PROFIT_CENTER_ID);
       })
       .then(function (res) {
         expect(res).to.have.status(200);

@@ -30,11 +30,11 @@ function list (req, res, next){
 
 function create (req, res, next) {
   var record = req.body;
-  var create_account_type_query = 'INSERT INTO account_type SET ?';
+  var createAccountTypeQuery = 'INSERT INTO account_type SET ?';
   var transaction = db.transaction();
 
   transaction
-  .addQuery(create_account_type_query, [record]);
+  .addQuery(createAccountTypeQuery, [record]);
 
   transaction.execute()
   .then(function (results){
@@ -49,9 +49,9 @@ function create (req, res, next) {
 function update (req, res, next){
   var queryData = req.body;
   var accountTypeId = req.params.id;
-  var update_account_type_query = 'UPDATE account_type SET ? WHERE id = ?';
+  var updateAccountTypeQuery = 'UPDATE account_type SET ? WHERE id = ?';
 
-  db.exec(update_account_type_query, [queryData, accountTypeId])
+  db.exec(updateAccountTypeQuery, [queryData, accountTypeId])
   .then(function (results){
     var confirmation = results;
     res.status(200).json(confirmation);
@@ -63,9 +63,9 @@ function update (req, res, next){
 
 function remove (req, res, next) {
   var accountTypeId = req.params.id;
-  var remove_account_type_query = 'DELETE FROM account_type WHERE id=?';
+  var removeAccountTypeQuery = 'DELETE FROM account_type WHERE id=?';
 
-  db.exec(remove_account_type_query, [accountTypeId])
+  db.exec(removeAccountTypeQuery, [accountTypeId])
   .then(function (results){
     var confirmation = results;
     res.status(200).json(confirmation);

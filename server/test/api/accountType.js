@@ -22,13 +22,9 @@ describe('The /account_type API endpoint', function () {
     type : 'test account type 1'
   };
 
-  var deletable_account_type = {
-    id : 3
-  };
 
-  var fecthable_account_type = {
-    id : 1
-  };
+  var DELETABLE_ACCOUNT_TYPE_ID = 3;
+  var FETCHABLE_ACCOUNT_TYPE_ID = 1;
 
   // throw errors
   function handler(err) { throw err; }
@@ -51,7 +47,7 @@ describe('The /account_type API endpoint', function () {
   });
 
   it(' A GET /account_types/:id returns one account type', function () {
-    return agent.get('/account_types/'+ fecthable_account_type.id)
+    return agent.get('/account_types/'+ FETCHABLE_ACCOUNT_TYPE_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -90,13 +86,13 @@ describe('The /account_type API endpoint', function () {
 
    it(' A DELETE /account_types/:id will delete a account_type', function () {
     this.timeout(60000);
-    return agent.delete('/account_types/' + deletable_account_type.id)
+    return agent.delete('/account_types/' + DELETABLE_ACCOUNT_TYPE_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
 
         // re-query the database
-        return agent.get('/account_types/' + deletable_account_type.id);
+        return agent.get('/account_types/' + DELETABLE_ACCOUNT_TYPE_ID);
       })
       .then(function (res) {
         expect(res).to.have.status(200);

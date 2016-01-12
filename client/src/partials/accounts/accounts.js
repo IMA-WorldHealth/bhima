@@ -18,12 +18,11 @@ function AccountsController(validate, appstate, connect, $translate, liberror, m
   };
 
   vm.newAccount = {};
-  vm.editable_account = {};
+  vm.editableAccount = {};
 
   accountService.list()
   .then(function (results){
     vm.accounts = results;
-    console.log(vm.accounts);
   });
 
   accountTypeService.list()
@@ -52,31 +51,31 @@ function AccountsController(validate, appstate, connect, $translate, liberror, m
 
   function reconfigureAccount (account_id){
     vm.session.state = 'update';
-    vm.editable_account = accountService.getAccountDetails(vm.accounts, account_id);
+    vm.editableAccount = accountService.getAccountDetails(vm.accounts, account_id);
   }
 
   function checkConditionAsset (){
     if(!vm.newAccount.account_type_id) {return;}
     var res = accountTypeService.getAccountType(vm.accountTypes, vm.newAccount.account_type_id);
-    return res.type == 'balance' && !vm.newAccount.parent;
+    return res.type === 'balance' && !vm.newAccount.parent;
   }
 
   function checkConditionCharge (){
     if(!vm.newAccount.account_type_id) {return;}
     var res = accountTypeService.getAccountType(vm.accountTypes, vm.newAccount.account_type_id);
-    return res.type == 'income/expense' && !vm.newAccount.parent;
+    return res.type === 'income/expense' && !vm.newAccount.parent;
   }
 
   function checkConditionProfitCenter (){
     if(!vm.newAccount.account_type_id) {return;}
     var res = accountTypeService.getAccountType(vm.accountTypes, vm.newAccount.account_type_id);
-    return res.type == 'income/expense' && vm.newAccount.is_charge == 0;
+    return res.type === 'income/expense' && vm.newAccount.is_charge == 0;
   }
 
   function checkConditionCostCenter (){
     if(!vm.newAccount.account_type_id) {return;}
     var res = accountTypeService.getAccountType(vm.accountTypes, vm.newAccount.account_type_id);
-    return res.type == 'income/expense' && vm.newAccount.is_charge == 1;
+    return res.type === 'income/expense' && vm.newAccount.is_charge == 1;
   }
 
   function checkConditionType (){
@@ -93,42 +92,43 @@ function AccountsController(validate, appstate, connect, $translate, liberror, m
 
   function checkConditionPanelBilan() {
     var res = null;
-    if(vm.newAccount.account_type_id) {res = accountTypeService.getAccountType(vm.accountTypes, vm.newAccount.account_type_id);}
-    var ans = res ? res.type == 'balance' : false;
-    return  (ans || vm.newAccount.parent) && !vm.newAccount.is_title;
+    if(vm.newAccount.account_type_id) {
+      res = accountTypeService.getAccountType(vm.accountTypes, vm.newAccount.account_type_id);
+    }
+    var isBalance = res ? res.type === 'balance' : false;
+    return  (isBalance || vm.newAccount.parent) && !vm.newAccount.is_title;
   }
 
   function checkConditionBrut (){
-    return vm.newAccount.is_asset == 1;
+    return vm.newAccount.is_asset === 1;
   }
 
   function submitAccount (savingForm){
     savingForm.$setSubmitted();
     if (savingForm.$invalid){
-      console.log('erreur');
       return;
     }
     prepareFormData();
     accountService.create(vm.newAccount)
     .then(function (result){
-      console.log('result', result);
+      //FIX ME : handle success
+      
     });    
   }
 
   function prepareFormData(){
 
     if(vm.newAccount.parent){
-      var parent_account = accountService.getAccountDetails(vm.accounts, vm.newAccount.parent);
+      var parentAccount = accountService.getAccountDetails(vm.accounts, vm.newAccount.parent);
       vm.newAccount.account_type_id = parent_account.account_type_id;
-      vm.newAccount.classe = parent_account.classe;
-      vm.newAccount.is_asset = parent_account.is_asset;
-      vm.newAccount.is_charge = parent_account.is_charge;
+      vm.newAccount.classe = parentAccount.classe;
+      vm.newAccount.is_asset = parentAccount.is_asset;
+      vm.newAccount.is_charge = parentAccount.is_charge;
     }else{
       vm.newAccount.classe = Number(String(vm.newAccount.account_number).substring(0,1));
     }
 
-    vm.newAccount.enterprise_id = sessionService.enterprise.id;
-    console.log(vm.newAccount);    
+    vm.newAccount.enterprise_id = sessionService.enterprise.id;    
   }
 
   vm.addAccount = addAccount;

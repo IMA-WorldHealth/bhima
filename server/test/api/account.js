@@ -55,7 +55,7 @@ describe('The /account API endpoint', function () {
   });
 
   it(' A GET /accounts returns a list of accounts', function () {
-    return agent.get('/accounts/detailed')
+    return agent.get('/accounts?list=full')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -64,8 +64,8 @@ describe('The /account API endpoint', function () {
       .catch(handler);
   });
 
-  it(' A GET /account/:id returns one account', function () {
-    return agent.get('/account/'+ fecthable_account.id)
+  it(' A GET /accounts/:id returns one account', function () {
+    return agent.get('/accounts/'+ fecthable_account.id)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -95,7 +95,7 @@ describe('The /account API endpoint', function () {
         expect(res.body.account_txt).to.not.equal(new_account.account_txt);
 
         // re-query the database
-        return agent.get('/account/'+ new_account.id);
+        return agent.get('/accounts/'+ new_account.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);

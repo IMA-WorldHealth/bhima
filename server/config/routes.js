@@ -103,8 +103,8 @@ exports.configure = function (app) {
   app.get('/location/detail/:uuid', locations.lookupDetail);
 
   //API for account routes crud
-  app.get('/accounts/:list_type', account.list);
-  app.get('/account/:id', account.getAccount);
+  app.get('/accounts', account.list);
+  app.get('/accounts/:id', account.getAccount);
   app.post('/accounts', account.create);
   app.put('/accounts/:id', account.update);
 
@@ -116,22 +116,22 @@ exports.configure = function (app) {
   app.delete('/account_types/:id', accountType.remove);
 
   //API for cost_center routes crud
-  app.get('/cost_centers/:list_type', costCenter.list);
-  app.get('/cost_center/:id', costCenter.getCostCenter);
+  app.get('/cost_centers', costCenter.list);
+  app.get('/cost_centers/:id', costCenter.getCostCenter);
   app.post('/cost_centers', costCenter.create);
   app.put('/cost_centers/:id', costCenter.update);
   app.delete('/cost_centers/:id', costCenter.remove);
 
   //API for profit_center routes crud
-  app.get('/profit_centers/:list_type', profitCenter.list);
-  app.get('/profit_center/:id', profitCenter.getProfitCenter);
+  app.get('/profit_centers', profitCenter.list);
+  app.get('/profit_centers/:id', profitCenter.getProfitCenter);
   app.post('/profit_centers', profitCenter.create);
   app.put('/profit_centers/:id', profitCenter.update);
   app.delete('/profit_centers/:id', profitCenter.remove);
 
   //API for reference routes crud
-  app.get('/references/:list_type', reference.list);
-  app.get('/reference/:id', reference.getReference);
+  app.get('/references', reference.list);
+  app.get('/references/:id', reference.getReference);
   app.post('/references', reference.create);
   app.put('/references/:id', reference.update);
   app.delete('/references/:id', reference.remove);
