@@ -1629,6 +1629,9 @@ CREATE TABLE `sale` (
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TRIGGER calculate_reference BEFORE INSERT ON sale 
+FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM patient WHERE patient.project_id = new.project_id);
+
 DROP TABLE IF EXISTS `sale_item`;
 
 CREATE TABLE `sale_item` (

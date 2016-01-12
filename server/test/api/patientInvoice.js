@@ -51,6 +51,8 @@ describe('The /sales API', function () {
   // it('GET /sales/:uuid returns a valid patient invoice', function () { });
   // it('GET /sales/:uuid returns 404 for an invalid patient invoice', function () { });
   
+  // it('POST /sales/ returns 500 for an invalid patient invoice request object', function () { });
+  // it('GET /sales/:invalid_request_uuid returns 404 ensuring invalid request was not written', function () { });
   function handle(error) {
     throw error;
   }

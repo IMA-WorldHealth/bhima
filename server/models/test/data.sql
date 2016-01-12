@@ -190,7 +190,8 @@ INSERT INTO `inventory_type` (`id`, `text`) VALUES (1,'Article'),(2,'Assembly'),
 INSERT INTO `inventory_unit` (`id`, `text`) VALUES (1,'Act'),(2,'Pallet'),(3,'Pill'),(4,'Box'),(5,'Lot'),(6,'amp'),(7,'bags'),(8,'btl'),(9,'cap'),(10,'flc'),(11,'jar'),(12,'ltr'),(13,'pce'),(14,'sch'),(15,'tab'),(16,'tub'),(17,'vial');
 
 INSERT INTO `inventory` VALUES 
-  (1, 'cf05da12-b477-11e5-b297-023919d3d5b0', 'INV0', 'Test inventory item', 25.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', NULL, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP); 
+  (1, 'cf05da13-b477-11e5-b297-023919d3d5b0', 'INV0', 'Test inventory item', 25.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', NULL, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
+  (1, '289cc0a1-b90f-11e5-8c73-159fdc73ab02', 'INV1', 'Second Test inventory item', 10.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', NULL, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP); 
 
 INSERT INTO `debitor_group` VALUES 
   (1, '4de0fe47-177f-4d30-b95f-cff8166400b4', 'Test Debtor Group', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6', NULL, NULL, NULL, 0, 0, 0, NULL),
