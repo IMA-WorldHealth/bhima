@@ -100,6 +100,7 @@ function details(req, res, next) {
 
 function create(req, res, next) { 
   var insertSaleLineQuery, insertSaleItemQuery;
+  var saleResults;
   var transaction;
    
   // Verify request validity 
@@ -139,14 +140,15 @@ function create(req, res, next) {
 
   transaction.execute() 
     .then(function (results) { 
-     
+      saleResults = results;
+      
       // TODO Update to use latest journal interface
       return postSaleRecord(saleLineBody.uuid, req.body.caution, req.session.user.id);
     })
     .then(function (results) { 
       var confirmation = { 
         uuid : saleLineBody.uuid,
-        results : results
+        results : saleResults
       };
       res.status(201).json(confirmation);
     })
@@ -155,7 +157,8 @@ function create(req, res, next) {
 }
 
 /** 
- * [TO DEPRECATE] Wrapper method to allow the module to use the current journal 
+ * @deprecated since version 2.X
+ * Wrapper method to allow the module to use the current journal 
  * interface. This will be replaced with the new server journal interface 
  * implementation.
  * @returns {Object} Promise object to be fulfilled on journal posting
