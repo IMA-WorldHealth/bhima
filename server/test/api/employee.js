@@ -25,9 +25,16 @@ function handler(err) { throw err; }
 * The /projects API endpoint
 *
 * This test suite implements full CRUD on the /projects HTTP API endpoint.
+* NOTE: to run correctly this test please execute the sql scripts
+* in ./server/models/test/update.sql file to get correct employees dependencies
 */
 describe('The /employees API endpoint :: ', function () {
   var agent = chai.request.agent(url);
+
+  // Custom dates
+  var embaucheDate  = '2016-01-01',
+      dob1 = '1987-04-17',
+      dob2 = '1993-04-25';
 
   // employee we will add during this test suite.
   var employee = {
@@ -36,8 +43,8 @@ describe('The /employees API endpoint :: ', function () {
       name : 'Magnus',
       postnom : 'Charlemagne',
       sexe : 'M',
-      dob : '1996-01-01',
-      date_embauche : '2016-01-01',
+      dob : dob1,
+      date_embauche : embaucheDate,
       nb_spouse : 0,
       nb_enfant : 0,
       grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
@@ -58,8 +65,8 @@ describe('The /employees API endpoint :: ', function () {
       name : 'Magne',
       postnom : 'De France',
       sexe : 'M',
-      dob : '1996-01-01',
-      date_embauche : '2016-01-01',
+      dob : dob2,
+      date_embauche : embaucheDate,
       nb_spouse : 0,
       nb_enfant : 0,
       grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
@@ -86,7 +93,7 @@ describe('The /employees API endpoint :: ', function () {
       .then(function (res) {
         expect(res).to.have.status(201);
         expect(res).to.be.json;
-        expect(res.body.id).to.be.exist;
+        expect(res.body.id).to.exist;
         employee.id = res.body.id;
       })
       .catch(handler);
@@ -96,7 +103,7 @@ describe('The /employees API endpoint :: ', function () {
     return agent.post('/employees')
       .send({})
       .then(function (res) {
-        expect(res).to.not.have.status(201);
+        expect(res).to.have.status(400);
         expect(res).to.be.json;
       })
       .catch(handler);
@@ -114,12 +121,13 @@ describe('The /employees API endpoint :: ', function () {
   it('GET /employees/:id should return a specific employee ', function () {
     return agent.get('/employees/' + employee.id)
       .then(function (res) {
+        var emp = res.body[0];
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body[0]).to.be.a('object');
+        expect(emp).to.be.a('object');
         // add a missing property due to alias in db query
-        res.body[0].code = res.body[0].code_employee;
-        expect(res.body[0]).to.contain.all.keys(employee);
+        emp.code = emp.code_employee;
+        expect(emp).to.contain.all.keys(employee);
       })
       .catch(handler);
   });
@@ -128,15 +136,11 @@ describe('The /employees API endpoint :: ', function () {
     return agent.put('/employees/' + employee.id)
       .send(updateEmployee)
       .then(function (res) {
+        var emp = res.body[0];
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body[0]).to.be.a('object');
-        // add a missing property due to alias in db query
-        res.body[0].code = res.body[0].code_employee;
-        expect(res.body[0]).to.contain.all.keys(updateEmployee);
-        for(var i in updateEmployee) {
-          expect(res.body[0][i]).to.be.equals(updateEmployee[i]);
-        }
+        expect(emp).to.be.a('object');
+        checkValidUpdate(emp, updateEmployee);
       })
       .catch(handler);
   });
@@ -150,20 +154,42 @@ describe('The /employees API endpoint :: ', function () {
       .catch(handler);
   });
 
-  it('PUT /employee/:idb should not update an existing employee with a fake data ', function () {
+  it('PUT /employee/:idb should not update an existing employee with fake fields ', function () {
     return agent.put('/employees/' + employee.id)
-      .send({})
-      .then(function (res) {
-        expect(res).to.not.have.status(200);
-        return agent.get('/employees/' + employee.id)
+      .send({
+        code : 'NEW_CODE_X',
+        fakeAttribute1: 'fake value 1',
+        fakeAttribute2: 'fake value 2'
       })
       .then(function (res) {
+        expect(res).to.have.status(400);
+        return agent.get('/employees/' + employee.id);
+      })
+      .then(function (res) {
+        var emp = res.body[0];
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body[0]).to.be.a('object');
-        expect(res.body[0]).to.have.property('id');
+        expect(emp).to.be.a('object');
+        checkValidUpdate(emp, updateEmployee);
       })
       .catch(handler);
   });
+
+  /**
+  * @function checkValidUpdate
+  * @desc This function test if an updated value returned by the server
+  * correspond correctly to the update sended
+  * @param {object} emp The employee object to test
+  * @param (object) update The correct employee update
+  */
+  function checkValidUpdate(employee, update) {
+    // add a missing property due to alias in db query
+    employee.code = employee.code_employee;
+    expect(employee).to.contain.all.keys(update);
+
+    for(var i in update) {
+      expect(employee[i]).to.equals(update[i]);
+    }
+  }
 
 });

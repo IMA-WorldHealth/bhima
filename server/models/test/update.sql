@@ -24,5 +24,5 @@ INSERT INTO `debitor` VALUES
   ('be0096dd-2929-41d2-912e-fb2259356fb5', '4de0fe47-177f-4d30-b95f-cff8166400b4', 'Employee/Test Debitor');
 
 -- Grade
-INSERT INTO `grade` VALUES 
+INSERT INTO `grade` VALUES
   ('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3', 'A1', '1.1', 50);

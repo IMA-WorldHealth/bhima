@@ -18,7 +18,6 @@
 
 var db = require('./../../lib/db');
 var util = require('./../../lib/util');
-var codes = require('./../../config/codes');
 
 /**
 * Returns an array of each employee in the database
@@ -79,8 +78,8 @@ exports.listHolidays = function (req, res, next) {
   ];
 
   db.exec(sql, data)
-  .then(function (result) {
-    res.send(result);
+  .then(function (rows) {
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
@@ -107,8 +106,8 @@ exports.checkHoliday = function (req, res, next) {
   }
 
   db.exec(sql, data)
-  .then(function (result) {
-    res.send(result);
+  .then(function (rows) {
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
@@ -120,8 +119,8 @@ exports.checkHoliday = function (req, res, next) {
 exports.checkOffday = function (req, res, next) {
   var sql ='SELECT * FROM offday WHERE date = ? AND id <> ?';
   db.exec(sql, [req.query.date, req.query.id])
-  .then(function (result) {
-    res.send(result);
+  .then(function (rows) {
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
@@ -143,7 +142,7 @@ exports.details = function (req, res, next) {
   var sql =
   'SELECT ' +
   'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
-  'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
+  'employee.postnom, employee.sexe, DATE_FORMAT(employee.dob, "%Y-%m-%d") AS dob, DATE_FORMAT(employee.date_embauche, "%Y-%m-%d") AS date_embauche, employee.service_id, ' +
   'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
   'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
   'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, employee.location_id, ' +
@@ -161,7 +160,7 @@ exports.details = function (req, res, next) {
   db.exec(sql, [req.params.id])
   .then(function (rows) {
     if (!rows.length) {
-      throw codes.ERR_NOT_FOUND;
+      throw req.codes.ERR_NOT_FOUND;
     }
     res.status(200).json(rows);
   })
@@ -186,12 +185,12 @@ exports.update = function (req, res, next) {
 
   db.exec(sql, [req.body, req.params.id])
   .then(function (row) {
-    if (!row.affectedRows) { throw codes.ERR_NOT_FOUND; }
+    if (!row.affectedRows) { throw req.codes.ERR_NOT_FOUND; }
 
     var sql2 =
     'SELECT ' +
     'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
-    'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
+    'employee.postnom, employee.sexe, DATE_FORMAT(employee.dob, "%Y-%m-%d") AS dob, DATE_FORMAT(employee.date_embauche, "%Y-%m-%d") AS date_embauche, employee.service_id, ' +
     'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
     'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
     'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, employee.location_id, ' +
@@ -210,11 +209,8 @@ exports.update = function (req, res, next) {
   })
   .then(function (rows) {
     if (!rows.length) {
-      throw codes.ERR_NOT_FOUND;
+      throw req.codes.ERR_NOT_FOUND;
     }
-    // returing date in 'yyyy-mm-dd' format
-    rows[0].dob = util.toMysqlDate(rows[0].dob);
-    rows[0].date_embauche = util.toMysqlDate(rows[0].date_embauche);
     res.status(200).json(rows);
   })
   .catch(next)
@@ -234,22 +230,31 @@ exports.update = function (req, res, next) {
 * employees.create(request, response, next);
 */
 exports.create = function (req, res, next) {
-  var sql =
-      'INSERT INTO employee (' +
-      'code, prenom, name, postnom, sexe, dob, date_embauche, nb_spouse, nb_enfant, ' +
-      'grade_id, daily_salary, bank, bank_account, adresse, phone, email, ' +
-      'fonction_id, service_id, location_id, creditor_uuid, debitor_uuid) VALUES ' +
-      '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-  var data = [
-    req.body.code, req.body.prenom, req.body.name, req.body.postnom, req.body.sexe,
-    req.body.dob, req.body.date_embauche, req.body.nb_spouse, req.body.nb_enfant,
-    req.body.grade_id, req.body.daily_salary, req.body.bank, req.body.bank_account,
-    req.body.adresse, req.body.phone, req.body.email, req.body.fonction_id, req.body.service_id,
-    req.body.location_id, req.body.creditor_uuid, req.body.debitor_uuid
+  var employee = req.body,
+      sql      = 'INSERT INTO employee SET ?';
+
+  var requiredKeys = [
+    'code', 'name', 'prenom', 'postnom', 'sexe',
+    'dob', 'grade_id', 'fonction_id', 'service_id',
+    'location_id', 'creditor_uuid', 'debitor_uuid'
   ];
 
-  db.exec(sql, data)
+  var validRequest = requiredKeys.every(function (key) {
+    return employee[key] !== null && employee[key] !== undefined;
+  });
+
+  if (!validRequest) {
+    return res.status(400).json({
+      code : 'ERR_MISSING_PROPERTIES',
+      reason : 'The employee creation path requires : ' +
+        'code, name, prenom, postnom, sexe, dob, grade_id, fonction_id, ' +
+        'service_id, location_id, creditor_uuid and debitor_uuid. ' +
+        'Please make sure these all exist and re-submit.'
+    });
+  }
+
+  db.exec(sql, [employee])
   .then(function (row) {
     res.status(201).json({ id: row.insertId });
   })
