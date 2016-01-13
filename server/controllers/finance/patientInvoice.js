@@ -71,8 +71,6 @@ function details(req, res, next) {
   // structure than alternative blocking methods
   db.exec(saleDetailQuery, [uuid])
     .then(function (detailsResult) { 
-      var saleDetail;
-  
       sale = detailsResult;
       return db.exec(saleItemsQuery, [uuid]);
     })
