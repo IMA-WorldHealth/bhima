@@ -72,7 +72,7 @@ build_db () {
   mysql -u $DB_USER -p$DB_PASS bhima < server/models/test/data.sql
 
   echo "Running db upgrades ..."
-  #mysql -u $DB_USER -p$DB_PASS bhima < server/models/updates/synt.sql
+  mysql -u $DB_USER -p$DB_PASS bhima < server/models/updates/synt.sql
 }
 
 # compile the server using gulp
