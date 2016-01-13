@@ -48,8 +48,8 @@ var debtors        = require('../controllers/finance/debtors');
 var cashboxes      = require('../controllers/finance/cashboxes');
 var exchange       = require('../controllers/finance/exchange');
 var cashflow       = require('../controllers/cashflow');
-
 var enterprises     = require('../controllers/admin/enterprises');
+var patientInvoice = require('../controllers/finance/patientInvoice');
 
 
 var financeServices      = require('../controllers/categorised/financeServices');
@@ -100,7 +100,7 @@ exports.configure = function (app) {
   app.get('/report/serve/:target', reports.serve);
 
   app.post('/purchase', createPurchase.execute);
-  app.post('/sale/', createSale.execute);
+  // app.post('/sale/', createSale.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
   // trial balance routes
@@ -283,6 +283,13 @@ exports.configure = function (app) {
   app.get('/InExAccounts/:id_enterprise/', accounts.listInExAccounts);
   app.get('/availableAccounts/:id_enterprise/', accounts.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', accounts.listEnterpriseProfitAccounts);
+
+  // Patient invoice API 
+  
+  // TODO Decide if the route should be named patient invoice
+  app.get('/sales', patientInvoice.list);
+  app.post('/sales', patientInvoice.create);
+  app.get('/sales/:uuid', patientInvoice.details);
 
   // Patients API
   app.get('/patients', patient.list);

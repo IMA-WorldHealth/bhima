@@ -1,3 +1,6 @@
+// DEPRECIATED - TO BE REMOVED 
+// -used to facilitate sale creation and posting before using an API-centric system 
+
 var q = require('q');
 var db = require('./../../lib/db');
 var parser = require('./../../lib/parser');
