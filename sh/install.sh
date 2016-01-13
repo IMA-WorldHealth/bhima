@@ -15,6 +15,11 @@ usage () {
 
 REBUILD=0;
 DEPENDENCIES=0;
+
+DB_NAME='bhima';
+DB_USER='bhima';
+DB_PASS='HISCongo2013';
+
 while getopts ":hrd" opt; do
   case $opt in
     h)
@@ -51,22 +56,23 @@ build_depends () {
 # build the database
 build_db () {
   echo "Building the bhima database ... "
-  user="bhima"
-  pass="HISCongo2013"
 
   # force database rebuild from command line option
   if [ $REBUILD -eq 1 ]
     then
       echo "Executing DROP SCHEMA command, since install was called with -r (rebuild)."
-      mysql -u $user -p$pass -e "DROP SCHEMA IF EXISTS bhima;"
+      mysql -u $DB_USER -p$DB_PASS -e "DROP SCHEMA IF EXISTS $DB_NAME;"
   fi
-  mysql -u $user -p$pass -e "CREATE SCHEMA IF NOT EXISTS bhima;"
+  mysql -u $DB_USER -p$DB_PASS -e "CREATE SCHEMA IF NOT EXISTS $DB_NAME;"
 
   echo "Building schema ..."
-  mysql -u $user -p$pass bhima < server/models/schema.sql
+  mysql -u $DB_USER -p$DB_PASS bhima < server/models/schema.sql
 
   echo "Importing data ..."
-  mysql -u $user -p$pass bhima < server/models/test/data.sql
+  mysql -u $DB_USER -p$DB_PASS bhima < server/models/test/data.sql
+
+  echo "Running db upgrades ..."
+  #mysql -u $DB_USER -p$DB_PASS bhima < server/models/updates/synt.sql
 }
 
 # compile the server using gulp

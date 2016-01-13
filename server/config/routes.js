@@ -48,6 +48,7 @@ var debtors        = require('../controllers/finance/debtors');
 var cashboxes      = require('../controllers/finance/cashboxes');
 var exchange       = require('../controllers/finance/exchange');
 var cashflow       = require('../controllers/cashflow');
+var priceList      = require('../controllers/finance/priceList');
 
 var patientInvoice = require('../controllers/finance/patientInvoice');
 
@@ -343,6 +344,7 @@ exports.configure = function (app) {
   app.put('/users/:id', users.update);
   app.put('/users/:id/password', users.password);
   app.delete('/users/:id', users.delete);
+  // @deprecated
   app.get('/editsession/authenticate/:pin', users.authenticatePin);
 
   // budget controller
@@ -367,6 +369,13 @@ exports.configure = function (app) {
   app.get('/cashboxes/:id/currencies/:currencyId', cashboxes.currencies.details);
   app.post('/cashboxes/:id/currencies', cashboxes.currencies.create);
   app.put('/cashboxes/:id/currencies/:currencyId', cashboxes.currencies.update);
+
+  // price lists
+  app.get('/prices', priceList.list);
+  app.get('/prices/:uuid', priceList.details);
+  app.post('/prices', priceList.create);
+  app.put('/prices/:uuid', priceList.update);
+  app.delete('/prices/:uuid', priceList.delete);
 
   // @todo - classify these
   app.get('/cashflow/report/', cashflow.getReport);
