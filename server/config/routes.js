@@ -288,7 +288,7 @@ exports.configure = function (app) {
   // TODO Decide if the route should be named patient invoice
   app.get('/sales', patientInvoice.list);
   app.post('/sales', patientInvoice.create);
-  // app.get('/sales/:uuid', patientInvoice.details);
+  app.get('/sales/:uuid', patientInvoice.details);
 
   // Patients API
   app.get('/patients', patient.list);
