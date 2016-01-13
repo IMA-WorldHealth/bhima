@@ -49,6 +49,8 @@ var cashboxes      = require('../controllers/finance/cashboxes');
 var exchange       = require('../controllers/finance/exchange');
 var cashflow       = require('../controllers/cashflow');
 
+var enterprises     = require('../controllers/admin/enterprises');
+
 
 var financeServices      = require('../controllers/categorised/financeServices');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
@@ -363,4 +365,9 @@ exports.configure = function (app) {
   // @todo - classify these
   app.get('/cashflow/report/', cashflow.getReport);
   //app.get('/stock/entries?', depot.getStockEntry);
+
+  // Enterprises Controller 
+  app.get('/enterprises', enterprises.list);
+  app.post('/enterprises', enterprises.create);
+  app.put('/enterprises/:id', enterprises.update);
 };
