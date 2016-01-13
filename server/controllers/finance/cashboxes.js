@@ -12,8 +12,6 @@ var db = require('../../lib/db');
 * in life.
 */
 
-// FIXME -- For some reason, is_bank can be null.
-
 /**
 * GET /cashboxes
 * Lists available cashboxes, defaulting to all in the database.  Pass in the
