@@ -41,7 +41,7 @@ module.exports = {
     httpStatus : 401,
     reason : 'A project does not exist within the applicaiton to login to.'
   },
-  'ERR_EMPTY_BODY' : { 
+  'ERR_EMPTY_BODY' : {
     code : 'ERR_EMPTY_BODY',
     httpStatus : 400,
     reason : 'You cannot submit a PUT/POST request with an empty body to the server.'
