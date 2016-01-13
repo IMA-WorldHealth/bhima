@@ -25,8 +25,6 @@ function handler(err) { throw err; }
 * The /projects API endpoint
 *
 * This test suite implements full CRUD on the /projects HTTP API endpoint.
-* NOTE: to run correctly this test please execute the sql scripts
-* in ./server/models/test/update.sql file to get correct employees dependencies
 */
 describe('The /employees API endpoint :: ', function () {
   var agent = chai.request.agent(url);
