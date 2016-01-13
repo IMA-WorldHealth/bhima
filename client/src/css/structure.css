@@ -1,0 +1,92 @@
+.sidebar { 
+  /* Only when not expanded */
+  width : 56px;
+
+  min-width : 56px;
+  position : absolute;
+}
+
+.sidebar-container { 
+  width : 56px;
+  
+  height : 100vh;
+
+  border-right : 1px solid #ccc;
+  background-color : #f5f5f5;
+  position : absolute; 
+  top : 0;
+  bottom : 0;
+}
+
+.sidebar-container > .sidebar-body { 
+
+  /* Can be used to implement a footer if required */
+  bottom : 80px;
+  
+  width : 100%;
+  padding : 0;
+
+  overflow-x : hidden;
+  position : absolute;
+  top : 0;
+}
+
+.sidebar-body > header { 
+  margin-top : 10px;
+  margin-left : 0;
+  margin-right : 0;
+  
+  table-layout : auto;
+  width : 100%;
+  padding-bottom : 0;
+}
+
+.header-image {
+  position : relative;
+  width : auto;
+  text-align : center;
+  vertical-align : top;
+}
+
+/* .header-image > a > img { */ 
+.header-image > img { 
+  height : 40px;
+  width : 40px;
+  /* margin-left : 12px; */
+  
+}
+
+.sidebar-group { 
+  border-top : 1px solid #ccc;
+  margin-top : 15px;
+  padding-top : 10px;
+
+  height : auto;
+}
+
+.sidebar-group > ul { 
+  list-style : none;
+  margin : 0;
+  padding : 0;
+}
+
+.sidebar-group > ul > li { 
+  /* padding : 0 15px; */
+  padding-top : 5px;
+  padding-bottom : 5px;
+  position : relative;
+  display : block;
+  text-align : center;
+}
+
+
+.sidebar-group > ul > li > a { 
+  padding-top : 10px;
+  padding-bottom : 10px;
+}
+.page { 
+}
+
+.sidebar-body > nav { 
+
+}

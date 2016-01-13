@@ -16,15 +16,44 @@
 
 <body ng-app="bhima" ng-strict-di>
 
-<!--not required in placeholder rewrite -->
 <div ng-controller="ApplicationController as AppCtrl">
-  
+   
   <div class="sidebar">
+    <div class="sidebar-container">
 
+      <div class="sidebar-body">
+        <header>
+          
+          <div class="header-image">
+            <!-- <a href="#/"> -->
+              <img src="assets/icon.png" width="40" height="40">
+            <!-- </a> -->
+          </div>
+        </header>
+
+        <nav>
+          <div class="sidebar-group">
+            <ul>
+              <li>
+                <span class="glyphicon glyphicon-resize-full"></span>
+              </li>
+              <li>
+                <span class="glyphicon glyphicon-cog"></span>
+              </li>
+
+              <li>
+                <span class="glyphicon glyphicon-log-out"></span>
+              </li>
+            </ul>
+          </div>
+
+        </nav>
+      </div>
+
+    </div>
   </div>
 
   <div class="page">
-
   </div>
   <!-- sidebar definition -->
   <!--div class="container sidebar hidden-print">
@@ -61,6 +90,16 @@
 <!--jquery-->
 <script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="vendor/jquery-ui.min/index.js"></script>
+
+<script>
+  /*sidebar();
+
+  function sidebar() { 
+    $('.sidebar-container').height($(window).height());
+  }
+
+  $(window).resize(sidebar);*/
+</script>
 
 <!-- localforage -->
 <script src="vendor/localforage/dist/localforage.min.js"></script>
