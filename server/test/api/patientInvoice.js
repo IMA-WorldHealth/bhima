@@ -87,7 +87,7 @@ describe('The /sales API', function () {
   it('GET /sales returns a list of patient invoices', function () {
 
     // This value depends on the success of the previous test
-    var INITIAL_PATIENT_INVOICES = 1;
+    var INITIAL_PATIENT_INVOICES = 3;
 
     return agent.get('/sales')
       .then(function (res) { 
