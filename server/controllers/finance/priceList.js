@@ -28,7 +28,7 @@ exports.list = function list(req, res, next) {
   var sql =
     'SELECT uuid, label, created_at ' +
     'FROM price_list ' +
-    'WHERE enteprise_id = ? ' +
+    'WHERE enterprise_id = ? ' +
     'ORDER BY label;';
 
   db.exec(sql, [req.session.enterprise.id])
@@ -69,7 +69,7 @@ function lookupPriceList(uuid, codes) {
   var priceList;
   var sql =
     'SELECT uuid, label, description, created_at, updated_at ' +
-    'FROM price_list WHERE id = ?;';
+    'FROM price_list WHERE uuid = ?;';
 
   return db.exec(sql, [ uuid ])
   .then(function (rows) {
@@ -116,12 +116,11 @@ exports.details = function details(req, res, next) {
  * Convert an array of price list item objects into an array of arrays for
  * easy database insertion
  *
- * @param {String} uuid
+ * @param {String} priceListUuid
  * @param {Array} items
  *
  * @example
  * var items = [{
- *   uuid : '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
  *   inventory_uuid : 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4',
  *   label : 'Aspirin 15% reduction',
  *   value : 15,
@@ -155,15 +154,19 @@ exports.details = function details(req, res, next) {
  *
  * @returns {Array} items
  */
-function formatPriceListItems(uuid, items) {
+function formatPriceListItems(priceListUuid, items) {
   'use strict';
 
   // format the price list items into a format that can be easily inserted into
   // the database
   return items.map(function (item) {
     return [
-      item.uuid, item.inventory_uuid, uuid,
-      item.label, item.value, item.is_percentage
+      item.uuid || uuid(),
+      item.inventory_uuid,
+      priceListUuid,
+      item.label,
+      item.value,
+      item.is_percentage
     ];
   });
 }
@@ -231,7 +234,7 @@ exports.update = function update(req, res, next) {
   var items;
   var data = req.body.list;
   var priceListSql =
-    'UPDATE price_list SET ? WHERE id = ?;';
+    'UPDATE price_list SET ? WHERE uuid = ?;';
 
   var priceListDeleteItemSql =
     'DELETE FROM price_list_item WHERE price_list_uuid = ?';
@@ -244,7 +247,7 @@ exports.update = function update(req, res, next) {
 
   // if the client didn't send price list items, do not create them.
   if (data.items) {
-    items = formatPriceListItems(data.uuid, data.items);
+    items = formatPriceListItems(req.params.uuid, data.items);
   }
 
   // remove non-updatable properties before queries
@@ -258,13 +261,15 @@ exports.update = function update(req, res, next) {
     // if we get here, it means the price list exists and we can perform an
     // update query on it. Since we are doing multiple operations at once,
     // wrap the queries in a DB transaction.
-    trans.addQuery(priceListSql, [ data, req.params.uuid ]);
+    if (!isEmptyObject(data)) {
+      trans.addQuery(priceListSql, [ data, req.params.uuid ]);
+    }
 
     // only trigger price list item updates if the items have been sent back to
     // the server
     if (items) {
-      trans.addQuery(priceListDeleteItemSql, [ items ]);
       trans.addQuery(priceListCreateItemSql, [ items ]);
+      trans.addQuery(priceListDeleteItemSql, [ req.params.uuid ]);
     }
 
     return trans.execute();
@@ -306,3 +311,7 @@ exports.delete = function del(req, res, next) {
   .catch(next)
   .done();
 };
+
+function isEmptyObject(object) {
+  return Object.keys(object).length === 0;
+}
