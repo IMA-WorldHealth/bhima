@@ -9,23 +9,25 @@
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
 
   <!-- Compiled bootstrap style definition -->
-  <!-- <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.css"> -->
   <link rel="stylesheet" href="css/bhima-bootstrap.css">
-
   <link rel="stylesheet" href="vendor/angular-ui-grid/ui-grid.min.css">
-
   <link rel="stylesheet" href="css/style.min.css">
-
-  <!-- UI Grid CSS --> 
-  <link rel="stylesheet" href="vendor/angular-ui-grid/ui-grid.min.css">
 </head>
+
 <body ng-app="bhima" ng-strict-di>
 
 <!--not required in placeholder rewrite -->
 <div ng-controller="ApplicationController as AppCtrl">
+  
+  <div class="sidebar">
 
+  </div>
+
+  <div class="page">
+
+  </div>
   <!-- sidebar definition -->
-  <div class="container sidebar hidden-print">
+  <!--div class="container sidebar hidden-print">
     <div class="row" id="logo">
       <h2><a href="#/"><img src="assets/icon.png" width="100" height="100"></a></h2>
     </div>
@@ -46,57 +48,13 @@
     </div>
   </div>
 
-  <!-- FIXME: required for printing to work properly... -->
   <span class="visible-print">
     <span class="invisible">.</span>
   </span>
 
-  <div class="hidden-print">
-    <div ng-controller="message" class="message-container" id="msg-box">
-
-      <div class="message message-{{message.type}}" ng-repeat="message in messages track by $index" ng-cloak>
-        <div ng-if="!message.error">
-          <h4>[{{ message.namespace }}] {{ message.title }} <a class="action pull-right" ng-if="message.closable" ng-click="close(message.id)"><span class="glyphicon glyphicon-remove-circle"></span></a></h4>
-          <div>
-            {{ message.description }}
-          </div>
-        </div>
-
-        <div ng-if="message.error">
-          <h4>[{{ message.namespace }}] {{ message.title }} <a class="action pull-right" ng-if="message.closable" ng-click="close(message.id)"><span class="error glyphicon glyphicon-remove-circle"></span></a></h4>
-          <div ng-if="!!message.statusText">
-            <!-- TODO : This should be translated -->
-            <b>Status Code</b>
-            <span>{{ message.status }} - "{{ message.statusText }}"</span>
-          </div>
-          <div>
-            <b>Description</b>
-            <div>{{ message.description }}</div>
-          </div>
-          <div ng-if="message.params">
-            <table class="parameter-table">
-              <thead>
-                <tr>
-                  <th colspan="2">Parameters</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="(k,v) in message.params">
-                  <th>{{ k }}</th>
-                  <td>{{ v }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
   <div class="viewport">
     <div ng-view class="view"></div>
-  </div>
+  </div-->
 </div>
 
 <!-- scripts loaded in body to prevent page from 'hanging'-->
