@@ -19,7 +19,6 @@ function empty(object) {
   return Object.keys(object).length === 0;
 }
 
-
 // looks up a single cash record and associated cash_items
 // sets the "canceled" flag if a cash_discard record exists.
 function lookupCashRecord(uuid, codes) {
@@ -111,7 +110,7 @@ exports.list = function list(req, res, next) {
  *   ...
  *  }
  */
-exports.details = function details(req, res, next) {
+exports.getCashDetails = function details(req, res, next) {
   'use strict';
 
   var uuid = req.params.uuid;
@@ -193,7 +192,7 @@ exports.update = function update(req, res, next) {
   'use strict';
 
   var uuid = req.params.uuid;
-  var updateSql = 'UPDATE cash SET ?;';
+  var updateSql = 'UPDATE cash SET ? WHERE uuid = ?;';
 
   // protected database fields that are unavailable for updates.
   var protect = [
@@ -219,7 +218,7 @@ exports.update = function update(req, res, next) {
 
     // if we get here, we know we have a cash record by this UUID.
     // we can try to update it.
-    return db.exec(updateSql, [ req.body ]);
+    return db.exec(updateSql, [ req.body, req.params.uuid ]);
   })
   .then(function () {
 

@@ -380,7 +380,7 @@ exports.configure = function (app) {
 
   // cash (aux/primary)
   app.get('/cash', cash.list);
-  app.get('/cash/:uuid', cash.details);
+  app.get('/cash/:uuid', cash.getCashDetails);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
   app.delete('/cash/:uuid', cash.debitNote);
