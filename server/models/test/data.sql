@@ -1,6 +1,6 @@
 -- bhima test database
 
-INSERT INTO `unit` VALUES 
+INSERT INTO `unit` VALUES
 (0,'Root','TREE.ROOT','The unseen root node',NULL,'/partials/index.html','/root'),
 (1,'Admin','TREE.ADMIN','The Administration Super-Category',0,'/partials/admin/index.html','/admin'),
 -- (2,'Enterprise','TREE.ENTERPRISE','Manage the registered enterprises from here',1,'/partials/enterprise/','/enterprise'),
@@ -134,7 +134,7 @@ INSERT INTO `village` VALUES ('03a329b2-03fe-4f73-b40f-56a2870cc7e6','MUBUABUA',
 
 INSERT INTO `enterprise` VALUES (1,'Test Enterprise','TE','243 81 504 0540','enterprise@test.org','a0a8998d-af22-4a73-9071-bd43a23f77e3',NULL,2,'103');
 INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,759), (2,'Test Project B','TPB',1,759);
-INSERT INTO `account` VALUES 
+INSERT INTO `account` VALUES
 (3626,3,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 14:25:12',1,NULL,1,NULL,NULL,0,NULL),
 (3627,2,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 14:26:13',1,1,1,NULL,0,0,NULL),
 (3628,2,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 14:27:13',1,1,1,NULL,0,0,NULL),
@@ -144,9 +144,9 @@ INSERT INTO `account` VALUES
 (3635,3,1,41000,'Test Debtor Accounts',3629,0,NULL,NULL,'2015-11-04 14:32:22',4,NULL,0,NULL,NULL,0,NULL),
 (3636,3,1,4600, 'Test Inventory Accounts', 3629, 0, NULL, NULL, '2015-11-04 14:32:22',4,NULL,0,NULL,NULL,0,NULL),
 (3637,2,1,46001,'Test Item Account',3636,0,NULL,NULL,'2015-11-04 14:32:22',4,NULL,1,NULL,NULL,0,NULL);
- 
+
 -- testing financial transactions
-INSERT INTO `fiscal_year` VALUES 
+INSERT INTO `fiscal_year` VALUES
 (1, 1, 12, 'Test fiscal year', NULL, NULL, NULL, 1, 2016, NULL, 0);
 
 INSERT INTO `period` VALUES
@@ -183,17 +183,18 @@ INSERT INTO `cash_box_account_currency` VALUES (1,1,1,3626,3626,3626,3626),(2,2,
 INSERT INTO `transaction_type` VALUES
 (1, 'sale');
 
-INSERT INTO `inventory_group` VALUES 
+INSERT INTO `inventory_group` VALUES
   ('1410dfe0-b478-11e5-b297-023919d3d5b0', 'Test inventory group', 'INVGRP', 3636, NULL, NULL, NULL);
 
 INSERT INTO `inventory_type` (`id`, `text`) VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
 INSERT INTO `inventory_unit` (`id`, `text`) VALUES (1,'Act'),(2,'Pallet'),(3,'Pill'),(4,'Box'),(5,'Lot'),(6,'amp'),(7,'bags'),(8,'btl'),(9,'cap'),(10,'flc'),(11,'jar'),(12,'ltr'),(13,'pce'),(14,'sch'),(15,'tab'),(16,'tub'),(17,'vial');
 
-INSERT INTO `inventory` VALUES 
+INSERT INTO `inventory` VALUES
   (1, 'cf05da13-b477-11e5-b297-023919d3d5b0', 'INV0', 'Test inventory item', 25.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', NULL, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
-  (1, '289cc0a1-b90f-11e5-8c73-159fdc73ab02', 'INV1', 'Second Test inventory item', 10.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', NULL, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP); 
+  (1, '289cc0a1-b90f-11e5-8c73-159fdc73ab02', 'INV1', 'Second Test inventory item', 10.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', NULL, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
+  (1, 'c48a3c4b-c07d-4899-95af-411f7708e296', 'INV2', 'Third Test Inventory Item', 105.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', NULL, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP);
 
-INSERT INTO `debitor_group` VALUES 
+INSERT INTO `debitor_group` VALUES
   (1, '4de0fe47-177f-4d30-b95f-cff8166400b4', 'Test Debtor Group', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6', NULL, NULL, NULL, 0, 0, 0, NULL),
   (1, '66f03607-bfbc-4b23-aa92-9321ca0ff586', 'Second Test Debtor Group', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6', NULL, NULL, NULL, 0, 0, 0, NULL);
 
@@ -205,7 +206,7 @@ INSERT INTO `debitor` VALUES
   ('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4', '4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/1/Patient'),
   ('3be232f9-a4b9-4af6-984c-5d3f87d5c107', '4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/2/Patient');
 
-INSERT INTO `patient` VALUES 
+INSERT INTO `patient` VALUES
   ('81af634f-321a-40de-bc6f-ceb1167a9f65',1,1,'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4',NULL,'Test','1','1990-06-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,'bda70b4b-8143-47cf-a683-e4ea7ddd4cff','bda70b4b-8143-47cf-a683-e4ea7ddd4cff','2015-11-14 07:04:49',NULL,NULL,'Patient','100'),
   ('274c51ae-efcc-4238-98c6-f402bfb39866',1,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',NULL,'Test','2','1990-06-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,'bda70b4b-8143-47cf-a683-e4ea7ddd4cff','bda70b4b-8143-47cf-a683-e4ea7ddd4cff','2015-11-14 07:04:49',NULL,NULL,'Patient','110');
 

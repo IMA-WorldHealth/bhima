@@ -231,7 +231,7 @@ exports.update = function update(req, res, next) {
   var items;
   var data = req.body.list;
   var priceListSql =
-    'UPDATE price_list SET ?;';
+    'UPDATE price_list SET ? WHERE id = ?;';
 
   var priceListDeleteItemSql =
     'DELETE FROM price_list_item WHERE price_list_uuid = ?';
@@ -258,7 +258,7 @@ exports.update = function update(req, res, next) {
     // if we get here, it means the price list exists and we can perform an
     // update query on it. Since we are doing multiple operations at once,
     // wrap the queries in a DB transaction.
-    trans.addQuery(priceListSql, data);
+    trans.addQuery(priceListSql, [ data, req.params.uuid ]);
 
     // only trigger price list item updates if the items have been sent back to
     // the server
