@@ -204,7 +204,8 @@ INSERT INTO `patient_group` VALUES
 
 INSERT INTO `debitor` VALUES
   ('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4', '4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/1/Patient'),
-  ('3be232f9-a4b9-4af6-984c-5d3f87d5c107', '4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/2/Patient');
+  ('3be232f9-a4b9-4af6-984c-5d3f87d5c107', '4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/2/Patient'),
+  ('be0096dd-2929-41d2-912e-fb2259356fb5', '4de0fe47-177f-4d30-b95f-cff8166400b4', 'Employee/Test Debitor');
 
 INSERT INTO `patient` VALUES
   ('81af634f-321a-40de-bc6f-ceb1167a9f65',1,1,'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4',NULL,'Test','1','1990-06-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,'bda70b4b-8143-47cf-a683-e4ea7ddd4cff','bda70b4b-8143-47cf-a683-e4ea7ddd4cff','2015-11-14 07:04:49',NULL,NULL,'Patient','100'),
@@ -219,8 +220,16 @@ INSERT INTO `cost_center` VALUES
 INSERT INTO `profit_center` VALUES
   (1, 1, 'Test profit center', 'Example note for a test profit center');
 
+-- Fonctions
+INSERT INTO `fonction` VALUES
+  (1, 'Infirmier'),
+  (2, 'Medecin Directeur');
+
+-- Services
 INSERT INTO `service` VALUES
-  (1, 1, 'Test service', 1, 1);
+  (1, 1, 'Test Service', 1, 1),
+  (2, 1, 'Administration', null, null),
+  (3, 1, 'Medecine Interne', null, null);
 
 INSERT INTO `sale` (`project_id`, `reference`, `uuid`, `cost`, `currency_id`, `debitor_uuid`, `service_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`, `timestamp`, `is_distributable`) VALUES
   (1,2,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 14:35:55',1),
@@ -228,3 +237,17 @@ INSERT INTO `sale` (`project_id`, `reference`, `uuid`, `cost`, `currency_id`, `d
 
 INSERT INTO `sale_item` (`sale_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) VALUES
   ('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6','2e1332a7-3e63-411e-827d-42ad585ff518','cf05da13-b477-11e5-b297-023919d3d5b0',3,25.0000,25.0000,0.0000,75.0000);
+
+-- Creditor group
+INSERT INTO  `creditor_group` VALUES
+  (1, 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7', 'Personnel [Creditor Group Test]', 3629, 0),
+  (1, '8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2', 'Fournisseur [Creditor Group Test]', 3630, 0);
+
+-- Creditor
+INSERT INTO  `creditor` VALUES
+  ('42d3756a-7770-4bb8-a899-7953cd859892', 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7', 'Personnel'),
+  ('7ac4e83c-65f2-45a1-8357-8b025003d794', '8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2', 'Fournisseur');
+
+-- Grade
+INSERT INTO `grade` VALUES
+  ('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3', 'A1', '1.1', 50);
