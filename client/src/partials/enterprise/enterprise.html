@@ -33,14 +33,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="e in EnterpriseCtrl.enterprises">
+      <tr ng-repeat="e in EnterpriseCtrl.enterprises | orderBy:'name'">
         <td>{{ e.name }}</td>
         <td>{{ e.abbr }}</td>
         <td>{{ e.po_box }}</td>
         <td>{{ e.email }}</td>
         <td>{{ e.phone }}</td>
         <td>{{ e.location_id.slice(0,8) }}</td>
-        <td>{{ EnterpriseCtrl.currency.get(e.currency_id).symbol }}</td>
+        <td>{{ EnterpriseCtrl.getElementCurrency(e.currency_id) }}</td>
       </tr>
     </tbody>
   </table>
@@ -68,7 +68,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="e in EnterpriseCtrl.enterprises" track by e.id>
+              <tr ng-repeat="e in EnterpriseCtrl.enterprises | orderBy:'name'" track by e.id>
                 <td>{{ e.name }}</td>
                 <td>{{ e.abbr }}</td>
                 <td>{{ e.po_box }}</td>

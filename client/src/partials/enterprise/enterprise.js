@@ -19,6 +19,7 @@ function EnterpriseController(Enterprises, Currencies, StateFactory) {
   vm.cancel = cancel;
   vm.submit = submit;
   vm.formatLocation = formatLocation;
+  vm.getElementCurrency = getElementCurrency;
 
   /* ------------------------------------------------------------------------ */
 
@@ -57,6 +58,10 @@ function EnterpriseController(Enterprises, Currencies, StateFactory) {
 
   function formatLocation(l) {
     return [l.name, l.sector_name, l.province_name, l.country_name].join(' -- ');
+  }
+
+  function getElementCurrency(id) {
+    return Currencies.symbol(id);
   }
   // asnychronously load a enterprise from the server
   function loadEnterprise(data) {
