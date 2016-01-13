@@ -265,7 +265,7 @@ function list(req, res, next) {
   .then(function (result) {
     var patients = result;
 
-    res.status(200).json(result);
+    res.status(200).json(patients);
   })
   .catch(next)
   .done();

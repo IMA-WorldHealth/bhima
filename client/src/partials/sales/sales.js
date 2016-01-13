@@ -282,7 +282,7 @@ angular.module('bhima.controllers')
       var invoiceRequest = packageInvoiceRequest();
 
       if (!validSaleProperties(invoiceRequest)) { return; }
-      $http.post('sale/', invoiceRequest).then(handleSaleResponse); // FIXME: refactor to using connect
+      $http.post('/sales', invoiceRequest).then(handleSaleResponse); // FIXME: refactor to using connect
     }
 
     function packageInvoiceRequest() {
@@ -344,7 +344,7 @@ angular.module('bhima.controllers')
 
         requestContainer.saleItems.push(formatDiscountItem);
       });
-
+  
       requestContainer.caution = (invoice.debitorCaution)? invoice.debitorCaution : 0;
 
       return requestContainer;
