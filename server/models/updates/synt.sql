@@ -12,7 +12,7 @@ INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) V
 -- No way to view this report because it is necessary to have a store in parameter
 -- /reports/stock_store/:depotId
 
-delete from unit where id = 134;
+DELETE FROM unit WHERE id = 134;
 
 --
 -- General upgrades to the entire database
@@ -26,7 +26,7 @@ delete from unit where id = 134;
 -- jniles
 
 -- DANGER
-set foreign_key_checks = 0;
+SET foreign_key_checks = 0;
 
 -- make sure all FK links have been removed
 UPDATE debitor_group SET price_list_uuid = NULL;
@@ -62,7 +62,6 @@ CREATE TABLE price_list_item (
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-set foreign_key_checks = 1;
 
 --
 -- END PRICE LIST UPDATES
@@ -73,7 +72,6 @@ set foreign_key_checks = 1;
 --
 
 -- Foreign key checks will affect the character set upgrade
-SET foreign_key_checks = 0;
 
 -- make sure server/client communication happens in UTF-8 charset (runtime only)
 SET NAMES 'utf8';
@@ -187,5 +185,145 @@ DROP TABLE cash_discard_migrate;
 DROP TABLE cash_item_migrate;
 DROP TABLE cash_migrate;
 
--- restore foreign keys
+-- BEGIN PATIENT INVOICE SCHEMA UPDATES
+--
+
+-- new properties to determine pricing in the patient invoice module
+ALTER TABLE debitor_group ADD COLUMN apply_discounts BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE debitor_group ADD COLUMN apply_billing_services BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE debitor_group ADD COLUMN apply_subsidies BOOLEAN NOT NULL DEFAULT TRUE;
+
+-- BILLING SERVICE DEFNs
+
+-- the values here are percentages
+DROP TABLE IF EXISTS billing_service;
+CREATE TABLE billing_service (
+  `id`              SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id`      INT(10) UNSIGNED NOT NULL,
+  `label`           VARCHAR(200) NOT NULL,
+  `description`     TEXT,
+  `value`           DECIMAL(10,2) NOT NULL,
+  `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `account_id` (`account_id`),
+  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS patient_group_billing_service;
+CREATE TABLE patient_group_billing_service (
+  `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `patient_group_uuid`      CHAR(36) NOT NULL,
+  `billing_service_id`      SMALLINT UNSIGNED NOT NULL,
+  `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `patient_group_uuid` (`patient_group_uuid`),
+  KEY `billing_service_id` (`billing_service_id`),
+  FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS debitor_group_billing_service;
+CREATE TABLE debitor_group_billing_service (
+  `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `debitor_group_uuid`      CHAR(36) NOT NULL,
+  `billing_service_id`      SMALLINT UNSIGNED NOT NULL,
+  `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `debitor_group_uuid` (`debitor_group_group_uuid`),
+  KEY `billing_service_id` (`billing_service_id`),
+  FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`debitor_group_uuid`) REFERENCES `debitor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `sale_billing_service`;
+CREATE TABLE `sale_billing_service` (
+  `sale_uuid`               CHAR(36) NOT NULL,
+  `value`                   DECIMAL(10,2) NOT NULL,
+  `billing_service_id`      SMALLINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`sale_uuid`, `value`),
+  KEY `sale_uuid` (`sale_uuid`),
+  KEY `billing_service_id` (`billing_service_id`),
+  FOREIGN KEY (`sale_uuid`) REFERENCES `sale` (`uuid`),
+  FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- SUBSIDY DEFNs
+
+-- assumed percentage value
+DROP TABLE IF EXISTS subsidy;
+CREATE TABLE subsidy (
+  `id`              SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id`      INT(10) UNSIGNED NOT NULL,
+  `label`           VARCHAR(200) NOT NULL,
+  `description`     TEXT,
+  `value`           DECIMAL(10,2) NOT NULL,
+  `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `account_id` (`account_id`),
+  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS patient_group_subsidy;
+CREATE TABLE patient_group_subsidy (
+  `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `patient_group_uuid`      CHAR(36) NOT NULL,
+  `subsidy_id`              SMALLINT UNSIGNED NOT NULL,
+  `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `patient_group_uuid` (`patient_group_uuid`),
+  KEY `subsidy_id` (`subsidy_id`),
+  FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS debitor_group_subsidy;
+CREATE TABLE debitor_group_subsidy (
+  `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `debitor_group_uuid`      CHAR(36) NOT NULL,
+  `subsidy_id`              SMALLINT UNSIGNED NOT NULL,
+  `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `debitor_group_uuid` (`debitor_group_group_uuid`),
+  KEY `subsidy_id` (`subsidy_id`),
+  FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`debitor_group_uuid`) REFERENCES `debitor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `sale_subsidy`;
+CREATE TABLE `sale_subsidy` (
+  `sale_uuid`       CHAR(36) NOT NULL,
+  `value`           DECIMAL(10,2) NOT NULL,
+  `subsidy_id`      SMALLINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`sale_uuid`, `value`),
+  KEY `sale_uuid` (`sale_uuid`),
+  KEY `subsidy_id` (`subsidy_id`),
+  FOREIGN KEY (`sale_uuid`) REFERENCES `sale` (`uuid`),
+  FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- DISCOUNT DEFNs
+
+-- assumed percentage value
+DROP TABLE IF EXISTS discount;
+CREATE TABLE discount (
+  `id`                  SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label`               VARCHAR(200) NOT NULL,
+  `description`         TEXT,
+  `inventory_uuid`      CHAR(36) NOT NULL,
+  `account_id`          INT(10) UNSIGNED NOT NULL,
+  `value`               DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `inventory_uuid` (`inventory_uuid`),
+  KEY `account_id` (`account_id`),
+  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB DEFAUL CHARSET=utf8;
+
+--
+-- END PATIENT INVOICE UPDATES
+--
+
 SET foreign_key_checks = 1;
+--
