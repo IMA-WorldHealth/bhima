@@ -3,13 +3,13 @@ var db = require('../../lib/db');
 function getReference (req, res, next){
   'use strict';
 
-  var sql = 
-    'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id ' +
-    'FROM reference AS r WHERE r.id = ?';
-
-  db.exec(sql, req.params.id)
+  handleFetchReference (req.params.id)
   .then(function (rows) {
-    res.status(200).json(rows);
+    if(rows.length === 0){
+      res.status(404).send();
+    }else{
+      res.status(200).json(rows[0]);
+    }
   })
   .catch(next)
   .done();
@@ -21,7 +21,7 @@ function list (req, res, next){
   var sql = 
     'SELECT r.id, r.text, r.ref FROM reference AS r';
 
-  if(req.query.list == 'full'){
+  if(req.query.list === 'full'){
     sql = 
       'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id ' +
       'FROM reference AS r';
@@ -39,17 +39,11 @@ function list (req, res, next){
 
 function create (req, res, next) {
   var record = req.body;
-  var create_reference_query = 'INSERT INTO reference SET ?';
-  var transaction = db.transaction();
-
-  transaction
-  .addQuery(create_reference_query, [record]);
-
-  transaction.execute()
-  .then(function (results){
-    var confirmation = results;
-    res.status(201).json(confirmation);
-    return;
+  var createReferenceQuery = 'INSERT INTO reference SET ?';
+  
+  db.exec(createReferenceQuery, [record])
+  .then(function (result){
+    res.status(201).json({ id: result.insertId });
   })
   .catch(next)
   .done();
@@ -58,13 +52,15 @@ function create (req, res, next) {
 function update (req, res, next){
   var queryData = req.body;
   var referenceId = req.params.id;
-  var update_reference_query = 'UPDATE reference SET ? WHERE id = ?';
+  var updateReferenceQuery = 'UPDATE reference SET ? WHERE id = ?';
 
-  db.exec(update_reference_query, [queryData, referenceId])
-  .then(function (results){
-    var confirmation = results;
-    res.status(200).json(confirmation);
-    return;
+  db.exec(updateReferenceQuery, [queryData, referenceId])
+  .then(function (result){
+    return handleFetchReference(referenceId);
+  })
+  .then(function (references){
+    var updatedReference = references[0];
+    res.status(200).json(updatedReference);
   })
   .catch(next)
   .done();
@@ -72,18 +68,23 @@ function update (req, res, next){
 
 function remove (req, res, next) {
   var referenceId = req.params.id;
-  var remove_reference_query = 'DELETE FROM reference WHERE id=?';
+  var removeReferenceQuery = 'DELETE FROM reference WHERE id=?';
 
-  db.exec(remove_reference_query, [referenceId])
+  db.exec(removeReferenceQuery, [referenceId])
   .then(function (results){
-    var confirmation = results;
-    res.status(200).json(confirmation);
-    return;
+    res.status(200).send();
   })
   .catch(next)
   .done();
 }
 
+function handleFetchReference (id){
+  var sql = 
+    'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id ' +
+    'FROM reference AS r WHERE r.id = ?';
+
+  return db.exec(sql, id);
+}
 exports.list = list;
 exports.create = create;
 exports.update = update;

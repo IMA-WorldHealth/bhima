@@ -15,13 +15,12 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
-describe('The /account_type API endpoint', function () {
+describe('The /account_types API endpoint', function () {
   var agent = chai.request.agent(url);
-  var new_account_type = {
+  var newAccountType = {
     id : 4,
     type : 'test account type 1'
   };
-
 
   var DELETABLE_ACCOUNT_TYPE_ID = 3;
   var FETCHABLE_ACCOUNT_TYPE_ID = 1;
@@ -51,52 +50,50 @@ describe('The /account_type API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(1);
+        expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_TYPE_ID);
+
       })
       .catch(handler);
   });
 
   it('A POST /account_types will add an account_type', function () {
     return agent.post('/account_types')
-      .send(new_account_type)
+      .send(newAccountType)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        new_account_type.id = res.body.id;
+        expect(res).to.have.status(201);        
       })
       .catch(handler);
   }); 
 
   it('A PUT /account_types/:id will update the newly added account_type', function () {
-    return agent.put('/account_types/'+ 4)
+    return agent.put('/account_types/' + newAccountType.id)
       .send({ type : 'updated value' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.id).to.equal(new_account_type.id);
-        expect(res.body.position).to.not.equal(new_account_type.type);
+        expect(res.body.id).to.equal(newAccountType.id);
+        expect(res.body.type).to.not.equal(newAccountType.type);
 
         // re-query the database
-        return agent.get('/account_types/'+ new_account_type.id);
+        return agent.get('/account_types/'+ newAccountType.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
       })
       .catch(handler);
   });
 
    it(' A DELETE /account_types/:id will delete a account_type', function () {
-    this.timeout(60000);
     return agent.delete('/account_types/' + DELETABLE_ACCOUNT_TYPE_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
-
+        
         // re-query the database
         return agent.get('/account_types/' + DELETABLE_ACCOUNT_TYPE_ID);
       })
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.have.length(0);
+        expect(res).to.have.status(404);        
       })
       .catch(handler);
   });  

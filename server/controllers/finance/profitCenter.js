@@ -1,12 +1,12 @@
 var db = require('../../lib/db');
 
 function list (req, res, next){
-  'use strict';  
+  'use strict';
 
   var sql = 
     'SELECT p.id, p.text FROM profit_center AS p';
 
-  if(req.query.list == 'full'){
+  if(req.query.list === 'full'){
     sql = 
       'SELECT p.id, p.text, p.project_id, p.note, pr.name, pr.abbr, pr.enterprise_id, pr.zs_id ' +
       'FROM profit_center AS p JOIN project AS pr ON p.project_id = pr.id';
@@ -22,35 +22,30 @@ function list (req, res, next){
   .done();
 }
 
-
 function create (req, res, next) {
   var record = req.body;
-  var create_profit_center_query = 'INSERT INTO profit_center SET ?';
-  var transaction = db.transaction();
-
-  transaction
-  .addQuery(create_profit_center_query, [record]);
-
-  transaction.execute()
-  .then(function (results){
-    var confirmation = results;
-    res.status(201).json(confirmation);
-    return;
-  })
-  .catch(next)
-  .done();
+  var createProfitCenterQuery = 'INSERT INTO profit_center SET ?';
+  
+  db.exec(createProfitCenterQuery, [record])
+    .then(function (result){
+      res.status(201).json({ id: result.insertId });
+    })
+    .catch(next)
+    .done();
 }
 
 function update (req, res, next){
   var queryData = req.body;
   var profitCenterId = req.params.id;
-  var update_profit_center_query = 'UPDATE profit_center SET ? WHERE id = ?';
+  var updateProfitCenterQuery = 'UPDATE profit_center SET ? WHERE id = ?';
 
-  db.exec(update_profit_center_query, [queryData, profitCenterId])
-  .then(function (results){
-    var confirmation = results;
-    res.status(200).json(confirmation);
-    return;
+  db.exec(updateProfitCenterQuery, [queryData, profitCenterId])
+  .then(function (result){
+    return handleFetchProfitCenter(profitCenterId);
+  })
+  .then(function (profitCenters){
+    var updatedProfitCenters = profitCenters[0];
+    res.status(200).json(updatedProfitCenters);
   })
   .catch(next)
   .done();
@@ -58,13 +53,11 @@ function update (req, res, next){
 
 function remove (req, res, next) {
   var profitCenterId = req.params.id;
-  var remove_profit_center_query = 'DELETE FROM profit_center WHERE id=?';
+  var removeProfitCenterQuery = 'DELETE FROM profit_center WHERE id=?';
 
-  db.exec(remove_profit_center_query, [profitCenterId])
-  .then(function (results){
-    var confirmation = results;
-    res.status(200).json(confirmation);
-    return;
+  db.exec(removeProfitCenterQuery, [profitCenterId])
+  .then(function (result){
+    res.status(200).send();    
   })
   .catch(next)
   .done();
@@ -73,15 +66,24 @@ function remove (req, res, next) {
 function getProfitCenter (req, res, next){
   'use strict';
 
-  var sql = 
-    'SELECT pc.id, pc.text, pc.note, pc.project_id FROM profit_center AS pc WHERE pc.id = ?';
+  handleFetchProfitCenter(req.params.id)
+    .then(function (rows) {
+      if(rows.length === 0){
+        res.status(404).send();
+      }else{
+        res.status(200).json(rows[0]);
+      }
+    })
+    .catch(next)
+    .done();
+}
 
-  db.exec(sql, req.params.id)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+function handleFetchProfitCenter (id){
+  'use strict';
+  var sql = 
+    'SELECT p.id, p.text, p.note, p.project_id FROM profit_center AS p WHERE p.id = ?';
+
+  return db.exec(sql, id);
 }
 
 exports.list = list;

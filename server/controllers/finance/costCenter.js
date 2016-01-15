@@ -6,7 +6,7 @@ function list (req, res, next){
   var sql = 
     'SELECT c.id, c.text FROM cost_center AS c';
 
-  if(req.query.list == 'full'){
+  if(req.query.list === 'full'){
     sql = 
       'SELECT c.id, c.text, c.project_id, c.note, c.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id ' +
       'FROM cost_center AS c JOIN project AS p ON c.project_id = p.id';
@@ -24,32 +24,28 @@ function list (req, res, next){
 
 function create (req, res, next) {
   var record = req.body;
-  var create_cost_center_query = 'INSERT INTO cost_center SET ?';
-  var transaction = db.transaction();
-
-  transaction
-  .addQuery(create_cost_center_query, [record]);
-
-  transaction.execute()
-  .then(function (results){
-    var confirmation = results;
-    res.status(201).json(confirmation);
-    return;
-  })
-  .catch(next)
-  .done();
+  var createCostCenterQuery = 'INSERT INTO cost_center SET ?';
+  
+  db.exec(createCostCenterQuery, [record])
+    .then(function (result){
+      res.status(201).json({ id: result.insertId });
+    })
+    .catch(next)
+    .done();
 }
 
 function update (req, res, next){
   var queryData = req.body;
   var costCenterId = req.params.id;
-  var update_cost_center_query = 'UPDATE cost_center SET ? WHERE id = ?';
+  var updateCostCenterQuery = 'UPDATE cost_center SET ? WHERE id = ?';
 
-  db.exec(update_cost_center_query, [queryData, costCenterId])
-  .then(function (results){
-    var confirmation = results;
-    res.status(200).json(confirmation);
-    return;
+  db.exec(updateCostCenterQuery, [queryData, costCenterId])
+  .then(function (result){
+    return handleFetchCostCenter(costCenterId);
+  })
+  .then(function (costCenters){
+    var updatedCostCenters = costCenters[0];
+    res.status(200).json(updatedCostCenters);
   })
   .catch(next)
   .done();
@@ -57,13 +53,11 @@ function update (req, res, next){
 
 function remove (req, res, next) {
   var costCenterId = req.params.id;
-  var remove_cost_center_query = 'DELETE FROM cost_center WHERE id=?';
+  var removeCostCenterQuery = 'DELETE FROM cost_center WHERE id=?';
 
-  db.exec(remove_cost_center_query, [costCenterId])
-  .then(function (results){
-    var confirmation = results;
-    res.status(200).json(confirmation);
-    return;
+  db.exec(removeCostCenterQuery, [costCenterId])
+  .then(function (result){
+    res.status(200).send();    
   })
   .catch(next)
   .done();
@@ -72,15 +66,24 @@ function remove (req, res, next) {
 function getCostCenter (req, res, next){
   'use strict';
 
+  handleFetchCostCenter(req.params.id)
+    .then(function (rows) {
+      if(rows.length === 0){
+        res.status(404).send();
+      }else{
+        res.status(200).json(rows[0]);
+      }
+    })
+    .catch(next)
+    .done();
+}
+
+function handleFetchCostCenter (id){
+  'use strict';
   var sql = 
     'SELECT cc.id, cc.text, cc.note, cc.is_principal, cc.project_id FROM cost_center AS cc WHERE cc.id = ?';
 
-  db.exec(sql, req.params.id)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+  return db.exec(sql, id);
 }
 
 exports.list = list;

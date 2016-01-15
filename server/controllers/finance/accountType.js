@@ -2,13 +2,13 @@ var db = require('../../lib/db');
 
 function getAccountType (req, res, next){
   'use strict';
-
-  var sql = 
-    'SELECT at.id, at.type FROM account_type AS at WHERE at.id = ?';
-
-  db.exec(sql, req.params.id)
-  .then(function (rows) {
-    res.status(200).json(rows);
+  handleFetchAccountType(req.params.id)
+    .then(function (rows) {
+      if(rows.length === 0){
+        res.status(404).send();
+      }else{
+        res.status(200).json(rows[0]);
+      }
   })
   .catch(next)
   .done();
@@ -31,19 +31,13 @@ function list (req, res, next){
 function create (req, res, next) {
   var record = req.body;
   var createAccountTypeQuery = 'INSERT INTO account_type SET ?';
-  var transaction = db.transaction();
-
-  transaction
-  .addQuery(createAccountTypeQuery, [record]);
-
-  transaction.execute()
-  .then(function (results){
-    var confirmation = results;
-    res.status(201).json(confirmation);
-    return;
-  })
-  .catch(next)
-  .done();
+  
+  db.exec(createAccountTypeQuery, [record])
+    .then(function (result){
+      res.status(201).json({ id: result.insertId});
+    })
+    .catch(next)
+    .done();
 }
 
 function update (req, res, next){
@@ -52,10 +46,12 @@ function update (req, res, next){
   var updateAccountTypeQuery = 'UPDATE account_type SET ? WHERE id = ?';
 
   db.exec(updateAccountTypeQuery, [queryData, accountTypeId])
-  .then(function (results){
-    var confirmation = results;
-    res.status(200).json(confirmation);
-    return;
+   .then(function (result){
+    return handleFetchAccountType(accountTypeId);
+  })
+  .then(function (accountTypes){
+    var updatedAccountType = accountTypes[0];
+    res.status(200).json(updatedAccountType);
   })
   .catch(next)
   .done();
@@ -66,13 +62,17 @@ function remove (req, res, next) {
   var removeAccountTypeQuery = 'DELETE FROM account_type WHERE id=?';
 
   db.exec(removeAccountTypeQuery, [accountTypeId])
-  .then(function (results){
-    var confirmation = results;
-    res.status(200).json(confirmation);
-    return;
-  })
-  .catch(next)
-  .done();
+  .then(function (result){
+      res.status(200).send();
+    })
+    .catch(next)
+    .done();
+}
+
+function handleFetchAccountType(id){
+  var sql = 
+    'SELECT at.id, at.type FROM account_type AS at WHERE at.id = ?';
+  return db.exec(sql, id);
 }
 
 exports.list = list;
