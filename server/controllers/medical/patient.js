@@ -454,7 +454,9 @@ function isEmpty(array) {
 }
 
 /**
-* GET /patient/search?name="..."&details=...&limit=...
+* GET /patient/search?name={string}&detail={boolean}&limit={number}
+* GET /patient/search?reference={string}&detail={boolean}&limit={number}
+* GET /patient/search?fields={object}
 *
 * @desc This function is responsible to find a patient with detailled informations or not
 * and with a limited rows or not
@@ -462,6 +464,7 @@ function isEmpty(array) {
 function search (req, res, next) {
 
   var sql,
+      columns    = null,
       data       = [],
       qReference = req.query.reference,
       qName      = req.query.name,
@@ -469,129 +472,94 @@ function search (req, res, next) {
       qDetail    = req.query.detail || 0,
       qLimit     = req.query.limit;
 
-  if (!qReference && !qName && !qFields) { throw req.codes.ERR_PARAMETERS_REQUIRED; }
-
   try {
+    var missingRequiredParameters = (!qReference && !qName && !qFields);
+    if (missingRequiredParameters) { throw req.codes.ERR_PARAMETERS_REQUIRED; }
+
     qFields = qFields ? JSON.parse(qFields) : null;
     qDetail = Number(qDetail);
     qLimit  = Number(qLimit);
+
   } catch (err) {
     return next(err);
   }
 
-  // NOTE: For the queries bellow we get all columns from the patient table and
-  // we return to the client only necessary data according the detail parameter
-  // the reference has a hight priority
+  // customize returned columns according detailled results or not
+  if (!qDetail) {
+    columns =
+      'q.uuid, q.project_id, q.reference, q.debitor_uuid, ' +
+      'q.first_name, q.last_name, q.middle_name, q.sex, q.dob ';
 
-  if (qName && !qReference) {
-    // Find patient by names : first_name, middle_name or last_name
-    sql =
-      'SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid, p.creditor_uuid, ' +
-        'p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name, ' +
-        'p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer, ' +
-        'p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2, ' +
-        'p.renewal, p.origin_location_id, p.current_location_id, p.registration_date, ' +
-        'p.title, p.notes, p.hospital_no, proj.abbr, d.text, ' +
-        'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
-      'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-      'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
-      'WHERE ' +
-        'LEFT(LOWER(CONCAT(p.last_name, \' \', p.middle_name, \' \', p.first_name )), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(p.last_name, \' \', p.first_name, \' \', p.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(p.first_name, \' \', p.middle_name, \' \', p.last_name)), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(p.first_name, \' \', p.last_name, \' \', p.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(p.middle_name, \' \', p.last_name, \' \', p.first_name)), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(p.middle_name, \' \', p.first_name, \' \', p.last_name)), CHAR_LENGTH(?)) = ? ';
-
-      data = [qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName]
-
-  } else if (qFields && !qReference) {
-    // Find patients by a set of criteria defined in an object. Ex. : { sex: "M", last_name: "Doe" }
-    sql =
-    'SELECT q.uuid, q.project_id, q.reference, q.debitor_uuid, q.creditor_uuid, ' +
+  } else {
+    columns =
+      'q.uuid, q.project_id, q.abbr, q.reference, q.debitor_uuid, q.creditor_uuid, ' +
       'q.first_name, q.last_name, q.middle_name, q.sex, q.dob, q.father_name, q.mother_name, ' +
       'q.profession, q.employer, q.spouse, q.spouse_profession, q.spouse_employer, ' +
       'q.religion, q.marital_status, q.phone, q.email, q.address_1, q.address_2, ' +
       'q.renewal, q.origin_location_id, q.current_location_id, q.registration_date, ' +
       'q.title, q.notes, q.hospital_no, q.text, ' +
-      'q.account_id, q.price_list_uuid, q.is_convention, q.locked ' +
-    'FROM (' +
-      'SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid, p.creditor_uuid, ' +
-        'p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name, ' +
-        'p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer, ' +
-        'p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2, ' +
-        'p.renewal, p.origin_location_id, p.current_location_id, p.registration_date, ' +
-        'p.title, p.notes, p.hospital_no, d.text, ' +
-        'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
-      'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-        'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
-    ') AS q ';
+      'q.account_id, q.price_list_uuid, q.is_convention, q.locked ';
 
-    var clauseWhere = 'WHERE ';
+  }
 
+  // build the main part of the sql query
+  sql = 'SELECT ' + columns + ' FROM ' +
+        '(' +
+          'SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid, p.creditor_uuid, ' +
+            'p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name, ' +
+            'p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer, ' +
+            'p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2, ' +
+            'p.renewal, p.origin_location_id, p.current_location_id, p.registration_date, ' +
+            'p.title, p.notes, p.hospital_no, d.text, proj.abbr, ' +
+            'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
+          'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
+            'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
+        ') AS q ';
+
+  // complete the sql query according parameters of search
+  // such as by: name, reference or by a set of criteria
+  if (qName && !qReference) {
+    // Final sql query for finding patient by names : first_name, middle_name or last_name
+    sql +=
+        'WHERE ' +
+        'LEFT(LOWER(CONCAT(q.last_name, \' \', q.middle_name, \' \', q.first_name )), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(q.last_name, \' \', q.first_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(q.first_name, \' \', q.middle_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(q.first_name, \' \', q.last_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(q.middle_name, \' \', q.last_name, \' \', q.first_name)), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(q.middle_name, \' \', q.first_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? ';
+
+    data = [qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName]
+
+  } else if (qFields && !qReference) {
+    // Final sql query for finding patients by a set of criteria
+    // defined in an object. Ex. : { sex: "M", last_name: "Doe" }
     data = [];
 
+    // building the where clause criteria
     var criteria = Object.keys(qFields).map(function (item) {
       data.push(qFields[item])
       return 'q.' + item + ' = ?';
     }).join(' AND ');
 
-    clauseWhere += criteria;
-    sql += clauseWhere;
+    sql += 'WHERE ' + criteria;
 
   } else if (qReference) {
-    // find a patient identified by a reference. Ex. HBB123
-    sql =
-      'SELECT q.uuid, q.project_id, q.reference, q.debitor_uuid, q.creditor_uuid, ' +
-        'q.first_name, q.last_name, q.middle_name, q.sex, q.dob, q.father_name, q.mother_name, ' +
-        'q.profession, q.employer, q.spouse, q.spouse_profession, q.spouse_employer, ' +
-        'q.religion, q.marital_status, q.phone, q.email, q.address_1, q.address_2, ' +
-        'q.renewal, q.origin_location_id, q.current_location_id, q.registration_date, ' +
-        'q.title, q.notes, q.hospital_no, q.text, ' +
-        'q.account_id, q.price_list_uuid, q.is_convention, q.locked ' +
-      'FROM (' +
-        'SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid, p.creditor_uuid, ' +
-          'p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name, ' +
-          'p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer, ' +
-          'p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2, ' +
-          'p.renewal, p.origin_location_id, p.current_location_id, p.registration_date, ' +
-          'p.title, p.notes, p.hospital_no, d.text, ' +
-          'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
-        'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-          'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
-      ') AS q ' +
-      'WHERE q.reference = ? ';
-
-      data = [qReference];
+    // Final sql query for finding patient identified by a reference. Ex. HBB123
+    sql += 'WHERE q.reference = ? ';
+    data = [qReference];
 
   } else {
     // throw an error in other cases
-    throw req.codes.ERR_PARAMETERS_REQUIRED;
+    return next(req.codes.ERR_PARAMETERS_REQUIRED);
   }
 
-  if (qLimit && typeof(qLimit) === 'number' && (parseFloat(qLimit) === parseInt(qLimit))) {
-    // Insert the limit in the query
-    sql += ' LIMIT ' + qLimit + ';';
+  if (qLimit && typeof(qLimit) === 'number') {
+    sql += ' LIMIT ' + Math.floor(qLimit) + ';';
   }
 
   db.exec(sql, data)
   .then(function (rows) {
-
-    if (!qDetail) {
-      // Select only usefull attributes for detail = 0
-      rows = rows.map(function (item) {
-        return {
-          uuid         : item.uuid,
-          debitor_uuid : item.debitor_uuid,
-          reference    : item.reference,
-          first_name   : item.first_name,
-          middle_name  : item.middle_name,
-          last_name    : item.last_name,
-          dob          : item.dob,
-          sex          : item.sex
-        };
-      });
-    }
     res.status(200).json(rows);
   })
   .catch(next)
