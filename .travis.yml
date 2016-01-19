@@ -10,7 +10,7 @@ node_js:
   - "0.10"
 
 before_script:
-  - npm install -g gulp bower
+  - npm install -g gulp bower mocha
   - bower install
   - mysql -u root -e "CREATE DATABASE bhima;"
   - mysql -u root -e "CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
@@ -22,5 +22,10 @@ cache:
     - node_modules/
     - client/vendor
 
+# set the clone depth to a low value 
+git:
+  depth: 3
+
+# make sure we aren't caching verbose output from NPM
 before_cache:
   - rm -f npm-debug.log
