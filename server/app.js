@@ -2,13 +2,33 @@ var express       = require('express'),
     https         = require('https'),
     fs            = require('fs');
 
-// switch for environmental variables
-var env = (process.env.NODE_ENV === 'production') ?
-  'server/.env.production' :
-  'server/.env.development';
+// warn the user if the process does not have a NODE_ENV variable configured
+if (!process.env.NODE_ENV) {
+  console.warn('[WARN] No NODE_ENV environmental variables found. Using \'production\'.');
+  process.env.NODE_ENV = 'production';
+}
 
-// load the environmnetal variables into process
-require('dotenv').config({ path : env });
+// normalize the environmental variable name
+var env = process.env.NODE_ENV.toLowerCase();
+
+// decode the file path for the environmental variables.
+var fPath = 'server/.env.{env}'.replace('{env}', env);
+
+// load the environmnetal variables into process using the dotenv module
+try {
+  console.log('[app] Loading configuration from file: %s', fPath);
+  require('dotenv').config({ path : fPath });
+} catch (e) {
+  console.error(
+    '[ERROR] Configuration file could not be found in path: %s.',
+    'Please ensure that you have the correct NODE_ENV variable set',
+    'or that the file exists.',
+    fPath
+  );
+
+  // crash the process - the app cannot continue without a proper configuration
+  throw e;
+}
 
 // SSL credentials
 var privateKey  = fs.readFileSync(process.env.TLS_KEY, 'utf8');
@@ -34,16 +54,17 @@ require('./config/express').errorHandling(app);
 require('./lib/pluginManager')(app, []);
 
 // start the server
-https.createServer(credentials, app).listen(process.env.PORT, logApplicationStart);
+https.createServer(credentials, app)
+  .listen(process.env.PORT, logApplicationStart);
 
 process.on('uncaughtException', forceExit);
 
 function logApplicationStart() {
-  console.log('[app] BHIMA server started in mode %s on port %s.', process.env.NODE_ENV.toUpperCase(), process.env.PORT);
+  console.log('[app] BHIMA server started in mode \'%s\' on port %s.', process.env.NODE_ENV.toLowerCase(), process.env.PORT);
 }
 
 function forceExit(err) {
-  console.error('[uncaughtException]', err, err.message);
+  console.error('[uncaughtException]', err.message);
   console.error(err.stack);
   process.exit(1);
 }

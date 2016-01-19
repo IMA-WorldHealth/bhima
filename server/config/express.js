@@ -64,16 +64,17 @@ exports.configure = function configure(app) {
   // morgan logger setup
   // options: combined | common | dev | short | tiny
   // Recommend 'combined' for production settings.
-  //
-  // Uncomment if you want logs written to a file instead
-  // of piped to standard out (default).
-  //var logFile = fs.createWriteStream(__dirname + '/access.log', {flags : 'a'});
-  //app.use(morgan(process.env.LOG_LEVEL, { stream : logFile }));
 
-  // custom LOG_LEVEL 'none' turns off logging during tests
-  if (process.env.LOG_LEVEL !== 'none') {
-    app.use(morgan(process.env.LOG_LEVEL));
+  // if a LOG_FILE is specified, write the output to that logfile
+  if (process.env.LOG_FILE) {
+    var file = fs.createWriteStream(process.env.LOG_FILE, { flags : 'a'});
+
+    // custom log level 'none' suppresses all output during local tests
+    if (process.env.LOG_LEVEL !== 'none') {
+      app.use(morgan(process.env.LOG_LEVEL, { stream : file }));
+    }
   }
+
 
   // serve static files from a single location
   // NOTE the assumption is that this entire directory is public -

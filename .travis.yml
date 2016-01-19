@@ -1,31 +1,50 @@
-sudo: false
+sudo: required
+dist: trusty
+
+before_install:
+  # manually install mysql 5.6 since the default for travis is still 5.5
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6
+
+
+# spin up the mysql service
+services:
+  - mysql
+
 language: node_js
 node_js:
   - "node"
-  - "iojs"
   - "4.1"
   - "4.0"
   - "0.12"
   - "0.11"
   - "0.10"
+  - "0.8"
+  - "0.6"
+  - "iojs"
 
 before_script:
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'bhima_travis'@'localhost' IDENTIFIED BY 'TRAVIS_PASSWORD' WITH GRANT OPTION;"
+  - mysql -u root -e "FLUSH PRIVILEGES;"
+  - mysql -u root -e "DROP SCHEMA IF EXISTS bhima_travis_db;"
+  - mysql -u bhima_travis -pTRAVIS_PASSWORD -e "CREATE SCHEMA bhima_travis_db CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+  - mysql -u bhima_travis -pTRAVIS_PASSWORD bhima_travis_db < server/models/schema.sql
+  - mysql -u bhima_travis -pTRAVIS_PASSWORD bhima_travis_db < server/models/test/data.sql
+  - mysql -u bhima_travis -pTRAVIS_PASSWORD bhima_travis_db < server/models/updates/synt.sql
+
+script:
   - npm install -g gulp bower mocha
   - bower install
-  - mysql -u root -e "CREATE DATABASE bhima;"
-  - mysql -u root -e "CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
-  - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'bhima'@'localhost' WITH GRANT OPTION;"
-  - mysql -u root bhima < server/models/schema.sql
+  - npm run travis &
+  - sleep 10
+  - mocha server/test/api
 
-cache:
-  directories:
-    - node_modules/
-    - client/vendor
-
-# set the clone depth to a low value 
+# set the clone depth to a low value
 git:
   depth: 3
 
 # make sure we aren't caching verbose output from NPM
 before_cache:
   - rm -f npm-debug.log
+  - rm -f access.log
+

@@ -5,15 +5,16 @@
 echo "Building test database for integration tests ..."
 
 # TODO - store these in environmental variables somehow
-user="bhima"
-pw="HISCongo2013"
+DB_USER='bhima'
+DB_PASS='HISCongo2013'
+DB_NAME='bhima_test'
 
 # build the test database
-mysql -u $user -p$pw -e "DROP DATABASE IF EXISTS bhima_test;"
-mysql -u $user -p$pw -e "CREATE DATABASE bhima_test CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-mysql -u $user -p$pw bhima_test < server/models/schema.sql
-mysql -u $user -p$pw bhima_test < server/models/test/data.sql
-mysql -u $user -p$pw bhima_test < server/models/updates/synt.sql
+mysql -u $DB_USER -p$DB_PASS -e "DROP DATABASE IF EXISTS $DB_NAME ;"
+mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/synt.sql
 
 echo "Building server ...."
 

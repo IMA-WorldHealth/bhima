@@ -77,9 +77,6 @@ SET NAMES 'utf8';
 SET character_set_database = 'utf8';
 SET collation_database = 'utf8_unicode_ci';
 
--- upgrade the database schema default (permanent upgrade)
-ALTER DATABASE bhima CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
 --
 -- BEGIN UPGRADING
 --
