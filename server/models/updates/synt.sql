@@ -205,7 +205,7 @@ CREATE TABLE billing_service (
   `account_id`      INT(10) UNSIGNED NOT NULL,
   `label`           VARCHAR(200) NOT NULL,
   `description`     TEXT,
-  `value`           DECIMAL(10,2) NOT NULL,
+  `value`           DECIMAL(10,2) UNSIGNED NOT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
