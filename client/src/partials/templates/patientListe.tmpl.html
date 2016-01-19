@@ -1,4 +1,5 @@
 <a>
-  <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-  <span><b>[{{ match.model.uuid }}]</b></span>
+  <span bind-html-unsafe="match.reference | typeaheadHighlight:query"></span>
+  <span style="display:inline-block; min-width:64px;"><b>{{ match.model.reference }}</b></span>
+  <span>{{ match.model.first_name + ' ' + match.model.middle_name + ' ' + match.model.last_name }}</span>
 </a>
