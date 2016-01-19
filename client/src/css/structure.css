@@ -80,12 +80,12 @@
   
 
   /* min-height : 59px; */
-  padding-top : 5px;
-  
   vertical-align : middle;
   margin : 0;
   padding : 0;
   text-align : left;
+  
+  padding-top : 4px;
 }
 
 .expanded .header-title { 
@@ -102,8 +102,6 @@
   
   margin : 0;
   padding : 0;
-
-  padding-top : 3px;
 
 }
 
@@ -155,18 +153,130 @@
  */
 
 
-
-
+/*
+ * TODO 
+ * Change of heart - decided to start investigating flex - this could 
+ * potentially be used for the sidebar  
 /* 
  * Page Header
  */
+div.flex-header { 
 
-.expanded .app-page { 
-  padding-left : 260px;
+  margin-left : 56px;
 }
 
+.expanded div.flex-header { 
+  margin-left : 260px;
+}
+
+.flex-header { 
+  
+  
+  /* width : calc(100% - 56px); */
+  display : flex;
+
+  -webkit-box-orient : vertical;
+  -webkit-box-direction : normal;
+  flex-direction : column;
+  
+  flex-wrap : nowrap;
+  -webkit-box-wrap : start;
+  
+  justify-content: flex-start;
+  flex-shrink : 0;
+  margin : 0;
+  padding : 0;
+  border: none;
+  min-height : 52px;
+  max-height : 52px;
+  
+  z-index : 3;
+  
+  /* box-shadow : 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12); */
+  border-bottom : 1px solid #ccc;
+}
+
+.flex-row { 
+  display : flex;
+  -webkit-box-orient : vertical;
+  -webkit-box-direction : normal;
+  flex-direction : row;
+  flex-wrap : nowrap;
+  flex-shrink : 0;
+  align-self : stretch;
+  -webkit-box-align : center;
+  align-items : center;
+  margin : 0;
+  padding : 0 40px 0 10px;
+  height : 52px;
+
+}
+
+.flex-title { 
+  flex-shrink : 0;
+  display : block;
+  position : relative;
+
+  font-size : 2em;
+}
+
+.flex-header h2 { 
+  padding : 0;
+  margin : 0;
+}
+
+.flex-content { 
+  /* margin-left : 56px; */
+  
+  margin-left : 56px;
+  /* width : calc(100% - 56px); */
+ 
+  display : inline-block;
+  overflow-x : hidden;
+  overflow-y : auto;
+  -webkit-box-flex : 1;
+  flex-grow : 1;
+  z-index : 1;
+}
+
+.flex-page { 
+  /* margin-left : 56px; */
+
+  
+  width : 100%;
+  height : 100%;
+  display : flex;
+  -webkit-box-orient : vertical;
+  -webkit-box-direction : normal;
+  flex-direction : column;
+  
+  overflow-x : hidden;
+  overflow-y : auto;
+
+  position : relative;
+  
+}
+
+
+.flex-container { 
+  position : absolute;
+  width : 100%;
+  height : 100%;
+  display : block;
+}
+
+.expanded .flex-content { 
+  margin-left : 260px;
+}
+
+/* #app-container { */ 
+  /* position : absolute; */
+  /* width : 100%; */
+  /* height : 100%; */
+/* } */
+
 .app-page { 
-  padding-left : 56px;
+  margin-left : 56px;
   /* clear : both; */
   display : block;
   margin : 0;
@@ -174,50 +284,37 @@
   width : 100%;
 }
 
-.app-page-header { 
-  width : 100%;
-  /* position : absolute; */
-  /* top : 0; */
-  min-height : 52px;
-  border-bottom : 1px solid #ccc;
-  padding-left : 5px;
-  padding-top : 8px;
+/* .app-page-header { */ 
+/*   width : 100%; */
+/*   /1* position : absolute; *1/ */
+/*   /1* top : 0; *1/ */
+/*   min-height : 52px; */
+/*   border-bottom : 1px solid #ccc; */
+/*   padding-left : 5px; */
+/*   padding-top : 8px; */
   
-}
+/* } */
 
-.app-page-header > h2 { 
-  margin : 0;
-  padding : 0;
-}
+/* .app-page-header > h2 { */ 
+/*   margin : 0; */
+/*   padding : 0; */
+/* } */
 
-#container { 
-  clear : both; 
-  position : relative;
-}
+/* #container { */ 
+/*   clear : both; */ 
+/*   position : relative; */
+/* } */
 
-#container:before { 
-  content : "";
-  clear : both;
-  display : table;
-}
+/* #container:before { */ 
+/*   content : ""; */
+/*   clear : both; */
+/*   display : table; */
+/* } */
 
 
-.expanded .header-title { 
-  /* display : inline-block; */
-}
-
-.sidebar-body > header > .header-title { 
-  /* display : inline-block; */
-   
-  /* padding-left : 50px; */
-}
-
-.header-title > h4 { 
-  /* text-transform : uppercase; */
-  /* white-space : nowrap; */
-  /* text-overflow : ellipsis; */
-  /* overflow : hidden; */
-}
+/* .expanded .header-title { */ 
+/*   /1* display : inline-block; *1/ */
+/* } */
 
 .sidebar-group { 
   border-top : 1px solid #ccc;

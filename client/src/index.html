@@ -16,73 +16,89 @@
 
 <body ng-app="bhima" ng-strict-di>
 
-<div id="app-container" ng-controller="ApplicationController as AppCtrl">
+<div id="app-container" class="flex-container" ng-controller="ApplicationController as AppCtrl">
    
-  <div class="sidebar">
-    <div class="sidebar-container">
+  <div class="flex-page">
+    
+    <div class="sidebar">
+      <div class="sidebar-container">
 
-      <div class="sidebar-body">
-        <header class="sidebar-header">
-          
-          <div class="header-content">
+        <div class="sidebar-body">
+          <header class="sidebar-header">
             
-            <div class="header-image">
-              <a class="app-logo">
-                <span class="logo-container">
-                  <img src="assets/icon.png" width="40" height="40">
-                </span>
-              </a>
+            <div class="header-content">
+              
+              <div class="header-image">
+                <a class="app-logo">
+                  <span class="logo-container">
+                    <img src="assets/icon.png" width="40" height="40">
+                  </span>
+                </a>
+              </div>
+              
+              <div class="header-title">
+                <h2>
+                  <!-- <div class="title-wrap"> -->
+                  <!-- <div class="title-container"> -->
+                    <a class="title-content">PAX</a>
+                  <!-- </div> -->
+                  <!-- </div> -->
+                </h2>
+              </div>
             </div>
-            
-            <div class="header-title">
-              <h2>
-                <!-- <div class="title-wrap"> -->
-                <!-- <div class="title-container"> -->
-                  <a class="title-content">PAX</a>
-                <!-- </div> -->
-                <!-- </div> -->
-              </h2>
-            </div>
-          </div>
-        </header>
+          </header>
 
-        <nav>
-          <div class="sidebar-group">
-            <ul>
-              <li>
-              <!-- <span class="glyphicon glyphicon-menu-hamburger"></span> -->
-              <!-- <p class="text-vertical"> -->
-                <!-- Navigation -->
-              <!-- </p> -->
-              </li>
-            </ul>
-          </div>
-        </nav>
+          <nav>
+            <div class="sidebar-group">
+              <ul>
+                <li>
+                <!-- <span class="glyphicon glyphicon-menu-hamburger"></span> -->
+                <!-- <p class="text-vertical"> -->
+                  <!-- Navigation -->
+                <!-- </p> -->
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+        
+        <div class="sidebar-footer">
+          <a class="footer-link">
+            <span class="sidebar-icon">
+              <span class="glyphicon glyphicon-cog"></span>
+            </span>
+          </a>
+
+
+          <a class="footer-link" id="expandnav">
+            <span class="sidebar-icon">
+              <span class="glyphicon glyphicon-menu-right"></span>
+            </span>
+          </a>
+        </div>
       </div>
+
+    <!-- End sidebar -->
+    </div>
+
+    <div class="flex-header">
+      <div class="flex-row">
+
+        <span class="flex-title">Patient Registration</span>
+      </div>
+    </div>
+
+    <div class="flex-content">
+    
+      <!-- App content --> 
+    </div>
       
-      <div class="sidebar-footer">
-        <a class="footer-link">
-          <span class="sidebar-icon">
-            <span class="glyphicon glyphicon-cog"></span>
-          </span>
-        </a>
 
 
-        <a class="footer-link" id="expandnav">
-          <span class="sidebar-icon">
-            <span class="glyphicon glyphicon-menu-right"></span>
-          </span>
-        </a>
-      </div>
-    </div>
+  <!-- End page -->
   </div>
-
-  <div class="app-page">
-
-    <div class="app-page-header">
-      <h2>Patient Registration</h2>
-    </div>
-  </div>
+  
+  <!-- </div> -->
   <!-- sidebar definition -->
   <!--div class="container sidebar hidden-print">
     <div class="row" id="logo">
@@ -111,7 +127,9 @@
 
   <div class="viewport">
     <div ng-view class="view"></div>
-  </div-->
+    </div-->
+
+<!-- End container -->
 </div>
 
 <!-- scripts loaded in body to prevent page from 'hanging'-->
@@ -127,8 +145,18 @@
   }
 
   $(window).resize(sidebar);*/
+  
+  $(window).keypress(function (event) { 
+    var FORWARD_SLASH = 47;
 
-  $('#expandnav').click(function () { 
+    if (event.which === FORWARD_SLASH) { 
+      toggleNav();
+    }
+  });
+
+  $('#expandnav').click(toggleNav);
+
+  function toggleNav() { 
     var sidebar = $('#app-container');
 
     if (sidebar.hasClass('expanded')) { 
@@ -136,7 +164,7 @@
     } else { 
       sidebar.addClass('expanded');
     }
-  });
+  }
 </script>
 
 <!-- localforage -->
