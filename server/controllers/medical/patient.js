@@ -162,16 +162,29 @@ function handleFetchPatient(uuid) {
 
 function groups(req, res, next) {
   var patientGroupsQuery;
+  var patientExistenceQuery;
   var uuid = req.params.uuid;
 
+  // just check if the patient exists
+  patientExistenceQuery =
+    'SELECT uuid FROM patient WHERE uuid = ?;';
+
+  // read patient groups
   patientGroupsQuery =
     'SELECT patient_group.name, patient_group.note, patient_group.created, patient_group.uuid ' +
-    'FROM assignation_patient left join patient_group on patient_group_uuid = patient_group.uuid ' +
+    'FROM assignation_patient LEFT JOIN patient_group ON patient_group_uuid = patient_group.uuid ' +
     'WHERE patient_uuid = ?';
 
-  db.exec(patientGroupsQuery, [uuid])
-    .then(function(patientGroups) {
+  db.exec(patientExistenceQuery, [uuid])
+    .then(function (rows) {
 
+      if (isEmpty(rows)) {
+        throw req.codes.ERR_NOT_FOUND;
+      }
+
+      return db.exec(patientGroupsQuery, [uuid]);
+    })
+    .then(function(patientGroups) {
       res.status(200).json(patientGroups);
     })
     .catch(next)

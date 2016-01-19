@@ -47,8 +47,14 @@ var donations      = require('../controllers/finance/donations');
 var debtors        = require('../controllers/finance/debtors');
 var cashboxes      = require('../controllers/finance/cashboxes');
 var exchange       = require('../controllers/finance/exchange');
+var cash           = require('../controllers/finance/cash');
 var cashflow       = require('../controllers/cashflow');
+<<<<<<< HEAD
 var enterprises     = require('../controllers/admin/enterprises');
+=======
+var priceList      = require('../controllers/finance/priceList');
+
+>>>>>>> master
 var patientInvoice = require('../controllers/finance/patientInvoice');
 
 
@@ -344,6 +350,7 @@ exports.configure = function (app) {
   app.put('/users/:id', users.update);
   app.put('/users/:id/password', users.password);
   app.delete('/users/:id', users.delete);
+  // @deprecated
   app.get('/editsession/authenticate/:pin', users.authenticatePin);
 
   // budget controller
@@ -369,12 +376,34 @@ exports.configure = function (app) {
   app.post('/cashboxes/:id/currencies', cashboxes.currencies.create);
   app.put('/cashboxes/:id/currencies/:currencyId', cashboxes.currencies.update);
 
+  // price lists
+  app.get('/prices', priceList.list);
+  app.get('/prices/:uuid', priceList.details);
+  app.post('/prices', priceList.create);
+  app.put('/prices/:uuid', priceList.update);
+  app.delete('/prices/:uuid', priceList.delete);
+
+  // cash (aux/primary)
+  app.get('/cash', cash.list);
+  app.get('/cash/:uuid', cash.getCashDetails);
+  app.post('/cash', cash.create);
+  app.put('/cash/:uuid', cash.update);
+  app.delete('/cash/:uuid', cash.debitNote);
+
   // @todo - classify these
   app.get('/cashflow/report/', cashflow.getReport);
   //app.get('/stock/entries?', depot.getStockEntry);
 
+<<<<<<< HEAD
   // Enterprises Controller 
   app.get('/enterprises', enterprises.list);
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
+=======
+  // employees api
+  app.get('/employees', employees.list);
+  app.get('/employees/:id', employees.details);
+  app.put('/employees/:id', employees.update);
+  app.post('/employees', employees.create);
+>>>>>>> master
 };

@@ -9,9 +9,10 @@ var q = require('q');
 // as appropriate.
 
 var config = {
+
   
-  //specs: ['client/test/e2e/cashboxes/cashboxes.spec.js'],
   specs: ['client/test/e2e/**/*.spec.js'],
+  
 
   framework : 'mocha',
   baseUrl : 'https://localhost:8080/',
@@ -19,7 +20,7 @@ var config = {
   timeout : 10000,
   defaultTimeoutInterval : 30000,
 
-  mochaOpts : { 
+  mochaOpts : {
     timeout : 30000,
   },
   // default browsers to run

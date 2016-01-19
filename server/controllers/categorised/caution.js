@@ -1,6 +1,23 @@
+/**
+* The Caution Controller
+*
+* @module categorised/caution
+*
+* @description This controller is responsible for retrieving journal details of
+* a debitor relatives to a caution
+*
+* @requires lib/db
+* @requires lib/sanitize
+*/
+
+'use strict';
+
 var db = require('../../lib/db');
 var sanitize = require('../../lib/sanitize');
 
+/**
+* Getting debitor details from posting journal
+*/
 exports.debtor = function (req, res, next) {
   var sql, debitor_uuid = sanitize.escape(req.params.debitor_uuid),
       project_id = sanitize.escape(req.params.project_id);

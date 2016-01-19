@@ -12,8 +12,6 @@ var db = require('../../lib/db');
 * in life.
 */
 
-// FIXME -- For some reason, is_bank can be null.
-
 /**
 * GET /cashboxes
 * Lists available cashboxes, defaulting to all in the database.  Pass in the
@@ -76,7 +74,7 @@ function helperGetCashbox(id, codes) {
   return db.exec(sql, [id])
   .then(function (rows) {
 
-    if (!rows.length) {
+    if (rows.length === 0) {
       throw codes.NOT_FOUND;
     }
 

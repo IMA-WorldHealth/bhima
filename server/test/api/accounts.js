@@ -1,31 +1,19 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-// workaround for low node versions
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
-
-// environment variables - disable certificate errors
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-// base URL
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 /**
 * The /accounts API endpoint
 */
 describe('The /accounts API endpoint', function () {
-  var agent = chai.request.agent(url);
+  var agent = chai.request.agent(helpers.baseUrl);
 
-  // throw errors
-  function handler(err) { throw err; }
 
   // cheeky clone method for ES5 arrays
   function clone(array) {
@@ -33,11 +21,7 @@ describe('The /accounts API endpoint', function () {
   }
 
   // login before each request
-  beforeEach(function () {
-    return agent
-      .post('/login')
-      .send(user);
-  });
+  beforeEach(helpers.login(agent));
 
   it('GET /accounts returns a list of accounts', function () {
     return agent.get('/accounts')
@@ -45,7 +29,7 @@ describe('The /accounts API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /accounts returns the accounts in sorted order by account_number', function () {
@@ -64,7 +48,7 @@ describe('The /accounts API endpoint', function () {
 
         expect(accounts).to.deep.equal(sorted);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /accounts?type=ohada returns only OHADA accounts', function () {
@@ -92,7 +76,7 @@ describe('The /accounts API endpoint', function () {
         var ohada = res.body;
         expect(accounts).to.not.deep.equal(ohada);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 });
 
