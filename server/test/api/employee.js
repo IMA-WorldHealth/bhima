@@ -1,25 +1,15 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach, process */
 
-// import testing framework
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-// workaround for low node versions
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
 
-// do not throw self-signed certificate errors
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+/** import test helpers */
+var helpers = require('./helpers');
+helpers.configure(chai);
 
-// base URL
-var url = 'https://localhost:8080';
-
-// throw errors
-function handler(err) { throw err; }
 
 /**
 * The /projects API endpoint
@@ -27,7 +17,12 @@ function handler(err) { throw err; }
 * This test suite implements full CRUD on the /projects HTTP API endpoint.
 */
 describe('The /employees API endpoint :: ', function () {
-  var agent = chai.request.agent(url);
+  'use strict';
+
+  var agent = chai.request.agent(helpers.baseUrl);
+
+  /** login before each request */
+  beforeEach(helpers.login(agent));
 
   // Custom dates
   var embaucheDate  = '2016-01-01',
@@ -77,14 +72,6 @@ describe('The /employees API endpoint :: ', function () {
       location_id : 'ffe563ef-781c-4551-a080-7cec135351ff'
   };
 
-  // login before each request
-  beforeEach(function () {
-    var user = { username : 'superuser', password : 'superuser', project: 1};
-    return agent
-      .post('/login')
-      .send(user);
-  });
-
   it('POST /employee should create a new employee', function () {
     return agent.post('/employees')
       .send(employee)
@@ -94,7 +81,7 @@ describe('The /employees API endpoint :: ', function () {
         expect(res.body.id).to.exist;
         employee.id = res.body.id;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('POST /employee with fake employee data', function () {
@@ -104,7 +91,7 @@ describe('The /employees API endpoint :: ', function () {
         expect(res).to.have.status(400);
         expect(res).to.be.json;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /employees returns a list of all employees', function () {
@@ -113,7 +100,7 @@ describe('The /employees API endpoint :: ', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /employees/:id should return a specific employee ', function () {
@@ -127,7 +114,7 @@ describe('The /employees API endpoint :: ', function () {
         emp.code = emp.code_employee;
         expect(emp).to.contain.all.keys(employee);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /employee/:id should update an existing employee ', function () {
@@ -140,7 +127,7 @@ describe('The /employees API endpoint :: ', function () {
         expect(emp).to.be.a('object');
         checkValidUpdate(emp, updateEmployee);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /employee/:id should not update an existing employee with a fake Id ', function () {
@@ -149,7 +136,7 @@ describe('The /employees API endpoint :: ', function () {
       .then(function (res) {
         expect(res).to.have.status(404);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /employee/:idb should not update an existing employee with fake fields ', function () {
@@ -170,7 +157,7 @@ describe('The /employees API endpoint :: ', function () {
         expect(emp).to.be.a('object');
         checkValidUpdate(emp, updateEmployee);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   /**
