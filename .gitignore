@@ -10,6 +10,7 @@
 # ignore npm/node modules
 node_modules/
 .npm-debug.log
+npm-debug.log
 
 # ignore bower installation target
 client/vendor/

@@ -90,11 +90,6 @@ var paths = {
  *   - [client-watch]       watch the client/src/ for changes and run the build
 */
 
-// removes files with del, and continues
-gulp.task('client-clean', function (cb) {
-  rimraf(CLIENT_FOLDER, cb);
-});
-
 // run jshint on the client javascript code
 gulp.task('client-lint-js', function () {
   return gulp.src(paths.client.javascript.concat(paths.client.excludeLint))
@@ -198,13 +193,13 @@ gulp.task('notify-lint-process', function () {
 });
 
 // builds the client with all the options available
-gulp.task('build-client', ['client-clean'], function () {
+gulp.task('build-client', function () {
   gulp.start('client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-vendor-build-bootstrap', 'client-mv-static', 'notify-lint-process');
 });
 
 // Lint client code seperately from build process
 // TODO Processes for linting server code - requires uncategorised commit update
-gulp.task('lint', ['client-clean'], function () {
+gulp.task('lint', function () {
   gulp.start('client-lint-js', 'client-lint-i18n');
 });
 
@@ -224,12 +219,6 @@ gulp.task('lint', ['client-clean'], function () {
  *
  * To run all of the above, run the gulp task `gulp build-server`.
 */
-
-gulp.task('server-clean', function (cb) {
-  rimraf(SERVER_FOLDER, function () {
-    rimraf(PLUGIN_FOLDER, cb);
-  });
-});
 
 // run jshint on all server javascript files
 gulp.task('server-lint-js', function () {
@@ -282,18 +271,13 @@ gulp.task('client-test-e2e', function () {
  * The following tasks will run unit tests on the bhima server using gulp-mocha
 */
 
-// ensure that the server actually runs
-gulp.task('server-test-run', function () {
-  spawn('node', [path.join(SERVER_FOLDER, 'app.js')], {stdio: 'inherit'});
-});
-
 /* -------------------------------------------------------------------------- */
 
 gulp.task('clean', function (cb) {
   rimraf('./bin/', cb);
 });
 
-gulp.task('build', function () {
+gulp.task('build', ['clean'], function () {
   gulp.start('build-client', 'build-server');
 });
 
@@ -302,6 +286,6 @@ gulp.task('test', ['build'], function () {
 });
 
 // run the build-client and build-server tasks when no arguments
-gulp.task('default', [], function () {
+gulp.task('default', ['clean'], function () {
   gulp.start('build-client', 'build-server');
 });
