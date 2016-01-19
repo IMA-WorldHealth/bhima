@@ -1,34 +1,62 @@
 /**
-* @description
+* The /patient HTTP API endpoint
 *
-* @returns
+* @module medical/patient
 *
-* @todo
+* @desc This module is responsible for handling all crud operations relatives to patients
+* and define all patient api functions
+*
+* @required lib/db
+* @required lib/guid
+*
+* @todo Review naming conventions
+* @todo Remove or refactor methods to fit new API standards
+*
 */
+
+'use strict';
+
 var db = require('../../lib/db'),
     uuid = require('../../lib/guid');
 
+// create a new patient
 exports.create = create;
+
+// get details of a patient
 exports.details = details;
+
+// update patient informations
 exports.update = update;
+
+// get list of patients
 exports.list = list;
+
+// search patients
 exports.search = search;
 
-// TODO Review naming conventions
-// Provide groups for individual patient
+// get the patient group
 exports.groups = groups;
+
+// update patient group
 exports.updateGroups = updateGroups;
 
-// Provide all patient groups
+// get list of groups
 exports.listGroups = listGroups;
 
+// verify the hospital number of a patient
 exports.verifyHospitalNumber = verifyHospitalNumber;
 
-/*
- * HTTP Controllers
- */
+// Search patient reference
+exports.searchReference = searchReference;
 
-// TODO Method handles too many operations
+// Search fuzzy
+exports.searchFuzzy = searchFuzzy;
+
+// log patient visit
+exports.visit = visit;
+
+
+/** @todo Method handles too many operations */
 function create(req, res, next) {
   var writeDebtorQuery, calculateReferenceQuery, writePatientQuery;
   var invalidParameters;
@@ -91,7 +119,7 @@ function generatePatientText(patient) {
   return textLineDefault.concat(patient.last_name, '/', patient.middle_name);
 }
 
-// TODO review if this many details should be returned under a patient end point
+/** @todo review if this many details should be returned under a patient end point */
 function details(req, res, next) {
   var uuid = req.params.uuid;
 
@@ -284,10 +312,6 @@ function list(req, res, next) {
   .done();
 }
 
-function search(req, res, next) {
-  next();
-}
-
 /**
  * @description Return a status object indicating if the hospital number has laready been registered
  * with an existing patient
@@ -325,14 +349,11 @@ function verifyHospitalNumber(req, res, next) {
     .done();
 }
 
-/**
- * Legacy Methods
- * TODO Remove or refactor methods to fit new API standards
+ /**
+ * GET /patient/search/reference/:reference
+ * @desc Performs a search on the patient reference (e.g. HBB123)
  */
-
-// GET /patient/search/reference/:reference
-// Performs a search on the patient reference (e.g. HBB123)
-exports.searchReference = function (req, res, next) {
+function searchReference (req, res, next) {
   'use strict';
 
   var sql, reference = req.params.reference;
@@ -365,11 +386,13 @@ exports.searchReference = function (req, res, next) {
   .catch(next)
   .done();
 
-};
+}
 
-// GET /patient/search/fuzzy/:match
-// Performs fuzzy searching on patient names
-exports.searchFuzzy = function (req, res, next) {
+/**
+* GET /patient/search/fuzzy/:match
+* @desc Performs fuzzy searching on patient names
+*/
+function searchFuzzy (req, res, next) {
   'use strict';
 
   var sql, match = req.params.match;
@@ -399,9 +422,9 @@ exports.searchFuzzy = function (req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
-exports.visit = function (req, res, next) {
+function visit (req, res, next) {
   var visitData = req.body;
 
   logVisit(visitData, req.session.user.id)
@@ -414,7 +437,7 @@ exports.visit = function (req, res, next) {
     })
     .catch(next)
     .done();
-};
+}
 
 function logVisit(patientData, userId) {
   var sql;
@@ -428,4 +451,149 @@ function logVisit(patientData, userId) {
 
 function isEmpty(array) {
   return array.length === 0;
+}
+
+/**
+* GET /patient/search?name="..."&details=...&limit=...
+*
+* @desc This function is responsible to find a patient with detailled informations or not
+* and with a limited rows or not
+*/
+function search (req, res, next) {
+
+  var sql,
+      data       = [],
+      qReference = req.query.reference,
+      qName      = req.query.name,
+      qFields    = req.query.fields,
+      qDetail    = req.query.detail || 0,
+      qLimit     = req.query.limit;
+
+  if (!qReference && !qName && !qFields) { throw req.codes.ERR_PARAMETERS_REQUIRED; }
+
+  try {
+    qFields = qFields ? JSON.parse(qFields) : null;
+    qDetail = Number(qDetail);
+    qLimit  = Number(qLimit);
+  } catch (err) {
+    return next(err);
+  }
+
+  // NOTE: For the queries bellow we get all columns from the patient table and
+  // we return to the client only necessary data according the detail parameter
+  // the reference has a hight priority
+
+  if (qName && !qReference) {
+    // Find patient by names : first_name, middle_name or last_name
+    sql =
+      'SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid, p.creditor_uuid, ' +
+        'p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name, ' +
+        'p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer, ' +
+        'p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2, ' +
+        'p.renewal, p.origin_location_id, p.current_location_id, p.registration_date, ' +
+        'p.title, p.notes, p.hospital_no, proj.abbr, d.text, ' +
+        'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
+      'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
+      'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
+      'WHERE ' +
+        'LEFT(LOWER(CONCAT(p.last_name, \' \', p.middle_name, \' \', p.first_name )), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(p.last_name, \' \', p.first_name, \' \', p.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(p.first_name, \' \', p.middle_name, \' \', p.last_name)), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(p.first_name, \' \', p.last_name, \' \', p.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(p.middle_name, \' \', p.last_name, \' \', p.first_name)), CHAR_LENGTH(?)) = ? OR ' +
+        'LEFT(LOWER(CONCAT(p.middle_name, \' \', p.first_name, \' \', p.last_name)), CHAR_LENGTH(?)) = ? ';
+
+      data = [qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName]
+
+  } else if (qFields && !qReference) {
+    // Find patients by a set of criteria defined in an object. Ex. : { sex: "M", last_name: "Doe" }
+    sql =
+    'SELECT q.uuid, q.project_id, q.reference, q.debitor_uuid, q.creditor_uuid, ' +
+      'q.first_name, q.last_name, q.middle_name, q.sex, q.dob, q.father_name, q.mother_name, ' +
+      'q.profession, q.employer, q.spouse, q.spouse_profession, q.spouse_employer, ' +
+      'q.religion, q.marital_status, q.phone, q.email, q.address_1, q.address_2, ' +
+      'q.renewal, q.origin_location_id, q.current_location_id, q.registration_date, ' +
+      'q.title, q.notes, q.hospital_no, q.text, ' +
+      'q.account_id, q.price_list_uuid, q.is_convention, q.locked ' +
+    'FROM (' +
+      'SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid, p.creditor_uuid, ' +
+        'p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name, ' +
+        'p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer, ' +
+        'p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2, ' +
+        'p.renewal, p.origin_location_id, p.current_location_id, p.registration_date, ' +
+        'p.title, p.notes, p.hospital_no, d.text, ' +
+        'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
+      'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
+        'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
+    ') AS q ';
+
+    var clauseWhere = 'WHERE ';
+
+    data = [];
+
+    var criteria = Object.keys(qFields).map(function (item) {
+      data.push(qFields[item])
+      return 'q.' + item + ' = ?';
+    }).join(' AND ');
+
+    clauseWhere += criteria;
+    sql += clauseWhere;
+
+  } else if (qReference) {
+    // find a patient identified by a reference. Ex. HBB123
+    sql =
+      'SELECT q.uuid, q.project_id, q.reference, q.debitor_uuid, q.creditor_uuid, ' +
+        'q.first_name, q.last_name, q.middle_name, q.sex, q.dob, q.father_name, q.mother_name, ' +
+        'q.profession, q.employer, q.spouse, q.spouse_profession, q.spouse_employer, ' +
+        'q.religion, q.marital_status, q.phone, q.email, q.address_1, q.address_2, ' +
+        'q.renewal, q.origin_location_id, q.current_location_id, q.registration_date, ' +
+        'q.title, q.notes, q.hospital_no, q.text, ' +
+        'q.account_id, q.price_list_uuid, q.is_convention, q.locked ' +
+      'FROM (' +
+        'SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid, p.creditor_uuid, ' +
+          'p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name, ' +
+          'p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer, ' +
+          'p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2, ' +
+          'p.renewal, p.origin_location_id, p.current_location_id, p.registration_date, ' +
+          'p.title, p.notes, p.hospital_no, d.text, ' +
+          'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
+        'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
+          'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
+      ') AS q ' +
+      'WHERE q.reference = ? ';
+
+      data = [qReference];
+
+  } else {
+    // throw an error in other cases
+    throw req.codes.ERR_PARAMETERS_REQUIRED;
+  }
+
+  if (qLimit && typeof(qLimit) === 'number' && (parseFloat(qLimit) === parseInt(qLimit))) {
+    // Insert the limit in the query
+    sql += ' LIMIT ' + qLimit + ';';
+  }
+
+  db.exec(sql, data)
+  .then(function (rows) {
+
+    if (!qDetail) {
+      // Select only usefull attributes for detail = 0
+      rows = rows.map(function (item) {
+        return {
+          uuid         : item.uuid,
+          debitor_uuid : item.debitor_uuid,
+          reference    : item.reference,
+          first_name   : item.first_name,
+          middle_name  : item.middle_name,
+          last_name    : item.last_name,
+          dob          : item.dob,
+          sex          : item.sex
+        };
+      });
+    }
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
 }
