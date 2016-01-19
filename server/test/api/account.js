@@ -42,6 +42,7 @@ describe('The /account API endpoint', function () {
   // throw errors
   function handler(err) { throw err; }
 
+
   // login before each request
   beforeEach(function () {
     return agent
@@ -54,7 +55,7 @@ describe('The /account API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(8);
+        expect(res.body).to.have.length(9);
       })
       .catch(handler);
   });
@@ -64,7 +65,7 @@ describe('The /account API endpoint', function () {
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.length(8);
+          expect(res.body).to.have.length(9);
          })
         .catch(handler);
     });
