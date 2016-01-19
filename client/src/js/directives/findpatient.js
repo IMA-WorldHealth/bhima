@@ -13,97 +13,117 @@ FindPatientDirective.$inject = [
 * The typeahead loads data as your type into the input box, pinging th URL
 * /patient/search/fuzzy (for legacy reasons, not actually a fuzzy search).  The
 * HTTP endpoints sends back 10 results which are then presented to the user.
+*
+* @todo use of cache for keeping state if necessary
 */
+
 function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
   return {
     restrict: 'AE',
     templateUrl : 'partials/templates/findpatient.tmpl.html',
     scope : {
-      callback : '&onSearchComplete',
-      initLookup : '=?',
+      callback      : '&onSearchComplete',
+      initLookup    : '=?',
       enableRefresh : '=',
+      inline        : '='
     },
     link : function(scope, element, attrs) {
-      var dependencies = {},
-          cache = new AppCache('patientSearchDirective');
+      var cache   = new AppCache('findPatientCache');
+      var session = scope.session = {};
 
-      var session = scope.session = {},
-          input = scope.input = {};
+      session.findAnotherPatient = true;
+      session.patient = {};
+      session.input   = {};
+      session.loadStatus = null;
+      session.options = [
+        {
+          'key'   : 0,
+          'label' : 'FIND.PATIENT_ID',
+          'placeholder' : 'FIND.SEARCH_PATIENT_ID'
+        },
+        {
+          'key'   : 1,
+          'label' : 'FIND.PATIENT_NAME',
+          'placeholder' : 'FIND.SEARCH_NAME'
+        }
+      ];
 
-      session.state = 'name'; // 'name || 'uuid'
-      session.submitted = false;
-      session.valid = null;
+      // expose to view
+      scope.searchByReference  = searchByReference;
+      scope.searchByName       = searchByName;
+      scope.formatPatient         = formatPatient;
+      scope.validateNameSearch = validateNameSearch;
+      scope.selectPatient      = selectPatient;
+      scope.findBy             = findBy;
+      scope.reload             = reload;
 
-      // generic error echo-er
-      function handler(error) {
-        console.error(error);
+      // init the directive
+      startup();
+
+      // startup function
+      function startup() {
+        session.selected = session.options[0];
       }
 
       // calls bhima API for a patient by hospital reference
       // (e.g. HBB123)
-      function searchReference(ref) {
-        var url = '/patient/search/reference/';
+      function searchByReference(ref) {
+        session.loadStatus = 'loading';
+        var url = '/patients/search/?reference=';
         $http.get(url + ref)
-        .then(function (response) { selectPatient(response.data); })
+        .then(function (response) {
+          selectPatient(response.data);
+        })
         .catch(handler)
         .finally();
       }
 
-      // matches the patient's name via SOUNDEX()
-      function fuzzyNameSearch(text) {
-        var url = '/patient/search/fuzzy/';
+      // matches the patient's name
+      function searchByName(text) {
+        session.loadStatus = 'loading';
+        var url = '/patients/search/?name=';
         return $http.get(url + text.toLowerCase())
         .then(function (response) {
           return response.data;
         });
       }
 
-      // calls bhima API with uuid
-      function searchByUuid(uuid) {
-        var url = '/patient/';
-        $http.get(url + uuid)
-        .then(function (response) { selectPatient(response.data); })
-        .catch(handler)
-        .finally();
+      function findBy(option) {
+        session.selected = option;
       }
 
-      // make a pretty label
-      function fmtPatient(p) {
+      function reload() {
+        session.findAnotherPatient = true;
+      }
+
+      function formatPatient(p) {
         return p ? p.first_name + ' ' + p.last_name + ' ' + p.middle_name : '';
       }
 
-      // change the input type
-      function toggleSearch(s) {
-        session.state = s;
-        saveState({ state : s });
+      // generic error handler
+      function handler(error) {
+        console.error(error);
       }
 
-      // expose to view
-      scope.searchReference = searchReference;
-      scope.fuzzyNameSearch = fuzzyNameSearch;
-      scope.toggleSearch = toggleSearch;
-      scope.fmtPatient = fmtPatient;
-
-      // init the module
-      cache.fetch('state')
-      .then(loadDefaultState);
-
-      // this is called after $http requests are made,
+      // handle the selected patient
       function selectPatient(patient) {
+        session.findAnotherPatient = false;
+
+        if (!patient) {
+          session.loadStatus = 'error';
+          session.patient = {};
+          session.input   = {};
+          throw Error('No patient found');
+        }
+
+        session.loadStatus = 'loaded';
         scope.patient = patient;
-
-        // flush input away
-        scope.input = {};
-
-        // show success ui response
-        session.valid = true;
-        session.submitted = true;
 
         // parse patient metadata
         var age = getAge(patient.dob);
-        patient.ageObject = age;
         patient.age = age.years;
-        patient.name = fmtPatient(patient);
+        patient.name = formatPatient(patient);
+        patient.sex = patient.sex.toUpperCase();
 
         // call the external $scope callback
         scope.callback({ patient : patient });
@@ -153,30 +173,6 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
         session.valid = true;
       }
 
-      function refresh() {
-        session.submitted = false;
-        session.valid = null;
-        input = {};
-      }
-
-      function loadDefaultState(dstate) {
-        if (dstate) { toggleSearch(dstate.state); }
-      }
-
-      // save the directive state to appcache
-      function saveState(dstate) {
-        cache.put('state', dstate);
-      }
-
-      // when the init-lookup value changes, force a refresh on that patient
-      // allows you to coerce the find patient to execute when recovering previous data
-      scope.$watch('initLookup', function (value) {
-        if (value) { searchByUuid(value); }
-      });
-
-      scope.validateNameSearch = validateNameSearch;
-      scope.refresh = refresh;
-      scope.selectPatient = selectPatient;
     }
   };
 }

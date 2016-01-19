@@ -1,0 +1,5 @@
+<a>
+  <span bind-html-unsafe="match.reference | typeaheadHighlight:query"></span>
+  <span style="display:inline-block; width:64px;"><b>{{ match.model.reference }}</b></span>
+  <span>{{ match.model.first_name + ' ' + match.model.middle_name + ' ' + match.model.last_name }}</span>
+</a>

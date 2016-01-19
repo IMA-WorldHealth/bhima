@@ -429,7 +429,7 @@
    "CREDITOR"              : "Créditeur",
    "CREDITOR_ID"           : "ID Créditeur",
    "CRE_EQUIV"             : "Crédit",
-   "CURRENCIES"            : "Monnaies",   
+   "CURRENCIES"            : "Monnaies",
    "CURRENCY"              : "Monnaie",
    "CURRENCIES"            : "Devises",
    "CURRENT_STOCK"         : "Stock Courrant",
@@ -1178,7 +1178,7 @@
    "TITLE"                    : "Gestion de l'Entreprise"
    },
 "ERROR": {
-   "CONNECTION"                     : "Erreur sur la requête de connexion au serveur. Certaines informations requises peut ne pas avoir été chargé. S'il vous plaît rafraîchir la page pour continuer. Si le problème persiste, contactez l'administrateur du système.",    
+   "CONNECTION"                     : "Erreur sur la requête de connexion au serveur. Certaines informations requises peut ne pas avoir été chargé. S'il vous plaît rafraîchir la page pour continuer. Si le problème persiste, contactez l'administrateur du système.",
    "ERR_ACCNT_LOCKED"               : "Erreur Compte Barre",
    "ERR_ACCNT_NULL"                 : "Erreur Compte NULL",
    "ERR_DATE_IN_THE_FUTURE"         : "Erreur: La date sélectionnée n'est pas encore atteint. Veuillez insérer une date valide.",
@@ -1253,6 +1253,7 @@
       },
    "PATIENT_ID"        : "ID Patient",
    "PATIENT_NAME"      : "Nom du Patient",
+   "PATIENT_NOT_FOUND" : "Patient non trouvé",
    "SEARCH_NAME"       : "Chercher Par Nom",
    "SEARCH_PATIENT_ID" : "Chercher ID Patient",
    "TITLE"             : "Trouver Patient"
@@ -1800,7 +1801,7 @@
       "TITLE"         : "Groupes de patients",
       "UPDATED"       : "L'appartenance au groupe des patients mis à jour",
       "EMPTY"         : "Ce patient n'est membre d'aucun des groupes de patients",
-      "UPDATE"        : "Mettre à jour l'assignation à un groupe", 
+      "UPDATE"        : "Mettre à jour l'assignation à un groupe",
       "MODAL_TTILE"   : "Mettre à jour Update les groupes de patients",
       "MODAL_INFO"    : "Attribuer le patient à des groupes parmi les options ci-dessous. Appuyez sur 'confirmer' pour une mise à jour permanente des groupes souscrites du patient.",
       "MODAL_WARN"    : "Aucun groupes de patients n'a été trouvée. Les groupes de patients doivent être enregistrés dans le système avant l'affectation des patients"
@@ -1811,7 +1812,7 @@
       "UPDATE"        : "Mettre à jour le groupe",
       "MODAL_TITLE"   : "Mettre à jour le Groupe débiteur",
       "MODAL_INFO"    : "Attribuez un nouveau groupe de débiteur parmi les options ci-dessous. Appuyez sur 'confirmer' pour une mise à jour permanente du groupe de débiteur du patient"
-    }   
+    }
    },
 "PATIENT_GRP": {
    "HELP_TXT_1"    : "Group Patient est utilisée pour assigner un discount aux patients qui le meritent. utiliser ce module pour Enregsitrer, modifier, et effacer un group patient",
@@ -1903,7 +1904,7 @@
    "DATE_TO"                    : "Date fin",
    "DAY"                        : "Aujourd'hui",
    "FIND_DATE"                  : "Choisir Date",
-   "INCORRECT_DATE_AND"         : "et",    
+   "INCORRECT_DATE_AND"         : "et",
    "INCORRECT_DATE_LIMIT"       : "Année de naissance doit être comprise entre (min) et (max)",
    "INCORRECT_DATE_TYPE"        : "la valeur de la date est invalide",
    "INCORRECT_LOCATION_CURRENT" : "village actuel non spécifiée",
@@ -2003,7 +2004,7 @@
    "PERMISSIONS" : "Permissions",
    "REGISTERED"  : "Utilisateurs Enregistrés",
    "RETYPE"      : "Retaper",
-   "SET_PASSWORD" : "Définir le mot de passe",   
+   "SET_PASSWORD" : "Définir le mot de passe",
    "SUPER"       : "Super Utilisateur",
    "UPDATE_PASSWORD" : "Mettre à jour le Mot de passe",
    "TITLE"       : "Gestion des Utilisateurs et Permissions",

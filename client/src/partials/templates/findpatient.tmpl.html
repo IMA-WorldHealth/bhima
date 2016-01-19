@@ -1,73 +1,63 @@
-<div class="panel panel-default" ng-class="{'panel-success': session.valid === true, 'panel-danger': session.valid === false }">
-  <div class="panel-heading clearfix">
-
-    <!-- banner before submission -->
-    <div ng-if="!session.submitted">
-      <i class="glyphicon glyphicon-search"></i> {{ "FIND.TITLE" | translate }}
-      <div class="pull-right">
-        <a href="" ng-class="{'link-selected': session.state === 'id' }" ng-click="toggleSearch('id')">
-          <i class="glyphicon glyphicon-pencil"></i> {{ "FIND.SEARCH_PATIENT_ID" | translate }}
-        </a>
-        <a href="" ng-class="{'link-selected': session.state === 'name' }" ng-click="toggleSearch('name')">
-          <i class="glyphicon glyphicon-user"></i> {{ "FIND.SEARCH_NAME" | translate }}
-        </a>
-      </div>
+<!-- inline directive option -->
+<div ng-form="formFindPatient" class="form-group" novalidate>
+  <div class="input-group" ng-if="session.findAnotherPatient">
+    <!-- dropdown button -->
+    <div class="input-group-btn" uib-dropdown>
+      <button class="btn btn-default" uib-dropdown-toggle>
+        {{ session.selected.label | translate }} <span class="caret"></span>
+      </button>
+      <ul class="uib-dropdown-menu">
+        <li ng-repeat="option in session.options">
+          <a ng-click="findBy(option)">{{ option.label | translate }}</a>
+        </li>
+      </ul>
     </div>
+    <!-- /dropdown button -->
 
-    <!-- banner after submission -->
-    <div ng-if="session.submitted">
-      <i style="margin-right: 5px;" class="glyphicon glyphicon-user"></i> {{ patient.name }}
-      <small>({{ patient.sex }} {{ (patient.ageObject.years <= 1) ? patient.ageObject.months : patient.ageObject.years }} {{ (patient.ageObject.years <= 1) ? "UTIL.MONTHS" : "UTIL.YEARS" | translate }}) </small>
-      <div class="pull-right" ng-if="enableRefresh" style="cursor:pointer;">
-        <i ng-click="refresh()" class="glyphicon glyphicon-repeat"></i>
-      </div>
-    </div>
+    <!-- search by ID  -->
+    <input ng-model="session.patient"
+      ng-if="session.selected.key==0"
+      type="text"
+      class="form-control"
+      placeholder="{{ session.selected.placeholder | translate }}..."
+      required>
+
+    <!-- search by Name  -->
+    <input ng-model="session.input"
+      ng-if="session.selected.key==1"
+      type="text"
+      class="form-control"
+      placeholder="{{ session.selected.placeholder | translate }}..."
+      uib-typeahead="patient as formatPatient(patient) for patient in searchByName($viewValue)"
+      uib-typeahead-no-results="noPatients"
+      uib-typeahead-wait-ms="150"
+      typeahead-template-url="/partials/templates/patientListV2.tmpl.html"
+      typeahead-on-select="selectPatient($item)"
+      required>
+
+    <!-- icon notification -->
+    <i ng-if="session.selected.key==1"
+      class="form-control-feedback glyphicon"
+      ng-class="{'glyphicon-refresh': session.loadStatus == 'loading', 'glyphicon-ok': session.loadStatus == 'loaded', 'glyphicon-warning': session.loadStatus == 'error'}">
+    </i>
+
+    <!-- submit button for search by ID -->
+    <span ng-if="session.selected.key==0" class="input-group-btn">
+      <button class="btn btn-success" type="button" ng-disabled="formFindPatient.$invalid">Submit</button>
+    </span>
   </div>
 
-  <div class="panel-body find-collapse" ng-if="!(session.submitted && session.valid)">
-    <div ng-switch="session.state">
-
-      <!-- search by name -->
-      <div ng-switch-when="name">
-        <div class="input-group">
-          <input
-          type="text"
-          class="form-control"
-          ng-model="input.model"
-          uib-typeahead="patient as fmtPatient(patient) for patient in fuzzyNameSearch($viewValue)"
-          placeholder="{{ 'FIND.PATIENT_NAME' | translate }}"
-          uib-typeahead-wait-ms="150"
-          uib-typeahead-template-url="/partials/templates/debtorListItem.tmpl.html"
-          uib-typeahead-no-results="noPatients"
-          size="25">
-          <span class="input-group-btn">
-            <button ng-disabled="validateNameSearch(input.model)" ng-click="selectPatient(input.model)" class="btn btn-default">
-              {{ "FORM.SUBMIT" | translate }}
-            </button>
-          </span>
-        </div>
-        <!-- <i ng-show="loadingPatients" class="glyphicon glyphicon-refresh"></i> -->
-        <p class="help-block" ng-show="noPatients">
-          <i class="glyphicon glyphicon-remove"></i> {{ "FORM.NO_RESULTS" | translate }}
-        </p>
-      </div> <!-- End searchName component -->
-
-      <!-- search by uuid -->
-      <div ng-switch-when="id">
-        <div class="input-group">
-          <input
-          type="text"
-          class="form-control"
-          ng-model="input.term"
-          placeholder="{{ 'FIND.PATIENT_ID' | translate }}">
-          <span class="input-group-btn">
-            <button ng-click="searchReference(input.term)" class="btn btn-default">
-              {{ "FORM.SUBMIT" | translate }}
-            </button>
-          </span>
-        </div>
-      </div>
-
+  <!-- notification text  -->
+  <div class="alert" ng-class="{'alert-success': session.loadStatus=='loaded', 'alert-danger': session.loadStatus=='error'}"
+    ng-if="!session.findAnotherPatient">
+    <i class="glyphicon glyphicon-ok"></i>
+    <span ng-if="session.loadStatus=='loaded'">
+      <b>{{'[' + patient.reference + ']'}}</b>
+      {{ patient.name + ' (' + patient.sex + ' ' + patient.age + ')'}}
+    </span>
+    <span ng-if="session.loadStatus=='error'">{{ 'FIND.PATIENT_NOT_FOUND' | translate }}</span>
+    <div class="pull-right">
+      <span class="pointer" ng-click="reload()"><i class="glyphicon glyphicon-refresh"></i></span>
     </div>
   </div>
 </div>
