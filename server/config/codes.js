@@ -50,5 +50,10 @@ module.exports = {
     code: 'ERR_PROTECTED_FIELD',
     httpStatus : 400,
     reason : 'The update request attempted to change a protected field.'
+  },
+  'ERR_PARAMETERS_REQUIRED' : {
+    code : 'ERR_PARAMETERS_REQUIRED',
+    httpStatus : 400,
+    reason : 'That Request require some necessary parameters which are missing'
   }
 };
