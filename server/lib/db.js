@@ -1,6 +1,4 @@
-// /scripts/lib/database/db.js
-
-// Module: db.js
+// /scripts/lib/db.js
 
 // TODO rewrite documentation - this module can now be required by any controller module throughout the application
 // TODO Seperate DB wrapper and DB methods - this module should just initialise a new DB instance
@@ -11,30 +9,22 @@
 // sharing connections between request sessions (also allowing for shraring a
 // transaction between unrelated components)
 
-// The purpose of this module is managing client connections
-// and disconnections to a variety of database management systems.
-// All query formatting is expected to happen elsewhere.
-
 var q = require('q');
+var mysql = require('mysql');
 
-var db, con, supportedDatabases, dbms;
+var con;
 
 // Initiliase module on startup - create once and allow db to be required anywhere
-function initialise(cfg) {
+function initialise() {
   'use strict';
 
-  cfg = cfg || {};
-
-  // Select the system's database with this variable.
-  dbms = cfg.dbms || 'mysql';
-
-  // All supported dabases and their initializations
-  supportedDatabases = {
-    mysql    : mysqlInit
-  };
-
-  // The database connection for all data interactions
-  con = supportedDatabases[dbms](cfg);
+  // configure MySQL via environmental variables
+  con = mysql.createPool({
+    host : process.env.DB_HOST,
+    user : process.env.DB_USER,
+    password : process.env.DB_PASS,
+    database : process.env.DB_NAME
+  });
 
   //  FIXME reset all logged in users on event of server crashing / terminating - this
   //  should be removed/ implemented into the error/logging module before shipping
@@ -70,10 +60,6 @@ function execute(sql, callback) {
     });
 
   });
-}
-
-function getSupportedDatabases() {
-  return Object.keys(supportedDatabases);
 }
 
 function execTransaction(queryList) {
@@ -166,56 +152,29 @@ function transaction() {
   return self;
 }
 
-function mysqlInit (config) {
+function flushUsers(handle) {
   'use strict';
-  var db = require('mysql');
-  return db.createPool(config);
-}
-
-function flushUsers (db_con) {
-  'use strict';
-  var permissions, reset, strict;
+  var permissions, reset;
 
   // Disable safe mode #420blazeit
-  // TODO  This should be optionally set as a flag - and reported (logged)
+  // TODO This should be optionally set as a flag - and reported (logged)
   permissions = 'SET SQL_SAFE_UPDATES = 0;';
   reset = 'UPDATE `user` SET user.active = 0 WHERE user.active = 1;';
 
-  db_con.getConnection(function (err, con) {
+  handle.getConnection(function (err, con) {
     if (err) { throw err; }
     con.query(permissions, function (err) {
       if (err) { throw err; }
       con.release();
-      db_con.getConnection(function (err, con) {
+      handle.getConnection(function (err, con) {
         if (err) { throw err; }
         con.query(reset, function (err) {
           if (err) { throw err; }
-
         });
       });
     });
   });
 }
-
-/*
-// TODO: impliment PostgreSQL support
-function postgresInit(config) {
-  var db = require('pg');
-  return true;
-}
-
-// TODO: impliment Firebird support
-function firebirdInit(config) {
-  var db = require('node-firebird');
-  return true;
-}
-
-// TODO: impliment sqlite support
-function sqliteInit(config) {
-  var db = require('sqlite3');
-  return true;
-}
-*/
 
 // Uses an already existing connection to query the database, returning a promise
 function queryConnection(connection, sql, params) {
@@ -243,5 +202,3 @@ module.exports = {
   sanitize:    sanitize, // FIXME: is this even used?
   escape:      sanitize
 };
-
-//module.exports = db;

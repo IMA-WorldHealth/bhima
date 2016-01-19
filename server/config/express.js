@@ -9,12 +9,12 @@ var express    = require('express'),
     morgan     = require('morgan'),
     fs         = require('fs');
 
-var cfg   = require('../config/environment/' + process.env.NODE_ENV);
 var codes = require('../config/codes');
 
 // Accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
   'use strict';
+
   console.log('[config/express] Configure express');
 
   // middleware
@@ -26,12 +26,12 @@ exports.configure = function configure(app) {
   // not interrupt sessions.
   app.use(session({
     store             : new FileStore({
-      reapInterval      : cfg.session.reapInterval,
+      reapInterval      : Number(process.env.SESS_REAP_INTERVAL),
     }),
-    secret            : cfg.session.secret,
-    saveUninitialized : cfg.session.saveUninitialized,
-    resave            : cfg.session.resave,
-    unset             : 'destroy',
+    secret            : process.env.SESS_SECRET,
+    saveUninitialized : Boolean(process.env.SESS_SAVE_UNINITIALIZED),
+    resave            : Boolean(process.env.SESS_RESAVE),
+    unset             : process.env.SESS_UNSET,
     cookie            : { secure : true }
   }));
 
@@ -68,11 +68,11 @@ exports.configure = function configure(app) {
   // Uncomment if you want logs written to a file instead
   // of piped to standard out (default).
   //var logFile = fs.createWriteStream(__dirname + '/access.log', {flags : 'a'});
-  //app.use(morgan('short', { stream : logFile }));
+  //app.use(morgan(process.env.LOG_LEVEL, { stream : logFile }));
 
-  // custom logLevel 'none' allows developers to turn off logging during tests
-  if (cfg.logLevel !== 'none') {
-    app.use(morgan(cfg.logLevel));
+  // custom LOG_LEVEL 'none' turns off logging during tests
+  if (process.env.LOG_LEVEL !== 'none') {
+    app.use(morgan(process.env.LOG_LEVEL));
   }
 
   // serve static files from a single location
