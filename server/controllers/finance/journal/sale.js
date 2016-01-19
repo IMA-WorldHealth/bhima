@@ -137,9 +137,6 @@ function creditNote(id, userId, cb) {
   .done();
 }
 
-// TODO
-// convert everything to using db.exec()
-// parameter parsing.
 function getSubsidy(id) {
   var sql =
     'SELECT sale_subsidy.value, debitor_group.account_id, subsidy.text, sale.uuid ' +
