@@ -45,5 +45,10 @@ module.exports = {
     code : 'ERR_EMPTY_BODY',
     httpStatus : 400,
     reason : 'You cannot submit a PUT/POST request with an empty body to the server.'
+  },
+  'ERR_PROTECTED_FIELD' : {
+    code: 'ERR_PROTECTED_FIELD',
+    httpStatus : 400,
+    reason : 'The update request attempted to change a protected field.'
   }
 };

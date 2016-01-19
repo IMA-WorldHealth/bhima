@@ -1,29 +1,19 @@
+/* global describe, it, beforeEach */
+
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
+chai.use(chaiHttp);
 
 var q = require('q');
 
-var url = 'https://localhost:8080';
-var user = { 
-  username : 'superuser', 
-  password : 'superuser', 
-  project: 1
-};
-
-chai.use(chaiHttp);
-
-// workaround for low node versions
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
-
-// Environment variables - disable certificate errors
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 describe('The /patients API', function () { 
-  var agent = chai.request.agent(url);
+  'use strict';
+
+  var agent = chai.request.agent(helpers.baseUrl);
   
   var preparedTestPatientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
 
@@ -71,10 +61,11 @@ describe('The /patients API', function () {
     },
     medical : missingParamsPatient
   };
+
   var badRequest = { 
     incorrectLayout : mockDebtor,
     incorrectTest : mockPatient
-  }
+  };
   
   var simultaneousPatient = { 
     first_name : 'Simultaneous',
@@ -95,13 +86,8 @@ describe('The /patients API', function () {
     medical : simultaneousPatient
   };
 
-  // Assumes test database is built with the following information
   // Logs in before each test
-  beforeEach(function () {
-    return agent
-      .post('/login')
-      .send(user);
-  });
+  beforeEach(helpers.login(agent));
   
   it('GET /patients returns a list of patients', function () {
     var INITIAL_TEST_PATIENTS = 2;
@@ -148,7 +134,7 @@ describe('The /patients API', function () {
   });
 
   it('GET /patients/:id will return not found for invalid id', function () { 
-    return agent.get('/patients/unkownid')
+    return agent.get('/patients/unknownid')
       .then(function (result) { 
         expect(result).to.have.status(404);
         expect(result.body).to.not.be.empty;
@@ -189,11 +175,12 @@ describe('The /patients API', function () {
       .catch(handle);
   });
 
-  if('GET /patients/:id/groups will return 404 not found for invalid request', function () { 
+  it('GET /patients/:id/groups will return 404 not found for invalid request', function () { 
     
-    return agent.get('/patient/unkownid/groups')
+    return agent.get('/patients/unknownid/groups')
       .then(function (result) { 
         expect(result).to.have.status(404);
+        expect(result).to.be.json;
         expect(result.body).to.not.be.empty;
       })
       .catch(handle);

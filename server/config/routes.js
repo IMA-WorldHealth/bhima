@@ -47,6 +47,7 @@ var donations      = require('../controllers/finance/donations');
 var debtors        = require('../controllers/finance/debtors');
 var cashboxes      = require('../controllers/finance/cashboxes');
 var exchange       = require('../controllers/finance/exchange');
+var cash           = require('../controllers/finance/cash');
 var cashflow       = require('../controllers/cashflow');
 var priceList      = require('../controllers/finance/priceList');
 
@@ -376,6 +377,13 @@ exports.configure = function (app) {
   app.post('/prices', priceList.create);
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
+
+  // cash (aux/primary)
+  app.get('/cash', cash.list);
+  app.get('/cash/:uuid', cash.getCashDetails);
+  app.post('/cash', cash.create);
+  app.put('/cash/:uuid', cash.update);
+  app.delete('/cash/:uuid', cash.debitNote);
 
   // @todo - classify these
   app.get('/cashflow/report/', cashflow.getReport);

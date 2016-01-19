@@ -1,39 +1,20 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
-
-var url = 'https://localhost:8080';
-var user = { 
-  username : 'superuser', 
-  password : 'superuser', 
-  project: 1
-};
-
 chai.use(chaiHttp);
 
-// workaround for low node versions
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
-
-// Environment variables - disable certificate errors
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 describe('The /debtors API', function () { 
-  var agent = chai.request.agent(url);
+  var agent = chai.request.agent(helpers.baseUrl);
 
   var inspectDebtorGroup;
 
-  // Assumes test database is built with the following information
   // Logs in before each test
-  beforeEach(function () {
-    return agent
-      .post('/login')
-      .send(user);
-  });
+  beforeEach(helpers.login(agent));
 
   it('GET /debtors/groups returns a list of debtor groups', function () { 
     var INITIAL_TEST_DEBTORS = 2;
@@ -46,7 +27,7 @@ describe('The /debtors API', function () {
         
         inspectDebtorGroup = result.body[0].uuid;
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
 
   it('GET /debtors/groups/:id returns all details for a valid debtor group', function () { 
@@ -60,7 +41,7 @@ describe('The /debtors API', function () {
         debtorGroup = result.body;
         expect(debtorGroup).to.contain.keys(expectedKeySubset);
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
 
   it('GET /debtors/groups/:id returns not found for invalid id', function () { 
@@ -70,10 +51,6 @@ describe('The /debtors API', function () {
         expect(result).to.have.status(404);
         expect(result.body).to.not.be.empty;
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
-
-  function handle(error) {
-    throw error;
-  }
 });
