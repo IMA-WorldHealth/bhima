@@ -21,7 +21,7 @@ function list (req, res, next){
   var sql = 
     'SELECT r.id, r.text, r.ref FROM reference AS r';
 
-  if(req.query.list === 'full'){
+  if(req.query.full === '1'){
     sql = 
       'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id ' +
       'FROM reference AS r';

@@ -5,10 +5,8 @@ var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
@@ -16,7 +14,7 @@ var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
 describe('The /profit_center API endpoint', function () {
-  var agent = chai.request.agent(url);
+  var agent = chai.request.agent(helpers.baseUrl);
   var newProfitCenter = {
     project_id : 1,
     //id : 200,
@@ -27,24 +25,16 @@ describe('The /profit_center API endpoint', function () {
   var DELETABLE_PROFIT_CENTER_ID = 2;
   var FETCHABLE_PROFIT_CENTER_ID = 1;
 
-  // throw errors
-  function handler(err) { throw err; }
+  beforeEach(helpers.login(agent));
 
-    // login before each request
-    beforeEach(function () {
-      return agent
-        .post('/login')
-        .send(user);
-    });
-
-    it(' A GET /profit_centers?list=full returns a list of profit centers', function () {
-      return agent.get('/profit_centers?list=full')
+    it(' A GET /profit_centers?full returns a list of profit centers', function () {
+      return agent.get('/profit_centers?full=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.length(2);
         })
-        .catch(handler);
+        .catch(helpers.handler);
     });
 
   it(' A GET /profit_centers returns a list of profit centers', function () {
@@ -54,7 +44,7 @@ describe('The /profit_center API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(2);
       })
-      .catch(handler);
+     .catch(helpers.handler);
   });
   
   it(' A GET /profit_center/:id returns one profit center', function () {
@@ -64,7 +54,8 @@ describe('The /profit_center API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.equal(FETCHABLE_PROFIT_CENTER_ID);
       })
-      .catch(handler);
+      .catch(helpers.handler);
+
   });
 
   it('A POST /profit_centers will add a profit center', function () {
@@ -77,7 +68,7 @@ describe('The /profit_center API endpoint', function () {
         expect(res.body.id).to.be.defined;
         newProfitCenter.id = res.body.id;
       })
-      .catch(handler);
+     .catch(helpers.handler);
   }); 
 
   it('A PUT /profit_centers/:id will update the newly added profit center', function () {
@@ -96,7 +87,8 @@ describe('The /profit_center API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
       })
-      .catch(handler);
+     .catch(helpers.handler);
+
   });
 
    it(' A DELETE /profit_centers/:id will delete a profit_center', function () {
@@ -109,6 +101,6 @@ describe('The /profit_center API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(404);        
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });  
 });

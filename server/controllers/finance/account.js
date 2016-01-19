@@ -33,13 +33,18 @@ function list (req, res, next){
   'use strict';
 
   var sql = 
-    'SELECT a.id, a.account_number, a.account_txt FROM account AS a';
+    'SELECT a.id, a.account_number, a.account_txt, a.locked FROM account AS a';
 
-  if(req.query.list === 'full'){
+  if(req.query.full === '1'){
+    
     sql = 
       'SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset, ' + 
       'a.reference_id, a.is_brut_link, a.is_used_budget, a.is_charge, a.account_number, ' +
       'a.account_txt, a.parent, a.account_type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.account_type_id = at.id';
+  }
+
+  if(req.query.locked === '0'){
+    sql+=' WHERE a.locked = 0';
   }
 
   sql += ' ORDER BY a.account_number;';

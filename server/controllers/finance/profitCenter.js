@@ -5,7 +5,7 @@ function list (req, res, next){
   var sql = 
     'SELECT p.id, p.text FROM profit_center AS p';
 
-  if(req.query.list === 'full'){
+  if(req.query.full === '1'){
 
     sql = 
       'SELECT p.id, p.text, p.project_id, p.note, pr.name, pr.abbr, pr.enterprise_id, pr.zs_id ' +

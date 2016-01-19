@@ -6,7 +6,7 @@ function list (req, res, next){
   var sql = 
     'SELECT c.id, c.text FROM cost_center AS c';
 
-  if(req.query.list === 'full'){
+  if(req.query.full === '1'){
     sql = 
       'SELECT c.id, c.text, c.project_id, c.note, c.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id ' +
       'FROM cost_center AS c JOIN project AS p ON c.project_id = p.id';

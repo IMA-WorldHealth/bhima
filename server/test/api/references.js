@@ -5,10 +5,8 @@ var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
@@ -16,7 +14,8 @@ var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
 describe('The /references API endpoint', function () {
-  var agent = chai.request.agent(url);
+  var agent = chai.request.agent(helpers.baseUrl);
+
   var newReference = {
     //id : 2,
     is_report : 0,
@@ -30,26 +29,17 @@ describe('The /references API endpoint', function () {
   var DELETABLE_REFERENCE_ID = 4;
 
   var FETCHABLE_REFERENCE_ID = 1;
-
-  // throw errors
-  function handler(err) { throw err; }
-    // login before each request
-    beforeEach(function () {
-      return agent
-        .post('/login')
-        .send(user);
-    });
-
-    it(' A GET /references?list returns a list of references', function () {
-      return agent.get('/references?list=full')
+  beforeEach(helpers.login(agent));
+ 
+    it(' A GET /references?full returns a list of references', function () {
+      return agent.get('/references?full=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.length(3);
          })
-        .catch(handler);
-    });
-
+       .catch(helpers.handler);
+  });
     it(' A GET /references returns a list of references', function () {
       return agent.get('/references')
         .then(function (res) {
@@ -57,7 +47,7 @@ describe('The /references API endpoint', function () {
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.length(3);
          })
-        .catch(handler);
+       .catch(helpers.handler);    
     });
 
 
@@ -68,8 +58,8 @@ describe('The /references API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.equal(FETCHABLE_REFERENCE_ID);
       })
-      .catch(handler);
-  });
+     .catch(helpers.handler);  
+    });
 
   it('A POST /references will add a reference', function () {
     return agent.post('/references')
@@ -81,7 +71,7 @@ describe('The /references API endpoint', function () {
           expect(res.body.id).to.be.defined;
           newReference.id = res.body.id;
         })
-        .catch(handler);
+       .catch(helpers.handler);  
   }); 
 
   it('A PUT /references/:id will update the newly added reference', function () {
@@ -100,7 +90,7 @@ describe('The /references API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
       })
-      .catch(handler);
+     .catch(helpers.handler); 
   });
 
    it(' A DELETE /references/:id will delete a reference', function () {
@@ -113,6 +103,6 @@ describe('The /references API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(404);        
       })
-      .catch(handler);
+      .catch(helpers.handler); 
   });  
 });

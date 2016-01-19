@@ -5,10 +5,8 @@ var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
@@ -16,7 +14,7 @@ var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
 describe('The /account_types API endpoint', function () {
-  var agent = chai.request.agent(url);
+  var agent = chai.request.agent(helpers.baseUrl);
   var newAccountType = {
     id : 4,
     type : 'test account type 1'
@@ -25,15 +23,8 @@ describe('The /account_types API endpoint', function () {
   var DELETABLE_ACCOUNT_TYPE_ID = 3;
   var FETCHABLE_ACCOUNT_TYPE_ID = 1;
 
-  // throw errors
-  function handler(err) { throw err; }
-
   // login before each request
-  beforeEach(function () {
-    return agent
-      .post('/login')
-      .send(user);
-  });
+  beforeEach(helpers.login(agent));
 
   it(' A GET /account_types returns a list of account type', function () {
     return agent.get('/account_types')
@@ -42,7 +33,7 @@ describe('The /account_types API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(2);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it(' A GET /account_types/:id returns one account type', function () {
@@ -52,7 +43,7 @@ describe('The /account_types API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_TYPE_ID);
       })
-      .catch(handler);
+     .catch(helpers.handler);
   });
 
   it('A POST /account_types will add an account_type', function () {
@@ -61,7 +52,7 @@ describe('The /account_types API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(201);        
       })
-      .catch(handler);
+      .catch(helpers.handler);
   }); 
 
   it('A PUT /account_types/:id will update the newly added account_type', function () {
@@ -80,7 +71,7 @@ describe('The /account_types API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
       })
-      .catch(handler);
+     .catch(helpers.handler);
   });
 
    it(' A DELETE /account_types/:id will delete a account_type', function () {
@@ -93,6 +84,6 @@ describe('The /account_types API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(404);        
       })
-      .catch(handler);
+     .catch(helpers.handler);
   });  
 });

@@ -5,10 +5,8 @@ var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
@@ -16,8 +14,8 @@ var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
 describe('The /cost_center API endpoint', function () {
-  var agent = chai.request.agent(url);
-  var newCostCenter = {
+ var agent = chai.request.agent(helpers.baseUrl);
+ var newCostCenter = {
     project_id : 1,
     //id : 200,
     text : 'tested cost',
@@ -29,23 +27,17 @@ describe('The /cost_center API endpoint', function () {
 
   var FETCHABLE_COST_CENTER_ID = 1;
 
-  // throw errors
-  function handler(err) { throw err; }
-    // login before each request
-    beforeEach(function () {
-      return agent
-        .post('/login')
-        .send(user);
-    });
+   // throw errors
+  beforeEach(helpers.login(agent));
 
     it(' A GET /cost_centers?list=full returns a list of cost centers', function () {
-      return agent.get('/cost_centers?list=full')
+      return agent.get('/cost_centers?full=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.length(2);
         })
-        .catch(handler);
+       .catch(helpers.handler);
     });
 
   it(' A GET /cost_centers returns a list of cost centers', function () {
@@ -55,9 +47,8 @@ describe('The /cost_center API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(2);
       })
-      .catch(handler);
-  });
-
+      .catch(helpers.handler);
+ });
   it(' A GET /cost_center/:id returns one cost center', function () {
     return agent.get('/cost_centers/'+ FETCHABLE_COST_CENTER_ID)
       .then(function (res) {
@@ -65,9 +56,8 @@ describe('The /cost_center API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.equal(FETCHABLE_COST_CENTER_ID);
       })
-      .catch(handler);
-  });
-
+      .catch(helpers.handler);
+ });
   it('A POST /cost_centers will add a cost center', function () {
     return agent.post('/cost_centers')
       .send(newCostCenter)
@@ -78,7 +68,7 @@ describe('The /cost_center API endpoint', function () {
         expect(res.body.id).to.be.defined;
         newCostCenter.id = res.body.id;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   }); 
 
   it('A PUT /cost_centers/:id will update the newly added cost center', function () {
@@ -97,7 +87,7 @@ describe('The /cost_center API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
    it(' A DELETE /cost_centers/:id will delete a cost_center', function () {
@@ -110,6 +100,6 @@ describe('The /cost_center API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(404);        
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });  
 });
