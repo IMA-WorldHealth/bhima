@@ -31,7 +31,6 @@ describe('The /cost_center API endpoint', function () {
 
   // throw errors
   function handler(err) { throw err; }
-
     // login before each request
     beforeEach(function () {
       return agent
@@ -58,8 +57,6 @@ describe('The /cost_center API endpoint', function () {
       })
       .catch(handler);
   });
-
-
 
   it(' A GET /cost_center/:id returns one cost center', function () {
     return agent.get('/cost_centers/'+ FETCHABLE_COST_CENTER_ID)
@@ -107,7 +104,6 @@ describe('The /cost_center API endpoint', function () {
     return agent.delete('/cost_centers/' + DELETABLE_COST_CENTER_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
-        
         // re-query the database
         return agent.get('/cost_centers/' + DELETABLE_COST_CENTER_ID);
       })

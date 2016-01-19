@@ -216,19 +216,12 @@ INSERT INTO `patient` VALUES
 INSERT INTO `assignation_patient` VALUES
   (UUID(), '112a9fb5-847d-4c6a-9b20-710fa8b4da24', '81af634f-321a-40de-bc6f-ceb1167a9f65');
 
-
 -- Fonctions
 INSERT INTO `fonction` VALUES
   (1, 'Infirmier'),
   (2, 'Medecin Directeur');
 
 
-INSERT INTO `sale` (`project_id`, `reference`, `uuid`, `cost`, `currency_id`, `debitor_uuid`, `service_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`, `timestamp`, `is_distributable`) VALUES
-  (1,2,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 14:35:55',1),
-  (1,1,'c44619e0-3a88-4754-a750-a414fc9567bf',25.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 14:31:14',1);
-
-INSERT INTO `sale_item` (`sale_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) VALUES
-  ('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6','2e1332a7-3e63-411e-827d-42ad585ff518','cf05da13-b477-11e5-b297-023919d3d5b0',3,25.0000,25.0000,0.0000,75.0000);
 
 -- Creditor group
 INSERT INTO  `creditor_group` VALUES
@@ -248,6 +241,7 @@ INSERT INTO `section_bilan` VALUES (1, 'Section Bilan 1', 1, 1);
 INSERT INTO `section_resultat` VALUES (1, 'Section Resultat 1', 1, 1);
 
 INSERT INTO `reference_group` VALUES (1, 'AA', 'Reference Group 1', 1, 1);
+
 INSERT INTO `reference` VALUES 
   (1, 0, 'AB', 'Reference bilan 1', 1, 1, NULL),
   (3, 0, 'AC', 'Reference resultat 1', 1, NULL, 1),
@@ -266,4 +260,11 @@ INSERT INTO `service` VALUES
   (1, 1, 'Test Service', 1, 1),
   (2, 1, 'Administration', null, null),
   (3, 1, 'Medecine Interne', null, null);
+
+INSERT INTO `sale` (`project_id`, `reference`, `uuid`, `cost`, `currency_id`, `debitor_uuid`, `service_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`, `timestamp`, `is_distributable`) VALUES
+  (1,2,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 14:35:55',1),
+  (1,1,'c44619e0-3a88-4754-a750-a414fc9567bf',25.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 14:31:14',1);
+
+INSERT INTO `sale_item` (`sale_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) VALUES
+  ('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6','2e1332a7-3e63-411e-827d-42ad585ff518','cf05da13-b477-11e5-b297-023919d3d5b0',3,25.0000,25.0000,0.0000,75.0000);
 

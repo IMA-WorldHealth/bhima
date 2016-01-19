@@ -51,7 +51,6 @@ describe('The /account_types API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_TYPE_ID);
-
       })
       .catch(handler);
   });
@@ -88,7 +87,6 @@ describe('The /account_types API endpoint', function () {
     return agent.delete('/account_types/' + DELETABLE_ACCOUNT_TYPE_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
-        
         // re-query the database
         return agent.get('/account_types/' + DELETABLE_ACCOUNT_TYPE_ID);
       })

@@ -25,7 +25,6 @@ describe('The /profit_center API endpoint', function () {
   };
 
   var DELETABLE_PROFIT_CENTER_ID = 2;
-
   var FETCHABLE_PROFIT_CENTER_ID = 1;
 
   // throw errors
@@ -57,9 +56,7 @@ describe('The /profit_center API endpoint', function () {
       })
       .catch(handler);
   });
-
-
-
+  
   it(' A GET /profit_center/:id returns one profit center', function () {
     return agent.get('/profit_centers/'+ FETCHABLE_PROFIT_CENTER_ID)
       .then(function (res) {
@@ -106,7 +103,6 @@ describe('The /profit_center API endpoint', function () {
     return agent.delete('/profit_centers/' + DELETABLE_PROFIT_CENTER_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
-        
         // re-query the database
         return agent.get('/profit_centers/' + DELETABLE_PROFIT_CENTER_ID);
       })

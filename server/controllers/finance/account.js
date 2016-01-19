@@ -78,10 +78,6 @@ function handleFetchAccount (id){
   return db.exec(sql, id);
 }
 
-
-
-
-
 exports.list = list;
 exports.create = create;
 exports.update = update;

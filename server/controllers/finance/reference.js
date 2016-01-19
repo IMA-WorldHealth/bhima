@@ -4,15 +4,15 @@ function getReference (req, res, next){
   'use strict';
 
   handleFetchReference (req.params.id)
-  .then(function (rows) {
-    if(rows.length === 0){
-      res.status(404).send();
-    }else{
-      res.status(200).json(rows[0]);
-    }
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      if(rows.length === 0){
+        res.status(404).send();
+      }else{
+        res.status(200).json(rows[0]);
+      }
+    })
+    .catch(next)
+    .done();
 }
 
 function list (req, res, next){
@@ -85,6 +85,7 @@ function handleFetchReference (id){
 
   return db.exec(sql, id);
 }
+
 exports.list = list;
 exports.create = create;
 exports.update = update;

@@ -10,6 +10,7 @@
 -- No way to view this report because it is necessary to have a store in parameter
 -- /reports/stock_store/:depotId
 
+
 -- delete from unit where id = 134;
 
 --
@@ -188,6 +189,7 @@ DROP TABLE cash_migrate;
 
 -- restore foreign keys
 SET foreign_key_checks = 1;
+
 
 -- Creating a flag for title account
 -- By Dedrick Kitamuka

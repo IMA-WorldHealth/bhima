@@ -49,6 +49,11 @@ var cashboxes      = require('../controllers/finance/cashboxes');
 var exchange       = require('../controllers/finance/exchange');
 var cash           = require('../controllers/finance/cash');
 var cashflow       = require('../controllers/cashflow');
+var account        = require('../controllers/finance/account');
+var accountType    = require('../controllers/finance/accountType');
+var costCenter     = require('../controllers/finance/costCenter');
+var profitCenter   = require('../controllers/finance/profitCenter');
+var reference      = require('../controllers/finance/reference');
 
 var priceList      = require('../controllers/finance/priceList');
 var account        = require('../controllers/finance/account');

@@ -33,7 +33,6 @@ describe('The /references API endpoint', function () {
 
   // throw errors
   function handler(err) { throw err; }
-
     // login before each request
     beforeEach(function () {
       return agent
@@ -75,14 +74,14 @@ describe('The /references API endpoint', function () {
   it('A POST /references will add a reference', function () {
     return agent.post('/references')
       .send(newReference)
-      .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.defined;
-        newReference.id = res.body.id;
-      })
-      .catch(handler);
+        .then(function (res) {
+          expect(res).to.have.status(201);
+          expect(res).to.be.json;
+          expect(res.body).to.not.be.empty;
+          expect(res.body.id).to.be.defined;
+          newReference.id = res.body.id;
+        })
+        .catch(handler);
   }); 
 
   it('A PUT /references/:id will update the newly added reference', function () {
@@ -108,7 +107,6 @@ describe('The /references API endpoint', function () {
     return agent.delete('/references/' + DELETABLE_REFERENCE_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
-      
         // re-query the database
         return agent.get('/references/' + DELETABLE_REFERENCE_ID);
       })
