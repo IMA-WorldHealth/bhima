@@ -10,6 +10,7 @@ var q = require('q');
 
 var config = {
   
+  //specs: ['client/test/e2e/cashboxes/cashboxes.spec.js'],
   specs: ['client/test/e2e/**/*.spec.js'],
 
   framework : 'mocha',
