@@ -895,7 +895,7 @@ DROP TABLE IF EXISTS `inventory_group`;
 CREATE TABLE `inventory_group` (
   `uuid` char(36) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `code` smallint(6) NOT NULL,
+  `code` varchar(30) NOT NULL,
   `sales_account` mediumint(8) unsigned NOT NULL,
   `cogs_account` mediumint(8) unsigned DEFAULT NULL,
   `stock_account` mediumint(8) unsigned DEFAULT NULL,
@@ -1847,8 +1847,7 @@ CREATE TABLE `user` (
   `email` varchar(100) DEFAULT NULL,
   `active` tinyint(4) NOT NULL DEFAULT '0',
   `pin` char(4) NOT NULL DEFAULT 0,
-  `last_login` date NOT NULL,
-
+  `last_login`  TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

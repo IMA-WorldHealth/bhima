@@ -24,6 +24,8 @@ node_js:
   - "iojs"
 
 before_script:
+  - echo "[mysqld]\nsql_mode = \"STRICT_ALL_TABLES\"" > /etc/my.cnf
+  - sudo service restart mysql
   - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'bhima_travis'@'localhost' IDENTIFIED BY 'TRAVIS_PASSWORD' WITH GRANT OPTION;"
   - mysql -u root -e "FLUSH PRIVILEGES;"
   - mysql -u root -e "DROP SCHEMA IF EXISTS bhima_travis_db;"
