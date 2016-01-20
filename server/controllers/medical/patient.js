@@ -464,7 +464,6 @@ function isEmpty(array) {
 function search (req, res, next) {
 
   var sql,
-      columns    = null,
       data       = [],
       qReference = req.query.reference,
       qName      = req.query.name,
@@ -481,25 +480,23 @@ function search (req, res, next) {
     qLimit  = Number(qLimit);
 
   } catch (err) {
+    // notify the occurence of the error
+    console.error(err);
     return next(err);
   }
 
-  // customize returned columns according detailled results or not
-  if (!qDetail) {
-    columns =
+  var columns =
       'q.uuid, q.project_id, q.reference, q.debitor_uuid, ' +
       'q.first_name, q.last_name, q.middle_name, q.sex, q.dob ';
 
-  } else {
-    columns =
-      'q.uuid, q.project_id, q.abbr, q.reference, q.debitor_uuid, q.creditor_uuid, ' +
-      'q.first_name, q.last_name, q.middle_name, q.sex, q.dob, q.father_name, q.mother_name, ' +
-      'q.profession, q.employer, q.spouse, q.spouse_profession, q.spouse_employer, ' +
-      'q.religion, q.marital_status, q.phone, q.email, q.address_1, q.address_2, ' +
-      'q.renewal, q.origin_location_id, q.current_location_id, q.registration_date, ' +
-      'q.title, q.notes, q.hospital_no, q.text, ' +
-      'q.account_id, q.price_list_uuid, q.is_convention, q.locked ';
-
+  // customize returned columns according detailled results or not
+  if (qDetail) {
+    columns +=
+      ', q.abbr, q.creditor_uuid, q.father_name, q.mother_name, q.profession, q.employer, ' +
+      'q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status, ' +
+      'q.phone, q.email, q.address_1, q.address_2, q.renewal, q.origin_location_id, ' +
+      'q.current_location_id, q.registration_date, q.title, q.notes, q.hospital_no, ' +
+      'q.text, q.account_id, q.price_list_uuid, q.is_convention, q.locked ';
   }
 
   // build the main part of the sql query
