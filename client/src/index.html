@@ -38,11 +38,7 @@
               
               <div class="header-title">
                 <h2>
-                  <!-- <div class="title-wrap"> -->
-                  <!-- <div class="title-container"> -->
                     <a class="title-content">PAX</a>
-                  <!-- </div> -->
-                  <!-- </div> -->
                 </h2>
               </div>
             </div>
@@ -50,31 +46,33 @@
 
           <nav>
             <div class="sidebar-group">
-              <ul>
-                <li>
-                <!-- <span class="glyphicon glyphicon-menu-hamburger"></span> -->
-                <!-- <p class="text-vertical"> -->
-                  <!-- Navigation -->
-                <!-- </p> -->
-                </li>
-              </ul>
+              <div class="link-nav">
+                <span class="text-vertical">Navigation</span>
+              </div>
+      
+              <div class="flex-tree">
+                <ul>
+                  <li><a>Admin</a></li>
+                  <li><a>Finance</a></li>
+                  <li class="file"><a>Patient Invoice</a></li>
+                  <li><a>Hospital</a></li>
+                  <li class="file"><a>Patient Registration</a></li>
+                  <li class="file"><a>Patient Visit</a></li>
+                  <li class="file"><a>Patient Search</a></li>
+                </ul>
+              </div>
             </div>
           </nav>
         </div>
         
-        <div class="sidebar-footer">
-          <a class="footer-link">
-            <span class="sidebar-icon">
+        <div class="flex-footer">
+          <ul>
+            <li><a>
               <span class="glyphicon glyphicon-cog"></span>
-            </span>
-          </a>
-
-
-          <a class="footer-link" id="expandnav">
-            <span class="sidebar-icon">
-              <span class="glyphicon glyphicon-menu-right"></span>
-            </span>
-          </a>
+              <span class="link-label">User Settings</span>
+            </a></li>
+            <li><a id="expandnav"><span id="expandicon" class="glyphicon glyphicon-menu-right"></span></a></li>
+          </ul>
         </div>
       </div>
 
@@ -84,52 +82,18 @@
     <div class="flex-header">
       <div class="flex-row">
 
-        <span class="flex-title">Patient Registration</span>
+        <span class="flex-title">Hospital Good Shepard (Main dashboard page)</span>
       </div>
     </div>
 
     <div class="flex-content">
+      <!-- App page -->
     
-      <!-- App content --> 
     </div>
-      
-
-
+    
   <!-- End page -->
   </div>
   
-  <!-- </div> -->
-  <!-- sidebar definition -->
-  <!--div class="container sidebar hidden-print">
-    <div class="row" id="logo">
-      <h2><a href="#/"><img src="assets/icon.png" width="100" height="100"></a></h2>
-    </div>
-
-    <div class="row" id="bhima-tree" ng-controller="TreeController" ng-if="AppCtrl.isLoggedIn()">
-      <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treeData" data-node-id="id" data-node-label="key" data-node-children="children"></div>
-    </div>
-
-   <div class="row" id="bhima-util" ng-controller="UtilController as UtilCtrl" ng-if="AppCtrl.isLoggedIn()">
-      <div class="btn-group-justified">
-        <a ng-click="UtilCtrl.openSettings()" type="button" class="btn btn-default">
-          <span class="glyphicon glyphicon-cog"></span>
-        </a>
-        <a tabindex="-1" name="logout" type="button" class="btn btn-default" ng-click="UtilCtrl.logout()">
-          <span class="glyphicon glyphicon-log-out"></span>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <span class="visible-print">
-    <span class="invisible">.</span>
-  </span>
-
-  <div class="viewport">
-    <div ng-view class="view"></div>
-    </div-->
-
-<!-- End container -->
 </div>
 
 <!-- scripts loaded in body to prevent page from 'hanging'-->
@@ -138,13 +102,6 @@
 <script src="vendor/jquery-ui.min/index.js"></script>
 
 <script>
-  /*sidebar();
-
-  function sidebar() { 
-    $('.sidebar-container').height($(window).height());
-  }
-
-  $(window).resize(sidebar);*/
   
   $(window).keypress(function (event) { 
     var FORWARD_SLASH = 47;
@@ -155,14 +112,20 @@
   });
 
   $('#expandnav').click(toggleNav);
+  $('.link-nav').click(toggleNav);
 
   function toggleNav() { 
     var sidebar = $('#app-container');
+    var icon = $('#expandicon');
 
     if (sidebar.hasClass('expanded')) { 
       sidebar.removeClass('expanded');
+      icon.removeClass('glyphicon-menu-left');
+      icon.addClass('glyphicon-menu-right');
     } else { 
       sidebar.addClass('expanded');
+      icon.removeClass('glyphicon-menu-right');
+      icon.addClass('glyphicon-menu-left');
     }
   }
 </script>
