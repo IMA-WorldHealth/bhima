@@ -1,16 +1,14 @@
 /* Budget controller */
+
 'use strict';
 
-var csv    = require('fast-csv'),
-	fs     = require('fs'),
-	q      = require('q');
+var csv = require('fast-csv'),
+	  fs  = require('fs'),
+	  q   = require('q');
+var db  = require('../../lib/db');
 
-// TODO this should be injected from the top
-var config = require('../../config/environment/production');
 
-var db     = require('../../lib/db');
-	
-var uploadDir = config.uploadFolder;
+var uploadDir = process.env.UPLOAD_FOLDER;
 
 module.exports = {
 	update : updateBudget,
@@ -47,14 +45,14 @@ function uploadedFile(req, res, next) {
 				.on('error', next);
 			});
 		});
-	} 
+	}
 }
 
 function createBudget(csvArray, fiscal_year_id, period, next) {
 
 	/**
 	  * Objectif : create a new budget via params given
-	  * Params : 
+	  * Params :
 	  *	- csvArray : an array of the budget csv file
 	  * - fiscal_year_id : the fiscal year id
 	  * - period : the period
@@ -79,7 +77,7 @@ function createBudget(csvArray, fiscal_year_id, period, next) {
 	function createAnnualBudget (periods) {
 		/**
 		  * This function is responsible to create an annual budget
-		  * the `periodLength` variable bellow is used in division of budget by period 
+		  * the `periodLength` variable bellow is used in division of budget by period
 		  */
 		var periodIds    = periods;
 		var periodLength = periodIds.length - 1 > 0 ? periodIds.length - 1 : 1;
@@ -93,7 +91,7 @@ function createBudget(csvArray, fiscal_year_id, period, next) {
 	function handleCSVArray(period_id, periodLength) {
 		/**
 		  * This function is responsible to get budget from csvArray
-		  * and insert these data into budget table in database 
+		  * and insert these data into budget table in database
 		  * the `periodLength` variable is used in divison of budget by period, and must be different to zero
 		  */
 		periodLength = (periodLength && periodLength > 0) ? periodLength : 1;
