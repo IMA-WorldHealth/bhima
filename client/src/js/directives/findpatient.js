@@ -2,7 +2,7 @@ angular.module('bhima.directives')
 .directive('findPatient', FindPatientDirective);
 
 FindPatientDirective.$inject = [
-  '$compile', '$http', 'validate', 'messenger', 'appcache'
+  '$compile', '$http', 'appcache'
 ];
 
 /**
@@ -17,7 +17,7 @@ FindPatientDirective.$inject = [
 * @todo use of cache for keeping state if necessary
 */
 
-function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
+function FindPatientDirective($compile, $http, AppCache) {
   return {
     restrict: 'AE',
     templateUrl : 'partials/templates/findpatient.tmpl.html',
@@ -32,8 +32,6 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
 
       session.findAnotherPatient = true;
       session.loadStatus = null;
-      session.patient    = {};
-      session.input      = {};
       session.options    = [
         {
           'key'   : 0,
@@ -71,7 +69,7 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
         var url = '/patients/search/?reference=';
         $http.get(url + ref)
         .then(function (response) {
-          selectPatient(response.data);
+          selectPatient(response.data[0]);
         })
         .catch(errorHandler)
         .finally();
@@ -88,13 +86,17 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
       }
 
       function submit() {
-        if (session.selected.key === 0 && session.input) {
-          searchByReference();
+        if (session.selected.key === 0 && session.idInput) {
+          searchByReference(session.idInput);
+
+        } else if (session.selected.key === 1 && session.nameInput) {
+          selectPatient(session.nameInput);
         }
       }
 
       function findBy(option) {
         session.selected = option;
+        session.loadStatus = null;
       }
 
       function reload() {
@@ -113,26 +115,25 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
       // handle the selected patient
       function selectPatient(patient) {
         session.findAnotherPatient = false;
-        console.log(patient);
 
-        if (!patient) {
+        if (patient) {
+          session.loadStatus = 'loaded';
+          scope.patient = patient;
+
+          // parse patient metadata
+          var age = getAge(patient.dob);
+          patient.age = age.years;
+          patient.name = formatPatient(patient);
+          patient.sex = patient.sex.toUpperCase();
+
+          // call the external $scope callback
+          // scope.callback({ patient : patient });
+
+        } else {
           session.loadStatus = 'error';
-          session.patient = {};
-          session.input   = {};
-          throw Error('No patient found');
+
         }
 
-        session.loadStatus = 'loaded';
-        scope.patient = patient;
-
-        // parse patient metadata
-        var age = getAge(patient.dob);
-        patient.age = age.years;
-        patient.name = formatPatient(patient);
-        patient.sex = patient.sex.toUpperCase();
-
-        // call the external $scope callback
-        // scope.callback({ patient : patient });
       }
 
       // get an age object for the person with years, months, days

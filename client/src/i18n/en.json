@@ -1248,9 +1248,11 @@
       "ENTER_ACCOUNT" : "Enter Account",
       "PLACEHOLDER"   : "Account Name or Number"
       },
+   "PATIENT"           : "Patient",
    "PATIENT_ID"        : "Patient ID",
    "PATIENT_NAME"      : "Patient name",
-   "PATIENT_NOT_FOUND" : "Patient not found",
+   "NOT_FOUND"         : "Not found",
+   "SEARCH"            : "Search",
    "SEARCH_NAME"       : "Search by Name",
    "SEARCH_PATIENT_ID" : "Search by Patient ID",
    "TITLE"             : "Find a patient"

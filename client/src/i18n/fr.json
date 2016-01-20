@@ -1251,9 +1251,11 @@
       "ENTER_ACCOUNT"   : "Entrez un Compte",
       "PLACEHOLDER"     : "Par le numéro de Compte ou bien par le nom"
       },
+   "PATIENT"           : "Patient",
    "PATIENT_ID"        : "ID Patient",
    "PATIENT_NAME"      : "Nom du Patient",
-   "PATIENT_NOT_FOUND" : "Patient non trouvé",
+   "NOT_FOUND"         : "non trouvé",
+   "SEARCH"            : "Rechercher",
    "SEARCH_NAME"       : "Chercher Par Nom",
    "SEARCH_PATIENT_ID" : "Chercher ID Patient",
    "TITLE"             : "Trouver Patient"
