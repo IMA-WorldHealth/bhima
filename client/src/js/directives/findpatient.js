@@ -28,14 +28,13 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
       inline        : '='
     },
     link : function(scope, element, attrs) {
-      var cache   = new AppCache('findPatientCache');
       var session = scope.session = {};
 
       session.findAnotherPatient = true;
-      session.patient = {};
-      session.input   = {};
       session.loadStatus = null;
-      session.options = [
+      session.patient    = {};
+      session.input      = {};
+      session.options    = [
         {
           'key'   : 0,
           'label' : 'FIND.PATIENT_ID',
@@ -51,9 +50,9 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
       // expose to view
       scope.searchByReference  = searchByReference;
       scope.searchByName       = searchByName;
-      scope.formatPatient         = formatPatient;
-      scope.validateNameSearch = validateNameSearch;
+      scope.formatPatient      = formatPatient;
       scope.selectPatient      = selectPatient;
+      scope.submit             = submit;
       scope.findBy             = findBy;
       scope.reload             = reload;
 
@@ -74,7 +73,7 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
         .then(function (response) {
           selectPatient(response.data);
         })
-        .catch(handler)
+        .catch(errorHandler)
         .finally();
       }
 
@@ -86,6 +85,12 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
         .then(function (response) {
           return response.data;
         });
+      }
+
+      function submit() {
+        if (session.selected.key === 0 && session.input) {
+          searchByReference();
+        }
       }
 
       function findBy(option) {
@@ -101,13 +106,14 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
       }
 
       // generic error handler
-      function handler(error) {
+      function errorHandler(error) {
         console.error(error);
       }
 
       // handle the selected patient
       function selectPatient(patient) {
         session.findAnotherPatient = false;
+        console.log(patient);
 
         if (!patient) {
           session.loadStatus = 'error';
@@ -126,7 +132,7 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
         patient.sex = patient.sex.toUpperCase();
 
         // call the external $scope callback
-        scope.callback({ patient : patient });
+        // scope.callback({ patient : patient });
       }
 
       // get an age object for the person with years, months, days
@@ -159,18 +165,6 @@ function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
         age.months = mdiff > 0 ? mdiff : 0;
         age.days   = ddiff > 0 ? ddiff : 0;
         return age;
-      }
-
-      // value is the selected typeahead model
-      function validateNameSearch(value) {
-        if (!value) { return true; }
-
-        if (typeof value === 'string') {
-          session.valid = false;
-          return true;
-        }
-
-        session.valid = true;
       }
 
     }

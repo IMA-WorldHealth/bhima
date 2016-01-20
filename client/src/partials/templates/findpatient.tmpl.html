@@ -1,5 +1,5 @@
 <!-- inline directive option -->
-<div ng-form="formFindPatient" class="form-group" novalidate>
+<div ng-form="formFindPatient" class="form-group has-feedback" novalidate>
   <div class="input-group" ng-if="session.findAnotherPatient">
     <!-- dropdown button -->
     <div class="input-group-btn" uib-dropdown>
@@ -15,7 +15,7 @@
     <!-- /dropdown button -->
 
     <!-- search by ID  -->
-    <input ng-model="session.patient"
+    <input ng-model="session.input"
       ng-if="session.selected.key==0"
       type="text"
       class="form-control"
@@ -30,9 +30,9 @@
       placeholder="{{ session.selected.placeholder | translate }}..."
       uib-typeahead="patient as formatPatient(patient) for patient in searchByName($viewValue)"
       uib-typeahead-no-results="noPatients"
-      uib-typeahead-wait-ms="150"
       typeahead-template-url="/partials/templates/patientListV2.tmpl.html"
       typeahead-on-select="selectPatient($item)"
+      typeahead-loading="session.loading"
       required>
 
     <!-- icon notification -->
@@ -43,7 +43,9 @@
 
     <!-- submit button for search by ID -->
     <span ng-if="session.selected.key==0" class="input-group-btn">
-      <button class="btn btn-success" type="button" ng-disabled="formFindPatient.$invalid">Submit</button>
+      <button class="btn btn-success"
+        ng-disabled="formFindPatient.$invalid"
+        ng-click="submit()">Submit</button>
     </span>
   </div>
 
