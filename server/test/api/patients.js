@@ -97,11 +97,22 @@ describe('The /patients API', function () {
       return agent.get('/patients/search/?uuid="81af634f-321a-40de-bc6f-ceb1167a9f65"')
         .then(function (res) {
           expect(res).to.have.status(400);
+          expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
+          return agent.get('/patients/search/?');
+        })
+        .then(function (res) {
+          expect(res).to.have.status(400);
+          expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
+          return agent.get('/patients/search');
+        })
+        .then(function (res) {
+          expect(res).to.have.status(400);
+          expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
         })
         .catch(handle);
     });
 
-    it('GET /patients/search with reference parameter', function () {
+    it('GET /patients/search with `reference` parameter', function () {
 
       return agent.get('/patients/search/?reference=TPA1')
         .then(function (res) {
@@ -111,7 +122,7 @@ describe('The /patients API', function () {
         .catch(handle);
     });
 
-    it('GET /patients/search with name parameter', function () {
+    it('GET /patients/search with `name` parameter', function () {
 
       return agent.get('/patients/search/?name=Test')
         .then(function (res) {
