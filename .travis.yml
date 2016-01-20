@@ -12,10 +12,9 @@ node_js:
 before_script:
   - npm install -g gulp bower mocha
   - bower install
-  - mysql -u root -e "CREATE DATABASE bhima;"
-  - mysql -u root -e "CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
+  - mysql -u root -e "CREATE DATABASE bhima_test;"
+  - mysql -u root -e "CREATE USER 'bhima_test'@'%' IDENTIFIED BY 'HISCongo2013';"
   - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'bhima'@'localhost' WITH GRANT OPTION;"
-  - mysql -u root bhima < server/models/schema.sql
 
 cache:
   directories:
@@ -29,3 +28,6 @@ git:
 # make sure we aren't caching verbose output from NPM
 before_cache:
   - rm -f npm-debug.log
+
+services:
+  - mysql
