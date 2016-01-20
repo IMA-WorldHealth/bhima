@@ -1,14 +1,28 @@
+/**
+ * AccountType controller
+ * 
+ * @module finance/accountType
+ * @author DedrickEnc
+ *
+ * @desc Implements CRUD operations on the AccountType entity.
+ *
+ * This module implements the following routes:
+ * GET    /account_types
+ * GET    /account_types/:id
+ * POST   /account_types
+ * PUT    /account_types/:id
+ * DELETE /accounts_types/:id
+ *
+ **/
+ 
 var db = require('../../lib/db');
 
 function getAccountType (req, res, next){
   'use strict';
-  handleFetchAccountType(req.params.id)
-    .then(function (rows) {
-      if(rows.length === 0){
-        res.status(404).send();
-      }else{
-        res.status(200).json(rows[0]);
-      }
+
+  lookupAccountType(req.params.id, req.codes)
+    .then(function (row) {
+      res.status(200).json(row);
   })
   .catch(next)
   .done();
@@ -28,10 +42,20 @@ function list (req, res, next){
   .done();
 }
 
+
+/**
+ * Create a new account type entity.
+ *
+ * POST /account_types
+ */
 function create (req, res, next) {
+  'use strict';
+
   var record = req.body;
   var createAccountTypeQuery = 'INSERT INTO account_type SET ?';
   
+  delete record.id;
+
   db.exec(createAccountTypeQuery, [record])
     .then(function (result){
       res.status(201).json({ id: result.insertId});
@@ -41,17 +65,23 @@ function create (req, res, next) {
 }
 
 function update (req, res, next){
+  'use strict';
+
   var queryData = req.body;
   var accountTypeId = req.params.id;
   var updateAccountTypeQuery = 'UPDATE account_type SET ? WHERE id = ?';
 
-  db.exec(updateAccountTypeQuery, [queryData, accountTypeId])
-   .then(function (result){
-    return handleFetchAccountType(accountTypeId);
+  delete queryData.id;
+
+  lookupAccountType(accountTypeId, req.codes)
+    .then(function (){
+      return db.exec(updateAccountTypeQuery, [queryData, accountTypeId]);
+    }) 
+   .then(function (){
+      return lookupAccountType(accountTypeId, req.codes);
   })
-  .then(function (accountTypes){
-    var updatedAccountType = accountTypes[0];
-    res.status(200).json(updatedAccountType);
+  .then(function (accountType){
+    res.status(200).json(accountType);
   })
   .catch(next)
   .done();
@@ -61,18 +91,28 @@ function remove (req, res, next) {
   var accountTypeId = req.params.id;
   var removeAccountTypeQuery = 'DELETE FROM account_type WHERE id=?';
 
-  db.exec(removeAccountTypeQuery, [accountTypeId])
-  .then(function (result){
-      res.status(200).send();
+  lookupAccountType(accountTypeId, req.codes)
+    .then(function (){
+      return db.exec(removeAccountTypeQuery, [accountTypeId]);
+    })
+    .then(function (){
+      res.status(204).send();
     })
     .catch(next)
     .done();
 }
 
-function handleFetchAccountType(id){
+function lookupAccountType(id, codes){
+  'use strict';
+  
   var sql = 
     'SELECT at.id, at.type FROM account_type AS at WHERE at.id = ?';
-  return db.exec(sql, id);
+
+  return db.exec(sql, id)
+    .then(function (rows){
+      if(rows.length === 0) { throw codes.ERR_NOT_FOUND;}
+      return rows[0];
+    });
 }
 
 exports.list = list;

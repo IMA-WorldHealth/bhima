@@ -375,3 +375,11 @@ UPDATE account SET locked = 1 WHERE is_ohada = 0;
 -- 26-12-2015
 
 ALTER TABLE account DROP COLUMN is_ohada;
+
+-- Make account type id auto increment
+-- By Dedrick Kitamuka
+-- 20-01-2016
+
+ALTER TABLE account DROP FOREIGN KEY account_ibfk_1;
+ALTER TABLE account_type MODIFY id mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE account ADD FOREIGN KEY (`account_type_id`) REFERENCES account_type (`id`);
