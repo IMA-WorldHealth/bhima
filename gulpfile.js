@@ -9,7 +9,8 @@ var gulp       = require('gulp'),
     gulpif     = require('gulp-if'),
     concat     = require('gulp-concat'),
     uglify     = require('gulp-uglify'),
-    minifycss  = require('gulp-minify-css'),
+    cssnano    = require('gulp-cssnano'),
+    cssnano    = require('gulp-cssnano'),
     jshint     = require('gulp-jshint'),
     flatten    = require('gulp-flatten'),
     spawn      = require('child_process').spawn,
@@ -61,7 +62,7 @@ var paths = {
   },
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
-    files      : ['server/*', 'server/**/*'],
+    files      : ['server/*', 'server/**/*', '.env.*'],
     plugins    : ['plugins/*', 'plugins/**/*'],
     unittest   : []
   }
@@ -76,7 +77,7 @@ var paths = {
  * and writes them to the /bin/client/ folder.  There are tasks to do
  * the following:
  *   - [client-lint-js]     lint the client javascript code (via jshint)
- *   - [client-minify-css]  minify (via minify css) the css
+ *   - [client-minify-css]  minify (via css nano) the css
  *   - [client-minify-js]   minify (via uglify) the clientside js code
  *   - [client-lint-i18n]   compares translation files for missing values
  *   - [client-mv-static]   moves the static files (html, img) to the client
@@ -88,11 +89,6 @@ var paths = {
  * Other options include
  *   - [client-watch]       watch the client/src/ for changes and run the build
 */
-
-// removes files with del, and continues
-gulp.task('client-clean', function (cb) {
-  rimraf(CLIENT_FOLDER, cb);
-});
 
 // run jshint on the client javascript code
 gulp.task('client-lint-js', function () {
@@ -115,7 +111,7 @@ gulp.task('client-minify-js', function () {
 // writes output to style.min.css
 gulp.task('client-minify-css', function () {
   return gulp.src(paths.client.css)
-    .pipe(minifycss())
+    .pipe(cssnano())
     .pipe(concat('style.min.css'))
     .pipe(gulp.dest(CLIENT_FOLDER + 'css/'));
 });
@@ -197,13 +193,13 @@ gulp.task('notify-lint-process', function () {
 });
 
 // builds the client with all the options available
-gulp.task('build-client', ['client-clean'], function () {
+gulp.task('build-client', function () {
   gulp.start('client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-vendor-build-bootstrap', 'client-mv-static', 'notify-lint-process');
 });
 
 // Lint client code seperately from build process
 // TODO Processes for linting server code - requires uncategorised commit update
-gulp.task('lint', ['client-clean'], function () {
+gulp.task('lint', function () {
   gulp.start('client-lint-js', 'client-lint-i18n');
 });
 
@@ -223,12 +219,6 @@ gulp.task('lint', ['client-clean'], function () {
  *
  * To run all of the above, run the gulp task `gulp build-server`.
 */
-
-gulp.task('server-clean', function (cb) {
-  rimraf(SERVER_FOLDER, function () {
-    rimraf(PLUGIN_FOLDER, cb);
-  });
-});
 
 // run jshint on all server javascript files
 gulp.task('server-lint-js', function () {
@@ -281,18 +271,13 @@ gulp.task('client-test-e2e', function () {
  * The following tasks will run unit tests on the bhima server using gulp-mocha
 */
 
-// ensure that the server actually runs
-gulp.task('server-test-run', function () {
-  spawn('node', [path.join(SERVER_FOLDER, 'app.js')], {stdio: 'inherit'});
-});
-
 /* -------------------------------------------------------------------------- */
 
 gulp.task('clean', function (cb) {
   rimraf('./bin/', cb);
 });
 
-gulp.task('build', function () {
+gulp.task('build', ['clean'], function () {
   gulp.start('build-client', 'build-server');
 });
 
@@ -301,6 +286,6 @@ gulp.task('test', ['build'], function () {
 });
 
 // run the build-client and build-server tasks when no arguments
-gulp.task('default', [], function () {
+gulp.task('default', ['clean'], function () {
   gulp.start('build-client', 'build-server');
 });

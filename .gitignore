@@ -10,6 +10,7 @@
 # ignore npm/node modules
 node_modules/
 .npm-debug.log
+npm-debug.log
 
 # ignore bower installation target
 client/vendor/
@@ -25,3 +26,6 @@ bin/*
 # ignore the upload folder
 client/src/upload/
 
+# ignore configuration
+.env.production
+.env.development
