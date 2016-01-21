@@ -1,17 +1,22 @@
-<header data-header>
-  {{ "PATIENT_EDIT.PAGE_TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li class="active">{{ "PATIENT_EDIT.PAGE_TITLE" | translate }}</li>
+<div class="flex-header">
+  <div class="flex-row">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
+      <li class="title">{{ "PATIENT_EDIT.PAGE_TITLE" | translate }}</li>
     </ol>
   </div>
-</nav>
+</div>
 
-<main>
+<!-- <nav> -->
+<!--   <div class="pull-left"> -->
+<!--     <ol class="breadcrumb"> -->
+<!--       <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li> -->
+<!--       <li class="active">{{ "PATIENT_EDIT.PAGE_TITLE" | translate }}</li> -->
+<!--     </ol> -->
+<!--   </div> -->
+<!-- </nav> -->
+
+<div class="flex-content">
   <div class="container-fluid">
 
     <div class="row" ng-if="PatientEditCtrl.unknownId">
@@ -390,4 +395,4 @@
       </div> 
     </div>
   </div>
-</main>
+</div>

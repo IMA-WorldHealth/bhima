@@ -17,17 +17,24 @@
 <body ng-app="bhima" ng-strict-di>
 
 <div id="app-container" class="flex-container" ng-controller="ApplicationController as AppCtrl">
-   
   <div class="flex-page">
     
+    <!-- Example Application Page -->
+    <!-- <div class="flex-header"> -->
+    <!--   <div class="flex-row"> -->
+    <!--     <span class="flex-title">Hospital Good Shepard (Main dashboard page)</span> -->
+    <!--   </div> -->
+    <!-- </div> -->
+    <!-- <div class="flex-content"></div> -->
+    <!-- <ng-view></ng-view> -->
+    
+    <!-- Sidebar -->
     <div class="sidebar">
       <div class="sidebar-container">
-
+        
         <div class="sidebar-body">
           <header class="sidebar-header">
-            
             <div class="header-content">
-              
               <div class="header-image">
                 <a class="app-logo">
                   <span class="logo-container">
@@ -37,9 +44,7 @@
               </div>
               
               <div class="header-title">
-                <h2>
-                    <a class="title-content">PAX</a>
-                </h2>
+                <h2><a class="title-content">PAX</a></h2>
               </div>
             </div>
           </header>
@@ -59,6 +64,16 @@
                   <li class="file"><a>Patient Registration</a></li>
                   <li class="file"><a>Patient Visit</a></li>
                   <li class="file"><a>Patient Search</a></li>
+                  <li><a>Top Level Folder</a></li>
+                  <li><a>Top Level Folder</a></li>
+                  <li><a>Top Level Folder</a></li>
+                  <li><a>Top Level Folder</a></li>
+                  <li><a>Top Level Folder</a></li>
+                  <li><a>Top Level Folder</a></li>
+                  <li><a>Top Level Folder</a></li>
+                  <li><a>Top Level Folder</a></li>
+                  <li><a>Top Level Folder</a></li>
+                  <li><a>Top Level Folder</a></li>
                 </ul>
               </div>
             </div>
@@ -75,25 +90,15 @@
           </ul>
         </div>
       </div>
-
-    <!-- End sidebar -->
+      <!-- End sidebar -->
     </div>
-
-    <div class="flex-header">
-      <div class="flex-row">
-
-        <span class="flex-title">Hospital Good Shepard (Main dashboard page)</span>
-      </div>
-    </div>
-
-    <div class="flex-content">
-      <!-- App page -->
+    <!-- End page -->
     
+    <div class="flex-view" ng-view>
+      <!-- <ng-view></ng-view> -->
     </div>
-    
-  <!-- End page -->
+    <!-- <div ng-view></div> -->
   </div>
-  
 </div>
 
 <!-- scripts loaded in body to prevent page from 'hanging'-->
@@ -101,8 +106,8 @@
 <script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="vendor/jquery-ui.min/index.js"></script>
 
+<!-- Temporary sidebar navigation prototype code -->
 <script>
-  
   $(window).keypress(function (event) { 
     var FORWARD_SLASH = 47;
 

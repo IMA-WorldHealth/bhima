@@ -170,11 +170,11 @@
  */
 div.flex-header { 
 
-  margin-left : 56px;
+  /* margin-left : 56px; */
 }
 
 .expanded div.flex-header { 
-  margin-left : 260px;
+  /* margin-left : 260px; */
 }
 
 .flex-header { 
@@ -236,7 +236,7 @@ div.flex-header {
 .flex-content { 
   /* margin-left : 56px; */
   
-  margin-left : 56px;
+  /* margin-left : 56px; */
   /* width : calc(100% - 56px); */
  
   display : inline-block;
@@ -249,6 +249,8 @@ div.flex-header {
   /* Unsure of */
   padding-top : 5px;
   min-width : 250px;
+  
+  height : 100vh;
 }
 
 .flex-page { 
@@ -278,7 +280,7 @@ div.flex-header {
 }
 
 .expanded .flex-content { 
-  margin-left : 260px;
+  /* margin-left : 260px; */
 }
 
 /* #app-container { */ 
@@ -578,4 +580,56 @@ div.flex-header {
 
 .file { 
   border-left : 5px solid grey;
+}
+
+.flex-view { 
+  margin-left : 56px;
+  /* width : calc(100% - 56px); */
+  
+  display : flex;
+  -webkit-box-orient : vertical;
+  -webkit-box-direction : normal;
+  flex-direction : column;
+  
+  overflow-x : hidden;
+  overflow-y : auto;
+
+  position : relative;
+}
+
+.expanded .flex-view { 
+  margin-left : 260px;
+}
+
+
+/* Temporary header breadcrumb fork*/
+.headercrumb {
+  padding: 8px 0px;
+  /* margin-bottom: 20px; */
+  list-style: none;
+  /* background-color: #f5f5f5; */
+  border-radius: 2px;
+}
+ol.headercrumb { 
+  margin-bottom : 0px !important;
+}
+.headercrumb > li {
+  display: inline-block;
+}
+.headercrumb > li + li:before {
+  content: "/\00a0";
+  padding: 0 5px;
+  color: #ccc;
+}
+.headercrumb > .active {
+  color: #777777;
+}
+
+.headercrumb > .title { 
+  color : #313131;
+  font-weight : bold;
+}
+
+.headercrumb > .static { 
+  color: #828080;
 }
