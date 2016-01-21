@@ -11,7 +11,7 @@
   </div>
 
   <div class="pull-right">
-    <button class="btn btn-default" ng-click="EnterpriseCtrl.create()" data-method="create">
+    <button class="btn btn-default" id="create" ng-click="EnterpriseCtrl.create()" data-method="create">
       <i class="glyphicon glyphicon-plus-sign"></i>
       {{ "ENTERPRISE.NEW" | translate }}
     </button>
@@ -68,13 +68,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="e in EnterpriseCtrl.enterprises | orderBy:'name'" track by e.id>
-                <td>{{ e.name }}</td>
+              <tr ng-repeat="e in EnterpriseCtrl.enterprises | orderBy:'name'">
+                <td>{{ e.name }} Os</td>
                 <td>{{ e.abbr }}</td>
                 <td>{{ e.po_box }}</td>
                 <td>{{ e.email }}</td>
                 <td>{{ e.phone }}</td>
-                <td><a class="action" ng-click="EnterpriseCtrl.update(e)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                <td><a class="action" id="enterprise-{{e.id}}" ng-click="EnterpriseCtrl.update(e)"><i class="glyphicon glyphicon-pencil"></i></a></td>
               </tr>
             </tbody>
           </table>
@@ -149,7 +149,7 @@
                 <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.currency_id.$invalid }">  
                   <div class="radio" ng-repeat="currency in EnterpriseCtrl.currencies">
                     <label class="control-label">
-                      <input type="radio" value="{{currency.id}}" required id="currency_id" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
+                      <input type="radio" value="{{currency.id}}" required id="currency_id-{{currency.id}}" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
                       {{currency.name}}
                     </label>
                     </div>
@@ -157,7 +157,7 @@
               </fieldset>
 
               <div class="form-group">
-                  <button class="btn btn-default" type="submit" data-method="submit">
+                  <button class="btn btn-default" id="submit-enterprise" type="submit" data-method="submit">
                     {{ "FORM.SUBMIT" | translate }}
                   </button>
                   <button class="btn btn-default" type="button" ng-click="EnterpriseCtrl.cancel()" data-method="cancel">
@@ -231,7 +231,7 @@
               </fieldset>
 
               <div class="form-group">
-                  <button class="btn btn-default" type="submit" data-method="submit">
+                  <button class="btn btn-default" id="change_enterprise" name="submit" type="submit" data-method="submit">
                     {{ "FORM.SAVE_CHANGES" | translate }}
                   </button>
                   <button class="btn btn-default" type="button" ng-click="EnterpriseCtrl.cancel()" data-method="cancel">

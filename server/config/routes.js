@@ -49,12 +49,8 @@ var cashboxes      = require('../controllers/finance/cashboxes');
 var exchange       = require('../controllers/finance/exchange');
 var cash           = require('../controllers/finance/cash');
 var cashflow       = require('../controllers/cashflow');
-<<<<<<< HEAD
 var enterprises     = require('../controllers/admin/enterprises');
-=======
 var priceList      = require('../controllers/finance/priceList');
-
->>>>>>> master
 var patientInvoice = require('../controllers/finance/patientInvoice');
 
 
@@ -394,16 +390,15 @@ exports.configure = function (app) {
   app.get('/cashflow/report/', cashflow.getReport);
   //app.get('/stock/entries?', depot.getStockEntry);
 
-<<<<<<< HEAD
-  // Enterprises Controller 
+  // Enterprises api 
   app.get('/enterprises', enterprises.list);
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
-=======
+
   // employees api
   app.get('/employees', employees.list);
   app.get('/employees/:id', employees.details);
   app.put('/employees/:id', employees.update);
   app.post('/employees', employees.create);
->>>>>>> master
+
 };
