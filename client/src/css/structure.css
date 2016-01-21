@@ -88,12 +88,12 @@
   
 
   /* min-height : 59px; */
-  vertical-align : middle;
+  /* vertical-align : middle; */
   margin : 0;
   padding : 0;
   text-align : left;
   
-  padding-top : 4px;
+  /* padding-top : 4px; */
 }
 
 .expanded .header-title { 
@@ -102,7 +102,7 @@
   min-height : 40px;
 }
 
-.header-title > h2 { 
+.header-title > h4 { 
   text-transform : uppercase;  
   white-space : nowrap;
   text-overflow : ellipsis;
@@ -127,8 +127,10 @@
   text-overflow : ellipsis;
   display : block;
 
-
-  color : #707070;
+  /* Should be done using flex container*/
+  padding-top : 12px;
+  padding-bottom : 8px;
+  color : #505050;
   text-decoration : none;
   cursor : pointer;
 }
@@ -136,7 +138,7 @@
 .title-content:hover { 
   text-decoration : none;
   cursor : pointer;
-  color : #707070;
+  color : #505050;
 }
 
 .title-wrap { 
@@ -532,14 +534,12 @@ div.flex-header {
   /* position : relative; */
 }
 
-.flex-tree { 
+.flex-nav { 
   display : none;
-  
-  
 }
 
-.expanded .flex-tree { 
-  display : flex;
+.expanded .flex-nav { 
+  display : block;
 }
 
 .flex-tree ul { 
@@ -557,18 +557,19 @@ div.flex-header {
 }
 
 .flex-tree a { 
-  padding-top : 10px;
-  padding-bottom : 10px;
+  /* padding-top : 10px; */
+  /* padding-bottom : 10px; */
   display : flex;
-  /* align-items : center; */
+
+  align-items : center;
   
   /* width : 100%; */
   /* padding-left : 150px; */
   /* padding-right : 150px; */
 
   color : #707070;
-  min-height : 48px;
-  padding-left : 20px;
+  min-height : 35px;
+  padding-left : 10px;
 }
 
 .flex-tree a:hover { 
@@ -579,7 +580,7 @@ div.flex-header {
 }
 
 .file { 
-  border-left : 5px solid grey;
+  border-left : 5px solid #707070;
 }
 
 .flex-view { 
@@ -633,3 +634,21 @@ ol.headercrumb {
 .headercrumb > .static { 
   color: #828080;
 }
+
+.tree-title { 
+  padding-left : 7px;
+}
+
+.selected a { 
+  color : #2089CE;
+  font-weight : bold;
+}
+.selected a:hover { 
+  color : #2089CE;
+}
+
+li.selected { 
+  border-left-color : #2089CE;
+}
+
+

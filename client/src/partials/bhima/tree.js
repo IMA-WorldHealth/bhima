@@ -7,6 +7,8 @@ TreeController.$inject = [
 
 
 function TreeController($scope, $rootScope, $location, $http, $translate, AppCache) {
+  var vm = this;
+  vm.units = [];
 
   // TODO
   //   Theoretically, the users and permissions depend on an
@@ -25,7 +27,7 @@ function TreeController($scope, $rootScope, $location, $http, $translate, AppCac
     .then(function(res) {
       collapsedModel = res;
       formatElementGroup($scope.treeData);
-      selectTreeNode($scope.treeData, originLocation);
+      // selectTreeNode($scope.treeData, originLocation);
     });
   }
 
@@ -71,7 +73,7 @@ function TreeController($scope, $rootScope, $location, $http, $translate, AppCac
       var hasChildren = element.children && element.children.length > 0;
 
       if (sanitiseElement === sanitiseLocation) {
-        $scope.navtree.selectNodeLabel(element);
+        // $scope.navtree.selectNodeLabel(element);
       }
 
       if (hasChildren) { selectTreeNode(element.children, locationPath); }
@@ -111,6 +113,7 @@ function TreeController($scope, $rootScope, $location, $http, $translate, AppCac
       // expose to view
 
       $scope.treeData = response.data;
+      vm.units = response.data;
       loadTreeOptions();
     });
   }

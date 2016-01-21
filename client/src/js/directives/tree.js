@@ -14,13 +14,13 @@ angular.module('bhima.directives')
 
 
       var template =
-        '<ul>' +
-          '<li data-ng-repeat=\'node in ' + treeModel + '\'>' +
-            '<i name=\'{{node.' + nodeLabel + '}}\' ng-class="{\'glyphicon-folder-close collapsed\': node.' + nodeChildren + '.length && node.collapsed, \'glyphicon-folder-open expanded\': node.' + nodeChildren + '.length && !node.collapsed }" class=\'glyphicon\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
-            '<i class=\'normal glyphicon glyphicon-file\' data-ng-hide=\'node.' + nodeChildren + '.length\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
-            '<span name=\'{{node.'  + nodeLabel + '}}\' data-ng-class=\'node.selected\' data-ng-click=\'' + treeId + '.selectNodeLabel(node)\'>{{node.' + nodeLabel + ' | translate }}</span>' +
-            '<div data-ng-hide=\'node.collapsed\' data-tree-id=\'' + treeId + '\' data-tree-model=\'node.' + nodeChildren + '\' data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
-          '</li>' +
+        // '<ul>' +
+          // '<li data-ng-repeat=\'node in ' + treeModel + '\'>' +
+            // '<i name=\'{{node.' + nodeLabel + '}}\' ng-class="{\'glyphicon-folder-close collapsed\': node.' + nodeChildren + '.length && node.collapsed, \'glyphicon-folder-open expanded\': node.' + nodeChildren + '.length && !node.collapsed }" class=\'glyphicon\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
+            // '<i class=\'normal glyphicon glyphicon-file\' data-ng-hide=\'node.' + nodeChildren + '.length\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
+            // '<span name=\'{{node.'  + nodeLabel + '}}\' data-ng-class=\'node.selected\' data-ng-click=\'' + treeId + '.selectNodeLabel(node)\'>{{node.' + nodeLabel + ' | translate }}</span>' +
+            // '<div data-ng-hide=\'node.collapsed\' data-tree-id=\'' + treeId + '\' data-tree-model=\'node.' + nodeChildren + '\' data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
+          // '</li>' +
         '</ul>';
 
       // Collapse by default
