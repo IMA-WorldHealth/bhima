@@ -51,7 +51,7 @@ describe('The /accounts API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /accounts?type=ohada returns only OHADA accounts', function () {
+  it.skip('GET /accounts?type=ohada returns only OHADA accounts', function () {
 
     // NOTE
     // In the test data, we define one account (id: 3635) that is not OHADA

@@ -70,8 +70,19 @@ function AccountService($http, util) {
 
   // return a list of OHADA accounts
   function list() {
-    return $http.get('/accounts?type=ohada')
+    return $http.get('/accounts?full=1') // TODO - this should only be /accounts
       .then(util.unwrapHttpResponse)
+      .then(function (accounts) {
+        
+        // hack to make sure accounts are properly rendered on cashboxes page
+        // FIXME - make /accounts return the account type w/o query string
+        // and preformat the label elsewhere
+        accounts.forEach(function (account) {
+          account.label = account.account_number + ' ' + account.account_txt;
+        });
+
+        return accounts;
+      })
       .then(order);
   }
 
