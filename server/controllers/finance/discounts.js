@@ -90,6 +90,14 @@ exports.create = function create(req, res, next) {
   // expects the proposed record to be namespaced by "discount"
   var data = req.body.discount;
 
+  // @TODO - unify this condition in either a database rejection or a req.codes
+  if (data.value < 0) {
+    return res.status(400).json({
+      code : 'ERR_NEGATIVE_VALUES',
+      reason : 'You cannot insert a negative value into this table.'
+    });
+  }
+
   var sql =
     'INSERT INTO discount ' +
       '(label, description, inventory_uuid, account_id, value) ' +
@@ -123,6 +131,13 @@ exports.update = function update(req, res, next) {
 
   // remove the id if it exists (prevent attacks on data integrity)
   delete data.id;
+
+  if (data.value && data.value < 0) {
+    return res.status(400).json({
+      code : 'ERR_NEGATIVE_VALUES',
+      reason : 'You cannot insert a negative value into this table.'
+    });
+  }
 
   var sql =
     'UPDATE discount SET ? WHERE id = ?;';

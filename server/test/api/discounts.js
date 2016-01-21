@@ -36,6 +36,14 @@ describe('(/discounts) Discounts Interface ::', function () {
     value:          15
   };
 
+  var mockDiscountNegative = {
+    label:          'Test Discount B',
+    description:    'This is a mock (negative) discount for testing purposes.',
+    account_id:     ACCOUNT_ID,
+    inventory_uuid: INVENTORY_UUID,
+    value:          -125.00
+  };
+
   it('GET /discounts/undefined returns a 404 error', function () {
     return agent.get('/discounts/undefined')
     .then(function (res) {
@@ -78,6 +86,16 @@ describe('(/discounts) Discounts Interface ::', function () {
       // exhaustively make sure all properties were inserted correctly
       var isIdentical = helpers.identical(mockDiscount, res.body);
       expect(isIdentical).to.equal(true);
+    })
+    .catch(helpers.handler);
+  });
+
+  it('POST /discounts should reject a discount record with a negative value', function () {
+    return agent.post('/discounts')
+    .send({ discount : mockDiscountNegative })
+    .then(function (res) {
+      expect(res).to.have.status(400);
+      expect(res).to.be.json;
     })
     .catch(helpers.handler);
   });
