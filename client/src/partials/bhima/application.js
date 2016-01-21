@@ -25,6 +25,8 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
     return Session.user;
   };
 
+  vm.projectName = Session.project.name;
+
   // on refresh, if we have a session load the rest of the state
   if (vm.isLoggedIn()) { loadState(); }
 

@@ -1,27 +1,42 @@
-<div class="container text-center">
-  <div>
-    <img src="assets/icon.png" width="200" height="200" />
-    <h1 style="margin:0;">{{ "HOME.BHIMA" | translate }}</h1>
-    <h4 style="margin:0; margin-bottom:5px;">{{ "HOME.BHIMA_LONG" | translate }}</h4>
+<div class="flex-header">
+  <div class="flex-row">
+    <ol class="headercrumb">
+      <!-- <li class="static">{{ "TREE.HOSPITAL" | translate }}</li> -->
+      <li class="static">BHIMA</li>
+      <li class="title">{{HomeCtrl.enterprise.name}}</span></li>
+    </ol>
+    <!-- <span class="flex-title">{{ "PATIENT_REG.PAGE_TITLE" | translate }} <small>{{ patient.title }} {{ patient.first_name }} {{ patient.last_name }}</small></span> -->
   </div>
+</div>
 
-  <div class="row">
-    <div class="alert clearfix" ng-class="{'alert-success': HomeCtrl.hasDailyRate, 'alert-danger': !HomeCtrl.hasDailyRate }" style="width:800px; margin:0 auto;">
-      <div class="col-xs-3">
-        {{ "HOME.PROJECT" | translate }}:
-        <br><strong>{{ HomeCtrl.project.name }}</strong>
-      </div>
-      <div class="col-xs-3">
-        {{ "HOME.DATE" | translate }}:
-        <br><strong>{{ HomeCtrl.today | date }}</strong>
-      </div>
-      <div class="col-xs-3">
-        {{ "HOME.EXCHANGE_RATE" | translate }}:
-        <br><strong>{{ HomeCtrl.exchangeRate }}</strong>
-      </div>
-      <div class="col-xs-3">
-        {{ "HOME.USER" | translate }}:
-        <br><strong>{{ HomeCtrl.user.first }} - {{ HomeCtrl.user.last }}</strong>
+<div class="flex-content">
+  <div class="container">
+    
+    <div class="page-header">
+      <h1>{{HomeCtrl.enterprise.name}}</h1>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">System Status</div>
+      <div class="panel-body"> 
+        <div class="row">
+          <div class="col-sm-3">
+            {{ "HOME.PROJECT" | translate }}:
+            <br><strong>{{ HomeCtrl.project.name }}</strong>
+          </div>
+          <div class="col-sm-3">
+            {{ "HOME.DATE" | translate }}:
+            <br><strong>{{ HomeCtrl.today | date }}</strong>
+          </div>
+          <div class="col-sm-3">
+            {{ "HOME.EXCHANGE_RATE" | translate }}:
+            <br><strong>{{ HomeCtrl.exchangeRate }}</strong>
+          </div>
+          <div class="col-sm-3">
+            {{ "HOME.USER" | translate }}:
+            <br><strong>{{ HomeCtrl.user.first }} - {{ HomeCtrl.user.last }}</strong>
+          </div>
+        </div>
       </div>
     </div>
   </div>
