@@ -1,4 +1,4 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
@@ -7,11 +7,6 @@ chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
 
 describe('The account types API, PATH : /account_types', function () {
   var agent = chai.request.agent(helpers.baseUrl);
@@ -43,7 +38,7 @@ describe('The account types API, PATH : /account_types', function () {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_TYPE_ID);
-        expect(res.body).to.have.all.keys('id', 'type');        
+        expect(res.body).to.have.all.keys('id', 'type');
       })
      .catch(helpers.handler);
   });
@@ -57,14 +52,14 @@ describe('The account types API, PATH : /account_types', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.defined;
         newAccountType.id = res.body.id;
-        return agent.get('/account_types/' + newAccountType.id);      
+        return agent.get('/account_types/' + newAccountType.id);
       })
       .then(function (res) {
           expect(res).to.have.status(200);
           expect(res.body).to.have.all.keys('id', 'type');
       })
       .catch(helpers.handler);
-  }); 
+  });
 
   it('METHOD : PUT, PATH : /account_types/:id, It updates the newly added account_type', function () {
     var updateInfo = {type : 'updated value' };
@@ -87,8 +82,8 @@ describe('The account types API, PATH : /account_types', function () {
         return agent.get('/account_types/' + DELETABLE_ACCOUNT_TYPE_ID);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);        
+        expect(res).to.have.status(404);
       })
      .catch(helpers.handler);
-  });  
+  });
 });

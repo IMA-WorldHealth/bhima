@@ -1,4 +1,4 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
@@ -8,13 +8,9 @@ chai.use(chaiHttp);
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
-
 describe('The cost center API, PATH : /cost_centers', function () {
  var agent = chai.request.agent(helpers.baseUrl);
+
  var newCostCenter = {
     project_id : 1,
     text : 'tested cost',
@@ -57,7 +53,7 @@ describe('The cost center API, PATH : /cost_centers', function () {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.equal(FETCHABLE_COST_CENTER_ID);
-        expect(res.body).to.have.all.keys('project_id', 'id', 'text', 'note', 'is_principal');        
+        expect(res.body).to.have.all.keys('project_id', 'id', 'text', 'note', 'is_principal');
       })
       .catch(helpers.handler);
  });
@@ -72,14 +68,14 @@ describe('The cost center API, PATH : /cost_centers', function () {
         expect(res.body.id).to.be.defined;
         newCostCenter.id = res.body.id;
 
-        return agent.get('/cost_centers/' + newCostCenter.id);  
+        return agent.get('/cost_centers/' + newCostCenter.id);
       })
-      .then(function (res){ 
+      .then(function (res){
         expect(res).to.have.status(200);
         expect(res.body).to.have.all.keys('project_id', 'id', 'text', 'note', 'is_principal');
       })
-      .catch(helpers.handler); 
-  }); 
+      .catch(helpers.handler);
+  });
 
   it('METHOD : PUT, PATH : /cost_centers/:id, It updates the newly added cost center', function () {
     var updateInfo = {note : 'update value for note'};
@@ -104,8 +100,8 @@ describe('The cost center API, PATH : /cost_centers', function () {
         return agent.get('/cost_centers/' + DELETABLE_COST_CENTER_ID);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);        
+        expect(res).to.have.status(404);
       })
       .catch(helpers.handler);
-  });  
+  });
 });

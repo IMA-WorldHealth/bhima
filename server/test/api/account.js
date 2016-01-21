@@ -1,4 +1,4 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
@@ -8,13 +8,9 @@ chai.use(chaiHttp);
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
-
 describe('The account API, PATH : /accounts', function () {
   var agent = chai.request.agent(helpers.baseUrl);
+
   var newAccount = {
     account_type_id : 1,
     enterprise_id : 1,
@@ -35,7 +31,7 @@ describe('The account API, PATH : /accounts', function () {
 
   var DELETABLE_ACCOUNT_ID = 3636;
   var FETCHABLE_ACCOUNT_ID = 3626;
-  
+
     // login before each request
   beforeEach(helpers.login(agent));
 
@@ -82,7 +78,7 @@ describe('The account API, PATH : /accounts', function () {
         .to.have.all.keys('id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
                           'reference_id', 'is_brut_link', 'is_used_budget', 'is_charge', 'account_number',
                           'account_txt', 'parent', 'account_type_id', 'is_title', 'type');
-       
+
        expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_ID);
       })
       .catch(helpers.handler);
@@ -119,11 +115,11 @@ describe('The account API, PATH : /accounts', function () {
 
       })
      .catch(helpers.handler);
-  }); 
+  });
 
   it('METHOD : PUT, PATH : /accounts/:id, It updates the newly added account', function () {
     var updateInfo = { account_txt : 'updated value for testing account'};
-  
+
     return agent.put('/accounts/'+ newAccount.id)
       .send(updateInfo)
       .then(function (res) {
@@ -142,7 +138,7 @@ describe('The account API, PATH : /accounts', function () {
 
  it('METHOD : PUT, PATH : /accounts/:unknown, It refuses to update the unknow entity', function () {
     var updateInfo = { account_txt : 'updated value for testing account unknwon'};
-  
+
     return agent.put('/accounts/undefined')
       .send(updateInfo)
       .then(function (res) {
@@ -150,5 +146,5 @@ describe('The account API, PATH : /accounts', function () {
         expect(res).to.be.json;
       })
       .catch(helpers.handler);
-  });    
+  });
 });
