@@ -331,8 +331,8 @@ exports.configure = function (app) {
   app.get('/availableAccounts/:id_enterprise/', accounts.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', accounts.listEnterpriseProfitAccounts);
 
-  // Patient invoice API 
-  
+  // Patient invoice API
+
   // TODO Decide if the route should be named patient invoice
   app.get('/sales', patientInvoice.list);
   app.post('/sales', patientInvoice.create);
@@ -343,6 +343,7 @@ exports.configure = function (app) {
   app.post('/patients', patient.create);
   app.put('/patients/:uuid', patient.update);
 
+  app.get('/patients/search', patient.search);
   app.get('/patients/groups', patient.listGroups);
   app.get('/patients/:uuid', patient.details);
 
