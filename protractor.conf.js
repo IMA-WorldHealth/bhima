@@ -9,7 +9,6 @@ var q = require('q');
 // as appropriate.
 
 var config = {
-
   specs: ['client/test/e2e/**/*.spec.js'],
 
   framework : 'mocha',

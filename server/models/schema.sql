@@ -28,7 +28,6 @@ CREATE TABLE `account` (
   FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`),
-  FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`),
   FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
