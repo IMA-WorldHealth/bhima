@@ -13,11 +13,10 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
-describe('The /references API endpoint', function () {
+describe('The reference API, PATH : /references', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var newReference = {
-    //id : 2,
     is_report : 0,
     ref : 'AD',
     text : 'Reference tested 1',
@@ -26,24 +25,27 @@ describe('The /references API endpoint', function () {
     section_resultat_id : 1
   };
 
-  var DELETABLE_REFERENCE_ID = 4;
-
+  var DELETABLE_REFERENCE_ID = 5;
   var FETCHABLE_REFERENCE_ID = 1;
+
   beforeEach(helpers.login(agent));
  
-    it(' A GET /references?full returns a list of references', function () {
+    it('METHOD : GET, PATH : /references, It returns a list of references', function () {
       return agent.get('/references?full=1')
         .then(function (res) {
           expect(res).to.have.status(200);
+          expect(res).to.be.json;
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.length(3);
          })
        .catch(helpers.handler);
-  });
-    it(' A GET /references returns a list of references', function () {
+    });
+
+    it('METHOD : GET, PATH : /references, It returns a list of references', function () {
       return agent.get('/references')
         .then(function (res) {
           expect(res).to.have.status(200);
+          expect(res).to.be.json;
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.length(3);
          })
@@ -51,52 +53,54 @@ describe('The /references API endpoint', function () {
     });
 
 
-    it(' A GET /references/:id returns one reference', function () {
-    return agent.get('/references/'+ FETCHABLE_REFERENCE_ID)
-      .then(function (res) {        
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.equal(FETCHABLE_REFERENCE_ID);
-      })
-     .catch(helpers.handler);  
-    });
-
-  it('A POST /references will add a reference', function () {
-    return agent.post('/references')
-      .send(newReference)
-        .then(function (res) {
-          expect(res).to.have.status(201);
+    it('METHOD : GET, PATH : /references/:id, It returns one reference', function () {
+      return agent.get('/references/'+ FETCHABLE_REFERENCE_ID)
+        .then(function (res) {        
+          expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.not.be.empty;
-          expect(res.body.id).to.be.defined;
-          newReference.id = res.body.id;
+          expect(res.body.id).to.be.equal(FETCHABLE_REFERENCE_ID);
+          expect(res.body).to.have.all.keys('id', 'is_report', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id'); 
         })
-       .catch(helpers.handler);  
+        .catch(helpers.handler);  
+    });
+
+    it('METHOD : POST, PATH : /references, It adds a reference', function () {
+      return agent.post('/references')
+        .send(newReference)
+          .then(function (res) {
+            expect(res).to.have.status(201);
+            expect(res).to.be.json;
+            expect(res.body).to.not.be.empty;
+            expect(res.body.id).to.be.defined;
+            newReference.id = res.body.id;
+            return agent.get('/references/' + newReference.id);  
+          })
+          .then(function (res){ 
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.all.keys('id', 'is_report', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id');
+          })
+          .catch(helpers.handler); 
   }); 
 
-  it('A PUT /references/:id will update the newly added reference', function () {
+  it('METHOD : PUT, PATH : /references/:id, It updates the newly added reference', function () {
+    var updateInfo = {position : 3};
+
     return agent.put('/references/'+ newReference.id)
-      .send({ position : 3 })
+      .send(updateInfo)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body.id).to.equal(newReference.id);
-        expect(res.body.position).to.not.equal(newReference.position);
-
-        // re-query the database
-        return agent.get('/references/'+ newReference.id);
+        expect(res.body.position).to.equal(updateInfo.position);
       })
-      .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-      })
-     .catch(helpers.handler); 
+      .catch(helpers.handler); 
   });
 
-   it(' A DELETE /references/:id will delete a reference', function () {
+   it('METHOD : DELETE, PATH : /references/:id, It deletes a reference', function () {
     return agent.delete('/references/' + DELETABLE_REFERENCE_ID)
       .then(function (res) {
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(204);
         // re-query the database
         return agent.get('/references/' + DELETABLE_REFERENCE_ID);
       })

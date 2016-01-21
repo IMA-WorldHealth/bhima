@@ -23,8 +23,12 @@ function list (req, res, next){
 }
 
 function create (req, res, next) {
+  'use strict';
+
   var record = req.body;
   var createCostCenterQuery = 'INSERT INTO cost_center SET ?';
+
+  delete record.id;
   
   db.exec(createCostCenterQuery, [record])
     .then(function (result){
@@ -35,55 +39,65 @@ function create (req, res, next) {
 }
 
 function update (req, res, next){
+  'use strict';
+
   var queryData = req.body;
   var costCenterId = req.params.id;
   var updateCostCenterQuery = 'UPDATE cost_center SET ? WHERE id = ?';
 
-  db.exec(updateCostCenterQuery, [queryData, costCenterId])
-  .then(function (result){
-    return handleFetchCostCenter(costCenterId);
-  })
-  .then(function (costCenters){
-    var updatedCostCenters = costCenters[0];
-    res.status(200).json(updatedCostCenters);
-  })
-  .catch(next)
-  .done();
+  delete queryData.id;
+
+  lookupCostCenter(costCenterId, req.codes)
+    .then(function (){
+      return db.exec(updateCostCenterQuery, [queryData, costCenterId]);      
+    })
+    .then(function (result){
+      return lookupCostCenter(costCenterId, req.codes);
+    })
+    .then(function (costCenter){
+      res.status(200).json(costCenter);
+    })
+    .catch(next)
+    .done();
 }
 
 function remove (req, res, next) {
   var costCenterId = req.params.id;
   var removeCostCenterQuery = 'DELETE FROM cost_center WHERE id=?';
 
-  db.exec(removeCostCenterQuery, [costCenterId])
-  .then(function (result){
-    res.status(200).send();    
-  })
-  .catch(next)
-  .done();
-}
-
-function getCostCenter (req, res, next){
-  'use strict';
-
-  handleFetchCostCenter(req.params.id)
-    .then(function (rows) {
-      if(rows.length === 0){
-        res.status(404).send();
-      }else{
-        res.status(200).json(rows[0]);
-      }
+  lookupCostCenter(costCenterId, req.codes)
+    .then(function (){
+      return db.exec(removeCostCenterQuery, [costCenterId])
+    })
+    .then(function (){
+      res.status(204).send();    
     })
     .catch(next)
     .done();
 }
 
-function handleFetchCostCenter (id){
+function getCostCenter (req, res, next){
   'use strict';
+
+  lookupCostCenter(req.params.id, req.codes)
+    .then(function (row) {
+      res.status(200).json(row);      
+    })
+    .catch(next)
+    .done();
+}
+
+function lookupCostCenter (id, codes){
+  'use strict';
+
   var sql = 
     'SELECT cc.id, cc.text, cc.note, cc.is_principal, cc.project_id FROM cost_center AS cc WHERE cc.id = ?';
 
-  return db.exec(sql, id);
+  return db.exec(sql, id)
+    .then(function (rows){
+      if(rows.length === 0) { throw codes.ERR_NOT_FOUND;}
+      return rows[0];      
+    });
 }
 
 exports.list = list;

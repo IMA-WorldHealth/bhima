@@ -13,11 +13,10 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
-describe('The /profit_center API endpoint', function () {
+describe('The profit center API, PATH : /profit_centers', function () {
   var agent = chai.request.agent(helpers.baseUrl);
   var newProfitCenter = {
     project_id : 1,
-    //id : 200,
     text : 'tested profit',
     note : 'test inserted'  
   };
@@ -27,38 +26,41 @@ describe('The /profit_center API endpoint', function () {
 
   beforeEach(helpers.login(agent));
 
-    it(' A GET /profit_centers?full returns a list of profit centers', function () {
+    it('METHOD : GET, PATH : /profit_centers?full=1, It returns a full list of profit centers', function () {
       return agent.get('/profit_centers?full=1')
         .then(function (res) {
           expect(res).to.have.status(200);
+          expect(res).to.be.json;
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.length(2);
         })
         .catch(helpers.handler);
     });
 
-  it(' A GET /profit_centers returns a list of profit centers', function () {
+  it('METHOD : GET, PATH : /profit_centers, It returns a list of profit centers', function () {
     return agent.get('/profit_centers')
       .then(function (res) {
         expect(res).to.have.status(200);
+        expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(2);
+        expect(res.body).to.have.length(2); 
       })
      .catch(helpers.handler);
   });
   
-  it(' A GET /profit_center/:id returns one profit center', function () {
+  it('METHOD : GET, PATH : /profit_center/:id, It returns one profit center', function () {
     return agent.get('/profit_centers/'+ FETCHABLE_PROFIT_CENTER_ID)
       .then(function (res) {
-        expect(res).to.have.status(200);
+       expect(res).to.have.status(200);
+        expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.equal(FETCHABLE_PROFIT_CENTER_ID);
+        expect(res.body).to.have.all.keys('project_id', 'id', 'text', 'note');
       })
       .catch(helpers.handler);
-
   });
 
-  it('A POST /profit_centers will add a profit center', function () {
+  it('METHOD : POST, PATH : /profit_centers, It adds a profit center', function () {
     return agent.post('/profit_centers')
       .send(newProfitCenter)
       .then(function (res) {
@@ -67,34 +69,33 @@ describe('The /profit_center API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.defined;
         newProfitCenter.id = res.body.id;
+        return agent.get('/profit_centers/' + newProfitCenter.id);  
+      })
+      .then(function (res){ 
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.all.keys('project_id', 'id', 'text', 'note');
       })
      .catch(helpers.handler);
   }); 
 
-  it('A PUT /profit_centers/:id will update the newly added profit center', function () {
+  it('METHOD : PUT, PATH : /profit_centers/:id, It updates the newly added profit center', function () {
+    var updateInfo = {note : 'updated value for note'};
+
     return agent.put('/profit_centers/'+ newProfitCenter.id)
-      .send({ note : 'updated value for note' })
+      .send(updateInfo)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body.id).to.equal(newProfitCenter.id);
-        expect(res.body.note).to.not.equal(newProfitCenter.note);
-
-        // re-query the database
-        return agent.get('/profit_centers/'+ newProfitCenter.id);
+        expect(res.body.note).to.equal(updateInfo.note);
       })
-      .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-      })
-     .catch(helpers.handler);
-
+      .catch(helpers.handler);
   });
 
-   it(' A DELETE /profit_centers/:id will delete a profit_center', function () {
+   it('METHOD : DELETE, PATH : /profit_centers/:id, It deletes a profit_center', function () {
     return agent.delete('/profit_centers/' + DELETABLE_PROFIT_CENTER_ID)
       .then(function (res) {
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(204);
         // re-query the database
         return agent.get('/profit_centers/' + DELETABLE_PROFIT_CENTER_ID);
       })

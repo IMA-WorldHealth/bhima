@@ -23,9 +23,13 @@ function list (req, res, next){
 }
 
 function create (req, res, next) {
+  'use strict';
+
   var record = req.body;
   var createProfitCenterQuery = 'INSERT INTO profit_center SET ?';
   
+  delete record.id;
+
   db.exec(createProfitCenterQuery, [record])
     .then(function (result){
       res.status(201).json({ id: result.insertId });
@@ -35,55 +39,65 @@ function create (req, res, next) {
 }
 
 function update (req, res, next){
+  'use strict';
+
   var queryData = req.body;
   var profitCenterId = req.params.id;
   var updateProfitCenterQuery = 'UPDATE profit_center SET ? WHERE id = ?';
 
-  db.exec(updateProfitCenterQuery, [queryData, profitCenterId])
-  .then(function (result){
-    return handleFetchProfitCenter(profitCenterId);
-  })
-  .then(function (profitCenters){
-    var updatedProfitCenters = profitCenters[0];
-    res.status(200).json(updatedProfitCenters);
-  })
-  .catch(next)
-  .done();
+  delete queryData.id;
+
+  lookupProfitCenter(profitCenterId, req.codes)
+    .then(function (){
+      return db.exec(updateProfitCenterQuery, [queryData, profitCenterId]);
+    })
+    .then(function (result){
+      return lookupProfitCenter(profitCenterId, req.codes);
+    })
+    .then(function (profitCenter){
+      res.status(200).json(profitCenter);
+    })
+    .catch(next)
+    .done();
 }
 
 function remove (req, res, next) {
   var profitCenterId = req.params.id;
   var removeProfitCenterQuery = 'DELETE FROM profit_center WHERE id=?';
 
-  db.exec(removeProfitCenterQuery, [profitCenterId])
-  .then(function (result){
-    res.status(200).send();    
-  })
-  .catch(next)
-  .done();
-}
-
-function getProfitCenter (req, res, next){
-  'use strict';
-
-  handleFetchProfitCenter(req.params.id)
-    .then(function (rows) {
-      if(rows.length === 0){
-        res.status(404).send();
-      }else{
-        res.status(200).json(rows[0]);
-      }
+  lookupProfitCenter(profitCenterId, req.codes)
+    .then(function (){
+      return db.exec(removeProfitCenterQuery, [profitCenterId]);
+    })
+    .then(function (){
+      res.status(204).send();   
     })
     .catch(next)
     .done();
 }
 
-function handleFetchProfitCenter (id){
+function getProfitCenter (req, res, next){
   'use strict';
+
+  lookupProfitCenter(req.params.id, req.codes)
+    .then(function (row) {
+      res.status(200).json(row);
+    })
+    .catch(next)
+    .done();
+}
+
+function lookupProfitCenter (id, codes){
+  'use strict';
+
   var sql = 
     'SELECT p.id, p.text, p.note, p.project_id FROM profit_center AS p WHERE p.id = ?';
 
-  return db.exec(sql, id);
+  return db.exec(sql, id)
+    .then(function (rows){
+      if(rows.length === 0) { throw codes.ERR_NOT_FOUND;}
+      return rows[0];
+    });
 }
 
 exports.list = list;
