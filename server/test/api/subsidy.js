@@ -1,4 +1,4 @@
-/*global describe, it, beforeEach, process*/
+/*global describe, it, beforeEach*/
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
@@ -7,9 +7,6 @@ chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);
-
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
 
 describe('The subsidy API, PATH : /subsidies', function () {
   var agent = chai.request.agent(helpers.baseUrl);
@@ -55,6 +52,8 @@ describe('The subsidy API, PATH : /subsidies', function () {
         expect(res).to.have.status(400);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.all.keys('code', 'httpStatus', 'reason');
+
       })
       .catch(helpers.handler);
   });  
@@ -105,7 +104,8 @@ describe('The subsidy API, PATH : /subsidies', function () {
         return agent.get('/subsidies/' + newSubsidy.id);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);        
+        expect(res).to.have.status(404);     
+        expect(res.body).to.have.all.keys('code', 'httpStatus', 'reason');
       })
       .catch(helpers.handler);
   });  

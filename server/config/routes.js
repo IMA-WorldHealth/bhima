@@ -140,7 +140,7 @@ exports.configure = function (app) {
 
  //API for subsidy routes crud
   app.get('/subsidies', subsidy.list);
-  app.get('/subsidies/:id', subsidy.getSubsidy);
+  app.get('/subsidies/:id', subsidy.detail);
   app.post('/subsidies', subsidy.create);
   app.put('/subsidies/:id', subsidy.update);
   app.delete('/subsidies/:id', subsidy.remove);

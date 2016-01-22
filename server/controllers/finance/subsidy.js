@@ -13,7 +13,7 @@ function lookupSubsidy (id, codes){
     });
 }
 
-function getSubsidy (req, res, next){
+function detail (req, res, next){
   'use strict';
 
   lookupSubsidy (req.params.id, req.codes)
@@ -111,4 +111,4 @@ exports.list = list;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
-exports.getSubsidy = getSubsidy;
+exports.detail = detail;
