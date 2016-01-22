@@ -63,7 +63,7 @@ function update (req, res, next){
   var updateSubsidyQuery = 'UPDATE subsidy SET ? WHERE id = ?';
 
   delete queryData.id;
-  checkData(queryData);
+  checkData(queryData, req.codes);
 
   lookupSubsidy(subsidyId, req.codes)
     .then(function (){
