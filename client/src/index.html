@@ -19,18 +19,10 @@
 <div id="app-container" class="flex-container" ng-controller="ApplicationController as AppCtrl">
   <div class="flex-page">
     
-    <!-- Example Application Page -->
-    <!-- <div class="flex-header"> -->
-    <!--   <div class="flex-row"> -->
-    <!--     <span class="flex-title">Hospital Good Shepard (Main dashboard page)</span> -->
-    <!--   </div> -->
-    <!-- </div> -->
-    <!-- <div class="flex-content"></div> -->
-    <!-- <ng-view></ng-view> -->
-    
     <!-- Sidebar -->
+    <!-- TODO: Load the default position for the sidebar before angular is bootstrapped-->
     <div class="sidebar">
-      <div class="sidebar-container">
+      <div class="sidebar-container disable" ng-class="{'disable' : !AppCtrl.isLoggedIn()}">
         
         <div class="sidebar-body">
           <header class="sidebar-header">
@@ -51,11 +43,12 @@
 
           <nav>
             <div class="sidebar-group">
-              <div class="link-nav">
+              
+              <div class="link-nav session">
                 <span class="text-vertical">Navigation</span>
               </div>
               <div class="flex-nav">
-                  <bhima-nav></bhima-nav>
+                  <bhima-nav ng-if="AppCtrl.isLoggedIn()"></bhima-nav>
               </div>
             </div>
           </nav>
@@ -63,11 +56,11 @@
         
         <div class="flex-footer">
           <ul>
-            <li><a>
+            <li><a class="session">
               <span class="glyphicon glyphicon-cog"></span>
               <span class="link-label">User Settings</span>
             </a></li>
-            <li><a id="expandnav"><span id="expandicon" class="glyphicon glyphicon-menu-right"></span></a></li>
+            <li><a id="expandnav" class="session"><span id="expandicon" class="glyphicon glyphicon-menu-right"></span></a></li>
           </ul>
         </div>
       </div>

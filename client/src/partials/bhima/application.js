@@ -11,7 +11,7 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
 
   // useful for loading the language
   var cache = new Appcache('preferences');
-
+  
   cache.fetch('language')
   .then(function (language) {
     if (language) {
@@ -24,8 +24,6 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
   vm.isLoggedIn = function () {
     return Session.user;
   };
-
-  vm.projectName = Session.project.name;
 
   // on refresh, if we have a session load the rest of the state
   if (vm.isLoggedIn()) { loadState(); }
@@ -87,6 +85,9 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
       appstate.set('enterprise', Session.enterprise);
       appstate.set('project', Session.project);
       appstate.set('user', Session.user);
+
+      // TODO Position this to gaurantee the project is populated
+      vm.projectName = Session.project.name;
     });
 
     // FIXME
@@ -100,6 +101,7 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
         appstate.set('fiscal', currentFiscal);
       }
     });
+
   }
 
   // utility function to set appstate() variables

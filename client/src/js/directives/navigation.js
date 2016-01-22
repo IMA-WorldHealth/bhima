@@ -10,7 +10,6 @@ function NavigationController($location, Tree) {
   Tree.units()
     .then(function (result) { 
       vm.units = result;
-      console.log(result);
     });
 
   vm.toggleUnit = function toggleUnit(unit) { 

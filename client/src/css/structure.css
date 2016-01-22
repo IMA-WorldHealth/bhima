@@ -651,4 +651,12 @@ li.selected {
   border-left-color : #2089CE;
 }
 
+.disable .session >  * { 
+  color : #D2D2D2 !important;
+}
 
+.disable .session:hover { 
+  color : #D2D2D2;
+  background-color : transparent !important;
+  cursor : default;
+}
