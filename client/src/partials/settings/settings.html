@@ -1,7 +1,14 @@
-<header data-header>
-  {{ 'SETTINGS.TITLE' | translate }}
-</header>
+<div class="flex-header">
+  <div class="flex-row">
+    <ol class="headercrumb">
+      <li class="static">BHIMA</li>
+      <li class="title">{{ 'SETTINGS.TITLE' | translate }}</li>
+    </ol>
+    <!-- <span class="flex-title">{{ "PATIENT_REG.PAGE_TITLE" | translate }} <small>{{ patient.title }} {{ patient.first_name }} {{ patient.last_name }}</small></span> -->
+  </div>
+</div>
 
+<div class="flex-content">
 <main class="container-fluid">
   <div class="row">
     <div class="col-md-5">
@@ -28,4 +35,4 @@
     <span class="glyphicon glyphicon-circle-arrow-left"></span> {{ "UTIL.BACK" | translate }}
   </button>
 </main>
-
+</div>

@@ -8,7 +8,7 @@ ApplicationController.$inject = [
 
 function ApplicationController($location, $timeout, $translate, Appcache, appstate, connect, util, Session, tmhDynamicLocale, amMoment) {
   var vm = this;
-
+  
   // useful for loading the language
   var cache = new Appcache('preferences');
   
@@ -24,6 +24,11 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
   vm.isLoggedIn = function () {
     return Session.user;
   };
+  
+  // TODO Load this from cache - this may have to be done before angular is bootstrapped
+  // Open by default for logged in users
+  // vm.sidebarExpanded = vm.isLoggedIn();
+  vm.sidebarExpanded = false;
 
   // on refresh, if we have a session load the rest of the state
   if (vm.isLoggedIn()) { loadState(); }
@@ -101,7 +106,9 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
         appstate.set('fiscal', currentFiscal);
       }
     });
-
+    
+    // Optionally expand sidebar 
+    // vm.sidebarExpanded = true;
   }
 
   // utility function to set appstate() variables
@@ -112,5 +119,18 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
         appstate.set(key, values);
       });
     });
+  }
+
+  /**
+   * Application Structure methods 
+   */
+  vm.toggleSidebar = function toggleSidebar() { 
+    if (vm.isLoggedIn()) { 
+      vm.sidebarExpanded = !vm.sidebarExpanded;
+    }
+  }
+
+  vm.settings = function settings() { 
+    $location.path('/settings');
   }
 }

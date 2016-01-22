@@ -12,17 +12,22 @@
   <link rel="stylesheet" href="css/bhima-bootstrap.css">
   <link rel="stylesheet" href="vendor/angular-ui-grid/ui-grid.min.css">
   <link rel="stylesheet" href="css/style.min.css">
+
 </head>
 
 <body ng-app="bhima" ng-strict-di>
 
-<div id="app-container" class="flex-container" ng-controller="ApplicationController as AppCtrl">
+<div 
+  id="app-container" 
+  class="flex-container"
+  ng-class="{'expanded' : AppCtrl.sidebarExpanded}"
+  ng-controller="ApplicationController as AppCtrl">
   <div class="flex-page">
     
     <!-- Sidebar -->
     <!-- TODO: Load the default position for the sidebar before angular is bootstrapped-->
     <div class="sidebar">
-      <div class="sidebar-container disable" ng-class="{'disable' : !AppCtrl.isLoggedIn()}">
+      <div class="sidebar-container" ng-class="{'disable' : !AppCtrl.isLoggedIn()}">
         
         <div class="sidebar-body">
           <header class="sidebar-header">
@@ -41,10 +46,9 @@
             </div>
           </header>
 
-          <nav>
+          <nav ng-cloak>
             <div class="sidebar-group">
-              
-              <div class="link-nav session">
+              <div class="link-nav session" ng-click="AppCtrl.toggleSidebar()">
                 <span class="text-vertical">Navigation</span>
               </div>
               <div class="flex-nav">
@@ -54,13 +58,24 @@
           </nav>
         </div>
         
-        <div class="flex-footer">
+        <div class="flex-footer" ng-cloak>
           <ul>
-            <li><a class="session">
+            <li><a class="session" ng-click="AppCtrl.settings()">
               <span class="glyphicon glyphicon-cog"></span>
               <span class="link-label">User Settings</span>
             </a></li>
-            <li><a id="expandnav" class="session"><span id="expandicon" class="glyphicon glyphicon-menu-right"></span></a></li>
+            <li>
+              <a 
+                id="expandnav" 
+                class="session"
+                ng-click="AppCtrl.toggleSidebar()">
+                <span 
+                  id="expandicon" 
+                  class="glyphicon"
+                  ng-class="{'glyphicon-menu-right' : !AppCtrl.sidebarExpanded, 'glyphicon-menu-left' : AppCtrl.sidebarExpanded}">
+                </span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -79,35 +94,6 @@
 <!--jquery-->
 <script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="vendor/jquery-ui.min/index.js"></script>
-
-<!-- Temporary sidebar navigation prototype code -->
-<script>
-  $(window).keypress(function (event) { 
-    var FORWARD_SLASH = 47;
-
-    if (event.which === FORWARD_SLASH) { 
-      toggleNav();
-    }
-  });
-
-  $('#expandnav').click(toggleNav);
-  $('.link-nav').click(toggleNav);
-
-  function toggleNav() { 
-    var sidebar = $('#app-container');
-    var icon = $('#expandicon');
-
-    if (sidebar.hasClass('expanded')) { 
-      sidebar.removeClass('expanded');
-      icon.removeClass('glyphicon-menu-left');
-      icon.addClass('glyphicon-menu-right');
-    } else { 
-      sidebar.addClass('expanded');
-      icon.removeClass('glyphicon-menu-right');
-      icon.addClass('glyphicon-menu-left');
-    }
-  }
-</script>
 
 <!-- localforage -->
 <script src="vendor/localforage/dist/localforage.min.js"></script>
