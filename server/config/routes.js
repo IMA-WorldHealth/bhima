@@ -57,6 +57,8 @@ var costCenter      = require('../controllers/finance/costCenter');
 var profitCenter    = require('../controllers/finance/profitCenter');
 var reference       = require('../controllers/finance/reference');
 
+var subsidy        = require('../controllers/finance/subsidy');
+
 var patientInvoice = require('../controllers/finance/patientInvoice');
 
 var financeServices      = require('../controllers/categorised/financeServices');
@@ -135,6 +137,13 @@ exports.configure = function (app) {
   app.post('/references', reference.create);
   app.put('/references/:id', reference.update);
   app.delete('/references/:id', reference.remove);
+
+ //API for subsidy routes crud
+  app.get('/subsidies', subsidy.list);
+  app.get('/subsidies/:id', subsidy.getSubsidy);
+  app.post('/subsidies', subsidy.create);
+  app.put('/subsidies/:id', subsidy.update);
+  app.delete('/subsidies/:id', subsidy.remove);
 
 
   // -> Add :route
