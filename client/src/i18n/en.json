@@ -2647,7 +2647,9 @@
    "HOME_PAGE" : "Default Home Page",
    "LANGUAGE"  : "Language",
    "LAST_PAGE" : "Last Page Visited",
-   "TITLE"     : "BHIMA Settings"
+   "TITLE"     : "BHIMA Settings",
+   "LOGOUT_TITLE" : "Logout of BHIMA",
+   "LOGOUT"    : "Logout"
    },
 "SEX": {
    "F" : "F",
