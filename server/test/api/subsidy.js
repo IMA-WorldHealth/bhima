@@ -53,7 +53,6 @@ describe('The subsidy API, PATH : /subsidies', function () {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.all.keys('code', 'httpStatus', 'reason');
-
       })
       .catch(helpers.handler);
   });  

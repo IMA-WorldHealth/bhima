@@ -59,6 +59,8 @@ var reference       = require('../controllers/finance/reference');
 
 var subsidy        = require('../controllers/finance/subsidy');
 
+var subsidy        = require('../controllers/finance/subsidy');
+
 var patientInvoice = require('../controllers/finance/patientInvoice');
 
 var financeServices      = require('../controllers/categorised/financeServices');

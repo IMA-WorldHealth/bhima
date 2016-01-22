@@ -61,7 +61,7 @@ module.exports = {
     code : 'ERR_NEGATIVE_VALUES',
     httpStatus : 400,
     reason : 'Expected some value(s) to be positive, but received a negative value.'
-  }
+  },
 
  'ERR_BAD_VALUE' : {
    code : 'ERR_BAD_VALUE',
