@@ -1,47 +1,92 @@
-// Module: lib/util.js
+/**
+ * A variety of utilities to use in the server.  This should be replaced with a
+ * tested npm module in the future.
+ *
+ * @module lib/util
+ * @todo remove deprecated functions
+ */
 
-// This modules adds utilities available throughout the
-// server.
+// import Node's native util
+var util = require('util');
 
-module.exports = {
+/** check if an arry or object is empty */
+exports.empty = function empty(object) {
+  'use strict';
+  if (Array.isArray(object)) {
+    return object.length === 0;
+  } else {
+    return Object.keys(object).length === 0;
+  }
+};
 
-  isInt : function (i) { return Math.floor(i) === Number(i); },
 
-  // this also works for hexadecimal ('0x12')
-  isNumber: function (n) { return !Number.isNaN(Number(n)); },
+/**
+ * check if a value is an array.  Will be removed at the release of bhima-2.X.
+ * @deprecated since bhima-2.X
+ */
+exports.isArray =
+  util.deprecate(Array.isArray, 'Use the native Array.isArray() instead.');
 
-  isArray: function (arr) { return Object.prototype.toString.call(arr) === '[object Array]'; },
 
-  isString: function (str) { return typeof str === 'string'; },
+/** check if a value is an integer */
+exports.isInt = function isInt(value) {
+  return (Math.floor(value) === Number(value));
+};
 
-  isObject: function (obj) { return typeof obj === 'object'; },
+/** check if a value is a number. This also works for hexadecimal ('0x12') */
+function isNumber(value) {
+  return !Number.isNaN(Number(value));
+}
 
-  //convertToMysqlDate: function convertToMysqlDate(dateString){ return toMySqlDate(dateString); }
+exports.isNumber = isNumber;
 
-  toMysqlDate : function (dateString) {
-    // This style of convert to MySQL date avoids changing
-    // the prototype of the global Date object
-    if (!dateString) { return new Date().toISOString().slice(0, 10); }
+/** check if a value is a string */
+exports.isString = function isString(value) {
+  return (typeof value === 'string');
+};
 
-    var date = new Date(dateString),
-      year = String(date.getFullYear()),
-      month = String(date.getMonth() + 1),
-      day = String(date.getDate());
+/** check if a value is an object */
+exports.isObject = function isObject(value) {
+  return (typeof value === 'object');
+};
 
-    month = month.length < 2 ? '0' + month : month;
-    day = day.length < 2 ? '0' + day : day;
+/**
+ * converts a date or date string to a mysql-friendly date
+ * @deprecated since bhima-2.X
+ */
+function toMysqlDate(dateString) {
 
-    return [year, month, day].join('-');
-  },
+  // This style of convert to MySQL date avoids changing
+  // the prototype of the global Date object
+  if (!dateString) { return new Date().toISOString().slice(0, 10); }
 
-  isPositive : function (number) { return this.isNumber(number) && Number(number) >= 0; },
+  var date = new Date(dateString),
+    year = String(date.getFullYear()),
+    month = String(date.getMonth() + 1),
+    day = String(date.getDate());
 
-  isNegative : function (number) { return this.isNumber(number) && !this.isPositive(number); },
+  month = month.length < 2 ? '0' + month : month;
+  day = day.length < 2 ? '0' + day : day;
 
-  isDefined : function (a) { return a !== undefined; },
+  return [year, month, day].join('-');
+}
 
-  exists : function (a) { return this.isDefined(a) && !this.isNull(a); },
+exports.toMysqlDate =
+  util.deprecate(toMysqlDate, 'Use node-mysql\'s automatic date escaping.');
 
-  toDistinctValues : function(a) { return a.reduce(function(p, c) { if (p.indexOf(c) < 0) { p.push(c); } return p; }, []); }
+/** check if a value is a postive number */
+function isPositive(value) {
+  return isNumber(value) && Number(value) >= 0;
+}
 
+exports.isPositive = isPositive;
+
+/** check if a value is a negative number */
+exports.isNegative = function (value) {
+  return isNumber(value) && !isPositive(value);
+};
+
+/** check if a value is defined */
+exports.isDefined = function isDefined(value) {
+  return value !== undefined;
 };

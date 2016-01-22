@@ -1,6 +1,8 @@
 /**
 * Cash Controller
 *
+* @module finance/cash
+*
 * This controller is responsible for processing cash payments for patients. The
 * payments can either be against an previous invoice (sale payment) or a future
 * invoice (cautionary payment).
@@ -12,12 +14,6 @@
 */
 var db   = require('../../lib/db');
 var uuid = require('../../lib/guid');
-
-// check if an object is empty
-// TODO - can this be from a library?
-function empty(object) {
-  return Object.keys(object).length === 0;
-}
 
 // looks up a single cash record and associated cash_items
 // sets the "canceled" flag if a cash_discard record exists.
