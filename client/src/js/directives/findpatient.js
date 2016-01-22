@@ -12,6 +12,11 @@ FindPatientDirective.$inject = ['$compile', '$http', 'appcache'];
 * /patient/search/?name={string} The HTTP endpoints sends back 20 results
 * which are then presented to the user.
 *
+* This Directive take these attributes :
+*   - type : which take one of these values (inline or panel)
+*   - on-search-complete : the callback function which get the returned patient
+* By default the directive has the `inline` type
+*
 */
 function FindPatientDirective($compile, $http, AppCache) {
   return {
@@ -19,7 +24,7 @@ function FindPatientDirective($compile, $http, AppCache) {
     templateUrl : 'partials/templates/findpatient.tmpl.html',
     scope : {
       callback : '&onSearchComplete',
-      inline   : '='
+      type     : '@type'
     },
     link : function(scope, element, attrs) {
       var cache   = new AppCache('FindPatientDirective'),
@@ -141,7 +146,8 @@ function FindPatientDirective($compile, $http, AppCache) {
       function findBy(option) {
         session.selected   = option;
         session.loadStatus = null;
-        scope.patient      = {};
+        session.idInput    = undefined;
+        session.nameInput  = undefined;
         saveOption(session.selected);
       }
 
@@ -203,7 +209,7 @@ function FindPatientDirective($compile, $http, AppCache) {
           patient.sex = patient.sex.toUpperCase();
 
           // call the external $scope callback
-          // scope.callback({ patient : patient });
+          scope.callback({ patient : patient });
 
         } else {
           session.loadStatus = 'error';

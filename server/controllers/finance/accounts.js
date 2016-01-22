@@ -11,16 +11,12 @@ exports.list = function list(req, res, next) {
   // This should probably take a query string for filtering to
   // make it more useful all around.
   // Some ideas:
-  // ?classe=5, ?type=ohada, etc...
+  // ?classe=5, etc...
 
   var sql =
     'SELECT a.id, a.account_number, a.account_txt, a.parent, at.type ' +
     'FROM account AS a JOIN account_type AS at ON ' +
       'a.account_type_id = at.id';
-
-  if (req.query.type === 'ohada') {
-    sql += ' WHERE a.is_ohada = 1';
-  }
 
   sql += ' ORDER BY a.account_number;';
 
@@ -179,11 +175,11 @@ exports.getClassSolde = function (req, res, next) {
   */
 exports.getTypeSolde = function (req, res, next) {
 
-    var fiscalYearId = req.params.fiscal_year,
+  var fiscalYearId = req.params.fiscal_year,
         accountType   = req.params.account_type_id,
         accountIsCharge = req.params.is_charge;
 
-    var sql =
+  var sql =
       'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `ac`.`account_type_id`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
       'FROM (' +
         '(' +
