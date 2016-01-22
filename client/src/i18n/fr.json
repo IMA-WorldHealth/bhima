@@ -1252,9 +1252,10 @@
       "PLACEHOLDER"     : "Par le numéro de Compte ou bien par le nom"
       },
    "PATIENT"           : "Patient",
+   "PATIENT_FOUND"     : "Patient Trouvé",
    "PATIENT_ID"        : "ID Patient",
    "PATIENT_NAME"      : "Nom du Patient",
-   "NOT_FOUND"         : "non trouvé",
+   "PATIENT_NOT_FOUND" : "Patient Non Trouvé",
    "SEARCH"            : "Rechercher",
    "SEARCH_NAME"       : "Chercher Par Nom",
    "SEARCH_PATIENT_ID" : "Chercher ID Patient",

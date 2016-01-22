@@ -1249,9 +1249,10 @@
       "PLACEHOLDER"   : "Account Name or Number"
       },
    "PATIENT"           : "Patient",
+   "PATIENT_FOUND"     : "Patient Found",
    "PATIENT_ID"        : "Patient ID",
-   "PATIENT_NAME"      : "Patient name",
-   "NOT_FOUND"         : "Not found",
+   "PATIENT_NAME"      : "Patient Name",
+   "PATIENT_NOT_FOUND" : "Patient Not Found",
    "SEARCH"            : "Search",
    "SEARCH_NAME"       : "Search by Name",
    "SEARCH_PATIENT_ID" : "Search by Patient ID",
