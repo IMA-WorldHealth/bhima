@@ -12,6 +12,7 @@ INSERT INTO `unit` VALUES (0,'Root','TREE.ROOT','The unseen root node',NULL,'/pa
   (5,'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
   (12,'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
   (14,'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register/'),
+  (16,'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/partials/patient_invoice/','/invoices/patient'),
   (18,'Cash Payments','TREE.CASH_PAYMENTS','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
   (22,'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
   (42,'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
@@ -95,6 +96,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Patient Registration
 (14,1),
+
+-- Patient Invoice
+(16,1),
 
 -- Cash Payments
 (18,1),

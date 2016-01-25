@@ -375,6 +375,12 @@ function bhimaconfig($routeProvider) {
   })
 
   /* */
+
+  .when('/invoices/patient', { 
+    controller : 'PatientInvoiceController as PatientInvoiceCtrl',
+    templateUrl : 'partials/patient_invoice/patientInvoice.html'
+  })
+
   .when('/patients/search/:patientID?', {
     controller: 'patientRecords',
     templateUrl: '/partials/patients/search/search.html'

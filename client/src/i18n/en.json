@@ -3265,6 +3265,7 @@
    "PATIENT_SEARCH"            : "Patient Search",
    "PATIENT_STANDING"          : "Patient Standing",
    "PATIENT_VISIT_STATUS"      : "Patient Visits",
+   "PATIENT_INVOICE"           : "Patient Invoice",
    "PAYMENT_PERIOD"            : "Payment Period Management",
    "PAYROLL"                   : "Payroll",
    "PAYROLL_REPORT"            : "Payroll",
