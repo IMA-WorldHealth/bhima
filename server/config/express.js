@@ -10,6 +10,7 @@ var express    = require('express'),
     fs         = require('fs');
 
 var codes = require('../config/codes');
+var interceptors = require('../config/interceptors');
 
 // Accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
@@ -55,7 +56,7 @@ exports.configure = function configure(app) {
     var emptyBody = Object.keys(req.body).length === 0;
 
     if (emptyBody) {
-      next(req.codes.ERR_EMPTY_BODY);
+      next(Error(req.codes.ERR_EMPTY_BODY));
     } else {
       next();
     }
@@ -92,80 +93,18 @@ exports.configure = function configure(app) {
     var publicRoutes = ['/login', '/languages', '/projects', '/logout'];
 
     if (req.session.user === undefined && !within(req.path, publicRoutes)) {
-      next('ERR_NOT_AUTHENTICATED');
+      next(Error(req.codes.ERR_NOT_AUTHENTICATED));
     } else {
       next();
     }
   });
 };
 
+/** configures error handlers */
 exports.errorHandling = function errorHandling(app) {
   'use strict';
 
-  // TODO Is there a open source middleware that does this?
-  function interceptDatabaseErrors(err, req, res, next) {
-    var codes = [{
-        code : 'ER_BAD_FIELD_ERROR',
-        httpStatus : 400,
-        reason : 'Column does not exist in database.'
-      }, {
-        code : 'ER_ROW_IS_REFERENCED_2',
-        httpStatus : 400,
-        reason : 'Cannot delete entity becuase entity is used in another table.'
-      }
-    ];
-
-    var supported = codeSupported(codes, err);
-    if (supported) {
-
-      // NOTE -- we prefix errors with "DB." for proper client
-      // translation.
-      // TODO -- review this decision
-      return res.status(supported.httpStatus).json({
-        code : 'DB.' + supported.code,
-        reason : supported.reason,
-        raw : err
-      });
-    } else {
-
-      // Unkown code - forward error
-      next(err);
-    }
-  }
-
-  function catchAll(err, req, res, next) {
-    console.log('[ERROR]', err);
-    res.status(500).json(err);
-    return;
-  }
-
-  // TODO Research methods effeciency and refactor
-  function codeSupported(codes, err) {
-    var result = null;
-
-    codes.some(function (supported) {
-      if (supported.code === err.code) {
-        result = supported;
-        return true;
-      }
-    });
-    return result;
-  }
-
-  function interceptThrownErrors(err, req, res, next) {
-
-    // check if it is a throw error
-    if (err.httpStatus) {
-      res.status(err.httpStatus).json(err);
-    } else if (typeof err === 'string') {
-      var error = codes[err];
-      res.status(error.httpStatus).json(error);
-    } else {
-      next(err);
-    }
-  }
-
-  app.use(interceptThrownErrors);
-  app.use(interceptDatabaseErrors);
-  app.use(catchAll);
+  app.use(interceptors.apiErrorHandler);
+  app.use(interceptors.databaseErrorHandler);
+  app.use(interceptors.catchAllErrorHandler);
 };

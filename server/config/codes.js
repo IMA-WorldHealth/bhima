@@ -1,16 +1,17 @@
 /**
-* Application Error Codes
+* @module config/codes
 *
-* These codes are to be attached to the res object, and used to throw errors
+* @desc These codes are to be attached to the res object, and used to throw errors
 * within the application.  The basic usage should be either:
-*  1) next(res.errors.ERR_NOT_FOUND);
-*  2) .then(function () { throw res.errors.ERR_NOT_FOUND; }).catch(next);
 *
-*  The JSON below defines the error codes throughout the application.
+* @example
+* next(Error(res.codes.ERR_NOT_FOUND));
+* Promise.then(function () { throw new Error(res.codes.ERR_NOT_FOUND); }).catch(next);
 */
 
-// TODO -- add more error codes
 module.exports = {
+
+  /** application error codes */
   'ERR_NOT_FOUND' : {
     code : 'ERR_NOT_FOUND',
     httpStatus : 404,
@@ -34,12 +35,12 @@ module.exports = {
   'ERR_NO_ENTERPRISE' : {
     code : 'ERR_NO_ENTERPRISE',
     httpStatus : 401,
-    reason : 'An enterprise does not exist within the application to login to.'
+    reason : 'There are no enterprises regiested in the database. Please contact a developer.'
   },
   'ERR_NO_PROJECT' : {
     code : 'ERR_NO_PROJECT',
     httpStatus : 401,
-    reason : 'A project does not exist within the applicaiton to login to.'
+    reason : 'There are no projects registered in the database.  The selected action cannot be completed.'
   },
   'ERR_EMPTY_BODY' : {
     code : 'ERR_EMPTY_BODY',
@@ -54,18 +55,58 @@ module.exports = {
   'ERR_PARAMETERS_REQUIRED' : {
     code : 'ERR_PARAMETERS_REQUIRED',
     httpStatus : 400,
-    reason : 'That Request require some necessary parameters which are missing'
+    reason : 'The request requires at least one parameter.'
   },
-
   'ERR_NEGATIVE_VALUES' : {
     code : 'ERR_NEGATIVE_VALUES',
     httpStatus : 400,
     reason : 'Expected some value(s) to be positive, but received a negative value.'
   },
-
  'ERR_BAD_VALUE' : {
    code : 'ERR_BAD_VALUE',
    httpStatus : 400,
-   reason : 'You sent a bad value for some parameters'	
- }
+   reason : 'You sent a bad value for some parameters'
+ },
+
+  /** MySQL error codes */
+  'ER_DISK_FULL' : {
+    code : 'DB.ER_DISK_FULL',
+    httpStatus : 500,
+    reason : 'The databsae ran out of space.  Please free some memory to continue using the application.'
+  },
+  'ER_DUP_KEY' : {
+    code : 'DB.ER_DUP_KEY',
+    httpStatus: 400,
+    reason : 'A key collided in a unique database field.  Please either retry your action.  If the problem persists, contact the developers.'
+  },
+  'ER_BAD_FIELD_ERROR' : {
+    code : 'DB.ER_BAD_FIELD_ERROR',
+    httpStatus : 400,
+    reason : 'Column does not exist in database.'
+  },
+  'ER_ROW_IS_REFERENCED_2' : {
+    code : 'DB.ER_ROW_IS_REFERENCED_2',
+    httpStatus : 400,
+    reason : 'Cannot delete entity becuase entity is used in another table.'
+  },
+  'ER_BAD_NULL_ERROR'  : {
+    code : 'DB.ER_BAD_NULL_ERROR',
+    httpStatus: 400,
+    reason : 'A column was left NULL that cannot be NULL.'
+  },
+  'ER_DUP_ENTRY' : {
+    code : 'DB.ER_DUP_ENTRY',
+    httpStatus: 400,
+    reason : 'You cannot insert a duplicate record.  This record already exists.'
+  },
+  'ER_PARSE_ERROR' : {
+    code : 'DB.ER_PARSE_ERROR',
+    httpStatus : 400,
+    reason : 'Your query cannot be translated into valid SQL.  Please modify your query and try again.'
+  },
+  'ER_EMPTY_QUERY' :  {
+    code : 'DB.ER_EMPTY_QUERY',
+    httpStatus : 400,
+    reason : 'The query was empty.'
+  }
 };
