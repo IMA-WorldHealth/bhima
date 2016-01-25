@@ -56,9 +56,16 @@ module.exports = {
     httpStatus : 400,
     reason : 'That Request require some necessary parameters which are missing'
   },
+
   'ERR_NEGATIVE_VALUES' : {
     code : 'ERR_NEGATIVE_VALUES',
     httpStatus : 400,
     reason : 'Expected some value(s) to be positive, but received a negative value.'
-  }
+  },
+
+ 'ERR_BAD_VALUE' : {
+   code : 'ERR_BAD_VALUE',
+   httpStatus : 400,
+   reason : 'You sent a bad value for some parameters'	
+ }
 };

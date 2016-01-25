@@ -10,9 +10,6 @@ helpers.configure(chai);
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
-
 describe('The reference API, PATH : /references', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
