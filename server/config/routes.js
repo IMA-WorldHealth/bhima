@@ -62,6 +62,7 @@ var subsidy        = require('../controllers/finance/subsidy');
 var subsidy        = require('../controllers/finance/subsidy');
 
 var patientInvoice = require('../controllers/finance/patientInvoice');
+var discounts      = require('../controllers/finance/discounts');
 
 var financeServices      = require('../controllers/categorised/financeServices');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
@@ -454,4 +455,12 @@ exports.configure = function (app) {
   app.post('/billing_services', billingServices.create);
   app.put('/billing_services/:id', billingServices.update);
   app.delete('/billing_services/:id', billingServices.delete);
+
+
+  /** discounts */
+  app.get('/discounts', discounts.list);
+  app.get('/discounts/:id', discounts.detail);
+  app.post('/discounts', discounts.create);
+  app.put('/discounts/:id', discounts.update);
+  app.delete('/discounts/:id', discounts.delete);
 };
