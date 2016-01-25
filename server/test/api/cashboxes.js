@@ -1,28 +1,21 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach, process */
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-// workaround for low node versions
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
-
-// environment variables - disable certificate errors
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-// base URL
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
+/** import test helpers */
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 /**
 * The /cashboxes API endpoint
 */
 describe('The /cashboxes API endpoint', function () {
-  var agent = chai.request.agent(url);
+  'use strict';
+
+  var agent = chai.request.agent(helpers.baseUrl);
 
   // constants
   var NUMBER_OF_CASHBOXES = 2;
@@ -47,15 +40,9 @@ describe('The /cashboxes API endpoint', function () {
     loss_exchange_account_id: 3631
   };
 
-  // throw errors
-  function handler(err) { throw err; }
 
-  // login before each request
-  beforeEach(function () {
-    return agent
-      .post('/login')
-      .send(user);
-  });
+  /** login before each request */
+  beforeEach(helpers.login(agent));
 
   it('GET /cashboxes returns a list of cashboxes', function () {
     return agent.get('/cashboxes')
@@ -65,7 +52,7 @@ describe('The /cashboxes API endpoint', function () {
         expect(res.body[0]).to.contain.keys('id', 'text');
         expect(res.body).to.have.length(NUMBER_OF_CASHBOXES);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /cashboxes?is_auxillary=1 returns only auxillary cashboxes', function () {
@@ -75,7 +62,7 @@ describe('The /cashboxes API endpoint', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(NUMBER_OF_AUX_CASHBOXES);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /cashboxes/:id should return a single cashbox with currencies', function () {
@@ -87,7 +74,7 @@ describe('The /cashboxes API endpoint', function () {
         expect(res.body).to.contain.keys('currencies', 'id', 'text');
         expect(res.body.currencies).to.have.length(NUMBER_OF_CASHBOX_CURRENCIES);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /cashboxes/:id should return a 404 for invalid cashbox', function () {
@@ -95,7 +82,7 @@ describe('The /cashboxes API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(404);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('POST /cashboxes should create a new cashbox', function () {
@@ -116,7 +103,7 @@ describe('The /cashboxes API endpoint', function () {
         expect(res.body.text).to.equal(BOX.text);
         expect(res.body.is_auxillary).to.equal(BOX.is_auxillary);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /cashboxes/:id should update the cashbox', function () {
@@ -128,7 +115,7 @@ describe('The /cashboxes API endpoint', function () {
         expect(res.body.text).to.equal(BOX.text);
         expect(res.body.is_auxillary).to.equal(0);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /cashboxes/:id/currencies should return an empty list of cashbox currencies', function () {
@@ -147,7 +134,7 @@ describe('The /cashboxes API endpoint', function () {
         expect(res).to.be.json;
         expect(res.body).to.contain.keys('id');
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /cashboxes/:id/currencies/:currencyId should return a single cashbox currency reference', function () {
@@ -181,7 +168,7 @@ describe('The /cashboxes API endpoint', function () {
         expect(res.body.gain_exchange_account_id).not.to.equal(BOX_CURRENCY.gain_exchange_account_id);
         expect(res.body.loss_exchange_account_id).to.equal(BOX_CURRENCY.gain_exchange_account_id);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /cashboxes/:id/currencies/undefined should successfully return nothing', function () {
@@ -192,7 +179,7 @@ describe('The /cashboxes API endpoint', function () {
         expect(res).to.be.json;
         expect(res.body).to.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('DELETE /cashboxes/:id should delete the cashbox and associated currencies', function () {
@@ -204,7 +191,6 @@ describe('The /cashboxes API endpoint', function () {
     .then(function (res) {
       expect(res).to.have.status(404);
     })
-    .catch(handler);
+    .catch(helpers.handler);
   });
-
 });
