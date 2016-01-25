@@ -272,9 +272,6 @@
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "UPDATE_SUCCESS"         : "Successfully updated a cashbox."
    },
-   "CLEAR_SELECTION"  : "Clear Selection",
-   "DEBITOR_INVOICES" : "Debtor Invoices",
-   "DEFAULT_CASHBOX"  : "Caisse",
    "EXTRA" : {
       "ACTION"             : "Action",
       "FILTER_PATIENT"     : "Client filter",
@@ -292,12 +289,6 @@
       "TITLE"              : "Regularization of payments",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
-   "FLOW" : {
-     "TITLE" : "Cash Flow "
-   },
-   "HELP_TXT_1"       : "The module allows debitors to pay against existing invoices",
-   "HELP_TXT_2"       : "To begin, search for a debitor using the search bar above",
-   "NO_EXCHANGE_RATE" : "Error : No exchange rate!",
    "OVER": {
       "CUED"          : "The debtor has been billed this amount",
       "DANGER"        : "Warning!",
@@ -306,16 +297,22 @@
       "PAYMENT"       : "The debitor is paying a this amount",
       "REASON"        : "Reason",
       "TITLE"         : "Justification for Payment"
-      },
-   "OVERDUE"          : "Over Due",
-   "PAYMENT"          : "Payment",
-   "PAY_INVOICES"     : "Pay Invoices",
-   "TITLE"            : "Auxillary Cash Module",
-   "TOTAL_DUE"        : "Total Due",
-   "TOTAL_PAYING"     : "Total Paying",
-   "WARNING"          : "This patient is a contracted and can not pay checkout in Cash Payments",
-   "WARNING_2"        : "For the payment of old bills would have to change his debtor group"
    },
+   "VOUCHER" : {
+     "TITLE" : "Cash Payments",
+     "CASHBOXES" : { 
+       "AVAILABLE" : "Available Cashboxes",
+       "UNCONFIGURED" : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue.",
+       "LINK" : "Click here to add it.",
+       "MISSING" : "Don't see your cashbox?"
+     },
+     "SLIP" : "Cash Voucher",
+     "CASHBOX" : "Cashbox",
+     "CAUTION" : "Caution",
+     "INVOICE" : "Invoice Payment",
+     "SELECT_INVOICES" : "Select Invoice(s)"
+   }
+  },
 "CASH_DISCARD" : {
   "CASH_DETAILS"     : "Details",
   "DESCRIPTION"      : "Description",
