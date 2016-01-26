@@ -1,76 +1,76 @@
 <div class="flex-content">
-<div class="container-fluid">
-  <div class="center-block" style="margin-top : 2em; max-width:400px;">
-    <div class="panel panel-default">
-      <div class="panel-heading clearfix">
-        <div class="pull-right" uib-dropdown>
-          <button class="btn btn-default" uib-dropdown-toggle>
-            <span class="caret"></span>
-          </button>
-          <ul class="uib-dropdown-menu" role="menu">
-            <li role="menuitem" ng-repeat="lang in LoginCtrl.languages track by lang.key">
-              <a ng-click="LoginCtrl.setLanguage(lang)">{{ lang.name }}</a>
-            </li>
-          </ul>
+  <div class="container-fluid">
+    <div class="center-block" style="margin-top : 2em; max-width:400px;">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <div class="pull-right" uib-dropdown>
+            <button class="btn btn-default" uib-dropdown-toggle>
+              <span class="caret"></span>
+            </button>
+            <ul class="uib-dropdown-menu" role="menu">
+              <li role="menuitem" ng-repeat="lang in LoginCtrl.languages track by lang.key">
+                <a ng-click="LoginCtrl.setLanguage(lang)">{{ lang.name }}</a>
+              </li>
+            </ul>
+          </div>
+          <h4>{{ "AUTH.LOGIN" | translate }}</h4>
         </div>
-        <h4>{{ "AUTH.LOGIN" | translate }}</h4>
-      </div>
-      <div class="panel-body">
+        <div class="panel-body">
 
-        <form name="LoginForm" ng-submit="LoginCtrl.login(LoginForm.$invalid, LoginCtrl.credentials)" novalidate>
+          <form name="LoginForm" ng-submit="LoginCtrl.login(LoginForm.$invalid, LoginCtrl.credentials)" novalidate>
 
-          <!-- display the server-sent error as an alert -->
-          <div class="alert alert-danger" ng-if="!!LoginCtrl.error">
-            <strong><i class="glyphicon glyphicon-exclamation-sign"></i> {{ LoginCtrl.error | translate }}</strong>
-          </div>
+            <!-- display the server-sent error as an alert -->
+            <div class="alert alert-danger" ng-if="!!LoginCtrl.error">
+              <strong><i class="glyphicon glyphicon-exclamation-sign"></i> {{ LoginCtrl.error | translate }}</strong>
+            </div>
 
-          <!-- client-side validation error: requires both username and password -->
-          <div class="alert alert-danger" ng-if="LoginForm.$submitted && LoginForm.$invalid">
-            <b><i class="glyphicon glyphicon-exclamation-sign"></i> {{ "AUTH.ERR_MISSING_DATA" | translate }}</b>
-          </div>
+            <!-- client-side validation error: requires both username and password -->
+            <div class="alert alert-danger" ng-if="LoginForm.$submitted && LoginForm.$invalid">
+              <b><i class="glyphicon glyphicon-exclamation-sign"></i> {{ "AUTH.ERR_MISSING_DATA" | translate }}</b>
+            </div>
 
-          <fieldset>
-            <div class="form-group">
-              <label for="username">{{ "COLUMNS.USERNAME" | translate }}</label>
-              <div class="input-group">
-                <span class="input-group-addon" style="background-color: #fff;">
-                  <span class="glyphicon glyphicon-user"></span>
-                </span>
-                <input name="username" ng-model="LoginCtrl.credentials.username" class="form-control" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_USERNAME' | translate }}" type="text" autofocus required />
+            <fieldset>
+              <div class="form-group">
+                <label for="username">{{ "COLUMNS.USERNAME" | translate }}</label>
+                <div class="input-group">
+                  <span class="input-group-addon" style="background-color: #fff;">
+                    <span class="glyphicon glyphicon-user"></span>
+                  </span>
+                  <input name="username" ng-model="LoginCtrl.credentials.username" class="form-control" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_USERNAME' | translate }}" type="text" autofocus required />
+                </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label for="password">{{ "COLUMNS.PASSWORD" | translate }}</label>
-              <div class="input-group">
-                <span class="input-group-addon" style="background-color: #fff;">
-                  <span class="glyphicon glyphicon-lock"></span>
-                </span>
-                <input name="password" ng-model="LoginCtrl.credentials.password" class="form-control" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_PASSWORD' | translate }}" "" type="password" required />
+              <div class="form-group">
+                <label for="password">{{ "COLUMNS.PASSWORD" | translate }}</label>
+                <div class="input-group">
+                  <span class="input-group-addon" style="background-color: #fff;">
+                    <span class="glyphicon glyphicon-lock"></span>
+                  </span>
+                  <input name="password" ng-model="LoginCtrl.credentials.password" class="form-control" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_PASSWORD' | translate }}" "" type="password" required />
+                </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label for="password">{{ "COLUMNS.PROJECT" | translate }}</label>
-              <div class="input-group">
-                <span class="input-group-addon" style="background-color: #fff;">
-                  <i class="glyphicon glyphicon-home"></i>
-                </span>
-                <select name="project" class="form-control" ng-model="LoginCtrl.credentials.project" ng-options="proj.id as proj.name for proj in LoginCtrl.projects">
-                  <option value="" disabled="disabled"> -- {{ "SELECT.PROJECT" | translate }} --</option>
-                </select>
+              <div class="form-group">
+                <label for="password">{{ "COLUMNS.PROJECT" | translate }}</label>
+                <div class="input-group">
+                  <span class="input-group-addon" style="background-color: #fff;">
+                    <i class="glyphicon glyphicon-home"></i>
+                  </span>
+                  <select name="project" class="form-control" ng-model="LoginCtrl.credentials.project" ng-options="proj.id as proj.name for proj in LoginCtrl.projects">
+                    <option value="" disabled="disabled"> -- {{ "SELECT.PROJECT" | translate }} --</option>
+                  </select>
+                </div>
               </div>
-            </div>
-      
-            <div class="form-group">
-              <button id="submit" class="btn btn-default" type="submit">
-               {{ "FORM.LOGIN" | translate }}
-              </button>
-            </div>
-          </fieldset>
-        </form>
+        
+              <div class="form-group">
+                <button id="submit" class="btn btn-default" type="submit">
+                 {{ "FORM.LOGIN" | translate }}
+                </button>
+              </div>
+            </fieldset>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>
