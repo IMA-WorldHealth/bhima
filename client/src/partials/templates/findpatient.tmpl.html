@@ -1,73 +1,208 @@
-<div class="panel panel-default" ng-class="{'panel-success': session.valid === true, 'panel-danger': session.valid === false }">
-  <div class="panel-heading clearfix">
+<div ng-switch="type">
 
-    <!-- banner before submission -->
-    <div ng-if="!session.submitted">
-      <i class="glyphicon glyphicon-search"></i> {{ "FIND.TITLE" | translate }}
+  <!-- Inline Find Patient Directive UI  -->
+  <div class="form-group has-feedback "
+    ng-switch-default
+    ng-form="formFindPatient"
+    novalidate>
+
+    <!-- inline input zone -->
+    <div class="input-group" ng-if="session.showSearchView">
+
+      <!-- dropdown button -->
+      <div class="input-group-btn" uib-dropdown>
+        <button class="btn btn-default" uib-dropdown-toggle>
+          {{ session.selected.label | translate }} <span class="caret"></span>
+        </button>
+        <ul class="uib-dropdown-menu">
+          <li ng-repeat="option in session.options">
+            <a href="" ng-click="findBy(option)">{{ option.label | translate }}</a>
+          </li>
+        </ul>
+      </div>
+      <!-- /dropdown button -->
+
+      <!-- search by ID  -->
+      <input ng-model="session.idInput"
+        ng-if="session.selected.key==0"
+        ng-keyup="readInput($event)"
+        ng-change="validateNameSearch(session.idInput)"
+        name="idInput"
+        type="text"
+        class="form-control"
+        placeholder="{{ session.selected.placeholder | translate }}..."
+        required>
+
+      <!-- search by Name  -->
+      <input ng-model="session.nameInput"
+        ng-if="session.selected.key==1"
+        ng-keyup="readInput($event)"
+        name="nameInput"
+        type="text"
+        class="form-control"
+        placeholder="{{ session.selected.placeholder | translate }}..."
+        uib-typeahead="patient as patient.label for patient in searchByName($viewValue)"
+        typeahead-no-results="session.noPatients"
+        typeahead-loading="session.loadingPatients"
+        typeahead-template-url="/partials/templates/patientListe.tmpl.html"
+        typeahead-on-select="selectPatient($item)"
+        required>
+
+      <!-- submit button for search by ID -->
+      <!-- use of fixed width that correspond to notification text margin right -->
+      <span class="input-group-btn">
+        <button style="width:8em;" class="btn btn-success"
+          ng-disabled="!session.validInput"
+          ng-click="submit()">
+          <span>{{ "FIND.SEARCH" | translate }}</span>
+        </button>
+      </span>
+    </div>
+    <!-- /inline input zone -->
+
+    <!-- inline notification -->
+    <!-- HACK: The Notification position must correspond to search button width  -->
+    <div ng-if="session.showSearchView" class="pull-right" style="margin-right:8em;">
+      <span class="text-warning" ng-if="(session.noPatients && session.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
+      <span class="text-info" ng-if="(session.loadingPatients && session.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
+    </div>
+    <!-- /inline notification -->
+
+    <!-- notification zone for result  -->
+    <div class="alert "
+      ng-class="{'alert-success': session.loadStatus=='loaded', 'alert-danger': session.loadStatus=='error'}"
+      ng-if="!session.showSearchView">
+
+      <!-- patient found notification -->
+      <span ng-if="session.loadStatus=='loaded'">
+        <i class="glyphicon glyphicon-ok"></i> &nbsp; {{ "FIND.PATIENT_FOUND" | translate }}: &nbsp;
+        <b>({{ patient.reference }})</b> {{ patient.name + ' (' + patient.sex + ' ' + patient.age + ')'}}
+      </span>
+
+      <!-- patient not found notification -->
+      <span ng-if="session.loadStatus=='error'">
+        <i class="glyphicon glyphicon-alert"></i> &nbsp; {{ 'FIND.PATIENT_NOT_FOUND' | translate }}
+      </span>
+
+      <!-- reload for new search -->
       <div class="pull-right">
-        <a href="" ng-class="{'link-selected': session.state === 'id' }" ng-click="toggleSearch('id')">
-          <i class="glyphicon glyphicon-pencil"></i> {{ "FIND.SEARCH_PATIENT_ID" | translate }}
-        </a>
-        <a href="" ng-class="{'link-selected': session.state === 'name' }" ng-click="toggleSearch('name')">
-          <i class="glyphicon glyphicon-user"></i> {{ "FIND.SEARCH_NAME" | translate }}
-        </a>
+        <a href="" class="alert-link" ng-click="reload()"><i class="glyphicon glyphicon-repeat"></i></a>
       </div>
     </div>
+    <!-- /notification zone  -->
 
-    <!-- banner after submission -->
-    <div ng-if="session.submitted">
-      <i style="margin-right: 5px;" class="glyphicon glyphicon-user"></i> {{ patient.name }}
-      <small>({{ patient.sex }} {{ (patient.ageObject.years <= 1) ? patient.ageObject.months : patient.ageObject.years }} {{ (patient.ageObject.years <= 1) ? "UTIL.MONTHS" : "UTIL.YEARS" | translate }}) </small>
-      <div class="pull-right" ng-if="enableRefresh" style="cursor:pointer;">
-        <i ng-click="refresh()" class="glyphicon glyphicon-repeat"></i>
-      </div>
-    </div>
   </div>
+  <!-- /Inline Find Patient Directive UI  -->
 
-  <div class="panel-body find-collapse" ng-if="!(session.submitted && session.valid)">
-    <div ng-switch="session.state">
+<!-- ======================================================================= -->
 
-      <!-- search by name -->
-      <div ng-switch-when="name">
-        <div class="input-group">
-          <input
-          type="text"
-          class="form-control"
-          ng-model="input.model"
-          uib-typeahead="patient as fmtPatient(patient) for patient in fuzzyNameSearch($viewValue)"
-          placeholder="{{ 'FIND.PATIENT_NAME' | translate }}"
-          uib-typeahead-wait-ms="150"
-          uib-typeahead-template-url="/partials/templates/debtorListItem.tmpl.html"
-          uib-typeahead-no-results="noPatients"
-          size="25">
-          <span class="input-group-btn">
-            <button ng-disabled="validateNameSearch(input.model)" ng-click="selectPatient(input.model)" class="btn btn-default">
-              {{ "FORM.SUBMIT" | translate }}
+  <!-- "Panel" Find Patient Directive UI -->
+  <div class="panel panel-default"
+    ng-class="{'panel-success': session.loadStatus=='loaded', 'panel-danger': session.loadStatus=='error'}"
+    ng-switch-when="panel">
+
+    <!-- panel heading -->
+    <div class="panel-heading">
+      <i class="glyphicon glyphicon-search"></i> {{ "FIND.TITLE" | translate }}
+
+      <!-- state notification  -->
+      <div class="pull-right"
+        ng-if="session.loadStatus!='loaded' && session.loadStatus!='error'">
+        <span class="text-warning" ng-if="(session.noPatients && session.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
+        <span class="text-info" ng-if="(session.loadingPatients && session.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
+      </div>
+      <!-- state notification  -->
+    </div>
+
+    <!-- panel body -->
+    <div class="panel-body">
+
+      <div class="form-group has-feedback "
+        ng-class="{'has-success': session.loadStatus ==='loaded', 'has-error': session.loadStatus === 'error'}"
+        ng-form="formFindPatient"
+        novalidate>
+
+        <!-- input zone -->
+        <div class="input-group input-group-sm">
+
+          <!-- dropdown button -->
+          <!-- use of fixed width that correspond to notification text margin left -->
+          <div class="input-group-btn" uib-dropdown>
+            <button style="width:135px;" class="btn btn-default" uib-dropdown-toggle>
+              {{ session.selected.label | translate }} <span class="caret"></span>
             </button>
-          </span>
-        </div>
-        <!-- <i ng-show="loadingPatients" class="glyphicon glyphicon-refresh"></i> -->
-        <p class="help-block" ng-show="noPatients">
-          <i class="glyphicon glyphicon-remove"></i> {{ "FORM.NO_RESULTS" | translate }}
-        </p>
-      </div> <!-- End searchName component -->
+            <ul class="uib-dropdown-menu">
+              <li ng-repeat="option in session.options">
+                <a href="" ng-click="findBy(option)">{{ option.label | translate }}</a>
+              </li>
+            </ul>
+          </div>
+          <!-- /dropdown button -->
 
-      <!-- search by uuid -->
-      <div ng-switch-when="id">
-        <div class="input-group">
-          <input
-          type="text"
-          class="form-control"
-          ng-model="input.term"
-          placeholder="{{ 'FIND.PATIENT_ID' | translate }}">
-          <span class="input-group-btn">
-            <button ng-click="searchReference(input.term)" class="btn btn-default">
-              {{ "FORM.SUBMIT" | translate }}
-            </button>
-          </span>
+          <!-- search by ID  -->
+          <input ng-model="session.idInput"
+            ng-if="session.selected.key==0"
+            ng-keyup="readInput($event)"
+            ng-change="validateNameSearch(session.idInput)"
+            name="idInput"
+            type="text"
+            class="form-control"
+            placeholder="{{ session.selected.placeholder | translate }}..."
+            required>
+
+          <!-- search by Name  -->
+          <input ng-model="session.nameInput"
+            ng-if="session.selected.key==1"
+            ng-keyup="readInput($event)"
+            name="nameInput"
+            type="text"
+            class="form-control"
+            placeholder="{{ session.selected.placeholder | translate }}..."
+            uib-typeahead="patient as patient.label for patient in searchByName($viewValue)"
+            typeahead-no-results="session.noPatients"
+            typeahead-loading="session.loadingPatients"
+            typeahead-template-url="/partials/templates/patientListe.tmpl.html"
+            typeahead-on-select="selectPatient($item)"
+            required>
+
         </div>
+        <!-- /input zone -->
+
+
+        <!-- notification zone  -->
+        <!-- HACK: The Notification position must correspond to dropdown button width  -->
+        <div class="pull-left help-block" style="margin-left:135px; margin-top:10px;"
+          ng-if="session.loadStatus=='loaded' || session.loadStatus=='error'">
+
+          <!-- patient found notification -->
+          <span ng-if="session.loadStatus=='loaded'">
+            <i class="glyphicon glyphicon-ok"></i> &nbsp; {{ "FIND.PATIENT_FOUND" | translate }}: &nbsp;
+            <b>({{ patient.reference }})</b> {{ patient.name + ' (' + patient.sex + ' ' + patient.age + ')'}}
+          </span>
+
+          <!-- patient not found notification -->
+          <span ng-if="session.loadStatus=='error'">
+            <i class="glyphicon glyphicon-alert"></i> &nbsp; {{ 'FIND.PATIENT_NOT_FOUND' | translate }}
+          </span>
+
+        </div>
+        <!-- /notification zone  -->
+
+        <!-- submit button -->
+        <div class="pull-right">
+          <button class="btn btn-success btn-sm" style="margin-top:5px;"
+            ng-disabled="!(session.validInput || session.nameInput)"
+            ng-click="submit()">
+            {{ "FIND.SEARCH" | translate }}
+          </button>
+        </div>
+        <!-- /submit button -->
+
       </div>
 
     </div>
+
   </div>
+  <!-- /Panel Find Patient Directive UI  -->
+
 </div>
