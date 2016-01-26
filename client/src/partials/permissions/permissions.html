@@ -1,23 +1,23 @@
-<header>
-  {{ 'PERMISSIONS.TITLE' | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-      <ol class="breadcrumb">
-      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
-      <li class="active">{{ "PERMISSIONS.TITLE" | translate }}</li>
+<div class="flex-header">
+  <div class="bhima-title">
+      
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="title">{{ "PERMISSIONS.TITLE" | translate }}</li>
     </ol>
+    
   </div>
+</div>
 
-  <div class="pull-right">
-    <button id="initCreate" class="btn btn-default" ng-click="PermissionsCtrl.setState('create')" ng-class="{ 'active' : PermissionsCtrl.state === 'create' }">
+<!-- flex-util not recommended - pending new top right menu design -->
+<div class="flex-util">
+    <button id="initCreate" class="btn btn-default btn-sm" ng-click="PermissionsCtrl.setState('create')" ng-class="{ 'active' : PermissionsCtrl.state === 'create' }">
       <i class="glyphicon glyphicon-plus-sign"></i> {{ "PERMISSIONS.ADD_NEW_USER" | translate }}
     </button>
-  </div>
-</nav>
-
-<main class="container-fluid extend">
+</div>
+  
+<div class="flex-content">
+<div class="container-fluid">
   <div class="row">
 
     <div class="col-md-6">
@@ -219,4 +219,5 @@
 
     </div>
   </div>
-</main>
+</div>
+</div>
