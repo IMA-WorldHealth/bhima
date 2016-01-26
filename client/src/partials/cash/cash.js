@@ -50,7 +50,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, Sessio
     // load cashboxes on startup
     Cashboxes.read().then(function (cashboxes) {
       vm.cashboxes = cashboxes;
-      console.log('cashboxes:', cashboxes);
     }).catch(handler);
 
     // look up stored cashbox, if it exists
@@ -64,14 +63,12 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, Sessio
 
   //  load a particular cashbox on select
   function selectCashbox(id) {
-    console.log('Clicked selectCashbox(%d)', id);
 
     Cashboxes.read(id).then(function (cashbox) {
       vm.cashbox = cashbox;
 
       // cache for page refreshes
       cache.put('cashbox', cashbox);
-      console.log('cashbox', cashbox);
     });
   }
 

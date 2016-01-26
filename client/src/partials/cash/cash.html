@@ -65,9 +65,7 @@
               {{ "CASH.VOUCHER.CASHBOX" | translate }}
               <a ng-click="CashCtrl.changeCashbox()" href="" class="btn btn-xs btn-default"> <i class="glyphicon glyphicon-info-sign"></i> Change </a>
             </label>
-            <p class="form-control-static">
-              {{ CashCtrl.cashbox.text }}
-            </p>
+            <p class="form-control-static"> {{ CashCtrl.cashbox.text }} </p>
           </div>
 
           <div class="form-group">
@@ -79,8 +77,8 @@
             <label> {{ "COLUMNS.DATE" | translate }}
               <a ng-if="!CashCtrl.dateEditable" href="" class="btn btn-xs btn-default" ng-click="CashCtrl.enableDateInput()"><i class="glyphicon glyphicon-calendar"></i> Change</a>
             </label>
-            <p class="form-control-static" ng-if="!CashCtrl.dateEditable">{{ CashCtrl.payment.date | date }}</p>
             <input name="date" class="form-control" type="date" ng-if="CashCtrl.dateEditable" ng-model="CashCtrl.payment.date">
+            <p class="form-control-static" ng-if="!CashCtrl.dateEditable">{{ CashCtrl.payment.date | date }}</p>
           </div>
 
 
@@ -114,7 +112,7 @@
             if payment type is not a caution, add in a component to show payments against previous invoices
           -->
           <div ng-if="CashCtrl.payment.is_caution == 0">
-            <button class="btn-block btn btn-warning" ng-click="CashCtrl.openInvoicesModal()">
+            <button class="btn-block btn btn-warning" ng-click="CashCtrl.openInvoicesModal()" type="button">
               <i class="glyphicon glyphicon-plus-sign"></i> {{ "CASH.VOUCHER.SELECT_INVOICES" | translate }}
             </button>
           </div>
@@ -158,12 +156,15 @@
                 class="form-control"
                 required>
             </div>
+            <div ng-messages="CashVoucherForm.value.$error" role="alert" class="help-block" ng-if="CashVoucherForm.$submitted">
+              <div ng-message="min">This field cannot contain a negative value.</div>
+              <div ng-message="required">This field cannot be empty.</div>
+            </div>
           </div>
 
           <div class="form-group">
             <button class="btn btn-primary" type="submit">{{ "FORM.SUBMIT" | translate }}</button>
           </div>
-
         </form>
       </div>
     </div>
