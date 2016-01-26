@@ -43,7 +43,7 @@ function Settings($http, $routeParams, $translate, $location, Appcache, messenge
     $translate.use(language.translateKey);
     tmhDynamicLocale.set(language.localeKey);
     amMoment.changeLocale(language.translateKey);
-
+    
     cache.put('language', language);
   };
 

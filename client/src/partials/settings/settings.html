@@ -15,7 +15,7 @@
       <div class="col-md-5">
         <div class="form-group">
           <label for="select-language">{{ "SETTINGS.LANGUAGE" | translate }}</label>
-          <select id="select-language" ng-model="settings.language" ng-change="SettingsCtrl.updateLanguage(SettingsCtrl.settings.language)" class="form-control">
+          <select id="select-language" ng-model="SettingsCtrl.settings.language" ng-change="SettingsCtrl.updateLanguage(SettingsCtrl.settings.language)" class="form-control">
             <option value="" disabled="disabled" selected>{{ "SELECT.LANGUAGE" | translate }}</option>
             <option value="en">{{ "LANGUAGES.ENGLISH" | translate }}</option>
             <option value="fr">{{ "LANGUAGES.FRENCH" | translate }}</option>

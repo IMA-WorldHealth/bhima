@@ -26,7 +26,7 @@ Limitations of current templating structure:
       ng-class="{'selected' : child.selected}">
       <a ng-click="NavCtrl.navigate(child)">
         <span class="glyphicon glyphicon-file"></span>
-        <span class="tree-title">{{child.name}}</a></span>
+        <span class="tree-title">{{child.key | translate }}</a></span>
       </a>
     </li>
   </ul>

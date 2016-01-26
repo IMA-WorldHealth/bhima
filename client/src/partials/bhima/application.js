@@ -8,10 +8,21 @@ ApplicationController.$inject = [
 
 function ApplicationController($location, $timeout, $translate, Appcache, appstate, connect, util, Session, tmhDynamicLocale, amMoment) {
   var vm = this;
-  
+ 
+  // TODO Load this from cache - this may have to be done before angular is bootstrapped
+  // Open by default for logged in users
+  // vm.sidebarExpanded = vm.isLoggedIn();
+  vm.sidebarExpanded = false;
+
   // useful for loading the language
   var cache = new Appcache('preferences');
-  
+  cache.fetch('sidebar')
+  .then(function (sidebar) { 
+    if (sidebar) { 
+      vm.sidebarExpanded = sidebar.expanded; 
+    }
+  });
+
   cache.fetch('language')
   .then(function (language) {
     if (language) {
@@ -25,11 +36,7 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
     return Session.user;
   };
   
-  // TODO Load this from cache - this may have to be done before angular is bootstrapped
-  // Open by default for logged in users
-  // vm.sidebarExpanded = vm.isLoggedIn();
-  vm.sidebarExpanded = false;
-
+  
   // on refresh, if we have a session load the rest of the state
   if (vm.isLoggedIn()) { loadState(); }
 
@@ -127,6 +134,7 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
   vm.toggleSidebar = function toggleSidebar() { 
     if (vm.isLoggedIn()) { 
       vm.sidebarExpanded = !vm.sidebarExpanded;
+      cache.put('sidebar', { expanded : vm.sidebarExpanded });
     }
   }
 
