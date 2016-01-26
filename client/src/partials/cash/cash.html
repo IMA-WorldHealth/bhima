@@ -79,32 +79,44 @@
             </label>
             <input name="date" class="form-control" type="date" ng-if="CashCtrl.dateEditable" ng-model="CashCtrl.payment.date">
             <p class="form-control-static" ng-if="!CashCtrl.dateEditable">{{ CashCtrl.payment.date | date }}</p>
+
+            <div class="help-block" ng-messages="CashVoucherForm.date.$error" ng-show="CashVoucherForm.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
           </div>
 
 
           <b>{{ "COLUMNS.TYPE" | translate }}</b>
-          <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.paymentType.$invalid }">
+          <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
             <label class="radio-inline">
-              <input name="paymentType" type="radio" ng-model="CashCtrl.payment.is_caution" value="1" required>
+              <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" value="1" required>
               {{ "CASH.VOUCHER.CAUTION" | translate }}
             </label>
             <label class="radio-inline">
-              <input name="paymentType" type="radio" ng-model="CashCtrl.payment.is_caution" value="0" required>
+              <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" value="0" required>
               {{ "CASH.VOUCHER.INVOICE" | translate }}
             </label>
+
+            <div class="help-block" ng-messages="CashVoucherForm.type.$error" ng-show="CashVoucherForm.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
           </div>
 
           <b>{{ "COLUMNS.CURRENCY" | translate }}</b>
-          <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.paymentCurrency.$invalid }">
+          <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.currency.$invalid }">
             <label ng-repeat="currency in CashCtrl.cashbox.currencies track by currency.currency_id" class="radio-inline">
               <input
-                name="paymentCurrency"
+                name="currency"
                 type="radio"
                 ng-model="CashCtrl.payment.currency_id"
                 ng-value="currency.currency_id"
                 required>
               {{ CashCtrl.formatCurrency(currency.currency_id); }}
             </label>
+
+            <div class="help-block" ng-messages="CashVoucherForm.currency.$error" ng-show="CashVoucherForm.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
           </div>
 
 
@@ -142,7 +154,7 @@
             no matter what payment type, show the payment total details
           -->
           <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.value.$invalid }">
-            <label>{{ "FORM.TOTAL" | translate }}</label>
+            <label>{{ "COLUMNS.TOTAL" | translate }}</label>
             <div class="input-group">
               <span class="input-group-addon">
                 {{ CashCtrl.payment.currency_id ? CashCtrl.Currencies.symbol(CashCtrl.payment.currency_id) : '...' }}
@@ -156,9 +168,8 @@
                 class="form-control"
                 required>
             </div>
-            <div ng-messages="CashVoucherForm.value.$error" role="alert" class="help-block" ng-if="CashVoucherForm.$submitted">
-              <div ng-message="min">This field cannot contain a negative value.</div>
-              <div ng-message="required">This field cannot be empty.</div>
+            <div class="help-block" ng-messages="CashVoucherForm.value.$error" ng-show="CashVoucherForm.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
             </div>
           </div>
 

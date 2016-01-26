@@ -31,7 +31,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, Sessio
   vm.Currencies = Currencies;
   vm.enableDateInput = enableDateInput;
   vm.openInvoicesModal = openInvoicesModal;
-  
+
   // bind data
   vm.payment = { date : new Date() };
 
@@ -39,9 +39,16 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, Sessio
   vm.dateEditable = false;
   vm.enterprise = Session.enterprise;
 
+  // timestamp to 
+  vm.timestamp = new Date();
+
   // temporary error handler until an application-wide method is described
   function handler(error) {
     throw error;
+  }
+
+  function warnDate() {
+    return (vm.payment.date > vm.timestamp);
   }
 
   // fired on controller start
@@ -90,7 +97,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, Sessio
 
     Cash.create({ payment : vm.payment })
     .then(function () {
-      console.log('Redirecting to another page!'); 
+      console.log('Redirecting to another page!');
     })
     .catch(handler);
   }
