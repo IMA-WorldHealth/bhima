@@ -1254,6 +1254,7 @@
    "PATIENT"           : "Patient",
    "PATIENT_FOUND"     : "Patient Trouvé",
    "PATIENT_ID"        : "ID Patient",
+   "PATIENT_LOADING"   : "Chargement",
    "PATIENT_NAME"      : "Nom du Patient",
    "PATIENT_NOT_FOUND" : "Patient Non Trouvé",
    "SEARCH"            : "Rechercher",

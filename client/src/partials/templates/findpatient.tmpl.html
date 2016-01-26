@@ -42,23 +42,33 @@
         class="form-control"
         placeholder="{{ session.selected.placeholder | translate }}..."
         uib-typeahead="patient as patient.label for patient in searchByName($viewValue)"
-        uib-typeahead-no-results="noPatients"
+        typeahead-no-results="session.noPatients"
+        typeahead-loading="session.loadingPatients"
         typeahead-template-url="/partials/templates/patientListe.tmpl.html"
         typeahead-on-select="selectPatient($item)"
         required>
 
       <!-- submit button for search by ID -->
+      <!-- use of fixed width that correspond to notification text margin right -->
       <span class="input-group-btn">
-        <button class="btn btn-success"
+        <button style="width:8em;" class="btn btn-success"
           ng-disabled="!session.validInput"
           ng-click="submit()">
-          {{ "FIND.SEARCH" | translate }}
+          <span>{{ "FIND.SEARCH" | translate }}</span>
         </button>
       </span>
     </div>
     <!-- /inline input zone -->
 
-    <!-- notification zone  -->
+    <!-- inline notification -->
+    <!-- HACK: The Notification position must correspond to search button width  -->
+    <div ng-if="session.showSearchView" class="pull-right" style="margin-right:8em;">
+      <span class="text-warning" ng-if="(session.noPatients && session.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
+      <span class="text-info" ng-if="(session.loadingPatients && session.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
+    </div>
+    <!-- /inline notification -->
+
+    <!-- notification zone for result  -->
     <div class="alert "
       ng-class="{'alert-success': session.loadStatus=='loaded', 'alert-danger': session.loadStatus=='error'}"
       ng-if="!session.showSearchView">
@@ -94,6 +104,14 @@
     <!-- panel heading -->
     <div class="panel-heading">
       <i class="glyphicon glyphicon-search"></i> {{ "FIND.TITLE" | translate }}
+
+      <!-- state notification  -->
+      <div class="pull-right"
+        ng-if="session.loadStatus!='loaded' && session.loadStatus!='error'">
+        <span class="text-warning" ng-if="(session.noPatients && session.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
+        <span class="text-info" ng-if="(session.loadingPatients && session.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
+      </div>
+      <!-- state notification  -->
     </div>
 
     <!-- panel body -->
@@ -141,7 +159,8 @@
             class="form-control"
             placeholder="{{ session.selected.placeholder | translate }}..."
             uib-typeahead="patient as patient.label for patient in searchByName($viewValue)"
-            uib-typeahead-no-results="noPatients"
+            typeahead-no-results="session.noPatients"
+            typeahead-loading="session.loadingPatients"
             typeahead-template-url="/partials/templates/patientListe.tmpl.html"
             typeahead-on-select="selectPatient($item)"
             required>
@@ -170,11 +189,13 @@
         <!-- /notification zone  -->
 
         <!-- submit button -->
-        <button class="pull-right btn btn-success btn-sm" style="margin-top:5px;"
-          ng-disabled="!(session.validInput || session.nameInput)"
-          ng-click="submit()">
-          {{ "FIND.SEARCH" | translate }}
-        </button>
+        <div class="pull-right">
+          <button class="btn btn-success btn-sm" style="margin-top:5px;"
+            ng-disabled="!(session.validInput || session.nameInput)"
+            ng-click="submit()">
+            {{ "FIND.SEARCH" | translate }}
+          </button>
+        </div>
         <!-- /submit button -->
 
       </div>
