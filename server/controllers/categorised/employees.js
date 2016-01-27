@@ -164,7 +164,6 @@ exports.detail = function detail(req, res, next) {
       throw new req.codes.ERR_NOT_FOUND();
     }
 
-    console.log('[DB] date:', rows[0].date, 'typeof:', typeof rows[0].date);
     res.status(200).json(rows[0]);
   })
   .catch(next)

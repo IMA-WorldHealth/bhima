@@ -1,9 +1,6 @@
-/* global describe, it, beforeEach, process */
-
+/* global describe, it, beforeEach */
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 
 /** import test helpers */

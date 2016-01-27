@@ -38,7 +38,6 @@ function createReport (req, res) {
 					def.resolve(isNew);
 				} else {
 					isNew = true;
-					console.log('Creation nouveau rapport possible');
 					//Resolve
 					def.resolve(isNew);
 				}
@@ -60,7 +59,6 @@ function createReport (req, res) {
 					def.resolve(_REPORT_ID);
 				});
 			} else {
-				console.log('Le rapport pr ce mois [' + period + '] existe deja [%s]', _REPORT_ID);
 				def.resolve(_REPORT_ID);
 			}
 

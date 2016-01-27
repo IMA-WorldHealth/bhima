@@ -1,5 +1,3 @@
-//require('./db').initialise();
-
 var sanitize = require('./db').sanitize,
     util = require('./util');
 
@@ -393,8 +391,7 @@ exports.insert = function (table, data) {
           .replace('%V%', '(' + columns.join(', ') + ')')
           .replace('%E%', expressions.join(', '))
           .replace('%project_id%', project_id);
-  
-  console.log('made this sql like', sql);
+
   return sql;
 };
 

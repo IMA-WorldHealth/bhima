@@ -263,7 +263,7 @@ function service(id, userId, details, cb) {
 /**
 * Distribution Loss
 *
-* This route is responsible for 
+* This route is responsible for
 *
 * TODO Rewrite this route
 */
@@ -428,7 +428,7 @@ function reverseDistribution(id, userId, cb) {
       'FROM general_ledger ' +
       'WHERE trans_id = ?;';
 
-    return db.exec(sql, [reference.trans_id, reference.trans_id]);   
+    return db.exec(sql, [reference.trans_id, reference.trans_id]);
   })
   .then(function (records){
     references = records;
@@ -458,7 +458,7 @@ function reverseDistribution(id, userId, cb) {
       item.trans_date = new Date();
 
       if (!item.deb_cred_uuid) {
-        item.deb_cred_uuid = null
+        item.deb_cred_uuid = null;
       }
 
       sql =

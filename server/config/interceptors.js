@@ -69,13 +69,9 @@ exports.databaseErrorHandler = function databaseErrorHandler(error, req, res, ne
   // check to see if this is a database error
   if (error && error.sqlState) {
 
-    console.log('[SQL ERROR]:', error);
-
     // retrieve the formatted error from
     try {
       var appError = new errors[error.code]();
-
-      //console.log('[MATCHING APP ERROR]:', appError);
 
       // send the formatted error back to the client.
       res.status(appError.httpStatus).json(appError);
@@ -101,9 +97,9 @@ exports.catchAllErrorHandler = function catchAllErrorHandler(error, req, res, ne
   'use strict';
 
   // log errors unless explicitly turned of in the config
-  //if (process.env.LOG_LEVEL !== 'none') {
+  if (process.env.LOG_LEVEL !== 'none') {
     console.error('[ERROR]', error);
-  //}
+  }
 
   // return a 500 error so the client
   res.status(500).json(error);
