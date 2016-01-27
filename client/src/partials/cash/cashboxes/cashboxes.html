@@ -1,24 +1,24 @@
-<header data-header>
-  {{ "CASH.CASHBOX.TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
-      <li class="active">{{ "CASH.CASHBOX.TITLE" | translate }}</li>
+<div class="flex-header">
+  <div class="bhima-title">
+      
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="title">{{ "CASH.CASHBOX.TITLE" | translate }}</li>
     </ol>
+    
   </div>
+</div>
 
-  <div class="pull-right">
-    <button class="btn btn-default" ng-click="CashCtrl.create()" data-method="create">
-      <i class="glyphicon glyphicon-plus-sign"></i>
-      {{ "CASH.CASHBOX.ADD" | translate }}
-    </button>
-  </div>
-</nav>
+<!-- flex-util not recommended - pending new top right menu design -->
+<div class="flex-util">
+  <button class="btn btn-default btn-sm" ng-click="CashCtrl.create()" data-method="create">
+    <i class="glyphicon glyphicon-plus-sign"></i>
+    {{ "CASH.CASHBOX.ADD" | translate }}
+  </button>
+</div>
 
-<main class="container-fluid">
+<div class="flex-content">
+<div class="container-fluid">
   <div class="row">
 
     <div class="col-md-6">
@@ -186,4 +186,5 @@
       </div>
     </div>
   </div>
-</main>
+</div>
+</div>

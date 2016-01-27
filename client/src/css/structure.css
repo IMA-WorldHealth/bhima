@@ -1,0 +1,454 @@
+/**
+ * Primary structural class definitions for BHIMA 
+ *
+ * @todo Some elements use display: flex after it was researched and prototyped, 
+ * now that we are using this it can be used to make all component definitions 
+ * cleaner 
+ *
+ * @todo Many of the class definitions evolved over development - not all styles
+ * are used/ respected - these should be removed
+ *
+ * -Sidebar 
+ * -Module Header
+ * -Module Content
+ * -Headercrumb
+ * -Tree
+ */
+
+/** Angular helper class, wait until the page is bootstraped to display */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+/* 
+ * Sidebar 
+ */
+.sidebar { 
+  width : 56px;
+  min-width : 56px;
+  position : absolute;
+}
+
+.sidebar-container { 
+  position : absolute; 
+  top : 0;
+  bottom : 0;
+  width : 56px;
+  height : 100vh;
+  background-color : #f5f5f5;
+  border-right : 1px solid #ccc;
+}
+
+.expanded .sidebar-container { 
+  width : 260px;
+}
+
+.sidebar-body { 
+  position : absolute;
+  top : 0;
+  bottom : 96px;
+  width : 100%;
+  overflow-x : hidden;
+  padding : 0;
+}
+
+/** Designed before research into display flex, styles can be refined */
+.expanded .sidebar-body { 
+  bottom : 48px;
+}
+
+.expanded .sidebar-group {
+  height : calc(100vh - 100px);
+}
+
+/* 
+ * Sidebar Header 
+ */
+.sidebar-header { 
+  margin-top : 5px;
+  margin-left : 0;
+  margin-right : 0;
+  padding-bottom : 0;
+}
+
+.header-content { 
+  table-layout : auto;
+  width : 100%;
+  border-spacing : 0;
+}
+
+.header-image {
+  position : relative;
+  width : auto;
+  
+  /* text-align : center; */
+  text-align : left;
+  vertical-align : top;
+  margin : 0;
+  padding : 0;
+}
+
+.expanded .header-image { 
+  position : absolute;
+  width : 1px;
+  white-space : nowrap;
+}
+
+.app-logo { 
+  position : relative;
+  display : inline-block;
+}
+
+.logo-container { 
+  height : 40px;
+  width : 40px;
+  margin : 0 0 0 8px;
+  vertical-align : top;
+}
+
+.header-title { 
+  display : none;
+  margin : 0;
+  padding : 0;
+  text-align : left;
+}
+
+.expanded .header-title { 
+  display : block;
+  padding-left : 55px;
+  min-height : 40px;
+}
+
+.header-title > h4 { 
+  text-transform : uppercase;  
+  white-space : nowrap;
+  text-overflow : ellipsis;
+  overflow : hidden;
+  margin : 0;
+  padding : 0;
+}
+
+.title-content { 
+  overflow : hidden;
+  text-overflow : ellipsis;
+  display : block;
+  
+  /** Should be done using flex container*/
+  padding-top : 12px;
+  padding-bottom : 8px;
+  color : #505050;
+  text-decoration : none;
+  cursor : pointer;
+}
+
+.title-content:hover { 
+  text-decoration : none;
+  cursor : pointer;
+  color : #505050;
+}
+
+/**
+ * Application Header
+ *
+ * @todo Header + title is verbose, not all of these styles are required or 
+ * respected, this could be refined
+ */
+.flex-header { 
+  display : flex;
+  -webkit-box-orient : vertical;
+  -webkit-box-direction : normal;
+  flex-direction : column;
+  flex-wrap : nowrap;
+  -webkit-box-wrap : start;
+  justify-content: flex-start;
+  flex-shrink : 0;
+  margin : 0;
+  padding : 0;
+  border: none;
+  min-height : 52px;
+  max-height : 52px;
+  border-bottom : 1px solid #ccc;
+}
+
+.flex-util { 
+  display : flex;
+  -webkit-box-direction : normal;
+  flex-direction : row;
+  flex-wrap : nowrap;
+  -webkit-box-wrap : start;
+  justify-content: flex-start;
+  flex-shrink : 0;
+  padding : 5px;
+  border: none;
+  max-height : 42px;
+  border-bottom : 1px solid #ccc;
+}
+
+.bhima-title { 
+  display : flex;
+  -webkit-box-orient : vertical;
+  -webkit-box-direction : normal;
+  flex-direction : row;
+  flex-wrap : nowrap;
+  flex-shrink : 0;
+  align-self : stretch;
+  -webkit-box-align : center;
+  align-items : center;
+  margin : 0;
+  padding : 0 40px 0 10px;
+  height : 52px;
+}
+
+/** 
+ * Application Content
+ */
+.flex-content { 
+  display : inline-block;
+  overflow-x : hidden;
+  overflow-y : auto;
+  -webkit-box-flex : 1;
+  flex-grow : 1;
+  z-index : 1;
+
+  /** @todo determine if these should be assigned to another element */
+  padding-top : 5px;
+  min-width : 250px;
+  height : 100vh;
+}
+
+.flex-page { 
+  width : 100%;
+  height : 100%;
+  display : flex;
+  -webkit-box-orient : vertical;
+  -webkit-box-direction : normal;
+  flex-direction : column;
+  overflow-x : hidden;
+  overflow-y : auto;
+  position : relative;
+}
+
+/**
+ * Stores all module elements (other than the sidebar), this element is 
+ * responsibe for maintaining 'pushed' sidebar state
+ */
+.flex-container { 
+  position : absolute;
+  width : 100%;
+  height : 100%;
+  display : block;
+}
+
+/** 
+ * @todo top and bottom specified - this could be improved with more thought 
+ * through definition
+ */
+.sidebar-group { 
+  border-top : 1px solid #ccc;
+  margin-top : 6px;
+  height : calc(100vh - 148px);
+  width : 100%;
+  overflow-y : auto;
+  overflow-x : hidden;
+}
+
+.expanded .link-label { 
+  padding-left : 5px;
+  display : inherit;
+}
+
+.link-label { 
+  white-space : nowrap; 
+  display : none;
+}
+
+/* Flex footer test */
+.flex-footer { 
+  font-size : 100%; 
+  overflow : hidden;
+  margin : 0;
+  padding : 0 0 0 0;
+  border-top : 1px solid #ccc;
+  position : absolute;
+  bottom : 0;
+  min-height : 40px;
+  width : 100%;
+}
+
+.flex-footer ul { 
+  margin : 0;
+  padding : 0;
+  display : flex;
+  flex-wrap : wrap;
+  justify-content : center;
+  list-style : none;
+}
+
+.flex-footer a { 
+  padding-top : 10px;
+  padding-bottom : 10px;
+  display : flex;
+  align-items : center;
+  padding-left : 20px;
+  padding-right : 20px;
+  color : #707070;
+  min-height : 48px;
+}
+
+.expanded .flex-footer li:first-child { 
+  flex-grow : 1; 
+}
+
+.flex-footer a:hover { 
+  background-color : #e6e6e6;
+  text-decoration : none;
+  color : #707070;
+  cursor : pointer;
+}
+
+.link-nav { 
+  width : 100%;
+  height : 100%;
+  display : flex;
+  justify-content : center; 
+  align-items : center;
+  border: none;
+  cursor : pointer;
+}
+
+.link-nav:hover {
+  background-color : #e6e6e6;
+}
+
+.expanded .link-nav { 
+  display : none;
+}
+
+.text-vertical { 
+  transform : rotate(-90deg);
+  color : #707070;
+}
+
+/** Hide the navigation link when sidebar is not expanded (default state) */
+.flex-nav { 
+  display : none;
+}
+
+.expanded .flex-nav { 
+  display : block;
+}
+
+/** 
+ * @todo Tree styles very temporarily defined - these should be carefully 
+ * refined 
+ */
+.flex-tree ul { 
+  margin : 0;
+  padding : 0;
+  display : flex;
+  list-style : none;
+  flex-direction : column;
+  width : 100%;
+}
+
+.flex-tree li { 
+  border-bottom : 1px solid #ccc;
+}
+
+.flex-tree a { 
+  display : flex;
+  align-items : center;
+  color : #707070;
+  min-height : 35px;
+  padding-left : 10px;
+}
+
+.flex-tree a:hover { 
+  background-color : #e6e6e6;
+  text-decoration : none;
+  color : #707070;
+  cursor : pointer;
+}
+
+.file { 
+  border-left : 5px solid #707070;
+}
+
+.tree-title { 
+  padding-left : 7px;
+}
+
+/** 
+ * Contains application modules (ng-view) - pushes margin right on sidebar 
+ * expansion
+ */
+.flex-view { 
+  margin-left : 56px;
+  display : flex;
+  -webkit-box-orient : vertical;
+  -webkit-box-direction : normal;
+  flex-direction : column;
+  overflow-x : hidden;
+  overflow-y : auto;
+  position : relative;
+}
+
+.expanded .flex-view { 
+  margin-left : 260px;
+}
+
+.selected a { 
+  color : #2089CE;
+  font-weight : bold;
+}
+.selected a:hover { 
+  color : #2089CE;
+}
+
+li.selected { 
+  border-left-color : #2089CE;
+}
+
+/** 
+ * Temporary header breadcrumb bootstrap fork
+ * @todo implement this in less using the boostrap element 
+ */
+.headercrumb {
+  padding: 8px 0px;
+  list-style: none;
+  border-radius: 2px;
+}
+ol.headercrumb { 
+  margin-bottom : 0px !important;
+}
+.headercrumb > li {
+  display: inline-block;
+}
+.headercrumb > li + li:before {
+  content: "/\00a0";
+  padding: 0 5px;
+  color: #ccc;
+}
+.headercrumb > .active {
+  color: #777777;
+}
+
+.headercrumb > .title { 
+  color : #313131;
+  font-weight : bold;
+}
+
+.headercrumb > .static { 
+  color: #828080;
+}
+
+/* Disabling elements if there is no valid user session */
+.disable .session >  * { 
+  color : #D2D2D2 !important;
+}
+
+.disable .session:hover { 
+  color : #D2D2D2;
+  background-color : transparent !important;
+  cursor : default;
+}
