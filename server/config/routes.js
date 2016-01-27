@@ -109,34 +109,34 @@ exports.configure = function (app) {
 
   // API for account routes crud
   app.get('/accounts', account.list);
-  app.get('/accounts/:id', account.getAccount);
+  app.get('/accounts/:id', account.detail);
   app.post('/accounts', account.create);
   app.put('/accounts/:id', account.update);
 
   //API for account type routes crud
   app.get('/account_types', accountType.list);
-  app.get('/account_types/:id', accountType.getAccountType);
+  app.get('/account_types/:id', accountType.detail);
   app.post('/account_types', accountType.create);
   app.put('/account_types/:id', accountType.update);
   app.delete('/account_types/:id', accountType.remove);
 
   //API for cost_center routes crud
   app.get('/cost_centers', costCenter.list);
-  app.get('/cost_centers/:id', costCenter.getCostCenter);
+  app.get('/cost_centers/:id', costCenter.detail);
   app.post('/cost_centers', costCenter.create);
   app.put('/cost_centers/:id', costCenter.update);
   app.delete('/cost_centers/:id', costCenter.remove);
 
   //API for profit_center routes crud
   app.get('/profit_centers', profitCenter.list);
-  app.get('/profit_centers/:id', profitCenter.getProfitCenter);
+  app.get('/profit_centers/:id', profitCenter.detail);
   app.post('/profit_centers', profitCenter.create);
   app.put('/profit_centers/:id', profitCenter.update);
   app.delete('/profit_centers/:id', profitCenter.remove);
 
   //API for reference routes crud
   app.get('/references', reference.list);
-  app.get('/references/:id', reference.getReference);
+  app.get('/references/:id', reference.detail);
   app.post('/references', reference.create);
   app.put('/references/:id', reference.update);
   app.delete('/references/:id', reference.remove);
@@ -442,7 +442,7 @@ exports.configure = function (app) {
 
   /** employees */
   app.get('/employees', employees.list);
-  app.get('/employees/:id', employees.details);
+  app.get('/employees/:id', employees.detail);
   app.put('/employees/:id', employees.update);
   app.post('/employees', employees.create);
 

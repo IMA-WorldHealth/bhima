@@ -73,8 +73,8 @@ CREATE TABLE `budget` (
 
 DROP TABLE IF EXISTS `cash`;
 CREATE TABLE `cash` (
-  `project_id` smallint(5) unsigned NOT NULL,
-  `reference` int(10) unsigned NOT NULL,
+  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `reference` INT(10) UNSIGNED,
   `uuid` char(36) NOT NULL,
   `document_id` int(10) unsigned NOT NULL,
   `type` char(1) NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE `cash` (
   `user_id` smallint(5) unsigned NOT NULL,
   `cashbox_id` smallint(5) unsigned NOT NULL,
   `description` text,
-  `is_caution` tinyint(1) NOT NULL DEFAULT '0',
+  `is_caution` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   KEY `reference` (`reference`),
   KEY `project_id` (`project_id`),
@@ -143,7 +143,7 @@ CREATE TABLE `cash_box_account_currency` (
 DROP TABLE IF EXISTS `cash_discard`;
 CREATE TABLE `cash_discard` (
   `project_id` smallint(5) unsigned NOT NULL,
-  `reference` int(10) unsigned NOT NULL,
+  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `uuid` char(36) NOT NULL,
   `cost` decimal(19,4) unsigned NOT NULL,
   `debitor_uuid` char(36) NOT NULL,
@@ -439,7 +439,7 @@ DROP TABLE IF EXISTS `credit_note`;
 
 CREATE TABLE `credit_note` (
   `project_id` smallint(5) unsigned NOT NULL,
-  `reference` int(10) unsigned NOT NULL,
+  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `uuid` char(36) NOT NULL,
   `cost` decimal(19,4) unsigned NOT NULL,
   `debitor_uuid` char(36) NOT NULL,
@@ -562,7 +562,7 @@ CREATE TABLE `debitor_group_history` (
 DROP TABLE IF EXISTS `depot`;
 CREATE TABLE `depot` (
   `uuid` char(36) NOT NULL,
-  `reference` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `text` text,
   `enterprise_id` smallint(5) unsigned NOT NULL,
   `is_warehouse` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -582,13 +582,13 @@ CREATE TABLE `donation_item` (
 
 DROP TABLE IF EXISTS `donations`;
 CREATE TABLE `donations` (
-  `uuid` char(36) NOT NULL,
-  `donor_id` int(11) NOT NULL,
-  `employee_id` int(11) NOT NULL,
-  `date` date DEFAULT NULL,
-  `is_received` tinyint(1) NOT NULL DEFAULT '0',
-  `is_confirmed` tinyint(1) NOT NULL DEFAULT '0',
-  `confirmed_by` int(10) unsigned NOT NULL,
+  `uuid`         CHAR(36) NOT NULL,
+  `donor_id`     INT(11) NOT NULL,
+  `employee_id`  INT(11) NOT NULL,
+  `date`         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_received`  TINYINT(1) NOT NULL DEFAULT '0',
+  `is_confirmed` TINYINT(1) NOT NULL DEFAULT '0',
+  `confirmed_by` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -603,29 +603,29 @@ CREATE TABLE `donor` (
 
 DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(20) NOT NULL,
-  `prenom` text,
-  `name` text NOT NULL,
-  `postnom` text,
-  `sexe` varchar(10) NOT NULL,
-  `dob` date NOT NULL,
-  `date_embauche` date DEFAULT NULL,
-  `nb_spouse` int(11) DEFAULT '0',
-  `nb_enfant` int(11) DEFAULT '0',
-  `grade_id` char(36) NOT NULL,
-  `daily_salary` float DEFAULT '0',
-  `bank` varchar(30) DEFAULT NULL,
-  `bank_account` varchar(30) DEFAULT NULL,
-  `adresse` varchar(50) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `email` varchar(70) DEFAULT NULL,
-  `fonction_id` tinyint(3) unsigned DEFAULT NULL,
-  `service_id` smallint(5) unsigned DEFAULT NULL,
-  `location_id` char(36) DEFAULT NULL,
-  `creditor_uuid` char(36) DEFAULT NULL,
-  `debitor_uuid` char(36) DEFAULT NULL,
-  `locked` tinyint(1) DEFAULT NULL,
+  `id`            INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `code`          VARCHAR(20) NOT NULL,
+  `prenom`        TEXT,
+  `name`          TEXT NOT NULL,
+  `postnom`       TEXT,
+  `sexe`          VARCHAR(10) NOT NULL,
+  `dob`           DATETIME NOT NULL,
+  `date_embauche` DATETIME DEFAULT NULL,
+  `nb_spouse`     INT(11) DEFAULT '0',
+  `nb_enfant`     INT(11) DEFAULT '0',
+  `grade_id`      CHAR(36) NOT NULL,
+  `daily_salary`  FLOAT DEFAULT '0',
+  `bank`          VARCHAR(30) DEFAULT NULL,
+  `bank_account`  VARCHAR(30) DEFAULT NULL,
+  `adresse`       VARCHAR(50) DEFAULT NULL,
+  `phone`         VARCHAR(20) DEFAULT NULL,
+  `email`         VARCHAR(70) DEFAULT NULL,
+  `fonction_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
+  `service_id`    SMALLINT(5) UNSIGNED DEFAULT NULL,
+  `location_id`   CHAR(36) DEFAULT NULL,
+  `creditor_uuid` CHAR(36) DEFAULT NULL,
+  `debitor_uuid`  CHAR(36) DEFAULT NULL,
+  `locked`        TINYINT(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fonction_id` (`fonction_id`),
   KEY `service_id` (`service_id`),
@@ -697,11 +697,11 @@ CREATE TABLE `enterprise` (
 
 DROP TABLE IF EXISTS `exchange_rate`;
 CREATE TABLE `exchange_rate` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `enterprise_currency_id` tinyint(3) unsigned NOT NULL,
-  `foreign_currency_id` tinyint(3) unsigned NOT NULL,
-  `rate` decimal(19,4) unsigned NOT NULL,
-  `date` date NOT NULL,
+  `id`                      MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `enterprise_currency_id`  TINYINT(3) UNSIGNED NOT NULL,
+  `foreign_currency_id`     TINYINT(3) UNSIGNED NOT NULL,
+  `rate`                    DECIMAL(19,4) UNSIGNED NOT NULL,
+  `date`                    DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   KEY `enterprise_currency_id` (`enterprise_currency_id`),
   KEY `foreign_currency_id` (`foreign_currency_id`),
@@ -1155,36 +1155,36 @@ CREATE TABLE `partial_paiement` (
 DROP TABLE IF EXISTS `patient`;
 
 CREATE TABLE `patient` (
-  `uuid` char(36) NOT NULL,
-  `project_id` smallint(5) unsigned NOT NULL,
-  `reference` int(10) unsigned NOT NULL,
-  `debitor_uuid` char(36) NOT NULL,
-  `creditor_uuid` char(36) DEFAULT NULL,
-  `first_name` varchar(150) NOT NULL,
-  `last_name` varchar(150) NOT NULL,
-  `dob` date NOT NULL,
-  `father_name` varchar(150) DEFAULT NULL,
-  `mother_name` varchar(150) DEFAULT NULL,
-  `profession` varchar(150) DEFAULT NULL,
-  `employer` varchar(150) DEFAULT NULL,
-  `spouse` varchar(150) DEFAULT NULL,
-  `spouse_profession` varchar(150) DEFAULT NULL,
-  `spouse_employer` varchar(150) DEFAULT NULL,
-  `sex` char(1) NOT NULL,
-  `religion` varchar(50) DEFAULT NULL,
-  `marital_status` varchar(50) DEFAULT NULL,
-  `phone` varchar(12) DEFAULT NULL,
-  `email` varchar(40) DEFAULT NULL,
-  `address_1` varchar(100) DEFAULT NULL,
-  `address_2` varchar(100) DEFAULT NULL,
-  `renewal` tinyint(1) NOT NULL DEFAULT '0',
-  `origin_location_id` char(36) NOT NULL,
-  `current_location_id` char(36) NOT NULL,
-  `registration_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `title` varchar(30) DEFAULT NULL,
-  `notes` text,
-  `middle_name` varchar(150) DEFAULT NULL,
-  `hospital_no` varchar(150) DEFAULT NULL,
+  `uuid`                        CHAR(36) NOT NULL,
+  `project_id`                  SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`                   INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `debitor_uuid`                CHAR(36) NOT NULL,
+  `creditor_uuid`               CHAR(36),
+  `first_name`                  VARCHAR(150) NOT NULL,
+  `last_name`                   VARCHAR(150) NOT NULL,
+  `dob`                         DATETIME NOT NULL,
+  `father_name`                 VARCHAR(150),
+  `mother_name`                 VARCHAR(150),
+  `profession`                  VARCHAR(150),
+  `employer`                    VARCHAR(150),
+  `spouse`                      VARCHAR(150),
+  `spouse_profession`           VARCHAR(150),
+  `spouse_employer`             VARCHAR(150),
+  `sex`                         CHAR(1) NOT NULL,
+  `religion`                    VARCHAR(50),
+  `marital_status`              VARCHAR(50),
+  `phone`                       VARCHAR(12),
+  `email`                       VARCHAR(40),
+  `address_1`                   VARCHAR(100),
+  `address_2`                   VARCHAR(100),
+  `renewal`                     TINYINT(1) NOT NULL DEFAULT 0,
+  `origin_location_id`          CHAR(36) NOT NULL,
+  `current_location_id`         CHAR(36) NOT NULL,
+  `registration_date`           DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `title`                       VARCHAR(30),
+  `notes`                       TEXT,
+  `middle_name`                 VARCHAR(150),
+  `hospital_no`                 VARCHAR(150),
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `creditor_uuid` (`creditor_uuid`),
   KEY `reference` (`reference`),
@@ -1198,7 +1198,7 @@ CREATE TABLE `patient` (
   FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TRIGGER patient_reference BEFORE INSERT ON patient 
+CREATE TRIGGER patient_reference BEFORE INSERT ON patient
 FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM patient WHERE patient.project_id = new.project_id);
 
 DROP TABLE IF EXISTS `patient_group`;
@@ -1387,7 +1387,7 @@ CREATE TABLE `price_list_item` (
 DROP TABLE IF EXISTS `primary_cash`;
 
 CREATE TABLE `primary_cash` (
-  `reference` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `uuid` char(36) NOT NULL,
   `project_id` smallint(5) unsigned NOT NULL,
   `type` char(1) NOT NULL,
@@ -1494,7 +1494,7 @@ DROP TABLE IF EXISTS `purchase`;
 
 CREATE TABLE `purchase` (
   `project_id` smallint(5) unsigned NOT NULL,
-  `reference` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `reference` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `uuid` char(36) NOT NULL,
   `cost` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
   `currency_id` tinyint(3) unsigned NOT NULL,
@@ -1603,7 +1603,7 @@ DROP TABLE IF EXISTS `sale`;
 
 CREATE TABLE `sale` (
   `project_id` smallint(5) unsigned NOT NULL,
-  `reference` int(10) unsigned NOT NULL,
+  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `uuid` char(36) NOT NULL,
   `cost` decimal(19,4) unsigned NOT NULL,
   `currency_id` tinyint(3) unsigned NOT NULL,
@@ -1628,7 +1628,7 @@ CREATE TABLE `sale` (
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TRIGGER sale_reference BEFORE INSERT ON sale 
+CREATE TRIGGER sale_reference BEFORE INSERT ON sale
 FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM sale WHERE sale.project_id = new.project_id);
 
 DROP TABLE IF EXISTS `sale_item`;

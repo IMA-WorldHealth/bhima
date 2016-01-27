@@ -1,9 +1,3 @@
--- By: Dedrick Kitamuka
--- Date: 2015-11-27
-
--- INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) VALUES (138, 'Employee State Pdf', 'TREE.EMPLOYEE_STATE', 'Situation Financiere employee' , 128, 'partials/reports_proposed/employee_state/', '/reports/employee_state/');
-
-
 -- Deleting
 -- By Chris LOMAME
 -- Date : 2015-12-16
@@ -11,7 +5,6 @@
 -- /reports/stock_store/:depotId
 
 DELETE FROM unit WHERE id = 134;
-
 
 --
 -- General upgrades to the entire database
@@ -98,16 +91,16 @@ DROP TABLE cash;
 
 -- schema for cash table
 CREATE TABLE `cash` (
-  `uuid`            char(36) NOT NULL,
-  `project_id`      smallint(5) unsigned NOT NULL,
-  `reference`       int(10) unsigned NOT NULL,
-  `date`            date NOT NULL,
-  `debtor_uuid`     char(36) NOT NULL,
-  `currency_id`     tinyint(3) unsigned NOT NULL,
-  `amount`          decimal(19,2) unsigned NOT NULL DEFAULT 0.00,
-  `user_id`         smallint(5) unsigned NOT NULL,
-  `cashbox_id`      mediumint(8) unsigned NOT NULL,
-  `description`     text,
+  `uuid`            CHAR(36) NOT NULL,
+  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `date`            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `debtor_uuid`     CHAR(36) NOT NULL,
+  `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
+  `amount`          DECIMAL(19,2) UNSIGNED NOT NULL DEFAULT 0.00,
+  `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  `cashbox_id`      MEDIUMINT(8) UNSIGNED NOT NULL,
+  `description`     TEXT,
   `is_caution`      BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   KEY `project_id` (`project_id`),
@@ -135,13 +128,13 @@ CREATE TABLE `cash_item` (
 
 -- schema for cash_discard table
 CREATE TABLE `cash_discard` (
-  `uuid`              char(36) NOT NULL,
-  `project_id`        smallint(5) unsigned NOT NULL,
-  `reference`         int(10) unsigned NOT NULL,
-  `cash_uuid`         char(36) NOT NULL,
-  `date`              date NOT NULL,
+  `uuid`              CHAR(36) NOT NULL,
+  `project_id`        SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`         INT(10) UNSIGNED NOT NULL,
+  `cash_uuid`         CHAR(36) NOT NULL,
+  `date`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description`       text,
-  `user_id`           smallint(5) unsigned NOT NULL,
+  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `reference` (`reference`),
   KEY `project_id` (`project_id`),

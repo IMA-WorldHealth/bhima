@@ -46,13 +46,6 @@ exports.list = function list(req, res, next) {
  * with the given ID.
  *
  * @example
- * var codes = {
- *   ERR_NOT_FOUND : {
- *    httpCode : 404,
- *    reason : 'Database record not found'
- *    }
- * };
- *
  * // lookup price list
  * lookupPriceList(1, codes)
  * .then(function (priceList) {
@@ -76,7 +69,7 @@ function lookupPriceList(uuid, codes) {
 
     // if no matches found, send a 404 error
     if (rows.length === 0) {
-      throw codes.ERR_NOT_FOUND;
+      throw new codes.ERR_NOT_FOUND();
     }
 
     priceList = rows[0];

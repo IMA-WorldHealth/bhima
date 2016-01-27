@@ -22,7 +22,7 @@ echo "Building server ...."
 npm run dev &
 
 # make sure we have enough time for the server to start
-sleep 5
+sleep 8
 
 echo "Running tests ..."
 

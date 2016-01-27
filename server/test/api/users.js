@@ -155,7 +155,7 @@ describe('(/users) Users and Permissions Interface ::', function () {
       .then(function (res) {
         expect(res).to.have.status(400);
         expect(res).to.be.json;
-        expect(res.body.code).to.equal('ERR_CANNOT_UPDATE_PASSWORD');
+        expect(res.body.code).to.equal('ERR_PROTECTED_FIELD');
       })
       .catch(helpers.handler);
   });

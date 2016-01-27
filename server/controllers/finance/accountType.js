@@ -17,7 +17,7 @@
  
 var db = require('../../lib/db');
 
-function getAccountType (req, res, next){
+function detail(req, res, next){
   'use strict';
 
   lookupAccountType(req.params.id, req.codes)
@@ -110,7 +110,9 @@ function lookupAccountType(id, codes){
 
   return db.exec(sql, id)
     .then(function (rows){
-      if(rows.length === 0) { throw codes.ERR_NOT_FOUND;}
+      if (rows.length === 0) {
+        throw new codes.ERR_NOT_FOUND();
+      }
       return rows[0];
     });
 }
@@ -119,5 +121,5 @@ exports.list = list;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
-exports.getAccountType = getAccountType;
+exports.detail = detail;
 

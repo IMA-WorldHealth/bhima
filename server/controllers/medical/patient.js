@@ -69,6 +69,7 @@ function create(req, res, next) {
   var medical = createRequestData.medical;
   var finance = createRequestData.finance;
 
+
   // Debtor group required for financial modelling
   invalidParameters = !finance || !medical;
 
@@ -77,9 +78,17 @@ function create(req, res, next) {
     // FIXME This should be handled by middleware
     res.status(400).json({
       code : 'ERROR.ERR_MISSING_INFO',
-      reason : 'Both `financial` and `medical` information must be provided to register a patient'
+      reason : 'Both `financial` and `medical` information must be provided to register a patient.'
     });
     return;
+  }
+
+  // pre-process dates
+  if (medical.dob) {
+    medical.dob = new Date(medical.dob);
+  }
+  if (medical.registration_date) {
+    medical.registration_date = new Date(medical.registration_date);
   }
 
   // Optionally allow client to specify UUID
@@ -149,13 +158,11 @@ function update(req, res, next) {
   var queryData = req.body;
   var patientId = req.params.uuid;
 
-  // TODO This should never be matched by express - review and remove if true
-  if (!patientId) {
-    res.status(400).json({
-      code : 'ERR_INVALID_REQUEST',
-      reason : 'A valid patient UUID must be provided to update a patient\'s record.'
-    });
-    return;
+  if (queryData.dob) {
+    queryData.dob = new Date(queryData.dob);
+  }
+  if (queryData.registration_date) {
+    queryData.registration_date = new Date(queryData.registration_date);
   }
 
   updatePatientQuery =
@@ -207,7 +214,7 @@ function groups(req, res, next) {
     .then(function (rows) {
 
       if (isEmpty(rows)) {
-        throw req.codes.ERR_NOT_FOUND;
+        throw new req.codes.ERR_NOT_FOUND();
       }
 
       return db.exec(patientGroupsQuery, [uuid]);
@@ -471,7 +478,7 @@ function search (req, res, next) {
 
   try {
     var missingRequiredParameters = (!qReference && !qName && !qFields);
-    if (missingRequiredParameters) { throw req.codes.ERR_PARAMETERS_REQUIRED; }
+    if (missingRequiredParameters) { throw new req.codes.ERR_PARAMETERS_REQUIRED(); }
 
     qFields = qFields ? JSON.parse(qFields) : null;
     qDetail = Number(qDetail);
@@ -479,7 +486,6 @@ function search (req, res, next) {
 
   } catch (err) {
     // notify the occurence of the error
-    console.error(err);
     return next(err);
   }
 
@@ -546,7 +552,7 @@ function search (req, res, next) {
 
   } else {
     // throw an error in other cases
-    return next(req.codes.ERR_PARAMETERS_REQUIRED);
+    return next(new req.codes.ERR_PARAMETERS_REQUIRED());
   }
 
   if (qLimit && typeof(qLimit) === 'number') {

@@ -35,7 +35,7 @@ function lookupBillingService(id, codes) {
 
     // if no records matching, throw a 404
     if (rows.length === 0) {
-      throw codes.ERR_NOT_FOUND;
+      throw new codes.ERR_NOT_FOUND();
     }
 
     // return a single JSON of the record
@@ -100,7 +100,7 @@ exports.create = function create(req, res, next) {
 
   // ensure that values inserted are positive
   if (data.value <= 0) {
-    return next(req.codes.ERR_NEGATIVE_VALUES);
+    return next(new req.codes.ERR_NEGATIVE_VALUES());
   }
 
   var sql =

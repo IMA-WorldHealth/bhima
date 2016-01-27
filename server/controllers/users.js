@@ -45,7 +45,7 @@ exports.list = function list(req, res, next) {
 };
 
 // helper function to get a single user, including project details
-function helperGetUserDetails(id) {
+function lookupUserDetails(id, codes) {
   'use strict';
 
   var sql, data;
@@ -59,7 +59,7 @@ function helperGetUserDetails(id) {
   .then(function (rows) {
 
     if (!rows.length) {
-      throw 'ERR_NOT_FOUND';
+      throw new codes.ERR_NOT_FOUND();
     }
 
     // bind user data to ship back
@@ -99,7 +99,7 @@ function helperGetUserDetails(id) {
 exports.details = function details(req, res, next) {
   'use strict;';
 
-  helperGetUserDetails(req.params.id)
+  lookupUserDetails(req.params.id, req.codes)
   .then(function (data) {
     res.status(200).json(data);
   })
@@ -180,8 +180,7 @@ exports.create = function create(req, res, next) {
 
   // send a 400 response to the client
   if (missingKeys.length > 0) {
-    return res.status(400)
-    .json({
+    return res.status(400).json({
       code : 'ERROR.ERR_MISSING_INFO',
       reason: 'A username, password, first name, last name, project list, and email are ' +
               'required to create a user.',
@@ -304,11 +303,7 @@ exports.update = function update(req, res, next) {
 
   // if the password is sent the the
   if (data.password) {
-    return res.status(400).json({
-      code: 'ERR_CANNOT_UPDATE_PASSWORD',
-      reason : 'Cannot update both regular user information and passwords ' +
-        'in the same request.  Please use the users/:id/password endpoint.'
-    });
+    return next(new req.codes.ERR_PROTECTED_FIELD());
   }
 
   var hasProjects = (projects && projects.length > 0);
@@ -340,7 +335,7 @@ exports.update = function update(req, res, next) {
   .then(function () {
 
     // fetch the entire changed resource to send back to the client
-    return helperGetUserDetails(req.params.id);
+    return lookupUserDetails(req.params.id, req.codes);
   })
   .then(function (data) {
     res.status(200).json(data);
@@ -355,7 +350,7 @@ exports.update = function update(req, res, next) {
 * This endpoint updates a user's password with ID :id.  If the user is not
 * found, the server sends back a 404 error.
 */
-exports.password = function update(req, res, next) {
+exports.password = function updatePassword(req, res, next) {
   'use strict';
 
   // TODO -- strict check to see if the user is either signed in or has
@@ -366,7 +361,7 @@ exports.password = function update(req, res, next) {
 
   db.exec(sql, [req.body.password, req.params.id])
   .then(function () {
-    return helperGetUserDetails(req.params.id);
+    return lookupUserDetails(req.params.id, req.codes);
   })
   .then(function (data) {
     res.status(200).json(data);
@@ -392,7 +387,7 @@ exports.delete = function del(req, res, next) {
 
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      throw 'ERR_NOT_FOUND';
+      throw new req.codes.ERR_NOT_FOUND();
     }
 
     res.status(204).send();
@@ -416,7 +411,6 @@ exports.getLanguages = function getLanguages(req, res, next) {
   .catch(next)
   .done();
 };
-
 
 // TODO -- remove this.
 exports.authenticatePin = function authenticatePin(req, res, next) {

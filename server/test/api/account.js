@@ -32,6 +32,12 @@ describe('The account API, PATH : /accounts', function () {
   var DELETABLE_ACCOUNT_ID = 3636;
   var FETCHABLE_ACCOUNT_ID = 3626;
 
+  var responseKeys = [
+    'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
+    'reference_id', 'is_brut_link', 'is_used_budget', 'is_charge', 'account_number',
+    'account_txt', 'parent', 'account_type_id', 'is_title', 'type'
+  ];
+
     // login before each request
   beforeEach(helpers.login(agent));
 
@@ -74,10 +80,7 @@ describe('The account API, PATH : /accounts', function () {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body)
-        .to.have.all.keys('id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
-                          'reference_id', 'is_brut_link', 'is_used_budget', 'is_charge', 'account_number',
-                          'account_txt', 'parent', 'account_type_id', 'is_title', 'type');
+        expect(res.body).to.have.all.keys(responseKeys);
 
        expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_ID);
       })
@@ -88,7 +91,7 @@ describe('The account API, PATH : /accounts', function () {
     return agent.get('/accounts/unknownId')
       .then(function (res) {
         expect(res).to.have.status(404);
-        expect(res.body).to.have.all.keys('code', 'httpStatus', 'reason');
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
   });
@@ -108,11 +111,7 @@ describe('The account API, PATH : /accounts', function () {
       })
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res.body)
-        .to.have.all.keys('id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
-                          'reference_id', 'is_brut_link', 'is_used_budget', 'is_charge', 'account_number',
-                          'account_txt', 'parent', 'account_type_id', 'is_title', 'type');
-
+        expect(res.body).to.have.all.keys(responseKeys);
       })
      .catch(helpers.handler);
   });
@@ -127,11 +126,7 @@ describe('The account API, PATH : /accounts', function () {
         expect(res).to.be.json;
         expect(res.body.id).to.equal(newAccount.id);
         expect(res.body.account_txt).to.equal(updateInfo.account_txt);
-        expect(res.body)
-        .to.have.all.keys('id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
-                          'reference_id', 'is_brut_link', 'is_used_budget', 'is_charge', 'account_number',
-                          'account_txt', 'parent', 'account_type_id', 'is_title', 'type');
-
+        expect(res.body).to.have.all.keys(responseKeys);
        })
       .catch(helpers.handler);
   });

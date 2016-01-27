@@ -32,6 +32,11 @@ describe('(/billing_services) Billing Services Interface ::', function () {
     value:       -15.0
   };
 
+  var responseKeys = [
+    'id', 'account_id', 'label', 'description', 'value',
+    'account_number', 'created_at', 'updated_at'
+  ];
+
   /** logs in before each request */
   beforeEach(helpers.login(agent));
 
@@ -50,7 +55,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
       .then(function (res) {
         expect(res).to.have.status(404);
         expect(res).to.be.json;
-        expect(res.body).to.have.keys('code', 'reason', 'httpStatus');
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
   });
@@ -71,10 +76,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body).to.have.keys(
-          'id', 'account_id', 'label', 'description', 'value',
-          'account_number', 'created_at', 'updated_at'
-        );
+        expect(res.body).to.contain.all.keys(responseKeys);
 
         // these props should be identical
         expect(res.body.id).to.equal(billingServiceA.id);
@@ -91,7 +93,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
       .then(function (res) {
         expect(res).to.have.status(400);
         expect(res).to.be.json;
-        expect(res.body).to.have.keys('code', 'reason', 'httpStatus');
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
   });
@@ -118,7 +120,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
     return agent.delete('/billing_services/undefined')
       .then(function (res) {
         expect(res).to.have.status(404);
-        expect(res.body).to.have.keys('code', 'reason', 'httpStatus');
+        expect(res.body).to.contain.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
   });
@@ -132,7 +134,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
       })
       .then(function (res) {
         expect(res).to.have.status(404);
-        expect(res.body).to.have.keys('code', 'reason', 'httpStatus');
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
   });

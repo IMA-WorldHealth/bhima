@@ -43,7 +43,7 @@ function lookupCashRecord(uuid, codes) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw codes.ERR_NOT_FOUND;
+      throw new codes.ERR_NOT_FOUND();
     }
 
     // store the record for return
@@ -209,7 +209,7 @@ exports.update = function update(req, res, next) {
 
   // if we have a protected key, emit an error
   if (hasProtectedKey) {
-    return next('ERR_PROTECTED_FIELD');
+    return next(new req.codes.ERR_PROTECTED_FIELD());
   }
 
   // if checks pass, we are free to continue with our updates to the db

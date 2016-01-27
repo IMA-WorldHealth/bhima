@@ -32,9 +32,8 @@ function lookupDiscount(id, codes) {
 
     // if no matches in the database, throw a 404
     if (rows.length === 0) {
-      throw codes.ERR_NOT_FOUND;
+      throw new codes.ERR_NOT_FOUND();
     }
-
 
     // return a single record
     return rows[0];
@@ -90,12 +89,8 @@ exports.create = function create(req, res, next) {
   // expects the proposed record to be namespaced by "discount"
   var data = req.body.discount;
 
-  // @TODO - unify this condition in either a database rejection or a req.codes
   if (data.value < 0) {
-    return res.status(400).json({
-      code : 'ERR_NEGATIVE_VALUES',
-      reason : 'You cannot insert a negative value into this table.'
-    });
+    return next(new req.codes.ERR_NEGATIVE_VALUES());
   }
 
   var sql =

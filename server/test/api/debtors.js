@@ -39,7 +39,7 @@ describe('The /debtors API', function () {
         expect(result).to.have.status(200);
 
         debtorGroup = result.body;
-        expect(debtorGroup).to.contain.keys(expectedKeySubset);
+        expect(debtorGroup).to.contain.all.keys(expectedKeySubset);
       })
       .catch(helpers.handler);
   });

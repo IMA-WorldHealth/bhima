@@ -56,7 +56,7 @@ exports.configure = function configure(app) {
     var emptyBody = Object.keys(req.body).length === 0;
 
     if (emptyBody) {
-      next(Error(req.codes.ERR_EMPTY_BODY));
+      next(new req.codes.ERR_EMPTY_BODY());
     } else {
       next();
     }
@@ -93,7 +93,7 @@ exports.configure = function configure(app) {
     var publicRoutes = ['/login', '/languages', '/projects', '/logout'];
 
     if (req.session.user === undefined && !within(req.path, publicRoutes)) {
-      next(Error(req.codes.ERR_NOT_AUTHENTICATED));
+      next(new req.codes.ERR_NOT_AUTHENTICATED());
     } else {
       next();
     }

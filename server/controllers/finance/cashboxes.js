@@ -75,7 +75,7 @@ function helperGetCashbox(id, codes) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw codes.NOT_FOUND;
+      throw new codes.ERR_NOT_FOUND();
     }
 
     cashbox = rows[0];
@@ -205,7 +205,7 @@ exports.currencies.details = function detailCurrencies(req, res, next) {
   db.exec(sql, [req.params.id, req.params.currencyId])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw req.codes.NOT_FOUND;
+      throw new req.codes.ERR_NOT_FOUND();
     }
 
     res.status(200).json(rows[0]);

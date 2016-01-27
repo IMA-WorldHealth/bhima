@@ -1,38 +1,22 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-// workaround for low node versions
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
-
-// environment variables - disable certificate errors
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-// base URL
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
+/** import test helpers */
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 /**
  * The /prices API endpoint
  */
 describe('(/prices ) The price list API', function () {
-  var agent = chai.request.agent(url);
+  var agent = chai.request.agent(helpers.baseUrl);
 
-  // temp error handler
-  function handler(err) { throw err; }
-
-  // login before each request
-  beforeEach(function () {
-    return agent
-      .post('/login')
-      .send(user);
-  });
+  /** login before each request */
+  beforeEach(helpers.login(agent));
 
 
   // constants
@@ -71,6 +55,10 @@ describe('(/prices ) The price list API', function () {
     }]
   };
 
+  var errorKeys = ['code', 'httpStatus', 'reason'];
+  var responseKeys = [
+    'uuid', 'label', 'description', 'created_at', 'updated_at', 'items'
+  ];
 
   it('GET /prices returns an empty list of price lists', function () {
     return agent.get('/prices')
@@ -79,16 +67,16 @@ describe('(/prices ) The price list API', function () {
         expect(res).to.be.json;
         expect(res.body).to.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /prices/unknownId returns a 404 error', function () {
     return agent.get('/prices/unknownId')
       .then(function (res) {
         expect(res).to.have.status(404);
-        expect(res.body).to.have.all.keys('code', 'httpStatus', 'reason');
+        expect(res.body).to.contain.all.keys(errorKeys);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
 
@@ -106,9 +94,9 @@ describe('(/prices ) The price list API', function () {
       })
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res.body).to.have.all.keys('uuid', 'label', 'description', 'created_at', 'updated_at', 'items');
+        expect(res.body).to.have.all.keys(responseKeys);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /prices should update the (empty) price list\'s label', function () {
@@ -118,11 +106,11 @@ describe('(/prices ) The price list API', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body).to.have.all.keys('uuid', 'label', 'description', 'created_at', 'updated_at', 'items');
+        expect(res.body).to.have.all.keys(responseKeys);
         expect(res.body.label).to.equal(newLabel);
         expect(res.body.items).to.be.empty;
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('PUT /prices should update the (empty) price list with price list items', function () {
@@ -131,9 +119,9 @@ describe('(/prices ) The price list API', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body).to.have.all.keys('uuid', 'label', 'description', 'created_at', 'updated_at', 'items');
+        expect(res.body).to.have.all.keys(responseKeys);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /prices should return a list of one item', function () {
@@ -143,7 +131,7 @@ describe('(/prices ) The price list API', function () {
         expect(res).to.be.json;
         expect(res.body).to.have.length(1);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('POST /prices should create a price list with two items', function () {
@@ -160,10 +148,10 @@ describe('(/prices ) The price list API', function () {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.all.keys('uuid', 'label', 'description', 'created_at', 'updated_at', 'items');
+        expect(res.body).to.have.all.keys(responseKeys);
         expect(res.body.items).to.have.length(2);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('GET /prices should return a list of two items', function () {
@@ -173,15 +161,17 @@ describe('(/prices ) The price list API', function () {
         expect(res).to.be.json;
         expect(res.body).to.have.length(2);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
-  
+
   it('POST /prices with an invalid price list item should not create a dangling price list', function () {
     return agent.post('/prices')
       .send({ list : invalidPriceList })
       .then(function (res) {
-        expect(res).to.have.status(500);
+        expect(res).to.have.status(400);
         expect(res.body).to.not.have.key('uuid');
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        expect(res.body.code).to.equal('DB.ER_BAD_NULL_ERROR');
 
         // make sure we didn't gain a price list!
         return agent.get('/prices');
@@ -191,7 +181,7 @@ describe('(/prices ) The price list API', function () {
         expect(res).to.be.json;
         expect(res.body).to.have.length(2);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('DELETE /prices/unknownid should return a 404 error.', function () {
@@ -199,9 +189,9 @@ describe('(/prices ) The price list API', function () {
       .then(function (res) {
         expect(res).to.have.status(404);
         expect(res).to.be.json;
-        expect(res.body).to.have.all.keys('code', 'httpStatus', 'reason');
+        expect(res.body).to.contain.all.keys(errorKeys);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 
   it('DELETE /prices/:uuid should delete an existing price list', function () {
@@ -213,8 +203,8 @@ describe('(/prices ) The price list API', function () {
       .then(function (res) {
         expect(res).to.have.status(404);
         expect(res).to.be.json;
-        expect(res.body).to.have.all.keys('code', 'httpStatus', 'reason');
+        expect(res.body).to.contain.all.keys(errorKeys);
       })
-      .catch(handler);
+      .catch(helpers.handler);
   });
 });

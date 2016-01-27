@@ -1,6 +1,6 @@
 var db = require('../../lib/db');
 
-function getReference (req, res, next){
+function detail(req, res, next) {
   'use strict';
 
   lookupReference (req.params.id, req.codes)
@@ -11,14 +11,14 @@ function getReference (req, res, next){
     .done();
 }
 
-function list (req, res, next){
+function list(req, res, next) {
   'use strict';
 
-  var sql = 
+  var sql =
     'SELECT r.id, r.text, r.ref FROM reference AS r';
 
-  if(req.query.full === '1'){
-    sql = 
+  if (req.query.full === '1') {
+    sql =
       'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id ' +
       'FROM reference AS r';
   }
@@ -40,16 +40,16 @@ function create (req, res, next) {
   var createReferenceQuery = 'INSERT INTO reference SET ?';
 
   delete record.id;
-  
+
   db.exec(createReferenceQuery, [record])
-  .then(function (result){
+  .then(function (result) {
     res.status(201).json({ id: result.insertId });
   })
   .catch(next)
   .done();
 }
 
-function update (req, res, next){
+function update (req, res, next) {
   'use strict';
 
   var queryData = req.body;
@@ -59,13 +59,13 @@ function update (req, res, next){
   delete queryData.id;
 
   lookupReference(referenceId, req.codes)
-    .then(function (){
+    .then(function () {
       return db.exec(updateReferenceQuery, [queryData, referenceId]);
     })
-    .then(function (result){
+    .then(function (result) {
       return lookupReference(referenceId, req.codes);
     })
-    .then(function (reference){
+    .then(function (reference) {
       res.status(200).json(reference);
     })
     .catch(next)
@@ -73,29 +73,32 @@ function update (req, res, next){
 }
 
 function remove (req, res, next) {
-  
+
   var referenceId = req.params.id;
   var removeReferenceQuery = 'DELETE FROM reference WHERE id=?';
 
   lookupReference(referenceId, req.codes)
-    .then(function (){
+    .then(function () {
       return db.exec(removeReferenceQuery, [referenceId]);
     })
-    .then(function (){
+    .then(function () {
       res.status(204).send();
    })
     .catch(next)
     .done();
 }
 
-function lookupReference (id, codes){
-  var sql = 
+function lookupReference(id, codes) {
+  var sql =
     'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id ' +
     'FROM reference AS r WHERE r.id = ?';
 
   return db.exec(sql, id)
-    .then(function (rows){
-    if(rows.length === 0){ throw codes.ERR_NOT_FOUND;}
+    .then(function (rows) {
+      if (rows.length === 0) {
+        throw new codes.ERR_NOT_FOUND();
+      }
+
       return rows[0];
     });
 }
@@ -104,4 +107,4 @@ exports.list = list;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
-exports.getReference = getReference;
+exports.detail = detail;
