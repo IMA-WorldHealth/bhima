@@ -369,7 +369,8 @@ exports.configure = function (app) {
   app.get('/debtors/groups', debtors.listGroups);
   app.get('/debtors/groups/:uuid', debtors.groupDetails);
   // app.get('/debtors/:uuid', debtors.details);
-  app.get('/debtors/:uuid/invoices', debtors.invoices);
+  //app.get('/debtors/:uuid/invoices', debtors.invoices);
+  app.get('/debtors/:uuid/invoices', debtors.fetchInvoices);
 
   app.put('/debtors/:uuid', debtors.update);
 

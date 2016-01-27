@@ -57,7 +57,7 @@ describe('The account API, PATH : /accounts', function () {
         .catch(helpers.handler);
     });
 
- it('METHOD : GET, PATH : /accounts?locked=0, It returns a list of unlocked accounts', function () {
+ it('METHOD : GET, PATH : /accounts?locked=0, It returns a listst of unlocked accounts', function () {
       return agent.get('/accounts?locked=0')
         .then(function (res) {
           var list = res.body.filter(function (item) { return item.locked === 0; });

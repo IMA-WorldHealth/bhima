@@ -6,6 +6,7 @@ var db = require('../../lib/db'),
 exports.groupDetails = groupDetails;
 exports.listGroups = listGroups;
 exports.update = update;
+exports.fetchInvoices = fetchInvoices;
 
 function groupDetails(req, res, next) {
   var debtorDetailsQuery;
@@ -80,7 +81,7 @@ function update(req, res, next) {
   db.exec(updateDebtorQuery, [queryData, debtorId])
     .then(function (result) { 
     
-      return handleFetchDebtor(debtorId);
+      return lookupDebtor(debtorId, req.codes);
     })
     .then(function (updatedDebtor) { 
       res.status(200).json(updatedDebtor);
@@ -89,17 +90,81 @@ function update(req, res, next) {
     .done();
 }
 
-function handleFetchDebtor(uuid) { 
+function fetchInvoices (req, res, next){
+  
+  var accountId = null;
+  var sql =
+    'SELECT account_id FROM debitor_group WHERE uuid = (SELECT group_uuid FROM debitor WHERE uuid = ?)';
+
+  lookupDebtor(req.params.uuid, req.codes)
+    .then(function (){
+      return db.exec(sql, [req.params.uuid]);
+    })
+    .then(function (rows){
+      accountId = rows[0].account_id;
+      sql =
+      'SELECT c.inv_po_id FROM (' +
+        'SELECT p.inv_po_id ' +
+        'FROM posting_journal AS p ' +
+        'WHERE p.deb_cred_uuid = ? AND p.account_id = ? ' +
+      'UNION ' +
+        'SELECT g.inv_po_id ' +
+        'FROM general_ledger AS g ' +
+        'WHERE g.deb_cred_uuid = ? AND g.account_id = ?' +
+      ') AS c;';
+
+      return db.exec(sql, [req.params.uuid, accountId, req.params.uuid, accountId]);
+    })
+    .then(function (rows){
+
+     var invoices = rows.map(function (row) {
+       return row.inv_po_id;
+     });
+
+     sql =
+      'SELECT CONCAT(p.abbr, s.reference) AS reference, t.inv_po_id AS sale_uuid, t.trans_date AS date, ' +
+        'SUM(t.debit_equiv - t.credit_equiv) AS balance, t.description, s.cost, COUNT(si.uuid) AS numItems, IF(ISNULL(cn.uuid), 0, 1) AS canceled ' +
+      'FROM (' +
+        '(' +
+          'SELECT pj.inv_po_id, pj.trans_date, pj.debit_equiv, pj.credit_equiv, ' +
+            'pj.account_id, pj.deb_cred_uuid, pj.trans_id, pj.description ' +
+          'FROM posting_journal AS pj ' +
+        ') UNION ALL (' +
+          'SELECT gl.inv_po_id, gl.trans_date, gl.debit_equiv, gl.credit_equiv, ' +
+            'gl.account_id, gl.deb_cred_uuid, gl.trans_id, gl.description ' +
+          'FROM general_ledger AS gl ' +
+        ')' +
+      ') AS t ' +
+      'JOIN sale AS s ON t.inv_po_id = s.uuid ' +
+      'JOIN project AS p ON s.project_id = p.id ' +
+      'JOIN sale_item AS si ON si.sale_uuid = s.uuid ' +
+      'LEFT JOIN credit_note AS cn ON cn.sale_uuid = s.uuid ' + 
+      'WHERE t.inv_po_id IN (?) ' +
+        'AND t.account_id = ? ' +
+        'GROUP BY t.inv_po_id';
+
+      if(req.query.balanced === '1'){ sql += ' HAVING balance = 0;';}
+      if(req.query.balanced === '0') { sql += ' HAVING balance > 0;';}
+
+      return db.exec(sql, [invoices, accountId]);
+    })
+    .then(function (rows){
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();             
+}
+
+function lookupDebtor(uuid, codes) { 
   var debtorQuery = 
     'SELECT uuid, group_uuid, text ' + 
     'FROM debitor ' + 
     'WHERE uuid = ?';
 
   return db.exec(debtorQuery, [uuid])
-    .then(function (debtorResult) { 
-      
-      // Got correct debtor - seperate JSON object
-      return debtorResult[0];
+    .then(function (rows) {
+      if(rows.length === 0) { throw codes.ERR_NOT_FOUND;}
+      return rows[0];
     });
 }
 
@@ -107,9 +172,13 @@ function isEmpty(array) {
   return array.length === 0;
 }
 
+
+
 // GET /debtor/:uuid/invoices
 // Show open invoices for a debtor
-exports.invoices = function invoices(req, res, next) {
+
+/**
+ * exports.invoices = function invoices(req, res, next) {
   'use strict';
 
   var sql, accountId;
@@ -185,4 +254,4 @@ exports.invoices = function invoices(req, res, next) {
   })
   .catch(next)
   .done();
-};
+};**/
