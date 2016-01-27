@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
 .controller('settings', Settings);
 
-Settings.$inject = ['$http','$routeParams','$translate','$location','appcache','messenger','tmhDynamicLocale','store','amMoment', 'SessionService'];
+Settings.$inject = ['$http','$routeParams','$translate','$location','appcache', 'tmhDynamicLocale','amMoment', 'SessionService'];
 
-function Settings($http, $routeParams, $translate, $location, Appcache, messenger, tmhDynamicLocale, Store, amMoment, SessionService) {
+function Settings($http, $routeParams, $translate, $location, Appcache, tmhDynamicLocale, amMoment, SessionService) {
   var vm = this;
 
   // TODO issue discussing DB modelling of languages, quick suggestion (id, label, translateKey, localeKey)
