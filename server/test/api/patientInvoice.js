@@ -1,9 +1,7 @@
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 /** import test helpers */
 var helpers = require('./helpers');
@@ -22,7 +20,7 @@ describe('The /sales API', function () {
       cost: 35,
       currency_id: 2,
       debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
-      invoice_date: '2016-01-13',
+      invoice_date: new Date('2016-01-13'),
       note: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
       service_id: 1,
       is_distributable: true

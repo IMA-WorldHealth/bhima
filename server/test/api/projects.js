@@ -1,10 +1,7 @@
 /* global describe, it, beforeEach */
 
-// import testing framework
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);

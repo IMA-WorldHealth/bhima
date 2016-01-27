@@ -2,9 +2,7 @@
 
 // import testing framework
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 /** import test helpers */
 var helpers = require('./helpers');
@@ -25,11 +23,8 @@ describe('The /login API endpoint', function () {
       .get('/non-existant')
       .then(function (res) {
         expect(res).to.have.status(401);
-        expect(res.body).to.deep.equal({
-          code : 'ERR_NOT_AUTHENTICATED',
-          httpStatus : 401,
-          reason : 'You have not yet authenticated with the API to access the endpoint.  Send a POST to /login with proper credentials to sign in.'
-        });
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        expect(res.body.code).to.equal('ERR_NOT_AUTHENTICATED');
       })
       .catch(helpers.handler);
   });
@@ -39,6 +34,7 @@ describe('The /login API endpoint', function () {
       .get('/journal')
       .then(function (res) {
         expect(res).to.have.status(401);
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
         expect(res.body.code).to.equal('ERR_NOT_AUTHENTICATED');
       })
       .catch(helpers.handler);
@@ -59,6 +55,7 @@ describe('The /login API endpoint', function () {
       .send(invalidUser)
       .then(function (res) {
         expect(res).to.have.status(401);
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
         expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
       })
       .catch(helpers.handler);
@@ -71,6 +68,7 @@ describe('The /login API endpoint', function () {
       .send({ username : validUser.username, password : validUser.password })
       .then(function (res) {
         expect(res).to.have.status(401);
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
         expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
       })
       .catch(helpers.handler);
@@ -82,6 +80,7 @@ describe('The /login API endpoint', function () {
       .send({ username : validUser.username, project : validUser.project })
       .then(function (res) {
         expect(res).to.have.status(401);
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
         expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
       })
       .catch(helpers.handler);

@@ -34,7 +34,12 @@ exports.create = function create(req, res, next) {
   'use strict';
 
   var sql,
-      data = req.body;
+      data = req.body.rate;
+
+  // preprocess dates
+  if (data.date) {
+    data.date = new Date(data.date);
+  }
 
   sql =
     'INSERT INTO exchange_rate (enterprise_currency_id, foreign_currency_id, rate, date) ' +

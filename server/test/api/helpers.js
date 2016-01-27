@@ -1,5 +1,9 @@
 // Test Helpers
 
+// import plugins
+var chaiHttp = require('chai-http');
+var chaiDatetime =  require('chai-datetime');
+
 // Configure NodeJS/Mocha to continue working even with invalid TLS certs
 // This explicitly disables cert errors for the parent Node process, and
 // should only be done for testing cases.
@@ -32,6 +36,9 @@ exports.configure = function configure(chai) {
     chai.request.addPromises(q.Promise);
   }
 
+  // attach plugins
+  chai.use(chaiHttp);
+  chai.use(chaiDatetime);
 };
 
 // generic error handler
@@ -47,3 +54,8 @@ exports.identical = function (objectA, objectB) {
     return objectA[key] === objectB[key];
   });
 };
+
+/** The error keys sent back by the API */
+exports.errorKeys = [
+  'code', 'httpStatus', 'reason'
+];

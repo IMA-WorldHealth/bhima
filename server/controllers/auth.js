@@ -27,7 +27,7 @@ exports.login = function login(req, res, next) {
 
     // if no data found, we return a login error
     if (rows.length < 1) {
-      throw req.codes.ERR_BAD_CREDENTIALS;
+      throw new req.codes.ERR_BAD_CREDENTIALS();
     }
 
     // we assume only one match for the user
@@ -43,7 +43,7 @@ exports.login = function login(req, res, next) {
 
     // if no permissions, notify the user that way
     if (rows.length === 0) {
-      throw req.codes.ERR_NO_PERMISSIONS;
+      throw new req.codes.ERR_NO_PERMISSIONS();
     }
 
     // update the database for when the user logged in
@@ -65,7 +65,7 @@ exports.login = function login(req, res, next) {
   })
   .then(function (rows) {
     if (rows.length === 0) {
-      throw req.codes.ERR_NO_ENTERPRISE;
+      throw new req.codes.ERR_NO_ENTERPRISE();
     }
 
     enterprise = rows[0];
@@ -77,7 +77,7 @@ exports.login = function login(req, res, next) {
   })
   .then(function (rows) {
     if (rows.length === 0) {
-      throw req.codes.ERR_NO_PROJECT;
+      throw new req.codes.ERR_NO_PROJECT();
     }
 
     project = rows[0];

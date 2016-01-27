@@ -6,15 +6,15 @@ echo "Building test database for end to end tests ..."
 
 # build the test database
 # TODO Seperate test databases for integration (very few entities) and e2e tests (more featured) should be defined
-user="bhima"
-pw="HISCongo2013"
+DB_USER="bhima"
+DB_PASS="HISCongo2013"
+DB_NAME="bhima_test"
 
-mysql -u $user -p$pw -e "DROP DATABASE bhima_test;"
-mysql -u $user -p$pw -e "CREATE DATABASE bhima_test;"
-#mysql -u $user -p$pw -e "GRANT ALL ON bhima_test.* TO 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
-mysql -u $user -p$pw bhima_test < server/models/schema.sql
-mysql -u $user -p$pw bhima_test < server/models/test/data.sql
-mysql -u $user -p$pw bhima_test < server/models/updates/synt.sql
+mysql -u $DB_USER -p$DB_PASS -e "DROP DATABASE bhima_test;"
+mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE bhima_test;"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/synt.sql
 
 
 echo "Building server ...."
@@ -23,7 +23,7 @@ echo "Building server ...."
 npm run dev &
 
 # make sure we have enough time for the server to start
-sleep 5
+sleep 8
 
 echo "Running tests ..."
 

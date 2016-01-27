@@ -1,9 +1,7 @@
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var q = require('q');
 
@@ -23,32 +21,32 @@ describe('The /patients API', function () {
   var missingPatientUuid = 'd74bc167-3e14-487e-af78-22fd725e4ac1';
 
   var mockDebtor = {
-    uuid : mockDebtorUuid,
-    debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+    uuid:                mockDebtorUuid,
+    debitor_group_uuid:  '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
   var mockPatient = {
-    first_name : 'Mock',
-    middle_name : 'Patient',
-    last_name : 'First',
-    dob : '1993-06-01T00:00:00.000Z',
-    current_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
-    origin_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
-    sex : 'M',
-    project_id : 1,
-    hospital_no : 120,
-    uuid : mockPatientUuid,
+    first_name:          'Mock',
+    middle_name:         'Patient',
+    last_name:           'First',
+    dob:                 new Date ('1993-06-01'),
+    current_location_id: 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    origin_location_id:  'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    sex:                 'M',
+    project_id:          1,
+    hospital_no:         120,
+    uuid:                mockPatientUuid,
   };
 
   // Missing last name, sex
   var missingParamsPatient = {
-    first_name : 'Mock',
-    middle_name : 'Patient',
-    dob : '1993-06-01T00:00:00.000Z',
-    current_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
-    origin_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
-    project_id : 1,
-    hospital_no : 121,
-    uuid : missingPatientUuid,
+    first_name:          'Mock',
+    middle_name:         'Patient',
+    dob:                 new Date('1993-06-01'),
+    current_location_id: 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    origin_location_id:  'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    project_id:          1,
+    hospital_no:         121,
+    uuid:                missingPatientUuid,
   };
 
   var mockRequest = {
@@ -68,15 +66,15 @@ describe('The /patients API', function () {
   };
 
   var simultaneousPatient = {
-    first_name : 'Simultaneous',
-    middle_name : 'Patient',
-    last_name : 'Last',
-    dob : '1993-06-01T00:00:00.000Z',
-    current_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
-    origin_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
-    sex : 'M',
-    project_id : 1,
-    hospital_no : 122,
+    first_name:          'Simultaneous',
+    middle_name:         'Patient',
+    last_name:           'Last',
+    dob:                 new Date('1993-06-01'),
+    current_location_id: 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    origin_location_id:  'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    sex:                 'M',
+    project_id:          1,
+    hospital_no:         122,
   };
 
   var simultaneousRequest = {
@@ -240,8 +238,8 @@ describe('The /patients API', function () {
   it('POST /patients will reject a patient with missing information', function () {
     return agent.post('/patients')
       .send(mockMissingRequest)
-      .then(function (result) {
-        expect(result).to.have.status(400);
+      .then(function (res) {
+        expect(res).to.have.status(400);
       })
       .catch(helpers.handler);
   });
@@ -292,7 +290,7 @@ describe('The /patients API', function () {
         expect(result.body).to.have.length(TOTAL_PATIENT_GROUPS);
       })
       .catch(helpers.handler);
-  }); 
+  });
 
   it('Simultaneous patient registration requests respect reference lock', function () {
 

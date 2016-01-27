@@ -1,9 +1,7 @@
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 // import test helpers
 var helpers = require('./helpers');
@@ -48,7 +46,7 @@ describe('(/discounts) Discounts Interface ::', function () {
     return agent.get('/discounts/undefined')
     .then(function (res) {
       expect(res).to.have.status(404);
-      expect(res.body).to.have.keys('code', 'httpStatus', 'reason');
+      expect(res.body).to.contain.all.keys(helpers.errorKeys);
       expect(res.body.code).to.equal('ERR_NOT_FOUND');
     })
     .catch(helpers.handler);

@@ -19,16 +19,17 @@ function initialise() {
   'use strict';
 
   // configure MySQL via environmental variables
+
   con = mysql.createPool({
-    host : process.env.DB_HOST,
-    user : process.env.DB_USER,
-    password : process.env.DB_PASS,
-    database : process.env.DB_NAME
+    host:     process.env.DB_HOST,
+    user:     process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
   });
 
   //  FIXME reset all logged in users on event of server crashing / terminating - this
   //  should be removed/ implemented into the error/logging module before shipping
-  flushUsers(con);
+  //flushUsers(con);
 }
 
 function exec(sql, params) {

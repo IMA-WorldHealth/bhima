@@ -65,15 +65,15 @@ exports.listHolidays = function (req, res, next) {
   var sql =
     'SELECT hollyday.id, hollyday.label, hollyday.dateFrom, hollyday.percentage, hollyday.dateTo ' +
     'FROM hollyday WHERE ' +
-    '((hollyday.dateFrom>=? AND hollyday.dateFrom<=?) OR ' +
-    '(hollyday.dateTo>=? AND hollyday.dateTo<=?) OR ' +
-    '(hollyday.dateFrom<=? AND hollyday.dateTo>=?)) AND ' +
-    'hollyday.employee_id=? ;';
+    '((hollyday.dateFrom >= ? AND hollyday.dateFrom <= ?) OR ' +
+    '(hollyday.dateTo >= ? AND hollyday.dateTo <= ?) OR ' +
+    '(hollyday.dateFrom <= ? AND hollyday.dateTo >a ?)) AND ' +
+    'hollyday.employee_id = ? ;';
 
   var data = [
-    util.toMysqlDate(pp.dateFrom), util.toMysqlDate(pp.dateTo),
-    util.toMysqlDate(pp.dateFrom), util.toMysqlDate(pp.dateTo),
-    util.toMysqlDate(pp.dateFrom), util.toMysqlDate(pp.dateFrom),
+    pp.dateFrom, pp.dateTo,
+    pp.dateFrom, pp.dateTo,
+    pp.dateFrom, pp.dateFrom,
     req.params.employee_id
   ];
 
@@ -100,7 +100,7 @@ exports.checkHoliday = function (req, res, next) {
     req.query.dateFrom, req.query.dateFrom, req.query.dateTo, req.query.dateTo
   ];
 
-  if (req.query.line !== ''){
+  if (req.query.line !== '') {
     sql += ' AND id <> ?';
     data.push(req.query.line);
   }
@@ -116,7 +116,7 @@ exports.checkHoliday = function (req, res, next) {
 /**
 * Check an existing offday
 */
-exports.checkOffday = function (req, res, next) {
+exports.checkOffday = function checkHoliday(req, res, next) {
   var sql ='SELECT * FROM offday WHERE date = ? AND id <> ?';
   db.exec(sql, [req.query.date, req.query.id])
   .then(function (rows) {
@@ -138,16 +138,16 @@ exports.checkOffday = function (req, res, next) {
 * var employees = require('categorised/employees');
 * employees.details(request, response, next);
 */
-exports.details = function (req, res, next) {
+exports.detail = function detail(req, res, next) {
   var sql =
-  'SELECT ' +
-  'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
-  'employee.postnom, employee.sexe, DATE_FORMAT(employee.dob, "%Y-%m-%d") AS dob, DATE_FORMAT(employee.date_embauche, "%Y-%m-%d") AS date_embauche, employee.service_id, ' +
-  'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
-  'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
-  'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, employee.location_id, ' +
-  'grade.code AS code_grade, debitor.uuid as debitor_uuid, debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
-  'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
+  'SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
+    'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
+    'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
+    'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
+    'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, ' +
+    'employee.daily_salary, employee.location_id, grade.code AS code_grade, debitor.uuid as debitor_uuid, ' +
+    'debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, creditor.uuid as creditor_uuid, ' +
+    'creditor.text AS creditor_text, creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
   'FROM employee ' +
   ' JOIN grade ON employee.grade_id = grade.uuid ' +
   ' JOIN fonction ON employee.fonction_id = fonction.id ' +
@@ -159,10 +159,12 @@ exports.details = function (req, res, next) {
 
   db.exec(sql, [req.params.id])
   .then(function (rows) {
-    if (!rows.length) {
-      throw req.codes.ERR_NOT_FOUND;
+
+    if (rows.length === 0) {
+      throw new req.codes.ERR_NOT_FOUND();
     }
-    res.status(200).json(rows);
+
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
@@ -180,38 +182,51 @@ exports.details = function (req, res, next) {
 * var employees = require('categorised/employees');
 * employees.update(request, response, next);
 */
-exports.update = function (req, res, next) {
+exports.update = function update(req, res, next) {
   var sql = 'UPDATE employee SET ? WHERE employee.id = ?';
+  var employee = req.body;
 
-  db.exec(sql, [req.body, req.params.id])
+  if (employee.dob) {
+    employee.dob = new Date(employee.dob);
+  }
+  if (employee.date_embauche) {
+    employee.date_embauche = new Date(employee.date_embauche);
+  }
+
+  db.exec(sql, [employee, req.params.id])
   .then(function (row) {
-    if (!row.affectedRows) { throw req.codes.ERR_NOT_FOUND; }
+
+    if (!row.affectedRows) {
+      throw new req.codes.ERR_NOT_FOUND();
+    }
 
     var sql2 =
-    'SELECT ' +
-    'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
-    'employee.postnom, employee.sexe, DATE_FORMAT(employee.dob, "%Y-%m-%d") AS dob, DATE_FORMAT(employee.date_embauche, "%Y-%m-%d") AS date_embauche, employee.service_id, ' +
-    'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
-    'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
-    'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, employee.location_id, ' +
-    'grade.code AS code_grade, debitor.uuid as debitor_uuid, debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
-    'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
-    'FROM employee ' +
-    ' JOIN grade ON employee.grade_id = grade.uuid ' +
-    ' JOIN fonction ON employee.fonction_id = fonction.id ' +
-    ' JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
-    ' JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
-    ' JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
-    ' LEFT JOIN service ON service.id = employee.service_id ' +
-    'WHERE employee.id = ? ';
+      'SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
+        'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
+        'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
+        'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
+        'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, ' +
+        'employee.daily_salary, employee.location_id, grade.code AS code_grade, debitor.uuid as debitor_uuid, ' +
+        'debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
+        'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, ' +
+        'creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
+      'FROM employee ' +
+        'JOIN grade ON employee.grade_id = grade.uuid ' +
+        'JOIN fonction ON employee.fonction_id = fonction.id ' +
+        'JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
+        'JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
+        'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
+        'LEFT JOIN service ON service.id = employee.service_id ' +
+      'WHERE employee.id = ? ';
 
     return db.exec(sql2, [req.params.id]);
   })
   .then(function (rows) {
+
     if (!rows.length) {
-      throw req.codes.ERR_NOT_FOUND;
+      throw new req.codes.ERR_NOT_FOUND();
     }
-    res.status(200).json(rows);
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
@@ -229,32 +244,21 @@ exports.update = function (req, res, next) {
 * var employees = require('categorised/employees');
 * employees.create(request, response, next);
 */
-exports.create = function (req, res, next) {
+exports.create = function create(req, res, next) {
 
-  var employee = req.body,
-      sql      = 'INSERT INTO employee SET ?';
+  var employee = req.body;
+  var sql = 'INSERT INTO employee SET ?';
 
-  var requiredKeys = [
-    'code', 'name', 'prenom', 'postnom', 'sexe',
-    'dob', 'grade_id', 'fonction_id', 'service_id',
-    'location_id', 'creditor_uuid', 'debitor_uuid'
-  ];
-
-  var validRequest = requiredKeys.every(function (key) {
-    return employee[key] !== null && employee[key] !== undefined;
-  });
-
-  if (!validRequest) {
-    return res.status(400).json({
-      code : 'ERR_MISSING_PROPERTIES',
-      reason : 'The employee creation path requires : ' +
-        'code, name, prenom, postnom, sexe, dob, grade_id, fonction_id, ' +
-        'service_id, location_id, creditor_uuid and debitor_uuid. ' +
-        'Please make sure these all exist and re-submit.'
-    });
+  // ensure dates are MySQL-parseable.
+  if (employee.dob) {
+    employee.dob = new Date(employee.dob);
+  }
+  if (employee.date_embauche) {
+    employee.date_embauche = new Date(employee.date_embauche);
   }
 
-  db.exec(sql, [employee])
+  // execute the SQL query
+  db.exec(sql, [ employee ])
   .then(function (row) {
     res.status(201).json({ id: row.insertId });
   })

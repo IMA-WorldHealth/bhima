@@ -10,10 +10,8 @@ var gulp       = require('gulp'),
     concat     = require('gulp-concat'),
     uglify     = require('gulp-uglify'),
     cssnano    = require('gulp-cssnano'),
-    cssnano    = require('gulp-cssnano'),
     jshint     = require('gulp-jshint'),
     flatten    = require('gulp-flatten'),
-    spawn      = require('child_process').spawn,
     path       = require('path'),
     iife       = require('gulp-iife'),
     rimraf     = require('rimraf'),
@@ -29,7 +27,6 @@ var gulp       = require('gulp'),
     // child process for custom scripts
     exec       = require('child_process').exec;
 
-
 // constants
 // toggle client javascript minification
 var UGLIFY = false,
@@ -37,7 +34,6 @@ var UGLIFY = false,
     // path to the jshintrc to use
     JSHINT_PATH = '.jshintrc',
 
-    // TODO - remove this link
     PLUGIN_FOLDER = './bin/plugins',
 
     // the output folder for built server files
@@ -55,7 +51,6 @@ var paths = {
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
     vendor     : ['client/vendor/**/*.js', 'client/vendor/**/*.css', 'client/vendor/**/*.ttf', 'client/vendor/**/*.wof*', 'client/vendor/**/*.eot','client/vendor/**/*.svg', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
     e2etest    : ['client/test/e2e/**/*.spec.js'],
-    unittest   : [],
 
     // these must be globs ("**" syntax) to retain their folder structures
     static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/js/**/*.js', '!client/src/partials/**/*.js', '!client/src/**/*.css']
@@ -64,7 +59,6 @@ var paths = {
     javascript : ['server/*.js', 'server/**/*.js'],
     files      : ['server/*', 'server/**/*', '.env.*'],
     plugins    : ['plugins/*', 'plugins/**/*'],
-    unittest   : []
   }
 };
 
@@ -174,6 +168,7 @@ gulp.task('client-lint-i18n', function (cb) {
       frPath = 'client/src/i18n/fr.json';
 
   exec('node ' + [progPath, enPath, frPath].join(' '), function(err, _, warning) {
+    if (err) { throw err; }
     if (warning) { console.error(warning); }
     cb();
  	});
@@ -246,11 +241,11 @@ gulp.task('build-server', function () {
 
 /* -------------------------------------------------------------------------- */
 
-/* Testing Client Builds
+/**
+ * Testing Client Builds
  *
- * The following tasks will run unit and end-to-end tests
- * on bhima.
-*/
+ * The following tasks will run unit and end-to-end tests on bhima.
+ */
 
 // run the selenium server for e2e tests
 gulp.task('client-test-e2e', function () {
@@ -261,17 +256,7 @@ gulp.task('client-test-e2e', function () {
     .on('error', function (e) { throw e; });
 });
 
-
-/* -------------------------------------------------------------------------- */
-
-/* Testing Server Builds
- *
- * TODO
- *
- * The following tasks will run unit tests on the bhima server using gulp-mocha
-*/
-
-/* -------------------------------------------------------------------------- */
+/** shared utilities */
 
 gulp.task('clean', function (cb) {
   rimraf('./bin/', cb);

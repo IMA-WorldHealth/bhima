@@ -1,10 +1,6 @@
-/* global describe, it, beforeEach, process */
-
+/* global describe, it, beforeEach */
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
-
 
 /** import test helpers */
 var helpers = require('./helpers');
@@ -25,9 +21,9 @@ describe('The /employees API endpoint :: ', function () {
   beforeEach(helpers.login(agent));
 
   // Custom dates
-  var embaucheDate  = '2016-01-01',
-      dob1 = '1987-04-17',
-      dob2 = '1993-04-25';
+  var embaucheDate  = new Date('2016-01-01'),
+      dob1 = new Date('1987-04-17'),
+      dob2 = new Date('1993-04-25');
 
   // employee we will add during this test suite.
   var employee = {
@@ -106,10 +102,11 @@ describe('The /employees API endpoint :: ', function () {
   it('GET /employees/:id should return a specific employee ', function () {
     return agent.get('/employees/' + employee.id)
       .then(function (res) {
-        var emp = res.body[0];
+        var emp = res.body;
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(emp).to.be.a('object');
+
         // add a missing property due to alias in db query
         emp.code = emp.code_employee;
         expect(emp).to.contain.all.keys(employee);
@@ -121,7 +118,7 @@ describe('The /employees API endpoint :: ', function () {
     return agent.put('/employees/' + employee.id)
       .send(updateEmployee)
       .then(function (res) {
-        var emp = res.body[0];
+        var emp = res.body;
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(emp).to.be.a('object');
@@ -151,7 +148,7 @@ describe('The /employees API endpoint :: ', function () {
         return agent.get('/employees/' + employee.id);
       })
       .then(function (res) {
-        var emp = res.body[0];
+        var emp = res.body;
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(emp).to.be.a('object');
@@ -165,15 +162,20 @@ describe('The /employees API endpoint :: ', function () {
   * @desc This function test if an updated value returned by the server
   * correspond correctly to the update sended
   * @param {object} emp The employee object to test
-  * @param (object) update The correct employee update
+  * @param {object} update The correct employee update
   */
   function checkValidUpdate(employee, update) {
     // add a missing property due to alias in db query
     employee.code = employee.code_employee;
     expect(employee).to.contain.all.keys(update);
 
-    for(var i in update) {
-      expect(employee[i]).to.equals(update[i]);
+    /** @fixme -- manual treatment of dates is sub-optimal.  Can we do better? */
+    for (var i in update) {
+      if (i === 'dob' || i === 'date_embauche') {
+        expect(new Date(employee[i])).to.equalDate(new Date(update[i]));
+      } else {
+        expect(employee[i]).to.equal(update[i]);
+      }
     }
   }
 

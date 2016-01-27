@@ -1,9 +1,7 @@
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 /** import test helpers */
 var helpers = require('./helpers');
@@ -174,7 +172,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res).to.be.json;
 
           // expect to be an error
-          expect(res.body).to.contain.keys('code', 'reason');
+          expect(res.body).to.contain.all.keys(helpers.errorKeys);
         })
         .catch(helpers.handler);
     });

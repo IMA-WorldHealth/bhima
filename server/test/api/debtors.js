@@ -1,9 +1,7 @@
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);
@@ -39,7 +37,7 @@ describe('The /debtors API', function () {
         expect(result).to.have.status(200);
 
         debtorGroup = result.body;
-        expect(debtorGroup).to.contain.keys(expectedKeySubset);
+        expect(debtorGroup).to.contain.all.keys(expectedKeySubset);
       })
       .catch(helpers.handler);
   });
@@ -83,6 +81,4 @@ it('METHOD : GET, PATH : /debtors/:uuid/invoices?balanced=1 returns a list of ba
       })
       .catch(helpers.handler);
   });
-
- 
 });

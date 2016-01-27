@@ -17,4 +17,3 @@ mysql -u $user -p$pw -e "DROP DATABASE IF EXISTS bhima;"
 mysql -u $user -p$pw -e "CREATE DATABASE bhima CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
 mysql -u $user -p$pw bhima < server/models/schema.sql
 mysql -u $user -p$pw bhima < server/models/test/data.sql
-mysql -u $user -p$pw bhima < server/models/update/schema-v2.sql

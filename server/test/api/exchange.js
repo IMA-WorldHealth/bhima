@@ -1,9 +1,7 @@
-/*global describe, it, beforeEach, process*/
+/* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);
@@ -21,7 +19,7 @@ describe('The /exchange API endpoint', function () {
     enterprise_currency_id: 2,    // USD in test database
     foreign_currency_id:    1,    // FC in test database
     rate:                   930,
-    date:                   new Date()
+    date:                   new Date('2015-10-10')
   };
 
   // login before each request
@@ -38,7 +36,7 @@ describe('The /exchange API endpoint', function () {
 
   it('POST /exchange creates a new exchange rate', function () {
     return agent.post('/exchange')
-      .send(RATE)
+      .send({ rate : RATE })
       .then(function (res) {
         expect(res).to.have.status(201);
         expect(res.body).to.have.property('id');

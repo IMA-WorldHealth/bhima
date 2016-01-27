@@ -1,41 +1,43 @@
 var db = require('../../lib/db');
 
-function lookupSubsidy (id, codes){
-  'use strict'; 
+function lookupSubsidy(id, codes) {
+  'use strict';
 
-  var sql = 
+  var sql =
     'SELECT id, account_id, label, description, value, created_at, updated_at FROM subsidy WHERE id = ?';
 
   return db.exec(sql, id)
-    .then(function (rows){
-      if(rows.length === 0) { throw codes.ERR_NOT_FOUND;}
+    .then(function (rows) {
+      if (rows.length === 0) {
+        throw new codes.ERR_NOT_FOUND();
+      }
       return rows[0];
     });
 }
 
-function detail (req, res, next){
+function detail(req, res, next) {
   'use strict';
 
-  lookupSubsidy (req.params.id, req.codes)
-    .then(function (row){
-      res.status(200).json(row);
-    })
-    .catch(next)
-    .done();
+  lookupSubsidy(req.params.id, req.codes)
+  .then(function (row) {
+    res.status(200).json(row);
+  })
+  .catch(next)
+  .done();
 }
 
-function list (req, res, next) {
+function list(req, res, next) {
   'use strict';
 
-  var sql = 
+  var sql =
    'SELECT id, account_id, label, description, value, created_at, updated_at FROM subsidy';
 
    db.exec(sql)
-    .then(function (rows){
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done(); 
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
 }
 
 function create (req, res, next) {
@@ -45,17 +47,23 @@ function create (req, res, next) {
   var createSubsidyQuery = 'INSERT INTO subsidy SET ?';
 
   delete record.id;
-  checkData(record, req.codes);
+
+  try {
+    checkData(record, req.codes);
+  } catch (err) {
+    return next(err);
+  }
+
 
   db.exec(createSubsidyQuery, [record])
-  .then(function (result){
+  .then(function (result) {
     res.status(201).json({id : result.insertId});
   })
   .catch(next)
   .done();
 }
 
-function update (req, res, next){
+function update(req, res, next) {
   'use strict';
 
   var queryData = req.body;
@@ -64,32 +72,36 @@ function update (req, res, next){
 
   delete queryData.id;
 
-  checkData(queryData, req.codes);
+  try {
+    checkData(queryData, req.codes);
+  } catch (err) {
+    return next(err);
+  }
 
   lookupSubsidy(subsidyId, req.codes)
-    .then(function (){
-      return db.exec(updateSubsidyQuery, [queryData, subsidyId]);
+  .then(function () {
+    return db.exec(updateSubsidyQuery, [queryData, subsidyId]);
   })
-  .then(function (){
+  .then(function () {
     return lookupSubsidy(subsidyId, req.codes);
   })
-  .then(function (subsidy){
+  .then(function (subsidy) {
     res.status(200).json(subsidy);
   })
   .catch(next)
   .done();
 }
 
-function remove (req, res, next){
-  
+function remove(req, res, next) {
+
   var subsidyId = req.params.id;
   var removeSubsidyQuery = 'DELETE FROM subsidy WHERE id = ?';
 
   lookupSubsidy(subsidyId, req.codes)
-    .then(function (){
+    .then(function () {
       return db.exec(removeSubsidyQuery, [subsidyId]);
     })
-    .then(function (){
+    .then(function () {
       res.status(204).send();
     })
     .catch(next)
@@ -100,12 +112,11 @@ function isEmptyObject(object) {
   return Object.keys(object).length === 0;
 }
 
-function checkData (obj, codes){
-
-  if(isEmptyObject(obj)) { throw codes.ERR_EMPTY_BODY;}
-  if(!obj.value) { throw codes.ERR_PARAMETERS_REQUIRED;}
-  if(obj.value <= 0) { throw codes.ERR_BAD_VALUE;}
-  if(isNaN(obj.value)) { throw codes.ERR_BAD_VALUE;}
+function checkData (obj, codes) {
+  if (isEmptyObject(obj)) { throw new codes.ERR_EMPTY_BODY();}
+  if (!obj.value) { throw new codes.ERR_PARAMETERS_REQUIRED();}
+  if (obj.value <= 0) { throw new codes.ERR_BAD_VALUE();}
+  if (isNaN(obj.value)) { throw new codes.ERR_BAD_VALUE();}
 }
 
 exports.list = list;

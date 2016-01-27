@@ -1,16 +1,24 @@
 #!/bin/bash
 
-# This file runs some lint checks using Travis CI
+# Instructions for Travis to build the MySQL database
+# NOTE - the bhima user is already defined in the .travis.yml
 
-# lint the client
-echo "Linting the client ..."
+echo "[TRAVIS] Linting the client."
 gulp lint
 
-# build the application
-echo "Building the application ..."
-gulp build
+echo "[TRAVIS] Linting the server."
+find . \( -not -wholename '*/test/*' -name '*.js' \) -exec jshint {} \;
 
-# lint the server
-echo "Linting the server ..."
-jshint server/{controllers,lib,config}/*.js
-jshint server/controllers/{categorised,medical,reports,stock,finance}/*.js
+
+echo "[LOG] Building and running server in test mode ..."
+
+# build and start the server
+npm run travis &
+
+# make sure we have enough time for the server to start
+sleep 10
+
+echo "[TRAVIS] Running integration tests."
+
+# run the tests
+mocha server/test/api/

@@ -1,9 +1,7 @@
 /*global describe, it, beforeEach*/
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);
@@ -12,18 +10,22 @@ describe('The subsidy API, PATH : /subsidies', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var newSubsidy = {
-    account_id : 3626,
-    label : 'tested subsidy',
-    description : 'This is for the test',
-    value : 10  
+    account_id:  3626,
+    label:       'tested subsidy',
+    description: 'This is for the test',
+    value:       10
   };
- 
+
   var wrongSubsidy = {
-    account_id : 3626,
-    label : 'tested wrong subsidy',
-    description : 'This is for the wrong value test',
-    value : -10  
+    account_id:  3626,
+    label:       'tested wrong subsidy',
+    description: 'This is for the wrong value test',
+    value:       -10
   };
+
+  var responseKeys = [
+    'id', 'account_id', 'label', 'description', 'value', 'created_at', 'updated_at'
+  ];
 
   beforeEach(helpers.login(agent));
 
@@ -36,11 +38,11 @@ describe('The subsidy API, PATH : /subsidies', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.defined;
         newSubsidy.id = res.body.id;
-        return agent.get('/subsidies/' + newSubsidy.id);  
+        return agent.get('/subsidies/' + newSubsidy.id);
       })
-      .then(function (res){ 
+      .then(function (res){
         expect(res).to.have.status(200);
-        expect(res.body).to.have.all.keys('id', 'account_id', 'label', 'description', 'value', 'created_at', 'updated_at');
+        expect(res.body).to.have.all.keys(responseKeys);
       })
      .catch(helpers.handler);
   });
@@ -52,11 +54,11 @@ describe('The subsidy API, PATH : /subsidies', function () {
         expect(res).to.have.status(400);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.all.keys('code', 'httpStatus', 'reason');
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
-  });  
-    
+  });
+
   it('METHOD : GET, PATH : /subsidies, It returns a list of subsidies', function () {
       return agent.get('/subsidies')
         .then(function (res) {
@@ -67,7 +69,7 @@ describe('The subsidy API, PATH : /subsidies', function () {
         })
         .catch(helpers.handler);
     });
-  
+
   it('METHOD : GET, PATH : /subsidies/:id, It returns one subsidy', function () {
     return agent.get('/subsidies/'+ newSubsidy.id)
       .then(function (res) {
@@ -75,12 +77,12 @@ describe('The subsidy API, PATH : /subsidies', function () {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.equal(newSubsidy.id);
-        expect(res.body).to.have.all.keys('id', 'account_id', 'label', 'description', 'value', 'created_at', 'updated_at');
+        expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
   });
 
- 
+
   it('METHOD : PUT, PATH : /subsidies/:id, It updates the newly added subsidy', function () {
     var updateInfo = {value : 50};
 
@@ -103,9 +105,9 @@ describe('The subsidy API, PATH : /subsidies', function () {
         return agent.get('/subsidies/' + newSubsidy.id);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);     
-        expect(res.body).to.have.all.keys('code', 'httpStatus', 'reason');
+        expect(res).to.have.status(404);
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
-  });  
+  });
 });
