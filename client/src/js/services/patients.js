@@ -1,11 +1,5 @@
 'use strict';
 
-/**
- * @description 
- *
- * @returns 
- */
-
 angular.module('bhima.services')
   .factory('Patients', Patients);
   

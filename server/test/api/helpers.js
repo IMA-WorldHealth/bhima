@@ -38,3 +38,12 @@ exports.configure = function configure(chai) {
 exports.handler = function handler(err) {
   throw err;
 };
+
+/** ensure that objectA's key/values are contained in and identical to objectB's */
+exports.identical = function (objectA, objectB) {
+  'use strict';
+
+  return Object.keys(objectA).every(function (key) {
+    return objectA[key] === objectB[key];
+  });
+};

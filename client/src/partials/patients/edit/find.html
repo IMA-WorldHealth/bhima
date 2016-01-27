@@ -1,29 +1,26 @@
-<header data-header>
-  {{ "PATIENT_EDIT.PAGE_TITLE" | translate }}
-</header>
+<div class="flex-header">
+  <div class="bhima-title">
 
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li class="active">{{ "PATIENT_EDIT.PAGE_TITLE" | translate }}</li>
-    </ol>
+      <ol class="headercrumb">
+        <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
+        <li class="title">{{ "PATIENT_EDIT.PAGE_TITLE" | translate }}</li>
+      </ol>
+
   </div>
-</nav>
+</div>
 
-<main>
+<div class="flex-content">
   <div class="container-fluid">
     <div class="row">
-      
+
       <!-- Find patient directive -->
       <div class="col-md-12">
 
-        <div 
-          find-patient 
+        <find-patient type="inline"
           on-search-complete="PatientEditFindCtrl.submitPatient(patient)">
-        </div>
+        </find-patient>
       </div>
+
     </div>
   </div>
-</main>
-
+</div>

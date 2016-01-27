@@ -134,6 +134,7 @@ INSERT INTO `village` VALUES ('03a329b2-03fe-4f73-b40f-56a2870cc7e6','MUBUABUA',
 
 INSERT INTO `enterprise` VALUES (1,'Test Enterprise','TE','243 81 504 0540','enterprise@test.org','a0a8998d-af22-4a73-9071-bd43a23f77e3',NULL,2,'103');
 INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,759), (2,'Test Project B','TPB',1,759);
+
 INSERT INTO `account` VALUES
 (3626,3,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 14:25:12',1,NULL,1,NULL,NULL,0,NULL),
 (3627,2,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 14:26:13',1,1,1,NULL,0,0,NULL),
@@ -159,9 +160,10 @@ INSERT INTO `period` VALUES
 ( 7 , 1 ,7,'2016-07-01', '2016-07-31', 0 ),
 ( 8 , 1 ,8,'2016-08-01', '2016-08-31', 0 ),
 ( 9 , 1 ,9,'2016-09-01', '2016-09-30', 0 ),
-( 0 , 1 ,0,'2016-10-01', '2016-10-31', 0 ),
+( 10 , 1 ,0,'2016-10-01', '2016-10-31', 0 ),
 ( 11, 1 ,1,'2016-11-01', '2016-11-30', 0 ),
 ( 12 ,1 ,2,'2016-12-01', '2016-12-31', 0 );
+
 
 -- create test users
 INSERT INTO user (id, username, password, first, last, email) VALUES
@@ -181,7 +183,7 @@ INSERT INTO `cash_box` VALUES (1,'Test Primary Cashbox A ',1,0,0), (2,'Test Aux 
 INSERT INTO `cash_box_account_currency` VALUES (1,1,1,3626,3626,3626,3626),(2,2,1,3627,3627,3627,3627),(3,1,2,3627,3627,3627,3627),(4,2,2,3627,3627,3627,3627);
 
 INSERT INTO `transaction_type` VALUES
-(1, 'sale');
+(2, 'sale');
 
 INSERT INTO `inventory_group` VALUES
   ('1410dfe0-b478-11e5-b297-023919d3d5b0', 'Test inventory group', 'INVGRP', 3636, NULL, NULL, NULL);
@@ -214,29 +216,12 @@ INSERT INTO `patient` VALUES
 INSERT INTO `assignation_patient` VALUES
   (UUID(), '112a9fb5-847d-4c6a-9b20-710fa8b4da24', '81af634f-321a-40de-bc6f-ceb1167a9f65');
 
-INSERT INTO `cost_center` VALUES
-  (1, 1, 'Test cost center', 'Example note for a test cost center', 1);
-
-INSERT INTO `profit_center` VALUES
-  (1, 1, 'Test profit center', 'Example note for a test profit center');
-
 -- Fonctions
 INSERT INTO `fonction` VALUES
   (1, 'Infirmier'),
   (2, 'Medecin Directeur');
 
--- Services
-INSERT INTO `service` VALUES
-  (1, 1, 'Test Service', 1, 1),
-  (2, 1, 'Administration', null, null),
-  (3, 1, 'Medecine Interne', null, null);
 
-INSERT INTO `sale` (`project_id`, `reference`, `uuid`, `cost`, `currency_id`, `debitor_uuid`, `service_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`, `timestamp`, `is_distributable`) VALUES
-  (1,2,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 14:35:55',1),
-  (1,1,'c44619e0-3a88-4754-a750-a414fc9567bf',25.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 14:31:14',1);
-
-INSERT INTO `sale_item` (`sale_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) VALUES
-  ('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6','2e1332a7-3e63-411e-827d-42ad585ff518','cf05da13-b477-11e5-b297-023919d3d5b0',3,25.0000,25.0000,0.0000,75.0000);
 
 -- Creditor group
 INSERT INTO  `creditor_group` VALUES
@@ -251,3 +236,44 @@ INSERT INTO  `creditor` VALUES
 -- Grade
 INSERT INTO `grade` VALUES
   ('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3', 'A1', '1.1', 50);
+
+INSERT INTO `section_bilan` VALUES (1, 'Section Bilan 1', 1, 1);
+INSERT INTO `section_resultat` VALUES (1, 'Section Resultat 1', 1, 1);
+
+INSERT INTO `reference_group` VALUES (1, 'AA', 'Reference Group 1', 1, 1);
+
+INSERT INTO `reference` VALUES 
+  (1, 0, 'AB', 'Reference bilan 1', 1, 1, NULL),
+  (3, 0, 'AC', 'Reference resultat 1', 1, NULL, 1),
+  (4, 0, 'XX', 'Deletable reference 1', 1, NULL, NULL);
+
+INSERT INTO `cost_center` VALUES 
+  (1, 1, 'cost center 1', 'cost note', 1),
+  (1, 2, 'cost center 2', 'cost note 2', 0);
+
+INSERT INTO `profit_center` VALUES 
+  (1, 1, 'profit center 1', 'profit note'), 
+  (1, 2, 'profit center 2', 'profit note 2');
+
+-- Services
+INSERT INTO `service` VALUES
+  (1, 1, 'Test Service', 1, 1),
+  (2, 1, 'Administration', null, null),
+  (3, 1, 'Medecine Interne', null, null);
+
+INSERT INTO `sale` (`project_id`, `reference`, `uuid`, `cost`, `currency_id`, `debitor_uuid`, `service_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`, `timestamp`, `is_distributable`) VALUES
+  (1,2,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 14:35:55',1),
+  (1,1,'c44619e0-3a88-4754-a750-a414fc9567bf',25.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 14:31:14',1);
+
+INSERT INTO `sale_item` (`sale_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) VALUES
+  ('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6','2e1332a7-3e63-411e-827d-42ad585ff518','cf05da13-b477-11e5-b297-023919d3d5b0',3,25.0000,25.0000,0.0000,75.0000);
+
+INSERT INTO `posting_journal` 
+(uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, account_id, debit, credit,
+  debit_equiv, credit_equiv, currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, pc_id) 
+VALUES 
+("017dbe1e-c37c-11e5-a86e-843a4b0cdadc", 1, 1, 1, "HBB1", '2016-01-26', 3631, 75.0000, 0, 75.0000, 0, 2, "3be232f9-a4b9-4af6-984c-5d3f87d5c107",
+  "D", "957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6", 2, 1, NULL),
+("017dbe1e-c37c-11e5-a86e-843a4b0cdade", 1, 1, 1, "HBB1", '2016-01-26', 3638, 0, 75.0000, 0, 75.0000, 2, "cf05da13-b477-11e5-b297-023919d3d5b0",
+  NULL, "957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6", 2, 1, 1);
+

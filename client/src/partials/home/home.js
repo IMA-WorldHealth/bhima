@@ -11,6 +11,7 @@ function HomeController($translate, appstate, exchange, SessionService) {
   vm.today = new Date();
   vm.project = SessionService.project;
   vm.user = SessionService.user;
+  vm.enterprise = SessionService.enterprise;
 
   // listen for changes in exchange rate and update accordingly
   appstate.register('exchange_rate', loadDailyExchangeRate);

@@ -31,6 +31,7 @@ var inventory       = require('../controllers/stock/inventory');
 var depot           = require('../controllers/stock/depot');
 var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
 
+<<<<<<< HEAD
 var trialbalance   = require('../controllers/finance/trialbalance');
 var journal        = require('../controllers/finance/journal');
 var ledger         = require('../controllers/finance/ledger');
@@ -51,7 +52,40 @@ var cash           = require('../controllers/finance/cash');
 var cashflow       = require('../controllers/cashflow');
 var enterprises     = require('../controllers/admin/enterprises');
 var priceList      = require('../controllers/finance/priceList');
+=======
+var trialbalance    = require('../controllers/finance/trialbalance');
+var journal         = require('../controllers/finance/journal');
+var ledger          = require('../controllers/finance/ledger');
+var fiscal          = require('../controllers/finance/fiscal');
+var extra           = require('../controllers/finance/extraPayment');
+var gl              = require('../controllers/finance/ledgers/general');
+var genericFinance  = require('../controllers/finance/financeGeneric');
+var accounts        = require('../controllers/finance/accounts');
+var analytics       = require('../controllers/finance/analytics');
+var purchase        = require('../controllers/finance/purchase');
+var budget          = require('../controllers/finance/budget');
+var taxPayment      = require('../controllers/finance/taxPayment');
+var donations       = require('../controllers/finance/donations');
+var debtors         = require('../controllers/finance/debtors');
+var cashboxes       = require('../controllers/finance/cashboxes');
+var exchange        = require('../controllers/finance/exchange');
+var cash            = require('../controllers/finance/cash');
+var cashflow        = require('../controllers/cashflow');
+var billingServices = require('../controllers/finance/billingServices');
+var priceList       = require('../controllers/finance/priceList');
+var account         = require('../controllers/finance/account');
+var accountType     = require('../controllers/finance/accountType');
+var costCenter      = require('../controllers/finance/costCenter');
+var profitCenter    = require('../controllers/finance/profitCenter');
+var reference       = require('../controllers/finance/reference');
+
+var subsidy        = require('../controllers/finance/subsidy');
+
+var subsidy        = require('../controllers/finance/subsidy');
+
+>>>>>>> master
 var patientInvoice = require('../controllers/finance/patientInvoice');
+var discounts      = require('../controllers/finance/discounts');
 
 
 var financeServices      = require('../controllers/categorised/financeServices');
@@ -96,6 +130,48 @@ exports.configure = function (app) {
   app.get('/location/sector/:uuid', locations.lookupSector);
   app.get('/location/province/:uuid', locations.lookupProvince);
   app.get('/location/detail/:uuid', locations.lookupDetail);
+
+  // API for account routes crud
+  app.get('/accounts', account.list);
+  app.get('/accounts/:id', account.getAccount);
+  app.post('/accounts', account.create);
+  app.put('/accounts/:id', account.update);
+
+  //API for account type routes crud
+  app.get('/account_types', accountType.list);
+  app.get('/account_types/:id', accountType.getAccountType);
+  app.post('/account_types', accountType.create);
+  app.put('/account_types/:id', accountType.update);
+  app.delete('/account_types/:id', accountType.remove);
+
+  //API for cost_center routes crud
+  app.get('/cost_centers', costCenter.list);
+  app.get('/cost_centers/:id', costCenter.getCostCenter);
+  app.post('/cost_centers', costCenter.create);
+  app.put('/cost_centers/:id', costCenter.update);
+  app.delete('/cost_centers/:id', costCenter.remove);
+
+  //API for profit_center routes crud
+  app.get('/profit_centers', profitCenter.list);
+  app.get('/profit_centers/:id', profitCenter.getProfitCenter);
+  app.post('/profit_centers', profitCenter.create);
+  app.put('/profit_centers/:id', profitCenter.update);
+  app.delete('/profit_centers/:id', profitCenter.remove);
+
+  //API for reference routes crud
+  app.get('/references', reference.list);
+  app.get('/references/:id', reference.getReference);
+  app.post('/references', reference.create);
+  app.put('/references/:id', reference.update);
+  app.delete('/references/:id', reference.remove);
+
+ //API for subsidy routes crud
+  app.get('/subsidies', subsidy.list);
+  app.get('/subsidies/:id', subsidy.detail);
+  app.post('/subsidies', subsidy.create);
+  app.put('/subsidies/:id', subsidy.update);
+  app.delete('/subsidies/:id', subsidy.remove);
+
 
   // -> Add :route
   app.post('/report/build/:route', reports.build);
@@ -313,12 +389,9 @@ exports.configure = function (app) {
   app.get('/patients/search/reference/:value', patient.searchReference);
 
   // Debtors API
-  // app.get('/debtors', debtors.list);
   app.get('/debtors/groups', debtors.listGroups);
   app.get('/debtors/groups/:uuid', debtors.groupDetails);
-  // app.get('/debtors/:uuid', debtors.details);
-  app.get('/debtors/:uuid/invoices', debtors.invoices);
-
+  app.get('/debtors/:uuid/invoices', debtors.fetchInvoices);
   app.put('/debtors/:uuid', debtors.update);
 
   // search stuff
@@ -380,14 +453,14 @@ exports.configure = function (app) {
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
 
-  // cash (aux/primary)
+  /** cash (aux/primary) */
   app.get('/cash', cash.list);
   app.get('/cash/:uuid', cash.getCashDetails);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
   app.delete('/cash/:uuid', cash.debitNote);
 
-  // @todo - classify these
+  /** @todo - classify these */
   app.get('/cashflow/report/', cashflow.getReport);
   //app.get('/stock/entries?', depot.getStockEntry);
 
@@ -398,9 +471,25 @@ exports.configure = function (app) {
   app.put('/enterprises/:id', enterprises.update);
 
   // employees api
+
+  /** employees */
   app.get('/employees', employees.list);
   app.get('/employees/:id', employees.details);
   app.put('/employees/:id', employees.update);
   app.post('/employees', employees.create);
 
+  /** billing services */
+  app.get('/billing_services', billingServices.list);
+  app.get('/billing_services/:id', billingServices.detail);
+  app.post('/billing_services', billingServices.create);
+  app.put('/billing_services/:id', billingServices.update);
+  app.delete('/billing_services/:id', billingServices.delete);
+
+
+  /** discounts */
+  app.get('/discounts', discounts.list);
+  app.get('/discounts/:id', discounts.detail);
+  app.post('/discounts', discounts.create);
+  app.put('/discounts/:id', discounts.update);
+  app.delete('/discounts/:id', discounts.delete);
 };

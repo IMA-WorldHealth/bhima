@@ -35,7 +35,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/exchange/exchange.html'
   })
   .when('/settings/:route?', {
-    controller: 'settings',
+    controller: 'settings as SettingsCtrl',
     templateUrl: 'partials/settings/settings.html'
   })
   .when('/services', {

@@ -1,24 +1,15 @@
-<header data-header>
-  {{ "PATIENT_REG.PAGE_TITLE" | translate }} <small>{{ patient.title }} {{ patient.first_name }} {{ patient.last_name }}</small>
-</header>
-
-<!-- TODO Application structural changes - flex structure + bootstrap style standard -->
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li class="active">{{ "PATIENT_REG.PAGE_TITLE" | translate }}</li>
+<div class="flex-header">
+  <div class="bhima-title">
+      
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
+      <li class="title">{{ "PATIENT_REG.PAGE_TITLE" | translate }}</li>
     </ol>
+    
   </div>
-  
-  <div class="pull-right">
-    <a href='/#/patients/search' class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_REG.VIEW_PATIENT_RECORDS" | translate }}
-    </a>
-  </div>
-</nav>
+</div>
 
-<main>
+<div class="flex-content">
   <div class="container-fluid">
     <div class="row">
       
@@ -173,6 +164,13 @@
               </div>
             </form>
           </div>
+
+          <div class="panel-footer">
+            <button type="submit" id="submitPatient" ng-click="PatientRegCtrl.registerPatient()" class="btn btn-primary btn-sm">
+              {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
+            </button>
+          </div>
+
         </div>
       </div>
   
@@ -293,12 +291,4 @@
       </div>
     </div>
   </div>
-</main>
-
-<footer>
-  <div class="pull-right">
-    <button type="submit" id="submitPatient" ng-click="PatientRegCtrl.registerPatient()" class="btn btn-primary btn-sm">
-      {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
-    </button>
-  </div>
-</footer>
+</div>

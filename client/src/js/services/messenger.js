@@ -31,6 +31,8 @@ angular.module('bhima.services')
     }
 
     function enqueue(message) {
+      console.error('The messenger API has been deprecated - please reference the latest standards for displaying information to users.');
+
       // trust text
       message.namespace =  trust(message.namespace);
       message.description = trust(message.description);

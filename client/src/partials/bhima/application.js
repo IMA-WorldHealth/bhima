@@ -11,6 +11,16 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
 
   // useful for loading the language
   var cache = new Appcache('preferences');
+  
+  // Default sidebar state
+  /** @todo Load sidebar state before angular is bootstraped to remove 'flicker' */
+  vm.sidebarExpanded = false;
+  cache.fetch('sidebar')
+  .then(function (sidebar) { 
+    if (sidebar && vm.isLoggedIn()) { 
+      vm.sidebarExpanded = sidebar.expanded; 
+    }
+  });
 
   cache.fetch('language')
   .then(function (language) {
@@ -24,7 +34,7 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
   vm.isLoggedIn = function () {
     return Session.user;
   };
-
+  
   // on refresh, if we have a session load the rest of the state
   if (vm.isLoggedIn()) { loadState(); }
 
@@ -85,6 +95,9 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
       appstate.set('enterprise', Session.enterprise);
       appstate.set('project', Session.project);
       appstate.set('user', Session.user);
+
+      // TODO Position this to gaurantee the project is populated
+      vm.projectName = Session.project.name;
     });
 
     // FIXME
@@ -98,6 +111,9 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
         appstate.set('fiscal', currentFiscal);
       }
     });
+    
+    // Optionally expand sidebar 
+    // vm.sidebarExpanded = true;
   }
 
   // utility function to set appstate() variables
@@ -108,5 +124,19 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
         appstate.set(key, values);
       });
     });
+  }
+
+  /**
+   * Application Structure methods 
+   */
+  vm.toggleSidebar = function toggleSidebar() { 
+    if (vm.isLoggedIn()) { 
+      vm.sidebarExpanded = !vm.sidebarExpanded;
+      cache.put('sidebar', { expanded : vm.sidebarExpanded });
+    }
+  }
+
+  vm.settings = function settings() { 
+    $location.path('/settings');
   }
 }

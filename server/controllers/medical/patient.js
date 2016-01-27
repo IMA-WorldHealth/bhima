@@ -354,7 +354,6 @@ function verifyHospitalNumber(req, res, next) {
  * @desc Performs a search on the patient reference (e.g. HBB123)
  */
 function searchReference (req, res, next) {
-  'use strict';
 
   var sql, reference = req.params.reference;
 
@@ -393,7 +392,6 @@ function searchReference (req, res, next) {
 * @desc Performs fuzzy searching on patient names
 */
 function searchFuzzy (req, res, next) {
-  'use strict';
 
   var sql, match = req.params.match;
 
@@ -526,7 +524,7 @@ function search (req, res, next) {
         'LEFT(LOWER(CONCAT(q.middle_name, \' \', q.last_name, \' \', q.first_name)), CHAR_LENGTH(?)) = ? OR ' +
         'LEFT(LOWER(CONCAT(q.middle_name, \' \', q.first_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? ';
 
-    data = [qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName]
+    data = [qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName];
 
   } else if (qFields && !qReference) {
     // Final sql query for finding patients by a set of criteria
@@ -535,7 +533,7 @@ function search (req, res, next) {
 
     // building the where clause criteria
     var criteria = Object.keys(qFields).map(function (item) {
-      data.push(qFields[item])
+      data.push(qFields[item]);
       return 'q.' + item + ' = ?';
     }).join(' AND ');
 

@@ -109,7 +109,7 @@ describe('The /patients API', function () {
           expect(res).to.have.status(400);
           expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
         })
-        .catch(handle);
+        .catch(helpers.handler);
     });
 
     it('GET /patients/search with `reference` parameter', function () {
@@ -119,7 +119,7 @@ describe('The /patients API', function () {
           expect(res).to.have.status(200);
           expect(res.body).to.not.be.empty;
         })
-        .catch(handle);
+        .catch(helpers.handler);
     });
 
     it('GET /patients/search with `name` parameter', function () {
@@ -129,12 +129,12 @@ describe('The /patients API', function () {
           expect(res).to.have.status(200);
           expect(res.body).to.not.be.empty;
         })
-        .catch(handle);
+        .catch(helpers.handler);
     });
 
     it('GET /patients/search with a set of parameters (fields) as an object', function () {
       var fields = {
-        sex: "M",
+        sex: 'M',
         last_name: 2
       };
       return agent.get('/patients/search/?fields='+JSON.stringify(fields))
@@ -142,7 +142,7 @@ describe('The /patients API', function () {
           expect(res).to.have.status(200);
           expect(res.body).to.not.be.empty;
         })
-        .catch(handle);
+        .catch(helpers.handler);
     });
 
     it('GET /patients/search with `name` and `reference` parameters for the priority of reference', function () {
@@ -155,7 +155,7 @@ describe('The /patients API', function () {
           expect(res.body[0].reference).to.exist;
           expect(res.body[0].reference).to.be.equals('TPA1');
         })
-        .catch(handle);
+        .catch(helpers.handler);
     });
 
     it('GET /patients/search with `detail` and `limit` parameters', function () {
@@ -180,7 +180,7 @@ describe('The /patients API', function () {
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.length(1);
         })
-        .catch(handle);
+        .catch(helpers.handler);
     });
 
   });
@@ -194,7 +194,7 @@ describe('The /patients API', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(INITIAL_TEST_PATIENTS);
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
 
   it('POST /patients will register a valid patient', function () {
@@ -208,7 +208,7 @@ describe('The /patients API', function () {
         expect(confirmation.body.uuid.length).to.equal(UUID_LENGTH);
 
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
 
   it('GET /patients/:id finds and retrieves the details of the registered patient', function () {
@@ -243,7 +243,7 @@ describe('The /patients API', function () {
       .then(function (result) {
         expect(result).to.have.status(400);
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
 
   it('POST /patients will reject a patient with an incorrectly formatted request object', function () {
@@ -254,7 +254,7 @@ describe('The /patients API', function () {
         expect(result.body).to.have.keys('code', 'reason');
         expect(result.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
       })
-      .catch(handle);
+      .catch(helpers.handler);
 
   });
 
@@ -268,7 +268,7 @@ describe('The /patients API', function () {
         expect(result.body).to.not.be.empty;
         expect(result.body).to.have.length(SUBSCRIBED_PATIENT_GROUPS);
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
 
   it('GET /patients/:id/groups will return 404 not found for invalid request', function () {
@@ -279,7 +279,7 @@ describe('The /patients API', function () {
         expect(result).to.be.json;
         expect(result.body).to.not.be.empty;
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
 
   it('GET /patients/groups will return a list of all patient groups', function () {
@@ -291,8 +291,8 @@ describe('The /patients API', function () {
         expect(result.body).to.not.be.empty;
         expect(result.body).to.have.length(TOTAL_PATIENT_GROUPS);
       })
-      .catch(handle);
-  });
+      .catch(helpers.handler);
+  }); 
 
   it('Simultaneous patient registration requests respect reference lock', function () {
 
@@ -348,7 +348,7 @@ describe('The /patients API', function () {
           references.push(patientReference);
         });
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
 
  describe('Updating patient group assignment', function () {
@@ -373,7 +373,7 @@ describe('The /patients API', function () {
 
         expect(assignResult.affectedRows).to.equal(groupAssignment.assignments.length);
       })
-      .catch(handle);
+      .catch(helpers.handler);
    });
 
    /*
@@ -432,9 +432,5 @@ describe('The /patients API', function () {
     timeout);
 
     return deferred.promise;
-  }
-
-  function handle(error) {
-    throw error;
   }
 });

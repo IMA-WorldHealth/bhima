@@ -5,7 +5,7 @@ var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-// import test helpers
+/** import test helpers */
 var helpers = require('./helpers');
 helpers.configure(chai);
 
@@ -28,8 +28,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
     { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf', amount : 25.0 }
   ];
 
-
-  // login before each request
+  /** login before each request */
   beforeEach(helpers.login(agent));
 
   // no cash payments have been made yet
@@ -53,7 +52,6 @@ describe('(/cash) Cash Payments Interface ::', function () {
   });
 
   // Tests for the Caution Payment Interface
-  //
   describe('Caution Payments ::', function () {
 
     var CAUTION_PAYMENT = {

@@ -428,7 +428,7 @@
    "CREDITOR"              : "Creditor",
    "CREDITOR_ID"           : "Creditor ID",
    "CRE_EQUIV"             : "Credit",
-   "CURRENCIES"            : "Currencies",   
+   "CURRENCIES"            : "Currencies",
    "CURRENCY"              : "Currency",
    "CURRENT_STOCK"         : "Current stock",
    "CUSTOMIZE"             : "Customize",
@@ -1177,7 +1177,7 @@
    "UPDATE_SUCCES"            : "Updated successfully"
    },
 "ERROR": {
-   "CONNECTION"                  : "A request to the server errored.  Some required information may not have loaded.  Please refresh the page to continue.  If the problem persists, contact a system administrator.",  
+   "CONNECTION"                  : "A request to the server errored.  Some required information may not have loaded.  Please refresh the page to continue.  If the problem persists, contact a system administrator.",
    "ERR_ACCNT_LOCKED"            : "Locked Account Error",
    "ERR_ACCNT_NULL"              : "Null Account Error",
    "ERR_DATE_IN_THE_FUTURE"      : "Error: The submitted date in the future.  Please insert a valid date.",
@@ -1203,7 +1203,7 @@
    "ERR_CSV_FILE"                : "Error with the CSV file",
    "ERROR_MISSING_ACCOUNTS"      : "Missing accounts",
    "HTTP_STATUS_CODE"            : "HTTP status code",
-   "WARN_MISSING_DOCUMENT_ID"    : "Missing document ID"   
+   "WARN_MISSING_DOCUMENT_ID"    : "Missing document ID"
    },
 "EXCHANGE": {
    "HELP_TXT_1"       : "The exchange rate module provides the facilty to set daily exchange rates. In order to ensure data integrity, an exchange rate for all functional currencies must be set daily",
@@ -1250,8 +1250,13 @@
       "ENTER_ACCOUNT" : "Enter Account",
       "PLACEHOLDER"   : "Account Name or Number"
       },
+   "PATIENT"           : "Patient",
+   "PATIENT_FOUND"     : "Patient Found",
    "PATIENT_ID"        : "Patient ID",
-   "PATIENT_NAME"      : "Patient name",
+   "PATIENT_LOADING"   : "Loading",
+   "PATIENT_NAME"      : "Patient Name",
+   "PATIENT_NOT_FOUND" : "Patient Not Found",
+   "SEARCH"            : "Search",
    "SEARCH_NAME"       : "Search by Name",
    "SEARCH_PATIENT_ID" : "Search by Patient ID",
    "TITLE"             : "Find a patient"
@@ -1799,7 +1804,7 @@
       "TITLE"         : "Patient Groups",
       "UPDATED"       : "Patient group membership updated",
       "EMPTY"         : "This patient is not a member of any patient groups",
-      "UPDATE"        : "Update Group Assignments", 
+      "UPDATE"        : "Update Group Assignments",
       "MODAL_TTILE"   : "Update Patient Groups",
       "MODAL_INFO"    : "Assign the patient to patient groups from the options below. Press 'confirm' to permenantly update the patient's subscribed groups.",
       "MODAL_WARN"    : "No patient groups have been found. Patient groups must be registered with the system before they can be assigned to patients"
@@ -1902,7 +1907,7 @@
    "DATE_TO"                    : "Date To",
    "DAY"                        : "Today",
    "FIND_DATE"                  : "Pick a Date",
-   "INCORRECT_DATE_AND"         : "and",   
+   "INCORRECT_DATE_AND"         : "and",
    "INCORRECT_DATE_LIMIT"       : "Date of birth must be between",
    "INCORRECT_DATE_TYPE"        : "Provided date value is invalid",
    "INCORRECT_LOCATION_CURRENT" : "Current village not specified",
@@ -2002,7 +2007,7 @@
    "PERMISSIONS" : "Permissions",
    "REGISTERED"  : "Registered Users",
    "RETYPE"      : "Retype",
-   "SET_PASSWORD" : "Set Password",   
+   "SET_PASSWORD" : "Set Password",
    "SUPER"       : "Super User",
    "UPDATE_PASSWORD" : "Update Password",
    "TITLE"       : "Users and Permissions Management",
@@ -2644,7 +2649,9 @@
    "HOME_PAGE" : "Default Home Page",
    "LANGUAGE"  : "Language",
    "LAST_PAGE" : "Last Page Visited",
-   "TITLE"     : "BHIMA Settings"
+   "TITLE"     : "BHIMA Settings",
+   "LOGOUT_TITLE" : "Logout of BHIMA",
+   "LOGOUT"    : "Logout"
    },
 "SEX": {
    "F" : "F",

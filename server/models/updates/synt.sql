@@ -1,9 +1,7 @@
--- Reset employee state
 -- By: Dedrick Kitamuka
 -- Date: 2015-11-27
 
-INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) VALUES
-(138, 'Employee State Pdf', 'TREE.EMPLOYEE_STATE', 'Situation Financiere employee' , 128, 'partials/reports_proposed/employee_state/', '/reports/employee_state/');
+-- INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) VALUES (138, 'Employee State Pdf', 'TREE.EMPLOYEE_STATE', 'Situation Financiere employee' , 128, 'partials/reports_proposed/employee_state/', '/reports/employee_state/');
 
 
 -- Deleting
@@ -13,6 +11,7 @@ INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) V
 -- /reports/stock_store/:depotId
 
 DELETE FROM unit WHERE id = 134;
+
 
 --
 -- General upgrades to the entire database
@@ -65,6 +64,7 @@ CREATE TABLE price_list_item (
 --
 -- END PRICE LIST UPDATES
 --
+
 
 --
 -- PREAMBLE
@@ -205,7 +205,7 @@ CREATE TABLE billing_service (
   `account_id`      INT(10) UNSIGNED NOT NULL,
   `label`           VARCHAR(200) NOT NULL,
   `description`     TEXT,
-  `value`           DECIMAL(10,2) NOT NULL,
+  `value`           DECIMAL(10,2) UNSIGNED NOT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -330,3 +330,56 @@ CREATE TABLE discount (
 --
 
 SET foreign_key_checks = 1;
+
+
+-- Creating a flag for title account
+-- By Dedrick Kitamuka
+-- 22-12-2015
+
+ALTER TABLE account ADD COLUMN is_title BOOLEAN DEFAULT 0;
+
+-- Removing constraint in account
+-- By Dedrick Kitamuka
+-- 22-12-2015
+-- ALTER TABLE account DROP FOREIGN KEY account_type_id;
+
+UPDATE account SET is_title = 1 WHERE account_type_id = 3;
+
+-- Updating the account type
+-- By Dedrick Kitamuka
+-- 22-12-2015
+
+UPDATE account SET account_type_id = 1 where classe > 5 AND account_type_id = 3;
+UPDATE account SET account_type_id = 2 where classe < 5 AND account_type_id = 3;
+
+-- Removing title account type
+-- By Dedrick Kitamuka
+-- 22-12-2015
+
+DELETE FROM account_type WHERE id = 3;
+
+-- SET locked to false for OHADA account
+-- By Dedrick Kitamuka
+-- 26-12-2015
+
+UPDATE account SET locked = 0 WHERE is_ohada = 1;
+
+-- SET locked to true for PCGC account
+-- By Dedrick Kitamuka
+-- 26-12-2015
+
+UPDATE account SET locked = 1 WHERE is_ohada = 0;
+
+-- Removing is_ohada column
+-- By Dedrick Kitamuka
+-- 26-12-2015
+
+ALTER TABLE account DROP COLUMN is_ohada;
+
+-- Make account type id auto increment
+-- By Dedrick Kitamuka
+-- 20-01-2016
+
+ALTER TABLE account DROP FOREIGN KEY account_ibfk_1;
+ALTER TABLE account_type MODIFY id mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE account ADD FOREIGN KEY (`account_type_id`) REFERENCES account_type (`id`);
