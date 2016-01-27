@@ -12,7 +12,7 @@ describe('The /debtors API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var inspectDebtorGroup;
-
+  var debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
   // Logs in before each test
   beforeEach(helpers.login(agent));
 
@@ -53,4 +53,36 @@ describe('The /debtors API', function () {
       })
       .catch(helpers.handler);
   });
+
+  it('METHOD : GET, PATH : /debtors/:uuid/invoices?balanced=0 returns a list of unbalance invoices of a given debtor', function () {
+    return agent.get('/debtors/:uuid/invoices?balanced=0'.replace(':uuid', debtorUuid))
+      .then(function (result) {
+        expect(result).to.have.status(200);
+        expect(result.body).to.not.be.empty;
+        expect(result.body).to.have.length(1);
+      })
+      .catch(helpers.handler);
+  });
+
+it('METHOD : GET, PATH : /debtors/:uuid/invoices?balanced=1 returns a list of balanced invoices of a given debtor', function () {
+    return agent.get('/debtors/:uuid/invoices?balanced=1'.replace(':uuid', debtorUuid))
+      .then(function (result) {
+        expect(result).to.have.status(200);
+        expect(result.body).to.have.length(0);
+      })
+      .catch(helpers.handler);
+  });
+
+
+ it('METHOD : GET, PATH : /debtors/:uuid/invoices returns a list of all invoices of a given debtor', function () {
+    return agent.get('/debtors/:uuid/invoices'.replace(':uuid', debtorUuid))
+      .then(function (result) {
+        expect(result).to.have.status(200);
+        expect(result.body).to.not.be.empty;
+        expect(result.body).to.have.length(1);
+      })
+      .catch(helpers.handler);
+  });
+
+ 
 });
