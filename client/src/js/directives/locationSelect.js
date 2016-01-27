@@ -85,7 +85,7 @@ angular.module('bhima.directives')
           // Request new location 
           fetchInitialLocation(nval)
             .then(function (result) { 
-              return initialiseLocation(result);          
+              return initialiseLocation(result);
             });
 	}
       }
@@ -116,12 +116,10 @@ angular.module('bhima.directives')
           locationStore[key] = {model : {}, value : {}};
           // modelMap.push(locationStore[key].value);
           locationStore[key].value = defaultLocation[formatKeyId(key)];
-
         });
 
         // Initial request, update config with no dependency
         fetchLocationData(lookupDependency(null), null);
-
       }
 
       function submitVillage(uuid) { 

@@ -1175,7 +1175,9 @@
    "POST_OFFICE_BOX"          : "Boîte Postale",
    "REGISTERED_ENTERPRISE"    : "Entreprises Enregistrées",
    "REGISTERED_RELATIONS"     : "Relations Enregistrées",
-   "TITLE"                    : "Gestion de l'Entreprise"
+   "SAVE_SUCCES"              : "Enregistrement avec succès",
+   "TITLE"                    : "Gestion de l'Entreprise",
+   "UPDATE_SUCCES"            : "Mis à jour avec succès"
    },
 "ERROR": {
    "CONNECTION"                     : "Erreur sur la requête de connexion au serveur. Certaines informations requises peut ne pas avoir été chargé. S'il vous plaît rafraîchir la page pour continuer. Si le problème persiste, contactez l'administrateur du système.",
@@ -2652,7 +2654,9 @@
    "HOME_PAGE" : "Page Defaut",
    "LANGUAGE"  : "Langue",
    "LAST_PAGE" : "Dernier Page Visite",
-   "TITLE"     : "BHIMA Paramètres"
+   "TITLE"     : "BHIMA Paramètres",
+   "LOGOUT_TITLE" : "Déconnection de BHIMA",
+   "LOGOUT"    : "Déconnection"   
    },
 "SEX": {
    "F" : "F",

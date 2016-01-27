@@ -9,9 +9,12 @@
       <li class="active">{{ "ENTERPRISE.TITLE" | translate }}</li>
     </ol>
   </div>
-  
+
   <div class="pull-right">
-    <button class="btn btn-default btn-sm" ng-click="newEnterprise()"><i class="glyphicon glyphicon-plus-sign"></i> {{ 'ENTERPRISE.NEW' | translate }}</button>
+    <button class="btn btn-default" id="create" ng-click="EnterpriseCtrl.create()" data-method="create">
+      <i class="glyphicon glyphicon-plus-sign"></i>
+      {{ "ENTERPRISE.NEW" | translate }}
+    </button>
   </div>
 </nav>
 
@@ -30,174 +33,231 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="e in enterprise.data">
+      <tr ng-repeat="e in EnterpriseCtrl.enterprises | orderBy:'name'">
         <td>{{ e.name }}</td>
         <td>{{ e.abbr }}</td>
         <td>{{ e.po_box }}</td>
         <td>{{ e.email }}</td>
         <td>{{ e.phone }}</td>
         <td>{{ e.location_id.slice(0,8) }}</td>
-        <td>{{ currency.get(e.currency_id).symbol }}</td>
+        <td>{{ EnterpriseCtrl.getCurrencySymbol(e.currency_id) }}</td>
       </tr>
     </tbody>
   </table>
 </div>
 
 <main class="hidden-print">
-  <div class="row">
-    <div class="col-xs-6">
-      <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
-        <div class="panel-heading">
-          {{ 'ENTERPRISE.EXISTING_ENTERPRISES' | translate }}
-        </div>
-        <table class="table table-condensed table-hover">
-          <thead>
-            <tr>
-              <th>{{ 'ENTERPRISE.NAME' | translate }}</th>
-              <th>{{ 'ENTERPRISE.ABBREVIATION' | translate }}</th>
-              <th>{{ 'ENTERPRISE.PO_BOX' | translate }}</th>
-              <th>{{ 'ENTERPRISE.EMAIL' | translate }}</th>
-              <th>{{ 'ENTERPRISE.PHONE' | translate }}</th>
-              <th>{{ 'ENTERPRISE.EDIT' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="e in enterprise.data" ng-click="load(e)">
-              <td>{{ e.name }}</td>
-              <td>{{ e.abbr }}</td>
-              <td>{{ e.po_box }}</td>
-              <td>{{ e.email }}</td>
-              <td>{{ e.phone }}</td>
-              <td><a class="action" ng-click="editEnterprise(e)"><i class="glyphicon glyphicon-pencil"></i></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="col-xs-6" ng-switch="action">
-      <div ng-switch-default>
-        <div class="alert alert-info">
-          <h4>{{ 'ENTERPRISE.TITLE' | translate }}</h4>
-          <p>{{ 'ENTERPRISE.HELP_TEXT_1' | translate }}
-          </p>
-          <ul class="list-plain">
-            <li><i class="glyphicon glyphicon-pencil"></i> {{ 'ENTERPRISE.HELP_TEXT_2' | translate }}</li>
-            <li><i class="glyphicon glyphicon-plus-sign"></i> {{ 'ENTERPRISE.HELP_TEXT_3' | translate }}</li>
-          </ul>
+  <div class="container-fluid">
+    <div class="row">
+      
+      <!-- Enterprises Details Form -->
+      <div class="col-md-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ 'ENTERPRISE.EXISTING_ENTERPRISES' | translate }}
+          </div>
+          <table class="table table-condensed table-hover">
+            <thead>
+              <tr>
+                <th>{{ 'ENTERPRISE.NAME' | translate }}</th>
+                <th>{{ 'ENTERPRISE.ABBREVIATION' | translate }}</th>
+                <th>{{ 'ENTERPRISE.PO_BOX' | translate }}</th>
+                <th>{{ 'ENTERPRISE.EMAIL' | translate }}</th>
+                <th>{{ 'ENTERPRISE.PHONE' | translate }}</th>
+                <th>{{ 'ENTERPRISE.EDIT' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="e in EnterpriseCtrl.enterprises | orderBy:'name'">
+                <td>{{ e.name }}</td>
+                <td>{{ e.abbr }}</td>
+                <td>{{ e.po_box }}</td>
+                <td>{{ e.email }}</td>
+                <td>{{ e.phone }}</td>
+                <td><a class="action" id="enterprise-{{e.id}}" ng-click="EnterpriseCtrl.update(e)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+  
+      <!-- Optional Information Form -->
+      <div class="col-md-6" ng-switch="EnterpriseCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info">
+            <h4>{{ 'ENTERPRISE.TITLE' | translate }}</h4>
+            <p>{{ 'ENTERPRISE.HELP_TEXT_1' | translate }}
+            </p>
+            <ul class="list-plain">
+              <li><i class="glyphicon glyphicon-pencil"></i> {{ 'ENTERPRISE.HELP_TEXT_2' | translate }}</li>
+              <li><i class="glyphicon glyphicon-plus-sign"></i> {{ 'ENTERPRISE.HELP_TEXT_3' | translate }}</li>
+            </ul>
+          </div>
+        </div>
 
-      <div ng-switch-when="new">
-        <form novalidate name="newForm">
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'ENTERPRISE.SAVE_SUCCES' | translate }} </h4>
+            </p>
+          </div>
+        </div>
 
-          <fieldset>
-            <legend>{{ 'ENTERPRISE.CONFIGURATION' | translate }}</legend>
-            <div class="form-group">
-              <label for="bhima-enterprise-name">{{ 'ENTERPRISE.NAME' | translate }} </label>
-              <input type="text" class="form-bhima" name="bhima-enterprise-name" id="bhima-enterprise-name" ng-model="add.name">
-            </div>
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'ENTERPRISE.UPDATE_SUCCES' | translate }} </h4>
+            </p>
+          </div>
+        </div>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
-              <input type="text" class="form-bhima" name="bhima-enterprise-abbr" id="bhima-enterprise-abbr" ng-model="add.abbr">
-            </div>
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ "ENTERPRISE.CONFIGURATION" | translate }}</div>
+          <div class="panel-body">
+            <form class="form-horizontal" name="CreateForm" ng-submit="EnterpriseCtrl.submit(CreateForm.$invalid)" novalidate>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-po_box">{{ 'ENTERPRISE.PO_BOX' | translate }} </label>
-              <input class="form-bhima" name="bhima-enterprise-po_box" id="bhima-enterprise-email" ng-model="add.po_box">
-            </div>
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
+                <label class="col-xs-3 control-label required" for="bhima-enterprise-name">{{ 'ENTERPRISE.NAME' | translate }}</label>
+                <div class="col-xs-9">
+                  <input type="text" class="form-control" name="name" id="bhima-enterprise-name" ng-model="EnterpriseCtrl.enterprise.name" required>
+                </div>
+              </div>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-email">{{ 'ENTERPRISE.EMAIL' | translate }} </label>
-              <input type="email" class="form-bhima" name="bhima-enterprise-email" id="bhima-enterprise-email" ng-model="add.email">
-            </div>
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.abbr.$invalid }">
+                <label for="bhima-enterprise-abbr" class="col-md-3 control-label">{{ "ENTERPRISE.ABBREVIATION" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="abbr" required id="bhima-enterprise-abbr" ng-model="EnterpriseCtrl.enterprise.abbr">
+                </div>
+              </div>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-phone" >{{ 'ENTERPRISE.PHONE' | translate }} </label>
-              <input type="tel" class="form-bhima" name="bhima-enterprise-phone" id="bhima-enterprise-phone" ng-model="add.phone">
-            </div>
+              <div class="form-group">
+                <label for="bhima-enterprise-po_box" class="col-md-3 control-label">{{ "ENTERPRISE.PO_BOX" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="po_box" id="bhima-enterprise-po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
+                </div>
+              </div>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
-              <select class="form-bhima" name="bhima-enterprise-location" id="bhima-enterprise-location" ng-model="add.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'">
-                <option value="" disabled="disabled">-- {{ 'SELECT.LOCATION' | translate }}--</option>
-              </select>
-            </div>
+              <div class="form-group">
+                <label for="bhima-enterprise-email" class="col-md-3 control-label">{{ "ENTERPRISE.EMAIL" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="email" class="form-control" name="email" id="bhima-enterprise-email" ng-model="EnterpriseCtrl.enterprise.email">
+                </div>
+              </div>
 
-          </fieldset>
-          <fieldset>
-            <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
+              <div class="form-group">
+                <label for="bhima-enterprise-phone" class="col-md-3 control-label">{{ "ENTERPRISE.PHONE" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="tel" class="form-control" name="phone" id="bhima-enterprise-phone" ng-model="EnterpriseCtrl.enterprise.phone">
+                </div>
+              </div>
 
-            <div class="radio" ng-repeat="currency in currency.data">
-              <label>
-                {{currency.name}}
-                <input type="radio" value="{{currency.id}}" name="bhima-enterprise-currency" ng-model="add.currency_id">
-              </label>
-            </div>
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.location_id.$invalid }">
+                <label class="col-md-3 control-label">{{ "ENTERPRISE.LOCATION" | translate }}</label>
+                <div class="col-md-9">
+                  <select class="form-control" name="location_id" ng-model="EnterpriseCtrl.enterprise.location_id" id="bhima-enterprise-location" ng-options="loc.uuid as loc.format for loc in EnterpriseCtrl.locations | orderBy:'village'" required>
+                    <option value="" disabled> -- {{ 'SELECT.LOCATION' | translate }}-- </option>
+                  </select>
+                </div>
+              </div>
 
-          </fieldset>
+              <fieldset>
+                <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.currency_id.$invalid }">  
+                  <div class="radio" ng-repeat="currency in EnterpriseCtrl.currencies">
+                    <label class="control-label">
+                      <input type="radio" value="{{currency.id}}" required id="currency_id-{{currency.id}}" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
+                      {{currency.name}}
+                    </label>
+                    </div>
+                </div>  
+              </fieldset>
 
-          <input type="submit" class="btn btn-sm btn-success" ng-click="saveNew()" value="{{ 'FORM.SAVE' | translate }}" ng-disabled="newForm.$invalid">
-          <input type="reset" class="btn btn-sm btn-default" ng-click="resetNew()" value="{{ 'FORM.RESET_FORM' | translate }}">
+              <div class="form-group">
+                  <button class="btn btn-default" id="submit-enterprise" type="submit" data-method="submit">
+                    {{ "FORM.SUBMIT" | translate }}
+                  </button>
+                  <button class="btn btn-default" type="button" ng-click="EnterpriseCtrl.cancel()" data-method="cancel">
+                    {{ "FORM.CANCEL" | translate }}
+                  </button>
+              </div>
+            </form>
+          </div>
+        </div>
 
-        </form>
-      </div>
 
-      <div ng-switch-when="edit">
-        <form novalidate name="editForm">
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ "ENTERPRISE.EDIT_ENTERPRISE" | translate }}</div>
+          <div class="panel-body">
+            <form class="form-horizontal" name="UpdateForm" ng-submit="EnterpriseCtrl.submit(UpdateForm.$invalid)" novalidate>
 
-          <fieldset>
-            <legend>{{ "ENTERPRISE.EDIT_ENTERPRISE" | translate }}</legend>
-            <div class="form-group">
-              <label for="bhima-enterprise-name" class="required">{{ 'ENTERPRISE.NAME' | translate }} </label>
-              <input class="form-bhima" name="bhima-enterprise-name" id="bhima-enterprise-name" ng-model="edit.name" required>
-            </div>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
+                <label class="col-xs-3 control-label required" for="bhima-enterprise-name">{{ 'ENTERPRISE.NAME' | translate }}</label>
+                <div class="col-xs-9">
+                  <input type="text" class="form-control" name="name" id="bhima-enterprise-name" ng-model="EnterpriseCtrl.enterprise.name" required>
+                </div>
+              </div>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
-              <input class="form-bhima" name="bhima-enterprise-abbr" id="bhima-enterprise-abbr" ng-model="edit.abbr">
-            </div>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.abbr.$invalid }">
+                <label for="bhima-enterprise-abbr" class="col-md-3 control-label">{{ "ENTERPRISE.ABBREVIATION" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="abbr" required id="bhima-enterprise-abbr" ng-model="EnterpriseCtrl.enterprise.abbr">
+                </div>
+              </div>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-po_box" >{{ 'ENTERPRISE.PO_BOX' | translate }} </label>
-              <input class="form-bhima" name="bhima-enterprise-po_box" id="bhima-enterprise-po_box" ng-model="edit.po_box">
-            </div>
+              <div class="form-group">
+                <label for="bhima-enterprise-po_box" class="col-md-3 control-label">{{ "ENTERPRISE.PO_BOX" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="po_box" id="bhima-enterprise-po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
+                </div>
+              </div>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-email" >{{ 'ENTERPRISE.EMAIL' | translate }} </label>
-              <input type="email" class="form-bhima" name="bhima-enterprise-email" id="bhima-enterprise-email" ng-model="edit.email">
-            </div>
+              <div class="form-group">
+                <label for="bhima-enterprise-email" class="col-md-3 control-label">{{ "ENTERPRISE.EMAIL" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="email" class="form-control" name="email" id="bhima-enterprise-email" ng-model="EnterpriseCtrl.enterprise.email">
+                </div>
+              </div>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-phone" >{{ 'ENTERPRISE.PHONE' | translate }} </label>
-              <input type="tel" class="form-bhima" name="bhima-enterprise-phone" id="bhima-enterprise-phone" ng-model="edit.phone">
-            </div>
+              <div class="form-group">
+                <label for="bhima-enterprise-phone" class="col-md-3 control-label">{{ "ENTERPRISE.PHONE" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="tel" class="form-control" name="phone" id="bhima-enterprise-phone" ng-model="EnterpriseCtrl.enterprise.phone">
+                </div>
+              </div>
+    
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.location_id.$invalid }">
+                <label class="col-md-3 control-label">{{ "ENTERPRISE.LOCATION" | translate }}</label>
+                <div class="col-md-9">
+                  <select class="form-control" name="location_id" ng-model="EnterpriseCtrl.enterprise.location_id" id="bhima-enterprise-location" ng-options="loc.uuid as loc.format for loc in EnterpriseCtrl.locations | orderBy:'village'" required>
+                    <option value="" disabled> -- {{ 'SELECT.LOCATION' | translate }}-- </option>
+                  </select>
+                </div>  
+              </div>
+                                   
+              <fieldset>
+                <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.currency_id.$invalid }">  
+                  <div class="radio" ng-repeat="currency in EnterpriseCtrl.currencies">
+                    <label class="control-label">
+                      <input type="radio" value="{{currency.id}}" required id="currency_id" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
+                      {{currency.name}}
+                    </label>
+                  </div>
+                </div>  
+              </fieldset>
 
-            <div class="form-group">
-              <label for="bhima-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
-              <select class="form-bhima" name="bhima-enterprise-location" id="bhima-enterprise-location" ng-model="edit.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
-                <option value="" disabled="disabled">-- Select a Location --</option>
-              </select>
-            </div>
-
-          </fieldset>
-          <fieldset>
-            <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
-
-            <div class="radio" ng-repeat="currency in currency.data">
-              <label>
-                {{currency.name}}
-                <input type="radio" value="{{currency.id}}" name="bhima-enterprise-currency" ng-model="edit.currency_id">
-              </label>
-            </div>
-          </fieldset>
-
-          <input type="submit" class="btn btn-sm btn-success" ng-click="saveEdit()" value="{{ 'FORM.SAVE_CHANGES' | translate }}" ng-disabled="editForm.$invalid">
-          <input type="button" class="btn btn-sm btn-default" ng-click="resetEdit()" value="{{ 'FORM.RESET_FORM' | translate }}">
-
-        </form>
+              <div class="form-group">
+                  <button class="btn btn-default" id="change_enterprise" name="submit" type="submit" data-method="submit">
+                    {{ "FORM.SAVE_CHANGES" | translate }}
+                  </button>
+                  <button class="btn btn-default" type="button" ng-click="EnterpriseCtrl.cancel()" data-method="cancel">
+                    {{ "FORM.RESET_FORM" | translate }}
+                  </button>
+              </div>
+            </form>
+          </div>
+        </div>        
       </div>
     </div>
   </div>
 </main>
+
+
