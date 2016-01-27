@@ -101,7 +101,7 @@ describe('The reference API, PATH : /references', function () {
         // re-query the database
         return agent.get('/references/' + DELETABLE_REFERENCE_ID);
       })
-      .then(function (res) {res
+      .then(function (res) {
         expect(res).to.have.status(404);        
       })
       .catch(helpers.handler); 
