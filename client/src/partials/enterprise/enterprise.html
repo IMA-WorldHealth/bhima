@@ -40,7 +40,7 @@
         <td>{{ e.email }}</td>
         <td>{{ e.phone }}</td>
         <td>{{ e.location_id.slice(0,8) }}</td>
-        <td>{{ EnterpriseCtrl.getElementCurrency(e.currency_id) }}</td>
+        <td>{{ EnterpriseCtrl.getCurrencySymbol(e.currency_id) }}</td>
       </tr>
     </tbody>
   </table>
@@ -69,7 +69,7 @@
             </thead>
             <tbody>
               <tr ng-repeat="e in EnterpriseCtrl.enterprises | orderBy:'name'">
-                <td>{{ e.name }} Os</td>
+                <td>{{ e.name }}</td>
                 <td>{{ e.abbr }}</td>
                 <td>{{ e.po_box }}</td>
                 <td>{{ e.email }}</td>
@@ -92,6 +92,20 @@
               <li><i class="glyphicon glyphicon-pencil"></i> {{ 'ENTERPRISE.HELP_TEXT_2' | translate }}</li>
               <li><i class="glyphicon glyphicon-plus-sign"></i> {{ 'ENTERPRISE.HELP_TEXT_3' | translate }}</li>
             </ul>
+          </div>
+        </div>
+
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'ENTERPRISE.SAVE_SUCCES' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'ENTERPRISE.UPDATE_SUCCES' | translate }} </h4>
+            </p>
           </div>
         </div>
 
@@ -138,12 +152,12 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.location_id.$invalid }">
                 <label class="col-md-3 control-label">{{ "ENTERPRISE.LOCATION" | translate }}</label>
                 <div class="col-md-9">
-                  <select class="form-control" name="location_id" ng-model="EnterpriseCtrl.enterprise.location_id" id="bhima-enterprise-location" ng-options="loc.uuid as EnterpriseCtrl.formatLocation(loc) for loc in EnterpriseCtrl.locations | orderBy:'village'" required>
+                  <select class="form-control" name="location_id" ng-model="EnterpriseCtrl.enterprise.location_id" id="bhima-enterprise-location" ng-options="loc.uuid as loc.format for loc in EnterpriseCtrl.locations | orderBy:'village'" required>
                     <option value="" disabled> -- {{ 'SELECT.LOCATION' | translate }}-- </option>
                   </select>
-                </div>  
-              </div>       
-                     
+                </div>
+              </div>
+
               <fieldset>
                 <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
                 <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.currency_id.$invalid }">  
@@ -208,16 +222,16 @@
                   <input type="tel" class="form-control" name="phone" id="bhima-enterprise-phone" ng-model="EnterpriseCtrl.enterprise.phone">
                 </div>
               </div>
-
+    
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.location_id.$invalid }">
                 <label class="col-md-3 control-label">{{ "ENTERPRISE.LOCATION" | translate }}</label>
                 <div class="col-md-9">
-                  <select class="form-control" name="location_id" ng-model="EnterpriseCtrl.enterprise.location_id" id="bhima-enterprise-location" ng-options="loc.uuid as EnterpriseCtrl.formatLocation(loc) for loc in EnterpriseCtrl.locations | orderBy:'village'" required>
+                  <select class="form-control" name="location_id" ng-model="EnterpriseCtrl.enterprise.location_id" id="bhima-enterprise-location" ng-options="loc.uuid as loc.format for loc in EnterpriseCtrl.locations | orderBy:'village'" required>
                     <option value="" disabled> -- {{ 'SELECT.LOCATION' | translate }}-- </option>
                   </select>
                 </div>  
-              </div>       
-                     
+              </div>
+                                   
               <fieldset>
                 <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
                 <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.currency_id.$invalid }">  

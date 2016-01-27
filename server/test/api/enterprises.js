@@ -5,17 +5,10 @@ var chaiHttp = require('chai-http');
 var expect = chai.expect;
 chai.use(chaiHttp);
 
-// workaround for low node versions
-if (!global.Promise) {
-  var q = require('q');
-  chai.request.addPromises(q.Promise);
-}
-
-// environment variables - disable certificate errors
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+var helpers = require('./helpers');
+helpers.configure(chai);
 
 // base URL
-var url = 'https://localhost:8080';
 var user = { username : 'superuser', password : 'superuser', project: 1};
 
 /**
@@ -24,67 +17,130 @@ var user = { username : 'superuser', password : 'superuser', project: 1};
 * This test suite implements full CRUD on the /Enterprises HTTP API endpoint.
 */
 describe('The /Enterprises API endpoint', function () {
-  var agent = chai.request.agent(url);
-  var NUMBER_OF_CASHBOXES = 2;
+  var agent = chai.request.agent(helpers.baseUrl),
+    TOTAL_CURRENCIES = 2;
   
-  var newEnterprises = {
+  var newEnterprise = {
     name : 'newEnterprises',
     abbr : 'newEnterprises', 
     email : 'newEnterprises@test.org', 
     po_box : 'newEnterprises', 
     phone : '2016', 
-    location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff', 
-    currency_id : [2]
+    location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    logo : null, 
+    currency_id : 2
   };
 
-  var updateEnterprises = {
+  var updateEnterprise = {
     name : 'updateEnterprises',
     abbr : 'updateEnterprises', 
     email : 'newEnterprises@test.org', 
     po_box : 'newEnterprises', 
     phone : '00904940950932016', 
     location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff', 
-    currency_id : [2]
+    logo : null,
+    currency_id : 2
+  };
+
+  var invalideEnterprise = {
+    name : null,
+    abbr : null, 
+    email : 'newEnterprises@test.org', 
+    po_box : 'newEnterprises', 
+    phone : '2016', 
+    location_id : null, 
+    logo : null,
+    currency_id : null
   };
 
   it('POST /ENTERPRISES will register a valid Enterprises', function () { 
     return agent.post('/enterprises')
-      .send({ enterprises : newEnterprises })
+      .send({ enterprise : newEnterprise })
       .then(function (confirmation) { 
         expect(confirmation).to.have.status(201);
-        updateEnterprises.id = confirmation.body.id  
+        expect(confirmation.body.id).to.be.defined; 
+        updateEnterprise.id = confirmation.body.id;
+
+        return agent.get('/enterprises/' + confirmation.body.id);
       })
-      .catch(handle);
+      .then(function (res) {
+        expect(res).to.have.status(200);
+      })      
+      .catch(helpers.handler);
+  });
+
+  it('POST /ENTERPRISES will not register an invalid Enterprises', function () { 
+    return agent.post('/enterprises')
+      .send({})
+      .then(function (confirmation) { 
+        expect(confirmation).to.have.status(400);
+        expect(confirmation).to.be.json; 
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /ENTERPRISES will not register an incomplete Enterprise', function () { 
+    return agent.post('/enterprises')
+      .send({ enterprise : invalideEnterprise })
+      .then(function (confirmation) { 
+        expect(confirmation).to.have.status(400);
+        expect(confirmation).to.be.json; 
+      })
+      .catch(helpers.handler);
   });
 
   it('GET /CURRENCY FOR ENTERPRISES returns a currencies list ', function () { 
-    var TOTAL_CURRENCIES = 2;
     return agent.get('/finance/currencies')
       .then(function (result) { 
         expect(result).to.have.status(200);
         expect(result.body).to.not.be.empty;
         expect(result.body).to.have.length(TOTAL_CURRENCIES);
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });     
 
   it('PUT /ENTERPRISES should update an existing Enterprises', function () {
-    return agent.put('/enterprises/' + updateEnterprises.id)
-      .send(updateEnterprises)
+    return agent.put('/enterprises/' + updateEnterprise.id)
+      .send(updateEnterprise)
       .then(function (res) {
+        var e = res.body[0];
         expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(e).to.have.all.keys('id', 'name', 'abbr', 'email', 'po_box', 'phone', 'location_id', 'logo', 'currency_id');
+        expect(e.name).to.not.be.equal(newEnterprise.name);
+        expect(e.location_id).to.be.equal(newEnterprise.location_id);
       })
-      .catch(handle);
+      .catch(helpers.handler);
   });
 
   it('GET /ENTERPRISES returns a Enterprises List ', function () { 
-    return agent.get('/enterprises')
+    return agent.get('/enterprises?detailed=1')
       .then(function (result) { 
         expect(result).to.have.status(200);
-        expect(result.body).to.not.be.empty;
+        expect(result).to.be.json;
       })
-      .catch(handle);
+      .catch(helpers.handler);
   }); 
+
+  it('GET /ENTERPRISES returns a Enterprises List With a minimum number of elements ', function () { 
+    return agent.get('/enterprises/')
+      .then(function (result) { 
+        expect(result).to.have.status(200);
+        expect(result).to.be.json;
+        expect(result.body[0]).to.have.all.keys('id', 'name', 'abbr');
+      })
+      .catch(helpers.handler);
+  }); 
+
+  it('GET /ENTERPRISES:ID returns a single Enterprise ', function () { 
+    return agent.get('/enterprises/' + updateEnterprise.id)
+      .then(function (result) { 
+        expect(result).to.have.status(200);
+        expect(result).to.be.json;
+      })
+      .catch(helpers.handler);
+  });
+
 
   it('GET /LOCATIONS ENTERPRISES returns a Locations List ', function () { 
     return agent.get('/location/villages')
@@ -92,19 +148,9 @@ describe('The /Enterprises API endpoint', function () {
         expect(result).to.have.status(200);
         expect(result.body).to.not.be.empty;
       })
-      .catch(handle);
+      .catch(helpers.handler);
   }); 
 
   // login before each request
-  beforeEach(function () {
-    return agent
-      .post('/login')
-      .send(user);
-  });
-
-  // throw errors
-  function handle(error) {
-    throw error;
-  }  
-
+  beforeEach(helpers.login(agent));
 });

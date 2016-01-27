@@ -1172,7 +1172,9 @@
    "POST_OFFICE_BOX"          : "Post Office Box",
    "REGISTERED_ENTERPRISE"    : "Registered Enterprises",
    "REGISTERED_RELATIONS"     : "Registered Relations",
-   "TITLE"                    : "Enterprise Management"
+   "SAVE_SUCCES"              : "Saved successfully",
+   "TITLE"                    : "Enterprise Management",
+   "UPDATE_SUCCES"            : "Updated successfully"
    },
 "ERROR": {
    "CONNECTION"                  : "A request to the server errored.  Some required information may not have loaded.  Please refresh the page to continue.  If the problem persists, contact a system administrator.",  

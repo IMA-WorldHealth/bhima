@@ -11,7 +11,7 @@ describe('The Enterprises Module', function () {
 
   // shared methods
   var path = '#/enterprises';
-  var ENTERPRISES = {
+  var ENTERPRISE = {
     name : 'Interchurch Medical Assistance',
     abbr : 'IMA', 
     email : 'ima@imaworldhealth.com', 
@@ -20,12 +20,7 @@ describe('The Enterprises Module', function () {
     currency_id : 1
   };
 
-  function update(n) {
-    return element(by.repeater("e in EnterpriseCtrl.enterprises | orderBy:'name'").row(n))
-      .$$('a')
-      .click();
-  }
-
+  var ENTERPRISE_ID = 1;
   // navigate to the enterprise module before each test
   beforeEach(function () {
     browser.get(path);
@@ -34,11 +29,11 @@ describe('The Enterprises Module', function () {
   it('Successfully creates a new Enterprise', function () {
     FormUtils.buttons.create();
 
-    FormUtils.input('EnterpriseCtrl.enterprise.name', ENTERPRISES.name);
-    FormUtils.input('EnterpriseCtrl.enterprise.abbr', ENTERPRISES.abbr);
-    FormUtils.input('EnterpriseCtrl.enterprise.email', ENTERPRISES.email);
-    FormUtils.input('EnterpriseCtrl.enterprise.po_box', ENTERPRISES.po_box);
-    FormUtils.input('EnterpriseCtrl.enterprise.phone', ENTERPRISES.phone);
+    FormUtils.input('EnterpriseCtrl.enterprise.name', ENTERPRISE.name);
+    FormUtils.input('EnterpriseCtrl.enterprise.abbr', ENTERPRISE.abbr);
+    FormUtils.input('EnterpriseCtrl.enterprise.email', ENTERPRISE.email);
+    FormUtils.input('EnterpriseCtrl.enterprise.po_box', ENTERPRISE.po_box);
+    FormUtils.input('EnterpriseCtrl.enterprise.phone', ENTERPRISE.phone);
 
     // select a random, non-disabled option
     FormUtils.select('EnterpriseCtrl.enterprise.location_id')
@@ -46,17 +41,21 @@ describe('The Enterprises Module', function () {
       .first()
       .click();
 
-    FormUtils.radio('EnterpriseCtrl.enterprise.currency_id', ENTERPRISES.currency_id);  
+    FormUtils.radio('EnterpriseCtrl.enterprise.currency_id', ENTERPRISE.currency_id);  
     // submit the page to the server
     FormUtils.buttons.submit();
+
+    expect(element(by.id('create_success')).isPresent()).to.eventually.be.true;
   });
 
 
   it('Successfully edits an Enterprise', function () {
-    element(by.id('enterprise-1')).click();
+    element(by.id('enterprise-' + ENTERPRISE_ID )).click();
     element(by.model('EnterpriseCtrl.enterprise.name')).sendKeys('Enterprise UPDATED');
     element(by.model('EnterpriseCtrl.enterprise.abbr')).sendKeys('EnUpdt');
     element(by.id('change_enterprise')).click();
+
+    expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
   });
 
 

@@ -3,7 +3,7 @@
 INSERT INTO `unit` VALUES
 (0,'Root','TREE.ROOT','The unseen root node',NULL,'/partials/index.html','/root'),
 (1,'Admin','TREE.ADMIN','The Administration Super-Category',0,'/partials/admin/index.html','/admin'),
-(2,'Enterprise','TREE.ENTERPRISE','Manage the registered enterprises from here',1,'/partials/enterprise/','/enterprise'),
+(2, 'Enterprise', 'TREE.ENTERPRISE', 'Manage the registered enterprises from here', 1, '/partials/enterprise/', '/enterprises'),
 (4,'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/user_permission/','/permissions'),
 -- (5,'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
 -- (6,'Account','TREE.ACCOUNT','Chart of Accounts management',30,'/partials/accounts/create_account/','/create_account'),

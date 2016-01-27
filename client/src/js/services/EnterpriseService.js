@@ -1,11 +1,3 @@
-'use strict';
-
-/**
- * @description 
- *
- * @returns 
- */
-
 angular.module('bhima.services')
   .factory('EnterpriseService', EnterpriseService);
   
@@ -15,26 +7,25 @@ function EnterpriseService($http, util) {
   var service = {};
 
   service.read = read;
-  service.readLocations = readLocations;
+  service.read_detailed = read_detailed;
   service.create = create;
   service.update = update;
 
-  /* ------------------------------------------------------------------------ */
 
   function read(id) {
-    var url = '/enterprises/';
+    var url = (id) ? '/enterprises/' + id : '/enterprises/';
     return $http.get(url)
       .then(util.unwrapHttpResponse);
   }
 
-  function readLocations() {
-    var url = '/location/villages';
+  function read_detailed() {
+    var url = '/enterprises?detailed=1';
     return $http.get(url)
       .then(util.unwrapHttpResponse);
   }
 
   function create(enterprise) {
-    return $http.post('/enterprises', { enterprises: enterprise })
+    return $http.post('/enterprises', { enterprise: enterprise })
       .then(util.unwrapHttpResponse);
   }
 

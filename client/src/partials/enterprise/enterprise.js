@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'CurrencyService', 'FormStateFactory'
+  'EnterpriseService', 'CurrencyService', 'LocationService', 'FormStateFactory'
 ];
 
-function EnterpriseController(Enterprises, Currencies, StateFactory) {
+function EnterpriseController(Enterprises, Currencies, Locations, StateFactory) {
   var vm = this;
 
   vm.enterprises = [];
@@ -18,10 +18,7 @@ function EnterpriseController(Enterprises, Currencies, StateFactory) {
   vm.update = update;
   vm.cancel = cancel;
   vm.submit = submit;
-  vm.formatLocation = formatLocation;
-  vm.getElementCurrency = getElementCurrency;
-
-  /* ------------------------------------------------------------------------ */
+  vm.getCurrencySymbol = getCurrencySymbol;
 
   function handler(error) {
     console.error(error);
@@ -31,11 +28,14 @@ function EnterpriseController(Enterprises, Currencies, StateFactory) {
   // fired on startup
   function startup() {
     // load Enterprises
-    Enterprises.read().then(function (data) {
+    Enterprises.read_detailed().then(function (data) {
       vm.enterprises = data;
     }).catch(handler);
 
-    Enterprises.readLocations().then(function (data) {
+    Locations.readLocations().then(function (data) {
+      data.forEach(function (l) {
+        l.format = [l.name, l.sector_name, l.province_name, l.country_name].join(' -- ');
+      });
       vm.locations = data;
     }).catch(handler);
 
@@ -56,14 +56,10 @@ function EnterpriseController(Enterprises, Currencies, StateFactory) {
     vm.enterprise = {};
   }
 
-  function formatLocation(l) {
-    return [l.name, l.sector_name, l.province_name, l.country_name].join(' -- ');
-  }
-
-  function getElementCurrency(id) {
+  function getCurrencySymbol(id) {
     return Currencies.symbol(id);
   }
-  // asnychronously load a enterprise from the server
+  // Load a enterprise from the server
   function loadEnterprise(data) {
     vm.enterprise = data;      
   }
@@ -77,9 +73,8 @@ function EnterpriseController(Enterprises, Currencies, StateFactory) {
 
   // refresh the displayed Enterprises
   function refreshEnterprises() {
-    return Enterprises.read()
+    return Enterprises.read_detailed()
       .then(function (data) {
-        vm.view = 'default';
         vm.enterprises = data;
       });
   }
@@ -88,20 +83,22 @@ function EnterpriseController(Enterprises, Currencies, StateFactory) {
   function submit(invalid) {
     if (invalid) { return; }
 
-    var enterpriseId;
     var promise;
     var creation = (vm.view === 'create');
     var enterprise = angular.copy(vm.enterprise);
-    
+
     promise = (creation) ?
       Enterprises.create(enterprise) :
       Enterprises.update(enterprise.id, enterprise);
 
     promise
       .then(function (response) {
-        enterpriseId = response.id;
         return refreshEnterprises();
       })
+      .then(function () {
+        update(enterprise.id);
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
       .catch(handler);
   }
 

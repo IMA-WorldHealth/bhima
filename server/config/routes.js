@@ -393,6 +393,7 @@ exports.configure = function (app) {
 
   // Enterprises api 
   app.get('/enterprises', enterprises.list);
+  app.get('/enterprises/:id', enterprises.single);
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
 
