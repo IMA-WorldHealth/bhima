@@ -1,36 +1,83 @@
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /accounts API endpoint
-*/
-describe('The /accounts API endpoint', function () {
+// cheeky method to duplicate an array
+function clone(array) {
+  return array.filter(function (element) { return 1; });
+}
+
+/** tests for the /accounts API endpoint */
+describe('The account API, PATH : /accounts', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
+  var newAccount = {
+    account_type_id : 1,
+    enterprise_id : 1,
+    account_number : 4000400,
+    account_txt : 'Account for integration test',
+    parent : 0,
+    locked : 0,
+    cc_id : null,
+    pc_id : null,
+    classe : 4,
+    is_asset : 0,
+    reference_id : null,
+    is_brut_link : 0,
+    is_used_budget : 0,
+    is_charge : 0,
+    is_title : 0
+  };
 
-  // cheeky clone method for ES5 arrays
-  function clone(array) {
-    return array.filter(function () { return true; });
-  }
+  var DELETABLE_ACCOUNT_ID = 3636;
+  var FETCHABLE_ACCOUNT_ID = 3626;
 
-  // login before each request
+  var responseKeys = [
+    'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
+    'reference_id', 'is_brut_link', 'is_used_budget', 'is_charge', 'account_number',
+    'account_txt', 'parent', 'account_type_id', 'is_title', 'type'
+  ];
+
+    // login before each request
   beforeEach(helpers.login(agent));
 
-  it('GET /accounts returns a list of accounts', function () {
-    return agent.get('/accounts')
+  it('METHOD : GET, PATH : /accounts?full=1, It returns the full list of account' , function () {
+    return agent.get('/accounts?full=1')
       .then(function (res) {
         expect(res).to.have.status(200);
+        expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.length(9);
       })
       .catch(helpers.handler);
   });
+
+  it('METHOD : GET, PATH : /accounts, It returns a simple list of account', function () {
+    return agent.get('/accounts')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.length(9);
+       })
+      .catch(helpers.handler);
+   });
+
+   it('METHOD : GET, PATH : /accounts?locked=0, It returns a list of unlocked accounts', function () {
+      return agent.get('/accounts?locked=0')
+      .then(function (res) {
+        var list = res.body.filter(function (item) { return item.locked === 0; });
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.deep.have.same.members(list);
+      })
+     .catch(helpers.handler);
+    });
+
 
   it('GET /accounts returns the accounts in sorted order by account_number', function () {
     return agent.get('/accounts')
@@ -51,32 +98,72 @@ describe('The /accounts API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it.skip('GET /accounts?type=ohada returns only OHADA accounts', function () {
-
-    // NOTE
-    // In the test data, we define one account (id: 3635) that is not OHADA
-    // To figure out if our filter works, we query all accounts, then only
-    // OHADA accounts, and then compare the two.
-    var accounts;
-
-    return agent.get('/accounts')
+  it('METHOD : GET, PATH : /accounts/:id, It returns one account', function () {
+    return agent.get('/accounts/'+ FETCHABLE_ACCOUNT_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.all.keys(responseKeys);
 
-        accounts = res.body;
-        return agent.get('/accounts?type=ohada');
+       expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_ID);
+      })
+      .catch(helpers.handler);
+  });
+
+ it('METHOD : GET, PATH : /accounts/unknownId, It returns a 404 error', function () {
+    return agent.get('/accounts/unknownId')
+      .then(function (res) {
+        expect(res).to.have.status(404);
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+      })
+      .catch(helpers.handler);
+  });
+
+
+  it('METHOD : POST, PATH : /accounts, It a adds an account', function () {
+    return agent.post('/accounts')
+      .send(newAccount)
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.all.keys('id');
+        expect(res.body.id).to.be.defined;
+        newAccount.id = res.body.id;
+        return agent.get('/accounts/' + newAccount.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.all.keys(responseKeys);
+      })
+     .catch(helpers.handler);
+  });
 
-        var ohada = res.body;
-        expect(accounts).to.not.deep.equal(ohada);
+  it('METHOD : PUT, PATH : /accounts/:id, It updates the newly added account', function () {
+    var updateInfo = { account_txt : 'updated value for testing account'};
+
+    return agent.put('/accounts/'+ newAccount.id)
+      .send(updateInfo)
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.id).to.equal(newAccount.id);
+        expect(res.body.account_txt).to.equal(updateInfo.account_txt);
+        expect(res.body).to.have.all.keys(responseKeys);
+       })
+      .catch(helpers.handler);
+  });
+
+ it('METHOD : PUT, PATH : /accounts/:unknown, It refuses to update the unknow entity', function () {
+    var updateInfo = { account_txt : 'updated value for testing account unknwon'};
+
+    return agent.put('/accounts/undefined')
+      .send(updateInfo)
+      .then(function (res) {
+        expect(res).to.have.status(404);
+        expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });
 });
-
