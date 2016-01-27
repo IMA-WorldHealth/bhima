@@ -1,9 +1,7 @@
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var q = require('q');
 
@@ -292,7 +290,7 @@ describe('The /patients API', function () {
         expect(result.body).to.have.length(TOTAL_PATIENT_GROUPS);
       })
       .catch(helpers.handler);
-  }); 
+  });
 
   it('Simultaneous patient registration requests respect reference lock', function () {
 

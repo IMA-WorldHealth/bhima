@@ -2,7 +2,6 @@
 var chai = require('chai');
 var expect = chai.expect;
 
-
 /** import test helpers */
 var helpers = require('./helpers');
 helpers.configure(chai);

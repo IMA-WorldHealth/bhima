@@ -1,7 +1,6 @@
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
 
 var helpers = require('./helpers');

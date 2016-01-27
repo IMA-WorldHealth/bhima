@@ -1,9 +1,7 @@
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);
@@ -83,6 +81,4 @@ it('METHOD : GET, PATH : /debtors/:uuid/invoices?balanced=1 returns a list of ba
       })
       .catch(helpers.handler);
   });
-
- 
 });

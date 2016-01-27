@@ -1,24 +1,18 @@
 /*global describe, it, beforeEach, process*/
 
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-var url = 'https://localhost:8080';
-var user = { username : 'superuser', password : 'superuser', project: 1};
-
 describe('The profit center API, PATH : /profit_centers', function () {
   var agent = chai.request.agent(helpers.baseUrl);
+
   var newProfitCenter = {
     project_id : 1,
     text : 'tested profit',
-    note : 'test inserted'  
+    note : 'test inserted'
   };
 
   var DELETABLE_PROFIT_CENTER_ID = 2;
@@ -43,11 +37,11 @@ describe('The profit center API, PATH : /profit_centers', function () {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(2); 
+        expect(res.body).to.have.length(2);
       })
      .catch(helpers.handler);
   });
-  
+
   it('METHOD : GET, PATH : /profit_center/:id, It returns one profit center', function () {
     return agent.get('/profit_centers/'+ FETCHABLE_PROFIT_CENTER_ID)
       .then(function (res) {
@@ -69,14 +63,14 @@ describe('The profit center API, PATH : /profit_centers', function () {
         expect(res.body).to.not.be.empty;
         expect(res.body.id).to.be.defined;
         newProfitCenter.id = res.body.id;
-        return agent.get('/profit_centers/' + newProfitCenter.id);  
+        return agent.get('/profit_centers/' + newProfitCenter.id);
       })
-      .then(function (res){ 
+      .then(function (res){
         expect(res).to.have.status(200);
         expect(res.body).to.have.all.keys('project_id', 'id', 'text', 'note');
       })
      .catch(helpers.handler);
-  }); 
+  });
 
   it('METHOD : PUT, PATH : /profit_centers/:id, It updates the newly added profit center', function () {
     var updateInfo = {note : 'updated value for note'};
@@ -100,8 +94,8 @@ describe('The profit center API, PATH : /profit_centers', function () {
         return agent.get('/profit_centers/' + DELETABLE_PROFIT_CENTER_ID);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);        
+        expect(res).to.have.status(404);
       })
       .catch(helpers.handler);
-  });  
+  });
 });
