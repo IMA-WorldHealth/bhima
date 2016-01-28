@@ -2,15 +2,15 @@ var q = require('q');
 var db = require('./../../../../lib/db');
 var parser = require('./../../../../lib/parser');
 var uuid = require('./../../../../lib/guid');
-
 var journal = require('./../../../finance/journal');
 
-'use strict';
 
 /*
  * HTTP Controllers
 */
 exports.execute = function (req, res, next) {
+  'use strict';
+
   initialiseConsumption(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
@@ -18,6 +18,8 @@ exports.execute = function (req, res, next) {
 };
 
 function initialiseConsumption(data, userId, callback) {
+  'use strict';
+
   return writeMainConsumption(data.main_consumptions)
     .then(function () {
       return writeLossConsumption(data.loss_consumptions);
@@ -44,6 +46,7 @@ function writeLossConsumption (loss_consumptions) {
 }
 
 function writeToJournal (document_id, userId, details) {
+  'use strict';
   var deferred = q.defer();
   journal.request('consumption_loss', document_id, userId, function (error, result) {
     if (error) {

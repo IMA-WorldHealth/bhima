@@ -8,7 +8,8 @@ var numeral = require('numeral');
 var formatDollar = '$0,0.00';
 
 // expose the http route
-exports.compile = function (options) {
+exports.compile = function compile(options) {
+
   'use strict';
   var i18nBilan = options.language == 'fr' ? require('../lang/fr.json').BILAN : require('../lang/en.json').BILAN;
   var deferred = q.defer(), context = {}, infos = {}, assetData = {}, passiveData = {};
@@ -34,45 +35,54 @@ exports.compile = function (options) {
     infos.current_detail_list = ans;
     return db.exec(sql, [options.pfy, 1]);
   })
-  .then(function (ans){
+  .then(function (ans) {
     infos.previous_detail_list = ans;
     return q.when(infos);
   })
-  .then(function (infos){
+  .then(function (infos) {
     //data processing
 
     var AssetGeneralBrut = 0, AssetGeneralAmortProv = 0, AssetGeneralNet = 0, AssetGeneralPreviousNet = 0;
 
-    assetData.current_detail_list = infos.current_detail_list.filter(function (item){
+    assetData.current_detail_list = infos.current_detail_list.filter(function (item) {
       return item.sectionBilanIsActif === 1;
     });
 
-    assetData.previous_detail_list = infos.previous_detail_list.filter(function (item){
+    assetData.previous_detail_list = infos.previous_detail_list.filter(function (item) {
       return item.sectionBilanIsActif === 1;
     });
 
-    passiveData.current_detail_list = infos.current_detail_list.filter(function (item){
+    passiveData.current_detail_list = infos.current_detail_list.filter(function (item) {
       return item.sectionBilanIsActif === 0;
     });
 
-    passiveData.previous_detail_list = infos.previous_detail_list.filter(function (item){
+    passiveData.previous_detail_list = infos.previous_detail_list.filter(function (item) {
       return item.sectionBilanIsActif === 0;
     });
 
     context.assetSide = processAsset(assetData);
     context.passiveSide = processPassive(passiveData);
 
-    function processAsset (tbl){
+    function processAsset (tbl) {
       var currents = tbl.current_detail_list;
       var sections = (currents.length > 0) ? getSections(currents) : [];
 
-      context.assetGeneralBrut = 0, context.assetGeneralAmortProv = 0, context.assetGeneralNet = 0, context.assetGeneralPreviousNet = 0,
-      sections.forEach(function (section){
-        section.totalBrut = 0, section.totalAmortProv = 0, section.totalNet = 0, section.totalPreviousNet = 0;
+      context.assetGeneralBrut = 0;
+      context.assetGeneralAmortProv = 0;
+      context.assetGeneralNet = 0;
+      context.assetGeneralPreviousNet = 0;
+
+      sections.forEach(function (section) {
+
+        section.totalBrut = 0;
+        section.totalAmortProv = 0;
+        section.totalNet = 0;
+        section.totalPreviousNet = 0;
         section.grefs = getGroupReferences(section, currents);
-        section.grefs.forEach(function (gref){
+
+        section.grefs.forEach(function (gref) {
           gref.refs = getReferences(gref, currents);
-          gref.refs.forEach(function (item){
+          gref.refs.forEach(function (item) {
 
             //brut processing
             item.brut = getBrut(item, currents, section.sectionBilanIsActif);
@@ -116,17 +126,22 @@ exports.compile = function (options) {
       return sections;
     }
 
-    function processPassive (tbl){
+    function processPassive (tbl) {
       var currents = tbl.current_detail_list;
       var sections = (currents.length > 0) ? getSections(currents) : [];
 
-      context.passiveGeneralBrut = 0, context.passiveGeneralAmortProv = 0, context.passiveGeneralNet = 0, context.passiveGeneralPreviousNet = 0,
-      sections.forEach(function (section){
-        section.totalNet = 0, section.totalPreviousNet = 0;
+      context.passiveGeneralBrut = 0;
+      context.passiveGeneralAmortProv = 0;
+      context.passiveGeneralNet = 0;
+      context.passiveGeneralPreviousNet = 0;
+
+      sections.forEach(function (section) {
+        section.totalNet = 0;
+        section.totalPreviousNet = 0;
         section.grefs = getGroupReferences(section, currents);
-        section.grefs.forEach(function (gref){
+        section.grefs.forEach(function (gref) {
           gref.refs = getReferences(gref, currents);
-          gref.refs.forEach(function (item){
+          gref.refs.forEach(function (item) {
             var br = getBrut(item, currents, section.sectionBilanIsActif); //tapon pour stocker le brute
             item.net = br < 0 ? br * -1 : br;
             item.net_view = numeral(item.net).format(formatDollar);
@@ -142,9 +157,8 @@ exports.compile = function (options) {
           section.totalNet_view = numeral(section.totalNet).format(formatDollar);
           section.totalPreviousNet_view = numeral(section.totalPreviousNet).format(formatDollar);
         });
-
-          context.passiveGeneralNet += section.totalNet;
-          context.passiveGeneralPreviousNet += section.totalPreviousNet;
+        context.passiveGeneralNet += section.totalNet;
+        context.passiveGeneralPreviousNet += section.totalPreviousNet;
       });
 
       context.passiveGeneralNet = numeral(context.passiveGeneralNet).format(formatDollar);
@@ -152,13 +166,13 @@ exports.compile = function (options) {
       return sections;
     }
 
-    function exist (obj, arr, crit){
-      return arr.some(function (item){
+    function exist (obj, arr, crit) {
+      return arr.some(function (item) {
         return obj[crit] == item[crit];
       });
     }
 
-    function getSections (list){
+    function getSections (list) {
       var sections = [];
       sections.push({
         sectionBilanId : list[0].sectionBilanId,
@@ -168,27 +182,27 @@ exports.compile = function (options) {
         grefs : []
       });
 
-      for(var i = 0; i <= list.length - 1; i++){
-        if(!exist(list[i], sections, 'sectionBilanId')){
+      for(var i = 0; i <= list.length - 1; i++) {
+        if (!exist(list[i], sections, 'sectionBilanId')) {
           sections.push({
             sectionBilanId : list[i].sectionBilanId,
             sectionBilanPosition : list[i].sectionBilanPosition,
             sectionBilanLabel : list[i].sectionBilanLabel,
             sectionBilanIsActif : list[i].sectionBilanIsActif,
             grefs : []
-          })
+          });
         }
       }
 
       return sections;
     }
 
-    function getGroupReferences (section, list){
+    function getGroupReferences (section, list) {
       var greferences = [];
 
-      list.forEach(function (item){
-        if(item.sectionBilanId === section.sectionBilanId){
-          if(!exist(item, greferences, 'greferenceId')){
+      list.forEach(function (item) {
+        if (item.sectionBilanId === section.sectionBilanId) {
+          if (!exist(item, greferences, 'greferenceId')) {
             greferences.push({
               greferenceId : item.greferenceId,
               greferenceAbbr : item.greferenceAbbr,
@@ -203,12 +217,12 @@ exports.compile = function (options) {
       return greferences;
     }
 
-    function getReferences (greference, list){
+    function getReferences (greference, list) {
       var references = [];
 
-      list.forEach(function (item){
-        if(item.greferenceId == greference.greferenceId){
-          if(!exist(item, references, 'referenceId')){
+      list.forEach(function (item) {
+        if (item.greferenceId == greference.greferenceId) {
+          if (!exist(item, references, 'referenceId')) {
             references.push({
               referenceId : item.referenceId,
               referenceAbbr : item.referenceAbbr,
@@ -222,15 +236,15 @@ exports.compile = function (options) {
           }
         }
       });
-      
+
       return references;
     }
 
-    function getBrut (reference, list, isActif){
+    function getBrut (reference, list, isActif) {
       var somDebit = 0, somCredit = 0;
 
-      list.forEach(function (item){
-        if(item.referenceId === reference.referenceId && item.accountIsBrutLink === 1){
+      list.forEach(function (item) {
+        if (item.referenceId === reference.referenceId && item.accountIsBrutLink === 1) {
           somDebit+=item.generalLegderDebit;
           somCredit+=item.generalLegderCredit;
         }
@@ -240,11 +254,11 @@ exports.compile = function (options) {
       return (isActif === 1)? somDebit - somCredit : somCredit - somDebit;
     }
 
-    function getAmortProv (reference, currents, isActif){
+    function getAmortProv (reference, currents, isActif) {
       var somDebit = 0, somCredit = 0;
 
-      currents.forEach(function (item){
-        if(item.referenceId === reference.referenceId && item.accountIsBrutLink === 0){
+      currents.forEach(function (item) {
+        if (item.referenceId === reference.referenceId && item.accountIsBrutLink === 0) {
           somDebit+=(item.generalLegderDebit);
           somCredit+=(item.generalLegderCredit);
         }
@@ -252,14 +266,14 @@ exports.compile = function (options) {
       return isActif === 1 ? somDebit - somCredit : somCredit - somDebit;
     }
 
-    function getPreviousNet (reference, previous, isActif){
+    function getPreviousNet (reference, previous, isActif) {
       var somDebit = 0, somCredit = 0;
 
-      previous.forEach(function (item){
-        if(item.referenceId == reference.referenceId && item.accountIsBrutLink == 0){
+      previous.forEach(function (item) {
+        if (item.referenceId == reference.referenceId && item.accountIsBrutLink === 0) {
           somDebit+=(item.generalLegderDebit) * -1;
           somCredit+=(item.generalLegderCredit) * -1;
-        }else if(item.referenceId == reference.referenceId && item.accountIsBrutLink == 1){
+        } else if (item.referenceId == reference.referenceId && item.accountIsBrutLink === 1) {
           somDebit+=item.generalLegderDebit;
           somCredit+=item.generalLegderCredit;
         }
