@@ -20,9 +20,12 @@ describe('The /projects API endpoint', function () {
       name:          'Temporary Project',
       enterprise_id: 1,
       zs_id:         759,
-      is_locked:     0 
+      locked:     0 
     };
 
+  var UNLOCKED = 0;  
+  var PROJECT_KEY = ['id', 'name', 'abbr', 'enterprise_id', 'zs_id', 'locked'];
+  var INITIAL_PROJECTS = 2;
   // login before each request
   beforeEach(helpers.login(agent));
 
@@ -61,6 +64,8 @@ describe('The /projects API endpoint', function () {
       .then(function (result) { 
         expect(result).to.have.status(200);
         expect(result).to.be.json;
+        expect(result.body).to.have.length(INITIAL_PROJECTS);
+        expect(result.body[0]).to.contain.all.keys(PROJECT_KEY); 
       })
       .catch(helpers.handler);
   });
@@ -70,6 +75,9 @@ describe('The /projects API endpoint', function () {
       .then(function (result) { 
         expect(result).to.have.status(200);
         expect(result).to.be.json;
+        expect(result.body[0].locked).to.equal(UNLOCKED);
+        expect(result.body[0]).to.contain.all.keys(PROJECT_KEY);
+        expect(result.body).to.have.length(INITIAL_PROJECTS);        
       })
       .catch(helpers.handler);
   });
@@ -80,6 +88,7 @@ describe('The /projects API endpoint', function () {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
         expect(result.body[0]).to.have.keys('id', 'name');
+        expect(result.body).to.have.length(INITIAL_PROJECTS);
       })
       .catch(helpers.handler);
   });
@@ -107,7 +116,7 @@ describe('The /projects API endpoint', function () {
       .send({ name : 'Temp Project' })
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res.body).to.have.keys('id', 'name', 'abbr', 'enterprise_id', 'zs_id', 'is_locked');
+        expect(res.body).to.have.keys(PROJECT_KEY);
         expect(res.body.name).to.not.equal(project.name);
       })
       .catch(helpers.handler);

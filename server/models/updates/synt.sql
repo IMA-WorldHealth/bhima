@@ -379,5 +379,5 @@ ALTER TABLE account ADD FOREIGN KEY (`account_type_id`) REFERENCES account_type 
 -- By: Chris LOMAME
 
 ALTER TABLE `project`
-ADD `is_locked` BOOLEAN NULL;
+ADD `locked` BOOLEAN NOT NULL;
 --
