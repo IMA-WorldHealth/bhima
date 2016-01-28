@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
 
     //fonctions
 
-    function init(records){
+    function init(records) {
       //async function
       $scope.models[names[0]] = records[0];
       $scope.models[names[1]] = records[1].data;
@@ -28,45 +28,45 @@ angular.module('bhima.controllers')
       setStatAccount();
     }
 
-    var transformAccountNumber = function (){
-      $scope.models.accounts.map(function(item){
+    function transformAccountNumber() {
+      $scope.models.accounts.map(function(item) {
         item.account_number = item.account_number.toString();
       });
-    };
+    }
 
-    var getStatements = function (fiscal_id){
+    var getStatements = function (fiscal_id) {
       var def = $q.defer();
       connect.fetch('/reports/accountStatement/?'+JSON.stringify({fiscal_id : fiscal_id}))
-      .then(function(values){
+      .then(function(values) {
         def.resolve(values);
       });
       return def.promise;
     };
 
-    var getIncomeExpensiveAccount = function (enterprise_id){
+    var getIncomeExpensiveAccount = function (enterprise_id) {
       var def = $q.defer();
       connect.fetch('/InExAccounts/'+enterprise_id+'/')
-      .then(function(values){
+      .then(function(values) {
         def.resolve(values);
       });
       return def.promise;
     };
 
-    var setStatAccount = function (){
-      $scope.models.accounts.map(function(account){
+    function setStatAccount () {
+      $scope.models.accounts.map(function(account) {
         if (account.parent === 0) {
           account.stat = [];
         }else{
           account.stat = getPeriodStats(account.id);
         }
       });
-    };
+    }
 
-    var getPeriodStats = function (account_id){
+    function getPeriodStats (account_id) {
       var periodStats = [];
       $scope.models.periods.forEach(function (period) {
         var balance = 0;
-        incomeExpensiveStatements.forEach(function (incomeExpensiveStatements){
+        incomeExpensiveStatements.forEach(function (incomeExpensiveStatements) {
           if (incomeExpensiveStatements.period_id === period.id && incomeExpensiveStatements.id === account_id) {
             balance+=(incomeExpensiveStatements.debit - incomeExpensiveStatements.credit);
           }
@@ -74,10 +74,10 @@ angular.module('bhima.controllers')
         periodStats.push(balance);
       });
       return periodStats;
-    };
+    }
 
-    var loading = function (fy){
-      appstate.register('fiscal', function(fiscal){
+    var loading = function (fy) {
+      appstate.register('fiscal', function(fiscal) {
         $scope.fySelected = fy || fiscal;
         periods = {tables:{'period':{columns:['id', 'period_start', 'period_stop']}}, where : ['period.fiscal_year_id='+$scope.fySelected.id]};
         var fiscalYears = {
@@ -92,35 +92,35 @@ angular.module('bhima.controllers')
       });
     };
 
-    var initializeItem = function(){
-      $scope.models.fys.map(function(item){
+    function initializeItem() {
+      $scope.models.fys.map(function(item) {
         item.checked = false;
       });
 
-      $scope.models.periods.map(function(item){
+      $scope.models.periods.map(function(item) {
         item.checked = true;
       });
-    };
+    }
 
-    var removePeriod = function(id){
+    var removePeriod = function(id) {
       var periods = [];
-      $scope.models.periods.forEach(function(period){
+      $scope.models.periods.forEach(function(period) {
         if (period.id !== id) { periods.push(period); }
       });
       $scope.models.periods = periods;
       setStatAccount();
     };
 
-    var tester = function(){
+    var tester = function() {
       loading($scope.choix || null);
     };
 
-    $scope.reload = function(f){
+    $scope.reload = function(f) {
       f.checked = !f.checked;
       loading(f);
     };
 
-    $scope.adjust = function(p){
+    $scope.adjust = function(p) {
       p.checked = !p.checked;
       removePeriod(p.id);
       // $scope.models.periods.splice($scope.models.periods.indexOf(p), $scope.models.periods.indexOf(p)); dont work very well
