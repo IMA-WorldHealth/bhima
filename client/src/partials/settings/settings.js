@@ -1,9 +1,12 @@
 angular.module('bhima.controllers')
 .controller('settings', Settings);
 
-Settings.$inject = ['$http','$routeParams','$translate','$location','appcache', 'tmhDynamicLocale','amMoment', 'SessionService'];
+Settings.$inject = [
+  '$http','$routeParams','$translate','$location','appcache',
+  'tmhDynamicLocale','amMoment', 'SessionService', 'Store'
+];
 
-function Settings($http, $routeParams, $translate, $location, Appcache, tmhDynamicLocale, amMoment, SessionService) {
+function Settings($http, $routeParams, $translate, $location, Appcache, tmhDynamicLocale, amMoment, SessionService, Store) {
   var vm = this;
 
   // TODO issue discussing DB modelling of languages, quick suggestion (id, label, translateKey, localeKey)
@@ -26,7 +29,7 @@ function Settings($http, $routeParams, $translate, $location, Appcache, tmhDynam
     }
   ];
   languageStore.setData(languages);
-  
+
   vm.url = $routeParams.url || '';
   var cache = new Appcache('preferences');
 
@@ -39,24 +42,24 @@ function Settings($http, $routeParams, $translate, $location, Appcache, tmhDynam
 
   vm.updateLanguage = function updateLanuage(key) {
     var language = languageStore.get(key);
-    
+
     $translate.use(language.translateKey);
     tmhDynamicLocale.set(language.localeKey);
     amMoment.changeLocale(language.translateKey);
-    
+
     cache.put('language', language);
   };
 
   vm.back = function () {
-    $location.url($scope.url);
+    $location.url(vm.url);
   };
-  
+
   /** @todo Wrap logout call in a service */
-  vm.logout = function () { 
+  vm.logout = function () {
     $http.get('/logout')
       .then(function () {
         SessionService.destroy();
         $location.url('/login');
       });
-  }
+  };
 }

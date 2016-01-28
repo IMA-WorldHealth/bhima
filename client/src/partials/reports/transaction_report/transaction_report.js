@@ -24,7 +24,7 @@ angular.module('bhima.controllers')
 
     //fonctions
 
-    function init (records){
+    function init (records) {
       $scope.models[names[0]] = records[0].data;
       $scope.models[names[1]] = records[1].data;
       $scope.models[names[2]] = records[2].data;
@@ -34,7 +34,7 @@ angular.module('bhima.controllers')
       }
     }
 
-    $scope.fill = function(chaine){
+    $scope.fill = function(chaine) {
       if (chaine === 'I') { $scope.data.type = 'I'; }
       if (chaine === 'G') { $scope.data.type = 'G'; }
       if (chaine === 'C') { $scope.data.dc = 'C'; }
@@ -42,8 +42,8 @@ angular.module('bhima.controllers')
       loading();
     };
 
-    var loading = function(){
-      if ($scope.data.type === 'I'){
+    function loading() {
+      if ($scope.data.type === 'I') {
         if ($scope.data.dc === 'C') { loadCreditors(); }
         if ($scope.data.dc === 'D') { loadDebitors(); }
    
@@ -51,15 +51,15 @@ angular.module('bhima.controllers')
         if ($scope.data.dc === 'C') { loadCreditorGroups(); }
         if ($scope.data.dc === 'D') { loadDebitorGroups(); }
       }
-    };
+    }
 
-    function mapper(collection){
-      collection.map(function(item){
+    function mapper(collection) {
+      collection.map(function(item) {
         item.text = item.text || item.name;
       });
     }
 
-    $scope.populate = function (){
+    $scope.populate = function () {
       if ($scope.data.dateFrom && $scope.data.dateTo &&
         (util.isDateAfter($scope.data.dateTo, $scope.data.dateFrom) ||
          util.areDatesEqual($scope.data.dateTo, $scope.data.dateFrom))) {
@@ -76,12 +76,12 @@ angular.module('bhima.controllers')
           };
 
           connect.fetch('/reports/transReport/?'+JSON.stringify(qo))
-          .then(function(values){
+          .then(function(values) {
             $scope.model.transReport = values;
             doSummary(values);
           });
 
-        } else if ($scope.data.type === 'G'){
+        } else if ($scope.data.type === 'G') {
 
           $scope.DC = $scope.data.dc === 'D' ? 'DEBITOR GROUP' : 'CREDITOR GROUP';
 
@@ -95,7 +95,7 @@ angular.module('bhima.controllers')
           };
 
           connect.fetch('/reports/transReport/?'+JSON.stringify(qo))
-          .then(function(values){
+          .then(function(values) {
             $scope.model.transReport = values;
             doSummary(values);
           });
@@ -106,7 +106,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    function doSummary(){
+    function doSummary() {
       var sql;
       if ($scope.data.type === 'I') {
         sql = {
@@ -135,7 +135,7 @@ angular.module('bhima.controllers')
       connect.req(sql)
       .then(function(resps) {
         var creditTotal = 0, debitTotal = 0;
-        resps.data.forEach(function(item){
+        resps.data.forEach(function(item) {
           creditTotal+=item.credit;
           debitTotal+=item.debit;
         });
@@ -147,7 +147,7 @@ angular.module('bhima.controllers')
       });
     }
 
-    var tester = function (){
+    var tester = function () {
       creditors = {tables:{'creditor':{columns:['id', 'text']}, 'creditor_group':{columns:['account_id']}}, join:  ['creditor.group_id=creditor_group.id']};
       debitors =  {tables:{'debitor':{columns:['id', 'text']}, 'debitor_group':{columns:['account_id']}}, join:  ['debitor.group_id=debitor_group.id']};
       debitorGroups = {tables:{'debitor_group':{columns:['id', 'name', 'account_id']}}};
@@ -160,21 +160,21 @@ angular.module('bhima.controllers')
       ]).then(init);
     };
 
-    var loadCreditors = function(){
+    function loadCreditors() {
       $scope.model.chooses = $scope.models.creditors;
-    };
+    }
 
-    var loadDebitors = function(){
+    function loadDebitors() {
       $scope.model.chooses = $scope.models.debitors;
-    };
+    }
 
-    var loadCreditorGroups = function(){
+    function loadCreditorGroups () {
       $scope.model.chooses = $scope.models.creditorGroups;
-    };
+    }
 
-    var loadDebitorGroups = function(){
+    function loadDebitorGroups () {
       $scope.model.chooses = $scope.models.debitorGroups;
-    };
+    }
 
     //invocation
 

@@ -134,9 +134,9 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
       vm.sidebarExpanded = !vm.sidebarExpanded;
       cache.put('sidebar', { expanded : vm.sidebarExpanded });
     }
-  }
+  };
 
   vm.settings = function settings() { 
     $location.path('/settings');
-  }
+  };
 }

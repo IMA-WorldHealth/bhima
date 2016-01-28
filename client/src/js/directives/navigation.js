@@ -38,16 +38,16 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
 
     // Update cached record of modules expansion
     cache.put(unit.id, {open : unit.open});
-  }
+  };
 
   vm.navigate = function navigate(unit) { 
     selectUnit(unit);   
     $location.path(unit.path);
-  }
+  };
 
   vm.refreshTranslation = function refreshTranslation() { 
     Tree.sortByTranslationKey(vm.units);
-  }
+  };
   
   /**
    * Select a unit in the tree given aa specified URL 
@@ -92,10 +92,8 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
 
     cache.fetchAll()
       .then(function (initialStates) { 
-        console.log(initialStates);
-    
         initialStates.forEach(function (unitState) { 
-          unitsIndex.id[unitState.key].open = unitState.open
+          unitsIndex.id[unitState.key].open = unitState.open;
         });
       });
   }
