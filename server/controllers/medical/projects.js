@@ -24,17 +24,22 @@ exports.list = function list(req, res, next) {
     sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
       'project.zs_id, project.name, project.is_locked ' +
     'FROM project;';
-  } else if (req.query.unlocked === 1) {
-    sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
-      'project.zs_id, project.name, project.is_locked ' +
-    'FROM project WHERE project.is_locked = \'0\' ;';
-  } else if (req.query.incomplete_unlocked === 1){
-    sql =
-      'SELECT project.id, project.name FROM project WHERE project.is_locked = \'0\';';
   } else {
     sql =
       'SELECT project.id, project.name FROM project;';
   }
+
+  if (req.query.unlocked === 1) {
+    sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
+      'project.zs_id, project.name, project.is_locked ' +
+    'FROM project WHERE project.is_locked = \'0\' ;';
+  }
+
+  if (req.query.incomplete_unlocked === 1){
+    sql =
+      'SELECT project.id, project.name FROM project WHERE project.is_locked = \'0\';';
+  } else 
+
 
   db.exec(sql)
   .then(function (rows) {
