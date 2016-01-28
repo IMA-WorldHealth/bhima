@@ -22,8 +22,15 @@ exports.list = function list(req, res, next) {
   // send a larger response if complete is 1
   if (req.query.complete === 1) {
     sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
-      'project.zs_id, project.name ' +
+      'project.zs_id, project.name, project.is_locked ' +
     'FROM project;';
+  } else if (req.query.unlocked === 1) {
+    sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
+      'project.zs_id, project.name, project.is_locked ' +
+    'FROM project WHERE project.is_locked = \'0\' ;';
+  } else if (req.query.incomplete_unlocked === 1){
+    sql =
+      'SELECT project.id, project.name FROM project WHERE project.is_locked = \'0\';';
   } else {
     sql =
       'SELECT project.id, project.name FROM project;';
@@ -48,7 +55,7 @@ exports.details = function details(req, res, next) {
 
   var sql =
     'SELECT project.id, project.enterprise_id, project.abbr, ' +
-      'project.zs_id, project.name ' +
+      'project.zs_id, project.name, project.is_locked ' +
     'FROM project ' +
     'WHERE project.id = ?;';
 
@@ -80,9 +87,9 @@ exports.create = function create(req, res, next) {
   var sql, data = req.body;
 
   sql =
-    'INSERT INTO project (name, abbr, enterprise_id, zs_id) VALUES (?, ?, ?, ?);';
+    'INSERT INTO project (name, abbr, enterprise_id, zs_id, is_locked) VALUES (?, ?, ?, ?, ?);';
 
-  db.exec(sql, [data.name, data.abbr, data.enterprise_id, data.zs_id])
+  db.exec(sql, [data.name, data.abbr, data.enterprise_id, data.zs_id, data.is_locked])
   .then(function (row) {
     res.status(201).send({ id : row.insertId });
   })
@@ -108,7 +115,7 @@ exports.update = function update(req, res, next) {
 
     sql =
       'SELECT project.id, project.enterprise_id, project.abbr, ' +
-        'project.zs_id, project.name ' +
+        'project.zs_id, project.name, project.is_locked ' +
       'FROM project ' +
       'WHERE project.id = ?;';
 
