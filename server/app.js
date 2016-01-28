@@ -17,7 +17,7 @@ var fPath = 'server/.env.{env}'.replace('{env}', env);
 // load the environmnetal variables into process using the dotenv module
 try {
   console.log('[app] Loading configuration from file: %s', fPath);
-  require('dotenv').config({ path : fPath });
+  require('dotenv').config({ path : fPath.toString().trim() });
 } catch (e) {
   console.error(
     '[ERROR] Configuration file could not be found in path: %s.',
