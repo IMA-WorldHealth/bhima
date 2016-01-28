@@ -38,7 +38,7 @@ exports.list = function list(req, res, next) {
   if (req.query.incomplete_unlocked === 1){
     sql =
       'SELECT project.id, project.name FROM project WHERE project.is_locked = \'0\';';
-  } else 
+  }  
 
 
   db.exec(sql)
