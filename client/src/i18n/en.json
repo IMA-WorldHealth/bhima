@@ -1379,6 +1379,7 @@
    "REQUIRED_EMAIL" : "You must provide a valid email address.",
    "REQUIRED_TELEPHONE"  : "You must provide a valid telephone number.",
    "REVIEW"          : "Review",
+   "SELECT"          : "Select",
    "SAVE"            : "Save",
    "SAVE_CHANGES"    : "Save Changes",
    "SAVE_FORM"       : "Save Form",

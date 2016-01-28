@@ -1,0 +1,46 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">{{ "CASH.VOUCHER.TITLE" | translate }}</li>
+    </ol>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <!-- alert indicating the user must select a cashbox -->
+    <div class="row">
+      <div class="col-sm-12 col-md-offset-1 col-md-10">
+        <div class="alert alert-info">
+          <p>
+            <i class="glyphicon glyphicon-info-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.UNCONFIGURED" | translate }}
+          </p>
+          <p>
+            <i class="glyphicon glyphicon-question-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
+            <a href="#/cashboxes">
+              <i class="glyphicon glyphicon-link"></i> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- repeating thumbnails for cashbox selection -->
+    <div class="row">
+      <div class="col-sm-6 col-md-4 col-lg-2" ng-repeat="cashbox in CashboxSelectCtrl.cashboxes track by cashbox.id">
+        <div class="thumbnail">
+          <div class="caption text-center">
+            <h5>{{ cashbox.text }}</h5>
+            <p>
+              <a ng-click="CashboxSelectCtrl.selectCashbox(cashbox.id)" href="" class="btn btn-warning">
+                <span class="glyphicon glyphicon-play-circle"></span> {{ "FORM.SELECT" | translate }}
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

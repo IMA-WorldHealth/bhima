@@ -261,6 +261,10 @@ function bhimaconfig($routeProvider) {
   /* cash routes */
 
   .when('/cash', {
+    controller: 'CashboxSelectController as CashboxSelectCtrl',
+    templateUrl: '/partials/cash/cashboxSelect.html'
+  })
+  .when('/cash/:id', {
     controller: 'CashController as CashCtrl',
     templateUrl: '/partials/cash/cash.html'
   })

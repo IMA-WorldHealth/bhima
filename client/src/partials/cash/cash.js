@@ -8,38 +8,38 @@
  *
  * @todo documentation improvements
  *
- * @module controllers/CashController
+ * @todo - should the $location routing and/or appcache be in a service?
+ *
+ * @module bhima/controllers/CashController
  */
-
 angular.module('bhima.controllers')
 .controller('CashController', CashController);
 
 CashController.$inject = [
-  'CashService', 'CashboxService', 'appcache', 'CurrencyService', '$uibModal', 'SessionService'
+  'CashService', 'CashboxService', 'appcache', 'CurrencyService', '$uibModal', '$routeParams', '$location'
 ];
 
-function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, Session) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $routeParams, $location) {
 
   // bind controller alias
   var vm = this;
-  var cache = new AppCache('Cash Payments');
+  var cache = new AppCache('CashPayments');
+  var cashboxId = $routeParams.id;
 
   // bind methods
-  vm.selectCashbox = selectCashbox;
-  vm.changeCashbox = changeCashbox;
   vm.formatCurrency = formatCurrency;
   vm.Currencies = Currencies;
   vm.enableDateInput = enableDateInput;
   vm.openInvoicesModal = openInvoicesModal;
+  vm.resetCashbox = resetCashbox;
 
   // bind data
   vm.payment = { date : new Date() };
 
   // by default, do not let users edit the date until asked for
   vm.dateEditable = false;
-  vm.enterprise = Session.enterprise;
 
-  // timestamp to 
+  // timestamp to compare date values
   vm.timestamp = new Date();
 
   // temporary error handler until an application-wide method is described
@@ -51,37 +51,27 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, Sessio
     return (vm.payment.date > vm.timestamp);
   }
 
+  // removes the cachebox from the local cache
+  function resetCashbox() {
+    cache.put('cashbox', undefined)
+    .then(function () {
+      $location.path('/cash');
+    })
+    .catch(handler);
+  }
+
   // fired on controller start
   function startup() {
 
-    // load cashboxes on startup
-    Cashboxes.read().then(function (cashboxes) {
-      vm.cashboxes = cashboxes;
+    // load the cashbox on startup
+    Cashboxes.read(cashboxId)
+    .then(function (cashbox) {
+      vm.cashbox = cashbox;
+      cache.put('cashbox', cashbox);
     }).catch(handler);
-
-    // look up stored cashbox, if it exists
-    cache.fetch('cashbox', function (cashbox) {
-      if (cashbox) { vm.cashbox = cashbox; }
-    });
 
     // load currencies for later templating
     Currencies.read();
-  }
-
-  //  load a particular cashbox on select
-  function selectCashbox(id) {
-
-    Cashboxes.read(id).then(function (cashbox) {
-      vm.cashbox = cashbox;
-
-      // cache for page refreshes
-      cache.put('cashbox', cashbox);
-    });
-  }
-
-  // simply deletes the cashbox, triggering a view update
-  function changeCashbox() {
-    vm.cashbox = null;
   }
 
   // formats currencies for client display

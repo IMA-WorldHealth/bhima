@@ -1,183 +1,150 @@
-<header data-header>
-  {{ "CASH.VOUCHER.TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-      <ol class="breadcrumb">
-        <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-        <li class="active">{{ "CASH.VOUCHER.TITLE" | translate }}</li>
-      </ol>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">{{ "CASH.VOUCHER.TITLE" | translate }}</li>
+    </ol>
   </div>
-</nav>
+</div>
 
-<main class="container-fluid">
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-barcode"></span>
+            {{ "CASH.VOUCHER.SLIP" | translate }}
+          </div>
 
-  <!-- fired when there is no cashbox -->
-  <div class="row" ng-if="!CashCtrl.cashbox">
+          <form class="panel-body" name="CashVoucherForm" ng-submit="CashCtrl.submit(CashVoucherForm.$invalid)" novalidate>
 
-    <div class="alert alert-info">
-      <i class="glyphicon glyphicon-info-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.AVAILABLE" | translate }}
-    </div>
+            <!-- display the current cashbox with an option to change -->
+            <div class="form-group">
+              <label>
+                {{ "CASH.VOUCHER.CASHBOX" | translate }}
+                <a ng-click="CashCtrl.resetCashbox()" href="" class="btn btn-xs btn-default">
+                  <span class="glyphicon glyphicon-edit"></span> {{ "FORM.EDIT" | translate }}
+                </a>
+              </label>
+              <p class="form-control-static"> {{ CashCtrl.cashbox.text }} </p>
+            </div>
 
-    <!-- cashbox selection -->
-    <div class="col-md-8">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <i class="glyphicon glyphicon-bookmark"></i> {{ "CASH.CASHBOXES_AVAILABLE" | translate }}
+            <div class="form-group">
+              <find-patient type="inline" on-search-complete="CashCtrl.submitPatient(patient)">
+              </find-patient>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.date.$invalid }">
+              <label> {{ "COLUMNS.DATE" | translate }}
+                <a ng-if="!CashCtrl.dateEditable" href="" class="btn btn-xs btn-default" ng-click="CashCtrl.enableDateInput()">
+                  <span class="glyphicon glyphicon-edit"></span> {{ "FORM.EDIT" | translate }}
+                </a>
+              </label>
+              <input name="date" class="form-control" type="date" ng-if="CashCtrl.dateEditable" ng-model="CashCtrl.payment.date">
+              <p class="form-control-static" ng-if="!CashCtrl.dateEditable">
+                <span class="glyphicon glyphicon-calendar"></span> {{ CashCtrl.payment.date | date }}
+              </p>
+
+              <div class="help-block" ng-messages="CashVoucherForm.date.$error" ng-show="CashVoucherForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+
+            <b>{{ "COLUMNS.TYPE" | translate }}</b>
+            <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
+              <label class="radio-inline">
+                <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" value="1" required>
+                {{ "CASH.VOUCHER.CAUTION" | translate }}
+              </label>
+              <label class="radio-inline">
+                <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" value="0" required>
+                {{ "CASH.VOUCHER.INVOICE" | translate }}
+              </label>
+
+              <div class="help-block" ng-messages="CashVoucherForm.type.$error" ng-show="CashVoucherForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <b>{{ "COLUMNS.CURRENCY" | translate }}</b>
+            <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.currency.$invalid }">
+              <label ng-repeat="currency in CashCtrl.cashbox.currencies track by currency.currency_id" class="radio-inline">
+                <input
+                  name="currency"
+                  type="radio"
+                  ng-model="CashCtrl.payment.currency_id"
+                  ng-value="currency.currency_id"
+                  required>
+                {{ CashCtrl.formatCurrency(currency.currency_id); }}
+              </label>
+
+              <div class="help-block" ng-messages="CashVoucherForm.currency.$error" ng-show="CashVoucherForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+
+            <!--
+              if payment type is not a caution, add in a component to show payments against previous invoices
+            -->
+            <div ng-if="CashCtrl.payment.is_caution == 0">
+              <button class="btn-block btn btn-warning" ng-click="CashCtrl.openInvoicesModal()" type="button">
+                <span class="glyphicon glyphicon-plus-sign"></span> {{ "CASH.VOUCHER.SELECT_INVOICES" | translate }}
+              </button>
+            </div>
+
+            <table class="table" ng-if="CashCtrl.payment.invoices">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>{{ "COLUMNS.NUM_ITEMS" | translate }}</th>
+                  <th>{{ "COLUMNS.DATE" | translate }}</th>
+                  <th colspan="2">{{ "COLUMNS.AMOUNT" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.uuid">
+                  <td>{{ $index }}</td>
+                  <td>{{ invoice.numItems }}</td>
+                  <td>{{ invoice.date | date }}</td>
+                  <td>{{ invoice.value | currency:CashCtrl.enterprise.currency_id }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr />
+
+            <!--
+              no matter what payment type, show the payment total details
+            -->
+            <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.value.$invalid }">
+              <label>{{ "COLUMNS.TOTAL" | translate }}</label>
+              <div class="input-group">
+                <span class="input-group-addon">
+                  {{ CashCtrl.payment.currency_id ? CashCtrl.Currencies.symbol(CashCtrl.payment.currency_id) : '...' }}
+                </span>
+                <input
+                  type="number"
+                  name="value"
+                  ng-model="CashCtrl.payment.value"
+                  ng-min="0"
+                  placeholder="0.00"
+                  class="form-control"
+                  required>
+              </div>
+              <div class="help-block" ng-messages="CashVoucherForm.value.$error" ng-show="CashVoucherForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-primary" type="submit">{{ "FORM.SUBMIT" | translate }}</button>
+            </div>
+          </form>
         </div>
-        <ul class="list-group">
-          <a
-            ng-click="CashCtrl.selectCashbox(cashbox.id)"
-            ng-repeat="cashbox in CashCtrl.cashboxes track by cashbox.id"
-            class="list-group-item"
-            href="">
-            {{ cashbox.text }}
-          </a>
-        </ul>
-      </div>
-
-      <!-- link to cashboxes page to allow user to go there on the fly -->
-      <span class="text-info">
-        <i class="glyphicon glyphicon-question-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
-        <a href="#/cashboxes">
-          <i class="glyphicon glyphicon-link"></i> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
-        </a>
-      </span>
-    </div>
-
-  </div>
-
-  <!-- only shown if a cashbox is configured -->
-  <div class="row" ng-if="CashCtrl.cashbox">
-
-    <div class="col-md-8">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <i class="glyphicon glyphicon-barcode"></i>
-          {{ "CASH.VOUCHER.SLIP" | translate }}
-        </div>
-        <form class="panel-body" name="CashVoucherForm" ng-submit="CashCtrl.submit(CashVoucherForm.$invalid)" novalidate>
-
-          <!-- display the current cashbox with an option to change -->
-          <div class="form-group">
-            <label>
-              {{ "CASH.VOUCHER.CASHBOX" | translate }}
-              <a ng-click="CashCtrl.changeCashbox()" href="" class="btn btn-xs btn-default"> <i class="glyphicon glyphicon-info-sign"></i> Change </a>
-            </label>
-            <p class="form-control-static"> {{ CashCtrl.cashbox.text }} </p>
-          </div>
-
-          <div class="form-group">
-            <label>Patient</label>
-            <p class="form-control-static">Placeholder for find-patient directive</p>
-          </div>
-
-          <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.date.$invalid }">
-            <label> {{ "COLUMNS.DATE" | translate }}
-              <a ng-if="!CashCtrl.dateEditable" href="" class="btn btn-xs btn-default" ng-click="CashCtrl.enableDateInput()"><i class="glyphicon glyphicon-calendar"></i> Change</a>
-            </label>
-            <input name="date" class="form-control" type="date" ng-if="CashCtrl.dateEditable" ng-model="CashCtrl.payment.date">
-            <p class="form-control-static" ng-if="!CashCtrl.dateEditable">{{ CashCtrl.payment.date | date }}</p>
-
-            <div class="help-block" ng-messages="CashVoucherForm.date.$error" ng-show="CashVoucherForm.$submitted">
-              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
-
-          <b>{{ "COLUMNS.TYPE" | translate }}</b>
-          <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
-            <label class="radio-inline">
-              <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" value="1" required>
-              {{ "CASH.VOUCHER.CAUTION" | translate }}
-            </label>
-            <label class="radio-inline">
-              <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" value="0" required>
-              {{ "CASH.VOUCHER.INVOICE" | translate }}
-            </label>
-
-            <div class="help-block" ng-messages="CashVoucherForm.type.$error" ng-show="CashVoucherForm.$submitted">
-              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
-          <b>{{ "COLUMNS.CURRENCY" | translate }}</b>
-          <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.currency.$invalid }">
-            <label ng-repeat="currency in CashCtrl.cashbox.currencies track by currency.currency_id" class="radio-inline">
-              <input
-                name="currency"
-                type="radio"
-                ng-model="CashCtrl.payment.currency_id"
-                ng-value="currency.currency_id"
-                required>
-              {{ CashCtrl.formatCurrency(currency.currency_id); }}
-            </label>
-
-            <div class="help-block" ng-messages="CashVoucherForm.currency.$error" ng-show="CashVoucherForm.$submitted">
-              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
-
-          <!--
-            if payment type is not a caution, add in a component to show payments against previous invoices
-          -->
-          <div ng-if="CashCtrl.payment.is_caution == 0">
-            <button class="btn-block btn btn-warning" ng-click="CashCtrl.openInvoicesModal()" type="button">
-              <i class="glyphicon glyphicon-plus-sign"></i> {{ "CASH.VOUCHER.SELECT_INVOICES" | translate }}
-            </button>
-          </div>
-
-          <table class="table" ng-if="CashCtrl.payment.invoices">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>{{ "COLUMNS.NUM_ITEMS" | translate }}</th>
-                <th>{{ "COLUMNS.DATE" | translate }}</th>
-                <th colspan="2">{{ "COLUMNS.AMOUNT" | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.uuid">
-                <td>{{ $index }}</td>
-                <td>{{ invoice.numItems }}</td>
-                <td>{{ invoice.date | date }}</td>
-                <td>{{ invoice.value | currency:CashCtrl.enterprise.currency_id }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <hr />
-
-          <!--
-            no matter what payment type, show the payment total details
-          -->
-          <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.value.$invalid }">
-            <label>{{ "COLUMNS.TOTAL" | translate }}</label>
-            <div class="input-group">
-              <span class="input-group-addon">
-                {{ CashCtrl.payment.currency_id ? CashCtrl.Currencies.symbol(CashCtrl.payment.currency_id) : '...' }}
-              </span>
-              <input
-                type="number"
-                name="value"
-                ng-model="CashCtrl.payment.value"
-                ng-min="0"
-                placeholder="0.00"
-                class="form-control"
-                required>
-            </div>
-            <div class="help-block" ng-messages="CashVoucherForm.value.$error" ng-show="CashVoucherForm.$submitted">
-              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <button class="btn btn-primary" type="submit">{{ "FORM.SUBMIT" | translate }}</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>
-</main>
+</div>
