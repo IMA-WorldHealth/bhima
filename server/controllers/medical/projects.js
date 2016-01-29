@@ -20,13 +20,35 @@ exports.list = function list(req, res, next) {
   var sql;
 
   // send a larger response if complete is 1
-  if (req.query.complete === 1) {
+  if (req.query.complete === '1') {
     sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
-      'project.zs_id, project.name ' +
+      'project.zs_id, project.name, project.locked ' +
     'FROM project;';
   } else {
     sql =
       'SELECT project.id, project.name FROM project;';
+  }
+
+  if (req.query.locked === '0') {
+    sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
+      'project.zs_id, project.name, project.locked ' +
+    'FROM project WHERE project.locked = 0;';
+  }
+
+  if (req.query.locked === '1') {
+    sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
+      'project.zs_id, project.name, project.locked ' +
+    'FROM project WHERE project.locked = 1;';
+  }
+
+  if (req.query.incomplete_locked === '0'){
+    sql =
+      'SELECT project.id, project.name FROM project WHERE project.locked = 0;';
+  }  
+
+  if (req.query.incomplete_locked === '1'){
+    sql =
+      'SELECT project.id, project.name FROM project WHERE project.locked = 1;';
   }
 
   db.exec(sql)
@@ -48,7 +70,7 @@ exports.details = function details(req, res, next) {
 
   var sql =
     'SELECT project.id, project.enterprise_id, project.abbr, ' +
-      'project.zs_id, project.name ' +
+      'project.zs_id, project.name, project.locked ' +
     'FROM project ' +
     'WHERE project.id = ?;';
 
@@ -80,9 +102,9 @@ exports.create = function create(req, res, next) {
   var sql, data = req.body;
 
   sql =
-    'INSERT INTO project (name, abbr, enterprise_id, zs_id) VALUES (?, ?, ?, ?);';
+    'INSERT INTO project (name, abbr, enterprise_id, zs_id, locked) VALUES (?, ?, ?, ?, ?);';
 
-  db.exec(sql, [data.name, data.abbr, data.enterprise_id, data.zs_id])
+  db.exec(sql, [data.name, data.abbr, data.enterprise_id, data.zs_id, data.locked])
   .then(function (row) {
     res.status(201).send({ id : row.insertId });
   })
@@ -108,7 +130,7 @@ exports.update = function update(req, res, next) {
 
     sql =
       'SELECT project.id, project.enterprise_id, project.abbr, ' +
-        'project.zs_id, project.name ' +
+        'project.zs_id, project.name, project.locked ' +
       'FROM project ' +
       'WHERE project.id = ?;';
 
