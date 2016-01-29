@@ -16,10 +16,11 @@ angular.module('bhima.controllers')
 .controller('CashController', CashController);
 
 CashController.$inject = [
-  'CashService', 'CashboxService', 'appcache', 'CurrencyService', '$uibModal', '$routeParams', '$location'
+  'CashService', 'CashboxService', 'appcache', 'CurrencyService',
+  '$uibModal', '$routeParams', '$location', 'Patients'
 ];
 
-function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $routeParams, $location) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $routeParams, $location, Patients) {
 
   // bind controller alias
   var vm = this;
@@ -29,15 +30,16 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
   // bind methods
   vm.formatCurrency = formatCurrency;
   vm.Currencies = Currencies;
-  vm.enableDateInput = enableDateInput;
+  vm.toggleDateInput = toggleDateInput;
   vm.openInvoicesModal = openInvoicesModal;
   vm.resetCashbox = resetCashbox;
+  vm.usePatient = usePatient;
 
   // bind data
   vm.payment = { date : new Date() };
 
   // by default, do not let users edit the date until asked for
-  vm.dateEditable = false;
+  vm.lockDateInput = true;
 
   // timestamp to compare date values
   vm.timestamp = new Date();
@@ -93,13 +95,19 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
   }
 
   // switches the date flag to allow users to edit the date.
-  function enableDateInput() {
-    vm.dateEditable = true;
+  function toggleDateInput() {
+    vm.lockDateInput = !vm.lockDateInput;
+  }
+
+  // fired after a patient is found via the find-patient directive
+  function usePatient(patient) {
+    console.log('Found patient:', patient);
+    vm.patient = patient;
   }
 
   function openInvoicesModal() {
     var instance = $uibModal.open({
-      templateUrl : 'partials/cash/modal.html',
+      templateUrl : 'partials/cash/modals/invoices.modal.html',
       controller : 'CashModalController as ModalCtrl',
       size : 'md',
       backdrop : 'static',

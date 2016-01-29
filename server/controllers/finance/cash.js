@@ -136,6 +136,10 @@ exports.create = function create(req, res, next) {
   // be sufficient?
   data.uuid = data.uuid || uuid();
 
+  // trust the server's session info over the client's
+  data.project_id = req.session.project.id;
+  data.user_id = req.session.user.id;
+
   // account for the cash items
   var items =  data.items;
 

@@ -14,7 +14,7 @@
         <button class="btn btn-default" uib-dropdown-toggle>
           {{ session.selected.label | translate }} <span class="caret"></span>
         </button>
-        <ul class="uib-dropdown-menu">
+        <ul uib-dropdown-menu>
           <li ng-repeat="option in session.options">
             <a href="" ng-click="findBy(option)">{{ option.label | translate }}</a>
           </li>
@@ -131,7 +131,7 @@
             <button style="width:135px;" class="btn btn-default" uib-dropdown-toggle>
               {{ session.selected.label | translate }} <span class="caret"></span>
             </button>
-            <ul class="uib-dropdown-menu">
+            <ul uib-dropdown-menu>
               <li ng-repeat="option in session.options">
                 <a href="" ng-click="findBy(option)">{{ option.label | translate }}</a>
               </li>
