@@ -70,8 +70,8 @@ describe('The /projects API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? UNLOCKED = 1 returns a complete List of unlocked projects  ', function () { 
-    return agent.get('/projects?unlocked=1')
+  it('GET /projects/ ? LOCKED = 0 returns a complete List of unlocked projects  ', function () { 
+    return agent.get('/projects?locked=0')
       .then(function (result) { 
         expect(result).to.have.status(200);
         expect(result).to.be.json;
@@ -82,13 +82,31 @@ describe('The /projects API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? INCOMPLETE UNLOCKED = 1 returns a simple List of unlocked projects  ', function () { 
-    return agent.get('/projects?incomplete_unlocked=1')
+  it('GET /projects/ ? LOCKED = 1 returns a complete List of locked projects  ', function () { 
+    return agent.get('/projects?locked=1')
+      .then(function (result) { 
+        expect(result).to.have.status(200);
+        expect(result.body).to.be.empty;        
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /projects/ ? INCOMPLETE LOCKED = 0 returns a simple List of unlocked projects  ', function () { 
+    return agent.get('/projects?incomplete_locked=0')
       .then(function (result) { 
         expect(result).to.have.status(200);
         expect(result).to.be.json;
         expect(result.body[0]).to.have.keys('id', 'name');
         expect(result.body).to.have.length(INITIAL_PROJECTS);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /projects/ ? INCOMPLETE LOCKED = 1 returns a simple List of locked projects  ', function () { 
+    return agent.get('/projects?incomplete_locked=1')
+      .then(function (result) { 
+        expect(result).to.have.status(200);
+        expect(result.body).to.be.empty;
       })
       .catch(helpers.handler);
   });
