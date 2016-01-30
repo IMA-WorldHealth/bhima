@@ -8,7 +8,8 @@
     "dev": "gulp build && cd bin && NODE_ENV=development node server/app.js",
     "start": "gulp build && cd bin && NODE_ENV=production node server/app.js",
     "travis": "gulp build && cd bin && NODE_ENV=travis node server/app.js",
-    "dev_windows": "gulp build && cd bin && set NODE_ENV=development&& node server/app.js"
+    "app_windows": "gulp build && cd bin && set NODE_ENV=production && node server/app.js",
+    "dev_windows": "gulp build && cd bin && set NODE_ENV=development && node server/app.js"
   },
   "repository": {
     "type": "git",

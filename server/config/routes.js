@@ -67,6 +67,7 @@ var caution              = require('../controllers/categorised/caution');
 var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
+var transferts           = require('../controllers/finance/transferts');
 
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
@@ -435,7 +436,7 @@ exports.configure = function (app) {
   app.get('/cashflow/report/', cashflow.getReport);
   //app.get('/stock/entries?', depot.getStockEntry);
 
-  // Enterprises api 
+  // Enterprises api
   app.get('/enterprises', enterprises.list);
   app.get('/enterprises/:id', enterprises.single);
   app.post('/enterprises', enterprises.create);
@@ -463,4 +464,10 @@ exports.configure = function (app) {
   app.post('/discounts', discounts.create);
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
+
+  /** transferts */
+  app.get('/transferts', transferts.list);
+  app.get('/transferts/:id', transferts.detail);
+  app.post('/transferts', transferts.create);
+
 };
