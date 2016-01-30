@@ -9,13 +9,13 @@ helpers.configure(chai);
 
 
 /**
-* The /transferts API endpoint
+* The /transfers API endpoint
 *
 * This test suite implements all GET and POST requests on the /projects HTTP API endpoint.
 * NOTE: to run correctly this test please run the `server/models/test/update.sql`
 * and we must have the exchange rate of current date defined
 */
-describe('The /transferts API endpoint :: ', function () {
+describe('The /transfers API endpoint :: ', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
@@ -55,17 +55,19 @@ describe('The /transferts API endpoint :: ', function () {
   var expectedKeys = Object.keys(primaryCash);
   expectedKeys.push('document_uuid');
 
-  it('POST /transferts should create a new transfert records in primary_cash, primary_cash_item and journal', function () {
-    return agent.post('/transferts')
+  it('POST /transfers should create a new transfert records in primary_cash, primary_cash_item and journal', function () {
+    return agent.post('/transfers')
       .send(primaryCash)
       .then(function (res) {
         expect(res).to.have.status(201);
+        expect(res.body.id).to.exist;
+        expect(res.body.id).to.be.equal(primaryCash.uuid);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /transferts should return a list of all transferts', function () {
-    return agent.get('/transferts')
+  it('GET /transfers should return a list of all transfers', function () {
+    return agent.get('/transfers')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -85,8 +87,8 @@ describe('The /transferts API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /transferts/?limit=1 should return a limited set of results', function () {
-    return agent.get('/transferts/?limit=1')
+  it('GET /transfers/?limit=1 should return a limited set of results', function () {
+    return agent.get('/transfers/?limit=1')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -96,8 +98,8 @@ describe('The /transferts API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /transferts/{uuid} should return specific transfert record according a {uuid} given', function () {
-    return agent.get('/transferts/' + primaryCash.uuid)
+  it('GET /transfers/{uuid} should return specific transfert record according a {uuid} given', function () {
+    return agent.get('/transfers/' + primaryCash.uuid)
       .then(function (res) {
         var result = res.body;
         delete result.document_uuid;
@@ -115,19 +117,19 @@ describe('The /transferts API endpoint :: ', function () {
           if (i === 'date') {
             expect(new Date(result[i])).to.equalDate(new Date(primaryCash[i]));
           } else {
-            expect(result[i]).to.equal(result[i]);
+            expect(result[i]).to.equal(primaryCash[i]);
           }
         }
       })
       .catch(helpers.handler);
   });
 
-  it('POST /transferts should not post data with missing essentials values', function () {
-    return agent.post('/transferts')
+  it('POST /transfers should not post data with missing essentials values', function () {
+    return agent.post('/transfers')
       .send(wrongPrimaryCash)
       .then(function (res) {
         expect(res).to.have.status(400);
-        return agent.get('/transferts/' + wrongPrimaryCash.uuid)
+        return agent.get('/transfers/' + wrongPrimaryCash.uuid)
       })
       .then(function (res) {
         expect(res).to.have.status(404);
@@ -137,8 +139,8 @@ describe('The /transferts API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /transferts/{uuid} should not get anything with a fake {uuid}', function () {
-    return agent.get('/transferts/badidentifier')
+  it('GET /transfers/{uuid} should not get anything with a fake {uuid}', function () {
+    return agent.get('/transfers/badidentifier')
       .then(function (res) {
         expect(res).to.have.status(404);
         expect(res.body.code).to.exist;

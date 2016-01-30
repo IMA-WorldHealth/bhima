@@ -96,6 +96,11 @@ module.exports = {
    httpStatus : 400,
    reason : 'The request requires some essentials parameters which are missing'
  }),
+ 'ERR_RESOURCE_NOT_FOUND' : makeError('ApiError', {
+   code : 'ERR_RESOURCE_NOT_FOUND',
+   httpStatus : 500,
+   reason : 'The necessary resource is not found'
+ }),
 
   /** MySQL error codes */
   'ER_DISK_FULL' : makeError('DatabaseError', {

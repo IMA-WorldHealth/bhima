@@ -67,7 +67,7 @@ var caution              = require('../controllers/categorised/caution');
 var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
-var transferts           = require('../controllers/finance/transferts');
+var transfers           = require('../controllers/finance/transfers');
 
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
@@ -465,9 +465,9 @@ exports.configure = function (app) {
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
 
-  /** transferts */
-  app.get('/transferts', transferts.list);
-  app.get('/transferts/:id', transferts.detail);
-  app.post('/transferts', transferts.create);
+  /** transfers */
+  app.get('/transfers', transfers.list);
+  app.get('/transfers/:id', transfers.detail);
+  app.post('/transfers', transfers.create);
 
 };

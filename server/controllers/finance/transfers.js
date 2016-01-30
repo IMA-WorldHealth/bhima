@@ -41,6 +41,8 @@ function getList(req, res, next) {
 
   db.exec(sql)
   .then(function (row) {
+    if (!row.length) { return next(new req.codes.ERR_RESOURCE_NOT_FOUND()); }
+
     /** Getting transfert records */
     sql =
         'SELECT pc.uuid, pc.project_id, pc.type, pc.date, pc.currency_id, pc.account_id, pc.cost, pc.description, ' +
@@ -56,7 +58,7 @@ function getList(req, res, next) {
     return db.exec(sql, [row[0].id]);
   })
   .then(function (rows) {
-    if (!rows.length) { next(new req.codes.ERR_NOT_FOUND()); }
+    if (!rows.length) { return next(new req.codes.ERR_NOT_FOUND()); }
     res.status(200).json(rows);
   })
   .catch(next)
@@ -78,6 +80,8 @@ function getDetail(req, res, next) {
 
   db.exec(sql)
   .then(function (row) {
+    if (!row.length) { return next(new req.codes.ERR_RESOURCE_NOT_FOUND()); }
+
     /** Getting transfert records */
     sql =
         'SELECT pc.uuid, pc.project_id, pc.type, pc.date, pc.currency_id, pc.account_id, pc.cost, pc.description, ' +
@@ -90,7 +94,7 @@ function getDetail(req, res, next) {
     return db.exec(sql, [row[0].id, qUuid]);
   })
   .then(function (rows) {
-    if (!rows.length) { next(new req.codes.ERR_NOT_FOUND()); }
+    if (!rows.length) { return next(new req.codes.ERR_NOT_FOUND()); }
     res.status(200).json(rows[0]);
   })
   .catch(next)
@@ -107,17 +111,6 @@ function getDetail(req, res, next) {
 function create(req, res, next) {
   var qData = req.body;
 
-
-  var missingRequiredParameters =
-    (
-      !qData.uuid && !qData.project_id && !qData.currency_id &&
-      !qData.account_id && !qData.cost && !qData.cash_box_id &&
-      !qData.origin_id && !qData.user_id
-    );
-  if (missingRequiredParameters) {
-    return next(new req.codes.ERR_MISSING_REQUIRED_PARAMETERS());
-  }
-
   var sqlPrimaryCash = 'INSERT INTO primary_cash ' +
       '(uuid, project_id, type, date, currency_id, account_id, cost, description, cash_box_id, origin_id, user_id) ' +
       'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
@@ -131,13 +124,13 @@ function create(req, res, next) {
   var paramPrimaryCashItem = [uuid(), qData.uuid, qData.cost, qData.uuid, 0];
 
   db.exec(sqlPrimaryCash, paramPrimaryCash)
-  .then(function (data) {
+  .then(function () {
     return db.exec(sqlPrimaryCashItem, paramPrimaryCashItem);
   })
-  .then(function (data) {
+  .then(function () {
     journalTransfer(qData.uuid, qData.user_id, function (err, result) {
-      if (err) return next(err);
-      res.status(201).send();
+      if (err) { return next(err); }
+      res.status(201).json({ id : qData.uuid });
     });
   })
   .catch(next)
