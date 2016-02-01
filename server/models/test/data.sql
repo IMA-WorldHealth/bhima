@@ -242,17 +242,17 @@ INSERT INTO `section_resultat` VALUES (1, 'Section Resultat 1', 1, 1);
 
 INSERT INTO `reference_group` VALUES (1, 'AA', 'Reference Group 1', 1, 1);
 
-INSERT INTO `reference` VALUES 
+INSERT INTO `reference` VALUES
   (1, 0, 'AB', 'Reference bilan 1', 1, 1, NULL),
   (3, 0, 'AC', 'Reference resultat 1', 1, NULL, 1),
   (4, 0, 'XX', 'Deletable reference 1', 1, NULL, NULL);
 
-INSERT INTO `cost_center` VALUES 
+INSERT INTO `cost_center` VALUES
   (1, 1, 'cost center 1', 'cost note', 1),
   (1, 2, 'cost center 2', 'cost note 2', 0);
 
-INSERT INTO `profit_center` VALUES 
-  (1, 1, 'profit center 1', 'profit note'), 
+INSERT INTO `profit_center` VALUES
+  (1, 1, 'profit center 1', 'profit note'),
   (1, 2, 'profit center 2', 'profit note 2');
 
 -- Services
@@ -268,12 +268,22 @@ INSERT INTO `sale` (`project_id`, `reference`, `uuid`, `cost`, `currency_id`, `d
 INSERT INTO `sale_item` (`sale_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) VALUES
   ('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6','2e1332a7-3e63-411e-827d-42ad585ff518','cf05da13-b477-11e5-b297-023919d3d5b0',3,25.0000,25.0000,0.0000,75.0000);
 
-INSERT INTO `posting_journal` 
+INSERT INTO `posting_journal`
 (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, account_id, debit, credit,
-  debit_equiv, credit_equiv, currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, pc_id) 
-VALUES 
+  debit_equiv, credit_equiv, currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, pc_id)
+VALUES
 ("017dbe1e-c37c-11e5-a86e-843a4b0cdadc", 1, 1, 1, "HBB1", '2016-01-26', 3631, 75.0000, 0, 75.0000, 0, 2, "3be232f9-a4b9-4af6-984c-5d3f87d5c107",
   "D", "957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6", 2, 1, NULL),
 ("017dbe1e-c37c-11e5-a86e-843a4b0cdade", 1, 1, 1, "HBB1", '2016-01-26', 3638, 0, 75.0000, 0, 75.0000, 2, "cf05da13-b477-11e5-b297-023919d3d5b0",
   NULL, "957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6", 2, 1, 1);
 
+
+INSERT INTO `primary_cash_module` VALUES
+  (1, "Transfert");
+
+INSERT INTO `transaction_type` VALUES
+  (1, "pcash_transfert");
+
+-- Excahange Rate for the current date
+INSERT INTO `exchange_rate` (enterprise_currency_id, foreign_currency_id, rate, date) VALUES
+  (2, 1, 930, CURRENT_DATE());

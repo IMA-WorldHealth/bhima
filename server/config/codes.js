@@ -91,6 +91,16 @@ module.exports = {
    httpStatus : 400,
    reason : 'You sent a bad value for some parameters'
  }),
+ 'ERR_MISSING_REQUIRED_PARAMETERS' : makeError('ApiError', {
+   code : 'ERR_MISSING_REQUIRED_PARAMETERS',
+   httpStatus : 400,
+   reason : 'The request requires some essentials parameters which are missing'
+ }),
+ 'ERR_RESOURCE_NOT_FOUND' : makeError('ApiError', {
+   code : 'ERR_RESOURCE_NOT_FOUND',
+   httpStatus : 500,
+   reason : 'The necessary resource is not found'
+ }),
 
   /** MySQL error codes */
   'ER_DISK_FULL' : makeError('DatabaseError', {
