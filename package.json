@@ -32,7 +32,7 @@
     "compression": "^1.5.2",
     "connect-multiparty": "^2.0.0",
     "dot": "^1.0.3",
-    "dotenv": "^1.2.0",
+    "dotenv": "^2.0.0",
     "express": "^4.13.3",
     "express-session": "^1.11.3",
     "fast-csv": "1.0.0",
@@ -61,7 +61,7 @@
     "gulp-uglify": "^1.4.2",
     "gulp-util": "^3.0.7",
     "jshint": "^2.8.0",
-    "mocha": "^2.3.3",
+    "mocha": "^2.4.5",
     "protractor": "^3.0.0",
     "rimraf": "^2.4.3"
   }
