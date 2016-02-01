@@ -2619,6 +2619,9 @@
    "TYPE"               : "Sale type",
    "UPDATE"             : "Update Defaults"
    },
+"PATIENT_INVOICE": { 
+  "PAGE_TITLE" : "Patient Invoice"
+},
 "SALERECORD": {
    "ADVANCE"         : "Advanced Search",
    "ALL_PROJECTS"    : "All Projects",
