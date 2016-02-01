@@ -427,7 +427,7 @@ exports.configure = function (app) {
 
   /**
   * transfers
-  * NOTE: The `/cash/transfers` API endpoint must be above the `/cash` API endpoint  
+  * NOTE: The `/cash/transfers` API endpoint must be above the `/cash` API endpoint
   */
   app.get('/cash/transfers', transfers.list);
   app.get('/cash/transfers/:id', transfers.detail);
