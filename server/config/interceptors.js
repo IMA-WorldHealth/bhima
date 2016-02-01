@@ -65,9 +65,10 @@ exports.databaseErrorHandler = function databaseErrorHandler(error, req, res, ne
   // skip native errors - caught in catchAllErrorHandler
   if (isNativeError(error)) { return next(error); }
 
-
   // check to see if this is a database error
   if (error && error.sqlState) {
+
+    //console.log(error);
 
     // retrieve the formatted error from
     try {

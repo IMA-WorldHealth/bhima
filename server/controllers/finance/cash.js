@@ -140,6 +140,9 @@ exports.create = function create(req, res, next) {
   data.project_id = req.session.project.id;
   data.user_id = req.session.user.id;
 
+  // format date for insertion into database
+  data.date = new Date(data.date);
+
   // account for the cash items
   var items =  data.items;
 

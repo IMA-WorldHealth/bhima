@@ -34,12 +34,15 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
   vm.openInvoicesModal = openInvoicesModal;
   vm.resetCashbox = resetCashbox;
   vm.usePatient = usePatient;
+  vm.hasFutureDate = hasFutureDate;
+  vm.submit = submit;
 
   // bind data
   vm.payment = { date : new Date() };
 
   // by default, do not let users edit the date until asked for
   vm.lockDateInput = true;
+  vm.loadingState = false;
 
   // timestamp to compare date values
   vm.timestamp = new Date();
@@ -49,7 +52,9 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
     throw error;
   }
 
-  function warnDate() {
+
+  // TODO - advanced warning if the date is in the future
+  function hasFutureDate() {
     return (vm.payment.date > vm.timestamp);
   }
 
@@ -84,14 +89,26 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
   // submits the form to the server
   function submit(invalid) {
 
+    console.log('Clicked SUBMIT!');
+
     // if the form is invalid, reject it without any further processing.
     if (invalid) { return; }
 
+    // make sure the form cannot be clicked more than once via disabling.
+    toggleLoadingState();
+
+    // add in the cashbox id
+    vm.payment.cashbox_id = cashboxId;
+
+    console.log('Sending the following data to the server:', { payment : vm.payment });
+
     Cash.create({ payment : vm.payment })
-    .then(function () {
+    .then(function (response) {
+      console.log('Got the following response:', response);
       console.log('Redirecting to another page!');
     })
-    .catch(handler);
+    .catch(handler)
+    .finally(toggleLoadingState);
   }
 
   // switches the date flag to allow users to edit the date.
@@ -99,10 +116,14 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
     vm.lockDateInput = !vm.lockDateInput;
   }
 
+  // toggle loading state on off
+  function toggleLoadingState() {
+    vm.loadingState = !vm.loadingState;
+  }
+
   // fired after a patient is found via the find-patient directive
   function usePatient(patient) {
-    console.log('Found patient:', patient);
-    vm.patient = patient;
+    vm.payment.debtor_uuid = patient.debitor_uuid;
   }
 
   function openInvoicesModal() {
