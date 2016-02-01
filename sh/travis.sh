@@ -7,8 +7,7 @@ echo "[TRAVIS] Linting the client."
 gulp lint
 
 echo "[TRAVIS] Linting the server."
-find . \( -not -wholename '*/test/*' -name '*.js' \) -exec jshint {} \;
-
+find server/ \( -not -wholename '*/test/*' -name '*.js' \) -exec jshint {} \;
 
 echo "[LOG] Building and running server in test mode ..."
 
