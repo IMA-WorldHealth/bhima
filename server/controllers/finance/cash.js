@@ -141,7 +141,7 @@ exports.create = function create(req, res, next) {
   data.user_id = req.session.user.id;
 
   // format date for insertion into database
-  data.date = new Date(data.date);
+  if (data.date) { data.date = new Date(data.date); }
 
   // account for the cash items
   var items =  data.items;
@@ -200,7 +200,7 @@ exports.update = function update(req, res, next) {
   // protected database fields that are unavailable for updates.
   var protect = [
     'is_caution', 'amount', 'user_id', 'cashbox_id',
-    'currency_id', 'date', 'uuid', 'project_id'
+    'currency_id', 'date', 'project_id'
   ];
 
   // loop through update keys and ensure that we are only updating non-protected
@@ -214,6 +214,12 @@ exports.update = function update(req, res, next) {
   if (hasProtectedKey) {
     return next(new req.codes.ERR_PROTECTED_FIELD());
   }
+
+  // delete the uuid if it exists
+  delete req.body.uuid;
+
+  // properly parse date if it exists
+  if (req.body.date) { req.body.date = new Date(req.body.date); }
 
   // if checks pass, we are free to continue with our updates to the db
   lookupCashRecord(uuid, req.codes)

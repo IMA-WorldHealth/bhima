@@ -68,8 +68,6 @@ exports.databaseErrorHandler = function databaseErrorHandler(error, req, res, ne
   // check to see if this is a database error
   if (error && error.sqlState) {
 
-    //console.log(error);
-
     // retrieve the formatted error from
     try {
       var appError = new errors[error.code]();

@@ -1,38 +1,56 @@
-<ng-form name="ModalForm">
-  <div class="modal-header">
-    <h4>Invoices <small>Jonathan Niles</small>
-  </div>
+<div class="modal-header">
+  <h4>
+    {{ "CASH.MODALS.DEBTOR_INVOICES" | translate }} <small>{{ CashInvoiceModalCtrl.patient.label }}</small>
+  </h4>
+</div>
 
-  <div class="modal-body">
-    <div class="table table-bordered">
-      <thead>
-        <tr>
-          <th colspan="4">
-            <input type="checkbox" ng-model="ModalCtrl.allInvoices" ng-click="ModalCtrl.selectAllInvoices()"> All Invoices
-          </th>
-        </tr>
-        <tr>
-          <th colspan="2"># of Items</th>
-          <th>Date</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="invoice in ModalCtrl.invoices track by invoice.uuid">
-          <td style="text-align: center; vertical-align: middle;">
-            <input type="checkbox" ng-model="invoice.selected">
-          </td>
-          <td>{{ invoice.numItems }}</td>
-          <td>{{ invoice.date | date }}</td>
-          <td>{{ invoice.amount | currency:ModalCtrl.enterprise.currency_id }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<div class="modal-body">
 
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-default" ng-click="ModalCtrl.submit(ModalForm.$invalid)" >{{ "FORM.SUBMIT" | translate }}</button>
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.CANCEL" | translate }}</button>
-  </div>
+  <!-- warn the client if not debtor id has been passed in -->
+  <p ng-show="CashInvoiceModalCtrl.missingId" class="text-danger text-center">
+    <span class="glyphicon glyphicon-alert"></span>
+    {{ "CASH.MODALS.MISSING_DEBTOR_ID" |translate }}
+  </p>
 
-</ng-form>
+  <!-- the ui grid to select debtor invoices -->
+  <div ng-if="!CashInvoiceModalCtrl.missingId">
+    <div ui-grid="CashInvoiceModalCtrl.gridOptions" ui-grid-selection class="modal-grid">
+      <div class="grid-msg-overlay" ng-show="CashInvoiceModalCtrl.loadingState">
+        <div class="msg">
+          <span><span class="glyphicon glyphicon-refresh"></span> {{ "UTIL.LOADING" | translate }}</span>
+        </div>
+      </div>
+      <div class="grid-msg-overlay" ng-show="CashInvoiceModalCtrl.noData">
+        <div class="msg">
+          <span class="text-danger">
+            <span class="glyphicon glyphicon-info-sign"></span> There are no records in the database matching this query.
+          </span>
+        </div>
+      </div>
+      <div class="grid-msg-overlay" ng-show="CashInvoiceModalCtrl.loadingError">
+        <div class="msg">
+          <span class="text-danger">
+            <span class="glyphicon glyphicon-alert"></span> An error occurred in loading the data.
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="submit"
+    class="btn btn-primary"
+    ng-class="{'btn-danger' : CashInvoiceModalCtrl.missingId }"
+    ng-click="CashInvoiceModalCtrl.submit()"
+    ng-disabled="CashInvoiceModalCtrl.missingId">
+    {{ "FORM.SUBMIT" | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="CashInvoiceModalCtrl.cancel()">
+    {{ "FORM.CANCEL" | translate }}
+  </button>
+</div>

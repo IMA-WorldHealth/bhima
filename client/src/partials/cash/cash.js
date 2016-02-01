@@ -129,13 +129,13 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
   function openInvoicesModal() {
     var instance = $uibModal.open({
       templateUrl : 'partials/cash/modals/invoices.modal.html',
-      controller : 'CashModalController as ModalCtrl',
+      controller : 'CashInvoiceModalController as CashInvoiceModalCtrl',
       size : 'md',
       backdrop : 'static',
       animation: false,
       resolve : {
-        patient : function () {
-          return vm.patient;
+        debtorId : function () {
+          return vm.payment.debtor_uuid;
         }
       }
     });

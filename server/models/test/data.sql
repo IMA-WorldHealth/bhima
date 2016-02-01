@@ -221,8 +221,6 @@ INSERT INTO `fonction` VALUES
   (1, 'Infirmier'),
   (2, 'Medecin Directeur');
 
-
-
 -- Creditor group
 INSERT INTO  `creditor_group` VALUES
   (1, 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7', 'Personnel [Creditor Group Test]', 3629, 0),

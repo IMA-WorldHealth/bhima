@@ -58,7 +58,8 @@ describe('(/cash) Cash Payments Interface ::', function () {
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
       project_id:  PROJECT_ID,
-      user_id  :   USER_ID,
+      date:        new Date('2015-01-01'),
+      user_id:     USER_ID,
       is_caution:  1
     };
 

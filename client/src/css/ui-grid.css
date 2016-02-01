@@ -1,0 +1,40 @@
+
+.modal-grid {
+  min-height: 300px;
+  width : 100%;
+}
+
+/*
+ Overlay a ui-grid to put a message in front
+*/
+.grid-msg-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/*
+  This element will contain our message.
+*/
+.grid-msg-overlay .msg {
+  opacity: 1;
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 50%;
+  text-align: center;
+  display: table;
+}
+
+/*
+  This is the actual message text. It uses
+  display: table-cell so the vertical alignment
+  works properly.
+*/
+.grid-msg-overlay .msg > span {
+  display: table-cell;
+  vertical-align: middle;
+}

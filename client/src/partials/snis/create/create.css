@@ -4,7 +4,7 @@
 #canvas-snis #identification .input-group-addon { min-width: 10em; }
 #canvas-snis #hospitalisation .cas-2 input[type="text"] { width: 6em; }
 #canvas-snis #hospitalisation table thead td { text-align: center; }
-#canvas-snis #hospitalisation table thead .age, thead { font-weight: bold; background-color: #efefef;text-align: center; }
+#canvas-snis #hospitalisation table thead .age { font-weight: bold; background-color: #efefef;text-align: center; }
 #canvas-snis #hospitalisation table thead .age { border-bottom: 1px solid #999; font-style: italic; }
 
 table thead .age { border-bottom: 1px solid #999; font-style: italic; }

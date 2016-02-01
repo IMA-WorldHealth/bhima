@@ -1,7 +1,7 @@
 var bhima = angular.module('bhima', [
   'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute',
   'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale',
-  'ngFileUpload', 'ui.grid', 'ui.grid.autoResize', 'angularMoment', 'ngMessages'
+  'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'angularMoment', 'ngMessages'
 ]);
 
 function bhimaconfig($routeProvider) {

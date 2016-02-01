@@ -1,6 +1,5 @@
 <div class="flex-header">
-
-</div><div class="bhima-title">
+  <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
       <li class="static">{{ "CASH.VOUCHER.TITLE" | translate }}</li>
@@ -39,7 +38,7 @@
                   <label class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
 
                   <div class="input-group">
-                    <input name="date" class="form-control" type="date" ng-model="CashCtrl.payment.date" ng-disabled="CashCtrl.lockDateInput">
+                    <input name="date" class="form-control" type="date" ng-model="CashCtrl.payment.date" ng-readonly="CashCtrl.lockDateInput">
                     <span class="input-group-btn">
                       <button class="btn btn-default" type="button" ng-click="CashCtrl.toggleDateInput()">
                         <span class="glyphicon"
