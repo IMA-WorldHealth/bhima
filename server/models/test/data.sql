@@ -284,4 +284,6 @@ INSERT INTO `primary_cash_module` VALUES
 INSERT INTO `transaction_type` VALUES
   (1, "pcash_transfert");
 
-ALTER TABLE `primary_cash` CHANGE `date` `date` datetime;
+-- Excahange Rate for the current date
+INSERT INTO `exchange_rate` (enterprise_currency_id, foreign_currency_id, rate, date) VALUES
+  (2, 1, 930, CURRENT_DATE());

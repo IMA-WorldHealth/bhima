@@ -425,6 +425,14 @@ exports.configure = function (app) {
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
 
+  /**
+  * transfers
+  * NOTE: The `/cash/transfers` API endpoint must be above the `/cash` API endpoint  
+  */
+  app.get('/cash/transfers', transfers.list);
+  app.get('/cash/transfers/:id', transfers.detail);
+  app.post('/cash/transfers', transfers.create);
+
   /** cash (aux/primary) */
   app.get('/cash', cash.list);
   app.get('/cash/:uuid', cash.getCashDetails);
@@ -464,10 +472,5 @@ exports.configure = function (app) {
   app.post('/discounts', discounts.create);
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
-
-  /** transfers */
-  app.get('/transfers', transfers.list);
-  app.get('/transfers/:id', transfers.detail);
-  app.post('/transfers', transfers.create);
 
 };

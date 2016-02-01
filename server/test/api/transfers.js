@@ -9,13 +9,13 @@ helpers.configure(chai);
 
 
 /**
-* The /transfers API endpoint
+* The /cash/transfers API endpoint
 *
 * This test suite implements all GET and POST requests on the /projects HTTP API endpoint.
 * NOTE: to run correctly this test please run the `server/models/test/update.sql`
 * and we must have the exchange rate of current date defined
 */
-describe('The /transfers API endpoint :: ', function () {
+describe('The /cash/transfers API endpoint :: ', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
@@ -55,8 +55,8 @@ describe('The /transfers API endpoint :: ', function () {
   var expectedKeys = Object.keys(primaryCash);
   expectedKeys.push('document_uuid');
 
-  it('POST /transfers should create a new transfert records in primary_cash, primary_cash_item and journal', function () {
-    return agent.post('/transfers')
+  it('POST /cash/transfers should create a new transfert records in primary_cash, primary_cash_item and journal', function () {
+    return agent.post('/cash/transfers')
       .send(primaryCash)
       .then(function (res) {
         expect(res).to.have.status(201);
@@ -66,8 +66,8 @@ describe('The /transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /transfers should return a list of all transfers', function () {
-    return agent.get('/transfers')
+  it('GET /cash/transfers should return a list of all transfers', function () {
+    return agent.get('/cash/transfers')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -87,8 +87,8 @@ describe('The /transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /transfers/?limit=1 should return a limited set of results', function () {
-    return agent.get('/transfers/?limit=1')
+  it('GET /cash/transfers/?limit=1 should return a limited set of results', function () {
+    return agent.get('/cash/transfers/?limit=1')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -98,8 +98,8 @@ describe('The /transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /transfers/{uuid} should return specific transfert record according a {uuid} given', function () {
-    return agent.get('/transfers/' + primaryCash.uuid)
+  it('GET /cash/transfers/{uuid} should return specific transfert record according a {uuid} given', function () {
+    return agent.get('/cash/transfers/' + primaryCash.uuid)
       .then(function (res) {
         var result = res.body;
         delete result.document_uuid;
@@ -124,12 +124,12 @@ describe('The /transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /transfers should not post data with missing essentials values', function () {
-    return agent.post('/transfers')
+  it('POST /cash/transfers should not post data with missing essentials values', function () {
+    return agent.post('/cash/transfers')
       .send(wrongPrimaryCash)
       .then(function (res) {
         expect(res).to.have.status(400);
-        return agent.get('/transfers/' + wrongPrimaryCash.uuid)
+        return agent.get('/cash/transfers/' + wrongPrimaryCash.uuid)
       })
       .then(function (res) {
         expect(res).to.have.status(404);
@@ -139,8 +139,8 @@ describe('The /transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /transfers/{uuid} should not get anything with a fake {uuid}', function () {
-    return agent.get('/transfers/badidentifier')
+  it('GET /cash/transfers/{uuid} should not get anything with a fake {uuid}', function () {
+    return agent.get('/cash/transfers/badidentifier')
       .then(function (res) {
         expect(res).to.have.status(404);
         expect(res.body.code).to.exist;
