@@ -23,17 +23,22 @@
         
         <div class="form-group">
           <label>Service</label>
-          <select id="service" class="form-control"></select>
+          <select 
+            id="service" 
+            class="form-control"
+            ng-model="PatientInvoiceCtrl.service"
+            ng-options="service as service.service for service in PatientInvoiceCtrl.services">
+          </select>
         </div>
 
         <label class="control-label">Sale Type <span class="text-info glyphicon glyphicon-info-sign"></span></label>
         <div class="form-group">
           <label class="radio-inline">
-            <input type="radio" name="service-type" id="distributable" value="true" ng-model="PatientInvoiceCtrl.saleType" required>
+            <input type="radio" name="service-type" id="distributable" value="true" checked ng-model="PatientInvoiceCtrl.distributable" required>
             Distributable          
           </label>
           <label class="radio-inline">
-            <input type="radio" name="service-type" id="ndistributable" value="true" ng-model="PatientInvoiceCtrl.saleType" required>
+            <input type="radio" name="service-type" id="not-distributable" value="false" ng-model="PatientInvoiceCtrl.distributable" required>
             Non-distributable          
           </label>
 
@@ -77,11 +82,13 @@
             <!-- TODO Move width restriction to generic CSS class -->
           <div class="input-group">
             <span class="input-group-btn">
-              <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Add</button> 
+              <button 
+                class="btn btn-default btn-sm"
+                ng-click="PatientInvoiceCtrl.addInventoryItem(PatientInvoiceCtrl.itemIncrement)"><span class="glyphicon glyphicon-plus-sign"></span> Add</button> 
             </span>
-            <input class="form-control input-sm" value="1" style="max-width : 40px;"></input> 
+            <input class="form-control input-sm" ng-model="PatientInvoiceCtrl.itemIncrement" style="max-width : 40px;"></input> 
           </div>
-</div>
+      </div>
     </div>
     <div ui-grid="PatientInvoiceCtrl.mockOptions" style="height : 300px !important; width : 100%;">
       
