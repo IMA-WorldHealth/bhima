@@ -47,7 +47,7 @@
     "chai": "^3.4.0",
     "chai-as-promised": "^5.1.0",
     "chai-datetime": "^1.4.0",
-    "chai-http": "^1.0.0",
+    "chai-http": "^2.0.1",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-cssnano": "^2.1.0",
