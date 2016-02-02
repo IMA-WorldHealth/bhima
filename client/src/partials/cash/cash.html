@@ -102,55 +102,71 @@
                   </div>
                 </div>
 
-                <!--
-                  namespace: slip
-                  display a table of selected invoices the patient will be billed for.
-                -->
-                <table class="table" ng-show="CashCtrl.payment.invoices">
-                  <thead>
-                    <tr>
-                      <th style="width: 25%;">{{ "COLUMNS.REFERENCE" | translate }}</th>
-                      <th style="width: 50%;">{{ "COLUMNS.DATE" | translate }}</th>
-                      <th style="width: 25%;">{{ "COLUMNS.AMOUNT" | translate }}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.uuid">
-                      <td>{{ invoice.reference }}</td>
-                      <td>{{ invoice.date | date }}</td>
-                      <td class="text-right">{{ invoice.cost | currency:CashCtrl.enterprise.currency_id }}</td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-
-                    <!-- only show this segment if using a foreign currency -->
-                    <tr>
-                      <td colspan="2" class="text-right"><u>{{ "COLUMNS.EXCHANGE_RATE" | translate }}</u></td>
-                      <td class="text-right">
-                        <span ng-show="CashCtrl.payment.currency_id !== CashCtrl.enterprise.currency_id">
-                          {{ CashCtrl.slip.rate | currency:CashCtrl.payment.currency_id }}
-                        </span>
-                        <span ng-show="CashCtrl.payment.currency_id === CashCtrl.enterprise.currency_id">
-                          ---
-                        </span>
-                      </td>
-                    </tr>
-
-                    <!-- show the total -->
-                    <tr>
-                      <td colspan="2" class="text-right"><u>{{ "COLUMNS.TOTAL" | translate }}</u></td>
-                      <td class="text-right">{{ CashCtrl.slip.total | currency:CashCtrl.payment.currency_id }}</td>
-                    </tr>
-                  </tfoot>
-                </table>
 
                 <!--
-                  if payment type is not a caution, add in a component to show payments against previous invoices
+                  if payment type is not a caution, add in components to show payments against previous invoices
                 -->
                 <div ng-if="CashCtrl.payment.is_caution == 0">
+                  <!--
+                    namespace: slip
+                    display a table of selected invoices the patient will be billed for.
+                  -->
+                  <table class="table" ng-show="CashCtrl.payment.invoices.length > 0">
+                    <thead>
+                      <tr>
+                        <th style="width: 25%;">{{ "COLUMNS.REFERENCE" | translate }}</th>
+                        <th style="width: 50%;">{{ "COLUMNS.DATE" | translate }}</th>
+                        <th style="width: 25%;">{{ "COLUMNS.AMOUNT" | translate }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                      <!-- show a list of previous invoices to pay again -->
+                      <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.sale_uuid">
+                        <td>{{ invoice.reference }}</td>
+                        <td>{{ invoice.date | date }}</td>
+                        <td class="text-right">{{ invoice.cost | currency:CashCtrl.enterprise.currency_id }}</td>
+                      </tr>
+                    </tbody>
+
+                    <!-- total rows -->
+                    <tfoot>
+
+                      <!-- only show the sum if we have more rows than 1 -->
+                      <tr ng-show="CashCtrl.payment.invoices.length > 1">
+                        <td colspan="2" class="text-right"><u>{{ "COLUMNS.TOTAL" | translate }}</u></td>
+                        <td class="text-right">{{ CashCtrl.slip.rawTotal | currency:CashCtrl.enterprise.currency_id }}</td>
+                      </tr>
+
+                      <!-- only show this segment if using a foreign currency -->
+                      <tr>
+                        <td colspan="2" class="text-right"><u>{{ "COLUMNS.EXCHANGE_RATE" | translate }}</u></td>
+                        <td class="text-right">
+                          <span ng-show="CashCtrl.payment.currency_id !== CashCtrl.enterprise.currency_id">
+                            {{ CashCtrl.slip.rate | currency:CashCtrl.payment.currency_id }}
+                          </span>
+                          <span ng-show="CashCtrl.payment.currency_id === CashCtrl.enterprise.currency_id">
+                            ---
+                          </span>
+                        </td>
+                      </tr>
+
+                      <!-- show a nice total row of what the payer owes today -->
+                      <tr>
+                        <td colspan="2" class="text-right"><u>{{ "COLUMNS.TOTAL" | translate }}</u></td>
+                        <td class="text-right">{{ CashCtrl.slip.total | currency:CashCtrl.payment.currency_id }}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+
                   <button class="btn-block btn btn-warning" ng-click="CashCtrl.openInvoicesModal()" type="button">
                     <span class="glyphicon glyphicon-plus-sign"></span> {{ "CASH.VOUCHER.SELECT_INVOICES" | translate }}
                   </button>
+
+                  <!-- show informational message if there are not sales selected -->
+                  <p ng-if="CashCtrl.payment.invoices.length === 0" class="text-center text-primary">
+                    <span class="glyphicon glyphicon-info-sign"></span> {{ "CASH.VOUCHER.NO_INVOICES_SELECTED" | translate }}
+                  </p>
                 </div>
 
                 <hr />
@@ -159,7 +175,7 @@
                   no matter what payment type, show the payment total details
                 -->
                 <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.amount.$invalid }">
-                  <label>{{ "COLUMNS.TOTAL" | translate }}</label>
+                  <label>{{ "COLUMNS.PAYMENT" | translate }}</label>
                   <div class="input-group">
                     <span class="input-group-addon">
                       {{ CashCtrl.payment.currency_id ? CashCtrl.Currencies.symbol(CashCtrl.payment.currency_id) : '...' }}
@@ -169,6 +185,7 @@
                       name="amount"
                       ng-model="CashCtrl.payment.amount"
                       ng-min="0"
+                      ng-max="CashCtrl.slip.total"
                       placeholder="0.00"
                       class="form-control"
                       required>

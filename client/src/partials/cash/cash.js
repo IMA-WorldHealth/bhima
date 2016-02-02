@@ -28,7 +28,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   var cashboxId = $routeParams.id;
 
   // bind methods
-  vm.formatCurrency = formatCurrency;
   vm.Currencies = Currencies;
   vm.toggleDateInput = toggleDateInput;
   vm.openInvoicesModal = openInvoicesModal;
@@ -81,12 +80,8 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     // load currencies for later templating
     Currencies.read();
 
+    // make sure we have exchange
     Exchange.read();
-  }
-
-  // formats currencies for client display
-  function formatCurrency(id) {
-    return Currencies.name(id) + ' (' + Currencies.symbol(id) + ')';
   }
 
   // submits the form to the server
@@ -101,9 +96,8 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     // add in the cashbox id
     vm.payment.cashbox_id = cashboxId;
 
-    console.log('Sending the following data to the server:', { payment : vm.payment });
-
-    Cash.create({ payment : vm.payment })
+    // submit the cash payment
+    Cash.create(vm.payment)
     .then(function (response) {
       console.log('Got the following response:', response);
       console.log('Redirecting to another page!');
@@ -129,23 +123,30 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
   /**
    * receive open invoices from the invoice modal
-  * @TODO - pass in a list of invoices that are selected.
-  * */
+   */
   function openInvoicesModal() {
     var instance = Modal.open({
-      templateUrl : 'partials/cash/modals/invoices.modal.html',
-      controller : 'CashInvoiceModalController as CashInvoiceModalCtrl',
-      size : 'md',
-      backdrop : 'static',
-      animation: false,
-      resolve : {
-        debtorId : function () { return vm.payment.debtor_uuid; }
+      templateUrl: 'partials/cash/modals/invoices.modal.html',
+      controller:  'CashInvoiceModalController as CashInvoiceModalCtrl',
+      size:        'md',
+      backdrop:    'static',
+      animation:   false,
+      resolve:     {
+        debtorId:  function debtorIdProvider() { return vm.payment.debtor_uuid; },
+        invoiceIds : function invoiceIdsProvider() {
+
+          // if no invoices have been initialized, pass in an empty array.
+          if (!vm.payment.invoices) { return []; }
+
+          return vm.payment.invoices.map(function (invoice) {
+            return invoice.sale_uuid;
+          });
+        }
       }
     });
 
-    // fired when the modal clsoes
-    instance.result
-    .then(function (result) {
+    // fired when the modal closes
+    instance.result.then(function (result) {
 
       // bind the selected invoices
       vm.payment.invoices = result.invoices;
@@ -156,16 +157,12 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
       digestExchangeRate();
     });
   }
-  
-  window.Exchange = Exchange;
 
   // exchanges the payment at the bottom of the previous invoice slip.
   function digestExchangeRate() {
 
     // make sure we have all the required data
     if (!vm.slip || !vm.payment.currency_id) { return; }
-
-    console.log(vm.slip, vm.payment.currency_id);
 
     // bind the correct exchange rate
     vm.slip.rate = Exchange.getCurrentRate(vm.payment.currency_id);

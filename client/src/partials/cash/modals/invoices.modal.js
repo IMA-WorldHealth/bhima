@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('CashInvoiceModalController', CashInvoiceModalController);
 
 CashInvoiceModalController.$inject = [
-  'Debtors', 'debtorId', 'invoices', '$uibModalInstance', 'SessionService'
+  'Debtors', 'debtorId', 'invoiceIds', '$uibModalInstance', 'SessionService',
+  '$timeout'
 ];
 
 /**
@@ -11,7 +12,7 @@ CashInvoiceModalController.$inject = [
  * @description This controller is responsible for retrieving a list of debtor invoices
  * from the server, and allowing selection of any number of invoices.
  */
-function CashInvoiceModalController(Debtors, debtorId, ModalInstance, Session) {
+function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance, Session, $timeout) {
   var vm = this;
 
   // we start in a neutral state
@@ -45,6 +46,7 @@ function CashInvoiceModalController(Debtors, debtorId, ModalInstance, Session) {
   // into the controller scope to bind the getSelectedRows method.
   function bindGridApi(api) {
     vm.getSelectedRows = api.selection.getSelectedRows;
+    vm.selectRow = api.selection.selectRow;
   }
 
   // starts up the modal
@@ -56,6 +58,15 @@ function CashInvoiceModalController(Debtors, debtorId, ModalInstance, Session) {
     // load debtor invoices
     Debtors.invoices(debtorId).then(function (invoices) {
       vm.gridOptions.data = invoices;
+
+      // requires timeout to bind angular ids to each row before selecting them.
+      $timeout(function () {
+        vm.gridOptions.data.forEach(function (invoice) {
+          if (invoiceIds.indexOf(invoice.sale_uuid) > -1) {
+            vm.selectRow(invoice);
+          }
+        });
+      });
 
       // warn the user that there is no data
       vm.noData = (vm.gridOptions.data.length === 0);
@@ -73,6 +84,7 @@ function CashInvoiceModalController(Debtors, debtorId, ModalInstance, Session) {
   function toggleLoadingState() {
     vm.loadingState = !vm.loadingState;
   }
+
 
   // resolve the modal with the selected invoices to add to the cash payment bills
   function submit() {

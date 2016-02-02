@@ -50,8 +50,38 @@ function CashService($http, util) {
    * @param {object} data A JSON object containing the cash payment record defn
    * @returns {object} payment A promise resolved with the database uuid.
    */
-  function create(data) {
-    return $http.post(baseUrl, data)
+  function create(payment) {
+
+    // create a temporary copy to send to the server
+    var data = angular.copy(payment);
+    var totalAmount = payment.amount;
+
+    // if is_caution is checked, delete invoice data
+    if (data.is_caution) { delete data.invoices; }
+
+    // calculate amount to bill each invoice from the global amount.
+    if (data.invoices) {
+      data.items = data.invoices
+        .map(function (invoice) {
+
+          // the allocated amount depends on the amount remaining.
+          var allocatedAmount = (totalAmount > invoice.amount) ?
+              invoice.amount : totalAmount;
+
+          // decrease the total amount by the allocated amount.
+          totalAmount -= allocatedAmount;
+
+          return { sale_uuid : invoice.sale_uuid, amount : allocatedAmount };
+        })
+        
+        // only retain positive invoice amounts
+        .filter(function (invoice) {
+
+          return invoice.amount > 0;
+        });
+    }
+
+    return $http.post(baseUrl, { payment : data })
       .then(util.unwrapHttpResponse);
   }
 

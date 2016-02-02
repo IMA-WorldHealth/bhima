@@ -22,8 +22,8 @@ describe('(/cash) Cash Payments Interface ::', function () {
     'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
   var USER_ID     = 1;   // Test User
   var INVOICES    = [    // sales defined in the database
-    { invoice_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6', amount : 75.0 },
-    { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf', amount : 25.0 }
+    { sale_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6', amount : 75.0 },
+    { sale_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf', amount : 25.0 }
   ];
 
   /** login before each request */

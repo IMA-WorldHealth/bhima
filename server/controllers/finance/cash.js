@@ -156,7 +156,7 @@ exports.create = function create(req, res, next) {
       item.cash_uuid = data.uuid;
       return [
         item.uuid, item.cash_uuid,
-        item.amount, item.invoice_uuid
+        item.amount, item.sale_uuid
       ];
     });
   }
