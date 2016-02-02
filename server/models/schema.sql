@@ -1391,7 +1391,7 @@ CREATE TABLE `primary_cash` (
   `uuid` char(36) NOT NULL,
   `project_id` smallint(5) unsigned NOT NULL,
   `type` char(1) NOT NULL,
-  `date` date NOT NULL,
+  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deb_cred_uuid` char(36) DEFAULT NULL,
   `deb_cred_type` varchar(1) DEFAULT NULL,
   `currency_id` tinyint(3) unsigned NOT NULL,

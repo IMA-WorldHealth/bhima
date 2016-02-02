@@ -67,6 +67,7 @@ var caution              = require('../controllers/categorised/caution');
 var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
+var transfers           = require('../controllers/finance/transfers');
 
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
@@ -425,6 +426,14 @@ exports.configure = function (app) {
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
 
+  /**
+  * transfers
+  * NOTE: The `/cash/transfers` API endpoint must be above the `/cash` API endpoint
+  */
+  app.get('/cash/transfers', transfers.list);
+  app.get('/cash/transfers/:id', transfers.detail);
+  app.post('/cash/transfers', transfers.create);
+
   /** cash (aux/primary) */
   app.get('/cash', cash.list);
   app.get('/cash/:uuid', cash.getCashDetails);
@@ -436,7 +445,7 @@ exports.configure = function (app) {
   app.get('/cashflow/report/', cashflow.getReport);
   //app.get('/stock/entries?', depot.getStockEntry);
 
-  // Enterprises api 
+  // Enterprises api
   app.get('/enterprises', enterprises.list);
   app.get('/enterprises/:id', enterprises.single);
   app.post('/enterprises', enterprises.create);
@@ -464,4 +473,5 @@ exports.configure = function (app) {
   app.post('/discounts', discounts.create);
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
+
 };
