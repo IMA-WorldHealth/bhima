@@ -300,11 +300,13 @@
    },
    "VOUCHER" : {
      "TITLE" : "Cash Payments",
-     "CASHBOXES" : { 
+     "CASHBOXES" : {
        "AVAILABLE" : "Available Cashboxes",
        "UNCONFIGURED" : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue.",
        "LINK" : "Click here to add it.",
-       "MISSING" : "Don't see your cashbox?"
+       "MISSING" : "Don't see your cashbox?",
+       "CURRENT_CASHBOX" : "Current Cashbox",
+       "CHANGE_CASHBOX" : "Change Cashbox"
      },
      "SLIP" : "Cash Voucher",
      "CASHBOX" : "Cashbox",
@@ -478,6 +480,7 @@
    "ENTERPRISE_CURRENCY"   : "Enterprise Currency",
    "ENTERPRISE_ID"         : "Enterprise ID",
    "ENTRY_DATE"            : "Entry date",
+   "EXCHANGE_RATE"         : "Exchange Rate",
    "EXPENSE"               : "Expense",
    "EXPIRATION_DATE"       : "Expiration Date",
    "EXPLANATION"           : "Explanation",
@@ -584,7 +587,7 @@
    "RATE"                  : "Rate",
    "RECEIPT"               : "Receipt",
    "REF"                   : "Ref.",
-   "REFERENCE"             : "reference",
+   "REFERENCE"             : "Reference",
    "REF_GROUP"             : "Ref. Groupe",
    "REFERENCE_GROUP"       : "Group de reference",
    "REFERENCE_PURCHASE"    : "Purchase Order Reference",
@@ -656,7 +659,6 @@
    "WORDING"               : "Wording",
    "WORKING_DAY"           : "Working day",
    "ZS"                    : "Health Zone"
-
    },
 
 "CONFIG_ACCOUNTING": {

@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('CashInvoiceModalController', CashInvoiceModalController);
 
 CashInvoiceModalController.$inject = [
-  'Debtors', 'debtorId', '$uibModalInstance', 'SessionService'
+  'Debtors', 'debtorId', 'invoices', '$uibModalInstance', 'SessionService'
 ];
 
 /**
@@ -10,8 +10,6 @@ CashInvoiceModalController.$inject = [
  *
  * @description This controller is responsible for retrieving a list of debtor invoices
  * from the server, and allowing selection of any number of invoices.
- *
- *
  */
 function CashInvoiceModalController(Debtors, debtorId, ModalInstance, Session) {
   var vm = this;
@@ -40,7 +38,6 @@ function CashInvoiceModalController(Debtors, debtorId, ModalInstance, Session) {
       { name : 'balance', cellFilter: 'currency:' + Session.enterprise.currencyId, enableHiding : false, },
       { name : 'date', cellFilter: 'date', enableHiding: false }
     ],
-    data : [],
     minRowsToShow : 10
   };
 
@@ -53,9 +50,11 @@ function CashInvoiceModalController(Debtors, debtorId, ModalInstance, Session) {
   // starts up the modal
   function startup() {
 
+    // start up the loading indicator
+    vm.loadingState = true;
+
     // load debtor invoices
     Debtors.invoices(debtorId).then(function (invoices) {
-      throw 'AN ERROR';
       vm.gridOptions.data = invoices;
 
       // warn the user that there is no data
@@ -65,18 +64,14 @@ function CashInvoiceModalController(Debtors, debtorId, ModalInstance, Session) {
     .finally(function () { toggleLoadingState(); });
   }
 
-
   /** generic error handler */
   function handler(error) {
-    console.log('got here');
-    vm.loadingError = true;
+    vm.loadingError = error;
   }
 
   /** toggles loading state (boolean) */
   function toggleLoadingState() {
-    console.log('vm.loadingState:', vm.loadingState);
     vm.loadingState = !vm.loadingState;
-    console.log('vm.loadingState:', vm.loadingState);
   }
 
   // resolve the modal with the selected invoices to add to the cash payment bills

@@ -15,22 +15,28 @@
   <!-- the ui grid to select debtor invoices -->
   <div ng-if="!CashInvoiceModalCtrl.missingId">
     <div ui-grid="CashInvoiceModalCtrl.gridOptions" ui-grid-selection class="modal-grid">
+
+      <!-- indicate that data is still being loaded from the server -->
       <div class="grid-msg-overlay" ng-show="CashInvoiceModalCtrl.loadingState">
         <div class="msg">
           <span><span class="glyphicon glyphicon-refresh"></span> {{ "UTIL.LOADING" | translate }}</span>
         </div>
       </div>
+
+      <!-- indicate that there is no data for the requested query -->
       <div class="grid-msg-overlay" ng-show="CashInvoiceModalCtrl.noData">
         <div class="msg">
-          <span class="text-danger">
+          <span class="text-info">
             <span class="glyphicon glyphicon-info-sign"></span> There are no records in the database matching this query.
           </span>
         </div>
       </div>
+
+      <!-- indicate that some error occurred -->
       <div class="grid-msg-overlay" ng-show="CashInvoiceModalCtrl.loadingError">
         <div class="msg">
           <span class="text-danger">
-            <span class="glyphicon glyphicon-alert"></span> An error occurred in loading the data.
+            <span class="glyphicon glyphicon-alert"></span> {{ CashInvoiceModalCtrl.loadingError.code | translate }}
           </span>
         </div>
       </div>
@@ -42,9 +48,9 @@
   <button
     type="submit"
     class="btn btn-primary"
-    ng-class="{'btn-danger' : CashInvoiceModalCtrl.missingId }"
+    ng-class="{'btn-danger' : (CashInvoiceModalCtrl.missingId || CashInvoiceModalCtrl.loadingError) }"
     ng-click="CashInvoiceModalCtrl.submit()"
-    ng-disabled="CashInvoiceModalCtrl.missingId">
+    ng-disabled="(CashInvoiceModalCtrl.missingId || CashInvoiceModalCtrl.loadingError)">
     {{ "FORM.SUBMIT" | translate }}
   </button>
   <button

@@ -16,11 +16,11 @@ angular.module('bhima.controllers')
 .controller('CashController', CashController);
 
 CashController.$inject = [
-  'CashService', 'CashboxService', 'appcache', 'CurrencyService',
-  '$uibModal', '$routeParams', '$location', 'Patients'
+  'CashService', 'CashboxService', 'appcache', 'CurrencyService', '$uibModal',
+  '$routeParams', '$location', 'Patients', 'ExchangeRateService', 'SessionService'
 ];
 
-function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $routeParams, $location, Patients) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routeParams, $location, Patients, Exchange, Session) {
 
   // bind controller alias
   var vm = this;
@@ -32,9 +32,10 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
   vm.Currencies = Currencies;
   vm.toggleDateInput = toggleDateInput;
   vm.openInvoicesModal = openInvoicesModal;
-  vm.resetCashbox = resetCashbox;
+  vm.changeCashbox = changeCashbox;
   vm.usePatient = usePatient;
   vm.hasFutureDate = hasFutureDate;
+  vm.digestExchangeRate = digestExchangeRate;
   vm.submit = submit;
 
   // bind data
@@ -46,12 +47,12 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
 
   // timestamp to compare date values
   vm.timestamp = new Date();
+  vm.enterprise = Session.enterprise;
 
   // temporary error handler until an application-wide method is described
   function handler(error) {
     throw error;
   }
-
 
   // TODO - advanced warning if the date is in the future
   function hasFutureDate() {
@@ -59,7 +60,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
   }
 
   // removes the cachebox from the local cache
-  function resetCashbox() {
+  function changeCashbox() {
     cache.put('cashbox', undefined)
     .then(function () {
       $location.path('/cash');
@@ -79,6 +80,8 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
 
     // load currencies for later templating
     Currencies.read();
+
+    Exchange.read();
   }
 
   // formats currencies for client display
@@ -88,8 +91,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
 
   // submits the form to the server
   function submit(invalid) {
-
-    console.log('Clicked SUBMIT!');
 
     // if the form is invalid, reject it without any further processing.
     if (invalid) { return; }
@@ -126,24 +127,52 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $uibModal, $route
     vm.payment.debtor_uuid = patient.debitor_uuid;
   }
 
+  /**
+   * receive open invoices from the invoice modal
+  * @TODO - pass in a list of invoices that are selected.
+  * */
   function openInvoicesModal() {
-    var instance = $uibModal.open({
+    var instance = Modal.open({
       templateUrl : 'partials/cash/modals/invoices.modal.html',
       controller : 'CashInvoiceModalController as CashInvoiceModalCtrl',
       size : 'md',
       backdrop : 'static',
       animation: false,
       resolve : {
-        debtorId : function () {
-          return vm.payment.debtor_uuid;
-        }
+        debtorId : function () { return vm.payment.debtor_uuid; }
       }
     });
 
+    // fired when the modal clsoes
     instance.result
-    .then(function (invoices) {
-      vm.payment.invoices = invoices;
+    .then(function (result) {
+
+      // bind the selected invoices
+      vm.payment.invoices = result.invoices;
+
+      // the table of invoices shown to the client is namespaced by 'slip'
+      vm.slip = {};
+      vm.slip.rawTotal = result.total;
+      digestExchangeRate();
     });
+  }
+  
+  window.Exchange = Exchange;
+
+  // exchanges the payment at the bottom of the previous invoice slip.
+  function digestExchangeRate() {
+
+    // make sure we have all the required data
+    if (!vm.slip || !vm.payment.currency_id) { return; }
+
+    console.log(vm.slip, vm.payment.currency_id);
+
+    // bind the correct exchange rate
+    vm.slip.rate = Exchange.getCurrentRate(vm.payment.currency_id);
+
+    // bind the correct exchanged total
+    vm.slip.total =
+      Exchange.convertFromEnterpriseCurrency(vm.payment.currency_id, vm.payment.date, vm.slip.rawTotal);
   }
 
   // start up the module

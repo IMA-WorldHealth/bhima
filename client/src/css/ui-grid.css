@@ -21,9 +21,9 @@
 .grid-msg-overlay .msg {
   opacity: 1;
   position: absolute;
-  top: 20%;
-  left: 20%;
-  width: 60%;
+  top: 10%;
+  left: 10%;
+  width: 80%;
   height: 50%;
   text-align: center;
   display: table;

@@ -62,45 +62,45 @@ function listGroups(req, res, next) {
     .done();
 }
 
-function update(req, res, next) { 
+function update(req, res, next) {
   var updateDebtorQuery;
   var queryData = req.body;
   var debtorId = req.params.uuid;
-  
-  if (!debtorId) { 
+
+  if (!debtorId) {
     res.status(400).json({
       code : 'ERR_INVALID_REQUEST',
       reason : 'A valid debtor UUID must be provided to update a debtor record.'
     });
     return;
   }
-  
-  updateDebtorQuery = 
+
+  updateDebtorQuery =
     'UPDATE debitor SET ? WHERE uuid = ?';
-  
+
   db.exec(updateDebtorQuery, [queryData, debtorId])
-    .then(function (result) { 
-    
+    .then(function (result) {
+
       return lookupDebtor(debtorId, req.codes);
     })
-    .then(function (updatedDebtor) { 
+    .then(function (updatedDebtor) {
       res.status(200).json(updatedDebtor);
     })
     .catch(next)
     .done();
 }
 
-function fetchInvoices (req, res, next){
-  
+function fetchInvoices (req, res, next) {
+
   var accountId = null;
   var sql =
     'SELECT account_id FROM debitor_group WHERE uuid = (SELECT group_uuid FROM debitor WHERE uuid = ?)';
 
   lookupDebtor(req.params.uuid, req.codes)
-    .then(function (){
+    .then(function () {
       return db.exec(sql, [req.params.uuid]);
     })
-    .then(function (rows){
+    .then(function (rows) {
       accountId = rows[0].account_id;
       sql =
       'SELECT c.inv_po_id FROM (' +
@@ -115,11 +115,14 @@ function fetchInvoices (req, res, next){
 
       return db.exec(sql, [req.params.uuid, accountId, req.params.uuid, accountId]);
     })
-    .then(function (rows){
+    .then(function (rows) {
 
      var invoices = rows.map(function (row) {
        return row.inv_po_id;
      });
+
+     // if there are no invoices, escape right away
+     if (invoices.length === 0) { return  []; }
 
      sql =
       'SELECT CONCAT(p.abbr, s.reference) AS reference, t.inv_po_id AS sale_uuid, t.trans_date AS date, ' +
@@ -138,32 +141,32 @@ function fetchInvoices (req, res, next){
       'JOIN sale AS s ON t.inv_po_id = s.uuid ' +
       'JOIN project AS p ON s.project_id = p.id ' +
       'JOIN sale_item AS si ON si.sale_uuid = s.uuid ' +
-      'LEFT JOIN credit_note AS cn ON cn.sale_uuid = s.uuid ' + 
+      'LEFT JOIN credit_note AS cn ON cn.sale_uuid = s.uuid ' +
       'WHERE t.inv_po_id IN (?) ' +
         'AND t.account_id = ? ' +
         'GROUP BY t.inv_po_id';
 
-      if(req.query.balanced === '1'){ sql += ' HAVING balance = 0;';}
-      if(req.query.balanced === '0') { sql += ' HAVING balance > 0;';}
+      if (req.query.balanced === '1') { sql += ' HAVING balance = 0;';}
+      if (req.query.balanced === '0') { sql += ' HAVING balance > 0;';}
 
       return db.exec(sql, [invoices, accountId]);
     })
-    .then(function (rows){
+    .then(function (rows) {
       res.status(200).json(rows);
     })
     .catch(next)
-    .done();             
+    .done();
 }
 
-function lookupDebtor(uuid, codes) { 
-  var debtorQuery = 
-    'SELECT uuid, group_uuid, text ' + 
-    'FROM debitor ' + 
+function lookupDebtor(uuid, codes) {
+  var debtorQuery =
+    'SELECT uuid, group_uuid, text ' +
+    'FROM debitor ' +
     'WHERE uuid = ?';
 
   return db.exec(debtorQuery, [uuid])
     .then(function (rows) {
-      if(rows.length === 0) { throw codes.ERR_NOT_FOUND;}
+      if (rows.length === 0) { throw codes.ERR_NOT_FOUND;}
       return rows[0];
     });
 }

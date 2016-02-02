@@ -35,6 +35,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   service.create = create;
   service.convertToEntepriseCurrency = convertToEnterpriseCurrency;
   service.convertFromEnterpriseCurrency = convertFromEnterpriseCurrency;
+  service.getCurrentRate = getCurrentRate;
 
   /* ------------------------------------------------------------------------ */
 
@@ -145,7 +146,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     // get the last rate for the given currency
     var rate = rates[rates.length - 1].rate;
 
-    return amount * rate;
+    return amount * (1 / rate);
   }
 
   // converts an {amount} of money to {currencyId} from the enterprise currency
@@ -164,7 +165,26 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     // get the last rate for the given currency
     var rate = rates[rates.length - 1].rate;
 
-    return amount * ( 1 / rate );
+    return amount * rate;
+  }
+
+  function getCurrentRate(currencyId) {
+
+    // if we passed in the enterprise currency, just return the amount.  Allows
+    // you to apply this transformation to a list of mixed currencies.
+    if (currencyId === Session.enterprise.currency_id) { return 1; }
+
+    var today = new Date();
+
+    // look up the rates for currencyId via the cMap object.
+    var rates = cMap[currencyId].filter(function (row) {
+      return row.date <= today;
+    });
+
+    // get the last rate for the given currency
+    var rate = rates[rates.length - 1].rate;
+
+    return rate;
   }
 
   return service;

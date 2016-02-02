@@ -12,8 +12,16 @@
   <div class="container-fluid">
     <div class="row">
 
+      <!-- Switch Cashbox Form -->
+      <div class="col-md-4 col-md-push-8 pad-bottom">
+        <p><u>{{ "CASH.VOUCHER.CASHBOXES.CURRENT_CASHBOX" | translate }}</u>: <strong>{{ CashCtrl.cashbox.text }}</strong></p>
+        <button class="btn btn-warning" ng-click="CashCtrl.changeCashbox()">
+          <span class="glyphicon glyphicon-inbox"></span> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
+        </button>
+      </div>
+
       <!-- Cash Voucher Form -->
-      <div class="col-md-8">
+      <div class="col-md-8 col-md-pull-4">
         <div class="panel panel-primary">
           <div class="panel-heading">
             <span class="glyphicon glyphicon-barcode"></span>
@@ -67,8 +75,9 @@
                       type="radio"
                       ng-model="CashCtrl.payment.currency_id"
                       ng-value="currency.currency_id"
+                      ng-change="CashCtrl.digestExchangeRate()"
                       required>
-                    {{ CashCtrl.formatCurrency(currency.currency_id); }}
+                    {{ CashCtrl.Currencies.format(currency.currency_id); }}
                   </label>
 
                   <div class="help-block" ng-messages="CashVoucherForm.currency.$error" ng-show="CashVoucherForm.$submitted">
@@ -93,6 +102,47 @@
                   </div>
                 </div>
 
+                <!--
+                  namespace: slip
+                  display a table of selected invoices the patient will be billed for.
+                -->
+                <table class="table" ng-show="CashCtrl.payment.invoices">
+                  <thead>
+                    <tr>
+                      <th style="width: 25%;">{{ "COLUMNS.REFERENCE" | translate }}</th>
+                      <th style="width: 50%;">{{ "COLUMNS.DATE" | translate }}</th>
+                      <th style="width: 25%;">{{ "COLUMNS.AMOUNT" | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.uuid">
+                      <td>{{ invoice.reference }}</td>
+                      <td>{{ invoice.date | date }}</td>
+                      <td class="text-right">{{ invoice.cost | currency:CashCtrl.enterprise.currency_id }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+
+                    <!-- only show this segment if using a foreign currency -->
+                    <tr>
+                      <td colspan="2" class="text-right"><u>{{ "COLUMNS.EXCHANGE_RATE" | translate }}</u></td>
+                      <td class="text-right">
+                        <span ng-show="CashCtrl.payment.currency_id !== CashCtrl.enterprise.currency_id">
+                          {{ CashCtrl.slip.rate | currency:CashCtrl.payment.currency_id }}
+                        </span>
+                        <span ng-show="CashCtrl.payment.currency_id === CashCtrl.enterprise.currency_id">
+                          ---
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!-- show the total -->
+                    <tr>
+                      <td colspan="2" class="text-right"><u>{{ "COLUMNS.TOTAL" | translate }}</u></td>
+                      <td class="text-right">{{ CashCtrl.slip.total | currency:CashCtrl.payment.currency_id }}</td>
+                    </tr>
+                  </tfoot>
+                </table>
 
                 <!--
                   if payment type is not a caution, add in a component to show payments against previous invoices
@@ -102,25 +152,6 @@
                     <span class="glyphicon glyphicon-plus-sign"></span> {{ "CASH.VOUCHER.SELECT_INVOICES" | translate }}
                   </button>
                 </div>
-
-                <table class="table" ng-if="CashCtrl.payment.invoices">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>{{ "COLUMNS.NUM_ITEMS" | translate }}</th>
-                      <th>{{ "COLUMNS.DATE" | translate }}</th>
-                      <th colspan="2">{{ "COLUMNS.AMOUNT" | translate }}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.uuid">
-                      <td>{{ $index }}</td>
-                      <td>{{ invoice.numItems }}</td>
-                      <td>{{ invoice.date | date }}</td>
-                      <td>{{ invoice.value | currency:CashCtrl.enterprise.currency_id }}</td>
-                    </tr>
-                  </tbody>
-                </table>
 
                 <hr />
 
@@ -158,14 +189,6 @@
             </form>
           </div>
         </div>
-      </div>
-
-      <!-- Switch Cashbox Form -->
-      <div class="col-md-4">
-        <p><u>Current Cashbox</u>: <strong>{{ CashCtrl.cashbox.text }}</strong></p>
-        <button class="btn btn-warning" ng-click="CashCtrl.resetCashbox()">
-          <span class="glyphicon glyphicon-inbox"></span> Change Cashboxes
-        </button>
       </div>
     </div>
   </div>
