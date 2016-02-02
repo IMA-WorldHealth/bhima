@@ -11,54 +11,50 @@
 * identicale modules - they should all be encapsulated as one
 * module. For Example finance.createSale, finance.createPurchase
 */
-var auth            = require('../controllers/auth');
-var data            = require('../controllers/data');
-var users           = require('../controllers/users');
-var locations       = require('../controllers/location');
-var tree            = require('../controllers/tree');
-
-var createPurchase  = require('../controllers/finance/purchase');
-var createSale      = require('../controllers/finance/sale');
-
-var patient         = require('../controllers/medical/patient');
-var snis            = require('../controllers/medical/snis');
-var projects        = require('../controllers/medical/projects');
-
-var legacyReports   = require('../controllers/reports/report_legacy');
-var reports         = require('../controllers/reports/reports.js');
-
-var inventory       = require('../controllers/stock/inventory');
-var depot           = require('../controllers/stock/depot');
-var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
-var trialbalance   = require('../controllers/finance/trialbalance');
-var journal        = require('../controllers/finance/journal');
-var ledger         = require('../controllers/finance/ledger');
-var fiscal         = require('../controllers/finance/fiscal');
-var extra          = require('../controllers/finance/extraPayment');
-var gl             = require('../controllers/finance/ledgers/general');
-var genericFinance = require('../controllers/finance/financeGeneric');
-var accounts       = require('../controllers/finance/accounts');
-var analytics      = require('../controllers/finance/analytics');
-var purchase       = require('../controllers/finance/purchase');
-var budget         = require('../controllers/finance/budget');
-var taxPayment     = require('../controllers/finance/taxPayment');
-var donations      = require('../controllers/finance/donations');
-var debtors        = require('../controllers/finance/debtors');
-var cashboxes      = require('../controllers/finance/cashboxes');
-var exchange       = require('../controllers/finance/exchange');
-var cash           = require('../controllers/finance/cash');
-var cashflow       = require('../controllers/cashflow');
-var enterprises     = require('../controllers/admin/enterprises');
-var priceList      = require('../controllers/finance/priceList');
-var billingServices = require('../controllers/finance/billingServices');
-var account         = require('../controllers/finance/account');
-var accountType     = require('../controllers/finance/accountType');
-var costCenter      = require('../controllers/finance/costCenter');
-var profitCenter    = require('../controllers/finance/profitCenter');
-var reference       = require('../controllers/finance/reference');
-var subsidy        = require('../controllers/finance/subsidy');
-var patientInvoice = require('../controllers/finance/patientInvoice');
-var discounts      = require('../controllers/finance/discounts');
+var auth                 = require('../controllers/auth');
+var data                 = require('../controllers/data');
+var users                = require('../controllers/users');
+var locations            = require('../controllers/location');
+var tree                 = require('../controllers/tree');
+var createPurchase       = require('../controllers/finance/purchase');
+var createSale           = require('../controllers/finance/sale');
+var patient              = require('../controllers/medical/patient');
+var snis                 = require('../controllers/medical/snis');
+var projects             = require('../controllers/medical/projects');
+var legacyReports        = require('../controllers/reports/report_legacy');
+var reports              = require('../controllers/reports/reports.js');
+var inventory            = require('../controllers/stock/inventory');
+var depot                = require('../controllers/stock/depot');
+var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
+var trialbalance         = require('../controllers/finance/trialbalance');
+var journal              = require('../controllers/finance/journal');
+var ledger               = require('../controllers/finance/ledger');
+var fiscal               = require('../controllers/finance/fiscal');
+var extra                = require('../controllers/finance/extraPayment');
+var gl                   = require('../controllers/finance/ledgers/general');
+var genericFinance       = require('../controllers/finance/financeGeneric');
+var accounts             = require('../controllers/finance/accounts');
+var analytics            = require('../controllers/finance/analytics');
+var purchase             = require('../controllers/finance/purchase');
+var budget               = require('../controllers/finance/budget');
+var taxPayment           = require('../controllers/finance/taxPayment');
+var donations            = require('../controllers/finance/donations');
+var debtors              = require('../controllers/finance/debtors');
+var cashboxes            = require('../controllers/finance/cashboxes');
+var exchange             = require('../controllers/finance/exchange');
+var cash                 = require('../controllers/finance/cash');
+var cashflow             = require('../controllers/cashflow');
+var enterprises          = require('../controllers/admin/enterprises');
+var priceList            = require('../controllers/finance/priceList');
+var billingServices      = require('../controllers/finance/billingServices');
+var account              = require('../controllers/finance/account');
+var accountType          = require('../controllers/finance/accountType');
+var costCenter           = require('../controllers/finance/costCenter');
+var profitCenter         = require('../controllers/finance/profitCenter');
+var reference            = require('../controllers/finance/reference');
+var subsidy              = require('../controllers/finance/subsidy');
+var patientInvoice       = require('../controllers/finance/patientInvoice');
+var discounts            = require('../controllers/finance/discounts');
 var financeServices      = require('../controllers/categorised/financeServices');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
 var depreciatedReports   = require('../controllers/categorised/reports_depreciate');
@@ -67,10 +63,11 @@ var caution              = require('../controllers/categorised/caution');
 var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
-var transfers           = require('../controllers/finance/transfers');
+var transfers            = require('../controllers/finance/transfers');
+var conventions          = require('../controllers/finance/conventions');
 
 // Middleware for handle uploaded file
-var multipart       = require('connect-multiparty');
+var multipart            = require('connect-multiparty');
 
 exports.configure = function (app) {
   console.log('[config/routes] Configure routes');
@@ -432,6 +429,12 @@ exports.configure = function (app) {
   app.get('/cash/transfers', transfers.list);
   app.get('/cash/transfers/:id', transfers.detail);
   app.post('/cash/transfers', transfers.create);
+
+  /**
+  * conventions
+  * NOTE: The `/cash/conventions` API endpoint must be above the `/cash` API endpoint
+  */
+  app.post('/cash/conventions', conventions.create);
 
   /** cash (aux/primary) */
   app.get('/cash', cash.list);

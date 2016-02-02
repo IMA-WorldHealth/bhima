@@ -279,10 +279,12 @@ VALUES
 
 
 INSERT INTO `primary_cash_module` VALUES
-  (1, "Transfert");
+  (1, "Transfert"),
+  (3, "Convention");
 
 INSERT INTO `transaction_type` VALUES
-  (1, "pcash_transfert");
+  (1, "pcash_transfert"),
+  (8, "pcash_convention");
 
 -- Excahange Rate for the current date
 INSERT INTO `exchange_rate` (enterprise_currency_id, foreign_currency_id, rate, date) VALUES
