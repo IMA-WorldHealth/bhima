@@ -290,11 +290,22 @@ function getReport (req, res) {
 	}
 }
 
+function get_snis_zs (req, res) {
+
+  var sql = 'SELECT id, zone, territoire, province FROM mod_snis_zs';
+  db.exec(sql, function (err, rows) {
+    if (err) { throw err; }
+    res.send(rows);
+  });
+}
+
+
 // Expose
 module.exports = {
 	getAllReports : getAllReports,
 	createReport  : createReport,
 	deleteReport  : deleteReport,
 	populateReport: populateReport,
-	getReport     : getReport
+	getReport     : getReport,
+  get_snis_zs   : get_snis_zs
 };

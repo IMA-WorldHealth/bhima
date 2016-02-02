@@ -185,6 +185,7 @@ exports.configure = function (app) {
   app.post('/snis/createReport', snis.createReport);
   app.delete('/snis/deleteReport/:id', snis.deleteReport);
   app.post('/snis/populateReport', snis.populateReport);
+  app.get('/snis/get_snis_zs',snis.get_snis_zs);
 
   /**
    * refactor-categorisation

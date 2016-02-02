@@ -2204,12 +2204,16 @@
    "TITLE"      : "Gestion des Centres de profits"
    },
 "PROJECT": {
-   "EDIT"        : "Editer",
-   "EXISTING"    : "Projets Existants",
-   "HELP_TXT_1"  : "Ce module vous permettre faire la gestion des projets.  Vous voyez seulment les projets qui concerne votre enterprise.",
-   "NEW"         : "Nouveau",
-   "PRINT_TITLE" : "Projets Enregistrer",
-   "TITLE"       : "Gestion des Projets"
+   "CONFIRM"        : "Voulez-vous vraiment effectuer cette operation ?", 
+   "DELETE_SUCCESS" : "Suppression avec succès",
+   "EDIT"           : "Editer",
+   "EXISTING"       : "Projets Existants",
+   "HELP_TXT_1"     : "Ce module vous permettre faire la gestion des projets.  Vous voyez seulment les projets qui concerne votre enterprise.",
+   "NEW"            : "Nouveau",
+   "PRINT_TITLE"    : "Projets Enregistrer",
+   "SAVE_SUCCES"    : "Enregistrement avec succès",
+   "TITLE"          : "Gestion des Projets",
+   "UPDATE_SUCCES"  : "Mis à jour avec succès"
    },
 "PROVINCE": {
    "ACTIONS"          : "Actions",
