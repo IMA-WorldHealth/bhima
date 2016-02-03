@@ -290,7 +290,7 @@ function getReport (req, res) {
 	}
 }
 
-function health_zones (req, res, next) {
+function healthZones (req, res, next) {
   var sql = 'SELECT id, zone, territoire, province FROM mod_snis_zs';
   
   db.exec(sql)
@@ -309,5 +309,5 @@ module.exports = {
 	deleteReport  	: deleteReport,
 	populateReport	: populateReport,
 	getReport     	: getReport,
-    health_zones   	: health_zones
+    healthZones   	: healthZones
 };

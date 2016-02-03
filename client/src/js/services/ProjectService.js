@@ -9,7 +9,7 @@ function ProjectService($http, $translate, $window, util) {
   service.create = create;
   service.read = read;
   service.update = update;
-  service.del = del;
+  service.delete = del;
 
   function create(project) {
     return $http.post('/projects', project)

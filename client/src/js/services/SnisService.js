@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-  .factory('SnisService', SnisService);
+.service('SnisService', SnisService);
   
 SnisService.$inject = ['$http', 'util'];
 
@@ -9,7 +9,7 @@ function SnisService($http, util) {
   service.healthZones = healthZones;
 
   function healthZones() {
-    var url = '/snis/health_zones';
+    var url = '/snis/healthZones';
     return $http.get(url)
       .then(util.unwrapHttpResponse);
   }

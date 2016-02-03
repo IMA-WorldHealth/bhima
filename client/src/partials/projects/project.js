@@ -58,22 +58,17 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
     vm.project = {};
   }
 
-  // Load a Project from the server
-  function loadProject(data) {
-    vm.project= data;      
-  }
-
   // switch to update mode
-  function update(id) {
+  function update(data) {
     vm.state.reset();
-    loadProject(id);
+    vm.project= data;
     vm.view = 'update';
   }
 
   // switch to delete warning mode
   function del(project) {
     vm.view = 'delete_confirm';
-    Projects.del(project.id)
+    Projects.delete(project.id)
     .then(function (response) {
       refreshProjects();
       vm.view = 'delete_success';
@@ -94,8 +89,6 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
   // form submission
   function submit(invalid) {
     if (invalid) { return; }
-    vm.project.locked = (vm.project.locked)?1:0;
-
     var promise;
     var creation = (vm.view === 'create');
     var project = angular.copy(vm.project);
