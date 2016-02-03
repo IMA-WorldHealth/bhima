@@ -11,8 +11,8 @@ describe('The Projects Module', function () {
   // shared methods
   var path = '#/projects';
   var PROJECT = {
-    name : 'PROJECT END 2 END',
-    abbr : 'P e2e'
+    name : 'Test Project D',
+    abbr : 'TPD'
   };
 
   //To obtain the rank of a random element to the project list
@@ -22,6 +22,9 @@ describe('The Projects Module', function () {
 
   var DEFAULT_PROJECT = 3;
   var ENTERPRISE_RANK = aleatoire(DEFAULT_PROJECT);
+  var DELETE_SUCCESS = 4;
+  var DELETE_ERROR = 1;
+
 
   //var ENTERPRISE_ID = 1;
   // navigate to the project module before each test
@@ -62,6 +65,14 @@ describe('The Projects Module', function () {
     expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
   });
 
+  it('Successfully Unlock an Project', function () {
+    element(by.id('project-upd-' + ENTERPRISE_RANK )).click();
+    element(by.id('change_project')).click();
+
+    expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
+  });
+
+
   it('correctly blocks invalid form submission with relevent error classes', function () {
     element(by.id('create')).click();
     // Verify form has not been successfully submitted
@@ -79,10 +90,16 @@ describe('The Projects Module', function () {
     expect(element(by.model('ProjectCtrl.project.locked')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
   });  
 
-  it('Successfully delete an Project OR No way to delete a project', function () {
-    element(by.id('project-del-' + ENTERPRISE_RANK )).click();
+  it('Successfully delete an Project', function () {
+    element(by.id('project-del-' + DELETE_SUCCESS )).click();
     browser.switchTo().alert().accept();
-    expect(element(by.id('delete_success', 'delete_error')).isPresent()).to.eventually.be.true;
+    expect(element(by.id('delete_success')).isPresent()).to.eventually.be.true;
+  });
+
+  it('No way to delete a project', function () {
+    element(by.id('project-del-' + DELETE_ERROR )).click();
+    browser.switchTo().alert().accept();
+    expect(element(by.id('delete_error')).isPresent()).to.eventually.be.true;
   });
 
 });

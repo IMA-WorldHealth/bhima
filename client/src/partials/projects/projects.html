@@ -1,21 +1,17 @@
-<header data-header>
-  {{ 'PROJECT.TITLE' | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
       <li class="active">{{ "PROJECT.TITLE" | translate }}</li>
     </ol>
   </div>
+</div>
 
-  <div class="pull-right">
-    <button class="btn btn-sm btn-default" id="create" ng-click="ProjectCtrl.create()" data-method="create">
-      <span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROJECT.NEW' | translate }}
-    </button>
-  </div>
-</nav>
+<div class="flex-util">
+  <button class="btn btn-sm btn-default" id="create" ng-click="ProjectCtrl.create()" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROJECT.NEW' | translate }}
+  </button>
+</div>
 
 <div class="report visible-print">
   <div class="reportBody">
@@ -44,7 +40,7 @@
   </div>
 </div>
 
-<main class="hidden-print">
+<main class="flex-content">
   <div class="container-fluid">
     <div class="row">
 
@@ -157,7 +153,6 @@
                   <input type="checkbox" id="locked" ng-true-value="1" ng-false-value="0" name="bhima-project-locked" ng-model="ProjectCtrl.project.locked">
                 </div>
               </div>
-
               <div class="form-group">
                   <button class="btn btn-default" id="submit-project" type="submit" data-method="submit">
                     {{ "FORM.SUBMIT" | translate }}
@@ -226,8 +221,6 @@
             </form>
           </div>        
         </div>
-
-
       </div>
     </div>
   </div>  

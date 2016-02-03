@@ -28,10 +28,7 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
   // fired on startup
   function startup() {
     // load Projects
-    Projects.read(null, { complete : 1 })
-    .then(function (projects) {
-      vm.projects = projects.data;
-    }).catch(handler);
+    refreshProjects();
 
     // load Enterprises
     Enterprises.read().then(function (data) {
@@ -55,7 +52,7 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
 
   function create() {
     vm.view = 'create';
-    vm.project = {};
+    vm.project = { locked : 0 };
   }
 
   // switch to update mode
@@ -89,6 +86,7 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
   // form submission
   function submit(invalid) {
     if (invalid) { return; }
+
     var promise;
     var creation = (vm.view === 'create');
     var project = angular.copy(vm.project);
