@@ -4,7 +4,7 @@ angular.module('bhima.services')
 SnisService.$inject = ['$http', 'util'];
 
 function SnisService($http, util) {  
-  var service = {};
+  var service = this;
 
   service.healthZones = healthZones;
 
