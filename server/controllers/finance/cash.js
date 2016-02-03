@@ -161,12 +161,20 @@ exports.create = function create(req, res, next) {
     });
   }
 
+  // disallow invoice payments with empty items.
+  if (!data.is_caution && (!items || !items.length)) {
+    return res.status(400).json({
+      code : 'CASH.VOUCHER.ERRORS.NO_CASH_ITEMS',
+      reason : 'You must submit cash items with the cash items payment.'
+    });
+  }
+
   var writeCashSql =
     'INSERT INTO cash SET ?;';
 
   var writeCashItemsSql =
     'INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) ' +
-    'VALUES (?);';
+    'VALUES ?;';
 
   var transaction = db.transaction();
   transaction.addQuery(writeCashSql, [ data ]);
@@ -174,7 +182,7 @@ exports.create = function create(req, res, next) {
   // only add the "items" query if we are NOT making a caution
   // cautions do not have items
   if (!data.is_caution) {
-    transaction.addQuery(writeCashItemsSql, items);
+    transaction.addQuery(writeCashItemsSql, [ items ]);
   }
 
   transaction.execute()

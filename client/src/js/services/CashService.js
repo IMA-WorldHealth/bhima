@@ -56,6 +56,9 @@ function CashService($http, util) {
     var data = angular.copy(payment);
     var totalAmount = payment.amount;
 
+    // ensure that data.is_caution is a number, not a string
+    data.is_caution = Number(data.is_caution);
+   
     // if is_caution is checked, delete invoice data
     if (data.is_caution) { delete data.invoices; }
 

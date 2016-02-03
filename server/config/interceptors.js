@@ -46,8 +46,12 @@ exports.apiErrorHandler = function apiErrorHandler(error, req, res, next) {
   // check to see if this is an API error
   if (error && error.httpStatus) {
 
+    // remove the status from the error;
+    var status = error.httpStatus;
+    delete error.httpStatus;
+
     // return to the client as a JSON object error.
-    res.status(error.httpStatus).json(error);
+    res.status(status).json(error);
 
   // if not matching an API error, pass along to the next interceptor
   } else {

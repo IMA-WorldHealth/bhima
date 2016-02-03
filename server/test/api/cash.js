@@ -68,11 +68,9 @@ describe('(/cash) Cash Payments Interface ::', function () {
       return agent.post('/cash')
         .send({ payment : CAUTION_PAYMENT })
         .then(function (res) {
-          expect(res).to.have.status(201);
-          expect(res).to.be.json;
-          expect(res.body).to.not.be.empty;
-          expect(res.body.uuid).to.be.defined;
 
+          // checks to see if the response correspond to the correct response codes
+          helpers.api.created(res);
 
           // store the payment id for later
           CAUTION_PAYMENT.uuid = res.body.uuid;
@@ -111,15 +109,25 @@ describe('(/cash) Cash Payments Interface ::', function () {
       is_caution:  0
     };
 
+    var INVALID_SALE_PAYMENT = {
+      amount:      1520,
+      currency_id: CURRENCY_ID,
+      cashbox_id:  CASHBOX_ID,
+      debtor_uuid: DEBTOR_UUID,
+      items:       [],
+      project_id:  PROJECT_ID,
+      user_id  :   USER_ID,
+      is_caution:  0
+    };
+
     // create a cash payment
     it('POST /cash should create a cash payment against multiple sales', function () {
       return agent.post('/cash')
         .send({ payment : SALE_PAYMENT })
         .then(function (res) {
-          expect(res).to.have.status(201);
-          expect(res).to.be.json;
-          expect(res.body).to.not.be.empty;
-          expect(res.body.uuid).to.be.defined;
+
+          // checks to see that the record was a successful api created response
+          helpers.api.created(res);
 
           // store the payment id for later
           SALE_PAYMENT.uuid = res.body.uuid;
@@ -132,11 +140,27 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res).to.be.json;
           expect(res.body).to.not.be.empty;
 
+          expect(res.body.items).to.have.length(2);
+
           expect(res.body.uuid).to.equal(SALE_PAYMENT.uuid);
           expect(res.body.is_caution).to.equal(SALE_PAYMENT.is_caution);
           expect(res.body.currency_id).to.equal(SALE_PAYMENT.currency_id);
           expect(res.body.cashbox_id).to.equal(SALE_PAYMENT.cashbox_id);
           expect(res.body.canceled).to.be.false;
+        })
+        .catch(helpers.handler);
+    });
+
+    it('POST /cash should not create a cash payment if cash items are empty', function () {
+      return agent.post('/cash')
+        .send({ payment : INVALID_SALE_PAYMENT })
+        .then(function (res) {
+
+          // anticipate a 400 error from the API.
+          helpers.api.errored(res, 400);
+
+          // check to make sure the error code is correct
+          expect(res.body.code).to.equal('CASH.VOUCHER.ERRORS.NO_CASH_ITEMS');
         })
         .catch(helpers.handler);
     });
@@ -157,6 +181,8 @@ describe('(/cash) Cash Payments Interface ::', function () {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.not.be.empty;
+
+          expect(res.body.items).to.have.length(2);
 
           expect(res.body.is_caution).to.equal(SALE_PAYMENT.is_caution);
           expect(res.body.description).to.equal(DESC);
@@ -191,26 +217,49 @@ describe('(/cash) Cash Payments Interface ::', function () {
         })
         .catch(helpers.handler);
     });
+
+    // should not allow nefarious requests
+    it('POST /cash should not process cash_items if is_caution flag is set', function () {
+      var CONFUSED_PAYMENT = {
+        amount:      15000,
+        currency_id: CURRENCY_ID,
+        cashbox_id:  CASHBOX_ID,
+        debtor_uuid: DEBTOR_UUID,
+        items:       INVOICES,
+        project_id:  PROJECT_ID,
+        date:        new Date('2015-01-01'),
+        user_id:     USER_ID,
+        is_caution:  1
+      };
+
+      return agent.post('/cash')
+        .send({ payment : CONFUSED_PAYMENT })
+        .then(function (res) {
+
+          // should have created successfully
+          helpers.api.created(res);
+
+          return agent.get('/cash/'.concat(res.body.uuid));
+        })
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+
+          // make sure that there are no associated items
+          expect(res.body).to.not.be.empty;
+          expect(res.body).to.have.property('items');
+          expect(res.body.items).to.have.length(0);
+        })
+        .catch(helpers.handler);
+    });
   });
 
   // The HTTP DELETE verb triggers a cash_discard record, but does not destroy any data
   // (proposed rename: debit_note)
   describe.skip('The Debit Note Interface ::', function () {
-
-    it('DELETE /cash/:uuid should create a cash_discard record', function () {
-      // TODO
-    });
-
-    it('DELETE /cash/:uuid should do nothing if the cash record is already discarded', function () {
-      // TODO
-    });
-
-    it('DELETE-d cash records should still be discoverable by GET /cash', function () {
-      // TODO
-    });
-
-    it('DELETE-d cash records should have the \'canceled\' property set', function () {
-      // TODO
-    });
+    it('DELETE /cash/:uuid should create a cash_discard record');
+    it('DELETE /cash/:uuid should do nothing if the cash record is already discarded');
+    it('DELETE-d cash records should still be discoverable by GET /cash');
+    it('DELETE-d cash records should have the \'canceled\' property set');
   });
 });
