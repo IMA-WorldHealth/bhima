@@ -10,7 +10,6 @@ var q = require('q');
 
 var config = {
 
-  
   specs: ['client/test/e2e/**/*.spec.js'],
   
   framework : 'mocha',
@@ -45,7 +44,7 @@ var config = {
 };
 
 // configuration for running on SauceLabs via Travis
-if (process.env.TRAVIS_BUILD_NUMBER) {
+if (process.env.TRAVIS || process.env.TRAVIS_BUILD_NUMBER) {
 
   // SauceLabs credentials
   config.sauceUser = process.env.SAUCE_USERNAME;
@@ -53,13 +52,15 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
 
   // modify the browsers to use Travis identifiers
   config.multiCapabilities = [{
-    'browserName': 'firefox',
+    'browserName':        'firefox',
      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-     'build': process.env.TRAVIS_BUILD_NUMBER,
+     'build':             process.env.TRAVIS_BUILD_NUMBER,
+     'name':              'bhima-firefox-' + process.env.TRAVIS_BUILD_NUMBER
   }, {
-    'browserName': 'chrome',
+    'browserName':        'chrome',
      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-     'build': process.env.TRAVIS_BUILD_NUMBER,
+     'build':             process.env.TRAVIS_BUILD_NUMBER,
+     'name':              'bhima-chrome-' + process.env.TRAVIS_BUILD_NUMBER
   }];
 }
 
