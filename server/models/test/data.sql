@@ -277,7 +277,7 @@ VALUES
 ("017dbe1e-c37c-11e5-a86e-843a4b0cdade", 1, 1, 1, "HBB1", '2016-01-26', 3638, 0, 75.0000, 0, 75.0000, 2, "cf05da13-b477-11e5-b297-023919d3d5b0",
   NULL, "957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6", 2, 1, 1);
 
---Zones des santes SNIS 
+-- Zones des santes SNIS 
 INSERT INTO `mod_snis_zs` VALUES
   (1, 'Zone Sante A', 'Territoire A', 'Province A'),
   (2, 'Zone Sante B', 'Territoire B', 'Province B');

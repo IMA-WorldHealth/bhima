@@ -145,7 +145,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.zs_id.$invalid }">
                 <label class="col-md-3 control-label">{{ 'COLUMNS.ZS' | translate }}</label>
                 <div class="col-md-9">
-                  <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" id="bhima-project-zs" ng-options="zs.id as zs.format for zs in ProjectCtrl.snis_zs | orderBy:'zone'" required>
+                  <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" id="bhima-project-zs" ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'" required>
                     <option value="" disabled> -- {{ 'SELECT.ZS' | translate }} -- </option>
                   </select>
                 </div>
@@ -202,7 +202,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.zs_id.$invalid }">
                 <label class="col-md-3 control-label">{{ 'COLUMNS.ZS' | translate }}</label>
                 <div class="col-md-9">
-                  <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" id="bhima-project-zs" ng-options="zs.id as zs.format for zs in ProjectCtrl.snis_zs | orderBy:'zone'" required>
+                  <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" id="bhima-project-zs" ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'" required>
                     <option value="" disabled> -- {{ 'SELECT.ZS' | translate }} -- </option>
                   </select>
                 </div>

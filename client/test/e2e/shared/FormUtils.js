@@ -101,10 +101,6 @@ module.exports = {
     return element.all(by.model(model)).get(n).click();
   },
 
-  // get a checked button by its position and click
-  checked : function checked(model, n) {
-    return element.all(by.model(model)).get(n).click();
-  },
   // asserts whether an element exists or not
   exists : function exists(locator, bool) {
     expect(element(locator).isPresent()).to.eventually.equal(bool);

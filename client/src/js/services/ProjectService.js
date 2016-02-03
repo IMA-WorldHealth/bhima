@@ -1,34 +1,24 @@
 angular.module('bhima.services')
 .service('ProjectService', ProjectService);
 
-ProjectService.$inject = [ '$http', '$translate', 'util' ];
+ProjectService.$inject = [ '$http', '$translate', '$window', 'util' ];
 
-function ProjectService($http, $translate, util) {
+function ProjectService($http, $translate, $window, util) {
   var service = this;
 
   service.create = create;
   service.read = read;
   service.update = update;
   service.del = del;
-  service.readComplete = readComplete;
 
   function create(project) {
     return $http.post('/projects', project)
     .then(util.unwrapHttpResponse);
   }
 
-  function read(id) {
-    var url = (id) ? '/projects/' + id : '/projects';
-
-    return $http.get(url)
-    .then(util.unwrapHttpResponse);
-  }
-
-  function readComplete() {
-    var url = '/projects?complete=1';
-
-    return $http.get(url)
-    .then(util.unwrapHttpResponse);
+  function read(id, params) {
+     var url = (id) ? '/projects/' + id : '/projects';
+     return $http.get(url, { params : params });
   }
 
   function update(id, project) {
@@ -38,7 +28,7 @@ function ProjectService($http, $translate, util) {
 
   function del(id) {
 
-    var result = confirm($translate.instant('PROJECT.CONFIRM'));
+    var result = $window.confirm($translate.instant('PROJECT.CONFIRM'));
     if (result) {
     return $http.delete('/projects/' + id)
     .then(util.unwrapHttpResponse);

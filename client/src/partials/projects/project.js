@@ -28,8 +28,9 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
   // fired on startup
   function startup() {
     // load Projects
-    Projects.readComplete().then(function (data) {
-      vm.projects = data;
+    Projects.read(null, { complete : 1 })
+    .then(function (projects) {
+      vm.projects = projects.data;
     }).catch(handler);
 
     // load Enterprises
@@ -37,11 +38,11 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
       vm.enterprises = data;
     }).catch(handler);
 
-    SnisService.readSnisZs().then(function (data) {
+    SnisService.healthZones().then(function (data) {
       data.forEach(function (l) {
         l.format = l.zone + ' - ' + l.territoire + ' (' + l.province + ')';
       });
-      vm.snis_zs = data;
+      vm.zones = data;
     }).catch(handler);
 
     vm.state.reset();
@@ -84,10 +85,10 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
 
   // refresh the displayed Projects
   function refreshProjects() {
-    return Projects.readComplete()
-      .then(function (data) {
-        vm.projects = data;
-      });
+    return Projects.read(null, { complete : 1 })
+    .then(function (projects) {
+      vm.projects = projects.data;
+    });
   }
 
   // form submission
