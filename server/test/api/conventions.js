@@ -22,8 +22,9 @@ describe('The /cash/conventions API endpoint :: ', function () {
   /** login before each request */
   beforeEach(helpers.login(agent));
 
-  /** Test with the current date */
+  /** Test with dates */
   var date = new Date();
+  var futurDate = new Date(date.getYear() + 1900, date.getMonth(), date.getDay() + 10);
 
   /** Primary Cash Object */
   var primaryCash = {
@@ -33,10 +34,10 @@ describe('The /cash/conventions API endpoint :: ', function () {
       date        : date,
       currency_id : 2,
       account_id  : 3631,
-      cost        : 10,
+      cost        : 5,
       description : 'Test Convention Payment/' + date.toString(),
       cash_box_id : 2,
-      origin_id   : 1,
+      origin_id   : 3,
       user_id     : 1
   };
 
@@ -47,8 +48,10 @@ describe('The /cash/conventions API endpoint :: ', function () {
     date        : date,
     currency_id : 2,
     account_id  : 3631,
-    cost        : 10
+    cost        : 5
   };
+
+  var mock = {};
 
   it('POST /cash/conventions should create a new convention payment records in primary_cash, primary_cash_item and journal', function () {
     return agent.post('/cash/conventions')
@@ -66,6 +69,50 @@ describe('The /cash/conventions API endpoint :: ', function () {
       .send(wrongPrimaryCash)
       .then(function (res) {
         expect(res).to.have.status(400);
+        expect(res.body.code).to.exist;
+        expect(res.body.code).to.be.equal('DB.ER_BAD_NULL_ERROR');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /cash/conventions should not post without uuid', function () {
+    mock = wrongPrimaryCash;
+    delete mock.uuid;
+    return agent.post('/cash/conventions')
+      .send(mock)
+      .then(function (res) {
+        expect(res).to.have.status(400);
+        expect(res.body.code).to.exist;
+        expect(res.body.code).to.be.equal('DB.ER_BAD_NULL_ERROR');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /cash/conventions should not post when there is not a date defined', function () {
+    mock = primaryCash;
+    mock.uuid = uuid();
+    delete mock.date;
+    return agent.post('/cash/conventions')
+      .send(mock)
+      .then(function (res) {
+        expect(res).to.have.status(400);
+        expect(res.body.code).to.exist;
+        expect(res.body.code).to.be.equal('ERR_DATE_NOT_DEFINED');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /cash/conventions should not post when there is not an exchange rate defined for a date', function () {
+    /** The future date does'nt have a defined exchange rate */
+    mock = primaryCash;
+    mock.uuid = uuid();
+    mock.date = futurDate;
+    return agent.post('/cash/conventions')
+      .send(mock)
+      .then(function (res) {
+        expect(res).to.have.status(500);
+        expect(res.body.code).to.exist;
+        expect(res.body.code).to.be.equal('ERR_EXCHANGE_RATE_NOT_FOUND');
       })
       .catch(helpers.handler);
   });
