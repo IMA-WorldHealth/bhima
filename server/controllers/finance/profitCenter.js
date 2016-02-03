@@ -12,6 +12,10 @@ function list (req, res, next) {
       'FROM profit_center AS p JOIN project AS pr ON p.project_id = pr.id';
   }
 
+  if(req.query.availableOnly === '1') {
+    sql += ' WHERE p.id NOT IN (SELECT s.profit_center_id FROM service AS s WHERE NOT ISNULL(s.profit_center_id))';
+  }
+
   sql += ' ORDER BY p.text;';
 
   db.exec(sql)
@@ -102,8 +106,43 @@ function lookupProfitCenter (id, codes) {
     });
 }
 
+function getProfitValue (req, res, next){
+
+  var sql = null, optionalCondition = '';
+
+  lookupProfitCenter(req.params.id, req.codes)
+    .then(function (){      
+      sql = 
+        'SELECT ac.id FROM account AS ac WHERE ac.pc_id=? AND ac.is_title =?';
+
+      return db.exec(sql, [req.params.id, 0]);
+    })
+    .then(function (rows){
+      if (rows.length > 0) {
+        rows = rows.map(function (row) { return row.id;});
+        optionalCondition = ' OR %table%.account_id IN (' + rows.join(',') + ')';
+      }
+
+      sql =
+        'SELECT SUM(t.credit_equiv - t.debit_equiv) as profit ' +
+        'FROM ((SELECT pj.debit_equiv, pj.credit_equiv FROM posting_journal AS pj LEFT JOIN ' +
+        'profit_center AS pc ON pj.pc_id = pc.id WHERE pj.pc_id=?' + (optionalCondition.replace('%table%', 'pj')) + ') ' + 
+        'UNION ALL (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN ' +
+        'profit_center AS pc ON gl.pc_id = pc.id WHERE gl.pc_id=? ' + (optionalCondition.replace('%table%', 'gl')) + ')) ' +
+        'AS t';
+
+      return db.exec(sql, [req.params.id, req.params.id]);
+    })
+    .then(function (result){
+      res.status(200).json(result[0]);
+    })
+    .catch(next)
+    .done();
+}
+
 exports.list = list;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
 exports.detail = detail;
+exports.getProfitValue = getProfitValue;

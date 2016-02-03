@@ -380,4 +380,13 @@ ALTER TABLE account ADD FOREIGN KEY (`account_type_id`) REFERENCES account_type 
 
 ALTER TABLE `project`
 ADD `locked` BOOLEAN NOT NULL;
---
+
+
+-- Linking service o enterprise directly
+-- Date : 2016-02-02
+-- By : Dedrick Kitamuka
+
+ALTER TABLE service DROP FOREIGN KEY service_ibfk_1;
+ALTER TABLE service CHANGE project_id enterprise_id SMALLINT(5) UNSIGNED;
+ALTER TABLE service ADD FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`);
+
