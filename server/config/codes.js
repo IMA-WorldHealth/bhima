@@ -23,6 +23,7 @@ function makeError(name, defn) {
     this.httpStatus = defn.httpStatus;
 
     // record the callstack where and when it was thrown
+    /** @todo -- make this work */
     this.stack = (new Error()).stack;
   }
 

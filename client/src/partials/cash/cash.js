@@ -29,12 +29,13 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
   // bind methods
   vm.Currencies = Currencies;
-  vm.toggleDateInput = toggleDateInput;
   vm.openInvoicesModal = openInvoicesModal;
   vm.changeCashbox = changeCashbox;
   vm.usePatient = usePatient;
   vm.hasFutureDate = hasFutureDate;
   vm.digestExchangeRate = digestExchangeRate;
+  vm.toggleDateInput = toggleDateInput;
+  vm.toggleVoucherType = toggleVoucherType;
   vm.submit = submit;
 
   // bind data
@@ -50,10 +51,11 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
   // temporary error handler until an application-wide method is described
   function handler(error) {
-    throw error;
+    if (error.data && error.data.code) { vm.HttpError = error.data.code; }
+    else { throw error; }
   }
 
-  // TODO - advanced warning if the date is in the future
+  // warns if the date is in the future
   function hasFutureDate() {
     return (vm.payment.date > vm.timestamp);
   }
@@ -87,6 +89,9 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   // submits the form to the server
   function submit(invalid) {
 
+    // remove any dangling HTTP errors from the view
+    vm.HttpError = null;
+
     // if the form is invalid, reject it without any further processing.
     if (invalid) { return; }
 
@@ -111,6 +116,11 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     vm.lockDateInput = !vm.lockDateInput;
   }
 
+  // fired on voucher type change.
+  function toggleVoucherType() {
+    delete vm.payment.invoices;
+  }
+
   // toggle loading state on off
   function toggleLoadingState() {
     vm.loadingState = !vm.loadingState;
@@ -121,10 +131,38 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     vm.payment.debtor_uuid = patient.debitor_uuid;
   }
 
+
+  /**
+   * Receipt modal for fun and profit.
+   *
+   */
+  function openReceiptModal(uuid) {
+
+    var instance = Modal.open({
+      templateUrl: 'partials/cash/modals/receipt.modal.html',
+      controller:  'CashReceiptModalController as CashReceipteModalCtrl',
+      size:        'md',
+      backdrop:    'static',
+      animation:   false,
+      resolve : {
+        uuid : function uuidProvider() { return vm.uuid; }
+      }
+    });
+
+    instance.result.then(function (res) {
+      console.log('Done');
+    });
+
+  }
+
   /**
    * receive open invoices from the invoice modal
+   *
+   * @todo - refactor this into a separate invoices modal component, that can
+   * be injected into any controller.
    */
   function openInvoicesModal() {
+
     var instance = Modal.open({
       templateUrl: 'partials/cash/modals/invoices.modal.html',
       controller:  'CashInvoiceModalController as CashInvoiceModalCtrl',
@@ -147,6 +185,9 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
     // fired when the modal closes
     instance.result.then(function (result) {
+
+      // clear HTTP errors if we are taking further action.
+      vm.HttpError = null;
 
       // bind the selected invoices
       vm.payment.invoices = result.invoices;

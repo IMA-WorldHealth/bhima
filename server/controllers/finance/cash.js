@@ -144,7 +144,7 @@ exports.create = function create(req, res, next) {
   if (data.date) { data.date = new Date(data.date); }
 
   // account for the cash items
-  var items =  data.items;
+  var items = data.items;
 
   // remove the cash items so that the SQL query is properly formatted
   delete data.items;

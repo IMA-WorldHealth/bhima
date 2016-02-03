@@ -21,7 +21,7 @@ ExchangeRateService.$inject = [
 *
 * TODO -- How should we best handle errors such as looking up old dates before an
 * exchange rate is defined?  What happens when we call
-* service.convertToEntepriseCurrency(someId, null, 100)?
+* service.convertToEnterpriseCurrency(someId, null, 100)?
 */
 function ExchangeRateService($http, $q, util, Currencies, Session) {
   var service = {};
@@ -33,7 +33,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
 
   service.read = read;
   service.create = create;
-  service.convertToEntepriseCurrency = convertToEnterpriseCurrency;
+  service.convertToEnterpriseCurrency = convertToEnterpriseCurrency;
   service.convertFromEnterpriseCurrency = convertFromEnterpriseCurrency;
   service.getCurrentRate = getCurrentRate;
 

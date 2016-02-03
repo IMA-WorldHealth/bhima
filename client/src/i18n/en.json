@@ -312,7 +312,10 @@
      "CASHBOX" : "Cashbox",
      "CAUTION" : "Caution",
      "INVOICE" : "Invoice Payment",
-     "SELECT_INVOICES" : "Select Invoice(s)"
+     "SELECT_INVOICES" : "Select Invoice(s)",
+     "ERRORS"  :  {
+      "NO_CASH_ITEMS" : "No cash items have been selected.  In order to pay against previous invoices, you must select an invoice using the 'Select Invoices(s)' button."
+     }
    }
   },
 "CASH_DISCARD" : {
@@ -1390,7 +1393,10 @@
    "SUBMIT"          : "Submit",
    "SUBMIT_SUCCESS"  : "Form submitted succesfully.",
    "SUBMIT_FAILURE"  : "Form submission did not succeed.",
-   "UPDATE"          : "Update"
+   "UPDATE"          : "Update",
+   "WARNINGS" : {
+    "FUTURE_DATE" : "Warning: This date in the future."
+   }
    },
 "GRADE": {
    "ADD"            : "Add a grade",

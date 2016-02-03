@@ -9,14 +9,14 @@
 angular.module('bhima.services')
 .service('CashService', CashService);
 
-CashService.$inject = [ '$http', 'util' ];
+CashService.$inject = [ '$http', 'util', 'ExchangeRateService' ];
 
 /**
  * A service to interact with the server-side /cash API.
  *
  * @constructor CashService
  */
-function CashService($http, util) {
+function CashService($http, util, Exchange) {
   var service = this;
   var baseUrl = '/cash';
 
@@ -44,6 +44,42 @@ function CashService($http, util) {
   }
 
   /**
+   * Cash Payments can be made to multiple invoices.  This function loops
+   * though the invoices in selected order, allocating the global amount to each
+   * invoice until it is decimated.
+   */
+  function allocatePaymentAmounts(data) {
+
+    // the global amount paid
+    var totalAmount = data.amount;
+
+    var items = data.invoices
+
+    // loop through the invoices, allocating a sum to the invoice until there
+    // is no more left to allocate.
+      .map(function (invoice) {
+
+        // the allocated amount depends on the amount remaining.
+        var allocatedAmount = (totalAmount > invoice.amount) ?
+            invoice.amount :
+            totalAmount;
+
+        // decrease the total amount by the allocated amount.
+        totalAmount -= allocatedAmount;
+
+        // return a slice of the data
+        return { sale_uuid : invoice.sale_uuid, amount : allocatedAmount };
+      })
+
+    // filter out invoices that do not have amounts allocated to them
+      .filter(function (invoice) {
+        return invoice.amount > 0;
+      });
+
+    return items;
+  }
+
+  /**
    * Creates a cash payment from a JSON passed from a form.
    *
    * @method create
@@ -54,35 +90,21 @@ function CashService($http, util) {
 
     // create a temporary copy to send to the server
     var data = angular.copy(payment);
-    var totalAmount = payment.amount;
 
-    // ensure that data.is_caution is a number, not a string
+    // a payment can be made in any currency.  Exchange the currency into the
+    // enterprise currency before any more calculations take place.
+    data.amount = Exchange.convertToEnterpriseCurrency(data.currency_id, data.date, data.amount);
+
+    // ensure that the caution flag is a Number
     data.is_caution = Number(data.is_caution);
-   
-    // if is_caution is checked, delete invoice data
-    if (data.is_caution) { delete data.invoices; }
 
-    // calculate amount to bill each invoice from the global amount.
-    if (data.invoices) {
-      data.items = data.invoices
-        .map(function (invoice) {
-
-          // the allocated amount depends on the amount remaining.
-          var allocatedAmount = (totalAmount > invoice.amount) ?
-              invoice.amount : totalAmount;
-
-          // decrease the total amount by the allocated amount.
-          totalAmount -= allocatedAmount;
-
-          return { sale_uuid : invoice.sale_uuid, amount : allocatedAmount };
-        })
-        
-        // only retain positive invoice amounts
-        .filter(function (invoice) {
-
-          return invoice.amount > 0;
-        });
+    // process the sale items, allocating costs to each of them
+    if (data.is_caution === 0) {
+      data.items = allocatePaymentAmounts(data);
     }
+
+    // remove data.invoices property before submission to the server
+    delete data.invoices;
 
     return $http.post(baseUrl, { payment : data })
       .then(util.unwrapHttpResponse);

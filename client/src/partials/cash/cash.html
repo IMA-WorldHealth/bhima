@@ -52,7 +52,7 @@
                         <span class="glyphicon"
                           ng-class="{ 'glyphicon-edit' : CashCtrl.lockDateInput, 'glyphicon-check' : !CashCtrl.lockDateInput}">
                         </span>
-                        {{ (CashCtrl.lockDateInput ? "FORM.EDIT" : "FORM.SELECT") | translate }}
+                        {{ (CashCtrl.lockDateInput ? "FORM.EDIT" : "FORM.SET") | translate }}
                       </button>
                     </span>
                   </div>
@@ -89,11 +89,11 @@
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
                   <p><strong class="control-label">{{ "COLUMNS.TYPE" | translate }}</strong></p>
                   <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" value="1" required>
+                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="1" ng-change="CashCtrl.toggleVoucherType()" required>
                     {{ "CASH.VOUCHER.CAUTION" | translate }}
                   </label>
                   <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" value="0" required>
+                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="0" ng-change="CashCtrl.toggleVoucherType()" required>
                     {{ "CASH.VOUCHER.INVOICE" | translate }}
                   </label>
 
@@ -111,7 +111,7 @@
                     namespace: slip
                     display a table of selected invoices the patient will be billed for.
                   -->
-                  <table class="table" ng-show="CashCtrl.payment.invoices.length > 0">
+                  <table class="table table-condensed" ng-show="CashCtrl.payment.invoices.length > 0">
                     <thead>
                       <tr>
                         <th style="width: 25%;">{{ "COLUMNS.REFERENCE" | translate }}</th>
@@ -201,6 +201,11 @@
                     {{ (CashCtrl.loadingState ? "UTIL.LOADING" : "FORM.SUBMIT") | translate }}
                   </button>
                 </div>
+
+                <!-- show any HTTP errors that are logged from the server -->
+                <p ng-show="CashCtrl.HttpError" class="text-danger">
+                  <span class="glyphicon glyphicon-alert"></span> {{ CashCtrl.HttpError | translate }}
+                </p>
 
               </fieldset>
             </form>

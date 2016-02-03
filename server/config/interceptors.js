@@ -76,8 +76,11 @@ exports.databaseErrorHandler = function databaseErrorHandler(error, req, res, ne
     try {
       var appError = new errors[error.code]();
 
+      var status = appError.httpStatus;
+      delete appError.httpStatus;
+
       // send the formatted error back to the client.
-      res.status(appError.httpStatus).json(appError);
+      res.status(status).json(appError);
 
     // if no matching error found, pass on to next();
     } catch (e)  {
