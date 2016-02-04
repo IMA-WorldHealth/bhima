@@ -1370,6 +1370,7 @@
    "CONFIGURE"       : "Configure",
    "DELETE"          : "Delete",
    "DISCARD"         : "Discard",
+   "DISMISS"         : "Dismiss",
    "EDIT"            : "Edit",
    "LOGIN"           : "Login",
    "HAS_ERRORS"      : "The form contains errors.  Please correct them and resubmit.",
@@ -2333,6 +2334,19 @@
    "SUCCESS_MESSAGE" : "Patient visit successfully renewed",
    "TITLE"           : "Renew Patient Visit"
    },
+"RECEIPTS" : {
+  "DETAILS" : "Receipt Details",
+  "CLIENT" : "Client",
+  "CLIENT_ID" : "Client ID",
+  "DATE" : "Date",
+  "FAX" : "FAX",
+  "TEL" : "TEL",
+  "TELEPHONE" : "Telephone",
+  "TYPE" : "Type",
+  "TOTAL_BILLED" : "Total Billed",
+  "TOTAL_PAID" : "Total Paid",
+  "EXCHANGE_RATE" : "Exchange Rate"
+},
 "REFERENCE": {
    "ADD"            : "Add a Reference",
    "ALERT"          : "Reference management module is a module that has been designed to allow administration of existing References within the organization, the table is left to record, to update the attributes of a Reference and the deletion.",

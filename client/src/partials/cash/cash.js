@@ -105,7 +105,9 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     Cash.create(vm.payment)
     .then(function (response) {
       console.log('Got the following response:', response);
-      console.log('Redirecting to another page!');
+
+      // display the receipt in a modal
+      openReceiptModal(response.uuid);
     })
     .catch(handler)
     .finally(toggleLoadingState);
@@ -140,12 +142,12 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
     var instance = Modal.open({
       templateUrl: 'partials/cash/modals/receipt.modal.html',
-      controller:  'CashReceiptModalController as CashReceipteModalCtrl',
+      controller:  'CashReceiptModalController as CashReceiptModalCtrl',
       size:        'md',
       backdrop:    'static',
       animation:   false,
       resolve : {
-        uuid : function uuidProvider() { return vm.uuid; }
+        uuid : function uuidProvider() { return uuid; }
       }
     });
 

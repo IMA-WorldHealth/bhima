@@ -453,7 +453,7 @@ exports.configure = function (app) {
 
   /** cash (aux/primary) */
   app.get('/cash', cash.list);
-  app.get('/cash/:uuid', cash.getCashDetails);
+  app.get('/cash/:uuid', cash.detail);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
   app.delete('/cash/:uuid', cash.debitNote);
@@ -464,7 +464,7 @@ exports.configure = function (app) {
 
   // Enterprises api
   app.get('/enterprises', enterprises.list);
-  app.get('/enterprises/:id', enterprises.single);
+  app.get('/enterprises/:id', enterprises.detail);
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
 

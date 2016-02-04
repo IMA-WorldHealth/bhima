@@ -53,7 +53,9 @@ function CashService($http, util, Exchange) {
     // the global amount paid
     var totalAmount = data.amount;
 
-    var items = data.invoices
+    // default to an empty array if necessary -- the server will throw an error
+    /** @todo -- review this decision */
+    var items = (data.invoices || [])
 
     // loop through the invoices, allocating a sum to the invoice until there
     // is no more left to allocate.

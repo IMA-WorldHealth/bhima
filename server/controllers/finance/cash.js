@@ -22,7 +22,7 @@ function lookupCashRecord(uuid, codes) {
 
   var record;
   var cashRecordSql =
-    'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference, ' +
+    'SELECT cash.uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference, ' +
       'cash.date, cash.debtor_uuid, cash.currency_id, cash.amount, ' +
       'cash.description, cash.cashbox_id, cash.is_caution, cash.user_id ' +
     'FROM cash JOIN project ON cash.project_id = project.id ' +
@@ -106,7 +106,7 @@ exports.list = function list(req, res, next) {
  *   ...
  *  }
  */
-exports.getCashDetails = function details(req, res, next) {
+exports.detail = function detail(req, res, next) {
   'use strict';
 
   var uuid = req.params.uuid;
