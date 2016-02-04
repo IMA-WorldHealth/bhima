@@ -4,7 +4,7 @@
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
       <li class="title">{{ "PATIENT_INVOICE.PAGE_TITLE" | translate }}</li>
-      <li class="title">{{PatientInvoiceCtrl.invoiceId}}</li>
+      <li class="title">{{PatientInvoiceCtrl.invoicePatient.name}}</li>
     </ol>
     
   </div>
@@ -17,7 +17,7 @@
       <div class="col-md-6">
         <div class="form-group">
           <label>Bill to</label>
-          <find-patient type="inline">
+          <find-patient type="inline" on-search-complete="PatientInvoiceCtrl.setPatient(patient)">
           </find-patient>
         </div>
         
@@ -31,7 +31,12 @@
           </select>
         </div>
 
-        <label class="control-label">Sale Type <span class="text-info glyphicon glyphicon-info-sign"></span></label>
+        <label class="control-label">
+          Sale Type 
+          <!-- popover-placement="right" --> 
+          <span 
+            class="text-info glyphicon glyphicon-info-sign"></span>
+        </label>
         <div class="form-group">
           <label class="radio-inline">
             <input type="radio" name="service-type" id="distributable" value="true" checked ng-model="PatientInvoiceCtrl.distributable" required>
@@ -87,19 +92,43 @@
                 ng-click="PatientInvoiceCtrl.addInventoryItem(PatientInvoiceCtrl.itemIncrement)"><span class="glyphicon glyphicon-plus-sign"></span> Add</button> 
             </span>
             <input class="form-control input-sm" ng-model="PatientInvoiceCtrl.itemIncrement" style="max-width : 40px;"></input> 
+            <button 
+                class="btn btn-default btn-sm" ng-click="PatientInvoiceCtrl.viewItems()">View</button>
           </div>
       </div>
     </div>
-    <div ui-grid="PatientInvoiceCtrl.mockOptions" style="height : 300px !important; width : 100%;">
+    <!-- TODO Research performance hit using ui-grid-auto-resize -->
+    <div ui-grid="PatientInvoiceCtrl.mockOptions" style="height : 300px; width : 100%;" ui-grid-auto-resize>
       
     </div>
-    <!-- <div class="row"> -->
-    <!--   <div class="col-sm-8"> -->
 
+    <!-- Ideal directive allowing totalling columns on any slick grid -->
+    
+    <!-- <totals-footer grid="PatientInvoiceCtrl.gridOptions" > --> 
+    <!--   <div width="{{TotalFooterCtrl.calculatedWidth}}"> -->
+    <!--     <span>Totals</span> -->
     <!--   </div> -->
-    <!--   <div class="col-sm-4"> -->
-    <!--     <button class="btn btn-default">Submit Patient Invoice</button> -->
+
+    <!--   <div> -->
+    <!--     <span>$0.00</span> -->
     <!--   </div> -->
-    <!-- </div> -->
+    <!-- </footer> -->
+  
+    <!-- ------------------>
+
+    <div class="row" style="margin-top : 20px;">
+      <div class="col-xs-12">
+        
+        <finance-footer>
+
+        <div style="margin-bottom : 1em; height :20px; background-color : red; width : {{PatientInvoiceCtrl.calculate(PatientInvoiceCtrl.columns)}}px;"></div>
+
+        </finance-footer>
+      </div>
+    </div>
   </div>
-</main>
+</div>
+
+<script type="text/ng-template" id="distributableInfo.html">
+  <div>Content</div>
+</script>
