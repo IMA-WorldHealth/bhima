@@ -71,7 +71,7 @@ var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
 var transfers           = require('../controllers/finance/transfers');
 
-var service    = require('../controllers/admin/service');
+var services    = require('../controllers/admin/services');
 
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
@@ -130,11 +130,11 @@ exports.configure = function (app) {
 
   //API for service routes
 
-  app.post('/services', service.create);
-  app.get('/services', service.list);
-  app.get('/services/:id', service.detail);
-  app.put('/services/:id', service.update);
-  app.delete('/services/:id', service.remove);
+  app.post('/services', services.create);
+  app.get('/services', services.list);
+  app.get('/services/:id', services.detail);
+  app.put('/services/:id', services.update);
+  app.delete('/services/:id', services.remove);
 
   //API for profit_center routes crud
   app.get('/profit_centers', profitCenter.list);

@@ -387,6 +387,6 @@ ADD `locked` BOOLEAN NOT NULL;
 -- By : Dedrick Kitamuka
 
 ALTER TABLE service DROP FOREIGN KEY service_ibfk_1;
-ALTER TABLE service CHANGE project_id enterprise_id SMALLINT(5) UNSIGNED;
+ALTER TABLE service CHANGE project_id enterprise_id SMALLINT(5) UNSIGNED NOT NULL;
 ALTER TABLE service ADD FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`);
 

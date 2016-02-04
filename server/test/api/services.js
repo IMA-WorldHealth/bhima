@@ -18,6 +18,7 @@ describe('The Service API, PATH : /services', function () {
 
   var serviceWithoutCostCenter = {
     name : 'without cost and profit center',
+    enterprise_id : 1,
     cost_center_id : null,
     profit_center_id : null
   };

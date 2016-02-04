@@ -106,6 +106,18 @@ function lookupProfitCenter (id, codes) {
     });
 }
 
+
+/**
+* METHOD : GET
+* FUNCTION : getProfitValue
+* ARG : 
+*      - req contains a id of profit center
+*      - res will contain the result to send to the client
+*      - next will pass the control to an other middleware
+* DESCRIPTION : This funtion receive an profit center id and send back his value, by scanning the general
+*               table and by considering account which are directly tailed to it.
+**/
+
 function getProfitValue (req, res, next){
 
   var sql = null, optionalCondition = '';
@@ -125,10 +137,8 @@ function getProfitValue (req, res, next){
 
       sql =
         'SELECT SUM(t.credit_equiv - t.debit_equiv) as profit ' +
-        'FROM ((SELECT pj.debit_equiv, pj.credit_equiv FROM posting_journal AS pj LEFT JOIN ' +
-        'profit_center AS pc ON pj.pc_id = pc.id WHERE pj.pc_id=?' + (optionalCondition.replace('%table%', 'pj')) + ') ' + 
-        'UNION ALL (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN ' +
-        'profit_center AS pc ON gl.pc_id = pc.id WHERE gl.pc_id=? ' + (optionalCondition.replace('%table%', 'gl')) + ')) ' +
+        'FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN ' +
+        'profit_center AS pc ON gl.pc_id = pc.id WHERE gl.pc_id=? ' + (optionalCondition.replace('%table%', 'gl')) + ') ' +
         'AS t';
 
       return db.exec(sql, [req.params.id, req.params.id]);

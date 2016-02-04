@@ -95,6 +95,15 @@ function detail(req, res, next) {
     .done();
 }
 
+/**
+* FUNCTION : lookupService
+* ARG : 
+*      - id contains a id of a service
+*      - codes contain a set of error code and error messages
+* DESCRIPTION : This funtion receive an service id and attempt to retrieve it in the database
+*               It throws an error if there is no occurence otherwise it will send back and object
+*               representing a service.
+**/
 function lookupService(id, codes) {
   'use strict';
 
@@ -110,22 +119,22 @@ function lookupService(id, codes) {
     });
 }
 
-function isValidData (obj){  
+function isValidData (service){  
 
-if(obj.enterprise_id){
-  if(isNaN(Number(obj.enterprise_id))) {
-    return false;
-  }
-}
+// if(service.enterprise_id){
+//   if(isNaN(Number(service.enterprise_id))) {
+//     return false;
+//   }
+// }
 
-  if(obj.cost_center_id) {
-    if(isNaN(Number(obj.cost_center_id))){
+  if(service.cost_center_id) {
+    if(isNaN(Number(service.cost_center_id))){
       return false;
     }
   }
 
-  if(obj.profit_center_id) {
-    if(isNaN(Number(obj.profit_center_id) )){
+  if(service.profit_center_id) {
+    if(isNaN(Number(service.profit_center_id) )){
       return false;
     }
   }
