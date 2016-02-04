@@ -78,8 +78,8 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
   // refresh the displayed Projects
   function refreshProjects() {
     return Projects.read(null, { complete : 1 })
-    .then(function (projects) {
-      vm.projects = projects.data;
+    .then(function (data) {
+      vm.projects = data;
     });
   }
 
