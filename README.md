@@ -7,8 +7,6 @@ BHIMA
 [![bitHound Overall Score](https://www.bithound.io/github/IMA-WorldHealth/bhima-2.X/badges/score.svg)](https://www.bithound.io/github/IMA-WorldHealth/bhima-2.X)
 [![bitHound Code](https://www.bithound.io/github/IMA-WorldHealth/bhima-2.X/badges/code.svg)](https://www.bithound.io/github/IMA-WorldHealth/bhima-2.X)
 
-_Bhima is alpha version software. Please do not use this in a commerical context._
-
 Bhima is a free, open source accounting and hospital information management system
 (HIMS) tailored for rural hospitals in Africa.  We are an international team
 based in the Democratic Republic of the Congo.

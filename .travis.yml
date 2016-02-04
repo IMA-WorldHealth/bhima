@@ -33,20 +33,17 @@ script:
   - npm install -g npm
   - npm install -g gulp bower mocha
   - bower install
-  - npm run travis &
-  - sleep 10
-  - mocha server/test/api
+  - ./node_modules/protractor/bin/webdriver-manager update
+  - bash sh/travis.sh
 
 git:
   depth: 3
 
-env:
-  global:
-  - secure: UsNWrUSEvh7Shjr0zlXo+DSVhWmBfa50TrDLGU6tuLOav+VAJvYd9vFxUUpYwu9/dX5Zrc6BxEzeFmzcdTlic5zNJStKD6duiiv7zpwZJrRjayxMBiMuvXfdsY8ClOfGSBZywa6xl4IfcCCdEOX/9HLm1GBYp4rPo1wWN1a2Hzhc1+Dp2u4+XH7HzW6kviYFSNiZm8MZlrmQAu+Uz6Ul4UhaXUU6fl2CTM5f/iDY3JATWYzWgVHEVGcdputYAKawRyQfBdhCKWndLLV1AyuY5Vh6Wj5aYAxISaEp9ukA3HLCZMzD9Mu+zQfSfjXPXN+WdRAU2b0HvvD5YJBwUPZvE9NUSNC22vaZt8to5q1A7MKwN6V7gLc97JE/lEjCgCq+G3nDTn57vCiFIJ1fgBt+M4t7zJ+a6ckYPK7z6CIKGPL6l20UGj8vKshFLT2PeVwyYTBRkQFxvDV2vteO/zsuccCk9XtJIwqvUcA7fijmL+tNQcp5bwcOosOyqx2BhcpYLVcBGCGSxJ+AFVo3fm2yFgX33ZIQSNkPTRw7UqaJWjk+DfCL/e6cXRuAyDusXVuM1ga4QexQyT7LlZVX1JfUG32rJZikGTm8psFdNhnqLEDOfylFi3DHl9onsM05GcNpUzyOTUv01i8kFqJT3xgA2aEYEGp93heVNXl45GfYV2c=
-  - secure: Zji0cP0yszHfiIErAy2rKmK1ybJGJg2bVYXy/YQEURIPzDLtpN4WtLOzPnnkyiYjc/hHij6gEHIVArulNM3IVByQQVYdr4ZPWD4rVLzh15IVtTflwKAfxeJR/4YE/vo5T5v7JwC+yTddt/wmfxjzpbwLKc22nt8+Qoacu95ODtR/7VGVeTrctb2NMUABsDN/oIi63dOg0cZb0cRVFRUkwVsRhDxKN+AyXGFmw2jVYi9sM+E3DpordSGVedZqRRRQNP2JV4Bllva+hxU1Aa0Lan/lIUPC8YOV6t1JamOq9YTshIYPbx9ZjctdRFhz0+uejh9KLxr8MtqCL2/Y2bvAN3ENVtY5v/JBYaHgUxNC2z841uOpaMZy1VrwZW7k8yLW/qqCqPD1YG9wuM1HQnt16nOGO7Z6B0g8fzA1qIfTB74JHREkyRHl8XH5/8BTgYqMzaBIhJ0VIcZzVJon6HQNYhsAOKs29yQ/VZm91kA0sBGtf2Tha2/AqcKxrJXX0ZMpTHkmz4GcIwJSDIic8h8GsjaHiYAxU8ECoiwZP6D65SqqE1J87LzwjF2VRFxrwCPjQOIC5cTxC/K4Mawal7MdED23KnWyKnIUBScNst624/s77btqjFQBXMcLGUkuMuSd2TBRMNvg5nAqLjolWbdWR6O2Bx0cBwRmdHbcWs3v5LU=
-
 addons:
-  sauce_connect: true
+  sauce_connect:
+    username: "developers@imaworldhealth.org"
+    access_key :
+        secure: "HUms7z2RReoVx4edlEpKs/Icdrd2phFJym+kuYYcs5HsJJR+Lc1K8AJ2X6W7K1XVb3OSR6TsPZduLctwobQiMaWmnVt7WuKXm2CcWrg4HAjiAVinLeUGFbmgzXSLoenqSdEVg3SbKTADAGkL+AQikpep4J/W6k8Leq+eGSO2ADlDw5GBS2YN1mwUHh7tXwu8rn4tPMI0NVguwU0v9SrZSEuUomX4KMZWe8J7MQMFfmClHqX1RDVjendILTT74Psty13y+53D5OlRUJgGwkJiCDJNtp+BU9YzfUoeOTQai7uns4/jecOCyI2ykQCio2x/eMNeREfrj7nYXgdw4b45IeOSNByxPJPPzCTkG+5+dOuH5F4ilmRa44eOduEYVvJ/1v+vYjegtjMOr4h5CEDl5WotkeR10Hm7kNABMascwl9UA3Lm6O8P2Ej1AxADqCcZK4NGCzCEQLEvFSaqUDnXBJ+yJrvpF/7BFJ0/3CEOtQHzyOVt90XyUXQ7H74uKwMEspTXZCjlBK2BSP5UA2P1CiqyWDahgZUWKCN7ZbYeLQ/oI7qgaN2nnRiEG/C2ekRRfJGxSwBUA5E3/WNqwfGssLkjk80FaYTyJv2V/pRw6Qyg/PsdsLBJbEjHA1BVZdMETqxMIyOEIiEQsm20TVVdhsn5n7w7Svec2YOtjAqp8jg="
 
 before_cache:
   - rm -f npm-debug.log
