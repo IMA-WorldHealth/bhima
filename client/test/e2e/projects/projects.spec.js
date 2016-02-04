@@ -102,4 +102,10 @@ describe('The Projects Module', function () {
     expect(element(by.id('delete_error')).isPresent()).to.eventually.be.true;
   });
 
+  it('Cancellation of removal process of a project', function () {
+    element(by.id('project-del-' + DELETE_ERROR )).click();
+    browser.switchTo().alert().dismiss();
+    expect(element(by.id('default')).isPresent()).to.eventually.be.true;
+  });
+
 });

@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('ProjectController', ProjectController);
 
 ProjectController.$inject = [
-   'ProjectService', 'EnterpriseService', 'SnisService', 'FormStateFactory'
+   'ProjectService', 'EnterpriseService', 'SnisService', 'FormStateFactory', '$translate', '$window'
 ];
 
-function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
+function ProjectController(Projects, Enterprises, SnisService, StateFactory, $translate, $window) {
   var vm = this;
 
   vm.enterprises = [];
@@ -64,15 +64,20 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
 
   // switch to delete warning mode
   function del(project) {
-    vm.view = 'delete_confirm';
-    Projects.delete(project.id)
-    .then(function (response) {
-      refreshProjects();
-      vm.view = 'delete_success';
-    }).catch(function (error) {
-      vm.view = 'delete_error';
-      vm.HTTPError = error;
-    });
+    var result = $window.confirm($translate.instant('PROJECT.CONFIRM'));
+    if(result){
+      vm.view = 'delete_confirm';
+      Projects.delete(project.id)
+      .then(function (response) {
+        refreshProjects();
+        vm.view = 'delete_success';
+      }).catch(function (error) {
+        vm.view = 'delete_error';
+        vm.HTTPError = error;
+      });
+    } else {
+      vm.view = 'default';
+    } 
   }
 
   // refresh the displayed Projects

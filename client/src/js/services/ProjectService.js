@@ -1,9 +1,9 @@
 angular.module('bhima.services')
 .service('ProjectService', ProjectService);
 
-ProjectService.$inject = [ '$http', '$translate', '$window', 'util' ];
+ProjectService.$inject = [ '$http', 'util' ];
 
-function ProjectService($http, $translate, $window, util) {
+function ProjectService($http, util) {
   var service = this;
 
   service.create = create;
@@ -28,11 +28,11 @@ function ProjectService($http, $translate, $window, util) {
   }
 
   function del(id) {
-
-    var result = $window.confirm($translate.instant('PROJECT.CONFIRM'));
-    if (result) {
     return $http.delete('/projects/' + id)
     .then(util.unwrapHttpResponse);
-    }    
   }
 }
+
+
+
+
