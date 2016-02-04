@@ -72,7 +72,7 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory) {
     }).catch(function (error) {
       vm.view = 'delete_error';
       vm.HTTPError = error;
-    })
+    });
   }
 
   // refresh the displayed Projects
