@@ -48,7 +48,12 @@ function update (req, res, next) {
   var serviceId = req.params.id;
   var updateServiceQuery = 'UPDATE service SET ? WHERE id = ?';
 
+
   delete queryData.id;
+
+  if(!isValidData(queryData)) {
+    return next(new req.codes.ERR_BAD_VALUE());
+  }
 
   lookupService(serviceId, req.codes)
     .then(function () {
@@ -103,6 +108,29 @@ function lookupService(id, codes) {
       }
       return rows[0];
     });
+}
+
+function isValidData (obj){  
+
+if(obj.enterprise_id){
+  if(isNaN(Number(obj.enterprise_id))) {
+    return false;
+  }
+}
+
+  if(obj.cost_center_id) {
+    if(isNaN(Number(obj.cost_center_id))){
+      return false;
+    }
+  }
+
+  if(obj.profit_center_id) {
+    if(isNaN(Number(obj.profit_center_id) )){
+      return false;
+    }
+  }
+
+  return true;
 }
 
 exports.list = list;
