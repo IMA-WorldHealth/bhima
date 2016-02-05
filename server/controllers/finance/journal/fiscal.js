@@ -2,9 +2,7 @@ var q         = require('q'),
     core      = require('./core'),
     uuid      = require('../../../lib/guid'),
     sanitize  = require('../../../lib/sanitize'),
-    validate  = require('../../../lib/validate')(),
-    db        = require('../../../lib/db'),
-    util      = require('../../../lib/util');
+    db        = require('../../../lib/db');
 
 exports.close = close;
 exports.create = create;
@@ -41,15 +39,15 @@ function close(id, user_id, data, cb) {
       // Locking simply a fiscal year without creation
       // Transaction date (in journal) must be the last date of the concerned
       // fiscal year
-      transactionDate = util.toMysqlDate(data.fiscalYearLastDate);
-      cfg.descrip = 'Closing Fiscal Year/' + String(transactionDate);
+      transactionDate = data.fiscalYearLastDate;
+      cfg.descrip = 'Closing Fiscal Year/' + transactionDate;
 
     } else if (data.flag === 'CREATE_WITH_LOCKING') {
       // Create a new fiscal year with closing previous
       // Transaction date of creation (in journal) must be the last date of
       // the closed fiscal year
-      transactionDate = util.toMysqlDate(data.closedFYLastDate);
-      cfg.descrip = 'New Fiscal Year/Closing Previous/' + String(transactionDate);
+      transactionDate = data.closedFYLastDate;
+      cfg.descrip = 'New Fiscal Year/Closing Previous/' + transactionDate;
     }
   } catch (err) {
     return cb(err);

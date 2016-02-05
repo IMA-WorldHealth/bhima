@@ -7,8 +7,6 @@
 * employees table through the `/employees` endpoint.
 *
 * @requires lib/db
-* @requires lib/util
-* @requires config/codes
 *
 * NOTE: This api does not handle the deletion of employees because
 * that subject is not in the actuality.
@@ -17,7 +15,6 @@
 'use strict';
 
 var db = require('./../../lib/db');
-var util = require('./../../lib/util');
 
 /**
 * Returns an array of each employee in the database
