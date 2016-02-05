@@ -38,6 +38,7 @@
     "fast-csv": "1.0.0",
     "morgan": "^1.6.1",
     "mysql": "^2.9.0",
+    "node-uuid": "^1.4.7",
     "numeral": "^1.5.3",
     "q": "~1.4.1",
     "session-file-store": "0.0.24",
