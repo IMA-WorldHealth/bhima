@@ -1,12 +1,36 @@
-// TODO Patients currently responsible for setting debtor (one small line) - should this be delegated here?
-// TODO Create Debtor Group
-var db = require('../../lib/db'),
+/**
+* The Debtors Controllers
+*
+* @module finance/debtors
+*
+* @desc This module is responsible for handling all crud operations relatives
+* to debtors and debtor groups, and relatives functions
+*
+* @required q
+* @required lib/db
+* @required lib/guid
+*
+* @todo Patients currently responsible for setting debtor (one small line) - should this be delegated here?
+* @todo implements the creation of a Debtor Group
+* @todo (listGroups) ? parameter to request all (including locked) groups
+*/
+
+'use strict';
+
+var q  = require('q'),
+    db = require('../../lib/db'),
     guid = require('../../lib/guid');
 
-exports.groupDetails = groupDetails;
-exports.listGroups = listGroups;
-exports.update = update;
+exports.groupDetails  = groupDetails;
+exports.listGroups    = listGroups;
+exports.update        = update;
 exports.fetchInvoices = fetchInvoices;
+
+/** `fetchGroupInvoices` HTTP API Endpoint function */
+exports.fetchGroupInvoices = fetchGroupInvoices;
+
+/** `getGroupInvoices` Server side function */
+exports.getGroupInvoices = getGroupInvoices;
 
 function groupDetails(req, res, next) {
   var debtorDetailsQuery;
@@ -38,7 +62,6 @@ function groupDetails(req, res, next) {
     .done();
 }
 
-// TODO ? parameter to request all (including locked) groups
 function listGroups(req, res, next) {
   var listDebtorGroupsQuery, filterLockedCondition;
   var query;
@@ -62,28 +85,28 @@ function listGroups(req, res, next) {
     .done();
 }
 
-function update(req, res, next) { 
+function update(req, res, next) {
   var updateDebtorQuery;
   var queryData = req.body;
   var debtorId = req.params.uuid;
-  
-  if (!debtorId) { 
+
+  if (!debtorId) {
     res.status(400).json({
       code : 'ERR_INVALID_REQUEST',
       reason : 'A valid debtor UUID must be provided to update a debtor record.'
     });
     return;
   }
-  
-  updateDebtorQuery = 
+
+  updateDebtorQuery =
     'UPDATE debitor SET ? WHERE uuid = ?';
-  
+
   db.exec(updateDebtorQuery, [queryData, debtorId])
-    .then(function (result) { 
-    
+    .then(function (result) {
+
       return lookupDebtor(debtorId, req.codes);
     })
-    .then(function (updatedDebtor) { 
+    .then(function (updatedDebtor) {
       res.status(200).json(updatedDebtor);
     })
     .catch(next)
@@ -91,7 +114,7 @@ function update(req, res, next) {
 }
 
 function fetchInvoices (req, res, next){
-  
+
   var accountId = null;
   var sql =
     'SELECT account_id FROM debitor_group WHERE uuid = (SELECT group_uuid FROM debitor WHERE uuid = ?)';
@@ -138,7 +161,7 @@ function fetchInvoices (req, res, next){
       'JOIN sale AS s ON t.inv_po_id = s.uuid ' +
       'JOIN project AS p ON s.project_id = p.id ' +
       'JOIN sale_item AS si ON si.sale_uuid = s.uuid ' +
-      'LEFT JOIN credit_note AS cn ON cn.sale_uuid = s.uuid ' + 
+      'LEFT JOIN credit_note AS cn ON cn.sale_uuid = s.uuid ' +
       'WHERE t.inv_po_id IN (?) ' +
         'AND t.account_id = ? ' +
         'GROUP BY t.inv_po_id';
@@ -152,13 +175,106 @@ function fetchInvoices (req, res, next){
       res.status(200).json(rows);
     })
     .catch(next)
-    .done();             
+    .done();
 }
 
-function lookupDebtor(uuid, codes) { 
-  var debtorQuery = 
-    'SELECT uuid, group_uuid, text ' + 
-    'FROM debitor ' + 
+/**
+* Fetch Debtor Group Invoices
+*
+* @function fetchGroupInvoices
+*
+* @desc This function is responsible for getting all invoices of a specified debtor group
+*/
+function fetchGroupInvoices(req, res, next) {
+  getGroupInvoices(req.params.id)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+}
+
+/**
+* Get Debtor group invoices
+*/
+function getGroupInvoices (id) {
+  var def = q.defer();
+
+  if (!id) { def.reject(new Error('ERR_MISSING_REQUIRED_PARAMETERS')); }
+
+  var query =
+    'SELECT `debitor_group`.`account_id` FROM `debitor_group` ' +
+    'WHERE `debitor_group`.`uuid`= ?';
+
+  db.exec(query, [id])
+  .then(function (rows) {
+    if (!rows.length) { def.resolve([]); }
+
+    var accountId = rows.pop().account_id;
+    var query =
+      'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (' +
+        ' SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
+        ' FROM posting_journal AS p ' +
+        ' WHERE p.account_id = ? ' +
+        ' UNION ' +
+        ' SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
+        ' FROM general_ledger AS g ' +
+        ' WHERE g.account_id = ? ' +
+      ') AS c ;';
+
+    return db.exec(query, [accountId, accountId]);
+  })
+  .then(function (rows) {
+    if (!rows.length) { def.resolve([]); }
+
+    var accountId = rows.pop().account_id;
+    var invoices = rows.map(function (line) {
+      return line.inv_po_id;
+    });
+
+    var query =
+      'SELECT s.reference, s.project_id, s.is_distributable, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,  ' +
+        'SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance, ' +
+        't.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id, ' +
+        't.comment ' +
+      'FROM (' +
+        '(' +
+          'SELECT pj.inv_po_id, pj.trans_date, pj.debit, ' +
+            'pj.credit, pj.debit_equiv, pj.credit_equiv, ' +
+            'pj.account_id, pj.deb_cred_uuid, pj.currency_id, ' +
+            'pj.doc_num, pj.trans_id, pj.description, pj.comment ' +
+          'FROM posting_journal AS pj ' +
+          'WHERE pj.inv_po_id IN ("' + invoices.join('","') + '") ' +
+          'AND pj.account_id = ? ' +
+        ') UNION (' +
+          'SELECT gl.inv_po_id, gl.trans_date, gl.debit, ' +
+            'gl.credit, gl.debit_equiv, gl.credit_equiv, ' +
+            'gl.account_id, gl.deb_cred_uuid, gl.currency_id, ' +
+            'gl.doc_num, gl.trans_id, gl.description, gl.comment ' +
+          'FROM general_ledger AS gl ' +
+          'WHERE gl.inv_po_id IN ("' + invoices.join('","') + '") ' +
+          'AND gl.account_id=? ' +
+        ')' +
+      ') AS t JOIN sale AS s on t.inv_po_id = s.uuid ' +
+      'GROUP BY t.inv_po_id ;';
+
+    return db.exec(query, [accountId, accountId]);
+  })
+  .then(function (rows) {
+    def.resolve(rows);
+  })
+  .catch(function (err) {
+    def.reject(err);
+  });
+  return def.promise;
+}
+
+function lookupDebtor(uuid, codes) {
+  var debtorQuery =
+    'SELECT uuid, group_uuid, text ' +
+    'FROM debitor ' +
     'WHERE uuid = ?';
 
   return db.exec(debtorQuery, [uuid])
@@ -171,4 +287,3 @@ function lookupDebtor(uuid, codes) {
 function isEmpty(array) {
   return array.length === 0;
 }
-
