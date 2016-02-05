@@ -33,7 +33,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="project in ProjectCtrl.projects | orderBy:'name'" ng-class="{'btn-primary' : editProject.id==project.id }">
+              <tr ng-repeat="project in ProjectCtrl.projects | orderBy:'name' track by project.id" ng-class="{'btn-primary' : editProject.id==project.id }">
                 <td>{{ project.id }}</td>
                 <td>{{ project.name }}</td>
                 <td>{{ project.abbr }}</td>
