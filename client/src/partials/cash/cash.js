@@ -104,7 +104,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     // submit the cash payment
     Cash.create(vm.payment)
     .then(function (response) {
-      console.log('Got the following response:', response);
 
       // display the receipt in a modal
       openReceiptModal(response.uuid);
@@ -131,12 +130,11 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   // fired after a patient is found via the find-patient directive
   function usePatient(patient) {
     vm.payment.debtor_uuid = patient.debitor_uuid;
+    vm.patient = patient;
   }
-
 
   /**
    * Receipt modal for fun and profit.
-   *
    */
   function openReceiptModal(uuid) {
 
@@ -147,14 +145,10 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
       backdrop:    'static',
       animation:   false,
       resolve : {
-        uuid : function uuidProvider() { return uuid; }
+        uuid : function uuidProvider() { return uuid; },
+        patientUuid : function patientUuidProvider() { return vm.patient.uuid; }
       }
     });
-
-    instance.result.then(function (res) {
-      console.log('Done');
-    });
-
   }
 
   /**

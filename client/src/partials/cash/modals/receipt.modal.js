@@ -2,8 +2,9 @@ angular.module('bhima.controllers')
 .controller('CashReceiptModalController', CashReceiptModalController);
 
 CashReceiptModalController.$inject = [
-  'uuid', '$uibModalInstance', 'CashService', 'ProjectService',
-  'EnterpriseService', '$q', 'CashboxService', 'UserService', 'ExchangeRateService'
+  'uuid', 'patientUuid', '$uibModalInstance', 'CashService', 'ProjectService',
+  'EnterpriseService', '$q', 'CashboxService', 'UserService', 'ExchangeRateService',
+  'Patients', 'CurrencyService'
 ];
 
 /**
@@ -12,12 +13,13 @@ CashReceiptModalController.$inject = [
  * @description This controller is responsible for displaying a receipt for a
  * cash payment made from the auxillary cash box.
  */
-function CashReceiptModalController(uuid, ModalInstance, Cash, Projects, Enterprises, $q, Cashboxes, Users, Exchange) {
+function CashReceiptModalController(uuid, patientUuid, ModalInstance, Cash, Projects, Enterprises, $q, Cashboxes, Users, Exchange, Patients, Currencies) {
   var vm = this;
 
   // bind close modal method
   vm.cancel = ModalInstance.dismiss;
   vm.isEnterpriseCurrency = isEnterpriseCurrency;
+  vm.fmtCurrency = fmtCurrency;
 
   // bind data
   vm.loading = false;
@@ -38,8 +40,6 @@ function CashReceiptModalController(uuid, ModalInstance, Cash, Projects, Enterpr
       // bind the receipt
       vm.receipt = receipt;
 
-      console.log('Got Receipt:', receipt);
-
       return $q.all([
 
         // read in the cashboxes to tell the user where it was created
@@ -51,18 +51,26 @@ function CashReceiptModalController(uuid, ModalInstance, Cash, Projects, Enterpr
         // get the project information
         Projects.read(receipt.project_id),
 
+        // load in the patient details
+        Patients.detail(patientUuid),
+
         // ensure the exchange rates are loaded
-        Exchange.read()
+        Exchange.read(),
+
+        // ensure that currencies are loaded
+        Currencies.read()
       ]);
     })
     .then(function (promises) {
-
-      console.log('promises:', promises);
 
       // destruct the promises
       vm.cashbox = promises[0];
       vm.user    = promises[1];
       vm.project = promises[2];
+      vm.patient = promises[3];
+
+      // format a patient name nicely
+      vm.patient.label = fmtPatient(vm.patient);
 
       // for display purposes, convert the value to the payment value
       vm.receipt.total =
@@ -76,8 +84,6 @@ function CashReceiptModalController(uuid, ModalInstance, Cash, Projects, Enterpr
       return Enterprises.read(vm.project.enterprise_id);
     })
     .then(function (enterprise) {
-
-      console.log('Read enterprise :', enterprise);
       vm.enterprise = enterprise;
     })
     .catch(handler)
@@ -94,6 +100,17 @@ function CashReceiptModalController(uuid, ModalInstance, Cash, Projects, Enterpr
   /** this is to make HTML more readable */
   function isEnterpriseCurrency(id) {
     return vm.enterprise && vm.enterprise.currency_id === id;
+  }
+
+  /** formats a patient's name nicely */
+  function fmtPatient(patient) {
+    return [patient.first_name, patient.middle_name, patient.last_name].join(' ');
+  }
+
+  function fmtCurrency(id) {
+    return angular.isDefined(id) ?
+      Currencies.format(id) :
+      '';
   }
 
   // starts up the module

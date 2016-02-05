@@ -315,6 +315,9 @@
      "SELECT_INVOICES" : "Select Invoice(s)",
      "ERRORS"  :  {
       "NO_CASH_ITEMS" : "No cash items have been selected.  In order to pay against previous invoices, you must select an invoice using the 'Select Invoices(s)' button."
+     },
+     "RECEIPTS" : {
+      "TITLE" : "Cash Payment Receipt"
      }
    }
   },
@@ -2209,7 +2212,7 @@
    },
 "PROJECT": {
    "CONFIRM"        : "Are you sure you want to delete this Project",
-   "DELETE_SUCCESS" : "Deleted successfully", 
+   "DELETE_SUCCESS" : "Deleted successfully",
    "EDIT"           : "Editing Project",
    "EXISTING"       : "Existing Projects",
    "HELP_TXT_1"     : "This page is for managment of projects belonging to enterprises.  You see here all projects currently registered to your current enterprise.",
@@ -2345,7 +2348,12 @@
   "TYPE" : "Type",
   "TOTAL_BILLED" : "Total Billed",
   "TOTAL_PAID" : "Total Paid",
-  "EXCHANGE_RATE" : "Exchange Rate"
+  "EXCHANGE_RATE" : "Exchange Rate",
+  "POST_OFFICE_BOX" : "Post Office Box",
+  "PO_BOX" : "P.O. Box",
+  "CASHIER" : "Cashier",
+  "CURRENCY" : "Transaction Currency",
+  "CASHBOX" : "Cash Window"
 },
 "REFERENCE": {
    "ADD"            : "Add a Reference",

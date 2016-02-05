@@ -19,9 +19,11 @@ ExchangeRateService.$inject = [
 * the application and throw a MISSING_EXCHANGE_RATES error if we are missing a base
 * rate for any of the currencies.
 *
-* TODO -- How should we best handle errors such as looking up old dates before an
+* @todo - How should we best handle errors such as looking up old dates before an
 * exchange rate is defined?  What happens when we call
 * service.convertToEnterpriseCurrency(someId, null, 100)?
+*
+* @todo - documentation improvements
 */
 function ExchangeRateService($http, $q, util, Currencies, Session) {
   var service = {};
@@ -135,17 +137,8 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   // using the exchange rate valid for the date {date}
   function convertToEnterpriseCurrency(currencyId, date, amount) {
 
-    // if we passed in the enterprise currency, just return the amount.  Allows
-    // you to apply this transformation to a list of mixed currencies.
-    if (currencyId === Session.enterprise.currency_id) { return amount; }
-
-    // look up the rates for currencyId via the cMap object.
-    var rates = cMap[currencyId].filter(function (row) {
-      return row.date <= date;
-    });
-
-    // get the last rate for the given currency
-    var rate = rates[rates.length - 1].rate;
+    // get the current exchange rate
+    var rate = getExchangeRate(currencyId, date);
 
     return amount * (1 / rate);
   }
@@ -154,17 +147,8 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   // using the exchange rate valid for the date {date}
   function convertFromEnterpriseCurrency(currencyId, date, amount) {
 
-    // if we passed in the enterprise currency, just return the amount.  Allows
-    // you to apply this transformation to a list of mixed currencies.
-    if (currencyId === Session.enterprise.currency_id) { return amount; }
-
-    // look up the rates for currencyId via the cMap object.
-    var rates = cMap[currencyId].filter(function (row) {
-      return row.date <= date;
-    });
-
-    // get the last rate for the given currency
-    var rate = rates[rates.length - 1].rate;
+    // get the current exchange rate
+    var rate = getExchangeRate(currencyId, date);
 
     return amount * rate;
   }
