@@ -86,6 +86,8 @@ exports.configure = function (app) {
 
   app.get('/exchange', exchange.list);
   app.post('/exchange', exchange.create);
+  app.put('/exchange/:id', exchange.update);
+  app.delete('/exchange/:id', exchange.delete);
 
   // application data
   app.post('/data', data.create);

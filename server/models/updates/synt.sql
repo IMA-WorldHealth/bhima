@@ -380,4 +380,17 @@ ALTER TABLE account ADD FOREIGN KEY (`account_type_id`) REFERENCES account_type 
 
 ALTER TABLE `project`
 ADD `locked` BOOLEAN NOT NULL;
---
+
+
+-- Changing the exchange_rate table 
+-- Date: 2016-02-05
+-- By: Chris LOMAME
+
+ALTER TABLE `exchange_rate` 
+CHANGE `enterprise_currency_id` `enterprise_id` TINYINT(3) UNSIGNED NOT NULL;
+
+ALTER TABLE `exchange_rate` 
+CHANGE `foreign_currency_id` `currency_id` TINYINT(3) UNSIGNED NOT NULL;
+
+ALTER TABLE `exchange_rate` 
+CHANGE `date` `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
