@@ -41,6 +41,7 @@
     "numeral": "^1.5.3",
     "q": "~1.4.1",
     "session-file-store": "0.0.24",
+    "winston": "^2.1.1",
     "wkhtmltopdf": "^0.1.5"
   },
   "devDependencies": {

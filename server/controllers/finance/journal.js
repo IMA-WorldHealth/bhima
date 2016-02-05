@@ -69,8 +69,6 @@ tableRouter = {
 // This should be a promise.
 function request (table, id, user_id, done, debCaution, details) {
 
-  console.log('Call for TABLE:', table);
-
   // handles all requests coming from the client
   if (debCaution >= 0) {
     tableRouter[table](id, user_id, done, debCaution);

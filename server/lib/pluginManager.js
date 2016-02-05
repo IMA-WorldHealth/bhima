@@ -7,8 +7,9 @@
  *
 */
 
-var path =  require('path'),
-    thread = require('child_process');
+var path    = require('path');
+var thread  = require('child_process');
+var winston = require('winston');
 
 var MAX_RESTARTS = 3;
 
@@ -61,6 +62,7 @@ Plugin.prototype.exitHandler = function (code, signal) {
     if (this.restarts < this.maxRestarts) {
       this.startup();
       this.restarts++;
+      winston.log('info', '%s died. Restarting %d out of %d times.', this.script, this.restarts, this.maxRestarts);
     }
   }
 };
@@ -93,16 +95,12 @@ function PluginManager(cfgArray) {
   'use strict';
 
   var plugins = this.plugins = {};
-
-  function echo() {
-    var args = Array.prototype.slice.call(arguments);
-    console.log('[PluginManager]', args.join(' '));
-  }
+  var NAMESPACE = 'PluginManager';
 
   // PluginManager Methods
 
   function _onStartup() {
-    echo('Starting PluginManager...');
+    winston.log('debug', '[%s] onStartup() event called.', NAMESPACE);
 
     // TODO Should we have a 'priority' tag to determine which plugins are
     // initialized first?  This would require sorting the array by priority
@@ -110,24 +108,23 @@ function PluginManager(cfgArray) {
 
     // load and map the plugins to their namespaces
     cfgArray.forEach(function (plugin) {
-      echo('Loading ' + plugin.name);
+      winston.log('debug', '[%s] Loading %s', NAMESPACE, plugin.name);
       plugins[plugin.name] = new Plugin(plugin.script);
     });
   }
 
   // kills all subprocesses in the case that the parent process dies.
   this.killChildren = function (e) {
-    console.log('Exception:', e);
-    echo('Killing all subprocesses ...');
+    winston.log('debug', '[%s] Killing all subprocesses', NAMESPACE);
 
     // look through the
     Object.keys(plugins).forEach(function (key) {
-      echo('Killing', key);
-      plugins[key].kill('SIGTERM');
+      var plugin = plugins[key];
+      winston.log('debug', '[%s] Sending kill signal to %s', NAMESPACE, plugin.script);
+      plugin.kill('SIGTERM');
     });
 
-    echo('Done. Exiting...');
-    // exit the main thread
+    winston.log('debug', '[%s] %s is exiting.', NAMESPACE, NAMESPACE);
     process.exit(e);
   };
 
@@ -141,6 +138,7 @@ function PluginManager(cfgArray) {
 
       // error if the plugin is not defined for the manager
       if (!this.plugins[pluginId]) {
+        winston.log('warn', '[%s] PluginId %s not found.', NAMESPACE, pluginId);
         throw new Error('Error: Plugin not found %s'.replace('%s', pluginId));
       }
 
@@ -149,7 +147,7 @@ function PluginManager(cfgArray) {
     } catch (e) {
 
       // ensure that the event failure is broadcast
-      throw new Error('Error: Event %s not properly constructed'.replace('%s', event));
+      winston.log('error', '[%s] %j', NAMESPACE, e);
     }
   };
 
