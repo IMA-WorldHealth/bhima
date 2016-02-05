@@ -16,11 +16,10 @@ function ProjectService($http, util) {
     .then(util.unwrapHttpResponse);
   }
 
-  function read(id) {
-    var url = (id) ? '/projects/' + id : '/projects';
-
-    return $http.get(url)
-    .then(util.unwrapHttpResponse);
+  function read(id, params) {
+     var url = (id) ? '/projects/' + id : '/projects';
+     return $http.get(url, { params : params })
+     .then(util.unwrapHttpResponse);
   }
 
   function update(id, project) {
@@ -33,3 +32,7 @@ function ProjectService($http, util) {
     .then(util.unwrapHttpResponse);
   }
 }
+
+
+
+

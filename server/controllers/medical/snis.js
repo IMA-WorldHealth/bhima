@@ -290,11 +290,24 @@ function getReport (req, res) {
 	}
 }
 
+function healthZones (req, res, next) {
+  var sql = 'SELECT id, zone, territoire, province FROM mod_snis_zs';
+  
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+
 // Expose
 module.exports = {
-	getAllReports : getAllReports,
-	createReport  : createReport,
-	deleteReport  : deleteReport,
-	populateReport: populateReport,
-	getReport     : getReport
+	getAllReports 	: getAllReports,
+	createReport  	: createReport,
+	deleteReport  	: deleteReport,
+	populateReport	: populateReport,
+	getReport     	: getReport,
+    healthZones   	: healthZones
 };

@@ -2201,12 +2201,16 @@
    "TITLE"      : "Profit center Management"
    },
 "PROJECT": {
-   "EDIT"        : "Editing Project",
-   "EXISTING"    : "Existing Projects",
-   "HELP_TXT_1"  : "This page is for managment of projects belonging to enterprises.  You see here all projects currently registered to your current enterprise.",
-   "NEW"         : "New Project",
-   "PRINT_TITLE" : "Registered Projects",
-   "TITLE"       : "Project Management"
+   "CONFIRM"        : "Are you sure you want to delete this Project",
+   "DELETE_SUCCESS" : "Deleted successfully", 
+   "EDIT"           : "Editing Project",
+   "EXISTING"       : "Existing Projects",
+   "HELP_TXT_1"     : "This page is for managment of projects belonging to enterprises.  You see here all projects currently registered to your current enterprise.",
+   "NEW"            : "New Project",
+   "PRINT_TITLE"    : "Registered Projects",
+   "SAVE_SUCCES"    : "Saved successfully",
+   "TITLE"          : "Project Management",
+   "UPDATE_SUCCES"  : "Updated successfully"
    },
 "PROVINCE": {
    "ACTIONS"          : "Actions",

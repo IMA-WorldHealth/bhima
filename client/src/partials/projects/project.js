@@ -1,117 +1,115 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('ProjectController', ProjectController);
 
 ProjectController.$inject = [
-  '$scope', '$window', 'validate', 'connect', 'messenger', 'appstate'
+   'ProjectService', 'EnterpriseService', 'SnisService', 'FormStateFactory', '$translate', '$window'
 ];
 
-function ProjectController($scope, $window, validate, connect, messenger, appstate) {
-  var dependencies = {};
-  $scope.action = '';
-  $scope.timestamp = new Date();
+function ProjectController(Projects, Enterprises, SnisService, StateFactory, $translate, $window) {
+  var vm = this;
 
-  dependencies.projects = {
-    query : {
-      tables : {
-        'project' : {
-          columns : ['id', 'name', 'abbr', 'enterprise_id']
-        }
-      }
-    }
-  };
+  vm.enterprises = [];
+  vm.state = new StateFactory();
+  vm.view = 'default';
 
-  dependencies.zs = {
-    query : {
-      tables : {
-        'mod_snis_zs' : {
-          columns : ['id', 'zone', 'territoire', 'province']
-        }
-      }
-    }
-  };
+  // bind methods
+  vm.create = create;
+  vm.update = update;
+  vm.cancel = cancel;
+  vm.submit = submit;
+  vm.del = del;
 
-  dependencies.enterprises = {
-    query : {
-      tables : {
-        'enterprise' : {
-          columns : ['id', 'name', 'abbr']
-        }
-      }
-    }
-  };
-
-  function handleErrors(err) {
-    messenger.danger('An Error occured : ' + err);
+  function handler(error) {
+    console.error(error);
+    vm.state.error();
   }
 
-  function load(models) {
-    for (var k in models) { $scope[k] = models[k]; }
+  // fired on startup
+  function startup() {
+    // load Projects
+    refreshProjects();
+
+    // load Enterprises
+    Enterprises.read().then(function (data) {
+      vm.enterprises = data;
+    }).catch(handler);
+
+    SnisService.healthZones().then(function (data) {
+      data.forEach(function (l) {
+        l.format = l.zone + ' - ' + l.territoire + ' (' + l.province + ')';
+      });
+      vm.zones = data;
+    }).catch(handler);
+
+    vm.state.reset();
   }
 
-  $scope.print = function print() {
-    $window.print();
-  };
+  function cancel() {
+    vm.state.reset();
+    vm.view = 'default';
+  }
 
-  $scope.new = function n() {
-    $scope.newProject = {};
-    $scope.action = 'new';
-  };
+  function create() {
+    vm.view = 'create';
+    vm.project = { locked : 0 };
+  }
 
-  $scope.submitNew = function submitNew() {
-    var clean = connect.clean($scope.newProject);
-    connect.post('project', [clean])
-    .then(function (res) {
-      clean.id = res.data.insertId;
-      $scope.projects.post(clean);
-      $scope.action = 'default';
-    })
-    .catch(handleErrors);
-  };
+  // switch to update mode
+  function update(data) {
+    vm.state.reset();
+    vm.project= data;
+    vm.view = 'update';
+  }
 
-  $scope.cancelNew = function canceNew() {
-    $scope.newProject = {};
-  };
+  // switch to delete warning mode
+  function del(project) {
+    var result = $window.confirm($translate.instant('PROJECT.CONFIRM'));
+    if(result){
+      vm.view = 'delete_confirm';
+      Projects.delete(project.id)
+      .then(function (response) {
+        refreshProjects();
+        vm.view = 'delete_success';
+      }).catch(function (error) {
+        vm.view = 'delete_error';
+        vm.HTTPError = error;
+      });
+    } else {
+      vm.view = 'default';
+    } 
+  }
 
-  $scope.edit = function edit(project) {
-    $scope.editProject = angular.copy(project);
-    $scope.raw = project;
-    $scope.action = 'edit';
-  };
-
-  $scope.submitEdit = function submitEdit() {
-    var clean = connect.clean($scope.editProject);
-    connect.put('project', [clean], ['id'])
-    .then(function () {
-      $scope.projects.put(clean);
-      $scope.action = 'default';
-    })
-    .catch(handleErrors);
-  };
-
-  $scope.cancelEdit = function cancelEdit() {
-    $scope.editProject = angular.copy($scope.raw);
-    $scope.action = 'edit';
-  };
-
-  $scope.delete = function d(project) {
-    connect.delete('project', 'id', project.id)
-    .then(function () {
-      $scope.projects.remove(project.id);
-    })
-    .catch(function (error) {
-      messenger.danger('An error occurred : ' + error);
+  // refresh the displayed Projects
+  function refreshProjects() {
+    return Projects.read(null, { complete : 1 })
+    .then(function (data) {
+      vm.projects = data;
     });
-  };
+  }
 
-  $scope.fmtZone = function (obj) {
-    return obj.zone + ' - ' + obj.territoire + ' (' + obj.province + ')';
-  };
+  // form submission
+  function submit(invalid) {
+    if (invalid) { return; }
 
-  appstate.register('project', function (project) {
-    $scope.currentProject = project;
-    dependencies.projects.query.where =
-      ['project.enterprise_id=' + project.enterprise_id];
-    validate.process(dependencies)
-    .then(load, handleErrors);
-  });
+    var promise;
+    var creation = (vm.view === 'create');
+    var project = angular.copy(vm.project);
+
+    promise = (creation) ?
+      Projects.create(project) :
+      Projects.update(project.id, project);
+
+    promise
+      .then(function (response) {
+        return refreshProjects();
+      })
+      .then(function () {
+        update(project.id);
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
+      .catch(handler);
+  }
+
+  startup();
 }
