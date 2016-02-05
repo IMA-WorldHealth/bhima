@@ -13,33 +13,6 @@
   </button>
 </div>
 
-<div class="report visible-print">
-  <div class="reportBody">
-    <div class="reportFrame">
-      <h4>{{ enterprises.get(projects.data[0].enterprise_id).name }}</h4>
-      <h4>{{ "PROJECT.PRINT_TITLE" | translate }} <small> {{timestamp | date}}</small></h4>
-      <table class="reportTable">
-        <thead>
-          <tr>
-            <th>{{ 'COLUMNS.ID' | translate }}</th>
-            <th>{{ 'COLUMNS.NAME' | translate }}</th>
-            <th>{{ 'COLUMNS.ABBR' | translate }}</th>
-            <th>{{ 'COLUMNS.ENTERPRISE_ID' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat='project in ProjectCtrl.projects'>
-            <td>{{ project.id }}</td>
-            <td>{{ project.name }}</td>
-            <td>{{ project.abbr }}</td>
-            <td>{{ project.enterprise_id }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
