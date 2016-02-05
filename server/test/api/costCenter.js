@@ -33,8 +33,8 @@ describe('The cost center API, PATH : /cost_centers', function () {
        .catch(helpers.handler);
     });
 
-    it('METHOD : GET, PATH : /cost_centers?availableOnly=1, It returns a list of availables cost centers', function () {
-      return agent.get('/cost_centers?availableOnly=1')
+    it('METHOD : GET, PATH : /cost_centers?available=1, It returns a list of availables cost centers', function () {
+      return agent.get('/cost_centers?available=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -44,8 +44,8 @@ describe('The cost center API, PATH : /cost_centers', function () {
        .catch(helpers.handler);
     });
 
-    it('METHOD : GET, PATH : /cost_centers?availableOnly=1&full=1, It returns a full list of availables cost centers', function () {
-      return agent.get('/cost_centers?availableOnly=1&full=1')
+    it('METHOD : GET, PATH : /cost_centers?available=1&full=1, It returns a full list of availables cost centers', function () {
+      return agent.get('/cost_centers?available=1&full=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -85,6 +85,7 @@ describe('The cost center API, PATH : /cost_centers', function () {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.all.keys('cost');
+        expect(res.body.cost).to.satisfy(function (cost) { return cost >= 0;});
       })
       .catch(helpers.handler);
   });

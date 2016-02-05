@@ -1,4 +1,29 @@
+/**
+* The /profit_centers HTTP API endpoint
+*
+* @module finance/profit_centers
+*
+* @description This controller is responsible for implementing all crud and others custom request
+* on the profit_center table through the `/profit_centers` endpoint.
+*
+* @requires lib/db
+**/
+
+
 var db = require('../../lib/db');
+
+/**
+* Returns an array of profit centers
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // GET /profit_centers : Get list of profit_centers
+* var profitCenters = require('finance/profit_centers');
+* profitCenters.list(req, res, next);
+*/
 
 function list (req, res, next) {
   'use strict';
@@ -12,7 +37,7 @@ function list (req, res, next) {
       'FROM profit_center AS p JOIN project AS pr ON p.project_id = pr.id';
   }
 
-  if(req.query.availableOnly === '1') {
+  if(req.query.available === '1') {
     sql += ' WHERE p.id NOT IN (SELECT s.profit_center_id FROM service AS s WHERE NOT ISNULL(s.profit_center_id))';
   }
 
@@ -25,6 +50,20 @@ function list (req, res, next) {
   .catch(next)
   .done();
 }
+
+
+/**
+* Create a profit center in the database
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // POST /profit_centers : Insert a profit center
+* var profitCenters = require('finance/profit_centers');
+* profitCenters.create(req, res, next);
+*/
 
 function create (req, res, next) {
   'use strict';
@@ -41,6 +80,20 @@ function create (req, res, next) {
     .catch(next)
     .done();
 }
+
+
+/**
+* Update a profit center in the database
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // PUT /profit_centers : update a profit center
+* var profitCenters = require('finance/profit_centers');
+* profitCenters.update(req, res, next);
+*/
 
 function update(req, res, next) {
   'use strict';
@@ -65,9 +118,23 @@ function update(req, res, next) {
     .done();
 }
 
+
+/**
+* Remove a profit center in the database
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // DELETE /profit_centers : delete a profit center
+* var profitCenters = require('finance/profit_centers');
+* profitCenters.remove(req, res, next);
+*/
+
 function remove(req, res, next) {
   var profitCenterId = req.params.id;
-  var removeProfitCenterQuery = 'DELETE FROM profit_center WHERE id=?';
+  var removeProfitCenterQuery = 'DELETE FROM profit_center WHERE id = ?';
 
   lookupProfitCenter(profitCenterId, req.codes)
     .then(function () {
@@ -80,6 +147,19 @@ function remove(req, res, next) {
     .done();
 }
 
+/**
+* Return a profit center details from the database
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // GET /profit_centers : returns a profit center detail
+* var proitCenters = require('finance/profit_centers');
+* profitCenters.detail(req, res, next);
+*/
+
 function detail(req, res, next) {
   'use strict';
 
@@ -90,6 +170,14 @@ function detail(req, res, next) {
     .catch(next)
     .done();
 }
+
+/**
+* Return a profit center instance from the database
+*
+* @param {integer} id of a profit center
+* @param {object} codes object which contain errors code
+*
+*/
 
 function lookupProfitCenter (id, codes) {
   'use strict';
@@ -106,17 +194,18 @@ function lookupProfitCenter (id, codes) {
     });
 }
 
-
 /**
-* METHOD : GET
-* FUNCTION : getProfitValue
-* ARG : 
-*      - req contains a id of profit center
-*      - res will contain the result to send to the client
-*      - next will pass the control to an other middleware
-* DESCRIPTION : This funtion receive an profit center id and send back his value, by scanning the general
-*               table and by considering account which are directly tailed to it.
-**/
+* Return a profit value by scanning the genral ledger
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // GET /profit_centers/:id/profit : returns a profit detail
+* var profitCenters = require('finance/profit_centers');
+* profitCenters.detail(req, res, next);
+*/
 
 function getProfitValue (req, res, next){
 
@@ -125,23 +214,23 @@ function getProfitValue (req, res, next){
   lookupProfitCenter(req.params.id, req.codes)
     .then(function (){      
       sql = 
-        'SELECT ac.id FROM account AS ac WHERE ac.pc_id=? AND ac.is_title =?';
+        'SELECT ac.id FROM account AS ac WHERE ac.pc_id = ? AND ac.is_title = 0';
 
-      return db.exec(sql, [req.params.id, 0]);
+      return db.exec(sql, req.params.id);
     })
     .then(function (rows){
       if (rows.length > 0) {
         rows = rows.map(function (row) { return row.id;});
-        optionalCondition = ' OR %table%.account_id IN (' + rows.join(',') + ')';
+        optionalCondition = ' OR gl.account_id IN (' + rows.join(',') + ')';
       }
 
       sql =
-        'SELECT SUM(t.credit_equiv - t.debit_equiv) as profit ' +
+        'SELECT IFNULL(SUM(t.credit_equiv - t.debit_equiv), 0) as profit ' +
         'FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN ' +
-        'profit_center AS pc ON gl.pc_id = pc.id WHERE gl.pc_id=? ' + (optionalCondition.replace('%table%', 'gl')) + ') ' +
+        'profit_center AS pc ON gl.pc_id = pc.id WHERE gl.pc_id = ? ' + optionalCondition + ') ' +
         'AS t';
 
-      return db.exec(sql, [req.params.id, req.params.id]);
+      return db.exec(sql, req.params.id);
     })
     .then(function (result){
       res.status(200).json(result[0]);

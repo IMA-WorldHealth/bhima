@@ -1,4 +1,28 @@
+/**
+* The /services HTTP API endpoint
+*
+* @module finance/services
+*
+* @description This controller is responsible for implementing all crud and others custom request
+* on the services table through the `/services` endpoint.
+*
+* @requires lib/db
+**/ 
+
 var db = require('../../lib/db');
+
+/**
+* Returns an array of services
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // GET /services : Get list of services
+* var services = require('admin/services');
+* services.list(req, res, next);
+*/
 
 function list (req, res, next) {
   'use strict';
@@ -25,6 +49,19 @@ function list (req, res, next) {
   .done();
 }
 
+/**
+* Create a service in the database
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // POST /services : Insert a service
+* var services = require('finance/services');
+* services.create(req, res, next);
+*/
+
 function create (req, res, next) {
   'use strict';
 
@@ -40,6 +77,20 @@ function create (req, res, next) {
     .catch(next)
     .done();
 }
+
+/**
+* Update a service in the database
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // PUT /services : update a service
+* var services = require('admin/services');
+* services.update(req, res, next);
+*/
+
 
 function update (req, res, next) {
   'use strict';
@@ -69,6 +120,19 @@ function update (req, res, next) {
     .done();
 }
 
+/**
+* Remove a service in the database
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // DELETE /services : delete a service
+* var services = require('admin/services');
+* service.remove(req, res, next);
+*/
+
 function remove (req, res, next) {
   var serviceId = req.params.id;
   var removeServiceQuery = 'DELETE FROM service WHERE id=?';
@@ -84,6 +148,19 @@ function remove (req, res, next) {
     .done();
 }
 
+/**
+* Return a service details from the database
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // GET /services : returns a service detail
+* vaservices = require('finance/services');
+*services.detail(req, res, next);
+*/
+
 function detail(req, res, next) {
   'use strict';
 
@@ -96,14 +173,13 @@ function detail(req, res, next) {
 }
 
 /**
-* FUNCTION : lookupService
-* ARG : 
-*      - id contains a id of a service
-*      - codes contain a set of error code and error messages
-* DESCRIPTION : This funtion receive an service id and attempt to retrieve it in the database
-*               It throws an error if there is no occurence otherwise it will send back and object
-*               representing a service.
-**/
+* Return a service instance from the database
+*
+* @param {integer} id of a service
+* @param {object} codes object which contain errors code
+*
+*/
+
 function lookupService(id, codes) {
   'use strict';
 
@@ -119,22 +195,22 @@ function lookupService(id, codes) {
     });
 }
 
-function isValidData (service){  
+/**
+* Return a boolean answer to know if a service is well formated for an update
+* @param {object} service object which represente a service instance
+*
+*/
 
-// if(service.enterprise_id){
-//   if(isNaN(Number(service.enterprise_id))) {
-//     return false;
-//   }
-// }
+function isValidData (service){
 
-  if(service.cost_center_id) {
-    if(isNaN(Number(service.cost_center_id))){
+  if (service.cost_center_id) {
+    if (isNaN(Number(service.cost_center_id))) {
       return false;
     }
   }
 
-  if(service.profit_center_id) {
-    if(isNaN(Number(service.profit_center_id) )){
+  if (service.profit_center_id) {
+    if (isNaN(Number(service.profit_center_id))) {
       return false;
     }
   }
