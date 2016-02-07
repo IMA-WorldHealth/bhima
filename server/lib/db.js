@@ -1,4 +1,4 @@
-// /scripts/lib/db.js
+// server/lib/db.js
 
 // TODO rewrite documentation - this module can now be required by any controller module throughout the application
 // TODO Seperate DB wrapper and DB methods - this module should just initialise a new DB instance
@@ -9,8 +9,10 @@
 // sharing connections between request sessions (also allowing for shraring a
 // transaction between unrelated components)
 
-var q = require('q');
-var mysql = require('mysql');
+var q       = require('q');
+var mysql   = require('mysql');
+var winston = require('winston');
+var util    = require('util');
 
 var con;
 
@@ -19,39 +21,34 @@ function initialise() {
   'use strict';
 
   // configure MySQL via environmental variables
-
   con = mysql.createPool({
     host:     process.env.DB_HOST,
     user:     process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME
   });
-
-  //  FIXME reset all logged in users on event of server crashing / terminating - this
-  //  should be removed/ implemented into the error/logging module before shipping
-  //flushUsers(con);
 }
 
 function exec(sql, params) {
-  var defer = q.defer();
+  var dfd = q.defer();
 
   con.getConnection(function (err, connection) {
-    if (err) { return defer.reject(err); }
+    if (err) { return dfd.reject(err); }
 
     var qs = connection.query(sql, params, function (err, results) {
       connection.release();
-      if (err) { return defer.reject(err); }
-      defer.resolve(results);
+      if (err) { return dfd.reject(err); }
+      dfd.resolve(results);
     });
+
+    // log the SQL if in debug mode
+    winston.log('debug', qs.sql);
   });
 
-  return defer.promise;
+  return dfd.promise;
 }
 
 function execute(sql, callback) {
-  // This fxn is formated for mysql pooling, not in all generality
-  console.log('[DEPRECATED] [db] [execute]: ', sql);
-
   con.getConnection(function (err, connection) {
     if (err) { return callback(err); }
     connection.query(sql, function (err, results) {
@@ -59,7 +56,6 @@ function execute(sql, callback) {
       if (err) { return callback(err); }
       return callback(null, results);
     });
-
   });
 }
 
@@ -81,8 +77,6 @@ function execTransaction(queryList) {
         return deferred.reject(error);
       }
 
-      // console.log('[Transaction] begin transaction');
-
       // Successful transaction initialisation
       transactionPromises = queryList.map(function (queryObject) {
         var query = queryObject.query;
@@ -98,16 +92,14 @@ function execTransaction(queryList) {
           connection.commit(function (error) {
             if (error) {
               connection.rollback(function () {
-                // console.log('[Transaction] Commit failure - rollback success');
-
                 connection.release();
                 deferred.reject(error);
+                winston.log('debug', '[Transaction] Rollback due to : %j', error);
               });
               return;
             }
 
             connection.release();
-            // console.log('[Transaction] Commit success - all changes saved');
             deferred.resolve(results);
           });
         })
@@ -115,9 +107,9 @@ function execTransaction(queryList) {
 
           // Individual query did not work - rollback transaction
           connection.rollback(function () {
-            // console.log('[Transaction] Query failure - rollback success');
             connection.release();
             deferred.reject(error);
+            winston.log('debug', '[Transaction] Rollback due to : %j', error);
           });
         });
     });
@@ -153,42 +145,18 @@ function transaction() {
   return self;
 }
 
-function flushUsers(handle) {
-  'use strict';
-  var permissions, reset;
-
-  // Disable safe mode #420blazeit
-  // TODO This should be optionally set as a flag - and reported (logged)
-  permissions = 'SET SQL_SAFE_UPDATES = 0;';
-  reset = 'UPDATE `user` SET user.active = 0 WHERE user.active = 1;';
-
-  handle.getConnection(function (err, con) {
-    if (err) { throw err; }
-    con.query(permissions, function (err) {
-      if (err) { throw err; }
-      con.release();
-      handle.getConnection(function (err, con) {
-        if (err) { throw err; }
-        con.query(reset, function (err) {
-          if (err) { throw err; }
-        });
-      });
-    });
-  });
-}
-
 // Uses an already existing connection to query the database, returning a promise
 function queryConnection(connection, sql, params) {
-  var deferred = q.defer();
+  var dfd = q.defer();
 
   var qs = connection.query(sql, params, function (error, result) {
-    if (error) { return deferred.reject(error); }
-    return deferred.resolve(result);
+    if (error) { return dfd.reject(error); }
+    return dfd.resolve(result);
   });
 
-  //console.log('[Transaction] Query :', qs.sql);
+  winston.log('debug', '[Transaction] %s', qs.sql);
 
-  return deferred.promise;
+  return dfd.promise;
 }
 
 function sanitize(x) {
@@ -199,7 +167,7 @@ module.exports = {
   initialise:  initialise,
   exec:        exec,
   transaction: transaction,
-  execute:     execute,
-  sanitize:    sanitize, // FIXME: is this even used?
+  execute:     util.deprecate(execute, 'db.execute() is deprecated, use db.exec() instead.'),
+  sanitize:    util.deprecate(sanitize, 'db.sanitize() is deprecated, use db.escape instead.'),
   escape:      sanitize
 };
