@@ -1,11 +1,14 @@
-// Generate guids in javascript
-// src: http://byronsalau.com/blog/how-to-create-a-guid-uuid-in-javascript/
 
+var uuid = require('node-uuid');
+var util = require('util');
 
-module.exports = function guid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0,
-    v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-};
+/**
+ * generates version 4 UUIds
+ * @deprecated Use node-uuid directly instead
+ */
+function generate() {
+  return uuid.v4();
+}
+
+module.exports =
+  util.deprecate(generate, 'uuid() is deprecated. Please require(\'node-uuid\') and use it directly.');
