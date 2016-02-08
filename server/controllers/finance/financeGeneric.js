@@ -137,7 +137,7 @@ exports.postJournalVoucher = function (req, res, next) {
     // If the currency is not the enterprise currency we need to
     // exchange the debits and credits.  Otherwise, do nothing.
     sql =
-      'SELECT enterprise_currency_id, foreign_currency_id, rate ' +
+      'SELECT enterprise_id, currency_id, rate ' +
       'FROM exchange_rate WHERE DATE(date) = DATE(?);';
 
     return db.exec(sql, [date]);
@@ -160,7 +160,7 @@ exports.postJournalVoucher = function (req, res, next) {
 
       // we are not using the enterprise currency.  Does the record's foreign_curreny_id
       // match our currency we are trying to post? (it should, unless we use more than three currencies.)
-      if (data.currencyId !== record.foreign_currency_id) {
+      if (data.currencyId !== record.currency_id) {
 
         // didn't find a suitable exchange rate, throw an error
         throw 'ERROR.ERR_NO_EXCHANGE_RATE';

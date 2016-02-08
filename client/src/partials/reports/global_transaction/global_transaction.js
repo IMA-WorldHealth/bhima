@@ -31,7 +31,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
     query : {
       tables : {
         'exchange_rate' : {
-          columns : ['id', 'foreign_currency_id', 'rate', 'date']
+          columns : ['id', 'currency_id', 'rate', 'date']
         }
       }
     }
@@ -94,7 +94,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
     vm.model.source_id = 0;
 
     vm.exchange_rate.data.forEach(function (item) {
-      map[util.sqlDate(new Date())] = {c_id : item.foreign_currency_id, rate : item.rate};
+      map[util.sqlDate(new Date())] = {c_id : item.currency_id, rate : item.rate};
     });
   }
 

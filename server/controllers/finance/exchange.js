@@ -16,9 +16,9 @@ exports.list = function list(req, res, next) {
       enterprise = req.session.enterprise;
   
   sql =
-    'SELECT foreign_currency_id AS currency_id, rate, date ' +
+    'SELECT currency_id, rate, date ' +
     'FROM exchange_rate ' + 
-    'WHERE enterprise_currency_id = ? ' +
+    'WHERE enterprise_id = ? ' +
     'ORDER BY date;';
 
   db.exec(sql, [ enterprise.currency_id ])
@@ -42,13 +42,67 @@ exports.create = function create(req, res, next) {
   }
 
   sql =
-    'INSERT INTO exchange_rate (enterprise_currency_id, foreign_currency_id, rate, date) ' +
+    'INSERT INTO exchange_rate (enterprise_id, currency_id, rate, date) ' +
     'VALUES (?);';
 
-  db.exec(sql, [[data.enterprise_currency_id, data.foreign_currency_id, data.rate, data.date ]])
+  db.exec(sql, [[data.enterprise_id, data.currency_id, data.rate, data.date ]])
   .then(function (row) {
     res.status(201).json({ id: row.insertId });
   })
   .catch(next)
   .done();
 };
+
+
+// PUT /exchange/:id
+exports.update = function update(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'UPDATE exchange_rate SET ? WHERE id = ?;';
+
+  db.exec(sql, [req.body, req.params.id])
+  .then(function () {
+
+    sql =
+      'SELECT id, enterprise_id, currency_id, rate, date ' +
+      'FROM exchange_rate ' +
+      'WHERE id = ?;';
+
+    return db.exec(sql, [req.params.id]);
+  })
+  .then(function (rows) {
+
+    if (rows.length === 0) {
+      throw new req.codes.ERR_NOT_FOUND();
+    }
+
+    res.status(200).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+};
+
+// DELETE /exchange/:id
+exports.delete = function del(req, res, next) {
+  'use strict';
+
+  var sql =
+    'DELETE FROM exchange_rate WHERE id = ?;';
+
+  db.exec(sql, [req.params.id])
+  .then(function (row) {
+
+    // if nothing happened, let the client know via a 404 error
+    if (row.affectedRows === 0) {
+      throw new req.codes.ERR_NOT_FOUND();
+    }
+
+    res.status(204).send();
+  })
+  .catch(next)
+  .done();
+};
+

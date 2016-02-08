@@ -44,7 +44,7 @@ function PrimaryCashSupportController($scope, $q, $location, $routeParams, valid
     query : {
       tables : {
         'exchange_rate' : {
-          columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
+          columns : ['id', 'enterprise_id', 'currency_id', 'date', 'rate']
         }
       },
       where : ['exchange_rate.date=' + util.sqlDate(new Date())]
