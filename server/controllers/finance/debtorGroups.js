@@ -108,17 +108,16 @@ function fetchInvoices(req, res, next) {
 * @return {array} An promise of an array
 */
 function getInvoices (id, balanced) {
-  var def = q.defer();
 
-  if (!id) { def.reject(new Error('ERR_MISSING_REQUIRED_PARAMETERS')); }
+  if (!id) { return q.reject(new Error('ERR_MISSING_REQUIRED_PARAMETERS')); }
 
   var query =
     'SELECT `debitor_group`.`account_id` FROM `debitor_group` ' +
     'WHERE `debitor_group`.`uuid`= ?';
 
-  db.exec(query, [id])
+  return db.exec(query, [id])
   .then(function (rows) {
-    if (!rows.length) { def.resolve([]); }
+    if (!rows.length) { return q.resolve([]); }
 
     var accountId = rows.pop().account_id;
     var query =
@@ -135,7 +134,7 @@ function getInvoices (id, balanced) {
     return db.exec(query, [accountId, accountId]);
   })
   .then(function (rows) {
-    if (!rows.length) { def.resolve([]); }
+    if (!rows.length) { return q.resolve([]); }
 
     var accountId = rows.pop().account_id;
     var invoices = rows.map(function (line) {
@@ -172,15 +171,6 @@ function getInvoices (id, balanced) {
              (balanced === '0') ? ' HAVING balance > 0;' : ';';
 
     return db.exec(query, [accountId, accountId]);
-  })
-  .then(function (rows) {
-    def.resolve(rows);
-  })
-  .catch(function (err) {
-    // Notify for the error
-    console.error(err);
-    // reject error in promise
-    def.reject(err);
   });
-  return def.promise;
+  
 }
