@@ -92,7 +92,7 @@ exports.delete = function del(req, res, next) {
 
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      return res.status(404).send();
+      throw new req.codes.ERR_NOT_FOUND();
     }
 
     res.status(204).send();

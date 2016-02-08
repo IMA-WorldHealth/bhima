@@ -70,7 +70,6 @@ describe('The /exchange API endpoint', function () {
     return agent.delete('/exchange/unknownproject')
       .then(function (res) {
         expect(res).to.have.status(404);
-        expect(res.body).to.be.empty;
       })
       .catch(helpers.handler);
   });
