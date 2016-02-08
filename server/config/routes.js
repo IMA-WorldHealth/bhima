@@ -71,6 +71,8 @@ var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
 var transfers           = require('../controllers/finance/transfers');
 
+var services    = require('../controllers/admin/services');
+
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
 
@@ -121,16 +123,27 @@ exports.configure = function (app) {
   //API for cost_center routes crud
   app.get('/cost_centers', costCenter.list);
   app.get('/cost_centers/:id', costCenter.detail);
+  app.get('/cost_centers/:id/cost', costCenter.getCostValue);
   app.post('/cost_centers', costCenter.create);
   app.put('/cost_centers/:id', costCenter.update);
   app.delete('/cost_centers/:id', costCenter.remove);
 
+  //API for service routes
+
+  app.post('/services', services.create);
+  app.get('/services', services.list);
+  app.get('/services/:id', services.detail);
+  app.put('/services/:id', services.update);
+  app.delete('/services/:id', services.remove);
+
   //API for profit_center routes crud
   app.get('/profit_centers', profitCenter.list);
   app.get('/profit_centers/:id', profitCenter.detail);
+  app.get('/profit_centers/:id/profit', profitCenter.getProfitValue);
   app.post('/profit_centers', profitCenter.create);
   app.put('/profit_centers/:id', profitCenter.update);
   app.delete('/profit_centers/:id', profitCenter.remove);
+
 
   //API for reference routes crud
   app.get('/references', reference.list);

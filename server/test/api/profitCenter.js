@@ -42,6 +42,40 @@ describe('The profit center API, PATH : /profit_centers', function () {
      .catch(helpers.handler);
   });
 
+    it('METHOD : GET, PATH : /profit_centers?available=1, It returns a list of availables profit centers', function () {
+      return agent.get('/profit_centers?available=1')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.not.be.empty;
+          expect(res.body).to.have.length(1);
+        })
+       .catch(helpers.handler);
+    });
+
+    it('METHOD : GET, PATH : /profit_centers?available=1&full=1, It returns a full list of availables profit centers', function () {
+      return agent.get('/profit_centers?available=1&full=1')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.not.be.empty;
+          expect(res.body).to.have.length(1);
+        })
+       .catch(helpers.handler);
+    });
+
+    it('METHOD : GET, PATH : /profit_centers/:id/profit, It returns  profit of a provided profit center', function () {
+      return agent.get('/profit_centers/:id/profit'.replace(':id', FETCHABLE_PROFIT_CENTER_ID))
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.not.be.empty;
+          expect(res.body).to.have.all.keys('profit');
+          expect(res.body.profit).to.satisfy(function (profit) { return profit >= 0;});
+        })
+        .catch(helpers.handler);
+    });
+
   it('METHOD : GET, PATH : /profit_center/:id, It returns one profit center', function () {
     return agent.get('/profit_centers/'+ FETCHABLE_PROFIT_CENTER_ID)
       .then(function (res) {
