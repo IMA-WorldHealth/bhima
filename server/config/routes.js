@@ -69,7 +69,8 @@ var caution              = require('../controllers/categorised/caution');
 var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
-var transfers           = require('../controllers/finance/transfers');
+var transfers            = require('../controllers/finance/transfers');
+var debtorGroups         = require('../controllers/finance/debtorGroups');
 
 var services    = require('../controllers/admin/services');
 
@@ -378,11 +379,18 @@ exports.configure = function (app) {
   app.get('/patients/search/name/:value', patient.searchFuzzy);
   app.get('/patients/search/reference/:value', patient.searchReference);
 
-  // Debtors API
+  /** Debtors API */
+  /** @fixme `/debtors/groups` is deprecated, use `/debtor_groups` at the client side */
+  /** @fixme `/debtors/groups/:uuid` is deprecated, use `/debtor_groups/:uuid` at the client side */
   app.get('/debtors/groups', debtors.listGroups);
   app.get('/debtors/groups/:uuid', debtors.groupDetails);
   app.get('/debtors/:uuid/invoices', debtors.fetchInvoices);
   app.put('/debtors/:uuid', debtors.update);
+
+  /** Debtor Groups API */
+  app.get('/debtor_groups', debtorGroups.list);
+  app.get('/debtor_groups/:uuid', debtorGroups.detail);
+  app.get('/debtor_groups/:uuid/invoices', debtorGroups.fetchInvoices);
 
   // search stuff
   // TODO merge with patients API
