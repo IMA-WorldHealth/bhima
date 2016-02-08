@@ -74,6 +74,11 @@ exports.update = function update(req, res, next) {
     return db.exec(sql, [req.params.id]);
   })
   .then(function (rows) {
+
+    if (rows.length === 0) {
+      throw new req.codes.ERR_NOT_FOUND();
+    }
+
     res.status(200).json(rows[0]);
   })
   .catch(next)

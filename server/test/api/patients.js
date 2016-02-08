@@ -56,7 +56,8 @@ describe('The /patients API', function () {
   var mockMissingRequest = {
     finance : {
       debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
-    }
+    },
+    medical : missingParamsPatient
   };
 
   var badRequest = {

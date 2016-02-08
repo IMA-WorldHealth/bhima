@@ -66,10 +66,22 @@ describe('The /exchange API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /exchange/:id will send back a 404 if the exchage rate does not exist', function () {
-    return agent.delete('/exchange/unknownproject')
+  it('PUT /exchange should update an Unknow exchange rate', function () {
+    return agent.put('/exchange/inknowexchangerate')
+      .send({ rate : 1000000 })
       .then(function (res) {
         expect(res).to.have.status(404);
+        expect(res.body.code).to.be.equal('ERR_NOT_FOUND');
+      })
+      .catch(helpers.handler);
+  });
+
+
+  it('DELETE /exchange/:id will send back a 404 if the exchage rate does not exist', function () {
+    return agent.delete('/exchange/inknowexchangerate')
+      .then(function (res) {
+        expect(res).to.have.status(404);
+        expect(res.body.code).to.be.equal('ERR_NOT_FOUND');
       })
       .catch(helpers.handler);
   });
