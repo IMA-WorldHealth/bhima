@@ -1,7 +1,7 @@
 /**
 * The /cost_centers HTTP API endpoint
 *
-* @module finance/cost_centers
+* @module finance/costCenters
 *
 * @description This controller is responsible for implementing all crud and others custom request
 * on the cost_center table through the `/cost_centers` endpoint.

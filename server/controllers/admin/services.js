@@ -1,7 +1,7 @@
 /**
 * The /services HTTP API endpoint
 *
-* @module finance/services
+* @module admin/services
 *
 * @description This controller is responsible for implementing all crud and others custom request
 * on the services table through the `/services` endpoint.
