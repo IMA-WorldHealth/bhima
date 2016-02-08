@@ -7,7 +7,8 @@ var express    = require('express'),
     session    = require('express-session'),
     FileStore  = require('session-file-store')(session),
     morgan     = require('morgan'),
-    fs         = require('fs');
+    fs         = require('fs'),
+    winston    = require('winston');
 
 var codes = require('../config/codes');
 var interceptors = require('../config/interceptors');
@@ -16,7 +17,7 @@ var interceptors = require('../config/interceptors');
 exports.configure = function configure(app) {
   'use strict';
 
-  console.log('[config/express] Configure express');
+  winston.log('debug', 'Configuring middleware');
 
   // middleware
   app.use(compress());
@@ -62,19 +63,16 @@ exports.configure = function configure(app) {
     }
   });
 
+  // provide a stream for morgan to write to 
+  winston.stream = {
+    write : function (message, encoding) {
+      winston.log('info', message.trim());
+    }
+  };
+
   // morgan logger setup
   // options: combined | common | dev | short | tiny
-  // Recommend 'combined' for production settings.
-
-  // if a LOG_FILE is specified, write the output to that logfile
-  if (process.env.LOG_FILE) {
-    var file = fs.createWriteStream(process.env.LOG_FILE, { flags : 'a'});
-
-    // custom log level 'none' suppresses all output during local tests
-    if (process.env.LOG_LEVEL !== 'none') {
-      app.use(morgan(process.env.LOG_LEVEL, { stream : file }));
-    }
-  }
+  app.use(morgan('combined', { stream : winston.stream }));
 
 
   // serve static files from a single location
@@ -93,6 +91,7 @@ exports.configure = function configure(app) {
     var publicRoutes = ['/login', '/languages', '/projects', '/logout'];
 
     if (req.session.user === undefined && !within(req.path, publicRoutes)) {
+      winston.log('debug', 'Rejecting unauthorized acces to %s from %s', req.path, req.ip);
       next(new req.codes.ERR_NOT_AUTHENTICATED());
     } else {
       next();

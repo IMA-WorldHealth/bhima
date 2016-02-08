@@ -11,6 +11,8 @@
 * identicale modules - they should all be encapsulated as one
 * module. For Example finance.createSale, finance.createPurchase
 */
+var winston = require('winston');
+
 var auth            = require('../controllers/auth');
 var data            = require('../controllers/data');
 var users           = require('../controllers/users');
@@ -73,7 +75,7 @@ var transfers           = require('../controllers/finance/transfers');
 var multipart       = require('connect-multiparty');
 
 exports.configure = function (app) {
-  console.log('[config/routes] Configure routes');
+  winston.log('debug', 'Configuring routes');
 
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
@@ -475,5 +477,4 @@ exports.configure = function (app) {
   app.post('/discounts', discounts.create);
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
-
 };

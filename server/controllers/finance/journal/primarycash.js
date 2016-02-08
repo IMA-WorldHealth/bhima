@@ -152,7 +152,6 @@ function transfer(id, userId, cb) {
     // FIXME/TODO -- why are we deleting from the primary cash??
     // We should be deleting and bad transfers from the posting journal!
     // Oh my.
-    console.log('[JOURNAL] Primary Cash:', error);
     sql = 'DELETE FROM primary_cash_item WHERE primary_cash_uuid = ?;';
 
     db.exec(sql, [id])
@@ -175,7 +174,6 @@ function transfer(id, userId, cb) {
  * This is used when you need to pay someone back for a previous (paid) bill.
  */
 function refund(id, userId, cb) {
-  console.log('[JOURNAL] REFUND ', id);
   var sql, data, params, reference, cfg = {}, queries = {};
 
   // TODO : Formalize this

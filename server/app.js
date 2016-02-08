@@ -1,34 +1,44 @@
-var express       = require('express'),
-    https         = require('https'),
-    fs            = require('fs');
+var express = require('express'),
+    https   = require('https'),
+    winston = require('winston'),
+    fs      = require('fs');
 
-// warn the user if the process does not have a NODE_ENV variable configured
-if (!process.env.NODE_ENV) {
-  console.warn('[WARN] No NODE_ENV environmental variables found. Using \'production\'.');
-  process.env.NODE_ENV = 'production';
-}
+function loadEnvironmentalVariables() {
 
-// normalize the environmental variable name
-var env = process.env.NODE_ENV.toLowerCase();
+  // warn the user if the process does not have a NODE_ENV variable configured
+  if (!process.env.NODE_ENV) {
+    process.env.NODE_ENV = 'production';
+  }
 
-// decode the file path for the environmental variables.
-var fPath = 'server/.env.{env}'.replace('{env}', env);
+  // normalize the environmental variable name
+  var env = process.env.NODE_ENV.toLowerCase();
 
-// load the environmnetal variables into process using the dotenv module
-try {
+  // decode the file path for the environmental variables.
+  var fPath = 'server/.env.{env}'.replace('{env}', env);
+
+  // load the environmnetal variables into process using the dotenv module
   console.log('[app] Loading configuration from file: %s', fPath);
   require('dotenv').config({ path : fPath.toString().trim() });
-} catch (e) {
-  console.error(
-    '[ERROR] Configuration file could not be found in path: %s.',
-    'Please ensure that you have the correct NODE_ENV variable set',
-    'or that the file exists.',
-    fPath
-  );
-
-  // crash the process - the app cannot continue without a proper configuration
-  throw e;
 }
+
+function configureLogger() {
+  var logFile = process.env.LOG_FILE;
+
+  // allow logging to a file if needed
+  if (logFile) {
+    winston.add(winston.transports.File, { filename : logFile });
+  }
+
+  // set logging levels to that found in the file
+  winston.level = process.env.LOG_LEVEL;
+
+  // make sure to log unhandled exceptions
+  winston.handleExceptions(winston.transports.Console);
+}
+
+loadEnvironmentalVariables();
+
+configureLogger();
 
 // SSL credentials
 var privateKey  = fs.readFileSync(process.env.TLS_KEY, 'utf8');
@@ -57,14 +67,12 @@ require('./lib/pluginManager')(app, []);
 https.createServer(credentials, app)
   .listen(process.env.PORT, logApplicationStart);
 
-process.on('uncaughtException', forceExit);
+process.on('uncaughtException', handleUncaughtExceptions);
 
 function logApplicationStart() {
-  console.log('[app] BHIMA server started in mode \'%s\' on port %s.', process.env.NODE_ENV.toLowerCase(), process.env.PORT);
+  winston.log('info', 'BHIMA server started in mode %s on port %s.', process.env.NODE_ENV.toLowerCase(), process.env.PORT);
 }
 
-function forceExit(err) {
-  console.error('[uncaughtException]', err.message);
-  console.error(err.stack);
+function handleUncaughtExceptions(err) {
   process.exit(1);
 }

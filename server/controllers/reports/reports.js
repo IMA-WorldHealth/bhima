@@ -1,6 +1,7 @@
-var path                               = require('path');
-var fs                                 = require('fs');
-var q                                  = require('q');
+var path    = require('path');
+var fs      = require('fs');
+var q       = require('q');
+var winston = require('winston');
 
 // Import and compile template files
 var dots                               = require('dot').process({path : path.join(__dirname, 'templates')});
@@ -70,12 +71,13 @@ exports.serve = function (req, res, next) {
 
   var target = req.params.target;
   var options = {root : writePath};
+  var NAMESPACE = 'REPORTS';
 
   res.sendFile(target.concat('.pdf'), options, function (err, res) {
     if (err) {
       next(err);
     } else {
-      console.log('report generated succefully');
+      winston.log('info', '[%s] Generated %s', NAMESPACE, target.concat('.pdf'));
 
       // Delete (unlink) served file
       /*fs.unlink(path.join(__dirname, 'out/').concat(target, '.pdf'), function (err) {
@@ -147,8 +149,7 @@ function initialise() {
     if (!exists) {
       fs.mkdir(writePath, function (err) {
         if (err) { throw err; }
-
-        console.log('[controllers/report] output folder written :', writePath);
+        winston.log('debug', '[REPORT] Output folder written to %s', writePath);
       });
     }
   });
