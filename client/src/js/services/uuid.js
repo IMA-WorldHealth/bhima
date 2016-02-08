@@ -1,3 +1,4 @@
+/* jshint bitwise: false */
 angular.module('bhima.services')
 .service('uuid', function () {
   return function () {

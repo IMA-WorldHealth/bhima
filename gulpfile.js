@@ -1,9 +1,10 @@
-// Build, Lint, and Test bhima
-
-// TODO
-//  Should we make these requires dependent on what path is being taken, so that
-//  not all are required to build bhima?  In this format, there is no difference
-//  between the install requirements of a developer and a production environment.
+/**
+ * Build Script
+ * @TODO
+ * Should we make these requires dependent on what path is being taken, so that
+ * not all are required to build bhima?  In this format, there is no difference
+ * between the install requirements of a developer and a production environment.
+ */
 
 var gulp       = require('gulp'),
     gulpif     = require('gulp-if'),
