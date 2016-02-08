@@ -27,7 +27,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
     query : {
       tables : {
         'exchange_rate' : {
-          columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
+          columns : ['id', 'enterprise_id', 'currency_id', 'date', 'rate']
         }
       },
       where : ['exchange_rate.date=' + util.sqlDate(new Date())]
@@ -125,12 +125,12 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       .finally(endLoading);
     }
 
-    function initCurrency(enterprise_currency_id) {
+    function initCurrency(enterprise_id) {
       if (!session.currency) {
         session.configured = false;
         session.complete = false;
       }
-      session.loading_currency_id = (session.currency) ? session.currency.id : enterprise_currency_id;
+      session.loading_currency_id = (session.currency) ? session.currency.id : enterprise_id;
       session.selectedCurrency = (session.currency) ? session.currency : null;
     }
 

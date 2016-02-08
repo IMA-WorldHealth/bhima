@@ -49,7 +49,7 @@ angular.module('bhima.filters')
     appstate.register('exchange_rate', function (globalRates) {
       // build rate map anytime the exchange rate changes.
       globalRates.forEach(function (r) {
-        map[r.foreign_currency_id] = r.rate;
+        map[r.currency_id] = r.rate;
       });
     });
 

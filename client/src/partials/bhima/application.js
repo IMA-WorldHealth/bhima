@@ -55,7 +55,7 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
     exchangeRate = {
       'tables' : {
         'exchange_rate' : {
-          'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
+          'columns' : ['id', 'enterprise_id', 'currency_id', 'rate', 'date']
         }
       }
     };

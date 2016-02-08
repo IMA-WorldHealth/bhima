@@ -42,7 +42,7 @@ angular.module('bhima.controllers')
           };
           validate.process(dependencies, ['get_hollydayCount'])
           .then(function (model) {
-            if(data[0].enterprise_currency_id !== data[0].currency_id){
+            if(data[0].enterprise_id !== data[0].currency_id){
               data[0].basic_salary *= data[0].rate;
             }
 

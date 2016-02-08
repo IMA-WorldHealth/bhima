@@ -76,12 +76,12 @@ angular.module('bhima.services')
       }
 
       store.rates.post({
-        id : rate.foreign_currency_id,
+        id : rate.currency_id,
         rate : rate.rate,
       });
 
       store.rates.post({
-        id : rate.enterprise_currency_id,
+        id : rate.enterprise_id,
         rate: 1
       });
     }

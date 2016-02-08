@@ -136,9 +136,9 @@ queries.exchangeRate = function (date) {
   // expects a mysql-compatible date
 
   var sql =
-    'SELECT enterprise_currency_id, foreign_currency_id, rate, ' +
+    'SELECT enterprise_id, currency_id, rate, ' +
       'min_monentary_unit ' +
-    'FROM exchange_rate JOIN currency ON exchange_rate.foreign_currency_id = currency.id ' +
+    'FROM exchange_rate JOIN currency ON exchange_rate.currency_id = currency.id ' +
     'WHERE exchange_rate.date = DATE(?);';
 
   return db.exec(sql, [date])
@@ -149,8 +149,8 @@ queries.exchangeRate = function (date) {
 
     var store = new Store();
     rows.forEach(function (line) {
-      store.post({ id : line.foreign_currency_id, rate : line.rate });
-      store.post({ id : line.enterprise_currency_id, rate : 1});
+      store.post({ id : line.currency_id, rate : line.rate });
+      store.post({ id : line.enterprise_id, rate : 1});
     });
 
     return q(store);
@@ -163,9 +163,9 @@ queries.myExchangeRate = function (date) {
 
   // expects a mysql-compatible date
   var sql =
-    'SELECT enterprise_currency_id, foreign_currency_id, rate ' +
+    'SELECT enterprise_id, currency_id, rate ' +
     'FROM exchange_rate JOIN currency ON ' +
-      'exchange_rate.foreign_currency_id = currency.id ' +
+      'exchange_rate.currency_id = currency.id ' +
     'WHERE exchange_rate.date = DATE(?);';
 
   return db.exec(sql, [date])
@@ -176,8 +176,8 @@ queries.myExchangeRate = function (date) {
 
     var store = new Store();
     rows.forEach(function (line) {
-      store.post({ id : line.foreign_currency_id, rate : line.rate });
-      store.post({ id : line.enterprise_currency_id, rate : 1});
+      store.post({ id : line.currency_id, rate : line.rate });
+      store.post({ id : line.enterprise_id, rate : 1});
     });
 
     return q(store);
