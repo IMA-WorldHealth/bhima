@@ -1,15 +1,3 @@
-/**
- * The Cash Payments Controller
- *
- * This controller is responsible for binding the cash payments controller to
- * its view.  Cash payments can be made against future invocies (cautions) or
- * against previous invoices (sales).  The cash payments module provides
- * functionality to pay both in multiple currencies.
- *
- * @todo documentation improvements
- *
- * @module bhima/controllers/CashboxSelectController
- */
 angular.module('bhima.controllers')
 .controller('CashboxSelectController', CashboxSelectController);
 
@@ -17,13 +5,30 @@ CashboxSelectController.$inject = [
   'CashboxService', 'appcache', '$location'
 ];
 
+/**
+ * The Cashbox Selection Controller
+ *
+ * This controller is responsible for selecting a cashbox from all available
+ * cashboxes before routing the client page to the CashController module.
+ *
+ * @module bhima/controllers/CashboxSelectController
+ * @constructor
+ *
+ * @todo Migrate this code to an angular.component().
+ * @todo Use toggleLoadingState() to govern loading.
+ */
 function CashboxSelectController(Cashboxes, AppCache, $location) {
 
-  // bind controller alias
+  /** @const view-model alias */
   var vm = this;
+
+  /**
+  * @const persistent cashbox store
+  * This should be the same as in CashController
+  */
   var cache = new AppCache('CashPayments');
 
-  // bind data
+  /** ui loading indicator control */
   vm.loadingState = true;
 
   // bind methods
@@ -89,4 +94,3 @@ function CashboxSelectController(Cashboxes, AppCache, $location) {
   // start up the module
   startup();
 }
-

@@ -77,7 +77,7 @@
                       ng-value="currency.currency_id"
                       ng-change="CashCtrl.digestExchangeRate()"
                       required>
-                    {{ CashCtrl.Currencies.format(currency.currency_id); }}
+                    {{ CashCtrl.currencies.format(currency.currency_id); }}
                   </label>
 
                   <div class="help-block" ng-messages="CashVoucherForm.currency.$error" ng-show="CashVoucherForm.$submitted">
@@ -178,7 +178,7 @@
                   <label>{{ "COLUMNS.PAYMENT" | translate }}</label>
                   <div class="input-group">
                     <span class="input-group-addon">
-                      {{ CashCtrl.payment.currency_id ? CashCtrl.Currencies.symbol(CashCtrl.payment.currency_id) : '...' }}
+                      {{ CashCtrl.payment.currency_id ? CashCtrl.currencies.symbol(CashCtrl.payment.currency_id) : '...' }}
                     </span>
                     <input
                       type="number"

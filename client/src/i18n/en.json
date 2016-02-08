@@ -318,7 +318,8 @@
      },
      "RECEIPTS" : {
       "TITLE" : "Cash Payment Receipt"
-     }
+     },
+     "DEBTOR_INVOICES" : "Debtor Invoices"
    }
   },
 "CASH_DISCARD" : {

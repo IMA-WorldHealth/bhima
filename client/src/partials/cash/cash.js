@@ -1,3 +1,11 @@
+angular.module('bhima.controllers')
+.controller('CashController', CashController);
+
+CashController.$inject = [
+  'CashService', 'CashboxService', 'appcache', 'CurrencyService', '$uibModal',
+  '$routeParams', '$location', 'Patients', 'ExchangeRateService', 'SessionService'
+];
+
 /**
  * The Cash Payments Controller
  *
@@ -7,28 +15,28 @@
  * functionality to pay both in multiple currencies.
  *
  * @todo documentation improvements
- *
- * @todo - should the $location routing and/or appcache be in a service?
+ * @todo should the $location routing and/or appcache be in a service?
+ * @todo move invoices modal into a service
+ * @todo move receipt modal into a service
  *
  * @module bhima/controllers/CashController
  */
-angular.module('bhima.controllers')
-.controller('CashController', CashController);
-
-CashController.$inject = [
-  'CashService', 'CashboxService', 'appcache', 'CurrencyService', '$uibModal',
-  '$routeParams', '$location', 'Patients', 'ExchangeRateService', 'SessionService'
-];
-
 function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routeParams, $location, Patients, Exchange, Session) {
 
-  // bind controller alias
+  /** @const controller view-model alias */
   var vm = this;
+
+  /**
+  * @const persistent cashbox store
+  * This should be the same as in CashboxSelect Controller
+  */
   var cache = new AppCache('CashPayments');
+
+  /** @const id of the currently select cashbox */
   var cashboxId = $routeParams.id;
 
   // bind methods
-  vm.Currencies = Currencies;
+  vm.currencies = Currencies;
   vm.openInvoicesModal = openInvoicesModal;
   vm.changeCashbox = changeCashbox;
   vm.usePatient = usePatient;
@@ -38,26 +46,28 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   vm.toggleVoucherType = toggleVoucherType;
   vm.submit = submit;
 
-  // bind data
-  vm.payment = { date : new Date() };
-
-  // by default, do not let users edit the date until asked for
-  vm.lockDateInput = true;
-  vm.loadingState = false;
-
-  // timestamp to compare date values
-  vm.timestamp = new Date();
-  vm.enterprise = Session.enterprise;
-
   // temporary error handler until an application-wide method is described
   function handler(error) {
     if (error.data && error.data.code) { vm.HttpError = error.data.code; }
     else { throw error; }
   }
 
-  // warns if the date is in the future
+  /**
+   * warns if the date is in the future
+   * @todo - refactor into an angular.component.
+   * @see Issue #58.
+   */
   function hasFutureDate() {
     return (vm.payment.date > vm.timestamp);
+  }
+
+  /**
+   * switches the date flag to allow users to edit the date.
+   * @todo refactor into an angular.component
+   * @see Issue #58.
+   */
+  function toggleDateInput() {
+    vm.lockDateInput = !vm.lockDateInput;
   }
 
   // removes the cachebox from the local cache
@@ -69,8 +79,22 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     .catch(handler);
   }
 
-  // fired on controller start
+  /**
+   * Fired on controller start or form refresh
+   * @private
+   */
   function startup() {
+
+    /** This is the actual payment form */
+    vm.payment = { date : new Date() };
+
+    // by default, do not let users edit the date until asked for
+    vm.lockDateInput = true;
+    vm.loadingState = false;
+
+    // timestamp to compare date values
+    vm.timestamp = new Date();
+    vm.enterprise = Session.enterprise;
 
     // load the cashbox on startup
     Cashboxes.read(cashboxId)
@@ -112,12 +136,9 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     .finally(toggleLoadingState);
   }
 
-  // switches the date flag to allow users to edit the date.
-  function toggleDateInput() {
-    vm.lockDateInput = !vm.lockDateInput;
-  }
-
-  // fired on voucher type change.
+  /**
+  * clears the invoices field whenever the voucher type changes for a better UX
+  */
   function toggleVoucherType() {
     delete vm.payment.invoices;
   }
@@ -134,7 +155,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   }
 
   /**
-   * Receipt modal for fun and profit.
+   * Cash Receipt Modal
    */
   function openReceiptModal(uuid) {
 
@@ -154,7 +175,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   /**
    * receive open invoices from the invoice modal
    *
-   * @todo - refactor this into a separate invoices modal component, that can
+   * @todo refactor this into a separate invoices modal component, that can
    * be injected into any controller.
    */
   function openInvoicesModal() {
