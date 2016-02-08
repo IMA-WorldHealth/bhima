@@ -34,7 +34,7 @@
           <div class="caption text-center">
             <h5>{{ cashbox.text }}</h5>
             <p>
-              <a ng-click="CashboxSelectCtrl.selectCashbox(cashbox.id)" href="" class="btn btn-primary">
+            <a ng-click="CashboxSelectCtrl.selectCashbox(cashbox.id)" href="" class="btn btn-primary" id="cashbox-{{ cashbox.id }}">
                 <span class="glyphicon glyphicon-play-circle"></span> {{ "FORM.SELECT" | translate }}
               </a>
             </p>

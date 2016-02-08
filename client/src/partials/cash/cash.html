@@ -14,8 +14,8 @@
 
       <!-- Switch Cashbox Form -->
       <div class="col-md-4 col-md-push-8 pad-bottom">
-        <p><u>{{ "CASH.VOUCHER.CASHBOXES.CURRENT_CASHBOX" | translate }}</u>: <strong>{{ CashCtrl.cashbox.text }}</strong></p>
-        <button class="btn btn-warning" ng-click="CashCtrl.changeCashbox()">
+        <p><u>{{ "CASH.VOUCHER.CASHBOXES.CURRENT_CASHBOX" | translate }}</u>: <strong data-cashbox-text>{{ CashCtrl.cashbox.text }}</strong></p>
+        <button class="btn btn-warning" ng-click="CashCtrl.changeCashbox()" data-change-cashbox>
           <span class="glyphicon glyphicon-inbox"></span> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
         </button>
       </div>

@@ -48,8 +48,20 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
   // temporary error handler until an application-wide method is described
   function handler(error) {
-    if (error.data && error.data.code) { vm.HttpError = error.data.code; }
-    else { throw error; }
+
+    // if we have received 404 for while reading the cashbox, reroute
+    // to the cashboxes page.
+    if (error.status === 404) {
+      $location.url('/cash');
+
+    // for any error that has a translatable error code, bind to view
+    } else if (error.data && error.data.code) {
+      vm.HttpError = error.data.code;
+
+    // unclear what action to take - throw the error.
+    } else {
+      throw error;
+    }
   }
 
   /**

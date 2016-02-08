@@ -1,4 +1,4 @@
-/*global describe, it, beforeEach, inject, browser, element, by*/
+/* global inject, browser, element, by */
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
