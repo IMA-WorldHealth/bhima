@@ -382,6 +382,7 @@ ALTER TABLE `project`
 ADD `locked` BOOLEAN NOT NULL;
 
 
+
 -- Changing the exchange_rate table 
 -- Date: 2016-02-05
 -- By: Chris LOMAME
@@ -394,3 +395,12 @@ CHANGE `foreign_currency_id` `currency_id` TINYINT(3) UNSIGNED NOT NULL;
 
 ALTER TABLE `exchange_rate` 
 CHANGE `date` `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- Linking service o enterprise directly
+-- Date : 2016-02-02
+-- By : Dedrick Kitamuka
+
+ALTER TABLE service DROP FOREIGN KEY service_ibfk_1;
+ALTER TABLE service CHANGE project_id enterprise_id SMALLINT(5) UNSIGNED NOT NULL;
+ALTER TABLE service ADD FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`);
+

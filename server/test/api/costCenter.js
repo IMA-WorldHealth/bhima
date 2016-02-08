@@ -33,16 +33,38 @@ describe('The cost center API, PATH : /cost_centers', function () {
        .catch(helpers.handler);
     });
 
-  it('METHOD : GET, PATH : /cost_centers, It returns a list of cost centers', function () {
-    return agent.get('/cost_centers')
-      .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(2);
-      })
-      .catch(helpers.handler);
- });
+    it('METHOD : GET, PATH : /cost_centers?available=1, It returns a list of availables cost centers', function () {
+      return agent.get('/cost_centers?available=1')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.not.be.empty;
+          expect(res.body).to.have.length(1);
+        })
+       .catch(helpers.handler);
+    });
+
+    it('METHOD : GET, PATH : /cost_centers?available=1&full=1, It returns a full list of availables cost centers', function () {
+      return agent.get('/cost_centers?available=1&full=1')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.not.be.empty;
+          expect(res.body).to.have.length(1);
+        })
+       .catch(helpers.handler);
+    });
+
+    it('METHOD : GET, PATH : /cost_centers, It returns a list of cost centers', function () {
+      return agent.get('/cost_centers')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.not.be.empty;
+          expect(res.body).to.have.length(2);
+        })
+        .catch(helpers.handler);
+    });
 
   it('METHOD : GET, PATH : /cost_center/:id, It returns one cost center', function () {
     return agent.get('/cost_centers/'+ FETCHABLE_COST_CENTER_ID)
@@ -54,7 +76,19 @@ describe('The cost center API, PATH : /cost_centers', function () {
         expect(res.body).to.have.all.keys('project_id', 'id', 'text', 'note', 'is_principal');
       })
       .catch(helpers.handler);
- });
+  });
+
+  it('METHOD : GET, PATH : /cost_centers/:id/cost, It returns the cost of a provided cost center', function () {
+    return agent.get('/cost_centers/:id/cost'.replace(':id', FETCHABLE_COST_CENTER_ID))
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.all.keys('cost');
+        expect(res.body.cost).to.satisfy(function (cost) { return cost >= 0;});
+      })
+      .catch(helpers.handler);
+  });
 
   it('METHOD : POST, PATH : /cost_centers, It adds a cost center', function () {
     return agent.post('/cost_centers')
