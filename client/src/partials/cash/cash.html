@@ -179,7 +179,7 @@
                   <label>{{ "COLUMNS.PAYMENT" | translate }}</label>
                   <div class="input-group">
                     <span class="input-group-addon">
-                      {{ CashCtrl.payment.currency_id ? CashCtrl.currencies.symbol(CashCtrl.payment.currency_id) : '...' }}
+                      {{ CashCtrl.currencyLabel }}
                     </span>
                     <input
                       type="number"

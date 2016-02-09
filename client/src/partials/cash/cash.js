@@ -35,6 +35,9 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   /** @const id of the currently select cashbox */
   var cashboxId = $routeParams.id;
 
+  /** default to dots for currency symbol */
+  vm.currencyLabel = '...';
+
   // bind methods
   vm.currencies = Currencies;
   vm.openInvoicesModal = openInvoicesModal;
@@ -231,7 +234,13 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   // exchanges the payment at the bottom of the previous invoice slip.
   function digestExchangeRate() {
 
-    // make sure we have all the required data
+    // this is purely for UI considerations.  We want to update the currency
+    // input's symbol when the currency changes (prompting a
+    // digestExchangeRate()) call.
+    vm.currencyLabel = Currencies.symbol(vm.payment.currency_id);
+
+    // make sure we have all the required data before attempting to exchange
+    // any values
     if (!vm.slip || !vm.payment.currency_id) { return; }
 
     // bind the correct exchange rate
