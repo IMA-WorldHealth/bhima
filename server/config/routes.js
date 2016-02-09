@@ -390,7 +390,7 @@ exports.configure = function (app) {
   /** Debtor Groups API */
   app.get('/debtor_groups', debtorGroups.list);
   app.get('/debtor_groups/:uuid', debtorGroups.detail);
-  app.get('/debtor_groups/:uuid/invoices', debtorGroups.fetchInvoices);
+  app.get('/debtor_groups/:uuid/invoices', debtorGroups.getInvoices);
 
   // search stuff
   // TODO merge with patients API

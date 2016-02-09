@@ -59,6 +59,14 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
       .catch(helpers.handler);
   });
 
+  it('GET /debtor_groups/unknow/invoices returns a NOT FOUND (404) for an unknow {uuid}', function () {
+    return agent.get('/debtor_groups/unknow/invoices')
+      .then(function (result) {
+        expect(result).to.have.status(404);
+      })
+      .catch(helpers.handler);
+  });
+
   it('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', function () {
     return agent.get('/debtor_groups/' + inspectDebtorGroup + '/invoices?balanced=1')
       .then(function (result) {

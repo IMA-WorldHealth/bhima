@@ -26,10 +26,11 @@ exports.detail = getDetail;
 exports.list = getList;
 
 /** [HTTP API ENDPOINT] Get debtor groups invoices list */
-exports.fetchInvoices = fetchInvoices;
+exports.getInvoices = getInvoices;
 
 /** [SERVER SIDE FUNCTION] Get debtor groups invoices list */
-exports.getInvoices = getInvoices;
+exports.fetchInvoices = fetchInvoices;
+
 
 /**
 * GET /debtor_groups/:uuid
@@ -83,33 +84,33 @@ function getList(req, res, next) {
 * GET /debtor_groups/{:uuid}/invoices
 * GET /debtor_groups/{:uuid}/invoices?balanced=1
 *
-* @function fetchInvoices
+* @function getInvoices
 *
 * @desc This function is responsible for getting all invoices of a specified debtor group
 */
-function fetchInvoices(req, res, next) {
-  getInvoices(req.params.uuid, req.query.balanced)
+function getInvoices(req, res, next) {
+  fetchInvoices(req.params.uuid, req.query.balanced, req.codes)
   .then(function (rows) {
     res.status(200).json(rows);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 }
 
 /**
 * Get Debtor group invoices
 *
-* @function getInvoices
+* @function fetchInvoices
 *
 * @param {number} uuid The debtor group uuid
+* @param {number} balanced The optional value (1|0) for getting balanced invoices or not
+* @param {array} codes The required array of error codes
 *
 * @return {array} An promise of an array
 */
-function getInvoices (id, balanced) {
+function fetchInvoices (id, balanced, codes) {
 
-  if (!id) { return q.reject(new Error('ERR_MISSING_REQUIRED_PARAMETERS')); }
+  if (!id) { return q.reject(new codes.ERR_MISSING_REQUIRED_PARAMETERS()); }
 
   var query =
     'SELECT `debitor_group`.`account_id` FROM `debitor_group` ' +
@@ -117,7 +118,7 @@ function getInvoices (id, balanced) {
 
   return db.exec(query, [id])
   .then(function (rows) {
-    if (!rows.length) { return q.resolve([]); }
+    if (!rows.length) { return q.reject(new codes.ERR_NOT_FOUND()); }
 
     var accountId = rows.pop().account_id;
     var query =
@@ -172,5 +173,5 @@ function getInvoices (id, balanced) {
 
     return db.exec(query, [accountId, accountId]);
   });
-  
+
 }
