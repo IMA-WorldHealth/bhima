@@ -1,0 +1,48 @@
+<div class="flex-header">
+  <div class="bhima-title">
+
+    <ol class="headercrumb">
+      <li class="static">{{ "HOME.BHIMA" | translate }}</li>
+      <li ng-repeat="p in vm.bcPaths" class="title">
+        <span ng-if="p.current">{{ p.label }}</span>
+        <span ng-if="!p.current"><a ng-href="{{ p.link }}">{{ p.label }}</a></span>
+      </li>
+    </ol>
+
+    <div class="toolbar">
+      <!-- dropdown buttons -->
+      <div class="toolbar-item" ng-if="vm.bcDropdowns.length">
+        <span ng-repeat="d in vm.bcDropdowns" uib-dropdown>
+          <button class="btn btn-sm" ng-class="d.color" uib-dropdown-toggle>
+            {{ d.selected | translate }} <span class="caret"></span>
+          </button>
+          <ul class="pull-right" uib-dropdown-menu>
+            <li ng-repeat="opt in d.option">
+              <a href="" ng-click="vm.helperDropdown(opt, d)">
+                {{ opt.label | translate }}
+              </a>
+            </li>
+          </ul>
+        </span>
+      </div>
+
+      <!-- buttons -->
+      <div class="toolbar-item btn-group btn-group-sm" ng-if="vm.bcButtons.length">
+        <button class="btn"
+          ng-class="a.color"
+          ng-repeat="a in vm.bcButtons"
+          ng-click="a.action(a.label)">
+          <i class="{{ a.icon }}"></i> {{ a.label }}
+        </button>
+      </div>
+
+      <!-- labels -->
+      <div class="toolbar-item" ng-if="vm.bcLabels.length">
+        <label ng-repeat="l in vm.bcLabels">
+          <b><i class="{{ l.icon }}"></i> {{ l.label }}</b>
+        </label>
+      </div>
+    </div>
+
+  </div>
+</div>

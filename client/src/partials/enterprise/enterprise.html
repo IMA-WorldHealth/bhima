@@ -49,7 +49,7 @@
 <main class="hidden-print">
   <div class="container-fluid">
     <div class="row">
-      
+
       <!-- Enterprises Details Form -->
       <div class="col-md-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
@@ -80,7 +80,7 @@
           </table>
         </div>
       </div>
-  
+
       <!-- Optional Information Form -->
       <div class="col-md-6" ng-switch="EnterpriseCtrl.view">
         <div ng-switch-default>
@@ -160,14 +160,14 @@
 
               <fieldset>
                 <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
-                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.currency_id.$invalid }">  
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.currency_id.$invalid }">
                   <div class="radio" ng-repeat="currency in EnterpriseCtrl.currencies">
                     <label class="control-label">
                       <input type="radio" value="{{currency.id}}" required id="currency_id-{{currency.id}}" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
                       {{currency.name}}
                     </label>
                     </div>
-                </div>  
+                </div>
               </fieldset>
 
               <div class="form-group">
@@ -222,26 +222,26 @@
                   <input type="tel" class="form-control" name="phone" id="bhima-enterprise-phone" ng-model="EnterpriseCtrl.enterprise.phone">
                 </div>
               </div>
-    
+
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.location_id.$invalid }">
                 <label class="col-md-3 control-label">{{ "ENTERPRISE.LOCATION" | translate }}</label>
                 <div class="col-md-9">
                   <select class="form-control" name="location_id" ng-model="EnterpriseCtrl.enterprise.location_id" id="bhima-enterprise-location" ng-options="loc.uuid as loc.format for loc in EnterpriseCtrl.locations | orderBy:'village'" required>
                     <option value="" disabled> -- {{ 'SELECT.LOCATION' | translate }}-- </option>
                   </select>
-                </div>  
+                </div>
               </div>
-                                   
+
               <fieldset>
                 <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
-                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.currency_id.$invalid }">  
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.currency_id.$invalid }">
                   <div class="radio" ng-repeat="currency in EnterpriseCtrl.currencies">
                     <label class="control-label">
                       <input type="radio" value="{{currency.id}}" required id="currency_id" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
                       {{currency.name}}
                     </label>
                   </div>
-                </div>  
+                </div>
               </fieldset>
 
               <div class="form-group">
@@ -254,10 +254,8 @@
               </div>
             </form>
           </div>
-        </div>        
+        </div>
       </div>
     </div>
   </div>
 </main>
-
-
