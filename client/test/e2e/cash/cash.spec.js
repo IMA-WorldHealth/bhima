@@ -4,7 +4,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 
 // import ui-grid testing utiliites
-var gridUtils = require('../shared/gridObjectTestUtils.spec.js');
+var gridUtils = require('../shared/gridTestUtils.spec.js');
 var EC = protractor.ExpectedConditions;
 
 chai.use(chaiAsPromised);
@@ -125,7 +125,7 @@ describe.only('Cash Payments Module', function () {
   });
 
   /** tests for the cash payments form page */
-  describe.only('Cash Payments Form Page', function () {
+  describe('Cash Payments Form Page', function () {
 
     /** navigate to the page before each function */
     beforeEach(function () {
@@ -143,7 +143,7 @@ describe.only('Cash Payments Module', function () {
     };
 
     // This payment against patient invoices should succeed
-    var mockInvoicePayment = {
+    var mockInvoicesPayment = {
       patientId: 'TPA2',
       date : new Date('2016-06-01'),
       amount : 5.12
@@ -229,8 +229,48 @@ describe.only('Cash Payments Module', function () {
       expect(element(by.css('[data-cash-receipt-modal]')).isPresent()).to.eventually.equal(true);
     });
 
-    it('should make a payment against previous invoices');
+    it('should make a payment against previous invoices', function () {
+      var gridId = 'debtorInvoicesGrid';
 
-    it('should not allow a payment without a date');
+      // select the proper patient
+      findPatientById(mockInvoicesPayment.patientId);
+
+      // select the properdate
+      editDate(mockInvoicesPayment.date);
+
+      // select the "invoices payment" option type
+      var cautionOption = element(by.css('[data-caution-option="0"]'));
+      cautionOption.click();
+
+      // open the invoices modal to select various invoices
+      var modalButton = element(by.css('[data-open-invoices-btn]'));
+      expect(modalButton.isPresent()).to.eventually.equal(true);
+      modalButton.click();
+
+      // be sure that the modal opened
+      expect(element(by.css('[data-debtor-invoices-modal]')).isPresent()).to.eventually.equal(true);
+
+      // inside the modal, we want to select the first row to pay against
+      var row = gridUtils.selectRow(gridId, 0);
+
+      // submit the modal
+      var modalSubmit =  element(by.css('[data-debtor-invoices-modal-submit]'));
+      modalSubmit.click();
+
+      // select the USD currency from the currency radio buttons
+      var currencyOption = element(by.css('[data-currency-option="2"]'));
+      currencyOption.click();
+
+      // enter the amount to pay for an invoice
+      var currencyInput = element(by.css('[data-currency-input]'));
+      currencyInput.sendKeys(mockInvoicesPayment.amount);
+
+      // click the submit button
+      var submit = element(by.css('[data-action="submit"]'));
+      submit.click();
+
+      // expect the receipt modal to appear
+      expect(element(by.css('[data-cash-receipt-modal]')).isPresent()).to.eventually.equal(true);
+    });
   });
 });

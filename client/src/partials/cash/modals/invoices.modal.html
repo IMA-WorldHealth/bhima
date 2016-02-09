@@ -2,7 +2,7 @@
   <h4>{{ "CASH.VOUCHER.DEBTOR_INVOICES" | translate }}</h4>
 </div>
 
-<div class="modal-body">
+<div class="modal-body" data-debtor-invoices-modal>
 
   <!-- warn the client if not debtor id has been passed in -->
   <p ng-show="CashInvoiceModalCtrl.missingId" class="text-danger text-center">
@@ -12,7 +12,7 @@
 
   <!-- the ui grid to select debtor invoices -->
   <div ng-if="!CashInvoiceModalCtrl.missingId">
-    <div ui-grid="CashInvoiceModalCtrl.gridOptions" ui-grid-selection class="modal-grid">
+    <div ui-grid="CashInvoiceModalCtrl.gridOptions" ui-grid-selection class="modal-grid" id="debtorInvoicesGrid">
 
       <!-- indicate that data is still being loaded from the server -->
       <div class="grid-msg-overlay" ng-show="CashInvoiceModalCtrl.loadingState">
@@ -48,13 +48,16 @@
     class="btn btn-primary"
     ng-class="{'btn-danger' : (CashInvoiceModalCtrl.missingId || CashInvoiceModalCtrl.loadingError) }"
     ng-click="CashInvoiceModalCtrl.submit()"
-    ng-disabled="(CashInvoiceModalCtrl.missingId || CashInvoiceModalCtrl.loadingError)">
+    ng-disabled="(CashInvoiceModalCtrl.missingId || CashInvoiceModalCtrl.loadingError)"
+    data-debtor-invoices-modal-submit
+    >
     {{ "FORM.SUBMIT" | translate }}
   </button>
   <button
     type="button"
     class="btn btn-default"
-    ng-click="CashInvoiceModalCtrl.cancel()">
+    ng-click="CashInvoiceModalCtrl.cancel()"
+    data-debtor-invoices-modal-cancel>
     {{ "FORM.CANCEL" | translate }}
   </button>
 </div>
