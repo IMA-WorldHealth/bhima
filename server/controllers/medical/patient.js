@@ -23,7 +23,7 @@ var db = require('../../lib/db'),
 exports.create = create;
 
 // get details of a patient
-exports.details = details;
+exports.details = detail;
 
 // update patient informations
 exports.update = update;
@@ -129,7 +129,7 @@ function generatePatientText(patient) {
 }
 
 /** @todo review if this many details should be returned under a patient end point */
-function details(req, res, next) {
+function detail(req, res, next) {
   var uuid = req.params.uuid;
 
   handleFetchPatient(uuid)

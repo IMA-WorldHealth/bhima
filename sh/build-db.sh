@@ -7,13 +7,15 @@
 # echo -n "Enter password: " 
 # read -s pw
 # echo
-user='bhima'
-pw='HISCongo2013'
+DB_USER='bhima'
+DB_PASS='HISCongo2013'
+DB_NAME='bhima'
 
 echo "Rebuilding the database ..."
 
 # rebuild database
-mysql -u $user -p$pw -e "DROP DATABASE IF EXISTS bhima;"
-mysql -u $user -p$pw -e "CREATE DATABASE bhima CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-mysql -u $user -p$pw bhima < server/models/schema.sql
-mysql -u $user -p$pw bhima < server/models/test/data.sql
+mysql -u $DB_USER -p$DB_PASS -e "DROP DATABASE IF EXISTS bhima;"
+mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE bhima CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/synt.sql

@@ -7,7 +7,7 @@
             <button class="btn btn-default" uib-dropdown-toggle>
               <span class="caret"></span>
             </button>
-            <ul class="uib-dropdown-menu" role="menu">
+            <ul role="menu" uib-dropdown-menu>
               <li role="menuitem" ng-repeat="lang in LoginCtrl.languages track by lang.key">
                 <a ng-click="LoginCtrl.setLanguage(lang)">{{ lang.name }}</a>
               </li>

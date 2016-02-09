@@ -19,9 +19,11 @@ ExchangeRateService.$inject = [
 * the application and throw a MISSING_EXCHANGE_RATES error if we are missing a base
 * rate for any of the currencies.
 *
-* TODO -- How should we best handle errors such as looking up old dates before an
+* @todo - How should we best handle errors such as looking up old dates before an
 * exchange rate is defined?  What happens when we call
-* service.convertToEntepriseCurrency(someId, null, 100)?
+* service.convertToEnterpriseCurrency(someId, null, 100)?
+*
+* @todo - documentation improvements
 */
 function ExchangeRateService($http, $q, util, Currencies, Session) {
   var service = {};
@@ -33,8 +35,10 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
 
   service.read = read;
   service.create = create;
-  service.convertToEntepriseCurrency = convertToEnterpriseCurrency;
+  service.convertToEnterpriseCurrency = convertToEnterpriseCurrency;
   service.convertFromEnterpriseCurrency = convertFromEnterpriseCurrency;
+  service.getCurrentRate = getCurrentRate;
+  service.getExchangeRate = getExchangeRate;
 
   /* ------------------------------------------------------------------------ */
 
@@ -133,28 +137,36 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   // using the exchange rate valid for the date {date}
   function convertToEnterpriseCurrency(currencyId, date, amount) {
 
-    // if we passed in the enterprise currency, just return the amount.  Allows
-    // you to apply this transformation to a list of mixed currencies.
-    if (currencyId === Session.enterprise.currency_id) { return amount; }
+    // get the current exchange rate
+    var rate = getExchangeRate(currencyId, date);
 
-    // look up the rates for currencyId via the cMap object.
-    var rates = cMap[currencyId].filter(function (row) {
-      return row.date <= date;
-    });
-
-    // get the last rate for the given currency
-    var rate = rates[rates.length - 1].rate;
-
-    return amount * rate;
+    return amount * (1 / rate);
   }
 
   // converts an {amount} of money to {currencyId} from the enterprise currency
   // using the exchange rate valid for the date {date}
   function convertFromEnterpriseCurrency(currencyId, date, amount) {
 
+    // get the current exchange rate
+    var rate = getExchangeRate(currencyId, date);
+
+    return amount * rate;
+  }
+
+  // get the current exchagne rate for a currency
+  function getCurrentRate(currencyId) {
+    return getExchangeRate(currencyId, new Date());
+  }
+
+  // get the rate for a currency on a given date
+  function getExchangeRate(currencyId, date) {
+
+    // parse date into a date object (if not already a date)
+    date = new Date(Date.parse(date));
+
     // if we passed in the enterprise currency, just return the amount.  Allows
     // you to apply this transformation to a list of mixed currencies.
-    if (currencyId === Session.enterprise.currency_id) { return amount; }
+    if (currencyId === Session.enterprise.currency_id) { return 1; }
 
     // look up the rates for currencyId via the cMap object.
     var rates = cMap[currencyId].filter(function (row) {
@@ -164,7 +176,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     // get the last rate for the given currency
     var rate = rates[rates.length - 1].rate;
 
-    return amount * ( 1 / rate );
+    return rate;
   }
 
   return service;

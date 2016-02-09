@@ -272,9 +272,6 @@
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "UPDATE_SUCCESS"         : "Successfully updated a cashbox."
    },
-   "CLEAR_SELECTION"  : "Clear Selection",
-   "DEBITOR_INVOICES" : "Debtor Invoices",
-   "DEFAULT_CASHBOX"  : "Caisse",
    "EXTRA" : {
       "ACTION"             : "Action",
       "FILTER_PATIENT"     : "Client filter",
@@ -292,12 +289,6 @@
       "TITLE"              : "Regularization of payments",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
-   "FLOW" : {
-     "TITLE" : "Cash Flow "
-   },
-   "HELP_TXT_1"       : "The module allows debitors to pay against existing invoices",
-   "HELP_TXT_2"       : "To begin, search for a debitor using the search bar above",
-   "NO_EXCHANGE_RATE" : "Error : No exchange rate!",
    "OVER": {
       "CUED"          : "The debtor has been billed this amount",
       "DANGER"        : "Warning!",
@@ -306,16 +297,31 @@
       "PAYMENT"       : "The debitor is paying a this amount",
       "REASON"        : "Reason",
       "TITLE"         : "Justification for Payment"
-      },
-   "OVERDUE"          : "Over Due",
-   "PAYMENT"          : "Payment",
-   "PAY_INVOICES"     : "Pay Invoices",
-   "TITLE"            : "Auxillary Cash Module",
-   "TOTAL_DUE"        : "Total Due",
-   "TOTAL_PAYING"     : "Total Paying",
-   "WARNING"          : "This patient is a contracted and can not pay checkout in Cash Payments",
-   "WARNING_2"        : "For the payment of old bills would have to change his debtor group"
    },
+   "VOUCHER" : {
+     "TITLE" : "Cash Payments",
+     "CASHBOXES" : {
+       "AVAILABLE" : "Available Cashboxes",
+       "UNCONFIGURED" : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue.",
+       "LINK" : "Click here to add it.",
+       "MISSING" : "Don't see your cashbox?",
+       "CURRENT_CASHBOX" : "Current Cashbox",
+       "CHANGE_CASHBOX" : "Change Cashbox"
+     },
+     "SLIP" : "Cash Voucher",
+     "CASHBOX" : "Cashbox",
+     "CAUTION" : "Caution",
+     "INVOICE" : "Invoice Payment",
+     "SELECT_INVOICES" : "Select Invoice(s)",
+     "ERRORS"  :  {
+      "NO_CASH_ITEMS" : "No cash items have been selected.  In order to pay against previous invoices, you must select an invoice using the 'Select Invoices(s)' button."
+     },
+     "RECEIPTS" : {
+      "TITLE" : "Cash Payment Receipt"
+     },
+     "DEBTOR_INVOICES" : "Debtor Invoices"
+   }
+  },
 "CASH_DISCARD" : {
   "CASH_DETAILS"     : "Details",
   "DESCRIPTION"      : "Description",
@@ -481,6 +487,7 @@
    "ENTERPRISE_CURRENCY"   : "Enterprise Currency",
    "ENTERPRISE_ID"         : "Enterprise ID",
    "ENTRY_DATE"            : "Entry date",
+   "EXCHANGE_RATE"         : "Exchange Rate",
    "EXPENSE"               : "Expense",
    "EXPIRATION_DATE"       : "Expiration Date",
    "EXPLANATION"           : "Explanation",
@@ -587,7 +594,7 @@
    "RATE"                  : "Rate",
    "RECEIPT"               : "Receipt",
    "REF"                   : "Ref.",
-   "REFERENCE"             : "reference",
+   "REFERENCE"             : "Reference",
    "REF_GROUP"             : "Ref. Groupe",
    "REFERENCE_GROUP"       : "Group de reference",
    "REFERENCE_PURCHASE"    : "Purchase Order Reference",
@@ -659,7 +666,6 @@
    "WORDING"               : "Wording",
    "WORKING_DAY"           : "Working day",
    "ZS"                    : "Health Zone"
-
    },
 
 "CONFIG_ACCOUNTING": {
@@ -1368,6 +1374,7 @@
    "CONFIGURE"       : "Configure",
    "DELETE"          : "Delete",
    "DISCARD"         : "Discard",
+   "DISMISS"         : "Dismiss",
    "EDIT"            : "Edit",
    "LOGIN"           : "Login",
    "HAS_ERRORS"      : "The form contains errors.  Please correct them and resubmit.",
@@ -1382,6 +1389,7 @@
    "REQUIRED_EMAIL" : "You must provide a valid email address.",
    "REQUIRED_TELEPHONE"  : "You must provide a valid telephone number.",
    "REVIEW"          : "Review",
+   "SELECT"          : "Select",
    "SAVE"            : "Save",
    "SAVE_CHANGES"    : "Save Changes",
    "SAVE_FORM"       : "Save Form",
@@ -1390,7 +1398,10 @@
    "SUBMIT"          : "Submit",
    "SUBMIT_SUCCESS"  : "Form submitted succesfully.",
    "SUBMIT_FAILURE"  : "Form submission did not succeed.",
-   "UPDATE"          : "Update"
+   "UPDATE"          : "Update",
+   "WARNINGS" : {
+    "FUTURE_DATE" : "Warning: This date in the future."
+   }
    },
 "GRADE": {
    "ADD"            : "Add a grade",
@@ -2202,7 +2213,7 @@
    },
 "PROJECT": {
    "CONFIRM"        : "Are you sure you want to delete this Project",
-   "DELETE_SUCCESS" : "Deleted successfully", 
+   "DELETE_SUCCESS" : "Deleted successfully",
    "EDIT"           : "Editing Project",
    "EXISTING"       : "Existing Projects",
    "HELP_TXT_1"     : "This page is for managment of projects belonging to enterprises.  You see here all projects currently registered to your current enterprise.",
@@ -2327,6 +2338,24 @@
    "SUCCESS_MESSAGE" : "Patient visit successfully renewed",
    "TITLE"           : "Renew Patient Visit"
    },
+"RECEIPTS" : {
+  "DETAILS" : "Receipt Details",
+  "CLIENT" : "Client",
+  "CLIENT_ID" : "Client ID",
+  "DATE" : "Date",
+  "FAX" : "FAX",
+  "TEL" : "TEL",
+  "TELEPHONE" : "Telephone",
+  "TYPE" : "Type",
+  "TOTAL_BILLED" : "Total Billed",
+  "TOTAL_PAID" : "Total Paid",
+  "EXCHANGE_RATE" : "Exchange Rate",
+  "POST_OFFICE_BOX" : "Post Office Box",
+  "PO_BOX" : "P.O. Box",
+  "CASHIER" : "Cashier",
+  "CURRENCY" : "Transaction Currency",
+  "CASHBOX" : "Cash Window"
+},
 "REFERENCE": {
    "ADD"            : "Add a Reference",
    "ALERT"          : "Reference management module is a module that has been designed to allow administration of existing References within the organization, the table is left to record, to update the attributes of a Reference and the deletion.",
@@ -3048,11 +3077,10 @@
    "BUDGET_ANALYSIS"           : "Budget Analysis",
    "BUDGET_BY_ACCOUNT"         : "Budget by Account",
    "BUDGET_MANAGEMENT"         : "Budget Management",
-   "CASH"                      : "Auxillary Cash",
+   "CASH_PAYMENTS"             : "Cash Payments",
    "CASHBOX_MANAGEMENT"        : "Cashbox Management",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Treasure Configuration",
    "CASH_FLOW"                 : "Cash Flow",
-   "CASH_PAYMENTS"             : "Cash Payments",
    "CAUTION"                   : "Caution",
    "CHART_OF_ACCOUNTS"         : "Chart of Accounts",
    "CLIENT"                    : "Clients",

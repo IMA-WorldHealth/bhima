@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 Settings.$inject = [
   '$http','$routeParams','$translate','$location','appcache',
-  'tmhDynamicLocale','amMoment', 'SessionService', 'Store'
+  'tmhDynamicLocale','amMoment', 'SessionService', 'store'
 ];
 
 function Settings($http, $routeParams, $translate, $location, Appcache, tmhDynamicLocale, amMoment, SessionService, Store) {
