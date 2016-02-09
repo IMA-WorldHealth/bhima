@@ -46,9 +46,9 @@
                   <label class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
 
                   <div class="input-group">
-                    <input name="date" class="form-control" type="date" ng-model="CashCtrl.payment.date" ng-readonly="CashCtrl.lockDateInput">
+                    <input name="date" class="form-control" type="date" ng-model="CashCtrl.payment.date" ng-readonly="CashCtrl.lockDateInput" data-edit-date-input>
                     <span class="input-group-btn">
-                      <button class="btn btn-default" type="button" ng-click="CashCtrl.toggleDateInput()">
+                      <button class="btn btn-default" type="button" ng-click="CashCtrl.toggleDateInput()" data-edit-date-btn>
                         <span class="glyphicon"
                           ng-class="{ 'glyphicon-edit' : CashCtrl.lockDateInput, 'glyphicon-check' : !CashCtrl.lockDateInput}">
                         </span>
@@ -76,6 +76,7 @@
                       ng-model="CashCtrl.payment.currency_id"
                       ng-value="currency.currency_id"
                       ng-change="CashCtrl.digestExchangeRate()"
+                      data-currency-option="{{ currency.currency_id }}"
                       required>
                     {{ CashCtrl.currencies.format(currency.currency_id); }}
                   </label>
@@ -89,11 +90,11 @@
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
                   <p><strong class="control-label">{{ "COLUMNS.TYPE" | translate }}</strong></p>
                   <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="1" ng-change="CashCtrl.toggleVoucherType()" required>
+                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="1" ng-change="CashCtrl.toggleVoucherType()" data-caution-option="1" required>
                     {{ "CASH.VOUCHER.CAUTION" | translate }}
                   </label>
                   <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="0" ng-change="CashCtrl.toggleVoucherType()" required>
+                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="0" ng-change="CashCtrl.toggleVoucherType()" data-caution-option="0" required>
                     {{ "CASH.VOUCHER.INVOICE" | translate }}
                   </label>
 
@@ -188,6 +189,7 @@
                       ng-max="CashCtrl.slip.total"
                       placeholder="0.00"
                       class="form-control"
+                      data-currency-input
                       required>
                   </div>
                   <div class="help-block" ng-messages="CashVoucherForm.amount.$error" ng-show="CashVoucherForm.$submitted">
@@ -196,7 +198,7 @@
                 </div>
 
                 <div class="form-group">
-                  <button type="submit" class="btn btn-primary">
+                  <button type="submit" class="btn btn-primary" data-action="submit">
                     <span class="glyphicon glyphicon-refresh" ng-show="CashCtrl.loadingState"></span>
                     {{ (CashCtrl.loadingState ? "UTIL.LOADING" : "FORM.SUBMIT") | translate }}
                   </button>

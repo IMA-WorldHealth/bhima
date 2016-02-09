@@ -2,7 +2,7 @@
   <h3>{{ "CASH.VOUCHER.RECEIPTS.TITLE" | translate }} <small>#{{ CashReceiptModalCtrl.receipt.reference }}</small></h3>
 </div>
 
-<div class="modal-body">
+<div class="modal-body" data-cash-receipt-modal>
 
   <!-- warn the client if not debtor id has been passed in -->
   <p ng-show="CashReceiptModalCtrl.HttpError" class="text-danger text-center">
