@@ -34,7 +34,8 @@ exports.configure = function configure(app) {
     saveUninitialized : Boolean(process.env.SESS_SAVE_UNINITIALIZED),
     resave            : Boolean(process.env.SESS_RESAVE),
     unset             : process.env.SESS_UNSET,
-    cookie            : { secure : true }
+    cookie            : { secure : true },
+    retries: 50
   }));
 
   // bind error codes to the express stack

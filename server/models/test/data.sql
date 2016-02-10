@@ -5,7 +5,7 @@ INSERT INTO `unit` VALUES
 (1,'Admin','TREE.ADMIN','The Administration Super-Category',0,'/partials/admin/index.html','/admin'),
 (2, 'Enterprise', 'TREE.ENTERPRISE', 'Manage the registered enterprises from here', 1, '/partials/enterprise/', '/enterprises'),
 (4,'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/user_permission/','/permissions'),
--- (5,'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
+(5,'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
 -- (6,'Account','TREE.ACCOUNT','Chart of Accounts management',30,'/partials/accounts/create_account/','/create_account'),
 -- (7,'Edit Account Budget','TREE.EDIT_BUDGET','',8,'/partials/budget/edit/','/budgeting/edit'),
 -- (8,'Budgeting','TREE.BUDGETING','Plan your next move',0,'/partials/budget/index.html','/budget'),
@@ -17,7 +17,7 @@ INSERT INTO `unit` VALUES
 -- (15,'Patient Search','TREE.PATIENT_SEARCH','Search for patient',12,'/partials/patient/search/','/patient/search/'),
 -- (16,'Sales','TREE.SALES','Create an invoice for a sale',5,'/partials/sales/','/sales/'),
 -- (17,'Sale Records','TREE.SALE_RECORDS','Search for a sale',5,'/partials/records/sales_records/','/sale_records/'),
--- (18,'Cash Box','TREE.CASH','Pay invoices',5,'/partials/cash/','/cash'),
+(18,'Cash Payments','TREE.CASH_PAYMENTS','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
 -- (19,'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/partials/creditor/','/creditor'),
 -- (20,'Donor management','TREE.DONOR_MANAGEMENT','',1,'/partials/donor_management/','/donor_management/'),
 -- (21,'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/inventory/price_list'),
@@ -221,8 +221,6 @@ INSERT INTO `fonction` VALUES
   (1, 'Infirmier'),
   (2, 'Medecin Directeur');
 
-
-
 -- Creditor group
 INSERT INTO  `creditor_group` VALUES
   (1, 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7', 'Personnel [Creditor Group Test]', 3629, 0),
@@ -288,6 +286,6 @@ INSERT INTO `primary_cash_module` VALUES
 INSERT INTO `transaction_type` VALUES
   (1, "pcash_transfert");
 
--- Excahange Rate for the current date
+-- Exchange Rate for the current date
 INSERT INTO `exchange_rate` (enterprise_currency_id, foreign_currency_id, rate, date) VALUES
   (2, 1, 930, CURRENT_DATE());

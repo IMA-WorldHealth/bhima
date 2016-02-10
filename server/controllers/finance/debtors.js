@@ -112,17 +112,16 @@ function update(req, res, next) {
     .done();
 }
 
-function fetchInvoices (req, res, next){
-
+function fetchInvoices(req, res, next) {
   var accountId = null;
   var sql =
     'SELECT account_id FROM debitor_group WHERE uuid = (SELECT group_uuid FROM debitor WHERE uuid = ?)';
 
   lookupDebtor(req.params.uuid, req.codes)
-    .then(function (){
+    .then(function () {
       return db.exec(sql, [req.params.uuid]);
     })
-    .then(function (rows){
+    .then(function (rows) {
       accountId = rows[0].account_id;
       sql =
       'SELECT c.inv_po_id FROM (' +
@@ -137,11 +136,14 @@ function fetchInvoices (req, res, next){
 
       return db.exec(sql, [req.params.uuid, accountId, req.params.uuid, accountId]);
     })
-    .then(function (rows){
+    .then(function (rows) {
 
      var invoices = rows.map(function (row) {
        return row.inv_po_id;
      });
+
+     // if there are no invoices, escape right away
+     if (invoices.length === 0) { return  []; }
 
      sql =
       'SELECT CONCAT(p.abbr, s.reference) AS reference, t.inv_po_id AS sale_uuid, t.trans_date AS date, ' +
@@ -165,12 +167,12 @@ function fetchInvoices (req, res, next){
         'AND t.account_id = ? ' +
         'GROUP BY t.inv_po_id';
 
-      if(req.query.balanced === '1'){ sql += ' HAVING balance = 0;';}
-      if(req.query.balanced === '0') { sql += ' HAVING balance > 0;';}
+      if (req.query.balanced === '1') { sql += ' HAVING balance = 0;';}
+      if (req.query.balanced === '0') { sql += ' HAVING balance > 0;';}
 
       return db.exec(sql, [invoices, accountId]);
     })
-    .then(function (rows){
+    .then(function (rows) {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -185,7 +187,7 @@ function lookupDebtor(uuid, codes) {
 
   return db.exec(debtorQuery, [uuid])
     .then(function (rows) {
-      if(rows.length === 0) { throw codes.ERR_NOT_FOUND;}
+      if (rows.length === 0) { throw codes.ERR_NOT_FOUND;}
       return rows[0];
     });
 }
