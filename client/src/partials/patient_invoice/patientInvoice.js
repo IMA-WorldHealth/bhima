@@ -1,3 +1,7 @@
+/**
+ * @todo Known bug - if the sidebar is expanded and collapsed to totals footer 
+ * will not refresh to the correct size (fixed width is not recalculated)
+ */
 angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
@@ -24,37 +28,17 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
     });
 
   // TODO rename list
-  var saleData = InventoryItems.current;
+  var saleData = InventoryItems.current.data;
   vm.availableInventoryItems = InventoryItems.available;
   
-  console.log(vm.availableInventoryItems);
   
-  function validate(gridApi) { 
-    console.log('got');
-    window.api = gridApi;
-
-    gridApi.core.on.rowsRendered(null, function (a, b, c) { 
-      if (!vm.columns) { 
-      vm.columns = a.grid.columns;
-      }
-      // console.log('abc', a, b, c); 
-    });
-  }
- 
-  /** This method is called a hell of a lot. */
-  vm.calculateWidth = function calculateWidth(renderedColumns) { 
-    var rc = renderedColumns;
-  
-    return rc[0].drawnWidth + rc[1].drawnWidth + rc[2].drawnWidth; 
-  }
-
   var mockOptions = { 
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
     // showGridFooter : true,
     // gridFooterTemplate : footer,
-    onRegisterApi : validate,
+    // onRegisterApi : validate,
     // footerTemplate : 'partials/patient_invoice/templates/footer.tmpl.html',
     // showColumnFooter : true,
     columnDefs : [
@@ -77,14 +61,17 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
         },
       { field : 'description' },
       { field : 'quantity', 
-        cellTemplate : '<div style="padding : 5px;"><input ng-disabled="!row.entity.confirmed" class="form-control" style="padding-left : 5px !important" ng-model="row.entity.quantity"></input></div>'
+        cellTemplate : '<div style="padding : 5px;"><input min="0" type="number" ng-disabled="!row.entity.confirmed" class="form-control" style="padding-left : 5px !important" ng-model="row.entity.quantity"></input></div>'
         // cellFooterTemplate : '<div>eh</div>',
         // aggregationType : uiGridConstants.aggregationTypes.sum
       },
       { field : 'unit_price', 
-        cellTemplate : '<div style="padding : 5px;"><input ng-disabled="!row.entity.confirmed" class="form-control" style="padding-left : 5px !important" ng-model="row.entity.unit_price"></input></div>'},
+        cellTemplate : '<div style="padding : 5px;"><input type="number" ng-disabled="!row.entity.confirmed" class="form-control" style="padding-left : 5px !important" ng-model="row.entity.unit_price"></input></div>'},
       { field : 'amount',
-        cellTemplate : '<div style="padding : 5px;">{{row.entity.quantity * row.entity.unit_price | currency}}</div>'}
+        cellTemplate : '<div style="padding : 5px;">{{row.entity.quantity * row.entity.unit_price | currency}}</div>'},
+      { field : 'actions',
+        width : 25,
+        cellTemplate : '<div style="padding : 5px;"><a href="" ng-click="grid.appScope.InventoryItems.removeItem(row.entity)"><span class="glyphicon glyphicon-trash"></span></a></div>'}
     ],
     data : saleData
   };
@@ -97,11 +84,13 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
   // Unit price should be number
 
   vm.mockOptions = mockOptions;
-  
+  vm.saleData = saleData;
+
   // TODO Move to items service
   vm.addInventoryItem = function addInventoryItem(totalItems) { 
-    
-    console.log(vm.availableInventoryItems());
+    var totalItems = totalItems || 1;
+
+    // console.log(vm.availableInventoryItems());
     // TODO Validate total items is a reasonable value
 
     for (var i = 0; i < totalItems; i++) { 
@@ -111,6 +100,9 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
   }
 
   vm.setPatient = function setPatient(patient) { 
+    // Prompt initial invoice item
+    vm.addInventoryItem();
+    
     vm.invoicePatient = patient;
   }
 
@@ -119,29 +111,16 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
     // console.log('confirming inventory item');
   }
 
+  vm.returnTotal = InventoryItems.total;
+  vm.inventoryItemAvailable = InventoryItems.inventoryItemAvailable;
+
+  vm.InventoryItems = InventoryItems;
+  //vm.addInventoryItem();
+
   // Debug method - TODO Remove
   vm.viewItems = function viewItems() { 
     console.log(saleData);
   } 
   
   window.gridOptions = mockOptions;
-
-  vm.calculate = function calculate(renderedColumns) { 
-    var leadingColumns = 5;
-  
-    if (!renderedColumns) { 
-      return;
-    }
-
-    console.log('called');
-    return renderedColumns.reduce(function (width, column, index) { 
-      // console.log('reduce', width, column, index);
-       
-      if (index < leadingColumns) { 
-        width += column.drawnWidth;
-      }
-
-      return width;
-    }, 0);
-  }
 }
