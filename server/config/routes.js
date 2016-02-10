@@ -379,14 +379,15 @@ exports.configure = function (app) {
   app.get('/patients/search/reference/:value', patient.searchReference);
 
   /** Debtors API */
-  /** @fixme `/debtors/groups` is deprecated, use `/debtor_groups` at the client side */
-  /** @fixme `/debtors/groups/:uuid` is deprecated, use `/debtor_groups/:uuid` at the client side */
+  /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
+  /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */
   app.get('/debtors/groups', debtors.listGroups);
   app.get('/debtors/groups/:uuid', debtors.groupDetails);
   app.get('/debtors/:uuid/invoices', debtors.fetchInvoices);
   app.put('/debtors/:uuid', debtors.update);
 
   /** Debtor Groups API */
+  app.post('/debtor_groups', debtorGroups.create);
   app.get('/debtor_groups', debtorGroups.list);
   app.get('/debtor_groups/:uuid', debtorGroups.detail);
   app.get('/debtor_groups/:uuid/invoices', debtorGroups.getInvoices);

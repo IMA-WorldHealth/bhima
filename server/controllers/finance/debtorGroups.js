@@ -10,14 +10,16 @@
 * @required lib/db
 * @required lib/guid
 *
-* @todo implements the creation of a Debtor Group
 */
 
 'use strict';
 
 var q  = require('q'),
     db = require('../../lib/db'),
-    guid = require('../../lib/guid');
+    guid = require('node-uuid');
+
+/** Create a new debtor group */
+exports.create = create;
 
 /** Get debtor group details */
 exports.detail = getDetail;
@@ -31,6 +33,55 @@ exports.getInvoices = getInvoices;
 /** [SERVER SIDE FUNCTION] Get debtor groups invoices list */
 exports.fetchInvoices = fetchInvoices;
 
+
+/**
+* POST /debtor_groups/
+*
+* @exemple
+* // An example of parameter of the post request
+* {
+*   enterprise_id : {number},
+*   uuid : {uuid},
+*   name : {string},
+*   account_id : {number},
+*   location_id : {uuid},
+*   phone : {string},
+*   email : {string},
+*   note : {string},
+*   locked : {number},
+*   max_credit : {number},
+*   is_convention : {number},
+*   price_list_uuid : {uuid} or NULL,
+*   apply_discounts : {number},
+*   apply_billing_services : {number},
+*   apply_subsidies : {number}
+* };
+*
+* @function create
+*
+* @desc This function is responsible for creating a new debtor group
+*/
+function create(req, res, next) {
+
+  var missingValues = !req.body.uuid || !req.body.account_id || !req.body.name || !req.body.enterprise_id;
+  if (missingValues) { return next(new req.codes.ERR_MISSING_REQUIRED_PARAMETERS()); }
+
+  var data = req.body;
+  var query = 'INSERT INTO debitor_group SET ? ;';
+
+  /** prevent required values */
+  data.locked          = data.locked || 0;
+  data.apply_subsidies = data.apply_subsidies || 0;
+  data.apply_discounts = data.apply_discounts || 0;
+  data.apply_billing_services = data.apply_billing_services || 0;
+
+  db.exec(query, data)
+  .then(function () {
+    res.status(201).json({ id: data.uuid });
+  })
+  .catch(next)
+  .done();
+}
 
 /**
 * GET /debtor_groups/:uuid
@@ -59,8 +110,8 @@ function getDetail(req, res, next) {
 }
 
 /**
-* GET /debtor_groups/
-* GET /debtor_groups/?with_locked={1|0}
+* GET /debtor_groups/ => all debtor groups
+* GET /debtor_groups/?locked={1|0} => only locked or not locked debtor groups
 *
 * @function getList
 *
@@ -70,7 +121,8 @@ function getList(req, res, next) {
   var query;
 
   query = 'SELECT uuid, name, locked, account_id FROM debitor_group ';
-  query += (req.query.with_locked === '1') ? '' : 'WHERE locked = 0';
+  query += (req.query.locked === '1') ? 'WHERE locked = 1' :
+           (req.query.locked === '0') ? 'WHERE locked = 0' : '';
 
   db.exec(query)
   .then(function (rows) {
