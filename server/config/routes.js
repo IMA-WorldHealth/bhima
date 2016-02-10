@@ -71,6 +71,7 @@ var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
 var transfers            = require('../controllers/finance/transfers');
 var debtorGroups         = require('../controllers/finance/debtorGroups');
+var currencies           = require('../controllers/finance/currencies');
 var services             = require('../controllers/admin/services');
 
 // Middleware for handle uploaded file
@@ -341,10 +342,13 @@ exports.configure = function (app) {
   // finance controller
   app.get('/finance/debtors', genericFinance.getDebtors);
   app.get('/finance/creditors', genericFinance.getCreditors);
-  app.get('/finance/currencies', genericFinance.getCurrencies);
   app.get('/finance/profitcenters', genericFinance.getProfitCenters);
   app.get('/finance/costcenters', genericFinance.getCostCenters);
   app.post('/finance/journalvoucher', genericFinance.postJournalVoucher);
+
+  // currencies API
+  app.get('/currencies', currencies.list);
+  app.get('/currencies/:id', currencies.detail);
 
   // accounts controller
   app.get('/accounts', accounts.list);

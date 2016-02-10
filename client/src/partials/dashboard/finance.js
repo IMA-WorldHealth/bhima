@@ -44,7 +44,7 @@ angular.module('bhima.controllers')
 
   // retrieve a list of valid currencies
   service.getCurrencies = function () {
-    return $http.get('/finance/currencies');
+    return $http.get('/currencies');
   };
 
   service.getCashBoxBalance = function (boxId, currencyId, hasPostingJournal) {

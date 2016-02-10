@@ -1376,6 +1376,11 @@
    "DISCARD"         : "Discard",
    "DISMISS"         : "Dismiss",
    "EDIT"            : "Edit",
+   "ERRORS"        : {
+    "REQUIRED"   : "This value is required.",
+    "MIN_CURRENCY_UNIT" : "This value is too small for the selected currency.",
+    "NUMBER" : "This value must be a valid number."
+   },
    "LOGIN"           : "Login",
    "HAS_ERRORS"      : "The form contains errors.  Please correct them and resubmit.",
    "NEW_FORM"        : "New Form",

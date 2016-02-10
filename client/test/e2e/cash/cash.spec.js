@@ -139,7 +139,7 @@ describe.only('Cash Payments Module', function () {
     // This caution payment should succeed
     var mockCautionPayment = {
       patientId: 'TPA1',
-      amount : 15
+      amount : 150
     };
 
     // This payment against patient invoices should succeed
@@ -218,7 +218,7 @@ describe.only('Cash Payments Module', function () {
       currencyOption.click();
 
       // enter the amount to pay for a caution
-      var currencyInput = element(by.css('[data-currency-input]'));
+      var currencyInput = element(by.css('[data-bh-currency-input]'));
       currencyInput.sendKeys(mockCautionPayment.amount);
 
       // click the submit button
@@ -262,7 +262,7 @@ describe.only('Cash Payments Module', function () {
       currencyOption.click();
 
       // enter the amount to pay for an invoice
-      var currencyInput = element(by.css('[data-currency-input]'));
+      var currencyInput = element(by.css('[data-bh-currency-input]'));
       currencyInput.sendKeys(mockInvoicesPayment.amount);
 
       // click the submit button

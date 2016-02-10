@@ -13,6 +13,7 @@ CurrencyService.$inject = [ '$http', '$q', 'util' ];
 */
 function CurrencyService($http, $q, util) {
   var service = this;
+  var baseUrl = '/currencies';
   var cache;
   var map;
 
@@ -21,6 +22,9 @@ function CurrencyService($http, $q, util) {
 
   /** get the symbol for a currency by id */
   service.symbol = symbol;
+
+  /** get the full currency object for a currency */
+  service.detail = detail;
 
   /** get the name for a currency by id */
   service.name = namer;
@@ -43,7 +47,7 @@ function CurrencyService($http, $q, util) {
     // if we have currencies cached, return them directly
     if (cache) { return $q.resolve(cache); }
 
-    return $http.get('/finance/currencies')
+    return $http.get(baseUrl)
     .then(util.unwrapHttpResponse)
     .then(function (currencies) {
 
@@ -52,6 +56,34 @@ function CurrencyService($http, $q, util) {
       map = buildMap(currencies);
 
       return cache;
+    });
+  }
+
+  /**
+   * Look up the specific details of a particular currency by its id.
+   *
+   * @method detail()
+   * @param {number} the currency id to look up
+   * @return {Promise} a promise resolving to the currency object
+   */
+  function detail(id) {
+
+    // if we have a cached version, return it immediately
+    if (map && map[id]) { return $q.resolve(map[id]); }
+
+    // fetch the currency from the server
+    return $http.get(baseUrl.concat('/' + id))
+    .then(util.unwrapHttpResponse)
+    .then(function (currency) {
+
+      // ensure that the map exists
+      if (!map) { map = {}; }
+
+      // cache the currency for later
+      map[currency.id] = currency;
+
+      // return the fetched currency
+      return currency;
     });
   }
 
