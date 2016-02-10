@@ -70,8 +70,8 @@ var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
 var transfers            = require('../controllers/finance/transfers');
-
-var services    = require('../controllers/admin/services');
+var debtorGroups         = require('../controllers/finance/debtorGroups');
+var services             = require('../controllers/admin/services');
 
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
@@ -378,11 +378,19 @@ exports.configure = function (app) {
   app.get('/patients/search/name/:value', patient.searchFuzzy);
   app.get('/patients/search/reference/:value', patient.searchReference);
 
-  // Debtors API
+  /** Debtors API */
+  /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
+  /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */
   app.get('/debtors/groups', debtors.listGroups);
   app.get('/debtors/groups/:uuid', debtors.groupDetails);
   app.get('/debtors/:uuid/invoices', debtors.fetchInvoices);
   app.put('/debtors/:uuid', debtors.update);
+
+  /** Debtor Groups API */
+  app.post('/debtor_groups', debtorGroups.create);
+  app.get('/debtor_groups', debtorGroups.list);
+  app.get('/debtor_groups/:uuid', debtorGroups.detail);
+  app.get('/debtor_groups/:uuid/invoices', debtorGroups.getInvoices);
 
   // search stuff
   // TODO merge with patients API

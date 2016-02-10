@@ -1,11 +1,34 @@
-// TODO Patients currently responsible for setting debtor (one small line) - should this be delegated here?
-// TODO Create Debtor Group
-var db = require('../../lib/db'),
+/**
+* The Debtors Controllers
+*
+* @module finance/debtors
+*
+* @desc This module is responsible for handling all crud operations relatives
+* to debtors, and relatives functions
+*
+* @required q
+* @required lib/db
+* @required lib/guid
+*
+* @todo Patients currently responsible for setting debtor (one small line) - should this be delegated here?
+* @todo groupDetails and listGroups functions must be removed or moving into
+* the debtorGroups controllers if they are not already exist.
+* BE SURE THEY ARE NO USED ANYWHERE BEFORE TO REMOVE THEM
+*/
+
+'use strict';
+
+var q  = require('q'),
+    db = require('../../lib/db'),
     guid = require('../../lib/guid');
 
-exports.groupDetails = groupDetails;
-exports.listGroups = listGroups;
-exports.update = update;
+/** @fixme Need to be removed or moved to debtorGroups.js */
+exports.groupDetails  = groupDetails;
+
+/** @fixme Need to be removed or moved to debtorGroups.js */
+exports.listGroups    = listGroups;
+
+exports.update        = update;
 exports.fetchInvoices = fetchInvoices;
 
 function groupDetails(req, res, next) {
@@ -38,7 +61,6 @@ function groupDetails(req, res, next) {
     .done();
 }
 
-// TODO ? parameter to request all (including locked) groups
 function listGroups(req, res, next) {
   var listDebtorGroupsQuery, filterLockedCondition;
   var query;
@@ -90,8 +112,7 @@ function update(req, res, next) {
     .done();
 }
 
-function fetchInvoices (req, res, next) {
-
+function fetchInvoices(req, res, next) {
   var accountId = null;
   var sql =
     'SELECT account_id FROM debitor_group WHERE uuid = (SELECT group_uuid FROM debitor WHERE uuid = ?)';
@@ -174,4 +195,3 @@ function lookupDebtor(uuid, codes) {
 function isEmpty(array) {
   return array.length === 0;
 }
-
