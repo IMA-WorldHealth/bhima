@@ -11,24 +11,19 @@
 * identicale modules - they should all be encapsulated as one
 * module. For Example finance.createSale, finance.createPurchase
 */
-var winston = require('winston');
-
-var auth            = require('../controllers/auth');
-var data            = require('../controllers/data');
-var users           = require('../controllers/users');
-var locations       = require('../controllers/location');
-var tree            = require('../controllers/tree');
-
-var createPurchase  = require('../controllers/finance/purchase');
-var createSale      = require('../controllers/finance/sale');
-
-var patient         = require('../controllers/medical/patient');
-var snis            = require('../controllers/medical/snis');
-var projects        = require('../controllers/medical/projects');
-
-var legacyReports   = require('../controllers/reports/report_legacy');
-var reports         = require('../controllers/reports/reports.js');
-
+var winston              = require('winston');
+var auth                 = require('../controllers/auth');
+var data                 = require('../controllers/data');
+var users                = require('../controllers/users');
+var locations            = require('../controllers/location');
+var tree                 = require('../controllers/tree');
+var createPurchase       = require('../controllers/finance/purchase');
+var createSale           = require('../controllers/finance/sale');
+var patient              = require('../controllers/medical/patient');
+var snis                 = require('../controllers/medical/snis');
+var projects             = require('../controllers/medical/projects');
+var legacyReports        = require('../controllers/reports/report_legacy');
+var reports              = require('../controllers/reports/reports.js');
 var inventory            = require('../controllers/stock/inventory');
 var depot                = require('../controllers/stock/depot');
 var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
@@ -73,9 +68,10 @@ var transfers            = require('../controllers/finance/transfers');
 var debtorGroups         = require('../controllers/finance/debtorGroups');
 var currencies           = require('../controllers/finance/currencies');
 var services             = require('../controllers/admin/services');
+var conventions          = require('../controllers/finance/conventions');
 
 // Middleware for handle uploaded file
-var multipart       = require('connect-multiparty');
+var multipart            = require('connect-multiparty');
 
 exports.configure = function (app) {
   winston.log('debug', 'Configuring routes');
@@ -462,6 +458,12 @@ exports.configure = function (app) {
   app.get('/cash/transfers', transfers.list);
   app.get('/cash/transfers/:id', transfers.detail);
   app.post('/cash/transfers', transfers.create);
+
+  /**
+  * conventions
+  * NOTE: The `/cash/conventions` API endpoint must be above the `/cash` API endpoint
+  */
+  app.post('/cash/conventions', conventions.create);
 
   /** cash (aux/primary) */
   app.get('/cash', cash.list);

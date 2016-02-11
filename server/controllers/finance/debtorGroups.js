@@ -172,7 +172,7 @@ function fetchInvoices (id, balanced, codes) {
   .then(function (rows) {
     if (!rows.length) { return q.reject(new codes.ERR_NOT_FOUND()); }
 
-    var accountId = rows.pop().account_id;
+    var accountId = rows[0].account_id;
     var query =
       'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (' +
         ' SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
@@ -189,7 +189,7 @@ function fetchInvoices (id, balanced, codes) {
   .then(function (rows) {
     if (!rows.length) { return q.resolve([]); }
 
-    var accountId = rows.pop().account_id;
+    var accountId = rows[0].account_id;
     var invoices = rows.map(function (line) {
       return line.inv_po_id;
     });
