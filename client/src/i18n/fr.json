@@ -911,9 +911,15 @@
      "TOP_DEBTOR_GROUPS" : "Top des Groupes débiteurs"
    }
 },
- "DB" : {
-  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car elle a été utilisé dans une transaction."
+
+"DATEFINDER" : {
+  "SET" : "Changer Date"
+},
+
+"DB" : {
+  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
  },
+ 
 "DEBITOR_GRP": {
    "FILTER"     : "Filtrer Le Groupe de Débiteur",
    "GROUPS"     : "Groupe de Débiteur",

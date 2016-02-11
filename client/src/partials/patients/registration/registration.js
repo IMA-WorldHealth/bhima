@@ -8,6 +8,8 @@ PatientRegistrationController.$inject = [
 
 function PatientRegistrationController($scope, $location, patients, debtors, util, Session) {
   var viewModel = this;
+
+  viewModel.format='yyyy/MM/dd';
   
   // Models for collecting patient data in logical groups
   viewModel.finance = {};

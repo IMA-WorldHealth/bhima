@@ -13,6 +13,7 @@ PermissionsController.$inject = [
 
 function PermissionsController($window, $translate, $http, $uibModal, util, Session, Users, Projects, NT) {
   var vm = this;
+
   var btnTemplate =
     '<button ng-click="grid.appScope.edit(row.entity)" style="margin: 0 5px">{{ "FORM.EDIT" | translate }}</button>' +
     '<button ng-click="grid.appScope.editPermissions(row.entity)">{{ "PERMISSIONS.EDIT_PERMISSIONS" | translate }}</button>';
@@ -151,6 +152,7 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
   // submit the data to the server from all three forms (update, create,
   // permissions)
   function submit(invalid) {
+    console.log('voici', vm.yob);
     if (invalid) { return; }
 
     var promise;

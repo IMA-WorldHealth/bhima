@@ -43,6 +43,7 @@
         </div>
         <form class="panel-body" name="CreateForm" ng-submit="PermissionsCtrl.submit(CreateForm.$invalid)" novalidate>
           <fieldset>
+
             <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.firstname.$invalid }">
               <label class="control-label">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
               <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
