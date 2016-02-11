@@ -45,6 +45,7 @@ angular.module('bhima.services')
     };
 
     exchange.hasDailyRate = function hasDailyRate (dateParam) {
+
       var date = normalize(new Date(dateParam)) || normalize(new Date());
       return !!DateStore.get(date);
     };

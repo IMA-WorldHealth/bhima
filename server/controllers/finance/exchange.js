@@ -16,13 +16,14 @@ exports.list = function list(req, res, next) {
       enterprise = req.session.enterprise;
   
   sql =
-    'SELECT currency_id, rate, date ' +
+    'SELECT id, currency_id, rate, date ' +
     'FROM exchange_rate ' + 
     'WHERE enterprise_id = ? ' +
     'ORDER BY date;';
 
   db.exec(sql, [ enterprise.currency_id ])
   .then(function (rows) {
+
     res.status(200).json(rows);
   })
   .catch(next)
@@ -35,7 +36,7 @@ exports.create = function create(req, res, next) {
 
   var sql,
       data = req.body.rate;
-
+    
   // preprocess dates
   if (data.date) {
     data.date = new Date(data.date);
