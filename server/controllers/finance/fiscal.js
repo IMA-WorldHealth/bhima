@@ -1,6 +1,6 @@
-var db = require('./../../lib/db'),
-    util = require('./../../lib/util'),
-    journal = require('./journal');
+var db      = require('./../../lib/db');
+var journal = require('./journal');
+var _       = require('lodash/lang');
 
 exports.createFiscalYear = createFiscalYear;
 exports.fiscalYearResultat = fiscalYearResultat;
@@ -31,7 +31,7 @@ function createFiscalYear(req, res, next) {
   var hasBalances, data, fiscalYearId;
 
   // check if we need to create opening balances or not.
-  hasBalances = util.isDefined(req.body.balances);
+  hasBalances = !_.isUndefined(req.body.balances);
 
   // parse dates from client into date objects
   data = req.body;
@@ -128,7 +128,7 @@ function createOpeningBalances(data) {
 
     var details = {
       balances  : totals,
-      dateStart : util.toMysqlDate(data.start)
+      dateStart : data.start
     };
 
     return journal.request('create_fiscal_year', periodId, data.user_id, function (error, result) {

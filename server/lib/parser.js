@@ -1,5 +1,5 @@
-var sanitize = require('./db').sanitize,
-    util = require('./util');
+var sanitize = require('./db').sanitize;
+var _ = require('lodash/lang');
 
 // TODO should this go here?
 // all mysql reserved words
@@ -490,7 +490,7 @@ function escapeWhereCondition(condition) {
   // We allow nested where conditions, in the form of nested
   // arrays.  If 'conditon' is an array, we recursively call the
   // parseWhere function on it!
-  if (util.isArray(condition)) { return '(' + parseWhereStatement(condition) + ')';  }
+  if (_.isArray(condition)) { return '(' + parseWhereStatement(condition) + ')';  }
 
   operator = getOperator(condition);
 
