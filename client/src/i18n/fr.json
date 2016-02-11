@@ -840,8 +840,8 @@
    },
 "CURRENCY": {
    "ACTIONS"       : "Actions",
-   "ACTION_TXT_1"  : "Editer la monaie",
-   "ACTION_TXT_2"  : "Soupplimer la monaie",
+   "ACTION_TXT_1"  : "Editer la monnaie",
+   "ACTION_TXT_2"  : "Soupplimer la monnaie",
    "ADD"           : "Ajouter un Monaies",
    "CURRENCY_DEFN" : "Definition de la Monaie",
    "DECIMAL"       : "Decimal",
@@ -851,7 +851,7 @@
    "SEPARATOR"     : "Seperateur",
    "SEPARATOR_TXT" : "Le delimiteur pour la place milles",
    "SYMBOL"        : "Signe",
-   "SYMBOL_TXT"    : "La signe qui va demarquer le monaie",
+   "SYMBOL_TXT"    : "La signe qui va demarquer le monnaie",
    "TITLE"         : "Gestion des Monaies"
    },
 "DAILY_CONSUMPTION": {
@@ -1209,18 +1209,20 @@
    "WARN_MISSING_DOCUMENT_ID"       : "Document ID manquant"
    },
 "EXCHANGE": {
-   "HELP_TXT_1"       : "Le module de taux de change, donne la possibilite de définir le taux d'echange du jour. Par souci d'Intégrité des données, Le taux d'echange doit être défini par jour",
-   "NEW"              : "Nouveau Taux",
-   "NO_EXCHANGE_RATE" : "Le taux d'échange n'est pas encore défini pour la date du :",
-   "NO_RATES"         : "Il n'y a pas des taux défini pour aujourd'hui!",
-   "PREV"             : "Taux Précédent ",
-   "REVIEW"           : "Revoir le taux d'aujourd'hui",
-   "SET"              : "Définir le Taux de Change pour Aujourd'hui",
-   "SET_HERE"         : "Définir ici",
-   "TITLE"            : "Configurer le taux de change",
-   "TODAY_RATE"       : "Taux de change pour",
-   "OLD_DATE"         : "Definir le taux d'echange pour une date anterieure",
-   "DATE"             : "Definir date"
+   "DATE"                 : "Definir date",
+   "ENTERPRISE_CURRENCY"  : "Monnaie de l'Enterprise",
+   "HELP_TXT_1"           : "Le module de taux de change, donne la possibilite de définir le taux d'echange du jour. Par souci d'Intégrité des données, Le taux d'echange doit être défini par jour",
+   "NEW"                  : "Nouveau Taux",
+   "NEW_RATE"             : "Nouveau Taux d'échange",
+   "NO_EXCHANGE_RATE"     : "Le taux d'échange n'est pas encore défini pour la date du :",
+   "NO_RATES"             : "Il n'y a pas des taux défini pour aujourd'hui!",
+   "PREV"                 : "Taux Précédent ",
+   "REVIEW"               : "Revoir le taux ",
+   "SET"                  : "Définir le Taux de Change pour Aujourd'hui",
+   "SET_HERE"             : "Définir ici",
+   "TITLE"                : "Configurer le taux de change",
+   "TODAY_RATE"           : "Taux de change pour",
+   "OLD_DATE"             : "Definir le taux d'echange pour une date anterieure"
    },
 "EXPIRING": {
    "EXPIRED" : "Articles expirés",
@@ -1369,6 +1371,7 @@
    "CLOSE_FORM"      : "Annuler",
    "CONTINUE"        : "Continuer",
    "CONFIGURE"       : "Configurer",
+   "DEFINE"          : "Définir",
    "DELETE"          : "Effacer",
    "DISCARD"         : "Annuler",
    "EDIT"            : "Editer",

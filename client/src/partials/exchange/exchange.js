@@ -15,11 +15,13 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
   var vm = this;
 
   // bind data
+  vm.view = 'default';
   vm.today      = new Date();
   vm.tomorrow   = Dates.next.day();
   vm.enterprise = Session.enterprise;
   vm.form       = { date : vm.today };
-
+  vm.create     = create;
+  vm.update     = update;
   // bind methods
   vm.formatCurrency = formatCurrency;
   vm.setExchangeRate = setExchangeRate;
@@ -56,7 +58,6 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
   // It doesn't seem to make sense to expose this functionality from the
   // service API, so this is a duplicate.
   function calculateCurrentRates(rates) {
-
     // initially sort the rates by date in reverse order
     rates.sort(function (a,b) {
       return (a.date < b.date) ? 1 : (a.date === b.date ? 0 : -1);
@@ -65,7 +66,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
     // take the first rate matching the currency (since we reversed the
     // rate orders, this is the most recent rate).
     return rates.reduce(function (map, row) {
-      if (!map[row.currency_id]) { map[row.currency_id] = row.rate; }
+      if (!map[row.currency_id]) { map[row.currency_id] = { rate: row.rate, rowid : row.id } }
       return map;
     }, {});
   }
@@ -79,7 +80,8 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
       controller : 'ExchangeRateModalController as ModalCtrl',
       resolve : {
         data : {
-          date : vm.date,
+          id : vm.form.id,
+          date : vm.form.date,
           currency_id : id
         }
       }
@@ -87,6 +89,15 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
     .then(function () {
       startup();
     });
+  }
+
+  function update(data){
+    vm.view = 'update';
+    vm.form = data;
+  }
+
+  function create(){
+    vm.view = 'default';
   }
 
   // startup the module

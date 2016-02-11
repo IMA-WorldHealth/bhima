@@ -35,6 +35,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   service.create = create;
   service.convertToEntepriseCurrency = convertToEnterpriseCurrency;
   service.convertFromEnterpriseCurrency = convertFromEnterpriseCurrency;
+  service.update = update;
 
   /* ------------------------------------------------------------------------ */
 
@@ -42,7 +43,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     var rates;
 
     // if we have local cached rates, return them immediately
-    if (cache) { return $q.resolve(cache); }
+    //if (cache) { return $q.resolve(cache); }
 
     // query the exchange_rate table on the backend
     return $http.get('/exchange')
@@ -96,7 +97,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   }
 
   function create(data) {
-    return $http.post('/exchange', { rates : data })
+    return $http.post('/exchange', { rate : data })
       .then(util.unwrapHttpResponse)
       .then(function (data) {
 
@@ -106,6 +107,11 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
 
         return data;
       });
+  }
+
+  function update(id, rate) {
+    return $http.put('/exchange/' + id, rate)
+    .then(util.unwrapHttpResponse);
   }
 
   // build the cMap object from an array of rates
