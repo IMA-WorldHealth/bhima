@@ -16,6 +16,10 @@ var user = { username : 'superuser', password : 'superuser', project: 1};
 */
 describe('The /Enterprises API endpoint', function () {
   var agent = chai.request.agent(helpers.baseUrl);
+  var TOTAL_CURRENCIES = 2;
+
+  // login before each request
+  beforeEach(helpers.login(agent));
 
   var newEnterprise = {
     name : 'newEnterprises',
@@ -119,7 +123,7 @@ describe('The /Enterprises API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /ENTERPRISES:ID returns a single Enterprise ', function () {
+  it('GET /ENTERPRISES/:ID returns a single Enterprise ', function () {
     return agent.get('/enterprises/' + updateEnterprise.id)
       .then(function (result) {
         expect(result).to.have.status(200);
@@ -127,17 +131,4 @@ describe('The /Enterprises API endpoint', function () {
       })
       .catch(helpers.handler);
   });
-
-
-  it('GET /LOCATIONS ENTERPRISES returns a Locations List ', function () {
-    return agent.get('/location/villages')
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result.body).to.not.be.empty;
-      })
-      .catch(helpers.handler);
-  });
-
-  // login before each request
-  beforeEach(helpers.login(agent));
 });

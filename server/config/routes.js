@@ -96,15 +96,15 @@ exports.configure = function (app) {
   app.put('/data', data.update);
   app.delete('/data/:table/:column/:value', data.deleteRecord);
 
-  // location routes
-  // -> /location/:scope(list || lookup)/:target(village || sector || province)/:id(optional)
-  app.get('/location/villages', locations.allVillages);
-  app.get('/location/sectors', locations.allSectors);
-  app.get('/location/provinces', locations.allProvinces);
-  app.get('/location/village/:uuid', locations.lookupVillage);
-  app.get('/location/sector/:uuid', locations.lookupSector);
-  app.get('/location/province/:uuid', locations.lookupProvince);
-  app.get('/location/detail/:uuid', locations.lookupDetail);
+  /**  API for locations */
+  app.get('/locations/villages', locations.villages);
+  app.get('/locations/sectors', locations.sectors);
+  app.get('/locations/provinces', locations.provinces);
+  app.get('/locations/countries', locations.countries);
+  // app.get('/locations/village/:uuid', locations.lookupVillage);
+  // app.get('/locations/sector/:uuid', locations.lookupSector);
+  // app.get('/locations/province/:uuid', locations.lookupProvince);
+  app.get('/locations/detail/:uuid', locations.detail);
 
   // API for account routes crud
   app.get('/accounts', account.list);
