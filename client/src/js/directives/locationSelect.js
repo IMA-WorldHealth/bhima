@@ -1,12 +1,35 @@
 /**
  * @param {string} level-select The method that will be called on selection of a village, this method should accept a 32 char UUID
  * 
- * Note : Directive should have a sepearate template and link method;
+ * Note : Directive should have a separate template and link method;
  *  - Angular doesn't allow you to template ng-model
  *  - I'm too stuborn to let that win, and (simplify everything) just hard-code in location selects
  *  - This doesn't need to be this generic, and should be refactored if required
  */
+
 angular.module('bhima.directives')
+.component('bhLocationSelect', {
+  bindings : {
+    locationId : '=',  // two-way binding
+    onChange : '@',    // callback binding
+  },
+  controller : LocationSelectComponent,
+  templateUrl : 'partials/templates/bhLocationSelect.tmpl.html'
+});
+
+LocationSelectComponent.$inject =  [];
+
+/**
+ * Location Select Component - bhLocationSelect
+ *
+ * This component allows easy selection and validation of locations to be used
+ * throughout bhima.
+ *
+ */
+function LocationSelectComponent() {
+}
+
+/*
 .directive('locationSelect', ['appstate', 'connect', '$compile',  function (appstate, connect, $compile) {
   return {
     restrict : 'A',
@@ -276,3 +299,4 @@ angular.module('bhima.directives')
     }
   };
 }]);
+*/
