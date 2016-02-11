@@ -5,6 +5,8 @@ CashboxService.$inject = [ '$http', 'util' ];
 
 /**
 * Cashbox Service
+*
+* @todo documenation updates to use JSDoc standards
 */
 function CashboxService($http, util) {
   var service = {};

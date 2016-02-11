@@ -17,18 +17,18 @@
 
 <body ng-app="bhima" ng-strict-di>
 
-<div 
-  id="app-container" 
+<div
+  id="app-container"
   class="flex-container"
   ng-class="{'expanded' : AppCtrl.sidebarExpanded}"
   ng-controller="ApplicationController as AppCtrl">
   <div class="flex-page">
-    
+
     <!-- Sidebar -->
     <!-- TODO: Load the default position for the sidebar before angular is bootstrapped-->
     <div class="sidebar" ng-cloak>
       <div class="sidebar-container" ng-class="{'disable' : !AppCtrl.isLoggedIn()}">
-        
+
         <div class="sidebar-body">
           <header class="sidebar-header">
             <div class="header-content">
@@ -39,7 +39,7 @@
                   </span>
                 </a>
               </div>
-              
+
               <div class="header-title">
                 <h4><a class="title-content">{{AppCtrl.projectName}}</a></h4>
               </div>
@@ -65,12 +65,12 @@
               <span class="link-label">User Settings</span>
             </a></li>
             <li>
-              <a 
-                id="expandnav" 
+              <a
+                id="expandnav"
                 class="session"
                 ng-click="AppCtrl.toggleSidebar()">
-                <span 
-                  id="expandicon" 
+                <span
+                  id="expandicon"
                   class="glyphicon"
                   ng-class="{'glyphicon-menu-right' : !AppCtrl.sidebarExpanded, 'glyphicon-menu-left' : AppCtrl.sidebarExpanded}">
                 </span>
@@ -82,7 +82,7 @@
       <!-- End sidebar -->
     </div>
     <!-- End page -->
-    
+
     <div class="flex-view" ng-view></div>
   </div>
 </div>
@@ -100,13 +100,14 @@
 
 <!--angular-->
 <script src="vendor/angular/angular.min.js"></script>
-<script src="vendor/angular-route/angular-route.js"></script>
+<script src="vendor/angular-route/angular-route.min.js"></script>
+<script src="vendor/angular-messages/angular-messages.min.js"></script>
 
 <!-- angular-chart-->
 <script src="vendor/Chart.js/Chart.min.js"></script>
 <script src="vendor/angular-chart.js/dist/angular-chart.min.js"></script>
 
-<!-- momentjs --> 
+<!-- momentjs -->
 <script src="vendor/moment/moment.js"></script>
 <script src="vendor/angular-moment/angular-moment.js"></script>
 
@@ -133,7 +134,6 @@
 
 <!-- UI Grid -->
 <script src="vendor/angular-ui-grid/ui-grid.min.js"></script>
-
 
 <!-- BHIMA -->
 <script src="js/bhima.min.js"></script>

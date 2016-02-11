@@ -1,51 +1,59 @@
-'use strict';
-
 /**
- * @description 
+ * @description The debtor service provides access to the debtor HTTP API
  *
- * @returns 
+ * @module services/debtors
  */
 
 angular.module('bhima.services')
-  .factory('Debtors', Debtors);
-  
-Debtors.$inject = ['$http'];
+  .service('Debtors', Debtors);
 
-function Debtors($http) {  
+Debtors.$inject = [ '$http', 'util' ];
+
+function Debtors($http, util) {
+  var service = this;
+
+  /** update the details of a debtor */
+  service.update = update;
+
+  /** returns a list of debtor groups */
+  service.groups = groups;
+
+  /** returns the details of a debtor group */
+  service.groupDetail = groupDetail;
+
+  /** returns a list of invoices owed to a given debtor */
+  service.invoices = invoices;
 
   // function detail(uuid)
   // function list()
-  
-  function groupDetail(uuid) { 
+
+  function groupDetail(uuid) {
     var path = '/debtors/groups/';
 
     return $http.get(path.concat(uuid))
-      .then(extractData);
+      .then(util.unwrapHttpResponse);
   }
 
-  function groups() { 
+  function groups() {
     var path = '/debtors/groups';
 
     return $http.get(path)
-      .then(extractData);
+      .then(util.unwrapHttpResponse);
   }
 
-  function update(uuid, params) { 
+  function update(uuid, params) {
     var path = '/debtors/';
 
     return $http.put(path.concat(uuid), params)
-      .then(extractData);
+      .then(util.unwrapHttpResponse);
   }
 
-  return {
-    update : update,
-    groups : groups,
-    groupDetail : groupDetail
-  };
-}
+  function invoices(uuid) {
+    var path = '/debtors/:uuid/invoices';
 
-// Utility method - pass only data object to controller
-// TODO Use shared utility service
-function extractData(result) { 
-  return result.data;
+    return $http.get(path.replace(':uuid', uuid))
+      .then(util.unwrapHttpResponse);
+  }
+
+  return service;
 }

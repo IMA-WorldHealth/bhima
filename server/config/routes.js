@@ -29,38 +29,38 @@ var projects        = require('../controllers/medical/projects');
 var legacyReports   = require('../controllers/reports/report_legacy');
 var reports         = require('../controllers/reports/reports.js');
 
-var inventory       = require('../controllers/stock/inventory');
-var depot           = require('../controllers/stock/depot');
-var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
-var trialbalance   = require('../controllers/finance/trialbalance');
-var journal        = require('../controllers/finance/journal');
-var ledger         = require('../controllers/finance/ledger');
-var fiscal         = require('../controllers/finance/fiscal');
-var extra          = require('../controllers/finance/extraPayment');
-var gl             = require('../controllers/finance/ledgers/general');
-var genericFinance = require('../controllers/finance/financeGeneric');
-var accounts       = require('../controllers/finance/accounts');
-var analytics      = require('../controllers/finance/analytics');
-var purchase       = require('../controllers/finance/purchase');
-var budget         = require('../controllers/finance/budget');
-var taxPayment     = require('../controllers/finance/taxPayment');
-var donations      = require('../controllers/finance/donations');
-var debtors        = require('../controllers/finance/debtors');
-var cashboxes      = require('../controllers/finance/cashboxes');
-var exchange       = require('../controllers/finance/exchange');
-var cash           = require('../controllers/finance/cash');
-var cashflow       = require('../controllers/cashflow');
-var enterprises     = require('../controllers/admin/enterprises');
-var priceList      = require('../controllers/finance/priceList');
-var billingServices = require('../controllers/finance/billingServices');
-var account         = require('../controllers/finance/account');
-var accountType     = require('../controllers/finance/accountType');
-var costCenter      = require('../controllers/finance/costCenter');
-var profitCenter    = require('../controllers/finance/profitCenter');
-var reference       = require('../controllers/finance/reference');
-var subsidy        = require('../controllers/finance/subsidy');
-var patientInvoice = require('../controllers/finance/patientInvoice');
-var discounts      = require('../controllers/finance/discounts');
+var inventory            = require('../controllers/stock/inventory');
+var depot                = require('../controllers/stock/depot');
+var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
+var trialbalance         = require('../controllers/finance/trialbalance');
+var journal              = require('../controllers/finance/journal');
+var ledger               = require('../controllers/finance/ledger');
+var fiscal               = require('../controllers/finance/fiscal');
+var extra                = require('../controllers/finance/extraPayment');
+var gl                   = require('../controllers/finance/ledgers/general');
+var genericFinance       = require('../controllers/finance/financeGeneric');
+var accounts             = require('../controllers/finance/accounts');
+var analytics            = require('../controllers/finance/analytics');
+var purchase             = require('../controllers/finance/purchase');
+var budget               = require('../controllers/finance/budget');
+var taxPayment           = require('../controllers/finance/taxPayment');
+var donations            = require('../controllers/finance/donations');
+var debtors              = require('../controllers/finance/debtors');
+var cashboxes            = require('../controllers/finance/cashboxes');
+var exchange             = require('../controllers/finance/exchange');
+var cash                 = require('../controllers/finance/cash');
+var cashflow             = require('../controllers/cashflow');
+var enterprises          = require('../controllers/admin/enterprises');
+var priceList            = require('../controllers/finance/priceList');
+var billingServices      = require('../controllers/finance/billingServices');
+var account              = require('../controllers/finance/account');
+var accountType          = require('../controllers/finance/accountType');
+var costCenter           = require('../controllers/finance/costCenter');
+var profitCenter         = require('../controllers/finance/profitCenter');
+var reference            = require('../controllers/finance/reference');
+var subsidy              = require('../controllers/finance/subsidy');
+var patientInvoice       = require('../controllers/finance/patientInvoice');
+var discounts            = require('../controllers/finance/discounts');
 var financeServices      = require('../controllers/categorised/financeServices');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
 var depreciatedReports   = require('../controllers/categorised/reports_depreciate');
@@ -69,9 +69,9 @@ var caution              = require('../controllers/categorised/caution');
 var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
-var transfers           = require('../controllers/finance/transfers');
-
-var services    = require('../controllers/admin/services');
+var transfers            = require('../controllers/finance/transfers');
+var debtorGroups         = require('../controllers/finance/debtorGroups');
+var services             = require('../controllers/admin/services');
 
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
@@ -378,11 +378,19 @@ exports.configure = function (app) {
   app.get('/patients/search/name/:value', patient.searchFuzzy);
   app.get('/patients/search/reference/:value', patient.searchReference);
 
-  // Debtors API
+  /** Debtors API */
+  /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
+  /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */
   app.get('/debtors/groups', debtors.listGroups);
   app.get('/debtors/groups/:uuid', debtors.groupDetails);
   app.get('/debtors/:uuid/invoices', debtors.fetchInvoices);
   app.put('/debtors/:uuid', debtors.update);
+
+  /** Debtor Groups API */
+  app.post('/debtor_groups', debtorGroups.create);
+  app.get('/debtor_groups', debtorGroups.list);
+  app.get('/debtor_groups/:uuid', debtorGroups.detail);
+  app.get('/debtor_groups/:uuid/invoices', debtorGroups.getInvoices);
 
   // search stuff
   // TODO merge with patients API
@@ -453,7 +461,7 @@ exports.configure = function (app) {
 
   /** cash (aux/primary) */
   app.get('/cash', cash.list);
-  app.get('/cash/:uuid', cash.getCashDetails);
+  app.get('/cash/:uuid', cash.detail);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
   app.delete('/cash/:uuid', cash.debitNote);
@@ -464,7 +472,7 @@ exports.configure = function (app) {
 
   // Enterprises api
   app.get('/enterprises', enterprises.list);
-  app.get('/enterprises/:id', enterprises.single);
+  app.get('/enterprises/:id', enterprises.detail);
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
 

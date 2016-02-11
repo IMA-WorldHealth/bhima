@@ -11,12 +11,14 @@
 
       <!-- dropdown button -->
       <div class="input-group-btn" uib-dropdown>
-        <button class="btn btn-default" uib-dropdown-toggle>
+        <button class="btn btn-default" uib-dropdown-toggle data-find-patient-dropdown-toggle>
           {{ session.selected.label | translate }} <span class="caret"></span>
         </button>
-        <ul class="uib-dropdown-menu">
+        <ul uib-dropdown-menu>
           <li ng-repeat="option in session.options">
-            <a href="" ng-click="findBy(option)">{{ option.label | translate }}</a>
+            <a href="" ng-click="findBy(option)" data-find-patient-option="{{ option.label }}">
+              {{ option.label | translate }}
+            </a>
           </li>
         </ul>
       </div>
@@ -53,7 +55,8 @@
       <span class="input-group-btn">
         <button style="width:8em;" class="btn btn-success"
           ng-disabled="!session.validInput"
-          ng-click="submit()">
+          ng-click="submit()"
+          data-find-patient-submit>
           <span>{{ "FIND.SEARCH" | translate }}</span>
         </button>
       </span>
@@ -131,7 +134,7 @@
             <button style="width:135px;" class="btn btn-default" uib-dropdown-toggle>
               {{ session.selected.label | translate }} <span class="caret"></span>
             </button>
-            <ul class="uib-dropdown-menu">
+            <ul uib-dropdown-menu>
               <li ng-repeat="option in session.options">
                 <a href="" ng-click="findBy(option)">{{ option.label | translate }}</a>
               </li>
