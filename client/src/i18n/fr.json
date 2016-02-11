@@ -1463,8 +1463,11 @@
    "UPDATE_SUCCES"   : "Mis à jour avec succès",
    "WARNINGS" : {
     "FUTURE_DATE"    : "Attention: Cette date n'est pas encore arrivée."
-   }
    },
+   "ERRORS" : {
+    "REQUIRED" : "La date est requise!"
+   }
+  },   
 "GRADE": {
    "ADD"            : "Ajouter un grade",
    "ALERT"          : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",

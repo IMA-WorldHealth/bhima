@@ -274,5 +274,4 @@ exports.findDebtorGroup = {
     this.popup(),
     this.reload()
   }
-
 };

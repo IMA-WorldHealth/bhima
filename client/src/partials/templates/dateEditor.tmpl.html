@@ -7,6 +7,7 @@
 	<!-- Input component implementation-->
 	<div class="input-group">
 	    <input
+	    	data-date-editor
 	    	name="dateEditorValue"
 	    	type="text"
 	    	class="form-control"	    	
@@ -28,7 +29,6 @@
 	    	</button>
 	    </span>
     </div> 
-    <pre>{{$ctrl.form.dateEditorValue.$error | json}}</pre>
 
     <!-- Error message implementation-->
     <p class="help-block" ng-messages="$ctrl.form.dateEditorValue.$error" ng-show="$ctrl.validationTrigger">
