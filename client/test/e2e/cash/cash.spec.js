@@ -1,16 +1,17 @@
-/* global inject, browser, element, by, protractor, localforage */
+/* global inject, browser, element, by, protractor */
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 
 // import ui-grid testing utiliites
 var gridUtils = require('../shared/gridTestUtils.spec.js');
+var components = require('../shared/components');
 var EC = protractor.ExpectedConditions;
 
 chai.use(chaiAsPromised);
 var expect = chai.expect;
 
-describe.only('Cash Payments Module', function () {
+describe('Cash Payments Module', function () {
 
   /** @const */
   var path = '#/cash';
@@ -139,7 +140,7 @@ describe.only('Cash Payments Module', function () {
     // This caution payment should succeed
     var mockCautionPayment = {
       patientId: 'TPA1',
-      amount : 15
+      amount : 150
     };
 
     // This payment against patient invoices should succeed
@@ -218,8 +219,7 @@ describe.only('Cash Payments Module', function () {
       currencyOption.click();
 
       // enter the amount to pay for a caution
-      var currencyInput = element(by.css('[data-currency-input]'));
-      currencyInput.sendKeys(mockCautionPayment.amount);
+      components.currencyInput.set(mockCautionPayment.amount);
 
       // click the submit button
       var submit = element(by.css('[data-action="submit"]'));
@@ -262,8 +262,7 @@ describe.only('Cash Payments Module', function () {
       currencyOption.click();
 
       // enter the amount to pay for an invoice
-      var currencyInput = element(by.css('[data-currency-input]'));
-      currencyInput.sendKeys(mockInvoicesPayment.amount);
+      components.currencyInput.set(mockInvoicesPayment.amount);
 
       // click the submit button
       var submit = element(by.css('[data-action="submit"]'));

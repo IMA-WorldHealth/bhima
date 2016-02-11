@@ -15,12 +15,12 @@
     "src"
   ],
   "dependencies": {
-    "angular": "~1.4.9",
+    "angular": "^1.5.0",
     "angular-bootstrap": "1.1.1",
     "angular-chart.js": "~0.8.8",
     "angular-localforage": "~1.2.3",
-    "angular-route": "~1.4.9",
-    "angular-sanitize": "~1.4.9",
+    "angular-route": "^1.5.0",
+    "angular-sanitize": "^1.5.0",
     "angular-translate": "~2.9.0",
     "angular-translate-loader-static-files": "~2.9.0",
     "angular-translate-loader-url": "~2.9.0",
@@ -30,12 +30,14 @@
     "ng-file-upload": "~11.2.3",
     "ng-file-upload-shim": "~11.2.3",
     "slickgrid": "~2.1.0",
-    "angular-mocks": "~1.4.7",
     "angular-ui-grid": "3.1.0",
     "bootstrap": "~3.3.6",
     "angular-moment": "~0.10.3",
     "moment": "~2.10.6",
     "angular-dynamic-locale": "~0.1.29",
-    "angular-messages": "~1.4.9"
+    "angular-messages": "^1.5.0"
+  },
+  "resolutions": {
+    "angular": "^1.5.0"
   }
 }

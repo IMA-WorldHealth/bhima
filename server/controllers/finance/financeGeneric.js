@@ -272,24 +272,6 @@ exports.getCreditors = function (req, res, next) {
   .done();
 };
 
-// GET /finance/currencies
-exports.getCurrencies = function (req, res, next) {
-  'use strict';
-
-  var sql =
-    'SELECT c.id, c.name, c.note, c.format_key, c.symbol ' +
-    'FROM currency AS c;';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(function (error) {
-    next(error);
-  })
-  .done();
-};
-
 // GET /finance/costcenters
 exports.getCostCenters = function (req, res, next) {
   'use strict';

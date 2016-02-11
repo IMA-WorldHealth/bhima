@@ -17,7 +17,7 @@ angular.module('bhima.services')
   var invalidCurrency = { supported : false };
   
   // Request all defined BHIMA currencies
-  $http.get('/finance/currencies')
+  $http.get('/currencies')
   .then(util.unwrapHttpResponse)
   .then(function (currencyList) {
     supportedCurrencies.setData(currencyList);
