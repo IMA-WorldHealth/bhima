@@ -18,8 +18,8 @@ function ExchangeModalController(Rates, Currencies, Session, $uibModalInstance, 
   vm.enterpriseCurrency = format(Session.enterprise.currency_id);
   vm.selectedCurrency = format(data.currency_id);
   vm.today = new Date();
-  
-  vm.hasDailyRate = exchange.hasDailyRate(data.date);
+
+  vm.hasDailyRate = Rates.hasDailyRate(vm.data.currency_id,vm.data.date);
 
   vm.exchangeRate = vm.hasDailyRate ? true : false;
   
@@ -48,14 +48,18 @@ function ExchangeModalController(Rates, Currencies, Session, $uibModalInstance, 
       creation = (vm.action === 'create'),
       promise;
 
+    if(creation){
+      delete vm.data.id;
+    }  
+
     promise = (creation) ?
       Rates.create(rate) :
       Rates.update(rate.id, rate);
 
     promise
     .then(function (data) {
-      
-      return $uibModalInstance.close(data);
+      var operation = creation ? 'create_success' : 'update_success';
+      return $uibModalInstance.close(operation);
     })
     .catch(handler);
   }

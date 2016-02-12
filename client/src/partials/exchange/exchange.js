@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('ExchangeRateController', ExchangeRateController);
 
 ExchangeRateController.$inject = [
-  'SessionService', 'DateService', 'CurrencyService', 'ExchangeRateService', '$uibModal'
+  'SessionService', 'DateService', 'CurrencyService', 'ExchangeRateService', '$uibModal', '$window', '$translate'
 ];
 
 /**
@@ -11,7 +11,7 @@ ExchangeRateController.$inject = [
 *
 * @controller ExchangeRateController
 */
-function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
+function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $window, $translate) {
   var vm = this;
 
   // bind data
@@ -22,6 +22,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
   vm.form       = { date : vm.today };
   vm.create     = create;
   vm.update     = update;
+  vm.del = del;  
   // bind methods
   vm.formatCurrency = formatCurrency;
   vm.setExchangeRate = setExchangeRate;
@@ -35,7 +36,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
 
   // start up the module
   function startup() {
-
+    vm.feedback = null;
     // load supported currencies
     Currencies.read().then(function (data) {
       vm.currencies = data;
@@ -72,23 +73,31 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
   }
 
   // set the exchange rate for a currency id in a new modal
-  function setExchangeRate(id) {
-    $uibModal.open({
-      templateUrl : 'partials/exchange/modal.html',
-      size : 'md',
-      animation : true,
-      controller : 'ExchangeRateModalController as ModalCtrl',
-      resolve : {
-        data : {
-          id : vm.form.id,
-          date : vm.form.date,
-          currency_id : id
+  function setExchangeRate(id, row) {
+    if(vm.form.date){
+      vm.feedback = 'default';
+      var identifiant = vm.form.id ? vm.form.id : row.rowid; 
+      $uibModal.open({
+        templateUrl : 'partials/exchange/modal.html',
+        size : 'md',
+        animation : true,
+        controller : 'ExchangeRateModalController as ModalCtrl',
+        resolve : {
+          data : {
+            id : identifiant,
+            date : vm.form.date,
+            currency_id : id
+          }
         }
-      }
-    }).result
-    .then(function () {
-      startup();
-    });
+      }).result
+      .then(function (operation) {
+        vm.view = 'default';
+        startup();
+        vm.feedback = operation;
+      });        
+    } else {
+      vm.feedback = 'invalid-date';
+    }
   }
 
   function update(data){
@@ -97,7 +106,27 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
   }
 
   function create(){
+    vm.form = { date : vm.today };
     vm.view = 'default';
+    vm.feedback = null;
+  }
+
+  // switch to delete warning mode
+  function del(id) {
+    var result = $window.confirm($translate.instant('EXCHANGE.CONFIRM'));
+    if(result){
+      vm.view = 'delete_confirm';
+      Rates.delete(id)
+      .then(function (response) {
+        startup();
+        vm.feedback = 'delete_success';
+      }).catch(function (error) {
+        vm.feedback = 'delete_error';
+        vm.HTTPError = error;
+      });
+    } else {
+      vm.view = 'default';
+    } 
   }
 
   // startup the module
