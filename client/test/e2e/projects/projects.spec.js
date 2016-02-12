@@ -26,7 +26,6 @@ describe('The Projects Module', function () {
   var DELETE_ERROR = 1;
 
 
-  //var ENTERPRISE_ID = 1;
   // navigate to the project module before each test
   beforeEach(function () {
     browser.get(path);
