@@ -114,7 +114,8 @@ exports.countries = function countries(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT country.uuid, country.country_en AS name FROM country;';
+    'SELECT country.uuid, country.country_en AS name FROM country ' +
+    'ORDER BY country.country_en ASC;';
 
   db.exec(sql)
   .then(function (data) {

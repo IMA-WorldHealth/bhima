@@ -1,18 +1,18 @@
 <div class="flex-header">
   <div class="bhima-title">
-      
+
     <ol class="headercrumb">
       <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
       <li class="title">{{ "PATIENT_REG.PAGE_TITLE" | translate }}</li>
     </ol>
-    
+
   </div>
 </div>
 
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
-      
+
       <!-- Patient Details Form -->
       <div class="col-md-7">
         <div id="patient-details" class="panel panel-primary">
@@ -20,9 +20,9 @@
           <div class="panel-body">
 
             <form name="details"  class="form-horizontal">
-              
+
               <!-- Last Name -->
-              <div 
+              <div
                 class="form-group has-feedback"
                 ng-class="{'has-error' : details.lastName.$invalid && details.$submitted}">
 
@@ -31,9 +31,9 @@
                   <input id="second-name" class="form-control" name="lastName" ng-model="PatientRegCtrl.medical.last_name" required>
                 </div>
               </div>
-              
+
               <!-- Middle Name -->
-              <div 
+              <div
                 class="form-group has-feedback"
                 ng-class="{'has-error' : details.middleName.$invalid && details.$submitted}">
 
@@ -42,9 +42,9 @@
                   <input id="middle-name" class="form-control" name="middleName" ng-model="PatientRegCtrl.medical.middle_name" required>
                 </div>
               </div>
-          
+
               <!-- First Name -->
-              <div 
+              <div
                 class="form-group has-feedback"
                 ng-class="{'has-error' : details.firstName.$invalid && details.$submitted}">
 
@@ -55,27 +55,27 @@
               </div>
 
               <!-- Hospital File Number -->
-              <div 
+              <div
                 class="form-group has-feedback"
                 ng-class="{'has-error' : details.hospitalNumber.$invalid && details.$submitted || details.$error.hospitalNumber}">
-                
+
                 <label for="new-hospital-number" class="col-md-3 control-label">{{ "INVOICE.HOSPITAL_FILE_NR" | translate }} </label>
                 <div class="col-md-9">
                   <input id="new-hospital-number" name="hospitalNumber" class="form-control" ng-model="PatientRegCtrl.medical.hospital_no" hospital-number required>
                   <span ng-if="details.$error.hospitalNumber" class="glyphicon glyphicon-remove form-control-feedback"></span>
                   <span ng-if="details.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
                   <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
-                  
+
                   <!-- TODO Translate -->
                   <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">{{ "UTIL.PATIENT_EXIT" | translate }}</p>
                 </div>
               </div>
 
               <!-- Year of Birth -->
-              <div class="form-group" 
+              <div class="form-group"
                 ng-if="!PatientRegCtrl.fullDateEnabled"
                 ng-class="{'has-error' : details.yob.$invalid && details.$submitted}">
-                
+
                 <label for="yob" class="col-md-3 control-label">{{ "PATIENT_REG.YOB" | translate }}</label>
                 <div class="col-md-9">
                   <div class="input-group">
@@ -86,19 +86,19 @@
                   </div>
                 </div>
               </div>
-              
+
               <!-- Full date of birth -->
               <div class="form-group has-feedback"
                 ng-class="{'has-error' : details.dob.$invalid && details.$submitted}">
-                
+
                 <label for="patient-dob" class="col-md-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                 <div class="col-md-9">
                   <input required name="dob" id="patient-dob" type="date" class="form-control" ng-disabled="!PatientRegCtrl.fullDateEnabled" ng-model="PatientRegCtrl.medical.dob" min="{{PatientRegCtrl.minDOB | date : 'yyyy-MM-dd'}}" max="{{PatientRegCtrl.maxDOB | date : 'yyyy-MM-dd'}}">
                 </div>
               </div>
-      
+
               <!-- Date of birth warning message -->
-              <div 
+              <div
                 id="date-error"
                 class="alert alert-danger"
                 ng-if="details.dob.$error.min || details.dob.$error.max">
@@ -118,39 +118,37 @@
                   <label class="radio-inline">
                     <input type="radio" name="genderOptions" id="female" value="F" ng-model="PatientRegCtrl.medical.sex" required>
                     {{ "PATIENT_REG.FEMALE" | translate }}
-                  </label>  
+                  </label>
                 </div>
               </div>
-  
+
               <!-- Seperate location settings -->
               <hr>
-            
+
               <!-- Location -->
-              <!-- TODO Each individual select should be a form group -->
               <div class="row">
                 <div class="col-md-6">
                   <h4>{{ "PATIENT_REG.ORIGIN_LOCATION" | translate }}</h4>
-                  <div location-select select-village="setOriginLocation"></div>
-
-                  <!-- Input model used to attach location village to the forms scope - this is purely used for validation purposes -->
-                  <!-- TODO Explain this clearly -->
-                  <input name="validateOriginLocation" ng-model="PatientRegCtrl.medical.origin_location_id" required hidden>
+                  <bh-location-select
+                    validation-trigger="details.$submitted"
+                    location-uuid="PatientRegCtrl.medical.origin_location_id">
+                  </bh-location-select>
                 </div>
-                
+
                 <!-- Seperate location searches given a certain screen size -->
                 <div class="visible-sm-block visible-xs-block"><hr></div>
-                
+
                 <div class="col-md-6">
                   <h4>{{ "PATIENT_REG.CURRENT_LOCATION" | translate }}</h4>
-                  <div location-select select-village="setCurrentLocation"></div>
-                  
-                  <!-- Input model used to attach location village to the forms scope - this is purely used for validation purposes -->
-                  <input name="validateCurrentLocation" ng-model="PatientRegCtrl.medical.current_location_id" required hidden>
+                  <bh-location-select
+                    validation-trigger="details.$submitted"
+                    location-uuid="PatientRegCtrl.medical.currency_location_id">
+                  </bh-location-select>
                 </div>
               </div>
-             
+
               <!-- Seperate finance settings -->
-              <hr> 
+              <hr>
 
               <!-- Debtor Group -->
               <div class="form-group has-feedback"
@@ -173,14 +171,14 @@
 
         </div>
       </div>
-  
+
       <!-- Optional Information Form -->
       <div class="col-md-5">
         <div id="registration-type" class="panel panel-default">
           <div class="panel-heading">{{ "PATIENT_REG.OPTIONAL_INFO" | translate }}</div>
           <div class="panel-body">
             <form class="form-horizontal">
-                
+
               <div class="form-group">
                 <label for="title" class="col-md-3 control-label">Title</label>
                 <div class="col-md-9">

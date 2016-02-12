@@ -22,8 +22,8 @@ function LocationService($http, util) {
    * wrapper for HTTP requests made to the baseUrl endpoint
    * @private
    */
-  function request(path) {
-    return $http.get(baseUrl.concat(path))
+  function request(path, options) {
+    return $http.get(baseUrl.concat(path), options)
     .then(util.unwrapHttpResponse);
   }
 
@@ -31,8 +31,8 @@ function LocationService($http, util) {
    * fetch a list of villages from the server
    * @public
    */
-  function villages() {
-    return request('/villages');
+  function villages(options) {
+    return request('/villages', { params : options });
   }
 
 
@@ -40,16 +40,16 @@ function LocationService($http, util) {
    * fetch a list of sectors from the server
    * @public
    */
-  function sectors() {
-    return request('/sectors');
+  function sectors(options) {
+    return request('/sectors', { params : options });
   }
 
   /**
    * fetch a list of provinces from the server
    * @public
    */
-  function provinces() {
-    return request('/provinces');
+  function provinces(options) {
+    return request('/provinces', { params : options });
   }
 
   /**
@@ -68,7 +68,7 @@ function LocationService($http, util) {
    * @public
    */
   function location(uuid) {
-    return request('detail/'.concat(uuid));
+    return request('/detail/'.concat(uuid));
   }
 
   return service;
