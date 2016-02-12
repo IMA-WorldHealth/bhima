@@ -152,7 +152,6 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
   // submit the data to the server from all three forms (update, create,
   // permissions)
   function submit(invalid) {
-    console.log('voici', vm.yob);
     if (invalid) { return; }
 
     var promise;

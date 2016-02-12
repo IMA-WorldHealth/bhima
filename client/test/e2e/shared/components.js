@@ -174,7 +174,9 @@ exports.findPatient = {
     var option = element(by.css('[data-find-patient-option="FIND.PATIENT_?"]'.replace('?', tmpl)));
     option.click();
   },
-
+exports.dateEditor = {
+  selector : '[data-bh-date-editor]',
+  
   /**
    * searches for a patient by name
    * @todo - this needs to be improved to select directly from the typeahead

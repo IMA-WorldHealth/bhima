@@ -1,13 +1,12 @@
 <!-- Date editor component view implementation-->
 <div 
-	ng-switch="$ctrl.editMode"
 	class="form-group"
 	ng-class="{'has-error' : $ctrl.validationTrigger && $ctrl.form.dateEditorValue.$invalid}">
 
 	<!-- Input component implementation-->
 	<div class="input-group">
 	    <input
-	    	data-date-editor
+	    	bh-data-date-editor
 	    	name="dateEditorValue"
 	    	type="text"
 	    	class="form-control"	    	
@@ -16,15 +15,13 @@
 	    	is-open="$ctrl.editMode"
 	    	min-date="$ctrl.minDate"
 	    	max-date="$ctrl.maxDate"
-	    	datepicker-options="dateOptions"
 	    	close-text="Close"
-	    	alt-input-formats="altInputFormats"
 	    	ng-disabled="!$ctrl.editMode"
 	    	show-button-bar="true"
 	    	required
 	    	/>
 	    <span class="input-group-btn">
-	    	<button style="width:8em;" class="btn btn-default" type="button" ng-click="$ctrl.changeMode()" ng-disabled="$ctrl.editMode">
+	    	<button class="btn btn-default" type="button" ng-click="$ctrl.changeMode()" ng-disabled="$ctrl.editMode">
 	    		{{"DATEFINDER.SET" | translate}}
 	    	</button>
 	    </span>
