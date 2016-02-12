@@ -172,30 +172,14 @@
 
                 <hr />
 
-                <!--
-                  no matter what payment type, show the payment total details
-                -->
-                <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.amount.$invalid }">
-                  <label>{{ "COLUMNS.PAYMENT" | translate }}</label>
-                  <div class="input-group">
-                    <span class="input-group-addon">
-                      {{ CashCtrl.currencyLabel }}
-                    </span>
-                    <input
-                      type="number"
-                      name="amount"
-                      ng-model="CashCtrl.payment.amount"
-                      ng-min="0.01"
-                      ng-max="CashCtrl.slip.total"
-                      placeholder="0.00"
-                      class="form-control"
-                      data-currency-input
-                      required>
-                  </div>
-                  <div class="help-block" ng-messages="CashVoucherForm.amount.$error" ng-show="CashVoucherForm.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
+                <!-- use the currency input component for currency validation-->
+                <bh-currency-input
+                  currency-id="CashCtrl.payment.currency_id"
+                  model="CashCtrl.payment.amount"
+                  form="CashVoucherForm"
+                  validation-trigger="CashVoucherForm.$submitted"
+                  >
+                </bh-currency-input>
 
                 <div class="form-group">
                   <button type="submit" class="btn btn-primary" data-action="submit">

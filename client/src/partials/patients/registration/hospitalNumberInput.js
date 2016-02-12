@@ -1,9 +1,9 @@
 angular.module('bhima.directives')
 .directive('hospitalNumber', HospitalNumber);
   
-HospitalNumber.$inject = ['$q', '$http', '$timeout'];
+HospitalNumber.$inject = [ '$q', '$http' ];
 
-function HospitalNumber($q, $http, $timeout) { 
+function HospitalNumber($q, $http) { 
   
   return { 
     require : 'ngModel',

@@ -56,7 +56,7 @@ function JournalVoucherController($scope, $http, AppCache) {
   };
 
   // load dependencies
-  $http.get('/finance/currencies')
+  $http.get('/currencies')
   .then(function (response) {
     vm.currencies = response.data;
   })

@@ -11,7 +11,6 @@ var url = require('url');
 
 var db = require('./../../lib/db');
 var sanitize = require('./../../lib/sanitize');
-var util = require('./../../lib/util');
 
 /*
  * HTTP Controllers
@@ -309,8 +308,8 @@ function patientRecords(params) {
   var p = querystring.parse(params),
       deferred = q.defer();
 
-  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
+  var _start = sanitize.escape(new Date(p.start)),
+      _end =  sanitize.escape(new Date(p.end).setDate(new Date(p.end).getDate() + 1)),
       _id;
 
   if (p.id.indexOf(',')) {
@@ -336,8 +335,8 @@ function patientNewVisit(params) {
   var p = querystring.parse(params),
       deferred = q.defer();
 
-  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
+  var _start = sanitize.escape(new Date(p.start)),
+      _end =  sanitize.escape(new Date(p.end).setDate(new Date(p.end).getDate() + 1)),
       _id;
 
   if (p.id.indexOf(',')) {
@@ -364,8 +363,8 @@ function patientOldVisit(params) {
   var p = querystring.parse(params),
       deferred = q.defer();
 
-  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
+  var _start = sanitize.escape(new Date(p.start)),
+      _end =  sanitize.escape(new Date(p.end).setDate(new Date(p.end).getDate() + 1)),
       _id;
 
   if (p.id.indexOf(',')) {
@@ -391,8 +390,8 @@ function patientOldVisit(params) {
 function paymentRecords(params) {
   var p = querystring.parse(params);
 
-  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+  var _start = sanitize.escape(new Date(p.start)),
+      _end =  sanitize.escape(new Date(p.end)),
       _id = p.id;
 
   var sql =
@@ -911,8 +910,8 @@ function purchase_order() {
 function purchaseOrdeRecords(params) {
   var p = querystring.parse(params);
 
-  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+  var _start = sanitize.escape(new Date(p.start)),
+      _end =  sanitize.escape(new Date(p.end)),
       _id = p.id,
       _transaction = sanitize.escape(p.transaction);
 
@@ -939,8 +938,8 @@ function purchaseOrdeRecords(params) {
 function donation_confirmationRecords(params) {
   var p = querystring.parse(params);
 
-  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end)));
+  var _start = sanitize.escape(new Date(p.start)),
+      _end =  sanitize.escape(new Date(p.end));
 
   var sql =
     'SELECT DISTINCT `donations`.`uuid`, `donations`.`date`, `user`.`first`, `user`.`last`, `employee`.`prenom`, ' +
@@ -961,8 +960,8 @@ function donation_confirmationRecords(params) {
 function integration_stock(params) {
   var p = querystring.parse(params);
 
-  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+  var _start = sanitize.escape(new Date(p.start)),
+      _end =  sanitize.escape(new Date(p.end)),
       _depot = sanitize.escape(p.depot);
 
   var sql =

@@ -1403,6 +1403,11 @@
    "DISCARD"         : "Annuler",
    "DISMISS"         : "Rejeter",   
    "EDIT"            : "Editer",
+   "ERRORS"          : {
+    "REQUIRED"   : "Cette valeur est nécessaire.",
+    "MIN_CURRENCY_UNIT" : "Cette valeur est trop petite pour la monnaie choisie.",
+    "NUMBER" : "Cette valeur doit être un nombre valide."
+   },   
    "INVALID_DATE"    : "La date est invalide",
    "LOGIN"           : "Se Connector",
    "HAS_ERRORS"      : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumettre à nouveau.",
