@@ -1,3 +1,4 @@
+/* jshint expr : true */
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
@@ -51,7 +52,7 @@ describe('The account API, PATH : /accounts', function () {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(9);
+        expect(res.body).to.have.length(10);
       })
       .catch(helpers.handler);
   });
@@ -62,7 +63,7 @@ describe('The account API, PATH : /accounts', function () {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(9);
+        expect(res.body).to.have.length(10);
        })
       .catch(helpers.handler);
    });

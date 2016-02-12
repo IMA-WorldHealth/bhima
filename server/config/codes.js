@@ -102,6 +102,16 @@ module.exports = {
    httpStatus : 500,
    reason : 'The necessary resource is not found'
  }),
+ 'ERR_EXCHANGE_RATE_NOT_FOUND' : makeError('ApiError', {
+   code : 'ERR_EXCHANGE_RATE_NOT_FOUND',
+   httpStatus : 500,
+   reason : 'There is no exchange rate defined for the current date or for a given date'
+ }),
+ 'ERR_DATE_NOT_DEFINED' : makeError('ApiError', {
+   code : 'ERR_DATE_NOT_DEFINED',
+   httpStatus : 400,
+   reason : 'The date for an operation is not defined in the request'
+ }),
 
   /** MySQL error codes */
   'ER_DISK_FULL' : makeError('DatabaseError', {

@@ -1,3 +1,4 @@
+/* jshint expr: true */
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
@@ -14,7 +15,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     enterprise_id : 1,
     uuid : uuid(),
     name : 'New Debtor Group (Test)',
-    account_id : 3631,
+    account_id : 3638,
     location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
@@ -32,7 +33,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     enterprise_id : 1,
     uuid : uuid(),
     name : 'Locked Debtor Group (Test)',
-    account_id : 3631,
+    account_id : 3638,
     location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
     phone : '0811838662',
     email : 'debtorgroup@info.com',

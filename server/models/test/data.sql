@@ -144,7 +144,8 @@ INSERT INTO `account` VALUES
 (3631,3,1,41000,'Test Debtor Accounts',3629,0,NULL,NULL,'2015-11-04 14:32:22',4,NULL,0,NULL,NULL,0,NULL),
 (3635,3,1,41000,'Test Debtor Accounts',3629,0,NULL,NULL,'2015-11-04 14:32:22',4,NULL,0,NULL,NULL,0,NULL),
 (3636,3,1,4600, 'Test Inventory Accounts', 3629, 0, NULL, NULL, '2015-11-04 14:32:22',4,NULL,0,NULL,NULL,0,NULL),
-(3637,2,1,46001,'Test Item Account',3636,0,NULL,NULL,'2015-11-04 14:32:22',4,NULL,1,NULL,NULL,0,NULL);
+(3637,2,1,46001,'Test Item Account',3636,0,NULL,NULL,'2015-11-04 14:32:22',4,NULL,1,NULL,NULL,0,NULL),
+(3638,2,1,47001,'Test Debtor Group Account',3626,0,NULL,NULL,'2015-11-04 14:32:22',4,NULL,1,NULL,0,0,NULL);
 
 -- testing financial transactions
 INSERT INTO `fiscal_year` VALUES
@@ -275,16 +276,18 @@ VALUES
 ("017dbe1e-c37c-11e5-a86e-843a4b0cdade", 1, 1, 1, "HBB1", '2016-01-26', 3638, 0, 75.0000, 0, 75.0000, 2, "cf05da13-b477-11e5-b297-023919d3d5b0",
   NULL, "957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6", 2, 1, 1);
 
--- Zones des santes SNIS 
+-- Zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
   (1, 'Zone Sante A', 'Territoire A', 'Province A'),
   (2, 'Zone Sante B', 'Territoire B', 'Province B');
 
 INSERT INTO `primary_cash_module` VALUES
-  (1, "Transfert");
+  (1, "Transfert"),
+  (3, "Convention");
 
 INSERT INTO `transaction_type` VALUES
-  (1, "pcash_transfert");
+  (1, "pcash_transfert"),
+  (8, "pcash_convention");
 
 -- Exchange Rate for the current date
 INSERT INTO `exchange_rate` (enterprise_currency_id, foreign_currency_id, rate, date) VALUES
