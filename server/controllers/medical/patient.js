@@ -491,7 +491,7 @@ function search (req, res, next) {
 
   var columns =
       'q.uuid, q.project_id, q.reference, q.debitor_uuid, ' +
-      'q.first_name, q.last_name, q.middle_name, q.sex, q.dob ';
+      'q.first_name, q.last_name, q.middle_name, q.sex, q.dob, q.registration_date ';
 
   // customize returned columns according detailled results or not
   if (qDetail) {
