@@ -93,7 +93,20 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
     cache.fetchAll()
       .then(function (initialStates) { 
         initialStates.forEach(function (unitState) { 
-          unitsIndex.id[unitState.key].open = unitState.open;
+      
+          // Lookup the cached unit key in the current set of units
+          var currentUnit = unitsIndex.id[unitState.key];
+
+          if (angular.isDefined(currentUnit)) { 
+
+            // Unit exists - set the relevent open state
+            currentUnit.open = unitState.open;
+          } else { 
+
+            // Unit does not exist - potentially the permission has been revoked 
+            // Update the cache to reflect this
+            cache.remove(unitState.key);
+          }
         });
       });
   }
