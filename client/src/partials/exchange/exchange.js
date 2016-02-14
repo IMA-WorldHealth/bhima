@@ -45,6 +45,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
       return Rates.read(true);
     })
     .then(function (data) {
+
       vm.rates = data;
       vm.current = calculateCurrentRates(data);
     })
@@ -114,7 +115,10 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
   // switch to delete warning mode
   function del(id) {
     var result = $window.confirm($translate.instant('EXCHANGE.CONFIRM'));
-    if(result){
+    if (!result) {
+      vm.view = 'default';
+      return
+    } else {
       vm.view = 'delete_confirm';
       Rates.delete(id)
       .then(function (response) {
@@ -124,9 +128,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
         vm.feedback = 'delete_error';
         vm.HTTPError = error;
       });
-    } else {
-      vm.view = 'default';
-    } 
+    }
   }
 
   // startup the module
