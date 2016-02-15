@@ -89,9 +89,6 @@ angular.module('bhima.services')
 
     function loadRates(rates) {
       // loads in an array of rates
-      // cfg.rates = rates;
-
-      // console.log('RATES:', rates);
 
       rates.forEach(function (rate) {
         createDailyRateStore(rate);

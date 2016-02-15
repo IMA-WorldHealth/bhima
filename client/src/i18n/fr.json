@@ -1409,7 +1409,7 @@
     "NUMBER" : "Cette valeur doit être un nombre valide."
    },   
    "INVALID_DATE"    : "La date est invalide",
-   "LOGIN"           : "Se Connector",
+   "LOGIN"           : "Connexion",
    "HAS_ERRORS"      : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumettre à nouveau.",
    "NEW_FORM"        : "Nouveau Formulaire",
    "NEW_TRANSFER"    : "Nouveau Transfert",

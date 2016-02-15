@@ -39,8 +39,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   service.convertFromEnterpriseCurrency = convertFromEnterpriseCurrency;
   service.update = update;
   service.getCurrentRate = getCurrentRate;
-  service.getExchangeRate = getExchangeRate;
-  service.hasDailyRate = hasDailyRate; 
+  service.getExchangeRate = getExchangeRate; 
   service.delete = del;
 
 
@@ -121,6 +120,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     .then(util.unwrapHttpResponse);
   }
 
+
   // build the cMap object from an array of rates
   function buildCMap(rates) {
 
@@ -186,36 +186,6 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     var rate = rates[rates.length - 1].rate;
 
     return rate;
-  }
-
-  function hasDailyRate(currencyId, date) {
-
-    // parse date into a date object (if not already a date)
-    date = new Date(Date.parse(date));
-
-    // if we passed in the enterprise currency, just return the amount.  Allows
-    // you to apply this transformation to a list of mixed currencies.
-    if (currencyId === Session.enterprise.currency_id) { return 1; }
-
-    // look up the rates for currencyId via the cMap object.
-    var rates = cMap[currencyId].filter(function (row) {
- 
-      var dayDate = date.getDate();
-      var monthDate = date.getMonth();
-      var yearDate = date.getFullYear();
-
-      var dayRowDate = row.date.getDate();
-      var monthRowDate = row.date.getMonth();
-      var yearRowDate = row.date.getFullYear(); 
-
-      return ((dayDate === dayRowDate) && (monthDate === monthRowDate) && (yearDate === yearRowDate));
-    });
-
-    if(rates[0]){
-      return true;
-    } else {
-      return false;
-    }
   }
 
   function del(id) {

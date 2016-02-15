@@ -41,11 +41,18 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
     Currencies.read().then(function (data) {
       vm.currencies = data;
 
+      // filter out the enteprise currency
+      vm.outCurrencies = vm.currencies.filter(function (currency) {
+        return currency.id !== Session.enterprise.currency_id;
+      });
+      vm.form.id = null;
+      vm.rates = null;
+      vm.current = null;
       // load supported rates
       return Rates.read(true);
     })
     .then(function (data) {
-
+      vm.form.date = vm.today;
       vm.rates = data;
       vm.current = calculateCurrentRates(data);
     })
@@ -77,7 +84,8 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
   function setExchangeRate(id, row) {
     if(vm.form.date){
       vm.feedback = 'default';
-      var identifiant = vm.form.id ? vm.form.id : row.rowid; 
+      var identifiant = vm.form.id ? vm.form.id : ''; 
+
       $uibModal.open({
         templateUrl : 'partials/exchange/modal.html',
         size : 'md',
@@ -89,7 +97,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
             date : vm.form.date,
             currency_id : id
           }
-        }
+        },
       }).result
       .then(function (operation) {
         vm.view = 'default';
@@ -107,7 +115,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
   }
 
   function create(){
-    vm.form = { date : vm.today };
+    vm.form = { date : new Date() };
     vm.view = 'default';
     vm.feedback = null;
   }
