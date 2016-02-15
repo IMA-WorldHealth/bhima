@@ -14,16 +14,13 @@ function ExchangeModalController(Rates, Currencies, Session, $uibModalInstance, 
 
   vm.submit = submit;
   vm.cancel = cancel;
-  vm.enterpriseCurrencyId = Session.enterprise.currency_id;
+  vm.enterpriseId = Session.enterprise.id;
   vm.enterpriseCurrency = format(Session.enterprise.currency_id);
   vm.selectedCurrency = format(data.currency_id);
   vm.today = new Date();
+  vm.action = null;
 
-  vm.hasDailyRate = Rates.hasDailyRate(vm.data.currency_id,vm.data.date);
-
-  vm.exchangeRate = vm.hasDailyRate ? true : false;
-  
-  if(vm.exchangeRate){
+  if(vm.data.id){
     vm.text = 'EXCHANGE.REVIEW';
     vm.action = 'update';
   } else {
@@ -42,7 +39,7 @@ function ExchangeModalController(Rates, Currencies, Session, $uibModalInstance, 
 
   function submit(invalid) {
     if (invalid) { return; }
-    vm.data.enterprise_id = vm.enterpriseCurrencyId;
+    vm.data.enterprise_id = vm.enterpriseId;
 
     var rate = angular.copy(vm.data),
       creation = (vm.action === 'create'),

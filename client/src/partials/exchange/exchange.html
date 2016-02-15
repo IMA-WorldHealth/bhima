@@ -64,7 +64,15 @@
                 <a class="btn btn-warning text-right" id="current-{{ $index + 1 }}" ng-click="ExchangeCtrl.setExchangeRate(id, row)">{{ "FORM.DEFINE" | translate }}</a>
               </div>
             </div>
-
+            <div ng-if="!ExchangeCtrl.current">
+              <div  class="form-group" ng-repeat="currency in ExchangeCtrl.outCurrencies">
+                <label class="control-label col-md-6">{{ ExchangeCtrl.formatCurrency(currency.id) }} </label>
+                <div class="col-md-6">
+                  {{ 0 | currency:currency.id }} 
+                  <a class="btn btn-warning text-right" id="current-{{ $index + 1 }}" ng-click="ExchangeCtrl.setExchangeRate(currency.id,'')">{{ "FORM.DEFINE" | translate }}</a>
+                </div>
+              </div>
+            </div>
             <span data-role="feedback" ng-switch="ExchangeCtrl.feedback">
               <span ng-switch-default>
               </span>

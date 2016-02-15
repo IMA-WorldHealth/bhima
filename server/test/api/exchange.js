@@ -16,13 +16,13 @@ describe('The /exchange API endpoint', function () {
 
   // constants
   var RATE = {
-    enterprise_id   :2,    // USD in test database
+    enterprise_id   :1,    // Enterprise ID
     currency_id     :1,    // FC in test database
     rate            :930,
     date            :new Date('2015-10-10')
   };
 
-  var RATE_KEY = ['id', 'enterprise_id', 'currency_id', 'rate', 'date'];
+  var RATE_KEY = ['id', 'enterprise_id', 'currency_id', 'enterprise_currency_id', 'rate', 'date'];
 
   // login before each request
   beforeEach(helpers.login(agent));

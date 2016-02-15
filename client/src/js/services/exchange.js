@@ -82,16 +82,13 @@ angular.module('bhima.services')
       });
 
       store.rates.post({
-        id : rate.enterprise_id,
+        id : rate.enterprise_currency_id,
         rate: 1
       });
     }
 
     function loadRates(rates) {
       // loads in an array of rates
-      // cfg.rates = rates;
-
-      // console.log('RATES:', rates);
 
       rates.forEach(function (rate) {
         createDailyRateStore(rate);

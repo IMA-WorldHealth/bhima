@@ -11,12 +11,12 @@ describe('The Exchange Rate  Module', function () {
   // shared methods
   var path = '#/exchange';
   var EXCHANGE = {
-    date : '02/11/2016',
+    date : '06/30/2015',
     rate : '900'
   };
 
   var EXCHANGE_NEW ={
-    date : '02/01/2016',
+    date : '02/15/2016',
     rate : '950'
   };
 
@@ -28,16 +28,26 @@ describe('The Exchange Rate  Module', function () {
     return (Math.floor((N)*Math.random()+1)); 
   }
 
+  var DELETE_RATE = 1;
   var DEFAULT_EXCHANGE = 1;
   var CURRENCY_RANK = aleatoire(DEFAULT_EXCHANGE);
   var DELETE_SUCCESS = 4;
   var DELETE_ERROR = 1;
   var RATE = 2;
   var RATE_RANK = aleatoire(RATE);
-  var DELETE_RATE = 2;
+
 
   beforeEach(function () {
     browser.get(path);
+  });
+
+  it('Successfully delete an Exchange Rate ', function () {
+    element(by.id('rate-' + DELETE_RATE )).click();    
+    // submit the page to the server
+    element(by.id('delete')).click();    
+
+    browser.switchTo().alert().accept();
+    expect(element(by.id('delete_success')).isPresent()).to.eventually.be.true;
   });
 
   it('Successfully Set a new Exchange Rate', function () {
@@ -52,7 +62,7 @@ describe('The Exchange Rate  Module', function () {
     expect(element(by.id('create_success')).isPresent()).to.eventually.be.true;
   });
 
-  it('Triggering the updated process, during initialization of a day exchange rate which has already', function () {
+  it('Add exchange rates for a date for an Old Date ', function () {
     FormUtils.buttons.create();
 
     element(by.id('previous')).click();
@@ -62,7 +72,7 @@ describe('The Exchange Rate  Module', function () {
     // submit the page to the server
     FormUtils.buttons.submit();
 
-    expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
+    expect(element(by.id('create_success')).isPresent()).to.eventually.be.true;
   });
 
   it('Updated currency exchange rates from the already recorded rate', function () {
@@ -75,17 +85,6 @@ describe('The Exchange Rate  Module', function () {
 
     expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
   });
-
-  it('Successfully delete an Project ', function () {
-    element(by.id('rate-' + DELETE_RATE )).click();
-    
-    // submit the page to the server
-    element(by.id('delete')).click();    
-
-    browser.switchTo().alert().accept();
-    expect(element(by.id('delete_success')).isPresent()).to.eventually.be.true;
-  });
-
 
   it('correctly blocks invalid form submission with relevent error classes', function () {
     FormUtils.buttons.create();
