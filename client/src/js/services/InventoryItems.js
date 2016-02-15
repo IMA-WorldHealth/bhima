@@ -1,3 +1,6 @@
+/**
+ * @todo Redefine API - InventoryItems.addInventoryItem() doesn't make any sense
+ */
 'use strict';
 
 angular.module('bhima.services')
@@ -21,8 +24,8 @@ function InventoryItems(InventoryService, Uuid, Store) {
   var items = new Store(options);
 
   // FIXME
-  var used = new Store(options);
-  used.setData([]);
+  // var used = new Store(options);
+  // used.setData([]);
   
   // Expose store
   this.current = new Store(options);
@@ -36,17 +39,20 @@ function InventoryItems(InventoryService, Uuid, Store) {
   this.currentItems = function currentItems() { 
     return current.data;
   };
-
-  this.addItem = function addItem() { 
   
-    // Only add sale items if there are possible inventory item options
-    if (this.inventoryItemAvailable()) {
-      this.current.post(new Item());
+  this.addInventoryItem = function addInventoryItem(totalItems) { 
+    var totalItems = totalItems || 1;
+
+    // console.log(vm.availableInventoryItems());
+    // TODO Validate total items is a reasonable value
+
+    for (var i = 0; i < totalItems; i++) { 
+      addItem();
     }
   };
-
-  this.inventoryItemAvailable = function inventoryItemAvailable() { 
-    return service.current.data.length < totalInventoryItems;
+  
+  this.allAssigned = function allAssigned() { 
+    return service.current.data.length === totalInventoryItems;
   }
 
   this.total = function total() { 
@@ -56,12 +62,14 @@ function InventoryItems(InventoryService, Uuid, Store) {
 
   this.removeItem = function removeItem(item) { 
     console.log('remove item called', item);
-    
+  
+    // Remove the entity from the current list of sale items
     service.current.remove(item.uuid);
-    items.post(item);
-    used.remove(item.inventoryUuid);
 
-    
+    // If the item has had an inventory assigned to it, add this item back into the pool of available inventory items
+    if (item.sourceInventoryItem) { 
+      items.post(item.sourceInventoryItem);
+    }
   };
 
   this.confirmItem = function confirmItem(item) { 
@@ -77,8 +85,11 @@ function InventoryItems(InventoryService, Uuid, Store) {
     item.description = inventoryItem.label;
   
     console.log('items before', items);
-
-    used.post(inventoryItem);
+  
+    // Track inventory item in case this entity is removed and the item should be available for re-uese 
+    item.sourceInventoryItem = inventoryItem;
+   
+    // used.post(inventoryItem);
     items.remove(item.inventoryUuid);
     console.log('items after', items);
   }
@@ -117,6 +128,15 @@ function InventoryItems(InventoryService, Uuid, Store) {
 
     return currentCost;
   }
+  
+  function addItem() { 
+  
+    // Only add sale items if there are possible inventory item options
+    if (!service.allAssigned()) {
+      service.current.post(new Item());
+    }
+  };
+
 
   return service;
 }

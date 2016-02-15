@@ -9,12 +9,26 @@ PatientInvoiceController.$inject = ['$http', 'uuid', 'InventoryItems', 'uiGridCo
 
 function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) { 
   var vm = this;
-  
+
+  // 1. Allow generic configuration of page - all financial details wait on the patient to be invoiced to be set 
+  // 2. Patient being selected will trigger all other actions
+  // 3. Billing services downloaded for patient 
+  // 4. Price lists downloaded for patient 
+  // 5. InventoryItems service initialised with price list and billing services prices in as optional parameters 
+  //    (These will need to be included in the price of quanities as well as the total calculation)
+  // 6. Submit sale simply collects form information and request InventoryItem.formatSumbitted()
+ 
+  // Personal TODO
+  // Extend and write 
+  // patient/:uuid/billing_services
+  // patient/:uuid/price_lists
+  // patient/:uuid/subsidies
+
   // Set default invoice date to today 
   vm.invoiceDate = new Date();
   vm.invoiceId = uuid();
 
-  // FIXME 
+  // FIXME FIXME
   vm.distributable = "true";
   vm.itemIncrement = 1;
 
@@ -29,8 +43,6 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
 
   // TODO rename list
   var saleData = InventoryItems.current.data;
-  vm.availableInventoryItems = InventoryItems.available;
-  
   
   var mockOptions = { 
     appScopeProvider : vm,
@@ -53,7 +65,7 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
         field : 'code',
         cellTemplate : '<div style="padding : 5px;">' + 
           '<div ng-if="!row.entity.confirmed">' + 
-          '<input class="form-control" typeahead-append-to-body="true" uib-typeahead="item.uuid as (item.label + \' [\' + item.code + \']\') for item in grid.appScope.availableInventoryItems()" ng-model="row.entity.inventoryUuid" typeahead-on-select="grid.appScope.confirmItem(row.entity)"></input>'+ 
+          '<input class="form-control" typeahead-append-to-body="true" uib-typeahead="item.uuid as (item.label + \' [\' + item.code + \']\') for item in grid.appScope.InventoryItems.available()" ng-model="row.entity.inventoryUuid" typeahead-on-select="grid.appScope.InventoryItems.confirmItem(row.entity)"></input>'+ 
           '</div>' + 
           '<div nf-if="row.entity.confirmed">' + 
           '<p>{{row.entity.code}}</p>' +
@@ -66,7 +78,7 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
         // aggregationType : uiGridConstants.aggregationTypes.sum
       },
       { field : 'unit_price', 
-        cellTemplate : '<div style="padding : 5px;"><input type="number" ng-disabled="!row.entity.confirmed" class="form-control" style="padding-left : 5px !important" ng-model="row.entity.unit_price"></input></div>'},
+        cellTemplate : '<div style="padding : 5px;"><input min="0" type="number" ng-disabled="!row.entity.confirmed" class="form-control" style="padding-left : 5px !important" ng-model="row.entity.unit_price"></input></div>'},
       { field : 'amount',
         cellTemplate : '<div style="padding : 5px;">{{row.entity.quantity * row.entity.unit_price | currency}}</div>'},
       { field : 'actions',
@@ -86,41 +98,14 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
   vm.mockOptions = mockOptions;
   vm.saleData = saleData;
 
-  // TODO Move to items service
-  vm.addInventoryItem = function addInventoryItem(totalItems) { 
-    var totalItems = totalItems || 1;
-
-    // console.log(vm.availableInventoryItems());
-    // TODO Validate total items is a reasonable value
-
-    for (var i = 0; i < totalItems; i++) { 
-      InventoryItems.addItem();
-      // saleData.push({});
-    }
-  }
-
   vm.setPatient = function setPatient(patient) { 
     // Prompt initial invoice item
-    vm.addInventoryItem();
+    InventoryItems.addInventoryItem();
     
     vm.invoicePatient = patient;
   }
 
-  vm.confirmItem = function confirmItem(item) { 
-    InventoryItems.confirmItem(item);
-    // console.log('confirming inventory item');
-  }
-
-  vm.returnTotal = InventoryItems.total;
-  vm.inventoryItemAvailable = InventoryItems.inventoryItemAvailable;
-
   vm.InventoryItems = InventoryItems;
-  //vm.addInventoryItem();
-
-  // Debug method - TODO Remove
-  vm.viewItems = function viewItems() { 
-    console.log(saleData);
-  } 
-  
+    
   window.gridOptions = mockOptions;
 }
