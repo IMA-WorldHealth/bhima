@@ -11,12 +11,12 @@ helpers.configure(chai);
 
 
 /**
-* The /cash/conventions API endpoint
+* The /cash/generic/incomes API endpoint
 *
-* @desc This test suit is about the conventions payment in the primary cash
+* @desc This test suit is about the generic incomes payment in the primary cash
 *
 */
-describe('The /cash/conventions API endpoint :: ', function () {
+describe('The /cash/generic/incomes API endpoint :: ', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
@@ -38,10 +38,10 @@ describe('The /cash/conventions API endpoint :: ', function () {
       date        : date,
       currency_id : 2,
       account_id  : 3631,
-      cost        : 5,
-      description : 'Test Convention Payment/' + date.toString(),
+      cost        : 10,
+      description : 'Test Generic Income Payment/' + date.toString(),
       cash_box_id : 2,
-      origin_id   : 3,
+      origin_id   : 5,
       user_id     : 1
   };
 
@@ -57,8 +57,8 @@ describe('The /cash/conventions API endpoint :: ', function () {
 
   var mock = {};
 
-  it('POST /cash/conventions should create a new convention payment records in primary_cash, primary_cash_item and journal', function () {
-    return agent.post('/cash/conventions')
+  it('POST /cash/generic/incomes should create a new generic income records in primary_cash, primary_cash_item and journal', function () {
+    return agent.post('/cash/generic/incomes')
       .send(primaryCash)
       .then(function (res) {
         expect(res).to.have.status(201);
@@ -68,8 +68,8 @@ describe('The /cash/conventions API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /cash/conventions should not post data with missing essentials values', function () {
-    return agent.post('/cash/conventions')
+  it('POST /cash/generic/incomes should not post data with missing essentials values', function () {
+    return agent.post('/cash/generic/incomes')
       .send(wrongPrimaryCash)
       .then(function (res) {
         expect(res).to.have.status(400);
@@ -79,10 +79,10 @@ describe('The /cash/conventions API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /cash/conventions should not post without uuid', function () {
+  it('POST /cash/generic/incomes should not post without uuid', function () {
     mock = wrongPrimaryCash;
     delete mock.uuid;
-    return agent.post('/cash/conventions')
+    return agent.post('/cash/generic/incomes')
       .send(mock)
       .then(function (res) {
         expect(res).to.have.status(400);
@@ -92,11 +92,11 @@ describe('The /cash/conventions API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /cash/conventions should not post when there is not a date defined', function () {
+  it('POST /cash/generic/incomes should not post when there is not a date defined', function () {
     mock = primaryCash;
     mock.uuid = uuid.v4();
     delete mock.date;
-    return agent.post('/cash/conventions')
+    return agent.post('/cash/generic/incomes')
       .send(mock)
       .then(function (res) {
         expect(res).to.have.status(400);
@@ -106,12 +106,12 @@ describe('The /cash/conventions API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /cash/conventions should not post when there is not an exchange rate defined for a date', function () {
+  it('POST /cash/generic/incomes should not post when there is not an exchange rate defined for a date', function () {
     /** The future date does'nt have a defined exchange rate */
     mock = primaryCash;
     mock.uuid = uuid.v4();
     mock.date = futurDate;
-    return agent.post('/cash/conventions')
+    return agent.post('/cash/generic/incomes')
       .send(mock)
       .then(function (res) {
         expect(res).to.have.status(500);

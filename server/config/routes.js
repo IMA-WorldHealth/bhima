@@ -69,6 +69,7 @@ var debtorGroups         = require('../controllers/finance/debtorGroups');
 var currencies           = require('../controllers/finance/currencies');
 var services             = require('../controllers/admin/services');
 var conventions          = require('../controllers/finance/conventions');
+var genericIncomes       = require('../controllers/finance/genericIncomes');
 
 // Middleware for handle uploaded file
 var multipart            = require('connect-multiparty');
@@ -464,6 +465,12 @@ exports.configure = function (app) {
   * NOTE: The `/cash/conventions` API endpoint must be above the `/cash` API endpoint
   */
   app.post('/cash/conventions', conventions.create);
+
+  /**
+  * Generic income / expense
+  * NOTE: The `/cash/generic/` API endpoint must be above the `/cash` API endpoint
+  */
+  app.post('/cash/generic/incomes', genericIncomes.create);
 
   /** cash (aux/primary) */
   app.get('/cash', cash.list);
