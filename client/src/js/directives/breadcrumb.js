@@ -1,14 +1,10 @@
 /**
-* The BHIMA breadcrumb navigation bar
-*/
-angular.module('bhima.directives')
-.directive('breadcrumb', breadcrumb);
-
-/**
-* The Breadcrumb directive is responsible to display the breadcrumb navigation
+* <bh-breadcrumb></bh-breadcrumb>
+*
+* The Breadcrumb component is responsible to display the breadcrumb navigation
 * and all action buttons attached to it.
 *
-* This Directive take these attributes :
+* This component take these attributes :
 *   - path : which take an array which contains paths
 *   - button : which takes an array of button objects
 *   - dropdown : which takes an array of object as dropdown
@@ -17,29 +13,17 @@ angular.module('bhima.directives')
 * @example
 * // Simple breadcrumb navigation
 * // In the view
-* <breadcrumb
+* <bh-breadcrumb
 *   path="MyCtrl.bcPaths"
 *   button="MyCtrl.bcButtons"
 *   dropdown="MyCtrl.bcDropdowns"
 *   Label="MyCtrl.bcLabels">
-* </breadcrumb>
+* </bh-breadcrumb>
 */
-function breadcrumb () {
-  return {
-    restrict    : 'E',
-    scope       : {
-      path     : '=',
-      button   : '=',
-      label    : '=',
-      dropdown : '='
-    },
-    templateUrl : 'partials/templates/breadcrumb.tmpl.html',
-    link        : breadcrumbLink
-  };
-}
 
-function breadcrumbLink(scope, element, attrs) {
-  var vm = scope.vm = {};
+/** Breadcrumb controller defintion */
+function BreadcrumbController() {
+  var vm = this;
 
   /** Paths definition
    * @example
@@ -49,7 +33,7 @@ function breadcrumbLink(scope, element, attrs) {
    *  { label: 'path3', link: '#/path1_link_to_go', current: true },
    * ];
    */
-  vm.bcPaths     = scope.path;
+  vm.bcPaths     = this.path || [];
 
   /** Buttons definition
    * @example
@@ -59,7 +43,7 @@ function breadcrumbLink(scope, element, attrs) {
    *  { icon: 'glyphicon glyphicon-refresh', label: 'Refresh', action: buttonAction }
    * ];
    */
-  vm.bcButtons   = scope.button;
+  vm.bcButtons   = this.button || [];
 
   /** Labels definition
    * @example
@@ -69,7 +53,7 @@ function breadcrumbLink(scope, element, attrs) {
    *  { label: 'My label 3' }
    * ];
    */
-  vm.bcLabels    = scope.label;
+  vm.bcLabels    = this.label || [];
 
   /** Dropdowns definition
    * @example
@@ -92,7 +76,7 @@ function breadcrumbLink(scope, element, attrs) {
    *  }
    * ];
    */
-  vm.bcDropdowns = scope.dropdown;
+  vm.bcDropdowns = this.dropdown || [];
 
   /** call the apropriate function and update the dropdown label */
   vm.helperDropdown = function (child, parent) {
@@ -110,3 +94,20 @@ function breadcrumbLink(scope, element, attrs) {
   })();
 
 }
+
+/** Breadcrumb Component definition */
+var breadcrumb = {
+    bindings   : {
+      path     : '<',
+      button   : '<',
+      label    : '<',
+      dropdown : '<'
+    },
+    templateUrl  : 'partials/templates/breadcrumb.tmpl.html',
+    controller   : BreadcrumbController,
+    controllerAs : 'vm'
+};
+
+/** Component for BHIMA */
+angular.module('bhima.directives')
+.component('bhBreadcrumb', breadcrumb);

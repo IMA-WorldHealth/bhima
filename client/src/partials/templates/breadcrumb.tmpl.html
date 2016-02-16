@@ -2,7 +2,9 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static">{{ "HOME.BHIMA" | translate }}</li>
+      <li class="static">
+        <a href="#/">{{ "HOME.BHIMA" | translate }}</a>
+      </li>
       <li ng-repeat="p in vm.bcPaths" class="title">
         <span ng-if="p.current">{{ p.label }}</span>
         <span ng-if="!p.current"><a ng-href="{{ p.link }}">{{ p.label }}</a></span>
