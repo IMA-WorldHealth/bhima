@@ -21,12 +21,16 @@ function initialise() {
   'use strict';
 
   // configure MySQL via environmental variables
-  con = mysql.createPool({
-    host:     process.env.DB_HOST,
-    user:     process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME
-  });
+  if (process.env.DB_URL) {
+    con = mysql.createPool(process.env.DB_URL);
+  } else {
+    con = mysql.createPool({
+      host:     process.env.DB_HOST,
+      user:     process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME
+    });
+  }
 }
 
 function exec(sql, params) {
