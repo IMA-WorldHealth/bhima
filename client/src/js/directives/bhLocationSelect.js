@@ -1,3 +1,4 @@
+/** TODO - move this to bhima.components when @dedrickenc's PR lands */
 angular.module('bhima.directives')
 
 /**
@@ -7,6 +8,7 @@ angular.module('bhima.directives')
   templateUrl : 'partials/templates/bhLocationSelect.tmpl.html',
   controller : LocationSelectController,
   bindings: {
+    id:                '@',
     locationUuid:      '=', // two-way binding
     disable:           '<', // one-way binding
     validationTrigger: '<', // one-way binding
@@ -56,6 +58,9 @@ function LocationSelectController(Locations, $scope) {
 
   /** loading indicator */
   vm.loading = false;
+
+  /** default id */
+  vm.id = vm.id || 'bh-location-select-component';
 
   /** methods */
   vm.loadVillages = loadVillages;
@@ -172,7 +177,6 @@ function LocationSelectController(Locations, $scope) {
   /** updates the exposed location uuid for the client to use */
   function updateLocationUuid() {
     vm.locationUuid = vm.village.uuid;
-    console.log('Location updated to:', vm.locationUuid);
   }
 
   /**

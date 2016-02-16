@@ -3,7 +3,7 @@
   a child form is added for validation purposes, and to make the HTML easier
   to read.
 -->
-<fieldset ng-disabled="$ctrl.disable" ng-form="LocationSelectForm">
+<fieldset ng-disabled="$ctrl.disable" ng-form="LocationSelectForm" id="{{ $ctrl.id }}" data-bh-location-select>
 
   <!-- allows a user to select a country -->
   <div class="form-group"
@@ -16,6 +16,7 @@
       name="country"
       ng-options="country as country.name for country in $ctrl.countries track by country.uuid"
       ng-change="$ctrl.loadProvinces()"
+      data-country-select
       required>
       <option value="" disabled>{{ $ctrl.messages.country | translate }}</option>
     </select>
@@ -33,6 +34,7 @@
       ng-options="province as province.name for province in $ctrl.provinces track by province.uuid"
       ng-change="$ctrl.loadSectors()"
       ng-disabled="$ctrl.disabled.province"
+      data-province-select
       required>
       <option ng-if="$ctrl.country" value="" disabled>{{ $ctrl.messages.province | translate }}</option>
     </select>
@@ -50,6 +52,7 @@
       ng-options="sector as sector.name for sector in $ctrl.sectors track by sector.uuid"
       ng-change="$ctrl.loadVillages()"
       ng-disabled="$ctrl.disabled.sector"
+      data-sector-select
       required>
       <option ng-if="$ctrl.province" value="" disabled>{{ $ctrl.messages.sector | translate }}</option>
     </select>
@@ -67,6 +70,7 @@
       ng-change="$ctrl.updateLocationUuid()"
       ng-options="village as village.name for village in $ctrl.villages track by village.uuid"
       ng-disabled="$ctrl.disabled.village"
+      data-village-select
       required>
       <option ng-if="$ctrl.sector" value="" disabled>{{ $ctrl.messages.village | translate }}</option>
     </select>
@@ -76,12 +80,12 @@
   <p class="text-right">
     <a href="#/locations">
       <span class="glyphicon glyphicon-link"></span>
-      {{ "LOCATION.REGISTER_LOCATION" | translate }}
+      {{ "LOCATION.REGISTER" | translate }}
     </a>
   </p>
 
   <!-- validation messages shown on form errors-->
   <p class="help-block text-danger" ng-messages="LocationSelectForm.$error" ng-show="$ctrl.validationTrigger">
-    <p ng-message="required">{{ "FORM.REQUIRED" | translate }}</p>
+    <span ng-message="required">{{ "FORM.REQUIRED" | translate }}</span>
   </p>
 </fieldset>
