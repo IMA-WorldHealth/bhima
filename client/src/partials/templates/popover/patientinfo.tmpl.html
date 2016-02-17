@@ -1,0 +1,10 @@
+<ul class="list-unstyled">
+  <li><span class="glyphicon glyphicon-user"> </span> {{patient.name}}</li>
+  <li><span class="glyphicon glyphicon-list-alt"> </span> {{patient.age}} {{patient.sex}}</li>
+  <li>
+    <span class="glyphicon glyphicon-info-sign"> </span> 
+    {{ "PATIENT_EDIT.REGISTERED" | translate }} 
+    <span am-time-ago="patient.registration_date"></span>
+  </li>
+</ul>
+
