@@ -19,6 +19,7 @@
 var db = require('../../lib/db'),
     uuid = require('../../lib/guid');
 
+
 // create a new patient
 exports.create = create;
 
@@ -54,6 +55,7 @@ exports.searchFuzzy = searchFuzzy;
 
 // log patient visit
 exports.visit = visit;
+
 
 
 /** @todo Method handles too many operations */
@@ -128,26 +130,29 @@ function generatePatientText(patient) {
   return textLineDefault.concat(patient.last_name, '/', patient.middle_name);
 }
 
+/**
+* Returns details associated to a patient directly and indirectly
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express object to pass the controle to the next middleware
+*
+* @example
+* // GET /patients/uuid : Get details associated to a patient directly and indirectly
+* var patient = require('medical/patient');
+* patient.detail(req, res, next);
+*/
+
 /** @todo review if this many details should be returned under a patient end point */
 function detail(req, res, next) {
   var uuid = req.params.uuid;
 
-  handleFetchPatient(uuid)
+  handleFetchPatient(uuid, req.codes)
     .then(function(result) {
       var patientDetail;
-
-      if (isEmpty(result)) {
-        res.status(404).json({
-          code : 'ERR_NOT_FOUND',
-          reason : 'No patient found under the id ' + uuid
-        });
-        return;
-      } else {
-
-        // UUID has matched patient - extract result and send to client
-        patientDetail = result[0];
-        res.status(200).json(patientDetail);
-      }
+      // UUID has matched patient - extract result and send to client
+      patientDetail = result;
+      res.status(200).json(patientDetail);
     })
     .catch(next)
     .done();
@@ -171,18 +176,19 @@ function update(req, res, next) {
   db.exec(updatePatientQuery, [queryData, patientId])
     .then(function (result) {
 
-      return handleFetchPatient(patientId);
+      return handleFetchPatient(patientId, req.codes);
     })
-    .then(function (updatedPatientResults) {
-      var updatedPatient = updatedPatientResults[0];
-
+    .then(function (updatedPatientResult) {
+      var updatedPatient = updatedPatientResult;
       res.status(200).json(updatedPatient);
     })
     .catch(next)
     .done();
 }
 
-function handleFetchPatient(uuid) {
+function handleFetchPatient(uuid, codes) {
+  'use strict';
+
   var patientDetailQuery =
     'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, p.hospital_no, ' +
       'p.sex, p.registration_date, p.email, p.phone, p.dob, p.origin_location_id, p.reference, p.title, p.address_1, p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse, p.spouse_profession, ' +
@@ -192,7 +198,13 @@ function handleFetchPatient(uuid) {
     'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
     'WHERE p.uuid = ?';
 
-  return db.exec(patientDetailQuery, [uuid]);
+  return db.exec(patientDetailQuery, uuid)
+    .then(function (rows) {
+      if (rows.length === 0) {
+        throw new codes.ERR_NOT_FOUND();
+      }
+      return rows[0];
+    });
 }
 
 function groups(req, res, next) {
@@ -566,3 +578,6 @@ function search (req, res, next) {
   .catch(next)
   .done();
 }
+
+
+
