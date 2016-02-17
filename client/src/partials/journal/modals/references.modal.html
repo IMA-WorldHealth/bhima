@@ -12,8 +12,8 @@
       <select
         class="form-control"
         name="type"
-        ng-model="ReferenceLookupModalCtrl.path"
-        ng-options="tgt.path as (tgt.key | translate) for tgt in ::ReferenceLookupModalCtrl.targets track by tgt.path"
+        ng-model="ReferenceLookupModalCtrl.target"
+        ng-options="tgt as (tgt.key | translate) for tgt in ::ReferenceLookupModalCtrl.targets track by tgt.path"
         required
         >
         <option value="" disabled>Select a Receipt Type</option>
@@ -21,7 +21,9 @@
     </div>
 
     <!-- input to find the correct receipt by reference -->
-    <div class="form-group has-feedback" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$error }">
+    <div class="form-group has-feedback" ng-class="{
+      'has-error' : ModalForm.reference.$dirty && ModalForm.reference.$invalid
+    }">
       <label class="control-label">Reference Lookup</label>
       <div class="input-group">
         <input
@@ -29,30 +31,62 @@
           name="reference"
           class="form-control"
           ng-model="ReferenceLookupModalCtrl.reference"
-          ng-disabled="(ReferenceLookupModalCtrl.loading || !ReferenceLookupModalCtrl.path)"
+          ng-disabled="(ReferenceLookupModalCtrl.loading || !ReferenceLookupModalCtrl.target)"
           required>
         <span class="input-group-btn">
           <button
             class="btn btn-default"
             type="button"
             ng-click="ReferenceLookupModalCtrl.lookupReference()"
-            ng-disabled="(ReferenceLookupModalCtrl.loading || !ReferenceLookupModalCtrl.path)">
+            ng-disabled="(ReferenceLookupModalCtrl.loading || !ReferenceLookupModalCtrl.target)">
             <span ng-hide="vm.loading"><span class="glyphicon glyphicon-search"></span> Search</span>
             <span ng-show="vm.loading"><span class="glyphicon glyphicon-time"></span> Loading</span>
           </button>
         </span>
       </div>
+
+      <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.reference.$dirty">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+
+      <!-- success block -->
+      <p class="help-block" ng-show="ModalForm.reference.$dirty && ReferenceLookupModalCtrl.document">
+        <span class="text-success">
+          <span class="glyphicon glyphicon-ok"></span> Successfully found a receipt!
+        </span>
+      </p>
     </div>
 
     <!-- preview field for document -->
     <div class="form-group" ng-show="ReferenceLookupModalCtrl.document">
-      <label class="control-label">Preview</label>
-      <p class="form-control-static">I am a preview field.</p>
+      <label class="control-label">{{ ReferenceLookupModalCtrl.target.key | translate }}</label>
+      <dl>
+
+        <!-- document reference -->
+        <dt>{{ "COLUMNS.REFERENCE" | translate }}</dt>
+        <dd>{{ ReferenceLookupModalCtrl.document.reference }}</dd>
+
+        <!-- document date -->
+        <dt>{{ "COLUMNS.DATE" | translate }}</dt>
+        <dd>
+          {{ ReferenceLookupModalCtrl.document.date | date }}
+          (<span class="glyphicon glyphicon-time"></span>
+          <span am-time-ago="ReferenceLookupModalCtrl.document.date"></span>)
+        </dd>
+
+        <!-- the amount -->
+        <dt>{{ "COLUMNS.AMOUNT" | translate }}</dt>
+        <dd>{{ ReferenceLookupModalCtrl.document.amount | currency:ReferenceLookupModalCtrl.document.currency_id }}</dd>
+      </dl>
     </div>
   </div>
 
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" ng-click="ReferenceLookupModalCtrl.submit(ModalForm.$invalid)">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      ng-click="ReferenceLookupModalCtrl.submit(ModalForm.$invalid)"
+      ng-disabled="!ReferenceLookupModalCtrl.document">
       {{ "FORM.SUBMIT" | translate }}
     </button>
     <button type="button" class="btn btn-default" ng-click="ReferenceLookupModalCtrl.dismiss()">

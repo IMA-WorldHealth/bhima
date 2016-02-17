@@ -211,8 +211,10 @@ function JournalVoucherController($scope, $http, AppCache, Modal) {
       keyboard : false
     });
 
+    /** bind the reference to the view */
     instance.result.then(function (result) {
-      console.log('result!', result);
+      vm.master.documentId = ['[', result.reference, '] ', result.type].join('');
+      vm.master.document_id = result.uuid;
     });
   }
 

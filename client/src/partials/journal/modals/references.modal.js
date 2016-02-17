@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('ReferenceLookupModalController', ReferenceLookupModalController);
 
-ReferenceLookupModalController.$inject = [ '$uibModalInstance', '$timeout' ];
+ReferenceLookupModalController.$inject = [ '$uibModalInstance', '$timeout', '$translate' ];
 
 /**
  * Reference Lookup Modal Controller
@@ -19,7 +19,7 @@ ReferenceLookupModalController.$inject = [ '$uibModalInstance', '$timeout' ];
  * This is currently just a prototype, to be improved as services become
  * available to power the lookups.
  */
-function ReferenceLookupModalController(ModalInstance, $timeout) {
+function ReferenceLookupModalController(ModalInstance, $timeout, $translate) {
   var vm = this;
 
   /** bind the dismiss method */
@@ -64,14 +64,17 @@ function ReferenceLookupModalController(ModalInstance, $timeout) {
       // turn off loading
       toggleLoading();
 
-      // temporary mock data
+      // temporary mock data (with some randomness)
       vm.document = {
-        uuid : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
-        amount : 10.34,
-        date : new Date(Date.parse('2016-02-03'))
+        uuid:        '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
+        amount:      Math.random() * 10000,
+        currency_id: (Math.random() > 0.5) ? 1 : 2,
+        date:        new Date(Date.parse('2015-06-01') + (Math.random() * 12930050020)),
+        reference:   vm.reference,
+        type:        $translate.instant(vm.target.key)
       };
 
-    }, 1200);
+    }, 1000);
   }
 
   /** modal submit */
