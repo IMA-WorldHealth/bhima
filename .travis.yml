@@ -11,9 +11,10 @@ services:
 language: node_js
 node_js:
   - node
+  - '4.3'
+  - '4.2'
   - '4.1'
   - '4.0'
-  - '0.12'
 
 before_script:
   - bash sh/install.sh

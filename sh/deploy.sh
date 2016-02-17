@@ -4,6 +4,12 @@
 
 export NODE_ENV="staging"
 
+# remove the progress bar for fun and profit
+npm set progress=false
+
+# make sure we have the latest version of npm
+npm install -g npm
+
 # setup nodejs dependencies
 npm install
 
