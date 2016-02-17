@@ -32,7 +32,7 @@ function EnterpriseController(Enterprises, Currencies, Locations, StateFactory) 
       vm.enterprises = data;
     }).catch(handler);
 
-    Locations.readLocations().then(function (data) {
+    Locations.villages().then(function (data) {
       data.forEach(function (l) {
         l.format = [l.name, l.sector_name, l.province_name, l.country_name].join(' -- ');
       });

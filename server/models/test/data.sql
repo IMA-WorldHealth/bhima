@@ -80,7 +80,11 @@ INSERT INTO `permission` (`unit_id`, `user_id`) VALUES
 -- Patient Registration
 (14, 1),
 -- Patient Update
-(80, 1);
+(80, 1),
+-- Enterprises
+(2, 1),
+-- Exchange Rate
+(22, 1);
 
 -- give test permission to both projects
 INSERT INTO project_permission (project_id, user_id) VALUES (1, 1), (2, 1);
