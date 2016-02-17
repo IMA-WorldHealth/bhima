@@ -5,9 +5,11 @@ var expect = require('chai').expect;
 var chaiHttp = require('chai-http');
 var chaiDatetime =  require('chai-datetime');
 
-// Configure NodeJS/Mocha to continue working even with invalid TLS certs
-// This explicitly disables cert errors for the parent Node process, and
-// should only be done for testing cases.
+/**
+ * Configure NodeJS/Mocha to continue working even with invalid TLS certs
+ * This explicitly disables cert errors for the parent Node process, and
+ * should only be done for testing cases.
+ */
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 // base URL for all tests
@@ -198,6 +200,35 @@ api.deleted = function deleted(res) {
   // make sure that the response has the correct HTTP headers
   expect(res).to.have.status(204);
   expect(res.body).to.be.empty;
+};
+
+/**
+ * Ensures that a GET API request was successful and conforms to API standards.
+ * This tests is only for "list" methods, which return an array of records from
+ * the database with a 200 success code expected.
+ *
+ * @method listed
+ * @param {object} res - the HTTP response object
+ * @param {number} len - the expected length of the array returned
+ *
+ * @example
+ * var helpers = require('path/to/helpers');
+ *
+ * agent.get('some/route')
+ * .then(function (res) {
+ *   helpers.api.listed(res, 10);
+ * })
+ * .catch(helpers.handler);
+ */
+api.listed = function listed(res, len) {
+  'use strict';
+
+  // make sure that the response has the correct HTTP headers
+  expect(res).to.have.status(200);
+  expect(res).to.be.json;
+
+  // assert that the length is the expected length.
+  expect(res.body).to.have.length(len);
 };
 
 /** The error keys sent back by the API */
