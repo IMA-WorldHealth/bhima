@@ -697,16 +697,16 @@ CREATE TABLE `enterprise` (
 
 DROP TABLE IF EXISTS `exchange_rate`;
 CREATE TABLE `exchange_rate` (
-  `id`                      MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `enterprise_currency_id`  TINYINT(3) UNSIGNED NOT NULL,
-  `foreign_currency_id`     TINYINT(3) UNSIGNED NOT NULL,
-  `rate`                    DECIMAL(19,4) UNSIGNED NOT NULL,
-  `date`                    DATETIME NOT NULL,
+  `id`    MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `enterprise_id`   smallint(5) UNSIGNED NOT NULL,
+  `currency_id`   TINYINT(3) UNSIGNED NOT NULL,
+  `rate`    DECIMAL(19,4) UNSIGNED NOT NULL,
+  `date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `enterprise_currency_id` (`enterprise_currency_id`),
-  KEY `foreign_currency_id` (`foreign_currency_id`),
-  FOREIGN KEY (`enterprise_currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`foreign_currency_id`) REFERENCES `currency` (`id`)
+  KEY `enterprise_id` (`enterprise_id`),
+  KEY `currency_id` (`currency_id`),
+  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

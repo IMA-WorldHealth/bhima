@@ -195,8 +195,8 @@ INSERT INTO `transaction_type` VALUES
   (8, "pcash_convention");
 
 -- Exchange Rate for the current date
-INSERT INTO `exchange_rate` (enterprise_currency_id, foreign_currency_id, rate, date) VALUES
-  (2, 1, 930, CURRENT_DATE());
+INSERT INTO `exchange_rate` (enterprise_id, currency_id, rate, date) VALUES
+  (1, 1, 930, CURRENT_DATE());
 
 -- 1.X Routes
 -- ----------

@@ -55,7 +55,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     return $http.get('/exchange')
       .then(util.unwrapHttpResponse)
       .then(function (data) {
-
+        
         // if there is no data, the controllers should be alerted
         // by throwing an missing exchange rate error.
         if (data.length === 0) {
