@@ -1,4 +1,4 @@
-/* global by,browser,element */
+/* global by, browser, element */
 
 var q = require('q');
 
@@ -10,9 +10,8 @@ var q = require('q');
 
 var config = {
 
-  
   specs: ['client/test/e2e/**/*.spec.js'],
-  
+
   framework : 'mocha',
   baseUrl : 'https://localhost:8080/',
   allScriptsTimeout : 30000,
@@ -45,21 +44,24 @@ var config = {
 };
 
 // configuration for running on SauceLabs via Travis
-if (process.env.TRAVIS_BUILD_NUMBER) {
+if (process.env.TRAVIS) {
 
   // SauceLabs credentials
   config.sauceUser = process.env.SAUCE_USERNAME;
   config.sauceKey = process.env.SAUCE_ACCESS_KEY;
+  config.sauceSeleniumAddress = 'ondemand.saucelabs.com:80/wd/hub';
 
   // modify the browsers to use Travis identifiers
   config.multiCapabilities = [{
-    'browserName': 'firefox',
+    'browserName':        'firefox',
      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-     'build': process.env.TRAVIS_BUILD_NUMBER,
+     'build':             process.env.TRAVIS_BUILD_NUMBER,
+     'name':              'bhima-firefox-' + process.env.TRAVIS_BUILD_NUMBER
   }, {
-    'browserName': 'chrome',
+    'browserName':        'chrome',
      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-     'build': process.env.TRAVIS_BUILD_NUMBER,
+     'build':             process.env.TRAVIS_BUILD_NUMBER,
+     'name':              'bhima-chrome-' + process.env.TRAVIS_BUILD_NUMBER
   }];
 }
 

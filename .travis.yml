@@ -1,32 +1,30 @@
 sudo: required
+language: node_js
 dist: trusty
 
-before_install:
-  # manually install mysql 5.6 since the default for travis is still 5.5
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6
-
-
-# spin up the mysql service
 services:
   - mysql
 
-language: node_js
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6
+
 node_js:
-  - "node"
-  - "4.1"
-  - "4.0"
-  - "0.12"
-  - "0.11"
-  - "iojs"
+  - node
+  - '4.1'
+  - '4.0'
+  - '0.12'
+  - '0.11'
+  - iojs
 
 before_script:
-  # ensure mysql is running in "STRICT_ALL_TABLES' mode
   - mysql -u root -e "SET GLOBAL sql_mode='STRICT_ALL_TABLES';"
-  - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'bhima_travis'@'localhost' IDENTIFIED BY 'TRAVIS_PASSWORD' WITH GRANT OPTION;"
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'bhima_travis'@'localhost' IDENTIFIED
+    BY 'TRAVIS_PASSWORD' WITH GRANT OPTION;"
   - mysql -u root -e "FLUSH PRIVILEGES;"
   - mysql -u root -e "DROP SCHEMA IF EXISTS bhima_travis_db;"
-  - mysql -u bhima_travis -pTRAVIS_PASSWORD -e "CREATE SCHEMA bhima_travis_db CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+  - mysql -u bhima_travis -pTRAVIS_PASSWORD -e "CREATE SCHEMA bhima_travis_db CHARACTER
+    SET utf8 COLLATE utf8_unicode_ci;"
   - mysql -u bhima_travis -pTRAVIS_PASSWORD bhima_travis_db < server/models/schema.sql
   - mysql -u bhima_travis -pTRAVIS_PASSWORD bhima_travis_db < server/models/test/data.sql
   - mysql -u bhima_travis -pTRAVIS_PASSWORD bhima_travis_db < server/models/updates/synt.sql
@@ -35,16 +33,29 @@ script:
   - npm install -g npm
   - npm install -g gulp bower mocha
   - bower install
-  - npm run travis &
-  - sleep 10
-  - mocha server/test/api
+  - ./node_modules/protractor/bin/webdriver-manager update
+  - bash sh/travis.sh
 
-# set the clone depth to a low value
 git:
   depth: 3
 
-# make sure we aren't caching verbose output from NPM
+addons:
+  sauce_connect:
+    username: "developers@imaworldhealth.org"
+    access_key :
+        secure: "HUms7z2RReoVx4edlEpKs/Icdrd2phFJym+kuYYcs5HsJJR+Lc1K8AJ2X6W7K1XVb3OSR6TsPZduLctwobQiMaWmnVt7WuKXm2CcWrg4HAjiAVinLeUGFbmgzXSLoenqSdEVg3SbKTADAGkL+AQikpep4J/W6k8Leq+eGSO2ADlDw5GBS2YN1mwUHh7tXwu8rn4tPMI0NVguwU0v9SrZSEuUomX4KMZWe8J7MQMFfmClHqX1RDVjendILTT74Psty13y+53D5OlRUJgGwkJiCDJNtp+BU9YzfUoeOTQai7uns4/jecOCyI2ykQCio2x/eMNeREfrj7nYXgdw4b45IeOSNByxPJPPzCTkG+5+dOuH5F4ilmRa44eOduEYVvJ/1v+vYjegtjMOr4h5CEDl5WotkeR10Hm7kNABMascwl9UA3Lm6O8P2Ej1AxADqCcZK4NGCzCEQLEvFSaqUDnXBJ+yJrvpF/7BFJ0/3CEOtQHzyOVt90XyUXQ7H74uKwMEspTXZCjlBK2BSP5UA2P1CiqyWDahgZUWKCN7ZbYeLQ/oI7qgaN2nnRiEG/C2ekRRfJGxSwBUA5E3/WNqwfGssLkjk80FaYTyJv2V/pRw6Qyg/PsdsLBJbEjHA1BVZdMETqxMIyOEIiEQsm20TVVdhsn5n7w7Svec2YOtjAqp8jg="
+
 before_cache:
   - rm -f npm-debug.log
   - rm -f access.log
 
+deploy:
+  provider: openshift
+  user: developers@imaworldhealth.org
+  password:
+    secure: UQM5hhuyjaQDZbuz4dzxt8RIQLFUfBx0iV0LpeFRjajDh9xZAPB8KZ7E0uR8Kvg61i0cQSa1zD6/2cWONzybkom8Q+ecNo9lfwUN7ENhIS1cjFM7ouBU/9Z+PCb6z16YVUxfQtPG+r8pg5SQVNdPIlZeQmRcSh+ZYq6/wzCNOZSvefLlBySknhWxqNn5jHYExGKuOCg+Kp0OWm3L8StP8zFBqag+ahCLzW3qiOlzEzS8Zcy/DoStLdVZgDaqkrCiueXJeKAfoa3BAlrKpselL5epI4D6nWjcydF1zTyfwLY7zO2r+ELxxqSrp3vcEPNPKPU6IvHv1rLvu0nJKvbH/4s70Dotl5qO6+yaBlFX1s2Voyl0VN3lhr/SVNquSAB0jdhBSX8A7a/PfCeGFFBf6vJxwzVwQib6ve/+hmDMFLbmj3AvgDSHkPAIu9uTDt5cpZnj7SKQwn8Bn2kA1nnoh+GoTt89wEN6T0apT1OyHDVUgoapLSbpcuhlLq1jgFY4WObHXLW8C6KWhlMhStKwPUEDeeGRFOxI6b9Xz/xwMj6+KhixtNpnlU/VkHQCJlXjYErw+xlvvUj++bdJfjIt/yZQxjOmOyQCfoqguAH3+5FIMJ7Er0X+Yqij4HZsFQ9WL6ICzs0ldfvrjiBdf5XbiMhPzAI9r7Mz381gyXV+kXc=
+  app: bhima
+  domain: imaworldhealth
+  on:
+    repo: IMA-WorldHealth/bhima-2.X
+    branch: master

@@ -17,7 +17,12 @@ npm run travis &
 # make sure we have enough time for the server to start
 sleep 10
 
-echo "[TRAVIS] Running integration tests."
+echo "[TRAVIS] Running integration tests..."
 
-# run the tests
+# run the integration tests
 mocha server/test/api/
+
+echo "[TRAVIS] Running end to end tests..."
+
+# run end to end tests
+gulp client-test-e2e
