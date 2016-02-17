@@ -4,6 +4,10 @@
   <div class="form-group has-feedback "
     ng-switch-default
     ng-form="formFindPatient"
+    ng-class="{
+      'has-success': !session.showSearchView && session.loadStatus=='loaded', 
+      'has-error': !session.showSearchView && session.loadStatus=='error'
+      }"
     novalidate>
 
     <!-- inline input zone -->
@@ -53,7 +57,13 @@
       <!-- submit button for search by ID -->
       <!-- use of fixed width that correspond to notification text margin right -->
       <span class="input-group-btn">
+    
+        <!-- 
+         button type="button" allows angular to disable the elements click event as well
+         as not submitting the form
+         -->
         <button style="width:8em;" class="btn btn-success"
+          type="button"
           ng-disabled="!session.validInput"
           ng-click="submit()"
           data-find-patient-submit>
@@ -72,24 +82,34 @@
     <!-- /inline notification -->
 
     <!-- notification zone for result  -->
-    <div class="alert "
-      ng-class="{'alert-success': session.loadStatus=='loaded', 'alert-danger': session.loadStatus=='error'}"
-      ng-if="!session.showSearchView">
 
-      <!-- patient found notification -->
-      <span ng-if="session.loadStatus=='loaded'">
-        <i class="glyphicon glyphicon-ok"></i> &nbsp; {{ "FIND.PATIENT_FOUND" | translate }}: &nbsp;
-        <b>({{ patient.reference }})</b> {{ patient.name + ' (' + patient.sex + ' ' + patient.age + ')'}}
-      </span>
+    <div ng-if="!session.showSearchView">
+      
+      <div class="input-group">
+        
+        <span class="input-group-addon">
+           <span class="glyphicon glyphicon-user"></span>
+        </span>
 
-      <!-- patient not found notification -->
-      <span ng-if="session.loadStatus=='error'">
-        <i class="glyphicon glyphicon-alert"></i> &nbsp; {{ 'FIND.PATIENT_NOT_FOUND' | translate }}
-      </span>
+        <input ng-if="session.loadStatus=='loaded'" readonly class="form-control" value="[{{patient.reference}}] {{patient.name}}">
+        <input ng-if="session.loadStatus=='error'" readonly class="form-control" value="{{ 'FIND.PATIENT_NOT_FOUND' | translate }}">
+        
+        <div class="input-group-btn">
+          <a 
+            ng-if="session.loadStatus=='loaded'"
+            class="btn btn-default"
+            uib-popover-template="'partials/templates/popover/patientinfo.tmpl.html'"
+            popover-title="Patient Record"
+            popover-placement="bottom"
+            popover-trigger="mouseenter"
+            popover-append-to-body="true">
+           <span class="glyphicon glyphicon-info-sign"></span>
+          </a>
 
-      <!-- reload for new search -->
-      <div class="pull-right">
-        <a href="" class="alert-link" ng-click="reload()"><i class="glyphicon glyphicon-repeat"></i></a>
+          <a class="btn btn-default" ng-click="reload()">
+           <span class="glyphicon glyphicon-refresh"></span>
+          </a>
+        </div>
       </div>
     </div>
     <!-- /notification zone  -->

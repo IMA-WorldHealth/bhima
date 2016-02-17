@@ -46,9 +46,8 @@ exports.configure = function configure(app) {
     next();
   });
 
-  // NOTE -- EXPERIMENTAL
-  // reject PUTs and POSTs with empty objects in the data
-  // property with a 400 error
+  // reject PUTs and POSTs with empty objects in the data property with a 400
+  // error
   app.use(function (req, res, next) {
     if (req.method !== 'PUT' && req.method !== 'POST') {
       return next();
@@ -67,7 +66,7 @@ exports.configure = function configure(app) {
   // provide a stream for morgan to write to 
   winston.stream = {
     write : function (message, encoding) {
-      winston.log('info', message.trim());
+      winston.info(message.trim());
     }
   };
 
