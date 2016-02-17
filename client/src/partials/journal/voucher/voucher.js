@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 .controller('JournalVoucherController', JournalVoucherController)
 .controller('JournalVoucherTableController', JournalVoucherTableController);
 
-JournalVoucherController.$inject = [ '$scope', '$http', 'appcache' ];
+JournalVoucherController.$inject = [ '$scope', '$http', 'appcache', '$uibModal' ];
 
 /**
 * This controller wraps all the global metadata
@@ -25,7 +25,7 @@ JournalVoucherController.$inject = [ '$scope', '$http', 'appcache' ];
 * EDIT: yes, we can do better.  These should use a service to share
 * data.
 */
-function JournalVoucherController($scope, $http, AppCache) {
+function JournalVoucherController($scope, $http, AppCache, Modal) {
   var dependencies = {},
       isDefined = angular.isDefined,
 
@@ -44,7 +44,6 @@ function JournalVoucherController($scope, $http, AppCache) {
   vm.today = new Date();
 
   vm.showComment = false;
-  vm.showReference = false;
   vm.hasCachedForm = false;
 
   // the master form
@@ -54,6 +53,8 @@ function JournalVoucherController($scope, $http, AppCache) {
     date : vm.today,
     rows : [] // the child
   };
+
+  vm.openReferenceLookupModal = openReferenceLookupModal;
 
   // load dependencies
   $http.get('/currencies')
@@ -67,11 +68,6 @@ function JournalVoucherController($scope, $http, AppCache) {
   // toggle comment field
   vm.toggleComment = function () {
     vm.showComment = !vm.showComment;
-  };
-
-  // toggle reference field
-  vm.toggleReference = function () {
-    vm.showReference = !vm.showReference;
   };
 
   // do the final submit checks
@@ -206,6 +202,19 @@ function JournalVoucherController($scope, $http, AppCache) {
       }
     });
   };
+
+  function openReferenceLookupModal() {
+    var instance = Modal.open({
+      size : 'md',
+      controller : 'ReferenceLookupModalController as ReferenceLookupModalCtrl',
+      templateUrl : 'partials/journal/modals/references.modal.html',
+      keyboard : false
+    });
+
+    instance.result.then(function (result) {
+      console.log('result!', result);
+    });
+  }
 
   // auto-detect if there is an old form
   findCachedForm();

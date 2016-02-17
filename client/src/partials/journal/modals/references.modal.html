@@ -13,7 +13,7 @@
         class="form-control"
         name="type"
         ng-model="ReferenceLookupModalCtrl.path"
-        ng-options="tgt.path as tgt.key for tgt in ReferenceLookupModalCtrl.targets | translate track by tgt.path"
+        ng-options="tgt.path as (tgt.key | translate) for tgt in ::ReferenceLookupModalCtrl.targets track by tgt.path"
         required
         >
         <option value="" disabled>Select a Receipt Type</option>
@@ -29,16 +29,18 @@
           name="reference"
           class="form-control"
           ng-model="ReferenceLookupModalCtrl.reference"
-          ng-disabled="ReferenceLookupModalCtrl.loading"
+          ng-disabled="(ReferenceLookupModalCtrl.loading || !ReferenceLookupModalCtrl.path)"
           required>
-        <button
-          class="input-group-btn"
-          type="button"
-          ng-click="ReferenceModalCtrl.lookupReference()"
-          ng-disabled="ReferenceLookupModalCtrl.loading">
-          <span ng-hide="vm.loading"><span class="glyphicon glyphicon-search"></span> Search</span>
-          <span ng-show="vm.loading"><span class="glyphicon glyphicon-time"></span> Loading</span>
-        </button>
+        <span class="input-group-btn">
+          <button
+            class="btn btn-default"
+            type="button"
+            ng-click="ReferenceLookupModalCtrl.lookupReference()"
+            ng-disabled="(ReferenceLookupModalCtrl.loading || !ReferenceLookupModalCtrl.path)">
+            <span ng-hide="vm.loading"><span class="glyphicon glyphicon-search"></span> Search</span>
+            <span ng-show="vm.loading"><span class="glyphicon glyphicon-time"></span> Loading</span>
+          </button>
+        </span>
       </div>
     </div>
 

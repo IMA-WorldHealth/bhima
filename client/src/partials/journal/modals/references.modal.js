@@ -47,10 +47,14 @@ function ReferenceLookupModalController(ModalInstance, $timeout) {
     key : 'PAYSLIPS'
   }];
 
+  vm.lookupReference = lookupReference;
+
   function lookupReference() {
 
     // don't bother trying a lookup if there is no reference.
     if (!vm.reference) { return; }
+
+    delete vm.document;
 
     toggleLoading();
 
@@ -67,7 +71,7 @@ function ReferenceLookupModalController(ModalInstance, $timeout) {
         date : new Date(Date.parse('2016-02-03'))
       };
 
-    }, 3000);
+    }, 1200);
   }
 
   /** modal submit */
