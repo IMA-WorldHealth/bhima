@@ -82,7 +82,7 @@ angular.module('bhima.services')
       });
 
       store.rates.post({
-        id : rate.enterprise_id,
+        id : rate.enterprise_currency_id,
         rate: 1
       });
     }

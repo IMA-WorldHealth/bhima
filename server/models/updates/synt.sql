@@ -382,6 +382,7 @@ ALTER TABLE `project`
 ADD `locked` BOOLEAN NOT NULL;
 
 
+
 -- Linking service o enterprise directly
 -- Date : 2016-02-02
 -- By : Dedrick Kitamuka
