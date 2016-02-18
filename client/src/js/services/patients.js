@@ -11,6 +11,7 @@ PatientService.$inject = [ '$http', 'util' ];
  */
 function PatientService($http, util) {
   var service = this;
+  var baseUrl = '/patients/';
 
   service.detail = detail;
   service.create = create;
@@ -19,40 +20,37 @@ function PatientService($http, util) {
   service.updateGroups = updateGroups;
   service.logVisit = logVisit;
 
-  function detail(uuid) {
-    var path = '/patients/';
+  /** uses the "search" endpoint to pass query strings to the database */
+  service.search = search;
 
-    return $http.get(path.concat(uuid))
+  function detail(uuid) {
+    return $http.get(baseUrl.concat(uuid))
       .then(util.unwrapHttpResponse);
   }
 
   // TODO Service could seperate medical and financial details - depending on form build
   function create(details) {
-    var path = '/patients';
-
-    return $http.post(path, details)
+    return $http.post(baseUrl, details)
       .then(util.unwrapHttpResponse);
   }
 
   function update(uuid, definition) {
-    var path = '/patients/';
-
-    return $http.put(path.concat(uuid), definition)
+    return $http.put(baseUrl.concat(uuid), definition)
       .then(util.unwrapHttpResponse);
   }
 
   // TODO Review/ refactor
   // Optionally accepts patientUuid - if no uuid is passed this will return all patients groups
   function groups(patientUuid) {
-    var path = '/patients/';
+    var path;
 
     // If a patient ID has been specified - return only the patient groups for that patient
     if (angular.isDefined(patientUuid)) {
-      path = path.concat(patientUuid, '/groups');
+      path = baseUrl.concat(patientUuid, '/groups');
     } else {
 
       // No Patient ID is specified - return a list of all patient groups
-      path = path.concat('groups');
+      path = baseUrl.concat('groups');
     }
 
     return $http.get(path)
@@ -60,24 +58,38 @@ function PatientService($http, util) {
   }
 
   function updateGroups(uuid, subscribedGroups) {
-    var path = '/patients/';
     var options = formatGroupOptions(subscribedGroups);
+    var path = baseUrl.concat(uuid, '/groups');
 
-    path = path.concat(uuid, '/groups');
-
-    console.log('formatted', options);
     return $http.post(path, options)
       .then(util.unwrapHttpResponse);
   }
 
   function logVisit(details) {
-    var path = '/patients/visit';
-
-    return $http.post(path, details)
+    return $http.post(baseUrl.concat('visit'), details)
       .then(util.unwrapHttpResponse);
   }
 
-  // Utility methods
+
+  /**
+   * Uses query strings to generically search for patients.
+   * 
+   * @method search
+   *
+   * @param {object} options - a JSON of options to be parsed by Angular's
+   * paramSerializer
+   */
+  function search(options) {
+    var target = baseUrl.concat('search');
+
+    return $http.get(target, { params : options })
+      .then(util.unwrapHttpResponse);
+  }
+  
+  /* ----------------------------------------------------------------- */
+  /** Utility Methods */
+  /* ----------------------------------------------------------------- */
+
   function formatGroupOptions(groupFormOptions) {
     var groupUuids = Object.keys(groupFormOptions);
 

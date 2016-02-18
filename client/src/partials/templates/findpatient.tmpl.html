@@ -1,26 +1,26 @@
 <div ng-switch="type">
 
   <!-- Inline Find Patient Directive UI  -->
-  <div class="form-group has-feedback "
+  <div class="form-group has-feedback"
     ng-switch-default
-    ng-form="formFindPatient"
+    ng-form="FindPatientForm"
     ng-class="{
-      'has-success': !session.showSearchView && session.loadStatus=='loaded', 
-      'has-error': !session.showSearchView && session.loadStatus=='error'
+      'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
+      'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
       }"
     novalidate>
 
     <!-- inline input zone -->
-    <div class="input-group" ng-if="session.showSearchView">
+    <div class="input-group" ng-if="$ctrl.showSearchView">
 
       <!-- dropdown button -->
       <div class="input-group-btn" uib-dropdown>
-        <button class="btn btn-default" uib-dropdown-toggle data-find-patient-dropdown-toggle>
-          {{ session.selected.label | translate }} <span class="caret"></span>
+        <button class="btn btn-default" uib-dropdown-toggle data-find-patient-dropdown-toggle tabindex=-1>
+          {{ $ctrl.selected.label | translate }} <span class="caret"></span>
         </button>
         <ul uib-dropdown-menu>
-          <li ng-repeat="option in session.options">
-            <a href="" ng-click="findBy(option)" data-find-patient-option="{{ option.label }}">
+          <li ng-repeat="option in $ctrl.options">
+            <a href="" ng-click="$ctrl.findBy(option)" data-find-patient-option="{{ option.label }}">
               {{ option.label | translate }}
             </a>
           </li>
@@ -29,43 +29,43 @@
       <!-- /dropdown button -->
 
       <!-- search by ID  -->
-      <input ng-model="session.idInput"
-        ng-if="session.selected.key==0"
-        ng-keyup="readInput($event)"
-        ng-change="validateNameSearch(session.idInput)"
+      <input ng-model="$ctrl.idInput"
+        ng-if="$ctrl.selected.key==0"
+        ng-keyup="$ctrl.readInput($event)"
+        ng-change="$ctrl.validateNameSearch($ctrl.idInput)"
         name="idInput"
         type="text"
         class="form-control"
-        placeholder="{{ session.selected.placeholder | translate }}..."
+        placeholder="{{ $ctrl.selected.placeholder | translate }}..."
         required>
 
       <!-- search by Name  -->
-      <input ng-model="session.nameInput"
-        ng-if="session.selected.key==1"
+      <input ng-model="$ctrl.nameInput"
+        ng-if="$ctrl.selected.key==1"
         ng-keyup="readInput($event)"
         name="nameInput"
         type="text"
         class="form-control"
-        placeholder="{{ session.selected.placeholder | translate }}..."
-        uib-typeahead="patient as patient.label for patient in searchByName($viewValue)"
-        typeahead-no-results="session.noPatients"
-        typeahead-loading="session.loadingPatients"
+        placeholder="{{ $ctrl.selected.placeholder | translate }}..."
+        uib-typeahead="patient as patient.label for patient in $ctrl.searchByName($viewValue)"
+        typeahead-no-results="$ctrl.noPatients"
+        typeahead-loading="$ctrl.loadingPatients"
         typeahead-template-url="/partials/templates/patientListe.tmpl.html"
-        typeahead-on-select="selectPatient($item)"
+        typeahead-on-select="$ctrl.selectPatient($item)"
         required>
 
       <!-- submit button for search by ID -->
       <!-- use of fixed width that correspond to notification text margin right -->
       <span class="input-group-btn">
-    
-        <!-- 
+
+        <!--
          button type="button" allows angular to disable the elements click event as well
          as not submitting the form
          -->
         <button style="width:8em;" class="btn btn-success"
           type="button"
-          ng-disabled="!session.validInput"
-          ng-click="submit()"
+          ng-disabled="!$ctrl.validInput"
+          ng-click="$ctrl.submit()"
           data-find-patient-submit>
           <span>{{ "FIND.SEARCH" | translate }}</span>
         </button>
@@ -75,28 +75,28 @@
 
     <!-- inline notification -->
     <!-- HACK: The Notification position must correspond to search button width  -->
-    <div ng-if="session.showSearchView" class="pull-right" style="margin-right:8em;">
-      <span class="text-warning" ng-if="(session.noPatients && session.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
-      <span class="text-info" ng-if="(session.loadingPatients && session.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
+    <div ng-if="$ctrl.showSearchView" class="pull-right" style="margin-right:8em;">
+      <span class="text-warning" ng-if="($ctrl.noPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
+      <span class="text-info" ng-if="($ctrl.loadingPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
     </div>
     <!-- /inline notification -->
 
     <!-- notification zone for result  -->
 
-    <div ng-if="!session.showSearchView">
-      
+    <div ng-if="!$ctrl.showSearchView">
+
       <div class="input-group">
-        
+
         <span class="input-group-addon">
            <span class="glyphicon glyphicon-user"></span>
         </span>
 
-        <input ng-if="session.loadStatus=='loaded'" readonly class="form-control" value="[{{patient.reference}}] {{patient.name}}">
-        <input ng-if="session.loadStatus=='error'" readonly class="form-control" value="{{ 'FIND.PATIENT_NOT_FOUND' | translate }}">
-        
+        <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="[{{ $ctrl.patient.reference }}] {{ $ctrl.patient.name }}">
+        <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FIND.PATIENT_NOT_FOUND' | translate }}">
+
         <div class="input-group-btn">
-          <a 
-            ng-if="session.loadStatus=='loaded'"
+          <a
+            ng-if="$ctrl.loadStatus=='loaded'"
             class="btn btn-default"
             uib-popover-template="'partials/templates/popover/patientinfo.tmpl.html'"
             popover-title="Patient Record"
@@ -106,7 +106,7 @@
            <span class="glyphicon glyphicon-info-sign"></span>
           </a>
 
-          <a class="btn btn-default" ng-click="reload()">
+          <a class="btn btn-default" ng-click="$ctrl.reload()">
            <span class="glyphicon glyphicon-refresh"></span>
           </a>
         </div>
@@ -121,7 +121,7 @@
 
   <!-- "Panel" Find Patient Directive UI -->
   <div class="panel panel-default"
-    ng-class="{'panel-success': session.loadStatus=='loaded', 'panel-danger': session.loadStatus=='error'}"
+    ng-class="{'panel-success': $ctrl.loadStatus=='loaded', 'panel-danger': $ctrl.loadStatus=='error'}"
     ng-switch-when="panel">
 
     <!-- panel heading -->
@@ -130,9 +130,9 @@
 
       <!-- state notification  -->
       <div class="pull-right"
-        ng-if="session.loadStatus!='loaded' && session.loadStatus!='error'">
-        <span class="text-warning" ng-if="(session.noPatients && session.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
-        <span class="text-info" ng-if="(session.loadingPatients && session.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
+        ng-if="$ctrl.loadStatus!='loaded' && $ctrl.loadStatus!='error'">
+        <span class="text-warning" ng-if="($ctrl.noPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
+        <span class="text-info" ng-if="($ctrl.loadingPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
       </div>
       <!-- state notification  -->
     </div>
@@ -141,8 +141,8 @@
     <div class="panel-body">
 
       <div class="form-group has-feedback "
-        ng-class="{'has-success': session.loadStatus ==='loaded', 'has-error': session.loadStatus === 'error'}"
-        ng-form="formFindPatient"
+        ng-class="{'has-success': $ctrl.loadStatus ==='loaded', 'has-error': $ctrl.loadStatus === 'error'}"
+        ng-form="FindPatientForm"
         novalidate>
 
         <!-- input zone -->
@@ -152,40 +152,40 @@
           <!-- use of fixed width that correspond to notification text margin left -->
           <div class="input-group-btn" uib-dropdown>
             <button style="width:135px;" class="btn btn-default" uib-dropdown-toggle>
-              {{ session.selected.label | translate }} <span class="caret"></span>
+              {{ $ctrl.selected.label | translate }} <span class="caret"></span>
             </button>
             <ul uib-dropdown-menu>
-              <li ng-repeat="option in session.options">
-                <a href="" ng-click="findBy(option)">{{ option.label | translate }}</a>
+              <li ng-repeat="option in $ctrl.options">
+                <a href="" ng-click="$ctrl.findBy(option)">{{ option.label | translate }}</a>
               </li>
             </ul>
           </div>
           <!-- /dropdown button -->
 
           <!-- search by ID  -->
-          <input ng-model="session.idInput"
-            ng-if="session.selected.key==0"
-            ng-keyup="readInput($event)"
-            ng-change="validateNameSearch(session.idInput)"
+          <input ng-model="$ctrl.idInput"
+            ng-if="$ctrl.selected.key==0"
+            ng-keyup="$ctrl.readInput($event)"
+            ng-change="$ctrl.validateNameSearch($ctrl.idInput)"
             name="idInput"
             type="text"
             class="form-control"
-            placeholder="{{ session.selected.placeholder | translate }}..."
+            placeholder="{{ $ctrl.selected.placeholder | translate }}"
             required>
 
           <!-- search by Name  -->
-          <input ng-model="session.nameInput"
-            ng-if="session.selected.key==1"
-            ng-keyup="readInput($event)"
+          <input ng-model="$ctrl.nameInput"
+            ng-if="$ctrl.selected.key==1"
+            ng-keyup="$ctrl.readInput($event)"
             name="nameInput"
             type="text"
             class="form-control"
-            placeholder="{{ session.selected.placeholder | translate }}..."
-            uib-typeahead="patient as patient.label for patient in searchByName($viewValue)"
-            typeahead-no-results="session.noPatients"
-            typeahead-loading="session.loadingPatients"
+            placeholder="{{ $ctrl.selected.placeholder | translate }}..."
+            uib-typeahead="patient as patient.label for patient in $ctrl.searchByName($viewValue)"
+            typeahead-no-results="$ctrl.noPatients"
+            typeahead-loading="$ctrl.loadingPatients"
             typeahead-template-url="/partials/templates/patientListe.tmpl.html"
-            typeahead-on-select="selectPatient($item)"
+            typeahead-on-select="$ctrl.selectPatient($item)"
             required>
 
         </div>
@@ -193,19 +193,20 @@
 
 
         <!-- notification zone  -->
-        <!-- HACK: The Notification position must correspond to dropdown button width  -->
+        <!-- HACK: The notification position must correspond to dropdown button width  -->
         <div class="pull-left help-block" style="margin-left:135px; margin-top:10px;"
-          ng-if="session.loadStatus=='loaded' || session.loadStatus=='error'">
+          ng-if="$ctrl.loadStatus=='loaded' || $ctrl.loadStatus=='error'">
 
           <!-- patient found notification -->
-          <span ng-if="session.loadStatus=='loaded'">
-            <i class="glyphicon glyphicon-ok"></i> &nbsp; {{ "FIND.PATIENT_FOUND" | translate }}: &nbsp;
-            <b>({{ patient.reference }})</b> {{ patient.name + ' (' + patient.sex + ' ' + patient.age + ')'}}
+          <span ng-if="$ctrl.loadStatus=='loaded'">
+            <i class="glyphicon glyphicon-ok"></i> {{ "FIND.PATIENT_FOUND" | translate }}:
+            <strong>({{ $ctrl.patient.reference }})</strong>
+            {{ $ctrl.patient.name + ' (' + $ctrl.patient.sex  + ' ' + ($ctrl.timestamp | amDifference:$ctrl.patient.dob:'years') + ')' }}
           </span>
 
           <!-- patient not found notification -->
-          <span ng-if="session.loadStatus=='error'">
-            <i class="glyphicon glyphicon-alert"></i> &nbsp; {{ 'FIND.PATIENT_NOT_FOUND' | translate }}
+          <span ng-if="$ctrl.loadStatus=='error'">
+            <i class="glyphicon glyphicon-alert"></i> {{ 'FIND.PATIENT_NOT_FOUND' | translate }}
           </span>
 
         </div>
@@ -214,8 +215,8 @@
         <!-- submit button -->
         <div class="pull-right">
           <button class="btn btn-success btn-sm" style="margin-top:5px;"
-            ng-disabled="!(session.validInput || session.nameInput)"
-            ng-click="submit()">
+            ng-disabled="!($ctrl.validInput || $ctrl.nameInput)"
+            ng-click="$ctrl.submit()">
             {{ "FIND.SEARCH" | translate }}
           </button>
         </div>
