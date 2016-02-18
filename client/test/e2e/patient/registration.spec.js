@@ -1,3 +1,4 @@
+/* jshint expr : true */
 /* global element, by, inject, browser */
 
 var chai = require('chai');
