@@ -8,7 +8,7 @@
 </div>
 
 <div class="flex-util">
-  <button class="btn btn-default" id="create" ng-click="EnterpriseCtrl.create()" data-method="create">
+  <button class="btn btn-default" ng-click="EnterpriseCtrl.create()" data-method="create">
     <span class="glyphicon glyphicon-plus-sign"></span>
     {{ "ENTERPRISE.NEW" | translate }}
   </button>
@@ -87,47 +87,47 @@
             <form  name="CreateForm" ng-submit="EnterpriseCtrl.submit(CreateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
-                <label class="control-label" for="bhima-enterprise-name">
+                <label class="control-label">
                   {{ 'ENTERPRISE.NAME' | translate }}
                 </label>
-                <input type="text" class="form-control" name="name" id="bhima-enterprise-name" ng-model="EnterpriseCtrl.enterprise.name" required>
+                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" required>
                 <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.abbr.$invalid }">
-                <label for="bhima-enterprise-abbr" class="control-label">
+                <label class="control-label">
                   {{ "ENTERPRISE.ABBREVIATION" | translate }}
                 </label>
-                <input type="text" class="form-control" name="abbr" required id="bhima-enterprise-abbr" ng-model="EnterpriseCtrl.enterprise.abbr">
+                <input type="text" class="form-control" name="abbr" required ng-model="EnterpriseCtrl.enterprise.abbr">
                 <div class="help-block" ng-messages="CreateForm.abbr.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="bhima-enterprise-po_box" class="control-label">
+                <label class="control-label">
                   {{ "ENTERPRISE.PO_BOX" | translate }}
                 </label>
-                <input type="text" class="form-control" name="po_box" id="bhima-enterprise-po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <input type="text" class="form-control" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
               </div>
 
               <div class="form-group">
-                <label for="bhima-enterprise-email" class="control-label">
+                <label class="control-label">
                   {{ "ENTERPRISE.EMAIL" | translate }}
                 </label>
-                <input type="email" class="form-control" name="email" id="bhima-enterprise-email" ng-model="EnterpriseCtrl.enterprise.email">
+                <input type="email" class="form-control" name="email" ng-model="EnterpriseCtrl.enterprise.email">
                 <div class="help-block" ng-messages="CreateForm.email.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="bhima-enterprise-phone" class="control-label">
+                <label class="control-label">
                   {{ "ENTERPRISE.PHONE" | translate }}
                 </label>
-                <input type="tel" class="form-control" name="phone" id="bhima-enterprise-phone" ng-model="EnterpriseCtrl.enterprise.phone">
+                <input type="tel" class="form-control" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
                 <div class="help-block" ng-messages="CreateForm.phone.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -152,7 +152,7 @@
               </div>
 
               <div class="form-group">
-                <button class="btn btn-default" id="submit-enterprise" type="submit" data-method="submit">
+                <button class="btn btn-default" type="submit" data-method="submit" id="create">
                   {{ "FORM.SUBMIT" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="EnterpriseCtrl.cancel()" data-method="cancel">
@@ -170,43 +170,43 @@
             <form name="UpdateForm" ng-submit="EnterpriseCtrl.submit(UpdateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
-                <label class="control-label" for="bhima-enterprise-name">
+                <label class="control-label">
                   {{ 'ENTERPRISE.NAME' | translate }}
                 </label>
-                <input type="text" class="form-control" name="name" id="bhima-enterprise-name" ng-model="EnterpriseCtrl.enterprise.name" required>
+                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.abbr.$invalid }">
-                <label for="bhima-enterprise-abbr" class="control-label">
+                <label class="control-label">
                   {{ "ENTERPRISE.ABBREVIATION" | translate }}
                 </label>
-                <input type="text" class="form-control" name="abbr" required id="bhima-enterprise-abbr" ng-model="EnterpriseCtrl.enterprise.abbr">
+                <input type="text" class="form-control" name="abbr" required ng-model="EnterpriseCtrl.enterprise.abbr">
                 <div class="help-block" ng-messages="UpdateForm.abbr.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="bhima-enterprise-po_box" class="control-label">
+                <label class="control-label">
                   {{ "ENTERPRISE.PO_BOX" | translate }}
                 </label>
-                <input type="text" class="form-control" name="po_box" id="bhima-enterprise-po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <input type="text" class="form-control" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
               </div>
 
               <div class="form-group">
-                <label for="bhima-enterprise-email" class="control-label">{{ "ENTERPRISE.EMAIL" | translate }}</label>
-                <input type="email" class="form-control" name="email" id="bhima-enterprise-email" ng-model="EnterpriseCtrl.enterprise.email">
+                <label class="control-label">{{ "ENTERPRISE.EMAIL" | translate }}</label>
+                <input type="email" class="form-control" name="email" ng-model="EnterpriseCtrl.enterprise.email">
                 <div class="help-block" ng-messages="UpdateForm.email.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="bhima-enterprise-phone" class="control-label">{{ "ENTERPRISE.PHONE" | translate }}</label>
-                <input type="tel" class="form-control" name="phone" id="bhima-enterprise-phone" ng-model="EnterpriseCtrl.enterprise.phone">
+                <label class="control-label">{{ "ENTERPRISE.PHONE" | translate }}</label>
+                <input type="tel" class="form-control" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
                 <div class="help-block" ng-messages="UpdateForm.phone.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -221,7 +221,7 @@
                 <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
                 <div class="radio" ng-repeat="currency in EnterpriseCtrl.currencies track by currency.id">
                   <label class="control-label">
-                    <input type="radio" value="{{currency.id}}" required id="currency_id" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
+                    <input type="radio" value="{{currency.id}}" required id="currency_id-{{currency.id}}" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
                     {{ currency.name }}
                   </label>
                 </div>

@@ -6,6 +6,7 @@ chai.use(chaiAsPromised);
 var expect = chai.expect;
 
 var FormUtils = require('../shared/FormUtils');
+var components = require('../shared/components');
 
 describe('The Enterprises Module', function () {
 
@@ -13,20 +14,28 @@ describe('The Enterprises Module', function () {
   var path = '#/enterprises';
   var ENTERPRISE = {
     name : 'Interchurch Medical Assistance',
-    abbr : 'IMA', 
-    email : 'ima@imaworldhealth.com', 
-    po_box : 'POBOX USA 1', 
-    phone : '01500', 
+    abbr : 'IMA',
+    email : 'ima@imaworldhealth.com',
+    po_box : 'POBOX USA 1',
+    phone : '01500',
     currency_id : 1
   };
 
+  var locations = [
+   'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
+   'f6fc7469-7e58-45cb-b87c-f08af93edade', // Bas Congo,
+   '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', // Tshikapa,
+   '1f162a10-9f67-4788-9eff-c1fea42fcc9b' // kele
+  ];
+
   var ENTERPRISE_ID = 1;
+
   // navigate to the enterprise module before each test
   beforeEach(function () {
     browser.get(path);
   });
 
-  it('Successfully creates a new Enterprise', function () {
+  it('successfully creates a new enterprise', function () {
     FormUtils.buttons.create();
 
     FormUtils.input('EnterpriseCtrl.enterprise.name', ENTERPRISE.name);
@@ -35,13 +44,11 @@ describe('The Enterprises Module', function () {
     FormUtils.input('EnterpriseCtrl.enterprise.po_box', ENTERPRISE.po_box);
     FormUtils.input('EnterpriseCtrl.enterprise.phone', ENTERPRISE.phone);
 
-    // select a random, non-disabled option
-    FormUtils.select('EnterpriseCtrl.enterprise.location_id')
-      .enabled()
-      .first()
-      .click();
+    // select the locations specified
+    components.locationSelect.set(locations);
 
-    FormUtils.radio('EnterpriseCtrl.enterprise.currency_id', ENTERPRISE.currency_id);  
+    FormUtils.radio('EnterpriseCtrl.enterprise.currency_id', ENTERPRISE.currency_id);
+
     // submit the page to the server
     FormUtils.buttons.submit();
 
@@ -49,7 +56,7 @@ describe('The Enterprises Module', function () {
   });
 
 
-  it('Successfully edits an Enterprise', function () {
+  it('successfully edits an enterprise', function () {
     element(by.id('enterprise-' + ENTERPRISE_ID )).click();
     element(by.model('EnterpriseCtrl.enterprise.name')).sendKeys('Enterprise UPDATED');
     element(by.model('EnterpriseCtrl.enterprise.abbr')).sendKeys('EnUpdt');
@@ -60,23 +67,21 @@ describe('The Enterprises Module', function () {
 
 
   it('correctly blocks invalid form submission with relevent error classes', function () {
-    element(by.id('create')).click();
+    FormUtils.buttons.create();
+    FormUtils.buttons.submit();
+
     // Verify form has not been successfully submitted
     expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
-
-    element(by.id('submit-enterprise')).click();
 
     // The following fields should be required
     expect(element(by.model('EnterpriseCtrl.enterprise.name')).getAttribute('class')).to.eventually.contain('ng-invalid');
     expect(element(by.model('EnterpriseCtrl.enterprise.abbr')).getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(element(by.model('EnterpriseCtrl.enterprise.location_id')).getAttribute('class')).to.eventually.contain('ng-invalid');
     expect(element(by.model('EnterpriseCtrl.enterprise.currency_id')).getAttribute('class')).to.eventually.contain('ng-invalid');
 
     // The following fields is not required
     expect(element(by.model('EnterpriseCtrl.enterprise.email')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
     expect(element(by.model('EnterpriseCtrl.enterprise.po_box')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
     expect(element(by.model('EnterpriseCtrl.enterprise.phone')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
-
-  });  
+  });
 
 });
