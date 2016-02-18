@@ -61,7 +61,7 @@ function EnterpriseController(Enterprises, Currencies, Locations, StateFactory) 
   }
   // Load a enterprise from the server
   function loadEnterprise(data) {
-    vm.enterprise = data;      
+    vm.enterprise = data;
   }
 
   // switch to update mode
@@ -98,7 +98,7 @@ function EnterpriseController(Enterprises, Currencies, Locations, StateFactory) 
       .then(function () {
         update(enterprise.id);
         vm.view = creation ? 'create_success' : 'update_success';
-      })      
+      })
       .catch(handler);
   }
 
