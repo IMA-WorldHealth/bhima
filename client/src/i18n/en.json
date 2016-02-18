@@ -1722,12 +1722,10 @@
    },
 "LOCATION": {
    "ADD"                   : "Add",
-   "COUNTRY"               : "Country",
    "CURRENT"               : "Current",
    "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
-   "ET"                    : "and",
-   "INFO_CREATE"           : "create",
-   "INFO_MODIFY"           : "modify",
+   "INFO_CREATE"           : "Create",
+   "INFO_MODIFY"           : "Modify",
    "LOCALITY"              : "Locality",
    "LOCATION"              : "Location",
    "MANAGER_CONFIGURATION" : "Location Manager Configuration",
@@ -1737,15 +1735,16 @@
    "MANAGE_VILLAGE"        : "Manage Village",
    "NEW_FORM"              : "New Form",
    "ORIGIN"                : "Origin",
-   "PROVINCE"              : "Province",
-   "REGISTER"              : "Register a Location",
+   "REGISTER"              : "Register a new Location",
    "REGISTERED"            : "Registered Locations",
-   "REMOVE"                : "remove",
-   "SECTOR"                : "Sector",
+   "REMOVE"                : "Remove",
    "TITLE"                 : "Location Manager",
-   "VILLAGE"               : "Village",
    "VILLAGE_NAME"          : "Village Name",
-   "VILLE"                 : "Township/Commune"
+   "VILLE"                 : "Township/Commune",
+   "COUNTRY"               : "Country",
+   "PROVINCE"              : "Province",
+   "SECTOR"                : "Sector",
+   "VILLAGE"               : "Village"
    },
 "NO_EXCHANGE": {
    "CURRENT_DATE" : "Current Date",
@@ -2584,9 +2583,9 @@
    "TITLE"            : "Sector Manager"
    },
 "SELECT": {
-   "ACCOUNT"               : "Select Account",
-   "ACCOUNT_REFERENTIIAL"  : "Select the accounts referential",
-   "ACCOUNT_TYPE"          : "Select Account Type",
+   "ACCOUNT"               : "Select an Account",
+   "ACCOUNT_REFERENTIIAL"  : "Select the Referential Account",
+   "ACCOUNT_TYPE"          : "Select an Account Type",
    "ALL"                   : "All",
    "BALANCE_SECTION"       : "Select Balance Sheet Section",
    "CASH"                  : "Select a Cash",
@@ -2650,7 +2649,12 @@
    "VALUE"                 : "Select a value",
    "VILLAGE"               : "Select a Village",
    "WHOLE_YEAR_BUDGET"     : "Select the annual budget",
-   "ZS"                    : "Select an health zone"
+   "ZS"                    : "Select an health zone",
+   "VILLAGE"               : "Select a Village",
+   "SECTOR"                : "Select a Sector",
+   "PROVINCE"              : "Select a Province",
+   "COUNTRY"               : "Select a Country",
+   "EMPTY"                 : "No matching records!"
    },
 "SERVICE": {
    "COST_CENTER_SELECT"     : "Cost center",
