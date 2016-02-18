@@ -47,6 +47,42 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     apply_subsidies : 0
   };
 
+  var conventionGroup = {
+    enterprise_id : 1,
+    uuid : uuid(),
+    name : 'Convention Debtor Group (Test)',
+    account_id : 3638,
+    location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
+    phone : '0811838662',
+    email : 'debtorgroup@info.com',
+    note : 'Nouveau debtor group de test',
+    locked : 0,
+    max_credit : null,
+    is_convention : 1,
+    price_list_uuid : null,
+    apply_discounts : 0,
+    apply_billing_services : 0,
+    apply_subsidies : 0
+  };
+
+  var lockedConventionGroup = {
+    enterprise_id : 1,
+    uuid : uuid(),
+    name : 'Locked Convention Debtor Group (Test)',
+    account_id : 3638,
+    location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
+    phone : '0811838662',
+    email : 'debtorgroup@info.com',
+    note : 'Nouveau debtor group de test',
+    locked : 1,
+    max_credit : null,
+    is_convention : 1,
+    price_list_uuid : null,
+    apply_discounts : 0,
+    apply_billing_services : 0,
+    apply_subsidies : 0
+  };
+
   var invalidGroup = {
     enterprise_id : 1,
     name : 'Invalid Debtor Group (Test)',
@@ -83,6 +119,28 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     .catch(helpers.handler);
   });
 
+  it('POST /debtor_groups/ create a new debtor group (convention)', function () {
+    return agent.post('/debtor_groups/')
+    .send(conventionGroup)
+    .then(function (res) {
+      expect(res).to.have.status(201);
+      expect(res.body.id).to.exist;
+      expect(res.body.id).to.be.equal(conventionGroup.uuid);
+    })
+    .catch(helpers.handler);
+  });
+
+  it('POST /debtor_groups/ create a new debtor group (locked convention)', function () {
+    return agent.post('/debtor_groups/')
+    .send(lockedConventionGroup)
+    .then(function (res) {
+      expect(res).to.have.status(201);
+      expect(res.body.id).to.exist;
+      expect(res.body.id).to.be.equal(lockedConventionGroup.uuid);
+    })
+    .catch(helpers.handler);
+  });
+
   it('POST /debtor_groups/ dont create when with missing data', function () {
     return agent.post('/debtor_groups/')
     .send(invalidGroup)
@@ -107,7 +165,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
   it('GET /debtor_groups/:uuid returns all details for a valid debtor group', function () {
     return agent.get('/debtor_groups/' + debtorGroup.uuid)
       .then(function (res) {
-        var expectedKeySubset = ['uuid', 'account_id', 'name', 'location_id'];
+        var expectedKeySubset = ['uuid', 'account_id', 'name', 'location_id', 'is_convention'];
         expect(res).to.have.status(200);
         expect(res.body).to.contain.all.keys(expectedKeySubset);
       })
@@ -134,12 +192,79 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(totalLockedGroup);
+        expect(res.body[0].locked).to.exist;
+        expect(res.body[0].locked).to.be.equal(1);
         return agent.get('/debtor_groups/?locked=0');
       })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(totalUnlockedGroup);
+        expect(res.body[0].locked).to.exist;
+        expect(res.body[0].locked).to.be.equal(0);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /debtor_groups/?is_convention={1|0} returns only conventions or not conventions debtor groups', function () {
+    var totalConvention = getTotal(allDebtorGroups, 'is_convention', 1);
+    var totalNotConvention = getTotal(allDebtorGroups, 'is_convention', 0);
+
+    return agent.get('/debtor_groups/?is_convention=1')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.length(totalConvention);
+        expect(res.body[0].is_convention).to.exist;
+        expect(res.body[0].is_convention).to.be.equal(1);
+        return agent.get('/debtor_groups/?is_convention=0');
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.length(totalNotConvention);
+        expect(res.body[0].is_convention).to.exist;
+        expect(res.body[0].is_convention).to.be.equal(0);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /debtor_groups/?locked={1|0}&is_convention={1|0} returns either  locked or convention debtor groups', function () {
+    return agent.get('/debtor_groups/?locked=1&is_convention=1')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body[0].locked).to.exist;
+        expect(res.body[0].locked).to.be.equal(1);
+        expect(res.body[0].is_convention).to.exist;
+        expect(res.body[0].is_convention).to.be.equal(1);
+        return agent.get('/debtor_groups/?locked=1&is_convention=0');
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body[0].locked).to.exist;
+        expect(res.body[0].locked).to.be.equal(1);
+        expect(res.body[0].is_convention).to.exist;
+        expect(res.body[0].is_convention).to.be.equal(0);
+        return agent.get('/debtor_groups/?locked=0&is_convention=1');
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body[0].locked).to.exist;
+        expect(res.body[0].locked).to.be.equal(0);
+        expect(res.body[0].is_convention).to.exist;
+        expect(res.body[0].is_convention).to.be.equal(1);
+        return agent.get('/debtor_groups/?locked=0&is_convention=0');
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body[0].locked).to.exist;
+        expect(res.body[0].locked).to.be.equal(0);
+        expect(res.body[0].is_convention).to.exist;
+        expect(res.body[0].is_convention).to.be.equal(0);
       })
       .catch(helpers.handler);
   });
