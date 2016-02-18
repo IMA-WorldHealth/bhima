@@ -110,12 +110,12 @@ function getDetail(req, res, next) {
 }
 
 /**
-* GET /debtor_groups/ => all debtor groups
-* GET /debtor_groups/?locked={1|0}&is_convention={1|0} => locked or convention criteria
+* GET /debtor_groups
+* @param is_convention  {boolean} (0 | 1) filter debtor groups in the convention column
+* @param locked {boolean} (0 | 1) filters locked debtor groups
 *
 * @function getList
-*
-* @desc This function is responsible for retrieving details of a debtor group
+* @description This function is responsible for retrieving list of debtor groups
 */
 function getList(req, res, next) {
   var query, criteria, conditions = [];
@@ -124,8 +124,8 @@ function getList(req, res, next) {
 
   /** build the where clause criteria */
   criteria = Object.keys(req.query).map(function (item) {
-    conditions.push(req.query[item]);
-    return '' + item + ' = ?';
+    conditions = conditions.concat(item, req.query[item]);
+    return '?? = ?';
   }).join(' AND ');
 
   query += (req.query.locked || req.query.is_convention) ? 'WHERE ' + criteria : '';
