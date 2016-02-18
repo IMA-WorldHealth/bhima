@@ -14,7 +14,7 @@
     <div class="input-group" ng-if="$ctrl.showSearchView">
 
       <!-- dropdown button -->
-      <div class="input-group-btn" uib-dropdown>
+      <div class="input-group-btn" uib-dropdown tabindex=-1>
         <button class="btn btn-default" uib-dropdown-toggle data-find-patient-dropdown-toggle tabindex=-1>
           {{ $ctrl.selected.label | translate }} <span class="caret"></span>
         </button>
@@ -36,8 +36,11 @@
         name="idInput"
         type="text"
         class="form-control"
-        placeholder="{{ $ctrl.selected.placeholder | translate }}..."
-        required>
+        placeholder="{{ $ctrl.selected.placeholder | translate }}...",
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        ng-required="$ctrl.required">
 
       <!-- search by Name  -->
       <input ng-model="$ctrl.nameInput"
@@ -52,7 +55,10 @@
         typeahead-loading="$ctrl.loadingPatients"
         typeahead-template-url="/partials/templates/patientListe.tmpl.html"
         typeahead-on-select="$ctrl.selectPatient($item)"
-        required>
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        ng-required="$ctrl.required">
 
       <!-- submit button for search by ID -->
       <!-- use of fixed width that correspond to notification text margin right -->
@@ -126,21 +132,24 @@
 
     <!-- panel heading -->
     <div class="panel-heading">
-      <i class="glyphicon glyphicon-search"></i> {{ "FIND.TITLE" | translate }}
+      <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}
 
       <!-- state notification  -->
       <div class="pull-right"
         ng-if="$ctrl.loadStatus!='loaded' && $ctrl.loadStatus!='error'">
-        <span class="text-warning" ng-if="($ctrl.noPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
-        <span class="text-info" ng-if="($ctrl.loadingPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
+        <span class="text-warning" ng-if="($ctrl.noPatients && $ctrl.nameInput)">
+          <span class="glyphicon glyphicon-alert"></span> {{ "FIND.PATIENT_NOT_FOUND" | translate }}
+        </span>
+        <span class="text-info" ng-if="($ctrl.loadingPatients && $ctrl.nameInput)">
+          <span class="glyphicon glyphicon-hourglass"></span> {{ "FIND.PATIENT_LOADING" | translate }}
+        </span>
       </div>
-      <!-- state notification  -->
     </div>
 
     <!-- panel body -->
     <div class="panel-body">
 
-      <div class="form-group has-feedback "
+      <div class="form-group has-feedback"
         ng-class="{'has-success': $ctrl.loadStatus ==='loaded', 'has-error': $ctrl.loadStatus === 'error'}"
         ng-form="FindPatientForm"
         novalidate>
@@ -151,7 +160,7 @@
           <!-- dropdown button -->
           <!-- use of fixed width that correspond to notification text margin left -->
           <div class="input-group-btn" uib-dropdown>
-            <button style="width:135px;" class="btn btn-default" uib-dropdown-toggle>
+            <button style="width:135px;" class="btn btn-default" uib-dropdown-toggle tabindex=-1>
               {{ $ctrl.selected.label | translate }} <span class="caret"></span>
             </button>
             <ul uib-dropdown-menu>
@@ -170,10 +179,13 @@
             name="idInput"
             type="text"
             class="form-control"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
             placeholder="{{ $ctrl.selected.placeholder | translate }}"
-            required>
+            ng-required="$ctrl.required">
 
-          <!-- search by Name  -->
+          <!-- search by name  -->
           <input ng-model="$ctrl.nameInput"
             ng-if="$ctrl.selected.key==1"
             ng-keyup="$ctrl.readInput($event)"
@@ -186,11 +198,13 @@
             typeahead-loading="$ctrl.loadingPatients"
             typeahead-template-url="/partials/templates/patientListe.tmpl.html"
             typeahead-on-select="$ctrl.selectPatient($item)"
-            required>
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            ng-required="$ctrl.required">
 
         </div>
         <!-- /input zone -->
-
 
         <!-- notification zone  -->
         <!-- HACK: The notification position must correspond to dropdown button width  -->
@@ -206,7 +220,7 @@
 
           <!-- patient not found notification -->
           <span ng-if="$ctrl.loadStatus=='error'">
-            <i class="glyphicon glyphicon-alert"></i> {{ 'FIND.PATIENT_NOT_FOUND' | translate }}
+            <span class="glyphicon glyphicon-alert"></span> {{ 'FIND.PATIENT_NOT_FOUND' | translate }}
           </span>
 
         </div>
@@ -223,10 +237,7 @@
         <!-- /submit button -->
 
       </div>
-
     </div>
-
   </div>
   <!-- /Panel Find Patient Directive UI  -->
-
 </div>

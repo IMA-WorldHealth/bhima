@@ -149,3 +149,26 @@ exports.currencyInput = {
     return elm.getAttribute('ng-invalid');
   }
 };
+
+/**
+ * hooks for the find patient component described in the component
+ * bhFindPatient.js.
+ * @public
+ */
+exports.findPatient = {
+  selector : '[data-bh-find-patient]',
+
+  /**
+   * searches for a patient by name
+   */
+  findByName: function findByName(name) {
+    // TODO
+  },
+
+  /**
+   * searches for a patient by id 
+   */
+  findById : function findById(id) {
+    // TODO
+  }
+};

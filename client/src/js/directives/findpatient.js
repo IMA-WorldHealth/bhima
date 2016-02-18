@@ -2,9 +2,10 @@ angular.module('bhima.directives')
 .component('bhFindPatient', {
   controller: FindPatientComponent,
   templateUrl : 'partials/templates/findpatient.tmpl.html',
-  bindings : {
-    onSearchComplete : '&',
-    type : '@'
+  bindings: {
+    onSearchComplete: '&',  // bind callback
+    type:             '@',  // bind string
+    required:         '<',  // bind the required 
   }
 });
 
