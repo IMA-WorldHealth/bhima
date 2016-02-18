@@ -1,14 +1,14 @@
 /**
- * Primary structural class definitions for BHIMA 
+ * Primary structural class definitions for BHIMA
  *
- * @todo Some elements use display: flex after it was researched and prototyped, 
- * now that we are using this it can be used to make all component definitions 
- * cleaner 
+ * @todo Some elements use display: flex after it was researched and prototyped,
+ * now that we are using this it can be used to make all component definitions
+ * cleaner
  *
  * @todo Many of the class definitions evolved over development - not all styles
  * are used/ respected - these should be removed
  *
- * -Sidebar 
+ * -Sidebar
  * -Module Header
  * -Module Content
  * -Headercrumb
@@ -20,17 +20,17 @@
   display: none !important;
 }
 
-/* 
- * Sidebar 
+/*
+ * Sidebar
  */
-.sidebar { 
+.sidebar {
   width : 56px;
   min-width : 56px;
   position : absolute;
 }
 
-.sidebar-container { 
-  position : absolute; 
+.sidebar-container {
+  position : absolute;
   top : 0;
   bottom : 0;
   width : 56px;
@@ -39,11 +39,11 @@
   border-right : 1px solid #ccc;
 }
 
-.expanded .sidebar-container { 
+.expanded .sidebar-container {
   width : 260px;
 }
 
-.sidebar-body { 
+.sidebar-body {
   position : absolute;
   top : 0;
   bottom : 96px;
@@ -53,7 +53,7 @@
 }
 
 /** Designed before research into display flex, styles can be refined */
-.expanded .sidebar-body { 
+.expanded .sidebar-body {
   bottom : 48px;
 }
 
@@ -61,17 +61,17 @@
   height : calc(100vh - 100px);
 }
 
-/* 
- * Sidebar Header 
+/*
+ * Sidebar Header
  */
-.sidebar-header { 
+.sidebar-header {
   margin-top : 5px;
   margin-left : 0;
   margin-right : 0;
   padding-bottom : 0;
 }
 
-.header-content { 
+.header-content {
   table-layout : auto;
   width : 100%;
   border-spacing : 0;
@@ -80,7 +80,7 @@
 .header-image {
   position : relative;
   width : auto;
-  
+
   /* text-align : center; */
   text-align : left;
   vertical-align : top;
@@ -88,39 +88,39 @@
   padding : 0;
 }
 
-.expanded .header-image { 
+.expanded .header-image {
   position : absolute;
   width : 1px;
   white-space : nowrap;
 }
 
-.app-logo { 
+.app-logo {
   position : relative;
   display : inline-block;
 }
 
-.logo-container { 
+.logo-container {
   height : 40px;
   width : 40px;
   margin : 0 0 0 8px;
   vertical-align : top;
 }
 
-.header-title { 
+.header-title {
   display : none;
   margin : 0;
   padding : 0;
   text-align : left;
 }
 
-.expanded .header-title { 
+.expanded .header-title {
   display : block;
   padding-left : 55px;
   min-height : 40px;
 }
 
-.header-title > h4 { 
-  text-transform : uppercase;  
+.header-title > h4 {
+  text-transform : uppercase;
   white-space : nowrap;
   text-overflow : ellipsis;
   overflow : hidden;
@@ -128,11 +128,11 @@
   padding : 0;
 }
 
-.title-content { 
+.title-content {
   overflow : hidden;
   text-overflow : ellipsis;
   display : block;
-  
+
   /** Should be done using flex container*/
   padding-top : 12px;
   padding-bottom : 8px;
@@ -141,7 +141,7 @@
   cursor : pointer;
 }
 
-.title-content:hover { 
+.title-content:hover {
   text-decoration : none;
   cursor : pointer;
   color : #505050;
@@ -150,10 +150,10 @@
 /**
  * Application Header
  *
- * @todo Header + title is verbose, not all of these styles are required or 
+ * @todo Header + title is verbose, not all of these styles are required or
  * respected, this could be refined
  */
-.flex-header { 
+.flex-header {
   display : flex;
   -webkit-box-orient : vertical;
   -webkit-box-direction : normal;
@@ -170,7 +170,7 @@
   border-bottom : 1px solid #ccc;
 }
 
-.flex-util { 
+.flex-util {
   display : flex;
   -webkit-box-direction : normal;
   flex-direction : row;
@@ -184,7 +184,7 @@
   border-bottom : 1px solid #ccc;
 }
 
-.bhima-title { 
+.bhima-title {
   display : flex;
   -webkit-box-orient : vertical;
   -webkit-box-direction : normal;
@@ -195,14 +195,14 @@
   -webkit-box-align : center;
   align-items : center;
   margin : 0;
-  padding : 0 40px 0 10px;
+  padding : 0 10px 0 10px;
   height : 52px;
 }
 
-/** 
+/**
  * Application Content
  */
-.flex-content { 
+.flex-content {
   display : inline-block;
   overflow-x : hidden;
   overflow-y : auto;
@@ -216,7 +216,7 @@
   height : 100vh;
 }
 
-.flex-page { 
+.flex-page {
   width : 100%;
   height : 100%;
   display : flex;
@@ -229,21 +229,21 @@
 }
 
 /**
- * Stores all module elements (other than the sidebar), this element is 
+ * Stores all module elements (other than the sidebar), this element is
  * responsibe for maintaining 'pushed' sidebar state
  */
-.flex-container { 
+.flex-container {
   position : absolute;
   width : 100%;
   height : 100%;
   display : block;
 }
 
-/** 
- * @todo top and bottom specified - this could be improved with more thought 
+/**
+ * @todo top and bottom specified - this could be improved with more thought
  * through definition
  */
-.sidebar-group { 
+.sidebar-group {
   border-top : 1px solid #ccc;
   margin-top : 6px;
   height : calc(100vh - 148px);
@@ -252,19 +252,19 @@
   overflow-x : hidden;
 }
 
-.expanded .link-label { 
+.expanded .link-label {
   padding-left : 5px;
   display : inherit;
 }
 
-.link-label { 
-  white-space : nowrap; 
+.link-label {
+  white-space : nowrap;
   display : none;
 }
 
 /* Flex footer test */
-.flex-footer { 
-  font-size : 100%; 
+.flex-footer {
+  font-size : 100%;
   overflow : hidden;
   margin : 0;
   padding : 0 0 0 0;
@@ -275,7 +275,7 @@
   width : 100%;
 }
 
-.flex-footer ul { 
+.flex-footer ul {
   margin : 0;
   padding : 0;
   display : flex;
@@ -284,7 +284,7 @@
   list-style : none;
 }
 
-.flex-footer a { 
+.flex-footer a {
   padding-top : 10px;
   padding-bottom : 10px;
   display : flex;
@@ -295,22 +295,22 @@
   min-height : 48px;
 }
 
-.expanded .flex-footer li:first-child { 
-  flex-grow : 1; 
+.expanded .flex-footer li:first-child {
+  flex-grow : 1;
 }
 
-.flex-footer a:hover { 
+.flex-footer a:hover {
   background-color : #e6e6e6;
   text-decoration : none;
   color : #707070;
   cursor : pointer;
 }
 
-.link-nav { 
+.link-nav {
   width : 100%;
   height : 100%;
   display : flex;
-  justify-content : center; 
+  justify-content : center;
   align-items : center;
   border: none;
   cursor : pointer;
@@ -320,29 +320,29 @@
   background-color : #e6e6e6;
 }
 
-.expanded .link-nav { 
+.expanded .link-nav {
   display : none;
 }
 
-.text-vertical { 
+.text-vertical {
   transform : rotate(-90deg);
   color : #707070;
 }
 
 /** Hide the navigation link when sidebar is not expanded (default state) */
-.flex-nav { 
+.flex-nav {
   display : none;
 }
 
-.expanded .flex-nav { 
+.expanded .flex-nav {
   display : block;
 }
 
-/** 
- * @todo Tree styles very temporarily defined - these should be carefully 
- * refined 
+/**
+ * @todo Tree styles very temporarily defined - these should be carefully
+ * refined
  */
-.flex-tree ul { 
+.flex-tree ul {
   margin : 0;
   padding : 0;
   display : flex;
@@ -351,11 +351,11 @@
   width : 100%;
 }
 
-.flex-tree li { 
+.flex-tree li {
   border-bottom : 1px solid #ccc;
 }
 
-.flex-tree a { 
+.flex-tree a {
   display : flex;
   align-items : center;
   color : #707070;
@@ -363,26 +363,26 @@
   padding-left : 10px;
 }
 
-.flex-tree a:hover { 
+.flex-tree a:hover {
   background-color : #e6e6e6;
   text-decoration : none;
   color : #707070;
   cursor : pointer;
 }
 
-.file { 
+.file {
   border-left : 5px solid #707070;
 }
 
-.tree-title { 
+.tree-title {
   padding-left : 7px;
 }
 
-/** 
- * Contains application modules (ng-view) - pushes margin right on sidebar 
+/**
+ * Contains application modules (ng-view) - pushes margin right on sidebar
  * expansion
  */
-.flex-view { 
+.flex-view {
   margin-left : 56px;
   display : flex;
   -webkit-box-orient : vertical;
@@ -393,32 +393,32 @@
   position : relative;
 }
 
-.expanded .flex-view { 
+.expanded .flex-view {
   margin-left : 260px;
 }
 
-.selected a { 
+.selected a {
   color : #2089CE;
   font-weight : bold;
 }
-.selected a:hover { 
+.selected a:hover {
   color : #2089CE;
 }
 
-li.selected { 
+li.selected {
   border-left-color : #2089CE;
 }
 
-/** 
+/**
  * Temporary header breadcrumb bootstrap fork
- * @todo implement this in less using the boostrap element 
+ * @todo implement this in less using the boostrap element
  */
 .headercrumb {
   padding: 8px 0px;
   list-style: none;
   border-radius: 2px;
 }
-ol.headercrumb { 
+ol.headercrumb {
   margin-bottom : 0px !important;
 }
 .headercrumb > li {
@@ -433,22 +433,52 @@ ol.headercrumb {
   color: #777777;
 }
 
-.headercrumb > .title { 
+.headercrumb > .title {
   color : #313131;
   font-weight : bold;
 }
 
-.headercrumb > .static { 
+.headercrumb > .static,
+.headercrumb > .static > a {
+  text-decoration: none;
   color: #828080;
 }
 
 /* Disabling elements if there is no valid user session */
-.disable .session >  * { 
+.disable .session >  * {
   color : #D2D2D2 !important;
 }
 
-.disable .session:hover { 
+.disable .session:hover {
   color : #D2D2D2;
   background-color : transparent !important;
   cursor : default;
 }
+
+/**
+ * Breadcrumb toolbar
+ */
+ .toolbar {
+   flex: 2;
+ }
+
+ .toolbar-item {
+   margin-left: 7px;
+   float: right !important;
+ }
+
+ .toolbar-item > [uib-dropdown] > button[uib-dropdown-toggle] {
+   min-width: 100px;
+ }
+
+ .toolbar-item > [uib-dropdown] > ul[uib-dropdown-menu] {
+   top:24px;
+   min-width: 100px;
+   text-align: right;
+ }
+
+ .toolbar-item > label {
+   display: inline-flex;
+   line-height:30px;
+   padding-left: 7px;
+ }
