@@ -114,7 +114,7 @@ function LocationSelectController(Locations, $scope) {
     vm.disabled.province = false;
 
     // load the provinces to bind to the view
-    Locations.provinces({ country : vm.country.uuid })
+    return Locations.provinces({ country : vm.country.uuid })
     .then(function (provinces) {
       vm.provinces = provinces;
 
@@ -139,7 +139,7 @@ function LocationSelectController(Locations, $scope) {
     vm.disabled.sector = false;
 
     // fetch the sectors from the server
-    Locations.sectors({ province : vm.province.uuid })
+    return Locations.sectors({ province : vm.province.uuid })
     .then(function (sectors) {
       vm.sectors = sectors;
 
@@ -163,7 +163,7 @@ function LocationSelectController(Locations, $scope) {
     vm.disabled.village = false;
 
     // fetch the villages from the server
-    Locations.villages({ sector : vm.sector.uuid })
+    return Locations.villages({ sector : vm.sector.uuid })
     .then(function (villages) {
       vm.villages = villages;
 
@@ -222,9 +222,9 @@ function LocationSelectController(Locations, $scope) {
       };
 
       // refresh all data sources to allow a user to use the <select> elements.
-      loadVillages();
-      loadSectors();
-      loadProvinces();
+      loadProvinces()
+      .then(loadSectors)
+      .then(loadVillages);
     });
   }
 
