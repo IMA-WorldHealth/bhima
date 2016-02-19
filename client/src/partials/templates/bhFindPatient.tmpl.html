@@ -62,7 +62,7 @@
 
       <!-- submit button for search by ID -->
       <!-- use of fixed width that correspond to notification text margin right -->
-      <span class="input-group-btn">
+      <span class="input-group-btn" ng-if="$ctrl.selected == $ctrl.options.findById">
 
         <!--
          button type="button" allows angular to disable the elements click event as well
