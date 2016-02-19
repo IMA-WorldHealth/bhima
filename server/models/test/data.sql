@@ -66,13 +66,13 @@ INSERT INTO user (id, username, password, first, last, email) VALUES
 (4, 'admin', PASSWORD('1'), 'Admin', 'User', 'admin@test.org');
 
 -- Only modules updated and written to 2X standards should be registered in the application tree
-INSERT INTO `permission` (`unit_id`, `user_id`) VALUES 
+INSERT INTO `permission` (`unit_id`, `user_id`) VALUES
 -- [Folder] Administration
 (1, 1),
--- Users and permissions 
+-- Users and permissions
 (4, 1),
 --  Cashbox Management
-(105, 1), 
+(105, 1),
 -- Projects
 (42,1),
 -- [Folder] Hospital
@@ -188,11 +188,15 @@ INSERT INTO `mod_snis_zs` VALUES
 
 INSERT INTO `primary_cash_module` VALUES
   (1, "Transfert"),
-  (3, "Convention");
+  (3, "Convention"),
+  (4, "Generic Expense"),
+  (5, "Generic Income");
 
 INSERT INTO `transaction_type` VALUES
   (1, "pcash_transfert"),
-  (8, "pcash_convention");
+  (8, "pcash_convention"),
+  (11, "generic_income"),
+  (20, "generic_expense");
 
 -- Exchange Rate for the current date
 INSERT INTO `exchange_rate` (enterprise_currency_id, foreign_currency_id, rate, date) VALUES
