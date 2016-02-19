@@ -35,7 +35,7 @@
 
                 <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && !CashCtrl.payment.debtor_uuid }">
                   <label class="control-label">{{ "COLUMNS.PATIENT" | translate }}</label>
-                  <find-patient type="inline" on-search-complete="CashCtrl.usePatient(patient)" required></find-patient>
+                  <bh-find-patient type="inline" on-search-complete="CashCtrl.usePatient(patient)" required></bh-find-patient>
                 </div>
 
                 <div
