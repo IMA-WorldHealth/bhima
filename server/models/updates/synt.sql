@@ -383,19 +383,6 @@ ADD `locked` BOOLEAN NOT NULL;
 
 
 
--- Changing the exchange_rate table 
--- Date: 2016-02-05
--- By: Chris LOMAME
-
-ALTER TABLE `exchange_rate` 
-CHANGE `enterprise_currency_id` `enterprise_id` TINYINT(3) UNSIGNED NOT NULL;
-
-ALTER TABLE `exchange_rate` 
-CHANGE `foreign_currency_id` `currency_id` TINYINT(3) UNSIGNED NOT NULL;
-
-ALTER TABLE `exchange_rate` 
-CHANGE `date` `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
-
 -- Linking service o enterprise directly
 -- Date : 2016-02-02
 -- By : Dedrick Kitamuka

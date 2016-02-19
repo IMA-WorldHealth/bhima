@@ -37,8 +37,11 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   service.create = create;
   service.convertToEnterpriseCurrency = convertToEnterpriseCurrency;
   service.convertFromEnterpriseCurrency = convertFromEnterpriseCurrency;
+  service.update = update;
   service.getCurrentRate = getCurrentRate;
-  service.getExchangeRate = getExchangeRate;
+  service.getExchangeRate = getExchangeRate; 
+  service.delete = del;
+
 
   /* ------------------------------------------------------------------------ */
 
@@ -46,13 +49,13 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     var rates;
 
     // if we have local cached rates, return them immediately
-    if (cache) { return $q.resolve(cache); }
+    //if (cache) { return $q.resolve(cache); }
 
     // query the exchange_rate table on the backend
     return $http.get('/exchange')
       .then(util.unwrapHttpResponse)
       .then(function (data) {
-
+        
         // if there is no data, the controllers should be alerted
         // by throwing an missing exchange rate error.
         if (data.length === 0) {
@@ -100,7 +103,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   }
 
   function create(data) {
-    return $http.post('/exchange', { rates : data })
+    return $http.post('/exchange', { rate : data })
       .then(util.unwrapHttpResponse)
       .then(function (data) {
 
@@ -111,6 +114,12 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
         return data;
       });
   }
+
+  function update(id, rate) {
+    return $http.put('/exchange/' + id, rate)
+    .then(util.unwrapHttpResponse);
+  }
+
 
   // build the cMap object from an array of rates
   function buildCMap(rates) {
@@ -177,6 +186,11 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     var rate = rates[rates.length - 1].rate;
 
     return rate;
+  }
+
+  function del(id) {
+    return $http.delete('/exchange/' + id)
+    .then(util.unwrapHttpResponse);
   }
 
   return service;
