@@ -24,7 +24,7 @@ function bhimaconfig($routeProvider) {
   })
   .when('/enterprises', {
     controller: 'EnterpriseController as EnterpriseCtrl', 
-    templateUrl: 'partials/enterprise/enterprise.html'
+    templateUrl: 'partials/enterprises/enterprises.html'
   })
   .when('/projects', {
     controller : 'ProjectController as ProjectCtrl',

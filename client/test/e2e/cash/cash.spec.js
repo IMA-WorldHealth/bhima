@@ -151,30 +151,6 @@ describe('Cash Payments Module', function () {
     };
 
     /**
-     * wraps the find-patient directive to search by id easily
-     * @todo - move this into a common shared utility for modules to use in the
-     * future
-     */
-    function findPatientById(id) {
-
-      // locate the find-patient directive's dropdown toggle and open
-      var dropdown = element(by.css('[data-find-patient-dropdown-toggle]'));
-      dropdown.click();
-
-      // select the search by id option
-      var searchByIdOption = element(by.css('[data-find-patient-option="FIND.PATIENT_ID"]'));
-      searchByIdOption.click();
-
-      // get the input and enter the id provided
-      var input = element(by.model('session.idInput'));
-      input.sendKeys(id);
-
-      // submit the id to the server
-      var submit = element(by.css('[data-find-patient-submit]'));
-      submit.click();
-    }
-
-    /**
      * wraps the edit date component to easily change dates
      * @todo - move this into a common shared utility for modules to use in the
      * future
@@ -206,7 +182,7 @@ describe('Cash Payments Module', function () {
     it('should make a caution payment', function () {
 
       // select the proper patient
-      findPatientById(mockCautionPayment.patientId);
+      components.findPatient.findById(mockCautionPayment.patientId);
 
       // we will leave the date input as default
 
@@ -233,7 +209,7 @@ describe('Cash Payments Module', function () {
       var gridId = 'debtorInvoicesGrid';
 
       // select the proper patient
-      findPatientById(mockInvoicesPayment.patientId);
+      components.findPatient.findById(mockInvoicesPayment.patientId);
 
       // select the properdate
       editDate(mockInvoicesPayment.date);
