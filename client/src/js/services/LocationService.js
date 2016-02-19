@@ -1,14 +1,14 @@
 angular.module('bhima.services')
 .service('LocationService', LocationService);
 
-LocationService.$inject = [ '$http', 'util' ];
+LocationService.$inject = [ '$http', 'util', '$uibModal' ];
 
 /**
  * Location Service
  *
  * Interacts with the /locations API.
  */
-function LocationService($http, util) {
+function LocationService($http, util, Modal) {
   var service = {};
   var baseUrl = '/locations';
 
@@ -17,6 +17,7 @@ function LocationService($http, util) {
   service.sectors = sectors;
   service.countries = countries;
   service.location = location;
+  service.modal = modal;
 
   /**
    * wrapper for HTTP requests made to the baseUrl endpoint
@@ -69,6 +70,17 @@ function LocationService($http, util) {
    */
   function location(uuid) {
     return request('/detail/'.concat(uuid));
+  }
+
+  /**
+   * Opens the "Add a Location" modal in place
+   */
+  function modal() {
+    return Modal.open({
+      templateUrl : 'partials/templates/modals/location.modal.html',
+      controller : 'LocationModalController as LocationModalCtrl',
+      size : 'md'
+    }).result;
   }
 
   return service;

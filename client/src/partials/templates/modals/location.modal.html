@@ -1,0 +1,124 @@
+<ng-form="LocationModalForm" ng-submit="LocationModalCtrl.submit(LocationModalForm.$invalid)">
+
+  <div class="modal-header">
+    <h4>{{ "MODALS.ADD_LOCATION" | translate }}</h4>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row text-center">
+      <div class="btn-group">
+        <button
+          type="button"
+          class="btn btn-default"
+          ng-click="LocationModalCtrl.state(1)"
+          ng-class="{ 'active' : LocationModalCtrl.visibility === 1 }">
+          {{ "LOCATION.PROVINCE" | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-default"
+          ng-click="LocationModalCtrl.state(2)"
+          ng-class="{ 'active' : LocationModalCtrl.visibility === 2 }">
+          {{ "LOCATION.SECTOR" | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-default"
+          ng-click="LocationModalCtrl.state(3)"
+          ng-class="{ 'active' : LocationModalCtrl.visibility === 3 }">
+          {{ "LOCATION.VILLAGE" | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.country.$error }"
+      >
+      <label class="control-label">
+        {{ "LOCATION.COUNTRY" | translate }}
+      </label>
+      <select
+        class="form-control"
+        name="country"
+        ng-model="LocationModalCtrl.country"
+        ng-options="country as country.name for country in LocationModalCtrl.countries track by country.uuid"
+        required
+        >
+        <option value="" disabled>{{ "SELECT.COUNTRY" | translate }}</option>
+      </select>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.province.$error }"
+      >
+      <label class="control-label">
+        {{ "LOCATION.PROVINCE" | translate }}
+      </label>
+      <select
+        ng-if="LocationModalCtrl.visibility > 1"
+        class="form-control"
+        name="province"
+        ng-model="LocationModalCtrl.province"
+        ng-options="province as province.name for province in LocationModalCtrl.provinces track by province.uuid"
+        ng-change="LocationModalCtrl.loadSectors()"
+        required>
+        <option value="" disabled>{{ "SELECT.PROVINCE" | translate }}</option>
+      </select>
+
+      <input
+        ng-if="LocationModalCtrl.visibility === 1"
+        class="form-control"
+        name="province"
+        ng-model="LocationModalCtrl.province"
+        required>
+    </div>
+
+    <div class="form-group"
+      ng-if="LocationModalCtrl.visibility > 1"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.sector.$error }"
+      >
+      <label class="control-label">
+        {{ "LOCATION.SECTOR" | translate }}
+      </label>
+      <select
+        ng-if="LocationModalCtrl.visibility > 2"
+        class="form-control"
+        name="sector"
+        ng-model="LocationModalCtrl.sector"
+        ng-options="sector as sector.name for sector in LocationModalCtrl.sectors track by sector.uuid"
+        required>
+        <option value="" disabled>{{ "SELECT.SECTOR" | translate }}</option>
+      </select>
+      <input
+        ng-if="LocationModalCtrl.visibility === 2"
+        name="sector"
+        class="form-control"
+        ng-model="LocationModalCtrl.sector"
+        required>
+    </div>
+
+    <div class="form-group"
+      ng-if="LocationModalCtrl.visibility > 2"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.village.$error }"
+      >
+      <label class="control-label">
+        {{ "LOCATION.VILLAGE" | translate }}
+      </label>
+      <input
+        class="form-control"
+        name="village"
+        ng-model="LocationModalCtrl.village"
+        required>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">
+      {{ "FORM.SUBMIT" | translate }}
+    </button>
+    <button type="button" ng-click="LocationModalCtrl.dismiss()" class="btn btn-default">
+      {{ "FORM.CANCEL" | translate }}
+    </button>
+  </div>
+</ng-form>

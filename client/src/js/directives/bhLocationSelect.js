@@ -52,7 +52,7 @@ LocationSelectController.$inject =  [ 'LocationService', '$scope' ];
  * </bh-location-select>
  *
  */
-function LocationSelectController(Locations, $scope) {
+function LocationSelectController(Locations, $scope, Modal) {
   var vm = this;
 
   /** loading indicator */
@@ -63,6 +63,7 @@ function LocationSelectController(Locations, $scope) {
   vm.loadSectors = loadSectors;
   vm.loadProvinces = loadProvinces;
   vm.updateLocationUuid = updateLocationUuid;
+  vm.modal = openAddLocationModal;
 
   /** disabled bindings for individual <select>s */
   vm.disabled = {
@@ -237,4 +238,11 @@ function LocationSelectController(Locations, $scope) {
    * evolves.
    */
   $scope.$watch('vm.locationUuid', loadLocation);
+
+  /**
+   * Open "Add a Location" modal
+   */
+  function openAddLocationModal() {
+    Locations.modal();
+  }
 }
