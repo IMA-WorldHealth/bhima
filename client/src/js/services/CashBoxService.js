@@ -12,6 +12,7 @@ function CashboxService($http, util) {
   var service = {};
 
   service.read = read;
+  service.filteredRead = filteredRead;
   service.create = create;
   service.update = update;
   service.delete = del;
@@ -23,8 +24,16 @@ function CashboxService($http, util) {
 
   /* ------------------------------------------------------------------------ */
 
+
+
   function read(id) {
     var url = (id) ? '/cashboxes/' + id : '/cashboxes';
+    return $http.get(url)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function filteredRead (filter) {
+    var url = '/cashboxes' + filter;
     return $http.get(url)
       .then(util.unwrapHttpResponse);
   }

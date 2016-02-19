@@ -317,6 +317,11 @@
    "WARNING"          : "Ce patient est un conventionné et ne peut payer à la caisse auxilliare",
    "WARNING_2"        : "Pour le paiement des anciennes factures il faudrait changer son groupe débiteur "
    },
+"CASH_BOX_TYPE" : {
+  "PRIMARY" : "Principale",
+  "AUXILLARY" : "Auxillaire",
+  "BANK"      : "Banque"
+  },
 "CASH_DISCARD" : {
    "CASH_DETAILS"     : "Détails",
    "DESCRIPTION"      : "Description",
@@ -2560,7 +2565,7 @@
    "ACCOUNT_TYPE"          : "Sélectionner Type de Compte",
    "ALL"                   : "Tous",
    "BALANCE_SECTION"       : "Sélectionner la section du bilan",
-   "CASH"                  : "Caisse Auxillaire",
+   "CASH"                  : "Sélectionner Caisse",
    "CLASS"                 : "Sélectionner une Classe",
    "COST_CENTER"           : "Sélectionner Centre des frais",
    "COTISATION"            : "Sélectionner une cotisation",
