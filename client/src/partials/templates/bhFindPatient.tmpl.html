@@ -15,12 +15,12 @@
 
       <!-- dropdown button -->
       <div class="input-group-btn" uib-dropdown tabindex=-1>
-        <button class="btn btn-default" uib-dropdown-toggle data-find-patient-dropdown-toggle tabindex=-1>
+        <button class="btn btn-default" type="button" uib-dropdown-toggle data-find-patient-dropdown-toggle tabindex=-1>
           {{ $ctrl.selected.label | translate }} <span class="caret"></span>
         </button>
         <ul uib-dropdown-menu>
-          <li ng-repeat="option in $ctrl.options">
-            <a href="" ng-click="$ctrl.findBy(option)" data-find-patient-option="{{ option.label }}">
+          <li ng-repeat="(key, option) in $ctrl.options">
+            <a href="" ng-click="$ctrl.findBy(key)" data-find-patient-option="{{ option.label }}">
               {{ option.label | translate }}
             </a>
           </li>
@@ -30,7 +30,7 @@
 
       <!-- search by ID  -->
       <input ng-model="$ctrl.idInput"
-        ng-if="$ctrl.selected.key==0"
+        ng-if="$ctrl.selected == $ctrl.options.findById"
         ng-keyup="$ctrl.readInput($event)"
         ng-change="$ctrl.validateNameSearch($ctrl.idInput)"
         name="idInput"
@@ -44,7 +44,7 @@
 
       <!-- search by Name  -->
       <input ng-model="$ctrl.nameInput"
-        ng-if="$ctrl.selected.key==1"
+        ng-if="$ctrl.selected == $ctrl.options.findByName"
         ng-keyup="readInput($event)"
         name="nameInput"
         type="text"
@@ -164,8 +164,8 @@
               {{ $ctrl.selected.label | translate }} <span class="caret"></span>
             </button>
             <ul uib-dropdown-menu>
-              <li ng-repeat="option in $ctrl.options">
-                <a href="" ng-click="$ctrl.findBy(option)">{{ option.label | translate }}</a>
+              <li ng-repeat="(key, option) in $ctrl.options">
+                <a href="" ng-click="$ctrl.findBy(key)">{{ option.label | translate }}</a>
               </li>
             </ul>
           </div>
@@ -173,7 +173,7 @@
 
           <!-- search by ID  -->
           <input ng-model="$ctrl.idInput"
-            ng-if="$ctrl.selected.key==0"
+            ng-if="$ctrl.selected == $ctrl.options.findById"
             ng-keyup="$ctrl.readInput($event)"
             ng-change="$ctrl.validateNameSearch($ctrl.idInput)"
             name="idInput"
@@ -187,7 +187,7 @@
 
           <!-- search by name  -->
           <input ng-model="$ctrl.nameInput"
-            ng-if="$ctrl.selected.key==1"
+            ng-if="$ctrl.selected == $ctrl.options.findByName"
             ng-keyup="$ctrl.readInput($event)"
             name="nameInput"
             type="text"

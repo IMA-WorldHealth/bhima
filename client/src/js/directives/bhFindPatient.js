@@ -1,11 +1,11 @@
 angular.module('bhima.directives')
 .component('bhFindPatient', {
   controller: FindPatientComponent,
-  templateUrl : 'partials/templates/findpatient.tmpl.html',
+  templateUrl : 'partials/templates/bhFindPatient.tmpl.html',
   bindings: {
     onSearchComplete: '&',  // bind callback
     type:             '@',  // bind string
-    required:         '<',  // bind the required 
+    required:         '<',  // bind the required
   }
 });
 
@@ -36,15 +36,16 @@ function FindPatientComponent(Patients, AppCache) {
   var LIMIT = 20;
 
   /** supported searches: by name or by id */
-  vm.options = [{
-    'key'   : 0,
-    'label' : 'FIND.PATIENT_ID',
-    'placeholder' : 'FIND.SEARCH_PATIENT_ID'
-  }, {
-    'key'   : 1,
-    'label' : 'FIND.PATIENT_NAME',
-    'placeholder' : 'FIND.SEARCH_NAME'
-  }];
+  vm.options = {
+    findById : {
+      'label' : 'FIND.PATIENT_ID',
+      'placeholder' : 'FIND.SEARCH_PATIENT_ID'
+    },
+    findByName : {
+      'label' : 'FIND.PATIENT_NAME',
+      'placeholder' : 'FIND.SEARCH_NAME'
+    }
+  };
 
   vm.timestamp      = new Date();
   vm.showSearchView = true;
@@ -63,7 +64,7 @@ function FindPatientComponent(Patients, AppCache) {
   vm.readInput          = readInput;
 
   /** fetch the initial setting for the component from appcache */
-  cache.fetch('option')
+  cache.fetch('optionKey')
   .then(loadDefaultOption);
 
   /**
@@ -129,10 +130,9 @@ function FindPatientComponent(Patients, AppCache) {
   * according we have a search by ID or a search by Name to get data
   */
   function submit() {
-    if (vm.selected.key === 0 && vm.idInput) {
+    if (vm.selected === vm.options.findById && vm.idInput) {
       searchByReference(vm.idInput);
-
-    } else if (vm.selected.key === 1 && vm.nameInput) {
+    } else if (vm.selected === vm.options.findByName && vm.nameInput) {
       selectPatient(vm.nameInput);
     }
   }
@@ -145,14 +145,14 @@ function FindPatientComponent(Patients, AppCache) {
   * @description This function is responsible for setting the selected option
   * between ID or Name option of search
   */
-  function findBy(option) {
-    vm.selected   = option;
+  function findBy(key) {
+    vm.selected   = vm.options[key];
     vm.loadStatus = null;
     vm.idInput    = undefined;
     vm.nameInput  = undefined;
 
     // save the option for later
-    cache.put('option', option);
+    cache.put('optionKey', key);
   }
 
   /**
@@ -237,14 +237,18 @@ function FindPatientComponent(Patients, AppCache) {
   /**
   * @method loadDefaultOption
   *
-  * @param {object} option The default option of search
+  * @param {object} key - the default option key to search by
   *
   * @description This function is responsible for changing the option of search.
-  * Search by ID or by the name
+  * Search by ID or by name
   */
-  function loadDefaultOption(option) {
-    option = option || vm.options[0];
-    findBy(option);
+  function loadDefaultOption(optionKey) {
+
+    // default to findById
+    optionKey = optionKey || 'findById';
+
+    // change the findBy call
+    findBy(optionKey);
   }
 
   /**
