@@ -62,8 +62,6 @@ exports.list = function list(req, res, next) {
 
   sql += ';';
 
-  console.log('sql', sql);
-
   db.exec(sql)
   .then(function (rows) {
     res.status(200).json(rows);

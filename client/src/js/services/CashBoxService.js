@@ -33,8 +33,8 @@ function CashboxService($http, util) {
   }
 
   function filteredRead (filter) {
-    var url = '/cashboxes' + filter;
-    return $http.get(url)
+    var url = '/cashboxes';
+    return $http.get(url, { params : filter})
       .then(util.unwrapHttpResponse);
   }
 

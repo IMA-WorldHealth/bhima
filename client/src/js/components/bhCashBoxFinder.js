@@ -12,26 +12,37 @@
  function cashBoxFinderController (CashboxService, $translate){
  	
  	var ctrl = this;
- 	ctrl.types = [
- 					{label : $translate.instant('CASH_BOX_TYPE.PRIMARY'), is_auxillary : 0, is_bank :  0},
- 					{label : $translate.instant('CASH_BOX_TYPE.AUXILLARY'), is_auxillary : 1, is_bank : 0},
- 					{label : $translate.instant('CASH_BOX_TYPE.BANK'), is_bank : 1, is_auxillary : 0}
- 				 ];
+  var filter = null;
+ 	ctrl.types = [{label : 'CASH_BOX_TYPE.PRIMARY', is_auxillary : 0, is_bank :  0, full : 1},
+ 					      {label : 'CASH_BOX_TYPE.AUXILLARY', is_auxillary : 1, is_bank : 0, full : 1}
+ 				       ];
  	ctrl.selectedType = ctrl.types[0];
+
 
  	function init () {
  		ctrl.selectedCash = null;
  		ctrl.cashBoxValue = null;
 	 	ctrl.session = {
 	 		state : 'finding'
-	 	}
-	 	fetchcash('?full=1&is_auxillary=' + ctrl.selectedType.is_auxillary + '&is_bank=' + ctrl.selectedType.is_bank);
+	 	};
+    filter = {
+      is_auxillary : ctrl.selectedType.is_auxillary,
+      is_bank : ctrl.selectedType.is_bank,
+      full : ctrl.selectedType.full
+    };
+
+	 	fetchcash(filter);
  	}
 
  	function setType (type){
-    	ctrl.selectedType = type;
-    	fetchcash('?full=1&is_auxillary=' + type.is_auxillary + '&is_bank=' + type.is_bank);
-  	}
+  	ctrl.selectedType = type;
+    filter = {
+      is_auxillary : ctrl.selectedType.is_auxillary,
+      is_bank : ctrl.selectedType.is_bank,
+      full : ctrl.selectedType.full
+    };
+  	fetchcash(filter);
+  }
 
   	function selectCashBox (item){
   		ctrl.selectedCash = item;
