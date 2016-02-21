@@ -14,47 +14,71 @@ angular.module('bhima.filters')
  */
 function TelephoneFilter() {
     return function telephone(tel) {
-        
-        if (!tel) { return ''; }
 
-        var value = tel.toString().trim().replace(/^\+/, '');
+      // if no input, gracefully return an empty string
+      if (!tel) { return ''; }
 
-        if (value.match(/[^0-9]/)) {
-            return tel;
-        }
+      // strip off whitespace and remove the leading '+' sign, if it exists.
+      var value = tel.toString().trim().replace(/^\+/, '');
 
-        var country, city, number;
+      // ensure that the value is composed only of numbers 0-9
+      if (value.match(/[^0-9]/)) {
+          return tel;
+      }
 
-        switch (value.length) {
-            case 10: // +1PPP####### -> C (PPP) ###-####
-                country = 1;
-                city = value.slice(0, 3);
-                number = value.slice(3);
-                break;
+      var country, city, number;
 
-            case 11: // +CPPP####### -> CCC (PP) ###-####
-                country = value[0];
-                city = value.slice(1, 4);
-                number = value.slice(4);
-                break;
+      /**
+       * Switch to figure out what format to display the user based on the
+       * length of the input.
+       *  - if length < 10  => we simply display the original value.
+       *  - if length is 10 => we assume that the country code doesn't exist.
+       *                       So, we default to a single digit: 1 (the code for
+       *                       the US).  We display the following format:
+       *                          1 (###) ###-####
+       *
+       *  - if length is 11 => we assume that the country code is a single digit
+       *                       and included in the telephone number.  Return the
+       *                       following format:
+       *                         # (###) ###-####
+       *
+       *  - if length is 12 => we assume that the country code is three digits
+       *                       and included in the telephone number.  Return the
+       *                       following format:
+       *
+       */
+      switch (value.length) {
+          case 10: // +1PPP####### -> C (PPP) ###-####
+              country = 1;
+              city = value.slice(0, 3);
+              number = value.slice(3);
+              break;
 
-            case 12: // +CCCPP####### -> CCC (PP) ###-####
-                country = value.slice(0, 3);
-                city = value.slice(3, 5);
-                number = value.slice(5);
-                break;
+          case 11: // +CPPP####### -> C (PPP) ###-####
+              country = value[0];
+              city = value.slice(1, 4);
+              number = value.slice(4);
+              break;
 
-            default:
-                return tel;
-        }
+          case 12: // +CCCPP####### -> CCC (PP) ###-####
+              country = value.slice(0, 3);
+              city = value.slice(3, 5);
+              number = value.slice(5);
+              break;
 
-        // if the country is defined, prepend a plus sign
-        if (country) {
-          country = '+' + country;
-        }
+          default:
+              return tel;
+      }
 
-        number = number.slice(0, 3) + '-' + number.slice(3);
+      // if the country is defined, prepend a plus sign
+      if (country) {
+        country = '+' + country;
+      }
 
-        return (country + ' (' + city + ') ' + number).trim();
-    };
+      // format the final portion of the like number ###-####
+      number = number.slice(0, 3) + '-' + number.slice(3);
+
+      // concatenate everything together and return
+      return (country + ' (' + city + ') ' + number).trim();
+  };
 }
