@@ -234,7 +234,7 @@ exports.configure = function (app) {
 
   // Employee management
   app.get('/employee_list/', employees.list);
-  app.get('/hollyday_list/:pp/:employee_id', employees.listHolidays);
+  app.get('/holiday_list/:pp/:employee_id', employees.listHolidays);
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
 

@@ -67,7 +67,7 @@
         <tr ng-repeat="item in dataHollydays | orderBy:'label'">
           <td> </td>
           <td>{{ item.label }}</td>
-          <td>{{ item.hollyday_nbdays }} </td>
+          <td>{{ item.holiday_nbdays }} </td>
           <td>{{ item.dailyHollyd | currency:dataPaiements[0].currency_id }}</td>
           <td>{{ item.somHolly | currency:dataPaiements[0].currency_id }}</td>
           <td></td>
