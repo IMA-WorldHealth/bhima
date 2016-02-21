@@ -7,7 +7,7 @@
   <!-- warn the client if not debtor id has been passed in -->
   <p ng-show="CashReceiptModalCtrl.HttpError" class="text-danger text-center">
     <span class="glyphicon glyphicon-alert"></span>
-    {{ CashReceiptModalCtrl.HttpError |translate }}
+    {{ CashReceiptModalCtrl.HttpError | translate }}
   </p>
 
   <div ng-show="CashReceiptModalCtrl.loading" class="text-center">
@@ -23,7 +23,7 @@
           <strong>{{ CashReceiptModalCtrl.enterprise.name }}</strong> <br />
           {{ CashReceiptModalCtrl.enterprise.email }} <br />
           <abbr title="{{ 'RECEIPTS.POST_OFFICE_BOX' | translate }}">{{ "RECEIPTS.PO_BOX" | translate }}</abbr>: {{ CashReceiptModalCtrl.enterprise.po_box }} <br />
-          <abbr title="{{ 'RECEIPTS.TELEPHONE' | translate }}">{{ "RECEIPTS.TEL" | translate }}</abbr>: {{ CashReceiptModalCtrl.enterprise.phone }} <br />
+          <abbr title="{{ 'RECEIPTS.TELEPHONE' | translate }}">{{ "RECEIPTS.TEL" | translate }}</abbr>: {{ CashReceiptModalCtrl.enterprise.phone | telephone }} <br />
         </address>
       </div>
 

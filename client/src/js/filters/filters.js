@@ -70,3 +70,5 @@ angular.module('bhima.filters')
         return $sce.trustAsHtml(depreciateElement.concat(depreciateScript));
       };
     }]); 
+
+
