@@ -12,6 +12,11 @@ helpers.configure(chai);
 *
 * This test suite implements full CRUD on the /projects HTTP API endpoint.
 */
+
+var PURCHASE_KEY = ['uuid', 'reference', 'cost', 'discount', 'purchase_date', 'paid', 'text', 'name', 'prenom', 'first',
+  'last', 'creditor_uuid', 'timestamp', 'note', 'paid_uuid', 'confirmed', 'closed', 'is_direct', 'is_donation', 'emitter_id',
+  'is_authorized', 'is_validate', 'confirmed_by', 'is_integration', 'purchaser_id', 'receiver_id'];  
+
 describe('The /Purchase Order API endpoint', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
@@ -52,6 +57,11 @@ describe('The /Purchase Order API endpoint', function () {
     purchase_item : purchase_item
   };
 
+  var invalidPurchase = {
+    inv_purchase_order : {},
+    inv_purchase_item : {}
+  };
+
 
   // login before each request  
   beforeEach(helpers.login(agent));
@@ -76,6 +86,7 @@ describe('The /Purchase Order API endpoint', function () {
       .catch(helpers.handler);
   });
 
+
   it('GET /purchase/:uuid should return a single JSON purchase order', function () {
     return agent.get('/purchase/' + purchase_order.uuid)
       .then(function (res) {
@@ -84,6 +95,56 @@ describe('The /Purchase Order API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(purchase.uuid).to.exist;
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /purchase/ ? COMPLETE = 1 returns a complete List of purchase   ', function () { 
+    return agent.get('/purchase?complete=1')
+      .then(function (result) {
+        expect(result).to.have.status(200);
+        expect(result).to.be.json;
+        expect(result.body[0]).to.contain.all.keys(PURCHASE_KEY); 
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /purchase/:uuid returns 404 for an invalid purchase order', function () {
+    return agent.get('/purchase/unkown')
+      .then(function (result) {
+        expect(result).to.have.status(404);
+        expect(result.body).to.not.be.empty;
+        expect(result.body.code).to.equal('ERR_NOT_FOUND');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /purchase should update an property of a Purchase Order ', function () {
+    return agent.put('/purchase/' + purchase_order.uuid)
+      .send({ is_validate : 1 })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body.is_validate).to.not.equal(purchase_order.is_validate);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /purchase returns 400 for an invalid Purchase Order request object', function () {
+
+    return agent.post('/purchase')
+      .send(invalidPurchase)
+      .then(function (res) {
+        expect(res).to.have.status(400);
+        expect(res.body).to.not.be.empty;
+      });
+  });
+
+  it('PUT /purchase should update an Invalid Purchase Order ', function () {
+    return agent.put('/purchase/invalid')
+      .send({ is_integration : 1 })
+      .then(function (res) {
+        expect(res).to.have.status(404);
+        expect(res.body).to.not.be.empty;
       })
       .catch(helpers.handler);
   });

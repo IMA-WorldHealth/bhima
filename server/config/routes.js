@@ -510,5 +510,5 @@ exports.configure = function (app) {
   app.post('/purchase', purchase.create);
   app.get('/purchase', purchase.list);
   app.get('/purchase/:uuid', purchase.detail);
-
+  app.put('/purchase/:uuid', purchase.update);
 };
