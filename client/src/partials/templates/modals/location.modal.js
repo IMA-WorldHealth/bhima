@@ -25,7 +25,7 @@ function LocationModalController(Locations, Instance) {
   vm.state = state;
 
   /** default visibility */
-  vm.visibility = 1;
+  vm.visibility = 0;
 
   /** bind listener */
   vm.loadProvinces = loadProvinces;
@@ -56,5 +56,15 @@ function LocationModalController(Locations, Instance) {
   /** show/hide different values */
   function state(key) {
     vm.visibility = key;
+  }
+
+  /** creates a new location based on the selections made. */
+  function submit(invalid) {
+
+    // reject an invalid form
+    if (invalid)  { return; }
+
+
+
   }
 }

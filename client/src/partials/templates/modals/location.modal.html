@@ -11,6 +11,13 @@
         <button
           type="button"
           class="btn btn-default"
+          ng-click="LocationModalCtrl.state(0)"
+          ng-class="{ 'active' : LocationModalCtrl.visibility === 0 }">
+          {{ "LOCATION.COUNTRY" | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-default"
           ng-click="LocationModalCtrl.state(1)"
           ng-class="{ 'active' : LocationModalCtrl.visibility === 1 }">
           {{ "LOCATION.PROVINCE" | translate }}
@@ -39,6 +46,7 @@
         {{ "LOCATION.COUNTRY" | translate }}
       </label>
       <select
+        ng-if="LocationModalCtrl.visibility > 0"
         class="form-control"
         name="country"
         ng-model="LocationModalCtrl.country"
@@ -47,10 +55,18 @@
         >
         <option value="" disabled>{{ "SELECT.COUNTRY" | translate }}</option>
       </select>
+      <input
+        ng-if="LocationModalCtrl.visibility === 0"
+        class="form-control"
+        name="country"
+        ng-model="LocationModalCtrl.country"
+        placeholder="{{ 'INPUT.COUNTRY' | translate }}"
+        required>
     </div>
 
     <div class="form-group"
       ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.province.$error }"
+      ng-if="LocationModalCtrl.visibility > 0"
       >
       <label class="control-label">
         {{ "LOCATION.PROVINCE" | translate }}
@@ -71,6 +87,7 @@
         class="form-control"
         name="province"
         ng-model="LocationModalCtrl.province"
+        placeholder="{{ 'INPUT.PROVINCE' | translate }}"
         required>
     </div>
 
@@ -95,6 +112,7 @@
         name="sector"
         class="form-control"
         ng-model="LocationModalCtrl.sector"
+        placeholder="{{ 'INPUT.SECTOR' | translate }}"
         required>
     </div>
 
@@ -109,6 +127,7 @@
         class="form-control"
         name="village"
         ng-model="LocationModalCtrl.village"
+        placeholder="{{ 'INPUT.VILLAGE' | translate }}"
         required>
     </div>
   </div>

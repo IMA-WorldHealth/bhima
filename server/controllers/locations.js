@@ -217,3 +217,98 @@ exports.detail = function detail(req, res, next) {
   .catch(next)
   .done();
 };
+
+/** bindings for creation methods */
+exports.create = {};
+
+/**
+ * POST /locations/country
+ *
+ * This method creates a country reference in the database and returns its uuid.
+ *
+ * @method createCountry
+ * @returns {string} uuid - the unique id for the country.
+ */
+exports.create.country = function createCountry(req, res, next) {
+  'use strict';
+
+  var sql =
+    'INSERT INTO country (uuid, name) VALUES (?, ?);';
+
+  db.exec(sql, [req.body.uuid, req.body.name])
+  .then(function (rows) {
+    res.status(201).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+ * POST /locations/province
+ *
+ * This method creates a province reference, linked to a country, in the
+ * database and returns its uuid.
+ *
+ * @method createProvince
+ * @returns {string} uuid - the uuid for the province.
+ */
+exports.create.province = function createProvince(req, res, next) {
+  'use strict';
+
+  var sql =
+    'INSERT INTO province (uuid, name, country_uuid) VALUES (?);';
+
+  db.exec(sql, [[req.body.uuid, req.body.name, req.body.country_uuid]])
+  .then(function (rows) {
+    res.status(201).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+};
+
+
+/**
+ * POST /locations/sector
+ *
+ * This method creates a sector reference, linked to a province, in the
+ * database and returns its uuid.
+ *
+ * @method createSector
+ * @returns {string} uuid - the unique id for the sector.
+ */
+exports.create.sector = function createSector(req, res, next) {
+  'use strict';
+
+  var sql =
+    'INSERT INTO sector (uuid, name, province_uuid) VALUES (?);';
+
+  db.exec(sql, [[req.body.uuid, req.body.name, req.body.province_uuid]])
+  .then(function (rows) {
+    res.status(201).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+ * POST /locations/villages
+ *
+ * This method creates a village reference, linked to a sector, in the
+ * database and returns its uuid.
+ *
+ * @method createVillage
+ * @returns {string} uuid - the unique id for the village.
+ */
+exports.create.village = function createVillage(req, res, next) {
+  'use strict';
+
+  var sql =
+    'INSERT INTO village (uuid, name, sector_uuid) VALUES (?);';
+
+  db.exec(sql, [[req.body.uuid, req.body.name, req.body.sector_uuid]])
+  .then(function (rows) {
+    res.status(201).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+};

@@ -1,9 +1,11 @@
 var chai = require('chai');
 var expect = chai.expect;
+var uuid = require('node-uuid');
 
 /** import test helpers */
 var helpers = require('./helpers');
 helpers.configure(chai);
+
 
 /**
 * The /locations API endpoint
@@ -105,7 +107,7 @@ describe('(/locations) Locations Interface', function () {
     .catch(helpers.handler);
   });
 
-  it('GET /locations/countries  should return a list of countries', function () {
+  it('GET /locations/countries should return a list of countries', function () {
     return agent.get('/locations/countries')
     .then(function (res) {
 
@@ -127,6 +129,67 @@ describe('(/locations) Locations Interface', function () {
         'villageUuid', 'village', 'sector', 'sectorUuid',
         'province', 'provinceUuid', 'country', 'countryUuid'
       ]);
+    })
+    .catch(helpers.handler);
+  });
+
+  /** CREATE methods */
+
+  var country = {
+    uuid : uuid.v4(),
+    name : 'Test Country'
+  };
+
+  var province = {
+    uuid : uuid.v4(),
+    name : 'Test Province',
+    country_uuid : country.uuid
+  };
+
+  var sector = {
+    uuid : uuid.v4(),
+    name : 'Test Sector',
+    province_uuid : province.uuid
+  };
+
+  var village = {
+    uuid : uuid.v4(),
+    namem : 'Test Village',
+    sector_uuid : sector.uuid
+  };
+
+  it('POST /locations/countries should create a country', function () {
+    return agent.post('/locations/countries')
+    .send(country)
+    .then(function (res) {
+      helpers.api.created(res);
+    })
+    .catch(helpers.handler);
+  });
+
+  it('POST /locations/provinces should create a province', function () {
+    return agent.post('/locations/provinces')
+    .send(province)
+    .then(function (res) {
+      helpers.api.created(res);
+    })
+    .catch(helpers.handler);
+  });
+
+  it('POST /locations/sectors should create a sector', function () {
+    return agent.post('/locations/sectors')
+    .send(sector)
+    .then(function (res) {
+      helpers.api.created(res);
+    })
+    .catch(helpers.handler);
+  });
+
+  it('POST /locations/villages should create a village', function () {
+    return agent.post('/locations/provinces')
+    .send(village)
+    .then(function (res) {
+      helpers.api.created(res);
     })
     .catch(helpers.handler);
   });
