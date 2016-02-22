@@ -57,7 +57,7 @@ describe('The /cash/conventions API endpoint :: ', function () {
 
   var mock = {};
 
-  it('POST /cash/conventions should create a new convention payment records in primary_cash, primary_cash_item and journal', function () {
+  it.skip('POST /cash/conventions should create a new convention payment records in primary_cash, primary_cash_item and journal', function () {
     return agent.post('/cash/conventions')
       .send(primaryCash)
       .then(function (res) {
@@ -68,7 +68,7 @@ describe('The /cash/conventions API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /cash/conventions should not post data with missing essentials values', function () {
+  it.skip('POST /cash/conventions should not post data with missing essentials values', function () {
     return agent.post('/cash/conventions')
       .send(wrongPrimaryCash)
       .then(function (res) {
@@ -79,7 +79,7 @@ describe('The /cash/conventions API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /cash/conventions should not post without uuid', function () {
+  it.skip('POST /cash/conventions should not post without uuid', function () {
     mock = wrongPrimaryCash;
     delete mock.uuid;
     return agent.post('/cash/conventions')
@@ -92,7 +92,7 @@ describe('The /cash/conventions API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /cash/conventions should not post when there is not a date defined', function () {
+  it.skip('POST /cash/conventions should not post when there is not a date defined', function () {
     mock = primaryCash;
     mock.uuid = uuid.v4();
     delete mock.date;
@@ -106,7 +106,7 @@ describe('The /cash/conventions API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /cash/conventions should not post when there is not an exchange rate defined for a date', function () {
+  it.skip('POST /cash/conventions should not post when there is not an exchange rate defined for a date', function () {
     /** The future date does'nt have a defined exchange rate */
     mock = primaryCash;
     mock.uuid = uuid.v4();

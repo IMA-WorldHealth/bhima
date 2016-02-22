@@ -55,7 +55,7 @@ describe('The /cash/transfers API endpoint :: ', function () {
   var expectedKeys = Object.keys(primaryCash);
   expectedKeys.push('document_uuid');
 
-  it('POST /cash/transfers should create a new transfert records in primary_cash, primary_cash_item and journal', function () {
+  it.skip('POST /cash/transfers should create a new transfert records in primary_cash, primary_cash_item and journal', function () {
     return agent.post('/cash/transfers')
       .send(primaryCash)
       .then(function (res) {
@@ -66,7 +66,7 @@ describe('The /cash/transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /cash/transfers should return a list of all transfers', function () {
+  it.skip('GET /cash/transfers should return a list of all transfers', function () {
     return agent.get('/cash/transfers')
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -87,7 +87,7 @@ describe('The /cash/transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /cash/transfers/?limit=1 should return a limited set of results', function () {
+  it.skip('GET /cash/transfers/?limit=1 should return a limited set of results', function () {
     return agent.get('/cash/transfers/?limit=1')
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -98,7 +98,7 @@ describe('The /cash/transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /cash/transfers/{uuid} should return specific transfert record according a {uuid} given', function () {
+  it.skip('GET /cash/transfers/{uuid} should return specific transfert record according a {uuid} given', function () {
     return agent.get('/cash/transfers/' + primaryCash.uuid)
       .then(function (res) {
         var result = res.body;
@@ -124,7 +124,7 @@ describe('The /cash/transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /cash/transfers should not post data with missing essentials values', function () {
+  it.skip('POST /cash/transfers should not post data with missing essentials values', function () {
     return agent.post('/cash/transfers')
       .send(wrongPrimaryCash)
       .then(function (res) {
@@ -139,7 +139,7 @@ describe('The /cash/transfers API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /cash/transfers/{uuid} should not get anything with a fake {uuid}', function () {
+  it.skip('GET /cash/transfers/{uuid} should not get anything with a fake {uuid}', function () {
     return agent.get('/cash/transfers/badidentifier')
       .then(function (res) {
         expect(res).to.have.status(404);

@@ -19,6 +19,7 @@ describe('The /cashboxes API endpoint', function () {
   var NUMBER_OF_CASHBOXES = 2;
   var NUMBER_OF_AUX_CASHBOXES = 1;
   var NUMBER_OF_CASHBOX_CURRENCIES = 2;
+  var NUMBER_OF_CASHBOX_BY_CURRENCIES = 4;
   var PROJECT_ID = 1;
 
   // new cashbox
@@ -59,6 +60,16 @@ describe('The /cashboxes API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(NUMBER_OF_AUX_CASHBOXES);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /cashboxes?full=1 returns cashboxes with relatives properties', function () {
+    return agent.get('/cashboxes?full=1')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.length(NUMBER_OF_CASHBOX_BY_CURRENCIES);
       })
       .catch(helpers.handler);
   });
