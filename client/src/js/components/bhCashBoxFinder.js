@@ -9,76 +9,59 @@
  
  //A cash box finder component controller
  
- function cashBoxFinderController (CashboxService, $translate){
+ function cashBoxFinderController (CashboxService){
  	
  	var ctrl = this;
-  var filter = null;
- 	ctrl.types = [{label : 'CASH_BOX_TYPE.PRIMARY', is_auxillary : 0, is_bank :  0, full : 1},
- 					      {label : 'CASH_BOX_TYPE.AUXILLARY', is_auxillary : 1, is_bank : 0, full : 1}
- 				       ];
- 	ctrl.selectedType = ctrl.types[0];
+ 	ctrl.types = [
+    {label : 'CASH_BOX_TYPE.PRIMARY', is_auxillary : 0, is_bank :  0, full : 1},
+ 		{label : 'CASH_BOX_TYPE.AUXILLARY', is_auxillary : 1, is_bank : 0, full : 1}
+ 	];
 
-
- 	function init () {
+ 	function load () {
  		ctrl.selectedCash = null;
  		ctrl.cashBoxValue = null;
-	 	ctrl.session = {
-	 		state : 'finding'
-	 	};
-    filter = {
-      is_auxillary : ctrl.selectedType.is_auxillary,
-      is_bank : ctrl.selectedType.is_bank,
-      full : ctrl.selectedType.full
-    };
-
-	 	fetchcash(filter);
+	 	ctrl.session = { state : 'finding'};
+    setType(ctrl.types[0]);    
  	}
 
  	function setType (type){
   	ctrl.selectedType = type;
-    filter = {
+    var opt = {
       is_auxillary : ctrl.selectedType.is_auxillary,
       is_bank : ctrl.selectedType.is_bank,
       full : ctrl.selectedType.full
     };
-  	fetchcash(filter);
+  	fetchcash(opt);
   }
 
-  	function selectCashBox (item){
-  		ctrl.selectedCash = item;
-  		ctrl.cashBoxValue = item.account_id;
-  		ctrl.session.state = 'found';
-  	}
+	function selectCashBox (item){
+		ctrl.selectedCash = item;
+		ctrl.cashBoxValue = item.account_id;
+		ctrl.session.state = 'found';
+	}
 
-  	function search (text) {
-  		var list = ctrl.cashboxes.filter(function (item){
-  			var match = new RegExp(text, 'i').test(item.text + item.symbol);
-  			return match;
-  		});
+	function search (text) {
+		return ctrl.cashboxes.filter(function (item){
+			return new RegExp(text, 'i').test(item.text + item.symbol); //build a regex a look for text occurence in the cash label without case sensive
+		});
+	}
 
-  		return list;
-  	}
+	function fetchcash(opt){
+		CashboxService.read(null, { params : opt})
+			.then(function (cashboxes){
+				ctrl.cashboxes = cashboxes;
+			});
+	}
 
-  	function fetchcash(filter){
-  		CashboxService.filteredRead(filter)
-  			.then(function (cashboxes){
-  				ctrl.cashboxes = cashboxes;
-  			});
-  	}
+  load();
 
-    function reload () {
-    	init();
-    }
-
-    init();
-
-  	ctrl.reload = reload;
-  	ctrl.search = search;
-  	ctrl.selectCashBox = selectCashBox;
-  	ctrl.setType = setType;
+	ctrl.load = load;
+	ctrl.search = search;
+	ctrl.selectCashBox = selectCashBox;
+	ctrl.setType = setType;
 }
 
- cashBoxFinderController.$inject = ['CashboxService', '$translate'];
+ cashBoxFinderController.$inject = ['CashboxService'];
  
  //component implementation
 angular.module('bhima.components').component('bhCashBoxFinder', {
