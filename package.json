@@ -2,18 +2,17 @@
   "name": "bhima",
   "version": "0.2.0",
   "description": "A rural hospital information management system.",
-  "main": "server/app.js",
+  "main": "sh/deploy.sh",
   "scripts": {
     "app": "gulp build && cd bin && NODE_ENV=production node server/app.js",
     "dev": "gulp build && cd bin && NODE_ENV=development node server/app.js",
-    "start": "gulp build && cd bin && NODE_ENV=production node server/app.js",
-    "travis": "gulp build && cd bin && NODE_ENV=travis node server/app.js",
+    "start": "sh/deploy.sh",
     "app_windows": "gulp build && cd bin && set NODE_ENV=production && node server/app.js",
     "dev_windows": "gulp build && cd bin && set NODE_ENV=development && node server/app.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IMA-WorldHealth/bhima-2.X.git"
+    "url": "git+https://github.com/IMA-WorldHealth/bhima-2.X.git"
   },
   "keywords": [
     "bhima",
@@ -26,6 +25,9 @@
   "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/IMA-WorldHealth/bhima/issues"
+  },
+  "engines": {
+    "node": "5.3.0"
   },
   "dependencies": {
     "body-parser": "^1.14.1",
@@ -47,6 +49,7 @@
     "wkhtmltopdf": "^0.1.5"
   },
   "devDependencies": {
+    "bower": "^1.7.7",
     "chai": "^3.4.0",
     "chai-as-promised": "^5.1.0",
     "chai-datetime": "^1.4.0",
@@ -67,5 +70,9 @@
     "mocha": "^2.4.5",
     "protractor": "^3.0.0",
     "rimraf": "^2.4.3"
+  },
+  "homepage": "https://github.com/IMA-WorldHealth/bhima-2.X#readme",
+  "directories": {
+    "doc": "docs"
   }
 }

@@ -107,7 +107,7 @@ exports.databaseErrorHandler = function databaseErrorHandler(error, req, res, ne
 exports.catchAllErrorHandler = function catchAllErrorHandler(error, req, res, next) {
   'use strict';
 
-  winston.debug('[ERROR]', error);
+  winston.error('[ERROR]', error);
 
   // return a 500 error so the client
   res.status(500).json(error);
