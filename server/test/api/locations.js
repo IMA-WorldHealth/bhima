@@ -186,7 +186,7 @@ describe('(/locations) Locations Interface', function () {
   });
 
   it('POST /locations/villages should create a village', function () {
-    return agent.post('/locations/provinces')
+    return agent.post('/locations/villages')
     .send(village)
     .then(function (res) {
       helpers.api.created(res);
