@@ -1,3 +1,4 @@
+/* jshint expr: true */
 // Test Helpers
 
 // import plugins
@@ -98,7 +99,7 @@ api.created = function created(res) {
   // id checks
   if (res.body.id) {
     expect(res.body).to.have.property('id');
-    expect(res.body.uuid).to.be.a('number');
+    expect(res.body.id).to.be.a('number');
 
   // uuid checks
   } else {
