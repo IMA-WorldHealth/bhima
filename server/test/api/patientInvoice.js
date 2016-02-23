@@ -51,6 +51,9 @@ describe('The /sales API', function () {
 
   /** @const total number of sales in the database */
   var NUM_SALES = 2;
+  
+  /** @const a reference for one of the sales in the database */
+  var REFERENCE = 'TPA1';
 
   /** login before each request */
   beforeEach(helpers.login(agent));
@@ -198,6 +201,26 @@ describe('The /sales API', function () {
         })
         .catch(helpers.handler);
     });
+  });
 
+  describe('(/sales/references) reference interface for the sales table', function () {
+
+    it('GET /sales/reference/:reference should return a uuid for a valid sale reference', function () {
+      return agent.get('/sales/references/'.concat(REFERENCE))
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.have.property('uuid');
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /sales/references/:reference should fail for an invalid sale reference', function () {
+      return agent.get('/sales/references/unknown')
+        .then(function (res) {
+          helpers.api.errored(res, 404);
+        })
+        .catch(helpers.handler);
+    });
   });
 });

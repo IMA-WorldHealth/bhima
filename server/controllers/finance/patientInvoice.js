@@ -22,8 +22,13 @@ exports.details = details;
 /** Write a new patient invoice record and attempt to post it to the journal. */
 exports.create = create;
 
-/** Filter the patient table by any column via query strings */
+/** Filter the patient invoice table by any column via query strings */
 exports.search = search;
+
+/**
+ * Retrieves a sale uuid by searching for a human readable reference (e.g. HBB123)
+ */
+exports.reference = reference;
 
 /** Undo the financial effects of a sale generating an equal and opposite credit note. */
 // exports.reverse = reverse;
@@ -198,6 +203,8 @@ function linkSaleItems(saleItems, saleUuid) {
 
 /**
  * Searches for a sale by query parameters provided.
+ *
+ * GET sales/search
  */
 function search(req, res, next) {
   'use strict';
@@ -233,6 +240,37 @@ function search(req, res, next) {
   db.exec(sql, conditions)
   .then(function (rows) {
     res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+ * Searches for a particular sale uuid by reference string.
+ *
+ * NOTE - this cannot be combined with the /search route since it would require
+ * wrapping a MySQL query in an outer query to do the filtering.  This would be
+ * highly inefficient in most cases, or lead to complex code.
+ *
+ * GET sales/references/:reference
+ */
+function reference(req, res, next) {
+  'use strict';
+
+  var sql =
+    'SELECT s.uuid FROM (' +
+      'SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference ' +
+      'FROM sale JOIN project ON sale.project_id = project.id ' +
+    ')s WHERE s.reference = ?;';
+
+  db.exec(sql, [ req.params.reference ])
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw new req.codes.ERR_NOT_FOUND();
+    }
+
+    // references should be unique -- send back only the first result
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
