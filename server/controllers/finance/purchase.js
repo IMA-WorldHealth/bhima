@@ -49,7 +49,7 @@ function lookupPurchaseOrder(uuid, codes) {
     'JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid ' +
     'WHERE purchase_item.purchase_uuid = ? ';  
 
-  return db.exec(sqlPurchaseItem, [uuid])
+  return db.exec(sqlPurchase, [uuid])
   .then(function (rows) {
 
     if (rows.length === 0) {
@@ -85,10 +85,10 @@ function create (req, res, next) {
   var purchaseItem =  purchase.purchase_item;
 
   // Reject invalid parameters
-  if (!purchaseItem || !purchaseItem) { 
+  if (!purchaseOrder || !purchaseItem) { 
     res.status(400).json({
       code : 'ERROR.ERR_MISSING_INFO', 
-      reason : 'A valid sale details and sale items must be provided under the attributes `sale` and `saleItems`'
+      reason : 'A valid purchase details and purchase items must be provided under the attributes `purchaseOrder` and `purchaseItem`'
     });
     return;
   }

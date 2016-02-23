@@ -90,8 +90,7 @@ describe('The /Purchase Order API endpoint', function () {
   it('GET /purchase/:uuid should return a single JSON purchase order', function () {
     return agent.get('/purchase/' + purchase_order.uuid)
       .then(function (res) {
-        var purchase = res.body.purchase;
-
+        var purchase = res.body;
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(purchase.uuid).to.exist;
