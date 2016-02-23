@@ -13,12 +13,13 @@ exports.listPaiementData = function (req, res, next) {
           ' paiement.working_day, paiement.paiement_date, employee.code, employee.prenom, employee.name,' +
           ' employee.postnom, employee.dob, employee.sexe, employee.nb_spouse, employee.nb_enfant,' +
           ' employee.grade_id, grade.text, grade.code AS \'codegrade\', grade.basic_salary, exchange_rate.rate,' +
-          ' exchange_rate.enterprise_id' +
+          ' exchange_rate.enterprise_id, enterprise.enterprise_currency_id' +
           ' FROM paiement' +
           ' JOIN employee ON employee.id = paiement.employee_id' +
           ' JOIN grade ON grade.uuid = employee.grade_id ' +
           ' JOIN paiement_period ON paiement_period.id = paiement.paiement_period_id' +
           ' JOIN exchange_rate ON exchange_rate.date = paiement.paiement_date' +
+          ' JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id' +
           ' WHERE paiement.uuid = ' + sanitize.escape(req.query.invoiceId);
 
   db.exec(sql)

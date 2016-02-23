@@ -16,13 +16,16 @@ exports.list = function list(req, res, next) {
       enterprise = req.session.enterprise;
   
   sql =
-    'SELECT currency_id, rate, date ' +
-    'FROM exchange_rate ' + 
-    'WHERE enterprise_id = ? ' +
+    'SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, exchange_rate.date, ' +
+    'enterprise.currency_id AS \'enterprise_currency_id\' ' +
+    'FROM exchange_rate ' +
+    'JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id ' + 
+    'WHERE exchange_rate.enterprise_id = ? ' +
     'ORDER BY date;';
 
-  db.exec(sql, [ enterprise.currency_id ])
+  db.exec(sql, [ enterprise.id ])
   .then(function (rows) {
+
     res.status(200).json(rows);
   })
   .catch(next)
@@ -35,7 +38,7 @@ exports.create = function create(req, res, next) {
 
   var sql,
       data = req.body.rate;
-
+    
   // preprocess dates
   if (data.date) {
     data.date = new Date(data.date);
@@ -67,9 +70,11 @@ exports.update = function update(req, res, next) {
   .then(function () {
 
     sql =
-      'SELECT id, enterprise_id, currency_id, rate, date ' +
+      'SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, exchange_rate.date, ' +
+      'enterprise.currency_id AS \'enterprise_currency_id\' ' +
       'FROM exchange_rate ' +
-      'WHERE id = ?;';
+      'JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id ' + 
+      'WHERE exchange_rate.id = ?;';
 
     return db.exec(sql, [req.params.id]);
   })

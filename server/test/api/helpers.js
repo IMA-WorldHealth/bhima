@@ -13,7 +13,8 @@ var chaiDatetime =  require('chai-datetime');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 // base URL for all tests
-exports.baseUrl = 'https://localhost:8080';
+var port = process.env.PORT || '8080';
+exports.baseUrl = 'https://localhost:' + port;
 
 // login using the base URL and user
 exports.login = function login(agent) {

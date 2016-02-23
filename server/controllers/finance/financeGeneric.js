@@ -137,8 +137,11 @@ exports.postJournalVoucher = function (req, res, next) {
     // If the currency is not the enterprise currency we need to
     // exchange the debits and credits.  Otherwise, do nothing.
     sql =
-      'SELECT enterprise_id, currency_id, rate ' +
-      'FROM exchange_rate WHERE DATE(date) = DATE(?);';
+      'SELECT exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate ' +
+      'enterprise.currency_id AS \'enterprise_currency_id\' ' +
+      'FROM exchange_rate ' +
+      'JOIN enterprise_id ON enterprise.id = exchange_rate.enterprise_id ' +
+      'WHERE DATE(date) = DATE(?);';
 
     return db.exec(sql, [date]);
   })

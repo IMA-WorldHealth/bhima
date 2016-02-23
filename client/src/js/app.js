@@ -1,5 +1,5 @@
 var bhima = angular.module('bhima', [
-  'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute',
+  'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'bhima.components', 'ngRoute',
   'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale',
   'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'angularMoment', 'ngMessages'
 ]);

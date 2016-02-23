@@ -12,6 +12,7 @@ exports.invoice = invoice;
  * particular convention to be invoiced for a patient
  * bill.
  */
+
 function invoice(id, userId, cb) {
   'use strict';
 

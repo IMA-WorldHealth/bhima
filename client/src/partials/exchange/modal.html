@@ -1,29 +1,29 @@
-<ng-form name="ModalForm">
+<form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm.$invalid)" novalidate>
   <div class="modal-header">
     <h4>{{ 'EXCHANGE.NEW_RATE' | translate }}</h4>
   </div>
 
   <div class="modal-body">
     <uib-alert type="info">
-      <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "EXCHANGE.NEW_RATE_HELP" | translate }}
+      <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "EXCHANGE.HELP_TXT_1" | translate }}
     </uib-alert>
 
     <div class="form-group">
-      <label>{{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }}</label>
+      <label>{{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }}</label> 
       <p class="form-control-static">{{ ModalCtrl.enterpriseCurrency }} : {{ 1 |  currency:ModalCtrl.enterpriseCurrencyId }}</p>
     </div>
 
-    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.$invalid }">
-      <label class="control-label">{{ "EXCHANGE.NEW_RATE" | translate }}</label>
-      <input class="form-control" type="number" name="rate" ng-model="ModalCtrl.data.rate" min="0" required>
+    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }">
+      <label class="control-label">{{ ModalCtrl.text | translate }} : {{ ModalCtrl.data.date | date }} : {{ ModalCtrl.selectedCurrency }}</label>
+      <input type="number" class="form-control" name="rate" required id="bhima-project-abbr" min="0" ng-model="ModalCtrl.data.rate">
     </div>
 
-    {{ ModalForm.$submitted }} {{ ModalForm.$invalid }}
   </div>
 
   <div class="modal-footer">
-    <button type="submit" class="btn btn-default" ng-click="ModalCtrl.submit(ModalForm.$invalid)" >{{ "FORM.SUBMIT" | translate }}</button>
+    <button class="btn btn-default" id="submit-project" type="submit" data-method="submit">
+      {{ "FORM.SUBMIT" | translate }}
+    </button>
     <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.CANCEL" | translate }}</button>
   </div>
-
-</ng-form>
+</form>
