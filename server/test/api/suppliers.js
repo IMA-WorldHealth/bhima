@@ -17,16 +17,16 @@ describe('The /supplier  API endpoint', function () {
 
       // Supplier we will add during this test suite.
   var supplier = {
-    uuid : uuid(),
+    uuid : uuid.v4(),
     creditor_uuid : '7ac4e83c-65f2-45a1-8357-8b025003d794',
     name : 'SUPPLIER TEST A',
-    address_1 : '',
-    address_2 : '',
-    email : '',
-    fax : '',
-    note : '',
+    address_1 : null,
+    address_2 : null,
+    email : null,
+    fax : null,
+    note : null,
     phone : '03949848595',
-    international : '',
+    international : 0,
     locked : 0
   };
 
@@ -77,7 +77,7 @@ describe('The /supplier  API endpoint', function () {
 
   it('GET /supplier/ ? LOCKED = 0 returns a complete List of unlocked supplier   ', function () { 
     return agent.get('/suppliers?locked=0')
-      .then(function (result) { 
+      .then(function (result) {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
         expect(result.body[0].locked).to.equal(UNLOCKED);
@@ -108,7 +108,7 @@ describe('The /supplier  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /ENTERPRISES/:ID returns a single Supplier ', function () {
+  it('GET /Supplier/:ID returns a single Supplier ', function () {
     return agent.get('/suppliers/' + supplier.uuid)
       .then(function (result) {
         expect(result).to.have.status(200);

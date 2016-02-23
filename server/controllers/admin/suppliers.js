@@ -8,6 +8,33 @@ var db = require('../../lib/db');
 var uuid = require('../../lib/guid');
 // GET /Supplier
 //
+
+function lookupSupplier(uuid, codes) {
+  'use strict';
+
+  var record;
+
+  var sql =
+    'SELECT supplier.uuid, supplier.creditor_uuid, supplier.name, supplier.address_1, supplier.address_2, supplier.email, ' +
+    'supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked ' +
+    'FROM supplier ' +
+    'WHERE supplier.uuid = ? ';
+
+  return db.exec(sql, [uuid])
+  .then(function (rows) {
+
+    if (rows.length === 0) {
+      throw new codes.ERR_NOT_FOUND();
+    }
+
+    // store the record for return
+    record = rows[0];
+
+    return record;
+  });
+}
+
+
 // The Supplier  is assumed from the session.
 exports.list = function list(req, res, next) {
   'use strict';
@@ -17,22 +44,14 @@ exports.list = function list(req, res, next) {
   sql =
     'SELECT supplier.uuid, supplier.creditor_uuid, supplier.name, supplier.address_1, supplier.address_2, supplier.email, ' +
     'supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked ' +
-    'FROM supplier;';
+    'FROM supplier ';
 
   if (req.query.locked === '0') {
-    sql =
-      'SELECT supplier.uuid, supplier.creditor_uuid, supplier.name, supplier.address_1, supplier.address_2, supplier.email, ' +
-      'supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked ' +
-      'FROM supplier ' +
-      'WHERE supplier.locked = \'0\';';
+    sql += 'WHERE supplier.locked = 0 ';
   }
 
   if (req.query.locked === '1') {
-    sql =
-      'SELECT supplier.uuid, supplier.creditor_uuid, supplier.name, supplier.address_1, supplier.address_2, supplier.email, ' +
-      'supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked ' +
-      'FROM supplier ' +
-      'WHERE supplier.locked = \'1\';';      
+    sql += 'WHERE supplier.locked = 1 ';     
   }
 
   db.exec(sql)
@@ -52,24 +71,11 @@ exports.list = function list(req, res, next) {
 exports.detail = function detail(req, res, next) {
   'use strict';
 
-  var sql;
+  var uuid = req.params.uuid;
 
-  sql =
-    'SELECT supplier.uuid, supplier.creditor_uuid, supplier.name, supplier.address_1, supplier.address_2, supplier.email, ' +
-    'supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked ' +
-    'FROM supplier ' +
-    'WHERE supplier.uuid = ? ';
-
-  db.exec(sql, [req.params.uuid])
-  .then(function (rows) {
-    if (!rows.length) {
-      return res.status(404).json({
-        code : 'ERR_NOT_FOUND',
-        reason : 'No Supplier found by id ' + req.params.uuid
-      });
-    } 
-
-    res.status(200).json(rows[0]);
+  lookupSupplier(uuid, req.codes)
+  .then(function (record) {
+    res.status(200).json(record);
   })
   .catch(next)
   .done();
@@ -109,22 +115,12 @@ exports.update = function update(req, res, next) {
 
   db.exec(sql, [req.body, req.params.uuid])
   .then(function () {
-
-    sql =
-      'SELECT supplier.uuid, supplier.creditor_uuid, supplier.name, supplier.address_1, supplier.address_2, supplier.email, ' +
-      'supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked ' +
-      'FROM supplier ' +
-      'WHERE supplier.uuid = ? ';
-
-    return db.exec(sql, [req.params.uuid]);
+    var uuid = req.params.uuid;
+    return lookupSupplier(uuid, req.codes);
   })
-  .then(function (rows) {
-
-    if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
-    }
-
-    res.status(200).json(rows[0]);
+  .then(function (record) {
+    // all updates completed successfull, return full object to client
+    res.status(200).json(record);
   })
   .catch(next)
   .done();
