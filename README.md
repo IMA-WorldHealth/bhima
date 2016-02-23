@@ -4,8 +4,6 @@ BHIMA
 [![Build Status](https://travis-ci.org/IMA-WorldHealth/bhima-2.X.svg)](https://travis-ci.org/IMA-WorldHealth/bhima-2.X)
 [![Dependency Status](https://david-dm.org/IMA-WorldHealth/bhima-2.X.svg)](https://david-dm.org/IMA-WorldHealth/bhima-2.X)
 [![devDependency Status](https://david-dm.org/IMA-WorldHealth/bhima-2.X/dev-status.svg)](https://david-dm.org/IMA-WorldHealth/bhima-2.X/#info=devDependencies)
-[![bitHound Overall Score](https://www.bithound.io/github/IMA-WorldHealth/bhima-2.X/badges/score.svg)](https://www.bithound.io/github/IMA-WorldHealth/bhima-2.X)
-[![bitHound Code](https://www.bithound.io/github/IMA-WorldHealth/bhima-2.X/badges/code.svg)](https://www.bithound.io/github/IMA-WorldHealth/bhima-2.X)
 
 _Bhima is alpha version software. Please do not use this in a commerical context._
 
