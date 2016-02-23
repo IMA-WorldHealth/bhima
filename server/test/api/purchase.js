@@ -139,7 +139,7 @@ describe('The /Purchase Order API endpoint', function () {
       });
   });
 
-  it('PUT /purchase should update an Invalid Purchase Order ', function () {
+  it('PUT /purchase Unable to update an invalid purchase order ', function () {
     return agent.put('/purchase/invalid')
       .send({ is_integration : 1 })
       .then(function (res) {

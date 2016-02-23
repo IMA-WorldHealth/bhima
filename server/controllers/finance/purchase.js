@@ -30,7 +30,7 @@ function lookupPurchaseOrder(uuid, codes) {
 
   var record;
 
-  var sql =
+  var sqlPurchase =
     'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
     'creditor.text, employee.name, employee.prenom, user.first, user.last, ' +
     'purchase.creditor_uuid, purchase.timestamp, purchase.note, purchase.paid_uuid, purchase.confirmed, purchase.closed, ' +
@@ -42,15 +42,6 @@ function lookupPurchaseOrder(uuid, codes) {
     'JOIN user ON user.id = purchase.emitter_id ' +
     'WHERE purchase.uuid = ? ;';
 
-  var sqlPurchase =
-    'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
-    'creditor.text, employee.name, employee.prenom, user.first, user.last ' +
-    'FROM purchase ' +
-    'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
-    'JOIN employee ON employee.id = purchase.purchaser_id ' +
-    'JOIN user ON user.id = purchase.emitter_id ' +
-    'WHERE purchase.uuid = ?';
-
   var sqlPurchaseItem =
     'SELECT purchase_item.purchase_uuid, purchase_item.uuid, purchase_item.quantity, purchase_item.unit_price, ' +
     'purchase_item.total, inventory.text ' +
@@ -58,7 +49,7 @@ function lookupPurchaseOrder(uuid, codes) {
     'JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid ' +
     'WHERE purchase_item.purchase_uuid = ? ';  
 
-  return db.exec(sql, [uuid])
+  return db.exec(sqlPurchaseItem, [uuid])
   .then(function (rows) {
 
     if (rows.length === 0) {
@@ -67,17 +58,6 @@ function lookupPurchaseOrder(uuid, codes) {
 
     // store the record for return
     record = rows[0];
-
-    return db.exec(sqlPurchase, [uuid]);
-  })
-  .then(function (rows) {
-
-    if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
-    }
-
-    // bind the purchase order without all purchase_order table key
-    record.purchase = rows[0];
 
     return db.exec(sqlPurchaseItem, [uuid]);
   })
@@ -124,12 +104,11 @@ function create (req, res, next) {
 
   transaction
     .addQuery(sqlPurchase, [purchaseOrder])
-    .addQuery(sqlPurchaseItem,[linkPurchaseItems(purchaseItem, purchaseOrder.uuid)]);
+    .addQuery(sqlPurchaseItem,[dataPurchaseItem]);
 
   transaction.execute()
     .then(function (results) {
       res.status(201).json({ uuid : purchaseOrder.uuid });
-      return;
     })
     .catch(next)
     .done();
