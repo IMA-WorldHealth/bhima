@@ -1,3 +1,4 @@
+/* jshint expr:true */
 var chai = require('chai');
 var expect = chai.expect;
 var uuid = require('node-uuid');

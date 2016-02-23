@@ -76,7 +76,7 @@ var suppliers            = require('../controllers/admin/suppliers');
 var multipart            = require('connect-multiparty');
 
 exports.configure = function (app) {
-  winston.log('debug', 'Configuring routes');
+  winston.debug('Configuring routes');
 
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
