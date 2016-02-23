@@ -2,10 +2,10 @@
 
 var chai = require('chai');
 var expect = chai.expect;
-var date = new Date();
-
 var helpers = require('./helpers');
+var uuid    = require('node-uuid');
 helpers.configure(chai);
+
 
 /**
 * The /projects API endpoint
@@ -23,7 +23,7 @@ describe('The /Purchase Order API endpoint', function () {
 
   // purchase we will add during this test suite.
   var purchase_order = {
-      uuid          : '858f7a85-16d9-4ae5-b5c0-1fe007a8d2e',
+      uuid          : uuid(),
       cost          : 546.7520,
       purchase_date : new Date('2016-02-19'),
       currency_id   : 1,
@@ -37,14 +37,14 @@ describe('The /Purchase Order API endpoint', function () {
 
    var purchase_item = [
     { 
-      uuid : '017dbe1e-c37c-11e5-a86e-843a4b0cdadc', 
+      uuid : uuid(), 
       inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
       quantity : 200,
       unit_price : 0.0538,
       total : 10.7520 
     },
     { 
-      uuid : 'ab8528de-1b0a-41df-84b4-88eff430f2f7',       
+      uuid : uuid(),       
       inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
       quantity : 16000,
       unit_price : 0.0335,
@@ -77,7 +77,7 @@ describe('The /Purchase Order API endpoint', function () {
         return agent.get('/purchase/' + purchaseUuid);
       })
       .then(function (res) {
-        var purchase = res.body.purchase[0];
+        var purchase = res.body;
 
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -90,7 +90,7 @@ describe('The /Purchase Order API endpoint', function () {
   it('GET /purchase/:uuid should return a single JSON purchase order', function () {
     return agent.get('/purchase/' + purchase_order.uuid)
       .then(function (res) {
-        var purchase = res.body.purchase[0];
+        var purchase = res.body.purchase;
 
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -143,8 +143,7 @@ describe('The /Purchase Order API endpoint', function () {
     return agent.put('/purchase/invalid')
       .send({ is_integration : 1 })
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.not.be.empty;
+        expect(res).to.have.status(500);
       })
       .catch(helpers.handler);
   });

@@ -24,6 +24,72 @@ function linkPurchaseItems(purchaseItems, purchaseUuid) {
   });
 }
 
+// looks up a single purchase record and associated purchase_items
+function lookupPurchaseOrder(uuid, codes) {
+  'use strict';
+
+  var record;
+
+  var sql =
+    'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
+    'creditor.text, employee.name, employee.prenom, user.first, user.last, ' +
+    'purchase.creditor_uuid, purchase.timestamp, purchase.note, purchase.paid_uuid, purchase.confirmed, purchase.closed, ' +
+    'purchase.is_direct, purchase.is_donation, purchase.emitter_id, purchase.is_authorized, purchase.is_validate, ' +
+    'purchase.confirmed_by, purchase.is_integration, purchase.purchaser_id, purchase.receiver_id ' +
+    'FROM purchase ' +
+    'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
+    'JOIN employee ON employee.id = purchase.purchaser_id ' +
+    'JOIN user ON user.id = purchase.emitter_id ' +
+    'WHERE purchase.uuid = ? ;';
+
+  var sqlPurchase =
+    'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
+    'creditor.text, employee.name, employee.prenom, user.first, user.last ' +
+    'FROM purchase ' +
+    'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
+    'JOIN employee ON employee.id = purchase.purchaser_id ' +
+    'JOIN user ON user.id = purchase.emitter_id ' +
+    'WHERE purchase.uuid = ?';
+
+  var sqlPurchaseItem =
+    'SELECT purchase_item.purchase_uuid, purchase_item.uuid, purchase_item.quantity, purchase_item.unit_price, ' +
+    'purchase_item.total, inventory.text ' +
+    'FROM purchase_item ' +
+    'JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid ' +
+    'WHERE purchase_item.purchase_uuid = ? ';  
+
+  return db.exec(sql, [uuid])
+  .then(function (rows) {
+
+    if (rows.length === 0) {
+      throw new codes.ERR_NOT_FOUND();
+    }
+
+    // store the record for return
+    record = rows[0];
+
+    return db.exec(sqlPurchase, [uuid]);
+  })
+  .then(function (rows) {
+
+    if (rows.length === 0) {
+      throw new codes.ERR_NOT_FOUND();
+    }
+
+    // bind the purchase order without all purchase_order table key
+    record.purchase = rows[0];
+
+    return db.exec(sqlPurchaseItem, [uuid]);
+  })
+  .then(function (rows) {
+
+    // bind the purchase items to the "items" property and return
+    record.items = rows;
+
+    return record;
+  });
+}
+
 
 /**
 * Create a Purchase Order in the database
@@ -47,8 +113,6 @@ function create (req, res, next) {
     return;
   }
   
-
-
   var sqlPurchase = 'INSERT INTO purchase SET ?';
 
   var sqlPurchaseItem = 'INSERT INTO purchase_item (uuid, inventory_uuid, quantity, unit_price, ' +
@@ -64,12 +128,7 @@ function create (req, res, next) {
 
   transaction.execute()
     .then(function (results) {
-      var confirmation =  { 
-        uuid : purchaseOrder.uuid,
-        results : results
-      };
-
-      res.status(201).json(confirmation);
+      res.status(201).json({ uuid : purchaseOrder.uuid });
       return;
     })
     .catch(next)
@@ -118,45 +177,12 @@ function list (req, res, next) {
 function detail (req, res, next) {
   'use strict';
 
-  var purchaseUuid = req.params.uuid,
-    purchaseRow, purchaseItems;
+  var uuid = req.params.uuid;
 
-  var sqlPurchase =
-    'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
-    'creditor.text, employee.name, employee.prenom, user.first, user.last ' +
-    'FROM purchase ' +
-    'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
-    'JOIN employee ON employee.id = purchase.purchaser_id ' +
-    'JOIN user ON user.id = purchase.emitter_id ' +
-    'WHERE purchase.uuid = ?';
-
-  var sqlPurchaseItem =
-    'SELECT purchase_item.purchase_uuid, purchase_item.uuid, purchase_item.quantity, purchase_item.unit_price, ' +
-    'purchase_item.total, inventory.text ' +
-    'FROM purchase_item ' +
-    'JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid ' +
-    'WHERE purchase_item.purchase_uuid = ? ';  
-
-  db.exec(sqlPurchase, [purchaseUuid])
-  .then(function (row) {
-    purchaseRow = row;
-    return db.exec(sqlPurchaseItem, [purchaseUuid]);
+  lookupPurchaseOrder(uuid, req.codes)
+  .then(function (record) {
+    res.status(200).json(record);
   })
-  .then(function (rows) {     
-    if (purchaseRow.length === 0) { 
-      res.status(404).json({
-        code : 'ERR_NOT_FOUND', 
-        reason : 'No Purchase found under the uuid ' + purchaseUuid
-      });
-    } else {       
-      // Found Purchase resource - unpack and return to client
-      purchaseItems = rows;
-      res.status(200).json({
-        purchase : purchaseRow, 
-        purchaseItems : purchaseItems
-      });
-    }
-  })  
   .catch(next)
   .done();
 }
@@ -167,34 +193,21 @@ function update(req, res, next) {
   'use strict';
 
   var sql;
+  var uuid = req.params.uuid;
 
   sql =
     'UPDATE purchase SET ? WHERE uuid = ?;';
 
-  db.exec(sql, [req.body, req.params.uuid])
+  db.exec(sql, [req.body, uuid])
   .then(function () {
 
-    sql =
-      'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
-      'creditor.text, employee.name, employee.prenom, user.first, user.last, ' +
-      'purchase.creditor_uuid, purchase.timestamp, purchase.note, purchase.paid_uuid, purchase.confirmed, purchase.closed, ' +
-      'purchase.is_direct, purchase.is_donation, purchase.emitter_id, purchase.is_authorized, purchase.is_validate, ' +
-      'purchase.confirmed_by, purchase.is_integration, purchase.purchaser_id, purchase.receiver_id ' +
-      'FROM purchase ' +
-      'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
-      'JOIN employee ON employee.id = purchase.purchaser_id ' +
-      'JOIN user ON user.id = purchase.emitter_id ' +
-      'WHERE purchase.uuid = ? ;';
-
-
-    return db.exec(sql, [req.params.uuid]);
+    // fetch the changed object from the database
+    return lookupPurchaseOrder(uuid);
   })
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
-    }
+  .then(function (record) {
 
-    res.status(200).json(rows[0]);
+    // all updates completed successfull, return full object to client
+    res.status(200).json(record);
   })
   .catch(next)
   .done();
