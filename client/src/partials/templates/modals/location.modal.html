@@ -9,32 +9,13 @@
     <div class="row text-center">
       <div class="btn-group">
         <button
+          ng-repeat="(key, view) in LocationModalCtrl.views track by $index"
           type="button"
           class="btn btn-default"
-          ng-click="LocationModalCtrl.state(0)"
-          ng-class="{ 'active' : LocationModalCtrl.visibility === 0 }">
-          {{ "LOCATION.COUNTRY" | translate }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-default"
-          ng-click="LocationModalCtrl.state(1)"
-          ng-class="{ 'active' : LocationModalCtrl.visibility === 1 }">
-          {{ "LOCATION.PROVINCE" | translate }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-default"
-          ng-click="LocationModalCtrl.state(2)"
-          ng-class="{ 'active' : LocationModalCtrl.visibility === 2 }">
-          {{ "LOCATION.SECTOR" | translate }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-default"
-          ng-click="LocationModalCtrl.state(3)"
-          ng-class="{ 'active' : LocationModalCtrl.visibility === 3 }">
-          {{ "LOCATION.VILLAGE" | translate }}
+          ng-class="{ 'active' : LocationModalCtrl.view.index === view.index }"
+          ng-click="LocationModalCtrl.setView(view.cacheKey)"
+          >
+          {{ view.translateKey | translate }}
         </button>
       </div>
     </div>
@@ -46,7 +27,7 @@
         {{ "LOCATION.COUNTRY" | translate }}
       </label>
       <select
-        ng-if="LocationModalCtrl.visibility > 0"
+        ng-if="LocationModalCtrl.view.index > 1"
         class="form-control"
         name="country"
         ng-model="LocationModalCtrl.country"
@@ -56,7 +37,7 @@
         <option value="" disabled>{{ "SELECT.COUNTRY" | translate }}</option>
       </select>
       <input
-        ng-if="LocationModalCtrl.visibility === 0"
+        ng-if="LocationModalCtrl.view.index === 1"
         class="form-control"
         name="country"
         ng-model="LocationModalCtrl.country"
@@ -66,13 +47,13 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.province.$error }"
-      ng-if="LocationModalCtrl.visibility > 0"
+      ng-if="LocationModalCtrl.view.index > 1"
       >
       <label class="control-label">
         {{ "LOCATION.PROVINCE" | translate }}
       </label>
       <select
-        ng-if="LocationModalCtrl.visibility > 1"
+        ng-if="LocationModalCtrl.view.index > 2"
         class="form-control"
         name="province"
         ng-model="LocationModalCtrl.province"
@@ -83,7 +64,7 @@
       </select>
 
       <input
-        ng-if="LocationModalCtrl.visibility === 1"
+        ng-if="LocationModalCtrl.view.index === 2"
         class="form-control"
         name="province"
         ng-model="LocationModalCtrl.province"
@@ -92,14 +73,14 @@
     </div>
 
     <div class="form-group"
-      ng-if="LocationModalCtrl.visibility > 1"
+      ng-if="LocationModalCtrl.view.index > 2"
       ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.sector.$error }"
       >
       <label class="control-label">
         {{ "LOCATION.SECTOR" | translate }}
       </label>
       <select
-        ng-if="LocationModalCtrl.visibility > 2"
+        ng-if="LocationModalCtrl.view.index > 3"
         class="form-control"
         name="sector"
         ng-model="LocationModalCtrl.sector"
@@ -108,7 +89,7 @@
         <option value="" disabled>{{ "SELECT.SECTOR" | translate }}</option>
       </select>
       <input
-        ng-if="LocationModalCtrl.visibility === 2"
+        ng-if="LocationModalCtrl.view.index === 3"
         name="sector"
         class="form-control"
         ng-model="LocationModalCtrl.sector"
@@ -117,7 +98,7 @@
     </div>
 
     <div class="form-group"
-      ng-if="LocationModalCtrl.visibility > 2"
+      ng-if="LocationModalCtrl.view.index > 3"
       ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.village.$error }"
       >
       <label class="control-label">
