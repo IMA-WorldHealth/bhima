@@ -14,12 +14,12 @@ exports.list = function list(req, res, next) {
 
   var sql,
       enterprise = req.session.enterprise;
-  
+
   sql =
     'SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, exchange_rate.date, ' +
     'enterprise.currency_id AS \'enterprise_currency_id\' ' +
     'FROM exchange_rate ' +
-    'JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id ' + 
+    'JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id ' +
     'WHERE exchange_rate.enterprise_id = ? ' +
     'ORDER BY date;';
 
@@ -38,8 +38,8 @@ exports.create = function create(req, res, next) {
 
   var sql,
       data = req.body.rate;
-    
-  // preprocess dates
+
+  // preprocess dates for mysql insertion
   if (data.date) {
     data.date = new Date(data.date);
   }
@@ -66,14 +66,19 @@ exports.update = function update(req, res, next) {
   sql =
     'UPDATE exchange_rate SET ? WHERE id = ?;';
 
+  // should we even be changed the date?
+  if (req.body.date) {
+    req.body.date = new Date(req.body.date);
+  }
+
   db.exec(sql, [req.body, req.params.id])
   .then(function () {
 
     sql =
       'SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, exchange_rate.date, ' +
-      'enterprise.currency_id AS \'enterprise_currency_id\' ' +
+      'enterprise.currency_id AS enterprise_currency_id ' +
       'FROM exchange_rate ' +
-      'JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id ' + 
+      'JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id ' +
       'WHERE exchange_rate.id = ?;';
 
     return db.exec(sql, [req.params.id]);
@@ -105,7 +110,7 @@ exports.delete = function del(req, res, next) {
       throw new req.codes.ERR_NOT_FOUND();
     }
 
-    res.status(204).send();
+    res.status(204).json();
   })
   .catch(next)
   .done();
