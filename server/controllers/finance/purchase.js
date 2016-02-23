@@ -84,6 +84,7 @@ function create (req, res, next) {
   var purchaseOrder = purchase.purchase_order;
   var purchaseItem =  purchase.purchase_item;
 
+
   // Reject invalid parameters
   if (!purchaseOrder || !purchaseItem) { 
     res.status(400).json({
@@ -91,6 +92,10 @@ function create (req, res, next) {
       reason : 'A valid purchase details and purchase items must be provided under the attributes `purchaseOrder` and `purchaseItem`'
     });
     return;
+  }
+
+  if(purchaseOrder.purchase_date){
+    purchaseOrder.purchase_date = new Date(purchaseOrder.purchase_date);
   }
   
   var sqlPurchase = 'INSERT INTO purchase SET ?';

@@ -78,7 +78,6 @@ describe('The /Purchase Order API endpoint', function () {
       })
       .then(function (res) {
         var purchase = res.body;
-
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(purchase.cost).to.equal(purchase_order.cost);
