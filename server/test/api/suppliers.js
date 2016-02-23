@@ -2,6 +2,7 @@
 
 var chai = require('chai');
 var expect = chai.expect;
+var uuid    = require('node-uuid');
 
 var helpers = require('./helpers');
 helpers.configure(chai);
@@ -16,7 +17,7 @@ describe('The /supplier  API endpoint', function () {
 
       // Supplier we will add during this test suite.
   var supplier = {
-    uuid : 'ab7b06f5-f4b8-4218-a22d-14c753b3e13c',
+    uuid : uuid(),
     creditor_uuid : '7ac4e83c-65f2-45a1-8357-8b025003d794',
     name : 'SUPPLIER TEST A',
     address_1 : '',

@@ -91,11 +91,7 @@ exports.create = function create(req, res, next) {
 
   db.exec(sql, [data])
   .then(function (row) {
-    var confirmation = { 
-      uuid : data.uuid
-    };
-
-    res.status(201).json(confirmation);
+    res.status(201).json({ uuid : data.uuid });
   })
   .catch(next)
   .done();
