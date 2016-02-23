@@ -1,3 +1,4 @@
+/* jshint expr:true*/
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -23,6 +24,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
     { sale_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6', amount : 75.0 },
     { sale_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf', amount : 25.0 }
   ];
+  var REFERENCE = 'TPA1';
 
   /** login before each request */
   beforeEach(helpers.login(agent));
@@ -252,6 +254,29 @@ describe('(/cash) Cash Payments Interface ::', function () {
     });
   });
 
+  // the references API
+  describe('(/cash/references) references for finding cash payment uuids', function () {
+
+    it('GET /cash/references/unknown should return a 404 error', function () {
+      agent.get('/cash/references/unknown')
+        .then(function (res) {
+          helpers.api.errored(res, 404);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('get /cash/references/:reference should return a uuid for a valid payment', function () {
+      agent.get('/cash/references/'.concat(REFERENCE))
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.have.property('uuid');
+        })
+        .catch(helpers.handler);
+    });
+  });
+
+
   // The HTTP DELETE verb triggers a cash_discard record, but does not destroy any data
   // (proposed rename: debit_note)
   describe.skip('The Debit Note Interface ::', function () {
@@ -260,4 +285,5 @@ describe('(/cash) Cash Payments Interface ::', function () {
     it('DELETE-d cash records should still be discoverable by GET /cash');
     it('DELETE-d cash records should have the \'canceled\' property set');
   });
+
 });

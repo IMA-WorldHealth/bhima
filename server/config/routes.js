@@ -471,6 +471,7 @@ exports.configure = function (app) {
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
   app.delete('/cash/:uuid', cash.debitNote);
+  app.get('/cash/references/:reference', cash.reference);
 
   /** @todo - classify these */
   app.get('/cashflow/report/', cashflow.getReport);
