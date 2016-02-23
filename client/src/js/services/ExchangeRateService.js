@@ -35,14 +35,12 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
 
   service.read = read;
   service.create = create;
+  service.update = update;
+  service.delete = del;
   service.convertToEnterpriseCurrency = convertToEnterpriseCurrency;
   service.convertFromEnterpriseCurrency = convertFromEnterpriseCurrency;
   service.getCurrentRate = getCurrentRate;
   service.getExchangeRate = getExchangeRate;
-  service.update = update;
-  service.hasDailyRate = hasDailyRate; 
-  service.getExchangeRate = getExchangeRate; 
-  service.delete = del;
 
 
   /* ------------------------------------------------------------------------ */
@@ -57,7 +55,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     return $http.get('/exchange')
       .then(util.unwrapHttpResponse)
       .then(function (data) {
-        
+
         // if there is no data, the controllers should be alerted
         // by throwing an missing exchange rate error.
         if (data.length === 0) {
