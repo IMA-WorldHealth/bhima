@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('ExchangeRateController', ExchangeRateController);
 
 ExchangeRateController.$inject = [
-  'SessionService', 'DateService', 'CurrencyService', 'ExchangeRateService', '$uibModal'
+  'SessionService', 'DateService', 'CurrencyService', 'ExchangeRateService', '$uibModal', '$window', '$translate'
 ];
 
 /**
@@ -11,15 +11,18 @@ ExchangeRateController.$inject = [
 *
 * @controller ExchangeRateController
 */
-function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
+function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $window, $translate) {
   var vm = this;
 
   // bind data
+  vm.view = 'default';
   vm.today      = new Date();
   vm.tomorrow   = Dates.next.day();
   vm.enterprise = Session.enterprise;
   vm.form       = { date : vm.today };
-
+  vm.create     = create;
+  vm.update     = update;
+  vm.del = del;  
   // bind methods
   vm.formatCurrency = formatCurrency;
   vm.setExchangeRate = setExchangeRate;
@@ -33,15 +36,23 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
 
   // start up the module
   function startup() {
-
+    vm.feedback = null;
     // load supported currencies
     Currencies.read().then(function (data) {
       vm.currencies = data;
 
+      // filter out the enteprise currency
+      vm.outCurrencies = vm.currencies.filter(function (currency) {
+        return currency.id !== Session.enterprise.currency_id;
+      });
+      vm.form.id = null;
+      vm.rates = null;
+      vm.current = null;
       // load supported rates
       return Rates.read(true);
     })
     .then(function (data) {
+      vm.form.date = vm.today;
       vm.rates = data;
       vm.current = calculateCurrentRates(data);
     })
@@ -56,7 +67,6 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
   // It doesn't seem to make sense to expose this functionality from the
   // service API, so this is a duplicate.
   function calculateCurrentRates(rates) {
-
     // initially sort the rates by date in reverse order
     rates.sort(function (a,b) {
       return (a.date < b.date) ? 1 : (a.date === b.date ? 0 : -1);
@@ -65,28 +75,68 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal) {
     // take the first rate matching the currency (since we reversed the
     // rate orders, this is the most recent rate).
     return rates.reduce(function (map, row) {
-      if (!map[row.currency_id]) { map[row.currency_id] = row.rate; }
+      if (!map[row.currency_id]) { map[row.currency_id] = { rate: row.rate, rowid : row.id } }
       return map;
     }, {});
   }
 
   // set the exchange rate for a currency id in a new modal
-  function setExchangeRate(id) {
-    $uibModal.open({
-      templateUrl : 'partials/exchange/modal.html',
-      size : 'md',
-      animation : true,
-      controller : 'ExchangeRateModalController as ModalCtrl',
-      resolve : {
-        data : {
-          date : vm.date,
-          currency_id : id
-        }
-      }
-    }).result
-    .then(function () {
-      startup();
-    });
+  function setExchangeRate(id, row) {
+    if(vm.form.date){
+      vm.feedback = 'default';
+      var identifiant = vm.form.id ? vm.form.id : ''; 
+
+      $uibModal.open({
+        templateUrl : 'partials/exchange/modal.html',
+        size : 'md',
+        animation : true,
+        controller : 'ExchangeRateModalController as ModalCtrl',
+        resolve : {
+          data : {
+            id : identifiant,
+            date : vm.form.date,
+            currency_id : id
+          }
+        },
+      }).result
+      .then(function (operation) {
+        vm.view = 'default';
+        startup();
+        vm.feedback = operation;
+      });        
+    } else {
+      vm.feedback = 'invalid-date';
+    }
+  }
+
+  function update(data){
+    vm.view = 'update';
+    vm.form = data;
+  }
+
+  function create(){
+    vm.form = { date : new Date() };
+    vm.view = 'default';
+    vm.feedback = null;
+  }
+
+  // switch to delete warning mode
+  function del(id) {
+    var result = $window.confirm($translate.instant('EXCHANGE.CONFIRM'));
+    if (!result) {
+      vm.view = 'default';
+      return
+    } else {
+      vm.view = 'delete_confirm';
+      Rates.delete(id)
+      .then(function (response) {
+        startup();
+        vm.feedback = 'delete_success';
+      }).catch(function (error) {
+        vm.feedback = 'delete_error';
+        vm.HTTPError = error;
+      });
+    }
   }
 
   // startup the module

@@ -251,31 +251,31 @@
   }
 },
 "CASH": {
-   "CASHBOX" : {
-      "ADD"                    : "Ajouter une Caisse",
-      "ALERT"                  : "Module de gestion des Cashbox",
-      "ALL"                    : "Toutes",
-      "ADD_CURRENCY_ACCOUNTS"  : "Ajouter Comptes",
-      "AUXILIARY"              : "Auxiliare",
-      "BOX"                    : "Caisse",
-      "CASHBOX"                : "Caisse",
-      "CASH_ACCOUNT"           : "Compte Caisse",
-      "CONFIG_CURRENCIES"      : "Configurer Devises",
-      "CREATE_SUCCESS"         : "Créé une caisse avec succès.",
-      "EDIT"                   : "Edit",
-      "GAIN_ACCOUNT"           : "Compte Gain Echange",
-      "LOSS_ACCOUNT"           : "Compte Perte Echange",
-      "NOT_CONFIGURED"         : "Les comptes ne sont pas configuree.",
-      "PRINCIPAL"              : "Principal",
-      "PROJECT"                : "Projet",
-      "SAVE_UPDATES"           : "Sauvegarder vos changements",
-      "TITLE"                  : "Gestion des caisses et des comptes bancaires",
-      "TRANSFER_ACCOUNT"       : "Compte Virement",
-      "UPDATE_SUCCESS"         : "Mis à jour une caisse avec succès."
-      },
+  "CASHBOX" : {
+    "ADD"                    : "Ajouter une Caisse",
+    "ALERT"                  : "Module de gestion des Cashbox",
+    "ALL"                    : "Toutes",
+    "ADD_CURRENCY_ACCOUNTS"  : "Ajouter Comptes",
+    "AUXILIARY"              : "Auxiliare",
+    "BOX"                    : "Caisse",
+    "CASHBOX"                : "Caisse",
+    "CASH_ACCOUNT"           : "Compte Caisse",
+    "CONFIG_CURRENCIES"      : "Configurer Devises",
+    "CREATE_SUCCESS"         : "Créé une caisse avec succès.",
+    "EDIT"                   : "Edit",
+    "GAIN_ACCOUNT"           : "Compte Gain Echange",
+    "LOSS_ACCOUNT"           : "Compte Perte Echange",
+    "NOT_CONFIGURED"         : "Les comptes ne sont pas configuree.",
+    "PRINCIPAL"              : "Principal",
+    "PROJECT"                : "Projet",
+    "SAVE_UPDATES"           : "Sauvegarder vos changements",
+    "TITLE"                  : "Gestion des caisses et des comptes bancaires",
+    "TRANSFER_ACCOUNT"       : "Compte Virement",
+    "UPDATE_SUCCESS"         : "Mis à jour une caisse avec succès."
+    },
    "CLEAR_SELECTION"  : "Recommencer",
-   "DEBITOR_INVOICES" : "Factures Impaye de Débiteur",
-   "DEFAULT_CASHBOX"  : "Caisse",
+   "DEBITOR_INVOICES" : "Unpaid invoices of debitors",
+   "DEFAULT_CASHBOX"  : "Default Cashbox",
    "EXTRA" : {
       "ACTION"             : "Action",
       "FILTER_PATIENT"     : "Filtre client",
@@ -293,12 +293,12 @@
       "TITLE"              : "Régularisation des paiements",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
-    "FLOW" : {
-      "TITLE" : "Flux de liquidité (Cash Flow) "
-    },
-   "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
+   "FLOW" : {
+     "TITLE" : "Flux de liquidité (Cash Flow) "
+   },
+   "HELP_TXT_1"       : "Ce module permettre des payer contre plusiers factures",
    "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
-   "NO_EXCHANGE_RATE" : "Erreur                                                      : Taux d'Exchange n'existe pas!",
+   "NO_EXCHANGE_RATE" : "Erreur                                                      : le taux de change n'existe pas!",
    "OVER": {
       "CUED"          : "Le debiteur doit cette montant",
       "DANGER"        : "Attention!",
@@ -308,12 +308,35 @@
       "REASON"        : "Raison",
       "TITLE"         : "Justification De Payment"
       },
-   "OVERDUE"          : "Excedent",
+    "VOUCHER" : {
+      "TITLE" : "Paiements Caisse Auxillaire",
+      "CASHBOXES" : {
+        "AVAILABLE" : "Caissea disponibles",
+        "UNCONFIGURED" : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse dans la liste ci-dessous pour continuer.",
+        "LINK" : "Cliquez ici pour l'ajouter.",
+        "MISSING" : "Vous ne trouvez pas votre caisse?",
+        "CURRENT_CASHBOX" : "Caisse auxilliare courant",
+        "CHANGE_CASHBOX" : "Changer de caisse"
+      },
+     "SLIP" : "Caisse en espèces",
+     "CASHBOX" : "Caisse",
+     "CAUTION" : "Caution",
+     "INVOICE" : "Paiement des factures",
+     "SELECT_INVOICES" : "Sélectionner la(les) Facture(s)",
+     "ERRORS"  :  {
+      "NO_CASH_ITEMS" : "Aucun élément n'a été sélectionné. Afin de payer des factures précédentes, vous devez sélectionner une facture en utilisant le bouton 'Sélectionner la(les) Facture(s)' "
+     },
+     "RECEIPTS" : {
+      "TITLE" : "Reçu de paiement des factures"
+     },
+     "DEBTOR_INVOICES" : "Factures des débiteurs"
+   },
+   "OVERDUE"          : "Excédent",
    "PAYMENT"          : "Paiement",
-   "PAY_INVOICES"     : "Paye les Factures",
+   "PAY_INVOICES"     : "Payer les Factures",
    "TITLE"            : "Caisse Auxillaire",
-   "TOTAL_DUE"        : "Total Débiter",
-   "TOTAL_PAYING"     : "Total Paye",
+   "TOTAL_DUE"        : "Total dû",
+   "TOTAL_PAYING"     : "Total Payé",
    "WARNING"          : "Ce patient est un conventionné et ne peut payer à la caisse auxilliare",
    "WARNING_2"        : "Pour le paiement des anciennes factures il faudrait changer son groupe débiteur "
    },
@@ -321,7 +344,7 @@
   "PRIMARY" : "Principale",
   "AUXILLARY" : "Auxillaire",
   "BANK"      : "Banque"
-  },
+},
 "CASH_DISCARD" : {
    "CASH_DETAILS"     : "Détails",
    "DESCRIPTION"      : "Description",
@@ -488,6 +511,7 @@
    "ENTERPRISE_CURRENCY"   : "Monnaie de l'Entreprise",
    "ENTERPRISE_ID"         : "ID Enterprise",
    "ENTRY_DATE"            : "Date d'entrée",
+   "EXCHANGE_RATE"         : "Taux de change",
    "EXPENSE"               : "Dépense",
    "EXPIRATION_DATE"       : "Date Expiration",
    "EXPLANATION"           : "Explication",
@@ -845,8 +869,8 @@
    },
 "CURRENCY": {
    "ACTIONS"       : "Actions",
-   "ACTION_TXT_1"  : "Editer la monaie",
-   "ACTION_TXT_2"  : "Soupplimer la monaie",
+   "ACTION_TXT_1"  : "Editer la monnaie",
+   "ACTION_TXT_2"  : "Soupplimer la monnaie",
    "ADD"           : "Ajouter un Monaies",
    "CURRENCY_DEFN" : "Definition de la Monaie",
    "DECIMAL"       : "Decimal",
@@ -856,7 +880,7 @@
    "SEPARATOR"     : "Seperateur",
    "SEPARATOR_TXT" : "Le delimiteur pour la place milles",
    "SYMBOL"        : "Signe",
-   "SYMBOL_TXT"    : "La signe qui va demarquer le monaie",
+   "SYMBOL_TXT"    : "La signe qui va demarquer le monnaie",
    "TITLE"         : "Gestion des Monaies"
    },
 "DAILY_CONSUMPTION": {
@@ -1214,18 +1238,21 @@
    "WARN_MISSING_DOCUMENT_ID"       : "Document ID manquant"
    },
 "EXCHANGE": {
-   "HELP_TXT_1"       : "Le module de taux de change, donne la possibilite de définir le taux d'echange du jour. Par souci d'Intégrité des données, Le taux d'echange doit être défini par jour",
-   "NEW"              : "Nouveau Taux",
-   "NO_EXCHANGE_RATE" : "Le taux d'échange n'est pas encore défini pour la date du :",
-   "NO_RATES"         : "Il n'y a pas des taux défini pour aujourd'hui!",
-   "PREV"             : "Taux Précédent ",
-   "REVIEW"           : "Revoir le taux d'aujourd'hui",
-   "SET"              : "Définir le Taux de Change pour Aujourd'hui",
-   "SET_HERE"         : "Définir ici",
-   "TITLE"            : "Configurer le taux de change",
-   "TODAY_RATE"       : "Taux de change pour",
-   "OLD_DATE"         : "Definir le taux d'echange pour une date anterieure",
-   "DATE"             : "Definir date"
+   "CONFIRM"              : "Etes vous sure de vouloir supprimer ce taux de change",
+   "DATE"                 : "Definir date",
+   "ENTERPRISE_CURRENCY"  : "Monnaie de l'Enterprise",
+   "HELP_TXT_1"           : "Le module de taux de change, donne la possibilite de définir le taux d'echange du jour. Par souci d'Intégrité des données, Le taux d'echange doit être défini par jour",
+   "NEW"                  : "Nouveau Taux",
+   "NEW_RATE"             : "Nouveau Taux d'échange",
+   "NO_EXCHANGE_RATE"     : "Le taux d'échange n'est pas encore défini pour la date du :",
+   "NO_RATES"             : "Il n'y a pas des taux défini pour aujourd'hui!",
+   "PREV"                 : "Taux Précédent ",
+   "REVIEW"               : "Revoir le taux ",
+   "SET"                  : "Définir le Taux de Change pour Aujourd'hui",
+   "SET_HERE"             : "Définir ici",
+   "TITLE"                : "Configurer le taux de change",
+   "TODAY_RATE"           : "Taux de change pour",
+   "OLD_DATE"             : "Definir le taux d'echange pour une date anterieure"
    },
 "EXPIRING": {
    "EXPIRED" : "Articles expirés",
@@ -1374,10 +1401,15 @@
    "CLOSE_FORM"      : "Annuler",
    "CONTINUE"        : "Continuer",
    "CONFIGURE"       : "Configurer",
+   "DANGER_ZONE"     : "Zone Dangereuse",
+   "DEFINE"          : "Définir",
    "DELETE"          : "Effacer",
+   "DELETE_SUCCESS"  : "Suppression avec succès",
    "DISCARD"         : "Annuler",
+   "DISMISS"         : "Rejeter",
    "EDIT"            : "Editer",
-   "LOGIN"           : "Se Connector",
+   "INVALID_DATE"    : "La date est invalide",
+   "LOGIN"           : "Connexion",
    "HAS_ERRORS"      : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumettre à nouveau.",
    "NEW_FORM"        : "Nouveau Formulaire",
    "NEW_TRANSFER"    : "Nouveau Transfert",
@@ -1393,12 +1425,17 @@
    "SAVE"            : "Sauver",
    "SAVE_CHANGES"    : "Sauver Changement",
    "SAVE_FORM"       : "Sauver Formulaire",
-   "DANGER_ZONE"     : "Zone Dangereuse",
+   "SAVE_SUCCES"     : "Enregistrement avec succès",
    "SEARCH"          : "Rechercher",
+   "SELECT"          : "Sélectionner",
    "SUBMIT"          : "Soumettre",
    "SUBMIT_SUCCESS"  : "Formulaire est sauvegardé avec success.",
    "SUBMIT_FAILURE"  : "Submission n'etait pas reussi.",
-   "UPDATE"          : "Mettre à Jour"
+   "UPDATE"          : "Mettre à Jour",
+   "UPDATE_SUCCES"   : "Mis à jour avec succès",
+   "WARNINGS" : {
+    "FUTURE_DATE"    : "Attention: Cette date n'est pas encore arrivée."
+   }
    },
 "GRADE": {
    "ADD"            : "Ajouter un grade",
@@ -2209,7 +2246,7 @@
    "TITLE"      : "Gestion des Centres de profits"
    },
 "PROJECT": {
-   "CONFIRM"        : "Voulez-vous vraiment effectuer cette operation ?", 
+   "CONFIRM"        : "Voulez-vous vraiment effectuer cette operation ?",
    "DELETE_SUCCESS" : "Suppression avec succès",
    "EDIT"           : "Editer",
    "EXISTING"       : "Projets Existants",
@@ -2324,6 +2361,24 @@
    "LETTER"             : "Lettre",
    "QUANTITY"           : "Quantité"
    },
+"RECEIPTS" : {
+  "DETAILS" : "Détails de reçus",
+  "CLIENT" : "Client",
+  "CLIENT_ID" : "Id Client",
+  "DATE" : "Date",
+  "FAX" : "FAX",
+  "TEL" : "TEL",
+  "TELEPHONE" : "Téléphone",
+  "TYPE" : "Type",
+  "TOTAL_BILLED" : "Total Facturé",
+  "TOTAL_PAID" : "Total Paie",
+  "EXCHANGE_RATE" : "Taux de change",
+  "POST_OFFICE_BOX" : "Boîte postale",
+  "PO_BOX" : "B.P.",
+  "CASHIER" : "Caissier ",
+  "CURRENCY" : "Monnaie de la transaction",
+  "CASHBOX" : "Accéder à la Caisse"
+},
 "REFERENCE": {
    "ADD"             : "Ajouter une référence",
    "ALERT"           : "Le module gestion de référence est un module qui a été conçu pour permettre l'administration des références existantes au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une référence ainsi que la suppression.",
@@ -2665,7 +2720,7 @@
    "LAST_PAGE" : "Dernier Page Visite",
    "TITLE"     : "BHIMA Paramètres",
    "LOGOUT_TITLE" : "Déconnection de BHIMA",
-   "LOGOUT"    : "Déconnection"   
+   "LOGOUT"    : "Déconnection"
    },
 "SEX": {
    "F" : "F",
