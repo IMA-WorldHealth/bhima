@@ -104,7 +104,7 @@ describe('The /supplier  API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(SUPPLIER_KEY);
-        expect(res.body.name).to.not.equal('Temp Project');
+        expect(res.body.name).to.equal('Temp Project');
       })
       .catch(helpers.handler);
   });
