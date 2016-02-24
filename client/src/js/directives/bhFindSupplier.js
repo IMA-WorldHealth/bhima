@@ -1,7 +1,7 @@
 angular.module('bhima.directives')
-.component('bhFindPatient', {
-  controller: FindPatientComponent,
-  templateUrl : 'partials/templates/bhFindPatient.tmpl.html',
+.component('bhFindSupplier', {
+  controller: FindSupplierComponent,
+  templateUrl : 'partials/templates/bhFindSupplier.tmpl.html',
   bindings: {
     onSearchComplete: '&',  // bind callback
     type:             '@',  // bind string
@@ -9,41 +9,36 @@ angular.module('bhima.directives')
   }
 });
 
-FindPatientComponent.$inject = ['Patients', 'appcache'];
+FindSupplierComponent.$inject = ['SupplierService', 'appcache'];
 
 /**
- * The Find Patient Component
+ * The Find Supplier Component
  *
- * This component allows a user to serach for a patient by either the
- * patient identifier (Project Abbreviation + Reference) or by typeahead on patient
+ * This component allows a user to serach for a supplier by either the
+ * supplier identifier (Project Abbreviation + Reference) or by typeahead on supplier
  * name.
  *
  * The typeahead loads data as your type into the input box, pinging th URL
- * /patient/search/?name={string} The HTTP endpoints sends back 20 results
+ * /supplier/search/?name={string} The HTTP endpoints sends back 20 results
  * which are presented to the user.
  *
  * SUPPORTED ATTRIBUTES:
  *   - type : which take one of these values (inline or panel) (default: inline)
- *   - on-search-complete : the callback function which get the returned patient
+ *   - on-search-complete : the callback function which get the returned supplier
  */
-function FindPatientComponent(Patients, AppCache) {
+function FindSupplierComponent(SupplierService, AppCache) {
   var vm = this;
 
   /** cache to remember which the search type of the component */
-  var cache = new AppCache('FindPatientComponent');
-  
+  var cache = new AppCache('FindSupplierComponent');
 
   /** @const the max number of records to fetch from the server */
   var LIMIT = 20;
 
   /** supported searches: by name or by id */
   vm.options = {
-    findById : {
-      'label' : 'FIND.PATIENT_ID',
-      'placeholder' : 'FIND.SEARCH_PATIENT_ID'
-    },
     findByName : {
-      'label' : 'FIND.PATIENT_NAME',
+      'label' : 'FIND.SUPPLIER_NAME',
       'placeholder' : 'FIND.SEARCH_NAME'
     }
   };
@@ -54,12 +49,10 @@ function FindPatientComponent(Patients, AppCache) {
   vm.validInput     = false;
 
   /** Expose functions and variables to the template view */
-  vm.searchByReference  = searchByReference;
   vm.searchByName       = searchByName;
-  vm.formatPatient      = formatPatient;
-  vm.selectPatient      = selectPatient;
+  vm.selectSupplier      = selectSupplier;
+
   vm.validateNameSearch = validateNameSearch;
-  vm.submit             = submit;
   vm.findBy             = findBy;
   vm.reload             = reload;
   vm.readInput          = readInput;
@@ -68,40 +61,16 @@ function FindPatientComponent(Patients, AppCache) {
   cache.fetch('optionKey')
   .then(loadDefaultOption);
 
-  /**
-  * @method searchByReference
-  *
-  * @param {string} ref -patient hospital referenece (e.g. HBB123)
-  *
-  * @description This function make a call to BHIMA API for finding a patient
-  * who is identified by a hospital reference. (e.g. HBB123)
-  */
-  function searchByReference(reference) {
-    vm.loadStatus = 'loading';
-
-    var options = {
-      reference : reference,
-      limit : LIMIT
-    };
-
-    // query the patient's search endpoint for the
-    // reference
-    Patients.search(options)
-    .then(function (patients) {
-      selectPatient(patients[0]);
-    })
-    .catch(handler);
-  }
 
   /**
   * @method searchByName
   *
-  * @param {string} text Patient name (first_name, middle_name or last_name)
+  * @param {string} text Supplier name (first_name, middle_name or last_name)
   *
-  * @description This function make a call to BHIMA API for getting patients
-  * according the name (first_name, middle_name or last_name).
+  * @description This function make a call to BHIMA API for getting suppliers
+  * according the name of supplier.
   *
-  * @return {Array} An array of patients
+  * @return {Array} An array of suppliers
   */
   function searchByName(text) {
     vm.loadStatus = 'loading';
@@ -112,31 +81,17 @@ function FindPatientComponent(Patients, AppCache) {
       limit : LIMIT
     };
 
-    return Patients.search(options)
-    .then(function (patients) {
-
+    return SupplierService.filter(options)
+    .then(function (suppliers) {
       // loop through each
-      patients.forEach(function (patient) {
-        patient.label = formatPatient(patient);
+      suppliers.forEach(function (supplier) {
+        supplier.label = supplier.name;
       });
 
-      return patients;
+      return suppliers;
     });
   }
 
-  /**
-  * @method submit
-  *
-  * @description This function is responsible for call the appropriate function
-  * according we have a search by ID or a search by Name to get data
-  */
-  function submit() {
-    if (vm.selected === vm.options.findById && vm.idInput) {
-      searchByReference(vm.idInput);
-    } else if (vm.selected === vm.options.findByName && vm.nameInput) {
-      selectPatient(vm.nameInput);
-    }
-  }
 
   /**
   * @method findBy
@@ -167,18 +122,19 @@ function FindPatientComponent(Patients, AppCache) {
   }
 
   /**
-  * @method formatPatient
+  * @method formatSupplier
   *
-  * @param {object} patient The patient object
+  * @param {object} Supplier The supplier object
   *
-  * @description This function is responsible for formatting the patient name
+  * @description This function is responsible for formatting the supplier name
   * to be more readable
   *
-  * @returns {string} The formatted patient name
+  * @returns {string} The formatted supplier name
   */
-  function formatPatient(p) {
+  function formatSupplier(p) {
     return p ? p.first_name + ' ' + p.last_name + ' ' + p.middle_name : '';
   }
+
 
   /**
   * @method handler
@@ -193,26 +149,22 @@ function FindPatientComponent(Patients, AppCache) {
   }
 
   /**
-  * @method selectPatient
+  * @method selectSupplier
   *
-  * @param {object} patient The patient object
+  * @param {object} supplier The supplier object
   *
   * @description This function is responsible for handling the result of the search,
-  * display results and pass the returned patient to the parent controller
+  * display results and pass the returned supplier to the parent controller
   */
-  function selectPatient(patient) {
+  function selectSupplier(supplier) {
     vm.showSearchView = false;
 
-    if (patient && typeof(patient) === 'object') {
+    if (supplier && typeof(supplier) === 'object') {
       vm.loadStatus = 'loaded';
-      vm.patient = patient;
+      vm.supplier = supplier;
 
-      // parse patient metadata
-      patient.name = formatPatient(patient);
-      patient.sex = patient.sex.toUpperCase();
-
-      // call the external function with patient
-      vm.onSearchComplete({ patient : patient });
+      // call the external function with supplier
+      vm.onSearchComplete({ supplier : supplier });
 
     } else {
       vm.loadStatus = 'error';
@@ -222,7 +174,7 @@ function FindPatientComponent(Patients, AppCache) {
   /**
   * @method validateNameSearch
   *
-  * @param {string} value The patient reference ID or name
+  * @param {string} value The supplier reference name
   *
   * @description Check if the value in the inputs is correct (well defined)
   */
@@ -265,4 +217,5 @@ function FindPatientComponent(Patients, AppCache) {
       submit();
     }
   }
+
 }
