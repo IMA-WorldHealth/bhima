@@ -60,12 +60,12 @@ exports.list = function (req, res, next) {
 exports.listHolidays = function (req, res, next) {
   var pp = JSON.parse(req.params.pp);
   var sql =
-    'SELECT hollyday.id, hollyday.label, hollyday.dateFrom, hollyday.percentage, hollyday.dateTo ' +
-    'FROM hollyday WHERE ' +
-    '((hollyday.dateFrom >= ? AND hollyday.dateFrom <= ?) OR ' +
-    '(hollyday.dateTo >= ? AND hollyday.dateTo <= ?) OR ' +
-    '(hollyday.dateFrom <= ? AND hollyday.dateTo >a ?)) AND ' +
-    'hollyday.employee_id = ? ;';
+    'SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.percentage, holiday.dateTo ' +
+    'FROM holiday WHERE ' +
+    '((holiday.dateFrom >= ? AND holiday.dateFrom <= ?) OR ' +
+    '(holiday.dateTo >= ? AND holiday.dateTo <= ?) OR ' +
+    '(holiday.dateFrom <= ? AND holiday.dateTo >a ?)) AND ' +
+    'holiday.employee_id = ? ;';
 
   var data = [
     pp.dateFrom, pp.dateTo,
@@ -87,7 +87,7 @@ exports.listHolidays = function (req, res, next) {
 */
 exports.checkHoliday = function (req, res, next) {
   var sql =
-    'SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM hollyday WHERE employee_id = ?' +
+    'SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM holiday WHERE employee_id = ?' +
     ' AND ((dateFrom >= ?) OR (dateTo >= ?) OR (dateFrom >= ?) OR (dateTo >= ?))' +
     ' AND ((dateFrom <= ?) OR (dateTo <= ?) OR (dateFrom <= ?) OR (dateTo <= ?))';
 

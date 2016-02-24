@@ -15,14 +15,14 @@ function HolidayController ($translate, $http, validate, messenger, connect, uti
       dependencies = {},
       session = vm.session = {};
 
-  dependencies.hollydays = {
+  dependencies.holidays = {
     query : {
       identifier : 'id',
       tables : {
-        'hollyday' : { columns : ['id', 'employee_id', 'label', 'percentage', 'dateFrom', 'dateTo'] },
+        'holiday' : { columns : ['id', 'employee_id', 'label', 'percentage', 'dateFrom', 'dateTo'] },
         'employee' : { columns : ['name', 'postnom', 'prenom']}
       },
-      join : ['hollyday.employee_id=employee.id']
+      join : ['holiday.employee_id=employee.id']
     }
   };
 
@@ -57,22 +57,22 @@ function HolidayController ($translate, $http, validate, messenger, connect, uti
     angular.extend(vm, models);
   }
 
-  function deletion (hollyday) {
+  function deletion (holiday) {
     var result = confirm($translate.instant('HOLLYDAY_MANAGEMENT.CONFIRM'));
     if (result) {
-      connect.delete('hollyday', 'id', hollyday.id)
+      connect.delete('holiday', 'id', holiday.id)
       .then(function () {
-        vm.hollydays.remove(hollyday.id);
+        vm.holidays.remove(holiday.id);
         messenger.info($translate.instant('HOLLYDAY_MANAGEMENT.DELETE_SUCCESS'));
       });
     }
   }
 
-  function edition (hollyday) {
+  function edition (holiday) {
     session.action = 'edit';
-    hollyday.dateFrom = new Date(hollyday.dateFrom);
-    hollyday.dateTo = new Date(hollyday.dateTo);
-    session.edit = angular.copy(hollyday);
+    holiday.dateFrom = new Date(holiday.dateFrom);
+    holiday.dateTo = new Date(holiday.dateTo);
+    session.edit = angular.copy(holiday);
   }
 
   function create () {
@@ -104,7 +104,7 @@ function HolidayController ($translate, $http, validate, messenger, connect, uti
          messenger.danger($translate.instant('HOLLYDAY_MANAGEMENT.SAVE_FAILURE'), true);
          throw $translate.instant('HOLLYDAY_MANAGEMENT.SAVE_FAILURE');
       }
-      return connect.put('hollyday', [record], ['id']);
+      return connect.put('holiday', [record], ['id']);
     })
     .then(function () {
       return validate.refresh(dependencies);
@@ -137,7 +137,7 @@ function HolidayController ($translate, $http, validate, messenger, connect, uti
          messenger.danger($translate.instant('HOLLYDAY_MANAGEMENT.SAVE_FAILURE'), true);
          throw $translate.instant('HOLLYDAY_MANAGEMENT.SAVE_FAILURE');
       }
-      return connect.post('hollyday', [record]);
+      return connect.post('holiday', [record]);
     })
     .then(function () {
       return validate.refresh(dependencies);
@@ -150,12 +150,6 @@ function HolidayController ($translate, $http, validate, messenger, connect, uti
     })
     .catch(error);
 
-  }
-
-  function generateReference () {
-    window.data = vm.hollydays.data;
-    var max = Math.max.apply(Math.max, vm.hollydays.data.map(function (o) { return o.reference; }));
-    return Number.isNaN(max) ? 1 : max + 1;
   }
 
   function error(err) {
