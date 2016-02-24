@@ -2,26 +2,23 @@
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
-
-chai.use(chaiAsPromised);
 var expect = chai.expect;
 
+chai.use(chaiAsPromised);
+
 var components = require('../shared/components');
-var FormUtils = require('../shared/FormUtils');
+var FU = require('../shared/FormUtils');
 
-describe('patient registration', function () {
-  // this.timeout(30000);
+describe.only('patient registration', function () {
+  'use strict';
 
-  var REGISTRATION_PATH = '#/patients/register';
+  var registrationPath = '#/patients/register';
 
   var mockPatient = {
     first_name : 'Mock',
     middle_name : 'Patient',
     last_name : 'First',
-    // dob : '1993-06-01T00:00:00.000Z',
     yob : '1993',
-    // current_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
-    // origin_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
     sex : 'M',
     project_id : 1,
     hospital_no : 120
@@ -35,47 +32,50 @@ describe('patient registration', function () {
    '1f162a10-9f67-4788-9eff-c1fea42fcc9b' // kele
   ];
 
-  var debtorGroupUuid = 'string:66f03607-bfbc-4b23-aa92-9321ca0ff586';
   var uniqueHospitalNumber = 1020;
 
+  // navigate to the patient registration page
   beforeEach(function () {
-    // navigate to the patient registration page
-    browser.get(REGISTRATION_PATH);
+    browser.get(registrationPath);
   });
 
-  it('registers a valid user', function (done) {
-    element(by.model('PatientRegCtrl.medical.last_name')).sendKeys(mockPatient.last_name);
-    element(by.model('PatientRegCtrl.medical.middle_name')).sendKeys(mockPatient.middle_name);
-    element(by.model('PatientRegCtrl.medical.first_name')).sendKeys(mockPatient.first_name);
+  it('successfully registers a valid patient', function (done) {
 
-    element(by.model('PatientRegCtrl.medical.hospital_no')).sendKeys(mockPatient.hospital_no);
+    // patient name
+    FU.input('PatientRegCtrl.medical.last_name', mockPatient.last_name);
+    FU.input('PatientRegCtrl.medical.middle_name', mockPatient.middle_name);
+    FU.input('PatientRegCtrl.medical.first_name', mockPatient.first_name);
 
-    element(by.model('PatientRegCtrl.yob')).sendKeys(mockPatient.yob);
+    // hospital number, etc
+    FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
+    FU.input('PatientRegCtrl.yob', mockPatient.yob);
 
     // set the locations via the "locations" array
     components.locationSelect.set(locations, 'origin-location-id');
     components.locationSelect.set(locations, 'current-location-id');
 
+    // set the gender of the patient
     element(by.id('male')).click();
-    element(by.id('submitPatient')).click();
 
-    element(by.model('PatientRegCtrl.finance.debitor_group_uuid')).element(by.cssContainingText('option', 'Second Test Debtor Group')).click();
+    // set the debtor group
+    var select = element(by.model('PatientRegCtrl.finance.debitor_group_uuid'));
+    var option = select.element(by.cssContainingText('option', 'Second Test Debtor Group'));
+    option.click();
 
-    element(by.id('submitPatient')).click();
+    // submit the patient registration form
+    FU.buttons.submit();
 
-    // expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/invoice/patient/');
     expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/invoice/patient/')
-      .then(function () {
-        done();
-      });
+    .then(function () {
+      done();
+    });
   });
 
-  it('correctly updates Date of Birth given a valid Year of Birth', function () {
+  it('correctly updates date of birth given a valid year of birth', function () {
     var validYear = '2000';
-    element(by.model('PatientRegCtrl.yob')).sendKeys(validYear);
+    FU.input('PatientRegCtrl.yob', validYear);
 
     var calculatedDOB = element(by.model('PatientRegCtrl.medical.dob')).getText();
-
     expect(calculatedDOB).to.be.defined;
     expect(calculatedDOB).to.not.be.empty;
 
@@ -88,43 +88,51 @@ describe('patient registration', function () {
 
     it('correctly blocks invalid form submission with relevent error classes', function () {
 
-      element(by.id('submitPatient')).click();
+      // submit the patient registration form
+      FU.buttons.submit();
 
-      // Verify form has not been successfully submitted
-      expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + REGISTRATION_PATH);
+      // verify form has not been successfully submitted
+      expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + registrationPath);
 
-      // The following fields should be required
-      expect(element(by.model('PatientRegCtrl.medical.last_name')).getAttribute('class')).to.eventually.contain('ng-invalid');
-      expect(element(by.model('PatientRegCtrl.finance.debitor_group_uuid')).getAttribute('class')).to.eventually.contain('ng-invalid');
-      expect(element(by.model('PatientRegCtrl.medical.dob')).getAttribute('class')).to.eventually.contain('ng-invalid');
+      // the following fields should be required
+      FU.validation.error('PatientRegCtrl.medical.last_name');
+      FU.validation.error('PatientRegCtrl.finance.debitor_group_uuid');
+      FU.validation.error('PatientRegCtrl.medical.dob');
 
-      // First name is not required
-      expect(element(by.model('PatientRegCtrl.medical.first_name')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
-      expect(element(by.model('PatientRegCtrl.medical.title')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
+      // first name is not and title
+      FU.validation.ok('PatientRegCtrl.medical.first_name');
+      FU.validation.ok('PatientRegCtrl.medical.title');
     });
 
     it('correctly alerts for minimum and maximum dates', function () {
       var testMaxYear = '9000';
       var testMinYear = '1000';
+      var validYear = '2000';
 
-      element(by.model('PatientRegCtrl.yob')).sendKeys(testMaxYear);
-      expect(element(by.id('date-error')).isPresent()).to.eventually.be.true;
+      FU.clear('PatientRegCtrl.yob');
+      FU.input('PatientRegCtrl.yob', testMaxYear);
+      FU.exists(by.id('date-error'), true);
 
-      element(by.model('PatientRegCtrl.yob')).clear();
-      element(by.model('PatientRegCtrl.yob')).sendKeys(testMaxYear);
-      expect(element(by.id('date-error')).isPresent()).to.eventually.be.true;
+      FU.clear('PatientRegCtrl.yob');
+      FU.input('PatientRegCtrl.yob', validYear);
+      FU.exists(by.id('date-error'), false);
+
+      FU.clear('PatientRegCtrl.yob');
+      FU.input('PatientRegCtrl.yob', testMinYear);
+      FU.exists(by.id('date-error'), true);
     });
 
     it('correctly identifies duplicate hospital numbers (async)', function () {
 
-      // Resent the (assumed) correctly registered patients hospital number
-      element(by.model('PatientRegCtrl.medical.hospital_no')).sendKeys(mockPatient.hospital_no);
-      expect(element(by.id('hospitalNumber-alert')).isPresent()).to.eventually.be.true;
+      // resend the (assumed) correctly registered patients hospital number
+      FU.clear('PatientRegCtrl.medical.hospital_no');
+      FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
+      FU.exists(by.id('hospitalNumber-alert'), true);
 
-      element(by.model('PatientRegCtrl.medical.hospital_no')).clear();
-      element(by.model('PatientRegCtrl.medical.hospital_no')).sendKeys(uniqueHospitalNumber);
-
-      expect(element(by.id('hospitalNumber-alert')).isPresent()).to.eventually.be.false;
+      // put in a unique hospital number
+      FU.clear('PatientRegCtrl.medical.hospital_no');
+      FU.input('PatientRegCtrl.medical.hospital_no', uniqueHospitalNumber);
+      FU.exists(by.id('hospitalNumber-alert'), false);
     });
   });
 
