@@ -65,7 +65,7 @@ function FindSupplierComponent(SupplierService, AppCache) {
   /**
   * @method searchByName
   *
-  * @param {string} text Supplier name (first_name, middle_name or last_name)
+  * @param {string} text Supplier name 
   *
   * @description This function make a call to BHIMA API for getting suppliers
   * according the name of supplier.
@@ -97,10 +97,8 @@ function FindSupplierComponent(SupplierService, AppCache) {
   * @method findBy
   *
   * @param {object} option The selected option
-  *
-  * @description This function is responsible for setting the selected option
-  * between ID or Name option of search
   */
+
   function findBy(key) {
     vm.selected   = vm.options[key];
     vm.loadStatus = null;
@@ -115,26 +113,11 @@ function FindSupplierComponent(SupplierService, AppCache) {
   * @method reload
   *
   * @description This function is responsible for enabling the user to input data
-  * again for search by showing the inputs zones (search by ID or by name) again.
+  * again for search by showing the inputs zones again.
   */
   function reload() {
     vm.showSearchView = true;
   }
-
-  /**
-  * @method formatSupplier
-  *
-  * @param {object} Supplier The supplier object
-  *
-  * @description This function is responsible for formatting the supplier name
-  * to be more readable
-  *
-  * @returns {string} The formatted supplier name
-  */
-  function formatSupplier(p) {
-    return p ? p.first_name + ' ' + p.last_name + ' ' + p.middle_name : '';
-  }
-
 
   /**
   * @method handler
@@ -156,6 +139,7 @@ function FindSupplierComponent(SupplierService, AppCache) {
   * @description This function is responsible for handling the result of the search,
   * display results and pass the returned supplier to the parent controller
   */
+
   function selectSupplier(supplier) {
     vm.showSearchView = false;
 
@@ -193,13 +177,9 @@ function FindSupplierComponent(SupplierService, AppCache) {
   * @param {object} key - the default option key to search by
   *
   * @description This function is responsible for changing the option of search.
-  * Search by ID or by name
+  * Search by name
   */
   function loadDefaultOption(optionKey) {
-
-    // default to findById
-    optionKey = optionKey || 'findById';
-
     // change the findBy call
     findBy(optionKey);
   }

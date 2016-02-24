@@ -126,6 +126,8 @@ function update(req, res, next) {
   .done();
 }
 
+// GET /SUPPLIER/FILTER
+
 function filter(req, res, next) { 
   var sql;
   var limit = Number(req.query.limit);
@@ -152,12 +154,18 @@ function filter(req, res, next) {
   .done();
 }
 
+
+// get list of a supplier
 exports.list = list;
 
+// get details of a supplier
 exports.detail = detail;
 
+// create a new supplier
 exports.create = create;
 
+// update supplier informations
 exports.update = update;
 
+// filtering supplers data
 exports.filter = filter;
