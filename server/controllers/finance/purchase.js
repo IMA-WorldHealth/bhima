@@ -158,7 +158,7 @@ function list (req, res, next) {
   .done();
 }
 
-function detail (req, res, next) {
+function detail(req, res, next) {
   'use strict';
 
   var uuid = req.params.uuid;
@@ -186,7 +186,7 @@ function update(req, res, next) {
   .then(function () {
 
     // fetch the changed object from the database
-    return lookupPurchaseOrder(uuid);
+    return lookupPurchaseOrder(uuid, req.codes);
   })
   .then(function (record) {
 
