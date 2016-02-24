@@ -2,10 +2,10 @@
 /* global element, by, inject, browser */
 
 var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
 var expect = chai.expect;
 
-chai.use(chaiAsPromised);
+var helpers = require('../shared/helpers');
+helpers.configure(chai);
 
 describe('locations (create modal)', function () {
   'use strict';
@@ -90,11 +90,11 @@ describe('locations (create modal)', function () {
     var root = element(by.css(selector));
 
     // get the country select and select the previous country
-    var country = element(by.model('LocationModalCtrl.country'));
+    var country = root.element(by.model('LocationModalCtrl.country'));
     country.element(by.cssContainingText('option', newLocation.country)).click();
 
     // create a new province
-    var province = element(by.model('LocationModalCtrl.province'));
+    var province = root.element(by.model('LocationModalCtrl.province'));
     province.sendKeys(newLocation.province);
 
     // submit the modal
@@ -117,7 +117,7 @@ describe('locations (create modal)', function () {
     var root = element(by.css(selector));
 
     // get the country select and select the previous country
-    var country = element(by.model('LocationModalCtrl.country'));
+    var country = root.element(by.model('LocationModalCtrl.country'));
     country.element(by.cssContainingText('option', newLocation.country)).click();
 
     // get the province select and select the previous province
@@ -125,7 +125,7 @@ describe('locations (create modal)', function () {
     province.element(by.cssContainingText('option', newLocation.province)).click();
 
     // create a new sector
-    var sector = element(by.model('LocationModalCtrl.sector'));
+    var sector = root.element(by.model('LocationModalCtrl.sector'));
     sector.sendKeys(newLocation.sector);
 
     // submit the modal
@@ -148,15 +148,15 @@ describe('locations (create modal)', function () {
     var root = element(by.css(selector));
 
     // get the country select and select the previous country
-    var country = element(by.model('LocationModalCtrl.country'));
+    var country = root.element(by.model('LocationModalCtrl.country'));
     country.element(by.cssContainingText('option', newLocation.country)).click();
 
     // get the province select and select the previous province
-    var province = element(by.model('LocationModalCtrl.province'));
+    var province = root.element(by.model('LocationModalCtrl.province'));
     province.element(by.cssContainingText('option', newLocation.province)).click();
 
     // get the sector select and select the previous sector
-    var sector = element(by.model('LocationModalCtrl.sector'));
+    var sector = root.element(by.model('LocationModalCtrl.sector'));
     sector.element(by.cssContainingText('option', newLocation.sector)).click();
 
     // create a new village

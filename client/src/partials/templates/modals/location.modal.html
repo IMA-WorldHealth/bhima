@@ -112,7 +112,13 @@
         placeholder="{{ 'INPUT.VILLAGE' | translate }}"
         required>
     </div>
+
+    <p class="text-danger" ng-show="LocationModalForm.$submitted && LocationModalForm.$invalid">
+      <span class="glyphicon glyphicon-exclamation-sign"></span>
+      {{ "FORM.ERRORS.GENERIC" | translate }}
+    </p>
   </div>
+
 
   <div class="modal-footer">
     <!-- @todo - why does this not set the submitted state automatically? -->
