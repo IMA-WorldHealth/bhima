@@ -23,7 +23,7 @@ describe('The /Purchase Order API endpoint', function () {
 
   // purchase we will add during this test suite.
   var purchase_order = {
-      uuid          : uuid(),
+      uuid          : uuid.v4(),
       cost          : 546.7520,
       purchase_date : new Date('2016-02-19'),
       currency_id   : 1,

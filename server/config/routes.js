@@ -163,7 +163,6 @@ exports.configure = function (app) {
   app.post('/report/build/:route', reports.build);
   app.get('/report/serve/:target', reports.serve);
 
-  //app.post('/purchase', createPurchase.execute);
   // app.post('/sale/', createSale.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
@@ -322,9 +321,6 @@ exports.configure = function (app) {
 
   // stock API
   app.get('/donations', donations.getRecentDonations);
-
-  // TODO - make a purchase order controller
-  //app.get('/purchaseorders', purchase.getPurchaseOrders);
 
   app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
 
