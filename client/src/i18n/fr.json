@@ -1490,14 +1490,14 @@
    "SUCCES"                 : "Operation avec succès !",
    "TITLE"                  : "Prise en charge par des Tiers"
    },
-"HOLLYDAY_MANAGEMENT": {
+"HOLIDAY_MANAGEMENT": {
    "ADD"            : "Créer une période de vacance",
    "ALERT"          : "Le module gestion des vacances, permet de standardiser et de sécuriser les demandes et la gestion des vacances (congés payés, repos compensateur…). Il favorise leur intégration automatique en paie, depuis la demande, sa validation et jusqu’à son traitement.",
    "CONFIRM"        : "Etes vous sure de vouloir supprimer cette période de vacance",
    "DELETE_SUCCESS" : "Suppression avec succès",
    "EMPLOYEE"       : "Employé",
-   "NEW_HOLLYDAY"   : "Créer une période de vacance pour un employé ",
-   "NO_HOLLYDAY"    : "Aucune période de vacance n'est encore enregistrée",
+   "NEW_HOLIDAY"   : "Créer une période de vacance pour un employé ",
+   "NO_HOLIDAY"    : "Aucune période de vacance n'est encore enregistrée",
    "REGISTERED"     : "Période des vacances enregistrées",
    "SAVE_FAILURE"   : "Erreur, ces données s'enchevêtre avec d'autres période des vacances",
    "SAVE_SUCCES"    : "Enregistrement avec succès",
@@ -3171,7 +3171,7 @@
    "GRAND_LIVRE"               : "Grand Livre",
    "GRAND_LIVRE_REPORT"        : "Grand Livre",
    "GRP_INVOICING"             : "Prise en charge (Tiers)",
-   "HOLLYDAY_MANAGEMENT"       : "Gestion Vacances",
+   "HOLIDAY_MANAGEMENT"       : "Gestion Vacances",
    "HOSPITAL"                  : "Hôpital",
    "INCOME_EXPENSE"            : "Recettes/Dépense",
    "INCOME_REPORT"             : "Recettes",
