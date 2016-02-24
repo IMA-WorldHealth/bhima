@@ -66,7 +66,7 @@ exports.list = function list(req, res, next) {
 /**
 * GET /Supplier/:UUID
 *
-* Returns the detail of a single project
+* Returns the detail of a single Supplier
 */
 exports.detail = function detail(req, res, next) {
   'use strict';
