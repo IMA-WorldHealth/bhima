@@ -1,7 +1,6 @@
-<ng-form="LocationModalForm" ng-submit="LocationModalCtrl.submit(LocationModalForm.$invalid)">
-
+<ng-form name="LocationModalForm">
   <div class="modal-header">
-    <h4>{{ "MODALS.ADD_LOCATION" | translate }}</h4>
+    <h4>{{ "LOCATION.MODAL" | translate }}</h4>
   </div>
 
   <div class="modal-body">
@@ -31,10 +30,11 @@
         class="form-control"
         name="country"
         ng-model="LocationModalCtrl.country"
+        ng-change="LocationModalCtrl.loadProvinces()"
         ng-options="country as country.name for country in LocationModalCtrl.countries track by country.uuid"
         required
         >
-        <option value="" disabled>{{ "SELECT.COUNTRY" | translate }}</option>
+        <option value="" disabled>{{ LocationModalCtrl.messages.country | translate }}</option>
       </select>
       <input
         ng-if="LocationModalCtrl.view.index === 1"
@@ -60,7 +60,7 @@
         ng-options="province as province.name for province in LocationModalCtrl.provinces track by province.uuid"
         ng-change="LocationModalCtrl.loadSectors()"
         required>
-        <option value="" disabled>{{ "SELECT.PROVINCE" | translate }}</option>
+        <option value="" disabled>{{ LocationModalCtrl.messages.province | translate }}</option>
       </select>
 
       <input
@@ -86,7 +86,7 @@
         ng-model="LocationModalCtrl.sector"
         ng-options="sector as sector.name for sector in LocationModalCtrl.sectors track by sector.uuid"
         required>
-        <option value="" disabled>{{ "SELECT.SECTOR" | translate }}</option>
+        <option value="" disabled>{{ LocationModalCtrl.messages.sector | translate }}</option>
       </select>
       <input
         ng-if="LocationModalCtrl.view.index === 3"
@@ -114,7 +114,11 @@
   </div>
 
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary">
+    <!-- @todo - why does this not set the submitted state automatically? -->
+    <button
+      type="submit"
+      class="btn btn-primary"
+      ng-click="LocationModalCtrl.submit(LocationModalForm.$invalid); LocationModalForm.$setSubmitted();">
       {{ "FORM.SUBMIT" | translate }}
     </button>
     <button type="button" ng-click="LocationModalCtrl.dismiss()" class="btn btn-default">

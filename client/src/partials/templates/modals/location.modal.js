@@ -9,13 +9,16 @@ LocationModalController.$inject = [
  * "Add a Location" Modal
  *
  * This modal can be injected into any page, and is useful for creating
- * locations on the fly.  The user is asked to choose from countires,
- * provinces, and sectors as needed to create a new location.
+ * locations on the fly.  The user is asked to choose from countries,
+ * provinces, and sectors as needed to create a new location.  It shares many
+ * similarites with the bhLocationSelect component.
+ *
+ * @class LocationModalController
  */
 function LocationModalController(Locations, Instance, AppCache) {
   var vm = this;
 
-  /** caches the current view */
+  /** caches the current view in local storage */
   var cache = new AppCache('bh-location-select-modal');
 
   /**
@@ -55,8 +58,15 @@ function LocationModalController(Locations, Instance, AppCache) {
     }
   };
 
-  /** bind indicators */
-  vm.loading = false;
+  /**
+   * messages to be displayed in the <select> options.  Normally, these are
+   * "Select a X", but in case there is no data, a no data message is displayed.
+   */
+  vm.messages = {
+    country : Locations.messages.country,
+    province : Locations.messages.province,
+    sector : Locations.messages.sector
+  };
 
   /** cancels the create location modal */
   vm.dismiss = Instance.dismiss;
@@ -67,6 +77,7 @@ function LocationModalController(Locations, Instance, AppCache) {
   /** bind listener */
   vm.loadProvinces = loadProvinces;
   vm.loadSectors = loadSectors;
+  vm.submit = submit;
 
   /** load previous/default view */
   cache.fetch('view')
@@ -78,23 +89,51 @@ function LocationModalController(Locations, Instance, AppCache) {
   /** load countries on startup */
   Locations.countries()
   .then(function (countries) {
-    vm.countries = countries;
-  });
 
+    // bind the countries to the view for <select>ion
+    vm.countries = countries;
+
+    // make sure that we are showing the proper message to the client
+    vm.messages.country = (countries.length > 0) ?
+      Locations.messages.country :
+      Locations.messages.empty;
+  });
 
   /** loads provinces based on the selected country */
   function loadProvinces() {
-    Locations.provinces(vm.countries.uuid)
+
+    // make sure we do not make unnecessary HTTP requests
+    if (!vm.country || !vm.country.uuid) { return; }
+
+    Locations.provinces({ country : vm.country.uuid })
     .then(function (provinces) {
+
+      // bind the provinces to the view for <select>ion
       vm.provinces = provinces;
+
+      // make sure that we show the correct message in the <select> option
+      vm.messages.province = (provinces.length > 0) ?
+        Locations.messages.province :
+        Locations.messages.empty;
     });
   }
 
   /** loads sectors based on the selected province */
   function loadSectors() {
-    Locations.sectors(vm.province.uuid)
+
+    // make sure we do not make unnecessary HTTP requests
+    if (!vm.province || !vm.province.uuid) { return; }
+
+    Locations.sectors({ province : vm.province.uuid })
     .then(function (sectors) {
+
+      // bind the sectors to the view for <select>ion
       vm.sectors = sectors;
+
+      // make sure that we show the correct message in the <select> option
+      vm.messages.sector = (sectors.length > 0) ?
+        Locations.messages.sector :
+        Locations.messages.empty;
     });
   }
 
@@ -114,8 +153,56 @@ function LocationModalController(Locations, Instance, AppCache) {
   /** creates a new location based on the selections made. */
   function submit(invalid) {
 
+    // delete the HTTP error if it exists
+    delete vm.error;
+
     // reject an invalid form
     if (invalid)  { return; }
 
+    var promise;
+
+    /**
+     * determine wht type of location we are creating and send an $http
+     * request for it.
+     */
+    switch (vm.view) {
+
+      case vm.views.country:
+        promise = Locations.create.country({
+          name : vm.country
+        });
+        break;
+
+      case vm.views.province:
+        promise = Locations.create.province({
+          name : vm.province,
+          country_uuid : vm.country.uuid
+        });
+        break;
+
+      case vm.views.sector:
+        promise = Locations.create.sector({
+          name : vm.sector,
+          province_uuid : vm.province.uuid
+        });
+        break;
+
+      case vm.views.village:
+        promise = Locations.create.village({
+          name : vm.village,
+          sector_uuid : vm.sector.uuid
+        });
+        break;
+
+      default:
+        return;
+    }
+
+    promise.then(function (data) {
+      Instance.close(data);
+    })
+    .catch(function (error) {
+      vm.error = error;
+    });
   }
 }

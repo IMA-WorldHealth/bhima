@@ -1799,7 +1799,12 @@
    "TITLE"                 : "Location Manager",
    "VILLAGE"               : "Village",
    "VILLAGE_NAME"          : "Village Name",
-   "VILLE"                 : "Township/Commune"
+   "VILLE"                 : "Township/Commune",
+   "COUNTRY"               : "Country",
+   "PROVINCE"              : "Province",
+   "SECTOR"                : "Sector",
+   "VILLAGE"               : "Village",
+   "MODAL"               : "Add a new Location"
    },
 "NO_EXCHANGE": {
    "CURRENT_DATE" : "Current Date",
