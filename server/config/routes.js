@@ -17,7 +17,7 @@ var data                 = require('../controllers/data');
 var users                = require('../controllers/users');
 var locations            = require('../controllers/locations');
 var tree                 = require('../controllers/tree');
-var createPurchase       = require('../controllers/finance/purchase');
+//var createPurchase       = require('../controllers/finance/purchase');
 var createSale           = require('../controllers/finance/sale');
 var patient              = require('../controllers/medical/patient');
 var snis                 = require('../controllers/medical/snis');
@@ -165,7 +165,6 @@ exports.configure = function (app) {
   app.post('/report/build/:route', reports.build);
   app.get('/report/serve/:target', reports.serve);
 
-  app.post('/purchase', createPurchase.execute);
   // app.post('/sale/', createSale.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
@@ -237,7 +236,7 @@ exports.configure = function (app) {
 
   // Employee management
   app.get('/employee_list/', employees.list);
-  app.get('/hollyday_list/:pp/:employee_id', employees.listHolidays);
+  app.get('/holiday_list/:pp/:employee_id', employees.listHolidays);
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
 
@@ -324,9 +323,6 @@ exports.configure = function (app) {
 
   // stock API
   app.get('/donations', donations.getRecentDonations);
-
-  // TODO - make a purchase order controller
-  app.get('/purchaseorders', purchase.getPurchaseOrders);
 
   app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
 
@@ -508,10 +504,17 @@ exports.configure = function (app) {
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
 
-    // Suppliers api
+  /** Suppliers api */
   app.get('/suppliers', suppliers.list);
   app.get('/suppliers/:uuid', suppliers.detail);
   app.post('/suppliers', suppliers.create);
   app.put('/suppliers/:uuid', suppliers.update);
+
+
+  /** purchase */
+  app.post('/purchase', purchase.create);
+  app.get('/purchase', purchase.list);
+  app.get('/purchase/:uuid', purchase.detail);
+  app.put('/purchase/:uuid', purchase.update);
 
 };
