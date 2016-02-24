@@ -830,9 +830,9 @@ CREATE TABLE `group_invoice_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `hollyday`;
+DROP TABLE IF EXISTS `holiday`;
 
-CREATE TABLE `hollyday` (
+CREATE TABLE `holiday` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `employee_id` int(10) unsigned NOT NULL,
   `percentage` float DEFAULT '0',
@@ -844,17 +844,17 @@ CREATE TABLE `hollyday` (
   FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `hollyday_paiement`;
+DROP TABLE IF EXISTS `holiday_paiement`;
 
-CREATE TABLE `hollyday_paiement` (
-  `hollyday_id` int(10) unsigned NOT NULL,
-  `hollyday_nbdays` int(10) unsigned NOT NULL,
-  `hollyday_percentage` float DEFAULT '0',
+CREATE TABLE `holiday_paiement` (
+  `holiday_id` int(10) unsigned NOT NULL,
+  `holiday_nbdays` int(10) unsigned NOT NULL,
+  `holiday_percentage` float DEFAULT '0',
   `paiement_uuid` char(36) NOT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
-  KEY `hollyday_id` (`hollyday_id`),
+  KEY `holiday_id` (`holiday_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
-  FOREIGN KEY (`hollyday_id`) REFERENCES `hollyday` (`id`)
+  FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

@@ -1,19 +1,19 @@
 <header data-header>
-  {{ "HOLLYDAY_MANAGEMENT.TITLE" | translate }}
+  {{ "HOLIDAY_MANAGEMENT.TITLE" | translate }}
 </header>
 
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
       <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li class="active">{{ "HOLLYDAY_MANAGEMENT.TITLE" | translate }}</li>
+      <li class="active">{{ "HOLIDAY_MANAGEMENT.TITLE" | translate }}</li>
     </ol>
   </div>
 
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="HolidayCtrl.new()">
       <span class="glyphicon glyphicon-plus-sign"></span>
-      {{ "HOLLYDAY_MANAGEMENT.ADD" | translate }}
+      {{ "HOLIDAY_MANAGEMENT.ADD" | translate }}
     </button>
   </div>
 </nav>
@@ -25,7 +25,7 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-road"></span>
-          {{ "HOLLYDAY_MANAGEMENT.REGISTERED" | translate }}
+          {{ "HOLIDAY_MANAGEMENT.REGISTERED" | translate }}
         </div>
         <table class="table table-condensed">
           <thead>
@@ -39,17 +39,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="hollyday in HolidayCtrl.hollydays.data | orderBy:'name'">
-              <td>{{ hollyday.name }} {{ hollyday.postnom }} {{ hollyday.prenom }}</td>
-              <td>{{ hollyday.label }}</td>
-              <td>{{ hollyday.percentage }}</td>
-              <td>{{ hollyday.dateFrom | date}}</td>
-              <td>{{ hollyday.dateTo | date}}</td>
-              <td><a class="action" ng-click="HolidayCtrl.edit(hollyday)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a class="action danger" ng-click="HolidayCtrl.delete(hollyday)"><span class="glyphicon glyphicon-trash"></span></a></td>
+            <tr ng-repeat="holiday in HolidayCtrl.holidays.data | orderBy:'name'">
+              <td>{{ holiday.name }} {{ holiday.postnom }} {{ holiday.prenom }}</td>
+              <td>{{ holiday.label }}</td>
+              <td>{{ holiday.percentage }}</td>
+              <td>{{ holiday.dateFrom | date}}</td>
+              <td>{{ holiday.dateTo | date}}</td>
+              <td><a class="action" ng-click="HolidayCtrl.edit(holiday)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a class="action danger" ng-click="HolidayCtrl.delete(holiday)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
-            <tr ng-if="!HolidayCtrl.hollydays.data.length">
-              <td colspan="4">{{ "HOLLYDAY_MANAGEMENT.NO_HOLLYDAY" | translate }}</td>
+            <tr ng-if="!HolidayCtrl.holidays.data.length">
+              <td colspan="4">{{ "HOLIDAY_MANAGEMENT.NO_HOLIDAY" | translate }}</td>
             </tr>
           </tbody>
         </table>
@@ -58,13 +58,13 @@
 
     <div class="col-xs-6" ng-switch="HolidayCtrl.session.action">
       <div class="alert alert-info" ng-switch-default>
-        <h4>{{ "HOLLYDAY_MANAGEMENT.TITLE" | translate }}</h4>
-        <p>{{ "HOLLYDAY_MANAGEMENT.ALERT" | translate }}</p>
+        <h4>{{ "HOLIDAY_MANAGEMENT.TITLE" | translate }}</h4>
+        <p>{{ "HOLIDAY_MANAGEMENT.ALERT" | translate }}</p>
       </div>
 
       <div ng-switch-when="new">
         <form novalidate class="form-horizontal" name="new">
-          <legend><h3>{{ "HOLLYDAY_MANAGEMENT.NEW_HOLLYDAY" | translate }} </h3></legend>
+          <legend><h3>{{ "HOLIDAY_MANAGEMENT.NEW_HOLIDAY" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.EMPLOYEE_NAME" | translate }}</label>
@@ -116,7 +116,7 @@
 
       <div ng-switch-when="edit">
         <form novalidate class="form-horizontal" name="edit">
-          <legend><h3>{{ "HOLLYDAY_MANAGEMENT.UPDATE" | translate }} </h3></legend>
+          <legend><h3>{{ "HOLIDAY_MANAGEMENT.UPDATE" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.EMPLOYEE_NAME" | translate }}</label>

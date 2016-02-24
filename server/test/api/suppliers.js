@@ -91,6 +91,7 @@ describe('The /supplier  API endpoint', function () {
     return agent.get('/suppliers?locked=1')
       .then(function (result) { 
         expect(result).to.have.status(200);
+        expect(result.body).to.have.length(0);
         expect(result.body).to.be.empty;
       })
       .catch(helpers.handler);
@@ -103,7 +104,7 @@ describe('The /supplier  API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(SUPPLIER_KEY);
-        expect(res.body.name).to.not.equal(supplier.name);
+        expect(res.body.name).to.equal('Temp Project');
       })
       .catch(helpers.handler);
   });

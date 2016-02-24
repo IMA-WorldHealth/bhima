@@ -252,7 +252,7 @@ INSERT INTO `exchange_rate` (enterprise_id, currency_id, rate, date) VALUES
 -- (62,'Gestions des taxes','TREE.TAXE_MANAGEMENT','',57,'/partials/taxe/','/taxes_management/'),
 -- (63,'Rubriques Management','TREE.RUBRIC_MANAGEMENT','',57,'/partials/rubric/','/rubric_management/'),
 -- (64,'Gestions des jours ferries','TREE.OFFDAY_MANAGEMENT','',57,'/partials/offdays/','/offday_management/'),
--- (65,'Gestion des vacances','TREE.HOLLYDAY_MANAGEMENT','',57,'/partials/hollydays/','/hollyday_management/'),
+-- (65,'Gestion des vacances','TREE.HOLLYDAY_MANAGEMENT','',57,'/partials/holidays/','/holiday_management/'),
 -- (66,'Gestion des periodes','TREE.PAYMENT_PERIOD','',57,'/partials/payment_period/','/payment_period/'),
 -- (67,'Cotisation management','TREE.COTISATION_MANAGEMENT','',57,'/partials/cotisation/cotisation_management.html/','/cotisations_management/'),
 -- (68,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',57,'/partials/config_accounting/','/config_accounting/'),
