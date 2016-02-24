@@ -30,7 +30,7 @@ describe('patient registration', function () {
    'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
    'f6fc7469-7e58-45cb-b87c-f08af93edade', // Bas Congo,
    '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', // Tshikapa,
-   '1f162a10-9f67-4788-9eff-c1fea42fcc9b' // kele
+   '1f162a10-9f67-4788-9eff-c1fea42fcc9b'  // kele
   ];
 
   var uniqueHospitalNumber = 1020;
@@ -137,5 +137,5 @@ describe('patient registration', function () {
     });
   });
 
-  // TODO Test attempting to register an invalid patient - look for specific error classes and help blocks
+  /** @TODO Test attempting to register an invalid patient - look for specific error classes and help blocks */
 });

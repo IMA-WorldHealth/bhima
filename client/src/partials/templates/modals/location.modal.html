@@ -1,4 +1,4 @@
-<ng-form name="LocationModalForm">
+<ng-form name="LocationModalForm" data-location-modal>
   <div class="modal-header">
     <h4>{{ "LOCATION.MODAL" | translate }}</h4>
   </div>
@@ -13,6 +13,7 @@
           class="btn btn-default"
           ng-class="{ 'active' : LocationModalCtrl.view.index === view.index }"
           ng-click="LocationModalCtrl.setView(view.cacheKey)"
+          data-location-view-key="{{ key }}"
           >
           {{ view.translateKey | translate }}
         </button>
