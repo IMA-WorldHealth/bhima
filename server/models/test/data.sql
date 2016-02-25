@@ -202,6 +202,12 @@ INSERT INTO `transaction_type` VALUES
 INSERT INTO `exchange_rate` (enterprise_id, currency_id, rate, date) VALUES
   (1, 1, 930, CURRENT_DATE());
 
+INSERT INTO grade VALUES ("71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0", 'G1', 'grade 1', 500);
+
+INSERT INTO employee VALUES (NULL, 'E1', 'Dedrick', 'Kitamuka', 'Mvuezolo', 'M', '1980-02-01', '2016-02-02', 1, 3, "71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0", 500, NULL, NULL, 'kinshasa', '0896611111', 'my@email.com', NULL, NULL, NULL, '42d3756a-7770-4bb8-a899-7953cd859892', NULL, NULL );
+
+
+
 -- 1.X Routes
 -- ----------
 -- (6,'Account','TREE.ACCOUNT','Chart of Accounts management',30,'/partials/accounts/create_account/','/create_account'),

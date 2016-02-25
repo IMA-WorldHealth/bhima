@@ -1157,6 +1157,8 @@
    "REGISTER"           : "Nouveau employé",
    "REGISTER_SUCCESS"   : "Enregistrement de l'employé avec succès",
    "SERVICE"            : "Service",
+   "SEARCH_BY_CODE"     : "Taper le code employee",
+   "SEARCH_BY_NAME"     : "Taper le nom empoyee",
    "SEX"                : "Sexe",
    "SUBMIT_EDIT"        : "Envoyer les détails",
    "SUBMIT_NEW"         : "Soumettre l'enregistrement",
