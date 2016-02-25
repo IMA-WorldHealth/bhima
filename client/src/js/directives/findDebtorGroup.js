@@ -21,9 +21,7 @@
 /** Find Debtor Group Controller */
 function findDebtorGroupController($http, DebtorGroupService) {
   var ctrl         = this,
-      callback     = this.callback,
-      locked       = this.locked,
-      isConvention = this.isConvention;
+      callback     = this.callback;
 
   /** Load debtor group */
   loadDebtorGroup();
@@ -66,19 +64,13 @@ function findDebtorGroupController($http, DebtorGroupService) {
     var parameters = {};
 
     /** Is convention debtor group or not */
-    if (angular.isDefined(isConvention) && Boolean(isConvention) === true) {
-      parameters.is_convention = 1;
-    }
-    else if (angular.isDefined(isConvention) && Boolean(isConvention) === false) {
-      parameters.is_convention = 0;
+    if (angular.isDefined(ctrl.isConvention)) {
+      parameters.is_convention = Boolean(ctrl.isConvention) ? 1 : 0;
     }
 
     /** Locked debtor group or not */
-    if (angular.isDefined(locked) && Boolean(locked) === true) {
-      parameters.locked = 1;
-    }
-    else if (angular.isDefined(locked) && Boolean(locked) === false) {
-      parameters.locked = 0;
+    if (angular.isDefined(ctrl.locked)) {
+      parameters.locked = Boolean(ctrl.locked) ? 1 : 0;
     }
 
     DebtorGroupService.read(null, parameters)

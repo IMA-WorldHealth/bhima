@@ -10,6 +10,7 @@ DebtorGroupService.$inject = ['$http', 'util'];
 */
 function DebtorGroupService($http, util) {
   var service = this;
+  var baseUrl = '/debtor_groups/';
 
   /** Exposed method read */
   service.read = read;
@@ -21,7 +22,7 @@ function DebtorGroupService($http, util) {
   * @description This function is responsible for getting debtor groups
   */
   function read(uuid, parameters) {
-    var url = uuid ? '/debtor_groups/' + uuid : '/debtor_groups/';
+    var url = baseUrl.concat(uuid || '');
     return $http.get(url, { params : parameters })
     .then(util.unwrapHttpResponse);
   }
