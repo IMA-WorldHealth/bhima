@@ -31,6 +31,7 @@ function FindPatientComponent(Patients, AppCache) {
 
   /** cache to remember which the search type of the component */
   var cache = new AppCache('FindPatientComponent');
+  
 
   /** @const the max number of records to fetch from the server */
   var LIMIT = 20;

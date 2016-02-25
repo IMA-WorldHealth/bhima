@@ -33,7 +33,17 @@ describe('The /supplier  API endpoint', function () {
   var UNLOCKED = 0;  
   var SUPPLIER_KEY = ['uuid', 'creditor_uuid', 'name', 'address_1', 'address_2',
    'email', 'fax', 'note', 'phone', 'international', 'locked'];
-  
+
+  var FILTER = {
+      name : 'UPD',
+      limit : 20
+  };
+
+  var NOT_FOUND = {
+      name : 'TEST',
+      limit : 20
+  };
+
   // login before each request
   beforeEach(helpers.login(agent));
 
@@ -100,11 +110,11 @@ describe('The /supplier  API endpoint', function () {
 
   it('PUT /supplier  should update an existing Supplier ', function () {
     return agent.put('/suppliers/' + supplier.uuid)
-      .send({ name : 'Temp Project' })
+      .send({ name : 'SUPPLIER UPDATE' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(SUPPLIER_KEY);
-        expect(res.body.name).to.equal('Temp Project');
+        expect(res.body.name).to.equal('SUPPLIER UPDATE');
       })
       .catch(helpers.handler);
   });
@@ -114,6 +124,26 @@ describe('The /supplier  API endpoint', function () {
       .then(function (result) {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /Supplier/Search/ Filtering the supplier list from the property NAME ', function () {
+    return agent.get('/suppliers/search')
+      .send(FILTER)
+      .then(function (result) {
+        expect(result).to.have.status(200);
+        expect(result).to.be.json;
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /Supplier/Search/ The filter returns an empty list because of key words to send to server ', function () {
+    return agent.get('/suppliers/search')
+      .send(NOT_FOUND)
+      .then(function (result) {
+        expect(result).to.have.status(200);
+        expect(result.body).to.be.empty;
       })
       .catch(helpers.handler);
   });
