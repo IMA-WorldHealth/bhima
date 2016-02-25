@@ -8,7 +8,7 @@ angular.module('bhima.components')
   }
 });
 
-FindSupplierComponent.$inject = ['SupplierService', 'appcache'];
+FindSupplierComponent.$inject = ['SupplierService'];
 
 /**
  * The Find Supplier Component
@@ -16,11 +16,8 @@ FindSupplierComponent.$inject = ['SupplierService', 'appcache'];
  * This component allows a user to search for a name
  *
  */
-function FindSupplierComponent(SupplierService, AppCache) {
+function FindSupplierComponent(SupplierService) {
   var vm = this;
-
-  /** cache to remember which the search type of the component */
-  var cache = new AppCache('FindSupplierComponent');
 
   /** @const the max number of records to fetch from the server */
   var LIMIT = 20;
@@ -33,7 +30,6 @@ function FindSupplierComponent(SupplierService, AppCache) {
   vm.searchByName       = searchByName;
   vm.selectSupplier      = selectSupplier;
 
-  //vm.findBy             = findBy;
   vm.reload             = reload;
   vm.readInput          = readInput;
 

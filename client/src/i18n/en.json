@@ -339,6 +339,11 @@
    "WARNING"          : "This patient is a Subscriber and can not pay the cash auxilliare",
    "WARNING_2"        : "For the payment of old bills should change its debtor group "
   },
+"CASH_BOX_TYPE" : {
+  "PRIMARY"   : "Primary",
+  "AUXILLARY" : "Auxillary",
+  "BANK"      : "Bank"
+},
 "CASH_DISCARD" : {
   "CASH_DETAILS"     : "Details",
   "DESCRIPTION"      : "Description",
@@ -1762,6 +1767,7 @@
    },
 "LOCATION": {
    "ADD"                   : "Add",
+   "AND"                   : "and",
    "COUNTRY"               : "Country",
    "CURRENT"               : "Current",
    "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
@@ -2649,6 +2655,7 @@
    "EMPLOYEE_GRADE"        : "Select a Grade",
    "EMPLOYEE_SERVICE"      : "Select a Service",
    "EMPLOYEE_SEX"          : "Select Sex",
+   "EMPTY"                 : "No matching records!",
    "ENTERPRISE"            : "Select an Enterprise",
    "FISCAL_YEAR"           : "Select a fiscal year",
    "GENERAL_LEDGER"        : "General Ledger",
