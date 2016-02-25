@@ -1411,6 +1411,11 @@
    "DISCARD"         : "Annuler",
    "DISMISS"         : "Rejeter",
    "EDIT"            : "Editer",
+   "ERRORS"        : {
+   "REQUIRED"           : "Cette valeur est requis.",
+    "MIN_CURRENCY_UNIT" : "Cette valeur est trop petite pour la monnaie choisie.",
+    "NUMBER"            : "Cette valeur doit être un nombre valide."
+   },   
    "INVALID_DATE"    : "La date est invalide",
    "LOGIN"           : "Connexion",
    "HAS_ERRORS"      : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumettre à nouveau.",
@@ -1754,10 +1759,10 @@
    },
 "LOCATION": {
    "ADD"                   : "Ajouter",
+   "AND"                   : "et",
    "COUNTRY"               : "Pays",
    "CURRENT"               : "Présent",
    "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
-   "ET"                    : "et",
    "INFO_CREATE"           : "créer",
    "INFO_MODIFY"           : "modifier",
    "LOCALITY"              : "Localite",
@@ -2643,6 +2648,7 @@
    "EMPLOYEE_GRADE"        : "Sélectionner un Grade",
    "EMPLOYEE_SERVICE"      : "Sélectionner un Service",
    "EMPLOYEE_SEX"          : "Sélectionner Sexe",
+   "EMPTY"                 : "Aucun enregistrement correspondant!",
    "ENTERPRISE"            : "Sélectionner Enterprise",
    "FISCAL_YEAR"           : "Sélectionner une année fiscale",
    "GENERAL_LEDGER"        : "Grand Livre",
