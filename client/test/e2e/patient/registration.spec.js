@@ -1,3 +1,4 @@
+/* jshint expr : true */
 /* global element, by, inject, browser */
 
 var chai = require('chai');
@@ -9,7 +10,7 @@ chai.use(chaiAsPromised);
 var components = require('../shared/components');
 var FU = require('../shared/FormUtils');
 
-describe.only('patient registration', function () {
+describe('patient registration', function () {
   'use strict';
 
   var registrationPath = '#/patients/register';
