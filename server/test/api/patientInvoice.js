@@ -1,7 +1,9 @@
+/* jshint expr:true */
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
 var expect = chai.expect;
+var uuid = require('node-uuid');
 
 /** import test helpers */
 var helpers = require('./helpers');
@@ -46,6 +48,12 @@ describe('The /sales API', function () {
     badSale : {},
     invalidParams : {}
   };
+
+  /** @const total number of sales in the database */
+  var NUM_SALES = 2;
+  
+  /** @const a reference for one of the sales in the database */
+  var REFERENCE = 'TPA1';
 
   /** login before each request */
   beforeEach(helpers.login(agent));
@@ -102,22 +110,117 @@ describe('The /sales API', function () {
   });
 
   it('GET /sales/:uuid returns 404 for an invalid patient invoice', function () {
-
-    return agent.get('/sales/unkown')
-      .then(function (result) {
-        expect(result).to.have.status(404);
-        expect(result.body).to.not.be.empty;
+    return agent.get('/sales/unknown')
+      .then(function (res) {
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
   it('POST /sales returns 400 for an invalid patient invoice request object', function () {
-
     return agent.post('/sales')
       .send(invalidRequestSale)
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res.body).to.not.be.empty;
-      });
+        helpers.api.errored(res, 400);
+      })
+      .catch(helpers.handler);
+  });
+
+  describe('(/sales/search) Search interface for the sales table', function () {
+
+    // no params provided
+    it('GET /sales/search should return all sales if no query string provided', function () {
+      return agent.get('/sales/search')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.have.length(NUM_SALES);
+        })
+        .catch(helpers.handler);
+    });
+
+    // valid filter, all results
+    it('GET /sales/search?debitor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two sales', function () {
+      return agent.get('/sales/search?debitor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.have.length(2);
+        })
+        .catch(helpers.handler);
+    });
+
+    // valid filter, but no results expected
+    it('GET /sales/search?cost=0 should return no sales', function () {
+      return agent.get('/sales/search?cost=0')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.have.length(0);
+        })
+        .catch(helpers.handler);
+    });
+
+    // invalid filter should fail with database error
+    it('GET /sales/search?invalidKey=invalidValue should error w/ 400 status', function () {
+      return agent.get('/sales/search?invalidKey=invalidValue')
+        .then(function (res) {
+          helpers.api.errored(res, 400);
+        })
+        .catch(helpers.handler);
+    });
+
+    // filter should find exactly one result
+    it('GET /sales/search?cost=75 should return a single sale', function () {
+      return agent.get('/sales/search?cost=75')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.have.length(1);
+        })
+        .catch(helpers.handler);
+    });
+
+    // filter should combine to find the same result as above
+    it('GET /sales/search?cost=75&currency_id=2 should return a single sale (combined filter)', function () {
+      return agent.get('/sales/search?cost=75&currency_id=2')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.have.length(1);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /sales/search?cost=75&currency_id=1 should not return any results', function () {
+      return agent.get('/sales/search?cost=75&currency_id=1')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.have.length(0);
+        })
+        .catch(helpers.handler);
+    });
+  });
+
+  describe('(/sales/references) reference interface for the sales table', function () {
+
+    it('GET /sales/reference/:reference should return a uuid for a valid sale reference', function () {
+      return agent.get('/sales/references/'.concat(REFERENCE))
+        .then(function (res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.have.property('uuid');
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /sales/references/:reference should fail for an invalid sale reference', function () {
+      return agent.get('/sales/references/unknown')
+        .then(function (res) {
+          helpers.api.errored(res, 404);
+        })
+        .catch(helpers.handler);
+    });
   });
 });
