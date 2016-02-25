@@ -2,7 +2,7 @@
   "name": "bhima-2.X",
   "description": "basic hospital information management application",
   "scripts": {
-    "postdeploy": "sh/install.sh"
+    "postdeploy": "sh/install.sh && sh/deploy.sh"
   },
   "env": {
     "DB_URL": {
