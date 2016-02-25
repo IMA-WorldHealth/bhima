@@ -2,14 +2,15 @@
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
-
-// import ui-grid testing utiliites
-var gridUtils = require('../shared/gridTestUtils.spec.js');
-var components = require('../shared/components');
-var EC = protractor.ExpectedConditions;
-
-chai.use(chaiAsPromised);
 var expect = chai.expect;
+chai.use(chaiAsPromised);
+
+// import testing utiliites
+var components = require('../shared/components');
+var GU = require('../shared/gridTestUtils.spec.js');
+var EC = protractor.ExpectedConditions;
+var FU = require('../shared/FormUtils');
+
 
 describe('Cash Payments Module', function () {
 
@@ -191,18 +192,17 @@ describe('Cash Payments Module', function () {
       cautionOption.click();
 
       // select the FC currency from the currency
-      var currencyOption = element(by.css('[data-currency-option="1"]'));
-      currencyOption.click();
+      var FC = element(by.css('[data-currency-option="1"]'));
+      FC.click();
 
       // enter the amount to pay for a caution
       components.currencyInput.set(mockCautionPayment.amount);
 
       // click the submit button
-      var submit = element(by.css('[data-action="submit"]'));
-      submit.click();
+      FU.buttons.submit();
 
       // expect the receipt modal to appear
-      expect(element(by.css('[data-cash-receipt-modal]')).isPresent()).to.eventually.equal(true);
+      FU.exists(by.css('[data-cash-receipt-modal]'), true);
     });
 
     it('should make a payment against previous invoices', function () {
@@ -219,33 +219,38 @@ describe('Cash Payments Module', function () {
       cautionOption.click();
 
       // open the invoices modal to select various invoices
-      var modalButton = element(by.css('[data-open-invoices-btn]'));
-      expect(modalButton.isPresent()).to.eventually.equal(true);
-      modalButton.click();
+      FU.exists(by.css('[data-open-invoices-btn]'), true);
+      element(by.css('[data-open-invoices-btn]')).click();
 
       // be sure that the modal opened
-      expect(element(by.css('[data-debtor-invoices-modal]')).isPresent()).to.eventually.equal(true);
+      FU.exists(by.css('[data-debtor-invoices-modal]'), true);
 
       // inside the modal, we want to select the first row to pay against
-      var row = gridUtils.selectRow(gridId, 0);
+      var row = GU.selectRow(gridId, 0);
 
       // submit the modal
       var modalSubmit =  element(by.css('[data-debtor-invoices-modal-submit]'));
       modalSubmit.click();
 
       // select the USD currency from the currency radio buttons
-      var currencyOption = element(by.css('[data-currency-option="2"]'));
-      currencyOption.click();
+      var USD = element(by.css('[data-currency-option="2"]'));
+      USD.click();
 
       // enter the amount to pay for an invoice
       components.currencyInput.set(mockInvoicesPayment.amount);
 
       // click the submit button
-      var submit = element(by.css('[data-action="submit"]'));
-      submit.click();
+      FU.buttons.submit();
 
       // expect the receipt modal to appear
-      expect(element(by.css('[data-cash-receipt-modal]')).isPresent()).to.eventually.equal(true);
+      FU.exists(by.css('[data-cash-receipt-modal]'), true);
+    });
+
+    it('should perform validation', function () {
+
+      // click the submit button
+      FU.buttons.submit();
+
     });
   });
 });
