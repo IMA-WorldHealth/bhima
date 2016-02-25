@@ -70,6 +70,7 @@ var currencies           = require('../controllers/finance/currencies');
 var services             = require('../controllers/admin/services');
 var conventions          = require('../controllers/finance/conventions');
 var vouchers             = require('../controllers/finance/vouchers');
+var suppliers            = require('../controllers/admin/suppliers');
 
 // Middleware for handle uploaded file
 var multipart            = require('connect-multiparty');
@@ -354,7 +355,9 @@ exports.configure = function (app) {
   // TODO Decide if the route should be named patient invoice
   app.get('/sales', patientInvoice.list);
   app.post('/sales', patientInvoice.create);
+  app.get('/sales/search', patientInvoice.search);
   app.get('/sales/:uuid', patientInvoice.details);
+  app.get('/sales/references/:reference', patientInvoice.reference);
 
   // Patients API
   app.get('/patients', patient.list);
@@ -508,9 +511,16 @@ exports.configure = function (app) {
   app.get('/vouchers/:uuid', vouchers.detail);
   app.post('/vouchers', vouchers.create);
 
+  /** Suppliers api */
+  app.get('/suppliers', suppliers.list);
+  app.get('/suppliers/:uuid', suppliers.detail);
+  app.post('/suppliers', suppliers.create);
+  app.put('/suppliers/:uuid', suppliers.update);
+
   /** purchase */
   app.post('/purchase', purchase.create);
   app.get('/purchase', purchase.list);
   app.get('/purchase/:uuid', purchase.detail);
   app.put('/purchase/:uuid', purchase.update);
+
 };
