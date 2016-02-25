@@ -93,7 +93,7 @@ var validation = {
 
   // no error state present
   ok : function success(model) {
-    expect(element(by.model(model)).getAttribute('class')).to.eventually.not.contain('ng-invalid');
+    expect(element(by.model(model)).getAttribute('class')).to.eventually.contain('ng-valid');
   }
 };
 
