@@ -67,7 +67,9 @@
                   <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
 
                   <!-- TODO Translate -->
-                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">{{ "UTIL.PATIENT_EXIT" | translate }}</p>
+                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">
+                    {{ "UTIL.PATIENT_EXIT" | translate }}
+                  </p>
                 </div>
               </div>
 
@@ -167,7 +169,7 @@
           </div>
 
           <div class="panel-footer">
-            <button type="submit" id="submitPatient" ng-click="PatientRegCtrl.registerPatient()" class="btn btn-primary btn-sm">
+            <button type="submit" ng-click="PatientRegCtrl.registerPatient()" class="btn btn-primary btn-sm" data-method="submit">
               {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
             </button>
           </div>

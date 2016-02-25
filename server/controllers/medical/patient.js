@@ -187,7 +187,6 @@ function update(req, res, next) {
 }
 
 function handleFetchPatient(uuid, codes) {
-  'use strict';
 
   var patientDetailQuery =
     'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, p.hospital_no, ' +
@@ -478,7 +477,7 @@ function isEmpty(array) {
 * @desc This function is responsible to find a patient with detailled informations or not
 * and with a limited rows or not
 */
-function search (req, res, next) {
+function search(req, res, next) {
 
   var sql,
       data       = [],
@@ -578,6 +577,3 @@ function search (req, res, next) {
   .catch(next)
   .done();
 }
-
-
-
