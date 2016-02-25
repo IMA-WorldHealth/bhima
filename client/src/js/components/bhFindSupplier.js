@@ -1,10 +1,9 @@
-angular.module('bhima.directives')
+angular.module('bhima.components')
 .component('bhFindSupplier', {
   controller: FindSupplierComponent,
   templateUrl : 'partials/templates/bhFindSupplier.tmpl.html',
   bindings: {
     onSearchComplete: '&',  // bind callback
-    type:             '@',  // bind string
     required:         '<',  // bind the required
   }
 });
@@ -14,17 +13,8 @@ FindSupplierComponent.$inject = ['SupplierService', 'appcache'];
 /**
  * The Find Supplier Component
  *
- * This component allows a user to serach for a supplier by either the
- * supplier identifier (Project Abbreviation + Reference) or by typeahead on supplier
- * name.
+ * This component allows a user to search for a name
  *
- * The typeahead loads data as your type into the input box, pinging th URL
- * /supplier/search/?name={string} The HTTP endpoints sends back 20 results
- * which are presented to the user.
- *
- * SUPPORTED ATTRIBUTES:
- *   - type : which take one of these values (inline or panel) (default: inline)
- *   - on-search-complete : the callback function which get the returned supplier
  */
 function FindSupplierComponent(SupplierService, AppCache) {
   var vm = this;
@@ -35,15 +25,6 @@ function FindSupplierComponent(SupplierService, AppCache) {
   /** @const the max number of records to fetch from the server */
   var LIMIT = 20;
 
-  /** supported searches: by name or by id */
-  vm.options = {
-    findByName : {
-      'label' : 'FIND.SUPPLIER_NAME',
-      'placeholder' : 'FIND.SEARCH_NAME'
-    }
-  };
-
-  vm.timestamp      = new Date();
   vm.showSearchView = true;
   vm.loadStatus     = null;
   vm.validInput     = false;
@@ -52,14 +33,9 @@ function FindSupplierComponent(SupplierService, AppCache) {
   vm.searchByName       = searchByName;
   vm.selectSupplier      = selectSupplier;
 
-  vm.validateNameSearch = validateNameSearch;
-  vm.findBy             = findBy;
+  //vm.findBy             = findBy;
   vm.reload             = reload;
   vm.readInput          = readInput;
-
-  /** fetch the initial setting for the component from appcache */
-  cache.fetch('optionKey')
-  .then(loadDefaultOption);
 
 
   /**
@@ -81,32 +57,10 @@ function FindSupplierComponent(SupplierService, AppCache) {
       limit : LIMIT
     };
 
-    return SupplierService.filter(options)
+    return SupplierService.search(options)
     .then(function (suppliers) {
-      // loop through each
-      suppliers.forEach(function (supplier) {
-        supplier.label = supplier.name;
-      });
-
       return suppliers;
     });
-  }
-
-
-  /**
-  * @method findBy
-  *
-  * @param {object} option The selected option
-  */
-
-  function findBy(key) {
-    vm.selected   = vm.options[key];
-    vm.loadStatus = null;
-    vm.idInput    = undefined;
-    vm.nameInput  = undefined;
-
-    // save the option for later
-    cache.put('optionKey', key);
   }
 
   /**
@@ -139,7 +93,6 @@ function FindSupplierComponent(SupplierService, AppCache) {
   * @description This function is responsible for handling the result of the search,
   * display results and pass the returned supplier to the parent controller
   */
-
   function selectSupplier(supplier) {
     vm.showSearchView = false;
 
@@ -156,35 +109,6 @@ function FindSupplierComponent(SupplierService, AppCache) {
   }
 
   /**
-  * @method validateNameSearch
-  *
-  * @param {string} value The supplier reference name
-  *
-  * @description Check if the value in the inputs is correct (well defined)
-  */
-  function validateNameSearch(value) {
-    vm.validInput = angular.isDefined(value);
-
-    // Update the nofication
-    if (!vm.validInput) {
-      vm.loadStatus = null;
-    }
-  }
-
-  /**
-  * @method loadDefaultOption
-  *
-  * @param {object} key - the default option key to search by
-  *
-  * @description This function is responsible for changing the option of search.
-  * Search by name
-  */
-  function loadDefaultOption(optionKey) {
-    // change the findBy call
-    findBy(optionKey);
-  }
-
-  /**
   * @method readInput
   *
   * @param {object} event An Event object
@@ -195,6 +119,7 @@ function FindSupplierComponent(SupplierService, AppCache) {
   function readInput(event) {
     if (event.keyCode === 13) {
       submit();
+      event.preventDefault();
     }
   }
 

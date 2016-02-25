@@ -505,7 +505,7 @@ exports.configure = function (app) {
   app.delete('/discounts/:id', discounts.delete);
 
   /** Suppliers api */
-  app.get('/suppliers/filter', suppliers.filter);
+  app.get('/suppliers/search', suppliers.search);
   app.get('/suppliers', suppliers.list);
   app.get('/suppliers/:uuid', suppliers.detail);
   app.post('/suppliers', suppliers.create);

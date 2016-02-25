@@ -126,9 +126,9 @@ function update(req, res, next) {
   .done();
 }
 
-// GET /SUPPLIER/FILTER
+// GET /SUPPLIER/SEARCH
 
-function filter(req, res, next) { 
+function search(req, res, next) { 
   var sql;
   var limit = Number(req.query.limit);
 
@@ -141,7 +141,7 @@ function filter(req, res, next) {
     'FROM supplier ' +
     'WHERE supplier.name LIKE ? ';
 
-  if (limit && typeof(limit) === 'number') {
+  if (limit) {
     sql += ' LIMIT ' + Math.floor(limit) + ';';
   }
 
@@ -167,5 +167,5 @@ exports.create = create;
 // update supplier informations
 exports.update = update;
 
-// filtering supplers data
-exports.filter = filter;
+// search suppliers data
+exports.search = search;

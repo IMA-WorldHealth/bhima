@@ -128,8 +128,8 @@ describe('The /supplier  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /Supplier/Filter/ Filtering the supplier list from the property NAME ', function () {
-    return agent.get('/suppliers/filter')
+  it('GET /Supplier/Search/ Filtering the supplier list from the property NAME ', function () {
+    return agent.get('/suppliers/search')
       .send(FILTER)
       .then(function (result) {
         expect(result).to.have.status(200);
@@ -138,8 +138,8 @@ describe('The /supplier  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /Supplier/Filter/ The filter returns an empty list because of key words to send to server ', function () {
-    return agent.get('/suppliers/filter')
+  it('GET /Supplier/Search/ The filter returns an empty list because of key words to send to server ', function () {
+    return agent.get('/suppliers/search')
       .send(NOT_FOUND)
       .then(function (result) {
         expect(result).to.have.status(200);

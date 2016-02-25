@@ -9,7 +9,7 @@ function SupplierService($http, util) {
   service.create = create;
   service.read = read;
   service.update = update;
-  service.filter = filter; 
+  service.search = search; 
 
 
   function create(supplier) {
@@ -18,13 +18,15 @@ function SupplierService($http, util) {
   }
 
   function read(uuid, params) {
-     var url = (uuid) ? '/suppliers/' + uuid : '/suppliers';
+     var url = '/suppliers/'.concat(uuid || '');
      return $http.get(url, { params : params })
      .then(util.unwrapHttpResponse);
   }
 
-  function filter(params) {
-    var url = '/suppliers/filter';
+  function search(params) {
+    var url = '/suppliers/search';
+    params.limit = params.limit || 20;
+
     return $http.get(url, { params : params })
       .then(util.unwrapHttpResponse);
   }
@@ -33,6 +35,8 @@ function SupplierService($http, util) {
     return $http.put('/suppliers/' + uuid, supplier)
     .then(util.unwrapHttpResponse);
   }
+
+  return service;
 }
 
 
