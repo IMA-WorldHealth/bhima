@@ -36,7 +36,7 @@ function lookupSupplier(uuid, codes) {
 
 
 // The Supplier  is assumed from the session.
-exports.list = function list(req, res, next) {
+function list(req, res, next) {
   'use strict';
 
   var sql;
@@ -61,14 +61,14 @@ exports.list = function list(req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
 /**
 * GET /Supplier/:UUID
 *
 * Returns the detail of a single Supplier
 */
-exports.detail = function detail(req, res, next) {
+function detail(req, res, next) {
   'use strict';
 
   var uuid = req.params.uuid;
@@ -79,11 +79,11 @@ exports.detail = function detail(req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
 
 // POST /Supplier
-exports.create = function create(req, res, next) {
+function create(req, res, next) {
   'use strict';
 
   var sql,
@@ -101,11 +101,11 @@ exports.create = function create(req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
 
 // PUT /Supplier /:uuid 
-exports.update = function update(req, res, next) {
+function update(req, res, next) {
   'use strict';
 
   var sql;
@@ -124,5 +124,48 @@ exports.update = function update(req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
+// GET /SUPPLIER/SEARCH
+
+function search(req, res, next) { 
+  var sql;
+  var limit = Number(req.query.limit);
+
+  var name = req.query.name;   
+  var condition = '%' + name + '%';
+
+  sql =
+    'SELECT supplier.uuid, supplier.creditor_uuid, supplier.name, supplier.address_1, supplier.address_2, supplier.email, ' +
+    'supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked ' +
+    'FROM supplier ' +
+    'WHERE supplier.name LIKE ? ';
+
+  if (limit) {
+    sql += ' LIMIT ' + Math.floor(limit) + ';';
+  }
+
+  db.exec(sql, [condition])
+  .then(function (rows) {
+
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+
+// get list of a supplier
+exports.list = list;
+
+// get details of a supplier
+exports.detail = detail;
+
+// create a new supplier
+exports.create = create;
+
+// update supplier informations
+exports.update = update;
+
+// search suppliers data
+exports.search = search;

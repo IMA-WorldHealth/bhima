@@ -1285,6 +1285,7 @@
       "ENTER_ACCOUNT"   : "Entrez un Compte",
       "PLACEHOLDER"     : "Par le numéro de Compte ou bien par le nom"
       },
+   "LOADING"           : "Chargement",   
    "PATIENT"           : "Patient",
    "PATIENT_FOUND"     : "Patient Trouvé",
    "PATIENT_ID"        : "ID Patient",
@@ -1294,6 +1295,8 @@
    "SEARCH"            : "Rechercher",
    "SEARCH_NAME"       : "Chercher Par Nom",
    "SEARCH_PATIENT_ID" : "Chercher ID Patient",
+   "SUPPLIER_NAME"     : "Nom du fournisseur",
+   "SUPPLIER_NOT_FOUND": "Aucun fournisseur n'a été trouvé",
    "TITLE"             : "Trouver Patient"
    },
 "FISCAL_YEAR": {
@@ -2961,6 +2964,7 @@
    "FAX"                   : "Fax",
    "GROUP"                 : "Groupe",
    "INTL"                  : "Internationale",
+   "NAME"                  : "Nom du fournisseur",
    "OPTIONAL_INFO"         : "Informations optionnelles",
    "PHONE"                 : "Téléphone",
    "REGISTERED"            : "Les fournisseurs inscrits",
