@@ -1864,3 +1864,34 @@ CREATE TABLE `village` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SET foreign_key_checks = 1;
+
+--
+-- Structure de la table `voucher`
+--
+DROP TABLE IF EXISTS `voucher`;
+CREATE TABLE IF NOT EXISTS `voucher` (
+  `uuid` char(36) NOT NULL,
+  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `project_id` tinyint(4) NOT NULL,
+  `reference` varchar(16) NOT NULL,
+  `currency_id` tinyint(4) NOT NULL,
+  `amount` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `description` varchar(255) DEFAULT NULL,
+  `document_uuid` char(36) NOT NULL,
+  `user_id` tinyint(4) NOT NULL,
+  PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Structure de la table `voucher_item`
+--
+DROP TABLE IF EXISTS `voucher_item`;
+CREATE TABLE IF NOT EXISTS `voucher_item` (
+  `uuid` char(36) NOT NULL,
+  `account_id` int(11) NOT NULL,
+  `debit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `credit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `voucher_uuid` char(36) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `voucher_uuid` (`voucher_uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

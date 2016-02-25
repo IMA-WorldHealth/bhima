@@ -69,8 +69,8 @@ var debtorGroups         = require('../controllers/finance/debtorGroups');
 var currencies           = require('../controllers/finance/currencies');
 var services             = require('../controllers/admin/services');
 var conventions          = require('../controllers/finance/conventions');
+var vouchers             = require('../controllers/finance/vouchers');
 var suppliers            = require('../controllers/admin/suppliers');
-
 
 // Middleware for handle uploaded file
 var multipart            = require('connect-multiparty');
@@ -507,13 +507,17 @@ exports.configure = function (app) {
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
 
+  /** voucher api endpoint */
+  app.get('/vouchers', vouchers.list);
+  app.get('/vouchers/:uuid', vouchers.detail);
+  app.post('/vouchers', vouchers.create);
+
   /** Suppliers api */
   app.get('/suppliers/search', suppliers.search);
   app.get('/suppliers', suppliers.list);
   app.get('/suppliers/:uuid', suppliers.detail);
   app.post('/suppliers', suppliers.create);
   app.put('/suppliers/:uuid', suppliers.update);
-
 
   /** purchase */
   app.post('/purchase', purchase.create);
