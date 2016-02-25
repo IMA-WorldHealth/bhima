@@ -8,7 +8,6 @@ angular.module('bhima.directives')
   templateUrl : 'partials/templates/bhLocationSelect.tmpl.html',
   controller : LocationSelectController,
   bindings: {
-    id:                '@',
     locationUuid:      '=', // two-way binding
     disable:           '<', // one-way binding
     validationTrigger: '<', // one-way binding
@@ -58,9 +57,6 @@ function LocationSelectController(Locations, $scope) {
 
   /** loading indicator */
   vm.loading = false;
-
-  /** default id */
-  vm.id = vm.id || 'bh-location-select-component';
 
   /** methods */
   vm.loadVillages = loadVillages;
