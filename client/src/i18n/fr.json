@@ -1285,6 +1285,7 @@
       "ENTER_ACCOUNT"   : "Entrez un Compte",
       "PLACEHOLDER"     : "Par le numéro de Compte ou bien par le nom"
       },
+   "LOADING"           : "Chargement",   
    "PATIENT"           : "Patient",
    "PATIENT_FOUND"     : "Patient Trouvé",
    "PATIENT_ID"        : "ID Patient",
@@ -1294,6 +1295,8 @@
    "SEARCH"            : "Rechercher",
    "SEARCH_NAME"       : "Chercher Par Nom",
    "SEARCH_PATIENT_ID" : "Chercher ID Patient",
+   "SUPPLIER_NAME"     : "Nom du fournisseur",
+   "SUPPLIER_NOT_FOUND": "Aucun fournisseur n'a été trouvé",
    "TITLE"             : "Trouver Patient"
    },
 "FISCAL_YEAR": {
@@ -1408,6 +1411,11 @@
    "DISCARD"         : "Annuler",
    "DISMISS"         : "Rejeter",
    "EDIT"            : "Editer",
+   "ERRORS"        : {
+   "REQUIRED"           : "Cette valeur est requis.",
+    "MIN_CURRENCY_UNIT" : "Cette valeur est trop petite pour la monnaie choisie.",
+    "NUMBER"            : "Cette valeur doit être un nombre valide."
+   },   
    "INVALID_DATE"    : "La date est invalide",
    "LOGIN"           : "Connexion",
    "HAS_ERRORS"      : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumettre à nouveau.",
@@ -1751,10 +1759,10 @@
    },
 "LOCATION": {
    "ADD"                   : "Ajouter",
+   "AND"                   : "et",
    "COUNTRY"               : "Pays",
    "CURRENT"               : "Présent",
    "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
-   "ET"                    : "et",
    "INFO_CREATE"           : "créer",
    "INFO_MODIFY"           : "modifier",
    "LOCALITY"              : "Localite",
@@ -2640,6 +2648,7 @@
    "EMPLOYEE_GRADE"        : "Sélectionner un Grade",
    "EMPLOYEE_SERVICE"      : "Sélectionner un Service",
    "EMPLOYEE_SEX"          : "Sélectionner Sexe",
+   "EMPTY"                 : "Aucun enregistrement correspondant!",
    "ENTERPRISE"            : "Sélectionner Enterprise",
    "FISCAL_YEAR"           : "Sélectionner une année fiscale",
    "GENERAL_LEDGER"        : "Grand Livre",
@@ -2961,6 +2970,7 @@
    "FAX"                   : "Fax",
    "GROUP"                 : "Groupe",
    "INTL"                  : "Internationale",
+   "NAME"                  : "Nom du fournisseur",
    "OPTIONAL_INFO"         : "Informations optionnelles",
    "PHONE"                 : "Téléphone",
    "REGISTERED"            : "Les fournisseurs inscrits",

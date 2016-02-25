@@ -512,6 +512,7 @@ exports.configure = function (app) {
   app.post('/vouchers', vouchers.create);
 
   /** Suppliers api */
+  app.get('/suppliers/search', suppliers.search);
   app.get('/suppliers', suppliers.list);
   app.get('/suppliers/:uuid', suppliers.detail);
   app.post('/suppliers', suppliers.create);

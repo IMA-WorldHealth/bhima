@@ -339,6 +339,11 @@
    "WARNING"          : "This patient is a Subscriber and can not pay the cash auxilliare",
    "WARNING_2"        : "For the payment of old bills should change its debtor group "
   },
+"CASH_BOX_TYPE" : {
+  "PRIMARY"   : "Primary",
+  "AUXILLARY" : "Auxillary",
+  "BANK"      : "Bank"
+},  
 "CASH_DISCARD" : {
   "CASH_DETAILS"     : "Details",
   "DESCRIPTION"      : "Description",
@@ -1276,6 +1281,7 @@
       "ENTER_ACCOUNT" : "Enter Account",
       "PLACEHOLDER"   : "Account Name or Number"
       },
+   "LOADING"           : "Loading",       
    "PATIENT"           : "Patient",
    "PATIENT_FOUND"     : "Patient Found",
    "PATIENT_ID"        : "Patient ID",
@@ -1285,6 +1291,8 @@
    "SEARCH"            : "Search",
    "SEARCH_NAME"       : "Search by Name",
    "SEARCH_PATIENT_ID" : "Search by Patient ID",
+   "SUPPLIER_NAME"     : "Supplier Name",   
+   "SUPPLIER_NOT_FOUND": "Supplier Not Found",
    "TITLE"             : "Find a patient"
    },
 "FISCAL_YEAR": {
@@ -1747,6 +1755,7 @@
    },
 "LOCATION": {
    "ADD"                   : "Add",
+   "AND"                   : "and",
    "CURRENT"               : "Current",
    "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
    "INFO_CREATE"           : "Create",
@@ -2633,6 +2642,7 @@
    "EMPLOYEE_GRADE"        : "Select a Grade",
    "EMPLOYEE_SERVICE"      : "Select a Service",
    "EMPLOYEE_SEX"          : "Select Sex",
+   "EMPTY"                 : "No matching records!",
    "ENTERPRISE"            : "Select an Enterprise",
    "FISCAL_YEAR"           : "Select a fiscal year",
    "GENERAL_LEDGER"        : "General Ledger",
@@ -2674,12 +2684,7 @@
    "VALUE"                 : "Select a value",
    "VILLAGE"               : "Select a Village",
    "WHOLE_YEAR_BUDGET"     : "Select the annual budget",
-   "ZS"                    : "Select an health zone",
-   "VILLAGE"               : "Select a Village",
-   "SECTOR"                : "Select a Sector",
-   "PROVINCE"              : "Select a Province",
-   "COUNTRY"               : "Select a Country",
-   "EMPTY"                 : "No matching records!"
+   "ZS"                    : "Select an health zone"
    },
 "SERVICE": {
    "COST_CENTER_SELECT"     : "Cost center",
@@ -2959,6 +2964,7 @@
    "FAX"                   : "Fax",
    "GROUP"                 : "Group",
    "INTL"                  : "International",
+   "NAME"                  : "Name of supplier",
    "OPTIONAL_INFO"         : "Optional Information",
    "PHONE"                 : "Phone",
    "REGISTERED"            : "Registered Suppliers",
