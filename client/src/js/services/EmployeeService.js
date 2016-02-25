@@ -10,9 +10,16 @@ function EmployeeService($http, util) {
   service.read = read;
   service.create = create;
   service.update = update;
+  service.search = search;
 
   function read(id) {
     var url = baseUrl.concat(id || '');
+    return $http.get(url)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function search (key, value){
+    var url = baseUrl + key + '/' + value;
     return $http.get(url)
       .then(util.unwrapHttpResponse);
   }

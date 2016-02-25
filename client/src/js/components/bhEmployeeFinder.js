@@ -3,53 +3,97 @@
  *
  * @module components/bhEmployeeFinder
  *
- * @description a component to deal with employee, it let you choose a employee
+ * @description a component to deal with employee, it let you choose a employee and return back is account_id
  * 
  **/
  
-//An employee finder component controller
+/**An employee finder component controller**/
  
-function employeeFinderController (employeeService){ 	
+function employeeFinderController (employeeService, Appcache){ 	
  	var ctrl = this;
+ 	var cache = new Appcache('employeeFinderComponent'); //using appcache to persist the option choice
+
+ 	//search options array
 
  	ctrl.searchOptions = [
  		{key : 'code', label : 'EMPLOYEE.CODE', placeHolder : 'EMPLOYEE.SEARCH_BY_CODE'},
  		{key : 'names', label : 'EMPLOYEE.NAME', placeHolder : 'EMPLOYEE.SEARCH_BY_NAME'}
- 	];
+ 	]; 	
+
+	/**
+	* @method load
+	*
+	* @description This called the first to initialize data
+	*/
 
  	function load (){
  		ctrl.selectedEmployee = null;
- 		ctrl.employeeValue = null;
- 		ctrl.session = {state : 'finding'};
- 		setSearchOption(ctrl.searchOptions[0]); 
-
- 		employeeService.read()
- 		.then(function (employees){
- 			ctrl.employees = employees;
- 		});		
+ 		ctrl.employeeAccountId = null;
+ 		ctrl.searchStarted = false;
+ 		ctrl.state = 'finding';
+ 		cache.fetch('searchOptionKey')
+ 		.then(setSearchOption);
 	}
+
+	/**
+	* @method setSearchOption
+	*
+	* @param {String} searchOption The option to set
+	*
+	* @description set a search option and make it persistent through appcache
+	*/
 
 	function setSearchOption (searchOption){
-		ctrl.selectedSearchOption = searchOption;
+		ctrl.selectedSearchOption = searchOption || ctrl.searchOptions[0];
+		cache.put('searchOptionKey', searchOption);
 	}
 
-	function selectEmployee (item){
-		ctrl.selectedEmployee = item;
-		ctrl.employeeValue = item.account_id;
-		ctrl.session.state = 'found';
+	/**
+	* @method selectEmployee
+	*
+	*@param {object} employee The employee to set
+	*
+	* @description set an employee and update the employeeAccountId and the state as well
+	*/
+
+	function selectEmployee (employee){
+		ctrl.selectedEmployee = employee;
+		ctrl.employeeAccountId = employee.account_id;
+		ctrl.state = 'found';
 	}
+
+	/**
+	* @method search
+	*
+	*@param {String} text The token to use for research
+	*
+	* @description take a token and look the employee by code or names according to the option choosen
+	*/
 
 	function search (text) {
-
-		return ctrl.employees.filter(function (item){
-			var content = ctrl.selectedSearchOption.key === 'names' ? [item.prenom, item.name, item.postnom].join('') : item.code_employee;
-			return new RegExp(text, 'i').test(content); //build a regex a look for text occurence in the employee names without case sensive
-		});
+		ctrl.searchStarted = true;
+		return employeeService.search(ctrl.selectedSearchOption.key, text)
+ 		.then(function (employees){
+ 			ctrl.searchSucceed = true; 
+ 			employees.forEach(function (employee){
+ 				employee.label = formatEmployee(employee);
+ 			});		
+ 			return employees;
+ 		})
+ 		.catch(function (err){
+ 			ctrl.searchSucceed = false;
+ 		});
 	}
 
-	function formatEmployee (employee) {
-		if(!employee) return '';
+	/**
+	* @method formatEmployee
+	*
+	*@param {object} employee the employee to format
+	*
+	* @description take an employee and return back a formated string to use at the view
+	*/
 
+	function formatEmployee (employee) {
 		return [
 				employee.prenom,
 				employee.name,
@@ -60,20 +104,20 @@ function employeeFinderController (employeeService){
 
 	load();
 
-	ctrl.formatEmployee = formatEmployee;
+	//expose methods to the view
  	ctrl.load = load;
  	ctrl.search = search;
  	ctrl.selectEmployee = selectEmployee;	
  	ctrl.setSearchOption = setSearchOption; 
 }
 
-employeeFinderController.$inject = ['EmployeeService'];
+employeeFinderController.$inject = ['EmployeeService', 'appcache'];
  
  //component implementation
 angular.module('bhima.components').component('bhEmployeeFinder', {
 	templateUrl : '/partials/templates/bhEmployeeFinder.tmpl.html',
  	controller : employeeFinderController,
  	bindings : {
- 		employeeValue : '='
+ 		employeeAccountId : '='
  	}
 });
