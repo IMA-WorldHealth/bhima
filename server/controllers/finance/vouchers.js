@@ -8,6 +8,7 @@
 *
 * @required lodash
 * @required node-uuid
+* @required lib/util
 * @required lib/db
 */
 
@@ -15,6 +16,7 @@
 
 var _    = require('lodash'),
     uuid = require('node-uuid'),
+    util = require('../../lib/util'),
     db   = require('../../lib/db');
 
 /** Get list of vouchers */
@@ -38,7 +40,7 @@ function list(req, res, next) {
     'vi.account_id, vi.debit, vi.credit ' +
     'FROM voucher v JOIN voucher_item vi ON vi.voucher_uuid = v.uuid ';
 
-  var builder = queryCondition(query, req.query);
+  var builder = util.queryCondition(query, req.query);
 
   db.exec(builder.query, builder.conditions)
   .then(function (rows) {
@@ -77,7 +79,6 @@ function detail(req, res, next) {
 */
 function create(req, res, next) {
 
-  // if (!checkForMissing(req.body)) { return next(new req.codes.ERR_MISSING_REQUIRED_PARAMETERS()); }
   if (req.body.voucher.date) { req.body.voucher.date = new Date(req.body.voucher.date); }
 
   /** Initialise the transaction handler */
@@ -97,57 +98,4 @@ function create(req, res, next) {
   })
   .catch(next)
   .done();
-}
-
-/**
-* @function checkForMissing
-* @param {object} The sended object
-* @return {boolean}
-* @description This functin check missing data for voucher and voucher item
-*/
-function checkForMissing(_data) {
-  var voucher = _data.voucher;
-  var voucher_item = _data.voucher_item;
-
-  var validVoucher =
-    voucher.uuid && voucher.date && voucher.project_id && voucher.reference &&
-    voucher.currency_id && (voucher.amount + 1) && voucher.description &&
-    voucher.document_uuid && voucher.user_id ;
-
-  var validVoucherItem =
-    voucher_item.uuid && voucher_item.account_id &&
-    (voucher_item.debit + 1) && (voucher_item.credit + 1) && voucher_item.voucher_uuid;
-
-  /** handle array of items */
-  if (_.isArray(voucher_item)) {
-    var predicat = false;
-    validVoucherItem = true;
-    _.forEach(voucher_item, function (elem) {
-      predicat = _.every(elem, function (item) {
-          return _.isNil(item) === false || item === 0;
-      });
-      validVoucherItem = validVoucherItem && predicat;
-    });
-  }
-
-  return (validVoucher && validVoucherItem);
-}
-
-/**
-* @function queryCondition
-* @param {string} _query The sql query
-* @param {object} _requestQuery The req.query object
-* @return {array} The final query and conditions
-* @description build query string conditions
-*/
-function queryCondition(_query, _requestQuery) {
-  var criteria, conditions = [];
-
-  criteria = Object.keys(_requestQuery).map(function (item) {
-    conditions = conditions.concat(item, _requestQuery[item]);
-    return '?? = ?';
-  }).join(' AND ');
-
-  _query += (Object.keys(_requestQuery).length > 0) ? 'WHERE ' + criteria : '';
-  return { query : _query, conditions : conditions };
 }

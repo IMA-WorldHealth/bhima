@@ -14,7 +14,7 @@ helpers.configure(chai);
 * The /vouchers API endpoint
 *
 * @desc This test suit is about the vouchers transactions
-*
+* BE SURE : run mysql in sql_mode = "STRICT_ALL_TABLES"
 */
 
 describe('The /vouchers HTTP endpoint ::', function () {
@@ -113,7 +113,7 @@ describe('The /vouchers HTTP endpoint ::', function () {
     };
 
     var mockVoucherItem = {
-      uuid : uuid.v4(),
+      // Missing voucher item uuid
       account_id : 3631,
       debit : 10,
       credit : 0,
@@ -127,7 +127,7 @@ describe('The /vouchers HTTP endpoint ::', function () {
       .then(function (res) {
         expect(res).to.have.status(400);
         expect(res.body.code).to.exist;
-        expect(res.body.code).to.be.equal('ERR_MISSING_REQUIRED_PARAMETERS');
+        expect(res.body.code).to.be.equal('DB.ER_NO_DEFAULT_FOR_FIELD');
       })
       .catch(helpers.handler);
   });
