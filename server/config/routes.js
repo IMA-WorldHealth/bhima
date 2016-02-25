@@ -46,6 +46,7 @@ var exchange             = require('../controllers/finance/exchange');
 var cash                 = require('../controllers/finance/cash');
 var cashflow             = require('../controllers/cashflow');
 var enterprises          = require('../controllers/admin/enterprises');
+var employees            = require('../controllers/admin/employees');
 var priceList            = require('../controllers/finance/priceList');
 var billingServices      = require('../controllers/finance/billingServices');
 var account              = require('../controllers/finance/account');
@@ -61,7 +62,6 @@ var depreciatedInventory = require('../controllers/categorised/inventory_depreci
 var depreciatedReports   = require('../controllers/categorised/reports_depreciate');
 var payroll              = require('../controllers/categorised/payroll');
 var caution              = require('../controllers/categorised/caution');
-var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
 var transfers            = require('../controllers/finance/transfers');
@@ -488,6 +488,7 @@ exports.configure = function (app) {
   /** employees */
   app.get('/employees', employees.list);
   app.get('/employees/:id', employees.detail);
+  app.get('/employees/:key/:value', employees.search);
   app.put('/employees/:id', employees.update);
   app.post('/employees', employees.create);
 

@@ -21,7 +21,7 @@
  		ctrl.selectedCash = null;
  		ctrl.cashBoxValue = null;
 	 	ctrl.session = { state : 'finding'};
-    setType(ctrl.types[0]);    
+    	setType(ctrl.types[0]);    
  	}
 
  	function setType (type){
