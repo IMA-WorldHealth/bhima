@@ -114,7 +114,7 @@ describe('The /employees API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees/:key/:value,  should return a list of employees match the employee code ', function () {
+  it('METHOD : GET PATH : /employees/code/:value,  should return a list of employees match the employee code token', function () {
     return agent.get('/employees/code/' + String(employee.code).substring(0,1))
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -124,7 +124,7 @@ describe('The /employees API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees/:key/:value,  should return a list of employees match the employee names ', function () {
+  it('METHOD : GET PATH : /employees/names/:value,  should return a list of employees match the employee names token', function () {
     return agent.get('/employees/names/' + employee.name.substring(0,2))
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -134,7 +134,7 @@ describe('The /employees API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees/:key/:value,  should return an error for an ankwnow key', function () {
+  it('METHOD : GET PATH : /employees/unknown/:value,  should return an error for an ankwnow key', function () {
     return agent.get('/employees/unknown/' + employee.name.substring(0,2))
       .then(function (res) {
         expect(res).to.have.status(400);
@@ -143,11 +143,12 @@ describe('The /employees API endpoint :: ', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees/:key/:value,  should return an error for a unmatch value', function () {
+  it('METHOD : GET PATH : /employees/code/:value,  should return an empty array for an unmatch value', function () {
     return agent.get('/employees/code/unknown')
       .then(function (res) {
-        expect(res).to.have.status(404);
+        expect(res).to.have.status(200);
         expect(res).to.be.json;
+        expect(res.body).to.have.length(0);
       })
       .catch(helpers.handler);
   });

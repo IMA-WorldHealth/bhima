@@ -29,6 +29,7 @@ function employeeFinderController (employeeService, Appcache){
  	function load (){
  		ctrl.selectedEmployee = null;
  		ctrl.employeeAccountId = null;
+ 		ctrl.isEmpty = true;
  		ctrl.searchStarted = false;
  		ctrl.state = 'finding';
  		cache.fetch('searchOptionKey')
@@ -74,15 +75,12 @@ function employeeFinderController (employeeService, Appcache){
 		ctrl.searchStarted = true;
 		return employeeService.search(ctrl.selectedSearchOption.key, text)
  		.then(function (employees){
- 			ctrl.searchSucceed = true; 
  			employees.forEach(function (employee){
  				employee.label = formatEmployee(employee);
- 			});		
+ 			});
+ 			ctrl.isEmpty = employees.length === 0;
  			return employees;
- 		})
- 		.catch(function (err){
- 			ctrl.searchSucceed = false;
- 		});
+ 		}); 
 	}
 
 	/**

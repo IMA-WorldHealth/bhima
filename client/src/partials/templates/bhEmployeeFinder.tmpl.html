@@ -1,5 +1,5 @@
 <div ng-switch="$ctrl.state">
-  <div ng-switch-when="finding" class="input-group"  ng-class="{'has-error': $ctrl.searchStarted && (!$ctrl.searchSucceed || !$ctrl.selectedEmployee)}">
+  <div ng-switch-when="finding" class="input-group"  ng-class="{'has-error': $ctrl.searchStarted && $ctrl.isEmpty }">
 
     <div class="input-group-btn" uib-dropdown>
       <button class="btn btn-default" uib-dropdown-toggle data-employee-finder>
