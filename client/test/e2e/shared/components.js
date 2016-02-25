@@ -156,6 +156,7 @@ exports.currencyInput = {
  * @public
  */
 exports.findPatient = {
+  selector : '[data-find-patient]',
 
   /**
    * sets the input to the correct mode
@@ -180,16 +181,18 @@ exports.findPatient = {
    */
   findByName: function findByName(name) {
 
+    var root = element(by.css(this.selector));
+
     // set the input to "find by name" mode
     this.mode('name');
 
     // get the input and enter the id provided
-    var input = element(by.model('$ctrl.idInput'));
+    var input = root.element(by.model('$ctrl.nameInput'));
     input.sendKeys(name);
 
-    // submit the id to the server
-    var submit = element(by.css('[data-find-patient-submit]'));
-    submit.click();
+    // get the first option and click it
+    var option = root.all(by.repeater('match in matches track by $index')).first();
+    option.click();
   },
 
   /**

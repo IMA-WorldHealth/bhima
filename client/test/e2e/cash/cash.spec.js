@@ -140,7 +140,7 @@ describe('Cash Payments Module', function () {
 
     // This caution payment should succeed
     var mockCautionPayment = {
-      patientId: 'TPA1',
+      patientName: 'Test 1',
       amount : 150
     };
 
@@ -183,7 +183,7 @@ describe('Cash Payments Module', function () {
     it('should make a caution payment', function () {
 
       // select the proper patient
-      components.findPatient.findById(mockCautionPayment.patientId);
+      components.findPatient.findByName(mockCautionPayment.patientName);
 
       // we will leave the date input as default
 
