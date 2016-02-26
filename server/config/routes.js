@@ -195,6 +195,7 @@ exports.configure = function (app) {
 
   app.get('/reports/:route/', legacyReports.buildReport);
 
+  /* load a user's tree */
   app.get('/tree', tree.generate);
 
   // snis controller

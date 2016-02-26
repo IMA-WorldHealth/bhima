@@ -1,4 +1,4 @@
-// Module: server/controllers/tree.js
+// module: server/controllers/tree.js
 
 var db = require('../lib/db');
 
@@ -13,7 +13,6 @@ var ROOT_NODE = 0;
 * HTTP Controllers
 */
 exports.generate = function (req, res, next) {
-  /* jshint unused : false*/
 
   buildTree(req.session.user.id)
   .then(function (treeData) {
