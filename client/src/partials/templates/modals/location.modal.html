@@ -1,0 +1,135 @@
+<ng-form name="LocationModalForm" data-location-modal>
+  <div class="modal-header">
+    <h4>{{ "LOCATION.MODAL" | translate }}</h4>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row text-center">
+      <div class="btn-group">
+        <button
+          ng-repeat="(key, view) in LocationModalCtrl.views track by $index"
+          type="button"
+          class="btn btn-default"
+          ng-class="{ 'active' : LocationModalCtrl.view.index === view.index }"
+          ng-click="LocationModalCtrl.setView(view.cacheKey)"
+          data-location-view-key="{{ key }}"
+          >
+          {{ view.translateKey | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.country.$error }"
+      >
+      <label class="control-label">
+        {{ "LOCATION.COUNTRY" | translate }}
+      </label>
+      <select
+        ng-if="LocationModalCtrl.view.index > 1"
+        class="form-control"
+        name="country"
+        ng-model="LocationModalCtrl.country"
+        ng-change="LocationModalCtrl.loadProvinces()"
+        ng-options="country as country.name for country in LocationModalCtrl.countries track by country.uuid"
+        required
+        >
+        <option value="" disabled>{{ LocationModalCtrl.messages.country | translate }}</option>
+      </select>
+      <input
+        ng-if="LocationModalCtrl.view.index === 1"
+        class="form-control"
+        name="country"
+        ng-model="LocationModalCtrl.country"
+        placeholder="{{ 'INPUT.COUNTRY' | translate }}"
+        required>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.province.$error }"
+      ng-if="LocationModalCtrl.view.index > 1"
+      >
+      <label class="control-label">
+        {{ "LOCATION.PROVINCE" | translate }}
+      </label>
+      <select
+        ng-if="LocationModalCtrl.view.index > 2"
+        class="form-control"
+        name="province"
+        ng-model="LocationModalCtrl.province"
+        ng-options="province as province.name for province in LocationModalCtrl.provinces track by province.uuid"
+        ng-change="LocationModalCtrl.loadSectors()"
+        required>
+        <option value="" disabled>{{ LocationModalCtrl.messages.province | translate }}</option>
+      </select>
+
+      <input
+        ng-if="LocationModalCtrl.view.index === 2"
+        class="form-control"
+        name="province"
+        ng-model="LocationModalCtrl.province"
+        placeholder="{{ 'INPUT.PROVINCE' | translate }}"
+        required>
+    </div>
+
+    <div class="form-group"
+      ng-if="LocationModalCtrl.view.index > 2"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.sector.$error }"
+      >
+      <label class="control-label">
+        {{ "LOCATION.SECTOR" | translate }}
+      </label>
+      <select
+        ng-if="LocationModalCtrl.view.index > 3"
+        class="form-control"
+        name="sector"
+        ng-model="LocationModalCtrl.sector"
+        ng-options="sector as sector.name for sector in LocationModalCtrl.sectors track by sector.uuid"
+        required>
+        <option value="" disabled>{{ LocationModalCtrl.messages.sector | translate }}</option>
+      </select>
+      <input
+        ng-if="LocationModalCtrl.view.index === 3"
+        name="sector"
+        class="form-control"
+        ng-model="LocationModalCtrl.sector"
+        placeholder="{{ 'INPUT.SECTOR' | translate }}"
+        required>
+    </div>
+
+    <div class="form-group"
+      ng-if="LocationModalCtrl.view.index > 3"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.village.$error }"
+      >
+      <label class="control-label">
+        {{ "LOCATION.VILLAGE" | translate }}
+      </label>
+      <input
+        class="form-control"
+        name="village"
+        ng-model="LocationModalCtrl.village"
+        placeholder="{{ 'INPUT.VILLAGE' | translate }}"
+        required>
+    </div>
+
+    <p class="text-danger" ng-show="LocationModalForm.$submitted && LocationModalForm.$invalid">
+      <span class="glyphicon glyphicon-exclamation-sign"></span>
+      {{ "FORM.ERRORS.GENERIC" | translate }}
+    </p>
+  </div>
+
+
+  <div class="modal-footer">
+    <!-- @todo - why does this not set the submitted state automatically? -->
+    <button
+      type="submit"
+      class="btn btn-primary"
+      ng-click="LocationModalCtrl.submit(LocationModalForm.$invalid); LocationModalForm.$setSubmitted();">
+      {{ "FORM.SUBMIT" | translate }}
+    </button>
+    <button type="button" ng-click="LocationModalCtrl.dismiss()" class="btn btn-default">
+      {{ "FORM.CANCEL" | translate }}
+    </button>
+  </div>
+</ng-form>

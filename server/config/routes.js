@@ -76,7 +76,7 @@ var suppliers            = require('../controllers/admin/suppliers');
 var multipart            = require('connect-multiparty');
 
 exports.configure = function (app) {
-  winston.log('debug', 'Configuring routes');
+  winston.debug('Configuring routes');
 
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
@@ -103,9 +103,11 @@ exports.configure = function (app) {
   app.get('/locations/sectors', locations.sectors);
   app.get('/locations/provinces', locations.provinces);
   app.get('/locations/countries', locations.countries);
-  // app.get('/locations/village/:uuid', locations.lookupVillage);
-  // app.get('/locations/sector/:uuid', locations.lookupSector);
-  // app.get('/locations/province/:uuid', locations.lookupProvince);
+  app.post('/locations/countries', locations.create.country);
+  app.post('/locations/provinces', locations.create.province);
+  app.post('/locations/sectors', locations.create.sector);
+  app.post('/locations/villages', locations.create.village);
+
   app.get('/locations/detail/:uuid', locations.detail);
 
   // API for account routes crud
