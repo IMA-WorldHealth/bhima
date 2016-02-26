@@ -1,22 +1,67 @@
 angular.module('bhima.services')
 .service('LocationService', LocationService);
 
-LocationService.$inject = [ '$http', 'util' ];
+LocationService.$inject = [ '$http', 'util', '$uibModal' ];
 
 /**
  * Location Service
  *
- * Interacts with the /locations API.
+ * Interacts with the /locations API.  It currently supports reading from the
+ * database for all location entities, but only will support a detailed query
+ * for a village uuid (via the location()) method.
+ *
+ * Supported Actions:
+ *  - Lists:
+ *    - countries
+ *    - provinces
+ *    - sectors
+ *    - villages
+ *  - Details:
+ *    - village (via .location())
+ *  - Create:
+ *    - countries
+ *    - provinces
+ *    - sectors
+ *    - villages
+ *
+ * Eventually this service may have to be broke in two to group related
+ * functions and reduce complexity.  For example, the create interfaces are only
+ * needed on specific modules, whereas the read interfaces may be needed in a
+ * variety of places.
+ *
+ * @class LocationService
  */
-function LocationService($http, util) {
+function LocationService($http, util, Modal) {
   var service = {};
   var baseUrl = '/locations';
 
-  service.villages = villages;
+  /** read interfaces */
+  service.countries = countries;
   service.provinces = provinces;
   service.sectors = sectors;
-  service.countries = countries;
+  service.villages = villages;
+
+  /** detail interfacs */
   service.location = location;
+
+  /** locaiton creation interfaces */
+  service.create = {};
+  service.create.country = createCountry;
+  service.create.province = createProvince;
+  service.create.sector = createSector;
+  service.create.village = createVillage;
+
+  /** launch the "add location" modal */
+  service.modal = modal;
+
+  /** translation messages used in location <select> components */
+  service.messages = {
+    country:  'SELECT.COUNTRY',
+    province: 'SELECT.PROVINCE',
+    sector:   'SELECT.SECTOR',
+    village:  'SELECT.VILLAGE',
+    empty:    'SELECT.EMPTY'
+  };
 
   /**
    * wrapper for HTTP requests made to the baseUrl endpoint
@@ -69,6 +114,46 @@ function LocationService($http, util) {
    */
   function location(uuid) {
     return request('/detail/'.concat(uuid));
+  }
+
+  /**
+   * Opens the "Add a Location" modal in place
+   */
+  function modal() {
+    return Modal.open({
+      templateUrl : 'partials/templates/modals/location.modal.html',
+      controller : 'LocationModalController as LocationModalCtrl',
+      size : 'md'
+    }).result;
+  }
+
+  /**
+   * generic interface for creation methods
+   * @private
+   */
+  function createGeneric(endpoint, data) {
+    return $http.post(baseUrl.concat(endpoint), data)
+    .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * creates a country in the database
+   * @public
+   */
+  function createCountry(data) {
+    return createGeneric('/countries', data);
+  }
+
+  function createProvince(data) {
+    return createGeneric('/provinces', data);
+  }
+
+  function createSector(data) {
+    return createGeneric('/sectors', data);
+  }
+
+  function createVillage(data) {
+    return createGeneric('/villages', data);
   }
 
   return service;

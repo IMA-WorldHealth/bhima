@@ -46,6 +46,7 @@ var exchange             = require('../controllers/finance/exchange');
 var cash                 = require('../controllers/finance/cash');
 var cashflow             = require('../controllers/cashflow');
 var enterprises          = require('../controllers/admin/enterprises');
+var employees            = require('../controllers/admin/employees');
 var priceList            = require('../controllers/finance/priceList');
 var billingServices      = require('../controllers/finance/billingServices');
 var account              = require('../controllers/finance/account');
@@ -61,7 +62,6 @@ var depreciatedInventory = require('../controllers/categorised/inventory_depreci
 var depreciatedReports   = require('../controllers/categorised/reports_depreciate');
 var payroll              = require('../controllers/categorised/payroll');
 var caution              = require('../controllers/categorised/caution');
-var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
 var transfers            = require('../controllers/finance/transfers');
@@ -69,14 +69,14 @@ var debtorGroups         = require('../controllers/finance/debtorGroups');
 var currencies           = require('../controllers/finance/currencies');
 var services             = require('../controllers/admin/services');
 var conventions          = require('../controllers/finance/conventions');
+var vouchers             = require('../controllers/finance/vouchers');
 var suppliers            = require('../controllers/admin/suppliers');
-
 
 // Middleware for handle uploaded file
 var multipart            = require('connect-multiparty');
 
 exports.configure = function (app) {
-  winston.log('debug', 'Configuring routes');
+  winston.debug('Configuring routes');
 
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
@@ -103,9 +103,11 @@ exports.configure = function (app) {
   app.get('/locations/sectors', locations.sectors);
   app.get('/locations/provinces', locations.provinces);
   app.get('/locations/countries', locations.countries);
-  // app.get('/locations/village/:uuid', locations.lookupVillage);
-  // app.get('/locations/sector/:uuid', locations.lookupSector);
-  // app.get('/locations/province/:uuid', locations.lookupProvince);
+  app.post('/locations/countries', locations.create.country);
+  app.post('/locations/provinces', locations.create.province);
+  app.post('/locations/sectors', locations.create.sector);
+  app.post('/locations/villages', locations.create.village);
+
   app.get('/locations/detail/:uuid', locations.detail);
 
   // API for account routes crud
@@ -193,6 +195,7 @@ exports.configure = function (app) {
 
   app.get('/reports/:route/', legacyReports.buildReport);
 
+  /* load a user's tree */
   app.get('/tree', tree.generate);
 
   // snis controller
@@ -488,6 +491,7 @@ exports.configure = function (app) {
   /** employees */
   app.get('/employees', employees.list);
   app.get('/employees/:id', employees.detail);
+  app.get('/employees/:key/:value', employees.search);
   app.put('/employees/:id', employees.update);
   app.post('/employees', employees.create);
 
@@ -506,13 +510,17 @@ exports.configure = function (app) {
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
 
+  /** voucher api endpoint */
+  app.get('/vouchers', vouchers.list);
+  app.get('/vouchers/:uuid', vouchers.detail);
+  app.post('/vouchers', vouchers.create);
+
   /** Suppliers api */
   app.get('/suppliers/search', suppliers.search);
   app.get('/suppliers', suppliers.list);
   app.get('/suppliers/:uuid', suppliers.detail);
   app.post('/suppliers', suppliers.create);
   app.put('/suppliers/:uuid', suppliers.update);
-
 
   /** purchase */
   app.post('/purchase', purchase.create);

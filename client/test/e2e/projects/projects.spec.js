@@ -1,110 +1,140 @@
-/*global describe, it, element, by, beforeEach, inject, browser */
+/* jshint expr:true */
+/* global element, by, beforeEach, inject, browser */
 
 var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
 var expect = chai.expect;
 
-var FormUtils = require('../shared/FormUtils');
+var FU = require('../shared/FormUtils');
+var helpers = require('../shared/helpers');
+
+helpers.configure(chai);
 
 describe('The Projects Module', function () {
-  // shared methods
+  'use strict';
+
   var path = '#/projects';
-  var PROJECT = {
+  var project = {
     name : 'Test Project D',
     abbr : 'TPD'
   };
 
-  //To obtain the rank of a random element to the project list
-  function aleatoire(N) { 
-    return (Math.floor((N)*Math.random()+1)); 
-  }
-
-  var DEFAULT_PROJECT = 3;
-  var ENTERPRISE_RANK = aleatoire(DEFAULT_PROJECT);
-  var DELETE_SUCCESS = 4;
-  var DELETE_ERROR = 1;
-
+  var defaultProject = 3;
+  var enterpriseRank = helpers.random(defaultProject);
+  var deleteSuccess = 4;
+  var deleteError = 1;
 
   // navigate to the project module before each test
   beforeEach(function () {
     browser.get(path);
   });
 
-  it('Successfully creates a new Project', function () {
-    FormUtils.buttons.create();
+  it('successfully creates a new project', function () {
 
-    FormUtils.input('ProjectCtrl.project.name', PROJECT.name);
-    FormUtils.input('ProjectCtrl.project.abbr', PROJECT.abbr);
-    // select a random, Enterprise
-    FormUtils.select('ProjectCtrl.project.enterprise_id')
+    // swtich to the create form
+    FU.buttons.create();
+
+    FU.input('ProjectCtrl.project.name', project.name);
+    FU.input('ProjectCtrl.project.abbr', project.abbr);
+
+    // select an enterprise
+    FU.select('ProjectCtrl.project.enterprise_id')
       .enabled()
       .first()
       .click();
 
-    // select a random, Zone de sante
-    FormUtils.select('ProjectCtrl.project.zs_id')
+    // select a health zone (zone de sante)
+    FU.select('ProjectCtrl.project.zs_id')
       .enabled()
       .first()
       .click();
 
     // submit the page to the server
-    FormUtils.buttons.submit();
+    FU.buttons.submit();
 
-    expect(element(by.id('create_success')).isPresent()).to.eventually.be.true;
+    // expect a nice validation message
+    FU.exists(by.id('create_success'), true);
   });
 
 
-  it('Successfully edits an Project', function () {
-    element(by.id('project-upd-' + ENTERPRISE_RANK )).click();
-    element(by.model('ProjectCtrl.project.name')).sendKeys('Updated');
+  it('successfully edits an project', function () {
+
+    element(by.id('project-upd-' + enterpriseRank )).click();
+
+    // modify the project name
+    FU.input('ProjectCtrl.project.name', 'Updated');
+
     element(by.id('bhima-project-locked')).click();
     element(by.id('change_project')).click();
 
-    expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
+    // make sure the success message appears
+    FU.exists(by.id('update_success'), true);
   });
 
-  it('Successfully Unlock an Project', function () {
-    element(by.id('project-upd-' + ENTERPRISE_RANK )).click();
+  it('successfully unlock an project', function () {
+    element(by.id('project-upd-' + enterpriseRank )).click();
+
     element(by.id('change_project')).click();
 
-    expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
+    // make sure the success message appears
+    FU.exists(by.id('update_success'), true);
   });
 
 
-  it('correctly blocks invalid form submission with relevent error classes', function () {
+  it('correctly blocks invalid form submission with relevant error classes', function () {
+
+    // switch to the create form
     element(by.id('create')).click();
+
     // Verify form has not been successfully submitted
     expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
 
     element(by.id('submit-project')).click();
 
-    // The following fields should be required
-    expect(element(by.model('ProjectCtrl.project.name')).getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(element(by.model('ProjectCtrl.project.abbr')).getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(element(by.model('ProjectCtrl.project.enterprise_id')).getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(element(by.model('ProjectCtrl.project.zs_id')).getAttribute('class')).to.eventually.contain('ng-invalid');
+    // the following fields should be required
+    FU.validation.error('ProjectCtrl.project.name');
+    FU.validation.error('ProjectCtrl.project.abbr');
+    FU.validation.error('ProjectCtrl.project.enterprise_id');
+    FU.validation.error('ProjectCtrl.project.zs_id');
 
-    // The following fields is not required
-    expect(element(by.model('ProjectCtrl.project.locked')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
-  });  
-
-  it('Successfully delete an Project', function () {
-    element(by.id('project-del-' + DELETE_SUCCESS )).click();
-    browser.switchTo().alert().accept();
-    expect(element(by.id('delete_success')).isPresent()).to.eventually.be.true;
+    // the following fields are not required
+    FU.validation.ok('ProjectCtrl.project.locked');
   });
 
-  it('No way to delete a project', function () {
-    element(by.id('project-del-' + DELETE_ERROR )).click();
+  it('successfully delete an project', function () {
+    element(by.id('project-del-' + deleteSuccess )).click();
+
+    // click the alert asking for permission
     browser.switchTo().alert().accept();
-    expect(element(by.id('delete_error')).isPresent()).to.eventually.be.true;
+
+    // make sure that the delete message appears
+    FU.exists(by.id('delete_success'), true);
   });
 
-  it('Cancellation of removal process of a project', function () {
-    element(by.id('project-del-' + DELETE_ERROR )).click();
+  it('does not delete a project that has foreign key conditions', function () {
+
+    // try to delete an element that is used in other tables
+    element(by.id('project-del-' + deleteError)).click();
+
+    // accept the alert
+    browser.switchTo().alert().accept();
+
+    // the module should show an error message (and none others)
+    FU.exists(by.id('delete_error'), true);
+    FU.exists(by.id('default'), false);
+    FU.exists(by.id('delete_success'), false);
+  });
+
+  it('cancellation of removal process of a project', function () {
+    
+    // click the remove a project
+    element(by.id('project-del-' + deleteError )).click();
+
+    // reject the alert that appears
     browser.switchTo().alert().dismiss();
-    expect(element(by.id('default')).isPresent()).to.eventually.be.true;
-  });
 
+    // make sure that we have the default interface (and no others)
+    FU.exists(by.id('default'), true);
+    FU.exists(by.id('delete_success'), false);
+    FU.exists(by.id('delete_error'), false);
+  });
 });

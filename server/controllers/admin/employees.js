@@ -1,7 +1,7 @@
 /**
 * The /employees HTTP API endpoint
 *
-* @module categorised/employees
+* @module admin/employees
 *
 * @description This controller is responsible for implementing all crud on the
 * employees table through the `/employees` endpoint.
@@ -25,7 +25,7 @@ var db = require('./../../lib/db');
 *
 * @example
 * // GET /employees : Get list of employees
-* var employees = require('categorised/employees');
+* var employees = require('admin/employees');
 * employees.list(request, response, next);
 */
 exports.list = function (req, res, next) {
@@ -126,14 +126,14 @@ exports.checkOffday = function checkHoliday(req, res, next) {
 /**
 * Returns an object of details of an employee referenced by an `id` in the database
 *
-* @param {object} request The express request object
-* @param {object} response The express response object
+* @param {object} req The express request object
+* @param {object} res The express response object
 * @param {object} next The express middleware next object
 *
 * @example
 * // GET /employees/:id : Get details of an employee
-* var employees = require('categorised/employees');
-* employees.details(request, response, next);
+* var employees = require('admin/employees');
+* employees.details(req, res, next);
 */
 exports.detail = function detail(req, res, next) {
   var sql =
@@ -176,8 +176,8 @@ exports.detail = function detail(req, res, next) {
 *
 * @example
 * // PUT /employees/:id : Update details of an employee
-* var employees = require('categorised/employees');
-* employees.update(request, response, next);
+* var employees = require('admin/employees');
+* employees.update(req, res, next);
 */
 exports.update = function update(req, res, next) {
   var sql = 'UPDATE employee SET ? WHERE employee.id = ?';
@@ -238,8 +238,8 @@ exports.update = function update(req, res, next) {
 *
 * @example
 * // POST /employees/ : Create a new employee
-* var employees = require('categorised/employees');
-* employees.create(request, response, next);
+* var employees = require('admin/employees');
+* employees.create(req, res, next);
 */
 exports.create = function create(req, res, next) {
 
@@ -262,3 +262,49 @@ exports.create = function create(req, res, next) {
   .catch(next)
   .done();
 };
+
+/**
+*This function is responsible for looking for employee by names or code
+*
+* @param {object} req The express request object
+* @param {object} res The express response object
+* @param {object} next The express middleware next object
+*
+* @example
+* // GET /employees/names/x
+* var employees = require('admin/employees');
+* employees.search(req, res, next);
+**/
+
+exports.search = function search(req, res, next){
+  
+  var searchOption = '', sql = '';
+  var keyValue = '%' + req.params.value + '%';
+
+  if (req.params.key === 'code'){
+    searchOption = 'LOWER(employee.code)';
+  }else if(req.params.key === 'names'){
+    searchOption = 'LOWER(CONCAT(employee.prenom, employee.name, employee.postnom))';
+  }else{
+    return next(new req.codes.ERR_BAD_VALUE());
+  }
+
+  sql = 'SELECT ' +
+    'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
+    'employee.postnom, employee.locked, employee.bank, employee.bank_account, ' + 
+    'creditor.uuid as creditor_uuid, creditor.group_uuid as creditor_group_uuid, ' +
+    'creditor_group.account_id FROM employee ' +
+    'JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
+    'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
+    'WHERE ' + searchOption + ' LIKE ? LIMIT 10';
+
+    db.exec(sql, [keyValue])
+    .then(function (rows){
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+
+

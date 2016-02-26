@@ -8,7 +8,6 @@ angular.module('bhima.directives')
   templateUrl : 'partials/templates/bhLocationSelect.tmpl.html',
   controller : LocationSelectController,
   bindings: {
-    id:                '@',
     locationUuid:      '=', // two-way binding
     disable:           '<', // one-way binding
     validationTrigger: '<', // one-way binding
@@ -53,20 +52,18 @@ LocationSelectController.$inject =  [ 'LocationService', '$scope' ];
  * </bh-location-select>
  *
  */
-function LocationSelectController(Locations, $scope) {
+function LocationSelectController(Locations, $scope, Modal) {
   var vm = this;
 
   /** loading indicator */
   vm.loading = false;
-
-  /** default id */
-  vm.id = vm.id || 'bh-location-select-component';
 
   /** methods */
   vm.loadVillages = loadVillages;
   vm.loadSectors = loadSectors;
   vm.loadProvinces = loadProvinces;
   vm.updateLocationUuid = updateLocationUuid;
+  vm.modal = openAddLocationModal;
 
   /** disabled bindings for individual <select>s */
   vm.disabled = {
@@ -77,32 +74,29 @@ function LocationSelectController(Locations, $scope) {
 
   /**
    * <select> component messages to be translated
-   * if there is no data, indicate that to the user.
    */
-  var selectCountry  = 'SELECT.COUNTRY';
-  var selectProvince = 'SELECT.PROVINCE';
-  var selectSector   = 'SELECT.SECTOR';
-  var selectVillage  = 'SELECT.VILLAGE';
-  var noData         = 'SELECT.EMPTY';
   vm.messages = {
-    country:  selectCountry,
-    province: selectVillage,
-    sector:   selectSector,
-    village:  selectVillage,
+    country:  Locations.messages.country,
+    province: Locations.messages.province,
+    sector:   Locations.messages.sector,
+    village:  Locations.messages.village,
   };
 
-  // load the countries once, at startup
-  Locations.countries()
-  .then(function (countries) {
-    vm.countries = countries;
+  function loadCountries() {
+    Locations.countries()
+    .then(function (countries) {
 
-    // if there are countries to select, show a "select a country" message
-    // however, if there isn't any data, show a "no data" message. This pattern
-    // is used throughout the component.
-    vm.messages.country = (countries.length > 0) ?
-      selectCountry :
-      noData;
-  });
+      // bind the countries to view
+      vm.countries = countries;
+
+      // if there are countries to select, show a "select a country" message
+      // however, if there isn't any data, show a "no data" message. This pattern
+      // is used throughout the component.
+      vm.messages.country = (countries.length > 0) ?
+        Locations.messages.country :
+        Locations.messages.empty ;
+    });
+  }
 
   /** load the provinces, based on the country selected */
   function loadProvinces() {
@@ -120,8 +114,8 @@ function LocationSelectController(Locations, $scope) {
 
       // show the appropriate message to the user
       vm.messages.province = (provinces.length > 0) ?
-        selectProvince :
-        noData;
+        Locations.messages.province :
+        Locations.messages.empty ;
 
       // clear the dependent <select> elements
       vm.sectors = [];
@@ -145,8 +139,8 @@ function LocationSelectController(Locations, $scope) {
 
       // show the appropriate message to the user
       vm.messages.sector = (sectors.length > 0) ?
-        selectSector :
-        noData;
+        Locations.messages.sector :
+        Locations.messages.empty ;
 
       // clear the selected village
       vm.villages = [];
@@ -169,8 +163,8 @@ function LocationSelectController(Locations, $scope) {
 
       // show the appropriate message to the user
       vm.messages.village = (villages.length > 0) ?
-        selectVillage :
-        noData;
+        Locations.messages.village :
+        Locations.messages.empty;
     });
   }
 
@@ -228,6 +222,10 @@ function LocationSelectController(Locations, $scope) {
     });
   }
 
+
+  // load the countries once, at startup
+  loadCountries();
+
   /**
    * Hook up a listener to the locationUuid to reload it if it is changed
    * externally.
@@ -241,4 +239,16 @@ function LocationSelectController(Locations, $scope) {
    * evolves.
    */
   $scope.$watch('vm.locationUuid', loadLocation);
+
+  /**
+   * Open "Add a Location" modal
+   */
+  function openAddLocationModal() {
+    Locations.modal()
+    .finally(function () {
+
+      // load countries again in case we added a country!
+      loadCountries();
+    });
+  }
 }

@@ -3,7 +3,7 @@
   a child form is added for validation purposes, and to make the HTML easier
   to read.
 -->
-<fieldset ng-disabled="$ctrl.disable" ng-form="LocationSelectForm" id="{{ $ctrl.id }}" data-bh-location-select>
+<fieldset ng-disabled="$ctrl.disable" ng-form="LocationSelectForm" data-bh-location-select>
 
   <!-- allows a user to select a country -->
   <div class="form-group"
@@ -78,8 +78,8 @@
 
   <!-- link to location create modal -->
   <p class="text-right">
-    <a href="#/locations">
-      <span class="glyphicon glyphicon-link"></span>
+    <a href="" ng-click="$ctrl.modal()" data-location-modal-open>
+      <span class="glyphicon glyphicon-modal-window"></span>
       {{ "LOCATION.REGISTER" | translate }}
     </a>
   </p>
