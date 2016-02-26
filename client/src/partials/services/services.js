@@ -1,183 +1,145 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  '$scope', '$q', '$translate', 'validate', 'messenger',
-  'connect', 'appstate', 'SessionService'
+  'ServiceService', 'EnterpriseService', 'FinancialService', 'FormStateFactory', '$translate', '$window', 'SessionService'
 ];
 
-function ServicesController($scope, $q, $translate, validate, messenger, connect, appstate, SessionService) {
-  var dependencies = {}, cost_center = {}, service ={},
-      configuration = $scope.configuration = {};
+function ServicesController(Services, Enterprises, FinancialService, StateFactory, $translate, $window, SessionService) {
+  var vm = this;
 
-  $scope.choosen = {};
+  vm.enterprises = [];
+  vm.choosen = {};
+  vm.state = new StateFactory();
+  vm.view = 'default';
+  vm.projectId = SessionService.project.id;
 
-  dependencies.projects = {
-    query : {
-      tables : {
-        'project' : {
-          columns : ['id', 'name', 'abbr', 'enterprise_id']
-        }
-      }
-    }
-  };
+  // bind methods
+  vm.create = create;
+  vm.update = update;
+  vm.cancel = cancel;
+  vm.submit = submit;
+  vm.del    = del;
+  vm.more   = more;  
 
-  dependencies.costs = {
-    query : {
-      tables : {
-        'cost_center' : {
-          columns : ['id', 'text']
-        }
-      }
-    }
-  };
 
-  dependencies.profits = {
-    query : {
-      tables : {
-        'profit_center' : {
-          columns : ['id', 'text']
-        }
-      }
-    }
-  };
+  function handler(error) {
+    console.error(error);
+    vm.state.error();
+  }
 
-  dependencies.services = {
-    query :'/services/'
-  };
-
-  dependencies.cost_centers = {
-    query : '/available_cost_center/'
-  };
-
-  dependencies.profit_centers = {
-    query : '/available_profit_center/'
-  };
-
-  startup();
-
+  // fired on startup
   function startup() {
-    $scope.project = SessionService.project;
-    validate.process(dependencies)
-    .then(init)
-    .catch(error);
+    // load Services
+    refreshServices();
+
+    // load Enterprises
+    Enterprises.read().then(function (data) {
+      vm.enterprises = data;
+    }).catch(handler);
+
+    // load Cost Center
+    FinancialService.readCostCenter().then(function (data) {
+      vm.costCenters = data;
+    }).catch(handler);
+
+    // load Profit Center
+    FinancialService.readProfitCenter().then(function (data) {
+      vm.profitCenters = data;
+    }).catch(handler);
+
+    vm.state.reset();
   }
 
-  function init (model) {
-    $scope.model = model;
-    configuration.cost_centers = model.cost_centers.data;
-    configuration.profit_centers = model.profit_centers.data;
+  function cancel() {
+    vm.state.reset();
+    vm.view = 'default';
   }
 
-  function save() {
-    writeService()
-    .then(function () {
-      // FIXME just add service to model
-      validate.refresh(dependencies, ['services'])
-      .then(function (model) {
-        angular.extend($scope, model);
-        messenger.success($translate.instant('SERVICE.INSERT_SUCCESS_MESSAGE'));
+  function create() {
+    vm.view = 'create';
+    vm.service = {};
+  }
+
+  // switch to update mode
+  function update(data) {
+    vm.state.reset();
+    vm.service= data;
+    vm.view = 'update';
+  }
+
+  // switch to view more information about 
+  function more(data) {
+    vm.state.reset();
+    vm.service= data;
+    vm.choosen.service = data.name;
+    var ccId = data.cost_center_id;
+    var pcId = data.profit_center_id;
+    
+    // load Cost Center value for a specific service 
+    FinancialService.getCostCenter(vm.projectId,ccId).
+    then(function (data) {
+      vm.choosen.charge = data.cost;
+    }).catch(handler);
+
+    // load Profit Center value for a specific service 
+    FinancialService.getProfitCenter(vm.projectId,pcId).
+    then(function (data) {
+      vm.choosen.profit = data.profit;
+    }).catch(handler);
+
+    vm.view = 'more';
+  }
+
+  // switch to delete warning mode
+  function del(service) {
+    var result = $window.confirm($translate.instant('PROJECT.CONFIRM'));
+    if(result){
+      vm.view = 'delete_confirm';
+      Services.delete(service.id)
+      .then(function (response) {
+        refreshServices();
+        vm.view = 'delete_success';
+      }).catch(function (error) {
+        vm.view = 'delete_error';
+        vm.HTTPError = error;
       });
+    } else {
+      vm.view = 'default';
+    } 
+  }
 
-      $scope.service = {};
-    })
-    .catch(function () {
-      messenger.danger($translate.instant('SERVICE.INSERT_FAIL_MESSAGE'));
+  // refresh the displayed Services
+  function refreshServices() {
+    return Services.read(null, { full : 1 })
+    .then(function (data) {
+      vm.services = data;
     });
   }
 
-  function writeService () {
-    return connect.post('service', [connect.clean($scope.service)]);
-  }
+  // form submission
+  function submit(invalid) {
+    if (invalid) { return; }
 
-  function setAction (value, service) {
-    $scope.choosen = angular.copy(service) || {};
-    if (value === 'more') {
-      getCost($scope.choosen.cost_center_id)
-      .then(handleResultCost)
-      .then(getProfit)
-      .then(handleResultProfit);
-    } else if (value === 'edit') {
-      configuration.cost_centers = $scope.model.costs.data;
-      configuration.profit_centers = $scope.model.profits.data;
-    }
-    $scope.action = value;
-  }
+    var promise;
+    var creation = (vm.view === 'create');
+    var service = angular.copy(vm.service);
 
-  function getProfit() {
-    return connect.req('/profit/' + $scope.project.id + '/' + $scope.choosen.profit_center_id);
-  }
+    promise = (creation) ?
+      Services.create(service) :
+      Services.update(service.id, service);
 
-  function edit() {
-    var data = {
-      id                : $scope.choosen.id,
-      name              : $scope.choosen.service,
-      cost_center_id    : $scope.choosen.cost_center_id,
-      profit_center_id  : $scope.choosen.profit_center_id
-    };
-
-    if (isValid(data.cost_center_id, data.profit_center_id)) {
-      connect.put('service', [connect.clean(data)], ['id'])
-      .then(function () {
-        $scope.choosen.cost_center = $scope.choosen.cost_center_id ? getCostcenterText($scope.choosen.cost_center_id) : $scope.choosen.cost_center;
-        $scope.choosen.profit_center = $scope.choosen.profit_center_id ? getProfitCenterText($scope.choosen.profit_center_id) : $scope.choosen.profit_center;
-        $scope.model.services.put(connect.clean($scope.choosen));
-        $scope.action = '';
-        $scope.choosen = {}; // reset
+    promise
+      .then(function (response) {
+        return refreshServices();
       })
-      .catch(function (err) {
-        messenger.danger('Error:' + JSON.stringify(err));
-      });
-    }else{
-      alert('centre de cout ou centre de profit deja utilise');
-    }
-
+      .then(function () {
+        update(service.id);
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
+      .catch(handler);
   }
 
-  function isValid (cost_id, profit_id) {
-    var c = $scope.model.services.data.filter(function (item) {
-      return (item.cost_center_id === cost_id && $scope.choosen.id !== item.id) || (item.profit_center_id === profit_id && $scope.choosen.id !== item.id);
-    })[0];
-
-    return c ? false : true;
-  }
-
-  function getCostcenterText(cost_id) {
-    //FIX ME : hack
-    return configuration.cost_centers.filter(function (item) {
-      return item.id === cost_id;
-    })[0].text;
-  }
-
-  function getProfitCenterText (profit_id) {
-    //FIX ME : hack
-    return configuration.profit_centers.filter(function (item) {
-      return item.id === profit_id;
-    })[0].text;
-  }
-
-
-  function handleResultCost(value) {
-    $scope.choosen.charge = value.data.cost;
-    return $q.when();
-  }
-
-  function handleResultProfit(value) {
-    $scope.choosen.profit = value.data.profit;
-    return $q.when();
-  }
-
-  function getCost(ccId) {
-    return connect.req('/cost/' + $scope.project.id + '/' + ccId);
-  }
-
-  function error(err) {
-    console.log('Error', err);
-  }
-
-  $scope.save = save;
-  $scope.service = service;
-  $scope.cost_center = cost_center;
-  $scope.setAction = setAction;
-  $scope.edit = edit;
+  startup();
 }

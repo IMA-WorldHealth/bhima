@@ -43,7 +43,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/settings/settings.html'
   })
   .when('/services', {
-    controller : 'ServicesController',
+    controller : 'ServicesController as ServicesCtrl',
     templateUrl : 'partials/services/services.html'
   })
   .when('/caution', {
