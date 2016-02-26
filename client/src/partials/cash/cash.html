@@ -38,32 +38,15 @@
                   <bh-find-patient type="inline" on-search-complete="CashCtrl.usePatient(patient)" required></bh-find-patient>
                 </div>
 
-                <div
-                  class="form-group"
-                  ng-class="{
-                    'has-error' : CashVoucherForm.$submitted && CashVoucherForm.date.$invalid,
-                    'has-warning' : CashCtrl.hasFutureDate() }">
-                  <label class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
-
-                  <div class="input-group">
-                    <input name="date" class="form-control" type="date" ng-model="CashCtrl.payment.date" ng-readonly="CashCtrl.lockDateInput" data-edit-date-input>
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button" ng-click="CashCtrl.toggleDateInput()" data-edit-date-btn>
-                        <span class="glyphicon"
-                          ng-class="{ 'glyphicon-edit' : CashCtrl.lockDateInput, 'glyphicon-check' : !CashCtrl.lockDateInput}">
-                        </span>
-                        {{ (CashCtrl.lockDateInput ? "FORM.EDIT" : "FORM.SET") | translate }}
-                      </button>
-                    </span>
-                  </div>
-
-                  <div class="help-block" ng-messages="CashVoucherForm.date.$error" ng-show="CashVoucherForm.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                  <div class="help-block" ng-show="CashCtrl.hasFutureDate()">
-                    <span class="glyphicon glyphicon-info-sign"></span>
-                    {{ "FORM.WARNINGS.FUTURE_DATE" | translate }}
-                  </div>
+                <div>
+                  <label for="dateEditor" class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
+                      <bh-date-editor 
+                        date-value="CashCtrl.payment.date" 
+                        form="CashVoucherForm"
+                        validation-trigger="CashVoucherForm.$submitted" 
+                        max-date="CashCtrl.timestamp" 
+                      >
+                      </bh-date-editor>
                 </div>
 
                 <!-- currency selection -->
