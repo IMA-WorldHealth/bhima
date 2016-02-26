@@ -41,7 +41,3 @@ function ServiceService ($http, util) {
 
   return service;
 }
-
-
-
-

@@ -37,7 +37,3 @@ function FinancialService ($http, util) {
 
   return service;
 }
-
-
-
-
