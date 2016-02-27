@@ -22,3 +22,12 @@ INSERT INTO `patient_group_subsidy` VALUES
 
 INSERT INTO `debitor_group_subsidy` VALUES
   (1, '4de0fe47-177f-4d30-b95f-cff8166400b4', 1, CURRENT_TIMESTAMP);
+
+INSERT INTO `price_list` VALUES 
+  (1, '75e09694-dd5c-11e5-a8a2-6c29955775b0', 'Test Price List', 'Price list for test purposes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP); 
+
+INSERT INTO `price_list_item` VALUES 
+  (UUID(), 'cf05da13-b477-11e5-b297-023919d3d5b0', '75e09694-dd5c-11e5-a8a2-6c29955775b0', '', 100, 1, CURRENT_TIMESTAMP),
+  (UUID(), '289cc0a1-b90f-11e5-8c73-159fdc73ab02', '75e09694-dd5c-11e5-a8a2-6c29955775b0', '', 100, 1, CURRENT_TIMESTAMP);
+
+UPDATE debitor_group SET price_list_uuid = '75e09694-dd5c-11e5-a8a2-6c29955775b0' WHERE uuid = '4de0fe47-177f-4d30-b95f-cff8166400b4';

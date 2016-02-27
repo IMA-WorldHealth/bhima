@@ -136,7 +136,6 @@ function InventoryItems(InventoryService, Uuid, Store) {
       service.current.post(new Item());
     }
   };
-
-
+  
   return service;
 }

@@ -5,9 +5,9 @@
 angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
-PatientInvoiceController.$inject = ['$http', 'uuid', 'InventoryItems', 'uiGridConstants', 'Patients'];
+PatientInvoiceController.$inject = ['$http', '$q', 'uuid', 'InventoryItems', 'uiGridConstants', 'Patients', 'PriceLists'];
 
-function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants, Patients) { 
+function PatientInvoiceController($http, $q, uuid, InventoryItems, uiGridConstants, Patients, PriceLists) { 
   var vm = this;
 
   // 1. Allow generic configuration of page - all financial details wait on the patient to be invoiced to be set 
@@ -23,7 +23,8 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants, 
   // patient/:uuid/billing_services
   // patient/:uuid/price_lists
   // patient/:uuid/subsidies
-
+  
+  
   // Set default invoice date to today 
   vm.invoiceDate = new Date();
   vm.invoiceId = uuid();
@@ -42,6 +43,10 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants, 
     });
 
   // TODO rename list
+  
+  // var items = new IntentoryItems();
+  // console.log('initialised new items', items);
+
   var saleData = InventoryItems.current.data;
   
   var mockOptions = { 
@@ -99,22 +104,58 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants, 
   vm.saleData = saleData;
 
   vm.setPatient = function setPatient(patient) { 
+
+    // TODO (remove comment) set up for when patient find directive only returnd uuid to be referenced
+    var uuid = patient.uuid;
+
+    Patients.detail(uuid)
+      .then(configureInvoice);
+  }
+
+  function configureInvoice(patient) { 
+    var configureQueue = [];
+
     // Prompt initial invoice item
     InventoryItems.addInventoryItem();
-    
     vm.invoicePatient = patient;
+  
+    // TODO Temporary API tests
+    configureQueue.push(
+      Patients.billingServices(patient.uuid)
+    );
 
-    Patients.billingServices(patient.uuid)
-      .then(function (result) { 
-        console.log('got patient billing services');
-        console.log(result);
-      });
+    configureQueue.push(
+      Patients.subsidies(patient.uuid)
+    );
 
-    Patients.subsidies(patient.uuid)
+    if (patient.price_list_uuid) { 
+      configureQueue.push(
+        PriceLists.detail(patient.price_list_uuid)
+      );
+    }
+    
+    $q.all(configureQueue)
       .then(function (result) { 
-        console.log('got patient subsidies');
-        console.log(result);
+        var billingResult = result[0];
+        var subsidiesResult = result[1];
+        var priceListResult = result[2];
+     
+        console.log('config queue completed', result);
       });
+      // .then(function (result) { 
+        // console.log('got patient subsidies');
+        // console.log(result);
+      // });
+    
+    // console.log('current patient is', patient);
+    // Information is required to know if we should be applying subsidies, 
+    // billing services and discounts
+    
+            // .then(function (result) { 
+          // console.log('got price list');
+          // console.log(result);
+        // });
+    // }
   }
 
   vm.InventoryItems = InventoryItems;
