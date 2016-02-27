@@ -19,6 +19,9 @@ function PatientService($http, util) {
   service.groups = groups;
   service.updateGroups = updateGroups;
   service.logVisit = logVisit;
+  
+  service.billingServices = billingServices;
+  service.subsidies = subsidies;
 
   /** uses the "search" endpoint to pass query strings to the database */
   service.search = search;
@@ -86,9 +89,24 @@ function PatientService($http, util) {
       .then(util.unwrapHttpResponse);
   }
   
-  /* ----------------------------------------------------------------- */
-  /** Utility Methods */
-  /* ----------------------------------------------------------------- */
+  // fetch all billing services belonging to a patient entity
+  function billingServices(patientUuid) { 
+    var path = patientAttributePath('services', patientUuid);
+    return $http.get(path)
+      .then(util.unwrapHttpResponse);
+  }
+  
+  function subsidies(patientUuid) { 
+    var path = patientAttributePath('subsidies', patientUuid);
+    return $http.get(path)
+      .then(util.unwrapHttpResponse);
+  }
+
+  // Utility methods
+  function patientAttributePath(path, patientUuid) { 
+    var root = '/patients/';
+    return root.concat(patientUuid, '/', path);
+  }
 
   function formatGroupOptions(groupFormOptions) {
     var groupUuids = Object.keys(groupFormOptions);

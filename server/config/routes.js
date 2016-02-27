@@ -380,7 +380,12 @@ exports.configure = function (app) {
 
   app.get('/patients/:uuid/groups', patient.groups);
   app.post('/patients/:uuid/groups', patient.updateGroups);
-
+  
+  app.get('/patients/:uuid/services', patient.billingServices);
+  app.get('/patients/:uuid/prices', patient.priceLists);
+  app.get('/patients/:uuid/subsidies', patient.subsidies);
+  
+    // TODO rename route
   app.get('/patients/checkHospitalId/:id', patient.verifyHospitalNumber);
   app.post('/patients/visit', patient.visit);
 

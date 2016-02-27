@@ -56,6 +56,10 @@ exports.searchFuzzy = searchFuzzy;
 // log patient visit
 exports.visit = visit;
 
+/** @todo discuss if these should be handled by the entity APIs or by patients. */
+exports.billingServices = billingServices;
+exports.priceLists = priceLists;
+exports.subsidies = subsidies;
 
 
 /** @todo Method handles too many operations */
@@ -576,4 +580,104 @@ function search(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+function billingServices(req, res, next) { 
+  var uuid = req.params.uuid;
+  
+  /** @todo (OPTIMISATION) Two additional SELECTs to select group uuids can be written as JOINs. */
+  var patientsServiceQuery =
+    
+    // get the final information needed to apply billing services to an invoice
+    'SELECT DISTINCT ' +
+      'billing_service_id, label, description, value, billing_service.created_at ' +
+    'FROM ' + 
+
+      // get all of the billing services from patient group subscriptions
+      '(SELECT * ' + 
+      'FROM patient_group_billing_service ' + 
+      'WHERE patient_group_billing_service.patient_group_uuid in ' + 
+        
+        // find all of the patients groups
+        '(SELECT patient_group_uuid ' + 
+        'FROM assignation_patient ' + 
+        'WHERE patient_uuid = ?) ' +
+    'UNION ' + 
+
+      // get all of the billing services from debitor group subscriptions 
+      'SELECT * ' + 
+      'FROM debitor_group_billing_service ' + 
+      'WHERE debitor_group_uuid = ' + 
+        
+        // find the debitor group uuid 
+        '(SELECT debitor_group_uuid ' + 
+        'FROM debitor ' + 
+        'LEFT JOIN patient ' + 
+        'ON patient.debitor_uuid = debitor.uuid ' + 
+        'WHERE patient.uuid = ?)' + 
+      ') AS patient_services ' +
+
+    // apply billing service information to rows retrived from service subscriptions
+    'LEFT JOIN billing_service ' + 
+    'ON billing_service_id = billing_service.id';
+
+  db.exec(patientsServiceQuery, [uuid, uuid])
+    .then(function (result) { 
+      res.status(200).json(result);
+    })
+    .catch(next)
+    .done();
+}
+
+function priceLists(req, res, next) { 
+  var uuid = req.params.uuid;
+  
+  // var patientPricesQuery =
+  //   'SELECT
+}
+
+function subsidies(req, res, next) { 
+  var uuid = req.params.uuid;
+  
+  var patientsSubsidyQuery =
+    
+    // subsidy information required to apply subsidies to an invoice
+    'SELECT DISTINCT ' +
+      'subsidy_id, label, description, value, subsidy.created_at ' +
+    'FROM ' + 
+
+      // get all of subsidies from patient group subscriptions
+      '(SELECT * ' + 
+      'FROM patient_group_subsidy ' + 
+      'WHERE patient_group_subsidy.patient_group_uuid in ' + 
+        
+        // find all of the patients groups
+        '(SELECT patient_group_uuid ' + 
+        'FROM assignation_patient ' + 
+        'WHERE patient_uuid = ?) ' +
+    'UNION ' + 
+
+      // get all subsidies from debitor group subscriptions 
+      'SELECT * ' + 
+      'FROM debitor_group_subsidy ' + 
+      'WHERE debitor_group_uuid = ' + 
+        
+        // find the debitor group uuid 
+        '(SELECT debitor_group_uuid ' + 
+        'FROM debitor ' + 
+        'LEFT JOIN patient ' + 
+        'ON patient.debitor_uuid = debitor.uuid ' + 
+        'WHERE patient.uuid = ?)' + 
+      ') AS patient_services ' +
+
+    // apply subsidy information to rows retrived from subsidy subscriptions
+    'LEFT JOIN subsidy ' + 
+    'ON subsidy_id = subsidy.id';
+  
+  db.exec(patientsSubsidyQuery, [uuid, uuid])
+    .then(function (result) { 
+      res.status(200).json(result);
+    })
+    .catch(next)
+    .done();
 }

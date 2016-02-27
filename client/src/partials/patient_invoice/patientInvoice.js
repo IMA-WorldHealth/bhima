@@ -5,9 +5,9 @@
 angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
-PatientInvoiceController.$inject = ['$http', 'uuid', 'InventoryItems', 'uiGridConstants'];
+PatientInvoiceController.$inject = ['$http', 'uuid', 'InventoryItems', 'uiGridConstants', 'Patients'];
 
-function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) { 
+function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants, Patients) { 
   var vm = this;
 
   // 1. Allow generic configuration of page - all financial details wait on the patient to be invoiced to be set 
@@ -103,6 +103,18 @@ function PatientInvoiceController($http, uuid, InventoryItems, uiGridConstants) 
     InventoryItems.addInventoryItem();
     
     vm.invoicePatient = patient;
+
+    Patients.billingServices(patient.uuid)
+      .then(function (result) { 
+        console.log('got patient billing services');
+        console.log(result);
+      });
+
+    Patients.subsidies(patient.uuid)
+      .then(function (result) { 
+        console.log('got patient subsidies');
+        console.log(result);
+      });
   }
 
   vm.InventoryItems = InventoryItems;
