@@ -1,0 +1,72 @@
+<form name="TransferForm" ng-submit="CashTransferModalCtrl.submit(TransferForm.$invalid)" novalidate>
+
+  <div class="modal-header">
+    <h4>{{ "CASH.VOUCHER.TRANSFER" | translate }}</h4>
+  </div>
+
+  <div class="modal-body">
+
+    <p class="text-danger text-center" ng-if="CashTransferModalCtrl.cashBoxIdMissed">
+      <span class="glyphicon glyphicon-alert"></span>
+      {{ "CASH.MODALS.MISSING_CASH_BOX_ID" | translate }}
+    </p>
+
+    <p class="text-danger text-center" ng-if="!CashTransferModalCtrl.cashBoxIdMissed">
+      <span class="glyphicon glyphicon-alert"></span>
+      {{ "CASH.MODALS.FINANCIAL_DETAIL" | translate }}
+    </p>
+
+    <hr/>
+
+    <div class="radio" ng-class="{ 'has-error' : TransferForm.$submitted && TransferForm.currency.$invalid }">
+      <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
+      <label 
+        ng-repeat="currency in CashTransferModalCtrl.cashBox.currencies track by currency.currency_id"
+        class="radio-inline">
+          <input
+            name="currency"
+            type="radio"
+            ng-model="CashTransferModalCtrl.currency_id"
+            ng-value="currency.currency_id"
+            data-currency-option="{{ currency.currency_id }}"
+            required>
+          {{ CashTransferModalCtrl.currencyService.format(currency.currency_id); }}
+      </label>
+      <div class="help-block" ng-messages="TransferForm.currency.$error" ng-show="TransferForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <bh-currency-input
+      currency-id="CashTransferModalCtrl.currency_id"
+      model="CashTransferModalCtrl.amount"
+      form="TransferForm"
+      validation-trigger="TransferForm.$submitted"
+      >
+    </bh-currency-input>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="submit"
+      id="submit-transfer"
+      class="btn btn-primary"
+      data-method="submit"
+      ng-disabled="CashTransferModalCtrl.cashBoxIdMissed"
+      data-transfer-modal-submit
+      >
+      {{ "FORM.SUBMIT" | translate }}
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="CashTransferModalCtrl.cancel()"
+      data-transfer-modal-cancel>
+      {{ "FORM.CANCEL" | translate }}
+    </button>
+  </div>
+</form>
+
+
+

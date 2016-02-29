@@ -12,12 +12,20 @@
   <div class="container-fluid">
     <div class="row">
 
-      <!-- Switch Cashbox Form -->
+      <!-- Switch Cashbox Form and Transfer -->
       <div class="col-md-4 col-md-push-8 pad-bottom">
         <p><u>{{ "CASH.VOUCHER.CASHBOXES.CURRENT_CASHBOX" | translate }}</u>: <strong data-cashbox-text>{{ CashCtrl.cashbox.text }}</strong></p>
-        <button class="btn btn-warning" ng-click="CashCtrl.changeCashbox()" data-change-cashbox>
-          <span class="glyphicon glyphicon-inbox"></span> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
-        </button>
+        <p>
+          <button class="btn btn-warning" ng-click="CashCtrl.changeCashbox()" data-change-cashbox>
+            <span class="glyphicon glyphicon-inbox"></span> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
+          </button>
+        </p>
+
+        <p>
+          <button class="btn btn-primary" ng-click="CashCtrl.openTransferModal()" data-perform-transfer>
+            <span class="glyphicon glyphicon-export"></span> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
+          </button>
+        </p>        
       </div>
 
       <!-- Cash Voucher Form -->
@@ -40,13 +48,12 @@
 
                 <div>
                   <label for="dateEditor" class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
-                      <bh-date-editor 
-                        date-value="CashCtrl.payment.date" 
-                        form="CashVoucherForm"
-                        validation-trigger="CashVoucherForm.$submitted" 
-                        max-date="CashCtrl.timestamp" 
-                      >
-                      </bh-date-editor>
+                  <bh-date-editor 
+                    date-value="CashCtrl.payment.date"
+                    form="CashVoucherForm"
+                    validation-trigger="CashVoucherForm.$submitted"
+                    max-date="CashCtrl.timestamp">
+                  </bh-date-editor>
                 </div>
 
                 <!-- currency selection -->
@@ -175,7 +182,6 @@
                 <p ng-show="CashCtrl.HttpError" class="text-danger">
                   <span class="glyphicon glyphicon-alert"></span> {{ CashCtrl.HttpError | translate }}
                 </p>
-
               </fieldset>
             </form>
           </div>

@@ -316,7 +316,8 @@
         "LINK" : "Cliquez ici pour l'ajouter.",
         "MISSING" : "Vous ne trouvez pas votre caisse?",
         "CURRENT_CASHBOX" : "Caisse auxilliare courant",
-        "CHANGE_CASHBOX" : "Changer de caisse"
+        "CHANGE_CASHBOX" : "Changer de caisse",
+        "TRANSFER"       : "Transferer fonds"
       },
      "SLIP" : "Caisse en espèces",
      "CASHBOX" : "Caisse",
