@@ -12,7 +12,7 @@ var EC = protractor.ExpectedConditions;
 var FU = require('../shared/FormUtils');
 
 
-describe('Cash Payments Module', function () {
+describe.only('Cash Payments Module', function () {
 
   /** @const */
   var path = '#/cash';
@@ -65,17 +65,23 @@ describe('Cash Payments Module', function () {
     it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', function () {
 
       // our target is cashboxB
-      var target = path.concat('/' + cashboxB.id);
+      var target = path.concat('/' + cashboxA.id);
 
-      // implicitly choose cashbox B by navigating to it directly
+      // implicitly choose cashbox B by navigating to it directly 
+
       browser.get(target);
-      expect(getCurrentPath()).to.eventually.equal(target);
 
-      // attempt to return to /cash manually
-      browser.get(path);
+      //Lazy solution wait for the http request to be complteted
+
+      // browser.sleep(3000); 
 
       // make sure all $http/$timeout requests clear before moving forward
-      browser.waitForAngular();
+      browser.waitForAngular();   
+      
+      expect(getCurrentPath()).to.eventually.equal(target);      
+
+      // attempt to return to /cash manually
+      browser.get(path);      
 
       // expect that we were routed back to cashbox B
       expect(getCurrentPath()).to.eventually.equal(target);
@@ -89,15 +95,16 @@ describe('Cash Payments Module', function () {
       // emulate a selection by simply going to the direct URL
       // this should set the cashbox ID in localstorage
       browser.get(target);
+      // browser.sleep(3000);
+      
+      // make sure all $http/$timeout requests clear before moving forward
+      browser.waitForAngular();
 
       // confirm that we actually go to the page
       expect(getCurrentPath()).to.eventually.equal(target);
 
       // attempt to return to the cash page manually
-      browser.get(path);
-
-      // make sure all $http/$timeout requests clear before moving forward
-      browser.waitForAngular();
+      browser.get(path);      
 
       // the browser should be rerouted to the cashboxB page
       expect(getCurrentPath()).to.eventually.equal(target);
@@ -120,12 +127,18 @@ describe('Cash Payments Module', function () {
       var backBtn = element(by.css('[data-change-cashbox]'));
       backBtn.click();
 
+      // browser.sleep(3000);
+      browser.waitForAngular();
+
       // ensure we get back to the cashbox select module
       expect(getCurrentPath()).to.eventually.equal(path);
 
       // attempt to navigate (via the buttons) to cashboxB as our new target
       var btn = element(by.id('cashbox-'.concat(cashboxB.id)));
       btn.click();
+
+      // browser.sleep(3000);
+      browser.waitForAngular();
 
       // verify that we get to the cashboxB page
       expect(getCurrentPath()).to.eventually.equal(targetFinal);
@@ -162,34 +175,35 @@ describe('Cash Payments Module', function () {
      * @todo - move this into a common shared utility for modules to use in the
      * future
      */
-    function editDate(date, form) {
+    // function editDate(date, form) {
 
-      // click the edit date button to toggle into readonly mode
-      var btn = element(by.css('[data-edit-date-btn]'));
-      btn.click();
+    //   // click the edit date button to toggle into readonly mode
+    //   var btn = element(by.css('[data-edit-date-btn]'));
+    //   btn.click();
 
-      // pre-format date for insertion to the date input
-      var val = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    //   // pre-format date for insertion to the date input
+    //   var val = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
 
-      // currently, protractor does not support sending keys to all known HTML5
-      // date input controls (see https://github.com/angular/protractor/issues/562).
-      // so, we must the document methods.
-      var src = 'var ipt = document.querySelector("[data-edit-date-btn]"); ' +
-        'ipt.value = "' + val + '"; ' +
-        'angular.element(ipt).scope().$apply(' +
-          'function (s) { s.' + form + '[ipt.name].$setViewValue("' + val + '"); });';
+    //   // currently, protractor does not support sending keys to all known HTML5
+    //   // date input controls (see https://github.com/angular/protractor/issues/562).
+    //   // so, we must the document methods.
+    //   var src = 'var ipt = document.querySelector("[data-edit-date-btn]"); ' +
+    //     'ipt.value = "' + val + '"; ' +
+    //     'angular.element(ipt).scope().$apply(' +
+    //       'function (s) { s.' + form + '[ipt.name].$setViewValue("' + val + '"); });';
 
-      // run the script
-      browser.executeScript(src);
+    //   // run the script
+    //   browser.executeScript(src);
 
-      // lock the date input back in readonly mode
-      btn.click();
-    }
+    //   // lock the date input back in readonly mode
+    //   btn.click();
+    // }
 
     it('should make a caution payment', function () {
 
       // select the proper patient
       components.findPatient.findByName(mockCautionPayment.patientName);
+
 
       // we will leave the date input as default
 
@@ -218,7 +232,8 @@ describe('Cash Payments Module', function () {
       components.findPatient.findById(mockInvoicesPayment.patientId);
 
       // select the properdate
-      editDate(mockInvoicesPayment.date);
+
+      components.dateEditor.set(new Date(mockInvoicesPayment.date).toISOString().slice(0, 10), "CashVoucherForm");
 
       // select the "invoices payment" option type
       var cautionOption = element(by.css('[data-caution-option="0"]'));
@@ -256,7 +271,6 @@ describe('Cash Payments Module', function () {
 
       // click the submit button
       FU.buttons.submit();
-
     });
   });
 });

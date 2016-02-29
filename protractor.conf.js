@@ -17,6 +17,7 @@ var config = {
   allScriptsTimeout : 30000,
   timeout : 10000,
   defaultTimeoutInterval : 30000,
+  ignoreSynchronization : false,
 
   mochaOpts : {
     timeout : 30000,

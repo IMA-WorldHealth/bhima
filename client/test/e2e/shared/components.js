@@ -174,9 +174,7 @@ exports.findPatient = {
     var option = element(by.css('[data-find-patient-option="FIND.PATIENT_?"]'.replace('?', tmpl)));
     option.click();
   },
-exports.dateEditor = {
-  selector : '[data-bh-date-editor]',
-  
+
   /**
    * searches for a patient by name
    * @todo - this needs to be improved to select directly from the typeahead
@@ -275,5 +273,42 @@ exports.findDebtorGroup = {
     this.select(index),
     this.popup(),
     this.reload()
+  }
+};
+
+
+/**
+* Date editor component interface for e2e test
+* @public
+*/
+
+exports.dateEditor = {
+  selector : ['data-date-editor'],
+
+  /**
+   * sets the value in date field.
+   */
+
+  set : function set(value, form) {
+
+    var scr = "var datePicker = document.getElementById('bh-date-editor-id'); " +
+              "datePicker.value = '" + value + "'; " +
+              "angular.element(datePicker).scope().$apply(function(s) { s." + form + "[datePicker.name].$setViewValue('" + value + "'); });";
+
+    var setDateButton = element(by.id('set-date-btn'));
+    setDateButton.click();
+
+    browser.executeScript(scr);
+
+    // var DateInputText = element(by.css(this.selector));
+    // DateInputText.sendKeys(value);
+  },
+
+  /**
+   * get the value of the date editor input.
+   */
+  get : function get() {
+    var DateInputText = element(by.css(this.selector));
+    return DateInputText.getAttribute('value');
   }
 };
