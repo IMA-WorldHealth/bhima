@@ -4,6 +4,17 @@
     <input class="form-control" typeahead-append-to-body="true" uib-typeahead="item.uuid as (item.label + ' [' + item.code + ']') for item in grid.appScope.Invoice.items.available()" ng-model="row.entity.inventoryUuid" typeahead-on-select="grid.appScope.Invoice.items.confirmItem(row.entity)"></input>
   </div>
   <div nf-if="row.entity.confirmed">
-    <p>{{row.entity.code}}</p>
+    <span 
+      class="text-info" 
+      ng-if="row.entity.priceListApplied"
+      uib-popover="The base price for this line item has been augmented by a price list."
+      popover-placement="right"
+      popover-append-to-body="true"
+      popover-trigger="mouseenter">
+
+      <!-- <span class="glyphicon glyphicon-list-alt"></span> -->
+      <span class="glyphicon glyphicon-info-sign"></span>
+    </span>
+    <span>{{row.entity.code}}</span>
   </div>
 </div>

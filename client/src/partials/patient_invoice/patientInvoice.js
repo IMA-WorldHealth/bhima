@@ -9,19 +9,10 @@ PatientInvoiceController.$inject = ['$http', '$q', 'uuid', 'uiGridConstants', 'P
 
 function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, PriceLists, Invoice) { 
   var vm = this;
-
-  // 4. Price lists downloaded for patient 
-  // 5. Invoice.items service initialised with price list and billing services prices in as optional parameters 
-  //    (These will need to be included in the price of quanities as well as the total calculation)
-  // 6. Submit sale simply collects form information and request InventoryItem.formatSumbitted()
- 
-  // Personal TODO
-  // Extend and write 
-  // patient/:uuid/billing_services
-  // patient/:uuid/price_lists
-  // patient/:uuid/subsidies
   
-   
+  // TODO 1. Billing services and subsidies must be shut down according to debtor information 
+  // TODO 2. Submit sale simply collects form information and request InventoryItem.formatSumbitted()
+ 
   // Set default invoice date to today 
   vm.invoiceDate = new Date();
   vm.invoiceId = uuid();
@@ -39,11 +30,6 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
       vm.service = vm.services[0];
     });
 
-  // TODO rename list
-  
-  // var items = new IntentoryItems();
-  // console.log('initialised new items', items);
- 
   // TODO Initialise per session
   vm.Invoice = Invoice;
   vm.Invoice.items = vm.Invoice.items;
@@ -64,15 +50,7 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
     data : vm.Invoice.items.current.data
   };
   
-  // TODO Move this code - initial inventory item 
-  // this.addItem();
-
-  // TODO 
-  // Quantity should be required to be whole integer 
-  // Unit price should be number
-
   vm.gridOptions = gridOptions;
-
   vm.setPatient = function setPatient(patient) { 
 
     // TODO (remove comment) set up for when patient find directive only returnd uuid to be referenced
@@ -113,10 +91,8 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
         var subsidiesResult = result[1];
         var priceListResult = result[2];
      
-        console.log('config queue completed', result);
         vm.Invoice.configureGlobalCosts(billingResult, subsidiesResult);
-
-
+        vm.Invoice.items.setPriceList(priceListResult);
         vm.invoicePatient = patient;
       });
   }

@@ -1,5 +1,8 @@
 /**
  * @todo Redefine API - InventoryItems.addInventoryItem() doesn't make any sense
+ *
+ * @tood All perecentages/ value manipulations should be rounded in a known fassion (or done at total calculation)
+ *
  */
 'use strict';
 
@@ -32,6 +35,8 @@ function InvoiceItems(InventoryService, Uuid, Store) {
   this.current = new Store(options);
   this.current.setData([]);
   
+  this.priceList = null;
+
   // Expose blueprint 
   this.available = function available() { 
     return items.data;  
@@ -80,24 +85,32 @@ function InvoiceItems(InventoryService, Uuid, Store) {
 
     item.confirmed = true;
     item.quantity = 1;
+  
     item.unit_price = inventoryItem.price;
+    
+    
+    applyPriceList(item);
+
+        
     item.amount = 0;
     item.code = inventoryItem.code;
     item.description = inventoryItem.label;
-  
-    console.log('items before', items);
   
     // Track inventory item in case this entity is removed and the item should be available for re-uese 
     item.sourceInventoryItem = inventoryItem;
    
     // used.post(inventoryItem);
     items.remove(item.inventoryUuid);
-    console.log('items after', items);
-  }
+  };
 
   this.loaded = function loaded() { 
     return service.inventoryItemsLoaded;
-  }
+  };
+
+  this.setPriceList = function setPriceList(priceList) { 
+    this.priceList = new Store({identifier : 'inventory_uuid'});
+    this.priceList.setData(priceList.items);
+  };
 
   InventoryService.getInventoryItems()
     .then(function (result) { 
@@ -118,18 +131,28 @@ function InvoiceItems(InventoryService, Uuid, Store) {
   /**
    * Utility methods 
    */
-  // function sumTotalCost(currentCost, item) { 
-  //   var itemIsValid =
-  //     angular.isNumber(item.quantity) && 
-  //     angular.isNumber(item.unit_price);
-    
-  //   if(itemIsValid) { 
-  //     currentCost += (item.quantity * item.unit_price);
-  //   }
 
-  //   return currentCost;
-  // }
-  
+  function applyPriceList(item) { 
+    if (angular.isDefined(service.priceList)) { 
+
+      var priceReference = service.priceList.get(item.inventoryUuid);
+      
+      if (angular.isDefined(priceReference)) { 
+        item.priceListApplied = true;
+        
+        if (priceReference.is_percentage) { 
+          
+          // value is intended to manipulate line items base price 
+          item.unit_price += (item.unit_price / 100) * priceReference.value;
+        } else { 
+          
+          // value is intended to directly reflect line items price
+          item.unit_price = priceReference.value;
+        }
+      }
+    }
+  }
+
   function addItem() { 
   
     // Only add sale items if there are possible inventory item options
