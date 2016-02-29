@@ -17,7 +17,7 @@
   <div class="container-fluid">
     <div class="row">
 
-      <div>
+      <div class="col-xs-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
             {{ 'SERVICE.REGISTERED' | translate }}
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <div ng-switch="ServicesCtrl.view">
+      <div class="col-xs-6" ng-switch="ServicesCtrl.view">
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
             <h4>{{ 'SERVICE.INFO' | translate}}</h4>
@@ -174,12 +174,12 @@
               </div>
 
               <div class="form-group">
-                <button class="btn btn-default" id="change_service" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
-                </button>
-                <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
-                </button>
+                  <button class="btn btn-default" id="change_service" type="submit" data-method="submit">
+                    {{ "FORM.SUBMIT" | translate }}
+                  </button>
+                  <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel">
+                    {{ "FORM.CANCEL" | translate }}
+                  </button>
               </div>
             </form>
           </div>        
