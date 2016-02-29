@@ -4,11 +4,11 @@
 'use strict';
 
 angular.module('bhima.services')
-  .service('InventoryItems', InventoryItems);
+  .service('InvoiceItems', InvoiceItems);
 
-InventoryItems.$inject = ['InventoryService', 'uuid', 'store'];
+InvoiceItems.$inject = ['InventoryService', 'uuid', 'store'];
 
-function InventoryItems(InventoryService, Uuid, Store) { 
+function InvoiceItems(InventoryService, Uuid, Store) { 
   
   /** [rename] Available inventory items. */
   //service.availableInventory = availableInventory

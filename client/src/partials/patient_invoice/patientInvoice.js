@@ -5,16 +5,16 @@
 angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
-PatientInvoiceController.$inject = ['$http', '$q', 'uuid', 'InventoryItems', 'uiGridConstants', 'Patients', 'PriceLists'];
+PatientInvoiceController.$inject = ['$http', '$q', 'uuid', 'InvoiceItems', 'uiGridConstants', 'Patients', 'PriceLists'];
 
-function PatientInvoiceController($http, $q, uuid, InventoryItems, uiGridConstants, Patients, PriceLists) { 
+function PatientInvoiceController($http, $q, uuid, InvoiceItems, uiGridConstants, Patients, PriceLists) { 
   var vm = this;
 
   // 1. Allow generic configuration of page - all financial details wait on the patient to be invoiced to be set 
   // 2. Patient being selected will trigger all other actions
   // 3. Billing services downloaded for patient 
   // 4. Price lists downloaded for patient 
-  // 5. InventoryItems service initialised with price list and billing services prices in as optional parameters 
+  // 5. InvoiceItems service initialised with price list and billing services prices in as optional parameters 
   //    (These will need to be included in the price of quanities as well as the total calculation)
   // 6. Submit sale simply collects form information and request InventoryItem.formatSumbitted()
  
@@ -47,7 +47,7 @@ function PatientInvoiceController($http, $q, uuid, InventoryItems, uiGridConstan
   // var items = new IntentoryItems();
   // console.log('initialised new items', items);
 
-  var saleData = InventoryItems.current.data;
+  var saleData = InvoiceItems.current.data;
   
   var mockOptions = { 
     appScopeProvider : vm,
@@ -70,7 +70,7 @@ function PatientInvoiceController($http, $q, uuid, InventoryItems, uiGridConstan
         field : 'code',
         cellTemplate : '<div style="padding : 5px;">' + 
           '<div ng-if="!row.entity.confirmed">' + 
-          '<input class="form-control" typeahead-append-to-body="true" uib-typeahead="item.uuid as (item.label + \' [\' + item.code + \']\') for item in grid.appScope.InventoryItems.available()" ng-model="row.entity.inventoryUuid" typeahead-on-select="grid.appScope.InventoryItems.confirmItem(row.entity)"></input>'+ 
+          '<input class="form-control" typeahead-append-to-body="true" uib-typeahead="item.uuid as (item.label + \' [\' + item.code + \']\') for item in grid.appScope.InvoiceItems.available()" ng-model="row.entity.inventoryUuid" typeahead-on-select="grid.appScope.InvoiceItems.confirmItem(row.entity)"></input>'+ 
           '</div>' + 
           '<div nf-if="row.entity.confirmed">' + 
           '<p>{{row.entity.code}}</p>' +
@@ -88,7 +88,7 @@ function PatientInvoiceController($http, $q, uuid, InventoryItems, uiGridConstan
         cellTemplate : '<div style="padding : 5px;">{{row.entity.quantity * row.entity.unit_price | currency}}</div>'},
       { field : 'actions',
         width : 25,
-        cellTemplate : '<div style="padding : 5px;"><a href="" ng-click="grid.appScope.InventoryItems.removeItem(row.entity)"><span class="glyphicon glyphicon-trash"></span></a></div>'}
+        cellTemplate : '<div style="padding : 5px;"><a href="" ng-click="grid.appScope.InvoiceItems.removeItem(row.entity)"><span class="glyphicon glyphicon-trash"></span></a></div>'}
     ],
     data : saleData
   };
@@ -116,7 +116,7 @@ function PatientInvoiceController($http, $q, uuid, InventoryItems, uiGridConstan
     var configureQueue = [];
 
     // Prompt initial invoice item
-    InventoryItems.addInventoryItem();
+    InvoiceItems.addInventoryItem();
     vm.invoicePatient = patient;
   
     // TODO Temporary API tests
@@ -158,7 +158,7 @@ function PatientInvoiceController($http, $q, uuid, InventoryItems, uiGridConstan
     // }
   }
 
-  vm.InventoryItems = InventoryItems;
+  vm.InvoiceItems = InvoiceItems;
     
   window.gridOptions = mockOptions;
 }
