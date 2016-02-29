@@ -13,8 +13,9 @@ function InvoiceItems(InventoryService, Uuid, Store) {
   /** [rename] Available inventory items. */
   //service.availableInventory = availableInventory
   //service.total = total;
-  
+    
   var service = this;
+  console.log('invoice items service fired');
 
   // variable to track initial number of inventory items - significantly reduces
   // validating method complexity
@@ -55,10 +56,10 @@ function InvoiceItems(InventoryService, Uuid, Store) {
     return service.current.data.length === totalInventoryItems;
   }
 
-  this.total = function total() { 
-    var t = service.current.data.reduce(sumTotalCost, 0);
-    return t;
-  };
+  // this.total = function total() { 
+  //   var t = service.current.data.reduce(sumTotalCost, 0);
+  //   return t;
+  // };
 
   this.removeItem = function removeItem(item) { 
     console.log('remove item called', item);
@@ -117,17 +118,17 @@ function InvoiceItems(InventoryService, Uuid, Store) {
   /**
    * Utility methods 
    */
-  function sumTotalCost(currentCost, item) { 
-    var itemIsValid =
-      angular.isNumber(item.quantity) && 
-      angular.isNumber(item.unit_price);
+  // function sumTotalCost(currentCost, item) { 
+  //   var itemIsValid =
+  //     angular.isNumber(item.quantity) && 
+  //     angular.isNumber(item.unit_price);
     
-    if(itemIsValid) { 
-      currentCost += (item.quantity * item.unit_price);
-    }
+  //   if(itemIsValid) { 
+  //     currentCost += (item.quantity * item.unit_price);
+  //   }
 
-    return currentCost;
-  }
+  //   return currentCost;
+  // }
   
   function addItem() { 
   

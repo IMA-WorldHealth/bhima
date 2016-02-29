@@ -632,8 +632,8 @@ function billingServices(req, res, next) {
 function priceLists(req, res, next) { 
   var uuid = req.params.uuid;
   
-  var patientPriceListQuery = '
-    'SELECT * FROM price_lists 
+  // var patientPriceListQuery = '
+    // 'SELECT * FROM price_lists 
   // var patientPricesQuery =
   //   'SELECT
 }

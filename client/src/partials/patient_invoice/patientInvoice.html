@@ -21,8 +21,8 @@
       <div class="col-md-6">
         <div class="form-group">
           <label>Bill to</label>
-          <find-patient type="inline" on-search-complete="PatientInvoiceCtrl.setPatient(patient)">
-          </find-patient>
+          <bh-find-patient type="inline" on-search-complete="PatientInvoiceCtrl.setPatient(patient)">
+          </bh-find-patient>
         </div>
         
         <div class="form-group">
@@ -99,8 +99,8 @@
               <!-- TODO Template method -->
               <!-- TODO Translation -->
               <button 
-                ng-disabled="!PatientInvoiceCtrl.invoicePatient || PatientInvoiceCtrl.InvoiceItems.allAssigned()" class="btn btn-default btn-sm"
-                ng-click="PatientInvoiceCtrl.InvoiceItems.addInventoryItem(PatientInvoiceCtrl.itemIncrement)"><span class="glyphicon glyphicon-plus-sign"></span> Add</button> 
+                ng-disabled="!PatientInvoiceCtrl.invoicePatient || PatientInvoiceCtrl.Invoice.items.allAssigned()" class="btn btn-default btn-sm"
+                ng-click="PatientInvoiceCtrl.Invoice.items.addInventoryItem(PatientInvoiceCtrl.itemIncrement)"><span class="glyphicon glyphicon-plus-sign"></span> Add</button> 
             </span>
             <input class="form-control input-sm" ng-model="PatientInvoiceCtrl.itemIncrement" style="max-width : 40px;"></input> 
           </div>
@@ -109,7 +109,7 @@
             <p 
               style="padding-top : 10px;"
               class="text-warning"
-              ng-if="PatientInvoiceCtrl.InvoiceItems.loaded() && PatientInvoiceCtrl.InvoiceItems.allAssigned()"><span class="glyphicon glyphicon-info-sign"></span> There are no additional inventory items that be assigned to this invoice.</p>
+              ng-if="PatientInvoiceCtrl.Invoice.items.loaded() && PatientInvoiceCtrl.Invoice.items.allAssigned()"><span class="glyphicon glyphicon-info-sign"></span> There are no additional inventory items that be assigned to this invoice.</p>
             <p 
               style="padding-top : 10px;"
               class="text-info"
@@ -134,18 +134,39 @@
 
           <div style="text-align : right;">
             <h4>Total</h4>
-            <h4>Billing Services Applied</h4>
-            <h4>Subsidies Applied</h4>
+            
+            
+            <!-- Expand billing services -->
+            <div ng-if="PatientInvoiceCtrl.expandBillingServices">
+            <hr>
+            <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices">{{service.label}}({{service.value}}%)</h4>
+            <hr> 
+            </div>
+            
+            <h4><a href="" ng-click="PatientInvoiceCtrl.expandBillingServices=!PatientInvoiceCtrl.expandBillingServices"><span class="label label-primary">{{PatientInvoiceCtrl.Invoice.billingServices.length}}</span></a> Billing Services Applied</h4>
+            <h4><span class="label label-default">{{PatientInvoiceCtrl.Invoice.subsidies.length}}</span> Subsidies Applied</h4>
+            
+                        
             <h4><strong>Payment Due</strong></h4>
           </div>
         </div>
 
         <div class="fixedColumn" style="padding-left : 5px; text-overflow : elpisis;">
+          
           <!-- TODO Template method -->
-          <h4>{{PatientInvoiceCtrl.InvoiceItems.total() | currency}}</h4>
-          <h4>$0.00</h4>
-          <h4>$0.00</h4>
-          <h4><strong>{{PatientInvoiceCtrl.InvoiceItems.total() | currency}}</strong><h4>
+          <h4>{{PatientInvoiceCtrl.Invoice.itemsCost | currency}}</h4>
+          
+          <div ng-if="PatientInvoiceCtrl.expandBillingServices">
+          <hr>
+          <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices">{{service.charge | currency}}</h4>
+          <hr>
+          </div>
+          
+          <h4>{{PatientInvoiceCtrl.Invoice.billingServiceCost | currency}}</h4>
+          <h4>{{PatientInvoiceCtrl.Invoice.subsidyCost | currency}}</h4>
+
+          <!-- This is actually what causes all of the values referenced to be updated on every change -->
+          <h4><strong>{{PatientInvoiceCtrl.Invoice.total() | currency}}</strong><h4>
         </div>
       </div>
     </div>
