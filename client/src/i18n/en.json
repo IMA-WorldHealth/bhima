@@ -2715,6 +2715,8 @@
    },
 "SERVICE": {
    "COST_CENTER_SELECT"     : "Cost center",
+   "DELETE_SUCCESS"         : "Deleted successfully",
+   "EDIT"                   : "Editing Project",
    "INFO"                   : "Service informations",
    "INFO_DESCRIPTION"       : "This feature will help you to manage your services (creating, editing and suppressing as well as consulting)",
    "INSERT_FAIL_MESSAGE"    : "Error during insertion !",
@@ -2722,13 +2724,16 @@
    "MODIFYING"              : "Editing",
    "NEW"                    : "New service",
    "NONE_FOUND"             : "No service found !",
+   "NOT_AVAILABLE"          : "Not available",
    "OVERVIEW_SERVICE"       : "Systhetic result of service",
    "PROFIT_CENTER_SELECT"   : "Profit Center",
    "PROJECT_SELECT"         : "Selectionner a Project",
    "REGISTER"               : "Registering",
    "REGISTERED"             : "Registered Services",
+   "SAVE_SUCCES"            : "Saved successfully",
    "SUCCESS_MESSAGE"        : "Operation successfully !",
-   "TITLE"                  : "Services Management"
+   "TITLE"                  : "Services Management",
+   "UPDATE_SUCCES"          : "Updated successfully"
    },
 "SERVICE_RETURN_STOCK" : {
   "BACK"         : "Back",
