@@ -85,13 +85,13 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
     var pcId = data.profit_center_id;
     
     // load Cost Center value for a specific service 
-    FinancialService.getCostCenter(vm.projectId,ccId).
+    FinancialService.getCost(vm.projectId,ccId).
     then(function (data) {
       vm.choosen.charge = data.cost;
     }).catch(handler);
 
     // load Profit Center value for a specific service 
-    FinancialService.getProfitCenter(vm.projectId,pcId).
+    FinancialService.getProfit(vm.projectId,pcId).
     then(function (data) {
       vm.choosen.profit = data.profit;
     }).catch(handler);

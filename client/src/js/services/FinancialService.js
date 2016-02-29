@@ -8,8 +8,8 @@ function FinancialService ($http, util) {
 
   service.readCostCenter = readCostCenter;
   service.readProfitCenter = readProfitCenter;
-  service.getCostCenter = getCostCenter;
-  service.getProfitCenter = getProfitCenter;
+  service.getCost = getCost;
+  service.getProfit = getProfit;
 
   // this will read all cost centers
   function readCostCenter(id, params) {
@@ -26,14 +26,14 @@ function FinancialService ($http, util) {
   }
 
   //Gives the value of the charges of a cost center
-  function getCostCenter(projectId , ccId) {
+  function getCost(projectId , ccId) {
      var url = '/cost/' + projectId + '/' + ccId;
      return $http.get(url)
      .then(util.unwrapHttpResponse);
   }
 
   //Gives the value of products of a profit center
-  function getProfitCenter(projectId , pcId) {
+  function getProfit(projectId , pcId) {
      var url = '/profit/' + projectId + '/' + pcId;
      return $http.get(url)
      .then(util.unwrapHttpResponse);
