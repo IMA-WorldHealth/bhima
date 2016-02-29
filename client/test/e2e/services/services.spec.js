@@ -1,9 +1,9 @@
 /*global describe, it, element, by, beforeEach, inject, browser */
 
 var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
 var expect = chai.expect;
+var helpers = require('../shared/helpers');
+helpers.configure(chai);
 
 var FormUtils = require('../shared/FormUtils');
 
@@ -14,14 +14,8 @@ describe('The Projects Module', function () {
     name : 'Zebra Service',
   };
 
-  //To obtain the rank of a random element to the Service list
-  function aleatoire(N) { 
-    return (Math.floor((N)*Math.random()+1)); 
-  }
-
   var DEFAULT_SERVICE = 4;
-  var SERVICE_RANK = aleatoire(DEFAULT_SERVICE);
-  console.log('SERVICE RANK',SERVICE_RANK);
+  var SERVICE_RANK = helpers.random(DEFAULT_SERVICE);
 
   var DELETE_SUCCESS = 5;
   var DELETE_ERROR = 3;
@@ -57,50 +51,50 @@ describe('The Projects Module', function () {
     // submit the page to the server
     FormUtils.buttons.submit();
 
-    expect(element(by.id('create_success')).isPresent()).to.eventually.be.true;
+    FormUtils.exists(by.id('create_success'), true);
   });
 
 
   it('Successfully edits an Service', function () {
     element(by.id('service-upd-' + SERVICE_RANK )).click();
-    element(by.model('ServicesCtrl.service.name')).sendKeys('Updated');
+    FormUtils.input('ServicesCtrl.service.name', 'Updated');
     element(by.id('change_service')).click();
 
-    expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
+    FormUtils.exists(by.id('update_success'), true);
   });
 
   it('correctly blocks invalid form submission with relevent error classes', function () {
-    element(by.id('create')).click();
+    FormUtils.buttons.create();
     // Verify form has not been successfully submitted
     expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
 
     element(by.id('submit-service')).click();
 
     // The following fields should be required
-    expect(element(by.model('ServicesCtrl.service.name')).getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(element(by.model('ServicesCtrl.service.enterprise_id')).getAttribute('class')).to.eventually.contain('ng-invalid');
+    FormUtils.validation.error('ServicesCtrl.service.name');
+    FormUtils.validation.error('ServicesCtrl.service.enterprise_id');
 
     // The following fields is not required
-    expect(element(by.model('ServicesCtrl.service.cost_center_id')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
-    expect(element(by.model('ServicesCtrl.service.profit_center_id')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
+    FormUtils.validation.ok('ServicesCtrl.service.cost_center_id');
+    FormUtils.validation.ok('ServicesCtrl.service.profit_center_id');
   });  
 
   it('Successfully delete an Service', function () {
     element(by.id('service-del-' + DELETE_SUCCESS )).click();
     browser.switchTo().alert().accept();
-    expect(element(by.id('delete_success')).isPresent()).to.eventually.be.true;
+    FormUtils.exists(by.id('delete_success'), true);
   });
 
   it('No way to delete a Service', function () {
     element(by.id('service-del-' + DELETE_ERROR )).click();
     browser.switchTo().alert().accept();
-    expect(element(by.id('delete_error')).isPresent()).to.eventually.be.true;
+    FormUtils.exists(by.id('delete_error'), true);
   });
 
   it('Cancellation of removal process of a Service', function () {
     element(by.id('service-del-' + DELETE_ERROR )).click();
     browser.switchTo().alert().dismiss();
-    expect(element(by.id('default')).isPresent()).to.eventually.be.true;
+    FormUtils.exists(by.id('default'), true);
   });
 
 });

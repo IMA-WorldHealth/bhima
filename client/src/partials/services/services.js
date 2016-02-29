@@ -3,15 +3,15 @@ angular.module('bhima.controllers')
 .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'EnterpriseService', 'FinancialService', 'FormStateFactory', '$translate', '$window', 'SessionService'
+  'ServiceService', 'EnterpriseService', 'FinancialService', '$translate', '$window', 'SessionService'
 ];
 
-function ServicesController(Services, Enterprises, FinancialService, StateFactory, $translate, $window, SessionService) {
+function ServicesController(Services, Enterprises, FinancialService, $translate, $window, SessionService) {
   var vm = this;
 
   vm.enterprises = [];
   vm.choosen = {};
-  vm.state = new StateFactory();
+  vm.state = 'default';  
   vm.view = 'default';
   vm.projectId = SessionService.project.id;
 
@@ -27,6 +27,11 @@ function ServicesController(Services, Enterprises, FinancialService, StateFactor
   function handler(error) {
     console.error(error);
     vm.state.error();
+  }
+
+  // sets the module view state
+  function setState(state) {
+    vm.state = state;
   }
 
   // fired on startup
@@ -49,11 +54,11 @@ function ServicesController(Services, Enterprises, FinancialService, StateFactor
       vm.profitCenters = data;
     }).catch(handler);
 
-    vm.state.reset();
+    setState('default');
   }
 
   function cancel() {
-    vm.state.reset();
+    setState('default');
     vm.view = 'default';
   }
 
@@ -63,15 +68,17 @@ function ServicesController(Services, Enterprises, FinancialService, StateFactor
   }
 
   // switch to update mode
+  // data is an object that contains all the information of a service 
   function update(data) {
-    vm.state.reset();
+    setState('default');
     vm.service= data;
     vm.view = 'update';
   }
 
   // switch to view more information about 
+  // data is an object that contains all the information of a service 
   function more(data) {
-    vm.state.reset();
+    setState('default');
     vm.service= data;
     vm.choosen.service = data.name;
     var ccId = data.cost_center_id;
@@ -94,21 +101,27 @@ function ServicesController(Services, Enterprises, FinancialService, StateFactor
 
   // switch to delete warning mode
   function del(service) {
-    var result = $window.confirm($translate.instant('PROJECT.CONFIRM'));
-    if(result){
-      vm.view = 'delete_confirm';
-      Services.delete(service.id)
-      .then(function (response) {
-        refreshServices();
-        vm.view = 'delete_success';
-      }).catch(function (error) {
-        vm.view = 'delete_error';
-        vm.HTTPError = error;
-      });
-    } else {
-      vm.view = 'default';
-    } 
+    var bool = $window.confirm($translate.instant('PROJECT.CONFIRM'));
+
+     // if the user clicked cancel, reset the view and return
+     if (!bool) {
+        vm.view = 'default';
+        return;
+     }
+
+    // if we get there, the user wants to delete a service
+    vm.view = 'delete_confirm';
+    Services.delete(service.id)
+    .then(function () {
+       vm.view = 'delete_success';
+       return refreshServices();
+    })
+    .catch(function (error) {
+      vm.HTTPError = error;
+      vm.view = 'delete_error';
+    });
   }
+
 
   // refresh the displayed Services
   function refreshServices() {
