@@ -1,170 +1,220 @@
-<header data-header>
-  {{ "SERVICE.TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
       <li class="active">{{ "SERVICE.TITLE" | translate }}</li>
     </ol>
   </div>
+</div>
 
-  <div class="pull-right">
-    <button ng-click="setAction('register')" class="btn btn-sm btn-default pull-right">
-      <i class="glyphicon glyphicon-plus-sign"></i> {{'SERVICE.NEW' | translate}}
-    </button>
-  </div>
-</nav>
+<div class="flex-util">
+  <button class="btn btn-sm btn-default" id="create" ng-click="ServicesCtrl.create()" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ 'SERVICE.NEW' | translate }}
+  </button>
+</div>
 
-<main>
-  <div class="row">
-    <div class="col-xs-6" style="height: 100%">
-      <div class="panel panel-default" style="height: 100%; overflow-y: auto; overflow-x: auto;">
-        <div class="panel-heading">
-          {{ "SERVICE.REGISTERED" | translate }}
-        </div>
-        <table class="table table-condensed table-striped">
-          <thead>
-            <tr>
-              <th>{{ "COLUMNS.SERVICE" | translate }}</th>
-              <th>{{ "COLUMNS.COST_CENTER" | translate }}</th>
-              <th>{{ "COLUMNS.PROFIT_CENTER" | translate }}</th>
-              <th colspan="2">{{ "COLUMNS.ACTIONS" | translate}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="item in model.services.data  | orderBy:'service'">
-              <td>{{ item.service }}</td>
-              <td>{{ item.cost_center }}</td>
-              <td>{{ item.profit_center }}</td>
-              <td><a class="clk" ng-click="setAction('edit', item)"><i class="glyphicon glyphicon-pencil"></i></a></td>
-              <td><a class="clk" ng-click="setAction('more', item)"><i class="glyphicon glyphicon-eye-open"></i></a></td>
-            </tr>
-            <tr ng-if="!model.services.data.length">
-              <td colspan="6">
-                <div class="alert alert-warning square"><i class="glyphicon glyphicon-warning-sign"></i> {{ 'SERVICE.NONE_FOUND' | translate }}</div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
 
-    <div class="col-xs-6" ng-switch="action">
-      <div ng-switch-default>
-        <div class="alert alert-info">
-          <b>{{ 'SERVICE.INFO' | translate}}</b>
-          <p>{{ 'SERVICE.INFO_DESCRIPTION' | translate }}</p>
-        </div>
-      </div>
-
-      <div ng-switch-when="register">
-        <form class="form-horizontal" name="serviceForm" novalidate>
-          <fieldset>
-            <legend>{{ "SERVICE.REGISTER" | translate }}</legend>
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
-              <div class="col-xs-9">
-                <input class="form-bhima" ng-model="service.name" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "SERVICE.COST_CENTER_SELECT" | translate }}:</label>
-              <div class="col-xs-9">
-                <select class="form-bhima" ng-model="service.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in configuration.cost_centers" required>
-                  <option value="" disabled="disabled">--- {{ "SELECT.COST_CENTER" | translate }} ---</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "SERVICE.PROFIT_CENTER_SELECT" | translate }}:</label>
-              <div class="col-xs-9">
-                <select class="form-bhima" ng-model="service.profit_center_id" ng-options="profit_center.id as profit_center.text for profit_center in configuration.profit_centers" required>
-                  <option value="" disabled="disabled">--- {{ "SELECT.PROFIT_CENTER" | translate }} ---</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="pull-right">
-              <button ng-disabled="serviceForm.$invalid" class="btn btn-success btn-sm" ng-click="save()">
-                {{ "FORM.SUBMIT" | translate }}
-              </button>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-
-      <div ng-switch-when="edit">
-        <form class="form-horizontal" name="serviceForm" novalidate>
-          <fieldset>
-            <legend>{{ "SERVICE.MODIFYING" | translate }}</legend>
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
-              <div class="col-xs-9">
-                <input class="form-bhima" ng-model="choosen.service" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "SERVICE.COST_CENTER_SELECT" | translate }}:</label>
-              <div class="col-xs-9">
-                <select class="form-bhima" name="cost_name" ng-model="choosen.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in configuration.cost_centers" required>
-                  <option value="" disabled="disabled">--- {{ "SELECT.COST_CENTER" | translate }} ---</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "SERVICE.PROFIT_CENTER_SELECT" | translate }}:</label>
-              <div class="col-xs-9">
-                <select class="form-bhima" name="profit_name" ng-model="choosen.profit_center_id" ng-options="profit_center.id as profit_center.text for profit_center in configuration.profit_centers" required>
-                  <option value="" disabled="disabled">--- {{ "SELECT.PROFIT_CENTER" | translate }} ---</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="pull-right">
-              <button ng-disabled="serviceForm.$invalid" class="btn btn-success btn-sm" ng-click="edit()">
-                {{ "FORM.SUBMIT" | translate }}
-              </button>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-
-      <div ng-switch-when="more">
-        <div class="panel panel-default" style="height: 100%; overflow-y: auto;">
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
-            {{ "SERVICE.OVERVIEW_SERVICE" | translate }}<b>{{selected.text}}</b>
+            {{ 'SERVICE.REGISTERED' | translate }}
           </div>
-          <table class="table table-condensed">
+          <table class="table table-condensed table-hover">
             <thead>
               <tr>
+                <th>{{ 'COLUMNS.NR' | translate }}</th>
                 <th>{{ "COLUMNS.SERVICE" | translate }}</th>
-                <th>{{ "COLUMNS.CHARGE" | translate }}</th>
-                <th>{{"COLUMNS.PROFIT" | translate}}</th>
-                <th>{{"COLUMNS.RESULT" | translate}}</th>
+                <th>{{ "COLUMNS.COST_CENTER" | translate }}</th>
+                <th>{{ "COLUMNS.PROFIT_CENTER" | translate }}</th>
+                <th colspan="3">{{ 'COLUMNS.ACTIONS' | translate }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr  ng-if="true">
-                <td>{{choosen.service}}</td>
-                <td>{{choosen.charge | currency }}</td>
-                <td>{{choosen.profit | currency }}</td>
-                <td>{{(choosen.profit-choosen.charge) | currency}}</td>
-              </tr>
-              <tr ng-if="false">
-                <td colspan="4"><div class="alert alert-warning square">Non disponible</div></td>
+              <tr ng-repeat="service in ServicesCtrl.services | orderBy:'name' track by service.id" ng-class="{'btn-primary' : editService.id==service.id }">
+                <td>{{ $index + 1 }}</td>
+                <td>{{ service.name }}</td>
+                <td>{{ service.cost_center_name }}</td>
+                <td>{{ service.profit_center_name }}</td>
+                <td><a class="btn btn-xs btn-default" ng-click="ServicesCtrl.update(service)" id="service-upd-{{ $index + 1}}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                <td><a class="btn btn-xs btn-default" ng-click="ServicesCtrl.more(service)" id="service-more-{{ $index + 1 }}" class="danger"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                <td><a class="btn btn-xs btn-default" ng-click="ServicesCtrl.del(service)" id="service-del-{{ $index + 1 }}" class="danger"><span class="glyphicon glyphicon-trash"></span></a></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
+      <div class="col-xs-6" ng-switch="ServicesCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info" id="default">
+            <h4>{{ 'SERVICE.INFO' | translate}}</h4>
+            <p>{{ 'SERVICE.INFO_DESCRIPTION' | translate }}</p>           
+          </div>
+        </div>
+
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'SERVICE.SAVE_SUCCES' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'SERVICE.UPDATE_SUCCES' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_success">
+          <div class="alert alert-success" id="delete_success">
+            <h4>{{ 'SERVICE.DELETE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_error">
+          <div class="alert alert-danger" id="delete_error">
+            <h4>{{ ServicesCtrl.HTTPError.data.code | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ 'SERVICE.NEW' | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="CreateForm" ng-submit="ServicesCtrl.submit(CreateForm.$invalid)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
+                <label class="control-label" for="bhima-service-name">{{ 'COLUMNS.NAME' | translate }}</label>
+                <div>
+                  <input type="text" class="form-control" name="name" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.enterprise_id.$invalid }">
+                <label class="control-label">{{ "COLUMNS.ENTERPRISE" | translate }}</label>
+                <div>
+                  <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
+                    <option value="" disabled> -- {{ 'SELECT.ENTERPRISE' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.cost_center_id.$invalid }">
+                <label class="control-label">{{ "SERVICE.COST_CENTER_SELECT" | translate }}</label>
+                <div>
+                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cost_center_id" id="bhima-service-cost_center_id" ng-options="c.id as c.text for c in ServicesCtrl.costCenters | orderBy:'text'" >
+                    <option value="" disabled> -- {{ 'SELECT.COST_CENTER' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.profit_center_id.$invalid }">
+                <label class="control-label">{{ "SERVICE.PROFIT_CENTER_SELECT" | translate }}</label>
+                <div>
+                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.profit_center_id" id="bhima-service-profit_center_id" ng-options="p.id as p.text for p in ServicesCtrl.profitCenters | orderBy:'text'" >
+                    <option value="" disabled> -- {{ 'SELECT.PROFIT_CENTER' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-service" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>        
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'SERVICE.EDIT' | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="UpdateForm" ng-submit="ServicesCtrl.submit(UpdateForm.$invalid)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
+                <label class="control-label" for="bhima-service-name">{{ 'COLUMNS.NAME' | translate }}</label>
+                <div>
+                  <input type="text" class="form-control" name="name" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.enterprise_id.$invalid }">
+                <label class="control-label">{{ "COLUMNS.ENTERPRISE" | translate }}</label>
+                <div>
+                  <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
+                    <option value="" disabled> -- {{ 'SELECT.ENTERPRISE' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.cost_center_id.$invalid }">
+                <label class="control-label">{{ "SERVICE.COST_CENTER_SELECT" | translate }}</label>
+                <div>
+                  <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cost_center_id" id="bhima-service-cost_center_id" ng-options="c.id as c.text for c in ServicesCtrl.costCenters | orderBy:'text'">
+                    <option value=""> -- {{ 'SELECT.COST_CENTER' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.profit_center_id.$invalid }">
+                <label class="control-label">{{ "SERVICE.PROFIT_CENTER_SELECT" | translate }}</label>
+                <div>
+                  <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.profit_center_id" id="bhima-service-profit_center_id" ng-options="p.id as p.text for p in ServicesCtrl.profitCenters | orderBy:'text'">
+                    <option value=""> -- {{ 'SELECT.PROFIT_CENTER' | translate }} -- </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                  <button class="btn btn-default" id="change_service" type="submit" data-method="submit">
+                    {{ "FORM.SUBMIT" | translate }}
+                  </button>
+                  <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel">
+                    {{ "FORM.CANCEL" | translate }}
+                  </button>
+              </div>
+            </form>
+          </div>        
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="more">
+          <div class="panel-heading">{{ 'SERVICE.OVERVIEW_SERVICE' | translate }}</div>
+          <div class="panel-body">
+            <div class="panel panel-default" style="height: 100%; overflow-y: auto;">
+              <table class="table table-condensed">
+                <thead>
+                  <tr>
+                    <th>{{ "COLUMNS.SERVICE" | translate }}</th>
+                    <th>{{ "COLUMNS.CHARGE" | translate }}</th>
+                    <th>{{"COLUMNS.PROFIT" | translate}}</th>
+                    <th>{{"COLUMNS.RESULT" | translate}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr  ng-if="true">
+                    <td>{{ServicesCtrl.choosen.service}}</td>
+                    <td>{{ServicesCtrl.choosen.charge | currency }}</td>
+                    <td>{{ServicesCtrl.choosen.profit | currency }}</td>
+                    <td>{{(ServicesCtrl.choosen.profit-ServicesCtrl.choosen.charge) | currency}}</td>
+                  </tr>
+                  <tr ng-if="false">
+                    <td colspan="4"><div class="alert alert-warning square">{{ "SERVICE.NOT_AVAILABLE" | translate }}</div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>        
+        </div>
+
+      </div>
     </div>
-  </div>
-</main>
+  </div>  
+</div>

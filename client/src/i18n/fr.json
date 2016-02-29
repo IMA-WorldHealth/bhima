@@ -912,7 +912,7 @@
    }
 },
  "DB" : {
-  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
+  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car elle a été utilisé dans une transaction."
  },
 "DEBITOR_GRP": {
    "FILTER"     : "Filtrer Le Groupe de Débiteur",
@@ -2708,6 +2708,8 @@
    },
 "SERVICE": {
    "COST_CENTER_SELECT"     : "Centre de frais",
+   "DELETE_SUCCESS"         : "Suppression avec succès",
+   "EDIT"                   : "Editer",
    "INFO"                   : "Information sur le service",
    "INFO_DESCRIPTION"       : "Ce module vous permet de gérer vos services (leur creation, modification et suppression ainsi que leur consultation)",
    "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion",
@@ -2715,13 +2717,16 @@
    "MODIFYING"              : "Modification",
    "NEW"                    : "Nouveau Service",
    "NONE_FOUND"             : "Aucun service trouvé",
+   "NOT_AVAILABLE"          : "Non disponible",
    "OVERVIEW_SERVICE"       : "Résultat synthétique du service :",
    "PROFIT_CENTER_SELECT"   : "Centre de profit",
    "PROJECT_SELECT"         : "Sélectionner un projet",
    "REGISTER"               : "Enregistrement",
    "REGISTERED"             : "Services enregistrés",
+   "SAVE_SUCCES"            : "Enregistrement avec succès",
    "SUCCESS_MESSAGE"        : "Insertion avec succès !",
-   "TITLE"                  : "Gestion des Services"
+   "TITLE"                  : "Gestion des Services",
+   "UPDATE_SUCCES"          : "Mis à jour avec succès"
    },
 "SERVICE_RETURN_STOCK" : {
   "BACK"         : "Retour",
