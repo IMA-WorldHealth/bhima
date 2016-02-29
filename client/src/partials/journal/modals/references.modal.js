@@ -1,7 +1,10 @@
 angular.module('bhima.controllers')
 .controller('ReferenceLookupModalController', ReferenceLookupModalController);
 
-ReferenceLookupModalController.$inject = [ '$uibModalInstance', '$timeout', '$translate' ];
+ReferenceLookupModalController.$inject = [
+  '$uibModalInstance', 'CashService', 'PatientInvoiceService',
+  'JournalVoucherService', 'PurchaseOrderService', '$translate'
+];
 
 /**
  * Reference Lookup Modal Controller
@@ -13,13 +16,10 @@ ReferenceLookupModalController.$inject = [ '$uibModalInstance', '$timeout', '$tr
  *  4) Purchase Orders
  *  5) Payslips (Payroll)
  *
- * The module itself is simple - it is a typeahead with an async validator to
- * verfiy that the modal actually has data.
- *
  * This is currently just a prototype, to be improved as services become
  * available to power the lookups.
  */
-function ReferenceLookupModalController(ModalInstance, $timeout, $translate) {
+function ReferenceLookupModalController(ModalInstance, Cash, PatientInvoices, Vouchers, PurchaseOrders, $translate) {
   var vm = this;
 
   /** bind the dismiss method */
@@ -31,58 +31,74 @@ function ReferenceLookupModalController(ModalInstance, $timeout, $translate) {
 
   /** target paths to look up from */
   vm.targets = [{
-    path : '/cash/references/',
-    key : 'CASH_PAYMENTS'
+    key : 'TREE.CASH_PAYMENTS',
+    service : Cash,
+    placeholder : ''
   }, {
-    path : '/sales/references/',
-    key : 'PATIENT_INVOICE'
+    key : 'TREE.SALES',
+    service : PatientInvoices,
+    placeholder : ''
   }, {
-    path : '/purchases/references/',
-    key : 'PURCHASE_ORDERS'
+    key : 'TREE.PURCHASE_ORDER',
+    service : PurchaseOrders,
+    placeholder : '',
+    disabled : true
   }, {
-    path : '/vouchers/references/',
-    key : 'JOURNAL_VOUCHERS'
+    key : 'TREE.JOURNAL_VOUCHER',
+    service: Vouchers,
+    placeholder : ''
+
+  /** @todo actually make a route for paychecks */
   }, {
-    path : '/paychecks/references/',
-    key : 'PAYSLIPS'
+    key : 'TREE.PAYROLL',
+    service : function (ref)  { return angular.noop(ref); },
+    placeholder : '',
+    disabled : true
   }];
 
   vm.lookupReference = lookupReference;
 
+  /** looks up the receipt by the reference using the correct service */
   function lookupReference() {
 
     // don't bother trying a lookup if there is no reference.
     if (!vm.reference) { return; }
 
-    delete vm.document;
+    // clear expired data
+    delete vm.receipt;
+    delete vm.httpError;
 
+    // start loading indicator
     toggleLoading();
 
-    // mock lookups
-    $timeout(function () {
+    // look up the receipt by the reference
+    var promise = vm.target.service.reference(vm.reference);
 
-      // turn off loading
+    promise.then(function (result) {
+      return vm.target.service.read(result.uuid);
+    })
+    .then(function (receipt) {
+      vm.receipt = receipt;
+      
+      // bind useful props
+      vm.receipt.reference = vm.reference;
+      vm.receipt.type = $translate.instant(vm.target.key);
+    })
+    .catch(function (error) {
+      vm.httpError = error;
+    })
+    .finally(function () {
       toggleLoading();
-
-      // temporary mock data (with some randomness)
-      vm.document = {
-        uuid:        '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
-        amount:      Math.random() * 10000,
-        currency_id: (Math.random() > 0.5) ? 1 : 2,
-        date:        new Date(Date.parse('2015-06-01') + (Math.random() * 12930050020)),
-        reference:   vm.reference,
-        type:        $translate.instant(vm.target.key)
-      };
-
-    }, 1000);
+    });
   }
 
   /** modal submit */
   function submit(invalid) {
     if (invalid) { return; }
 
-    /** return the document retrieved from the server */
-    ModalInstance.close(vm.document);
+
+    /** return the receipt retrieved from the server */
+    ModalInstance.close(vm.receipt);
   }
 
   /** toggle modal loading */

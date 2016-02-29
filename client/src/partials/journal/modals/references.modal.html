@@ -1,6 +1,6 @@
 <ng-form name="ModalForm">
   <div class="modal-header">
-    <h4>Receipt Lookup Modal</h4>
+    <h4>{{ "MODALS.REFERENCES.TITLE" | translate }}</h4>
   </div>
 
   <!-- main form body -->
@@ -8,15 +8,15 @@
 
     <!-- dropdown to choose receipt type -->
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.type.$error }">
-      <label class="control-label">Receipt Type</label>
+      <label class="control-label">{{ "MODALS.REFERENCES.TYPE" | translate }}</label>
       <select
         class="form-control"
         name="type"
         ng-model="ReferenceLookupModalCtrl.target"
-        ng-options="tgt as (tgt.key | translate) for tgt in ::ReferenceLookupModalCtrl.targets track by tgt.path"
+        ng-options="tgt as (tgt.key | translate) disable when tgt.disabled for tgt in ::ReferenceLookupModalCtrl.targets | orderBy:tgt.key"
         required
         >
-        <option value="" disabled>Select a Receipt Type</option>
+        <option value="" disabled>{{ "SELECT.RECEIPT" | translate }}</option>
       </select>
     </div>
 
@@ -24,7 +24,7 @@
     <div class="form-group has-feedback" ng-class="{
       'has-error' : ModalForm.reference.$dirty && ModalForm.reference.$invalid
     }">
-      <label class="control-label">Reference Lookup</label>
+      <label class="control-label">{{ "MODALS.REFERENCES.REFERENCE_LOOKUP" | translate }}</label>
       <div class="input-group">
         <input
           type="text"
@@ -50,33 +50,33 @@
       </div>
 
       <!-- success block -->
-      <p class="help-block" ng-show="ModalForm.reference.$dirty && ReferenceLookupModalCtrl.document">
+      <p class="help-block" ng-show="ModalForm.reference.$dirty && ReferenceLookupModalCtrl.receipt">
         <span class="text-success">
-          <span class="glyphicon glyphicon-ok"></span> Successfully found a receipt!
+          <span class="glyphicon glyphicon-ok"></span> {{ "MODALS.REFERENCES.SUCCESS" | translate }}
+        </span>
+      </p>
+
+      <p class="help-block" ng-show="ReferenceLookupModalCtrl.httpError">
+        <span class="text-danger">
+          <span class="glyphicon glyphicon-warning-sign"></span> {{ "MODALS.REFERENCES.NO_RECEIPT" | translate }}
         </span>
       </p>
     </div>
 
     <!-- preview field for document -->
-    <div class="form-group" ng-show="ReferenceLookupModalCtrl.document">
+    <!-- @todo: improve this when table column names are standardized -->
+    <div class="form-group" ng-show="ReferenceLookupModalCtrl.receipt">
       <label class="control-label">{{ ReferenceLookupModalCtrl.target.key | translate }}</label>
-      <dl>
-
+      <dl class="dl-horizontal">
         <!-- document reference -->
         <dt>{{ "COLUMNS.REFERENCE" | translate }}</dt>
-        <dd>{{ ReferenceLookupModalCtrl.document.reference }}</dd>
+        <dd>{{ ReferenceLookupModalCtrl.receipt.reference }}</dd>
 
         <!-- document date -->
-        <dt>{{ "COLUMNS.DATE" | translate }}</dt>
+        <dt>{{ "COLUMNS.ID" | translate }}</dt>
         <dd>
-          {{ ReferenceLookupModalCtrl.document.date | date }}
-          (<span class="glyphicon glyphicon-time"></span>
-          <span am-time-ago="ReferenceLookupModalCtrl.document.date"></span>)
+          {{ ReferenceLookupModalCtrl.receipt.uuid }}
         </dd>
-
-        <!-- the amount -->
-        <dt>{{ "COLUMNS.AMOUNT" | translate }}</dt>
-        <dd>{{ ReferenceLookupModalCtrl.document.amount | currency:ReferenceLookupModalCtrl.document.currency_id }}</dd>
       </dl>
     </div>
   </div>
@@ -86,7 +86,7 @@
       type="submit"
       class="btn btn-primary"
       ng-click="ReferenceLookupModalCtrl.submit(ModalForm.$invalid)"
-      ng-disabled="!ReferenceLookupModalCtrl.document">
+      ng-disabled="!ReferenceLookupModalCtrl.receipt">
       {{ "FORM.SUBMIT" | translate }}
     </button>
     <button type="button" class="btn btn-default" ng-click="ReferenceLookupModalCtrl.dismiss()">
