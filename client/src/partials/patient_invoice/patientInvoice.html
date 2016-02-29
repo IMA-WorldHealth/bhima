@@ -117,15 +117,13 @@
       </div>
     </div>
     <!-- TODO Research performance hit using ui-grid-auto-resize -->
-    <div ui-grid="PatientInvoiceCtrl.mockOptions" style="height : 230px; width : 100%;" ui-grid-auto-resize>
-      
-    </div>
+    <div ui-grid="PatientInvoiceCtrl.gridOptions" style="height : 230px; width : 100%;" ui-grid-auto-resize></div>
     
     <!-- Transition to show on patient selected (will also add intitial inventory item) -->
     <div class="row" ng-show="PatientInvoiceCtrl.invoicePatient">
       <div 
         totals-footer 
-        grid="PatientInvoiceCtrl.mockOptions" 
+        grid="PatientInvoiceCtrl.gridOptions" 
         leading-columns="5">
 
         <div
@@ -164,6 +162,7 @@
           
           <h4>{{PatientInvoiceCtrl.Invoice.billingServiceCost | currency}}</h4>
           <h4>{{PatientInvoiceCtrl.Invoice.subsidyCost | currency}}</h4>
+          
 
           <!-- This is actually what causes all of the values referenced to be updated on every change -->
           <h4><strong>{{PatientInvoiceCtrl.Invoice.total() | currency}}</strong><h4>

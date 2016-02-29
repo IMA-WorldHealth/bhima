@@ -1,0 +1,9 @@
+<div style="padding : 5px;"> 
+  <div ng-if="!row.entity.confirmed">
+    <!-- TODO Design and implement custom typeahead template -->
+    <input class="form-control" typeahead-append-to-body="true" uib-typeahead="item.uuid as (item.label + ' [' + item.code + ']') for item in grid.appScope.Invoice.items.available()" ng-model="row.entity.inventoryUuid" typeahead-on-select="grid.appScope.Invoice.items.confirmItem(row.entity)"></input>
+  </div>
+  <div nf-if="row.entity.confirmed">
+    <p>{{row.entity.code}}</p>
+  </div>
+</div>
