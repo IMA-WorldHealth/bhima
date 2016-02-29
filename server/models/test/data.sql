@@ -11,6 +11,8 @@ INSERT INTO unit VALUES
 (18,  'Cash Payments','TREE.CASH_PAYMENTS','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
 (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
 (42,  'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
+(57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
+(61,  'Employee','TREE.EMPLOYEE','Employees management',57,'partials/employees/','/employees'),
 (80,  'Patient Update','TREE.EDIT_PATIENT','',12,'/partials/patient_edit/','/patients/edit/'),
 (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes');
 
@@ -91,6 +93,12 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Projects
 (42,1),
+
+-- Payroll Management
+(57, 1),
+
+-- Employee Management
+(61, 1),
 
 -- Patient Update
 (80, 1),
