@@ -1152,6 +1152,7 @@
    "POST_NAME"          : "Post Name",
    "REGISTER"           : "Register Employee",
    "REGISTER_SUCCESS"   : "Register successfully",
+   "REGISTRATION_FORM"  : "Registration Form",
    "SEARCH_BY_CODE"     : "Tap the code",
    "SEARCH_BY_NAME"     : "Tap the empoyee name",
    "SERVICE"            : "Service",   

@@ -1156,6 +1156,7 @@
    "POST_NAME"          : "Postnom",
    "REGISTER"           : "Nouveau employé",
    "REGISTER_SUCCESS"   : "Enregistrement de l'employé avec succès",
+   "REGISTRATION_FORM"  : "Formulaire d'enregistrement",
    "SERVICE"            : "Service",
    "SEARCH_BY_CODE"     : "Taper le code employee",
    "SEARCH_BY_NAME"     : "Taper le nom empoyee",
