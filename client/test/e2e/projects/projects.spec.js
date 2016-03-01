@@ -9,7 +9,7 @@ var helpers = require('../shared/helpers');
 
 helpers.configure(chai);
 
-describe('The Projects Module', function () {
+describe('Projects Module', function () {
   'use strict';
 
   var path = '#/projects';
@@ -125,7 +125,7 @@ describe('The Projects Module', function () {
   });
 
   it('cancellation of removal process of a project', function () {
-    
+
     // click the remove a project
     element(by.id('project-del-' + deleteError )).click();
 
