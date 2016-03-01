@@ -114,7 +114,7 @@ function update(req, res, next) {
   .done();
 }
 
-// DELETE /function/:uuid
+// DELETE /Grade/:uuid
 function del(req, res, next) {
   'use strict';
 
