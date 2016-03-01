@@ -65,6 +65,7 @@ function TotalsFooterDirective() {
     
       function updateColumnWidths() { 
         trackGridColumns.width = columns.reduce(sumColumnWidths, 0);
+        trackGridColumns.trackedWidth = columns[leadingColumns].drawnWidth;
       }
 
       function sumColumnWidths(currentWidth, column, index) { 

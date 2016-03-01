@@ -80,18 +80,15 @@ function InvoiceItems(InventoryService, Uuid, Store) {
 
   this.confirmItem = function confirmItem(item) { 
     var inventoryItem = items.get(item.inventoryUuid);
-    console.log(item);
+    
     console.log('inventoryItem', inventoryItem);
 
     item.confirmed = true;
     item.quantity = 1;
-  
     item.unit_price = inventoryItem.price;
-    
     
     applyPriceList(item);
 
-        
     item.amount = 0;
     item.code = inventoryItem.code;
     item.description = inventoryItem.label;

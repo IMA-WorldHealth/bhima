@@ -16,6 +16,8 @@ function Invoice(InvoiceItems) {
   // global costs 
   invoice.billingServices = [];
   invoice.subsidies = [];
+  
+  invoice.details = {};
 
   // TODO Initialise per session 
   invoice.items = InvoiceItems;

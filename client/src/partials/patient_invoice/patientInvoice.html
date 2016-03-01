@@ -4,7 +4,7 @@
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
       <li class="title">{{ "PATIENT_INVOICE.PAGE_TITLE" | translate }}</li>
-      <li class="title">{{PatientInvoiceCtrl.invoicePatient.name}}</li>
+      <li class="title">{{PatientInvoiceCtrl.Invoice.recipient.first_name}}</li>
     </ol>
     
   </div>
@@ -18,10 +18,16 @@
       <div class="panel panel-default">
       <!-- <div class="panel-heading"></div> -->
       <div class="panel-body">
+      <form name="detailsForm">
       <div class="col-md-6">
-        <div class="form-group">
-          <label>Bill to</label>
-          <bh-find-patient type="inline" on-search-complete="PatientInvoiceCtrl.setPatient(patient)">
+      
+        {{PatientInvoiceCtrl.Invoice.recipient}}
+        <!-- TODO Note custom error handling for valid recipient - the find patient directive should have state based validators -->
+        <div 
+          class="form-group"
+          ng-class="{'has-error' : !PatientInvoiceCtrl.Invoice.recipient && detailsForm.$submitted}">
+          <label class="control-label">Bill to</label>
+          <bh-find-patient type="inline" on-search-complete="PatientInvoiceCtrl.setPatient(patient)" required="true">
           </bh-find-patient>
         </div>
         
@@ -30,7 +36,8 @@
           <select 
             id="service" 
             class="form-control"
-            ng-model="PatientInvoiceCtrl.service"
+            name="service"
+            ng-model="PatientInvoiceCtrl.Invoice.details.service"
             ng-options="service as service.name for service in PatientInvoiceCtrl.services">
           </select>
         </div>
@@ -41,42 +48,63 @@
           <span 
             class="text-info glyphicon glyphicon-info-sign"></span>
         </label>
+        <!-- TODO Distributable vs. non distributable sales should be designed/reviewed carefully -->
         <div class="form-group">
           <label class="radio-inline">
-            <input type="radio" name="service-type" id="distributable" value="true" checked ng-model="PatientInvoiceCtrl.distributable" required>
+            <input required type="radio" name="service-type" id="distributable" value="true" checked ng-model="PatientInvoiceCtrl.distributable" required>
             Distributable          
           </label>
           <label class="radio-inline">
-            <input type="radio" name="service-type" id="not-distributable" value="false" ng-model="PatientInvoiceCtrl.distributable" required>
+            <input required type="radio" name="service-type" id="not-distributable" value="false" ng-model="PatientInvoiceCtrl.distributable" required>
             Non-distributable          
           </label>
 
         </div>
       </div>
-
+  
       <div class="col-md-6">
-        <div class="form-group">
-            <label for="invoice-date">Date</label>
+        
+        <!-- Edit date component -->
+        <!-- TODO As we know this is a financial date, we could set min and max for periods etc. -->
+        <div 
+          class="form-group has-feedback"
+          ng-class="{'has-error' : detailsForm.invoiceDate.$invalid}">
+          <label 
+            class="control-label" 
+            for="invoice-date">{{ "COLUMNS.DATE" | translate }}</label>
+            
             <div class="input-group"> 
               <input 
-                id="invoice-date" 
+                required
+                name="invoiceDate" 
                 type="date" 
-                ng-model="PatientInvoiceCtrl.invoiceDate"
-                readonly 
+                ng-model="PatientInvoiceCtrl.Invoice.details.date"
+                ng-readonly="PatientInvoiceCtrl.dateLocked"
+                min="{{PatientInvoiceCtrl.minimumDate | date : 'yyyy-MM-dd'}}" 
+                max="{{PatientInvoiceCtrl.timestamp | date : 'yyyy-MM-dd'}}"
                 class="form-control"></input>
               <span class="input-group-btn">
-                <button class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                <!-- TODO Final date lock/edit component could run validity checks on lock -->
+                <button class="btn btn-default" ng-disabled="detailsForm.invoiceDate.$invalid" ng-click="PatientInvoiceCtrl.dateLocked=!PatientInvoiceCtrl.dateLocked" type="button">
+                  <span class="glyphicon" ng-class="{'glyphicon-edit' : PatientInvoiceCtrl.dateLocked, 'glyphicon-check' : !PatientInvoiceCtrl.dateLocked}"></span> 
+                  {{ PatientInvoiceCtrl.dateLocked ? "FORM.EDIT" : "FORM.LOCK" | translate }}
+                </button>
               </span>
             </div>
+             
+            <div class="help-block" ng-messages="detailsForm.invoiceDate.$error">
+              <div ng-messages-include="partials/templates/messages.dates.html">
+            </div>
+          </div>
         </div>
+        
         <div class="form-group">
           <label for="invoice-note">Notes</label>
-          <textarea id="invoice-note" class="form-control"></textarea>
+          <textarea id="invoice-note" name="notes" class="form-control"></textarea>
         </div>
-
       </div>
-
     </div>
+    </form>
     </div><!-- End panel -->
     </div><!-- End (12) columns -->
     </div><!-- End row -->
@@ -93,7 +121,7 @@
               <!-- TODO Template method -->
               <!-- TODO Translation -->
               <button 
-                ng-disabled="!PatientInvoiceCtrl.invoicePatient || PatientInvoiceCtrl.Invoice.items.allAssigned()" class="btn btn-default btn-sm"
+                ng-disabled="!PatientInvoiceCtrl.Invoice.recipient || PatientInvoiceCtrl.Invoice.items.allAssigned()" class="btn btn-default btn-sm"
                 ng-click="PatientInvoiceCtrl.Invoice.items.addInventoryItem(PatientInvoiceCtrl.itemIncrement)"><span class="glyphicon glyphicon-plus-sign"></span> Add</button> 
             </span>
             <input class="form-control input-sm" ng-model="PatientInvoiceCtrl.itemIncrement" style="max-width : 40px;"></input> 
@@ -107,14 +135,14 @@
             <p 
               style="padding-top : 10px;"
               class="text-info"
-              ng-if="!PatientInvoiceCtrl.invoicePatient"><span class="glyphicon glyphicon-info-sign"></span> An invoice must have a recipient before assigning items.</p>
+              ng-if="!PatientInvoiceCtrl.Invoice.recipient"><span class="glyphicon glyphicon-info-sign"></span> An invoice must have a recipient before assigning items.</p>
       </div>
     </div>
     <!-- TODO Research performance hit using ui-grid-auto-resize -->
     <div ui-grid="PatientInvoiceCtrl.gridOptions" style="height : 230px; width : 100%;" ui-grid-auto-resize></div>
     
     <!-- Transition to show on patient selected (will also add intitial inventory item) -->
-    <div class="row" ng-show="PatientInvoiceCtrl.invoicePatient">
+    <div class="row" ng-show="PatientInvoiceCtrl.Invoice.recipient">
       <div 
         totals-footer 
         grid="PatientInvoiceCtrl.gridOptions" 
@@ -143,7 +171,7 @@
           </div>
         </div>
 
-        <div class="fixedColumn" style="padding-left : 5px; text-overflow : elpisis;">
+        <div class="fixedColumn" style="padding-left : 5px; text-align : right; text-overflow : elpisis; width : {{PatientInvoiceCtrl.trackColumns.trackedWidth}}px;">
           
           <!-- TODO Template method -->
           <h4>{{PatientInvoiceCtrl.Invoice.itemsCost | currency}}</h4>
@@ -169,10 +197,11 @@
       <div class="col-md-12">
         <button 
           class="btn btn-primary"
-          ng-disabled="!PatientInvoiceCtrl.invoicePatient">Submit Invoice</button>
+          ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
+          ng-click="PatientInvoiceCtrl.submit(detailsForm)">Submit Invoice</button>
         <button 
           class="btn btn-default"
-          ng-disabled="!PatientInvoiceCtrl.invoicePatient"><span class="glyphicon glyphicon-ban-circle"></span> Clear</button>
+          ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"><span class="glyphicon glyphicon-ban-circle"></span> Clear</button>
         
         <!-- <p class="text-danger">Invoice cannot be submitted with invalid items</p> -->
       </div>

@@ -34,6 +34,8 @@ describe('patient registration', function () {
   ];
 
   var uniqueHospitalNumber = 1020;
+  
+  console.log('inject', inject);
 
   // navigate to the patient registration page
   beforeEach(function () {

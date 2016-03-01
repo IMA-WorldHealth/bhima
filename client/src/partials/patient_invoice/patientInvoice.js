@@ -5,21 +5,28 @@
 angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
-PatientInvoiceController.$inject = ['$http', '$q', 'uuid', 'uiGridConstants', 'Patients', 'PriceLists', 'Invoice'];
+PatientInvoiceController.$inject = ['$http', '$q', 'uuid', 'uiGridConstants', 'Patients', 'PriceLists', 'Invoice', 'util', 'moment'];
 
-function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, PriceLists, Invoice) { 
+function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, PriceLists, Invoice, util, moment) { 
+  console.log(util);
   var vm = this;
   
   // TODO 1. Billing services and subsidies must be shut down according to debtor information 
   // TODO 2. Submit sale simply collects form information and request InventoryItem.formatSumbitted()
  
+  vm.Invoice = Invoice;
+  
   // Set default invoice date to today 
-  vm.invoiceDate = new Date();
+  vm.Invoice.details.date = new Date();
   vm.invoiceId = uuid();
 
   // FIXME FIXME
   vm.distributable = "true";
   vm.itemIncrement = 1;
+  vm.timestamp = new moment();
+  vm.minimumDate = util.minimumDate;
+
+  vm.dateLocked = true;
 
   // TODO 02/08 - Replace with Dedrick's service API
   $http.get('services')
@@ -27,11 +34,11 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
       vm.services = services.data;
 
       // Select default service
-      vm.service = vm.services[0];
+      // TODO
+      vm.Invoice.details.service = vm.services[0];
     });
 
   // TODO Initialise per session
-  vm.Invoice = Invoice;
   vm.Invoice.items = vm.Invoice.items;
 
   var gridOptions = { 
@@ -58,6 +65,14 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
 
     Patients.detail(uuid)
       .then(configureInvoice);
+  }
+
+  vm.submit = function submit(detailsForm) { 
+    console.log('got sale details form', detailsForm);
+    
+    detailsForm.$setSubmitted();
+
+    console.log(detailsForm.$invalid);
   }
 
   // This is done in the controller because the invoice service would become strictly 
@@ -93,7 +108,7 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
      
         vm.Invoice.configureGlobalCosts(billingResult, subsidiesResult);
         vm.Invoice.items.setPriceList(priceListResult);
-        vm.invoicePatient = patient;
+        vm.Invoice.recipient = patient;
       });
   }
 }
