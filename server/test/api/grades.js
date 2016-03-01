@@ -77,7 +77,7 @@ describe('The /grade  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-/*  it('DELETE /Grade/:Uuid will send back a 404 if the grade does not exist', function () {
+  it('DELETE /Grade/:Uuid will send back a 404 if the grade does not exist', function () {
     return agent.delete('/grades/inknowGrade')
       .then(function (res) {
         helpers.api.errored(res, 404);
@@ -85,12 +85,12 @@ describe('The /grade  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /exchange/:Uuid should delete an grade ', function () {
+  it('DELETE /exchange/:Uuid should delete a grade ', function () {
     return agent.delete('/grades/' + grade.uuid)
       .then(function (res) {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);
-  });*/
+  });
 
 });

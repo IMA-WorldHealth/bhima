@@ -75,7 +75,7 @@ describe('The /function  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /Function/:id will send back a 404 if the exchage rate does not exist', function () {
+  it('DELETE /Function/:id will send back a 404 if the Function does not exist', function () {
     return agent.delete('/functions/inknowFunction')
       .then(function (res) {
         helpers.api.errored(res, 404);
@@ -83,7 +83,7 @@ describe('The /function  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /exchange/:id should delete an exchange rate ', function () {
+  it('DELETE /exchange/:id should delete a Function ', function () {
     return agent.delete('/functions/' + fonction.id)
       .then(function (res) {
         helpers.api.deleted(res);
