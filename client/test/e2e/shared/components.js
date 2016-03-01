@@ -283,25 +283,19 @@ exports.findDebtorGroup = {
 */
 
 exports.dateEditor = {
-  selector : ['data-date-editor'],
+  selector : ['data-date-editor-input'],
 
   /**
    * sets the value in date field.
    */
 
-  set : function set(value, form) {
+  set : function set(value) {
 
-    var scr = "var datePicker = document.getElementById('bh-date-editor-id'); " +
-              "datePicker.value = '" + value + "'; " +
-              "angular.element(datePicker).scope().$apply(function(s) { s." + form + "[datePicker.name].$setViewValue('" + value + "'); });";
-
-    var setDateButton = element(by.id('set-date-btn'));
+    var setDateButton = element(by.css('[data-date-editor-input]'));
     setDateButton.click();
 
-    browser.executeScript(scr);
-
-    // var DateInputText = element(by.css(this.selector));
-    // DateInputText.sendKeys(value);
+    var DateInputText = element(by.css(this.selector));
+    DateInputText.dateValue = value;
   },
 
   /**
@@ -309,6 +303,6 @@ exports.dateEditor = {
    */
   get : function get() {
     var DateInputText = element(by.css(this.selector));
-    return DateInputText.getAttribute('value');
+    return DateInputText.getAttribute('date-value');
   }
 };

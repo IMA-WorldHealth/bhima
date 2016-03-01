@@ -12,7 +12,7 @@ var EC = protractor.ExpectedConditions;
 var FU = require('../shared/FormUtils');
 
 
-describe.only('Cash Payments Module', function () {
+describe('Cash Payments Module', function () {
 
   /** @const */
   var path = '#/cash';
@@ -147,6 +147,7 @@ describe.only('Cash Payments Module', function () {
 
   /** tests for the cash payments form page */
   describe('Cash Payments Form Page', function () {
+    var dateValue, scope, $componentController;
 
     /** navigate to the page before each function */
     beforeEach(function () {
@@ -166,7 +167,7 @@ describe.only('Cash Payments Module', function () {
     // This payment against patient invoices should succeed
     var mockInvoicesPayment = {
       patientId: 'TPA2',
-      date : new Date('2016-06-01'),
+      date : new Date(2016, 03, 01),
       amount : 5.12
     };
 
@@ -233,7 +234,7 @@ describe.only('Cash Payments Module', function () {
 
       // select the properdate
 
-      components.dateEditor.set(new Date(mockInvoicesPayment.date).toISOString().slice(0, 10), "CashVoucherForm");
+      components.dateEditor.set(mockInvoicesPayment.date);
 
       // select the "invoices payment" option type
       var cautionOption = element(by.css('[data-caution-option="0"]'));
