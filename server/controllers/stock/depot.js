@@ -6,27 +6,86 @@
 * might be better positioned in the /inventory/ controller.
 */
 
-var db = require('../../lib/db'),
+var uuid = require('node-uuid'),
+    db = require('../../lib/db'),
     distributions = require('./depots/distributions');
 
-// expose routes
-exports.getDepots = getDepots;
-exports.getDepotsById = getDepotsById;
-exports.getDistributions = getDistributions;
-exports.getDistributionsById = getDistributionsById;
-exports.getAvailableLots = getAvailableLots;
-exports.getAvailableLotsByInventoryId = getAvailableLotsByInventoryId;
-exports.getExpiredLots = getExpiredLots;
+/** expose depots routes */
+exports.list   = list;
+exports.detail = detail;
+exports.create = create;
+exports.update = update;
+
+/** expose depots distributions routes */
 exports.createDistributions = createDistributions;
-exports.getStockExpirations = getStockExpirations;
+exports.listDistributions   = listDistributions;
+exports.detailDistributions = detailDistributions;
+
+/** expose depots inventories and lots routes */
+exports.listAvailableLots    = listAvailableLots;
+exports.detailAvailableLots  = detailAvailableLots;
+exports.listExpiredLots      = listExpiredLots;
+exports.listStockExpirations = listStockExpirations;
+
+
+/**
+* POST /depots
+* Create a new depot in the database
+*
+* @function create
+*/
+function create(req, res, next) {
+  'use strict';
+
+  /** prevent missing uuid by generating a new one */
+  if (!req.body.uuid) { req.body.uuid = uuid.v4(); }
+
+  var query = 'INSERT INTO depot SET ?';
+  db.exec(query, [req.body])
+  .then(function () {
+    res.status(201).json({ uuid : req.body.uuid });
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+* PUT /depots
+* Edit an existing depot in the database
+*
+* @function update
+*/
+function update(req, res, next) {
+  'use strict';
+
+  /** prevent update uuid */
+  if (req.body.uuid) { delete req.body.uuid; }
+
+  var query = 'UPDATE `depot` SET ? WHERE uuid = ?';
+  db.exec(query, [req.body, req.params.uuid])
+  .then(selectDepot)
+  .then(function (rows) {
+    if (!rows.length) { return next(new req.codes.ERR_NOT_FOUND()); }
+    res.status(200).send(rows);
+  })
+  .catch(next)
+  .done();
+
+  function selectDepot(rows) {
+    var sql =
+      'SELECT uuid, reference, text, enterprise_id, is_warehouse ' +
+      'FROM depot WHERE uuid = ?';
+    return db.exec(sql, [req.params.uuid]);
+  }
+}
 
 /**
 * GET /depots
 * Fetches all depots in the database
 *
-* @function getDepots
+* @function list
 */
-function getDepots(req, res, next) {
+function list(req, res, next) {
   'use strict';
 
   var sql;
@@ -49,9 +108,9 @@ function getDepots(req, res, next) {
 * GET /depots/:uuid
 * Fetches a depot by its uuid from the database
 *
-* @function getDepotsById
+* @function detail
 */
-function getDepotsById(req, res, next) {
+function detail(req, res, next) {
   'use strict';
 
   var sql,
@@ -92,9 +151,9 @@ function getDepotsById(req, res, next) {
 * NOTE - this query does not filter for uncanceled sales.  You will have to
 * handle those yourselves in your controllers.
 *
-* @function getDistributions
+* @function listDistributions
 */
-function getDistributions(req, res, next) {
+function listDistributions(req, res, next) {
   'use strict';
 
   var sql,
@@ -206,7 +265,7 @@ function getDistributions(req, res, next) {
   .done();
 }
 
-function getDistributionsById(req, res, next) {
+function detailDistributions(req, res, next) {
   'use strict';
 
   var sql,
@@ -263,9 +322,9 @@ function createDistributions(req, res, next) {
 * This function returns all the lots in a given depot for all inventory items
 * in the inventory.
 *
-* @function getAvailableLots
+* @function listAvailableLots
 */
-function getAvailableLots(req, res, next) {
+function listAvailableLots(req, res, next) {
   'use strict';
 
   var sql,
@@ -302,9 +361,9 @@ function getAvailableLots(req, res, next) {
 *
 * TODO -- this should change to a UUID.
 *
-* @function getAvailableLotsByInventoryId
+* @function detailAvailableLots
 */
-function getAvailableLotsByInventoryId(req, res, next) {
+function detailAvailableLots(req, res, next) {
   'use strict';
 
   var sql,
@@ -336,9 +395,9 @@ function getAvailableLotsByInventoryId(req, res, next) {
 * GET /depot/:uuid/expired
 * Finds expiring drugs for a particular depot identified by depotId
 *
-* @function getExpiredLots
+* @function listExpiredLots
 */
-function getExpiredLots(req, res, next) {
+function listExpiredLots(req, res, next) {
   'use strict';
 
   var sql,
@@ -377,9 +436,9 @@ function getExpiredLots(req, res, next) {
 * This function returns all lots that will expire in a given depot between the
 * provided dates.
 *
-* @function getStockExpirations
+* @function listStockExpirations
 */
-function getStockExpirations(req, res, next) {
+function listStockExpirations(req, res, next) {
   'use strict';
 
   var sql,

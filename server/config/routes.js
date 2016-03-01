@@ -25,7 +25,7 @@ var projects             = require('../controllers/medical/projects');
 var legacyReports        = require('../controllers/reports/report_legacy');
 var reports              = require('../controllers/reports/reports.js');
 var inventory            = require('../controllers/stock/inventory');
-var depot                = require('../controllers/stock/depot');
+var depots               = require('../controllers/stock/depot');
 var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
 var trialbalance         = require('../controllers/finance/trialbalance');
 var journal              = require('../controllers/finance/journal');
@@ -303,24 +303,26 @@ exports.configure = function (app) {
   app.get('/inventory/donations', inventory.getInventoryDonations);
   app.get('/inventory/:uuid/donations', inventory.getInventoryDonationsById);
 
-  /* Depot Management */
+  /* Depot routes */
+  app.get('/depots', depots.list);
+  app.get('/depots/:uuid', depots.detail);
+  app.put('/depots/:uuid', depots.update);
+  app.post('/depots', depots.create);
 
-  app.get('/depots', depot.getDepots);
-  app.get('/depots/:uuid', depot.getDepotsById);
+  /* Depot distributions routes */
+  app.get('/depots/:depotId/distributions', depots.listDistributions);
+  app.get('/depots/:depotId/distributions/:uuid', depots.detailDistributions);
+  app.post('/depots/:depotId/distributions', depots.createDistributions);
 
-  app.get('/depots/:depotId/distributions', depot.getDistributions);
-  app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);
-
-  // over-loaded distributions route handles patients, services, and more
-  app.post('/depots/:depotId/distributions', depot.createDistributions);
-
-  // get the lots of a particular inventory item in the depot
-  // TODO -- should this be renamed? /stock? /lots?
-  app.get('/depots/:depotId/inventory', depot.getAvailableLots);
-  app.get('/depots/:depotId/inventory/:uuid', depot.getAvailableLotsByInventoryId);
-
-  app.get('/depots/:depotId/expired', depot.getExpiredLots);
-  app.get('/depots/:depotId/expirations', depot.getStockExpirations);
+  /**
+   * Depot inventories and lots routes
+   * get the lots of a particular inventory item in the depot
+   * @todo -- should this be renamed? /stock? /lots?
+   */
+  app.get('/depots/:depotId/inventory', depots.listAvailableLots);
+  app.get('/depots/:depotId/inventory/:uuid', depots.detailAvailableLots);
+  app.get('/depots/:depotId/expired', depots.listExpiredLots);
+  app.get('/depots/:depotId/expirations', depots.listStockExpirations);
 
   /* continuing on ... */
 
@@ -478,7 +480,7 @@ exports.configure = function (app) {
 
   /** @todo - classify these */
   app.get('/cashflow/report/', cashflow.getReport);
-  //app.get('/stock/entries?', depot.getStockEntry);
+  //app.get('/stock/entries?', depots.getStockEntry);
 
   // Enterprises api
   app.get('/enterprises', enterprises.list);
