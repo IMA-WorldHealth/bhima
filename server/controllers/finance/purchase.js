@@ -3,152 +3,210 @@ var db = require('./../../lib/db');
 var uuid = require('./../../lib/guid');
 var journal = require('./journal');
 
-// GET /purchaseorders
 
-/*
- * HTTP Controllers
-*/
-exports.execute = function (req, res, next) {
-  executePurchase(req.session.user.id, req.body)
-  .then(function (id) {
-    res.status(200).send({ purchaseId : id });
-  })
-  .catch(next)
-  .done();
-};
 
-exports.getPurchaseOrders = function (req, res, next) {
+/** 
+ * Utility method to ensure purchase items lines reference purchase.
+ * @param {Object} purchaseItems - An Array of all purchase items to be written 
+ * @param {string} purchaseUuid - UUID of referenced purchase order
+ * @returns {Object} An Array of all purchases items with guaranteed UUIDs and Purchase orders references
+ */
+function linkPurchaseItems(purchaseItems, purchaseUuid) { 
+  return purchaseItems.map(function (purchaseItem) { 
+     
+    purchaseItem.uuid = purchaseItem.uuid || uuid();
+    purchaseItem.purchase_uuid = purchaseUuid;
+   
+    // Collapse sale item into Array to be inserted into database
+    return Object.keys(purchaseItem).map(function (key) { 
+      return purchaseItem[key];
+    });
+  });
+}
+
+// looks up a single purchase record and associated purchase_items
+function lookupPurchaseOrder(uuid, codes) {
   'use strict';
 
-  var sql,
-      status = req.query.status;
+  var record;
 
-  // base query
-  sql = 'SELECT COUNT(uuid) AS count FROM purchase WHERE is_donation = 0 ' +
-        'AND (is_return = 0 OR is_return IS NULL) ';
+  var sqlPurchase =
+    'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
+    'creditor.text, employee.name, employee.prenom, user.first, user.last, ' +
+    'purchase.creditor_uuid, purchase.timestamp, purchase.note, purchase.paid_uuid, purchase.confirmed, purchase.closed, ' +
+    'purchase.is_direct, purchase.is_donation, purchase.emitter_id, purchase.is_authorized, purchase.is_validate, ' +
+    'purchase.confirmed_by, purchase.is_integration, purchase.purchaser_id, purchase.receiver_id ' +
+    'FROM purchase ' +
+    'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
+    'JOIN employee ON employee.id = purchase.purchaser_id ' +
+    'JOIN user ON user.id = purchase.emitter_id ' +
+    'WHERE purchase.uuid = ? ;';
 
-  switch (status) {
+  var sqlPurchaseItem =
+    'SELECT purchase_item.purchase_uuid, purchase_item.uuid, purchase_item.quantity, purchase_item.unit_price, ' +
+    'purchase_item.total, inventory.text ' +
+    'FROM purchase_item ' +
+    'JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid ' +
+    'WHERE purchase_item.purchase_uuid = ? ';  
 
-    // the purchase order is pending payment
-    case 'pending':
-      sql += ' AND paid = 0 AND confirmed = 0;';
-      break;
+  return db.exec(sqlPurchase, [uuid])
+  .then(function (rows) {
 
-    // the purchase order has been paid, but items have not been
-    // shipped
-    case 'paid':
-      sql += ' AND paid = 1;';
-      break;
+    if (rows.length === 0) {
+      throw new codes.ERR_NOT_FOUND();
+    }
 
-    // the purchased items have been shipped, but have not
-    // arrived in the warehouse yet
-    case 'shipped':
-      sql += ' AND closed = 0 AND confirmed = 1;';
-      break;
+    // store the record for return
+    record = rows[0];
 
-    // the purchase order has been fulfilled with stock in the
-    // warehouse.
-    case 'delivered':
-      sql += ' AND closed = 1 AND confirmed = 1;';
-      break;
+    return db.exec(sqlPurchaseItem, [uuid]);
+  })
+  .then(function (rows) {
 
-    default:
-      sql += ';';
-      break;
+    // bind the purchase items to the "items" property and return
+    record.items = rows;
+
+    return record;
+  });
+}
+
+
+/**
+* Create a Purchase Order in the database
+*
+**/
+
+function create (req, res, next) {
+  'use strict';
+
+  var purchase = req.body;
+  var transaction;  
+  var purchaseOrder = purchase.purchase_order;
+  var purchaseItem =  purchase.purchase_item;
+
+
+  // Reject invalid parameters
+  if (!purchaseOrder || !purchaseItem) { 
+    res.status(400).json({
+      code : 'ERROR.ERR_MISSING_INFO', 
+      reason : 'A valid purchase details and purchase items must be provided under the attributes `purchaseOrder` and `purchaseItem`'
+    });
+    return;
+  }
+
+  if(purchaseOrder.purchase_date){
+    purchaseOrder.purchase_date = new Date(purchaseOrder.purchase_date);
+  }
+  
+  var sqlPurchase = 'INSERT INTO purchase SET ?';
+
+  var sqlPurchaseItem = 'INSERT INTO purchase_item (uuid, inventory_uuid, quantity, unit_price, ' +
+    'total, purchase_uuid) VALUES ?'; 
+
+  var dataPurchaseItem = linkPurchaseItems(purchase.purchase_item, purchaseOrder.uuid);
+
+  transaction = db.transaction();
+
+  transaction
+    .addQuery(sqlPurchase, [purchaseOrder])
+    .addQuery(sqlPurchaseItem,[dataPurchaseItem]);
+
+  transaction.execute()
+    .then(function (results) {
+      res.status(201).json({ uuid : purchaseOrder.uuid });
+    })
+    .catch(next)
+    .done();
+}
+
+
+/**
+* GET /projects/
+*
+* Returns the details of a single project
+*/
+function list (req, res, next) {
+  'use strict';
+  var sql;
+
+  sql =
+    'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
+    'creditor.text, employee.name, employee.prenom, user.first, user.last ' +
+    'FROM purchase ' +
+    'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
+    'JOIN employee ON employee.id = purchase.purchaser_id ' +
+    'JOIN user ON user.id = purchase.emitter_id; ';
+
+  if (req.query.complete === '1') {
+    sql =  
+      'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
+      'creditor.text, employee.name, employee.prenom, user.first, user.last, ' +
+      'purchase.creditor_uuid, purchase.timestamp, purchase.note, purchase.paid_uuid, purchase.confirmed, purchase.closed, ' +
+      'purchase.is_direct, purchase.is_donation, purchase.emitter_id, purchase.is_authorized, purchase.is_validate, ' +
+      'purchase.confirmed_by, purchase.is_integration, purchase.purchaser_id, purchase.receiver_id ' +
+      'FROM purchase ' +
+      'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
+      'JOIN employee ON employee.id = purchase.purchaser_id ' +
+      'JOIN user ON user.id = purchase.emitter_id; ';
   }
 
   db.exec(sql)
   .then(function (rows) {
-    res.status(200).send(rows);
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
-};
-
-/*
- * Utility Methods
-*/
-// TODO Server side sale and purchase order are very similar, they should
-// probably be combined
-
-// TODO employee responsible for purchase, credited money from purchase request
-//      must be able to select them at purchase order
-
-// TODO create purchase order, expense cash, confirm recieving (work with overflow money)
-
-// TODO
-//  - Purchase price and sale price
-//  - On purchase order no money is moved
-//  - Move money from cash balance account to asset account (on authorisation of purchase)
-//  - On sale move money from asset account to expense account,
-//    credit sale account
-
-function values(obj) {
-  // get an array of an object's values
-  // cannot wait for es6's Object.values(o);
-  return Object.keys(obj).map(function (k) { return obj[k]; });
 }
 
-function executePurchase(userId, data) {
-  // Writes data to the primary_cash table
-  // then the primary_cash_items table and
-  // finally the posting_journal
-  var primaryCashId = uuid();
+function detail(req, res, next) {
+  'use strict';
 
-  return writeCash(primaryCashId, userId, data.details)
-    .then(function () {
-      return writeCashItems(primaryCashId, data.transaction);
-    })
-    .then(function () {
-      return postToJournal(primaryCashId, userId);
-    })
-    .then(function () {
-      return q(primaryCashId);
-    });
+  var uuid = req.params.uuid;
+
+  lookupPurchaseOrder(uuid, req.codes)
+  .then(function (record) {
+    res.status(200).json(record);
+  })
+  .catch(next)
+  .done();
 }
 
-function writeCash(primaryCashId, userId, data) {
-  // write items to the primary_cash table
-  var sql, params;
+
+// PUT /purchase/:uuid
+function update(req, res, next) {
+  'use strict';
+
+  var sql;
+  var uuid = req.params.uuid;
 
   sql =
-    'INSERT INTO primary_cash ' +
-      '(project_id, type, date, deb_cred_uuid, deb_cred_type, currency_id, ' +
-      'cash_box_id, account_id, cost, description, origin_id, uuid, user_id) ' +
-    'VALUES ' +
-      '(?,?,?,?,?,?,?,?,?,?,?,?,?);';
+    'UPDATE purchase SET ? WHERE uuid = ?;';
 
-  params = values(data);
-  params.push(primaryCashId);
-  params.push(userId);
+  db.exec(sql, [req.body, uuid])
+  .then(function () {
 
-  return db.exec(sql, params);
+    // fetch the changed object from the database
+    return lookupPurchaseOrder(uuid, req.codes);
+  })
+  .then(function (record) {
+
+    // all updates completed successfull, return full object to client
+    res.status(200).json(record);
+  })
+  .catch(next)
+  .done();
 }
 
-function writeCashItems(primaryCashId, data) {
-  var sql, queries, params;
 
-  sql =
-    'INSERT INTO `primary_cash_item` ' +
-      '(inv_po_id, debit, credit, document_uuid, uuid, primary_cash_uuid) ' +
-    'VALUES ' +
-      '(?, ?, ?, ?, ?, ?)';
 
-  queries = data.map(function (item) {
-    params = values(item);
-    params.push(uuid());
-    params.push(primaryCashId);
-    return db.exec(sql, params);
-  });
+// create a new purchase order
+exports.create = create;
 
-  return q.all(queries);
-}
+//Read all purchase order
+exports.list = list;
 
-function postToJournal(primaryCashId, userId) {
-  var dfd = q.defer();
-  journal.request('indirect_purchase', primaryCashId, userId, function (err, result) {
-    if (err) { return dfd.reject(err); }
-    dfd.resolve(result);
-  });
-  return dfd.promise;
-}
+// Read a specific purchase order
+exports.detail = detail;
+
+//Update properties of a purchase Order 
+exports.update = update; 

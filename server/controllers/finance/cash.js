@@ -1,6 +1,8 @@
 /**
 * Cash Controller
 *
+* @module finance/cash
+*
 * This controller is responsible for processing cash payments for patients. The
 * payments can either be against an previous invoice (sale payment) or a future
 * invoice (cautionary payment).
@@ -13,11 +15,23 @@
 var db   = require('../../lib/db');
 var uuid = require('../../lib/guid');
 
-// check if an object is empty
-// TODO - can this be from a library?
-function empty(object) {
-  return Object.keys(object).length === 0;
-}
+/** retrieves the details of a cash payment */
+exports.detail = detail;
+
+/** retrieves a list of all cash payments */
+exports.list = list;
+
+/** creates cash payments */
+exports.create = create;
+
+/** modifies previous cash payments */
+exports.update = update;
+
+/** searchs for cash payment uuids by their human-readable reference */
+exports.reference = reference;
+
+/** @todo - reverse a cash payment via a journal voucher */
+exports.debitNote = debitNote;
 
 // looks up a single cash record and associated cash_items
 // sets the "canceled" flag if a cash_discard record exists.
@@ -26,7 +40,7 @@ function lookupCashRecord(uuid, codes) {
 
   var record;
   var cashRecordSql =
-    'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference, ' +
+    'SELECT cash.uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference, ' +
       'cash.date, cash.debtor_uuid, cash.currency_id, cash.amount, ' +
       'cash.description, cash.cashbox_id, cash.is_caution, cash.user_id ' +
     'FROM cash JOIN project ON cash.project_id = project.id ' +
@@ -80,7 +94,7 @@ function lookupCashRecord(uuid, codes) {
  * Lists the cash payments with optional filtering parameters.
  * @returns payments An array of { uuid, reference, date } JSON objects
  */
-exports.list = function list(req, res, next) {
+function list(req, res, next) {
   'use strict';
 
   // base query
@@ -95,7 +109,7 @@ exports.list = function list(req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
 /**
  * GET /cash/:uuid
@@ -110,7 +124,7 @@ exports.list = function list(req, res, next) {
  *   ...
  *  }
  */
-exports.getCashDetails = function details(req, res, next) {
+function detail(req, res, next) {
   'use strict';
 
   var uuid = req.params.uuid;
@@ -121,7 +135,7 @@ exports.getCashDetails = function details(req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
 
 /**
@@ -130,7 +144,7 @@ exports.getCashDetails = function details(req, res, next) {
  * API also supports future offline functionality by either accepting a UUID or
  * generating it if it is not present.
  */
-exports.create = function create(req, res, next) {
+function create(req, res, next) {
   'use strict';
 
   var data = req.body.payment;
@@ -140,8 +154,15 @@ exports.create = function create(req, res, next) {
   // be sufficient?
   data.uuid = data.uuid || uuid();
 
+  // trust the server's session info over the client's
+  data.project_id = req.session.project.id;
+  data.user_id = req.session.user.id;
+
+  // format date for insertion into database
+  if (data.date) { data.date = new Date(data.date); }
+
   // account for the cash items
-  var items =  data.items;
+  var items = data.items;
 
   // remove the cash items so that the SQL query is properly formatted
   delete data.items;
@@ -153,8 +174,16 @@ exports.create = function create(req, res, next) {
       item.cash_uuid = data.uuid;
       return [
         item.uuid, item.cash_uuid,
-        item.amount, item.invoice_uuid
+        item.amount, item.sale_uuid
       ];
+    });
+  }
+
+  // disallow invoice payments with empty items.
+  if (!data.is_caution && (!items || !items.length)) {
+    return res.status(400).json({
+      code : 'CASH.VOUCHER.ERRORS.NO_CASH_ITEMS',
+      reason : 'You must submit cash items with the cash items payment.'
     });
   }
 
@@ -163,7 +192,7 @@ exports.create = function create(req, res, next) {
 
   var writeCashItemsSql =
     'INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) ' +
-    'VALUES (?);';
+    'VALUES ?;';
 
   var transaction = db.transaction();
   transaction.addQuery(writeCashSql, [ data ]);
@@ -171,7 +200,7 @@ exports.create = function create(req, res, next) {
   // only add the "items" query if we are NOT making a caution
   // cautions do not have items
   if (!data.is_caution) {
-    transaction.addQuery(writeCashItemsSql, items);
+    transaction.addQuery(writeCashItemsSql, [ items ]);
   }
 
   transaction.execute()
@@ -180,7 +209,7 @@ exports.create = function create(req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
 
 /**
@@ -188,7 +217,7 @@ exports.create = function create(req, res, next) {
  * Updates the non-financial details associated with a cash payment.
  * NOTE - this will not update the cash_item or cash_discard tables.
  */
-exports.update = function update(req, res, next) {
+function update(req, res, next) {
   'use strict';
 
   var uuid = req.params.uuid;
@@ -197,7 +226,7 @@ exports.update = function update(req, res, next) {
   // protected database fields that are unavailable for updates.
   var protect = [
     'is_caution', 'amount', 'user_id', 'cashbox_id',
-    'currency_id', 'date', 'uuid', 'project_id'
+    'currency_id', 'date', 'project_id'
   ];
 
   // loop through update keys and ensure that we are only updating non-protected
@@ -211,6 +240,12 @@ exports.update = function update(req, res, next) {
   if (hasProtectedKey) {
     return next(new req.codes.ERR_PROTECTED_FIELD());
   }
+
+  // delete the uuid if it exists
+  delete req.body.uuid;
+
+  // properly parse date if it exists
+  if (req.body.date) { req.body.date = new Date(req.body.date); }
 
   // if checks pass, we are free to continue with our updates to the db
   lookupCashRecord(uuid, req.codes)
@@ -232,15 +267,41 @@ exports.update = function update(req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
 /**
  * DELETE /cash/:uuid
  * Reverses a cash payment using the cash discard table
  * @TODO - should this be implemented as a separate API?
  */
-exports.debitNote = function debitNote(req, res, next) {
+function debitNote(req, res, next) {
   'use strict';
   // TODO
   next();
-};
+}
+
+
+/**
+ * retrieves cash payment uuids from a reference string (e.g. HBB123)
+ * GET /cash/references/:reference
+ */
+function reference(req, res, next) {
+
+  var sql =
+    'SELECT c.uuid FROM (' +
+      'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference ' +
+      'FROM cash JOIN project ON cash.project_id = project.id' +
+    ')c WHERE c.reference = ?;';
+
+  db.exec(sql, [ req.params.reference ])
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw new req.codes.ERR_NOT_FOUND();
+    }
+
+    // references should be unique - return the first one
+    res.status(200).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+}

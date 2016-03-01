@@ -33,7 +33,7 @@ function configureLogger() {
   winston.level = process.env.LOG_LEVEL;
 
   // make sure to log unhandled exceptions
-  winston.handleExceptions(winston.transports.Console);
+  winston.handleExceptions(new winston.transports.Console());
 }
 
 loadEnvironmentalVariables();

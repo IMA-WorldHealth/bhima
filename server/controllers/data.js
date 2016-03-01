@@ -7,8 +7,9 @@
 var url = require('url'),
     qs = require('querystring'),
     db = require('../lib/db'),
-    util = require('../lib/util'),
     parser = require('../lib/parser');
+
+var _ = require('lodash/lang');
 
 /*
  * HTTP Controllers
@@ -20,7 +21,7 @@ exports.create = function create(req, res, next) {
   //   This checks if data is an array and stuffs it
   //   into an array if it is not.  This should be done on the
   //   client (by connect).
-  data = util.isArray(req.body.data) ? req.body.data : [req.body.data];
+  data = _.isArray(req.body.data) ? req.body.data : [req.body.data];
   sql = parser.insert(req.body.table, data);
 
   db.exec(sql)

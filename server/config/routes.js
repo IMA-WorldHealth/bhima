@@ -11,73 +11,72 @@
 * identicale modules - they should all be encapsulated as one
 * module. For Example finance.createSale, finance.createPurchase
 */
-var winston = require('winston');
-
-var auth            = require('../controllers/auth');
-var data            = require('../controllers/data');
-var users           = require('../controllers/users');
-var locations       = require('../controllers/location');
-var tree            = require('../controllers/tree');
-
-var createPurchase  = require('../controllers/finance/purchase');
-var createSale      = require('../controllers/finance/sale');
-
-var patient         = require('../controllers/medical/patient');
-var snis            = require('../controllers/medical/snis');
-var projects        = require('../controllers/medical/projects');
-
-var legacyReports   = require('../controllers/reports/report_legacy');
-var reports         = require('../controllers/reports/reports.js');
-
-var inventory       = require('../controllers/stock/inventory');
-var depot           = require('../controllers/stock/depot');
-var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
-var trialbalance   = require('../controllers/finance/trialbalance');
-var journal        = require('../controllers/finance/journal');
-var ledger         = require('../controllers/finance/ledger');
-var fiscal         = require('../controllers/finance/fiscal');
-var extra          = require('../controllers/finance/extraPayment');
-var gl             = require('../controllers/finance/ledgers/general');
-var genericFinance = require('../controllers/finance/financeGeneric');
-var accounts       = require('../controllers/finance/accounts');
-var analytics      = require('../controllers/finance/analytics');
-var purchase       = require('../controllers/finance/purchase');
-var budget         = require('../controllers/finance/budget');
-var taxPayment     = require('../controllers/finance/taxPayment');
-var donations      = require('../controllers/finance/donations');
-var debtors        = require('../controllers/finance/debtors');
-var cashboxes      = require('../controllers/finance/cashboxes');
-var exchange       = require('../controllers/finance/exchange');
-var cash           = require('../controllers/finance/cash');
-var cashflow       = require('../controllers/cashflow');
-var enterprises     = require('../controllers/admin/enterprises');
-var priceList      = require('../controllers/finance/priceList');
-var billingServices = require('../controllers/finance/billingServices');
-var account         = require('../controllers/finance/account');
-var accountType     = require('../controllers/finance/accountType');
-var costCenter      = require('../controllers/finance/costCenter');
-var profitCenter    = require('../controllers/finance/profitCenter');
-var reference       = require('../controllers/finance/reference');
-var subsidy        = require('../controllers/finance/subsidy');
-var patientInvoice = require('../controllers/finance/patientInvoice');
-var discounts      = require('../controllers/finance/discounts');
+var winston              = require('winston');
+var auth                 = require('../controllers/auth');
+var data                 = require('../controllers/data');
+var users                = require('../controllers/users');
+var locations            = require('../controllers/locations');
+var tree                 = require('../controllers/tree');
+//var createPurchase       = require('../controllers/finance/purchase');
+var createSale           = require('../controllers/finance/sale');
+var patient              = require('../controllers/medical/patient');
+var snis                 = require('../controllers/medical/snis');
+var projects             = require('../controllers/medical/projects');
+var legacyReports        = require('../controllers/reports/report_legacy');
+var reports              = require('../controllers/reports/reports.js');
+var inventory            = require('../controllers/stock/inventory');
+var depots               = require('../controllers/stock/depot');
+var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
+var trialbalance         = require('../controllers/finance/trialbalance');
+var journal              = require('../controllers/finance/journal');
+var ledger               = require('../controllers/finance/ledger');
+var fiscal               = require('../controllers/finance/fiscal');
+var extra                = require('../controllers/finance/extraPayment');
+var gl                   = require('../controllers/finance/ledgers/general');
+var genericFinance       = require('../controllers/finance/financeGeneric');
+var accounts             = require('../controllers/finance/accounts');
+var analytics            = require('../controllers/finance/analytics');
+var purchase             = require('../controllers/finance/purchase');
+var budget               = require('../controllers/finance/budget');
+var taxPayment           = require('../controllers/finance/taxPayment');
+var donations            = require('../controllers/finance/donations');
+var debtors              = require('../controllers/finance/debtors');
+var cashboxes            = require('../controllers/finance/cashboxes');
+var exchange             = require('../controllers/finance/exchange');
+var cash                 = require('../controllers/finance/cash');
+var cashflow             = require('../controllers/cashflow');
+var enterprises          = require('../controllers/admin/enterprises');
+var employees            = require('../controllers/admin/employees');
+var priceList            = require('../controllers/finance/priceList');
+var billingServices      = require('../controllers/finance/billingServices');
+var account              = require('../controllers/finance/account');
+var accountType          = require('../controllers/finance/accountType');
+var costCenter           = require('../controllers/finance/costCenter');
+var profitCenter         = require('../controllers/finance/profitCenter');
+var reference            = require('../controllers/finance/reference');
+var subsidy              = require('../controllers/finance/subsidy');
+var patientInvoice       = require('../controllers/finance/patientInvoice');
+var discounts            = require('../controllers/finance/discounts');
 var financeServices      = require('../controllers/categorised/financeServices');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
 var depreciatedReports   = require('../controllers/categorised/reports_depreciate');
 var payroll              = require('../controllers/categorised/payroll');
 var caution              = require('../controllers/categorised/caution');
-var employees            = require('../controllers/categorised/employees');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
-var transfers           = require('../controllers/finance/transfers');
-
-var services    = require('../controllers/admin/services');
+var transfers            = require('../controllers/finance/transfers');
+var debtorGroups         = require('../controllers/finance/debtorGroups');
+var currencies           = require('../controllers/finance/currencies');
+var services             = require('../controllers/admin/services');
+var conventions          = require('../controllers/finance/conventions');
+var vouchers             = require('../controllers/finance/vouchers');
+var suppliers            = require('../controllers/admin/suppliers');
 
 // Middleware for handle uploaded file
-var multipart       = require('connect-multiparty');
+var multipart            = require('connect-multiparty');
 
 exports.configure = function (app) {
-  winston.log('debug', 'Configuring routes');
+  winston.debug('Configuring routes');
 
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
@@ -99,15 +98,17 @@ exports.configure = function (app) {
   app.put('/data', data.update);
   app.delete('/data/:table/:column/:value', data.deleteRecord);
 
-  // location routes
-  // -> /location/:scope(list || lookup)/:target(village || sector || province)/:id(optional)
-  app.get('/location/villages', locations.allVillages);
-  app.get('/location/sectors', locations.allSectors);
-  app.get('/location/provinces', locations.allProvinces);
-  app.get('/location/village/:uuid', locations.lookupVillage);
-  app.get('/location/sector/:uuid', locations.lookupSector);
-  app.get('/location/province/:uuid', locations.lookupProvince);
-  app.get('/location/detail/:uuid', locations.lookupDetail);
+  /**  API for locations */
+  app.get('/locations/villages', locations.villages);
+  app.get('/locations/sectors', locations.sectors);
+  app.get('/locations/provinces', locations.provinces);
+  app.get('/locations/countries', locations.countries);
+  app.post('/locations/countries', locations.create.country);
+  app.post('/locations/provinces', locations.create.province);
+  app.post('/locations/sectors', locations.create.sector);
+  app.post('/locations/villages', locations.create.village);
+
+  app.get('/locations/detail/:uuid', locations.detail);
 
   // API for account routes crud
   app.get('/accounts', account.list);
@@ -166,7 +167,6 @@ exports.configure = function (app) {
   app.post('/report/build/:route', reports.build);
   app.get('/report/serve/:target', reports.serve);
 
-  app.post('/purchase', createPurchase.execute);
   // app.post('/sale/', createSale.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
@@ -195,6 +195,7 @@ exports.configure = function (app) {
 
   app.get('/reports/:route/', legacyReports.buildReport);
 
+  /* load a user's tree */
   app.get('/tree', tree.generate);
 
   // snis controller
@@ -238,7 +239,7 @@ exports.configure = function (app) {
 
   // Employee management
   app.get('/employee_list/', employees.list);
-  app.get('/hollyday_list/:pp/:employee_id', employees.listHolidays);
+  app.get('/holiday_list/:pp/:employee_id', employees.listHolidays);
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
 
@@ -302,32 +303,31 @@ exports.configure = function (app) {
   app.get('/inventory/donations', inventory.getInventoryDonations);
   app.get('/inventory/:uuid/donations', inventory.getInventoryDonationsById);
 
-  /* Depot Management */
+  /* Depot routes */
+  app.get('/depots', depots.list);
+  app.get('/depots/:uuid', depots.detail);
+  app.put('/depots/:uuid', depots.update);
+  app.post('/depots', depots.create);
 
-  app.get('/depots', depot.getDepots);
-  app.get('/depots/:uuid', depot.getDepotsById);
+  /* Depot distributions routes */
+  app.get('/depots/:depotId/distributions', depots.listDistributions);
+  app.get('/depots/:depotId/distributions/:uuid', depots.detailDistributions);
+  app.post('/depots/:depotId/distributions', depots.createDistributions);
 
-  app.get('/depots/:depotId/distributions', depot.getDistributions);
-  app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);
-
-  // over-loaded distributions route handles patients, services, and more
-  app.post('/depots/:depotId/distributions', depot.createDistributions);
-
-  // get the lots of a particular inventory item in the depot
-  // TODO -- should this be renamed? /stock? /lots?
-  app.get('/depots/:depotId/inventory', depot.getAvailableLots);
-  app.get('/depots/:depotId/inventory/:uuid', depot.getAvailableLotsByInventoryId);
-
-  app.get('/depots/:depotId/expired', depot.getExpiredLots);
-  app.get('/depots/:depotId/expirations', depot.getStockExpirations);
+  /**
+   * Depot inventories and lots routes
+   * get the lots of a particular inventory item in the depot
+   * @todo -- should this be renamed? /stock? /lots?
+   */
+  app.get('/depots/:depotId/inventory', depots.listAvailableLots);
+  app.get('/depots/:depotId/inventory/:uuid', depots.detailAvailableLots);
+  app.get('/depots/:depotId/expired', depots.listExpiredLots);
+  app.get('/depots/:depotId/expirations', depots.listStockExpirations);
 
   /* continuing on ... */
 
   // stock API
   app.get('/donations', donations.getRecentDonations);
-
-  // TODO - make a purchase order controller
-  app.get('/purchaseorders', purchase.getPurchaseOrders);
 
   app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
 
@@ -341,10 +341,13 @@ exports.configure = function (app) {
   // finance controller
   app.get('/finance/debtors', genericFinance.getDebtors);
   app.get('/finance/creditors', genericFinance.getCreditors);
-  app.get('/finance/currencies', genericFinance.getCurrencies);
   app.get('/finance/profitcenters', genericFinance.getProfitCenters);
   app.get('/finance/costcenters', genericFinance.getCostCenters);
   app.post('/finance/journalvoucher', genericFinance.postJournalVoucher);
+
+  // currencies API
+  app.get('/currencies', currencies.list);
+  app.get('/currencies/:id', currencies.detail);
 
   // accounts controller
   app.get('/accounts', accounts.list);
@@ -357,7 +360,9 @@ exports.configure = function (app) {
   // TODO Decide if the route should be named patient invoice
   app.get('/sales', patientInvoice.list);
   app.post('/sales', patientInvoice.create);
+  app.get('/sales/search', patientInvoice.search);
   app.get('/sales/:uuid', patientInvoice.details);
+  app.get('/sales/references/:reference', patientInvoice.reference);
 
   // Patients API
   app.get('/patients', patient.list);
@@ -378,11 +383,19 @@ exports.configure = function (app) {
   app.get('/patients/search/name/:value', patient.searchFuzzy);
   app.get('/patients/search/reference/:value', patient.searchReference);
 
-  // Debtors API
+  /** Debtors API */
+  /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
+  /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */
   app.get('/debtors/groups', debtors.listGroups);
   app.get('/debtors/groups/:uuid', debtors.groupDetails);
   app.get('/debtors/:uuid/invoices', debtors.fetchInvoices);
   app.put('/debtors/:uuid', debtors.update);
+
+  /** Debtor Groups API */
+  app.post('/debtor_groups', debtorGroups.create);
+  app.get('/debtor_groups', debtorGroups.list);
+  app.get('/debtor_groups/:uuid', debtorGroups.detail);
+  app.get('/debtor_groups/:uuid/invoices', debtorGroups.getInvoices);
 
   // search stuff
   // TODO merge with patients API
@@ -451,20 +464,27 @@ exports.configure = function (app) {
   app.get('/cash/transfers/:id', transfers.detail);
   app.post('/cash/transfers', transfers.create);
 
+  /**
+  * conventions
+  * NOTE: The `/cash/conventions` API endpoint must be above the `/cash` API endpoint
+  */
+  app.post('/cash/conventions', conventions.create);
+
   /** cash (aux/primary) */
   app.get('/cash', cash.list);
-  app.get('/cash/:uuid', cash.getCashDetails);
+  app.get('/cash/:uuid', cash.detail);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
   app.delete('/cash/:uuid', cash.debitNote);
+  app.get('/cash/references/:reference', cash.reference);
 
   /** @todo - classify these */
   app.get('/cashflow/report/', cashflow.getReport);
-  //app.get('/stock/entries?', depot.getStockEntry);
+  //app.get('/stock/entries?', depots.getStockEntry);
 
   // Enterprises api
   app.get('/enterprises', enterprises.list);
-  app.get('/enterprises/:id', enterprises.single);
+  app.get('/enterprises/:id', enterprises.detail);
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
 
@@ -473,6 +493,7 @@ exports.configure = function (app) {
   /** employees */
   app.get('/employees', employees.list);
   app.get('/employees/:id', employees.detail);
+  app.get('/employees/:key/:value', employees.search);
   app.put('/employees/:id', employees.update);
   app.post('/employees', employees.create);
 
@@ -490,4 +511,23 @@ exports.configure = function (app) {
   app.post('/discounts', discounts.create);
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
+
+  /** voucher api endpoint */
+  app.get('/vouchers', vouchers.list);
+  app.get('/vouchers/:uuid', vouchers.detail);
+  app.post('/vouchers', vouchers.create);
+
+  /** Suppliers api */
+  app.get('/suppliers/search', suppliers.search);
+  app.get('/suppliers', suppliers.list);
+  app.get('/suppliers/:uuid', suppliers.detail);
+  app.post('/suppliers', suppliers.create);
+  app.put('/suppliers/:uuid', suppliers.update);
+
+  /** purchase */
+  app.post('/purchase', purchase.create);
+  app.get('/purchase', purchase.list);
+  app.get('/purchase/:uuid', purchase.detail);
+  app.put('/purchase/:uuid', purchase.update);
+
 };

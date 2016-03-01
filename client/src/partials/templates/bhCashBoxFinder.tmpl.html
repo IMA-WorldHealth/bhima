@@ -1,0 +1,39 @@
+<div ng-switch="$ctrl.session.state">
+  <div ng-switch-when="finding" class="input-group">
+
+    <div class="input-group-btn" uib-dropdown>
+      <button class="btn btn-default" uib-dropdown-toggle data-cash-box-finder>
+        {{$ctrl.selectedType.label | translate}} <span class="caret"></span>
+      </button>
+      <ul uib-dropdown-menu>
+        <li ng-repeat="type in $ctrl.types">
+          <a href="" ng-click="$ctrl.setType(type)" data-cash-box-finder-option="{{ type.label }}">
+            {{type.label | translate}}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <input 
+      bh-cash-box-finder      
+      name="cashBoxFinderValue"
+      ng-model="$ctrl.value"    
+      type="text"
+      class="form-control"
+      uib-typeahead="cashBox as cashBox.text for cashBox in $ctrl.search($viewValue)"
+      typeahead-template-url="/partials/templates/cashBoxList.tmp.html"
+      typeahead-on-select="$ctrl.selectCashBox($item)"
+      placeHolder="{{ 'SELECT.CASH' | translate }}"
+      required>    
+  </div>
+
+  <div ng-switch-when="found" class="alert alert-success">
+    <span class="text-info">
+      <i class="glyphicon glyphicon-ok"></i> 
+      {{$ctrl.selectedCash.text + '  ' + $ctrl.selectedCash.symbol}}
+    </span> 
+    <div class="pull-right">
+        <a href="" class="alert-link" ng-click="$ctrl.load()"><i class="glyphicon glyphicon-repeat"></i></a>
+    </div>           
+  </div>
+</div>

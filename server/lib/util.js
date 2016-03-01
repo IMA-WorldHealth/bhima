@@ -1,47 +1,52 @@
-// Module: lib/util.js
+/**
+* @module lib/util
+* @description Ths modoule contains some usefull utilities functions
+* @required util
+*/
 
-// This modules adds utilities available throughout the
-// server.
+/** javascript strict mode */
+'use strict';
 
-module.exports = {
+var util = require('util');
 
-  isInt : function (i) { return Math.floor(i) === Number(i); },
+/** The query string conditions builder */
+module.exports.queryCondition = queryCondition;
 
-  // this also works for hexadecimal ('0x12')
-  isNumber: function (n) { return !Number.isNaN(Number(n)); },
+/** The toMysqlDate function */
+module.exports.toMysqlDate = util.deprecate(toMysqlDate, 'util.toMysqlDate() is deprecated and will be removed soon. Please use db.js\'s native date parsing.');
 
-  isArray: function (arr) { return Object.prototype.toString.call(arr) === '[object Array]'; },
+/**
+* @function queryCondition
+* @description build query string conditions
+* @param {string} query The sql query
+* @param {object} requestQuery The req.query object
+* @return {object} The object which contains the query and conditions
+*/
+function queryCondition(query, requestQuery) {
+  var criteria, conditions = [];
 
-  isString: function (str) { return typeof str === 'string'; },
+  criteria = Object.keys(requestQuery).map(function (item) {
+    conditions = conditions.concat(item, requestQuery[item]);
+    return '?? = ?';
+  }).join(' AND ');
 
-  isObject: function (obj) { return typeof obj === 'object'; },
+  query += (Object.keys(requestQuery).length > 0) ? 'WHERE ' + criteria : '';
+  return { query : query, conditions : conditions };
+}
 
-  //convertToMysqlDate: function convertToMysqlDate(dateString){ return toMySqlDate(dateString); }
+/** @deprecated toMysqlDate - Please use db.js's native date parsing */
+function toMysqlDate (dateString) {
+  // This style of convert to MySQL date avoids changing
+  // the prototype of the global Date object
+  if (!dateString) { return new Date().toISOString().slice(0, 10); }
 
-  toMysqlDate : function (dateString) {
-    // This style of convert to MySQL date avoids changing
-    // the prototype of the global Date object
-    if (!dateString) { return new Date().toISOString().slice(0, 10); }
+  var date = new Date(dateString),
+    year = String(date.getFullYear()),
+    month = String(date.getMonth() + 1),
+    day = String(date.getDate());
 
-    var date = new Date(dateString),
-      year = String(date.getFullYear()),
-      month = String(date.getMonth() + 1),
-      day = String(date.getDate());
+  month = month.length < 2 ? '0' + month : month;
+  day = day.length < 2 ? '0' + day : day;
 
-    month = month.length < 2 ? '0' + month : month;
-    day = day.length < 2 ? '0' + day : day;
-
-    return [year, month, day].join('-');
-  },
-
-  isPositive : function (number) { return this.isNumber(number) && Number(number) >= 0; },
-
-  isNegative : function (number) { return this.isNumber(number) && !this.isPositive(number); },
-
-  isDefined : function (a) { return a !== undefined; },
-
-  exists : function (a) { return this.isDefined(a) && !this.isNull(a); },
-
-  toDistinctValues : function(a) { return a.reduce(function(p, c) { if (p.indexOf(c) < 0) { p.push(c); } return p; }, []); }
-
-};
+  return [year, month, day].join('-');
+}

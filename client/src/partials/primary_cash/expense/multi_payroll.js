@@ -28,8 +28,12 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       tables : {
         'exchange_rate' : {
           columns : ['id', 'enterprise_id', 'currency_id', 'date', 'rate']
-        }
+        },
+        'enterprise'  : {
+          columns : ['id', 'currency_id::enterprise_currency_id']
+        }  
       },
+      join : ['exchange_rate.enterprise_id=enterprise.id'],
       where : ['exchange_rate.date=' + util.sqlDate(new Date())]
     }
   };
@@ -125,12 +129,12 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       .finally(endLoading);
     }
 
-    function initCurrency(enterprise_id) {
+    function initCurrency(enterprise_currency_id) {
       if (!session.currency) {
         session.configured = false;
         session.complete = false;
       }
-      session.loading_currency_id = (session.currency) ? session.currency.id : enterprise_id;
+      session.loading_currency_id = (session.currency) ? session.currency.id : enterprise_currency_id;
       session.selectedCurrency = (session.currency) ? session.currency : null;
     }
 
@@ -213,7 +217,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
 
     getHollyDayCount(emp)
     .then(function (hld) {
-      var hl = (hld)? hld.nb : 0; //hl contains the number of hollydays
+      var hl = (hld)? hld.nb : 0; //hl contains the number of holidays
       self.datahl = (hld)? hld.data : null;
 
       self.coefhl = (hld)? hld.coeff : 0;
@@ -228,7 +232,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       );
       self.max_day = session.data.max_day;
       self.working_day = session.data.max_day - (hl + session.data.off_day);
-      self.hollydays = hl;
+      self.holidays = hl;
       self.offdays = session.data.off_day;
 
       self.daily_salary = self.emp.basic_salary / session.data.max_day;
@@ -487,16 +491,16 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
     var som = 0;
     var pp = session.pp;
 
-    connect.fetch('/hollyday_list/' + JSON.stringify(pp) + '/' + employee.id)
+    connect.fetch('/holiday_list/' + JSON.stringify(pp) + '/' + employee.id)
     .then(function (res) {
-      var hollydays = res;
-      if (hollydays.length) {
+      var holidays = res;
+      if (holidays.length) {
         var pp_confs = session.model.paiement_period_conf.data,
           soms = [],
           configs = [],
           dataHollydays = [];
 
-        hollydays.forEach(function (h) {
+        holidays.forEach(function (h) {
           var nb = 0, nbOf = 0;
 
           function getValue (ppc) {
@@ -579,7 +583,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
     var rubrics = session.model.rubric_config.data, housing = 0;
     rubrics.forEach(function (rub) {
       var dataRubric = (rub.is_percent) ?
-        ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;
+        ((row.daily_salary * (row.working_day + row.holidays + row.offdays)) * rub.value) / 100 : rub.value;
       row[rub.abbr] = dataRubric;
     });
   }
@@ -628,7 +632,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
         return (packagePay.cc_records.length > 0) ? connect.post('cotisation_paiement', packagePay.cc_records) : $q.when();
       })
       .then(function () {
-        return (packagePay.hollydaysData.length > 0) ? connect.post('hollyday_paiement', packagePay.hollydaysData) : $q.when();
+        return (packagePay.holidaysData.length > 0) ? connect.post('holiday_paiement', packagePay.holidaysData) : $q.when();
       })
       .then(function () {
         return $http.post('/posting_promesse_payment/', params);
@@ -651,7 +655,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       var rc_records = [];
       var tc_records = [];
       var cc_records = [];
-      var hollydaysData = [];
+      var holidaysData = [];
 
       var somRub = 0, SomTax = 0, somCot = 0, somPrime = 0;
 
@@ -749,11 +753,11 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       });
 
       if (elmt.datahl) {
-        hollydaysData =  elmt.datahl.map(function (item) {
+        holidaysData =  elmt.datahl.map(function (item) {
           return {
-            hollyday_id : item.id_hdays,
-            hollyday_nbdays : item.nbdays,
-            hollyday_percentage : item.percentage,
+            holiday_id : item.id_hdays,
+            holiday_nbdays : item.nbdays,
+            holiday_percentage : item.percentage,
             paiement_uuid : paiement.uuid
           };
         });
@@ -764,7 +768,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
         rc_records : rc_records,
         tc_records : tc_records,
         cc_records : cc_records,
-        hollydaysData : hollydaysData
+        holidaysData : holidaysData
       };
 
       return payEmployee(packagePay);
@@ -786,7 +790,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       row.working_day = 0;
     }
 
-    var totaldays = row.working_day + row.hollydays + row.offdays;
+    var totaldays = row.working_day + row.holidays + row.offdays;
 
 
     var taxes, rubrics, cotisations;

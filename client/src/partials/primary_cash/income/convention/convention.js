@@ -43,8 +43,12 @@ function PrimaryCashConventionController ($q, $location, $routeParams, validate,
       tables : {
         'exchange_rate' : {
           columns : ['id', 'enterprise_id', 'currency_id', 'date', 'rate']
-        }
+        },
+        'enterprise'  : {
+          columns : ['id', 'currency_id::enterprise_currency_id']
+        }  
       },
+      join : ['exchange_rate.enterprise_id=enterprise.id'],
       where : ['exchange_rate.date='+util.sqlDate(new Date())]
     }
   };

@@ -1,7 +1,7 @@
 {
   "name": "bhima",
-  "version": "0.1.0",
-  "homepage": "https://github.com/IMA-WorldHealth/bhima",
+  "version": "0.2.0",
+  "homepage": "https://github.com/IMA-WorldHealth/bhima-2.X",
   "description": "A hospital information system for developing countries.",
   "keywords": [
     "HIS"
@@ -12,30 +12,30 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests",
     "src"
   ],
   "dependencies": {
-    "angular": "~1.4.5",
-    "angular-bootstrap": "~0.14.3",
-    "angular-chart.js": "~0.8.1",
-    "angular-dynamic-locale": "~0.1.27",
+    "angular": "^1.5.0",
+    "angular-bootstrap": "1.1.1",
+    "angular-chart.js": "~0.8.8",
     "angular-localforage": "~1.2.3",
-    "angular-route": "~1.4.5",
-    "angular-sanitize": "~1.4.5",
-    "angular-translate": "~2.7.2",
-    "angular-translate-loader-static-files": "~2.7.2",
-    "angular-translate-loader-url": "~2.7.2",
+    "angular-route": "^1.5.0",
+    "angular-sanitize": "^1.5.0",
+    "angular-translate": "~2.9.0",
+    "angular-translate-loader-static-files": "~2.9.0",
+    "angular-translate-loader-url": "~2.9.0",
     "Chart.js": "~1.0.2",
     "jquery": "~2.1.4",
-    "jquery-ui.min": "https://code.jquery.com/ui/1.11.4/jquery-ui.min.js",
-    "ng-file-upload": "~7.3.8",
-    "ng-file-upload-shim": "~7.3.8",
-    "slickgrid": "~2.1.0",
-    "angular-mocks": "~1.4.7",
-    "angular-ui-grid": "~3.0.7",
+    "ng-file-upload": "~11.2.3",
+    "ng-file-upload-shim": "~11.2.3",
+    "angular-ui-grid": "3.1.0",
     "bootstrap": "~3.3.6",
     "angular-moment": "~0.10.3",
-    "moment": "~2.10.6"
+    "moment": "~2.10.6",
+    "angular-dynamic-locale": "~0.1.29",
+    "angular-messages": "^1.5.0"
+  },
+  "resolutions": {
+    "angular": "^1.5.0"
   }
 }

@@ -53,7 +53,6 @@ describe('(/prices ) The price list API', function () {
     }]
   };
 
-  var errorKeys = ['code', 'httpStatus', 'reason'];
   var responseKeys = [
     'uuid', 'label', 'description', 'created_at', 'updated_at', 'items'
   ];
@@ -72,7 +71,7 @@ describe('(/prices ) The price list API', function () {
     return agent.get('/prices/unknownId')
       .then(function (res) {
         expect(res).to.have.status(404);
-        expect(res.body).to.contain.all.keys(errorKeys);
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
   });
@@ -187,7 +186,7 @@ describe('(/prices ) The price list API', function () {
       .then(function (res) {
         expect(res).to.have.status(404);
         expect(res).to.be.json;
-        expect(res.body).to.contain.all.keys(errorKeys);
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
   });
@@ -201,7 +200,7 @@ describe('(/prices ) The price list API', function () {
       .then(function (res) {
         expect(res).to.have.status(404);
         expect(res).to.be.json;
-        expect(res.body).to.contain.all.keys(errorKeys);
+        expect(res.body).to.contain.all.keys(helpers.errorKeys);
       })
       .catch(helpers.handler);
   });

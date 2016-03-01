@@ -22,27 +22,27 @@ angular.module('bhima.controllers')
       success(function(data) {
         getPPConf();
         function getHollyDayCount(paiement_period_confs) {
-          dependencies.get_hollydayCount = {
+          dependencies.get_holidayCount = {
             query : {
               tables : {
-                'hollyday_paiement' : {
-                  columns : ['hollyday_id', 'hollyday_nbdays', 'hollyday_percentage', 'paiement_uuid']
+                'holiday_paiement' : {
+                  columns : ['holiday_id', 'holiday_nbdays', 'holiday_percentage', 'paiement_uuid']
                 },
-                'hollyday' : {
+                'holiday' : {
                   columns : ['id', 'label']
                 }
               },
               join : [
-                'hollyday.id=hollyday_paiement.hollyday_id'
+                'holiday.id=holiday_paiement.holiday_id'
               ],
               where : [
-                'hollyday_paiement.paiement_uuid=' + invoiceId
+                'holiday_paiement.paiement_uuid=' + invoiceId
               ]
             }
           };
-          validate.process(dependencies, ['get_hollydayCount'])
+          validate.process(dependencies, ['get_holidayCount'])
           .then(function (model) {
-            if(data[0].enterprise_id !== data[0].currency_id){
+            if(data[0].enterprise_currency_id !== data[0].currency_id){
               data[0].basic_salary *= data[0].rate;
             }
 
@@ -53,13 +53,13 @@ angular.module('bhima.controllers')
             $scope.TotalPaid += $scope.amont_payable;
             $scope.TotalNet += $scope.amont_payable;
 
-            var dataHollydays = $scope.dataHollydays = model.get_hollydayCount.data,
+            var dataHollydays = $scope.dataHollydays = model.get_holidayCount.data,
               cotisationValue = model.get_cotisation.data,
               dailyRate = data[0].basic_salary / $scope.max_day;
 
             dataHollydays.forEach(function (item) {
-            item.dailyHollyd = dailyRate * (item.hollyday_percentage /100);
-            item.somHolly = item.dailyHollyd * item.hollyday_nbdays;
+            item.dailyHollyd = dailyRate * (item.holiday_percentage /100);
+            item.somHolly = item.dailyHollyd * item.holiday_nbdays;
 
             $scope.TotalPaid += item.somHolly;
             $scope.TotalNet += item.somHolly;

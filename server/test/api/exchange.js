@@ -1,3 +1,4 @@
+/* jshint expr: true */
 /* global describe, it, beforeEach */
 
 var chai = require('chai');
@@ -16,13 +17,13 @@ describe('The /exchange API endpoint', function () {
 
   // constants
   var RATE = {
-    enterprise_id   :2,    // USD in test database
+    enterprise_id   :1,    // Enterprise ID
     currency_id     :1,    // FC in test database
     rate            :930,
     date            :new Date('2015-10-10')
   };
 
-  var RATE_KEY = ['id', 'enterprise_id', 'currency_id', 'rate', 'date'];
+  var RATE_KEY = ['id', 'enterprise_id', 'currency_id', 'enterprise_currency_id', 'rate', 'date'];
 
   // login before each request
   beforeEach(helpers.login(agent));
@@ -40,8 +41,10 @@ describe('The /exchange API endpoint', function () {
     return agent.post('/exchange')
       .send({ rate : RATE })
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res.body).to.have.property('id');
+
+        // make sure the API conforms to app standards
+        helpers.api.created(res);
+
         RATE.id = res.body.id;
         return agent.get('/exchange');
       })
@@ -70,8 +73,9 @@ describe('The /exchange API endpoint', function () {
     return agent.put('/exchange/inknowexchangerate')
       .send({ rate : 1000000 })
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body.code).to.be.equal('ERR_NOT_FOUND');
+
+        // make sure the API conforms to app standards
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -80,17 +84,18 @@ describe('The /exchange API endpoint', function () {
   it('DELETE /exchange/:id will send back a 404 if the exchage rate does not exist', function () {
     return agent.delete('/exchange/inknowexchangerate')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body.code).to.be.equal('ERR_NOT_FOUND');
+
+        // make sure the API conforms to app standards
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /EXCHANGE/:id should delete an exchange rate ', function () {
+  it('DELETE /exchange/:id should delete an exchange rate ', function () {
     return agent.delete('/exchange/' + RATE.id)
       .then(function (res) {
-        expect(res).to.have.status(204);
+        helpers.api.deleted(res);
       })
       .catch(helpers.handler);
-  }); 
+  });
 });

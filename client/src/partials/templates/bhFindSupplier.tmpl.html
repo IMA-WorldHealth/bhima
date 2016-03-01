@@ -1,0 +1,74 @@
+<div class="form-group has-feedback"
+  ng-form="FindSupplierForm"
+  ng-class="{
+    'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
+    'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
+    }"
+  novalidate>
+
+  <!-- inline input zone -->
+  <div class="input-group" ng-if="$ctrl.showSearchView">
+
+    <span class="input-group-addon">
+      <span class="glyphicon glyphicon-shopping-cart"></span>
+    </span>
+
+    <!-- search by Name  -->
+    <input ng-model="$ctrl.nameInput"
+      ng-keyup="readInput($event)"
+      name="nameInput"
+      type="text"
+      class="form-control"
+      placeholder="{{ 'FIND.SEARCH_NAME' | translate }}..."
+      uib-typeahead="supplier as supplier.name for supplier in $ctrl.searchByName($viewValue)"
+      typeahead-no-results="$ctrl.noSuppliers"
+      typeahead-loading="$ctrl.loadingSuppliers"
+      typeahead-template-url="/partials/templates/supplierListe.tmpl.html"
+      typeahead-on-select="$ctrl.selectSupplier($item)"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      ng-required="$ctrl.required">
+  </div>
+  <!-- /inline input zone -->
+
+  <!-- inline notification -->
+  <!-- HACK: The Notification position must correspond to search button width  -->
+  <div ng-if="$ctrl.showSearchView" class="pull-right" style="margin-right:8em;">
+    <span class="text-warning text-danger" ng-if="($ctrl.noSuppliers && $ctrl.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.SUPPLIER_NOT_FOUND" | translate }}</span>
+    <span class="text-info" ng-if="($ctrl.loadingSuppliers && $ctrl.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.LOADING" | translate }}</span>
+  </div>
+  <!-- /inline notification -->
+
+  <!-- notification zone for result  -->
+
+  <div ng-if="!$ctrl.showSearchView">
+
+    <div class="input-group">
+
+      <span class="input-group-addon">
+         <span class="glyphicon glyphicon-shopping-cart"></span>
+      </span>
+
+      <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="{{ $ctrl.supplier.name }}">
+      <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FIND.SUPPLIER_NOT_FOUND' | translate }}">
+
+      <div class="input-group-btn">
+        <a
+          ng-if="$ctrl.loadStatus=='loaded'"
+          class="btn btn-default"
+          uib-popover-template="'partials/templates/popover/supplierinfo.tmpl.html'"
+          popover-title="Supplier Record"
+          popover-placement="bottom"
+          popover-trigger="mouseenter"
+          popover-append-to-body="true">
+         <span class="glyphicon glyphicon-info-sign"></span>
+        </a>
+
+        <a class="btn btn-default" ng-click="$ctrl.reload()">
+         <span class="glyphicon glyphicon-refresh"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

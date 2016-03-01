@@ -75,12 +75,26 @@ var modal = {
   cancel : function cancel() { return $('[uib-modal-window] [data-method="cancel"]').click(); }
 };
 
-// convience methods to see if the form contains feedback text.  Returns locators.
+// convenience methods to see if the form contains feedback text.  Returns locators.
 var feedback = {
   success : function success() { return by.css('[data-role="feedback"] > .text-success'); },
   error : function error() { return by.css('[data-role="feedback"] > .text-danger'); },
   warning : function warning() { return by.css('[data-role="feedback"] > .text-warning'); },
   info : function info() { return by.css('[data-role="feedback"] > .text-info'); }
+};
+
+// convenience methods to check form element validation states
+var validation = {
+
+  // an error state is present
+  error : function error(model) {
+    expect(element(by.model(model)).getAttribute('class')).to.eventually.contain('ng-invalid');
+  },
+
+  // no error state present
+  ok : function success(model) {
+    expect(element(by.model(model)).getAttribute('class')).to.eventually.contain('ng-valid');
+  }
 };
 
 // expose routes to the view
@@ -89,6 +103,11 @@ module.exports = {
   // get an <input> element by its ng-model
   input : function input(model, value) {
     return element(by.model(model)).sendKeys('').sendKeys(value);
+  },
+
+  // clear an input's value.  Only works for <input> and <textarea>
+  clear : function input(model) {
+    return element(by.model(model)).clear();
   },
 
   // get a <select> element by its ng-model.
@@ -114,6 +133,10 @@ module.exports = {
   // to detect feedback, the parent element must have the
   // [data-role="feedback"] attribute assigned to it.
   feedback : feedback,
+
+  // bind validation states.  Each method takes in a model's string and asserts
+  // the validation state.
+  validation : validation,
 
   // bindings for modal overlay forms
   modal : modal

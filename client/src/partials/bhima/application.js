@@ -54,10 +54,10 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
 
     exchangeRate = {
       'tables' : {
-        'exchange_rate' : {
-          'columns' : ['id', 'enterprise_id', 'currency_id', 'rate', 'date']
-        }
-      }
+        'exchange_rate' : {'columns' : ['id', 'enterprise_id', 'currency_id', 'rate', 'date'] },
+        'enterprise'  : {'columns' : ['id', 'currency_id::enterprise_currency_id']}
+      },
+      join : ['exchange_rate.enterprise_id=enterprise.id']
     };
 
     fiscalYear = {

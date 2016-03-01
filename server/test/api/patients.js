@@ -292,7 +292,7 @@ describe('The /patients API', function () {
       .catch(helpers.handler);
   });
 
-  it('Simultaneous patient registration requests respect reference lock', function () {
+  it.skip('Simultaneous patient registration requests respect reference lock', function () {
 
     // Custom timeout
     this.timeout(30000);

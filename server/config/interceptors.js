@@ -16,6 +16,7 @@
  */
 
 var errors = require('./codes');
+var winston = require('winston');
 
 /**
  * This function identifies whether a parameter is a native error of JS or not.
@@ -46,8 +47,14 @@ exports.apiErrorHandler = function apiErrorHandler(error, req, res, next) {
   // check to see if this is an API error
   if (error && error.httpStatus) {
 
+    winston.debug('[ERROR]', error);
+
+    // remove the status from the error;
+    var status = error.httpStatus;
+    delete error.httpStatus;
+
     // return to the client as a JSON object error.
-    res.status(error.httpStatus).json(error);
+    res.status(status).json(error);
 
   // if not matching an API error, pass along to the next interceptor
   } else {
@@ -65,16 +72,20 @@ exports.databaseErrorHandler = function databaseErrorHandler(error, req, res, ne
   // skip native errors - caught in catchAllErrorHandler
   if (isNativeError(error)) { return next(error); }
 
-
   // check to see if this is a database error
   if (error && error.sqlState) {
+
+    winston.debug('[ERROR]', error);
 
     // retrieve the formatted error from
     try {
       var appError = new errors[error.code]();
 
+      var status = appError.httpStatus;
+      delete appError.httpStatus;
+
       // send the formatted error back to the client.
-      res.status(appError.httpStatus).json(appError);
+      res.status(status).json(appError);
 
     // if no matching error found, pass on to next();
     } catch (e)  {
@@ -96,10 +107,7 @@ exports.databaseErrorHandler = function databaseErrorHandler(error, req, res, ne
 exports.catchAllErrorHandler = function catchAllErrorHandler(error, req, res, next) {
   'use strict';
 
-  // log errors unless explicitly turned of in the config
-  if (process.env.LOG_LEVEL !== 'none') {
-    console.error('[ERROR]', error);
-  }
+  winston.error('[ERROR]', error);
 
   // return a 500 error so the client
   res.status(500).json(error);

@@ -137,8 +137,11 @@ exports.postJournalVoucher = function (req, res, next) {
     // If the currency is not the enterprise currency we need to
     // exchange the debits and credits.  Otherwise, do nothing.
     sql =
-      'SELECT enterprise_id, currency_id, rate ' +
-      'FROM exchange_rate WHERE DATE(date) = DATE(?);';
+      'SELECT exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate ' +
+      'enterprise.currency_id AS \'enterprise_currency_id\' ' +
+      'FROM exchange_rate ' +
+      'JOIN enterprise_id ON enterprise.id = exchange_rate.enterprise_id ' +
+      'WHERE DATE(date) = DATE(?);';
 
     return db.exec(sql, [date]);
   })
@@ -261,24 +264,6 @@ exports.getCreditors = function (req, res, next) {
     'SELECT c.uuid, c.text, cg.name, c.group_uuid, a.id AS account_id, a.account_number ' +
     'FROM creditor AS c JOIN creditor_group AS cg JOIN account AS a ' +
       'ON c.group_uuid = cg.uuid AND cg.account_id = a.id;';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(function (error) {
-    next(error);
-  })
-  .done();
-};
-
-// GET /finance/currencies
-exports.getCurrencies = function (req, res, next) {
-  'use strict';
-
-  var sql =
-    'SELECT c.id, c.name, c.note, c.format_key, c.symbol ' +
-    'FROM currency AS c;';
 
   db.exec(sql)
   .then(function (rows) {

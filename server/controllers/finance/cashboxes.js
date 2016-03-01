@@ -32,6 +32,16 @@ exports.list = function list(req, res, next) {
   sql =
     'SELECT id, text FROM cash_box ';
 
+  if(req.query.full === '1') {
+    sql = 'SELECT cash_box.id, text, account_id, ' + 
+      'gain_exchange_account_id, loss_exchange_account_id, virement_account_id, symbol ' +
+      'FROM cash_box JOIN cash_box_account_currency ON ' +
+      'cash_box.id = cash_box_account_currency.cash_box_id JOIN currency ON ' + 
+      'currency.id = cash_box_account_currency.currency_id ';
+  }
+
+  delete req.query.full;
+
   // loop through conditions if they exist, escaping them and adding them
   // to the query string.
   if (providedConditions.length > 0) {

@@ -1,0 +1,11 @@
+<ul class="list-unstyled">
+  <li><i class="glyphicon glyphicon-th"></i> {{ $ctrl.selected.name }}</li>
+  <li>
+    <i class="glyphicon" ng-class="{'glyphicon-ok': $ctrl.selected.is_convention, 'glyphicon-remove': !$ctrl.selected.is_convention }"></i>
+    {{ "COLUMNS.CONVENTION" | translate }}
+  </li>
+  <li>
+    <i class="glyphicon" ng-class="{'glyphicon-ok': !$ctrl.selected.locked, 'glyphicon-remove': $ctrl.selected.locked }"></i> 
+    {{ "UTIL.OPEN" | translate }}
+  </li>
+</ul>

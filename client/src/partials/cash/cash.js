@@ -2,248 +2,255 @@ angular.module('bhima.controllers')
 .controller('CashController', CashController);
 
 CashController.$inject = [
-  '$scope', '$location', '$modal', '$q', 'connect', 'appcache',
-  'appstate', 'messenger', 'validate', 'exchange', 'util', 'precision',
-  'calc', 'uuid', 'SessionService'
+  'CashService', 'CashboxService', 'appcache', 'CurrencyService', '$uibModal',
+  '$routeParams', '$location', 'Patients', 'ExchangeRateService', 'SessionService'
 ];
 
-function CashController($scope, $location, $modal, $q, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid, Session) {
-  var vm = this;
-  var cache = new Appcache('cash');
-  var session;
+/**
+ * The Cash Payments Controller
+ *
+ * This controller is responsible for binding the cash payments controller to
+ * its view.  Cash payments can be made against future invocies (cautions) or
+ * against previous invoices (sales).  The cash payments module provides
+ * functionality to pay both in multiple currencies.
+ *
+ * @todo documentation improvements
+ * @todo should the $location routing and/or appcache be in a service?
+ * @todo move invoices modal into a service
+ * @todo move receipt modal into a service
+ *
+ * @module bhima/controllers/CashController
+ */
+function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routeParams, $location, Patients, Exchange, Session) {
 
-  // bind data
-  vm.user = Session.user;
+  /** @const controller view-model alias */
+  var vm = this;
+
+  /**
+  * @const persistent cashbox store
+  * This should be the same as in CashboxSelect Controller
+  */
+  var cache = new AppCache('CashPayments');
+
+  /** @const id of the currently select cashbox */
+  var cashboxId = $routeParams.id;
+
+  /** default to dots for currency symbol */
+  vm.currencyLabel = '...';
 
   // bind methods
-  vm.loadInvoices = loadInvoices;
-  vm.setCashbox = setCashbox;
+  vm.currencies = Currencies;
+  vm.openInvoicesModal = openInvoicesModal;
+  vm.changeCashbox = changeCashbox;
+  vm.usePatient = usePatient;
+  vm.hasFutureDate = hasFutureDate;
+  vm.digestExchangeRate = digestExchangeRate;
+  vm.toggleDateInput = toggleDateInput;
+  vm.toggleVoucherType = toggleVoucherType;
+  vm.submit = submit;
 
-  /* ------------------------------------------------------------------------ */
+  // temporary error handler until an application-wide method is described
+  function handler(error) {
 
-  function loadCashbox() {
-    cache.fetch('cashbox')
+    // if we have received 404 for while reading the cashbox, reroute
+    // to the cashboxes page.
+    if (error.status === 404) {
+      $location.url('/cash');
+
+    // for any error that has a translatable error code, bind to view
+    } else if (error.data && error.data.code) {
+      vm.HttpError = error.data.code;
+
+    // unclear what action to take - throw the error.
+    } else {
+      throw error;
+    }
+  }
+
+  /**
+   * warns if the date is in the future
+   * @todo - refactor into an angular.component.
+   * @see Issue #58.
+   */
+  function hasFutureDate() {
+    return (vm.payment.date > vm.timestamp);
+  }
+
+  /**
+   * switches the date flag to allow users to edit the date.
+   * @todo refactor into an angular.component
+   * @see Issue #58.
+   */
+  function toggleDateInput() {
+    vm.lockDateInput = !vm.lockDateInput;
+  }
+
+  // removes the cachebox from the local cache
+  function changeCashbox() {
+    cache.put('cashbox', undefined)
+    .then(function () {
+      $location.path('/cash');
+    })
+    .catch(handler);
+  }
+
+  /**
+   * Fired on controller start or form refresh
+   * @private
+   */
+  function startup() {
+
+    /** This is the actual payment form */
+    vm.payment = { date : new Date() };
+
+    // by default, do not let users edit the date until asked for
+    vm.lockDateInput = true;
+    vm.loadingState = false;
+
+    // timestamp to compare date values
+    vm.timestamp = new Date();
+    vm.enterprise = Session.enterprise;
+
+    // load the cashbox on startup
+    Cashboxes.read(cashboxId)
     .then(function (cashbox) {
-      if (!cashbox) { return; }
-    });
+      vm.cashbox = cashbox;
+      cache.put('cashbox', cashbox);
+    }).catch(handler);
+
+    // load currencies for later templating
+    Currencies.read();
+
+    // make sure we have exchange
+    Exchange.read();
   }
 
-  function setCashbox() {}
+  // submits the form to the server
+  function submit(invalid) {
 
-  function loadCurrency() {
-    cache.fetch('currency');
+    // remove any dangling HTTP errors from the view
+    vm.HttpError = null;
+
+    // if the form is invalid, reject it without any further processing.
+    if (invalid) { return; }
+
+    // make sure the form cannot be clicked more than once via disabling.
+    toggleLoadingState();
+
+    // add in the cashbox id
+    vm.payment.cashbox_id = cashboxId;
+
+    // submit the cash payment
+    Cash.create(vm.payment)
+    .then(function (response) {
+
+      // display the receipt in a modal
+      openReceiptModal(response.uuid);
+    })
+    .catch(handler)
+    .finally(toggleLoadingState);
   }
 
-  function setup(models) {
-    haltOnNoExchange();
+  /**
+  * clears the invoices field whenever the voucher type changes for a better UX
+  */
+  function toggleVoucherType() {
+    delete vm.payment.invoices;
   }
 
-  function haltOnNoExchange () {
-    if (exchange.hasDailyRate()) { return; }
+  // toggle loading state on off
+  function toggleLoadingState() {
+    vm.loadingState = !vm.loadingState;
+  }
 
-    var instance = $modal.open({
-      templateUrl: 'partials/exchangeRateModal/exchangeRateModal.html',
-      keyboard:    false,
+  // fired after a patient is found via the find-patient directive
+  function usePatient(patient) {
+    vm.payment.debtor_uuid = patient.debitor_uuid;
+    vm.patient = patient;
+  }
+
+  /**
+   * Cash Receipt Modal
+   */
+  function openReceiptModal(uuid) {
+
+    var instance = Modal.open({
+      templateUrl: 'partials/cash/modals/receipt.modal.html',
+      controller:  'CashReceiptModalController as CashReceiptModalCtrl',
       size:        'md',
-      controller:  'exchangeRateModal'
-    });
-
-    instance.result.then(function () {
-      $location.path('/exchange');
-    })
-    .catch(function () {
-      $scope.errorState = true;
-    });
-  }
-
-  function handleErrors(error) {
-    messenger.danger('Error:', JSON.stringify(error));
-  }
-
-
-  function loadInvoices(patient) {
-    $scope.ledger = [];
-    $scope.queue = [];
-    $scope.patient = patient;
-
-    // TODO -- why can't we just use the is_convention property?
-    if (patient.is_convention === 1) {
-      session.patient = 'is_convention';
-    } else {
-      session.patient = 'not_convention';
-    }
-
-    session.loading = true;
-
-    // TODO -- error handling?
-    connect.fetch('/ledgers/debitor/' + patient.debitor_uuid)
-    .then(function (data) {
-
-      // why doesn't this filter out zeros?
-      $scope.ledger = data.filter(function (row) {
-        return row.balance > 0;
-      });
-    })
-    .finally(function () {
-      session.loading = false;
-    });
-  }
-
-  $scope.add = function add(idx) {
-    var invoice = $scope.ledger.splice(idx, 1)[0];
-    invoice.allocated = 0;
-    $scope.queue.push(invoice);
-  };
-
-  $scope.remove = function remove(idx) {
-    $scope.ledger.push($scope.queue.splice(idx, 1)[0]);
-  };
-
-  function addTotal(n, m) {
-    return precision.round(n + m.locale);
-  }
-
-  $scope.digestTotal = function () {
-    $scope.data.raw = $scope.queue.reduce(addTotal, 0);
-    if (!$scope.cashbox) { return; }
-    var dirty = calc($scope.data.raw, $scope.currency.currency_id);
-    $scope.data.total = dirty.total;
-    $scope.data.difference = dirty.difference;
-
-    // digest overdue
-    var over  = precision.round($scope.data.payment - $scope.data.total, 3);
-    $scope.data.overdue = over > 0 ? over : 0;
-  };
-
-  $scope.digestInvoice = function () {
-    if (!$scope.queue) { return null; }
-
-    var proposed = $scope.data.payment || 0;
-
-    $scope.queue.forEach(function (invoice) {
-      if (proposed < 0) {
-        invoice.allocated = 0;
-        return null;
+      backdrop:    'static',
+      animation:   false,
+      resolve : {
+        uuid : function uuidProvider() { return uuid; },
+        patientUuid : function patientUuidProvider() { return vm.patient.uuid; }
       }
-
-      var diff = precision.round(proposed - invoice.locale);
-      invoice.allocated = diff >= 0 ? invoice.locale : proposed;
-      proposed = diff >= 0 ? diff : 0;
-
-      invoice.remaining = precision.compare(invoice.locale, invoice.allocated);
     });
+  }
 
-    var over  = $scope.data.payment - $scope.data.total;
-    $scope.data.overdue = over > 0 ? over : 0;
+  /**
+   * receive open invoices from the invoice modal
+   *
+   * @todo refactor this into a separate invoices modal component, that can
+   * be injected into any controller.
+   */
+  function openInvoicesModal() {
 
-  };
+    var instance = Modal.open({
+      templateUrl: 'partials/cash/modals/invoices.modal.html',
+      controller:  'CashInvoiceModalController as CashInvoiceModalCtrl',
+      size:        'md',
+      backdrop:    'static',
+      animation:   false,
+      resolve:     {
+        debtorId:  function debtorIdProvider() { return vm.payment.debtor_uuid; },
+        invoiceIds : function invoiceIdsProvider() {
 
-  function initPayment () {
-    var id, date, invoice, instance, defer = $q.defer();
+          // if no invoices have been initialized, pass in an empty array.
+          if (!vm.payment.invoices) { return []; }
 
-    date = util.sqlDate(new Date());
-
-    invoice = {
-      date : date,
-      document_id : id,
-      description : [$scope.project.abbr + '_CAISSEAUX', id, $scope.patient.last_name, date].join('/')
-    };
-
-    if ($scope.data.overdue) {
-      instance = $modal.open({
-        templateUrl : 'partials/cash/justify_modal.html',
-        backdrop    : 'static',
-        keyboard    : false,
-        controller  : 'CashJustifyModalController as ModalCtrl',
-        resolve : {
-          data : function () {
-            return $scope.data;
-          }
+          return vm.payment.invoices.map(function (invoice) {
+            return invoice.sale_uuid;
+          });
         }
-      });
+      }
+    });
 
-      instance.result.then(function (description) {
-        if (description) { invoice.description += ' ' + description; }
-        defer.resolve({invoice : invoice, creditAccount : !!description });
-      }, function () {
-        defer.reject();
-      });
-    } else {
-      defer.resolve({ invoice : invoice, creditAccount : false });
-    }
+    // fired when the modal closes
+    instance.result.then(function (result) {
 
-    return defer.promise;
+      // clear HTTP errors if we are taking further action.
+      vm.HttpError = null;
+
+      // bind the selected invoices
+      vm.payment.invoices = result.invoices;
+
+      // the table of invoices shown to the client is namespaced by 'slip'
+      vm.slip = {};
+      vm.slip.rawTotal = result.total;
+      digestExchangeRate();
+    });
   }
 
-  $scope.invoice = function invoice () {
-    var payment, records, creditAccount, id = uuid();
+  // exchanges the payment at the bottom of the previous invoice slip.
+  function digestExchangeRate() {
 
-    initPayment()
-    .then(function (data) {
-      // pay the cash payment
-      creditAccount = data.creditAccount;
-      var account = $scope.cashbox_accounts.get($scope.currency.currency_id);
+    // this is purely for UI considerations.  We want to update the currency
+    // input's symbol when the currency changes (prompting a
+    // digestExchangeRate()) call.
+    vm.currencyLabel = Currencies.symbol(vm.payment.currency_id);
 
-      payment = data.invoice;
-      payment.uuid = id;
-      payment.type = 'E';
-      payment.project_id = $scope.project.id;
-      payment.debit_account = account.account_id;
-      payment.credit_account = $scope.patient.account_id;
-      payment.currency_id = $scope.currency.currency_id;
-      payment.cost = precision.round($scope.data.payment);
-      payment.deb_cred_uuid = $scope.patient.debitor_uuid;
-      payment.deb_cred_type = 'D';
-      payment.cashbox_id = $scope.cashbox.id;
-      payment.reference = 1; // TODO : This is a mistake
+    // make sure we have all the required data before attempting to exchange
+    // any values
+    if (!vm.slip || !vm.payment.currency_id) { return; }
 
-      payment.user_id = $scope.user.id;
+    // bind the correct exchange rate
+    vm.slip.rate = Exchange.getCurrentRate(vm.payment.currency_id);
 
-      return connect.post('cash', [payment]);
-    })
-    .then(function () {
-      // pay each of the cash items
-      records = [];
+    // bind the correct exchanged total
+    vm.slip.total =
+      Exchange.convertFromEnterpriseCurrency(vm.payment.currency_id, vm.payment.date, vm.slip.rawTotal);
+  }
 
-      $scope.queue.forEach(function (record) {
-        if (record.allocated < 0) { return; }
-        records.push({
-          uuid           : uuid(),
-          cash_uuid      : id,
-          allocated_cost : precision.round(record.allocated),
-          invoice_uuid   : record.inv_po_id
-        });
-      });
-
-      if (creditAccount) {
-        records.push({
-          uuid : uuid(),
-          cash_uuid : id,
-          allocated_cost : precision.round($scope.data.payment - $scope.data.raw),
-          invoice_uuid : null
-        });
-      }
-
-      return connect.post('cash_item', records);
-    })
-    .then(function () {
-      return connect.fetch('/journal/cash/' + id);
-    })
-    .then(function () {
-      $location.path('/invoice/cash/' + id);
-    })
-    .catch(function (err) {
-    })
-    .finally();
-  };
-
-  // FIXME: This is suboptimal, but very readable.
-  // Everytime a cashbox changes or the ledger gains
-  // or loses items, the invoice balances are
-  // exchanged into the appropriate locale currency.
-
-  // NOTE -- $watchCollection is not appropriate here
-  // far too shallow
-  $scope.$watch('queue', $scope.digestTotal, true);
-  $scope.$watch('data.payment', $scope.digestInvoice);
+  // start up the module
+  startup();
 }

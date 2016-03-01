@@ -1,97 +1,108 @@
-'use strict';
-
+/** @todo - rename this service to PatientService */
 angular.module('bhima.services')
-  .factory('Patients', Patients);
-  
-Patients.$inject = ['$http'];
+  .service('Patients', PatientService);
 
-function Patients($http) {  
-  
-  function detail(uuid) { 
-    var path = '/patients/';
+PatientService.$inject = [ '$http', 'util' ];
 
-    return $http.get(path.concat(uuid))
-      .then(extractData);
+/**
+ * Patient Service
+ *
+ * Queries the /patients API
+ */
+function PatientService($http, util) {
+  var service = this;
+  var baseUrl = '/patients/';
+
+  service.detail = detail;
+  service.create = create;
+  service.update = update;
+  service.groups = groups;
+  service.updateGroups = updateGroups;
+  service.logVisit = logVisit;
+
+  /** uses the "search" endpoint to pass query strings to the database */
+  service.search = search;
+
+  function detail(uuid) {
+    return $http.get(baseUrl.concat(uuid))
+      .then(util.unwrapHttpResponse);
   }
 
   // TODO Service could seperate medical and financial details - depending on form build
-  function create(details) { 
-    var path = '/patients';
-
-    return $http.post(path, details)
-      .then(extractData);
+  function create(details) {
+    return $http.post(baseUrl, details)
+      .then(util.unwrapHttpResponse);
   }
 
-  function update(uuid, definition) { 
-    var path = '/patients/';
-
-    return $http.put(path.concat(uuid), definition)
-      .then(extractData);
+  function update(uuid, definition) {
+    return $http.put(baseUrl.concat(uuid), definition)
+      .then(util.unwrapHttpResponse);
   }
-  
+
   // TODO Review/ refactor
   // Optionally accepts patientUuid - if no uuid is passed this will return all patients groups
-  function groups(patientUuid) { 
-    var path = '/patients/';
+  function groups(patientUuid) {
+    var path;
 
     // If a patient ID has been specified - return only the patient groups for that patient
-    if (angular.isDefined(patientUuid)) { 
-      path = path.concat(patientUuid, '/groups');
-    } else { 
-      
+    if (angular.isDefined(patientUuid)) {
+      path = baseUrl.concat(patientUuid, '/groups');
+    } else {
+
       // No Patient ID is specified - return a list of all patient groups
-      path = path.concat('groups');
+      path = baseUrl.concat('groups');
     }
 
     return $http.get(path)
-      .then(extractData);
+      .then(util.unwrapHttpResponse);
   }
 
-  function updateGroups(uuid, subscribedGroups) { 
-    var path = '/patients/';
+  function updateGroups(uuid, subscribedGroups) {
     var options = formatGroupOptions(subscribedGroups);
+    var path = baseUrl.concat(uuid, '/groups');
 
-    path = path.concat(uuid, '/groups');
-    
-    console.log('formatted', options);
     return $http.post(path, options)
-      .then(extractData);
+      .then(util.unwrapHttpResponse);
   }
 
-  function logVisit(details) { 
-    var path = '/patients/visit';
-    
-    return $http.post(path, details)
-      .then(extractData);
+  function logVisit(details) {
+    return $http.post(baseUrl.concat('visit'), details)
+      .then(util.unwrapHttpResponse);
   }
 
-  // Utility methods 
-  function formatGroupOptions(groupFormOptions) { 
-    var groupUuids = Object.keys(groupFormOptions);
+
+  /**
+   * Uses query strings to generically search for patients.
+   * 
+   * @method search
+   *
+   * @param {object} options - a JSON of options to be parsed by Angular's
+   * paramSerializer
+   */
+  function search(options) {
+    var target = baseUrl.concat('search');
+
+    return $http.get(target, { params : options })
+      .then(util.unwrapHttpResponse);
+  }
   
-    var formatted = groupUuids.filter(function (groupUuid) { 
-      
+  /* ----------------------------------------------------------------- */
+  /** Utility Methods */
+  /* ----------------------------------------------------------------- */
+
+  function formatGroupOptions(groupFormOptions) {
+    var groupUuids = Object.keys(groupFormOptions);
+
+    var formatted = groupUuids.filter(function (groupUuid) {
+
       // Filter out UUIDs without a true subscription
       return groupFormOptions[groupUuid];
     });
 
-    return { 
+    return {
       assignments : formatted
     };
   }
 
-  return {
-    detail : detail,
-    create : create,
-    update : update,
-    groups : groups,
-    updateGroups : updateGroups,
-    logVisit : logVisit
-  };
-}
-
-// Utility method - pass only data object to controller
-// TODO Use shared utility service
-function extractData(result) { 
-  return result.data;
+  return service;
 }

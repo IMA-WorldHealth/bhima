@@ -1,21 +1,21 @@
 /**
 * Enterprises Controller
 *
-* This controller is responsible for creating and updating Enterprises.  
+* This controller is responsible for creating and updating Enterprises.
   Each Enterprise must necessarily have a name, an abbreviation, a geographical location as well as a currency
 
-*  And it is not possible to remove an Enterprise 
+*  And it is not possible to remove an Enterprise
 */
 var db = require('../../lib/db');
 
-// GET / Enterprises 
+// GET / Enterprises
 exports.list = function list(req, res, next) {
   'use strict';
   var sql;
 
   sql = 'SELECT id, name, abbr FROM enterprise';
 
-  if(req.query.detailed === '1'){
+  if (req.query.detailed === '1'){
     sql =
       'SELECT id, name, abbr, email, po_box, phone, location_id, logo, currency_id FROM enterprise';
   }
@@ -29,8 +29,8 @@ exports.list = function list(req, res, next) {
 };
 
 
-// GET / Enterprises : id  
-exports.single = function list(req, res, next) {
+// GET / Enterprises : id
+exports.detail = function detail(req, res, next) {
   'use strict';
   var sql;
   var enterpriseId = req.params.id;
@@ -38,10 +38,10 @@ exports.single = function list(req, res, next) {
   sql =
     'SELECT id, name, abbr, email, po_box, phone, location_id, logo, currency_id ' +
     'FROM enterprise WHERE id = ?';
-  
+
   db.exec(sql, [enterpriseId])
   .then(function (rows) {
-    res.status(200).json(rows);
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
@@ -61,7 +61,7 @@ exports.create = function create(req, res, next) {
     });
     return;
   }
-  
+
   writeEnterpriseQuery = 'INSERT INTO enterprise (name, abbr, phone, email, location_id, logo, currency_id, po_box) VALUES (?);';
 
   db.exec(writeEnterpriseQuery, [[enterprise.name, enterprise.abbr, enterprise.phone, enterprise.email,
@@ -80,8 +80,8 @@ exports.update = function update(req, res, next) {
   var enterpriseId = req.params.id;
   var queryData = req.body;
 
-  delete queryData.id; 
-  
+  delete queryData.id;
+
   // TODO This should never be matched by express - review and remove if true
   if (!enterpriseId) {
     res.status(400).json({
@@ -94,7 +94,7 @@ exports.update = function update(req, res, next) {
   sql = 'UPDATE enterprise SET ? WHERE id = ?;';
 
   db.exec(sql, [queryData, enterpriseId])
-  .then(function (row) {    
+  .then(function (row) {
     if (!row.affectedRows) {
       throw req.codes.ERR_NOT_FOUND;
     }

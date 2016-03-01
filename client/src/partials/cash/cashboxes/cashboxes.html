@@ -1,11 +1,11 @@
 <div class="flex-header">
   <div class="bhima-title">
-      
+
     <ol class="headercrumb">
       <li class="static">{{ "TREE.ADMIN" | translate }}</li>
       <li class="title">{{ "CASH.CASHBOX.TITLE" | translate }}</li>
     </ol>
-    
+
   </div>
 </div>
 
@@ -22,7 +22,7 @@
     <div class="row">
 
       <div class="col-md-6">
-        <table class="table table-striped table-borded table-condensed" style="max-height:600px; overflow:auto;">
+        <table class="table table-striped table-bordered table-condensed" style="max-height:600px; overflow:auto;">
           <thead>
             <tr>
               <th colspan="2">{{ "COLUMNS.NAME" | translate }}</th>
@@ -53,12 +53,17 @@
           <form class="panel-body" name="CreateForm" ng-submit="CashCtrl.submit(CreateForm.$invalid)" novalidate>
 
             <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
-              <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
-              <input class="form-control" name="CreateForm.text" ng-model="CashCtrl.box.text" required>
+              <label class="control-label">
+                {{ "COLUMNS.NAME" | translate }}
+              </label>
+              <input class="form-control" name="text" ng-model="CashCtrl.box.text" required>
+              <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
             </div>
 
             <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.type.$invalid }">
-              <label>{{ "COLUMNS.TYPE" | translate }}</label>
+              <label class="control-label">{{ "COLUMNS.TYPE" | translate }}</label>
               <div class="radio">
                 <label>
                   <input type="radio" name="type" ng-model="CashCtrl.box.type" value="primary" required>
@@ -72,13 +77,21 @@
                   {{ "CASH.CASHBOX.AUXILIARY" | translate }}
                 </label>
               </div>
+              <div class="help-block" ng-messages="CreateForm.type.$error" ng-show="CreateForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
             </div>
 
             <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.project.$invalid }">
-              <label class="control-label">{{ "CASH.CASHBOX.PROJECT" | translate }}</label>
+              <label class="control-label">
+                {{ "CASH.CASHBOX.PROJECT" | translate }}
+              </label>
               <select class="form-control" name="project" ng-model="CashCtrl.box.project_id" ng-options="project.id as project.name for project in CashCtrl.projects" required>
                 <option value="" disabled>{{ "SELECT.PROJECT" | translate }}</option>
               </select>
+              <div class="help-block" ng-messages="CreateForm.project.$error" ng-show="CreateForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
             </div>
 
             <div class="form-group">
@@ -100,12 +113,17 @@
             <div class="panel-body">
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
-                <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
-                <input class="form-control" name="UpdateForm.text" ng-model="CashCtrl.box.text" required>
+                <label class="control-label">
+                  {{ "COLUMNS.NAME" | translate }}
+                </label>
+                <input class="form-control" name="text" ng-model="CashCtrl.box.text" required>
+                <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.type.$invalid }">
-                <label>{{ "COLUMNS.TYPE" | translate }}</label>
+                <label class="control-label">{{ "COLUMNS.TYPE" | translate }}</label>
                 <div class="radio">
                   <label>
                     <input type="radio" name="type" ng-model="CashCtrl.box.type" value="primary" required>
@@ -119,6 +137,9 @@
                     {{ "CASH.CASHBOX.AUXILIARY" | translate }}
                   </label>
                 </div>
+                <div class="help-block" ng-messages="UpdateForm.type.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
               </div>
 
               <div class="form-group">
@@ -126,7 +147,7 @@
                 <div ng-repeat="currency in CashCtrl.currencies | orderBy:currency.name track by currency.id">
                   <p ng-class="{ 'text-danger' : !currency.configured }">
                     <i class="glyphicon glyphicon-alert" ng-if="!currency.configured"></i> {{ currency.name }} ({{ currency.symbol}})
-                    <a class="btn btn-xs btn-default" href="" ng-click="CashCtrl.configureCurrency(currency)">
+                    <a class="btn btn-xs btn-default" href="" ng-click="CashCtrl.configureCurrency(currency)" data-currency-id="{{ currency.id }}">
                       <i class="glyphicon glyphicon-pencil"></i> {{ "FORM.CONFIGURE" | translate }}
                     </a>
                   </p>
@@ -137,10 +158,20 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.project.$invalid }">
-                <label class="control-label">{{ "CASH.CASHBOX.PROJECT" | translate }}</label>
-                <select class="form-control" name="project" ng-model="CashCtrl.box.project_id" ng-options="project.id as project.name for project in CashCtrl.projects" required>
+                <label class="control-label">
+                  {{ "CASH.CASHBOX.PROJECT" | translate }}
+                </label>
+                <select
+                  class="form-control"
+                  name="project"
+                  ng-model="CashCtrl.box.project_id"
+                  ng-options="project.id as project.name for project in CashCtrl.projects track by project.id"
+                  required>
                   <option value="" disabled>{{ "SELECT.PROJECT" | translate }}</option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.project.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
               </div>
             </div>
 

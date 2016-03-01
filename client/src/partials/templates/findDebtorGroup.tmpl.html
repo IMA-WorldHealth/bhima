@@ -1,0 +1,57 @@
+<div class="form-group has-feedback "
+  ng-form="formFindDebtorGroup"
+  ng-class="{'has-success' : $ctrl.state==1, 'has-error': $ctrl.noDebtorGroups}"
+  novalidate>
+
+  <div data-bh-find-debtorgroup-name>
+
+    <div ng-if="$ctrl.showSearchView === 'default'">
+      <div class="input-group">
+        <span class="input-group-addon">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</span>
+        <input
+          ng-model="$ctrl.debtorGroupName"
+          name="debtorGroupName"
+          type="text"
+          class="form-control"
+          placeholder="{{ 'FIND.DEBTOR_GROUP' | translate }}..."
+          uib-typeahead="debtorGroup as debtorGroup.name for debtorGroup in $ctrl.debtorGroupData | filter: $viewValue | limitTo: 10"
+          typeahead-no-results="$ctrl.noDebtorGroups"
+          typeahead-loading="$ctrl.loadingDebtorGroups"
+          typeahead-on-select="$ctrl.selectDebtorGroup($item)"
+          required>
+        <span ng-if="$ctrl.loadingDebtorGroups" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
+        <span ng-if="$ctrl.noDebtorGroups" class="glyphicon glyphicon-alert form-control-feedback"></span>
+      </div>
+    </div>
+
+    <!-- notification zone for result  -->
+    <div ng-if="$ctrl.showSearchView === 'result'">
+      <div class="input-group">
+
+        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+        <input id="selectedDebtorGroupName" ng-if="$ctrl.state==1" class="form-control" value="{{ $ctrl.selected.name }}" readonly>
+        <input ng-if="$ctrl.state!=1" class="form-control" value="{{ 'FIND.DEBTOR_GROUP_NOT_FOUND' }}" readonly>
+
+        <div class="input-group-btn">
+          <a class="btn btn-default"
+            ng-if="$ctrl.state==1"
+            id="popupInfo"
+            uib-popover-template="'partials/templates/popover/debtorGroupInfo.tmpl.html'"
+            popover-title="{{ 'PATIENT_REG.DEBTOR_GROUP' | translate }}"
+            popover-placement="left"
+            popover-trigger="click"
+            popover-append-to-body="true">
+            <i class="glyphicon glyphicon-info-sign"></i>
+          </a>
+          <a class="btn btn-default"
+            id="reload"
+            ng-click="$ctrl.reload()">
+            <i class="glyphicon glyphicon-refresh"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- /notification zone for result  -->
+  </div>
+
+</div>

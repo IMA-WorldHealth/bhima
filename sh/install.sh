@@ -1,96 +1,21 @@
 #!/bin/bash
 
-# install.sh
-# A small script to help set up the bhima application.
-# NOTE: root privileges are required for some parts of the script.
+# A small script to set up virtual machine instances for deployment or testing.
 
-usage () {
-  echo "Usage: ./sh/install.sh [-hrd]"
-  echo "         -h  help      Display this help message."
-  echo "         -r  rebuild   Force the database to rebuild using a DROP "
-  echo "                       SCHEMA statement."
-  echo "         -d  depends   Download dependencies from the internet."
-  exit 1
-}
+export ENV="staging"
 
-REBUILD=0;
-DEPENDENCIES=0;
+# make sure we are using the correct SQL mode
+mysql -h $DB_HOST -u root -e "SET GLOBAL sql_mode='STRICT_ALL_TABLES';"
 
-DB_NAME='bhima';
-DB_USER='bhima';
-DB_PASS='HISCongo2013';
+# setup usernames and permissions
+mysql -h $DB_HOST -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS' WITH GRANT OPTION;"
+mysql -h $DB_HOST -u root -e "FLUSH PRIVILEGES;"
 
-while getopts ":hrd" opt; do
-  case $opt in
-    h)
-      usage
-      exit 1
-      ;;
-    r)
-      REBUILD=1
-      ;;
-    d)
-      DEPENDENCIES=1
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-      ;;
-    :)
-      usage
-      exit 1
-      ;;
-  esac
-done
 
-# dependency installation
-build_depends () {
-  echo "Installing online dependencies ..."
-  echo "Please put in your super user password to install global dependencies."
-  sudo npm install -g gulp bower mocha
-  echo "Installing local dependencies ..."
-  npm install
-  bower install -f
-}
+# setup database
+mysql -h $DB_HOST -u root -e "DROP SCHEMA IF EXISTS $DB_NAME;"
+mysql -h $DB_HOST -u $DB_USER -p$DB_PASS -e "CREATE SCHEMA $DB_NAME CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+mysql -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql
+mysql -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql
+mysql -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME < server/models/updates/synt.sql
 
-# build the database
-build_db () {
-  echo "Building the bhima database ... "
-
-  # force database rebuild from command line option
-  if [ $REBUILD -eq 1 ]
-    then
-      echo "Executing DROP SCHEMA command, since install was called with -r (rebuild)."
-      mysql -u $DB_USER -p$DB_PASS -e "DROP SCHEMA IF EXISTS $DB_NAME;"
-  fi
-  mysql -u $DB_USER -p$DB_PASS -e "CREATE SCHEMA IF NOT EXISTS $DB_NAME;"
-
-  echo "Building schema ..."
-  mysql -u $DB_USER -p$DB_PASS bhima < server/models/schema.sql
-
-  echo "Importing data ..."
-  mysql -u $DB_USER -p$DB_PASS bhima < server/models/test/data.sql
-
-  echo "Running db upgrades ..."
-  mysql -u $DB_USER -p$DB_PASS bhima < server/models/updates/synt.sql
-}
-
-# compile the server using gulp
-build_server () {
-  echo "Building the bhima server ... "
-  gulp build
-}
-
-# actually run the script
-main () {
-
-  # allow user to ask that dependencies are installed with -d flag
-  if [ $DEPENDENCIES -eq 1 ]; then
-    build_depends
-  fi
-
-  build_db
-  build_server
-}
-
-main

@@ -697,16 +697,16 @@ CREATE TABLE `enterprise` (
 
 DROP TABLE IF EXISTS `exchange_rate`;
 CREATE TABLE `exchange_rate` (
-  `id`                      MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `enterprise_currency_id`  TINYINT(3) UNSIGNED NOT NULL,
-  `foreign_currency_id`     TINYINT(3) UNSIGNED NOT NULL,
-  `rate`                    DECIMAL(19,4) UNSIGNED NOT NULL,
-  `date`                    DATETIME NOT NULL,
+  `id`    MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `enterprise_id`   smallint(5) UNSIGNED NOT NULL,
+  `currency_id`   TINYINT(3) UNSIGNED NOT NULL,
+  `rate`    DECIMAL(19,4) UNSIGNED NOT NULL,
+  `date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `enterprise_currency_id` (`enterprise_currency_id`),
-  KEY `foreign_currency_id` (`foreign_currency_id`),
-  FOREIGN KEY (`enterprise_currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`foreign_currency_id`) REFERENCES `currency` (`id`)
+  KEY `enterprise_id` (`enterprise_id`),
+  KEY `currency_id` (`currency_id`),
+  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -830,9 +830,9 @@ CREATE TABLE `group_invoice_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `hollyday`;
+DROP TABLE IF EXISTS `holiday`;
 
-CREATE TABLE `hollyday` (
+CREATE TABLE `holiday` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `employee_id` int(10) unsigned NOT NULL,
   `percentage` float DEFAULT '0',
@@ -844,17 +844,17 @@ CREATE TABLE `hollyday` (
   FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `hollyday_paiement`;
+DROP TABLE IF EXISTS `holiday_paiement`;
 
-CREATE TABLE `hollyday_paiement` (
-  `hollyday_id` int(10) unsigned NOT NULL,
-  `hollyday_nbdays` int(10) unsigned NOT NULL,
-  `hollyday_percentage` float DEFAULT '0',
+CREATE TABLE `holiday_paiement` (
+  `holiday_id` int(10) unsigned NOT NULL,
+  `holiday_nbdays` int(10) unsigned NOT NULL,
+  `holiday_percentage` float DEFAULT '0',
   `paiement_uuid` char(36) NOT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
-  KEY `hollyday_id` (`hollyday_id`),
+  KEY `holiday_id` (`holiday_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
-  FOREIGN KEY (`hollyday_id`) REFERENCES `hollyday` (`id`)
+  FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1864,3 +1864,34 @@ CREATE TABLE `village` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SET foreign_key_checks = 1;
+
+--
+-- Structure de la table `voucher`
+--
+DROP TABLE IF EXISTS `voucher`;
+CREATE TABLE IF NOT EXISTS `voucher` (
+  `uuid` char(36) NOT NULL,
+  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `project_id` tinyint(4) NOT NULL,
+  `reference` varchar(16) NOT NULL,
+  `currency_id` tinyint(4) NOT NULL,
+  `amount` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `description` varchar(255) DEFAULT NULL,
+  `document_uuid` char(36) NOT NULL,
+  `user_id` tinyint(4) NOT NULL,
+  PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Structure de la table `voucher_item`
+--
+DROP TABLE IF EXISTS `voucher_item`;
+CREATE TABLE IF NOT EXISTS `voucher_item` (
+  `uuid` char(36) NOT NULL,
+  `account_id` int(11) NOT NULL,
+  `debit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `credit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `voucher_uuid` char(36) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `voucher_uuid` (`voucher_uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -1,4 +1,8 @@
-var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid', 'ui.grid.autoResize', 'angularMoment']);
+var bhima = angular.module('bhima', [
+  'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'bhima.components', 'ngRoute',
+  'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale',
+  'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'angularMoment', 'ngMessages'
+]);
 
 function bhimaconfig($routeProvider) {
   // TODO: Dynamic routes loaded from unit database?
@@ -20,7 +24,7 @@ function bhimaconfig($routeProvider) {
   })
   .when('/enterprises', {
     controller: 'EnterpriseController as EnterpriseCtrl', 
-    templateUrl: 'partials/enterprise/enterprise.html'
+    templateUrl: 'partials/enterprises/enterprises.html'
   })
   .when('/projects', {
     controller : 'ProjectController as ProjectCtrl',
@@ -39,7 +43,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/settings/settings.html'
   })
   .when('/services', {
-    controller : 'ServicesController',
+    controller : 'ServicesController as ServicesCtrl',
     templateUrl : 'partials/services/services.html'
   })
   .when('/caution', {
@@ -257,6 +261,10 @@ function bhimaconfig($routeProvider) {
   /* cash routes */
 
   .when('/cash', {
+    controller: 'CashboxSelectController as CashboxSelectCtrl',
+    templateUrl: '/partials/cash/cashboxSelect.html'
+  })
+  .when('/cash/:id', {
     controller: 'CashController as CashCtrl',
     templateUrl: '/partials/cash/cash.html'
   })
@@ -350,15 +358,15 @@ function bhimaconfig($routeProvider) {
   })
 
   /* Patient Edit */
-  .when('/patients/edit/', { 
-    controller  : 'PatientEditFind as PatientEditFindCtrl', 
+  .when('/patients/edit/', {
+    controller  : 'PatientEditFind as PatientEditFindCtrl',
     templateUrl : 'partials/patients/edit/find.html'
   })
   .when('/patients/edit/:patientID', {
     controller: 'PatientEdit as PatientEditCtrl',
     templateUrl: 'partials/patients/edit/edit.html'
   })
-  
+
   /* */
   .when('/patients/search/:patientID?', {
     controller: 'patientRecords',
@@ -803,7 +811,7 @@ function bhimaconfig($routeProvider) {
   .when('/reports/patient_visit_status', {
     controller : 'ReportPatientVisitStatus',
     templateUrl : '/partials/reports/patient_visit_status/patient_visit_status.html'
-  })  
+  })
   .when('/reports/stock_entry', {
     controller : 'ReportStockEntryController',
     templateUrl : 'partials/reports/stock/stock_entry/stock_entry.html'

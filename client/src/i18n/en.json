@@ -250,30 +250,30 @@
   }
 },
 "CASH": {
-    "CASHBOX" : {
-      "ADD"                    : "Add A Cashbox",
-      "ADD_CURRENCY_ACCOUNTS"  : "Add Currency Account",
-      "ALERT"                  : "Cashbox Management Module",
-      "ALL"                    : "All",
-      "AUXILIARY"              : "Auxiliary",
-      "BOX"                    : "Cashbox",
-      "CASHBOX"                : "Cashbox",
-      "CASH_ACCOUNT"           : "Cash Account",
-      "CONFIG_CURRENCIES"      : "Configure Currency Accounts",
-      "CREATE_SUCCESS"         : "Successfully created a cashbox.",
-      "EDIT"                   : "Edit",
-      "GAIN_ACCOUNT"           : "Gain on Exchange Rate Account",
-      "LOSS_ACCOUNT"           : "Loss on Exchange Rate Account",
-      "NOT_CONFIGURED"         : "The accounts for this currency have not been configured yet.",
-      "PRINCIPAL"              : "Principal",
-      "PROJECT"                : "Project",
-      "SAVE_UPDATES"           : "Remember to submit the form to save your changes.",
-      "TITLE"                  : "Cashbox Management",
-      "TRANSFER_ACCOUNT"       : "Transfer Account",
-      "UPDATE_SUCCESS"         : "Successfully updated a cashbox."
-   },
-   "CLEAR_SELECTION"  : "Clear Selection",
-   "DEBITOR_INVOICES" : "Debtor Invoices",
+  "CASHBOX" : {
+    "ADD"                    : "Add A Cashbox",
+    "ADD_CURRENCY_ACCOUNTS"  : "Add Currency Account",
+    "ALERT"                  : "Cashbox Management Module",
+    "ALL"                    : "All",
+    "AUXILIARY"              : "Auxiliary",
+    "BOX"                    : "Cashbox",
+    "CASHBOX"                : "Cashbox",
+    "CASH_ACCOUNT"           : "Cash Account",
+    "CONFIG_CURRENCIES"      : "Configure Currency Accounts",
+    "CREATE_SUCCESS"         : "Successfully created a cashbox.",
+    "EDIT"                   : "Edit",
+    "GAIN_ACCOUNT"           : "Gain on Exchange Rate Account",
+    "LOSS_ACCOUNT"           : "Loss on Exchange Rate Account",
+    "NOT_CONFIGURED"         : "The accounts for this currency have not been configured yet.",
+    "PRINCIPAL"              : "Principal",
+    "PROJECT"                : "Project",
+    "SAVE_UPDATES"           : "Remember to submit the form to save your changes.",
+    "TITLE"                  : "Cashbox Management",
+    "TRANSFER_ACCOUNT"       : "Transfer Account",
+    "UPDATE_SUCCESS"         : "Successfully updated a cashbox."
+    },
+   "CLEAR_SELECTION"  : "Restart",
+   "DEBITOR_INVOICES" : "Factures Impaye de Débiteur",
    "DEFAULT_CASHBOX"  : "Caisse",
    "EXTRA" : {
       "ACTION"             : "Action",
@@ -292,12 +292,12 @@
       "TITLE"              : "Regularization of payments",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
-   "FLOW" : {
-     "TITLE" : "Cash Flow "
-   },
-   "HELP_TXT_1"       : "The module allows debitors to pay against existing invoices",
-   "HELP_TXT_2"       : "To begin, search for a debitor using the search bar above",
-   "NO_EXCHANGE_RATE" : "Error : No exchange rate!",
+    "FLOW" : {
+      "TITLE" : "Cash Flow"
+    },
+   "HELP_TXT_1"       : "This module enables to pay several invoice",
+   "HELP_TXT_2"       : "Find Debtor with ",
+   "NO_EXCHANGE_RATE" : "Error                                                     : The exchange rate does not exist!",
    "OVER": {
       "CUED"          : "The debtor has been billed this amount",
       "DANGER"        : "Warning!",
@@ -306,16 +306,44 @@
       "PAYMENT"       : "The debitor is paying a this amount",
       "REASON"        : "Reason",
       "TITLE"         : "Justification for Payment"
-      },
-   "OVERDUE"          : "Over Due",
-   "PAYMENT"          : "Payment",
-   "PAY_INVOICES"     : "Pay Invoices",
-   "TITLE"            : "Auxillary Cash Module",
-   "TOTAL_DUE"        : "Total Due",
-   "TOTAL_PAYING"     : "Total Paying",
-   "WARNING"          : "This patient is a contracted and can not pay checkout in Cash Payments",
-   "WARNING_2"        : "For the payment of old bills would have to change his debtor group"
    },
+   "VOUCHER" : {
+     "TITLE" : "Cash Payments",
+     "CASHBOXES" : {
+       "AVAILABLE" : "Available Cashboxes",
+       "UNCONFIGURED" : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue.",
+       "LINK" : "Click here to add it.",
+       "MISSING" : "Don't see your cashbox?",
+       "CURRENT_CASHBOX" : "Current Cashbox",
+       "CHANGE_CASHBOX" : "Change Cashbox"
+     },
+     "SLIP" : "Cash Voucher",
+     "CASHBOX" : "Cashbox",
+     "CAUTION" : "Caution",
+     "INVOICE" : "Invoice Payment",
+     "SELECT_INVOICES" : "Select Invoice(s)",
+     "ERRORS"  :  {
+      "NO_CASH_ITEMS" : "No cash items have been selected.  In order to pay against previous invoices, you must select an invoice using the 'Select Invoices(s)' button."
+     },
+     "RECEIPTS" : {
+      "TITLE" : "Cash Payment Receipt"
+     },
+     "DEBTOR_INVOICES" : "Debtor Invoices"
+   },
+   "OVERDUE"          : "Excedent",
+   "PAYMENT"          : "Paiement",
+   "PAY_INVOICES"     : "Pay the invoices",
+   "TITLE"            : "Auxilliairy Cashbox",
+   "TOTAL_DUE"        : "Total due",
+   "TOTAL_PAYING"     : "Total Paying",
+   "WARNING"          : "This patient is a Subscriber and can not pay the cash auxilliare",
+   "WARNING_2"        : "For the payment of old bills should change its debtor group "
+  },
+"CASH_BOX_TYPE" : {
+  "PRIMARY"   : "Primary",
+  "AUXILLARY" : "Auxillary",
+  "BANK"      : "Bank"
+},
 "CASH_DISCARD" : {
   "CASH_DETAILS"     : "Details",
   "DESCRIPTION"      : "Description",
@@ -481,6 +509,7 @@
    "ENTERPRISE_CURRENCY"   : "Enterprise Currency",
    "ENTERPRISE_ID"         : "Enterprise ID",
    "ENTRY_DATE"            : "Entry date",
+   "EXCHANGE_RATE"         : "Exchange Rate",
    "EXPENSE"               : "Expense",
    "EXPIRATION_DATE"       : "Expiration Date",
    "EXPLANATION"           : "Explanation",
@@ -587,7 +616,7 @@
    "RATE"                  : "Rate",
    "RECEIPT"               : "Receipt",
    "REF"                   : "Ref.",
-   "REFERENCE"             : "reference",
+   "REFERENCE"             : "Reference",
    "REF_GROUP"             : "Ref. Groupe",
    "REFERENCE_GROUP"       : "Group de reference",
    "REFERENCE_PURCHASE"    : "Purchase Order Reference",
@@ -659,7 +688,6 @@
    "WORDING"               : "Wording",
    "WORKING_DAY"           : "Working day",
    "ZS"                    : "Health Zone"
-
    },
 
 "CONFIG_ACCOUNTING": {
@@ -1124,7 +1152,9 @@
    "POST_NAME"          : "Post Name",
    "REGISTER"           : "Register Employee",
    "REGISTER_SUCCESS"   : "Register successfully",
-   "SERVICE"            : "Service",
+   "SEARCH_BY_CODE"     : "Tap the code",
+   "SEARCH_BY_NAME"     : "Tap the empoyee name",
+   "SERVICE"            : "Service",   
    "SEX"                : "Sex",
    "SUBMIT_EDIT"        : "Submit Details",
    "SUBMIT_NEW"         : "Submit Registration",
@@ -1206,18 +1236,21 @@
    "WARN_MISSING_DOCUMENT_ID"    : "Missing document ID"
    },
 "EXCHANGE": {
-   "HELP_TXT_1"       : "The exchange rate module provides the facilty to set daily exchange rates. In order to ensure data integrity, an exchange rate for all functional currencies must be set daily",
-   "NEW"              : "New Exchange Rate",
-   "NO_EXCHANGE_RATE" : "No exchange rates loaded for date",
-   "NO_RATES"         : "There are no rates set for today!",
-   "PREV"             : "Previous Rates",
-   "REVIEW"           : "Review Today's Rates",
-   "SET"              : "Set Today's Exchange Rate",
-   "SET_HERE"         : "Setting here",
-   "TITLE"            : "Configure Exchange Rates",
-   "TODAY_RATE"       : "Exchange Rate for",
-   "OLD_DATE"         : "Define an exchange rate for an old date",
-   "DATE"             : "Define date"
+   "CONFIRM"              : "Are you sure you want to delete this exchange rate",
+   "DATE"                 : "Define date",
+   "ENTERPRISE_CURRENCY"  : "Enterprise Currency",
+   "HELP_TXT_1"           : "The exchange rate module provides the facilty to set daily exchange rates. In order to ensure data integrity, an exchange rate for all functional currencies must be set daily",
+   "NEW"                  : "New Exchange Rate",
+   "NEW_RATE"             : "New Rate",
+   "NO_EXCHANGE_RATE"     : "No exchange rates loaded for date",
+   "NO_RATES"             : "There are no rates set for today!",
+   "PREV"                 : "Previous Rates",
+   "REVIEW"               : "Review Rates ",
+   "SET"                  : "Set Today's Exchange Rate",
+   "SET_HERE"             : "Setting here",
+   "TITLE"                : "Configure Exchange Rates",
+   "TODAY_RATE"           : "Exchange Rate for",
+   "OLD_DATE"             : "Define an exchange rate for an old date"
    },
 "EXPIRING": {
    "EXPIRED" : "Expired inventories",
@@ -1250,16 +1283,31 @@
       "ENTER_ACCOUNT" : "Enter Account",
       "PLACEHOLDER"   : "Account Name or Number"
       },
-   "PATIENT"           : "Patient",
-   "PATIENT_FOUND"     : "Patient Found",
-   "PATIENT_ID"        : "Patient ID",
-   "PATIENT_LOADING"   : "Loading",
-   "PATIENT_NAME"      : "Patient Name",
-   "PATIENT_NOT_FOUND" : "Patient Not Found",
-   "SEARCH"            : "Search",
-   "SEARCH_NAME"       : "Search by Name",
-   "SEARCH_PATIENT_ID" : "Search by Patient ID",
-   "TITLE"             : "Find a patient"
+   "DEBTOR_GROUP"           : "Find a debtor group",
+   "DEBTOR_GROUP_NOT_FOUND" : "Debtor group not found",
+   "PATIENT"                : "Patient",
+   "PATIENT_FOUND"          : "Patient Found",
+   "PATIENT_ID"             : "Patient ID",
+   "PATIENT_LOADING"        : "Loading",
+   "PATIENT_NAME"           : "Patient Name",
+   "PATIENT_NOT_FOUND"      : "Patient Not Found",
+   "SEARCH"                 : "Search",
+   "SEARCH_NAME"            : "Search by Name",
+   "SEARCH_PATIENT_ID"      : "Search by Patient ID",
+   "TITLE"                  : "Find a patient",
+   "LOADING"                : "Loading",
+   "PATIENT"                : "Patient",
+   "PATIENT_FOUND"          : "Patient Found",
+   "PATIENT_ID"             : "Patient ID",
+   "PATIENT_LOADING"        : "Loading",
+   "PATIENT_NAME"           : "Patient Name",
+   "PATIENT_NOT_FOUND"      : "Patient Not Found",
+   "SEARCH"                 : "Search",
+   "SEARCH_NAME"            : "Search by Name",
+   "SEARCH_PATIENT_ID"      : "Search by Patient ID",
+   "SUPPLIER_NAME"          : "Supplier Name",
+   "SUPPLIER_NOT_FOUND"     : "Supplier Not Found",
+   "TITLE"                  : "Find a patient"
    },
 "FISCAL_YEAR": {
    "ACCEPT"                      : "I accepte",
@@ -1366,31 +1414,47 @@
    "CLOSE_FORM"      : "Close Form",
    "CONTINUE"        : "Continue",
    "CONFIGURE"       : "Configure",
+   "DANGER_ZONE"     : "Danger Zone",
+   "DEFINE"          : "Define",
    "DELETE"          : "Delete",
+   "DELETE_SUCCESS"  : "Deleted successfully",
    "DISCARD"         : "Discard",
+   "DISMISS"         : "Dismiss",
    "EDIT"            : "Edit",
+   "ERRORS"        : {
+    "REQUIRED"   : "This value is required.",
+    "MIN_CURRENCY_UNIT" : "This value is too small for the selected currency.",
+    "NUMBER" : "This value must be a valid number.",
+    "GENERIC" : "The form contains errors."
+   },
+   "INVALID_DATE"    : "Invalide date",
    "LOGIN"           : "Login",
    "HAS_ERRORS"      : "The form contains errors.  Please correct them and resubmit.",
    "NEW_FORM"        : "New Form",
    "NEW_TRANSFER"    : "New transfer",
    "OK"              : "Ok",
-   "PASSWORD_MATCH" : "The passwords must be the same.",
+   "PASSWORD_MATCH"  : "The passwords must be the same.",
    "RESET"           : "Reset",
    "RESET_FORM"      : "Reset Form",
    "REQUIRED_FIELD"  : "This is a required field.",
    "REQUIRED_OPTION" : "You must select at least one option.",
-   "REQUIRED_EMAIL" : "You must provide a valid email address.",
+   "REQUIRED_EMAIL"  : "You must provide a valid email address.",
    "REQUIRED_TELEPHONE"  : "You must provide a valid telephone number.",
    "REVIEW"          : "Review",
    "SAVE"            : "Save",
    "SAVE_CHANGES"    : "Save Changes",
    "SAVE_FORM"       : "Save Form",
+   "SAVE_SUCCES"     : "Successfully saving",
    "SEARCH"          : "Search",
-   "DANGER_ZONE"     : "Danger Zone",
+   "SELECT"          : "Select",
    "SUBMIT"          : "Submit",
    "SUBMIT_SUCCESS"  : "Form submitted succesfully.",
    "SUBMIT_FAILURE"  : "Form submission did not succeed.",
-   "UPDATE"          : "Update"
+   "UPDATE"          : "Update",
+   "UPDATE_SUCCES"  : "Updated successfully",
+   "WARNINGS" : {
+    "FUTURE_DATE" : "Warning: This date in the future."
+   }
    },
 "GRADE": {
    "ADD"            : "Add a grade",
@@ -1442,19 +1506,19 @@
    "SUCCES"                 : "operation successfully !",
    "TITLE"                  : "Tiers Support"
    },
-"HOLLYDAY_MANAGEMENT": {
-   "ADD"            : "Create a hollyday period",
-   "ALERT"          : "The management of hollyday standardizes and secure applications and management of vacation (paid leave, compensatory time off ...). It supports automatic introduction pays from request, validation and to its treatment.",
+"HOLIDAY_MANAGEMENT": {
+   "ADD"            : "Create a holiday period",
+   "ALERT"          : "The management of holiday standardizes and secure applications and management of vacation (paid leave, compensatory time off ...). It supports automatic introduction pays from request, validation and to its treatment.",
    "CONFIRM"        : "Are you sure you want to delete this Hollyday period",
    "DELETE_SUCCESS" : "Deleted successfully",
    "EMPLOYEE"       : "Employee",
-   "NEW_HOLLYDAY"   : "Create a hollyday period",
-   "NO_HOLLYDAY"    : "No Hollyday have been registred",
+   "NEW_HOLIDAY"   : "Create a holiday period",
+   "NO_HOLIDAY"    : "No Hollyday have been registred",
    "REGISTERED"     : "Registered Hollydays",
    "SAVE_FAILURE"   : "Error, these data are entangled with other holiday period",
    "SAVE_SUCCES"    : "Successfully saving Offday",
    "TITLE"          : "Hollydays Management",
-   "UPDATE"         : "Modify a hollyday period",
+   "UPDATE"         : "Modify a holiday period",
    "UPDATE_SUCCES"  : "Updated successfully"
    },
 "HOME" : {
@@ -1480,6 +1544,12 @@
    "TITLE"       : "Enterprise Cash Payments : Income",
    "TRANSFER"    : "Transfer"
    },
+"INPUT" : {
+  "COUNTRY" : "Enter a country.",
+  "PROVINCE" : "Enter a province.",
+  "SECTOR" : "Enter a sector.",
+  "VILLAGE" : "Enter a village."
+},
 "INVENTORY": {
    "GROUPS": {
       "ADD"              : "Creating Inventory Group",
@@ -1706,6 +1776,7 @@
    },
 "LOCATION": {
    "ADD"                   : "Add",
+   "AND"                   : "and",
    "COUNTRY"               : "Country",
    "CURRENT"               : "Current",
    "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
@@ -1729,7 +1800,12 @@
    "TITLE"                 : "Location Manager",
    "VILLAGE"               : "Village",
    "VILLAGE_NAME"          : "Village Name",
-   "VILLE"                 : "Township/Commune"
+   "VILLE"                 : "Township/Commune",
+   "COUNTRY"               : "Country",
+   "PROVINCE"              : "Province",
+   "SECTOR"                : "Sector",
+   "VILLAGE"               : "Village",
+   "MODAL"               : "Add a new Location"
    },
 "NO_EXCHANGE": {
    "CURRENT_DATE" : "Current Date",
@@ -2202,7 +2278,7 @@
    },
 "PROJECT": {
    "CONFIRM"        : "Are you sure you want to delete this Project",
-   "DELETE_SUCCESS" : "Deleted successfully", 
+   "DELETE_SUCCESS" : "Deleted successfully",
    "EDIT"           : "Editing Project",
    "EXISTING"       : "Existing Projects",
    "HELP_TXT_1"     : "This page is for managment of projects belonging to enterprises.  You see here all projects currently registered to your current enterprise.",
@@ -2316,6 +2392,24 @@
    "LETTER"             : "Letter",
    "QUANTITY"           : "Quantity"
    },
+"RECEIPTS" : {
+  "DETAILS" : "Receipt Details",
+  "CLIENT" : "Client",
+  "CLIENT_ID" : "Client ID",
+  "DATE" : "Date",
+  "FAX" : "FAX",
+  "TEL" : "TEL",
+  "TELEPHONE" : "Telephone",
+  "TYPE" : "Type",
+  "TOTAL_BILLED" : "Total Billed",
+  "TOTAL_PAID" : "Total Paid",
+  "EXCHANGE_RATE" : "Exchange Rate",
+  "POST_OFFICE_BOX" : "Post Office Box",
+  "PO_BOX" : "P.O. Box",
+  "CASHIER" : "Cashier",
+  "CURRENCY" : "Transaction Currency",
+  "CASHBOX" : "Cash Window"
+},
 "RENEWAL": {
    "AGE"             : "Age",
    "BILL_RENEWAL"    : "Bill for Renewal",
@@ -2575,6 +2669,7 @@
    "EMPLOYEE_GRADE"        : "Select a Grade",
    "EMPLOYEE_SERVICE"      : "Select a Service",
    "EMPLOYEE_SEX"          : "Select Sex",
+   "EMPTY"                 : "No matching records!",
    "ENTERPRISE"            : "Select an Enterprise",
    "FISCAL_YEAR"           : "Select a fiscal year",
    "GENERAL_LEDGER"        : "General Ledger",
@@ -2620,6 +2715,8 @@
    },
 "SERVICE": {
    "COST_CENTER_SELECT"     : "Cost center",
+   "DELETE_SUCCESS"         : "Deleted successfully",
+   "EDIT"                   : "Editing Project",
    "INFO"                   : "Service informations",
    "INFO_DESCRIPTION"       : "This feature will help you to manage your services (creating, editing and suppressing as well as consulting)",
    "INSERT_FAIL_MESSAGE"    : "Error during insertion !",
@@ -2627,13 +2724,16 @@
    "MODIFYING"              : "Editing",
    "NEW"                    : "New service",
    "NONE_FOUND"             : "No service found !",
+   "NOT_AVAILABLE"          : "Not available",
    "OVERVIEW_SERVICE"       : "Systhetic result of service",
    "PROFIT_CENTER_SELECT"   : "Profit Center",
    "PROJECT_SELECT"         : "Selectionner a Project",
    "REGISTER"               : "Registering",
    "REGISTERED"             : "Registered Services",
+   "SAVE_SUCCES"            : "Saved successfully",
    "SUCCESS_MESSAGE"        : "Operation successfully !",
-   "TITLE"                  : "Services Management"
+   "TITLE"                  : "Services Management",
+   "UPDATE_SUCCES"          : "Updated successfully"
    },
 "SERVICE_RETURN_STOCK" : {
   "BACK"         : "Back",
@@ -2896,6 +2996,7 @@
    "FAX"                   : "Fax",
    "GROUP"                 : "Group",
    "INTL"                  : "International",
+   "NAME"                  : "Name of supplier",
    "OPTIONAL_INFO"         : "Optional Information",
    "PHONE"                 : "Phone",
    "REGISTERED"            : "Registered Suppliers",
@@ -3048,11 +3149,10 @@
    "BUDGET_ANALYSIS"           : "Budget Analysis",
    "BUDGET_BY_ACCOUNT"         : "Budget by Account",
    "BUDGET_MANAGEMENT"         : "Budget Management",
-   "CASH"                      : "Auxillary Cash",
+   "CASH_PAYMENTS"             : "Cash Payments",
    "CASHBOX_MANAGEMENT"        : "Cashbox Management",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Treasure Configuration",
    "CASH_FLOW"                 : "Cash Flow",
-   "CASH_PAYMENTS"             : "Cash Payments",
    "CAUTION"                   : "Caution",
    "CHART_OF_ACCOUNTS"         : "Chart of Accounts",
    "CLIENT"                    : "Clients",
@@ -3103,7 +3203,7 @@
    "GRAND_LIVRE"               : "General Ledger",
    "GRAND_LIVRE_REPORT"        : "General Ledger",
    "GRP_INVOICING"             : "Tiers Support",
-   "HOLLYDAY_MANAGEMENT"       : "Holiday Management",
+   "HOLIDAY_MANAGEMENT"       : "Holiday Management",
    "HOSPITAL"                  : "Hospital",
    "INCOME_EXPENSE"            : "Income/Expense",
    "INCOME_REPORT"             : "Incomes",
@@ -3237,6 +3337,7 @@
    "BACK"              : "Back",
    "CANCEL"            : "Cancel",
    "CHECK_DAILY_RATE"  : "Please check the daily rate",
+   "CLOSED"            : "Closed",
    "COLUMNS"           : "Columns",
    "CONFIGURATION"     : "Configuration",
    "CONFIGURE"         : "Configure",
@@ -3276,6 +3377,7 @@
    "NO_DEPOT_SELECTED" : "No depot selected",
    "OFF"               : "Off",
    "ON"                : "On",
+   "OPEN"              : "Open",
    "PATIENT_EXIT"      : "Hospital file number already exists",
    "PATIENT_EXIST_A"   : "Patient with file number [",
    "PATIENT_EXIST_B"   : "] already exist",
