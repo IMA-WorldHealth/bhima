@@ -12,8 +12,8 @@
 * currencies.  The API accepts a cashbox ID during cash payment creation and
 * looks up the correct account based on the cashbox_id + currency.
 */
-var db   = require('../../lib/db');
-var uuid = require('../../lib/guid');
+const db   = require('../../lib/db');
+const uuid = require('node-uuid');
 
 /** retrieves the details of a cash payment */
 exports.detail = detail;
@@ -35,25 +35,29 @@ exports.debitNote = debitNote;
 
 // looks up a single cash record and associated cash_items
 // sets the "canceled" flag if a cash_discard record exists.
-function lookupCashRecord(uuid, codes) {
+function lookupCashRecord(id, codes) {
   'use strict';
 
-  var record;
-  var cashRecordSql =
-    'SELECT cash.uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference, ' +
+  let record;
+
+  const cashRecordSql =
+    'SELECT BUID(cash.uuid) as uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference, ' +
       'cash.date, cash.debtor_uuid, cash.currency_id, cash.amount, ' +
       'cash.description, cash.cashbox_id, cash.is_caution, cash.user_id ' +
     'FROM cash JOIN project ON cash.project_id = project.id ' +
     'WHERE cash.uuid = ?;';
 
-  var cashItemsRecordSql =
-    'SELECT cash_item.uuid, cash_item.amount, cash_item.invoice_uuid ' +
+  const cashItemsRecordSql =
+    'SELECT BUID(cash_item.uuid) AS uuid, cash_item.amount, cash_item.invoice_uuid ' +
     'FROM cash_item WHERE cash_item.cash_uuid = ?;';
 
-  var cashDiscardRecordSql =
-    'SELECT cash_uuid FROM cash_discard WHERE cash_uuid = ?;';
+  const cashDiscardRecordSql =
+    'SELECT BUID(cash_uuid) AS uuid FROM cash_discard WHERE cash_uuid = ?;';
 
-  return db.exec(cashRecordSql, [uuid])
+  // parse the uuid into a buffer
+  const buffer = db.bid(id);
+
+  return db.exec(cashRecordSql, [ buffer ])
   .then(function (rows) {
 
     if (rows.length === 0) {
@@ -63,14 +67,14 @@ function lookupCashRecord(uuid, codes) {
     // store the record for return
     record = rows[0];
 
-    return db.exec(cashItemsRecordSql, [uuid]);
+    return db.exec(cashItemsRecordSql, [ buffer ]);
   })
   .then(function (rows) {
 
     // bind the cash items to the "items" property and return
     record.items = rows;
 
-    return db.exec(cashDiscardRecordSql, [uuid]);
+    return db.exec(cashDiscardRecordSql, [ buffer ]);
   })
   .then(function (rows) {
 
@@ -84,22 +88,15 @@ function lookupCashRecord(uuid, codes) {
 
 /**
  * GET /cash
- * TODO - Query Paramters:
- *   start={date}
- *   end={date}
- *   debtor={uuid}
- *   type={ 'cash' | 'caution' },
- *   project={id}
- *
  * Lists the cash payments with optional filtering parameters.
- * @returns payments An array of { uuid, reference, date } JSON objects
+ *
+ * @returns {array} payments - an array of { uuid, reference, date } JSONs
  */
 function list(req, res, next) {
   'use strict';
 
-  // base query
-  var sql =
-    'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference, ' +
+  const sql =
+    'SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference, ' +
       'cash.date, cash.amount '  +
     'FROM cash JOIN project ON cash.project_id = project.id;';
 
@@ -127,9 +124,9 @@ function list(req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  var uuid = req.params.uuid;
+  const id = req.params.uuid;
 
-  lookupCashRecord(uuid, req.codes)
+  lookupCashRecord(id, req.codes)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -140,19 +137,20 @@ function detail(req, res, next) {
 
 /**
  * POST /cash
- * Creates a cash payment against several sales or a cautionary payment.  The
- * API also supports future offline functionality by either accepting a UUID or
- * generating it if it is not present.
+ * Creates a cash payment against one or many previous sales or a cautionary
+ * payment.  If a UUID is not provided, one is automatically generated.
  */
 function create(req, res, next) {
   'use strict';
 
-  var data = req.body.payment;
+  // alias insertion data
+  let data = req.body.payment;
 
   // generate a UUID if it not provided.
-  // @TODO - should we validate that this is an _actual_ uuid, or should this
-  // be sufficient?
-  data.uuid = data.uuid || uuid();
+  const id = data.uuid || uuid.v4();
+
+  // convert the uuid into a binary buffer
+  data.uuid = db.bid(id);
 
   // trust the server's session info over the client's
   data.project_id = req.session.project.id;
@@ -162,7 +160,7 @@ function create(req, res, next) {
   if (data.date) { data.date = new Date(data.date); }
 
   // account for the cash items
-  var items = data.items;
+  let items = data.items;
 
   // remove the cash items so that the SQL query is properly formatted
   delete data.items;
@@ -170,11 +168,13 @@ function create(req, res, next) {
   // if items exist, tranform them into an array of arrays for db formatting
   if (items) {
     items = items.map(function (item) {
-      item.uuid = item.uuid || uuid();
+      item.uuid = item.uuid || uuid.v4();
       item.cash_uuid = data.uuid;
       return [
-        item.uuid, item.cash_uuid,
-        item.amount, item.sale_uuid
+        db.bid(item.uuid),
+        item.cash_uuid,
+        item.amount,
+        item.sale_uuid
       ];
     });
   }
@@ -187,14 +187,14 @@ function create(req, res, next) {
     });
   }
 
-  var writeCashSql =
+  const writeCashSql =
     'INSERT INTO cash SET ?;';
 
-  var writeCashItemsSql =
+  const writeCashItemsSql =
     'INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) ' +
     'VALUES ?;';
 
-  var transaction = db.transaction();
+  let transaction = db.transaction();
   transaction.addQuery(writeCashSql, [ data ]);
 
   // only add the "items" query if we are NOT making a caution
@@ -205,7 +205,9 @@ function create(req, res, next) {
 
   transaction.execute()
   .then(function () {
-    res.status(201).json({ uuid : data.uuid });
+    res.status(201).json({
+      uuid : id
+    });
   })
   .catch(next)
   .done();
@@ -216,23 +218,26 @@ function create(req, res, next) {
  * PUT /cash/:uuid
  * Updates the non-financial details associated with a cash payment.
  * NOTE - this will not update the cash_item or cash_discard tables.
+ *
+ * @todo - remove protected fields check -- the database should do this
+ * automatically
  */
 function update(req, res, next) {
   'use strict';
 
-  var uuid = req.params.uuid;
-  var updateSql = 'UPDATE cash SET ? WHERE uuid = ?;';
+  const id = req.params.uuid;
+  const updateSql = 'UPDATE cash SET ? WHERE uuid = ?;';
 
   // protected database fields that are unavailable for updates.
-  var protect = [
+  const protect = [
     'is_caution', 'amount', 'user_id', 'cashbox_id',
     'currency_id', 'date', 'project_id'
   ];
 
   // loop through update keys and ensure that we are only updating non-protected
   // fields
-  var keys = Object.keys(req.body);
-  var hasProtectedKey = keys.some(function (key) {
+  let keys = Object.keys(req.body);
+  let hasProtectedKey = keys.some(function (key) {
       return protect.indexOf(key) > -1;
   });
 
@@ -248,17 +253,17 @@ function update(req, res, next) {
   if (req.body.date) { req.body.date = new Date(req.body.date); }
 
   // if checks pass, we are free to continue with our updates to the db
-  lookupCashRecord(uuid, req.codes)
+  lookupCashRecord(id, req.codes)
   .then(function (record) {
 
     // if we get here, we know we have a cash record by this UUID.
     // we can try to update it.
-    return db.exec(updateSql, [ req.body, req.params.uuid ]);
+    return db.exec(updateSql, [ req.body, db.bid(req.params.uuid) ]);
   })
   .then(function () {
 
     // fetch the changed object from the database
-    return lookupCashRecord(uuid);
+    return lookupCashRecord(id);
   })
   .then(function (record) {
 
@@ -280,15 +285,14 @@ function debitNote(req, res, next) {
   next();
 }
 
-
 /**
- * retrieves cash payment uuids from a reference string (e.g. HBB123)
  * GET /cash/references/:reference
+ * retrieves cash payment uuids from a reference string (e.g. HBB123)
  */
 function reference(req, res, next) {
 
-  var sql =
-    'SELECT c.uuid FROM (' +
+  const sql =
+    'SELECT BUID(c.uuid) AS uuid FROM (' +
       'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference ' +
       'FROM cash JOIN project ON cash.project_id = project.id' +
     ')c WHERE c.reference = ?;';
