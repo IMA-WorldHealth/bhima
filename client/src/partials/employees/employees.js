@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('EmployeeController', EmployeeController);
 
 EmployeeController.$inject = [
-  'EmployeeService', 'ServiceService', 'util', 'EnterpriseService', 'FinancialService', '$translate', '$window', 'SessionService'
+  'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService', 'util', 'EnterpriseService', 'FinancialService', '$translate', '$window', 'SessionService'
 ];
 
-function EmployeeController(Employees, Services, util, Enterprises, FinancialService, $translate, $window, SessionService) {
+function EmployeeController(Employees, Services, Grades, Functions, util, Enterprises, FinancialService, $translate, $window, SessionService) {
   var vm = this;
 
   vm.enterprises = [];
@@ -47,6 +47,18 @@ function EmployeeController(Employees, Services, util, Enterprises, FinancialSer
       vm.services = data;
     }).catch(handler);
 
+    // load Grades
+    Grades.read(null, { detailed : 1 }).then(function (data) {
+      data.forEach(function (g) {
+        g.format = g.code + ' - ' + g.text;
+      });
+      vm.grades = data;
+    }).catch(handler);
+
+    // load Functions
+    Functions.read().then(function (data) {
+      vm.functions = data;
+    }).catch(handler);
 
     // load Enterprises
     Enterprises.read().then(function (data) {

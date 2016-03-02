@@ -204,7 +204,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.grade_id.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.GRADE" | translate }}</label>
                 <div>
-                  <select class="form-control" name="grade_id" ng-model="EmployeeCtrl.employee.grade_id" id="bhima-employee-grade_id" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
+                  <select class="form-control" name="grade_id" ng-model="EmployeeCtrl.employee.grade_id" id="bhima-employee-grade_id" ng-options="g.uuid as g.format for g in EmployeeCtrl.grades | orderBy:'text'" required>
                     <option value="" disabled> -- {{ "SELECT.EMPLOYEE_GRADE" | translate }} -- </option>
                   </select>
                 </div>
@@ -213,7 +213,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.fonction_id.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.FUNCTION" | translate }}</label>
                 <div>
-                  <select class="form-control" name="fonction_id" ng-model="EmployeeCtrl.employee.fonction_id" id="bhima-employee-fonction_id" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
+                  <select class="form-control" name="fonction_id" ng-model="EmployeeCtrl.employee.fonction_id" id="bhima-employee-fonction_id" ng-options="f.id as f.fonction_txt for f in EmployeeCtrl.functions | orderBy:'fonction_txt'" required>
                     <option value="" disabled> -- {{ "SELECT.EMPLOYEE_FUNCTION" | translate }} -- </option>
                   </select>
                 </div>
