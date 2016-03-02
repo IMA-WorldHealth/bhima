@@ -72,6 +72,7 @@ describe('The /creditor_groups  API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
+        expect(res.body.uuid).to.equal(creditorGroup.uuid);
       })
       .catch(helpers.handler);
   });

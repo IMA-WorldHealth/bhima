@@ -552,5 +552,6 @@ exports.configure = function (app) {
   app.post('/creditor_groups', creditorGroups.create);
   app.get('/creditor_groups', creditorGroups.list);
   app.get('/creditor_groups/:uuid', creditorGroups.detail);
+  app.put('/creditor_groups/:uuid', creditorGroups.update);
 
 };
