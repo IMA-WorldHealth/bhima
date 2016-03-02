@@ -11,7 +11,6 @@ function HospitalNumber($q, $http) {
       registeredValue : '='
     },
     link : function (scope, elm, attrs, ctrl) { 
-      var nochecks = 0;
 
       ctrl.$asyncValidators.hospitalNumber = function (modelValue, viewValue) { 
         var deferred;
