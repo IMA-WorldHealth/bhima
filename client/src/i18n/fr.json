@@ -946,15 +946,19 @@
 },
 
 "DEPOT": {
-  "ADD"             : "Ajouter",
-  "ALERT"           : "Ce module vous permet de gérer vos dépôt",
-  "ALL"             : "Tous les Dépôts",
-  "NO_LOTS"        : "Pass de stock disponibles",
+  "ADD"               : "Ajouter un depot",
+  "ALERT"             : "Ce module vous permet de gérer vos dépôt",
+  "ALL"               : "Tous les Dépôts",
+  "NO_LOTS"           : "Pass de stock disponibles",
   "CHANGE_DEPOT"      : "Etes-vous sur que vous voulez changer le pharmacy?  The pharmacy courant est  %depot%.",
-  "CONFIRM_SELECTION"             : "Voulez-vous vraiment gérer les stocks avec %depot% ",
-  "DELETE_SUCCESS"  : "Suppression avec succès",
-  "DELETE_FAIL"     : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
-  "DISTRIBUTION"   : {
+  "CONFIRM_SELECTION" : "Voulez-vous vraiment gérer les stocks avec %depot% ",
+  "CREATE_SUCCESS"    : "Creation du depot avec succès",
+  "DELETE_SUCCESS"    : "Suppression avec succès",
+  "DELETE_FAIL"       : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
+  "DEPOTS_MANAGEMENT" : "Gestion des depots",
+  "DEPOTS_LIST"       : "Liste des depots",
+  "DESCRIPTION"       : "Module de gestion des depots",
+  "DISTRIBUTION"      : {
     "ANNUL"    : "Annuler cette Transaction",
     "ANNULLED" : "Annulé",
     "LOSSES"   : "Stock Losses",
@@ -982,8 +986,8 @@
      "TITLE"             : "Perte stock"
    }
   },
-  "EDIT"            : "Editer les informations d'un dépôt",
-  "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
+  "EDIT"              : "Editer les informations d'un dépôt",
+  "EDIT_SUCCESS"      : "Données du dépôt mise à jour avec succès ",
    "MAIN": {
       "CONFIGURE_WAREHOUSE" : "Sélectionner dépôt",
       "CONFIRM"             : "Voulez-vous vraiment gérer les stocks avec le dépôt : ",
@@ -995,10 +999,14 @@
       "WAREHOUSE_INFO_2"    : "Toutes operations des stock seront affectées au dépôt sélectionné,",
       "WAREHOUSE_INFO_3"    : "Cette configuration n'est pas definitive et peut être changer n'important quand."
       },
-  "NEW"             : "Nouveau dépôt",
-  "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
-  "NO_DEPOTS"       : "Aucun dépôt trouvé",
-  "TITLE"           : "Gestion des Dépôt"
+  "IS_WAREHOUSE"      : "Entrepot ?",
+  "NAME"              : "Nom",
+  "NEW"               : "Nouveau dépôt",
+  "NEW_SUCCESS"       : "Nouveau dépôt enregistré avec succès",
+  "NO_DEPOTS"         : "Aucun dépôt trouvé",
+  "REFERENCE"         : "Ref.",
+  "TITLE"             : "Gestion des Dépôt",
+  "UPDATE_SUCCESS"    : "Mise a jour du depot avec succès"
 },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
@@ -1429,7 +1437,7 @@
    "REQUIRED"           : "Cette valeur est requis.",
     "MIN_CURRENCY_UNIT" : "Cette valeur est trop petite pour la monnaie choisie.",
     "NUMBER"            : "Cette valeur doit être un nombre valide."
-   },   
+   },
    "INVALID_DATE"    : "La date est invalide",
    "LOGIN"           : "Connexion",
    "HAS_ERRORS"      : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumettre à nouveau.",

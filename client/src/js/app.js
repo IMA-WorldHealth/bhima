@@ -23,7 +23,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/permissions/permissions.html'
   })
   .when('/enterprises', {
-    controller: 'EnterpriseController as EnterpriseCtrl', 
+    controller: 'EnterpriseController as EnterpriseCtrl',
     templateUrl: 'partials/enterprises/enterprises.html'
   })
   .when('/projects', {
@@ -100,6 +100,12 @@ function bhimaconfig($routeProvider) {
   .when('/report/invoice/:target', {
     controller : 'configureInvoice',
     templateUrl : 'partials/reports_proposed/invoice/invoice.html'
+  })
+
+  /* Admin : depot management */
+  .when('/depots_management', {
+    controller : 'DepotManagementController as DepotCtrl',
+    templateUrl : 'partials/depots_management/depots_management.html'
   })
 
   /* employees routes */
