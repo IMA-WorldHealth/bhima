@@ -2,6 +2,10 @@
  * @todo Known bug - if the sidebar is expanded and collapsed to totals footer 
  * will not refresh to the correct size (fixed width is not recalculated)
  */
+
+// TODO Caching inventory items - if items are cleared or page reloaded they can be loaded back,
+//  - with quantities?
+//  - with prices?
 angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
@@ -16,18 +20,7 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
  
   vm.Invoice = Invoice;
   
-  // Set default invoice date to today 
-  vm.Invoice.details.date = new Date();
-  vm.invoiceId = uuid();
-
-  // FIXME FIXME
-  vm.distributable = "true";
-  vm.itemIncrement = 1;
-  vm.timestamp = new moment();
-  vm.minimumDate = util.minimumDate;
-
-  vm.dateLocked = true;
-
+  
   // TODO 02/08 - Replace with Dedrick's service API
   $http.get('services')
     .then(function (services) { 
@@ -40,6 +33,13 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
 
   // TODO Initialise per session
   vm.Invoice.items = vm.Invoice.items;
+
+  function handleGridApi(gridApi) { 
+    console.log('handle grid api');
+
+    // expose grid api
+    vm.gridApi = gridApi;
+  }
 
   var gridOptions = { 
     appScopeProvider : vm,
@@ -54,9 +54,11 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
       {field : 'amount', cellTemplate : 'partials/patient_invoice/templates/grid/amount.tmpl.html'},
       {field : 'actions', width : 25, cellTemplate : 'partials/patient_invoice/templates/grid/actions.tmpl.html'}
     ],
+    onRegisterApi : handleGridApi,
     data : vm.Invoice.items.current.data
   };
-  
+
+    
   vm.gridOptions = gridOptions;
   vm.setPatient = function setPatient(patient) { 
 
@@ -68,12 +70,56 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
   }
 
   vm.submit = function submit(detailsForm) { 
-    console.log('got sale details form', detailsForm);
+    // console.log('got sale details form', detailsForm);
     
     detailsForm.$setSubmitted();
+  
+    // Ask service items to validate themselves - if anything is returned it is invalid
+    var invalidItem = vm.Invoice.items.verify();
+    
+    if (angular.isDefined(invalidItem)) { 
+      console.log('there was a problem with an item!');
+      
+      console.log(vm.gridApi);
 
-    console.log(detailsForm.$invalid);
+      // show the user where the error is
+      vm.gridApi.core.scrollTo(invalidItem);
+      
+      return;
+    }
+      
+    console.log('everything must be valid!');
   }
+  
+  // Reset everything in the controller
+  vm.clear = function clear() { 
+    
+    // Default values
+    // Set default invoice date to today 
+    vm.Invoice.details.date = new Date();
+    vm.invoiceId = uuid();
+
+    // FIXME FIXME
+    vm.distributable = "true";
+    vm.itemIncrement = 1;
+    vm.timestamp = new moment();
+    vm.minimumDate = util.minimumDate;
+
+    vm.dateLocked = true;
+    
+    if (vm.services) { 
+      vm.Invoice.details.service = vm.services[0];
+    }
+
+    if (vm.patientSearch) { 
+      vm.patientSearch.reset();
+    }
+    vm.Invoice.recipient = null;
+    vm.Invoice.items.reset();
+  };
+
+  //FIXME
+  vm.clear();
 
   // This is done in the controller because the invoice service would become strictly 
   // tied  to debitors given this code 
@@ -81,6 +127,9 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
   // TODO very temporary code
   function configureInvoice(patient) { 
     var configureQueue = [];
+    
+    // console.log('patient search', vm.patientSearch);
+    // vm.patientSearch.reset();
 
     // Prompt initial invoice item
     Invoice.items.addInventoryItem();

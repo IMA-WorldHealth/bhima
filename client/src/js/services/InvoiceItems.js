@@ -42,9 +42,9 @@ function InvoiceItems(InventoryService, Uuid, Store) {
     return items.data;  
   };
 
-  this.currentItems = function currentItems() { 
-    return current.data;
-  };
+  // this.currentItems = function currentItems() { 
+  //   return current.data;
+  // };
   
   this.addInventoryItem = function addInventoryItem(totalItems) { 
     var totalItems = totalItems || 1;
@@ -67,10 +67,12 @@ function InvoiceItems(InventoryService, Uuid, Store) {
   // };
 
   this.removeItem = function removeItem(item) { 
-    console.log('remove item called', item);
-  
+    
     // Remove the entity from the current list of sale items
     service.current.remove(item.uuid);
+    
+    console.log('removed');
+    console.log(service.current.data);
 
     // If the item has had an inventory assigned to it, add this item back into the pool of available inventory items
     if (item.sourceInventoryItem) { 
@@ -107,6 +109,66 @@ function InvoiceItems(InventoryService, Uuid, Store) {
   this.setPriceList = function setPriceList(priceList) { 
     this.priceList = new Store({identifier : 'inventory_uuid'});
     this.priceList.setData(priceList.items);
+  };
+
+  this.reset = function reset() { 
+    
+    var numberOfItems = service.current.data.length;
+
+    // console.log('resett', service.current);
+    
+    for (var i = 0; i < numberOfItems; i++) { 
+      var item = service.current.data[0];
+      // console.log('removing item', item);
+
+      // Remove items one by one to respect remove rules
+      service.removeItem(service.current.data[0]);
+
+    }
+    // service.current.data.forEach(function (item) { 
+      // service.removeItem(item);
+    // });
+  };
+
+  this.verify = function verify() { 
+    var invalidItem;
+
+    service.current.data.some(function (item) { 
+      var invalid = false;
+      console.log('verifying item...');
+  
+      // Most of these cases should be impossible to reach
+      // Check item has been confirmed
+      if (!item.confirmed) { 
+        invalid = true;
+      }
+    
+      if (!angular.isNumber(item.quantity)) { 
+        invalid = true;
+      }
+
+      if (!angular.isNumber(item.unit_price)) { 
+        invalid = true;
+      }
+
+      if (item.quantity <= 0) { 
+        invalid = true;
+      }
+      
+      if (item.unit_price < 0) { 
+        invalid = false;
+      }
+
+      if (invalid) {
+        invalidItem = item;
+        return true;
+      } 
+        
+      return false;
+    });
+
+
+    return invalidItem;
   };
 
   InventoryService.getInventoryItems()

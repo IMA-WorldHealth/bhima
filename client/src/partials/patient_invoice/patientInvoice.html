@@ -21,13 +21,16 @@
       <form name="detailsForm">
       <div class="col-md-6">
       
-        {{PatientInvoiceCtrl.Invoice.recipient}}
+        <!-- {{PatientInvoiceCtrl.Invoice.recipient}} -->
         <!-- TODO Note custom error handling for valid recipient - the find patient directive should have state based validators -->
-        <div 
-          class="form-group"
-          ng-class="{'has-error' : !PatientInvoiceCtrl.Invoice.recipient && detailsForm.$submitted}">
+        <!-- ng-class="{'has-error' : !PatientInvoiceCtrl.Invoice.recipient && detailsForm.$submitted}"> -->
+        <div class="form-group">
           <label class="control-label">Bill to</label>
-          <bh-find-patient type="inline" on-search-complete="PatientInvoiceCtrl.setPatient(patient)" required="true">
+          <bh-find-patient 
+            type="inline" 
+            suppress-reset="true" 
+            on-search-complete="PatientInvoiceCtrl.setPatient(patient)" 
+            api="PatientInvoiceCtrl.patientSearch">
           </bh-find-patient>
         </div>
         
@@ -185,7 +188,6 @@
           <h4>{{PatientInvoiceCtrl.Invoice.billingServiceCost | currency}}</h4>
           <h4>{{PatientInvoiceCtrl.Invoice.subsidyCost | currency}}</h4>
           
-
           <!-- This is actually what causes all of the values referenced to be updated on every change -->
           <h4><strong>{{PatientInvoiceCtrl.Invoice.total() | currency}}</strong><h4>
         </div>
@@ -201,8 +203,20 @@
           ng-click="PatientInvoiceCtrl.submit(detailsForm)">Submit Invoice</button>
         <button 
           class="btn btn-default"
-          ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"><span class="glyphicon glyphicon-ban-circle"></span> Clear</button>
+          ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
+          ng-click="PatientInvoiceCtrl.clear()"><span class="glyphicon glyphicon-ban-circle"></span> Clear</button>
         
+        <p 
+          class="text-danger"
+          ng-if="detailsForm.$submitted && detailsForm.$invalid">
+          <span class="glyphicon glyphicon glyphicon-exclamation-sign"></span> This invoice contains invalid details
+        </p>
+        <p 
+          class="text-danger"
+          ng-if="detailsForm.$submitted">
+          <span class="glyphicon glyphicon glyphicon-exclamation-sign"></span> This invoice contains invalid items
+        </p>
+
         <!-- <p class="text-danger">Invoice cannot be submitted with invalid items</p> -->
       </div>
     </div>

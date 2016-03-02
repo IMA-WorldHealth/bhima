@@ -111,8 +111,12 @@
             popover-append-to-body="true">
            <span class="glyphicon glyphicon-info-sign"></span>
           </a>
-
-          <a class="btn btn-default" ng-click="$ctrl.reload()">
+          
+          <!-- Only shown if the controller has not specified suppressReset -->
+          <a 
+            ng-if="!$ctrl.suppressReset"
+            class="btn btn-default" 
+            ng-click="$ctrl.reload()">
            <span class="glyphicon glyphicon-refresh"></span>
           </a>
         </div>
