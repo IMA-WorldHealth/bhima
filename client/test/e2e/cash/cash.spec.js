@@ -171,34 +171,11 @@ describe('Cash Payments Module', function () {
       amount : 5.12
     };
 
-    /**
-     * wraps the edit date component to easily change dates
-     * @todo - move this into a common shared utility for modules to use in the
-     * future
-     */
-    // function editDate(date, form) {
+    //This transfer should succed
 
-    //   // click the edit date button to toggle into readonly mode
-    //   var btn = element(by.css('[data-edit-date-btn]'));
-    //   btn.click();
-
-    //   // pre-format date for insertion to the date input
-    //   var val = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-
-    //   // currently, protractor does not support sending keys to all known HTML5
-    //   // date input controls (see https://github.com/angular/protractor/issues/562).
-    //   // so, we must the document methods.
-    //   var src = 'var ipt = document.querySelector("[data-edit-date-btn]"); ' +
-    //     'ipt.value = "' + val + '"; ' +
-    //     'angular.element(ipt).scope().$apply(' +
-    //       'function (s) { s.' + form + '[ipt.name].$setViewValue("' + val + '"); });';
-
-    //   // run the script
-    //   browser.executeScript(src);
-
-    //   // lock the date input back in readonly mode
-    //   btn.click();
-    // }
+    var mockTransfer = {
+      amout : 1000
+    }
 
     it('should make a caution payment', function () {
 
@@ -268,10 +245,22 @@ describe('Cash Payments Module', function () {
       FU.exists(by.css('[data-cash-receipt-modal]'), true);
     });
 
-    it('should perform validation', function () {
+    it('should make a transfert between selected auxillary cash and a virement account', function (){
 
-      // click the submit button
-      FU.buttons.submit();
+      //click the transfert button
+      var transfertBtn = element(by.css('[data-perform-transfer]'));
+      transfertBtn.click();
+
+      //choosing CDF as transfer currency
+      var CDFRadio = element(by.css('[data-transfer-currency-option="1"]'));
+      CDFRadio.click();
+
+      //set a value in the currency component by model to avoid conflict  
+      components.currencyInput.setById('transferCurrencyInput', mockTransfer.amount);
+
+      // submit the modal button
+      var transferSubmitBtn =  element(by.id('submit-transfer'));
+      transferSubmitBtn.click();
     });
   });
 });

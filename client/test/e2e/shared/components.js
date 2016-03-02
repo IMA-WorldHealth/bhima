@@ -123,7 +123,7 @@ exports.locationSelect = {
  * @public
  */
 exports.currencyInput = {
-  selector : '[data-bh-currency-input]',
+  selector : '[data-bh-currency-input]',  
 
   /**
    * sets the value of the currency input.
@@ -131,6 +131,14 @@ exports.currencyInput = {
   set : function set(value) {
     var elm = element(by.css(this.selector));
     elm.sendKeys(value);
+  },
+
+  /**
+  *set the value of the component by his id to avoid conflict
+  */
+  setById : function setById (id, value){
+    var input = element(by.id(id));
+    input.model = value;
   },
 
   /**
