@@ -3,8 +3,6 @@ var db = require('./../../lib/db');
 var uuid = require('./../../lib/guid');
 var journal = require('./journal');
 
-
-
 /** 
  * Utility method to ensure purchase items lines reference purchase.
  * @param {Object} purchaseItems - An Array of all purchase items to be written 
