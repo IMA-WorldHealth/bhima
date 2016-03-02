@@ -7,9 +7,9 @@ helpers.configure(chai);
 /**
 * The /function  API endpoint
 *
-* This test suite implements full CRUD on the /function  HTTP API endpoint.
+* This test suite implements full CRUD on the /functions  HTTP API endpoint.
 */
-describe('The /function  API endpoint', function () {
+describe('The /functions  API endpoint', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
       // Function we will add during this test suite.
