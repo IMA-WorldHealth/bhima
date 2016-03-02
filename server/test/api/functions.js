@@ -5,7 +5,7 @@ var helpers = require('./helpers');
 helpers.configure(chai);
 
 /**
-* The /function  API endpoint
+* The /functions  API endpoint
 *
 * This test suite implements full CRUD on the /functions  HTTP API endpoint.
 */
