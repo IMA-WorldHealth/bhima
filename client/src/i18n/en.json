@@ -295,6 +295,10 @@
     "FLOW" : {
       "TITLE" : "Cash Flow"
     },
+  "MODALS" : {
+    "MISSING_DEBTOR_ID" : "No debtor selected!",
+    "EMPTY_SELECTION" : "No invoices selected.  Please select at least one invoice or dismiss the modal."
+  },
    "HELP_TXT_1"       : "This module enables to pay several invoice",
    "HELP_TXT_2"       : "Find Debtor with ",
    "NO_EXCHANGE_RATE" : "Error                                                     : The exchange rate does not exist!",

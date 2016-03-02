@@ -7,7 +7,7 @@
   <!-- warn the client if not debtor id has been passed in -->
   <p ng-show="CashInvoiceModalCtrl.missingId" class="text-danger text-center">
     <span class="glyphicon glyphicon-alert"></span>
-    {{ "CASH.MODALS.MISSING_DEBTOR_ID" |translate }}
+    {{ "CASH.MODALS.MISSING_DEBTOR_ID" | translate }}
   </p>
 
   <!-- the ui grid to select debtor invoices -->
@@ -39,6 +39,10 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div ng-show="CashInvoiceModalCtrl.empty" class="text-warning">
+    <span class="glyphicon glyphicon-info-sign"></span> {{ "CASH.MODALS.EMPTY_SELECTION" | translate }}
   </div>
 </div>
 
