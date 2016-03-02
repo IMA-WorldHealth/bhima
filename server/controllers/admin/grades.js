@@ -5,13 +5,11 @@
 
 */
 var db = require('../../lib/db');
-var uuid = require('../../lib/guid');
+var uuid = require('node-uuid');
 
 // GET /Grade 
 function lookupGrade (uuid, codes) {
   'use strict';
-
-  var record;
 
   var sql =
     'SELECT uuid, code, text, basic_salary ' +
@@ -25,22 +23,25 @@ function lookupGrade (uuid, codes) {
       throw new codes.ERR_NOT_FOUND();
     }
 
-    // store the record for return
-    record = rows[0];
+    return rows[0];
 
-    return record;
   });
 }
 
 
-// The Grade  is assumed from the session.
+// Lists of grades of hospital employees.
 function list(req, res, next) {
   'use strict';
 
   var sql;
   
   sql =
-    'SELECT uuid, code, text, basic_salary FROM grade ;';
+    'SELECT uuid, text FROM grade ;';
+
+  if (req.query.detailed === '1'){
+    sql =
+      'SELECT uuid, code, text, basic_salary FROM grade ;';
+  }
 
   db.exec(sql)
   .then(function (rows) {
@@ -59,9 +60,7 @@ function list(req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  var uuid = req.params.uuid;
-
-  lookupGrade (uuid, req.codes)
+  lookupGrade (req.params.uuid, req.codes)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -78,7 +77,7 @@ function create(req, res, next) {
       data = req.body;
    
   // Provide UUID if the client has not specified 
-  data.uuid = data.uuid || uuid();
+  data.uuid = data.uuid || uuid.v4();
     
   sql =
     'INSERT INTO grade SET ? ';

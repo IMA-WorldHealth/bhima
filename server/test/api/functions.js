@@ -1,8 +1,5 @@
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
-var uuid    = require('node-uuid');
 
 var helpers = require('./helpers');
 helpers.configure(chai);
@@ -22,22 +19,22 @@ describe('The /function  API endpoint', function () {
  
   var FUNCTION_KEY = ['id', 'fonction_txt'];
 
-  var DEFAULT = 2;
+  var NUM_FUNCTIONS = 2;
 
   // login before each request
   beforeEach(helpers.login(agent));
 
 
-  it('GET /function  returns a list of function ', function () {
+  it('GET /FUNCTIONS returns a list of function ', function () {
     return agent.get('/functions')
     .then(function (res) {
-      helpers.api.listed(res, DEFAULT);
+      helpers.api.listed(res, NUM_FUNCTIONS);
     })
     .catch(helpers.handler);
   });
 
 
-  it('POST /function  should create a new Function', function () {
+  it('POST /FUNCTIONS should create a new Function', function () {
     return agent.post('/functions')
     .send(fonction)
     .then(function (res) {
@@ -47,7 +44,7 @@ describe('The /function  API endpoint', function () {
     .catch(helpers.handler);
   });
 
-  it('GET /function/:id should not be found for unknown id', function () {
+  it('GET /FUNCTIONS/:ID should not be found for unknown id', function () {
     return agent.get('/functions/unknownFunction')
     .then(function (res) {
       helpers.api.errored(res, 404);
@@ -55,7 +52,7 @@ describe('The /function  API endpoint', function () {
     .catch(helpers.handler);
   });
 
-  it('PUT /function  should update an existing Function ', function () {
+  it('PUT /FUNCTIONS  should update an existing Function ', function () {
     return agent.put('/functions/' + fonction.id)
       .send({ fonction_txt : 'Imagerie Medicale' })
       .then(function (res) {
@@ -66,7 +63,7 @@ describe('The /function  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /Function/:ID returns a single Function ', function () {
+  it('GET /FUNCTIONS/:ID returns a single Function ', function () {
     return agent.get('/functions/' + fonction.id)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -75,7 +72,7 @@ describe('The /function  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /Function/:id will send back a 404 if the Function does not exist', function () {
+  it('DELETE /FUNCTIONS/:ID will send back a 404 if the Function does not exist', function () {
     return agent.delete('/functions/inknowFunction')
       .then(function (res) {
         helpers.api.errored(res, 404);
@@ -83,7 +80,7 @@ describe('The /function  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /exchange/:id should delete a Function ', function () {
+  it('DELETE /FUNCTIONS/:ID should delete a Function ', function () {
     return agent.delete('/functions/' + fonction.id)
       .then(function (res) {
         helpers.api.deleted(res);

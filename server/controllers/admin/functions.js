@@ -10,8 +10,6 @@ var db = require('../../lib/db');
 function lookupFunction(id, codes) {
   'use strict';
 
-  var record;
-
   var sql =
     'SELECT id, fonction_txt FROM fonction ' +
     'WHERE fonction.id = ? ';
@@ -23,15 +21,12 @@ function lookupFunction(id, codes) {
       throw new codes.ERR_NOT_FOUND();
     }
 
-    // store the record for return
-    record = rows[0];
-
-    return record;
+    return rows[0];
   });
 }
 
 
-// The Function is assumed from the session.
+// Lists the functions of hospital employees
 function list(req, res, next) {
   'use strict';
 
@@ -98,8 +93,7 @@ function update(req, res, next) {
 
   db.exec(sql, [req.body, req.params.id])
   .then(function () {
-    var id = req.params.id;
-    return lookupFunction(id, req.codes);
+    return lookupFunction(req.params.id, req.codes);
   })
   .then(function (record) {
     // all updates completed successfull, return full object to client
