@@ -103,8 +103,7 @@ function update(req, res, next) {
 
   db.exec(sql, [req.body, req.params.uuid])
   .then(function () {
-    var uuid = req.params.uuid;
-    return lookupCreditorGroup (uuid, req.codes);
+    return lookupCreditorGroup (req.params.uuid, req.codes);
   })
   .then(function (record) {
     // all updates completed successfull, return full object to client
