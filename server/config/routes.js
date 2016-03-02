@@ -71,7 +71,10 @@ var services             = require('../controllers/admin/services');
 var conventions          = require('../controllers/finance/conventions');
 var vouchers             = require('../controllers/finance/vouchers');
 var suppliers            = require('../controllers/admin/suppliers');
+var functions            = require('../controllers/admin/functions');
+var grades               = require('../controllers/admin/grades');
 var creditorGroups       = require('../controllers/finance/creditorGroups');
+
 
 // Middleware for handle uploaded file
 var multipart            = require('connect-multiparty');
@@ -530,6 +533,20 @@ exports.configure = function (app) {
   app.get('/purchase', purchase.list);
   app.get('/purchase/:uuid', purchase.detail);
   app.put('/purchase/:uuid', purchase.update);
+
+  /** functions api */
+  app.get('/functions', functions.list);
+  app.get('/functions/:id', functions.detail);
+  app.post('/functions', functions.create);
+  app.put('/functions/:id', functions.update);
+  app.delete('/functions/:id', functions.delete);
+
+  /** Grades api */
+  app.get('/grades', grades.list);
+  app.get('/grades/:uuid', grades.detail);
+  app.post('/grades', grades.create);
+  app.put('/grades/:uuid', grades.update);
+  app.delete('/grades/:uuid', grades.delete);
 
   /** Creditor Groups API */
   app.post('/creditor_groups', creditorGroups.create);
