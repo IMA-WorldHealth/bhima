@@ -9,6 +9,7 @@
  * This module implements the following routes:
  * GET    /accounts
  * GET    /accounts/:id
+ * GET    /accounts/:id/balance/
  * POST   /accounts
  * PUT    /accounts/:id
  *
@@ -104,6 +105,30 @@ function detail(req, res, next) {
   .done();
 }
 
+function getSold (req, res, next){
+  'use strict';
+
+  var accountId = req.params.id, optional = '';
+
+  if(req.query.journal === '1') {
+    optional = ' UNION ALL SELECT pj.account_id, SUM(pj.debit_equiv) AS debit, SUM(pj.credit_equiv) AS credit, (debit-credit) AS balance FROM posting_journal AS pj JOIN account AS ac ON pj.account_id = ac.id WHERE pj.account_id = ?';
+  }
+
+  var accountSoldQuery = 'SELECT t.account_id, IFNULL(SUM(t.debit), 0) AS debit, IFNULL(SUM(t.credit), 0) AS credit, IFNULL(t.balance, 0) AS balance FROM' + 
+    ' (SELECT gl.account_id, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, (debit-credit) AS balance FROM' + 
+    ' general_ledger AS gl JOIN account AS ac ON gl.account_id = ac.id WHERE gl.account_id = ?' + optional + ' ) AS t;';
+
+  lookupAccount(accountId, req.codes)
+    .then(function () {
+      return db.exec(accountSoldQuery, [accountId, accountId]);
+    })
+    .then(function (rows){
+      res.status(200).json(rows[0]);
+    })
+    .catch(next)
+    .done();  
+}
+
 function lookupAccount(id, codes) {
   'use strict';
 
@@ -129,3 +154,4 @@ exports.list = list;
 exports.create = create;
 exports.update = update;
 exports.detail = detail;
+exports.getSold = getSold;

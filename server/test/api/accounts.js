@@ -112,11 +112,25 @@ describe('The account API, PATH : /accounts', function () {
       .catch(helpers.handler);
   });
 
- it('METHOD : GET, PATH : /accounts/unknownId, It returns a 404 error', function () {
+  it('METHOD : GET, PATH : /accounts/unknownId, It returns a 404 error', function () {
     return agent.get('/accounts/unknownId')
       .then(function (res) {
         expect(res).to.have.status(404);
         expect(res.body).to.contain.all.keys(helpers.errorKeys);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('METHOD : GET, PATH : /accounts/:id/balance, It returns the balance of a provided account id', function () {
+    return agent.get('/accounts/:id/balance'.replace(':id', FETCHABLE_ACCOUNT_ID))
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
+        expect(res.body.debit).to.satisfy(function (debit) { return debit >= 0;});
+        expect(res.body.credit).to.satisfy(function (credit) { return credit >= 0;});
+        expect(res.body.balance).to.satisfy(function (balance) { return balance >= 0;});
       })
       .catch(helpers.handler);
   });
