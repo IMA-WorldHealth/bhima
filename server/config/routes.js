@@ -73,6 +73,8 @@ var vouchers             = require('../controllers/finance/vouchers');
 var suppliers            = require('../controllers/admin/suppliers');
 var functions            = require('../controllers/admin/functions');
 var grades               = require('../controllers/admin/grades');
+var creditorGroups       = require('../controllers/finance/creditorGroups');
+
 
 // Middleware for handle uploaded file
 var multipart            = require('connect-multiparty');
@@ -545,5 +547,11 @@ exports.configure = function (app) {
   app.post('/grades', grades.create);
   app.put('/grades/:uuid', grades.update);
   app.delete('/grades/:uuid', grades.delete);
+
+  /** Creditor Groups API */
+  app.post('/creditor_groups', creditorGroups.create);
+  app.get('/creditor_groups', creditorGroups.list);
+  app.get('/creditor_groups/:uuid', creditorGroups.detail);
+  app.put('/creditor_groups/:uuid', creditorGroups.update);
 
 };
