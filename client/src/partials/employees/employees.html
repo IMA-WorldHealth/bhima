@@ -231,7 +231,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.debitor_group_uuid.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.DEBITOR_GROUP" | translate }}</label>
                 <div>
-                  <select class="form-control" name="debitor_group_uuid" ng-model="EmployeeCtrl.employee.debitor_group_uuid" id="bhima-employee-debitor_group_uuid" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
+                  <select class="form-control" name="debitor_group_uuid" ng-model="EmployeeCtrl.employee.debitor_group_uuid" id="bhima-employee-debitor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debitorGroups | orderBy:'name'" required>
                     <option value="" disabled> -- {{ "SELECT.DEBITOR_GROUP" | translate }} -- </option>
                   </select>
                 </div>
