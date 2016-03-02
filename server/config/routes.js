@@ -71,6 +71,7 @@ var services             = require('../controllers/admin/services');
 var conventions          = require('../controllers/finance/conventions');
 var vouchers             = require('../controllers/finance/vouchers');
 var suppliers            = require('../controllers/admin/suppliers');
+var creditorGroups       = require('../controllers/finance/creditorGroups');
 
 // Middleware for handle uploaded file
 var multipart            = require('connect-multiparty');
@@ -529,5 +530,10 @@ exports.configure = function (app) {
   app.get('/purchase', purchase.list);
   app.get('/purchase/:uuid', purchase.detail);
   app.put('/purchase/:uuid', purchase.update);
+
+  /** Creditor Groups API */
+  app.post('/creditor_groups', creditorGroups.create);
+  app.get('/creditor_groups', creditorGroups.list);
+  app.get('/creditor_groups/:uuid', creditorGroups.detail);
 
 };
