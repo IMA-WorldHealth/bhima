@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('EmployeeController', EmployeeController);
 
 EmployeeController.$inject = [
-  'EmployeeService', 'ServiceService', 'EnterpriseService', 'FinancialService', '$translate', '$window', 'SessionService'
+  'EmployeeService', 'ServiceService', 'util', 'EnterpriseService', 'FinancialService', '$translate', '$window', 'SessionService'
 ];
 
-function EmployeeController(Employees, Services, Enterprises, FinancialService, $translate, $window, SessionService) {
+function EmployeeController(Employees, Services, util, Enterprises, FinancialService, $translate, $window, SessionService) {
   var vm = this;
 
   vm.enterprises = [];
@@ -21,7 +21,11 @@ function EmployeeController(Employees, Services, Enterprises, FinancialService, 
   vm.cancel = cancel;
   vm.submit = submit;
   vm.del    = del;
-  vm.more   = more;  
+  vm.more   = more;
+
+  // Define limits for DOB
+  vm.minDOB = util.minDOB;
+  vm.maxDOB = util.maxDOB;    
 
   function handler(error) {
     console.error(error);
