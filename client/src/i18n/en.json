@@ -1155,7 +1155,7 @@
    "REGISTRATION_FORM"  : "Registration Form",
    "SEARCH_BY_CODE"     : "Tap the code",
    "SEARCH_BY_NAME"     : "Tap the empoyee name",
-   "SERVICE"            : "Service",   
+   "SERVICE"            : "Service",
    "SEX"                : "Sex",
    "SUBMIT_EDIT"        : "Submit Details",
    "SUBMIT_NEW"         : "Submit Registration",
@@ -1808,6 +1808,15 @@
    "VILLAGE"               : "Village",
    "MODAL"               : "Add a new Location"
    },
+"MODALS" : {
+  "REFERENCES" : {
+    "TITLE" : "Receipt Lookup Modal",
+    "TYPE" : "Receipt Type",
+    "REFERENCE_LOOKUP" : "Reference Lookup",
+    "NO_RECEIPT" : "No receipt matches that reference.",
+    "SUCCESS" : "Successfully found a receipt!"
+  }
+},
 "NO_EXCHANGE": {
    "CURRENT_DATE" : "Current Date",
    "EXPLANATION"  : "This module requires an exchange rate.  There is no exchange rate set for today.",
@@ -2702,6 +2711,7 @@
    "REFERENCE"             : "Select a Reference",
    "REFERENCE_GROUP"       : "Select a Reference Group",
    "RESULT_ACCOUNT_SCT"    : "Select a Result Account section",
+   "RECEIPT"               : "Select a Receipt",
    "SECTOR"                : "Select a Sector",
    "SERVICE"               : "Select a Service",
    "SOURCE"                : "Select a source",

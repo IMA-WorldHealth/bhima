@@ -18,12 +18,13 @@ CashService.$inject = [ '$http', 'util', 'ExchangeRateService' ];
  */
 function CashService($http, util, Exchange) {
   var service = this;
-  var baseUrl = '/cash';
+  var baseUrl = '/cash/';
 
   service.read = read;
   service.create = create;
   service.update = update;
   service.delete = remove;
+  service.reference = reference;
 
   /**
    * Fetchs cash payments from the server.  If an uuid is specified, will read a
@@ -31,13 +32,12 @@ function CashService($http, util, Exchange) {
    * database.
    *
    * @method read
-   * @param {string} uuid A cash payment UUID
+   * @param {string} uuid (optional) - a cash payment UUID
+   * @param {object} options - parameters to be passed as HTTP query strings
    * @returns {object|array} payments One or more cash payments.
    */
   function read(uuid, options) {
-    var target = (uuid) ?
-      baseUrl + '/' + uuid :
-      baseUrl;
+    var target = baseUrl.concat(uuid || '');
 
     return $http.get(target, options)
       .then(util.unwrapHttpResponse);
@@ -121,7 +121,7 @@ function CashService($http, util, Exchange) {
    * @returns {object} payments A promise containing the entire cash payment record
    */
   function update(uuid, data) {
-    var target = baseUrl + '/' + uuid;
+    var target = baseUrl.concat(uuid);
     return $http.put(target, data)
       .then(util.unwrapHttpResponse);
   }
@@ -131,15 +131,30 @@ function CashService($http, util, Exchange) {
    *
    * @method delete
    * @param {string} uuid A cash payment UUID
-   * @returns Promise A resolved or rejected empty promise
+   * @returns {promise} promise - a resolved or rejected empty promise
    */
   function remove(uuid) {
-    var target = baseUrl + '/' + uuid;
+    var target = baseUrl.concat(uuid);
 
     // Technically, we are not returning any body, so unwrappHttpResponse does
     // not do anything.  However, to keep uniformity with the API, I've included
     // it.
     return $http.delete(target)
+      .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * Searches for a cash payment by its reference.
+   *
+   * @method reference
+   * @param {string} reference
+   * @returns {promise} promise - a resolved or rejected promise with the
+   * result sent from the server.
+   */
+  function reference(ref) {
+    var target = baseUrl + 'references/' + ref;
+
+    return $http.get(target)
       .then(util.unwrapHttpResponse);
   }
 }

@@ -6,11 +6,11 @@ var helpers = require('./helpers');
 helpers.configure(chai);
 
 /**
-* The /grade   API endpoint
+* The /grades   API endpoint
 *
-* This test suite implements full CRUD on the /grade   HTTP API endpoint.
+* This test suite implements full CRUD on the /grades   HTTP API endpoint.
 */
-describe('The /grade  API endpoint', function () {
+describe('The /grades  API endpoint', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   // Grade we will add during this test suite.
