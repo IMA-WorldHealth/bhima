@@ -137,8 +137,9 @@ exports.currencyInput = {
   *set the value of the component by his id to avoid conflict
   */
   setById : function setById (id, value){
-    var input = element(by.id(id));
-    input.model = value;
+    var comp = element(by.id(id));
+    var input = comp.element(by.css(this.selector));
+    input.clear().sendKeys(value);
   },
 
   /**

@@ -147,7 +147,6 @@ describe('Cash Payments Module', function () {
 
   /** tests for the cash payments form page */
   describe('Cash Payments Form Page', function () {
-    var dateValue, scope, $componentController;
 
     /** navigate to the page before each function */
     beforeEach(function () {
@@ -169,13 +168,7 @@ describe('Cash Payments Module', function () {
       patientId: 'TPA2',
       date : new Date(2016, 03, 01),
       amount : 5.12
-    };
-
-    //This transfer should succed
-
-    var mockTransfer = {
-      amout : 1000
-    }
+    };    
 
     it('should make a caution payment', function () {
 
@@ -245,6 +238,21 @@ describe('Cash Payments Module', function () {
       FU.exists(by.css('[data-cash-receipt-modal]'), true);
     });
 
+    
+  });
+
+  describe('Cash Transfer ', function (){    
+
+    /** navigate to the page before each function */
+    beforeEach(function () {
+      browser.get(path);
+    });
+
+    //This transfer should succed
+    var mockTransfer = {
+      amount : 100
+    };
+
     it('should make a transfert between selected auxillary cash and a virement account', function (){
 
       //click the transfert button
@@ -261,6 +269,8 @@ describe('Cash Payments Module', function () {
       // submit the modal button
       var transferSubmitBtn =  element(by.id('submit-transfer'));
       transferSubmitBtn.click();
+
+      FU.exists(by.id('succed-label'), true);
     });
   });
 });
