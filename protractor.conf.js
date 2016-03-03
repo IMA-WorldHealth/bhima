@@ -20,13 +20,13 @@ var config = {
   ignoreSynchronization : false,
 
   mochaOpts : {
-    timeout : 30000,
+    timeout : 30000
   },
   // default browsers to run
   multiCapabilities: [{
     //'browserName': 'firefox',
  // }, {
-    'browserName': 'chrome',
+    'browserName': 'chrome'
   }],
 
   // this will log the user in to begin with

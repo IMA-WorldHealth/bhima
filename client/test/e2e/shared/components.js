@@ -139,7 +139,7 @@ exports.currencyInput = {
   setById : function setById (id, value){
     var comp = element(by.id(id));
     var input = comp.element(by.css(this.selector));
-    input.clear().sendKeys(value);
+    input.sendKeys(value);
   },
 
   /**
