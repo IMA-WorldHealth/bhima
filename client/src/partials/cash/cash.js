@@ -238,11 +238,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
         cashBox:  function cashBoxProvider() { return vm.cashbox; }
       }
     });
-
-    // fired when the modal closes
-    instance.result.then(function (result) {
-      
-    });
   }
 
   // exchanges the payment at the bottom of the previous invoice slip.
