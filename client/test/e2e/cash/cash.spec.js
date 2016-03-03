@@ -68,12 +68,7 @@ describe('Cash Payments Module', function () {
       var target = path.concat('/' + cashboxA.id);
 
       // implicitly choose cashbox B by navigating to it directly 
-
       browser.get(target);
-
-      //Lazy solution wait for the http request to be complteted
-
-      // browser.sleep(3000); 
 
       // make sure all $http/$timeout requests clear before moving forward
       browser.waitForAngular();   
@@ -95,7 +90,6 @@ describe('Cash Payments Module', function () {
       // emulate a selection by simply going to the direct URL
       // this should set the cashbox ID in localstorage
       browser.get(target);
-      // browser.sleep(3000);
       
       // make sure all $http/$timeout requests clear before moving forward
       browser.waitForAngular();
@@ -127,7 +121,6 @@ describe('Cash Payments Module', function () {
       var backBtn = element(by.css('[data-change-cashbox]'));
       backBtn.click();
 
-      // browser.sleep(3000);
       browser.waitForAngular();
 
       // ensure we get back to the cashbox select module
@@ -137,7 +130,6 @@ describe('Cash Payments Module', function () {
       var btn = element(by.id('cashbox-'.concat(cashboxB.id)));
       btn.click();
 
-      // browser.sleep(3000);
       browser.waitForAngular();
 
       // verify that we get to the cashboxB page
