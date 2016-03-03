@@ -66,9 +66,6 @@ var paths = {
       // jquery
       'client/vendor/jquery/dist/jquery.min.js',
 
-      // localforage
-      'client/vendor/localforage/dist/localforage.min.js',
-
       // Angular
       'client/vendor/angular/angular.min.js',
       'client/vendor/angular-route/angular-route.min.js',
@@ -100,8 +97,8 @@ var paths = {
       // UI Bootstrap
       'client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
 
-      // Angular Local Forage
-      'client/vendor/angular-localforage/dist/angular-localForage.min.js'
+      // ngStorage
+      'client/vendor/ngstorage/ngStorage.min.js'
     ],
     e2etest    : [
       'client/test/e2e/**/*.spec.js'

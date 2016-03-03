@@ -18,7 +18,6 @@
     "angular": "^1.5.0",
     "angular-bootstrap": "1.1.1",
     "angular-chart.js": "~0.8.8",
-    "angular-localforage": "~1.2.3",
     "angular-route": "^1.5.0",
     "angular-sanitize": "^1.5.0",
     "angular-translate": "~2.9.0",
@@ -33,7 +32,8 @@
     "angular-moment": "~0.10.3",
     "moment": "~2.10.6",
     "angular-dynamic-locale": "~0.1.29",
-    "angular-messages": "^1.5.0"
+    "angular-messages": "^1.5.0",
+    "ngstorage": "^0.3.10"
   },
   "resolutions": {
     "angular": "^1.5.0"

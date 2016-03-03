@@ -10,7 +10,7 @@
   "freeze"        : true,
   "immed"         : true,
   "latedef"       : "nofunc",
-  "newcap"        : true,
+  "newcap"        : false,
   "noarg"         : true,
   "noempty"       : true,
   "nonew"         : true,
