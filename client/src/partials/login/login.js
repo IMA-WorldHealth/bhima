@@ -67,6 +67,8 @@ function LoginController($scope, $translate, $location, $http, $timeout, AppCach
       // Yay!  We are authenticated.  Create the user session.
       SessionService.create(response.data.user, response.data.enterprise, response.data.project);
 
+      cache.project = credentials.project.id;
+
       // HACK to send this signal to ApplicationController
       $timeout(function () {
         appstate.set('login', true);
