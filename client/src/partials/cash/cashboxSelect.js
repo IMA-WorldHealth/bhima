@@ -26,7 +26,7 @@ function CashboxSelectController(Cashboxes, AppCache, $location) {
   * @const persistent cashbox store
   * This should be the same as in CashController
   */
-  var cache = new AppCache('CashPayments');
+  var cache = AppCache('CashPayments');
 
   /** ui loading indicator control */
   vm.loadingState = true;
@@ -58,9 +58,7 @@ function CashboxSelectController(Cashboxes, AppCache, $location) {
     Cashboxes.read(id)
     .then(function (cashbox) {
       vm.cashbox = cashbox;
-      return cache.put('cashbox', cashbox);
-    })
-    .then(function () {
+      cache.cashbox = cashbox;
       navigate(vm.cashbox.id);
     })
     .catch(handler);
@@ -75,20 +73,11 @@ function CashboxSelectController(Cashboxes, AppCache, $location) {
   // fired on controller load
   function startup() {
 
-    // look up cashbox from local storage
-    cache.fetch('cashbox')
-    .then(function (cashbox) {
-
-      // if a cashbox exists, go to it!
-      if (cashbox) {
-        navigate(cashbox.id);
-
-      // otherwise, load a list to be displayed to the client
-      } else {
-        return refreshCashboxList();
-      }
-    })
-    .catch(handler);
+    if (cache.cashbox) {
+      navigate(cache.cashbox.id);
+    } else {
+      refreshCashboxList();
+    }
   }
 
   // start up the module

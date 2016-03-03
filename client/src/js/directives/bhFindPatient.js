@@ -9,7 +9,7 @@ angular.module('bhima.directives')
   }
 });
 
-FindPatientComponent.$inject = ['Patients', 'appcache'];
+FindPatientComponent.$inject = ['Patients', 'AppCache'];
 
 /**
  * The Find Patient Component
@@ -30,8 +30,7 @@ function FindPatientComponent(Patients, AppCache) {
   var vm = this;
 
   /** cache to remember which the search type of the component */
-  var cache = new AppCache('FindPatientComponent');
-  
+  var cache = AppCache('FindPatientComponent');
 
   /** @const the max number of records to fetch from the server */
   var LIMIT = 20;
@@ -65,8 +64,7 @@ function FindPatientComponent(Patients, AppCache) {
   vm.readInput          = readInput;
 
   /** fetch the initial setting for the component from appcache */
-  cache.fetch('optionKey')
-  .then(loadDefaultOption);
+  loadDefaultOption(cache.optionKey);
 
   /**
   * @method searchByReference
@@ -153,7 +151,7 @@ function FindPatientComponent(Patients, AppCache) {
     vm.nameInput  = undefined;
 
     // save the option for later
-    cache.put('optionKey', key);
+    cache.optionKey = key;
   }
 
   /**
