@@ -74,6 +74,9 @@ describe('Cash Payments Module', function () {
       // attempt to return to /cash manually
       browser.get(path);
 
+      // make sure all $http/$timeout requests clear before moving forward
+      browser.waitForAngular();
+
       // expect that we were routed back to cashbox B
       expect(getCurrentPath()).to.eventually.equal(target);
     });
@@ -92,6 +95,9 @@ describe('Cash Payments Module', function () {
 
       // attempt to return to the cash page manually
       browser.get(path);
+
+      // make sure all $http/$timeout requests clear before moving forward
+      browser.waitForAngular();
 
       // the browser should be rerouted to the cashboxB page
       expect(getCurrentPath()).to.eventually.equal(target);
