@@ -109,20 +109,25 @@ function getSold (req, res, next){
   'use strict';
 
   var accountId = req.params.id, optional = '';
+  var params = [accountId];
 
   if(req.query.journal === '1') {
-    optional = ' UNION ALL SELECT pj.account_id, SUM(pj.debit_equiv) AS debit, SUM(pj.credit_equiv) AS credit, (debit-credit) AS balance FROM posting_journal AS pj JOIN account AS ac ON pj.account_id = ac.id WHERE pj.account_id = ?';
+    optional = ' UNION ALL SELECT pj.account_id, IFNULL(SUM(pj.debit_equiv), 0) AS debit, IFNULL(SUM(pj.credit_equiv), 0) AS credit, IFNULL((pj.debit_equiv - pj.credit_equiv), 0) AS balance FROM posting_journal AS pj WHERE pj.account_id = ? GROUP BY pj.account_id';
+    params.push(accountId);
   }
 
   var accountSoldQuery = 'SELECT t.account_id, IFNULL(SUM(t.debit), 0) AS debit, IFNULL(SUM(t.credit), 0) AS credit, IFNULL(t.balance, 0) AS balance FROM' + 
-    ' (SELECT gl.account_id, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, (debit-credit) AS balance FROM' + 
-    ' general_ledger AS gl JOIN account AS ac ON gl.account_id = ac.id WHERE gl.account_id = ?' + optional + ' ) AS t;';
+    ' (SELECT gl.account_id, IFNULL(SUM(gl.debit_equiv), 0) AS debit, IFNULL(SUM(gl.credit_equiv), 0) AS credit, IFNULL((gl.debit_equiv - gl.credit_equiv), 0) AS balance FROM' + 
+    ' general_ledger AS gl WHERE gl.account_id = ? GROUP BY gl.account_id' + optional + ' ) AS t GROUP BY t.account_id';
 
   lookupAccount(accountId, req.codes)
-    .then(function () {
-      return db.exec(accountSoldQuery, [accountId, accountId]);
+    .then(function (account) {
+      return db.exec(accountSoldQuery, params);
     })
     .then(function (rows){
+      if(rows.length === 0){
+        return next(new req.codes.ERR_NOT_FOUND());
+      }
       res.status(200).json(rows[0]);
     })
     .catch(next)

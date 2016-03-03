@@ -7,50 +7,50 @@ AccountService.$inject = ['$http', 'util'];
 // @helper
 // This method builds a tree data structure of
 // accounts and children of a specified parentId.
-function getChildren(accounts, parentId) {
-  var children;
+// function getChildren(accounts, parentId) {
+//   var children;
 
-  // base case: There are no child accounts
-  if (accounts.length === 0) { return null; }
+//   // base case: There are no child accounts
+//   if (accounts.length === 0) { return null; }
 
-  // returns all accounts where the parent is the
-  // parentId
-  children = accounts.filter(function (account) {
-    return account.parent === parentId;
-  });
+//   // returns all accounts where the parent is the
+//   // parentId
+//   children = accounts.filter(function (account) {
+//     return account.parent === parentId;
+//   });
 
-  // recursively call getChildren on all child accounts
-  // and attach them as childen of their parent account
-  children.forEach(function (account) {
-    account.children = getChildren(accounts, account.id);
-  });
+//   // recursively call getChildren on all child accounts
+//   // and attach them as childen of their parent account
+//   children.forEach(function (account) {
+//     account.children = getChildren(accounts, account.id);
+//   });
 
-  return children;
-}
+//   return children;
+// }
 
 // @helper
 // flattens a tree data structure (must have children property) in place.
-function flatten(tree) {
-  return tree.reduce(function (array, node) {
-    var items = [node].concat(node.children ? flatten(node.children) : []);
-    return array.concat(items);
-  }, []);
-}
+// function flatten(tree) {
+//   return tree.reduce(function (array, node) {
+//     var items = [node].concat(node.children ? flatten(node.children) : []);
+//     return array.concat(items);
+//   }, []);
+// }
 
 // creates a proper account ordering by first creating an account tree and then
 // flattening in place.
-function order(accounts) {
+// function order(accounts) {
 
-  // NOTE
-  // we assume the root node is 0
-  var ROOT_NODE = 0;
+//   // NOTE
+//   // we assume the root node is 0
+//   var ROOT_NODE = 0;
 
-  // build the account tree
-  var tree = getChildren(accounts, ROOT_NODE);
+//   // build the account tree
+//   var tree = getChildren(accounts, ROOT_NODE);
 
-  // return a flattened tree (in order)
-  return flatten(tree);
-}
+//   // return a flattened tree (in order)
+//   return flatten(tree);
+// }
 
 /**
 * Account Service
@@ -63,8 +63,10 @@ function order(accounts) {
 */
 function AccountService($http, util) {
   var service = this;
+  var baseUrl = '/accounts';
 
   service.list = list;
+  service.getSold = getSold;
 
   /* ------------------------------------------------------------------------ */
 
@@ -84,6 +86,12 @@ function AccountService($http, util) {
         return accounts;
       })
       .then(order);
+  }
+
+  function getSold(account_id, opt){
+    var url = baseUrl + '/' + account_id + '/balance';
+    return $http.get(url, opt)
+      .then(util.unwrapHttpResponse);
   }
 
   return service;

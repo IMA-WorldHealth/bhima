@@ -241,7 +241,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
     // fired when the modal closes
     instance.result.then(function (result) {
-      console.log('handle the result here', result);
+      
     });
   }
 

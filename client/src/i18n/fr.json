@@ -299,7 +299,7 @@
   "HELP_TXT_1"       : "Ce module permettre des payer contre plusiers factures",
   "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
   "MODALS" : {
-    "FINANCIAL_DETAIL" : "DETAIL FINACIERE"
+    "FINANCIAL_DETAIL" : "Balance actuelle, journal de saisie inclue :"
   },
 
   "NO_EXCHANGE_RATE" : "Erreur : le taux de change n'existe pas!",

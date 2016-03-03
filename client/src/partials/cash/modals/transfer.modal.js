@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('CashTransferModalController', CashTransferModalController);
 
 CashTransferModalController.$inject = [
-  '$uibModalInstance', '$q', 'SessionService', 'CurrencyService', 'VoucherService', 'CashboxService', 'cashBox', 'uuid'
+  '$uibModalInstance', '$q', 'SessionService', 'CurrencyService', 'VoucherService', 'CashboxService', 'AccountService', 'cashBox', 'uuid'
 ];
 
 /**
@@ -11,7 +11,7 @@ CashTransferModalController.$inject = [
  * @description This controller is responsible transfering money between auxillary cash and a virement account
 */
 
-function CashTransferModalController(ModalInstance, $q, sessionService, currencyService, voucherService, cashBoxService, cashBox, uuid) {
+function CashTransferModalController(ModalInstance, $q, sessionService, currencyService, voucherService, cashBoxService, accountService, cashBox, uuid) {
   var vm = this; 
 
   /** Attaching service to the scope **/
@@ -29,20 +29,15 @@ function CashTransferModalController(ModalInstance, $q, sessionService, currency
   **/
   function submit (invalid){
     if (invalid) { return; }
-
-    cashBoxService.currencies.read(vm.cashBox.id, vm.currency_id)
-    .then(function (cashAccountCurrency){
-      vm.cashAccountCurrency = cashAccountCurrency;      
-      var voucher = processVoucher();
-      var voucher_item = processVoucherItem(voucher.uuid);
-      var record = { voucher : voucher, voucher_item : voucher_item };
-      return $q.when(record);
-    })
-    .then(function (record){
-      return voucherService.create(record);        
-    })
+    var voucher = processVoucher();
+    var voucher_item = processVoucherItem(voucher.uuid);
+    var record = { voucher : voucher, voucher_item : voucher_item };
+    voucherService.create(record)      
     .then(function (res){
-      ModalInstance.close(res);
+      vm.submited = true; //FIX ME, I need a goo idea
+    })
+    .catch(function (err){
+      vm.fail = true; //FIX ME, I need a goo idea
     });          
   }
 
@@ -100,7 +95,19 @@ function CashTransferModalController(ModalInstance, $q, sessionService, currency
     return [cashVoucherLine, transferVoucherLine];
   }
 
+  function handleCurrencyChange () {
+    cashBoxService.currencies.read(vm.cashBox.id, vm.currency_id)
+    .then(function (cashAccountCurrency){
+      vm.cashAccountCurrency = cashAccountCurrency; 
+      return  accountService.getSold(vm.cashAccountCurrency.account_id, { params : { journal : 1 }});
+    })
+    .then(function (sold){
+      vm.cashAccountSold = sold;
+    });
+  }
+
   /**expose function to the scope**/ 
   vm.submit = submit;
   vm.cancel = cancel;
+  vm.handleCurrencyChange = handleCurrencyChange;
 }
