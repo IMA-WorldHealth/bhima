@@ -4,7 +4,6 @@
  */
 
 // TODO Caching inventory items - if items are cleared or page reloaded they can be loaded back,
-//  - with quantities?
 //  - with prices?
 angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
@@ -115,7 +114,7 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
       vm.patientSearch.reset();
     }
     vm.Invoice.recipient = null;
-    vm.Invoice.items.reset();
+    vm.Invoice.items.removeItems();
   };
 
   //FIXME
@@ -132,7 +131,7 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
     // vm.patientSearch.reset();
 
     // Prompt initial invoice item
-    Invoice.items.addInventoryItem();
+    Invoice.items.configureBase();
   
     // TODO Temporary API tests
     configureQueue.push(

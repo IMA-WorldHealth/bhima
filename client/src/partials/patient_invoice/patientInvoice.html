@@ -116,20 +116,31 @@
 
       <!-- TODO Move padding generic CSS class -->
       <div class="col-xs-12">
-
-            <!-- TODO Move width restriction to generic CSS class -->
-          <div class="input-group">
-            <span class="input-group-btn">
-
-              <!-- TODO Template method -->
-              <!-- TODO Translation -->
+          
+            <div class="btn-group pull-right" role="group">
               <button 
-                ng-disabled="!PatientInvoiceCtrl.Invoice.recipient || PatientInvoiceCtrl.Invoice.items.allAssigned()" class="btn btn-default btn-sm"
-                ng-click="PatientInvoiceCtrl.Invoice.items.addInventoryItem(PatientInvoiceCtrl.itemIncrement)"><span class="glyphicon glyphicon-plus-sign"></span> Add</button> 
-            </span>
-            <input class="form-control input-sm" ng-model="PatientInvoiceCtrl.itemIncrement" style="max-width : 40px;"></input> 
-          </div>
-            <!-- TODO Template method -->
+                class="btn btn-default"
+                ng-class="{'btn-primary' : PatientInvoiceCtrl.Invoice.items.cacheAvailable && PatientInvoiceCtrl.Invoice.recipient}"
+                ng-click="PatientInvoiceCtrl.Invoice.items.recoverCache()"
+                ng-disabled="!PatientInvoiceCtrl.Invoice.items.cacheAvailable || !PatientInvoiceCtrl.Invoice.recipient">
+                <span class="glyphicon glyphicon-floppy-open"></span> Recover Items
+              </button>
+            </div>
+            <!-- <div class="btn-group" role="group"> -->
+                <!-- TODO Move width restriction to generic CSS class -->
+              <div class="input-group">
+
+                <span class="input-group-btn">
+                  <!-- TODO Template method -->
+                  <!-- TODO Translation -->
+                  <button 
+                    ng-disabled="!PatientInvoiceCtrl.Invoice.recipient || PatientInvoiceCtrl.Invoice.items.allAssigned()" class="btn btn-default btn-sm"
+                    ng-click="PatientInvoiceCtrl.Invoice.items.addInventoryItem(PatientInvoiceCtrl.itemIncrement)"><span class="glyphicon glyphicon-plus-sign"></span> Add</button> 
+                </span>
+                <input class="form-control input-sm" ng-model="PatientInvoiceCtrl.itemIncrement" style="max-width : 40px;"></input> 
+              </div>
+            <!-- </div> -->
+              <!-- TODO Template method -->
             <!-- TODO Temporary Style -->
             <p 
               style="padding-top : 10px;"

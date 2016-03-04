@@ -3,16 +3,18 @@
 angular.module('bhima.services')
   .service('Invoice', Invoice);
 
-Invoice.$inject = ['InvoiceItems'];
+Invoice.$inject = ['InvoiceItems', 'appcache'];
 
-function Invoice(InvoiceItems) { 
+function Invoice(InvoiceItems, AppCache) { 
   var invoice = this;
   // Accept billing serivces, subsidies + price lists 
   // Price lists passed to inventory items 
   // calculate total facotrs in subsidies + billing services
   
   console.log('invoice service fired');
-
+ 
+    
+  
   // global costs 
   invoice.billingServices = [];
   invoice.subsidies = [];
@@ -88,8 +90,8 @@ function Invoice(InvoiceItems) {
 
     return subsidyReduction;
   }
-  
-  
+ 
+    
   /**
    * Utility methods 
    */
@@ -107,4 +109,6 @@ function Invoice(InvoiceItems) {
   
   invoice.configureGlobalCosts = configureGlobalCosts;
   invoice.total = total;
+
+
 }
