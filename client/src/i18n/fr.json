@@ -3432,5 +3432,15 @@
    "REGISTERED"       : "Villages Enregistrés",
    "SECTOR"           : "Commune",
    "TITLE"            : "Gestion des Villages"
+   },
+   "VALIDATION" : {
+    "MIN" : "Cette valeur est trop petite pour ce champ.",
+    "MAX" : "Cette valeur est trop grande pour ce champ.",
+    "REQUIRED" : "Ce champ ne peut pas être vide.",
+    "EMAIL" : "Ce champ doit être un email valide.",
+    "MINLENGTH" : "Cette entrée est trop court.",
+    "MAXLENGTH" : "Cette entrée est trop longue.",
+    "NUMBER" : "Ce champ doit être un nombre.",
+    "DATE" : "Ce champ doit être une date valide."
    }
 }
