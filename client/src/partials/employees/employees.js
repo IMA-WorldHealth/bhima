@@ -21,6 +21,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   // Define limits for DOB
   vm.minDOB = util.minDOB;
   vm.maxDOB = util.maxDOB;    
+  vm.maxDateEmbauche = util.maxDateEmbauche;
 
   function handler(error) {
     console.error(error);
@@ -74,9 +75,6 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   // switch to update mode
   // data is an object that contains all the information of a employee 
   function update(data) {
-    console.log('FFFFFFFFFFFFFFFFFFF');
-    console.log(data);
-
     // Sanitise DOB for HTML Date Input 
     data.dob = new Date(data.dob);
     // Sanitise DATE_EMBAUCHE for HTML Date Input 

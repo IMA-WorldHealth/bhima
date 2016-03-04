@@ -70,7 +70,7 @@
                 <td>{{ item.fonction_txt }}</td>
                 <td>{{ item.code_grade }}</td>
                 <td><i class="glyphicon glyphicon-ok" ng-if="!!item.locked"></i></td>
-                <td><a ng-click="EmployeeCtrl.update(item)"> <i class="glyphicon glyphicon-circle-arrow-right"></i></a></td>
+                <td><a ng-click="EmployeeCtrl.update(item)" id="employee-upd-{{ $index + 1}}"> <i class="glyphicon glyphicon-circle-arrow-right"></i></a></td>
               </tr>
             </tbody>
           </table>
@@ -95,20 +95,6 @@
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
             <h4>{{ 'SERVICE.UPDATE_SUCCES' | translate }} </h4>
-            </p>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_success">
-          <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'SERVICE.DELETE_SUCCESS' | translate }} </h4>
-            </p>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_error">
-          <div class="alert alert-danger" id="delete_error">
-            <h4>{{ EmployeeCtrl.HTTPError.data.code | translate }} </h4>
             </p>
           </div>
         </div>
@@ -174,14 +160,14 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.locked.$invalid }">
                 <label class="control-label" for="bhima-employee-locked">{{ 'EMPLOYEE.LOCKED' | translate }}</label>
                 <div>
-                  <input type="checkbox" class="form-control" name="locked" id="bhima-employee-locked" ng-model="EmployeeCtrl.employee.locked">
+                  <input type="checkbox" class="form-control" name="locked" ng-true-value="1" ng-false-value="0" id="bhima-employee-locked" ng-model="EmployeeCtrl.employee.locked">
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.date_embauche.$invalid }">
                 <label class="control-label" for="bhima-employee-date_embauche">{{ 'EMPLOYEE.DATE_EMBAUCHE' | translate }}</label>
                 <div>
-                  <input type="date" class="form-control" name="date_embauche" id="bhima-employee-date_embauche" ng-model="EmployeeCtrl.employee.date_embauche" required>
+                  <input type="date" class="form-control" name="date_embauche" id="bhima-employee-date_embauche" ng-model="EmployeeCtrl.employee.date_embauche" max="{{ EmployeeCtrl.maxDateEmbauche | date : 'yyyy-MM-dd'}}" required>
                 </div>
               </div>
 
@@ -350,14 +336,14 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.locked.$invalid }">
                 <label class="control-label" for="bhima-employee-locked">{{ 'EMPLOYEE.LOCKED' | translate }}</label>
                 <div>
-                  <input type="checkbox" class="form-control" name="locked" id="bhima-employee-locked" ng-model="EmployeeCtrl.employee.locked">
+                  <input type="checkbox" class="form-control" ng-true-value="1" ng-false-value="0" name="locked" id="bhima-employee-locked" ng-model="EmployeeCtrl.employee.locked">
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.date_embauche.$invalid }">
                 <label class="control-label" for="bhima-employee-date_embauche">{{ 'EMPLOYEE.DATE_EMBAUCHE' | translate }}</label>
                 <div>
-                  <input type="date" class="form-control" name="date_embauche" id="bhima-employee-date_embauche" ng-model="EmployeeCtrl.employee.date_embauche" required>
+                  <input type="date" class="form-control" name="date_embauche" id="bhima-employee-date_embauche" ng-model="EmployeeCtrl.employee.date_embauche" max="{{ EmployeeCtrl.maxDateEmbauche | date : 'yyyy-MM-dd'}}" required>
                 </div>
               </div>
 
