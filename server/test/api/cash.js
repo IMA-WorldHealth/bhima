@@ -191,11 +191,7 @@ describe('(/cash) Cash Payments Interface ', function () {
       return agent.put('/cash/' + SALE_PAYMENT.uuid)
         .send({ amount : 123000.13 })
         .then(function (res) {
-          expect(res).to.have.status(400);
-          expect(res).to.be.json;
-
-          // expect to be an error
-          expect(res.body).to.contain.all.keys(helpers.errorKeys);
+          helpers.api.errored(res, 400);
         })
         .catch(helpers.handler);
     });

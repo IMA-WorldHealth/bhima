@@ -1,5 +1,4 @@
 /* jshint expr: true */
-/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -13,7 +12,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
 
   var debtorGroup = {
     enterprise_id : 1,
-    uuid : uuid(),
+    uuid : uuid.v4(),
     name : 'New Debtor Group (Test)',
     account_id : 3638,
     location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
@@ -48,7 +47,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
 
   var lockedGroup = {
     enterprise_id : 1,
-    uuid : uuid(),
+    uuid : uuid.v4(),
     name : 'Locked Debtor Group (Test)',
     account_id : 3638,
     location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
@@ -66,7 +65,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
 
   var conventionGroup = {
     enterprise_id : 1,
-    uuid : uuid(),
+    uuid : uuid.v4(),
     name : 'Convention Debtor Group (Test)',
     account_id : 3638,
     location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
@@ -84,7 +83,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
 
   var lockedConventionGroup = {
     enterprise_id : 1,
-    uuid : uuid(),
+    uuid : uuid.v4(),
     name : 'Locked Convention Debtor Group (Test)',
     account_id : 3638,
     location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',

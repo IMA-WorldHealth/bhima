@@ -1,16 +1,13 @@
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 
-// import test helpers
 var helpers = require('./helpers');
 helpers.configure(chai);
 
 /**
 * The /discounts API endpoint
 */
-describe('(/discounts) Discounts Interface ::', function () {
+describe('(/discounts) Discounts Interface', function () {
   'use strict';
 
   // bind agent for authenticated requrests
@@ -45,9 +42,7 @@ describe('(/discounts) Discounts Interface ::', function () {
   it('GET /discounts/undefined returns a 404 error', function () {
     return agent.get('/discounts/undefined')
     .then(function (res) {
-      expect(res).to.have.status(404);
-      expect(res.body).to.contain.all.keys(helpers.errorKeys);
-      expect(res.body.code).to.equal('ERR_NOT_FOUND');
+      helpers.api.errored(res, 404);
     })
     .catch(helpers.handler);
   });
@@ -55,9 +50,7 @@ describe('(/discounts) Discounts Interface ::', function () {
   it('GET /discounts returns an empty array of discounts', function () {
     return agent.get('/discounts')
     .then(function (res) {
-      expect(res).to.have.status(200);
-      expect(res).to.be.json;
-      expect(res.body).to.be.empty;
+      helpers.api.listed(res, 0);
     })
     .catch(helpers.handler);
   });
@@ -66,9 +59,8 @@ describe('(/discounts) Discounts Interface ::', function () {
     return agent.post('/discounts')
     .send({ discount : mockDiscount })
     .then(function (res) {
-      expect(res).to.have.status(201);
-      expect(res).to.be.json;
-      expect(res.body).to.have.key('id');
+
+      helpers.api.created(res);
 
       // bind the returned ID
       mockDiscount.id = res.body.id;
@@ -92,8 +84,7 @@ describe('(/discounts) Discounts Interface ::', function () {
     return agent.post('/discounts')
     .send({ discount : mockDiscountNegative })
     .then(function (res) {
-      expect(res).to.have.status(400);
-      expect(res).to.be.json;
+      helpers.api.errored(res, 400);
     })
     .catch(helpers.handler);
   });
@@ -101,9 +92,7 @@ describe('(/discounts) Discounts Interface ::', function () {
   it('GET /discounts returns an array of precisely one value', function () {
     return agent.get('/discounts')
     .then(function (res) {
-      expect(res).to.have.status(200);
-      expect(res).to.be.json;
-      expect(res.body).to.have.length(1);
+      helpers.api.listed(res, 1);
     })
     .catch(helpers.handler);
   });
@@ -125,8 +114,7 @@ describe('(/discounts) Discounts Interface ::', function () {
   it('DELETE /discounts/undefined should return a 404 error', function () {
     return agent.delete('/discounts/undefined')
     .then(function (res) {
-      expect(res).to.have.status(404);
-      expect(res.body).to.not.be.empty;
+      helpers.api.errored(res, 404);
     })
     .catch(helpers.handler);
   });
@@ -134,8 +122,7 @@ describe('(/discounts) Discounts Interface ::', function () {
   it('DELETE /discounts/:id should successfully delete a discount', function () {
     return agent.delete('/discounts/' + mockDiscount.id)
     .then(function (res) {
-      expect(res).to.have.status(204);
-      expect(res.body).to.be.empty;
+      helpers.api.deleted(res);
     })
     .catch(helpers.handler);
   });
