@@ -1,5 +1,3 @@
-/* global describe, it, beforeEach, process */
-
 var chai = require('chai');
 var expect = chai.expect;
 

@@ -1,5 +1,3 @@
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -7,10 +5,8 @@ var expect = chai.expect;
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* @desc The /billing_services API endpoint
-*/
-describe('(/billing_services) Billing Services Interface ::', function () {
+/** The /billing_services API endpoint */
+describe('(/billing_services) Billing Services Interface', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
@@ -41,9 +37,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
   it('GET /billing_services should return an empty list of billing services', function () {
     return agent.get('/billing_services')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.be.empty;
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
@@ -51,9 +45,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
   it('GET /billing_services/undefined should reject (404) an unknown id', function () {
     return agent.get('/billing_services/undefined')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res).to.be.json;
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -62,9 +54,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
     return agent.post('/billing_services')
       .send({ billingService : billingServiceA })
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.have.key('id');
+        helpers.api.created(res);
 
         // bind the database-generated ID
         billingServiceA.id = res.body.id;
@@ -89,9 +79,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
     return agent.post('/billing_services')
       .send({ billingService : billingServiceB })
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res).to.be.json;
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
@@ -117,8 +105,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
   it('DELETE /billing_services/undefined should return a 404 error', function () {
     return agent.delete('/billing_services/undefined')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.contain.keys(helpers.errorKeys);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -126,13 +113,11 @@ describe('(/billing_services) Billing Services Interface ::', function () {
   it('DELETE /billing_services/:id should delete an existing billing service', function () {
     return agent.delete('/billing_services/' + billingServiceA.id)
       .then(function (res) {
-        expect(res).to.have.status(204);
-
+        helpers.api.deleted(res);
         return agent.get('/billing_services/' + billingServiceA.id);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

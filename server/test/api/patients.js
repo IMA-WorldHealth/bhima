@@ -1,5 +1,3 @@
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -88,23 +86,25 @@ describe('The /patients API', function () {
   beforeEach(helpers.login(agent));
 
   // HTTP API Test for /patients/search/ routes
-  describe('The /patients/search/ HTTP API ::', function () {
+  describe('The /patients/search API', function () {
 
     it('GET /patients/search with missing necessary parameters', function () {
 
       return agent.get('/patients/search/?uuid="81af634f-321a-40de-bc6f-ceb1167a9f65"')
         .then(function (res) {
-          expect(res).to.have.status(400);
+          helpers.api.errored(res, 400);
+
           expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
           return agent.get('/patients/search/?');
         })
         .then(function (res) {
-          expect(res).to.have.status(400);
+          helpers.api.errored(res, 400);
+
           expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
           return agent.get('/patients/search');
         })
         .then(function (res) {
-          expect(res).to.have.status(400);
+          helpers.api.errored(res, 400);
           expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
         })
         .catch(helpers.handler);
@@ -114,8 +114,7 @@ describe('The /patients API', function () {
 
       return agent.get('/patients/search/?reference=TPA1')
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res.body).to.not.be.empty;
+          helpers.api.listed(res, 1);
         })
         .catch(helpers.handler);
     });
@@ -124,8 +123,7 @@ describe('The /patients API', function () {
 
       return agent.get('/patients/search/?name=Test')
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res.body).to.not.be.empty;
+          helpers.api.listed(res, 2);
         })
         .catch(helpers.handler);
     });
@@ -137,19 +135,15 @@ describe('The /patients API', function () {
       };
       return agent.get('/patients/search/?fields='+JSON.stringify(fields))
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res.body).to.not.be.empty;
+          helpers.api.listed(res, 1);
         })
         .catch(helpers.handler);
     });
 
     it('GET /patients/search with `name` and `reference` parameters for the priority of reference', function () {
-
       return agent.get('/patients/search/?name=Test&reference=TPA1')
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.length(1);
+          helpers.api.listed(res, 1);
           expect(res.body[0].reference).to.exist;
           expect(res.body[0].reference).to.be.equals('TPA1');
         })
@@ -167,16 +161,14 @@ describe('The /patients API', function () {
             'title', 'notes', 'hospital_no', 'abbr', 'text', 'account_id', 'price_list_uuid',
             'is_convention', 'locked'
           ];
-          expect(res).to.have.status(200);
-          expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.length(2);
+
+          helpers.api.listed(res, 2);
+
           expect(res.body[0]).to.contain.all.keys(expected);
           return agent.get('/patients/search/?name=Test&limit=1');
         })
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.length(1);
+          helpers.api.listed(res, 1);
         })
         .catch(helpers.handler);
     });
@@ -188,9 +180,7 @@ describe('The /patients API', function () {
 
     return agent.get('/patients')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(INITIAL_TEST_PATIENTS);
+        helpers.api.listed(res, INITIAL_TEST_PATIENTS);
       })
       .catch(helpers.handler);
   });
@@ -200,11 +190,8 @@ describe('The /patients API', function () {
 
     return agent.post('/patients')
       .send(mockRequest)
-      .then(function (confirmation) {
-        expect(confirmation).to.have.status(201);
-        expect(confirmation.body).to.contain.keys('uuid');
-        expect(confirmation.body.uuid.length).to.equal(UUID_LENGTH);
-
+      .then(function (res) {
+        helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
@@ -229,9 +216,8 @@ describe('The /patients API', function () {
 
   it('GET /patients/:id will return not found for invalid id', function () {
     return agent.get('/patients/unknownid')
-      .then(function (result) {
-        expect(result).to.have.status(404);
-        expect(result.body).to.not.be.empty;
+      .then(function (res) {
+        helpers.api.errored(res, 404);
       });
   });
 
@@ -239,7 +225,7 @@ describe('The /patients API', function () {
     return agent.post('/patients')
       .send(mockMissingRequest)
       .then(function (res) {
-        expect(res).to.have.status(400);
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
@@ -247,10 +233,9 @@ describe('The /patients API', function () {
   it('POST /patients will reject a patient with an incorrectly formatted request object', function () {
     return agent.post('/patients')
       .send(badRequest)
-      .then(function (result) {
-        expect(result).to.have.status(400);
-        expect(result.body).to.have.keys('code', 'reason');
-        expect(result.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
+      .then(function (res) {
+        helpers.api.errored(res, 400);
+        expect(res.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
       })
       .catch(helpers.handler);
 
@@ -261,10 +246,8 @@ describe('The /patients API', function () {
     var SUBSCRIBED_PATIENT_GROUPS = 1;
 
     return agent.get(groupRoute)
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result.body).to.not.be.empty;
-        expect(result.body).to.have.length(SUBSCRIBED_PATIENT_GROUPS);
+      .then(function (res) {
+        helpers.api.listed(res, SUBSCRIBED_PATIENT_GROUPS);
       })
       .catch(helpers.handler);
   });
@@ -272,10 +255,8 @@ describe('The /patients API', function () {
   it('GET /patients/:id/groups will return 404 not found for invalid request', function () {
 
     return agent.get('/patients/unknownid/groups')
-      .then(function (result) {
-        expect(result).to.have.status(404);
-        expect(result).to.be.json;
-        expect(result.body).to.not.be.empty;
+      .then(function (res) {
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -284,10 +265,8 @@ describe('The /patients API', function () {
     var TOTAL_PATIENT_GROUPS = 2;
 
     return agent.get('/patients/groups')
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result.body).to.not.be.empty;
-        expect(result.body).to.have.length(TOTAL_PATIENT_GROUPS);
+      .then(function (res) {
+        helpers.api.listed(res, TOTAL_PATIENT_GROUPS);
       })
       .catch(helpers.handler);
   });

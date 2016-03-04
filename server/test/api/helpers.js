@@ -232,8 +232,3 @@ api.listed = function listed(res, len) {
   // assert that the length is the expected length.
   expect(res.body).to.have.length(len);
 };
-
-/** The error keys sent back by the API */
-exports.errorKeys = [
-  'code', 'reason'
-];

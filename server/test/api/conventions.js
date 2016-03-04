@@ -1,5 +1,4 @@
 /* jshint expr: true */
-/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var expect = chai.expect;
