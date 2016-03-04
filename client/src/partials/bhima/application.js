@@ -2,39 +2,35 @@ angular.module('bhima.controllers')
 .controller('ApplicationController', ApplicationController);
 
 ApplicationController.$inject = [
-  '$location', '$timeout', '$translate', 'appcache', 'appstate',
+  '$location', '$timeout', '$translate', 'AppCache', 'appstate',
   'connect', 'util', 'SessionService', 'tmhDynamicLocale', 'amMoment'
 ];
 
-function ApplicationController($location, $timeout, $translate, Appcache, appstate, connect, util, Session, tmhDynamicLocale, amMoment) {
+function ApplicationController($location, $timeout, $translate, AppCache, appstate, connect, util, Session, tmhDynamicLocale, amMoment) {
   var vm = this;
 
-  // useful for loading the language
-  var cache = new Appcache('preferences');
-  
+  // load in the application cache
+  var cache = AppCache('preferences');
+
   // Default sidebar state
   /** @todo Load sidebar state before angular is bootstraped to remove 'flicker' */
   vm.sidebarExpanded = false;
-  cache.fetch('sidebar')
-  .then(function (sidebar) { 
-    if (sidebar && vm.isLoggedIn()) { 
-      vm.sidebarExpanded = sidebar.expanded; 
-    }
-  });
 
-  cache.fetch('language')
-  .then(function (language) {
-    if (language) {
-      $translate.use(language.translateKey);
-      tmhDynamicLocale.set(language.localeKey);
-      amMoment.changeLocale(language.translateKey); 
-    }
-  });
+  // setup the language
+  if (cache.language) {
+    var language = cache.language;
+    $translate.use(language.translateKey);
+    tmhDynamicLocale.set(language.localeKey);
+  }
 
-  vm.isLoggedIn = function () {
+  vm.isLoggedIn = function isLoggedIn() {
     return Session.user;
   };
-  
+
+  if (vm.isLoggedIn()) {
+    vm.sidebarExpanded = cache.sidebar && cache.sidebar.expanded;
+  }
+
   // on refresh, if we have a session load the rest of the state
   if (vm.isLoggedIn()) { loadState(); }
 
@@ -111,8 +107,8 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
         appstate.set('fiscal', currentFiscal);
       }
     });
-    
-    // Optionally expand sidebar 
+
+    // Optionally expand sidebar
     // vm.sidebarExpanded = true;
   }
 
@@ -127,16 +123,16 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
   }
 
   /**
-   * Application Structure methods 
+   * Application Structure methods
    */
-  vm.toggleSidebar = function toggleSidebar() { 
-    if (vm.isLoggedIn()) { 
+  vm.toggleSidebar = function toggleSidebar() {
+    if (vm.isLoggedIn()) {
       vm.sidebarExpanded = !vm.sidebarExpanded;
-      cache.put('sidebar', { expanded : vm.sidebarExpanded });
+      cache.sidebar = { expanded : vm.sidebarExpanded };
     }
   };
 
-  vm.settings = function settings() { 
+  vm.settings = function settings() {
     $location.path('/settings');
   };
 }

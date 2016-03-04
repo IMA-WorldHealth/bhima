@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('CashController', CashController);
 
 CashController.$inject = [
-  'CashService', 'CashboxService', 'appcache', 'CurrencyService', '$uibModal',
+  'CashService', 'CashboxService', 'AppCache', 'CurrencyService', '$uibModal',
   '$routeParams', '$location', 'Patients', 'ExchangeRateService', 'SessionService'
 ];
 
@@ -30,7 +30,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   * @const persistent cashbox store
   * This should be the same as in CashboxSelect Controller
   */
-  var cache = new AppCache('CashPayments');
+  var cache = AppCache('CashPayments');
 
   /** @const id of the currently select cashbox */
   var cashboxId = $routeParams.id;
@@ -85,13 +85,10 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     vm.lockDateInput = !vm.lockDateInput;
   }
 
-  // removes the cachebox from the local cache
+  // removes the cashbox from the local cache
   function changeCashbox() {
-    cache.put('cashbox', undefined)
-    .then(function () {
-      $location.path('/cash');
-    })
-    .catch(handler);
+    delete cache.cashbox;
+    $location.path('/cash');
   }
 
   /**
@@ -115,7 +112,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     Cashboxes.read(cashboxId)
     .then(function (cashbox) {
       vm.cashbox = cashbox;
-      cache.put('cashbox', cashbox);
+      cache.cashbox = cashbox;
     }).catch(handler);
 
     // load currencies for later templating
