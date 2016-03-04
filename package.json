@@ -44,7 +44,7 @@
     "node-uuid": "^1.4.7",
     "numeral": "^1.5.3",
     "q": "~1.4.1",
-    "session-file-store": "0.0.24",
+    "session-file-store": "0.1.0",
     "winston": "^2.1.1",
     "wkhtmltopdf": "^0.1.5"
   },
