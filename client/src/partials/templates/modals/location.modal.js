@@ -19,7 +19,7 @@ function LocationModalController(Locations, Instance, AppCache) {
   var vm = this;
 
   /** caches the current view in local storage */
-  var cache = new AppCache('bh-location-select-modal');
+  var cache = AppCache('bh-location-select-modal');
 
   /**
    * This is not the best way to do states, but for such a complex component,
@@ -79,12 +79,13 @@ function LocationModalController(Locations, Instance, AppCache) {
   vm.loadSectors = loadSectors;
   vm.submit = submit;
 
+  loadView(cache.view);
+
   /** load previous/default view */
-  cache.fetch('view')
-  .then(function (key) {
+  function loadView(key) {
     key = key ||  vm.views.country.cacheKey;
     setView(key);
-  });
+  }
 
   /** load countries on startup */
   Locations.countries()
@@ -141,7 +142,7 @@ function LocationModalController(Locations, Instance, AppCache) {
   function setView(key) {
 
     // cache the value for later
-    cache.put('view', key);
+    cache.view = key;
 
     // set the current view to the selected one.
     vm.view = vm.views[key];

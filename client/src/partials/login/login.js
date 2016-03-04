@@ -6,11 +6,13 @@ LoginController.$inject = [
 ];
 
 // The login conroller
-function LoginController($scope, $translate, $location, $http, $timeout, Appcache, appstate, SessionService) {
+function LoginController($scope, $translate, $location, $http, $timeout, AppCache, appstate, SessionService) {
 
   // this is the View-Model (angular style guide).
-  var vm = this,
-      cache = new Appcache('preferences');
+  var vm = this;
+
+  // the is the same as the SettingsContoller
+  var cache = AppCache('preferences');
 
   // contains the values from the login form
   vm.credentials = {};
@@ -43,20 +45,11 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
   function loadStoredProject() {
     var defaultProjectIndex = 0;
 
-    cache.fetch('project')
-    .then(function (project) {
-      var projectCacheFound = project && project.id;
-
-      if (projectCacheFound) {
-
-        // Assign the cached project as default selection
-        vm.credentials.project = project.id;
-      } else {
-
-        // Assign defaultProjectIndex for now
-        vm.credentials.project = vm.projects[defaultProjectIndex].id;
-      }
-    });
+    // if the project was found in the cache, set it to the default project
+    // otherwise, use the defaultProjectIndex to set the default project
+    vm.credentials.project = (cache.project) ?
+        cache.project.id :
+        vm.projects[defaultProjectIndex].id;
   }
 
   // logs the user in, creates the user client session
@@ -73,6 +66,8 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
 
       // Yay!  We are authenticated.  Create the user session.
       SessionService.create(response.data.user, response.data.enterprise, response.data.project);
+
+      cache.project = credentials.project.id;
 
       // HACK to send this signal to ApplicationController
       $timeout(function () {
@@ -101,6 +96,6 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
   // switches languages
   function setLanguage(lang) {
     $translate.use(lang.key);
-    cache.put('language', { current: lang.key });
+    cache.language = lang;
   }
 }

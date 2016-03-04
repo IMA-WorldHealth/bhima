@@ -1,6 +1,6 @@
 var bhima = angular.module('bhima', [
   'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'bhima.components', 'ngRoute',
-  'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale',
+  'ui.bootstrap', 'pascalprecht.translate', 'ngStorage', 'chart.js', 'tmh.dynamicLocale',
   'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'angularMoment', 'ngMessages'
 ]);
 
@@ -864,11 +864,10 @@ function startupConfig($rootScope, $location, SessionService, amMoment) {
   amMoment.changeLocale('fr');
 }
 
-function localForageConfig($localForageProvider) {
-  $localForageProvider.config({
-    name : 'bhima-v1',
-    version : 1.0
-  });
+// set the proper key prifix
+function localStorageConfig($localStorageProvider) {
+  var PREFIX = 'bhima-';
+  $localStorageProvider.setKeyPrefix(PREFIX);
 }
 
 // configuration
@@ -876,7 +875,7 @@ bhima.config(['$routeProvider', bhimaconfig]);
 bhima.config(['$translateProvider', translateConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$httpProvider', authConfig]);
-bhima.config(['$localForageProvider', localForageConfig]);
+bhima.config(['$localStorageProvider', localStorageConfig]);
 
 // run
 bhima.run(['$rootScope', '$location', 'SessionService', 'amMoment', startupConfig]);

@@ -3458,5 +3458,15 @@
    "REGISTERED"       : "Registered villages",
    "SECTOR"           : "Sector",
    "TITLE"            : "Village Manager"
+   },
+   "VALIDATION" : {
+    "MIN" : "This value is too small for this field.",
+    "MAX" : "This value is too large for this field.",
+    "REQUIRED" : "This field cannot be empty.",
+    "EMAIL" : "This field must be a valid email.",
+    "MINLENGTH" : "This input is too short.",
+    "MAXLENGTH" : "This input is too long.",
+    "NUMBER" : "This field must be a valid number.",
+    "DATE" : "This field must be a valid date."
    }
 }
