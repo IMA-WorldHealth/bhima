@@ -463,7 +463,7 @@ DROP TABLE IF EXISTS `creditor`;
 CREATE TABLE `creditor` (
   `uuid` char(36) NOT NULL,
   `group_uuid` char(36) NOT NULL,
-  `text` varchar(45) DEFAULT NULL,
+  `text` text,
   PRIMARY KEY (`uuid`),
   KEY `group_uuid` (`group_uuid`),
   FOREIGN KEY (`group_uuid`) REFERENCES `creditor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE

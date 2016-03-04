@@ -70,7 +70,7 @@
                 <td>{{ item.fonction_txt }}</td>
                 <td>{{ item.code_grade }}</td>
                 <td><i class="glyphicon glyphicon-ok" ng-if="!!item.locked"></i></td>
-                <td><a ng-click="EmployeeCtrl.editEmployee(item)"> <i class="glyphicon glyphicon-circle-arrow-right"></i></a></td>
+                <td><a ng-click="EmployeeCtrl.update(item)"> <i class="glyphicon glyphicon-circle-arrow-right"></i></a></td>
               </tr>
             </tbody>
           </table>
@@ -222,7 +222,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.creditor_group_uuid.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.CREDITOR_GROUP" | translate }}</label>
                 <div>
-                  <select class="form-control" name="creditor_group_uuid" ng-model="EmployeeCtrl.employee.creditor_group_uuid" id="bhima-employee-creditor_group_uuid" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
+                  <select class="form-control" name="creditor_group_uuid" ng-model="EmployeeCtrl.employee.creditor_group_uuid" id="bhima-employee-creditor_group_uuid" ng-options="cg.uuid as cg.name for cg in EmployeeCtrl.creditorGroups | orderBy:'name'" required>
                     <option value="" disabled> -- {{ "SELECT.CREDITOR_GROUP" | translate }} -- </option>
                   </select>
                 </div>
@@ -251,9 +251,16 @@
                 </div>
               </div>
 
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.adresse.$invalid }">
+                <label class="control-label" for="bhima-employee-adresse">{{ "EMPLOYEE.ADDRESS" | translate }}</label>
+                <div>
+                  <input type="adresse" class="form-control" name="adresse" id="bhima-employee-adresse" ng-model="EmployeeCtrl.employee.adresse" required >
+                </div>
+              </div>
+
               <bh-location-select
                 validation-trigger="CreateForm.$submitted"
-                location-uuid="EnterpriseCtrl.enterprise.location_id">
+                location-uuid="EmployeeCtrl.employee.location_id">
               </bh-location-select>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.bank.$invalid }">
@@ -373,7 +380,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.grade_id.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.GRADE" | translate }}</label>
                 <div>
-                  <select class="form-control" name="grade_id" ng-model="EmployeeCtrl.employee.grade_id" id="bhima-employee-grade_id" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
+                  <select class="form-control" name="grade_id" ng-model="EmployeeCtrl.employee.grade_id" id="bhima-employee-grade_id" ng-options="g.uuid as g.format for g in EmployeeCtrl.grades | orderBy:'text'" required>
                     <option value="" disabled> -- {{ "SELECT.EMPLOYEE_GRADE" | translate }} -- </option>
                   </select>
                 </div>
@@ -388,19 +395,19 @@
                 </div>
               </div>
               
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.creditor_group_uuid.$invalid }">
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && UpdateForm.creditor_group_uuid.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.CREDITOR_GROUP" | translate }}</label>
                 <div>
-                  <select class="form-control" name="creditor_group_uuid" ng-model="EmployeeCtrl.employee.creditor_group_uuid" id="bhima-employee-creditor_group_uuid" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
+                  <select class="form-control" name="creditor_group_uuid" ng-model="EmployeeCtrl.employee.creditor_group_uuid" id="bhima-employee-creditor_group_uuid" ng-options="cg.uuid as cg.name for cg in EmployeeCtrl.creditorGroups | orderBy:'name'" required>
                     <option value="" disabled> -- {{ "SELECT.CREDITOR_GROUP" | translate }} -- </option>
                   </select>
                 </div>
               </div>
               
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.debitor_group_uuid.$invalid }">
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && UpdateForm.debitor_group_uuid.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.DEBITOR_GROUP" | translate }}</label>
                 <div>
-                  <select class="form-control" name="debitor_group_uuid" ng-model="EmployeeCtrl.employee.debitor_group_uuid" id="bhima-employee-debitor_group_uuid" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
+                  <select class="form-control" name="debitor_group_uuid" ng-model="EmployeeCtrl.employee.debitor_group_uuid" id="bhima-employee-debitor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debitorGroups | orderBy:'name'" required>
                     <option value="" disabled> -- {{ "SELECT.DEBITOR_GROUP" | translate }} -- </option>
                   </select>
                 </div>
@@ -420,9 +427,16 @@
                 </div>
               </div>
 
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.adresse.$invalid }">
+                <label class="control-label" for="bhima-employee-adresse">{{ "EMPLOYEE.ADDRESS" | translate }}</label>
+                <div>
+                  <input type="adresse" class="form-control" name="adresse" id="bhima-employee-adresse" ng-model="EmployeeCtrl.employee.adresse" required >
+                </div>
+              </div>
+
               <bh-location-select
                 validation-trigger="CreateForm.$submitted"
-                location-uuid="EnterpriseCtrl.enterprise.location_id">
+                location-uuid="EmployeeCtrl.employee.location_id">
               </bh-location-select>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.bank.$invalid }">

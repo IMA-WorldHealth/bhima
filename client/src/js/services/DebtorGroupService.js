@@ -26,4 +26,6 @@ function DebtorGroupService($http, util) {
     return $http.get(url, { params : parameters })
     .then(util.unwrapHttpResponse);
   }
+
+  return service;
 }

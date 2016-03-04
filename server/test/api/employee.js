@@ -42,10 +42,11 @@ describe('The /employees API endpoint :: ', function () {
       bank_account : '00-99-88-77',
       email : 'me@info.com',
       fonction_id : 1,
+      locked : 0,
       service_id : 1,
       location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
-      creditor_uuid : '42d3756a-7770-4bb8-a899-7953cd859892',
-      debitor_uuid : 'be0096dd-2929-41d2-912e-fb2259356fb5'
+      creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
+      debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
 
   var updateEmployee = {
@@ -65,7 +66,10 @@ describe('The /employees API endpoint :: ', function () {
       email : 'me@info.com',
       fonction_id : 1,
       service_id : 1,
-      location_id : 'ffe563ef-781c-4551-a080-7cec135351ff'
+      location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
+      creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
+      debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+
   };
 
   it('METHOD : POST PATH : /employee,  should create a new employee', function () {
