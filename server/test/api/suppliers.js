@@ -43,7 +43,7 @@ describe('The /supplier  API endpoint', function () {
   };
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('POST /supplier  should create a new Supplier ', function () {
     return agent.post('/suppliers')

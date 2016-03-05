@@ -25,7 +25,7 @@ describe('The /projects API endpoint', function () {
   var PROJECT_KEY = ['id', 'name', 'abbr', 'enterprise_id', 'zs_id', 'locked'];
   var INITIAL_PROJECTS = 3;
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('GET /projects returns a list of projects', function () {
     return agent.get('/projects')

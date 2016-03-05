@@ -12,7 +12,7 @@ describe('(/prices ) The price list API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
 
   // constants

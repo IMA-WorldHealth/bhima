@@ -26,8 +26,8 @@ describe('(/cash) Cash Payments Interface ', function () {
   ];
   var REFERENCE = 'TPA1';
 
-  /** login before each request */
-  beforeEach(helpers.login(agent));
+  /** login before test start request */
+  before(helpers.login(agent));
 
   // no cash payments have been made yet
   it('GET /cash returns an empty list with no cash payments', function () {

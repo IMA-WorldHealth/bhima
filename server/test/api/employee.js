@@ -1,3 +1,4 @@
+/* jshint expr:true*/
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -16,7 +17,7 @@ describe('(/employees) the employees API endpoint', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   var numEmployees = 1;
 
@@ -95,7 +96,7 @@ describe('(/employees) the employees API endpoint', function () {
   it('METHOD : GET PATH : /employees,  returns a list of all employees', function () {
     return agent.get('/employees')
       .then(function (res) {
-        helpers.api.listed(res, numEmployees);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });

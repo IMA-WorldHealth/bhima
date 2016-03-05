@@ -25,7 +25,7 @@ describe('The subsidy API, PATH : /subsidies', function () {
     'id', 'account_id', 'label', 'description', 'value', 'created_at', 'updated_at'
   ];
 
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('GET /subsidies returns an empty list of subsidies', function () {
       return agent.get('/subsidies')

@@ -19,7 +19,7 @@ describe('The /Enterprises API endpoint', function () {
   var TOTAL_CURRENCIES = 2;
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   var newEnterprise = {
     name : 'newEnterprises',

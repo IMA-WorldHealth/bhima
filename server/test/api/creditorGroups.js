@@ -27,7 +27,7 @@ describe('The /creditor_groups  API endpoint', function () {
   var NUM_CREDITOR_GROUPS = 2;
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
 
   it('GET /CREDITOR_GROUPS  returns a list of Creditor Group ', function () {

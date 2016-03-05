@@ -36,6 +36,8 @@ describe('(/billing_services) Billing Services API', function () {
     'number', 'created_at', 'updated_at'
   ];
 
+  /** logs in before the test suite */
+  before(helpers.login(agent));
 
   it('GET /billing_services should return an empty list of billing services', function () {
     return agent.get('/billing_services')

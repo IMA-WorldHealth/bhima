@@ -43,7 +43,7 @@ describe('The account API, PATH : /accounts', function () {
   ];
 
     // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('METHOD : GET, PATH : /accounts?full=1, It returns the full list of account', function () {
     return agent.get('/accounts?full=1')

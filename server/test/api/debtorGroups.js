@@ -111,7 +111,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
   var allDebtorGroups;
 
   // Logs in before each test
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('POST /debtor_groups/ create a new debtor group (unlocked)', function () {
     return agent.post('/debtor_groups/')
