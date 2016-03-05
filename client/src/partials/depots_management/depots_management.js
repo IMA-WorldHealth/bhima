@@ -38,6 +38,7 @@ function DepotManagementController($translate, DepotService, SessionService) {
   vm.update = update;
   vm.cancel = cancel;
   vm.submit = submit;
+  vm.refreshValidation = refreshValidation;
 
   /** Load depots */
   depotsList();
@@ -105,12 +106,20 @@ function DepotManagementController($translate, DepotService, SessionService) {
     vm.action = action;
     vm.depot  = {};
 
+    vm.actionTitle =
+      action === 'create' ? 'DEPOT.ADD' :
+      action === 'update' ? 'DEPOT.EDIT' : '';
+
     if (uuid && action === 'update') {
       DepotService.getDepots(uuid)
       .then(function (depot) {
         vm.depot = depot;
       });
     }
+  }
+
+  function refreshValidation() {
+    vm.state.errored = vm.depot.text ? false : true;
   }
 
   vm.state.reset = function reset() {
