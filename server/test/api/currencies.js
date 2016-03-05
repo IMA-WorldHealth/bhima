@@ -16,7 +16,7 @@ describe('(/currencies) currencies API routes', function () {
   ];
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('GET /currencies should return a list of currencies', function () {
     return agent.get('/currencies')

@@ -83,7 +83,7 @@ describe('The /patients API', function () {
   };
 
   // Logs in before each test
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   // HTTP API Test for /patients/search/ routes
   describe('The /patients/search API', function () {

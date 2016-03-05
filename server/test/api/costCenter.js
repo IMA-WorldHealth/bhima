@@ -17,7 +17,7 @@ describe('The cost center API, PATH : /cost_centers', function () {
   var DELETABLE_COST_CENTER_ID = 2;
   var FETCHABLE_COST_CENTER_ID = 1;
 
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
     it('METHOD : GET, PATH : /cost_centers?full=1, It returns a full list of cost centers', function () {
       return agent.get('/cost_centers?full=1')

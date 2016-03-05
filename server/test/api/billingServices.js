@@ -32,7 +32,7 @@ describe('(/billing_services) Billing Services Interface', function () {
   ];
 
   /** logs in before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('GET /billing_services should return an empty list of billing services', function () {
     return agent.get('/billing_services')

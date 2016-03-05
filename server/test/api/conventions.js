@@ -21,7 +21,7 @@ describe('The /cash/conventions API endpoint :: ', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   /** Test with dates */
   var date = new Date();

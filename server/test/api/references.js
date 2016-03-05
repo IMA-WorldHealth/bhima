@@ -19,7 +19,7 @@ describe('The reference API, PATH : /references', function () {
   var DELETABLE_REFERENCE_ID = 5;
   var FETCHABLE_REFERENCE_ID = 1;
 
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
     it('METHOD : GET, PATH : /references, It returns a list of references', function () {
       return agent.get('/references?full=1')

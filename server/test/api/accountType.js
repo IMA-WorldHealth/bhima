@@ -14,7 +14,7 @@ describe('The account types API, PATH : /account_types', function () {
   var FETCHABLE_ACCOUNT_TYPE_ID = 1;
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('METHOD : GET, PATH : /account_types, It returns a list of account type', function () {
     return agent.get('/account_types')

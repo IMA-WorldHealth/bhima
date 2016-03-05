@@ -12,7 +12,7 @@ describe('(/debtors) The /debtors API', function () {
   var emptyDebtorUuid = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
 
   // Logs in before each test
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
  it('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', function () {
     return agent.get('/debtors/:uuid/invoices'.replace(':uuid', debtorUuid))

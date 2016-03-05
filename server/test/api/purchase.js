@@ -64,7 +64,7 @@ describe('The /purchase API endpoint', function () {
 
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('POST /purchase should create a new purchase order', function () {
 

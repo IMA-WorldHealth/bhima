@@ -16,7 +16,7 @@ describe('(/employees) the employees API endpoint', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   var numEmployees = 1;
 

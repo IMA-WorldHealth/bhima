@@ -35,7 +35,7 @@ describe('The Service API, PATH : /services', function () {
     'id', 'cost_center_id', 'profit_center_id', 'name', 'enterprise_id'
   ];
 
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('METHOD : POST, PATH : /services, It adds a services', function () {
     return agent.post('/services')

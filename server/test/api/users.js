@@ -27,7 +27,7 @@ describe('(/users) Users and Permissions Interface', function () {
   };
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('GET /users returns a list of users', function () {
     return agent.get('/users')

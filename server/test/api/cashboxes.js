@@ -39,7 +39,7 @@ describe('The /cashboxes API endpoint', function () {
 
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('GET /cashboxes returns a list of cashboxes', function () {
     return agent.get('/cashboxes')
