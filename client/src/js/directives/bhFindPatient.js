@@ -259,8 +259,13 @@ function FindPatientComponent(Patients, AppCache) {
   * call a function to do something
   */
   function readInput(event) {
+
+    // submit the find-patient form
     if (event.keyCode === 13) {
       submit();
+
+      // make sure we do not submit the parent form!
+      event.preventDefault();
     }
   }
 }
