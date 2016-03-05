@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('CashTransferModalController', CashTransferModalController);
 
 CashTransferModalController.$inject = [
-  '$uibModalInstance', 'SessionService', 'CurrencyService', 'VoucherService', 'CashboxService', 'AccountService', 'cashBox', 'uuid'
+  '$uibModalInstance', 'CurrencyService', 'VoucherService',
+   'CashboxService', 'AccountService', 'CashService', 'cashBox'
 ];
 
 /**
@@ -11,7 +12,7 @@ CashTransferModalController.$inject = [
  * @description This controller is responsible transfering money between auxillary cash and a virement account
 */
 
-function CashTransferModalController(ModalInstance, sessionService, currencyService, voucherService, cashBoxService, accountService, cashBox, uuid) {
+function CashTransferModalController(ModalInstance, currencyService, voucherService, cashBoxService, accountService, cashService, cashBox) {
   var vm = this; 
 
   /** Attaching service to the scope **/
@@ -29,9 +30,7 @@ function CashTransferModalController(ModalInstance, sessionService, currencyServ
   **/
   function submit (invalid){
     if (invalid) { return; }
-    var voucher = initializeVoucher();
-    var voucher_item = initializeVoucherItem(voucher.uuid);
-    var record = { voucher : voucher, voucher_item : voucher_item };
+    var record = cashService.getTransferRecord(vm.cashAccountCurrency, vm.amount, vm.currency_id);
     voucherService.create(record)      
     .then(function (res){
       vm.success = true;
@@ -40,56 +39,6 @@ function CashTransferModalController(ModalInstance, sessionService, currencyServ
 
   function cancel (){
     ModalInstance.dismiss();
-  }
-
-  /**
-  * This methode is responsible to generate a description for the voucher operation
-  * @private
-  **/
-  function generateDescription (){
-    return ['Transfer voucher', new Date().toISOString().slice(0, 10)].join('/');
-  }
-
-  /**
-  * This methode is responsible to create a voucher object and it back
-  * @private
-  **/
-  function initializeVoucher (){
-    var voucher = {
-      uuid : uuid(),
-      project_id : sessionService.project.id,
-      currency_id : vm.currency_id,
-      amount : vm.amount,
-      description : generateDescription(),
-      user_id : sessionService.user.id
-    }
-
-    return voucher;
-  }
-
-  /**
-  * This methode is responsible to create a array of voucher_item based on voucher_uuid and send it back
-  * @private
-  **/
-  function initializeVoucherItem (voucher_uuid){
-
-    var cashVoucherLine = [
-      uuid (),
-      vm.cashAccountCurrency.account_id,
-      0,
-      vm.amount,
-      voucher_uuid
-    ];
-
-    var transferVoucherLine = [
-      uuid (),
-      vm.cashAccountCurrency.virement_account_id,
-      vm.amount,
-      0,
-      voucher_uuid
-    ];
-
-    return [cashVoucherLine, transferVoucherLine];
   }
 
   function handleCurrencyChange () {
