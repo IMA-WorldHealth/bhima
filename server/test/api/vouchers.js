@@ -1,5 +1,4 @@
 /* jshint expr: true */
-/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -23,7 +22,7 @@ describe('The /vouchers HTTP endpoint ::', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   /** Test with dates */
   var date = new Date();

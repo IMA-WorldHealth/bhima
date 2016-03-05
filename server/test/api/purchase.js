@@ -1,5 +1,3 @@
-/* global beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -39,14 +37,14 @@ describe('The /purchase API endpoint', function () {
 
    var purchase_item = [
     {
-      uuid : uuid(),
+      uuid : uuid.v4(),
       inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
       quantity : 200,
       unit_price : 0.0538,
       total : 10.7520
     },
     {
-      uuid : uuid(),
+      uuid : uuid.v4(),
       inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
       quantity : 16000,
       unit_price : 0.0335,
@@ -66,7 +64,7 @@ describe('The /purchase API endpoint', function () {
 
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('POST /purchase should create a new purchase order', function () {
 

@@ -1,5 +1,3 @@
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -37,16 +35,13 @@ describe('The Service API, PATH : /services', function () {
     'id', 'cost_center_id', 'profit_center_id', 'name', 'enterprise_id'
   ];
 
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('METHOD : POST, PATH : /services, It adds a services', function () {
     return agent.post('/services')
       .send(newService)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.defined;
+        helpers.api.created(res);
         newService.id = res.body.id;
         return agent.get('/services/' + newService.id);
       })
@@ -67,21 +62,18 @@ describe('The Service API, PATH : /services', function () {
         expect(res.body.id).to.be.defined;
         serviceWithoutCostCenter.id = res.body.id;
         return agent.get('/services/' + serviceWithoutCostCenter.id);
-      })  
+      })
       .then(function (res){
         expect(res).to.have.status(200);
         expect(res.body).to.have.all.keys(responseKeys);
-      })    
+      })
      .catch(helpers.handler);
   });
 
   it('METHOD : GET, PATH : /services, It returns a list of services', function () {
       return agent.get('/services')
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.length(5);
+          helpers.api.listed(res, 5);
         })
         .catch(helpers.handler);
   });
@@ -118,9 +110,7 @@ describe('The Service API, PATH : /services', function () {
     return agent.put('/services/' + newService.id)
       .send(wrongUpdateService)
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res).to.be.json;
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
@@ -139,13 +129,11 @@ describe('The Service API, PATH : /services', function () {
   it('METHOD : DELETE, PATH : /services/:id, It deletes a service', function () {
     return agent.delete('/services/' + newService.id)
       .then(function (res) {
-        expect(res).to.have.status(204);
-        // re-query the database
+        helpers.api.deleted(res);
         return agent.get('/services/' + newService.id);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

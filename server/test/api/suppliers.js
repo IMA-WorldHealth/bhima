@@ -1,5 +1,3 @@
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 var uuid    = require('node-uuid');
@@ -30,7 +28,7 @@ describe('The /supplier  API endpoint', function () {
     locked : 0
   };
 
-  var UNLOCKED = 0;  
+  var UNLOCKED = 0;
   var SUPPLIER_KEY = ['uuid', 'creditor_uuid', 'name', 'address_1', 'address_2',
    'email', 'fax', 'note', 'phone', 'international', 'locked'];
 
@@ -45,7 +43,7 @@ describe('The /supplier  API endpoint', function () {
   };
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('POST /supplier  should create a new Supplier ', function () {
     return agent.post('/suppliers')
@@ -69,7 +67,7 @@ describe('The /supplier  API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body[0]).to.contain.all.keys(SUPPLIER_KEY); 
+        expect(res.body[0]).to.contain.all.keys(SUPPLIER_KEY);
       })
       .catch(helpers.handler);
   });
@@ -85,21 +83,21 @@ describe('The /supplier  API endpoint', function () {
   });
 
 
-  it('GET /supplier/ ? LOCKED = 0 returns a complete List of unlocked supplier   ', function () { 
+  it('GET /supplier/ ? LOCKED = 0 returns a complete List of unlocked supplier   ', function () {
     return agent.get('/suppliers?locked=0')
       .then(function (result) {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
         expect(result.body[0].locked).to.equal(UNLOCKED);
         expect(result.body[0]).to.contain.all.keys(SUPPLIER_KEY);
-        expect(result.body).to.have.length(1);        
+        expect(result.body).to.have.length(1);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /supplier/ ? LOCKED = 1 returns a complete List of locked supplier', function () { 
+  it('GET /supplier/ ? LOCKED = 1 returns a complete List of locked supplier', function () {
     return agent.get('/suppliers?locked=1')
-      .then(function (result) { 
+      .then(function (result) {
         expect(result).to.have.status(200);
         expect(result.body).to.have.length(0);
         expect(result.body).to.be.empty;

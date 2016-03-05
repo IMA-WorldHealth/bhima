@@ -26,7 +26,7 @@ describe('The /grades  API endpoint', function () {
   var NUM_GRADES = 2;
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
 
   it('GET /GRADES  returns a list of grade ', function () {

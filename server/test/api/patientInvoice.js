@@ -1,5 +1,4 @@
 /* jshint expr:true */
-/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -56,7 +55,7 @@ describe('The /sales API', function () {
   var REFERENCE = 'TPA1';
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   // NOTE : Temporary skips while we are sorting the posting journal routes out
 

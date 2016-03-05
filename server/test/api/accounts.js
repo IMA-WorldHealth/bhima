@@ -1,5 +1,4 @@
 /* jshint expr : true */
-/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -44,15 +43,12 @@ describe('The account API, PATH : /accounts', function () {
   ];
 
     // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('METHOD : GET, PATH : /accounts?full=1, It returns the full list of account' , function () {
     return agent.get('/accounts?full=1')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(10);
+        helpers.api.listed(res, 10);
       })
       .catch(helpers.handler);
   });
@@ -115,8 +111,7 @@ describe('The account API, PATH : /accounts', function () {
  it('METHOD : GET, PATH : /accounts/unknownId, It returns a 404 error', function () {
     return agent.get('/accounts/unknownId')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -126,11 +121,7 @@ describe('The account API, PATH : /accounts', function () {
     return agent.post('/accounts')
       .send(newAccount)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.all.keys('id');
-        expect(res.body.id).to.be.defined;
+        helpers.api.created(res);
         newAccount.id = res.body.id;
         return agent.get('/accounts/' + newAccount.id);
       })
@@ -162,8 +153,7 @@ describe('The account API, PATH : /accounts', function () {
     return agent.put('/accounts/undefined')
       .send(updateInfo)
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res).to.be.json;
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

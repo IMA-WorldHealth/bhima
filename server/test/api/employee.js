@@ -1,26 +1,26 @@
-/* global describe, it, beforeEach */
 var chai = require('chai');
 var expect = chai.expect;
 
-/** import test helpers */
 var helpers = require('./helpers');
 helpers.configure(chai);
 
 
 /**
-* The /projects API endpoint
+* The /employees API endpoint
 *
-* This test suite implements full CRUD on the /projects HTTP API endpoint.
+* This test suite implements full CRUD on the /employees HTTP API endpoint.
 */
-describe('The /employees API endpoint :: ', function () {
+describe('(/employees) the employees API endpoint', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
-  // Custom dates
+  var numEmployees = 1;
+
+  // custom dates
   var embaucheDate  = new Date('2016-01-01'),
       dob1 = new Date('1987-04-17'),
       dob2 = new Date('1993-04-25');
@@ -72,9 +72,8 @@ describe('The /employees API endpoint :: ', function () {
     return agent.post('/employees')
       .send(employee)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body.id).to.exist;
+        helpers.api.created(res);
+
         employee.id = res.body.id;
       })
       .catch(helpers.handler);
@@ -84,8 +83,7 @@ describe('The /employees API endpoint :: ', function () {
     return agent.post('/employees')
       .send({})
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res).to.be.json;
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
@@ -93,8 +91,7 @@ describe('The /employees API endpoint :: ', function () {
   it('METHOD : GET PATH : /employees,  returns a list of all employees', function () {
     return agent.get('/employees')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        helpers.api.listed(res, numEmployees);
       })
       .catch(helpers.handler);
   });
@@ -105,7 +102,7 @@ describe('The /employees API endpoint :: ', function () {
         var emp = res.body;
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(emp).to.be.a('object');
+        expect(res.body).to.be.a('object');
 
         // add a missing property due to alias in db query
         emp.code = emp.code_employee;
@@ -117,9 +114,7 @@ describe('The /employees API endpoint :: ', function () {
   it('METHOD : GET PATH : /employees/code/:value,  should return a list of employees match the employee code token', function () {
     return agent.get('/employees/code/' + String(employee.code).substring(0,1))
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
+        helpers.api.listed(res, numEmployees);
       })
       .catch(helpers.handler);
   });
@@ -127,9 +122,7 @@ describe('The /employees API endpoint :: ', function () {
   it('METHOD : GET PATH : /employees/names/:value,  should return a list of employees match the employee names token', function () {
     return agent.get('/employees/names/' + employee.name.substring(0,2))
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
+        helpers.api.listed(res, numEmployees);
       })
       .catch(helpers.handler);
   });
@@ -137,8 +130,7 @@ describe('The /employees API endpoint :: ', function () {
   it('METHOD : GET PATH : /employees/unknown/:value,  should return an error for an ankwnow key', function () {
     return agent.get('/employees/unknown/' + employee.name.substring(0,2))
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res).to.be.json;
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
@@ -146,9 +138,7 @@ describe('The /employees API endpoint :: ', function () {
   it('METHOD : GET PATH : /employees/code/:value,  should return an empty array for an unmatch value', function () {
     return agent.get('/employees/code/unknown')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.have.length(0);
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
@@ -171,7 +161,7 @@ describe('The /employees API endpoint :: ', function () {
     return agent.put('/employees/fakeId')
       .send(updateEmployee)
       .then(function (res) {
-        expect(res).to.have.status(404);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -184,7 +174,7 @@ describe('The /employees API endpoint :: ', function () {
         fakeAttribute2: 'fake value 2'
       })
       .then(function (res) {
-        expect(res).to.have.status(400);
+        helpers.api.errored(res, 400);
         return agent.get('/employees/' + employee.id);
       })
       .then(function (res) {

@@ -1,5 +1,3 @@
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -20,14 +18,14 @@ describe('The /projects API endpoint', function () {
       name:          'Temporary Project',
       enterprise_id: 1,
       zs_id:         759,
-      locked:     0 
+      locked:     0
     };
 
-  var UNLOCKED = 0;  
+  var UNLOCKED = 0;
   var PROJECT_KEY = ['id', 'name', 'abbr', 'enterprise_id', 'zs_id', 'locked'];
   var INITIAL_PROJECTS = 3;
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('GET /projects returns a list of projects', function () {
     return agent.get('/projects')
@@ -59,41 +57,41 @@ describe('The /projects API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? COMPLETE = 1 returns a complete List of project  ', function () { 
+  it('GET /projects/ ? COMPLETE = 1 returns a complete List of project  ', function () {
     return agent.get('/projects?complete=1')
-      .then(function (result) { 
+      .then(function (result) {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
         expect(result.body).to.have.length(INITIAL_PROJECTS);
-        expect(result.body[0]).to.contain.all.keys(PROJECT_KEY); 
+        expect(result.body[0]).to.contain.all.keys(PROJECT_KEY);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? LOCKED = 0 returns a complete List of unlocked projects  ', function () { 
+  it('GET /projects/ ? LOCKED = 0 returns a complete List of unlocked projects  ', function () {
     return agent.get('/projects?locked=0')
-      .then(function (result) { 
+      .then(function (result) {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
         expect(result.body[0].locked).to.equal(UNLOCKED);
         expect(result.body[0]).to.contain.all.keys(PROJECT_KEY);
-        expect(result.body).to.have.length(INITIAL_PROJECTS);        
+        expect(result.body).to.have.length(INITIAL_PROJECTS);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? LOCKED = 1 returns a complete List of locked projects  ', function () { 
+  it('GET /projects/ ? LOCKED = 1 returns a complete List of locked projects  ', function () {
     return agent.get('/projects?locked=1')
-      .then(function (result) { 
+      .then(function (result) {
         expect(result).to.have.status(200);
-        expect(result.body).to.be.empty;        
+        expect(result.body).to.be.empty;
       })
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? INCOMPLETE LOCKED = 0 returns a simple List of unlocked projects  ', function () { 
+  it('GET /projects/ ? INCOMPLETE LOCKED = 0 returns a simple List of unlocked projects  ', function () {
     return agent.get('/projects?incomplete_locked=0')
-      .then(function (result) { 
+      .then(function (result) {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
         expect(result.body[0]).to.have.keys('id', 'name');
@@ -102,9 +100,9 @@ describe('The /projects API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? INCOMPLETE LOCKED = 1 returns a simple List of locked projects  ', function () { 
+  it('GET /projects/ ? INCOMPLETE LOCKED = 1 returns a simple List of locked projects  ', function () {
     return agent.get('/projects?incomplete_locked=1')
-      .then(function (result) { 
+      .then(function (result) {
         expect(result).to.have.status(200);
         expect(result.body).to.be.empty;
       })

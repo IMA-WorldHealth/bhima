@@ -26,8 +26,8 @@ describe('(/cash) Cash Payments Interface ::', function () {
   ];
   var REFERENCE = 'TPA1';
 
-  /** login before each request */
-  beforeEach(helpers.login(agent));
+  /** login before test start request */
+  before(helpers.login(agent));
 
   // no cash payments have been made yet
   it('GET /cash returns an empty list with no cash payments', function () {
@@ -195,11 +195,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
       return agent.put('/cash/' + SALE_PAYMENT.uuid)
         .send({ amount : 123000.13 })
         .then(function (res) {
-          expect(res).to.have.status(400);
-          expect(res).to.be.json;
-
-          // expect to be an error
-          expect(res.body).to.contain.all.keys(helpers.errorKeys);
+          helpers.api.errored(res, 400);
         })
         .catch(helpers.handler);
     });

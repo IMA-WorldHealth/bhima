@@ -16,7 +16,7 @@ describe('(/locations) Locations Interface', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login before each request */
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   /**
    * number of test villages, sectors, provinces, and countries in the test

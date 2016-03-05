@@ -1,5 +1,3 @@
-/*global describe, it, beforeEach, process*/
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -18,7 +16,7 @@ describe('The profit center API, PATH : /profit_centers', function () {
   var DELETABLE_PROFIT_CENTER_ID = 2;
   var FETCHABLE_PROFIT_CENTER_ID = 1;
 
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
     it('METHOD : GET, PATH : /profit_centers?full=1, It returns a full list of profit centers', function () {
       return agent.get('/profit_centers?full=1')
