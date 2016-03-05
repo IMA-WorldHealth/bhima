@@ -104,7 +104,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (48, 1),
 
 --  Cashbox Management
-(105,1);
+(105,1),
+
+--  Depots Management
+(106,1);
 
 -- give test permission to both projects
 INSERT INTO project_permission (project_id, user_id) VALUES (1, 1), (2, 1);

@@ -14,23 +14,23 @@
           <div class="panel-heading">
             {{ "DEPOT.DEPOTS_LIST" | translate }}
           </div>
-          <table class="table table-bordered table-condensed">
+          <table class="table table-condensed">
             <thead>
               <tr>
                 <th>{{ "DEPOT.REFERENCE" | translate }}</th>
                 <th>{{ "DEPOT.NAME" | translate }}</th>
                 <th>{{ "DEPOT.IS_WAREHOUSE" | translate }}</th>
-                <th></th>
+                <th>{{ "COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="depot in DepotCtrl.depotList">
                 <td>{{ depot.reference }}</td>
                 <td>{{ depot.text }}</td>
-                <td  class="text-center">
+                <td>
                   <i ng-if="depot.is_warehouse" class="glyphicon glyphicon-ok-sign"></i>
                 </td>
-                <td class="text-center">
+                <td>
                   <a name="depot-{{depot.text}}" class="btn btn-xs btn-default"
                     ng-click="DepotCtrl.update(depot.uuid)">
                     <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.EDIT' | translate }}
@@ -93,9 +93,6 @@
 
               <!-- error feedback area -->
               <span data-role="feedback">
-                <span ng-if="ActionForm.$submitted && ActionForm.$invalid" class="text-danger">
-                  <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
-                </span>
                 <span ng-if="DepotCtrl.state.errored" class="text-danger">
                   <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
                 </span>

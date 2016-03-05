@@ -1,17 +1,16 @@
 /* jshint expr: true */
-/* describe, it, element, by, beforeEach, inject, browser */
+/* element, by, inject, browser */
 
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var uuid = require('node-uuid');
+var chai    = require('chai');
+var expect  = chai.expect;
+var helpers = require('../shared/helpers');
 
-chai.use(chaiAsPromised);
-var expect = chai.expect;
+helpers.configure(chai);
 
 var FormUtils = require('../shared/FormUtils');
 var components = require('../shared/components');
 
-describe.only('Depots management tests suit :: ', function () {
+describe('Depots management tests suit :: ', function () {
 
   var PATH = '#/depots_management';
 
@@ -33,9 +32,8 @@ describe.only('Depots management tests suit :: ', function () {
   it('successfully creates a new depot', function () {
     FormUtils.buttons.create();
     FormUtils.input('DepotCtrl.depot.text', depot.text);
-    FormUtils.input('DepotCtrl.depot.is_warehouse', depot.is_warehouse);
     FormUtils.buttons.submit();
-    expect(element(by.id('create_success')).isPresent()).to.eventually.be.true;
+    FormUtils.exists(by.id('create_success'), true);
   });
 
   it('successfully edits a depot', function () {
@@ -43,7 +41,14 @@ describe.only('Depots management tests suit :: ', function () {
     element(by.model('DepotCtrl.depot.text')).sendKeys(updateDepot.text);
     element(by.model('DepotCtrl.depot.is_warehouse')).click();
     FormUtils.buttons.submit();
-    expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
+    FormUtils.exists(by.id('update_success'), true);
+  });
+
+  it('Dont create when incorrect depot name', function () {
+    FormUtils.buttons.create();
+    FormUtils.input('DepotCtrl.depot.text', '');
+    FormUtils.buttons.submit();
+    FormUtils.exists(by.id('create_success'), false);
   });
 
 });

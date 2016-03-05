@@ -1,14 +1,14 @@
 angular.module('bhima.controllers')
 .controller('DepotManagementController', DepotManagementController);
 
-DepotManagementController.$inject = ['$translate', 'DepotService', 'SessionService', 'FormStateFactory'];
+DepotManagementController.$inject = ['$translate', 'DepotService', 'SessionService'];
 
 /**
  * Depot Management Controller
  * This controller is about the depot management module in the admin zone
  * It's responsible for creating, editing and updating a depot
  */
-function DepotManagementController($translate, DepotService, SessionService, StateFactory) {
+function DepotManagementController($translate, DepotService, SessionService) {
   'use strict';
 
   var vm = this;
@@ -31,7 +31,7 @@ function DepotManagementController($translate, DepotService, SessionService, Sta
   ];
 
   /** init variables */
-  vm.state = new StateFactory();
+  vm.state = {};
   vm.depot = {};
 
   /** Expose to the view */
@@ -39,10 +39,8 @@ function DepotManagementController($translate, DepotService, SessionService, Sta
   vm.cancel = cancel;
   vm.submit = submit;
 
-  /** Startup the module */
-  (function startup() {
-    depotsList();
-  })();
+  /** Load depots */
+  depotsList();
 
   function depotsList() {
     DepotService.getDepots()
@@ -52,30 +50,21 @@ function DepotManagementController($translate, DepotService, SessionService, Sta
   }
 
   function update(uuid) {
-    vm.state.reset();
-    vm.view = 'action';
-    vm.action = 'update';
-    DepotService.getDepots(uuid)
-    .then(function (depot) {
-      vm.depot = depot;
-    });
+    initialise('action', 'update', uuid);
   }
 
   function create() {
-    vm.state.reset();
-    vm.view = 'action';
-    vm.action = 'create';
-    vm.depot = {};
+    initialise('action', 'create');
   }
 
   function cancel() {
-    vm.state.reset();
-    vm.view = 'default';
-    vm.depot = {};
-    vm.action = null;
+    initialise('default');
   }
 
-  function submit() {
+  function submit(invalid) {
+    if (invalid) {
+      vm.state.errored = true;
+    }
     if (vm.depot.text && vm.action === 'create') {
       createDepot();
     }
@@ -109,5 +98,25 @@ function DepotManagementController($translate, DepotService, SessionService, Sta
     vm.state.errored = true;
     console.log(err);
   }
+
+  function initialise(view, action, uuid) {
+    vm.state.reset();
+    vm.view   = view;
+    vm.action = action;
+    vm.depot  = {};
+
+    if (uuid && action === 'update') {
+      DepotService.getDepots(uuid)
+      .then(function (depot) {
+        vm.depot = depot;
+      });
+    }
+  }
+
+  vm.state.reset = function reset() {
+    vm.state.errored = false;
+    vm.state.updated = false;
+    vm.state.created = false;
+  };
 
 }
