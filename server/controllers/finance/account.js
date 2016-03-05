@@ -125,10 +125,12 @@ function getBalance (req, res, next){
       return db.exec(accountSoldQuery, params);
     })
     .then(function (rows){
-      if(rows.length === 0){
-        res.status(200).json({account_id : accountId, debit : 0, credit : 0, balance : 0});
-      }
-      res.status(200).json(rows[0]);
+
+      var response = (rows.length === 0) ? 
+       {account_id : accountId, debit : 0, credit : 0, balance : 0 } : 
+       rows[0];
+
+      res.status(200).json(response);
     })
     .catch(next)
     .done();  
