@@ -53,7 +53,7 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
   function startup() {
 
     // start up the loading indicator
-    vm.loadingState = true;
+    toggleLoadingState();
 
     // load debtor invoices
     Debtors.invoices(debtorId).then(function (invoices) {
@@ -88,12 +88,15 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
     vm.loadingState = !vm.loadingState;
   }
 
-
   // resolve the modal with the selected invoices to add to the cash payment bills
   function submit() {
 
     // retrieve the outstanding patient invoices from the ui grid
     var invoices = vm.getSelectedRows();
+
+    // block the submission if there are no
+    vm.empty = (invoices.length === 0);
+    if (vm.empty) { return; }
 
     // sum up the total cost of the selected rows
     var total = invoices.reduce(function (aggregate, invoice) {
