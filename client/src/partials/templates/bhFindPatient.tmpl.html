@@ -31,7 +31,7 @@
       <!-- search by ID  -->
       <input ng-model="$ctrl.idInput"
         ng-if="$ctrl.selected == $ctrl.options.findById"
-        ng-keyup="$ctrl.readInput($event)"
+        ng-keypress="$ctrl.readInput($event)"
         ng-change="$ctrl.validateNameSearch($ctrl.idInput)"
         name="idInput"
         type="text"
@@ -45,7 +45,7 @@
       <!-- search by Name  -->
       <input ng-model="$ctrl.nameInput"
         ng-if="$ctrl.selected == $ctrl.options.findByName"
-        ng-keyup="readInput($event)"
+        ng-keypress="readInput($event)"
         name="nameInput"
         type="text"
         class="form-control"
@@ -174,7 +174,7 @@
           <!-- search by ID  -->
           <input ng-model="$ctrl.idInput"
             ng-if="$ctrl.selected == $ctrl.options.findById"
-            ng-keyup="$ctrl.readInput($event)"
+            ng-keypress="$ctrl.readInput($event)"
             ng-change="$ctrl.validateNameSearch($ctrl.idInput)"
             name="idInput"
             type="text"
@@ -188,7 +188,7 @@
           <!-- search by name  -->
           <input ng-model="$ctrl.nameInput"
             ng-if="$ctrl.selected == $ctrl.options.findByName"
-            ng-keyup="$ctrl.readInput($event)"
+            ng-keypress="$ctrl.readInput($event)"
             name="nameInput"
             type="text"
             class="form-control"
