@@ -1,12 +1,11 @@
 <!-- Date editor component view implementation-->
 <div 
 	class="form-group"	
-	ng-class="{'has-error' : $ctrl.validationTrigger && $ctrl.form.dateEditorValue.$invalid}" >
+	ng-class="{'has-error' : $ctrl.validationTrigger && $ctrl.form.dateEditorValue.$invalid}" data-date-editor-input>
 
 	<!-- Input component implementation-->
 	<div class="input-group">
-	    <input
-	    	data-date-editor-input
+	    <input	    	
 	    	name="dateEditorValue"
 	    	type="text"
 	    	class="form-control"	    	
@@ -21,7 +20,7 @@
 	    	required
 	    	/>
 	    <span class="input-group-btn">
-	    	<button id="set-date-btn" class="btn btn-default" type="button" ng-click="$ctrl.changeMode()" ng-disabled="$ctrl.editMode">
+	    	<button data-edit-date-btn class="btn btn-default" type="button" ng-click="$ctrl.changeMode()" ng-disabled="$ctrl.editMode">
 	    		{{"DATEFINDER.SET" | translate}}
 	    	</button>
 	    </span>

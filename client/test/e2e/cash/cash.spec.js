@@ -64,10 +64,10 @@ describe('Cash Payments Module', function () {
 
     it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', function () {
 
-      // our target is cashboxB
+      // our target is cashboxA
       var target = path.concat('/' + cashboxA.id);
 
-      // implicitly choose cashbox B by navigating to it directly 
+      // implicitly choose cashbox A by navigating to it directly 
       browser.get(target);
 
       // make sure all $http/$timeout requests clear before moving forward
@@ -78,7 +78,7 @@ describe('Cash Payments Module', function () {
       // attempt to return to /cash manually
       browser.get(path);      
 
-      // expect that we were routed back to cashbox B
+      // expect that we were routed back to cashbox A
       expect(getCurrentPath()).to.eventually.equal(target);
     });
 
@@ -158,7 +158,7 @@ describe('Cash Payments Module', function () {
     // This payment against patient invoices should succeed
     var mockInvoicesPayment = {
       patientId: 'TPA2',
-      date : new Date(2016, 03, 01),
+      date : new Date('2016-03-01'),
       amount : 5.12
     };    
 
@@ -179,7 +179,7 @@ describe('Cash Payments Module', function () {
       FC.click();
 
       // enter the amount to pay for a caution
-      components.currencyInput.set(mockCautionPayment.amount);
+      components.currencyInput.set(mockCautionPayment.amount, null);
 
       // click the submit button
       FU.buttons.submit();
@@ -221,16 +221,14 @@ describe('Cash Payments Module', function () {
       USD.click();
 
       // enter the amount to pay for an invoice
-      components.currencyInput.set(mockInvoicesPayment.amount);
+      components.currencyInput.set(mockInvoicesPayment.amount, null);
 
       // click the submit button
       FU.buttons.submit();
 
       // expect the receipt modal to appear
       FU.exists(by.css('[data-cash-receipt-modal]'), true);
-    });
-
-    
+    });    
   });
 
   describe('Cash Transfer ', function (){    
@@ -256,7 +254,7 @@ describe('Cash Payments Module', function () {
       CDFRadio.click();
 
       //set a value in the currency component by model to avoid conflict  
-      components.currencyInput.setById('transferCurrencyInput', mockTransfer.amount);
+      components.currencyInput.set(mockTransfer.amount, 'transferCurrencyInput');
 
       // submit the modal button
       var transferSubmitBtn =  element(by.id('submit-transfer'));

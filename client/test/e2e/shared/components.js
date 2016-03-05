@@ -127,20 +127,13 @@ exports.currencyInput = {
 
   /**
    * sets the value of the currency input.
-   */
-  set : function set(value) {
-    var elm = element(by.css(this.selector));
+  */  
+  set : function set(value, id) {
+  // it might be clearer to do this in two steps.
+    var root = element(id ? by.id(id) : by.css(this.selector));
+    var elm  = root.element(by.model('$ctrl.model'));
     elm.sendKeys(value);
-  },
-
-  /**
-  *set the value of the component by his id to avoid conflict
-  */
-  setById : function setById (id, value){
-    var comp = element(by.id(id));
-    var input = comp.element(by.css(this.selector));
-    input.sendKeys(value);
-  },
+  },  
 
   /**
    * get the value of the currency input.
@@ -292,19 +285,18 @@ exports.findDebtorGroup = {
 */
 
 exports.dateEditor = {
-  selector : ['data-date-editor-input'],
+  selector : '[data-date-editor-input]',
 
   /**
    * sets the value in date field.
    */
-
   set : function set(value) {
+    var root = element(by.css(this.selector));
+    var btn = root.element(by.css('[data-edit-date-btn]'));
+    browser.actions().mouseMove(btn).click(); //to fix the no clickable problem
 
-    var setDateButton = element(by.css('[data-date-editor-input]'));
-    setDateButton.click();
-
-    var DateInputText = element(by.css(this.selector));
-    DateInputText.dateValue = value;
+    var input = root.element(by.model('$ctrl.dateValue'));
+    input.dateValue = value;
   },
 
   /**

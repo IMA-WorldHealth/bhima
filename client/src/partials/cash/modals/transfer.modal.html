@@ -6,18 +6,17 @@
 
   <div class="modal-body">
 
-    <p class="text-danger text-center" ng-if="CashTransferModalCtrl.cashBoxIdMissed">
+    <p class="text-danger text-center" ng-hide="CashTransferModalCtrl.cashBox">
       <span class="glyphicon glyphicon-alert"></span>
       {{ "CASH.MODALS.MISSING_CASH_BOX_ID" | translate }}
     </p>
 
-    <uib-alert type="info" ng-if="!CashTransferModalCtrl.cashBoxIdMissed">
+    <uib-alert type="info" ng-show="CashTransferModalCtrl.cashBox">
       <p>{{ "CASH.MODALS.FINANCIAL_DETAIL" | translate }} </p>
 
       <p>{{"CASH.CASHBOX" | translate}} : {{ CashTransferModalCtrl.cashBox.text }} </p>
       <div ng-if="CashTransferModalCtrl.currency_id">
-        <p>{{"COLUMNS.CURRENCY" | translate}} : {{ CashTransferModalCtrl.currencyService.format(CashTransferModalCtrl.currency_id); }}</p>
-        <p>{{"COLUMNS.BALANCE" | translate}} : {{CashTransferModalCtrl.cashAccountSold.balance}}</p>
+        <p>{{"COLUMNS.BALANCE" | translate}} : {{CashTransferModalCtrl.cashAccountBalance.balance | currency:CashTransferModalCtrl.currency_id}}</p>
       </div>
     </uib-alert>   
 
@@ -52,14 +51,9 @@
       >
     </bh-currency-input>
 
-    <span id="succed-label" class="text-success" ng-if="CashTransferModalCtrl.submited">
+    <span id="succed-label" class="text-success" ng-show="TransferForm.$submitted && CashTransferModalCtrl.success">
       <i class="glyphicon glyphicon-ok-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.SUCCESS" | translate }}
     </span>
-
-    <span id="fail-label" class="text-danger" ng-if="CashTransferModalCtrl.fail">
-      <i class="glyphicon glyphicon-warning-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.FAIL" | translate }}
-    </span>
-
   </div>
 
   <div class="modal-footer">
@@ -68,7 +62,7 @@
       id="submit-transfer"
       class="btn btn-primary"
       data-method="submit"
-      ng-disabled="CashTransferModalCtrl.cashBoxIdMissed"
+      ng-disabled="!CashTransferModalCtrl.cashBox"
       data-transfer-modal-submit
       >
       {{ "FORM.SUBMIT" | translate }}

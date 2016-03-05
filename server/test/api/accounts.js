@@ -122,11 +122,16 @@ describe('The account API, PATH : /accounts', function () {
       .catch(helpers.handler);
   });
 
- it('METHOD : GET, PATH : /accounts/:id/balance, It returns an error 404 not found', function () {
+ it('METHOD : GET, PATH : /accounts/:id/balance, It returns an object with zero as balance, debit and credit', function () {
    return agent.get('/accounts/:id/balance'.replace(':id', FETCHABLE_ACCOUNT_ID))
     .then(function (res){
-      expect(res).to.have.status(404);
+      expect(res).to.have.status(200);
       expect(res).to.be.json;
+      expect(res.body).to.not.be.empty;
+      expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
+      expect(res.body.debit).to.equal(0);
+      expect(res.body.credit).to.equal(0);
+      expect(res.body.balance).to.equal(0);
     })
     .catch(helpers.handler);
  });
@@ -139,8 +144,9 @@ describe('The account API, PATH : /accounts', function () {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
-        expect(res.body.debit).to.satisfy(function (debit) { return debit >= 0;});
-        expect(res.body.credit).to.satisfy(function (credit) { return credit >= 0;});
+        expect(res.body.debit).to.equal(75);
+        expect(res.body.credit).to.equal(0);
+        expect(res.body.balance).to.equal(75);
       })
       .catch(helpers.handler);
   });

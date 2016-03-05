@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('CashTransferModalController', CashTransferModalController);
 
 CashTransferModalController.$inject = [
-  '$uibModalInstance', '$q', 'SessionService', 'CurrencyService', 'VoucherService', 'CashboxService', 'AccountService', 'cashBox', 'uuid'
+  '$uibModalInstance', 'SessionService', 'CurrencyService', 'VoucherService', 'CashboxService', 'AccountService', 'cashBox', 'uuid'
 ];
 
 /**
@@ -11,7 +11,7 @@ CashTransferModalController.$inject = [
  * @description This controller is responsible transfering money between auxillary cash and a virement account
 */
 
-function CashTransferModalController(ModalInstance, $q, sessionService, currencyService, voucherService, cashBoxService, accountService, cashBox, uuid) {
+function CashTransferModalController(ModalInstance, sessionService, currencyService, voucherService, cashBoxService, accountService, cashBox, uuid) {
   var vm = this; 
 
   /** Attaching service to the scope **/
@@ -19,8 +19,8 @@ function CashTransferModalController(ModalInstance, $q, sessionService, currency
   vm.currencyService = currencyService; 
   vm.cashBoxService = cashBoxService;
 
-  /** check if the cashbox id is provided**/
-  vm.cashBoxIdMissed = !cashBox.id;
+  /** init success to false**/
+  vm.success = false;
 
   /**
   * @function submit
@@ -29,16 +29,13 @@ function CashTransferModalController(ModalInstance, $q, sessionService, currency
   **/
   function submit (invalid){
     if (invalid) { return; }
-    var voucher = processVoucher();
-    var voucher_item = processVoucherItem(voucher.uuid);
+    var voucher = initializeVoucher();
+    var voucher_item = initializeVoucherItem(voucher.uuid);
     var record = { voucher : voucher, voucher_item : voucher_item };
     voucherService.create(record)      
     .then(function (res){
-      vm.submited = true; //FIX ME, I need a goo idea
-    })
-    .catch(function (err){
-      vm.fail = true; //FIX ME, I need a goo idea
-    });          
+      vm.success = true;
+    });
   }
 
   function cancel (){
@@ -57,7 +54,7 @@ function CashTransferModalController(ModalInstance, $q, sessionService, currency
   * This methode is responsible to create a voucher object and it back
   * @private
   **/
-  function processVoucher (){
+  function initializeVoucher (){
     var voucher = {
       uuid : uuid(),
       project_id : sessionService.project.id,
@@ -74,7 +71,7 @@ function CashTransferModalController(ModalInstance, $q, sessionService, currency
   * This methode is responsible to create a array of voucher_item based on voucher_uuid and send it back
   * @private
   **/
-  function processVoucherItem (voucher_uuid){
+  function initializeVoucherItem (voucher_uuid){
 
     var cashVoucherLine = [
       uuid (),
@@ -99,10 +96,10 @@ function CashTransferModalController(ModalInstance, $q, sessionService, currency
     cashBoxService.currencies.read(vm.cashBox.id, vm.currency_id)
     .then(function (cashAccountCurrency){
       vm.cashAccountCurrency = cashAccountCurrency; 
-      return  accountService.getSold(vm.cashAccountCurrency.account_id, { params : { journal : 1 }});
+      return  accountService.getBalance(vm.cashAccountCurrency.account_id, { params : { journal : 1 }});
     })
-    .then(function (sold){
-      vm.cashAccountSold = sold;
+    .then(function (balance){
+      vm.cashAccountBalance = balance;
     });
   }
 
