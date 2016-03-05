@@ -9,6 +9,7 @@
  * This module implements the following routes:
  * GET    /accounts
  * GET    /accounts/:id
+ * GET    /accounts/:id/balance/
  * POST   /accounts
  * PUT    /accounts/:id
  *
@@ -104,6 +105,37 @@ function detail(req, res, next) {
   .done();
 }
 
+function getBalance (req, res, next){
+  'use strict';
+
+  var accountId = req.params.id, optional = '';
+  var params = [accountId];
+
+  if(req.query.journal === '1') {
+    optional = ' UNION ALL SELECT pj.account_id, IFNULL(SUM(pj.debit), 0) AS debit, IFNULL(SUM(pj.credit), 0) AS credit, IFNULL((pj.debit - pj.credit), 0) AS balance FROM posting_journal AS pj WHERE pj.account_id = ? GROUP BY pj.account_id';
+    params.push(accountId);
+  }
+
+  var accountSoldQuery = 'SELECT t.account_id, IFNULL(SUM(t.debit), 0) AS debit, IFNULL(SUM(t.credit), 0) AS credit, IFNULL(t.balance, 0) AS balance FROM' + 
+    ' (SELECT gl.account_id, IFNULL(SUM(gl.debit), 0) AS debit, IFNULL(SUM(gl.credit), 0) AS credit, IFNULL((gl.debit - gl.credit), 0) AS balance FROM' + 
+    ' general_ledger AS gl WHERE gl.account_id = ? GROUP BY gl.account_id' + optional + ' ) AS t GROUP BY t.account_id';
+
+  lookupAccount(accountId, req.codes)
+    .then(function (account) {
+      return db.exec(accountSoldQuery, params);
+    })
+    .then(function (rows){
+
+      var response = (rows.length === 0) ? 
+       {account_id : accountId, debit : 0, credit : 0, balance : 0 } : 
+       rows[0];
+
+      res.status(200).json(response);
+    })
+    .catch(next)
+    .done();  
+}
+
 function lookupAccount(id, codes) {
   'use strict';
 
@@ -129,3 +161,4 @@ exports.list = list;
 exports.create = create;
 exports.update = update;
 exports.detail = detail;
+exports.getBalance = getBalance;

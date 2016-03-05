@@ -117,6 +117,7 @@ exports.configure = function (app) {
   // API for account routes crud
   app.get('/accounts', account.list);
   app.get('/accounts/:id', account.detail);
+  app.get('/accounts/:id/balance', account.getBalance);
   app.post('/accounts', account.create);
   app.put('/accounts/:id', account.update);
 

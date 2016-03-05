@@ -201,7 +201,7 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
           // catch in case of 404, none specified default to empty object
           return Boxes.currencies.read(vm.box.id, currency.id)
             .catch(function () { return {}; });
-        },
+        }
       }
     });
 

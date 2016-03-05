@@ -64,20 +64,21 @@ describe('Cash Payments Module', function () {
 
     it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', function () {
 
-      // our target is cashboxB
-      var target = path.concat('/' + cashboxB.id);
+      // our target is cashboxA
+      var target = path.concat('/' + cashboxA.id);
 
-      // implicitly choose cashbox B by navigating to it directly
+      // implicitly choose cashbox A by navigating to it directly 
       browser.get(target);
-      expect(getCurrentPath()).to.eventually.equal(target);
-
-      // attempt to return to /cash manually
-      browser.get(path);
 
       // make sure all $http/$timeout requests clear before moving forward
-      browser.waitForAngular();
+      browser.waitForAngular();   
+      
+      expect(getCurrentPath()).to.eventually.equal(target);      
 
-      // expect that we were routed back to cashbox B
+      // attempt to return to /cash manually
+      browser.get(path);      
+
+      // expect that we were routed back to cashbox A
       expect(getCurrentPath()).to.eventually.equal(target);
     });
 
@@ -89,15 +90,15 @@ describe('Cash Payments Module', function () {
       // emulate a selection by simply going to the direct URL
       // this should set the cashbox ID in localstorage
       browser.get(target);
+      
+      // make sure all $http/$timeout requests clear before moving forward
+      browser.waitForAngular();
 
       // confirm that we actually go to the page
       expect(getCurrentPath()).to.eventually.equal(target);
 
       // attempt to return to the cash page manually
-      browser.get(path);
-
-      // make sure all $http/$timeout requests clear before moving forward
-      browser.waitForAngular();
+      browser.get(path);      
 
       // the browser should be rerouted to the cashboxB page
       expect(getCurrentPath()).to.eventually.equal(target);
@@ -120,12 +121,16 @@ describe('Cash Payments Module', function () {
       var backBtn = element(by.css('[data-change-cashbox]'));
       backBtn.click();
 
+      browser.waitForAngular();
+
       // ensure we get back to the cashbox select module
       expect(getCurrentPath()).to.eventually.equal(path);
 
       // attempt to navigate (via the buttons) to cashboxB as our new target
       var btn = element(by.id('cashbox-'.concat(cashboxB.id)));
       btn.click();
+
+      browser.waitForAngular();
 
       // verify that we get to the cashboxB page
       expect(getCurrentPath()).to.eventually.equal(targetFinal);
@@ -153,43 +158,15 @@ describe('Cash Payments Module', function () {
     // This payment against patient invoices should succeed
     var mockInvoicesPayment = {
       patientId: 'TPA2',
-      date : new Date('2016-06-01'),
+      date : new Date('2016-03-01'),
       amount : 5.12
-    };
-
-    /**
-     * wraps the edit date component to easily change dates
-     * @todo - move this into a common shared utility for modules to use in the
-     * future
-     */
-    function editDate(date, form) {
-
-      // click the edit date button to toggle into readonly mode
-      var btn = element(by.css('[data-edit-date-btn]'));
-      btn.click();
-
-      // pre-format date for insertion to the date input
-      var val = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-
-      // currently, protractor does not support sending keys to all known HTML5
-      // date input controls (see https://github.com/angular/protractor/issues/562).
-      // so, we must the document methods.
-      var src = 'var ipt = document.querySelector("[data-edit-date-btn]"); ' +
-        'ipt.value = "' + val + '"; ' +
-        'angular.element(ipt).scope().$apply(' +
-          'function (s) { s.' + form + '[ipt.name].$setViewValue("' + val + '"); });';
-
-      // run the script
-      browser.executeScript(src);
-
-      // lock the date input back in readonly mode
-      btn.click();
-    }
+    };    
 
     it('should make a caution payment', function () {
 
       // select the proper patient
       components.findPatient.findByName(mockCautionPayment.patientName);
+
 
       // we will leave the date input as default
 
@@ -202,7 +179,7 @@ describe('Cash Payments Module', function () {
       FC.click();
 
       // enter the amount to pay for a caution
-      components.currencyInput.set(mockCautionPayment.amount);
+      components.currencyInput.set(mockCautionPayment.amount, null);
 
       // click the submit button
       FU.buttons.submit();
@@ -218,7 +195,8 @@ describe('Cash Payments Module', function () {
       components.findPatient.findById(mockInvoicesPayment.patientId);
 
       // select the properdate
-      editDate(mockInvoicesPayment.date);
+
+      components.dateEditor.set(mockInvoicesPayment.date);
 
       // select the "invoices payment" option type
       var cautionOption = element(by.css('[data-caution-option="0"]'));
@@ -243,20 +221,46 @@ describe('Cash Payments Module', function () {
       USD.click();
 
       // enter the amount to pay for an invoice
-      components.currencyInput.set(mockInvoicesPayment.amount);
+      components.currencyInput.set(mockInvoicesPayment.amount, null);
 
       // click the submit button
       FU.buttons.submit();
 
       // expect the receipt modal to appear
       FU.exists(by.css('[data-cash-receipt-modal]'), true);
+    });    
+  });
+
+  describe('Cash Transfer ', function (){    
+
+    /** navigate to the page before each function */
+    beforeEach(function () {
+      browser.get(path);
     });
 
-    it('should perform validation', function () {
+    //This transfer should succed
+    var mockTransfer = {
+      amount : 100
+    };
 
-      // click the submit button
-      FU.buttons.submit();
+    it('should make a transfert between selected auxillary cash and a virement account', function (){
 
+      //click the transfert button
+      var transfertBtn = element(by.css('[data-perform-transfer]'));
+      transfertBtn.click();
+
+      //choosing CDF as transfer currency
+      var CDFRadio = element(by.css('[data-transfer-currency-option="1"]'));
+      CDFRadio.click();
+
+      //set a value in the currency component by model to avoid conflict  
+      components.currencyInput.set(mockTransfer.amount, 'transferCurrencyInput');
+
+      // submit the modal button
+      var transferSubmitBtn =  element(by.id('submit-transfer'));
+      transferSubmitBtn.click();
+
+      FU.exists(by.id('succed-label'), true);
     });
   });
 });

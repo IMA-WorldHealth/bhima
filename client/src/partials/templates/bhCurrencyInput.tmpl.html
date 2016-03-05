@@ -1,6 +1,6 @@
 <div class="form-group"
-  ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.form.currencyInputValue.$invalid }"
-  >
+  ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.form.currencyInputValue.$invalid }"  
+  data-bh-currency-input>
   <label class="control-label">
     {{ "COLUMNS.PAYMENT" | translate }}
   </label>
@@ -8,7 +8,6 @@
   <div class="input-group">
     <span class="input-group-addon">{{ $ctrl.currency.symbol }}</span>
     <input class="form-control"
-      data-bh-currency-input
       type="number"
       name="currencyInputValue"
       ng-model="$ctrl.model"

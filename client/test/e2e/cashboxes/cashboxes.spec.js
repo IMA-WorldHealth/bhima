@@ -10,6 +10,7 @@ var FU = require('../shared/FormUtils');
 describe('Cashbox Module', function () {
 
   var path = '#/cashboxes';
+
   var cashbox = {
     name:    'Test Principal Cashbox',
     type:    1,

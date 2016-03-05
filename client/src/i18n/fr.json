@@ -272,51 +272,56 @@
     "TITLE"                  : "Gestion des caisses et des comptes bancaires",
     "TRANSFER_ACCOUNT"       : "Compte Virement",
     "UPDATE_SUCCESS"         : "Mis à jour une caisse avec succès."
-    },
-   "CLEAR_SELECTION"  : "Recommencer",
-   "DEBITOR_INVOICES" : "Unpaid invoices of debitors",
-   "DEFAULT_CASHBOX"  : "Default Cashbox",
-   "EXTRA" : {
-      "ACTION"             : "Action",
-      "FILTER_PATIENT"     : "Filtre client",
-      "FIND_ACCOUNT"       : "Chercher un compte d'attente ...",
-      "FIND_PATIENT"       : "Chercher le patient ...",
-      "PATIENT"            : "Client",
-      "SALE_AMOUNT_PAYED"  : "Montant payé",
-      "SALE_AMOUNT_TO_PAY" : "Montant à payer",
-      "SALE_CLIENT"        : "Client",
-      "SALE_CURRENCY"      : "Monnaie",
-      "SALE_DETAILS"       : "Details",
-      "SALE_NO"            : "Vente",
-      "SALE_UUID"          : "ID vente",
-      "SALE_SUBMIT"        : "Soumettre",
-      "TITLE"              : "Régularisation des paiements",
-      "WAIT_ACCOUNT"       : "Compte d'attente"
-    },
-   "FLOW" : {
-     "TITLE" : "Flux de liquidité (Cash Flow) "
-   },
-   "HELP_TXT_1"       : "Ce module permettre des payer contre plusiers factures",
-   "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
-   "NO_EXCHANGE_RATE" : "Erreur                                                      : le taux de change n'existe pas!",
-   "OVER": {
-      "CUED"          : "Le debiteur doit cette montant",
-      "DANGER"        : "Attention!",
-      "JUSTIFICATION" : "S'il vous plait, indiquer la cause du payment",
-      "MIN"           : "Minimum 25 caracteres",
-      "PAYMENT"       : "Le debiteur va payer cette montant",
-      "REASON"        : "Raison",
-      "TITLE"         : "Justification De Payment"
-      },
-    "VOUCHER" : {
-      "TITLE" : "Paiements Caisse Auxillaire",
+  },
+  "CLEAR_SELECTION"  : "Recommencer",
+  "DEBITOR_INVOICES" : "Unpaid invoices of debitors",
+  "DEFAULT_CASHBOX"  : "Default Cashbox",
+  "EXTRA" : {
+    "ACTION"             : "Action",
+    "FILTER_PATIENT"     : "Filtre client",
+    "FIND_ACCOUNT"       : "Chercher un compte d'attente ...",
+    "FIND_PATIENT"       : "Chercher le patient ...",
+    "PATIENT"            : "Client",
+    "SALE_AMOUNT_PAYED"  : "Montant payé",
+    "SALE_AMOUNT_TO_PAY" : "Montant à payer",
+    "SALE_CLIENT"        : "Client",
+    "SALE_CURRENCY"      : "Monnaie",
+    "SALE_DETAILS"       : "Details",
+    "SALE_NO"            : "Vente",
+    "SALE_UUID"          : "ID vente",
+    "SALE_SUBMIT"        : "Soumettre",
+    "TITLE"              : "Régularisation des paiements",
+    "WAIT_ACCOUNT"       : "Compte d'attente"
+  },
+  "FLOW" : {
+   "TITLE" : "Flux de liquidité (Cash Flow) "
+  },
+  "HELP_TXT_1"       : "Ce module permettre des payer contre plusiers factures",
+  "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
+  "MODALS" : {
+    "FINANCIAL_DETAIL" : "Balance actuelle, journal de saisie inclue :"
+  },
+
+  "NO_EXCHANGE_RATE" : "Erreur : le taux de change n'existe pas!",
+  "OVER": {
+    "CUED"          : "Le debiteur doit cette montant",
+    "DANGER"        : "Attention!",
+    "JUSTIFICATION" : "S'il vous plait, indiquer la cause du payment",
+    "MIN"           : "Minimum 25 caracteres",
+    "PAYMENT"       : "Le debiteur va payer cette montant",
+    "REASON"        : "Raison",
+    "TITLE"         : "Justification De Payment"
+  },
+  "VOUCHER" : {
+    "TITLE" : "Paiements Caisse Auxillaire",
       "CASHBOXES" : {
         "AVAILABLE" : "Caissea disponibles",
         "UNCONFIGURED" : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse dans la liste ci-dessous pour continuer.",
         "LINK" : "Cliquez ici pour l'ajouter.",
         "MISSING" : "Vous ne trouvez pas votre caisse?",
         "CURRENT_CASHBOX" : "Caisse auxilliare courant",
-        "CHANGE_CASHBOX" : "Changer de caisse"
+        "CHANGE_CASHBOX" : "Changer de caisse",
+        "TRANSFER"       : "Transferer Fonds"
       },
      "SLIP" : "Caisse en espèces",
      "CASHBOX" : "Caisse",
@@ -911,9 +916,15 @@
      "TOP_DEBTOR_GROUPS" : "Top des Groupes débiteurs"
    }
 },
- "DB" : {
-  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car elle a été utilisé dans une transaction."
+
+"DATEFINDER" : {
+  "SET" : "Changer Date"
+},
+
+"DB" : {
+  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
  },
+ 
 "DEBITOR_GRP": {
    "FILTER"     : "Filtrer Le Groupe de Débiteur",
    "GROUPS"     : "Groupe de Débiteur",
@@ -1457,8 +1468,11 @@
    "UPDATE_SUCCES"   : "Mis à jour avec succès",
    "WARNINGS" : {
     "FUTURE_DATE"    : "Attention: Cette date n'est pas encore arrivée."
-   }
    },
+   "ERRORS" : {
+    "REQUIRED" : "La date est requise!"
+   }
+  },   
 "GRADE": {
    "ADD"            : "Ajouter un grade",
    "ALERT"          : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",

@@ -41,11 +41,11 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   // bind methods
   vm.currencies = Currencies;
   vm.openInvoicesModal = openInvoicesModal;
+  vm.openTransferModal = openTransferModal;
   vm.changeCashbox = changeCashbox;
   vm.usePatient = usePatient;
   vm.hasFutureDate = hasFutureDate;
   vm.digestExchangeRate = digestExchangeRate;
-  vm.toggleDateInput = toggleDateInput;
   vm.toggleVoucherType = toggleVoucherType;
   vm.submit = submit;
 
@@ -99,9 +99,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
     /** This is the actual payment form */
     vm.payment = { date : new Date() };
-
-    // by default, do not let users edit the date until asked for
-    vm.lockDateInput = true;
+    
     vm.loadingState = false;
 
     // timestamp to compare date values
@@ -225,6 +223,20 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
       vm.slip = {};
       vm.slip.rawTotal = result.total;
       digestExchangeRate();
+    });
+  }
+
+  function openTransferModal() {
+
+    var instance = Modal.open({
+      templateUrl: 'partials/cash/modals/transfer.modal.html',
+      controller:  'CashTransferModalController as CashTransferModalCtrl',
+      size:        'md',
+      backdrop:    'static',
+      animation:   true,
+      resolve:     {
+        cashBox:  function cashBoxProvider() { return vm.cashbox; }
+      }
     });
   }
 

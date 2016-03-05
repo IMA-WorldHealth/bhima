@@ -4,6 +4,7 @@ var bhima = angular.module('bhima', [
   'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'angularMoment', 'ngMessages'
 ]);
 
+
 function bhimaconfig($routeProvider) {
   // TODO: Dynamic routes loaded from unit database?
 

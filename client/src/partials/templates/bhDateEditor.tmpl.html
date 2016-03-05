@@ -1,0 +1,36 @@
+<!-- Date editor component view implementation-->
+<div 
+	class="form-group"	
+	ng-class="{'has-error' : $ctrl.validationTrigger && $ctrl.form.dateEditorValue.$invalid}" data-date-editor-input>
+
+	<!-- Input component implementation-->
+	<div class="input-group">
+	    <input	    	
+	    	name="dateEditorValue"
+	    	type="text"
+	    	class="form-control"	    	
+	    	uib-datepicker-popup="{{$ctrl.dateFormat}}"
+	    	ng-model="$ctrl.dateValue"
+	    	is-open="$ctrl.editMode"
+	    	min-date="$ctrl.minDate"
+	    	max-date="$ctrl.maxDate"
+	    	close-text="Close"
+	    	ng-disabled="!$ctrl.editMode"
+	    	show-button-bar="true"
+	    	required
+	    	/>
+	    <span class="input-group-btn">
+	    	<button data-edit-date-btn class="btn btn-default" type="button" ng-click="$ctrl.changeMode()" ng-disabled="$ctrl.editMode">
+	    		{{"DATEFINDER.SET" | translate}}
+	    	</button>
+	    </span>
+    </div> 
+
+    <!-- Error message implementation-->
+    <p class="help-block" ng-messages="$ctrl.form.dateEditorValue.$error" ng-show="$ctrl.validationTrigger">
+    	<span ng-message="required">
+    		<span class="glyphicon glyphicon-exclamation-sign"></span>
+			{{"FORM.ERRORS.REQUIRED" | translate}}
+    	</span>
+    </p>	
+</div>

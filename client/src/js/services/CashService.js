@@ -9,14 +9,14 @@
 angular.module('bhima.services')
 .service('CashService', CashService);
 
-CashService.$inject = [ '$http', 'util', 'ExchangeRateService' ];
+CashService.$inject = [ '$http', 'util', 'ExchangeRateService', 'uuid', 'SessionService' ];
 
 /**
  * A service to interact with the server-side /cash API.
  *
  * @constructor CashService
  */
-function CashService($http, util, Exchange) {
+function CashService($http, util, Exchange, uuid, sessionService ) {
   var service = this;
   var baseUrl = '/cash/';
 
@@ -25,6 +25,7 @@ function CashService($http, util, Exchange) {
   service.update = update;
   service.delete = remove;
   service.reference = reference;
+  service.getTransferRecord = getTransferRecord;
 
   /**
    * Fetchs cash payments from the server.  If an uuid is specified, will read a
@@ -156,5 +157,46 @@ function CashService($http, util, Exchange) {
 
     return $http.get(target)
       .then(util.unwrapHttpResponse);
+  }
+
+  /**
+  * This methode is responsible to create a voucher object and it back
+  **/
+  function getTransferRecord (cashAccountCurrency, amount, currency_id){
+
+    var voucher = {
+      uuid : uuid(),
+      project_id : sessionService.project.id,
+      currency_id : currency_id,
+      amount : amount,
+      description : generateTransferDescription(),
+      user_id : sessionService.user.id
+    };   
+
+    var cashVoucherLine = [
+      uuid (),
+      cashAccountCurrency.account_id,
+      0,
+      amount,
+      voucher.uuid
+    ];
+
+    var transferVoucherLine = [
+      uuid (),
+      cashAccountCurrency.virement_account_id,
+      amount,
+      0,
+      voucher.uuid
+    ];
+
+    return {voucher : voucher, voucher_item : [cashVoucherLine, transferVoucherLine]};
+  }
+
+  /**
+  * This methode is responsible to generate a description for the transfer operation
+  * @private
+  **/
+  function generateTransferDescription (){
+    return ['Transfer voucher', new Date().toISOString().slice(0, 10), sessionService.user.id].join('/');
   }
 }
