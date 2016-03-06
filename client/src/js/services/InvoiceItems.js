@@ -123,7 +123,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
   };
 
   this.confirmItem = function confirmItem(item) { 
-    var inventoryItem = items.get(item.inventoryUuid);
+    var inventoryItem = items.get(item.inventory_uuid);
     
     
     // Confirm that the initial item has been set
@@ -137,11 +137,13 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
 
     item.confirmed = true;
     item.quantity = 1;
-    item.unit_price = inventoryItem.price;
+
+    // Assign original inventory item price for sale table
+    item.transaction_price = inventoryItem.price;
     
     applyPriceList(item);
-
-    item.amount = 0;
+  
+    item.inventory_price = inventoryItem.price;
     item.code = inventoryItem.code;
     item.description = inventoryItem.label;
   
@@ -150,7 +152,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
    
     // used.post(inventoryItem);
     // Remove item from being able to be selected an additional time
-    items.remove(item.inventoryUuid);
+    items.remove(item.inventory_uuid);
 
     appcache.put(inventoryItem.uuid, {
       confirmed : true
@@ -218,7 +220,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
         invalid = true;
       }
 
-      if (!angular.isNumber(item.unit_price)) { 
+      if (!angular.isNumber(item.transaction_price)) { 
         invalid = true;
       }
 
@@ -226,7 +228,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
         invalid = true;
       }
       
-      if (item.unit_price < 0) { 
+      if (item.transaction_price < 0) { 
         invalid = false;
       }
 
@@ -314,7 +316,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
         // Add and confirm item 
         var placeholderItem = addItem(); 
         
-        placeholderItem.inventoryUuid = item.key;
+        placeholderItem.inventory_uuid = item.key;
 
         // Ensure placeholder is not null - in this case too many items are assigned
         service.confirmItem(placeholderItem);
@@ -338,7 +340,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
   function applyPriceList(item) { 
     if (angular.isDefined(service.priceList)) { 
 
-      var priceReference = service.priceList.get(item.inventoryUuid);
+      var priceReference = service.priceList.get(item.inventory_uuid);
       
       if (angular.isDefined(priceReference)) { 
         item.priceListApplied = true;
@@ -346,11 +348,11 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
         if (priceReference.is_percentage) { 
           
           // value is intended to manipulate line items base price 
-          item.unit_price += (item.unit_price / 100) * priceReference.value;
+          item.transaction_price += (item.transaction_price / 100) * priceReference.value;
         } else { 
           
           // value is intended to directly reflect line items price
-          item.unit_price = priceReference.value;
+          item.transaction_price = priceReference.value;
         }
       }
     }

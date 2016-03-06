@@ -132,9 +132,12 @@ function create(req, res, next) {
   insertSaleLineQuery =
     'INSERT INTO sale SET ?';
 
+  // insertSaleItemQuery =
+  //   'INSERT INTO sale_item (inventory_uuid, quantity, inventory_price, ' +
+  //       'transaction_price, credit, uuid,  sale_uuid) VALUES ?';
   insertSaleItemQuery =
-    'INSERT INTO sale_item (inventory_uuid, quantity, inventory_price, ' +
-        'transaction_price, credit, debit, uuid,  sale_uuid) VALUES ?';
+    'INSERT INTO sale_item (uuid, inventory_uuid, quantity, ' +
+        'transaction_price, inventory_price, credit, sale_uuid) VALUES ?';
 
   transaction = db.transaction();
 

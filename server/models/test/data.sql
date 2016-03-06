@@ -218,9 +218,9 @@ INSERT INTO `profit_center` VALUES
 
 -- Services
 INSERT INTO `service` VALUES
-  (1,1,'Test Service',1,1),
-  (2,1,'Administration',NULL,NULL),
-  (3,1,'Medecine Interne',NULL,NULL);
+  (1, 1, 'Test Service', 1, 1),
+  (2, 1, 'Administration', 1, 1),
+  (3, 1, 'Medecine Interne', 1, 1);
 
 INSERT INTO `sale` VALUES
   (1,1,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 13:35:55',1),

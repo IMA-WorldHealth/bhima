@@ -40,8 +40,8 @@
             id="service" 
             class="form-control"
             name="service"
-            ng-model="PatientInvoiceCtrl.Invoice.details.service"
-            ng-options="service as service.name for service in PatientInvoiceCtrl.services">
+            ng-model="PatientInvoiceCtrl.Invoice.details.service_id"
+            ng-options="service.id as service.name for service in PatientInvoiceCtrl.services">
           </select>
         </div>
 
@@ -54,11 +54,11 @@
         <!-- TODO Distributable vs. non distributable sales should be designed/reviewed carefully -->
         <div class="form-group">
           <label class="radio-inline">
-            <input required type="radio" name="service-type" id="distributable" value="true" checked ng-model="PatientInvoiceCtrl.distributable" required>
+            <input required type="radio" name="service-type" id="distributable" value="true" checked ng-model="PatientInvoiceCtrl.Invoice.details.is_distributable" required>
             Distributable          
           </label>
           <label class="radio-inline">
-            <input required type="radio" name="service-type" id="not-distributable" value="false" ng-model="PatientInvoiceCtrl.distributable" required>
+            <input required type="radio" name="service-type" id="not-distributable" value="false" ng-model="PatientInvoiceCtrl.Invoice.details.is_distributable" required>
             Non-distributable          
           </label>
 
@@ -81,7 +81,7 @@
                 required
                 name="invoiceDate" 
                 type="date" 
-                ng-model="PatientInvoiceCtrl.Invoice.details.date"
+                ng-model="PatientInvoiceCtrl.Invoice.details.invoice_date"
                 ng-readonly="PatientInvoiceCtrl.dateLocked"
                 min="{{PatientInvoiceCtrl.minimumDate | date : 'yyyy-MM-dd'}}" 
                 max="{{PatientInvoiceCtrl.timestamp | date : 'yyyy-MM-dd'}}"
@@ -103,7 +103,7 @@
         
         <div class="form-group">
           <label for="invoice-note">Notes</label>
-          <textarea id="invoice-note" name="notes" class="form-control"></textarea>
+          <textarea id="invoice-note" ng-model="PatientInvoiceCtrl.Invoice.details.note" name="notes" class="form-control"></textarea>
         </div>
       </div>
     </div>

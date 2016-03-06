@@ -139,11 +139,10 @@ function creditNote(id, userId, cb) {
 
 function getSubsidy(id) {
   var sql =
-    'SELECT sale_subsidy.value, debitor_group.account_id, subsidy.text, sale.uuid ' +
-    'FROM sale_subsidy, debitor_group, subsidy, sale ' +
+    'SELECT sale_subsidy.value, subsidy.account_id, subsidy.description, sale.uuid ' +
+    'FROM sale_subsidy, subsidy, sale ' +
     'WHERE sale_subsidy.sale_uuid = sale.uuid AND ' +
-      'sale_subsidy.subsidy_uuid = subsidy.uuid AND ' +
-      'subsidy.debitor_group_uuid = debitor_group.uuid AND ' +
+      'sale_subsidy.subsidy_id = subsidy.id AND ' +
       'sale_subsidy.sale_uuid = ?;';
   return db.exec(sql, [id]);
 }

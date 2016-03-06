@@ -20,6 +20,9 @@ function Invoice(InvoiceItems, AppCache) {
   invoice.subsidies = [];
   
   invoice.details = {};
+  
+  // FIXME defauls
+  invoice.details.is_distributable = "true";
 
   // TODO Initialise per session 
   invoice.items = InvoiceItems;
@@ -53,6 +56,7 @@ function Invoice(InvoiceItems, AppCache) {
     invoice.subsidyCost = calculateSubsidies(total);
     total -= invoice.subsidyCost; 
     
+    invoice.details.cost = invoice.itemsCost;
     // console.log('billing service', invoice.billingServiceCost); 
     // console.log('calculated total', total);
     return total;
@@ -98,10 +102,12 @@ function Invoice(InvoiceItems, AppCache) {
   function sumTotalCost(currentCost, item) { 
     var itemIsValid =
       angular.isNumber(item.quantity) && 
-      angular.isNumber(item.unit_price);
+      angular.isNumber(item.transaction_price);
     
     if(itemIsValid) { 
-      currentCost += (item.quantity * item.unit_price);
+      var itemCost = (item.quantity * item.transaction_price);
+      item.credit = itemCost;
+      currentCost += item.credit;
     }
 
     return currentCost;
