@@ -103,6 +103,12 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports_proposed/invoice/invoice.html'
   })
 
+  /* Admin : depot management */
+  .when('/depots_management', {
+    controller : 'DepotManagementController as DepotCtrl',
+    templateUrl : 'partials/depots_management/depots_management.html'
+  })
+
   /* employees routes */
 
   .when('/employees', {

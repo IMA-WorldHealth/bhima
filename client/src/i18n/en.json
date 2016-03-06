@@ -950,15 +950,19 @@
    "GENERATE_DOC"    : "Generate document"
 },
 "DEPOT": {
-  "ADD"              : "Add a Depot",
-  "ALERT"            : "Manage depots stores from here",
-  "ALL"              : "All Depots",
-  "NO_LOTS"        : "No Lots Available",
+  "ADD"               : "Add a Depot",
+  "ALERT"             : "Manage depots stores from here",
+  "ALL"               : "All Depots",
+  "NO_LOTS"           : "No Lots Available",
   "CHANGE_DEPOT"      : "Are you sure you want to change depots?  The current depot is %depot%.",
   "CONFIRM_SELECTION" : "Are you sure you want to select %depot%?",
-  "DELETE_SUCCESS"  : "Successfully deleted a depot.",
-  "DELETE_FAIL"     : "Depot deletion failed, since it is used in recorded transactions.",
-  "DISTRIBUTION"   : {
+  "CREATE_SUCCESS"    : "Successfully created depot",
+  "DELETE_SUCCESS"    : "Successfully deleted a depot.",
+  "DELETE_FAIL"       : "Depot deletion failed, since it is used in recorded transactions.",
+  "DEPOTS_MANAGEMENT" : "Depots Management",
+  "DEPOTS_LIST"       : "Depots List",
+  "DESCRIPTION"       : "Depots Management Module",
+  "DISTRIBUTION"      : {
     "ANNUL"    : "Annul this Transaction",
     "ANNULLED" : "Annulled",
     "TYPE_INVENTORY_ITEM"      : "Type the drug name or drug code",
@@ -986,8 +990,9 @@
       "TITLE"             : "Stock loss"
     }
   },
-  "EDIT"            : "Edit depot information",
-  "EDIT_SUCCESS"    : "Updated successfully.",
+  "EDIT"              : "Edit depot information",
+  "EDIT_SUCCESS"      : "Updated successfully.",
+  "IS_WAREHOUSE"      : "Warehouse ?",
   "MAIN": {
     "CONFIGURE_WAREHOUSE" : "Select Store",
     "CONFIRM"             : "Are you sure you want to manage this depot: ",
@@ -999,10 +1004,13 @@
     "WAREHOUSE_INFO_2"    : "All Stock operations (entry, exit and reports) will be assigned to this store.",
     "WAREHOUSE_INFO_3"    : "This setting can be changed at a later date."
   },
-  "NEW"             : "Register a new Store",
-  "NEW_SUCCESS"     : "Successfully created a new depot.",
-  "NO_DEPOTS"       : "No depots have been registered.",
-  "TITLE"           : "Store Management"
+  "NAME"              : "Name",
+  "NEW"               : "Register a new Store",
+  "NEW_SUCCESS"       : "Successfully created a new depot.",
+  "NO_DEPOTS"         : "No depots have been registered.",
+  "REFERENCE"         : "Ref.",
+  "TITLE"             : "Store Management",
+  "UPDATE_SUCCESS"    : "Successfully updated depot"
 },
 
 "DISTRIBUTION": {
@@ -3197,6 +3205,7 @@
    "DEBTOR_GROUP_ANNUAL_REPORT" : "Debtor Group Annual Report",
    "DEBITOR_GROUP_REPORT"      : "Debtor Group State",
    "DEPOT"                     : "Store",
+   "DEPOTS_MANAGEMENT"         : "Depots",
    "DONATION_CONFIRMATION"     : "Donation Confirm",
    "DONATION_MANAGEMENT"       : "Donation Management",
    "DONOR_MANAGEMENT"          : "Donators",
