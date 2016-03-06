@@ -6,6 +6,11 @@
  * @todo Think through all use cases with cache
  * - right now if many sales are not submitted and cancelled the cache will store all confirmed items until it is submitted or deleted
  *
+ * Cache service currently works as follows 
+ * -> The first item confirmed determines the new cache to track
+ * -> If recovered anything added to the old cache will also be tracked 
+ * -> Once recovered items cannot be recovered again 
+ * -> Clearing an invoice will maintain the cache
  */
 'use strict';
 
@@ -29,6 +34,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
   var cacheKey = 'invoice_key';
   var appcache = new AppCache(cacheKey);
   
+  service.recovered = false;
   
   service.cacheAvailable = false;
   
@@ -40,6 +46,9 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
   var options = { identifier : 'uuid' };
   var items = new Store(options);
   service.items = items;
+  
+  // Track if this is the first item confirmed - this is used to reset the cahce
+  var initialItem = false;
 
   // FIXME
   // var used = new Store(options);
@@ -93,8 +102,9 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
   //   return t;
   // };
 
-  this.removeItem = function removeItem(item) { 
-    
+  this.removeItem = function removeItem(item, clearCache) { 
+    var clearCache = angular.isDefined(clearCache) ? clearCache : true;
+
     // Remove the entity from the current list of sale items
     service.current.remove(item.uuid);
     
@@ -104,7 +114,10 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
     // If the item has had an inventory assigned to it, add this item back into the pool of available inventory items
     if (item.sourceInventoryItem) { 
       items.post(item.sourceInventoryItem);
-      appcache.remove(item.sourceInventoryItem.uuid);
+
+      if (clearCache) { 
+        appcache.remove(item.sourceInventoryItem.uuid);
+      }
     }
 
   };
@@ -112,7 +125,15 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
   this.confirmItem = function confirmItem(item) { 
     var inventoryItem = items.get(item.inventoryUuid);
     
-    console.log('inventoryItem', inventoryItem);
+    
+    // Confirm that the initial item has been set
+    if (!initialItem) { 
+
+      if (!service.recovered) { 
+        removeCache();
+      }
+      initialItem = true;
+    }
 
     item.confirmed = true;
     item.quantity = 1;
@@ -146,12 +167,16 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
   };
   
   // Accepts flag to remove everything or only unconfirmed items
-  this.removeItems = function removeItems(removeConfirmed) { 
+  this.removeItems = function removeItems(removeConfirmed, clearCache) { 
     
     // This cannot read removeConfirmed = removeConfirmed || true because it equates to false
     if (angular.isUndefined(removeConfirmed)) { 
       removeConfirmed = true; 
     };
+
+    if (angular.isUndefined(clearCache)) { 
+      clearCache = true;
+    }
 
     var numberOfItems = service.current.data.length;
 
@@ -167,7 +192,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
         console.log('ITEM WAS NOT REMOVED'); 
       } else { 
         console.log('ITEM WAS REMOVED', removeConfirmed, item.confirmed); 
-        service.removeItem(item);
+        service.removeItem(item, clearCache);
       
       }
     }
@@ -232,6 +257,25 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
       uuid : Uuid()
     }
   }
+  
+  // Removes previous cache 
+  // TODO This can be greatly improved using simpler cache
+  function removeCache() { 
+    service.cacheAvailable = false;
+  
+    // Fetch everything to make sure our cache isn't out of date (with the latest session)
+    appcache.fetchAll()
+      .then(function (items) { 
+        
+        items.forEach(function (item) { 
+
+          console.log('removing previous cache', item.key);
+          appcache.remove(item.key);
+        });
+      });
+  }
+  
+  service.removeCache = removeCache;
 
   function configureCachedItems(items) { 
   
@@ -255,6 +299,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
   service.recoverCache = function recoverCache() { 
     var cached = service.recoveredCache;
   
+    service.recovered = true;
     // Remove any unconfirmed items - they will cause unexpected results
     service.removeItems(false);
 
@@ -281,6 +326,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
       }
     });
 
+    service.cacheAvailable = false;
     // Remove empty items
   }
 

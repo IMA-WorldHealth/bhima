@@ -5,6 +5,11 @@
 
 // TODO Caching inventory items - if items are cleared or page reloaded they can be loaded back,
 //  - with prices?
+//
+// TODO Tabbing through UI grid - it's essential to be able to tab through 
+// code -> Quantity -> Price 
+// code -> Quantity -> Price 
+// etc. 
 angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
@@ -88,6 +93,14 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
     }
       
     console.log('everything must be valid!');
+
+    // If everything is okay - clear the invoice items cache
+    // (this should be done on return)
+    handleCompleteInvoice();
+  }
+
+  function handleCompleteInvoice() { 
+    vm.Invoice.items.removeCache(); 
   }
   
   // Reset everything in the controller
@@ -114,7 +127,8 @@ function PatientInvoiceController($http, $q, uuid, uiGridConstants, Patients, Pr
       vm.patientSearch.reset();
     }
     vm.Invoice.recipient = null;
-    vm.Invoice.items.removeItems();
+    vm.Invoice.items.recovered = false;
+    vm.Invoice.items.removeItems(true, false);
   };
 
   //FIXME
