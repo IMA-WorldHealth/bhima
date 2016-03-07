@@ -21,8 +21,8 @@ describe('Employees Module', function () {
       name : 'Holms',
       postnom : 'Doyle',
       sexe : 'M',
-      dob : '06/30/1960',
-      date_embauche : '05/17/1997',
+      dob : new Date('1960-06-30'),
+      date_embauche : new Date('1997-05-17'),
       nb_spouse : 1,
       nb_enfant : 2,
       bank : 'BIAC',
@@ -56,7 +56,9 @@ describe('Employees Module', function () {
     FU.input('EmployeeCtrl.employee.prenom', employee.prenom);
     FU.input('EmployeeCtrl.employee.name', employee.name);
     FU.input('EmployeeCtrl.employee.postnom', employee.postnom);
-    FU.input('EmployeeCtrl.employee.dob', employee.dob);
+  
+    // select the properdate
+    components.dateEditor.set(employee.dob);
     // select a Sexe
     FU.select('EmployeeCtrl.employee.sexe')
       .enabled()
@@ -64,7 +66,11 @@ describe('Employees Module', function () {
       .click();    
     FU.input('EmployeeCtrl.employee.nb_spouse', employee.nb_spouse);
     FU.input('EmployeeCtrl.employee.nb_enfant', employee.nb_enfant);
-    FU.input('EmployeeCtrl.employee.date_embauche', employee.date_embauche);  
+    
+
+    // select the properdate
+    components.dateEditor.set(employee.date_embauche);
+
     FU.input('EmployeeCtrl.employee.code', employee.code);
     // select an Service
     FU.select('EmployeeCtrl.employee.service_id')
@@ -150,10 +156,8 @@ describe('Employees Module', function () {
     FU.validation.error('EmployeeCtrl.employee.prenom');
     FU.validation.error('EmployeeCtrl.employee.name');
     FU.validation.error('EmployeeCtrl.employee.postnom');
-    FU.validation.error('EmployeeCtrl.employee.dob');
     FU.validation.error('EmployeeCtrl.employee.sexe');
 
-    FU.validation.error('EmployeeCtrl.employee.date_embauche');
     FU.validation.error('EmployeeCtrl.employee.code');
     FU.validation.error('EmployeeCtrl.employee.service_id');
     FU.validation.error('EmployeeCtrl.employee.grade_id');
