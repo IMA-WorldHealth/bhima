@@ -8,8 +8,8 @@
               <span class="caret"></span>
             </button>
             <ul role="menu" uib-dropdown-menu>
-              <li role="menuitem" ng-repeat="lang in LoginCtrl.languages track by lang.key">
-                <a ng-click="LoginCtrl.setLanguage(lang)">{{ lang.name }}</a>
+              <li role="menuitem" ng-repeat="(key, lang) in LoginCtrl.languages">
+                <a ng-click="LoginCtrl.languageService.set(key)">{{ lang.name }}</a>
               </li>
             </ul>
           </div>
@@ -57,11 +57,11 @@
                     <i class="glyphicon glyphicon-home"></i>
                   </span>
                   <select name="project" class="form-control" ng-model="LoginCtrl.credentials.project" ng-options="proj.id as proj.name for proj in LoginCtrl.projects">
-                    <option value="" disabled="disabled"> -- {{ "SELECT.PROJECT" | translate }} --</option>
+                    <option value="" disabled="disabled">{{ "SELECT.PROJECT" | translate }}</option>
                   </select>
                 </div>
               </div>
-        
+
               <div class="form-group">
                 <button id="submit" class="btn btn-default" type="submit">
                  {{ "FORM.LOGIN" | translate }}

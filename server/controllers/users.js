@@ -398,11 +398,12 @@ exports.delete = function del(req, res, next) {
 
 // GET /languages
 // TODO - where does this actually belong?
-exports.getLanguages = function getLanguages(req, res, next) {
+exports.getLanguages = function languages(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT lang.id, lang.name, lang.key FROM language AS lang;';
+    'SELECT lang.id, lang.name, lang.key, lang.locale_key AS localeKey ' +
+    'FROM language AS lang;';
 
   db.exec(sql)
   .then(function (rows) {
