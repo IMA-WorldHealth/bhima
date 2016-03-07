@@ -12,6 +12,7 @@
       name="currencyInputValue"
       ng-model="$ctrl.model"
       ng-min="$ctrl.currency.min_monentary_unit"
+      ng-max="$ctrl.maxValue"
       required>
   </div>
 
@@ -29,6 +30,12 @@
     <span ng-message="min">
       <span class="glyphicon glyphicon-exclamation-sign"></span>
       {{ "FORM.ERRORS.MIN_CURRENCY_UNIT" | translate }}
+    </span>
+
+    <!-- displays: "This value is too big than the maximum" -->
+    <span ng-message="max">
+      <span class="glyphicon glyphicon-exclamation-sign"></span>
+      {{ "FORM.ERRORS.MAX" | translate }}
     </span>
 
     <!-- displays: "You must enter a valid number." -->

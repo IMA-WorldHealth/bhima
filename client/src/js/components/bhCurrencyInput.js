@@ -5,6 +5,7 @@ angular.module('bhima.directives')
   bindings : {
     currencyId : '<',       // one-way binding
     model : '=',            // two way binding
+    maxValue : '<',         // one way binding, set by client only
     form : '<',             // one-way binding,
     validationTrigger : '<' // one-way binding
   }

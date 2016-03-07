@@ -23,6 +23,9 @@ function CashTransferModalController(ModalInstance, currencyService, voucherServ
   /** init success to false**/
   vm.success = false;
 
+  /** init balance to zero **/
+  vm.cashAccountCurrency = { balance : 0 };
+
   /**
   * @function submit
   * @param {boolean} invalid it is true if the form is valid
