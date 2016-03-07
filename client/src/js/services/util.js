@@ -96,4 +96,5 @@ function UtilService($filter) {
   service.defaultBirthMonth = '06-01';
   service.minDOB = new Date('1900-01-01');
   service.maxDOB = new Date();
+
 }

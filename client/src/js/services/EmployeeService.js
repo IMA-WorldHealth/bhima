@@ -78,5 +78,8 @@ function EmployeeService($http, util) {
       .then(util.unwrapHttpResponse);
   }
 
+  //Define the maximum DATE_EMBAUCHE
+  service.maxDateEmbauche = new Date();
+
   return service;
 }

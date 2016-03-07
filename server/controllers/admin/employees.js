@@ -15,6 +15,7 @@
 'use strict';
 
 var db = require('./../../lib/db');
+var uuid = require('node-uuid');
 
 /**
 * Returns an array of each employee in the database
@@ -123,6 +124,40 @@ exports.checkOffday = function checkHoliday(req, res, next) {
   .done();
 };
 
+function lookupEmployee(id, codes) {
+  'use strict';
+
+  var sql =
+    'SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
+      'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
+      'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
+      'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
+      'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, ' +
+      'employee.daily_salary, employee.location_id, grade.code AS code_grade, debitor.uuid as debitor_uuid, ' +
+      'debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
+      'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, ' +
+      'creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
+    'FROM employee ' +
+      'JOIN grade ON employee.grade_id = grade.uuid ' +
+      'JOIN fonction ON employee.fonction_id = fonction.id ' +
+      'JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
+      'JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
+      'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
+      'LEFT JOIN service ON service.id = employee.service_id ' +
+    'WHERE employee.id = ? ';
+
+  return db.exec(sql, [id])
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw new codes.ERR_NOT_FOUND();
+    }
+
+    return rows[0];
+  });
+}
+
+
+
 /**
 * Returns an object of details of an employee referenced by an `id` in the database
 *
@@ -136,35 +171,12 @@ exports.checkOffday = function checkHoliday(req, res, next) {
 * employees.details(req, res, next);
 */
 exports.detail = function detail(req, res, next) {
-  var sql =
-  'SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
-    'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
-    'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
-    'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
-    'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, ' +
-    'employee.daily_salary, employee.location_id, grade.code AS code_grade, debitor.uuid as debitor_uuid, ' +
-    'debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, creditor.uuid as creditor_uuid, ' +
-    'creditor.text AS creditor_text, creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
-  'FROM employee ' +
-  ' JOIN grade ON employee.grade_id = grade.uuid ' +
-  ' JOIN fonction ON employee.fonction_id = fonction.id ' +
-  ' JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
-  ' JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
-  ' JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
-  ' LEFT JOIN service ON service.id = employee.service_id ' +
-  'WHERE employee.id = ? ';
-
-  db.exec(sql, [req.params.id])
-  .then(function (rows) {
-
-    if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
-    }
-
-    res.status(200).json(rows[0]);
+  lookupEmployee(req.params.id, req.codes)
+  .then(function (record) {
+    res.status(200).json(record);
   })
   .catch(next)
-  .done();
+  .done();  
 };
 
 /**
@@ -180,8 +192,22 @@ exports.detail = function detail(req, res, next) {
 * employees.update(req, res, next);
 */
 exports.update = function update(req, res, next) {
-  var sql = 'UPDATE employee SET ? WHERE employee.id = ?';
   var employee = req.body;
+
+  var transaction;
+
+  var creditor = {
+    uuid : employee.creditor_uuid,
+    group_uuid : employee.creditor_group_uuid,
+    text : 'Crediteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
+  };
+
+  var debitor = {
+    uuid : employee.debitor_uuid,
+    group_uuid : employee.debitor_group_uuid,
+    text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
+  };  
+
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
@@ -190,43 +216,53 @@ exports.update = function update(req, res, next) {
     employee.date_embauche = new Date(employee.date_embauche);
   }
 
-  db.exec(sql, [employee, req.params.id])
-  .then(function (row) {
+  var clean = {
+    prenom : employee.prenom,
+    name : employee.name, 
+    postnom : employee.postnom,
+    sexe : employee.sexe,
+    dob : employee.dob,
+    date_embauche : employee.date_embauche,
+    service_id : employee.service_id,
+    nb_spouse : employee.nb_spouse,
+    nb_enfant : employee.nb_enfant,
+    grade_id : employee.grade_id,
+    locked : employee.locked,
+    fonction_id : employee.fonction_id,
+    phone : employee.phone,
+    email : employee.email,
+    adresse : employee.adresse,
+    bank : employee.bank,
+    bank_account : employee.bank_account,
+    daily_salary : employee.daily_salary,
+    location_id : employee.location_id,
+    code : employee.code
+  };
 
-    if (!row.affectedRows) {
-      throw new req.codes.ERR_NOT_FOUND();
-    }
+  var updateCreditor = 'UPDATE creditor SET ? WHERE creditor.uuid = ?';
+  var updateDebitor = 'UPDATE debitor SET ? WHERE debitor.uuid = ?';
+  var sql = 'UPDATE employee SET ? WHERE employee.id = ?';
 
-    var sql2 =
-      'SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
-        'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
-        'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
-        'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
-        'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, ' +
-        'employee.daily_salary, employee.location_id, grade.code AS code_grade, debitor.uuid as debitor_uuid, ' +
-        'debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
-        'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, ' +
-        'creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
-      'FROM employee ' +
-        'JOIN grade ON employee.grade_id = grade.uuid ' +
-        'JOIN fonction ON employee.fonction_id = fonction.id ' +
-        'JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
-        'JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
-        'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
-        'LEFT JOIN service ON service.id = employee.service_id ' +
-      'WHERE employee.id = ? ';
+  transaction = db.transaction();
 
-    return db.exec(sql2, [req.params.id]);
-  })
-  .then(function (rows) {
+  transaction
+    .addQuery(updateCreditor, [creditor, creditor.uuid])
+    .addQuery(updateDebitor, [debitor, debitor.uuid])
+    .addQuery(sql, [clean, req.params.id]);
 
-    if (!rows.length) {
-      throw new req.codes.ERR_NOT_FOUND();
-    }
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
+  transaction.execute()
+    .then(function (results) {
+      if (!results[2].affectedRows) {
+        throw new req.codes.ERR_NOT_FOUND();
+      }
+
+      return lookupEmployee(req.params.id, req.codes);
+    })
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -242,8 +278,31 @@ exports.update = function update(req, res, next) {
 * employees.create(req, res, next);
 */
 exports.create = function create(req, res, next) {
-
+  var creditorUuid = uuid.v4();
+  var debitorUuid = uuid.v4();
+  var transaction;
   var employee = req.body;
+
+  var creditor = {
+    uuid : creditorUuid,
+    group_uuid : employee.creditor_group_uuid,
+    text : 'Crediteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
+  };
+
+  var debitor = {
+    uuid : debitorUuid,
+    group_uuid : employee.debitor_group_uuid,
+    text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
+  };  
+
+  employee.creditor_uuid = creditorUuid; 
+  employee.debitor_uuid = debitorUuid; 
+
+  delete(employee.debitor_group_uuid);
+  delete(employee.creditor_group_uuid);
+
+  var writeCreditor = "INSERT INTO creditor SET ?";
+  var writeDebitor = "INSERT INTO debitor SET ?";
   var sql = 'INSERT INTO employee SET ?';
 
   // ensure dates are MySQL-parseable.
@@ -254,13 +313,20 @@ exports.create = function create(req, res, next) {
     employee.date_embauche = new Date(employee.date_embauche);
   }
 
-  // execute the SQL query
-  db.exec(sql, [ employee ])
-  .then(function (row) {
-    res.status(201).json({ id: row.insertId });
-  })
-  .catch(next)
-  .done();
+  transaction = db.transaction();
+
+  transaction
+    .addQuery(writeCreditor, [creditor])
+    .addQuery(writeDebitor, [debitor])
+    .addQuery(sql, [employee]);
+
+  transaction.execute()
+    .then(function (results) {
+
+      res.status(201).json({ id: results[2].insertId });
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -304,7 +370,7 @@ exports.search = function search(req, res, next){
     })
     .catch(next)
     .done();
-}
+};
 
 
 
