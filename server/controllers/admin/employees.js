@@ -236,11 +236,8 @@ exports.update = function update(req, res, next) {
     bank_account : employee.bank_account,
     daily_salary : employee.daily_salary,
     location_id : employee.location_id,
-    debitor_uuid : employee.debitor_uuid,
-    creditor_uuid : employee.creditor_uuid,
     code : employee.code
   };
-
 
   var updateCreditor = 'UPDATE creditor SET ? WHERE creditor.uuid = ?';
   var updateDebitor = 'UPDATE debitor SET ? WHERE debitor.uuid = ?';
