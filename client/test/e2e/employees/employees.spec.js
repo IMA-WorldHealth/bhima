@@ -35,6 +35,7 @@ describe('Employees Module', function () {
   var employeeRank = helpers.random(defaultEmployee);
 
   /** locations to be used in the patient select */
+  /** FIX ME : we should remember to move these locations into a helper function */
   var locations = [
    'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
    'f6fc7469-7e58-45cb-b87c-f08af93edade', // Bas Congo,

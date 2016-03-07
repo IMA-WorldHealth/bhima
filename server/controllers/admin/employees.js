@@ -216,17 +216,30 @@ exports.update = function update(req, res, next) {
     employee.date_embauche = new Date(employee.date_embauche);
   }
 
-  delete(employee.debitor_group_uuid);
-  delete(employee.creditor_group_uuid);
-  delete(employee.text);
-  delete(employee.basic_salary);
-  delete(employee.fonction_txt);
-  delete(employee.code_grade);
-  delete(employee.debitor_text);
-  delete(employee.creditor_text);
-  delete(employee.creditor_text);
-  delete(employee.account_id);
-  delete(employee.code_employee);
+  var clean = {
+    prenom : employee.prenom,
+    name : employee.name, 
+    postnom : employee.postnom,
+    sexe : employee.sexe,
+    dob : employee.dob,
+    date_embauche : employee.date_embauche,
+    service_id : employee.service_id,
+    nb_spouse : employee.nb_spouse,
+    nb_enfant : employee.nb_enfant,
+    grade_id : employee.grade_id,
+    locked : employee.locked,
+    fonction_id : employee.fonction_id,
+    phone : employee.phone,
+    email : employee.email,
+    adresse : employee.adresse,
+    bank : employee.bank,
+    bank_account : employee.bank_account,
+    daily_salary : employee.daily_salary,
+    location_id : employee.location_id,
+    debitor_uuid : employee.debitor_uuid,
+    creditor_uuid : employee.creditor_uuid,
+    code : employee.code
+  };
 
 
   var updateCreditor = 'UPDATE creditor SET ? WHERE creditor.uuid = ?';
@@ -238,7 +251,7 @@ exports.update = function update(req, res, next) {
   transaction
     .addQuery(updateCreditor, [creditor, creditor.uuid])
     .addQuery(updateDebitor, [debitor, debitor.uuid])
-    .addQuery(sql, [employee, req.params.id]);
+    .addQuery(sql, [clean, req.params.id]);
 
   transaction.execute()
     .then(function (results) {

@@ -22,17 +22,10 @@
           <div class="panel-heading">
             {{ "EMPLOYEE.EMPLOYEES" | translate }}
           </div>
-
-          <div class="input-group input-group-sm search-employees">
-            <input
-              class="form-control"
-              placeholder="{{ 'UTIL.SEARCH_EMPLOYEE' | translate }}..."
-              ng-model="searchEmployee">
-            <span class="input-group-addon">
-              <i class="glyphicon glyphicon-search"></i>
-            </span>
-          </div>          
           
+          <!-- FIX ME -->
+          <!-- Employee research must be done in a ui-grid  -->         
+
           <table class="table table-condensed">
             <thead>
               <tr>
@@ -62,11 +55,11 @@
               </tr>
 
               <tr ng-repeat="item in EmployeeCtrl.employees | orderBy:'name' | filter: searchEmployee"
-                ng-class="{'rowSelected' : EmployeeCtrl.session.employees.id === item.id}">
+                ng-class="{'rowSelected' : EmployeeCtrl.employee.id === item.id}">
                 <td>
                   <i ng-if="!item.code_employees" class="glyphicon glyphicon-minus-sign"></i> {{ item.code_employees }}
                 </td>
-                <td>{{ item.prenom }}<span ng-if="item.prenom && item.name">,</span> {{ item.name }} <span ng-if="item.name && item.postnom"> - </span> {{ item.postnom }}</td>
+                <td>{{ item.displayName}} </td>
                 <td>{{ item.fonction_txt }}</td>
                 <td>{{ item.code_grade }}</td>
                 <td><i class="glyphicon glyphicon-ok" ng-if="!!item.locked"></i></td>

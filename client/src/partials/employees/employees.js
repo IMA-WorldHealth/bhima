@@ -8,7 +8,9 @@ EmployeeController.$inject = [
 
 function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, DebtorGroups, util) {
   var vm = this;
+  var session = vm.session = {};
 
+  session.loading = false;  
   vm.view = 'default';
 
   // bind methods
@@ -21,7 +23,9 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   // Define limits for DOB
   vm.minDOB = util.minDOB;
   vm.maxDOB = util.maxDOB;    
-  vm.maxDateEmbauche = util.maxDateEmbauche;
+  vm.maxDateEmbauche = Employees.maxDateEmbauche;
+
+
 
   function handler(error) {
     console.error(error);
@@ -29,6 +33,9 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
 
   // fired on startup
   function startup() {
+    // start up loading indicator
+    session.loading = true;
+
     // load Employees
     refreshEmployees();
 
@@ -90,7 +97,20 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   function refreshEmployees() {
     return Employees.read()
     .then(function (data) {
+      data.forEach(function (employee) {
+        employee.displayName = employee.prenom;
+
+        if (employee.prenom) {
+          employee.displayName += ', ' + employee.name;
+        }
+
+        if (employee.postnom) {
+          employee.displayName += ' - ' + employee.postnom;
+        }
+      });
+
       vm.employees = data;
+      session.loading = false;
     });
   }
 
