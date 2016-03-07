@@ -156,9 +156,8 @@ describe('Cash Payments Module', function () {
       var cautionOption = element(by.css('[data-caution-option="1"]'));
       cautionOption.click();
 
-      // select the FC currency from the currency
-      var FC = element(by.css('[data-currency-option="1"]'));
-      FC.click();
+      // select the FC currency from the currency select
+      components.currencySelect.set(1);
 
       // enter the amount to pay for a caution
       components.currencyInput.set(mockCautionPayment.amount, null);
@@ -202,8 +201,7 @@ describe('Cash Payments Module', function () {
       modalSubmit.click();
 
       // select the USD currency from the currency radio buttons
-      var USD = element(by.css('[data-currency-option="2"]'));
-      USD.click();
+      components.currencySelect.set(2);
 
       // enter the amount to pay for an invoice
       components.currencyInput.set(mockInvoicesPayment.amount, null);
