@@ -25,7 +25,7 @@
           <button class="btn btn-primary" ng-click="CashCtrl.openTransferModal()" data-perform-transfer>
             <span class="glyphicon glyphicon-export"></span> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
           </button>
-        </p>        
+        </p>
       </div>
 
       <!-- Cash Voucher Form -->
@@ -48,7 +48,7 @@
 
                 <div>
                   <label for="dateEditor" class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
-                  <bh-date-editor 
+                  <bh-date-editor
                     date-value="CashCtrl.payment.date"
                     form="CashVoucherForm"
                     validation-trigger="CashVoucherForm.$submitted"
@@ -57,6 +57,7 @@
                 </div>
 
                 <!-- currency selection -->
+                <!--
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.currency.$invalid }">
                   <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
                   <label ng-repeat="currency in CashCtrl.cashbox.currencies track by currency.currency_id" class="radio-inline">
@@ -75,6 +76,15 @@
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
                 </div>
+
+                -->
+                <bh-currency-select
+                  currency-id="CashCtrl.payment.currency_id"
+                  validation-trigger="CashVoucherForm.$submitted"
+                  on-change="CashCtrl.digestExchangeRate()"
+                  disable-ids="CashCtrl.disabledCurrencyIds"
+                  >
+                </bh-currency-select>
 
                 <!-- determine if we are creating a caution or an invoice payment -->
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">

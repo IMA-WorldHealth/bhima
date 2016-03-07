@@ -123,17 +123,17 @@ exports.locationSelect = {
  * @public
  */
 exports.currencyInput = {
-  selector : '[data-bh-currency-input]',  
+  selector : '[data-bh-currency-input]',
 
   /**
    * sets the value of the currency input.
-  */  
+  */
   set : function set(value, id) {
   // it might be clearer to do this in two steps.
     var root = element(id ? by.id(id) : by.css(this.selector));
     var elm  = root.element(by.model('$ctrl.model'));
     elm.sendKeys(value);
-  },  
+  },
 
   /**
    * get the value of the currency input.
@@ -268,13 +268,13 @@ exports.findDebtorGroup = {
   * @function test
   * @param {string} name The text for the debtor group name
   * @param {number} index The index of a debtor group in the list
-  * @description Run a default test of use of the component  
+  * @description Run a default test of use of the component
   */
   test : function test(name, index) {
-    this.search(name),
-    this.select(index),
-    this.popup(),
-    this.reload()
+    this.search(name);
+    this.select(index);
+    this.popup();
+    this.reload();
   }
 };
 
@@ -307,3 +307,32 @@ exports.dateEditor = {
     return DateInputText.getAttribute('date-value');
   }
 };
+
+/**
+ * test harness for the currency select component described in the component
+ * bhCurrencySelect.js.
+ * @public
+ */
+exports.currencySelect = {
+  selector : '[data-bh-currency-select]',
+
+  /**
+   * sets the value of the currency select.
+   * @todo - make value == ('FC' || 'USD') instead of an id.
+  */
+  set : function set(value, id) {
+
+    // get the root value of the
+    var root = element(id ? by.id(id) : by.css(this.selector));
+
+    // construct a locator for the value
+    var locator = '[data-currency-option="?"]'.replace('?', value);
+
+    // get the approrpriate option by the locator
+    var option = root.element(by.css(locator));
+
+    // click it!
+    option.click();
+  }
+};
+
