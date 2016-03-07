@@ -32,7 +32,6 @@ describe('The /vouchers HTTP endpoint ::', function () {
     uuid : uuid.v4(),
     date : date,
     project_id : 1,
-    reference : 'TPA1',
     currency_id : 1,
     amount : 10,
     description : 'Voucher transaction',
@@ -52,7 +51,6 @@ describe('The /vouchers HTTP endpoint ::', function () {
     uuid : uuid.v4(),
     date : date,
     project_id : 1,
-    reference : 'TPA1',
     currency_id : 1,
     amount : 17,
     description : 'Multiple Voucher transaction',
@@ -68,8 +66,6 @@ describe('The /vouchers HTTP endpoint ::', function () {
   ];
 
   var mock = {};
-
-  var allVouchers = [];
 
   it('POST /vouchers create a new voucher record in voucher and voucher_item tables', function () {
     /** data to send must be in this forma : */
@@ -104,7 +100,6 @@ describe('The /vouchers HTTP endpoint ::', function () {
       uuid : uuid.v4(),
       date : date,
       project_id : 1,
-      reference : 'TPA1',
       currency_id : 1,
       amount : 10,
       description : 'Voucher transaction',
@@ -137,7 +132,6 @@ describe('The /vouchers HTTP endpoint ::', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        allVouchers = res.body;
       })
       .catch(helpers.handler);
   });
@@ -183,18 +177,18 @@ describe('The /vouchers HTTP endpoint ::', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.be.empty;
-        return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=TPA1');
+        return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=1');
       })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(1);
-        return agent.get('/vouchers/?project_id=' + voucher.project_id + '&reference=TPA1');
+        return agent.get('/vouchers/?project_id=' + voucher.project_id + '&reference=1');
       })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(allVouchers.length);
+        expect(res.body).to.have.length(1);
       })
       .catch(helpers.handler);
   });

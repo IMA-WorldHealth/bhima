@@ -272,51 +272,56 @@
     "TITLE"                  : "Gestion des caisses et des comptes bancaires",
     "TRANSFER_ACCOUNT"       : "Compte Virement",
     "UPDATE_SUCCESS"         : "Mis à jour une caisse avec succès."
-    },
-   "CLEAR_SELECTION"  : "Recommencer",
-   "DEBITOR_INVOICES" : "Unpaid invoices of debitors",
-   "DEFAULT_CASHBOX"  : "Default Cashbox",
-   "EXTRA" : {
-      "ACTION"             : "Action",
-      "FILTER_PATIENT"     : "Filtre client",
-      "FIND_ACCOUNT"       : "Chercher un compte d'attente ...",
-      "FIND_PATIENT"       : "Chercher le patient ...",
-      "PATIENT"            : "Client",
-      "SALE_AMOUNT_PAYED"  : "Montant payé",
-      "SALE_AMOUNT_TO_PAY" : "Montant à payer",
-      "SALE_CLIENT"        : "Client",
-      "SALE_CURRENCY"      : "Monnaie",
-      "SALE_DETAILS"       : "Details",
-      "SALE_NO"            : "Vente",
-      "SALE_UUID"          : "ID vente",
-      "SALE_SUBMIT"        : "Soumettre",
-      "TITLE"              : "Régularisation des paiements",
-      "WAIT_ACCOUNT"       : "Compte d'attente"
-    },
-   "FLOW" : {
-     "TITLE" : "Flux de liquidité (Cash Flow) "
-   },
-   "HELP_TXT_1"       : "Ce module permettre des payer contre plusiers factures",
-   "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
-   "NO_EXCHANGE_RATE" : "Erreur                                                      : le taux de change n'existe pas!",
-   "OVER": {
-      "CUED"          : "Le debiteur doit cette montant",
-      "DANGER"        : "Attention!",
-      "JUSTIFICATION" : "S'il vous plait, indiquer la cause du payment",
-      "MIN"           : "Minimum 25 caracteres",
-      "PAYMENT"       : "Le debiteur va payer cette montant",
-      "REASON"        : "Raison",
-      "TITLE"         : "Justification De Payment"
-      },
-    "VOUCHER" : {
-      "TITLE" : "Paiements Caisse Auxillaire",
+  },
+  "CLEAR_SELECTION"  : "Recommencer",
+  "DEBITOR_INVOICES" : "Unpaid invoices of debitors",
+  "DEFAULT_CASHBOX"  : "Default Cashbox",
+  "EXTRA" : {
+    "ACTION"             : "Action",
+    "FILTER_PATIENT"     : "Filtre client",
+    "FIND_ACCOUNT"       : "Chercher un compte d'attente ...",
+    "FIND_PATIENT"       : "Chercher le patient ...",
+    "PATIENT"            : "Client",
+    "SALE_AMOUNT_PAYED"  : "Montant payé",
+    "SALE_AMOUNT_TO_PAY" : "Montant à payer",
+    "SALE_CLIENT"        : "Client",
+    "SALE_CURRENCY"      : "Monnaie",
+    "SALE_DETAILS"       : "Details",
+    "SALE_NO"            : "Vente",
+    "SALE_UUID"          : "ID vente",
+    "SALE_SUBMIT"        : "Soumettre",
+    "TITLE"              : "Régularisation des paiements",
+    "WAIT_ACCOUNT"       : "Compte d'attente"
+  },
+  "FLOW" : {
+   "TITLE" : "Flux de liquidité (Cash Flow) "
+  },
+  "HELP_TXT_1"       : "Ce module permettre des payer contre plusiers factures",
+  "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
+  "MODALS" : {
+    "FINANCIAL_DETAIL" : "Balance actuelle, journal de saisie inclue :"
+  },
+
+  "NO_EXCHANGE_RATE" : "Erreur : le taux de change n'existe pas!",
+  "OVER": {
+    "CUED"          : "Le debiteur doit cette montant",
+    "DANGER"        : "Attention!",
+    "JUSTIFICATION" : "S'il vous plait, indiquer la cause du payment",
+    "MIN"           : "Minimum 25 caracteres",
+    "PAYMENT"       : "Le debiteur va payer cette montant",
+    "REASON"        : "Raison",
+    "TITLE"         : "Justification De Payment"
+  },
+  "VOUCHER" : {
+    "TITLE" : "Paiements Caisse Auxillaire",
       "CASHBOXES" : {
         "AVAILABLE" : "Caissea disponibles",
         "UNCONFIGURED" : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse dans la liste ci-dessous pour continuer.",
         "LINK" : "Cliquez ici pour l'ajouter.",
         "MISSING" : "Vous ne trouvez pas votre caisse?",
         "CURRENT_CASHBOX" : "Caisse auxilliare courant",
-        "CHANGE_CASHBOX" : "Changer de caisse"
+        "CHANGE_CASHBOX" : "Changer de caisse",
+        "TRANSFER"       : "Transferer Fonds"
       },
      "SLIP" : "Caisse en espèces",
      "CASHBOX" : "Caisse",
@@ -911,9 +916,15 @@
      "TOP_DEBTOR_GROUPS" : "Top des Groupes débiteurs"
    }
 },
- "DB" : {
-  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car elle a été utilisé dans une transaction."
+
+"DATEFINDER" : {
+  "SET" : "Changer Date"
+},
+
+"DB" : {
+  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
  },
+ 
 "DEBITOR_GRP": {
    "FILTER"     : "Filtrer Le Groupe de Débiteur",
    "GROUPS"     : "Groupe de Débiteur",
@@ -946,15 +957,19 @@
 },
 
 "DEPOT": {
-  "ADD"             : "Ajouter",
-  "ALERT"           : "Ce module vous permet de gérer vos dépôt",
-  "ALL"             : "Tous les Dépôts",
-  "NO_LOTS"        : "Pass de stock disponibles",
+  "ADD"               : "Ajouter un depot",
+  "ALERT"             : "Ce module vous permet de gérer vos dépôt",
+  "ALL"               : "Tous les Dépôts",
+  "NO_LOTS"           : "Pass de stock disponibles",
   "CHANGE_DEPOT"      : "Etes-vous sur que vous voulez changer le pharmacy?  The pharmacy courant est  %depot%.",
-  "CONFIRM_SELECTION"             : "Voulez-vous vraiment gérer les stocks avec %depot% ",
-  "DELETE_SUCCESS"  : "Suppression avec succès",
-  "DELETE_FAIL"     : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
-  "DISTRIBUTION"   : {
+  "CONFIRM_SELECTION" : "Voulez-vous vraiment gérer les stocks avec %depot% ",
+  "CREATE_SUCCESS"    : "Creation du depot avec succès",
+  "DELETE_SUCCESS"    : "Suppression avec succès",
+  "DELETE_FAIL"       : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
+  "DEPOTS_MANAGEMENT" : "Gestion des depots",
+  "DEPOTS_LIST"       : "Liste des depots",
+  "DESCRIPTION"       : "Module de gestion des depots",
+  "DISTRIBUTION"      : {
     "ANNUL"    : "Annuler cette Transaction",
     "ANNULLED" : "Annulé",
     "LOSSES"   : "Stock Losses",
@@ -982,8 +997,8 @@
      "TITLE"             : "Perte stock"
    }
   },
-  "EDIT"            : "Editer les informations d'un dépôt",
-  "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
+  "EDIT"              : "Editer les informations d'un dépôt",
+  "EDIT_SUCCESS"      : "Données du dépôt mise à jour avec succès ",
    "MAIN": {
       "CONFIGURE_WAREHOUSE" : "Sélectionner dépôt",
       "CONFIRM"             : "Voulez-vous vraiment gérer les stocks avec le dépôt : ",
@@ -995,10 +1010,14 @@
       "WAREHOUSE_INFO_2"    : "Toutes operations des stock seront affectées au dépôt sélectionné,",
       "WAREHOUSE_INFO_3"    : "Cette configuration n'est pas definitive et peut être changer n'important quand."
       },
-  "NEW"             : "Nouveau dépôt",
-  "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
-  "NO_DEPOTS"       : "Aucun dépôt trouvé",
-  "TITLE"           : "Gestion des Dépôt"
+  "IS_WAREHOUSE"      : "Entrepot ?",
+  "NAME"              : "Nom",
+  "NEW"               : "Nouveau dépôt",
+  "NEW_SUCCESS"       : "Nouveau dépôt enregistré avec succès",
+  "NO_DEPOTS"         : "Aucun dépôt trouvé",
+  "REFERENCE"         : "Ref.",
+  "TITLE"             : "Gestion des Dépôt",
+  "UPDATE_SUCCESS"    : "Mise a jour du depot avec succès"
 },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
@@ -1430,7 +1449,7 @@
    "REQUIRED"           : "Cette valeur est requis.",
     "MIN_CURRENCY_UNIT" : "Cette valeur est trop petite pour la monnaie choisie.",
     "NUMBER"            : "Cette valeur doit être un nombre valide."
-   },   
+   },
    "INVALID_DATE"    : "La date est invalide",
    "LOGIN"           : "Connexion",
    "HAS_ERRORS"      : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumettre à nouveau.",
@@ -1458,8 +1477,11 @@
    "UPDATE_SUCCES"   : "Mis à jour avec succès",
    "WARNINGS" : {
     "FUTURE_DATE"    : "Attention: Cette date n'est pas encore arrivée."
-   }
    },
+   "ERRORS" : {
+    "REQUIRED" : "La date est requise!"
+   }
+  },   
 "GRADE": {
    "ADD"            : "Ajouter un grade",
    "ALERT"          : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",
@@ -3172,6 +3194,7 @@
    "DEBTOR_GRP"                : "Groupe Débiteur",
    "DEBTOR_GROUP_ANNUAL_REPORT" : "Rapport Annuel des Groupes Débiteur",
    "DEPOT"                     : "Dépôt",
+   "DEPOTS_MANAGEMENT"         : "Depots",
    "DONATION_CONFIRMATION"     : "Confirmation Donation",
    "DONATION_MANAGEMENT"       : "Gestion des Dons",
    "DONOR_MANAGEMENT"          : "Donateurs",
@@ -3433,5 +3456,15 @@
    "REGISTERED"       : "Villages Enregistrés",
    "SECTOR"           : "Commune",
    "TITLE"            : "Gestion des Villages"
+   },
+   "VALIDATION" : {
+    "MIN" : "Cette valeur est trop petite pour ce champ.",
+    "MAX" : "Cette valeur est trop grande pour ce champ.",
+    "REQUIRED" : "Ce champ ne peut pas être vide.",
+    "EMAIL" : "Ce champ doit être un email valide.",
+    "MINLENGTH" : "Cette entrée est trop court.",
+    "MAXLENGTH" : "Cette entrée est trop longue.",
+    "NUMBER" : "Ce champ doit être un nombre.",
+    "DATE" : "Ce champ doit être une date valide."
    }
 }

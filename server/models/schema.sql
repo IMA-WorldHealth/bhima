@@ -1873,14 +1873,17 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   `uuid` char(36) NOT NULL,
   `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `project_id` tinyint(4) NOT NULL,
-  `reference` varchar(16) NOT NULL,
+  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `currency_id` tinyint(4) NOT NULL,
   `amount` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
   `description` varchar(255) DEFAULT NULL,
-  `document_uuid` char(36) NOT NULL,
+  `document_uuid` char(36) DEFAULT NULL,
   `user_id` tinyint(4) NOT NULL,
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TRIGGER voucher_calculate_reference BEFORE INSERT ON voucher
+FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM voucher WHERE voucher.project_id = NEW.project_id);
 
 --
 -- Structure de la table `voucher_item`

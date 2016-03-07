@@ -8,7 +8,7 @@ PatientRegistrationController.$inject = [
 
 function PatientRegistrationController($scope, $location, patients, debtors, util, Session) {
   var viewModel = this;
-  
+
   // Models for collecting patient data in logical groups
   viewModel.finance = {};
   viewModel.medical = {};

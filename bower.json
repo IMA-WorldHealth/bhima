@@ -36,6 +36,7 @@
     "ngstorage": "^0.3.10"
   },
   "resolutions": {
-    "angular": "^1.5.0"
+    "angular": "^1.5.0",
+    "angular-translate": "~2.9.0"
   }
 }

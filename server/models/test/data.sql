@@ -15,7 +15,8 @@ INSERT INTO unit VALUES
 (57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
 (61,  'Employee','TREE.EMPLOYEE','Employees management',57,'partials/employees/','/employees'),
 (80,  'Patient Update','TREE.EDIT_PATIENT','',12,'/partials/patient_edit/','/patients/edit/'),
-(105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes');
+(105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
+(106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots_management/', '/depots_management');
 
 INSERT INTO account_type VALUES (1,'income/expense'),(2,'balance'),(3,'title');
 INSERT INTO language VALUES (1,'Francais','fr'),(2,'English','en'),(3,'Lingala','lg');
@@ -107,11 +108,14 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Exchange Rate
 (22, 1),
 
--- Service Management  
+-- Service Management
 (48, 1),
 
 --  Cashbox Management
-(105,1);
+(105,1),
+
+--  Depots Management
+(106,1);
 
 -- give test permission to both projects
 INSERT INTO project_permission (project_id, user_id) VALUES (1, 1), (2, 1);

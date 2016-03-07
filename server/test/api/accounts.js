@@ -36,6 +36,7 @@ describe('The account API, PATH : /accounts', function () {
 
   var DELETABLE_ACCOUNT_ID = 3636;
   var FETCHABLE_ACCOUNT_ID = 3626;
+  var ACCOUNT_ID_FOR_BALANCE = 3631;
 
   var responseKeys = [
     'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
@@ -46,7 +47,7 @@ describe('The account API, PATH : /accounts', function () {
     // login before each request
   beforeEach(helpers.login(agent));
 
-  it('METHOD : GET, PATH : /accounts?full=1, It returns the full list of account' , function () {
+  it('METHOD : GET, PATH : /accounts?full=1, It returns the full list of account', function () {
     return agent.get('/accounts?full=1')
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -121,6 +122,34 @@ describe('The account API, PATH : /accounts', function () {
       .catch(helpers.handler);
   });
 
+ it('METHOD : GET, PATH : /accounts/:id/balance, It returns an object with zero as balance, debit and credit', function () {
+   return agent.get('/accounts/:id/balance'.replace(':id', FETCHABLE_ACCOUNT_ID))
+    .then(function (res){
+      expect(res).to.have.status(200);
+      expect(res).to.be.json;
+      expect(res.body).to.not.be.empty;
+      expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
+      expect(res.body.debit).to.equal(0);
+      expect(res.body.credit).to.equal(0);
+      expect(res.body.balance).to.equal(0);
+    })
+    .catch(helpers.handler);
+ });
+
+  
+  it('METHOD : GET, PATH : /accounts/:id/balance?journal=1, It returns the balance of a provided account_id, scans the journal also', function () {
+    return agent.get('/accounts/:id/balance?journal=1'.replace(':id', ACCOUNT_ID_FOR_BALANCE))
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
+        expect(res.body.debit).to.equal(75);
+        expect(res.body.credit).to.equal(0);
+        expect(res.body.balance).to.equal(75);
+      })
+      .catch(helpers.handler);
+  });
 
   it('METHOD : POST, PATH : /accounts, It a adds an account', function () {
     return agent.post('/accounts')

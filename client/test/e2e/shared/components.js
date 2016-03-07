@@ -123,15 +123,17 @@ exports.locationSelect = {
  * @public
  */
 exports.currencyInput = {
-  selector : '[data-bh-currency-input]',
+  selector : '[data-bh-currency-input]',  
 
   /**
    * sets the value of the currency input.
-   */
-  set : function set(value) {
-    var elm = element(by.css(this.selector));
+  */  
+  set : function set(value, id) {
+  // it might be clearer to do this in two steps.
+    var root = element(id ? by.id(id) : by.css(this.selector));
+    var elm  = root.element(by.model('$ctrl.model'));
     elm.sendKeys(value);
-  },
+  },  
 
   /**
    * get the value of the currency input.
@@ -274,5 +276,34 @@ exports.findDebtorGroup = {
     this.popup(),
     this.reload()
   }
+};
 
+
+/**
+* Date editor component interface for e2e test
+* @public
+*/
+
+exports.dateEditor = {
+  selector : '[data-date-editor-input]',
+
+  /**
+   * sets the value in date field.
+   */
+  set : function set(value) {
+    var root = element(by.css(this.selector));
+    var btn = root.element(by.css('[data-edit-date-btn]'));
+    browser.actions().mouseMove(btn).click(); //to fix the no clickable problem
+
+    var input = root.element(by.model('$ctrl.dateValue'));
+    input.dateValue = value;
+  },
+
+  /**
+   * get the value of the date editor input.
+   */
+  get : function get() {
+    var DateInputText = element(by.css(this.selector));
+    return DateInputText.getAttribute('date-value');
+  }
 };
