@@ -13,6 +13,7 @@ INSERT INTO unit VALUES
 (42,  'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
 (48,  'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
 (80,  'Patient Update','TREE.EDIT_PATIENT','',12,'/partials/patient_edit/','/patients/edit/'),
+(82,  'Subsidies','TREE.SUBSIDY','Handles the subsidy situation',1,'/partials/subsidies/','/subsidies'),
 (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
 (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots_management/', '/depots_management');
 
@@ -102,6 +103,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Service Management
 (48, 1),
+
+-- subsidie Management
+(82, 1),
 
 --  Cashbox Management
 (105,1),
