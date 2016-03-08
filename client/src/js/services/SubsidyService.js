@@ -1,9 +1,9 @@
 angular.module('bhima.services')
-  .service('SubsidiesService', SubsidiesService);
+  .service('SubsidyService', SubsidyService);
 
-SubsidiesService.$inject = ['$http', 'util'];
+SubsidyService.$inject = ['$http', 'util'];
 
-function SubsidiesService($http, util) {
+function SubsidyService($http, util) {
   var service = this;
   var baseUrl = '/subsidies/';
 
@@ -22,9 +22,9 @@ function SubsidiesService($http, util) {
   *   your code here
   *  });
   **/
-  function read(id) {
+  function read(id, params) {
     var url = baseUrl.concat(id || '');
-    return $http.get(url)
+    return $http.get(url, { params : params })
       .then(util.unwrapHttpResponse);
   }
 
@@ -53,10 +53,6 @@ function SubsidiesService($http, util) {
   *  });
   **/
   function update(id, subsidy) {
-    delete subsidy.id;
-    delete subsidy.account_number;
-    delete subsidy.account_number;
-
     var subsidyClean = {
       label : subsidy.label,
       value : subsidy.value,

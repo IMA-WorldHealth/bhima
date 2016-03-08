@@ -1,14 +1,14 @@
 // TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('SubsidiesController', SubsidiesController);
+.controller('SubsidyController', SubsidyController);
 
-SubsidiesController.$inject = [
-  'SubsidiesService', 'AccountService', 'util', '$window', '$translate'
+SubsidyController.$inject = [
+  'SubsidyService', 'AccountService', '$window', '$translate'
 ];
 
-function SubsidiesController(Subsidies , Accounts, util, $window, $translate) {
+function SubsidyController(Subsidy , Accounts, $window, $translate) {
   var vm = this;
-  var session = vm.session = {};
+  vm.session = {};
   vm.view = 'default';
 
   // bind methods
@@ -25,7 +25,7 @@ function SubsidiesController(Subsidies , Accounts, util, $window, $translate) {
   // fired on startup
   function startup() {
     // start up loading indicator
-    session.loading = true;
+    vm.session.loading = true;
 
     // load accounts and properly formats their labels
     Accounts.list(null, { full : 1 })
@@ -57,7 +57,7 @@ function SubsidiesController(Subsidies , Accounts, util, $window, $translate) {
   
   // refresh the displayed Subsidies
   function refreshSubsidies() {
-    return Subsidies.read()
+    return Subsidy.read(null, { detailed : 1 })
     .then(function (data) {
       vm.subsidies = data;
     });
@@ -72,8 +72,8 @@ function SubsidiesController(Subsidies , Accounts, util, $window, $translate) {
     var subsidy = angular.copy(vm.subsidy);
 
     promise = (creation) ?
-      Subsidies.create(subsidy) :
-      Subsidies.update(subsidy.id, subsidy);
+      Subsidy.create(subsidy) :
+      Subsidy.update(subsidy.id, subsidy);
 
     promise
       .then(function (response) {
@@ -97,7 +97,7 @@ function SubsidiesController(Subsidies , Accounts, util, $window, $translate) {
 
     // if we get there, the user wants to delete a subsidy
     vm.view = 'delete_confirm';
-    Subsidies.delete(subsidy.id)
+    Subsidy.delete(subsidy.id)
     .then(function () {
        vm.view = 'delete_success';
        return refreshSubsidies();

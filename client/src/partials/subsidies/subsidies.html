@@ -8,7 +8,7 @@
 </div>
 
 <div class="flex-util">
-  <button class="btn btn-sm btn-default" id="create" ng-click="SubsidiesCtrl.create()" data-method="create">
+  <button class="btn btn-sm btn-default" id="create" ng-click="SubsidyCtrl.create()" data-method="create">
     <span class="glyphicon glyphicon-plus-sign"></span> {{ "SUBSIDY.NEW_SUBSIDY" | translate }}
   </button>
 </div>
@@ -35,16 +35,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="subsidy in SubsidiesCtrl.subsidies | orderBy:'text'" ng-class="{'rowSelected' : SubsidiesCtrl.subsidy.id === subsidy.id}">
+              <tr ng-repeat="subsidy in SubsidyCtrl.subsidies | orderBy:'text'" ng-class="{'rowSelected' : SubsidyCtrl.subsidy.id === subsidy.id}">
                 <td>{{ $index + 1 }}</td>
                 <td>{{ subsidy.label }}</td>
                 <td>{{ subsidy.value }}</td>
                 <td>{{ subsidy.account_number }}</td>
-                <td><a class="btn btn-xs btn-default" id="subsidy-upd-{{ $index + 1}}" ng-click="SubsidiesCtrl.update(subsidy)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                <td><a class="btn btn-xs btn-default" id="subsidy-del-{{ $index + 1}}" ng-click="SubsidiesCtrl.del(subsidy)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                <td><a class="btn btn-xs btn-default" id="subsidy-upd-{{ $index + 1}}" ng-click="SubsidyCtrl.update(subsidy)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                <td><a class="btn btn-xs btn-default" id="subsidy-del-{{ $index + 1}}" ng-click="SubsidyCtrl.del(subsidy)"><span class="glyphicon glyphicon-trash"></span></a></td>
               </tr>
 
-              <tr ng-if="!SubsidiesCtrl.subsidies.length">
+              <tr ng-if="!SubsidyCtrl.subsidies.length">
                 <td colspan="4">{{ "SUBSIDY.NO_SUBSIDY" | translate }}</td>
               </tr>            
             </tbody>
@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <div class="col-xs-6" ng-switch="SubsidiesCtrl.view">
+      <div class="col-xs-6" ng-switch="SubsidyCtrl.view">
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
             <h4>{{ "SUBSIDY.TITLE" | translate }}</h4>
@@ -84,7 +84,7 @@
 
         <div ng-switch-when="delete_error">
           <div class="alert alert-danger" id="delete_error">
-            <h4>{{ SubsidiesCtrl.HTTPError.data.code | translate }} </h4>
+            <h4>{{ SubsidyCtrl.HTTPError.data.code | translate }} </h4>
             </p>
           </div>
         </div>
@@ -93,35 +93,35 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'SUBSIDY.NEW_SUBSIDY' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="SubsidiesCtrl.submit(CreateForm.$invalid)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="SubsidyCtrl.submit(CreateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
-                <input type="text" class="form-control" name="label" ng-model="SubsidiesCtrl.subsidy.label" required>
+                <input type="text" class="form-control" name="label" ng-model="SubsidyCtrl.subsidy.label" required>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.value.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.VALUE' | translate }}</label>
-                <input type="number" class="form-control" name="value" ng-model="SubsidiesCtrl.subsidy.value" required>
+                <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_id.$invalid }">
                 <label class="col-md-3 control-label">{{ "COLUMNS.ACCOUNT" | translate }}</label>
-                <select class="form-control" name="account_id" ng-model="SubsidiesCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidiesCtrl.accounts | orderBy:'account_number'" required>
+                <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
                   <option value="" disabled> -- {{ 'SELECT.ACCOUNT' | translate }} -- </option>
                 </select>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
                 <label class="control-label" for="description">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
-                <textarea class="form-control" id="description" ng-model="SubsidiesCtrl.subsidy.description" rows="3"></textarea>
+                <textarea class="form-control" id="description" ng-model="SubsidyCtrl.subsidy.description" rows="3"></textarea>
               </div>
 
               <div class="form-group">
                 <button class="btn btn-default" id="submit-subsidy" type="submit" data-method="submit">
                   {{ "FORM.SUBMIT" | translate }}
                 </button>
-                <button class="btn btn-default" type="button" ng-click="SubsidiesCtrl.cancel()" data-method="cancel">
+                <button class="btn btn-default" type="button" ng-click="SubsidyCtrl.cancel()" data-method="cancel">
                   {{ "FORM.CANCEL" | translate }}
                 </button>
               </div>
@@ -132,35 +132,35 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'SUBSIDY.NEW_SUBSIDY' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="SubsidiesCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="SubsidyCtrl.submit(UpdateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
-                <input type="text" class="form-control" name="label" ng-model="SubsidiesCtrl.subsidy.label" required>
+                <input type="text" class="form-control" name="label" ng-model="SubsidyCtrl.subsidy.label" required>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.value.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.VALUE' | translate }}</label>
-                <input type="number" class="form-control" name="value" ng-model="SubsidiesCtrl.subsidy.value" required>
+                <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.account_id.$invalid }">
                 <label class="col-md-3 control-label">{{ "COLUMNS.ACCOUNT" | translate }}</label>
-                <select class="form-control" name="account_id" ng-model="SubsidiesCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidiesCtrl.accounts | orderBy:'account_number'" required>
+                <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
                   <option value="" disabled> -- {{ 'SELECT.ACCOUNT' | translate }} -- </option>
                 </select>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
                 <label class="control-label" for="description">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
-                <textarea class="form-control" id="description" ng-model="SubsidiesCtrl.subsidy.description" rows="3"></textarea>
+                <textarea class="form-control" id="description" ng-model="SubsidyCtrl.subsidy.description" rows="3"></textarea>
               </div>
 
               <div class="form-group">
                 <button class="btn btn-default" id="change_subsidy" type="submit" data-method="submit">
                   {{ "FORM.SUBMIT" | translate }}
                 </button>
-                <button class="btn btn-default" type="button" ng-click="SubsidiesCtrl.cancel()" data-method="cancel">
+                <button class="btn btn-default" type="button" ng-click="SubsidyCtrl.cancel()" data-method="cancel">
                   {{ "FORM.CANCEL" | translate }}
                 </button>
               </div>

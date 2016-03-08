@@ -95,7 +95,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/payroll/config_accounting/config_accounting.html'
   })
   .when('/subsidies', {
-    controller : 'SubsidiesController as SubsidiesCtrl',
+    controller : 'SubsidyController as SubsidyCtrl',
     templateUrl : 'partials/subsidies/subsidies.html'
   })
   .when('/report/invoice/:target', {

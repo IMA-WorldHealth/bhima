@@ -10,7 +10,7 @@ var components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Employees Module', function () {
+describe('Subsidies Module', function () {
   'use strict';
 
   var path = '#/subsidies';
