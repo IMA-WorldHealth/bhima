@@ -1,6 +1,14 @@
 <div class="form-group"
   ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.form.currencyInputValue.$invalid }"  
   data-bh-currency-input>
+
+  <bh-currency-select
+    currency-id="$ctrl.currencyId"
+    validation-trigger="$ctrl.validationTrigger"
+    on-change="$ctrl.handleCurrencyChange(currency)"
+    >
+  </bh-currency-select>
+
   <label class="control-label">
     {{ "COLUMNS.PAYMENT" | translate }}
   </label>

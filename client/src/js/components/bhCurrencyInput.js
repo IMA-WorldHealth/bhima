@@ -1,42 +1,36 @@
-angular.module('bhima.directives')
-.component('bhCurrencyInput', {
-  templateUrl : 'partials/templates/bhCurrencyInput.tmpl.html',
-  controller: CurrencyInputController,
-  bindings : {
-    currencyId : '<',       // one-way binding
-    model : '=',            // two way binding
-    maxValue : '<',         // one way binding, set by client only
-    form : '<',             // one-way binding,
-    validationTrigger : '<' // one-way binding
-  }
-});
-
-CurrencyInputController.$inject = [ 'CurrencyService', '$scope' ];
-
 /**
  * Currency Input Component
  *
  * This is a currency input form based on <input type="number">, with specific
  * validation based on the currency being validated.
  */
-function CurrencyInputController(Currencies, $scope) {
+
+function CurrencyInputController() {
   var ctrl = this;
 
-  // update bindings when someone changes the currency
-  $scope.$watch('$ctrl.currencyId', loadCurrency);
+  /**the currency input component can update this object, to manage his own view**/
 
-  /** @private loads a particular currency from the server */
-  function loadCurrency() {
-
-    // if the currency id doesn't exist, exit
-    if (!ctrl.currencyId) { return; }
-
-    // load currency from the currency service
-    Currencies.detail(ctrl.currencyId)
-    .then(function (currency) {
-
-      // bind the currency to the controller
-      ctrl.currency = currency;
-    });
+  function handleCurrencyChange (currency){
+    ctrl.currency = currency; 
+    ctrl.onCurrencyChange({currency : currency});    
   }
+
+  ctrl.handleCurrencyChange = handleCurrencyChange;
 }
+
+CurrencyInputController.$inject =  ['CurrencyService', 'AppCache', 'SessionService', '$scope'];
+
+angular.module('bhima.components')
+.component('bhCurrencyInput', {
+  templateUrl : 'partials/templates/bhCurrencyInput.tmpl.html',
+  controller: CurrencyInputController,
+  bindings : {
+    onCurrencyChange : '&', //external method
+    currencyId : '<',       // one-way binding
+    persistCurrency : '<',  // one way binding
+    model : '=',            // two way binding
+    maxValue : '<',         // one way binding
+    form : '<',             // one-way binding
+    validationTrigger : '<' // one-way binding
+  }
+});

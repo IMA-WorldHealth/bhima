@@ -56,26 +56,6 @@
                   </bh-date-editor>
                 </div>
 
-                <!-- currency selection -->
-                <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.currency.$invalid }">
-                  <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
-                  <label ng-repeat="currency in CashCtrl.cashbox.currencies track by currency.currency_id" class="radio-inline">
-                    <input
-                      name="currency"
-                      type="radio"
-                      ng-model="CashCtrl.payment.currency_id"
-                      ng-value="currency.currency_id"
-                      ng-change="CashCtrl.digestExchangeRate()"
-                      data-currency-option="{{ currency.currency_id }}"
-                      required>
-                    {{ CashCtrl.currencies.format(currency.currency_id); }}
-                  </label>
-
-                  <div class="help-block" ng-messages="CashVoucherForm.currency.$error" ng-show="CashVoucherForm.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-
                 <!-- determine if we are creating a caution or an invoice payment -->
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
                   <p><strong class="control-label">{{ "COLUMNS.TYPE" | translate }}</strong></p>
@@ -169,6 +149,7 @@
                   model="CashCtrl.payment.amount"
                   form="CashVoucherForm"
                   validation-trigger="CashVoucherForm.$submitted"
+                  on-currency-change="CashCtrl.updateCurrency(currency)"
                   >
                 </bh-currency-input>
 

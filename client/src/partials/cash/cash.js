@@ -45,6 +45,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   vm.changeCashbox = changeCashbox;
   vm.usePatient = usePatient;
   vm.hasFutureDate = hasFutureDate;
+  vm.updateCurrency = updateCurrency;
   vm.digestExchangeRate = digestExchangeRate;
   vm.toggleVoucherType = toggleVoucherType;
   vm.submit = submit;
@@ -245,6 +246,11 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     // bind the correct exchanged total
     vm.slip.total =
       Exchange.convertFromEnterpriseCurrency(vm.payment.currency_id, vm.payment.date, vm.slip.rawTotal);
+  }
+
+  function updateCurrency (currency){
+    console.log('on a recu', currency);
+    vm.payment.currency_id = currency.id;
   }
 
   // start up the module
