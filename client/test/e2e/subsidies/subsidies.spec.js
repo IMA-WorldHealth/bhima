@@ -34,16 +34,16 @@ describe('Subsidies Module', function () {
 
     // swtich to the create form
     FU.buttons.create();
-    FU.input('SubsidiesCtrl.subsidy.label', subsidy.label);
-    FU.input('SubsidiesCtrl.subsidy.value', subsidy.value);
+    FU.input('SubsidyCtrl.subsidy.label', subsidy.label);
+    FU.input('SubsidyCtrl.subsidy.value', subsidy.value);
 
     // select an Account
-    FU.select('SubsidiesCtrl.subsidy.account_id')
+    FU.select('SubsidyCtrl.subsidy.account_id')
       .enabled()
       .first()
       .click(); 
 
-    FU.input('SubsidiesCtrl.subsidy.description', subsidy.description);
+    FU.input('SubsidyCtrl.subsidy.description', subsidy.description);
   
     // submit the page to the server
     FU.buttons.submit();
@@ -57,9 +57,9 @@ describe('Subsidies Module', function () {
 
     element(by.id('subsidy-upd-' + subsidyRank )).click();
     // modify the subsidy label
-    FU.input('SubsidiesCtrl.subsidy.label', 'Updated');
+    FU.input('SubsidyCtrl.subsidy.label', 'Updated');
     // modify the subsidy description
-    FU.input('SubsidiesCtrl.subsidy.description', ' IMCK Tshikaji');
+    FU.input('SubsidyCtrl.subsidy.description', ' IMCK Tshikaji');
 
     element(by.id('change_subsidy')).click();
 
@@ -77,11 +77,11 @@ describe('Subsidies Module', function () {
     element(by.id('submit-subsidy')).click();
 
     // the following fields should be required
-    FU.validation.error('SubsidiesCtrl.subsidy.label');
-    FU.validation.error('SubsidiesCtrl.subsidy.value');
-    FU.validation.error('SubsidiesCtrl.subsidy.account_id');
+    FU.validation.error('SubsidyCtrl.subsidy.label');
+    FU.validation.error('SubsidyCtrl.subsidy.value');
+    FU.validation.error('SubsidyCtrl.subsidy.account_id');
     // the following fields are not required
-    FU.validation.ok('SubsidiesCtrl.subsidy.description');
+    FU.validation.ok('SubsidyCtrl.subsidy.description');
   });
 
   it('successfully delete a Subsidy', function () {
