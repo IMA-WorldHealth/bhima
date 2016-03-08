@@ -307,3 +307,31 @@ exports.dateEditor = {
     return DateInputText.getAttribute('date-value');
   }
 };
+
+/**
+  * test harness for the currency select component described in the component
+  * bhCurrencySelect.js.
+  * @public
+  */
+exports.currencySelect = {
+ selector : '[data-bh-currency-select]',
+
+ /**
+  * sets the value of the currency select.
+  * @todo - make value == ('FC' || 'USD') instead of an id.
+ */
+ set : function set(value, id) {
+
+   // get the root value of the
+   var root = element(id ? by.id(id) : by.css(this.selector));
+
+   // construct a locator for the value
+   var locator = '[data-currency-option="?"]'.replace('?', value);
+
+   // get the approrpriate option by the locator
+   var option = root.element(by.css(locator));
+
+   // click it!
+   option.click();
+ }
+};
