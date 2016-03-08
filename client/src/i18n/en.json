@@ -296,8 +296,9 @@
       "TITLE" : "Cash Flow"
     },
   "MODALS" : {
-    "MISSING_DEBTOR_ID" : "No debtor selected!",
-    "EMPTY_SELECTION" : "No invoices selected.  Please select at least one invoice or dismiss the modal."
+    "EMPTY_SELECTION"   : "No invoices selected.  Please select at least one invoice or dismiss the modal.",
+    "FINANCIAL_DETAIL"  : "Current balance, the posting journal is included:",
+    "MISSING_DEBTOR_ID" : "No debtor selected!"
   },
    "HELP_TXT_1"       : "This module enables to pay several invoice",
    "HELP_TXT_2"       : "Find Debtor with ",
@@ -314,12 +315,13 @@
    "VOUCHER" : {
      "TITLE" : "Cash Payments",
      "CASHBOXES" : {
-       "AVAILABLE" : "Available Cashboxes",
-       "UNCONFIGURED" : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue.",
-       "LINK" : "Click here to add it.",
-       "MISSING" : "Don't see your cashbox?",
-       "CURRENT_CASHBOX" : "Current Cashbox",
-       "CHANGE_CASHBOX" : "Change Cashbox"
+       "AVAILABLE"        : "Available Cashboxes",
+       "CHANGE_CASHBOX"   : "Change Cashbox",
+       "CURRENT_CASHBOX"  : "Current Cashbox",
+       "LINK"             : "Click here to add it.",
+       "MISSING"          : "Don't see your cashbox?",
+       "TRANSFER"         : "Transfer Funds",
+       "UNCONFIGURED"     : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue."       
      },
      "SLIP" : "Cash Voucher",
      "CASHBOX" : "Cashbox",
@@ -1440,10 +1442,10 @@
    "DISMISS"         : "Dismiss",
    "EDIT"            : "Edit",
    "ERRORS"        : {
-    "REQUIRED"   : "This value is required.",
+    "GENERIC"           : "The form contains errors.",
     "MIN_CURRENCY_UNIT" : "This value is too small for the selected currency.",
-    "NUMBER" : "This value must be a valid number.",
-    "GENERIC" : "The form contains errors."
+    "NUMBER"            : "This value must be a valid number.",
+    "REQUIRED"          : "This value is required."
    },
    "INVALID_DATE"    : "Invalide date",
    "LOGIN"           : "Login",
@@ -1808,6 +1810,7 @@
    "MANAGE_PROVINCE"       : "Manage Province",
    "MANAGE_SECTOR"         : "Manage Sector",
    "MANAGE_VILLAGE"        : "Manage Village",
+   "MODAL"                 : "Add a new Location",   
    "NEW_FORM"              : "New Form",
    "ORIGIN"                : "Origin",
    "PROVINCE"              : "Province",
@@ -1822,8 +1825,7 @@
    "COUNTRY"               : "Country",
    "PROVINCE"              : "Province",
    "SECTOR"                : "Sector",
-   "VILLAGE"               : "Village",
-   "MODAL"               : "Add a new Location"
+   "VILLAGE"               : "Village"   
    },
 "MODALS" : {
   "REFERENCES" : {
@@ -2724,11 +2726,11 @@
    "PROFIT_CENTER"         : "Select a Profit Center",
    "PROJECT"               : "Select a project",
    "PROVINCE"              : "Select a Province",
+   "RECEIPT"               : "Select a Receipt",   
    "RECIPIENT"             : "Select a Recipient",
    "REFERENCE"             : "Select a Reference",
    "REFERENCE_GROUP"       : "Select a Reference Group",
    "RESULT_ACCOUNT_SCT"    : "Select a Result Account section",
-   "RECEIPT"               : "Select a Receipt",
    "SECTOR"                : "Select a Sector",
    "SERVICE"               : "Select a Service",
    "SOURCE"                : "Select a source",
