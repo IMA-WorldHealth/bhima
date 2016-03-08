@@ -1,57 +1,27 @@
-/**
- * @todo Known bug - if the sidebar is expanded and collapsed to totals footer 
- * will not refresh to the correct size (fixed width is not recalculated)
- */
-
-// TODO Caching inventory items - if items are cleared or page reloaded they can be loaded back,
-//  - with prices?
-//
-// TODO Tabbing through UI grid - it's essential to be able to tab through 
-// code -> Quantity -> Price 
-// code -> Quantity -> Price 
-// etc. 
-//
-// TODO BHIMA 1.X handled caution payments from within the sale client side - this should be redesigned. 
-// If deemed appropriate this module will need to be udpated to allow for this functionality.
-//
-// TODO Total rows show ,billing services applies -> subsidies applied, subsidies are applied 
-// to total + billing services, this running total could be shown before subsidies applied 
-// (subsidies applied are also negative - this should be reflected)
 angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
-PatientInvoiceController.$inject = ['$http', '$q', '$location', 'uuid', 'uiGridConstants', 'Patients', 'PriceLists', 'Invoice', 'util', 'moment', 'PatientInvoice'];
+PatientInvoiceController.$inject = [
+  '$http', '$q', '$location', 'Patients', 'PriceLists', 'PatientInvoice', 
+  'Invoice', 'util'
+];
 
-function PatientInvoiceController($http, $q, $location, uuid, uiGridConstants, Patients, PriceLists, Invoice, util, moment, PatientInvoice) { 
-  console.log(util);
+/** 
+ * Patient Invoice Controller 
+ *
+ * @todo (required) Tabbing through UI grid. Code -> Quantity -> Price
+ * @todo (required) Design and implement how cautions are assigned. Client vs. Server
+ * @todo (required) Sale made outside of fiscal year error should be handled and shown to user
+ * @todo (required) Billing services and subsidies should be ignored for specific debtors 
+ * @todo Known bug - sidebar expanding and collapsing does not redraw totals columns (listen and update?)
+ * @todo Total rows formatted to show subsidy as subtraction and make clear running total
+ *
+ * @module bhima/controllers/PatientInvoiceController
+ */
+function PatientInvoiceController($http, $q, $location, Patients, PriceLists, PatientInvoice, Invoice, util) { 
   var vm = this;
-  
-  // TODO 1. Billing services and subsidies must be shut down according to debtor information 
-  // TODO 2. Submit sale simply collects form information and request InventoryItem.formatSumbitted()
- 
-  vm.Invoice = Invoice;
-  
-  
-  // TODO 02/08 - Replace with Dedrick's service API
-  $http.get('services')
-    .then(function (services) { 
-      vm.services = services.data;
-
-      // Select default service
-      // TODO
-      vm.Invoice.details.service_id = vm.services[0].id;
-    });
-
-  // TODO Initialise per session
-  vm.Invoice.items = vm.Invoice.items;
-
-  function handleGridApi(gridApi) { 
-    console.log('handle grid api');
-
-    // expose grid api
-    vm.gridApi = gridApi;
-  }
-
+  vm.Invoice = new Invoice();
+    
   var gridOptions = { 
     appScopeProvider : vm,
     enableSorting : false,
@@ -65,15 +35,15 @@ function PatientInvoiceController($http, $q, $location, uuid, uiGridConstants, P
       {field : 'amount', cellTemplate : 'partials/patient_invoice/templates/grid/amount.tmpl.html'},
       {field : 'actions', width : 25, cellTemplate : 'partials/patient_invoice/templates/grid/actions.tmpl.html'}
     ],
-    onRegisterApi : handleGridApi,
-    data : vm.Invoice.items.current.data
+    onRegisterApi : exposeGridScroll,
+    data : vm.Invoice.items.rows
   };
 
-    
-  vm.gridOptions = gridOptions;
-  vm.setPatient = function setPatient(patient) { 
-
-    // TODO (remove comment) set up for when patient find directive only returnd uuid to be referenced
+  function exposeGridScroll(gridApi) { 
+    vm.gridApi = gridApi;
+  }
+  
+  function setPatient(patient) { 
     var uuid = patient.uuid;
 
     Patients.detail(uuid)
@@ -85,59 +55,60 @@ function PatientInvoiceController($http, $q, $location, uuid, uiGridConstants, P
   // - Subsidies are sent to the server but NOT recorded
   // - TODO the final value of a sale can only be determined after checking all
   //        billing services, subsidies and the cost of the sale
-  vm.submit = function submit(detailsForm) { 
-    // console.log('got sale details form', detailsForm);
+  function submit(detailsForm) { 
+    var items = angular.copy(vm.Invoice.items.rows);
     
+    // Update value for Form validation
     detailsForm.$setSubmitted();
   
+    if (detailsForm.$invalid) { 
+      return;
+    }
+
     // Ask service items to validate themselves - if anything is returned it is invalid
     var invalidItem = vm.Invoice.items.verify();
     
     if (angular.isDefined(invalidItem)) { 
-      console.log('there was a problem with an item!');
       
-      console.log(vm.gridApi);
-
       // show the user where the error is
       vm.gridApi.core.scrollTo(invalidItem);
-      
       return;
     }
       
-    console.log('everything must be valid!');
-    
-    // If everything is okay - clear the invoice items cache
-    // (this should be done on return)
-  
-    // TODO rename vm.Invoice.items.current.data
-    
-    // ensure processing doesn't effect current invoice items (if it doesn't get submitted)
-    var items = angular.copy(vm.Invoice.items.current.data);
-    PatientInvoice.create(vm.Invoice.details, items)
+    // Invoice consists of 
+    // 1. Invoice details
+    // 2. Invoice items
+    // 3. Charged billing services - each of these have the global charge calculated by the client
+    // 4. Charged subsidies - each of these have the global charge calculated by the client
+    PatientInvoice.create(vm.Invoice.details, items, vm.Invoice.billingServices, vm.Invoice.subsidies)
       .then(handleCompleteInvoice);
   }
-
+   
   function handleCompleteInvoice(result) { 
     vm.Invoice.items.removeCache(); 
-    console.log(result);
     $location.path('/invoice/sale/'.concat(result.uuid));
   }
   
-  // Reset everything in the controller
-  vm.clear = function clear() { 
+  // Reset everything in the controller - default values
+  function clear() { 
     
     // Default values
-    // Set default invoice date to today 
-    vm.Invoice.details.invoice_date = new Date();
-    vm.invoiceId = uuid();
-
-    // FIXME FIXME
     vm.itemIncrement = 1;
-    vm.timestamp = new moment();
-    vm.minimumDate = util.minimumDate;
+    vm.timestamp = new Date();
+    
+    // set one day in the future 
+    vm.timestamp.setDate(vm.timestamp.getDate() + 1);
 
+    vm.minimumDate = util.minimumDate;
     vm.dateLocked = true;
     
+    // Set default invoice date to today 
+    // FIXME Encapsulare invoice reset logic within service
+    vm.Invoice.details.invoice_date = new Date();
+    vm.Invoice.recipient = null;
+    vm.Invoice.items.recovered = false;
+    vm.Invoice.items.clearItems(true, false);
+
     if (vm.services) { 
       vm.Invoice.details.service_id = vm.services[0].id;
     }
@@ -145,40 +116,26 @@ function PatientInvoiceController($http, $q, $location, uuid, uiGridConstants, P
     if (vm.patientSearch) { 
       vm.patientSearch.reset();
     }
-    vm.Invoice.recipient = null;
-    vm.Invoice.items.recovered = false;
-    vm.Invoice.items.removeItems(true, false);
   };
+  
+  vm.gridOptions = gridOptions;
+  vm.setPatient = setPatient;
+  vm.submit = submit;
+  vm.clear = clear;
 
-  //FIXME
-  vm.clear();
-
-  // This is done in the controller because the invoice service would become strictly 
-  // tied  to debitors given this code 
   // TODO potentially move this into debitor configuration within invoice
   // TODO very temporary code
   function configureInvoice(patient) { 
     var configureQueue = [];
-    
-    // console.log('patient search', vm.patientSearch);
-    // vm.patientSearch.reset();
 
     // Prompt initial invoice item
-    Invoice.items.configureBase();
+    vm.Invoice.items.configureBase();
   
-    // TODO Temporary API tests
-    configureQueue.push(
-      Patients.billingServices(patient.uuid)
-    );
-
-    configureQueue.push(
-      Patients.subsidies(patient.uuid)
-    );
+    configureQueue.push(Patients.billingServices(patient.uuid));
+    configureQueue.push(Patients.subsidies(patient.uuid));
 
     if (patient.price_list_uuid) { 
-      configureQueue.push(
-        PriceLists.detail(patient.price_list_uuid)
-      );
+      configureQueue.push(PriceLists.detail(patient.price_list_uuid));
     }
     
     $q.all(configureQueue)
@@ -186,13 +143,24 @@ function PatientInvoiceController($http, $q, $location, uuid, uiGridConstants, P
         var billingResult = result[0];
         var subsidiesResult = result[1];
         var priceListResult = result[2];
-      
 
-        // All of these can be settup in one method exposed by the service
+        // TODO All of these can be settup in one method exposed by the service
         vm.Invoice.configureGlobalCosts(billingResult, subsidiesResult);
         vm.Invoice.items.setPriceList(priceListResult);
         vm.Invoice.recipient = patient;
         vm.Invoice.details.debitor_uuid = patient.debitor_uuid;
       });
   }
+
+  // TODO 02/08 - Replace with Dedrick's services API
+  $http.get('services')
+    .then(function (services) { 
+      vm.services = services.data;
+
+      // Select default service
+      vm.Invoice.details.service_id = vm.services[0].id;
+    });
+  
+  // Set initial default values
+  clear();
 }

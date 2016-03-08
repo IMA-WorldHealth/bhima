@@ -1,13 +1,13 @@
 <div style="padding : 5px;"> 
   <div ng-if="!row.entity.confirmed">
     <!-- TODO Design and implement custom typeahead template -->
-    <input class="form-control" typeahead-append-to-body="true" uib-typeahead="item.uuid as (item.label + ' [' + item.code + ']') for item in grid.appScope.Invoice.items.available()" ng-model="row.entity.inventory_uuid" typeahead-on-select="grid.appScope.Invoice.items.confirmItem(row.entity)"></input>
+    <input class="form-control" typeahead-append-to-body="true" uib-typeahead="item.uuid as (item.label + ' [' + item.code + ']') for item in grid.appScope.Invoice.items.inventoryItems.data" ng-model="row.entity.inventory_uuid" typeahead-on-select="grid.appScope.Invoice.items.confirmItem(row.entity)"></input>
   </div>
   <div nf-if="row.entity.confirmed">
     <span 
       class="text-info" 
       ng-if="row.entity.priceListApplied"
-      uib-popover="The base price for this line item has been augmented by a price list."
+      uib-popover="{{ 'PATIENT_INVOICE.BASE_PRICE_ALTERED' | translate }}"
       popover-placement="right"
       popover-append-to-body="true"
       popover-trigger="mouseenter">

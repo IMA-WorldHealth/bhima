@@ -1,120 +1,115 @@
-'use strict';
-
 angular.module('bhima.services')
-  .service('Invoice', Invoice);
+  .service('Invoice', InvoiceService);
 
-Invoice.$inject = ['InvoiceItems', 'appcache'];
+InvoiceService.$inject = ['InvoiceItems', 'appcache'];
 
-function Invoice(InvoiceItems, AppCache) { 
-  var invoice = this;
-  // Accept billing serivces, subsidies + price lists 
-  // Price lists passed to inventory items 
-  // calculate total facotrs in subsidies + billing services
+/** 
+ * Invoice Service 
+ *
+ * This service provides a model for generic  to be used by any controller, 
+ * patient , purchase orders etc. 
+ *
+ * @todo Discuss - currently all total values are force calculated by
+ * in the angular digest loop (from the angular template) - this vs. $watch 
+ *
+ * @todo (required) Only the maximum of the bill should be subsidised
+ *
+ * @usage var = new Invoice();
+ */
+function InvoiceService(InvoiceItems, AppCache) { 
   
-  console.log('invoice service fired');
- 
+  function calculateBillingServices(billingServices, total) { 
     
-  
-  // global costs 
-  invoice.billingServices = [];
-  invoice.subsidies = [];
-  
-  invoice.details = {};
-  
-  // FIXME defauls
-  invoice.details.is_distributable = "true";
-
-  // TODO Initialise per session 
-  invoice.items = InvoiceItems;
-  invoice.recipient = null;
-  
-  invoice.itemsCost = 0;
-  invoice.billingServiceCost = 0;
-  invoice.subsidyCost = 0;
-  invoice.totalCost = 0;
-  
-  function configureGlobalCosts(billingServices, subsidies) { 
-    console.log('configure global costs');
-    invoice.billingServices = billingServices;
-    invoice.subsidies = subsidies;
-  }
-  
-  // TODO Discuss - currently all values are force calculated by the angular template 
-  // calling this method - this then updates all of the other values that are statically 
-  // referenced. Design decision - should this be called from the angular template or using
-  // something like $watch
-  function total() { 
-    var total = 0;
-    invoice.itemsCost = invoice.items.current.data.reduce(sumTotalCost, 0);
-    total = invoice.itemsCost;
-  
-    invoice.billingServiceCost = calculateBillingServices(total);
-
-    // Apply billing services before factoring in subsidies
-    total += invoice.billingServiceCost;
-
-    invoice.subsidyCost = calculateSubsidies(total);
-    total -= invoice.subsidyCost; 
-    
-    invoice.details.cost = invoice.itemsCost;
-    // console.log('billing service', invoice.billingServiceCost); 
-    // console.log('calculated total', total);
-    return total;
-  }
- 
-  // TODO Do checks to make sure billing service is valid whilst applying
-  // billing service is always a percentage
-
-  // TODO rewrite these as reduces
-  function calculateBillingServices(invoiceTotal) { 
-    var billingCharge = 0;
-    
-    invoice.billingServices.forEach(function (billingService) {
-      var serviceCharge = (invoiceTotal / 100) * billingService.value;
-      billingService.charge = serviceCharge;
-      billingCharge += serviceCharge;
-    });
-
+    // Reduce method - assigns the current billing services charge to the billing
+    // service and adds to the running total
+    var billingCharge = billingServices.reduce(function (current, billingService) {
+      billingService.charge = (total / 100) * billingService.value;
+      current += billingService.charge;
+      return current;
+    }, 0);
     return billingCharge;
   }
   
-  // Currently works just first come first served - potentially there
-  // should be rules for what order to take subsidies
-  
-  // TODO only the maximum of the bill should be subsidised - each subsidy should
-  // know how much it is being used
-  function calculateSubsidies(invoiceTotal) { 
-    var subsidyReduction = 0;
+  // This is a seperate (very similar) method to calculating billing services
+  // as subsidies will require additional logic to limit subsidising more then 100%
+  function calculateSubsidies(subsidies, total) { 
 
-    invoice.subsidies.forEach(function (subsidy) { 
+    var subsidyReduction = subsidies.reduce(function (current, subsidy) { 
+      
       // All values are percentages
-      var subsidyCharge = (invoiceTotal / 100) *  subsidy.value;
-      subsidyReduction += subsidyCharge;
-    });
-
+      subsidy.charge = (total / 100) *  subsidy.value;
+      current += subsidy.charge;
+      return current;
+    }, 0);
     return subsidyReduction;
   }
- 
-    
-  /**
-   * Utility methods 
-   */
+  
+  // Reduce method
   function sumTotalCost(currentCost, item) { 
     var itemIsValid =
       angular.isNumber(item.quantity) && 
       angular.isNumber(item.transaction_price);
     
     if(itemIsValid) { 
-      var itemCost = (item.quantity * item.transaction_price);
-      item.credit = itemCost;
+      item.credit = (item.quantity * item.transaction_price);
       currentCost += item.credit;
     }
-
     return currentCost;
   }
-  
-  invoice.configureGlobalCosts = configureGlobalCosts;
-  invoice.total = total;
 
+  // Invoice instance - this should only exist during the controllers lifespan
+  function InvoiceModel() { 
+    var invoice = this;
 
+    invoice.billingServices = { 
+      items : [],
+      total : 0
+    };
+    invoice.subsidies = { 
+      items : [],
+      total : 0
+    };
+    invoice.rows = { 
+      
+      // TODO This should also be initialised
+      items : new InvoiceItems(), 
+      total : 0
+    };
+    invoice.total = 0;
+
+    invoice.details = { is_distributable : '1' };
+    invoice.recipient = null;
+
+    function configureGlobalCosts(recipientServices, recipientSubsidies) { 
+      invoice.billingServices.items = recipientServices;
+      invoice.subsidies.items = recipientSubsidies;
+    }
+    
+    function total() { 
+      var total = 0;
+      
+      invoice.rows.total = invoice.rows.items.currentRows.data.reduce(sumTotalCost, 0);
+      total = invoice.rows.total;
+    
+      invoice.billingServices.total = calculateBillingServices(invoice.billingServices.items, total);
+      total += invoice.billingServices.total;
+
+      invoice.subsidies.total = calculateSubsidies(invoice.subsidies.items, total);
+      total -= invoice.subsidies.total; 
+     
+      // Invoice cost as modelled in the database does not factor in billing services 
+      // or subsidies
+      invoice.details.cost = invoice.rows.total;
+      return total;
+    }
+    
+    invoice.configureGlobalCosts = configureGlobalCosts;
+    invoice.total = total;
+
+    // Alias items as these are frequently used
+    invoice.items = invoice.rows.items;
+
+    return invoice;
+  }
+  return InvoiceModel;  
 }

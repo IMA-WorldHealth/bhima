@@ -22,17 +22,21 @@ function PatientInvoice($http, util, SessionService) {
   /** Method to format and send a valid patient invoice request. */
   service.create = create;
 
-  function create(invoiceDetails, invoiceItems) { 
+  function create(invoiceDetails, invoiceItems, billingServices, subsidies) { 
     var invoice; 
   
     invoiceDetails = addSessionDetails(invoiceDetails);
     invoiceItems = invoiceItems.map(filterInventorySource);
-  
-    console.log('sending items', invoiceItems);
-    // TODO Make all naming consisten
+    
+    // A patient invoice is not required to qualify for billing services or subsidies 
+    billingServices = billingServices || [];
+    subsidies = subsidies || [];
+
     invoice = { 
       sale : invoiceDetails,
-      saleItems : invoiceItems
+      saleItems : invoiceItems,
+      billingServices : billingServices,
+      subsidies : subsidies
     };
 
     return $http.post(invoiceUrl, invoice)

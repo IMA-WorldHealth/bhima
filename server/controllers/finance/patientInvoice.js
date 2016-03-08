@@ -2,6 +2,7 @@
  * Patient Invoice API Controller
  *.@module controllers/finance/patientInvoice
  *
+ * @todo (required) Major bug - Sale items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
  * @todo GET /sales/patient/:uuid - retrieve all patient invoices for a specific patient
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructre
  * @todo Credit note logic pending on clear design
@@ -113,6 +114,14 @@ function create(req, res, next) {
   // Verify request validity
   var saleLineBody = req.body.sale;
   var saleItems = req.body.saleItems;
+ 
+  // TODO Billing service + subsidy posting journal interface
+  // Billing services and subsidies are sent from the client, the client 
+  // has calculated the charge associated with each subsidy and billing service
+  // - the financial posting logic depends on the future posting jounral logic, 
+  // it must be decided if the server will have the final say in the cost calculation 
+  var billingServices = req.body.billingServices;
+  var subsidies = req.body.subsidies;
 
   // Reject invalid parameters
   if (!saleLineBody || !saleItems) {
@@ -131,16 +140,13 @@ function create(req, res, next) {
 
   insertSaleLineQuery =
     'INSERT INTO sale SET ?';
-
-  // insertSaleItemQuery =
-  //   'INSERT INTO sale_item (inventory_uuid, quantity, inventory_price, ' +
-  //       'transaction_price, credit, uuid,  sale_uuid) VALUES ?';
+  
   insertSaleItemQuery =
     'INSERT INTO sale_item (uuid, inventory_uuid, quantity, ' +
         'transaction_price, inventory_price, credit, sale_uuid) VALUES ?';
 
   transaction = db.transaction();
-
+  
   // Insert sale line
   transaction
     .addQuery(insertSaleLineQuery, [saleLineBody])
