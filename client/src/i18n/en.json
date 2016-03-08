@@ -1170,13 +1170,15 @@
    "REGISTER"           : "Register Employee",
    "REGISTER_SUCCESS"   : "Register successfully",
    "REGISTRATION_FORM"  : "Registration Form",
+   "SAVE_SUCCES"        : "Saved successfully",
    "SEARCH_BY_CODE"     : "Tap the code",
    "SEARCH_BY_NAME"     : "Tap the empoyee name",
    "SERVICE"            : "Service",
    "SEX"                : "Sex",
    "SUBMIT_EDIT"        : "Submit Details",
    "SUBMIT_NEW"         : "Submit Registration",
-   "TITLE"              : "Employee Management"
+   "TITLE"              : "Employee Management",
+   "UPDATE_SUCCES"      : "Updated successfully"
    },
 "EMPLOYEE_STANDING": {
    "ACCOUNT_BALANCE"   : "Account Balance",
@@ -3006,13 +3008,19 @@
    "TITLE"                 : "Stock Situation"
    },
 "SUBSIDY" : {
-   "DETAILS"     : "",
-   "INFO"        : "Subsidy management module",
-   "NEW_SUBSIDY" : "New subsidy",
-   "NO_SUBSIDY"  : "No subsidy have been registered",
-   "REGISTERED"  : "Registered subsidy",
-   "TITLE"       : "Subsidy",
-   "UPDATE"      : "Update"
+   "CONFIRM"          : "Are you sure you want to delete this Subsidy",  
+   "DATE_CREATION"    : "Date of creation",
+   "DATE_UPDATE"      : "Date of update",
+   "DETAILS"          : "",
+   "DELETE_SUCCESS"   : "Deleted successfully",
+   "INFO"             : "Subsidy management module",
+   "NEW_SUBSIDY"      : "New subsidy",
+   "NO_SUBSIDY"       : "No subsidy have been registered",
+   "REGISTERED"       : "Registered subsidy",
+   "SAVE_SUCCESS"      : "Saved successfully",   
+   "TITLE"            : "Subsidy",
+   "UPDATE"           : "Update",
+   "UPDATE_SUCCESS"    : "Updated successfully"
    },
 "SUPPLIER": {
    "ADDR_1"                : "Address 1",
