@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('CashTransferModalController', CashTransferModalController);
 
 CashTransferModalController.$inject = [
-  '$scope', '$uibModalInstance', 'VoucherService',
+  '$uibModalInstance', 'VoucherService',
    'CashboxService', 'AccountService', 'CashService', 'cashBox'
 ];
 
@@ -12,7 +12,7 @@ CashTransferModalController.$inject = [
  * @description This controller is responsible transfering money between auxillary cash and a virement account
 */
 
-function CashTransferModalController($scope, ModalInstance, voucherService, cashBoxService, accountService, cashService, cashBox) {
+function CashTransferModalController(ModalInstance, voucherService, cashBoxService, accountService, cashService, cashBox) {
   var vm = this; 
 
   /** Attaching service to the scope **/

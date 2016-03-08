@@ -2,6 +2,7 @@
   ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.form.currencyInputValue.$invalid }"  
   data-bh-currency-input>
 
+  <!-- incorporate the currency select component-->
   <bh-currency-select
     currency-id="$ctrl.currencyId"
     validation-trigger="$ctrl.validationTrigger"
@@ -23,7 +24,6 @@
       ng-max="$ctrl.maxValue"
       required>
   </div>
-
 
   <!-- validation messages -->
   <p class="help-block" ng-messages="$ctrl.form.currencyInputValue.$error" ng-show="$ctrl.validationTrigger">

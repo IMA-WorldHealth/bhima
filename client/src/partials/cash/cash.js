@@ -249,7 +249,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   }
 
   function updateCurrency (currency){
-    console.log('on a recu', currency);
     vm.payment.currency_id = currency.id;
   }
 

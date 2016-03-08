@@ -67,7 +67,7 @@ function bhCurrencySelect(Currencies, AppCache) {
   ctrl.currencies = [];
 
   // default to noop() if an onChange() method was not passed in
-  // ctrl.onChange = ctrl.onChange || angular.noop();
+  ctrl.onChange = ctrl.onChange || angular.noop();
 
   init(cache.defaultCurrency);  
 
@@ -82,7 +82,9 @@ function bhCurrencySelect(Currencies, AppCache) {
       return currency.id === ctrl.currencyId;
     });
     /** persist the selected currency as default**/
-    cache.defaultCurrency = currencies[0];   
+    cache.defaultCurrency = currencies[0]; 
+    
+    /** calling the callback**/      
     ctrl.onChange({ currency : currencies[0] });
   }
 
