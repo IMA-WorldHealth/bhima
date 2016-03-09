@@ -28,9 +28,21 @@ function detail(req, res, next) {
 
 function list(req, res, next) {
   'use strict';
+  var sql;
+
+  if (req.query.detailed === '1') {
+    sql = 
+      'SELECT subsidy.id, subsidy.account_id, subsidy.label, subsidy.description, subsidy.value, subsidy.created_at, ' +
+      'subsidy.updated_at, account.account_number ' +
+      'FROM subsidy ' +
+      'JOIN account ON account.id = subsidy.account_id';       
+  } else {
+    sql =
+      'SELECT id, label, value FROM subsidy';
+  }  
 
   var sql =
-   'SELECT id, account_id, label, description, value, created_at, updated_at FROM subsidy';
+
 
    db.exec(sql)
   .then(function (rows) {
@@ -53,7 +65,6 @@ function create (req, res, next) {
   } catch (err) {
     return next(err);
   }
-
 
   db.exec(createSubsidyQuery, [record])
   .then(function (result) {

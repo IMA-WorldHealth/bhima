@@ -299,7 +299,9 @@
   "HELP_TXT_1"       : "Ce module permettre des payer contre plusiers factures",
   "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
   "MODALS" : {
-    "FINANCIAL_DETAIL" : "Balance actuelle, journal de saisie inclue :"
+    "EMPTY_SELECTION"   : "Aucune facture sélectionnée. S'il vous plaît sélectionner au moins une facture ou bien annuler.",
+    "FINANCIAL_DETAIL"  : "Balance actuelle, journal de saisie inclue :",
+    "MISSING_DEBTOR_ID" : "Aucun débiteur sélectionné!"
   },
 
   "NO_EXCHANGE_RATE" : "Erreur : le taux de change n'existe pas!",
@@ -314,14 +316,14 @@
   },
   "VOUCHER" : {
     "TITLE" : "Paiements Caisse Auxillaire",
-      "CASHBOXES" : {
-        "AVAILABLE" : "Caissea disponibles",
-        "UNCONFIGURED" : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse dans la liste ci-dessous pour continuer.",
-        "LINK" : "Cliquez ici pour l'ajouter.",
-        "MISSING" : "Vous ne trouvez pas votre caisse?",
+      "CASHBOXES"         : {
+        "AVAILABLE"       : "Caissea disponibles",
+        "CHANGE_CASHBOX"  : "Changer de caisse",
         "CURRENT_CASHBOX" : "Caisse auxilliare courant",
-        "CHANGE_CASHBOX" : "Changer de caisse",
-        "TRANSFER"       : "Transferer Fonds"
+        "LINK"            : "Cliquez ici pour l'ajouter.",
+        "MISSING"         : "Vous ne trouvez pas votre caisse?",
+        "TRANSFER"        : "Transférer Fonds",
+        "UNCONFIGURED"    : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse dans la liste ci-dessous pour continuer."
       },
      "SLIP" : "Caisse en espèces",
      "CASHBOX" : "Caisse",
@@ -1176,13 +1178,15 @@
    "REGISTER"           : "Nouveau employé",
    "REGISTER_SUCCESS"   : "Enregistrement de l'employé avec succès",
    "REGISTRATION_FORM"  : "Formulaire d'enregistrement",
+   "SAVE_SUCCES"        : "Enregistrement avec succès",
    "SERVICE"            : "Service",
    "SEARCH_BY_CODE"     : "Taper le code employee",
    "SEARCH_BY_NAME"     : "Taper le nom empoyee",
    "SEX"                : "Sexe",
    "SUBMIT_EDIT"        : "Envoyer les détails",
    "SUBMIT_NEW"         : "Soumettre l'enregistrement",
-   "TITLE"              : "Gestion des employés"
+   "TITLE"              : "Gestion des employés",
+   "UPDATE_SUCCESS"     : "Mis à jour avec succès"
    },
 "EMPLOYEE_STANDING": {
    "ACCOUNT_BALANCE"   : "Balance Compte",
@@ -1446,9 +1450,10 @@
    "DISMISS"         : "Rejeter",
    "EDIT"            : "Editer",
    "ERRORS"        : {
-   "REQUIRED"           : "Cette valeur est requis.",
+    "GENERIC"           : "Le formulaire contient des erreurs.",
     "MIN_CURRENCY_UNIT" : "Cette valeur est trop petite pour la monnaie choisie.",
-    "NUMBER"            : "Cette valeur doit être un nombre valide."
+    "NUMBER"            : "Cette valeur doit être un nombre valide.",
+    "REQUIRED"           : "Cette valeur est requis."
    },
    "INVALID_DATE"    : "La date est invalide",
    "LOGIN"           : "Connexion",
@@ -1477,9 +1482,6 @@
    "UPDATE_SUCCES"   : "Mis à jour avec succès",
    "WARNINGS" : {
     "FUTURE_DATE"    : "Attention: Cette date n'est pas encore arrivée."
-   },
-   "ERRORS" : {
-    "REQUIRED" : "La date est requise!"
    }
   },   
 "GRADE": {
@@ -1570,6 +1572,12 @@
    "TITLE"       : "Caisse Principale: Dépense",
    "TRANSFER"    : "Transfert"
    },
+"INPUT" : {
+  "COUNTRY" : "Entrez un pays.",
+  "PROVINCE" : "Entrez une province.",
+  "SECTOR" : "Entrez un secteur.",
+  "VILLAGE" : "Entrez un village."
+},   
 "INVENTORY": {
    "GROUPS": {
       "ADD"              : "Ajouter un Groupe d'inventaires",
@@ -1800,6 +1808,7 @@
    "COUNTRY"               : "Pays",
    "CURRENT"               : "Présent",
    "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
+   "ET"                    : "et",
    "INFO_CREATE"           : "créer",
    "INFO_MODIFY"           : "modifier",
    "LOCALITY"              : "Localite",
@@ -1809,6 +1818,7 @@
    "MANAGE_PROVINCE"       : "Gerer Les Province",
    "MANAGE_SECTOR"         : "Gerer Les Secteurs",
    "MANAGE_VILLAGE"        : "Gerer Les Villages",
+   "MODAL"                 : "Ajouter une nouvelle location",   
    "NEW_FORM"              : "Nouveau formulaire",
    "ORIGIN"                : "Origine",
    "PROVINCE"              : "Province",
@@ -1821,6 +1831,15 @@
    "VILLAGE_NAME"          : "Nom du Village",
    "VILLE"                 : "Ville/Commune"
    },
+"MODALS" : {
+  "REFERENCES" : {
+    "TITLE"   : "Recherche d'accusé de réception",
+    "TYPE"    : "Type de reçu",
+    "REFERENCE_LOOKUP" : "Référence de la recherche",
+    "NO_RECEIPT"       : "Aucun reçu correspond à cette référence.",
+    "SUCCESS"   : "Reçu trouvé avec succès!"
+  }
+},   
 "NO_EXCHANGE": {
    "CURRENT_DATE" : "Date",
    "EXPLANATION"  : "Ce module ne marche qu'avec un nouveau d'échange, aucun taux n'a éta défini pour aujourd'hui.",
@@ -2713,6 +2732,7 @@
    "PROFIT_CENTER"         : "Sélectionner un centre de profits",
    "PROJECT"               : "Sélectionner un Projet",
    "PROVINCE"              : "Sélectionner une Province",
+   "RECEIPT"               : "Sélectionnez un reçu", 
    "REFERENCE"             : "Sélectionner la référence",
    "REFERENCE_GROUP"       : "Sélectionner un groupe de référence",
    "RESULT_ACCOUNT_SCT"    : "Sélectionner une Section de Compte Résultat",
@@ -2994,13 +3014,19 @@
    "TITLE"                 : "Situation des stocks"
    },
 "SUBSIDY" : {
+   "CONFIRM"       : "Etes vous sure de vouloir supprimer cette subvention",    
+   "DATE_CREATION" : "Date de la création",
+   "DATE_UPDATE"   : "Date de mis à jour",  
+   "DELETE_SUCCESS"   : "Suppression avec succès",
    "DETAILS"     : "",
    "INFO"        : "Module de gestion des subventions",
    "NEW_SUBSIDY" : "Nouvelle subvention",
    "NO_SUBSIDY"  : "Aucune subvention n'est enregistrée",
    "REGISTERED"  : "Subvention(s) enregistrée(s)",
-   "TITLE"       : "Subventions",
-   "UPDATE"      : "Mise à jour"
+   "SAVE_SUCCESS" : "Enregistrement avec succès",
+   "TITLE"          : "Subventions",
+   "UPDATE"         : "Mise à jour",
+   "UPDATE_SUCCESS" : "Mise à jour avec succès"
    },
 "SUPPLIER": {
    "ADDR_1"                : "Adresse 1",
