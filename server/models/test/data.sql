@@ -15,11 +15,13 @@ INSERT INTO unit VALUES
 (57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
 (61,  'Employee','TREE.EMPLOYEE','Employees management',57,'partials/employees/','/employees'),
 (80,  'Patient Update','TREE.EDIT_PATIENT','',12,'/partials/patient_edit/','/patients/edit/'),
+(82,  'Subsidies','TREE.SUBSIDY','Handles the subsidy situation',1,'/partials/subsidies/','/subsidies'),
 (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
-(106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots_management/', '/depots_management');
+(106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots_management/', '/depots_management'),
+(107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtor_groups/', '/debtor_groups');
 
 INSERT INTO account_type VALUES (1,'income/expense'),(2,'balance'),(3,'title');
-INSERT INTO language VALUES (1,'Francais','fr'),(2,'English','en'),(3,'Lingala','lg');
+INSERT INTO language VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
 INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES (1,'Congolese Francs','fc','Fc',NULL,50.00),(2,'United States Dollars','usd','$',NULL,0.01);
 
 -- locations
@@ -111,11 +113,17 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Service Management
 (48, 1),
 
+-- subsidie Management
+(82, 1),
+
 --  Cashbox Management
 (105,1),
 
 --  Depots Management
-(106,1);
+(106,1),
+
+--  Debtor Groups Management
+(107,1);
 
 -- give test permission to both projects
 INSERT INTO project_permission (project_id, user_id) VALUES (1, 1), (2, 1);
@@ -236,8 +244,6 @@ INSERT INTO `exchange_rate` (enterprise_id, currency_id, rate, date) VALUES
 INSERT INTO grade VALUES ("71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0", 'G1', 'grade 1', 500);
 
 INSERT INTO employee VALUES (NULL, 'E1', 'Dedrick', 'Kitamuka', 'Mvuezolo', 'M', '1980-02-01', '2016-02-02', 1, 3, "71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0", 500, NULL, NULL, 'kinshasa', '0896611111', 'my@email.com', 1, 3, 'bfd8563e-72db-4698-af0f-55bd7849369e', '42d3756a-7770-4bb8-a899-7953cd859892', 'be0096dd-2929-41d2-912e-fb2259356fb5', NULL );
-
-
 
 -- 1.X Routes
 -- ----------

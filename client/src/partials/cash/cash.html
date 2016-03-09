@@ -37,13 +37,13 @@
           </div>
           <div class="panel-body">
 
-            <form name="CashVoucherForm" ng-submit="CashCtrl.submit(CashVoucherForm.$invalid)" novalidate>
+            <form name="CashVoucherForm" bh-submit="CashCtrl.submit()" novalidate>
 
-              <fieldset ng-disabled="CashCtrl.loadingState">
+              <fieldset ng-disabled="CashVoucherForm.$loading">
 
                 <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && !CashCtrl.payment.debtor_uuid }">
                   <label class="control-label">{{ "COLUMNS.PATIENT" | translate }}</label>
-                  <bh-find-patient type="inline" on-search-complete="CashCtrl.usePatient(patient)" required></bh-find-patient>
+                  <bh-find-patient type="inline" on-search-complete="CashCtrl.usePatient(patient)" required="1"></bh-find-patient>
                 </div>
 
                 <div>

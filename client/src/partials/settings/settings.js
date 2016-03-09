@@ -1,61 +1,39 @@
 angular.module('bhima.controllers')
-.controller('settings', Settings);
+.controller('settings', SettingsController);
 
-Settings.$inject = [
-  '$http','$routeParams','$translate','$location','AppCache',
-  'tmhDynamicLocale','amMoment', 'SessionService', 'store'
+SettingsController.$inject = [
+  '$http', '$routeParams', '$location', 'LanguageService', 'SessionService'
 ];
 
-function Settings($http, $routeParams, $translate, $location, AppCache, tmhDynamicLocale, amMoment, SessionService, Store) {
+function SettingsController($http, $routeParams, $location, Languages, Session) {
   var vm = this;
 
-  // set up a new appcache namespace
-  var cache = AppCache('preferences');
-
-  // TODO issue discussing DB modelling of languages, quick suggestion (id, label, translateKey, localeKey)
-  var languageStore = new Store({identifier : 'translateKey'});
-  var languages = [{
-    translateKey : 'en',
-    localeKey : 'en-us',
-    label : 'English'
-  }, {
-    translateKey : 'fr',
-    localeKey : 'fr-be',
-    label : 'French'
-  }, {
-    translateKey : 'ln',
-    localeKey : 'fr-cd',
-    label : 'Lingala'
-  }];
-
-  languageStore.setData(languages);
-
+  // the url to return to (using the back button)
   vm.url = $routeParams.url || '';
 
-  // load settings from the cache
-  vm.settings = { language : cache.language };
+  // load settings from services
+  vm.settings = { language : Languages.key };
 
-  vm.updateLanguage = function updateLanuage(key) {
-    var language = languageStore.get(key);
+  /** bind the language service for use in the view */
+  Languages.read()
+  .then(function (languages) {
+    vm.languages = languages;
+  });
 
-    $translate.use(language.translateKey);
-    tmhDynamicLocale.set(language.localeKey);
-    amMoment.changeLocale(language.translateKey);
+  vm.languageService = Languages;
 
-    cache.language = language;
+  /** returns a user to the previous url */
+  vm.back = back;
 
-    console.log('Cache:', cache);
-  };
-
-  vm.back = function back() {
+  function back() {
     $location.url(vm.url);
-  };
+  }
 
   /** @todo Wrap logout call in a service */
   vm.logout = function logout() {
     $http.get('/logout')
       .then(function () {
-        SessionService.destroy();
+        Session.destroy();
         $location.url('/login');
       });
   };

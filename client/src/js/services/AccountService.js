@@ -29,7 +29,7 @@ function AccountService($http, util) {
         // FIXME - make /accounts return the account type w/o query string
         // and preformat the label elsewhere
         accounts.forEach(function (account) {
-          account.label = account.account_number + ' ' + account.account_txt;
+          account.label = account.account_number + ' - ' + account.account_txt;
         });
 
         return accounts;

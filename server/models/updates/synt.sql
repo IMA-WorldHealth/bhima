@@ -394,3 +394,14 @@ ALTER TABLE service ADD FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id
 ALTER TABLE country DROP COLUMN `code`;
 ALTER TABLE country DROP COLUMN `country_en`;
 ALTER TABLE country CHANGE COLUMN `country_fr` `name` VARCHAR(45);
+
+
+-- TODO: Move test's data query into server/models/test/data.sql
+-- TODO: Move schema query into server/models/schema.sql
+-- FIXME: Price list need `label` or `title` as field
+
+-- Price list data for passing Travis
+-- Date : 2016-03-09
+-- By: Bruce M.
+INSERT INTO `price_list` (`enterprise_id`, `uuid`, `label`) VALUES
+  (1, '2e39c855-6f2b-48d7-af7f-746f0552f7b7', 'Test Price List');

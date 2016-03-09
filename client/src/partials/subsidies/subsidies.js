@@ -1,99 +1,112 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('subsidy', [
-  '$scope',
-  '$translate',
-  'validate',
-  'messenger',
-  'connect',
-  'uuid',
-  function ($scope, $translate, validate, messenger, connect, uuid) {
-    var dependencies = {},
-        session = $scope.session = {};
+.controller('SubsidyController', SubsidyController);
 
-    dependencies.subsidies = {
-      identifier:'uuid',
-      query : '/getSubsidies/'
-    };
+SubsidyController.$inject = [
+  'SubsidyService', 'AccountService', '$window', '$translate'
+];
 
-    dependencies.debitorGroups = {
-      query : {
-        identifier : 'uuid',
-        tables : {
-          'debitor_group' : {columns : ['uuid', 'name']}
-        }
-      }
-    };
+function SubsidyController(Subsidy , Accounts, $window, $translate) {
+  var vm = this;
+  vm.session = {};
+  vm.view = 'default';
 
-    dependencies.enterprise = {
-      query : {
-        tables : {
-          'enterprise' : { columns : ['id'] },
-          'currency' : {columns : ['symbol']}
-        },
-        join : ['enterprise.currency_id=currency.id']
-      }
-    };
+  // bind methods
+  vm.create = create;
+  vm.submit = submit;
+  vm.update = update;
+  vm.del    = del;  
+  vm.cancel = cancel;
 
-    function startup (models) {
-      angular.extend($scope, models);
-    }
-
-    validate.process(dependencies).then(startup);
-
-    $scope.delete = function (subsidy) {
-      var result = confirm($translate.instant('SUBSIDY.CONFIRM'));
-      if (result) {
-        connect.delete('subsidy', 'uuid', [subsidy.uuid])
-        .then(function () {
-          $scope.subsidies.remove(subsidy.uuid);
-          messenger.info($translate.instant('SUBSIDY.DELETE_SUCCESS'));
-        });
-      }
-    };
-
-    $scope.edit = function (subsidy) {
-      session.action = 'edit';
-      session.edit = angular.copy(subsidy);
-    };
-
-    $scope.new = function () {
-      session.action = 'new';
-      session.new = {};
-    };
-
-    $scope.save = {};
-
-    $scope.save.edit = function () {
-
-      var record = angular.copy(connect.clean(session.edit));
-      var editedSubsidy = {
-        uuid : record.uuid,
-        is_percent : record.is_percent,
-        value : record.value,
-        text : record.text,
-        debitor_group_uuid : record.debitor_group_uuid
-      };
-      connect.put('subsidy', [editedSubsidy], ['uuid'])
-        .then(function (res) {
-          $scope.subsidies.put(record);
-          record = {};
-          session.action = '';
-          session.edit = {};
-      });
-    };
-
-    $scope.save.new = function () {
-      var record = connect.clean(session.new);
-      if(record.value < 0 || (record.is_percent === 1 && record.value > 100)) {return messenger.danger($translate.instant('SUBSIDY.WRONG_VALUE'));}
-      record.uuid = uuid();
-      connect.post('subsidy', [record])
-        .then(function (res) {
-          record.name = $scope.debitorGroups.get(record.debitor_group_uuid).name;
-          $scope.subsidies.post(record);
-          record = {};
-          session.action = '';
-          session.new = {};
-      });
-    };
+  function handler(error) {
+    console.error(error);
   }
-]);
+
+  // fired on startup
+  function startup() {
+    // start up loading indicator
+    vm.session.loading = true;
+
+    // load accounts and properly formats their labels
+    Accounts.list(null, { full : 1 })
+    .then(function (accounts) {
+      vm.accounts = accounts;
+    })
+    .catch(handler);
+
+    // load Subsidies
+    refreshSubsidies();
+  }
+
+  function cancel() {
+    vm.view = 'default';
+  }
+
+  function create() {
+    vm.view = 'create';
+    vm.subsidy = {};
+  }
+
+  // switch to update mode
+  // data is an object that contains all the information of a subsidy
+  function update(data) {
+    vm.view = 'update';
+    vm.subsidy = data;
+  }
+
+  
+  // refresh the displayed Subsidies
+  function refreshSubsidies() {
+    return Subsidy.read(null, { detailed : 1 })
+    .then(function (data) {
+      vm.subsidies = data;
+    });
+  }
+
+  // form submission
+  function submit(invalid) {
+    if (invalid) { return; }
+
+    var promise;
+    var creation = (vm.view === 'create');
+    var subsidy = angular.copy(vm.subsidy);
+
+    promise = (creation) ?
+      Subsidy.create(subsidy) :
+      Subsidy.update(subsidy.id, subsidy);
+
+    promise
+      .then(function (response) {
+        return refreshSubsidies();
+      })
+      .then(function () {
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
+      .catch(handler);
+  }
+
+  // switch to delete warning mode
+  function del(subsidy) {
+    var bool = $window.confirm($translate.instant('SUBSIDY.CONFIRM'));
+
+     // if the user clicked cancel, reset the view and return
+     if (!bool) {
+        vm.view = 'default';
+        return;
+     }
+
+    // if we get there, the user wants to delete a subsidy
+    vm.view = 'delete_confirm';
+    Subsidy.delete(subsidy.id)
+    .then(function () {
+       vm.view = 'delete_success';
+       return refreshSubsidies();
+    })
+    .catch(function (error) {
+      vm.HTTPError = error;
+      vm.view = 'delete_error';
+    });
+  }
+
+  startup();  
+}

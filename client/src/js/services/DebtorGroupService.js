@@ -14,6 +14,7 @@ function DebtorGroupService($http, util) {
 
   /** Exposed method read */
   service.read = read;
+  service.create = create;
 
   /**
   * @method read
@@ -24,6 +25,16 @@ function DebtorGroupService($http, util) {
   function read(uuid, parameters) {
     var url = baseUrl.concat(uuid || '');
     return $http.get(url, { params : parameters })
+    .then(util.unwrapHttpResponse);
+  }
+
+  /**
+  * @method create
+  * @param {object} debtorGroup The debtor group object
+  * @description This function is responsible for create new debtor group
+  */
+  function create(debtorGroup) {
+    return $http.post(baseUrl, debtorGroup)
     .then(util.unwrapHttpResponse);
   }
 
