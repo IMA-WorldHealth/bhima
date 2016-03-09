@@ -3,7 +3,7 @@
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
       <li class="title">{{ "PATIENT_INVOICE.PAGE_TITLE" | translate }}</li>
-      <li class="title">{{PatientInvoiceCtrl.Invoice.recipient.first_name}}</li>
+      <li class="title" ng-show="PatientInvoiceCtrl.Invoice.recipient">{{ PatientInvoiceCtrl.Invoice.recipient.first_name }}</li>
     </ol>
   </div>
 </div>
@@ -15,7 +15,7 @@
       <div class="col-xs-12">
         <div class="panel panel-default">
           <div class="panel-body">
-            <form name="detailsForm">
+            <form name="detailsForm" novalidate>
               <div class="col-md-6">
 
                 <div class="form-group">
@@ -73,10 +73,10 @@
                       required
                       name="invoiceDate"
                       type="date"
-                      ng-model="PatientInvoiceCtrl.Invoice.details.invoice_date"
+                      ng-model="PatientInvoiceCtrl.Invoice.details.date"
                       ng-readonly="PatientInvoiceCtrl.dateLocked"
-                      min="{{PatientInvoiceCtrl.minimumDate | date : 'yyyy-MM-dd'}}"
-                      max="{{PatientInvoiceCtrl.timestamp | date : 'yyyy-MM-dd'}}"
+                      min="{{ PatientInvoiceCtrl.minimumDate | date : 'yyyy-MM-dd'}}"
+                      max="{{ PatientInvoiceCtrl.timestamp | date : 'yyyy-MM-dd'}}"
                       class="form-control"></input>
                     <span class="input-group-btn">
                       <!-- TODO Final date lock/edit component could run validity checks on lock -->
@@ -94,8 +94,9 @@
               </div>
 
                 <div class="form-group">
-                  <label for="invoice-note">{{ "FORM.NOTES" | translate}}</label>
-                  <textarea id="invoice-note" ng-model="PatientInvoiceCtrl.Invoice.details.note" name="notes" class="form-control"></textarea>
+                  <label for="invoice-note">{{ "FORM.NOTES" | translate }}</label>
+                  <textarea id="invoice-note" ng-model="PatientInvoiceCtrl.Invoice.details.description" name="notes" class="form-control">
+                  </textarea>
                 </div>
               </div>
             </div>
@@ -108,7 +109,6 @@
     <div class="row" style="padding-bottom : 5px;">
 
       <div class="col-xs-12">
-
             <div class="btn-group pull-right" role="group">
               <button
                 class="btn btn-default"
@@ -118,15 +118,14 @@
                 <span class="glyphicon glyphicon-floppy-open"></span> {{ "SALE.RECOVER_ITEMS" | translate }}
               </button>
             </div>
-              <div class="input-group">
-
-                <span class="input-group-btn">
-                  <button
-                    ng-disabled="!PatientInvoiceCtrl.Invoice.recipient" class="btn btn-default btn-sm"
-                    ng-click="PatientInvoiceCtrl.Invoice.items.addInventoryItem(PatientInvoiceCtrl.itemIncrement)"><span class="glyphicon glyphicon-plus-sign"></span> Add</button>
-                </span>
-                <input class="form-control input-sm" ng-model="PatientInvoiceCtrl.itemIncrement" style="max-width : 40px;" ng-disabled="!PatientInvoiceCtrl.Invoice.recipient">
-              </div>
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button
+                  ng-disabled="!PatientInvoiceCtrl.Invoice.recipient" class="btn btn-default btn-sm"
+                  ng-click="PatientInvoiceCtrl.Invoice.items.addInventoryItem(PatientInvoiceCtrl.itemIncrement)"><span class="glyphicon glyphicon-plus-sign"></span> Add</button>
+              </span>
+              <input class="form-control input-sm" ng-model="PatientInvoiceCtrl.itemIncrement" style="max-width : 40px;" ng-disabled="!PatientInvoiceCtrl.Invoice.recipient">
+            </div>
             <p
               style="padding-top : 10px;"
               class="text-warning"
@@ -153,50 +152,54 @@
         leading-columns="5">
 
         <div
-          style="width : {{PatientInvoiceCtrl.trackColumns.width}}px"
+          style="width : {{ PatientInvoiceCtrl.trackColumns.width }}px"
           class="fixedColumn">
 
           <div style="text-align : right;">
             <h4>{{ "PATIENT_INVOICE.TOTAL" | translate }}</h4>
 
 
-            <!-- Expand billing services -->
+            <!-- expand billing services -->
             <div ng-if="PatientInvoiceCtrl.expandBillingServices">
-            <hr>
-            <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices.items">{{service.label}}({{service.value}}%)</h4>
-            <hr>
+              <hr>
+              <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices.items">
+                {{ service.label }}({{ service.value }}%)
+              </h4>
+              <hr>
             </div>
 
             <h4>
               <a href="" ng-click="PatientInvoiceCtrl.expandBillingServices=!PatientInvoiceCtrl.expandBillingServices">
-                <span class="label label-primary">{{PatientInvoiceCtrl.Invoice.billingServices.items.length}}</span>
+                <span class="label label-primary">{{ PatientInvoiceCtrl.Invoice.billingServices.items.length }}</span>
               </a>
               {{ "PATIENT_INVOICE.BILLING_SERVICES" | translate }}
             </h4>
-            <h4><span class="label label-default">{{PatientInvoiceCtrl.Invoice.subsidies.length}}</span> {{ "PATIENT_INVOICE.SUBSIDIES" | translate }}</h4>
+            <h4><span class="label label-default">{{ PatientInvoiceCtrl.Invoice.subsidies.length }}</span> {{ "PATIENT_INVOICE.SUBSIDIES" | translate }}</h4>
 
             <h4><strong>{{ "PATIENT_INVOICE.DUE" | translate }}</strong></h4>
           </div>
         </div>
 
-        <div class="fixedColumn" style="padding-left : 5px; text-align : right; text-overflow : elpisis; width : {{PatientInvoiceCtrl.trackColumns.trackedWidth}}px;">
+        <div class="fixedColumn" style="padding-left : 5px; text-align : right; text-overflow : elpisis; width : {{ PatientInvoiceCtrl.trackColumns.trackedWidth }}px;">
 
-          <h4>{{PatientInvoiceCtrl.Invoice.rows.total | currency}}</h4>
+          <h4>{{ PatientInvoiceCtrl.Invoice.rows.total | currency:PatientInvoiceCtrl.enterprise.currency_id }}</h4>
 
           <div ng-if="PatientInvoiceCtrl.expandBillingServices">
-          <hr>
-          <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices.items">{{service.charge | currency}}</h4>
-          <hr>
+            <hr>
+            <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices.items">
+              {{ service.charge | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+            </h4>
+            <hr>
           </div>
 
-          <h4>{{PatientInvoiceCtrl.Invoice.billingServices.total | currency}}</h4>
-          <h4>{{PatientInvoiceCtrl.Invoice.subsidies.total | currency}}</h4>
+          <h4>{{ PatientInvoiceCtrl.Invoice.billingServices.total | currency:PatientInvoiceCtrl.enterprise.currency_id }}</h4>
+          <h4>{{ PatientInvoiceCtrl.Invoice.subsidies.total | currency:PatientInvoiceCtrl.enterprise.currency_id }}</h4>
 
           <!-- This is actually what causes all of the values referenced to be updated on every change -->
-          <h4><strong>{{PatientInvoiceCtrl.Invoice.total() | currency}}</strong><h4>
+          <h4><strong>{{ PatientInvoiceCtrl.Invoice.total() | currency:PatientInvoiceCtrl.enterprise.currency_id }}</strong><h4>
         </div>
       </div>
-    </div>
+    </div
 
     <!-- TODO Temporary styles -->
     <div class="row" style="padding-top : 5px; padding-bottom : 5px;">

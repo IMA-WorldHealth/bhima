@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   '$q', '$location', 'Patients', 'PriceLists', 'PatientInvoice',
-  'Invoice', 'util', 'ServiceService'
+  'Invoice', 'util', 'ServiceService', 'SessionService'
 ];
 
 /**
@@ -18,9 +18,12 @@ PatientInvoiceController.$inject = [
  *
  * @module bhima/controllers/PatientInvoiceController
  */
-function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services) {
+function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session) {
   var vm = this;
   vm.Invoice = new Invoice();
+
+  // bind the enterprise to the enterprise currency
+  vm.enterprise = Session.enterprise;
 
   var gridOptions = {
     appScopeProvider : vm,
@@ -58,9 +61,10 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
   function submit(detailsForm) {
     var items = angular.copy(vm.Invoice.items.rows);
 
-    // Update value for form validation
+    // update value for form validation
     detailsForm.$setSubmitted();
 
+    // if the form is invalid, return right away
     if (detailsForm.$invalid) {
       return;
     }
@@ -75,7 +79,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
       return;
     }
 
-    // Invoice consists of
+    // invoice consists of
     // 1. Invoice details
     // 2. Invoice items
     // 3. Charged billing services - each of these have the global charge calculated by the client
@@ -89,7 +93,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
     $location.path('/invoice/sale/'.concat(result.uuid));
   }
 
-  // Reset everything in the controller - default values
+  // reset everything in the controller - default values
   function clear() {
 
     // Default values
@@ -104,7 +108,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
 
     // Set default invoice date to today
     // FIXME Encapsulare invoice reset logic within service
-    vm.Invoice.details.invoice_date = new Date();
+    vm.Invoice.details.date = new Date();
     vm.Invoice.recipient = null;
     vm.Invoice.items.recovered = false;
     vm.Invoice.items.clearItems(true, false);

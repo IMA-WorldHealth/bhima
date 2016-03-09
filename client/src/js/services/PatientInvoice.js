@@ -32,34 +32,27 @@ function PatientInvoice($http, util, SessionService) {
     billingServices = billingServices || [];
     subsidies = subsidies || [];
 
-    invoice = {
-      sale : invoiceDetails,
-      saleItems : invoiceItems,
-      billingServices : billingServices,
-      subsidies : subsidies
-    };
+    // concat into a single object to send back to the client
+    invoice = invoiceDetails;
+    invoice.items = invoiceItems;
+    invoice.billingServices = billingServices;
+    invoice.subsidies = subsidies;
 
-    return $http.post(baseUrl, invoice)
+    return $http.post(baseUrl, { sale : invoice })
       .then(util.unwrapHttpResponse);
   }
 
-  // Utility methods
+  // utility methods
 
   // TODO These details could be added on the client or the server - a design
   // decision that should be made going forward and similarly adopted among
   // all services
   function addSessionDetails(invoice) {
     invoice.project_id = SessionService.project.id;
-
-    /**
-     * @todo discussion - do invoices need a currency ID?  We only ever bill in the
-     * enterprise currency...
-     */
-    invoice.currency_id = SessionService.enterprise.currency_id;
     return invoice;
   }
 
-  // Remove the source items from invoice items - if they exist
+  // remove the source items from invoice items - if they exist
   function filterInventorySource(item) {
     delete item.sourceInventoryItem;
     delete item.description;

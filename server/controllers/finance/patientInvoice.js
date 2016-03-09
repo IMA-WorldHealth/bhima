@@ -115,31 +115,26 @@ function details(req, res, next) {
 }
 
 function create(req, res, next) {
+  'use strict';
+
   var insertSaleQuery, insertSaleItemQuery;
   var transaction;
 
   var sale = req.body.sale;
-  var items = req.body.sale && req.body.sale.items;
+  var items = sale.items || [];
 
   // TODO Billing service + subsidy posting journal interface
   // Billing services and subsidies are sent from the client, the client
   // has calculated the charge associated with each subsidy and billing service
   // - the financial posting logic depends on the future posting journal logic,
   // it must be decided if the server will have the final say in the cost calculation
-  var billingServices = req.body.billingServices;
-  var subsidies = req.body.subsidies;
-
-  // reject invalid parameters
-  if (!sale || !items) {
-    res.status(400).json({
-      code : 'ERROR.ERR_MISSING_INFO',
-      reason : 'A valid sale details and sale items must be provided under the attributes `sale` and `items`'
-    });
-    return;
-  }
+  var billingServices = sale.billingServices || [];
+  var subsidies = sale.subsidies || [];
 
   // remove the unused properties on sale
-  delete req.body.sale.items;
+  delete sale.items;
+  delete sale.billingServices;
+  delete sale.subsidies;
 
   // provide UUID if the client has not specified
   sale.uuid = sale.uuid || uuid.v4();
@@ -153,12 +148,15 @@ function create(req, res, next) {
   sale.user_id = req.session.user.id;
 
   // make sure that sale items have their uuids
-  items.map(function (item) {
+  items.forEach(function (item) {
     item.uuid = item.uuid || uuid.v4();
     item.sale_uuid = sale.uuid;
+
+    // FIXME -- where is this supposed to have been defined?
+    item.debit = 0;
   });
 
-  // create a filter to align sale item columns
+  // create a filter to align sale item columns to the sql columns
   var filter =
     util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'sale_uuid');
 
