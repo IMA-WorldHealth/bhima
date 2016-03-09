@@ -114,14 +114,19 @@ function create(req, res, next) {
   // Verify request validity
   var saleLineBody = req.body.sale;
   var saleItems = req.body.saleItems;
- 
+
   // TODO Billing service + subsidy posting journal interface
-  // Billing services and subsidies are sent from the client, the client 
+  // Billing services and subsidies are sent from the client, the client
   // has calculated the charge associated with each subsidy and billing service
-  // - the financial posting logic depends on the future posting jounral logic, 
-  // it must be decided if the server will have the final say in the cost calculation 
+  // - the financial posting logic depends on the future posting jounral logic,
+  // it must be decided if the server will have the final say in the cost calculation
   var billingServices = req.body.billingServices;
   var subsidies = req.body.subsidies;
+
+  // make sure that the dates have been properly transformed before insert
+  if (saleLineBody.invoice_date) {
+    saleLineBody.invoice_date = new Date(saleLineBody.invoice_date);
+  }
 
   // Reject invalid parameters
   if (!saleLineBody || !saleItems) {
@@ -140,13 +145,13 @@ function create(req, res, next) {
 
   insertSaleLineQuery =
     'INSERT INTO sale SET ?';
-  
+
   insertSaleItemQuery =
     'INSERT INTO sale_item (uuid, inventory_uuid, quantity, ' +
         'transaction_price, inventory_price, credit, sale_uuid) VALUES ?';
 
   transaction = db.transaction();
-  
+
   // Insert sale line
   transaction
     .addQuery(insertSaleLineQuery, [saleLineBody])
