@@ -1176,13 +1176,15 @@
    "REGISTER"           : "Nouveau employé",
    "REGISTER_SUCCESS"   : "Enregistrement de l'employé avec succès",
    "REGISTRATION_FORM"  : "Formulaire d'enregistrement",
+   "SAVE_SUCCES"        : "Enregistrement avec succès",
    "SERVICE"            : "Service",
    "SEARCH_BY_CODE"     : "Taper le code employee",
    "SEARCH_BY_NAME"     : "Taper le nom empoyee",
    "SEX"                : "Sexe",
    "SUBMIT_EDIT"        : "Envoyer les détails",
    "SUBMIT_NEW"         : "Soumettre l'enregistrement",
-   "TITLE"              : "Gestion des employés"
+   "TITLE"              : "Gestion des employés",
+   "UPDATE_SUCCESS"     : "Mis à jour avec succès"
    },
 "EMPLOYEE_STANDING": {
    "ACCOUNT_BALANCE"   : "Balance Compte",
@@ -2994,13 +2996,19 @@
    "TITLE"                 : "Situation des stocks"
    },
 "SUBSIDY" : {
+   "CONFIRM"       : "Etes vous sure de vouloir supprimer cette subvention",    
+   "DATE_CREATION" : "Date de la création",
+   "DATE_UPDATE"   : "Date de mis à jour",  
+   "DELETE_SUCCESS"   : "Suppression avec succès",
    "DETAILS"     : "",
    "INFO"        : "Module de gestion des subventions",
    "NEW_SUBSIDY" : "Nouvelle subvention",
    "NO_SUBSIDY"  : "Aucune subvention n'est enregistrée",
    "REGISTERED"  : "Subvention(s) enregistrée(s)",
-   "TITLE"       : "Subventions",
-   "UPDATE"      : "Mise à jour"
+   "SAVE_SUCCESS" : "Enregistrement avec succès",
+   "TITLE"          : "Subventions",
+   "UPDATE"         : "Mise à jour",
+   "UPDATE_SUCCESS" : "Mise à jour avec succès"
    },
 "SUPPLIER": {
    "ADDR_1"                : "Adresse 1",
