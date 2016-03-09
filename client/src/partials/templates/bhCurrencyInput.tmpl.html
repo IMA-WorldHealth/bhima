@@ -15,13 +15,14 @@
   </label>
 
   <div class="input-group">
-    <span class="input-group-addon">{{ $ctrl.currency.symbol }}</span>
+    <span class="input-group-addon">{{ $ctrl.currency.symbol || '...' }}</span>
     <input class="form-control"
       type="number"
       name="currencyInputValue"
       ng-model="$ctrl.model"
       ng-min="$ctrl.currency.min_monentary_unit"
       ng-max="$ctrl.maxValue"
+      ng-change="$ctrl.checkModel()"
       required>
   </div>
 
@@ -50,6 +51,12 @@
     <span ng-message="number">
       <span class="glyphicon glyphicon-exclamation-sign"></span>
       {{ "FORM.ERRORS.NUMBER" | translate }}
+    </span>
+
+    <!-- displays: "You must enter correct value accoording to currency." -->
+    <span ng-message="step">
+      <span class="glyphicon glyphicon-exclamation-sign"></span>
+      {{ "FORM.ERRORS.STEP" | translate }}
     </span>
   </p>
 </div>
