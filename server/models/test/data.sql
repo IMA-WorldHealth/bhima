@@ -237,7 +237,8 @@ INSERT INTO grade VALUES ("71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0", 'G1', 'grade 1
 
 INSERT INTO employee VALUES (NULL, 'E1', 'Dedrick', 'Kitamuka', 'Mvuezolo', 'M', '1980-02-01', '2016-02-02', 1, 3, "71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0", 500, NULL, NULL, 'kinshasa', '0896611111', 'my@email.com', 1, 3, 'bfd8563e-72db-4698-af0f-55bd7849369e', '42d3756a-7770-4bb8-a899-7953cd859892', 'be0096dd-2929-41d2-912e-fb2259356fb5', NULL );
 
-
+INSERT INTO `price_list` (`enterprise_id`, `uuid`, `label`)
+  VALUES (1, '2e39c855-6f2b-48d7-af7f-746f0552f7bf', 'Test Price List');
 
 -- 1.X Routes
 -- ----------

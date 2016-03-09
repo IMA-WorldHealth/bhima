@@ -29,6 +29,23 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     apply_subsidies : 0
   };
 
+  var updateGroup = {
+    enterprise_id : 1,
+    name : 'Updated Debtor Group (Test)',
+    account_id : 3638,
+    location_id : '03b44338-a38b-4450-b12d-3acc4f3d3465',
+    phone : '0818061031',
+    email : 'update@info.com',
+    note : 'Updated debtor group de test',
+    locked : 1,
+    max_credit : 1000,
+    is_convention : 1,
+    price_list_uuid : '2e39c855-6f2b-48d7-af7f-746f0552f7bf',
+    apply_discounts : 1,
+    apply_billing_services : 1,
+    apply_subsidies : 1
+  };
+
   var lockedGroup = {
     enterprise_id : 1,
     uuid : uuid(),
@@ -267,6 +284,18 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
         expect(res.body[0].is_convention).to.be.equal(0);
       })
       .catch(helpers.handler);
+  });
+
+  it('PUT /debtor_groups/ update a debtor group', function () {
+    return agent.put('/debtor_groups/' + debtorGroup.uuid)
+    .send(updateGroup)
+    .then(function (res) {
+      updateGroup.uuid = debtorGroup.uuid;
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an('object');
+      expect(res.body).to.have.deep.equal(updateGroup);
+    })
+    .catch(helpers.handler);
   });
 
   /**
