@@ -1,161 +1,174 @@
-<header data-header>
-  {{ "SUBSIDY.TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li class="active">{{"SUBSIDY.TITLE" | translate}}</li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="active">{{ "SUBSIDY.TITLE" | translate }}</li>
     </ol>
   </div>
+</div>
 
-  <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="new()">
-      <span class="glyphicon glyphicon-plus-sign"></span>
-       {{ "SUBSIDY.NEW_SUBSIDY" | translate }}
-    </button>
-  </div>
-</nav>
+<div class="flex-util">
+  <button class="btn btn-sm btn-default" id="create" ng-click="SubsidyCtrl.create()" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "SUBSIDY.NEW_SUBSIDY" | translate }}
+  </button>
+</div>
 
-<main>
-  <div class="row">
 
-    <div class="col-xs-7">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <span class="glyphicon glyphicon-briefcase"></span>
-          {{ "SUBSIDY.REGISTERED" | translate }}
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ "EMPLOYEE.EMPLOYEES" | translate }}
+          </div>
+
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.NR" | translate}}</th>
+                <th>{{ "COLUMNS.LABEL" | translate}}</th>
+                <th>{{ "COLUMNS.VALUE" | translate}}</th>
+                <th>{{ "COLUMNS.ACCOUNT" | translate}}</th>
+                <th colspan="2">{{ "COLUMNS.ACTIONS" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="subsidy in SubsidyCtrl.subsidies | orderBy:'text'" ng-class="{'rowSelected' : SubsidyCtrl.subsidy.id === subsidy.id}">
+                <td>{{ $index + 1 }}</td>
+                <td>{{ subsidy.label }}</td>
+                <td>{{ subsidy.value }}</td>
+                <td>{{ subsidy.account_number }}</td>
+                <td><a class="btn btn-xs btn-default" id="subsidy-upd-{{ $index + 1}}" ng-click="SubsidyCtrl.update(subsidy)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                <td><a class="btn btn-xs btn-default" id="subsidy-del-{{ $index + 1}}" ng-click="SubsidyCtrl.del(subsidy)"><span class="glyphicon glyphicon-trash"></span></a></td>
+              </tr>
+
+              <tr ng-if="!SubsidyCtrl.subsidies.length">
+                <td colspan="4">{{ "SUBSIDY.NO_SUBSIDY" | translate }}</td>
+              </tr>            
+            </tbody>
+          </table>
         </div>
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th>{{ "COLUMNS.LABEL" | translate}}</th>
-              <th>{{ "COLUMNS.VALUE" | translate}}</th>
-              <th>{{ "COLUMNS.IS_PERCENT" | translate}}</th>
-              <th>{{ "COLUMNS.DEBITOR_GROUP" | translate}}</th>
-              <th colspan="4">{{ "COLUMNS.ACTIONS" | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="subsidy in subsidies.data | orderBy:'text'">
-              <td>{{ subsidy.text }}</td>
-              <td>
-                {{ subsidy.value }}
-                <span ng-show="subsidy.is_percent">%</span>
-                <span ng-hide="subsidy.is_percent">{{enterprise.data[0].symbol}}</span>
-              </td>
-              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!subsidy.is_percent, 'glyphicon-minus' : !subsidy.is_percent}"></td>
-              <td>{{ subsidy.name }}</td>
-              <td><a class="action" ng-click="edit(subsidy)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a class="action danger" ng-click="delete(subsidy)"><span class="glyphicon glyphicon-trash"></span></a></td>
-            </tr>
-            <tr ng-if="!subsidies.data.length">
-              <td colspan="4">{{ "SUBSIDY.NO_SUBSIDY" | translate }}</td>
-            </tr>
-          </tbody>
-        </table>
+      </div>
+
+      <div class="col-xs-6" ng-switch="SubsidyCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info" id="default">
+            <h4>{{ "SUBSIDY.TITLE" | translate }}</h4>
+            <p>{{ "SUBSIDY.INFO" | translate }}</p>
+            <p>{{ "SUBSIDY.DETAILS" | translate }}</p>          
+          </div>
+        </div>
+
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'SUBSIDY.SAVE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'SUBSIDY.UPDATE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_success">
+          <div class="alert alert-success" id="delete_success">
+            <h4>{{ 'SUBSIDY.DELETE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_error">
+          <div class="alert alert-danger" id="delete_error">
+            <h4>{{ SubsidyCtrl.HTTPError.data.code | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ 'SUBSIDY.NEW_SUBSIDY' | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="CreateForm" ng-submit="SubsidyCtrl.submit(CreateForm.$invalid)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
+                <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
+                <input type="text" class="form-control" name="label" ng-model="SubsidyCtrl.subsidy.label" required>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.value.$invalid }">
+                <label class="control-label">{{ 'COLUMNS.VALUE' | translate }}</label>
+                <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_id.$invalid }">
+                <label class="col-md-3 control-label">{{ "COLUMNS.ACCOUNT" | translate }}</label>
+                <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
+                  <option value="" disabled> -- {{ 'SELECT.ACCOUNT' | translate }} -- </option>
+                </select>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
+                <label class="control-label" for="description">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
+                <textarea class="form-control" id="description" ng-model="SubsidyCtrl.subsidy.description" rows="3"></textarea>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-subsidy" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="SubsidyCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>        
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'SUBSIDY.NEW_SUBSIDY' | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="UpdateForm" ng-submit="SubsidyCtrl.submit(UpdateForm.$invalid)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
+                <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
+                <input type="text" class="form-control" name="label" ng-model="SubsidyCtrl.subsidy.label" required>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.value.$invalid }">
+                <label class="control-label">{{ 'COLUMNS.VALUE' | translate }}</label>
+                <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.account_id.$invalid }">
+                <label class="col-md-3 control-label">{{ "COLUMNS.ACCOUNT" | translate }}</label>
+                <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
+                  <option value="" disabled> -- {{ 'SELECT.ACCOUNT' | translate }} -- </option>
+                </select>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
+                <label class="control-label" for="description">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
+                <textarea class="form-control" id="description" ng-model="SubsidyCtrl.subsidy.description" rows="3"></textarea>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="change_subsidy" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="SubsidyCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>        
+        </div>
+
       </div>
     </div>
-
-    <div class="col-xs-5" ng-switch="session.action">
-      <div class="alert alert-info" ng-switch-default>
-        <h4>{{ "SUBSIDY.TITLE" | translate }}</h4>
-        <p>{{ "SUBSIDY.INFO" | translate }}</p>
-        <p>{{ "SUBSIDY.DETAILS" | translate }}</p>
-      </div>
-
-      <div ng-switch-when="new">
-        <form novalidate name="new" class="form-horizontal">
-          <legend><h3>{{ "SUBSIDY.NEW_SUBSIDY" | translate }} </h3></legend>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
-            <div class="col-xs-7">
-              <input ng-model="session.new.text" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4">{{ "COLUMNS.IS_PERCENT" | translate }}</label>
-            <div class="col-xs-7">
-              <input type="checkbox" id="isprecentID" ng-model="session.new.is_percent" ng-true-value="1" ng-false-value="0">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.VALUE" | translate }}</label>
-            <div class="input-group col-xs-7" >
-              <input class="form-bhima" ng-model="session.new.value" type="number" required>
-              <span class="input-group-addon">
-                <span ng-show="session.new.is_percent">%</span>
-                <span ng-hide="session.new.is_percent">{{enterprise.data[0].symbol}}</span>
-              </span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.DEBITOR_GROUP" | translate }}</label>
-            <div class="col-xs-7">
-              <select class="form-bhima" required ng-model="session.new.debitor_group_uuid">
-                <option ng-repeat="debitorGroup in debitorGroups.data | orderBy:'name'" ng-value="debitorGroup.uuid">{{debitorGroup.name}}</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>
-        </form>
-      </div>
-
-      <div ng-switch-when="edit">
-        <form novalidate class="form-horizontal" name="edit">
-          <legend><h3>{{ "SUBSIDY.UPDATE" | translate }} </h3></legend>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
-            <div class="col-xs-7">
-              <input ng-model="session.edit.text" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4">{{ "COLUMNS.IS_PERCENT" | translate }}</label>
-            <div class="col-xs-7">
-              <input type="checkbox" id="ispercentID" ng-model="session.edit.is_percent" ng-true-value="1" ng-false-value="0">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.VALUE" | translate }}</label>
-            <div class="input-group col-xs-7">
-              <input ng-model="session.edit.value" class="form-bhima" required>
-              <span class="input-group-addon">
-                <span ng-show="session.edit.is_percent">%</span>
-                <span ng-hide="session.edit.is_percent">{{enterprise.data[0].symbol}}</span>
-              </span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.DEBITOR_GROUP" | translate }}</label>
-            <div class="col-xs-7">
-              <select class="form-bhima" required ng-model="session.edit.debitor_group_uuid" ng-options="debitorGroup.uuid as debitorGroup.name for debitorGroup in debitorGroups.data">
-                <option value="" disable="disabled">-- {{'SELECT.SUBSIDY' | translate}} -- </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <input type="submit" ng-disabled="edit.$invalid" id="editButtonID" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</main>
-
-
+  </div>  
+</div>
