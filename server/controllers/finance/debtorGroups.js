@@ -40,7 +40,7 @@ exports.fetchInvoices = fetchInvoices;
 /**
 * POST /debtor_groups/
 *
-* @exemple
+* @example
 * // An example of parameter of the post request
 * {
 *   enterprise_id : {number},
@@ -89,7 +89,7 @@ function create(req, res, next) {
 /**
 * PUT /debtor_groups/:uuid
 *
-* @exemple
+* @example
 * // An example of parameter of the put request
 * {
 *   enterprise_id : {number},
@@ -130,7 +130,12 @@ function update(req, res, next) {
   .done();
 
   function findDebtorGroup(rows) {
-    return db.exec('SELECT * FROM debitor_group WHERE uuid = ?', req.params.uuid);
+    var query =
+      'SELECT enterprise_id, uuid, name, account_id, location_id, ' +
+      'phone, email, note, locked, max_credit, is_convention, price_list_uuid, ' +
+      'apply_discounts, apply_billing_services, apply_subsidies ' +
+      'FROM debitor_group WHERE uuid = ?';
+    return db.exec(query, req.params.uuid);
   }
 }
 

@@ -40,7 +40,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     locked : 1,
     max_credit : 1000,
     is_convention : 1,
-    price_list_uuid : '2e39c855-6f2b-48d7-af7f-746f0552f7bf',
+    price_list_uuid : '2e39c855-6f2b-48d7-af7f-746f0552f7b7',
     apply_discounts : 1,
     apply_billing_services : 1,
     apply_subsidies : 1
@@ -286,7 +286,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
       .catch(helpers.handler);
   });
 
-  it('PUT /debtor_groups/ update a debtor group', function () {
+  it('PUT /debtor_groups/:uuid update a debtor group', function () {
     return agent.put('/debtor_groups/' + debtorGroup.uuid)
     .send(updateGroup)
     .then(function (res) {

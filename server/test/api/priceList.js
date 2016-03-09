@@ -57,12 +57,12 @@ describe('(/prices ) The price list API', function () {
     'uuid', 'label', 'description', 'created_at', 'updated_at', 'items'
   ];
 
-  it('GET /prices returns an empty list of price lists', function () {
+  it('GET /prices returns only one default record', function () {
     return agent.get('/prices')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body).to.be.empty;
+        expect(res.body).to.have.length(1);
       })
       .catch(helpers.handler);
   });
@@ -121,12 +121,12 @@ describe('(/prices ) The price list API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /prices should return a list of one item', function () {
+  it('GET /prices should return a list of two items', function () {
     return agent.get('/prices')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body).to.have.length(1);
+        expect(res.body).to.have.length(2);
       })
       .catch(helpers.handler);
   });
@@ -151,12 +151,12 @@ describe('(/prices ) The price list API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /prices should return a list of two items', function () {
+  it('GET /prices should return a list of three items', function () {
     return agent.get('/prices')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body).to.have.length(2);
+        expect(res.body).to.have.length(3);
       })
       .catch(helpers.handler);
   });
@@ -176,7 +176,7 @@ describe('(/prices ) The price list API', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body).to.have.length(2);
+        expect(res.body).to.have.length(3);
       })
       .catch(helpers.handler);
   });
