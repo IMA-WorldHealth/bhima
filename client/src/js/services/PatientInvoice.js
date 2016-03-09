@@ -39,8 +39,6 @@ function PatientInvoice($http, util, SessionService) {
       subsidies : subsidies
     };
 
-    console.log('invoice:', invoice);
-
     return $http.post(baseUrl, invoice)
       .then(util.unwrapHttpResponse);
   }
@@ -54,8 +52,8 @@ function PatientInvoice($http, util, SessionService) {
     invoice.project_id = SessionService.project.id;
 
     /**
-     * @todo Discuss - do invoices need a currency ID? We only ever bill in the
-     * enterprise currency
+     * @todo discussion - do invoices need a currency ID?  We only ever bill in the
+     * enterprise currency...
      */
     invoice.currency_id = SessionService.enterprise.currency_id;
     return invoice;

@@ -9,8 +9,9 @@
  */
 var q    = require('q');
 var db   = require('../../lib/db');
-var uuid = require('../../lib/guid');
+var uuid = require('node-uuid');
 var _    = require('lodash');
+var util = require('../../lib/util');
 
 var journal = require('./journal');
 
@@ -113,12 +114,12 @@ function create(req, res, next) {
 
   // Verify request validity
   var saleLineBody = req.body.sale;
-  var saleItems = req.body.saleItems;
+  var saleItems = req.body.sale && req.body.sale.items;
 
   // TODO Billing service + subsidy posting journal interface
   // Billing services and subsidies are sent from the client, the client
   // has calculated the charge associated with each subsidy and billing service
-  // - the financial posting logic depends on the future posting jounral logic,
+  // - the financial posting logic depends on the future posting journal logic,
   // it must be decided if the server will have the final say in the cost calculation
   var billingServices = req.body.billingServices;
   var subsidies = req.body.subsidies;
@@ -137,18 +138,35 @@ function create(req, res, next) {
     return;
   }
 
-  // Provide UUID if the client has not specified
-  saleLineBody.uuid = saleLineBody.uuid || uuid();
+  // remove the unused properties on sale
+  delete req.body.sale.items;
 
-  // Implicitly provide seller information based on user session
+  // provide UUID if the client has not specified
+  saleLineBody.uuid = saleLineBody.uuid || uuid.v4();
+
+  // implicitly provide seller information based on user session
   saleLineBody.seller_id = req.session.user.id;
+
+  // make sure that sale items have their uuids
+  saleItems.map(function (item) {
+    item.uuid = item.uuid || uuid.v4();
+    item.sale_uuid = saleLineBody.uuid;
+  });
+
+  // create a filter to align sale item columns
+  var filter =
+    util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'sale_uuid');
+
+  // prepare sale items for insertion into database
+  var items = _.map(saleItems, filter);
 
   insertSaleLineQuery =
     'INSERT INTO sale SET ?';
 
   insertSaleItemQuery =
     'INSERT INTO sale_item (uuid, inventory_uuid, quantity, ' +
-        'transaction_price, inventory_price, credit, sale_uuid) VALUES ?';
+        'transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?';
+
 
   transaction = db.transaction();
 
@@ -157,7 +175,7 @@ function create(req, res, next) {
     .addQuery(insertSaleLineQuery, [saleLineBody])
 
   // Insert sale item lines
-    .addQuery(insertSaleItemQuery, [linkSaleItems(saleItems, saleLineBody.uuid)]);
+    .addQuery(insertSaleItemQuery, [items]);
 
   transaction.execute()
     .then(function (results) {
@@ -167,11 +185,9 @@ function create(req, res, next) {
       return postSaleRecord(saleLineBody.uuid, req.body.caution, req.session.user.id);
     })
     .then(function (results) {
-      var confirmation = {
-        uuid : saleLineBody.uuid,
-        results : saleResults
-      };
-      res.status(201).json(confirmation);
+      res.status(201).json({
+        uuid :saleLineBody.uuid
+      });
     })
     .catch(next)
     .done();
@@ -194,25 +210,6 @@ function postSaleRecord(saleUuid, caution, userId) {
     return deferred.resolve(result);
   }, caution);
   return deferred.promise;
-}
-
-/**
- * Utility method to ensure patient invoice lines reference sale.
- * @param {Object} saleItems - An Array of all sale items to be written
- * @param {string} saleUuid - UUID of referenced patient invoice
- * @returns {Object} An Array of all sale items with guaranteed UUIDs and Patient Invoice references
- */
-function linkSaleItems(saleItems, saleUuid) {
-  return saleItems.map(function (saleItem) {
-
-    saleItem.uuid = saleItem.uuid || uuid();
-    saleItem.sale_uuid = saleUuid;
-
-    // Collapse sale item into Array to be inserted into database
-    return Object.keys(saleItem).map(function (key) {
-      return saleItem[key];
-    });
-  });
 }
 
 /**

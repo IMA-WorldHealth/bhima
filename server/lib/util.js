@@ -15,6 +15,8 @@ module.exports.queryCondition = queryCondition;
 /** The toMysqlDate function */
 module.exports.toMysqlDate = util.deprecate(toMysqlDate, 'util.toMysqlDate() is deprecated and will be removed soon. Please use db.js\'s native date parsing.');
 
+module.exports.take = take;
+
 /**
 * @function queryCondition
 * @description build query string conditions
@@ -49,4 +51,28 @@ function toMysqlDate (dateString) {
   day = day.length < 2 ? '0' + day : day;
 
   return [year, month, day].join('-');
+}
+
+
+/**
+ * Creates a filter that takes only takes the columns passed in from the
+ * object, in the order that they are passed in.
+ *
+ * @method take
+ * @returns {function} filter - a filtering function to that will convert an
+ * object to an array with the given keys.
+ *
+ * @private
+ */
+function take() {
+
+  // get the arguments as an array
+  var keys = Array.prototype.slice.call(arguments);
+
+  // return the filter function
+  return function (object) {
+    return keys.map(function (key) {
+      return object[key];
+    });
+  };
 }
