@@ -36,10 +36,9 @@ describe('The /sales API', function () {
   var mockSale = {
     project_id: 1,
     cost: 35,
-    currency_id: 2,
     debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
-    invoice_date: new Date('2016-01-13'),
-    note: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
+    date: new Date('2016-01-13'),
+    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
     service_id: 1,
     is_distributable: true,
     items : mockItems
@@ -50,10 +49,9 @@ describe('The /sales API', function () {
   var missingSaleItems = {
     project_id: 1,
     cost: 8.5,
-    currency_id: 2,
     debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
-    invoice_date: new Date('2016-01-13'),
-    note: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
+    date: new Date('2016-01-13'),
+    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
     service_id: 1,
     is_distributable: true,
   };
@@ -61,9 +59,8 @@ describe('The /sales API', function () {
   var missingSaleDate = {
     project_id: 1,
     cost: 35.0,
-    currency_id: 2,
     debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
-    note: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
+    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
     service_id: 1,
     is_distributable: true,
     items : mockItems
@@ -111,10 +108,10 @@ describe('The /sales API', function () {
 
         expect(sale).to.not.be.empty;
         /** @todo -- change the sales API to make it more pleasing to use */
-        //expect(sale).to.have.property('items');
-        //expect(sale.items).to.not.be.empty;
-        //expect(sale).to.contain.keys('uuid', 'cost', 'invoice_date');
-        //expect(sale.items[0]).to.contain.keys('uuid', 'code', 'quantity');
+        expect(sale).to.have.property('items');
+        expect(sale.items).to.not.be.empty;
+        expect(sale).to.contain.keys('uuid', 'cost', 'date');
+        expect(sale.items[0]).to.contain.keys('uuid', 'code', 'quantity');
       })
       .catch(helpers.handler);
   });
@@ -206,8 +203,8 @@ describe('The /sales API', function () {
     });
 
     // filter should combine to find the same result as above
-    it('GET /sales/search?cost=75&currency_id=2 should return a single sale (combined filter)', function () {
-      return agent.get('/sales/search?cost=75&currency_id=2')
+    it('GET /sales/search?cost=75&project_id=1 should return a single sale (combined filter)', function () {
+      return agent.get('/sales/search?cost=75&project_id=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -216,8 +213,8 @@ describe('The /sales API', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /sales/search?cost=75&currency_id=1 should not return any results', function () {
-      return agent.get('/sales/search?cost=75&currency_id=1')
+    it('GET /sales/search?cost=15&project_id=1 should not return any results', function () {
+      return agent.get('/sales/search?cost=15&project_id=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
