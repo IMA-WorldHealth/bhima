@@ -10,31 +10,30 @@
 angular.module('bhima.services')
 .service('PatientInvoice', PatientInvoice);
 
-PatientInvoice.$inject = ['$http', 'util', 'SessionService'];
+PatientInvoice.$inject = [ '$http', 'util', 'SessionService' ];
 
 /**
  * @constructor PatientInvoice
  */
-function PatientInvoice($http, util, SessionService) {
+function PatientInvoice($http, util, Session) {
   var service = this;
   var baseUrl = '/sales';
 
-  /** Method to format and send a valid patient invoice request. */
+  /** method to format and send a valid patient invoice request. */
   service.create = create;
 
-  function create(invoiceDetails, invoiceItems, billingServices, subsidies) {
-    var invoice;
+  function create(invoice, invoiceItems, billingServices, subsidies) {
 
-    invoiceDetails = addSessionDetails(invoiceDetails);
-    invoiceItems = invoiceItems.map(filterInventorySource);
+    // add project id from session
+    invoice.project_id = Session.project.id;
 
-    // A patient invoice is not required to qualify for billing services or subsidies
+    // a patient invoice is not required to qualify for billing services or subsidies
+    // default to empty arrays
     billingServices = billingServices || [];
     subsidies = subsidies || [];
 
     // concat into a single object to send back to the client
-    invoice = invoiceDetails;
-    invoice.items = invoiceItems;
+    invoice.items = invoiceItems.map(filterInventorySource);
     invoice.billingServices = billingServices;
     invoice.subsidies = subsidies;
 
@@ -43,14 +42,6 @@ function PatientInvoice($http, util, SessionService) {
   }
 
   // utility methods
-
-  // TODO These details could be added on the client or the server - a design
-  // decision that should be made going forward and similarly adopted among
-  // all services
-  function addSessionDetails(invoice) {
-    invoice.project_id = SessionService.project.id;
-    return invoice;
-  }
 
   // remove the source items from invoice items - if they exist
   function filterInventorySource(item) {

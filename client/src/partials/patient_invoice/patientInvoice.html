@@ -61,37 +61,16 @@
 
                 <!-- Edit date component -->
                 <!-- TODO As we know this is a financial date, we could set min and max for periods etc. -->
-                <div
-                  class="form-group has-feedback"
-                  ng-class="{'has-error' : detailsForm.invoiceDate.$invalid}">
-                  <label
-                    class="control-label"
-                    for="invoice-date">{{ "COLUMNS.DATE" | translate }}</label>
-
-                  <div class="input-group">
-                    <input
-                      required
-                      name="invoiceDate"
-                      type="date"
-                      ng-model="PatientInvoiceCtrl.Invoice.details.date"
-                      ng-readonly="PatientInvoiceCtrl.dateLocked"
-                      min="{{ PatientInvoiceCtrl.minimumDate | date : 'yyyy-MM-dd'}}"
-                      max="{{ PatientInvoiceCtrl.timestamp | date : 'yyyy-MM-dd'}}"
-                      class="form-control"></input>
-                    <span class="input-group-btn">
-                      <!-- TODO Final date lock/edit component could run validity checks on lock -->
-                      <button class="btn btn-default" ng-disabled="detailsForm.invoiceDate.$invalid" ng-click="PatientInvoiceCtrl.dateLocked=!PatientInvoiceCtrl.dateLocked" type="button">
-                        <span class="glyphicon" ng-class="{'glyphicon-edit' : PatientInvoiceCtrl.dateLocked, 'glyphicon-check' : !PatientInvoiceCtrl.dateLocked}"></span>
-                        {{ PatientInvoiceCtrl.dateLocked ? "FORM.EDIT" : "FORM.LOCK" | translate }}
-                      </button>
-                    </span>
-                  </div>
-
-                  <div class="help-block" ng-messages="detailsForm.invoiceDate.$error">
-                    <div ng-messages-include="partials/templates/messages.dates.html">
-                  </div>
+                <div class="form-group has-feedback">
+                  <label class="control-label" >{{ "COLUMNS.DATE" | translate }}</label>
+                  <bh-date-editor
+                      date-value="PatientInvoiceCtrl.Invoice.details.date"
+                      form="detailsForm"
+                      validation-trigger="detailsForm.$submitted"
+                      min-date="PatientInvoiceCtrl.minimumDate"
+                      max-date="PatientInvoiceCtrl.timestamp">
+                  </bh-date-editor>
                 </div>
-              </div>
 
                 <div class="form-group">
                   <label for="invoice-note">{{ "FORM.NOTES" | translate }}</label>

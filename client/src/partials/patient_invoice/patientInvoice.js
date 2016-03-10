@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   '$q', '$location', 'Patients', 'PriceLists', 'PatientInvoice',
-  'Invoice', 'util', 'ServiceService', 'SessionService'
+  'Invoice', 'util', 'ServiceService', 'SessionService', 'DateService'
 ];
 
 /**
@@ -18,7 +18,7 @@ PatientInvoiceController.$inject = [
  *
  * @module bhima/controllers/PatientInvoiceController
  */
-function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session) {
+function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates) {
   var vm = this;
   vm.Invoice = new Invoice();
 
@@ -98,16 +98,15 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
 
     // Default values
     vm.itemIncrement = 1;
-    vm.timestamp = new Date();
 
-    // set one day in the future
-    vm.timestamp.setDate(vm.timestamp.getDate() + 1);
+    // set timestamp to today
+    vm.timestamp = Dates.current.day();
 
     vm.minimumDate = util.minimumDate;
     vm.dateLocked = true;
 
     // Set default invoice date to today
-    // FIXME Encapsulare invoice reset logic within service
+    // FIXME encapsulate invoice reset logic within service
     vm.Invoice.details.date = new Date();
     vm.Invoice.recipient = null;
     vm.Invoice.items.recovered = false;
@@ -117,9 +116,9 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
       vm.Invoice.details.service_id = vm.services[0].id;
     }
 
-    if (vm.patientSearch) {
-      vm.patientSearch.reset();
-    }
+    // if (vm.patientSearch) {
+    //   vm.patientSearch.reset();
+    // }
   }
 
   vm.gridOptions = gridOptions;
@@ -158,7 +157,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
       });
   }
 
-  // read in services to the view
+  // read in services and bind to the view
   Services.read()
   .then(function (services) {
     vm.services = services;
