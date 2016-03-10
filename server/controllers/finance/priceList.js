@@ -24,12 +24,28 @@ var uuid = require('../../lib/guid');
  */
 exports.list = function list(req, res, next) {
   'use strict';
+  var sql;
 
   var sql =
-    'SELECT uuid, label, created_at ' +
+    'SELECT uuid, label, created_at, description ' +
     'FROM price_list ' +
     'WHERE enterprise_id = ? ' +
     'ORDER BY label;';
+
+  sql =
+    'SELECT uuid, label ' +
+    'FROM price_list ' +
+    'WHERE enterprise_id = ? ' +
+    'ORDER BY label;';
+
+  if (req.query.detailed === '1') {
+    sql =  
+      'SELECT uuid, label, created_at, description ' +
+      'FROM price_list ' +
+      'WHERE enterprise_id = ? ' +
+      'ORDER BY label;';
+  }
+
 
   db.exec(sql, [req.session.enterprise.id])
   .then(function (rows) {
@@ -226,6 +242,7 @@ exports.update = function update(req, res, next) {
 
   var items;
   var data = req.body.list;
+
   var priceListSql =
     'UPDATE price_list SET ? WHERE uuid = ?;';
 
@@ -261,8 +278,8 @@ exports.update = function update(req, res, next) {
     // only trigger price list item updates if the items have been sent back to
     // the server
     if (items) {
-      trans.addQuery(priceListCreateItemSql, [ items ]);
       trans.addQuery(priceListDeleteItemSql, [ req.params.uuid ]);
+      trans.addQuery(priceListCreateItemSql, [ items ]);
     }
 
     return trans.execute();

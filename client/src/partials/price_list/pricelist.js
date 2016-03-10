@@ -1,262 +1,150 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('PriceListController', PriceListController);
 
 PriceListController.$inject = [
-  '$scope', '$q', '$translate', '$window', 'connect', 'messenger',
-  'appstate', 'validate', 'uuid'
+  'PriceListService', '$window', '$translate', '$uibModal', 'InventoryService'
 ];
 
-function PriceListController($scope, $q, $translate, $window, connect, messenger, appstate, validate, uuid) {
-  var dependencies = {};
-  var enterprise;
+function PriceListController(PriceListService, $window, $translate, $uibModal, Inventory) {
+  var vm = this;
+  vm.session = {};
+  vm.view = 'default';
 
-  $scope.session = {
-    action : 'default',
-    selected : null
-  };
+  // bind methods
+  vm.create   = create;
+  vm.submit   = submit;
+  vm.update   = update;
+  vm.del      = del;  
+  vm.cancel   = cancel;
+  vm.addItem  = addItem;
+  vm.getInventory = getInventory;
+  vm.removeItem = removeItem;
 
-  dependencies.priceList = {
-    query : {
-      identifier : 'uuid',
-      tables : {'price_list' : {columns:['uuid', 'title', 'description']}}
-    }
-  };
-
-  dependencies.inventory = {
-    query : {
-      identifier : 'uuid',
-      tables : {'inventory' : {columns:['uuid', 'code', 'text', 'type_id']}},
-    }
-  };
-
-
-  function loadDependencies(enterpriseResult) {
-    enterprise = $scope.enterprise = enterpriseResult;
-
-    // Set condition
-    dependencies.priceList.query.where  = ['price_list.enterprise_id='+enterprise.id];
-    validate.process(dependencies).then(priceList);
+  function handler(error) {
+    console.error(error);
   }
 
-  appstate.register('enterprise', loadDependencies);
+  // fired on startup
+  function startup() {
+    // start up loading indicator
+    vm.session.loading = true;
 
+    // load Inventory 
+    Inventory.getInventoryItems()
+    .then(function (data) {
+      vm.inventories = data;
+    }).catch(handler);
 
-  function priceList(model) {
-    $scope.model = model;
+    // load PriceList
+    refreshPriceList();
   }
 
-  function editItems(list) {
-    dependencies.priceListItems = {
-      query : {
-        identifier: 'uuid',
-        tables : {'price_list_item' : {columns:['uuid', 'item_order', 'description', 'value', 'is_discount', 'is_global', 'price_list_uuid', 'inventory_uuid']}},
-        where : ['price_list_item.price_list_uuid=' + list.uuid]
-      }
-    };
-    validate.process(dependencies).then(processListItems);
-
-    $scope.session.action = 'item';
-    $scope.session.selected = list;
-    $scope.session.deleteQueue = [];
+  function cancel() {
+    vm.view = 'default';
   }
 
-  function processListItems(model) {
-    var defaultItem = {
-      is_discount : '0',
-      is_global : '0'
-    };
+  function getInventory(uuid) {
+    var inventory = vm.inventories.filter(function (item) {
+      return item.uuid  === uuid;
+    });
 
-    $scope.session.listItems = model.priceListItems.data;
-    $scope.session.listCache = angular.copy($scope.session.listItems);
-
-    $scope.session.listItems.sort(function (a, b) { return (a.item_order === b.item_order) ? 0 : (a.item_order > b.item_order ? 1 : -1); });
-    if ($scope.session.listItems.length === 0) {
-      $scope.session.listItems.push(defaultItem);
-    }
+    return inventory[0].label;
   }
 
+  function removeItem(item){
+    vm.pricelistItems.splice(vm.pricelistItems.indexOf(item), 1);
+  }
+
+  function create() {
+    vm.priceList = null;  
+    vm.pricelistItems = [];
+    vm.view = 'create';
+  }
+
+  // switch to update mode
+  // data is an object that contains all the information of a priceList
+  function update(data) {
+    vm.view = 'update';
+    vm.priceList = data;
+
+    PriceListService.read(data.uuid)
+    .then(function (data) {
+      vm.pricelistItems = data.items;
+    });
+
+  }
+
+  
+  // refresh the displayed PriceList
+  function refreshPriceList() {
+    return PriceListService.read(null, { detailed : 1 })
+    .then(function (data) {
+      vm.priceLists = data;
+    });
+  }
+
+  // form submission
+  function submit(invalid) {
+    if (invalid) { return; }
+
+    var promise;
+    var creation = (vm.view === 'create');
+
+    vm.priceList.items = vm.pricelistItems.length ? vm.pricelistItems : null;
+
+    var priceList = angular.copy(vm.priceList);
+
+
+    promise = (creation) ?
+      PriceListService.create(priceList) :
+      PriceListService.update(priceList.uuid, priceList);
+
+    promise
+      .then(function (response) {
+        return refreshPriceList();
+      })
+      .then(function () {
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
+      .catch(handler);
+  }
+
+  // switch to delete warning mode
+  function del(priceList) {
+    var bool = $window.confirm($translate.instant('PRICE_LIST.DELETE_CONFIRM'));
+
+     // if the user clicked cancel, reset the view and return
+     if (!bool) {
+        vm.view = 'default';
+        return;
+     }
+
+    // if we get there, the user wants to delete a priceList
+    vm.view = 'delete_confirm';
+    PriceListService.delete(priceList.uuid)
+    .then(function () {
+       vm.view = 'delete_success';
+       return refreshPriceList();
+    })
+    .catch(function (error) {
+      vm.HTTPError = error;
+      vm.view = 'delete_error';
+    });
+  }
+
+  // Add pricelist Item in a  modal
   function addItem() {
-    var defaultItem = {
-      is_discount : '0',
-      is_global : '0'
-    };
-
-    $scope.session.listItems.push(defaultItem);
+    $uibModal.open({
+      templateUrl : 'partials/price_list/modal.html',
+      size : 'md',
+      animation : true,
+      controller : 'PriceListModalController as ModalCtrl'
+    }).result
+    .then(function (items) {
+      vm.pricelistItems.push(items);
+    });        
   }
 
-  function shiftDown(item) {
-    var list = $scope.session.listItems, index = list.indexOf(item);
-
-    if (index < list.length - 1) {
-      list.splice(index, 1);
-      list.splice(index + 1, 0, item);
-    }
-  }
-
-  function shiftUp(item) {
-    var list = $scope.session.listItems, index = list.indexOf(item);
-
-    if (index > 0) {
-      list.splice(index, 1);
-      list.splice(index - 1, 0, item);
-    }
-  }
-
-  function deleteItem(item) {
-    var list = $scope.session.listItems;
-    if (list.length > 1) {
-      list.splice(list.indexOf(item), 1);
-      if (item.uuid) {
-        $scope.session.deleteQueue.push(item.uuid);
-      }
-    } else {
-      messenger.warn($translate.instant('PRICE_LIST.WARN'));
-    }
-  }
-
-  function saveItems() {
-    var priceList = $scope.session.selected,
-        uploadPromise = [];
-
-    // Verify items
-    var invalidData = $scope.session.listItems.some(function (item, index) {
-      if (!item.price_list_uuid) {
-        item.price_list_uuid = priceList.uuid;
-      }
-      item.item_order = index;
-
-
-      if (isNaN(Number(item.value))) {
-        return true;
-      }
-
-      if (!item.description || item.description.length === 0) { return true; }
-      if (Number(item.is_global) && !item.inventory_uuid) { return true; }
-
-      return false;
-    });
-
-    if (invalidData) {
-      return messenger.danger($translate.instant('PRICE_LIST.INVALID_ITEMS'));
-    }
-
-    // FIXME single request for all items
-    $scope.session.listItems.forEach(function (item) {
-      var request, uploadItem = connect.clean(item);
-      if (item.uuid) {
-        request = connect.put('price_list_item', [uploadItem], ['uuid']);
-      } else {
-        uploadItem.uuid = uuid();
-        request = connect.post('price_list_item', [uploadItem]);
-      }
-      uploadPromise.push(request);
-    });
-
-    $scope.session.deleteQueue.forEach(function (itemId) {
-      uploadPromise.push(connect.delete('price_list_item', 'uuid', itemId));
-    });
-
-    $q.all(uploadPromise)
-    .then(function () {
-      // FIXME Redownload to prove DB state - remove (horrible use of bandwidth)
-      editItems(priceList);
-      messenger.success($translate.instant('PRICE_LIST.LIST_SUCCESS'));
-    })
-    .catch(function () {
-      messenger.danger($translate.instant('PRICE_LIST.LIST_FAILURE'));
-    });
-  }
-
-  // Clear inventory uuid for non global items (on change)
-  function clearInventory(item) {
-    if (!Number(item.is_global)) { item.inventory_uuid = null; }
-  }
-
-  function editMeta (list) {
-    $scope.edit = {};
-    $scope.session.action = 'meta';
-    $scope.session.selected = list;
-    $scope.edit = angular.copy(list);
-  }
-
-  function saveMeta () {
-    connect.put('price_list', [connect.clean($scope.edit)], ['uuid'])
-    .then(function () {
-      messenger.success($translate.instant('PRICE_LIST.EDITED_SUCCES'));
-      $scope.model.priceList.put($scope.edit);
-
-      $scope.session.selected = null;
-      $scope.session.action = '';
-    }, function (err) {
-      messenger.danger('error:' + JSON.stringify(err));
-    });
-  }
-
-  function resetMeta  () {
-    $scope.edit = {};
-  }
-
-  function addList () {
-    $scope.add = {};
-
-    $scope.session.action = 'add';
-    $scope.session.selected = null;
-  }
-
-  function saveAdd () {
-    $scope.add.enterprise_id = $scope.enterprise.id;
-    $scope.add.uuid = uuid();
-    connect.post('price_list', [connect.clean($scope.add)])
-    .then(function () {
-      var finalList;
-
-      finalList = connect.clean($scope.add);
-
-      $scope.model.priceList.post(finalList);
-      editItems(finalList);
-
-      messenger.success($translate.instant('PRICE_LIST.POSTED'));
-    }, function (err) {
-      messenger.danger('Error:' + JSON.stringify(err));
-    });
-  }
-
-  $scope.resetAdd = function () {
-    $scope.add = {};
-  };
-
-  function removeList (list) {
-    var confirmed = $window.confirm($translate.instant('PRICE_LIST.DELETE_CONFIRM'));
-    if (!confirmed) { return; }
-
-    connect.delete('price_list', 'uuid', list.uuid)
-    .then(function(v) {
-      if (v.status === 200) {
-        $scope.model.priceList.remove(list.uuid);
-        messenger.success($translate.instant('PRICE_LIST.REMOVE_SUCCESS'));
-      }
-    })
-    .catch(function(error) {
-      //FIXME Temporary
-      if (error.status === 500) {
-        messenger.danger($translate.instant('PRICE_LIST.UNABLE_TO_DELETE'), 4000);
-      }
-    });
-  }
-
-  $scope.editMeta = editMeta;
-  $scope.saveMeta = saveMeta;
-  $scope.resetMeta = resetMeta;
-
-  $scope.editItems = editItems;
-  $scope.addItem = addItem;
-  $scope.saveItems = saveItems;
-  $scope.shiftUp = shiftUp;
-  $scope.shiftDown = shiftDown;
-  $scope.deleteItem = deleteItem;
-  $scope.clearInventory = clearInventory;
-
-  $scope.addList = addList;
-  $scope.saveAdd = saveAdd;
-  $scope.removeList = removeList;
+  startup();  
 }
