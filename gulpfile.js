@@ -6,18 +6,18 @@
  * between the install requirements of a developer and a production environment.
  */
 
-var gulp       = require('gulp'),
-    gulpif     = require('gulp-if'),
-    concat     = require('gulp-concat'),
-    uglify     = require('gulp-uglify'),
-    cssnano    = require('gulp-cssnano'),
-    jshint     = require('gulp-jshint'),
-    flatten    = require('gulp-flatten'),
-    path       = require('path'),
-    iife       = require('gulp-iife'),
-    rimraf     = require('rimraf'),
-    gutil      = require('gulp-util'),
-    less       = require('gulp-less'),
+var gulp    = require('gulp'),
+    gulpif  = require('gulp-if'),
+    concat  = require('gulp-concat'),
+    uglify  = require('gulp-uglify'),
+    cssnano = require('gulp-cssnano'),
+    jshint  = require('gulp-jshint'),
+    flatten = require('gulp-flatten'),
+    path    = require('path'),
+    iife    = require('gulp-iife'),
+    rimraf  = require('rimraf'),
+    gutil   = require('gulp-util'),
+    less    = require('gulp-less'),
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
@@ -32,7 +32,7 @@ var gulp       = require('gulp'),
  * @const
  * toggle client javascript minification
  */
-var UGLIFY = false,
+var UGLIFY = process.env.BUILD_MINIFY || false,
 
     // path to the jshintrc to use
     JSHINT_PATH = '.jshintrc',
