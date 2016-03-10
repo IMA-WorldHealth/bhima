@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
 .controller('LoginController', LoginController);
 
 LoginController.$inject = [
-  '$scope', '$translate', '$location', '$http', '$timeout', 'appcache', 'appstate', 'SessionService',
+  '$scope', '$location', '$http', '$timeout', 'appcache', 'appstate', 'SessionService', 'LanguageService'
 ];
 
 // The login conroller
-function LoginController($scope, $translate, $location, $http, $timeout, AppCache, appstate, SessionService) {
+function LoginController($scope, $location, $http, $timeout, AppCache, appstate, Session, Languages) {
 
   // this is the View-Model (angular style guide).
   var vm = this;
@@ -18,12 +18,11 @@ function LoginController($scope, $translate, $location, $http, $timeout, AppCach
   vm.credentials = {};
   vm.error = false;
   vm.login = login;
-  vm.setLanguage = setLanguage;
+  vm.languageService = Languages;
 
-  // load language dependencies
-  $http.get('/languages')
-  .then(function (response) {
-    vm.languages = response.data;
+  Languages.read()
+  .then(function (languages) {
+    vm.languages = languages;
   });
 
   // load project dependencies
@@ -65,7 +64,7 @@ function LoginController($scope, $translate, $location, $http, $timeout, AppCach
     .then(function (response) {
 
       // Yay!  We are authenticated.  Create the user session.
-      SessionService.create(response.data.user, response.data.enterprise, response.data.project);
+      Session.create(response.data.user, response.data.enterprise, response.data.project);
 
       cache.project = credentials.project.id;
 
@@ -91,11 +90,5 @@ function LoginController($scope, $translate, $location, $http, $timeout, AppCach
       // suppress missing data errors when editting again
       $scope.LoginForm.$setPristine();
     });
-  }
-
-  // switches languages
-  function setLanguage(lang) {
-    $translate.use(lang.key);
-    cache.language = lang;
   }
 }

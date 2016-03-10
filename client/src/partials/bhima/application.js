@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
 .controller('ApplicationController', ApplicationController);
 
 ApplicationController.$inject = [
-  '$location', '$timeout', '$translate', 'AppCache', 'appstate',
-  'connect', 'util', 'SessionService', 'tmhDynamicLocale', 'amMoment'
+  '$location', '$timeout', 'AppCache', 'appstate',
+  'connect', 'util', 'SessionService', 'LanguageService'
 ];
 
-function ApplicationController($location, $timeout, $translate, AppCache, appstate, connect, util, Session, tmhDynamicLocale, amMoment) {
+function ApplicationController($location, $timeout, AppCache, appstate, connect, util, Session, Languages) {
   var vm = this;
 
   // load in the application cache
@@ -16,12 +16,9 @@ function ApplicationController($location, $timeout, $translate, AppCache, appsta
   /** @todo Load sidebar state before angular is bootstraped to remove 'flicker' */
   vm.sidebarExpanded = false;
 
-  // setup the language
-  if (cache.language) {
-    var language = cache.language;
-    $translate.use(language.translateKey);
-    tmhDynamicLocale.set(language.localeKey);
-  }
+  // set up the languages for the application, including default languages
+  // the 'true' parameter forces refresh
+  Languages.read(true);
 
   vm.isLoggedIn = function isLoggedIn() {
     return Session.user;

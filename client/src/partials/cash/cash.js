@@ -99,8 +99,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
     /** This is the actual payment form */
     vm.payment = { date : new Date() };
-    
-    vm.loadingState = false;
 
     // timestamp to compare date values
     vm.timestamp = new Date();
@@ -121,29 +119,23 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   }
 
   // submits the form to the server
-  function submit(invalid) {
-
-    // remove any dangling HTTP errors from the view
-    vm.HttpError = null;
-
-    // if the form is invalid, reject it without any further processing.
-    if (invalid) { return; }
+  function submit() {
 
     // make sure the form cannot be clicked more than once via disabling.
-    toggleLoadingState();
 
     // add in the cashbox id
     vm.payment.cashbox_id = cashboxId;
 
     // submit the cash payment
-    Cash.create(vm.payment)
+    return Cash.create(vm.payment)
     .then(function (response) {
 
       // display the receipt in a modal
       openReceiptModal(response.uuid);
     })
-    .catch(handler)
-    .finally(toggleLoadingState);
+    .catch(function (error) {
+      vm.HttpError = error; 
+    });
   }
 
   /**
@@ -151,11 +143,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   */
   function toggleVoucherType() {
     delete vm.payment.invoices;
-  }
-
-  // toggle loading state on off
-  function toggleLoadingState() {
-    vm.loadingState = !vm.loadingState;
   }
 
   // fired after a patient is found via the find-patient directive

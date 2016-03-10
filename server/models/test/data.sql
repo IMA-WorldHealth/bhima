@@ -21,7 +21,7 @@ INSERT INTO unit VALUES
 (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots_management/', '/depots_management');
 
 INSERT INTO account_type VALUES (1,'income/expense'),(2,'balance'),(3,'title');
-INSERT INTO language VALUES (1,'Francais','fr'),(2,'English','en'),(3,'Lingala','lg');
+INSERT INTO language VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
 INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES (1,'Congolese Francs','fc','Fc',NULL,50.00),(2,'United States Dollars','usd','$',NULL,0.01);
 
 -- locations

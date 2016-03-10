@@ -958,9 +958,10 @@ CREATE TABLE `journal_log` (
 DROP TABLE IF EXISTS `language`;
 
 CREATE TABLE `language` (
-  `id` tinyint(3) unsigned NOT NULL,
-  `name` text NOT NULL,
-  `key` text NOT NULL,
+  `id` TINYINT UNSIGNED NOT NULL,
+  `name` TEXT NOT NULL,
+  `key` VARCHAR(5) NOT NULL,
+  `locale_key` VARCHAR(5) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
