@@ -401,6 +401,7 @@ exports.configure = function (app) {
   app.get('/debtor_groups', debtorGroups.list);
   app.get('/debtor_groups/:uuid', debtorGroups.detail);
   app.get('/debtor_groups/:uuid/invoices', debtorGroups.getInvoices);
+  app.put('/debtor_groups/:uuid', debtorGroups.update);
 
   // search stuff
   // TODO merge with patients API
