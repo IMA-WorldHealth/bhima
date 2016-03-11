@@ -38,7 +38,6 @@ function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
   vm.update = update;
   vm.cancel = cancel;
   vm.submit = submit;
-  vm.selectAccount = selectAccount;
   vm.refreshValidation = refreshValidation;
 
   /** Load debtor groups */
@@ -135,12 +134,7 @@ function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
   }
 
   function refreshValidation() {
-    vm.state.errored = vm.debtorGroup.text ? false : true;
-  }
-
-  function selectAccount(account) {
-    // vm.debtorGroup.account_id = account.id;
-    // vm.accountLabel = account.account_number + ' - ' + account.account_txt;
+    vm.state.errored = vm.debtorGroup.name ? false : true;
   }
 
   function error(err) {

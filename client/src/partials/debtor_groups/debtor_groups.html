@@ -90,7 +90,6 @@
                     placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}..."
                     uib-typeahead="account.id as account.account_number for account in DebtorGroupCtrl.accounts.data | filter:$viewValue | limitTo:8" class="form-control"
                     typeahead-template-url="accounts.tpl"
-                    typeahead-on-select="DebtorGroupCtrl.selectAccount($item)"
                     ng-model="DebtorGroupCtrl.debtorGroup.account_id" required>
                   <div class="help-block" ng-messages="ActionForm.account.$error" ng-show="ActionForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -113,6 +112,19 @@
                   <div class="help-block" ng-messages="ActionForm.account.$error" ng-show="ActionForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
+                </div>
+
+                <!-- Max credit for the debtor group -->
+                <div class="form-group">
+                  <label class="control-label">
+                    {{ "COLUMNS.MAX_CREDIT" | translate }}
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="max_credit"
+                    placeholder="{{ 'COLUMNS.MAX_CREDIT' | translate }}..."
+                    ng-model="DebtorGroupCtrl.debtorGroup.max_credit">
                 </div>
 
               </fieldset>
