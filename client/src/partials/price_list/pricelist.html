@@ -34,8 +34,8 @@
             <tbody>
               <tr ng-class="{'rowSelected' : PriceListCtrl.priceList.uuid === list.uuid}" ng-repeat="list in PriceListCtrl.priceLists | orderBy:'label'">
                 <td> {{ list.label }} </td>
-                <td><a class="btn btn-xs btn-default" ng-click="PriceListCtrl.update(list)"><i class="glyphicon glyphicon-pencil white"></i></a></td>
-                <td><a class="btn btn-xs btn-default" ng-click="PriceListCtrl.del(list)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
+                <td><a class="btn btn-xs btn-default" id="price_list_{{ $index+1 }}" ng-click="PriceListCtrl.update(list)"><i class="glyphicon glyphicon-pencil white"></i></a></td>
+                <td><a class="btn btn-xs btn-default" id="price_delete_{{ $index+1 }}" ng-click="PriceListCtrl.del(list)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
               </tr>
               <tr ng-if="PriceListCtrl.priceList.data.length===0">
                 <td colspan=2><i>{{ 'PRICE_LIST.NO_RECORDS' | translate }}</i></tr>
@@ -59,21 +59,21 @@
 
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'SUBSIDY.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'PRICE_LIST.SAVE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'SUBSIDY.UPDATE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'PRICE_LIST.UPDATE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'SUBSIDY.DELETE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'PRICE_LIST.DELETE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
@@ -102,10 +102,11 @@
               
               <hr>
               <div class="form-group">
-                  <a class="btn btn-xs btn-default" ng-click="PriceListCtrl.addItem()">
+                  <a class="btn btn-xs btn-default" id="add_item" ng-click="PriceListCtrl.addItem()">
                     <span class="glyphicon glyphicon-plus"></span>{{'PRICE_LIST.ADD_ITEMS' | translate}}
                   </a>
-              </div>            
+              </div> 
+
               <table class="table table-condensed">
                 <thead>
                   <tr>
@@ -122,7 +123,7 @@
                     <td> {{ item.value }} </td>
                     <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"> </td>
                     <td> {{ PriceListCtrl.getInventory(item.inventory_uuid) }} </td>
-                    <td colspan="6"><a class="btn btn-xs btn-default" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
+                    <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
                   </tr> 
                 </tbody>
               </table>              
@@ -141,7 +142,7 @@
         </div>
 
         <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading">{{ 'SUBSIDY.NEW_SUBSIDY' | translate }}</div>
+          <div class="panel-heading">{{ 'PRICE_LIST.UPDATE' | translate }}</div>
           <div class="panel-body">
             <form class="panel-body" name="UpdateForm" ng-submit="PriceListCtrl.submit(UpdateForm.$invalid)" novalidate>
 
@@ -158,7 +159,7 @@
               
               <hr>
               <div class="form-group">
-                  <a class="btn btn-xs btn-default" ng-click="PriceListCtrl.addItem()">
+                  <a class="btn btn-xs btn-default" id="add_item" ng-click="PriceListCtrl.addItem()">
                     <span class="glyphicon glyphicon-plus"></span>{{'PRICE_LIST.ADD_ITEMS' | translate}}
                   </a>
               </div>            
@@ -178,7 +179,7 @@
                     <td> {{ item.value }} </td>
                     <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"> </td>
                     <td> {{ PriceListCtrl.getInventory(item.inventory_uuid) }} </td>
-                    <td colspan="6"><a class="btn btn-xs btn-default" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
+                    <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
                   </tr> 
                 </tbody>
               </table>              

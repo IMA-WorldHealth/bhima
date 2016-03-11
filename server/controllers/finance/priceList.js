@@ -14,8 +14,8 @@
  * DELETE /prices/:uuid
  */
 
-var db = require('../../lib/db');
-var uuid = require('../../lib/guid');
+var db    = require('../../lib/db');
+var uuid  = require('node-uuid');
 
 /**
  * Lists all price lists in the database
@@ -24,23 +24,18 @@ var uuid = require('../../lib/guid');
  */
 exports.list = function list(req, res, next) {
   'use strict';
+
   var sql;
-
-  var sql =
-    'SELECT uuid, label, created_at, description ' +
-    'FROM price_list ' +
-    'WHERE enterprise_id = ? ' +
-    'ORDER BY label;';
-
-  sql =
-    'SELECT uuid, label ' +
-    'FROM price_list ' +
-    'WHERE enterprise_id = ? ' +
-    'ORDER BY label;';
 
   if (req.query.detailed === '1') {
     sql =  
       'SELECT uuid, label, created_at, description ' +
+      'FROM price_list ' +
+      'WHERE enterprise_id = ? ' +
+      'ORDER BY label;';
+  } else {
+    sql =
+      'SELECT uuid, label ' +
       'FROM price_list ' +
       'WHERE enterprise_id = ? ' +
       'ORDER BY label;';
@@ -170,7 +165,7 @@ function formatPriceListItems(priceListUuid, items) {
   // the database
   return items.map(function (item) {
     return [
-      item.uuid || uuid(),
+      item.uuid || uuid.v4(),
       item.inventory_uuid,
       priceListUuid,
       item.label,
@@ -199,10 +194,8 @@ exports.create = function create(req, res, next) {
     'INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid, ' +
     'label, value, is_percentage) VALUES ?;';
 
-
   // generate a UUID if not provided
-  data.uuid = data.uuid || uuid();
-
+  data.uuid = data.uuid || uuid.v4();
   // if the client didn't send price list items, do not create them.
   if (data.items) {
     items = formatPriceListItems(data.uuid, data.items);
@@ -242,7 +235,6 @@ exports.update = function update(req, res, next) {
 
   var items;
   var data = req.body.list;
-
   var priceListSql =
     'UPDATE price_list SET ? WHERE uuid = ?;';
 
@@ -278,7 +270,7 @@ exports.update = function update(req, res, next) {
     // only trigger price list item updates if the items have been sent back to
     // the server
     if (items) {
-      trans.addQuery(priceListDeleteItemSql, [ req.params.uuid ]);
+      trans.addQuery(priceListDeleteItemSql, [ req.params.uuid ]); 
       trans.addQuery(priceListCreateItemSql, [ items ]);
     }
 

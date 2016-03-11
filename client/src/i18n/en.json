@@ -1182,7 +1182,7 @@
    "SUBMIT_EDIT"        : "Submit Details",
    "SUBMIT_NEW"         : "Submit Registration",
    "TITLE"              : "Employee Management",
-   "UPDATE_SUCCES"      : "Updated successfully"
+   "UPDATE_SUCCESS"     : "Updated successfully"
    },
 "EMPLOYEE_STANDING": {
    "ACCOUNT_BALANCE"   : "Account Balance",
@@ -2182,6 +2182,7 @@
    "APPLY_TO_ITEM"    : "Apply to item",
    "DECREASE"         : "Decrease",
    "DELETE_CONFIRM"   : "Are you sure, to erase ?",
+   "DELETE_SUCCESS"   : "Deleted successfully",
    "DETAILS"          : "Details",
    "EDIT"             : "Editting Price List Metadata",
    "EDITED_SUCCES"    : "Successfully edited price list",
@@ -2199,8 +2200,12 @@
    "PRICE_LIST_ITEMS" : "Price liste items",   
    "REMOVE_SUCCESS"   : "Erased succefully !",
    "SAVE_LIST"        : "Save List",
+   "SAVE_SUCCESS"     : "Saved successfully",
    "TITLE"            : "Price List Management",
-   "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups"
+   "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups",
+   "UPDATE"           : "Update a Price List",
+   "UPDATE_SUCCESS"    : "Updated successfully",
+   "WARN"             : "Warn"   
    },
 "PRIMARY_CASH": {
    "CONFIGURE"        : "Configure Cash Box",

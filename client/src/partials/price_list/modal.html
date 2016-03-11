@@ -17,7 +17,7 @@
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.is_percentage.$invalid }">
       <label class="control-label">{{ 'COLUMNS.IS_PERCENT' | translate }}</label>
-      <input type="checkbox" class="form-control" name="is_percentage"  ng-true-value="1" ng-false-value="0" ng-model="ModalCtrl.data.is_percentage">
+      <input type="checkbox" class="form-control" name="is_percentage" id="is_percentage" ng-true-value="1" ng-false-value="0" ng-model="ModalCtrl.data.is_percentage">
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
@@ -30,7 +30,7 @@
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" id="submit-project" type="submit" data-method="submit">
+    <button class="btn btn-default" id="submit-price-list" type="submit" data-method="submit">
       {{ "FORM.ADD" | translate }}
     </button>
     <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.CANCEL" | translate }}</button>

@@ -53,7 +53,11 @@ function PriceListController(PriceListService, $window, $translate, $uibModal, I
   }
 
   function removeItem(item){
-    vm.pricelistItems.splice(vm.pricelistItems.indexOf(item), 1);
+    if (vm.pricelistItems.length > 1) {
+      vm.pricelistItems.splice(vm.pricelistItems.indexOf(item), 1);
+    } else {
+      $window.alert($translate.instant('PRICE_LIST.WARN'));
+    }  
   }
 
   function create() {
