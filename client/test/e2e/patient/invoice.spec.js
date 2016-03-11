@@ -20,7 +20,7 @@ var PatientInvoicePage = require('./invoice.page.js');
  *   - Test for price list
  *   - Test for discount
  */
-describe.only('patient invoice', function () {
+describe('patient invoice', function () {
   'use strict';
 
   /** @const */
@@ -112,7 +112,7 @@ describe.only('patient invoice', function () {
     expect(page.btns.submit.isEnabled()).to.eventually.equal(false);
   });
 
-  it('blocks submission for an invalid grid', function () {
+  it.skip('blocks submission for an invalid grid', function () {
 
     // get a new page
     var page = new PatientInvoicePage();
