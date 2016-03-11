@@ -123,17 +123,17 @@ exports.locationSelect = {
  * @public
  */
 exports.currencyInput = {
-  selector : '[data-bh-currency-input]',  
+  selector : '[data-bh-currency-input]',
 
   /**
    * sets the value of the currency input.
-  */  
+  */
   set : function set(value, id) {
   // it might be clearer to do this in two steps.
     var root = element(id ? by.id(id) : by.css(this.selector));
     var elm  = root.element(by.model('$ctrl.model'));
     elm.sendKeys(value);
-  },  
+  },
 
   /**
    * get the value of the currency input.
@@ -190,6 +190,7 @@ exports.findPatient = {
 
     // get the input and enter the id provided
     var input = root.element(by.model('$ctrl.nameInput'));
+    input.clear();
     input.sendKeys(name);
 
     // get the first option and click it
@@ -207,6 +208,7 @@ exports.findPatient = {
 
     // get the input and enter the id provided
     var input = element(by.model('$ctrl.idInput'));
+    input.clear();
     input.sendKeys(id);
 
     // submit the id to the server
@@ -268,13 +270,13 @@ exports.findDebtorGroup = {
   * @function test
   * @param {string} name The text for the debtor group name
   * @param {number} index The index of a debtor group in the list
-  * @description Run a default test of use of the component  
+  * @description Run a default test of use of the component
   */
   test : function test(name, index) {
-    this.search(name),
-    this.select(index),
-    this.popup(),
-    this.reload()
+    this.search(name);
+    this.select(index);
+    this.popup();
+    this.reload();
   }
 };
 

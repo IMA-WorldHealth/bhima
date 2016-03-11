@@ -1,11 +1,17 @@
-<div style="padding : 5px;"> 
+<div style="padding : 5px;" id="inventory-code-dropdown">
   <div ng-if="!row.entity.confirmed">
     <!-- TODO Design and implement custom typeahead template -->
-    <input class="form-control" typeahead-append-to-body="true" uib-typeahead="item.uuid as (item.label + ' [' + item.code + ']') for item in grid.appScope.Invoice.items.inventoryItems.data" ng-model="row.entity.inventory_uuid" typeahead-on-select="grid.appScope.Invoice.items.confirmItem(row.entity)"></input>
+    <input
+      class="form-control"
+      typeahead-append-to-body="true"
+      uib-typeahead="item.uuid as item for item in grid.appScope.Invoice.items.inventoryItems.data"
+      typeahead-template-url="/partials/templates/inventoryItems.tmpl.html"
+      ng-model="row.entity.inventory_uuid"
+      typeahead-on-select="grid.appScope.Invoice.items.confirmItem(row.entity)">
   </div>
-  <div nf-if="row.entity.confirmed">
-    <span 
-      class="text-info" 
+  <div ng-if="row.entity.confirmed">
+    <span
+      class="text-info"
       ng-if="row.entity.priceListApplied"
       uib-popover="{{ 'PATIENT_INVOICE.BASE_PRICE_ALTERED' | translate }}"
       popover-placement="right"
@@ -15,6 +21,6 @@
       <!-- <span class="glyphicon glyphicon-list-alt"></span> -->
       <span class="glyphicon glyphicon-info-sign"></span>
     </span>
-    <span>{{row.entity.code}}</span>
+    <span>{{ row.entity.code }}</span>
   </div>
 </div>

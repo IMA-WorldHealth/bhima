@@ -37,6 +37,7 @@
                     ng-model="PatientInvoiceCtrl.Invoice.details.service_id"
                     ng-options="service.id as service.name for service in PatientInvoiceCtrl.services"
                     required>
+                    <option disabled="disabled" value="">{{ "SELECT.SERVICE" | translate }}</option>
                   </select>
                   <div class="help-block" ng-messages="detailsForm.service.$error" ng-show="detailsForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -114,13 +115,19 @@
         <div class="input-group">
           <span class="input-group-btn">
             <button
+              id="btn-add-rows"
               class="btn btn-default btn-sm"
               ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
               ng-click="PatientInvoiceCtrl.Invoice.items.addInventoryItem(PatientInvoiceCtrl.itemIncrement)">
               <span class="glyphicon glyphicon-plus-sign"></span> {{ "FORM.ADD" | translate }}
             </button>
           </span>
-          <input type="number" class="form-control input-sm" ng-model="PatientInvoiceCtrl.itemIncrement" style="max-width : 40px;" ng-disabled="!PatientInvoiceCtrl.Invoice.recipient">
+          <input
+            type="number"
+            class="form-control input-sm"
+            ng-model="PatientInvoiceCtrl.itemIncrement"
+            style="max-width : 40px;"
+            ng-disabled="!PatientInvoiceCtrl.Invoice.recipient">
         </div>
 
         <p
@@ -142,7 +149,7 @@
     </div>
 
     <!-- TODO Research performance hit using ui-grid-auto-resize -->
-    <div ui-grid="PatientInvoiceCtrl.gridOptions" style="height : 230px; width : 100%;" ui-grid-auto-resize></div>
+    <div id="invoice-grid" ui-grid="PatientInvoiceCtrl.gridOptions" style="height : 230px; width : 100%;" ui-grid-auto-resize></div>
 
     <div class="row" ng-show="PatientInvoiceCtrl.Invoice.recipient">
       <div
@@ -211,6 +218,7 @@
     <div class="row" style="padding-top : 5px; padding-bottom : 5px;">
       <div class="col-md-12">
         <button
+          id="btn-submit-invoice"
           class="btn btn-primary"
           ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
           ng-click="PatientInvoiceCtrl.submit(detailsForm)">{{ "PATIENT_INVOICE.SUBMIT" | translate }}</button>

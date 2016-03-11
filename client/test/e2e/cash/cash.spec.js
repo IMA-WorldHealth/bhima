@@ -67,16 +67,16 @@ describe('Cash Payments Module', function () {
       // our target is cashboxA
       var target = path.concat('/' + cashboxA.id);
 
-      // implicitly choose cashbox A by navigating to it directly 
+      // implicitly choose cashbox A by navigating to it directly
       browser.get(target);
 
       // make sure all $http/$timeout requests clear before moving forward
-      browser.waitForAngular();   
-      
-      expect(getCurrentPath()).to.eventually.equal(target);      
+      browser.waitForAngular();
+
+      expect(getCurrentPath()).to.eventually.equal(target);
 
       // attempt to return to /cash manually
-      browser.get(path);      
+      browser.get(path);
 
       // expect that we were routed back to cashbox A
       expect(getCurrentPath()).to.eventually.equal(target);
@@ -90,7 +90,7 @@ describe('Cash Payments Module', function () {
       // emulate a selection by simply going to the direct URL
       // this should set the cashbox ID in localstorage
       browser.get(target);
-      
+
       // make sure all $http/$timeout requests clear before moving forward
       browser.waitForAngular();
 
@@ -98,7 +98,7 @@ describe('Cash Payments Module', function () {
       expect(getCurrentPath()).to.eventually.equal(target);
 
       // attempt to return to the cash page manually
-      browser.get(path);      
+      browser.get(path);
 
       // the browser should be rerouted to the cashboxB page
       expect(getCurrentPath()).to.eventually.equal(target);
@@ -160,13 +160,12 @@ describe('Cash Payments Module', function () {
       patientId: 'TPA2',
       date : new Date('2016-03-01'),
       amount : 5.12
-    };    
+    };
 
     it('should make a caution payment', function () {
 
       // select the proper patient
       components.findPatient.findByName(mockCautionPayment.patientName);
-
 
       // we will leave the date input as default
 
@@ -228,10 +227,10 @@ describe('Cash Payments Module', function () {
 
       // expect the receipt modal to appear
       FU.exists(by.css('[data-cash-receipt-modal]'), true);
-    });    
+    });
   });
 
-  describe('Cash Transfer ', function (){    
+  describe('Cash Transfer ', function (){
 
     /** navigate to the page before each function */
     beforeEach(function () {
@@ -253,7 +252,7 @@ describe('Cash Payments Module', function () {
       var CDFRadio = element(by.css('[data-transfer-currency-option="1"]'));
       CDFRadio.click();
 
-      //set a value in the currency component by model to avoid conflict  
+      //set a value in the currency component by model to avoid conflict
       components.currencyInput.set(mockTransfer.amount, 'transferCurrencyInput');
 
       // submit the modal button
