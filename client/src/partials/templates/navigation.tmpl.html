@@ -1,32 +1,33 @@
-<!-- 
+<!--
 Limitations of current templating structure:
-* Assumption is made children of the root node are folders 
-* Only one level of depth is supported for children -->
+* Assumption is made children of the root node are folders
+* Only one level of depth is supported for children
+-->
 <div class="flex-tree">
   <ul>
-    <li ng-repeat-start="unit in NavCtrl.units">
-      <a ng-click="NavCtrl.toggleUnit(unit)"> 
-        <span 
+    <li ng-repeat-start="unit in $ctrl.units">
+      <a ng-click="$ctrl.toggleUnit(unit)">
+        <span
           class="glyphicon"
           ng-class="{
           'glyphicon-exclamation-sign' : unit.children.length === 0,
           'glyphicon-folder-open' : unit.open && unit.children.length > 0,
           'glyphicon-folder-close' : !unit.open && unit.children.length > 0}">
-        </span> 
-        <span class="tree-title">{{unit.key | translate}}</span>
+        </span>
+        <span class="tree-title">{{ unit.key | translate }}</span>
       </a>
     </li>
-    
+
     <!-- Naive one level child depth -->
-    <li 
-      ng-repeat-end 
+    <li
+      ng-repeat-end
       ng-repeat="child in unit.children"
-      ng-if="unit.open"
+      ng-show="unit.open"
       class="file"
-      ng-class="{'selected' : child.selected}">
-      <a ng-click="NavCtrl.navigate(child)">
+      ng-class="{ 'selected' : child.selected }">
+      <a ng-click="$ctrl.navigate(child)">
         <span class="glyphicon glyphicon-file"></span>
-        <span class="tree-title">{{child.key | translate }}</a></span>
+        <span class="tree-title">{{ child.key | translate }}</a></span>
       </a>
     </li>
   </ul>

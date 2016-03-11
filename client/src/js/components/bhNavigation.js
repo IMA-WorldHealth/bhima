@@ -1,16 +1,19 @@
 /**
- * Top level application navigation directive
+ * Top level application navigation component
  */
-angular.module('bhima.directives')
-.controller('bhimaNavController', NavigationController)
-.directive('bhimaNav', navigation);
+angular.module('bhima.components')
+.component('bhNavigation', {
+  controller : NavigationController,
+  templateUrl : 'partials/templates/navigation.tmpl.html'
+});
 
-NavigationController.$inject = ['$location', '$rootScope', 'Tree', 'AppCache'];
+NavigationController.$inject = [
+  '$location', '$rootScope', 'Tree', 'AppCache'
+];
 
 function NavigationController($location, $rootScope, Tree, AppCache) {
-  var vm = this;
-  var MODULE_NAMESPACE = 'navigation';
-  var cache = AppCache(MODULE_NAMESPACE);
+  var $ctrl = this;
+  var cache = AppCache('navigation');
 
   /**
    * Object used to index unit ids and paths, this allows for very efficient
@@ -18,64 +21,68 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
    * parsed once - every following method should use the index to point to the
    * relevent unit
    */
-  var unitsIndex = {id : {}, path : {}};
+  var unitsIndex = { id : {}, path : {} };
 
   /** @todo handle exception cases displayed at the top of the Tree directive */
   Tree.units()
     .then(function (result) {
 
       Tree.sortByTranslationKey(result);
-      vm.units = result;
+      $ctrl.units = result;
 
-      calculateUnitIndex(vm.units);
-      expandInitialUnits(vm.units);
+      calculateUnitIndex($ctrl.units);
+      expandInitialUnits($ctrl.units);
     });
 
   // Tree Utility methods
-  vm.toggleUnit = function toggleUnit(unit) {
+  $ctrl.toggleUnit = function toggleUnit(unit) {
     unit.open = unit.open || false;
     unit.open = !unit.open;
 
     // Update cached record of modules expansion
     cache[unit.id] = { open : unit.open };
-    //cache.put(unit.id, {open : unit.open});
   };
 
-  vm.navigate = function navigate(unit) {
+  $ctrl.navigate = function navigate(unit) {
     selectUnit(unit);
     $location.path(unit.path);
   };
 
-  vm.refreshTranslation = function refreshTranslation() {
-    Tree.sortByTranslationKey(vm.units);
+  $ctrl.refreshTranslation = function refreshTranslation() {
+    Tree.sortByTranslationKey($ctrl.units);
   };
 
   /**
-   * Select a unit in the tree given aa specified URL
-   *
-   * @todo search through all of the path keys - if the recorded path is found
-   * /anywhere/ in the url the path should be selected in the tree
+   * Select a unit in the tree given a specified URL.
    */
-
   function trackPathChange(event, url) {
     var path = url.split('/#')[1];
-    var unit = unitsIndex.path[normalisePath(path)];
+    var normPath = normalisePath(path);
 
-    if (unit) {
-      selectUnit(unit);
-    }
+    /**
+     * loop through all paths, selecting those are match the selected url
+     *
+     * @todo - write test cases to be sure this works in all cases, probably
+     * dependent on the ordering of unitsIndex.
+     */
+    Object.keys(unitsIndex.path).forEach(function (key) {
+      var node = unitsIndex.path[key];
+      if (normPath.includes(node.path)) {
+        selectUnit(path);
+      }
+    });
   }
 
   function selectUnit(unit) {
 
     // Clear previous selection if it exists
-    if (vm.selectedUnit) {
-      vm.selectedUnit.selected = false;
+    if ($ctrl.selectedUnit) {
+      $ctrl.selectedUnit.selected = false;
     }
 
     // Update status of currently selected unit
     unit.selected = true;
-    vm.selectedUnit = unit;
+    $ctrl.selectedUnit = unit;
   }
 
   // Remove trailing path elements
@@ -130,16 +137,6 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
    * changed within BHIMA - tracking this allows the tree to update without the
    * page being refreshed
    */
-  $rootScope.$on('$translateChangeSuccess', vm.refreshTranslation);
+  $rootScope.$on('$translateChangeSuccess', $ctrl.refreshTranslation);
   $rootScope.$on('$locationChangeStart', trackPathChange);
-}
-
-function navigation() {
-  return {
-    restrict : 'E',
-    scope : {},
-    templateUrl : 'partials/templates/navigation.tmpl.html',
-    controller : 'bhimaNavController as NavCtrl',
-    bindToController : true
-  };
 }
