@@ -21,6 +21,9 @@ var q  = require('q'),
 /** Create a new debtor group */
 exports.create = create;
 
+/** Update a debtor group */
+exports.update = update;
+
 /** Get debtor group details */
 exports.detail = getDetail;
 
@@ -37,7 +40,7 @@ exports.fetchInvoices = fetchInvoices;
 /**
 * POST /debtor_groups/
 *
-* @exemple
+* @example
 * // An example of parameter of the post request
 * {
 *   enterprise_id : {number},
@@ -81,6 +84,59 @@ function create(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+/**
+* PUT /debtor_groups/:uuid
+*
+* @example
+* // An example of parameter of the put request
+* {
+*   enterprise_id : {number},
+*   uuid : {uuid},
+*   name : {string},
+*   account_id : {number},
+*   location_id : {uuid},
+*   phone : {string},
+*   email : {string},
+*   note : {string},
+*   locked : {number},
+*   max_credit : {number},
+*   is_convention : {number},
+*   price_list_uuid : {uuid} or NULL,
+*   apply_discounts : {number},
+*   apply_billing_services : {number},
+*   apply_subsidies : {number}
+* };
+*
+* @function update
+*
+* @desc This function is responsible for updating a debtor group
+*/
+function update(req, res, next) {
+
+  var data = req.body;
+  var query = 'UPDATE debitor_group SET ? WHERE uuid = ?;';
+
+  /** prevent updating the uuid */
+  if (req.body.uuid) { delete req.body.uuid; }
+
+  db.exec(query, [data, req.params.uuid])
+  .then(findDebtorGroup)
+  .then(function (rows) {
+    res.status(200).send(rows[0]);
+  })
+  .catch(next)
+  .done();
+
+  function findDebtorGroup(rows) {
+    var query =
+      'SELECT enterprise_id, uuid, name, account_id, location_id, ' +
+      'phone, email, note, locked, max_credit, is_convention, price_list_uuid, ' +
+      'apply_discounts, apply_billing_services, apply_subsidies ' +
+      'FROM debitor_group WHERE uuid = ?';
+    return db.exec(query, req.params.uuid);
+  }
 }
 
 /**
