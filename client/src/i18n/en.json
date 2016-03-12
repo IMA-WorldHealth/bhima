@@ -136,7 +136,7 @@
    "TEXT_COST"             : "Designation",
    "TITLE"                 : "Assigning",
    "TOTAL"                 : "Total",
-   "TOTALS"                : "TOTALS",
+   "TOTALS"                : "Totals",
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
@@ -147,7 +147,7 @@
   "LOGOUT_SUCCESS"             : "You are now logged out.",
   "LOGIN_PLACEHOLDER_USERNAME" : "Enter your username",
   "LOGIN_PLACEHOLDER_PASSWORD" : "Enter your password",
-  "RESET"                      : "Reset"
+  "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it."
 },
 
 "AUXILLARY_CASH_RECORD" : {
@@ -321,7 +321,7 @@
        "LINK"             : "Click here to add it.",
        "MISSING"          : "Don't see your cashbox?",
        "TRANSFER"         : "Transfer Funds",
-       "UNCONFIGURED"     : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue."       
+       "UNCONFIGURED"     : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue."
      },
      "SLIP" : "Cash Voucher",
      "CASHBOX" : "Cashbox",
@@ -1447,7 +1447,8 @@
     "GENERIC"           : "The form contains errors.",
     "MIN_CURRENCY_UNIT" : "This value is too small for the selected currency.",
     "NUMBER"            : "This value must be a valid number.",
-    "REQUIRED"          : "This value is required."
+    "REQUIRED"          : "This value is required.",
+    "MISSING"           : "Please ensure that all fields are filled in."
    },
    "INVALID_DATE"    : "Invalide date",
    "LOGIN"           : "Login",
@@ -1812,7 +1813,7 @@
    "MANAGE_PROVINCE"       : "Manage Province",
    "MANAGE_SECTOR"         : "Manage Sector",
    "MANAGE_VILLAGE"        : "Manage Village",
-   "MODAL"                 : "Add a new Location",   
+   "MODAL"                 : "Add a new Location",
    "NEW_FORM"              : "New Form",
    "ORIGIN"                : "Origin",
    "PROVINCE"              : "Province",
@@ -1827,7 +1828,7 @@
    "COUNTRY"               : "Country",
    "PROVINCE"              : "Province",
    "SECTOR"                : "Sector",
-   "VILLAGE"               : "Village"   
+   "VILLAGE"               : "Village"
    },
 "MODALS" : {
   "REFERENCES" : {
@@ -2728,7 +2729,7 @@
    "PROFIT_CENTER"         : "Select a Profit Center",
    "PROJECT"               : "Select a project",
    "PROVINCE"              : "Select a Province",
-   "RECEIPT"               : "Select a Receipt",   
+   "RECEIPT"               : "Select a Receipt",
    "RECIPIENT"             : "Select a Recipient",
    "REFERENCE"             : "Select a Reference",
    "REFERENCE_GROUP"       : "Select a Reference Group",
@@ -3010,7 +3011,7 @@
    "TITLE"                 : "Stock Situation"
    },
 "SUBSIDY" : {
-   "CONFIRM"          : "Are you sure you want to delete this Subsidy",  
+   "CONFIRM"          : "Are you sure you want to delete this Subsidy",
    "DATE_CREATION"    : "Date of creation",
    "DATE_UPDATE"      : "Date of update",
    "DETAILS"          : "",
@@ -3019,7 +3020,7 @@
    "NEW_SUBSIDY"      : "New subsidy",
    "NO_SUBSIDY"       : "No subsidy have been registered",
    "REGISTERED"       : "Registered subsidy",
-   "SAVE_SUCCESS"      : "Saved successfully",   
+   "SAVE_SUCCESS"      : "Saved successfully",
    "TITLE"            : "Subsidy",
    "UPDATE"           : "Update",
    "UPDATE_SUCCESS"    : "Updated successfully"

@@ -14,11 +14,18 @@ function LoginController($scope, $location, $http, $timeout, AppCache, appstate,
   // the is the same as the SettingsContoller
   var cache = AppCache('preferences');
 
+  // local variable count to 
+  var count = 0;
+  var maxCount = 3;
+
   // contains the values from the login form
   vm.credentials = {};
-  vm.error = false;
   vm.login = login;
   vm.languageService = Languages;
+
+  // displays a message if the user attempts more than maxCount
+  // times to login and fails each time.
+  vm.excessiveAttempts = false;
 
   Languages.read()
   .then(function (languages) {
@@ -52,12 +59,14 @@ function LoginController($scope, $location, $http, $timeout, AppCache, appstate,
   }
 
   // logs the user in, creates the user client session
-  function login(invalid, credentials) {
-    vm.error = false;
+  function login(invalid) {
+    vm.httpError = false;
 
     // if the form is not valid, do not generate an
     // $http request
     if (invalid) { return; }
+
+    var credentials = vm.credentials;
 
     // submit the credentials to the server
     $http.post('/login', credentials)
@@ -76,19 +85,14 @@ function LoginController($scope, $location, $http, $timeout, AppCache, appstate,
       // navigate to the home page
       $location.url('/');
     })
-    .catch(function (error) {
+    .catch(function (response) {
 
-      // If the error is a string, we generated it.  Translate it an display to user
-      if (typeof error.data === 'string' ) {
-        vm.error = 'AUTH.' + error.data;
+      // bind the http error to the view
+      vm.httpError = response.data;
 
-      // do not swallow unrecognized errors
-      } else {
-        throw error;
-      }
-
-      // suppress missing data errors when editting again
-      $scope.LoginForm.$setPristine();
+      // augment the count and rebind the excessive attempts variable
+      count++;
+      vm.excessiveAttempts = (maxCount <= count);
     });
   }
 }
