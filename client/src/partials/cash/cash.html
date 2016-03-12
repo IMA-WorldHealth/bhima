@@ -149,7 +149,10 @@
                   model="CashCtrl.payment.amount"
                   form="CashVoucherForm"
                   validation-trigger="CashVoucherForm.$submitted"
+                  error-message="{{ CashCtrl.errorKey | translate }}"
+                  un-supported-currency-ids="CashCtrl.disabledCurrencyIds"
                   on-currency-change="CashCtrl.updateCurrency(currency)"
+                  ng-if="CashCtrl.disabledCurrencyIds"
                   >
                 </bh-currency-input>
 

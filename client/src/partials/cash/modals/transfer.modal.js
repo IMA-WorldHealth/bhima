@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CashTransferModalController.$inject = [
   '$uibModalInstance', 'VoucherService',
-   'CashboxService', 'AccountService', 'CashService', 'cashBox'
+   'CashboxService', 'AccountService', 'CashService', 'CurrencyService', 'cashBox'
 ];
 
 /**
@@ -12,7 +12,7 @@ CashTransferModalController.$inject = [
  * @description This controller is responsible transfering money between auxillary cash and a virement account
 */
 
-function CashTransferModalController(ModalInstance, voucherService, cashBoxService, accountService, cashService, cashBox) {
+function CashTransferModalController(ModalInstance, voucherService, cashBoxService, accountService, cashService, currencyService, cashBox) {
   var vm = this; 
 
   /** Attaching service to the scope **/
@@ -27,6 +27,14 @@ function CashTransferModalController(ModalInstance, voucherService, cashBoxServi
 
   /** init balance to zero **/
   vm.cashAccountCurrency = { balance : 0 };
+
+  /** error key for unsupported currencies**/
+  vm.errorKey = 'CASH.CURRENCY_NOT_SUPPORTED';
+
+  currencyService.read()
+  .then(function (currencies){
+    vm.invalidCurrencyIds = cashService.getUnsupportedCurrencyIds(cashBox, currencies);
+  });
 
   /**
   * @function submit

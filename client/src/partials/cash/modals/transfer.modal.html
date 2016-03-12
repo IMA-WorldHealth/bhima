@@ -30,6 +30,9 @@
       form="TransferForm"
       validation-trigger="TransferForm.$submitted"
       on-currency-change="CashTransferModalCtrl.handleCashCurrencyChange(currency)"
+      error-message="{{ CashTransferModalCtrl.errorKey | translate }}"
+      un-supported-currency-ids="CashTransferModalCtrl.invalidCurrencyIds"
+      ng-if="CashTransferModalCtrl.invalidCurrencyIds"
       >
     </bh-currency-input>
 

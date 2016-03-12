@@ -6,17 +6,25 @@
  */
 
 function CurrencyInputController(precision) {
-  var ctrl = this;
+  var ctrl = this;  
+  ctrl.block = false;
 
   /** atach empty function if no callback is provided**/
   ctrl.onCurrencyChange = ctrl.onCurrencyChange || angular.noop();  
 
-  function handleCurrencyChange (currency){
+  function handleCurrencyChange (currency){  
+    
     /**the currency input component can update this object, to manage his own view**/
-    ctrl.currency = currency; 
+    ctrl.currency = currency;     
 
-    /**the currency input component can not update the currencyId, it is not his responsability**/
-    ctrl.onCurrencyChange({currency : currency});    
+    /** block the input if the currency can not be supported**/
+    if(ctrl.unSupportedCurrencyIds){
+      ctrl.block =  (ctrl.unSupportedCurrencyIds.indexOf(currency.id) > -1) ? true : false;
+    }
+
+    /** call the callback to handle currency change situation**/
+    ctrl.onCurrencyChange({currency : currency});
+    
   }
 
   /** this is a custom form validation just for checking step**/
@@ -53,11 +61,13 @@ angular.module('bhima.components')
   templateUrl : 'partials/templates/bhCurrencyInput.tmpl.html',
   controller: CurrencyInputController,
   bindings : {
-    onCurrencyChange : '&', //external method
-    currencyId : '<',       // one-way binding
-    model : '=',            // two way binding
-    maxValue : '<',         // one way binding
-    form : '=',             // one-way binding
-    validationTrigger : '<' // one-way binding
+    unSupportedCurrencyIds : '<',
+    errorMessage : '@',
+    currencyId : '=',       
+    model : '=',            
+    maxValue : '<',         
+    form : '<',             
+    validationTrigger : '<',
+    onCurrencyChange  : '&'
   }
 });

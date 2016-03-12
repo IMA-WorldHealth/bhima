@@ -23,8 +23,11 @@
       ng-min="$ctrl.currency.min_monentary_unit"
       ng-max="$ctrl.maxValue"
       ng-change="$ctrl.checkModel()"
+      ng-disabled="$ctrl.block"
       required>
   </div>
+  
+  <span ng-if="$ctrl.block" class="glyphicon glyphicon-exclamation-sign">{{$ctrl.errorMessage}}</span>
 
   <!-- validation messages -->
   <p class="help-block" ng-messages="$ctrl.form.currencyInputValue.$error" ng-show="$ctrl.validationTrigger">

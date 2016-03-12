@@ -5,7 +5,6 @@ angular.module('bhima.components')
   bindings : {
     validationTrigger : '<',
     currencyId : '<',
-    disableIds : '<',
     onChange : '&'
   }
 });
@@ -60,9 +59,6 @@ function bhCurrencySelect(Currencies, AppCache) {
   var ctrl = this;
   var cache = AppCache('CurrencySelectComponent');
 
-  // bind the currency service to the view
-  ctrl.service = Currencies;
-
   // default currencies to an empty list
   ctrl.currencies = [];
 
@@ -72,7 +68,7 @@ function bhCurrencySelect(Currencies, AppCache) {
   init(cache.defaultCurrency);  
 
   function init (defaultCurrency){
-    if(defaultCurrency){ ctrl.onChange({currency : defaultCurrency});}
+    if(defaultCurrency) { ctrl.onChange({currency : defaultCurrency}); }   
   }
 
   function handleChange (){
@@ -81,11 +77,12 @@ function bhCurrencySelect(Currencies, AppCache) {
     var currencies = ctrl.currencies.filter(function (currency){
       return currency.id === ctrl.currencyId;
     });
-    /** persist the selected currency as default**/
-    cache.defaultCurrency = currencies[0]; 
-    
+
     /** calling the callback**/      
     ctrl.onChange({ currency : currencies[0] });
+
+    /** persist the selected currency as default**/
+    cache.defaultCurrency = currencies[0];     
   }
 
   // load all the available currencies

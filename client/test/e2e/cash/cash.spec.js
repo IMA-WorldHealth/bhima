@@ -240,7 +240,7 @@ describe('Cash Payments Module', function () {
 
     //This transfer should succed
     var mockTransfer = {
-      amount : 100
+      amount : 50
     };
 
     it('should make a transfert between selected auxillary cash and a virement account', function (){
