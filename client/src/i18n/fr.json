@@ -328,7 +328,8 @@
     "PROJECT_NAME" : "Nom Project",
     "TODAY" : "Date du jour",
     "EXCHANGE_RATE" : "Taux d'echange",
-    "CONNECTED_USER" : "Utilisateur Connecte"
+    "CONNECTED_USER" : "Utilisateur Connecte",
+    "SYSTEM" : "Hospital Management System"
   },
 
   "LOGIN" : {
