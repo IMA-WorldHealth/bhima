@@ -7,6 +7,7 @@ DebtorGroupsController.$inject = ['$http', '$translate', 'DebtorGroupService', '
  * Debtor Groups Controller
  * This controller is about the debtor groups management module in the admin zone
  * It's responsible for creating and updating a debtor group
+ * @todo Implementing the delete method for deleting debtor groups
  */
 function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
   'use strict';
@@ -40,17 +41,17 @@ function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
   vm.submit = submit;
   vm.refreshValidation = refreshValidation;
 
-  /** Load debtor groups */
-  debtorGroupsList()
-  .then(accountList)
-  .then(priceList)
-  .catch(handler);
+  /** Load necessary data */
+  debtorGroupsList();
+  accountList();
+  priceList();
 
   function debtorGroupsList() {
     return DebtorGroup.read()
     .then(function (list) {
       vm.debtorGroupList = list;
-    });
+    })
+    .catch(handler);
   }
 
   /** @fixme Need service for getting accounts list */
@@ -58,7 +59,8 @@ function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
     return $http.get('/accounts')
     .then(function (accounts) {
       vm.accounts = accounts;
-    });
+    })
+    .catch(handler);
   }
 
   /** @fixme Need service for getting prices list */
@@ -66,7 +68,8 @@ function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
     return $http.get('/prices')
     .then(function (prices) {
       vm.prices = prices;
-    });
+    })
+    .catch(handler);
   }
 
   function update(uuid) {
@@ -84,12 +87,17 @@ function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
   function submit(invalid) {
     if (invalid) {
       vm.state.errored = true;
+      return;
     }
-    if (vm.debtorGroup.name && vm.action === 'create') {
-      createDebtorGroup();
-    }
-    if (vm.debtorGroup.uuid && vm.debtorGroup.name && vm.action === 'update') {
+
+    // figure out what type of request to send
+    var isUpdate = (vm.action === 'update');
+
+    // execute the chosen request.
+    if (isUpdate) {
       updateDebtorGroup(vm.debtorGroup.uuid);
+    } else {
+      createDebtorGroup();
     }
   }
 
@@ -129,7 +137,8 @@ function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
       DebtorGroup.read(uuid)
       .then(function (debtorGroup) {
         vm.debtorGroup = debtorGroup;
-      });
+      })
+      .catch(handler);
     }
   }
 

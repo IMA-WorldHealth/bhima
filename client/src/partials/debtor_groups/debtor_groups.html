@@ -89,7 +89,7 @@
                     name="account"
                     placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}..."
                     uib-typeahead="account.id as account.account_number for account in DebtorGroupCtrl.accounts.data | filter:$viewValue | limitTo:8" class="form-control"
-                    typeahead-template-url="accounts.tpl"
+                    typeahead-template-url="partials/templates/typeahead/account.html"
                     ng-model="DebtorGroupCtrl.debtorGroup.account_id" required>
                   <div class="help-block" ng-messages="ActionForm.account.$error" ng-show="ActionForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -256,7 +256,7 @@
               <div class="clearfix"></div>
 
               <!-- error feedback area -->
-              <div ng-if="DebtorGroupCtrl.state.errored && ActionForm.$submitted"
+              <div id="error-feedback" ng-if="DebtorGroupCtrl.state.errored && ActionForm.$submitted"
                 class="text-danger" data-role="feedback" style="margin-top:10px;">
                 <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
               </div>
@@ -279,11 +279,3 @@
     </div>
   </div>
 </div>
-
-<!-- Templates  -->
-<script type="text/ng-template" id="accounts.tpl">
-  <a>
-    <span><b>{{ match.model.account_number}}</b></span>
-    <em>{{ match.model.account_txt}}</em>
-  </a>
-</script>

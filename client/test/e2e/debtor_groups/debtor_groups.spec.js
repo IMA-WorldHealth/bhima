@@ -118,9 +118,9 @@ describe('Debtor Groups tests suit :: ', function () {
 
   it('Dont create when missing required data', function () {
     FormUtils.buttons.create();
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.name', '');
+    FormUtils.clear('DebtorGroupCtrl.debtorGroup.name');
     FormUtils.buttons.submit();
-    FormUtils.exists(by.id('create_success'), false);
+    FormUtils.exists(by.id('error-feedback'), true);
   });
 
 });
