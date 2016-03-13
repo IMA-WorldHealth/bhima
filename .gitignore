@@ -30,3 +30,7 @@ client/src/upload/
 .env.production
 .env.development
 integrations.log
+
+#ignore the tmp file
+
+/utilities/tmp/
