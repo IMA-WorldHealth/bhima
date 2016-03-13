@@ -441,6 +441,7 @@
    "BASIC_SALARY"          : "Basic salary",
    "BHIMA_STOCK_CODE"      : "Stock Reference",
    "BY"                    : "By",
+   "CARACTERISTICS"        : "Caracteristics",
    "CASHBOX"               : "Cash Box",
    "CHARGE"                : "Charge",
    "CODE"                  : "Code",
@@ -454,6 +455,7 @@
    "CONSUMED_STOCK"        : "Consumed Stock",
    "CONSUMPTION_PER_MONTH" : "Consumption per Month",
    "CONSUMPTION_PER_DAY"   : "Consumption By Day",
+   "CONTACT"               : "Contact",
    "CONVENTION"            : "Convention",
    "COST"                  : "Cost",
    "COST_CENTER"           : "Cost center",
@@ -486,6 +488,7 @@
    "DEBITOR_TYPE"          : "Debtor Type",
    "DEBT"                  : "Debt",
    "DEBTOR"                : "Debtor",
+   "DEBTOR_GROUP"          : "Debtor Group",
    "DEB_CRED_TYPE"         : "Debtor/Creditor Type",
    "DEB_CRED_UUID"         : "Debtor/Creditor ID",
    "DEB_EQUIV"             : "Debit",
@@ -922,20 +925,29 @@
  "DB" : {
   "ER_ROW_IS_REFERENCED_2" : "Cannot delete entry since it has been used in a transaction."
  },
-"DEBITOR_GRP": {
-   "FILTER"     : "Filter Debtor Groups",
-   "GROUPS"     : "Debtor Groups",
-   "HELP_TXT_1" : "This interface allows you to review, find, and configure debitor groups",
-   "HELP_TXT_2" : "Edit selected debitor group",
-   "HELP_TXT_3" : "Lock the selected debitor group.  No new transactions can be recorded for a locked group",
-   "HELP_TXT_4" : "Create a new debitor group",
-   "INFO"       : "Group Information",
-   "NEW"        : "New Debtor Group",
-   "SUCCES"     : "success",
-   "TITLE"      : "Debtor Group Management"
+
+"DEBTOR_GRP": {
+   "APPLY_BILLING_SERVICES" : "Apply billing service",
+   "APPLY_SUBSIDIES"        : "Apply subsidies",
+   "APPLY_DISCOUNTS"        : "Apply discounts",
+   "CREATE_SUCCESS" : "Successfully creates the debtor group",
+   "EDIT"           : "Edit Debtor Group",
+   "FILTER"         : "Filter Debtor Groups",
+   "GROUPS"         : "Debtor Groups",
+   "HELP_TXT_1"     : "This interface allows you to review, find, and configure debitor groups",
+   "HELP_TXT_2"     : "Edit selected debitor group",
+   "HELP_TXT_3"     : "Lock the selected debitor group.  No new transactions can be recorded for a locked group",
+   "HELP_TXT_4"     : "Create a new debitor group",
+   "INFO"           : "Group Information",
+   "IS_CONVENTION"  : "Convention",
+   "LOCKED"         : "Locked",
+   "NEW"            : "New Debtor Group",
+   "SUCCES"         : "success",
+   "TITLE"          : "Debtor Group Management",
+   "UPDATE_SUCCESS" : "Successfully updates the debtor group"
 },
 
-"DEBITOR_GROUP_REPORT" : {
+"DEBTOR_GROUP_REPORT" : {
    "DOCUMENT_CONFIG" : "Configuration of Debitor Group Report",
    "LANGUAGE" : "Language",
    "INVOLVE_JOURNAL" : "Involve journal",
@@ -2125,9 +2137,17 @@
    "PERMISSIONS_SUCCESS" : "Successfully updated user permissions."
    },
 "PLACEHOLDERS": {
-   "PRODUCTS"       : "e.g. Products",
-   "PURCHASE_ORDER" : "Enter a purchase order ID."
+   "ENTER" : {
+     "ACCOUNT"        : "Enter an account name or number",
+     "PRICE_LIST"     : "Enter price list name"
    },
+   "PRODUCTS"       : "e.g. Products",
+   "PURCHASE_ORDER" : "Enter a purchase order ID.",
+   "SELECT" : {
+     "ACCOUNT"        : "Please select an account",
+     "PRICE_LIST"     : "Please select a price list"
+   }
+ },
 "POSTING_JOURNAL": {
    "ABOLISH_GROUPS"        : "Abolish Groups",
    "ACCOUNT"               : "Account",

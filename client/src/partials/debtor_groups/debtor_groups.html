@@ -1,0 +1,281 @@
+<!-- breadcrumb header -->
+<bh-breadcrumb
+  path="DebtorGroupCtrl.bcPaths"
+  button="DebtorGroupCtrl.bcButtons">
+</bh-breadcrumb>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            {{ "DEBTOR_GRP.GROUPS" | translate }}
+          </div>
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{{ "COLUMNS.NAME" | translate }}</th>
+                <th>{{ "DEBTOR_GRP.IS_CONVENTION" | translate }}</th>
+                <th>{{ "DEBTOR_GRP.LOCKED" | translate }}</th>
+                <th>{{ "COLUMNS.ACTION" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="group in DebtorGroupCtrl.debtorGroupList | orderBy: 'name'">
+                <td>{{ $index + 1 }}</td>
+                <td>{{ group.name }}</td>
+                <td>
+                  <i ng-if="group.is_convention" class="glyphicon glyphicon-ok-sign"></i>
+                </td>
+                <td>
+                  <i ng-if="group.locked" class="glyphicon glyphicon-lock"></i>
+                </td>
+                <td>
+                  <a name="group-{{group.name}}" class="btn btn-xs btn-default"
+                    ng-click="DebtorGroupCtrl.update(group.uuid)">
+                    <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.EDIT' | translate }}
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-md-6" ng-switch="DebtorGroupCtrl.view">
+
+        <div class="alert alert-info" ng-switch-default>
+          <h4>{{ "DEBTOR_GRP.TITLE" | translate }}</h4>
+          <p>{{ "DEBTOR_GRP.HELP_TXT_1" | translate }}</p>
+        </div>
+
+        <div ng-switch-when="action">
+          <form class="panel panel-primary" name="ActionForm" ng-submit="DebtorGroupCtrl.submit(ActionForm.$invalid)" novalidate>
+            <div class="panel-heading">
+              {{ DebtorGroupCtrl.actionTitle | translate }}
+            </div>
+            <div class="panel-body">
+
+              <!-- Debtor group info  -->
+              <fieldset>
+                <legend>{{ "COLUMNS.DEBTOR_GROUP" | translate }}</legend>
+
+                <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.name.$invalid }">
+                  <label class="control-label">
+                    {{ "COLUMNS.NAME" | translate }}
+                  </label>
+                  <input
+                    class="form-control"
+                    name="name"
+                    placeholder="{{ 'COLUMNS.NAME' | translate }}..."
+                    ng-model="DebtorGroupCtrl.debtorGroup.name"
+                    ng-change="DebtorGroupCtrl.refreshValidation()" required>
+                  <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <!-- Find an account for debtor group -->
+                <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.account.$invalid }">
+                  <label class="control-label">
+                    {{ "COLUMNS.ACCOUNT" | translate }}
+                  </label>
+                  <input
+                    class="form-control"
+                    name="account"
+                    placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}..."
+                    uib-typeahead="account.id as account.account_number for account in DebtorGroupCtrl.accounts.data | filter:$viewValue | limitTo:8" class="form-control"
+                    typeahead-template-url="partials/templates/typeahead/account.html"
+                    ng-model="DebtorGroupCtrl.debtorGroup.account_id" required>
+                  <div class="help-block" ng-messages="ActionForm.account.$error" ng-show="ActionForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <!-- Find price list for the group -->
+                <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.price_list.$invalid }">
+                  <label class="control-label">
+                    {{ "COLUMNS.PRICE_LIST" | translate }}
+                  </label>
+                  <select
+                    class="form-control"
+                    name="price_list"
+                    ng-model="DebtorGroupCtrl.debtorGroup.price_list_uuid"
+                    ng-options="price.uuid as price.label for price in DebtorGroupCtrl.prices.data"
+                    required>
+                    <option value="" disabled>{{ "PLACEHOLDERS.SELECT.PRICE_LIST" | translate }}</option>
+                  </select>
+                  <div class="help-block" ng-messages="ActionForm.account.$error" ng-show="ActionForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <!-- Max credit for the debtor group -->
+                <div class="form-group">
+                  <label class="control-label">
+                    {{ "COLUMNS.MAX_CREDIT" | translate }}
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="max_credit"
+                    placeholder="{{ 'COLUMNS.MAX_CREDIT' | translate }}..."
+                    ng-model="DebtorGroupCtrl.debtorGroup.max_credit">
+                </div>
+
+              </fieldset>
+
+              <!-- caracteristics -->
+              <fieldset>
+                <legend>{{ 'COLUMNS.CARACTERISTICS' | translate }}</legend>
+                <div class="form-group col-xs-6">
+                  <label class="control-label">
+                    <input
+                      type="checkbox"
+                      name="is_convention"
+                      ng-true-value="1"
+                      ng-false-value="0"
+                      ng-model="DebtorGroupCtrl.debtorGroup.is_convention">
+                    {{ "DEBTOR_GRP.IS_CONVENTION" | translate }}
+                  </label>
+                </div>
+
+                <div class="form-group col-xs-6">
+                  <label class="control-label">
+                    <input
+                      type="checkbox"
+                      name="locked"
+                      ng-true-value="1"
+                      ng-false-value="0"
+                      ng-model="DebtorGroupCtrl.debtorGroup.locked">
+                    {{ "DEBTOR_GRP.LOCKED" | translate }}
+                  </label>
+                </div>
+
+                <div class="form-group col-xs-6">
+                  <label class="control-label">
+                    <input
+                      type="checkbox"
+                      name="apply_discounts"
+                      ng-true-value="1"
+                      ng-false-value="0"
+                      ng-model="DebtorGroupCtrl.debtorGroup.apply_discounts">
+                    {{ "DEBTOR_GRP.APPLY_DISCOUNTS" | translate }}
+                  </label>
+                </div>
+
+                <div class="form-group col-xs-6">
+                  <label class="control-label">
+                    <input
+                      type="checkbox"
+                      name="apply_billing_services"
+                      ng-true-value="1"
+                      ng-false-value="0"
+                      ng-model="DebtorGroupCtrl.debtorGroup.apply_billing_services">
+                    {{ "DEBTOR_GRP.APPLY_BILLING_SERVICES" | translate }}
+                  </label>
+                </div>
+
+                <div class="form-group col-xs-6">
+                  <label class="control-label">
+                    <input
+                      type="checkbox"
+                      name="apply_subsidies"
+                      ng-true-value="1"
+                      ng-false-value="0"
+                      ng-model="DebtorGroupCtrl.debtorGroup.apply_subsidies">
+                    {{ "DEBTOR_GRP.APPLY_SUBSIDIES" | translate }}
+                  </label>
+                </div>
+
+              </fieldset>
+
+              <!-- contact info -->
+              <fieldset>
+                <legend>{{ "COLUMNS.CONTACT" | translate }}</legend>
+                <!-- phone  -->
+                <div class="form-group">
+                  <label class="control-label">
+                    {{ "COLUMNS.PHONE" | translate }}
+                  </label>
+                  <input
+                    class="form-control"
+                    name="phone"
+                    placeholder="{{ 'COLUMNS.PHONE' | translate }}..."
+                    ng-model="DebtorGroupCtrl.debtorGroup.phone">
+                </div>
+
+                <!-- email  -->
+                <div class="form-group">
+                  <label class="control-label">
+                    {{ "COLUMNS.EMAIL" | translate }}
+                  </label>
+                  <input
+                    class="form-control"
+                    name="email"
+                    placeholder="{{ 'COLUMNS.EMAIL' | translate }}..."
+                    ng-model="DebtorGroupCtrl.debtorGroup.email">
+                </div>
+
+                <!-- debtor group location  -->
+                <bh-location-select
+                  id="origin-location-id"
+                  validation-trigger="ActionForm.$submitted"
+                  location-uuid="DebtorGroupCtrl.debtorGroup.location_id">
+                </bh-location-select>
+              </fieldset>
+
+              <!-- note  -->
+              <div class="form-group">
+                <label class="control-label">
+                  {{ "COLUMNS.NOTE" | translate }}
+                </label>
+                <textarea
+                  class="form-control"
+                  name="note"
+                  placeholder="{{ 'COLUMNS.NOTE' | translate }}..."
+                  ng-model="DebtorGroupCtrl.debtorGroup.note">
+                </textarea>
+              </div>
+
+            </div>
+
+            <div class="panel-footer">
+
+              <button class="btn btn-default pull-right" type="submit" data-method="submit">
+                {{ "FORM.SUBMIT" | translate }}
+              </button>
+              <button class="btn btn-default" type="button" ng-click="DebtorGroupCtrl.cancel()" data-method="cancel">
+                {{ "FORM.CANCEL" | translate }}
+              </button>
+
+              <div class="clearfix"></div>
+
+              <!-- error feedback area -->
+              <div id="error-feedback" ng-if="DebtorGroupCtrl.state.errored && ActionForm.$submitted"
+                class="text-danger" data-role="feedback" style="margin-top:10px;">
+                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
+              </div>
+
+            </div>
+          </form>
+        </div>
+
+        <!-- success feedback -->
+        <div class="alert alert-success" ng-switch-when="success">
+          <h4 id="update_success" ng-if="DebtorGroupCtrl.state.updated">
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "DEBTOR_GRP.UPDATE_SUCCESS" | translate }}
+          </h4>
+          <h4 id="create_success" ng-if="DebtorGroupCtrl.state.created">
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "DEBTOR_GRP.CREATE_SUCCESS" | translate }}
+          </h4>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
