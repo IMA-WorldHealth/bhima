@@ -2,7 +2,7 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static">{{ "HOME.BHIMA" | translate }}</li>
+      <li class="static">{{ "HOME.TITLE" | translate }}</li>
       <li class="title">{{HomeCtrl.enterprise.name}}</span></li>
     </ol>
 
@@ -17,15 +17,15 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">{{ "HOME.BHIMA" | translate }}</div>
+      <div class="panel-heading">{{ "HOME.TITLE" | translate }}</div>
       <div class="panel-body"> 
         <div class="row">
           <div class="col-sm-3">
-            {{ "HOME.PROJECT" | translate }}:
+            {{ "HOME.PROJECT_NAME" | translate }}:
             <br><strong>{{ HomeCtrl.project.name }}</strong>
           </div>
           <div class="col-sm-3">
-            {{ "HOME.DATE" | translate }}:
+            {{ "HOME.TODAY" | translate }}:
             <br><strong>{{ HomeCtrl.today | date }}</strong>
           </div>
           <div class="col-sm-3">
@@ -36,7 +36,7 @@
            
           </div>
           <div class="col-sm-3">
-            {{ "HOME.USER" | translate }}:
+            {{ "HOME.CONNECTED_USER" | translate }}:
             <br><strong>{{ HomeCtrl.user.first }} - {{ HomeCtrl.user.last }}</strong>
           </div>
         </div>
