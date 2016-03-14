@@ -1,5 +1,5 @@
 /* jshint expr: true */
-/* element, by, inject, browser */
+/* global element, by, inject, browser */
 
 var chai    = require('chai');
 var expect  = chai.expect;
@@ -10,7 +10,7 @@ helpers.configure(chai);
 var FormUtils = require('../shared/FormUtils');
 var components = require('../shared/components');
 
-describe('Debtor Groups tests suit :: ', function () {
+describe('Debtor Groups', function () {
 
   var PATH = '#/debtor_groups';
 
@@ -40,7 +40,9 @@ describe('Debtor Groups tests suit :: ', function () {
   });
 
   it('successfully creates a new Debtor Group', function () {
+
     FormUtils.buttons.create();
+
     /** debtor group info */
     FormUtils.input('DebtorGroupCtrl.debtorGroup.name', debtorGroup.name);
     FormUtils.input('DebtorGroupCtrl.debtorGroup.account_id', debtorGroup.account_id);
@@ -59,6 +61,7 @@ describe('Debtor Groups tests suit :: ', function () {
     FormUtils.input('DebtorGroupCtrl.debtorGroup.email', debtorGroup.email);
     FormUtils.input('DebtorGroupCtrl.debtorGroup.note', debtorGroup.note);
 
+
     /** location Kele in Bas-Congo */
     var locations = [
      'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
@@ -66,9 +69,11 @@ describe('Debtor Groups tests suit :: ', function () {
      '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', // Tshikapa,
      '1f162a10-9f67-4788-9eff-c1fea42fcc9b' // kele
     ];
+
     components.locationSelect.set(locations);
 
     FormUtils.buttons.submit();
+
     FormUtils.exists(by.id('create_success'), true);
   });
 
@@ -81,7 +86,7 @@ describe('Debtor Groups tests suit :: ', function () {
     FormUtils.clear('DebtorGroupCtrl.debtorGroup.account_id');
     FormUtils.input('DebtorGroupCtrl.debtorGroup.account_id', update.account_id);
 
-    element.all(by.options('price.uuid as price.label for price in DebtorGroupCtrl.prices.data')).get(2).click();
+    element.all(by.options('price.uuid as price.label for price in DebtorGroupCtrl.prices.data')).get(1).click();
 
     FormUtils.clear('DebtorGroupCtrl.debtorGroup.max_credit');
     FormUtils.input('DebtorGroupCtrl.debtorGroup.max_credit', update.max_credit);
@@ -116,7 +121,7 @@ describe('Debtor Groups tests suit :: ', function () {
     FormUtils.exists(by.id('update_success'), true);
   });
 
-  it('Dont create when missing required data', function () {
+  it('form blocks when missing data', function () {
     FormUtils.buttons.create();
     FormUtils.clear('DebtorGroupCtrl.debtorGroup.name');
     FormUtils.buttons.submit();
