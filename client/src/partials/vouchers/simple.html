@@ -15,7 +15,7 @@
           </div>
 
           <div class="panel-body">
-            <form name="SimpleVoucherForm" bh-submit="SimpleVoucherCtrl.submit(SimpleVoucherForm.$invalid)" autocomplete="off">
+            <form name="SimpleVoucherForm" bh-submit="SimpleVoucherCtrl.submit(SimpleVoucherForm)" autocomplete="off" novalidate>
 
               <div>
                 <label class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
@@ -36,6 +36,7 @@
                   class="form-control"
                   name="description"
                   ng-model="SimpleVoucherCtrl.voucher.description"
+                  placeholder="{{ 'INPUT.DESCRIPTION' | translate }}"
                   required>
                 </textarea>
                 <div class="help-block" ng-messages="SimpleVoucherForm.description.$error" ng-show="SimpleVoucherForm.$submitted">
@@ -92,7 +93,7 @@
                     type="radio"
                     ng-model="SimpleVoucherCtrl.voucher.currency_id"
                     ng-value="currency.id"
-                    data-currency-option="{{ currency.currency_id }}"
+                    data-currency-option="{{ currency.id }}"
                     required>
                   {{ currency.label }}
                 </label>
@@ -112,7 +113,7 @@
               </bh-currency-input>
 
               <div class="form-group">
-                <button type="submit" class="btn btn-primary" data-method="submit">
+                <button type="submit" class="btn btn-primary" data-method="submit" ng-disabled="SimpleVoucherCtrl.created">
                   {{ "FORM.SUBMIT" | translate }}
                 </button>
 
@@ -121,7 +122,7 @@
                   type="button"
                   class="btn btn-default"
                   ng-show="SimpleVoucherCtrl.created"
-                  ng-click="SimpleVoucherCtrl.startup(); SimpleVoucherForm.$setPristine();">
+                  ng-click="SimpleVoucherCtrl.reset(); SimpleVoucherForm.$setPristine();">
                   {{ "FORM.RESET" | translate }}
                 </button>
               </div>

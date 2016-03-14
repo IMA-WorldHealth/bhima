@@ -53,7 +53,7 @@ function VoucherService ($http, util) {
     // bind the voucher items
     clean.items = items;
 
-    return $http.post(baseUrl, clean)
+    return $http.post(baseUrl, { voucher : clean })
     .then(util.unwrapHttpResponse);
   }
 

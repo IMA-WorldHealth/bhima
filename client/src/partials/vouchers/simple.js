@@ -66,8 +66,6 @@ function SimpleJournalVoucherController(AppCache, Vouchers, $translate, Accounts
 
     // set up default voucher values
     vm.voucher.date = new Date();
-    vm.voucher.description =
-      $translate.instant('VOUCHERS.SIMPLE.DESCRIPTION');
 
     /** @todo - these should be set on the server */
     vm.voucher.user_id = Session.user.id;
@@ -77,13 +75,15 @@ function SimpleJournalVoucherController(AppCache, Vouchers, $translate, Accounts
     vm.timestamp = new Date();
   }
 
-  function submit(invalid) {
+  function submit(form) {
 
     // clear the old error if it exists
     delete vm.httpError;
 
     // stop submission if the form is invalid
-    if (invalid) { return; }
+    if (form.$invalid) {
+      return;
+    }
 
     // turn the voucher into double-entry accounting
     return Vouchers.createSimple(vm.voucher)
