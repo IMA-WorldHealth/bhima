@@ -1,0 +1,144 @@
+<!-- breadcrumb header -->
+<bh-breadcrumb
+  path="SimpleVoucherCtrl.paths">
+</bh-breadcrumb>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-md-6">
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            {{ "VOUCHERS.SIMPLE.TITLE" | translate }}
+          </div>
+
+          <div class="panel-body">
+            <form name="SimpleVoucherForm" bh-submit="SimpleVoucherCtrl.submit(SimpleVoucherForm.$invalid)" autocomplete="off">
+
+              <div>
+                <label class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
+                <bh-date-editor
+                  date-value="SimpleVoucherCtrl.voucher.date"
+                  form="SimpleVoucherForm"
+                  validation-trigger="SimpleVoucherForm.$submitted"
+                  max-date="SimpleVoucherCtrl.timestamp"
+                >
+                </bh-date-editor>
+              </div>
+
+              <div
+                class="form-group"
+                ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.description.$invalid }">
+                <label class="control-label">{{ "COLUMNS.DESCRIPTION" | translate }}</label>
+                <textarea
+                  class="form-control"
+                  name="description"
+                  ng-model="SimpleVoucherCtrl.voucher.description"
+                  required>
+                </textarea>
+                <div class="help-block" ng-messages="SimpleVoucherForm.description.$error" ng-show="SimpleVoucherForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+               <div
+                 class="form-group"
+                 ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.fromAccount.$invalid }">
+                 <label class="control-label">
+                   {{ "VOUCHERS.SIMPLE.FROM_ACCOUNT" | translate }}
+                 </label>
+                 <input
+                   class="form-control"
+                   name="fromAccount"
+                   placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}..."
+                   uib-typeahead="account as account.label for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
+                   typeahead-template-url="partials/templates/typeahead/accounts.html"
+                   ng-model="SimpleVoucherCtrl.voucher.fromAccount"
+                   required>
+                 <div class="help-block" ng-messages="SimpleVoucherForm.fromAccount.$error" ng-show="SimpleVoucherForm.$submitted">
+                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                 </div>
+               </div>
+
+               <div
+                 class="form-group"
+                 ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.toAccount.$invalid }">
+                 <label class="control-label">
+                   {{ "VOUCHERS.SIMPLE.TO_ACCOUNT" | translate }}
+                 </label>
+                 <input
+                   class="form-control"
+                   name="toAccount"
+                   placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}..."
+                   uib-typeahead="account as account.label for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
+                   typeahead-template-url="partials/templates/typeahead/accounts.html"
+                   ng-model="SimpleVoucherCtrl.voucher.toAccount"
+                   required>
+                 <div class="help-block" ng-messages="SimpleVoucherForm.toAccount.$error" ng-show="SimpleVoucherForm.$submitted">
+                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                 </div>
+               </div>
+
+              <!-- @TODO - use a currency selection component -->
+              <div
+                class="radio"
+                ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.currency.$invalid }">
+                <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
+                <label ng-repeat="currency in SimpleVoucherCtrl.currencies track by currency.id" class="radio-inline">
+                  <input
+                    name="currency"
+                    type="radio"
+                    ng-model="SimpleVoucherCtrl.voucher.currency_id"
+                    ng-value="currency.id"
+                    data-currency-option="{{ currency.currency_id }}"
+                    required>
+                  {{ currency.label }}
+                </label>
+
+                <div class="help-block" ng-messages="SimpleVoucherForm.currency.$error" ng-show="SimpleVoucherForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <bh-currency-input
+                data-voucher-currency-input
+                currency-id="SimpleVoucherCtrl.voucher.currency_id"
+                model="SimpleVoucherCtrl.voucher.amount"
+                form="SimpleVoucherForm"
+                validation-trigger="SimpleVoucherForm.$submitted"
+                >
+              </bh-currency-input>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+
+                <!-- @todo - random hacks to make things look pretty - need  state handler-->
+                <button
+                  type="button"
+                  class="btn btn-default"
+                  ng-show="SimpleVoucherCtrl.created"
+                  ng-click="SimpleVoucherCtrl.startup(); SimpleVoucherForm.$setPristine();">
+                  {{ "FORM.RESET" | translate }}
+                </button>
+              </div>
+
+              <!-- translate the server-sent error for the client -->
+              <p class="text-danger" ng-show="SimpleVoucherCtrl.httpError">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>{{ SimpleVoucherCtrl.httpError | translate }}
+              </p>
+
+              <!-- displays: "Record created successfully!" -->
+              <p class="text-success" ng-show="SimpleVoucherCtrl.created">
+                <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.CREATED" | translate }}
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
