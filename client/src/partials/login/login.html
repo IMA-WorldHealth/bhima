@@ -13,7 +13,7 @@
               </li>
             </ul>
           </div>
-          <h4>{{ "AUTH.LOGIN" | translate }}</h4>
+          <h4>{{ "LOGIN.TITLE" | translate }}</h4>
         </div>
         <div class="panel-body">
           <form name="LoginForm" ng-submit="LoginCtrl.login(LoginForm.$invalid)" novalidate>
@@ -21,7 +21,7 @@
               class="form-group"
               ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.username.$invalid }">
               <label class="control-label">
-                {{ "COLUMNS.USERNAME" | translate }}
+                {{ "FORM.LABELS.USERNAME" | translate }}
               </label>
               <div class="input-group">
                 <span class="input-group-addon" style="background-color: #fff;">
@@ -32,7 +32,7 @@
                   type="text"
                   class="form-control"
                   ng-model="LoginCtrl.credentials.username"
-                  placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_USERNAME' | translate }}"
+                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_USERNAME' | translate }}"
                   autocomplete="off"
                   autocorrect="off"
                   autofocus
@@ -44,7 +44,7 @@
               class="form-group"
               ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.password.$invalid }">
               <label class="control-label">
-                {{ "COLUMNS.PASSWORD" | translate }}
+                {{ "FORM.LABELS.PASSWORD" | translate }}
               </label>
               <div class="input-group">
                 <span class="input-group-addon" style="background-color: #fff;">
@@ -55,7 +55,7 @@
                   type="password"
                   ng-model="LoginCtrl.credentials.password"
                   class="form-control"
-                  placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_PASSWORD' | translate }}"
+                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_PASSWORD' | translate }}"
                   required />
               </div>
             </div>
@@ -64,7 +64,7 @@
               class="form-group"
               ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.project.$invalid }">
               <label class="control-label">
-                {{ "COLUMNS.PROJECT" | translate }}
+                {{ "FORM.LABELS.PROJECT" | translate }}
               </label>
               <div class="input-group">
                 <span class="input-group-addon" style="background-color: #fff;">
@@ -76,7 +76,7 @@
                   ng-model="LoginCtrl.credentials.project"
                   ng-options="proj.id as proj.name for proj in LoginCtrl.projects"
                   required >
-                  <option value="" disabled>{{ "SELECT.PROJECT" | translate }}</option>
+                  <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
                 </select>
               </div>
             </div>
@@ -86,7 +86,7 @@
               ng-class="{ 'has-error' : LoginForm.$submitted && (LoginForm.$invalid || LoginCtrl.httpError) }"
               >
               <button id="submit" class="btn btn-default" type="submit">
-               {{ "FORM.LOGIN" | translate }}
+               {{ "FORM.BUTTONS.CONNECTION" | translate }}
               </button>
 
               <div class="help-block" ng-show="LoginForm.$submitted && (LoginForm.$invalid || LoginCtrl.httpError)" style="margin-top:10px;">
@@ -105,7 +105,7 @@
 
                 <p ng-show="LoginCtrl.excessiveAttempts" class="text-info">
                   <span class="glyphicon glyphicon-info-sign"></span>
-                  {{ "AUTH.TOO_MANY_TRYS" | translate }}
+                  {{ "FORM.INFOS.MANY_TRYS" | translate }}
                 </p>
               </div>
             </div>
