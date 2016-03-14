@@ -1,0 +1,26 @@
+<ng-form name="CurrencyForm">
+  <div class="radio" ng-class="{ 'has-error' : $ctrl.validationTrigger && CurrencyForm.$invalid }" data-bh-currency-select>
+    <p class="control-label">
+      <strong>{{ "COLUMNS.CURRENCY" | translate }}</strong>
+    </p>
+
+    <!-- repeat each currency in the application -->
+    <label ng-repeat="currency in $ctrl.currencies track by currency.id" class="radio-inline" ng-class="{ 'disabled' : currency.disabled }">
+      <input
+        name="currency"
+        type="radio"
+        ng-model="$ctrl.currencyId"
+        ng-value="currency.id"
+        ng-change="$ctrl.onChange"
+        data-currency-option="{{ currency.id }}"
+        ng-disabled="currency.disabled"
+        required>
+      {{ currency.label }}
+    </label>
+
+    <!-- radio button validation messages -->
+    <div class="help-block" ng-messages="CurrencyForm.currency.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</ng-form>

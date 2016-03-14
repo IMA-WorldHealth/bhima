@@ -35,11 +35,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   /** @const id of the currently select cashbox */
   var cashboxId = $routeParams.id;
 
-  /** default to dots for currency symbol */
-  vm.currencyLabel = '...';
-
   // bind methods
-  vm.currencies = Currencies;
   vm.openInvoicesModal = openInvoicesModal;
   vm.openTransferModal = openTransferModal;
   vm.changeCashbox = changeCashbox;
@@ -48,6 +44,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   vm.digestExchangeRate = digestExchangeRate;
   vm.toggleVoucherType = toggleVoucherType;
   vm.submit = submit;
+
 
   // temporary error handler until an application-wide method is described
   function handler(error) {
@@ -104,15 +101,27 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     vm.timestamp = new Date();
     vm.enterprise = Session.enterprise;
 
-    // load the cashbox on startup
-    Cashboxes.read(cashboxId)
+    Currencies.read()
+    .then(function (currencies) {
+      vm.currencies = currencies;
+      return Cashboxes.read(cashboxId);
+    })
     .then(function (cashbox) {
       vm.cashbox = cashbox;
       cache.cashbox = cashbox;
-    }).catch(handler);
 
-    // load currencies for later templating
-    Currencies.read();
+      // collect cashbox ids in an array
+      var cashboxCurrencyIds = cashbox.currencies.reduce(function (array, currency) {
+        return array.concat(currency.currency_id);
+      }, []);
+
+      // find all ids that are not cashbox ids, to disable them
+      vm.disabledCurrencyIds = vm.currencies.reduce(function (array, currency) {
+        var bool = (cashboxCurrencyIds.indexOf(currency.id) === -1);
+        return array.concat(bool ? currency.id : []);
+      }, []);
+    })
+    .catch(handler);
 
     // make sure we have exchange
     Exchange.read();
@@ -229,11 +238,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
 
   // exchanges the payment at the bottom of the previous invoice slip.
   function digestExchangeRate() {
-
-    // this is purely for UI considerations.  We want to update the currency
-    // input's symbol when the currency changes (prompting a
-    // digestExchangeRate()) call.
-    vm.currencyLabel = Currencies.symbol(vm.payment.currency_id);
 
     // make sure we have all the required data before attempting to exchange
     // any values
