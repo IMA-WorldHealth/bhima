@@ -1,80 +1,80 @@
 <form name="CashboxModalForm" ng-submit="CashboxModalCtrl.submit(CashboxModalForm)" novalidate>
   <div class="modal-header">
-    <h4>{{ "CASH.CASHBOX.CONFIG_CURRENCIES" | translate }} <small>{{ CashboxModalCtrl.cashbox.text }}</small></h4>
+    <h4>{{ "CASHBOX.CONFIG_ACCOUNTS" | translate }} <small>{{ CashboxModalCtrl.cashbox.text }}</small></h4>
   </div>
 
   <div class="modal-body">
     <p class="text-danger text-justify" ng-if="CashboxModalCtrl.error">
-      <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "ERROR.CONNECTION" | translate }}
+      <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "FORM.ERRORS.CONNECTION" | translate }}
     </p>
 
     <div class="form-group">
-      <label>{{ "COLUMNS.CURRENCY" | translate }}</label>
+      <label>{{ "FORM.LABELS.CURRENCY" | translate }}</label>
       <p class="form-control-static">
         {{ CashboxModalCtrl.currency.name }} ({{ CashboxModalCtrl.currency.symbol}})
       </p>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.account_id.$invalid }">
-      <label class="control-label">{{ "CASH.CASHBOX.CASH_ACCOUNT" | translate }}</label>
+      <label class="control-label">{{ "FORM.LABELS.CASH_ACCOUNT" | translate }}</label>
       <select
         class="form-control"
         name="account_id"
         ng-model="CashboxModalCtrl.data.account_id"
         ng-options="account.id as account.label disable when account.type === 'title' for account in ::CashboxModalCtrl.accounts"
         required>
-        <option value="" disabled>{{ "SELECT.ACCOUNT" | translate }}</option>
+        <option value="" disabled>{{ "FORM.SELECTS.SELECT_ACCOUNT" | translate }}</option>
       </select>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.gain_exchange_account_id.$invalid }">
-      <label class="control-label">{{ "CASH.CASHBOX.GAIN_ACCOUNT" | translate }}</label>
+      <label class="control-label">{{ "FORM.LABELS.GAIN_ACCOUNT" | translate }}</label>
       <select
         class="form-control"
         name="gain_exchange_account_id"
         ng-model="CashboxModalCtrl.data.gain_exchange_account_id"
         ng-options="account.id as account.label disable when account.type === 'title' for account in ::CashboxModalCtrl.accounts"
         required>
-        <option value="" disabled>{{ "SELECT.ACCOUNT" | translate }}</option>
+        <option value="" disabled>{{ "FORM.SELECTS.SELECT_ACCOUNT" | translate }}</option>
       </select>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.loss_exchange_account_id.$invalid }">
-      <label class="control-label">{{ "CASH.CASHBOX.LOSS_ACCOUNT" | translate }}</label>
+      <label class="control-label">{{ "FORM.LABELS.LOSS_ACCOUNT" | translate }}</label>
       <select
         class="form-control"
         name="loss_exchange_account_id"
         ng-model="CashboxModalCtrl.data.loss_exchange_account_id"
         ng-options="account.id as account.label disable when account.type === 'title' for account in ::CashboxModalCtrl.accounts"
         required>
-        <option value="" disabled>{{ "SELECT.ACCOUNT" | translate }}</option>
+        <option value="" disabled>{{ "FORM.SELECTS.SELECT_ACCOUNT" | translate }}</option>
       </select>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.virement_account_id.$invalid }">
-      <label class="control-label">{{ "CASH.CASHBOX.TRANSFER_ACCOUNT" | translate }}</label>
+      <label class="control-label">{{ "FORM.LABELS.TRANSFER_ACCOUNT" | translate }}</label>
       <select
         class="form-control"
         name="virement_account_id"
         ng-model="CashboxModalCtrl.data.virement_account_id"
         ng-options="account.id as account.label disable when account.type === 'title' for account in ::CashboxModalCtrl.accounts"
         required>
-        <option value="" disabled>{{ "SELECT.ACCOUNT" | translate }}</option>
+        <option value="" disabled>{{ "FORM.SELECTS.SELECT_ACCOUNT" | translate }}</option>
       </select>
     </div>
   </div>
 
   <div class="modal-footer">
     <button type="submit" class="btn btn-default" data-method="submit">
-      {{ "FORM.SUBMIT" | translate }}
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </button>
     <button type="button" class="btn btn-default" ng-click="CashboxModalCtrl.dismiss()" data-method="cancel">
-      {{ "FORM.CANCEL" | translate }}
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
 
     <span data-role="feedback">
       <span ng-if="CashboxModalForm.$submitted && CashboxModalForm.$invalid" class="text-danger">
-        <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
+        <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERROR" | translate }}
       </span>
     </span>
   </div>

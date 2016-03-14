@@ -1,4 +1,14 @@
 {
+  "CASHBOX" : {
+    "TITLE" : "Gestion caisse",
+    "DESCRIPTION" : "Ce module est responsable de la gestion de caisse",
+    "ADD_CASHBOX" : "Ajout caisse",
+    "DANGER_ZONE" : "Zone reservee",
+    "CASHBOX" : "Caisse",
+    "CONFIG_ACCOUNTS" : "Configuration comptes"
+
+  },
+
   "HOME" : {
     "TITLE" : "Bhima",
     "PROJECT_NAME" : "Nom Project",
@@ -16,7 +26,19 @@
     "LABELS" : {
       "USERNAME" : "Nom Utilisateur",
       "PASSWORD" : "Mot de passe",
-      "PROJECT" : "Proget"
+      "PROJECT" : "Proget",
+      "NAME" : "Nom",
+      "TYPE" : "Type",
+      "PRINCIPAL" : "Principale",
+      "AUXILIARY" : "Auxilliaire",
+      "EDIT" : "Editer",
+      "CURRENCIES" : "Monnaies",
+      "CURRENCY" : "Monnaie",
+      "CASH_ACCOUNT" : "Compte caisse",
+      "GAIN_ACCOUNT" : "Compte excedant",
+      "LOSS_ACCOUNT" : "Compte perte",
+      "TRANSFER_ACCOUNT" : "Compte transfert"
+
     },
 
     "PLACE_HOLDERS" : {
@@ -25,19 +47,42 @@
     },
 
     "SELECTS" : {
-      "SELECT_PROJECT" : "Selectionner proget"      
+      "SELECT_PROJECT" : "Selectionner proget",
+      "SELECT_ACCOUNT" : "Selectionner compte"      
     },
 
     "BUTTONS" : {
-      "CONNECTION" : "Connexion"
+      "CONNECTION" : "Connexion",
+      "ADD" : "Ajouter",
+      "EDIT" : "Editer",
+      "SUBMIT" : "Soumettre",
+      "CANCEL" : "Annuler",
+      "CONFIGURE" : "Configurer",
+      "NOT_CONFIGURED" : "Non configuree",
+      "DELETE" : "Supprimer"
     },
 
     "ERRORS" : {
-      "MISSING" : "Informations manquantes"
+      "MISSING" : "Informations manquantes",
+      "HAS_ERROR" : "Contiens une erreur",
+      "CONNECTION" : "Erreur de connexion"
     },
 
     "INFOS" : {
-      "MANY_TRYS" : "Plusieurs tentatives"
+      "MANY_TRYS" : "Plusieurs tentatives",
+      "UPDATE_SUCCESS" : "Mise a jour avec succes",
+      "CREATE_SUCCESS" : "Cree avec succes"
+    },
+
+    "VALIDATIONS" : {
+      "REQUIRED" : "Champ requis"
+    }
+  },
+
+  "TABLE" : {
+    "COLUMNS" : {
+      "NAME" : "Nom"
+      
     }
   },
 
