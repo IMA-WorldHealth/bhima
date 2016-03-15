@@ -150,8 +150,9 @@ function getDetail(req, res, next) {
   var uuid = req.params.uuid;
 
   var debtorDetailsQuery =
-    'SELECT uuid, name, account_id, location_id, phone, email, note, locked ' +
-      'max_credit, is_convention, price_list_uuid ' +
+    'SELECT uuid, name, account_id, location_id, phone, email, note, locked, ' +
+      'max_credit, is_convention, price_list_uuid, ' +
+      'apply_subsidies, apply_discounts, apply_billing_services ' +
     'FROM debitor_group ' +
     'WHERE uuid = ?';
 

@@ -136,7 +136,7 @@
    "TEXT_COST"             : "Designation",
    "TITLE"                 : "Assigning",
    "TOTAL"                 : "Total",
-   "TOTALS"                : "TOTALS",
+   "TOTALS"                : "Totals",
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
@@ -147,7 +147,7 @@
   "LOGOUT_SUCCESS"             : "You are now logged out.",
   "LOGIN_PLACEHOLDER_USERNAME" : "Enter your username",
   "LOGIN_PLACEHOLDER_PASSWORD" : "Enter your password",
-  "RESET"                      : "Reset"
+  "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it."
 },
 
 "AUXILLARY_CASH_RECORD" : {
@@ -321,7 +321,7 @@
        "LINK"             : "Click here to add it.",
        "MISSING"          : "Don't see your cashbox?",
        "TRANSFER"         : "Transfer Funds",
-       "UNCONFIGURED"     : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue."       
+       "UNCONFIGURED"     : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue."
      },
      "SLIP" : "Cash Voucher",
      "CASHBOX" : "Cashbox",
@@ -441,6 +441,7 @@
    "BASIC_SALARY"          : "Basic salary",
    "BHIMA_STOCK_CODE"      : "Stock Reference",
    "BY"                    : "By",
+   "CARACTERISTICS"        : "Caracteristics",
    "CASHBOX"               : "Cash Box",
    "CHARGE"                : "Charge",
    "CODE"                  : "Code",
@@ -454,6 +455,7 @@
    "CONSUMED_STOCK"        : "Consumed Stock",
    "CONSUMPTION_PER_MONTH" : "Consumption per Month",
    "CONSUMPTION_PER_DAY"   : "Consumption By Day",
+   "CONTACT"               : "Contact",
    "CONVENTION"            : "Convention",
    "COST"                  : "Cost",
    "COST_CENTER"           : "Cost center",
@@ -486,6 +488,7 @@
    "DEBITOR_TYPE"          : "Debtor Type",
    "DEBT"                  : "Debt",
    "DEBTOR"                : "Debtor",
+   "DEBTOR_GROUP"          : "Debtor Group",
    "DEB_CRED_TYPE"         : "Debtor/Creditor Type",
    "DEB_CRED_UUID"         : "Debtor/Creditor ID",
    "DEB_EQUIV"             : "Debit",
@@ -922,20 +925,29 @@
  "DB" : {
   "ER_ROW_IS_REFERENCED_2" : "Cannot delete entry since it has been used in a transaction."
  },
-"DEBITOR_GRP": {
-   "FILTER"     : "Filter Debtor Groups",
-   "GROUPS"     : "Debtor Groups",
-   "HELP_TXT_1" : "This interface allows you to review, find, and configure debitor groups",
-   "HELP_TXT_2" : "Edit selected debitor group",
-   "HELP_TXT_3" : "Lock the selected debitor group.  No new transactions can be recorded for a locked group",
-   "HELP_TXT_4" : "Create a new debitor group",
-   "INFO"       : "Group Information",
-   "NEW"        : "New Debtor Group",
-   "SUCCES"     : "success",
-   "TITLE"      : "Debtor Group Management"
+
+"DEBTOR_GRP": {
+   "APPLY_BILLING_SERVICES" : "Apply billing service",
+   "APPLY_SUBSIDIES"        : "Apply subsidies",
+   "APPLY_DISCOUNTS"        : "Apply discounts",
+   "CREATE_SUCCESS" : "Successfully creates the debtor group",
+   "EDIT"           : "Edit Debtor Group",
+   "FILTER"         : "Filter Debtor Groups",
+   "GROUPS"         : "Debtor Groups",
+   "HELP_TXT_1"     : "This interface allows you to review, find, and configure debitor groups",
+   "HELP_TXT_2"     : "Edit selected debitor group",
+   "HELP_TXT_3"     : "Lock the selected debitor group.  No new transactions can be recorded for a locked group",
+   "HELP_TXT_4"     : "Create a new debitor group",
+   "INFO"           : "Group Information",
+   "IS_CONVENTION"  : "Convention",
+   "LOCKED"         : "Locked",
+   "NEW"            : "New Debtor Group",
+   "SUCCES"         : "success",
+   "TITLE"          : "Debtor Group Management",
+   "UPDATE_SUCCESS" : "Successfully updates the debtor group"
 },
 
-"DEBITOR_GROUP_REPORT" : {
+"DEBTOR_GROUP_REPORT" : {
    "DOCUMENT_CONFIG" : "Configuration of Debitor Group Report",
    "LANGUAGE" : "Language",
    "INVOLVE_JOURNAL" : "Involve journal",
@@ -1447,7 +1459,8 @@
     "GENERIC"           : "The form contains errors.",
     "MIN_CURRENCY_UNIT" : "This value is too small for the selected currency.",
     "NUMBER"            : "This value must be a valid number.",
-    "REQUIRED"          : "This value is required."
+    "REQUIRED"          : "This value is required.",
+    "MISSING"           : "Please ensure that all fields are filled in."
    },
    "INVALID_DATE"    : "Invalide date",
    "LOGIN"           : "Login",
@@ -1814,7 +1827,7 @@
    "MANAGE_PROVINCE"       : "Manage Province",
    "MANAGE_SECTOR"         : "Manage Sector",
    "MANAGE_VILLAGE"        : "Manage Village",
-   "MODAL"                 : "Add a new Location",   
+   "MODAL"                 : "Add a new Location",
    "NEW_FORM"              : "New Form",
    "ORIGIN"                : "Origin",
    "PROVINCE"              : "Province",
@@ -1831,7 +1844,7 @@
    "SAVE_SUCCESS"          : "Saved successfully",
    "SECTOR"                : "Sector",
    "UPDATE_SUCCESS"        : "Updating success",
-   "VILLAGE"               : "Village"   
+   "VILLAGE"               : "Village"
    },
 "MODALS" : {
   "REFERENCES" : {
@@ -2128,9 +2141,17 @@
    "PERMISSIONS_SUCCESS" : "Successfully updated user permissions."
    },
 "PLACEHOLDERS": {
-   "PRODUCTS"       : "e.g. Products",
-   "PURCHASE_ORDER" : "Enter a purchase order ID."
+   "ENTER" : {
+     "ACCOUNT"        : "Enter an account name or number",
+     "PRICE_LIST"     : "Enter price list name"
    },
+   "PRODUCTS"       : "e.g. Products",
+   "PURCHASE_ORDER" : "Enter a purchase order ID.",
+   "SELECT" : {
+     "ACCOUNT"        : "Please select an account",
+     "PRICE_LIST"     : "Please select a price list"
+   }
+ },
 "POSTING_JOURNAL": {
    "ABOLISH_GROUPS"        : "Abolish Groups",
    "ACCOUNT"               : "Account",
@@ -2732,7 +2753,7 @@
    "PROFIT_CENTER"         : "Select a Profit Center",
    "PROJECT"               : "Select a project",
    "PROVINCE"              : "Select a Province",
-   "RECEIPT"               : "Select a Receipt",   
+   "RECEIPT"               : "Select a Receipt",
    "RECIPIENT"             : "Select a Recipient",
    "REFERENCE"             : "Select a Reference",
    "REFERENCE_GROUP"       : "Select a Reference Group",
@@ -3014,7 +3035,7 @@
    "TITLE"                 : "Stock Situation"
    },
 "SUBSIDY" : {
-   "CONFIRM"          : "Are you sure you want to delete this Subsidy",  
+   "CONFIRM"          : "Are you sure you want to delete this Subsidy",
    "DATE_CREATION"    : "Date of creation",
    "DATE_UPDATE"      : "Date of update",
    "DETAILS"          : "",
@@ -3023,7 +3044,7 @@
    "NEW_SUBSIDY"      : "New subsidy",
    "NO_SUBSIDY"       : "No subsidy have been registered",
    "REGISTERED"       : "Registered subsidy",
-   "SAVE_SUCCESS"      : "Saved successfully",   
+   "SAVE_SUCCESS"      : "Saved successfully",
    "TITLE"            : "Subsidy",
    "UPDATE"           : "Update",
    "UPDATE_SUCCESS"    : "Updated successfully"
