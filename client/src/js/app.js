@@ -109,8 +109,13 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/depots_management/depots_management.html'
   })
 
-  /* employees routes */
+  /* Admin : debtor group management */
+  .when('/debtor_groups', {
+    controller : 'DebtorGroupsController as DebtorGroupCtrl',
+    templateUrl : 'partials/debtor_groups/debtor_groups.html'
+  })
 
+  /* employees routes */
   .when('/employees', {
     controller : 'EmployeeController as EmployeeCtrl',
     templateUrl : 'partials/employees/employees.html'

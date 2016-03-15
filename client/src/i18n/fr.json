@@ -443,6 +443,7 @@
    "BASIC_SALARY"          : "Salaire de base",
    "BHIMA_STOCK_CODE"      : "Code Stock",
    "BY"                    : "Par",
+   "CARACTERISTICS"        : "Caracteristiques",
    "CASHBOX"               : "Caisse",
    "CHARGE"                : "Charge",
    "CODE"                  : "Code",
@@ -456,6 +457,7 @@
    "CONSUMED_STOCK"        : "Stock Consommé",
    "CONSUMPTION_PER_MONTH" : "Consommation par mois",
    "CONSUMPTION_PER_DAY"   : "Consommation par Jour",
+   "CONTACT"               : "Contact",
    "CONVENTION"            : "Convention",
    "COST"                  : "Coût",
    "COST_CENTER"           : "Centre coût",
@@ -489,6 +491,7 @@
    "DEBT"                  : "Dette",
    "DEBITOR_TYPE"          : "Type de Débiteur",
    "DEBTOR"                : "Débiteur",
+   "DEBTOR_GROUP"          : "Groupe Débiteur",
    "DEB_CRED_TYPE"         : "Type Débiteur/Créditeur",
    "DEB_CRED_UUID"         : "ID Débiteur/Créditeur",
    "DEB_EQUIV"             : "Débit",
@@ -928,21 +931,29 @@
 "DB" : {
   "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
  },
- 
-"DEBITOR_GRP": {
-   "FILTER"     : "Filtrer Le Groupe de Débiteur",
-   "GROUPS"     : "Groupe de Débiteur",
-   "HELP_TXT_1" : "Cette interface vous permet de visualiser, trouver, et configurer un groupe de debiteur",
-   "HELP_TXT_2" : "Editer le Groupe de debiteur Sélectionnée",
-   "HELP_TXT_3" : "Bloquer le Groupe de debiteur sélectionné. Aucune transaction ne pourra etre Effectuée avec ce groupe",
-   "HELP_TXT_4" : "Crée un nouveau groupe de debiteur",
-   "INFO"       : "Information du Groupe",
-   "NEW"        : "Nouveau Groupe de Débiteur",
-   "SUCCES"     : "Succès",
-   "TITLE"      : "Gestion des Groupes des Débiteurs"
+
+"DEBTOR_GRP": {
+  "APPLY_BILLING_SERVICES" : "Appliquer facturation",
+  "APPLY_SUBSIDIES"        : "Appliquer subvention",
+  "APPLY_DISCOUNTS"        : "Appliquer reduction",
+   "CREATE_SUCCESS" : "Creation avec succes du groupe debiteur",
+   "EDIT"           : "Editer le groupe debiteur",
+   "FILTER"         : "Filtrer Le Groupe de Débiteur",
+   "GROUPS"         : "Groupes de Débiteur",
+   "HELP_TXT_1"     : "Cette interface vous permet de visualiser, trouver, et configurer un groupe de debiteur",
+   "HELP_TXT_2"     : "Editer le Groupe de debiteur Sélectionnée",
+   "HELP_TXT_3"     : "Bloquer le Groupe de debiteur sélectionné. Aucune transaction ne pourra etre Effectuée avec ce groupe",
+   "HELP_TXT_4"     : "Crée un nouveau groupe de debiteur",
+   "INFO"           : "Information du Groupe",
+   "IS_CONVENTION"  : "Convention",
+   "LOCKED"         : "Verrouillé",
+   "NEW"            : "Nouveau Groupe de Débiteur",
+   "SUCCES"         : "Succès",
+   "TITLE"          : "Gestion des Groupes des Débiteurs",
+   "UPDATE_SUCCESS" : "Mise a jour avec succes du groupe debiteur"
 },
 
-"DEBITOR_GROUP_REPORT" : {
+"DEBTOR_GROUP_REPORT" : {
    "DOCUMENT_CONFIG" : "Configuration rapport groupe de debiteur",
    "LANGUAGE" : "Langue",
    "INVOLVE_JOURNAL" : "Integrer le journal ",
@@ -1485,7 +1496,7 @@
    "WARNINGS" : {
     "FUTURE_DATE"    : "Attention: Cette date n'est pas encore arrivée."
    }
-  },   
+  },
 "GRADE": {
    "ADD"            : "Ajouter un grade",
    "ALERT"          : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",
@@ -2128,9 +2139,17 @@
    "PERMISSIONS_SUCCESS" : "Mis les permissions a jor avec success."
    },
 "PLACEHOLDERS": {
-   "PRODUCTS"       : "ex. Produits",
-   "PURCHASE_ORDER" : "Entre la référence d'une commande d'achat."
+   "ENTER" : {
+     "ACCOUNT"        : "Entrer le numero ou le nom d'un compte",
+     "PRICE_LIST"     : "Entrer le nom d'une liste de prix"
    },
+   "PRODUCTS"       : "ex. Produits",
+   "PURCHASE_ORDER" : "Entre la référence d'une commande d'achat.",
+   "SELECT" : {
+     "ACCOUNT"        : "Veuillez selectionner un compte",
+     "PRICE_LIST"     : "Veuillez selectionner une liste de prix"
+   }
+  },
 "POSTING_JOURNAL": {
    "ABOLISH_GROUPS"        : "Abolir les groupes",
    "ACCOUNT"               : "Compte",
