@@ -33,7 +33,7 @@ function CashTransferModalController(ModalInstance, voucherService, cashBoxServi
 
   currencyService.read()
   .then(function (currencies){
-    vm.invalidCurrencyIds = cashService.getUnsupportedCurrencyIds(cashBox, currencies);
+    vm.disabledCurrencyIds = cashService.getUnsupportedCurrencyIds(cashBox, currencies);
   });
 
   /**

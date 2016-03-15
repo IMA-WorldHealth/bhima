@@ -22,6 +22,16 @@
 
     <hr/>
 
+    <bh-currency-select
+      currency-id="CashTransferModalCtrl.currency_id"
+      validation-trigger="TransferForm.$submitted"
+      error-message="{{ CashTransferModalCtrl.errorKey | translate }}"
+      disable-ids="CashTransferModalCtrl.disabledCurrencyIds"
+      on-change="CashTransferModalCtrl.handleCashCurrencyChange(currency)"
+      ng-if="CashTransferModalCtrl.disabledCurrencyIds"                  
+    >
+    </bh-currency-select>
+
     <bh-currency-input
       id="transferCurrencyInput"
       currency-id="CashTransferModalCtrl.currency_id"
@@ -29,10 +39,7 @@
       max-value="CashTransferModalCtrl.cashAccountBalance.balance"
       form="TransferForm"
       validation-trigger="TransferForm.$submitted"
-      on-currency-change="CashTransferModalCtrl.handleCashCurrencyChange(currency)"
-      error-message="{{ CashTransferModalCtrl.errorKey | translate }}"
-      un-supported-currency-ids="CashTransferModalCtrl.invalidCurrencyIds"
-      ng-if="CashTransferModalCtrl.invalidCurrencyIds"
+      ng-if="CashTransferModalCtrl.currency_id"
       >
     </bh-currency-input>
 

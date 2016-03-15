@@ -12,6 +12,7 @@
         ng-model="$ctrl.currencyId"
         ng-value="currency.id"
         ng-change="$ctrl.handleChange()"
+        ng-disabled="currency.disabled"
         data-currency-option="{{ currency.id }}"
         required>
       {{ currency.label }}

@@ -3,8 +3,10 @@ angular.module('bhima.components')
   controller : bhCurrencySelect,
   templateUrl : 'partials/templates/bhCurrencySelect.tmpl.html',
   bindings : {
-    validationTrigger : '<',
+    disableIds : '<',
+    errorMessage : '@',
     currencyId : '<',
+    validationTrigger : '<',
     onChange : '&'
   }
 });
@@ -56,8 +58,11 @@ bhCurrencySelect.$inject = [ 'CurrencyService', 'AppCache' ];
  *      an array of currency ids to be disabled as required.
  */
 function bhCurrencySelect(Currencies, AppCache) {
-  var ctrl = this;
+  var ctrl = this;  
   var cache = AppCache('CurrencySelectComponent');
+
+  /****/
+  // ctrl.block = false;
 
   // default currencies to an empty list
   ctrl.currencies = [];
@@ -92,6 +97,7 @@ function bhCurrencySelect(Currencies, AppCache) {
     // cache a label for faster view rendering
     currencies.forEach(function (currency) {
       currency.label = Currencies.format(currency.id);
+      currency.disabled = (ctrl.disableIds.indexOf(currency.id) > -1) ? true : false;
     });
 
     ctrl.currencies = currencies;

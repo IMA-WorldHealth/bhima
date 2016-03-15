@@ -2,14 +2,6 @@
   ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.form.currencyInputValue.$invalid }"  
   data-bh-currency-input>
 
-  <!-- incorporate the currency select component-->
-  <bh-currency-select
-    currency-id="$ctrl.currencyId"
-    validation-trigger="$ctrl.validationTrigger"
-    on-change="$ctrl.handleCurrencyChange(currency)"
-    >
-  </bh-currency-select>
-
   <label class="control-label">
     {{ "COLUMNS.PAYMENT" | translate }}
   </label>
@@ -23,12 +15,9 @@
       ng-min="$ctrl.currency.min_monentary_unit"
       ng-max="$ctrl.maxValue"
       ng-change="$ctrl.checkModel()"
-      ng-disabled="$ctrl.block"
       required>
   </div>
   
-  <span ng-if="$ctrl.block" class="glyphicon glyphicon-exclamation-sign">{{$ctrl.errorMessage}}</span>
-
   <!-- validation messages -->
   <p class="help-block" ng-messages="$ctrl.form.currencyInputValue.$error" ng-show="$ctrl.validationTrigger">
 
