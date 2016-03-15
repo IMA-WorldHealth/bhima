@@ -19,7 +19,6 @@ function SectorController(Locations, $window, $translate) {
 
 
   vm.loadProvinces = loadProvinces;
-  vm.loadSectors = loadSectors;
 
   function handler(error) {
     console.error(error);
