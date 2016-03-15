@@ -837,7 +837,7 @@
    "AND"              : "and",
    "CODE"             : "Code",
    "CONFIGURATION"    : "Country Manager Configuration ",
-   "COUNTRY"          : "country",
+   "COUNTRY"          : "Country",
    "CREATE"           : "create",
    "DESCRIPTION"      : "This module will help you to manage countries. At the left you see available countries and their locations. Use this module to create, modify, and remove countries.",
    "EDIT"             : "Edit a Country",
@@ -1799,8 +1799,10 @@
 "LOCATION": {
    "ADD"                   : "Add",
    "AND"                   : "and",
+   "CONFIRM"               : "Are you sure you want to delete this Location",
    "COUNTRY"               : "Country",
    "CURRENT"               : "Current",
+   "DELETE_SUCCESS"        : "Deleted successfully",
    "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
    "ET"                    : "and",
    "INFO_CREATE"           : "create",
@@ -1826,7 +1828,9 @@
    "VILLE"                 : "Township/Commune",
    "COUNTRY"               : "Country",
    "PROVINCE"              : "Province",
+   "SAVE_SUCCESS"          : "Saved successfully",
    "SECTOR"                : "Sector",
+   "UPDATE_SUCCESS"        : "Updating success",
    "VILLAGE"               : "Village"   
    },
 "MODALS" : {
@@ -3250,7 +3254,7 @@
    "INVENTORY_MANAGEMENT"      : "Inventory Management",
    "INVENTORY_VIEW"            : "Stock",
    "JOURNAL_VOUCHER"           : "Journal Voucher",
-   "LOCATION"                  : "Location Management",
+   "LOCATION"                  : "Locations Management",
    "LOSS_RECORDS"              : "Stock loss",
    "MAIN_CASH"                 : "Principal Cashbox",
    "MULTI_PAYROLL"             : "Multiple Payroll",

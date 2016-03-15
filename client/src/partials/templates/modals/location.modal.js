@@ -57,7 +57,7 @@ function LocationModalController(Locations, Instance, AppCache) {
       onEnter : function onEnter() { delete vm.village; }
     }
   };
-
+ 
   /**
    * messages to be displayed in the <select> options.  Normally, these are
    * "Select a X", but in case there is no data, a no data message is displayed.

@@ -1,85 +1,100 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('LocationCountryController', LocationCountryController);
+.controller('CountryController', CountryController);
 
-LocationCountryController.$inject = [
-  '$scope', 'connect', 'validate', 'uuid', 'messenger'
+CountryController.$inject = [
+  'LocationService', '$window', '$translate'
 ];
 
-function LocationCountryController($scope, connect, validate, uuid, messenger) {
-  var dependencies = {};
+function CountryController(Locations, $window, $translate) {
+  var vm = this;
+  vm.session = {};
+  vm.view = 'default';
 
-  dependencies.countries = {
-    query : {
-      identifier : 'uuid',
-      tables: {
-        'country' : {
-          columns : ['uuid','code', 'country_en', 'country_fr']
-        }
-      }
-    }
+  // bind methods
+  vm.create = create;
+  vm.submit = submit;
+  vm.update = update;
+  vm.cancel = cancel;
+
+
+  function handler(error) {
+    console.error(error);
+  }
+
+  // fired on startup
+  function startup() {
+    // start up loading indicator
+    vm.session.loading = true;
+
+    // load Subsidies
+    refreshCountrys();
+  }
+
+  function cancel() {
+    vm.view = 'default';
+  }
+
+  function create() {
+    vm.view = 'create';
+    vm.country = {};
+  }
+
+  vm.messages = {
+    country : Locations.messages.country
   };
 
-  function manageCountry (model) {
-    angular.extend($scope, model);
+  /** load countries on startup */
+  Locations.countries()
+  .then(function (countries) {
+
+    // bind the countries to the view for <select>ion
+    vm.countries = countries;
+
+    // make sure that we are showing the proper message to the client
+    vm.messages.country = (countries.length > 0) ?
+      Locations.messages.country :
+      Locations.messages.empty;
+  });
+
+
+  // switch to update mode
+  // data is an object that contains all the information of a country
+  function update(data) {
+    vm.view = 'update';
+    vm.country = data;
   }
 
-  function setOp(action, country){
-    $scope.country  = angular.copy(country) || {};
-    $scope.op = action;
-  }
-
-  function addCountry (obj){
-    var country = {
-      uuid : uuid(),
-      code : obj.code,
-      country_en : obj.country_en,
-      country_fr : obj.country_fr
-    };
-
-    connect.post('country', [country])
-    .then(function (suc) {
-      console.log(suc);
-      $scope.countries.post(country);
-      $scope.op = '';
-    })
-    .catch(function (err) {
-      messenger.danger('error during adding', err);
+  
+  // refresh the displayed Countrys
+  function refreshCountrys() {
+    return Locations.countries({detailed : 1}).then(function (data) {
+      vm.countries = data;
+      vm.session.loading = false;
     });
   }
 
-  function editCountry(){
-    var country  = {
-      uuid : $scope.country.uuid,
-      code : $scope.country.code,
-      country_en : $scope.country.country_en,
-      country_fr : $scope.country.country_fr
-    };
+  // form submission
+  function submit(invalid) {
+    if (invalid) { return; }
 
-    connect.put('country', [connect.clean(country)], ['uuid'])
-    .then(function () {
-      $scope.countries.put($scope.country);
-      $scope.country = {};
-    })
-    .catch(function (err) {
-      messenger.danger('error during editing', err);
-    });
+    var promise;
+    var creation = (vm.view === 'create');
+    var country = angular.copy(vm.country);
+    
+    promise = (creation) ?
+      Locations.create.country(country) :
+      Locations.update.country(country.uuid, country);
+
+    promise
+      .then(function (response) {
+        return refreshCountrys();
+      })
+      .then(function () {
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
+      .catch(handler);
   }
 
-  $scope.removeCountry = function removeCountry(country_uuid){
-    connect.delete('country', 'uuid', country_uuid)
-    .then(function (suc){
-      $scope.countries.remove(country_uuid);
-      $scope.countries.recalculateIndex();
-    })
-    .catch(function (err) {
-      messenger.danger('error during removing', err);
-    });
-  };
-
-  validate.process(dependencies)
-  .then(manageCountry);
-
-  $scope.setOp = setOp;
-  $scope.addCountry = addCountry;
-  $scope.editCountry = editCountry;
+  startup();  
 }

@@ -1,116 +1,166 @@
-<header data-header>
-  {{ 'PROVINCE.TITLE' | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="static">{{ "TREE.LOCATION" | translate }}</li>
       <li class="active">{{ "PROVINCE.TITLE" | translate }}</li>
     </ol>
   </div>
+</div>
 
-  <div class="pull-right">
-    <button class="btn btn-default btn-sm" ng-click="setOp('Add')"><span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROVINCE.ADD' | translate}}</button>
-    <a href="#/locations" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-globe"></span> {{'PROVINCE.LOCATION_MANAGER' | translate}}</a>
-  </div>
-</nav>
+<div class="flex-util">
+  <a href="#/locations" class="btn btn-default btn-sm">
+    <span class="glyphicon glyphicon-globe"></span> {{ 'PROVINCE.LOCATION_MANAGER' | translate }}
+  </a> 
 
-<main>
-  <div class="row">
+  <button class="btn btn-sm btn-default" id="create" ng-click="ProvinceCtrl.create()" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{'PROVINCE.ADD' | translate}}
+  </button> 
+</div>
 
-    <div class="col-xs-6">
-      <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
-        <div class="panel-heading">
-          {{'PROVINCE.REGISTERED' | translate}}
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ 'PROVINCE.REGISTERED' | translate }}
+          </div>
+
+          <table class="table table-condensed">
+            <thead>
+               <tr>
+                <th>{{ 'PROVINCE.NAME' | translate}}</th>
+                <th>{{ 'PROVINCE.COUNTRY' | translate}}</th>
+                <th>{{ 'PROVINCE.ACTIONS' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="ProvinceCtrl.session.loading" class="text-center">
+                <td colspan="4"><loading-indicator></loading-indicator></td>
+              </tr>
+              <tr ng-repeat="province in ProvinceCtrl.provinces | orderBy:'province' "  ng-class="{'rowSelected' : ProvinceCtrl.province.uuid === province.uuid}">
+                <td>{{ province.name }}</td>
+                <td>{{ province.country_name }}</td>
+                <td><a class="btn btn-xs btn-default" id="province-{{$index + 1}}" ng-click="ProvinceCtrl.update(province)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <table class="table table-striped table-condensed">
-          <thead>
-            <tr>
-              <th>{{ 'PROVINCE.NAME' | translate}}</th>
-              <th>{{ 'PROVINCE.COUNTRY' | translate}}</th>
-              <th colspan="2">{{ 'PROVINCE.ACTIONS' | translate}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="province in provinces.data | orderBy:'name'">
-              <td>{{ province.name }}</td>
-              <td>{{ province.country_name }}</td>
-              <td><a ng-click="setOp('Edit', province)"><i class="glyphicon glyphicon-pencil"></i></a></td>
-              <td><a ng-click="removeProvince(province.uuid)" class="danger"><i class="glyphicon glyphicon-trash"></i></a></td>
-            </tr>
-          </tbody>
-        </table>
       </div>
-    </div>
 
-    <div class="col-xs-6" ng-switch="op">
-      <div ng-switch-default>
-         <div class="alert alert-info">
+      <div class="col-xs-6" ng-switch="ProvinceCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info" id="default">
              <b>{{'PROVINCE.CONFIGURATION' | translate}} </b>
              <p>{{'PROVINCE.DESCRIPTION' | translate}}
-             </p>
-         </div>
-       </div>
-
-       <div ng-switch-when="Add">
-          <form class="form-horizontal" name="addForm" novalidate>
-            <fieldset>
-              <legend>{{'PROVINCE.REGISTER' | translate}}</legend>
-              <div class="form-group">
-                <label class="col-xs-2"> {{'PROVINCE.COUNTRY' | translate}}</label>
-                <div class="col-xs-10">
-                  <select required class="form-bhima" name="countryname" id="countryID" ng-model="add.country_uuid" ng-options="cou.uuid as cou.country_en for cou in countries.data">
-                    <option value="" disable="disabled">-- {{'SELECT.COUNTRY' | translate}} -- </option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group">
-                 <label class="col-xs-2 control-label">{{'PROVINCE.PROVINCE_NAME' | translate}}</label>
-                 <div class="col-xs-10">
-                    <input class="form-bhima" ng-model="add.name" required>
-                 </div>
-              </div>
-            </fieldset>
-
-            <button class="btn btn-default btn-success" ng-click="addProvince(add)" ng-disabled="addForm.$invalid">
-              {{'FORM.ADD' | translate}}
-            </button>
-            <button class="btn btn-default btn-sm">
-              {{'FORM.NEW_FORM' | translate}}
-            </button>
-          </form>
+             </p>       
+          </div>
         </div>
 
-        <div ng-switch-when="Edit">
-          <form class="form-horizontal" name="editForm" novalidate>
-            <fieldset>
-              <legend>{{'PROVINCE.EDIT' | translate}}</legend>
-              <div class="form-group">
-                <label class="col-xs-2"> {{'PROVINCE.COUNTRY' | translate}}</label>
-                <div class="col-xs-10">
-                  <select class="form-bhima" name="countryname" id="countryID" ng-model="province.country_uuid" ng-options="cou.uuid as cou.country_fr for cou in countries.data | orderBy:'country_fr'" required>
-                    <option value="" disable="disabled">-- {{ 'SELECT.COUNTRY' | translate }} -- </option>
-                  </select>
-                </div>
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'LOCATION.SAVE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'LOCATION.UPDATE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_success">
+          <div class="alert alert-success" id="delete_success">
+            <h4>{{ 'LOCATION.DELETE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_error">
+          <div class="alert alert-danger" id="delete_error">
+            <h4>{{ ProvinceCtrl.HTTPError.data.code | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ 'PROVINCE.REGISTER' | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="CreateForm" ng-submit="ProvinceCtrl.submit(CreateForm.$invalid)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
+                <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
+                <select 
+                  class="form-control" 
+                  name="country" 
+                  ng-model="ProvinceCtrl.province.country_uuid" 
+                  id="country"  
+                  ng-options="c.uuid as c.name for c in ProvinceCtrl.countries | orderBy:'name'"
+                  ng-change="ProvinceCtrl.loadProvinces()"
+                  required>
+                  <option value="" disabled> -- {{ ProvinceCtrl.messages.country | translate }} -- </option>
+                </select>
               </div>
 
-              <div class="form-group">
-                <label class="col-xs-2 control-label">{{'PROVINCE.PROVINCE_NAME' | translate}}</label>
-                <div class="col-xs-10">
-                  <input class="form-bhima" ng-model="province.name" required>
-                </div>
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.province.$invalid }">
+                <label class="control-label">{{ "LOCATION.PROVINCE" | translate }}</label>
+                <input type="text" placeholder="{{ 'INPUT.PROVINCE' | translate }}" class="form-control" name="province" ng-model="ProvinceCtrl.province.name" required>
               </div>
-            </fieldset>
-            <button class="btn btn-default btn-success" ng-click="editProvince(province)" ng-disabled="editForm.$invalid">
-              {{'FORM.ADD' | translate}}
-            </button>
-            <button class="btn btn-default btn-sm">
-              {{'FORM.NEW_FORM' | translate}}
-            </button>
-          </form>
-       </div>
-     </div>
-   </div>
-</main>
+              
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-province" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="ProvinceCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>        
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'PROVINCE.EDIT' | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="UpdateForm" ng-submit="ProvinceCtrl.submit(UpdateForm.$invalid)" novalidate>
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
+                <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
+                <select 
+                  class="form-control" 
+                  name="country" 
+                  ng-model="ProvinceCtrl.province.country_uuid" 
+                  id="country"  
+                  ng-options="c.uuid as c.name for c in ProvinceCtrl.countries | orderBy:'name'"
+                  ng-change="ProvinceCtrl.loadProvinces()"
+                  required>
+                  <option value="" disabled> -- {{ ProvinceCtrl.messages.country | translate }} -- </option>
+                </select>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.province.$invalid }">
+                <label class="control-label">{{ "LOCATION.PROVINCE" | translate }}</label>
+                <input type="text" placeholder="{{ 'INPUT.PROVINCE' | translate }}" class="form-control" name="province" ng-model="ProvinceCtrl.province.name" required>
+              </div>
+              
+              <div class="form-group">
+                <button class="btn btn-default" id="change_province" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="ProvinceCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>         
+        </div>
+
+      </div>
+    </div>
+  </div>  
+</div>

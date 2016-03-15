@@ -40,16 +40,25 @@ function LocationService($http, util, Modal) {
   service.provinces = provinces;
   service.sectors = sectors;
   service.villages = villages;
+  service.locations = locations;
 
   /** detail interfacs */
   service.location = location;
 
-  /** locaiton creation interfaces */
+  /** location creation interfaces */
   service.create = {};
   service.create.country = createCountry;
   service.create.province = createProvince;
   service.create.sector = createSector;
   service.create.village = createVillage;
+
+/** location update interfaces */
+  service.update = {};
+  service.update.country = updateCountry;
+  service.update.province = updateProvince;
+  service.update.sector = updateSector;
+  service.update.village = updateVillage;
+
 
   /** launch the "add location" modal */
   service.modal = modal;
@@ -59,7 +68,6 @@ function LocationService($http, util, Modal) {
     country:  'SELECT.COUNTRY',
     province: 'SELECT.PROVINCE',
     sector:   'SELECT.SECTOR',
-    village:  'SELECT.VILLAGE',
     empty:    'SELECT.EMPTY'
   };
 
@@ -154,6 +162,53 @@ function LocationService($http, util, Modal) {
 
   function createVillage(data) {
     return createGeneric('/villages', data);
+  }
+
+  /**
+   * Update location in the database
+   * @public
+   */
+  function updateCountry(uuid, country) {
+    return $http.put('/locations/countries/'.concat(uuid), country)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function updateProvince(uuid, province) {
+    var provinceClean = {
+      country_uuid : province.country_uuid,
+      name : province.name
+    };
+
+    return $http.put('/locations/provinces/'.concat(uuid), provinceClean)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function updateSector(uuid, sector) {
+    var sectorClean = {
+      province_uuid : sector.province_uuid,
+      name : sector.name
+    };
+
+    return $http.put('/locations/sectors/'.concat(uuid), sectorClean)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function updateVillage(uuid, village) {
+    var villageClean = {
+      sector_uuid : village.sector_uuid,
+      name : village.name
+    };
+
+    return $http.put('/locations/villages/'.concat(uuid), villageClean)
+      .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * fetch a list of all data about locations from the server
+   * @public
+   */
+  function locations(options) {
+    return request('/detail', { params : options });
   }
 
   return service;

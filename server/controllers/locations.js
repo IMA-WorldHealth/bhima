@@ -11,7 +11,8 @@ var uuid = require('node-uuid');
 *   /locations/sector/:uuid
 *   /locations/province/:uuid
 *   /locations/detail/:uuid
-*
+*   /locations/detail/
+*   
 * Each endpoint returns a table with all information available.
 * Endpoints taking UUIDs return only the records matching the UUID
 */
@@ -59,8 +60,23 @@ exports.villages = function villages(req, res, next) {
 exports.sectors = function sectors(req, res, next) {
   'use strict';
 
-  var sql =
-    'SELECT sector.uuid, sector.name FROM sector ';
+  var sql;
+
+  // send a larger response if detailed is 1
+  if (req.query.detailed === '1') {
+    sql = 
+      'SELECT sector.uuid, sector.name, ' +
+        'province.name AS province_name, province.uuid AS provinceUuid, country.name AS country_name,  ' +
+        'country.uuid AS countryUuid ' +
+      'FROM sector JOIN province JOIN country ON ' +
+        'sector.province_uuid = province.uuid AND ' +
+        'province.country_uuid = country.uuid ';
+
+  } else {
+    sql =
+      'SELECT sector.uuid, sector.name FROM sector ';
+  }
+
 
   sql += (req.query.province) ?
     'WHERE sector.province_uuid = ? ORDER BY sector.name ASC;' :
@@ -88,8 +104,19 @@ exports.sectors = function sectors(req, res, next) {
 exports.provinces = function provinces(req, res, next) {
   'use strict';
 
-  var sql =
-    'SELECT province.uuid, province.name FROM province ';
+  var sql;
+
+  // send a larger response if detailed is 1
+  if (req.query.detailed === '1') {
+    sql = 
+      'SELECT province.uuid, province.name, country.name AS country_name, province.country_uuid AS countryUuid ' +
+      'FROM province JOIN country ON ' +
+        'province.country_uuid = country.uuid ';
+  } else {
+    sql =
+      'SELECT province.uuid, province.name FROM province ';
+  }
+
 
   sql += (req.query.country) ?
     'WHERE province.country_uuid = ? ORDER BY province.name ASC;' :
@@ -126,8 +153,8 @@ exports.countries = function countries(req, res, next) {
   .done();
 };
 
-/** @todo - should this method even be called? */
-exports.lookupVillage = function lookupVillage(req, res, next) {
+
+function lookupVillage(uuid, codes) {
   'use strict';
 
   var sql =
@@ -139,16 +166,17 @@ exports.lookupVillage = function lookupVillage(req, res, next) {
       'province.country_uuid = country.uuid ' +
     'WHERE village.uuid = ?;';
 
-  db.exec(sql, [req.params.uuid])
-  .then(function (data) {
-    res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
-};
+  db.exec(sql, [uuid])
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw new codes.ERR_NOT_FOUND();
+    }
 
-/** @todo - should this method even be called? */
-exports.lookupSector = function lookupSector(req, res, next) {
+    return rows[0];    
+  });
+}
+
+function lookupSector(uuid, codes) {
   'use strict';
 
   var sql =
@@ -159,15 +187,17 @@ exports.lookupSector = function lookupSector(req, res, next) {
       'province.country_uuid = country.uuid ' +
     'WHERE sector.uuid = ?;';
 
-  db.exec(sql, [req.params.uuid])
-  .then(function (data) {
-    res.send(data);
-  })
-  .catch(next)
-  .done();
-};
+  db.exec(sql, [uuid])
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw new codes.ERR_NOT_FOUND();
+    }
 
-exports.lookupProvince = function lookupProvince(req, res, next) {
+    return rows[0];    
+  });
+}
+
+function lookupProvince(uuid, codes) {
   'use strict';
 
   var sql =
@@ -176,14 +206,33 @@ exports.lookupProvince = function lookupProvince(req, res, next) {
       'province.country_uuid = country.uuid ' +
     'WHERE province.uuid = ?;';
 
-  db.exec(sql, [req.params.uuid])
-  .then(function (data) {
-    res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
-};
+  db.exec(sql, [uuid])
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw new codes.ERR_NOT_FOUND();
+    }
 
+    return rows[0];    
+  });
+}
+
+function lookupCountry(uuid, codes) {
+  'use strict';
+
+  var sql =
+    'SELECT country.uuid, country.name ' +
+    'FROM country ' +
+    'WHERE country.uuid = ?;';
+
+  db.exec(sql, [uuid])
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw new codes.ERR_NOT_FOUND();
+    }
+
+    return rows[0];    
+  });
+}
 
 /**
  * GET /locations/detail/:uuid
@@ -218,6 +267,40 @@ exports.detail = function detail(req, res, next) {
   .catch(next)
   .done();
 };
+
+
+
+/**
+ * GET /locations/detail/
+ *
+ * This method looks up a detailed location reference from the database and
+ * returns it as a JSON object.
+ *
+ * @method detail
+ * @return {object} JSON object with keys {villageUuid, village, sectorUuid,
+ * sector, countryUuid, country}
+ */
+exports.list = function list(req, res, next) {
+  'use strict';
+
+  var sql =
+    'SELECT village.uuid AS villageUuid, village.name AS village, sector.name AS sector,' +
+      'sector.uuid AS sectorUuid, province.name AS province, province.uuid AS provinceUuid, ' +
+      'country.name AS country, country.uuid AS countryUuid ' +
+    'FROM village, sector, province, country ' +
+    'WHERE village.sector_uuid = sector.uuid AND ' +
+      'sector.province_uuid = province.uuid AND ' +
+      'province.country_uuid = country.uuid ;';
+
+  db.exec(sql)
+  .then(function (data) {
+    res.status(200).json(data);
+  })
+  .catch(next)
+  .done();
+
+};
+
 
 /** bindings for creation methods */
 exports.create = {};
@@ -321,6 +404,122 @@ exports.create.village = function createVillage(req, res, next) {
   db.exec(sql, [[req.body.uuid, req.body.name, req.body.sector_uuid]])
   .then(function (row) {
     res.status(201).json({ uuid : req.body.uuid });
+  })
+  .catch(next)
+  .done();
+};
+
+
+/** bindings for Update methods */
+exports.update = {};
+
+/**
+ * PUT /locations/countries/:uuid
+ *
+ * This method update a country reference in the database.
+ *
+ * @method updateCountry
+ */
+exports.update.country = function updateCountry(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'UPDATE country SET ? WHERE uuid = ?;';
+
+  db.exec(sql, [req.body, req.params.uuid])
+  .then(function () {
+    var uuid = req.params.uuid;
+    return lookupCountry (uuid, req.codes);
+  })
+  .then(function (record) {
+    // all updates completed successfull, return full object to client
+    res.status(200).json(record);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+ * PUT /locations/provinces/:uuid
+ *
+ * This method Updates a province reference
+ *
+ * @method updateProvince
+ */
+exports.update.province = function updateProvince(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'UPDATE province SET ? WHERE uuid = ?;';
+
+  db.exec(sql, [req.body, req.params.uuid])
+  .then(function () {
+    var uuid = req.params.uuid;
+    return lookupProvince (uuid, req.codes);
+  })
+  .then(function (record) {
+    // all updates completed successfull, return full object to client
+    res.status(200).json(record);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+ * PUT /locations/sectors/:uuid
+ *
+ * This method Updates a sector reference, linked to a province, in the
+ *
+ * @method updateSector
+ */
+exports.update.sector = function updateSector(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'UPDATE sector SET ? WHERE uuid = ?;';
+
+  db.exec(sql, [req.body, req.params.uuid])
+  .then(function () {
+    var uuid = req.params.uuid;
+    return lookupSector (uuid, req.codes);
+  })
+  .then(function (record) {
+    // all updates completed successfull, return full object to client
+    res.status(200).json(record);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+ * PUT /locations/villages/:uuid
+ *
+ * This method updates a village reference, linked to a sector, in the
+ *
+ * @method updateVillage
+ */
+exports.update.village = function updateVillage(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'UPDATE village SET ? WHERE uuid = ?;';
+
+  db.exec(sql, [req.body, req.params.uuid])
+  .then(function () {
+    var uuid = req.params.uuid;
+    return lookupVillage (uuid, req.codes);
+  })
+  .then(function (record) {
+    // all updates completed successfull, return full object to client
+    res.status(200).json(record);
   })
   .catch(next)
   .done();

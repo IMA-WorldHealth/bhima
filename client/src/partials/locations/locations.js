@@ -1,13 +1,34 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('location', [
-  '$scope',
-  'connect',
-  'store',
-  function ($scope, connect, Store) {
+.controller('LocationController', LocationController);
 
-    connect.fetch('/location/villages')
-    .then(function (data) {
-      $scope.locations = data;
-    });
+LocationController.$inject = [
+  'LocationService'
+];
+
+function LocationController(Locations) {
+  var vm = this;
+  var session = vm.session = {};
+
+  session.loading = false;  
+  vm.view = 'default';
+
+  function handler(error) {
+    console.error(error);
   }
-]);
+
+  // fired on startup
+  function startup() {
+    // start up loading indicator
+    session.loading = true;
+
+    // load location
+    Locations.locations().then(function (data) {
+      vm.locations = data;
+      session.loading = false;
+    }).catch(handler);
+
+  }
+
+  startup();
+}

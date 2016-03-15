@@ -14,6 +14,7 @@ INSERT INTO `unit` VALUES (0,'Root','TREE.ROOT','The unseen root node',NULL,'/pa
   (14,'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register/'),
   (18,'Cash Payments','TREE.CASH_PAYMENTS','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
   (22,'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
+  (26,'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
   (42,'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
   (48,'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
   (57,'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
@@ -98,6 +99,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Cash Payments
 (18,1),
+
+-- Location Management 
+(26,1),
 
 -- Projects
 (42,1),
