@@ -6,7 +6,6 @@ var expect = chai.expect;
 
 var FU = require('../shared/FormUtils');
 var helpers = require('../shared/helpers');
-var components = require('../shared/components');
 
 helpers.configure(chai);
 

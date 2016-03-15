@@ -74,21 +74,6 @@
           </div>
         </div>
 
-        <div ng-switch-when="delete_success">
-          <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'LOCATION.DELETE_SUCCESS' | translate }} </h4>
-            </p>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_error">
-          <div class="alert alert-danger" id="delete_error">
-            <h4>{{ ProvinceCtrl.HTTPError.data.code | translate }} </h4>
-            </p>
-          </div>
-        </div>
-
-
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'PROVINCE.REGISTER' | translate }}</div>
           <div class="panel-body">

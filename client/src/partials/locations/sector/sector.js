@@ -81,25 +81,6 @@ function SectorController(Locations, $window, $translate) {
     });
   }
 
-  /** loads sectors based on the selected province */
-  function loadSectors() {
-
-    // make sure we do not make unnecessary HTTP requests
-    if (!vm.sector.province_uuid) { return; }
-
-    Locations.sectors({ province : vm.sector.province_uuid })
-    .then(function (sectors) {
-
-      // bind the sectors to the view for <selection>
-      vm.sectors = sectors;
-
-      // make sure that we show the correct message in the <select> option
-      vm.messages.sector = (sectors.length > 0) ?
-        Locations.messages.sector :
-        Locations.messages.empty;
-    });
-  }
-
   // switch to update mode
   // data is an object that contains all the information of a sector
   function update(data) {
