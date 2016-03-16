@@ -1,195 +1,211 @@
-<header data-header>
-  {{ "PRICE_LIST.TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
       <li class="active">{{ "PRICE_LIST.TITLE" | translate }}</li>
     </ol>
   </div>
+</div>
 
-  <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="addList()">
-      <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW" | translate }}
-    </button>
-  </div>
-</nav>
+<div class="flex-util">
+  <button class="btn btn-sm btn-default" id="create" ng-click="PriceListCtrl.create()" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW" | translate }}
+  </button>
+</div>
 
-<main>
-  <div class="row">
-    <div class="col-xs-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <span>{{ "PRICE_LIST.LISTS" | translate }}</span>
-        </div>
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-              <th colspan="3" style="width: 20%;">{{ "COLUMNS.ACTION" | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-class="{'selected-primary' : session.selected===list}" ng-repeat="list in model.priceList.data | orderBy:'title'">
-              <td> {{ list.title }} </td>
-              <td><a ng-click="editMeta(list)"><i class="glyphicon glyphicon-pencil white"></i></a></td>
-              <td><a ng-click="editItems(list)"><i class="glyphicon glyphicon-cog white"></i></a></td>
-              <td><a ng-click="removeList(list)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
-            </tr>
 
-            <tr ng-if="model.priceList.data.length===0">
-              <td colspan=2><i>{{ 'PRICE_LIST.NO_RECORDS' | translate }}</i></tr>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
 
-    <div class="col-xs-8" ng-switch="session.action">
-
-      <div class="alert alert-info" ng-switch-default>
-        <h4>{{ "PRICE_LIST.TITLE" | translate }}</h4>
-        <p>{{ "PRICE_LIST.HELP_TXT_1" | translate }}</p>
-        <ul style="list-style-type: none; padding-left: 15px;">
-          <li><i class="glyphicon glyphicon-cog"></i> {{ "PRICE_LIST.HELP_TXT_2" | translate }}</li>
-          <li><i class="glyphicon glyphicon-trash"></i> {{ "PRICE_LIST.HELP_TXT_3" | translate }}</li>
-        </ul>
-      </div>
-      
-      <div ng-switch-when="meta">
-        <div class="panel panel-primary">
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
-            <b><span class="glyphicon glyphicon-pencil"></span> {{session.selected.title}} {{ "PRICE_LIST.DETAILS" | translate }}</b>
+            {{ "PRICE_LIST.LISTS" | translate }}
           </div>
 
-          <div class="panel-body">
-            <form name="editPriceList" class="form-horizontal">
-                <div class="form-group">
-                  <label class="col-xs-2 control-label required">{{ "COLUMNS.TITLE" | translate }}</label>
-                  <div class="col-xs-5">
-                    <input class="form-bhima" ng-model="edit.title"  required>
-                  </div>
-                </div>           
-
-                <div class="form-group">
-                  <label class="col-xs-2 control-label">
-                    {{ "COLUMNS.DESCRIPTION" | translate }}
-                  </label>
-                  <div class="col-xs-5">
-                    <input class="form-bhima" ng-model="edit.description">
-                  </div>
-                </div>
-    
-                <input type="submit" ng-disabled="editPriceList.$invalid" class="btn btn-sm btn-success" ng-click="saveMeta()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
-                <input type="reset" class="btn btn-sm btn-default" ng-click="resetMeta()" value="{{ 'FORM.RESET_FORM' | translate }}">
-
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <div ng-switch-when="add">
-        <div class="panel panel-success">
-          <div class="panel-heading">
-            <b>{{ "PRICE_LIST.ADD" | translate }}</b>
-          </div>
-
-          <div class="panel-body">
-            <form name="newPriceList" class="form-horizontal">
-              
-              <div class="form-group">
-                  <label class="col-xs-2 control-label required">{{ "COLUMNS.TITLE" | translate }}</label>
-                  <div class="col-xs-5">
-                    <input class="form-bhima" ng-model="add.title" required>
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label class="col-xs-2 control-label">{{ "COLUMNS.DESCRIPTION" | translate }}</label>
-                  <div class="col-xs-5">
-                    <input class="form-bhima" ng-model="add.description">
-                  </div>
-                </div>
-
-                <input type="submit" ng-disabled="newPriceList.$invalid" class="btn btn-sm btn-success" ng-click="saveAdd()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
-                <input type="reset" class="btn btn-sm btn-default" ng-click="resetAdd()" value="{{ 'FORM.RESET' | translate }}">
-
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <div ng-switch-when="item">
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <b> <span class="glyphicon glyphicon-cog"></span> {{session.selected.title}} {{ "PRICE_LIST.ITEMS" | translate }}</b>
-            <span class="pull-right">
-              <a class="menu-item" ng-click="addItem()"><span class="glyphicon glyphicon-plus"></span>{{'PRICE_LIST.ADD_ITEMS' | translate}}</a>
-              <a class="menu-item" ng-click="saveItems()"><span class="glyphicon glyphicon-floppy-disk"></span> {{'PRICE_LIST.SAVE_LIST' | translate}}</a>
-            </span>
-          </div>
-          
           <table class="table table-condensed">
             <thead>
+              <tr ng-if="PriceListCtrl.loading" class="text-center">
+                <td colspan="3"><loading-indicator></loading-indicator></td>
+              </tr>            
               <tr>
-                <th>#</th>
                 <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                <th>{{ "COLUMNS.VALUE" | translate }}</th>
-                <th>{{ "COLUMNS.DISCOUNT" | translate }}</th>
-                <th>{{ "COLUMNS.SCOPE" | translate }}</th>
-                <th colspan="3">{{ "COLUMNS.ACTIONS" | translate }}</th>
+                <th colspan="2" style="width: 20%;">{{ "COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat-start="item in session.listItems">
-                <td style="padding-top: 12px;">{{$index}}</td>
-                <td><input class="form-bhima" ng-model="item.description" type="text" placeholder="Item Description"></td>
-                <td>
-                  <div class="input-group" style="width: 100px;">
-                    <input class="form-bhima" ng-model="item.value" type="text" placeholder="0">
-                    <span class="input-group-addon">%</span>
-                </td>
-                <td>
-                  <select class="form-bhima" ng-model="item.is_discount">
-                    <option value="0" ng-selected="!item.is_discount">{{'PRICE_LIST.INCREASE' | translate}}</option>
-                    <option value="1" ng-selected="item.is_discount">{{'PRICE_LIST.DECREASE' | translate}}</option>
-                  </select>
-                </td>
-
-                <td>
-                  <select class="form-bhima" ng-change="clearInventory(item)" ng-model="item.is_global">
-                    <option value="0" ng-selected="!item.is_global">{{'PRICE_LIST.APPLY_TO_ITEM' | translate}}</option>
-                    <option value="1" ng-selected="item.is_global">{{'PRICE_LIST.APPLY_TO_BILL' | translate}}</option>
-                  </select>
-                </td>
-
-                <td style="padding-right: 15px; padding-top: 10px;">
-                  <a ng-click="shiftUp(item)" class="menu-item"><span class="glyphicon glyphicon-arrow-up"></span></a>
-                </td>
-                <td style="padding-right: 15px; padding-top: 10px;">
-                  <a ng-click="shiftDown(item)" class="menu-item"><span class="glyphicon glyphicon-arrow-down"></span></a>
-                  <!-- <button class="btn btn&#45;sm btn&#45;danger" ng&#45;click="removeItem($index)"><i class="glyphicon glyphicon&#45;trash"></i></button> -->
-                </td>
-                <td style="padding-right: 15px; padding-top: 10px;">
-                  <a ng-click="deleteItem(item)" class="menu-item"><span class="glyphicon glyphicon-trash"></span></a>
-                  <!-- <button class="btn btn&#45;sm btn&#45;danger" ng&#45;click="removeItem($index)"><i class="glyphicon glyphicon&#45;trash"></i></button> -->
-                </td>
+              <tr ng-class="{'rowSelected' : PriceListCtrl.priceList.uuid === list.uuid}" ng-repeat="list in PriceListCtrl.priceLists | orderBy:'label'">
+                <td> {{ list.label }} </td>
+                <td><a class="btn btn-xs btn-default" id="price_list_{{ $index+1 }}" ng-click="PriceListCtrl.update(list)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                <td><a class="btn btn-xs btn-default" id="price_delete_{{ $index+1 }}" ng-click="PriceListCtrl.del(list)" ><i class="glyphicon glyphicon-trash"></i></a></td>
               </tr>
-
-              <tr ng-repeat-end ng-if="item.is_global">
-                <td style="border-top: 0"></td>
-                <td colspan="7" style="border-top: 0">
-                  <select class="form-bhima" ng-model="item.inventory_uuid" ng-options="item.uuid as ('[' + item.type_id + '][' + item.code + '] ' + item.text) for item in model.inventory.data | orderBy: 'code'">
-                    <option value="" disabled>-- Select Discount Item --</option>
-                  </select>
-                </td>
-              </tr>
+              <tr ng-if="PriceListCtrl.priceList.data.length===0">
+                <td colspan="3"><i>{{ 'PRICE_LIST.NO_RECORDS' | translate }}</i></tr>
+              </tr>            
             </tbody>
           </table>
         </div>
       </div>
+
+      <div class="col-xs-6" ng-switch="PriceListCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info" id="default">
+            <h4>{{ "PRICE_LIST.TITLE" | translate }}</h4>
+            <p>{{ "PRICE_LIST.HELP_TXT_1" | translate }}</p>
+            <ul style="list-style-type: none; padding-left: 15px;">
+              <li><i class="glyphicon glyphicon-pencil"></i> {{ "PRICE_LIST.HELP_TXT_2" | translate }}</li>
+              <li><i class="glyphicon glyphicon-trash"></i> {{ "PRICE_LIST.HELP_TXT_3" | translate }}</li>
+            </ul>      
+          </div>
+        </div>
+
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'PRICE_LIST.SAVE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'PRICE_LIST.UPDATE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_success">
+          <div class="alert alert-success" id="delete_success">
+            <h4>{{ 'PRICE_LIST.DELETE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_error">
+          <div class="alert alert-danger" id="delete_error">
+            <h4>{{ PriceListCtrl.HTTPError.data.code | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ "PRICE_LIST.ADD" | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="CreateForm" ng-submit="PriceListCtrl.submit(CreateForm.$invalid)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
+                <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
+                <input type="text" class="form-control" name="label" ng-model="PriceListCtrl.priceList.label" required>
+                <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
+                <label class="control-label" for="description">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
+                <textarea class="form-control" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
+              </div>
+              
+              <hr>
+              <div class="form-group">
+                  <a class="btn btn-xs btn-default" id="add_item" ng-click="PriceListCtrl.addItem()">
+                    <span class="glyphicon glyphicon-plus"></span>{{'PRICE_LIST.ADD_ITEMS' | translate}}
+                  </a>
+              </div> 
+
+              <table class="table table-condensed">
+                <thead>
+                  <tr>
+                    <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                    <th>{{ "COLUMNS.VALUE" | translate }}</th>
+                    <th>{{ "COLUMNS.PERCENT" | translate }}</th>
+                    <th>{{ "COLUMNS.INVENTORY" | translate }}</th>
+                    <th colspan="6">{{ "COLUMNS.ACTION" | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="item in PriceListCtrl.pricelistItems | orderBy:'label'">
+                    <td> {{ item.label }} </td>
+                    <td> {{ item.value }} </td>
+                    <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"></span> </td>
+                    <td> {{ PriceListCtrl.getInventory(item.inventory_uuid) }} </td>
+                    <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash"></i></a></td>
+                  </tr> 
+                </tbody>
+              </table>              
+              <hr>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-priceList" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="PriceListCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>        
+        </div>
+
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'PRICE_LIST.UPDATE' | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="UpdateForm" ng-submit="PriceListCtrl.submit(UpdateForm.$invalid)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
+                <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
+                <input type="text" class="form-control" name="label" ng-model="PriceListCtrl.priceList.label" required>
+                <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>               
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
+                <label class="control-label" for="description">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
+                <textarea class="form-control" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
+              </div>
+
+              
+              <hr>
+              <div class="form-group">
+                  <a class="btn btn-xs btn-default" id="add_item" ng-click="PriceListCtrl.addItem()">
+                    <span class="glyphicon glyphicon-plus"></span>{{'PRICE_LIST.ADD_ITEMS' | translate}}
+                  </a>
+              </div>            
+              <table class="table table-condensed">
+                <thead>
+                  <tr>
+                    <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                    <th>{{ "COLUMNS.VALUE" | translate }}</th>
+                    <th>{{ "COLUMNS.PERCENT" | translate }}</th>
+                    <th>{{ "COLUMNS.INVENTORY" | translate }}</th>
+                    <th colspan="6">{{ "COLUMNS.ACTION" | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>                
+                  <tr ng-repeat="item in PriceListCtrl.pricelistItems | orderBy:'label'">
+                    <td> {{ item.label }} </td>
+                    <td> {{ item.value }} </td>
+                    <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"></span> </td>
+                    <td> {{ PriceListCtrl.getInventory(item.inventory_uuid) }} </td>
+                    <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash"></i></a></td>
+                  </tr> 
+                </tbody>
+              </table>              
+              <hr>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="change_priceList" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="PriceListCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>        
+        </div>
+      </div>
     </div>
-  </div>
-</main>
+  </div>  
+</div>

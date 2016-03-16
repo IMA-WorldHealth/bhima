@@ -25,7 +25,6 @@ describe('(/prices ) The price list API', function () {
   };
 
   var priceListItems = [{
-    uuid : '9eded093-699b-4765-9659-eced7db1d487',
     inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
     label : 'Test $10 reduction on an item',
     is_percentage : false,
