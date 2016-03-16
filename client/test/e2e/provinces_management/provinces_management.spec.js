@@ -9,7 +9,7 @@ var helpers = require('../shared/helpers');
 
 helpers.configure(chai);
 
-describe('Locations/Province Management', function () {
+describe('Locations/Provinces Management', function () {
   'use strict';
 
   var path = '#/locations/province';
@@ -27,7 +27,6 @@ describe('Locations/Province Management', function () {
   });
 
   it('successfully creates a new Province', function () {
-    element(by.id('province')).click();    
     // swtich to the create form
     FU.buttons.create();
 
@@ -47,7 +46,6 @@ describe('Locations/Province Management', function () {
   });
 
   it('successfully edits an Province ', function () {
-    element(by.id('province')).click();
     element(by.id('province-' + provinceRank )).click();
 
     // Update an Country
@@ -66,7 +64,6 @@ describe('Locations/Province Management', function () {
   });
 
   it('correctly blocks invalid form submission with relevant error classes', function () {
-    element(by.id('province')).click();
     // switch to the create form
     element(by.id('create')).click();
 

@@ -9,7 +9,7 @@ var helpers = require('../shared/helpers');
 
 helpers.configure(chai);
 
-describe('Locations/Village Management', function () {
+describe('Locations/Villages Management', function () {
   'use strict';
 
   var path = '#/locations/village';
@@ -17,6 +17,19 @@ describe('Locations/Village Management', function () {
   var village = {
     name : 'A Village for Test'
   };
+
+  var locations = {
+    country   : 'République Démocratique du Congo',
+    province  : 'Kasai Occidental',
+    sector    : 'Kananga' 
+  };
+
+  var locationsUpdate = {
+    country   : 'République Démocratique du Congo',
+    province  : 'Bas Congo',
+    sector    : 'Kimvula' 
+  };
+
 
   var defaultVillage  = 201;
 
@@ -32,23 +45,15 @@ describe('Locations/Village Management', function () {
     FU.buttons.create();
 
     // select an Country
-    FU.select('VillageCtrl.village.country_uuid')
-      .enabled()
-      .first()
-      .click();
+    element(by.model('VillageCtrl.village.country_uuid')).element(by.cssContainingText('option', locations.country)).click();      
 
     // select an Province
-    FU.select('VillageCtrl.village.province_uuid')
-      .enabled()
-      .first()
-      .click();
+    element(by.model('VillageCtrl.village.province_uuid')).element(by.cssContainingText('option', locations.province)).click();
 
     // select an Sector
-    FU.select('VillageCtrl.village.sector_uuid')
-      .enabled()
-      .first()
-      .click();
+    element(by.model('VillageCtrl.village.sector_uuid')).element(by.cssContainingText('option', locations.sector)).click();
 
+    // Set village name
     FU.input('VillageCtrl.village.name', village.name);
   
     // submit the page to the server
@@ -62,23 +67,14 @@ describe('Locations/Village Management', function () {
   it('successfully edits a Village ', function () {
     element(by.id('village-' + villageRank )).click();
 
-    // Update an Country
-    FU.select('VillageCtrl.village.country_uuid')
-      .enabled()
-      .first()
-      .click();
+    // Update a Country
+    element(by.model('VillageCtrl.village.country_uuid')).element(by.cssContainingText('option', locationsUpdate.country)).click();      
 
     // Update an Province
-    FU.select('VillageCtrl.village.province_uuid')
-      .enabled()
-      .first()
-      .click();
+    element(by.model('VillageCtrl.village.province_uuid')).element(by.cssContainingText('option', locationsUpdate.province)).click();
 
     // Update an Sector
-    FU.select('VillageCtrl.village.sector_uuid')
-      .enabled()
-      .first()
-      .click();
+    element(by.model('VillageCtrl.village.sector_uuid')).element(by.cssContainingText('option', locationsUpdate.sector)).click();
 
     // modify the Village Name
     FU.input('VillageCtrl.village.name', 'Village Update');
@@ -91,7 +87,6 @@ describe('Locations/Village Management', function () {
 
 
   it('correctly blocks invalid form submission with relevant error classes', function () {
-    element(by.id('village')).click();
     // switch to the create form
     element(by.id('create')).click();
 

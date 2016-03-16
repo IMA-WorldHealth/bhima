@@ -9,7 +9,7 @@ var helpers = require('../shared/helpers');
 
 helpers.configure(chai);
 
-describe('Locations/Country Management', function () {
+describe('Locations/Countries Management', function () {
   'use strict';
 
   var path = '#/locations/country';

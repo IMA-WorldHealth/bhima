@@ -6,16 +6,27 @@ var expect = chai.expect;
 
 var FU = require('../shared/FormUtils');
 var helpers = require('../shared/helpers');
+var components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Locations Module', function () {
+describe('Locations /Sectors Management', function () {
   'use strict';
 
   var path = '#/locations/sector';
 
   var sector = {
     name : 'A Sector for Test'
+  };
+
+  var locations = {
+    country : 'République Démocratique du Congo',
+    province : 'BANDUNDU' 
+  };
+
+  var locationsUpdate = {
+    country : 'République Démocratique du Congo',
+    province : 'Bas Congo' 
   };
 
   var defaultSector   = 209;
@@ -32,17 +43,12 @@ describe('Locations Module', function () {
     FU.buttons.create();
 
     // select an Country
-    FU.select('SectorCtrl.sector.country_uuid')
-      .enabled()
-      .first()
-      .click();
+    element(by.model('SectorCtrl.sector.country_uuid')).element(by.cssContainingText('option', locations.country)).click();
 
     // select an Province
-    FU.select('SectorCtrl.sector.province_uuid')
-      .enabled()
-      .first()
-      .click();
+    element(by.model('SectorCtrl.sector.province_uuid')).element(by.cssContainingText('option', locations.province)).click();
 
+    // Set the Sector Name
     FU.input('SectorCtrl.sector.name', sector.name);
   
     // submit the page to the server
@@ -56,18 +62,12 @@ describe('Locations Module', function () {
     element(by.id('sector-' + sectorRank )).click();
 
     // Update an Country
-    FU.select('SectorCtrl.sector.country_uuid')
-      .enabled()
-      .first()
-      .click();
+    element(by.model('SectorCtrl.sector.country_uuid')).element(by.cssContainingText('option', locationsUpdate.country)).click();
 
     // Update an Province
-    FU.select('SectorCtrl.sector.province_uuid')
-      .enabled()
-      .first()
-      .click();
+    element(by.model('SectorCtrl.sector.province_uuid')).element(by.cssContainingText('option', locationsUpdate.province)).click();
 
-    // modify the Province Name
+    // modify the Sector Name
     FU.input('SectorCtrl.sector.name', 'Sector Update');
 
     element(by.id('change_sector')).click();
