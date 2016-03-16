@@ -13,7 +13,7 @@ helpers.configure(chai);
 describe('Price List Module', function () {
   'use strict';
 
-  var path = '#/inventory/price_list';
+  var path = '#/prices';
 
   var priceList = {
       label : 'Price list without Item',

@@ -8,7 +8,6 @@ PriceListController.$inject = [
 
 function PriceListController(PriceListService, $window, $translate, $uibModal, Inventory) {
   var vm = this;
-  vm.session = {};
   vm.view = 'default';
 
   // bind methods
@@ -28,7 +27,7 @@ function PriceListController(PriceListService, $window, $translate, $uibModal, I
   // fired on startup
   function startup() {
     // start up loading indicator
-    vm.session.loading = true;
+    vm.loading = true;
 
     // load Inventory 
     Inventory.getInventoryItems()
@@ -84,6 +83,7 @@ function PriceListController(PriceListService, $window, $translate, $uibModal, I
   function refreshPriceList() {
     return PriceListService.read(null, { detailed : 1 })
     .then(function (data) {
+      vm.loading = false;
       vm.priceLists = data;
     });
   }

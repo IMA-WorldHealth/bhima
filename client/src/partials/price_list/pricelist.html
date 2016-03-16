@@ -26,19 +26,22 @@
 
           <table class="table table-condensed">
             <thead>
+              <tr ng-if="PriceListCtrl.loading" class="text-center">
+                <td colspan="3"><loading-indicator></loading-indicator></td>
+              </tr>            
               <tr>
                 <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                <th colspan="3" style="width: 20%;">{{ "COLUMNS.ACTION" | translate }}</th>
+                <th colspan="2" style="width: 20%;">{{ "COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-class="{'rowSelected' : PriceListCtrl.priceList.uuid === list.uuid}" ng-repeat="list in PriceListCtrl.priceLists | orderBy:'label'">
                 <td> {{ list.label }} </td>
-                <td><a class="btn btn-xs btn-default" id="price_list_{{ $index+1 }}" ng-click="PriceListCtrl.update(list)"><i class="glyphicon glyphicon-pencil white"></i></a></td>
-                <td><a class="btn btn-xs btn-default" id="price_delete_{{ $index+1 }}" ng-click="PriceListCtrl.del(list)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
+                <td><a class="btn btn-xs btn-default" id="price_list_{{ $index+1 }}" ng-click="PriceListCtrl.update(list)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                <td><a class="btn btn-xs btn-default" id="price_delete_{{ $index+1 }}" ng-click="PriceListCtrl.del(list)" ><i class="glyphicon glyphicon-trash"></i></a></td>
               </tr>
               <tr ng-if="PriceListCtrl.priceList.data.length===0">
-                <td colspan=2><i>{{ 'PRICE_LIST.NO_RECORDS' | translate }}</i></tr>
+                <td colspan="3"><i>{{ 'PRICE_LIST.NO_RECORDS' | translate }}</i></tr>
               </tr>            
             </tbody>
           </table>
@@ -93,6 +96,9 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
                 <input type="text" class="form-control" name="label" ng-model="PriceListCtrl.priceList.label" required>
+                <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
@@ -121,9 +127,9 @@
                   <tr ng-repeat="item in PriceListCtrl.pricelistItems | orderBy:'label'">
                     <td> {{ item.label }} </td>
                     <td> {{ item.value }} </td>
-                    <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"> </td>
+                    <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"></span> </td>
                     <td> {{ PriceListCtrl.getInventory(item.inventory_uuid) }} </td>
-                    <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
+                    <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash"></i></a></td>
                   </tr> 
                 </tbody>
               </table>              
@@ -149,6 +155,9 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
                 <input type="text" class="form-control" name="label" ng-model="PriceListCtrl.priceList.label" required>
+                <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>               
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
@@ -173,13 +182,13 @@
                     <th colspan="6">{{ "COLUMNS.ACTION" | translate }}</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody>                
                   <tr ng-repeat="item in PriceListCtrl.pricelistItems | orderBy:'label'">
                     <td> {{ item.label }} </td>
                     <td> {{ item.value }} </td>
-                    <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"> </td>
+                    <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"></span> </td>
                     <td> {{ PriceListCtrl.getInventory(item.inventory_uuid) }} </td>
-                    <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
+                    <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash"></i></a></td>
                   </tr> 
                 </tbody>
               </table>              

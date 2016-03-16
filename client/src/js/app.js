@@ -246,7 +246,7 @@ function bhimaconfig($routeProvider) {
     controller : 'inventory.depot',
     templateUrl : 'partials/inventory/depot/depot.html'
   })
-  .when('/inventory/price_list', {
+  .when('/prices', {
     controller: 'PriceListController as PriceListCtrl',
     templateUrl: 'partials/price_list/pricelist.html'
   })
