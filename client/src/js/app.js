@@ -246,8 +246,8 @@ function bhimaconfig($routeProvider) {
     controller : 'inventory.depot',
     templateUrl : 'partials/inventory/depot/depot.html'
   })
-  .when('/inventory/price_list', {
-    controller: 'PriceListController',
+  .when('/prices', {
+    controller: 'PriceListController as PriceListCtrl',
     templateUrl: 'partials/price_list/pricelist.html'
   })
   .when('/inventory/distribution/:depotId?', {
