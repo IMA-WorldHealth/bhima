@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('SectorController', SectorController);
 
 SectorController.$inject = [
-  'LocationService', '$window', '$translate'
+  'LocationService'
 ];
 
-function SectorController(Locations, $window, $translate) {
+function SectorController(locationService) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -43,13 +43,13 @@ function SectorController(Locations, $window, $translate) {
   }
 
   vm.messages = {
-    country : Locations.messages.country,
-    province : Locations.messages.province,
-    sector : Locations.messages.sector
+    country : locationService.messages.country,
+    province : locationService.messages.province,
+    sector : locationService.messages.sector
   };
 
   /** load countries on startup */
-  Locations.countries()
+  locationService.countries()
   .then(function (countries) {
 
     // bind the countries to the view for <select>ion
@@ -57,8 +57,8 @@ function SectorController(Locations, $window, $translate) {
 
     // make sure that we are showing the proper message to the client
     vm.messages.country = (countries.length > 0) ?
-      Locations.messages.country :
-      Locations.messages.empty;
+      locationService.messages.country :
+      locationService.messages.empty;
   });
 
   /** loads provinces based on the selected country */
@@ -67,7 +67,7 @@ function SectorController(Locations, $window, $translate) {
     // make sure we do not make unnecessary HTTP requests
     if (!vm.sector.country_uuid) { return; }
 
-    Locations.provinces({ country : vm.sector.country_uuid })
+    locationService.provinces({ country : vm.sector.country_uuid })
     .then(function (provinces) {
 
       // bind the provinces to the view for <select>ion
@@ -75,8 +75,8 @@ function SectorController(Locations, $window, $translate) {
 
       // make sure that we show the correct message in the <select> option
       vm.messages.province = (provinces.length > 0) ?
-        Locations.messages.province :
-        Locations.messages.empty;
+        locationService.messages.province :
+        locationService.messages.empty;
     });
   }
 
@@ -95,7 +95,7 @@ function SectorController(Locations, $window, $translate) {
   
   // refresh the displayed Sectors
   function refreshSectors() {
-    return Locations.sectors({detailed : 1}).then(function (data) {
+    return locationService.sectors({detailed : 1}).then(function (data) {
       vm.sectors = data;
       vm.session.loading = false;
     });
@@ -110,8 +110,8 @@ function SectorController(Locations, $window, $translate) {
     var sector = angular.copy(vm.sector);
     
     promise = (creation) ?
-      Locations.create.sector(sector) :
-      Locations.update.sector(sector.uuid, sector);
+      locationService.create.sector(sector) :
+      locationService.update.sector(sector.uuid, sector);
 
     promise
       .then(function (response) {

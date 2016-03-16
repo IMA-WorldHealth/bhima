@@ -6,7 +6,7 @@ LocationController.$inject = [
   'LocationService'
 ];
 
-function LocationController(Locations) {
+function LocationController(locationService) {
   var vm = this;
   var session = vm.session = {};
 
@@ -23,7 +23,7 @@ function LocationController(Locations) {
     session.loading = true;
 
     // load location
-    Locations.locations().then(function (data) {
+    locationService.locations().then(function (data) {
       vm.locations = data;
       session.loading = false;
     }).catch(handler);

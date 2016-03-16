@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('VillageController', VillageController);
 
 VillageController.$inject = [
-  'LocationService', '$window', '$translate'
+  'LocationService'
 ];
 
-function VillageController(Locations, $window, $translate) {
+function VillageController(locationService) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -44,13 +44,13 @@ function VillageController(Locations, $window, $translate) {
   }
 
   vm.messages = {
-    country : Locations.messages.country,
-    province : Locations.messages.province,
-    sector : Locations.messages.sector
+    country : locationService.messages.country,
+    province : locationService.messages.province,
+    sector : locationService.messages.sector
   };
 
   /** load countries on startup */
-  Locations.countries()
+  locationService.countries()
   .then(function (countries) {
 
     // bind the countries to the view for <select>ion
@@ -58,8 +58,8 @@ function VillageController(Locations, $window, $translate) {
 
     // make sure that we are showing the proper message to the client
     vm.messages.country = (countries.length > 0) ?
-      Locations.messages.country :
-      Locations.messages.empty;
+      locationService.messages.country :
+      locationService.messages.empty;
   });
 
   /** loads provinces based on the selected country */
@@ -68,7 +68,7 @@ function VillageController(Locations, $window, $translate) {
     // make sure we do not make unnecessary HTTP requests
     if (!vm.village.country_uuid) { return; }
 
-    Locations.provinces({ country : vm.village.country_uuid })
+    locationService.provinces({ country : vm.village.country_uuid })
     .then(function (provinces) {
 
       // bind the provinces to the view for <select>ion
@@ -76,8 +76,8 @@ function VillageController(Locations, $window, $translate) {
 
       // make sure that we show the correct message in the <select> option
       vm.messages.province = (provinces.length > 0) ?
-        Locations.messages.province :
-        Locations.messages.empty;
+        locationService.messages.province :
+        locationService.messages.empty;
     });
   }
 
@@ -87,7 +87,7 @@ function VillageController(Locations, $window, $translate) {
     // make sure we do not make unnecessary HTTP requests
     if (!vm.village.province_uuid) { return; }
 
-    Locations.sectors({ province : vm.village.province_uuid })
+    locationService.sectors({ province : vm.village.province_uuid })
     .then(function (sectors) {
 
       // bind the sectors to the view for <select>ion
@@ -95,8 +95,8 @@ function VillageController(Locations, $window, $translate) {
 
       // make sure that we show the correct message in the <select> option
       vm.messages.sector = (sectors.length > 0) ?
-        Locations.messages.sector :
-        Locations.messages.empty;
+        locationService.messages.sector :
+        locationService.messages.empty;
     });
   }
 
@@ -117,7 +117,7 @@ function VillageController(Locations, $window, $translate) {
   
   // refresh the displayed Villages
   function refreshVillages() {
-    return Locations.locations().then(function (data) {
+    return locationService.locations().then(function (data) {
       vm.locations = data;
       vm.session.loading = false;
     });
@@ -132,8 +132,8 @@ function VillageController(Locations, $window, $translate) {
     var village = angular.copy(vm.village);
     
     promise = (creation) ?
-      Locations.create.village(village) :
-      Locations.update.village(village.uuid, village);
+      locationService.create.village(village) :
+      locationService.update.village(village.uuid, village);
 
     promise
       .then(function (response) {

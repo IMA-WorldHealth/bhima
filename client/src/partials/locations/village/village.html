@@ -8,6 +8,7 @@
   </div>
 </div>
 
+<!-- Links to the main menu of management maps as well as the button for adding Villages -->
 <div class="flex-util">
   <a href="#/locations" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-globe"></span> {{ 'VILLAGE.LOCATION_MANAGER' | translate }}
@@ -22,7 +23,7 @@
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
-
+    <!-- Complete list of registred Villages -->
       <div class="col-xs-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
@@ -59,6 +60,7 @@
           </div>
         </div>
 
+        <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
             <h4>{{ 'LOCATION.SAVE_SUCCESS' | translate }} </h4>
@@ -66,6 +68,7 @@
           </div>
         </div>
 
+        <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
             <h4>{{ 'LOCATION.UPDATE_SUCCESS' | translate }} </h4>
@@ -73,6 +76,7 @@
           </div>
         </div>
 
+        <!-- Form for adding Village -->
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'VILLAGE.REGISTER' | translate }}</div>
           <div class="panel-body">
@@ -136,6 +140,7 @@
           </div>        
         </div>
 
+        <!-- Form for updating Village -->
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'VILLAGE.EDIT' | translate }}</div>
           <div class="panel-body">

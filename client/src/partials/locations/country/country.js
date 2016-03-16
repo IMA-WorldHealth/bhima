@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('CountryController', CountryController);
 
 CountryController.$inject = [
-  'LocationService', '$window', '$translate'
+  'LocationService'
 ];
 
-function CountryController(Locations, $window, $translate) {
+function CountryController(locationService) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -41,11 +41,11 @@ function CountryController(Locations, $window, $translate) {
   }
 
   vm.messages = {
-    country : Locations.messages.country
+    country : locationService.messages.country
   };
 
   /** load countries on startup */
-  Locations.countries()
+  locationService.countries()
   .then(function (countries) {
 
     // bind the countries to the view for <select>ion
@@ -53,8 +53,8 @@ function CountryController(Locations, $window, $translate) {
 
     // make sure that we are showing the proper message to the client
     vm.messages.country = (countries.length > 0) ?
-      Locations.messages.country :
-      Locations.messages.empty;
+      locationService.messages.country :
+      locationService.messages.empty;
   });
 
 
@@ -68,7 +68,7 @@ function CountryController(Locations, $window, $translate) {
   
   // refresh the displayed Countrys
   function refreshCountrys() {
-    return Locations.countries({detailed : 1}).then(function (data) {
+    return locationService.countries({detailed : 1}).then(function (data) {
       vm.countries = data;
       vm.session.loading = false;
     });
@@ -83,8 +83,8 @@ function CountryController(Locations, $window, $translate) {
     var country = angular.copy(vm.country);
     
     promise = (creation) ?
-      Locations.create.country(country) :
-      Locations.update.country(country.uuid, country);
+      locationService.create.country(country) :
+      locationService.update.country(country.uuid, country);
 
     promise
       .then(function (response) {
