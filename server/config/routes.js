@@ -113,6 +113,12 @@ exports.configure = function (app) {
   app.post('/locations/villages', locations.create.village);
 
   app.get('/locations/detail/:uuid', locations.detail);
+  app.get('/locations/detail/', locations.list);
+
+  app.put('/locations/villages/:uuid', locations.update.village);
+  app.put('/locations/sectors/:uuid', locations.update.sector);
+  app.put('/locations/provinces/:uuid', locations.update.province);
+  app.put('/locations/countries/:uuid', locations.update.country);  
 
   // API for account routes crud
   app.get('/accounts', account.list);

@@ -1,121 +1,125 @@
-<header data-header>
-  {{ 'COUNTRY.TITLE' | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="static">{{ "TREE.LOCATION" | translate }}</li>
       <li class="active">{{ "COUNTRY.TITLE" | translate }}</li>
     </ol>
   </div>
+</div>
 
-  <div class="pull-right">
-    <button class="btn btn-default btn-sm" ng-click="op='add'"><span class="glyphicon glyphicon-plus-sign"></span> {{ 'COUNTRY.NEW_COUNTRY' | translate}}</button>
-    <a href="#/locations" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-globe"></span> {{ 'COUNTRY.LOCATION_MANAGER' | translate}}</a>
-  </div>
-</nav>
+<!-- Links to the main menu of management maps as well as the button for adding countries -->
+<div class="flex-util">
+  <a href="#/locations" class="btn btn-default btn-sm">
+    <span class="glyphicon glyphicon-globe"></span> {{ 'COUNTRY.LOCATION_MANAGER' | translate }}
+  </a> 
 
-<main>
-  <div class="row">
-    <div class="col-xs-6">
-      <div class="panel panel-default" style="max-height:40em; overflow: auto;">
-        <div class="panel-heading">
-          <span>{{ 'COUNTRY.REGISTERED' | translate }}</span>
+  <button class="btn btn-sm btn-default" id="create" ng-click="CountryCtrl.create()" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{'COUNTRY.NEW_COUNTRY' | translate}}
+  </button> 
+</div>
+
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Complete list of registred Countries -->
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ 'COUNTRY.REGISTERED' | translate }}
+          </div>
+
+          <table class="table table-condensed">
+            <thead>
+               <tr>
+                <th>{{ 'COUNTRY.COUNTRY' | translate}}</th>
+                <th>{{ 'COUNTRY.ACTIONS' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="CountryCtrl.session.loading" class="text-center">
+                <td colspan="4"><loading-indicator></loading-indicator></td>
+              </tr>
+              <tr ng-repeat="country in CountryCtrl.countries | orderBy:'country' "  ng-class="{'rowSelected' : CountryCtrl.country.uuid === country.uuid}">
+                <td>{{ country.name }}</td>
+                <td><a class="btn btn-xs btn-default" id="country-{{$index + 1}}" ng-click="CountryCtrl.update(country)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <table class="table table-striped table-condensed">
-          <thead>
-            <tr>
-              <th>{{ 'COLUMNS.CODE' | translate }}</th>
-              <th>{{ 'COUNTRY.ENGLISH_NAME' | translate }}</th>
-              <th>{{ 'COUNTRY.FRENCH_NAME' | translate }}</th>
-              <th colspan="2">{{ 'COLUMNS.ACTIONS' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="country in countries.data | orderBy:'country_en'">
-              <td>{{ country.code }}</td>
-              <td>{{ country.country_en }}</td>
-              <td>{{ country.country_fr }}</td>
-              <td><a ng-click="setOp('edit', country)"><i class="glyphicon glyphicon-pencil"></i></a></td>
-              <td><a class="danger" ng-click="removeCountry(country.uuid)"><i class="glyphicon glyphicon-trash"></i></a></td>
-            </tr>
-          </tbody>
-        </table>
+      </div>
+
+      <div class="col-xs-6" ng-switch="CountryCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info" id="default">
+            <h4>{{ 'COUNTRY.CONFIGURATION' | translate }}</h4>
+            <p>{{ 'COUNTRY.DESCRIPTION' | translate }}</p>     
+          </div>
+        </div>
+
+        <!-- Success saving Feed Back -->
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'LOCATION.SAVE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <!-- Success updating feedBack -->
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'LOCATION.UPDATE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <!-- Form for adding country -->
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ 'COUNTRY.REGISTER' | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="CreateForm" ng-submit="CountryCtrl.submit(CreateForm.$invalid)" novalidate>
+            
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
+                <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
+                <input type="text" placeholder="{{ 'INPUT.COUNTRY' | translate }}" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+              </div>
+              
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-country" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="CountryCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>        
+        </div>
+
+        <!-- Form for updating country -->
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'COUNTRY.EDIT' | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm.$invalid)" novalidate>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
+                <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
+                <input type="text" placeholder="{{ 'INPUT.COUNTRY' | translate }}" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+              </div>
+              
+              <div class="form-group">
+                <button class="btn btn-default" id="change_country" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="CountryCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>         
+        </div>
+
       </div>
     </div>
-
-    <div class="col-xs-6" ng-switch="op">
-
-      <div ng-switch-default>
-        <div class="alert alert-info">
-          <h4>{{ 'COUNTRY.CONFIGURATION' | translate }}</h4>
-          <p>{{ 'COUNTRY.DESCRIPTION' | translate }}</p>
-        </div>
-      </div>
-
-      <div ng-switch-when="add">
-        <form class="form-horizontal" name="addForm" novalidate>
-          <fieldset>
-            <legend>{{ 'COUNTRY.REGISTER' | translate}}</legend>
-            <div class="form-group">
-              <label class="col-xs-2 control-label">{{ 'COUNTRY.CODE' | translate}}</label>
-              <div class="col-xs-10">
-                <input type="number" class="form-bhima" ng-model="add.code" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-2 control-label">{{ 'COUNTRY.ENGLISH_NAME' | translate}}</label>
-              <div class="col-xs-10">
-                <input class="form-bhima" ng-model="add.country_en" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-2 control-label">{{ 'COUNTRY.FRENCH_NAME' | translate}}</label>
-              <div class="col-xs-10">
-                <input class="form-bhima" ng-model="add.country_fr" required>
-              </div>
-            </div>
-
-          </fieldset>
-          <input class="btn btn-default btn-success" ng-click="addCountry(add)" ng-disabled="addForm.$invalid" type="submit" value="{{ 'FORM.ADD' | translate }}">
-          <input class="btn btn-default btn-sm" type="reset" value="{{ 'FORM.NEW_FORM' | translate }}">
-        </form>
-      </div>
-
-      <div ng-switch-when="edit">
-        <form class="form-horizontal" name="editForm" novalidate>
-          <fieldset>
-            <legend>{{ 'COUNTRY.EDIT' | translate}}</legend>
-
-            <div class="form-group">
-               <label class="col-xs-2 control-label">{{ 'COUNTRY.CODE' | translate}}</label>
-               <div class="col-xs-10">
-                  <input type="number" class="form-bhima" ng-model="country.code" required>
-               </div>
-            </div>
-
-            <div class="form-group">
-               <label class="col-xs-2 control-label">{{ 'COUNTRY.ENGLISH_NAME' | translate}}</label>
-               <div class="col-xs-10">
-                  <input class="form-bhima" ng-model="country.country_en" required>
-               </div>
-            </div>
-
-            <div class="form-group">
-               <label class="col-xs-2 control-label">{{ 'COUNTRY.FRENCH_NAME' | translate}}</label>
-               <div class="col-xs-10">
-                  <input class="form-bhima" ng-model="country.country_fr" required>
-               </div>
-            </div>
-
-          </fieldset>
-          <input class="btn btn-default btn-success" ng-click="editCountry(country)" ng-disabled="editForm.$invalid" type="submit" value="{{ 'FORM.SAVE' | translate }}">
-          <input class="btn btn-default btn-sm" type="reset" value="{{ 'FORM.NEW_FORM' | translate }}">
-        </form>
-      </div>
-    </div>
-  </div>
-</main>
+  </div>  
+</div>

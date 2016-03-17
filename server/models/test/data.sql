@@ -1,5 +1,10 @@
 -- bhima test database
 
+-- set variables
+SET names 'utf8';
+SET character_set_database = 'utf8';
+SET collation_database = 'utf8_unicode_ci';
+
 -- units
 INSERT INTO unit VALUES
   (0,   'Root','TREE.ROOT','The unseen root node',NULL,'/partials/index.html','/root'),
@@ -12,6 +17,7 @@ INSERT INTO unit VALUES
   (18,  'Cash Payments','TREE.CASH_PAYMENTS','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
   (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
+  (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
   (42,  'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
   (48,  'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
   (57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
@@ -95,6 +101,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Cash Payments
 (18,1),
+
+-- Location Management 
+(26,1),
 
 -- Projects
 (42,1),

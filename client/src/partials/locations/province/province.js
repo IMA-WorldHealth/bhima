@@ -1,94 +1,101 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('province', [
-  '$scope',
-  'connect',
-  'messenger',
-  'validate',
-  'uuid',
-  function ($scope, connect, messenger, validate, uuid) {
-    var dependencies = {};
+.controller('ProvinceController', ProvinceController);
 
-    dependencies.countries = {
-      query : {
-        identifier: 'uuid',
-        tables: {
-          'country' : {
-            columns : ['uuid', 'country_en', 'country_fr']
-          }
-        }
-      }
-    };
+ProvinceController.$inject = [
+  'LocationService'
+];
 
-    dependencies.provinces = {
-      identifier : 'uuid',
-      query : 'location/provinces/'
-    };
+function ProvinceController(locationService) {
+  var vm = this;
+  vm.session = {};
+  vm.view = 'default';
+
+  // bind methods
+  vm.create = create;
+  vm.submit = submit;
+  vm.update = update;
+  vm.cancel = cancel;
 
 
-    function manageProvince (model) {
-      angular.extend($scope, model);
-    }
-
-    $scope.setOp = function setOp(action, province){
-      $scope.province = angular.copy(province) || {};
-      $scope.op = action;
-    };
-
-    function addProvince (obj) {
-
-      var prov = {
-        name         : obj.name,
-        country_uuid : obj.country_uuid,
-        uuid         : uuid()
-      };
-
-      connect.post('province', [prov])
-      .then(function () {
-        var clientSideProv = {};
-        clientSideProv.uuid = prov.uuid;
-        clientSideProv.name = prov.name;
-        clientSideProv.country_name = $scope.countries.get(prov.country_uuid).country_en;
-        $scope.provinces.post(clientSideProv);
-        $scope.op = '';
-      })
-      .catch(function (err) {
-        messenger.danger('error during adding', err);
-      });
-    }
-
-    function editProvince (obj) {
-      var province  = {
-        uuid         : obj.uuid,
-        name         : obj.name,
-        country_uuid : obj.country_uuid
-      };
-
-      connect.put('province', [province], ['uuid'])
-      .then(function (suc) {
-        province.country_name = $scope.countries.get(province.country_uuid).country_en;
-        $scope.provinces.put(province);
-        $scope.op = '';
-      })
-      .catch(function (err) {
-        messenger.danger('error during editing', err);
-      });
-    }
-
-    function removeProvince(uuid){
-      connect.delete('province', 'uuid', [uuid])
-      .then(function (suc){
-        $scope.provinces.remove(uuid);
-      })
-      .catch(function (err) {
-        messenger.danger('error during removing', err);
-      });
-    }
-
-    validate.process(dependencies)
-    .then(manageProvince);
-
-    $scope.addProvince = addProvince;
-    $scope.editProvince = editProvince;
-    $scope.removeProvince = removeProvince;
+  function handler(error) {
+    console.error(error);
   }
-]);
+
+  // fired on startup
+  function startup() {
+    // start up loading indicator
+    vm.session.loading = true;
+
+    // load Subsidies
+    refreshProvinces();
+  }
+
+  function cancel() {
+    vm.view = 'default';
+  }
+
+  function create() {
+    vm.view = 'create';
+    vm.province = {};
+  }
+
+  vm.messages = {
+    country : locationService.messages.country
+  };
+
+  /** load countries on startup */
+  locationService.countries()
+  .then(function (countries) {
+
+    // bind the countries to the view for <select>ion
+    vm.countries = countries;
+
+    // make sure that we are showing the proper message to the client
+    vm.messages.country = (countries.length > 0) ?
+      locationService.messages.country :
+      locationService.messages.empty;
+  });
+
+
+  // switch to update mode
+  // data is an object that contains all the information of a province
+  function update(data) {
+    vm.view = 'update';
+    vm.province = data;
+    vm.province.country_uuid = data.countryUuid;
+  }
+
+  
+  // refresh the displayed Provinces
+  function refreshProvinces() {
+    return locationService.provinces({detailed : 1}).then(function (data) {
+      vm.provinces = data;
+      vm.session.loading = false;
+    });
+  }
+
+  // form submission
+  function submit(invalid) {
+    if (invalid) { return; }
+
+    var promise;
+    var creation = (vm.view === 'create');
+    var province = angular.copy(vm.province);
+    
+    promise = (creation) ?
+      locationService.create.province(province) :
+      locationService.update.province(province.uuid, province);
+
+    promise
+      .then(function (response) {
+        return refreshProvinces();
+      })
+      .then(function () {
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
+      .catch(handler);
+  }
+
+  startup();  
+}

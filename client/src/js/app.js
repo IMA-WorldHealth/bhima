@@ -140,23 +140,23 @@ function bhimaconfig($routeProvider) {
   /* location routes */
 
   .when('/locations', {
-    controller : 'location',
+    controller : 'LocationController as LocationCtrl',
     templateUrl: 'partials/locations/locations.html'
   })
   .when('/locations/village', {
-    controller : 'village',
+    controller : 'VillageController as VillageCtrl',
     templateUrl: 'partials/locations/village/village.html'
   })
   .when('/locations/sector', {
-    controller : 'sector',
+    controller : 'SectorController as SectorCtrl',
     templateUrl: 'partials/locations/sector/sector.html'
   })
   .when('/locations/province', {
-    controller : 'province',
+    controller : 'ProvinceController as ProvinceCtrl',
     templateUrl: 'partials/locations/province/province.html'
   })
   .when('/locations/country', {
-    controller : 'LocationCountryController',
+    controller : 'CountryController as CountryCtrl',
     templateUrl: 'partials/locations/country/country.html'
   })
 
