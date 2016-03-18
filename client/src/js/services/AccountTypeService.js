@@ -1,14 +1,14 @@
 angular.module('bhima.services')
 .service('AccountTypeService', AccountTypeService);
 
-AccountTypeService.$inject = ['$http', 'util', 'SessionService'];
+AccountTypeService.$inject = ['$http', 'util'];
 
 /**
-* Account Service
+* Account Type Service
 *
-* A service wrapper for the /accounts HTTP endpoint.  
+* A service wrapper for the /account_types HTTP endpoint.  
 */
-function AccountTypeService($http, util, sessionService) {
+function AccountTypeService($http, util) {
   var service = this;
   var baseUrl = '/account_types/';
 
