@@ -115,6 +115,12 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/debtor_groups/debtor_groups.html'
   })
 
+  /* Admin: donors management */
+  .when('/donors', {
+    controller : 'DonorsController as DonorsCtrl',
+    templateUrl : 'partials/donors/donors.html'
+  })
+
   /* employees routes */
   .when('/employees', {
     controller : 'EmployeeController as EmployeeCtrl',

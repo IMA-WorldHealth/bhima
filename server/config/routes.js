@@ -74,6 +74,7 @@ var suppliers            = require('../controllers/admin/suppliers');
 var functions            = require('../controllers/admin/functions');
 var grades               = require('../controllers/admin/grades');
 var creditorGroups       = require('../controllers/finance/creditorGroups');
+var donors               = require('../controllers/donors');
 
 
 // Middleware for handle uploaded file
@@ -561,5 +562,13 @@ exports.configure = function (app) {
   app.get('/creditor_groups', creditorGroups.list);
   app.get('/creditor_groups/:uuid', creditorGroups.detail);
   app.put('/creditor_groups/:uuid', creditorGroups.update);
+	
+	/** Donors API */
+	app.get('/donors', donors.list);
+	app.get('/donors/:id', donors.detail);
+	app.post('/donors', donors.create);
+	app.put('/donors/:id', donors.update);
+	app.delete('/donors/:id', donors.remove);
+	
 
 };
