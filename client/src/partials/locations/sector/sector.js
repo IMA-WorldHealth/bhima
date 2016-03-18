@@ -29,7 +29,7 @@ function SectorController(locationService) {
     // start up loading indicator
     vm.session.loading = true;
 
-    // load Subsidies
+    // load Sectors
     refreshSectors();
   }
 

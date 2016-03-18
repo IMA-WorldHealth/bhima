@@ -27,7 +27,7 @@ function CountryController(locationService) {
     // start up loading indicator
     vm.session.loading = true;
 
-    // load Subsidies
+    // load Country
     refreshCountrys();
   }
 

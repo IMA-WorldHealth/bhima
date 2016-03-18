@@ -1,415 +1,384 @@
-<header>
-  {{ "ACCOUNT.TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ACCOUNTING" | translate }}</li>
       <li class="active">{{ "ACCOUNT.TITLE" | translate }}</li>
     </ol>
   </div>
-  <div class="pull-right">
-    <button ng-click="updateState('add')" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-plus-sign"></span> {{ "ACCOUNT.ADD" | translate }}
-    </button>
-    <a ng-href="#/reports/chart_of_accounts" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-list"></span> {{ "ACCOUNT.ACCOUNT_CHART" | translate }}
-    </a>
-  </div>
-</nav>
+</div>
 
-<main class="extend">
-  <div class="row margin-top-10">
+<!-- Links to the Account Chart as well as the button for adding an account -->
+<div class="flex-util">
+  <button ng-click="AccountsCtrl.create()" class="btn btn-default btn-sm" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "ACCOUNT.ADD" | translate }}
+  </button>
+  <a ng-href="#/reports/chart_of_accounts" class="btn btn-default btn-sm">
+    <span class="glyphicon glyphicon-list"></span> {{ "ACCOUNT.ACCOUNT_CHART" | translate }}
+  </a> 
+</div>
 
-    <div class="col-xs-8">
-      <!-- ACCOUNTS LIST -->
-      <div class="panel panel-default square">
-        <div class="panel-heading square">
-          {{ "ACCOUNT.TITLE" | translate }}
 
-          <div class="input-group pull-right">
-            <label>
-              <input type="checkbox" name="option_is_asset" ng-model="session.filterAll">
-              {{ "ACCOUNT.ALL" | translate }}
-            </label>
-          </div>
-        </div>
-
-        <div class="panel-body">
-          <div class="input-group" style="margin-bottom: 15px">
-            <span class="input-group-btn">
-              <button disabled class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-search"></span></button>
-            </span>
-             <input class="form-bhima" placeholder="{{ 'ACCOUNT.ACCOUNT_LIST' | translate }}" ng-model="session.filter">
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Complete list of registred Account -->
+      <div class="col-xs-7">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ "ACCOUNT.TITLE" | translate }}
           </div>
 
-          <div class="max-height-90">
-          <table class="table table-bordered table-condensed">
+          <table class="table table-condensed">
             <thead>
               <tr>
                 <th>{{"COLUMNS.NUM" | translate}}</th>
                 <th>{{"COLUMNS.LABEL" | translate}}</th>
                 <th>{{"COLUMNS.TYPE" | translate}}</th>
+                <th>{{"COLUMNS.LOCKED" | translate}}</th>
                 <th>{{"COLUMNS.IS_ASSET" | translate }}</th>
                 <th>{{"COLUMNS.NATURE" | translate}}</th>
-                <th>{{"COLUMNS.IS_OHADA" | translate }}</th>
                 <th>{{"COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
-
-            <tr ng-if="!model.account.data.length">
-              <td colspan="7">
-                <div class="alert alert-warning square">{{ "ACCOUNT.NOT_FOUND" | translate }}</div>
-              </td>
-            </tr>
-            <tr 
-            ng-if="acc.is_ohada==1 || session.filterAll" 
-            ng-repeat="acc in model.account.data | filter:session.filter" 
-            ng-class="{'reportTitle': acc.account_type_id==3}">
+            <tbody>
+              <tr ng-if="AccountsCtrl.session.loading" class="text-center">
+                <td colspan="7"><loading-indicator></loading-indicator></td>
+              </tr>
+              <tr 
+              ng-repeat="acc in AccountsCtrl.accounts | orderBy:'account_number' | orderBy:'classe' " 
+              ng-class="{'rowSelected' : AccountsCtrl.account.id === acc.id}" >
                 <td>{{acc.account_number}}</td>
                 <td>{{acc.account_txt}}</td>
-                <td>{{acc.account_type}}</td>
-                <td style="width:12%;text-align:center"><i class="glyphicon glyphicon-ok-circle" ng-if="acc.is_asset==1"></i></td>
-                <td style="width:12%;text-align:center"> 
+                <td>{{acc.type}}</td>
+                <td><i class="glyphicon glyphicon-lock" ng-if="acc.locked==1"></i></td>
+                <td><i class="glyphicon glyphicon-ok-circle" ng-if="acc.is_asset==1"></i></td>
+                <td> 
                   <i class="glyphicon glyphicon-minus-sign" ng-if="acc.is_charge==1"></i>
                   <i class="glyphicon glyphicon-plus-sign" ng-if="acc.is_charge==0"></i>
                 </td>
-                <td style="width:12%;text-align:center"><i class="glyphicon glyphicon-ok-circle" ng-if="acc.is_ohada==1"></i></td>
-                <td><a class="menu-item" ng-click="getAccount(acc)"><span class="glyphicon glyphicon-edit"></span></a></td>
-            </tr>
-            <tbody>
+                <td>
+                  <a class="btn btn-xs btn-default" id="account-upd-{{$index+1}}" ng-click="AccountsCtrl.update(acc)"><span class="glyphicon glyphicon-edit"></span></a>
+                </td>
+              </tr>
             </tbody>
           </table>
-          </div>
         </div>
       </div>
-      <!-- END ACCOUNTS LIST -->
-    </div>
 
-    <div class="col-xs-4">
-      <div ng-switch on="session.state">
-          <div ng-switch-default>
-            <div class="alert alert-info">
-              <p>{{ "ACCOUNT.HELP_TXT_1" | translate }} <b>{{enterprise.name}}</b></p>
-              <p>{{ "ACCOUNT.HELP_TXT_2" | translate }}.</p>
-              <p>{{ "ACCOUNT.HELP_TXT_3" | translate }}.</p>
-            </div>
+      <div class="col-xs-5" ng-switch="AccountsCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info">
+            <p>{{ "ACCOUNT.HELP_TXT_1" | translate }} <b>{{enterprise.name}}</b></p>
+            <p>{{ "ACCOUNT.HELP_TXT_2" | translate }}.</p>
+            <p>{{ "ACCOUNT.HELP_TXT_3" | translate }}.</p>
           </div>
+        </div>
 
-          <div ng-switch-when='add'>
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                {{ "ACCOUNT.NEW" | translate }}
+        <!-- Success saving Feed Back -->
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'ACCOUNT.SAVE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <!-- Success updating feedBack -->
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'ACCOUNT.UPDATE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <!-- Form for adding account -->
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ "ACCOUNT.NEW" | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="CreateForm" ng-submit="AccountsCtrl.submit(CreateForm.$invalid)" novalidate>
+            
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.title.$invalid }">
+                <label class="control-label">{{ "ACCOUNT.ACCOUNT_TITLE" | translate }}</label>
+                <input type="text" placeholder="{{ 'ACCOUNT.ACCOUNT_TITLE' | translate }}" class="form-control" name="title" ng-model="AccountsCtrl.account.title" required>
               </div>
-              <div class="panel-body">
-                <form novalidate name="form">
 
-                  <div class="form-group">
-                    <label for="title">{{ "ACCOUNT.ACCOUNT_TITLE" | translate }}</label>
-                    <input required type="text" id="title" class="form-bhima" ng-model="newAccount.title">
-                  </div>
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.type.$invalid }">
+                <label class="control-label">{{ "ACCOUNT.ACCOUNT_TYPE" | translate }}</label>
+                <select 
+                  class="form-control" 
+                  name="type" 
+                  ng-model="AccountsCtrl.account.type" 
+                  id="type"  
+                  ng-options="at as at.type for at in AccountsCtrl.accountTypes"
+                  ng-change="AccountsCtrl.dataByTypes()"
+                  required>
+                  <option value="" disabled> -- {{ "SELECT.ACCOUNT_TYPE" | translate }} -- </option>
+                </select>
+              </div>
 
-                  <div class="form-group">
-                    <label for="type">{{ "ACCOUNT.ACCOUNT_TYPE" | translate }}</label>
-                    <select required  id="type" class="form-bhima" ng-options="c.type for c in model.accountType.data" ng-model="newAccount.type">
-                      <option value=""> --- {{ "SELECT.ACCOUNT_TYPE" | translate }} --- </option>
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_title.$invalid }">
+                <label class="control-label">
+                  <input type="checkbox"  name="is_title" id="is_title" ng-true-value="1" ng-false-value="0" 
+                    ng-model="AccountsCtrl.account.is_title">  {{ 'ACCOUNT.IS_TITLE' | translate }}
+                </label>  
+              </div> 
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.option_is_asset.$invalid }" ng-if="AccountsCtrl.account.type.type === 'balance'">
+                <div class="radio">
+                  <label class="control-label">
+                    <input type="radio" name="option_is_asset" id="is_asset" ng-value=1 ng-model="AccountsCtrl.account.is_asset" >
+                    {{ "ACCOUNT.IS_ASSET" | translate }}
+                  </label>
+                </div>
+                <div class="radio">
+                  <label class="control-label">
+                    <input type="radio" name="option_is_asset" id="is_asset" ng-value=0 ng-model="AccountsCtrl.account.is_asset" >
+                    {{ "ACCOUNT.IS_PASSIVE" | translate }}
+                  </label>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_number.$invalid }">
+                <label class="control-label">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
+                <input type="number" class="form-control" name="account_number" ng-model="AccountsCtrl.account.account_number" required>
+              </div>
+
+               <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_used_budget.$invalid }">
+                <label class="control-label">
+                  <input type="checkbox"  name="is_used_budget" id="is_used_budget" ng-true-value="1" ng-false-value="0" 
+                    ng-model="AccountsCtrl.account.is_used_budget">  {{ 'ACCOUNT.IS_USED_BUDGET' | translate }}
+                </label>  
+              </div>              
+
+              <div class="form-group" ng-if="AccountsCtrl.account.type.type === 'income/expense'">
+                <hr>
+                <div class="radio" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.option_is_charge.$invalid }">
+                  <label class="control-label">
+                    <input type="radio" name="option_is_charge" ng-change="AccountsCtrl.discarePC()" id="is_charge" ng-value=1 ng-model="AccountsCtrl.account.is_charge" >
+                    {{ "ACCOUNT.IS_CHARGE" | translate }}
+                  </label>
+                </div>
+                <div class="radio" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.option_is_charge.$invalid }">
+                  <label>
+                    <input type="radio" name="option_is_charge" ng-change="AccountsCtrl.discareCC()" id="is_profit" ng-value=0 ng-model="AccountsCtrl.account.is_charge" >
+                    {{ "ACCOUNT.IS_PROFIT" | translate }}
+                  </label>
+                </div>
+                
+                <div ng-switch on="AccountsCtrl.account.is_charge">
+                  <div ng-switch-when=1 ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.cc_id.$invalid }">
+                    <label class="control-label">{{ "ACCOUNT.COST_CENTER" | translate }}</label>
+                    <select  id="type" class="form-control" name="cc_id" ng-options="c.id as c.text for c in AccountsCtrl.costCenters" 
+                      ng-model="AccountsCtrl.account.cc_id" required>
+                      <option value="" disabled> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
                     </select>
                   </div>
-
-                  <div class="form-group" ng-if="newAccount.type.type === 'balance'">
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_asset" id="is_asset" ng-value=1 ng-model="newAccount.is_asset" >
-                        {{ "ACCOUNT.IS_ASSET" | translate }}
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_asset" id="is_asset" ng-value=0 ng-model="newAccount.is_asset" >
-                        {{ "ACCOUNT.IS_PASSIVE" | translate }}
-                      </label>
-                    </div>
+                  <div ng-switch-when=0 ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.pc_id.$invalid }">
+                    <label class="control-label">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
+                    <select  id="type" class="form-control" name="pc_id" ng-options="p.id as p.text for p in AccountsCtrl.profitCenters" 
+                    ng-model="AccountsCtrl.account.pc_id" required>
+                      <option value="" disabled> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
+                    </select>
                   </div>
-
-                  <hr>
-
-                  <div class="form-group">
-                    <label for="number">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
-                    <input 
-                    required type="text" 
-                    id="number" 
-                    class="form-bhima" 
-                    ng-model="newAccount.number">
-                  </div>
-
-                  <div class="form-group">
-                    <div class="checkbox">
-                      <label>
-                        <input 
-                        type="checkbox" 
-                        name="option_is_ohada" 
-                        id="is_ohada" 
-                        ng-model="newAccount.is_ohada">
-                        {{ "ACCOUNT.IS_OHADA" | translate }}
-                      </label>
-                    </div>
-                  </div>
-
-                  <hr>
-
-                  <div class="form-group">
-                    <div class="checkbox">
-                      <label>
-                        <input 
-                        type="checkbox" 
-                        name="option_is_used_budget" 
-                        id="is_used_budget" 
-                        ng-model="newAccount.is_used_budget">
-                        {{ "ACCOUNT.IS_USED_BUDGET" | translate }}
-                      </label>
-                    </div>
-                  </div>
-
-                  <div class="form-group" ng-if="newAccount.type.type === 'income/expense'">
-                    <hr>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_charge" id="is_charge" ng-value=1 ng-model="newAccount.is_charge" >
-                        {{ "ACCOUNT.IS_CHARGE" | translate }}
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_charge" id="is_charge" ng-value=0 ng-model="newAccount.is_charge" >
-                        {{ "ACCOUNT.IS_PROFIT" | translate }}
-                      </label>
-                    </div>
-                    
-                    <div ng-switch on="newAccount.is_charge">
-                      <div ng-switch-when=1>
-                        <label for="type">{{ "ACCOUNT.COST_CENTER" | translate }}</label>
-                        <select  id="type" class="form-bhima" ng-options="c.id as formatCenter(c) for c in model.costCenter.data" ng-model="newAccount.cc_id" 
-                        ng-change="discarePC()">
-                          <option value="null"> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
-                        </select>
-                      </div>
-                      <div ng-switch-when=0>
-                        <label for="type">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
-                        <select  id="type" class="form-bhima" ng-options="p.id as formatCenter(p) for p in model.profitCenter.data" ng-model="newAccount.pc_id" 
-                        ng-change="discareCC()">
-                          <option value="null"> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                {{ "ACCOUNT.ACCOUNT_GROUP" | translate }}
-              </div>
-              <div class="panel-body">
-                <div class="form-group">
-                  <label for="parent" class="required">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
-                  <select required  id="parent" class="form-bhima" ng-options="acc.id as format(acc) for acc in model.account.data | filter: {account_type_id: 3}" ng-model="newAccount.parent">
-                    <option value="">{{ "ACCOUNT.ROOT_ACCOUNT"  | translate }}</option>
-                  </select>
                 </div>
               </div>
-            </div>
 
-            <div class="panel panel-default" ng-if="newAccount.type.type === 'balance' || newAccount.type.type === 'income/expense'">
-              <div class="panel-heading">
-                {{ "COLUMNS.REFERENCE" | translate }}  
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.parent.$invalid }">
+                <label class="control-label">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
+                <select 
+                  class="form-control" 
+                  name="parent" 
+                  ng-model="AccountsCtrl.account.parent" 
+                  id="parent"  
+                  ng-options="acc.id as acc.label for acc in AccountsCtrl.accounts | filter: {is_title: 1}">
+                  <option value="" disabled> -- {{ "ACCOUNT.ROOT_ACCOUNT"  | translate }} -- </option>
+                </select>
               </div>
-              <div class="panel-body">
-                <div class="form-group">
-                  <label for="parent">{{ "COLUMNS.REFERENCE" | translate }}</label>
-                  <select id="parent" class="form-bhima" ng-options="ref.id as formatRef(ref) for ref in model.references.data" ng-model="newAccount.reference_id">
-                    <option value="">{{ "SELECT.REFERENCE"  | translate }}</option>
+
+              <hr>
+              <div class="panel panel-default" ng-if="AccountsCtrl.account.type.type === 'balance' || AccountsCtrl.account.type.type === 'income/expense'">
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.reference_id.$invalid }">
+                  <label class="control-label">{{ "COLUMNS.REFERENCE" | translate }}</label>
+                  <select 
+                    class="form-control" 
+                    name="reference_id" 
+                    ng-model="AccountsCtrl.account.reference_id" 
+                    id="reference_id"  
+                    ng-options="ref.id as ref.text for ref in AccountsCtrl.references">
+                    <option value="" disabled> -- {{ "SELECT.REFERENCE"  | translate }} -- </option>
                   </select>
                 </div>
-                <div class="form-group" ng-if="newAccount.type.type === 'balance'">
-                  <div class="checkbox">
-                    <label>
-                      <input 
-                      type="checkbox" 
-                      name="option_is_brut_link" 
-                      id="is_brut_link" 
-                      ng-model="newAccount.is_brut_link">
-                      {{ "COLUMNS.IS_BRUT_LINK" | translate }}
-                    </label>
-                  </div>
-                </div>                  
+
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_brut_link.$invalid }">
+                  <label class="control-label">
+                    <input type="checkbox"  name="is_brut_link" id="is_brut_link" ng-true-value="1" ng-false-value="0" 
+                      ng-model="AccountsCtrl.account.is_brut_link">  {{ "COLUMNS.IS_BRUT_LINK" | translate }}
+                  </label>  
+                </div>
+              </div>  
+
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-account" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="AccountsCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
               </div>
-            </div>
-            <button ng-disabled="form.$invalid" ng-click="submitAccount(newAccount)" class="btn btn-success">
-              {{ "FORM.SUBMIT" | translate }}
-            </button>
-          </div>
+            </form>
+          </div>        
+        </div>
 
-          <div ng-switch-when='edit'>
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                {{ "ACCOUNT.EDIT" | translate }} <b>{{ editAccount.account_number }}</b>
+        <!-- Form for updating account -->
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'ACCOUNT.EDIT' | translate }} : <b>{{ AccountsCtrl.account.account_number }}</b> </div>
+          <div class="panel-body">
+            <form class="panel-body" name="UpdateForm" ng-submit="AccountsCtrl.submit(UpdateForm.$invalid)" novalidate>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.title.$invalid }">
+                <label class="control-label">{{ "ACCOUNT.ACCOUNT_TITLE" | translate }}</label>
+                <input type="text" placeholder="{{ 'ACCOUNT.ACCOUNT_TITLE' | translate }}" class="form-control" name="title" ng-model="AccountsCtrl.account.title" required>
               </div>
-              <div class="panel-body">
-                <form novalidate name="form">
-                  <div class="form-group">
-                    <label for="title">{{ "ACCOUNT.ACCOUNT_TITLE" | translate }}</label>
-                    <input 
-                    required 
-                    type="text" 
-                    id="title" class="form-bhima" ng-model="editAccount.account_txt">
-                  </div>
-                  <div class="form-group">
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_asset" ng-value=1 ng-model="editAccount.is_asset" ng-checked="editAccount.is_asset==1">
-                        {{ "ACCOUNT.IS_ASSET" | translate }}
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_asset" ng-value=0 ng-model="editAccount.is_asset" ng-checked="editAccount.is_asset==0">
-                        {{ "ACCOUNT.IS_PASSIVE" | translate }}
-                      </label>
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="form-group">
-                    <div class="checkbox">
-                      <label>
-                        <input 
-                        type="checkbox" 
-                        name="option_is_ohada" 
-                        id="is_ohada" 
-                        ng-model="editAccount.is_ohada"
-                        ng-true-value=1>
-                        {{ "ACCOUNT.IS_OHADA" | translate }} 
-                      </label>
-                    </div>
-                  </div>
 
-                  <div>
-                    <div>
-                      <div>
-                        <div class="checkbox">
-                          <label>
-                            <input 
-                            type="checkbox" 
-                            name="option_is_used_budget" 
-                            id="is_used_budget"
-                            ng-true-value=1 
-                            ng-model="editAccount.is_used_budget">
-                            {{ "ACCOUNT.IS_USED_BUDGET" | translate }}
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.locked.$invalid }">
+                <label class="control-label">
+                  <input type="checkbox"  name="locked" id="locked" ng-true-value="1" ng-false-value="0" 
+                    ng-model="AccountsCtrl.account.locked">  {{ 'ACCOUNT.LOCKED' | translate }}
+                </label>  
+              </div> 
 
-                  <div class="form-group">
-                    <div class="checkbox">
-                      <label>
-                        <input 
-                        type="checkbox" 
-                        name="option_is_locked" 
-                        id="locked" 
-                        ng-model="editAccount.locked"
-                        ng-checked="editAccount.locked"
-                        ng-true-value="1"
-                        ng-false-value="0">
-                        {{ "ACCOUNT.IS_LOCKED" | translate }}
-                      </label>
-                    </div>
-                  </div>
-                  <div class="form-group" ng-if="editAccount.account_type === 'income/expense'">
-                    <hr>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_charge" id="is_charge" ng-value=1 ng-model="editAccount.is_charge" >
-                        {{ "ACCOUNT.CHARGE" | translate }}
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_charge" id="is_charge" ng-value=0 ng-model="editAccount.is_charge" >
-                        {{ "ACCOUNT.PROFIT" | translate }}
-                      </label>
-                    </div>
-                    
-                    <div ng-switch on="editAccount.is_charge">
-                      <div ng-switch-when=1>
-                        <label for="type">{{ "ACCOUNT.COST_CENTER" | translate }}</label>
-                        <select  id="type" class="form-bhima" ng-options="c.id as formatCenter(c) for c in model.costCenter.data" ng-model="editAccount.cc_id">
-                          <option value=""> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
-                        </select>
-                      </div>
-                      <div ng-switch-when=0>
-                        <label for="type">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
-                        <select  id="type" class="form-bhima" ng-options="p.id as formatCenter(p) for p in model.profitCenter.data" ng-model="editAccount.pc_id">
-                          <option value=""> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      {{ "ACCOUNT.ACCOUNT_GROUP" | translate }}
-                    </div>
-                    <div class="panel-body">
-                      <div class="form-group">
-                        <label for="parent" class="required">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
-                        <select required  id="parent" class="form-bhima" ng-options="acc.id as format(acc) for acc in model.account.data | filter: {account_type_id: 3}"  ng-model="editAccount.parent">
-                          <option value="">{{ "ACCOUNT.ROOT_ACCOUNT"  | translate }}</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="panel panel-default" ng-if="editAccount.account_type === 'balance' || editAccount.account_type === 'income/expense'">
-                    <div class="panel-heading">
-                      {{ "COLUMNS.REFERENCE" | translate }}  
-                    </div>
-                    <div class="panel-body">
-                      <div class="form-group">
-                        <label for="parent">{{ "COLUMNS.REFERENCE" | translate }}</label>
-                        <select id="parent" class="form-bhima" ng-options="ref.id as formatRef(ref) for ref in model.references.data" ng-model="editAccount.reference_id">
-                          <option value="">{{ "SELECT.REFERENCE"  | translate }}</option>
-                        </select>
-                      </div>
-                      <div class="form-group" ng-if="editAccount.account_type  === 'balance'">
-                        <div class="checkbox">
-                          <label>
-                            <input 
-                            type="checkbox" 
-                            name="option_is_brut_link" 
-                            id="is_brut_link"
-                            ng-true-value=1 
-                            ng-model="editAccount.is_brut_link">
-                            {{ "COLUMNS.IS_BRUT_LINK" | translate }}
-                          </label>
-                        </div>
-                      </div>                  
-                    </div>
-                  </div>
-
-                </form>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.account_type_id.$invalid }">
+                <label class="control-label">{{ "ACCOUNT.ACCOUNT_TYPE" | translate }}</label>
+                <select 
+                  class="form-control" 
+                  name="account_type_id" 
+                  ng-model="AccountsCtrl.account.account_type_id"
+                  ng-change="AccountsCtrl.getTypeText(AccountsCtrl.account.account_type_id, AccountsCtrl.accountTypes)" 
+                  id="account_type_id"  
+                  ng-options="at.id as at.type for at in AccountsCtrl.accountTypes"
+                  required>
+                  <option value="" disabled> -- {{ "SELECT.ACCOUNT_TYPE" | translate }} -- </option>
+                </select>
               </div>
-            </div>
 
-            <button ng-disabled="form.$invalid" ng-click="submitEditAccount(editAccount)" class="btn btn-success">
-              {{ "FORM.SUBMIT" | translate }}
-            </button>
-          </div>
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_title.$invalid }">
+                <label class="control-label">
+                  <input type="checkbox"  name="is_title" id="is_title" ng-true-value="1" ng-false-value="0" 
+                    ng-model="AccountsCtrl.account.is_title">  {{ 'ACCOUNT.IS_TITLE' | translate }}
+                </label>  
+              </div> 
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.option_is_asset.$invalid }" ng-if="AccountsCtrl.account.type === 'balance'">
+                <div class="radio">
+                  <label class="control-label">
+                    <input type="radio" name="option_is_asset" id="is_asset" ng-value=1 ng-model="AccountsCtrl.account.is_asset" >
+                    {{ "ACCOUNT.IS_ASSET" | translate }}
+                  </label>
+                </div>
+                <div class="radio">
+                  <label class="control-label">
+                    <input type="radio" name="option_is_asset" id="is_asset" ng-value=0 ng-model="AccountsCtrl.account.is_asset" >
+                    {{ "ACCOUNT.IS_PASSIVE" | translate }}
+                  </label>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_used_budget.$invalid }">
+                <label class="control-label">
+                  <input type="checkbox"  name="is_used_budget" id="is_used_budget" ng-true-value="1" ng-false-value="0" 
+                    ng-model="AccountsCtrl.account.is_used_budget">  {{ 'ACCOUNT.IS_USED_BUDGET' | translate }}
+                </label>  
+              </div>              
+
+              <div class="form-group" ng-if="AccountsCtrl.account.type === 'income/expense'">
+                <hr>
+                <div class="radio" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.option_is_charge.$invalid }">
+                  <label class="control-label">
+                    <input type="radio" name="option_is_charge" ng-change="AccountsCtrl.discarePC()" id="is_charge" ng-value=1 ng-model="AccountsCtrl.account.is_charge" >
+                    {{ "ACCOUNT.IS_CHARGE" | translate }}
+                  </label>
+                </div>
+                <div class="radio" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.option_is_charge.$invalid }">
+                  <label>
+                    <input type="radio" name="option_is_charge" ng-change="AccountsCtrl.discareCC()" id="is_profit" ng-value=0 ng-model="AccountsCtrl.account.is_charge" >
+                    {{ "ACCOUNT.IS_PROFIT" | translate }}
+                  </label>
+                </div>
+                
+                <div ng-switch on="AccountsCtrl.account.is_charge">
+                  <div ng-switch-when=1 ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.cc_id.$invalid }">
+                    <label class="control-label">{{ "ACCOUNT.COST_CENTER" | translate }}</label>
+                    <select  id="type" class="form-control" name="cc_id" ng-options="c.id as c.text for c in AccountsCtrl.costCenters" 
+                      ng-model="AccountsCtrl.account.cc_id" required>
+                      <option value="" disabled> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
+                    </select>
+                  </div>
+                  <div ng-switch-when=0 ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.pc_id.$invalid }">
+                    <label class="control-label">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
+                    <select  id="type" class="form-control" name="pc_id" ng-options="p.id as p.text for p in AccountsCtrl.profitCenters" 
+                    ng-model="AccountsCtrl.account.pc_id" required>
+                      <option value="" disabled> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.parent.$invalid }">
+                <label class="control-label">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
+                <select 
+                  class="form-control" 
+                  name="parent" 
+                  ng-model="AccountsCtrl.account.parent" 
+                  id="parent"  
+                  ng-options="acc.id as acc.label for acc in AccountsCtrl.accounts | filter: {is_title: 1}">
+                  <option value="" disabled> -- {{ "ACCOUNT.ROOT_ACCOUNT"  | translate }} -- </option>
+                </select>
+              </div>
+
+              <hr>
+              <div class="panel panel-default" ng-if="AccountsCtrl.account.type === 'balance' || AccountsCtrl.account.type === 'income/expense'">
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.reference_id.$invalid }">
+                  <label class="control-label">{{ "COLUMNS.REFERENCE" | translate }}</label>
+                  <select 
+                    class="form-control" 
+                    name="reference_id" 
+                    ng-model="AccountsCtrl.account.reference_id" 
+                    id="reference_id"  
+                    ng-options="ref.id as ref.text for ref in AccountsCtrl.references">
+                    <option value="" disabled> -- {{ "SELECT.REFERENCE"  | translate }} -- </option>
+                  </select>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_brut_link.$invalid }">
+                  <label class="control-label">
+                    <input type="checkbox"  name="is_brut_link" id="is_brut_link" ng-true-value="1" ng-false-value="0" 
+                      ng-model="AccountsCtrl.account.is_brut_link">  {{ "COLUMNS.IS_BRUT_LINK" | translate }}
+                  </label>  
+                </div>
+              </div>  
+
+              <div class="form-group">
+                <button class="btn btn-default" id="change_account" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="AccountsCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+              
+            </form>
+          </div>         
+        </div>
+
       </div>
     </div>
-
-  </div>
+  </div>  
 </div>

@@ -27,7 +27,7 @@ function ProvinceController(locationService) {
     // start up loading indicator
     vm.session.loading = true;
 
-    // load Subsidies
+    // load Provinces
     refreshProvinces();
   }
 

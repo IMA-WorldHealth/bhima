@@ -12,12 +12,14 @@ INSERT INTO unit VALUES
   (2,   'Enterprise', 'TREE.ENTERPRISE', 'Manage the registered enterprises from here', 1, '/partials/enterprise/', '/enterprises'),
   (4,   'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/user_permission/','/permissions'),
   (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
+  (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',30,'/partials/accounts/','/accounts'),
   (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
   (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register/'),
   (18,  'Cash Payments','TREE.CASH_PAYMENTS','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
   (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
+  (30,  'Accounting','TREE.ACCOUNTING','',0,'/partials/accounting/index.html','/accounting/'),  
   (42,  'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
   (48,  'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
   (57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
@@ -42,10 +44,10 @@ INSERT INTO `enterprise` VALUES (1,'Test Enterprise','TE','243 81 504 0540','ent
 INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,1,0),(2,'Test Project B','TPB',1,2,0),(3,'Test Project C','TPC',1,2,0);
 
 INSERT INTO `account` VALUES
-  (3626,2,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,0,NULL,1),
+  (3626,2,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,0,1,1),
   (3627,2,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 13:26:13',1,1,NULL,0,0,NULL,0),
   (3628,2,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 13:27:13',1,1,NULL,0,0,NULL,0),
-  (3629,2,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,0,NULL,1),
+  (3629,2,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,0,1,1),
   (3630,2,1,4100,'Test Debtor Accounts',3629,0,NULL,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,0,NULL,0),
   (3631,2,1,41000,'Test Debtor Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,0,NULL,1),
   (3635,2,1,41000,'Test Debtor Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,0,NULL,1),
@@ -75,7 +77,9 @@ INSERT INTO `period` VALUES
 INSERT INTO user (id, username, password, first, last, email) VALUES
   (1, 'superuser', PASSWORD('superuser'), 'Super', 'User', 'SuperUser@test.org'),
   (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular', 'User', 'RegUser@test.org'),
-  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No', 'Permissions', 'Invalid@test.org'),
+  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No', 'Permissrepertoire
+
+ions', 'Invalid@test.org'),
   (4, 'admin', PASSWORD('1'), 'Admin', 'User', 'admin@test.org');
 
 -- Only modules updated and written to 2X standards should be registered in the application tree
@@ -93,6 +97,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- [Folder] Finance
 (5,1),
 
+-- Account Management
+(6,1),
+
 -- [Folder] Hospital
 (12,1),
 
@@ -104,6 +111,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Location Management 
 (26,1),
+
+-- [Folder] Accounting 
+(30,1),
 
 -- Projects
 (42,1),
