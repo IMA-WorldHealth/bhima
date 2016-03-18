@@ -1,14 +1,14 @@
 angular.module('bhima.controllers')
 .controller('DonorsController', DonorsController);
 
-DonorsController.$inject = ['$http', '$translate', 'DebtorGroupService', 'SessionService', 'uuid'];
+DonorsController.$inject = ['$http', '$translate', 'DonorService', 'SessionService', 'uuid'];
 
 /**
  * Donors Controller
  * This controller is about donors management module in the admin zone
- * It's responsible for crud operations for donors 
+ * It's responsible for crud operations for donors
  */
-function DonorsController($http, $translate, Donors, Session, uuid) {
+function DonorsController($http, $translate, DonorService, Session, uuid) {
   'use strict';
 
   var vm = this;
