@@ -12,15 +12,15 @@
       <div class="col-md-6">
         <div class="panel panel-default">
           <div class="panel-heading">
-            {{ "DEPOT.DEPOTS_LIST" | translate }}
+            {{ "DEPOT.ALL_DEPOTS" | translate }}
           </div>
           <table class="table table-condensed">
             <thead>
               <tr>
-                <th>{{ "DEPOT.REFERENCE" | translate }}</th>
-                <th>{{ "DEPOT.NAME" | translate }}</th>
-                <th>{{ "DEPOT.IS_WAREHOUSE" | translate }}</th>
-                <th>{{ "COLUMNS.ACTION" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.REFERENCE" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.IS_WAREHOUSE" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -33,7 +33,7 @@
                 <td>
                   <a name="depot-{{depot.text}}" class="btn btn-xs btn-default"
                     ng-click="DepotCtrl.update(depot.uuid)">
-                    <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.EDIT' | translate }}
+                    <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}
                   </a>
                 </td>
               </tr>
@@ -45,7 +45,7 @@
       <div class="col-md-6" ng-switch="DepotCtrl.view">
 
         <div class="alert alert-info" ng-switch-default>
-          <h4>{{ "DEPOT.DEPOTS_MANAGEMENT" | translate }}</h4>
+          <h4>{{ "DEPOT.TITLE" | translate }}</h4>
           <p>{{ "DEPOT.DESCRIPTION" | translate }}</p>
         </div>
 
@@ -58,7 +58,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.text.$invalid }">
                 <label class="control-label">
-                  {{ "COLUMNS.NAME" | translate }}
+                  {{ "FORM.LABELS.NAME" | translate }}
                 </label>
                 <input
                   class="form-control"
@@ -78,7 +78,7 @@
                     ng-true-value="1"
                     ng-false-value="0"
                     ng-model="DepotCtrl.depot.is_warehouse">
-                  {{ "DEPOT.IS_WAREHOUSE" | translate }}
+                  {{ "FORM.LABELS.IS_WAREHOUSE" | translate }}
                 </label>
               </div>
 
@@ -86,10 +86,10 @@
             <div class="panel-footer">
 
               <button class="btn btn-default pull-right" type="submit" data-method="submit">
-                {{ "FORM.SUBMIT" | translate }}
+                {{ "FORM.BUTTONS.SUBMIT" | translate }}
               </button>
               <button class="btn btn-default" type="button" ng-click="DepotCtrl.cancel()" data-method="cancel">
-                {{ "FORM.CANCEL" | translate }}
+                {{ "FORM.BUTTONS.CANCEL" | translate }}
               </button>
 
               <div class="clearfix"></div>
@@ -97,7 +97,7 @@
               <!-- error feedback area -->
               <div ng-if="DepotCtrl.state.errored && ActionForm.$submitted"
                 class="text-danger" data-role="feedback" style="margin-top:10px;">
-                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
+                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERROR" | translate }}
               </div>
 
             </div>
@@ -107,10 +107,10 @@
         <!-- success feedback -->
         <div class="alert alert-success" ng-switch-when="success">
           <h4 id="update_success" ng-if="DepotCtrl.state.updated">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "DEPOT.UPDATE_SUCCESS" | translate }}
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}
           </h4>
           <h4 id="create_success" ng-if="DepotCtrl.state.created">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "DEPOT.CREATE_SUCCESS" | translate }}
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.CREATE_SUCCESS" | translate }}
           </h4>
         </div>
 

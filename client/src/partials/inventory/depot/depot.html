@@ -13,26 +13,25 @@
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="new()">
       <span class="glyphicon glyphicon-plus-sign"></span>
-      {{ "DEPOT.ADD" | translate }}
+      {{ "DEPOT.ADD_DEPOT" | translate }}
     </button>
   </div>
 </nav>
 
 <main>
   <div class="row">
-
     <div class="col-xs-6">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-home"></span> {{ "DEPOT.ALL" | translate }}
+          <span class="glyphicon glyphicon-home"></span> {{ "DEPOT.ALL_DEPOTS" | translate }}
         </div>
         <table class="table table-condensed">
           <thead>
             <tr>
-              <th>{{ "COLUMNS.REFERENCE" | translate }}</th>
-              <th>{{ "COLUMNS.NAME" | translate }}</th>
-              <th>{{ "COLUMNS.IS_WAREHOUSE" | translate }}</th>
-              <th colspan="2" style="width:15%;">{{ "COLUMNS.ACTION" | translate }}</th>
+              <th>{{ "TABLE.COLUMNS.REFERENCE" | translate }}</th>
+              <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
+              <th>{{ "TABLE.COLUMNS.IS_WAREHOUSE" | translate }}</th>
+              <th colspan="2" style="width:15%;">{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -44,7 +43,7 @@
               <td><a class="action danger" ng-click="delete(depot)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
             <tr ng-if="!depots.data.length">
-              <td colspan="4">{{ "DEPOT.NO_DEPOTS" | translate }}</td>
+              <td colspan="4">{{ "DEPOT.NO_DEPOT" | translate }}</td>
             </tr>
           </tbody>
         </table>
@@ -54,47 +53,45 @@
     <div class="col-xs-6" ng-switch="session.action">
       <div class="alert alert-info" ng-switch-default>
         <h4>{{ "DEPOT.TITLE" | translate }}</h4>
-        <p>{{ "DEPOT.ALERT" | translate }}</p>
+        <p>{{ "DEPOT.DESCRIPTION" | translate }}</p>
       </div>
 
       <form name="depotNew" ng-switch-when="new" novalidate>
-        <legend>{{ "DEPOT.NEW" | translate }}</legend>
+        <legend>{{ "FORM.LEGENDS.CREATION" | translate }}</legend>
 
         <div class="form-group">
-          <label>{{ "COLUMNS.NAME" | translate }}</label>
+          <label>{{ "FORM.LABELS.NAME" | translate }}</label>
           <input class="form-bhima" ng-model="session.new.text" required>
         </div>
 
         <div class="form-group">
-          <label class="control-label col-xs-4">{{ "COLUMNS.IS_WAREHOUSE" | translate }}</label>
+          <label class="control-label col-xs-4">{{ "FORM.LABELS.IS_WAREHOUSE" | translate }}</label>
           <div class="col-xs-7">
             <input type="checkbox" ng-value=1 ng-model="session.new.is_warehouse">
           </div>
         </div>
 
-        <button class="btn btn-sm btn-success" type="submit" ng-click="save.new()" ng-disabled="depotNew.$invalid">{{ "FORM.SUBMIT" | translate }}</button>
-        <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.CLEAR" | translate }}</button>
+        <button class="btn btn-sm btn-success" type="submit" ng-click="save.new()" ng-disabled="depotNew.$invalid">{{ "FORM.BUTTONS.SUBMIT" | translate }}</button>
+        <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.BUTTONS.CLEAR" | translate }}</button>
       </form>
 
       <form ng-switch-when="edit">
-        <legend>{{ "DEPOT.EDIT" | translate }}</legend>
+        <legend>{{ "FORM.LEGENDS.EDITION" | translate }}</legend>
         <div class="form-group">
-          <label>{{ "COLUMNS.NAME" | translate }}</label>
+          <label>{{ "FORM.LABELS.NAME" | translate }}</label>
           <input class="form-bhima" ng-model="session.edit.text" required>
         </div>
 
         <div class="form-group">
-          <label class="control-label col-xs-4">{{ "COLUMNS.IS_WAREHOUSE" | translate }}</label>
+          <label class="control-label col-xs-4">{{ "FORM.LABELS.IS_WAREHOUSE" | translate }}</label>
           <div class="col-xs-7">
             <input type="checkbox" ng-true-value=1 ng-model="session.edit.is_warehouse">
           </div>
         </div>
 
-        <button class="btn btn-sm btn-success" type="submit" ng-click="save.edit()">{{ "FORM.SUBMIT" | translate }}</button>
-        <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.CLEAR" | translate }}</button>
+        <button class="btn btn-sm btn-success" type="submit" ng-click="save.edit()">{{ "FORM.BUTTONS.SUBMIT" | translate }}</button>
+        <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.BUTTONS.CLEAR" | translate }}</button>
       </form>
-
     </div>
-
   </div>
 </main>

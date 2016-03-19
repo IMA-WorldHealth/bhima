@@ -6,6 +6,14 @@
     "DANGER_ZONE" : "Zone reservee",
     "CASHBOX" : "Caisse",
     "CONFIG_ACCOUNTS" : "Configuration comptes"
+  },
+
+  "DEPOT" : {
+    "TITLE" : "Gestion des depots",
+    "ADD_DEPOT" : "Ajouter depot",
+    "ALL_DEPOTS" : "Tous les depots",
+    "NO_DEPOT" : "Aucun depot",
+    "DESCRIPTION" : "Ce module vous permet de Lister, Creer, Modifier et Supprimer un depot"
 
   },
 
@@ -15,7 +23,8 @@
     "TODAY" : "Date du jour",
     "EXCHANGE_RATE" : "Taux d'echange",
     "CONNECTED_USER" : "Utilisateur Connecte",
-    "SYSTEM" : "Hospital Management System"
+    "SYSTEM" : "Hospital Management System",
+    "BHIMA" : "Bhima"
   },
 
   "LOGIN" : {
@@ -37,7 +46,8 @@
       "CASH_ACCOUNT" : "Compte caisse",
       "GAIN_ACCOUNT" : "Compte excedant",
       "LOSS_ACCOUNT" : "Compte perte",
-      "TRANSFER_ACCOUNT" : "Compte transfert"
+      "TRANSFER_ACCOUNT" : "Compte transfert",
+      "IS_WAREHOUSE" : "Entreprot ?"
 
     },
 
@@ -59,7 +69,8 @@
       "CANCEL" : "Annuler",
       "CONFIGURE" : "Configurer",
       "NOT_CONFIGURED" : "Non configuree",
-      "DELETE" : "Supprimer"
+      "DELETE" : "Supprimer",
+      "CLEAR" : "Effacer"
     },
 
     "ERRORS" : {
@@ -74,6 +85,11 @@
       "CREATE_SUCCESS" : "Cree avec succes"
     },
 
+    "LEGENDS" : {
+      "CREATION" : "Creation",
+      "EDITION" : "Edition"
+    },
+
     "VALIDATIONS" : {
       "REQUIRED" : "Champ requis"
     }
@@ -81,7 +97,10 @@
 
   "TABLE" : {
     "COLUMNS" : {
-      "NAME" : "Nom"
+      "NAME" : "Nom",
+      "REFERENCE" : "Reference",
+      "IS_WAREHOUSE" : "Enterport ?",
+      "ACTION" : "Actions"
       
     }
   },
