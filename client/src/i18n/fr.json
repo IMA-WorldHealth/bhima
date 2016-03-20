@@ -980,7 +980,10 @@
     "COUNTRY" : "Pays",
     "PROVINCE" : "Province",
     "VILLAGE" : "Village",
-    "REGISTER" : "Ajouter Location"
+    "REGISTER" : "Ajouter Location",
+    "MODAL" : {
+      "TITLE" : "Ajout Nouvelle Location"
+    }
   },
 
   "FORM" : {
@@ -1013,7 +1016,11 @@
 
     "PLACE_HOLDERS" : {
       "ENTER_USERNAME" : "Entrer nom utilisateur",
-      "ENTER_PASSWORD" : "Entrer mot de passe"
+      "ENTER_PASSWORD" : "Entrer mot de passe",
+      "ENTER_COUNTRY" : "Entrer pays",
+      "ENTER_PROVINCE" : "Enter province",
+      "ENTER_SECTOR" : "Entrer secteur",
+      "ENTER_VILLAGE" : "Entrer village"
     },
 
     "SELECTS" : {
@@ -1995,7 +2002,8 @@
     "ERRORS" : {
       "MISSING" : "Informations manquantes",
       "HAS_ERROR" : "Contiens une erreur",
-      "CONNECTION" : "Erreur de connexion"
+      "CONNECTION" : "Erreur de connexion",
+      "GENERIC" : "Le formulaire contient des erreurs"
     },
 
     "INFOS" : {

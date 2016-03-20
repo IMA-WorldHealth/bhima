@@ -1,6 +1,6 @@
 <ng-form name="LocationModalForm" data-location-modal>
   <div class="modal-header">
-    <h4>{{ "LOCATION.MODAL" | translate }}</h4>
+    <h4>{{ "LOCATION.MODAL.TITLE" | translate }}</h4>
   </div>
 
   <div class="modal-body">
@@ -42,7 +42,7 @@
         class="form-control"
         name="country"
         ng-model="LocationModalCtrl.country"
-        placeholder="{{ 'INPUT.COUNTRY' | translate }}"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_COUNTRY' | translate }}"
         required>
     </div>
 
@@ -69,7 +69,7 @@
         class="form-control"
         name="province"
         ng-model="LocationModalCtrl.province"
-        placeholder="{{ 'INPUT.PROVINCE' | translate }}"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_PROVINCE' | translate }}"
         required>
     </div>
 
@@ -94,7 +94,7 @@
         name="sector"
         class="form-control"
         ng-model="LocationModalCtrl.sector"
-        placeholder="{{ 'INPUT.SECTOR' | translate }}"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_SECTOR' | translate }}"
         required>
     </div>
 
@@ -109,7 +109,7 @@
         class="form-control"
         name="village"
         ng-model="LocationModalCtrl.village"
-        placeholder="{{ 'INPUT.VILLAGE' | translate }}"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_VILLAGE' | translate }}"
         required>
     </div>
 
@@ -126,10 +126,10 @@
       type="submit"
       class="btn btn-primary"
       ng-click="LocationModalCtrl.submit(LocationModalForm.$invalid); LocationModalForm.$setSubmitted();">
-      {{ "FORM.SUBMIT" | translate }}
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </button>
     <button type="button" ng-click="LocationModalCtrl.dismiss()" class="btn btn-default">
-      {{ "FORM.CANCEL" | translate }}
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
   </div>
 </ng-form>
