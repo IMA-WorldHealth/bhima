@@ -12,7 +12,7 @@ var EC = protractor.ExpectedConditions;
 var FU = require('../shared/FormUtils');
 
 
-describe.only('Cash Payments Module', function () {
+describe('Cash Payments Module', function () {
 
   /** @const */
   var path = '#/cash';
