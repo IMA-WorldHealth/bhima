@@ -58,7 +58,7 @@ function list (req, res, next) {
 *
 * @example
 * // POST /services : Insert a service
-* var services = require('finance/services');
+* var services = require('admin/services');
 * services.create(req, res, next);
 */
 
@@ -157,7 +157,7 @@ function remove (req, res, next) {
 *
 * @example
 * // GET /services : returns a service detail
-* vaservices = require('finance/services');
+* vaservices = require('admin/services');
 *services.detail(req, res, next);
 */
 
