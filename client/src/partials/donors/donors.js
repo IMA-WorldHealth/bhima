@@ -16,7 +16,7 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
   /** breadcrumb configurations */
   vm.bcPaths = [
     {
-      label: $translate.instant('DEBTOR_GRP.TITLE'),
+      label: $translate.instant('DONOR_MANAGEMENT.TITLE'),
       current: true
     }
   ];
@@ -25,58 +25,43 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
       dataMethod : 'create',
       color  : 'btn-default',
       icon   : 'glyphicon glyphicon-plus-sign',
-      label  : $translate.instant('DEBTOR_GRP.NEW'),
+      label  : $translate.instant('DONOR_MANAGEMENT.NEW'),
       action : create
     }
   ];
 
   /** init variables */
   vm.state = {};
-  vm.debtorGroup = {};
+  vm.donor = {};
 
   /** Expose to the view */
   vm.update = update;
   vm.cancel = cancel;
   vm.submit = submit;
+  vm.remove = remove;
   vm.refreshValidation = refreshValidation;
 
   /** Load necessary data */
-  debtorGroupsList();
-  accountList();
-  priceList();
+  donorList();
 
-  function debtorGroupsList() {
-    return DebtorGroup.read()
+  function donorList() {
+    return DonorService.read()
     .then(function (list) {
-      vm.debtorGroupList = list;
+      vm.donorList = list;
     })
     .catch(handler);
   }
 
-  /** @fixme Need service for getting accounts list */
-  function accountList () {
-    return $http.get('/accounts')
-    .then(function (accounts) {
-      vm.accounts = accounts;
-    })
-    .catch(handler);
-  }
-
-  /** @fixme Need service for getting prices list */
-  function priceList () {
-    return $http.get('/prices')
-    .then(function (prices) {
-      vm.prices = prices;
-    })
-    .catch(handler);
-  }
-
-  function update(uuid) {
-    initialise('action', 'update', uuid);
+  function update(id) {
+    initialise('action', 'update', id);
   }
 
   function create() {
     initialise('action', 'create');
+  }
+
+  function remove(id) {
+    initialise('action', 'remove', id);
   }
 
   function cancel() {
@@ -91,58 +76,70 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
 
     // figure out what type of request to send
     var isUpdate = (vm.action === 'update');
+    var isRemove = (vm.action === 'remove');
 
     // execute the chosen request.
     if (isUpdate) {
-      updateDebtorGroup(vm.debtorGroup.uuid);
+      updateDonor(vm.donor.id);
+    } else if (isRemove) {
+      removeDonor(vm.donor.id);
     } else {
-      createDebtorGroup();
+      createDonor();
     }
   }
 
-  function createDebtorGroup() {
-    vm.debtorGroup.enterprise_id = Session.enterprise.id;
-    vm.debtorGroup.uuid = uuid();
-    DebtorGroup.create(vm.debtorGroup)
+  function createDonor() {
+    DonorService.create(vm.donor)
     .then(function (res) {
       vm.state.created = true;
       vm.view = 'success';
     })
-    .then(debtorGroupsList)
+    .then(donorList)
     .catch(error);
   }
 
-  function updateDebtorGroup(uuid) {
-    DebtorGroup.update(uuid, vm.debtorGroup)
+  function updateDonor(id) {
+    DonorService.update(id, vm.donor)
     .then(function (res) {
       vm.state.updated = true;
       vm.view = 'success';
     })
-    .then(debtorGroupsList)
+    .then(donorList)
     .catch(error);
   }
 
-  function initialise(view, action, uuid) {
+  function removeDonor(id) {
+    DonorService.remove(id)
+    .then(function (res) {
+      vm.state.deleted = true;
+      vm.view = 'success';
+    })
+    .then(donorList)
+    .catch(error);
+  }
+
+  function initialise(view, action, id) {
     vm.state.reset();
     vm.view   = view;
     vm.action = action;
-    vm.debtorGroup  = {};
+    vm.donor  = {};
 
     vm.actionTitle =
-      action === 'create' ? 'DEBTOR_GRP.NEW' :
-      action === 'update' ? 'DEBTOR_GRP.EDIT' : '';
+      action === 'create' ? 'DONOR_MANAGEMENT.NEW' :
+      action === 'update' ? 'DONOR_MANAGEMENT.UPDATE' :
+      action === 'remove' ? 'DONOR_MANAGEMENT.CONFIRM' : '';
 
-    if (uuid && action === 'update') {
-      DebtorGroup.read(uuid)
-      .then(function (debtorGroup) {
-        vm.debtorGroup = debtorGroup;
+    if (id && (action === 'update' || action === 'remove')) {
+      DonorService.read(id)
+      .then(function (donor) {
+        vm.donor = donor;
       })
       .catch(handler);
     }
   }
 
   function refreshValidation() {
-    vm.state.errored = vm.debtorGroup.name ? false : true;
+    vm.state.errored = vm.donor.name ? false : true;
   }
 
   function error(err) {
@@ -158,5 +155,6 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
     vm.state.errored = false;
     vm.state.updated = false;
     vm.state.created = false;
+    vm.state.deleted = false;
   };
 }

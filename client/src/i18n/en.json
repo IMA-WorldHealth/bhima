@@ -540,7 +540,7 @@
    "INCOME"                : "Income",
    "INDIRECT"              : "Indirect",
    "INITIAL_STOCK"         : "Initial stock",
-   "INVENTORY"             : "Inventory",   
+   "INVENTORY"             : "Inventory",
    "INVENTORY_CODE"        : "Inventory Code",
    "INVENTORY_GROUP"       : "Inventory Group",
    "INVENTORY_ITEM"        : "Inventory Item",
@@ -1144,10 +1144,10 @@
    "NEW"            : "New Donor",
    "NO_DONOR"       : "No Donor saving",
    "REGISTERED"     : "Registered Donor",
-   "SAVE_SUCCES"    : "Successfully saving Configuration",
+   "SAVE_SUCCESS"   : "Successfully saving Configuration",
    "TITLE"          : "Donor management",
    "UPDATE"         : "Modify a Donor",
-   "UPDATE_SUCCES"  : "Updated successfully"
+   "UPDATE_SUCCESS" : "Updated successfully"
    },
 "EFIND": {
    "ENTER_EMPLOYEE_ID" : "Enter employee Id",
@@ -2222,7 +2222,7 @@
    "NEW"              : "New Price List",
    "NO_RECORDS"       : "No Record",
    "POSTED"           : "Posted new price list!",
-   "PRICE_LIST_ITEMS" : "Price liste items",   
+   "PRICE_LIST_ITEMS" : "Price liste items",
    "REMOVE_SUCCESS"   : "Erased succefully !",
    "SAVE_LIST"        : "Save List",
    "SAVE_SUCCESS"     : "Saved successfully",
@@ -2230,7 +2230,7 @@
    "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups",
    "UPDATE"           : "Update a Price List",
    "UPDATE_SUCCESS"    : "Updated successfully",
-   "WARN"             : "Warn"   
+   "WARN"             : "Warn"
    },
 "PRIMARY_CASH": {
    "CONFIGURE"        : "Configure Cash Box",

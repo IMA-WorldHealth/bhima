@@ -28,7 +28,7 @@ describe('The /donors API endpoint :: ', function () {
   var newDonor = {
     name : 'IMA WorldHealth'
   };
-	
+
 	var secondDonor = {
     name : 'SANRU'
   };
@@ -48,7 +48,7 @@ describe('The /donors API endpoint :: ', function () {
     })
     .catch(helpers.handler);
   });
-	
+
 	it('POST /donors create a second donor in the database', function () {
     return agent.post('/donors')
     .send(secondDonor)
@@ -88,15 +88,17 @@ describe('The /donors API endpoint :: ', function () {
     })
     .catch(helpers.handler);
   });
-	
+
 	it('GET /donors/:id should returns a specific donor', function () {
     return agent.get('/donors/' + secondDonor.id)
     .then(function (res) {
-      helpers.api.listed(res, 1);
+      expect(res).to.have.status(200);
+      expect(res.body.name).to.exist;
+      expect(res.body.name).to.be.equal(secondDonor.name);
     })
     .catch(helpers.handler);
   });
-	
+
 	it('DELETE /donors/:id should delete a specific donor', function () {
     return agent.delete('/donors/' + secondDonor.id)
     .then(function (res) {

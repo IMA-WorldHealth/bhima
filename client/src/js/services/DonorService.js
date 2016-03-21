@@ -12,27 +12,18 @@ function DonorService($http, util) {
   var service = this,
       baseUrl = '/donors/';
 
-  service.list = list;
-  service.detail = detail;
+  service.read   = read;
   service.create = create;
   service.update = update;
   service.remove = remove;
 
   /**
-  * @function list
+  * @function read
   * @description get list of donors
   */
-  function list() {
-    return $http.get(baseUrl)
-    .then(util.unwrapHttpResponse);
-  }
-
-  /**
-  * @function detail
-  * @description get detail of a specific donor
-  */
-  function detail(id) {
-    return $http.get(baseUrl + id)
+  function read(id) {
+    var url = baseUrl.concat(id || '');
+    return $http.get(url)
     .then(util.unwrapHttpResponse);
   }
 

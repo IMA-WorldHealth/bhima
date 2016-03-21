@@ -33,7 +33,7 @@ exports.remove = remove;
 
 /**
  * POST /donors
- * @description Create a new donor 
+ * @description Create a new donor
  */
 function create(req, res, next) {
 	var query = 'INSERT INTO donor SET ?';
@@ -45,8 +45,8 @@ function create(req, res, next) {
 }
 
 /**
- * PUT /donors/:id 
- * @description Update an existing donor 
+ * PUT /donors/:id
+ * @description Update an existing donor
  */
 function update(req, res, next) {
 	var query = 'UPDATE donor SET ? WHERE id = ?';
@@ -63,7 +63,7 @@ function update(req, res, next) {
 
 /**
  * GET /donors
- * @description Get donors 
+ * @description Get donors
  */
 function list(req, res, next) {
 	var query = 'SELECT id, name FROM donor';
@@ -75,21 +75,21 @@ function list(req, res, next) {
 }
 
 /**
- * GET /donors/:id 
- * @description Get a specific donor 
+ * GET /donors/:id
+ * @description Get a specific donor
  */
 function detail(req, res, next) {
 	var query = 'SELECT id, name FROM donor WHERE id = ?';
 	db.exec(query, [req.params.id])
 	.then(function (rows){
-		res.status(200).send(rows);
+		res.status(200).send(rows[0]);
 	})
 	.catch(next);
 }
 
 /**
- * DELETE /donors/:id 
- * @description Delete a specific donor 
+ * DELETE /donors/:id
+ * @description Delete a specific donor
  */
 function remove(req, res, next) {
 	var query = 'DELETE FROM donor WHERE id = ?';

@@ -1147,12 +1147,12 @@
    "CONFIRM"        : "Etes vous sure de vouloir supprimer ce donateur",
    "DELETE_SUCCESS" : "Suppression avec succès",
    "NEW"            : "Nouveau donateur",
-   "NO_DONOR"       : "Aucun donateur n'est enregistrée",
+   "NO_DONOR"       : "Aucun donateur n'est enregistré",
    "REGISTERED"     : "Liste des donateurs enregistrés",
-   "SAVE_SUCCES"    : "Enregistrement avec succès",
+   "SAVE_SUCCESS"   : "Enregistrement avec succès",
    "TITLE"          : "Gestion des donateurs",
    "UPDATE"         : "Mettre à jour un donateur",
-   "UPDATE_SUCCES"  : "Mis à jour avec succès"
+   "UPDATE_SUCCESS" : "Mis à jour avec succès"
    },
 "EFIND": {
    "ENTER_EMPLOYEE_ID" : "Entrer ID employé",
@@ -1590,7 +1590,7 @@
   "PROVINCE" : "Entrez une province.",
   "SECTOR" : "Entrez un secteur.",
   "VILLAGE" : "Entrez un village."
-},   
+},
 "INVENTORY": {
    "GROUPS": {
       "ADD"              : "Ajouter un Groupe d'inventaires",
@@ -1833,7 +1833,7 @@
    "MANAGE_PROVINCE"       : "Gerer Les Province",
    "MANAGE_SECTOR"         : "Gerer Les Secteurs",
    "MANAGE_VILLAGE"        : "Gerer Les Villages",
-   "MODAL"                 : "Ajouter une nouvelle location",   
+   "MODAL"                 : "Ajouter une nouvelle location",
    "NEW_FORM"              : "Nouveau formulaire",
    "ORIGIN"                : "Origine",
    "PROVINCE"              : "Province",
@@ -1856,7 +1856,7 @@
     "NO_RECEIPT"       : "Aucun reçu correspond à cette référence.",
     "SUCCESS"   : "Reçu trouvé avec succès!"
   }
-},   
+},
 "NO_EXCHANGE": {
    "CURRENT_DATE" : "Date",
    "EXPLANATION"  : "Ce module ne marche qu'avec un nouveau d'échange, aucun taux n'a éta défini pour aujourd'hui.",
@@ -2764,7 +2764,7 @@
    "PROFIT_CENTER"         : "Sélectionner un centre de profits",
    "PROJECT"               : "Sélectionner un Projet",
    "PROVINCE"              : "Sélectionner une Province",
-   "RECEIPT"               : "Sélectionnez un reçu", 
+   "RECEIPT"               : "Sélectionnez un reçu",
    "REFERENCE"             : "Sélectionner la référence",
    "REFERENCE_GROUP"       : "Sélectionner un groupe de référence",
    "RESULT_ACCOUNT_SCT"    : "Sélectionner une Section de Compte Résultat",
@@ -3046,9 +3046,9 @@
    "TITLE"                 : "Situation des stocks"
    },
 "SUBSIDY" : {
-   "CONFIRM"       : "Etes vous sure de vouloir supprimer cette subvention",    
+   "CONFIRM"       : "Etes vous sure de vouloir supprimer cette subvention",
    "DATE_CREATION" : "Date de la création",
-   "DATE_UPDATE"   : "Date de mis à jour",  
+   "DATE_UPDATE"   : "Date de mis à jour",
    "DELETE_SUCCESS"   : "Suppression avec succès",
    "DETAILS"     : "",
    "INFO"        : "Module de gestion des subventions",

@@ -117,7 +117,7 @@ function bhimaconfig($routeProvider) {
 
   /* Admin: donors management */
   .when('/donors', {
-    controller : 'DonorsController as DonorsCtrl',
+    controller : 'DonorsController as DonorCtrl',
     templateUrl : 'partials/donors/donors.html'
   })
 
@@ -535,11 +535,6 @@ function bhimaconfig($routeProvider) {
   })
 
   /* donation routes */
-
-  .when('/donors', {
-    controller: 'DonorManagementController',
-    templateUrl: '/partials/inventory/donors/donors.html'
-  })
   .when('/donations/:depotId?', {
     controller : 'DonationManagementController as DonationCtrl',
     templateUrl : 'partials/donations/donations.html'
