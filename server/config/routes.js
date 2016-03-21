@@ -20,6 +20,7 @@ var tree                 = require('../controllers/tree');
 //var createPurchase       = require('../controllers/finance/purchase');
 var createSale           = require('../controllers/finance/sale');
 var patient              = require('../controllers/medical/patient');
+var patientGroup         = require('../controllers/medical/patientGroups');
 var snis                 = require('../controllers/medical/snis');
 var projects             = require('../controllers/medical/projects');
 var legacyReports        = require('../controllers/reports/report_legacy');
@@ -393,6 +394,14 @@ exports.configure = function (app) {
   // app.get('/patients/search', patient.search);
   app.get('/patients/search/name/:value', patient.searchFuzzy);
   app.get('/patients/search/reference/:value', patient.searchReference);
+
+  /** patient group routes**/
+  app.get('/patient_groups', patientGroup.list);
+  app.get('/patient_groups/:uuid', patientGroup.detail);
+  app.post('/patient_groups', patientGroup.create);
+  app.put('/patient_groups/:uuid', patientGroup.update);
+  app.delete('/patient_groups/:uuid', patientGroup.remove);
+
 
   /** Debtors API */
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
