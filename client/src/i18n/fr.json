@@ -2684,15 +2684,19 @@
    },
 
 "SECTION_RESULTAT" : {
-   "CHARGE" : "Charge",
-   "PROFIT" : "Profit",
-   "NO_SECTION_RESULTAT" : "Pas de section resultat",
-   "TITLE"            : "Section resultat",
-   "ALL"              : "Tous les sections resultats",
-   "ALERT"            : "Section resultat management",
-   "ADD"              : "Ajouter",
-   "NEW"              : "Nouvelle section resultat",
-   "EDIT"             : "Edition section resultat"
+   "ADD"                  : "Ajouter",
+   "ALERT"                : "Section résultat management",
+   "ALL"                  : "Tous les sections resultats",
+   "CHARGE"               : "Charge",
+   "CONFIRM"              : "Etes-vous sûr de vouloir supprimer cette section Résultat",   
+   "DELETE_SUCCESS"       : "Suppression avec succès",
+   "EDIT"                 : "Edition section resultat",
+   "NEW"                  : "Nouvelle section resultat",
+   "NO_SECTION_RESULTAT"  : "Pas de section resultat",
+   "PROFIT"               : "Profit",
+   "SAVE_SUCCESS"         : "Enregistrement avec succès",
+   "TITLE"                : "Section résultat",
+   "UPDATE_SUCCESS"       : "Mise à jour avec succès"
    },
 
 "SECTOR": {

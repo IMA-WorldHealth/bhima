@@ -18,6 +18,7 @@ INSERT INTO unit VALUES
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
   (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
+  (30,  'Accounting','TREE.ACCOUNTING','',0,'/partials/accounting/index.html','/accounting/'),  
   (42,  'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
   (48,  'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
   (57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
@@ -26,7 +27,8 @@ INSERT INTO unit VALUES
   (82,  'Subsidies','TREE.SUBSIDY','Handles the subsidy situation',1,'/partials/subsidies/','/subsidies'),
   (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
   (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots_management/', '/depots_management'),
-  (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtor_groups/', '/debtor_groups');
+  (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtor_groups/', '/debtor_groups'),
+  (110, 'Section resultat','TREE.SECTION_RESULTAT','',30,'/partials/section_resultat/','/section_resultat/');
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
@@ -105,6 +107,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Location Management 
 (26,1),
 
+-- [Folder] Accounting 
+(30,1),
+
 -- Projects
 (42,1),
 
@@ -136,7 +141,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (106,1),
 
 --  Debtor Groups Management
-(107,1);
+(107,1),
+
+--  Section Resultat Management
+(110,1);
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
