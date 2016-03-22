@@ -37,15 +37,24 @@ function JournalController(Transactions) {
   vm.gridOptions.data = Transactions.list.data;
   
   vm.gridOptions.columnDefs = [
-    { field : 'date' },
-    { field : 'description' },
-    { field : 'debit' },
-    { field : 'credit' },
-    { field : 'currency' },
-    { field : 'debitor' }, 
-    { field : 'creditor' },
-    { field : 'reference_document' },
-    { field : 'user' },
-    { field : 'cost_center' }
+    { field : 'trans_date', displayName : 'Date' },
+    { field : 'description', displayName : 'Description' },
+    { field : 'account_number', displayName : 'Account' },
+    { field : 'debit_equiv', displayName : 'Debit' },
+    { field : 'credit_equiv', displayName : 'Credit' },
+    { field : 'trans_id', displayName : 'Transaction' },
+
+    // @todo this should be formatted as a currency icon vs. an ID
+    { field : 'currency_id', displayName : 'Currency' },
+    
+    // @todo this should be formatted showing the debitor/credior
+    { field : 'deb_cred_uuid', displayName : 'Recipient' }, 
+
+    // @fixme inv_po_id -> reference
+    { field : 'inv_po_id', displayName : 'Reference Document' },
+    { field : 'user', displayName : 'Responsible' },
+    { field : 'period_summary', displayName : 'Period' },
+    // @fixme this field should not come from the database as 'cc'
+    { field : 'cc', displayName : 'Cost Center' }
   ];
 }
