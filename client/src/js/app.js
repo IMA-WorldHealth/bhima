@@ -1,7 +1,8 @@
 var bhima = angular.module('bhima', [
   'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'bhima.components', 'ngRoute',
   'ui.bootstrap', 'pascalprecht.translate', 'ngStorage', 'chart.js', 'tmh.dynamicLocale',
-  'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'angularMoment', 'ngMessages'
+  'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns', 'angularMoment', 'ngMessages',
+  'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.grouping'
 ]);
 
 
@@ -178,24 +179,31 @@ function bhimaconfig($routeProvider) {
     controller: 'budget',
     templateUrl: 'partials/budget/budget.html'
   })
-
+  
+  /* TODO Depricate/ remove */
   /* journal routes */
 
-  .when('/journal', {
+  .when('/1.X-journal', {
     controller: 'journal.grid',
     templateUrl:'partials/journal/journal.html'
   })
-  .when('/journal/print', {
+  .when('/1.X-journal/print', {
     controller : 'journal.print',
     templateUrl : 'partials/journal/print.html'
   })
-  .when('/journal/voucher', {
+  .when('/1.X-journal/voucher', {
     controller: 'JournalVoucherController as JournalVoucherCtrl',
     templateUrl: 'partials/journal/voucher/voucher.html'
   })
   .when('/vouchers/simple', {
     controller: 'SimpleJournalVoucherController as SimpleVoucherCtrl',
     templateUrl: 'partials/vouchers/simple.html'
+  })
+
+  /* 2.X Journal routes */
+  .when('/journal', { 
+    controller : 'JournalController as JournalCtrl', 
+    templateUrl : 'partials/2.X-journal/journal.html'
   })
 
   /* debtors routes */
