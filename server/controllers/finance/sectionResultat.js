@@ -38,9 +38,6 @@ function list(req, res, next) {
       'SELECT id, text FROM section_resultat';
   }  
 
-  var sql =
-
-
    db.exec(sql)
   .then(function (rows) {
     res.status(200).json(rows);
