@@ -34,7 +34,7 @@ function list (req, res, next) {
 
   if (req.query.full === '1') {
     sql =
-      'SELECT pg.uuid, pg.name, pg.price_list_uuid, pg.note, pg.created, pl.label, pl.description ' +
+      'SELECT pg.uuid, pg.name, pg.price_list_uuid, pg.note, pg.created, pl.label AS priceListLable, pl.description ' +
       'FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid';
   }
 

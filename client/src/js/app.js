@@ -385,7 +385,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: '/partials/patients/search/search.html'
   })
   .when('/patients/groups', {
-    controller: 'patientGroup',
+    controller: 'patientGroupController as patientGroupCtrl',
     templateUrl: 'partials/patients/groups/groups.html'
   })
   .when('/patients/groups/assignment', {
