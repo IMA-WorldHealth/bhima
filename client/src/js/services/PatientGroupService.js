@@ -26,7 +26,7 @@ function PatientGroupService($http, util) {
 
   //create a patient group
   function create(patientGroup) {
-    return $http.post('/patient_groups', { patientGroup: patientGroup })
+    return $http.post('/patient_groups', patientGroup)
       .then(util.unwrapHttpResponse);
   }
 
