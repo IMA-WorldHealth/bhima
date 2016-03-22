@@ -4,7 +4,7 @@ function lookupSectionBilan(id, codes) {
   'use strict';
 
   var sql =
-    'SELECT id, text, position, is_charge FROM section_bilan WHERE id = ?';
+    'SELECT id, text, position, is_actif FROM section_bilan WHERE id = ?';
 
   return db.exec(sql, id)
     .then(function (rows) {
@@ -30,13 +30,9 @@ function list(req, res, next) {
   'use strict';
   var sql;
 
-  console.log('LLLLLLLLLLL');
-  console.log(req.query);
-  console.log('DDDDDDDDDDD');
-
   if (req.query.detailed === '1') {
     sql = 
-      'SELECT id, text, position, is_charge FROM section_bilan';       
+      'SELECT id, text, position, is_actif FROM section_bilan';       
   } else {
     sql =
       'SELECT id, text FROM section_bilan';

@@ -40,14 +40,14 @@
                 <td colspan="6"><loading-indicator></loading-indicator></td>
               </tr>
               <tr 
-              ng-repeat="sectionBilan in sectionBilanCtrl.sectionBilans | orderBy:'number' | orderBy:'classe' " 
+              ng-repeat="sectionBilan in sectionBilanCtrl.sectionBilans | orderBy:'number' | orderBy:'text' " 
               ng-class="{'rowSelected' : sectionBilanCtrl.sectionBilan.id === sectionBilan.id}" >
                 <td>{{ $index+1 }}</td>
                 <td>{{ sectionBilan.text }}</td>
                 <td>{{sectionBilan.position}}</td>
                 <td>
                   <b>
-                    {{ (sectionBilan.is_charge == 1) ? sectionBilanCtrl.doTranslate('SECTION_BILAN.CHARGE') : sectionBilanCtrl.doTranslate('SECTION_BILAN.PROFIT') }}
+                    {{ (sectionBilan.is_actif == 1) ? sectionBilanCtrl.doTranslate('SECTION_BILAN.ASSET') : sectionBilanCtrl.doTranslate('SECTION_BILAN.PASSIVE') }}
                   </b>
                 </td>
                 <td><a class="btn btn-xs btn-default" id="sectionBilan-upd-{{$index+1}}" ng-click="sectionBilanCtrl.update(sectionBilan)"><span class="glyphicon glyphicon-pencil"></span></a></td>
@@ -111,17 +111,17 @@
                 <input type="text" class="form-control" name="text" ng-model="sectionBilanCtrl.sectionBilan.text" required>
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_charge.$invalid }">
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_actif.$invalid }">
                 <div class="radio">
                   <label class="control-label">
-                    <input type="radio" name="is_charge" required ng-value=1 ng-model="sectionBilanCtrl.sectionBilan.is_charge" >
-                    {{ "SECTION_BILAN.CHARGE" | translate }}
+                    <input type="radio" name="is_actif" required ng-value=1 ng-model="sectionBilanCtrl.sectionBilan.is_actif" >
+                    {{ "SECTION_BILAN.ASSET" | translate }}
                   </label>
                 </div>
                 <div class="radio">
                   <label class="control-label">
-                    <input type="radio" name="is_charge" required ng-value=0 ng-model="sectionBilanCtrl.sectionBilan.is_charge" >
-                    {{ "SECTION_BILAN.PROFIT" | translate }}
+                    <input type="radio" name="is_actif" required ng-value=0 ng-model="sectionBilanCtrl.sectionBilan.is_actif" >
+                    {{ "SECTION_BILAN.PASSIVE" | translate }}
                   </label>
                 </div>
               </div>
@@ -155,17 +155,17 @@
                 <input type="text" class="form-control" name="text" ng-model="sectionBilanCtrl.sectionBilan.text" required>
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_charge.$invalid }">
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_actif.$invalid }">
                 <div class="radio">
                   <label class="control-label">
-                    <input type="radio" name="is_charge" required ng-value=1 ng-model="sectionBilanCtrl.sectionBilan.is_charge" >
-                    {{ "SECTION_BILAN.CHARGE" | translate }}
+                    <input type="radio" name="is_actif" required ng-value=1 ng-model="sectionBilanCtrl.sectionBilan.is_actif" >
+                    {{ "SECTION_BILAN.ASSET" | translate }}
                   </label>
                 </div>
                 <div class="radio">
                   <label class="control-label">
-                    <input type="radio" name="is_charge" required ng-value=0 ng-model="sectionBilanCtrl.sectionBilan.is_charge" >
-                    {{ "SECTION_BILAN.PROFIT" | translate }}
+                    <input type="radio" name="is_actif" required ng-value=0 ng-model="sectionBilanCtrl.sectionBilan.is_actif" >
+                    {{ "SECTION_BILAN.PASSIVE" | translate }}
                   </label>
                 </div>
               </div>
