@@ -40,7 +40,7 @@
                 <td colspan="6"><loading-indicator></loading-indicator></td>
               </tr>
               <tr 
-              ng-repeat="sectionResultat in sectionResultatCtrl.sectionResultats | orderBy:'number' | orderBy:'classe' " 
+              ng-repeat="sectionResultat in sectionResultatCtrl.sectionResultats | orderBy:'number' | orderBy:'text' " 
               ng-class="{'rowSelected' : sectionResultatCtrl.sectionResultat.id === sectionResultat.id}" >
                 <td>{{ $index+1 }}</td>
                 <td>{{ sectionResultat.text }}</td>
