@@ -9,7 +9,7 @@
 
 <div class="flex-util">
   <button class="btn btn-sm btn-default" id="create" ng-click="ProjectCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROJECT.NEW' | translate }}
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROJECT.ADD_PROJECT' | translate }}
   </button>
 </div>
 
@@ -20,16 +20,16 @@
       <div class="col-xs-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
-            {{ 'PROJECT.EXISTING' | translate }}
+            {{ 'PROJECT.ALL_PROJECTS' | translate }}
           </div>
           <table class="table table-condensed table-hover">
             <thead>
               <tr>
-                <th>{{ 'COLUMNS.ID' | translate }}</th>
-                <th>{{ 'COLUMNS.NAME' | translate }}</th>
-                <th>{{ 'COLUMNS.ABBR' | translate }}</th>
-                <th>{{ 'COLUMNS.ENTERPRISE_ID' | translate }}</th>
-                <th colspan="2">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.ID' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.NAME' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.ABBREVIATION' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.ENTERPRISE_ID' | translate }}</th>
+                <th colspan="2">{{ 'TABLE.COLUMNS.ACTION' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -56,27 +56,27 @@
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
             <h4>{{ 'PROJECT.TITLE' | translate }}</h4>
-            <p> {{ 'PROJECT.HELP_TXT_1' | translate }}</p>
+            <p> {{ 'PROJECT.DESCRIPTION' | translate }}</p>
           </div>
         </div>
 
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'PROJECT.SAVE_SUCCES' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'PROJECT.UPDATE_SUCCES' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'PROJECT.DELETE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.DELETE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
@@ -89,39 +89,39 @@
         </div>
 
         <div class="panel panel-primary" ng-switch-when="create">
-          <div class="panel-heading">{{ 'PROJECT.NEW' | translate }}</div>
+          <div class="panel-heading">{{ 'PROJECT.ADDING_PROJECT' | translate }}</div>
           <div class="panel-body">
             <form class="form-horizontal" name="CreateForm" ng-submit="ProjectCtrl.submit(CreateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
-                <label class="col-xs-3 control-label" for="bhima-project-name">{{ 'COLUMNS.NAME' | translate }}</label>
+                <label class="col-xs-3 control-label" for="bhima-project-name">{{ 'FORM.LABELS.NAME' | translate }}</label>
                 <div class="col-xs-9">
                   <input type="text" class="form-control" name="name" id="bhima-project-name" ng-model="ProjectCtrl.project.name" required>
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.abbr.$invalid }">
-                <label for="bhima-project-abbr" class="col-md-3 control-label">{{ "COLUMNS.ABBR" | translate }}</label>
+                <label for="bhima-project-abbr" class="col-md-3 control-label">{{ "FORM.LABELS.ABBREVIATION" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" name="abbr" required id="bhima-project-abbr" ng-model="ProjectCtrl.project.abbr">
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.enterprise_id.$invalid }">
-                <label class="col-md-3 control-label">{{ "COLUMNS.ENTERPRISE" | translate }}</label>
+                <label class="col-md-3 control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
                 <div class="col-md-9">
                   <select class="form-control" name="enterprise_id" ng-model="ProjectCtrl.project.enterprise_id" id="bhima-enterprise-enterprise_id" ng-options="e.id as e.name for e in ProjectCtrl.enterprises | orderBy:'name'" required>
-                    <option value="" disabled> -- {{ 'SELECT.ENTERPRISE' | translate }} -- </option>
+                    <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }} -- </option>
                   </select>
                 </div>
               </div>
 
               <!-- zone de sante for snis -->
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.zs_id.$invalid }">
-                <label class="col-md-3 control-label">{{ 'COLUMNS.ZS' | translate }}</label>
+                <label class="col-md-3 control-label">{{ 'FORM.LABELS.ZS' | translate }}</label>
                 <div class="col-md-9">
                   <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" id="bhima-project-zs" ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'" required>
-                    <option value="" disabled> -- {{ 'SELECT.ZS' | translate }} -- </option>
+                    <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ZS' | translate }} -- </option>
                   </select>
                 </div>
               </div>
@@ -130,7 +130,7 @@
                 <div class="col-sm-offset-3 col-sm-9">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" id="locked" ng-true-value="1" ng-false-value="0" name="bhima-project-locked" ng-model="ProjectCtrl.project.locked"> {{ 'COLUMNS.LOCKED' | translate }}
+                      <input type="checkbox" id="locked" ng-true-value="1" ng-false-value="0" name="bhima-project-locked" ng-model="ProjectCtrl.project.locked"> {{ 'FORM.LABELS.LOCKED' | translate }}
                     </label>
                   </div>
                 </div>
@@ -138,10 +138,10 @@
 
               <div class="form-group">
                   <button class="btn btn-default" id="submit-project" type="submit" data-method="submit">
-                    {{ "FORM.SUBMIT" | translate }}
+                    {{ "FORM.BUTTONS.SUBMIT" | translate }}
                   </button>
                   <button class="btn btn-default" type="button" ng-click="ProjectCtrl.cancel()" data-method="cancel">
-                    {{ "FORM.CANCEL" | translate }}
+                    {{ "FORM.BUTTONS.CANCEL" | translate }}
                   </button>
               </div>
             </form>
@@ -149,19 +149,19 @@
         </div>
 
         <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading">{{ 'PROJECT.EDIT' | translate }}</div>
+          <div class="panel-heading">{{ 'PROJECT.EDITING_PROJECT' | translate }}</div>
           <div class="panel-body">
             <form class="form-horizontal" name="UpdateForm" ng-submit="ProjectCtrl.submit(UpdateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
-                <label class="col-xs-3 control-label" for="bhima-project-name">{{ 'COLUMNS.NAME' | translate }}</label>
+                <label class="col-xs-3 control-label" for="bhima-project-name">{{ 'FORM.LABELS.NAME' | translate }}</label>
                 <div class="col-xs-9">
                   <input type="text" class="form-control" name="name" id="bhima-project-name" ng-model="ProjectCtrl.project.name" required>
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.abbr.$invalid }">
-                <label for="bhima-project-abbr" class="col-md-3 control-label">{{ "COLUMNS.ABBR" | translate }}</label>
+                <label for="bhima-project-abbr" class="col-md-3 control-label">{{ "FORM.LABELS.ABBREVIATION" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" name="abbr" required id="bhima-project-abbr" ng-model="ProjectCtrl.project.abbr">
                 </div>
@@ -169,7 +169,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.enterprise_id.$invalid }">
                 <label class="col-md-3 control-label">
-                  {{ "COLUMNS.ENTERPRISE" | translate }}
+                  {{ "FORM.LABELS.ENTERPRISE" | translate }}
                 </label>
                 <div class="col-md-9">
                   <select
@@ -177,17 +177,17 @@
                     name="enterprise_id"
                     ng-model="ProjectCtrl.project.enterprise_id"
                     ng-options="e.id as e.name for e in ProjectCtrl.enterprises | orderBy:'name'" required>
-                    <option value="" disabled> {{ 'SELECT.ENTERPRISE' | translate }} </option>
+                    <option value="" disabled> {{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }} </option>
                   </select>
                 </div>
               </div>
 
               <!-- zone de sante for snis -->
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.zs_id.$invalid }">
-                <label class="col-md-3 control-label">{{ 'COLUMNS.ZS' | translate }}</label>
+                <label class="col-md-3 control-label">{{ 'FORM.LABELS.ZS' | translate }}</label>
                 <div class="col-md-9">
                   <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" id="bhima-project-zs" ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'" required>
-                    <option value="" disabled> -- {{ 'SELECT.ZS' | translate }} -- </option>
+                    <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ZS' | translate }} -- </option>
                   </select>
                 </div>
               </div>
@@ -197,7 +197,7 @@
                 <div class="col-sm-offset-3 col-sm-9">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-true-value="1" ng-false-value="0" id="bhima-project-locked"  name="locked" ng-model="ProjectCtrl.project.locked"> {{ 'COLUMNS.LOCKED' | translate }}
+                      <input type="checkbox" ng-true-value="1" ng-false-value="0" id="bhima-project-locked"  name="locked" ng-model="ProjectCtrl.project.locked"> {{ 'FORM.LABELS.LOCKED' | translate }}
                     </label>
                   </div>
                 </div>
@@ -205,10 +205,10 @@
 
               <div class="form-group">
                   <button class="btn btn-default" id="change_project" type="submit" data-method="submit">
-                    {{ "FORM.SUBMIT" | translate }}
+                    {{ "FORM.BUTTONS.SUBMIT" | translate }}
                   </button>
                   <button class="btn btn-default" type="button" ng-click="ProjectCtrl.cancel()" data-method="cancel">
-                    {{ "FORM.CANCEL" | translate }}
+                    {{ "FORM.BUTTONS.CANCEL" | translate }}
                   </button>
               </div>
             </form>

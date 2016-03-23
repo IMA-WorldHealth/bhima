@@ -1,4 +1,14 @@
 {
+  "PROJECT" : {
+    "TITLE" : "Gestion des progets",
+    "ADD_PROJECT" : "Ajouter proget",
+    "ALL_PROJECTS" : "Tous les progets",
+    "DESCRIPTION" : "Ce module permet de lister, creer, modifier et supprimer un proget",
+    "ADDING_PROJECT" : "Ajout nouveau proget",
+    "EDITING_PROJECT" : "Modification proget"
+
+  },
+
   "CASHBOX" : {
     "TITLE" : "Gestion caisse",
     "DESCRIPTION" : "Ce module est responsable de la gestion de caisse",
@@ -76,7 +86,12 @@
       "COUNTRY" : "Pays",
       "PROVINCE" : "Province",
       "SECTOR" : "Secteur",
-      "VILLAGE" : "Village"
+      "VILLAGE" : "Village",
+      "ID" : "ID",
+      "ENTERPRISE_ID" : "ID entreprise",
+      "ENTERPRISE" : "Entreprise",
+      "ZS" : "Zone de sante",
+      "LOCKED" : "Bloquee"
     },
 
     "PLACE_HOLDERS" : {
@@ -95,6 +110,8 @@
       "SELECT_PROVINCE" : "Selectionner province",
       "SELECT_SECTOR" : "Selectionner secteur",
       "SELECT_VILLAGE" : "Selectionner village",
+      "SELECT_ENTERPRISE" : "Selectionner entreprise",
+      "SELECT_ZS" : "Selectionner zone de sante",
       "EMPTY" : "Vide"      
     },
 
@@ -123,7 +140,8 @@
       "MANY_TRYS" : "Plusieurs tentatives",
       "UPDATE_SUCCESS" : "Mise a jour avec succes",
       "CREATE_SUCCESS" : "Cree avec succes",
-      "SAVE_SUCCESS" : "Sauvee avec succes"
+      "SAVE_SUCCESS" : "Sauvee avec succes",
+      "DELETE_SUCCESS" : "Suppression avec succes"
     },
 
     "LEGENDS" : {
@@ -139,6 +157,10 @@
       "MINLENGTH" : "Longueur minimale non respectee",
       "MAXLENGTH" : "Longueur maximale non respectee",
       "DATE" : "Date mal saisie"
+    },
+
+    "DIALOGS" : {
+      "CONFIRM_DELETE" : "Confirmez vous la suppression ?"
     }
   },
 
@@ -147,13 +169,15 @@
       "NAME" : "Nom",
       "REFERENCE" : "Reference",
       "IS_WAREHOUSE" : "Enterport ?",
-      "ACTION" : "Actions",
+      "ACTION" : "Action",
       "ABBREVIATION" : "Abbreviation",
       "PO_BOX" : "Boite postale",
       "EMAIL" : "Email",
       "PHONE" : "Telephone",
-      "EDIT"  : "Editer"
-      
+      "EDIT"  : "Editer",
+      "ID" : "ID",
+      "ENTERPRISE_ID" : "ID enterprise"
+
     }
   },
 
