@@ -173,10 +173,8 @@
                 </bh-currency-input>
 
                 <div class="form-group">
-                  <button type="submit" class="btn btn-primary" data-method="submit">
-                    <span class="glyphicon glyphicon-refresh" ng-show="CashCtrl.loadingState"></span>
-                    {{ (CashCtrl.loadingState ? "UTIL.LOADING" : "FORM.SUBMIT") | translate }}
-                  </button>
+                  <bh-loading-button loading-state="CashVoucherForm.$loading">
+                  </bh-loading-button>
                 </div>
 
                 <!-- show any HTTP errors that are logged from the server -->

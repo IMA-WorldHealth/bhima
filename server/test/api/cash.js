@@ -9,7 +9,7 @@ helpers.configure(chai);
 /**
 * The /cash API endpoint
 */
-describe('(/cash) Cash Payments Interface ::', function () {
+describe('(/cash) Cash Payments Interface ', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
@@ -50,7 +50,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
   });
 
   // Tests for the Caution Payment Interface
-  describe('Caution Payments ::', function () {
+  describe('Caution Payments ', function () {
 
     var CAUTION_PAYMENT = {
       amount:      15000,
@@ -95,8 +95,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
 
 
   // Tests for the Payment Invoice Payment Interface
-  //
-  describe('Patient Invoice Payments ::', function () {
+  describe('Patient Invoice Payments ', function () {
 
     var SALE_PAYMENT = {
       amount:      1520,
@@ -275,15 +274,4 @@ describe('(/cash) Cash Payments Interface ::', function () {
         .catch(helpers.handler);
     });
   });
-
-
-  // The HTTP DELETE verb triggers a cash_discard record, but does not destroy any data
-  // (proposed rename: debit_note)
-  describe.skip('The Debit Note Interface ::', function () {
-    it('DELETE /cash/:uuid should create a cash_discard record');
-    it('DELETE /cash/:uuid should do nothing if the cash record is already discarded');
-    it('DELETE-d cash records should still be discoverable by GET /cash');
-    it('DELETE-d cash records should have the \'canceled\' property set');
-  });
-
 });

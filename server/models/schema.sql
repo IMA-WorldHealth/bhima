@@ -59,8 +59,8 @@ CREATE TABLE `assignation_patient` (
 
 DROP TABLE IF EXISTS `beneficiary`;
 CREATE TABLE `beneficiary` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `text` varchar(50) NOT NULL,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `text` TEXT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -81,17 +81,19 @@ CREATE TABLE billing_service (
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `account_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `period_id` mediumint(8) unsigned NOT NULL,
-  `budget` decimal(10,4) unsigned DEFAULT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `account_id` INT UNSIGNED NOT NULL,
+  `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `budget` DECIMAL(10,4) UNSIGNED DEFAULT NULL,
+  KEY `account_id` (`account_id`),
+  KEY `period_id` (`period_id`),
+  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-DROP TABLE IF EXISTS `cash`;
 CREATE TABLE `cash` (
-  `uuid`            CHAR(36) NOT NULL,
+  `uuid`            BINARY(16) NOT NULL,
   `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
   `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `date`            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -115,9 +117,37 @@ CREATE TABLE `cash` (
   FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- new triggers to manage creation of references
-CREATE TRIGGER cash_calculate_reference BEFORE INSERT ON cash
+-- triggers to manage creation of references
+CREATE TRIGGER cash_before_insert BEFORE INSERT ON cash
 FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM cash WHERE cash.project_id = new.project_id);
+
+CREATE TABLE `cash_item` (
+  `uuid`            BINARY(16) NOT NULL,
+  `cash_uuid`       BINARY(16) NOT NULL,
+  `amount`          DECIMAL(19,2) UNSIGNED NOT NULL DEFAULT 0.00,
+  `invoice_uuid`    CHAR(36) DEFAULT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `cash_uuid` (`cash_uuid`),
+  FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cash_discard` (
+  `uuid`              BINARY(16) NOT NULL,
+  `project_id`        SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`         INT(10) UNSIGNED NOT NULL,
+  `cash_uuid`         BINARY(16) NOT NULL,
+  `date`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `description`       text,
+  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `reference` (`reference`),
+  KEY `project_id` (`project_id`),
+  KEY `user_id` (`user_id`),
+  KEY `cash_uuid` (`cash_uuid`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `cash_box`;
 CREATE TABLE `cash_box` (
@@ -153,39 +183,6 @@ CREATE TABLE `cash_box_account_currency` (
   FOREIGN KEY (`gain_exchange_account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`loss_exchange_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `cash_discard`;
-CREATE TABLE `cash_discard` (
-  `uuid`              CHAR(36) NOT NULL,
-  `project_id`        SMALLINT(5) UNSIGNED NOT NULL,
-  `reference`         INT(10) UNSIGNED NOT NULL,
-  `cash_uuid`         CHAR(36) NOT NULL,
-  `date`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `description`       TEXT,
-  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `reference` (`reference`),
-  KEY `project_id` (`project_id`),
-  KEY `user_id` (`user_id`),
-  KEY `cash_uuid` (`cash_uuid`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `cash_item`;
-CREATE TABLE `cash_item` (
-  `uuid`            CHAR(36) NOT NULL,
-  `cash_uuid`       CHAR(36) NOT NULL,
-  `amount`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
-  `invoice_uuid`    CHAR(36) DEFAULT NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `cash_uuid` (`cash_uuid`),
-  FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `client`;
 CREATE TABLE `client` (
@@ -1986,14 +1983,21 @@ CREATE TABLE `village` (
 DROP TABLE IF EXISTS `voucher`;
 CREATE TABLE IF NOT EXISTS `voucher` (
   `uuid` char(36) NOT NULL,
-  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `project_id` tinyint(4) NOT NULL,
+  `date` DATETIME NOT NULL,
+  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
   `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `currency_id` tinyint(4) NOT NULL,
-  `amount` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `currency_id` TINYINT(3) UNSIGNED NOT NULL,
+  `amount` decimal(19,4) unsigned NOT NULL DEFAULT 0.0000,
   `description` varchar(255) DEFAULT NULL,
   `document_uuid` char(36) DEFAULT NULL,
-  `user_id` tinyint(4) NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY `project_id` (`project_id`),
+  KEY `currency_id` (`currency_id`),
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2005,14 +2009,39 @@ FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM vouc
 --
 DROP TABLE IF EXISTS `voucher_item`;
 CREATE TABLE IF NOT EXISTS `voucher_item` (
-  `uuid` char(36) NOT NULL,
-  `account_id` int(11) NOT NULL,
-  `debit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `credit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `uuid` CHAR(36) NOT NULL,
+  `account_id` INT UNSIGNED NOT NULL,
+  `debit` DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
+  `credit` DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
   `voucher_uuid` char(36) NOT NULL,
   PRIMARY KEY (`uuid`),
-  KEY `voucher_uuid` (`voucher_uuid`)
+  KEY `account_id` (`account_id`),
+  KEY `voucher_uuid` (`voucher_uuid`),
+  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 SET foreign_key_checks = 1;
+
+-- SQL FUNCTIONS
+
+DELIMITER //
+
+-- converts a hex uuid (36 chars) into a binary uuid (16 bytes)
+CREATE FUNCTION HUID(_uuid CHAR(36))
+RETURNS BINARY(16) DETERMINISTIC
+RETURN UNHEX(REPLACE(_uuid, '-', ''));
+//
+
+-- converts a binary uuid (16 bytes) to dash-delimited hex UUID (36 characters)
+CREATE FUNCTION BUID(b BINARY(16))
+RETURNS CHAR(36) DETERMINISTIC
+BEGIN
+  DECLARE hex CHAR(32);
+  SET hex = HEX(b);
+  RETURN LCASE(CONCAT_WS('-', SUBSTR(hex,1, 8), SUBSTR(hex, 9,4), SUBSTR(hex, 13,4), SUBSTR(hex, 17,4), SUBSTR(hex, 21, 12)));
+END
+//
+
+DELIMITER ;

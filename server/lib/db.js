@@ -13,6 +13,7 @@ var q       = require('q');
 var mysql   = require('mysql');
 var winston = require('winston');
 var util    = require('util');
+const uuid  = require('node-uuid');
 
 var con;
 
@@ -167,11 +168,26 @@ function sanitize(x) {
   return con.escape(x);
 }
 
+/**
+ * Converts a (dash separated) string uuid to a binary buffer for insertion
+ * into the database.
+ *
+ * @method bid
+ * @param {string} hexUuid - a 36 character length string to be inserted into
+ * the database
+ * @returns {buffer} uuid - a 16-byte binary buffer for insertion into the
+ * database
+ */
+function bid(hexUuid) {
+  return new Buffer(uuid.parse(hexUuid));
+}
+
 module.exports = {
   initialise:  initialise,
   exec:        exec,
   transaction: transaction,
   execute:     util.deprecate(execute, 'db.execute() is deprecated, use db.exec() instead.'),
   sanitize:    util.deprecate(sanitize, 'db.sanitize() is deprecated, use db.escape instead.'),
-  escape:      sanitize
+  escape:      sanitize,
+  bid:         bid
 };

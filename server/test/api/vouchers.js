@@ -1,6 +1,4 @@
 /* jshint expr: true */
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -9,15 +7,12 @@ var helpers = require('./helpers');
 var uuid    = require('node-uuid');
 helpers.configure(chai);
 
-
 /**
 * The /vouchers API endpoint
 *
 * @desc This test suit is about the vouchers transactions
-* BE SURE : run mysql in sql_mode = "STRICT_ALL_TABLES"
 */
-
-describe('The /vouchers HTTP endpoint ::', function () {
+describe('The /vouchers HTTP endpoint', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
@@ -28,101 +23,99 @@ describe('The /vouchers HTTP endpoint ::', function () {
   /** Test with dates */
   var date = new Date();
 
+  // This should never actually happen in production (in balanced transactions),
+  // but is a valid API test right now..
+  /**
+   * @todo - posting to the journal should reject this as unbalanced and
+   * break this test.
+   */
+  var vUuid = uuid.v4();
+
   var voucher = {
-    uuid : uuid.v4(),
+    uuid : vUuid,
     date : date,
     project_id : 1,
     currency_id : 1,
     amount : 10,
-    description : 'Voucher transaction',
+    description : 'Voucher Transaction',
     document_uuid : uuid.v4(),
-    user_id : 1
+    user_id : 1,
+    items : [{
+      uuid : uuid.v4(),
+      account_id : 3631,
+      debit : 10,
+      credit : 0,
+      voucher_uuid : vUuid
+    }]
   };
 
-  var voucherItem = {
-    uuid : uuid.v4(),
-    account_id : 3631,
-    debit : 10,
-    credit : 0,
-    voucher_uuid : voucher.uuid
-  };
+  // NOTE: this voucher does not have any uuids
+  var items = [
+    { account_id: 3631, debit: 11, credit: 0 },
+    { account_id: 3637, debit: 0,  credit:11 },
+    { account_id: 3627, debit: 0,  credit:12 },
+    { account_id: 3628, debit: 12, credit: 0 }
+  ];
 
   var secondVoucher = {
-    uuid : uuid.v4(),
     date : date,
     project_id : 1,
     currency_id : 1,
-    amount : 17,
-    description : 'Multiple Voucher transaction',
+    amount : 23,
+    description : 'Multiple Voucher Transaction',
     document_uuid : uuid.v4(),
-    user_id : 1
+    user_id : 1,
+    items : items
   };
 
-  var secondVoucherItemArray = [
-    [uuid.v4(), 3631, 11, 0, secondVoucher.uuid],
-    [uuid.v4(), 3637, 0, 11, secondVoucher.uuid],
-    [uuid.v4(), 3627, 0, 12, secondVoucher.uuid],
-    [uuid.v4(), 3628, 12, 0, secondVoucher.uuid]
-  ];
-
-  var mock = {};
+  var mockVoucher;
 
   it('POST /vouchers create a new voucher record in voucher and voucher_item tables', function () {
-    /** data to send must be in this forma : */
-    var data = { voucher : voucher, voucher_item : voucherItem };
-
     return agent.post('/vouchers')
-      .send(data)
+      .send({ voucher : voucher })
       .then(function (res) {
         expect(res).to.have.status(201);
-        expect(res.body.id).to.exist;
-        expect(res.body.id).to.be.equal(voucher.uuid);
+        expect(res.body.uuid).to.exist;
+        expect(res.body.uuid).to.be.equal(voucher.uuid);
       })
       .catch(helpers.handler);
   });
 
   it('POST /vouchers create a new voucher record with multiple voucher_items', function () {
-    /** data to send must be in this forma : */
-    var data = { voucher : secondVoucher, voucher_item : secondVoucherItemArray };
-
     return agent.post('/vouchers')
-      .send(data)
+      .send({ voucher : secondVoucher })
       .then(function (res) {
         expect(res).to.have.status(201);
-        expect(res.body.id).to.exist;
-        expect(res.body.id).to.be.equal(data.voucher.uuid);
+        expect(res.body.uuid).to.exist;
       })
       .catch(helpers.handler);
   });
 
   it('POST /vouchers dont register when missing data', function () {
-    var mockVoucher = {
-      uuid : uuid.v4(),
+    var uid = uuid.v4();
+    mockVoucher = {
+      uuid : uid,
       date : date,
       project_id : 1,
       currency_id : 1,
       amount : 10,
-      description : 'Voucher transaction',
+      description : 'Bad Voucher Transaction',
       document_uuid : uuid.v4(),
-      user_id : 1
+      user_id : 1,
+      items : [{
+        account_id : 3631,
+        // missing debit field
+        credit : 0,
+        voucher_uuid : uid
+      }]
     };
-
-    var mockVoucherItem = {
-      // Missing voucher item uuid
-      account_id : 3631,
-      debit : 10,
-      credit : 0,
-      voucher_uuid : mockVoucher.uuid
-    };
-
-    mock = { voucher : mockVoucher, voucher_item : mockVoucherItem };
 
     return agent.post('/vouchers')
-      .send(mock)
+      .send({ voucher : mockVoucher })
       .then(function (res) {
         expect(res).to.have.status(400);
         expect(res.body.code).to.exist;
-        expect(res.body.code).to.be.equal('DB.ER_NO_DEFAULT_FOR_FIELD');
+        expect(res.body.code).to.be.equal('DB.ER_BAD_NULL_ERROR');
       })
       .catch(helpers.handler);
   });
@@ -157,8 +150,8 @@ describe('The /vouchers HTTP endpoint ::', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /vouchers returns a list of vouchers pecified by query string', function () {
-    return agent.get('/vouchers/?reference=unknow')
+  it('GET /vouchers returns a list of vouchers specified by query string', function () {
+    return agent.get('/vouchers/?reference=unknown')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.be.empty;
@@ -172,7 +165,7 @@ describe('The /vouchers HTTP endpoint ::', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=unknow');
+        return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=unknown');
       })
       .then(function (res) {
         expect(res).to.have.status(200);
