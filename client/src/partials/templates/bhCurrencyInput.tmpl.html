@@ -1,21 +1,23 @@
 <div class="form-group"
   ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.form.currencyInputValue.$invalid }"  
   data-bh-currency-input>
+
   <label class="control-label">
     {{ "COLUMNS.PAYMENT" | translate }}
   </label>
 
   <div class="input-group">
-    <span class="input-group-addon">{{ $ctrl.currency.symbol }}</span>
+    <span class="input-group-addon">{{ $ctrl.currency.symbol || '...' }}</span>
     <input class="form-control"
       type="number"
       name="currencyInputValue"
       ng-model="$ctrl.model"
       ng-min="$ctrl.currency.min_monentary_unit"
+      ng-max="$ctrl.maxValue"
+      ng-change="$ctrl.checkModel()"
       required>
   </div>
-
-
+  
   <!-- validation messages -->
   <p class="help-block" ng-messages="$ctrl.form.currencyInputValue.$error" ng-show="$ctrl.validationTrigger">
 
@@ -31,10 +33,22 @@
       {{ "FORM.ERRORS.MIN_CURRENCY_UNIT" | translate }}
     </span>
 
+    <!-- displays: "This value is too big than the maximum" -->
+    <span ng-message="max">
+      <span class="glyphicon glyphicon-exclamation-sign"></span>
+      {{ "FORM.ERRORS.MAX" | translate }}
+    </span>
+
     <!-- displays: "You must enter a valid number." -->
     <span ng-message="number">
       <span class="glyphicon glyphicon-exclamation-sign"></span>
       {{ "FORM.ERRORS.NUMBER" | translate }}
+    </span>
+
+    <!-- displays: "You must enter correct value accoording to currency." -->
+    <span ng-message="step">
+      <span class="glyphicon glyphicon-exclamation-sign"></span>
+      {{ "FORM.ERRORS.STEP" | translate }}
     </span>
   </p>
 </div>

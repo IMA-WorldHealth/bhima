@@ -22,32 +22,24 @@
 
     <hr/>
 
-    <div class="radio" ng-class="{ 'has-error' : TransferForm.$submitted && TransferForm.currency.$invalid }">
-      <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
-      <label 
-        ng-repeat="currency in CashTransferModalCtrl.cashBox.currencies track by currency.currency_id"
-        class="radio-inline">
-          <input
-            name="currency"
-            type="radio"
-            ng-model="CashTransferModalCtrl.currency_id"
-            ng-value="currency.currency_id"
-            data-transfer-currency-option="{{ currency.currency_id }}"
-            ng-change="CashTransferModalCtrl.handleCurrencyChange()"
-            required>
-          {{ CashTransferModalCtrl.currencyService.format(currency.currency_id); }}
-      </label>
-      <div class="help-block" ng-messages="TransferForm.currency.$error" ng-show="TransferForm.$submitted">
-        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+    <bh-currency-select
+      currency-id="CashTransferModalCtrl.currency_id"
+      validation-trigger="TransferForm.$submitted"
+      error-message="{{ CashTransferModalCtrl.errorKey | translate }}"
+      disable-ids="CashTransferModalCtrl.disabledCurrencyIds"
+      on-change="CashTransferModalCtrl.handleCashCurrencyChange(currency)"
+      ng-if="CashTransferModalCtrl.disabledCurrencyIds"                  
+    >
+    </bh-currency-select>
 
     <bh-currency-input
       id="transferCurrencyInput"
       currency-id="CashTransferModalCtrl.currency_id"
       model="CashTransferModalCtrl.amount"
+      max-value="CashTransferModalCtrl.cashAccountBalance.balance"
       form="TransferForm"
       validation-trigger="TransferForm.$submitted"
+      ng-if="CashTransferModalCtrl.currency_id"
       >
     </bh-currency-input>
 

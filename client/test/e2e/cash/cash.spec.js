@@ -157,7 +157,7 @@ describe('Cash Payments Module', function () {
 
     // This payment against patient invoices should succeed
     var mockInvoicesPayment = {
-      patientId: 'TPA2',
+      patientId: 'TPA1',
       date : new Date('2016-03-01'),
       amount : 5.12
     };    
@@ -240,7 +240,7 @@ describe('Cash Payments Module', function () {
 
     //This transfer should succed
     var mockTransfer = {
-      amount : 100
+      amount : 50
     };
 
     it('should make a transfert between selected auxillary cash and a virement account', function (){
@@ -248,12 +248,8 @@ describe('Cash Payments Module', function () {
       //click the transfert button
       var transfertBtn = element(by.css('[data-perform-transfer]'));
       transfertBtn.click();
-
-      //choosing CDF as transfer currency
-      var CDFRadio = element(by.css('[data-transfer-currency-option="1"]'));
-      CDFRadio.click();
-
-      //set a value in the currency component by model to avoid conflict  
+      
+      //set a value in the currency component by model to avoid conflict 
       components.currencyInput.set(mockTransfer.amount, 'transferCurrencyInput');
 
       // submit the modal button

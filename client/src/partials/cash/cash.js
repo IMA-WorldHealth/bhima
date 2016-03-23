@@ -35,16 +35,15 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   /** @const id of the currently select cashbox */
   var cashboxId = $routeParams.id;
 
-  /** default to dots for currency symbol */
-  vm.currencyLabel = '...';
+  /** error key for unsupported currencies**/
+  vm.errorKey = 'CASH.CURRENCY_NOT_SUPPORTED';
 
   // bind methods
-  vm.currencies = Currencies;
   vm.openInvoicesModal = openInvoicesModal;
   vm.openTransferModal = openTransferModal;
   vm.changeCashbox = changeCashbox;
+  vm.updateCurrency = updateCurrency;
   vm.usePatient = usePatient;
-  vm.hasFutureDate = hasFutureDate;
   vm.digestExchangeRate = digestExchangeRate;
   vm.toggleVoucherType = toggleVoucherType;
   vm.submit = submit;
@@ -65,25 +64,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     } else {
       throw error;
     }
-  }
-
-  /**
-   * warns if the date is in the future
-   * @todo - refactor into an angular.component.
-   * @see Issue #58.
-   */
-  function hasFutureDate() {
-    return (vm.payment.date > vm.timestamp);
-  }
-
-  /**
-   * switches the date flag to allow users to edit the date.
-   * @todo refactor into an angular.component
-   * @see Issue #58.
-   */
-  function toggleDateInput() {
-    vm.lockDateInput = !vm.lockDateInput;
-  }
+  } 
 
   // removes the cashbox from the local cache
   function changeCashbox() {
@@ -109,10 +90,12 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
     .then(function (cashbox) {
       vm.cashbox = cashbox;
       cache.cashbox = cashbox;
-    }).catch(handler);
-
-    // load currencies for later templating
-    Currencies.read();
+      return Currencies.read();
+    })
+    .then(function (currencies){
+      vm.disabledCurrencyIds = Cash.getUnsupportedCurrencyIds(vm.cashbox, currencies);      
+     })
+    .catch(handler);
 
     // make sure we have exchange
     Exchange.read();
@@ -149,6 +132,12 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   function usePatient(patient) {
     vm.payment.debtor_uuid = patient.debitor_uuid;
     vm.patient = patient;
+  }
+
+  /** callback to update the currency id**/
+
+  function updateCurrency (currency){
+    vm.payment.currency_id = currency.id;
   }
 
   /**

@@ -26,6 +26,7 @@ function CashService($http, util, Exchange, uuid, sessionService ) {
   service.delete = remove;
   service.reference = reference;
   service.getTransferRecord = getTransferRecord;
+  service.getUnsupportedCurrencyIds = getUnsupportedCurrencyIds; 
 
   /**
    * Fetchs cash payments from the server.  If an uuid is specified, will read a
@@ -160,7 +161,7 @@ function CashService($http, util, Exchange, uuid, sessionService ) {
   }
 
   /**
-  * This methode is responsible to create a voucher object and it back
+  * This methode is responsible to create a voucher object and send it back
   **/
   function getTransferRecord (cashAccountCurrency, amount, currency_id){
 
@@ -198,5 +199,23 @@ function CashService($http, util, Exchange, uuid, sessionService ) {
   **/
   function generateTransferDescription (){
     return ['Transfer voucher', new Date().toISOString().slice(0, 10), sessionService.user.id].join('/');
+  }
+
+  /**
+  *This method take a cashbox and a liste of available currency in the system
+  *and send back a list of currency not supported by the provided cashbox
+  **/
+  function getUnsupportedCurrencyIds (cashBox, currencies){
+    var cashboxCurrencyIds = cashBox.currencies.reduce(function (array, currency) {
+         return array.concat(currency.currency_id);
+    }, []);
+ 
+    // find all ids that are not cashbox ids, to disable them
+    var ids = currencies.reduce(function (array, currency) {
+      var bool = (cashboxCurrencyIds.indexOf(currency.id) === -1);
+      return array.concat(bool ? currency.id : []);
+    }, []);
+
+    return ids;
   }
 }
