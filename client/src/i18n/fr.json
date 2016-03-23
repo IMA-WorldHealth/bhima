@@ -2497,9 +2497,9 @@
    "NEW_REFERENCE"   : "Nouveau groupe de référence",
    "NO_REFERENCES"   : "Aucun groupe de référence n'est encore enregistré",
    "REGISTERED"      : "Groupes de références enregistrés",
-   "SAVE_SUCCES"     : "Enregistrement avec succès",
+   "SAVE_SUCCESS"     : "Enregistrement avec succès",
    "TITLE"           : "Gestion de groupe de référence",
-   "UPDATE_SUCCES"   : "Mis à jour avec succès",
+   "UPDATE_SUCCESS"   : "Mis à jour avec succès",
    "UPD_REFERENCE"   : "Modifier un groupe de référence"
    },
 "RENEWAL": {
