@@ -46,9 +46,8 @@
                 <td>{{ sectionResultat.text }}</td>
                 <td>{{sectionResultat.position}}</td>
                 <td>
-                  <b>
-                    {{ (sectionResultat.is_charge == 1) ? sectionResultatCtrl.doTranslate('SECTION_RESULTAT.CHARGE') : sectionResultatCtrl.doTranslate('SECTION_RESULTAT.PROFIT') }}
-                  </b>
+                  <b ng-show="sectionBilan.is_charge">{{sectionBilanCtrl.doTranslate('SECTION_RESULTAT.CHARGE')}}</b>
+                  <b ng-show="!sectionBilan.is_charge">{{sectionBilanCtrl.doTranslate('SECTION_BILAN.PASSIVE')}}</b>
                 </td>
                 <td><a class="btn btn-xs btn-default" id="sectionResultat-upd-{{$index+1}}" ng-click="sectionResultatCtrl.update(sectionResultat)"><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td><a class="btn btn-xs btn-default" id="sectionResultat-del-{{$index+1}}" ng-click="sectionResultatCtrl.del(sectionResultat)"><span class="glyphicon glyphicon-trash"></span></a></td>
@@ -104,7 +103,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "SECTION_RESULTAT.NEW" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="sectionResultatCtrl.submit(CreateForm.$invalid)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="sectionResultatCtrl.submit(CreateForm)" novalidate>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
                 <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
@@ -148,7 +147,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'SECTION_RESULTAT.EDIT' | translate }} </b> </div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="sectionResultatCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="sectionResultatCtrl.submit(UpdateForm)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
                 <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
