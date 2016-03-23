@@ -71,19 +71,18 @@ function TransactionService($http, Store, uuid) {
     // each iteration will create a new transaction, a transaction can contain any 
     // number of rows
     for (var i = 0; i < numberOfTransactions; i++) { 
-      var transactionId = transactionPrefix.concat(i);
-      var currentTransaction = buildMockTransaction(transactionId);
-      
+      var currentTransaction = buildMockTransaction(i);
       transactions = transactions.concat(currentTransaction);
     }
 
-    function buildMockTransaction(transctionId) { 
+    function buildMockTransaction(id) { 
       var transaction; 
       var upperLines = 50;
       var upperCost = 10000;
       var numberOfLines = Math.round(Math.random() * upperLines);
       var cost = selectEvenNumber(upperCost);
       var date = selectDate();
+      var transactionId = transactionPrefix.concat(id);
       
       // array of (n) undefined elements
       transaction = Array.apply(null, { length : numberOfLines });
@@ -95,6 +94,7 @@ function TransactionService($http, Store, uuid) {
           trans_id : transactionId,
           trans_date : date,
           description : descriptionPrefix.concat(transactionId),
+          reference : id,
           currency_id : currencyId, 
           account_number : selectAccount(),
           account : selectEvenNumber,

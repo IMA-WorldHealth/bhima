@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('JournalController', JournalController);
 
-JournalController.$inject = ['TransactionService'];
+JournalController.$inject = ['TransactionService', 'JournalSortingService'];
 
 /**
  * Posting Journal Controller 
@@ -26,13 +26,20 @@ JournalController.$inject = ['TransactionService'];
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Transactions) { 
+function JournalController(Transactions, Sorting) { 
   var vm = this;
- 
+  
+  // Journal utilites
+  var sorting; 
+
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {};
   
+  // Initialise each of the journal utilites, providing them access to the journal 
+  // configuration options
+  sorting = new Sorting(vm.gridOptions);
+
   // bind the transactions service to populate the grid component
   vm.gridOptions.data = Transactions.list.data;
   
@@ -42,7 +49,7 @@ function JournalController(Transactions) {
     { field : 'account_number', displayName : 'Account' },
     { field : 'debit_equiv', displayName : 'Debit' },
     { field : 'credit_equiv', displayName : 'Credit' },
-    { field : 'trans_id', displayName : 'Transaction' },
+    { field : 'trans_id', displayName : 'Transaction', sortingAlgorithm : sorting.transactionIds},
 
     // @todo this should be formatted as a currency icon vs. an ID
     { field : 'currency_id', displayName : 'Currency' },
