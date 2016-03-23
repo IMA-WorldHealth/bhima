@@ -34,7 +34,9 @@
       </div>
 
       <!-- triggered on successful form creation -->
-      <bh-form-message message="PermissionsCtrl.formMessage" message-type="success" ng-switch-when="success"></bh-form-message>
+      <uib-alert type="success" ng-switch-when="success">
+        <span class="glyphicon glyphicon-ok"></span> {{ PermissionCtrl.formMessage.code | translate }}
+      </uib-alert>
 
       <!-- user creation view -->
       <div ng-switch-when="create" class="panel panel-primary">
@@ -116,10 +118,6 @@
                 <i class="glyphicon glyphicon-ban-circle"></i> {{ 'FORM.CANCEL' | translate }}
               </button>
             </div>
-
-            <!-- form feedback -->
-            <bh-form-message message="PermissionsCtrl.formMessage"></bh-form-message>
-
           </fieldset>
         </form>
       </div>
@@ -184,9 +182,6 @@
                 <i class="glyphicon glyphicon-lock"></i> {{ 'PERMISSIONS.UPDATE_PASSWORD' | translate }}
               </button>
             </div>
-
-            <!-- form feedback -->
-            <bh-form-message message="PermissionsCtrl.formMessage"></bh-form-message>
 
             <div class="form-group">
 
