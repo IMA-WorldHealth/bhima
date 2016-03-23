@@ -193,6 +193,10 @@ function bhimaconfig($routeProvider) {
     controller: 'JournalVoucherController as JournalVoucherCtrl',
     templateUrl: 'partials/journal/voucher/voucher.html'
   })
+  .when('/vouchers/simple', {
+    controller: 'SimpleJournalVoucherController as SimpleVoucherCtrl',
+    templateUrl: 'partials/vouchers/simple.html'
+  })
 
   /* debtors routes */
 
