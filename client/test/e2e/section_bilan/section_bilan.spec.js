@@ -50,7 +50,7 @@ describe('Section bilans Module', function () {
     element(by.id('sectionBilan-upd-' + sectionBilanRank )).click();
     // modify the sectionBilan text
     FU.input('sectionBilanCtrl.sectionBilan.text', 'Updated');
-    // modify the sectionBilan Is Charge
+    // modify the sectionBilan Is Actif
     FU.radio('sectionBilanCtrl.sectionBilan.is_actif', 1);
 
     element(by.id('change_sectionBilan')).click();
