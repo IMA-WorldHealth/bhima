@@ -2672,15 +2672,19 @@
    "UNFOUND"         : "Aucune transaction des patients trouvée. Référence"
    },
 "SECTION_BILAN" : {
-   "ASSET" : "Actif",
-   "PASSIVE" : "Passive",
-   "NO_SECTION_BILAN" : "Pas de section du bilan",
-   "TITLE"            : "Section bilan",
-   "ALL"              : "Tous les section bilan",
-   "ALERT"            : "Bilan section management",
-   "ADD"              : "Ajouter",
-   "NEW"              : "Nouvelle section bilan",
-   "EDIT"             : "Edition section bilan"
+   "ADD"                  : "Ajouter",
+   "ALERT"                : "Bilan section management",
+   "ALL"                  : "Tous les sections du bilan",
+   "ASSET"                : "Actif", 
+   "CONFIRM"              : "Etes-vous sûr de vouloir supprimer cette section du Bilan",  
+   "DELETE_SUCCESS"       : "Suppression avec succès",
+   "EDIT"                 : "Editer une section bilan",
+   "NEW"                  : "Nouvelle section du bilan",
+   "NO_SECTION_BILAN"     : "Pas de section du bilan",
+   "PASSIVE"              : "Passive", 
+   "SAVE_SUCCESS"         : "Enregistrement avec succès",  
+   "TITLE"                : "Section du bilan",
+   "UPDATE_SUCCESS"       : "Mise à jour avec succès"
    },
 
 "SECTION_RESULTAT" : {
