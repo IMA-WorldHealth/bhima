@@ -281,7 +281,7 @@ describe('The /patients API', function () {
   });
 
   it('GET /patients/groups will return a list of all patient groups', function () {
-    var TOTAL_PATIENT_GROUPS = 2;
+    var TOTAL_PATIENT_GROUPS = 3;
 
     return agent.get('/patients/groups')
       .then(function (result) {
