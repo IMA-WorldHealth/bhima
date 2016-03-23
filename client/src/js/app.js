@@ -64,7 +64,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/cash/discard/discard.html'
   })
   .when('/section_bilan', {
-    controller : 'sectionBilan',
+    controller : 'sectionBilanController as sectionBilanCtrl',
     templateUrl : 'partials/section_bilan/section_bilan.html'
   })
   .when('/section_resultat', {

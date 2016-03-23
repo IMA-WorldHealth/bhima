@@ -2673,15 +2673,18 @@
    "UNFOUND"         : "No patient transactions found. Reference"
    },
 "SECTION_BILAN" : {
-   "ASSET" : "Asset",
-   "PASSIVE" : "Passive",
-   "NO_SECTION_BILAN" : "No bilan section found",
-   "TITLE"            : "Bilan section",
+   "ADD"              : "Add",
+   "ALERT"            : "Administration of section du bilan",
    "ALL"              : "All bilan section",
-   "ALERT"            : "Gestion de section du bilan",
-   "NEW"              : "New bilan section",
+   "CONFIRM"          : "Are you sure you want to delete this Bilan section",
+   "ASSET"            : "Asset",
    "EDIT"             : "Bilan section editing",
-   "ADD"              : "Add"
+   "NEW"              : "New bilan section",
+   "NO_SECTION_BILAN" : "No bilan section found",
+   "PASSIVE"          : "Passive",
+   "SAVE_SUCCESS"     : "Saved Successfully",
+   "TITLE"            : "Bilan section",
+   "UPDATE_SUCCESS"   : "Update Successfully"   
 },
 "SECTION_RESULTAT" : {
    "CHARGE" : "Charge",
