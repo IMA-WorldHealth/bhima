@@ -1,4 +1,15 @@
 {
+  "SERVICE" : {
+    "TITLE" : "Gestion des services",
+    "ADD_SERVICE" : "Ajouter service",
+    "ALL_SERVICES" : "Tous les services",
+    "DESCRIPTION" : "Ce module permet de creer, lister, modifier, supprimer et voir le cout et produit du service",
+    "ADDING_SERVICE" : "Ajout service",
+    "EDITING_SERVICE" : "Modification service",
+    "OVERVIEWING_SERVICE" : "Visualisation sommaire du service"
+
+  },
+
   "PROJECT" : {
     "TITLE" : "Gestion des progets",
     "ADD_PROJECT" : "Ajouter proget",
@@ -6,7 +17,6 @@
     "DESCRIPTION" : "Ce module permet de lister, creer, modifier et supprimer un proget",
     "ADDING_PROJECT" : "Ajout nouveau proget",
     "EDITING_PROJECT" : "Modification proget"
-
   },
 
   "CASHBOX" : {
@@ -91,7 +101,9 @@
       "ENTERPRISE_ID" : "ID entreprise",
       "ENTERPRISE" : "Entreprise",
       "ZS" : "Zone de sante",
-      "LOCKED" : "Bloquee"
+      "LOCKED" : "Bloquee",
+      "COST_CENTER" : "Centre de cout",
+      "PROFIT_CENTER" : "Centre de profit"
     },
 
     "PLACE_HOLDERS" : {
@@ -112,6 +124,8 @@
       "SELECT_VILLAGE" : "Selectionner village",
       "SELECT_ENTERPRISE" : "Selectionner entreprise",
       "SELECT_ZS" : "Selectionner zone de sante",
+      "SELECT_COST_CENTER" : "Selectionner centre de cout",
+      "SELECT_PROFIT_CENTER" : "Selectionner centre profit",
       "EMPTY" : "Vide"      
     },
 
@@ -176,7 +190,13 @@
       "PHONE" : "Telephone",
       "EDIT"  : "Editer",
       "ID" : "ID",
-      "ENTERPRISE_ID" : "ID enterprise"
+      "ENTERPRISE_ID" : "ID enterprise",
+      "SERVICE" : "Service",
+      "COST_CENTER" : "Centre de cout",
+      "PROFIT_CENTER" : "Centre de profit",
+      "CHARGE" : "Charge",
+      "PROFIT" : "Profit",
+      "RESULT" : "Resultat"
 
     }
   },
