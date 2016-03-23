@@ -106,6 +106,12 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Cash Payments
 (18,1),
 
+-- Price list Management
+(21, 1),
+
+-- Exchange Rate
+(22, 1),
+
 -- Location Management
 (26,1),
 
@@ -115,6 +121,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Projects
 (42,1),
 
+-- Service Management
+(48, 1),
+
 -- Payroll Management
 (57, 1),
 
@@ -123,18 +132,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Patient Update
 (80, 1),
-
--- Price list Management
-(21, 1),
-
--- Exchange Rate
-(22, 1),
-
--- [Folder] Accounting 
-(30,1),
-
--- Service Management
-(48, 1),
 
 -- subsidie Management
 (82, 1),
@@ -147,7 +144,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 --  Debtor Groups Management
 (107,1),
-
 
 --  Bilan Section Management
 (109,1),
