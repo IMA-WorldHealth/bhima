@@ -31,9 +31,10 @@
     "moment": "^2.11.2",
     "angular-dynamic-locale": "~0.1.29",
     "angular-messages": "^1.5.0",
-    "ngstorage": "^0.3.10"
+    "ngstorage": "^0.3.10",
+    "angular-ui-router": "^0.2.18"
   },
   "resolutions": {
-    "angular": "^1.5.0",
+    "angular": "^1.5.0"
   }
 }
