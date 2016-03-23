@@ -103,6 +103,7 @@ exports.configure = function configure(app) {
 exports.errorHandling = function errorHandling(app) {
   'use strict';
 
+  app.use(interceptors.newErrorHandler);
   app.use(interceptors.apiErrorHandler);
   app.use(interceptors.databaseErrorHandler);
   app.use(interceptors.catchAllErrorHandler);
