@@ -1,6 +1,22 @@
-// responsible for authentication routes
+/**
+ * Authentication Controller
+ *
+ * This controller is responsible for managing user authentication and
+ * authorization to the entire application stack.
+ *
+ * @todo - user roles should be designed and implemented to restrict a
+ * user's ability to selected routes.
+ *
+ * @requires lib/db
+ * @requires lib/errors/Unauthorized
+ * @requires lib/errors/Forbidden
+ * @requires lib/errors/InternalServerError
+ */
 
 var db = require('../lib/db');
+var Unauthorized = require('../lib/errors/Unauthorized');
+var Forbidden = require('../lib/errors/Forbidden');
+var InternalServerError = require('../lib/errors/InternalServerError');
 
 // POST /login
 // This route will accept a login request with the
@@ -26,8 +42,8 @@ exports.login = function login(req, res, next) {
   .then(function (rows) {
 
     // if no data found, we return a login error
-    if (rows.length < 1) {
-      throw new req.codes.ERR_BAD_CREDENTIALS();
+    if (rows.length === 0) {
+      throw new Unauthorized('Bad username and password combination.');
     }
 
     // we assume only one match for the user
@@ -43,7 +59,7 @@ exports.login = function login(req, res, next) {
 
     // if no permissions, notify the user that way
     if (rows.length === 0) {
-      throw new req.codes.ERR_NO_PERMISSIONS();
+      throw new Unauthorized('This user does not have any permissions.');
     }
 
     // update the database for when the user logged in
@@ -65,7 +81,7 @@ exports.login = function login(req, res, next) {
   })
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new req.codes.ERR_NO_ENTERPRISE();
+      throw new InternalServerError('There are no enterprises registered in the database!');
     }
 
     enterprise = rows[0];
@@ -77,7 +93,7 @@ exports.login = function login(req, res, next) {
   })
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new req.codes.ERR_NO_PROJECT();
+      throw new Unauthorized('No project matching the provided id.');
     }
 
     project = rows[0];
@@ -87,12 +103,14 @@ exports.login = function login(req, res, next) {
     req.session.enterprise = enterprise;
     req.session.project = project;
 
-    // send the data back to the client
-    res.status(200).json({
+    var data = {
       user : user,
       enterprise : enterprise,
       project : project
-    });
+    };
+
+    // send the data back to the client
+    res.status(200).json(data);
   })
   .catch(next)
   .done();

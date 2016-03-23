@@ -56,7 +56,7 @@ describe('The /login API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(401);
         expect(res.body).to.contain.all.keys(helpers.errorKeys);
-        expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
+        expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);
   });
@@ -69,7 +69,7 @@ describe('The /login API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(401);
         expect(res.body).to.contain.all.keys(helpers.errorKeys);
-        expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
+        expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);
   });
@@ -81,7 +81,7 @@ describe('The /login API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(401);
         expect(res.body).to.contain.all.keys(helpers.errorKeys);
-        expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
+        expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);
   });

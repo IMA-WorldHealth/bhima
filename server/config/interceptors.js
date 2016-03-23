@@ -13,16 +13,27 @@
  * @todo Import logging functionality into this module.
  *
  * @requires config/codes
+ * @requires lib/errors/Forbidden
+ * @requires lib/errors/Unauthorized
+ * @requires lib/errors/BadRequest
+ * @requires lib/errors/NotFound
+ * @requires lib/errors/InternalServerError
  */
 
 var errors = require('./codes');
 var winston = require('winston');
 
+var BadRequest          = require('../lib/errors/BadRequest');
+var Unauthorized        = require('../lib/errors/Unauthorized');
+var Forbidden           = require('../lib/errors/Forbidden');
+var NotFound            = require('../lib/errors/NotFound');
+var InternalServerError = require('../lib/errors/InternalServerError');
+
 /**
  * This function identifies whether a parameter is a native error of JS or not.
  *
- * @param error
- * @returns {boolean} bool True if the error is a native error, false otherwise
+ * @param {Error} error
+ * @returns {boolean} bool - true if the error is a native error, false otherwise
  */
 function isNativeError(error) {
   return (
@@ -33,6 +44,37 @@ function isNativeError(error) {
     error instanceof EvalError
   );
 }
+
+/**
+ * This function identifies whether an error is an error constructed by the API
+ * as defined in lib/errors/*.js.
+ *
+ * @param {Error} error
+ * @returns {boolean} bool - true if the error is an API error, false otherwise
+ */
+function isApiError(error) {
+  return (
+    error instanceof NotFound ||
+    error instanceof Unauthorized ||
+    error instanceof Forbidden ||
+    error instanceof BadRequest ||
+    error instanceof InternalServerError
+  );
+}
+
+/**
+ * This error handler exists while we are migrating to the new error imports and
+ * deprecating req.codes.  It should eventually replace all API error handling.
+ * A catchall error handler will still be necessary.
+ */
+exports.newErrorHandler = function newErrorHandler(error, req, res, next) {
+
+  // skip this middleware if not an API error
+  if (!isApiError(error)) { return next(error); }
+
+  // send to the client with the appropriate status code
+  res.status(error.status).json(error);
+};
 
 
 /**

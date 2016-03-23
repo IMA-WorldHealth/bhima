@@ -7,9 +7,11 @@
 * @example
 * next(new res.codes.ERR_NOT_FOUND());
 * Promise.then(function () { throw new res.codes.ERR_NOT_FOUND(); }).catch(next);
+*
+* @deprecated This module should not longer be used.  See issue #182.
 */
 
-/** custom errorFactor function to throw in API endpoints */
+/** custom errorFactory function to throw in API endpoints */
 function makeError(name, defn) {
 
   // must call 'new' on this function
@@ -34,6 +36,7 @@ function makeError(name, defn) {
   return AppError;
 }
 
+/** @deprecated See issue #182 */
 module.exports = {
 
   /** application error codes */

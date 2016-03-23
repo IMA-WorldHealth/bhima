@@ -157,9 +157,6 @@ describe('(/cash) Cash Payments Interface ', function () {
 
           // anticipate a 400 error from the API.
           helpers.api.errored(res, 400);
-
-          // check to make sure the error code is correct
-          expect(res.body.code).to.equal('CASH.VOUCHER.ERRORS.NO_CASH_ITEMS');
         })
         .catch(helpers.handler);
     });

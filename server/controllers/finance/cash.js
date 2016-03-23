@@ -11,9 +11,16 @@
 * select a cashbox which implicitly bundles in cash accounts for all supported
 * currencies.  The API accepts a cashbox ID during cash payment creation and
 * looks up the correct account based on the cashbox_id + currency.
+*
+* @requires lib/db
+* @requires node-uuid
+* @requires lib/errors/NotFound
+* @requires lib/errors/BadRequest
 */
 const db   = require('../../lib/db');
 const uuid = require('node-uuid');
+var NotFound = require('../../lib/errors/NotFound');
+var BadRequest = require('../../lib/errors/BadRequest');
 
 /** retrieves the details of a cash payment */
 exports.detail = detail;
@@ -61,7 +68,7 @@ function lookupCashRecord(id, codes) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound('No cash record by uuid: ?'.replace('?', uuid));
     }
 
     // store the record for return
@@ -179,12 +186,11 @@ function create(req, res, next) {
     });
   }
 
-  // disallow invoice payments with empty items.
+  // disallow invoice payments with empty items by returning a 400 to the client
   if (!data.is_caution && (!items || !items.length)) {
-    return res.status(400).json({
-      code : 'CASH.VOUCHER.ERRORS.NO_CASH_ITEMS',
-      reason : 'You must submit cash items with the cash items payment.'
-    });
+    return next(
+      new BadRequest('You must submit cash items with the cash items payment.')
+    );
   }
 
   const writeCashSql =
@@ -291,16 +297,19 @@ function debitNote(req, res, next) {
  */
 function reference(req, res, next) {
 
+  // alias the reference
+  var ref = req.params.reference;
+
   const sql =
     'SELECT BUID(c.uuid) AS uuid FROM (' +
       'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference ' +
       'FROM cash JOIN project ON cash.project_id = project.id' +
     ')c WHERE c.reference = ?;';
 
-  db.exec(sql, [ req.params.reference ])
+  db.exec(sql, [ ref ])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound('No cash record with reference: ?'.replace('?', ref));
     }
 
     // references should be unique - return the first one
