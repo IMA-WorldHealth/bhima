@@ -31,7 +31,7 @@ describe('Locations /Sectors Management', function () {
 
   var defaultSector   = 209;
 
-  var sectorRank    = helpers.random(defaultSector);
+  var sectorRank    = 1;
 
   // navigate to the employee module before each test
   beforeEach(function () {

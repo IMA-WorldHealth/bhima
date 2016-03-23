@@ -45,9 +45,9 @@
                 <td>{{ $index+1 }}</td>
                 <td>{{ sectionResultat.text }}</td>
                 <td>{{sectionResultat.position}}</td>
-                <td>
-                  <b ng-show="sectionBilan.is_charge">{{sectionBilanCtrl.doTranslate('SECTION_RESULTAT.CHARGE')}}</b>
-                  <b ng-show="!sectionBilan.is_charge">{{sectionBilanCtrl.doTranslate('SECTION_BILAN.PASSIVE')}}</b>
+                <td>                  
+                  <b ng-show="sectionResultat.is_charge">{{sectionResultatCtrl.doTranslate('SECTION_RESULTAT.CHARGE')}}</b>
+                  <b ng-show="!sectionResultat.is_charge">{{sectionResultatCtrl.doTranslate('SECTION_RESULTAT.PROFIT')}}</b>
                 </td>
                 <td><a class="btn btn-xs btn-default" id="sectionResultat-upd-{{$index+1}}" ng-click="sectionResultatCtrl.update(sectionResultat)"><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td><a class="btn btn-xs btn-default" id="sectionResultat-del-{{$index+1}}" ng-click="sectionResultatCtrl.del(sectionResultat)"><span class="glyphicon glyphicon-trash"></span></a></td>
