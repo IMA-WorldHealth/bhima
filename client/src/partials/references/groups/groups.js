@@ -58,7 +58,7 @@ function ReferenceGroupController(referenceGroupService, sectionBilanService, $w
     return $translate.instant(key);
   }
   
-  // refresh the displayed Sections Bilans
+  // refresh the displayed References groups
   function refreshReferenceGroups() {
     return referenceGroupService.read(null,{ detailed : 1 }).then(function (data) {
       vm.referenceGroups = data;
