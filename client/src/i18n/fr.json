@@ -1,4 +1,17 @@
 {
+
+  "SUBSIDY" : {
+    "TITLE" : "Gestion des subventions",
+    "ADD_SUBSIDY" : "Ajouter subvention",
+    "ALL_SUBSIDIES" : "Toutes les subventions",
+    "NO_SUBSIDY" : "Aucune subvention",
+    "DESCRIPTION" : "Ce module permet de creer une subvention pour une facturation particuliere",
+    "ADDING_SUBSIDY" : "Ajout d'une subvention",
+    "UPDATING_SUBSIDY" : "Modification d'une subvention"
+
+
+  },
+
   "SERVICE" : {
     "TITLE" : "Gestion des services",
     "ADD_SERVICE" : "Ajouter service",
@@ -7,7 +20,6 @@
     "ADDING_SERVICE" : "Ajout service",
     "EDITING_SERVICE" : "Modification service",
     "OVERVIEWING_SERVICE" : "Visualisation sommaire du service"
-
   },
 
   "PROJECT" : {
@@ -103,7 +115,10 @@
       "ZS" : "Zone de sante",
       "LOCKED" : "Bloquee",
       "COST_CENTER" : "Centre de cout",
-      "PROFIT_CENTER" : "Centre de profit"
+      "PROFIT_CENTER" : "Centre de profit",
+      "VALUE" : "Valeur",
+      "ACCOUNT" : "Compte",
+      "DESCRIPTION" : "Description"
     },
 
     "PLACE_HOLDERS" : {
@@ -126,6 +141,7 @@
       "SELECT_ZS" : "Selectionner zone de sante",
       "SELECT_COST_CENTER" : "Selectionner centre de cout",
       "SELECT_PROFIT_CENTER" : "Selectionner centre profit",
+      "SELECT_ACCOUNT" : "Selectionner compte",
       "EMPTY" : "Vide"      
     },
 
@@ -196,7 +212,11 @@
       "PROFIT_CENTER" : "Centre de profit",
       "CHARGE" : "Charge",
       "PROFIT" : "Profit",
-      "RESULT" : "Resultat"
+      "RESULT" : "Resultat",
+      "VALUE" : "Valeur",
+      "ACCOUNT" : "Compte",
+      "LABEL" : "Label",
+      "NR" : "Numero"
 
     }
   },
