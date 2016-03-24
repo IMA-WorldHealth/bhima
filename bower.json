@@ -17,7 +17,6 @@
   "dependencies": {
     "angular": "^1.5.0",
     "angular-bootstrap": "^1.2.1",
-    "angular-route": "^1.5.0",
     "angular-sanitize": "^1.5.0",
     "angular-translate": "^2.10.0",
     "angular-translate-loader-static-files": "^2.10.0",
@@ -26,13 +25,15 @@
     "ng-file-upload": "^12.0.1",
     "ng-file-upload-shim": "^12.0.1",
     "angular-ui-grid": "^3.1.1",
+    "angular-ui-router": "^0.2.18",
     "bootstrap": "~3.3.6",
     "angular-moment": "^1.0.0",
     "moment": "^2.11.2",
     "angular-dynamic-locale": "~0.1.29",
     "angular-messages": "^1.5.0",
     "ngstorage": "^0.3.10",
-    "angular-ui-router": "^0.2.18"
+    "Chart.js": "^1.0.2",
+    "angular-chart.js": "^0.9.0"
   },
   "resolutions": {
     "angular": "^1.5.0"
