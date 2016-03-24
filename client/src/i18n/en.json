@@ -540,7 +540,7 @@
    "INCOME"                : "Income",
    "INDIRECT"              : "Indirect",
    "INITIAL_STOCK"         : "Initial stock",
-   "INVENTORY"             : "Inventory",   
+   "INVENTORY"             : "Inventory",
    "INVENTORY_CODE"        : "Inventory Code",
    "INVENTORY_GROUP"       : "Inventory Group",
    "INVENTORY_ITEM"        : "Inventory Item",
@@ -1585,7 +1585,8 @@
   "COUNTRY" : "Enter a country.",
   "PROVINCE" : "Enter a province.",
   "SECTOR" : "Enter a sector.",
-  "VILLAGE" : "Enter a village."
+  "VILLAGE" : "Enter a village.",
+  "DESCRIPTION" : "Enter a description."
 },
 "INVENTORY": {
    "GROUPS": {
@@ -2222,7 +2223,7 @@
    "NEW"              : "New Price List",
    "NO_RECORDS"       : "No Record",
    "POSTED"           : "Posted new price list!",
-   "PRICE_LIST_ITEMS" : "Price liste items",   
+   "PRICE_LIST_ITEMS" : "Price liste items",
    "REMOVE_SUCCESS"   : "Erased succefully !",
    "SAVE_LIST"        : "Save List",
    "SAVE_SUCCESS"     : "Saved successfully",
@@ -2230,7 +2231,7 @@
    "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups",
    "UPDATE"           : "Update a Price List",
    "UPDATE_SUCCESS"    : "Updated successfully",
-   "WARN"             : "Warn"   
+   "WARN"             : "Warn"
    },
 "PRIMARY_CASH": {
    "CONFIGURE"        : "Configure Cash Box",
@@ -3287,6 +3288,7 @@
    "INVENTORY_MANAGEMENT"      : "Inventory Management",
    "INVENTORY_VIEW"            : "Stock",
    "JOURNAL_VOUCHER"           : "Journal Voucher",
+   "SIMPLE_VOUCHER"            : "Simple Voucher",
    "LOCATION"                  : "Locations Management",
    "LOSS_RECORDS"              : "Stock loss",
    "MAIN_CASH"                 : "Principal Cashbox",
@@ -3525,5 +3527,12 @@
     "MAXLENGTH" : "This input is too long.",
     "NUMBER" : "This field must be a valid number.",
     "DATE" : "This field must be a valid date."
-   }
+   },
+  "VOUCHERS" : {
+    "SIMPLE" : {
+      "TITLE" : "Transfer Slip",
+      "FROM_ACCOUNT" : "From Account",
+      "TO_ACCOUNT" : "To Account"
+    }
+  }
 }

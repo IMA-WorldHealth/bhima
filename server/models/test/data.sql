@@ -29,7 +29,9 @@ INSERT INTO unit VALUES
   (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots_management/', '/depots_management'),
   (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtor_groups/', '/debtor_groups'),
   (109, 'Section du bilan','TREE.SECTION_BILAN','',30,'/partials/section_bilan/','/section_bilan/'),
-  (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',30,'/partials/references/groups','/references/groups');  
+  (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',30,'/partials/references/groups','/references/groups'),
+  (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple');
+
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
@@ -105,11 +107,23 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Cash Payments
 (18,1),
 
--- Location Management 
+-- Price list Management
+(21, 1),
+
+-- Exchange Rate
+(22, 1),
+
+-- Location Management
 (26,1),
+
+-- [Folder] Accounting
+(30, 1),
 
 -- Projects
 (42,1),
+
+-- Service Management
+(48, 1),
 
 -- Payroll Management
 (57, 1),
@@ -119,18 +133,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Patient Update
 (80, 1),
-
--- Price list Management
-(21, 1),
-
--- Exchange Rate
-(22, 1),
-
--- [Folder] Accounting 
-(30,1),
-
--- Service Management
-(48, 1),
 
 -- subsidie Management
 (82, 1),
@@ -149,6 +151,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 --  Reference Group Management
 (111,1);
+
+-- Simple Journal Vouchers
+(134, 1);
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);

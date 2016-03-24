@@ -46,9 +46,8 @@
                 <td>{{ sectionBilan.text }}</td>
                 <td>{{sectionBilan.position}}</td>
                 <td>
-                  <b>
-                    {{ (sectionBilan.is_actif == 1) ? sectionBilanCtrl.doTranslate('SECTION_BILAN.ASSET') : sectionBilanCtrl.doTranslate('SECTION_BILAN.PASSIVE') }}
-                  </b>
+                  <b ng-show="sectionBilan.is_actif">{{sectionBilanCtrl.doTranslate('SECTION_BILAN.ASSET')}}</b>
+                  <b ng-show="!sectionBilan.is_actif">{{sectionBilanCtrl.doTranslate('SECTION_BILAN.PASSIVE')}}</b>
                 </td>
                 <td><a class="btn btn-xs btn-default" id="sectionBilan-upd-{{$index+1}}" ng-click="sectionBilanCtrl.update(sectionBilan)"><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td><a class="btn btn-xs btn-default" id="sectionBilan-del-{{$index+1}}" ng-click="sectionBilanCtrl.del(sectionBilan)"><span class="glyphicon glyphicon-trash"></span></a></td>
@@ -104,7 +103,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "SECTION_BILAN.NEW" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="sectionBilanCtrl.submit(CreateForm.$invalid)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="sectionBilanCtrl.submit(CreateForm)" novalidate>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
                 <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
@@ -148,7 +147,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'SECTION_BILAN.EDIT' | translate }} </b> </div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="sectionBilanCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="sectionBilanCtrl.submit(UpdateForm)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
                 <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
