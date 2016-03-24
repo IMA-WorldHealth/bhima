@@ -67,8 +67,10 @@ function ReferenceGroupController(referenceGroupService, sectionBilanService, $w
   }
 
   // form submission
-  function submit(invalid) {
-    if (invalid) { return; }
+  function submit(form) {
+
+    // if the form has errors, exit immediately
+    if (form.$invalid) { return; }
 
     var promise;
     var creation = (vm.view === 'create');

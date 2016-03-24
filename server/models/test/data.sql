@@ -150,7 +150,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (109,1),
 
 --  Reference Group Management
-(111,1);
+(111,1),
 
 -- Simple Journal Vouchers
 (134, 1);
