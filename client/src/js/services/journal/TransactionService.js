@@ -77,7 +77,7 @@ function TransactionService($http, Store, uuid) {
 
     function buildMockTransaction(id) { 
       var transaction; 
-      var upperLines = 50;
+      var upperLines = 10;
       var upperCost = 10000;
       var numberOfLines = Math.round(Math.random() * upperLines);
       var cost = selectEvenNumber(upperCost);

@@ -1,7 +1,9 @@
 angular.module('bhima.controllers')
 .controller('JournalController', JournalController);
 
-JournalController.$inject = ['TransactionService', 'JournalSortingService'];
+JournalController.$inject = [
+  'TransactionService', 'JournalSortingService', 'JournalGroupingService'
+];
 
 /**
  * Posting Journal Controller 
@@ -26,11 +28,11 @@ JournalController.$inject = ['TransactionService', 'JournalSortingService'];
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Transactions, Sorting) { 
+function JournalController(Transactions, Sorting, Grouping) { 
   var vm = this;
   
   // Journal utilites
-  var sorting; 
+  var sorting, grouping;
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
@@ -39,18 +41,24 @@ function JournalController(Transactions, Sorting) {
   // Initialise each of the journal utilites, providing them access to the journal 
   // configuration options
   sorting = new Sorting(vm.gridOptions);
+  grouping = new Grouping(vm.gridOptions);
 
   // bind the transactions service to populate the grid component
   vm.gridOptions.data = Transactions.list.data;
   
   vm.gridOptions.columnDefs = [
-    { field : 'trans_date', displayName : 'Date' },
+    { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"' },
     { field : 'description', displayName : 'Description' },
     { field : 'account_number', displayName : 'Account' },
     { field : 'debit_equiv', displayName : 'Debit' },
     { field : 'credit_equiv', displayName : 'Credit' },
-    { field : 'trans_id', displayName : 'Transaction', sortingAlgorithm : sorting.transactionIds},
-
+    { field : 'trans_id', 
+      displayName : 'Transaction', 
+      sortingAlgorithm : sorting.transactionIds,
+      grouping : { groupPriority : 1 }
+    }
+  
+    /*
     // @todo this should be formatted as a currency icon vs. an ID
     { field : 'currency_id', displayName : 'Currency' },
     
@@ -63,5 +71,6 @@ function JournalController(Transactions, Sorting) {
     { field : 'period_summary', displayName : 'Period' },
     // @fixme this field should not come from the database as 'cc'
     { field : 'cc', displayName : 'Cost Center' }
+    */
   ];
 }
