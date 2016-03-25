@@ -72,7 +72,7 @@ function SupplierController(supplierService, creditorService) {
     
     promise = (creation) ?
       supplierService.create(supplier) :
-      supplierService.update(supplier.id, supplier);
+      supplierService.update(supplier.uuid, supplier);
 
     promise
       .then(function (response) {

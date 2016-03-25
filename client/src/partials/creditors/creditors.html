@@ -14,7 +14,6 @@
   </button>
 </div>
 
-
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
@@ -40,7 +39,7 @@
                 <td colspan="5"><loading-indicator></loading-indicator></td>
               </tr>
               <tr 
-              ng-repeat="supplier in SupplierCtrl.suppliers | orderBy:'number' | orderBy:'text' " 
+              ng-repeat="supplier in SupplierCtrl.suppliers | orderBy:'name' " 
               ng-class="{'rowSelected' : SupplierCtrl.supplier.uuid === supplier.uuid}" >
                 <td>{{ $index+1 }}</td>
                 <td>{{ supplier.name }}</td>
@@ -67,7 +66,7 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'SUPPLIER.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'SUPPLIER.REGISTRATION_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
@@ -79,20 +78,6 @@
             </p>
           </div>
         </div>
-
-        <div ng-switch-when="delete_success">
-          <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'SUPPLIER.DELETE_SUCCESS' | translate }} </h4>
-            </p>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_error">
-          <div class="alert alert-danger" id="delete_error">
-            <h4>{{ SubsidyCtrl.HTTPError.data.code | translate }} </h4>
-            </p>
-          </div>
-        </div>        
 
         <!-- Form for adding supplier -->
         <div class="panel panel-primary" ng-switch-when="create">
@@ -178,7 +163,7 @@
 
         <!-- Form for updating supplier -->
         <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading">{{ 'SUPPLIER.EDIT' | translate }} </b> </div>
+          <div class="panel-heading">{{ 'SUPPLIER.EDIT_SUPPLIER' | translate }} </b> </div>
           <div class="panel-body">
             <form class="panel-body" name="UpdateForm" ng-submit="SupplierCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
@@ -243,11 +228,6 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.note.$invalid }">
                 <label class="control-label" for="note">{{ "COLUMNS.NOTE" | translate }}</label>
                 <textarea class="form-control" name="note" id="note" ng-model="SupplierCtrl.supplier.note" rows="3"></textarea>
-              </div>
-
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.position.$invalid }">
-                <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
-                <input type="number" class="form-control"  min="0" name="position" ng-model="SupplierCtrl.supplier.position" required>
               </div>
 
               <div class="form-group">
