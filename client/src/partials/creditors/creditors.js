@@ -1,171 +1,88 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('SupplierController', SupplierController);
 
 SupplierController.$inject = [
-  '$scope', '$translate', 'validate', 'connect',
-  'appstate', 'uuid', 'messenger'
+  'SupplierService', 'CreditorService'
 ];
 
-function SupplierController($scope, $translate, validate, connect, appstate, uuid, messenger) {
-  var dependencies = {}, session = $scope.session = {}, route = {};
+function SupplierController(supplierService, creditorService) {
+  var vm = this;
+  vm.view = 'default';
 
-  dependencies.creditGroup = {
-    query : {
-      tables : {
-        creditor_group : { columns : ['enterprise_id', 'uuid', 'name', 'account_id', 'locked'] }
-      }
-    }
-  };
+  // bind methods
+  vm.create = create;
+  vm.submit = submit;
+  vm.update = update;
+  vm.cancel = cancel; 
 
-  dependencies.supplier = {
-    query : {
-      identifier : 'uuid',
-      tables : {
-        supplier : { columns : ['uuid', 'name', 'phone', 'locked', 'email', 'international', 'creditor_uuid', 'address_1', 'address_2', 'fax', 'note'] },
-        creditor : { columns : ['group_uuid'] }
-      },
-      join : ['supplier.creditor_uuid=creditor.uuid']
-    }
-  };
+  function handler(error) {
+    console.error(error);
+  }
 
-  route = $scope.route = {
-    create : {
-      header : 'SUPPLIER.CREATE',
-      button : 'SUPPLIER.CREATE_SUPPLIER',
-      method : registerSupplier
-    },
-    edit : {
-      header : 'SUPPLIER.EDIT',
-      button : 'SUPPLIER.EDIT_SUPPLIER',
-      method : submitEdit
-    }
-  };
+  // fired on startup
+  function startup() {
+    // start up loading indicator
+    vm.loading = true;
 
-  // Request enterprise information 
-  appstate.register('enterprise', function (enterprise) { 
-    session.enterprise = enterprise;
-    
-    // Request project information - initialise page
-    appstate.register('project', initialise);
-  });
+    // load Creditors
+    creditorService.read().then(function (data) {
+      vm.creditors = data;
+    }).catch(handler);
+
+    // load suppliers
+    refreshSuppliers();
+  }
+
+  function cancel() {
+    vm.view = 'default';
+  }
   
-  function initialise(project) {
-    session.project = project;
-    session.state = route.create;
-    session.location = {};
-    
-    // Request data from server
-    validate.process(dependencies).then(settupForm);
+
+  function create() {
+    vm.view = 'create';
+    vm.supplier = {};    
   }
 
-  function settupForm(model) {
-    angular.extend($scope, model);
+  // switch to update mode
+  // data is an object that contains all the information of a Supplier
+  function update(data) {
+    vm.view = 'update';
+    vm.supplier = data;
   }
-
-  function createSupplier() {
-    session.supplier = {};
-    session.creditor = {};
-    
-    session.state = route.create;
-    session.selected = null;
-
- }
-
-  function editSupplier(uuid) {
-
-    // Verify there is nothing in the current session
-
-    assignSupplier($scope.supplier.get(uuid));
-    session.state = route.edit;
-    session.selected = uuid;
-  }
-
-  function assignSupplier(supplier) {
-    session.supplier = supplier;
-    session.creditor = { group_uuid : supplier.group_uuid };      
-  }
-
-  function registerSupplier() {
-    var creditor_uuid = uuid();
-
-    // Assign uuid and note to creditor
-    session.creditor.uuid = creditor_uuid;
-    session.creditor.text = $translate.instant('SUPPLIER.SUPPLIER') + '[' + session.supplier.name + ']';
-
-    // Assign uuid, location and creditor id to supplier
-    session.supplier.uuid = uuid();
-    session.supplier.creditor_uuid = creditor_uuid;
   
-    requestCreditor(session.creditor)
-    .then(writeSupplier(session.supplier))
-    .then(handleRegistration)
-    .catch(handleError);
-  }
-
-  function requestCreditor(creditor) {
-    return connect.post('creditor', [creditor]);
-  }
-
-  function writeSupplier(supplier) {  
-    //supplier.international = supplier.international? 1 : 0;
-    return connect.post('supplier', [supplier]);
-  }
-
-  function requestSupplier(supplier) {
-    //supplier.international = supplier.international? 1 : 0;
-    return connect.put('supplier', [supplier], ['uuid']);
-  }
-
-  function handleRegistration() {
-    messenger.success($translate.instant('SUPPLIER.REGISTRATION_SUCCESS'));
-    $scope.supplier.post(session.supplier);
-    createSupplier();
-  }
-
-  function submitEdit() {
-
-    //FIXME hack - remove group_uuid from supplier
-    delete session.supplier.group_uuid;
-
-    requestSupplier(session.supplier)
-    .then(requestCreditorUpdate(session.supplier))
-    .then(handleRegistration)
-    .catch(handleError);
-  }
-
-  function requestCreditorUpdate() {
-    dependencies.creditor = {
-      query : {
-        tables : {
-          creditor : { columns : ['uuid', 'group_uuid'] }
-        },
-        where : ['creditor.uuid=' + session.supplier.creditor_uuid]
-      },
-    };
-
-    return validate.process(dependencies, ['creditor'])
-    .then(function (model) {
-     
-      // Assuming one supplier will only ever have one creditor account
-      var creditor = model.creditor.data[0];
-      creditor.group_uuid = session.creditor.group_uuid;
-  
-      // FIXME hack
-      session.supplier.group_uuid = creditor.group_uuid;
-      return connect.put('creditor', [creditor], ['uuid']);
+  // refresh the displayed Suppliers
+  function refreshSuppliers() {
+    return supplierService.read(null,{ detailed : 1 }).then(function (data) {
+      vm.suppliers = data;
+      vm.loading = false;
     });
   }
 
-  function handleError() {
-    // TODO reverse previous incorrect transactions
-    messenger.danger($translate.instant('SUPPLIER.REGISTRATION_FAILURE'));
+  // form submission
+  function submit(form) {
+
+     // stop submission if the form is invalid
+    if (form.$invalid) { return; }
+
+    var promise;
+    var creation = (vm.view === 'create');
+
+    var supplier = angular.copy(vm.supplier);
+    
+    promise = (creation) ?
+      supplierService.create(supplier) :
+      supplierService.update(supplier.id, supplier);
+
+    promise
+      .then(function (response) {
+        return refreshSuppliers();
+      })
+      .then(function () {
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
+      .catch(handler);
   }
 
-  $scope.registerSupplier = registerSupplier;
-  $scope.editSupplier = editSupplier;
-  $scope.createSupplier = createSupplier;
-
-  $scope.selectVillage = function selectVillage(village) { 
-    session.location.village = village;
-  };
+  startup();  
 }
