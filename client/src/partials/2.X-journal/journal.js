@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('JournalController', JournalController);
 
 JournalController.$inject = [
-  'TransactionService', 'JournalSortingService', 'JournalGroupingService'
+  'TransactionService', 'JournalSortingService', 'JournalGroupingService',
+  'JournalPaginationService'
 ];
 
 /**
@@ -28,11 +29,11 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Transactions, Sorting, Grouping) { 
+function JournalController(Transactions, Sorting, Grouping, Pagination) { 
   var vm = this;
   
   // Journal utilites
-  var sorting, grouping;
+  var sorting, grouping, pagination;
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
@@ -42,10 +43,19 @@ function JournalController(Transactions, Sorting, Grouping) {
   // configuration options
   sorting = new Sorting(vm.gridOptions);
   grouping = new Grouping(vm.gridOptions);
+  pagination = new Pagination(vm.gridOptions, Transactions.list.data);
 
   // bind the transactions service to populate the grid component
   vm.gridOptions.data = Transactions.list.data;
-  
+
+  /**
+   * Column defintions; specify the configuration and behaviour for each column
+   * in the journal grid. 
+   *
+   * - Note:  Setting the grouping priority without sorting by the same column will 
+   *          cause unexpected behaviour (splitting up of groups) when sorting 
+   *          other columns. This can be avoided by setting default sort and group.
+   */
   vm.gridOptions.columnDefs = [
     { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"' },
     { field : 'description', displayName : 'Description' },
@@ -55,22 +65,22 @@ function JournalController(Transactions, Sorting, Grouping) {
     { field : 'trans_id', 
       displayName : 'Transaction', 
       sortingAlgorithm : sorting.transactionIds,
-      grouping : { groupPriority : 1 }
-    }
+      sort : { priority : 0, direction : 'asc' },
+      grouping : { groupPriority : 0 }
+    },
   
-    /*
     // @todo this should be formatted as a currency icon vs. an ID
-    { field : 'currency_id', displayName : 'Currency' },
+    { field : 'currency_id', displayName : 'Currency', visible: false },
     
     // @todo this should be formatted showing the debitor/credior
-    { field : 'deb_cred_uuid', displayName : 'Recipient' }, 
+    { field : 'deb_cred_uuid', displayName : 'Recipient', visible : false }, 
 
     // @fixme inv_po_id -> reference
-    { field : 'inv_po_id', displayName : 'Reference Document' },
-    { field : 'user', displayName : 'Responsible' },
-    { field : 'period_summary', displayName : 'Period' },
+    { field : 'inv_po_id', displayName : 'Reference Document', visible : false },
+    { field : 'user', displayName : 'Responsible', visible : false },
+    { field : 'period_summary', displayName : 'Period', visible : false },
+    
     // @fixme this field should not come from the database as 'cc'
-    { field : 'cc', displayName : 'Cost Center' }
-    */
+    { field : 'cc', displayName : 'Cost Center', visible : false }
   ];
 }
