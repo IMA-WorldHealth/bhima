@@ -3,16 +3,20 @@ angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$location', 'Patients', 'Debtors', 'util'
+  '$location', 'Patients', 'Debtors', 'util', 'SessionService'
 ];
 
-function PatientRegistrationController($location, patients, debtors, util) {
+function PatientRegistrationController($location, patients, debtors, util, Session) {
   var viewModel = this;
 
   // Models for collecting patient data in logical groups
   viewModel.finance = {};
   viewModel.medical = {};
-  viewModel.options = {};
+  viewModel.options = {}; 
+  
+  // bind default villages 
+  viewModel.medical.origin_location_id = Session.enterprise.location_id;
+  viewModel.medical.current_location_id = Session.enterprise.location_id;
 
   // Set up page elements data (debtor select data)
   debtors.groups()
