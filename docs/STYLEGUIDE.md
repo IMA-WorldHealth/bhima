@@ -52,21 +52,23 @@ var Row = {};  // FIXME: not a class!
 var T = new dbLogger({ log : false });  // this is a class. Use CamelCase!
 ```
 
-Always declare variables using the `var` keyword.
+Always declare variables using a keyword.
 
 ```javascript
 // good
-var x = 7;
+let x = 7;
+const m = 12;
 var y = "Some String",
     z = new Separator();
 
 // bad
 x = 7;
+m = 12;
 y = "Some String";
 z = new Separator();
 ```
 
-Using one `var` statement for a series of assignments is acceptable, but be sure to
+Using one `var`/`let` statement for a series of assignments is acceptable, but be sure to
 indent properly.  Proper indentation aligns all the variable names to increase
 readability.
 
