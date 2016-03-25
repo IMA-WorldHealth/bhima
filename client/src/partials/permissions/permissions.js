@@ -1,8 +1,3 @@
-// This module is responsible for handling the creation
-// of users and assigning permissions to existing modules.
-
-// TODOs:
-// - Password Insecure alert or not
 angular.module('bhima.controllers')
 .controller('PermissionsController', PermissionsController);
 
@@ -11,20 +6,31 @@ PermissionsController.$inject = [
   'ProjectService', 'NodeTreeService'
 ];
 
+/** 
+ * Users and Permission Controller 
+ * 
+ * This module is responsible for handling the creation
+ * of users and assigning permissions to existing modules.
+ *
+ * @todo Password insecure alert or not
+ */
 function PermissionsController($window, $translate, $http, $uibModal, util, Session, Users, Projects, NT) {
   var vm = this;
 
-  var btnTemplate =
-    '<button ng-click="grid.appScope.edit(row.entity)" style="margin: 0 5px">{{ "FORM.EDIT" | translate }}</button>' +
-    '<button ng-click="grid.appScope.editPermissions(row.entity)">{{ "PERMISSIONS.EDIT_PERMISSIONS" | translate }}</button>';
-
+  var editTemplate =
+    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.edit(row.entity)">{{ "FORM.EDIT" | translate }}</a></div>';
+  
+  var permissionTemplate = 
+    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.editPermissions(row.entity)">{{ "PERMISSIONS.EDIT_PERMISSIONS" | translate }}</a></div>';
   // options for the UI grid
   vm.uiGridOptions = {
     appScopeProvider : vm, // ensure that the controller's `this` variable is bound to appScope
+    enableColumnMenus : false,
     columnDefs : [
       { field : 'displayname', name : 'Display Name' },
       { field : 'username', name : 'User Name' },
-      { name : 'Actions', cellTemplate: btnTemplate }
+      { name : 'edit', displayName : '', cellTemplate: editTemplate, enableSorting : false },
+      { name : 'permission', displayName : '', cellTemplate: permissionTemplate, enableSorting : false }
     ],
     enableSorting : true
   };
@@ -32,7 +38,7 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
   // the user object that is either edited or created
   vm.user = {};
 
-  // TODO -- manage state without strings
+  /** @todo manage state without strings */
   vm.state = 'default'; // this is default || create || update
 
   // bind methods
