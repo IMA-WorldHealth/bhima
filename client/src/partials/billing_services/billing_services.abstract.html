@@ -1,0 +1,26 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="title">{{ "BILLING_SERVICES.TITLE" | translate }}</li>
+    </ol>
+
+    <!-- @todo - discuss if buttons contained in the header is a good idea -->
+    <div class="toolbar">
+
+      <div class="toolbar-item">
+
+        <!-- @todo - hide this on the create/update state -->
+        <button class="btn btn-default" ui-sref="billingServices.create" data-method="create">
+          <span class="glyphicon glyphicon-plus"></span> {{ "BILLING_SERVICES.CREATE" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+
+  <!-- anchor to template in child views -->
+  <div class="container-fluid" ui-view></div>
+</div>

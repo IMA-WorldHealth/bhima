@@ -1529,7 +1529,9 @@
   "CLEAR"             : "Clear Selection",
   "GROUP_ROWS"        : "Group Rows",
   "REFRESH"           : "Refresh Selection",
-  "UPDATE"            : "Update Selection"
+  "UPDATE"            : "Update Selection",
+  "EMPTY"             : "There are no records to display.",
+  "LOADING"           : "Fetching data from the server."
 },
 "GROUP_INVOICE": {
    "AGREED"                 : "Agreed Payment",

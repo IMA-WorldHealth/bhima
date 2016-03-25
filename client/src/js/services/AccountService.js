@@ -13,6 +13,7 @@ function AccountService($http, util, sessionService) {
   var baseUrl = '/accounts/';
 
   service.read = read;
+  service.label = label;
 
   /** @deprecated */
   service.list = list;

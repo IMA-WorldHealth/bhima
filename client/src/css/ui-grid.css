@@ -1,4 +1,3 @@
-
 .modal-grid {
   min-height: 300px;
   width : 100%;
@@ -37,4 +36,14 @@
 .grid-msg-overlay .msg > span {
   display: table-cell;
   vertical-align: middle;
+}
+
+/*
+  This sets the grid to full height of the window.
+*/
+.grid-full-height {
+  width:  100%;
+
+  /* this is full height minus the header crumb */
+  height : calc(100vh - 65px);
 }

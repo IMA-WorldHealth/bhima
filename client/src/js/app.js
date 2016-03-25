@@ -198,14 +198,15 @@ function bhimaConfig($stateProvider, $urlRouterProvider) {
   /* billing service */
 
   .state('billingServices', {
+    abstract : true,
     url : '/admin/billing_services',
-    templateUrl : 'partials/billing_services/billing_services.html',
-    abstract : true
+    templateUrl : 'partials/billing_services/billing_services.abstract.html',
+    controller : 'BillingServicesController as BillingServicesCtrl',
   })
-  .state('billingServices.index', {
-    url : '',            // display along with parent state
-    templateUrl : '/partials/billing_services/billing_services.list.html',
-    controller : 'BillingServicesController as BillingServicesCtrl'
+  .state('billingServices.list', {
+    url : '', // display by default in the parent state
+    templateUrl : '/partials/billing_services/list/list.html',
+    controller : 'BillingServicesListController as BillingServicesListCtrl'
   })
   .state('billingServices.create', {
     url : '/create',

@@ -1,8 +1,8 @@
 angular.module('bhima.controllers')
-.controller('BillingServicesController', BillingServicesController);
+.controller('BillingServicesListController', BillingServicesListController);
 
-BillingServicesController.$inject = [
-  '$state', '$translate', 'BillingServicesService'
+BillingServicesListController.$inject = [
+  '$translate', 'BillingServicesService', 'AccountService'
 ];
 
 /**
@@ -10,7 +10,7 @@ BillingServicesController.$inject = [
  *
  * This is the default controller for the billing services URL endpoint.
  */
-function BillingServicesController($state, $translate, BillingServices) {
+function BillingServicesListController($translate, BillingServices, Accounts) {
   var vm = this;
 
   // these options are for the ui-grid
@@ -20,18 +20,16 @@ function BillingServicesController($state, $translate, BillingServices) {
     enableHiding : false,
     columnDefs : [
       { field : 'id', name : $translate.instant('COLUMNS.ID') },
-      { field : 'account_id', name : $translate.instant('COLUMNS.ACCOUNT') },
+      { field : 'account', name : $translate.instant('COLUMNS.ACCOUNT') },
       { field : 'label', name : $translate.instant('COLUMNS.LABEL') },
       { field : 'description', name : $translate.instant('COLUMNS.DESCRIPTION') },
       { field : 'value', name : $translate.instant('COLUMNS.VALUE') },
-      { field : 'date', name : $translate.instant('COLUMNS.DATE'), cellFilter:'date' },
+      { field : 'created_at', name : $translate.instant('COLUMNS.DATE'), cellFilter:'date' },
     ]
   };
 
   // default loading state - false;
   vm.loading = false;
-
-  vm.update = update;
 
   // fired on state init
   function startup() {
@@ -42,24 +40,25 @@ function BillingServicesController($state, $translate, BillingServices) {
     // retrieve a detailed list of the billing services in the application
     BillingServices.read(null, { detailed : 1 })
     .then(function (billingServices) {
-      console.log('loaded:', billingServices);
+
+      // make a pretty human readable account label
+      billingServices.forEach(function (service) {
+        service.account = Accounts.label(service);
+      });
+
+      // populate the grid
       vm.options.data = billingServices;
     })
+    .catch(function (error) {
+      vm.error = error;
+    })
     .finally(function () {
-
-      // turn loading indicator off after HTTP request is finished
       toggleLoadingIndicator();
     });
   }
 
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
-  }
-
-  // update the clicked billing service
-  function update(id) {
-    console.log('clicked:', id);
-    //$state.go('billingServices.update');
   }
 
   startup();
