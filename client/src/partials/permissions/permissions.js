@@ -184,7 +184,6 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
     }
 
     promise.then(function (data) {
-
       var msg = messages[vm.state];
 
       // go back to default state
