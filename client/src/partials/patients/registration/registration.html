@@ -29,6 +29,10 @@
                 <label for="second-name" class="col-md-3 control-label">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
                 <div class="col-md-9">
                   <input id="second-name" class="form-control" name="lastName" ng-model="PatientRegCtrl.medical.last_name" required>
+                  
+                  <div class="help-block" ng-messages="details.lastName.$error" ng-show="details.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
                 </div>
               </div>
 
@@ -40,6 +44,10 @@
                 <label for="middle-name" class="col-md-3 control-label">{{ "INVOICE.MIDDLE_NAME" | translate }}</label>
                 <div class="col-md-9">
                   <input id="middle-name" class="form-control" name="middleName" ng-model="PatientRegCtrl.medical.middle_name" required>
+                  
+                  <div class="help-block" ng-messages="details.middleName.$error" ng-show="details.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
                 </div>
               </div>
 
@@ -61,12 +69,17 @@
 
                 <label for="new-hospital-number" class="col-md-3 control-label">{{ "INVOICE.HOSPITAL_FILE_NR" | translate }} </label>
                 <div class="col-md-9">
+
+                  <!-- TODO Encapsulate feedback glyphicons + help block in hospital-number directive -->
                   <input id="new-hospital-number" name="hospitalNumber" class="form-control" ng-model="PatientRegCtrl.medical.hospital_no" hospital-number required>
                   <span ng-if="details.$error.hospitalNumber" class="glyphicon glyphicon-remove form-control-feedback"></span>
                   <span ng-if="details.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
-                  <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
-
-                  <!-- TODO Translate -->
+                  
+                  <div class="help-block" ng-messages="details.hospitalNumber.$error" ng-show="details.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                  
+                  <!-- Custom validation (hospital number already registered -->
                   <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">
                     {{ "UTIL.PATIENT_EXIT" | translate }}
                   </p>
@@ -96,15 +109,11 @@
                 <label for="patient-dob" class="col-md-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                 <div class="col-md-9">
                   <input required name="dob" id="patient-dob" type="date" class="form-control" ng-disabled="!PatientRegCtrl.fullDateEnabled" ng-model="PatientRegCtrl.medical.dob" min="{{PatientRegCtrl.minDOB | date : 'yyyy-MM-dd'}}" max="{{PatientRegCtrl.maxDOB | date : 'yyyy-MM-dd'}}">
-                </div>
-              </div>
 
-              <!-- Date of birth warning message -->
-              <div
-                id="date-error"
-                class="alert alert-danger"
-                ng-if="details.dob.$error.min || details.dob.$error.max">
-                <p>{{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_LIMIT" | translate }} {{PatientRegCtrl.minDOB | date}} {{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_AND" | translate }} {{PatientRegCtrl.maxDOB | date}}</p>
+                  <div class="help-block" ng-messages="details.dob.$error">
+                    <div ng-messages-include="partials/templates/dates.messages.tmpl.html"></div>
+                  </div>
+                </div>
               </div>
 
               <!-- Gender -->
@@ -121,6 +130,10 @@
                     <input type="radio" name="genderOptions" id="female" value="F" ng-model="PatientRegCtrl.medical.sex" required>
                     {{ "PATIENT_REG.FEMALE" | translate }}
                   </label>
+                  
+                  <div class="help-block" ng-messages="details.genderOptions.$error" ng-show="details.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
                 </div>
               </div>
 
@@ -162,17 +175,24 @@
                   <select class="form-control" name="debtorGroup" id="debtor-group" ng-model="PatientRegCtrl.finance.debitor_group_uuid" ng-options="g.uuid as g.name for g in PatientRegCtrl.options.debtorGroups | orderBy:'name'" required>
                     <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
                   </select>
+
+                  <div class="help-block" ng-messages="details.debtorGroup.$error" ng-show="details.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
                 </div>
               </div>
             </form>
           </div>
 
           <div class="panel-footer">
+           
+            <p class="text-danger" ng-if="details.$submitted && details.$invalid">
+              <span class="glyphicon glyphicon-remove-sign"></span> {{ "PATIENT_EDIT.RECORD_ERROR" | translate }}
+            </p>
             <button type="submit" ng-click="PatientRegCtrl.registerPatient()" class="btn btn-primary btn-sm" data-method="submit">
               {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
             </button>
           </div>
-
         </div>
       </div>
 
