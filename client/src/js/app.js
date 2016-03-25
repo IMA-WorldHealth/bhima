@@ -195,6 +195,29 @@ function bhimaConfig($stateProvider, $urlRouterProvider) {
     templateUrl: 'partials/locations/country/country.html'
   })
 
+  /* billing service */
+
+  .state('billingServices', {
+    url : '/admin/billing_services',
+    templateUrl : 'partials/billing_services/billing_services.html',
+    abstract : true
+  })
+  .state('billingServices.index', {
+    url : '',            // display along with parent state
+    templateUrl : '/partials/billing_services/billing_services.list.html',
+    controller : 'BillingServicesController as BillingServicesCtrl'
+  })
+  .state('billingServices.create', {
+    url : '/create',
+    templateUrl : '/partials/billing_services/create/create.html',
+    controller : 'BillingServicesCreateController as BillingServicesCreateCtrl'
+  })
+  .state('billingServices.update', {
+    url : '/:id',
+    templateUrl : '/partials/billing_services/update/update.html',
+    controller : 'BillingServicesUpdateController as BillingServiceUpdateCtrl'
+  })
+
   /* budget routes */
 
   .state('/budgets/create', {

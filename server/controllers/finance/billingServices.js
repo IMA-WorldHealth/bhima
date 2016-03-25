@@ -3,15 +3,15 @@
  *
  * @module finance/billingServices
  *
- * @desc This module is responsible for CRUD operations on the billing_service
+ * @description This module is responsible for CRUD operations on the billing_service
  * table.  A billing_service increases a patient's invoice by a set percentage
  * of the total invoice amount.
  *
- * @required lib/db
+ * @requires lib/db
  *
  */
 var db = require('../../lib/db');
-
+//var NotFound = require('../../lib/errors/NotFound');
 
 /**
  * Looks up a billing service by id.
@@ -74,6 +74,11 @@ exports.list = function list(req, res, next) {
     'SELECT bs.id, bs.label, bs.created_at ' +
     'FROM billing_service AS bs ' +
     'ORDER BY bs.label;';
+
+  if (req.query.detailed) {
+    // substituted SQL for complex SQL
+    console.log('todo');
+  }
 
   db.exec(sql)
   .then(function (rows) {

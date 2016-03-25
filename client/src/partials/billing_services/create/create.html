@@ -1,0 +1,101 @@
+<!-- billing service creation form -->
+<div class="row">
+  <div class="col-md-8">
+    <form name="CreateForm" bh-submit="BillingServicesCreateCtrl.submit(CreateForm)" novalidate autocomplete="off">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          {{ "BILLING_SERVICES.FORM.CREATE" | translate }}
+        </div>
+        <div class="panel-body">
+
+          <!-- account input -->
+          <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account.$invalid }">
+            <label class="control-label">
+              {{ "COLUMNS.ACCOUNT" | translate }}
+            </label>
+            <input
+              class="form-control"
+              name="account"
+              ng-model="BillingServicesCreateCtrl.model.account"
+              placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}"
+              uib-typeahead="account as account.label for account in BillingServicesCreateCtrl.accounts | filter:$viewValue | limitTo:10"
+              typeahead-template-url="partials/templates/typeahead/accounts.html"
+              required>
+            <div class="help-block" ng-messages="CreateForm.account.$error" ng-show="CreateForm.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- label input -->
+          <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
+            <label class="control-label">
+              {{ "COLUMNS.LABEL" | translate }}
+            </label>
+            <input
+              class="form-control"
+              name="label"
+              ng-model="BillingServicesCreateCtrl.model.label"
+              required>
+            <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- description textarea -->
+          <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
+            <label class="control-label">
+              {{ "COLUMNS.DESCRIPTION" | translate }}
+            </label>
+            <textarea
+              class="form-control"
+              name="description"
+              ng-model="BillingServicesCreateCtrl.model.description"
+              placeholder="{{ 'INPUT.DESCRIPTION' | translate }}"
+              required>
+            </textarea>
+            <div class="help-block" ng-messages="CreateForm.description.$error" ng-show="CreateForm.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- value input -->
+          <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.value.$invalid }">
+            <label class="control-label">
+              {{ "COLUMNS.VALUE" | translate }}
+            </label>
+            <input
+              type="number"
+              class="form-control"
+              name="value"
+              ng-model="BillingServicesCreateCtrl.model.value"
+              required>
+            <div class="help-block" ng-messages="CreateForm.value.$error" ng-show="CreateForm.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-footer">
+          <!-- submit button -->
+          <bh-loading-button loading-state="CreateForm.$loading">
+          </bh-loading-button>
+
+          <!-- show success message if the form is successfully submitted -->
+          <p ng-show="BillingServicesCreateCtrl.created" class="text-success" style="display: inline-block;">
+            <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.CREATED" | translate }}
+          </p>
+
+          <!-- there are (client-side) errors on the form -->
+          <p ng-show="CreateForm.$submitted && CreateForm.$invalid" class="text-danger" style="display: inline-block;">
+            <span class="glyphicon glyphicon-alert"></span> {{ "FORM.ERRORED" | translate }}
+          </p>
+
+          <!-- show http errors sent from the server -->
+          <p ng-show="CreateForm.$submitted && BillingServicesCreateCtrl.error" class="text-danger" style="display: inline-block;">
+            <span class="glyphicon glyphicon-alert"></span> {{ BillingServicesCreateCtrl.error.code | translate }}
+          </p>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
