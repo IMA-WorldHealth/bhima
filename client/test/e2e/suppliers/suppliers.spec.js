@@ -71,7 +71,7 @@ describe('Suppliers Module', function () {
     element(by.id('supplier-upd-' + supplierRank )).click();
     // modify the supplier name
     FU.input('SupplierCtrl.supplier.name', 'Updated');
-    // modify the supplier description
+    // modify the supplier note
     FU.input('SupplierCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
 
      FU.buttons.submit();
