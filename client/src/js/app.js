@@ -292,7 +292,7 @@ function bhimaconfig($routeProvider) {
   /* creditor routes */
 
   .when('/creditors', {
-    controller: 'SupplierController',
+    controller: 'SupplierController as SupplierCtrl',
     templateUrl: '/partials/creditors/creditors.html'
   })
   .when('/creditors/groups', {
