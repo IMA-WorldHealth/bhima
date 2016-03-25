@@ -1,5 +1,15 @@
 {
 
+  "EXCHANGE" : {
+    "TITLE" : "Gestion taux d'echange",
+    "ADD_EXCHANGE" : "Ajouter taux",
+    "ENTERPRISE_CURRENCY" : "Monnaie de l'entreprise",
+    "REVIEW_RATE" : "Revoir le taux",
+    "ADDING_RATE" : "Ajout d'un taux",
+    "DESCRIPTION" : "Cette interface vous permet d'ajouter un taux d'echange",
+    "NEW_RATE" : "Nouveau taux"
+  },
+
   "SUBSIDY" : {
     "TITLE" : "Gestion des subventions",
     "ADD_SUBSIDY" : "Ajouter subvention",
@@ -8,8 +18,6 @@
     "DESCRIPTION" : "Ce module permet de creer une subvention pour une facturation particuliere",
     "ADDING_SUBSIDY" : "Ajout d'une subvention",
     "UPDATING_SUBSIDY" : "Modification d'une subvention"
-
-
   },
 
   "SERVICE" : {
@@ -118,7 +126,9 @@
       "PROFIT_CENTER" : "Centre de profit",
       "VALUE" : "Valeur",
       "ACCOUNT" : "Compte",
-      "DESCRIPTION" : "Description"
+      "DESCRIPTION" : "Description",
+      "PREVIOUS_DATE" : "Date precedente",
+      "DATE" : "Date"
     },
 
     "PLACE_HOLDERS" : {
@@ -186,7 +196,8 @@
       "EMAIL" : "Email mal saisie",
       "MINLENGTH" : "Longueur minimale non respectee",
       "MAXLENGTH" : "Longueur maximale non respectee",
-      "DATE" : "Date mal saisie"
+      "DATE" : "Date mal saisie",
+      "INVALID_DATE" : "Date invalide"
     },
 
     "DIALOGS" : {
@@ -216,7 +227,10 @@
       "VALUE" : "Valeur",
       "ACCOUNT" : "Compte",
       "LABEL" : "Label",
-      "NR" : "Numero"
+      "NR" : "Numero",
+      "DATE" : "Date",
+      "CURRENCY" : "Monnaie",
+      "RATE" : "Taux"
 
     }
   },

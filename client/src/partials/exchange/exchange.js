@@ -122,7 +122,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
 
   // switch to delete warning mode
   function del(id) {
-    var result = $window.confirm($translate.instant('EXCHANGE.CONFIRM'));
+    var result = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
     if (!result) {
       vm.view = 'default';
       return

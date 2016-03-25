@@ -1,11 +1,11 @@
 <form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm.$invalid)" novalidate>
   <div class="modal-header">
-    <h4>{{ 'EXCHANGE.NEW_RATE' | translate }}</h4>
+    <h4>{{ 'EXCHANGE.ADDING_RATE' | translate }}</h4>
   </div>
 
   <div class="modal-body">
     <uib-alert type="info">
-      <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "EXCHANGE.HELP_TXT_1" | translate }}
+      <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "EXCHANGE.DESCRIPTION" | translate }}
     </uib-alert>
 
     <div class="form-group">
@@ -22,8 +22,8 @@
 
   <div class="modal-footer">
     <button class="btn btn-default" id="submit-project" type="submit" data-method="submit">
-      {{ "FORM.SUBMIT" | translate }}
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </button>
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.CANCEL" | translate }}</button>
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
   </div>
 </form>
