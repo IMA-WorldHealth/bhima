@@ -106,7 +106,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_id.$invalid }">
-                <label class="col-md-3 control-label">{{ "COLUMNS.ACCOUNT" | translate }}</label>
+                <label class="control-label">{{ "COLUMNS.ACCOUNT" | translate }}</label>
                 <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
                   <option value="" disabled> -- {{ 'SELECT.ACCOUNT' | translate }} -- </option>
                 </select>
