@@ -2,14 +2,14 @@
 angular.module('bhima.services')
   .service('Patients', PatientService);
 
-PatientService.$inject = [ '$http', 'util' ];
+PatientService.$inject = [ '$http', 'util', 'SessionService' ];
 
 /**
  * Patient Service
  *
  * Queries the /patients API
  */
-function PatientService($http, util) {
+function PatientService($http, util, Session) {
   var service = this;
   var baseUrl = '/patients/';
 
@@ -28,9 +28,16 @@ function PatientService($http, util) {
       .then(util.unwrapHttpResponse);
   }
 
-  // TODO Service could seperate medical and financial details - depending on form build
-  function create(details) {
-    return $http.post(baseUrl, details)
+  function create(medical, finance) {
+    var formatPatientRequest = { 
+      medical : medical,
+      finance : finance
+    };
+    
+    // Assign implicit information
+    formatPatientRequest.medical.project_id = Session.project.id;
+
+    return $http.post(baseUrl, formatPatientRequest)
       .then(util.unwrapHttpResponse);
   }
 
@@ -38,9 +45,7 @@ function PatientService($http, util) {
     return $http.put(baseUrl.concat(uuid), definition)
       .then(util.unwrapHttpResponse);
   }
-
-  // TODO Review/ refactor
-  // Optionally accepts patientUuid - if no uuid is passed this will return all patients groups
+  
   function groups(patientUuid) {
     var path;
 
@@ -65,11 +70,10 @@ function PatientService($http, util) {
       .then(util.unwrapHttpResponse);
   }
 
-  function logVisit(details) {
-    return $http.post(baseUrl.concat('visit'), details)
+  function logVisit(patientUuid) {
+    return $http.post(baseUrl.concat('visit'), {uuid : patientUuid})
       .then(util.unwrapHttpResponse);
   }
-
 
   /**
    * Uses query strings to generically search for patients.

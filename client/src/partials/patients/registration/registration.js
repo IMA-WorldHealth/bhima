@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$scope', '$location', 'Patients', 'Debtors', 'util', 'SessionService'
+  '$location', 'Patients', 'Debtors', 'util'
 ];
 
-function PatientRegistrationController($scope, $location, patients, debtors, util, Session) {
+function PatientRegistrationController($location, patients, debtors, util) {
   var viewModel = this;
 
   // Models for collecting patient data in logical groups
@@ -24,33 +24,22 @@ function PatientRegistrationController($scope, $location, patients, debtors, uti
   viewModel.minDOB = util.minDOB;
   viewModel.maxDOB = util.maxDOB;
 
-  viewModel.registerPatient = function registerPatient() {
-    var createPatientDetails;
+  viewModel.registerPatient = function registerPatient(patientDetailsForm) {
 
     // Register submitted action - explicit as the button is outside of the scope of the form
-    $scope.details.$setSubmitted();
+    patientDetailsForm.$setSubmitted();
 
-    if ($scope.details.$invalid) {
+    if (patientDetailsForm.$invalid) {
 
       // End propegation for invalid state - this could scroll to an $invalid element on the form
       return;
     }
-
-    createPatientDetails = {
-      medical : viewModel.medical,
-      finance : viewModel.finance
-    };
-
-    // Assign implicit information
-    createPatientDetails.medical.project_id = Session.project.id;
-
-    patients.create(createPatientDetails)
+   
+    patients.create(viewModel.medical, viewModel.finance)
       .then(function (result) {
 
-        // Create patient success - mark as visiting
-        return patients.logVisit({
-          uuid : result.uuid
-        });
+        // create patient success - mark as visiting
+        return patients.logVisit(result.uuid);
       })
       .then(function (confirmation) {
         var patientCardPath = '/invoice/patient/';
@@ -69,14 +58,5 @@ function PatientRegistrationController($scope, $location, patients, debtors, uti
 
   viewModel.calculateYOB = function calculateYOB(value) {
     viewModel.medical.dob = value && value.length === 4 ? new Date(value + '-' + util.defaultBirthMonth) : undefined;
-  };
-
-  //FIXME Location directive relies on the $scope object
-  $scope.setOriginLocation = function setOriginLocation(uuid) {
-    viewModel.medical.origin_location_id = uuid;
-  };
-
-  $scope.setCurrentLocation = function setCurrentLocation(uuid) {
-    viewModel.medical.current_location_id = uuid;
   };
 }

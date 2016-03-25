@@ -75,7 +75,7 @@
                   <span ng-if="details.$error.hospitalNumber" class="glyphicon glyphicon-remove form-control-feedback"></span>
                   <span ng-if="details.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
                   
-                  <div class="help-block" ng-messages="details.hospitalNumber.$error" ng-show="details.$submitted">
+                  <div class="help-block" ng-messages="details.hospitalNumber.$error" ng-if="details.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
                   
@@ -109,9 +109,12 @@
                 <label for="patient-dob" class="col-md-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                 <div class="col-md-9">
                   <input required name="dob" id="patient-dob" type="date" class="form-control" ng-disabled="!PatientRegCtrl.fullDateEnabled" ng-model="PatientRegCtrl.medical.dob" min="{{PatientRegCtrl.minDOB | date : 'yyyy-MM-dd'}}" max="{{PatientRegCtrl.maxDOB | date : 'yyyy-MM-dd'}}">
-
-                  <div class="help-block" ng-messages="details.dob.$error">
-                    <div ng-messages-include="partials/templates/dates.messages.tmpl.html"></div>
+    
+                  <!-- ng-if used to remove element for various test cases - this is not required for functionality -->
+                  <div ng-if="details.dob.$invalid">
+                    <div class="help-block" ng-messages="details.dob.$error" data-date-error>
+                      <div ng-messages-include="partials/templates/dates.messages.tmpl.html"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -189,7 +192,7 @@
             <p class="text-danger" ng-if="details.$submitted && details.$invalid">
               <span class="glyphicon glyphicon-remove-sign"></span> {{ "PATIENT_EDIT.RECORD_ERROR" | translate }}
             </p>
-            <button type="submit" ng-click="PatientRegCtrl.registerPatient()" class="btn btn-primary btn-sm" data-method="submit">
+            <button type="submit" ng-click="PatientRegCtrl.registerPatient(details)" class="btn btn-primary btn-sm" data-method="submit">
               {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
             </button>
           </div>
