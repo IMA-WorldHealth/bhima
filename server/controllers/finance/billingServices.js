@@ -8,20 +8,24 @@
  * of the total invoice amount.
  *
  * @requires lib/db
+ * @requires lodash/template
+ * @requires lib/errors/NotFound
+ * @requires lib/errors/BadRequest
  *
  */
-var db = require('../../lib/db');
-//var NotFound = require('../../lib/errors/NotFound');
+var _          = require('lodash');
+var db         = require('../../lib/db');
+var NotFound   = require('../../lib/errors/NotFound');
+var BadRequest = require('../../lib/errors/BadRequest');
 
 /**
  * Looks up a billing service by id.
  *
- * @param id {Number} The billing service id
- * @param codes {Object} An object of error codes
- * @returns billingService {Promise} A promise resolvinng to the billing
+ * @param {Number} id - the billing service id
+ * @returns {Promise} billingService - a promise resolvinng to the billing
  * service entity.
  */
-function lookupBillingService(id, codes) {
+function lookupBillingService(id) {
   'use strict';
 
   var sql =
@@ -35,7 +39,13 @@ function lookupBillingService(id, codes) {
 
     // if no records matching, throw a 404
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(
+
+        /** @todo - replace with ES6 template strings */
+        _.template(
+          'Could not find a billing service with id: ${id}.'
+        )({ id : id })
+      );
     }
 
     // return a single JSON of the record
@@ -47,13 +57,13 @@ function lookupBillingService(id, codes) {
 /**
  * GET /billing_services/:id
  *
- * @desc get the details of a single billing service.
+ * @description retrieve the details of a single billing service.
  */
 exports.detail = function detail(req, res, next) {
   'use strict';
 
   // looks up the billing service by ID
-  lookupBillingService(req.params.id, req.codes)
+  lookupBillingService(req.params.id)
   .then(function (billingService) {
     res.status(200).json(billingService);
   })
@@ -65,7 +75,8 @@ exports.detail = function detail(req, res, next) {
 /**
  * GET /billing_services
  *
- * @desc list all billing services in the database.
+ * @description lists all billing services in the database, in configurable
+ * levels of detail
  */
 exports.list = function list(req, res, next) {
   'use strict';
@@ -75,9 +86,14 @@ exports.list = function list(req, res, next) {
     'FROM billing_service AS bs ' +
     'ORDER BY bs.label;';
 
-  if (req.query.detailed) {
-    // substituted SQL for complex SQL
-    console.log('todo');
+  // provide as more information as necessary, if the client asks for it.
+  if (req.query.detailed === '1') {
+    sql =
+      'SELECT bs.id, bs.label, bs.created_at, bs.updated_at, bs.account_id, ' +
+        'bs.description, bs.value, a.account_txt, a.account_number ' +
+      'FROM billing_service AS bs JOIN account AS a ' +
+        'ON bs.account_id = a.id ' +
+      'ORDER BY bs.id;';
   }
 
   db.exec(sql)
@@ -105,7 +121,16 @@ exports.create = function create(req, res, next) {
 
   // ensure that values inserted are positive
   if (data.value <= 0) {
-    return next(new req.codes.ERR_NEGATIVE_VALUES());
+    return next(
+      new BadRequest(
+
+        /** @todo - replace with ES6 template strings */
+        _.template(
+          'The value submitted to a billing service must be positive.  ' +
+          'You provided the negative value ${value}.'
+        )({ value : data.value })
+      )
+    );
   }
 
   var sql =
@@ -142,14 +167,14 @@ exports.update = function update(req, res, next) {
     'UPDATE billing_service SET ? WHERE id = ?;';
 
   // ensure that the billing service matching :id exists
-  lookupBillingService(id, req.codes)
+  lookupBillingService(id)
   .then(function () {
     return db.exec(sql, [ data, req.params.id ]);
   })
   .then(function () {
 
     // return the full changed object
-    return lookupBillingService(id, req.codes);
+    return lookupBillingService(id);
   })
   .then(function (billingService) {
     res.status(200).json(billingService);
@@ -171,12 +196,12 @@ exports.delete = function del(req, res, next) {
     'DELETE FROM billing_service WHERE id = ?;';
 
   // first make sure that the billing service exists
-  lookupBillingService(req.params.id, req.codes)
+  lookupBillingService(req.params.id)
   .then(function () {
     return db.exec(sql, [ req.params.id ]);
   })
   .then(function () {
-    res.status(204).json();
+    res.sendStatus(204);
   })
   .catch(next)
   .done();
