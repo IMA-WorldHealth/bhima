@@ -1491,7 +1491,8 @@
    "UPDATE_SUCCES"  : "Updated successfully",
    "WARNINGS" : {
     "FUTURE_DATE" : "Warning: This date in the future."
-   }
+   },
+   "CONTACT_ADMIN"   : "Check with the system administrator that this has been configured correctly."
    },
 "GRADE": {
    "ADD"            : "Add a grade",
@@ -2027,7 +2028,8 @@
    "TITLE"                    : "Title",
    "VIEW_PATIENT_RECORDS"     : "View Patient Records",
    "YES"                      : "Yes",
-   "YOB"                      : "Year of Birth"
+   "YOB"                      : "Year of Birth",
+   "NO_DEBTOR_GROUPS"         : "No debtor groups have been loaded."
    },
 "PATIENT_REGISTRATIONS": {
    "DATE_FROM"                  : "Date From",

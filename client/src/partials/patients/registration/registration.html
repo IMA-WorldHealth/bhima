@@ -11,6 +11,18 @@
 
 <div class="flex-content">
   <div class="container-fluid">
+    
+    <!-- Module wide error handling -->
+    <div class="row">
+      <div class="col-md-12">
+        
+        <uib-alert id="exceptionAlert" type="danger" ng-show="PatientRegCtrl.exception">
+          <span class="glyphicon glyphicon-exclamation-sign"></span> 
+          <b>{{ PatientRegCtrl.exception.data.code | translate }}</b> ({{PatientRegCtrl.exception.status}} - {{PatientRegCtrl.exception.data.description}})
+        </uib-alert>
+      </div>
+    </div>
+    
     <div class="row">
 
       <!-- Patient Details Form -->
@@ -173,6 +185,13 @@
               <!-- Debtor Group -->
               <div class="form-group has-feedback"
                 ng-class="{'has-error' : details.debtorGroup.$invalid && details.$submitted}">
+                
+                <!-- Warning for incomplete data - the page will not be able to continue -->
+                <uib-alert type="warning" ng-if="PatientRegCtrl.options.debtorGroups.length === 0">
+                  <span class="glyphicon glyphicon-warning-sign"></span>
+                  {{ "PATIENT_REG.NO_DEBTOR_GROUPS" | translate }} <b>{{ "FORM.CONTACT_ADMIN" | translate }}</b>
+                </uib-alert>
+
                 <label for="new-debtor-group" class="col-md-3 control-label">Debtor Group</label>
                 <div class="col-md-9">
                   <select class="form-control" name="debtorGroup" id="debtor-group" ng-model="PatientRegCtrl.finance.debitor_group_uuid" ng-options="g.uuid as g.name for g in PatientRegCtrl.options.debtorGroups | orderBy:'name'" required>
