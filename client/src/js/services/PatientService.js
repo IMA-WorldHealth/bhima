@@ -1,6 +1,6 @@
 /** @todo - rename this service to PatientService */
 angular.module('bhima.services')
-  .service('Patients', PatientService);
+  .service('PatientService', PatientService);
 
 PatientService.$inject = [ '$http', 'util', 'SessionService' ];
 

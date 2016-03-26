@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$location', '$anchorScroll', '$timeout', 'Patients', 'Debtors', 'util', 'SessionService'
+  '$location', 'ScrollService', 'PatientService', 'DebtorService', 'util', 'SessionService'
 ];
 
-function PatientRegistrationController($location, $anchorScroll, $timeout, Patients, Debtors, util, Session) {
+function PatientRegistrationController($location, ScrollTo, Patients, Debtors, util, Session) {
   var viewModel = this;
 
   // Models for collecting patient data in logical groups
@@ -91,12 +91,7 @@ function PatientRegistrationController($location, $anchorScroll, $timeout, Patie
       // No cases have been matched - provide error details to the UI 
       viewModel.exception = error; 
     }
-
-    // scroll to the error message ensuring any screen size responds to the problem
-    // - scroll doesn't get digested initially without being wrapped in an $apply block
-    $timeout(function () { 
-      $location.hash('exceptionAlert');
-      $anchorScroll();
-    });
+    
+    ScrollTo('exceptionAlert');
   }
 }

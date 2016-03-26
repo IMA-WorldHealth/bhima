@@ -13,7 +13,7 @@
 angular.module('bhima.controllers')
 .controller('PatientEdit', PatientEdit);
 
-PatientEdit.$inject = ['$scope', '$translate', '$routeParams', '$location', '$anchorScroll', '$uibModal', 'Patients', 'util', 'moment'];
+PatientEdit.$inject = ['$scope', '$translate', '$routeParams', '$location', '$anchorScroll', '$uibModal', 'PatientService', 'util', 'moment'];
 
 function PatientEdit($scope, $translate, $routeParams, $location, $anchorScroll, $uibModal, patients, util, moment) { 
   var viewModel = this;

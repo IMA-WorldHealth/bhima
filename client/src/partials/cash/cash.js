@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService', '$uibModal',
-  '$routeParams', '$location', 'Patients', 'ExchangeRateService', 'SessionService'
+  '$routeParams', '$location', 'PatientService', 'ExchangeRateService', 'SessionService'
 ];
 
 /**

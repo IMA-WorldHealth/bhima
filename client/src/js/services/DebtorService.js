@@ -1,15 +1,15 @@
 /**
  * @description The debtor service provides access to the debtor HTTP API
  *
- * @module services/debtors
+ * @module services/DebtorService
  */
 
 angular.module('bhima.services')
-  .service('Debtors', Debtors);
+.service('DebtorService', DebtorService);
 
-Debtors.$inject = [ '$http', 'util' ];
+DebtorService.$inject = [ '$http', 'util' ];
 
-function Debtors($http, util) {
+function DebtorService($http, util) {
   var service = this;
 
   /** update the details of a debtor */
