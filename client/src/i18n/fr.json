@@ -1,5 +1,16 @@
 {
 
+  "PERMISSIONS" : {
+    "TITLE" : "Utilisateur et droits",
+    "ADD_USER" : "Ajouter utilisateur",
+    "DESCRIPTION" : "Module de gestion des utilisateur et leurs droits",
+    "ADDING_USER" : "Ajout utilisateur",
+    "UPDATING_USER" : "Mise a jour utilisateur",
+    "PERMISSIONS" : "Permissions",
+    "SUPER" : "super utilisateur",
+    "SET_PASSWORD" : "Definir mot de passe"
+  },
+
   "EXCHANGE" : {
     "TITLE" : "Gestion taux d'echange",
     "ADD_EXCHANGE" : "Ajouter taux",
@@ -128,7 +139,10 @@
       "ACCOUNT" : "Compte",
       "DESCRIPTION" : "Description",
       "PREVIOUS_DATE" : "Date precedente",
-      "DATE" : "Date"
+      "DATE" : "Date",
+      "RETYPE" : "Retaper",
+      "LAST_NAME" : "Nom",
+      "FIRST_NAME" : "Prenom"
     },
 
     "PLACE_HOLDERS" : {
@@ -166,7 +180,9 @@
       "DELETE" : "Supprimer",
       "CLEAR" : "Effacer",
       "SAVE" : "Sauver",
-      "RESET" : "Reinitialiser"
+      "RESET" : "Reinitialiser",
+      "UPDATE_PASSWORD" : "Modifier mot de passe",
+      "EDIT_PERMISSIONS" : "Editer permission"
     },
 
     "ERRORS" : {
@@ -197,7 +213,9 @@
       "MINLENGTH" : "Longueur minimale non respectee",
       "MAXLENGTH" : "Longueur maximale non respectee",
       "DATE" : "Date mal saisie",
-      "INVALID_DATE" : "Date invalide"
+      "INVALID_DATE" : "Date invalide",
+      "PASSWORD_MATCH" : "Mot de passe ne correspond pas",
+      "REQUIRED_EMAIL" : "Email requis"
     },
 
     "DIALOGS" : {

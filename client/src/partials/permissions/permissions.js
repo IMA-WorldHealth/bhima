@@ -15,8 +15,8 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
   var vm = this;
 
   var btnTemplate =
-    '<button ng-click="grid.appScope.edit(row.entity)" style="margin: 0 5px">{{ "FORM.EDIT" | translate }}</button>' +
-    '<button ng-click="grid.appScope.editPermissions(row.entity)">{{ "PERMISSIONS.EDIT_PERMISSIONS" | translate }}</button>';
+    '<button ng-click="grid.appScope.edit(row.entity)" style="margin: 0 5px">{{ "FORM.BUTTONS.EDIT" | translate }}</button>' +
+    '<button ng-click="grid.appScope.editPermissions(row.entity)">{{ "FORM.BUTTONS.EDIT_PERMISSIONS" | translate }}</button>';
 
   // options for the UI grid
   vm.uiGridOptions = {
@@ -156,9 +156,9 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
 
     var promise;
     var messages = {
-      'create' : 'PERMISSIONS.CREATE_SUCCESS',
-      'update' : 'PERMISSIONS.UPDATE_SUCCESS',
-      'permissions' : 'PERMISSIONS.PERMISSIONS_SUCCESS'
+      'create' : 'FORM.INFOS.CREATE_SUCCESS',
+      'update' : 'FORM.INFOS.UPDATE_SUCCESS',
+      'permissions' : 'FORM.INFOS.UPDATE_SUCCESS'
     };
 
     // decide how to submit data to the server based on state.
