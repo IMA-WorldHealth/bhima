@@ -77,7 +77,22 @@ function BillingServicesService($http, util) {
    */
   function update(id, data) {
     var target = url.concat(id);
-    return $http.put(target, data)
+
+    // copy the data not do disrupt the view
+    data = angular.copy(data);
+
+    // remove view-specific values
+    if (data.account) {
+      data.account_id = data.account.id;
+      delete data.account;
+    }
+
+    // remove unneeded properties
+    delete data.updated_at;
+    delete data.created_at;
+    delete data.account_number;
+
+    return $http.put(target, { billingService : data } )
       .then(util.unwrapHttpResponse);
   }
 

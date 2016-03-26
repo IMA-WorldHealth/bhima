@@ -198,6 +198,19 @@
   "GENERATE_DOC"    : "Generate Document",
   "DOC_SUCCES"      : "Document Build Success - Open Document"
   },
+"BILLING_SERVICES" : {
+  "TITLE" : "Billing Services",
+  "BTN" : {
+    "CREATE" : "Create a Billing Service",
+    "DELETE" : "Delete this Billing Service"
+  },
+  "CREATED" : "Created a new billing service.",
+  "FORM" : {
+    "CREATE" : "New Billing Service",
+    "UPDATE" : "Updating Billing Service"
+  },
+  "VIEW" : "View all billing services."
+},
 "BUDGET": {
   "ANALYSIS" : {
     "ALL_PERIOD"         : "All periods",
@@ -1470,10 +1483,7 @@
     "MISSING"           : "Please ensure that all fields are filled in.",
     "DATE_OUT_OF_RANGE" : "This date is not in the allowed date range. Please select another date."
    },
-<<<<<<< HEAD
-=======
    "ERRORED"       : "This form contains errors.  Please correct them and resubmit.",
->>>>>>> feat: inital billing services implementation
    "INVALID_DATE"    : "Invalid date",
    "LOGIN"           : "Login",
    "HAS_ERRORS"      : "The form contains errors.  Please correct them and resubmit.",
@@ -2715,7 +2725,7 @@
    "PASSIVE"          : "Passive",
    "SAVE_SUCCESS"     : "Saved Successfully",
    "TITLE"            : "Bilan section",
-   "UPDATE_SUCCESS"   : "Update Successfully"   
+   "UPDATE_SUCCESS"   : "Update Successfully"
 },
 "SECTION_RESULTAT" : {
    "ADD"                  : "Add",

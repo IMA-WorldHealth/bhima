@@ -11,9 +11,13 @@
       <div class="toolbar-item">
 
         <!-- @todo - hide this on the create/update state -->
-        <button class="btn btn-default" ui-sref="billingServices.create" data-method="create">
-          <span class="glyphicon glyphicon-plus"></span> {{ "BILLING_SERVICES.CREATE" | translate }}
-        </button>
+        <button
+          class="btn btn-default"
+          ui-sref="billingServices.create"
+          data-method="create"
+          ng-hide="BillingServicesCtrl.$state.current.name === 'billingServices.create'">
+          <span class="glyphicon glyphicon-plus"></span> {{ "BILLING_SERVICES.BTN.CREATE" | translate }}
+        </button> 
       </div>
     </div>
   </div>

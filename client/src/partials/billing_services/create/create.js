@@ -8,6 +8,9 @@ BillingServicesCreateController.$inject = [
 function BillingServicesCreateController($state, BillingServices, Accounts) {
   var vm = this;
 
+  // The form title is defined in the JS to allow us to reuse templates
+  vm.title = 'BILLING_SERVICES.FORM.CREATE';
+
   // this is the CreateForm's model
   vm.model = {};
 

@@ -200,7 +200,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider) {
   .state('billingServices', {
     abstract : true,
     url : '/admin/billing_services',
-    templateUrl : 'partials/billing_services/billing_services.abstract.html',
+    templateUrl : 'partials/billing_services/index.html',
     controller : 'BillingServicesController as BillingServicesCtrl',
   })
   .state('billingServices.list', {
@@ -208,15 +208,17 @@ function bhimaConfig($stateProvider, $urlRouterProvider) {
     templateUrl : '/partials/billing_services/list/list.html',
     controller : 'BillingServicesListController as BillingServicesListCtrl'
   })
+
+  // both create and update use the same form template
   .state('billingServices.create', {
     url : '/create',
-    templateUrl : '/partials/billing_services/create/create.html',
-    controller : 'BillingServicesCreateController as BillingServicesCreateCtrl'
+    templateUrl : '/partials/billing_services/form.html',
+    controller : 'BillingServicesCreateController as BillingServicesFormCtrl',
   })
   .state('billingServices.update', {
     url : '/:id',
-    templateUrl : '/partials/billing_services/update/update.html',
-    controller : 'BillingServicesUpdateController as BillingServiceUpdateCtrl'
+    templateUrl : '/partials/billing_services/form.html',
+    controller : 'BillingServicesUpdateController as BillingServicesFormCtrl'
   })
 
   /* budget routes */

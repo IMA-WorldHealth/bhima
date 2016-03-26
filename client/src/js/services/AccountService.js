@@ -43,9 +43,11 @@ function AccountService($http, util, sessionService) {
       .then(function (accounts) {
 
         // label the accounts with a nice human readable label
-        accounts.forEach(function (account) {
-          account.label = label(account);
-        });
+        if (!id) {
+          accounts.forEach(function (account) {
+            account.label = label(account);
+          });
+        }
 
         /** @todo make this ordering work */
         // return order(accounts);
