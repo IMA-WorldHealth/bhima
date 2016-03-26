@@ -30,8 +30,8 @@ function BillingServicesListController($translate, BillingServices, Accounts) {
       { field : 'account', displayName : $translate.instant('COLUMNS.ACCOUNT'), width: '*' },
       { field : 'label', displayName : $translate.instant('COLUMNS.LABEL') },
       { field : 'description', displayName: $translate.instant('COLUMNS.DESCRIPTION') },
-      { field : 'value', displayName : $translate.instant('COLUMNS.VALUE') },
-      { field : 'created_at', displayName : $translate.instant('COLUMNS.DATE'), cellFilter:'date' },
+      { field : 'value', displayName : $translate.instant('COLUMNS.VALUE'), cellFilter:'percentage', cellClass: 'text-right' },
+      { field : 'created_at', displayName : $translate.instant('COLUMNS.DATE'), cellFilter:'date', cellClass: 'text-center' },
       { field : 'edit', displayName: '', cellTemplate : editTemplate, width: 45 },
       { field : 'delete', displayName : '', cellTemplate: deleteTemplate, width: 45 }
     ]
