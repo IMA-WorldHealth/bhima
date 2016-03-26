@@ -4,7 +4,7 @@
     <form name="BillingServicesForm" bh-submit="BillingServicesFormCtrl.submit(BillingServicesForm)" novalidate autocomplete="off">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          {{ BillingServicesFormCtrl.title | translate }}
+          {{ BillingServicesFormCtrl.title | translate }}: {{ BillingServicesFormCtrl.label }}
         </div>
 
         <!--
@@ -24,6 +24,7 @@
               ng-model="BillingServicesFormCtrl.model.account"
               placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}"
               uib-typeahead="account as account.label for account in BillingServicesFormCtrl.accounts | filter:$viewValue | limitTo:6"
+              typeahead-editable="false"
               typeahead-template-url="partials/templates/typeahead/accounts.html"
               required>
             <div class="help-block" ng-messages="BillingServicesForm.account.$error" ng-show="BillingServicesForm.$submitted">
@@ -77,6 +78,7 @@
               class="form-control"
               name="value"
               ng-model="BillingServicesFormCtrl.model.value"
+              ng-min="0"
               required>
             <div class="help-block" ng-messages="BillingServicesForm.value.$error" ng-show="BillingServicesForm.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -87,7 +89,7 @@
           <div
             class="form-group"
             ng-class="{
-              'has-error' : BillingServicesForm.$submitted && (BillingServicesForm.$invalid || BillingServicesFormCtrl.error),
+              'has-error' : (BillingServicesForm.$submitted && BillingServicesForm.$invalid) || BillingServicesFormCtrl.error,
               'has-success' : BillingServicesFormCtrl.created || BillingServicesFormCtrl.updated
             }">
 
@@ -96,16 +98,10 @@
               <!-- show success message if the form is successfully submitted -->
               <p ng-show="BillingServicesFormCtrl.created">
                 <span class="glyphicon glyphicon-ok-sign"></span> {{ "BILLING_SERVICES.CREATED" | translate }}
-                <a ui-sref="billingServices.list" href="">
-                  <span class="glyphicon glyphicon-link"></span> {{ "BILLING_SERVICES.VIEW" | translate }}
-                </a>
               </p>
 
               <p ng-show="BillingServicesFormCtrl.updated">
                 <span class="glyphicon glyphicon-ok-sign"></span> {{ "BILLING_SERVICES.UPDATED" | translate }}
-                <a ui-sref="billingServices.list" href="">
-                  <span class="glyphicon glyphicon-link"></span> {{ "BILLING_SERVICES.VIEW" | translate }}
-                </a>
               </p>
 
               <!-- there are (client-side) errors on the form -->
@@ -114,8 +110,14 @@
               </p>
 
               <!-- show http errors sent from the server -->
-              <p ng-show="BillingServicesForm.$submitted && BillingServicesFormCtrl.error">
-                <span class="glyphicon glyphicon-alert"></span> {{ BillingServicesFormCtrl.error.code | translate }}
+              <p ng-show="BillingServicesFormCtrl.error">
+                <span class="glyphicon glyphicon-alert"></span> 
+                <span ng-show="BillingServicesFormCtrl.error.status === 404">
+                  {{ "BILLING_SERVICES.NOT_FOUND" | translate }}
+                </span>
+                <span ng-hide="BillingServicesFormCtrl.error.status === 404">
+                  {{ BillingServicesFormCtrl.error.code | translate }}
+                </span>
               </p>
             </div>
           </div>

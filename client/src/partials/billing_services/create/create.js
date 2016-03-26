@@ -2,19 +2,25 @@ angular.module('bhima.controllers')
 .controller('BillingServicesCreateController', BillingServicesCreateController);
 
 BillingServicesCreateController.$inject = [
-  '$state', 'BillingServicesService', 'AccountService'
+  'BillingServicesService', 'AccountService'
 ];
 
-function BillingServicesCreateController($state, BillingServices, Accounts) {
+/**
+ * Billing Services Create Controller
+ *
+ * This controller allows the user to create a new billing service using a form.
+ * Note that this uses the same HTML form as the update controller
+ */
+function BillingServicesCreateController(BillingServices, Accounts) {
   var vm = this;
 
-  // The form title is defined in the JS to allow us to reuse templates
+  // the form title is defined in the JS to allow us to reuse templates
   vm.title = 'BILLING_SERVICES.FORM.CREATE';
 
   // this is the CreateForm's model
   vm.model = {};
 
-  // the submit method to POST data to the server
+  // bind the submit method to POST data to the server
   vm.submit = submit;
 
   // fired on application startup
@@ -55,8 +61,8 @@ function BillingServicesCreateController($state, BillingServices, Accounts) {
       // make sure the validation rules for the form are reset
       form.$setPristine();
     })
-    .catch(function (error) {
-      vm.error = error;
+    .catch(function (response) {
+      vm.error = response.data;
     });
   }
 

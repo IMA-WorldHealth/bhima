@@ -2,14 +2,24 @@ angular.module('bhima.controllers')
 .controller('BillingServicesUpdateController', BillingServicesUpdateController);
 
 BillingServicesUpdateController.$inject = [
-  '$state', '$stateParams', 'BillingServicesService', 'AccountService'
+  '$stateParams', 'BillingServicesService', 'AccountService'
 ];
 
-function BillingServicesUpdateController($state, $stateParams, BillingServices, Accounts) {
+/**
+ * Updates a billing service passed in via a URL parameter.  For example,
+ * billing_services/1 will update the billing service with id 1.
+ *
+ * Importantly, both this controller and the BillingServicesCreateController
+ * use the same template, billing_services/form.html.
+ */
+function BillingServicesUpdateController($stateParams, BillingServices, Accounts) {
   var vm = this;
 
-  // The form title is defined in the JS to allow us to reuse templates
+  // the form title is defined in the JS to allow us to reuse templates
   vm.title = 'BILLING_SERVICES.FORM.UPDATE';
+
+  // the label will contain a copy of the billing service's label we are updating
+  vm.label = '';
 
   // this is the CreateForm's model
   vm.model = {};
@@ -19,23 +29,38 @@ function BillingServicesUpdateController($state, $stateParams, BillingServices, 
 
   // fired on application startup
   function startup() {
-    Accounts.read()
-    .then(function (accounts) {
-      vm.accounts = accounts;
-    });
 
     // load the billing service by id
     BillingServices.read($stateParams.id)
     .then(function (service) {
+
+      // set the label to the label of the fetched service
+      vm.label = service.label;
+
+      // bind the fetched data to the form for editing
       vm.model = service;
 
-      return Accounts.read(service.account_id);
+      // load the accounts
+      return Accounts.read();
     })
-    .then(function (account) {
-      vm.model.account = account;
+    .then(function (accounts) {
+
+      // bind the accounts to the view
+      vm.accounts = accounts;
+
+      // loop through the accounts and select the correct account to display
+      // in the typeahead
+      vm.model.account = accounts.reduce(function (value, account) {
+
+        // if the value is not false, we have found the account, so return it
+        if (value) { return value; }
+
+        // if the ids match, return the account, otherwise false
+        return (account.id === vm.model.account_id) ? account : value;
+      }, false);
     })
-    .catch(function (error) {
-      vm.error = error;
+    .catch(function (response) {
+      vm.error = response.data;
     });
   }
 
@@ -51,7 +76,7 @@ function BillingServicesUpdateController($state, $stateParams, BillingServices, 
 
     // remove any previously attached messages
     delete vm.error;
-    delete vm.created;
+    delete vm.updated;
 
     // exit immediately if the form is not valid
     if (form.$invalid) {
@@ -62,6 +87,9 @@ function BillingServicesUpdateController($state, $stateParams, BillingServices, 
     return BillingServices.update($stateParams.id, vm.model)
     .then(function () {
       vm.updated = true;
+
+      // update the cached label
+      vm.label = vm.model.label;
     })
     .catch(function (error) {
       vm.error = error;

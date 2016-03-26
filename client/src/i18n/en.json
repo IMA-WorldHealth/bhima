@@ -205,6 +205,8 @@
     "DELETE" : "Delete this Billing Service"
   },
   "CREATED" : "Created a new billing service.",
+  "UPDATED" : "Updated the billing service.",
+  "NOT_FOUND" : "There is no billing service with that ID.  Please go back and try again.",
   "FORM" : {
     "CREATE" : "New Billing Service",
     "UPDATE" : "Updating Billing Service"
