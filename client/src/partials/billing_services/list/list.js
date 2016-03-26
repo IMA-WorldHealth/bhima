@@ -15,10 +15,10 @@ function BillingServicesListController($translate, BillingServices, Accounts) {
   var vm = this;
 
   var editTemplate =
-    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-href="#/admin/billing_services/{{ row.entity.id}}"><span class="glyphicon glyphicon-pencil"></a></div>';
+    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-href="#/admin/billing_services/{{ row.entity.id}}" data-method="update"><span class="glyphicon glyphicon-pencil"></a></div>';
 
   var deleteTemplate =
-    '<div style="margin: 0px 5px 5px 5px;"><button class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.delete(row.entity)"><span class="glyphicon glyphicon-trash"></span></button></div>';
+    '<div style="margin: 0px 5px 5px 5px;"><button class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.delete(row.entity)" data-method="delete"><span class="glyphicon glyphicon-trash"></span></button></div>';
 
   // these options are for the ui-grid
   vm.options = {
