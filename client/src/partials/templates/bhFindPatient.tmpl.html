@@ -73,7 +73,7 @@
           ng-disabled="!$ctrl.validInput"
           ng-click="$ctrl.submit()"
           data-find-patient-submit>
-          <span>{{ "FIND.SEARCH" | translate }}</span>
+          <span>{{ "FORM.BUTTONS.SEARCH" | translate }}</span>
         </button>
       </span>
     </div>
@@ -82,8 +82,8 @@
     <!-- inline notification -->
     <!-- HACK: The Notification position must correspond to search button width  -->
     <div ng-if="$ctrl.showSearchView" class="pull-right" style="margin-right:8em;">
-      <span class="text-warning" ng-if="($ctrl.noPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FIND.PATIENT_NOT_FOUND" | translate }}</span>
-      <span class="text-info" ng-if="($ctrl.loadingPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FIND.PATIENT_LOADING" | translate }}</span>
+      <span class="text-warning" ng-if="($ctrl.noPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-alert"></i> {{ "FORM.WARNNINGS.NOT_FOUND" | translate }}</span>
+      <span class="text-info" ng-if="($ctrl.loadingPatients && $ctrl.nameInput)"><i class="glyphicon glyphicon-hourglass"></i> {{ "FORM.INFOS.LOADING" | translate }}</span>
     </div>
     <!-- /inline notification -->
 
@@ -98,7 +98,7 @@
         </span>
 
         <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="[{{ $ctrl.patient.reference }}] {{ $ctrl.patient.name }}">
-        <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FIND.PATIENT_NOT_FOUND' | translate }}">
+        <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FORM.WARNNINGS.NOT_FOUND' | translate }}">
 
         <div class="input-group-btn">
           <a
@@ -132,16 +132,16 @@
 
     <!-- panel heading -->
     <div class="panel-heading">
-      <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}
+      <span class="glyphicon glyphicon-search"></span> {{ "FORM.LABELS.SEARCH" | translate }}
 
       <!-- state notification  -->
       <div class="pull-right"
         ng-if="$ctrl.loadStatus!='loaded' && $ctrl.loadStatus!='error'">
         <span class="text-warning" ng-if="($ctrl.noPatients && $ctrl.nameInput)">
-          <span class="glyphicon glyphicon-alert"></span> {{ "FIND.PATIENT_NOT_FOUND" | translate }}
+          <span class="glyphicon glyphicon-alert"></span> {{ "FORM.WARNNINGS.NOT_FOUND" | translate }}
         </span>
         <span class="text-info" ng-if="($ctrl.loadingPatients && $ctrl.nameInput)">
-          <span class="glyphicon glyphicon-hourglass"></span> {{ "FIND.PATIENT_LOADING" | translate }}
+          <span class="glyphicon glyphicon-hourglass"></span> {{ "FORM.INFOS.LOADING" | translate }}
         </span>
       </div>
     </div>
@@ -213,14 +213,14 @@
 
           <!-- patient found notification -->
           <span ng-if="$ctrl.loadStatus=='loaded'">
-            <i class="glyphicon glyphicon-ok"></i> {{ "FIND.PATIENT_FOUND" | translate }}:
+            <i class="glyphicon glyphicon-ok"></i> {{ "FORM.INFOS.FOUND" | translate }}:
             <strong>({{ $ctrl.patient.reference }})</strong>
             {{ $ctrl.patient.name + ' (' + $ctrl.patient.sex  + ' ' + ($ctrl.timestamp | amDifference:$ctrl.patient.dob:'years') + ')' }}
           </span>
 
           <!-- patient not found notification -->
           <span ng-if="$ctrl.loadStatus=='error'">
-            <span class="glyphicon glyphicon-alert"></span> {{ 'FIND.PATIENT_NOT_FOUND' | translate }}
+            <span class="glyphicon glyphicon-alert"></span> {{ 'FORM.WARNNINGS.NOT_FOUND' | translate }}
           </span>
 
         </div>
@@ -231,7 +231,7 @@
           <button class="btn btn-success btn-sm" style="margin-top:5px;"
             ng-disabled="!($ctrl.validInput || $ctrl.nameInput)"
             ng-click="$ctrl.submit()">
-            {{ "FIND.SEARCH" | translate }}
+            {{ "FORM.BUTTONS..SEARCH" | translate }}
           </button>
         </div>
         <!-- /submit button -->

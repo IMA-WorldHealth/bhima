@@ -1,4 +1,24 @@
 {
+  "CASH" : {
+    "TITLE" : "Caisse Auxilliaire",
+    "PAYMENT" : "Paiement",
+    "CURRENT_CASHBOX" : "Caisse courante",
+    "TRANSFER" : {
+      "TITLE" : "Transfert"
+    },
+    "VOUCHER" : {
+      "TITLE" : "Recu de caisse"
+    },
+    "DEBTOR_INVOICES" : {
+      "TITLE" : "Facture(s) debiteur"
+    },
+    "SELECTION" : {
+      "TITLE" : "Selection caisse",
+      "GO_TO_CASHBOX_PAGE" : "Aller a la page de gestion de caisse",
+      "MISSING_CASH" : "Caisse manquante"
+    }
+
+  },
 
   "PERMISSIONS" : {
     "TITLE" : "Utilisateur et droits",
@@ -142,7 +162,24 @@
       "DATE" : "Date",
       "RETYPE" : "Retaper",
       "LAST_NAME" : "Nom",
-      "FIRST_NAME" : "Prenom"
+      "FIRST_NAME" : "Prenom",
+      "PATIENT" : "patient",
+      "CAUTION" : "Caution",
+      "INVOICE" : "Paiement facture",
+      "CASHBOX" : "Caisse",
+      "BALANCE" : "Balance",
+      "SEARCH" : "Chercher",
+      "BY_ID" : "Par id",
+      "BY_NAME" : "Par nom",
+      "AMOUNT" : "Montant",
+      "CLIENT_ID" : "Identifiant client",
+      "CASHIER" : "Caissier",
+      "STATUS" : "Etat",
+      "CANCELED" : "Annulee",
+      "NOTES" : "Note(s)",
+      "TOTAL_BILLED" : "Total Facture",
+      "TOTAL_PAID" : "Total paye",
+      "UNCONFIGURED" : "Non configuree"
     },
 
     "PLACE_HOLDERS" : {
@@ -151,7 +188,9 @@
       "ENTER_COUNTRY" : "Entrer pays",
       "ENTER_PROVINCE" : "Enter province",
       "ENTER_SECTOR" : "Entrer secteur",
-      "ENTER_VILLAGE" : "Entrer village"
+      "ENTER_VILLAGE" : "Entrer village",
+      "ENTER_PATIENT_ID" : "Entrer identifiant patient",
+      "ENTER_PATIENT_NAME" : "Entrer nom patient"
     },
 
     "SELECTS" : {
@@ -182,14 +221,23 @@
       "SAVE" : "Sauver",
       "RESET" : "Reinitialiser",
       "UPDATE_PASSWORD" : "Modifier mot de passe",
-      "EDIT_PERMISSIONS" : "Editer permission"
+      "EDIT_PERMISSIONS" : "Editer permission",
+      "CHANGE_CASHBOX" : "Changer caisse",
+      "TRANSFER" : "transferer",
+      "SELECT_INVOICES" : "Selectionner Facture(s)",
+      "LOADING" : "Chargement",
+      "SEARCH" : "Chercher",
+      "SET" : "Definir",
+      "SELECT" : "Choisir"
     },
 
     "ERRORS" : {
       "MISSING" : "Informations manquantes",
       "HAS_ERROR" : "Contiens une erreur",
       "CONNECTION" : "Erreur de connexion",
-      "GENERIC" : "Le formulaire contient des erreurs"
+      "GENERIC" : "Le formulaire contient des erreurs",
+      "MISSING_CASHBOX_ID" : "Caisse non definie",
+      "MISSING_DEBTOR_ID" : "Identifiant Debiteur manquant"
     },
 
     "INFOS" : {
@@ -197,7 +245,12 @@
       "UPDATE_SUCCESS" : "Mise a jour avec succes",
       "CREATE_SUCCESS" : "Cree avec succes",
       "SAVE_SUCCESS" : "Sauvee avec succes",
-      "DELETE_SUCCESS" : "Suppression avec succes"
+      "DELETE_SUCCESS" : "Suppression avec succes",
+      "NO_INVOICES_SELECTED" : "Aucune facture selectionnee",
+      "FINANCIAL_DETAIL" : "Details financieres",
+      "OPERATION_SUCCESS" : "Operation effectuee avec succes",
+      "LOADING" : "Chargement en cours",
+      "FOUND" : "Trouvee"
     },
 
     "LEGENDS" : {
@@ -215,11 +268,18 @@
       "DATE" : "Date mal saisie",
       "INVALID_DATE" : "Date invalide",
       "PASSWORD_MATCH" : "Mot de passe ne correspond pas",
-      "REQUIRED_EMAIL" : "Email requis"
+      "REQUIRED_EMAIL" : "Email requis",
+      "NUMBER" : "Doit etre un nombre",
+      "MIN_CURRENCY" : "Valeur trop petite pour la monnaie"
     },
 
     "DIALOGS" : {
       "CONFIRM_DELETE" : "Confirmez vous la suppression ?"
+    },
+
+    "WARNNINGS" : {
+      "NOT_FOUND" : "Non trouvee",
+      "EMPTY_SELECTION" : "Selection vide"
     }
   },
 
@@ -248,8 +308,9 @@
       "NR" : "Numero",
       "DATE" : "Date",
       "CURRENCY" : "Monnaie",
-      "RATE" : "Taux"
-
+      "RATE" : "Taux",
+      "AMOUNT" : "Montant",
+      "TOTAL" : "Total"
     }
   },
 

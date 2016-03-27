@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h3>{{ "CASH.VOUCHER.RECEIPTS.TITLE" | translate }} <small>#{{ CashReceiptModalCtrl.receipt.reference }}</small></h3>
+  <h3>{{ "CASH.VOUCHER.TITLE" | translate }} <small>#{{ CashReceiptModalCtrl.receipt.reference }}</small></h3>
 </div>
 
 <div class="modal-body" data-cash-receipt-modal>
@@ -11,7 +11,7 @@
   </p>
 
   <div ng-show="CashReceiptModalCtrl.loading" class="text-center">
-    <span class="glyphicon glyphicon-refresh"></span> {{ "UTIL.LOADING" | translate }}
+    <span class="glyphicon glyphicon-refresh"></span> {{ "FORM.INFOS.LOADING" | translate }}
   </div>
 
   <div ng-hide="CashReceiptModalCtrl.loading">
@@ -22,16 +22,16 @@
         <address>
           <strong>{{ CashReceiptModalCtrl.enterprise.name }}</strong> <br />
           {{ CashReceiptModalCtrl.enterprise.email }} <br />
-          <abbr title="{{ 'RECEIPTS.POST_OFFICE_BOX' | translate }}">{{ "RECEIPTS.PO_BOX" | translate }}</abbr>: {{ CashReceiptModalCtrl.enterprise.po_box }} <br />
-          <abbr title="{{ 'RECEIPTS.TELEPHONE' | translate }}">{{ "RECEIPTS.TEL" | translate }}</abbr>: {{ CashReceiptModalCtrl.enterprise.phone | telephone }} <br />
+          <abbr title="{{ 'FORM.LABELS.PO_BOX' | translate }}">{{ "FORM.LABELS.PO_BOX" | translate }}</abbr>: {{ CashReceiptModalCtrl.enterprise.po_box }} <br />
+          <abbr title="{{ 'FORM.LABELS.PHONE' | translate }}">{{ "FORM.LABELS.PHONE" | translate }}</abbr>: {{ CashReceiptModalCtrl.enterprise.phone | telephone }} <br />
         </address>
       </div>
 
       <!-- the patient's billing information -->
       <div class="col-xs-6">
         <strong class="text-capitalize">{{ CashReceiptModalCtrl.patient.label }}</strong> <br />
-        {{ "RECEIPTS.CLIENT_ID" | translate }}: {{ CashReceiptModalCtrl.patient.abbr + CashReceiptModalCtrl.patient.reference }} <br />
-        {{ "RECEIPTS.DATE" | translate }}: {{ CashReceiptModalCtrl.receipt.date | date }} <br />
+        {{ "FORM.LABELS.CLIENT_ID" | translate }}: {{ CashReceiptModalCtrl.patient.abbr + CashReceiptModalCtrl.patient.reference }} <br />
+        {{ "FORM.LABELS.DATE" | translate }}: {{ CashReceiptModalCtrl.receipt.date | date }} <br />
       </div>
     </div>
 
@@ -42,36 +42,36 @@
 
       <div class="col-xs-6">
         <div>
-          <u>{{ "RECEIPTS.TYPE" | translate }}</u>:
-          {{ (CashReceiptModalCtrl.receipt.is_caution ? "CASH.VOUCHER.CAUTION" : "CASH.VOUCHER.INVOICE") | translate }}
+          <u>{{ "FORM.LABELS.TYPE" | translate }}</u>:
+          {{ (CashReceiptModalCtrl.receipt.is_caution ? "FORM.LABELS.CAUTION" : "FORM.LABELS.INVOICE") | translate }}
         </div>
 
         <div>
-          <u>{{ "RECEIPTS.CASHIER" | translate }}</u>:
+          <u>{{ "FORM.LABELS.CASHIER" | translate }}</u>:
             {{ CashReceiptModalCtrl.user.first }} {{ CashReceiptModalCtrl.user.last }}
         </div>
 
         <div ng-show="CashReceiptModalCtrl.receipt.canceled">
           <!-- translate: "Status" -->
-          <u>{{ "RECEIPTS.STATUS" | translate }}</u>:
-          <span class="glyphicon glyphicon-remove-sign text-danger"></span> {{ "RECEIPT.CANCELED" | translate }}
+          <u>{{ "FORM.LABELS.STATUS" | translate }}</u>:
+          <span class="glyphicon glyphicon-remove-sign text-danger"></span> {{ "FORM.LABELS.CANCELED" | translate }}
         </div>
       </div>
 
       <div class="col-xs-6">
         <div>
-          <u>{{ "RECEIPTS.CASHBOX" | translate }}</u>:
+          <u>{{ "FORM.LABELS.CASHBOX" | translate }}</u>:
           {{ CashReceiptModalCtrl.cashbox.text }}
         </div>
 
         <div ng-show="CashReceiptModalCtrl.receipt.description">
-          <u>{{ "RECEIPTS.NOTES" | translate }}</u>:
+          <u>{{ "FORM.LABELS.NOTES" | translate }}</u>:
           {{ CashReceiptModalCtrl.receipt.description }}
         </div>
 
         <div>
           <!-- translate: transaction currency -->
-          <u>{{ "RECEIPTS.CURRENCY" | translate }}</u>:
+          <u>{{ "FORM.LABELS.CURRENCY" | translate }}</u>:
           {{ CashReceiptModalCtrl.fmtCurrency(CashReceiptModalCtrl.receipt.currency_id) }}
         </div>
       </div>
@@ -84,18 +84,18 @@
 
     <dl class="dl-horizontal">
       <dt ng-hide="CashReceiptModalCtrl.receipt.is_caution">
-        {{ "RECEIPTS.TOTAL_BILLED" | translate }}
+        {{ "FORM.LABELS.TOTAL_BILLED" | translate }}
       </dt>
       <dd ng-hide="CashReceiptModalCtrl.receipt.is_caution">
         {{ CashReceiptModalCtrl.receipt.amount | currency:CashReceiptModalCtrl.enterprise.currency_id }}
       </dd>
       <dt ng-hide="CashReceiptModalCtrl.isEnterpriseCurrency(CashReceiptModalCtrl.receipt.currency_id)">
-        {{ "RECEIPTS.EXCHANGE_RATE" | translate }}
+        {{ "FORM.LABELS.RATE" | translate }}
       </dt>
       <dd ng-hide="CashReceiptModalCtrl.isEnterpriseCurrency(CashReceiptModalCtrl.receipt.currency_id)">
         {{ CashReceiptModalCtrl.rate | currency:CashReceiptModalCtrl.receipt.currency_id }}
       </dd>
-      <dt>{{ "RECEIPTS.TOTAL_PAID" | translate }}</dt>
+      <dt>{{ "FORM.LABELS.TOTAL_PAID" | translate }}</dt>
       <dd>{{ CashReceiptModalCtrl.receipt.total | currency:CashReceiptModalCtrl.receipt.currency_id }}</dd>
     </dl>
   </div>
@@ -103,6 +103,6 @@
 
 <div class="modal-footer">
   <button  class="btn btn-success" ng-click="CashReceiptModalCtrl.cancel()">
-    {{ "FORM.DISMISS" | translate }}
+    {{ "FORM.BUTTONS.CANCEL" | translate }}
   </button>
 </div>

@@ -1,29 +1,29 @@
 <form name="TransferForm" ng-submit="CashTransferModalCtrl.submit(TransferForm.$invalid)" novalidate>
 
   <div class="modal-header">
-    <h4>{{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}</h4>
+    <h4>{{ "CASH.TRANSFER.TITLE" | translate }}</h4>
   </div>
 
   <div class="modal-body">
 
     <p class="text-danger text-center" ng-hide="CashTransferModalCtrl.cashBox">
       <span class="glyphicon glyphicon-alert"></span>
-      {{ "CASH.MODALS.MISSING_CASH_BOX_ID" | translate }}
+      {{ "FORM.ERRORS.MISSING_CASHBOX_ID" | translate }}
     </p>
 
     <uib-alert type="info" ng-show="CashTransferModalCtrl.cashBox">
-      <p>{{ "CASH.MODALS.FINANCIAL_DETAIL" | translate }} </p>
+      <p>{{ "FORM.INFOS.FINANCIAL_DETAIL" | translate }} </p>
 
-      <p>{{"CASH.CASHBOX" | translate}} : {{ CashTransferModalCtrl.cashBox.text }} </p>
+      <p>{{"FORM.LABELS.CASHBOX" | translate}} : {{ CashTransferModalCtrl.cashBox.text }} </p>
       <div ng-if="CashTransferModalCtrl.currency_id">
-        <p>{{"COLUMNS.BALANCE" | translate}} : {{CashTransferModalCtrl.cashAccountBalance.balance | currency:CashTransferModalCtrl.currency_id}}</p>
+        <p>{{"FORM.LABELS.BALANCE" | translate}} : {{CashTransferModalCtrl.cashAccountBalance.balance | currency:CashTransferModalCtrl.currency_id}}</p>
       </div>
     </uib-alert>   
 
     <hr/>
 
     <div class="radio" ng-class="{ 'has-error' : TransferForm.$submitted && TransferForm.currency.$invalid }">
-      <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
+      <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
       <label 
         ng-repeat="currency in CashTransferModalCtrl.cashBox.currencies track by currency.currency_id"
         class="radio-inline">
@@ -52,7 +52,7 @@
     </bh-currency-input>
 
     <span id="succed-label" class="text-success" ng-show="TransferForm.$submitted && CashTransferModalCtrl.success">
-      <i class="glyphicon glyphicon-ok-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.SUCCESS" | translate }}
+      <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.OPERATION_SUCCESS" | translate }}
     </span>
   </div>
 
@@ -65,7 +65,7 @@
       ng-disabled="!CashTransferModalCtrl.cashBox"
       data-transfer-modal-submit
       >
-      {{ "FORM.SUBMIT" | translate }}
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </button>
 
     <button
@@ -73,7 +73,7 @@
       class="btn btn-default"
       ng-click="CashTransferModalCtrl.cancel()"
       data-transfer-modal-cancel>
-      {{ "FORM.CANCEL" | translate }}
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
   </div>
 </form>

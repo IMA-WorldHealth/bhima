@@ -2,7 +2,7 @@
   ng-class="{ 'has-error' : $ctrl.validationTrigger && $ctrl.form.currencyInputValue.$invalid }"  
   data-bh-currency-input>
   <label class="control-label">
-    {{ "COLUMNS.PAYMENT" | translate }}
+    {{ "FORM.LABELS.AMOUNT" | translate }}
   </label>
 
   <div class="input-group">
@@ -22,19 +22,19 @@
     <!-- displays: "This value is required" -->
     <span ng-message="required">
       <span class="glyphicon glyphicon-exclamation-sign"></span>
-      {{ "FORM.ERRORS.REQUIRED" | translate }}
+      {{ "FORM.VALIDATIONS.REQUIRED" | translate }}
     </span>
 
     <!-- displays: "This value is too small for the selected currency" -->
     <span ng-message="min">
       <span class="glyphicon glyphicon-exclamation-sign"></span>
-      {{ "FORM.ERRORS.MIN_CURRENCY_UNIT" | translate }}
+      {{ "FORM.VALIDATIONS.MIN_CURRENCY" | translate }}
     </span>
 
     <!-- displays: "You must enter a valid number." -->
     <span ng-message="number">
       <span class="glyphicon glyphicon-exclamation-sign"></span>
-      {{ "FORM.ERRORS.NUMBER" | translate }}
+      {{ "FORM.VALIDATIONS.NUMBER" | translate }}
     </span>
   </p>
 </div>
