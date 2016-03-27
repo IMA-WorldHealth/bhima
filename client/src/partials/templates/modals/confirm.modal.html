@@ -1,4 +1,4 @@
-<div class="modal-header">
+<div class="modal-header" data-confirm-modal>
   <h4>{{ "MODALS.CONFIRM.TITLE" | translate }}</h4>
 </div>
 
@@ -10,10 +10,10 @@
 </div>
 
 <div class="modal-footer">
-  <button type="button" class="btn btn-primary" ng-click="ConfirmModalCtrl.close(true)">
+  <button type="button" class="btn btn-primary" ng-click="ConfirmModalCtrl.close(true)" data-modal-submit>
     {{ "MODALS.CONFIRM.ACCEPT" | translate }}
   </button>
-  <button type="button" class="btn btn-default" ng-click="ConfirmModalCtrl.close(false)">
+  <button type="button" class="btn btn-default" ng-click="ConfirmModalCtrl.close(false)" data-model-cancel>
     {{ "FORM.CANCEL" | translate }}
   </button>
 </div>

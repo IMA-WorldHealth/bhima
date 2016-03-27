@@ -63,7 +63,6 @@ describe('Billing Services', function () {
   });
 
   it('can update a billing service', function () {
-
     // get the cell with the update button and click it
     var cell = GU.dataCell(gridId, 0, 6);
     cell.element(by.css('[data-method="update"]')).click();
@@ -85,6 +84,24 @@ describe('Billing Services', function () {
     FU.buttons.back();
   });
 
-  /** @todo -- requires the modal described in #150 or similar */
-  it('can delete a billing service');
+  it('can delete a billing service', function () {
+    // get the cell with the delete button and click it
+    var cell = GU.dataCell(gridId, 0, 7);
+    cell.element(by.css('[data-method="delete"]')).click();
+
+    // expect the modal to appear
+    FU.exists(by.css('[data-confirm-modal]'), true);
+
+    // click the "accept" button
+    element(by.css('[data-modal-submit]')).click();
+
+    // check that the grid does not have any rows in it anymore
+    var grid = GU.getGrid(gridId);
+
+    var rows = grid.element(by.css('.ui-grid-render-container-body'))
+      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+
+    expect(rows.count()).to.eventually.equal(0);
+
+  });
 });
