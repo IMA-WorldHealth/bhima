@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h4>{{ "MODALS.CONFIRM.TITLE" | translate }}</h4>
+</div>
+
+<div class="modal-body">
+  <p class="text-left">
+    <span class="glyphicon glyphicon-info-sign text-primary"></span>
+    {{ (ConfirmModalCtrl.prompt || 'MODALS.CONFIRM.PROMPT') | translate }}
+  </p>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" ng-click="ConfirmModalCtrl.close(true)">
+    {{ "MODALS.CONFIRM.ACCEPT" | translate }}
+  </button>
+  <button type="button" class="btn btn-default" ng-click="ConfirmModalCtrl.close(false)">
+    {{ "FORM.CANCEL" | translate }}
+  </button>
+</div>

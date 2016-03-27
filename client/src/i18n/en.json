@@ -1882,6 +1882,11 @@
     "REFERENCE_LOOKUP" : "Reference Lookup",
     "NO_RECEIPT" : "No receipt matches that reference.",
     "SUCCESS" : "Successfully found a receipt!"
+  },
+  "CONFIRM" : {
+    "TITLE" : "Action Confirmation",
+    "PROMPT" : "Are you sure you would like to perform that action?",
+    "ACCEPT" : "Accept"
   }
 },
 "NO_EXCHANGE": {

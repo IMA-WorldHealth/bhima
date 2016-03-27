@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('BillingServicesListController', BillingServicesListController);
 
 BillingServicesListController.$inject = [
-  '$translate', 'BillingServicesService', 'AccountService'
+  '$translate', 'BillingServicesService', 'AccountService', 'ModalService'
 ];
 
 /**
@@ -11,7 +11,7 @@ BillingServicesListController.$inject = [
  * This is the default controller for the billing services URL endpoint.  It
  * downloads and displays all billing services in the application via a ui-grid.
  */
-function BillingServicesListController($translate, BillingServices, Accounts) {
+function BillingServicesListController($translate, BillingServices, Accounts, Modals) {
   var vm = this;
 
   var editTemplate =
@@ -40,6 +40,14 @@ function BillingServicesListController($translate, BillingServices, Accounts) {
   // default loading state - false;
   vm.loading = false;
 
+  // delete handler (calls confirm modal)
+  vm.delete = del;
+
+  // HTTP error handler - binds error to view
+  function handler(response) {
+    vm.error = response.data;
+  }
+
   // fired on state init
   function startup() {
 
@@ -58,29 +66,34 @@ function BillingServicesListController($translate, BillingServices, Accounts) {
       // populate the grid
       vm.options.data = billingServices;
     })
-    .catch(function (error) {
-      vm.error = error;
-    })
+    .catch(handler)
     .finally(function () {
       toggleLoadingIndicator();
     });
   }
 
+  // toggle the grid's loading indicator
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
 
-  function edit(row) {
-    console.log('Clicked edit with:', row);
-  }
-
+  // handle deletes in the view
   function del(row) {
-    console.log('Clicked delete with:', row);
+    Modals.confirm(null, { size : 'sm' })
+    .then(function (bool) {
+      // if the user did choose "accept", return early
+      if (!bool) { return bool; }
+
+      /** @todo - refactor this into a proper promise chain */
+      BillingServices.delete(row.id)
+      .then(function () {
+        vm.options.data = vm.options.data.filter(function (service) {
+          return service.id !== row.id;
+        });
+      });
+    })
+    .catch(handler);
   }
-
-  vm.edit = edit;
-  vm.delete = del;
-
 
   startup();
 }
