@@ -65,16 +65,17 @@ describe('Suppliers Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-
   it('successfully edits an supplier', function () {
 
     element(by.id('supplier-upd-' + supplierRank )).click();
     // modify the supplier name
     FU.input('SupplierCtrl.supplier.name', 'Updated');
+    // Modify the supplier Address 1
+    FU.input('SupplierCtrl.supplier.address_1', '212 b Baker Street');
     // modify the supplier note
     FU.input('SupplierCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
 
-     FU.buttons.submit();
+    element(by.id('change_supplier')).click();
 
     // make sure the success message appears
     FU.exists(by.id('update_success'), true);
