@@ -292,6 +292,33 @@ describe('The /patients API', function () {
       .catch(helpers.handler);
   });
 
+  it('GET /patients/hospital_number/:id/exists correctly identifies existing record', function () { 
+    var existingNumber = 100;
+
+    return agent.get('/patients/hospital_number/'.concat(existingNumber, '/exists'))
+      .then(function (result) { 
+        
+        expect(result).to.have.status(200);
+        expect(result.body).to.not.be.empty;
+        expect(result.body).to.be.true;
+      })
+      .catch(helpers.handler);
+  });
+  
+  it('GET /patients/hospital_number/:id/exists correctly identifies unique record', function () { 
+
+    return agent.get('/patients/hospital_number/190/exists')
+      .then(function (result) { 
+    
+        expect(result).to.have.status(200);
+
+        // chair returns an empty object for the body on this response - the text
+        // property seems to be unaffected
+        expect(result.text).to.equal('false');
+      })
+      .catch(helpers.handler);
+  });
+
   it.skip('Simultaneous patient registration requests respect reference lock', function () {
 
     // Custom timeout
