@@ -42,8 +42,9 @@ function AccountService($http, util, sessionService) {
       .then(util.unwrapHttpResponse)
       .then(function (accounts) {
 
+        // if we recieved an array of accounts from the server,
         // label the accounts with a nice human readable label
-        if (!id) {
+        if (angular.isArray(accounts)) {
           accounts.forEach(function (account) {
             account.label = label(account);
           });
