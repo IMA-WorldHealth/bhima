@@ -12,7 +12,7 @@ UniqueDirective.$inject = ['$q', 'UniqueValidatorService'];
  * on the angluar form record. 
  *
  * @example 
- * <input id="email" type="email" bh-uniqe="/users/validateEmail">
+ * <input id="email" type="email" bh-unique="/users/validateEmail">
  *
  * @module directives/bhUnique
  */
