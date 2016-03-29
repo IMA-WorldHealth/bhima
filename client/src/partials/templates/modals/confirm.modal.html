@@ -1,19 +1,30 @@
-<div class="modal-header" data-confirm-modal>
-  <h4>{{ "MODALS.CONFIRM.TITLE" | translate }}</h4>
-</div>
+<!-- leverage a form to get a loading indicator on the button -->
+<form name="ConfirmModalForm" bh-submit="ConfirmModalCtrl.submit()" data-confirm-modal>
+  <div class="modal-header">
+    <h4>{{ "MODALS.CONFIRM.TITLE" | translate }}</h4>
+  </div>
 
-<div class="modal-body">
-  <p class="text-left">
-    <span class="glyphicon glyphicon-info-sign text-primary"></span>
-    {{ (ConfirmModalCtrl.prompt || 'MODALS.CONFIRM.PROMPT') | translate }}
-  </p>
-</div>
+  <div class="modal-body">
 
-<div class="modal-footer">
-  <button type="button" class="btn btn-primary" ng-click="ConfirmModalCtrl.close(true)" data-modal-submit>
-    {{ "MODALS.CONFIRM.ACCEPT" | translate }}
-  </button>
-  <button type="button" class="btn btn-default" ng-click="ConfirmModalCtrl.close(false)" data-model-cancel>
-    {{ "FORM.CANCEL" | translate }}
-  </button>
-</div>
+    <!-- Error alert in case the server sends back an error -->
+    <div ng-show="ConfirmModalCtrl.error">
+      <uib-alert type="danger">
+        {{ ConfirmModalCtrl.error | translate }}
+      </uib-alert>
+    </div>
+
+    <!-- translateable prompt -->
+    <p class="text-left">
+      <span class="glyphicon glyphicon-info-sign text-primary"></span>
+      {{ (ConfirmModalCtrl.prompt || 'MODALS.CONFIRM.PROMPT') | translate }}
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <bh-loading-button loading-state="ConfirmModalForm.$loading" data-modal-submit>
+    </bh-loading-button>
+    <button type="button" class="btn btn-default" ng-click="ConfirmModalCtrl.dismiss()" data-model-cancel>
+      {{ "FORM.CANCEL" | translate }}
+    </button>
+  </div>
+</form>

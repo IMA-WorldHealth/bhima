@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('BillingServicesCreateController', BillingServicesCreateController);
 
 BillingServicesCreateController.$inject = [
-  'BillingServicesService', 'AccountService'
+  'BillingServicesService', 'AccountService', '$uibModalInstance'
 ];
 
 /**
@@ -11,7 +11,7 @@ BillingServicesCreateController.$inject = [
  * This controller allows the user to create a new billing service using a form.
  * Note that this uses the same HTML form as the update controller
  */
-function BillingServicesCreateController(BillingServices, Accounts) {
+function BillingServicesCreateController(BillingServices, Accounts, ModalInstance) {
   var vm = this;
 
   // the form title is defined in the JS to allow us to reuse templates
@@ -22,6 +22,7 @@ function BillingServicesCreateController(BillingServices, Accounts) {
 
   // bind the submit method to POST data to the server
   vm.submit = submit;
+  vm.dismiss = ModalInstance.dismiss;
 
   // fired on application startup
   function startup() {
@@ -43,7 +44,6 @@ function BillingServicesCreateController(BillingServices, Accounts) {
 
     // remove any previously attached messages
     delete vm.error;
-    delete vm.created;
 
     // exit immediately if the form is not valid
     if (form.$invalid) {
@@ -52,14 +52,8 @@ function BillingServicesCreateController(BillingServices, Accounts) {
 
     // submit data to the server
     return BillingServices.create(vm.model)
-    .then(function () {
-
-      // automatically reset the view
-      vm.created = true;
-      vm.model = {};
-
-      // make sure the validation rules for the form are reset
-      form.$setPristine();
+    .then(function (data) {
+      ModalInstance.close(data.id);
     })
     .catch(function (response) {
       vm.error = response.data;

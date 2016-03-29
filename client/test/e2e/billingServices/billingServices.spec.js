@@ -11,7 +11,7 @@ var components = require('../shared/components');
 var GU = require('../shared/gridTestUtils.spec.js');
 var FU = require('../shared/FormUtils');
 
-describe('Billing Services', function () {
+describe.only('Billing Services', function () {
   'use strict';
 
   /** @const */
@@ -47,12 +47,6 @@ describe('Billing Services', function () {
 
     FU.buttons.submit();
 
-    // make sure the "created" validation tag exists
-    FU.exists(by.css('[data-validation="created"]'), true);
-
-    // let's be sure we can find the record on the grid by returning there
-    FU.buttons.back();
-
     // check that the grid as exactly one record
     var grid = GU.getGrid(gridId);
 
@@ -76,12 +70,6 @@ describe('Billing Services', function () {
 
     // submit the forn
     FU.buttons.submit();
-
-    // make sure the "created" validation tag exists
-    FU.exists(by.css('[data-validation="updated"]'), true);
-
-    // return to the main page
-    FU.buttons.back();
   });
 
   it('can delete a billing service', function () {

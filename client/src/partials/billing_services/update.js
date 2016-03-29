@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('BillingServicesUpdateController', BillingServicesUpdateController);
 
 BillingServicesUpdateController.$inject = [
-  '$stateParams', 'BillingServicesService', 'AccountService'
+  '$state', 'BillingServicesService', 'AccountService', '$uibModalInstance'
 ];
 
 /**
@@ -12,7 +12,7 @@ BillingServicesUpdateController.$inject = [
  * Importantly, both this controller and the BillingServicesCreateController
  * use the same template, billing_services/form.html.
  */
-function BillingServicesUpdateController($stateParams, BillingServices, Accounts) {
+function BillingServicesUpdateController($state, BillingServices, Accounts, ModalInstance) {
   var vm = this;
 
   // the form title is defined in the JS to allow us to reuse templates
@@ -26,12 +26,13 @@ function BillingServicesUpdateController($stateParams, BillingServices, Accounts
 
   // the submit method to POST data to the server
   vm.submit = submit;
+  vm.dismiss = ModalInstance.dismiss;
 
   // fired on application startup
   function startup() {
 
     // load the billing service by id
-    BillingServices.read($stateParams.id)
+    BillingServices.read($state.params.id)
     .then(function (service) {
 
       // set the label to the label of the fetched service
@@ -76,7 +77,6 @@ function BillingServicesUpdateController($stateParams, BillingServices, Accounts
 
     // remove any previously attached messages
     delete vm.error;
-    delete vm.updated;
 
     // exit immediately if the form is not valid
     if (form.$invalid) {
@@ -84,12 +84,9 @@ function BillingServicesUpdateController($stateParams, BillingServices, Accounts
    }
 
     // submit data to the server
-    return BillingServices.update($stateParams.id, vm.model)
-    .then(function () {
-      vm.updated = true;
-
-      // update the cached label
-      vm.label = vm.model.label;
+    return BillingServices.update($state.params.id, vm.model)
+    .then(function (data) {
+      ModalInstance.close(data.id);
     })
     .catch(function (error) {
       vm.error = error;

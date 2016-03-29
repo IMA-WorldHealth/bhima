@@ -12,10 +12,11 @@
         <a
           class="btn btn-default"
           data-method="create"
-          href="#/admin/billing_services/create"
-          ng-hide="BillingServicesCtrl.$state.current.name === 'billingServices.create'">
+          ui-sref="billingServices.create"
+          ui-sref-opts="{notify:false}"
+          >
           <span class="glyphicon glyphicon-plus"></span> {{ "BILLING_SERVICES.BTN.CREATE" | translate }}
-        </a> 
+        </a>
       </div>
     </div>
   </div>
@@ -24,5 +25,39 @@
 <div class="flex-content">
 
   <!-- anchor to template in child views -->
-  <div class="container-fluid" ui-view></div>
+  <div class="container-fluid">
+    <div
+      class="grid-full-height"
+      id="BillingServicesGrid"
+      ui-grid="BillingServicesCtrl.options"
+      ui-grid-cellNav
+      ui-grid-auto-resize>
+
+      <!-- indicate that the grid is loading -->
+      <div class="grid-msg-overlay" ng-show="BillingServicesCtrl.loading">
+        <div class="msg">
+          <span><span class="glyphicon glyphicon-refresh"></span> {{ "GRID.LOADING" | translate }}</span>
+        </div>
+      </div>
+
+      <!-- indicate that there is no data for the requested query -->
+      <div class="grid-msg-overlay" ng-hide="BillingServicesCtrl.loading || BillingServicesCtrl.options.data.length > 0">
+        <div class="msg">
+          <span class="text-info">
+            <span class="glyphicon glyphicon-info-sign"></span> {{ "GRID.EMPTY" | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- indicate that some error occurred -->
+      <div class="grid-msg-overlay" ng-show="BillingServicesCtrl.error">
+        <div class="msg">
+          <!-- @todo - make an error directive for this kind of text -->
+          <span class="text-danger">
+            <span class="glyphicon glyphicon-alert"></span> {{ BillingServicesCtrl.error.code | translate }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

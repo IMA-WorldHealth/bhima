@@ -6,7 +6,10 @@ var bhima = angular.module('bhima', [
 ]);
 
 
-function bhimaConfig($stateProvider, $urlRouterProvider) {
+function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider) {
+  // allow trailing slashes in routes
+  $urlMatcherFactoryProvider.strictMode(false);
+
   /* misc routes */
 
   $stateProvider
@@ -195,31 +198,73 @@ function bhimaConfig($stateProvider, $urlRouterProvider) {
     templateUrl: 'partials/locations/country/country.html'
   })
 
-  /* billing service */
-
+  /**
+   * Billing Services Routes
+   *
+   * The billing services route endpoints.
+   *
+   * @todo - discuss if the "delete" route should be included as a separate
+   * view/state.  It doesn't really need to be deep-linked.
+   */
   .state('billingServices', {
-    abstract : true,
-    url : '/admin/billing_services',
+    url : '/admin/billing_services/{id:int}',
+    params : {
+      // this is required to match the route when a billing service id is present
+      // or omitted.  See: http://stackoverflow.com/questions/30720672/
+      id : { squash : true, value : null },
+      created : false,  // default for transitioning from child states
+      updated : false,  // default for transitioning from child states
+    },
     templateUrl : 'partials/billing_services/index.html',
     controller : 'BillingServicesController as BillingServicesCtrl',
   })
-  .state('billingServices.list', {
-    url : '', // display by default in the parent state
-    templateUrl : '/partials/billing_services/list/list.html',
-    controller : 'BillingServicesListController as BillingServicesListCtrl'
-  })
-
-  // both create and update use the same form template
-  .state('billingServices.create', {
-    url : '/create',
-    templateUrl : '/partials/billing_services/form.html',
-    controller : 'BillingServicesCreateController as BillingServicesFormCtrl',
-  })
-  .state('billingServices.update', {
-    url : '/:id',
-    templateUrl : '/partials/billing_services/form.html',
-    controller : 'BillingServicesUpdateController as BillingServicesFormCtrl'
-  })
+    .state('billingServices.create', {
+      onEnter : ['$state', '$uibModal', function ($state, Modal) {
+        Modal.open({
+          templateUrl : 'partials/billing_services/modal.html',
+          controller : 'BillingServicesCreateController as BillingServicesFormCtrl',
+        }).result.then(function (id) {
+          // go to the parent state (with refresh)
+          $state.go('^', { id : id, created : true }, { reload : true });
+        })
+        .catch(function () {
+          $state.go('^', { id : $state.params.id }, { notify: false });
+        });
+      }]
+    })
+    .state('billingServices.update', {
+      url: '/update',
+      onEnter : ['$state', '$uibModal', function ($state, Modal) {
+        Modal.open({
+          templateUrl : 'partials/billing_services/modal.html',
+          controller : 'BillingServicesUpdateController as BillingServicesFormCtrl',
+        }).result.then(function (id) {
+          // go to the parent state (with refresh)
+          $state.go('^', { id : id, updated: true }, { reload : true });
+        })
+        .catch(function () {
+          $state.go('^', { id : $state.params.id }, { notify: false });
+        });
+      }]
+    })
+    .state('billingServices.delete', {
+      url: '/delete',
+      onEnter : ['$state', '$uibModal', function ($state, Modal) {
+        Modal.open({
+          animation : false,
+          keyboard : true,
+          size : 'md',
+          controller : 'BillingServicesDeleteController as ConfirmModalCtrl',
+          templateUrl : '/partials/templates/modals/confirm.modal.html'
+        }).result.then(function () {
+          // go to the parent state (with refresh)
+          $state.go('^', { id: null }, { reload : true });
+        })
+        .catch(function () {
+          $state.go('^', { id : $state.params.id }, { notify: false });
+        });
+      }]
+    })
 
   /* budget routes */
 
@@ -903,7 +948,7 @@ function httpConfig($httpProvider) {
 }
 
 // configuration
-bhima.config(['$stateProvider', '$urlRouterProvider', bhimaConfig]);
+bhima.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$httpProvider', authConfig]);
