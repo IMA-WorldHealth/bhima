@@ -57,19 +57,27 @@
               <!-- Hospital File Number -->
               <div
                 class="form-group has-feedback"
-                ng-class="{'has-error' : details.hospitalNumber.$invalid && details.$submitted || details.$error.hospitalNumber}">
+                ng-class="{'has-error' : details.hospitalNumber.$invalid && details.$submitted || details.hospitalNumber.$error.unique}">
 
                 <label for="new-hospital-number" class="col-md-3 control-label">{{ "INVOICE.HOSPITAL_FILE_NR" | translate }} </label>
                 <div class="col-md-9">
-                  <input id="new-hospital-number" name="hospitalNumber" class="form-control" ng-model="PatientRegCtrl.medical.hospital_no" hospital-number required>
-                  <span ng-if="details.$error.hospitalNumber" class="glyphicon glyphicon-remove form-control-feedback"></span>
-                  <span ng-if="details.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
-                  <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
-
-                  <!-- TODO Translate -->
-                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">
-                    {{ "UTIL.PATIENT_EXIT" | translate }}
-                  </p>
+                  
+                  <input 
+                    id="new-hospital-number"
+                    name="hospitalNumber"
+                    class="form-control"
+                    autocomplete="off"
+                    ng-model="PatientRegCtrl.medical.hospital_no"
+                    bh-unique="/patients/hospital_number"
+                    required>
+                  
+                  <span ng-if="details.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
+                  <span ng-if="details.hospitalNumber.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
+                  
+                  <div class="help-block" ng-messages="details.hospitalNumber.$error" ng-show="details.$submitted || details.hospitalNumber.$error.unique">
+                    <p ng-messages-include="partials/templates/messages.tmpl.html"></p> 
+                  </div>
+                
                 </div>
               </div>
 

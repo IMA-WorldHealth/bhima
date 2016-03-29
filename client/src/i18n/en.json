@@ -3531,7 +3531,8 @@
     "MINLENGTH" : "This input is too short.",
     "MAXLENGTH" : "This input is too long.",
     "NUMBER" : "This field must be a valid number.",
-    "DATE" : "This field must be a valid date."
+    "DATE" : "This field must be a valid date.",
+    "UNIQUE" : "This field must be unique. This value is already taken."
    },
   "VOUCHERS" : {
     "SIMPLE" : {

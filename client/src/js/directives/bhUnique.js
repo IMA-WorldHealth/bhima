@@ -11,8 +11,14 @@ UniqueDirective.$inject = ['$q', 'UniqueValidatorService'];
  * `true` and `false` values. This will then update the $valid property 
  * on the angluar form record. 
  *
+ * The UniqueValidator service is used and therefore the URL provided will be 
+ * required to implement the `exists` API. See the `services/UniqueValidatorService`
+ * documentation for more details and examples.
+ *
  * @example 
- * <input id="email" type="email" bh-unique="/users/validateEmail">
+ * 
+ * // will result in a HTTP GET request to /users/attribute/:value/exists
+ * <input id="email" type="email" bh-unique="/users/attribute">
  *
  * @module directives/bhUnique
  */
@@ -41,16 +47,16 @@ function UniqueDirective($q, UniqueValidator) {
           return $q.when();
         }
 
-        return UniqueValidator.check(validationUrl, viewValue)
-          .then(function (valueIsUnique) { 
+        UniqueValidator.check(validationUrl, viewValue)
+          .then(function (valueExists) { 
     
             // as we have recieved a valid HTTP response there is nothing wrong 
             // with the connection to the server
             ctrl.$setValidity(exceptionKey, true); 
             
-            if (valueIsUnique) { 
+            if (valueExists) { 
               deferred.reject();
-            } else { 
+            } else {
               deferred.resolve();
             }
           })
