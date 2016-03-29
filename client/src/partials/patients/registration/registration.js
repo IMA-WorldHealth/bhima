@@ -1,15 +1,25 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$location', 'ScrollService', 'PatientService', 'DebtorService', 'util', 'SessionService'
+  '$location', 'ScrollService', 'PatientService', 'DebtorService',  
+  'SessionService', 'util'
 ];
 
-function PatientRegistrationController($location, ScrollTo, Patients, Debtors, util, Session) {
+/** 
+ * Patient Registration Controller
+ *
+ * This controller is responsible for collecting data and providing utility
+ * methods for the patient registration client side module. It provides basic 
+ * methods for handling dates of birth as well as wrappers to communicate with 
+ * the server. 
+ *
+ * @module controllers/PatientRegistrationController
+ */
+function PatientRegistrationController($location, ScrollTo, Patients, Debtors, Session, util) {
   var viewModel = this;
 
-  // Models for collecting patient data in logical groups
+  // models for collecting patient data in logical groups
   viewModel.finance = {};
   viewModel.medical = {};
   viewModel.options = {}; 
@@ -17,7 +27,11 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, u
   // bind default villages 
   viewModel.medical.origin_location_id = Session.enterprise.location_id;
   viewModel.medical.current_location_id = Session.enterprise.location_id;
-
+  
+  viewModel.registerPatient = registerPatient;
+  viewModel.enableFullDate = enableFullDate;
+  viewModel.calculateYOB = calculateYOB;
+  
   // Set up page elements data (debtor select data)
   Debtors.groups()
     .then(function (results) {
@@ -29,7 +43,7 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, u
   viewModel.minDOB = util.minDOB;
   viewModel.maxDOB = util.maxDOB;
 
-  viewModel.registerPatient = function registerPatient(patientDetailsForm) {
+  function registerPatient(patientDetailsForm) {
 
     // Register submitted action - explicit as the button is outside of the scope of the form
     patientDetailsForm.$setSubmitted();
@@ -58,11 +72,11 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, u
   /**
    * Date and location utility methods
    */
-  viewModel.enableFullDate = function enableFullDate() {
+  function enableFullDate() {
     viewModel.fullDateEnabled = true;
   };
 
-  viewModel.calculateYOB = function calculateYOB(value) {
+  function calculateYOB(value) {
     viewModel.medical.dob = value && value.length === 4 ? new Date(value + '-' + util.defaultBirthMonth) : undefined;
   };
   
@@ -72,6 +86,7 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, u
    * 
    * @todo  Discuss if this should be a library to account for standard client side errors,
    *        -1 for offline etc. This should not have to be done everywhere. 
+   *        This could be implemented with an $http interceptor. 
    * @params  {object}  error   An Error object that has been sent from the server. 
    */
   function handleServerError(error) {

@@ -10,6 +10,13 @@ ScrollService.$inject = ['$location', '$anchorScroll', '$timeout'];
  * The primary reason for this service is the number of imports it requires to 
  * scroll in Angular, this is just a semantic wrapper for a basic operation. 
  *
+ * @example
+ * Controller.$inject = ['ScrollService'];
+ *
+ * function Controller(ScrollTo)...
+ *
+ * ScrollTo('element-id');
+ *
  * @module services/ScrollService
  */
 function ScrollService($location, $anchorScroll, $timeout) { 
