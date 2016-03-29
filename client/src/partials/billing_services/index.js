@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('BillingServicesController', BillingServicesController);
 
 BillingServicesController.$inject = [
-  '$state', '$stateParams', '$translate', 'BillingServicesService', 'AccountService', 'ModalService',
+  '$state', '$stateParams', '$translate', 'BillingServicesService', 'AccountService'
 ];
 
 /**
@@ -11,7 +11,7 @@ BillingServicesController.$inject = [
  * This is the default controller for the billing services URL endpoint.  It
  * downloads and displays all billing services in the application via a ui-grid.
  */
-function BillingServicesController($state, $params, $translate, BillingServices, Accounts, Modals) {
+function BillingServicesController($state, $params, $translate, BillingServices, Accounts) {
   var vm = this;
 
   var updateTemplate =
@@ -26,16 +26,41 @@ function BillingServicesController($state, $params, $translate, BillingServices,
     enableSorting : true,
     enableColumnMenus: false,
     onRegisterApi: registerGridApi,
-    columnDefs : [
-      { field : 'id', displayName : $translate.instant('COLUMNS.ID'), width: 45 },
-      { field : 'account', displayName : $translate.instant('COLUMNS.ACCOUNT'), width: '*' },
-      { field : 'label', displayName : $translate.instant('COLUMNS.LABEL') },
-      { field : 'description', displayName: $translate.instant('COLUMNS.DESCRIPTION') },
-      { field : 'value', displayName : $translate.instant('COLUMNS.VALUE'), cellFilter:'percentage', cellClass: 'text-right' },
-      { field : 'created_at', displayName : $translate.instant('COLUMNS.DATE'), cellFilter:'date', cellClass: 'text-center' },
-      { field : 'edit', displayName: '', cellTemplate : updateTemplate, width: 45 },
-      { field : 'delete', displayName : '', cellTemplate: deleteTemplate, width: 45 }
-    ]
+    columnDefs : [{
+      field : 'id',
+      displayName : $translate.instant('COLUMNS.ID'),
+      width: 45
+    }, {
+      field : 'account',
+      displayName : $translate.instant('COLUMNS.ACCOUNT'),
+      width: '*'
+    }, {
+      field : 'label',
+      displayName : $translate.instant('COLUMNS.LABEL')
+    }, {
+      field : 'description',
+      displayName: $translate.instant('COLUMNS.DESCRIPTION')
+    }, {
+      field : 'value',
+      displayName : $translate.instant('COLUMNS.VALUE'),
+      cellFilter:'percentage',
+      cellClass: 'text-right'
+    }, {
+      field : 'created_at',
+      displayName : $translate.instant('COLUMNS.DATE'),
+      cellFilter:'date',
+      cellClass: 'text-center'
+    }, {
+      field : 'edit',
+      displayName: '',
+      cellTemplate : updateTemplate,
+      width: 45
+    }, {
+      field : 'delete',
+      displayName : '',
+      cellTemplate: deleteTemplate,
+      width: 45
+    }]
   };
 
   // bind state service to hide state buttons

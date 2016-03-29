@@ -11,7 +11,7 @@ var components = require('../shared/components');
 var GU = require('../shared/gridTestUtils.spec.js');
 var FU = require('../shared/FormUtils');
 
-describe.only('Billing Services', function () {
+describe('Billing Services', function () {
   'use strict';
 
   /** @const */

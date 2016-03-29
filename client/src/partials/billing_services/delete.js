@@ -1,7 +1,9 @@
 angular.module('bhima.controllers')
 .controller('BillingServicesDeleteController', BillingServicesDeleteController);
 
-BillingServicesDeleteController.$inject = ['$state', '$uibModalInstance', 'BillingServicesService' ];
+BillingServicesDeleteController.$inject = [
+  '$state', '$uibModalInstance', 'BillingServicesService'
+];
 
 /**
  * Billing Services Delete Controller
