@@ -1,4 +1,4 @@
-
+/* jshint expr:true */
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -21,9 +21,7 @@ describe('(/currencies) currencies API routes', function () {
   it('GET /currencies should return a list of currencies', function () {
     return agent.get('/currencies')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.have.length(2);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
@@ -38,11 +36,9 @@ describe('(/currencies) currencies API routes', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /currencies/unknownid should return an error', function () {
-    return agent.get('/currencies/unknownId')
+  it('GET /currencies/:id should return an error for unknown id', function () {
+    return agent.get('/currencies/unknown')
       .then(function (res) {
-
-        // assert that the result is an error
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);

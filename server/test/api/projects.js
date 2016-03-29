@@ -1,3 +1,4 @@
+/* jshint expr:true*/
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -9,10 +10,10 @@ helpers.configure(chai);
 *
 * This test suite implements full CRUD on the /projects HTTP API endpoint.
 */
-describe('The /projects API endpoint', function () {
+describe('(/projects) The projects API endpoint', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
-      // project we will add during this test suite.
+  // project we will add during this test suite.
   var project = {
       abbr:          'TMP',
       name:          'Temporary Project',
@@ -21,10 +22,14 @@ describe('The /projects API endpoint', function () {
       locked:     0
     };
 
-  var UNLOCKED = 0;
-  var PROJECT_KEY = ['id', 'name', 'abbr', 'enterprise_id', 'zs_id', 'locked'];
-  var INITIAL_PROJECTS = 3;
-  // login before each request
+  var PROJECT_KEY = [
+    'id', 'name', 'abbr', 'enterprise_id', 'zs_id', 'locked'
+  ];
+
+  /** @const number of projects defined in the dtabase */
+  var numProjects = 3;
+
+  // make sure the client is authenticated.
   before(helpers.login(agent));
 
   it('GET /projects returns a list of projects', function () {
@@ -38,11 +43,9 @@ describe('The /projects API endpoint', function () {
   });
 
   it('GET /projects/:id should not be found for unknown id', function () {
-    return agent.get('/projects/unknownproject')
+    return agent.get('/projects/unknown')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.not.be.empty;
-        expect(res.body.code).to.equal('ERR_NOT_FOUND');
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -57,65 +60,54 @@ describe('The /projects API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? COMPLETE = 1 returns a complete List of project  ', function () {
+  it('GET /projects?complete=1 returns a complete list of project', function () {
     return agent.get('/projects?complete=1')
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result).to.be.json;
-        expect(result.body).to.have.length(INITIAL_PROJECTS);
-        expect(result.body[0]).to.contain.all.keys(PROJECT_KEY);
+      .then(function (res) {
+        helpers.api.listed(res, numProjects);
+        expect(res.body[0]).to.contain.all.keys(PROJECT_KEY);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? LOCKED = 0 returns a complete List of unlocked projects  ', function () {
+  it('GET /projects?locked=0 returns a complete list of unlocked projects', function () {
     return agent.get('/projects?locked=0')
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result).to.be.json;
-        expect(result.body[0].locked).to.equal(UNLOCKED);
-        expect(result.body[0]).to.contain.all.keys(PROJECT_KEY);
-        expect(result.body).to.have.length(INITIAL_PROJECTS);
+      .then(function (res) {
+        helpers.api.listed(res, numProjects);
+        expect(res.body[0]).to.contain.all.keys(PROJECT_KEY);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? LOCKED = 1 returns a complete List of locked projects  ', function () {
+  it('GET /projects?locked=1 returns a complete list of locked projects', function () {
     return agent.get('/projects?locked=1')
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result.body).to.be.empty;
+      .then(function (res) {
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? INCOMPLETE LOCKED = 0 returns a simple List of unlocked projects  ', function () {
+  it('GET /projects/?incomplete_locked=0 returns a simple list of unlocked projects', function () {
     return agent.get('/projects?incomplete_locked=0')
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result).to.be.json;
-        expect(result.body[0]).to.have.keys('id', 'name');
-        expect(result.body).to.have.length(INITIAL_PROJECTS);
+      .then(function (res) {
+        helpers.api.listed(res, numProjects);
+        expect(res.body[0]).to.have.keys('id', 'name');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /projects/ ? INCOMPLETE LOCKED = 1 returns a simple List of locked projects  ', function () {
+  it('GET /projects/?incomplete_locked=1 returns a simple list of locked projects', function () {
     return agent.get('/projects?incomplete_locked=1')
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result.body).to.be.empty;
+      .then(function (res) {
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
 
   it('POST /projects should create a new project', function () {
-
     return agent.post('/projects')
       .send(project)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
+        helpers.api.created(res);
         return agent.get('/projects/' + res.body.id);
       })
       .then(function (res) {
@@ -139,10 +131,9 @@ describe('The /projects API endpoint', function () {
   });
 
   it('DELETE /projects/:id will send back a 404 if the prjects does not exist', function () {
-    return agent.delete('/projects/unknownproject')
+    return agent.delete('/projects/unknown')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.be.empty;
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -150,7 +141,11 @@ describe('The /projects API endpoint', function () {
   it('DELETE /projects/:id should delete an existing and unused project', function () {
     return agent.delete('/projects/' + project.id)
       .then(function (res) {
-        expect(res).to.have.status(204);
+        helpers.api.deleted(res);
+        return agent.get('/projects/' + project.id);
+      })
+      .then(function (res) {
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

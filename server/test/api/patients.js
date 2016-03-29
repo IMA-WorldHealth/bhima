@@ -1,3 +1,4 @@
+/* jshint expr:true */
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -6,7 +7,7 @@ var q = require('q');
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('The /patients API', function () {
+describe('(/patients) The Patients API', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
@@ -22,6 +23,7 @@ describe('The /patients API', function () {
     uuid:                mockDebtorUuid,
     debitor_group_uuid:  '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
+
   var mockPatient = {
     first_name:          'Mock',
     middle_name:         'Patient',
@@ -35,7 +37,7 @@ describe('The /patients API', function () {
     uuid:                mockPatientUuid,
   };
 
-  // Missing last name, sex
+  // missing last name, sex
   var missingParamsPatient = {
     first_name:          'Mock',
     middle_name:         'Patient',
@@ -51,6 +53,7 @@ describe('The /patients API', function () {
     finance : mockDebtor,
     medical : mockPatient
   };
+
   var mockMissingRequest = {
     finance : {
       debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
@@ -82,7 +85,7 @@ describe('The /patients API', function () {
     medical : simultaneousPatient
   };
 
-  // Logs in before each test
+  // ensure the client is logged into before test suite
   before(helpers.login(agent));
 
   // HTTP API Test for /patients/search/ routes
@@ -198,12 +201,12 @@ describe('The /patients API', function () {
 
   it('GET /patients/:id finds and retrieves the details of the registered patient', function () {
     return agent.get('/patients/' + mockPatientUuid)
-      .then(function (result) {
+      .then(function (res) {
         var retrievedDetails;
         var expectedKeys = ['uuid', 'last_name', 'middle_name', 'sex', 'origin_location_id'];
 
-        expect(result).to.have.status(200);
-        retrievedDetails = result.body;
+        expect(res).to.have.status(200);
+        retrievedDetails = res.body;
 
         expect(retrievedDetails).to.not.be.empty;
         expect(retrievedDetails).to.contain.keys(expectedKeys);
@@ -323,13 +326,13 @@ describe('The /patients API', function () {
 
     // Catch all patient write requests
     return q.all(patientQuery)
-      .then(function (result) {
+      .then(function (res) {
         var detailsQuery = [];
 
 
         // Settup all patient read requests
-        result.forEach(function (patient) {
-          expect(patient).to.have.status(201);
+        res.forEach(function (patient) {
+          helpers.api.created(patient);
           detailsQuery.push(agent.get('/patients/'.concat(patient.body.uuid)));
         });
 
@@ -366,14 +369,14 @@ describe('The /patients API', function () {
 
      return agent.post('/patients/'.concat(mockPatientUuid, '/groups'))
       .send(groupAssignment)
-      .then(function (result) {
+      .then(function (res) {
 
         var assignResult;
 
-        expect(result).to.have.status(200);
-        expect(result.body).to.not.be.empty;
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
 
-        assignResult = result.body[1];
+        assignResult = res.body[1];
 
         expect(assignResult.affectedRows).to.equal(groupAssignment.assignments.length);
       })
@@ -425,15 +428,13 @@ describe('The /patients API', function () {
 
       agent.post('/patients')
         .send(simultaneousRequest)
-        .then(function (result) {
-
-          deferred.resolve(result);
+        .then(function (res) {
+          deferred.resolve(res);
         })
         .catch(function (error) {
           deferred.reject(error);
         });
-    },
-    timeout);
+    }, timeout);
 
     return deferred.promise;
   }

@@ -12,12 +12,12 @@ helpers.configure(chai);
 *
 * @desc This test suit is about the vouchers transactions
 */
-describe('The /vouchers HTTP endpoint', function () {
+describe('(/vouchers) The Vouchers HTTP endpoint', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
 
-  /** login before each request */
+  /** login before tests suite executes */
   before(helpers.login(agent));
 
   /** Test with dates */
@@ -74,8 +74,7 @@ describe('The /vouchers HTTP endpoint', function () {
     return agent.post('/vouchers')
       .send({ voucher : voucher })
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res.body.uuid).to.exist;
+        helpers.api.created(res);
         expect(res.body.uuid).to.be.equal(voucher.uuid);
       })
       .catch(helpers.handler);
@@ -85,8 +84,7 @@ describe('The /vouchers HTTP endpoint', function () {
     return agent.post('/vouchers')
       .send({ voucher : secondVoucher })
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res.body.uuid).to.exist;
+        helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
@@ -113,9 +111,7 @@ describe('The /vouchers HTTP endpoint', function () {
     return agent.post('/vouchers')
       .send({ voucher : mockVoucher })
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res.body.code).to.exist;
-        expect(res.body.code).to.be.equal('DB.ER_BAD_NULL_ERROR');
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
@@ -123,8 +119,7 @@ describe('The /vouchers HTTP endpoint', function () {
   it('GET /vouchers returns a list of vouchers', function () {
     return agent.get('/vouchers')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        helpers.api.listed(res, 5);
       })
       .catch(helpers.handler);
   });
@@ -143,9 +138,7 @@ describe('The /vouchers HTTP endpoint', function () {
   it('GET /vouchers/:uuid returns a NOT FOUND (404) when unknown {uuid}', function () {
     return agent.get('/vouchers/unknown')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body.code).to.exist;
-        expect(res.body.code).to.be.equal('ERR_NOT_FOUND');
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -153,35 +146,27 @@ describe('The /vouchers HTTP endpoint', function () {
   it('GET /vouchers returns a list of vouchers specified by query string', function () {
     return agent.get('/vouchers/?reference=unknown')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.empty;
+        helpers.api.listed(res, 0);
         return agent.get('/vouchers/?account_id=0000');
       })
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.empty;
+        helpers.api.listed(res, 0);
         return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid);
       })
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        helpers.api.listed(res, 1);
         return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=unknown');
       })
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.empty;
+        helpers.api.listed(res, 0);
         return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=1');
       })
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(1);
+        helpers.api.listed(res, 1);
         return agent.get('/vouchers/?project_id=' + voucher.project_id + '&reference=1');
       })
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(1);
+        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });

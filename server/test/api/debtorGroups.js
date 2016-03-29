@@ -1,5 +1,4 @@
 /* jshint expr: true */
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -7,7 +6,7 @@ var helpers = require('./helpers');
 var uuid    = require('node-uuid');
 helpers.configure(chai);
 
-describe('The /debtor_groups HTTP API ENDPOINT', function () {
+describe('(/debtor_groups) The debtor groups HTTP API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var debtorGroup = {
@@ -117,9 +116,8 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     return agent.post('/debtor_groups/')
     .send(debtorGroup)
     .then(function (res) {
-      expect(res).to.have.status(201);
-      expect(res.body.id).to.exist;
-      expect(res.body.id).to.be.equal(debtorGroup.uuid);
+      helpers.api.created(res);
+      expect(res.body.uuid).to.be.equal(debtorGroup.uuid);
     })
     .catch(helpers.handler);
   });
@@ -128,9 +126,8 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     return agent.post('/debtor_groups/')
     .send(lockedGroup)
     .then(function (res) {
-      expect(res).to.have.status(201);
-      expect(res.body.id).to.exist;
-      expect(res.body.id).to.be.equal(lockedGroup.uuid);
+      helpers.api.created(res);
+      expect(res.body.uuid).to.be.equal(lockedGroup.uuid);
     })
     .catch(helpers.handler);
   });
@@ -139,9 +136,8 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     return agent.post('/debtor_groups/')
     .send(conventionGroup)
     .then(function (res) {
-      expect(res).to.have.status(201);
-      expect(res.body.id).to.exist;
-      expect(res.body.id).to.be.equal(conventionGroup.uuid);
+      helpers.api.created(res);
+      expect(res.body.uuid).to.be.equal(conventionGroup.uuid);
     })
     .catch(helpers.handler);
   });
@@ -150,9 +146,8 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     return agent.post('/debtor_groups/')
     .send(lockedConventionGroup)
     .then(function (res) {
-      expect(res).to.have.status(201);
-      expect(res.body.id).to.exist;
-      expect(res.body.id).to.be.equal(lockedConventionGroup.uuid);
+      helpers.api.created(res);
+      expect(res.body.uuid).to.be.equal(lockedConventionGroup.uuid);
     })
     .catch(helpers.handler);
   });
@@ -161,8 +156,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     return agent.post('/debtor_groups/')
     .send(invalidGroup)
     .then(function (res) {
-      expect(res).to.have.status(400);
-      expect(res.body.code).to.exist;
+      helpers.api.errored(res, 400);
       expect(res.body.code).to.be.equal('ERR_MISSING_REQUIRED_PARAMETERS');
     })
     .catch(helpers.handler);
@@ -171,8 +165,7 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
   it('GET /debtor_groups returns a list of debtor groups', function () {
     return agent.get('/debtor_groups')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        helpers.api.listed(res, 6);
         allDebtorGroups = res.body;
       })
       .catch(helpers.handler);
@@ -188,68 +181,56 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups/invalid returns NOT FOUND (404) for invalid id', function () {
+  it('GET /debtor_groups/:id returns NOT FOUND (404) for invalid id', function () {
     return agent.get('/debtor_groups/invalid')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.not.be.empty;
-        expect(res.body.code).to.exist;
-        expect(res.body.code).to.be.equal('ERR_NOT_FOUND');
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups/?locked={1|0} returns only locked or not locked debtor groups', function () {
+  it('GET /debtor_groups?locked={1|0} returns only locked or not locked debtor groups', function () {
     var totalLockedGroup = getTotal(allDebtorGroups, 'locked', 1);
     var totalUnlockedGroup = getTotal(allDebtorGroups, 'locked', 0);
 
-    return agent.get('/debtor_groups/?locked=1')
+    return agent.get('/debtor_groups?locked=1')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(totalLockedGroup);
+        helpers.api.listed(res, totalLockedGroup);
         expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(1);
         return agent.get('/debtor_groups/?locked=0');
       })
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(totalUnlockedGroup);
+        helpers.api.listed(res, totalUnlockedGroup);
         expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(0);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups/?is_convention={1|0} returns only conventions or not conventions debtor groups', function () {
+  it('GET /debtor_groups?is_convention={1|0} returns only conventions or not conventions debtor groups', function () {
     var totalConvention = getTotal(allDebtorGroups, 'is_convention', 1);
     var totalNotConvention = getTotal(allDebtorGroups, 'is_convention', 0);
 
-    return agent.get('/debtor_groups/?is_convention=1')
+    return agent.get('/debtor_groups?is_convention=1')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(totalConvention);
+        helpers.api.listed(res, totalConvention);
         expect(res.body[0].is_convention).to.exist;
         expect(res.body[0].is_convention).to.be.equal(1);
         return agent.get('/debtor_groups/?is_convention=0');
       })
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(totalNotConvention);
+        helpers.api.listed(res, totalNotConvention);
         expect(res.body[0].is_convention).to.exist;
         expect(res.body[0].is_convention).to.be.equal(0);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups/?locked={1|0}&is_convention={1|0} returns either  locked or convention debtor groups', function () {
+  it('GET /debtor_groups/?locked={1|0}&is_convention={1|0} returns either locked or convention debtor groups', function () {
     return agent.get('/debtor_groups/?locked=1&is_convention=1')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        helpers.api.listed(res, 1);
         expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(1);
         expect(res.body[0].is_convention).to.exist;
@@ -297,6 +278,30 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
     .catch(helpers.handler);
   });
 
+  it('GET /debtor_groups/:uuid/invoices returns all invoices for a debtor group', function () {
+    return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /debtor_groups/:uuid/invoices returns a NOT FOUND (404) for an unknow {uuid}', function () {
+    return agent.get('/debtor_groups/unknown/invoices')
+      .then(function (res) {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', function () {
+    return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices?balanced=1')
+      .then(function (res) {
+        helpers.api.listed(res, 0);
+      })
+      .catch(helpers.handler);
+  });
+
   /**
   * @function getTotal
   *
@@ -312,29 +317,4 @@ describe('The /debtor_groups HTTP API ENDPOINT', function () {
       return item[criteria] == value;
     }).length;
   }
-
-  it('GET /debtor_groups/:uuid/invoices returns all invoices for a debtor group', function () {
-    return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices')
-      .then(function (res) {
-        expect(res).to.have.status(200);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /debtor_groups/unknow/invoices returns a NOT FOUND (404) for an unknow {uuid}', function () {
-    return agent.get('/debtor_groups/unknow/invoices')
-      .then(function (res) {
-        expect(res).to.have.status(404);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', function () {
-    return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices?balanced=1')
-      .then(function (res) {
-        expect(res).to.have.status(200);
-      })
-      .catch(helpers.handler);
-  });
-
 });

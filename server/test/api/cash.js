@@ -6,9 +6,7 @@ var expect = chai.expect;
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /cash API endpoint
-*/
+/** The /cash API endpoint */
 describe('(/cash) Cash Payments Interface ', function () {
   'use strict';
 
@@ -33,8 +31,7 @@ describe('(/cash) Cash Payments Interface ', function () {
   it('GET /cash returns an empty list with no cash payments', function () {
     return agent.get('/cash')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.empty;
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
@@ -43,8 +40,7 @@ describe('(/cash) Cash Payments Interface ', function () {
   it('GET /cash/undefined returns an error', function () {
     return agent.get('/cash/undefined')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.not.be.empty;
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -248,7 +244,6 @@ describe('(/cash) Cash Payments Interface ', function () {
 
   // the references API
   describe('(/cash/references) references for finding cash payment uuids', function () {
-
     it('GET /cash/references/unknown should return a 404 error', function () {
       agent.get('/cash/references/unknown')
         .then(function (res) {
@@ -257,7 +252,7 @@ describe('(/cash) Cash Payments Interface ', function () {
         .catch(helpers.handler);
     });
 
-    it('get /cash/references/:reference should return a uuid for a valid payment', function () {
+    it('GET /cash/references/:reference should return a uuid for a valid payment', function () {
       agent.get('/cash/references/'.concat(REFERENCE))
         .then(function (res) {
           expect(res).to.have.status(200);

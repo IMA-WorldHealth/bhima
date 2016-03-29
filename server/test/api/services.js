@@ -1,10 +1,11 @@
+/* jshint expr:true */
 var chai = require('chai');
 var expect = chai.expect;
 
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('The Service API, PATH : /services', function () {
+describe('(/services) The Service API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var newService = {
@@ -37,7 +38,7 @@ describe('The Service API, PATH : /services', function () {
 
   before(helpers.login(agent));
 
-  it('METHOD : POST, PATH : /services, It adds a services', function () {
+  it('POST /services adds a services', function () {
     return agent.post('/services')
       .send(newService)
       .then(function (res) {
@@ -52,14 +53,11 @@ describe('The Service API, PATH : /services', function () {
      .catch(helpers.handler);
   });
 
-  it('METHOD : POST, PATH : /services, It adds a services with a null cost center', function () {
+  it('POST /services adds a services with a null cost center', function () {
     return agent.post('/services')
       .send(serviceWithoutCostCenter)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.defined;
+        helpers.api.created(res);
         serviceWithoutCostCenter.id = res.body.id;
         return agent.get('/services/' + serviceWithoutCostCenter.id);
       })
@@ -70,7 +68,7 @@ describe('The Service API, PATH : /services', function () {
      .catch(helpers.handler);
   });
 
-  it('METHOD : GET, PATH : /services, It returns a list of services', function () {
+  it('GET /services returns a list of services', function () {
       return agent.get('/services')
         .then(function (res) {
           helpers.api.listed(res, 5);
@@ -78,7 +76,7 @@ describe('The Service API, PATH : /services', function () {
         .catch(helpers.handler);
   });
 
-  it('METHOD : GET, PATH : /services/:id, It returns one services', function () {
+  it('GET /services/:id returns one services', function () {
     return agent.get('/services/'+ newService.id)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -91,9 +89,8 @@ describe('The Service API, PATH : /services', function () {
   });
 
 
-  it('METHOD : PUT, PATH : /services/:id, It updates the newly added services', function () {
+  it('PUT /services/:id updates the newly added services', function () {
     var updateInfo = {name : 'other'};
-
     return agent.put('/services/'+ newService.id)
       .send(updateInfo)
       .then(function (res) {
@@ -106,7 +103,7 @@ describe('The Service API, PATH : /services', function () {
   });
 
 
-  it('METHOD : PUT, PATH : /services/:id, It refuses to update a service with a string as profit_center_id', function () {
+  it('PUT /services/:id refuses to update a service with a string as profit_center_id', function () {
     return agent.put('/services/' + newService.id)
       .send(wrongUpdateService)
       .then(function (res) {
@@ -115,23 +112,31 @@ describe('The Service API, PATH : /services', function () {
       .catch(helpers.handler);
   });
 
-    it('METHOD : PUT, PATH : /services/:id, It ignores an undefined profit center and update a service with defined properties', function () {
-    return agent.put('/services/' + newService.id)
-      .send(undefinedProfitService)
-      .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body.id).to.equal(newService.id);
-      })
-      .catch(helpers.handler);
+  it('PUT /services/:id ignores an undefined profit center and update a service with defined properties', function () {
+  return agent.put('/services/' + newService.id)
+    .send(undefinedProfitService)
+    .then(function (res) {
+      expect(res).to.have.status(200);
+      expect(res).to.be.json;
+      expect(res.body.id).to.equal(newService.id);
+    })
+    .catch(helpers.handler);
   });
 
-  it('METHOD : DELETE, PATH : /services/:id, It deletes a service', function () {
+  it('DELETE /services/:id deletes a service', function () {
     return agent.delete('/services/' + newService.id)
       .then(function (res) {
         helpers.api.deleted(res);
         return agent.get('/services/' + newService.id);
       })
+      .then(function (res) {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /services/:id should return a 404 for unknown service', function () {
+    return agent.delete('/services/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
       })

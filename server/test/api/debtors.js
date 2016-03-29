@@ -16,38 +16,32 @@ describe('(/debtors) The /debtors API', function () {
 
  it('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', function () {
     return agent.get('/debtors/:uuid/invoices'.replace(':uuid', debtorUuid))
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result.body).to.not.be.empty;
-        expect(result.body).to.have.length(1);
+      .then(function (res) {
+        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });
 
   it('GET /debtors/:uuid/invoices?balanced=0 returns a list of unbalance invoices of a given debtor', function () {
     return agent.get('/debtors/:uuid/invoices?balanced=0'.replace(':uuid', debtorUuid))
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result.body).to.not.be.empty;
-        expect(result.body).to.have.length(1);
+      .then(function (res) {
+        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });
 
   it('GET /debtors/:uuid/invoices?balanced=1 returns a list of balanced invoices of a given debtor', function () {
     return agent.get('/debtors/:uuid/invoices?balanced=1'.replace(':uuid', debtorUuid))
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result.body).to.have.length(0);
+      .then(function (res) {
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
 
   it('GET /debtors/:uuid/invoice should return an empty list if the debtor does not have any invoices', function () {
     return agent.get('/debtors/:uuid/invoices'.replace(':uuid', emptyDebtorUuid))
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result.body).to.be.empty;
+      .then(function (res) {
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });

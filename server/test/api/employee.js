@@ -73,7 +73,7 @@ describe('(/employees) the employees API endpoint', function () {
 
   };
 
-  it('METHOD : POST PATH : /employee,  should create a new employee', function () {
+  it('POST /employee should create a new employee', function () {
     return agent.post('/employees')
       .send(employee)
       .then(function (res) {
@@ -84,7 +84,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : POST PATH : /employee,  with fake employee data', function () {
+  it('POST /employee should return a 400 error for an empty object', function () {
     return agent.post('/employees')
       .send({})
       .then(function (res) {
@@ -93,7 +93,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees,  returns a list of all employees', function () {
+  it('GET /employees returns a list of all employees', function () {
     return agent.get('/employees')
       .then(function (res) {
         helpers.api.listed(res, 2);
@@ -101,7 +101,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees/:id,  should return a specific employee ', function () {
+  it('GET /employees/:id should return a specific employee', function () {
     return agent.get('/employees/' + employee.id)
       .then(function (res) {
         var emp = res.body;
@@ -116,7 +116,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees/code/:value,  should return a list of employees match the employee code token', function () {
+  it('GET /employees/code/:value should return a list of employees match the employee code token', function () {
     return agent.get('/employees/code/' + String(employee.code).substring(0,1))
       .then(function (res) {
         helpers.api.listed(res, numEmployees);
@@ -124,7 +124,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees/names/:value,  should return a list of employees match the employee names token', function () {
+  it('GET /employees/names/:value should return a list of employees match the employee names token', function () {
     return agent.get('/employees/names/' + employee.name.substring(0,2))
       .then(function (res) {
         helpers.api.listed(res, numEmployees);
@@ -132,7 +132,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees/unknown/:value,  should return an error for an ankwnow key', function () {
+  it('GET /employees/unknown/:value should return an error for an unknown key', function () {
     return agent.get('/employees/unknown/' + employee.name.substring(0,2))
       .then(function (res) {
         helpers.api.errored(res, 400);
@@ -140,7 +140,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET PATH : /employees/code/:value,  should return an empty array for an unmatch value', function () {
+  it('GET /employees/code/:value should return an empty array for an unmatch value', function () {
     return agent.get('/employees/code/unknown')
       .then(function (res) {
         helpers.api.listed(res, 0);
@@ -149,7 +149,7 @@ describe('(/employees) the employees API endpoint', function () {
   });
 
 
-  it('METHOD : PUT PATH : /employee/:id,  should update an existing employee ', function () {
+  it('PUT /employee/:id should update an existing employee ', function () {
     return agent.put('/employees/' + employee.id)
       .send(updateEmployee)
       .then(function (res) {
@@ -162,7 +162,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : PUT PATH : /employee/:id should not update an existing employee with a fake Id ', function () {
+  it('PUT /employee/:id should not update an existing employee with a fake Id ', function () {
     return agent.put('/employees/fakeId')
       .send(updateEmployee)
       .then(function (res) {
@@ -171,7 +171,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : PUT PATH : /employee/:idb should not update an existing employee with fake fields ', function () {
+  it('PUT /employee/:idb should not update an existing employee with fake fields ', function () {
     return agent.put('/employees/' + employee.id)
       .send({
         code : 'NEW_CODE_X',

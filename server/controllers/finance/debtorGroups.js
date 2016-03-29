@@ -6,9 +6,9 @@
 * @desc This module is responsible for handling all crud operations relatives
 * to debtor groups, and relatives functions
 *
-* @required q
-* @required lib/db
-* @required lib/guid
+* @requires q
+* @requires lib/db
+* @requires lib/guid
 *
 */
 
@@ -80,7 +80,7 @@ function create(req, res, next) {
 
   db.exec(query, data)
   .then(function () {
-    res.status(201).json({ id: data.uuid });
+    res.status(201).json({ uuid: data.uuid });
   })
   .catch(next)
   .done();
