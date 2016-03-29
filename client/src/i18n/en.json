@@ -3527,6 +3527,7 @@
     "MAX" : "This value is too large for this field.",
     "REQUIRED" : "This field cannot be empty.",
     "EMAIL" : "This field must be a valid email.",
+    "EXCEPTION" : "There was a problem validating this field. Please check your internet connection.",
     "MINLENGTH" : "This input is too short.",
     "MAXLENGTH" : "This input is too long.",
     "NUMBER" : "This field must be a valid number.",

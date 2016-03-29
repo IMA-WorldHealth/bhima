@@ -1,7 +1,7 @@
 angular.module('bhima.directives')
 .directive('bhUnique', UniqueDirective);
   
-UniqueDirective.$inject = ['UniqueValidatorService'];
+UniqueDirective.$inject = ['$q', 'UniqueValidatorService'];
 
 /** 
  * Unique Input Directive 
@@ -16,7 +16,7 @@ UniqueDirective.$inject = ['UniqueValidatorService'];
  *
  * @module directives/bhUnique
  */
-function UniqueDirective(UniqueValidator) { 
+function UniqueDirective($q, UniqueValidator) { 
   return { 
     restrict : 'A', 
     require : 'ngModel',
@@ -24,10 +24,45 @@ function UniqueDirective(UniqueValidator) {
       bhUnique : '@bhUnique'
     },
     link : function uniqueLink(scope, element, attrs, ctrl) { 
-      var validationUrl = scope.bhUnique;
-      
-      ctrl.$asyncValidators.unique = function (modelValue, viewValue) { 
-        return UniqueValidator.check(validationUrl, viewValue);
+      var validationUrl = attrs.bhUnique;
+
+      // the $error that will be passed on to ng-messages if this directive fails
+      // to validate the input
+      var exceptionKey = 'exception';
+
+      ctrl.$asyncValidators.unique = function (modelValue, viewValue) {
+       
+        // deferred object must be used to handle catch statement within 
+        // this scope - $q does not currently support chaining catch statements
+        var deferred = $q.defer(); 
+        
+        // don't make an HTTP request unless there is content to validate
+        if (ctrl.$isEmpty(modelValue)) { 
+          return $q.when();
+        }
+
+        return UniqueValidator.check(validationUrl, viewValue)
+          .then(function (valueIsUnique) { 
+    
+            // as we have recieved a valid HTTP response there is nothing wrong 
+            // with the connection to the server
+            ctrl.$setValidity(exceptionKey, true); 
+            
+            if (valueIsUnique) { 
+              deferred.reject();
+            } else { 
+              deferred.resolve();
+            }
+          })
+          .catch(function (error) { 
+            
+            // expose that there has been an issue beyond the directives control 
+            // to the view
+            ctrl.$setValidity(exceptionKey, false);
+            deferred.reject();
+          });
+
+        return deferred.promise;
       };
     }
   };

@@ -10,6 +10,10 @@ UniqueValidatorService.$inject = ['$http', 'util'];
  * in a simple Boolean true/false value, both the URL and the value that should 
  * be verified are required. 
  *
+ * The service expects the validation server API to return a value of true or 
+ * false; if a value of false is returned this value is valid and can be used; if
+ * the result is true the value is taken.
+ *
  * @module services/UniqueValidorService
  */
 function UniqueValidatorService($http, util) { 
