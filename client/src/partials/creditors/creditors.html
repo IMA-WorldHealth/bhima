@@ -58,7 +58,7 @@
       <div class="col-xs-6" ng-switch="SupplierCtrl.view">
         <div ng-switch-default>
           <div class="alert alert-info">
-            <h4><strong>{{ "SUPPLIER.TITLE" | translate }}</strong></h4>
+            <h4>{{ "SUPPLIER.TITLE" | translate }}</h4>
             <p>{{ "SUPPLIER.INFO" | translate }}</p>
           </div>
         </div>
@@ -66,16 +66,14 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'SUPPLIER.REGISTRATION_SUCCESS' | translate }} </h4>
-            </p>
+            <h4>{{ "SUPPLIER.REGISTRATION_SUCCESS" | translate }}</h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'SUPPLIER.UPDATE_SUCCESS' | translate }} </h4>
-            </p>
+            <h4>{{ "SUPPLIER.UPDATE_SUCCESS" | translate }} </h4>
           </div>
         </div>
 

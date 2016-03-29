@@ -162,4 +162,9 @@ module.exports = {
     httpStatus : 400,
     reason : 'You did not include enough information in your query.'
   }),
+  'ER_DATA_TOO_LONG' : makeError('DatabaseError', { 
+    code : 'DB.ER_DATA_TOO_LONG', 
+    httpStatus : 400,
+    reason : 'The value provided is longer than the database record limit.'
+  })
 };

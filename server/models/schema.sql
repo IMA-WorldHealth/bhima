@@ -1864,7 +1864,7 @@ CREATE TABLE `supplier` (
   `address_2` text,
   `email` varchar(45) DEFAULT NULL,
   `fax` varchar(45) DEFAULT NULL,
-  `note` varchar(50) DEFAULT NULL,
+  `note` TEXT DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
   `international` tinyint(1) NOT NULL DEFAULT '0',
   `locked` tinyint(1) NOT NULL DEFAULT '0',
