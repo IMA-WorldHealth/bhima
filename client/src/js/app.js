@@ -880,12 +880,26 @@ function localStorageConfig($localStorageProvider) {
   $localStorageProvider.setKeyPrefix(PREFIX);
 }
 
+/**
+ * This function is responsible for configuring anulgar's $http service. Any 
+ * relevent services/ factories are registered at this point. 
+ *
+ * @params {Object} $httpProvider   Angular provider bject containing 
+ *                                  'interceptors' that are chained on any HTTP request
+ */
+function httpConfig($httpProvider) { 
+  
+  // register error handling interceptor 
+  $httpProvider.interceptors.push('ErrorInterceptor');
+}
+
 // configuration
 bhima.config(['$routeProvider', bhimaconfig]);
 bhima.config(['$translateProvider', translateConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$httpProvider', authConfig]);
 bhima.config(['$localStorageProvider', localStorageConfig]);
+bhima.config(['$httpProvider', httpConfig]);
 
 // run
 bhima.run(['$rootScope', '$location', 'SessionService', 'amMoment', startupConfig]);
