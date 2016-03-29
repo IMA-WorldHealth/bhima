@@ -66,16 +66,15 @@ describe('Suppliers Module', function () {
   });
 
   it('successfully edits an supplier', function () {
-
     element(by.id('supplier-upd-' + supplierRank )).click();
+    
     // modify the supplier name
     FU.input('SupplierCtrl.supplier.name', 'Updated');
-    // Modify the supplier Address 1
-    FU.input('SupplierCtrl.supplier.address_1', '212 b Baker Street');
+    
     // modify the supplier note
     FU.input('SupplierCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
 
-    element(by.id('change_supplier')).click();
+    FU.buttons.submit();
 
     // make sure the success message appears
     FU.exists(by.id('update_success'), true);
@@ -87,7 +86,6 @@ describe('Suppliers Module', function () {
 
     // Verify form has not been successfully submitted
     expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
-
     element(by.id('submit-supplier')).click();
 
     // the following fields should be required
