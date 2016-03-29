@@ -49,7 +49,7 @@ describe('Permissions Module', function () {
     FU.buttons.submit();
 
     // check for a success message
-    FU.exists(by.css('.bh-form-message.bh-form-message-success'), true);
+    FU.exists(by.css('[data-create-success]'), true);
   });
 
   // tests the form validation on the create page
