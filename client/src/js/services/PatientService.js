@@ -32,6 +32,9 @@ function PatientService($http, util, Session) {
   service.groups = groups;
   service.updateGroups = updateGroups;
   service.logVisit = logVisit;
+  
+  service.billingServices = billingServices;
+  service.subsidies = subsidies;
 
   /** uses the "search" endpoint to pass query strings to the database */
   service.search = search;
@@ -137,6 +140,31 @@ function PatientService($http, util, Session) {
       .then(util.unwrapHttpResponse);
   }
   
+  /**
+   * Fetches all billing services subslected by a patient entity
+   *
+   * @param   {String} patientUuid    UUID of patient to select billing services for
+   * @returnl {Object}                Promise object returning an array of billing
+   *                                  services
+   */
+  function billingServices(patientUuid) { 
+    var path = patientAttributePath('services', patientUuid);
+    return $http.get(path)
+      .then(util.unwrapHttpResponse);
+  }
+  
+  /**
+   * Fetches all subsidies subslected by a patient entity
+   *
+   * @param   {String} patientUuid    UUID of patient to select subsidies for
+   * @returnl {Object}                Promise object returning an array of subsidies
+   */
+  function subsidies(patientUuid) { 
+    var path = patientAttributePath('subsidies', patientUuid);
+    return $http.get(path)
+      .then(util.unwrapHttpResponse);
+  }
+
   /* ----------------------------------------------------------------- */
   /** Utility Methods */
   /* ----------------------------------------------------------------- */
@@ -153,6 +181,20 @@ function PatientService($http, util, Session) {
       assignments : formatted
     };
   }
+  
+  /** 
+   * Combine and return the patient entity with a service/attribute - returns a 
+   * correctly formatted path.
+   *
+   * @param   {String} path   Entity path (e.g 'services')
+   * @param   {String} uuid   UUID of patient to format services request
+   * @return  {String}        Formatted URL for patient service
+   */
+  function patientAttributePath(path, patientUuid) { 
+    var root = '/patients/';
+    return root.concat(patientUuid, '/', path);
+  }
+
 
   return service;
 }
