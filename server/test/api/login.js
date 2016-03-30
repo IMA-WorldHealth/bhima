@@ -42,7 +42,7 @@ describe('The /login API endpoint', function () {
 
   it('allows access to public routes', function () {
     return chai.request(url)
-      .get('/projects')
+      .get('/projects/')
       .then(function (res) {
         expect(res).to.have.status(200);
       })

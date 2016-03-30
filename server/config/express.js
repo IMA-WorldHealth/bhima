@@ -83,12 +83,12 @@ exports.configure = function configure(app) {
   app.use(express.static('client/', { maxAge : 7*days }));
 
   // quick way to find out if a value is in an array
-  function within(value, array) { return array.indexOf(value) !== -1; }
+  function within(value, array) { return array.indexOf(value.trim()) !== -1; }
 
   // Only allow routes to use /login, /projects, /logout, and /language if session does not exists
   app.use(function (req, res, next) {
 
-    var publicRoutes = ['/login', '/languages', '/projects', '/logout'];
+    var publicRoutes = ['/login', '/languages', '/projects/', '/logout'];
 
     if (req.session.user === undefined && !within(req.path, publicRoutes)) {
       winston.log('debug', 'Rejecting unauthorized acces to %s from %s', req.path, req.ip);
