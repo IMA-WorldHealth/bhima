@@ -19,7 +19,7 @@ describe('Locations/Provinces Management', function () {
   };
 
   var defaultProvince = 14;
-  var provinceRank  = helpers.random(defaultProvince);
+  var provinceRank  = 1;
 
   // navigate to the employee module before each test
   beforeEach(function () {
