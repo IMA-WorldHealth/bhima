@@ -1,10 +1,20 @@
 <div class="flex-content">
-  <div class="container-fluid">
-    <div class="center-block" style="margin-top : 3em; max-width:400px;">
+  <div class="container-fluid" style="height: 100%;">
+
+    <!-- @fixme - style hacks for content centering -->
+    <div class="center-block" style="margin-top : calc(50vh - 170px); max-width: 400px;">
+
+      <p ng-show="LoginCtrl.excessiveAttempts" class="text-info">
+        <span class="glyphicon glyphicon-info-sign"></span>
+        {{ "AUTH.TOO_MANY_TRYS" | translate }}
+      </p>
+
       <div class="panel panel-default">
+
         <div class="panel-heading clearfix">
+          <strong>{{ "AUTH.LOGIN" | translate }}</strong>
           <div class="pull-right" uib-dropdown>
-            <button class="btn btn-default" uib-dropdown-toggle>
+            <button class="btn btn-default btn-xs" uib-dropdown-toggle>
               <span class="caret"></span>
             </button>
             <ul role="menu" uib-dropdown-menu>
@@ -13,10 +23,10 @@
               </li>
             </ul>
           </div>
-          <h4>{{ "AUTH.LOGIN" | translate }}</h4>
         </div>
+
         <div class="panel-body">
-          <form name="LoginForm" ng-submit="LoginCtrl.login(LoginForm.$invalid)" novalidate>
+          <form name="LoginForm" bh-submit="LoginCtrl.login(LoginForm)" autocomplete="off" autocorrect="off" novalidate>
             <div
               class="form-group"
               ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.username.$invalid }">
@@ -33,8 +43,6 @@
                   class="form-control"
                   ng-model="LoginCtrl.credentials.username"
                   placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_USERNAME' | translate }}"
-                  autocomplete="off"
-                  autocorrect="off"
                   autofocus
                   required />
               </div>
@@ -75,7 +83,7 @@
                   class="form-control"
                   ng-model="LoginCtrl.credentials.project"
                   ng-options="proj.id as proj.name for proj in LoginCtrl.projects"
-                  required >
+                  required>
                   <option value="" disabled>{{ "SELECT.PROJECT" | translate }}</option>
                 </select>
               </div>
@@ -83,13 +91,15 @@
 
             <div
               class="form-group"
-              ng-class="{ 'has-error' : LoginForm.$submitted && (LoginForm.$invalid || LoginCtrl.httpError) }"
+              ng-class="{ 'has-error' : LoginForm.$submitted && (LoginForm.$invalid || LoginCtrl.error) }"
               >
-              <button id="submit" class="btn btn-default" type="submit">
-               {{ "FORM.LOGIN" | translate }}
-              </button>
 
-              <div class="help-block" ng-show="LoginForm.$submitted && (LoginForm.$invalid || LoginCtrl.httpError)" style="margin-top:10px;">
+              <!-- @todo - make this button transclude the label properly -->
+              <bh-loading-button id="submit" loading-state="LoginForm.$loading">
+               {{ "FORM.LOGIN" | translate }}
+              </bh-loading-button>
+
+              <div class="help-block" ng-show="LoginForm.$submitted && (LoginForm.$invalid || LoginCtrl.error)" style="margin-top:10px;">
 
                 <!-- client-side validation error: requires both username and password -->
                 <p ng-show="LoginForm.$invalid">
@@ -98,15 +108,11 @@
                 </p>
 
                 <!-- display the server-sent error as an alert -->
-                <p ng-show="LoginCtrl.httpError">
+                <p ng-show="LoginCtrl.error">
                   <span class="glyphicon glyphicon-exclamation-sign"></span>
-                  {{ LoginCtrl.httpError.code | translate }}
+                  {{ LoginCtrl.error.code | translate }}
                 </p>
 
-                <p ng-show="LoginCtrl.excessiveAttempts" class="text-info">
-                  <span class="glyphicon glyphicon-info-sign"></span>
-                  {{ "AUTH.TOO_MANY_TRYS" | translate }}
-                </p>
               </div>
             </div>
           </form>

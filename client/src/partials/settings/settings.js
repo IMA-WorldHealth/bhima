@@ -5,6 +5,12 @@ SettingsController.$inject = [
   '$http', '$routeParams', '$location', 'LanguageService', 'SessionService'
 ];
 
+/**
+ * Settings Page Controller
+ *
+ * The settings page allows a user to control the local application settings,
+ * such as display language.
+ */
 function SettingsController($http, $routeParams, $location, Languages, Session) {
   var vm = this;
 
@@ -29,12 +35,5 @@ function SettingsController($http, $routeParams, $location, Languages, Session) 
     $location.url(vm.url);
   }
 
-  /** @todo Wrap logout call in a service */
-  vm.logout = function logout() {
-    $http.get('/logout')
-      .then(function () {
-        Session.destroy();
-        $location.url('/login');
-      });
-  };
+  vm.logout = Session.logout;
 }
