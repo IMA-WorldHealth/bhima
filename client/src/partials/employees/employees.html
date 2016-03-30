@@ -121,16 +121,14 @@
                 </div>                 
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.dob.$invalid }">
-                <label class="control-label" for="bhima-employee-dob">{{ 'COLUMNS.DOB' | translate }}</label>
-                <bh-date-editor 
-                    date-value="EmployeeCtrl.employee.dob" 
-                    form="details" 
-                    validation-trigger="details.$submitted" 
-                    min-date="EmployeeCtrl.minDOB" 
-                    max-date="EmployeeCtrl.maxDOB">
-                </bh-date-editor>
-              </div>
+              <!-- date editor component -->
+              <bh-date-editor 
+                id="employee-dob"
+                date-value="EmployeeCtrl.employee.dob" 
+                validation-trigger="details.$submitted" 
+                min-date="EmployeeCtrl.minDOB" 
+                max-date="EmployeeCtrl.maxDOB">
+              </bh-date-editor>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.sexe.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.SEX" | translate }}</label>
@@ -160,15 +158,12 @@
                 </label>  
               </div> 
 
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.date_embauche.$invalid }">
-                <label class="control-label" for="bhima-employee-date_embauche">{{ 'EMPLOYEE.DATE_EMBAUCHE' | translate }}</label>
-                <bh-date-editor 
-                    date-value="EmployeeCtrl.employee.date_embauche" 
-                    form="details" 
-                    validation-trigger="details.$submitted" 
-                    max-date="EmployeeCtrl.maxDateEmbauche">
-                </bh-date-editor>
-              </div>
+              <bh-date-editor 
+                id="employee-date-hired"
+                date-value="EmployeeCtrl.employee.date_embauche" 
+                validation-trigger="details.$submitted" 
+                max-date="EmployeeCtrl.maxDateEmbauche">
+              </bh-date-editor>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.code.$invalid }">
                 <label class="control-label" for="bhima-employee-code">{{ 'COLUMNS.CODE' | translate }}</label>
@@ -302,17 +297,13 @@
                 </div>                 
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.dob.$invalid }">
-                <label class="control-label" for="bhima-employee-dob">{{ 'COLUMNS.DOB' | translate }}</label>
-                <bh-date-editor 
-                    date-value="EmployeeCtrl.employee.dob" 
-                    form="details" 
-                    validation-trigger="details.$submitted" 
-                    min-date="EmployeeCtrl.minDOB" 
-                    max-date="EmployeeCtrl.maxDOB" 
-                    date-format="PatientRegCtrl.format">
-                </bh-date-editor>
-              </div>
+              <bh-date-editor 
+                id="employee-dob"
+                date-value="EmployeeCtrl.employee.dob" 
+                validation-trigger="details.$submitted" 
+                min-date="EmployeeCtrl.minDOB" 
+                max-date="EmployeeCtrl.maxDOB">
+              </bh-date-editor>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.sexe.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.SEX" | translate }}</label>
@@ -343,15 +334,12 @@
               </div> 
 
 
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.date_embauche.$invalid }">
-                <label class="control-label" for="bhima-employee-date_embauche">{{ 'EMPLOYEE.DATE_EMBAUCHE' | translate }}</label>
-                <bh-date-editor 
-                    date-value="EmployeeCtrl.employee.date_embauche" 
-                    form="details" 
-                    validation-trigger="details.$submitted" 
-                    max-date="EmployeeCtrl.maxDateEmbauche">
-                </bh-date-editor>                
-              </div>
+              <bh-date-editor 
+                id="employee-date-hired"
+                date-value="EmployeeCtrl.employee.date_embauche" 
+                validation-trigger="details.$submitted" 
+                max-date="EmployeeCtrl.maxDateEmbauche">
+              </bh-date-editor>                
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.code.$invalid }">
                 <label class="control-label" for="bhima-employee-code">{{ 'COLUMNS.CODE' | translate }}</label>
