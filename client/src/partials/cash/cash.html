@@ -25,7 +25,7 @@
           <button class="btn btn-primary" ng-click="CashCtrl.openTransferModal()" data-perform-transfer>
             <span class="glyphicon glyphicon-export"></span> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
           </button>
-        </p>        
+        </p>
       </div>
 
       <!-- Cash Voucher Form -->
@@ -46,15 +46,11 @@
                   <bh-find-patient type="inline" on-search-complete="CashCtrl.usePatient(patient)" required="1"></bh-find-patient>
                 </div>
 
-                <div>
-                  <label for="dateEditor" class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
-                  <bh-date-editor 
-                    date-value="CashCtrl.payment.date"
-                    form="CashVoucherForm"
-                    validation-trigger="CashVoucherForm.$submitted"
-                    max-date="CashCtrl.timestamp">
-                  </bh-date-editor>
-                </div>
+                <bh-date-editor
+                  date-value="CashCtrl.payment.date"
+                  validation-trigger="CashVoucherForm.$submitted"
+                  max-date="CashCtrl.timestamp">
+                </bh-date-editor>
 
                 <!-- currency selection -->
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.currency.$invalid }">

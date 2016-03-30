@@ -5,29 +5,50 @@
 * @public
 */
 module.exports = {
-  selector : '[data-date-editor-input]',
+
+  // root level css selector for this component
+  selector : '[data-date-editor]',
 
   /**
-   * sets the value in date field.
+   * Sets the date input's value to the passed in value
+   *
+   * @param {Date} date - a date object
+   * @param {string} id - a CSS id to select on.
    */
-  set : function set(value) {
-    var root = element(by.css(this.selector));
-    var btn = root.element(by.css('[data-edit-date-btn]'));
-    browser.actions().mouseMove(btn).click(); // to fix the no clickable problem
+  set: function set(date, id) {
 
-    /**
-     * @fixme - this doesn't work.  Prefer using sendKeys() or another method
-     * to set the date.
-     */
-    var input = root.element(by.model('$ctrl.dateValue'));
-    input.dateValue = value;
-  },
+    // fail hard if the user did not pass into
+    if (!(date instanceof Date)) {
+      throw new TypeError('You  must provide a date object to the set() method.');
+    }
 
-  /**
-   * get the value of the date editor input.
-   */
-  get : function get() {
-    var DateInputText = element(by.css(this.selector));
-    return DateInputText.getAttribute('date-value');
+    // find the component in the DOM by its selector
+    var root = element((id) ? by.id(id) : by.css(this.selector));
+
+    // get the dropdown toggle and click it.
+    var btn = root.element(by.css('[data-date-editor-dropdown-toggle]'));
+    btn.click();
+
+    var input = root.element(by.css('[data-date-editor-input]'));
+    input.clear();
+
+    // format the date appropriately.
+
+    var year = date.getFullYear();
+
+    var _month = String(date.getMonth() + 1) ;
+    var month = (_month.length < 2) ? '0' + _month : _month;
+
+    var _day = String(date.getDate()) ;
+    var day = (_day.length < 2) ? '0' + _day : _day;
+
+    // set the date on the input
+    input.sendKeys([year, month, day].join('-'));
+
+    // at this point, the datepicker is still open, and will intercept all
+    // clicks that are made to any elements it is covering.  In order to make
+    // the dropdown go away, we will click on the top-left bhima logo to blur
+    // the dropdown and remove it.
+    element(by.css('.header-image')).click();
   }
 };

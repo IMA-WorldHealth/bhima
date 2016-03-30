@@ -17,16 +17,12 @@
           <div class="panel-body">
             <form name="SimpleVoucherForm" bh-submit="SimpleVoucherCtrl.submit(SimpleVoucherForm)" autocomplete="off" novalidate>
 
-              <div>
-                <label class="control-label">{{ "COLUMNS.DATE" | translate }}</label>
-                <bh-date-editor
-                  date-value="SimpleVoucherCtrl.voucher.date"
-                  form="SimpleVoucherForm"
-                  validation-trigger="SimpleVoucherForm.$submitted"
-                  max-date="SimpleVoucherCtrl.timestamp"
-                >
-                </bh-date-editor>
-              </div>
+              <bh-date-editor
+                date-value="SimpleVoucherCtrl.voucher.date"
+                validation-trigger="SimpleVoucherForm.$submitted"
+                max-date="SimpleVoucherCtrl.timestamp"
+              >
+              </bh-date-editor>
 
               <div
                 class="form-group"

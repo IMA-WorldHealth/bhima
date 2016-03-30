@@ -1463,9 +1463,10 @@
     "MIN_CURRENCY_UNIT" : "This value is too small for the selected currency.",
     "NUMBER"            : "This value must be a valid number.",
     "REQUIRED"          : "This value is required.",
-    "MISSING"           : "Please ensure that all fields are filled in."
+    "MISSING"           : "Please ensure that all fields are filled in.",
+    "DATE_OUT_OF_RANGE" : "This date is not in the allowed date range. Please select another date."
    },
-   "INVALID_DATE"    : "Invalide date",
+   "INVALID_DATE"    : "Invalid date",
    "LOGIN"           : "Login",
    "HAS_ERRORS"      : "The form contains errors.  Please correct them and resubmit.",
    "NEW_FORM"        : "New Form",

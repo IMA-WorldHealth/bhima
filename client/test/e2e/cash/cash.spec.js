@@ -193,8 +193,7 @@ describe('Cash Payments Module', function () {
       // select the proper patient
       components.findPatient.findById(mockInvoicesPayment.patientId);
 
-      // select the properdate
-
+      // select the proper date
       components.dateEditor.set(mockInvoicesPayment.date);
 
       // select the "invoices payment" option type
