@@ -3352,7 +3352,7 @@
    "SERVICE"                   : "Services",
    "SERVICE_EXPLOITATION"      : "Exploitation Service",
    "SERVICE_STATE"             : "Etat Service",
-   "SIMPLE_VOUCHER"            : "Bon Simple",
+   "SIMPLE_VOUCHER"            : "Bordereau de transfert",
    "STOCK"                     : "Stock",
    "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
    "STOCK_DEPOT_REPORT"        : "Stocks Depots",

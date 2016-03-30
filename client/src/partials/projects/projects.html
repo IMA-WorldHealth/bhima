@@ -63,28 +63,24 @@
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
             <h4>{{ 'PROJECT.SAVE_SUCCES' | translate }} </h4>
-            </p>
           </div>
         </div>
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
             <h4>{{ 'PROJECT.UPDATE_SUCCES' | translate }} </h4>
-            </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
             <h4>{{ 'PROJECT.DELETE_SUCCESS' | translate }} </h4>
-            </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_error">
           <div class="alert alert-danger" id="delete_error">
             <h4>{{ ProjectCtrl.HTTPError.data.code | translate }} </h4>
-            </p>
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 var db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
-function lookupReferenceGroup(id, codes) {
+function lookupReferenceGroup(id) {
   'use strict';
 
   var sql =
@@ -8,9 +9,11 @@ function lookupReferenceGroup(id, codes) {
 
   return db.exec(sql, id)
     .then(function (rows) {
+      // Record Not Found !
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound(`Record Not Found with id: ${id}`);
       }
+
       return rows[0];
     });
 }
@@ -18,7 +21,7 @@ function lookupReferenceGroup(id, codes) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupReferenceGroup(req.params.id, req.codes)
+  lookupReferenceGroup(req.params.id)
   .then(function (row) {
     res.status(200).json(row);
   })
@@ -76,12 +79,12 @@ function update(req, res, next) {
   delete queryData.id;
   delete queryData.sectionBilanText;
 
-  lookupReferenceGroup(sectionBilanId, req.codes)
+  lookupReferenceGroup(sectionBilanId)
   .then(function () {
     return db.exec(sql, [queryData, sectionBilanId]);
   })
   .then(function () {
-    return lookupReferenceGroup(sectionBilanId, req.codes);
+    return lookupReferenceGroup(sectionBilanId);
   })
   .then(function (sectionBilan) {
     res.status(200).json(sectionBilan);
@@ -95,7 +98,7 @@ function remove(req, res, next) {
   var sectionBilanId = req.params.id;
   var sql = 'DELETE FROM reference_group WHERE id = ?';
 
-  lookupReferenceGroup(sectionBilanId, req.codes)
+  lookupReferenceGroup(sectionBilanId)
     .then(function () {
       return db.exec(sql, [sectionBilanId]);
     })
