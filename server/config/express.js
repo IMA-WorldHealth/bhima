@@ -29,6 +29,7 @@ exports.configure = function configure(app) {
   app.use(session({
     store             : new FileStore({
       reapInterval      : Number(process.env.SESS_REAP_INTERVAL),
+      logFn             : () => {}
     }),
     secret            : process.env.SESS_SECRET,
     saveUninitialized : Boolean(process.env.SESS_SAVE_UNINITIALIZED),
