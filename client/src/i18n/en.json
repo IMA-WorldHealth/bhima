@@ -3530,7 +3530,8 @@
     "MINLENGTH" : "This input is too short.",
     "MAXLENGTH" : "This input is too long.",
     "NUMBER" : "This field must be a valid number.",
-    "DATE" : "This field must be a valid date."
+    "DATE" : "This field must be a valid date.",
+    "INTEGER" : "This value must be a whole number (integer)."
    },
   "VOUCHERS" : {
     "SIMPLE" : {
