@@ -44,8 +44,8 @@ exports.updateGroups = updateGroups;
 // get list of groups
 exports.listGroups = listGroups;
 
-// verify the hospital number of a patient
-exports.verifyHospitalNumber = verifyHospitalNumber;
+// check if a hospital file number is assigned to any patients
+exports.hospitalNumberExists = hospitalNumberExists;
 
 // Search patient reference
 exports.searchReference = searchReference;
@@ -331,37 +331,36 @@ function list(req, res, next) {
 }
 
 /**
- * @description Return a status object indicating if the hospital number has laready been registered
- * with an existing patient
+ * This method implements the bhima unique API for hospital numbers; it is 
+ * responsible for informing the client if a hospital number has been used (is 
+ * found) or is available (is not found)
+ * 
+ * Exists API:
+ * GET /entity/attribute/:id/exists 
+ * This pattern will be used by the client side service and must be respected 
+ * by this route. 
  *
- * Returns status object
- * {
- *  registered : Boolean - Specifies if the id passed has already been registered or not
- *  details : Object (optional) - Includes the details of the registered hospital number
- *  }
+ * The API here purposefully returns a 200 even if the hospital number cannot 
+ * be found, this is provide less convoluted logic for the client directive 
+ * (failure implying success). 
+ *
+ * @returns {Boolean}   true - hospital number passed in has been found
+ *                      false - hospital number passed in has not been found 
  */
-function verifyHospitalNumber(req, res, next) {
+function hospitalNumberExists(req, res, next) {
   var verifyQuery;
   var hospitalNumber = req.params.id;
 
   verifyQuery =
-    'SELECT uuid, hospital_no FROM patient ' +
-      'WHERE hospital_no = ?';
+    'SELECT uuid, hospital_no ' +
+    'FROM patient ' +
+    'WHERE hospital_no = ?';
 
   db.exec(verifyQuery, [hospitalNumber])
     .then(function (result) {
-      var hospitalIdStatus = {};
-
-      if (isEmpty(result)) {
-
-        hospitalIdStatus.registered = false;
-      } else {
-
-        hospitalIdStatus.registered = true;
-        hospitalIdStatus.details = result[0];
-      }
-
-      res.status(200).json(hospitalIdStatus);
+     
+      // if the result is not empty the hospital number exists (return this Boolean)
+      res.status(200).json( !isEmpty(result) );
     })
     .catch(next)
     .done();
