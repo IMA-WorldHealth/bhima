@@ -1,5 +1,5 @@
 /* jshint expr:true */
-/* global element, by, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');

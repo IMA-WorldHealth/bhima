@@ -1,7 +1,6 @@
 /**
 * @module lib/util
-* @description Ths modoule contains some usefull utilities functions
-* @required util
+* @description This modolue contains useful utility functions
 */
 
 /** javascript strict mode */
@@ -14,6 +13,8 @@ module.exports.queryCondition = queryCondition;
 
 /** The toMysqlDate function */
 module.exports.toMysqlDate = util.deprecate(toMysqlDate, 'util.toMysqlDate() is deprecated and will be removed soon. Please use db.js\'s native date parsing.');
+
+module.exports.take = take;
 
 /**
 * @function queryCondition
@@ -49,4 +50,52 @@ function toMysqlDate (dateString) {
   day = day.length < 2 ? '0' + day : day;
 
   return [year, month, day].join('-');
+}
+
+
+/**
+ * Creates a filter to be passed to a Array.map() function.  This filter will
+ * flatten an array of JSONs in to an array of arrays with values matching the
+ * keys specified as arguments, in the order that they are specified.
+ *
+ * @method take
+ * @returns {function} filter - a filtering function to that will convert an
+ * object to an array with the given keys.
+ *
+ * @example
+ * var _ = require('lodash');
+ *
+ * var array = [{
+ *   id: 1,
+ *   season: 'summer',
+ * }, {
+ *   id : 2,
+ *   season : 'winter'
+ * }, {
+ *   id : 3,
+ *   season : 'fall'
+ * }];
+ *
+ * // take the ids from the JSON array
+ * var filter = take('id');
+ * var ids = _.flatMap(array, filter); // returns [1, 2, 3];
+ * var ids = _.map(array, filter); // returns [ [1], [2], [3]];
+ *
+ * // take both the id and the season properties from the array
+ * var filter = take('id', 'season');
+ * var arrs = _.map(array, filter); // returns [[1, 'summer], [2, 'winter'], [3, 'fall']]
+ *
+ * @private
+ */
+function take() {
+
+  // get the arguments as an array
+  var keys = Array.prototype.slice.call(arguments);
+
+  // return the filter function
+  return function filter(object) {
+    return keys.map(function (key) {
+      return object[key];
+    });
+  };
 }

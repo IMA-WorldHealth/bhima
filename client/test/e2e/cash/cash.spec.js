@@ -167,7 +167,6 @@ describe('Cash Payments Module', function () {
       // select the proper patient
       components.findPatient.findByName(mockCautionPayment.patientName);
 
-
       // we will leave the date input as default
 
       // select the proper is caution type

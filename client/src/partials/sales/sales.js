@@ -6,6 +6,8 @@
  * controls and verifies the current state
  *
  * FIXME All sale details are still downloaded on patient select, hidden until service assignment, this should all be reuqested at once - ties in with state
+ *
+ * @deprecated with bhima-2.X
  */
 angular.module('bhima.controllers')
 .controller('sales', [

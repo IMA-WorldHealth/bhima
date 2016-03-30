@@ -55,6 +55,14 @@ function bhimaconfig($routeProvider) {
     controller : 'ExtraPaymentController as PaymentCtrl',
     templateUrl : 'partials/cash/extra_payment/extra_payment.html'
   })
+  
+  /**
+   * @fixme - this is to allow end to end testing of the patient invoice module
+   * @todo - replace this with a real receipt.
+   */
+  .when('/invoice/sale/:invoiceId', {
+    template: '<div id="temp-success-message">Successfully created a patient invoice!</div>'
+  })
   .when('/invoice/:originId/:invoiceId', {
     controller: 'receipts',
     templateUrl: 'partials/receipts/receipts.html'
@@ -384,6 +392,12 @@ function bhimaconfig($routeProvider) {
   })
 
   /* */
+
+  .when('/invoices/patient', { 
+    controller : 'PatientInvoiceController as PatientInvoiceCtrl',
+    templateUrl : 'partials/patient_invoice/patientInvoice.html'
+  })
+
   .when('/patients/search/:patientID?', {
     controller: 'patientRecords',
     templateUrl: '/partials/patients/search/search.html'
