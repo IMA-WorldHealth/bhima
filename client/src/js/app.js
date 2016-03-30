@@ -212,7 +212,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/references/references.html'
   })
   .when('/references/groups', {
-    controller: 'ReferenceGroupController',
+    controller: 'ReferenceGroupController as ReferenceGroupCtrl',
     templateUrl: 'partials/references/groups/groups.html'
   })
 

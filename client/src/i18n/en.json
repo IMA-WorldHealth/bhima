@@ -2510,9 +2510,9 @@
    "NEW_REFERENCE"  : "New Reference Group",
    "NO_REFERENCES"  : "No grave Reference Group have been registered.",
    "REGISTERED"     : "Registered References Groups",
-   "SAVE_SUCCES"    : "Successfully saving Reference Group",
+   "SAVE_SUCCESS"    : "Successfully saving Reference Group",
    "TITLE"          : "Reference group management",
-   "UPDATE_SUCCES"  : "Updated successfully",
+   "UPDATE_SUCCESS"  : "Updated successfully",
    "UPD_REFERENCE"  : "Update Reference Group"
    },
 "REPORT": {

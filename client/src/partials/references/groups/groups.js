@@ -1,153 +1,118 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('ReferenceGroupController', ReferenceGroupController);
 
 ReferenceGroupController.$inject = [
-  '$scope', '$translate', '$q', 'validate', 'messenger',
-  'connect', 'appstate'
+  'ReferenceGroupService', 'SectionBilanService', '$window', '$translate'
 ];
 
-function ReferenceGroupController($scope, $translate, $q, validate, messenger, connect, appstate) {
-  var dependencies = {},
-      session = $scope.session = {};
+function ReferenceGroupController(referenceGroupService, sectionBilanService, $window, $translate) {
+  var vm = this;
+  vm.view = 'default';
 
-  dependencies.reference_groups = {
-    query : {
-      identifier : 'id',
-      tables : {
-        'reference_group' : {
-          columns : ['id', 'reference_group', 'text', 'position', 'section_bilan_id']
-        }
-      }
-    }
-  };
+  // bind methods
+  vm.create = create;
+  vm.submit = submit;
+  vm.update = update;
+  vm.cancel = cancel;
+  vm.del    = del;  
 
-  dependencies.section_bilan = {
-    query : {
-      tables : {
-        'section_bilan' : {
-          columns : ['id', 'text']
-        }
-      }
-    }
-  };
+  vm.doTranslate = doTranslate;
 
-  dependencies.enterprise = {
-    query : {
-      tables : {
-        'enterprise' : {
-          columns : ['currency_id']
-        },
-        'currency' : {
-          columns : ['id', 'symbol']
-        }
-      },
-      join : [
-          'enterprise.currency_id=currency.id'
-        ]
-      }
-  };
-
-  function startup (models) {
-    angular.extend($scope, models);
+  function handler(error) {
+    console.error(error);
   }
 
-  function checkingReferenceGroup (position,section_bilan_id) {
-    var def = $q.defer();
-    var query = {
-      tables : {
-        reference_group : { columns : ['id'] }
-      },
-      where  : ['reference_group.position=' + position,'AND','reference_group.section_bilan_id=' + section_bilan_id]
-    };
-    connect.fetch(query)
-    .then(function (res) {
-      def.resolve(res.length !== 0);
+  // fired on startup
+  function startup() {
+    // start up loading indicator
+    vm.loading = true;
+
+    // load Section Bilans
+    sectionBilanService.read().then(function (data) {
+      vm.sectionBilans = data;
+    }).catch(handler);
+
+    // load Reference Group
+    refreshReferenceGroups();
+  }
+
+  function cancel() {
+    vm.view = 'default';
+  }
+  
+
+  function create() {
+    vm.view = 'create';
+    vm.referenceGroup = {};    
+  }
+
+  // switch to update mode
+  // data is an object that contains all the information of a Reference Group
+  function update(data) {
+    vm.view = 'update';
+    vm.referenceGroup = data;
+  }
+
+  function doTranslate(key){
+    return $translate.instant(key);
+  }
+  
+  // refresh the displayed References groups
+  function refreshReferenceGroups() {
+    return referenceGroupService.read(null,{ detailed : 1 }).then(function (data) {
+      vm.referenceGroups = data;
+      vm.loading = false;
     });
-    return def.promise;
   }
 
-  function checkingReferenceGroupUpdate (id,position,section_bilan_id) {
-    var def = $q.defer();
+  // form submission
+  function submit(form) {
 
-    var query = {
-      tables : {
-        reference_group : { columns : ['id'] }
-      },
-      where  : ['reference_group.id<>' + id, 'AND','reference_group.position=' + position,'AND','reference_group.section_bilan_id=' + section_bilan_id]
-    };
-    connect.fetch(query)
-    .then(function (res) {
-      def.resolve(res.length !== 0);
-    });
-    return def.promise;
-  }
+    // if the form has errors, exit immediately
+    if (form.$invalid) { return; }
 
-  appstate.register('enterprise', function (enterprise) {
-    $scope.enterprise = enterprise;
-    validate.process(dependencies)
-    .then(startup);
-  });
+    var promise;
+    var creation = (vm.view === 'create');
 
-  $scope.delete = function (reference_group) {
-    var result = confirm($translate.instant('REFERENCE_GROUP.CONFIRM'));
-    if (result) {
-      connect.delete('reference_group', ['id'], [reference_group.id])
+    var referenceGroup = angular.copy(vm.referenceGroup);
+    
+    promise = (creation) ?
+      referenceGroupService.create(referenceGroup) :
+      referenceGroupService.update(referenceGroup.id, referenceGroup);
+
+    promise
+      .then(function (response) {
+        return refreshReferenceGroups();
+      })
       .then(function () {
-        $scope.reference_groups.remove(reference_group.id);
-        messenger.info($translate.instant('REFERENCE_GROUP.DELETE_SUCCESS'));
-      });
-    }
-  };
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
+      .catch(handler);
+  }
 
-  $scope.edit = function (reference_group) {
-    session.action = 'edit';
-    session.edit = angular.copy(reference_group);
-  };
+  // switch to delete warning mode
+  function del(referenceGroup) {
+    var bool = $window.confirm($translate.instant('REFERENCE_GROUP.CONFIRM'));
 
-  $scope.new = function () {
-    session.action = 'new';
-    session.new = {};
-  };
+     // if the user clicked cancel, reset the view and return
+     if (!bool) {
+        vm.view = 'default';
+        return;
+     }
 
-  $scope.save = {};
-
-  $scope.save.edit = function () {
-    var record = connect.clean(session.edit);
-    delete record.reference;
-    delete record.section_bilan_txt;
-
-    checkingReferenceGroupUpdate(record.id,record.position,record.section_bilan_id)
-    .then(function (is_exist) {
-      if (!is_exist) {
-        connect.put('reference_group', [record], ['id'])
-        .then(function () {
-          messenger.success($translate.instant('REFERENCE_GROUP.UPDATE_SUCCES'));
-          $scope.reference_groups.put(record);
-          session.action = '';
-          session.edit = {};
-        });
-      } else {
-        messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2'));
-      }
+    // if we get there, the user wants to delete a Reference Group
+    vm.view = 'delete_confirm';
+    referenceGroupService.delete(referenceGroup.id)
+    .then(function () {
+       vm.view = 'delete_success';
+       return refreshReferenceGroups();
+    })
+    .catch(function (error) {
+      vm.HTTPError = error;
+      vm.view = 'delete_error';
     });
-  };
+  }
 
-  $scope.save.new = function () {
-    var record = connect.clean(session.new);
-    checkingReferenceGroup(record.position,record.section_bilan_id)
-    .then(function (is_exist) {
-      if (!is_exist) {
-        connect.post('reference_group', [record])
-        .then(function () {
-          messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));
-          $scope.reference_groups.post(record);
-          session.action = '';
-          session.new = {};
-        });
-      } else {
-        messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2'));
-      }
-    });
-  };
-
+  startup();  
 }
