@@ -179,22 +179,6 @@ function bhimaconfig($routeProvider) {
     controller: 'budget',
     templateUrl: 'partials/budget/budget.html'
   })
-  
-  /* TODO Depricate/ remove */
-  /* journal routes */
-
-  .when('/1.X-journal', {
-    controller: 'journal.grid',
-    templateUrl:'partials/journal/journal.html'
-  })
-  .when('/1.X-journal/print', {
-    controller : 'journal.print',
-    templateUrl : 'partials/journal/print.html'
-  })
-  .when('/1.X-journal/voucher', {
-    controller: 'JournalVoucherController as JournalVoucherCtrl',
-    templateUrl: 'partials/journal/voucher/voucher.html'
-  })
   .when('/vouchers/simple', {
     controller: 'SimpleJournalVoucherController as SimpleVoucherCtrl',
     templateUrl: 'partials/vouchers/simple.html'

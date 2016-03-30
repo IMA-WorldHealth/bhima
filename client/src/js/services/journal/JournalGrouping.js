@@ -17,9 +17,9 @@ function JournalGroupingService() {
   var gridApi;
  
   /**
-   * This method enables group level selections when the posting jounral is grouped
-   * according to a column. It first checks to ensure the row that changed is a row 
-   * and then selects each of the rows children.
+   * This method enables group level selections when the posting journal is grouped
+   * according to a column. It first checks to ensure the row that changed is a
+   * header and then selects each of the rows children.
    *
    * @params {object} rowChanged    Object containing the row that has just been selected
    */
@@ -40,7 +40,7 @@ function JournalGroupingService() {
   
   /** 
    * This method binds grouping utility methods to UI grid API actions. It sets 
-   * up the defeault grouping functionality of the grid, specifically: 
+   * up the default grouping functionality of the grid, specifically: 
    *  - Selecting a header row will select all children elements
    *  - Grid transactions will be expanded on initialisation
    * 
