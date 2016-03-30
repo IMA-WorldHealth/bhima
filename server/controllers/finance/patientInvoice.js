@@ -2,14 +2,16 @@
  * Patient Invoice API Controller
  *.@module controllers/finance/patientInvoice
  *
+ * @todo (required) Major bug - Sale items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
  * @todo GET /sales/patient/:uuid - retrieve all patient invoices for a specific patient
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructre
  * @todo Credit note logic pending on clear design
  */
 var q    = require('q');
 var db   = require('../../lib/db');
-var uuid = require('../../lib/guid');
+var uuid = require('node-uuid');
 var _    = require('lodash');
+var util = require('../../lib/util');
 
 var journal = require('./journal');
 
@@ -37,10 +39,11 @@ function list(req, res, next) {
   var saleListQuery;
 
   saleListQuery =
-    'SELECT sale.project_id, sale.reference, sale.uuid, cost, sale.debitor_uuid, ' +
-      'seller_id, invoice_date, is_distributable ' +
+    'SELECT CONCAT(project.abbr, sale.reference) AS reference, sale.uuid, cost,' +
+      'sale.debitor_uuid, user_id, date, is_distributable ' +
     'FROM sale ' +
-    'LEFT JOIN patient ON sale.debitor_uuid = patient.debitor_uuid';
+      'LEFT JOIN patient ON sale.debitor_uuid = patient.debitor_uuid ' +
+      'JOIN project ON sale.project_id = project.id;';
 
   db.exec(saleListQuery)
     .then(function (result) {
@@ -52,112 +55,140 @@ function list(req, res, next) {
     .done();
 }
 
-/**
- * @todo Read the balance remaining on the debtors account given the sale as an auxillary step
- */
-function details(req, res, next) {
-  var saleDetailQuery, saleItemsQuery;
-  var sale, saleItems;
-  var uuid = req.params.uuid;
 
-  saleDetailQuery =
-    'SELECT sale.uuid, sale.project_id, sale.reference, sale.cost, sale.currency_id, ' +
-      'sale.debitor_uuid, CONCAT(patient.first_name, " ", patient.last_name) as debitor_name, ' +
-      'seller_id, discount, invoice_date, sale.note, sale.posted, sale.is_distributable ' +
+/**
+ * lookupSale
+ *
+ * Find a sale by id in the database.
+ *
+ * @param {string} uid - the uuid of the sale in question
+ * @param {object} codes - the application's HTTP error codes
+ */
+function lookupSale(uid, codes) {
+  'use strict';
+
+  var record;
+
+  var saleDetailQuery =
+    'SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
+      'sale.debitor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debitor_name, ' +
+      'user_id, discount, date, sale.is_distributable ' +
     'FROM sale ' +
     'LEFT JOIN patient ON patient.debitor_uuid = sale.debitor_uuid ' +
+    'JOIN project ON project.id = sale.project_id ' +
     'WHERE sale.uuid = ?';
 
-  saleItemsQuery =
+  var saleItemsQuery =
     'SELECT sale_item.uuid, sale_item.quantity, sale_item.inventory_price, ' +
       'sale_item.transaction_price, inventory.code, inventory.text, inventory.consumable ' +
     'FROM sale_item ' +
     'LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid ' +
     'WHERE sale_uuid = ?';
 
-  // This process accepts a very small performance hit querrying the sale items
-  // even if the sale hasn't been found - however it uses a less obscure branching
-  // structure than alternative blocking methods
-  db.exec(saleDetailQuery, [uuid])
-    .then(function (detailsResult) {
-      sale = detailsResult;
-      return db.exec(saleItemsQuery, [uuid]);
-    })
-    .then(function (itemsResult) {
-      saleItems = itemsResult;
-
-      if (_.isEmpty(sale)) {
-        res.status(404).json({
-          code : 'ERR_NOT_FOUND',
-          reason : 'No sale found under the id ' + uuid
-        });
-      } else {
-
-        // Found sale resource - unpack and return to client
-        sale = sale[0];
-        res.status(200).json({
-          sale : sale,
-          saleItems : saleItems
-        });
+  return db.exec(saleDetailQuery, [uid])
+    .then(function (rows) {
+      if (rows.length === 0) {
+        throw new codes.ERR_NOT_FOUND();
       }
+
+      record = rows[0];
+      return db.exec(saleItemsQuery, [uid]);
     })
-    .catch(next)
-    .done();
+    .then(function (rows) {
+      record.items = rows;
+      return record;
+    });
+}
+
+/**
+ * @todo Read the balance remaining on the debtors account given the sale as an auxillary step
+ */
+function details(req, res, next) {
+  var uid = req.params.uuid;
+
+  lookupSale(uid, req.codes)
+  .then(function (record) {
+    res.status(200).json(record);
+  })
+  .catch(next)
+  .done();
 }
 
 function create(req, res, next) {
-  var insertSaleLineQuery, insertSaleItemQuery;
-  var saleResults;
+  'use strict';
+
+  var insertSaleQuery, insertSaleItemQuery;
   var transaction;
 
-  // Verify request validity
-  var saleLineBody = req.body.sale;
-  var saleItems = req.body.saleItems;
+  var sale = req.body.sale;
+  var items = sale.items || [];
 
-  // Reject invalid parameters
-  if (!saleLineBody || !saleItems) {
-    res.status(400).json({
-      code : 'ERROR.ERR_MISSING_INFO',
-      reason : 'A valid sale details and sale items must be provided under the attributes `sale` and `saleItems`'
-    });
-    return;
+  // TODO Billing service + subsidy posting journal interface
+  // Billing services and subsidies are sent from the client, the client
+  // has calculated the charge associated with each subsidy and billing service
+  // - the financial posting logic depends on the future posting journal logic,
+  // it must be decided if the server will have the final say in the cost calculation
+  var billingServices = sale.billingServices || [];
+  var subsidies = sale.subsidies || [];
+
+  // remove the unused properties on sale
+  delete sale.items;
+  delete sale.billingServices;
+  delete sale.subsidies;
+
+  // provide UUID if the client has not specified
+  sale.uuid = sale.uuid || uuid.v4();
+
+  // make sure that the dates have been properly transformed before insert
+  if (sale.date) {
+    sale.date = new Date(sale.date);
   }
 
-  // Provide UUID if the client has not specified
-  saleLineBody.uuid = saleLineBody.uuid || uuid();
+  // implicitly provide user information based on user session
+  sale.user_id = req.session.user.id;
 
-  // Implicitly provide seller information based on user session
-  saleLineBody.seller_id = req.session.user.id;
+  // make sure that sale items have their uuids
+  items.forEach(function (item) {
+    item.uuid = item.uuid || uuid.v4();
+    item.sale_uuid = sale.uuid;
 
-  insertSaleLineQuery =
+    // FIXME -- where is this supposed to have been defined?
+    item.debit = 0;
+  });
+
+  // create a filter to align sale item columns to the sql columns
+  var filter =
+    util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'sale_uuid');
+
+  // prepare sale items for insertion into database
+  items = _.map(items, filter);
+
+  insertSaleQuery =
     'INSERT INTO sale SET ?';
 
   insertSaleItemQuery =
-    'INSERT INTO sale_item (inventory_uuid, quantity, inventory_price, ' +
-        'transaction_price, credit, debit, uuid,  sale_uuid) VALUES ?';
+    'INSERT INTO sale_item (uuid, inventory_uuid, quantity, ' +
+        'transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?';
 
   transaction = db.transaction();
 
-  // Insert sale line
+  // insert sale line
   transaction
-    .addQuery(insertSaleLineQuery, [saleLineBody])
+    .addQuery(insertSaleQuery, [ sale ])
 
-  // Insert sale item lines
-    .addQuery(insertSaleItemQuery, [linkSaleItems(saleItems, saleLineBody.uuid)]);
+  // insert sale item lines
+    .addQuery(insertSaleItemQuery, [ items ]);
 
   transaction.execute()
-    .then(function (results) {
-      saleResults = results;
+    .then(function () {
 
-      // TODO Update to use latest journal interface
-      return postSaleRecord(saleLineBody.uuid, req.body.caution, req.session.user.id);
+      /** @todo Update to use latest journal interface */
+      return postSaleRecord(sale.uuid, req.body.caution, req.session.user.id);
     })
     .then(function (results) {
-      var confirmation = {
-        uuid : saleLineBody.uuid,
-        results : saleResults
-      };
-      res.status(201).json(confirmation);
+      res.status(201).json({
+        uuid : sale.uuid
+      });
     })
     .catch(next)
     .done();
@@ -183,25 +214,6 @@ function postSaleRecord(saleUuid, caution, userId) {
 }
 
 /**
- * Utility method to ensure patient invoice lines reference sale.
- * @param {Object} saleItems - An Array of all sale items to be written
- * @param {string} saleUuid - UUID of referenced patient invoice
- * @returns {Object} An Array of all sale items with guaranteed UUIDs and Patient Invoice references
- */
-function linkSaleItems(saleItems, saleUuid) {
-  return saleItems.map(function (saleItem) {
-
-    saleItem.uuid = saleItem.uuid || uuid();
-    saleItem.sale_uuid = saleUuid;
-
-    // Collapse sale item into Array to be inserted into database
-    return Object.keys(saleItem).map(function (key) {
-      return saleItem[key];
-    });
-  });
-}
-
-/**
  * Searches for a sale by query parameters provided.
  *
  * GET sales/search
@@ -211,8 +223,8 @@ function search(req, res, next) {
 
   var sql =
     'SELECT sale.uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference, ' +
-      'sale.cost, sale.currency_id, sale.debitor_uuid, sale.seller_id, sale.discount, ' +
-      'sale.invoice_date, sale.note, sale.posted, sale.is_distributable ' +
+      'sale.cost, sale.debitor_uuid, sale.user_id, sale.discount, ' +
+      'sale.date, sale.is_distributable ' +
     'FROM sale JOIN project ON project.id = sale.project_id ' +
     'WHERE ';
 

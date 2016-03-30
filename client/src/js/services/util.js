@@ -97,4 +97,6 @@ function UtilService($filter) {
   service.minDOB = new Date('1900-01-01');
   service.maxDOB = new Date();
 
+  // TODO This value is set in angular utilities - it could be configured on the enterprise
+  service.minimumDate = new Date('1900-01-01');
 }

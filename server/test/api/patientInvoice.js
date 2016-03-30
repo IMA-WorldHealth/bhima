@@ -1,5 +1,4 @@
 /* jshint expr:true */
-/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -9,102 +8,110 @@ var uuid = require('node-uuid');
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
- * The /sales API endpoint
- */
+/** The /sales API endpoint */
 describe('The /sales API', function () {
-  var mockSaleUuid;
   var agent = chai.request.agent(helpers.baseUrl);
 
+  /** login at the start of the test */
+  before(helpers.login(agent));
+
+  // mock sale items
+  var mockItems = [{
+    inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+    quantity: 1,
+    inventory_price: 10,
+    transaction_price: 10,
+    credit: 10,
+    debit: 0
+  }, {
+    inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
+    quantity: 1,
+    inventory_price: 25,
+    transaction_price: 25,
+    credit: 25,
+    debit: 0
+  }];
+
+  // mock sale that should succeed
   var mockSale = {
-    sale : {
-      project_id: 1,
-      cost: 35,
-      currency_id: 2,
-      debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
-      invoice_date: new Date('2016-01-13'),
-      note: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
-      service_id: 1,
-      is_distributable: true
-    },
-    saleItems : [{
-      inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
-      quantity: 1,
-      inventory_price: 10,
-      transaction_price: 10,
-      credit: 10,
-      debit: 0
-    },{
-      inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
-      quantity: 1,
-      inventory_price: 25,
-      transaction_price: 25,
-      credit: 25,
-      debit: 0
-    }]
+    project_id: 1,
+    cost: 35,
+    debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+    date: new Date('2016-01-13'),
+    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
+    service_id: 1,
+    is_distributable: true,
+    items : mockItems
   };
 
-  var invalidRequestSale = {
-    badSale : {},
-    invalidParams : {}
+  // error cases
+
+  var missingSaleItems = {
+    project_id: 1,
+    cost: 8.5,
+    debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+    date: new Date('2016-01-13'),
+    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
+    service_id: 1,
+    is_distributable: true,
+  };
+
+  var missingSaleDate = {
+    project_id: 1,
+    cost: 35.0,
+    debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
+    service_id: 1,
+    is_distributable: true,
+    items : mockItems
   };
 
   /** @const total number of sales in the database */
-  var NUM_SALES = 2;
-  
+  var numSales = 2;
+  var numCreatedSales = 3;
+
   /** @const a reference for one of the sales in the database */
   var REFERENCE = 'TPA1';
 
-  /** login before each request */
-  beforeEach(helpers.login(agent));
+  it('GET /sales returns a list of patient invoices', function () {
+    return agent.get('/sales')
+      .then(function (res) {
+        helpers.api.listed(res, numSales);
+      })
+      .catch(helpers.handler);
+  });
 
   // NOTE : Temporary skips while we are sorting the posting journal routes out
 
-  it.skip('POST /sales will record a valid patient invoice and return success from the posting journal', function () {
-    var UUID_LENGTH = 36;
-
+  it('POST /sales will record a valid patient invoice and return success from the posting journal', function () {
     return agent.post('/sales')
-      .send(mockSale)
-      .then(function (confirmation) {
-        expect(confirmation).to.have.status(201);
-        expect(confirmation.body).to.contain.keys('uuid', 'results');
-        expect(confirmation.body.uuid.length).to.be.equal(UUID_LENGTH);
-
-        // If test has passed record UUID to use in further tests
-        mockSaleUuid = confirmation.body.uuid;
+      .send({ sale : mockSale })
+      .then(function (res) {
+        helpers.api.created(res);
+        mockSale.uuid = res.body.uuid;
+        return agent.get('/sales/' + mockSale.uuid);
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });
 
-  it.skip('GET /sales returns a list of patient invoices', function () {
-
-    // This value depends on the success of the previous test
-    var INITIAL_PATIENT_INVOICES = 3;
-
-    return agent.get('/sales')
+  it('GET /sales/:uuid returns a valid patient invoice', function () {
+    return agent.get('/sales/' + mockSale.uuid)
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(INITIAL_PATIENT_INVOICES);
-      })
-      .catch(helpers.handler);
-  });
+        expect(res).to.be.json;
 
-  it.skip('GET /sales/:uuid returns a valid patient invoice', function () {
-    return agent.get('/sales/' + mockSaleUuid)
-      .then(function (res) {
-        var sale, saleItems, initialItem;
-        expect(res).to.have.status(200);
-        expect(res.body).to.contain.keys('sale', 'saleItems');
-
-        sale = res.body.sale;
-        saleItems = res.body.saleItems;
-        initialItem = saleItems[0];
+        var sale = res.body;
 
         expect(sale).to.not.be.empty;
-        expect(saleItems).to.not.be.empty;
-        expect(sale).to.contain.keys('uuid', 'cost', 'invoice_date');
-        expect(initialItem).to.contain.keys('uuid', 'code', 'quantity');
+        /** @todo -- change the sales API to make it more pleasing to use */
+        expect(sale).to.have.property('items');
+        expect(sale.items).to.not.be.empty;
+        expect(sale).to.contain.keys('uuid', 'cost', 'date');
+        expect(sale.items[0]).to.contain.keys('uuid', 'code', 'quantity');
       })
       .catch(helpers.handler);
   });
@@ -117,9 +124,27 @@ describe('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /sales returns 400 for an invalid patient invoice request object', function () {
+  it('POST /sales returns 400 for an empty patient invoice request object', function () {
     return agent.post('/sales')
-      .send(invalidRequestSale)
+      .send({})
+      .then(function (res) {
+        helpers.api.errored(res, 400);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /sales returns 400 for a patient invoice missing a date', function () {
+    return agent.post('/sales')
+      .send({ sale : missingSaleDate })
+      .then(function (res) {
+        helpers.api.errored(res, 400);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /sales returns 400 for a patient invoice missing sale items', function () {
+    return agent.post('/sales')
+      .send({ sale : missingSaleItems })
       .then(function (res) {
         helpers.api.errored(res, 400);
       })
@@ -132,9 +157,7 @@ describe('The /sales API', function () {
     it('GET /sales/search should return all sales if no query string provided', function () {
       return agent.get('/sales/search')
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.have.length(NUM_SALES);
+          helpers.api.listed(res, numCreatedSales);
         })
         .catch(helpers.handler);
     });
@@ -143,9 +166,7 @@ describe('The /sales API', function () {
     it('GET /sales/search?debitor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two sales', function () {
       return agent.get('/sales/search?debitor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.have.length(2);
+          helpers.api.listed(res, numCreatedSales);
         })
         .catch(helpers.handler);
     });
@@ -182,8 +203,8 @@ describe('The /sales API', function () {
     });
 
     // filter should combine to find the same result as above
-    it('GET /sales/search?cost=75&currency_id=2 should return a single sale (combined filter)', function () {
-      return agent.get('/sales/search?cost=75&currency_id=2')
+    it('GET /sales/search?cost=75&project_id=1 should return a single sale (combined filter)', function () {
+      return agent.get('/sales/search?cost=75&project_id=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -192,8 +213,8 @@ describe('The /sales API', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /sales/search?cost=75&currency_id=1 should not return any results', function () {
-      return agent.get('/sales/search?cost=75&currency_id=1')
+    it('GET /sales/search?cost=15&project_id=1 should not return any results', function () {
+      return agent.get('/sales/search?cost=15&project_id=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;

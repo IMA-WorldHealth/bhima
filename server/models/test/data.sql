@@ -14,6 +14,7 @@ INSERT INTO unit VALUES
   (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
   (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
   (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register/'),
+  (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/partials/patient_invoice/','/invoices/patient'),
   (18,  'Cash Payments','TREE.CASH_PAYMENTS','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
   (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/partials/creditors/','/creditors'),
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
@@ -33,7 +34,6 @@ INSERT INTO unit VALUES
   (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',30,'/partials/references/groups','/references/groups'),
   (110, 'Section resultat','TREE.SECTION_RESULTAT','',30,'/partials/section_resultat/','/section_resultat/'),
   (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple');
-
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
@@ -105,6 +105,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Patient Registration
 (14,1),
+
+-- Patient Invoice
+(16,1),
 
 -- Cash Payments
 (18,1),
@@ -188,9 +191,9 @@ INSERT INTO `inventory_type` VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
 INSERT INTO `inventory_unit` VALUES (1,'Act'),(2,'Pallet'),(3,'Pill'),(4,'Box'),(5,'Lot'),(6,'amp'),(7,'bags'),(8,'btl'),(9,'cap'),(10,'flc'),(11,'jar'),(12,'ltr'),(13,'pce'),(14,'sch'),(15,'tab'),(16,'tub'),(17,'vial');
 
 INSERT INTO `inventory` VALUES
-  (1, 'cf05da13-b477-11e5-b297-023919d3d5b0', 'INV0', 'Test inventory item', 25.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 1, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
-  (1, '289cc0a1-b90f-11e5-8c73-159fdc73ab02', 'INV1', 'Second Test inventory item', 10.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 6, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
-  (1, 'c48a3c4b-c07d-4899-95af-411f7708e296', 'INV2', 'Third Test Inventory Item', 105.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 7, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP);
+  (1, 'cf05da13-b477-11e5-b297-023919d3d5b0', 'INV0', 'Test inventory item', 25.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
+  (1, '289cc0a1-b90f-11e5-8c73-159fdc73ab02', 'INV1', 'Second Test inventory item', 10.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
+  (1, 'c48a3c4b-c07d-4899-95af-411f7708e296', 'INV2', 'Third Test Inventory Item', 105.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP);
 
 INSERT INTO `debitor_group` VALUES
   (1,'4de0fe47-177f-4d30-b95f-cff8166400b4','Test Debtor Group',3631,'03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
@@ -251,17 +254,16 @@ INSERT INTO `profit_center` VALUES
 
 -- Services
 INSERT INTO `service` VALUES
-  (1,1,'Test Service',1,1),
-  (2,1,'Administration',NULL,NULL),
-  (3,1,'Medecine Interne',NULL,NULL);
+  (1, 1, 'Test Service', 1, 1),
+  (2, 1, 'Administration', 1, 1),
+  (3, 1, 'Medecine Interne', 1, 1);
 
-INSERT INTO `sale` VALUES
-  (1,1,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 13:35:55',1),
-  (1,2,'c44619e0-3a88-4754-a750-a414fc9567bf',25.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 13:31:14',1);
+INSERT INTO sale (project_id, reference, uuid, cost, debitor_uuid, service_id, user_id, discount, date, description, timestamp, is_distributable) VALUES
+  (1,2,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
+  (1,1,'c44619e0-3a88-4754-a750-a414fc9567bf',25.0000,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
 
 INSERT INTO `sale_item` VALUES
   ('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6','2e1332a7-3e63-411e-827d-42ad585ff518','cf05da13-b477-11e5-b297-023919d3d5b0',3,25.0000,25.0000,0.0000,75.0000);
-
 
 INSERT INTO `posting_journal` VALUES
   ('017dbe1e-c37c-11e5-a86e-843a4b0cdadc',1,1,1,'HBB1','2016-01-26',NULL,NULL,3631,75.0000,0.0000,75.0000,0.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107','D','957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',NULL,NULL,2,1,NULL,NULL),

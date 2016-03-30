@@ -411,6 +411,11 @@ exports.configure = function (app) {
   app.post('/patients/:uuid/groups', patient.updateGroups);
 
   app.get('/patients/hospital_number/:id/exists', patient.hospitalNumberExists);
+  
+  app.get('/patients/:uuid/services', patient.billingServices);
+  app.get('/patients/:uuid/prices', patient.priceLists);
+  app.get('/patients/:uuid/subsidies', patient.subsidies);
+  
   app.post('/patients/visit', patient.visit);
 
   // app.get('/patients/search', patient.search);

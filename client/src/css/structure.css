@@ -482,3 +482,9 @@ ol.headercrumb {
    line-height:30px;
    padding-left: 7px;
  }
+
+.fixedColumn { 
+  float : left;
+  position : relative;
+  
+}
