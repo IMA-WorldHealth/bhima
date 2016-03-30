@@ -1,18 +1,20 @@
-/*global describe, it, beforeEach*/
-
+/* jshint expr:true */
 var chai = require('chai');
 var expect = chai.expect;
 
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('The section resultat API, PATH : /section_resultats', function () {
+describe('(/section_resultats) The section resultat API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
+
+  // log in before test suite
+  before(helpers.login(agent));
 
   var newSectionResultat = {
     text : 'A new Section Resultat',
     position : 4,
-    is_charge : 1 
+    is_charge : 1
   };
 
 
@@ -20,16 +22,12 @@ describe('The section resultat API, PATH : /section_resultats', function () {
     'id', 'text', 'position', 'is_charge'
   ];
 
-  beforeEach(helpers.login(agent));
 
-  it('METHOD : POST, PATH : /section_resultats, It adds a section resultat', function () {
+  it('POST /section_resultats adds a section resultat', function () {
     return agent.post('/section_resultats')
       .send(newSectionResultat)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.defined;
+        helpers.api.created(res);
         newSectionResultat.id = res.body.id;
         return agent.get('/section_resultats/' + newSectionResultat.id);
       })
@@ -41,18 +39,15 @@ describe('The section resultat API, PATH : /section_resultats', function () {
   });
 
 
-  it('METHOD : GET, PATH : /section_resultats, It returns a list of section_resultats', function () {
+  it('GET /section_resultats returns a list of section_resultats', function () {
     return agent.get('/section_resultats')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(2);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET, PATH : /section_resultats/:id, It returns one section resultat', function () {
+  it('GET /section_resultats/:id returns one section resultat', function () {
     return agent.get('/section_resultats/'+ newSectionResultat.id)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -65,7 +60,7 @@ describe('The section resultat API, PATH : /section_resultats', function () {
   });
 
 
-  it('METHOD : PUT, PATH : /section_resultats/:id, It updates the newly added section resultat', function () {
+  it('PUT /section_resultats/:id updates the newly added section resultat', function () {
     var updateData = {
       text : 'A Section Resultat Test Update',
       position : 1
@@ -83,16 +78,14 @@ describe('The section resultat API, PATH : /section_resultats', function () {
       .catch(helpers.handler);
   });
 
-   it('METHOD : DELETE, PATH : /section_resultats/:id, It deletes a section resultat', function () {
+   it('DELETE /section_resultats/:id deletes a section resultat', function () {
     return agent.delete('/section_resultats/' + newSectionResultat.id)
       .then(function (res) {
-        expect(res).to.have.status(204);
-        // re-query the database
+        helpers.api.deleted(res);
         return agent.get('/section_resultats/' + newSectionResultat.id);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

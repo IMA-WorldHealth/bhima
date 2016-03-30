@@ -1,19 +1,19 @@
-/*global describe, it, beforeEach*/
-
+/* jshint expr: true */
 var chai = require('chai');
 var expect = chai.expect;
 
+/** import test helpers */
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('The Reference Group API, PATH : /reference_groups', function () {
+describe('(/reference_group) The Reference Group API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var newReferenceGroup = {
     reference_group   : 'AR',
     text              : 'A new Reference Group',
     position          : 5,
-    section_bilan_id  : 1 
+    section_bilan_id  : 1
   };
 
   var responseKeys = [
@@ -22,14 +22,11 @@ describe('The Reference Group API, PATH : /reference_groups', function () {
 
   beforeEach(helpers.login(agent));
 
-  it('METHOD : POST, PATH : /reference_group, It adds a Reference Group', function () {
+  it('POST /reference_group adds a reference group', function () {
     return agent.post('/reference_group')
       .send(newReferenceGroup)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.defined;
+        helpers.api.created(res);
         newReferenceGroup.id = res.body.id;
         return agent.get('/reference_group/' + newReferenceGroup.id);
       })
@@ -41,18 +38,15 @@ describe('The Reference Group API, PATH : /reference_groups', function () {
   });
 
 
-  it('METHOD : GET, PATH : /reference_group, It returns a list of reference_groups', function () {
+  it('GET /reference_group returns a list of reference groups', function () {
     return agent.get('/reference_group')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(2);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET, PATH : /reference_group/:id, It returns one Reference Group', function () {
+  it('GET /reference_group/:id returns one reference group', function () {
     return agent.get('/reference_group/'+ newReferenceGroup.id)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -65,7 +59,7 @@ describe('The Reference Group API, PATH : /reference_groups', function () {
   });
 
 
-  it('METHOD : PUT, PATH : /reference_group/:id, It updates the newly added Reference Group', function () {
+  it('PUT /reference_group/:id updates the newly added reference group', function () {
     var updateData = {
       text : 'A Reference Group Test Update',
       position : 1
@@ -83,16 +77,14 @@ describe('The Reference Group API, PATH : /reference_groups', function () {
       .catch(helpers.handler);
   });
 
-   it('METHOD : DELETE, PATH : /reference_groups/:id, It deletes a Reference Group', function () {
+   it('DELETE /reference_groups/:id deletes a reference group', function () {
     return agent.delete('/reference_group/' + newReferenceGroup.id)
       .then(function (res) {
-        expect(res).to.have.status(204);
-        // re-query the database
+        helpers.api.deleted(res);
         return agent.get('/reference_group/' + newReferenceGroup.id);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
