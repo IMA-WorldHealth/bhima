@@ -92,11 +92,14 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "ACCOUNT.NEW" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="AccountsCtrl.submit(CreateForm.$invalid)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="AccountsCtrl.submit(CreateForm)" novalidate>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ "ACCOUNT.ACCOUNT_TITLE" | translate }}</label>
                 <input type="text" placeholder="{{ 'ACCOUNT.ACCOUNT_TITLE' | translate }}" class="form-control" name="label" ng-model="AccountsCtrl.account.label" required>
+                <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.type.$invalid }">
@@ -111,6 +114,9 @@
                   required>
                   <option value="" disabled> -- {{ "SELECT.ACCOUNT_TYPE" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.type.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                  
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_title.$invalid }">
@@ -140,6 +146,9 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.number.$invalid }">
                 <label class="control-label">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
                 <input type="number" class="form-control" name="number" ng-model="AccountsCtrl.account.number" required>
+                <div class="help-block" ng-messages="CreateForm.number.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                  
               </div>
 
                <hr>             
@@ -165,7 +174,11 @@
                     <select  id="type" class="form-control" name="cc_id" ng-options="c.id as c.text for c in AccountsCtrl.costCenters" 
                       ng-model="AccountsCtrl.account.cc_id" required>
                       <option value="" disabled> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
+                      <div class="help-block" ng-messages="CreateForm.cc_id.$error" ng-show="CreateForm.$submitted">
+                        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                      </div>                        
                     </select>
+
                   </div>
                   <div ng-switch-when=0 ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.pc_id.$invalid }">
                     <label class="control-label">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
@@ -173,6 +186,9 @@
                     ng-model="AccountsCtrl.account.pc_id" required>
                       <option value="" disabled> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
                     </select>
+                    <div class="help-block" ng-messages="CreateForm.pc_id.$error" ng-show="CreateForm.$submitted">
+                      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                    </div>                     
                   </div>
                 </div>
               </div>
@@ -229,10 +245,13 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'ACCOUNT.EDIT' | translate }} : <b>{{ AccountsCtrl.account.number }}</b> </div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="AccountsCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="AccountsCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ "ACCOUNT.ACCOUNT_TITLE" | translate }}</label>
                 <input type="text" placeholder="{{ 'ACCOUNT.ACCOUNT_TITLE' | translate }}" class="form-control" name="label" ng-model="AccountsCtrl.account.label" required>
+                <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.locked.$invalid }">
@@ -254,6 +273,9 @@
                   required>
                   <option value="" disabled> -- {{ "SELECT.ACCOUNT_TYPE" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.type_id.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_title.$invalid }">
@@ -302,6 +324,9 @@
                       ng-model="AccountsCtrl.account.cc_id" required>
                       <option value="" disabled> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
                     </select>
+                    <div class="help-block" ng-messages="UpdateForm.cc_id.$error" ng-show="UpdateForm.$submitted">
+                      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                    </div>                     
                   </div>
                   <div ng-switch-when=0 ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.pc_id.$invalid }">
                     <label class="control-label">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
@@ -309,6 +334,9 @@
                     ng-model="AccountsCtrl.account.pc_id" required>
                       <option value="" disabled> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
                     </select>
+                    <div class="help-block" ng-messages="UpdateForm.pc_id.$error" ng-show="UpdateForm.$submitted">
+                      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                    </div>                      
                   </div>
                 </div>
               </div>

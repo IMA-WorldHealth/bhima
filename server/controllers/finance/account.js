@@ -16,6 +16,7 @@
  * */
 
 var db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
 /**
  * Create a new account entity.
@@ -52,12 +53,12 @@ function update (req, res, next) {
 
   delete queryData.id;
 
-  lookupAccount(accountId, req.codes)
+  lookupAccount(accountId)
     .then(function () {
       return db.exec(updateAccountQuery, [queryData, accountId]);
     })
     .then(function() {
-      return lookupAccount(accountId, req.codes);
+      return lookupAccount(accountId);
     })
     .then(function (account) {
       res.status(200).json(account);
@@ -97,7 +98,7 @@ function list (req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupAccount(req.params.id, req.codes)
+  lookupAccount(req.params.id)
    .then(function (account) {
       res.status(200).json(account);
    })
@@ -120,7 +121,7 @@ function getBalance (req, res, next){
     ' (SELECT gl.account_id, IFNULL(SUM(gl.debit), 0) AS debit, IFNULL(SUM(gl.credit), 0) AS credit, IFNULL((gl.debit - gl.credit), 0) AS balance FROM' + 
     ' general_ledger AS gl WHERE gl.account_id = ? GROUP BY gl.account_id' + optional + ' ) AS t GROUP BY t.account_id';
 
-  lookupAccount(accountId, req.codes)
+  lookupAccount(accountId)
     .then(function (account) {
       return db.exec(accountSoldQuery, params);
     })
@@ -136,7 +137,7 @@ function getBalance (req, res, next){
     .done();  
 }
 
-function lookupAccount(id, codes) {
+function lookupAccount(id) {
   'use strict';
 
   var sql =
@@ -146,9 +147,11 @@ function lookupAccount(id, codes) {
 
   return db.exec(sql, id)
     .then(function(rows) {
+      // Record Not Found !
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound(`Record Not Found with id: ${id}`);
       }
+
       return rows[0];
     });
 }
