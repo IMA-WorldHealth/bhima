@@ -223,7 +223,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
 
     function verify() {
       var invalidItem;
-
+  
       items.rows.some(function (item) {
         var invalid = false;
 
@@ -239,7 +239,7 @@ function InvoiceItems(InventoryService, Uuid, Store, AppCache) {
           return true;
         }
       });
-
+    
       items.invalid = false;
 
       return invalidItem;

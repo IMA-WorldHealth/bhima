@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
 PatientInvoiceController.$inject = [
-  '$q', '$location', 'Patients', 'PriceLists', 'PatientInvoice',
+  '$q', '$location', 'PatientService', 'PriceLists', 'PatientInvoice',
   'Invoice', 'util', 'ServiceService', 'SessionService', 'DateService'
 ];
 
