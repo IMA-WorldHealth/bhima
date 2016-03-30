@@ -98,10 +98,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='record in OperatingCtrl.records track by record.account_number'>
+              <tr ng-repeat='record in OperatingCtrl.records track by record.number'>
                 <td> {{ $index + 1 }} </td>
-                <td> {{ record.account_number}} </td>
-                <td> {{ record.account_txt }} </td>
+                <td> {{ record.number}} </td>
+                <td> {{ record.label }} </td>
                 <td class="text-right"> {{ record.debit | currency:OperatingCtrl.enterprise.currency_id }} </td>
                 <td class="text-right"> {{ record.credit | currency:OperatingCtrl.enterprise.currency_id }} </td>
               </tr>

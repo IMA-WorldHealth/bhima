@@ -55,7 +55,7 @@ function PrimaryCashReturnController($scope, $routeParams, $translate, $location
         'debitor' : { 'columns' : ['uuid', 'text'] },
         'patient' : { 'columns' : ['first_name', 'last_name'] },
         'debitor_group' : { 'columns' : ['name'] },
-        'account' : { 'columns' : ['account_number', 'id'] }
+        'account' : { 'columns' : ['number', 'id'] }
       },
       join: ['debitor.uuid=patient.debitor_uuid', 'debitor_group.uuid=debitor.group_uuid', 'debitor_group.account_id=account.id']
     }
@@ -66,7 +66,7 @@ function PrimaryCashReturnController($scope, $routeParams, $translate, $location
       'tables' : {
         'creditor' : { 'columns' : ['uuid', 'text'] },
         'creditor_group' : { 'columns' : ['name'] },
-        'account' : { 'columns' : ['account_number', 'id'] }
+        'account' : { 'columns' : ['number', 'id'] }
       },
       join: ['creditor.group_uuid=creditor_group.uuid','creditor_group.account_id=account.id']
     }

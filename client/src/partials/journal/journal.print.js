@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
         'posting_journal' : {
           'columns' : ['uuid', 'fiscal_year_id', 'period_id', 'trans_id', 'trans_date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'currency_id', 'deb_cred_uuid', 'deb_cred_type', 'inv_po_id', 'debit_equiv', 'credit_equiv', 'currency_id', 'comment', 'user_id']
         },
-        'account' : { 'columns' : ['account_number'] }
+        'account' : { 'columns' : ['number'] }
       },
       join: ['posting_journal.account_id=account.id']
     };

@@ -136,10 +136,10 @@
               <tbody>
                 <tr ng-repeat="account in BudgetCtrl.accounts.data">
                   <td class="budget">{{ $index + 1 }}</td>
-                  <td class="budget">{{ account.account_number }}</td>
+                  <td class="budget">{{ account.number }}</td>
                   <td class="budget"
                       ng-style="{'padding-left': (account.depth * 40) + 'px'}"
-                      ng-class="{'reportTitle': account.type=='title'}">{{ account.account_txt }}</td>
+                      ng-class="{'reportTitle': account.type=='title'}">{{ account.label }}</td>
                   <td class="budget-cash">{{ account.budget }}</td>
                   <td class="budget-cash">{{ account.balance }}</td>
                   <td class="budget">{{ account.surplus }}</td>

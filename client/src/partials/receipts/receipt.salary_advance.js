@@ -16,7 +16,7 @@ angular.module('bhima.controllers')
           creditor : { columns : ['uuid'] },
           employee : { columns : ['id', 'code', 'prenom', 'name', 'postnom', 'creditor_uuid'] },
           user : { columns : ['first', 'last'] },
-          account : { columns : ['account_txt'] }
+          account : { columns : ['label'] }
         },
         join : [
           'primary_cash.user_id=user.id', 

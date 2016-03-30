@@ -32,8 +32,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="account in PrintCtrl.balances | orderBy:'account_number'">
-          <td><b>{{ account.account_number }}</b></td>
+        <tr ng-repeat="account in PrintCtrl.balances | orderBy:'number'">
+          <td><b>{{ account.number }}</b></td>
           <td style="text-align:right;padding-right:5px;">{{ account.balance | currency:2 }}</td>
           <td style="text-align:right;padding-right:5px;">{{ account.debit | currency:2 }}</td>
           <td style="text-align:right;padding-right:5px;">{{ account.credit | currency:2 }}</td>

@@ -14,11 +14,11 @@ exports.list = function list(req, res, next) {
   // ?classe=5, etc...
 
   var sql =
-    'SELECT a.id, a.account_number, a.account_txt, a.parent, at.type ' +
+    'SELECT a.id, a.number, a.label, a.parent, at.type ' +
     'FROM account AS a JOIN account_type AS at ON ' +
-      'a.account_type_id = at.id';
+      'a.type_id = at.id';
 
-  sql += ' ORDER BY a.account_number;';
+  sql += ' ORDER BY a.number;';
 
   db.exec(sql)
   .then(function (rows) {
@@ -34,24 +34,24 @@ exports.list = function list(req, res, next) {
 exports.listInExAccounts = function (req, res, next) {
   var enterprise_id = sanitize.escape(req.params.id_enterprise);
   var sql =
-    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, temp.`classe`, account_type.`type`, ' +
+    'SELECT temp.`id`, temp.`number`, temp.`label`, temp.`classe`, account_type.`type`, ' +
            'temp.`parent`, temp.`balance`' +  // , temp.`fixed`
     ' FROM (' +
-        'SELECT account.id, account.account_number, account.account_txt, account.classe, account.account_type_id, ' +
+        'SELECT account.id, account.number, account.label, account.classe, account.type_id, ' +
                'account.parent, period_total.credit - period_total.debit as balance ' +  // account.fixed,
         'FROM account LEFT JOIN period_total ' +
         'ON account.id=period_total.account_id ' +
         'WHERE account.enterprise_id = ' + enterprise_id +
-        ' AND (account.classe IN (\'6\', \'7\') OR ((account.classe IN (\'1\', \'2\', \'5\') AND account.is_used_budget = 1) ))' +
+        ' AND (account.classe IN (\'6\', \'7\') OR ((account.classe IN (\'1\', \'2\', \'5\')) ))' +
     ' ) ' +
     'AS temp JOIN account_type ' +
-    'ON temp.account_type_id = account_type.id ' +
-    'ORDER BY CAST(temp.account_number AS CHAR(10));';
+    'ON temp.type_id = account_type.id ' +
+    'ORDER BY CAST(temp.number AS CHAR(10));';
 
   function process(accounts) {
     var InExAccounts = accounts.filter(function(item) {
-      var account_6_7 = item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0,
-        account_1_2_5 = item.account_number.toString().indexOf('1') === 0 || item.account_number.toString().indexOf('2') === 0 || item.account_number.toString().indexOf('5') === 0;
+      var account_6_7 = item.number.toString().indexOf('6') === 0 || item.number.toString().indexOf('7') === 0,
+        account_1_2_5 = item.number.toString().indexOf('1') === 0 || item.number.toString().indexOf('2') === 0 || item.number.toString().indexOf('5') === 0;
       return account_6_7 || account_1_2_5;
     });
     return InExAccounts;
@@ -67,16 +67,16 @@ exports.listInExAccounts = function (req, res, next) {
 
 exports.listEnterpriseAccounts = function (req, res, next) {
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt FROM account ' +
+    'SELECT account.id, account.number, account.label FROM account ' +
     'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
       'AND account.parent <> 0 ' +
       'AND account.is_ohada = 1 ' +
       'AND account.cc_id IS NULL ' +
-      'AND account.account_type_id <> 3';
+      'AND account.type_id <> 3';
 
   function process(accounts) {
     var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
+      return item.number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
   }
@@ -91,16 +91,16 @@ exports.listEnterpriseAccounts = function (req, res, next) {
 
 exports.listEnterpriseProfitAccounts = function (req, res, next) {
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt FROM account ' +
+    'SELECT account.id, account.number, account.label FROM account ' +
     'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
       'AND account.parent <> 0 ' +
       'AND account.is_ohada = 1 ' +
       'AND account.pc_id IS NULL ' +
-      'AND account.account_type_id <> 3';
+      'AND account.type_id <> 3';
 
   function process(accounts) {
     var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('7') === 0;
+      return item.number.toString().indexOf('7') === 0;
     });
     return availablechargeAccounts;
   }
@@ -114,7 +114,7 @@ exports.listEnterpriseProfitAccounts = function (req, res, next) {
 };
 
 exports.listIncomeAccounts = function (req, res, next) {
-  var sql ='SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE "6%" AND account_type_id <> "3"';
+  var sql ='SELECT id, enterprise_id, number, label FROM account WHERE number LIKE "6%" AND type_id <> "3"';
 
   db.exec(sql)
   .then(function (result) {
@@ -125,7 +125,7 @@ exports.listIncomeAccounts = function (req, res, next) {
 };
 
 exports.listExpenseAccounts = function (req, res, next) {
-  var sql ='SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE "7%" AND account_type_id <> "3"';
+  var sql ='SELECT id, enterprise_id, number, label FROM account WHERE number LIKE "7%" AND type_id <> "3"';
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -140,7 +140,7 @@ exports.getClassSolde = function (req, res, next) {
       fiscal_year_id = req.params.fiscal_year;
 
   var sql =
-    'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
+    'SELECT `ac`.`id`, `ac`.`number`, `ac`.`label`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
     'FROM (' +
       '(' +
         'SELECT `account`.`id`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
@@ -176,29 +176,29 @@ exports.getClassSolde = function (req, res, next) {
 exports.getTypeSolde = function (req, res, next) {
 
   var fiscalYearId = req.params.fiscal_year,
-        accountType   = req.params.account_type_id,
+        accountType   = req.params.type_id,
         accountIsCharge = req.params.is_charge;
 
   var sql =
-      'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `ac`.`account_type_id`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
+      'SELECT `ac`.`id`, `ac`.`number`, `ac`.`label`, `ac`.`type_id`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
       'FROM (' +
         '(' +
-          'SELECT `account`.`id`, `account`.`account_type_id`, `account`.`is_charge`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
+          'SELECT `account`.`id`, `account`.`type_id`, `account`.`is_charge`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
             0 + ' AS debit, ' + 0 + ' AS credit, ' +
             'SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`,' +
             'SUM(`posting_journal`.`credit_equiv`) AS `credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
             '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
-          'FROM `posting_journal` JOIN `account` ON `account`.`id`=`posting_journal`.`account_id` WHERE `posting_journal`.`fiscal_year_id`=? AND `account`.`account_type_id`=? AND `account`.`is_charge`=? GROUP BY `posting_journal`.`account_id` ' +
+          'FROM `posting_journal` JOIN `account` ON `account`.`id`=`posting_journal`.`account_id` WHERE `posting_journal`.`fiscal_year_id`=? AND `account`.`type_id`=? AND `account`.`is_charge`=? GROUP BY `posting_journal`.`account_id` ' +
         ') UNION ALL (' +
-          'SELECT `account`.`id`, `account`.`account_type_id`, `account`.`is_charge`, `general_ledger`.`fiscal_year_id`, `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, '+
+          'SELECT `account`.`id`, `account`.`type_id`, `account`.`is_charge`, `general_ledger`.`fiscal_year_id`, `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, '+
             0 + ' AS credit, ' + 0 + ' AS debit, ' +
             'SUM(`general_ledger`.`debit_equiv`) AS `debit_equiv`, ' +
             'SUM(`general_ledger`.`credit_equiv`) AS `credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
             '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
-          'FROM `general_ledger` JOIN `account` ON `account`.`id`=`general_ledger`.`account_id` WHERE `general_ledger`.`fiscal_year_id`=? AND `account`.`account_type_id`=? AND `account`.`is_charge`=? GROUP BY `general_ledger`.`account_id` ' +
+          'FROM `general_ledger` JOIN `account` ON `account`.`id`=`general_ledger`.`account_id` WHERE `general_ledger`.`fiscal_year_id`=? AND `account`.`type_id`=? AND `account`.`is_charge`=? GROUP BY `general_ledger`.`account_id` ' +
         ')' +
       ') AS `t`, `account` AS `ac` ' +
-      'WHERE `t`.`account_id` = `ac`.`id` AND (`ac`.`account_type_id`=? AND `ac`.`is_charge`=?) AND t.fiscal_year_id = ? ';
+      'WHERE `t`.`account_id` = `ac`.`id` AND (`ac`.`type_id`=? AND `ac`.`is_charge`=?) AND t.fiscal_year_id = ? ';
 
   db.exec(sql, [fiscalYearId, accountType, accountIsCharge, fiscalYearId, accountType, accountIsCharge, accountType, accountIsCharge, fiscalYearId])
   .then(function (data) {

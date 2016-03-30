@@ -24,7 +24,7 @@ function ReportChartOfAccountsController($scope, $window, $translate, validate, 
     var data = accountModel.data;
 
     data.sort(function (a, b) {
-      var left = String(a.account_number), right = String(b.account_number);
+      var left = String(a.number), right = String(b.number);
       return (left === right) ? 0 : (left > right ? 1 : -1);
     });
 
@@ -54,7 +54,7 @@ function ReportChartOfAccountsController($scope, $window, $translate, validate, 
       query: {
         tables: {
           'account': {
-            columns: ['id', 'account_type_id', 'account_txt', 'account_number', 'is_ohada']
+            columns: ['id', 'type_id', 'label', 'number', 'is_ohada']
           }
         },
         where : ['account.is_ohada=' + session.type]

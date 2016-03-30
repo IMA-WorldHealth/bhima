@@ -86,7 +86,7 @@ exports.compile = function (options) {
 
   // FIXME/TODO -- n
   sql =
-    'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, ' +
+    'SELECT account.id, account.number, account.label, account.type_id, ' +
       'account.parent, IFNULL(totals.debit, 0) AS debit, IFNULL(totals.credit, 0) AS credit, ' +
       'IFNULL(totals.balance, 0) AS balance, account_type.type ' +
     'FROM account LEFT JOIN (' +
@@ -96,8 +96,8 @@ exports.compile = function (options) {
       'WHERE pt.fiscal_year_id = ? ' +
       'GROUP BY pt.account_id ' +
     ') AS totals ON totals.account_id = account.id ' +
-    'JOIN account_type ON account_type.id = account.account_type_id ' +
-    'WHERE account.account_type_id IN (?, ?) AND account.is_ohada = 1;';
+    'JOIN account_type ON account_type.id = account.type_id ' +
+    'WHERE account.type_id IN (?, ?) AND account.is_ohada = 1;';
 
   // first we want to get the proper account ids for the balance accounts
   // and title accounts

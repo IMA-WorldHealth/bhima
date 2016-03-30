@@ -59,14 +59,14 @@ exports.availableProfitCenters = function (req, res, next) {
 
 exports.costCenterCost = function (req, res, next) {
   var sql =
-    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'SELECT `account`.`id`, `account`.`number`, `account`.`label` FROM `account` '+
     'WHERE `account`.`cc_id` = ' + sanitize.escape(req.params.cc_id) +
-    ' AND `account`.`account_type_id` <> 3';
+    ' AND `account`.`type_id` <> 3';
 
   function process(accounts) {
     if(accounts.length === 0) {return {cost : 0};}
     var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
+      return item.number.toString().indexOf('6') === 0;
     });
 
     var cost = availablechargeAccounts.reduce(function (x, y) {
@@ -90,14 +90,14 @@ exports.costCenterCost = function (req, res, next) {
 
 exports.profitCenterCost = function (req, res, next) {
   var sql =
-    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'SELECT `account`.`id`, `account`.`number`, `account`.`label` FROM `account` '+
     'WHERE `account`.`pc_id`=' + sanitize.escape(req.params.pc_id) +
-    ' AND `account`.`account_type_id` <> 3';
+    ' AND `account`.`type_id` <> 3';
 
   function process(accounts) {
     if(accounts.length === 0) {return {profit : 0};}
     var availableprofitAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('7') === 0;
+      return item.number.toString().indexOf('7') === 0;
     });
 
     var profit = availableprofitAccounts.reduce(function (x, y) {
@@ -121,7 +121,7 @@ exports.profitCenterCost = function (req, res, next) {
 
 exports.costCenterAccount = function (req, res, next) {
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt ' +
+    'SELECT account.id, account.number, account.label ' +
     'FROM account JOIN cost_center ' +
     'ON account.cc_id = cost_center.id '+
     'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
@@ -131,7 +131,7 @@ exports.costCenterAccount = function (req, res, next) {
 
   function process(accounts) {
     var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
+      return item.number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
   }
@@ -146,7 +146,7 @@ exports.costCenterAccount = function (req, res, next) {
 
 exports.profitCenterAccount = function (req, res, next) {
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt ' +
+    'SELECT account.id, account.number, account.label ' +
     'FROM account JOIN profit_center ' +
     'ON account.pc_id = profit_center.id '+
     'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
@@ -156,7 +156,7 @@ exports.profitCenterAccount = function (req, res, next) {
 
   function process(accounts) {
     var availableprofitAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('7') === 0;
+      return item.number.toString().indexOf('7') === 0;
     });
     return availableprofitAccounts;
   }
@@ -171,7 +171,7 @@ exports.profitCenterAccount = function (req, res, next) {
 
 exports.auxCenterAccount = function (req, res, next) {
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt ' +
+    'SELECT account.id, account.number, account.label ' +
     'FROM account JOIN auxiliairy_center ' +
     'ON account.auxiliairy_center_id = auxiliairy_center.id ' +
     'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
@@ -180,7 +180,7 @@ exports.auxCenterAccount = function (req, res, next) {
 
   function process(accounts) {
     var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
+      return item.number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
   }
@@ -231,14 +231,14 @@ exports.removeFromProfitCenter = function (req, res, next) {
 /* Ambigious service categorisation */
 exports.costByPeriod = function (req, res, next) {
   var sql =
-    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'SELECT `account`.`id`, `account`.`number`, `account`.`label` FROM `account` '+
     'WHERE `account`.`cc_id`=' + sanitize.escape(req.params.cc_id) +
-    ' AND `account`.`account_type_id` <> 3';
+    ' AND `account`.`type_id` <> 3';
 
   function process(accounts) {
     if(accounts.length === 0) {return {cost : 0};}
     var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
+      return item.number.toString().indexOf('6') === 0;
     });
 
 
@@ -263,14 +263,14 @@ exports.costByPeriod = function (req, res, next) {
 
 exports.profitByPeriod = function (req, res, next) {
   var sql =
-    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'SELECT `account`.`id`, `account`.`number`, `account`.`label` FROM `account` '+
     'WHERE `account`.`pc_id`=' + sanitize.escape(req.params.pc_id) +
-    ' AND `account`.`account_type_id` <> 3';
+    ' AND `account`.`type_id` <> 3';
 
   function process(accounts) {
     if(accounts.length === 0) {return {profit : 0};}
     var availableprofitAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('7') === 0;
+      return item.number.toString().indexOf('7') === 0;
     });
 
     var profit = availableprofitAccounts.reduce(function (x, y) {

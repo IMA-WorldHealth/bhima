@@ -54,7 +54,7 @@
           <tr>
             <td>{{ model.transfer.reference }}</td>
             <td>{{ trans_id }}</td>            
-            <td>{{'INVOICE.LIBELLE_TRANSFERT_FROM' | translate}}{{model.transfer.account_txt}} {{'INVOICE.TO' | translate}} {{'INVOICE.PCASH' | translate}}</td>
+            <td>{{'INVOICE.LIBELLE_TRANSFERT_FROM' | translate}}{{model.transfer.label}} {{'INVOICE.TO' | translate}} {{'INVOICE.PCASH' | translate}}</td>
             <td>{{ model.transfer.cost  | currency:model.transfer.currency_id }}</td>
           </tr>
         </tbody>

@@ -13,7 +13,7 @@ angular.module('bhima.controllers')
         tables: {
           primary_cash: { columns: ['reference', 'cost', 'project_id', 'currency_id', 'date'] },
           primary_cash_item : {columns : ['debit', 'credit']},
-          account : {columns : ['account_txt']},
+          account : {columns : ['label']},
           sale       : {columns : ['note']}
         },
         join : ['primary_cash.account_id=account.id', 'primary_cash.uuid=primary_cash_item.primary_cash_uuid', 'sale.uuid=primary_cash_item.inv_po_id']

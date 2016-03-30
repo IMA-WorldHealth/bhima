@@ -31,7 +31,7 @@
         <tr ng-repeat="row in records">
           <td>{{ row.trans_id }}</td>
           <td>{{ row.trans_date | date }}</td>
-          <td>{{ row.account_number }}</td>
+          <td>{{ row.number }}</td>
           <td>{{ row.debit_equiv | currency:project.currency_id }}</td>
           <td>{{ row.credit_equiv | currency:project.currency_id }}</td>
           <td>{{ row.description }}</td>

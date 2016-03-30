@@ -14,7 +14,7 @@ function InventoryRegisterController($scope, $translate, appstate, connect, $mod
     query : {
       tables: {
         'account' : {
-          columns: ['enterprise_id', 'id', 'account_number', 'locked', 'account_txt', 'account_type_id']
+          columns: ['enterprise_id', 'id', 'number', 'locked', 'label', 'type_id']
         }
       },
     }

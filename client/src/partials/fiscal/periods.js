@@ -9,7 +9,7 @@ angular.module('bhima.controllers')
     $scope.fiscal = params.fiscal;
 
     params.accounts.forEach(function (row) {
-      row.account_number = String(row.account_number);
+      row.number = String(row.number);
     });
 
     $scope.dismiss = $modalInstance.close;

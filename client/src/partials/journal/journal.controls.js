@@ -30,9 +30,9 @@ angular.module('bhima.controllers')
 
     dependencies.account = {
       query : {
-        'identifier' : 'account_number',
+        'identifier' : 'number',
         'tables' : {
-          'account' : { 'columns' : ['id', 'account_number', 'account_type_id', 'account_txt'] }
+          'account' : { 'columns' : ['id', 'number', 'type_id', 'label'] }
         }
       }
     };
@@ -44,7 +44,7 @@ angular.module('bhima.controllers')
           'debitor' : { 'columns' : ['uuid'] },
           'patient' : { 'columns' : ['first_name', 'last_name'] },
           'debitor_group' : { 'columns' : ['name'] },
-          'account' : { 'columns' : ['account_number'] }
+          'account' : { 'columns' : ['number'] }
         },
         join: ['debitor.uuid=patient.debitor_uuid', 'debitor_group.uuid=debitor.group_uuid', 'debitor_group.account_id=account.id']
       }
@@ -55,7 +55,7 @@ angular.module('bhima.controllers')
         'tables' : {
           'creditor' : { 'columns' : ['uuid', 'text'] },
           'creditor_group' : { 'columns' : ['name'] },
-          'account' : { 'columns' : ['account_number'] }
+          'account' : { 'columns' : ['number'] }
         },
         join: ['creditor.group_uuid=creditor_group.uuid','creditor_group.account_id=account.id']
       }
@@ -268,7 +268,7 @@ angular.module('bhima.controllers')
         trans_date     : templateRow.trans_date,
         description    : templateRow.description,
         project_id     : templateRow.project_id,
-        account_number : '(Select Account)',
+        number : '(Select Account)',
         debit_equiv    : 0,
         credit_equiv   : 0,
         debit          : 0,
@@ -310,10 +310,10 @@ angular.module('bhima.controllers')
 
       // FIXME : This will no longer work if we have non-unique account
       // numbers.
-      if (record.account_number) { data.account_id = $scope.account.get(record.account_number).id; }
+      if (record.number) { data.account_id = $scope.account.get(record.number).id; }
 
       // Transfer values from cc over to posting journal cc_id and pc_id fields
-      // This is because we are doing a join, similar to the account_number field
+      // This is because we are doing a join, similar to the number field
       // above.
       // We check for NaNs because we don't have unique identifers like the account number
       // for an account.
@@ -352,7 +352,7 @@ angular.module('bhima.controllers')
 
 
     function validAccountNumber (item) {
-      return !isNaN(Number(item.account_number));
+      return !isNaN(Number(item.number));
     }
 
     function validTotals (totalDebit, totalCredit) {
@@ -645,13 +645,13 @@ angular.module('bhima.controllers')
 
       this.init = function () {
         //default value - naive way of checking for previous value, default string is set, not value
-        defaultValue = Number.isNaN(Number(args.item.account_number)) ? null : args.item.account_number;
+        defaultValue = Number.isNaN(Number(args.item.number)) ? null : args.item.number;
         var options = '';
         $scope.account.data.forEach(function (account) {
-          var disabled = (account.account_type_id === 3) ? 'disabled' : '';
-          options += '<option ' + disabled + ' value="' + account.account_number + '">' + account.account_number + ' ' + account.account_txt + '</option>';
-          if (!defaultValue && account.account_type_id!==3) {
-            defaultValue = account.account_number;
+          var disabled = (account.type_id === 3) ? 'disabled' : '';
+          options += '<option ' + disabled + ' value="' + account.number + '">' + account.number + ' ' + account.label + '</option>';
+          if (!defaultValue && account.type_id!==3) {
+            defaultValue = account.number;
           }
         });
 

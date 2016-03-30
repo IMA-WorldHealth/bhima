@@ -36,7 +36,7 @@
           <tbody>
             <tr ng-repeat="group in groups.data | filter:flags.search | orderBy:'name'">
               <td>{{ group.name }}</td>
-              <td>{{ accounts.get(group.account_id).account_number }}</td>
+              <td>{{ accounts.get(group.account_id).number }}</td>
               <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)" ng-true-value="1" ng-false-value="0" ng-checked="group.locked"></td>
               <td style="cursor: pointer;"><a ng-click="editGroup(group)"><i class="glyphicon glyphicon-pencil"></i></a></td>
             </tr>
@@ -69,7 +69,7 @@
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-bhima" ng-model="new.account_id" required ng-options="account.id as account.label disable when (account.type === 'title') for account in accounts.data | orderBy:'account_number'">
+                <select class="form-bhima" ng-model="new.account_id" required ng-options="account.id as account.label disable when (account.type === 'title') for account in accounts.data | orderBy:'number'">
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
                 </select>
               </div>
@@ -104,7 +104,7 @@
             <div class="form-group">
               <label class="col-xs-3 control-label">{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-bhima" ng-model="edit.account_id" required ng-options="account.id as account.label disable when (account.type === 'title') for account in accounts.data | orderBy:'account_number'">
+                <select class="form-bhima" ng-model="edit.account_id" required ng-options="account.id as account.label disable when (account.type === 'title') for account in accounts.data | orderBy:'number'">
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
                 </select>
               </div>

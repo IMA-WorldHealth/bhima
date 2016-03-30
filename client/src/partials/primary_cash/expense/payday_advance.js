@@ -36,7 +36,7 @@ angular.module('bhima.controllers')
             columns : ['id', 'text', 'project_id']
           },
           'account' : {
-            columns : ['account_txt']
+            columns : ['label']
           }
         },
         join : [

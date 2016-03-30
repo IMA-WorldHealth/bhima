@@ -29,9 +29,9 @@ angular.module('bhima.controllers')
     dependencies.account = {
       query : {
         'tables' : {
-          'account' : { 'columns' : ['id', 'account_number', 'account_type_id', 'account_txt'] }
+          'account' : { 'columns' : ['id', 'number', 'type_id', 'label'] }
         },
-        identifier: 'account_number'
+        identifier: 'number'
       }
     };
 
@@ -192,9 +192,9 @@ angular.module('bhima.controllers')
         dataview.setGrouping({
           getter: 'account_id',
           formatter: function(g) {
-            var account = $scope.account.get(g.rows[0].account_number),
-                label = account && account.account_txt ?
-                  account.account_number + ' ' + account.account_txt :
+            var account = $scope.account.get(g.rows[0].number),
+                label = account && account.label ?
+                  account.number + ' ' + account.label :
                   $translate.instant('POSTING_JOURNAL.UNKNOWN_ACCOUNT');
             return '<span style="font-weight: bold">' + label + '</span>';
           },

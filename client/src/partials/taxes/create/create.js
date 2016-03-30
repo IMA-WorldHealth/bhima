@@ -23,10 +23,10 @@ function CreateTaxController($scope, $translate, validate, messenger, connect, a
     query : {
       tables : {
         'account' : {
-          columns : ['id', 'account_number', 'account_txt']
+          columns : ['id', 'number', 'label']
         }
       },
-      where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
+      where : ['account.is_ohada=1', 'AND', 'account.type_id<>3']
     }
   };
 
@@ -83,8 +83,8 @@ function CreateTaxController($scope, $translate, validate, messenger, connect, a
       record.six_account_id = session.edit.six_account_id;
 
       delete record.reference;
-      delete record.account_number;
-      delete record.account_txt;
+      delete record.number;
+      delete record.label;
 
       if (record.abbr) {
         if (record.abbr.length <= 4) {

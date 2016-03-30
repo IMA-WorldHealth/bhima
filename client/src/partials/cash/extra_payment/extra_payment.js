@@ -54,7 +54,7 @@ function ExtraPaymentController($http, $translate, validate, messenger, Appcache
     query : {
       tables : {
         'account' :{
-          columns : ['id', 'account_txt', 'account_number']
+          columns : ['id', 'label', 'number']
         }
       },
       where : ['account.classe=4']
@@ -77,7 +77,7 @@ function ExtraPaymentController($http, $translate, validate, messenger, Appcache
 
   function formatAccount(account) {
     if (account) {
-      return account.account_number + ' - ' + account.account_txt;
+      return account.number + ' - ' + account.label;
     }
   }
 

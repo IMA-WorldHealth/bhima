@@ -30,7 +30,7 @@ angular.module('bhima.controllers')
 
     function transformAccountNumber() {
       $scope.models.accounts.map(function(item) {
-        item.account_number = item.account_number.toString();
+        item.number = item.number.toString();
       });
     }
 

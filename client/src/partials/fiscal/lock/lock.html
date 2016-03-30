@@ -42,8 +42,8 @@
     <div class="form-group">
       <label>{{ 'FISCAL_YEAR.SELECT_RESULTAT_ACCOUNT' | translate }}
       <span ng-if="session.resultat_account">:
-        <b>[{{session.resultat_account.account_number}}]</b>
-        {{session.resultat_account.account_txt}}
+        <b>[{{session.resultat_account.number}}]</b>
+        {{session.resultat_account.label}}
       </span></label>
       <select
       class="form-bhima"

@@ -13,7 +13,7 @@ angular.module('bhima.controllers')
         tables: {
           primary_cash: { columns: ['reference', 'cost', 'project_id', 'currency_id', 'date'] },
           primary_cash_item : {columns : ['debit', 'credit']},
-          account : {columns : ['account_txt']},
+          account : {columns : ['label']},
           employee : { columns: ['name', 'postnom', 'prenom', 'creditor_uuid'] },
           sale       : {columns : ['note']}
         },

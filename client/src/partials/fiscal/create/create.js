@@ -58,13 +58,13 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
     query : {
       tables : {
         'account' : {
-          columns : ['id', 'account_txt', 'account_number', 'parent']
+          columns : ['id', 'label', 'number', 'parent']
         },
         'account_type' : {
           columns : ['type']
         }
       },
-      join : ['account.account_type_id=account_type.id'],
+      join : ['account.type_id=account_type.id'],
       where : [['account_type.type=balance', 'OR', 'account_type.type=title'], 'AND']
     }
   };
@@ -72,7 +72,7 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
   dependencies.resultatAccount = {
     query : {
       tables : {
-        account : { columns : ['id', 'account_number', 'account_txt'] }
+        account : { columns : ['id', 'number', 'label'] }
       },
       where : ['account.classe=1', 'OR', 'account.is_ohada=1']
     }
@@ -138,19 +138,19 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
   // set the account balance to 0 for all accounts
   function resetBalances() {
     $scope.accounts.data.forEach(function (row) {
-      // make account_number a string to sort properly
-      row.account_number = String(row.account_number);
+      // make number a string to sort properly
+      row.number = String(row.number);
       row.debit = 0;
       row.credit = 0;
     });
   }
 
-  // sorts accounts based on account_number (string)
+  // sorts accounts based on number (string)
   function sortAccounts(accountModel) {
     var data = accountModel.data;
 
     data.sort(function (a, b) {
-      var left = String(a.account_number), right = String(b.account_number);
+      var left = String(a.number), right = String(b.number);
       return (left === right) ? 0 : (left > right ? 1 : -1);
     });
 
@@ -261,7 +261,7 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
   }
 
   $scope.formatAccount = function formatAccount (ac) {
-    return '['+ac.account_number+'] => '+ac.account_txt;
+    return '['+ac.number+'] => '+ac.label;
   };
 
   function postingNewFiscalYear () {

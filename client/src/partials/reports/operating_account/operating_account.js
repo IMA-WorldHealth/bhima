@@ -134,8 +134,8 @@ function OperatingAccountController($translate, $window, validate, SessionServic
 
     fileData.data = vm.records.map(function (item) {
       return {
-        'account_number' : item.account_number,
-        'account_txt'    : item.account_txt,
+        'number' : item.number,
+        'label'    : item.label,
         'credit'         : item.debit,
         'debit'          : item.credit
       };

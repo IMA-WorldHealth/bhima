@@ -64,8 +64,8 @@
     <div class="modal-table-body" ng-if="BalanceCtrl.state === 'default'">
       <table class="table-hover">
         <tbody>
-          <tr ng-repeat="account in BalanceCtrl.balances | orderBy:'account_number'">
-            <th style="width:20%" class="no-border">{{ account.account_number }}</th>
+          <tr ng-repeat="account in BalanceCtrl.balances | orderBy:'number'">
+            <th style="width:20%" class="no-border">{{ account.number }}</th>
             <td style="width:20%"> {{ account.balance | currency:2 }}</td>
             <td style="width:20%"> {{ account.debit | currency:2 }}</td>
             <td style="width:20%"> {{ account.credit | currency:2 }}</td>

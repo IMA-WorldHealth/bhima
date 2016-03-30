@@ -47,7 +47,7 @@ function buildFinanceQuery(requiredFiscalYears) {
   });
 
   query = [
-    'SELECT budget_result.account_id, account.account_number, account.account_txt, account.parent, account.account_type_id,',
+    'SELECT budget_result.account_id, account.number, account.label, account.parent, account.type_id,',
     selectColumns.join(','),
     ',',
     differenceColumns.join(','),
@@ -131,7 +131,7 @@ function accountStatement(params){
 
   report.account = {
     query :
-      'SELECT account_number, account_txt, account_type_id, parent, created FROM account where id = ' + params.accountId + ';',
+      'SELECT number, label, type_id, parent, created FROM account where id = ' + params.accountId + ';',
     singleResult : true
   };
 
@@ -685,7 +685,7 @@ function transactionsByAccount(params) {
   _limit = p.limit;
 
   sql =
-    'SELECT uuid, trans_date, description, account_number, debit, credit, currency_id ' +
+    'SELECT uuid, trans_date, description, number, debit, credit, currency_id ' +
     'FROM (' +
       'SELECT uuid, trans_date, description, account_id, debit, credit, currency_id ' +
       'FROM posting_journal ' +
@@ -704,7 +704,7 @@ function incomeReport (params) {
   params = JSON.parse(params);
   var defer = q.defer(),
     requette =
-      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `a`.`account_number`, `t`.`debit_equiv`,  ' +
+      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `a`.`number`, `t`.`debit_equiv`,  ' +
       '`t`.`credit_equiv`, SUM(`t`.`debit`) AS `debit`, SUM(`t`.`credit`) AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment`, `t`.`primary_cash_uuid`, `o`.`service_txt`, `u`.`first`, `u`.`last` ' +
       'FROM (' +
         '(' +
@@ -739,7 +739,7 @@ function expenseReport (params) {
   params = JSON.parse(params);
   var defer = q.defer(),
     requette =
-      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `a`.`account_number`, `t`.`debit_equiv`,  ' +
+      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `a`.`number`, `t`.`debit_equiv`,  ' +
       '`t`.`credit_equiv`, `t`.`debit`, `t`.`credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment`, `t`.`primary_cash_uuid`, `t`.`document_uuid`, `t`.`inv_po_id`, `o`.`service_txt`, `u`.`first`, `u`.`last` ' +
       'FROM (' +
         '(' +
@@ -795,7 +795,7 @@ function allTransactions (params){
     sub_chaine = source[params.source] + '.' + sub_chaine;
 
     requette =
-      'SELECT transact.uuid, transact.trans_id, transact.trans_date, ac.account_number, transact.debit_equiv AS debit,  ' +
+      'SELECT transact.uuid, transact.trans_id, transact.trans_date, ac.number, transact.debit_equiv AS debit,  ' +
       'transact.credit_equiv AS credit, transact.currency_id, transact.description, transact.comment ' +
       'FROM (' +
         'SELECT ' + sub_chaine + 'FROM ' + source[params.source] +
@@ -803,7 +803,7 @@ function allTransactions (params){
 
   } else {
     requette =
-      'SELECT transact.uuid, transact.trans_id, transact.trans_date, ac.account_number, transact.debit_equiv AS debit,  ' +
+      'SELECT transact.uuid, transact.trans_id, transact.trans_date, ac.number, transact.debit_equiv AS debit,  ' +
       'transact.credit_equiv AS credit, transact.currency_id, transact.description, transact.comment ' +
       'FROM (' +
         '(' +
@@ -866,7 +866,7 @@ function balanceMensuelle(params) {
 
   // gets the amount up to the current period
   sql =
-    'SELECT a.account_number, a.id, a.account_txt, a.account_type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
+    'SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
     'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
     'JOIN period AS p ON pt.period_id = p.id ' +
     'WHERE p.period_stop <= DATE(?) AND pt.enterprise_id = ? ' +
@@ -878,7 +878,7 @@ function balanceMensuelle(params) {
     data.beginning = rows;
 
     sql =
-      'SELECT a.account_number, a.account_txt, a.id, a.account_type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
+      'SELECT a.number, a.label, a.id, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
       'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
       'JOIN period AS p ON pt.period_id = p.id ' +
       'WHERE DATE(?) BETWEEN p.period_start AND p.period_stop AND pt.enterprise_id = ? ' +
@@ -1043,27 +1043,27 @@ function operatingAccount(params) {
       sql;
 
   sql =
-    'SELECT period_total.period_id, account.account_number, account.classe, account.account_txt, period_total.credit, period_total.debit ' +
+    'SELECT period_total.period_id, account.number, account.classe, account.label, period_total.credit, period_total.debit ' +
     'FROM period_total ' +
     'JOIN account ON account.id = period_total.account_id ' +
-    'JOIN account_type ON account_type.id = account.account_type_id ' +
+    'JOIN account_type ON account_type.id = account.type_id ' +
     'WHERE period_total.period_id = ' + params.period_id + ' ' +
     'AND period_total.credit <> period_total.debit ' +
     'AND account_type.type = \'income/expense\' ' +
-    'ORDER BY account.account_number ASC';
+    'ORDER BY account.number ASC';
 
   if (params.period_id === 'all') {
     sql =
-      'SELECT period_total.period_id, account.account_number, account.classe, account.account_txt, SUM(period_total.credit) AS \'credit\', ' +
+      'SELECT period_total.period_id, account.number, account.classe, account.label, SUM(period_total.credit) AS \'credit\', ' +
         'SUM(period_total.debit) AS \'debit\' ' +
       'FROM period_total ' +
       'JOIN account ON account.id = period_total.account_id ' +
-      'JOIN account_type ON account_type.id = account.account_type_id ' +
+      'JOIN account_type ON account_type.id = account.type_id ' +
       'WHERE period_total.fiscal_year_id = ' + fiscal_id + ' ' +
       'AND account_type.type = \'income/expense\' ' +
-      'GROUP BY account.account_number ' +
+      'GROUP BY account.number ' +
       'HAVING credit <> debit ' +
-      'ORDER BY account.account_number ASC ';
+      'ORDER BY account.number ASC ';
   }
 
   return db.exec(sql);

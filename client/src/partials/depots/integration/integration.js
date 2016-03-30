@@ -286,7 +286,7 @@ function DepotStockIntegrationController($scope, $q, $translate, $location, $rou
   }
 
   function formatAccount (acc) {
-    return [acc.account_number, acc.account_txt].join(' - ');
+    return [acc.number, acc.label].join(' - ');
   }
 
   function setConfiguration (acc) {

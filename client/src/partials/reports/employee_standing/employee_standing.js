@@ -27,7 +27,7 @@ function ReportEmployeeStanding ($scope, $window, validate, messenger, connect, 
     query : {
       tables : {
         account : {
-          columns : ['id', 'account_txt', 'account_number']
+          columns : ['id', 'label', 'number']
         }
       }
     }

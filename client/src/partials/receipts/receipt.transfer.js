@@ -14,7 +14,7 @@ angular.module('bhima.controllers')
           primary_cash: { columns: [ 'uuid', 'reference','cost', 'project_id', 'currency_id', 'date'] },
           primary_cash_item : { columns : ['document_uuid'] },
           user : {columns : ['first', 'last']},
-          account : {columns : ['account_txt']}
+          account : {columns : ['label']}
         },
         join : ['primary_cash.user_id=user.id', 'primary_cash.account_id=account.id', 'primary_cash.uuid=primary_cash_item.primary_cash_uuid']
       }

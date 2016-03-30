@@ -32,7 +32,7 @@ function FiscalLockController ($q, $scope, $http, $route, $translate, validate, 
   dependencies.resultatAccount = {
     query : {
       tables : {
-        account : { columns : ['id', 'account_number', 'account_txt'] }
+        account : { columns : ['id', 'number', 'label'] }
       },
       where : ['account.classe=1', 'AND', 'is_ohada=1']
     }
@@ -176,7 +176,7 @@ function FiscalLockController ($q, $scope, $http, $route, $translate, validate, 
   }
 
   function formatAccount (ac) {
-    return '['+ac.account_number+'] => '+ac.account_txt;
+    return '['+ac.number+'] => '+ac.label;
   }
 
   function refresh () {

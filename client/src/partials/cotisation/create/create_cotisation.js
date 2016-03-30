@@ -24,10 +24,10 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'account' : {
-            columns : ['id', 'account_number', 'account_txt']
+            columns : ['id', 'number', 'label']
           }
         },
-        where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
+        where : ['account.is_ohada=1', 'AND', 'account.type_id<>3']
       }
     };
 
@@ -67,8 +67,8 @@ angular.module('bhima.controllers')
     $scope.save.edit = function () {
       var record = angular.copy(connect.clean(session.edit));
       delete record.reference;
-      delete record.account_number;
-      delete record.account_txt;
+      delete record.number;
+      delete record.label;
 
       record.six_account_id = session.edit.six_account_id;
 

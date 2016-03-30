@@ -17,10 +17,10 @@ describe('The account API, PATH : /accounts', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var newAccount = {
-    account_type_id : 1,
+    type_id : 1,
     enterprise_id : 1,
-    account_number : 4000400,
-    account_txt : 'Account for integration test',
+    number : 4000400,
+    label : 'Account for integration test',
     parent : 0,
     locked : 0,
     cc_id : null,
@@ -29,7 +29,6 @@ describe('The account API, PATH : /accounts', function () {
     is_asset : 0,
     reference_id : null,
     is_brut_link : 0,
-    is_used_budget : 0,
     is_charge : 0,
     is_title : 0
   };
@@ -40,8 +39,8 @@ describe('The account API, PATH : /accounts', function () {
 
   var responseKeys = [
     'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
-    'reference_id', 'is_brut_link', 'is_used_budget', 'is_charge', 'account_number',
-    'account_txt', 'parent', 'account_type_id', 'is_title', 'type'
+    'reference_id', 'is_brut_link', 'is_charge', 'number',
+    'label', 'parent', 'type_id', 'is_title', 'type'
   ];
 
     // login before each request
@@ -81,7 +80,7 @@ describe('The account API, PATH : /accounts', function () {
     });
 
 
-  it('GET /accounts returns the accounts in sorted order by account_number', function () {
+  it('GET /accounts returns the accounts in sorted order by number', function () {
     return agent.get('/accounts')
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -92,7 +91,7 @@ describe('The account API, PATH : /accounts', function () {
         var sorted = clone(accounts);
 
         sorted.sort(function (a, b) {
-          return a.account_number > b.account_number ? 1 : -1;
+          return a.number > b.number ? 1 : -1;
         });
 
         expect(accounts).to.deep.equal(sorted);
@@ -171,7 +170,7 @@ describe('The account API, PATH : /accounts', function () {
   });
 
   it('METHOD : PUT, PATH : /accounts/:id, It updates the newly added account', function () {
-    var updateInfo = { account_txt : 'updated value for testing account'};
+    var updateInfo = { label : 'updated value for testing account'};
 
     return agent.put('/accounts/'+ newAccount.id)
       .send(updateInfo)
@@ -179,14 +178,14 @@ describe('The account API, PATH : /accounts', function () {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body.id).to.equal(newAccount.id);
-        expect(res.body.account_txt).to.equal(updateInfo.account_txt);
+        expect(res.body.label).to.equal(updateInfo.label);
         expect(res.body).to.have.all.keys(responseKeys);
        })
       .catch(helpers.handler);
   });
 
  it('METHOD : PUT, PATH : /accounts/:unknown, It refuses to update the unknow entity', function () {
-    var updateInfo = { account_txt : 'updated value for testing account unknwon'};
+    var updateInfo = { label : 'updated value for testing account unknwon'};
 
     return agent.put('/accounts/undefined')
       .send(updateInfo)

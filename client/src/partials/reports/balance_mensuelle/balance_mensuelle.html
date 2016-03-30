@@ -110,7 +110,7 @@
               </tr>
               <tr ng-repeat="(num, account) in ReportCtrl.accounts | orderBy:'num'" class="text-right">
                 <td class="text-left">{{ num }}</td>
-                <td class="text-left"> {{ account.account_txt }}</td>
+                <td class="text-left"> {{ account.label }}</td>
                 <td>{{ (account.beginDebit) | currency:session.enterprise.currency_id }}</td>
                 <td>{{ (account.beginCredit) | currency:session.enterprise.currency_id }}</td>
                 <td>{{ (account.middleDebit) | currency:session.enterprise.currency_id }}</td>

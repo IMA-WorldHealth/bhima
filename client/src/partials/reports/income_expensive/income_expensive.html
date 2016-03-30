@@ -43,8 +43,8 @@
       </tr>
     </thead>    
     <tbody>
-      <tr ng-repeat="account in models.accounts | orderBy:'account_number'">
-        <td>{{account.account_txt}}</td>
+      <tr ng-repeat="account in models.accounts | orderBy:'number'">
+        <td>{{account.label}}</td>
         <td ng-repeat="stat in account.stat track by $index">{{stat | currency}}</td>
       </tr>                      
     </tbody>

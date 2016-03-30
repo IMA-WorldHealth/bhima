@@ -33,7 +33,7 @@
           <tr>
 
             <td style="padding-left: {{=line.depth * 40}}px; {{? line.type === 'title' }}font-weight : bold;{{?}}">
-              {{=line.account_number}} <i>{{=line.account_txt}}</i>
+              {{=line.number}} <i>{{=line.label}}</i>
             </td>
 
             <td class="text-right">
@@ -54,7 +54,7 @@
 
         {{? line.type === 'title' }}
           <tr class="outline">
-            <td style="padding-left : {{=line.depth * 40}}px; font-weight : bold;">Balance: {{=line.account_txt}}</td>
+            <td style="padding-left : {{=line.depth * 40}}px; font-weight : bold;">Balance: {{=line.label}}</td>
             <td class="text-right" style="font-weight : bold;" colspan="3">{{=line.formattedBalance}}</td>
           </tr>
         {{?}}

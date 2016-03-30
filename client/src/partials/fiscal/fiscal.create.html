@@ -100,9 +100,9 @@
       <table class="table table-condensed" style="font-size: 10px; margin-bottom:0;">
         <tbody>
           <tr ng-repeat="account in accounts.data">
-            <th style="width:15%; border-right: 1px solid #ddd;">{{ account.account_number }}</th>
+            <th style="width:15%; border-right: 1px solid #ddd;">{{ account.number }}</th>
             <td style="width:55%;">
-              <span ng-style="{'padding-left': (account.depth * 20) + 'px'}">{{ account.account_txt }}</span>
+              <span ng-style="{'padding-left': (account.depth * 20) + 'px'}">{{ account.label }}</span>
             </td>
             <td style="width:15%" ng-if="account.type !== 'title'">
               <input type="number" ng-model="account.debit" required>
@@ -157,8 +157,8 @@
       <div class="form-group">
         <label>{{ 'FISCAL_YEAR.SELECT_RESULTAT_ACCOUNT' | translate }}
         <span ng-if="session.resultat_account">:
-          <b>[{{session.resultat_account.account_number}}]</b>
-          {{session.resultat_account.account_txt}}
+          <b>[{{session.resultat_account.number}}]</b>
+          {{session.resultat_account.label}}
         </span></label>
         <select
         class="form-control"

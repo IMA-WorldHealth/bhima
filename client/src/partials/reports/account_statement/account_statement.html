@@ -61,7 +61,7 @@
 
   <div ng-switch-when="generate">
     <header>
-      {{ "REPORT.ACCOUNT_STATEMENT.TITLE" | translate }} <span style="font-size: 14px">{{ report.account.account_txt }}</span>
+      {{ "REPORT.ACCOUNT_STATEMENT.TITLE" | translate }} <span style="font-size: 14px">{{ report.account.label }}</span>
     </header>
 
     <nav>
@@ -87,7 +87,7 @@
 
           <div class="row" style="margin:0">
             <div class="visible-print">
-              <h3>{{ "REPORT.ACCOUNT_STATEMENT.TITLE" | translate }} <span style="font-size: 14px">{{ report.account.account_txt }}</span></h3>
+              <h3>{{ "REPORT.ACCOUNT_STATEMENT.TITLE" | translate }} <span style="font-size: 14px">{{ report.account.label }}</span></h3>
             </div>
 
             <div class="pull-right">
@@ -108,8 +108,8 @@
 
                 <tbody>
                   <tr>
-                    <td>{{ report.account.account_number}}</td>
-                    <td>{{ report.account.account_txt }}</td>
+                    <td>{{ report.account.number}}</td>
+                    <td>{{ report.account.label }}</td>
                     <td>{{ session.config.dateFrom | date }} -- {{ session.config.dateTo | date }}</td>
                   </td>
                 </tbody>

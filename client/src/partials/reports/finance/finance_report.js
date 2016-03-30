@@ -20,7 +20,7 @@ angular.module('bhima.controllers')
 
     dependencies.finance = {
       required : true,
-      identifier: 'account_number'
+      identifier: 'number'
     };
 
     dependencies.fiscal = {
@@ -68,12 +68,12 @@ angular.module('bhima.controllers')
         };
 
         //FIXME very temporary filter
-        var filterVar = String(account.account_number);
+        var filterVar = String(account.number);
         if (filterVar.indexOf('6') !== 0 && filterVar.indexOf('7') !== 0) {
           return;
         }
 
-        if (account.account_type_id === TITLE) {
+        if (account.type_id === TITLE) {
           insertAccount.accounts = [];
 
           //FIXME Grouping and totaling
@@ -82,7 +82,7 @@ angular.module('bhima.controllers')
             insertAccount.detail.total[column.key] = 0;
           });
 
-          index[account.account_number] = insertAccount;
+          index[account.number] = insertAccount;
 
           if (account.parent === ROOT) {
             store.push(insertAccount);

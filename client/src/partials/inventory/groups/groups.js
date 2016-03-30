@@ -31,7 +31,7 @@ function InventoryGroupController($scope, validate, connect, uuid) {
     query : {
       tables : {
         'account' : {
-          columns : ['id', 'account_number', 'account_txt']
+          columns : ['id', 'number', 'label']
         }
       }
     }
@@ -41,8 +41,8 @@ function InventoryGroupController($scope, validate, connect, uuid) {
 
     // preformat account labels for massive speed gains
     models.accounts.data.forEach(function (accnt) {
-      accnt.account_number =  String(accnt.account_number);
-      accnt.label = [accnt.account_number, accnt.account_txt].join(' -- ');
+      accnt.number =  String(accnt.number);
+      accnt.label = [accnt.number, accnt.label].join(' -- ');
     });
 
     angular.extend($scope, models);

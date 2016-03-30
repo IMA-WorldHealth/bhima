@@ -97,7 +97,7 @@ function ReportGeneralLedger($scope, $translate, $filter, Session, validate, GLS
       {id: 'trans_date'     , name: $translate.instant('COLUMNS.DATE')           , field:'trans_date'     , visible : true   , formatter: formatDate  , sortable : true },
       {id: 'doc_num'        , name: $translate.instant('COLUMNS.DOCUMENT_ID')    , field:'doc_num'        , visible : false} ,
       {id: 'description'    , name: $translate.instant('COLUMNS.DESCRIPTION')    , field:'description'    , visible : true } ,
-      {id: 'account_number' , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field:'account_number' , visible : true   , sortable : true } ,
+      {id: 'number' , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field:'number' , visible : true   , sortable : true } ,
       {id: 'account_id'     , name: $translate.instant('COLUMNS.ACCOUNT_ID')     , field:'account_id'     , visible : false} ,
       {id: 'debit_equiv'    , name: $translate.instant('COLUMNS.DEB_EQUIV')      , field:'debit_equiv'    , visible : true   , formatter: formatEquiv  , groupTotalsFormatter: formatGroupTotalRow } ,
       {id: 'credit_equiv'   , name: $translate.instant('COLUMNS.CRE_EQUIV')      , field:'credit_equiv'   , visible : true   , formatter: formatEquiv  , groupTotalsFormatter: formatGroupTotalRow}  ,

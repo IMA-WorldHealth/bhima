@@ -32,10 +32,10 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
     query : {
       tables : {
         'account' :{
-          columns : ['id', 'account_txt', 'account_number', 'is_ohada']
+          columns : ['id', 'label', 'number', 'is_ohada']
         }
       },
-      where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
+      where : ['account.is_ohada=1', 'AND', 'account.type_id<>3']
     }
   };
 
@@ -174,7 +174,7 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
   }
 
   function formatAccount (ac) {
-    if (ac) {return ac.account_number + ' - ' + ac.account_txt;}
+    if (ac) {return ac.number + ' - ' + ac.label;}
   }
 
   function reconfigure () {

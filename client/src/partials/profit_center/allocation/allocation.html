@@ -63,8 +63,8 @@
             <tbody>
               <tr ng-repeat="account in ProfitCtrl.availableAccounts.data">
                 <td><input type="checkbox" ng-model="account.checked"/></td>
-                <td>{{ account.account_number }}</td>
-                <td>{{ account.account_txt }}</td>
+                <td>{{ account.number }}</td>
+                <td>{{ account.label }}</td>
               </tr>
             </tbody>
           </table>
@@ -104,8 +104,8 @@
             <tbody>
               <tr ng-repeat="associatedAccount in ProfitCtrl.associatedAccounts.data">
               <td><input type="checkbox" ng-model="associatedAccount.checked"/></td>
-              <td>{{ associatedAccount.account_number }}</td>
-              <td>{{ associatedAccount.account_txt }}</td>
+              <td>{{ associatedAccount.number }}</td>
+              <td>{{ associatedAccount.label }}</td>
               </tr>
             </tbody>
           </table>

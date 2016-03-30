@@ -60,7 +60,7 @@ function PrimaryCashSupportController($scope, $q, $location, $routeParams, valid
     query : {
       tables : {
         'account' : {
-          columns : ['id','account_number', 'account_txt']
+          columns : ['id','number', 'label']
         }
       },
       where: ['account.enterprise_id=' + $scope.enterprise.id]

@@ -90,9 +90,9 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
 
       // make the accounts object
       accounts = data.beginning.reduce(function (init, row) {
-        var account = init, id = row.account_number;
+        var account = init, id = row.number;
         var obj = account[id] = {}, sold = getSold(row);
-        obj.account_txt = row.account_txt;
+        obj.label = row.label;
         obj.beginDebit = sold.debit;
         obj.beginCredit = sold.credit;
         obj.middleDebit = 0;
@@ -106,13 +106,13 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
 
 
       data.middle.forEach(function (row){
-        var account = accounts[row.account_number] || {};
+        var account = accounts[row.number] || {};
         account.middleDebit = row.debit;
         account.middleCredit = row.credit;
-        account.account_txt = row.account_txt;
+        account.label = row.label;
         account.is_charge = row.is_charge;
         account.is_asset = row.is_asset;
-        accounts[row.account_number] = account;
+        accounts[row.number] = account;
       });
 
       Object.keys(accounts).forEach(function (item){
@@ -220,8 +220,8 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
 
     occurences = occurences.map(function (item){
       return {
-        account_number : item,
-        account_txt    : data[item].account_txt,
+        number : item,
+        label    : data[item].label,
         old_debit      : data[item].beginDebit || 0,
         old_credit     : data[item].beginCredit || 0,
         debit          : data[item].middleDebit || 0,

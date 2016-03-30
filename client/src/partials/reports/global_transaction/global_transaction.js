@@ -23,7 +23,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
   dependencies.accounts = {
     required : true,
     query : {
-      tables : {'account' : {columns : ['id', 'account_number', 'account_txt', 'account_type_id']}}
+      tables : {'account' : {columns : ['id', 'number', 'label', 'type_id']}}
     }
   };
 
@@ -74,7 +74,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
 
   function formatAccount(account) {
     return [
-      account.account_number, account.account_txt
+      account.number, account.label
     ].join(' -- ');
   }
 
@@ -84,7 +84,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
     angular.extend(vm, model);
 
     vm.accounts.data.forEach(function (account) {
-      account.account_number = String(account.account_number);
+      account.number = String(account.number);
 
       // Define formatted account string at load time as this will never have to change again
       account.display = formatAccount(account);
@@ -140,7 +140,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
       '&datef=' + util.sqlDate(session.dateFrom) +
       '&datet=' + util.sqlDate(session.dateTo);
 
-    session.account_number = vm.model.account_id ? vm.accounts.get(vm.model.account_id).account_number : '';
+    session.number = vm.model.account_id ? vm.accounts.get(vm.model.account_id).number : '';
     connect.fetch(url)
     .then(function (res) {
       vm.records = res;
@@ -179,7 +179,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
       return {
         'trans_id'       : item.trans_id,
         'trans_date'     : util.htmlDate(item.trans_date),
-        'account_number' : item.account_number,
+        'number' : item.number,
         'description'    : item.description,
         'debit'          : item.debit,
         'credit'         : item.credit

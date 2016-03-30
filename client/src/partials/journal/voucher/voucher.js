@@ -378,7 +378,7 @@ function JournalVoucherTableController($http, $q, $scope) {
 
   /* formatters */
   vm.fmtAccount = function (account) {
-    return account ?  account.account_number + ' ' +  account.account_txt : '';
+    return account ?  account.number + ' ' +  account.label : '';
   };
 
   // Set a debtor or creditor for the row

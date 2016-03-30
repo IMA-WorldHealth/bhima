@@ -57,7 +57,7 @@ Optional attributes:
     `whereClause()` function would look like this:
 
        function whereClause() {
-          return [ 'account.account_type_id in (1,4)' ];
+          return [ 'account.type_id in (1,4)' ];
        }
 
     Note that all fields are included in the query for accounts so the 'WHERE'

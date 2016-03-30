@@ -13,13 +13,13 @@ function CreditorGroupController($scope, connect, appstate, messenger, validate,
     query : {
       tables : {
         'account' : {
-          columns: ['id', 'account_number', 'account_txt']
+          columns: ['id', 'number', 'label']
         },
         'account_type' : {
           columns : ['type']
         }
       },
-      join : ['account.account_type_id=account_type.id'] // TODO: add order by for accounts
+      join : ['account.type_id=account_type.id'] // TODO: add order by for accounts
     }
   };
 
@@ -57,8 +57,8 @@ function CreditorGroupController($scope, connect, appstate, messenger, validate,
 
     // for the orderBy to work appropriately
     $scope.accounts.data.forEach(function (account) {
-      account.account_number = String(account.account_number);
-      account.label = account.account_number + ' -- ' + account.account_txt;
+      account.number = String(account.number);
+      account.label = account.number + ' -- ' + account.label;
     });
   }
 

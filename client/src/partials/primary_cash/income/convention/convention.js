@@ -58,7 +58,7 @@ function PrimaryCashConventionController ($q, $location, $routeParams, validate,
     query : {
       tables : {
         'account' : {
-          columns : ['id','account_number', 'account_txt']
+          columns : ['id','number', 'label']
         }
       }
     }

@@ -44,7 +44,7 @@ angular.module('bhima.controllers')
             columns : ['period_number']
           },
           'account' : {
-            columns: ['account_txt', 'account_number']
+            columns: ['label', 'number']
           },
           'account_type' : {
             columns : ['type']
@@ -53,7 +53,7 @@ angular.module('bhima.controllers')
         join : [
           'period_total.account_id=account.id',
           'period_total.period_id=period.id',
-          'account.account_type_id=account_type.id'
+          'account.type_id=account_type.id'
         ],
         where : [
           'period_total.fiscal_year_id=?',

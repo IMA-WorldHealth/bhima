@@ -28,7 +28,7 @@ function ReportAccountStatement($scope, $http, $routeParams, $translate, uuid, u
     query : {
       tables : {
         'account' :{
-          columns : ['id', 'account_txt', 'account_number']
+          columns : ['id', 'label', 'number']
         }
       }
     }

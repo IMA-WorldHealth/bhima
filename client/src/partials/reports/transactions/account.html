@@ -31,7 +31,7 @@
               <span class="input-group-addon">
                 <i class="glyphicon glyphicon-folder-open"></i>
               </span>
-              <select class="form-bhima" ng-model="session.account" ng-options="account as account.account_number + ' - ' + account.account_txt for account in accounts.data | orderBy:'account_number'" required>
+              <select class="form-bhima" ng-model="session.account" ng-options="account as account.number + ' - ' + account.label for account in accounts.data | orderBy:'number'" required>
                 <option value="" disabled>-- {{ "SELECT.ACCOUNT" | translate }} --</option>
               </select>
             </div>
@@ -47,7 +47,7 @@
 
   <div ng-switch-when="generate">
     <header>
-      {{ "REPORT.TRANSACTIONS_BY_ACCOUNT" | translate }} / {{ session.account.account_number }} : <b> {{ session.account.account_txt }} </b> / {{ session.timestamp | date }}
+      {{ "REPORT.TRANSACTIONS_BY_ACCOUNT" | translate }} / {{ session.account.number }} : <b> {{ session.account.label }} </b> / {{ session.timestamp | date }}
     </header>
 
     <nav>
@@ -74,7 +74,7 @@
           <h4 class="visible-print">
             {{ "OPERATING_ACCOUNT.TITLE" | translate }} :
             <small>
-              {{ "REPORT.TRANSACTIONS_BY_ACCOUNT" | translate }} / {{ session.account.account_number }} : <b> {{ session.account.account_txt }} </b> / {{ session.timestamp | date }}
+              {{ "REPORT.TRANSACTIONS_BY_ACCOUNT" | translate }} / {{ session.account.number }} : <b> {{ session.account.label }} </b> / {{ session.timestamp | date }}
             </small>
           </h4>
           <table class="reportTable">

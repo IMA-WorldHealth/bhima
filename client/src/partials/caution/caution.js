@@ -60,7 +60,7 @@ function CautionController($location, $translate, $modal, validate, connect, mes
           columns : ['symbol', 'min_monentary_unit']
         },
         'account' : {
-          columns : ['account_txt']
+          columns : ['label']
         }
       },
       join : [
@@ -75,7 +75,7 @@ function CautionController($location, $translate, $modal, validate, connect, mes
     query : {
       tables : {
         'account' : {
-          columns : ['id','account_number', 'account_txt']
+          columns : ['id','number', 'label']
         }
       },
       where : ['account.enterprise_id=' + vm.project.enterprise_id]

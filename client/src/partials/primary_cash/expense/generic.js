@@ -32,10 +32,10 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
     query : {
       tables : {
         'account' :{
-          columns : ['id', 'account_txt', 'account_number', 'is_ohada']
+          columns : ['id', 'label', 'number', 'is_ohada']
         }
       },
-      where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
+      where : ['account.is_ohada=1', 'AND', 'account.type_id<>3']
     }
   };
 
@@ -179,7 +179,7 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
 
   function formatAccount(ac) {
     if (ac) {
-      return ac.account_number + ' - ' + ac.account_txt;
+      return ac.number + ' - ' + ac.label;
     }
   }
 

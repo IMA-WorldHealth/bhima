@@ -1,35 +1,35 @@
 angular.module('bhima.services')
 .service('AccountService', AccountService);
 
-AccountService.$inject = ['$http', 'util'];
+AccountService.$inject = ['$http', 'util', 'SessionService'];
 
 /**
 * Account Service
 *
 * A service wrapper for the /accounts HTTP endpoint.  
 */
-function AccountService($http, util) {
+function AccountService($http, util, sessionService) {
   var service = this;
-  var baseUrl = '/accounts';
+  var baseUrl = '/accounts/';
 
   service.list = list;
   service.getBalance = getBalance;
   service.getChildren = getChildren;
   service.flatten = flatten;
   service.order = order;
-
+  service.create = create;
+  service.update = update;
 
   // return a list of accounts
   function list() {
     return $http.get('/accounts?full=1') // TODO - this should only be /accounts
       .then(util.unwrapHttpResponse)
       .then(function (accounts) {
-        
         // hack to make sure accounts are properly rendered on cashboxes page
         // FIXME - make /accounts return the account type w/o query string
-        // and preformat the label elsewhere
+        // and preformat the numberLabel elsewhere
         accounts.forEach(function (account) {
-          account.label = account.account_number + ' - ' + account.account_txt;
+          account.numberLabel = account.number + ' - ' + account.label;
         });
 
         return accounts;
@@ -94,6 +94,63 @@ function AccountService($http, util) {
 
     // return a flattened tree (in order)
     return flatten(tree);
+  }
+
+  /**
+  *@helper  
+  * This Method Creat an account
+  **/
+  function create(account) {
+    var classAccount = String(account.number).charAt(0), 
+      accountClean = {
+        enterprise_id : sessionService.enterprise.id,
+        type_id : account.type.id,
+        number : account.number,
+        label : account.label,
+        parent : account.parent,
+        locked : account.locked,
+        cc_id : account.cc_id,
+        pc_id : account.pc_id,
+        classe : classAccount,     
+        is_asset : account.is_asset,
+        reference_id : account.reference_id,
+        is_brut_link : account.is_brut_link,
+        is_title : account.is_title,
+        is_charge : account.is_charge
+      };
+
+    return $http.post(baseUrl, accountClean)
+      .then(util.unwrapHttpResponse);
+  }
+
+  /**
+  * @desc It updates an account
+  * @param {Integer} id, account id to update 
+  * @param {object} account, account to update 
+  * @example
+  * service.update(id, account)
+  * .then(function (res){
+  *   your code here
+  *  });
+  **/
+  function update(id, account) {
+    var accountClean = {
+      enterprise_id : sessionService.enterprise.id,
+      type_id : account.type_id,
+      label : account.title,
+      parent : account.parent,
+      locked : account.locked,
+      cc_id : account.cc_id,
+      pc_id : account.pc_id,     
+      is_asset : account.is_asset,
+      reference_id : account.reference_id,
+      is_brut_link : account.is_brut_link,
+      is_title : account.is_title,
+      is_charge : account.is_charge
+    };
+
+    return $http.put(baseUrl.concat(id), accountClean)
+      .then(util.unwrapHttpResponse);
   }
 
   return service;

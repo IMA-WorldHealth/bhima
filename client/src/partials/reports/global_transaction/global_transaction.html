@@ -16,7 +16,7 @@
                   <label class="required">{{ "UTIL.ACCOUNT" | translate }}</label>
                   <select
                     class="form-bhima"
-                    ng-options="account.id as account.display disable when (account.account_type_id===3) for account in ReportCtrl.accounts.data | orderBy:'account_number'"
+                    ng-options="account.id as account.display disable when (account.type_id===3) for account in ReportCtrl.accounts.data | orderBy:'number'"
                     ng-model="ReportCtrl.model.account_id"
                     required>
                     <option value="">-- {{ "SELECT.ALL" | translate }} --</option>
@@ -107,7 +107,7 @@
       <div class="reportBody">
         <div class="reportFrame">
             <ng-include src="'partials/reports/templates/enterprise_header.html'"></ng-include>
-            <h4>{{ "ALLTRANSACTIONS.DEFAULT" | translate }} <small>{{ReportCtrl.session.account_number}}</small></h4>
+            <h4>{{ "ALLTRANSACTIONS.DEFAULT" | translate }} <small>{{ReportCtrl.session.number}}</small></h4>
             <h4 class="visible-print"> {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }}</small></h4>
             <table id="transactionsTable" class="reportTable">
               <thead>
@@ -124,7 +124,7 @@
                 <tr ng-repeat="record in ::ReportCtrl.records | orderBy:'trans_id'">
                   <td width="10%"> {{ record.trans_id }} </td>
                   <td width="15%"> {{ record.trans_date | date }} </td>
-                  <td width="10%"> {{ record.account_number }} </td>
+                  <td width="10%"> {{ record.number }} </td>
                   <td width="30%"> {{ record.description}} </td>
                   <td class="text-right"> {{ record.debit | currency:ReportCtrl.enterprise.currency_id }} </td>
                   <td class="text-right"> {{ record.credit | currency:ReportCtrl.enterprise.currency_id }} </td>

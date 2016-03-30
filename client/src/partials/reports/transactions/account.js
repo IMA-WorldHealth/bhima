@@ -17,7 +17,7 @@ function ReportAccountTransactionsController($scope, $window, validate, connect,
     query : {
       tables : {
         'account' : {
-          columns : ['id', 'account_number', 'account_txt']
+          columns : ['id', 'number', 'label']
         }
       }
     }
@@ -44,7 +44,7 @@ function ReportAccountTransactionsController($scope, $window, validate, connect,
     $scope.currencies = models.currencies;
     session.currency = Session.enterprise.currency_id;
     models.accounts.data.forEach(function (acc) {
-      acc.account_number = String(acc.account_number);
+      acc.number = String(acc.number);
     });
     session.limit = 10;
     angular.extend($scope, models);

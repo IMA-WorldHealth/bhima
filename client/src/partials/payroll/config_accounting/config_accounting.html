@@ -40,7 +40,7 @@
             <tr ng-repeat="config_accounting in ConfigAccountCtrl.config_accountings.data">
               <td>{{$index + 1}}</td>
               <td>{{ config_accounting.label }}</td>
-              <td>{{ config_accounting.account_number }}</td>
+              <td>{{ config_accounting.number }}</td>
               <td><a class="action" ng-click="ConfigAccountCtrl.edit(config_accounting)"><span class="glyphicon glyphicon-pencil"></span></a></td>
               <td><a class="action danger" ng-click="ConfigAccountCtrl.delete(config_accounting)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
@@ -74,7 +74,7 @@
             <div class="col-xs-7">
               <select
                 class="form-bhima"
-                ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in ConfigAccountCtrl.accounts.data | orderBy:'account_number'"
+                ng-options="account.id as account.number + ' -- ' + account.label for account in ConfigAccountCtrl.accounts.data | orderBy:'number'"
                 ng-model="ConfigAccountCtrl.session.new.account_id"
                 required>
                 <option value="" disabled>--- {{ "SELECT.ACCOUNT" | translate }} ---</option>
@@ -107,7 +107,7 @@
               <select
                 class="form-bhima"
                 ng-model="ConfigAccountCtrl.session.edit.account_id"
-                ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in ConfigAccountCtrl.accounts.data | orderBy:'account_number'"
+                ng-options="account.id as account.number + ' -- ' + account.label for account in ConfigAccountCtrl.accounts.data | orderBy:'number'"
                 required>
                 <option value="" disabled>--- {{ "SELECT.ACCOUNT" | translate }} ---</option>
               </select>

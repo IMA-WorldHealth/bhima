@@ -19,7 +19,7 @@ function ConfigAccountingController ($translate, $http, validate, messenger, con
       identifier : 'id',
       tables : {
         'config_accounting' : { columns : ['id', 'label', 'account_id'] },
-        'account'           : { columns : ['account_number', 'account_txt'] }
+        'account'           : { columns : ['number', 'label'] }
       },
       join : ['config_accounting.account_id=account.id']
     }
@@ -76,8 +76,8 @@ function ConfigAccountingController ($translate, $http, validate, messenger, con
   function saveEdit () {
     var record = angular.copy(connect.clean(session.edit));
     delete record.reference;
-    delete record.account_number;
-    delete record.account_txt;
+    delete record.number;
+    delete record.label;
 
     connect.put('config_accounting', [record], ['id'])
     .then(function () {

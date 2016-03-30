@@ -21,14 +21,14 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
     query : {
       tables : {
         'account' :{
-          columns : ['id', 'account_type_id', 'account_txt', 'account_number']
+          columns : ['id', 'type_id', 'label', 'number']
         },
         'account_type' : {
           columns : ['type']
         },
       },
-      join : ['account_type.id = account.account_type_id'],
-      where : [ 'account.account_type_id in (1,4)' ]
+      join : ['account_type.id = account.type_id'],
+      where : [ 'account.type_id in (1,4)' ]
     }
   };
 
@@ -198,7 +198,7 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
     }
     else {
       session.no_data_msg = $translate.instant('BUDGET.EDIT.DATA_NOT_FOUND')
-        .replace('(acct)', session.account.account_txt)
+        .replace('(acct)', session.account.label)
         .replace('(fyname)', session.fiscal_year.fiscal_year_txt);
     }
   }
@@ -227,7 +227,7 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
   function accountWhere() {
     // only unlocked income/expense accounts
     // Allow accounts of class 1 and 2 used in budget
-    return [['account.account_type_id IN (1,4)','OR',['account.classe IN (1,2,5)','AND','account.is_used_budget=1']], 'AND', 'account.locked=0' ];
+    return [['account.type_id IN (1,4)','OR',['account.classe IN (1,2,5)']], 'AND', 'account.locked=0' ];
   }
 
   function restartSearch() {

@@ -190,8 +190,8 @@ angular.module('bhima.controllers')
       if (balance === null) {
         balance = '';
       }
-      var title = a.account_txt.replace(/"/g, '\'').replace(/ /g, sp);
-      csvStr += a.id + ', ' + a.account_number + ', "' + title + '", ' + budget + ', ' + balance + ', ' + a.surplus + ', ' + a.deficit + ', "' + a.type + '"' + lf;
+      var title = a.label.replace(/"/g, '\'').replace(/ /g, sp);
+      csvStr += a.id + ', ' + a.number + ', "' + title + '", ' + budget + ', ' + balance + ', ' + a.surplus + ', ' + a.deficit + ', "' + a.type + '"' + lf;
       });
 
       var today = new Date();

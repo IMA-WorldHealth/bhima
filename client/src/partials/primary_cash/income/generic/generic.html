@@ -124,7 +124,7 @@
     <div class="col-xs-6">
       <div class="alert alert-info">
         <h4>{{ 'PRIMARY_CASH.INCOME.ACCOUNT' | translate }}</h4>
-        <strong>{{ session.ac.account_number }}</strong> - {{ session.ac.account_txt }}
+        <strong>{{ session.ac.number }}</strong> - {{ session.ac.label }}
       </div>
     </div>
   </div>
@@ -134,6 +134,6 @@
 <script type="text/ng-template" id="AccountList.html">
   <a>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><b>[{{ match.model.account_number }}]</b></span>
+    <span><b>[{{ match.model.number }}]</b></span>
   </a>
 </script>

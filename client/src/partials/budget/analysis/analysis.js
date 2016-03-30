@@ -372,7 +372,7 @@ function AnalysisBudgetController($q, $window, $translate, validate, precision, 
         previousBudget.push(prevBudget);
       });
 
-      var row = [a.id, a.account_number, a.account_txt, budget, balance, a.surplus, a.deficit].concat(previousBudget, a.type);
+      var row = [a.id, a.number, a.label, budget, balance, a.surplus, a.deficit].concat(previousBudget, a.type);
       fileData.data.push(row);
     });
 
