@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('UpdateDebtorGroup', UpdateDebtorGroup);
 
-UpdateDebtorGroup.$inject = ['$scope', '$uibModalInstance', 'Debtors',  'patient', 'updateModel'];
+UpdateDebtorGroup.$inject = ['$scope', '$uibModalInstance', 'DebtorService',  'patient', 'updateModel'];
 
 function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateModel) { 
   var viewModel = this;

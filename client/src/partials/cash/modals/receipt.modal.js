@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 CashReceiptModalController.$inject = [
   'uuid', 'patientUuid', '$uibModalInstance', 'CashService', 'ProjectService',
   'EnterpriseService', '$q', 'CashboxService', 'UserService', 'ExchangeRateService',
-  'Patients', 'CurrencyService'
+  'PatientService', 'CurrencyService'
 ];
 
 /**

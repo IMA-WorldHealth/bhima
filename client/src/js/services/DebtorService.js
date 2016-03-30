@@ -1,15 +1,31 @@
-/**
- * @description The debtor service provides access to the debtor HTTP API
- *
- * @module services/debtors
- */
-
 angular.module('bhima.services')
-  .service('Debtors', Debtors);
+.service('DebtorService', DebtorService);
 
-Debtors.$inject = [ '$http', 'util' ];
+DebtorService.$inject = [ '$http', 'util' ];
 
-function Debtors($http, util) {
+/** 
+ * Debtor Service 
+ *
+ * This service is responsible for providing an interface between angular 
+ * module controllers and the server /debtors API endpoint. It also provides 
+ * a number of utility methods for correctly packaging requests. 
+ *
+ * @example 
+ * Controller.$inject = ['DebtorService'];
+ *
+ * var Debtors = DebtorService;
+ * 
+ * // Returns all debtor groups
+ * Debtors.groups()
+ *
+ * @todo  A pattern of overriding a method has been used in various other services
+ *        * groups() - returns all debtor groups
+ *        * groups(uuid) - returns details for a specific group
+ *        This would replace the groupDetail method
+ *
+ * @module services/DebtorService
+ */
+function DebtorService($http, util) {
   var service = this;
 
   /** update the details of a debtor */
@@ -23,9 +39,6 @@ function Debtors($http, util) {
 
   /** returns a list of invoices owed to a given debtor */
   service.invoices = invoices;
-
-  // function detail(uuid)
-  // function list()
 
   function groupDetail(uuid) {
     var path = '/debtors/groups/';

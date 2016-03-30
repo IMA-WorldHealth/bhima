@@ -112,15 +112,15 @@ describe('patient registration', function () {
 
       FU.clear('PatientRegCtrl.yob');
       FU.input('PatientRegCtrl.yob', testMaxYear);
-      FU.exists(by.id('date-error'), true);
+      FU.exists(by.css('[data-date-error]'), true);
 
       FU.clear('PatientRegCtrl.yob');
       FU.input('PatientRegCtrl.yob', validYear);
-      FU.exists(by.id('date-error'), false);
+      FU.exists(by.css('[data-date-error]'), false);
 
       FU.clear('PatientRegCtrl.yob');
       FU.input('PatientRegCtrl.yob', testMinYear);
-      FU.exists(by.id('date-error'), true);
+      FU.exists(by.css('[data-date-error]'), true);
     });
 
     it('correctly identifies duplicate hospital numbers (async)', function () {

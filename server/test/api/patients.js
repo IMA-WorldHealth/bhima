@@ -249,8 +249,8 @@ describe('The /patients API', function () {
       .send(badRequest)
       .then(function (result) {
         expect(result).to.have.status(400);
-        expect(result.body).to.have.keys('code', 'reason');
-        expect(result.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
+        expect(result.body).to.have.keys('code', 'description', 'status');
+        expect(result.body.code).to.be.equal('ERRORS.BAD_REQUEST');
       })
       .catch(helpers.handler);
 

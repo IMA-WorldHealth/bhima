@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('CashInvoiceModalController', CashInvoiceModalController);
 
 CashInvoiceModalController.$inject = [
-  'Debtors', 'debtorId', 'invoiceIds', '$uibModalInstance', 'SessionService',
+  'DebtorService', 'debtorId', 'invoiceIds', '$uibModalInstance', 'SessionService',
   '$timeout'
 ];
 

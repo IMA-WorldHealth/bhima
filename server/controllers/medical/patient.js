@@ -16,9 +16,10 @@
 
 'use strict';
 
-var db = require('../../lib/db'),
-    uuid = require('../../lib/guid');
+var db        = require('../../lib/db');
+var uuid      = require('../../lib/guid');
 
+var BadRequest  = require('../../lib/errors/BadRequest');
 
 // create a new patient
 exports.create = create;
@@ -80,13 +81,8 @@ function create(req, res, next) {
   invalidParameters = !finance || !medical;
 
   if (invalidParameters) {
-
-    // FIXME This should be handled by middleware
-    res.status(400).json({
-      code : 'ERROR.ERR_MISSING_INFO',
-      reason : 'Both `financial` and `medical` information must be provided to register a patient.'
-    });
-    return;
+  
+    throw new BadRequest('Both `financial` and `medical` information must be provided to register a patient.');
   }
 
   // pre-process dates
