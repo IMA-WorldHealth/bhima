@@ -18,7 +18,7 @@ describe('Services Module', function () {
   var DEFAULT_SERVICE = 4;
   var SERVICE_RANK = helpers.random(DEFAULT_SERVICE);
 
-  var DELETE_SUCCESS = 4;
+  var DELETE_SUCCESS = 5;
   var DELETE_ERROR = 3;
 
   // navigate to the Service module before each test
