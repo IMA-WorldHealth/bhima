@@ -1,6 +1,7 @@
 var db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
-function lookupSectionBilan(id, codes) {
+function lookupSectionBilan(id) {
   'use strict';
 
   var sql =
@@ -8,9 +9,11 @@ function lookupSectionBilan(id, codes) {
 
   return db.exec(sql, id)
     .then(function (rows) {
+      // Record Not Found !
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound(`Record Not Found with id: ${id}`);
       }
+
       return rows[0];
     });
 }
@@ -18,7 +21,7 @@ function lookupSectionBilan(id, codes) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupSectionBilan(req.params.id, req.codes)
+  lookupSectionBilan(req.params.id)
   .then(function (row) {
     res.status(200).json(row);
   })
@@ -71,12 +74,12 @@ function update(req, res, next) {
 
   delete queryData.id;
 
-  lookupSectionBilan(sectionBilanId, req.codes)
+  lookupSectionBilan(sectionBilanId)
   .then(function () {
     return db.exec(sql, [queryData, sectionBilanId]);
   })
   .then(function () {
-    return lookupSectionBilan(sectionBilanId, req.codes);
+    return lookupSectionBilan(sectionBilanId);
   })
   .then(function (sectionBilan) {
     res.status(200).json(sectionBilan);
@@ -90,7 +93,7 @@ function remove(req, res, next) {
   var sectionBilanId = req.params.id;
   var sql = 'DELETE FROM section_bilan WHERE id = ?';
 
-  lookupSectionBilan(sectionBilanId, req.codes)
+  lookupSectionBilan(sectionBilanId)
     .then(function () {
       return db.exec(sql, [sectionBilanId]);
     })
