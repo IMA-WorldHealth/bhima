@@ -2689,15 +2689,19 @@
    "UPDATE_SUCCESS"   : "Update Successfully"   
 },
 "SECTION_RESULTAT" : {
-   "CHARGE" : "Charge",
-   "PROFIT" : "Profit",
-   "NO_SECTION_RESULTAT" : "No Result Section",
-   "TITLE"            : "Result Section",
-   "ALL"              : "All Result Section",
-   "ALERT"            : "Result Section Management",
-   "ADD"              : "Add",
-   "NEW"              : "New Result Section",
-   "EDIT"             : "Edit Result Section"
+   "ADD"                  : "Add",
+   "ALERT"                : "Result Section Management",
+   "ALL"                  : "All Result Section",
+   "CHARGE"               : "Charge",
+   "CONFIRM"              : "Are you sure you want to delete this Result section",
+   "DELETE_SUCCESS"       : "Deleted successfully",
+   "EDIT"                 : "Edit Result Section",   
+   "NEW"                  : "New Result Section",
+   "NO_SECTION_RESULTAT"  : "No Result Section",
+   "PROFIT"               : "Profit",
+   "SAVE_SUCCESS"         : "Saved Successfully",
+   "TITLE"                : "Result Section", 
+   "UPDATE_SUCCESS"       : "Update Successfully"  
   },
 "SECTOR": {
    "ACTIONS"          : "Actions",
