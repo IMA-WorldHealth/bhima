@@ -128,12 +128,12 @@ describe('patient registration', function () {
       // resend the (assumed) correctly registered patients hospital number
       FU.clear('PatientRegCtrl.medical.hospital_no');
       FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
-      FU.exists(by.id('hospitalNumber-alert'), true);
+      FU.exists(by.id('unique-error-icon'), true);
 
       // put in a unique hospital number
       FU.clear('PatientRegCtrl.medical.hospital_no');
       FU.input('PatientRegCtrl.medical.hospital_no', uniqueHospitalNumber);
-      FU.exists(by.id('hospitalNumber-alert'), false);
+      FU.exists(by.id('unique-error-icon'), false);
     });
   });
 

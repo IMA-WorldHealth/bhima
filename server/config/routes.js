@@ -410,7 +410,7 @@ exports.configure = function (app) {
   app.get('/patients/:uuid/groups', patient.groups);
   app.post('/patients/:uuid/groups', patient.updateGroups);
 
-  app.get('/patients/checkHospitalId/:id', patient.verifyHospitalNumber);
+  app.get('/patients/hospital_number/:id/exists', patient.hospitalNumberExists);
   app.post('/patients/visit', patient.visit);
 
   // app.get('/patients/search', patient.search);
