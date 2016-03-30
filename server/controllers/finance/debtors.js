@@ -18,9 +18,13 @@
 
 'use strict';
 
-var q  = require('q'),
-    db = require('../../lib/db'),
-    guid = require('../../lib/guid');
+var q         = require('q');
+var db        = require('../../lib/db');
+var guid      = require('../../lib/guid');
+ 
+// import required error handling objects
+var NotFound    = require('../../lib/errors/NotFound');
+var BadRequest  = require('../../lib/errors/BadRequest');
 
 /** @fixme Need to be removed or moved to debtorGroups.js */
 exports.groupDetails  = groupDetails;
@@ -46,11 +50,8 @@ function groupDetails(req, res, next) {
       var debtorDetail;
 
       if (isEmpty(result)) {
-        res.status(404).json({
-          code : 'ERR_NOT_FOUND',
-          reason : 'No debtor groups found under the id ' + uuid
-        });
-        return;
+        
+        throw new NotFound('No debtor groups found under the id '.concat(uuid));
       } else {
 
         debtorDetail = result[0];
@@ -88,13 +89,11 @@ function update(req, res, next) {
   var updateDebtorQuery;
   var queryData = req.body;
   var debtorId = req.params.uuid;
-
+  
+  /** @todo This parameter (even if null) is required to match this route - discuss this error handling case */
   if (!debtorId) {
-    res.status(400).json({
-      code : 'ERR_INVALID_REQUEST',
-      reason : 'A valid debtor UUID must be provided to update a debtor record.'
-    });
-    return;
+    
+    throw new BadRequest('A valid debtor UUID must be provided to update a debtor record.');
   }
 
   updateDebtorQuery =

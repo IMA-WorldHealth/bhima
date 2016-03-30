@@ -14,7 +14,7 @@ angular.module('bhima.directives')
   }
 });
 
-FindPatientComponent.$inject = ['Patients', 'AppCache'];
+FindPatientComponent.$inject = ['PatientService', 'AppCache'];
 
 /**
  * The Find Patient Component

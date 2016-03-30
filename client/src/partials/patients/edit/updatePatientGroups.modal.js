@@ -2,7 +2,7 @@
 angular.module('bhima.controllers')
 .controller('UpdatePatientGroups', UpdatePatientGroups);
 
-UpdatePatientGroups.$inject = ['$scope', '$uibModalInstance', 'Patients', 'sessionPatient', 'sessionGroups', 'updateModel'];
+UpdatePatientGroups.$inject = ['$scope', '$uibModalInstance', 'PatientService', 'sessionPatient', 'sessionGroups', 'updateModel'];
 
 function UpdatePatientGroups($scope, $uibModalInstance, patients, sessionPatient, sessionGroups, updateModel) { 
   var viewModel = this;

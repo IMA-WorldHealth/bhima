@@ -1493,7 +1493,8 @@
    "UPDATE_SUCCES"  : "Updated successfully",
    "WARNINGS" : {
     "FUTURE_DATE" : "Warning: This date in the future."
-   }
+   },
+   "CONTACT_ADMIN"   : "Check with the system administrator that this has been configured correctly."
    },
 "GRADE": {
    "ADD"            : "Add a grade",
@@ -2029,7 +2030,8 @@
    "TITLE"                    : "Title",
    "VIEW_PATIENT_RECORDS"     : "View Patient Records",
    "YES"                      : "Yes",
-   "YOB"                      : "Year of Birth"
+   "YOB"                      : "Year of Birth",
+   "NO_DEBTOR_GROUPS"         : "No debtor groups have been loaded."
    },
 "PATIENT_REGISTRATIONS": {
    "DATE_FROM"                  : "Date From",
@@ -3556,7 +3558,12 @@
     "NUMBER" : "This field must be a valid number.",
     "DATE" : "This field must be a valid date.",
     "INTEGER" : "This value must be a whole number (integer).",
-    "UNIQUE" : "This field must be unique. This value is already taken."
+    "UNIQUE" : "This field must be unique. This value is already taken.",
+    "DATES" : { 
+      "MIN" : "This date is set too far in the past.",
+      "MAX" : "This date is set too far in the future.",
+      "REQUIRED" : "This date is required."
+    }
    },
   "VOUCHERS" : {
     "SIMPLE" : {
