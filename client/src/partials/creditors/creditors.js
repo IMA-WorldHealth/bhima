@@ -8,7 +8,9 @@ SupplierController.$inject = [
 
 function SupplierController(supplierService, creditorService) {
   var vm = this;
+  
   vm.view = 'default';
+  vm.state = {};
 
   // bind methods
   vm.create = create;
@@ -63,7 +65,10 @@ function SupplierController(supplierService, creditorService) {
   function submit(form) {
 
      // stop submission if the form is invalid
-    if (form.$invalid) { return; }
+    if (form.$invalid) { 
+      vm.state.errored = true;
+      return; 
+    }
 
     var promise;
     var creation = (vm.view === 'create');

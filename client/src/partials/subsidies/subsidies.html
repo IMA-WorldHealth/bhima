@@ -98,11 +98,17 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
                 <input type="text" class="form-control" name="label" ng-model="SubsidyCtrl.subsidy.label" required>
+                <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.value.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.VALUE' | translate }}</label>
                 <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
+                <div class="help-block" ng-messages="CreateForm.value.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_id.$invalid }">
@@ -110,6 +116,9 @@
                 <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
                   <option value="" disabled> -- {{ 'SELECT.ACCOUNT' | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.account_id.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
@@ -137,18 +146,27 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
                 <input type="text" class="form-control" name="label" ng-model="SubsidyCtrl.subsidy.label" required>
+                <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.value.$invalid }">
                 <label class="control-label">{{ 'COLUMNS.VALUE' | translate }}</label>
                 <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
+                <div class="help-block" ng-messages="UpdateForm.value.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.account_id.$invalid }">
-                <label class="col-md-3 control-label">{{ "COLUMNS.ACCOUNT" | translate }}</label>
+                <label class="control-label">{{ "COLUMNS.ACCOUNT" | translate }}</label>
                 <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
                   <option value="" disabled> -- {{ 'SELECT.ACCOUNT' | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.account_id.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">

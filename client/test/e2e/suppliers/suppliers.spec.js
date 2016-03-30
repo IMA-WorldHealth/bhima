@@ -65,7 +65,6 @@ describe('Suppliers Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-
   it('successfully edits an supplier', function () {
     element(by.id('supplier-upd-' + supplierRank )).click();
     

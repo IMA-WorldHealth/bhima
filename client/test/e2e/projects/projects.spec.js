@@ -63,7 +63,7 @@ describe('Projects Module', function () {
     // modify the project name
     FU.input('ProjectCtrl.project.name', 'Updated');
 
-    element(by.id('bhima-project-locked')).click();
+    element(by.id('locked')).click();
     element(by.id('change_project')).click();
 
     // make sure the success message appears
