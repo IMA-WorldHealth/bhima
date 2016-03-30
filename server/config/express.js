@@ -5,7 +5,7 @@ var express    = require('express'),
     compress   = require('compression'),
     bodyParser = require('body-parser'),
     session    = require('express-session'),
-    FileStore  = require('session-file-store')(session),
+    RedisStore = require('connect-redis')(session),
     morgan     = require('morgan'),
     fs         = require('fs'),
     winston    = require('winston');
@@ -27,15 +27,12 @@ exports.configure = function configure(app) {
   // stores session in a file store so that server restarts do
   // not interrupt sessions.
   app.use(session({
-    store             : new FileStore({
-      reapInterval      : Number(process.env.SESS_REAP_INTERVAL),
-    }),
+    store             : new RedisStore({}),
     secret            : process.env.SESS_SECRET,
     saveUninitialized : Boolean(process.env.SESS_SAVE_UNINITIALIZED),
     resave            : Boolean(process.env.SESS_RESAVE),
     unset             : process.env.SESS_UNSET,
-    cookie            : { secure : true },
-    retries: 50
+    cookie            : { secure : true }
   }));
 
   // bind error codes to the express stack
@@ -63,7 +60,7 @@ exports.configure = function configure(app) {
     }
   });
 
-  // provide a stream for morgan to write to 
+  // provide a stream for morgan to write to
   winston.stream = {
     write : function (message, encoding) {
       winston.info(message.trim());

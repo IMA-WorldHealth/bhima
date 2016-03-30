@@ -147,6 +147,7 @@
   "LOGOUT_SUCCESS"             : "You are now logged out.",
   "LOGIN_PLACEHOLDER_USERNAME" : "Enter your username",
   "LOGIN_PLACEHOLDER_PASSWORD" : "Enter your password",
+  "RESET"                      : "Reset",
   "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it."
 },
 
@@ -2509,9 +2510,9 @@
    "NEW_REFERENCE"  : "New Reference Group",
    "NO_REFERENCES"  : "No grave Reference Group have been registered.",
    "REGISTERED"     : "Registered References Groups",
-   "SAVE_SUCCES"    : "Successfully saving Reference Group",
+   "SAVE_SUCCESS"    : "Successfully saving Reference Group",
    "TITLE"          : "Reference group management",
-   "UPDATE_SUCCES"  : "Updated successfully",
+   "UPDATE_SUCCESS"  : "Updated successfully",
    "UPD_REFERENCE"  : "Update Reference Group"
    },
 "REPORT": {
@@ -2674,10 +2675,11 @@
    },
 "SECTION_BILAN" : {
    "ADD"              : "Add",
+   "ASSET"            : "Asset",
    "ALERT"            : "Administration of section du bilan",
    "ALL"              : "All bilan section",
    "CONFIRM"          : "Are you sure you want to delete this Bilan section",
-   "ASSET"            : "Asset",
+   "DELETE_SUCCESS"   : "Deleted successfully",
    "EDIT"             : "Bilan section editing",
    "NEW"              : "New bilan section",
    "NO_SECTION_BILAN" : "No bilan section found",
@@ -3530,7 +3532,8 @@
     "MINLENGTH" : "This input is too short.",
     "MAXLENGTH" : "This input is too long.",
     "NUMBER" : "This field must be a valid number.",
-    "DATE" : "This field must be a valid date."
+    "DATE" : "This field must be a valid date.",
+    "INTEGER" : "This value must be a whole number (integer)."
    },
   "VOUCHERS" : {
     "SIMPLE" : {

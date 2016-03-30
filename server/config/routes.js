@@ -75,6 +75,7 @@ var functions            = require('../controllers/admin/functions');
 var grades               = require('../controllers/admin/grades');
 var creditorGroups       = require('../controllers/finance/creditorGroups');
 var sectionBilans     = require('../controllers/finance/sectionBilan');
+var referenceGroup       = require('../controllers/finance/referenceGroup');
 
 // Middleware for handle uploaded file
 var multipart            = require('connect-multiparty');
@@ -172,6 +173,13 @@ exports.configure = function (app) {
   app.post('/section_bilans', sectionBilans.create);
   app.put('/section_bilans/:id', sectionBilans.update);
   app.delete('/section_bilans/:id', sectionBilans.remove);
+
+ //API for reference group crud
+  app.get('/reference_group', referenceGroup.list);
+  app.get('/reference_group/:id', referenceGroup.detail);
+  app.post('/reference_group', referenceGroup.create);
+  app.put('/reference_group/:id', referenceGroup.update);
+  app.delete('/reference_group/:id', referenceGroup.remove);
 
  //API for subsidy routes crud
   app.get('/subsidies', subsidy.list);
