@@ -1,0 +1,43 @@
+<!-- TODO Move style to permenent files -->
+<style>
+  .journalGrid { 
+    width : 100%;
+
+    /* Factor in height of headercrumb */
+    height : calc(100vh - 65px);
+  }
+</style>
+
+<div class="flex-header">
+  <div class="bhima-title">
+
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">{{ "POSTING_JOURNAL.TITLE" | translate }}</li>
+    </ol>
+  
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    
+    <div class="row">
+      <div class="col-md-12">
+        
+        <div
+          id="journalGrid"
+          class="journalGrid"
+          ui-grid="JournalCtrl.gridOptions"
+
+          ui-grid-auto-resize
+          ui-grid-resize-columns 
+          ui-grid-move-columns
+          ui-grid-selection
+          ui-grid-grouping
+          ui-grid-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
