@@ -2,8 +2,8 @@
 
 var chai    = require('chai');
 var expect  = chai.expect;
-var helpers = require('../shared/helpers');
 
+var helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 var FormUtils = require('../shared/FormUtils');
@@ -12,6 +12,8 @@ var components = require('../shared/components');
 describe('Debtor Groups', function () {
 
   var PATH = '#/debtor_groups';
+
+  var groupUuid = '4de0fe47-177f-4d30-b95f-cff8166400b4';
 
   var debtorGroup = {
     name : '(E2E) Debtor Group',
@@ -38,21 +40,25 @@ describe('Debtor Groups', function () {
     browser.get(PATH);
   });
 
-  it('successfully creates a new Debtor Group', function () {
+  it('creates a new debtor group', function () {
     FormUtils.buttons.create();
 
     /** debtor group info */
     FormUtils.input('DebtorGroupCtrl.debtorGroup.name', debtorGroup.name);
+
     FormUtils.input('DebtorGroupCtrl.debtorGroup.account_id', debtorGroup.account_id);
-    element.all(by.options('price.uuid as price.label for price in DebtorGroupCtrl.prices.data')).get(1).click();
+    var option = element.all(by.repeater('match in matches track by $index')).first();
+    option.click();
+
+    element.all(by.options('price.uuid as price.label for price in DebtorGroupCtrl.prices.data')).enabled().first().click();
     FormUtils.input('DebtorGroupCtrl.debtorGroup.max_credit', debtorGroup.max_credit);
 
-    /** debtor group caracteristcs */
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.is_convention').click();
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.locked').click();
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.apply_subsidies').click();
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.apply_discounts').click();
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.apply_billing_services').click();
+    /** debtor group characteristics */
+    element(by.model('DebtorGroupCtrl.debtorGroup.is_convention')).click();
+    element(by.model('DebtorGroupCtrl.debtorGroup.locked')).click();
+    element(by.model('DebtorGroupCtrl.debtorGroup.apply_subsidies')).click();
+    element(by.model('DebtorGroupCtrl.debtorGroup.apply_discounts')).click();
+    element(by.model('DebtorGroupCtrl.debtorGroup.apply_billing_services')).click();
 
     /** contact */
     FormUtils.input('DebtorGroupCtrl.debtorGroup.phone', debtorGroup.phone);
@@ -75,35 +81,29 @@ describe('Debtor Groups', function () {
     FormUtils.exists(by.id('create_success'), true);
   });
 
-  it('successfully updates an existing Debtor Group', function () {
-    element(by.name('group-' + debtorGroup.name)).click();
+  it('updates an existing debtor group', function () {
+    element(by.name('group-' + groupUuid)).click();
+
     /** debtor group info */
-    FormUtils.clear('DebtorGroupCtrl.debtorGroup.name');
     FormUtils.input('DebtorGroupCtrl.debtorGroup.name', update.name);
-
-    FormUtils.clear('DebtorGroupCtrl.debtorGroup.account_id');
     FormUtils.input('DebtorGroupCtrl.debtorGroup.account_id', update.account_id);
+    var option = element.all(by.repeater('match in matches track by $index')).first();
+    option.click();
 
-    element.all(by.options('price.uuid as price.label for price in DebtorGroupCtrl.prices.data')).get(1).click();
+    element.all(by.options('price.uuid as price.label for price in DebtorGroupCtrl.prices.data')).enabled().first().click();
 
-    FormUtils.clear('DebtorGroupCtrl.debtorGroup.max_credit');
     FormUtils.input('DebtorGroupCtrl.debtorGroup.max_credit', update.max_credit);
 
-    /** debtor group caracteristcs */
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.is_convention').click();
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.locked').click();
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.apply_subsidies').click();
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.apply_discounts').click();
-    FormUtils.input('DebtorGroupCtrl.debtorGroup.apply_billing_services').click();
+    /** debtor group characteristics */
+    element(by.model('DebtorGroupCtrl.debtorGroup.is_convention')).click();
+    element(by.model('DebtorGroupCtrl.debtorGroup.locked')).click();
+    element(by.model('DebtorGroupCtrl.debtorGroup.apply_subsidies')).click();
+    element(by.model('DebtorGroupCtrl.debtorGroup.apply_discounts')).click();
+    element(by.model('DebtorGroupCtrl.debtorGroup.apply_billing_services')).click();
 
     /** contact */
-    FormUtils.clear('DebtorGroupCtrl.debtorGroup.phone');
     FormUtils.input('DebtorGroupCtrl.debtorGroup.phone', update.phone);
-
-    FormUtils.clear('DebtorGroupCtrl.debtorGroup.email');
     FormUtils.input('DebtorGroupCtrl.debtorGroup.email', update.email);
-
-    FormUtils.clear('DebtorGroupCtrl.debtorGroup.note');
     FormUtils.input('DebtorGroupCtrl.debtorGroup.note', update.note);
 
     /** location Plateau in Kasai  */
@@ -117,12 +117,12 @@ describe('Debtor Groups', function () {
     components.locationSelect.set(locations);
 
     FormUtils.buttons.submit();
+
     FormUtils.exists(by.id('update_success'), true);
   });
 
   it('form blocks when missing data', function () {
     FormUtils.buttons.create();
-    FormUtils.clear('DebtorGroupCtrl.debtorGroup.name');
     FormUtils.buttons.submit();
     FormUtils.exists(by.id('error-feedback'), true);
   });

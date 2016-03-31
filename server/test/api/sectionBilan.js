@@ -40,8 +40,7 @@ describe('(section_bilans) The section bilan API', function () {
   it('GET /section_bilans returns a list of section_bilans', function () {
     return agent.get('/section_bilans')
       .then(function (res) {
-        helpers.api.listed(res, 2);
-        expect(res.body).to.have.length(2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });

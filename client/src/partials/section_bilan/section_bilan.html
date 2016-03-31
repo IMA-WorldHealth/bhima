@@ -37,24 +37,32 @@
             </thead>
             <tbody>
               <tr ng-if="sectionBilanCtrl.session.loading" class="text-center">
-                <td colspan="6"><loading-indicator></loading-indicator></td>
+                <td colspan="5"><loading-indicator></loading-indicator></td>
               </tr>
-              <tr 
-              ng-repeat="sectionBilan in sectionBilanCtrl.sectionBilans | orderBy:'number' | orderBy:'text' " 
+              <tr
+              ng-repeat="sectionBilan in sectionBilanCtrl.sectionBilans | orderBy:'number' | orderBy:'text' "
               ng-class="{'rowSelected' : sectionBilanCtrl.sectionBilan.id === sectionBilan.id}" >
-                <td>{{ $index+1 }}</td>
+                <td>{{ sectionBilan.id }}</td>
                 <td>{{ sectionBilan.text }}</td>
                 <td>{{sectionBilan.position}}</td>
                 <td>
                   <b ng-show="sectionBilan.is_actif">{{sectionBilanCtrl.doTranslate('SECTION_BILAN.ASSET')}}</b>
                   <b ng-show="!sectionBilan.is_actif">{{sectionBilanCtrl.doTranslate('SECTION_BILAN.PASSIVE')}}</b>
                 </td>
-                <td><a class="btn btn-xs btn-default" id="sectionBilan-upd-{{$index+1}}" ng-click="sectionBilanCtrl.update(sectionBilan)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                <td><a class="btn btn-xs btn-default" id="sectionBilan-del-{{$index+1}}" ng-click="sectionBilanCtrl.del(sectionBilan)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                <td>
+                  <a class="btn btn-xs btn-default" id="sectionBilan-upd-{{sectionBilan.id}}" ng-click="sectionBilanCtrl.update(sectionBilan)">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </a>
+                </td>
+                <td>
+                  <a class="btn btn-xs btn-default" id="sectionBilan-del-{{sectionBilan.id}}" ng-click="sectionBilanCtrl.del(sectionBilan)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </a>
+                </td>
               </tr>
               <tr ng-if="!sectionBilanCtrl.sectionBilans.length">
                 <td colspan="6">{{ "SECTION_BILAN.NO_SECTION_BILAN" | translate }}</td>
-              </tr> 
+              </tr>
 
             </tbody>
           </table>
@@ -91,22 +99,22 @@
 
         <div ng-switch-when="delete_error">
           <div class="alert alert-danger" id="delete_error">
-            <h4>{{ SubsidyCtrl.HTTPError.data.code | translate }} </h4>
+            <h4>{{ sectionBilanCtrl.HTTPError.data.code | translate }} </h4>
           </div>
-        </div>        
+        </div>
 
         <!-- Form for adding sectionBilan -->
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "SECTION_BILAN.NEW" | translate }}</div>
           <div class="panel-body">
             <form class="panel-body" name="CreateForm" ng-submit="sectionBilanCtrl.submit(CreateForm)" novalidate>
-            
+
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
                 <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-model="sectionBilanCtrl.sectionBilan.text" required>
                 <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_actif.$invalid }">
@@ -124,7 +132,7 @@
                 </div>
                 <div class="help-block" ng-messages="CreateForm.is_actif.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
               <hr>
 
@@ -133,7 +141,7 @@
                 <input type="number" class="form-control"  min="0" name="position" ng-model="sectionBilanCtrl.sectionBilan.position" required>
                 <div class="help-block" ng-messages="CreateForm.position.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group">
@@ -145,7 +153,7 @@
                 </button>
               </div>
             </form>
-          </div>        
+          </div>
         </div>
 
         <!-- Form for updating sectionBilan -->
@@ -159,7 +167,7 @@
                 <input type="text" class="form-control" name="text" ng-model="sectionBilanCtrl.sectionBilan.text" required>
                 <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>              
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_actif.$invalid }">
@@ -177,7 +185,7 @@
                 </div>
                 <div class="help-block" ng-messages="UpdateForm.is_actif.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
               <hr>
 
@@ -186,7 +194,7 @@
                 <input type="number" class="form-control"  min="0" name="position" ng-model="sectionBilanCtrl.sectionBilan.position" required>
                 <div class="help-block" ng-messages="UpdateForm.position.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
 
               <div class="form-group">
@@ -197,12 +205,12 @@
                   {{ "FORM.CANCEL" | translate }}
                 </button>
               </div>
-              
+
             </form>
-          </div>         
+          </div>
         </div>
 
       </div>
     </div>
-  </div>  
+  </div>
 </div>

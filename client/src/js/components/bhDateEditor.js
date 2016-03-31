@@ -7,6 +7,7 @@ angular.module('bhima.components')
 		minDate : '<',    // one-way binding
 		maxDate : '<',    // one-way binding
 		validationTrigger : '<', // one-way binding
+    disabled : '<',   // one-way binding
 		dateFormat : '@', // bind text
     label : '@'       // bind text
 	}
@@ -27,6 +28,7 @@ angular.module('bhima.components')
  *  min-date="Ctrl.min"
  *  max-date="Ctrl.max"
  *  validation-trigger="Form.$submitted"
+ *  disabled="Ctrl.isDisabled"
  * >
  * </bh-date-editor>
  *

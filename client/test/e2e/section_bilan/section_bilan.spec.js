@@ -1,5 +1,5 @@
 /* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -10,7 +10,7 @@ var components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Section bilans Module', function () {
+describe('Section Bilan Module', function () {
   'use strict';
 
   var path = '#/section_bilan';
@@ -18,21 +18,21 @@ describe('Section bilans Module', function () {
   var sectionBilan = {
     text : 'A Special Section Result',
     position : 3,
-    is_actif : 0 
+    is_actif : 0
   };
 
-  var sectionBilanRank = 1;
-
+  var sectionId = 2;
 
   // navigate to the SectionBilan module before each test
   beforeEach(function () {
     browser.get(path);
   });
 
-  it('successfully creates a new SectionBilan', function () {
+  it('creates a new sectionbilan', function () {
 
-    // swtich to the create form
+    // switch to the create form
     FU.buttons.create();
+
     FU.input('sectionBilanCtrl.sectionBilan.text', sectionBilan.text);
     FU.radio('sectionBilanCtrl.sectionBilan.is_actif', sectionBilan.is_actif);
     FU.input('sectionBilanCtrl.sectionBilan.position', sectionBilan.position);
@@ -44,10 +44,8 @@ describe('Section bilans Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-
-  it('successfully edits an sectionBilan', function () {
-
-    element(by.id('sectionBilan-upd-' + sectionBilanRank )).click();
+  it('edits an sectionbilan', function () {
+    element(by.id('sectionBilan-upd-' + sectionId )).click();
     // modify the sectionBilan text
     FU.input('sectionBilanCtrl.sectionBilan.text', 'Updated');
     // modify the sectionBilan Is Actif
@@ -59,7 +57,7 @@ describe('Section bilans Module', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', function () {
     // switch to the create form
     FU.buttons.create();
 
@@ -74,8 +72,8 @@ describe('Section bilans Module', function () {
     FU.validation.error('sectionBilanCtrl.sectionBilan.is_actif');
   });
 
-  it('successfully delete a SectionBilan', function () {
-    element(by.id('sectionBilan-del-' + sectionBilanRank )).click();
+  it('delete a sectionbilan', function () {
+    element(by.id('sectionBilan-del-' + sectionId)).click();
 
     // click the alert asking for permission
     browser.switchTo().alert().accept();
@@ -83,5 +81,4 @@ describe('Section bilans Module', function () {
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);
   });
-
 });
