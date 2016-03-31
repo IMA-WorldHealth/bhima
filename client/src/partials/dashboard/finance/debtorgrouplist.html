@@ -22,7 +22,7 @@
       <tr ng-repeat="group in DebtorGroupListCtrl.data | limitTo:DebtorGroupListCtrl.limit track by group.uuid ">
         <th>{{ $index + 1 }}</th>
         <td>{{ group.name }}</td>
-        <td>{{ group.account_number }}</td>
+        <td>{{ group.number }}</td>
         <td class="currency">{{ group.balance | currency }}</td>
       <tr>
     </tbody>

@@ -32,7 +32,7 @@ describe('(/billing_services) Billing Services Interface ::', function () {
 
   var responseKeys = [
     'id', 'account_id', 'label', 'description', 'value',
-    'account_number', 'created_at', 'updated_at'
+    'number', 'created_at', 'updated_at'
   ];
 
   /** logs in before each request */

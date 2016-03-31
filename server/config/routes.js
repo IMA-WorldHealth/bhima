@@ -282,7 +282,7 @@ exports.configure = function (app) {
   app.get('/getAccount6', accounts.listIncomeAccounts);
   app.get('/getAccount7/', accounts.listExpenseAccounts);
   app.get('/getClassSolde/:account_class/:fiscal_year', accounts.getClassSolde);
-  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', accounts.getTypeSolde);
+  app.get('/getTypeSolde/:fiscal_year/:type_id/:is_charge', accounts.getTypeSolde);
 
 
   app.get('available_payment_period/', taxPayment.availablePaymentPeriod);

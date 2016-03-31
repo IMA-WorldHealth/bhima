@@ -76,15 +76,15 @@ angular.module('bhima.directives')
 	    			var data = getAccount(scope.accountId);
 	    			if (data) {
 	      			selectedAccount = data;
-	      			scope.accountId = data.account_txt + ' [' + data.account_number + ']';
+	      			scope.accountId = data.label + ' [' + data.number + ']';
 	      			scope.findAccount.valid = true;
 	      		}
 	  			}
 				}
 				if (selectedAccount) {
-	  			return selectedAccount.account_txt + ' [' + selectedAccount.account_number + ']';
+	  			return selectedAccount.label + ' [' + selectedAccount.number + ']';
 	  		} else {
-	  			return account ? account.account_txt : '';
+	  			return account ? account.label : '';
 				}
       }
 

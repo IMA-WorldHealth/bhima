@@ -15,7 +15,7 @@ exports.compile = function compile(options) {
   var deferred = q.defer(), context = {}, infos = {}, assetData = {}, passiveData = {};
   var bilanDate = new Date();
   var sql =
-    'SELECT `acc`.`id` AS `accountId`, `acc`.`account_txt` AS `accounTxt`, `acc`.`account_number` AS `accountNumber`, ' +
+    'SELECT `acc`.`id` AS `accountId`, `acc`.`label` AS `accounTxt`, `acc`.`number` AS `accountNumber`, ' +
     '`acc`.`is_brut_link` AS `accountIsBrutLink`, `ref`.`id` AS `referenceId`, `ref`.`ref` AS `referenceAbbr`, `ref`.`text` AS `referenceLabel`, ' +
     '`ref`.`position` AS `referencePosition`, `gref`.`id` AS `greferenceId`, `ref`.`is_report` AS `referenceIsReport`, ' +
     '`gref`.`reference_group` AS `greferenceAbbr`, `gref`.`text` AS `greferenceLabel`, `gref`.`position` AS `greferencePosition`, ' +

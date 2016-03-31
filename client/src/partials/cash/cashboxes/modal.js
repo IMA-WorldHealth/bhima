@@ -49,7 +49,7 @@ function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, ca
         // compute account labels once and use for all time
         // @todo should this be done in the account service?
         accounts.forEach(function (account) {
-          account.label = account.account_number + ' ' + account.account_txt;
+          account.label = account.number + ' ' + account.label;
         });
 
         vm.accounts = accounts;

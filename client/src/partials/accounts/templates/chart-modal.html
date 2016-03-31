@@ -11,7 +11,7 @@
             class="form-control"
             placeholder="e.g. 100000"
             type="number"
-            ng-model="account.account_number"
+            ng-model="account.number"
             id="coa-accn"
             required
           >
@@ -23,7 +23,7 @@
           <input
             class="form-control"
             placeholder="e.g. Capital Social"
-            ng-model="account.account_txt"
+            ng-model="account.label"
             id="coa-acctxt"
             required
           >
@@ -34,7 +34,7 @@
         <div class="col-xs-10">
           <select
             class="form-control"
-            ng-model="account.account_type_id"
+            ng-model="account.type_id"
             ng-options="a.id as a.type for a in types"
             id="coa-acctype"
             required

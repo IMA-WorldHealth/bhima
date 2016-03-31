@@ -22,7 +22,7 @@ describe('(/discounts) Discounts Interface ::', function () {
   var ACCOUNT_ID = 3636;  // Test Inventory Account
   var INVENTORY_UUID = '289cc0a1-b90f-11e5-8c73-159fdc73ab02'; // INV1
   var KEYS = [
-    'id', 'account_id', 'inventory_uuid', 'account_number', 'inventoryLabel',
+    'id', 'account_id', 'inventory_uuid', 'number', 'inventoryLabel',
     'label', 'description', 'value'
   ];
 

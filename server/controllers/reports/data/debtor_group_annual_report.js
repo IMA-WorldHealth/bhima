@@ -86,7 +86,7 @@ exports.compile = function (options) {
     // get the opening balances for the year by summing all periods less than
     // the start of the first one.
     sql =
-      'SELECT account.id, account.account_number, dg.name, ' +
+      'SELECT account.id, account.number, dg.name, ' +
         'IFNULL(SUM(pt.debit), 0) AS debit, IFNULL(SUM(pt.credit), 0) AS credit ' +
       'FROM debitor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
       'JOIN account ON account.id = dg.account_id ' +
@@ -108,14 +108,14 @@ exports.compile = function (options) {
       object[id].openingCredits = account.credit;
       object[id].openingDebits = account.debit;
       object[id].name = account.name;
-      object[id].account_number = account.account_number;
+      object[id].number = account.number;
 
       return object;
     }, {});
 
     // get the debits and credits for the entire year
     sql =
-      'SELECT account.id, account.account_number, dg.name, ' +
+      'SELECT account.id, account.number, dg.name, ' +
         'IFNULL(SUM(pt.debit), 0) AS debit, IFNULL(SUM(pt.credit), 0) AS credit ' +
       'FROM debitor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
       'JOIN account ON account.id = dg.account_id ' +
@@ -131,22 +131,22 @@ exports.compile = function (options) {
 
       // if the account didn't have an opening balance, create it
       // TODO: this is kind of hacky code -- clean this up a bit
-      if (!context.accounts[a.account_number]) {
-        var o = context.accounts[a.account_number] = {};
+      if (!context.accounts[a.number]) {
+        var o = context.accounts[a.number] = {};
         o.openingCredits = 0;
         o.openingDebits = 0;
         o.name = a.name;
-        o.account_number = a.account_number;
+        o.number = a.number;
       }
 
-      var ref = context.accounts[a.account_number];
+      var ref = context.accounts[a.number];
       ref.debits = a.debit;
       ref.credits = a.credit;
     });
 
     // get the ending balance (movements + beginning balances)
     sql =
-      'SELECT account.id, account.account_number, dg.name, ' +
+      'SELECT account.id, account.number, dg.name, ' +
         'SUM(IFNULL(pt.debit, 0) - IFNULL(pt.credit, 0)) AS balance ' +
       'FROM debitor_group AS dg JOIN account ON account.id = dg.account_id ' +
       'LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
@@ -160,7 +160,7 @@ exports.compile = function (options) {
 
     // put in the closing balances
     accounts.forEach(function (account) {
-      var ref = context.accounts[account.account_number];
+      var ref = context.accounts[account.number];
       ref.closingBalance = account.balance;
     });
 
@@ -194,7 +194,7 @@ exports.compile = function (options) {
       var account = context.accounts[key];
 
       Object.keys(account).forEach(function (k) {
-        if (typeof account[k] === 'number' && k !== 'account_number') {
+        if (typeof account[k] === 'number' && k !== 'number') {
           account[k] = currencyFmt(account[k]);
         }
       });

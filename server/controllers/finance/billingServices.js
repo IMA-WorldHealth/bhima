@@ -26,7 +26,7 @@ function lookupBillingService(id, codes) {
 
   var sql =
     'SELECT bs.id, bs.account_id, bs.label, bs.description, bs.value, ' +
-      'bs.created_at, bs.updated_at, a.account_number ' +
+      'bs.created_at, bs.updated_at, a.number ' +
     'FROM billing_service AS bs JOIN account AS a ON bs.account_id = a.id ' +
     'WHERE bs.id = ?;';
 

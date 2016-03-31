@@ -35,17 +35,21 @@
    "IS_NOTHING"      : "Autre",
    "IS_PASSIVE"      : "Est un passif",
    "IS_PROFIT"       : "Est ce un profit?",
+   "IS_TITLE"        : "Est ce un titre?",
    "IS_USED_BUDGET"  : "Est ce utiliser dans le Budget ?",
    "LABEL"           : "Label",
+   "LOCKED"          : "Verrouillé",
    "NEW"             : "Ajouter un Compte",
    "NO"              : "No.",
    "NOT_FOUND"       : "Aucun compte enregistrés...",
    "PROFIT"          : "Profit",
    "PROFIT_CENTER"   : "Centres de profits",
    "ROOT_ACCOUNT"    : "Compte Parent",
+   "SAVE_SUCCESS"    : "Enregistrement avec succès",
    "TITLE"           : "Gestion des Comptes",
    "TITLE_ACCOUNT"   : "Comptes Titre",
    "TYPE"            : "Type",
+   "UPDATE_SUCCESS"  : "Mis à jour avec succès",
    "VARIABLE"        : "Variable"
 },
 "ACCOUNT_RESULT" : {
@@ -3549,3 +3553,4 @@
     }
   }
 }
+

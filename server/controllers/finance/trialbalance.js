@@ -26,7 +26,7 @@
  * {
  *   balances :  [{
  *     account_id : '',
- *     account_number :'',
+ *     number :'',
  *     balance : 0,        // can be null or number
  *     credit : 0,         // sum of credit_equv
  *     debit : 0           // sum of debit_equiv
@@ -260,7 +260,7 @@ exports.postTrialBalance = function (req, res, next) {
     // state of each account in the posting journal
     var sql =
       'SELECT pt.debit, pt.credit, '  +
-      'pt.account_id, pt.balance, account.account_number ' +
+      'pt.account_id, pt.balance, account.number ' +
       'FROM  account JOIN ( ' +
         'SELECT SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
         'posting_journal.account_id, (period_total.debit - period_total.credit) AS balance ' +

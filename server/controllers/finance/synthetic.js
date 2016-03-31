@@ -89,7 +89,7 @@ function ccc (project_id, request, callback){
   var ids_conditions_g = (ids.length > 0) ? ' OR `general_ledger`.`account_id` IN (' + ids.join(',') + ')' : '';
 
   var sql =
-    'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`account_number`' +
+    'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`number`' +
     ' FROM ((SELECT `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`project_id` FROM `posting_journal` LEFT JOIN' +
     ' `cost_center` ON `posting_journal`.`cc_id` = `cost_center`.`id` WHERE `posting_journal`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_p +
     ' ) UNION ALL (SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` LEFT JOIN' +
@@ -111,7 +111,7 @@ function ccc_periodic (project_id, request, callback){
   var ids_conditions_g = (ids.length > 0) ? ' OR (`general_ledger`.`account_id` IN (' + ids.join(',') + ') AND (`general_ledger`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') )' : '';
 
   var sql =
-    'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`account_number`' +
+    'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`number`' +
     ' FROM ((SELECT `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`project_id` FROM `posting_journal` LEFT JOIN' +
     ' `cost_center` ON `posting_journal`.`cc_id` = `cost_center`.`id` WHERE (`posting_journal`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') AND `posting_journal`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_p +
     ' ) UNION ALL (SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` LEFT JOIN' +
@@ -133,7 +133,7 @@ function pcv (project_id, request, callback){
   var ids_conditions_g = (ids.length > 0) ? ' OR `general_ledger`.`account_id` IN (' + ids.join(',') + ')' : '';
 
   var sql =
-    'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`account_number`' +
+    'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`number`' +
     ' FROM (' +
     '(SELECT `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`project_id` FROM `posting_journal` LEFT JOIN' +
     ' `profit_center` ON `posting_journal`.`pc_id` = `profit_center`.`id` WHERE `posting_journal`.`pc_id`=' + sanitize.escape(request.pc_id) + ids_conditions_p +
@@ -156,7 +156,7 @@ function pcv_periodic (project_id, request, callback){
   var ids_conditions_g = (ids.length > 0) ? ' OR (`general_ledger`.`account_id` IN (' + ids.join(',') + ') AND (`general_ledger`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') )' : '';
 
   var sql =
-    'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`account_number`' +
+    'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`number`' +
     ' FROM (' +
     '(SELECT `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`project_id` FROM `posting_journal` LEFT JOIN' +
     ' `profit_center` ON `posting_journal`.`pc_id` = `profit_center`.`id` WHERE (`posting_journal`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') AND `posting_journal`.`pc_id`=' + sanitize.escape(request.pc_id) + ids_conditions_p +
@@ -172,7 +172,7 @@ function pcv_periodic (project_id, request, callback){
 
 function sp (project_id, request, callback){
   var sql =
-    'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit, service_id, account_number '+
+    'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit, service_id, number '+
     'FROM ((SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `posting_journal`)'+
     ' UNION ALL (SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `general_ledger`)) as `t` JOIN `account` ON `account`.`id`=`t`.`account_id` JOIN `service` ON `service`.`id` = `t`.`service_id`'+
     ' WHERE `t`.`project_id`='+sanitize.escape(project_id)+' AND `t`.`service_id`='+sanitize.escape(request.service_id)+' GROUP BY `t`.`account_id`';
@@ -180,7 +180,7 @@ function sp (project_id, request, callback){
   db.execute(sql, function(err, ans){
     if (err) { return callback(err); }
     ans = ans.filter(function (item) {
-      return item.account_number.toString().indexOf('7') === 0;
+      return item.number.toString().indexOf('7') === 0;
     });
     return callback(null, ans);
   });

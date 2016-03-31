@@ -16,6 +16,7 @@
  * */
 
 var db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
 /**
  * Create a new account entity.
@@ -52,12 +53,12 @@ function update (req, res, next) {
 
   delete queryData.id;
 
-  lookupAccount(accountId, req.codes)
+  lookupAccount(accountId)
     .then(function () {
       return db.exec(updateAccountQuery, [queryData, accountId]);
     })
     .then(function() {
-      return lookupAccount(accountId, req.codes);
+      return lookupAccount(accountId);
     })
     .then(function (account) {
       res.status(200).json(account);
@@ -70,21 +71,21 @@ function list (req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT a.id, a.account_number, a.account_txt, a.locked FROM account AS a';
+    'SELECT a.id, a.number, a.label, a.locked FROM account AS a';
 
   if (req.query.full === '1') {
 
     sql =
       'SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset, ' +
-      'a.reference_id, a.is_brut_link, a.is_used_budget, a.is_charge, a.account_number, ' +
-      'a.account_txt, a.parent, a.account_type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.account_type_id = at.id';
+      'a.reference_id, a.is_brut_link, a.is_charge, a.number, ' +
+      'a.label, a.parent, a.type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.type_id = at.id';
   }
 
   if (req.query.locked === '0') {
     sql+=' WHERE a.locked = 0';
   }
 
-  sql += ' ORDER BY a.account_number;';
+  sql += ' ORDER BY a.number;';
 
   db.exec(sql)
   .then(function (rows) {
@@ -97,7 +98,7 @@ function list (req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupAccount(req.params.id, req.codes)
+  lookupAccount(req.params.id)
    .then(function (account) {
       res.status(200).json(account);
    })
@@ -120,7 +121,7 @@ function getBalance (req, res, next){
     ' (SELECT gl.account_id, IFNULL(SUM(gl.debit), 0) AS debit, IFNULL(SUM(gl.credit), 0) AS credit, IFNULL((gl.debit - gl.credit), 0) AS balance FROM' + 
     ' general_ledger AS gl WHERE gl.account_id = ? GROUP BY gl.account_id' + optional + ' ) AS t GROUP BY t.account_id';
 
-  lookupAccount(accountId, req.codes)
+  lookupAccount(accountId)
     .then(function (account) {
       return db.exec(accountSoldQuery, params);
     })
@@ -136,19 +137,21 @@ function getBalance (req, res, next){
     .done();  
 }
 
-function lookupAccount(id, codes) {
+function lookupAccount(id) {
   'use strict';
 
   var sql =
     'SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset, ' +
-    'a.reference_id, a.is_brut_link, a.is_used_budget, a.is_charge, a.account_number, ' +
-    'a.account_txt, a.parent, a.account_type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.account_type_id = at.id WHERE a.id = ?';
+    'a.reference_id, a.is_brut_link, a.is_charge, a.number, ' +
+    'a.label, a.parent, a.type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.type_id = at.id WHERE a.id = ?';
 
   return db.exec(sql, id)
     .then(function(rows) {
+      // Record Not Found !
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound(`Record Not Found with id: ${id}`);
       }
+
       return rows[0];
     });
 }

@@ -32,14 +32,14 @@ angular.module('bhima.directives')
           var detail = account.detail, style = buildAccountStyle(detail);
 
           //Row for group detail
-          template.push(printf(accountRowTemplate, detail.account_number, style, detail.account_txt, buildAccountColumns(detail, false)));
+          template.push(printf(accountRowTemplate, detail.number, style, detail.label, buildAccountColumns(detail, false)));
           if (!account.accounts) { return; }
 
           //Group children
           parseGroup(account.accounts);
 
           //Total row
-          template.push(printf(accountTotalTemplate, printf('style=\'padding-left: %dpx; font-weight: bold;\'', detail.depth * 30), 'Total ' + detail.account_txt, buildAccountColumns(detail, true)));
+          template.push(printf(accountTotalTemplate, printf('style=\'padding-left: %dpx; font-weight: bold;\'', detail.depth * 30), 'Total ' + detail.label, buildAccountColumns(detail, true)));
         });
       }
 
@@ -49,7 +49,7 @@ angular.module('bhima.directives')
         var styleTemplate = '',
             colspanTemplate = '',
             classTemplate = '',
-            title = (detail.account_type_id === 3);
+            title = (detail.type_id === 3);
 
         styleTemplate = printf('style=\'padding-left: %dpx;\'', detail.depth * 30);
         if (title) {
@@ -60,7 +60,7 @@ angular.module('bhima.directives')
       }
 
       function buildAccountColumns(detail, isTotal) {
-        if (detail.account_type_id === 3 && !isTotal) {
+        if (detail.type_id === 3 && !isTotal) {
           return '';
         }
 

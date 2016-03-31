@@ -10,7 +10,7 @@ exports.compile = function (options) {
   var i18nAccountResult = options.language == 'fr' ? require('../lang/fr.json').ACCOUNT_RESULT : require('../lang/en.json').ACCOUNT_RESULT;
   var deferred = q.defer(), context = {}, infos = {}, chargeData = {}, profitData = {};
   var sql =
-    'SELECT `acc`.`id` AS `accountId`, `acc`.`account_txt` AS `accounTxt`, `acc`.`account_number` AS `accountNumber`, ' +
+    'SELECT `acc`.`id` AS `accountId`, `acc`.`label` AS `accounTxt`, `acc`.`number` AS `accountNumber`, ' +
     '`ref`.`id` AS `referenceId`, `ref`.`ref` AS `referenceAbbr`, `ref`.`text` AS `referenceLabel`, ' +
     '`ref`.`position` AS `referencePosition`, `ref`.`is_report` AS `referenceIsReport`, ' +
     '`src`.`id` AS `sectionResultId`, `src`.`text` AS `sectionResultLabel`, `src`.`is_charge` AS `sectionResultIsCharge`, ' +
@@ -18,7 +18,7 @@ exports.compile = function (options) {
     'FROM `section_resultat` `src` JOIN `reference` `ref` ON `ref`.`section_resultat_id` = `src`.`id` ' +
     'JOIN `account` `acc` ON `acc`.`reference_id` = `ref`.`id` JOIN `general_ledger` `gld` ON `gld`.`account_id` = `acc`.`id` WHERE `gld`.`trans_date`<= (SELECT MAX(`period_stop`) ' +
     'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `gld`.`trans_date` >= (SELECT MIN(`period_start`) FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? ' + 
-    'AND `acc`.`account_type_id` = ? GROUP BY `gld`.`account_id` ORDER BY `src`.`position`, `ref`.`position` ASC;';
+    'AND `acc`.`type_id` = ? GROUP BY `gld`.`account_id` ORDER BY `src`.`position`, `ref`.`position` ASC;';
 
   var doBalance = function (somDebit, somCredit, isCharge){
     return (isCharge == 1)? somDebit - somCredit : somCredit - somDebit;

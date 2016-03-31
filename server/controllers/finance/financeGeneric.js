@@ -242,7 +242,7 @@ exports.getDebtors = function (req, res, next) {
 
   var sql =
     'SELECT d.uuid, d.text, CONCAT(p.first_name, p.middle_name, p.last_name) AS patientname, ' +
-      'dg.name AS groupname, a.id AS account_id, a.account_number ' +
+      'dg.name AS groupname, a.id AS account_id, a.number ' +
     'FROM debitor AS d JOIN patient AS p JOIN debitor_group AS dg JOIN account AS a ON ' +
       'd.uuid = p.debitor_uuid AND d.group_uuid = dg.uuid AND dg.account_id = a.id;';
 
@@ -261,7 +261,7 @@ exports.getCreditors = function (req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT c.uuid, c.text, cg.name, c.group_uuid, a.id AS account_id, a.account_number ' +
+    'SELECT c.uuid, c.text, cg.name, c.group_uuid, a.id AS account_id, a.number ' +
     'FROM creditor AS c JOIN creditor_group AS cg JOIN account AS a ' +
       'ON c.group_uuid = cg.uuid AND cg.account_id = a.id;';
 
