@@ -22,7 +22,7 @@ describe('The /functions  API endpoint', function () {
   var NUM_FUNCTIONS = 2;
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
 
   it('GET /FUNCTIONS returns a list of function ', function () {

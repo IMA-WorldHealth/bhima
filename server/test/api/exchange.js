@@ -1,5 +1,4 @@
 /* jshint expr: true */
-/* global describe, it, beforeEach */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -26,7 +25,7 @@ describe('The /exchange API endpoint', function () {
   var RATE_KEY = ['id', 'enterprise_id', 'currency_id', 'enterprise_currency_id', 'rate', 'date'];
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('GET /exchange returns a list of exchange rates', function () {
     return agent.get('/exchange')

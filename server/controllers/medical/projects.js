@@ -160,7 +160,10 @@ exports.delete = function del(req, res, next) {
 
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      return res.status(404).send();
+      return res.status(404).json({
+        code : 'ERR_NOT_FOUND',
+        reason : 'No project found by id ' + req.params.id
+      });
     }
 
     res.status(204).send();

@@ -2,13 +2,12 @@
 * Enterprises Controller
 *
 * This controller is responsible for creating and updating Enterprises.
-  Each Enterprise must necessarily have a name, an abbreviation, a geographical location as well as a currency
-
+*  Each Enterprise must necessarily have a name, an abbreviation, a geographical location as well as a currency
 *  And it is not possible to remove an Enterprise
 */
 var db = require('../../lib/db');
 
-// GET / Enterprises
+// GET /enterprises
 exports.list = function list(req, res, next) {
   'use strict';
   var sql;
@@ -17,7 +16,7 @@ exports.list = function list(req, res, next) {
 
   if (req.query.detailed === '1'){
     sql =
-      'SELECT id, name, abbr, email, po_box, phone, location_id, logo, currency_id FROM enterprise';
+      'SELECT id, name, abbr, email, po_box, phone, location_id, logo, currency_id FROM enterprise;';
   }
 
   db.exec(sql)
@@ -29,7 +28,7 @@ exports.list = function list(req, res, next) {
 };
 
 
-// GET / Enterprises : id
+// GET /enterprises/:id
 exports.detail = function detail(req, res, next) {
   'use strict';
   var sql;
@@ -41,6 +40,9 @@ exports.detail = function detail(req, res, next) {
 
   db.exec(sql, [enterpriseId])
   .then(function (rows) {
+    if (!rows.length) {
+      throw new req.codes.ERR_NOT_FOUND();
+    }
     res.status(200).json(rows[0]);
   })
   .catch(next)
@@ -64,8 +66,10 @@ exports.create = function create(req, res, next) {
 
   writeEnterpriseQuery = 'INSERT INTO enterprise (name, abbr, phone, email, location_id, logo, currency_id, po_box) VALUES (?);';
 
-  db.exec(writeEnterpriseQuery, [[enterprise.name, enterprise.abbr, enterprise.phone, enterprise.email,
-    enterprise.location_id, enterprise.logo, enterprise.currency_id, enterprise.po_box]])
+  db.exec(writeEnterpriseQuery, [[
+    enterprise.name, enterprise.abbr, enterprise.phone, enterprise.email,
+    enterprise.location_id, enterprise.logo, enterprise.currency_id, enterprise.po_box
+  ]])
   .then(function (row) {
     res.status(201).json({ id : row.insertId });
   })
@@ -73,7 +77,7 @@ exports.create = function create(req, res, next) {
   .done();
 };
 
-// PUT /Enterprises/:id
+// PUT /enterprises/:id
 exports.update = function update(req, res, next) {
   'use strict';
   var sql;
@@ -82,21 +86,13 @@ exports.update = function update(req, res, next) {
 
   delete queryData.id;
 
-  // TODO This should never be matched by express - review and remove if true
-  if (!enterpriseId) {
-    res.status(400).json({
-      code : 'ERR_INVALID_REQUEST',
-      reason : 'A valid Enterprise ID must be provided to update a enterprise\'s record.'
-    });
-    return;
-  }
 
   sql = 'UPDATE enterprise SET ? WHERE id = ?;';
 
   db.exec(sql, [queryData, enterpriseId])
   .then(function (row) {
     if (!row.affectedRows) {
-      throw req.codes.ERR_NOT_FOUND;
+      throw new req.codes.ERR_NOT_FOUND();
     }
 
     var sql2 = 'SELECT id, name, abbr, phone, email, location_id, logo, currency_id, po_box FROM enterprise WHERE id = ?;';
@@ -104,7 +100,7 @@ exports.update = function update(req, res, next) {
     return db.exec(sql2, [enterpriseId]);
   })
   .then(function (rows) {
-    res.status(200).json(rows);
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();

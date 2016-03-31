@@ -1,9 +1,8 @@
-/* global describe, it, beforeEach */
+/* jshint expr:true */
 
 var chai = require('chai');
 var expect = chai.expect;
 
-// import test helpers
 var helpers = require('./helpers');
 helpers.configure(chai);
 
@@ -12,7 +11,7 @@ helpers.configure(chai);
 *
 * This test suite implements full CRUD on the /users HTTP API endpoint.
 */
-describe('(/users) Users and Permissions Interface ::', function () {
+describe('(/users) Users and Permissions Interface', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var newUser = {
@@ -30,14 +29,12 @@ describe('(/users) Users and Permissions Interface ::', function () {
   };
 
   // login before each request
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
 
   it('GET /users returns a list of users', function () {
     return agent.get('/users')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(4);
+        helpers.api.listed(res, 4);
       })
       .catch(helpers.handler);
   });
@@ -46,8 +43,7 @@ describe('(/users) Users and Permissions Interface ::', function () {
     return agent.post('/users')
       .send(newUser)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res.body).to.have.keys('id');
+        helpers.api.created(res);
 
         // cache the user id
         newUser.id = res.body.id;
@@ -59,10 +55,8 @@ describe('(/users) Users and Permissions Interface ::', function () {
     return agent.post('/users')
       .send(badUser)
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res.body).to.have.keys('code', 'reason', 'missingKeys');
+        helpers.api.errored(res, 400);
         expect(res.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
-        expect(res.body.missingKeys).to.have.length.above(2);
       })
       .catch(helpers.handler);
   });
@@ -71,7 +65,7 @@ describe('(/users) Users and Permissions Interface ::', function () {
     return agent.post('/users')
       .send({})
       .then(function (res) {
-        expect(res).to.have.status(400);
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
@@ -79,9 +73,7 @@ describe('(/users) Users and Permissions Interface ::', function () {
   it('GET /users/:id/projects should not find one project assigned to the new user', function () {
     return agent.get('/users/' + newUser.id + '/projects')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.have.length(1);
+        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });
@@ -122,8 +114,7 @@ describe('(/users) Users and Permissions Interface ::', function () {
     return agent.put('/users/' + newUser.id)
       .send({})
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res).to.be.json;
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
@@ -151,8 +142,7 @@ describe('(/users) Users and Permissions Interface ::', function () {
     return agent.put('/users/' + newUser.id)
       .send({ password : 'I am super secret.' })
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res).to.be.json;
+        helpers.api.errored(res, 400);
         expect(res.body.code).to.equal('ERR_PROTECTED_FIELD');
       })
       .catch(helpers.handler);
@@ -185,9 +175,8 @@ describe('(/users) Users and Permissions Interface ::', function () {
         return agent.get('/users/' + newUser.id + '/permissions');
       })
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(1);
+        helpers.api.listed(res, 1);
+
         expect(res.body[0]).to.have.keys('id', 'unit_id');
         expect(res.body[0].unit_id).to.equal(0);
       })
@@ -224,12 +213,11 @@ describe('(/users) Users and Permissions Interface ::', function () {
   it('DELETE /users/:id will delete the newly added user', function () {
     return agent.delete('/users/' + newUser.id)
       .then(function (res) {
-        expect(res).to.have.status(204);
+        helpers.api.deleted(res);
         return agent.get('/users/' + newUser.id);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.not.be.empty;
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -237,8 +225,7 @@ describe('(/users) Users and Permissions Interface ::', function () {
   it('DELETE /users/:id will send back a 404 if the user does not exist', function () {
     return agent.delete('/users/' + newUser.id)
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.not.be.empty;
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -251,5 +238,4 @@ describe('(/users) Users and Permissions Interface ::', function () {
       })
       .catch(helpers.handler);
   });
-
 });

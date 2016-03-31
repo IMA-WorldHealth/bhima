@@ -1,5 +1,4 @@
-/*global describe, it, beforeEach, process*/
-
+/* jshint expr:true */
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -21,62 +20,57 @@ describe('The reference API, PATH : /references', function () {
   var DELETABLE_REFERENCE_ID = 5;
   var FETCHABLE_REFERENCE_ID = 1;
 
-  beforeEach(helpers.login(agent));
+  var responseKeys = [
+    'id', 'is_report', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id'
+  ];
 
-    it('METHOD : GET, PATH : /references, It returns a list of references', function () {
+  before(helpers.login(agent));
+
+    it('GET /references returns a list of references', function () {
       return agent.get('/references?full=1')
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.length(3);
-         })
+          helpers.api.listed(res, 3);
+        })
        .catch(helpers.handler);
     });
 
-    it('METHOD : GET, PATH : /references, It returns a list of references', function () {
+    it('GET /references returns a list of references', function () {
       return agent.get('/references')
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.length(3);
+          helpers.api.listed(res, 3);
          })
        .catch(helpers.handler);
     });
 
 
-    it('METHOD : GET, PATH : /references/:id, It returns one reference', function () {
+    it('GET /references/:id returns one reference', function () {
       return agent.get('/references/'+ FETCHABLE_REFERENCE_ID)
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.not.be.empty;
           expect(res.body.id).to.be.equal(FETCHABLE_REFERENCE_ID);
-          expect(res.body).to.have.all.keys('id', 'is_report', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id');
+          expect(res.body).to.have.keys(responseKeys);
         })
         .catch(helpers.handler);
     });
 
-    it('METHOD : POST, PATH : /references, It adds a reference', function () {
+    it('POST /references adds a reference', function () {
       return agent.post('/references')
         .send(newReference)
           .then(function (res) {
-            expect(res).to.have.status(201);
-            expect(res).to.be.json;
-            expect(res.body).to.not.be.empty;
-            expect(res.body.id).to.be.defined;
+            helpers.api.created(res);
             newReference.id = res.body.id;
             return agent.get('/references/' + newReference.id);
           })
           .then(function (res){
             expect(res).to.have.status(200);
-            expect(res.body).to.have.all.keys('id', 'is_report', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id');
+            expect(res.body).to.have.keys(responseKeys);
           })
           .catch(helpers.handler);
   });
 
-  it('METHOD : PUT, PATH : /references/:id, It updates the newly added reference', function () {
+  it('PUT /references/:id updates the newly added reference', function () {
     var updateInfo = {position : 3};
 
     return agent.put('/references/'+ newReference.id)
@@ -90,15 +84,14 @@ describe('The reference API, PATH : /references', function () {
       .catch(helpers.handler);
   });
 
-   it('METHOD : DELETE, PATH : /references/:id, It deletes a reference', function () {
+   it('DELETE /references/:id deletes a reference', function () {
     return agent.delete('/references/' + DELETABLE_REFERENCE_ID)
       .then(function (res) {
-        expect(res).to.have.status(204);
-        // re-query the database
+        helpers.api.deleted(res);
         return agent.get('/references/' + DELETABLE_REFERENCE_ID);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
