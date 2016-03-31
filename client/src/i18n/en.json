@@ -198,6 +198,21 @@
   "GENERATE_DOC"    : "Generate Document",
   "DOC_SUCCES"      : "Document Build Success - Open Document"
   },
+"BILLING_SERVICES" : {
+  "TITLE" : "Billing Services",
+  "BTN" : {
+    "CREATE" : "Create a Billing Service",
+    "DELETE" : "Delete this Billing Service"
+  },
+  "CREATED" : "Created a new billing service.",
+  "UPDATED" : "Updated the billing service.",
+  "NOT_FOUND" : "There is no billing service with that ID.  Please go back and try again.",
+  "FORM" : {
+    "CREATE" : "New Billing Service",
+    "UPDATE" : "Updating Billing Service"
+  },
+  "VIEW" : "View all billing services."
+},
 "BUDGET": {
   "ANALYSIS" : {
     "ALL_PERIOD"         : "All periods",
@@ -1470,6 +1485,7 @@
     "MISSING"           : "Please ensure that all fields are filled in.",
     "DATE_OUT_OF_RANGE" : "This date is not in the allowed date range. Please select another date."
    },
+   "ERRORED"       : "This form contains errors.  Please correct them and resubmit.",
    "INVALID_DATE"    : "Invalid date",
    "LOGIN"           : "Login",
    "HAS_ERRORS"      : "The form contains errors.  Please correct them and resubmit.",
@@ -1525,7 +1541,9 @@
   "CLEAR"             : "Clear Selection",
   "GROUP_ROWS"        : "Group Rows",
   "REFRESH"           : "Refresh Selection",
-  "UPDATE"            : "Update Selection"
+  "UPDATE"            : "Update Selection",
+  "EMPTY"             : "There are no records to display.",
+  "LOADING"           : "Fetching data from the server."
 },
 "GROUP_INVOICE": {
    "AGREED"                 : "Agreed Payment",
@@ -1864,6 +1882,11 @@
     "REFERENCE_LOOKUP" : "Reference Lookup",
     "NO_RECEIPT" : "No receipt matches that reference.",
     "SUCCESS" : "Successfully found a receipt!"
+  },
+  "CONFIRM" : {
+    "TITLE" : "Action Confirmation",
+    "PROMPT" : "Are you sure you would like to perform that action?",
+    "ACCEPT" : "Accept"
   }
 },
 "NO_EXCHANGE": {
@@ -2709,7 +2732,7 @@
    "PASSIVE"          : "Passive",
    "SAVE_SUCCESS"     : "Saved Successfully",
    "TITLE"            : "Bilan section",
-   "UPDATE_SUCCESS"   : "Update Successfully"   
+   "UPDATE_SUCCESS"   : "Update Successfully"
 },
 "SECTION_RESULTAT" : {
    "ADD"                  : "Add",
@@ -3254,6 +3277,7 @@
    "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
    "BILAN"                     : "Bilan",
+   "BILLING_SERVICES"          : "Billing Services",
    "BUDGETING"                 : "Budget",
    "BUDGET_ANALYSIS"           : "Budget Analysis",
    "BUDGET_BY_ACCOUNT"         : "Budget by Account",

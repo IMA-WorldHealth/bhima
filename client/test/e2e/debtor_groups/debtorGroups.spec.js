@@ -1,5 +1,4 @@
-/* jshint expr: true */
-/* global element, by, inject, browser */
+/* global element, by, browser */
 
 var chai    = require('chai');
 var expect  = chai.expect;
@@ -40,7 +39,6 @@ describe('Debtor Groups', function () {
   });
 
   it('successfully creates a new Debtor Group', function () {
-
     FormUtils.buttons.create();
 
     /** debtor group info */
@@ -115,6 +113,7 @@ describe('Debtor Groups', function () {
      'ecd22221-88ad-49e2-84b2-c8161ad39f53', // Kananga,
      'f9d555de-434d-47ac-86bb-b0fcfd3bc75f' // Plateau
     ];
+
     components.locationSelect.set(locations);
 
     FormUtils.buttons.submit();
@@ -127,5 +126,4 @@ describe('Debtor Groups', function () {
     FormUtils.buttons.submit();
     FormUtils.exists(by.id('error-feedback'), true);
   });
-
 });

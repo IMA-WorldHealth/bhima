@@ -9,19 +9,16 @@ var q = require('q');
 // as appropriate.
 
 var config = {
-  
+
   specs: ['client/test/e2e/**/*.spec.js'],
-  
+
   framework : 'mocha',
   baseUrl : 'https://localhost:8080/',
-  allScriptsTimeout : 30000,
-  timeout : 10000,
-  defaultTimeoutInterval : 30000,
-  ignoreSynchronization : false,
 
   mochaOpts : {
     timeout : 30000
   },
+
   // default browsers to run
   multiCapabilities: [{
     //'browserName': 'firefox',

@@ -1,0 +1,63 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="title">{{ "BILLING_SERVICES.TITLE" | translate }}</li>
+    </ol>
+
+    <!-- @todo - discuss if buttons contained in the header is a good idea -->
+    <div class="toolbar">
+
+      <div class="toolbar-item">
+        <a
+          class="btn btn-default"
+          data-method="create"
+          ui-sref="billingServices.create"
+          ui-sref-opts="{notify:false}"
+          >
+          <span class="glyphicon glyphicon-plus"></span> {{ "BILLING_SERVICES.BTN.CREATE" | translate }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+
+  <!-- anchor to template in child views -->
+  <div class="container-fluid">
+    <div
+      class="grid-full-height"
+      id="BillingServicesGrid"
+      ui-grid="BillingServicesCtrl.options"
+      ui-grid-cellNav
+      ui-grid-auto-resize>
+
+      <!-- indicate that the grid is loading -->
+      <div class="grid-msg-overlay" ng-show="BillingServicesCtrl.loading">
+        <div class="msg">
+          <span><span class="glyphicon glyphicon-refresh"></span> {{ "GRID.LOADING" | translate }}</span>
+        </div>
+      </div>
+
+      <!-- indicate that there is no data for the requested query -->
+      <div class="grid-msg-overlay" ng-hide="BillingServicesCtrl.loading || BillingServicesCtrl.options.data.length > 0">
+        <div class="msg">
+          <span class="text-info">
+            <span class="glyphicon glyphicon-info-sign"></span> {{ "GRID.EMPTY" | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- indicate that some error occurred -->
+      <div class="grid-msg-overlay" ng-show="BillingServicesCtrl.error">
+        <div class="msg">
+          <!-- @todo - make an error directive for this kind of text -->
+          <span class="text-danger">
+            <span class="glyphicon glyphicon-alert"></span> {{ BillingServicesCtrl.error.code | translate }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

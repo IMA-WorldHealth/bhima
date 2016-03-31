@@ -65,6 +65,7 @@ var buttons =  {
   create : function create() { return $('[data-method="create"]').click(); },
   submit : function submit() { return $('[data-method="submit"]').click(); },
   cancel : function cancel() { return $('[data-method="cancel"]').click(); },
+  back   : function back() { return $('[data-method="back"]').click(); },
   delete : function delet() { return $('[data-method="delete"]').click(); }
 };
 

@@ -6,30 +6,67 @@ AccountService.$inject = ['$http', 'util', 'SessionService'];
 /**
 * Account Service
 *
-* A service wrapper for the /accounts HTTP endpoint.  
+* A service wrapper for the /accounts HTTP endpoint.
 */
 function AccountService($http, util, sessionService) {
   var service = this;
   var baseUrl = '/accounts/';
 
+  service.read = read;
+  service.label = label;
+
+  /** @deprecated */
   service.list = list;
+
   service.getBalance = getBalance;
   service.getChildren = getChildren;
+
   service.flatten = flatten;
   service.order = order;
   service.create = create;
   service.update = update;
+
+  /**
+   * The read() method loads data from the api endpoint. If an id is provided,
+   * the $http promise is resolved with a single JSON object, otherwise an array
+   * of objects should be expected.
+   *
+   * @param {Number} id - the id of the account to fetch (optional).
+   * @param {Object} options - options to be passed as query strings (optional).
+   * @return {Promise} promise - resolves to either a JSON (if id provided) or
+   *   an array of JSONs.
+   */
+  function read(id, options) {
+    var url = baseUrl.concat(id || '');
+    return $http.get(url, { params : options })
+      .then(util.unwrapHttpResponse)
+      .then(function (accounts) {
+
+        // if we received an array of accounts from the server,
+        // label the accounts with a nice human readable label
+        if (angular.isArray(accounts)) {
+          accounts.forEach(function (account) {
+            account.hrlabel = label(account);
+          });
+        }
+
+        /** @todo make this ordering work */
+        // return order(accounts);
+        return accounts;
+      });
+  }
 
   // return a list of accounts
   function list() {
     return $http.get('/accounts?full=1') // TODO - this should only be /accounts
       .then(util.unwrapHttpResponse)
       .then(function (accounts) {
+
         // hack to make sure accounts are properly rendered on cashboxes page
         // FIXME - make /accounts return the account type w/o query string
         // and preformat the numberLabel elsewhere
         accounts.forEach(function (account) {
-          account.numberLabel = account.number + ' - ' + account.label;
+          account.hrlabel = label(account);
         });
 
         return accounts;
@@ -38,15 +75,21 @@ function AccountService($http, util, sessionService) {
   }
 
   function getBalance(account_id, opt){
-    var url = baseUrl + '/' + account_id + '/balance';
+    var url = baseUrl + account_id + '/balance';
     return $http.get(url, opt)
       .then(util.unwrapHttpResponse);
   }
 
-  /** @helper
-  *This method builds a tree data structure of
-  *accounts and children of a specified parentId.
-  **/
+  function label(account) {
+    return account.number + ' - ' + account.label;
+  }
+
+  /**
+   * This method builds a tree data structure of accounts and children of a
+   * specified parentId.
+   *
+   * @method
+   */
   function getChildren(accounts, parentId) {
     var children;
 
@@ -69,9 +112,9 @@ function AccountService($http, util, sessionService) {
   }
 
   /**
-  *@helper
-  *flattens a tree data structure (must have children property) in place.
-  **/
+   * flattens a tree data structure (must have children property) in place.
+   * @method
+   */
   function flatten(tree) {
     return tree.reduce(function (array, node) {
       var items = [node].concat(node.children ? flatten(node.children) : []);
@@ -80,9 +123,9 @@ function AccountService($http, util, sessionService) {
   }
 
   /**
-  *creates a proper account ordering by first creating an account tree and then
-  * flattening in place.
-  **/
+   * creates a proper account ordering by first creating an account tree and then
+   * flattening in place.
+   */
   function order(accounts) {
 
     // NOTE
