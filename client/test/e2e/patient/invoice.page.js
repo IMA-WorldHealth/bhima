@@ -56,7 +56,6 @@ function PatientInvoicePage() {
 
   // adds n rows to the grid
   page.addRows = function addRows(n) {
-    FU.clear('PatientInvoiceCtrl.itemIncrement');
     FU.input('PatientInvoiceCtrl.itemIncrement', n);
     btns.add.click();
   };

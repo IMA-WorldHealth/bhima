@@ -65,7 +65,6 @@ describe('Billing Services', function () {
     FU.exists(by.css('[name="BillingServicesForm"]'), true);
 
     // update the label
-    FU.clear('BillingServicesFormCtrl.model.label');
     FU.input('BillingServicesFormCtrl.model.label', 'Value Reduced Tax');
 
     // submit the forn

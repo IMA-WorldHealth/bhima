@@ -107,11 +107,6 @@ module.exports = {
     return element(by.model(model)).clear().sendKeys(value);
   },
 
-  // clear an input's value.  Only works for <input> and <textarea>
-  clear : function input(model) {
-    return element(by.model(model)).clear();
-  },
-
   // get a <select> element by its ng-model.
   select: function select(model) {
     return element(by.model(model)).all(by.tagName('option'));

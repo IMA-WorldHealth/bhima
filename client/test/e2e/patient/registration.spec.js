@@ -110,15 +110,12 @@ describe('patient registration', function () {
       var testMinYear = '1000';
       var validYear = '2000';
 
-      FU.clear('PatientRegCtrl.yob');
       FU.input('PatientRegCtrl.yob', testMaxYear);
       FU.exists(by.css('[data-date-error]'), true);
 
-      FU.clear('PatientRegCtrl.yob');
       FU.input('PatientRegCtrl.yob', validYear);
       FU.exists(by.css('[data-date-error]'), false);
 
-      FU.clear('PatientRegCtrl.yob');
       FU.input('PatientRegCtrl.yob', testMinYear);
       FU.exists(by.css('[data-date-error]'), true);
     });
@@ -126,12 +123,10 @@ describe('patient registration', function () {
     it('correctly identifies duplicate hospital numbers (async)', function () {
 
       // resend the (assumed) correctly registered patients hospital number
-      FU.clear('PatientRegCtrl.medical.hospital_no');
       FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
       FU.exists(by.id('unique-error-icon'), true);
 
       // put in a unique hospital number
-      FU.clear('PatientRegCtrl.medical.hospital_no');
       FU.input('PatientRegCtrl.medical.hospital_no', uniqueHospitalNumber);
       FU.exists(by.id('unique-error-icon'), false);
     });

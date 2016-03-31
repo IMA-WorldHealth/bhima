@@ -39,10 +39,10 @@
                 <td>{{ project.abbr }}</td>
                 <td>{{ project.enterprise_id }}</td>
                 <td>
-                  <a class="btn btn-xs btn-default" ng-click="ProjectCtrl.update(project)" id="project-upd-{{ $index + 1}}"><span class="glyphicon glyphicon-pencil"></span></a>
+                  <a class="btn btn-xs btn-default" ng-click="ProjectCtrl.update(project)" id="project-upd-{{ project.id }}"><span class="glyphicon glyphicon-pencil"></span></a>
                 </td>
                 <td>
-                  <a class="btn btn-xs btn-default" ng-click="ProjectCtrl.del(project)" id="project-del-{{ $index + 1 }}" class="danger">
+                  <a class="btn btn-xs btn-default" ng-click="ProjectCtrl.del(project)" id="project-del-{{ project.id }}" class="danger">
                     <span class="glyphicon glyphicon-trash"></span>
                   </a>
                 </td>
@@ -93,15 +93,15 @@
                 <input type="text" class="form-control" name="name" id="bhima-project-name" ng-model="ProjectCtrl.project.name" required>
                 <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.abbr.$invalid }">
                 <label for="bhima-project-abbr" class="control-label">{{ "COLUMNS.ABBR" | translate }}</label>
-                <input type="text" class="form-control" name="abbr" required id="bhima-project-abbr" ng-model="ProjectCtrl.project.abbr">                
+                <input type="text" class="form-control" name="abbr" required id="bhima-project-abbr" ng-model="ProjectCtrl.project.abbr">
                 <div class="help-block" ng-messages="CreateForm.abbr.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                  
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.enterprise_id.$invalid }">
@@ -111,7 +111,7 @@
                 </select>
                 <div class="help-block" ng-messages="CreateForm.enterprise_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <!-- zone de sante for snis -->
@@ -122,15 +122,15 @@
                 </select>
                 <div class="help-block" ng-messages="CreateForm.zs_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
               <!-- end zone de sante for snis -->
-              
+
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.locked.$invalid }">
                 <label class="control-label">
-                  <input type="checkbox"  name="locked" id="locked" ng-true-value="1" ng-false-value="0" 
+                  <input type="checkbox"  name="locked" id="locked" ng-true-value="1" ng-false-value="0"
                     ng-model="ProjectCtrl.project.locked">  {{ "COLUMNS.LOCKED" | translate }}
-                </label>  
+                </label>
               </div>
 
               <div class="form-group">
@@ -154,15 +154,15 @@
                 <input type="text" class="form-control" name="name" id="bhima-project-name" ng-model="ProjectCtrl.project.name" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.abbr.$invalid }">
                 <label for="bhima-project-abbr" class="control-label">{{ "COLUMNS.ABBR" | translate }}</label>
-                <input type="text" class="form-control" name="abbr" required id="bhima-project-abbr" ng-model="ProjectCtrl.project.abbr">                
+                <input type="text" class="form-control" name="abbr" required id="bhima-project-abbr" ng-model="ProjectCtrl.project.abbr">
                 <div class="help-block" ng-messages="UpdateForm.abbr.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                  
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.enterprise_id.$invalid }">
@@ -172,7 +172,7 @@
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.enterprise_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <!-- zone de sante for snis -->
@@ -183,15 +183,15 @@
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.zs_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
               <!-- end zone de sante for snis -->
-              
+
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.locked.$invalid }">
                 <label class="control-label">
-                  <input type="checkbox"  name="locked" id="locked" ng-true-value="1" ng-false-value="0" 
+                  <input type="checkbox"  name="locked" id="locked" ng-true-value="1" ng-false-value="0"
                     ng-model="ProjectCtrl.project.locked">  {{ "COLUMNS.LOCKED" | translate }}
-                </label>  
+                </label>
               </div>
               <div class="form-group">
                   <button class="btn btn-default" id="change_project" type="submit" data-method="submit">
