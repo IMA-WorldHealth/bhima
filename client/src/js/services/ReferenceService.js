@@ -55,7 +55,16 @@ function ReferenceService($http, util) {
   *  });
   **/
   function update(id, Reference) {
-    return $http.put(baseUrl.concat(id), Reference)
+    var referenceClean = {
+      is_report : Reference.is_report,
+      ref : Reference.ref,
+      text : Reference.text,
+      position : Reference.position,
+      reference_group_id : Reference.reference_group_id,
+      section_resultat_id : Reference.section_resultat_id,
+    };
+
+    return $http.put(baseUrl.concat(id), referenceClean)
       .then(util.unwrapHttpResponse);
   }
 

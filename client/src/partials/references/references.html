@@ -50,8 +50,8 @@
                 <td>{{ reference.position }}</td>
                 <td>{{ reference.reference_group_text }}</td>
                 <td>{{ reference.section_resultat_text }}</td>
-                <td><a class="action" ng-click="ReferenceCtrl.update(reference)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                <td><a class="action danger" ng-click="ReferenceCtrl.del(reference)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                <td><a class="btn btn-xs btn-default" id="reference-upd-{{$index+1}}" ng-click="ReferenceCtrl.update(reference)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                <td><a class="btn btn-xs btn-default" id="reference-del-{{$index+1}}" ng-click="ReferenceCtrl.del(reference)"><span class="glyphicon glyphicon-trash"></span></a></td>
               </tr>
               <tr ng-if="!ReferenceCtrl.references.length">
                 <td colspan="8">{{ "REFERENCE.NO_REFERENCES" | translate }}</td>
@@ -74,7 +74,6 @@
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
             <h4>{{ 'REFERENCE.SAVE_SUCCESS' | translate }} </h4>
-            </p>
           </div>
         </div>
 
@@ -82,21 +81,18 @@
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
             <h4>{{ 'REFERENCE.UPDATE_SUCCESS' | translate }} </h4>
-            </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
             <h4>{{ 'REFERENCE.DELETE_SUCCESS' | translate }} </h4>
-            </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_error">
           <div class="alert alert-danger" id="delete_error">
             <h4>{{ SubsidyCtrl.HTTPError.data.code | translate }} </h4>
-            </p>
           </div>
         </div>        
 
@@ -109,16 +105,25 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.ref.$invalid }">
                 <label class="control-label">{{ "COLUMNS.REFERENCE" | translate }}</label>
                 <input type="text" class="form-control" name="ref" ng-model="ReferenceCtrl.reference.ref" required>
+                <div class="help-block" ng-messages="CreateForm.ref.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
                 <label class="control-label">{{ "COLUMNS.LABEL" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-model="ReferenceCtrl.reference.text" required>
+                <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.position.$invalid }">
                 <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
                 <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceCtrl.reference.position" required>
+                <div class="help-block" ng-messages="CreateForm.position.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <hr>
@@ -179,16 +184,25 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.ref.$invalid }">
                 <label class="control-label">{{ "COLUMNS.REFERENCE" | translate }}</label>
                 <input type="text" class="form-control" name="ref" ng-model="ReferenceCtrl.reference.ref" required>
+                <div class="help-block" ng-messages="UpdateForm.ref.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
             
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
                 <label class="control-label">{{ "COLUMNS.LABEL" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-model="ReferenceCtrl.reference.text" required>
+                <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                  
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.position.$invalid }">
                 <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
                 <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceCtrl.reference.position" required>
+                <div class="help-block" ng-messages="UpdateForm.position.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                  
               </div>
 
               <hr>

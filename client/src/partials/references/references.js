@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('ReferenceController', ReferenceController);
 
 ReferenceController.$inject = [
-  'ReferenceService', 'SectionBilanService', '$window', '$translate'
+  'ReferenceService', 'ReferenceGroupService', 'SectionResultatService', '$window', '$translate'
 ];
 
-function ReferenceController(referenceService, sectionBilanService, $window, $translate) {
+function ReferenceController(referenceService, referenceGroupService, sectionResultatService, $window, $translate) {
   var vm = this;
   vm.view = 'default';
 
@@ -17,8 +17,6 @@ function ReferenceController(referenceService, sectionBilanService, $window, $tr
   vm.cancel = cancel;
   vm.del    = del;  
 
-  vm.doTranslate = doTranslate;
-
   function handler(error) {
     console.error(error);
   }
@@ -28,9 +26,14 @@ function ReferenceController(referenceService, sectionBilanService, $window, $tr
     // start up loading indicator
     vm.loading = true;
 
-    // load Section Bilans
-    sectionBilanService.read().then(function (data) {
-      vm.sectionBilans = data;
+    // load References groups
+    referenceGroupService.read().then(function (data) {
+      vm.referenceGroups = data;
+    }).catch(handler);
+
+    // load sections Resultats
+    sectionResultatService.read().then(function (data) {
+      vm.sectionResultats = data;
     }).catch(handler);
 
     // load Reference

@@ -180,7 +180,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 --  Reference Management
 (112,1),
 
-
 -- Simple Journal Vouchers
 (134, 1),
 
