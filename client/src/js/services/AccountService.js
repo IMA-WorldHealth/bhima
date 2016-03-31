@@ -42,11 +42,11 @@ function AccountService($http, util, sessionService) {
       .then(util.unwrapHttpResponse)
       .then(function (accounts) {
 
-        // if we recieved an array of accounts from the server,
+        // if we received an array of accounts from the server,
         // label the accounts with a nice human readable label
         if (angular.isArray(accounts)) {
           accounts.forEach(function (account) {
-            account.label = label(account);
+            account.hrlabel = label(account);
           });
         }
 
@@ -66,7 +66,7 @@ function AccountService($http, util, sessionService) {
         // FIXME - make /accounts return the account type w/o query string
         // and preformat the numberLabel elsewhere
         accounts.forEach(function (account) {
-          account.label = label(account);
+          account.hrlabel = label(account);
         });
 
         return accounts;
@@ -81,7 +81,7 @@ function AccountService($http, util, sessionService) {
   }
 
   function label(account) {
-    return account.account_number + ' - ' + account.account_txt;
+    return account.number + ' - ' + account.label;
   }
 
   /**

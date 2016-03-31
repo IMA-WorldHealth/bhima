@@ -306,7 +306,8 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* 2.X Journal routes */
-  .when('/journal', { 
+  .state('journal', {
+    url : '/journal',
     controller : 'JournalController as JournalCtrl', 
     templateUrl : 'partials/2.X-journal/journal.html'
   })
@@ -326,7 +327,8 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'ReferenceController',
     templateUrl: 'partials/references/references.html'
   })
-  .state('/references/groups', {
+  .state('referenceGroups', {
+    url : '/references/groups',
     controller: 'ReferenceGroupController as ReferenceGroupCtrl',
     templateUrl: 'partials/references/groups/groups.html'
   })
@@ -495,7 +497,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl: 'partials/patients/edit/edit.html'
   })
 
-  /* */
+  /* Patient Invoicing */
 
   .state('patientInvoice', {
     url : '/invoices/patient',

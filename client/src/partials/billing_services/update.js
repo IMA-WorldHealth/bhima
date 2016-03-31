@@ -88,8 +88,8 @@ function BillingServicesUpdateController($state, BillingServices, Accounts, Moda
     .then(function (data) {
       ModalInstance.close(data.id);
     })
-    .catch(function (error) {
-      vm.error = error;
+    .catch(function (response) {
+      vm.error = response.data;
     });
   }
 

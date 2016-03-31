@@ -6,6 +6,7 @@ var expect = chai.expect;
 // import testing utiliites
 var components = require('../shared/components');
 var FU = require('../shared/FormUtils');
+
 var helpers = require('../shared/helpers');
 helpers.configure(chai);
 

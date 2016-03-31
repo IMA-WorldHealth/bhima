@@ -90,7 +90,7 @@ exports.list = function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql =
       'SELECT bs.id, bs.label, bs.created_at, bs.updated_at, bs.account_id, ' +
-        'bs.description, bs.value, a.account_txt, a.account_number ' +
+        'bs.description, bs.value, a.number ' +
       'FROM billing_service AS bs JOIN account AS a ' +
         'ON bs.account_id = a.id ' +
       'ORDER BY bs.id;';

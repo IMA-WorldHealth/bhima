@@ -90,7 +90,7 @@ function BillingServicesService($http, util) {
     // remove unneeded properties
     delete data.updated_at;
     delete data.created_at;
-    delete data.account_number;
+    delete data.number; // account number
 
     return $http.put(target, { billingService : data } )
       .then(util.unwrapHttpResponse);

@@ -61,24 +61,26 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, S
         return Patients.logVisit(result.uuid);
       })
       .then(function (confirmation) {
-        var patientCardPath = '/invoice/patient/';
+        //var patientCardPath = '/invoices/patient/';
+        /** @fixme -  temporary path for end to end tests while we develop receipts */
+        var patientCardPath = '/patients/edit/';
 
-        //TODO Hospital card should recieve a value that notifies the user of register success
+        //TODO Hospital card should receive a value that notifies the user of register success
         $location.path(patientCardPath.concat(confirmation.uuid));
       })
       .catch(handleServerError);
-  };
+  }
 
   /**
    * Date and location utility methods
    */
   function enableFullDate() {
     viewModel.fullDateEnabled = true;
-  };
+  }
 
   function calculateYOB(value) {
     viewModel.medical.dob = value && value.length === 4 ? new Date(value + '-' + util.defaultBirthMonth) : undefined;
-  };
+  }
   
   /** 
    * This method is responsible for handling exceptions thrown by the server 

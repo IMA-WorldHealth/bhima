@@ -66,7 +66,7 @@ describe('patient registration', function () {
     // submit the patient registration form
     FU.buttons.submit();
 
-    expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/invoice/patient/')
+    expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/patients/edit/')
     .then(function () {
       done();
     });
