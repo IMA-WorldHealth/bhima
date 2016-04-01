@@ -64,7 +64,7 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory, $tr
 
   // switch to delete warning mode
   function del(project) {
-    var result = $window.confirm($translate.instant('PROJECT.CONFIRM'));
+    var result = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
     if(result){
       vm.view = 'delete_confirm';
       Projects.delete(project.id)
