@@ -96,6 +96,8 @@ function convert(data) {
   return data;
 }
 
+/** expose patient detail query internally */
+exports.lookupPatient = handleFetchPatient;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {

@@ -33,6 +33,9 @@ exports.search = search;
  */
 exports.reference = reference;
 
+/** Expose lookup sale for other controllers to use internally */
+exports.lookupSale = lookupSale;
+
 /** Undo the financial effects of a sale generating an equal and opposite credit note. */
 // exports.reverse = reverse;
 
