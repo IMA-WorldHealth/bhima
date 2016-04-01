@@ -19,6 +19,7 @@
 var db        = require('../../lib/db');
 var uuid      = require('../../lib/guid');
 
+var NotFound    = require('../../lib/errors/NotFound');
 var BadRequest  = require('../../lib/errors/BadRequest');
 
 // create a new patient
@@ -62,6 +63,8 @@ exports.billingServices = billingServices;
 exports.priceLists = priceLists;
 exports.subsidies = subsidies;
 
+/** expose patient detail query internally */
+exports.lookupPatient = handleFetchPatient;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
@@ -147,7 +150,7 @@ function generatePatientText(patient) {
 function detail(req, res, next) {
   var uuid = req.params.uuid;
 
-  handleFetchPatient(uuid, req.codes)
+  handleFetchPatient(uuid)
     .then(function(result) {
       var patientDetail;
       // UUID has matched patient - extract result and send to client
@@ -176,7 +179,7 @@ function update(req, res, next) {
   db.exec(updatePatientQuery, [queryData, patientId])
     .then(function (result) {
 
-      return handleFetchPatient(patientId, req.codes);
+      return handleFetchPatient(patientId);
     })
     .then(function (updatedPatientResult) {
       var updatedPatient = updatedPatientResult;
@@ -186,7 +189,7 @@ function update(req, res, next) {
     .done();
 }
 
-function handleFetchPatient(uuid, codes) {
+function handleFetchPatient(uuid) {
 
   var patientDetailQuery =
     'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, p.hospital_no, ' +
@@ -200,7 +203,7 @@ function handleFetchPatient(uuid, codes) {
   return db.exec(patientDetailQuery, uuid)
     .then(function (rows) {
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound('patient not found given uuid '.concat(uuid));
       }
       return rows[0];
     });
@@ -225,7 +228,7 @@ function groups(req, res, next) {
     .then(function (rows) {
 
       if (isEmpty(rows)) {
-        throw new req.codes.ERR_NOT_FOUND();
+        throw new new NotFound('patient not found given uiid '.concat(uuid));
       }
 
       return db.exec(patientGroupsQuery, [uuid]);
