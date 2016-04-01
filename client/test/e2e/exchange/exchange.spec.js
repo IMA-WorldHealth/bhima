@@ -1,28 +1,27 @@
 /* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
 
 var helpers = require('../shared/helpers');
 var FU = require('../shared/FormUtils');
-
-helpers.configure(chai);
+var components = require('../shared/components');
 
 describe('Exchange Rate Module', function () {
 
   var path = '#/exchange';
-  var EXCHANGE = {
-    date : '06/30/2015',
+  var exchangeRate = {
+    date : new Date('06-30-2015'),
     rate : '900'
   };
 
-  var EXCHANGE_NEW ={
-    date : '02/15/2016',
+  var newExchangeRate ={
+    date : new Date('02-15-2016'),
     rate : '950'
   };
 
-  var EXCHANGE_UPDATE ={
+  var updateExchangeRate ={
     rate : '930'
   };
 
@@ -34,6 +33,7 @@ describe('Exchange Rate Module', function () {
   var RATE = 2;
   var RATE_RANK = helpers.random(RATE);
 
+  // navigate to the page one
   beforeEach(function () {
     browser.get(path);
   });
@@ -50,16 +50,18 @@ describe('Exchange Rate Module', function () {
     FU.exists(by.id('delete_success'), true);
   });
 
-  it('successfully set a new exchange rate', function () {
+  it('sets a new exchange rate', function () {
 
-    // switch to teh creation form
+    // switch to the creation form
     FU.buttons.create();
 
+    // enable previous date checkbox
     element(by.id('previous')).click();
 
-    FU.input('ExchangeCtrl.form.date', EXCHANGE_NEW.date);
+    // set up the new date via the datepicker
+    components.dateEditor.set(exchangeRate.date);
     element(by.id('current-' + CURRENCY_RANK )).click();
-    FU.input('ModalCtrl.data.rate',EXCHANGE_NEW.rate);
+    FU.input('ModalCtrl.data.rate',newExchangeRate.rate);
 
     // submit the form
     FU.buttons.submit();
@@ -73,10 +75,14 @@ describe('Exchange Rate Module', function () {
     // switch to the create form
     FU.buttons.create();
 
+    // enable previous date checkbox
     element(by.id('previous')).click();
-    FU.input('ExchangeCtrl.form.date', EXCHANGE.date);
+
+    // set up the new date via the datepicker
+    components.dateEditor.set(exchangeRate.date);
+
     element(by.id('current-' + CURRENCY_RANK )).click();
-    FU.input('ModalCtrl.data.rate',EXCHANGE.rate);
+    FU.input('ModalCtrl.data.rate', exchangeRate.rate);
 
     // submit the page to the server
     FU.buttons.submit();
@@ -85,12 +91,12 @@ describe('Exchange Rate Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('Updated currency exchange rates from the already recorded rate', function () {
+  it('updates currency exchange rates from the already recorded rate', function () {
     element(by.id('rate-' + RATE_RANK )).click();
 
     // submit the page to the server
     element(by.id('submit')).click();
-    FU.input('ModalCtrl.data.rate',EXCHANGE_UPDATE.rate);
+    FU.input('ModalCtrl.data.rate',updateExchangeRate.rate);
 
     // submit the form
     FU.buttons.submit();
@@ -99,14 +105,16 @@ describe('Exchange Rate Module', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevent error classes', function () {
+  it('correctly blocks invalid form submission with relevant error classes', function () {
 
     // move to the submit form
     FU.buttons.create();
 
+    //
     element(by.id('previous')).click();
 
-    FU.input('ExchangeCtrl.form.date', EXCHANGE_NEW.date);
+    // set the new date in the datepicker
+    components.dateEditor.set(exchangeRate.date);
 
     element(by.id('current-' + CURRENCY_RANK )).click();
 

@@ -29,13 +29,15 @@
                 <td>{{ $index + 1 }}</td>
                 <td>{{ group.name }}</td>
                 <td>
-                  <i ng-if="group.is_convention" class="glyphicon glyphicon-ok-sign"></i>
+                  <i ng-show="group.is_convention" class="glyphicon glyphicon-ok-sign"></i>
                 </td>
                 <td>
-                  <i ng-if="group.locked" class="glyphicon glyphicon-lock"></i>
+                  <i ng-show="group.locked" class="glyphicon glyphicon-lock"></i>
                 </td>
                 <td>
-                  <a name="group-{{group.name}}" class="btn btn-xs btn-default"
+                  <a
+                    name="group-{{group.uuid}}"
+                    class="btn btn-xs btn-default"
                     ng-click="DebtorGroupCtrl.update(group.uuid)">
                     <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.EDIT' | translate }}
                   </a>
@@ -73,7 +75,8 @@
                     name="name"
                     placeholder="{{ 'COLUMNS.NAME' | translate }}..."
                     ng-model="DebtorGroupCtrl.debtorGroup.name"
-                    ng-change="DebtorGroupCtrl.refreshValidation()" required>
+                    ng-change="DebtorGroupCtrl.refreshValidation()"
+                    required>
                   <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
@@ -90,7 +93,8 @@
                     placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}..."
                     uib-typeahead="account.id as account.label for account in DebtorGroupCtrl.accounts.data | filter:$viewValue | limitTo:8" class="form-control"
                     typeahead-template-url="partials/templates/typeahead/accounts.html"
-                    ng-model="DebtorGroupCtrl.debtorGroup.account_id" required>
+                    ng-model="DebtorGroupCtrl.debtorGroup.account_id"
+                    required>
                   <div class="help-block" ng-messages="ActionForm.account.$error" ng-show="ActionForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>

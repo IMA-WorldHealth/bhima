@@ -34,13 +34,14 @@
         datepicker-append-to-body="true"
         data-date-editor-input
         ng-readonly="!$ctrl.editMode"
+        ng-disabled="$ctrl.disabled"
         required>
       <span class="input-group-btn">
         <button
           type="button"
           class="btn btn-default"
           ng-click="$ctrl.toggleEditMode()"
-          ng-disabled="$ctrl.editMode"
+          ng-disabled="$ctrl.editMode || $ctrl.disabled"
           data-date-editor-dropdown-toggle>
           <span class="glyphicon glyphicon-calendar"></span>
           {{ "DATEFINDER.SET" | translate }}

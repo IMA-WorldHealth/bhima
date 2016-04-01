@@ -1,10 +1,11 @@
 /* global browser, by, element, protractor */
 
 var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-
-chai.use(chaiAsPromised);
 var expect = chai.expect;
+
+var helpers = require('./helpers');
+helpers.configure(chai);
+
 
 // Overide the element.all() prototype function provided by protractor to attach custom methods
 // @TODO - is there a better way without overriding the prototype function?
@@ -103,12 +104,7 @@ module.exports = {
 
   // get an <input> element by its ng-model
   input : function input(model, value) {
-    return element(by.model(model)).sendKeys('').sendKeys(value);
-  },
-
-  // clear an input's value.  Only works for <input> and <textarea>
-  clear : function input(model) {
-    return element(by.model(model)).clear();
+    return element(by.model(model)).clear().sendKeys(value);
   },
 
   // get a <select> element by its ng-model.

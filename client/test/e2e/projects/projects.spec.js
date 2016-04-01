@@ -1,5 +1,4 @@
-/* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -20,7 +19,7 @@ describe('Projects Module', function () {
 
   var defaultProject = 3;
   var enterpriseRank = helpers.random(defaultProject);
-  var deleteSuccess = 4;
+  var deleteSuccess = 3;
   var deleteError = 1;
 
   // navigate to the project module before each test
@@ -28,7 +27,7 @@ describe('Projects Module', function () {
     browser.get(path);
   });
 
-  it('successfully creates a new project', function () {
+  it('creates a new project', function () {
 
     // swtich to the create form
     FU.buttons.create();
@@ -56,7 +55,7 @@ describe('Projects Module', function () {
   });
 
 
-  it('successfully edits an project', function () {
+  it('edits an project', function () {
 
     element(by.id('project-upd-' + enterpriseRank )).click();
 
@@ -100,7 +99,7 @@ describe('Projects Module', function () {
     FU.validation.ok('ProjectCtrl.project.locked');
   });
 
-  it('successfully delete an project', function () {
+  it('delete an project', function () {
     element(by.id('project-del-' + deleteSuccess )).click();
 
     // click the alert asking for permission
