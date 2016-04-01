@@ -7,13 +7,15 @@
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructre
  * @todo Credit note logic pending on clear design
  */
-var q    = require('q');
-var db   = require('../../lib/db');
-var uuid = require('node-uuid');
-var _    = require('lodash');
-var util = require('../../lib/util');
+var q         = require('q');
+var uuid      = require('node-uuid');
+var _         = require('lodash');
 
-var journal = require('./journal');
+var db        = require('../../lib/db');
+var util      = require('../../lib/util');
+var journal   = require('./journal');
+
+var NotFound  = require('../../lib/errors/NotFound');
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
@@ -31,6 +33,9 @@ exports.search = search;
  * Retrieves a sale uuid by searching for a human readable reference (e.g. HBB123)
  */
 exports.reference = reference;
+
+/** Expose lookup sale for other controllers to use internally */
+exports.lookupSale = lookupSale;
 
 /** Undo the financial effects of a sale generating an equal and opposite credit note. */
 // exports.reverse = reverse;
@@ -62,16 +67,15 @@ function list(req, res, next) {
  * Find a sale by id in the database.
  *
  * @param {string} uid - the uuid of the sale in question
- * @param {object} codes - the application's HTTP error codes
  */
-function lookupSale(uid, codes) {
+function lookupSale(uid) {
   'use strict';
 
   var record;
 
   var saleDetailQuery =
     'SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
-      'sale.debitor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debitor_name, ' +
+      'sale.debitor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debitor_name, patient.uuid AS patient_uuid, ' +
       'user_id, discount, date, sale.is_distributable ' +
     'FROM sale ' +
     'LEFT JOIN patient ON patient.debitor_uuid = sale.debitor_uuid ' +
@@ -88,7 +92,7 @@ function lookupSale(uid, codes) {
   return db.exec(saleDetailQuery, [uid])
     .then(function (rows) {
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound('No invoice record found for uuid '.concat(uid));
       }
 
       record = rows[0];
@@ -106,7 +110,7 @@ function lookupSale(uid, codes) {
 function details(req, res, next) {
   var uid = req.params.uuid;
 
-  lookupSale(uid, req.codes)
+  lookupSale(uid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -278,7 +282,7 @@ function reference(req, res, next) {
   db.exec(sql, [ req.params.reference ])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound('No invoice found given reference'.concat(req.params.reference));
     }
 
     // references should be unique -- send back only the first result

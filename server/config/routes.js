@@ -55,7 +55,10 @@ var costCenter           = require('../controllers/finance/costCenter');
 var profitCenter         = require('../controllers/finance/profitCenter');
 var reference            = require('../controllers/finance/reference');
 var subsidy              = require('../controllers/finance/subsidy');
+
 var patientInvoice       = require('../controllers/finance/patientInvoice');
+var invoiceReceipt       = require('../controllers/finance/reports/invoiceReceipt');
+
 var discounts            = require('../controllers/finance/discounts');
 var financeServices      = require('../controllers/categorised/financeServices');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
@@ -397,6 +400,9 @@ exports.configure = function (app) {
   app.get('/sales/search', patientInvoice.search);
   app.get('/sales/:uuid', patientInvoice.details);
   app.get('/sales/references/:reference', patientInvoice.reference);
+  
+  // Reports API: Invoices (receipts)
+  app.get('/reports/invoices/:uuid', invoiceReceipt.build);
 
   // Patients API
   app.get('/patients', patient.list);
