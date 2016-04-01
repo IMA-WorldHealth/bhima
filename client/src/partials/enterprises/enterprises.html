@@ -10,7 +10,7 @@
 <div class="flex-util">
   <button class="btn btn-default" ng-click="EnterpriseCtrl.create()" data-method="create">
     <span class="glyphicon glyphicon-plus-sign"></span>
-    {{ "ENTERPRISE.NEW" | translate }}
+    {{ "ENTERPRISE.ADD_ENTERPRISE" | translate }}
   </button>
 </div>
 
@@ -22,17 +22,17 @@
       <div class="col-md-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
-            {{ 'ENTERPRISE.EXISTING_ENTERPRISES' | translate }}
+            {{ 'ENTERPRISE.ALL_ENTERPRISES' | translate }}
           </div>
           <table class="table table-condensed table-hover">
             <thead>
               <tr>
-                <th>{{ 'ENTERPRISE.NAME' | translate }}</th>
-                <th>{{ 'ENTERPRISE.ABBREVIATION' | translate }}</th>
-                <th>{{ 'ENTERPRISE.PO_BOX' | translate }}</th>
-                <th>{{ 'ENTERPRISE.EMAIL' | translate }}</th>
-                <th>{{ 'ENTERPRISE.PHONE' | translate }}</th>
-                <th>{{ 'ENTERPRISE.EDIT' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.NAME' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.ABBREVIATION' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.PO_BOX' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.EMAIL' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.PHONE' | translate }}</th>
+                <th>{{ 'TABLE.COLUMNS.EDIT' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -58,35 +58,35 @@
         <div ng-switch-default>
           <div class="alert alert-info">
             <h4>{{ 'ENTERPRISE.TITLE' | translate }}</h4>
-            <p>{{ 'ENTERPRISE.HELP_TEXT_1' | translate }}
+            <p>{{ 'ENTERPRISE.DESCRIPTION_1' | translate }}
             </p>
             <ul class="list-plain">
-              <li><span class="glyphicon glyphicon-pencil"></span> {{ 'ENTERPRISE.HELP_TEXT_2' | translate }}</li>
-              <li><span class="glyphicon glyphicon-plus-sign"></span> {{ 'ENTERPRISE.HELP_TEXT_3' | translate }}</li>
+              <li><span class="glyphicon glyphicon-pencil"></span> {{ 'ENTERPRISE.DESCRIPTION_2' | translate }}</li>
+              <li><span class="glyphicon glyphicon-plus-sign"></span> {{ 'ENTERPRISE.DESCRIPTION_3' | translate }}</li>
             </ul>
           </div>
         </div>
 
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'ENTERPRISE.SAVE_SUCCES' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.SAVE_SUCCES' | translate }} </h4>
           </div>
         </div>
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'ENTERPRISE.UPDATE_SUCCES' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.UPDATE_SUCCES' | translate }} </h4>
           </div>
         </div>
 
         <div class="panel panel-primary" ng-switch-when="create">
-          <div class="panel-heading">{{ "ENTERPRISE.CONFIGURATION" | translate }}</div>
+          <div class="panel-heading">{{ "ENTERPRISE.CONFIGURATION_ENTERPRISE" | translate }}</div>
           <div class="panel-body">
             <form  name="CreateForm" ng-submit="EnterpriseCtrl.submit(CreateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                 <label class="control-label">
-                  {{ 'ENTERPRISE.NAME' | translate }}
+                  {{ 'FORM.LABELS.NAME' | translate }}
                 </label>
                 <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" required>
                 <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
@@ -96,7 +96,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.abbr.$invalid }">
                 <label class="control-label">
-                  {{ "ENTERPRISE.ABBREVIATION" | translate }}
+                  {{ "FORM.LABELS.ABBREVIATION" | translate }}
                 </label>
                 <input type="text" class="form-control" name="abbr" required ng-model="EnterpriseCtrl.enterprise.abbr">
                 <div class="help-block" ng-messages="CreateForm.abbr.$error" ng-show="CreateForm.$submitted">
@@ -106,14 +106,14 @@
 
               <div class="form-group">
                 <label class="control-label">
-                  {{ "ENTERPRISE.PO_BOX" | translate }}
+                  {{ "FORM.LABELS.PO_BOX" | translate }}
                 </label>
                 <input type="text" class="form-control" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
               </div>
 
               <div class="form-group">
                 <label class="control-label">
-                  {{ "ENTERPRISE.EMAIL" | translate }}
+                  {{ "FORM.LABELS.EMAIL" | translate }}
                 </label>
                 <input type="email" class="form-control" name="email" ng-model="EnterpriseCtrl.enterprise.email">
                 <div class="help-block" ng-messages="CreateForm.email.$error" ng-show="CreateForm.$submitted">
@@ -123,7 +123,7 @@
 
               <div class="form-group">
                 <label class="control-label">
-                  {{ "ENTERPRISE.PHONE" | translate }}
+                  {{ "FORM.LABELS.PHONE" | translate }}
                 </label>
                 <input type="tel" class="form-control" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
                 <div class="help-block" ng-messages="CreateForm.phone.$error" ng-show="CreateForm.$submitted">
@@ -137,7 +137,7 @@
               </bh-location-select>
 
               <div ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.currency_id.$invalid }">
-                <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
+                <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
                 <div class="radio" ng-repeat="currency in EnterpriseCtrl.currencies track by currency.id">
                   <label class="control-label">
                     <input type="radio" value="{{currency.id}}" required id="currency_id-{{currency.id}}" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
@@ -151,10 +151,10 @@
 
               <div class="form-group">
                 <button class="btn btn-default" type="submit" data-method="submit" id="create">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="EnterpriseCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.CANCEL" | translate }}
                 </button>
               </div>
             </form>
@@ -163,13 +163,13 @@
 
 
         <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading">{{ "ENTERPRISE.EDIT_ENTERPRISE" | translate }}</div>
+          <div class="panel-heading">{{ "ENTERPRISE.EDITING_ENTERPRISE" | translate }}</div>
           <div class="panel-body">
             <form name="UpdateForm" ng-submit="EnterpriseCtrl.submit(UpdateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label">
-                  {{ 'ENTERPRISE.NAME' | translate }}
+                  {{ 'FORM.LABELS.NAME' | translate }}
                 </label>
                 <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
@@ -179,7 +179,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.abbr.$invalid }">
                 <label class="control-label">
-                  {{ "ENTERPRISE.ABBREVIATION" | translate }}
+                  {{ "FORM.LABELS.ABBREVIATION" | translate }}
                 </label>
                 <input type="text" class="form-control" name="abbr" required ng-model="EnterpriseCtrl.enterprise.abbr">
                 <div class="help-block" ng-messages="UpdateForm.abbr.$error" ng-show="UpdateForm.$submitted">
@@ -189,13 +189,13 @@
 
               <div class="form-group">
                 <label class="control-label">
-                  {{ "ENTERPRISE.PO_BOX" | translate }}
+                  {{ "FORM.LABELS.PO_BOX" | translate }}
                 </label>
                 <input type="text" class="form-control" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
               </div>
 
               <div class="form-group">
-                <label class="control-label">{{ "ENTERPRISE.EMAIL" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
                 <input type="email" class="form-control" name="email" ng-model="EnterpriseCtrl.enterprise.email">
                 <div class="help-block" ng-messages="UpdateForm.email.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -203,7 +203,7 @@
               </div>
 
               <div class="form-group">
-                <label class="control-label">{{ "ENTERPRISE.PHONE" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
                 <input type="tel" class="form-control" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
                 <div class="help-block" ng-messages="UpdateForm.phone.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -216,7 +216,7 @@
               </bh-location-select>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.currency_id.$invalid }">
-                <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
+                <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
                 <div class="radio" ng-repeat="currency in EnterpriseCtrl.currencies track by currency.id">
                   <label class="control-label">
                     <input type="radio" value="{{currency.id}}" required id="currency_id-{{currency.id}}" name="currency_id" ng-model="EnterpriseCtrl.enterprise.currency_id">
@@ -230,10 +230,10 @@
 
               <div class="form-group">
                 <button class="btn btn-default" id="change_enterprise" name="submit" type="submit" data-method="submit">
-                  {{ "FORM.SAVE_CHANGES" | translate }}
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="EnterpriseCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.RESET_FORM" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
             </form>

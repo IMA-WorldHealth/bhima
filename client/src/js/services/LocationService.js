@@ -65,10 +65,11 @@ function LocationService($http, util, Modal) {
 
   /** translation messages used in location <select> components */
   service.messages = {
-    country:  'SELECT.COUNTRY',
-    province: 'SELECT.PROVINCE',
-    sector:   'SELECT.SECTOR',
-    empty:    'SELECT.EMPTY'
+    country:  'FORM.SELECTS.SELECT_COUNTRY',
+    province: 'FORM.SELECTS.SELECT_PROVINCE',
+    sector:   'FORM.SELECTS.SELECT_SECTOR',
+    village:  'FORM.SELECTS.SELECT_VILLAGE',
+    empty:    'FORM.SELECTS.EMPTY'
   };
 
   /**

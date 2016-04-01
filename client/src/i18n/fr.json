@@ -330,7 +330,26 @@
     "DANGER_ZONE" : "Zone reservee",
     "CASHBOX" : "Caisse",
     "CONFIG_ACCOUNTS" : "Configuration comptes"
+  },
 
+  "DEPOT" : {
+    "TITLE" : "Gestion des depots",
+    "ADD_DEPOT" : "Ajouter depot",
+    "ALL_DEPOTS" : "Tous les depots",
+    "NO_DEPOT" : "Aucun depot",
+    "DESCRIPTION" : "Ce module vous permet de Lister, Creer, Modifier et Supprimer un depot"
+  },
+
+
+  "ENTERPRISE" : {
+    "TITLE" : "Gestion des entreprises",
+    "ADD_ENTERPRISE" : "Ajouter entreprise",
+    "ALL_ENTERPRISES" : "Tous les entriprises",
+    "DESCRIPTION_1" : "Gerer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
+    "DESCRIPTION_2" : "Modifier l'enterprise sélectionner",
+    "DESCRIPTION_3" : "Ajouter une nouvelle entreprises",
+    "CONFIGURATION_ENTERPRISE" : "Configuration entreprise",
+    "EDITING_ENTERPRISE" : "Edition entreprise"
   },
 
   "HOME" : {
@@ -956,6 +975,14 @@
 },
 
 
+  "LOCATION" : {
+    "SECTOR" : "Secteur",
+    "COUNTRY" : "Pays",
+    "PROVINCE" : "Province",
+    "VILLAGE" : "Village",
+    "REGISTER" : "Ajouter Location"
+  },
+
   "FORM" : {
     "LABELS" : {
       "USERNAME" : "Nom Utilisateur",
@@ -972,7 +999,16 @@
       "GAIN_ACCOUNT" : "Compte excedant",
       "LOSS_ACCOUNT" : "Compte perte",
       "TRANSFER_ACCOUNT" : "Compte transfert"
-
+      "TRANSFER_ACCOUNT" : "Compte transfert",
+      "IS_WAREHOUSE" : "Entreprot ?",
+      "EMAIL" : "Email",
+      "PHONE" : "Telephone",
+      "PO_BOX" : "Boite postale",
+      "ABBREVIATION" : "Abbreviation",
+      "COUNTRY" : "Pays",
+      "PROVINCE" : "Province",
+      "SECTOR" : "Secteur",
+      "VILLAGE" : "Village"
     },
 
     "PLACE_HOLDERS" : {
@@ -982,7 +1018,12 @@
 
     "SELECTS" : {
       "SELECT_PROJECT" : "Selectionner proget",
-      "SELECT_ACCOUNT" : "Selectionner compte"      
+      "SELECT_ACCOUNT" : "Selectionner compte",
+      "SELECT_COUNTRY" : "Selectionner pays",
+      "SELECT_PROVINCE" : "Selectionner province",
+      "SELECT_SECTOR" : "Selectionner secteur",
+      "SELECT_VILLAGE" : "Selectionner village",
+      "EMPTY" : "Vide"      
     },
 
     "BUTTONS" : {
@@ -993,7 +1034,10 @@
       "CANCEL" : "Annuler",
       "CONFIGURE" : "Configurer",
       "NOT_CONFIGURED" : "Non configuree",
-      "DELETE" : "Supprimer"
+      "DELETE" : "Supprimer",
+      "CLEAR" : "Effacer",
+      "SAVE" : "Sauver",
+      "RESET" : "Reinitialiser"
     },
     "PATIENTS" : "Distributions to Patients",
     "RUMMAGE"  : "Liquidation by Rummage Sale",
@@ -1957,18 +2001,32 @@
     "INFOS" : {
       "MANY_TRYS" : "Plusieurs tentatives",
       "UPDATE_SUCCESS" : "Mise a jour avec succes",
-      "CREATE_SUCCESS" : "Cree avec succes"
+      "CREATE_SUCCESS" : "Cree avec succes",
+      "SAVE_SUCCESS" : "Sauvee avec succes"
     },
 
     "VALIDATIONS" : {
-      "REQUIRED" : "Champ requis"
+      "REQUIRED" : "Champ requis",
+      "MIN" : "Valeur minimale non respectee",
+      "MAX" : "Valeur maximale non respectee",
+      "EMAIL" : "Email mal saisie",
+      "MINLENGTH" : "Longueur minimale non respectee",
+      "MAXLENGTH" : "Longueur maximale non respectee",
+      "DATE" : "Date mal saisie"
     }
   },
 
   "TABLE" : {
     "COLUMNS" : {
-      "NAME" : "Nom"
-      
+      "NAME" : "Nom",
+      "REFERENCE" : "Reference",
+      "IS_WAREHOUSE" : "Enterport ?",
+      "ACTION" : "Actions",
+      "ABBREVIATION" : "Abbreviation",
+      "PO_BOX" : "Boite postale",
+      "EMAIL" : "Email",
+      "PHONE" : "Telephone",
+      "EDIT"  : "Editer"      
     }
 <<<<<<< a740d6c8ea1831d6a8a906482b6cd825fd74c7eb
    },
