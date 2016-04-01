@@ -199,6 +199,21 @@
   "GENERATE_DOC"    : "Générer le document",
   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document"
   },
+"BILLING_SERVICES" : {
+  "TITLE" : "Services de facturation",
+  "BTN" : {
+    "CREATE" : "Créer un service de facturation",
+    "DELETE" : "Supprimer ce service de facturation"
+  },
+  "CREATED" : "Créer un nouveau service de facturation.",
+  "UPDATED" : "Mettre à jour le service de facturation.",
+  "NOT_FOUND" : "Il y'a aucun service de facturation avec cet ID. Veuillez revenir en arrière et réessayez",
+  "FORM" : {
+    "CREATE" : "Nouveau service de facturation",
+    "UPDATE" : "Mettre à jour un service de facturation"
+  },
+  "VIEW" : "Voir tous les services de facturation."
+},  
 "BUDGET": {
    "ANALYSIS" : {
       "ALL_PERIOD"         : "Toutes les periodes",
@@ -1458,6 +1473,7 @@
    "CANCEL"          : "Annuler",
    "CLEAR"           : "Effacer",
    "CLOSE_FORM"      : "Annuler",
+   "CONTACT_ADMIN"   : "Vérifiez auprès de l'administrateur du système que cela a été correctement configuré",
    "CONTINUE"        : "Continuer",
    "CONFIGURE"       : "Configurer",
    "DANGER_ZONE"     : "Zone Dangereuse",
@@ -1467,18 +1483,21 @@
    "DISCARD"         : "Annuler",
    "DISMISS"         : "Rejeter",
    "EDIT"            : "Editer",
+   "ERRORED"         : "Ce formulaire contient des erreurs. S'il vous plaît corriger et réenvoier.",
    "ERRORS"        : {
+    "DATE_OUT_OF_RANGE" : "Cette date se trouve pas dans la plage de dates autorisée. S'il vous plaît sélectionner une autre date.",
     "GENERIC"           : "Le formulaire contient des erreurs.",
     "MIN_CURRENCY_UNIT" : "Cette valeur est trop petite pour la monnaie choisie.",
     "MISSING"           : "S'il vous plaît assurer que tous les champs sont remplis.",
     "NUMBER"            : "Cette valeur doit être un nombre valide.",
-    "REQUIRED"           : "Cette valeur est requis."
+    "REQUIRED"          : "Cette valeur est requis."
    },
    "INVALID_DATE"    : "La date est invalide",
    "LOGIN"           : "Connexion",
    "HAS_ERRORS"      : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumettre à nouveau.",
    "NEW_FORM"        : "Nouveau Formulaire",
    "NEW_TRANSFER"    : "Nouveau Transfert",
+   "NOTES"           : "Notes",
    "OK"              : "Ok",
    "PASSWORD_MATCH" : "Les mots de pass droivent etre egale.",
    "RESET"           : "Réinitiaiser",
@@ -1525,7 +1544,9 @@
 "GRID" : {
   "ABOLISH_GROUPS"   : "Abolir le groupement",
   "CLEAR"            : "Effacer la sélection",
+  "EMPTY"            : "Il n'y a pas d'enregistrements à afficher.",
   "GROUP_ROWS"       : "Grouper les lignes",
+  "LOADING"          : "Récupération des données à partir du serveur.",
   "REFRESH"          : "Rafraichir la sélection",
   "UPDATE"           : "Mettre à jour la sélection"
 },
@@ -1856,12 +1877,17 @@
    "VILLE"                 : "Ville/Commune"
    },
 "MODALS" : {
+  "CONFIRM" : {
+    "ACCEPT" : "Accepter",
+    "PROMPT" : "Etes-vous sûr de vouloir effectuer cette action?", 
+    "TITLE"  : "Confirmation"
+  },  
   "REFERENCES" : {
-    "TITLE"   : "Recherche d'accusé de réception",
-    "TYPE"    : "Type de reçu",
-    "REFERENCE_LOOKUP" : "Référence de la recherche",
-    "NO_RECEIPT"       : "Aucun reçu correspond à cette référence.",
-    "SUCCESS"   : "Reçu trouvé avec succès!"
+    "TITLE"             : "Recherche d'accusé de réception",
+    "TYPE"              : "Type de reçu",
+    "REFERENCE_LOOKUP"  : "Référence de la recherche",
+    "NO_RECEIPT"        : "Aucun reçu correspond à cette référence.",
+    "SUCCESS"           : "Reçu trouvé avec succès!"
   }
 },   
 "NO_EXCHANGE": {
@@ -1970,6 +1996,21 @@
    "SUCCESS_UPD" : "Mise à jour avec succès",
    "TITLE"       : "Assignation des patients"
    },
+"PATIENT_INVOICE": { 
+  "PAGE_TITLE"          : "Facture des patients",
+  "RECIPIENT"           : "Facture de ",
+  "SERVICE"             : "Service",
+  "TOTAL"               : "Total",
+  "BILLING_SERVICES"    : "Les services de facturation appliquée",
+  "SUBSIDIES"           : "Les subventions appliqués",
+  "DUE"                 : "Payment Due",
+  "SUBMIT"              : "Soumettre la facture",
+  "INVALID_DETAILS"     : "Cette facture contient des détails invalides",
+  "INVALID_ITEMS"       : "Cette facture contient des articles invalides",
+  "ITEMS_FULL"          : "Il n'y a pas d'articles supplémentaires qui seront affectés à cette facture.",
+  "NO_RECIPIENT"        : "Une facture doit appartenir à une personne avant d'assigner les éléments.",
+  "BASE_PRICE_ALTERED"  : "Le prix de base pour cet élément de ligne a été complétée par une liste de prix."
+},
 "PATIENT_RECORDS": {
    "ADVANCED_SEARCH"         : "Recherche Détaillée",
    "FEMALE"                  : "Femme",
@@ -2010,6 +2051,7 @@
    "MARITAL_STATUS"           : "Etat Civil",
    "MOTHER_NAME"              : "Nom de la Mère",
    "NO"                       : "Non",
+   "NO_DEBTOR_GROUPS"         : "Aucun groupe de débiteurs n'a été chargés.",
    "NOTES"                    : "Notes",
    "OPTIONAL_INFO"            : "Informations optionnelles",
    "ORIGIN_LOCATION"          : "Localisation d'origine",
@@ -2648,8 +2690,9 @@
    "IS_DISTRIBUTABLE"   : "Distribuable via le stock ?",
    "NO_DISTRIBUTABLE"   : "Non distribuable",
    "PATIENT_COVERED"    : "Patient est couvert par la convention",
-   "RECOVER"            : "Retrouver Vente",
-   "RECOVER_INFO"       : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
+   "RECOVER"            : "Retrouver une Vente",
+   "RECOVER_INFO"       : "[Retrouver une vente] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
+   "RECOVER_ITEMS"      : "Retrouver un article",
    "SALE"               : "Facture",
    "SUBMIT"             : "Soumettre La Facture",
    "TAB_LOCK_ITEM"      : "Tabuler par item",
@@ -3238,6 +3281,7 @@
    "BALANCE_SHEET"             : "Feuille de Balance",
    "BENEFICIARY"               : "Bénéficiaire",
    "BILAN"                     : "Bilan",
+   "BILLING_SERVICES"          : "Services de facturation",
    "BUDGETING"                 : "Budget",
    "BUDGET_ANALYSIS"           : "Analyse Budget",
    "BUDGET_BY_ACCOUNT"         : "Budget par Compte",
@@ -3312,6 +3356,7 @@
    "NEW_BUDGET"                : "Creation Budget",
    "OFFDAY_MANAGEMENT"         : "Gestion des jours fériés",
    "OPERATING_ACCOUNT"         : "Compte d'exploitation",
+   "PATIENT_INVOICE"           : "Facturation des patients",
    "PATIENT_GRP"               : "Groupe des Patients",
    "PATIENT_GRP_ASSIGNMENT"    : "Assignation Groupe",
    "PATIENT_RECORDS"           : "Historique Patients",
@@ -3535,16 +3580,24 @@
    "SECTOR"           : "Commune",
    "TITLE"            : "Gestion des Villages"
    },
-   "VALIDATION" : {
-    "MIN" : "Cette valeur est trop petite pour ce champ.",
-    "MAX" : "Cette valeur est trop grande pour ce champ.",
-    "REQUIRED" : "Ce champ ne peut pas être vide.",
-    "EMAIL" : "Ce champ doit être un email valide.",
-    "MINLENGTH" : "Cette entrée est trop court.",
-    "MAXLENGTH" : "Cette entrée est trop longue.",
-    "NUMBER" : "Ce champ doit être un nombre.",
-    "DATE" : "Ce champ doit être une date valide."
-   },
+"VALIDATION" : {
+  "DATES" : { 
+    "MIN" : "Cette date est trop loin dans le passé.",
+    "MAX" : "Cette date est fixée trop loin dans le future.",
+    "REQUIRED" : "Cette date est nécessaire."
+  },
+  "EXCEPTION"   : "Il y avait un problème de validation avec ce champ. S'il vous plaît vérifier votre connexion Internet.",    
+  "INTEGER"     : "Cette valeur doit être un nombre entier (Entier).",
+  "MIN"         : "Cette valeur est trop petite pour ce champ.",
+  "MAX"         : "Cette valeur est trop grande pour ce champ.",
+  "REQUIRED"    : "Ce champ ne peut pas être vide.",
+  "EMAIL"       : "Ce champ doit être un email valide.",
+  "MINLENGTH"   : "Cette entrée est trop court.",
+  "MAXLENGTH"   : "Cette entrée est trop longue.",
+  "NUMBER"      : "Ce champ doit être un nombre.",
+  "DATE"        : "Ce champ doit être une date valide.",
+  "UNIQUE"      : "Ce champ doit être unique. Cette valeur a déjà été utilisée."
+},
    "VOUCHERS" : {
     "SIMPLE" : {
       "TITLE" : "Bordereau de transfert",

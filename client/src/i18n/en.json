@@ -1876,17 +1876,17 @@
    "VILLAGE"               : "Village"
    },
 "MODALS" : {
-  "REFERENCES" : {
-    "TITLE" : "Receipt Lookup Modal",
-    "TYPE" : "Receipt Type",
-    "REFERENCE_LOOKUP" : "Reference Lookup",
-    "NO_RECEIPT" : "No receipt matches that reference.",
-    "SUCCESS" : "Successfully found a receipt!"
-  },
   "CONFIRM" : {
-    "TITLE" : "Action Confirmation",
-    "PROMPT" : "Are you sure you would like to perform that action?",
-    "ACCEPT" : "Accept"
+    "ACCEPT" : "Accept",
+    "PROMPT" : "Are you sure you would like to perform that action?", 
+    "TITLE"  : "Action Confirmation"
+  },
+  "REFERENCES" : {
+    "NO_RECEIPT"        : "No receipt matches that reference.",
+    "REFERENCE_LOOKUP"  : "Reference Lookup",
+    "SUCCESS"           : "Successfully found a receipt!",
+    "TITLE"             : "Receipt Lookup Modal",
+    "TYPE"              : "Receipt Type"
   }
 },
 "NO_EXCHANGE": {
@@ -2674,8 +2674,9 @@
    "IS_DISTRIBUTABLE"   : "Distributable via stock ?",
    "NO_DISTRIBUTABLE"   : "Not distributable",
    "PATIENT_COVERED"    : "Patient is covered by convention ",
-   "RECOVER_ITEMS"      : "Recover Items",
+   "RECOVER"            : "Sale Recover",
    "RECOVER_INFO"       : "[Sale Recovered] It is important to note ONLY sale items and quantities are recovered, previously set prices are reset to the inventory default",
+   "RECOVER_ITEMS"      : "Recover Items",
    "SALE"               : "Invoice",
    "SUBMIT"             : "Submit Patient Invoice",
    "TAB_LOCK_ITEM"      : "Tab lock Item",
