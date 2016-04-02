@@ -21,7 +21,7 @@ INSERT INTO unit VALUES
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
   (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
-  (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/partials/patient/group/','/patient/groups/'),
+  (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/partials/patient/group/','/patients/groups/'),
   (30,  'Accounting','TREE.ACCOUNTING','',0,'/partials/accounting/index.html','/accounting/'),  
   (42,  'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
   (48,  'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
@@ -174,7 +174,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (134, 1),
 
 -- Billing Services Module 
-(135, 1);
+(135, 1),
+
+-- Patient Group Module
+(29, 1);
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);

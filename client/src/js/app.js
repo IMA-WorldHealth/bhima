@@ -509,7 +509,8 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'patientRecords',
     templateUrl: '/partials/patients/search/search.html'
   })
-  .state('/patients/groups', {
+  .state('patientGroups', {
+    url : '/patients/groups', 
     controller: 'PatientGroupController as PatientGroupCtrl',
     templateUrl: 'partials/patients/groups/groups.html'
   })

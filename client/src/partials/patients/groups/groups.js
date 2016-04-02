@@ -5,6 +5,18 @@ PatientGroupController.$inject = [
   'PatientGroupService', 'PriceListService', 'SessionService', '$window'
 ];
 
+/**
+ *  Patient Group Controller
+ *
+ *  This controller creates and updates patient groups in the application.  A
+ *  Patient Group is a medical classification for patients with common
+ *  properties.  For example, HIV patients, pregnant women, children under five.
+ *
+ *  A patient group might have an associated price list, to allow groups of
+ *  patients to have different price lists due to their medical state.
+ *
+ *  @constructor
+ */
 function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
   var vm = this;
 
@@ -28,7 +40,6 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
       return loadPatientGroups();
     })
     .then(function (patientGroups) {
-
       vm.groups = patientGroups;
 
       // turn off loading indicator
@@ -71,7 +82,6 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
         return loadPatientGroups();
       })
       .then(function (groups) {
-        vm.selectedId = null;
         vm.groups = groups;
         vm.view = creation ? 'create' : 'update';
       })
@@ -89,16 +99,15 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
     // switch view to update
     vm.view = 'update';
 
-    // keep id selected
-    /** @todo - do we actually need this?  It seems like we could just use
-     * vm.patientGroup.uuid...
-     */
-    vm.selectedId = uuid;
-
     PatientGroups.read(uuid)
     .then(function (data) {
       vm.patientGroup = data;
     });
+  }
+
+  // this function clears the selected form
+  function cancel() {
+    vm.view = 'default';
   }
 
   // this function is responsible of removing a patient group
@@ -106,12 +115,10 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
     var bool =
       $window.confirm('Are you sure you want to delete this patient group?');
 
-    console.log('vm.patientGroup:', vm.patientGroup);
-
     // if the user cancels, return immediately.
     if (!bool) { return; }
 
-    PatientGroups.remove(vm.selectedId)
+    PatientGroups.remove(vm.patientGroup.uuid)
     .then(function (message) {
       vm.view = 'default';
       return loadPatientGroups();
@@ -134,4 +141,5 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
   vm.submit = submit;
   vm.update = update;
   vm.remove = remove;
+  vm.cancel = cancel;
 }
