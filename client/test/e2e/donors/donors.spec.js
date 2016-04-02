@@ -10,7 +10,7 @@ helpers.configure(chai);
 var FormUtils = require('../shared/FormUtils');
 var components = require('../shared/components');
 
-describe('Donor management tests suit :: ', function () {
+describe.only('Donor management tests suit :: ', function () {
 
   var PATH = '#/donors';
 
@@ -36,7 +36,7 @@ describe('Donor management tests suit :: ', function () {
 
   it('successfully edits a donor', function () {
     element(by.name('edit-' + donor.name )).click();
-    FormUtils.clear('DonorCtrl.donor.name');
+    FormUtils.input('DonorCtrl.donor.name', '');
     element(by.model('DonorCtrl.donor.name')).sendKeys(updateDonor.name);
     FormUtils.buttons.submit();
     FormUtils.exists(by.id('update_success'), true);

@@ -59,7 +59,7 @@
           <form class="panel panel-primary"
             ng-class="{ 'panel-danger': DonorCtrl.action === 'remove'}"
             name="ActionForm"
-            ng-submit="DonorCtrl.submit(ActionForm.$invalid)" novalidate>
+            ng-submit="DonorCtrl.submit(ActionForm)" novalidate>
             <div class="panel-heading">
               <i ng-show="DonorCtrl.action === 'remove'" class="glyphicon glyphicon-alert"></i>
               {{ DonorCtrl.actionTitle | translate }}
@@ -73,8 +73,7 @@
                   class="form-control"
                   name="name"
                   placeholder="{{ 'COLUMNS.NAME' | translate }}..."
-                  ng-model="DonorCtrl.donor.name"
-                  ng-change="DonorCtrl.refreshValidation()" required>
+                  ng-model="DonorCtrl.donor.name" required>
                 <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -96,7 +95,7 @@
               <div class="clearfix"></div>
 
               <!-- error feedback area -->
-              <div id="error-feedback" ng-if="DonorCtrl.state.errored && ActionForm.$submitted"
+              <div id="error-feedback" ng-if="ActionForm.$invalid && ActionForm.$submitted"
                 class="text-danger" data-role="feedback" style="margin-top:10px;">
                 <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
               </div>

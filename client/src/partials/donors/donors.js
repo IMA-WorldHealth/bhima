@@ -30,6 +30,22 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
     }
   ];
 
+  /** acions mapper */
+  var map = {
+    update : {
+      title : 'DONOR_MANAGEMENT.UPDATE',
+      submit : updateDonor
+    },
+    remove : {
+      title : 'DONOR_MANAGEMENT.CONFIRM',
+      submit : removeDonor
+    },
+    create : {
+      title : 'DONOR_MANAGEMENT.NEW',
+      submit : createDonor
+    }
+  };
+
   /** init variables */
   vm.state = {};
   vm.donor = {};
@@ -39,7 +55,6 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
   vm.cancel = cancel;
   vm.submit = submit;
   vm.remove = remove;
-  vm.refreshValidation = refreshValidation;
 
   /** Load necessary data */
   donorList();
@@ -49,7 +64,7 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
     .then(function (list) {
       vm.donorList = list;
     })
-    .catch(handler);
+    .catch(errorHandler);
   }
 
   function update(id) {
@@ -68,24 +83,11 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
     initialise('default');
   }
 
-  function submit(invalid) {
-    if (invalid) {
-      vm.state.errored = true;
+  function submit(actionForm) {
+    if (actionForm.$invalid) {
       return;
     }
-
-    // figure out what type of request to send
-    var isUpdate = (vm.action === 'update');
-    var isRemove = (vm.action === 'remove');
-
-    // execute the chosen request.
-    if (isUpdate) {
-      updateDonor(vm.donor.id);
-    } else if (isRemove) {
-      removeDonor(vm.donor.id);
-    } else {
-      createDonor();
-    }
+    map[vm.action].submit(vm.donor.id);
   }
 
   function createDonor() {
@@ -95,7 +97,7 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
       vm.view = 'success';
     })
     .then(donorList)
-    .catch(error);
+    .catch(errorHandler);
   }
 
   function updateDonor(id) {
@@ -105,7 +107,7 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
       vm.view = 'success';
     })
     .then(donorList)
-    .catch(error);
+    .catch(errorHandler);
   }
 
   function removeDonor(id) {
@@ -115,7 +117,7 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
       vm.view = 'success';
     })
     .then(donorList)
-    .catch(error);
+    .catch(errorHandler);
   }
 
   function initialise(view, action, id) {
@@ -124,35 +126,22 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
     vm.action = action;
     vm.donor  = {};
 
-    vm.actionTitle =
-      action === 'create' ? 'DONOR_MANAGEMENT.NEW' :
-      action === 'update' ? 'DONOR_MANAGEMENT.UPDATE' :
-      action === 'remove' ? 'DONOR_MANAGEMENT.CONFIRM' : '';
+    vm.actionTitle = map[action].title;
 
     if (id && (action === 'update' || action === 'remove')) {
       DonorService.read(id)
       .then(function (donor) {
         vm.donor = donor;
       })
-      .catch(handler);
+      .catch(errorHandler);
     }
   }
 
-  function refreshValidation() {
-    vm.state.errored = vm.donor.name ? false : true;
-  }
-
-  function error(err) {
-    vm.state.errored = true;
-    handler(err);
-  }
-
-  function handler(err) {
+  function errorHandler(err) {
     console.log(err);
   }
 
   vm.state.reset = function reset() {
-    vm.state.errored = false;
     vm.state.updated = false;
     vm.state.created = false;
     vm.state.deleted = false;

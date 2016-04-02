@@ -36,6 +36,8 @@
     "angular-chart.js": "^0.9.0"
   },
   "resolutions": {
-    "angular": "^1.5.0"
+    "angular": "^1.5.0",
+    "angular-translate": "~2.11.0",
+    "moment": "^2.11.2"
   }
 }

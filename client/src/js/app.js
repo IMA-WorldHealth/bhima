@@ -149,7 +149,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   /* Admin: donors management */
   .state('donors', {
-    url : '/donors'
+    url : '/donors',
     controller : 'DonorsController as DonorCtrl',
     templateUrl : 'partials/donors/donors.html'
   })
