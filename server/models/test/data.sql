@@ -214,7 +214,8 @@ INSERT INTO `debitor_group` VALUES
 
 INSERT INTO `patient_group` VALUES
   (1,'0b8fcc00-8640-479d-872a-31d36361fcfd',NULL,'Test Patient Group 1','Test Patient Group 1 Note','2016-03-10 08:44:23'),
-  (1,'112a9fb5-847d-4c6a-9b20-710fa8b4da24',NULL,'Test Patient Group 2','Test Patient Group 2 Note','2016-03-10 08:44:23');
+  (1,'112a9fb5-847d-4c6a-9b20-710fa8b4da24',NULL,'Test Patient Group 2','Test Patient Group 2 Note','2016-03-10 08:44:23'),
+  (1,'112a9fb5-847d-4c6a-9b20-710fa8b4da22',NULL,'Test Patient Group 3','Test Patient Group 2 Note','2016-03-12 08:44:23');
 
 INSERT INTO `debitor` VALUES
   ('3be232f9-a4b9-4af6-984c-5d3f87d5c107','4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/2/Patient'),

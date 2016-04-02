@@ -83,7 +83,7 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
       })
       .then(function (groups) {
         vm.groups = groups;
-        vm.view = creation ? 'create' : 'update';
+        vm.view = 'default';
       })
       .catch(handler);
   }
@@ -118,7 +118,7 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
     // if the user cancels, return immediately.
     if (!bool) { return; }
 
-    PatientGroups.remove(vm.patientGroup.uuid)
+    PatientGroups.delete(vm.patientGroup.uuid)
     .then(function (message) {
       vm.view = 'default';
       return loadPatientGroups();

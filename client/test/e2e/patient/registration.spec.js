@@ -2,10 +2,10 @@
 /* global element, by, browser */
 
 var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
 var expect = chai.expect;
 
-chai.use(chaiAsPromised);
+var helpers = require('../shared/helpers');
+helpers.configure(chai);
 
 var components = require('../shared/components');
 var FU = require('../shared/FormUtils');

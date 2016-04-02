@@ -38,7 +38,9 @@
                 <td>{{ group.priceListLable }}</td>
                 <td>{{ group.note }}</td>
                 <td>
-                  <a class="action" ng-click="PatientGroupCtrl.update(group.uuid)"><i class="glyphicon glyphicon-pencil"></i></a>
+                  <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </a>
                 </td>
               </tr>
               <tr ng-if="PatientGroupCtrl.loading" class="text-center">
@@ -69,7 +71,7 @@
             </div>
 
             <div class="panel-body">
-              <form name="CreateForm" bh-submit="PatientGroupCtrl.submit(CreateForm)" novalidate>
+              <form name="CreateForm" bh-submit="PatientGroupCtrl.submit(CreateForm)" novalidate data-create-form>
 
                 <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                   <label class="control-label">
@@ -99,7 +101,7 @@
 
                 <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.note.$invalid }">
                   <label class="control-label">
-                    {{ "FORM.LABELS.NOTEs" | translate }}
+                    {{ "FORM.LABELS.NOTES" | translate }}
                   </label>
                   <textarea class="form-control" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
                   <div class="help-block" ng-messages="CreateForm.note.$error" ng-show="CreateForm.$submitted">
@@ -127,7 +129,7 @@
             </div>
 
             <div class="panel-body">
-              <form bh-submit="PatientGroupCtrl.submit(UpdateForm)" name="UpdateForm" novalidate>
+              <form bh-submit="PatientGroupCtrl.submit(UpdateForm)" name="UpdateForm" novalidate data-update-form>
                 <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                   <label class="control-label">
                     {{ "FORM.LABELS.NAME" | translate }}
@@ -156,7 +158,7 @@
 
                 <div class="form-group">
                   <label class="control-label">
-                    {{ "FORM.LABELS.NOTE" | translate }}
+                    {{ "FORM.LABELS.NOTES" | translate }}
                   </label>
                   <textarea class="form-control" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
                   <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">

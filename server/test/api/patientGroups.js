@@ -66,7 +66,7 @@ describe('(/patient_groups) Patient Group API', function () {
   it('GET /patient_groups returns a list of patient groups', function () {
     return agent.get('/patient_groups')
       .then(function (res) {
-        helpers.api.listed(res, 4);
+        helpers.api.listed(res, 5);
       })
       .catch(helpers.handler);
   });
