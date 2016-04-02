@@ -8,7 +8,7 @@
 </div>
 
 <div class="flex-util">
-  <button class="btn btn-sm btn-default" id="create" ng-click="patientGroupCtrl.create()" data-method="create">
+  <button class="btn btn-sm btn-default" ng-click="PatientGroupCtrl.create()" data-method="create">
     <span class="glyphicon glyphicon-plus-sign"></span> {{ "PATIENT_GROUP.NEW" | translate }}
   </button>
 </div>
@@ -17,12 +17,14 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-6">
+
+        <!-- @todo - better design! -->
         <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
           <div class="panel-heading">
             <span>{{ "PATIENT_GROUP.ALL_PATIENT_GROUP" | translate }}</span>
           </div>
           <table class="table table-condensed">
-            <thead>                      
+            <thead>
               <tr>
                 <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
                 <th>{{ "TABLE.COLUMNS.PRICE_LIST" | translate }}</th>
@@ -31,15 +33,15 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="group in patientGroupCtrl.groups">
+              <tr ng-repeat="group in PatientGroupCtrl.groups">
                 <td>{{ group.name}}</td>
                 <td>{{ group.priceListLable }}</td>
                 <td>{{ group.note }}</td>
                 <td>
-                  <a class="action" ng-click="patientGroupCtrl.update(group.uuid)"><i class="glyphicon glyphicon-pencil"></i></a>
-                </td>              
+                  <a class="action" ng-click="PatientGroupCtrl.update(group.uuid)"><i class="glyphicon glyphicon-pencil"></i></a>
+                </td>
               </tr>
-              <tr ng-if="patientGroupCtrl.loading" class="text-center">
+              <tr ng-if="PatientGroupCtrl.loading" class="text-center">
                 <td colspan="4"><loading-indicator></loading-indicator></td>
               </tr>
             </tbody>
@@ -47,66 +49,74 @@
         </div>
       </div>
 
-      <div class="col-md-6" ng-switch="patientGroupCtrl.view">
+      <div class="col-md-6" ng-switch="PatientGroupCtrl.view">
 
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
             <h4>{{ "PATIENT_GROUP.TITLE" | translate }}</h4>
             <p>{{ "PRICE_LIST.DESCRIPTION1" | translate }}</p>
-            <ul style="list-style-type: none; padding-left: 15px;">
+            <ul class="list-unstyled">
               <li><i class="glyphicon glyphicon-pencil"></i> {{ "PATIENT_GROUP.DESCRIPTION2" | translate }}</li>
               <li><i class="glyphicon glyphicon-trash"></i> {{ "PATIENT_GROUP.DESCRIPTION3" | translate }}</li>
-            </ul>      
+            </ul>
           </div>
-        </div>        
+        </div>
 
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">
             {{ "PATIENT_GROUP.ADD_PATIENT_GROUP" | translate }}
           </div>
 
-          <form class="form-horizontal" ng-submit="patientGroupCtrl.submit(createForm.$invalid)" name="createForm" ng-novalidate>
+          <form class="form-horizontal" name="CreateForm" bh-submit="PatientGroupCtrl.submit(CreateForm)" novalidate>
 
-            <div class="form-group" ng-class="{ 'has-error' : createForm.$submitted && createForm.name.$invalid }">
+            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
               <label class="control-label">
                 {{ "FORM.LABELS.NAME" | translate }}
               </label>
-              <input class="form-control" name="name" ng-model="patientGroupCtrl.patientGroup.name" required>
-              <div class="help-block" ng-messages="createForm.name.$error" ng-show="createForm.$submitted">
+              <input class="form-control" name="name" ng-model="PatientGroupCtrl.patientGroup.name" required>
+              <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.priceList.$invalid }">
+              <label class="control-label">
+                {{ "FORM.LABELS.PRICE_LIST" | translate }}
+              </label>
+              <select
+                class="form-control"
+                name="priceList"
+                ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
+                ng-options="p.uuid as p.label for pin PatientGroupCtrl.priceLists track by p.uuid">
+                <option value="" disabled>{{ "FROM.SELECTS.SELECT_PROJECT" | translate }}</option>
+              </select>
+              <div class="help-block" ng-messages="CreateForm.priceList.$error" ng-show="CreateForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.note.$invalid }">
+              <label class="control-label">
+                {{ "FORM.LABELS.NOTE" | translate }}
+              </label>
+              <input class="form-control" name="note" ng-model="PatientGroupCtrl.patientGroup.note">
+              <div class="help-block" ng-messages="CreateForm.note.$error" ng-show="CreateForm.$submitted">
                 <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="control-label">
-                {{ "FORM.LABELS.PRICE_LIST" | translate }}
-              </label>
-              <select class="form-control" name="priceList" ng-model="patientGroupCtrl.patientGroup.price_list_uuid" ng-options="priceList.uuid as priceList.label for priceList in patientGroupCtrl.priceLists">
-                <option value="" disabled>{{ "FROM.SELECTS.SELECT_PROJECT" | translate }}</option>
-              </select>              
-            </div> 
-
-            <div class="form-group">
-              <label class="control-label">
-                {{ "FORM.LABELS.NOTE" | translate }}
-              </label>
-              <input class="form-control" name="note" ng-model="patientGroupCtrl.patientGroup.note">           
-            </div>
-
-            <div class="form-group">
-              <button class="btn btn-default" type="submit" data-method="submit">
-                {{ "FORM.BUTTONS.SUBMIT" | translate }}
-              </button>
-              <button class="btn btn-default" type="button" ng-click="patientGroupCtrl.cancel()" data-method="cancel">
+              <bh-loading-button loading-state="CreateForm.$loading"></bh-loading-button>
+              <button class="btn btn-default" type="button" ng-click="PatientGroupCtrl.cancel()" data-method="cancel">
                 {{ "FORM.CANCEL" | translate }}
               </button>
             </div>
           </form>
         </div>
 
-        <div  ng-switch-when="update">          
+        <div ng-switch-when="update">
 
-          <form class="panel panel-primary" ng-submit="patientGroupCtrl.submit(createForm.$invalid)" name="updateForm" ng-novalidate>
+          <form class="panel panel-primary" bh-submit="PatientGroupCtrl.submit(UpdateForm)" name="UpdateForm" novalidate>
 
             <div class="panel-heading">
             {{ "PATIENT_GROUP.ADD_PATIENT_GROUP" | translate }}
@@ -114,12 +124,12 @@
 
             <div class="panel-body">
 
-              <div class="form-group" ng-class="{ 'has-error' : updateForm.$submitted && updateForm.name.$invalid }">
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label">
                   {{ "FORM.LABELS.NAME" | translate }}
                 </label>
-                <input class="form-control" name="name" ng-model="patientGroupCtrl.patientGroup.name" required>
-                <div class="help-block" ng-messages="updateForm.name.$error" ng-show="updateForm.$submitted">
+                <input class="form-control" name="name" ng-model="PatientGroupCtrl.patientGroup.name" required>
+                <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
@@ -128,38 +138,48 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.PRICE_LIST" | translate }}
                 </label>
-                <select class="form-control" name="priceList" ng-model="patientGroupCtrl.patientGroup.price_list_uuid" ng-options="priceList.uuid as priceList.label for priceList in patientGroupCtrl.priceLists">
-                  <option value="" disabled>{{ "FROM.SELECTS.SELECT_PROJECT" | translate }}</option>
+                <select
+                  class="form-control"
+                  name="priceList"
+                  ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
+                  ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists track by p.uuid">
+                  <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
                 </select>
-              </div> 
+                <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
 
               <div class="form-group">
                 <label class="control-label">
                   {{ "FORM.LABELS.NOTE" | translate }}
                 </label>
-                <input class="form-control" name="note" ng-model="patientGroupCtrl.patientGroup.note">           
+                <input class="form-control" name="note" ng-model="PatientGroupCtrl.patientGroup.note">
+                <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
               </div>
 
               <div class="form-group">
-                <button class="btn btn-default" type="submit" data-method="submit">
-                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
-                </button>
-                <button class="btn btn-default" type="button" ng-click="patientGroupCtrl.cancel()" data-method="cancel">
+                <bh-loading-button loading-state="UpdateForm.$loading"></bh-loading-button>
+                <button class="btn btn-default" type="button" ng-click="PatientGroupCtrl.cancel()" data-method="cancel">
                   {{ "FORM.CANCEL" | translate }}
                 </button>
               </div>
             </div>
           </form>
+
           <div class="panel panel-warning">
             <div class="panel-heading">
-              <i class="glyphicon glyphicon-lock"></i> {{ "FORM.DANGER_ZONE" | translate }}
+              <span class="glyphicon glyphicon-lock"></span> {{ "FORM.DANGER_ZONE" | translate }}
             </div>
             <div class="panel-body">
-              <button class="btn btn-danger" type="button" ng-click="patientGroupCtrl.remove()" data-method="delete">
-                <i class="glyphicon glyphicon-trash"></i> {{ "FORM.DELETE" | translate }} {{ "CASH.CASHBOX.CASHBOX" | translate }}
+              <button class="btn btn-danger" type="button" ng-click="PatientGroupCtrl.remove()" data-method="delete">
+                <span class="glyphicon glyphicon-trash"></span> {{ "FORM.DELETE" | translate }}
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>

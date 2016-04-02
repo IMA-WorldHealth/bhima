@@ -4,35 +4,26 @@
 * @module medical/patient_groups
 *
 * @description This controller is responsible for implementing all crud and others custom request
-* on thepatient groups table through the `/patient_groups` endpoint.
+* on the patient groups table through the `/patient_groups` endpoint.
 *
 * @requires lib/db
 * @requires node_uuid
-**/ 
+**/
 
 var db = require('../../lib/db');
 var uuid = require('node-uuid');
+var NotFound = require('../../lib/errors/NotFound');
 
 /**
 * Returns an array of patient groups
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
-*
-* @example
-* // GET /patient_groups : Get list of patient groups
-* var patientGroups = require('medical/patientGroups');
-* patientGroups.list(req, res, next);
 */
-
-function list (req, res, next) {
+function list(req, res, next) {
   'use strict';
 
   var sql =
     'SELECT pg.uuid, pg.name, pg.price_list_uuid, pg.note, pg.created FROM patient_group AS pg';
 
-  if (req.query.full === '1') {
+  if (req.query.detailed === '1') {
     sql =
       'SELECT pg.uuid, pg.name, pg.price_list_uuid, pg.note, pg.created, pl.label AS priceListLable, pl.description ' +
       'FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid';
@@ -50,131 +41,92 @@ function list (req, res, next) {
 
 /**
 * Create a patient group in the database
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
-*
-* @example
-* // POST /patient_groups : Insert a patient group
-* var patientGroups = require('medical/patient_groups');
-* patientGroup.create(req, res, next);
 */
-
-function create (req, res, next) {
+function create(req, res, next) {
   'use strict';
 
   var record = req.body;
 
-  // Provide UUID if the client has not specified 
+  // provide UUID if the client has not specified
   record.uuid = record.uuid || uuid.v4();
 
-  var createPatientGroupQuery = 'INSERT INTO patient_group SET ?';
+  var sql = 'INSERT INTO patient_group SET ?';
 
-  db.exec(createPatientGroupQuery, [record])
-    .then(function (result) {
-      res.status(201).json({ uuid: record.uuid });
-    })
-    .catch(next)
-    .done();
+  db.exec(sql, [ record ])
+  .then(function (result) {
+    res.status(201).json({ uuid: record.uuid });
+  })
+  .catch(next)
+  .done();
 }
 
 /**
 * Update a patient group in the database
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
-*
-* @example
-* // PUT /patient_groups/uuid : update a service
-* var patientGroups require('medical/patient_groups');
-* services.update(req, res, next);
 */
-
-
-function update (req, res, next) {
+function update(req, res, next) {
   'use strict';
 
-  var queryData = req.body;
-  var patientGroupId = req.params.uuid;
-  var updatePatientGroupQuery = 'UPDATE patient_group SET ? WHERE uuid = ?';
+  var data = req.body;
+  var id = req.params.uuid;
+  var sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
 
-  lookupPatientGroup(patientGroupId, req.codes)
-    .then(function () {
-      return db.exec(updatePatientGroupQuery, [queryData, patientGroupId]);
-    })
-    .then(function (result) {
-      return lookupPatientGroup(patientGroupId, req.codes);
-    })
-    .then(function (patientGroup) {
-      res.status(200).json(patientGroup);
-    })
-    .catch(next)
-    .done();
+  // delete the id if necessary
+  delete data.uuid;
+
+  db.exec(sql, [data, id])
+  .then(function (rows) {
+    if (!rows.affectedRows) {
+      throw new NotFound('No patient group found with id ' + id);
+    }
+
+    return lookupPatientGroup(id);
+  })
+  .then(function (group) {
+    res.status(200).json(group);
+  })
+  .catch(next)
+  .done();
 }
 
 /**
 * Remove a patient group in the database
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
-*
-* @example
-* // DELETE /patient_groups/uuid : delete a patient group
-* var patientGroups require('medical/patient_groups');
-* patientGroups.remove(req, res, next);
 */
+function remove(req, res, next) {
+  var id = req.params.uuid;
+  var sql = 'DELETE FROM patient_group WHERE uuid = ?';
 
-function remove (req, res, next) {
-  var patientGroupId = req.params.uuid;
-  var removePatientGroupQuery = 'DELETE FROM patient_group WHERE uuid = ?';
+  db.exec(sql, [ id ])
+  .then(function (rows) {
+    if (!rows.affectedRows) {
+      throw new NotFound('No patient group found with id ' + id);
+    }
 
-  lookupPatientGroup(patientGroupId, req.codes)
-    .then(function () {
-      return db.exec(removePatientGroupQuery, [patientGroupId]);
-    })
-    .then(function () {
-      res.status(204).send();
-    })
-    .catch(next)
-    .done();
+    res.sendStatus(204);
+  })
+  .catch(next)
+  .done();
 }
 
 /**
 * Return a patient group details from the database
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
-*
-* @example
-* // GET /patient_groups : returns a patient group detail
-* var patientGroups = require('medical/patient_groups');
-* patientGroups.detail(req, res, next);
 */
-
 function detail(req, res, next) {
   'use strict';
 
-  lookupPatientGroup(req.params.uuid, req.codes)
-    .then(function (row) {
-      res.status(200).json(row);
-    })
-    .catch(next)
-    .done();
+  lookupPatientGroup(req.params.uuid)
+  .then(function (row) {
+    res.status(200).json(row);
+  })
+  .catch(next)
+  .done();
 }
 
 /**
 * Return a patient group instance from the database
 *
-* @param {integer} id of a service
-* @param {object} codes object which contain errors code
-*
+* @param {String} uuid - the uuid of a patient group
 */
-
-function lookupPatientGroup (uuid, codes) {
+function lookupPatientGroup(uuid) {
   'use strict';
 
   var sql =
@@ -182,12 +134,12 @@ function lookupPatientGroup (uuid, codes) {
     'FROM patient_group AS pg WHERE pg.uuid = ?';
 
   return db.exec(sql, [uuid])
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
-      }
-      return rows[0];
-    });
+  .then(function (rows) {
+    if (!rows.length) {
+      throw new NotFound('No patient group found with id ' + uuid);
+    }
+    return rows[0];
+  });
 }
 
 exports.list = list;
