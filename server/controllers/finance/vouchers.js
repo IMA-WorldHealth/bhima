@@ -1,5 +1,5 @@
 /**
-* The /vouchers/ HTTP API endpoint
+* The /vouchers HTTP API endpoint
 *
 * @module finance/vouchers
 *
@@ -73,28 +73,79 @@ function detail(req, res, next) {
 }
 
 /**
+ * Creates a filter that takes only takes the columns passed in from the
+ * object, in the order that they are passed in.
+ *
+ * @method take
+ * @returns {function} filter - a filtering function to that will convert an
+ * object to an array with the given keys.
+ *
+ * @private
+ */
+function take() {
+
+  // get the arguments as an array
+  var keys = Array.prototype.slice.call(arguments);
+
+  // return the filter function
+  return function (object) {
+    return keys.map(function (key) {
+      return object[key];
+    });
+  };
+}
+
+
+/**
 * POST /vouchers
 *
 * @method create
 */
 function create(req, res, next) {
 
-  if (req.body.voucher.date) { req.body.voucher.date = new Date(req.body.voucher.date); }
+  // alias both the voucher and the voucher items
+  var voucher = req.body.voucher;
+  var items = req.body.voucher.items || [];
 
-  /** Initialise the transaction handler */
+  // remove the voucher items from the request before insertion into the
+  // database
+  delete voucher.items;
+
+  // convert dates to a date objects
+  if (voucher.date) {
+    voucher.date = new Date(voucher.date);
+  }
+
+  // make sure the voucher has an id and convert an array of arrays
+  voucher.uuid = voucher.uuid || uuid.v4();
+
+  // preprocess the items so they uuids if required
+  items.forEach(function (item) {
+
+    // if the item doesn't have a uuid, create one for it.
+    item.uuid = item.uuid || uuid.v4();
+
+    // make sure the items reference the voucher correctly
+    item.voucher_uuid = item.voucher_uuid || voucher.uuid;
+  });
+
+  // map items into an array of arrays
+  items = _.map(items, take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid'));
+
+  // initialise the transaction handler
   var transaction = db.transaction();
 
-  transaction.addQuery('INSERT INTO voucher SET ?', [req.body.voucher]);
+  // build the SQL query
+  transaction
+    .addQuery('INSERT INTO voucher SET ?', [ voucher ])
+    .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?', [ items ]);
 
-  var queryVoucherItem = _.isArray(req.body.voucher_item) ?
-    'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?' :
-    'INSERT INTO voucher_item SET ?';
-
-  transaction.addQuery(queryVoucherItem, [req.body.voucher_item]);
-
+  // execute the transaction
   transaction.execute()
   .then(function (rows) {
-    res.status(201).json({ id: req.body.voucher.uuid });
+    res.status(201).json({
+      uuid: voucher.uuid
+    });
   })
   .catch(next)
   .done();

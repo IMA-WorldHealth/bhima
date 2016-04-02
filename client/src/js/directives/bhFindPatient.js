@@ -6,10 +6,15 @@ angular.module('bhima.directives')
     onSearchComplete: '&',  // bind callback
     type:             '@',  // bind string
     required:         '<',  // bind the required
+    suppressReset:    '<', 
+    
+    // TODO Discuss - This could be done by binding and watching objects
+    // the functionality required is forcing a reset on the directive from the controller
+    api:              '=?'   // expose force refresh API
   }
 });
 
-FindPatientComponent.$inject = ['Patients', 'AppCache'];
+FindPatientComponent.$inject = ['PatientService', 'AppCache'];
 
 /**
  * The Find Patient Component
@@ -28,7 +33,7 @@ FindPatientComponent.$inject = ['Patients', 'AppCache'];
  */
 function FindPatientComponent(Patients, AppCache) {
   var vm = this;
-
+  
   /** cache to remember which the search type of the component */
   var cache = AppCache('FindPatientComponent');
 
@@ -47,11 +52,12 @@ function FindPatientComponent(Patients, AppCache) {
     }
   };
 
+  
   vm.timestamp      = new Date();
   vm.showSearchView = true;
   vm.loadStatus     = null;
   vm.validInput     = false;
-
+  
   /** Expose functions and variables to the template view */
   vm.searchByReference  = searchByReference;
   vm.searchByName       = searchByName;
@@ -62,6 +68,8 @@ function FindPatientComponent(Patients, AppCache) {
   vm.findBy             = findBy;
   vm.reload             = reload;
   vm.readInput          = readInput;
+  
+  vm.suppressReset = vm.suppressReset || false;
 
   /** fetch the initial setting for the component from appcache */
   loadDefaultOption(cache.optionKey);
@@ -146,12 +154,17 @@ function FindPatientComponent(Patients, AppCache) {
   */
   function findBy(key) {
     vm.selected   = vm.options[key];
-    vm.loadStatus = null;
-    vm.idInput    = undefined;
-    vm.nameInput  = undefined;
+    resetState();
 
     // save the option for later
     cache.optionKey = key;
+  }
+  
+  // Common base values that can be used to set a new search
+  function resetState() { 
+    vm.loadStatus = null;
+    vm.idInput    = undefined;
+    vm.nameInput  = undefined;
   }
 
   /**
@@ -161,6 +174,8 @@ function FindPatientComponent(Patients, AppCache) {
   * again for search by showing the inputs zones (search by ID or by name) again.
   */
   function reload() {
+    resetState();
+
     vm.showSearchView = true;
   }
 
@@ -268,4 +283,14 @@ function FindPatientComponent(Patients, AppCache) {
       event.preventDefault();
     }
   }
+
+  // Expose reset method - this allows the controller to reset the state without
+  // forcing a page refresh 
+  // TODO Discuss - This could be done by binding and watching objects
+  // the functionality required is forcing a reset on the directive from the controller
+  // TODO Force search if required?
+  vm.api = { 
+    reset : reload
+  };
+
 }

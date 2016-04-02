@@ -1,31 +1,26 @@
+/* jshint expr:true*/
 var chai = require('chai');
-var chaiHttp = require('chai-http');
 var expect = chai.expect;
-chai.use(chaiHttp);
 
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-// base URL
-var user = { username : 'superuser', password : 'superuser', project: 1};
-
 /**
-* The /Enterprises API endpoint
-*
-* This test suite implements full CRUD on the /Enterprises HTTP API endpoint.
-*/
-describe('The /Enterprises API endpoint', function () {
+ * The /enterprises API endpoint
+ *
+ * This test suite implements full CRUD on the /enterprises hTTP API endpoint.
+ */
+describe('(/enterprises) The /enterprises API endpoint', function () {
   var agent = chai.request.agent(helpers.baseUrl);
-  var TOTAL_CURRENCIES = 2;
 
-  // login before each request
-  beforeEach(helpers.login(agent));
+  // ensure that the client is logged into the test suite
+  before(helpers.login(agent));
 
-  var newEnterprise = {
-    name : 'newEnterprises',
-    abbr : 'newEnterprises',
-    email : 'newEnterprises@test.org',
-    po_box : 'newEnterprises',
+  var enterprise = {
+    name : 'enterprises',
+    abbr : 'enterprises',
+    email : 'enterprises@test.org',
+    po_box : 'enterprises',
     phone : '2016',
     location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
     logo : null,
@@ -34,35 +29,39 @@ describe('The /Enterprises API endpoint', function () {
 
   var updateEnterprise = {
     name : 'updateEnterprises',
-    abbr : 'updateEnterprises',
-    email : 'newEnterprises@test.org',
-    po_box : 'newEnterprises',
+    abbr : 'upd',
     phone : '00904940950932016',
     location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
-    logo : null,
-    currency_id : 2
+    currency_id : 1
   };
 
-  var invalideEnterprise = {
+  var invalidEnterprise = {
     name : null,
     abbr : null,
-    email : 'newEnterprises@test.org',
-    po_box : 'newEnterprises',
+    email : 'enterprises@test.org',
+    po_box : 'enterprises',
     phone : '2016',
     location_id : null,
     logo : null,
     currency_id : null
   };
 
-  it('POST /ENTERPRISES will register a valid Enterprises', function () {
-    return agent.post('/enterprises')
-      .send({ enterprise : newEnterprise })
-      .then(function (confirmation) {
-        expect(confirmation).to.have.status(201);
-        expect(confirmation.body.id).to.be.defined;
-        updateEnterprise.id = confirmation.body.id;
+  /** @const the number of enterprises registered in the test db */
+  var numEnterprises = 2;
 
-        return agent.get('/enterprises/' + confirmation.body.id);
+  /** response keys from a detailed query */
+  var responseKeys = [
+    'id', 'name', 'abbr', 'email', 'po_box', 'phone',
+    'location_id', 'logo', 'currency_id'
+  ];
+
+  it('POST /enterprises will register a valid enterprises', function () {
+    return agent.post('/enterprises')
+      .send({ enterprise : enterprise })
+      .then(function (res) {
+        helpers.api.created(res);
+        enterprise.id = res.body.id;
+        return agent.get('/enterprises/' + res.body.id);
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -70,64 +69,66 @@ describe('The /Enterprises API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /ENTERPRISES will not register an invalid Enterprises', function () {
+  it('POST /enterprises will not register an invalid enterprises', function () {
     return agent.post('/enterprises')
       .send({})
-      .then(function (confirmation) {
-        expect(confirmation).to.have.status(400);
-        expect(confirmation).to.be.json;
+      .then(function (res) {
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /ENTERPRISES will not register an incomplete Enterprise', function () {
+  it('POST /enterprises will not register an incomplete enterprise', function () {
     return agent.post('/enterprises')
-      .send({ enterprise : invalideEnterprise })
-      .then(function (confirmation) {
-        expect(confirmation).to.have.status(400);
-        expect(confirmation).to.be.json;
+      .send({ enterprise : invalidEnterprise })
+      .then(function (res) {
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /ENTERPRISES should update an existing Enterprises', function () {
-    return agent.put('/enterprises/' + updateEnterprise.id)
+  it('PUT /enterprises/:id should update an existing enterprises', function () {
+    return agent.put('/enterprises/' + enterprise.id)
       .send(updateEnterprise)
       .then(function (res) {
-        var e = res.body[0];
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(e).to.have.all.keys('id', 'name', 'abbr', 'email', 'po_box', 'phone', 'location_id', 'logo', 'currency_id');
-        expect(e.name).to.not.be.equal(newEnterprise.name);
-        expect(e.location_id).to.be.equal(newEnterprise.location_id);
+        expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /ENTERPRISES returns a Enterprises List ', function () {
+  it('GET /enterprises returns a list of enterprises', function () {
+    return agent.get('/enterprises')
+      .then(function (res) {
+        helpers.api.listed(res, numEnterprises);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /enterprises?detailed=1 returns a enterprises list with all keys', function () {
     return agent.get('/enterprises?detailed=1')
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result).to.be.json;
+      .then(function (res) {
+        helpers.api.listed(res, numEnterprises);
+        expect(res.body[0]).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /ENTERPRISES returns a Enterprises List With a minimum number of elements ', function () {
-    return agent.get('/enterprises/')
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result).to.be.json;
-        expect(result.body[0]).to.have.all.keys('id', 'name', 'abbr');
+  it('GET /enterprises/:id returns a single enterprise', function () {
+    return agent.get('/enterprises/' + enterprise.id)
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });
 
-  it('GET /ENTERPRISES/:ID returns a single Enterprise ', function () {
-    return agent.get('/enterprises/' + updateEnterprise.id)
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result).to.be.json;
+  /** @todo - make this work; currently broken or unimplemented */
+  it.skip('GET /enterprises/:id returns a 404 error for unknown enterprises', function () {
+    return agent.get('/enterprises/unknown')
+      .then(function (res) {
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

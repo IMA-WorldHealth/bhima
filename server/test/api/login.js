@@ -1,29 +1,33 @@
-/* global describe, it, beforeEach */
-
-// import testing framework
 var chai = require('chai');
 var expect = chai.expect;
 
-/** import test helpers */
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-// begin login tests
-describe('The /login API endpoint', function () {
+describe('(/login) The login API', function () {
   'use strict';
 
   var url = helpers.baseUrl;
 
   // set up valid user
-  var validUser = { username : 'superuser', password : 'superuser', project: 1};
-  var invalidUser = { username: 'unauthorized', password : 'unauthorized' };
+  var validUser = {
+    username : 'superuser',
+    password : 'superuser',
+    project: 1
+  };
+
+  var invalidUser = {
+    username: 'unauthorized',
+    password : 'unauthorized'
+  };
 
   it('rejects access to non-existant routes', function () {
     return chai.request(url)
       .get('/non-existant')
       .then(function (res) {
-        expect(res).to.have.status(401);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+
+        helpers.api.errored(res, 401);
+
         expect(res.body.code).to.equal('ERR_NOT_AUTHENTICATED');
       })
       .catch(helpers.handler);
@@ -33,8 +37,9 @@ describe('The /login API endpoint', function () {
     return chai.request(url)
       .get('/journal')
       .then(function (res) {
-        expect(res).to.have.status(401);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+
+        helpers.api.errored(res, 401);
+
         expect(res.body.code).to.equal('ERR_NOT_AUTHENTICATED');
       })
       .catch(helpers.handler);
@@ -42,7 +47,7 @@ describe('The /login API endpoint', function () {
 
   it('allows access to public routes', function () {
     return chai.request(url)
-      .get('/projects')
+      .get('/projects/')
       .then(function (res) {
         expect(res).to.have.status(200);
       })
@@ -54,9 +59,8 @@ describe('The /login API endpoint', function () {
       .post('/login')
       .send(invalidUser)
       .then(function (res) {
-        expect(res).to.have.status(401);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
-        expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
+        helpers.api.errored(res, 401);
+        expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);
   });
@@ -67,9 +71,8 @@ describe('The /login API endpoint', function () {
       .post('/login')
       .send({ username : validUser.username, password : validUser.password })
       .then(function (res) {
-        expect(res).to.have.status(401);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
-        expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
+        helpers.api.errored(res, 401);
+        expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);
   });
@@ -79,19 +82,8 @@ describe('The /login API endpoint', function () {
       .post('/login')
       .send({ username : validUser.username, project : validUser.project })
       .then(function (res) {
-        expect(res).to.have.status(401);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
-        expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
-      })
-      .catch(helpers.handler);
-  });
-
-  it('allows a recognized user with username, password, and project', function () {
-    return chai.request(url)
-      .post('/login')
-      .send(validUser)
-      .then(function (res) {
-        expect(res).to.have.status(200);
+        helpers.api.errored(res, 401);
+        expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);
   });

@@ -38,7 +38,7 @@ function ConnectFactory($http, $q, liberror, messenger, Store) {
     //        columns: ['type']
     //      }
     //    },
-    //    join: ['account.account_type_id=account_type.id'],
+    //    join: ['account.type_id=account_type.id'],
     //    where: ['account.enterprise_id=101']
     //  };
     //

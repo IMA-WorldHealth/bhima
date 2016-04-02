@@ -33,176 +33,177 @@
         <h4>{{ "PERMISSIONS.HELP_TXT_1" | translate }}</h4>
       </div>
 
-      <!-- triggered on successful form creation -->
-      <bh-form-message message="PermissionsCtrl.formMessage" message-type="success" ng-switch-when="success"></bh-form-message>
+      <!-- triggered on successful form creation --> 
+      <div ng-switch-when="success">
+        <uib-alert type="success" data-create-success>
+          <span class="glyphicon glyphicon-ok"></span> {{ PermissionsCtrl.formMessage.code | translate }}
+        </uib-alert>
+      </div>
 
       <!-- user creation view -->
-      <div ng-switch-when="create" class="panel panel-primary">
-        <div class="panel-heading">
-          {{ "PERMISSIONS.NEW_USER_FORM" | translate }}
+      <div ng-switch-when="create">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            {{ "PERMISSIONS.NEW_USER_FORM" | translate }}
+          </div>
+          <form class="panel-body" name="CreateForm" ng-submit="PermissionsCtrl.submit(CreateForm.$invalid)" novalidate>
+            <fieldset>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.firstname.$invalid }">
+                <label class="control-label">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
+                <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
+                <div class="help-block" ng-messages="CreateForm.firstname.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.lastname.$invalid }">
+                <label class="control-label">{{ "COLUMNS.LAST_NAME" | translate }}</label>
+                <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
+                <div class="help-block" ng-messages="CreateForm.lastname.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group"  ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.username.$invalid }">
+                <label class="control-label">{{ "COLUMNS.USER_NAME" | translate }}</label>
+                <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
+                <div class="help-block" ng-messages="CreateForm.username.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.email.$invalid }">
+                <label class="control-label">{{ "COLUMNS.EMAIL" | translate }}</label>
+                <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email" required>
+                <div class="help-block" ng-messages="CreateForm.email.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.projects.$invalid }">
+                <label class="control-label">{{ "COLUMNS.PROJECTS" | translate }}</label>
+                <select
+                  name="projects"
+                  ng-model="PermissionsCtrl.user.projects"
+                  class="form-control"
+                  ng-options="project.id as project.name for project in PermissionsCtrl.projects"
+                  required
+                  multiple>
+                </select>
+                <div class="help-block" ng-messages="CreateForm.projects.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group has-feedback" ng-class="{ 'has-error' : CreateForm.$submitted && !PermissionsCtrl.validPassword() }">
+                <label class="control-label">{{ "COLUMNS.PASSWORD" | translate }}</label>
+                <input name="password" ng-model="PermissionsCtrl.user.password" class="form-control" type="password" required>
+                <i ng-if="!PermissionsCtrl.validPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
+                <i ng-if="PermissionsCtrl.validPassword()" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
+              </div>
+
+              <div class="form-group has-feedback" ng-class="{ 'has-error' : CreateForm.$submitted && !PermissionsCtrl.validPassword() }">
+                <label class="control-label"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSIONS.RETYPE" | translate }})</label>
+                <input name="passwordVerify" ng-model="PermissionsCtrl.user.passwordVerify" class="form-control" type="password" required>
+                <i ng-if="!PermissionsCtrl.validPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
+                <i ng-if="PermissionsCtrl.validPassword()" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
+                <p class="help-block" ng-if="CreateForm.$submitted && !PermissionsCtrl.validPassword()">
+                  {{ "FORM.PASSWORD_MATCH" | translate }}
+                </p>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-success" data-method="submit">
+                  <i class="glyphicon glyphicon-ok"></i> {{ 'FORM.SUBMIT' | translate }}
+                </button>
+                <button type="button" class="btn btn-default" ng-click="PermissionsCtrl.setState('default')">
+                  <i class="glyphicon glyphicon-ban-circle"></i> {{ 'FORM.CANCEL' | translate }}
+                </button>
+              </div>
+            </fieldset>
+          </form>
+        </div>  
+      </div> 
+      
+      <div ng-switch-when="update">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            {{ "PERMISSIONS.UPDATE_USER_FORM" | translate }}
+          </div>
+
+          <form class="panel-body" name="UpdateForm" ng-submit="PermissionsCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <fieldset>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.firstname.$invalid }">
+                <label class="control-label">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
+                <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
+                <div class="help-block" ng-messages="UpdateForm.firstname.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.lastname.$invalid }">
+                <label class="control-label">{{ "COLUMNS.LAST_NAME" | translate }}</label>
+                <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
+                <div class="help-block" ng-messages="UpdateForm.lastname.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group"  ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.username.$invalid }">
+                <label class="control-label">{{ "COLUMNS.USER_NAME" | translate }}</label>
+                <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
+                <div class="help-block" ng-messages="UpdateForm.username.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.email.$invalid }">
+                <label class="control-label">{{ "COLUMNS.EMAIL" | translate }}</label>
+                <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email">
+                <p class="help-block" ng-if="UpdateForm.$submitted && UpdateForm.email.$invalid">
+                  {{ "FORM.REQUIRED_EMAIL" | translate }}
+                </p>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.projects.$invalid }">
+                <label class="control-label">{{ "COLUMNS.PROJECTS" | translate }}</label>
+                <select
+                  name="projects"
+                  ng-model="PermissionsCtrl.user.projects"
+                  class="form-control"
+                  ng-options="project.id as project.name for project in PermissionsCtrl.projects"
+                  required
+                  multiple>
+                </select>
+                <div class="help-block" ng-messages="UpdateForm.projects.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button type="button" class="btn btn-warning btn-block" ng-click="PermissionsCtrl.setPasswordModal()">
+                  <i class="glyphicon glyphicon-lock"></i> {{ 'PERMISSIONS.UPDATE_PASSWORD' | translate }}
+                </button>
+              </div>
+
+              <div class="form-group">
+
+                <!-- TODO - make this a fancy button -->
+                <button type="submit" class="btn btn-success">
+                  <i class="glyphicon glyphicon-ok"></i> {{ 'FORM.SUBMIT' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-default" ng-click="PermissionsCtrl.setState('default')">
+                  <i class="glyphicon glyphicon-ban-circle"></i> {{ 'FORM.CANCEL' | translate }}
+                </button>
+              </div>
+
+            </fieldset>
+          </form>
         </div>
-        <form class="panel-body" name="CreateForm" ng-submit="PermissionsCtrl.submit(CreateForm.$invalid)" novalidate>
-          <fieldset>
-
-            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.firstname.$invalid }">
-              <label class="control-label">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
-              <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
-              <div class="help-block" ng-messages="CreateForm.firstname.$error" ng-show="CreateForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.lastname.$invalid }">
-              <label class="control-label">{{ "COLUMNS.LAST_NAME" | translate }}</label>
-              <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
-              <div class="help-block" ng-messages="CreateForm.lastname.$error" ng-show="CreateForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group"  ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.username.$invalid }">
-              <label class="control-label">{{ "COLUMNS.USER_NAME" | translate }}</label>
-              <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
-              <div class="help-block" ng-messages="CreateForm.username.$error" ng-show="CreateForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.email.$invalid }">
-              <label class="control-label">{{ "COLUMNS.EMAIL" | translate }}</label>
-              <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email" required>
-              <div class="help-block" ng-messages="CreateForm.email.$error" ng-show="CreateForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.projects.$invalid }">
-              <label class="control-label">{{ "COLUMNS.PROJECTS" | translate }}</label>
-              <select
-                name="projects"
-                ng-model="PermissionsCtrl.user.projects"
-                class="form-control"
-                ng-options="project.id as project.name for project in PermissionsCtrl.projects"
-                required
-                multiple>
-              </select>
-              <div class="help-block" ng-messages="CreateForm.projects.$error" ng-show="CreateForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group has-feedback" ng-class="{ 'has-error' : CreateForm.$submitted && !PermissionsCtrl.validPassword() }">
-              <label class="control-label">{{ "COLUMNS.PASSWORD" | translate }}</label>
-              <input name="password" ng-model="PermissionsCtrl.user.password" class="form-control" type="password" required>
-              <i ng-if="!PermissionsCtrl.validPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
-              <i ng-if="PermissionsCtrl.validPassword()" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
-            </div>
-
-            <div class="form-group has-feedback" ng-class="{ 'has-error' : CreateForm.$submitted && !PermissionsCtrl.validPassword() }">
-              <label class="control-label"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSIONS.RETYPE" | translate }})</label>
-              <input name="passwordVerify" ng-model="PermissionsCtrl.user.passwordVerify" class="form-control" type="password" required>
-              <i ng-if="!PermissionsCtrl.validPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
-              <i ng-if="PermissionsCtrl.validPassword()" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
-              <p class="help-block" ng-if="CreateForm.$submitted && !PermissionsCtrl.validPassword()">
-                {{ "FORM.PASSWORD_MATCH" | translate }}
-              </p>
-            </div>
-
-            <div class="form-group">
-              <button type="submit" class="btn btn-success" data-method="submit">
-                <i class="glyphicon glyphicon-ok"></i> {{ 'FORM.SUBMIT' | translate }}
-              </button>
-              <button type="button" class="btn btn-default" ng-click="PermissionsCtrl.setState('default')">
-                <i class="glyphicon glyphicon-ban-circle"></i> {{ 'FORM.CANCEL' | translate }}
-              </button>
-            </div>
-
-            <!-- form feedback -->
-            <bh-form-message message="PermissionsCtrl.formMessage"></bh-form-message>
-
-          </fieldset>
-        </form>
-      </div>
-
-      <div ng-switch-when="update" class="panel panel-primary">
-        <div class="panel-heading">
-          {{ "PERMISSIONS.UPDATE_USER_FORM" | translate }}
-        </div>
-
-        <form class="panel-body" name="UpdateForm" ng-submit="PermissionsCtrl.submit(UpdateForm.$invalid)" novalidate>
-          <fieldset>
-
-            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.firstname.$invalid }">
-              <label class="control-label">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
-              <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
-              <div class="help-block" ng-messages="UpdateForm.firstname.$error" ng-show="UpdateForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.lastname.$invalid }">
-              <label class="control-label">{{ "COLUMNS.LAST_NAME" | translate }}</label>
-              <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
-              <div class="help-block" ng-messages="UpdateForm.lastname.$error" ng-show="UpdateForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group"  ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.username.$invalid }">
-              <label class="control-label">{{ "COLUMNS.USER_NAME" | translate }}</label>
-              <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
-              <div class="help-block" ng-messages="UpdateForm.username.$error" ng-show="UpdateForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.email.$invalid }">
-              <label class="control-label">{{ "COLUMNS.EMAIL" | translate }}</label>
-              <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email">
-              <p class="help-block" ng-if="UpdateForm.$submitted && UpdateForm.email.$invalid">
-                {{ "FORM.REQUIRED_EMAIL" | translate }}
-              </p>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.projects.$invalid }">
-              <label class="control-label">{{ "COLUMNS.PROJECTS" | translate }}</label>
-              <select
-                name="projects"
-                ng-model="PermissionsCtrl.user.projects"
-                class="form-control"
-                ng-options="project.id as project.name for project in PermissionsCtrl.projects"
-                required
-                multiple>
-              </select>
-              <div class="help-block" ng-messages="UpdateForm.projects.$error" ng-show="UpdateForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <button type="button" class="btn btn-warning btn-block" ng-click="PermissionsCtrl.setPasswordModal()">
-                <i class="glyphicon glyphicon-lock"></i> {{ 'PERMISSIONS.UPDATE_PASSWORD' | translate }}
-              </button>
-            </div>
-
-            <!-- form feedback -->
-            <bh-form-message message="PermissionsCtrl.formMessage"></bh-form-message>
-
-            <div class="form-group">
-
-              <!-- TODO - make this a fancy button -->
-              <button type="submit" class="btn btn-success">
-                <i class="glyphicon glyphicon-ok"></i> {{ 'FORM.SUBMIT' | translate }}
-              </button>
-
-              <button type="button" class="btn btn-default" ng-click="PermissionsCtrl.setState('default')">
-                <i class="glyphicon glyphicon-ban-circle"></i> {{ 'FORM.CANCEL' | translate }}
-              </button>
-            </div>
-
-          </fieldset>
-        </form>
-      </div>
+      </div> 
 
       <div ng-switch-when="permissions">
         <div class="panel panel-primary">

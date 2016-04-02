@@ -1,12 +1,11 @@
-/*global describe, it, beforeEach*/
-
+/* jshint expr:true */
 var chai = require('chai');
 var expect = chai.expect;
 
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('The subsidy API, PATH : /subsidies', function () {
+describe('(/subsidies) The subsidy API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var newSubsidy = {
@@ -27,16 +26,22 @@ describe('The subsidy API, PATH : /subsidies', function () {
     'id', 'account_id', 'label', 'description', 'value', 'created_at', 'updated_at'
   ];
 
-  beforeEach(helpers.login(agent));
+  // ensure the client is logged in before tests start
+  before(helpers.login(agent));
 
-  it('METHOD : POST, PATH : /subsidies, It adds a subsidy', function () {
+  it('GET /subsidies returns an empty list of subsidies', function () {
+      return agent.get('/subsidies')
+        .then(function (res) {
+          helpers.api.listed(res, 0);
+        })
+        .catch(helpers.handler);
+    });
+
+  it('POST /subsidies adds a subsidy', function () {
     return agent.post('/subsidies')
       .send(newSubsidy)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.defined;
+        helpers.api.created(res);
         newSubsidy.id = res.body.id;
         return agent.get('/subsidies/' + newSubsidy.id);
       })
@@ -47,30 +52,24 @@ describe('The subsidy API, PATH : /subsidies', function () {
      .catch(helpers.handler);
   });
 
-  it('METHOD : POST, PATH : /subsidies, It refuses to add a wrong subsidy', function () {
+  it('POST /subsidies refuses to add a wrong subsidy', function () {
     return agent.post('/subsidies')
       .send(wrongSubsidy)
       .then(function (res) {
-        expect(res).to.have.status(400);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET, PATH : /subsidies, It returns a list of subsidies', function () {
+  it('GET /subsidies returns an array of one subsidy', function () {
       return agent.get('/subsidies')
         .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.length(1);
+          helpers.api.listed(res, 1);
         })
         .catch(helpers.handler);
     });
 
-  it('METHOD : GET, PATH : /subsidies/:id, It returns one subsidy', function () {
+  it('GET /subsidies/:id returns one subsidy', function () {
     return agent.get('/subsidies/'+ newSubsidy.id)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -82,10 +81,8 @@ describe('The subsidy API, PATH : /subsidies', function () {
       .catch(helpers.handler);
   });
 
-
-  it('METHOD : PUT, PATH : /subsidies/:id, It updates the newly added subsidy', function () {
-    var updateInfo = {value : 50};
-
+  it('PUT /subsidies/:id updates the newly added subsidy', function () {
+    var updateInfo = { value : 50 };
     return agent.put('/subsidies/'+ newSubsidy.id)
       .send(updateInfo)
       .then(function (res) {
@@ -97,16 +94,18 @@ describe('The subsidy API, PATH : /subsidies', function () {
       .catch(helpers.handler);
   });
 
-   it('METHOD : DELETE, PATH : /subsidies/:id, It deletes a subsidy', function () {
+   it('DELETE /subsidies/:id deletes a subsidy', function () {
     return agent.delete('/subsidies/' + newSubsidy.id)
       .then(function (res) {
-        expect(res).to.have.status(204);
+
+        // make sure the record is deleted
+        helpers.api.deleted(res);
+
         // re-query the database
         return agent.get('/subsidies/' + newSubsidy.id);
       })
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

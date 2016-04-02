@@ -33,10 +33,10 @@ exports.list = function list(req, res, next) {
     'SELECT id, text FROM cash_box ';
 
   if(req.query.full === '1') {
-    sql = 'SELECT cash_box.id, text, account_id, ' + 
+    sql = 'SELECT cash_box.id, text, account_id, ' +
       'gain_exchange_account_id, loss_exchange_account_id, virement_account_id, symbol ' +
       'FROM cash_box JOIN cash_box_account_currency ON ' +
-      'cash_box.id = cash_box_account_currency.cash_box_id JOIN currency ON ' + 
+      'cash_box.id = cash_box_account_currency.cash_box_id JOIN currency ON ' +
       'currency.id = cash_box_account_currency.currency_id ';
   }
 
@@ -172,7 +172,11 @@ exports.delete = function del(req, res, next) {
 
   db.exec(sql, [req.params.id])
   .then(function (rows) {
-    res.status(200).send();
+    if (!rows.affectedRows) {
+      throw new req.codes.ERR_NOT_FOUND();
+    }
+
+    res.status(204).json();
   })
   .catch(next)
   .done();

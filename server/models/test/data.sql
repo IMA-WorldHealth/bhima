@@ -12,22 +12,31 @@ INSERT INTO unit VALUES
   (2,   'Enterprise', 'TREE.ENTERPRISE', 'Manage the registered enterprises from here', 1, '/partials/enterprise/', '/enterprises'),
   (4,   'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/user_permission/','/permissions'),
   (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
+  (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',30,'/partials/accounts/','/accounts'),
   (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
-  (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register/'),
+  (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register'),
+  (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/partials/patient_invoice/','/invoices/patient'),
   (18,  'Cash Payments','TREE.CASH_PAYMENTS','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
+  (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/partials/creditors/','/creditors'),
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
   (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
+  (30,  'Accounting','TREE.ACCOUNTING','',0,'/partials/accounting/index.html','/accounting/'),
   (42,  'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
   (48,  'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
   (57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
   (61,  'Employee','TREE.EMPLOYEE','Employees management',57,'partials/employees/','/employees'),
-  (80,  'Patient Update','TREE.EDIT_PATIENT','',12,'/partials/patient_edit/','/patients/edit/'),
+  (80,  'Patient Update','TREE.EDIT_PATIENT','',12,'/partials/patient_edit/','/patients/edit'),
   (82,  'Subsidies','TREE.SUBSIDY','Handles the subsidy situation',1,'/partials/subsidies/','/subsidies'),
   (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
   (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots_management/', '/depots_management'),
   (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtor_groups/', '/debtor_groups'),
-  (108, 'Donors Management', 'TREE.DONOR_MANAGEMENT', 'Donors Management module', 1, '/partials/donors/', '/donors');
+  (108, 'Donors Management', 'TREE.DONOR_MANAGEMENT', 'Donors Management module', 1, '/partials/donors/', '/donors'),
+  (109, 'Section du bilan','TREE.SECTION_BILAN','',30,'/partials/section_bilan/','/section_bilan/'),
+  (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',30,'/partials/references/groups','/references/groups'),
+  (110, 'Section resultat','TREE.SECTION_RESULTAT','',30,'/partials/section_resultat/','/section_resultat/'),
+  (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple'),
+  (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services');
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
@@ -43,16 +52,16 @@ INSERT INTO `enterprise` VALUES (1,'Test Enterprise','TE','243 81 504 0540','ent
 INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,1,0),(2,'Test Project B','TPB',1,2,0),(3,'Test Project C','TPC',1,2,0);
 
 INSERT INTO `account` VALUES
-  (3626,2,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,0,NULL,1),
-  (3627,2,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 13:26:13',1,1,NULL,0,0,NULL,0),
-  (3628,2,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 13:27:13',1,1,NULL,0,0,NULL,0),
-  (3629,2,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,0,NULL,1),
-  (3630,2,1,4100,'Test Debtor Accounts',3629,0,NULL,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,0,NULL,0),
-  (3631,2,1,41000,'Test Debtor Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,0,NULL,1),
-  (3635,2,1,41000,'Test Debtor Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,0,NULL,1),
-  (3636,2,1,4600,'Test Inventory Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,0,NULL,1),
-  (3637,2,1,46001,'Test Item Account',3636,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,0,NULL,0),
-  (3638,2,1,47001,'Test Debtor Group Account',3626,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,0,NULL,0);
+  (3626,2,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,1,1),
+  (3627,2,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 13:26:13',1,1,NULL,0,NULL,0),
+  (3628,2,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 13:27:13',1,1,NULL,0,NULL,0),
+  (3629,2,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,1,1),
+  (3630,2,1,4100,'Test Debtor Accounts',3629,0,NULL,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,NULL,0),
+  (3631,2,1,41000,'Test Debtor Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3635,2,1,41000,'Test Debtor Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3636,2,1,4600,'Test Inventory Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3637,2,1,46001,'Test Item Account',3636,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,0),
+  (3638,2,1,47001,'Test Debtor Group Account',3626,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0);
 
 -- testing financial transactions
 INSERT INTO `fiscal_year` VALUES
@@ -76,7 +85,8 @@ INSERT INTO `period` VALUES
 INSERT INTO user (id, username, password, first, last, email) VALUES
   (1, 'superuser', PASSWORD('superuser'), 'Super', 'User', 'SuperUser@test.org'),
   (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular', 'User', 'RegUser@test.org'),
-  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No', 'Permissions', 'Invalid@test.org'),
+  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No', 'Permissrepertoire
+ions', 'Invalid@test.org'),
   (4, 'admin', PASSWORD('1'), 'Admin', 'User', 'admin@test.org');
 
 -- Only modules updated and written to 2X standards should be registered in the application tree
@@ -94,20 +104,41 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- [Folder] Finance
 (5,1),
 
+-- Account Management
+(6,1),
+
 -- [Folder] Hospital
 (12,1),
 
 -- Patient Registration
 (14,1),
 
+-- Patient Invoice
+(16,1),
+
 -- Cash Payments
 (18,1),
+
+-- Supplier Management
+(19,1),
+
+-- Price list Management
+(21, 1),
+
+-- Exchange Rate
+(22, 1),
 
 -- Location Management
 (26,1),
 
+-- [Folder] Accounting
+(30, 1),
+
 -- Projects
 (42,1),
+
+-- Service Management
+(48, 1),
 
 -- Payroll Management
 (57, 1),
@@ -117,15 +148,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Patient Update
 (80, 1),
-
--- Price list Management
-(21, 1),
-
--- Exchange Rate
-(22, 1),
-
--- Service Management
-(48, 1),
 
 -- subsidie Management
 (82, 1),
@@ -140,7 +162,22 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (107,1),
 
 --  Donators Management
-(108,1);
+(108,1),
+
+--  Bilan Section Management
+(109,1),
+
+--  Reference Group Management
+(111,1),
+
+--  Section Resultat Management
+(110,1),
+
+-- Simple Journal Vouchers
+(134, 1),
+
+-- Billing Services Module
+(135, 1);
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
@@ -167,9 +204,9 @@ INSERT INTO `inventory_type` VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
 INSERT INTO `inventory_unit` VALUES (1,'Act'),(2,'Pallet'),(3,'Pill'),(4,'Box'),(5,'Lot'),(6,'amp'),(7,'bags'),(8,'btl'),(9,'cap'),(10,'flc'),(11,'jar'),(12,'ltr'),(13,'pce'),(14,'sch'),(15,'tab'),(16,'tub'),(17,'vial');
 
 INSERT INTO `inventory` VALUES
-  (1, 'cf05da13-b477-11e5-b297-023919d3d5b0', 'INV0', 'Test inventory item', 25.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 1, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
-  (1, '289cc0a1-b90f-11e5-8c73-159fdc73ab02', 'INV1', 'Second Test inventory item', 10.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 6, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
-  (1, 'c48a3c4b-c07d-4899-95af-411f7708e296', 'INV2', 'Third Test Inventory Item', 105.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 7, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP);
+  (1, 'cf05da13-b477-11e5-b297-023919d3d5b0', 'INV0', 'Test inventory item', 25.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
+  (1, '289cc0a1-b90f-11e5-8c73-159fdc73ab02', 'INV1', 'Second Test inventory item', 10.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
+  (1, 'c48a3c4b-c07d-4899-95af-411f7708e296', 'INV2', 'Third Test Inventory Item', 105.0, 10, '1410dfe0-b478-11e5-b297-023919d3d5b0', 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP);
 
 INSERT INTO `debitor_group` VALUES
   (1,'4de0fe47-177f-4d30-b95f-cff8166400b4','Test Debtor Group',3631,'03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
@@ -211,7 +248,7 @@ INSERT INTO `grade` VALUES
   ('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0','G1','grade 1',500.0000),
   ('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3','A1','1.1',50.0000);
 
-INSERT INTO `section_bilan` VALUES (1,'Section Bilan 1',1,1);
+INSERT INTO `section_bilan` VALUES (1,'Section Bilan 1',1,1), (2, 'Section Bilan 2', 1, 1);
 INSERT INTO `section_resultat` VALUES (1,'Section Resultat 1',1,1);
 
 INSERT INTO `reference_group` VALUES (1,'AA','Reference Group 1',1,1);
@@ -230,17 +267,16 @@ INSERT INTO `profit_center` VALUES
 
 -- Services
 INSERT INTO `service` VALUES
-  (1,1,'Test Service',1,1),
-  (2,1,'Administration',NULL,NULL),
-  (3,1,'Medecine Interne',NULL,NULL);
+  (1, 1, 'Test Service', 1, 1),
+  (2, 1, 'Administration', 1, 1),
+  (3, 1, 'Medecine Interne', 1, 1);
 
-INSERT INTO `sale` VALUES
-  (1,1,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 13:35:55',1),
-  (1,2,'c44619e0-3a88-4754-a750-a414fc9567bf',25.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient',1,'2016-01-07 13:31:14',1);
+INSERT INTO sale (project_id, reference, uuid, cost, debitor_uuid, service_id, user_id, discount, date, description, timestamp, is_distributable) VALUES
+  (1,2,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',75.0000,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
+  (1,1,'c44619e0-3a88-4754-a750-a414fc9567bf',25.0000,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',1,1,0,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
 
 INSERT INTO `sale_item` VALUES
   ('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6','2e1332a7-3e63-411e-827d-42ad585ff518','cf05da13-b477-11e5-b297-023919d3d5b0',3,25.0000,25.0000,0.0000,75.0000);
-
 
 INSERT INTO `posting_journal` VALUES
   ('017dbe1e-c37c-11e5-a86e-843a4b0cdadc',1,1,1,'HBB1','2016-01-26',NULL,NULL,3631,75.0000,0.0000,75.0000,0.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107','D','957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',NULL,NULL,2,1,NULL,NULL),

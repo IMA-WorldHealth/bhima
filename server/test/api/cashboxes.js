@@ -1,5 +1,4 @@
-/* global describe, it, beforeEach, process */
-
+/* jshint expr:true */
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -7,25 +6,23 @@ var expect = chai.expect;
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /cashboxes API endpoint
-*/
-describe('The /cashboxes API endpoint', function () {
+/** The /cashboxes API endpoint */
+describe('(/cashboxes) The Cashboxes API endpoint', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
 
-  // constants
-  var NUMBER_OF_CASHBOXES = 2;
-  var NUMBER_OF_AUX_CASHBOXES = 1;
+  /** @const */
+  var numCashboxes = 2;
+  var numAuxCashboxes = 1;
   var NUMBER_OF_CASHBOX_CURRENCIES = 2;
-  var NUMBER_OF_CASHBOX_BY_CURRENCIES = 4;
-  var PROJECT_ID = 1;
+  var numCashboxCurrencies = 4;
+  var projectId = 1;
 
   // new cashbox
   var BOX = {
     text:         'New Cashbox C',
-    project_id:   PROJECT_ID,
+    project_id:   projectId,
     is_auxillary: 1,
     is_bank:      0
   };
@@ -40,16 +37,14 @@ describe('The /cashboxes API endpoint', function () {
   };
 
 
-  /** login before each request */
-  beforeEach(helpers.login(agent));
+  /** login before the first request */
+  before(helpers.login(agent));
 
   it('GET /cashboxes returns a list of cashboxes', function () {
     return agent.get('/cashboxes')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        helpers.api.listed(res, numCashboxes);
         expect(res.body[0]).to.contain.keys('id', 'text');
-        expect(res.body).to.have.length(NUMBER_OF_CASHBOXES);
       })
       .catch(helpers.handler);
   });
@@ -57,19 +52,16 @@ describe('The /cashboxes API endpoint', function () {
   it('GET /cashboxes?is_auxillary=1 returns only auxillary cashboxes', function () {
     return agent.get('/cashboxes?is_auxillary=1')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(NUMBER_OF_AUX_CASHBOXES);
+        helpers.api.listed(res, numAuxCashboxes);
       })
       .catch(helpers.handler);
   });
 
+  /** @fixme - why does this route exist?  Why is it not ?detailed=1 ? */
   it('GET /cashboxes?full=1 returns cashboxes with relatives properties', function () {
     return agent.get('/cashboxes?full=1')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(NUMBER_OF_CASHBOX_BY_CURRENCIES);
+        helpers.api.listed(res, numCashboxCurrencies);
       })
       .catch(helpers.handler);
   });
@@ -89,7 +81,7 @@ describe('The /cashboxes API endpoint', function () {
   it('GET /cashboxes/:id should return a 404 for invalid cashbox', function () {
     return agent.get('/cashboxes/invalid')
       .then(function (res) {
-        expect(res).to.have.status(404);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
@@ -98,12 +90,7 @@ describe('The /cashboxes API endpoint', function () {
     return agent.post('/cashboxes')
       .send({ cashbox : BOX })
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.defined;
-
-        // set the box id
+        helpers.api.created(res);
         BOX.id = res.body.id;
         return agent.get('/cashboxes/' + BOX.id);
       })
@@ -130,8 +117,7 @@ describe('The /cashboxes API endpoint', function () {
   it('GET /cashboxes/:id/currencies should return an empty list of cashbox currencies', function () {
     return agent.get('/cashboxes/' + BOX.id + '/currencies')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.empty;
+        helpers.api.listed(res, 0);
       });
   });
 
@@ -139,9 +125,7 @@ describe('The /cashboxes API endpoint', function () {
     return agent.post('/cashboxes/' + BOX.id + '/currencies')
       .send(BOX_CURRENCY)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.contain.keys('id');
+        helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
@@ -162,7 +146,7 @@ describe('The /cashboxes API endpoint', function () {
   it('GET /cashboxes/:id/currencies/unknown should return a single cashbox currency reference', function () {
     return agent.get('/cashboxes/' + BOX.id + '/currencies/unknown')
       .then(function (res) {
-        expect(res).to.have.status(404);
+        helpers.api.errored(res, 404);
       });
   });
 
@@ -194,11 +178,19 @@ describe('The /cashboxes API endpoint', function () {
   it('DELETE /cashboxes/:id should delete the cashbox and associated currencies', function () {
     return agent.delete('/cashboxes/' + BOX.id)
     .then(function (res) {
-      expect(res).to.have.status(200);
+      helpers.api.deleted(res);
       return agent.get('/cashboxes/' + BOX.id);
     })
     .then(function (res) {
-      expect(res).to.have.status(404);
+      helpers.api.errored(res, 404);
+    })
+    .catch(helpers.handler);
+  });
+
+  it('DELETE /cashboxes/:id should return a 404 for an unknown cashbox id', function () {
+    return agent.delete('/cashboxes/unknown')
+    .then(function (res) {
+      helpers.api.errored(res, 404);
     })
     .catch(helpers.handler);
   });

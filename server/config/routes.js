@@ -75,7 +75,9 @@ var functions            = require('../controllers/admin/functions');
 var grades               = require('../controllers/admin/grades');
 var creditorGroups       = require('../controllers/finance/creditorGroups');
 var donors               = require('../controllers/donors');
-
+var referenceGroup       = require('../controllers/finance/referenceGroup');
+var sectionResultats     = require('../controllers/finance/sectionResultat');
+var sectionBilans        = require('../controllers/finance/sectionBilan');
 
 // Middleware for handle uploaded file
 var multipart            = require('connect-multiparty');
@@ -119,7 +121,7 @@ exports.configure = function (app) {
   app.put('/locations/villages/:uuid', locations.update.village);
   app.put('/locations/sectors/:uuid', locations.update.sector);
   app.put('/locations/provinces/:uuid', locations.update.province);
-  app.put('/locations/countries/:uuid', locations.update.country);  
+  app.put('/locations/countries/:uuid', locations.update.country);
 
   // API for account routes crud
   app.get('/accounts', account.list);
@@ -166,6 +168,27 @@ exports.configure = function (app) {
   app.post('/references', reference.create);
   app.put('/references/:id', reference.update);
   app.delete('/references/:id', reference.remove);
+
+ //API for section resultats crud
+  app.get('/section_resultats', sectionResultats.list);
+  app.get('/section_resultats/:id', sectionResultats.detail);
+  app.post('/section_resultats', sectionResultats.create);
+  app.put('/section_resultats/:id', sectionResultats.update);
+  app.delete('/section_resultats/:id', sectionResultats.remove);
+
+ //API for section bilans crud
+  app.get('/section_bilans', sectionBilans.list);
+  app.get('/section_bilans/:id', sectionBilans.detail);
+  app.post('/section_bilans', sectionBilans.create);
+  app.put('/section_bilans/:id', sectionBilans.update);
+  app.delete('/section_bilans/:id', sectionBilans.remove);
+
+ //API for reference group crud
+  app.get('/reference_group', referenceGroup.list);
+  app.get('/reference_group/:id', referenceGroup.detail);
+  app.post('/reference_group', referenceGroup.create);
+  app.put('/reference_group/:id', referenceGroup.update);
+  app.delete('/reference_group/:id', referenceGroup.remove);
 
  //API for subsidy routes crud
   app.get('/subsidies', subsidy.list);
@@ -260,7 +283,7 @@ exports.configure = function (app) {
   app.get('/getAccount6', accounts.listIncomeAccounts);
   app.get('/getAccount7/', accounts.listExpenseAccounts);
   app.get('/getClassSolde/:account_class/:fiscal_year', accounts.getClassSolde);
-  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', accounts.getTypeSolde);
+  app.get('/getTypeSolde/:fiscal_year/:type_id/:is_charge', accounts.getTypeSolde);
 
 
   app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
@@ -388,7 +411,12 @@ exports.configure = function (app) {
   app.get('/patients/:uuid/groups', patient.groups);
   app.post('/patients/:uuid/groups', patient.updateGroups);
 
-  app.get('/patients/checkHospitalId/:id', patient.verifyHospitalNumber);
+  app.get('/patients/hospital_number/:id/exists', patient.hospitalNumberExists);
+
+  app.get('/patients/:uuid/services', patient.billingServices);
+  app.get('/patients/:uuid/prices', patient.priceLists);
+  app.get('/patients/:uuid/subsidies', patient.subsidies);
+
   app.post('/patients/visit', patient.visit);
 
   // app.get('/patients/search', patient.search);
@@ -562,13 +590,13 @@ exports.configure = function (app) {
   app.get('/creditor_groups', creditorGroups.list);
   app.get('/creditor_groups/:uuid', creditorGroups.detail);
   app.put('/creditor_groups/:uuid', creditorGroups.update);
-	
+
 	/** Donors API */
 	app.get('/donors', donors.list);
 	app.get('/donors/:id', donors.detail);
 	app.post('/donors', donors.create);
 	app.put('/donors/:id', donors.update);
 	app.delete('/donors/:id', donors.remove);
-	
+
 
 };

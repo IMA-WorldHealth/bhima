@@ -128,7 +128,7 @@ api.created = function created(res) {
 api.errored = function errored(res, status) {
   'use strict';
 
-  var keys = [ 'code', 'reason' ];
+  var keys = [ 'code' ];
 
   // make sure the response has the correct HTTP headers
   expect(res).to.have.status(status);
@@ -140,7 +140,6 @@ api.errored = function errored(res, status) {
 
   // ensure the error properties conform to standards
   expect(res.body.code).to.be.a('string');
-  expect(res.body.reason).to.be.a('string');
 };
 
 /**
@@ -233,8 +232,3 @@ api.listed = function listed(res, len) {
   // assert that the length is the expected length.
   expect(res.body).to.have.length(len);
 };
-
-/** The error keys sent back by the API */
-exports.errorKeys = [
-  'code', 'reason'
-];

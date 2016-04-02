@@ -1,303 +1,418 @@
 var bhima = angular.module('bhima', [
-  'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'bhima.components', 'ngRoute',
+  'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'bhima.components', 'ui.router',
   'ui.bootstrap', 'pascalprecht.translate', 'ngStorage', 'chart.js', 'tmh.dynamicLocale',
-  'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'angularMoment', 'ngMessages'
+  'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns', 'angularMoment', 'ngMessages',
+  'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.grouping'
 ]);
 
 
-function bhimaconfig($routeProvider) {
-  // TODO: Dynamic routes loaded from unit database?
+function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider) {
+  // allow trailing slashes in routes
+  $urlMatcherFactoryProvider.strictMode(false);
 
   /* misc routes */
 
-  $routeProvider
-  .when('/', {
+  $stateProvider
+  .state('index', {
+    url : '/',
     controller : 'HomeController as HomeCtrl',
     templateUrl : 'partials/home/home.html'
   })
-  .when('/login', {
+  .state('login', {
+    url : '/login',
     controller : 'LoginController as LoginCtrl',
     templateUrl : 'partials/login/login.html'
   })
-  .when('/permissions', {
+  .state('permissions', {
+    url : '/permissions',
     controller: 'PermissionsController as PermissionsCtrl',
     templateUrl: 'partials/permissions/permissions.html'
   })
-  .when('/enterprises', {
+  .state('enterprises', {
+    url : '/enterprises',
     controller: 'EnterpriseController as EnterpriseCtrl',
     templateUrl: 'partials/enterprises/enterprises.html'
   })
-  .when('/projects', {
+  .state('projects', {
+    url : '/projects',
     controller : 'ProjectController as ProjectCtrl',
     templateUrl : 'partials/projects/projects.html'
   })
-  .when('/fiscal', {
+  .state('fiscal', {
+    url : '/fiscal',
     controller: 'FiscalController as FiscalCtrl',
     templateUrl: 'partials/fiscal/fiscal.html'
   })
-  .when('/exchange', {
+  .state('exchange', {
+    url : '/exchange',
     controller : 'ExchangeRateController as ExchangeCtrl',
     templateUrl: 'partials/exchange/exchange.html'
   })
-  .when('/settings/:route?', {
+  .state('settings', {
+    url : '/settings',
     controller: 'settings as SettingsCtrl',
     templateUrl: 'partials/settings/settings.html'
   })
-  .when('/services', {
+  .state('services', {
+    url : '/services',
     controller : 'ServicesController as ServicesCtrl',
     templateUrl : 'partials/services/services.html'
   })
-  .when('/caution', {
+  .state('caution', {
+    url : '/caution',
     controller : 'CautionController as CautionCtrl',
     templateUrl : 'partials/caution/caution.html'
   })
-  .when('/extra_payment', {
+  .state('extra_payment', {
+    url : '/extra_payment',
     controller : 'ExtraPaymentController as PaymentCtrl',
     templateUrl : 'partials/cash/extra_payment/extra_payment.html'
   })
-  .when('/invoice/:originId/:invoiceId', {
+
+  /**
+   * @fixme - this is to allow end to end testing of the patient invoice module
+   * @todo - replace this with a real receipt.
+   */
+  .state('invoiceMessage', {
+    url : '/invoice/sale/:invoiceId',
+    template: '<div id="temp-success-message">Successfully created a patient invoice!</div>'
+  })
+  .state('invoice', {
+    url : '/invoice/:originId/:invoiceId',
     controller: 'receipts',
     templateUrl: 'partials/receipts/receipts.html'
   })
-  .when('/cash_discard/:receiptId?', {
+  .state('/cash_discard/:receiptId?', {
     controller: 'cashDiscard',
     templateUrl: 'partials/cash/discard/discard.html'
   })
-  .when('/section_bilan', {
-    controller : 'sectionBilan',
+  .state('configBilan', {
+    url: '/section_bilan',
+    controller : 'sectionBilanController as sectionBilanCtrl',
     templateUrl : 'partials/section_bilan/section_bilan.html'
   })
-  .when('/section_resultat', {
-    controller : 'sectionResultat',
+  .state('configResultat', {
+    url : '/section_resultat',
+    controller : 'sectionResultatController as sectionResultatCtrl',
     templateUrl : 'partials/section_resultat/section_resultat.html'
   })
-  .when('/variation_exploitation', {
+  .state('/variation_exploitation', {
     controller : 'variationExploitationController as variationCtrl',
     templateUrl : 'partials/reports_proposed/variation_exploitation/variation_exploitation.html'
   })
-  .when('/group_invoice', {
+  .state('groupInvoice', {
+    url : '/group_invoice',
     controller : 'GroupInvoiceController as InvoiceCtrl',
     templateUrl : 'partials/group_invoice/group_invoice.html'
   })
-  .when('/support/:id?', {
+  .state('support', {
+    url : '/support/:id?',
     controller : 'support',
     templateUrl : 'partials/support/support.html'
   })
-  .when('/accounts', {
-    controller: 'AccountsController',
+  .state('accounts', {
+    url : '/accounts',
+    controller: 'AccountsController as AccountsCtrl',
     templateUrl: 'partials/accounts/accounts.html'
   })
-  .when('/dashboards/finance', {
+  .state('dashboards/finance', {
+    url : '/dashboards/finance',
     templateUrl : 'partials/dashboard/finance.html'
   })
-  .when('/config_accounting', {
+  .state('/config_accounting', {
     controller: 'ConfigAccountingController as ConfigAccountCtrl',
     templateUrl: 'partials/payroll/config_accounting/config_accounting.html'
   })
-  .when('/subsidies', {
+  .state('subsidies', {
+    url : '/subsidies',
     controller : 'SubsidyController as SubsidyCtrl',
     templateUrl : 'partials/subsidies/subsidies.html'
   })
-  .when('/report/invoice/:target', {
+  .state('/report/invoice/:target', {
     controller : 'configureInvoice',
     templateUrl : 'partials/reports_proposed/invoice/invoice.html'
   })
 
   /* Admin : depot management */
-  .when('/depots_management', {
+  .state('/depots_management', {
+    url : '/depots_management',
     controller : 'DepotManagementController as DepotCtrl',
     templateUrl : 'partials/depots_management/depots_management.html'
   })
 
   /* Admin : debtor group management */
-  .when('/debtor_groups', {
+  .state('debtor_groups', {
+    url : '/debtor_groups',
     controller : 'DebtorGroupsController as DebtorGroupCtrl',
     templateUrl : 'partials/debtor_groups/debtor_groups.html'
   })
 
   /* Admin: donors management */
-  .when('/donors', {
+  .state('donors', {
+    url : '/donors'
     controller : 'DonorsController as DonorCtrl',
     templateUrl : 'partials/donors/donors.html'
   })
 
   /* employees routes */
-  .when('/employees', {
+  .state('employees', {
+    url : '/employees',
     controller : 'EmployeeController as EmployeeCtrl',
     templateUrl : 'partials/employees/employees.html'
   })
-  .when('/employees/fonction', {
+  .state('/employees/fonction', {
     controller : 'FonctionController',
     templateUrl : 'partials/employees/fonction/fonction.html'
   })
-  .when('/employees/grades', {
+  .state('/employees/grades', {
     controller : 'EmployeeGradeController',
     templateUrl : 'partials/employees/grades/grades.html'
   })
-  .when('/employees/offdays', {
+  .state('/employees/offdays', {
     controller : 'OffdayController as OffdayCtrl',
     templateUrl : 'partials/employees/offdays/offdays.html'
   })
-  .when('/employees/holidays', {
+  .state('/employees/holidays', {
     controller : 'HolidayController as HolidayCtrl',
     templateUrl : 'partials/employees/holidays/holidays.html'
   })
 
   /* location routes */
 
-  .when('/locations', {
+  .state('/locations', {
+    url : '/locations',
     controller : 'LocationController as LocationCtrl',
     templateUrl: 'partials/locations/locations.html'
   })
-  .when('/locations/village', {
+  .state('locations/village', {
+    url : '/locations/village',
     controller : 'VillageController as VillageCtrl',
     templateUrl: 'partials/locations/village/village.html'
   })
-  .when('/locations/sector', {
+  .state('locations/sector', {
+    url : '/locations/sector',
     controller : 'SectorController as SectorCtrl',
     templateUrl: 'partials/locations/sector/sector.html'
   })
-  .when('/locations/province', {
+  .state('locations/province', {
+    url : '/locations/province',
     controller : 'ProvinceController as ProvinceCtrl',
     templateUrl: 'partials/locations/province/province.html'
   })
-  .when('/locations/country', {
+  .state('locations/country', {
+    url : '/locations/country',
     controller : 'CountryController as CountryCtrl',
     templateUrl: 'partials/locations/country/country.html'
   })
 
+  /**
+   * Billing Services Routes
+   *
+   * The billing services route endpoints.
+   *
+   * @todo - discuss if the "delete" route should be included as a separate
+   * view/state.  It doesn't really need to be deep-linked.
+   */
+  .state('billingServices', {
+    url : '/admin/billing_services/{id:int}',
+    params : {
+      // this is required to match the route when a billing service id is present
+      // or omitted.  See: http://stackoverflow.com/questions/30720672/
+      id : { squash : true, value : null },
+      created : false,  // default for transitioning from child states
+      updated : false,  // default for transitioning from child states
+    },
+    templateUrl : 'partials/billing_services/index.html',
+    controller : 'BillingServicesController as BillingServicesCtrl',
+  })
+    .state('billingServices.create', {
+      onEnter : ['$state', '$uibModal', function ($state, Modal) {
+        Modal.open({
+          templateUrl : 'partials/billing_services/modal.html',
+          controller : 'BillingServicesCreateController as BillingServicesFormCtrl',
+        }).result.then(function (id) {
+          // go to the parent state (with refresh)
+          $state.go('^', { id : id, created : true }, { reload : true });
+        })
+        .catch(function () {
+          $state.go('^', { id : $state.params.id }, { notify: false });
+        });
+      }]
+    })
+    .state('billingServices.update', {
+      url: '/update',
+      onEnter : ['$state', '$uibModal', function ($state, Modal) {
+        Modal.open({
+          templateUrl : 'partials/billing_services/modal.html',
+          controller : 'BillingServicesUpdateController as BillingServicesFormCtrl',
+        }).result.then(function (id) {
+          // go to the parent state (with refresh)
+          $state.go('^', { id : id, updated: true }, { reload : true });
+        })
+        .catch(function () {
+          $state.go('^', { id : $state.params.id }, { notify: false });
+        });
+      }]
+    })
+    .state('billingServices.delete', {
+      url: '/delete',
+      onEnter : ['$state', '$uibModal', function ($state, Modal) {
+        Modal.open({
+          animation : false,
+          keyboard : true,
+          size : 'md',
+          controller : 'BillingServicesDeleteController as ConfirmModalCtrl',
+          templateUrl : '/partials/templates/modals/confirm.modal.html'
+        }).result.then(function () {
+          // go to the parent state (with refresh)
+          $state.go('^', { id: null }, { reload : true });
+        })
+        .catch(function () {
+          $state.go('^', { id : $state.params.id }, { notify: false });
+        });
+      }]
+    })
+
   /* budget routes */
 
-  .when('/budgets/create', {
+  .state('/budgets/create', {
     controller: 'NewBudgetController as BudgetCtrl',
     templateUrl: 'partials/budget/create/create.html'
   })
-  .when('/budgets/update', {
+  .state('/budgets/update', {
     controller: 'editAccountBudget',
     templateUrl: 'partials/budget/update/update.html'
   })
-  .when('/budgets/analysis', {
+  .state('/budgets/analysis', {
     controller: 'AnalysisBudgetController as BudgetCtrl',
     templateUrl: 'partials/budget/analysis/analysis.html'
   })
-  .when('/budgets/:accountID?', {
+  .state('/budgets/:accountID?', {
     controller: 'budget',
     templateUrl: 'partials/budget/budget.html'
   })
 
   /* journal routes */
 
-  .when('/journal', {
+  .state('/journal', {
     controller: 'journal.grid',
     templateUrl:'partials/journal/journal.html'
   })
-  .when('/journal/print', {
+  .state('/journal/print', {
     controller : 'journal.print',
     templateUrl : 'partials/journal/print.html'
   })
-  .when('/journal/voucher', {
+  .state('/journal/voucher', {
     controller: 'JournalVoucherController as JournalVoucherCtrl',
     templateUrl: 'partials/journal/voucher/voucher.html'
+  })
+  .state('simpleVouchers', {
+    url : '/vouchers/simple',
+    controller: 'SimpleJournalVoucherController as SimpleVoucherCtrl',
+    templateUrl: 'partials/vouchers/simple.html'
+  })
+
+  /* 2.X Journal routes */
+  .state('journal', {
+    url : '/journal',
+    controller : 'JournalController as JournalCtrl',
+    templateUrl : 'partials/2.X-journal/journal.html'
   })
 
   /* debtors routes */
 
-  .when('/debtors/groups', {
+  .state('debtors/groups', {
+    url : '/debtors/groups',
     controller : 'DebtorGroupController as GroupCtrl',
     templateUrl: 'partials/debtors/groups.html'
   })
 
   /* references routes */
 
-  .when('/references', {
+  .state('references', {
+    url : '/references',
     controller: 'ReferenceController',
     templateUrl: 'partials/references/references.html'
   })
-  .when('/references/groups', {
-    controller: 'ReferenceGroupController',
+  .state('referenceGroups', {
+    url : '/references/groups',
+    controller: 'ReferenceGroupController as ReferenceGroupCtrl',
     templateUrl: 'partials/references/groups/groups.html'
   })
 
   /* inventory routes */
 
-  .when('/inventory', {
+  .state('/inventory', {
     controller: 'inventory',
     templateUrl: '/partials/inventory/inventory.html'
   })
-  .when('/inventory/view', {
+  .state('/inventory/view', {
     controller : 'inventoryView',
     templateUrl:'/partials/inventory/view/view.html'
   })
-  .when('/inventory/register', {
+  .state('/inventory/register', {
     controller: 'InventoryRegisterController',
     templateUrl: '/partials/inventory/register/register.html'
   })
-  .when('/inventory/update', {
+  .state('/inventory/update', {
     controller : 'InventoryUpdateController',
     templateUrl : 'partials/inventory/update_item/update_item.html'
   })
-  .when('/inventory/groups', {
+  .state('/inventory/groups', {
     controller : 'inventory.groups',
     templateUrl : 'partials/inventory/groups/groups.html'
   })
-  .when('/inventory/types',  {
+  .state('/inventory/types',  {
     controller : 'InventoryTypeController',
     templateUrl : 'partials/inventory/types/types.html'
   })
-  .when('/inventory/manifest', {
+  .state('/inventory/manifest', {
     controller : 'inventory.manifest',
     templateUrl : 'partials/inventory/manifest/manifest.html'
   })
-  .when('/inventory/depot', {
+  .state('/inventory/depot', {
     controller : 'inventory.depot',
     templateUrl : 'partials/inventory/depot/depot.html'
   })
-  .when('/prices', {
+  .state('prices', {
+    url : '/prices',
     controller: 'PriceListController as PriceListCtrl',
     templateUrl: 'partials/price_list/pricelist.html'
   })
-  .when('/inventory/distribution/:depotId?', {
+  .state('/inventory/distribution/:depotId?', {
     controller : 'InventoryDistributionController',
     templateUrl : 'partials/inventory/distribution/distribution.html'
   })
 
   /* sales routes */
-
-  .when('/sales', {
+  .state('sales', {
+    url : '/sales',
     controller: 'sales',
     templateUrl: '/partials/sales/sales.html'
-  })
-  .when('/sales/records/:recordID?', {
-    controller: 'salesRecords',
-    templateUrl: '/partials/records/sales_records/sales_records.html'
-  })
-  .when('/credit_note/:invoiceId?', {
-    controller: 'CreditNoteController as NoteCtrl',
-    templateUrl: 'partials/sales/credit_note/credit_note.html'
   })
 
   /* cash routes */
 
-  .when('/cash', {
+  .state('/cash', {
+    url : '/cash',
     controller: 'CashboxSelectController as CashboxSelectCtrl',
     templateUrl: '/partials/cash/cashboxSelect.html'
   })
-  .when('/cash/:id', {
+  .state('/cash/:id', {
+    url : '/cash/:id',
     controller: 'CashController as CashCtrl',
     templateUrl: '/partials/cash/cash.html'
-  })
-  .when('/cash/records/:recordID?', {
-    controller: 'auxillaryRecords',
-    templateUrl: '/partials/records/auxillary_cash_records/auxillary_cash_records.html'
   })
 
   /* creditor routes */
 
-  .when('/creditors', {
-    controller: 'SupplierController',
+  .state('creditors', {
+    url : '/creditors',
+    controller: 'SupplierController as SupplierCtrl',
     templateUrl: '/partials/creditors/creditors.html'
   })
-  .when('/creditors/groups', {
+  .state('creditors/groups', {
+    url : '/creditors/groups',
     controller: 'CreditorGroupController',
     templateUrl: 'partials/creditors/groups/groups.html'
   })
@@ -305,531 +420,473 @@ function bhimaconfig($routeProvider) {
   /* purchase routes */
 
 
-  .when('/purchases', {
+  .state('purchases', {
+    url : '/purchases',
     controller : 'PurchaseController',
     templateUrl : 'partials/purchases/purchases.html'
   })
-  .when('/purchases/create', {
+  .state('/purchases/create', {
     controller: 'CreatePurchaseOrderController',
     templateUrl: 'partials/purchases/create/purchase.html'
   })
-  .when('/purchases/view', {
+  .state('/purchases/view', {
     controller: 'purchaseRecords as purchaseRecordsCtrl',
     templateUrl: 'partials/purchases/view/purchase_records.html'
   })
-  .when('/purchases/view/:option', {
+  .state('/purchases/view/:option', {
     controller: 'purchase_view',
     templateUrl: 'partials/purchases/view/purchase_view.html'
   })
-  .when('/purchases/confirm', {
+  .state('/purchases/confirm', {
     controller: 'PurchaseConfirm as purchaseConfirmCtrl',
     templateUrl: 'partials/purchases/confirm/confirm.html'
   })
-  .when('/purchases/validate', {
+  .state('/purchases/validate', {
     controller: 'purchaseValidate',
     templateUrl: 'partials/purchases/validate/validate.html'
   })
-  .when('/purchases/authorization', {
+  .state('/purchases/authorization', {
     controller: 'purchaseAuthorization',
     templateUrl: 'partials/purchases/authorization/authorization.html'
   })
 
   /* cost center routes */
 
-  .when('/cost_center', {
+  .state('/cost_center', {
     controller: 'CostCenterController as CenterCtrl',
     templateUrl: 'partials/cost_center/cost_center.html'
   })
-  .when('/cost_center/center', {
+  .state('/cost_center/center', {
     controller: 'AnalysisCostCenterController as CenterCtrl',
     templateUrl: 'partials/cost_center/center/analysis_center.html'
   })
-  .when('/cost_center/assigning', {
+  .state('/cost_center/assigning', {
     controller: 'CostCenterAssignmentController',
     templateUrl: 'partials/cost_center/assigning/assigning.html'
   })
-  .when('/cost_center/allocation', {
+  .state('/cost_center/allocation', {
     controller: 'CostCenterAllocationController as CenterCtrl',
     templateUrl: 'partials/cost_center/allocation/allocation.html'
   })
 
   /* profit center routes */
 
-  .when('/profit_center', {
+  .state('/profit_center', {
     controller: 'ProfitCenterController as CenterCtrl',
     templateUrl: 'partials/profit_center/profit_center.html'
   })
-  .when('/profit_center/center', {
+  .state('/profit_center/center', {
     controller: 'AnalysisProfitCenterController as CenterCtrl',
     templateUrl: 'partials/profit_center/center/analysis.html'
   })
-  .when('/profit_center/allocation', {
+  .state('/profit_center/allocation', {
     controller: 'ProfitCenterAllocationController as ProfitCtrl',
     templateUrl: 'partials/profit_center/allocation/allocation.html'
   })
 
   /* patients routes */
 
-  .when('/patients/register', {
+  .state('patients/register', {
+    url : '/patients/register',
     controller: 'PatientRegistrationController as PatientRegCtrl',
     templateUrl: 'partials/patients/registration/registration.html'
   })
 
   /* Patient Edit */
-  .when('/patients/edit/', {
+  .state('patients/edit/', {
+    url  : '/patients/edit',
     controller  : 'PatientEditFind as PatientEditFindCtrl',
     templateUrl : 'partials/patients/edit/find.html'
   })
-  .when('/patients/edit/:patientID', {
+  .state('patients/edit/:patientID', {
+    url : '/patients/edit/:patientID',
     controller: 'PatientEdit as PatientEditCtrl',
     templateUrl: 'partials/patients/edit/edit.html'
   })
 
-  /* */
-  .when('/patients/search/:patientID?', {
+  /* Patient Invoicing */
+
+  .state('patientInvoice', {
+    url : '/invoices/patient',
+    controller : 'PatientInvoiceController as PatientInvoiceCtrl',
+    templateUrl : 'partials/patient_invoice/patientInvoice.html'
+  })
+
+  .state('/patients/search/:patientID?', {
     controller: 'patientRecords',
     templateUrl: '/partials/patients/search/search.html'
   })
-  .when('/patients/groups', {
+  .state('/patients/groups', {
     controller: 'patientGroup',
     templateUrl: 'partials/patients/groups/groups.html'
   })
-  .when('/patients/groups/assignment', {
+  .state('/patients/groups/assignment', {
     controller: 'AssignPatientGroupController',
     templateUrl: 'partials/patients/groups/assignment.html'
   })
-  .when('/patients/debtor', {
+  .state('/patients/debtor', {
     controller : 'group.debtor.reassignment',
     templateUrl : 'partials/patients/debtor/swap.html'
   })
-
-  /* primary cash routes */
-
-  .when('/trialbalance/print', {
+  .state('/trialbalance/print', {
     controller : 'TrialBalancePrintController as PrintCtrl',
     templateUrl : 'partials/journal/trialbalance/print.html'
   })
 
-  /* primary cash routes */
-
-  .when('/primary_cash', {
-    controller : 'PrimaryCashController as PrimaryCtrl',
-    templateUrl : 'partials/primary_cash/primary.html'
-  })
-  .when('/primary_cash/:cashbox_id/transfer', {
-    controller : 'PrimaryCashIncomeTransferController as TransferCtrl',
-    templateUrl : 'partials/primary_cash/income/transfer/transfer.html'
-  })
-   .when('/primary_cash/:cashbox_id/convention', {
-    controller : 'PrimaryCashConventionController as ConventionCtrl',
-    templateUrl : 'partials/primary_cash/income/convention/convention.html'
-  })
-   .when('/primary_cash/:cashbox_id/support', {
-    controller : 'PrimaryCashSupportController as SupportCtrl',
-    templateUrl : 'partials/primary_cash/income/support/support.html'
-  })
-  .when('/primary_cash/:id/income/generic', {
-    controller : 'PrimaryCashIncomeGenericController as GenericIncomeCtrl',
-    templateUrl : 'partials/primary_cash/income/generic/generic.html'
-  })
-  .when('/primary_cash/:id/expense/generic', {
-    controller : 'PrimaryCashExpenseGenericController as GenericExpenseCtrl',
-    templateUrl: 'partials/primary_cash/expense/generic.html'
-  })
-  .when('/primary_cash/:cashbox/expense/purchase', {
-    controller : 'PurchaseOrderCashController as PurchaseCtrl',
-    templateUrl : 'partials/primary_cash/expense/purchase.html'
-  })
-  .when('/primary_cash/:cashbox/expense/payroll', {
-    controller : 'payroll',
-    templateUrl : 'partials/primary_cash/expense/payroll.html'
-  })
-  .when('/primary_cash/:cashbox/expense/refund', {
-    controller : 'PrimaryCashReturnController as ReturnCtrl',
-    templateUrl : 'partials/primary_cash/expense/cash_return.html'
-  })
-  .when('/primary_cash/expense/multi_payroll', {
-    controller : 'MultiPayrollController as PayrollCtrl',
-    templateUrl : 'partials/primary_cash/expense/multi_payroll.html'
-  })
-  .when('/primary_cash/:cashbox/expense/tax_payment', {
-    controller : 'primary_cash.tax_payment',
-    templateUrl : 'partials/primary_cash/expense/tax_payment.html'
-  })
-  .when('/primary_cash/:cashbox/expense/enterprise_tax_payment', {
-    controller : 'primary_cash.enterprise_tax_payment',
-    templateUrl : 'partials/primary_cash/expense/enterprise_tax_payment.html'
-  })
-  .when('/primary_cash/:cashbox/expense/cotisation_payment', {
-    controller : 'primary_cash.cotisation_payment',
-    templateUrl : 'partials/primary_cash/expense/cotisation_payment.html'
-  })
-  .when('/primary_cash/:cashbox/expense/salary_payment', {
-    controller : 'primary_cash.salary_payment',
-    templateUrl : 'partials/primary_cash/expense/salary_payment.html'
-  })
-  .when('/primary_cash/:cashbox/expense/partial_payment', {
-    controller : 'primary_cash.partial_payment',
-    templateUrl : 'partials/primary_cash/expense/partial_payment.html'
-  })
-  .when('/primary_cash/:cashbox/expense/payday_advance', {
-    controller : 'primary_cash.payday_advance',
-    templateUrl : 'partials/primary_cash/expense/payday_advance.html'
-  })
-
   /* depot routes */
-
-  .when('/depots', {
+  .state('depots', {
+    url : '/depots',
     controller : 'DepotController as DepotCtrl',
     templateUrl : 'partials/depots/depots.html'
   })
-  .when('/depots/:depotId/entry', {
+  .state('/depots/:depotId/entry', {
     controller : 'DepotEntryController',
     templateUrl : 'partials/depots/entry/entry.html'
   })
-  .when('/depots/:depotId/losses', {
+  .state('/depots/:depotId/losses', {
     controller : 'DepotLossController as LossCtrl',
     templateUrl : 'partials/depots/loss/loss.html'
   })
-  .when('/depots/:depotId/movements', {
+  .state('/depots/:depotId/movements', {
     controller : 'StockMovementController as MovementCtrl',
     templateUrl : 'partials/depots/movement/movement.html'
   })
-  .when('/depots/:depotId/distributions/patients', {
+  .state('/depots/:depotId/distributions/patients', {
     controller : 'StockDistributionsController as StockDistributionsCtrl',
     templateUrl : 'partials/depots/distributions/patients/patients.html'
   })
-  .when('/depots/:depotId/distributions/services', {
+  .state('/depots/:depotId/distributions/services', {
     controller : 'StockServiceDistributionsController as DistributionsCtrl',
     templateUrl : 'partials/depots/distributions/services/services.html'
   })
-  .when('/depots/:depotId/distributions/:consumptionId/cancel', {
+  .state('/depots/:depotId/distributions/:consumptionId/cancel', {
     controller : 'DepotDistributionsCancelController as CancelCtrl',
     templateUrl : 'partials/depots/distributions/cancel/cancel.html'
   })
-  .when('/depots/:depotId/integrations', {
+  .state('/depots/:depotId/integrations', {
     controller : 'stockIntegration as integrationCtrl',
     templateUrl : 'partials/stock/integration/integration.html'
   })
-  .when('/depots/:uuid/search', {
+  .state('/depots/:uuid/search', {
     controller : 'DepotStockSearchController',
     templateUrl: 'partials/depots/stock_search/search.html'
   })
-  .when('/depots/:depotId/reports/distributions/:type', {
+  .state('/depots/:depotId/reports/distributions/:type', {
     controller : 'DepotStockDistributionsController as DistributionsCtrl',
     templateUrl : 'partials/depots/reports/distributions/distributions.html'
   })
-  .when('/stock/entry/report/:documentId?', {
+  .state('/stock/entry/report/:documentId?', {
     controller : 'stock.entry.report',
     templateUrl : 'partials/stock/entry/report.html'
   })
 
   // TODO -- these should probably have an /inventory/ or /depot/ prefix
-  .when('/stock/count', {
+  .state('/stock/count', {
     controller : 'stock.count',
     templateUrl : 'partials/stock/count/count.html'
   })
-  .when('/stock/expiring/:depotId', {
+  .state('/stock/expiring/:depotId', {
     controller : 'stock.expiring',
     templateUrl : 'partials/stock/expiring/expiring.html'
   })
 
   /* donation routes */
-  .when('/donations/:depotId?', {
+  .state('/donations/:depotId?', {
     controller : 'DonationManagementController as DonationCtrl',
     templateUrl : 'partials/donations/donations.html'
   })
-  .when('/donations/confirm', {
+  .state('/donations/confirm', {
     controller : 'ConfirmDonationController as ConfirmCtrl',
     templateUrl : 'partials/donations/confirm/confirm.html'
   })
-  .when('/donations/report/:documentId', {
+  .state('/donations/report/:documentId', {
     controller : 'ReportDonationsController',
     templateUrl : 'partials/donations/report.html'
   })
 
   // TODO -- these should be namespaced/prefixed by depot
-  .when('/stock/dashboard', {
+  .state('/stock/dashboard', {
     controller : 'StockDashboardController as StockDashCtrl',
     templateUrl : 'partials/stock/dashboard/dashboard.html'
   })
-  .when('/stock/integration_confirm', {
+  .state('/stock/integration_confirm', {
     controller : 'ConfirmStockIntegrationController as ConfirmCtrl',
     templateUrl : 'partials/stock/integration/confirm_integration/confirm_integration.html'
   })
 
   /* snis routes */
 
-  .when('/snis', {
+  .state('/snis', {
     controller : 'SnisController',
     templateUrl : 'partials/snis/snis.html'
   })
-  .when('/snis/create', {
+  .state('/snis/create', {
     controller : 'SnisCreateController',
     templateUrl : 'partials/snis/create/create.html'
   })
-  .when('/snis/update/:id', {
+  .state('/snis/update/:id', {
     controller : 'SnisUpdateController',
     templateUrl : 'partials/snis/update/update.html'
   })
 
   /* tax routes */
 
-  .when('/taxes', {
+  .state('/taxes', {
     controller : 'TaxesController',
     templateUrl : 'partials/taxes/taxes.html'
   })
-  .when('/taxes/create', {
+  .state('/taxes/create', {
     controller : 'CreateTaxController',
     templateUrl : 'partials/taxes/create/create.html'
   })
-  .when('/taxes/ipr', {
+  .state('/taxes/ipr', {
     controller : 'taxes_management.ipr',
     templateUrl : 'partials/taxes/ipr/ipr.html'
   })
-  .when('/taxes/config_tax', {
+  .state('/taxes/config_tax', {
     controller : 'config_tax',
     templateUrl : 'partials/taxes/config/config.html'
   })
 
   /* cotisations management */
 
-  .when('/cotisations_management', {
+  .state('/cotisations_management', {
     controller : 'cotisations_management.menu',
     templateUrl : 'partials/cotisation/cotisation_management.html'
   })
-  .when('/cotisations_management/create', {
+  .state('/cotisations_management/create', {
     controller : 'cotisations_management.create',
     templateUrl : 'partials/cotisation/create/create_cotisation.html'
   })
-  .when('/cotisations_management/config_cotisation', {
+  .state('/cotisations_management/config_cotisation', {
     controller : 'config_cotisation',
     templateUrl : 'partials/cotisation/config_cotisation/config_cotisation.html'
   })
-
-  .when('/payment_period', {
+  .state('/payment_period', {
     controller : 'PaymentPeriodController',
     templateUrl : 'partials/payroll/payment_period/payment_period.html'
   })
-
-  .when('/rubric_management', {
+  .state('/rubric_management', {
     controller : 'rubric_management.menu',
     templateUrl : 'partials/payroll/rubrics/rubrics.html'
   })
-  .when('/rubric_management/config_rubric', {
+  .state('/rubric_management/config_rubric', {
     controller : 'config_rubric',
     templateUrl : 'partials/payroll/rubrics/config_rubric/config_rubric.html'
   })
-  .when('/rubric_management/rubriques_payroll', {
+  .state('/rubric_management/rubriques_payroll', {
     controller : 'RubriquePayrollController as RubriqueCtrl',
     templateUrl : 'partials/payroll/rubrics/rubriques_payroll/rubriques_payroll.html'
   })
 
   /* cashbox routes */
-  .when('/cashboxes', {
+  .state('cashboxes', {
+    url : '/cashboxes',
     controller : 'CashboxController as CashCtrl',
     templateUrl : 'partials/cash/cashboxes/cashboxes.html'
   })
-  .when('/cashboxes/:uuid/currencies', {
+  .state('cashboxes.currencies', {
+    url : '/cashboxes/:uuid/currencies',
     controller : 'cash.cashbox_account',
     templateUrl : 'partials/cash/cashboxes/currencies/currencies.html'
   })
 
   /* reports routes */
 
-  .when('/reports/daily_consumption', {
+  .state('/reports/daily_consumption', {
     controller : 'ReportDailyConsumptionController as ReportCtrl',
     templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
   })
-  .when('/reports/distributions', {
+  .state('/reports/distributions', {
     controller : 'ReportDepotDistributionsController as ReportCtrl',
     templateUrl : 'partials/reports/distributions/distributions.html'
   })
-  .when('/reports/finance', {
+  .state('/reports/finance', {
     controller: 'reportFinance',
     templateUrl: 'partials/reports/finance/finance_report.html'
   })
-  .when('/reports/patient_registrations', {
+  .state('/reports/patient_registrations', {
     controller : 'reportPatientRegistrations',
     templateUrl : 'partials/reports/patient_registrations/patient_registrations.html'
   })
-  .when('/reports/cash_payments', {
+  .state('/reports/cash_payments', {
     controller: 'reportCashPayments',
     templateUrl: 'partials/reports/cash_payments/cash_payments.html'
   })
-  .when('/reports/summary', {
+  .state('/reports/summary', {
     controller: 'summary',
     templateUrl: 'partials/reports/summary/summary.html'
   })
-  .when('/reports/patient_group/:uuid', {
+  .state('/reports/patient_group/:uuid', {
     controller : 'report.patientGroup',
     templateUrl : 'partials/reports/patient_group/patient_group.html'
   })
-  .when('/reports/prices', {
+  .state('/reports/prices', {
     controller : 'report.prices',
     templateUrl : 'partials/reports/prices/prices.html'
   })
-  .when('/reports/transactions/account', {
+  .state('/reports/transactions/account', {
     controller : 'report.transactions.account',
     templateUrl : 'partials/reports/transactions/account.html'
   })
-  .when('/reports/transaction_report', {
+  .state('/reports/transaction_report', {
     controller: 'reportTransaction',
     templateUrl: 'partials/reports/transaction_report/transaction_report.html'
   })
-  .when('/reports/patient_standing', {
+  .state('/reports/patient_standing', {
     controller : 'reportPatientStanding',
     templateUrl : '/partials/reports/patient_standing/patient_standing.html'
   })
-  .when('/reports/employee_standing', {
+  .state('/reports/employee_standing', {
     controller : 'reportEmployeeStanding',
     templateUrl : '/partials/reports/employee_standing/employee_standing.html'
   })
-  .when('/reports/ledger/general_ledger', {
+  .state('/reports/ledger/general_ledger', {
     controller: 'reportGeneralLedger',
     templateUrl: '/partials/reports/ledger/general_ledger.html'
   })
-  .when('/reports/payroll_report', {
+  .state('/reports/payroll_report', {
     controller : 'payroll_report',
     templateUrl : 'partials/reports/payroll_report/payroll_report.html'
   })
-  .when('/reports/operating_account', {
+  .state('/reports/operating_account', {
     controller : 'OperatingAccountController as OperatingCtrl',
     templateUrl : 'partials/reports/operating_account/operating_account.html'
   })
-  .when('/reports/debtor_aging', {
+  .state('/reports/debtor_aging', {
     controller: 'reportDebitorAging',
     templateUrl: 'partials/reports/debtor_aging/debtor_aging.html'
   })
-  .when('/reports/account_statement/:id?', {
+  .state('/reports/account_statement/:id?', {
     controller: 'accountStatement',
     templateUrl: 'partials/reports/account_statement/account_statement.html'
   })
-  .when('/reports/income_expensive', {
+  .state('/reports/income_expensive', {
     controller: 'reportIncomeExpensive',
     templateUrl: 'partials/reports/income_expensive/income_expensive.html'
   })
-  .when('/reports/service_exploitation', {
+  .state('/reports/service_exploitation', {
     controller: 'report.service_exploitation',
     templateUrl: 'partials/reports/service_exploitation/service_exploitation.html'
   })
-  .when('/reports/global_transaction', {
+  .state('/reports/global_transaction', {
     controller: 'ReportGlobalTransactionController as ReportCtrl',
     templateUrl: 'partials/reports/global_transaction/global_transaction.html'
   })
-  .when('/reports/balance_mensuelle', {
+  .state('/reports/balance_mensuelle', {
     controller: 'ReportBalanceMensuelleController as ReportCtrl',
     templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
   })
-  .when('/reports/donation', {
+  .state('/reports/donation', {
     controller: 'ReportDonationController as ReportCtrl',
     templateUrl: 'partials/reports/donation/donation.html'
   })
-  .when('/reports/chart_of_accounts', {
+  .state('/reports/chart_of_accounts', {
     controller: 'ReportChartOfAccountsController',
     templateUrl: 'partials/reports/chart_of_accounts/chart.html'
   })
-  .when('/reports/all_transactions', {
+  .state('/reports/all_transactions', {
     controller : 'allTransactions',
     templateUrl : 'partials/reports/all_transactions/all_transactions.html'
   })
-  .when('/reports/expiring', {
+  .state('/reports/expiring', {
     controller : 'ReportStockExpirationsController as ReportCtrl',
     templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
   })
-  .when('/reports/stock_store/:depotId', {
+  .state('/reports/stock_store/:depotId', {
     controller : 'stock_store',
     templateUrl : 'partials/reports/stock_store/stock_store.html'
   })
-  .when('/reports/purchase_order', {
+  .state('/reports/purchase_order', {
     controller : 'purchase_order',
     templateUrl : 'partials/reports/purchase_order/purchase_order.html'
   })
-  .when('/reports/donation_confirmation', {
+  .state('/reports/donation_confirmation', {
     controller : 'donation_confirmation',
     templateUrl : 'partials/reports/donation_confirmation/donation_confirmation.html'
   })
-  .when('/reports/stock_integration', {
+  .state('/reports/stock_integration', {
     controller : 'ReportStockIntegrationController as ReportCtrl',
     templateUrl : 'partials/reports/stock_integration/stock_integration.html'
   })
-  .when('/reports/stock_movement', {
+  .state('/reports/stock_movement', {
     controller : 'stock_movement',
     templateUrl : 'partials/reports/stock_movement/stock_movement.html'
   })
-  .when('/reports/bilan', {
+  .state('/reports/bilan', {
     controller : 'configureBilan',
     templateUrl : 'partials/reports_proposed/bilan/bilan.html'
   })
-  .when('/reports/debitor_group_report', {
+  .state('/reports/debitor_group_report', {
     controller : 'DebtorGroupReportController as debtorGroupReportCtrl',
     templateUrl : 'partials/reports_proposed/debitor_group_report/debitor_group_report.html'
   })
-  .when('/reports/result_account', {
+  .state('/reports/result_account', {
     controller : 'configureResult',
     templateUrl : 'partials/reports_proposed/result_account/result_account.html'
   })
-  .when('/reports/balance', {
+  .state('/reports/balance', {
     controller : 'configureBalance',
     templateUrl : 'partials/reports_proposed/balance/balance.html'
   })
-  .when('/reports/debtorgroup/annual', {
+  .state('/reports/debtorgroup/annual', {
     controller : 'DebtorGroupAnnualReportController as AnnualCtrl',
     templateUrl : 'partials/reports_proposed/debtor_group/annual.html'
   })
-  .when('/reports/grand_livre', {
+  .state('/reports/grand_livre', {
     controller : 'configureGrandLivre',
     templateUrl : 'partials/reports_proposed/grand_livre/grand_livre.html'
   })
-  .when('/reports/employee_state', {
+  .state('/reports/employee_state', {
     controller : 'configureEmployeeState',
     templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
   })
-  .when('/reports/cotisation_payment', {
+  .state('/reports/cotisation_payment', {
     controller : 'cotisation_payment',
     templateUrl : 'partials/reports/cotisation_payment/cotisation_payment.html'
   })
-  .when('/reports/salary_payment', {
+  .state('/reports/salary_payment', {
     controller : 'salary_payment',
     templateUrl : 'partials/reports/salary_payment/salary_payment.html'
   })
-  .when('/reports/taxes_payment', {
+  .state('/reports/taxes_payment', {
     controller : 'taxes_payment',
     templateUrl : 'partials/reports/taxes_payment/taxes_payment.html'
   })
-  .when('/reports/stock_status', {
+  .state('/reports/stock_status', {
     controller : 'StockStatusReportController as StatusCtrl',
     templateUrl : 'partials/reports/stock_status/stock_status.html'
   })
-  .when('/reports/loss_record', {
+  .state('/reports/loss_record', {
     controller : 'loss_record',
     templateUrl : 'partials/reports/loss_record/loss_record.html'
   })
-  .when('/reports/income_report', {
+  .state('/reports/income_report', {
     controller : 'primary_cash.incomeReport',
     templateUrl : 'partials/reports/primary_cash/income/income_report.html'
   })
-  .when('/reports/expense_report', {
+  .state('/reports/expense_report', {
     controller : 'primary_cash.expenseReport',
     templateUrl : 'partials/reports/primary_cash/expense/expense_report.html'
   })
-  .when('/reports/cash_flow/', {
+  .state('/reports/cash_flow/', {
     controller : 'cashFlowReportController as ReportCtrl',
     templateUrl : 'partials/reports/cash_flow/cash_flow.html'
   })
-  .when('/reports/stock_report', {
+  .state('/reports/stock_report', {
     controller : 'stock_report',
     templateUrl : 'partials/reports/stock/stock_report.html'
   })
-  .when('/reports/patient_visit_status', {
+  .state('/reports/patient_visit_status', {
     controller : 'ReportPatientVisitStatus',
     templateUrl : '/partials/reports/patient_visit_status/patient_visit_status.html'
   })
-  .when('/reports/stock_entry', {
+  .state('/reports/stock_entry', {
     controller : 'ReportStockEntryController',
     templateUrl : 'partials/reports/stock/stock_entry/stock_entry.html'
-  })
-  .otherwise({ redirectTo : '/' });
+  });
+
+  $urlRouterProvider.otherwise('/');
 }
 
 function translateConfig($translateProvider) {
@@ -861,11 +918,14 @@ function authConfig($httpProvider) {
 
 // Redirect to login if not signed in.
 function startupConfig($rootScope, $location, SessionService, amMoment) {
-  $rootScope.$on('$routeChangeStart', function (event, next) {
+  $rootScope.$on('$stateChangeStart', function (event, next) {
     if (!SessionService.user) {
       $location.url('/login');
     }
   });
+
+  // make sure $stateChangeErrors are emitted to the console.
+  $rootScope.$on('$stateChangeError', console.log.bind(console));
 
   // TODO Hardcoded default translation/ localisation
   amMoment.changeLocale('fr');
@@ -877,12 +937,26 @@ function localStorageConfig($localStorageProvider) {
   $localStorageProvider.setKeyPrefix(PREFIX);
 }
 
+/**
+ * This function is responsible for configuring anulgar's $http service. Any
+ * relevent services/ factories are registered at this point.
+ *
+ * @params {Object} $httpProvider   Angular provider bject containing
+ *                                  'interceptors' that are chained on any HTTP request
+ */
+function httpConfig($httpProvider) {
+
+  // register error handling interceptor
+  $httpProvider.interceptors.push('ErrorInterceptor');
+}
+
 // configuration
-bhima.config(['$routeProvider', bhimaconfig]);
+bhima.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$httpProvider', authConfig]);
 bhima.config(['$localStorageProvider', localStorageConfig]);
+bhima.config(['$httpProvider', httpConfig]);
 
 // run
 bhima.run(['$rootScope', '$location', 'SessionService', 'amMoment', startupConfig]);

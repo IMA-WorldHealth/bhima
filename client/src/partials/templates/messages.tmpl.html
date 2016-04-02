@@ -1,11 +1,20 @@
+<!-- displays "There was a problem validating this field. Please check your internet connection." -->
+<p ng-message="exception">{{ "VALIDATION.EXCEPTION" | translate }}</p>
+
+<!-- displays "This field cannot be empty." -->
+<p ng-message="required">{{ "VALIDATION.REQUIRED" | translate }}</p>
+
+<!-- displays "This value must be a whole number (integer)." -->
+<p ng-message="integer">{{ "VALIDATION.INTEGER" | translate }}</p>
+
+<!-- displays "This field must be unique. This value is already taken. -->
+<p ng-message="unique">{{ "VALIDATION.UNIQUE" | translate }}</p>
+
 <!-- displays "This value is too small for this field." -->
 <p ng-message="min">{{ "VALIDATION.MIN" | translate }}</p>
 
 <!-- displays "This value is too large for this field." -->
 <p ng-message="max">{{ "VALIDATION.MAX" | translate }}</p>
-
-<!-- displays "This field cannot be empty." -->
-<p ng-message="required">{{ "VALIDATION.REQUIRED" | translate }}</p>
 
 <!-- displays "This field must be a valid email." -->
 <p ng-message="email">{{ "VALIDATION.EMAIL" | translate }}</p>

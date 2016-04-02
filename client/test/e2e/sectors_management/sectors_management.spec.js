@@ -1,16 +1,14 @@
-/* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
 
 var FU = require('../shared/FormUtils');
 var helpers = require('../shared/helpers');
-var components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Locations /Sectors Management', function () {
+describe('Locations /sectors Management', function () {
   'use strict';
 
   var path = '#/locations/sector';
@@ -21,24 +19,24 @@ describe('Locations /Sectors Management', function () {
 
   var locations = {
     country : 'République Démocratique du Congo',
-    province : 'BANDUNDU' 
+    province : 'BANDUNDU'
   };
 
   var locationsUpdate = {
     country : 'République Démocratique du Congo',
-    province : 'Bas Congo' 
+    province : 'Bas Congo'
   };
 
   var defaultSector   = 209;
 
-  var sectorRank    = helpers.random(defaultSector);
+  var sectorRank    = 1;
 
   // navigate to the employee module before each test
   beforeEach(function () {
     browser.get(path);
   });
 
-  it('successfully creates a new Sector', function () {   
+  it('successfully creates a new Sector', function () {
     // swtich to the create form
     FU.buttons.create();
 
@@ -50,7 +48,7 @@ describe('Locations /Sectors Management', function () {
 
     // Set the Sector Name
     FU.input('SectorCtrl.sector.name', sector.name);
-  
+
     // submit the page to the server
     FU.buttons.submit();
 

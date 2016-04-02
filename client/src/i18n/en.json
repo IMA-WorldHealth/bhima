@@ -36,16 +36,20 @@
    "IS_PASSIVE"       : "Is passive",
    "IS_PROFIT"        : "Is profit?",
    "IS_USED_BUDGET"   : "Is used in the Budget",
+   "IS_TITLE"         : "Is an account title?",
    "LABEL"            : "Label",
+   "LOCKED"           : "Locked",
    "NEW"              : "New Account",
    "NO"               : "No.",
    "NOT_FOUND"        : "Aucun compte enregistrés...",
    "PROFIT"           : "Profit",
    "PROFIT_CENTER"    : "Profit Center",
    "ROOT_ACCOUNT"     : "Root Account",
+   "SAVE_SUCCESS"     : "Saved successfully",
    "TITLE"            : "Account Managment",
    "TITLE_ACCOUNT"    : "Title Account",
    "TYPE"             : "Type",
+   "UPDATE_SUCCESS"   : "Updating success",
    "VARIABLE"         : "Variable"
 },
 "ACCOUNT_RESULT" : {
@@ -147,6 +151,7 @@
   "LOGOUT_SUCCESS"             : "You are now logged out.",
   "LOGIN_PLACEHOLDER_USERNAME" : "Enter your username",
   "LOGIN_PLACEHOLDER_PASSWORD" : "Enter your password",
+  "RESET"                      : "Reset",
   "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it."
 },
 
@@ -193,6 +198,21 @@
   "GENERATE_DOC"    : "Generate Document",
   "DOC_SUCCES"      : "Document Build Success - Open Document"
   },
+"BILLING_SERVICES" : {
+  "TITLE" : "Billing Services",
+  "BTN" : {
+    "CREATE" : "Create a Billing Service",
+    "DELETE" : "Delete this Billing Service"
+  },
+  "CREATED" : "Created a new billing service.",
+  "UPDATED" : "Updated the billing service.",
+  "NOT_FOUND" : "There is no billing service with that ID.  Please go back and try again.",
+  "FORM" : {
+    "CREATE" : "New Billing Service",
+    "UPDATE" : "Updating Billing Service"
+  },
+  "VIEW" : "View all billing services."
+},
 "BUDGET": {
   "ANALYSIS" : {
     "ALL_PERIOD"         : "All periods",
@@ -1462,13 +1482,16 @@
     "MIN_CURRENCY_UNIT" : "This value is too small for the selected currency.",
     "NUMBER"            : "This value must be a valid number.",
     "REQUIRED"          : "This value is required.",
-    "MISSING"           : "Please ensure that all fields are filled in."
+    "MISSING"           : "Please ensure that all fields are filled in.",
+    "DATE_OUT_OF_RANGE" : "This date is not in the allowed date range. Please select another date."
    },
-   "INVALID_DATE"    : "Invalide date",
+   "ERRORED"       : "This form contains errors.  Please correct them and resubmit.",
+   "INVALID_DATE"    : "Invalid date",
    "LOGIN"           : "Login",
    "HAS_ERRORS"      : "The form contains errors.  Please correct them and resubmit.",
    "NEW_FORM"        : "New Form",
    "NEW_TRANSFER"    : "New transfer",
+   "NOTES"           : "Notes",
    "OK"              : "Ok",
    "PASSWORD_MATCH"  : "The passwords must be the same.",
    "RESET"           : "Reset",
@@ -1491,7 +1514,8 @@
    "UPDATE_SUCCES"  : "Updated successfully",
    "WARNINGS" : {
     "FUTURE_DATE" : "Warning: This date in the future."
-   }
+   },
+   "CONTACT_ADMIN"   : "Check with the system administrator that this has been configured correctly."
    },
 "GRADE": {
    "ADD"            : "Add a grade",
@@ -1517,7 +1541,9 @@
   "CLEAR"             : "Clear Selection",
   "GROUP_ROWS"        : "Group Rows",
   "REFRESH"           : "Refresh Selection",
-  "UPDATE"            : "Update Selection"
+  "UPDATE"            : "Update Selection",
+  "EMPTY"             : "There are no records to display.",
+  "LOADING"           : "Fetching data from the server."
 },
 "GROUP_INVOICE": {
    "AGREED"                 : "Agreed Payment",
@@ -1585,7 +1611,8 @@
   "COUNTRY" : "Enter a country.",
   "PROVINCE" : "Enter a province.",
   "SECTOR" : "Enter a sector.",
-  "VILLAGE" : "Enter a village."
+  "VILLAGE" : "Enter a village.",
+  "DESCRIPTION" : "Enter a description."
 },
 "INVENTORY": {
    "GROUPS": {
@@ -1855,6 +1882,11 @@
     "REFERENCE_LOOKUP" : "Reference Lookup",
     "NO_RECEIPT" : "No receipt matches that reference.",
     "SUCCESS" : "Successfully found a receipt!"
+  },
+  "CONFIRM" : {
+    "TITLE" : "Action Confirmation",
+    "PROMPT" : "Are you sure you would like to perform that action?",
+    "ACCEPT" : "Accept"
   }
 },
 "NO_EXCHANGE": {
@@ -2026,7 +2058,8 @@
    "TITLE"                    : "Title",
    "VIEW_PATIENT_RECORDS"     : "View Patient Records",
    "YES"                      : "Yes",
-   "YOB"                      : "Year of Birth"
+   "YOB"                      : "Year of Birth",
+   "NO_DEBTOR_GROUPS"         : "No debtor groups have been loaded."
    },
 "PATIENT_REGISTRATIONS": {
    "DATE_FROM"                  : "Date From",
@@ -2508,9 +2541,9 @@
    "NEW_REFERENCE"  : "New Reference Group",
    "NO_REFERENCES"  : "No grave Reference Group have been registered.",
    "REGISTERED"     : "Registered References Groups",
-   "SAVE_SUCCES"    : "Successfully saving Reference Group",
+   "SAVE_SUCCESS"    : "Successfully saving Reference Group",
    "TITLE"          : "Reference group management",
-   "UPDATE_SUCCES"  : "Updated successfully",
+   "UPDATE_SUCCESS"  : "Updated successfully",
    "UPD_REFERENCE"  : "Update Reference Group"
    },
 "REPORT": {
@@ -2641,7 +2674,7 @@
    "IS_DISTRIBUTABLE"   : "Distributable via stock ?",
    "NO_DISTRIBUTABLE"   : "Not distributable",
    "PATIENT_COVERED"    : "Patient is covered by convention ",
-   "RECOVER"            : "Recover Sale",
+   "RECOVER_ITEMS"      : "Recover Items",
    "RECOVER_INFO"       : "[Sale Recovered] It is important to note ONLY sale items and quantities are recovered, previously set prices are reset to the inventory default",
    "SALE"               : "Invoice",
    "SUBMIT"             : "Submit Patient Invoice",
@@ -2652,6 +2685,21 @@
    "TYPE"               : "Sale type",
    "UPDATE"             : "Update Defaults"
    },
+"PATIENT_INVOICE": { 
+  "PAGE_TITLE"          : "Patient Invoice",
+  "RECIPIENT"           : "Bill to",
+  "SERVICE"             : "Service",
+  "TOTAL"               : "Total",
+  "BILLING_SERVICES"    : "Billing Services Applied",
+  "SUBSIDIES"           : "Subsidies Applied",
+  "DUE"                 : "Payment Due",
+  "SUBMIT"              : "Submit Invoice",
+  "INVALID_DETAILS"     : "This invoice contains invalid details",
+  "INVALID_ITEMS"       : "This invoice contains invalid items",
+  "ITEMS_FULL"          : "There are no additional inventory items that be assigned to this invoice.",
+  "NO_RECIPIENT"        : "An invoice must have a recipient before assigning items.",
+  "BASE_PRICE_ALTERED"  : "The base price for this line item has been augmented by a price list."
+},
 "SALERECORD": {
    "ADVANCE"         : "Advanced Search",
    "ALL_PROJECTS"    : "All Projects",
@@ -2672,26 +2720,34 @@
    "UNFOUND"         : "No patient transactions found. Reference"
    },
 "SECTION_BILAN" : {
-   "ASSET" : "Asset",
-   "PASSIVE" : "Passive",
-   "NO_SECTION_BILAN" : "No bilan section found",
-   "TITLE"            : "Bilan section",
+   "ADD"              : "Add",
+   "ASSET"            : "Asset",
+   "ALERT"            : "Administration of section du bilan",
    "ALL"              : "All bilan section",
-   "ALERT"            : "Gestion de section du bilan",
-   "NEW"              : "New bilan section",
+   "CONFIRM"          : "Are you sure you want to delete this Bilan section",
+   "DELETE_SUCCESS"   : "Deleted successfully",
    "EDIT"             : "Bilan section editing",
-   "ADD"              : "Add"
+   "NEW"              : "New bilan section",
+   "NO_SECTION_BILAN" : "No bilan section found",
+   "PASSIVE"          : "Passive",
+   "SAVE_SUCCESS"     : "Saved Successfully",
+   "TITLE"            : "Bilan section",
+   "UPDATE_SUCCESS"   : "Update Successfully"
 },
 "SECTION_RESULTAT" : {
-   "CHARGE" : "Charge",
-   "PROFIT" : "Profit",
-   "NO_SECTION_RESULTAT" : "No Result Section",
-   "TITLE"            : "Result Section",
-   "ALL"              : "All Result Section",
-   "ALERT"            : "Result Section Management",
-   "ADD"              : "Add",
-   "NEW"              : "New Result Section",
-   "EDIT"             : "Edit Result Section"
+   "ADD"                  : "Add",
+   "ALERT"                : "Result Section Management",
+   "ALL"                  : "All Result Section",
+   "CHARGE"               : "Charge",
+   "CONFIRM"              : "Are you sure you want to delete this Result section",
+   "DELETE_SUCCESS"       : "Deleted successfully",
+   "EDIT"                 : "Edit Result Section",   
+   "NEW"                  : "New Result Section",
+   "NO_SECTION_RESULTAT"  : "No Result Section",
+   "PROFIT"               : "Profit",
+   "SAVE_SUCCESS"         : "Saved Successfully",
+   "TITLE"                : "Result Section", 
+   "UPDATE_SUCCESS"       : "Update Successfully"  
   },
 "SECTOR": {
    "ACTIONS"          : "Actions",
@@ -3063,19 +3119,23 @@
    "ADDR_2"                : "Address 2",
    "CREATE"                : "Create Creditor Group",
    "CREATE_SUPPLIER"       : "Save",
-   "EDIT_SUPPLIER"         : "Edit",
+   "EDIT_SUPPLIER"         : "Supplier Update Form",
    "EMAIL"                 : "Email",
    "FAX"                   : "Fax",
    "GROUP"                 : "Group",
+   "INFO"                  : "The Supplier Management module allows to monitor the status of suppliers based on their products and services and offer managers a complete and quick view of the provider file.",
    "INTL"                  : "International",
+   "LOCKED"                : "Is Locked ?",
    "NAME"                  : "Name of supplier",
+   "NEW"                   : "Supplier Registration Form",
    "OPTIONAL_INFO"         : "Optional Information",
    "PHONE"                 : "Phone",
    "REGISTERED"            : "Registered Suppliers",
    "REGISTRATION_SUCCESS"  : "Registration success",
    "SUPPLIER"              : "supplier",
    "SUPPLIER_DETAILS"      : "Details",
-   "TITLE"                 : "Register Supplier"
+   "TITLE"                 : "Register Supplier",
+   "UPDATE_SUCCESS"        : "Updated successfully"
    },
 "SUPPORT": {
    "AGREED"                 : "Agreed Payment",
@@ -3217,6 +3277,7 @@
    "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
    "BILAN"                     : "Bilan",
+   "BILLING_SERVICES"          : "Billing Services",
    "BUDGETING"                 : "Budget",
    "BUDGET_ANALYSIS"           : "Budget Analysis",
    "BUDGET_BY_ACCOUNT"         : "Budget by Account",
@@ -3284,6 +3345,7 @@
    "INVENTORY_MANAGEMENT"      : "Inventory Management",
    "INVENTORY_VIEW"            : "Stock",
    "JOURNAL_VOUCHER"           : "Journal Voucher",
+   "SIMPLE_VOUCHER"            : "Simple Voucher",
    "LOCATION"                  : "Locations Management",
    "LOSS_RECORDS"              : "Stock loss",
    "MAIN_CASH"                 : "Principal Cashbox",
@@ -3299,6 +3361,7 @@
    "PATIENT_SEARCH"            : "Patient Search",
    "PATIENT_STANDING"          : "Patient Standing",
    "PATIENT_VISIT_STATUS"      : "Patient Visits",
+   "PATIENT_INVOICE"           : "Patient Invoice",
    "PAYMENT_PERIOD"            : "Payment Period Management",
    "PAYROLL"                   : "Payroll",
    "PAYROLL_REPORT"            : "Payroll",
@@ -3518,9 +3581,25 @@
     "MAX" : "This value is too large for this field.",
     "REQUIRED" : "This field cannot be empty.",
     "EMAIL" : "This field must be a valid email.",
+    "EXCEPTION" : "There was a problem validating this field. Please check your internet connection.",
     "MINLENGTH" : "This input is too short.",
     "MAXLENGTH" : "This input is too long.",
     "NUMBER" : "This field must be a valid number.",
-    "DATE" : "This field must be a valid date."
-   }
+    "DATE" : "This field must be a valid date.",
+    "INTEGER" : "This value must be a whole number (integer).",
+    "UNIQUE" : "This field must be unique. This value is already taken.",
+    "DATES" : { 
+      "MIN" : "This date is set too far in the past.",
+      "MAX" : "This date is set too far in the future.",
+      "REQUIRED" : "This date is required."
+    }
+   },
+  "VOUCHERS" : {
+    "SIMPLE" : {
+      "TITLE" : "Transfer Slip",
+      "FROM_ACCOUNT" : "From Account",
+      "TO_ACCOUNT" : "To Account"
+    }
+  }
 }
+

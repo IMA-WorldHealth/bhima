@@ -58,7 +58,8 @@ describe('Employees Module', function () {
     FU.input('EmployeeCtrl.employee.postnom', employee.postnom);
   
     // select the properdate
-    components.dateEditor.set(employee.dob);
+    components.dateEditor.set(employee.dob, 'employee-dob');
+
     // select a Sexe
     FU.select('EmployeeCtrl.employee.sexe')
       .enabled()
@@ -66,10 +67,9 @@ describe('Employees Module', function () {
       .click();    
     FU.input('EmployeeCtrl.employee.nb_spouse', employee.nb_spouse);
     FU.input('EmployeeCtrl.employee.nb_enfant', employee.nb_enfant);
-    
 
     // select the properdate
-    components.dateEditor.set(employee.date_embauche);
+    components.dateEditor.set(employee.date_embauche, 'employee-date-hired');
 
     FU.input('EmployeeCtrl.employee.code', employee.code);
     // select an Service
@@ -176,5 +176,4 @@ describe('Employees Module', function () {
     FU.validation.ok('EmployeeCtrl.employee.bank');
     FU.validation.ok('EmployeeCtrl.employee.bank_account');
   });
-
 });

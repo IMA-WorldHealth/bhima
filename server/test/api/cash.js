@@ -6,10 +6,8 @@ var expect = chai.expect;
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /cash API endpoint
-*/
-describe('(/cash) Cash Payments Interface ::', function () {
+/** The /cash API endpoint */
+describe('(/cash) Cash Payments Interface ', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
@@ -26,15 +24,14 @@ describe('(/cash) Cash Payments Interface ::', function () {
   ];
   var REFERENCE = 'TPA1';
 
-  /** login before each request */
-  beforeEach(helpers.login(agent));
+  /** login before test start request */
+  before(helpers.login(agent));
 
   // no cash payments have been made yet
   it('GET /cash returns an empty list with no cash payments', function () {
     return agent.get('/cash')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.empty;
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
@@ -43,14 +40,13 @@ describe('(/cash) Cash Payments Interface ::', function () {
   it('GET /cash/undefined returns an error', function () {
     return agent.get('/cash/undefined')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.not.be.empty;
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
   // Tests for the Caution Payment Interface
-  describe('Caution Payments ::', function () {
+  describe('Caution Payments ', function () {
 
     var CAUTION_PAYMENT = {
       amount:      15000,
@@ -95,8 +91,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
 
 
   // Tests for the Payment Invoice Payment Interface
-  //
-  describe('Patient Invoice Payments ::', function () {
+  describe('Patient Invoice Payments ', function () {
 
     var SALE_PAYMENT = {
       amount:      1520,
@@ -158,9 +153,6 @@ describe('(/cash) Cash Payments Interface ::', function () {
 
           // anticipate a 400 error from the API.
           helpers.api.errored(res, 400);
-
-          // check to make sure the error code is correct
-          expect(res.body.code).to.equal('CASH.VOUCHER.ERRORS.NO_CASH_ITEMS');
         })
         .catch(helpers.handler);
     });
@@ -195,11 +187,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
       return agent.put('/cash/' + SALE_PAYMENT.uuid)
         .send({ amount : 123000.13 })
         .then(function (res) {
-          expect(res).to.have.status(400);
-          expect(res).to.be.json;
-
-          // expect to be an error
-          expect(res.body).to.contain.all.keys(helpers.errorKeys);
+          helpers.api.errored(res, 400);
         })
         .catch(helpers.handler);
     });
@@ -256,7 +244,6 @@ describe('(/cash) Cash Payments Interface ::', function () {
 
   // the references API
   describe('(/cash/references) references for finding cash payment uuids', function () {
-
     it('GET /cash/references/unknown should return a 404 error', function () {
       agent.get('/cash/references/unknown')
         .then(function (res) {
@@ -265,7 +252,7 @@ describe('(/cash) Cash Payments Interface ::', function () {
         .catch(helpers.handler);
     });
 
-    it('get /cash/references/:reference should return a uuid for a valid payment', function () {
+    it('GET /cash/references/:reference should return a uuid for a valid payment', function () {
       agent.get('/cash/references/'.concat(REFERENCE))
         .then(function (res) {
           expect(res).to.have.status(200);
@@ -275,15 +262,4 @@ describe('(/cash) Cash Payments Interface ::', function () {
         .catch(helpers.handler);
     });
   });
-
-
-  // The HTTP DELETE verb triggers a cash_discard record, but does not destroy any data
-  // (proposed rename: debit_note)
-  describe.skip('The Debit Note Interface ::', function () {
-    it('DELETE /cash/:uuid should create a cash_discard record');
-    it('DELETE /cash/:uuid should do nothing if the cash record is already discarded');
-    it('DELETE-d cash records should still be discoverable by GET /cash');
-    it('DELETE-d cash records should have the \'canceled\' property set');
-  });
-
 });

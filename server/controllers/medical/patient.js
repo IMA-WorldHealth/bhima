@@ -16,9 +16,10 @@
 
 'use strict';
 
-var db = require('../../lib/db'),
-    uuid = require('../../lib/guid');
+var db        = require('../../lib/db');
+var uuid      = require('../../lib/guid');
 
+var BadRequest  = require('../../lib/errors/BadRequest');
 
 // create a new patient
 exports.create = create;
@@ -44,8 +45,8 @@ exports.updateGroups = updateGroups;
 // get list of groups
 exports.listGroups = listGroups;
 
-// verify the hospital number of a patient
-exports.verifyHospitalNumber = verifyHospitalNumber;
+// check if a hospital file number is assigned to any patients
+exports.hospitalNumberExists = hospitalNumberExists;
 
 // Search patient reference
 exports.searchReference = searchReference;
@@ -56,6 +57,10 @@ exports.searchFuzzy = searchFuzzy;
 // log patient visit
 exports.visit = visit;
 
+/** @todo discuss if these should be handled by the entity APIs or by patients. */
+exports.billingServices = billingServices;
+exports.priceLists = priceLists;
+exports.subsidies = subsidies;
 
 
 /** @todo Method handles too many operations */
@@ -76,13 +81,8 @@ function create(req, res, next) {
   invalidParameters = !finance || !medical;
 
   if (invalidParameters) {
-
-    // FIXME This should be handled by middleware
-    res.status(400).json({
-      code : 'ERROR.ERR_MISSING_INFO',
-      reason : 'Both `financial` and `medical` information must be provided to register a patient.'
-    });
-    return;
+  
+    throw new BadRequest('Both `financial` and `medical` information must be provided to register a patient.');
   }
 
   // pre-process dates
@@ -331,37 +331,36 @@ function list(req, res, next) {
 }
 
 /**
- * @description Return a status object indicating if the hospital number has laready been registered
- * with an existing patient
+ * This method implements the bhima unique API for hospital numbers; it is 
+ * responsible for informing the client if a hospital number has been used (is 
+ * found) or is available (is not found)
+ * 
+ * Exists API:
+ * GET /entity/attribute/:id/exists 
+ * This pattern will be used by the client side service and must be respected 
+ * by this route. 
  *
- * Returns status object
- * {
- *  registered : Boolean - Specifies if the id passed has already been registered or not
- *  details : Object (optional) - Includes the details of the registered hospital number
- *  }
+ * The API here purposefully returns a 200 even if the hospital number cannot 
+ * be found, this is provide less convoluted logic for the client directive 
+ * (failure implying success). 
+ *
+ * @returns {Boolean}   true - hospital number passed in has been found
+ *                      false - hospital number passed in has not been found 
  */
-function verifyHospitalNumber(req, res, next) {
+function hospitalNumberExists(req, res, next) {
   var verifyQuery;
   var hospitalNumber = req.params.id;
 
   verifyQuery =
-    'SELECT uuid, hospital_no FROM patient ' +
-      'WHERE hospital_no = ?';
+    'SELECT uuid, hospital_no ' +
+    'FROM patient ' +
+    'WHERE hospital_no = ?';
 
   db.exec(verifyQuery, [hospitalNumber])
     .then(function (result) {
-      var hospitalIdStatus = {};
-
-      if (isEmpty(result)) {
-
-        hospitalIdStatus.registered = false;
-      } else {
-
-        hospitalIdStatus.registered = true;
-        hospitalIdStatus.details = result[0];
-      }
-
-      res.status(200).json(hospitalIdStatus);
+     
+      // if the result is not empty the hospital number exists (return this Boolean)
+      res.status(200).json( !isEmpty(result) );
     })
     .catch(next)
     .done();
@@ -576,4 +575,106 @@ function search(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+function billingServices(req, res, next) { 
+  var uuid = req.params.uuid;
+  
+  /** @todo (OPTIMISATION) Two additional SELECTs to select group uuids can be written as JOINs. */
+  var patientsServiceQuery =
+    
+    // get the final information needed to apply billing services to an invoice
+    'SELECT DISTINCT ' +
+      'billing_service_id, label, description, value, billing_service.created_at ' +
+    'FROM ' + 
+
+      // get all of the billing services from patient group subscriptions
+      '(SELECT * ' + 
+      'FROM patient_group_billing_service ' + 
+      'WHERE patient_group_billing_service.patient_group_uuid in ' + 
+        
+        // find all of the patients groups
+        '(SELECT patient_group_uuid ' + 
+        'FROM assignation_patient ' + 
+        'WHERE patient_uuid = ?) ' +
+    'UNION ' + 
+
+      // get all of the billing services from debitor group subscriptions 
+      'SELECT * ' + 
+      'FROM debitor_group_billing_service ' + 
+      'WHERE debitor_group_uuid = ' + 
+        
+        // find the debitor group uuid 
+        '(SELECT debitor_group_uuid ' + 
+        'FROM debitor ' + 
+        'LEFT JOIN patient ' + 
+        'ON patient.debitor_uuid = debitor.uuid ' + 
+        'WHERE patient.uuid = ?)' + 
+      ') AS patient_services ' +
+
+    // apply billing service information to rows retrived from service subscriptions
+    'LEFT JOIN billing_service ' + 
+    'ON billing_service_id = billing_service.id';
+
+  db.exec(patientsServiceQuery, [uuid, uuid])
+    .then(function (result) { 
+      res.status(200).json(result);
+    })
+    .catch(next)
+    .done();
+}
+
+function priceLists(req, res, next) { 
+  var uuid = req.params.uuid;
+  
+  // var patientPriceListQuery = '
+    // 'SELECT * FROM price_lists 
+  // var patientPricesQuery =
+  //   'SELECT
+}
+
+function subsidies(req, res, next) { 
+  var uuid = req.params.uuid;
+  
+  var patientsSubsidyQuery =
+    
+    // subsidy information required to apply subsidies to an invoice
+    'SELECT DISTINCT ' +
+      'subsidy_id, label, description, value, subsidy.created_at ' +
+    'FROM ' + 
+
+      // get all of subsidies from patient group subscriptions
+      '(SELECT * ' + 
+      'FROM patient_group_subsidy ' + 
+      'WHERE patient_group_subsidy.patient_group_uuid in ' + 
+        
+        // find all of the patients groups
+        '(SELECT patient_group_uuid ' + 
+        'FROM assignation_patient ' + 
+        'WHERE patient_uuid = ?) ' +
+    'UNION ' + 
+
+      // get all subsidies from debitor group subscriptions 
+      'SELECT * ' + 
+      'FROM debitor_group_subsidy ' + 
+      'WHERE debitor_group_uuid = ' + 
+        
+        // find the debitor group uuid 
+        '(SELECT debitor_group_uuid ' + 
+        'FROM debitor ' + 
+        'LEFT JOIN patient ' + 
+        'ON patient.debitor_uuid = debitor.uuid ' + 
+        'WHERE patient.uuid = ?)' + 
+      ') AS patient_services ' +
+
+    // apply subsidy information to rows retrived from subsidy subscriptions
+    'LEFT JOIN subsidy ' + 
+    'ON subsidy_id = subsidy.id';
+  
+  db.exec(patientsSubsidyQuery, [uuid, uuid])
+    .then(function (result) { 
+      res.status(200).json(result);
+    })
+    .catch(next)
+    .done();
 }

@@ -1,6 +1,4 @@
 /* jshint expr : true */
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -13,14 +11,14 @@ function clone(array) {
 }
 
 /** tests for the /accounts API endpoint */
-describe('The account API, PATH : /accounts', function () {
+describe('(/accounts) The account API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var newAccount = {
-    account_type_id : 1,
+    type_id : 1,
     enterprise_id : 1,
-    account_number : 4000400,
-    account_txt : 'Account for integration test',
+    number : 4000400,
+    label : 'Account for integration test',
     parent : 0,
     locked : 0,
     cc_id : null,
@@ -29,7 +27,6 @@ describe('The account API, PATH : /accounts', function () {
     is_asset : 0,
     reference_id : null,
     is_brut_link : 0,
-    is_used_budget : 0,
     is_charge : 0,
     is_title : 0
   };
@@ -40,27 +37,26 @@ describe('The account API, PATH : /accounts', function () {
 
   var responseKeys = [
     'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
-    'reference_id', 'is_brut_link', 'is_used_budget', 'is_charge', 'account_number',
-    'account_txt', 'parent', 'account_type_id', 'is_title', 'type'
+    'reference_id', 'is_brut_link', 'is_charge', 'number',
+    'label', 'parent', 'type_id', 'is_title', 'type'
   ];
 
-    // login before each request
-  beforeEach(helpers.login(agent));
+  // login before the test suite
+  before(helpers.login(agent));
 
-  it('METHOD : GET, PATH : /accounts?full=1, It returns the full list of account', function () {
+  /** @todo - make this "detailed=1" instead of "full" for parity with other APIs */
+  it('GET /accounts?full=1 returns the full list of account', function () {
     return agent.get('/accounts?full=1')
       .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(10);
+        helpers.api.listed(res, 10);
       })
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET, PATH : /accounts, It returns a simple list of account', function () {
+  it('GET /accounts returns a simple list of account', function () {
     return agent.get('/accounts')
       .then(function (res) {
+        helpers.api.listed(res, 10);
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
@@ -69,7 +65,7 @@ describe('The account API, PATH : /accounts', function () {
       .catch(helpers.handler);
    });
 
-   it('METHOD : GET, PATH : /accounts?locked=0, It returns a list of unlocked accounts', function () {
+   it('GET /accounts?locked=0 returns a list of unlocked accounts', function () {
       return agent.get('/accounts?locked=0')
       .then(function (res) {
         var list = res.body.filter(function (item) { return item.locked === 0; });
@@ -81,7 +77,7 @@ describe('The account API, PATH : /accounts', function () {
     });
 
 
-  it('GET /accounts returns the accounts in sorted order by account_number', function () {
+  it('GET /accounts returns the accounts in sorted order by number', function () {
     return agent.get('/accounts')
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -92,7 +88,7 @@ describe('The account API, PATH : /accounts', function () {
         var sorted = clone(accounts);
 
         sorted.sort(function (a, b) {
-          return a.account_number > b.account_number ? 1 : -1;
+          return a.number > b.number ? 1 : -1;
         });
 
         expect(accounts).to.deep.equal(sorted);
@@ -100,29 +96,27 @@ describe('The account API, PATH : /accounts', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : GET, PATH : /accounts/:id, It returns one account', function () {
+  it('GET /accounts/:id returns one account', function () {
     return agent.get('/accounts/'+ FETCHABLE_ACCOUNT_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.all.keys(responseKeys);
-
-       expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_ID);
+        expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_ID);
       })
       .catch(helpers.handler);
   });
 
- it('METHOD : GET, PATH : /accounts/unknownId, It returns a 404 error', function () {
-    return agent.get('/accounts/unknownId')
+  it('GET /accounts/:id returns a 404 error for unknown id', function () {
+    return agent.get('/accounts/unknown')
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res.body).to.contain.all.keys(helpers.errorKeys);
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
- it('METHOD : GET, PATH : /accounts/:id/balance, It returns an object with zero as balance, debit and credit', function () {
+  it('GET /accounts/:id/balance returns an object with zero as balance, debit and credit', function () {
    return agent.get('/accounts/:id/balance'.replace(':id', FETCHABLE_ACCOUNT_ID))
     .then(function (res){
       expect(res).to.have.status(200);
@@ -134,10 +128,9 @@ describe('The account API, PATH : /accounts', function () {
       expect(res.body.balance).to.equal(0);
     })
     .catch(helpers.handler);
- });
+  });
 
-  
-  it('METHOD : GET, PATH : /accounts/:id/balance?journal=1, It returns the balance of a provided account_id, scans the journal also', function () {
+  it('GET /accounts/:id/balance?journal=1 returns the balance of a provided account_id, scans the journal also', function () {
     return agent.get('/accounts/:id/balance?journal=1'.replace(':id', ACCOUNT_ID_FOR_BALANCE))
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -151,15 +144,11 @@ describe('The account API, PATH : /accounts', function () {
       .catch(helpers.handler);
   });
 
-  it('METHOD : POST, PATH : /accounts, It a adds an account', function () {
+  it('POST /accounts a adds an account', function () {
     return agent.post('/accounts')
       .send(newAccount)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.all.keys('id');
-        expect(res.body.id).to.be.defined;
+        helpers.api.created(res);
         newAccount.id = res.body.id;
         return agent.get('/accounts/' + newAccount.id);
       })
@@ -170,29 +159,26 @@ describe('The account API, PATH : /accounts', function () {
      .catch(helpers.handler);
   });
 
-  it('METHOD : PUT, PATH : /accounts/:id, It updates the newly added account', function () {
-    var updateInfo = { account_txt : 'updated value for testing account'};
-
+  it('PUT /accounts/:id updates the newly added account', function () {
+    var updateInfo = { label : 'updated value for testing account'};
     return agent.put('/accounts/'+ newAccount.id)
       .send(updateInfo)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body.id).to.equal(newAccount.id);
-        expect(res.body.account_txt).to.equal(updateInfo.account_txt);
+        expect(res.body.label).to.equal(updateInfo.label);
         expect(res.body).to.have.all.keys(responseKeys);
        })
       .catch(helpers.handler);
   });
 
- it('METHOD : PUT, PATH : /accounts/:unknown, It refuses to update the unknow entity', function () {
-    var updateInfo = { account_txt : 'updated value for testing account unknwon'};
-
+  it('PUT /accounts/:id returns a 404 for unknown account id', function () {
+    var updateInfo = { label : 'updated value for testing account unknown '};
     return agent.put('/accounts/undefined')
       .send(updateInfo)
       .then(function (res) {
-        expect(res).to.have.status(404);
-        expect(res).to.be.json;
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

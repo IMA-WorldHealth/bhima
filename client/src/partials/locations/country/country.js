@@ -27,7 +27,7 @@ function CountryController(locationService) {
     // start up loading indicator
     vm.session.loading = true;
 
-    // load Subsidies
+    // load Country
     refreshCountrys();
   }
 
@@ -75,8 +75,9 @@ function CountryController(locationService) {
   }
 
   // form submission
-  function submit(invalid) {
-    if (invalid) { return; }
+  function submit(form) {
+    // stop submission if the form is invalid
+    if (form.$invalid) { return; }
 
     var promise;
     var creation = (vm.view === 'create');

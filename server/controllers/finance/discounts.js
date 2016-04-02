@@ -22,7 +22,7 @@ function lookupDiscount(id, codes) {
 
   var sql =
     'SELECT d.id, d.label, d.description, d.inventory_uuid, ' +
-      'd.account_id, d.value, a.account_number, i.text as inventoryLabel ' +
+      'd.account_id, d.value, a.number, i.text as inventoryLabel ' +
     'FROM discount AS d JOIN inventory AS i ON d.inventory_uuid = i.uuid ' +
     'JOIN account AS a ON d.account_id = a.id ' +
     'WHERE d.id = ?;';

@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService', '$uibModal',
-  '$routeParams', '$location', 'Patients', 'ExchangeRateService', 'SessionService'
+  '$stateParams', '$location', 'PatientService', 'ExchangeRateService', 'SessionService'
 ];
 
 /**
@@ -21,7 +21,7 @@ CashController.$inject = [
  *
  * @module bhima/controllers/CashController
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routeParams, $location, Patients, Exchange, Session) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $stateParams, $location, Patients, Exchange, Session) {
 
   /** @const controller view-model alias */
   var vm = this;
@@ -33,7 +33,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $routePara
   var cache = AppCache('CashPayments');
 
   /** @const id of the currently select cashbox */
-  var cashboxId = $routeParams.id;
+  var cashboxId = $stateParams.id;
 
   /** default to dots for currency symbol */
   vm.currencyLabel = '...';

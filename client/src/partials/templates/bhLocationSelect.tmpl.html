@@ -74,6 +74,11 @@
       required>
       <option ng-if="$ctrl.sector" value="" disabled>{{ $ctrl.messages.village | translate }}</option>
     </select>
+    
+    <!-- validation messages shown on form errors-->
+    <p class="help-block text-danger" ng-messages="LocationSelectForm.$error" ng-show="$ctrl.validationTrigger">
+      <span ng-messages-include="partials/templates/messages.tmpl.html"></span>
+    </p>
   </div>
 
   <!-- link to location create modal -->
@@ -82,10 +87,5 @@
       <span class="glyphicon glyphicon-modal-window"></span>
       {{ "LOCATION.REGISTER" | translate }}
     </a>
-  </p>
-
-  <!-- validation messages shown on form errors-->
-  <p class="help-block text-danger" ng-messages="LocationSelectForm.$error" ng-show="$ctrl.validationTrigger">
-    <span ng-message="required">{{ "FORM.REQUIRED" | translate }}</span>
-  </p>
+  </p> 
 </fieldset>

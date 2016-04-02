@@ -56,8 +56,7 @@
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
              <b>{{'PROVINCE.CONFIGURATION' | translate}} </b>
-             <p>{{'PROVINCE.DESCRIPTION' | translate}}
-             </p>       
+             <p>{{'PROVINCE.DESCRIPTION' | translate}}     
           </div>
         </div>
 
@@ -65,7 +64,6 @@
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
             <h4>{{ 'LOCATION.SAVE_SUCCESS' | translate }} </h4>
-            </p>
           </div>
         </div>
 
@@ -73,7 +71,6 @@
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
             <h4>{{ 'LOCATION.UPDATE_SUCCESS' | translate }} </h4>
-            </p>
           </div>
         </div>
 
@@ -81,7 +78,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'PROVINCE.REGISTER' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="ProvinceCtrl.submit(CreateForm.$invalid)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="ProvinceCtrl.submit(CreateForm)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
@@ -95,11 +92,17 @@
                   required>
                   <option value="" disabled> -- {{ ProvinceCtrl.messages.country | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.province.$invalid }">
                 <label class="control-label">{{ "LOCATION.PROVINCE" | translate }}</label>
                 <input type="text" placeholder="{{ 'INPUT.PROVINCE' | translate }}" class="form-control" name="province" ng-model="ProvinceCtrl.province.name" required>
+                <div class="help-block" ng-messages="CreateForm.province.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                  
               </div>
               
               <div class="form-group">
@@ -118,7 +121,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'PROVINCE.EDIT' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="ProvinceCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="ProvinceCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
                 <select 
@@ -131,11 +134,17 @@
                   required>
                   <option value="" disabled> -- {{ ProvinceCtrl.messages.country | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.province.$invalid }">
                 <label class="control-label">{{ "LOCATION.PROVINCE" | translate }}</label>
                 <input type="text" placeholder="{{ 'INPUT.PROVINCE' | translate }}" class="form-control" name="province" ng-model="ProvinceCtrl.province.name" required>
+                <div class="help-block" ng-messages="UpdateForm.province.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
               
               <div class="form-group">
@@ -146,6 +155,7 @@
                   {{ "FORM.CANCEL" | translate }}
                 </button>
               </div>
+
             </form>
           </div>         
         </div>

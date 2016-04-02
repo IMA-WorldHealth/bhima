@@ -81,14 +81,12 @@
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
             <h4>{{ 'SERVICE.SAVE_SUCCES' | translate }} </h4>
-            </p>
           </div>
         </div>
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
             <h4>{{ 'SERVICE.UPDATE_SUCCES' | translate }} </h4>
-            </p>
           </div>
         </div>
 
@@ -100,36 +98,46 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.prenom.$invalid }">
                 <label class="control-label" for="bhima-employee-prenom">{{ 'EMPLOYEE.FIRST_NAME' | translate }}</label>
                 <input type="text" class="form-control" name="prenom" id="bhima-employee-prenom" ng-model="EmployeeCtrl.employee.prenom" required>
+                <div class="help-block" ng-messages="CreateForm.prenom.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                 <label class="control-label" for="bhima-employee-prenom">{{ 'EMPLOYEE.NAME' | translate }}</label>
                 <input type="text" class="form-control" name="name" id="bhima-employee-name" ng-model="EmployeeCtrl.employee.name" required>
+                <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.postnom.$invalid }">
                 <label class="control-label" for="bhima-employee-prenom">{{ 'EMPLOYEE.LAST_NAME' | translate }}</label>
                 <input type="text" class="form-control" name="postnom" id="bhima-employee-postnom" ng-model="EmployeeCtrl.employee.postnom" required>
+                <div class="help-block" ng-messages="CreateForm.postnom.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.dob.$invalid }">
-                <label class="control-label" for="bhima-employee-dob">{{ 'COLUMNS.DOB' | translate }}</label>
-                <bh-date-editor 
-                    date-value="EmployeeCtrl.employee.dob" 
-                    form="details" 
-                    validation-trigger="details.$submitted" 
-                    min-date="EmployeeCtrl.minDOB" 
-                    max-date="EmployeeCtrl.maxDOB">
-                </bh-date-editor>
-              </div>
+              <!-- date editor component -->
+              <bh-date-editor 
+                id="employee-dob"
+                date-value="EmployeeCtrl.employee.dob" 
+                validation-trigger="details.$submitted" 
+                min-date="EmployeeCtrl.minDOB" 
+                max-date="EmployeeCtrl.maxDOB">
+              </bh-date-editor>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.sexe.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.SEX" | translate }}</label>
                 <select class="form-control"name="sexe" ng-model="EmployeeCtrl.employee.sexe" id="bhima-employee-sexe" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.EMPLOYEE_SEX" | translate }} --</option>
-                  <option>M</option>
-                  <option>F</option>
+                  <option ng-value='M'>{{ "PATIENT_RECORDS.MALE" | translate }}</option>
+                  <option ng-value='F'>{{ "PATIENT_RECORDS.FEMALE" | translate }}</option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.sexe.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.nb_spouse.$invalid }">
@@ -143,23 +151,24 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.locked.$invalid }">
-                <label class="control-label" for="bhima-employee-locked">{{ 'EMPLOYEE.LOCKED' | translate }}</label>
-                <input type="checkbox" class="form-control" name="locked" ng-true-value="1" ng-false-value="0" id="bhima-employee-locked" ng-model="EmployeeCtrl.employee.locked">
-              </div>
+                <label class="control-label">
+                  <input type="checkbox" name="locked" ng-true-value="1" ng-false-value="0" id="bhima-employee-locked" ng-model="EmployeeCtrl.employee.locked">  {{ "EMPLOYEE.LOCKED" | translate }}
+                </label>  
+              </div> 
 
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.date_embauche.$invalid }">
-                <label class="control-label" for="bhima-employee-date_embauche">{{ 'EMPLOYEE.DATE_EMBAUCHE' | translate }}</label>
-                <bh-date-editor 
-                    date-value="EmployeeCtrl.employee.date_embauche" 
-                    form="details" 
-                    validation-trigger="details.$submitted" 
-                    max-date="EmployeeCtrl.maxDateEmbauche">
-                </bh-date-editor>
-              </div>
+              <bh-date-editor 
+                id="employee-date-hired"
+                date-value="EmployeeCtrl.employee.date_embauche" 
+                validation-trigger="details.$submitted" 
+                max-date="EmployeeCtrl.maxDateEmbauche">
+              </bh-date-editor>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.code.$invalid }">
                 <label class="control-label" for="bhima-employee-code">{{ 'COLUMNS.CODE' | translate }}</label>
                 <input type="text" class="form-control" name="code" id="bhima-employee-code" ng-model="EmployeeCtrl.employee.code" required>
+                <div class="help-block" ng-messages="CreateForm.code.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.service_id.$invalid }">
@@ -167,6 +176,9 @@
                 <select class="form-control" name="service_id" ng-model="EmployeeCtrl.employee.service_id" id="bhima-employee-service_id" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
                   <option value="" disabled> -- {{ "SELECT.EMPLOYEE_SERVICE" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.service_id.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.grade_id.$invalid }">
@@ -174,6 +186,9 @@
                 <select class="form-control" name="grade_id" ng-model="EmployeeCtrl.employee.grade_id" id="bhima-employee-grade_id" ng-options="g.uuid as g.format for g in EmployeeCtrl.grades | orderBy:'text'" required>
                   <option value="" disabled> -- {{ "SELECT.EMPLOYEE_GRADE" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.grade_id.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.fonction_id.$invalid }">
@@ -181,6 +196,9 @@
                 <select class="form-control" name="fonction_id" ng-model="EmployeeCtrl.employee.fonction_id" id="bhima-employee-fonction_id" ng-options="f.id as f.fonction_txt for f in EmployeeCtrl.functions | orderBy:'fonction_txt'" required>
                   <option value="" disabled> -- {{ "SELECT.EMPLOYEE_FUNCTION" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.fonction_id.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
               
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.creditor_group_uuid.$invalid }">
@@ -188,6 +206,9 @@
                 <select class="form-control" name="creditor_group_uuid" ng-model="EmployeeCtrl.employee.creditor_group_uuid" id="bhima-employee-creditor_group_uuid" ng-options="cg.uuid as cg.name for cg in EmployeeCtrl.creditorGroups | orderBy:'name'" required>
                   <option value="" disabled> -- {{ "SELECT.CREDITOR_GROUP" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.creditor_group_uuid.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
               
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.debitor_group_uuid.$invalid }">
@@ -195,6 +216,9 @@
                 <select class="form-control" name="debitor_group_uuid" ng-model="EmployeeCtrl.employee.debitor_group_uuid" id="bhima-employee-debitor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debitorGroups | orderBy:'name'" required>
                   <option value="" disabled> -- {{ "SELECT.DEBITOR_GROUP" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.debitor_group_uuid.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.phone.$invalid }">
@@ -210,6 +234,9 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.adresse.$invalid }">
                 <label class="control-label" for="bhima-employee-adresse">{{ "EMPLOYEE.ADDRESS" | translate }}</label>
                 <input type="adresse" class="form-control" name="adresse" id="bhima-employee-adresse" ng-model="EmployeeCtrl.employee.adresse" required >
+                <div class="help-block" ng-messages="CreateForm.adresse.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <bh-location-select
@@ -247,37 +274,45 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.prenom.$invalid }">
                 <label class="control-label" for="bhima-employee-prenom">{{ 'EMPLOYEE.FIRST_NAME' | translate }}</label>
                 <input type="text" class="form-control" name="prenom" id="bhima-employee-prenom" ng-model="EmployeeCtrl.employee.prenom" required>
+                <div class="help-block" ng-messages="UpdateForm.prenom.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label" for="bhima-employee-prenom">{{ 'EMPLOYEE.NAME' | translate }}</label>
                 <input type="text" class="form-control" name="name" id="bhima-employee-name" ng-model="EmployeeCtrl.employee.name" required>
+                <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.postnom.$invalid }">
                 <label class="control-label" for="bhima-employee-prenom">{{ 'EMPLOYEE.LAST_NAME' | translate }}</label>
                 <input type="text" class="form-control" name="postnom" id="bhima-employee-postnom" ng-model="EmployeeCtrl.employee.postnom" required>
+                <div class="help-block" ng-messages="UpdateForm.postnom.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.dob.$invalid }">
-                <label class="control-label" for="bhima-employee-dob">{{ 'COLUMNS.DOB' | translate }}</label>
-                <bh-date-editor 
-                    date-value="EmployeeCtrl.employee.dob" 
-                    form="details" 
-                    validation-trigger="details.$submitted" 
-                    min-date="EmployeeCtrl.minDOB" 
-                    max-date="EmployeeCtrl.maxDOB" 
-                    date-format="PatientRegCtrl.format">
-                </bh-date-editor>
-              </div>
+              <bh-date-editor 
+                id="employee-dob"
+                date-value="EmployeeCtrl.employee.dob" 
+                validation-trigger="details.$submitted" 
+                min-date="EmployeeCtrl.minDOB" 
+                max-date="EmployeeCtrl.maxDOB">
+              </bh-date-editor>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.sexe.$invalid }">
                 <label class="control-label">{{ "EMPLOYEE.SEX" | translate }}</label>
                 <select class="form-control"name="sexe" ng-model="EmployeeCtrl.employee.sexe" id="bhima-employee-sexe" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.EMPLOYEE_SEX" | translate }} --</option>
-                  <option>M</option>
-                  <option>F</option>
+                  <option ng-value='M'>{{ "PATIENT_RECORDS.MALE" | translate }}</option>
+                  <option ng-value='F'>{{ "PATIENT_RECORDS.FEMALE" | translate }}</option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.sexe.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.nb_spouse.$invalid }">
@@ -291,23 +326,25 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.locked.$invalid }">
-                <label class="control-label" for="bhima-employee-locked">{{ 'EMPLOYEE.LOCKED' | translate }}</label>
-                <input type="checkbox" class="form-control" ng-true-value="1" ng-false-value="0" name="locked" id="bhima-employee-locked" ng-model="EmployeeCtrl.employee.locked">
-              </div>
+                <label class="control-label">
+                  <input type="checkbox" name="locked" ng-true-value="1" ng-false-value="0" id="bhima-employee-locked" ng-model="EmployeeCtrl.employee.locked">  {{ "EMPLOYEE.LOCKED" | translate }}
+                </label>  
+              </div> 
 
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.date_embauche.$invalid }">
-                <label class="control-label" for="bhima-employee-date_embauche">{{ 'EMPLOYEE.DATE_EMBAUCHE' | translate }}</label>
-                <bh-date-editor 
-                    date-value="EmployeeCtrl.employee.date_embauche" 
-                    form="details" 
-                    validation-trigger="details.$submitted" 
-                    max-date="EmployeeCtrl.maxDateEmbauche">
-                </bh-date-editor>                
-              </div>
+
+              <bh-date-editor 
+                id="employee-date-hired"
+                date-value="EmployeeCtrl.employee.date_embauche" 
+                validation-trigger="details.$submitted" 
+                max-date="EmployeeCtrl.maxDateEmbauche">
+              </bh-date-editor>                
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.code.$invalid }">
                 <label class="control-label" for="bhima-employee-code">{{ 'COLUMNS.CODE' | translate }}</label>
                 <input type="text" class="form-control" name="code" id="bhima-employee-code" ng-model="EmployeeCtrl.employee.code" required>
+                <div class="help-block" ng-messages="UpdateForm.code.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.service_id.$invalid }">
@@ -315,6 +352,9 @@
                 <select class="form-control" name="service_id" ng-model="EmployeeCtrl.employee.service_id" id="bhima-employee-service_id" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
                   <option value="" disabled> -- {{ "SELECT.EMPLOYEE_SERVICE" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.service_id.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.grade_id.$invalid }">
@@ -322,6 +362,9 @@
                 <select class="form-control" name="grade_id" ng-model="EmployeeCtrl.employee.grade_id" id="bhima-employee-grade_id" ng-options="g.uuid as g.format for g in EmployeeCtrl.grades | orderBy:'text'" required>
                   <option value="" disabled> -- {{ "SELECT.EMPLOYEE_GRADE" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.grade_id.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.fonction_id.$invalid }">
@@ -329,6 +372,9 @@
                 <select class="form-control" name="fonction_id" ng-model="EmployeeCtrl.employee.fonction_id" id="bhima-employee-fonction_id" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
                   <option value="" disabled> -- {{ "SELECT.EMPLOYEE_FUNCTION" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.fonction_id.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
               
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && UpdateForm.creditor_group_uuid.$invalid }">
@@ -336,6 +382,9 @@
                 <select class="form-control" name="creditor_group_uuid" ng-model="EmployeeCtrl.employee.creditor_group_uuid" id="bhima-employee-creditor_group_uuid" ng-options="cg.uuid as cg.name for cg in EmployeeCtrl.creditorGroups | orderBy:'name'" required>
                   <option value="" disabled> -- {{ "SELECT.CREDITOR_GROUP" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.creditor_group_uuid.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
               
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && UpdateForm.debitor_group_uuid.$invalid }">
@@ -343,6 +392,9 @@
                 <select class="form-control" name="debitor_group_uuid" ng-model="EmployeeCtrl.employee.debitor_group_uuid" id="bhima-employee-debitor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debitorGroups | orderBy:'name'" required>
                   <option value="" disabled> -- {{ "SELECT.DEBITOR_GROUP" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.debitor_group_uuid.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.phone.$invalid }">
@@ -358,6 +410,9 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.adresse.$invalid }">
                 <label class="control-label" for="bhima-employee-adresse">{{ "EMPLOYEE.ADDRESS" | translate }}</label>
                 <input type="adresse" class="form-control" name="adresse" id="bhima-employee-adresse" ng-model="EmployeeCtrl.employee.adresse" required >
+                <div class="help-block" ng-messages="UpdateForm.adresse.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <bh-location-select

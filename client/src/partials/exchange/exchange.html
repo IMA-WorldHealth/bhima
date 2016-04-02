@@ -27,28 +27,32 @@
               </tr>
             </thead>
             <tbody>
-              <tr id = "rate-{{ $index + 1 }}" ng-repeat="rate in ExchangeCtrl.rates | orderBy:'-date' | limitTo:12" ng-click="ExchangeCtrl.update(rate)">
+              <tr id="rate-{{ $index + 1 }}" ng-repeat="rate in ExchangeCtrl.rates | orderBy:'-date' | limitTo:12" ng-click="ExchangeCtrl.update(rate)">
                 <td>{{ rate.date | date }}</td>
                 <td>{{ ExchangeCtrl.formatCurrency(rate.currency_id) }}</td>
                 <td>{{ rate.rate | currency:rate.currency_id }}</td>
               </tr>
             </tbody>
           </table>
-        </div>  
-
-        
+        </div>
       </div>
 
       <div class="col-xs-6" ng-switch="ExchangeCtrl.view">
+
         <div class="panel panel-default" ng-switch-default>
           <div class="panel-heading">
             {{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }} {{ ExchangeCtrl.formatCurrency(ExchangeCtrl.enterprise.currency_id) }}
           </div>
-          <form name="RateForm" class="panel-body form-horizontal" ng-submit="ExchangeCtrl.submit(RateForm.$invalid)" novalidate>
-            <div class="form-group" >
-              <label>{{ "COLUMNS.DATE" | translate }}</label>
-              <input name="date" type="date" class="form-control" ng-class="{ 'ng-invalid-date' : RateForm.$submitted && RateForm.date.$invalid }" ng-model="ExchangeCtrl.form.date" required ng-disabled="!ExchangeCtrl.form.previous" ng-max="{{ ExchangeCtrl.tomorrow }}" max="{{ ExchangeCtrl.today | date:'yyyy-MM-dd' }}">
-            </div>
+
+          <form name="RateForm" class="panel-body form-horizontal" ng-submit="ExchangeCtrl.submit(RateForm.$invalid)" autocomplete="off" novalidate>
+
+            <bh-date-editor
+              date-value="ExchangeCtrl.form.date"
+              max-date="ExchangeCtrl.today"
+              validation-trigger="RateForm.$submitted"
+              disabled="!ExchangeCtrl.form.previous"
+              >
+            </bh-date-editor>
 
             <div class="form-group">
               <div class="checkbox">
@@ -70,14 +74,13 @@
               <div  class="form-group" ng-repeat="currency in ExchangeCtrl.outCurrencies">
                 <label class="control-label col-md-6">{{ ExchangeCtrl.formatCurrency(currency.id) }} </label>
                 <div class="col-md-6">
-                  {{ 0 | currency:currency.id }} 
+                  {{ 0 | currency:currency.id }}
                   <a class="btn btn-warning text-right" id="current-{{ $index + 1 }}" ng-click="ExchangeCtrl.setExchangeRate(currency.id,'')">{{ "FORM.DEFINE" | translate }}</a>
                 </div>
               </div>
             </div>
             <span data-role="feedback" ng-switch="ExchangeCtrl.feedback">
-              <span ng-switch-default>
-              </span>
+              <span ng-switch-default></span>
 
               <span ng-switch-when="create_success" id="create_success" class="text-success">
                 <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.SAVE_SUCCES" | translate }}
@@ -90,12 +93,11 @@
               <span ng-switch-when="delete_success" id="delete_success" class="text-success">
                 <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.DELETE_SUCCESS" | translate }}
               </span>
-              
+
               <span ng-switch-when="invalid-date" id="invalid-date" class="text-danger">
                 <i class="glyphicon glyphicon-warning-sign"></i> {{ "FORM.INVALID_DATE" | translate }}
-              </span> 
+              </span>
             </span>
-
           </form>
         </div>
 
@@ -105,10 +107,14 @@
           </div>
           <form name="RateForm" class="panel-body form-horizontal" ng-submit="ExchangeCtrl.submit(RateForm.$invalid)" novalidate>
             <h3>{{ "EXCHANGE.REVIEW" | translate }} :</h3>
-            <div class="form-group" >
-              <label>{{ "COLUMNS.DATE" | translate }}</label>
-              <input name="date" type="date" class="form-control" ng-model="ExchangeCtrl.form.date" ng-disabled="!ExchangeCtrl.form.previous" ng-max="{{ ExchangeCtrl.tomorrow }}" max="{{ ExchangeCtrl.today | date:'yyyy-MM-dd' }}">
-            </div>
+
+            <bh-date-editor
+              date-value="ExchangeCtrl.form.date"
+              max-date="ExchangeCtrl.today"
+              validation-trigger="RateForm.$submitted"
+              disabled="!ExchangeCtrl.form.previous"
+              >
+            </bh-date-editor>
 
             <div class="form-group">
               <strong>{{ ExchangeCtrl.formatCurrency(ExchangeCtrl.form.currency_id) }}</strong> : {{ ExchangeCtrl.form.rate | currency:id }}
@@ -120,10 +126,10 @@
                   {{ "FORM.UPDATE" | translate }}
                 </button>
                 <button class="btn btn-danger" id="delete" type="button" ng-click="ExchangeCtrl.del(ExchangeCtrl.form.id)" data-method="delete">
-                  <i class="glyphicon glyphicon-trash"></i> {{ "FORM.DELETE" | translate }} 
+                  <i class="glyphicon glyphicon-trash"></i> {{ "FORM.DELETE" | translate }}
                 </button>
-              </div>  
-            </div>              
+              </div>
+            </div>
           </form>
         </div>
       </div>

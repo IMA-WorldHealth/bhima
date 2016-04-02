@@ -62,7 +62,6 @@
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
             <h4>{{ 'LOCATION.SAVE_SUCCESS' | translate }} </h4>
-            </p>
           </div>
         </div>
 
@@ -70,7 +69,6 @@
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
             <h4>{{ 'LOCATION.UPDATE_SUCCESS' | translate }} </h4>
-            </p>
           </div>
         </div>
 
@@ -78,11 +76,14 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'COUNTRY.REGISTER' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="CountryCtrl.submit(CreateForm.$invalid)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="CountryCtrl.submit(CreateForm)" novalidate>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
                 <input type="text" placeholder="{{ 'INPUT.COUNTRY' | translate }}" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+                <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
               
               <div class="form-group">
@@ -92,7 +93,7 @@
                 <button class="btn btn-default" type="button" ng-click="CountryCtrl.cancel()" data-method="cancel">
                   {{ "FORM.CANCEL" | translate }}
                 </button>
-              </div>
+              </div>             
             </form>
           </div>        
         </div>
@@ -101,10 +102,13 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'COUNTRY.EDIT' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
                 <input type="text" placeholder="{{ 'INPUT.COUNTRY' | translate }}" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+                <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
               
               <div class="form-group">
@@ -114,7 +118,7 @@
                 <button class="btn btn-default" type="button" ng-click="CountryCtrl.cancel()" data-method="cancel">
                   {{ "FORM.CANCEL" | translate }}
                 </button>
-              </div>
+              </div>               
             </form>
           </div>         
         </div>

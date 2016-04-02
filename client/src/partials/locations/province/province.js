@@ -10,6 +10,7 @@ function ProvinceController(locationService) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
+  vm.state = {};
 
   // bind methods
   vm.create = create;
@@ -27,7 +28,7 @@ function ProvinceController(locationService) {
     // start up loading indicator
     vm.session.loading = true;
 
-    // load Subsidies
+    // load Provinces
     refreshProvinces();
   }
 
@@ -76,8 +77,9 @@ function ProvinceController(locationService) {
   }
 
   // form submission
-  function submit(invalid) {
-    if (invalid) { return; }
+  function submit(form) {
+    // stop submission if the form is invalid
+    if (form.$invalid) { return; }
 
     var promise;
     var creation = (vm.view === 'create');

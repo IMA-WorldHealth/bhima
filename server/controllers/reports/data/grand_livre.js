@@ -25,7 +25,7 @@ exports.compile = function (options) {
   // will break this query.
   sql =
     'SELECT gl.trans_id, gl.trans_date, gl.description, ' +
-      'gl.debit_equiv, gl.credit_equiv, account.account_number, ' +
+      'gl.debit_equiv, gl.credit_equiv, account.number, ' +
       'fiscal_year.fiscal_year_txt, cost_center.text AS cc, profit_center.text AS pc ' +
     'FROM general_ledger AS gl JOIN account ON account.id = gl.account_id ' +
     'JOIN fiscal_year ON fiscal_year.id = gl.fiscal_year_id ' +

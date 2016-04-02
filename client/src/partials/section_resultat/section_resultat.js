@@ -1,77 +1,113 @@
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('sectionResultat', [
-  '$scope',
-  '$translate',
-  'validate',
-  'connect',
-  'messenger',
-  function ($scope, $translate, validate, connect, messenger) {
-    var dependencies = {},
-        session = $scope.session = {};
+.controller('sectionResultatController', sectionResultatController);
 
-    dependencies.sectionResultats = {
-      query : {
-        identifier : 'id',
-        tables : {
-          'section_resultat' : {
-            columns : ['id', 'text', 'is_charge', 'position']
-          }
-        }
-      }
-    };
+sectionResultatController.$inject = [
+  'SectionResultatService', '$window', '$translate'
+];
 
-    function startup (models) {
-      angular.extend($scope, models);
-    }
+function sectionResultatController(sectionResultatService, $window, $translate) {
+  var vm = this;
+  vm.view = 'default';
 
-    validate.process(dependencies)
-    .then(startup);
+  // bind methods
+  vm.create = create;
+  vm.submit = submit;
+  vm.update = update;
+  vm.cancel = cancel;
+  vm.del    = del;  
 
-    $scope.doTranslate = function (key){
-      return $translate.instant(key);
-    };
+  vm.doTranslate = doTranslate;
 
-    $scope.delete = function (sectionResultat) {
-      connect.delete('section_resultat', 'id', sectionResultat.id)
-      .then(function () {
-        $scope.sectionResultats.remove(sectionResultat.id);
-        messenger.info($translate.instant('SECTION_RESULTAT.DELETE_SUCCESS'));
-      });
-    };
-
-    $scope.edit = function (sectionResultat) {
-      session.action = 'edit';
-      session.edit = angular.copy(sectionResultat);
-    };
-
-    $scope.new = function () {
-      session.action = 'new';
-      session.new = {};
-    };
-
-    $scope.save = {};
-
-    $scope.save.edit = function () {
-      var record = connect.clean(session.edit);
-      connect.put('section_resultat', [record], ['id'])
-      .then(function (res) {
-        messenger.info($translate.instant('SECTION_RESULTAT.EDIT_SUCCESS'));
-        $scope.sectionResultats.put(record);
-        session.action = '';
-        session.edit = {};
-      });
-    };
-
-    $scope.save.new = function () {
-      var record = connect.clean(session.new);
-      connect.post('section_resultat', [record])
-      .then(function (res) {
-        messenger.info($translate.instant('SECTION_RESULTAT.NEW_SUCCESS'));
-        record.id = res.data.insertId;
-        $scope.sectionResultats.post(record);
-        session.action = '';
-        session.new = {};
-      });
-    };
+  function handler(error) {
+    console.error(error);
   }
-]);
+
+  // fired on startup
+  function startup() {
+    // start up loading indicator
+    vm.loading = true;
+
+    // load sections resultats
+    refreshSectionResultats();
+  }
+
+  function cancel() {
+    vm.view = 'default';
+  }
+  
+
+  function create() {
+    vm.view = 'create';
+    vm.sectionResultat = {};    
+  }
+
+  // switch to update mode
+  // data is an object that contains all the information of a Section Resultat
+  function update(data) {
+    vm.view = 'update';
+    vm.sectionResultat = data;
+  }
+
+  function doTranslate(key){
+    return $translate.instant(key);
+  }
+  
+  // refresh the displayed Sections Resultats
+  function refreshSectionResultats() {
+    return sectionResultatService.read(null,{ detailed : 1 }).then(function (data) {
+      vm.sectionResultats = data;
+      vm.loading = false;
+    });
+  }
+
+  // form submission
+  function submit(form) {
+    
+    // if the form has errors, exit immediately
+    if (form.$invalid) { return; }
+
+    var promise;
+    var creation = (vm.view === 'create');
+
+    var sectionResultat = angular.copy(vm.sectionResultat);
+    
+    promise = (creation) ?
+      sectionResultatService.create(sectionResultat) :
+      sectionResultatService.update(sectionResultat.id, sectionResultat);
+
+    promise
+      .then(function (response) {
+        return refreshSectionResultats();
+      })
+      .then(function () {
+        vm.view = creation ? 'create_success' : 'update_success';
+      })      
+      .catch(handler);
+  }
+
+  // switch to delete warning mode
+  function del(sectionResultat) {
+    var bool = $window.confirm($translate.instant('SECTION_RESULTAT.CONFIRM'));
+
+     // if the user clicked cancel, reset the view and return
+     if (!bool) {
+        vm.view = 'default';
+        return;
+     }
+
+    // if we get there, the user wants to delete a Section Resultat
+    vm.view = 'delete_confirm';
+    sectionResultatService.delete(sectionResultat.id)
+    .then(function () {
+       vm.view = 'delete_success';
+       return refreshSectionResultats();
+    })
+    .catch(function (error) {
+      vm.HTTPError = error;
+      vm.view = 'delete_error';
+    });
+  }
+
+  startup();  
+}

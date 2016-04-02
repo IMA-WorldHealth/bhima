@@ -1,127 +1,216 @@
-<header data-header>
-  {{ "SECTION_BILAN.TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ACCOUNTING" | translate }}</li>
       <li class="active">{{ "SECTION_BILAN.TITLE" | translate }}</li>
     </ol>
   </div>
+</div>
 
-  <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="new()">
-      <span class="glyphicon glyphicon-plus-sign"></span>
-      {{ "SECTION_BILAN.ADD" | translate }}
-    </button>
-  </div>
-</nav>
+<!-- Links to the Section Bilan Chart as well as the button for adding an sectionBilan -->
+<div class="flex-util">
+  <button ng-click="sectionBilanCtrl.create()" class="btn btn-default btn-sm" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "SECTION_BILAN.ADD" | translate }}
+  </button>
+</div>
 
-<main>
-  <div class="row">
 
-    <div class="col-xs-6">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <span class="glyphicon glyphicon-home"></span> {{ "SECTION_BILAN.ALL" | translate }}
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Complete list of registred Section Bilan -->
+      <div class="col-xs-7">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ "SECTION_BILAN.ALL" | translate }}
+          </div>
+
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.NR" | translate }}</th>
+                <th>{{ "COLUMNS.TEXT" | translate }}</th>
+                <th>{{ "COLUMNS.POSITION" | translate }}</th>
+                <th></th>
+                <th colspan="2">{{ "COLUMNS.ACTION" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="sectionBilanCtrl.session.loading" class="text-center">
+                <td colspan="5"><loading-indicator></loading-indicator></td>
+              </tr>
+              <tr
+              ng-repeat="sectionBilan in sectionBilanCtrl.sectionBilans | orderBy:'number' | orderBy:'text' "
+              ng-class="{'rowSelected' : sectionBilanCtrl.sectionBilan.id === sectionBilan.id}" >
+                <td>{{ sectionBilan.id }}</td>
+                <td>{{ sectionBilan.text }}</td>
+                <td>{{sectionBilan.position}}</td>
+                <td>
+                  <b ng-show="sectionBilan.is_actif">{{sectionBilanCtrl.doTranslate('SECTION_BILAN.ASSET')}}</b>
+                  <b ng-show="!sectionBilan.is_actif">{{sectionBilanCtrl.doTranslate('SECTION_BILAN.PASSIVE')}}</b>
+                </td>
+                <td>
+                  <a class="btn btn-xs btn-default" id="sectionBilan-upd-{{sectionBilan.id}}" ng-click="sectionBilanCtrl.update(sectionBilan)">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </a>
+                </td>
+                <td>
+                  <a class="btn btn-xs btn-default" id="sectionBilan-del-{{sectionBilan.id}}" ng-click="sectionBilanCtrl.del(sectionBilan)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </a>
+                </td>
+              </tr>
+              <tr ng-if="!sectionBilanCtrl.sectionBilans.length">
+                <td colspan="6">{{ "SECTION_BILAN.NO_SECTION_BILAN" | translate }}</td>
+              </tr>
+
+            </tbody>
+          </table>
         </div>
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th>{{ "COLUMNS.TEXT" | translate }}</th>
-              <th>{{ "COLUMNS.GROUP" | translate }}</th>
-              <th>{{ "COLUMNS.POSITION" | translate }}</th>
-              <th colspan="2" style="width:15%;">{{ "COLUMNS.ACTION" | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="sectionBilan in sectionBilans.data">
-              <td>{{ sectionBilan.text }}</td>
-              <td>
-                <b>
-                  {{ (sectionBilan.is_actif == 1) ? doTranslate('SECTION_BILAN.ASSET') : doTranslate('SECTION_BILAN.PASSIVE') }}
-                </b>
-              </td>
-              <td>{{sectionBilan.position}}</td>
-              <td><a class="action" ng-click="edit(sectionBilan)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a class="action danger" ng-click="delete(sectionBilan)"><span class="glyphicon glyphicon-trash"></span></a></td>
-            </tr>
-            <tr ng-if="!sectionBilans.data.length">
-              <td colspan="4">{{ "SECTION_BILAN.NO_SECTION_BILAN" | translate }}</td>
-            </tr>
-          </tbody>
-        </table>
+      </div>
+
+      <div class="col-xs-5" ng-switch="sectionBilanCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info">
+            <h4>{{ "SECTION_BILAN.TITLE" | translate }}</h4>
+            <p>{{ "SECTION_BILAN.ALERT" | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Success saving Feed Back -->
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'SECTION_BILAN.SAVE_SUCCESS' | translate }} </h4>
+          </div>
+        </div>
+
+        <!-- Success updating feedBack -->
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'SECTION_BILAN.UPDATE_SUCCESS' | translate }} </h4>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_success">
+          <div class="alert alert-success" id="delete_success">
+            <h4>{{ 'SECTION_BILAN.DELETE_SUCCESS' | translate }} </h4>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_error">
+          <div class="alert alert-danger" id="delete_error">
+            <h4>{{ sectionBilanCtrl.HTTPError.data.code | translate }} </h4>
+          </div>
+        </div>
+
+        <!-- Form for adding sectionBilan -->
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ "SECTION_BILAN.NEW" | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="CreateForm" ng-submit="sectionBilanCtrl.submit(CreateForm)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
+                <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
+                <input type="text" class="form-control" name="text" ng-model="sectionBilanCtrl.sectionBilan.text" required>
+                <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_actif.$invalid }">
+                <div class="radio">
+                  <label class="control-label">
+                    <input type="radio" name="is_actif" required ng-value=1 ng-model="sectionBilanCtrl.sectionBilan.is_actif" >
+                    {{ "SECTION_BILAN.ASSET" | translate }}
+                  </label>
+                </div>
+                <div class="radio">
+                  <label class="control-label">
+                    <input type="radio" name="is_actif" required ng-value=0 ng-model="sectionBilanCtrl.sectionBilan.is_actif" >
+                    {{ "SECTION_BILAN.PASSIVE" | translate }}
+                  </label>
+                </div>
+                <div class="help-block" ng-messages="CreateForm.is_actif.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.position.$invalid }">
+                <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
+                <input type="number" class="form-control"  min="0" name="position" ng-model="sectionBilanCtrl.sectionBilan.position" required>
+                <div class="help-block" ng-messages="CreateForm.position.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-sectionBilan" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="sectionBilanCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Form for updating sectionBilan -->
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ 'SECTION_BILAN.EDIT' | translate }} </b> </div>
+          <div class="panel-body">
+            <form class="panel-body" name="UpdateForm" ng-submit="sectionBilanCtrl.submit(UpdateForm)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
+                <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
+                <input type="text" class="form-control" name="text" ng-model="sectionBilanCtrl.sectionBilan.text" required>
+                <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_actif.$invalid }">
+                <div class="radio">
+                  <label class="control-label">
+                    <input type="radio" name="is_actif" required ng-value=1 ng-model="sectionBilanCtrl.sectionBilan.is_actif" >
+                    {{ "SECTION_BILAN.ASSET" | translate }}
+                  </label>
+                </div>
+                <div class="radio">
+                  <label class="control-label">
+                    <input type="radio" name="is_actif" required ng-value=0 ng-model="sectionBilanCtrl.sectionBilan.is_actif" >
+                    {{ "SECTION_BILAN.PASSIVE" | translate }}
+                  </label>
+                </div>
+                <div class="help-block" ng-messages="UpdateForm.is_actif.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.position.$invalid }">
+                <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
+                <input type="number" class="form-control"  min="0" name="position" ng-model="sectionBilanCtrl.sectionBilan.position" required>
+                <div class="help-block" ng-messages="UpdateForm.position.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="change_sectionBilan" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="sectionBilanCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <div class="col-xs-6" ng-switch="session.action">
-      <div class="alert alert-info" ng-switch-default>
-        <h4>{{ "SECTION_BILAN.TITLE" | translate }}</h4>
-        <p>{{ "SECTION_BILAN.ALERT" | translate }}</p>
-      </div>
-
-      <form name="sectionBilanNew" ng-switch-when="new" novalidate>
-        <legend>{{ "SECTION_BILAN.NEW" | translate }}</legend>
-
-        <div class="form-group">
-          <label>{{ "COLUMNS.NAME" | translate }}</label>
-          <input class="form-bhima" ng-model="session.new.text" required>
-        </div>
-
-        <div class="radio" ng-init="session.new.is_actif=1">
-          <label>
-            <input type="radio" name="isactifrd" ng-value="1" ng-model="session.new.is_actif">
-            {{'SECTION_BILAN.ASSET' | translate}}
-          </label>
-        </div>
-
-        <div class="radio">
-          <label>
-            <input type="radio" name="isactifrd" ng-value="0" ng-model="session.new.is_actif">
-            {{'SECTION_BILAN.PASSIVE' | translate}}
-          </label>
-        </div>
-
-        <div class="form-group">
-          <label>{{ "COLUMNS.POSITION" | translate }}</label>
-          <input type="number" min="0" step="1" class="form-bhima" ng-model="session.new.position" required>
-        </div>
-
-        <button class="btn btn-sm btn-success" type="submit" ng-click="save.new()" ng-disabled="sectionBilanNew.$invalid">{{ "FORM.SUBMIT" | translate }}</button>
-        <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.CLEAR" | translate }}</button>
-      </form>
-
-      <form ng-switch-when="edit">
-        <legend>{{ "SECTION_BILAN.EDIT" | translate }}</legend>
-
-        <div class="form-group">
-          <label>{{ "COLUMNS.NAME" | translate }}</label>
-          <input class="form-bhima" ng-model="session.edit.text" required>
-        </div>
-
-        <div class="radio">
-          <label>
-            <input type="radio" name="isactifrd" ng-value="1" ng-model="session.edit.is_actif">
-            {{'SECTION_BILAN.ASSET' | translate}}
-          </label>
-        </div>
-
-        <div class="radio">
-          <label>
-            <input type="radio" name="isactifrd" ng-value="0" ng-model="session.edit.is_actif">
-            {{'SECTION_BILAN.PASSIVE' | translate}}
-          </label>
-        </div>
-
-        <div class="form-group">
-          <label>{{ "COLUMNS.POSITION" | translate }}</label>
-          <input type="number" min="0" step="1" class="form-bhima" ng-model="session.edit.position" required>
-        </div>
-
-        <button class="btn btn-sm btn-success" type="submit" ng-click="save.edit()">{{ "FORM.SUBMIT" | translate }}</button>
-        <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.CLEAR" | translate }}</button>
-      </form>
-    </div>
   </div>
-</main>
+</div>

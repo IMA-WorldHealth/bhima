@@ -90,18 +90,20 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                 <label class="control-label" for="bhima-service-name">{{ 'COLUMNS.NAME' | translate }}</label>
-                <div>
-                  <input type="text" class="form-control" name="name" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
-                </div>
+                <input type="text" class="form-control" name="name" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
+                <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>  
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.enterprise_id.$invalid }">
                 <label class="control-label">{{ "COLUMNS.ENTERPRISE" | translate }}</label>
-                <div>
-                  <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
-                    <option value="" disabled> -- {{ 'SELECT.ENTERPRISE' | translate }} -- </option>
-                  </select>
-                </div>
+                <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
+                  <option value="" disabled> -- {{ 'SELECT.ENTERPRISE' | translate }} -- </option>
+                </select>
+                <div class="help-block" ng-messages="CreateForm.enterprise_id.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                  
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.cost_center_id.$invalid }">
@@ -141,18 +143,20 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label" for="bhima-service-name">{{ 'COLUMNS.NAME' | translate }}</label>
-                <div>
-                  <input type="text" class="form-control" name="name" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
-                </div>
+                <input type="text" class="form-control" name="name" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
+                <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.enterprise_id.$invalid }">
                 <label class="control-label">{{ "COLUMNS.ENTERPRISE" | translate }}</label>
-                <div>
-                  <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
-                    <option value="" disabled> -- {{ 'SELECT.ENTERPRISE' | translate }} -- </option>
-                  </select>
-                </div>
+                <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
+                  <option value="" disabled> -- {{ 'SELECT.ENTERPRISE' | translate }} -- </option>
+                </select>
+                <div class="help-block" ng-messages="UpdateForm.enterprise_id.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.cost_center_id.$invalid }">

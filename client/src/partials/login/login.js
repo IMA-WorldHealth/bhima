@@ -2,21 +2,25 @@ angular.module('bhima.controllers')
 .controller('LoginController', LoginController);
 
 LoginController.$inject = [
-  '$scope', '$location', '$http', '$timeout', 'appcache', 'appstate', 'SessionService', 'LanguageService'
+  'appcache', 'SessionService',
+  'LanguageService', 'ProjectService'
 ];
 
-// The login conroller
-function LoginController($scope, $location, $http, $timeout, AppCache, appstate, Session, Languages) {
-
-  // this is the View-Model (angular style guide).
+/**
+ * Login Controller
+ *
+ * The login controller powers the bhima login page.
+ */
+function LoginController(AppCache, Session, Languages, Projects) {
   var vm = this;
 
   // the is the same as the SettingsContoller
   var cache = AppCache('preferences');
 
-  // local variable count to 
-  var count = 0;
-  var maxCount = 3;
+  // tracks the number of login attempts made by this user to show a
+  // "forgot password" message if too many requests are made
+  var loginAttempts = 0;
+  var maxLoginAttempts = 3;
 
   // contains the values from the login form
   vm.credentials = {};
@@ -33,12 +37,11 @@ function LoginController($scope, $location, $http, $timeout, AppCache, appstate,
   });
 
   // load project dependencies
-  $http.get('/projects')
-  .then(function (response) {
-    vm.projects = response.data;
+  Projects.read()
+  .then(function (projects) {
+    vm.projects = projects;
 
-    // TODO -- proper error handling in case there is no
-    // projects
+    /** @todo - proper error handling in case there are no projects */
     if (vm.projects.length) {
       loadStoredProject();
     }
@@ -59,40 +62,27 @@ function LoginController($scope, $location, $http, $timeout, AppCache, appstate,
   }
 
   // logs the user in, creates the user client session
-  function login(invalid) {
-    vm.httpError = false;
+  function login(form) {
 
-    // if the form is not valid, do not generate an
-    // $http request
-    if (invalid) { return; }
+    // clear previous HTTP errors if they exist
+    delete vm.error;
 
-    var credentials = vm.credentials;
+    // if the form is not valid, do not generate an $http request
+    if (form.$invalid) { return; }
 
-    // submit the credentials to the server
-    $http.post('/login', credentials)
-    .then(function (response) {
-
-      // Yay!  We are authenticated.  Create the user session.
-      Session.create(response.data.user, response.data.enterprise, response.data.project);
-
-      cache.project = credentials.project.id;
-
-      // HACK to send this signal to ApplicationController
-      $timeout(function () {
-        appstate.set('login', true);
-      });
-
-      // navigate to the home page
-      $location.url('/');
+    // use the session service to log the user in
+    return Session.login(vm.credentials)
+    .then(function (session) {
+      cache.project = session.project;
     })
     .catch(function (response) {
 
-      // bind the http error to the view
-      vm.httpError = response.data;
+      // bind the $http error to the view
+      vm.error = response.data;
 
       // augment the count and rebind the excessive attempts variable
-      count++;
-      vm.excessiveAttempts = (maxCount <= count);
+      loginAttempts++;
+      vm.excessiveAttempts = (maxLoginAttempts <= loginAttempts);
     });
   }
 }

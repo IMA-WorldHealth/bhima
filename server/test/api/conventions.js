@@ -1,6 +1,4 @@
 /* jshint expr: true */
-/* global describe, it, beforeEach */
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -21,8 +19,8 @@ describe('The /cash/conventions API endpoint :: ', function () {
 
   var agent = chai.request.agent(helpers.baseUrl);
 
-  /** login before each request */
-  beforeEach(helpers.login(agent));
+  /** login before the first request */
+  before(helpers.login(agent));
 
   /** Test with dates */
   var date = new Date();
@@ -61,8 +59,7 @@ describe('The /cash/conventions API endpoint :: ', function () {
     return agent.post('/cash/conventions')
       .send(primaryCash)
       .then(function (res) {
-        expect(res).to.have.status(201);
-        expect(res.body.id).to.exist;
+        helpers.api.created(res);
         expect(res.body.id).to.be.equal(primaryCash.uuid);
       })
       .catch(helpers.handler);

@@ -68,8 +68,12 @@ var paths = {
 
       // Angular
       'client/vendor/angular/angular.min.js',
-      'client/vendor/angular-route/angular-route.min.js',
       'client/vendor/angular-messages/angular-messages.min.js',
+
+      // Angular UI
+      'client/vendor/angular-ui-router/release/angular-ui-router.min.js',
+      'client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+      'client/vendor/angular-ui-grid/ui-grid.min.js',
 
       // ChartJS
       'client/vendor/Chart.js/Chart.min.js',
@@ -79,9 +83,6 @@ var paths = {
       'client/vendor/moment/moment.js',
       'client/vendor/angular-moment/angular-moment.js',
       'client/vendor/moment/locale/fr.js',
-
-      // UI Grid
-      'client/vendor/angular-ui-grid/ui-grid.min.js',
 
       // Angular Translate
       'client/vendor/angular-translate/angular-translate.min.js',
@@ -93,9 +94,6 @@ var paths = {
 
       // Angular File Upload
       'client/vendor/ng-file-upload/ng-file-upload.min.js',
-
-      // UI Bootstrap
-      'client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
 
       // ngStorage
       'client/vendor/ngstorage/ngStorage.min.js'

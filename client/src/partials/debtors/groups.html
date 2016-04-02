@@ -39,7 +39,7 @@
           <tbody>
             <tr ng-repeat="group in debitor_group.data | filter:data.search | orderBy:'name'">
               <td>{{ group.name }}</td>
-              <td>{{ account.get(group.account_id).account_number }}</td>
+              <td>{{ account.get(group.account_id).number }}</td>
               <td><i class="glyphicon" ng-class="{'glyphicon-ok' : !!group.is_convention}"></i></td>
               <td><i class="glyphicon" ng-class="{'glyphicon-lock' : !!group.locked}"></i></td>
               <td><a ng-click="edit(group)" class="btn btn-xs btn-default"><i class="glyphicon glyphicon-pencil"></i></a></td>
@@ -89,7 +89,7 @@
               <label class="col-xs-2 control-label required">{{ "COLUMNS.ACCOUNT" | translate }}</label>
               <div class="col-xs-10">
                 <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-bhima" ng-model="newGroup.account_id" ng-options="acc.id as acc.label disable when (acc.account_type_id === 3) for acc in account.data"  required>
+                <select name="group-account" class="form-bhima" ng-model="newGroup.account_id" ng-options="acc.id as acc.label disable when (acc.type_id === 3) for acc in account.data"  required>
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
                 </select>
               </div>
@@ -173,7 +173,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.ACCOUNT" | translate }}</label>
               <div class="col-xs-10">
-                <select name="group-account" class="form-bhima" ng-model="editGroup.account_id" ng-options="acc.id as acc.label disable when (acc.account_type_id === 3) for acc in account.data | orderBy:'account_number'" required>
+                <select name="group-account" class="form-bhima" ng-model="editGroup.account_id" ng-options="acc.id as acc.label disable when (acc.type_id === 3) for acc in account.data | orderBy:'number'" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
                 </select>
               </div>

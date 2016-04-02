@@ -26,7 +26,7 @@ function DebtorGroupController($scope, $translate, connect, appstate, validate, 
     query : {
       tables : {
         'account' : {
-          columns : ['id', 'account_number', 'account_txt', 'account_type_id']
+          columns : ['id', 'number', 'label', 'type_id']
         }
       },
       where : [
@@ -67,8 +67,8 @@ function DebtorGroupController($scope, $translate, connect, appstate, validate, 
   function setUpModels (models) {
     angular.extend($scope, models);
     $scope.account.data.forEach(function (account) {
-      account.account_number = String(account.account_number);
-      account.label = [account.account_number, account.account_txt].join(' :: ');
+      account.number = String(account.number);
+      account.label = [account.number, account.label].join(' :: ');
     });
     $scope.action = '';
   }

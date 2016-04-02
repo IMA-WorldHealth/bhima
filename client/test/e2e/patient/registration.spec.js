@@ -1,5 +1,5 @@
 /* jshint expr:true */
-/* global element, by, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
@@ -66,7 +66,7 @@ describe('patient registration', function () {
     // submit the patient registration form
     FU.buttons.submit();
 
-    expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/invoice/patient/')
+    expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/patients/edit/')
     .then(function () {
       done();
     });
@@ -110,30 +110,25 @@ describe('patient registration', function () {
       var testMinYear = '1000';
       var validYear = '2000';
 
-      FU.clear('PatientRegCtrl.yob');
       FU.input('PatientRegCtrl.yob', testMaxYear);
-      FU.exists(by.id('date-error'), true);
+      FU.exists(by.css('[data-date-error]'), true);
 
-      FU.clear('PatientRegCtrl.yob');
       FU.input('PatientRegCtrl.yob', validYear);
-      FU.exists(by.id('date-error'), false);
+      FU.exists(by.css('[data-date-error]'), false);
 
-      FU.clear('PatientRegCtrl.yob');
       FU.input('PatientRegCtrl.yob', testMinYear);
-      FU.exists(by.id('date-error'), true);
+      FU.exists(by.css('[data-date-error]'), true);
     });
 
     it('correctly identifies duplicate hospital numbers (async)', function () {
 
       // resend the (assumed) correctly registered patients hospital number
-      FU.clear('PatientRegCtrl.medical.hospital_no');
       FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
-      FU.exists(by.id('hospitalNumber-alert'), true);
+      FU.exists(by.id('unique-error-icon'), true);
 
       // put in a unique hospital number
-      FU.clear('PatientRegCtrl.medical.hospital_no');
       FU.input('PatientRegCtrl.medical.hospital_no', uniqueHospitalNumber);
-      FU.exists(by.id('hospitalNumber-alert'), false);
+      FU.exists(by.id('unique-error-icon'), false);
     });
   });
 

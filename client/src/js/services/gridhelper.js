@@ -86,7 +86,7 @@ angular.module('bhima.services')
   service.grouping.byAccount = function (dataview, collapsed) {
     var formatter = function (g) {
       // FIXME: THIS IS A HACK
-      return '<span>ACCOUNT (<b>' + g.rows[0].account_number + '</b>)</span>';
+      return '<span>ACCOUNT (<b>' + g.rows[0].number + '</b>)</span>';
     };
     dataview.setGrouping({
       getter: 'account_id',
