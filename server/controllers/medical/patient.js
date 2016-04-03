@@ -228,7 +228,7 @@ function groups(req, res, next) {
     .then(function (rows) {
 
       if (isEmpty(rows)) {
-        throw new new NotFound('patient not found given uiid '.concat(uuid));
+        throw new NotFound('patient not found given uiid '.concat(uuid));
       }
 
       return db.exec(patientGroupsQuery, [uuid]);
