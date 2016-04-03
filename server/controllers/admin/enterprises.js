@@ -1,11 +1,15 @@
 /**
-* Enterprises Controller
-*
-* This controller is responsible for creating and updating Enterprises.
-*  Each Enterprise must necessarily have a name, an abbreviation, a geographical location as well as a currency
-*  And it is not possible to remove an Enterprise
-*/
-var db = require('../../lib/db');
+ * Enterprises Controller
+ *
+ * This controller is responsible for creating and updating Enterprises.
+ *  Each Enterprise must necessarily have a name, an abbreviation, a geographical location as well as a currency
+ *  And it is not possible to remove an Enterprise
+ */
+var db        = require('../../lib/db');
+
+var NotFound  = require('../../lib/errors/NotFound');
+
+exports.lookupEnterprise = lookupEnterprise;
 
 // GET /enterprises
 exports.list = function list(req, res, next) {
@@ -31,23 +35,32 @@ exports.list = function list(req, res, next) {
 // GET /enterprises/:id
 exports.detail = function detail(req, res, next) {
   'use strict';
-  var sql;
   var enterpriseId = req.params.id;
 
-  sql =
+  lookupEnterprise(enterpriseId)
+    .then(function (enterprise) { 
+      res.status(200).json(enterprise);
+    })
+    .catch(next)
+    .done();
+};
+
+function lookupEnterprise(id) { 
+  var sql = 
     'SELECT id, name, abbr, email, po_box, phone, location_id, logo, currency_id ' +
     'FROM enterprise WHERE id = ?';
-
-  db.exec(sql, [enterpriseId])
+  
+  return db.exec(sql, [id])
   .then(function (rows) {
+    var enterprise;
+
     if (!rows.length) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound('Could not find enterprise with id '.concat(id));
     }
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
-};
+    enterprise = rows[0];
+    return enterprise;
+  });
+}
 
 
 // POST /enterprises
@@ -105,4 +118,3 @@ exports.update = function update(req, res, next) {
   .catch(next)
   .done();
 };
-
