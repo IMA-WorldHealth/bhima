@@ -230,8 +230,6 @@ exports.configure = function (app) {
   app.get('/fiscal', fiscal.getFiscalYears);
   app.post('/fiscal/create', fiscal.createFiscalYear);
 
-  app.get('/reports/:route/', legacyReports.buildReport);
-
   /* load a user's tree */
   app.get('/tree', tree.generate);
 
