@@ -4,15 +4,16 @@ var expect = chai.expect;
 
 /** import test helpers */
 var helpers = require('./helpers');
-var uuid    = require('node-uuid');
 helpers.configure(chai);
+
+var uuid    = require('node-uuid');
 
 /**
 * The /vouchers API endpoint
 *
-* @desc This test suit is about the vouchers transactions
+* @desc This test suit is about the vouchers table
 */
-describe('(/vouchers) The Vouchers HTTP endpoint', function () {
+describe('(/vouchers) The vouchers HTTP endpoint', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
@@ -23,14 +24,9 @@ describe('(/vouchers) The Vouchers HTTP endpoint', function () {
   /** Test with dates */
   var date = new Date();
 
-  // This should never actually happen in production (in balanced transactions),
-  // but is a valid API test right now..
-  /**
-   * @todo - posting to the journal should reject this as unbalanced and
-   * break this test.
-   */
   var vUuid = uuid.v4();
 
+  // balanced transaction with two lines
   var voucher = {
     uuid : vUuid,
     date : date,
@@ -45,6 +41,11 @@ describe('(/vouchers) The Vouchers HTTP endpoint', function () {
       account_id : 3631,
       debit : 10,
       credit : 0,
+      voucher_uuid : vUuid
+    }, {
+      account_id: 3628,
+      debit: 0,
+      credit: 10,
       voucher_uuid : vUuid
     }]
   };
@@ -68,6 +69,22 @@ describe('(/vouchers) The Vouchers HTTP endpoint', function () {
     items : items
   };
 
+  var badVoucher = {
+    uuid : uuid.v4(),
+    date : date,
+    project_id : 1,
+    currency_id : 1,
+    amount : 10,
+    description : 'Voucher Transaction',
+    document_uuid : uuid.v4(),
+    items : [{
+      uuid : uuid.v4(),
+      account_id : 3631,
+      debit : 10,
+      credit : 0,
+    }]
+  };
+
   var mockVoucher;
 
   it('POST /vouchers create a new voucher record in voucher and voucher_item tables', function () {
@@ -89,7 +106,7 @@ describe('(/vouchers) The Vouchers HTTP endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /vouchers dont register when missing data', function () {
+  it('POST /vouchers doesn\'t register when missing data', function () {
     var uid = uuid.v4();
     mockVoucher = {
       uuid : uid,
@@ -116,10 +133,27 @@ describe('(/vouchers) The Vouchers HTTP endpoint', function () {
       .catch(helpers.handler);
   });
 
+  it('POST /vouchers will reject a voucher will less than two records', function () {
+    // attempt 1 - missing items completely + bad voucher
+    return agent.post('/vouchers')
+      .send({ voucher : { uuid : uuid.v4() }})
+      .then(function (res) {
+        helpers.api.errored(res, 400);
+
+    // attempt 2 - only a single item
+        return agent.post('/vouchers')
+          .send({ voucher : badVoucher });
+      })
+      .then(function (res) {
+        helpers.api.errored(res, 400);
+      })
+      .catch(helpers.handler);
+  });
+
   it('GET /vouchers returns a list of vouchers', function () {
     return agent.get('/vouchers')
       .then(function (res) {
-        helpers.api.listed(res, 5);
+        helpers.api.listed(res, 6);
       })
       .catch(helpers.handler);
   });
@@ -154,7 +188,7 @@ describe('(/vouchers) The Vouchers HTTP endpoint', function () {
         return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid);
       })
       .then(function (res) {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 2);
         return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=unknown');
       })
       .then(function (res) {
@@ -162,11 +196,11 @@ describe('(/vouchers) The Vouchers HTTP endpoint', function () {
         return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=1');
       })
       .then(function (res) {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 2);
         return agent.get('/vouchers/?project_id=' + voucher.project_id + '&reference=1');
       })
       .then(function (res) {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });

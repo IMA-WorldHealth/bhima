@@ -3,21 +3,22 @@
 *
 * @module finance/vouchers
 *
-* @desc This module is responsible for handling all crud operations relatives
-* to voiuchers transactions and define all vouchers api functions
+* @description This module is responsible for handling CRUD operations
+* against the `voucher` table.
 *
-* @required lodash
-* @required node-uuid
-* @required lib/util
-* @required lib/db
+* @requires lodash
+* @requires node-uuid
+* @requires lib/util
+* @requires lib/db
+* @requires lib/errors/NotFound
 */
 
-'use strict';
-
-var _    = require('lodash'),
-    uuid = require('node-uuid'),
-    util = require('../../lib/util'),
-    db   = require('../../lib/db');
+var _    = require('lodash');
+var uuid = require('node-uuid');
+var util = require('../../lib/util');
+var db   = require('../../lib/db');
+var NotFound = require('../../lib/errors/NotFound');
+var BadRequest = require('../../lib/errors/BadRequest');
 
 /** Get list of vouchers */
 exports.list = list;
@@ -35,11 +36,18 @@ exports.create = create;
 */
 function list(req, res, next) {
   var query =
-    'SELECT v.uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount, ' +
-    'v.description, v.document_uuid, v.user_id, vi.uuid AS voucher_item_uuid, ' +
-    'vi.account_id, vi.debit, vi.credit ' +
+    'SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount, ' +
+      'v.description, BUID(v.document_uuid) as document_uuid, ' +
+      'v.user_id, BUID(vi.uuid) AS voucher_item_uuid, ' +
+      'vi.account_id, vi.debit, vi.credit ' +
     'FROM voucher v JOIN voucher_item vi ON vi.voucher_uuid = v.uuid ';
 
+  // convert binary params if they exist
+  if (req.query.document_uuid) {
+    req.query.document_uuid = db.bid(req.query.document_uuid);
+  }
+
+  // format query parameters appropriately
   var builder = util.queryCondition(query, req.query);
 
   db.exec(builder.query, builder.conditions)
@@ -57,42 +65,23 @@ function list(req, res, next) {
 */
 function detail(req, res, next) {
   var query =
-    'SELECT v.uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount, ' +
-    'v.description, v.document_uuid, v.user_id, vi.uuid AS voucher_item_uuid, ' +
-    'vi.account_id, vi.debit, vi.credit ' +
+    'SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount, ' +
+      'v.description, v.document_uuid, v.user_id, BUID(vi.uuid) AS voucher_item_uuid, ' +
+      'vi.account_id, vi.debit, vi.credit ' +
     'FROM voucher v JOIN voucher_item vi ON vi.voucher_uuid = v.uuid ' +
-    'WHERE v.uuid = ? ;';
+    'WHERE v.uuid = ?;';
 
-  db.exec(query, req.params.uuid)
+  var id = db.bid(req.params.uuid);
+
+  db.exec(query, id)
   .then(function (rows) {
-    if (!rows.length) { return next(new req.codes.ERR_NOT_FOUND()); }
+    if (!rows.length) {
+      throw new NotFound('Could not find a voucher with id ' + req.params.id);
+    }
     res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
-}
-
-/**
- * Creates a filter that takes only takes the columns passed in from the
- * object, in the order that they are passed in.
- *
- * @method take
- * @returns {function} filter - a filtering function to that will convert an
- * object to an array with the given keys.
- *
- * @private
- */
-function take() {
-
-  // get the arguments as an array
-  var keys = Array.prototype.slice.call(arguments);
-
-  // return the filter function
-  return function (object) {
-    return keys.map(function (key) {
-      return object[key];
-    });
-  };
 }
 
 
@@ -107,6 +96,18 @@ function create(req, res, next) {
   var voucher = req.body.voucher;
   var items = req.body.voucher.items || [];
 
+  // a voucher without two items doesn't make any sense in double-entry
+  // accounting.  Therefore, throw a bad data error if there are any fewer
+  // than two items in the journal voucher.
+  if (items.length < 2) {
+    return next(
+      new BadRequest(
+        'Expected there to be at least two items, but ' +
+        'only received ? items.'.replace('?', items.length)
+      )
+    );
+  }
+
   // remove the voucher items from the request before insertion into the
   // database
   delete voucher.items;
@@ -116,35 +117,41 @@ function create(req, res, next) {
     voucher.date = new Date(voucher.date);
   }
 
-  // make sure the voucher has an id and convert an array of arrays
-  voucher.uuid = voucher.uuid || uuid.v4();
+  // convert the document uuid if it exists
+  if (voucher.document_uuid) {
+    voucher.document_uuid = db.bid(voucher.document_uuid);
+  }
 
-  // preprocess the items so they uuids if required
+  // make sure the voucher has an id
+  var uid = voucher.uuid || uuid.v4();
+  voucher.uuid = db.bid(uid);
+
+  // preprocess the items so they have uuids as required
   items.forEach(function (item) {
 
     // if the item doesn't have a uuid, create one for it.
-    item.uuid = item.uuid || uuid.v4();
+    item.uuid = db.bid(item.uuid || uuid.v4());
 
     // make sure the items reference the voucher correctly
-    item.voucher_uuid = item.voucher_uuid || voucher.uuid;
+    item.voucher_uuid = db.bid(item.voucher_uuid || uid);
   });
 
   // map items into an array of arrays
-  items = _.map(items, take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid'));
+  items = _.map(items, util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid'));
 
   // initialise the transaction handler
-  var transaction = db.transaction();
+  var txn = db.transaction();
 
   // build the SQL query
-  transaction
+  txn
     .addQuery('INSERT INTO voucher SET ?', [ voucher ])
     .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?', [ items ]);
 
   // execute the transaction
-  transaction.execute()
+  txn.execute()
   .then(function (rows) {
     res.status(201).json({
-      uuid: voucher.uuid
+      uuid: uid
     });
   })
   .catch(next)
