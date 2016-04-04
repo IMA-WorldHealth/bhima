@@ -75,6 +75,7 @@ var suppliers            = require('../controllers/admin/suppliers');
 var functions            = require('../controllers/admin/functions');
 var grades               = require('../controllers/admin/grades');
 var creditorGroups       = require('../controllers/finance/creditorGroups');
+var donors               = require('../controllers/donors');
 var referenceGroup       = require('../controllers/finance/referenceGroup');
 var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
@@ -121,7 +122,7 @@ exports.configure = function (app) {
   app.put('/locations/villages/:uuid', locations.update.village);
   app.put('/locations/sectors/:uuid', locations.update.sector);
   app.put('/locations/provinces/:uuid', locations.update.province);
-  app.put('/locations/countries/:uuid', locations.update.country);  
+  app.put('/locations/countries/:uuid', locations.update.country);
 
   // API for account routes crud
   app.get('/accounts', account.list);
@@ -412,11 +413,11 @@ exports.configure = function (app) {
   app.post('/patients/:uuid/groups', patient.updateGroups);
 
   app.get('/patients/hospital_number/:id/exists', patient.hospitalNumberExists);
-  
+
   app.get('/patients/:uuid/services', patient.billingServices);
   app.get('/patients/:uuid/prices', patient.priceLists);
   app.get('/patients/:uuid/subsidies', patient.subsidies);
-  
+
   app.post('/patients/visit', patient.visit);
 
   // app.get('/patients/search', patient.search);
@@ -598,5 +599,13 @@ exports.configure = function (app) {
   app.get('/creditor_groups', creditorGroups.list);
   app.get('/creditor_groups/:uuid', creditorGroups.detail);
   app.put('/creditor_groups/:uuid', creditorGroups.update);
+
+	/** Donors API */
+	app.get('/donors', donors.list);
+	app.get('/donors/:id', donors.detail);
+	app.post('/donors', donors.create);
+	app.put('/donors/:id', donors.update);
+	app.delete('/donors/:id', donors.remove);
+
 
 };

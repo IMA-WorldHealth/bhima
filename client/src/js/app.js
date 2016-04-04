@@ -68,7 +68,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'ExtraPaymentController as PaymentCtrl',
     templateUrl : 'partials/cash/extra_payment/extra_payment.html'
   })
-  
+
   /**
    * @fixme - this is to allow end to end testing of the patient invoice module
    * @todo - replace this with a real receipt.
@@ -145,6 +145,13 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     url : '/debtor_groups',
     controller : 'DebtorGroupsController as DebtorGroupCtrl',
     templateUrl : 'partials/debtor_groups/debtor_groups.html'
+  })
+
+  /* Admin: donors management */
+  .state('donors', {
+    url : '/donors',
+    controller : 'DonorsController as DonorCtrl',
+    templateUrl : 'partials/donors/donors.html'
   })
 
   /* employees routes */
@@ -308,7 +315,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   /* 2.X Journal routes */
   .state('journal', {
     url : '/journal',
-    controller : 'JournalController as JournalCtrl', 
+    controller : 'JournalController as JournalCtrl',
     templateUrl : 'partials/2.X-journal/journal.html'
   })
 
@@ -585,12 +592,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* donation routes */
-
-  .state('donors', {
-    url : '/donors',
-    controller: 'DonorManagementController',
-    templateUrl: '/partials/inventory/donors/donors.html'
-  })
   .state('/donations/:depotId?', {
     controller : 'DonationManagementController as DonationCtrl',
     templateUrl : 'partials/donations/donations.html'
@@ -938,15 +939,15 @@ function localStorageConfig($localStorageProvider) {
 }
 
 /**
- * This function is responsible for configuring anulgar's $http service. Any 
- * relevent services/ factories are registered at this point. 
+ * This function is responsible for configuring anulgar's $http service. Any
+ * relevent services/ factories are registered at this point.
  *
- * @params {Object} $httpProvider   Angular provider bject containing 
+ * @params {Object} $httpProvider   Angular provider bject containing
  *                                  'interceptors' that are chained on any HTTP request
  */
-function httpConfig($httpProvider) { 
-  
-  // register error handling interceptor 
+function httpConfig($httpProvider) {
+
+  // register error handling interceptor
   $httpProvider.interceptors.push('ErrorInterceptor');
 }
 
