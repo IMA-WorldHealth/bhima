@@ -283,9 +283,11 @@ INSERT INTO sale (project_id, reference, uuid, cost, debitor_uuid, service_id, u
 INSERT INTO `sale_item` VALUES
   ('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6','2e1332a7-3e63-411e-827d-42ad585ff518','cf05da13-b477-11e5-b297-023919d3d5b0',3,25.0000,25.0000,0.0000,75.0000);
 
+SET @pjid = HUID(UUID());
+
 INSERT INTO `posting_journal` VALUES
-  ('017dbe1e-c37c-11e5-a86e-843a4b0cdadc',1,1,1,'HBB1','2016-01-26',NULL,NULL,3631,75.0000,0.0000,75.0000,0.0000,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107','D','957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',NULL,NULL,2,1,NULL,NULL),
-  ('017dbe1e-c37c-11e5-a86e-843a4b0cdade',1,1,1,'HBB1','2016-01-26',NULL,NULL,3638,0.0000,75.0000,0.0000,75.0000,2,'cf05da13-b477-11e5-b297-023919d3d5b0',NULL,'957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6',NULL,NULL,2,1,NULL,1);
+  (HUID(UUID()),1,1,1,'HBB1','2016-01-09 14:35:55',@pjid,NULL,3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'HBB1','2016-01-09 14:35:55',@pjid,NULL,3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL);
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
@@ -297,7 +299,6 @@ INSERT INTO `primary_cash_module` VALUES (1,'Transfert'),(3,'Convention');
 -- exchange rate for the current date
 INSERT INTO `exchange_rate` VALUES
   (1,1,1,930.0000, CURRENT_DATE());
-
 
 INSERT INTO `employee` VALUES
   (1,'E1','Dedrick','Kitamuka','Mvuezolo','M','1980-02-01 00:00:00','2016-02-02 00:00:00',1,3,'71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0',500,NULL,NULL,'kinshasa','0896611111','my@email.com',1,3,'bfd8563e-72db-4698-af0f-55bd7849369e','42d3756a-7770-4bb8-a899-7953cd859892','be0096dd-2929-41d2-912e-fb2259356fb5',NULL);

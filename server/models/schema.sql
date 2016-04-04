@@ -792,30 +792,28 @@ CREATE TABLE `fonction` (
 
 DROP TABLE IF EXISTS `general_ledger`;
 CREATE TABLE `general_ledger` (
-  `uuid` char(36) NOT NULL,
-  `project_id` smallint(5) unsigned NOT NULL,
-  `fiscal_year_id` mediumint(8) unsigned NOT NULL,
-  `period_id` mediumint(8) unsigned NOT NULL,
-  `trans_id` text NOT NULL,
-  `trans_date` date NOT NULL,
-  `doc_num` int(10) unsigned DEFAULT NULL,
-  `description` text,
-  `account_id` int(10) unsigned NOT NULL,
-  `debit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `credit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `debit_equiv` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `credit_equiv` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `currency_id` tinyint(3) unsigned NOT NULL,
-  `deb_cred_uuid` char(36) DEFAULT NULL,
-  `deb_cred_type` char(1) DEFAULT NULL,
-  `inv_po_id` char(36) DEFAULT NULL,
-  `comment` text,
-  `cost_ctrl_id` varchar(10) DEFAULT NULL,
-  `origin_id` tinyint(3) unsigned NOT NULL,
-  `user_id` smallint(5) unsigned NOT NULL,
-  `session_id` int(10) unsigned NOT NULL,
-  `cc_id` smallint(6) DEFAULT NULL,
-  `pc_id` smallint(6) DEFAULT NULL,
+  `uuid`              BINARY(16) NOT NULL,
+  `project_id`        SMALLINT(5) UNSIGNED NOT NULL,
+  `fiscal_year_id`    MEDIUMINT(8) UNSIGNED DEFAULT NULL,
+  `period_id`         MEDIUMINT(8) UNSIGNED DEFAULT NULL,
+  `trans_id`          TEXT NOT NULL,
+  `trans_date`        DATETIME NOT NULL,
+  `record_uuid`       BINARY(16) NOT NULL, -- previously doc_num
+  `description`       TEXT,
+  `account_id`        INT(10) UNSIGNED NOT NULL,
+  `debit`             DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `credit`            DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `debit_equiv`       DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `credit_equiv`      DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
+  `entity_uuid`       CHAR(36),    -- previously deb_cred_uuid
+  `entity_type`       CHAR(1),     -- previously deb_cred_type
+  `reference_uuid`    BINARY(16),  -- previously inv_po_id
+  `comment`           TEXT,
+  `origin_id`         TINYINT(3) UNSIGNED NOT NULL,
+  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
+  `cc_id`             SMALLINT(6),
+  `pc_id`             SMALLINT(6),
   PRIMARY KEY (`uuid`),
   KEY `project_id` (`project_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
@@ -823,7 +821,6 @@ CREATE TABLE `general_ledger` (
   KEY `origin_id` (`origin_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
-  KEY `session_id` (`session_id`),
   KEY `cc_id` (`cc_id`),
   KEY `pc_id` (`pc_id`),
   FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
@@ -832,7 +829,6 @@ CREATE TABLE `general_ledger` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`session_id`) REFERENCES `posting_session` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1382,29 +1378,28 @@ CREATE TABLE `permission` (
 DROP TABLE IF EXISTS `posting_journal`;
 
 CREATE TABLE `posting_journal` (
-  `uuid` char(36) NOT NULL,
-  `project_id` smallint(5) unsigned NOT NULL,
-  `fiscal_year_id` mediumint(8) unsigned DEFAULT NULL,
-  `period_id` mediumint(8) unsigned DEFAULT NULL,
-  `trans_id` text NOT NULL,
-  `trans_date` date NOT NULL,
-  `doc_num` int(10) unsigned DEFAULT NULL,
-  `description` text,
-  `account_id` int(10) unsigned NOT NULL,
-  `debit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `credit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `debit_equiv` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `credit_equiv` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `currency_id` tinyint(3) unsigned NOT NULL,
-  `deb_cred_uuid` char(36) DEFAULT NULL,
-  `deb_cred_type` char(1) DEFAULT NULL,
-  `inv_po_id` char(36) DEFAULT NULL,
-  `comment` text,
-  `cost_ctrl_id` varchar(10) DEFAULT NULL,
-  `origin_id` tinyint(3) unsigned NOT NULL,
-  `user_id` smallint(5) unsigned NOT NULL,
-  `cc_id` smallint(6) DEFAULT NULL,
-  `pc_id` smallint(6) DEFAULT NULL,
+  `uuid`              BINARY(16) NOT NULL,
+  `project_id`        SMALLINT(5) UNSIGNED NOT NULL,
+  `fiscal_year_id`    MEDIUMINT(8) UNSIGNED DEFAULT NULL,
+  `period_id`         MEDIUMINT(8) UNSIGNED DEFAULT NULL,
+  `trans_id`          TEXT NOT NULL,
+  `trans_date`        DATETIME NOT NULL,
+  `record_uuid`       BINARY(16) NOT NULL, -- previously doc_num
+  `description`       TEXT,
+  `account_id`        INT(10) UNSIGNED NOT NULL,
+  `debit`             DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `credit`            DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `debit_equiv`       DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `credit_equiv`      DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
+  `entity_uuid`       BINARY(16),    -- previously deb_cred_uuid
+  `entity_type`       CHAR(1),     -- previously deb_cred_type
+  `reference_uuid`    BINARY(16),  -- previously inv_po_id
+  `comment`           TEXT,
+  `origin_id`         TINYINT(3) UNSIGNED NOT NULL,
+  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
+  `cc_id`             SMALLINT(6),
+  `pc_id`             SMALLINT(6),
   PRIMARY KEY (`uuid`),
   KEY `project_id` (`project_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
@@ -1422,17 +1417,6 @@ CREATE TABLE `posting_journal` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `posting_session`;
-
-CREATE TABLE `posting_session` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` smallint(5) unsigned NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `price_list`;
