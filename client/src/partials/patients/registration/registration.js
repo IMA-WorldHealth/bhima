@@ -92,23 +92,7 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, S
    * @params  {object}  error   An Error object that has been sent from the server. 
    */
   function handleServerError(error) {
-    var NO_INTERNET_CONNECTION = -1;
-  
-    // case - there is no internet connection 
-    if (error.status === NO_INTERNET_CONNECTION) { 
-      viewModel.exception = { 
-        status : -1,
-        data : { 
-          code : 'ERRORS.NO_CONNECTION',
-          description : 'No internet connection found - please contact your system administrator'
-        }
-      };
-    } else { 
-      
-      // No cases have been matched - provide error details to the UI 
-      viewModel.exception = error; 
-    }
-    
+    viewModel.exception = error; 
     ScrollTo('exceptionAlert');
   }
 }
