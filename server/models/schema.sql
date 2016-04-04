@@ -1974,21 +1974,18 @@ CREATE TABLE `village` (
   FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Structure de la table `voucher`
---
 DROP TABLE IF EXISTS `voucher`;
 CREATE TABLE IF NOT EXISTS `voucher` (
-  `uuid` char(36) NOT NULL,
-  `date` DATETIME NOT NULL,
-  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
-  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `currency_id` TINYINT(3) UNSIGNED NOT NULL,
-  `amount` decimal(19,4) unsigned NOT NULL DEFAULT 0.0000,
-  `description` varchar(255) DEFAULT NULL,
-  `document_uuid` char(36) DEFAULT NULL,
-  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
-  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `uuid`            BINARY(16) NOT NULL,
+  `date`            DATETIME NOT NULL,
+  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
+  `amount`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `description`     TEXT DEFAULT NULL,
+  `document_uuid`   BINARY(16) DEFAULT NULL,
+  `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `project_id` (`project_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
@@ -1998,19 +1995,16 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TRIGGER voucher_calculate_reference BEFORE INSERT ON voucher
+CREATE TRIGGER voucher_before_insert BEFORE INSERT ON voucher
 FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM voucher WHERE voucher.project_id = NEW.project_id);
 
---
--- Structure de la table `voucher_item`
---
 DROP TABLE IF EXISTS `voucher_item`;
 CREATE TABLE IF NOT EXISTS `voucher_item` (
-  `uuid` CHAR(36) NOT NULL,
-  `account_id` INT UNSIGNED NOT NULL,
-  `debit` DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
-  `credit` DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
-  `voucher_uuid` char(36) NOT NULL,
+  `uuid`            BINARY(16) NOT NULL,
+  `account_id`      INT UNSIGNED NOT NULL,
+  `debit`           DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
+  `credit`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
+  `voucher_uuid`    BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `account_id` (`account_id`),
   KEY `voucher_uuid` (`voucher_uuid`),

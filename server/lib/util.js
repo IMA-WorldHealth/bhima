@@ -85,7 +85,7 @@ function toMysqlDate (dateString) {
  * var filter = take('id', 'season');
  * var arrs = _.map(array, filter); // returns [[1, 'summer], [2, 'winter'], [3, 'fall']]
  *
- * @private
+ * @public
  */
 function take() {
 
