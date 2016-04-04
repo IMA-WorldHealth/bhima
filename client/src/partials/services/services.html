@@ -29,18 +29,26 @@
                 <th>{{ "COLUMNS.SERVICE" | translate }}</th>
                 <th>{{ "COLUMNS.COST_CENTER" | translate }}</th>
                 <th>{{ "COLUMNS.PROFIT_CENTER" | translate }}</th>
-                <th colspan="3">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+                <th>{{ 'COLUMNS.ACTIONS' | translate }}</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="service in ServicesCtrl.services | orderBy:'name' track by service.id" ng-class="{'btn-primary' : editService.id==service.id }">
-                <td>{{ $index + 1 }}</td>
+                <td>{{ service.id }}</td>
                 <td>{{ service.name }}</td>
                 <td>{{ service.cost_center_name }}</td>
                 <td>{{ service.profit_center_name }}</td>
-                <td><a class="btn btn-xs btn-default" ng-click="ServicesCtrl.update(service)" id="service-upd-{{ $index + 1}}"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                <td><a class="btn btn-xs btn-default" ng-click="ServicesCtrl.more(service)" id="service-more-{{ $index + 1 }}" class="danger"><span class="glyphicon glyphicon-eye-open"></span></a></td>
-                <td><a class="btn btn-xs btn-default" ng-click="ServicesCtrl.del(service)" id="service-del-{{ $index + 1 }}" class="danger"><span class="glyphicon glyphicon-trash"></span></a></td>
+                <td>
+                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.update(service)" id="service-upd-{{ service.id}}">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </a>
+                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.more(service)" id="service-more-{{ service.id }}">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                  </a>
+                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.del(service)" id="service-del-{{ service.id }}">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </a>
+                </td>
               </tr>
             </tbody>
           </table>

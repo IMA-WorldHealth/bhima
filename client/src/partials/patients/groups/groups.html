@@ -1,151 +1,195 @@
-<header data-header>
-  {{ "PATIENT_GRP.TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li class="active">{{ "PATIENT_GRP.TITLE" | translate }}</li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ADMIN" | translate }}</li>
+      <li class="title">{{ "PATIENT_GROUP.TITLE" | translate }}</li>
     </ol>
   </div>
+</div>
 
-  <div class="pull-right">
-    <button ng-click="newGroup()" class="btn btn-sm btn-default pull-right">
-      <i class="glyphicon glyphicon-plus-sign"></i> {{ "PATIENT_GRP.NEW" | translate }}
-    </button>
-  </div>
-</nav>
+<div class="flex-util">
+  <button class="btn btn-sm btn-default" ng-click="PatientGroupCtrl.create()" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PATIENT_GROUP.NEW" | translate }}
+  </button>
+</div>
 
-<main>
-  <div class="row margin-top-10">
-    <div class="col-xs-6">
-      <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
-        <div class="panel-heading">
-          <span>{{ "PATIENT_GRP.REGISTERED" | translate }}</span>
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+
+        <!-- @todo - better design! -->
+        <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
+          <div class="panel-heading">
+            <span>{{ "PATIENT_GROUP.ALL_PATIENT_GROUP" | translate }}</span>
+          </div>
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.PRICE_LIST" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.NOTE" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.ACTIONS" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="group in PatientGroupCtrl.groups" ng-class="{ 'bg-info' : group.uuid == PatientGroupCtrl.patientGroup.uuid }">
+                <td>{{ group.name}}</td>
+                <td>{{ group.priceListLable }}</td>
+                <td>{{ group.note }}</td>
+                <td>
+                  <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </a>
+                </td>
+              </tr>
+              <tr ng-if="PatientGroupCtrl.loading" class="text-center">
+                <td colspan="4"><loading-indicator></loading-indicator></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th>{{ "PATIENT_GRP.PATIENT_GROUP" | translate }}</th>
-              <th>{{ "PATIENT_GRP.PRICE_LIST" | translate }}</th>
-              <th>{{ "PATIENT_GRP.SUBSIDY" | translate }}</th>
-              <th colspan="3" width="10%">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-class="{'selected-primary' : session.selected.uuid === grp.uuid}" ng-repeat="grp in group.data  | orderBy:'name'">
-              <td>{{ grp.name }}</td>
-              <td>{{ list.get(grp.price_list_uuid).title }}</td>
-              <td>{{ subsidies.get(grp.subsidy_uuid).text }}</td>
-              <td><a ng-if="grp.price_list_uuid" title="{{ 'PATIENT_GRP.PRICE_LIST' | translate }}" class="action" ng-click="showReport(grp)"><span class="glyphicon glyphicon-eye-open"></span></a></td>
-              <td><a class="action" ng-click="edit(grp)"><i class="glyphicon glyphicon-pencil"></i></a></td>
-              <td><a class="action" ng-click="remove(grp)"><i class="glyphicon glyphicon-trash uif-red"></i></a></td>
-            </tr>
-          </tbody>
-        </table>
+      </div>
+
+      <div class="col-md-6" ng-switch="PatientGroupCtrl.view">
+
+        <div ng-switch-default>
+          <div class="alert alert-info">
+            <h4>{{ "PATIENT_GROUP.TITLE" | translate }}</h4>
+            <p>{{ "PRICE_LIST.DESCRIPTION1" | translate }}</p>
+            <ul class="list-unstyled">
+              <li><i class="glyphicon glyphicon-pencil"></i> {{ "PATIENT_GROUP.DESCRIPTION2" | translate }}</li>
+              <li><i class="glyphicon glyphicon-trash"></i> {{ "PATIENT_GROUP.DESCRIPTION3" | translate }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div ng-switch-when="create">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              {{ "PATIENT_GROUP.ADD_PATIENT_GROUP" | translate }}
+            </div>
+
+            <div class="panel-body">
+              <form name="CreateForm" bh-submit="PatientGroupCtrl.submit(CreateForm)" novalidate data-create-form>
+
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.NAME" | translate }}
+                  </label>
+                  <input class="form-control" name="name" ng-model="PatientGroupCtrl.patientGroup.name" required>
+                  <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.priceList.$invalid }">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.PRICE_LIST" | translate }}
+                  </label>
+                  <select
+                    class="form-control"
+                    name="priceList"
+                    ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
+                    ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists">
+                    <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
+                  </select>
+                  <div class="help-block" ng-messages="CreateForm.priceList.$error" ng-show="CreateForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.note.$invalid }">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.NOTES" | translate }}
+                  </label>
+                  <textarea class="form-control" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
+                  <div class="help-block" ng-messages="CreateForm.note.$error" ng-show="CreateForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <bh-loading-button loading-state="CreateForm.$loading"></bh-loading-button>
+                  <button class="btn btn-default" type="button" ng-click="PatientGroupCtrl.cancel()" data-method="cancel">
+                    {{ "FORM.CANCEL" | translate }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- @todo - update and create forms should use the same form -->
+        <div ng-switch-when="update">
+          <div class="panel panel-primary">
+
+            <div class="panel-heading">
+            {{ "PATIENT_GROUP.ADD_PATIENT_GROUP" | translate }}
+            </div>
+
+            <div class="panel-body">
+              <form bh-submit="PatientGroupCtrl.submit(UpdateForm)" name="UpdateForm" novalidate data-update-form>
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.NAME" | translate }}
+                  </label>
+                  <input class="form-control" name="name" ng-model="PatientGroupCtrl.patientGroup.name" required>
+                  <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.PRICE_LIST" | translate }}
+                  </label>
+                  <select
+                    class="form-control"
+                    name="priceList"
+                    ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
+                    ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists">
+                    <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
+                  </select>
+                  <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">
+                    {{ "FORM.LABELS.NOTES" | translate }}
+                  </label>
+                  <textarea class="form-control" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
+                  <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <!-- form submit/cancel buttons -->
+                <div class="form-group">
+                  <bh-loading-button loading-state="UpdateForm.$loading"></bh-loading-button>
+                  <button class="btn btn-default" type="button" ng-click="PatientGroupCtrl.cancel()" data-method="cancel">
+                    {{ "FORM.CANCEL" | translate }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="panel panel-warning">
+            <div class="panel-heading">
+              <span class="glyphicon glyphicon-lock"></span> {{ "FORM.DANGER_ZONE" | translate }}
+            </div>
+            <div class="panel-body">
+              <button class="btn btn-danger" type="button" ng-click="PatientGroupCtrl.remove()" data-method="delete">
+                <span class="glyphicon glyphicon-trash"></span> {{ "FORM.DELETE" | translate }}
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
-
-    <div class="col-xs-6" ng-switch="action">
-
-      <div ng-switch-default>
-        <div class="alert alert-info">
-          <h4>{{ "PATIENT_GRP.TITLE" | translate }}</h4>
-          <p>{{ "PATIENT_GRP.HELP_TXT_1" | translate }}.</p>
-        </div>
-      </div>
-
-      <div ng-switch-when="register">
-        <form class="form-horizontal" name="add" novalidate>
-          <fieldset>
-            <legend>{{ "PATIENT_GRP.REGISTER" | translate }}</legend>
-
-            <div class="form-group required">
-              <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
-              <div class="col-xs-10">
-                <input class="form-bhima" ng-model="register.name" required>
-              </div>
-            </div>
-
-            <div class="form-group required">
-              <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
-              <div class="col-xs-10">
-                <select class="form-bhima" ng-model="register.price_list_uuid" ng-options="list.uuid as list.title for list in list.data">
-                  <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-2 control-label">{{ "PATIENT_GRP.SUBSIDY" | translate }}</label>
-              <div class="col-xs-10">
-                <select class="form-bhima" ng-model="register.subsidy_uuid" ng-options="subsidy.uuid as subsidy.text for subsidy in subsidies.data">
-                  <option value="">-- {{ "SELECT.SUBSIDY" | translate }} --</option>
-                </select>
-              </div>
-            </div>
-
-
-            <div class="form-group">
-              <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
-              <div class="col-xs-10">
-                <textarea class="form-control" ng-model="register.note" rows="3">
-                </textarea>
-              </div>
-            </div>
-
-            <input ng-click="saveRegistration()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}" ng-disabled="add.$invalid">
-            <input ng-click="resetRegistration()" class="btn btn-sm btn-default" type="button" value="{{ 'FORM.RESET_FORM' | translate }}">
-
-          </fieldset>
-        </form>
-      </div>
-
-      <div ng-switch-when="modify">
-        <form class="form-horizontal">
-          <fieldset>
-            <legend>{{ "PATIENT_GRP.MODIFY" |  translate }}</legend>
-
-            <div class="form-group required">
-              <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
-              <div class="col-xs-10">
-                <input class="form-bhima" ng-model="modify.name">
-              </div>
-            </div>
-
-            <div class="form-group required">
-              <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
-              <div class="col-xs-10">
-                <select class="form-bhima" ng-model="modify.price_list_uuid" ng-options="list.uuid as list.title for list in list.data">
-                  <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-2 control-label">{{ "PATIENT_GRP.SUBSIDY" | translate }}</label>
-              <div class="col-xs-10">
-                <select class="form-bhima" ng-model="modify.subsidy_uuid" ng-options="subsidy.uuid as subsidy.text for subsidy in subsidies.data">
-                  <option value="">-- {{ "SELECT.SUBSIDY" | translate }} --</option>
-                </select>
-              </div>
-            </div>
-
-
-            <div class="form-group">
-              <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
-              <div class="col-xs-10">
-                <textarea class="form-control" ng-model="modify.note" rows="3"></textarea>
-              </div>
-            </div>
-
-            <input ng-click="saveModification()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}">
-            <input ng-click="resetModification()" class="btn btn-sm btn-default" type="button" value="{{ 'FORM.RESET_FORM' | translate }}">
-
-          </fieldset>
-        </form>
-      </div>
-    </div>
   </div>
-</main>
+</div>
