@@ -1164,10 +1164,10 @@
    "NEW"            : "New Donor",
    "NO_DONOR"       : "No Donor saving",
    "REGISTERED"     : "Registered Donor",
-   "SAVE_SUCCES"    : "Successfully saving Configuration",
+   "SAVE_SUCCESS"   : "Successfully saving Configuration",
    "TITLE"          : "Donor management",
    "UPDATE"         : "Modify a Donor",
-   "UPDATE_SUCCES"  : "Updated successfully"
+   "UPDATE_SUCCESS" : "Updated successfully"
    },
 "EFIND": {
    "ENTER_EMPLOYEE_ID" : "Enter employee Id",
