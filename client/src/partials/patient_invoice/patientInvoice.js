@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   '$q', '$location', 'PatientService', 'PriceLists', 'PatientInvoice',
-  'Invoice', 'util', 'ServiceService', 'SessionService', 'DateService'
+  'Invoice', 'util', 'ServiceService', 'SessionService', 'DateService',
+  'ReceiptModal'
 ];
 
 /**
@@ -18,12 +19,18 @@ PatientInvoiceController.$inject = [
  *
  * @module bhima/controllers/PatientInvoiceController
  */
-function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates) {
+function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates, Receipts) {
   var vm = this;
   vm.Invoice = new Invoice();
 
   // bind the enterprise to the enterprise currency
   vm.enterprise = Session.enterprise;
+  
+  Receipts.invoice('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6')
+    .then(function (result) { 
+     
+      // receipt closed fired
+    });
 
   var gridOptions = {
     appScopeProvider : vm,
