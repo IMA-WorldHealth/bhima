@@ -1,24 +1,19 @@
 /**
-* Application Routing
-*
-* Initialise link between server paths and controller logic
-*
-* TODO Pass authenticate and authorize middleware down through
-* controllers, allowing for modules to subscribe to different
-* levels of authority
-*
-* TODO createPurchase, createSale, are all almost
-* identicale modules - they should all be encapsulated as one
-* module. For Example finance.createSale, finance.createPurchase
-*/
+ * Application Routing
+ *
+ * Initialise link between server paths and controller logic
+ *
+ * @TODO Pass authenticate and authorize middleware down through
+ * controllers, allowing for modules to subscribe to different
+ * levels of authority
+ *
+ */
 var winston              = require('winston');
 var auth                 = require('../controllers/auth');
 var data                 = require('../controllers/data');
 var users                = require('../controllers/users');
 var locations            = require('../controllers/locations');
 var tree                 = require('../controllers/tree');
-//var createPurchase       = require('../controllers/finance/purchase');
-var createSale           = require('../controllers/finance/sale');
 var patient              = require('../controllers/medical/patient');
 var patientGroup         = require('../controllers/medical/patientGroups');
 var snis                 = require('../controllers/medical/snis');
@@ -66,7 +61,7 @@ var caution              = require('../controllers/categorised/caution');
 var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
 var transfers            = require('../controllers/finance/transfers');
-var debtorGroups         = require('../controllers/finance/debtorGroups');
+var debtorGroups         = require('../controllers/finance/debtors/groups');
 var currencies           = require('../controllers/finance/currencies');
 var services             = require('../controllers/admin/services');
 var conventions          = require('../controllers/finance/conventions');
@@ -80,8 +75,8 @@ var referenceGroup       = require('../controllers/finance/referenceGroup');
 var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
 
-// Middleware for handle uploaded file
-var multipart            = require('connect-multiparty');
+// middleware for handle uploaded file
+var multipart = require('connect-multiparty');
 
 exports.configure = function (app) {
   winston.debug('Configuring routes');
@@ -203,7 +198,6 @@ exports.configure = function (app) {
   app.post('/report/build/:route', reports.build);
   app.get('/report/serve/:target', reports.serve);
 
-  // app.post('/sale/', createSale.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
   // trial balance routes
@@ -375,7 +369,6 @@ exports.configure = function (app) {
   app.get('/ledgers/general', gl.route);
 
   // finance controller
-  app.get('/finance/debtors', genericFinance.getDebtors);
   app.get('/finance/creditors', genericFinance.getCreditors);
   app.get('/finance/profitcenters', genericFinance.getProfitCenters);
   app.get('/finance/costcenters', genericFinance.getCostCenters);
@@ -435,16 +428,16 @@ exports.configure = function (app) {
   /** Debtors API */
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
   /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */
-  app.get('/debtors/groups', debtors.listGroups);
-  app.get('/debtors/groups/:uuid', debtors.groupDetails);
-  app.get('/debtors/:uuid/invoices', debtors.fetchInvoices);
+  app.get('/debtors/groups', debtorGroups.list);
+  app.get('/debtors/groups/:uuid', debtorGroups.detail);
+  app.get('/debtors/:uuid/invoices', debtors.invoices);
   app.put('/debtors/:uuid', debtors.update);
 
   /** Debtor Groups API */
-  app.post('/debtor_groups', debtorGroups.create);
   app.get('/debtor_groups', debtorGroups.list);
   app.get('/debtor_groups/:uuid', debtorGroups.detail);
-  app.get('/debtor_groups/:uuid/invoices', debtorGroups.getInvoices);
+  app.get('/debtor_groups/:uuid/invoices', debtorGroups.invoices);
+  app.post('/debtor_groups', debtorGroups.create);
   app.put('/debtor_groups/:uuid', debtorGroups.update);
 
   // search stuff

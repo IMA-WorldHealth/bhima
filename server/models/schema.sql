@@ -46,7 +46,7 @@ CREATE TABLE `account_type` (
 DROP TABLE IF EXISTS `assignation_patient`;
 CREATE TABLE `assignation_patient` (
   `uuid` char(36) NOT NULL,
-  `patient_group_uuid` char(36) NOT NULL,
+  `patient_group_uuid` char(37) NOT NULL,
   `patient_uuid` char(36) NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `patient_group_uuid` (`patient_group_uuid`),
@@ -291,7 +291,7 @@ CREATE TABLE `config_tax_item` (
 DROP TABLE IF EXISTS `consumption`;
 
 CREATE TABLE `consumption` (
-  `uuid` char(36) NOT NULL,
+  `uuid` char(38) NOT NULL,
   `depot_uuid` char(36) NOT NULL,
   `date` date DEFAULT NULL,
   `document_id` char(36) NOT NULL,
@@ -2020,3 +2020,13 @@ END
 //
 
 DELIMITER ;
+
+-- a view to make SQL statements look nicer.
+CREATE VIEW combined_ledger AS
+  SELECT record_uuid, trans_id, trans_date AS date, account_id, credit_equiv AS credit, debit_equiv as debit,
+  reference_uuid, description, entity_uuid
+  FROM posting_journal
+  UNION ALL
+  SELECT record_uuid, trans_id, trans_date AS date, account_id, credit_equiv AS credit, debit_equiv as debit,
+  reference_uuid, description, entity_uuid
+  FROM general_ledger;

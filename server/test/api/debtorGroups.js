@@ -152,12 +152,11 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
     .catch(helpers.handler);
   });
 
-  it('POST /debtor_groups/ dont create when with missing data', function () {
+  it('POST /debtor_groups don\'t create when with missing data', function () {
     return agent.post('/debtor_groups/')
     .send(invalidGroup)
     .then(function (res) {
       helpers.api.errored(res, 400);
-      expect(res.body.code).to.be.equal('ERR_MISSING_REQUIRED_PARAMETERS');
     })
     .catch(helpers.handler);
   });
