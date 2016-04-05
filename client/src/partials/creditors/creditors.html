@@ -10,7 +10,7 @@
 <!-- Links to the Supplier Chart as well as the button for adding an supplier -->
 <div class="flex-util">
   <button ng-click="SupplierCtrl.create()" class="btn btn-default btn-sm" data-method="create">
-    <span class="glyphicon glyphicon-user"></span> {{ "SUPPLIER.TITLE" | translate }}
+    <span class="glyphicon glyphicon-user"></span> {{ "SUPPLIER.ADD_SUPPLIER" | translate }}
   </button>
 </div>
 
@@ -27,11 +27,11 @@
           <table class="table table-condensed">
             <thead>
               <tr>
-                <th>{{ "COLUMNS.NR" | translate }}</th>
-                <th>{{ "COLUMNS.NAME" | translate }}</th>
-                <th>{{ "COLUMNS.PHONE" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.NR" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.PHONE" | translate }}</th>
                 <th><span class="glyphicon glyphicon-lock"></span></th>
-                <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -66,25 +66,25 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ "SUPPLIER.REGISTRATION_SUCCESS" | translate }}</h4>
+            <h4>{{ "FORM.INFOS.SAVE_SUCCESS" | translate }}</h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ "SUPPLIER.UPDATE_SUCCESS" | translate }} </h4>
+            <h4>{{ "FORM.INFOS.UPDATE_SUCCESS" | translate }} </h4>
           </div>
         </div>
 
         <!-- Form for adding supplier -->
         <div class="panel panel-primary" ng-switch-when="create">
-          <div class="panel-heading">{{ "SUPPLIER.NEW" | translate }}</div>
+          <div class="panel-heading">{{ "SUPPLIER.NEW_SUPPLIER" | translate }}</div>
           <div class="panel-body">
             <form class="panel-body" name="CreateForm" ng-submit="SupplierCtrl.submit(CreateForm)" novalidate>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
-                <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
                 <input type="text" class="form-control" name="name" ng-model="SupplierCtrl.supplier.name" required>
                 <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -94,16 +94,16 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.international.$invalid }">
                 <label class="control-label">
                   <input type="checkbox"  name="international" id="international" ng-true-value="1" ng-false-value="0" 
-                    ng-model="SupplierCtrl.supplier.international">  {{ "SUPPLIER.INTL" | translate }}
+                    ng-model="SupplierCtrl.supplier.international">  {{ "FORM.LABELS.INTL" | translate }}
                 </label>  
               </div> 
 
               <hr>
               
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.creditor_uuid.$invalid }">
-                <label class="control-label">{{ "COLUMNS.GROUP" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.GROUP" | translate }}</label>
                 <select class="form-control" name="creditor_uuid" ng-model="SupplierCtrl.supplier.creditor_uuid" id="creditor_uuid" ng-options="creditor.uuid as creditor.text for creditor in SupplierCtrl.creditors | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "SELECT.CREDITOR" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_CREDITOR" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.creditor_uuid.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -113,17 +113,17 @@
               <hr>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.phone.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.PHONE" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
                 <input type="phone" class="form-control" name="phone" ng-model="SupplierCtrl.supplier.phone">
               </div>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.email.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.EMAIL" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
                 <input type="email" class="form-control" name="email" ng-model="SupplierCtrl.supplier.email">
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.address_1.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.ADDR_1" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.ADDR_1" | translate }}</label>
                 <input type="address" class="form-control" name="address_1" ng-model="SupplierCtrl.supplier.address_1" required>
                 <div class="help-block" ng-messages="CreateForm.address_1.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -133,35 +133,35 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.locked.$invalid }">
                 <label class="control-label">
                   <input type="checkbox"  name="locked" id="locked" ng-true-value="1" ng-false-value="0" 
-                    ng-model="SupplierCtrl.supplier.locked">  {{ "SUPPLIER.LOCKED" | translate }}
+                    ng-model="SupplierCtrl.supplier.locked">  {{ "FORM.LABELS.LOCKED" | translate }}
                 </label>  
               </div> 
 
               <hr>
-                <h3> {{ "SUPPLIER.OPTIONAL_INFO" | translate }}  </h3>
+                <h3> {{ "FORM.LABELS.OPTIONAL_INFO" | translate }}  </h3>
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.address_2.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.ADDR_2" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.ADDR_2" | translate }}</label>
                 <input type="address" class="form-control" name="address_2" ng-model="SupplierCtrl.supplier.address_2">
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.fax.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.FAX" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.FAX" | translate }}</label>
                 <input type="text" class="form-control" name="fax" ng-model="SupplierCtrl.supplier.fax">
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.note.$invalid }">
-                <label class="control-label" for="note">{{ "COLUMNS.NOTE" | translate }}</label>
+                <label class="control-label" for="note">{{ "FORM.LABELS.NOTES" | translate }}</label>
                 <textarea class="form-control" name="note" id="note" ng-model="SupplierCtrl.supplier.note" rows="3"></textarea>
               </div>
 
               <div class="form-group">
                 <button class="btn btn-default" id="submit-supplier" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="SupplierCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
 
@@ -181,7 +181,7 @@
           <div class="panel-body">
             <form class="panel-body" name="UpdateForm" ng-submit="SupplierCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
-                <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
                 <input type="text" class="form-control" name="name" ng-model="SupplierCtrl.supplier.name" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -191,16 +191,16 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.international.$invalid }">
                 <label class="control-label">
                   <input type="checkbox"  name="international" id="international" ng-true-value="1" ng-false-value="0" 
-                    ng-model="SupplierCtrl.supplier.international">  {{ "SUPPLIER.INTL" | translate }}
+                    ng-model="SupplierCtrl.supplier.international">  {{ "FORM.LABELS.INTL" | translate }}
                 </label>  
               </div> 
 
               <hr>
               
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.creditor_uuid.$invalid }">
-                <label class="control-label">{{ "COLUMNS.GROUP" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.GROUP" | translate }}</label>
                 <select class="form-control" name="creditor_uuid" ng-model="SupplierCtrl.supplier.creditor_uuid" id="creditor_uuid" ng-options="creditor.uuid as creditor.text for creditor in SupplierCtrl.creditors | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "SELECT.CREDITOR" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_CREDITOR" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.creditor_uuid.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -210,17 +210,17 @@
               <hr>
             
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.phone.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.PHONE" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
                 <input type="phone" class="form-control" name="phone" ng-model="SupplierCtrl.supplier.phone">
               </div>
             
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.email.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.EMAIL" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
                 <input type="email" class="form-control" name="email" ng-model="SupplierCtrl.supplier.email">
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.address_1.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.ADDR_1" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.ADDR_1" | translate }}</label>
                 <input type="address" class="form-control" name="address_1" ng-model="SupplierCtrl.supplier.address_1" required>
                 <div class="help-block" ng-messages="UpdateForm.address_1.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -230,35 +230,35 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.locked.$invalid }">
                 <label class="control-label">
                   <input type="checkbox"  name="locked" id="locked" ng-true-value="1" ng-false-value="0" 
-                    ng-model="SupplierCtrl.supplier.locked">  {{ "SUPPLIER.LOCKED" | translate }}
+                    ng-model="SupplierCtrl.supplier.locked">  {{ "FORM.LABELS.LOCKED" | translate }}
                 </label>  
               </div> 
 
               <hr>
-                <h3> {{ "SUPPLIER.OPTIONAL_INFO" | translate }}  </h3>
+                <h3> {{ "FORM.LABELS.OPTIONAL_INFO" | translate }}  </h3>
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.address_2.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.ADDR_2" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.ADDR_2" | translate }}</label>
                 <input type="address" class="form-control" name="address_2" ng-model="SupplierCtrl.supplier.address_2">
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.fax.$invalid }">
-                <label class="control-label">{{ "SUPPLIER.FAX" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.FAX" | translate }}</label>
                 <input type="text" class="form-control" name="fax" ng-model="SupplierCtrl.supplier.fax">
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.note.$invalid }">
-                <label class="control-label" for="note">{{ "COLUMNS.NOTE" | translate }}</label>
+                <label class="control-label" for="note">{{ "FORM.LABELS.NOTES" | translate }}</label>
                 <textarea class="form-control" name="note" id="note" ng-model="SupplierCtrl.supplier.note" rows="3"></textarea>
               </div>
 
               <div class="form-group">
                 <button class="btn btn-default" id="change_supplier" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="SupplierCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
 

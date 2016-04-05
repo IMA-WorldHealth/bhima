@@ -18,10 +18,10 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>{{ "COLUMNS.NAME" | translate }}</th>
-                <th>{{ "DEBTOR_GRP.IS_CONVENTION" | translate }}</th>
-                <th>{{ "DEBTOR_GRP.LOCKED" | translate }}</th>
-                <th>{{ "COLUMNS.ACTION" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.IS_CONVENTION" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.LOCKED" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -39,7 +39,7 @@
                     name="group-{{group.uuid}}"
                     class="btn btn-xs btn-default"
                     ng-click="DebtorGroupCtrl.update(group.uuid)">
-                    <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.EDIT' | translate }}
+                    <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}
                   </a>
                 </td>
               </tr>
@@ -64,16 +64,16 @@
 
               <!-- Debtor group info  -->
               <fieldset>
-                <legend>{{ "COLUMNS.DEBTOR_GROUP" | translate }}</legend>
+                <legend>{{ "FORM.LABELS.DEBTOR_GROUP" | translate }}</legend>
 
                 <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.name.$invalid }">
                   <label class="control-label">
-                    {{ "COLUMNS.NAME" | translate }}
+                    {{ "FORM.LABELS.NAME" | translate }}
                   </label>
                   <input
                     class="form-control"
                     name="name"
-                    placeholder="{{ 'COLUMNS.NAME' | translate }}..."
+                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_NAME' | translate }}..."
                     ng-model="DebtorGroupCtrl.debtorGroup.name"
                     ng-change="DebtorGroupCtrl.refreshValidation()"
                     required>
@@ -85,12 +85,12 @@
                 <!-- Find an account for debtor group -->
                 <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.account.$invalid }">
                   <label class="control-label">
-                    {{ "COLUMNS.ACCOUNT" | translate }}
+                    {{ "FORM.LABELS.ACCOUNT" | translate }}
                   </label>
                   <input
                     class="form-control"
                     name="account"
-                    placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}..."
+                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
                     uib-typeahead="account.id as account.label for account in DebtorGroupCtrl.accounts.data | filter:$viewValue | limitTo:8" class="form-control"
                     typeahead-template-url="partials/templates/typeahead/accounts.html"
                     ng-model="DebtorGroupCtrl.debtorGroup.account_id"
@@ -103,7 +103,7 @@
                 <!-- Find price list for the group -->
                 <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.price_list.$invalid }">
                   <label class="control-label">
-                    {{ "COLUMNS.PRICE_LIST" | translate }}
+                    {{ "FORM.LABELS.PRICE_LIST" | translate }}
                   </label>
                   <select
                     class="form-control"
@@ -111,7 +111,7 @@
                     ng-model="DebtorGroupCtrl.debtorGroup.price_list_uuid"
                     ng-options="price.uuid as price.label for price in DebtorGroupCtrl.prices.data"
                     required>
-                    <option value="" disabled>{{ "PLACEHOLDERS.SELECT.PRICE_LIST" | translate }}</option>
+                    <option value="" disabled>{{ "FORM.SELECTS.SELECT_PRICE_LIST" | translate }}</option>
                   </select>
                   <div class="help-block" ng-messages="ActionForm.account.$error" ng-show="ActionForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -121,13 +121,13 @@
                 <!-- Max credit for the debtor group -->
                 <div class="form-group">
                   <label class="control-label">
-                    {{ "COLUMNS.MAX_CREDIT" | translate }}
+                    {{ "FORM.LABELS.MAX_CREDIT" | translate }}
                   </label>
                   <input
                     type="number"
                     class="form-control"
                     name="max_credit"
-                    placeholder="{{ 'COLUMNS.MAX_CREDIT' | translate }}..."
+                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_MAX_CREDIT' | translate }}..."
                     ng-model="DebtorGroupCtrl.debtorGroup.max_credit">
                 </div>
 
@@ -135,7 +135,7 @@
 
               <!-- caracteristics -->
               <fieldset>
-                <legend>{{ 'COLUMNS.CARACTERISTICS' | translate }}</legend>
+                <legend>{{ 'FORM.LABELS.CARACTERISTICS' | translate }}</legend>
                 <div class="form-group col-xs-6">
                   <label class="control-label">
                     <input
@@ -144,7 +144,7 @@
                       ng-true-value="1"
                       ng-false-value="0"
                       ng-model="DebtorGroupCtrl.debtorGroup.is_convention">
-                    {{ "DEBTOR_GRP.IS_CONVENTION" | translate }}
+                    {{ "FORM.LABELS.IS_CONVENTION" | translate }}
                   </label>
                 </div>
 
@@ -156,7 +156,7 @@
                       ng-true-value="1"
                       ng-false-value="0"
                       ng-model="DebtorGroupCtrl.debtorGroup.locked">
-                    {{ "DEBTOR_GRP.LOCKED" | translate }}
+                    {{ "FORM.LABELS.LOCKED" | translate }}
                   </label>
                 </div>
 
@@ -168,7 +168,7 @@
                       ng-true-value="1"
                       ng-false-value="0"
                       ng-model="DebtorGroupCtrl.debtorGroup.apply_discounts">
-                    {{ "DEBTOR_GRP.APPLY_DISCOUNTS" | translate }}
+                    {{ "FORM.LABELS.APPLY_DISCOUNTS" | translate }}
                   </label>
                 </div>
 
@@ -180,7 +180,7 @@
                       ng-true-value="1"
                       ng-false-value="0"
                       ng-model="DebtorGroupCtrl.debtorGroup.apply_billing_services">
-                    {{ "DEBTOR_GRP.APPLY_BILLING_SERVICES" | translate }}
+                    {{ "FORM.LABELS.APPLY_BILLING_SERVICES" | translate }}
                   </label>
                 </div>
 
@@ -192,7 +192,7 @@
                       ng-true-value="1"
                       ng-false-value="0"
                       ng-model="DebtorGroupCtrl.debtorGroup.apply_subsidies">
-                    {{ "DEBTOR_GRP.APPLY_SUBSIDIES" | translate }}
+                    {{ "FORM.LABELS.APPLY_SUBSIDIES" | translate }}
                   </label>
                 </div>
 
@@ -200,28 +200,28 @@
 
               <!-- contact info -->
               <fieldset>
-                <legend>{{ "COLUMNS.CONTACT" | translate }}</legend>
+                <legend>{{ "FORM.LABELS.CONTACT" | translate }}</legend>
                 <!-- phone  -->
                 <div class="form-group">
                   <label class="control-label">
-                    {{ "COLUMNS.PHONE" | translate }}
+                    {{ "FORM.LABELS.PHONE" | translate }}
                   </label>
                   <input
                     class="form-control"
                     name="phone"
-                    placeholder="{{ 'COLUMNS.PHONE' | translate }}..."
+                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_PHONE' | translate }}..."
                     ng-model="DebtorGroupCtrl.debtorGroup.phone">
                 </div>
 
                 <!-- email  -->
                 <div class="form-group">
                   <label class="control-label">
-                    {{ "COLUMNS.EMAIL" | translate }}
+                    {{ "FORM.LABELS.EMAIL" | translate }}
                   </label>
                   <input
                     class="form-control"
                     name="email"
-                    placeholder="{{ 'COLUMNS.EMAIL' | translate }}..."
+                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_EMAIL' | translate }}..."
                     ng-model="DebtorGroupCtrl.debtorGroup.email">
                 </div>
 
@@ -236,12 +236,12 @@
               <!-- note  -->
               <div class="form-group">
                 <label class="control-label">
-                  {{ "COLUMNS.NOTE" | translate }}
+                  {{ "FORM.LABELS.NOTES" | translate }}
                 </label>
                 <textarea
                   class="form-control"
                   name="note"
-                  placeholder="{{ 'COLUMNS.NOTE' | translate }}..."
+                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_NOTES' | translate }}..."
                   ng-model="DebtorGroupCtrl.debtorGroup.note">
                 </textarea>
               </div>
@@ -251,10 +251,10 @@
             <div class="panel-footer">
 
               <button class="btn btn-default pull-right" type="submit" data-method="submit">
-                {{ "FORM.SUBMIT" | translate }}
+                {{ "FORM.BUTTONS.SAVE" | translate }}
               </button>
               <button class="btn btn-default" type="button" ng-click="DebtorGroupCtrl.cancel()" data-method="cancel">
-                {{ "FORM.CANCEL" | translate }}
+                {{ "FORM.BUTTONS.RESET" | translate }}
               </button>
 
               <div class="clearfix"></div>
@@ -262,7 +262,7 @@
               <!-- error feedback area -->
               <div id="error-feedback" ng-if="DebtorGroupCtrl.state.errored && ActionForm.$submitted"
                 class="text-danger" data-role="feedback" style="margin-top:10px;">
-                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
+                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
               </div>
 
             </div>
@@ -272,10 +272,10 @@
         <!-- success feedback -->
         <div class="alert alert-success" ng-switch-when="success">
           <h4 id="update_success" ng-if="DebtorGroupCtrl.state.updated">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "DEBTOR_GRP.UPDATE_SUCCESS" | translate }}
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}
           </h4>
           <h4 id="create_success" ng-if="DebtorGroupCtrl.state.created">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "DEBTOR_GRP.CREATE_SUCCESS" | translate }}
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.SAVE_SUCCESS" | translate }}
           </h4>
         </div>
 

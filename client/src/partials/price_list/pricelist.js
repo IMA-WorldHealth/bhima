@@ -55,7 +55,7 @@ function PriceListController(PriceListService, $window, $translate, $uibModal, I
     if (vm.pricelistItems.length > 1) {
       vm.pricelistItems.splice(vm.pricelistItems.indexOf(item), 1);
     } else {
-      $window.alert($translate.instant('PRICE_LIST.WARN'));
+      $window.alert($translate.instant('PRICE_LIST.UNABLE_TO_DELETE'));
     }  
   }
 
@@ -116,7 +116,7 @@ function PriceListController(PriceListService, $window, $translate, $uibModal, I
 
   // switch to delete warning mode
   function del(priceList) {
-    var bool = $window.confirm($translate.instant('PRICE_LIST.DELETE_CONFIRM'));
+    var bool = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
 
      // if the user clicked cancel, reset the view and return
      if (!bool) {

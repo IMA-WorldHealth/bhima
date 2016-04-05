@@ -6,7 +6,7 @@
   <div class="modal-body">
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.label.$invalid }">
-      <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
+      <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
       <input type="text" class="form-control" name="label" ng-model="ModalCtrl.data.label" required>
       <div class="help-block" ng-messages="ModalForm.label.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -14,7 +14,7 @@
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.value.$invalid }">
-      <label class="control-label">{{ 'COLUMNS.VALUE' | translate }}</label>
+      <label class="control-label">{{ 'FORM.LABELS.VALUE' | translate }}</label>
       <input type="number" class="form-control" name="value" ng-model="ModalCtrl.data.value" required>
       <div class="help-block" ng-messages="ModalForm.value.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -23,14 +23,14 @@
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.is_percentage.$invalid }">
       <label class="control-label">
-        <input type="checkbox"  name="is_percentage" id="is_percentage" ng-true-value="1" ng-false-value="0" ng-model="ModalCtrl.data.is_percentage">  {{ 'COLUMNS.IS_PERCENT' | translate }}
+        <input type="checkbox"  name="is_percentage" id="is_percentage" ng-true-value="1" ng-false-value="0" ng-model="ModalCtrl.data.is_percentage">  {{ 'FORM.LABELS.IS_PERCENT' | translate }}
       </label>  
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
-      <label class="control-label">{{ "COLUMNS.INVENTORY" | translate }}</label>
+      <label class="control-label">{{ "FORM.LABELS.INVENTORY" | translate }}</label>
       <select class="form-control" name="inventory_uuid" ng-model="ModalCtrl.data.inventory_uuid" id="inventory_uuid" ng-options="i.uuid as i.label for i in ModalCtrl.inventories | orderBy:'label'" required>
-        <option value="" disabled> -- {{ 'SELECT.INVENTORY' | translate }} -- </option>
+        <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_INVENTORY' | translate }} -- </option>
       </select>
       <div class="help-block" ng-messages="ModalForm.inventory_uuid.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -41,8 +41,8 @@
 
   <div class="modal-footer">
     <button class="btn btn-default" id="submit-price-list" type="submit" data-method="submit">
-      {{ "FORM.ADD" | translate }}
+      {{ "FORM.BUTTONS.ADD" | translate }}
     </button>
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.CANCEL" | translate }}</button>
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
   </div>
 </form>

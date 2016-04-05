@@ -16,7 +16,7 @@ function DepotManagementController($translate, DepotService, SessionService) {
   /** breadcrumb configurations */
   vm.bcPaths = [
     {
-      label: $translate.instant('DEPOT.DEPOTS_MANAGEMENT'),
+      label: $translate.instant('DEPOT.MAIN.TITLE'),
       current: true
     }
   ];
@@ -25,7 +25,7 @@ function DepotManagementController($translate, DepotService, SessionService) {
       dataMethod : 'create',
       color  : 'btn-default',
       icon   : 'glyphicon glyphicon-plus-sign',
-      label  : $translate.instant('DEPOT.ADD'),
+      label  : $translate.instant('DEPOT.ADD_DEPOT'),
       action : create
     }
   ];
@@ -107,8 +107,8 @@ function DepotManagementController($translate, DepotService, SessionService) {
     vm.depot  = {};
 
     vm.actionTitle =
-      action === 'create' ? 'DEPOT.ADD' :
-      action === 'update' ? 'DEPOT.EDIT' : '';
+      action === 'create' ? 'DEPOT.ADD_DEPOT' :
+      action === 'update' ? 'DEPOT.EDIT_DEPOT' : '';
 
     if (uuid && action === 'update') {
       DepotService.getDepots(uuid)
