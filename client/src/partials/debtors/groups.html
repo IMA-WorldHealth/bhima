@@ -1,0 +1,37 @@
+<div class="flex-header">
+  <div class="bhima-title">
+
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">{{ "DEBTOR_GRP.TITLE" | translate }}</li>
+    </ol>
+  
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container text-center">
+  
+    <!-- TODO Translate -->
+    <h1>Debtor Groups Utility</h1>
+  
+    <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+      <div ng-repeat="debtorGroup in GroupCtrl.debtorGroups">
+        <div class="panel panel-default">
+          <div class="panel-body text-left">
+            <p>{{debtorGroup.name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>  
+
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <uib-pagination total-items="1" ng-model="GroupCtrl.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;"></uib-pagination>
+      </div>
+    </div>
+  </div>
+</div>
