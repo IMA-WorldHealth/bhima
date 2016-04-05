@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static">{{ "PATIENT_INVOICE.PAGE_TITLE" | translate }}</li>
+    <li class="title">Receipt <span class="label label-warning">HBB120</span></li>
+  </ol>
+</div>
+
+<!-- TODO Investigate if this should use latest ui-router standards -->
+<div ng-switch on="ReceiptCtrl.renderer">
+  
+  <!-- JSON Should be exposed to a view provided by the template passed to the -->
+  <!-- controller by the Receipt Modal service -->
+  <div ng-switch-when="json">
+
+    <!-- TODO Modal height etc. should be standardised -->
+    <div class="modal-body" style="height : 50vh; overflow-y: auto;">
+      <div ng-include="ReceiptCtrl.target"></div>
+    </div>
+  </div>
+
+  <!-- PDFs are downloaded through the GET request - they can be displayed using -->
+  <!-- ng-src -->
+  <div ng-switch-when="pdf">
+    
+    <!-- Google Chrome obejct seems to add 5px below outside or margin/padding model - this can be removed if it causes issues -->
+    <object id="pdf" ng-src="{{ReceiptCtrl.receipt}}" type="application/pdf" style="width : 100%; height : 50vh; margin-bottom : -5px;">
+      <!-- TODO: Translate -->
+      <p>Unable to display PDF. Please contact your system administrator</p>
+    </object>
+  </div>
+
+  <!-- CSV -->
+
+  <!-- Excel -->
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default btn-sm">Close</button>
+  <button class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-print"></span> Print</button>
+</div>
