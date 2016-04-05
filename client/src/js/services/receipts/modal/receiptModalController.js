@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('ReceiptModalController', ReceiptModalController);
 
-ReceiptModalController.$inject = ['receipt'];
+ReceiptModalController.$inject = ['receipt', 'template', 'render'];
 
 /**
  * Receipt Modal Controller 
@@ -10,9 +10,16 @@ ReceiptModalController.$inject = ['receipt'];
  *                            by the service wrapping the receipt modal). The promise
  *                            is stored in an object to ensure the modal is evaluated 
  *                            before the HTTP request (promise) is resolved.
+ * @params {String} template  Path to the template or resource to load 
+ * @params {String} render    Render target used to generate report 
  */
-function ReceiptModalController(receipt) { 
-  
+function ReceiptModalController(receipt, template, render) { 
+  var vm = this;
+  vm.target = template;
+  vm.renderer = render;
+  vm.receipt = receipt;
+
+  console.log(render);
   receipt.promise
     .then(function (result) { 
       
