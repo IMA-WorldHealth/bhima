@@ -285,7 +285,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /debtor_groups/:uuid/invoices returns a NOT FOUND (404) for an unknow {uuid}', function () {
+  it('GET /debtor_groups/:uuid/invoices returns a 404 for an unknown uuid', function () {
     return agent.get('/debtor_groups/unknown/invoices')
       .then(function (res) {
         helpers.api.errored(res, 404);

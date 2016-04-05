@@ -1,4 +1,6 @@
 /**
+* @deprecated  This module will be removed soon
+*
 * The /cash/conventions HTTP API endpoint
 *
 * @module finance/conventions
@@ -9,22 +11,18 @@
 * @required node-uuid
 * @required lib/db
 * @required lib/util
-* @required debtorGroups
 * @required journal/primarycash
 *
 * @todo implements functions for the GET method
 * @todo implements functions for the PUT method
+*
 */
 
 'use strict';
 
 var uuid               = require('node-uuid'),
     db                 = require('../../lib/db'),
-    util               = require('../../lib/util'),
-    debtorGroups       = require('./debtorGroups'),
-    journalConvention  = require('./journal/primarycash').convention;
-
-var getGroupInvoices   = debtorGroups.fetchInvoices;
+    util               = require('../../lib/util');
 
 /** create a new convention payment record in the database */
 exports.create = create;
@@ -66,7 +64,6 @@ function create(req, res, next) {
 
   db.exec(query, [qData.account_id])
   .then(getConventionUuid)
-  .spread(getGroupInvoices)
   .then(getUnpayedInvoices)
   .then(getExchangeRate)
   .then(handleExchangeRate)
@@ -124,12 +121,7 @@ function create(req, res, next) {
     return transaction.execute();
   }
 
-  function writeToJournal() {
-    journalConvention(qData.uuid, qData.user_id, function (err, result) {
-      if (err) { return next(err); }
-      res.status(201).json({ id : qData.uuid });
-    });
-  }
+  function writeToJournal() {}
 
   /** Get Primary Cash Items */
   function getPrimaryCashItems(maxAmount, primaryCashUuid) {

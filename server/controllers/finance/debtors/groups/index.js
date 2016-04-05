@@ -7,20 +7,17 @@
 * to debtor groups, and relatives functions.
 *
 * @requires q
+* @requires node-uuid
 * @requires lib/db
 * @requires lib/util
-* @requires node-uuid
 * @requires lib/errors/NotFound
 */
 
-'use strict';
-
 var q  = require('q');
-var db = require('../../../lib/db');
-var util = require('../../../lib/util');
 var uuid = require('node-uuid');
-var NotFound = require('../../../lib/errors/NotFound');
-var shared =  require('./shared');
+var db = require('../../../../lib/db');
+var util = require('../../../../lib/util');
+var NotFound = require('../../../../lib/errors/NotFound');
 
 /** Create a new debtor group */
 exports.create = create;
@@ -34,7 +31,7 @@ exports.detail = detail;
 /** Get the list of debtor group */
 exports.list = list;
 
-/** [HTTP API ENDPOINT] Get debtor groups invoices list */
+/** [HTTP API ENDPOINT] get debtor groups invoices list */
 exports.invoices = invoices;
 
 /**
@@ -47,11 +44,11 @@ exports.invoices = invoices;
  */
 function lookupDebtorGroup(uid) {
   var sql =
-    `SELECT uuid, name, account_id, location_id, phone, email, note, locked,
-      max_credit, is_convention, price_list_uuid,
+    `SELECT uuid, enterprise_id ,name, account_id, location_id, phone, email,
+      note, locked, max_credit, is_convention, price_list_uuid,
       apply_subsidies, apply_discounts, apply_billing_services
     FROM debitor_group
-    'WHERE uuid = ?`;
+    WHERE uuid = ?;`;
 
   return db.exec(sql, [uid])
   .then(function (rows) {
@@ -106,28 +103,9 @@ function create(req, res, next) {
 /**
  * PUT /debtor_groups/:uuid
  *
- * @example
- * {
- *   enterprise_id : {number},
- *   uuid : {uuid},
- *   name : {string},
- *   account_id : {number},
- *   location_id : {uuid},
- *   phone : {string},
- *   email : {string},
- *   note : {string},
- *   locked : {number},
- *   max_credit : {number},
- *   is_convention : {number},
- *   price_list_uuid : {uuid} or NULL,
- *   apply_discounts : {number},
- *   apply_billing_services : {number},
- *   apply_subsidies : {number}
- * };
+ * This function is responsible for updating a debtor group
  *
  * @function update
- *
- * @desc This function is responsible for updating a debtor group
  */
 function update(req, res, next) {
   var data = req.body;
@@ -144,7 +122,7 @@ function update(req, res, next) {
       );
     }
 
-    return lookupDebtorGroup(uuid);
+    return lookupDebtorGroup(req.params.uuid);
   })
   .then(function (group) {
     res.status(200).send(group);
@@ -186,9 +164,9 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql =
-      `SELECT uuid, name, account_id, location_id, phone, email, note, locked, 
-        max_credit, is_convention, price_list_uuid, 
-        apply_subsidies, apply_discounts, apply_billing_services 
+      `SELECT uuid, name, account_id, location_id, phone, email, note, locked,
+        max_credit, is_convention, price_list_uuid,
+        apply_subsidies, apply_discounts, apply_billing_services
       FROM debitor_group `;
 
     delete req.query.detailed;
@@ -217,10 +195,14 @@ function invoices(req, res, next) {
 
   if (options.balanced) { options.balanced = Boolean(options.balanced); }
 
-  shared.invoices(req.params.uuid, options)
+  res.status(500).send('Unimplemented..');
+
+  /*
+  invoices(req.params.uuid, options)
   .then(function (rows) {
     res.status(200).json(rows);
   })
   .catch(next)
   .done();
+  */
 }

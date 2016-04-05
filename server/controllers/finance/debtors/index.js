@@ -9,7 +9,7 @@
 * invoices, and looking up the balance on a debtor's account.
 *
 *
-* @module finance/debtors
+* @module controllers/finance/debtors
 *
 * @requires lib/db
 * @requires lib/errors/NotFound
