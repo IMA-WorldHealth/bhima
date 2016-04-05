@@ -322,17 +322,17 @@
     "EMPTY_SELECTION"   : "Aucune facture sélectionnée. S'il vous plaît sélectionner au moins une facture ou bien annuler.",
     "FINANCIAL_DETAIL"  : "Balance actuelle, journal de saisie inclue :",
     "MISSING_DEBTOR_ID" : "Aucun débiteur sélectionné!"
+  },  
+  "HOME" : {
+    "TITLE" : "Bhima",
+    "PROJECT_NAME" : "Nom Project",
+    "TODAY" : "Date du jour",
+    "EXCHANGE_RATE" : "Taux d'echange",
+    "CONNECTED_USER" : "Utilisateur Connecte"
   },
 
-  "NO_EXCHANGE_RATE" : "Erreur : le taux de change n'existe pas!",
-  "OVER": {
-    "CUED"          : "Le debiteur doit cette montant",
-    "DANGER"        : "Attention!",
-    "JUSTIFICATION" : "S'il vous plait, indiquer la cause du payment",
-    "MIN"           : "Minimum 25 caracteres",
-    "PAYMENT"       : "Le debiteur va payer cette montant",
-    "REASON"        : "Raison",
-    "TITLE"         : "Justification De Payment"
+  "LOGIN" : {
+    "TITLE" : "Authentification"
   },
   "VOUCHER" : {
     "TITLE" : "Paiements Caisse Auxillaire",
@@ -944,76 +944,25 @@
    }
 },
 
-"DATEFINDER" : {
-  "SET" : "Changer Date"
-},
 
-"DB" : {
-  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
- },
+  "FORM" : {
+    "LABELS" : {
+      "USERNAME" : "Nom Utilisateur",
+      "PASSWORD" : "Mot de passe",
+      "PROJECT" : "Proget"
+    },
 
-"DEBTOR_GRP": {
-  "APPLY_BILLING_SERVICES" : "Appliquer facturation",
-  "APPLY_SUBSIDIES"        : "Appliquer subvention",
-  "APPLY_DISCOUNTS"        : "Appliquer reduction",
-   "CREATE_SUCCESS" : "Creation avec succes du groupe debiteur",
-   "EDIT"           : "Editer le groupe debiteur",
-   "FILTER"         : "Filtrer Le Groupe de Débiteur",
-   "GROUPS"         : "Groupes de Débiteur",
-   "HELP_TXT_1"     : "Cette interface vous permet de visualiser, trouver, et configurer un groupe de debiteur",
-   "HELP_TXT_2"     : "Editer le Groupe de debiteur Sélectionnée",
-   "HELP_TXT_3"     : "Bloquer le Groupe de debiteur sélectionné. Aucune transaction ne pourra etre Effectuée avec ce groupe",
-   "HELP_TXT_4"     : "Crée un nouveau groupe de debiteur",
-   "INFO"           : "Information du Groupe",
-   "IS_CONVENTION"  : "Convention",
-   "LOCKED"         : "Verrouillé",
-   "NEW"            : "Nouveau Groupe de Débiteur",
-   "SUCCES"         : "Succès",
-   "TITLE"          : "Gestion des Groupes des Débiteurs",
-   "UPDATE_SUCCESS" : "Mise a jour avec succes du groupe debiteur"
-},
+    "PLACE_HOLDERS" : {
+      "ENTER_USERNAME" : "Entrer nom utilisateur",
+      "ENTER_PASSWORD" : "Entrer mot de passe"
+    },
 
-"DEBTOR_GROUP_REPORT" : {
-   "DOCUMENT_CONFIG" : "Configuration rapport groupe de debiteur",
-   "LANGUAGE" : "Langue",
-   "INVOLVE_JOURNAL" : "Integrer le journal ",
-   "NOTSOLD_ONLY"    : "Montrer seulement Les factures non Soldees",
-   "DEBITOR_GROUP"   : "Groupe de Debiteur",
-   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
-   "GENERATE_DOC"    : "Generer document"
-},
+    "SELECTS" : {
+      "SELECT_PROJECT" : "Selectionner proget"      
+    },
 
-"DEBTOR_GROUP_ANNUAL_REPORT" : {
-   "TITLE" : "Rapport Groupe de Debiteur",
-   "DOCUMENT_CONFIG" : "Configuration rapport groupe de debiteur",
-   "DEBITOR_GROUP"   : "Groupe de Debiteur",
-   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
-   "GENERATE_DOC"    : "Generer document"
-},
-
-"DEPOT": {
-  "ADD"               : "Ajouter un depot",
-  "ALERT"             : "Ce module vous permet de gérer vos dépôt",
-  "ALL"               : "Tous les Dépôts",
-  "NO_LOTS"           : "Pass de stock disponibles",
-  "CHANGE_DEPOT"      : "Etes-vous sur que vous voulez changer le pharmacy?  The pharmacy courant est  %depot%.",
-  "CONFIRM_SELECTION" : "Voulez-vous vraiment gérer les stocks avec %depot% ",
-  "CREATE_SUCCESS"    : "Creation du depot avec succès",
-  "DELETE_SUCCESS"    : "Suppression avec succès",
-  "DELETE_FAIL"       : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
-  "DEPOTS_MANAGEMENT" : "Gestion des depots",
-  "DEPOTS_LIST"       : "Liste des depots",
-  "DESCRIPTION"       : "Module de gestion des depots",
-  "DISTRIBUTION"      : {
-    "ANNUL"    : "Annuler cette Transaction",
-    "ANNULLED" : "Annulé",
-    "LOSSES"   : "Stock Losses",
-    "TYPE_INVENTORY_ITEM"      : "Taper code ou nom médicament",
-    "NO_ROWS"  : "Pas de données pour période sélectionnée",
-    "SERVICES" : "Distributions to Services",
-    "SERVICE" : {
-      "LOTS_AVAILABLE" : "Lots Available",
-      "NO_LOTS"        : "Pass de stock disponibles"
+    "BUTTONS" : {
+      "CONNECTION" : "Connexion"
     },
     "PATIENTS" : "Distributions to Patients",
     "RUMMAGE"  : "Liquidation by Rummage Sale",
@@ -1966,15 +1915,16 @@
       "UPDATE"        : "Mettre à jour l'assignation à un groupe",
       "MODAL_TTILE"   : "Mettre à jour Update les groupes de patients",
       "MODAL_INFO"    : "Attribuer le patient à des groupes parmi les options ci-dessous. Appuyez sur 'confirmer' pour une mise à jour permanente des groupes souscrites du patient.",
-      "MODAL_WARN"    : "Aucun groupes de patients n'a été trouvée. Les groupes de patients doivent être enregistrés dans le système avant l'affectation des patients"
+      "MODAL_WARN"    : "Aucun groupes de patients n'a été trouvée. Les groupes de patients doivent être enregistrés dans le système avant l'affectation des patients",
+
+    "ERRORS" : {
+      "MISSING" : "Informations manquantes"
     },
-   "GROUPS_DEBTOR"  : {
-      "TITLE"         : "Groupe débiteur",
-      "UPDATED"       : "L'assignation au groupe débiteur est à jour",
-      "UPDATE"        : "Mettre à jour le groupe",
-      "MODAL_TITLE"   : "Mettre à jour le Groupe débiteur",
-      "MODAL_INFO"    : "Attribuez un nouveau groupe de débiteur parmi les options ci-dessous. Appuyez sur 'confirmer' pour une mise à jour permanente du groupe de débiteur du patient"
+
+    "INFOS" : {
+      "MANY_TRYS" : "Plusieurs tentatives"
     }
+<<<<<<< a740d6c8ea1831d6a8a906482b6cd825fd74c7eb
    },
 "PATIENT_GRP": {
    "HELP_TXT_1"    : "Group Patient est utilisée pour assigner un discount aux patients qui le meritent. utiliser ce module pour Enregsitrer, modifier, et effacer un group patient",
@@ -2202,7 +2152,10 @@
      "ACCOUNT"        : "Veuillez selectionner un compte",
      "PRICE_LIST"     : "Veuillez selectionner une liste de prix"
    }
+=======
+>>>>>>> Resolve Conflict with branch master
   },
+
 "POSTING_JOURNAL": {
    "ABOLISH_GROUPS"        : "Abolir les groupes",
    "ACCOUNT"               : "Compte",
@@ -3305,11 +3258,7 @@
    "CREDITOR_GRP"              : "Groupe Créditeur",
    "CREDIT_NOTE"               : "Note de Crédit",
    "CURRENCY"                  : "Monnaie",
-   "DAILY_CONSUMPTION"         : "Consommation",
-   "DASHBOARD" : {
-      "FINANCE" : "Tableau de bord Financier",
-      "TITLE"   : "Tableau de bord"
-   },
+   "DAILY_CONSUMPTION"         : "Consommation",   
    "DEBTOR_AGING"              : "Débiteur",
    "DEBITOR_GROUP_REPORT"      : "Etat Groupe Debiteur",
    "DEBTOR_GRP"                : "Groupe Débiteur",
