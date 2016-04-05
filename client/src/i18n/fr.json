@@ -1,4 +1,34 @@
 {
+  "PERMISSIONS" : {
+    "TITLE" : "Utilisateur et droits",
+    "ADD_USER" : "Ajouter utilisateur",
+    "DESCRIPTION" : "Module de gestion des utilisateur et leurs droits",
+    "ADDING_USER" : "Ajout utilisateur",
+    "UPDATING_USER" : "Mise a jour utilisateur",
+    "PERMISSIONS" : "Permissions",
+    "SUPER" : "super utilisateur",
+    "SET_PASSWORD" : "Definir mot de passe"
+  },
+
+  "EXCHANGE" : {
+    "TITLE" : "Gestion taux d'echange",
+    "ADD_EXCHANGE" : "Ajouter taux",
+    "ENTERPRISE_CURRENCY" : "Monnaie de l'entreprise",
+    "REVIEW_RATE" : "Revoir le taux",
+    "ADDING_RATE" : "Ajout d'un taux",
+    "DESCRIPTION" : "Cette interface vous permet d'ajouter un taux d'echange",
+    "NEW_RATE" : "Nouveau taux"
+  },
+
+  "SUBSIDY" : {
+    "TITLE" : "Gestion des subventions",
+    "ADD_SUBSIDY" : "Ajouter subvention",
+    "ALL_SUBSIDIES" : "Toutes les subventions",
+    "NO_SUBSIDY" : "Aucune subvention",
+    "DESCRIPTION" : "Ce module permet de creer une subvention pour une facturation particuliere",
+    "ADDING_SUBSIDY" : "Ajout d'une subvention",
+    "UPDATING_SUBSIDY" : "Modification d'une subvention"
+  },
 
   "SERVICE" : {
     "TITLE" : "Gestion des services",
@@ -109,7 +139,10 @@
       "ACCOUNT" : "Compte",
       "DESCRIPTION" : "Description",
       "PREVIOUS_DATE" : "Date precedente",
-      "DATE" : "Date"
+      "DATE" : "Date",
+      "RETYPE" : "Retaper",
+      "LAST_NAME" : "Nom",
+      "FIRST_NAME" : "Prenom"
     },
 
     "PLACE_HOLDERS" : {
@@ -147,7 +180,9 @@
       "DELETE" : "Supprimer",
       "CLEAR" : "Effacer",
       "SAVE" : "Sauver",
-      "RESET" : "Reinitialiser"
+      "RESET" : "Reinitialiser",
+      "UPDATE_PASSWORD" : "Modifier mot de passe",
+      "EDIT_PERMISSIONS" : "Editer permission"
     }
   },
   
