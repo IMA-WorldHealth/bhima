@@ -1,4 +1,5 @@
 {
+
   "SERVICE" : {
     "TITLE" : "Gestion des services",
     "ADD_SERVICE" : "Ajouter service",
@@ -7,7 +8,145 @@
     "ADDING_SERVICE" : "Ajout service",
     "EDITING_SERVICE" : "Modification service",
     "OVERVIEWING_SERVICE" : "Visualisation sommaire du service"
+  },
 
+  "PROJECT" : {
+    "TITLE" : "Gestion des progets",
+    "ADD_PROJECT" : "Ajouter proget",
+    "ALL_PROJECTS" : "Tous les progets",
+    "DESCRIPTION" : "Ce module permet de lister, creer, modifier et supprimer un proget",
+    "ADDING_PROJECT" : "Ajout nouveau proget",
+    "EDITING_PROJECT" : "Modification proget"
+  },
+
+  "CASHBOX" : {
+    "TITLE" : "Gestion caisse",
+    "DESCRIPTION" : "Ce module est responsable de la gestion de caisse",
+    "ADD_CASHBOX" : "Ajout caisse",
+    "DANGER_ZONE" : "Zone reservee",
+    "CASHBOX" : "Caisse",
+    "CONFIG_ACCOUNTS" : "Configuration comptes"
+  },
+
+  "DEPOT" : {
+    "TITLE" : "Gestion des depots",
+    "ADD_DEPOT" : "Ajouter depot",
+    "ALL_DEPOTS" : "Tous les depots",
+    "NO_DEPOT" : "Aucun depot",
+    "DESCRIPTION" : "Ce module vous permet de Lister, Creer, Modifier et Supprimer un depot"
+  },
+
+
+  "ENTERPRISE" : {
+    "TITLE" : "Gestion des entreprises",
+    "ADD_ENTERPRISE" : "Ajouter entreprise",
+    "ALL_ENTERPRISES" : "Tous les entriprises",
+    "DESCRIPTION_1" : "Gerer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
+    "DESCRIPTION_2" : "Modifier l'enterprise sélectionner",
+    "DESCRIPTION_3" : "Ajouter une nouvelle entreprises",
+    "CONFIGURATION_ENTERPRISE" : "Configuration entreprise",
+    "EDITING_ENTERPRISE" : "Edition entreprise"
+  },
+
+  "HOME" : {
+    "TITLE" : "Bhima",
+    "PROJECT_NAME" : "Nom Project",
+    "TODAY" : "Date du jour",
+    "EXCHANGE_RATE" : "Taux d'echange",
+    "CONNECTED_USER" : "Utilisateur Connecte",
+    "SYSTEM" : "Hospital Management System"
+  },
+
+  "LOGIN" : {
+    "TITLE" : "Authentification"
+  },
+
+
+  "LOCATION" : {
+    "SECTOR" : "Secteur",
+    "COUNTRY" : "Pays",
+    "PROVINCE" : "Province",
+    "VILLAGE" : "Village",
+    "REGISTER" : "Ajouter Location",
+    "MODAL" : {
+      "TITLE" : "Ajout Nouvelle Location"
+    }
+  },
+
+  "FORM" : {
+    "LABELS" : {
+      "USERNAME" : "Nom Utilisateur",
+      "PASSWORD" : "Mot de passe",
+      "PROJECT" : "Proget",
+      "NAME" : "Nom",
+      "TYPE" : "Type",
+      "PRINCIPAL" : "Principale",
+      "AUXILIARY" : "Auxilliaire",
+      "EDIT" : "Editer",
+      "CURRENCIES" : "Monnaies",
+      "CURRENCY" : "Monnaie",
+      "CASH_ACCOUNT" : "Compte caisse",
+      "GAIN_ACCOUNT" : "Compte excedant",
+      "LOSS_ACCOUNT" : "Compte perte",
+      "TRANSFER_ACCOUNT" : "Compte transfert",
+      "IS_WAREHOUSE" : "Entreprot ?",
+      "EMAIL" : "Email",
+      "PHONE" : "Telephone",
+      "PO_BOX" : "Boite postale",
+      "ABBREVIATION" : "Abbreviation",
+      "COUNTRY" : "Pays",
+      "PROVINCE" : "Province",
+      "SECTOR" : "Secteur",
+      "VILLAGE" : "Village",
+      "ID" : "ID",
+      "ENTERPRISE_ID" : "ID entreprise",
+      "ENTERPRISE" : "Entreprise",
+      "ZS" : "Zone de sante",
+      "LOCKED" : "Bloquee",
+      "COST_CENTER" : "Centre de cout",
+      "PROFIT_CENTER" : "Centre de profit",
+      "VALUE" : "Valeur",
+      "ACCOUNT" : "Compte",
+      "DESCRIPTION" : "Description"
+    },
+
+    "PLACE_HOLDERS" : {
+      "ENTER_USERNAME" : "Entrer nom utilisateur",
+      "ENTER_PASSWORD" : "Entrer mot de passe",
+      "ENTER_COUNTRY" : "Entrer pays",
+      "ENTER_PROVINCE" : "Enter province",
+      "ENTER_SECTOR" : "Entrer secteur",
+      "ENTER_VILLAGE" : "Entrer village"
+    },
+
+    "SELECTS" : {
+      "SELECT_PROJECT" : "Selectionner proget",
+      "SELECT_ACCOUNT" : "Selectionner compte",
+      "SELECT_COUNTRY" : "Selectionner pays",
+      "SELECT_PROVINCE" : "Selectionner province",
+      "SELECT_SECTOR" : "Selectionner secteur",
+      "SELECT_VILLAGE" : "Selectionner village",
+      "SELECT_ENTERPRISE" : "Selectionner entreprise",
+      "SELECT_ZS" : "Selectionner zone de sante",
+      "SELECT_COST_CENTER" : "Selectionner centre de cout",
+      "SELECT_PROFIT_CENTER" : "Selectionner centre profit",
+      "SELECT_ACCOUNT" : "Selectionner compte",
+      "EMPTY" : "Vide"      
+    },
+
+    "BUTTONS" : {
+      "CONNECTION" : "Connexion",
+      "ADD" : "Ajouter",
+      "EDIT" : "Editer",
+      "SUBMIT" : "Soumettre",
+      "CANCEL" : "Annuler",
+      "CONFIGURE" : "Configurer",
+      "NOT_CONFIGURED" : "Non configuree",
+      "DELETE" : "Supprimer",
+      "CLEAR" : "Effacer",
+      "SAVE" : "Sauver",
+      "RESET" : "Reinitialiser"
+    }
   },
 
   "TABLE" : {
@@ -28,9 +167,12 @@
       "PROFIT_CENTER" : "Centre de profit",
       "CHARGE" : "Charge",
       "PROFIT" : "Profit",
-      "RESULT" : "Resultat"
+      "RESULT" : "Resultat",
+      "VALUE" : "Valeur",
+      "ACCOUNT" : "Compte",
+      "LABEL" : "Label",
+      "NR" : "Numero"
     }
-   },
-
+   }
 }
 
