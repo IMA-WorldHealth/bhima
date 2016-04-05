@@ -107,7 +107,9 @@
       "PROFIT_CENTER" : "Centre de profit",
       "VALUE" : "Valeur",
       "ACCOUNT" : "Compte",
-      "DESCRIPTION" : "Description"
+      "DESCRIPTION" : "Description",
+      "PREVIOUS_DATE" : "Date precedente",
+      "DATE" : "Date"
     },
 
     "PLACE_HOLDERS" : {
@@ -148,7 +150,7 @@
       "RESET" : "Reinitialiser"
     }
   },
-
+  
   "TABLE" : {
     "COLUMNS" : {
       "NAME" : "Nom",
@@ -171,7 +173,10 @@
       "VALUE" : "Valeur",
       "ACCOUNT" : "Compte",
       "LABEL" : "Label",
-      "NR" : "Numero"
+      "NR" : "Numero",
+      "DATE" : "Date",
+      "CURRENCY" : "Monnaie",
+      "RATE" : "Taux"
     }
    }
 }
