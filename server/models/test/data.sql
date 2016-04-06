@@ -231,6 +231,47 @@ INSERT INTO `debtor_group` VALUES
   (1,HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Test Debtor Group',3631, HUID('03a329b2-03fe-4f73-b40f-56a2870cc7e6'),NULL,NULL,NULL,0,0,0,NULL,1,1,1),
   (1,HUID('66f03607-bfbc-4b23-aa92-9321ca0ff586'),'Second Test Debtor Group',3631,HUID('03a329b2-03fe-4f73-b40f-56a2870cc7e6'),NULL,NULL,NULL,0,0,0,NULL,1,1,1);
 
+INSERT INTO `debitor_group` VALUES
+  (1,'4de0fe47-177f-4d30-b95f-cff8166400b4','Test Debtor Group',3631,'03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1,'66f03607-bfbc-4b23-aa92-9321ca0ff586','Second Test Debtor Group',3631,'03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+
+  -- pad groups to test pagination/ search functions 
+  (1, uuid(), 'Pad Debtor Groups 1', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 2', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 3', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 4', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 5', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 6', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 7', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 8', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 9', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 10', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 11', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 12', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 13', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 14', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 15', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 16', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 17', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 18', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 19', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 20', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 21', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 22', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 23', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 24', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 25', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 26', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 27', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 28', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 29', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 30', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 31', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 32', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 33', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 34', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 35', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1),
+  (1, uuid(), 'Pad Debtor Groups 36', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6',NULL,NULL,NULL,0,0,0,NULL,1,1,1);
 
 INSERT INTO `patient_group` VALUES
   (HUID('0b8fcc00-8640-479d-872a-31d36361fcfd'),1,NULL,'Test Patient Group 1','Test Patient Group 1 Note','2016-03-10 08:44:23'),
