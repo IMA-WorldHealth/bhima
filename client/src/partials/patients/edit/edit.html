@@ -57,12 +57,12 @@
               
               <!-- Patient Group -->
               <div class="form-group"> 
-                <label class="control-label">{{ "PATIENT_EDIT.GROUPS_PATIENT.TITLE" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.GROUPS_PATIENT_TITLE" | translate }}</label>
                 
                 <p 
                   class="text-success form-control-static" 
                   ng-if="PatientEditCtrl.updatedPatientGroups">
-                  <span class="glyphicon glyphicon-ok-sign"></span> {{ "PATIENT_EDIT.GROUPS_PATIENT.UPDATED" | translate }}
+                  <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}
                 </p>
 
                 <!-- Iterate through patient groups -->
@@ -73,7 +73,7 @@
                  </ul>
 
                  <p class="text-info form-control-static" ng-if="PatientEditCtrl.finance.patientGroups.length === 0">
-                 <span class="glyphicon glyphicon-info-sign"></span> {{ "PATIENT_EDIT.GROUPS_PATIENT.EMPTY" | translate }}
+                 <span class="glyphicon glyphicon-info-sign"></span> {{ "FORM.LABELS.GROUPS_PATIENT_EMPTY" | translate }}
                  </p>
 
               </div>
@@ -83,18 +83,18 @@
                 <button 
                   id="submission"
                   class="btn btn-warning btn-block"
-                  ng-click="PatientEditCtrl.updatePatientGroups()">{{ "PATIENT_EDIT.GROUPS_PATIENT.UPDATE" | translate }}
+                  ng-click="PatientEditCtrl.updatePatientGroups()">{{ "FORM.BUTTONS.GROUPS_PATIENT_UPDATE" | translate }}
 </button>
               </div>
       
               <!-- Debtor Group -->
               <div class="form-group">
-                <label class="control-label">{{ "PATIENT_EDIT.GROUPS_DEBTOR.TITLE" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.GROUPS_DEBTOR_TITLE" | translate }}</label>
                 
                 <p 
                   class="text-success form-control-static" 
                   ng-if="PatientEditCtrl.updatedDebtorGroup">
-                  <span class="glyphicon glyphicon-ok-sign"></span> {{ "PATIENT_EDIT.GROUPS_DEBTOR.UPDATED" | translate }}
+                  <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}
                 </p>
 
                 <ul class="form-control-static">
@@ -107,7 +107,7 @@
 
                 <button 
                   class="btn btn-warning btn-block"
-                  ng-click="PatientEditCtrl.updateDebtorGroup()">{{ "PATIENT_EDIT.GROUPS_DEBTOR.UPDATE" | translate }}</button>
+                  ng-click="PatientEditCtrl.updateDebtorGroup()">{{ "FORM.BUTTONS.GROUPS_DEBTOR_UPDATE" | translate }}</button>
               </div>
 
             </form>   
@@ -118,7 +118,7 @@
       <div class="col-md-7 col-md-pull-5">
         <div class="panel panel-default">
           <div class="panel-heading">
-            {{ "PATIENT_REG.PATIENT_DETAILS" | translate }}
+            {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
           </div>
           <div class="panel-body">
             
@@ -131,7 +131,7 @@
                 class="form-group has-feedback"
                 ng-class="{'has-error' : details.last_name.$invalid && details.$submitted}">
 
-                <label for="second-name" class="col-md-3 control-label">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
+                <label for="second-name" class="col-md-3 control-label">{{ "FORM.LABELS.SECOND_NAME" | translate }}</label>
                 <div class="col-md-9">
                   <input id="second-name" class="form-control" name="last_name" ng-model="PatientEditCtrl.medical.last_name" required>
                 </div>
@@ -142,7 +142,7 @@
                 class="form-group has-feedback"
                 ng-class="{'has-error' : details.middle_name.$invalid && details.$submitted}">
 
-                <label for="middle-name" class="col-md-3 control-label">{{ "INVOICE.MIDDLE_NAME" | translate }}</label>
+                <label for="middle-name" class="col-md-3 control-label">{{ "FORM.LABELS.MIDDLE_NAME" | translate }}</label>
                 <div class="col-md-9">
                   <input id="middle-name" class="form-control" name="middle_name" ng-model="PatientEditCtrl.medical.middle_name" required>
                 </div>
@@ -153,7 +153,7 @@
                 class="form-group has-feedback"
                 ng-class="{'has-error' : details.firstName.$invalid && details.$submitted}">
 
-                <label for="new-first-name" class="col-md-3 control-label">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
+                <label for="new-first-name" class="col-md-3 control-label">{{ "FORM.LABELS.FIRST_NAME" | translate }}</label>
                 <div class="col-md-9">
                   <input id="new-first-name" class="form-control" name="first_name" ng-model="PatientEditCtrl.medical.first_name">
                 </div>
@@ -164,7 +164,7 @@
                 class="form-group has-feedback"
                 ng-class="{'has-error' : details.hospital_no.$invalid && details.$submitted || details.$error.hospitalNumber}">
                 
-                <label for="new-hospital-number" class="col-md-3 control-label">{{ "INVOICE.HOSPITAL_FILE_NR" | translate }} </label>
+                <label for="new-hospital-number" class="col-md-3 control-label">{{ "FORM.LABELS.HOSPITAL_FILE_NR" | translate }} </label>
                 <div class="col-md-9">
 
                   <!-- One way bind hospital number to allow skipping the registered patients hospital number -->
@@ -181,7 +181,7 @@
                   <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
                   
                   <!-- TODO Translate -->
-                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">{{ "UTIL.PATIENT_EXIST" | translate }}</p>
+                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">{{ "FORM.LABELS.PATIENT_EXIST" | translate }}</p>
                 </div>
               </div>
 
@@ -189,7 +189,7 @@
               <div class="form-group has-feedback"
                 ng-class="{'has-error' : details.dob.$invalid && details.$submitted}">
                 
-                <label for="patient-dob" class="col-md-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
+                <label for="patient-dob" class="col-md-3 control-label">{{ "FORM.LABELS.DOB" | translate }}</label>
                 <div class="col-md-9">
                   <input required name="dob" id="patient-dob" type="date" class="form-control" ng-model="PatientEditCtrl.medical.dob" min="{{PatientEditCtrl.minDOB | date : 'yyyy-MM-dd'}}" max="{{PatientEditCtrl.maxDOB | date : 'yyyy-MM-dd'}}">
                 </div>
@@ -200,13 +200,13 @@
                 id="date-error"
                 class="alert alert-danger"
                 ng-if="details.dob.$error.min || details.dob.$error.max">
-                <p>{{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_LIMIT" | translate }} {{PatientEditCtrl.minDOB | date}} {{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_AND" | translate }} {{PatientEditCtrl.maxDOB | date}}</p>
+                <p>{{ "FORM.LABELS.INCORRECT_DATE_LIMIT" | translate }} {{PatientEditCtrl.minDOB | date}} {{ "FORM.LABELS.INCORRECT_DATE_AND" | translate }} {{PatientEditCtrl.maxDOB | date}}</p>
               </div>
 
               <!-- Gender -->
               <div id="gender" class="form-group has-feedback"
                 ng-class="{'has-error' : details.sex.$invalid && details.$submitted}">
-                <label for="male" class="col-md-3 control-label">Gender</label>
+                <label for="male" class="col-md-3 control-label">{{ "FORM.LABELS.GENDER" | translate}}</label>
                 <div class="col-md-9">
       
                   <!-- ng-click registers element as dirty, this is a workaround for angular forms in radio buttons -->
@@ -219,7 +219,7 @@
                       ng-model="PatientEditCtrl.medical.sex" 
                       ng-click="details.sex.$setDirty()"
                       required>
-                    {{ "PATIENT_REG.MALE" | translate }}
+                    {{ "FORM.LABELS.MALE" | translate }}
                   </label>
 
                   <!-- ng-click registers element as dirty, this is a workaround for angular forms in radio buttons -->
@@ -232,7 +232,7 @@
                       ng-model="PatientEditCtrl.medical.sex" 
                       ng-click="details.sex.$setDirty()"
                       required>
-                    {{ "PATIENT_REG.FEMALE" | translate }}
+                    {{ "FORM.LABELS.FEMALE" | translate }}
                   </label>  
                 </div>
               </div>
@@ -244,132 +244,132 @@
             <!-- Submission -->
               <p 
                 class="text-success"
-                ng-if="PatientEditCtrl.updatedPatientDetails"><span class="glyphicon glyphicon-ok-sign"></span> {{ "PATIENT_EDIT.RECORD_SUCCESS" | translate }}</p>
+                ng-if="PatientEditCtrl.updatedPatientDetails"><span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.LABELS.RECORD_SUCCESS" | translate }}</p>
 
               <p 
                 class="text-danger"
                 ng-if="details.$submitted && details.$invalid">
-                <span class="glyphicon glyphicon-remove-sign"></span> {{ "PATIENT_EDIT.RECORD_ERROR" | translate }}</p>
+                <span class="glyphicon glyphicon-remove-sign"></span> {{ "FORM.LABELS.RECORD_ERROR" | translate }}</p>
 
               <p 
                 class="text-warning"
                 ng-if="details.$submitted && !details.$dirty">
-                <span class="glyphicon glyphicon-info-sign"></span> {{ "PATIENT_EDIT.RECORD_SAME" | translate }}</p>
+                <span class="glyphicon glyphicon-info-sign"></span> {{ "FORM.LABELS.RECORD_SAME" | translate }}</p>
 
               <button 
                 ng-click="PatientEditCtrl.updatePatient(PatientEditCtrl.medical)"
-                class="btn btn-sm btn-primary">{{ "PATIENT_EDIT.SUBMIT_CHANGES" | translate }}</button>  
+                class="btn btn-sm btn-primary">{{ "FORM.BUTTONS.SUBMIT_CHANGES" | translate }}</button>  
           </div>
 
         </div>
 
         <div class="panel panel-default">
           <div class="panel-heading">
-            {{ "PATIENT_REG.OPTIONAL_INFO" | translate }}   
+            {{ "FORM.LABELS.OPTIONAL_INFO" | translate }}   
           </div>
           <div class="panel-body">
             <form name="optional" class="form-horizontal">
                 
               <div class="form-group">
-                <label for="title" class="col-md-3 control-label">Title</label>
+                <label for="title" class="col-md-3 control-label">{{ "FORM.LABELS.TITLE" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" name="title" class="form-control" id="title" ng-model="PatientEditCtrl.medical.title">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="phone" class="col-md-3 control-label">{{ "PATIENT_REG.PHONE_NO" | translate }}</label>
+                <label for="phone" class="col-md-3 control-label">{{ "FORM.LABELS.PHONE_NO" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="form-control" name="phone" ng-model="PatientEditCtrl.medical.phone">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="email" class="col-md-3 control-label">{{ "PATIENT_REG.EMAIL" | translate }}</label>
+                <label for="email" class="col-md-3 control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
                 <div class="col-md-9">
                   <input type="email" class="form-control" id="email" name="email" ng-model="PatientEditCtrl.medical.email">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="address1" class="col-md-3 control-label">{{ "PATIENT_REG.ADDRESS1" | translate }}</label>
+                <label for="address1" class="col-md-3 control-label">{{ "FORM.LABELS.ADDRESS1" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="address1" name="address_1" ng-model="PatientEditCtrl.medical.address_1">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="address2" class="col-md-3 control-label">{{ "PATIENT_REG.ADDRESS2" | translate }}</label>
+                <label for="address2" class="col-md-3 control-label">{{ "FORM.LABELS.ADDRESS2" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" name="address_2" id="address2" ng-model="PatientEditCtrl.medical.address_2">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="father_name" class="col-md-3 control-label">{{ "PATIENT_REG.FATHER_NAME" | translate }}</label>
+                <label for="father_name" class="col-md-3 control-label">{{ "FORM.LABELS.FATHER_NAME" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" name="father_name" id="father_name" ng-model="PatientEditCtrl.medical.father_name">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="mother_name" class="col-md-3 control-label">{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
+                <label for="mother_name" class="col-md-3 control-label">{{ "FORM.LABELS.MOTHER_NAME" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="mother_name" name="mother_name" ng-model="PatientEditCtrl.medical.mother_name">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="religion" class="col-md-3 control-label">{{ "PATIENT_REG.RELIGION" | translate }}</label>
+                <label for="religion" class="col-md-3 control-label">{{ "FORM.LABELS.RELIGION" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="religion" name="religion" ng-model="PatientEditCtrl.medical.religion">
                 </div>
               </div>
 
               <div class="form-group" >
-                <label for="marital" class="col-md-3 control-label">{{ "PATIENT_REG.MARITAL_STATUS" | translate }}</label>
+                <label for="marital" class="col-md-3 control-label">{{ "FORM.LABELS.MARITAL_STATUS" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="marital" name="marital_status" ng-model="PatientEditCtrl.medical.marital_status">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="profession" class="col-md-3 control-label">{{ "PATIENT_REG.PROFESSION" | translate }}</label>
+                <label for="profession" class="col-md-3 control-label">{{ "FORM.LABELS.PROFESSION" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="profession" name="profession" ng-model="PatientEditCtrl.medical.profession">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="employer" class="col-md-3 control-label">{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
+                <label for="employer" class="col-md-3 control-label">{{ "FORM.LABELS.EMPLOYER" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="employer" name="employer" ng-model="PatientEditCtrl.medical.employer">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="spouse" class="col-md-3 control-label">{{ "PATIENT_REG.SPOUSE" | translate }}</label>
+                <label for="spouse" class="col-md-3 control-label">{{ "FORM.LABELS.SPOUSE" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="spouse" name="spouse" ng-model="PatientEditCtrl.medical.spouse">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="spouse_profession" class="col-md-3 control-label">{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
+                <label for="spouse_profession" class="col-md-3 control-label">{{ "FORM.LABELS.SPOUSE_PROFESSION" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="spouse_profession" name="spouse_profession" ng-model="PatientEditCtrl.medical.spouse_profession">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="spouse_employer" class="col-md-3 control-label">{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
+                <label for="spouse_employer" class="col-md-3 control-label">{{ "FORM.LABELS.SPOUSE_EMPLOYER" | translate }}</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" id="spouse_employer" name="spouse_employer" ng-model="PatientEditCtrl.medical.spouse_employer">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="notes" class="col-md-3 control-label">{{ "PATIENT_REG.NOTES" | translate }}</label>
+                <label for="notes" class="col-md-3 control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
                 <div class="col-md-9">
                   <textarea class="form-control" id="notes" name="notes" ng-model="PatientEditCtrl.medical.notes" rows="4"></textarea>
                 </div>
@@ -379,7 +379,7 @@
             <!-- Link to submission -->
             <div class="col-md-9 col-md-offset-3">
               <p class="text-center text-info">
-              <a href="" ng-click="PatientEditCtrl.scrollToSubmission()" id="submissionLink"><span class="glyphicon glyphicon-circle-arrow-up"></span> {{ "PATIENT_EDIT.LINK_SUBMISSION" | translate }}</a>
+              <a href="" ng-click="PatientEditCtrl.scrollToSubmission()" id="submissionLink"><span class="glyphicon glyphicon-circle-arrow-up"></span> {{ "FORM.BUTTONS.LINK_SUBMISSION" | translate }}</a>
               </p>
             </div>
           </div>

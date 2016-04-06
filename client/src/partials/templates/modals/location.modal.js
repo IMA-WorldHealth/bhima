@@ -34,25 +34,25 @@ function LocationModalController(Locations, Instance, AppCache) {
   vm.views = {
     country : {
       cacheKey : 'country',
-      translateKey : 'LOCATION.COUNTRY',
+      translateKey : 'FORM.LABELS.COUNTRY',
       index : 1,
       onEnter : function onEnter() { delete vm.country; }
     },
     province : {
       cacheKey : 'province',
-      translateKey : 'LOCATION.PROVINCE',
+      translateKey : 'FORM.LABELS.PROVINCE',
       index : 2,
       onEnter : function onEnter() { delete vm.province; }
     },
     sector : {
       cacheKey : 'sector',
-      translateKey : 'LOCATION.SECTOR',
+      translateKey : 'FORM.LABELS.SECTOR',
       index : 3,
       onEnter : function onEnter() { delete vm.sector; }
     },
     village : {
       cacheKey : 'village',
-      translateKey : 'LOCATION.VILLAGE',
+      translateKey : 'FORM.LABELS.VILLAGE',
       index : 4,
       onEnter : function onEnter() { delete vm.village; }
     }

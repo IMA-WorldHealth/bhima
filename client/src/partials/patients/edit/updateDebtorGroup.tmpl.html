@@ -1,16 +1,16 @@
 <div class="modal-header">
-  <h3 class="modal-title">{{ "PATIENT_EDIT.GROUPS_DEBTOR.MODAL_TITLE" | translate }}</h3>
+  <h3 class="modal-title">{{ "FORM.LABELS.UPDATE_GROUP_DEBTOR" | translate }}</h3>
 </div>
 
 <div class="modal-body">
 
   <p class="text-info">
-  {{ "PATIENT_EDIT.GROUPS_DEBTOR.MODAL_INFO" | translate }}
+  {{ "FORM.INFOS.GROUPS_DEBTOR" | translate }}
   </p>
   <form name="groupForm">
     <div class="form-group has-feedback">
     
-      <label for="debtor-group" class="control-label">{{ "PATIENT_EDIT.GROUPS_DEBTOR.TITLE" | translate }}</label>
+      <label for="debtor-group" class="control-label">{{ "FORM.LABELS.GROUPS_DEBTOR_TITLE" | translate }}</label>
       <select 
         class="form-control" 
         name="debtorGroup"
@@ -25,8 +25,8 @@
 <div class="modal-footer">
   <button 
     class="btn btn-default"
-    ng-click="UpdateDebtorGroupCtrl.closeModal()">{{ "UTIL.CANCEL" | translate }}</button>
+    ng-click="UpdateDebtorGroupCtrl.closeModal()">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
   <button 
     class="btn btn-default"
-    ng-click="UpdateDebtorGroupCtrl.confirmGroup()">{{ "UTIL.CONFIRM" | translate }}</button>
+    ng-click="UpdateDebtorGroupCtrl.confirmGroup()">{{ "FORM.BUTTONS.CONFIRM" | translate }}</button>
 </div>

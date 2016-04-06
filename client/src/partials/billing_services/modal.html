@@ -14,13 +14,13 @@
       data-component-find-account
       >
       <label class="control-label">
-        {{ "COLUMNS.ACCOUNT" | translate }}
+        {{ "FORM.LABELS.ACCOUNT" | translate }}
       </label>
       <input
         class="form-control"
         name="account"
         ng-model="BillingServicesFormCtrl.model.account"
-        placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}"
         uib-typeahead="account as account.hrlabel for account in BillingServicesFormCtrl.accounts | filter:$viewValue | limitTo:6"
         typeahead-editable="false"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
@@ -33,7 +33,7 @@
     <!-- label input -->
     <div class="form-group" ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.label.$invalid }">
       <label class="control-label">
-        {{ "COLUMNS.LABEL" | translate }}
+        {{ "FORM.LABELS.LABEL" | translate }}
       </label>
       <input
         class="form-control"
@@ -48,7 +48,7 @@
     <!-- description textarea -->
     <div class="form-group" ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.description.$invalid }">
       <label class="control-label">
-        {{ "COLUMNS.DESCRIPTION" | translate }}
+        {{ "FORM.LABELS.DESCRIPTION" | translate }}
       </label>
       <!--
         @todo - propose to the team that all text-areas should have "resize:vertical" styles
@@ -58,7 +58,7 @@
         class="form-control"
         name="description"
         ng-model="BillingServicesFormCtrl.model.description"
-        placeholder="{{ 'INPUT.DESCRIPTION' | translate }}"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
         required>
       </textarea>
       <div class="help-block" ng-messages="BillingServicesForm.description.$error" ng-show="BillingServicesForm.$submitted">
@@ -69,7 +69,7 @@
     <!-- value input -->
     <div class="form-group" ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.value.$invalid }">
       <label class="control-label">
-        {{ "COLUMNS.VALUE" | translate }} (%)
+        {{ "FORM.LABELS.VALUE" | translate }} (%)
       </label>
       <input
         type="number"
@@ -95,7 +95,7 @@
 
         <!-- there are (client-side) errors on the form -->
         <p ng-show="BillingServicesForm.$submitted && BillingServicesForm.$invalid">
-          <span class="glyphicon glyphicon-alert"></span> {{ "FORM.ERRORED" | translate }}
+          <span class="glyphicon glyphicon-alert"></span> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
         </p>
 
         <!-- show http errors sent from the server -->
@@ -117,7 +117,7 @@
     </bh-loading-button>
 
     <button class="btn btn-default" data-method="back" ng-click="BillingServicesFormCtrl.dismiss()">
-      {{ "FORM.BACK" | translate }}
+      {{ "FORM.BUTTONS.BACK" | translate }}
     </button>
   </div>
 </form>

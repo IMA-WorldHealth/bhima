@@ -17,7 +17,7 @@
     >
 
     <label class="control-label">
-      {{ ($ctrl.label || "COLUMNS.DATE") | translate }}
+      {{ ($ctrl.label || "FORM.LABELS.DATE") | translate }}
     </label>
 
     <!-- input component implementation -->
@@ -44,7 +44,7 @@
           ng-disabled="$ctrl.editMode || $ctrl.disabled"
           data-date-editor-dropdown-toggle>
           <span class="glyphicon glyphicon-calendar"></span>
-          {{ "DATEFINDER.SET" | translate }}
+          {{ "FORM.LABELS.SET_DATE" | translate }}
         </button>
       </span>
     </div>

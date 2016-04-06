@@ -28,26 +28,26 @@ function BillingServicesController($state, $params, $translate, BillingServices,
     onRegisterApi: registerGridApi,
     columnDefs : [{
       field : 'id',
-      displayName : $translate.instant('COLUMNS.ID'),
+      displayName : $translate.instant('TABLE.COLUMNS.ID'),
       width: 45
     }, {
       field : 'account',
-      displayName : $translate.instant('COLUMNS.ACCOUNT'),
+      displayName : $translate.instant('TABLE.COLUMNS.ACCOUNT'),
       width: '*'
     }, {
       field : 'label',
-      displayName : $translate.instant('COLUMNS.LABEL')
+      displayName : $translate.instant('TABLE.COLUMNS.LABEL')
     }, {
       field : 'description',
-      displayName: $translate.instant('COLUMNS.DESCRIPTION')
+      displayName: $translate.instant('TABLE.COLUMNS.DESCRIPTION')
     }, {
       field : 'value',
-      displayName : $translate.instant('COLUMNS.VALUE'),
+      displayName : $translate.instant('TABLE.COLUMNS.VALUE'),
       cellFilter:'percentage',
       cellClass: 'text-right'
     }, {
       field : 'created_at',
-      displayName : $translate.instant('COLUMNS.DATE'),
+      displayName : $translate.instant('TABLE.COLUMNS.DATE'),
       cellFilter:'date',
       cellClass: 'text-center'
     }, {

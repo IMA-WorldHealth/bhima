@@ -1,6 +1,6 @@
 <ng-form name="LocationModalForm" data-location-modal>
   <div class="modal-header">
-    <h4>{{ "LOCATION.MODAL.TITLE" | translate }}</h4>
+    <h4>{{ "FORM.LABELS.CONFIRMATION" | translate }}</h4>
   </div>
 
   <div class="modal-body">
@@ -24,7 +24,7 @@
       ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.country.$error }"
       >
       <label class="control-label">
-        {{ "LOCATION.COUNTRY" | translate }}
+        {{ "FORM.LABELS.COUNTRY" | translate }}
       </label>
       <select
         ng-if="LocationModalCtrl.view.index > 1"
@@ -51,7 +51,7 @@
       ng-if="LocationModalCtrl.view.index > 1"
       >
       <label class="control-label">
-        {{ "LOCATION.PROVINCE" | translate }}
+        {{ "FORM.LABELS.PROVINCE" | translate }}
       </label>
       <select
         ng-if="LocationModalCtrl.view.index > 2"
@@ -78,7 +78,7 @@
       ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.sector.$error }"
       >
       <label class="control-label">
-        {{ "LOCATION.SECTOR" | translate }}
+        {{ "FORM.LABELS.SECTOR" | translate }}
       </label>
       <select
         ng-if="LocationModalCtrl.view.index > 3"
@@ -103,7 +103,7 @@
       ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.village.$error }"
       >
       <label class="control-label">
-        {{ "LOCATION.VILLAGE" | translate }}
+        {{ "FORM.LABELS.VILLAGE" | translate }}
       </label>
       <input
         class="form-control"
