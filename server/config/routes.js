@@ -27,9 +27,7 @@ var trialbalance         = require('../controllers/finance/trialbalance');
 var journal              = require('../controllers/finance/journal');
 var ledger               = require('../controllers/finance/ledger');
 var fiscal               = require('../controllers/finance/fiscal');
-var extra                = require('../controllers/finance/extraPayment');
 var gl                   = require('../controllers/finance/ledgers/general');
-var genericFinance       = require('../controllers/finance/financeGeneric');
 var accounts             = require('../controllers/finance/accounts');
 var analytics            = require('../controllers/finance/analytics');
 var purchase             = require('../controllers/finance/purchase');
@@ -50,21 +48,16 @@ var accountType          = require('../controllers/finance/accountType');
 var costCenter           = require('../controllers/finance/costCenter');
 var profitCenter         = require('../controllers/finance/profitCenter');
 var reference            = require('../controllers/finance/reference');
-var subsidy              = require('../controllers/finance/subsidy');
+var subsidies            = require('../controllers/finance/subsidies');
 var patientInvoice       = require('../controllers/finance/patientInvoice');
 var discounts            = require('../controllers/finance/discounts');
-var financeServices      = require('../controllers/categorised/financeServices');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
 var depreciatedReports   = require('../controllers/categorised/reports_depreciate');
 var payroll              = require('../controllers/categorised/payroll');
-var caution              = require('../controllers/categorised/caution');
-var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
-var transfers            = require('../controllers/finance/transfers');
 var debtorGroups         = require('../controllers/finance/debtors/groups');
 var currencies           = require('../controllers/finance/currencies');
 var services             = require('../controllers/admin/services');
-var conventions          = require('../controllers/finance/conventions');
 var vouchers             = require('../controllers/finance/vouchers');
 var suppliers            = require('../controllers/admin/suppliers');
 var functions            = require('../controllers/admin/functions');
@@ -165,33 +158,33 @@ exports.configure = function (app) {
   app.put('/references/:id', reference.update);
   app.delete('/references/:id', reference.remove);
 
- //API for section resultats crud
+  //API for section resultats crud
   app.get('/section_resultats', sectionResultats.list);
   app.get('/section_resultats/:id', sectionResultats.detail);
   app.post('/section_resultats', sectionResultats.create);
   app.put('/section_resultats/:id', sectionResultats.update);
   app.delete('/section_resultats/:id', sectionResultats.remove);
 
- //API for section bilans crud
+  //API for section bilans crud
   app.get('/section_bilans', sectionBilans.list);
   app.get('/section_bilans/:id', sectionBilans.detail);
   app.post('/section_bilans', sectionBilans.create);
   app.put('/section_bilans/:id', sectionBilans.update);
   app.delete('/section_bilans/:id', sectionBilans.remove);
 
- //API for reference group crud
+  // API for reference group crud
   app.get('/reference_group', referenceGroup.list);
   app.get('/reference_group/:id', referenceGroup.detail);
   app.post('/reference_group', referenceGroup.create);
   app.put('/reference_group/:id', referenceGroup.update);
   app.delete('/reference_group/:id', referenceGroup.remove);
 
- //API for subsidy routes crud
-  app.get('/subsidies', subsidy.list);
-  app.get('/subsidies/:id', subsidy.detail);
-  app.post('/subsidies', subsidy.create);
-  app.put('/subsidies/:id', subsidy.update);
-  app.delete('/subsidies/:id', subsidy.remove);
+  // API for subsidies routes crud
+  app.get('/subsidies', subsidies.list);
+  app.get('/subsidies/:id', subsidies.detail);
+  app.post('/subsidies', subsidies.create);
+  app.put('/subsidies/:id', subsidies.update);
+  app.delete('/subsidies/:id', subsidies.remove);
 
 
   // -> Add :route
@@ -219,7 +212,6 @@ exports.configure = function (app) {
   app.get('/ledgers/debitor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
 
   /* fiscal year controller */
-
   app.get('/fiscal', fiscal.getFiscalYears);
   app.post('/fiscal/create', fiscal.createFiscalYear);
 
@@ -241,19 +233,6 @@ exports.configure = function (app) {
    *
    * @todo test all routes below to ensure no broken links
    */
-
-  // Financial services - cost/ profit centers, services etc.
-  app.get('/services/', financeServices.listServices);
-  app.get('/available_cost_center/', financeServices.availableCostCenters);
-  app.get('/available_profit_center/', financeServices.availableProfitCenters);
-  app.get('/cost/:id_project/:cc_id', financeServices.costCenterCost);
-  app.get('/profit/:id_project/:pc_id', financeServices.profitCenterCost);
-  app.get('/costCenterAccount/:id_enterprise/:cost_center_id', financeServices.costCenterAccount);
-  app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', financeServices.profitCenterAccount);
-  app.get('/removeFromCostCenter/:tab', financeServices.removeFromCostCenter);
-  app.get('/removeFromProfitCenter/:tab', financeServices.removeFromProfitCenter);
-  app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', financeServices.auxCenterAccount);
-
   // DEPRECIATED Inventory routes - these should be removed as soon as possible
   // FIXME Depreciate routes
   app.get('/lot/:inventory_uuid', depreciatedInventory.getInventoryLot);
@@ -273,8 +252,6 @@ exports.configure = function (app) {
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
 
-  app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
-
   app.get('/getAccount6', accounts.listIncomeAccounts);
   app.get('/getAccount7/', accounts.listExpenseAccounts);
   app.get('/getClassSolde/:account_class/:fiscal_year', accounts.getClassSolde);
@@ -284,9 +261,6 @@ exports.configure = function (app) {
   app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
   app.post('/payTax/', taxPayment.submit);
   app.put('/setTaxPayment/', taxPayment.setTaxPayment);
-
-  app.get('/cost_periodic/:id_project/:cc_id/:start/:end', financeServices.costByPeriod);
-  app.get('/profit_periodic/:id_project/:pc_id/:start/:end', financeServices.profitByPeriod);
 
   // TODO Remove or upgrade (model in database) every report from report_depreciate
   app.get('/getDistinctInventories/', depreciatedReports.listDistinctInventory);
@@ -305,8 +279,6 @@ exports.configure = function (app) {
   app.get('/taxe_ipr_currency/', payroll.listTaxCurrency);
 
   app.post('/posting_donation/', donations.post);
-
-  app.get('/getSubsidies/', subsidies.list);
 
   /*  Inventory and Stock Managment */
   app.get('/inventory/metadata', inventory.getInventoryItems);
@@ -361,18 +333,9 @@ exports.configure = function (app) {
 
   app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
 
-  // Extra Payement
-  app.post('/extraPayment/', extra.handleExtraPayment);
-
   // general ledger controller
   // transitioning to a more traditional angular application architecture
   app.get('/ledgers/general', gl.route);
-
-  // finance controller
-  app.get('/finance/creditors', genericFinance.getCreditors);
-  app.get('/finance/profitcenters', genericFinance.getProfitCenters);
-  app.get('/finance/costcenters', genericFinance.getCostCenters);
-  app.post('/finance/journalvoucher', genericFinance.postJournalVoucher);
 
   // currencies API
   app.get('/currencies', currencies.list);
@@ -499,20 +462,6 @@ exports.configure = function (app) {
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
 
-  /**
-  * transfers
-  * NOTE: The `/cash/transfers` API endpoint must be above the `/cash` API endpoint
-  */
-  app.get('/cash/transfers', transfers.list);
-  app.get('/cash/transfers/:id', transfers.detail);
-  app.post('/cash/transfers', transfers.create);
-
-  /**
-  * conventions
-  * NOTE: The `/cash/conventions` API endpoint must be above the `/cash` API endpoint
-  */
-  app.post('/cash/conventions', conventions.create);
-
   /** cash (aux/primary) */
   app.get('/cash', cash.list);
   app.get('/cash/:uuid', cash.detail);
@@ -599,6 +548,4 @@ exports.configure = function (app) {
 	app.post('/donors', donors.create);
 	app.put('/donors/:id', donors.update);
 	app.delete('/donors/:id', donors.remove);
-
-
 };
