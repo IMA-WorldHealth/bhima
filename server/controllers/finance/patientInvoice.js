@@ -2,14 +2,14 @@
  * Patient Invoice API Controller
  *.@module controllers/finance/patientInvoice
  *
- * @todo (required) Major bug - Sale items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
+ * @todo (required) major bug - Sale items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
  * @todo GET /sales/patient/:uuid - retrieve all patient invoices for a specific patient
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructre
  * @todo Credit note logic pending on clear design
  */
 var q    = require('q');
 var db   = require('../../lib/db');
-var uuid = require('node-uuid');
+const uuid = require('node-uuid');
 var _    = require('lodash');
 var util = require('../../lib/util');
 
@@ -104,7 +104,7 @@ function lookupSale(uid, codes) {
  * @todo Read the balance remaining on the debtors account given the sale as an auxillary step
  */
 function details(req, res, next) {
-  var uid = req.params.uuid;
+  var uid = db.bid(req.params.uuid);
 
   lookupSale(uid, req.codes)
   .then(function (record) {
@@ -137,7 +137,7 @@ function create(req, res, next) {
   delete sale.subsidies;
 
   // provide UUID if the client has not specified
-  sale.uuid = sale.uuid || uuid.v4();
+  sale.uuid = db.bid(sale.uuid || uuid.v4());
 
   // make sure that the dates have been properly transformed before insert
   if (sale.date) {
@@ -149,7 +149,7 @@ function create(req, res, next) {
 
   // make sure that sale items have their uuids
   items.forEach(function (item) {
-    item.uuid = item.uuid || uuid.v4();
+    item.uuid = db.bid(item.uuid || uuid.v4());
     item.sale_uuid = sale.uuid;
 
     // FIXME -- where is this supposed to have been defined?
@@ -187,7 +187,7 @@ function create(req, res, next) {
     })
     .then(function (results) {
       res.status(201).json({
-        uuid : sale.uuid
+        uuid : uuid.unparse(sale.uuid)
       });
     })
     .catch(next)
@@ -222,8 +222,8 @@ function search(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT sale.uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference, ' +
-      'sale.cost, sale.debitor_uuid, sale.user_id, sale.discount, ' +
+    'SELECT BUID(sale.uuid) as uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference, ' +
+      'sale.cost, BUID(sale.debitor_uuid) as debitor_uuid, sale.user_id, sale.discount, ' +
       'sale.date, sale.is_distributable ' +
     'FROM sale JOIN project ON project.id = sale.project_id ' +
     'WHERE ';
@@ -270,7 +270,7 @@ function reference(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT s.uuid FROM (' +
+    'SELECT BUID(s.uuid) as uuid FROM (' +
       'SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference ' +
       'FROM sale JOIN project ON sale.project_id = project.id ' +
     ')s WHERE s.reference = ?;';

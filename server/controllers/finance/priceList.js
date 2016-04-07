@@ -2,7 +2,6 @@
  * Price List Controller
  *
  * @module finance/priceList
- * @author jniles
  *
  * @desc Implements CRUD operations on the Price List entity.
  *
@@ -14,8 +13,8 @@
  * DELETE /prices/:uuid
  */
 
-var db    = require('../../lib/db');
-var uuid  = require('node-uuid');
+const db    = require('../../lib/db');
+const uuid  = require('node-uuid');
 
 /**
  * Lists all price lists in the database
@@ -28,19 +27,18 @@ exports.list = function list(req, res, next) {
   var sql;
 
   if (req.query.detailed === '1') {
-    sql =  
-      'SELECT uuid, label, created_at, description ' +
+    sql =
+      'SELECT BUID(uuid) as uuid, label, created_at, description ' +
       'FROM price_list ' +
       'WHERE enterprise_id = ? ' +
       'ORDER BY label;';
   } else {
     sql =
-      'SELECT uuid, label ' +
+      'SELECT BUID(uuid) as uuid, label ' +
       'FROM price_list ' +
       'WHERE enterprise_id = ? ' +
       'ORDER BY label;';
   }
-
 
   db.exec(sql, [req.session.enterprise.id])
   .then(function (rows) {
@@ -67,12 +65,12 @@ exports.list = function list(req, res, next) {
  *
  * @returns {Promise}
  */
-function lookupPriceList(uuid, codes) {
+function lookupPriceList(uid, codes) {
   'use strict';
 
   var priceList;
   var sql =
-    'SELECT uuid, label, description, created_at, updated_at ' +
+    'SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at ' +
     'FROM price_list WHERE uuid = ?;';
 
   return db.exec(sql, [ uuid ])
@@ -86,10 +84,10 @@ function lookupPriceList(uuid, codes) {
     priceList = rows[0];
 
     sql =
-      'SELECT uuid, inventory_uuid, label, value, is_percentage, created_at ' +
+      'SELECT BUID(uuid) as uuid, BUID(inventory_uuid) as inventory_uuid, label, value, is_percentage, created_at ' +
       'FROM price_list_item WHERE price_list_uuid = ?;';
 
-    return db.exec(sql, [ uuid ]);
+    return db.exec(sql, [ uid ]);
   })
   .then(function (rows) {
     priceList.items = rows;
@@ -107,8 +105,8 @@ function lookupPriceList(uuid, codes) {
  */
 exports.details = function details(req, res, next) {
   'use strict';
-
-  lookupPriceList(req.params.uuid, req.codes)
+  const uid = db.bid(req.params.uuid);
+  lookupPriceList(uid, req.codes)
   .then(function (priceList) {
     res.status(200).json(priceList);
   })
@@ -165,8 +163,8 @@ function formatPriceListItems(priceListUuid, items) {
   // the database
   return items.map(function (item) {
     return [
-      item.uuid || uuid.v4(),
-      item.inventory_uuid,
+      db.bid(item.uuid || uuid.v4()),
+      db.bid(item.inventory_uuid),
       priceListUuid,
       item.label,
       item.value,
@@ -195,7 +193,7 @@ exports.create = function create(req, res, next) {
     'label, value, is_percentage) VALUES ?;';
 
   // generate a UUID if not provided
-  data.uuid = data.uuid || uuid.v4();
+  data.uuid = db.bid(data.uuid || uuid.v4());
   // if the client didn't send price list items, do not create them.
   if (data.items) {
     items = formatPriceListItems(data.uuid, data.items);
@@ -217,7 +215,7 @@ exports.create = function create(req, res, next) {
 
     // respond to the client with a 201 CREATED
     res.status(201).json({
-      uuid : data.uuid
+      uuid : uuid.unparse(data.uuid)
     });
   })
   .catch(next)
@@ -246,10 +244,11 @@ exports.update = function update(req, res, next) {
     'label, value, is_percentage) VALUES ?;';
 
   var trans = db.transaction();
+  const uid = db.bid(req.params.uuid);
 
   // if the client didn't send price list items, do not create them.
   if (data.items) {
-    items = formatPriceListItems(req.params.uuid, data.items);
+    items = formatPriceListItems(uid, data.items);
   }
 
   // remove non-updatable properties before queries
@@ -257,20 +256,20 @@ exports.update = function update(req, res, next) {
   delete data.items;
 
   // make sure the price list exists
-  lookupPriceList(req.params.uuid)
+  lookupPriceList(uid)
   .then(function (priceList) {
 
     // if we get here, it means the price list exists and we can perform an
     // update query on it. Since we are doing multiple operations at once,
     // wrap the queries in a DB transaction.
     if (!isEmptyObject(data)) {
-      trans.addQuery(priceListSql, [ data, req.params.uuid ]);
+      trans.addQuery(priceListSql, [ data, uid ]);
     }
 
     // only trigger price list item updates if the items have been sent back to
     // the server
     if (items) {
-      trans.addQuery(priceListDeleteItemSql, [ req.params.uuid ]); 
+      trans.addQuery(priceListDeleteItemSql, [ uid ]);
       trans.addQuery(priceListCreateItemSql, [ items ]);
     }
 
@@ -279,7 +278,7 @@ exports.update = function update(req, res, next) {
   .then(function () {
 
     // send the full resource object back to the client via lookup function
-    return lookupPriceList(req.params.uuid);
+    return lookupPriceList(uid);
   })
   .then(function (priceList) {
     res.status(200).json(priceList);
@@ -297,13 +296,15 @@ exports.update = function update(req, res, next) {
 exports.delete = function del(req, res, next) {
   'use strict';
 
+  const uid = db.bid(req.params.uuid);
+
   var sql =
     'DELETE FROM price_list WHERE uuid = ?;';
 
   // ensure that the price list exists
-  lookupPriceList(req.params.uuid, req.codes)
+  lookupPriceList(uid, req.codes)
   .then(function () {
-    return db.exec(sql, [req.params.uuid ]);
+    return db.exec(sql, [ uid ]);
   })
   .then(function () {
 

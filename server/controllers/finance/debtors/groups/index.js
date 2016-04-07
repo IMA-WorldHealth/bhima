@@ -39,13 +39,12 @@ exports.invoices = invoices;
  *
  * @param {string} uuid - the uuid of the debtor group in question.
  * @returns {Promise} group - a promise resolving to the debtor group
- *
  * @private
  */
 function lookupDebtorGroup(uid) {
-  var sql =
-    `SELECT uuid, enterprise_id ,name, account_id, location_id, phone, email,
-      note, locked, max_credit, is_convention, price_list_uuid,
+  const sql =
+    `SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, location_id, phone, email,
+      note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
       apply_subsidies, apply_discounts, apply_billing_services
     FROM debitor_group
     WHERE uuid = ?;`;
@@ -53,7 +52,7 @@ function lookupDebtorGroup(uid) {
   return db.exec(sql, [uid])
   .then(function (rows) {
     if (!rows.length) {
-      throw new NotFound(`Could not find a debtor group with uuid ${uid}`);
+      throw new NotFound(`Could not find a debtor group with uuid ${uuid.unparse(uid)}`);
     }
 
     return rows[0];
@@ -89,12 +88,13 @@ function create(req, res, next) {
   var data = req.body;
   var sql = 'INSERT INTO debitor_group SET ? ;';
 
-  // generate a uuid if one doesn't exist
-  data.uuid = data.uuid || uuid.v4();
+  // generate a uuid if one doesn't exist, and convert to binary
+  const uid = data.uuid || uuid.v4();
+  data.uuid = db.bid(uid); 
 
   db.exec(sql, data)
   .then(function () {
-    res.status(201).json({ uuid: data.uuid });
+    res.status(201).json({ uuid: uid });
   })
   .catch(next)
   .done();
@@ -110,11 +110,12 @@ function create(req, res, next) {
 function update(req, res, next) {
   var data = req.body;
   var sql = 'UPDATE debitor_group SET ? WHERE uuid = ?;';
+  const uid = db.bid(req.params.uuid);
 
   // prevent updating the uuid, if it exists
   delete data.uuid;
 
-  db.exec(sql, [data, req.params.uuid])
+  db.exec(sql, [data, uid])
   .then(function (rows) {
     if (!rows.affectedRows) {
       throw new NotFound(
@@ -122,10 +123,10 @@ function update(req, res, next) {
       );
     }
 
-    return lookupDebtorGroup(req.params.uuid);
+    return lookupDebtorGroup(uid);
   })
   .then(function (group) {
-    res.status(200).send(group);
+    res.status(200).json(group);
   })
   .catch(next)
   .done();
@@ -139,9 +140,9 @@ function update(req, res, next) {
 * @function detail
 */
 function detail(req, res, next) {
-  var uuid = req.params.uuid;
+  const uid = db.bid(req.params.uuid);
 
-  lookupDebtorGroup(uuid)
+  lookupDebtorGroup(uid)
   .then(function (group) {
     res.status(200).json(group);
   })
@@ -160,7 +161,7 @@ function detail(req, res, next) {
  */
 function list(req, res, next) {
   var sql =
-    'SELECT uuid, name, locked, account_id, is_convention FROM debitor_group ';
+    'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention FROM debitor_group ';
 
   if (req.query.detailed === '1') {
     sql =

@@ -31,15 +31,24 @@ exports.balance = function() { /** @todo - noop */ };
  * Updates a debtor's details (particularly group_uuid)
  */
 function update(req, res, next) {
+
   var sql =
     'UPDATE debitor SET ? WHERE uuid = ?';
 
   // delete the uuid if it exists
   delete req.body.uuid;
 
-  db.exec(sql, [req.body, req.params.uuid])
+  // cache the incoming uuid for fast lookups
+  const uid = db.bid(req.params.uuid);
+
+  // escape the group_uuid if it exists
+  if (req.body.group_uuid) {
+    req.body.group_uuid = db.bid(req.body.group_uuid);
+  }
+
+  db.exec(sql, [req.body, uid])
   .then(function () {
-    return lookupDebtor(req.params.uuid);
+    return lookupDebtor(uid);
   })
   .then(function (debtor) {
     res.status(200).json(debtor);
@@ -56,14 +65,14 @@ function update(req, res, next) {
  */
 function lookupDebtor(uid) {
   var sql =
-    'SELECT uuid, group_uuid, text ' +
+    'SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text ' +
     'FROM debitor ' +
     'WHERE uuid = ?';
 
   return db.exec(sql, [uid])
   .then(function (rows) {
     if (!rows.length) {
-      throw new NotFound('Could not find a debtor with uuid ' + uid);
+      throw new NotFound(`Could not find a debtor with uuid ${uuid.unparse(uid)}`);
     }
     return rows[0];
   });
@@ -86,9 +95,12 @@ function lookupDebtor(uid) {
  * over the dataset queried only the debtor
  *
  * @method invoices
+ *
+ * @todo - this function should be replaced by an SQL function stored in
+ * procedures.sql for easy lookup
  */
 function invoices(req, res, next) {
-  var uid = req.params.uuid;
+  const uid = req.params.uuid;
   var options = req.query;
 
   // get the debtor invoice uuids from the sales table
@@ -151,9 +163,12 @@ function invoices(req, res, next) {
  * over the dataset queried only the debtor
  *
  * @method balance
+ *
+ * @todo - this function should be replaced by an SQL function stored in
+ * procedures.sql for easy lookup
  */
 function balance(req, res, next) {
-  var uid = req.params.uuid;
+  const uid = db.bid(req.params.uuid);
   var options = req.query;
 
   // make sure the debtor exists
@@ -166,13 +181,13 @@ function balance(req, res, next) {
     // if the debtor doesn't exist, throw an error
     if (!rows.length) {
       throw new NotFound(
-        `Could not find a debtor with uuid ${uid}`
+        `Could not find a debtor with uuid ${req.params.uuid}`
       );
     }
 
     // select all invoice and payments against invoices from the combined ledger
     sql =
-      `SELECT COUNT(*) AS count, SUM(credit - debit) AS balance, entity_uuid
+      `SELECT COUNT(*) AS count, SUM(credit - debit) AS balance, BUID(entity_uuid) as entity_uuid
       FROM (
         SELECT record_uuid as uuid, debit, credit
         FROM combined_ledger
@@ -187,5 +202,4 @@ function balance(req, res, next) {
   })
   .catch(next)
   .done();
-
 }

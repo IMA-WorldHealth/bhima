@@ -189,8 +189,6 @@ describe('(/patients) The Patients API', function () {
   });
 
   it('POST /patients will register a valid patient', function () {
-    var UUID_LENGTH = 36;
-
     return agent.post('/patients')
       .send(mockRequest)
       .then(function (res) {
