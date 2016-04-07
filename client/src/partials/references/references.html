@@ -1,195 +1,200 @@
-<header data-header>
-  {{ "REFERENCE.TITLE" | translate }}
-</header>
-
-<nav>
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li class="active">{{ "REFERENCE.TITLE" | translate }}</li>
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ACCOUNTING" | translate }}</li>
+      <li class="active">{{ "REFERENCE_GROUP.TITLE" | translate }}</li>
     </ol>
   </div>
+</div>
 
-  <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="new()">
-      <span class="glyphicon glyphicon-plus-sign"></span>
-       {{ "REFERENCE.ADD" | translate }}
-    </button>
-  </div>
-</nav>
+<!-- Links to the Reference Group Chart as well as the button for adding an referenceGroup -->
+<div class="flex-util">
+  <button ng-click="ReferenceCtrl.create()" class="btn btn-default btn-sm" data-method="create">
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "REFERENCE_GROUP.ADD" | translate }}
+  </button>
+</div>
 
-<main>
-  <div class="row margin-top-10">
 
-    <div class="col-xs-7">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <span class="glyphicon glyphicon-paperclip"></span>
-          {{ "REFERENCE.REGISTERED" | translate }}
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Complete list of registred Reference Group -->
+      <div class="col-xs-6">
+        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
+          <div class="panel-heading">
+            {{ "REFERENCE_GROUP.REGISTERED" | translate }}
+          </div>
+
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.NR" | translate}}</th>
+                <th>{{ "COLUMNS.REFERENCE_GROUP" | translate}}</th>
+                <th>{{ "COLUMNS.LABEL" | translate}}</th>
+                <th>{{ "COLUMNS.POSITION" | translate}}</th>
+                <th>{{ "COLUMNS.BALANCE_SECTION" | translate}}</th> 
+                <th colspan="2">{{ "COLUMNS.ACTIONS" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="ReferenceCtrl.session.loading" class="text-center">
+                <td colspan="7"><loading-indicator></loading-indicator></td>
+              </tr>
+              <tr 
+              ng-repeat="ref in ReferenceCtrl.referenceGroups | orderBy:'number' | orderBy:'text' " 
+              ng-class="{'rowSelected' : ReferenceCtrl.referenceGroup.id === ref.id}" >
+                <td>{{$index + 1}}</td>
+                <td>{{ ref.reference_group }}</td>
+                <td>{{ ref.text }}</td>
+                <td>{{ ref.position }}</td>
+                <td>{{ ref.sectionBilanText }} </td>
+                <td><a class="btn btn-xs btn-default" id="referenceGroup-upd-{{$index+1}}" ng-click="ReferenceCtrl.update(ref)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                <td><a class="btn btn-xs btn-default" id="referenceGroup-del-{{$index+1}}" ng-click="ReferenceCtrl.del(ref)"><span class="glyphicon glyphicon-trash"></span></a></td>
+              </tr>
+              <tr ng-if="!ReferenceCtrl.referenceGroups.length">
+                <td colspan="6">{{ "REFERENCE_GROUP.NO_REFERENCES" | translate }}</td>
+              </tr> 
+
+            </tbody>
+          </table>
         </div>
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th>{{ "COLUMNS.NR" | translate}}</th>
-              <th>{{ "COLUMNS.REF" | translate}}</th>
-              <th>{{ "COLUMNS.LABEL" | translate}}</th>
-              <th>{{ "COLUMNS.POSITION" | translate}}</th>
-              <th>{{ "COLUMNS.IS_REPORT" | translate}}</th>
-              <th>{{ "COLUMNS.REF_GROUP" | translate}}</th>
-              <th>{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate}}</th>
-              <th colspan="4">{{ "COLUMNS.ACTIONS" | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="reference in references.data | orderBy:'text'">
-              <td>{{$index + 1}}</td>
-              <td>{{ reference.ref }}</td>
-              <td>{{ reference.text }}</td>
-              <td>{{ reference.position }}</td>
-              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!reference.is_report}"></td>
-              <td>{{ reference_groups.get(reference.reference_group_id).text }}</td>
-              <td>{{ section_resultat.get(reference.section_resultat_id).text }}</td>
-              <td><a class="action" ng-click="edit(reference)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a class="action danger" ng-click="delete(reference)"><span class="glyphicon glyphicon-trash"></span></a></td>
-            </tr>
-            <tr ng-if="!references.data.length">
-              <td colspan="8">{{ "REFERENCE.NO_REFERENCES" | translate }}</td>
-            </tr>
-          </tbody>
-        </table>
+      </div>
+
+      <div class="col-xs-6" ng-switch="ReferenceCtrl.view">
+        <div ng-switch-default>
+          <div class="alert alert-info">
+            <h4><STRONG>{{ "REFERENCE_GROUP.TITLE" | translate }}</STRONG></h4>
+            <p>{{ "REFERENCE_GROUP.ALERT" | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Success saving Feed Back -->
+        <div ng-switch-when="create_success">
+          <div class="alert alert-success" id="create_success">
+            <h4>{{ 'REFERENCE_GROUP.SAVE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <!-- Success updating feedBack -->
+        <div ng-switch-when="update_success">
+          <div class="alert alert-success" id="update_success">
+            <h4>{{ 'REFERENCE_GROUP.UPDATE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_success">
+          <div class="alert alert-success" id="delete_success">
+            <h4>{{ 'REFERENCE_GROUP.DELETE_SUCCESS' | translate }} </h4>
+            </p>
+          </div>
+        </div>
+
+        <div ng-switch-when="delete_error">
+          <div class="alert alert-danger" id="delete_error">
+            <h4>{{ SubsidyCtrl.HTTPError.data.code | translate }} </h4>
+            </p>
+          </div>
+        </div>        
+
+        <!-- Form for adding referenceGroup -->
+        <div class="panel panel-primary" ng-switch-when="create">
+          <div class="panel-heading">{{ "REFERENCE_GROUP.NEW_REFERENCE" | translate }}</div>
+          <div class="panel-body">
+            <form class="panel-body" name="CreateForm" ng-submit="ReferenceCtrl.submit(CreateForm)" novalidate>
+            
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.reference_group.$invalid }">
+                <label class="control-label">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
+                <input type="text" class="form-control" name="reference_group" ng-model="ReferenceCtrl.referenceGroup.reference_group" required>
+              </div>
+            
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
+                <label class="control-label">{{ "COLUMNS.LABEL" | translate }}</label>
+                <input type="text" class="form-control" name="text" ng-model="ReferenceCtrl.referenceGroup.text" required>
+              </div>
+
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.position.$invalid }">
+                <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
+                <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceCtrl.referenceGroup.position" required>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.section_bilan_id.$invalid }">
+                <label class="control-label">{{ "COLUMNS.BALANCE_SECTION" | translate }}</label>
+                <select 
+                  class="form-control" 
+                  name="section_bilan_id" 
+                  ng-model="ReferenceCtrl.referenceGroup.section_bilan_id" 
+                  id="section_bilan_id"  
+                  ng-options="section.id as section.text for section in ReferenceCtrl.sectionBilans"
+                  required>
+                  <option value="" disabled> -- {{ "SELECT.BALANCE_SECTION" | translate }} -- </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="submit-referenceGroup" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="ReferenceCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+            </form>
+          </div>        
+        </div>
+
+        <!-- Form for updating referenceGroup -->
+        <div class="panel panel-primary" ng-switch-when="update">
+          <div class="panel-heading">{{ "REFERENCE_GROUP.UPD_REFERENCE" | translate }} </b> </div>
+          <div class="panel-body">
+            <form class="panel-body" name="UpdateForm" ng-submit="ReferenceCtrl.submit(UpdateForm)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.reference_group.$invalid }">
+                <label class="control-label">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
+                <input type="text" class="form-control" name="reference_group" ng-model="ReferenceCtrl.referenceGroup.reference_group" required>
+              </div>
+            
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
+                <label class="control-label">{{ "COLUMNS.LABEL" | translate }}</label>
+                <input type="text" class="form-control" name="text" ng-model="ReferenceCtrl.referenceGroup.text" required>
+              </div>
+
+              <hr>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.position.$invalid }">
+                <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
+                <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceCtrl.referenceGroup.position" required>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.section_bilan_id.$invalid }">
+                <label class="control-label">{{ "COLUMNS.BALANCE_SECTION" | translate }}</label>
+                <select 
+                  class="form-control" 
+                  name="section_bilan_id" 
+                  ng-model="ReferenceCtrl.referenceGroup.section_bilan_id" 
+                  id="section_bilan_id"  
+                  ng-options="section.id as section.text for section in ReferenceCtrl.sectionBilans" required>
+                  <option value="" disabled> -- {{ "SELECT.BALANCE_SECTION" | translate }} -- </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-default" id="change_referenceGroup" type="submit" data-method="submit">
+                  {{ "FORM.SUBMIT" | translate }}
+                </button>
+                <button class="btn btn-default" type="button" ng-click="ReferenceCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.CANCEL" | translate }}
+                </button>
+              </div>
+              
+            </form>
+          </div>         
+        </div>
+
       </div>
     </div>
-
-    <div class="col-xs-5" ng-switch="session.action">
-      <div class="alert alert-info" ng-switch-default>
-        <h4>{{ "REFERENCE.TITLE" | translate }}</h4>
-        <p>{{ "REFERENCE.ALERT" | translate }}</p>
-      </div>
-
-      <div ng-switch-when="new">
-        <form novalidate class="form-horizontal" name="referenceNew">
-          <legend><h3>{{ "REFERENCE.NEW_REFERENCE" | translate }} </h3></legend>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE" | translate }}</label>
-            <div class="col-xs-7">
-              <input ng-model="session.new.ref" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
-            <div class="col-xs-7">
-              <input ng-model="session.new.text" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
-            <div class="col-xs-7">
-              <input type="number" ng-model="session.new.position" min="0" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.IS_REPORT" | translate }}</label>
-            <div class="col-xs-7">
-              <input type="checkbox" ng-model="session.new.is_report" class="form-bhima">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
-            <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.new.reference_group_id">
-                <option value="" disabled="disabled">--- {{ "SELECT.REFERENCE_GROUP" | translate }} ---</option>
-                <option ng-repeat="reference_group in reference_groups.data | orderBy:'text'" value="{{reference_group.id}}">
-                  {{ reference_group.text }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate }}</label>
-            <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.new.section_resultat_id">
-                <option value="" disabled="disabled">--- {{ "SELECT.RESULT_ACCOUNT_SCT" | translate }} ---</option>
-                <option ng-repeat="section in section_resultat.data | orderBy:'text'" value="{{section.id}}">
-                  {{ section.text }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <input type="submit" ng-disabled="referenceNew.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>
-        </form>
-      </div>
-
-      <div ng-switch-when="edit">
-        <form novalidate class="form-horizontal" name="referenceEdit">
-          <legend><h3>{{ "REFERENCE.UPD_REFERENCE" | translate }} </h3></legend>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE" | translate }}</label>
-            <div class="col-xs-7">
-              <input ng-model="session.edit.ref" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
-            <div class="col-xs-7">
-              <input ng-model="session.edit.text" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
-            <div class="col-xs-7">
-              <input type="number" ng-model="session.edit.position" min="1" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.IS_REPORT" | translate }}</label>
-            <div class="col-xs-7">
-              <input type="checkbox" ng-model="session.edit.is_report" class="form-bhima">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
-            <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.edit.reference_group_id">
-                <option ng-repeat="reference_group in reference_groups.data | orderBy:'text'" ng-selected="reference_group.id" value="{{reference_group.id}}">
-                  {{ reference_group.text }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate }}</label>
-            <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.edit.section_resultat_id">
-                <option ng-repeat="section in section_resultat.data | orderBy:'text'" ng-selected="section.id" value="{{section.id}}">
-                  {{ section.text }}
-                </option>
-              </select>
-
-            </div>
-          </div>
-
-          <div class="form-group">
-            <input type="submit" ng-disabled="referenceEdit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</main>
+  </div>  
+</div>
