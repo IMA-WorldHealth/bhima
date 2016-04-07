@@ -87,6 +87,16 @@
     "REGISTERED"       : "Registered Countries",
     "TITLE"            : "Country Management"
   },
+
+  "DONOR_MANAGEMENT": {
+    "ADD"            : "Add a Donor",
+    "ALERT"          : "Donor management module is a module that has been designed to allow administration of existing Donor within the organization, the table is left to record, to update the attributes of a Donor and the deletion.",
+    "NEW"            : "New Donor",
+    "NO_DONOR"       : "No Donor saving",
+    "REGISTERED"     : "Registered Donor",
+    "TITLE"          : "Donor management",
+    "UPDATE"         : "Modify a Donor"
+  },
   
   "PERMISSIONS" : {
     "TITLE"       : "Users and Permissions Management",
@@ -456,7 +466,8 @@
       "CONNECTION"        : "Connexion error",
       "GENERIC"           : "The form contains errors.",
       "MISSING_CASHBOX_ID" : "Missing Cashbox",
-      "MISSING_DEBTOR_ID"  : "Identifying missing Debtor"      
+      "MISSING_DEBTOR_ID"  : "Identifying missing Debtor",
+      "RECORD_ERROR"       : "Please resolve any errors on the form. (Marked in red)"      
     },
 
     "INFOS" : {
@@ -538,8 +549,22 @@
   "PATIENT_EDIT": {
     "FINANCIAL_INFO"  : "Financial Information",
     "PAGE_TITLE"      : "Edit Patient Details",
+    "RECORD_SAME"    : "No changes have been made to the form. Update the patients details and then press submit.",
     "REGISTERED"      : "Registered",
     "WARN"            : "No patient groups have been found. Patient groups must be registered with the system before they can be assigned to patients"
+  },
+
+  "PATIENT_GROUP": {
+    "HELP_TXT_1"    : "Patient groups are uses to assign the appropriate discounts to types of patients that merit them.  Use this module to register, modify, and remove patient groups and their benefits",
+    "MODIFY"        : "Modify a Patient Group",
+    "NEW"           : "New Patient Group",
+    "PATIENT_GROUP" : "Patient Group",
+    "PRICE_LIST"    : "Price List",
+    "REGISTER"      : "Register a Patient Group",
+    "REGISTERED"    : "Registered Patient Groups",
+    "SUBSIDY"       : "Subsidy",
+    "SUCCESS"       : "Successfully modified the group",
+    "TITLE"         : "Patient Group Management"
   },
 
   "PATIENT_REG": {
@@ -653,6 +678,7 @@
       "PERCENT"             : "Percentage",
       "PHONE"               : "Telephone",
       "POSITION"            : "Position",
+      "PRICE_LIST"          : "Price List",
       "PROFIT"              : "Profit",
       "PROFIT_CENTER"       : "Profit Center",
       "PROVINCE"            : "Province",
@@ -662,15 +688,11 @@
       "SECTOR"              : "Sector",
       "SERVICE"             : "Service",
       "RESULT"              : "Result",
+      "TEXT"                : "Text",
+      "TYPE"                : "Type",
       "TOTAL"               : "Total",
       "VALUE"               : "Value",
-      "LABEL"               : "Label",
-      "NR"                  : "Number",
-      "DATE" : "Date",
-      "CURRENCY" : "Currency",
-      "TEXT"                      : "Text",
-      "TYPE"                  : "Type",
-      "VILLAGE"   : "Village"
+      "VILLAGE"             : "Village"
     }
   },
 

@@ -37,7 +37,7 @@ function DonorsController($http, $translate, DonorService, Session, uuid) {
       submit : updateDonor
     },
     remove : {
-      title : 'DONOR_MANAGEMENT.CONFIRM',
+      title : 'FORM.DIALOGS.CONFIRM_DELETE',
       submit : removeDonor
     },
     create : {

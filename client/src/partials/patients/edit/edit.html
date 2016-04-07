@@ -244,17 +244,17 @@
             <!-- Submission -->
               <p 
                 class="text-success"
-                ng-if="PatientEditCtrl.updatedPatientDetails"><span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.LABELS.RECORD_SUCCESS" | translate }}</p>
+                ng-if="PatientEditCtrl.updatedPatientDetails"><span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}</p>
 
               <p 
                 class="text-danger"
                 ng-if="details.$submitted && details.$invalid">
-                <span class="glyphicon glyphicon-remove-sign"></span> {{ "FORM.LABELS.RECORD_ERROR" | translate }}</p>
+                <span class="glyphicon glyphicon-remove-sign"></span> {{ "FORM.ERRORS.RECORD_ERROR" | translate }}</p>
 
               <p 
                 class="text-warning"
                 ng-if="details.$submitted && !details.$dirty">
-                <span class="glyphicon glyphicon-info-sign"></span> {{ "FORM.LABELS.RECORD_SAME" | translate }}</p>
+                <span class="glyphicon glyphicon-info-sign"></span> {{ "PATIENT_EDIT.RECORD_SAME" | translate }}</p>
 
               <button 
                 ng-click="PatientEditCtrl.updatePatient(PatientEditCtrl.medical)"

@@ -109,6 +109,16 @@
     "NEW_RATE" : "Nouveau taux"
   },
 
+  "DONOR_MANAGEMENT": {
+    "ADD"            : "Ajouter un donateur",
+    "ALERT"          : "Le module gestion des donateurs est un module qui a été conçu pour permettre l'administration des donateurs de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un donateur ainsi que la suppression.",
+    "NEW"            : "Nouveau donateur",
+    "NO_DONOR"       : "Aucun donateur n'est enregistrée",
+    "REGISTERED"     : "Liste des donateurs enregistrés",
+    "TITLE"          : "Gestion des donateurs",
+    "UPDATE"         : "Mettre à jour un donateur"
+  },
+
   "SUBSIDY" : {
     "TITLE" : "Gestion des subventions",
     "ADD_SUBSIDY" : "Ajouter subvention",
@@ -455,13 +465,14 @@
     },
 
     "ERRORS" : {
-      "MISSING" : "Informations manquantes",
-      "HAS_ERROR" : "Contiens une erreur",
-      "HAS_ERRORS"      : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumetter à nouveau.",
-      "CONNECTION" : "Erreur de connexion",
-      "GENERIC" : "Le formulaire contient des erreurs",
-      "MISSING_CASHBOX_ID" : "Caisse non definie",
-      "MISSING_DEBTOR_ID" : "Identifiant Debiteur manquant"      
+      "MISSING"       : "Informations manquantes",
+      "HAS_ERROR"     : "Contiens une erreur",
+      "HAS_ERRORS"    : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumetter à nouveau.",
+      "CONNECTION"    : "Erreur de connexion",
+      "GENERIC"       : "Le formulaire contient des erreurs",
+      "MISSING_CASHBOX_ID"  : "Caisse non definie",
+      "MISSING_DEBTOR_ID"   : "Identifiant Debiteur manquant",
+      "RECORD_ERROR"        : "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)"     
     },
 
     "INFOS" : {
@@ -543,8 +554,22 @@
   "PATIENT_EDIT": {
     "FINANCIAL_INFO" : "Information financière",
     "PAGE_TITLE"     : "Modifier Patient",
-    "REGISTERED"    : "Patient Enregistré",
-    "WARN"    : "Aucun groupes de patients n'a été trouvée. Les groupes de patients doivent être enregistrés dans le système avant l'affectation des patients"
+    "RECORD_SAME"    : "Aucun changement n'a été apporté sur le formulaire. Mettez à jour les détails de patients et appuyez sur soumettre.",
+    "REGISTERED"     : "Patient Enregistré",
+    "WARN"           : "Aucun groupes de patients n'a été trouvée. Les groupes de patients doivent être enregistrés dans le système avant l'affectation des patients"
+  },
+
+  "PATIENT_GROUP": {
+    "HELP_TXT_1"    : "Group Patient est utilisée pour assigner un discount aux patients qui le meritent. utiliser ce module pour Enregsitrer, modifier, et effacer un group patient",
+    "MODIFY"        : "Modifier un Groupe Patient",
+    "NEW"           : "Nouveau Groupe Patients",
+    "PATIENT_GROUP" : "Patient Group",
+    "PRICE_LIST"    : "Liste des Prix",
+    "REGISTER"      : "Enregistrer Groupe Patient",
+    "REGISTERED"    : "Groupes Patients Enregistrées",
+    "SUBSIDY"       : "Subventions",
+    "SUCCESS"       : "Le groupe a été modifié avec succès",
+    "TITLE"         : "Gestion des Groupes Patients"
   },
 
   "PATIENT_REG": {
@@ -652,12 +677,14 @@
       "LOCKED"              : "Bloquée",
       "NAME"                : "Nom",
       "NATURE"              : "Nature",
+      "NOTE"                : "Note",
       "NR"                  : "N°",
       "NUM"                 : "Numéro",      
       "PASSIVE"             : "Passive",       
       "PERCENT"             : "Pourcentage",
       "PHONE"               : "Telephone",
       "POSITION"            : "Position",
+      "PRICE_LIST"          : "Liste de prix",
       "PROFIT"              : "Profit",
       "PROFIT_CENTER"       : "Centre de profit",
       "PROVINCE"            : "Province",
@@ -668,15 +695,10 @@
       "SERVICE"             : "Service",
       "RESULT"              : "Resultat",
       "TOTAL"               : "Total",
-      "VALUE"               : "Valeur",
-      "LABEL"               : "Label",
-      "NR"                  : "Numero",
-      "DATE" : "Date",
-      "CURRENCY" : "Monnaie",
-      "RATE" : "Taux",
-      "TEXT"                      : "Text",
-      "TYPE"                  : "Type",
-      "VILLAGE"   : "Village"
+      "TEXT"                : "Text",
+      "TYPE"                : "Type",
+      "VALUE"               : "Valeur",     
+      "VILLAGE"             : "Village"
     }
   },
 
