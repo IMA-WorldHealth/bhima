@@ -54,7 +54,7 @@
     },
     "VOUCHER" : {
       "CASHBOXES"         : {
-        "AVAILABLE"       : "Caissea disponibles",
+        "AVAILABLE"       : "Caisse disponibles",
         "CHANGE_CASHBOX"  : "Changer de caisse",
         "CURRENT_CASHBOX" : "Caisse auxilliare courant",
         "LINK"            : "Cliquez ici pour l'ajouter.",
@@ -130,12 +130,12 @@
   },
 
   "PROJECT" : {
-    "TITLE" : "Gestion des progets",
-    "ADD_PROJECT" : "Ajouter proget",
-    "ALL_PROJECTS" : "Tous les progets",
-    "DESCRIPTION" : "Ce module permet de lister, creer, modifier et supprimer un proget",
-    "ADDING_PROJECT" : "Ajout nouveau proget",
-    "EDITING_PROJECT" : "Modification proget"
+    "TITLE" : "Gestion des projets",
+    "ADD_PROJECT" : "Formulaire d'enregistrement de projet",
+    "ALL_PROJECTS" : "Tous les projets",
+    "DESCRIPTION" : "Ce module permet de lister, creer, modifier et supprimer un projet",
+    "ADDING_PROJECT" : "Ajout nouveau projet",
+    "EDITING_PROJECT" : "Formulaire de Modification de projet"
   },
 
   "CASHBOX" : {
@@ -161,7 +161,6 @@
   },
 
   "DEBTOR_GRP": {
-    "CREATE_SUCCESS"         : "Creation avec succes du groupe debiteur",
     "EDIT"                   : "Editer le groupe debiteur",
     "GROUPS"                 : "Groupes Débiteurs",
     "HELP_TXT_1"             : "Cette interface vous permet de visualiser, trouver, et configurer un groupe de debiteur",
@@ -478,11 +477,11 @@
       "OPERATION_SUCCESS"     : "Opération effectuée avec succès",
       "LOADING"               : "Chargement en cours",
       "FOUND"                 : "Trouvée",
-      "NO_RECORDS_DATABASE"   : "Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
-      "PATIENT_FOUND"         : "Patient Trouvé",      
-      "PATIENT_NOT_FOUND"     : "Patient Non Trouvé",
-      "ITEMS_FULL"            : "Il n'y a pas d'articles supplémentaires qui seront affectés à cette facture.",
-      "NO_RECIPIENT"          : "Une facture doit appartenir à une personne avant d'assigner les éléments."      
+      "NO_RECORDS_DATABASE"   : "There are no records in the database for this query",
+      "PATIENT_FOUND"         : "Patient Found",    
+      "PATIENT_NOT_FOUND"     : "Patient Not Found",
+      "ITEMS_FULL"            : "There are no additional inventory items that be assigned to this invoice.",
+      "NO_RECIPIENT"          : "An invoice must have a recipient before assigning items."     
     },
 
     "LEGENDS" : {
@@ -521,9 +520,6 @@
 
   "LOCATION": {
     "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
-    "ET"                    : "et",
-    "INFO_CREATE"           : "créer",
-    "INFO_MODIFY"           : "modifier",
     "LOCALITY"              : "Localite",
     "LOCATION"              : "Localisation",
     "LOCATION_MANAGER"      : "Gestion des localisations",
@@ -533,7 +529,6 @@
     "MANAGE_SECTOR"         : "Gerer Les Secteurs",
     "MANAGE_VILLAGE"        : "Gerer Les Villages",
     "REGISTERED"            : "Localisations Enregistrées",
-    "REMOVE"                : "effacer",
     "TITLE"                 : "Gestion des localisations"
   },
 
@@ -573,9 +568,7 @@
     "PRICE_LIST_ITEMS" : "Eléments de la liste des prix",
     "TITLE"            : "Liste des Prix",
     "UNABLE_TO_DELETE" : "La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / groupes débiteurs",
-    "UPDATE"           : "Mettre à jour une liste de prix",
-    "UPDATE_SUCCESS"   : "Mise à jour avec succès",
-    "WARN"             : "Attention"
+    "UPDATE"           : "Mettre à jour une liste de prix"
   },
 
   "PROVINCE": {
@@ -619,7 +612,6 @@
      "NEW_VILLAGE"      : "Ajouter Village",
      "REGISTER"         : "Enregistrer un Village",
      "REGISTERED"       : "Villages Enregistrés",
-     "SECTOR"           : "Commune",
      "TITLE"            : "Gestion des Villages"
   },
 
@@ -710,7 +702,6 @@
 
   "SUPPLIER": {
     "ADD_SUPPLIER"          : "Ajouter un fournisseur",
-    "CREATE_SUPPLIER"       : "Sauvegarder",
     "EDIT_SUPPLIER"         : "Formulaire de mise à jour des fournisseurs",
     "NEW_SUPPLIER"          : "Formulaire d'enregistrement des fournisseurs",
     "INFO"                  : "Le module Gestion des fournisseurs permet de contrôler le statut des fournisseurs en fonction de leurs produits et services et d’offrir aux gestionnaires une vue complète et rapide du dossier fournisseur.",
@@ -757,7 +748,11 @@
     "CREDITOR_GRP"              : "Groupe Créditeur",
     "CREDIT_NOTE"               : "Note de Crédit",
     "CURRENCY"                  : "Monnaie",
-    "DAILY_CONSUMPTION"         : "Consommation",   
+    "DAILY_CONSUMPTION"         : "Consommation",  
+    "DASHBOARD" : {
+      "FINANCE" : "Tableau de bord de Finance",
+      "TITLE"   : "Tableau de bord"
+    },     
     "DEBTOR_AGING"              : "Débiteur",
     "DEBITOR_GROUP_REPORT"      : "Etat Groupe Debiteur",
     "DEBTOR_GRP"                : "Groupe Débiteur",
