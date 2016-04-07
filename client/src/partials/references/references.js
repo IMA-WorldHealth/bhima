@@ -33,7 +33,7 @@ function ReferenceController(referenceService, sectionBilanService, $window, $tr
       vm.sectionBilans = data;
     }).catch(handler);
 
-    // load Reference Group
+    // load Reference
     refreshReferences();
   }
 
@@ -44,21 +44,19 @@ function ReferenceController(referenceService, sectionBilanService, $window, $tr
 
   function create() {
     vm.view = 'create';
-    vm.reference = {};    
+    vm.reference = {
+      is_report : 0
+    };    
   }
 
   // switch to update mode
-  // data is an object that contains all the information of a Reference Group
+  // data is an object that contains all the information of a Reference
   function update(data) {
     vm.view = 'update';
     vm.reference = data;
   }
 
-  function doTranslate(key){
-    return $translate.instant(key);
-  }
-  
-  // refresh the displayed Sections Bilans
+  // refresh the displayed References
   function refreshReferences() {
     return referenceService.read(null,{ full : 1 }).then(function (data) {
       vm.references = data;
@@ -93,7 +91,7 @@ function ReferenceController(referenceService, sectionBilanService, $window, $tr
 
   // switch to delete warning mode
   function del(reference) {
-    var bool = $window.confirm($translate.instant('REFERENCE_GROUP.CONFIRM'));
+    var bool = $window.confirm($translate.instant('REFERENCE.CONFIRM'));
 
      // if the user clicked cancel, reset the view and return
      if (!bool) {
@@ -101,7 +99,7 @@ function ReferenceController(referenceService, sectionBilanService, $window, $tr
         return;
      }
 
-    // if we get there, the user wants to delete a Reference Group
+    // if we get there, the user wants to delete a Reference
     vm.view = 'delete_confirm';
     referenceService.delete(reference.id)
     .then(function () {

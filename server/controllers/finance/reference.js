@@ -19,8 +19,12 @@ function list(req, res, next) {
 
   if (req.query.full === '1') {
     sql =
-      'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id ' +
-      'FROM reference AS r';
+      'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id, ' + 
+      'rg.text AS reference_group_text, sr.text AS section_resultat_text ' + 
+      'FROM reference AS r ' +
+      'LEFT JOIN reference_group AS rg ON rg.id = r.reference_group_id ' +
+      'LEFT JOIN section_resultat AS sr ON sr.id = r.section_resultat_id '; 
+
   }
 
   sql += ' ORDER BY r.ref;';

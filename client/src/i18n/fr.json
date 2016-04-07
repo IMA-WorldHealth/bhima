@@ -549,20 +549,6 @@
   },
 
 
-  "LOCATION": {
-    "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
-    "LOCALITY"              : "Localite",
-    "LOCATION"              : "Localisation",
-    "LOCATION_MANAGER"      : "Gestion des localisations",
-    "MANAGER_CONFIGURATION" : "Configuration de la Gestion de localisations",
-    "MANAGE_COUNTRY"        : "Gerer Les Pays",
-    "MANAGE_PROVINCE"       : "Gerer Les Province",
-    "MANAGE_SECTOR"         : "Gerer Les Secteurs",
-    "MANAGE_VILLAGE"        : "Gerer Les Villages",
-    "REGISTERED"            : "Localisations Enregistrées",
-    "TITLE"                 : "Gestion des localisations"
-  },
-
   "PATIENT_INVOICE": { 
     "PAGE_TITLE"          : "Facture des patients",
     "BILLING_SERVICES"    : "Les services de facturation appliquée",
