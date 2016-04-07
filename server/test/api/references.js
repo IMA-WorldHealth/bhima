@@ -25,7 +25,8 @@ describe('(/reference) The Reference API', function () {
     'id', 'is_report', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id'
   ];
 
-  beforeEach(helpers.login(agent));
+  before(helpers.login(agent));
+  
 
   it('GET /references returns a full list of references', function () {
     return agent.get('/references?full=1')
