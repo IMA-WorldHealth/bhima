@@ -18,8 +18,8 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th style="width:60%">{{ "COLUMNS.NAME" | translate }}</th>
-                <th>{{ "COLUMNS.ACTION" | translate }}</th>
+                <th style="width:60%">{{ "TABLE.COLUMNS.NAME" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -30,11 +30,11 @@
                 <td>
                   <a name="edit-{{donor.name}}" class="btn btn-xs btn-default"
                     ng-click="DonorCtrl.update(donor.id)">
-                    <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.EDIT' | translate }}
+                    <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}
                   </a>
                   <a name="delete-{{donor.name}}" class="btn btn-xs btn-danger"
                     ng-click="DonorCtrl.remove(donor.id)">
-                    <i class="glyphicon glyphicon-trash"></i> {{ 'FORM.DELETE' | translate }}
+                    <i class="glyphicon glyphicon-trash"></i> {{ 'FORM.BUTTONS.DELETE' | translate }}
                   </a>
                 </td>
               </tr>
@@ -67,12 +67,12 @@
             <div class="panel-body">
               <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.name.$invalid }">
                 <label class="control-label">
-                  {{ "COLUMNS.NAME" | translate }}
+                  {{ "FORM.LABELS.NAME" | translate }}
                 </label>
                 <input
                   class="form-control"
                   name="name"
-                  placeholder="{{ 'COLUMNS.NAME' | translate }}..."
+                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_NAME' | translate }}..."
                   ng-model="DonorCtrl.donor.name" required>
                 <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -86,10 +86,10 @@
                 ng-class="{ 'btn-danger': DonorCtrl.action === 'remove'}"
                 type="submit" data-method="submit">
                 <i ng-show="DonorCtrl.action === 'remove'" class="glyphicon glyphicon-trash"></i>
-                {{ "FORM.SUBMIT" | translate }}
+                {{ "FORM.BUTTONS.SUBMIT" | translate }}
               </button>
               <button class="btn btn-default" type="button" ng-click="DonorCtrl.cancel()" data-method="cancel">
-                {{ "FORM.CANCEL" | translate }}
+                {{ "FORM.BUTTONS.CANCEL" | translate }}
               </button>
 
               <div class="clearfix"></div>
@@ -97,7 +97,7 @@
               <!-- error feedback area -->
               <div id="error-feedback" ng-if="ActionForm.$invalid && ActionForm.$submitted"
                 class="text-danger" data-role="feedback" style="margin-top:10px;">
-                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
+                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERROR" | translate }}
               </div>
 
             </div>
@@ -107,13 +107,13 @@
         <!-- success feedback -->
         <div class="alert alert-success" ng-switch-when="success">
           <h4 id="update_success" ng-if="DonorCtrl.state.updated">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "DONOR_MANAGEMENT.UPDATE_SUCCESS" | translate }}
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}
           </h4>
           <h4 id="create_success" ng-if="DonorCtrl.state.created">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "DONOR_MANAGEMENT.SAVE_SUCCESS" | translate }}
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.CREATE_SUCCESS" | translate }}
           </h4>
           <h4 id="delete_success" ng-if="DonorCtrl.state.deleted">
-            <i class="glyphicon glyphicon-ok-sign"></i> {{ "DONOR_MANAGEMENT.DELETE_SUCCESS" | translate }}
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.DELETE_SUCCESS" | translate }}
           </h4>
         </div>
 

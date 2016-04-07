@@ -27,12 +27,12 @@
               <div
                 class="form-group"
                 ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.description.$invalid }">
-                <label class="control-label">{{ "COLUMNS.DESCRIPTION" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
                 <textarea
                   class="form-control"
                   name="description"
                   ng-model="SimpleVoucherCtrl.voucher.description"
-                  placeholder="{{ 'INPUT.DESCRIPTION' | translate }}"
+                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
                   required>
                 </textarea>
                 <div class="help-block" ng-messages="SimpleVoucherForm.description.$error" ng-show="SimpleVoucherForm.$submitted">
@@ -44,12 +44,12 @@
                  class="form-group"
                  ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.fromAccount.$invalid }">
                  <label class="control-label">
-                   {{ "VOUCHERS.SIMPLE.FROM_ACCOUNT" | translate }}
+                   {{ "FORM.LABELS.FROM_ACCOUNT" | translate }}
                  </label>
                  <input
                    class="form-control"
                    name="fromAccount"
-                   placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}..."
+                   placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
                    uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
                    ng-model="SimpleVoucherCtrl.voucher.fromAccount"
@@ -63,12 +63,12 @@
                  class="form-group"
                  ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.toAccount.$invalid }">
                  <label class="control-label">
-                   {{ "VOUCHERS.SIMPLE.TO_ACCOUNT" | translate }}
+                   {{ "FORM.LABELS.TO_ACCOUNT" | translate }}
                  </label>
                  <input
                    class="form-control"
                    name="toAccount"
-                   placeholder="{{ 'PLACEHOLDERS.ENTER.ACCOUNT' | translate }}..."
+                   placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
                    uib-typeahead="account as account.label for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
                    ng-model="SimpleVoucherCtrl.voucher.toAccount"
@@ -82,7 +82,7 @@
               <div
                 class="radio"
                 ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.currency.$invalid }">
-                <p><strong class="control-label">{{ "COLUMNS.CURRENCY" | translate }}</strong></p>
+                <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
                 <label ng-repeat="currency in SimpleVoucherCtrl.currencies track by currency.id" class="radio-inline">
                   <input
                     name="currency"
@@ -110,7 +110,7 @@
 
               <div class="form-group">
                 <button type="submit" class="btn btn-primary" data-method="submit" ng-disabled="SimpleVoucherCtrl.created">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
                 </button>
 
                 <!-- @todo - random hacks to make things look pretty - need  state handler-->
@@ -119,7 +119,7 @@
                   class="btn btn-default"
                   ng-show="SimpleVoucherCtrl.created"
                   ng-click="SimpleVoucherCtrl.reset(); SimpleVoucherForm.$setPristine();">
-                  {{ "FORM.RESET" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
 
@@ -130,7 +130,7 @@
 
               <!-- displays: "Record created successfully!" -->
               <p class="text-success" ng-show="SimpleVoucherCtrl.created">
-                <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.CREATED" | translate }}
+                <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.LABELS.CREATED" | translate }}
               </p>
             </form>
           </div>

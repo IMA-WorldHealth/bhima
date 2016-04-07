@@ -43,12 +43,12 @@ function FindPatientComponent(Patients, AppCache) {
   /** supported searches: by name or by id */
   vm.options = {
     findById : {
-      'label' : 'FIND.PATIENT_ID',
-      'placeholder' : 'FIND.SEARCH_PATIENT_ID'
+      'label' : 'FORM.LABELS.PATIENT_ID',
+      'placeholder' : 'FORM.PLACE_HOLDERS.SEARCH_PATIENT_ID'
     },
     findByName : {
-      'label' : 'FIND.PATIENT_NAME',
-      'placeholder' : 'FIND.SEARCH_NAME'
+      'label' : 'FORM.LABELS.PATIENT_NAME',
+      'placeholder' : 'FORM.PLACE_HOLDERS.SEARCH_NAME'
     }
   };
 

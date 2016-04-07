@@ -31,7 +31,7 @@
       <button
         class="btn btn-default"
         ng-disabled="session.building"
-        ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{ session.building ? 'UTIL.LOADING' : 'UTIL.GENERATE' | translate }}
+        ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{ session.building ? 'FORM.INFOS.LOADING' : 'UTIL.GENERATE' | translate }}
       </button>
 
       <a class="btn btn-success" ng-href="{{ generatedDocumentPath }}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">Document Build Success - Open Document</a>

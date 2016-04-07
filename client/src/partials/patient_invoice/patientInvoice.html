@@ -19,7 +19,7 @@
               <div class="col-md-6">
 
                 <div class="form-group">
-                  <label class="control-label">{{ "PATIENT_INVOICE.RECIPIENT" | translate }}</label>
+                  <label class="control-label">{{ "FORM.LABELS.RECIPIENT" | translate }}</label>
                   <bh-find-patient
                     type="inline"
                     suppress-reset="true"
@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_INVOICE.SERVICE" | translate }}</label>
+                  <label>{{ "FORM.LABELS.SERVICE" | translate }}</label>
                   <select
                     id="service"
                     class="form-control"
@@ -37,7 +37,7 @@
                     ng-model="PatientInvoiceCtrl.Invoice.details.service_id"
                     ng-options="service.id as service.name for service in PatientInvoiceCtrl.services"
                     required>
-                    <option disabled="disabled" value="">{{ "SELECT.SERVICE" | translate }}</option>
+                    <option disabled="disabled" value="">{{ "FORM.LABELS.SERVICE" | translate }}</option>
                   </select>
                   <div class="help-block" ng-messages="detailsForm.service.$error" ng-show="detailsForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -45,7 +45,7 @@
                 </div>
 
                 <label class="control-label">
-                  {{ "SALE.TYPE" | translate }}
+                  {{ "FORM.LABELS.TYPE" | translate }}
                   <span class="text-info glyphicon glyphicon-info-sign"></span>
                 </label>
 
@@ -53,11 +53,11 @@
                 <div class="form-group">
                   <label class="radio-inline">
                     <input type="radio" name="serviceType" id="distributable" value="1" ng-model="PatientInvoiceCtrl.Invoice.details.is_distributable" checked required>
-                    {{ "SALE.DISTRIBUTABLE" | translate }}
+                    {{ "FORM.LABELS.DISTRIBUTABLE" | translate }}
                   </label>
                   <label class="radio-inline">
                     <input type="radio" name="serviceType" id="not-distributable" value="0" ng-model="PatientInvoiceCtrl.Invoice.details.is_distributable" required>
-                    {{ "SALE.NO_DISTRIBUTABLE" | translate }}
+                    {{ "FORM.LABELS.NO_DISTRIBUTABLE" | translate }}
                   </label>
                   <div class="help-block" ng-messages="detailsForm.serviceType.$error" ng-show="detailsForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -79,7 +79,7 @@
                 </bh-date-editor>
 
                 <div class="form-group">
-                  <label for="invoice-note">{{ "FORM.NOTES" | translate }}</label>
+                  <label for="invoice-note">{{ "FORM.LABELS.NOTES" | translate }}</label>
                   <textarea id="invoice-note" ng-model="PatientInvoiceCtrl.Invoice.details.description" name="notes" class="form-control" rows="4">
                   </textarea>
                   <div class="help-block" ng-messages="detailsForm.notes.$error" ng-show="detailsForm.$submitted">
@@ -104,7 +104,7 @@
             ng-class="{'btn-primary' : PatientInvoiceCtrl.Invoice.items.cacheAvailable && PatientInvoiceCtrl.Invoice.recipient}"
             ng-click="PatientInvoiceCtrl.Invoice.items.recoverCache()"
             ng-disabled="!PatientInvoiceCtrl.Invoice.items.cacheAvailable || !PatientInvoiceCtrl.Invoice.recipient">
-            <span class="glyphicon glyphicon-floppy-open"></span> {{ "SALE.RECOVER_ITEMS" | translate }}
+            <span class="glyphicon glyphicon-floppy-open"></span> {{ "FORM.BUTTONS.RECOVER_ITEMS" | translate }}
           </button>
         </div>
 
@@ -116,7 +116,7 @@
               class="btn btn-default btn-sm"
               ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
               ng-click="PatientInvoiceCtrl.Invoice.items.addInventoryItem(PatientInvoiceCtrl.itemIncrement)">
-              <span class="glyphicon glyphicon-plus-sign"></span> {{ "FORM.ADD" | translate }}
+              <span class="glyphicon glyphicon-plus-sign"></span> {{ "FORM.BUTTONS.ADD" | translate }}
             </button>
           </span>
           <input
@@ -132,7 +132,7 @@
           class="text-warning"
           ng-if="PatientInvoiceCtrl.Invoice.items.inventoryLoaded && PatientInvoiceCtrl.Invoice.items.allAssigned()">
           <span class="glyphicon glyphicon-info-sign"></span>
-          {{ "PATIENT_INVOICE.ITEMS_FULL" | translate }}
+          {{ "FORM.INFOS.ITEMS_FULL" | translate }}
         </p>
 
         <p
@@ -140,7 +140,7 @@
           class="text-info"
           ng-if="!PatientInvoiceCtrl.Invoice.recipient">
           <span class="glyphicon glyphicon-info-sign"></span>
-          {{ "PATIENT_INVOICE.NO_RECIPIENT" | translate }}
+          {{ "FORM.INFOS.NO_RECIPIENT" | translate }}
         </p>
       </div>
     </div>
@@ -159,7 +159,7 @@
           class="fixedColumn">
 
           <div style="text-align : right;">
-            <h4>{{ "PATIENT_INVOICE.TOTAL" | translate }}</h4>
+            <h4>{{ "FORM.LABELS.TOTAL" | translate }}</h4>
 
 
             <!-- expand billing services -->
@@ -178,15 +178,15 @@
                 ng-disabled="PatientInvoiceCtrl.Invoice.billingServices.items.length">
                 <span class="label label-primary">{{ PatientInvoiceCtrl.Invoice.billingServices.items.length }}</span>
               </a>
-              {{ "PATIENT_INVOICE.BILLING_SERVICES" | translate }}
+              {{ "FORM.LABELS.BILLING_SERVICES" | translate }}
             </h4>
 
             <h4>
               <span class="label label-default">{{ PatientInvoiceCtrl.Invoice.subsidies.length }}</span>
-              {{ "PATIENT_INVOICE.SUBSIDIES" | translate }}
+              {{ "FORM.LABELS.SUBSIDIES" | translate }}
             </h4>
 
-            <h4><strong>{{ "PATIENT_INVOICE.DUE" | translate }}</strong></h4>
+            <h4><strong>{{ "FORM.LABELS.DUE" | translate }}</strong></h4>
           </div>
         </div>
 
@@ -218,20 +218,20 @@
           id="btn-submit-invoice"
           class="btn btn-primary"
           ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
-          ng-click="PatientInvoiceCtrl.submit(detailsForm)">{{ "PATIENT_INVOICE.SUBMIT" | translate }}</button>
+          ng-click="PatientInvoiceCtrl.submit(detailsForm)">{{ "FORM.BUTTONS.SUBMIT" | translate }}</button>
         <button
           class="btn btn-default"
           ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
-          ng-click="PatientInvoiceCtrl.clear()"><span class="glyphicon glyphicon-ban-circle"></span> {{ "FORM.CLEAR" | translate }}</button>
+          ng-click="PatientInvoiceCtrl.clear()"><span class="glyphicon glyphicon-ban-circle"></span> {{ "FORM.BUTTONS.CLEAR" | translate }}</button>
         <p
           class="text-danger"
           ng-if="detailsForm.$submitted && detailsForm.$invalid">
-          <span class="glyphicon glyphicon glyphicon-exclamation-sign"></span> {{ "PATIENT_INVOICE.INVALID_DETAILS" | translate }}
+          <span class="glyphicon glyphicon glyphicon-exclamation-sign"></span> {{ "FORM.INFOS.INVALID_DETAILS" | translate }}
         </p>
         <p
           class="text-danger"
           ng-if="PatientInvoiceCtrl.Invoice.items.invalid && detailsForm.$submitted">
-          <span class="glyphicon glyphicon glyphicon-exclamation-sign"></span> {{ "PATIENT_INVOICE.INVALID_ITEMS" | translate }}
+          <span class="glyphicon glyphicon glyphicon-exclamation-sign"></span> {{ "FORM.INFOS.INVALID_ITEMS" | translate }}
         </p>
       </div>
     </div>

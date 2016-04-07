@@ -9,7 +9,7 @@
 
 <div class="flex-util">
   <button class="btn btn-sm btn-default" id="create" ng-click="PriceListCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW" | translate }}
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW_PRICE_LIST" | translate }} 
   </button>
 </div>
 
@@ -21,7 +21,7 @@
       <div class="col-xs-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
-            {{ "PRICE_LIST.LISTS" | translate }}
+            {{ "TABLE.COLUMNS.LISTS" | translate }}
           </div>
 
           <table class="table table-condensed">
@@ -30,8 +30,8 @@
                 <td colspan="3"><loading-indicator></loading-indicator></td>
               </tr>            
               <tr>
-                <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                <th colspan="2" style="width: 20%;">{{ "COLUMNS.ACTION" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
+                <th colspan="2" style="width: 20%;">{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -62,19 +62,19 @@
 
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'PRICE_LIST.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'PRICE_LIST.UPDATE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'PRICE_LIST.DELETE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.DELETE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
@@ -85,12 +85,12 @@
         </div>
 
         <div class="panel panel-primary" ng-switch-when="create">
-          <div class="panel-heading">{{ "PRICE_LIST.ADD" | translate }}</div>
+          <div class="panel-heading">{{ "PRICE_LIST.ADD_PRICE_LIST" | translate }}</div>
           <div class="panel-body">
             <form class="panel-body" name="CreateForm" ng-submit="PriceListCtrl.submit(CreateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
-                <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
+                <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
                 <input type="text" class="form-control" name="label" ng-model="PriceListCtrl.priceList.label" required>
                 <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -98,7 +98,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
-                <label class="control-label" for="description">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
+                <label class="control-label" for="description">{{ 'FORM.LABELS.DESCRIPTION' | translate }}</label>
                 <textarea class="form-control" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
               </div>
               
@@ -112,11 +112,11 @@
               <table class="table table-condensed">
                 <thead>
                   <tr>
-                    <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                    <th>{{ "COLUMNS.VALUE" | translate }}</th>
-                    <th>{{ "COLUMNS.PERCENT" | translate }}</th>
-                    <th>{{ "COLUMNS.INVENTORY" | translate }}</th>
-                    <th colspan="6">{{ "COLUMNS.ACTION" | translate }}</th>
+                    <th>{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
+                    <th>{{ "TABLE.COLUMNS.VALUE" | translate }}</th>
+                    <th>{{ "TABLE.COLUMNS.PERCENT" | translate }}</th>
+                    <th>{{ "TABLE.COLUMNS.INVENTORY" | translate }}</th>
+                    <th colspan="6">{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -133,10 +133,10 @@
 
               <div class="form-group">
                 <button class="btn btn-default" id="submit-priceList" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="PriceListCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
             </form>
@@ -149,7 +149,7 @@
             <form class="panel-body" name="UpdateForm" ng-submit="PriceListCtrl.submit(UpdateForm.$invalid)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
-                <label class="control-label">{{ 'COLUMNS.DESIGNATION' | translate }}</label>
+                <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
                 <input type="text" class="form-control" name="label" ng-model="PriceListCtrl.priceList.label" required>
                 <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -157,7 +157,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
-                <label class="control-label" for="description">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
+                <label class="control-label" for="description">{{ 'FORM.LABELS.DESCRIPTION' | translate }}</label>
                 <textarea class="form-control" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
               </div>
 
@@ -171,11 +171,11 @@
               <table class="table table-condensed">
                 <thead>
                   <tr>
-                    <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                    <th>{{ "COLUMNS.VALUE" | translate }}</th>
-                    <th>{{ "COLUMNS.PERCENT" | translate }}</th>
-                    <th>{{ "COLUMNS.INVENTORY" | translate }}</th>
-                    <th colspan="6">{{ "COLUMNS.ACTION" | translate }}</th>
+                    <th>{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
+                    <th>{{ "TABLE.COLUMNS.VALUE" | translate }}</th>
+                    <th>{{ "TABLE.COLUMNS.PERCENT" | translate }}</th>
+                    <th>{{ "TABLE.COLUMNS.INVENTORY" | translate }}</th>
+                    <th colspan="6">{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>                
@@ -192,10 +192,10 @@
 
               <div class="form-group">
                 <button class="btn btn-default" id="change_priceList" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="PriceListCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
             </form>

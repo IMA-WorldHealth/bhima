@@ -10,7 +10,7 @@
 <!-- Links to the Section Resultat Chart as well as the button for adding an sectionResultat -->
 <div class="flex-util">
   <button ng-click="sectionResultatCtrl.create()" class="btn btn-default btn-sm" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ "SECTION_RESULTAT.ADD" | translate }}
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "SECTION_RESULTAT.ADD_SECTION_RESULTAT" | translate }}
   </button>
 </div>
 
@@ -28,11 +28,11 @@
           <table class="table table-condensed">
             <thead>
               <tr>
-                <th>{{ "COLUMNS.NR" | translate }}</th>
-                <th>{{ "COLUMNS.TEXT" | translate }}</th>
-                <th>{{ "COLUMNS.POSITION" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.NR" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.TEXT" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.POSITION" | translate }}</th>
                 <th></th>
-                <th colspan="2">{{ "COLUMNS.ACTION" | translate }}</th>
+                <th colspan="2">{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -46,8 +46,8 @@
                 <td>{{ sectionResultat.text }}</td>
                 <td>{{sectionResultat.position}}</td>
                 <td>                  
-                  <b ng-show="sectionResultat.is_charge">{{sectionResultatCtrl.doTranslate('SECTION_RESULTAT.CHARGE')}}</b>
-                  <b ng-show="!sectionResultat.is_charge">{{sectionResultatCtrl.doTranslate('SECTION_RESULTAT.PROFIT')}}</b>
+                  <b ng-show="sectionResultat.is_charge">{{sectionResultatCtrl.doTranslate('TABLE.COLUMNS.CHARGE')}}</b>
+                  <b ng-show="!sectionResultat.is_charge">{{sectionResultatCtrl.doTranslate('TABLE.COLUMNS.PROFIT')}}</b>
                 </td>
                 <td><a class="btn btn-xs btn-default" id="sectionResultat-upd-{{$index+1}}" ng-click="sectionResultatCtrl.update(sectionResultat)"><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td><a class="btn btn-xs btn-default" id="sectionResultat-del-{{$index+1}}" ng-click="sectionResultatCtrl.del(sectionResultat)"><span class="glyphicon glyphicon-trash"></span></a></td>
@@ -72,26 +72,26 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'SECTION_RESULTAT.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }}</h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'SECTION_RESULTAT.UPDATE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }}</h4>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'SECTION_RESULTAT.DELETE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.DELETE_SUCCESS' | translate }}</h4>
           </div>
         </div>
 
         <div ng-switch-when="delete_error">
           <div class="alert alert-danger" id="delete_error">
-            <h4>{{ SubsidyCtrl.HTTPError.data.code | translate }} </h4>
+            <h4>{{ sectionResultatCtrl.HTTPError.data.code | translate }} </h4>
           </div>
         </div>        
 
@@ -102,7 +102,7 @@
             <form class="panel-body" name="CreateForm" ng-submit="sectionResultatCtrl.submit(CreateForm)" novalidate>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
-                <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-model="sectionResultatCtrl.sectionResultat.text" required>
               </div>
 
@@ -110,29 +110,29 @@
                 <div class="radio">
                   <label class="control-label">
                     <input type="radio" name="is_charge" required ng-value=1 ng-model="sectionResultatCtrl.sectionResultat.is_charge" >
-                    {{ "SECTION_RESULTAT.CHARGE" | translate }}
+                    {{ "FORM.LABELS.CHARGE" | translate }}
                   </label>
                 </div>
                 <div class="radio">
                   <label class="control-label">
                     <input type="radio" name="is_charge" required ng-value=0 ng-model="sectionResultatCtrl.sectionResultat.is_charge" >
-                    {{ "SECTION_RESULTAT.PROFIT" | translate }}
+                    {{ "FORM.LABELS.PROFIT" | translate }}
                   </label>
                 </div>
               </div>
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.position.$invalid }">
-                <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.POSITION" | translate }}</label>
                 <input type="number" class="form-control"  min="0" name="position" ng-model="sectionResultatCtrl.sectionResultat.position" required>
               </div>
 
               <div class="form-group">
                 <button class="btn btn-default" id="submit-sectionResultat" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="sectionResultatCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
             </form>
@@ -146,7 +146,7 @@
             <form class="panel-body" name="UpdateForm" ng-submit="sectionResultatCtrl.submit(UpdateForm)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
-                <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-model="sectionResultatCtrl.sectionResultat.text" required>
               </div>
 
@@ -154,29 +154,29 @@
                 <div class="radio">
                   <label class="control-label">
                     <input type="radio" name="is_charge" required ng-value=1 ng-model="sectionResultatCtrl.sectionResultat.is_charge" >
-                    {{ "SECTION_RESULTAT.CHARGE" | translate }}
+                    {{ "FORM.LABELS.CHARGE" | translate }}
                   </label>
                 </div>
                 <div class="radio">
                   <label class="control-label">
                     <input type="radio" name="is_charge" required ng-value=0 ng-model="sectionResultatCtrl.sectionResultat.is_charge" >
-                    {{ "SECTION_RESULTAT.PROFIT" | translate }}
+                    {{ "FORM.LABELS.PROFIT" | translate }}
                   </label>
                 </div>
               </div>
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.position.$invalid }">
-                <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.POSITION" | translate }}</label>
                 <input type="number" class="form-control"  min="0" name="position" ng-model="sectionResultatCtrl.sectionResultat.position" required>
               </div>
 
               <div class="form-group">
                 <button class="btn btn-default" id="change_sectionResultat" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="sectionResultatCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
               

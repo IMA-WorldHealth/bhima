@@ -39,7 +39,7 @@
             ng-disabled="AnnualCtrl.state === 'loading'"
             ng-click="AnnualCtrl.generateDocument(AnnualReportForm.$invalid)"
             ng-if="!AnnualCtrl.generatedDocumentPath">
-              {{ (AnnualCtrl.state === 'loading') ? "UTIL.LOADING" : "REPORT.GENERATE" | translate }}
+              {{ (AnnualCtrl.state === 'loading') ? "FORM.INFOS.LOADING" : "REPORT.GENERATE" | translate }}
           </button>
 
           <a class="btn btn-success" ng-href="{{ AnnualCtrl.generatedDocumentPath }}" target="_blank"

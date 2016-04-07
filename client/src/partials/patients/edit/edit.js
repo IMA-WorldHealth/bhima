@@ -48,7 +48,6 @@ function PatientEdit($scope, $translate, $stateParams, $location, $anchorScroll,
     return patients.detail(patientId)
       .then(function (patient) { 
         
-        console.log(patient);
         formatPatientAttributes(patient);
         viewModel.medical = patient;
       });
@@ -77,7 +76,6 @@ function PatientEdit($scope, $translate, $stateParams, $location, $anchorScroll,
     patients.groups(patientId)
       .then(function (result) { 
         viewModel.finance = {patientGroups : result};
-        console.log('got groups', result);
       });
   }
   
@@ -93,7 +91,6 @@ function PatientEdit($scope, $translate, $stateParams, $location, $anchorScroll,
     viewModel.updatedPatientGroups = true;
     viewModel.finance.patientGroups = [];
   
-    console.log('updated', updated);
     viewModel.finance.patientGroups = updated;
   }
   
@@ -131,7 +128,6 @@ function PatientEdit($scope, $translate, $stateParams, $location, $anchorScroll,
       changedDefinition.dob = util.sqlDate(changedDefinition.dob);
     }
 
-    console.log('sending', changedDefinition);
     patients.update(patient.uuid, changedDefinition)
       .then(function (updatedPatient) { 
         

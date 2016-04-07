@@ -11,7 +11,7 @@
 <!-- Links to the main menu of management maps as well as the button for adding Sectors -->
 <div class="flex-util">
   <a href="#/locations" class="btn btn-default btn-sm">
-    <span class="glyphicon glyphicon-globe"></span> {{ 'SECTOR.LOCATION_MANAGER' | translate }}
+    <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
   </a> 
 
   <button class="btn btn-sm btn-default" id="create" ng-click="SectorCtrl.create()" data-method="create">
@@ -33,9 +33,9 @@
           <table class="table table-condensed">
             <thead>
                <tr>
-                <th>{{ 'SECTOR.NAME' | translate}}</th>
-                <th>{{ 'SECTOR.PROVINCE' | translate}}</th>
-                <th>{{ 'SECTOR.ACTIONS' | translate}}</th>
+                <th>{{ 'TABLE.COLUMNS.NAME' | translate}}</th>
+                <th>{{ 'TABLE.COLUMNS.PROVINCE' | translate}}</th>
+                <th>{{ 'TABLE.COLUMNS.ACTION' | translate}}</th>
               </tr>
             </thead>
             <tbody>
@@ -63,14 +63,14 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'LOCATION.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'LOCATION.UPDATE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
@@ -81,7 +81,7 @@
             <form class="panel-body" name="CreateForm" ng-submit="SectorCtrl.submit(CreateForm)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
-                <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
                 <select 
                   class="form-control" 
                   name="country" 
@@ -98,7 +98,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.province.$invalid }">
-                <label class="control-label">{{ "LOCATION.PROVINCE" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
                 <select 
                   class="form-control" 
                   name="province" 
@@ -114,8 +114,8 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.sector.$invalid }">
-                <label class="control-label">{{ "LOCATION.SECTOR" | translate }}</label>
-                <input type="text" placeholder="{{ 'INPUT.SECTOR' | translate }}" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
+                <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
+                <input type="text" placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_SECTOR' | translate }}" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
                 <div class="help-block" ng-messages="CreateForm.sector.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                 
@@ -123,10 +123,10 @@
               
               <div class="form-group">
                 <button class="btn btn-default" id="submit-sector" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="SectorCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
 
@@ -140,7 +140,7 @@
           <div class="panel-body">        
             <form class="panel-body" name="UpdateForm" ng-submit="SectorCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
-                <label class="control-label">{{ "LOCATION.COUNTRY" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
                 <select 
                   class="form-control" 
                   name="country" 
@@ -157,7 +157,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.province.$invalid }">
-                <label class="control-label">{{ "LOCATION.PROVINCE" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
                 <select 
                   class="form-control" 
                   name="province" 
@@ -173,8 +173,8 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.sector.$invalid }">
-                <label class="control-label">{{ "LOCATION.SECTOR" | translate }}</label>
-                <input type="text" placeholder="{{ 'INPUT.SECTOR' | translate }}" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
+                <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
+                <input type="text" placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_SECTOR' | translate }}" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
                 <div class="help-block" ng-messages="UpdateForm.sector.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                 
@@ -182,10 +182,10 @@
               
               <div class="form-group">
                 <button class="btn btn-default" id="change_sector" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SAVE" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="SectorCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>             
             </form>

@@ -21,7 +21,7 @@ module.exports = {
     var tmpl = (mode === 'id') ? 'ID' : 'NAME';
 
     // click the correct dropdown item
-    var option = element(by.css('[data-find-patient-option="FIND.PATIENT_?"]'.replace('?', tmpl)));
+    var option = element(by.css('[data-find-patient-option="FORM.LABELS.PATIENT_?"]'.replace('?', tmpl)));
     option.click();
   },
 

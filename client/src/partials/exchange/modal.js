@@ -21,7 +21,7 @@ function ExchangeModalController(Rates, Currencies, Session, $uibModalInstance, 
   vm.action = null;
 
   if(vm.data.id){
-    vm.text = 'EXCHANGE.REVIEW';
+    vm.text = 'EXCHANGE.REVIEW_RATE';
     vm.action = 'update';
   } else {
     vm.text = 'EXCHANGE.NEW_RATE';

@@ -9,7 +9,7 @@
 
 <div class="flex-util">
   <button class="btn btn-sm btn-default" ng-click="PatientGroupCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PATIENT_GROUP.NEW" | translate }}
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PATIENT_GROUP.ADD_PATIENT_GROUP" | translate }}
   </button>
 </div>
 
@@ -29,7 +29,7 @@
                 <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
                 <th>{{ "TABLE.COLUMNS.PRICE_LIST" | translate }}</th>
                 <th>{{ "TABLE.COLUMNS.NOTE" | translate }}</th>
-                <th>{{ "TABLE.COLUMNS.ACTIONS" | translate }}</th>
+                <th>{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -56,10 +56,9 @@
         <div ng-switch-default>
           <div class="alert alert-info">
             <h4>{{ "PATIENT_GROUP.TITLE" | translate }}</h4>
-            <p>{{ "PRICE_LIST.DESCRIPTION1" | translate }}</p>
+            <p>{{ "PATIENT_GROUP.DESCRIPTION1" | translate }}</p>
             <ul class="list-unstyled">
               <li><i class="glyphicon glyphicon-pencil"></i> {{ "PATIENT_GROUP.DESCRIPTION2" | translate }}</li>
-              <li><i class="glyphicon glyphicon-trash"></i> {{ "PATIENT_GROUP.DESCRIPTION3" | translate }}</li>
             </ul>
           </div>
         </div>
@@ -112,7 +111,7 @@
                 <div class="form-group">
                   <bh-loading-button loading-state="CreateForm.$loading"></bh-loading-button>
                   <button class="btn btn-default" type="button" ng-click="PatientGroupCtrl.cancel()" data-method="cancel">
-                    {{ "FORM.CANCEL" | translate }}
+                    {{ "FORM.BUTTONS.CANCEL" | translate }}
                   </button>
                 </div>
               </form>
@@ -125,7 +124,7 @@
           <div class="panel panel-primary">
 
             <div class="panel-heading">
-            {{ "PATIENT_GROUP.ADD_PATIENT_GROUP" | translate }}
+            {{ "PATIENT_GROUP.EDIT_PATIENT_GROUP" | translate }}
             </div>
 
             <div class="panel-body">
@@ -170,7 +169,7 @@
                 <div class="form-group">
                   <bh-loading-button loading-state="UpdateForm.$loading"></bh-loading-button>
                   <button class="btn btn-default" type="button" ng-click="PatientGroupCtrl.cancel()" data-method="cancel">
-                    {{ "FORM.CANCEL" | translate }}
+                    {{ "FORM.BUTTONS.CANCEL" | translate }}
                   </button>
                 </div>
               </form>
@@ -179,11 +178,11 @@
 
           <div class="panel panel-warning">
             <div class="panel-heading">
-              <span class="glyphicon glyphicon-lock"></span> {{ "FORM.DANGER_ZONE" | translate }}
+              <span class="glyphicon glyphicon-lock"></span> {{ "FORM.INFOS.DANGER_ZONE" | translate }}
             </div>
             <div class="panel-body">
               <button class="btn btn-danger" type="button" ng-click="PatientGroupCtrl.remove()" data-method="delete">
-                <span class="glyphicon glyphicon-trash"></span> {{ "FORM.DELETE" | translate }}
+                <span class="glyphicon glyphicon-trash"></span> {{ "FORM.BUTTONS.DELETE" | translate }}
               </button>
             </div>
           </div>

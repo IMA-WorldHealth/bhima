@@ -88,7 +88,7 @@ function sectionBilanController(sectionBilanService, $window, $translate) {
 
   // switch to delete warning mode
   function del(sectionBilan) {
-    var bool = $window.confirm($translate.instant('SECTION_BILAN.CONFIRM'));
+    var bool = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
 
      // if the user clicked cancel, reset the view and return
      if (!bool) {

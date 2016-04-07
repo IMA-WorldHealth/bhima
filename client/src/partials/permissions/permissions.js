@@ -18,10 +18,11 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
   var vm = this;
 
   var editTemplate =
-    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.edit(row.entity)">{{ "FORM.EDIT" | translate }}</a></div>';
+    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.edit(row.entity)">{{ "FORM.BUTTONS.EDIT" | translate }}</a></div>';
   
   var permissionTemplate = 
-    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.editPermissions(row.entity)">{{ "PERMISSIONS.EDIT_PERMISSIONS" | translate }}</a></div>';
+    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.editPermissions(row.entity)">{{ "FORM.BUTTONS.EDIT_PERMISSIONS" | translate }}</a></div>';
+
   // options for the UI grid
   vm.uiGridOptions = {
     appScopeProvider : vm, // ensure that the controller's `this` variable is bound to appScope
@@ -162,9 +163,9 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
 
     var promise;
     var messages = {
-      'create' : 'PERMISSIONS.CREATE_SUCCESS',
-      'update' : 'PERMISSIONS.UPDATE_SUCCESS',
-      'permissions' : 'PERMISSIONS.PERMISSIONS_SUCCESS'
+      'create' : 'FORM.INFOS.CREATE_SUCCESS',
+      'update' : 'FORM.INFOS.UPDATE_SUCCESS',
+      'permissions' : 'FORM.INFOS.UPDATE_SUCCESS'
     };
 
     // decide how to submit data to the server based on state.

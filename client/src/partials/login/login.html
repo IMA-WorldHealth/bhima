@@ -23,6 +23,7 @@
               </li>
             </ul>
           </div>
+          <h4>{{ "LOGIN.TITLE" | translate }}</h4>
         </div>
 
         <div class="panel-body">
@@ -31,7 +32,7 @@
               class="form-group"
               ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.username.$invalid }">
               <label class="control-label">
-                {{ "COLUMNS.USERNAME" | translate }}
+                {{ "FORM.LABELS.USERNAME" | translate }}
               </label>
               <div class="input-group">
                 <span class="input-group-addon" style="background-color: #fff;">
@@ -42,7 +43,9 @@
                   type="text"
                   class="form-control"
                   ng-model="LoginCtrl.credentials.username"
-                  placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_USERNAME' | translate }}"
+                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_USERNAME' | translate }}"
+                  autocomplete="off"
+                  autocorrect="off"
                   autofocus
                   required />
               </div>
@@ -52,7 +55,7 @@
               class="form-group"
               ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.password.$invalid }">
               <label class="control-label">
-                {{ "COLUMNS.PASSWORD" | translate }}
+                {{ "FORM.LABELS.PASSWORD" | translate }}
               </label>
               <div class="input-group">
                 <span class="input-group-addon" style="background-color: #fff;">
@@ -63,7 +66,7 @@
                   type="password"
                   ng-model="LoginCtrl.credentials.password"
                   class="form-control"
-                  placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_PASSWORD' | translate }}"
+                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_PASSWORD' | translate }}"
                   required />
               </div>
             </div>
@@ -72,7 +75,7 @@
               class="form-group"
               ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.project.$invalid }">
               <label class="control-label">
-                {{ "COLUMNS.PROJECT" | translate }}
+                {{ "FORM.LABELS.PROJECT" | translate }}
               </label>
               <div class="input-group">
                 <span class="input-group-addon" style="background-color: #fff;">
@@ -83,8 +86,8 @@
                   class="form-control"
                   ng-model="LoginCtrl.credentials.project"
                   ng-options="proj.id as proj.name for proj in LoginCtrl.projects"
-                  required>
-                  <option value="" disabled>{{ "SELECT.PROJECT" | translate }}</option>
+                  required >
+                  <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
                 </select>
               </div>
             </div>
@@ -93,11 +96,9 @@
               class="form-group"
               ng-class="{ 'has-error' : LoginForm.$submitted && (LoginForm.$invalid || LoginCtrl.error) }"
               >
-
-              <!-- @todo - make this button transclude the label properly -->
-              <bh-loading-button id="submit" loading-state="LoginForm.$loading">
-               {{ "FORM.LOGIN" | translate }}
-              </bh-loading-button>
+              <button id="submit" class="btn btn-default" type="submit">
+               {{ "FORM.BUTTONS.CONNECTION" | translate }}
+              </button>
 
               <div class="help-block" ng-show="LoginForm.$submitted && (LoginForm.$invalid || LoginCtrl.error)" style="margin-top:10px;">
 
@@ -113,6 +114,10 @@
                   {{ LoginCtrl.error.code | translate }}
                 </p>
 
+                <p ng-show="LoginCtrl.excessiveAttempts" class="text-info">
+                  <span class="glyphicon glyphicon-info-sign"></span>
+                  {{ "FORM.INFOS.MANY_TRYS" | translate }}
+                </p>
               </div>
             </div>
           </form>

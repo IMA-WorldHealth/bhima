@@ -1,21 +1,20 @@
 <div class="modal-header">
-  <h3 class="modal-title">{{ "PATIENT_EDIT.GROUPS_PATIENT.MODAL_TITLE" | translate }}</h3>
+  <h3 class="modal-title">{{ "FORM.LABELS.UPDATE_PATIENT_GROUP" | translate }}</h3>
 </div>
 
 <div class="modal-body">
 
   <p class="text-info">
-  {{ "PATIENT_EDIT.GROUPS_PATIENT.MODAL_INFO" | translate }}   
+  {{ "FORM.INFOS.GROUPS_PATIENT" | translate }}   
   </p>
-
-  <p class="text-warning" ng-if="UpdatePatientGroupsCtrl.patientGroups.length === 0">
-  {{ "PATIENT_EDIT.GROUPS_PATIENT.MODAL_WARN" | translate }}   
+  <p class="text-warning" ng-if="UpdatePatientGroupsCtrl.patientGroups.length === 0"> 	
+  {{ "PATIENT_EDIT.WARN" | translate }}   
   </p>
 
   <form name="groupForm">
     <div class="form-group has-feedback">
     
-      <label class="control-label">{{ "PATIENT_EDIT.GROUPS_PATIENT.TITLE" | translate }}</label>
+      <label class="control-label">{{ "FORM.LABELS.GROUPS_PATIENT_TITLE" | translate }}</label>
       
       <div 
         class="checkbox"
@@ -35,11 +34,11 @@
 <div class="modal-footer">
   <button 
     class="btn btn-default"
-    ng-click="UpdatePatientGroupsCtrl.closeModal()">{{ "UTIL.CANCEL" | translate }}</button>
+    ng-click="UpdatePatientGroupsCtrl.closeModal()">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
   <button 
     class="btn btn-default"
     ng-click="UpdatePatientGroupsCtrl.confirmGroups()"
     ng-disabled="UpdatePatientGroupsCtrl.patientGroups.length === 0">
-      {{ "UTIL.CONFIRM" | translate }}    
+      {{ "FORM.BUTTONS.CONFIRM" | translate }}    
     </button>
 </div>

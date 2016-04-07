@@ -26,7 +26,7 @@ function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
       dataMethod : 'create',
       color  : 'btn-default',
       icon   : 'glyphicon glyphicon-plus-sign',
-      label  : $translate.instant('DEBTOR_GRP.NEW'),
+      label  : $translate.instant('DEBTOR_GRP.NEW_DEBTOR_GRP'),
       action : create
     }
   ];
