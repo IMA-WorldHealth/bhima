@@ -39,13 +39,13 @@
                 <td>{{ service.cost_center_name }}</td>
                 <td>{{ service.profit_center_name }}</td>
                 <td>
-                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.update(service)" id="service-upd-{{ service.id}}">
+                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.update(service)" id="service-upd-{{ $index+1 }}">
                     <span class="glyphicon glyphicon-pencil"></span>
                   </a>
-                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.more(service)" id="service-more-{{ service.id }}">
+                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.more(service)" id="service-more-{{ $index+1 }}">
                     <span class="glyphicon glyphicon-eye-open"></span>
                   </a>
-                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.del(service)" id="service-del-{{ service.id }}">
+                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.del(service)" id="service-del-{{ $index+1 }}">
                     <span class="glyphicon glyphicon-trash"></span>
                   </a>
                 </td>

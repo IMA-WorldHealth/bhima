@@ -1,4 +1,4 @@
-/*global element, by, browser */
+/*global it, element, by, beforeEach, inject, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -15,8 +15,10 @@ describe('Services Module', function () {
     name : 'A service E2E',
   };
 
-  var UPDATE_SERVICE = 3;
-  var DELETE_SUCCESS = 4;
+  var DEFAULT_SERVICE = 4;
+  var SERVICE_RANK = helpers.random(DEFAULT_SERVICE);
+
+  var DELETE_SUCCESS = 1;
   var DELETE_ERROR = 3;
 
   // navigate to the Service module before each test
@@ -54,14 +56,14 @@ describe('Services Module', function () {
   });
 
   it('successfully edits an service', function () {
-    element(by.id('service-upd-' + UPDATE_SERVICE )).click();
+    element(by.id('service-upd-' + SERVICE_RANK )).click();
     FormUtils.input('ServicesCtrl.service.name', 'Updated');
     element(by.id('change_service')).click();
 
     FormUtils.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
+  it('correctly blocks invalid form submission with relevent error classes', function () {
     FormUtils.buttons.create();
     // Verify form has not been successfully submitted
     expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);

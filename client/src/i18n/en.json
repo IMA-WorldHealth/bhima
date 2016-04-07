@@ -45,6 +45,14 @@
     "VIEW" : "View all billing services."
   },
 
+  "DB" : {
+    "ER_ROW_IS_REFERENCED_2" : "Cannot delete entry since it has been used in a transaction."
+  },
+
+  "ERRORS" :{
+    "UNAUTHORIZED" : "Unauthorized"    
+  },
+
   "CASH" : {
     "TITLE" : "Auxilliairy Cashbox",
     "PAYMENT" : "Payment",
@@ -116,7 +124,8 @@
     "REVIEW_RATE" : "Review the exchange Rate",
     "ADDING_RATE" : "Adding an exchange Rate",
     "DESCRIPTION" : "This interface allows you to add an exchange rate",
-    "NEW_RATE" : "New Rate"
+    "NEW_RATE" : "New Rate",
+    "REVIEW"               : "Review Rates "
   },
 
   "SUBSIDY" : {
@@ -278,6 +287,7 @@
       "EMPLOYER"                : "Employeur",
       "ENTERPRISE"              : "Enterprise",
       "ENTERPRISE_ID"           : "ID enterprise",
+      "EXCHANGE_RATE"           : "Exchange Rate",
       "FAX"                     : "Fax",
       "FATHER_NAME"             : "Father's Name",
       "FEMALE"                  : "Female",
@@ -465,9 +475,11 @@
       "HAS_ERRORS"        : "The form contains errors.  Please correct them and resubmit.",
       "CONNECTION"        : "Connexion error",
       "GENERIC"           : "The form contains errors.",
+      "MIN_CURRENCY_UNIT" : "This value is too small for the selected currency.",
       "MISSING_CASHBOX_ID" : "Missing Cashbox",
       "MISSING_DEBTOR_ID"  : "Identifying missing Debtor",
-      "RECORD_ERROR"       : "Please resolve any errors on the form. (Marked in red)"      
+      "RECORD_ERROR"       : "Please resolve any errors on the form. (Marked in red)",
+      "REQUIRED"          : "This value is required."
     },
 
     "INFOS" : {
@@ -479,15 +491,18 @@
       "GROUPS_DEBTOR"         : "Assign a new debtor group from the options below. Press 'confirm' to permenantly update the patient's debtor group",
       "GROUPS_PATIENT"        : "Assign the patient to patient groups from the options below. Press 'confirm' to permenantly update the patient's subscribed groups.",
       "NO_INVOICES_SELECTED"  : "No invoices selected",
+      "NOT_CONFIGURED"         : "The accounts for this currency have not been configured yet.",
       "FINANCIAL_DETAIL"      : "Financial details",
       "OPERATION_SUCCESS"     : "Operation performed successfully",
       "LOADING"               : "Loading",
       "FOUND"                 : "Found",
-      "NO_RECORDS_DATABASE"   : "Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
-      "PATIENT_FOUND"         : "Patient Trouvé",      
-      "PATIENT_NOT_FOUND"     : "Patient Non Trouvé",
-      "ITEMS_FULL"            : "Il n'y a pas d'articles supplémentaires qui seront affectés à cette facture.",
-      "NO_RECIPIENT"          : "Une facture doit appartenir à une personne avant d'assigner les éléments."      
+      "NO_RECORDS_DATABASE"   : "There are no records in the database for this query",
+      "PATIENT_FOUND"         : "Patient Found",    
+      "PATIENT_NOT_FOUND"     : "Patient Not Found",
+      "ITEMS_FULL"            : "There are no additional inventory items that be assigned to this invoice.",
+      "NO_RECIPIENT"          : "An invoice must have a recipient before assigning items.",
+      "DANGER_ZONE"           : "Danger Zone",
+      "UNAUTHORIZED"        : "Unauthorized"
     },
 
     "LEGENDS" : {
@@ -496,6 +511,8 @@
     },
 
     "VALIDATIONS" : {
+      "EXCEPTION"     : "There was a problem validating this field. Please check your internet connection.",
+      "INTEGER"       : "This value must be a whole number (integer).",
       "REQUIRED"      : "This field cannot be empty.",
       "MIN"           : "Not respected minimum value",
       "MAX"           : "Maximum value not respected",
@@ -510,7 +527,8 @@
       "PASSWORD_MATCH"  : "the password does not match",
       "REQUIRED_EMAIL"  : "Required Email",
       "NUMBER"          : "Must be a number",
-      "MIN_CURRENCY"    : "too little value for Currency"
+      "MIN_CURRENCY"    : "too little value for Currency",
+      "UNIQUE"            : "This field must be unique. This value is already taken."
     },
 
     "DIALOGS" : {
@@ -555,16 +573,16 @@
   },
 
   "PATIENT_GROUP": {
-    "HELP_TXT_1"    : "Patient groups are uses to assign the appropriate discounts to types of patients that merit them.  Use this module to register, modify, and remove patient groups and their benefits",
-    "MODIFY"        : "Modify a Patient Group",
-    "NEW"           : "New Patient Group",
-    "PATIENT_GROUP" : "Patient Group",
-    "PRICE_LIST"    : "Price List",
-    "REGISTER"      : "Register a Patient Group",
-    "REGISTERED"    : "Registered Patient Groups",
-    "SUBSIDY"       : "Subsidy",
-    "SUCCESS"       : "Successfully modified the group",
-    "TITLE"         : "Patient Group Management"
+    "ADD_PATIENT_GROUP"     : "New Patient Group",
+    "ALL_PATIENT_GROUP"     : "All Patient groups", 
+    "DESCRIPTION1"          : "Patient groups are uses to assign the appropriate discounts to types of patients that merit them.  Use this module to register, modify, and remove patient groups and their benefits",
+    "DESCRIPTION2"          : "Modify a Patient Group",
+    "EDIT_PATIENT_GROUP"   : "Update form Patient Group",
+    "PATIENT_GROUP"         : "Patient Group",
+    "PRICE_LIST"            : "Price List",
+    "REGISTER"              : "Register a Patient Group",
+    "SUBSIDY"               : "Subsidy",
+    "TITLE"                 : "Patient Group Management"
   },
 
   "PATIENT_REG": {
@@ -672,6 +690,7 @@
       "LOCKED"              : "Locked",
       "NAME"                : "Name",
       "NATURE"              : "Nature",
+      "NOTE"                : "Note",
       "NR"                  : "Nr",
       "NUM"                 : "Number",      
       "PASSIVE"             : "Passive",       

@@ -100,13 +100,19 @@
   },
 
   "EXCHANGE" : {
-    "TITLE" : "Gestion taux d'echange",
-    "ADD_EXCHANGE" : "Ajouter taux",
+    "TITLE"               : "Gestion taux d'echange",
+    "ADD_EXCHANGE"        : "Ajouter taux",
     "ENTERPRISE_CURRENCY" : "Monnaie de l'entreprise",
     "REVIEW_RATE" : "Revoir le taux",
     "ADDING_RATE" : "Ajout d'un taux",
     "DESCRIPTION" : "Cette interface vous permet d'ajouter un taux d'echange",
-    "NEW_RATE" : "Nouveau taux"
+    "NEW_RATE"    : "Nouveau taux",
+    "REVIEW"      : "Revoir le taux "
+
+  },
+
+  "DB" : {
+    "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
   },
 
   "DONOR_MANAGEMENT": {
@@ -117,6 +123,10 @@
     "REGISTERED"     : "Liste des donateurs enregistrés",
     "TITLE"          : "Gestion des donateurs",
     "UPDATE"         : "Mettre à jour un donateur"
+  },
+
+  "ERRORS" :{
+    "UNAUTHORIZED" : "Non autorisé"    
   },
 
   "SUBSIDY" : {
@@ -283,6 +293,7 @@
       "EMPLOYER"                : "Employeur",
       "ENTERPRISE"              : "Entreprise",
       "ENTERPRISE_ID"           : "ID entreprise",
+      "EXCHANGE_RATE"           : "Taux d'echange",
       "FAX"                     : "Fax",
       "FATHER_NAME"             : "Nom du Père",
       "FEMALE"                  : "Femme",
@@ -470,13 +481,17 @@
       "HAS_ERRORS"    : "Le formulaire contient des erreurs. S'il vous plaît, corriger-les et soumetter à nouveau.",
       "CONNECTION"    : "Erreur de connexion",
       "GENERIC"       : "Le formulaire contient des erreurs",
+      "MIN_CURRENCY_UNIT"   : "Cette valeur est trop petite pour la monnaie choisie.",
       "MISSING_CASHBOX_ID"  : "Caisse non definie",
       "MISSING_DEBTOR_ID"   : "Identifiant Debiteur manquant",
-      "RECORD_ERROR"        : "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)"     
+      "RECORD_ERROR"        : "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)",
+      "REQUIRED"            : "Cette valeur est requis."
+
     },
 
     "INFOS" : {
       "MANY_TRYS"         : "Plusieurs tentatives",
+      "NOT_CONFIGURED"    : "Les comptes ne sont pas configuree.",
       "UPDATE_SUCCESS"    : "Mise a jour avec succès",
       "CREATE_SUCCESS"    : "Cree avec succès",
       "SAVE_SUCCESS"      : "Enregistrement avec succès",
@@ -488,11 +503,13 @@
       "OPERATION_SUCCESS"     : "Opération effectuée avec succès",
       "LOADING"               : "Chargement en cours",
       "FOUND"                 : "Trouvée",
-      "NO_RECORDS_DATABASE"   : "There are no records in the database for this query",
-      "PATIENT_FOUND"         : "Patient Found",    
-      "PATIENT_NOT_FOUND"     : "Patient Not Found",
-      "ITEMS_FULL"            : "There are no additional inventory items that be assigned to this invoice.",
-      "NO_RECIPIENT"          : "An invoice must have a recipient before assigning items."     
+      "NO_RECORDS_DATABASE"   : "Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
+      "PATIENT_FOUND"         : "Patient Trouvé",      
+      "PATIENT_NOT_FOUND"     : "Patient Non Trouvé",
+      "ITEMS_FULL"            : "Il n'y a pas d'articles supplémentaires qui seront affectés à cette facture.",
+      "NO_RECIPIENT"          : "Une facture doit appartenir à une personne avant d'assigner les éléments.",      
+      "DANGER_ZONE"           : "Zone Dangereuse",
+      "UNAUTHORIZED"          : "Non autorisée"
     },
 
     "LEGENDS" : {
@@ -501,6 +518,8 @@
     },
 
     "VALIDATIONS" : {
+      "EXCEPTION"   : "Il y avait un problème de validation avec ce champ. S'il vous plaît vérifier votre connexion Internet.",
+      "INTEGER"     : "Cette valeur doit être un nombre entier (Entier).",
       "REQUIRED"      : "Champ requis",
       "MIN"           : "Valeur minimale non respectee",
       "MAX"           : "Valeur maximale non respectee",
@@ -515,7 +534,8 @@
       "PASSWORD_MATCH"  : "Mot de passe ne correspond pas",
       "REQUIRED_EMAIL"  : "Email requis",
       "NUMBER"          : "Doit etre un nombre",
-      "MIN_CURRENCY"    : "Valeur trop petite pour la monnaie"
+      "MIN_CURRENCY"    : "Valeur trop petite pour la monnaie",
+      "UNIQUE"          : "Ce champ doit être unique. Cette valeur a déjà été utilisée."
     },
 
     "DIALOGS" : {
@@ -560,15 +580,15 @@
   },
 
   "PATIENT_GROUP": {
-    "HELP_TXT_1"    : "Group Patient est utilisée pour assigner un discount aux patients qui le meritent. utiliser ce module pour Enregsitrer, modifier, et effacer un group patient",
-    "MODIFY"        : "Modifier un Groupe Patient",
-    "NEW"           : "Nouveau Groupe Patients",
+    "ADD_PATIENT_GROUP"           : "Nouveau Groupe de Patients",
+    "ALL_PATIENT_GROUP" : "Groupes Patients Enregistrées", 
+    "DESCRIPTION1"  : "Group Patient est utilisée pour assigner un discount aux patients qui le meritent. utiliser ce module pour Enregsitrer, modifier, et effacer un group patient",
+    "DESCRIPTION2"  : "Modifier un Groupe Patient",
+    "EDIT_PATIENT_GROUP" : "Formulaire de mise à jour de Groupe de patients",
     "PATIENT_GROUP" : "Patient Group",
     "PRICE_LIST"    : "Liste des Prix",
     "REGISTER"      : "Enregistrer Groupe Patient",
-    "REGISTERED"    : "Groupes Patients Enregistrées",
     "SUBSIDY"       : "Subventions",
-    "SUCCESS"       : "Le groupe a été modifié avec succès",
     "TITLE"         : "Gestion des Groupes Patients"
   },
 

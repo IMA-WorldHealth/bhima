@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientGroupController', PatientGroupController);
 
 PatientGroupController.$inject = [
-  'PatientGroupService', 'PriceListService', 'SessionService', '$window'
+  'PatientGroupService', 'PriceListService', 'SessionService', '$translate', '$window'
 ];
 
 /**
@@ -17,7 +17,7 @@ PatientGroupController.$inject = [
  *
  *  @constructor
  */
-function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
+function PatientGroupController (PatientGroups, PriceLists, Session, $translate, $window) {
   var vm = this;
 
   // by default, set loading to false.
@@ -113,7 +113,7 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $window) {
   // this function is responsible of removing a patient group
   function remove() {
     var bool =
-      $window.confirm('Are you sure you want to delete this patient group?');
+       $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
 
     // if the user cancels, return immediately.
     if (!bool) { return; }
