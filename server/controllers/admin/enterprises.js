@@ -7,6 +7,15 @@
 */
 var db = require('../../lib/db');
 
+// converts uuids appropriately
+function convert(data) {
+  if (data.location_id) {
+    data.location_id = db.bid(data.location_id);
+  }
+
+  return data;
+}
+
 // GET /enterprises
 exports.list = function list(req, res, next) {
   'use strict';
@@ -16,7 +25,7 @@ exports.list = function list(req, res, next) {
 
   if (req.query.detailed === '1'){
     sql =
-      'SELECT id, name, abbr, email, po_box, phone, location_id, logo, currency_id FROM enterprise;';
+      'SELECT id, name, abbr, email, po_box, phone, BUID(location_id) as location_id, logo, currency_id FROM enterprise;';
   }
 
   db.exec(sql)
@@ -35,7 +44,7 @@ exports.detail = function detail(req, res, next) {
   var enterpriseId = req.params.id;
 
   sql =
-    'SELECT id, name, abbr, email, po_box, phone, location_id, logo, currency_id ' +
+    'SELECT id, name, abbr, email, po_box, phone, BUID(location_id) as location_id, logo, currency_id ' +
     'FROM enterprise WHERE id = ?';
 
   db.exec(sql, [enterpriseId])
@@ -53,7 +62,7 @@ exports.detail = function detail(req, res, next) {
 // POST /enterprises
 exports.create = function create(req, res, next) {
   'use strict';
-  var enterprise = req.body.enterprise,
+  var enterprise = convert(req.body.enterprise),
     writeEnterpriseQuery;
 
   if (!enterprise.name && !enterprise.abbr && !enterprise.location_id && !enterprise.currency_id ) {
@@ -82,10 +91,9 @@ exports.update = function update(req, res, next) {
   'use strict';
   var sql;
   var enterpriseId = req.params.id;
-  var queryData = req.body;
+  var queryData = convert(req.body);
 
   delete queryData.id;
-
 
   sql = 'UPDATE enterprise SET ? WHERE id = ?;';
 

@@ -117,8 +117,8 @@ function invoices(req, res, next) {
 
     // select all invoice and payments against invoices from the combined ledger
     sql =
-      `SELECT i.uuid, CONCAT(project.abbr, sale.reference) as reference,
-        credit, debit, entity_uuid
+      `SELECT BUID(i.uuid) as uuid, CONCAT(project.abbr, sale.reference) as reference,
+        credit, debit, BUID(entity_uuid) as entity_uuid
       FROM (
         SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid '
         FROM (
@@ -173,7 +173,7 @@ function balance(req, res, next) {
 
   // make sure the debtor exists
   var sql =
-    'SELECT uuid FROM debitor WHERE uuid = ?;';
+    'SELECT BUID(uuid) as uuid FROM debitor WHERE uuid = ?;';
 
   db.exec(sql, [uid])
   .then(function (rows) {

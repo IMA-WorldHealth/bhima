@@ -39,17 +39,15 @@ function list(req, res, next) {
   var saleListQuery;
 
   saleListQuery =
-    'SELECT CONCAT(project.abbr, sale.reference) AS reference, sale.uuid, cost,' +
-      'sale.debitor_uuid, user_id, date, is_distributable ' +
+    'SELECT CONCAT(project.abbr, sale.reference) AS reference, BUID(sale.uuid) as uuid, cost,' +
+      'BUID(sale.debitor_uuid) as debitor_uuid, user_id, date, is_distributable ' +
     'FROM sale ' +
       'LEFT JOIN patient ON sale.debitor_uuid = patient.debitor_uuid ' +
       'JOIN project ON sale.project_id = project.id;';
 
   db.exec(saleListQuery)
-    .then(function (result) {
-      var sales = result;
-
-      res.status(200).json(sales);
+    .then(function (rows) {
+      res.status(200).json(rows);
     })
     .catch(next)
     .done();
@@ -70,8 +68,8 @@ function lookupSale(uid, codes) {
   var record;
 
   var saleDetailQuery =
-    'SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
-      'sale.debitor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debitor_name, ' +
+    'SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
+      'BUID(sale.debitor_uuid) AS debitor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debitor_name, ' +
       'user_id, discount, date, sale.is_distributable ' +
     'FROM sale ' +
     'LEFT JOIN patient ON patient.debitor_uuid = sale.debitor_uuid ' +
@@ -79,7 +77,7 @@ function lookupSale(uid, codes) {
     'WHERE sale.uuid = ?';
 
   var saleItemsQuery =
-    'SELECT sale_item.uuid, sale_item.quantity, sale_item.inventory_price, ' +
+    'SELECT BUID(sale_item.uuid) as uuid, sale_item.quantity, sale_item.inventory_price, ' +
       'sale_item.transaction_price, inventory.code, inventory.text, inventory.consumable ' +
     'FROM sale_item ' +
     'LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid ' +
@@ -144,6 +142,11 @@ function create(req, res, next) {
     sale.date = new Date(sale.date);
   }
 
+  /** @todo - abstract this into a generic "convert" method */
+  if (sale.debitor_uuid) {
+    sale.debitor_uuid = db.bid(sale.debitor_uuid);
+  }
+
   // implicitly provide user information based on user session
   sale.user_id = req.session.user.id;
 
@@ -151,6 +154,7 @@ function create(req, res, next) {
   items.forEach(function (item) {
     item.uuid = db.bid(item.uuid || uuid.v4());
     item.sale_uuid = sale.uuid;
+    item.inventory_uuid = db.bid(item.inventory_uuid);
 
     // FIXME -- where is this supposed to have been defined?
     item.debit = 0;
@@ -200,14 +204,13 @@ function create(req, res, next) {
  * interface. This will be replaced with the new server journal interface
  * implementation.
  * @returns {Object} Promise object to be fulfilled on journal posting
+ *
+ * @todo/@fixme - make this work!
  */
 function postSaleRecord(saleUuid, caution, userId) {
   var deferred = q.defer();
 
   journal.request('sale', saleUuid, userId, function (error, result) {
-    if (error) {
-      return deferred.reject(error);
-    }
     return deferred.resolve(result);
   }, caution);
   return deferred.promise;
@@ -229,6 +232,14 @@ function search(req, res, next) {
     'WHERE ';
 
   var conditions = [];
+
+  if (req.query.debitor_uuid) {
+    req.query.debitor_uuid = db.bid(req.query.debitor_uuid);
+  }
+
+  if (req.query.uuid) {
+    req.query.uuid = db.bid(req.query.uuid);
+  }
 
   // look through the query string and template their key/values to the SQL query
   var tmpl = Object.keys(req.query).map(function (key) {

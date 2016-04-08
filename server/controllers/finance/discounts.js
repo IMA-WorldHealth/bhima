@@ -1,13 +1,28 @@
 /**
-* @module finance/discounts
-*
-* @desc The discounts API implements CRUD on the `discount` table in the
-* database.
-*
-* @requires lib/db
-*/
+ * The discounts API implements CRUD on the `discount` table in the
+ * database.
+ *
+ * @module finance/discounts
+ *
+ * @requires lib/db
+ */
 
-var db = require('../../lib/db');
+const db = require('../../lib/db');
+
+/**
+ * Converts needed fields into binary
+ *
+ * @param {Object} data - the data to be entered into the database
+ * @returns {Object} data - the incoming data with uuids cast as binary
+ */
+function convert(data) {
+
+  if (data.inventory_uuid) {
+    data.inventory_uuid = db.bid(data.inventory_uuid);
+  }
+
+  return data;
+}
 
 /**
  * @desc Looks up a discount in the database by its id.  Throws a prmoise error
@@ -21,7 +36,7 @@ function lookupDiscount(id, codes) {
   'use strict';
 
   var sql =
-    'SELECT d.id, d.label, d.description, d.inventory_uuid, ' +
+    'SELECT d.id, d.label, d.description, BUID(d.inventory_uuid) as inventory_uuid, ' +
       'd.account_id, d.value, a.number, i.text as inventoryLabel ' +
     'FROM discount AS d JOIN inventory AS i ON d.inventory_uuid = i.uuid ' +
     'JOIN account AS a ON d.account_id = a.id ' +
@@ -87,21 +102,18 @@ exports.create = function create(req, res, next) {
   'use strict';
 
   // expects the proposed record to be namespaced by "discount"
-  var data = req.body.discount;
+  var data = convert(req.body.discount);
 
   if (data.value < 0) {
     return next(new req.codes.ERR_NEGATIVE_VALUES());
   }
 
   var sql =
-    'INSERT INTO discount ' +
-      '(label, description, inventory_uuid, account_id, value) ' +
-    'VALUES (?, ?, ?, ?, ?);';
+    'INSERT INTO discount SET ?;';
+
 
   // attempt to insert the record
-  db.exec(sql, [
-    data.label, data.description, data.inventory_uuid, data.account_id, data.value
-  ])
+  db.exec(sql, [ data ])
   .then(function (result) {
     res.status(201).json({ id : result.insertId });
   })
@@ -121,7 +133,7 @@ exports.update = function update(req, res, next) {
 
   // no namespace necessary for updates -- allows middleware to catch empty
   // req.body's
-  var data = req.body;
+  var data = convert(req.body);
   var id = req.params.id;
 
   // remove the id if it exists (prevent attacks on data integrity)
@@ -159,7 +171,7 @@ exports.update = function update(req, res, next) {
 /**
  * DELETE /discounts/:id
  *
- * @desc Deletes a discount record in the database matching the param id.  If
+ * deletes a discount record in the database matching the param id.  If
  * the record does not exist, returns a 404 error.  Otherwise, it will return
  * a 204 NO CONTENT for a successfully deleted record.
  */

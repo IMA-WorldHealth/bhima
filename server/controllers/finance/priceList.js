@@ -73,7 +73,7 @@ function lookupPriceList(uid, codes) {
     'SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at ' +
     'FROM price_list WHERE uuid = ?;';
 
-  return db.exec(sql, [ uuid ])
+  return db.exec(sql, [ uid ])
   .then(function (rows) {
 
     // if no matches found, send a 404 error
@@ -105,7 +105,9 @@ function lookupPriceList(uid, codes) {
  */
 exports.details = function details(req, res, next) {
   'use strict';
+
   const uid = db.bid(req.params.uuid);
+
   lookupPriceList(uid, req.codes)
   .then(function (priceList) {
     res.status(200).json(priceList);
@@ -162,9 +164,13 @@ function formatPriceListItems(priceListUuid, items) {
   // format the price list items into a format that can be easily inserted into
   // the database
   return items.map(function (item) {
+
+    //  prevent missing inventory_uuids from crashing the server
+    var inventoryId = item.inventory_uuid ? db.bid(item.inventory_uuid) : null;
+
     return [
       db.bid(item.uuid || uuid.v4()),
-      db.bid(item.inventory_uuid),
+      inventoryId,
       priceListUuid,
       item.label,
       item.value,

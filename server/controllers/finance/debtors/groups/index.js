@@ -1,10 +1,10 @@
 /**
 * The Debtor Groups Controllers
 *
-* @module finance/debtorGroups
+* This module is responsible for handling all CRUD operations on debtor groups
+* and helper functions.
 *
-* @desc This module is responsible for handling all crud operations relatives
-* to debtor groups, and relatives functions.
+* @module finance/debtors/groups
 *
 * @requires q
 * @requires node-uuid
@@ -43,8 +43,8 @@ exports.invoices = invoices;
  */
 function lookupDebtorGroup(uid) {
   const sql =
-    `SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, location_id, phone, email,
-      note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
+    `SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, BUID(location_id) as location_id,
+      phone, email, note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
       apply_subsidies, apply_discounts, apply_billing_services
     FROM debitor_group
     WHERE uuid = ?;`;
@@ -57,6 +57,27 @@ function lookupDebtorGroup(uid) {
 
     return rows[0];
   });
+}
+
+/**
+ * Converts incoming uuids into binary uuids, if they exist.  This works for both
+ * PUT and POST requests
+ *
+ * @param {Object} data - the incoming data object to be inserted into the
+ * database
+ * @returns {object} data - the same data object, with uuids cast as binary.
+ */
+function convert(data) {
+
+  if (data.location_id) {
+    data.location_id = db.bid(data.location_id);
+  }
+
+  if (data.price_list_uuid) {
+    data.price_list_uuid = db.bid(data.price_list_uuid);
+  }
+
+  return data;
 }
 
 /**
@@ -85,16 +106,17 @@ function lookupDebtorGroup(uid) {
  * };
  */
 function create(req, res, next) {
-  var data = req.body;
   var sql = 'INSERT INTO debitor_group SET ? ;';
 
+  // convert any incoming uuids into binary
+  var data = convert(req.body);
+
   // generate a uuid if one doesn't exist, and convert to binary
-  const uid = data.uuid || uuid.v4();
-  data.uuid = db.bid(uid); 
+  data.uuid = db.bid(data.uuid || uuid.v4());
 
   db.exec(sql, data)
   .then(function () {
-    res.status(201).json({ uuid: uid });
+    res.status(201).json({ uuid: uuid.unparse(data.uuid) });
   })
   .catch(next)
   .done();
@@ -108,9 +130,11 @@ function create(req, res, next) {
  * @function update
  */
 function update(req, res, next) {
-  var data = req.body;
   var sql = 'UPDATE debitor_group SET ? WHERE uuid = ?;';
   const uid = db.bid(req.params.uuid);
+
+  // convert any incoming uuids to binary
+  const data = convert(req.body);
 
   // prevent updating the uuid, if it exists
   delete data.uuid;
@@ -165,7 +189,7 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql =
-      `SELECT uuid, name, account_id, location_id, phone, email, note, locked,
+      `SELECT uuid, name, account_id, BUID(location_id) as location_id, phone, email, note, locked,
         max_credit, is_convention, price_list_uuid,
         apply_subsidies, apply_discounts, apply_billing_services
       FROM debitor_group `;

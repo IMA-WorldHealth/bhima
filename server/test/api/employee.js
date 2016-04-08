@@ -5,7 +5,6 @@ var expect = chai.expect;
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-
 /**
 * The /employees API endpoint
 *
@@ -16,7 +15,7 @@ describe('(/employees) the employees API endpoint', function () {
 
   var agent = chai.request.agent(helpers.baseUrl);
 
-  /** login before each request */
+  /** login before test suite */
   before(helpers.login(agent));
 
   var numEmployees = 1;
@@ -171,7 +170,7 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('PUT /employee/:idb should not update an existing employee with fake fields ', function () {
+  it('PUT /employee/:id should not update an existing employee with fake fields ', function () {
     return agent.put('/employees/' + employee.id)
       .send({
         code : 'NEW_CODE_X',

@@ -12,10 +12,32 @@ var uuid = require('node-uuid');
 *   /locations/province/:uuid
 *   /locations/detail/:uuid
 *   /locations/detail/
-*   
+*
 * Each endpoint returns a table with all information available.
 * Endpoints taking UUIDs return only the records matching the UUID
 */
+
+// convert uuids to binary uuids if need be
+function convert(data) {
+
+  if (data.village_uuid) {
+    data.village_uuid = db.bid(data.village_uuid);
+  }
+
+  if (data.sector_uuid) {
+    data.sector_uuid = db.bid(data.sector_uuid);
+  }
+
+  if (data.province_uuid) {
+    data.province_uuid = db.bid(data.province_uuid);
+  }
+
+  if (data.country_uuid) {
+    data.country_uuid = db.bid(data.country_uuid);
+  }
+
+  return data;
+}
 
 /**
  * GET /locations/villages
@@ -32,11 +54,15 @@ exports.villages = function villages(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT village.uuid, village.name FROM village ';
+    'SELECT BUID(village.uuid) as uuid, village.name FROM village ';
 
   sql += (req.query.sector) ?
     'WHERE village.sector_uuid = ? ORDER BY village.name ASC;' :
     'ORDER BY village.name ASC;';
+
+  if (req.query.sector) {
+    req.query.sector = db.bid(req.query.sector);
+  }
 
   db.exec(sql, [ req.query.sector ])
   .then(function (data) {
@@ -64,23 +90,27 @@ exports.sectors = function sectors(req, res, next) {
 
   // send a larger response if detailed is 1
   if (req.query.detailed === '1') {
-    sql = 
-      'SELECT sector.uuid, sector.name, ' +
-        'province.name AS province_name, province.uuid AS provinceUuid, country.name AS country_name,  ' +
-        'country.uuid AS countryUuid ' +
+    sql =
+      'SELECT BUID(sector.uuid) as uuid, sector.name, ' +
+        'province.name AS province_name, BUID(province.uuid) AS provinceUuid, country.name AS country_name,  ' +
+        'BUID(country.uuid) AS countryUuid ' +
       'FROM sector JOIN province JOIN country ON ' +
         'sector.province_uuid = province.uuid AND ' +
         'province.country_uuid = country.uuid ';
 
   } else {
     sql =
-      'SELECT sector.uuid, sector.name FROM sector ';
+      'SELECT BUID(sector.uuid) as uud, sector.name FROM sector ';
   }
 
 
   sql += (req.query.province) ?
     'WHERE sector.province_uuid = ? ORDER BY sector.name ASC;' :
     'ORDER BY sector.name ASC;';
+
+  if (req.query.province) {
+    req.query.province = db.bid(req.query.province);
+  }
 
   db.exec(sql, [ req.query.province ])
   .then(function (data) {
@@ -108,7 +138,7 @@ exports.provinces = function provinces(req, res, next) {
 
   // send a larger response if detailed is 1
   if (req.query.detailed === '1') {
-    sql = 
+    sql =
       'SELECT province.uuid, province.name, country.name AS country_name, province.country_uuid AS countryUuid ' +
       'FROM province JOIN country ON ' +
         'province.country_uuid = country.uuid ';
@@ -121,6 +151,10 @@ exports.provinces = function provinces(req, res, next) {
   sql += (req.query.country) ?
     'WHERE province.country_uuid = ? ORDER BY province.name ASC;' :
     'ORDER BY province.name ASC;';
+
+  if (req.query.country) {
+    req.query.country = db.bid(req.query.country);
+  }
 
   db.exec(sql, [ req.query.country ])
   .then(function (data) {
@@ -142,7 +176,7 @@ exports.countries = function countries(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT country.uuid, country.name FROM country ' +
+    'SELECT BUID(country.uuid) as uuid, country.name FROM country ' +
     'ORDER BY country.name ASC;';
 
   db.exec(sql)
@@ -158,7 +192,7 @@ function lookupVillage(uuid, codes) {
   'use strict';
 
   var sql =
-    'SELECT village.uuid, village.name, sector.name AS sector_name, sector.uuid AS sector_uuid, ' +
+    'SELECT BUID(village.uuid) as uuid, village.name, sector.name AS sector_name, BUID(sector.uuid) AS sector_uuid, ' +
     'province.name AS province_name, country.name AS country_name ' +
     'FROM village JOIN sector JOIN province JOIN country ON ' +
       'village.sector_uuid = sector.uuid AND ' +
@@ -172,7 +206,7 @@ function lookupVillage(uuid, codes) {
       throw new codes.ERR_NOT_FOUND();
     }
 
-    return rows[0];    
+    return rows[0];
   });
 }
 
@@ -180,7 +214,7 @@ function lookupSector(uuid, codes) {
   'use strict';
 
   var sql =
-    'SELECT sector.uuid, sector.name, ' +
+    'SELECT BUID(sector.uuid) as uuid, sector.name, ' +
       'province.name AS province_name, country.name AS country_name ' +
     'FROM sector JOIN province JOIN country ON ' +
       'sector.province_uuid = province.uuid AND ' +
@@ -193,7 +227,7 @@ function lookupSector(uuid, codes) {
       throw new codes.ERR_NOT_FOUND();
     }
 
-    return rows[0];    
+    return rows[0];
   });
 }
 
@@ -201,7 +235,7 @@ function lookupProvince(uuid, codes) {
   'use strict';
 
   var sql =
-    'SELECT province.uuid, province.name, country.name AS country_name ' +
+    'SELECT BUID(province.uuid) as uuid, province.name, country.name AS country_name ' +
     'FROM province JOIN country ON ' +
       'province.country_uuid = country.uuid ' +
     'WHERE province.uuid = ?;';
@@ -212,7 +246,7 @@ function lookupProvince(uuid, codes) {
       throw new codes.ERR_NOT_FOUND();
     }
 
-    return rows[0];    
+    return rows[0];
   });
 }
 
@@ -220,7 +254,7 @@ function lookupCountry(uuid, codes) {
   'use strict';
 
   var sql =
-    'SELECT country.uuid, country.name ' +
+    'SELECT BUID(country.uuid) as uuid, country.name ' +
     'FROM country ' +
     'WHERE country.uuid = ?;';
 
@@ -230,7 +264,7 @@ function lookupCountry(uuid, codes) {
       throw new codes.ERR_NOT_FOUND();
     }
 
-    return rows[0];    
+    return rows[0];
   });
 }
 
@@ -247,19 +281,21 @@ function lookupCountry(uuid, codes) {
 exports.detail = function detail(req, res, next) {
   'use strict';
 
+  const uid = db.bid(req.params.uuid);
+
   var sql =
-    'SELECT village.uuid AS villageUuid, village.name AS village, sector.name AS sector,' +
-      'sector.uuid AS sectorUuid, province.name AS province, province.uuid AS provinceUuid, ' +
-      'country.name AS country, country.uuid AS countryUuid ' +
+    'SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,' +
+      'BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid, ' +
+      'country.name AS country, BUID(country.uuid) AS countryUuid ' +
     'FROM village, sector, province, country ' +
     'WHERE village.sector_uuid = sector.uuid AND ' +
       'sector.province_uuid = province.uuid AND ' +
       'province.country_uuid = country.uuid AND village.uuid = ?;';
 
-  db.exec(sql, [ req.params.uuid ])
+  db.exec(sql, [ uid ])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new res.codes.ERR_NOT_FOUND();
+      throw new req.codes.ERR_NOT_FOUND();
     }
 
     res.status(200).json(rows[0]);
@@ -284,9 +320,9 @@ exports.list = function list(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT village.uuid AS villageUuid, village.name AS village, sector.name AS sector,' +
-      'sector.uuid AS sectorUuid, province.name AS province, province.uuid AS provinceUuid, ' +
-      'country.name AS country, country.uuid AS countryUuid ' +
+    'SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,' +
+      'BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid, ' +
+      'country.name AS country, BUID(country.uuid) AS countryUuid ' +
     'FROM village, sector, province, country ' +
     'WHERE village.sector_uuid = sector.uuid AND ' +
       'sector.province_uuid = province.uuid AND ' +
@@ -317,14 +353,14 @@ exports.create.country = function createCountry(req, res, next) {
   'use strict';
 
   // create a UUID if not provided
-  req.body.uuid = req.body.uuid || uuid.v4();
+  req.body.uuid = db.bid(req.body.uuid || uuid.v4());
 
   var sql =
     'INSERT INTO country (uuid, name) VALUES (?, ?);';
 
   db.exec(sql, [req.body.uuid, req.body.name])
   .then(function (row) {
-    res.status(201).json({ uuid : req.body.uuid });
+    res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
   })
   .catch(next)
   .done();
@@ -342,15 +378,17 @@ exports.create.country = function createCountry(req, res, next) {
 exports.create.province = function createProvince(req, res, next) {
   'use strict';
 
+  var data = convert(req.body);
+
   // create a UUID if not provided
-  req.body.uuid = req.body.uuid || uuid.v4();
+  data.uuid = db.bid(data.uuid || uuid.v4());
 
   var sql =
     'INSERT INTO province (uuid, name, country_uuid) VALUES (?);';
 
-  db.exec(sql, [[req.body.uuid, req.body.name, req.body.country_uuid]])
+  db.exec(sql, [[data.uuid, data.name, data.country_uuid]])
   .then(function (row) {
-    res.status(201).json({ uuid : req.body.uuid });
+    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
   })
   .catch(next)
   .done();
@@ -369,15 +407,17 @@ exports.create.province = function createProvince(req, res, next) {
 exports.create.sector = function createSector(req, res, next) {
   'use strict';
 
+  var data = convert(req.body);
+
   // create a UUID if not provided
-  req.body.uuid = req.body.uuid || uuid.v4();
+  data.uuid = db.bid(data.uuid || uuid.v4());
 
   var sql =
     'INSERT INTO sector (uuid, name, province_uuid) VALUES (?);';
 
-  db.exec(sql, [[req.body.uuid, req.body.name, req.body.province_uuid]])
+  db.exec(sql, [[data.uuid, data.name, data.province_uuid]])
   .then(function (row) {
-    res.status(201).json({ uuid : req.body.uuid });
+    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
   })
   .catch(next)
   .done();
@@ -395,15 +435,17 @@ exports.create.sector = function createSector(req, res, next) {
 exports.create.village = function createVillage(req, res, next) {
   'use strict';
 
+  var data = convert(req.body);
+
   // create a UUID if not provided
-  req.body.uuid = req.body.uuid || uuid.v4();
+  data.uuid = db.bid(data.uuid || uuid.v4());
 
   var sql =
     'INSERT INTO village (uuid, name, sector_uuid) VALUES (?);';
 
-  db.exec(sql, [[req.body.uuid, req.body.name, req.body.sector_uuid]])
+  db.exec(sql, [[data.uuid, data.name, data.sector_uuid]])
   .then(function (row) {
-    res.status(201).json({ uuid : req.body.uuid });
+    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
   })
   .catch(next)
   .done();
@@ -423,18 +465,16 @@ exports.update = {};
 exports.update.country = function updateCountry(req, res, next) {
   'use strict';
 
-  var sql;
+  const uid = db.bid(req.params.uuid);
 
-  sql =
+  var sql =
     'UPDATE country SET ? WHERE uuid = ?;';
 
-  db.exec(sql, [req.body, req.params.uuid])
+  db.exec(sql, [req.body, uid])
   .then(function () {
-    var uuid = req.params.uuid;
-    return lookupCountry (uuid, req.codes);
+    return lookupCountry(uid, req.codes);
   })
   .then(function (record) {
-    // all updates completed successfull, return full object to client
     res.status(200).json(record);
   })
   .catch(next)
@@ -451,18 +491,16 @@ exports.update.country = function updateCountry(req, res, next) {
 exports.update.province = function updateProvince(req, res, next) {
   'use strict';
 
-  var sql;
+  const uid = db.bid(req.params.uuid);
 
-  sql =
+  var sql =
     'UPDATE province SET ? WHERE uuid = ?;';
 
-  db.exec(sql, [req.body, req.params.uuid])
+  db.exec(sql, [req.body, uid])
   .then(function () {
-    var uuid = req.params.uuid;
-    return lookupProvince (uuid, req.codes);
+    return lookupProvince(uid, req.codes);
   })
   .then(function (record) {
-    // all updates completed successfull, return full object to client
     res.status(200).json(record);
   })
   .catch(next)
@@ -479,18 +517,16 @@ exports.update.province = function updateProvince(req, res, next) {
 exports.update.sector = function updateSector(req, res, next) {
   'use strict';
 
-  var sql;
+  const uid = db.bid(req.params.uuid);
 
-  sql =
+  var sql =
     'UPDATE sector SET ? WHERE uuid = ?;';
 
-  db.exec(sql, [req.body, req.params.uuid])
+  db.exec(sql, [req.body, uid])
   .then(function () {
-    var uuid = req.params.uuid;
-    return lookupSector (uuid, req.codes);
+    return lookupSector(uid, req.codes);
   })
   .then(function (record) {
-    // all updates completed successfull, return full object to client
     res.status(200).json(record);
   })
   .catch(next)
@@ -507,18 +543,16 @@ exports.update.sector = function updateSector(req, res, next) {
 exports.update.village = function updateVillage(req, res, next) {
   'use strict';
 
-  var sql;
+  const uid = db.bid(req.params.uuid);
 
-  sql =
+  var sql =
     'UPDATE village SET ? WHERE uuid = ?;';
 
-  db.exec(sql, [req.body, req.params.uuid])
+  db.exec(sql, [req.body, uid])
   .then(function () {
-    var uuid = req.params.uuid;
-    return lookupVillage (uuid, req.codes);
+    return lookupVillage(uid, req.codes);
   })
   .then(function (record) {
-    // all updates completed successfull, return full object to client
     res.status(200).json(record);
   })
   .catch(next)
