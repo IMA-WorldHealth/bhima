@@ -31,13 +31,16 @@ function lookupSupplier(uuid, codes) {
 }
 
 
+// The Supplier  is assumed from the session.
 function list(req, res, next) {
   'use strict';
 
-  var sql =
-    `SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
-    supplier.address_1, supplier.address_2, supplier.email,
-    supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
+  var sql;
+
+  sql =
+    `SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid,
+      supplier.name, supplier.address_1, supplier.address_2, supplier.email,
+      supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
     FROM supplier `;
 
   if (req.query.locked === '0') {
@@ -50,7 +53,6 @@ function list(req, res, next) {
 
   db.exec(sql)
   .then(function (rows) {
-
     res.status(200).json(rows);
   })
   .catch(next)
@@ -58,7 +60,7 @@ function list(req, res, next) {
 }
 
 /**
-* GET /Supplier/:UUID
+* GET /supplier/:uuid
 *
 * Returns the detail of a single Supplier
 */
@@ -93,7 +95,7 @@ function create(req, res, next) {
   var data = convert(req.body);
 
   // provide uuid if the client has not specified
-  data.uuid = db.bid(data.uuid || uuid.v4());
+  data.uuid = db.bid(data.uuid || uuid());
 
   var sql =
     'INSERT INTO supplier SET ? ';
@@ -116,7 +118,12 @@ function update(req, res, next) {
   var sql =
     'UPDATE supplier SET ? WHERE uuid = ?;';
 
-  db.exec(sql, [convert(req.body), uid])
+  var data = convert(req.body);
+
+  // prevent updating the uuid
+  delete data.uuid;
+
+  db.exec(sql, [data, uid])
   .then(function () {
     return lookupSupplier(uid, req.codes);
   })
@@ -137,8 +144,8 @@ function search(req, res, next) {
 
   sql =
     `SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
-    supplier.address_1, supplier.address_2, supplier.email,
-    supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
+      supplier.address_1, supplier.address_2, supplier.email,
+      supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
     FROM supplier
     WHERE supplier.name LIKE ?;`;
 

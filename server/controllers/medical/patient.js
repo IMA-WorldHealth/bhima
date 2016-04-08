@@ -60,21 +60,10 @@ exports.billingServices = billingServices;
 exports.priceLists = priceLists;
 exports.subsidies = subsidies;
 
-/** converts patient data for entry into the database */
+/**
+ * Converts dates and uuids to objects to enter into the database
+ */
 function convert(data) {
-
-  if (data.dob) {
-    data.dob = new Date(data.dob);
-  }
-
-  if (data.registration_date) {
-    data.registration_data = new Date(data.registration_date);
-  }
-
-  if (data.debitor_group_uuid) {
-    data.debitor_group_uuid =  db.bid(data.debitor_group_uuid);
-  }
-
   if (data.current_location_id) {
     data.current_location_id = db.bid(data.current_location_id);
   }
@@ -83,8 +72,29 @@ function convert(data) {
     data.origin_location_id = db.bid(data.origin_location_id);
   }
 
+  if (data.debitor_uuid) {
+    data.debitor_uuid = db.bid(data.debitor_uuid);
+  }
+
+  if (data.creditor_uuid) {
+    data.creditor_uuid = db.bid(data.creditor_uuid);
+  }
+
+  if (data.debitor_group_uuid) {
+    data.debitor_group_uuid = db.bid(data.debitor_group_uuid);
+  }
+
+  if (data.dob) {
+    data.dob = new Date(data.dob);
+  }
+
+  if (data.registration_date) {
+    data.registration_date = new Date(data.registration_date);
+  }
+
   return data;
 }
+
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
@@ -99,19 +109,20 @@ function create(req, res, next) {
   var medical = createRequestData.medical;
   var finance = createRequestData.finance;
 
-  // debtor group required for financial modelling
+  // Debtor group required for financial modelling
   invalidParameters = !finance || !medical;
 
   if (invalidParameters) {
-    return next(new BadRequest('Both `financial` and `medical` information must be provided to register a patient.'));
+    throw new BadRequest('Both `financial` and `medical` information must be provided to register a patient.');
   }
-
-  // preprocess medical values to binary uuids and date objects
-  medical = convert(medical);
 
   // Optionally allow client to specify UUID
   finance.uuid = db.bid(finance.uuid || uuid.v4());
   medical.uuid = db.bid(medical.uuid || uuid.v4());
+
+  finance = convert(finance);
+  medical = convert(medical);
+
   medical.debitor_uuid = finance.uuid;
 
   writeDebtorQuery = 'INSERT INTO debitor (uuid, group_uuid, text) VALUES ' +
@@ -122,12 +133,14 @@ function create(req, res, next) {
   transaction = db.transaction();
 
   transaction
-    .addQuery(writeDebtorQuery, [finance.uuid, db.bid(finance.debitor_group_uuid), generatePatientText(medical)])
+    .addQuery(writeDebtorQuery, [finance.uuid, finance.debitor_group_uuid, generatePatientText(medical)])
     .addQuery(writePatientQuery, [medical]);
 
   transaction.execute()
     .then(function (results) {
-      res.status(201).json({ uuid : uuid.unparse(medical.uuid) });
+      res.status(201).json({
+        uuid : uuid.unparse(medical.uuid)
+      });
     })
     .catch(next)
     .done();
@@ -162,16 +175,16 @@ function detail(req, res, next) {
 
 function update(req, res, next) {
   var updatePatientQuery;
-  var queryData = req.body;
+  var data = convert(req.body);
   var patientId = db.bid(req.params.uuid);
 
-  // convert all uuids as necessary
-  queryData = convert(req.body);
+  // prevent updating the patient's uuid
+  delete data.uuid;
 
   updatePatientQuery =
     'UPDATE patient SET ? WHERE uuid = ?';
 
-  db.exec(updatePatientQuery, [queryData, patientId])
+  db.exec(updatePatientQuery, [data, patientId])
     .then(function (result) {
       return handleFetchPatient(patientId, req.codes);
     })
@@ -182,18 +195,20 @@ function update(req, res, next) {
     .done();
 }
 
-function handleFetchPatient(uuid, codes) {
+function handleFetchPatient(uid, codes) {
   var patientDetailQuery =
-    'SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debitor_uuid) AS debitor_uuid, p.first_name, p.last_name, p.middle_name, p.hospital_no, ' +
-      'p.sex, p.registration_date, p.email, p.phone, p.dob, BUID(p.origin_location_id) as origin_location_id, p.reference, p.title, p.address_1, p.address_2, p.father_name, ' +
-      'p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse, p.spouse_profession, ' +
-      'p.spouse_employer, p.notes, proj.abbr, d.text, ' +
-      'dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debitor_group_uuid, dg.locked, dg.name as debitor_group_name ' +
-    'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
-    'WHERE p.uuid = ?';
+    `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debitor_uuid) AS debitor_uuid, p.first_name,
+      p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
+      BUID(p.origin_location_id) as origin_location_id, p.reference, p.title, p.address_1, p.address_2,
+      p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
+      p.spouse_profession, p.spouse_employer, p.notes, proj.abbr, d.text,
+      dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debitor_group_uuid,
+      dg.locked, dg.name as debitor_group_name
+    FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg
+    ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
+    WHERE p.uuid = ?;`;
 
-  return db.exec(patientDetailQuery, uuid)
+  return db.exec(patientDetailQuery, uid)
     .then(function (rows) {
       if (rows.length === 0) {
         throw new codes.ERR_NOT_FOUND();
@@ -209,17 +224,16 @@ function groups(req, res, next) {
 
   // just check if the patient exists
   patientExistenceQuery =
-    'SELECT BUID(uuid) as uuid FROM patient WHERE uuid = ?;';
+    'SELECT uuid FROM patient WHERE uuid = ?;';
 
   // read patient groups
   patientGroupsQuery =
-    'SELECT patient_group.name, patient_group.note, patient_group.created_at, BUID(patient_group.uuid) as uuid ' +
-    'FROM assignation_patient LEFT JOIN patient_group ON patient_group_uuid = patient_group.uuid ' +
-    'WHERE patient_uuid = ?';
+    `SELECT patient_group.name, patient_group.note, patient_group.created_at, BUID(patient_group.uuid) as uuid
+    FROM assignation_patient LEFT JOIN patient_group ON patient_group_uuid = patient_group.uuid
+    WHERE patient_uuid = ?`;
 
   db.exec(patientExistenceQuery, [uid])
     .then(function (rows) {
-
       if (isEmpty(rows)) {
         throw new req.codes.ERR_NOT_FOUND();
       }
@@ -234,11 +248,9 @@ function groups(req, res, next) {
 }
 
 function listGroups(req, res, next) {
-  var listGroupsQuery;
-
-  listGroupsQuery =
-    'SELECT BUID(uuid), name, note, created_at, BUID(price_list_uuid) as price_list_uuid ' +
-    'FROM patient_group';
+  var listGroupsQuery =
+    `SELECT BUID(uuid) as uuid, name, note, created_at, BUID(price_list_uuid) as price_list_uuid
+    FROM patient_group`;
 
   db.exec(listGroupsQuery)
     .then(function(allPatientGroups) {
@@ -268,6 +280,7 @@ function updateGroups(req, res, next) {
       reason: 'Request must specify an `assignment` object containing an array of patient group ids'
     });
   }
+
 
   // Clear assigned groups
   removeAssignmentsQuery =
@@ -311,12 +324,14 @@ function list(req, res, next) {
   var listPatientsQuery;
 
   listPatientsQuery =
-    'SELECT BUID(p.uuid) as uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name, ' +
+    'SELECT p.uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name, ' +
       'p.middle_name, p.last_name ' +
     'FROM patient AS p JOIN project AS pr ON p.project_id = pr.id';
 
   db.exec(listPatientsQuery)
-  .then(function (patients) {
+  .then(function (result) {
+    var patients = result;
+
     res.status(200).json(patients);
   })
   .catch(next)
@@ -345,7 +360,7 @@ function hospitalNumberExists(req, res, next) {
   var hospitalNumber = req.params.id;
 
   verifyQuery =
-    'SELECT BUID(uuid) as uuid, hospital_no ' +
+    'SELECT uuid, hospital_no ' +
     'FROM patient ' +
     'WHERE hospital_no = ?';
 
@@ -362,26 +377,26 @@ function hospitalNumberExists(req, res, next) {
  /**
  * GET /patient/search/reference/:reference
  * @desc Performs a search on the patient reference (e.g. HBB123)
- * @todo - is this used???
+ * @todo - is this ever used?
  */
-function searchReference(req, res, next) {
+function searchReference (req, res, next) {
 
   var sql, reference = req.params.reference;
 
   // use MYSQL to look up the reference
   // TODO This could probably be optimized
   sql =
-    `SELECT BUID(q.uuid) as uuid, q.project_id, BUID(q.debitor_uuid) as debitor_uuid, q.first_name, q.last_name, q.middle_name,
-      q.sex, q.dob, BUID(q.origin_location_id) as origin_location_id,  q.reference, q.text,
-      q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked
-    FROM (
-      SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name,
-      p.sex, p.dob, CONCAT(proj.abbr, p.reference) AS reference, p.origin_location_id, d.text,
-      dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked
-      FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg
-        ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
-    ) AS q
-    WHERE q.reference = ?;`;
+    'SELECT q.uuid, q.project_id, q.debitor_uuid, q.first_name, q.last_name, q.middle_name, ' +
+      'q.sex, q.dob, q.origin_location_id, q.reference, q.text, ' +
+      'q.account_id, q.price_list_uuid, q.is_convention, q.locked ' +
+    'FROM (' +
+      'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, ' +
+      'p.sex, p.dob, CONCAT(proj.abbr, p.reference) AS reference, p.origin_location_id, d.text, ' +
+      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
+      'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
+        'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
+    ') AS q ' +
+    'WHERE q.reference = ?;';
 
   db.exec(sql, [reference])
   .then(function (rows) {
@@ -401,7 +416,6 @@ function searchReference(req, res, next) {
 /**
 * GET /patient/search/fuzzy/:match
 * @desc Performs fuzzy searching on patient names
-* @todo - is this used?
 */
 function searchFuzzy(req, res, next) {
 
@@ -411,19 +425,19 @@ function searchFuzzy(req, res, next) {
 
   // search on the match parameter
   sql =
-    'SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debitor_uuid) AS debitor_uuid, p.first_name, p.last_name,  p.middle_name, ' +
-      'p.sex, p.dob, BUID(p.origin_location_id) as location_id, p.reference, proj.abbr, d.text, ' +
-      'dg.account_id, BUID(dg.price_list_uuid) as price_list_uuid, dg.is_convention, dg.locked ' +
-    'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
-    'WHERE ' +
-      'LEFT(LOWER(CONCAT(p.last_name, \' \', p.middle_name, \' \', p.first_name )), CHAR_LENGTH(?)) = ? OR ' +
-      'LEFT(LOWER(CONCAT(p.last_name, \' \', p.first_name, \' \', p.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
-      'LEFT(LOWER(CONCAT(p.first_name, \' \', p.middle_name, \' \', p.last_name)), CHAR_LENGTH(?)) = ? OR ' +
-      'LEFT(LOWER(CONCAT(p.first_name, \' \', p.last_name, \' \', p.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
-      'LEFT(LOWER(CONCAT(p.middle_name, \' \', p.last_name, \' \', p.first_name)), CHAR_LENGTH(?)) = ? OR ' +
-      'LEFT(LOWER(CONCAT(p.middle_name, \' \', p.first_name, \' \', p.last_name)), CHAR_LENGTH(?)) = ? ' +
-    'LIMIT 10;';
+    `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debitor_uuid) AS debitor_uuid, p.first_name,
+      p.last_name,  p.middle_name, p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text,
+      dg.account_id, BUID(dg.price_list_uuid) as price_list_uuid, dg.is_convention, dg.locked
+    FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg
+    ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
+    WHERE
+      LEFT(LOWER(CONCAT(p.last_name, \' \', p.middle_name, \' \', p.first_name )), CHAR_LENGTH(?)) = ? OR
+      LEFT(LOWER(CONCAT(p.last_name, \' \', p.first_name, \' \', p.middle_name)), CHAR_LENGTH(?)) = ? OR
+      LEFT(LOWER(CONCAT(p.first_name, \' \', p.middle_name, \' \', p.last_name)), CHAR_LENGTH(?)) = ? OR
+      LEFT(LOWER(CONCAT(p.first_name, \' \', p.last_name, \' \', p.middle_name)), CHAR_LENGTH(?)) = ? OR
+      LEFT(LOWER(CONCAT(p.middle_name, \' \', p.last_name, \' \', p.first_name)), CHAR_LENGTH(?)) = ? OR
+      LEFT(LOWER(CONCAT(p.middle_name, \' \', p.first_name, \' \', p.last_name)), CHAR_LENGTH(?)) = ?
+    LIMIT 10;`;
 
   // man. That's a lot of matches
   db.exec(sql, [match, match, match, match, match, match, match, match, match, match, match, match])
@@ -450,13 +464,10 @@ function visit(req, res, next) {
 }
 
 function logVisit(patientData, userId) {
-  var sql;
   var visitId = db.bid(uuid.v4());
-
-  sql =
+  var sql =
     'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?)';
-
-  return db.exec(sql, [visitId, patientData.uuid, userId]);
+  return db.exec(sql, [visitId, db.bid(patientData.uuid), userId]);
 }
 
 function isEmpty(array) {
@@ -501,18 +512,18 @@ function search(req, res, next) {
   // customize returned columns according detailled results or not
   if (qDetail) {
     columns +=
-      ', q.abbr, q.creditor_uuid, q.father_name, q.mother_name, q.profession, q.employer, ' +
-      'q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status, ' +
-      'q.phone, q.email, q.address_1, q.address_2, q.renewal, BUID(q.origin_location_id) as origin_location_id, ' +
-      'BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.hospital_no, ' +
-      'q.text, q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked ';
+      `, q.abbr, BUID(q.creditor_uuid) as creditor_uuid, q.father_name, q.mother_name, q.profession, q.employer,
+      q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status,
+      q.phone, q.email, q.address_1, q.address_2, q.renewal, BUID(q.origin_location_id) as origin_location_id,
+      BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.hospital_no,
+      q.text, q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked `;
   }
 
   // build the main part of the sql query
   sql =
     `SELECT ${columns} FROM (
-      SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid, p.creditor_uuid,
-        p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name,
+      SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid AS debitor_uuid,
+        p.creditor_uuid, p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name,
         p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer,
         p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2,
         p.renewal, p.origin_location_id, p.current_location_id, p.registration_date,
@@ -520,7 +531,7 @@ function search(req, res, next) {
         dg.account_id, BUID(dg.price_list_uuid) as price_list_uuid, dg.is_convention, dg.locked
       FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg
         ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
-    ) AS q `;
+      ) AS q `;
 
   // complete the sql query according parameters of search
   // such as by: name, reference or by a set of criteria

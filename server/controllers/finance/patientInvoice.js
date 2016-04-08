@@ -154,6 +154,8 @@ function create(req, res, next) {
   items.forEach(function (item) {
     item.uuid = db.bid(item.uuid || uuid.v4());
     item.sale_uuid = sale.uuid;
+
+    // should every item have an inventory uuid?
     item.inventory_uuid = db.bid(item.inventory_uuid);
 
     // FIXME -- where is this supposed to have been defined?

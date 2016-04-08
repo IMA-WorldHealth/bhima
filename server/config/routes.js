@@ -67,6 +67,7 @@ var donors               = require('../controllers/donors');
 var referenceGroup       = require('../controllers/finance/referenceGroup');
 var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
+var creditors            = require('../controllers/finance/creditors.js');
 
 // middleware for handle uploaded file
 var multipart = require('connect-multiparty');
@@ -548,4 +549,7 @@ exports.configure = function (app) {
 	app.post('/donors', donors.create);
 	app.put('/donors/:id', donors.update);
 	app.delete('/donors/:id', donors.remove);
+
+  app.get('/creditors', creditors.list);
+  app.get('/creditors/:uuid', creditors.detail);
 };

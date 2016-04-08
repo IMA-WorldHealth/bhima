@@ -79,9 +79,17 @@ function create(req, res, next) {
 function update(req, res, next) {
   'use strict';
 
-  var data = convert(req.body);
   var uid = db.bid(req.params.uuid);
   var sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
+
+  var data = convert(req.body);
+
+  if (data.created_at) {
+    data.created_at = new Date(data.created_at);
+  }
+
+  // make sure we aren't updating the uuid
+  delete data.uuid;
 
   db.exec(sql, [data, uid])
   .then(function (rows) {

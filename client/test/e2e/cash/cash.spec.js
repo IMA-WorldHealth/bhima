@@ -187,7 +187,8 @@ describe('Cash Payments Module', function () {
       FU.exists(by.css('[data-cash-receipt-modal]'), true);
     });
 
-    it('should make a payment against previous invoices', function () {
+    /** @todo - once posting is figured out, this test should be uncommented and work */
+    it.skip('should make a payment against previous invoices', function () {
       var gridId = 'debtorInvoicesGrid';
 
       // select the proper patient

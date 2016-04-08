@@ -1,5 +1,5 @@
 /* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -56,7 +56,7 @@ describe('Employees Module', function () {
     FU.input('EmployeeCtrl.employee.prenom', employee.prenom);
     FU.input('EmployeeCtrl.employee.name', employee.name);
     FU.input('EmployeeCtrl.employee.postnom', employee.postnom);
-  
+
     // select the properdate
     components.dateEditor.set(employee.dob, 'employee-dob');
 
@@ -64,7 +64,7 @@ describe('Employees Module', function () {
     FU.select('EmployeeCtrl.employee.sexe')
       .enabled()
       .first()
-      .click();    
+      .click();
     FU.input('EmployeeCtrl.employee.nb_spouse', employee.nb_spouse);
     FU.input('EmployeeCtrl.employee.nb_enfant', employee.nb_enfant);
 
@@ -87,7 +87,7 @@ describe('Employees Module', function () {
       .enabled()
       .first()
       .click();
-    
+
     // select an Creditor Group
     FU.select('EmployeeCtrl.employee.creditor_group_uuid')
       .enabled()
@@ -99,10 +99,10 @@ describe('Employees Module', function () {
       .enabled()
       .first()
       .click();
-    
+
     FU.input('EmployeeCtrl.employee.email', employee.email);
-    FU.input('EmployeeCtrl.employee.adresse', employee.adresse); 
-   
+    FU.input('EmployeeCtrl.employee.adresse', employee.adresse);
+
     // select the locations specified
     components.locationSelect.set(locations);
 

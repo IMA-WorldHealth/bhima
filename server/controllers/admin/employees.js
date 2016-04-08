@@ -81,8 +81,8 @@ exports.list = function (req, res, next) {
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, BUID(employee.location_id) AS location_id,
-      grade.code AS code_grade, debitor.uuid as debitor_uuid, debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid,
-      creditor.uuid as creditor_uuid, creditor.text AS creditor_text, creditor.group_uuid as creditor_group_uuid, creditor_group.account_id
+      grade.code AS code_grade, BUID(debitor.uuid) as debitor_uuid, debitor.text AS debitor_text, BUID(debitor.group_uuid) as debitor_group_uuid,
+      BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text, BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
      JOIN grade ON employee.grade_id = grade.uuid
      JOIN fonction ON employee.fonction_id = fonction.id

@@ -1,5 +1,5 @@
 /* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -22,7 +22,7 @@ describe('Suppliers Module', function () {
     email : 'info@alpha.cd',
     fax : '12-34-294-10',
     note : 'Commentaire speciale',
-    phone : '025495950001'  
+    phone : '025495950001'
   };
 
   var supplierRank = 1;
@@ -44,7 +44,7 @@ describe('Suppliers Module', function () {
     FU.select('SupplierCtrl.supplier.creditor_uuid')
       .enabled()
       .first()
-      .click(); 
+      .click();
 
     FU.input('SupplierCtrl.supplier.phone', supplier.phone);
 
@@ -56,8 +56,8 @@ describe('Suppliers Module', function () {
 
     FU.input('SupplierCtrl.supplier.fax', supplier.fax);
 
-    FU.input('SupplierCtrl.supplier.note', supplier.note);    
-  
+    FU.input('SupplierCtrl.supplier.note', supplier.note);
+
     // submit the page to the server
     FU.buttons.submit();
 
@@ -67,10 +67,10 @@ describe('Suppliers Module', function () {
 
   it('successfully edits an supplier', function () {
     element(by.id('supplier-upd-' + supplierRank )).click();
-    
+
     // modify the supplier name
     FU.input('SupplierCtrl.supplier.name', 'Updated');
-    
+
     // modify the supplier note
     FU.input('SupplierCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
 
