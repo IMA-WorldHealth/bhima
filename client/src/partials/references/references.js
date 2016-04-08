@@ -94,7 +94,7 @@ function ReferenceController(referenceService, referenceGroupService, sectionRes
 
   // switch to delete warning mode
   function del(reference) {
-    var bool = $window.confirm($translate.instant('REFERENCE.CONFIRM'));
+    var bool = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
 
      // if the user clicked cancel, reset the view and return
      if (!bool) {

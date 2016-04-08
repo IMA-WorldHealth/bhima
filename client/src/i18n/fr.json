@@ -228,11 +228,6 @@
   },
 
   "LOCATION" : {
-    "SECTOR" : "Secteur",
-    "COUNTRY" : "Pays",
-    "PROVINCE" : "Province",
-    "VILLAGE" : "Village",
-    "REGISTER" : "Ajouter Location",
     "MODAL" : {
       "TITLE" : "Ajout Nouvelle Location"
     }
@@ -319,6 +314,7 @@
       "IS_PASSIVE"              : "Est un passif",
       "IS_PERCENT"              : "En pourcentage",
       "IS_PROFIT"               : "Est ce un profit?",
+      "IS_REPORT"               : "Est ce un repport ?",
       "IS_TITLE"                : "Est ce un titre?",
       "IS_WAREHOUSE"            : "Entreprot ?",
       "LABEL"                   : "Désignation",
@@ -341,6 +337,7 @@
       "ORIGIN_LOCATION"         : "Localisation d'origine",
       "OPTIONAL_INFO"           : "Informations optionnelles",      
       "RECIPIENT"               : "Facture de ",
+      "RESULT_ACCOUNT_SCT"      : "Section Compte de Résultat",
       "PASSIVE"                 : "Passive", 
       "PASSWORD"                : "Mot de passe",
       "PATIENT"                 : "patient",
@@ -438,12 +435,14 @@
       "SELECT_PROFIT_CENTER"  : "Sélectionner centre profit",
       "SELECT_PROVINCE"       : "Sélectionner une province",
       "SELECT_REFERENCE"      : "Sélectionner la Référence",
-      "SELECT_ROOT_ACCOUNT"   : "Sélectionner le compte titre",
-      "SELECT_SECTOR"         : "Sélectionner secteur",
-      "SELECT_SERVICE"        : "Sélectionner un Service",
-      "SELECT_SEX"            : "Sélectionner le sexe",
-      "SELECT_VILLAGE"        : "Sélectionner village",      
-      "SELECT_ZS"             : "Sélectionner zone de sante"
+      "SELECT_REFERENCE_GROUP"        : "Sélectionner un groupe de référence",
+      "SELECT_RESULT_ACCOUNT_SCT"     : "Section Compte Résultat",
+      "SELECT_ROOT_ACCOUNT"           : "Sélectionner le compte titre",
+      "SELECT_SECTOR"                 : "Sélectionner secteur",
+      "SELECT_SERVICE"                : "Sélectionner un Service",
+      "SELECT_SEX"                    : "Sélectionner le sexe",
+      "SELECT_VILLAGE"                : "Sélectionner village",      
+      "SELECT_ZS"                     : "Sélectionner zone de sante"
     },
 
     "BUTTONS" : {
@@ -613,6 +612,17 @@
     "TITLE"            : "GESTION DES PROVINCES"
   },
 
+  "REFERENCE": {
+    "ADD"             : "Ajouter une référence",
+    "ALERT"           : "Le module gestion de référence est un module qui a été conçu pour permettre l'administration des références existantes au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une référence ainsi que la suppression.",
+    "ALERT_2"         : "Deux références d'un même références groupes ne peuvent avoir la même position",
+    "NEW_REFERENCE"   : "Nouvelle référence",
+    "NO_REFERENCES"   : "Aucun référence n'est encore enregistrée",
+    "REGISTERED"      : "Références enregistrées",
+    "TITLE"           : "Gestion de références",
+    "UPD_REFERENCE"   : "Modifier une référence"
+  },
+
   "REFERENCE_GROUP": {
     "ADD"             : "Ajouter un groupe de référence",
     "ALERT"           : "Le module gestion des groupes des références est un module qui a été conçu pour permettre l'administration des groupe de références existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un groupe de référence ainsi que la suppression.",
@@ -695,8 +705,11 @@
       "PROFIT_CENTER"       : "Centre de profit",
       "PROVINCE"            : "Province",
       "RATE"                : "Taux",      
+      "REF"                 : "Réf.",
       "REFERENCE"           : "Référence",
+      "REF_GROUP"           : "Groupe de Réf.",
       "REFERENCE_GROUP"     : "Groupe de référence",
+      "RESULT_ACCOUNT_SCT"  : "Section Compte Résultat",
       "SECTOR"              : "Secteur",
       "SERVICE"             : "Service",
       "RESULT"              : "Resultat",

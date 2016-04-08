@@ -28,13 +28,13 @@
           <table class="table table-condensed">
             <thead>
               <tr>
-              <th>{{ "COLUMNS.NR" | translate}}</th>
-              <th>{{ "COLUMNS.REF" | translate}}</th>
-              <th>{{ "COLUMNS.LABEL" | translate}}</th>
-              <th>{{ "COLUMNS.POSITION" | translate}}</th>
-              <th>{{ "COLUMNS.REF_GROUP" | translate}}</th>
-              <th>{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate}}</th>
-              <th colspan="2">{{ "COLUMNS.ACTIONS" | translate }}</th>
+              <th>{{ "TABLE.COLUMNS.NR" | translate}}</th>
+              <th>{{ "TABLE.COLUMNS.REF" | translate}}</th>
+              <th>{{ "TABLE.COLUMNS.LABEL" | translate}}</th>
+              <th>{{ "TABLE.COLUMNS.POSITION" | translate}}</th>
+              <th>{{ "TABLE.COLUMNS.REF_GROUP" | translate}}</th>
+              <th>{{ "TABLE.COLUMNS.RESULT_ACCOUNT_SCT" | translate}}</th>
+              <th colspan="2">{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -56,7 +56,6 @@
               <tr ng-if="!ReferenceCtrl.references.length">
                 <td colspan="8">{{ "REFERENCE.NO_REFERENCES" | translate }}</td>
               </tr> 
-
             </tbody>
           </table>
         </div>
@@ -73,20 +72,20 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'REFERENCE.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'REFERENCE.UPDATE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'REFERENCE.DELETE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFOS.DELETE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
@@ -103,7 +102,7 @@
             <form class="panel-body" name="CreateForm" ng-submit="ReferenceCtrl.submit(CreateForm)" novalidate>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.ref.$invalid }">
-                <label class="control-label">{{ "COLUMNS.REFERENCE" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.REFERENCE" | translate }}</label>
                 <input type="text" class="form-control" name="ref" ng-model="ReferenceCtrl.reference.ref" required>
                 <div class="help-block" ng-messages="CreateForm.ref.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -111,7 +110,7 @@
               </div>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
-                <label class="control-label">{{ "COLUMNS.LABEL" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-model="ReferenceCtrl.reference.text" required>
                 <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -119,7 +118,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.position.$invalid }">
-                <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.POSITION" | translate }}</label>
                 <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceCtrl.reference.position" required>
                 <div class="help-block" ng-messages="CreateForm.position.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -131,14 +130,14 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_report.$invalid }">
                 <label class="control-label">
                   <input type="checkbox"  name="is_report" id="is_report" ng-true-value="1" ng-false-value="0" 
-                    ng-model="ReferenceCtrl.reference.is_report">  {{ 'COLUMNS.IS_REPORT' | translate }}
+                    ng-model="ReferenceCtrl.reference.is_report">  {{ 'FORM.LABELS.IS_REPORT' | translate }}
                 </label>  
               </div> 
 
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.reference_group_id.$invalid }">
-                <label class="control-label">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.REFERENCE_GROUP" | translate }}</label>
                 <select 
                   class="form-control" 
                   name="reference_group_id" 
@@ -146,12 +145,12 @@
                   id="reference_group_id"  
                   ng-options="reference.id as reference.text for reference in ReferenceCtrl.referenceGroups"
                   >
-                  <option value=""> -- {{ "SELECT.REFERENCE_GROUP" | translate }} -- </option>
+                  <option value=""> -- {{ "FORM.SELECTS.SELECT_REFERENCE_GROUP" | translate }} -- </option>
                 </select>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.section_resultat_id.$invalid }">
-                <label class="control-label">{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.RESULT_ACCOUNT_SCT" | translate }}</label>
                 <select 
                   class="form-control" 
                   name="section_resultat_id" 
@@ -159,16 +158,16 @@
                   id="section_resultat_id"  
                   ng-options="section.id as section.text for section in ReferenceCtrl.sectionResultats"
                   >
-                  <option value=""> -- {{ "SELECT.RESULT_ACCOUNT_SCT" | translate }} -- </option>
+                  <option value=""> -- {{ "FORM.SELECTS.SELECT_RESULT_ACCOUNT_SCT" | translate }} -- </option>
                 </select>
               </div>
 
               <div class="form-group">
                 <button class="btn btn-default" id="submit-reference" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="ReferenceCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.CANCEL" | translate }}
                 </button>
               </div>
             </form>
@@ -182,7 +181,7 @@
             <form class="panel-body" name="UpdateForm" ng-submit="ReferenceCtrl.submit(UpdateForm)" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.ref.$invalid }">
-                <label class="control-label">{{ "COLUMNS.REFERENCE" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.REFERENCE" | translate }}</label>
                 <input type="text" class="form-control" name="ref" ng-model="ReferenceCtrl.reference.ref" required>
                 <div class="help-block" ng-messages="UpdateForm.ref.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -190,7 +189,7 @@
               </div>
             
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
-                <label class="control-label">{{ "COLUMNS.LABEL" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-model="ReferenceCtrl.reference.text" required>
                 <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -198,7 +197,7 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.position.$invalid }">
-                <label class="control-label">{{ "COLUMNS.POSITION" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.POSITION" | translate }}</label>
                 <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceCtrl.reference.position" required>
                 <div class="help-block" ng-messages="UpdateForm.position.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -210,14 +209,14 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_report.$invalid }">
                 <label class="control-label">
                   <input type="checkbox"  name="is_report" id="is_report" ng-true-value="1" ng-false-value="0" 
-                    ng-model="ReferenceCtrl.reference.is_report">  {{ 'COLUMNS.IS_REPORT' | translate }}
+                    ng-model="ReferenceCtrl.reference.is_report">  {{ 'FORM.LABELS.IS_REPORT' | translate }}
                 </label>  
               </div> 
 
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.reference_group_id.$invalid }">
-                <label class="control-label">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.REFERENCE_GROUP" | translate }}</label>
                 <select 
                   class="form-control" 
                   name="reference_group_id" 
@@ -225,12 +224,12 @@
                   id="reference_group_id"  
                   ng-options="reference.id as reference.text for reference in ReferenceCtrl.referenceGroups"
                   >
-                  <option value=""> -- {{ "SELECT.REFERENCE_GROUP" | translate }} -- </option>
+                  <option value=""> -- {{ "FORM.SELECTS.SELECT_REFERENCE_GROUP" | translate }} -- </option>
                 </select>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.section_resultat_id.$invalid }">
-                <label class="control-label">{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.RESULT_ACCOUNT_SCT" | translate }}</label>
                 <select 
                   class="form-control" 
                   name="section_resultat_id" 
@@ -238,15 +237,15 @@
                   id="section_resultat_id"  
                   ng-options="section.id as section.text for section in ReferenceCtrl.sectionResultats"
                   >
-                  <option value=""> -- {{ "SELECT.RESULT_ACCOUNT_SCT" | translate }} -- </option>
+                  <option value=""> -- {{ "FORM.SELECTS.SELECT_RESULT_ACCOUNT_SCT" | translate }} -- </option>
                 </select>
               </div>
               <div class="form-group">
                 <button class="btn btn-default" id="change_reference" type="submit" data-method="submit">
-                  {{ "FORM.SUBMIT" | translate }}
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
                 </button>
                 <button class="btn btn-default" type="button" ng-click="ReferenceCtrl.cancel()" data-method="cancel">
-                  {{ "FORM.CANCEL" | translate }}
+                  {{ "FORM.BUTTONS.CANCEL" | translate }}
                 </button>
               </div>
               
