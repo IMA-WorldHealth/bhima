@@ -19,35 +19,37 @@ ReceiptModal.$inject = ['$uibModal', 'ReceiptService'];
 function ReceiptModal(Modal, Receipts) { 
   var service = this;
   
-  var receiptController = 'ReceiptModalController as ReceiptCtrl';
-  var receiptTemplate   = '/js/services/receipts/modal/receiptModal.tmpl.html';
-  var receiptSize       = 'md';
-  var receiptBackdrop   = 'static';
-  var animateReceipt    = false;
-
+  var modalConfiguration = { 
+    templateUrl : '/js/services/receipts/modal/receiptModal.tmpl.html',
+    controller  : 'ReceiptModalController as ReceiptCtrl',
+    size        : 'md',
+    backdrop    : 'static',
+    animation   : false
+  };
+  
+  // expose available receipts
   service.invoice = invoice;
 
   function invoice(uuid) { 
 
     /** @todo Discuss if these should be overridable from the controller or if the config should be set here */
-    var renderTarget      = 'json';
-    var invoiceTemplate   = 'partials/patient_invoice/receipt/invoice.receipt.tmpl.html';
-    var invoiceRequest    = Receipts.invoice(uuid, { render : renderTarget });
-  
-    /** @todo The template passed in should be the /services/modal template which will transclude the invoice template */
-    var instance = Modal.open({
-      templateUrl : receiptTemplate,
-      controller  : receiptController,
-      size        : receiptSize,
-      backdrop    : receiptBackdrop,
-      animation   : animateReceipt,
-      resolve     : { 
+    var options = { 
+      title       : 'PATIENT_INVOICE.PAGE_TITLE',
+      identifier  : 'reference',
+      renderer    : 'json',
+      template    : 'partials/patient_invoice/receipt/invoice.receipt.tmpl.html',
+    };
+    
+    var invoiceRequest = Receipts.invoice(uuid, { render : options.renderer });
+    var invoiceProvider = { 
+      resolve : { 
         receipt       : function receiptProvider() { return { promise : invoiceRequest }; },
-        template      : function templateProvider() { return invoiceTemplate; },
-        render        : function renderProvider() { return renderTarget; }
+        options       : function templateProvider() { return options; },
       }
-    });
-
+    };
+    
+    var configuration = angular.extend(modalConfiguration, invoiceProvider);
+    var instance = Modal.open(configuration);
     return instance.result;
   }
 }
