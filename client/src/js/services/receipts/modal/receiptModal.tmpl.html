@@ -1,7 +1,24 @@
+<style>
+  .reportModal-content { 
+    position : relative;
+    padding : 15px;
+    height : 50vh;
+    overflow-y : auto;
+  }
+
+  @media print { 
+    .reportModal-content { 
+      position : initial;
+    }
+  }
+</style>
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static">{{ "PATIENT_INVOICE.PAGE_TITLE" | translate }}</li>
-    <li class="title">Receipt <span class="label label-warning">HBB120</span></li>
+    <li class="static">{{ ReceiptCtrl.title | translate }}</li>
+    <li class="title">
+      {{ "COLUMNS.RECEIPT" | translate }}
+      <span ng-if="ReceiptCtrl.identifier" class="label label-warning">{{ReceiptCtrl.receipt[ReceiptCtrl.identifier]}}</span>
+    </li>
   </ol>
 </div>
 
@@ -11,10 +28,10 @@
   <!-- JSON Should be exposed to a view provided by the template passed to the -->
   <!-- controller by the Receipt Modal service -->
   <div ng-switch-when="json">
-
+    
     <!-- TODO Modal height etc. should be standardised -->
-    <div class="modal-body" style="height : 50vh; overflow-y: auto;">
-      <div ng-include="ReceiptCtrl.target"></div>
+    <div class="reportModal-content">
+      <div ng-include="ReceiptCtrl.template"></div>
     </div>
   </div>
 

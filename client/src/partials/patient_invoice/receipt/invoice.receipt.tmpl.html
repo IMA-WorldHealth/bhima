@@ -1,26 +1,115 @@
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>First</th>
-      <th>Second</th>
-      <th>Third</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-  </tbody>
-</table>
+<style>  
+
+  .total-row > td { 
+    font-weight : bold; 
+  }
+  @media print { 
+    body * { 
+      visibility : hidden;
+    }
+  
+    /* FIXME .flex-content height is restricting the print view */
+    /* to two pages - this should be overriden to solve this problem */
+    .flex-content { }
+
+    /* Style required to fix single page overflow problem */
+    /* .flex-continar : height (cannot be 100%) */
+    .flex-container { 
+      height : inherit;
+    }
+    
+    /* .modal : overflow (cannot be hidden) */
+    .modal-open .modal { 
+      overflow-x : initial;
+      overflow-y : initial;
+    }
+ 
+    .modal { 
+      overflow : initial;
+    }
+
+    .printme, .printme * { 
+      visibility : visible;
+    }
+    .printme { 
+      position : absolute;
+      left : 0;
+      top : 0;
+    }
+  }
+</style>
+ 
+<div style="width : 100%" id="receipt" class="printme">
+  
+  <div class="row">
+  <div class="col-xs-12">
+    <h4 style="text-decoration : underline;">
+      Patient Invoice
+    </h4>
+  </div>
+  </div>
+
+  <div class="row">
+  <!-- Use xs to ensure it never collapses -->
+  <div class="col-xs-4">
+    <label>{{ "PATIENT_INVOICE.RECIPIENT" | translate }}</label>
+    <p>
+      {{ReceiptCtrl.receipt.recipient.first_name}}
+      {{ReceiptCtrl.receipt.recipient.middle_name}}
+      {{ReceiptCtrl.receipt.recipient.last_name}}
+    </p>
+  </div>
+  <div class="col-xs-4">
+    <label>{{ "COLUMNS.TRANS_ID" | translate }}</label>
+    <p>{{ReceiptCtrl.receipt.reference}}</p>
+  </div>
+  <div class="col-xs-4">
+    <label>{{ReceiptCtrl.receipt.enterprise.name}}</label>
+    <p>{{ReceiptCtrl.receipt.enterprise.email}}</p>  
+    <p>{{ReceiptCtrl.receipt.enterprise.phone}}</p>  
+  </div>
+  </div>
+  
+  <div class="row">
+  <div class="col-xs-12">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>{{ 'COLUMNS.CODE' | translate }}</th>
+        <th>{{ 'COLUMNS.DESCRIPTION' | translate }}</th>
+        <th>{{ 'COLUMNS.QUANTITY' | translate }}</th>
+        <th>{{ 'COLUMNS.PRICE' | translate }}</th>
+        <th>{{ 'COLUMNS.AMOUNT' | translate }}</th>
+      </tr>
+    </thead>
+    
+    <!-- Line items -->
+    <tbody>
+      <tr ng-repeat="item in ReceiptCtrl.receipt.items">
+        <td>{{item.code}}</td>
+        <td>{{item.text}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.transaction_price}}</td>
+        <td>{{item.quantity * item.transaction_price}}</td>
+      </tr>
+    </tbody>
+    
+    <!-- Totals -->
+    <tbody>
+      <tr class="total-row">
+        <td colspan="4">{{ "INVOICE.TOTAL" | translate }}</td>
+        <td>{{ReceiptCtrl.receipt.cost | currency }}</td>
+      </tr>
+      <!-- <tr> -->
+      <!--   <td colspan="4">{{ "INVOICE.AMOUNT_RECEIVED" | translate }}</td> -->
+      <!--   <td>{{ ReceiptCtrl.receipt.credit | currency }}</td> -->
+      <!-- </tr> -->
+      <!-- <tr> -->
+      <!--   <td colspan="4">{{ "INVOICE.BALANCE_DUE" | translate }}</td> -->
+      <!--   <td>{{ReceiptCtrl.receipt.balance | currency }}</td> -->
+      <!-- </tr> -->
+    </tbody>
+  </table>
+  </div>
+  </div>
+</div>
