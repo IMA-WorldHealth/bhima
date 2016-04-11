@@ -25,13 +25,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
 
   // bind the enterprise to the enterprise currency
   vm.enterprise = Session.enterprise;
-  
-  Receipts.invoice('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6')
-    .then(function (result) { 
-     
-      // receipt closed fired
-    });
-
+   
   var gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
@@ -95,9 +89,19 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
       .then(handleCompleteInvoice);
   }
 
-  function handleCompleteInvoice(result) {
+  function handleCompleteInvoice(invoice) {
     vm.Invoice.items.removeCache();
-    $location.path('/invoice/sale/'.concat(result.uuid));
+  
+    Receipts.invoice(invoice.uuid)
+    .then(function (result) { 
+ 
+      // receipt closed fired
+      console.log('got closed');
+    })
+    .catch(function (error) { 
+      
+      // receipt closed rejected
+    });
   }
 
   // reset everything in the controller - default values
