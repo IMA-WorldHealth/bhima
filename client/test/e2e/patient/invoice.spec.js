@@ -19,7 +19,7 @@ var PatientInvoicePage = require('./invoice.page.js');
  *   - Test for price list
  *   - Test for discount
  */
-describe('patient invoice', function () {
+describe.only('patient invoice', function () {
   'use strict';
 
   /** @const */
@@ -44,12 +44,10 @@ describe('patient invoice', function () {
 
     // attempt to submit the page.
     page.submit();
-
-    // make sure we navigate away from the page
-    expect(browser.getCurrentUrl()).to.eventually.not.equal(helpers.baseUrl + path);
-
-    // assert that we got to the success page
-    expect(element(by.id('temp-success-message')).isPresent()).to.eventually.equal(true);
+    
+    /** @todo - this can validate totals and receipt content in the future */
+    browser.waitForAngular();
+    FU.exists(by.id('receipt'), true); 
   });
 
   it.skip('invoices a patient for multiple items', function () {
@@ -87,12 +85,11 @@ describe('patient invoice', function () {
 
     // submit the page
     page.submit();
+  
+    browser.waitForAngular();
+    /** @todo - this can validate totals and receipt content in the future */
+    FU.exists(by.id('receipt'), true); 
 
-    // make sure we navigate away from the page
-    expect(browser.getCurrentUrl()).to.eventually.not.equal(helpers.baseUrl + path);
-
-    // assert that we got to the success page
-    expect(element(by.id('temp-success-message')).isPresent()).to.eventually.equal(true);
   });
 
 
