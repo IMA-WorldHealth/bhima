@@ -1,3 +1,4 @@
+/* jshint expr:true*/
 var chai = require('chai');
 var expect = chai.expect;
 var uuid    = require('node-uuid');
@@ -30,7 +31,7 @@ describe('The /creditor_groups  API endpoint', function () {
   before(helpers.login(agent));
 
 
-  it('GET /CREDITOR_GROUPS  returns a list of Creditor Group ', function () {
+  it('GET /creditor_groups  returns a list of creditor group ', function () {
     return agent.get('/creditor_groups')
     .then(function (res) {
       helpers.api.listed(res, NUM_CREDITOR_GROUPS);
@@ -39,7 +40,7 @@ describe('The /creditor_groups  API endpoint', function () {
   });
 
 
-  it('POST /CREDITOR_GROUPS  should create a new Creditor Group ', function () {
+  it('POST /creditor_groups  should create a new creditor group ', function () {
     return agent.post('/creditor_groups')
     .send(creditorGroup)
     .then(function (res) {
@@ -48,7 +49,7 @@ describe('The /creditor_groups  API endpoint', function () {
     .catch(helpers.handler);
   });
 
-  it('GET /CREDITOR_GROUPS/:UUID should not be found for unknown uuid', function () {
+  it('GET /creditor_groups/:uuid should not be found for unknown uuid', function () {
     return agent.get('/creditor_groups/unknownCreditorGroups')
     .then(function (res) {
       helpers.api.errored(res, 404);
@@ -56,7 +57,7 @@ describe('The /creditor_groups  API endpoint', function () {
     .catch(helpers.handler);
   });
 
-  it('PUT /CREDITOR_GROUPS  should update an existing Creditor Group ', function () {
+  it('PUT /creditor_groups  should update an existing creditor group ', function () {
     return agent.put('/creditor_groups/' + creditorGroup.uuid)
       .send({ name : 'Creditor Group Update' })
       .then(function (res) {
@@ -67,7 +68,7 @@ describe('The /creditor_groups  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /CREDITOR_GROUPS/:UUID returns a single Creditor Group ', function () {
+  it('GET /creditor_groups/:uuid returns a single creditor group ', function () {
     return agent.get('/creditor_groups/' + creditorGroup.uuid)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -76,5 +77,4 @@ describe('The /creditor_groups  API endpoint', function () {
       })
       .catch(helpers.handler);
   });
-
 });

@@ -14,6 +14,19 @@ var db = require('../../lib/db');
 var uuid = require('node-uuid');
 var NotFound = require('../../lib/errors/NotFound');
 
+// converts data's uuids to binary uuids as required
+function convert(data) {
+  var keys = [ 'price_list_uuid' ];
+
+  keys.forEach(function (key) {
+    if (data[key]) {
+      data[key] = db.bid(data[key]);
+    }
+  });
+
+  return data;
+}
+
 /**
 * Returns an array of patient groups
 */
@@ -21,11 +34,11 @@ function list(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT pg.uuid, pg.name, pg.price_list_uuid, pg.note, pg.created FROM patient_group AS pg';
+    'SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at FROM patient_group AS pg';
 
   if (req.query.detailed === '1') {
     sql =
-      'SELECT pg.uuid, pg.name, pg.price_list_uuid, pg.note, pg.created, pl.label AS priceListLable, pl.description ' +
+      'SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at, pl.label AS priceListLable, pl.description ' +
       'FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid';
   }
 
@@ -45,16 +58,16 @@ function list(req, res, next) {
 function create(req, res, next) {
   'use strict';
 
-  var record = req.body;
+  var record = convert(req.body);
 
   // provide UUID if the client has not specified
-  record.uuid = record.uuid || uuid.v4();
+  record.uuid = db.bid(record.uuid || uuid.v4());
 
   var sql = 'INSERT INTO patient_group SET ?';
 
   db.exec(sql, [ record ])
   .then(function (result) {
-    res.status(201).json({ uuid: record.uuid });
+    res.status(201).json({ uuid: uuid.unparse(record.uuid) });
   })
   .catch(next)
   .done();
@@ -66,20 +79,25 @@ function create(req, res, next) {
 function update(req, res, next) {
   'use strict';
 
-  var data = req.body;
-  var id = req.params.uuid;
+  var uid = db.bid(req.params.uuid);
   var sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
 
-  // delete the id if necessary
+  var data = convert(req.body);
+
+  if (data.created_at) {
+    data.created_at = new Date(data.created_at);
+  }
+
+  // make sure we aren't updating the uuid
   delete data.uuid;
 
-  db.exec(sql, [data, id])
+  db.exec(sql, [data, uid])
   .then(function (rows) {
     if (!rows.affectedRows) {
-      throw new NotFound('No patient group found with id ' + id);
+      throw new NotFound('No patient group found with id ' + uuid.unparse(uid));
     }
 
-    return lookupPatientGroup(id);
+    return lookupPatientGroup(uid);
   })
   .then(function (group) {
     res.status(200).json(group);
@@ -92,13 +110,13 @@ function update(req, res, next) {
 * Remove a patient group in the database
 */
 function remove(req, res, next) {
-  var id = req.params.uuid;
+  const id = db.bid(req.params.uuid);
   var sql = 'DELETE FROM patient_group WHERE uuid = ?';
 
   db.exec(sql, [ id ])
   .then(function (rows) {
     if (!rows.affectedRows) {
-      throw new NotFound('No patient group found with id ' + id);
+      throw new NotFound('No patient group found with id ' + uuid.unparse(id));
     }
 
     res.sendStatus(204);
@@ -113,7 +131,7 @@ function remove(req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupPatientGroup(req.params.uuid)
+  lookupPatientGroup(db.bid(req.params.uuid))
   .then(function (row) {
     res.status(200).json(row);
   })
@@ -124,19 +142,19 @@ function detail(req, res, next) {
 /**
 * Return a patient group instance from the database
 *
-* @param {String} uuid - the uuid of a patient group
+* @param {integer} id of a service
 */
-function lookupPatientGroup(uuid) {
+function lookupPatientGroup(uid) {
   'use strict';
 
   var sql =
-    'SELECT pg.uuid, pg.name, pg.enterprise_id, pg.price_list_uuid, pg.note ' +
+    'SELECT BUID(pg.uuid) as uuid, pg.name, pg.enterprise_id, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at ' +
     'FROM patient_group AS pg WHERE pg.uuid = ?';
 
-  return db.exec(sql, [uuid])
+  return db.exec(sql, [uid])
   .then(function (rows) {
     if (!rows.length) {
-      throw new NotFound('No patient group found with id ' + uuid);
+      throw new NotFound('No patient group found with id ' + uuid.unparse(uid));
     }
     return rows[0];
   });

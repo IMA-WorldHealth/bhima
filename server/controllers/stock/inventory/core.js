@@ -69,7 +69,7 @@ function getItemsMetadata() {
   'use strict';
 
   var sql =
-    'SELECT i.uuid, i.code, i.text AS label, i.price, iu.text AS unit, ' +
+    'SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit, ' +
       'it.text AS type, ig.name AS groupName, i.consumable, i.stock_min, ' +
       'i.stock_max, i.origin_stamp AS timestamp ' +
     'FROM inventory AS i JOIN inventory_type AS it ' +
@@ -92,7 +92,7 @@ function getItemsMetadataById(uuid) {
   'use strict';
 
   var sql =
-    'SELECT i.uuid, i.code, i.text AS label, i.price, iu.text AS unit, ' +
+    'SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit, ' +
       'it.text AS type, ig.name AS groupName, i.consumable, i.stock_min, ' +
       'i.stock_max, i.origin_stamp AS timestamp ' +
     'FROM inventory AS i JOIN inventory_type AS it ' +

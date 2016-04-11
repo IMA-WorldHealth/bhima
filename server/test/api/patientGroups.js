@@ -25,7 +25,7 @@ describe('(/patient_groups) Patient Group API', function () {
   };
 
   var responseKeys = [
-    'enterprise_id', 'uuid', 'price_list_uuid', 'name', 'note'
+    'enterprise_id', 'uuid', 'price_list_uuid', 'name', 'note', 'created_at'
   ];
 
   // log in before test suite

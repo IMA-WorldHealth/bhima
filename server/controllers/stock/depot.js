@@ -37,14 +37,14 @@ exports.listStockExpirations = listStockExpirations;
 */
 function create(req, res, next) {
   'use strict';
-
-  /** prevent missing uuid by generating a new one */
-  if (!req.body.uuid) { req.body.uuid = uuid.v4(); }
-
   var query = 'INSERT INTO depot SET ?';
+
+  // prevent missing uuid by generating a new one
+  req.body.uuid = db.bid(req.body.uuid || uuid.v4());
+
   db.exec(query, [req.body])
   .then(function () {
-    res.status(201).json({ uuid : req.body.uuid });
+    res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
   })
   .catch(next)
   .done();
@@ -77,11 +77,13 @@ function remove(req, res, next) {
 function update(req, res, next) {
   'use strict';
 
-  /** prevent update uuid */
+  var query = 'UPDATE depot SET ? WHERE uuid = ?';
+  const uid = db.bid(req.params.uuid);
+
+  // prevent updating the uuid by accident
   if (req.body.uuid) { delete req.body.uuid; }
 
-  var query = 'UPDATE `depot` SET ? WHERE uuid = ?';
-  db.exec(query, [req.body, req.params.uuid])
+  db.exec(query, [req.body, uid])
   .then(selectDepot)
   .then(function (rows) {
     if (!rows.length) { return next(new req.codes.ERR_NOT_FOUND()); }
@@ -92,9 +94,9 @@ function update(req, res, next) {
 
   function selectDepot(rows) {
     var sql =
-      'SELECT uuid, reference, text, enterprise_id, is_warehouse ' +
+      'SELECT BUID(uuid) as uuid, reference, text, enterprise_id, is_warehouse ' +
       'FROM depot WHERE uuid = ?';
-    return db.exec(sql, [req.params.uuid]);
+    return db.exec(sql, [uid]);
   }
 }
 
@@ -107,13 +109,10 @@ function update(req, res, next) {
 function list(req, res, next) {
   'use strict';
 
-  var sql;
-
-  // TODO - should be filtered by enterprise.
-  sql =
-    'SELECT d.uuid, d.reference, d.text, d.is_warehouse ' +
-    'FROM depot AS d ' +
-    'WHERE d.enterprise_id = ?;';
+  var sql =
+    `SELECT BUID(uuid) as uuid, reference, text, is_warehouse
+    FROM depot
+    WHERE enterprise_id = ?;`;
 
   db.exec(sql, [req.session.enterprise.id])
   .then(function (rows) {
@@ -132,22 +131,21 @@ function list(req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  var sql,
-      uuid = req.params.uuid;
+  var uid = db.bid(req.params.uuid);
 
-  sql =
-    'SELECT d.uuid, d.reference, d.text, d.is_warehouse ' +
+  var sql =
+    'SELECT BUID(d.uuid) as uuid, d.reference, d.text, d.is_warehouse ' +
     'FROM depot AS d ' +
     'WHERE d.enterprise_id = ? AND d.uuid = ?;';
 
-  db.exec(sql, [req.session.enterprise.id, uuid])
+  db.exec(sql, [req.session.enterprise.id, uid])
   .then(function (rows) {
 
     // make sure we find at least one depot
     if (rows.length < 1) {
       return res.status(404).json({
         code : 'ERR_NO_DEPOT',
-        reason : 'No depot was found matching the uuid:' + uuid
+        reason : 'No depot was found matching the uuid:' + uuid.unparse(uid)
       });
     }
 

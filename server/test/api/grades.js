@@ -1,3 +1,4 @@
+/* jshint expr:true*/
 var chai = require('chai');
 var expect = chai.expect;
 var uuid    = require('node-uuid');
@@ -6,7 +7,7 @@ var helpers = require('./helpers');
 helpers.configure(chai);
 
 /**
-* The /grades   API endpoint
+* The /grades API endpoint
 *
 * This test suite implements full CRUD on the /grades   HTTP API endpoint.
 */
@@ -20,16 +21,15 @@ describe('The /grades  API endpoint', function () {
     text : 'Grade 2',
     basic_salary : 150
   };
- 
+
   var GRADE_KEY = ['uuid', 'code', 'text', 'basic_salary'];
 
   var NUM_GRADES = 2;
 
-  // login before each request
+  // login before test suite
   before(helpers.login(agent));
 
-
-  it('GET /GRADES  returns a list of grade ', function () {
+  it('GET /grades returns a list of grade ', function () {
     return agent.get('/grades')
     .then(function (res) {
       helpers.api.listed(res, NUM_GRADES);
@@ -38,7 +38,7 @@ describe('The /grades  API endpoint', function () {
   });
 
 
-  it('POST /GRADES  should create a new Grade', function () {
+  it('POST /grades  should create a new grade', function () {
     return agent.post('/grades')
     .send(grade)
     .then(function (res) {
@@ -47,7 +47,7 @@ describe('The /grades  API endpoint', function () {
     .catch(helpers.handler);
   });
 
-  it('GET /GRADES/:UUID should not be found for unknown uuid', function () {
+  it('GET /grades/:uuid should not be found for unknown uuid', function () {
     return agent.get('/grades/unknownGrade')
     .then(function (res) {
       helpers.api.errored(res, 404);
@@ -55,7 +55,7 @@ describe('The /grades  API endpoint', function () {
     .catch(helpers.handler);
   });
 
-  it('PUT /GRADES  should update an existing Grade ', function () {
+  it('PUT /grades should update an existing Grade ', function () {
     return agent.put('/grades/' + grade.uuid)
       .send({ basic_salary : 2000 })
       .then(function (res) {
@@ -66,7 +66,7 @@ describe('The /grades  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /GRADES/:UUID returns a single Grade ', function () {
+  it('GET /grades/:uuid returns a single grade ', function () {
     return agent.get('/grades/' + grade.uuid)
       .then(function (res) {
         expect(res).to.have.status(200);

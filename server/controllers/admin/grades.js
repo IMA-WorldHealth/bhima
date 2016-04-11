@@ -1,22 +1,21 @@
 /**
-* Grade  Controller
-*
-* This controller exposes an API to the client for reading and writing Grade 
-
-*/
+ * Grade Controller
+ *
+ * This controller exposes an API to the client for reading and writing Grade
+ */
 var db = require('../../lib/db');
 var uuid = require('node-uuid');
 
-// GET /Grade 
-function lookupGrade (uuid, codes) {
+// GET /Grade
+function lookupGrade(uid, codes) {
   'use strict';
 
   var sql =
-    'SELECT uuid, code, text, basic_salary ' +
+    'SELECT BUID(uuid) as uuid, code, text, basic_salary ' +
     'FROM grade ' +
     'WHERE grade.uuid = ? ';
 
-  return db.exec(sql, [uuid])
+  return db.exec(sql, [uid])
   .then(function (rows) {
 
     if (rows.length === 0) {
@@ -24,7 +23,6 @@ function lookupGrade (uuid, codes) {
     }
 
     return rows[0];
-
   });
 }
 
@@ -34,18 +32,17 @@ function list(req, res, next) {
   'use strict';
 
   var sql;
-  
-  sql =
-    'SELECT uuid, text FROM grade ;';
 
-  if (req.query.detailed === '1'){
+  sql =
+    'SELECT BUID(uuid) as uuid, text FROM grade ;';
+
+  if (req.query.detailed === '1') {
     sql =
-      'SELECT uuid, code, text, basic_salary FROM grade ;';
+      'SELECT BUID(uuid) as uuid, code, text, basic_salary FROM grade ;';
   }
 
   db.exec(sql)
   .then(function (rows) {
-
     res.status(200).json(rows);
   })
   .catch(next)
@@ -53,14 +50,16 @@ function list(req, res, next) {
 }
 
 /**
-* GET /Grade /:UUID
+* GET /grade/:uuid
 *
-* Returns the detail of a single Grade 
+* Returns the detail of a single Grade
 */
 function detail(req, res, next) {
   'use strict';
 
-  lookupGrade (req.params.uuid, req.codes)
+  const uid = db.bid(req.params.uuid);
+
+  lookupGrade(uid, req.codes)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -69,58 +68,59 @@ function detail(req, res, next) {
 }
 
 
-// POST /Grade 
+// POST /grade
 function create(req, res, next) {
   'use strict';
 
   var sql,
       data = req.body;
-   
-  // Provide UUID if the client has not specified 
-  data.uuid = data.uuid || uuid.v4();
-    
+
+  // Provide UUID if the client has not specified
+  data.uuid = db.bid(data.uuid || uuid.v4());
+
   sql =
     'INSERT INTO grade SET ? ';
 
   db.exec(sql, [data])
   .then(function (row) {
-    res.status(201).json({ uuid : data.uuid });
+    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
   })
   .catch(next)
   .done();
 }
 
 
-// PUT /Grade  /:uuid 
+// PUT /grade /:uuid
 function update(req, res, next) {
   'use strict';
 
-  var sql;
-
-  sql =
+  var sql =
     'UPDATE grade SET ? WHERE uuid = ?;';
 
-  db.exec(sql, [req.body, req.params.uuid])
+  // make sure you cannot update the uuid
+  delete req.body.uuid;
+
+  const uid = db.bid(req.params.uuid);
+
+  db.exec(sql, [req.body, uid])
   .then(function () {
-    var uuid = req.params.uuid;
-    return lookupGrade (uuid, req.codes);
+    return lookupGrade(uid, req.codes);
   })
   .then(function (record) {
-    // all updates completed successfull, return full object to client
     res.status(200).json(record);
   })
   .catch(next)
   .done();
 }
 
-// DELETE /Grade/:uuid
+// DELETE /grade/:uuid
 function del(req, res, next) {
   'use strict';
 
   var sql =
     'DELETE FROM grade WHERE uuid = ?;';
 
-  db.exec(sql, [req.params.uuid])
+  db.exec(sql, [db.bid(req.params.uuid)])
   .then(function (row) {
 
     // if nothing happened, let the client know via a 404 error

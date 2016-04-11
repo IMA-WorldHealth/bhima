@@ -18,6 +18,50 @@ var db = require('./../../lib/db');
 var uuid = require('node-uuid');
 
 /**
+ * Preprocess INSERT/UPDATE data to convert uuids into binary uuids, as well as
+ * preprocess dates into date objects
+ *
+ * @param {Object} data - the data to be posted/put into the database
+ * @returns {Object} data - the same data object, with dates and uuids converted
+ */
+function convert(data) {
+
+  if (data.grade_id) {
+    data.grade_id = db.bid(data.grade_id);
+  }
+
+  if (data.debitor_group_uuid) {
+    data.debitor_group_uuid = db.bid(data.debitor_group_uuid);
+  }
+
+  if (data.creditor_group_uuid) {
+    data.creditor_group_uuid = db.bid(data.creditor_group_uuid);
+  }
+
+  if (data.creditor_uuid) {
+    data.creditor_uuid = db.bid(data.creditor_uuid);
+  }
+
+  if (data.debitor_uuid) {
+    data.debitor_uuid = db.bid(data.debitor_uuid);
+  }
+
+  if (data.location_id) {
+    data.location_id = db.bid(data.location_id);
+  }
+
+  if (data.dob) {
+    data.dob = new Date(data.dob);
+  }
+
+  if (data.date_embauche) {
+    data.date_embauche = new Date(data.date_embauche);
+  }
+
+  return data;
+}
+
+/**
 * Returns an array of each employee in the database
 *
 * @param {object} request The express request object
@@ -31,21 +75,21 @@ var uuid = require('node-uuid');
 */
 exports.list = function (req, res, next) {
   var sql =
-    'SELECT ' +
-    'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
-    'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
-    'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
-    'fonction.id AS fonction_id, fonction.fonction_txt, ' +
-    'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, employee.location_id, ' +
-    'grade.code AS code_grade, debitor.uuid as debitor_uuid, debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
-    'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
-    'FROM employee ' +
-    ' JOIN grade ON employee.grade_id = grade.uuid ' +
-    ' JOIN fonction ON employee.fonction_id = fonction.id ' +
-    ' JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
-    ' JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
-    ' JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
-    ' ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC';
+    `SELECT
+      employee.id, employee.code AS code_employee, employee.prenom, employee.name,
+      employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
+      employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked, grade.text, grade.basic_salary,
+      fonction.id AS fonction_id, fonction.fonction_txt,
+      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, BUID(employee.location_id) AS location_id,
+      grade.code AS code_grade, BUID(debitor.uuid) as debitor_uuid, debitor.text AS debitor_text, BUID(debitor.group_uuid) as debitor_group_uuid,
+      BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text, BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
+    FROM employee
+     JOIN grade ON employee.grade_id = grade.uuid
+     JOIN fonction ON employee.fonction_id = fonction.id
+     JOIN debitor ON employee.debitor_uuid = debitor.uuid
+     JOIN creditor ON employee.creditor_uuid = creditor.uuid
+     JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
+     ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC;`;
 
   db.exec(sql)
   .then(function (rows) {
@@ -125,26 +169,26 @@ exports.checkOffday = function checkHoliday(req, res, next) {
 };
 
 function lookupEmployee(id, codes) {
-  'use strict';
 
   var sql =
-    'SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
-      'employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id, ' +
-      'employee.nb_spouse, employee.nb_enfant, employee.grade_id, employee.locked, grade.text, grade.basic_salary, ' +
-      'fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, ' +
-      'employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, ' +
-      'employee.daily_salary, employee.location_id, grade.code AS code_grade, debitor.uuid as debitor_uuid, ' +
-      'debitor.text AS debitor_text,debitor.group_uuid as debitor_group_uuid, ' +
-      'creditor.uuid as creditor_uuid, creditor.text AS creditor_text, ' +
-      'creditor.group_uuid as creditor_group_uuid, creditor_group.account_id ' +
-    'FROM employee ' +
-      'JOIN grade ON employee.grade_id = grade.uuid ' +
-      'JOIN fonction ON employee.fonction_id = fonction.id ' +
-      'JOIN debitor ON employee.debitor_uuid = debitor.uuid ' +
-      'JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
-      'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
-      'LEFT JOIN service ON service.id = employee.service_id ' +
-    'WHERE employee.id = ? ';
+    `SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
+      employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
+      employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
+      employee.locked, grade.text, grade.basic_salary,
+      fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
+      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
+      employee.daily_salary, BUID(employee.location_id) as location_id, grade.code AS code_grade, BUID(debitor.uuid) as debitor_uuid,
+      debitor.text AS debitor_text, BUID(debitor.group_uuid) as debitor_group_uuid,
+      BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
+      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
+    FROM employee
+      JOIN grade ON employee.grade_id = grade.uuid
+      JOIN fonction ON employee.fonction_id = fonction.id
+      JOIN debitor ON employee.debitor_uuid = debitor.uuid
+      JOIN creditor ON employee.creditor_uuid = creditor.uuid
+      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
+      LEFT JOIN service ON service.id = employee.service_id
+    WHERE employee.id = ?;`;
 
   return db.exec(sql, [id])
   .then(function (rows) {
@@ -161,10 +205,6 @@ function lookupEmployee(id, codes) {
 /**
 * Returns an object of details of an employee referenced by an `id` in the database
 *
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express middleware next object
-*
 * @example
 * // GET /employees/:id : Get details of an employee
 * var employees = require('admin/employees');
@@ -176,15 +216,12 @@ exports.detail = function detail(req, res, next) {
     res.status(200).json(record);
   })
   .catch(next)
-  .done();  
+  .done();
 };
 
 /**
 * Update details of an employee referenced by an `id` in the database
 *
-* @param {object} request The express request object
-* @param {object} response The express response object
-* @param {object} next The express middleware next object
 *
 * @example
 * // PUT /employees/:id : Update details of an employee
@@ -192,7 +229,7 @@ exports.detail = function detail(req, res, next) {
 * employees.update(req, res, next);
 */
 exports.update = function update(req, res, next) {
-  var employee = req.body;
+  var employee = convert(req.body);
 
   var transaction;
 
@@ -206,19 +243,11 @@ exports.update = function update(req, res, next) {
     uuid : employee.debitor_uuid,
     group_uuid : employee.debitor_group_uuid,
     text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
-  };  
-
-
-  if (employee.dob) {
-    employee.dob = new Date(employee.dob);
-  }
-  if (employee.date_embauche) {
-    employee.date_embauche = new Date(employee.date_embauche);
-  }
+  };
 
   var clean = {
     prenom : employee.prenom,
-    name : employee.name, 
+    name : employee.name,
     postnom : employee.postnom,
     sexe : employee.sexe,
     dob : employee.dob,
@@ -268,50 +297,40 @@ exports.update = function update(req, res, next) {
 /**
 * This function is responsible for creating a new employee in the database
 *
-* @param {object} request The express request object
-* @param {object} response The express response object
-* @param {object} next The express middleware next object
-*
 * @example
 * // POST /employees/ : Create a new employee
 * var employees = require('admin/employees');
 * employees.create(req, res, next);
 */
 exports.create = function create(req, res, next) {
-  var creditorUuid = uuid.v4();
-  var debitorUuid = uuid.v4();
   var transaction;
-  var employee = req.body;
+
+  // cast as data object and add unique ids
+  var data = req.body;
+  data.creditor_uuid = uuid.v4();
+  data.debitor_uuid = uuid.v4();
+
+  // convert uuids to binary uuids as necessary
+  var employee = convert(data);
 
   var creditor = {
-    uuid : creditorUuid,
+    uuid : employee.creditor_uuid,
     group_uuid : employee.creditor_group_uuid,
     text : 'Crediteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
   };
 
   var debitor = {
-    uuid : debitorUuid,
+    uuid : employee.debitor_uuid,
     group_uuid : employee.debitor_group_uuid,
     text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
-  };  
+  };
 
-  employee.creditor_uuid = creditorUuid; 
-  employee.debitor_uuid = debitorUuid; 
+  delete employee.debitor_group_uuid;
+  delete employee.creditor_group_uuid;
 
-  delete(employee.debitor_group_uuid);
-  delete(employee.creditor_group_uuid);
-
-  var writeCreditor = "INSERT INTO creditor SET ?";
-  var writeDebitor = "INSERT INTO debitor SET ?";
+  var writeCreditor = 'INSERT INTO creditor SET ?';
+  var writeDebitor = 'INSERT INTO debitor SET ?';
   var sql = 'INSERT INTO employee SET ?';
-
-  // ensure dates are MySQL-parseable.
-  if (employee.dob) {
-    employee.dob = new Date(employee.dob);
-  }
-  if (employee.date_embauche) {
-    employee.date_embauche = new Date(employee.date_embauche);
-  }
 
   transaction = db.transaction();
 
@@ -322,8 +341,9 @@ exports.create = function create(req, res, next) {
 
   transaction.execute()
     .then(function (results) {
-
-      res.status(201).json({ id: results[2].insertId });
+      res.status(201).json({
+        id: results[2].insertId
+      });
     })
     .catch(next)
     .done();
@@ -332,10 +352,6 @@ exports.create = function create(req, res, next) {
 /**
 *This function is responsible for looking for employee by names or code
 *
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express middleware next object
-*
 * @example
 * // GET /employees/names/x
 * var employees = require('admin/employees');
@@ -343,7 +359,7 @@ exports.create = function create(req, res, next) {
 **/
 
 exports.search = function search(req, res, next){
-  
+
   var searchOption = '', sql = '';
   var keyValue = '%' + req.params.value + '%';
 
@@ -355,22 +371,21 @@ exports.search = function search(req, res, next){
     return next(new req.codes.ERR_BAD_VALUE());
   }
 
-  sql = 'SELECT ' +
-    'employee.id, employee.code AS code_employee, employee.prenom, employee.name, ' +
-    'employee.postnom, employee.locked, employee.bank, employee.bank_account, ' + 
-    'creditor.uuid as creditor_uuid, creditor.group_uuid as creditor_group_uuid, ' +
-    'creditor_group.account_id FROM employee ' +
-    'JOIN creditor ON employee.creditor_uuid = creditor.uuid ' +
-    'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
-    'WHERE ' + searchOption + ' LIKE ? LIMIT 10';
+  sql =
+    `SELECT
+      employee.id, employee.code AS code_employee, employee.prenom, employee.name,
+      employee.postnom, employee.locked, employee.bank, employee.bank_account,
+      BUID(creditor.uuid) as creditor_uuid, BUID(creditor.group_uuid) as creditor_group_uuid,
+      creditor_group.account_id
+    FROM employee
+    JOIN creditor ON employee.creditor_uuid = creditor.uuid
+    JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
+    WHERE ${searchOption} LIKE ? LIMIT 10;`;
 
-    db.exec(sql, [keyValue])
-    .then(function (rows){
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  db.exec(sql, [keyValue])
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
 };
-
-
-

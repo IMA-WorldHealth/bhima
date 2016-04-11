@@ -55,7 +55,8 @@ function SupplierController(supplierService, creditorService) {
   
   // refresh the displayed Suppliers
   function refreshSuppliers() {
-    return supplierService.read(null,{ detailed : 1 }).then(function (data) {
+    return supplierService.read(null,{ detailed : 1 })
+    .then(function (data) {
       vm.suppliers = data;
       vm.loading = false;
     });

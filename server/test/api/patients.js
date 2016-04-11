@@ -189,8 +189,6 @@ describe('(/patients) The Patients API', function () {
   });
 
   it('POST /patients will register a valid patient', function () {
-    var UUID_LENGTH = 36;
-
     return agent.post('/patients')
       .send(mockRequest)
       .then(function (res) {
@@ -244,7 +242,7 @@ describe('(/patients) The Patients API', function () {
 
   });
 
-  it('GET /patients/:id/groups will return a list of the patients groups', function () {
+  it('GET /patients/:uuid/groups will return a list of the patients groups', function () {
     var groupRoute = '/patients/'.concat(preparedTestPatientUuid).concat('/groups');
     var SUBSCRIBED_PATIENT_GROUPS = 1;
 
@@ -255,7 +253,7 @@ describe('(/patients) The Patients API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /patients/:id/groups will return 404 not found for invalid request', function () {
+  it('GET /patients/:uuid/groups will return 404 not found for invalid request', function () {
 
     return agent.get('/patients/unknownid/groups')
       .then(function (res) {
@@ -274,24 +272,24 @@ describe('(/patients) The Patients API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /patients/hospital_number/:id/exists correctly identifies existing record', function () { 
+  it('GET /patients/hospital_number/:id/exists correctly identifies existing record', function () {
     var existingNumber = 100;
 
     return agent.get('/patients/hospital_number/'.concat(existingNumber, '/exists'))
-      .then(function (result) { 
-        
+      .then(function (result) {
+
         expect(result).to.have.status(200);
         expect(result.body).to.not.be.empty;
         expect(result.body).to.be.true;
       })
       .catch(helpers.handler);
   });
-  
-  it('GET /patients/hospital_number/:id/exists correctly identifies unique record', function () { 
+
+  it('GET /patients/hospital_number/:id/exists correctly identifies unique record', function () {
 
     return agent.get('/patients/hospital_number/190/exists')
-      .then(function (result) { 
-    
+      .then(function (result) {
+
         expect(result).to.have.status(200);
 
         // chair returns an empty object for the body on this response - the text
