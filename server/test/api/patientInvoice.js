@@ -84,6 +84,8 @@ describe('The /sales API', function () {
   // NOTE : Temporary skips while we are sorting the posting journal routes out
 
   it('POST /sales will record a valid patient invoice and return success from the posting journal', function () {
+    this.timeout(3000);
+    
     return agent.post('/sales')
       .send({ sale : mockSale })
       .then(function (res) {

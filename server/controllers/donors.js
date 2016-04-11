@@ -15,6 +15,7 @@
 
 var q  = require('q'),
     db = require('../lib/db');
+const NotFound = require('../lib/errors/NotFound');    
 
 /** Create a new donor */
 exports.create = create;

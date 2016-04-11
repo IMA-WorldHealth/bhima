@@ -1,6 +1,9 @@
 var q = require('q');
 var db = require('./../../lib/db');
-const uuid = require('node-uuid');
+var uuid = require('node-uuid');
+var journal = require('./journal');
+const NotFound = require('./../../lib/errors/NotFound');
+
 
 /**
  * Utility method to ensure purchase items lines reference purchase.
