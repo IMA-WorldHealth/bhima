@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('ReceiptModalController', ReceiptModalController);
 
-ReceiptModalController.$inject = ['receipt', 'options'];
+ReceiptModalController.$inject = ['$uibModalInstance', '$window', 'receipt', 'options'];
 
 /**
  * Receipt Modal Controller 
@@ -13,7 +13,7 @@ ReceiptModalController.$inject = ['receipt', 'options'];
  * @params {String} template  Path to the template or resource to load 
  * @params {String} render    Render target used to generate report 
  */
-function ReceiptModalController(receipt, options) { 
+function ReceiptModalController($modalInstance, $window, receipt, options) { 
   var vm = this;
   
   // expose options to the view
@@ -29,4 +29,12 @@ function ReceiptModalController(receipt, options) {
       
       // receipt has failed - show error state
     });
+
+  vm.print = function print() { 
+    $window.print();
+  };
+  
+  vm.close = function close() { 
+    $modalInstance.close();
+  };
 }
