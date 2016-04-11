@@ -1,45 +1,4 @@
-<style>  
-
-  .total-row > td { 
-    font-weight : bold; 
-  }
-  @media print { 
-    body * { 
-      visibility : hidden;
-    }
-  
-    /* FIXME .flex-content height is restricting the print view */
-    /* to two pages - this should be overriden to solve this problem */
-    .flex-content { }
-
-    /* Style required to fix single page overflow problem */
-    /* .flex-continar : height (cannot be 100%) */
-    .flex-container { 
-      height : inherit;
-    }
-    
-    /* .modal : overflow (cannot be hidden) */
-    .modal-open .modal { 
-      overflow-x : initial;
-      overflow-y : initial;
-    }
- 
-    .modal { 
-      overflow : initial;
-    }
-
-    .printme, .printme * { 
-      visibility : visible;
-    }
-    .printme { 
-      position : absolute;
-      left : 0;
-      top : 0;
-    }
-  }
-</style>
- 
-<div style="width : 100%" id="receipt" class="printme">
+<div id="receipt" class="bh-print receipt">
   
   <div class="row">
   <div class="col-xs-12">
@@ -71,45 +30,45 @@
   </div>
   
   <div class="row">
-  <div class="col-xs-12">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>{{ 'COLUMNS.CODE' | translate }}</th>
-        <th>{{ 'COLUMNS.DESCRIPTION' | translate }}</th>
-        <th>{{ 'COLUMNS.QUANTITY' | translate }}</th>
-        <th>{{ 'COLUMNS.PRICE' | translate }}</th>
-        <th>{{ 'COLUMNS.AMOUNT' | translate }}</th>
-      </tr>
-    </thead>
-    
-    <!-- Line items -->
-    <tbody>
-      <tr ng-repeat="item in ReceiptCtrl.receipt.items">
-        <td>{{item.code}}</td>
-        <td>{{item.text}}</td>
-        <td>{{item.quantity}}</td>
-        <td>{{item.transaction_price}}</td>
-        <td>{{item.quantity * item.transaction_price}}</td>
-      </tr>
-    </tbody>
-    
-    <!-- Totals -->
-    <tbody>
-      <tr class="total-row">
-        <td colspan="4">{{ "INVOICE.TOTAL" | translate }}</td>
-        <td>{{ReceiptCtrl.receipt.cost | currency }}</td>
-      </tr>
-      <!-- <tr> -->
-      <!--   <td colspan="4">{{ "INVOICE.AMOUNT_RECEIVED" | translate }}</td> -->
-      <!--   <td>{{ ReceiptCtrl.receipt.credit | currency }}</td> -->
-      <!-- </tr> -->
-      <!-- <tr> -->
-      <!--   <td colspan="4">{{ "INVOICE.BALANCE_DUE" | translate }}</td> -->
-      <!--   <td>{{ReceiptCtrl.receipt.balance | currency }}</td> -->
-      <!-- </tr> -->
-    </tbody>
-  </table>
-  </div>
+    <div class="col-xs-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'COLUMNS.CODE' | translate }}</th>
+            <th>{{ 'COLUMNS.DESCRIPTION' | translate }}</th>
+            <th>{{ 'COLUMNS.QUANTITY' | translate }}</th>
+            <th>{{ 'COLUMNS.PRICE' | translate }}</th>
+            <th>{{ 'COLUMNS.AMOUNT' | translate }}</th>
+          </tr>
+        </thead>
+        
+        <!-- Line items -->
+        <tbody>
+          <tr ng-repeat="item in ReceiptCtrl.receipt.items">
+            <td>{{item.code}}</td>
+            <td>{{item.text}}</td>
+            <td>{{item.quantity}}</td>
+            <td>{{item.transaction_price}}</td>
+            <td>{{item.quantity * item.transaction_price}}</td>
+          </tr>
+        </tbody>
+        
+        <!-- Totals -->
+        <tbody>
+          <tr class="total-row">
+            <td colspan="4">{{ "INVOICE.TOTAL" | translate }}</td>
+            <td>{{ReceiptCtrl.receipt.cost | currency }}</td>
+          </tr>
+          <!-- <tr> -->
+          <!--   <td colspan="4">{{ "INVOICE.AMOUNT_RECEIVED" | translate }}</td> -->
+          <!--   <td>{{ ReceiptCtrl.receipt.credit | currency }}</td> -->
+          <!-- </tr> -->
+          <!-- <tr> -->
+          <!--   <td colspan="4">{{ "INVOICE.BALANCE_DUE" | translate }}</td> -->
+          <!--   <td>{{ReceiptCtrl.receipt.balance | currency }}</td> -->
+          <!-- </tr> -->
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

@@ -488,3 +488,65 @@ ol.headercrumb {
   position : relative;
   
 }
+
+/**
+ * Styles used for printing, receipts and reports 
+ * @todo move this to less
+ */
+.bh-modal-content { 
+  position : relative; 
+  padding : 15px;
+
+  /** @todo review this */
+  height : 50vh;
+  overflow-y : auto;
+}
+
+.receipt { 
+  width : 100%
+}
+
+/* Report tables */
+.total-row > td { 
+  font-weight : bold; 
+}
+
+@media print { 
+  body * { 
+    visibility : hidden;
+  }
+
+  /* FIXME .flex-content height is restricting the print view */
+  /* to two pages - this should be overriden to solve this problem */
+  .flex-content { }
+
+  /* Style required to fix single page overflow problem */
+  /* .flex-continar : height (cannot be 100%) */
+  .flex-container { 
+    height : inherit;
+  }
+  
+  /* .modal : overflow (cannot be hidden) */
+  .modal-open .modal { 
+    overflow-x : initial;
+    overflow-y : initial;
+  }
+
+  .modal { 
+    overflow : initial;
+  }
+
+  .bh-print, .bh-print * { 
+    visibility : visible;
+  }
+
+  .bh-print { 
+    position : absolute;
+    left : 0;
+    top : 0;
+  }
+  
+  .bh-modal-content { 
+    position : initial;
+  }
+}
