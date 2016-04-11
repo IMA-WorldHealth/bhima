@@ -15,6 +15,10 @@
 
 var q  = require('q'),
     db = require('../lib/db');
+<<<<<<< 5cddbe60c220a8c9127ddb93ba8077a881b6eced
+=======
+const NotFound = require('../lib/errors/NotFound');    
+>>>>>>> Complete updating in file donors, debtor Group, debtors, purchase and test patient invoice
 
 /** Create a new donor */
 exports.create = create;

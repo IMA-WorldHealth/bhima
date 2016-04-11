@@ -9,7 +9,7 @@ var helpers = require('./helpers');
 helpers.configure(chai);
 
 /** The /sales API endpoint */
-describe('The /sales API', function () {
+describe.only('The /sales API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login at the start of the test */
@@ -84,6 +84,8 @@ describe('The /sales API', function () {
   // NOTE : Temporary skips while we are sorting the posting journal routes out
 
   it('POST /sales will record a valid patient invoice and return success from the posting journal', function () {
+    this.timeout(3000);
+    
     return agent.post('/sales')
       .send({ sale : mockSale })
       .then(function (res) {
