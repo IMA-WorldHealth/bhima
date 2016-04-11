@@ -9,7 +9,7 @@ var helpers = require('./helpers');
 helpers.configure(chai);
 
 /** The /sales API endpoint */
-describe.only('The /sales API', function () {
+describe('The /sales API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login at the start of the test */
