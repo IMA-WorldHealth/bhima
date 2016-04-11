@@ -60,7 +60,9 @@ function remove(req, res, next) {
   'use strict';
 
   var query = 'DELETE FROM depot WHERE uuid = ?';
-  db.exec(query, [req.params.uuid])
+  const uid = db.bid(req.params.uuid);
+
+  db.exec(query, [uid])
   .then(function () {
     res.status(204).send({});
   })
