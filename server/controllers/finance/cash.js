@@ -42,7 +42,7 @@ exports.debitNote = debitNote;
 
 // looks up a single cash record and associated cash_items
 // sets the "canceled" flag if a cash_discard record exists.
-function lookupCashRecord(id, codes) {
+function lookupCashRecord(id) {
   'use strict';
 
   let record;
@@ -55,33 +55,30 @@ function lookupCashRecord(id, codes) {
     'WHERE cash.uuid = ?;';
 
   const cashItemsRecordSql =
-    'SELECT BUID(cash_item.uuid) AS uuid, cash_item.amount, cash_item.invoice_uuid ' +
+    'SELECT BUID(cash_item.uuid) AS uuid, cash_item.amount, BUID(cash_item.invoice_uuid) as invoice_uuid ' +
     'FROM cash_item WHERE cash_item.cash_uuid = ?;';
 
   const cashDiscardRecordSql =
     'SELECT BUID(cash_uuid) AS uuid FROM cash_discard WHERE cash_uuid = ?;';
 
-  // parse the uuid into a buffer
-  const buffer = db.bid(id);
-
-  return db.exec(cashRecordSql, [ buffer ])
+  return db.exec(cashRecordSql, [ id ])
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw new NotFound('No cash record by uuid: ?'.replace('?', uuid));
+      throw new NotFound(`No cash record by uuid: ${uuid.unparse(id)}`);
     }
 
     // store the record for return
     record = rows[0];
 
-    return db.exec(cashItemsRecordSql, [ buffer ]);
+    return db.exec(cashItemsRecordSql, id);
   })
   .then(function (rows) {
 
     // bind the cash items to the "items" property and return
     record.items = rows;
 
-    return db.exec(cashDiscardRecordSql, [ buffer ]);
+    return db.exec(cashDiscardRecordSql, id);
   })
   .then(function (rows) {
 
@@ -131,9 +128,9 @@ function list(req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  const id = req.params.uuid;
+  const uid = db.bid(req.params.uuid);
 
-  lookupCashRecord(id, req.codes)
+  lookupCashRecord(uid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -154,14 +151,15 @@ function create(req, res, next) {
   let data = req.body.payment;
 
   // generate a UUID if it not provided.
-  const id = data.uuid || uuid.v4();
-
-  // convert the uuid into a binary buffer
-  data.uuid = db.bid(id);
+  data.uuid = db.bid(data.uuid || uuid.v4());
 
   // trust the server's session info over the client's
   data.project_id = req.session.project.id;
   data.user_id = req.session.user.id;
+
+  if (data.debtor_uuid) {
+    data.debtor_uuid = db.bid(data.debtor_uuid);
+  }
 
   // format date for insertion into database
   if (data.date) { data.date = new Date(data.date); }
@@ -172,16 +170,15 @@ function create(req, res, next) {
   // remove the cash items so that the SQL query is properly formatted
   delete data.items;
 
-  // if items exist, tranform them into an array of arrays for db formatting
+  // if items exist, transform them into an array of arrays for db formatting
   if (items) {
     items = items.map(function (item) {
-      item.uuid = item.uuid || uuid.v4();
       item.cash_uuid = data.uuid;
       return [
-        db.bid(item.uuid),
+        db.bid(item.uuid || uuid.v4()),
         item.cash_uuid,
         item.amount,
-        item.sale_uuid
+        db.bid(item.sale_uuid)
       ];
     });
   }
@@ -212,7 +209,7 @@ function create(req, res, next) {
   transaction.execute()
   .then(function () {
     res.status(201).json({
-      uuid : id
+      uuid : uuid.unparse(data.uuid)
     });
   })
   .catch(next)
@@ -231,8 +228,8 @@ function create(req, res, next) {
 function update(req, res, next) {
   'use strict';
 
-  const id = req.params.uuid;
-  const updateSql = 'UPDATE cash SET ? WHERE uuid = ?;';
+  const uid = db.bid(req.params.uuid);
+  const sql = 'UPDATE cash SET ? WHERE uuid = ?;';
 
   // protected database fields that are unavailable for updates.
   const protect = [
@@ -259,21 +256,21 @@ function update(req, res, next) {
   if (req.body.date) { req.body.date = new Date(req.body.date); }
 
   // if checks pass, we are free to continue with our updates to the db
-  lookupCashRecord(id, req.codes)
+  lookupCashRecord(uid)
   .then(function (record) {
 
     // if we get here, we know we have a cash record by this UUID.
     // we can try to update it.
-    return db.exec(updateSql, [ req.body, db.bid(req.params.uuid) ]);
+    return db.exec(sql, [ req.body, uid ]);
   })
   .then(function () {
 
     // fetch the changed object from the database
-    return lookupCashRecord(id);
+    return lookupCashRecord(uid);
   })
   .then(function (record) {
 
-    // all updates completed successfull, return full object to client
+    // all updates completed successfully, return full object to client
     res.status(200).json(record);
   })
   .catch(next)
@@ -309,7 +306,7 @@ function reference(req, res, next) {
   db.exec(sql, [ ref ])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new NotFound('No cash record with reference: ?'.replace('?', ref));
+      throw new NotFound(`No cash record with reference: ${ref}`);
     }
 
     // references should be unique - return the first one

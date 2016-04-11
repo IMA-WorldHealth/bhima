@@ -65,7 +65,7 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $translate,
   function submit(form) {
 
     // if the form is not valid do nothing
-    if (form.$invalid) { return ; }
+    if (form.$invalid) { return; }
 
     var creation = (vm.view === 'create');
     var patientGroup = angular.copy(vm.patientGroup);

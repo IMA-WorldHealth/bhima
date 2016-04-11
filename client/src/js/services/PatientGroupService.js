@@ -26,6 +26,12 @@ function PatientGroupService($http, util) {
 
   // create a patient group
   function create(patientGroup) {
+
+    // make sure we are not submitting empty strings for price lists!
+    if (patientGroup.price_list_uuid === '') {
+      delete patientGroup.price_list_uuid;
+    }
+
     return $http.post(baseUrl, patientGroup)
       .then(util.unwrapHttpResponse);
   }
@@ -33,6 +39,12 @@ function PatientGroupService($http, util) {
   // update a patient group
   function update(uuid, patientGroup) {
     delete patientGroup.uuid;
+
+    // make sure we are not submitting empty strings for price lists!
+    if (patientGroup.price_list_uuid === '') {
+      delete patientGroup.price_list_uuid;
+    }
+
     return $http.put(baseUrl + uuid, patientGroup)
       .then(util.unwrapHttpResponse);
   }

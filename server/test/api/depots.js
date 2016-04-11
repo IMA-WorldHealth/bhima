@@ -1,5 +1,4 @@
 /* jshint expr: true */
-/* describe, it, beforeEach */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -9,19 +8,17 @@ var helpers = require('./helpers');
 var uuid    = require('node-uuid');
 helpers.configure(chai);
 
-
 /**
 * The /depots API endpoint
 *
 * @desc This test suit is about the crud operation with depots
-*
 */
 describe('The /depots API endpoint :: ', function () {
   'use strict';
 
   var agent = chai.request.agent(helpers.baseUrl);
 
-  /** login before each request */
+  /** login before test suite */
   before(helpers.login(agent));
 
   /** new depot object */
@@ -59,6 +56,7 @@ describe('The /depots API endpoint :: ', function () {
     .send(newDepot)
     .then(function (res) {
       helpers.api.created(res);
+      expect(res.body.uuid).to.equal(newDepot.uuid);
     })
     .catch(helpers.handler);
   });

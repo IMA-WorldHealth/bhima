@@ -1,53 +1,55 @@
 var q = require('q');
 var db = require('./../../lib/db');
-var uuid = require('./../../lib/guid');
-var journal = require('./journal');
+const uuid = require('node-uuid');
 
-/** 
+/**
  * Utility method to ensure purchase items lines reference purchase.
- * @param {Object} purchaseItems - An Array of all purchase items to be written 
+ * @param {Object} purchaseItems - An Array of all purchase items to be written
  * @param {string} purchaseUuid - UUID of referenced purchase order
  * @returns {Object} An Array of all purchases items with guaranteed UUIDs and Purchase orders references
  */
-function linkPurchaseItems(purchaseItems, purchaseUuid) { 
-  return purchaseItems.map(function (purchaseItem) { 
-     
-    purchaseItem.uuid = purchaseItem.uuid || uuid();
+function linkPurchaseItems(purchaseItems, purchaseUuid) {
+  return purchaseItems.map(function (purchaseItem) {
+
+    purchaseItem.uuid = db.bid(purchaseItem.uuid || uuid());
     purchaseItem.purchase_uuid = purchaseUuid;
-   
-    // Collapse sale item into Array to be inserted into database
-    return Object.keys(purchaseItem).map(function (key) { 
+
+    purchaseItem.inventory_uuid = db.bid(purchaseItem.inventory_uuid);
+
+    // Collapse sale item into array to be inserted into database
+    return Object.keys(purchaseItem).map(function (key) {
       return purchaseItem[key];
     });
   });
 }
 
 // looks up a single purchase record and associated purchase_items
-function lookupPurchaseOrder(uuid, codes) {
+function lookupPurchaseOrder(uid, codes) {
   'use strict';
 
   var record;
 
   var sqlPurchase =
-    'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
-    'creditor.text, employee.name, employee.prenom, user.first, user.last, ' +
-    'purchase.creditor_uuid, purchase.timestamp, purchase.note, purchase.paid_uuid, purchase.confirmed, purchase.closed, ' +
-    'purchase.is_direct, purchase.is_donation, purchase.emitter_id, purchase.is_authorized, purchase.is_validate, ' +
-    'purchase.confirmed_by, purchase.is_integration, purchase.purchaser_id, purchase.receiver_id ' +
-    'FROM purchase ' +
-    'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
-    'JOIN employee ON employee.id = purchase.purchaser_id ' +
-    'JOIN user ON user.id = purchase.emitter_id ' +
-    'WHERE purchase.uuid = ? ;';
+    `SELECT BUID(purchase.uuid) as uuid, purchase.reference, purchase.cost, purchase.discount,
+      purchase.purchase_date, purchase.paid, creditor.text, employee.name, employee.prenom,user.first, user.last,
+      BUID(purchase.creditor_uuid) as creditor_uuid, purchase.timestamp, purchase.note,
+      BUID(purchase.paid_uuid) as paid_uuid, purchase.confirmed, purchase.closed,
+      purchase.is_direct, purchase.is_donation, purchase.emitter_id, purchase.is_authorized, purchase.is_validate,
+      purchase.confirmed_by, purchase.is_integration, purchase.purchaser_id, purchase.receiver_id
+    FROM purchase
+    JOIN creditor ON creditor.uuid = purchase.creditor_uuid
+    JOIN employee ON employee.id = purchase.purchaser_id
+    JOIN user ON user.id = purchase.emitter_id
+    WHERE purchase.uuid = ?;`;
 
   var sqlPurchaseItem =
-    'SELECT purchase_item.purchase_uuid, purchase_item.uuid, purchase_item.quantity, purchase_item.unit_price, ' +
-    'purchase_item.total, inventory.text ' +
-    'FROM purchase_item ' +
-    'JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid ' +
-    'WHERE purchase_item.purchase_uuid = ? ';  
+    `SELECT BUID(purchase_item.purchase_uuid) as purchase_uuid, BUID(purchase_item.uuid) as uuid,
+      purchase_item.quantity, purchase_item.unit_price, purchase_item.total, inventory.text
+    FROM purchase_item
+    JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
+    WHERE purchase_item.purchase_uuid = ?`;
 
-  return db.exec(sqlPurchase, [uuid])
+  return db.exec(sqlPurchase, [uid])
   .then(function (rows) {
 
     if (rows.length === 0) {
@@ -57,7 +59,7 @@ function lookupPurchaseOrder(uuid, codes) {
     // store the record for return
     record = rows[0];
 
-    return db.exec(sqlPurchaseItem, [uuid]);
+    return db.exec(sqlPurchaseItem, [uid]);
   })
   .then(function (rows) {
 
@@ -68,40 +70,57 @@ function lookupPurchaseOrder(uuid, codes) {
   });
 }
 
+// convert uuids and dates for insertion into database
+function convert(data) {
+
+  if (data.purchase_date) {
+    data.purchase_date = new Date(data.purchase_date);
+  }
+
+  if (data.creditor_uuid) {
+    data.creditor_uuid = db.bid(data.creditor_uuid);
+  }
+
+  if (data.paid_uuid) {
+    data.paid_uuid = db.bid(data.paid_uuid);
+  }
+
+  return data;
+}
+
 
 /**
-* Create a Purchase Order in the database
-*
-**/
-
+ * Create a Purchase Order in the database
+ */
 function create (req, res, next) {
   'use strict';
 
   var purchase = req.body;
-  var transaction;  
+  var transaction;
   var purchaseOrder = purchase.purchase_order;
   var purchaseItem =  purchase.purchase_item;
 
-
-  // Reject invalid parameters
-  if (!purchaseOrder || !purchaseItem) { 
+  // reject invalid parameters
+  if (!purchaseOrder || !purchaseItem) {
     res.status(400).json({
-      code : 'ERROR.ERR_MISSING_INFO', 
+      code : 'ERROR.ERR_MISSING_INFO',
       reason : 'A valid purchase details and purchase items must be provided under the attributes `purchaseOrder` and `purchaseItem`'
     });
     return;
   }
 
-  if(purchaseOrder.purchase_date){
-    purchaseOrder.purchase_date = new Date(purchaseOrder.purchase_date);
-  }
-  
+  // default to a new uuid if the client did not provide one
+  purchaseOrder.uuid = db.bid(purchaseOrder.uuid || uuid.v4());
+
+  purchaseOrder = convert(purchaseOrder);
+
   var sqlPurchase = 'INSERT INTO purchase SET ?';
 
   var sqlPurchaseItem = 'INSERT INTO purchase_item (uuid, inventory_uuid, quantity, unit_price, ' +
-    'total, purchase_uuid) VALUES ?'; 
+    'total, purchase_uuid) VALUES ?';
 
   var dataPurchaseItem = linkPurchaseItems(purchase.purchase_item, purchaseOrder.uuid);
+
 
   transaction = db.transaction();
 
@@ -111,7 +130,7 @@ function create (req, res, next) {
 
   transaction.execute()
     .then(function (results) {
-      res.status(201).json({ uuid : purchaseOrder.uuid });
+      res.status(201).json({ uuid : uuid.unparse(purchaseOrder.uuid) });
     })
     .catch(next)
     .done();
@@ -128,24 +147,27 @@ function list (req, res, next) {
   var sql;
 
   sql =
-    'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
-    'creditor.text, employee.name, employee.prenom, user.first, user.last ' +
-    'FROM purchase ' +
-    'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
-    'JOIN employee ON employee.id = purchase.purchaser_id ' +
-    'JOIN user ON user.id = purchase.emitter_id; ';
+    `SELECT BUID(purchase.uuid) as uuid, purchase.reference, purchase.cost, purchase.discount,
+      purchase.purchase_date, purchase.paid, creditor.text, employee.name, employee.prenom,
+      user.first, user.last
+    FROM purchase
+    JOIN creditor ON creditor.uuid = purchase.creditor_uuid
+    JOIN employee ON employee.id = purchase.purchaser_id
+    JOIN user ON user.id = purchase.emitter_id;`;
 
+  /** @todo - this should be 'detailed' */
   if (req.query.complete === '1') {
-    sql =  
-      'SELECT purchase.uuid, purchase.reference, purchase.cost, purchase.discount, purchase.purchase_date, purchase.paid, ' +
-      'creditor.text, employee.name, employee.prenom, user.first, user.last, ' +
-      'purchase.creditor_uuid, purchase.timestamp, purchase.note, purchase.paid_uuid, purchase.confirmed, purchase.closed, ' +
-      'purchase.is_direct, purchase.is_donation, purchase.emitter_id, purchase.is_authorized, purchase.is_validate, ' +
-      'purchase.confirmed_by, purchase.is_integration, purchase.purchaser_id, purchase.receiver_id ' +
-      'FROM purchase ' +
-      'JOIN creditor ON creditor.uuid = purchase.creditor_uuid ' +
-      'JOIN employee ON employee.id = purchase.purchaser_id ' +
-      'JOIN user ON user.id = purchase.emitter_id; ';
+    sql =
+      `SELECT BUID(purchase.uuid) as uuid, purchase.reference, purchase.cost, purchase.discount,
+        purchase.purchase_date, purchase.paid, creditor.text, employee.name, employee.prenom,
+        user.first, user.last, BUID(purchase.creditor_uuid) as creditor_uuid, purchase.timestamp,
+        purchase.note, purchase.paid_uuid, purchase.confirmed, purchase.closed,
+        purchase.is_direct, purchase.is_donation, purchase.emitter_id, purchase.is_authorized, purchase.is_validate,
+        purchase.confirmed_by, purchase.is_integration, purchase.purchaser_id, purchase.receiver_id
+      FROM purchase
+      JOIN creditor ON creditor.uuid = purchase.creditor_uuid
+      JOIN employee ON employee.id = purchase.purchaser_id
+      JOIN user ON user.id = purchase.emitter_id;`;
   }
 
   db.exec(sql)
@@ -159,9 +181,9 @@ function list (req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  var uuid = req.params.uuid;
+  var uid = db.bid(req.params.uuid);
 
-  lookupPurchaseOrder(uuid, req.codes)
+  lookupPurchaseOrder(uid, req.codes)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -174,21 +196,18 @@ function detail(req, res, next) {
 function update(req, res, next) {
   'use strict';
 
-  var sql;
-  var uuid = req.params.uuid;
+  var uid = db.bid(req.params.uuid);
 
-  sql =
+  var sql =
     'UPDATE purchase SET ? WHERE uuid = ?;';
 
-  db.exec(sql, [req.body, uuid])
+  db.exec(sql, [req.body, uid])
   .then(function () {
 
     // fetch the changed object from the database
-    return lookupPurchaseOrder(uuid, req.codes);
+    return lookupPurchaseOrder(uid, req.codes);
   })
   .then(function (record) {
-
-    // all updates completed successfull, return full object to client
     res.status(200).json(record);
   })
   .catch(next)
@@ -206,5 +225,5 @@ exports.list = list;
 // Read a specific purchase order
 exports.detail = detail;
 
-//Update properties of a purchase Order 
-exports.update = update; 
+//Update properties of a purchase Order
+exports.update = update;

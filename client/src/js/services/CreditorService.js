@@ -10,7 +10,7 @@ CreditorService.$inject = ['$http', 'util'];
 */
 function CreditorService($http, util) {
   var service = this;
-  var baseUrl = '/finance/creditors/';
+  var baseUrl = '/creditors/';
 
   /** Exposed method read */
   service.read = read;

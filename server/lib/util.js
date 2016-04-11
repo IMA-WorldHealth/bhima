@@ -19,20 +19,19 @@ module.exports.take = take;
 /**
 * @function queryCondition
 * @description build query string conditions
-* @param {string} query The sql query
-* @param {object} requestQuery The req.query object
+* @param {object} params - The req.query object
 * @return {object} The object which contains the query and conditions
 */
-function queryCondition(query, requestQuery) {
-  var criteria, conditions = [];
+function queryCondition(sql, params) {
+  var conditions = [];
 
-  criteria = Object.keys(requestQuery).map(function (item) {
-    conditions = conditions.concat(item, requestQuery[item]);
+  var criteria = Object.keys(params).map(function (item) {
+    conditions = conditions.concat(item, params[item]);
     return '?? = ?';
   }).join(' AND ');
 
-  query += (Object.keys(requestQuery).length > 0) ? 'WHERE ' + criteria : '';
-  return { query : query, conditions : conditions };
+  sql += (Object.keys(params).length > 0) ? 'WHERE ' + criteria : '';
+  return { query: sql, conditions : conditions };
 }
 
 /** @deprecated toMysqlDate - Please use db.js's native date parsing */

@@ -2,14 +2,14 @@
  * Patient Invoice API Controller
  *.@module controllers/finance/patientInvoice
  *
- * @todo (required) Major bug - Sale items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
+ * @todo (required) major bug - Sale items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
  * @todo GET /sales/patient/:uuid - retrieve all patient invoices for a specific patient
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructre
  * @todo Credit note logic pending on clear design
  */
 var q    = require('q');
 var db   = require('../../lib/db');
-var uuid = require('node-uuid');
+const uuid = require('node-uuid');
 var _    = require('lodash');
 var util = require('../../lib/util');
 
@@ -39,17 +39,15 @@ function list(req, res, next) {
   var saleListQuery;
 
   saleListQuery =
-    'SELECT CONCAT(project.abbr, sale.reference) AS reference, sale.uuid, cost,' +
-      'sale.debitor_uuid, user_id, date, is_distributable ' +
+    'SELECT CONCAT(project.abbr, sale.reference) AS reference, BUID(sale.uuid) as uuid, cost,' +
+      'BUID(sale.debitor_uuid) as debitor_uuid, user_id, date, is_distributable ' +
     'FROM sale ' +
       'LEFT JOIN patient ON sale.debitor_uuid = patient.debitor_uuid ' +
       'JOIN project ON sale.project_id = project.id;';
 
   db.exec(saleListQuery)
-    .then(function (result) {
-      var sales = result;
-
-      res.status(200).json(sales);
+    .then(function (rows) {
+      res.status(200).json(rows);
     })
     .catch(next)
     .done();
@@ -70,8 +68,8 @@ function lookupSale(uid, codes) {
   var record;
 
   var saleDetailQuery =
-    'SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
-      'sale.debitor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debitor_name, ' +
+    'SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
+      'BUID(sale.debitor_uuid) AS debitor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debitor_name, ' +
       'user_id, discount, date, sale.is_distributable ' +
     'FROM sale ' +
     'LEFT JOIN patient ON patient.debitor_uuid = sale.debitor_uuid ' +
@@ -79,7 +77,7 @@ function lookupSale(uid, codes) {
     'WHERE sale.uuid = ?';
 
   var saleItemsQuery =
-    'SELECT sale_item.uuid, sale_item.quantity, sale_item.inventory_price, ' +
+    'SELECT BUID(sale_item.uuid) as uuid, sale_item.quantity, sale_item.inventory_price, ' +
       'sale_item.transaction_price, inventory.code, inventory.text, inventory.consumable ' +
     'FROM sale_item ' +
     'LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid ' +
@@ -104,7 +102,7 @@ function lookupSale(uid, codes) {
  * @todo Read the balance remaining on the debtors account given the sale as an auxillary step
  */
 function details(req, res, next) {
-  var uid = req.params.uuid;
+  var uid = db.bid(req.params.uuid);
 
   lookupSale(uid, req.codes)
   .then(function (record) {
@@ -137,11 +135,16 @@ function create(req, res, next) {
   delete sale.subsidies;
 
   // provide UUID if the client has not specified
-  sale.uuid = sale.uuid || uuid.v4();
+  sale.uuid = db.bid(sale.uuid || uuid.v4());
 
   // make sure that the dates have been properly transformed before insert
   if (sale.date) {
     sale.date = new Date(sale.date);
+  }
+
+  /** @todo - abstract this into a generic "convert" method */
+  if (sale.debitor_uuid) {
+    sale.debitor_uuid = db.bid(sale.debitor_uuid);
   }
 
   // implicitly provide user information based on user session
@@ -149,8 +152,11 @@ function create(req, res, next) {
 
   // make sure that sale items have their uuids
   items.forEach(function (item) {
-    item.uuid = item.uuid || uuid.v4();
+    item.uuid = db.bid(item.uuid || uuid.v4());
     item.sale_uuid = sale.uuid;
+
+    // should every item have an inventory uuid?
+    item.inventory_uuid = db.bid(item.inventory_uuid);
 
     // FIXME -- where is this supposed to have been defined?
     item.debit = 0;
@@ -187,7 +193,7 @@ function create(req, res, next) {
     })
     .then(function (results) {
       res.status(201).json({
-        uuid : sale.uuid
+        uuid : uuid.unparse(sale.uuid)
       });
     })
     .catch(next)
@@ -200,14 +206,13 @@ function create(req, res, next) {
  * interface. This will be replaced with the new server journal interface
  * implementation.
  * @returns {Object} Promise object to be fulfilled on journal posting
+ *
+ * @todo/@fixme - make this work!
  */
 function postSaleRecord(saleUuid, caution, userId) {
   var deferred = q.defer();
 
   journal.request('sale', saleUuid, userId, function (error, result) {
-    if (error) {
-      return deferred.reject(error);
-    }
     return deferred.resolve(result);
   }, caution);
   return deferred.promise;
@@ -222,13 +227,21 @@ function search(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT sale.uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference, ' +
-      'sale.cost, sale.debitor_uuid, sale.user_id, sale.discount, ' +
+    'SELECT BUID(sale.uuid) as uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference, ' +
+      'sale.cost, BUID(sale.debitor_uuid) as debitor_uuid, sale.user_id, sale.discount, ' +
       'sale.date, sale.is_distributable ' +
     'FROM sale JOIN project ON project.id = sale.project_id ' +
     'WHERE ';
 
   var conditions = [];
+
+  if (req.query.debitor_uuid) {
+    req.query.debitor_uuid = db.bid(req.query.debitor_uuid);
+  }
+
+  if (req.query.uuid) {
+    req.query.uuid = db.bid(req.query.uuid);
+  }
 
   // look through the query string and template their key/values to the SQL query
   var tmpl = Object.keys(req.query).map(function (key) {
@@ -270,7 +283,7 @@ function reference(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT s.uuid FROM (' +
+    'SELECT BUID(s.uuid) as uuid FROM (' +
       'SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference ' +
       'FROM sale JOIN project ON sale.project_id = project.id ' +
     ')s WHERE s.reference = ?;';

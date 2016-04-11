@@ -13,6 +13,7 @@ DB_NAME="bhima_test"
 mysql -u $DB_USER -p$DB_PASS -e "DROP DATABASE bhima_test;"
 mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE bhima_test;"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/procedures.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql
 
 echo "Building server ...."
