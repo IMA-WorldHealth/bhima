@@ -344,6 +344,7 @@ exports.configure = function (app) {
   app.get('/depots/:uuid', depots.detail);
   app.put('/depots/:uuid', depots.update);
   app.post('/depots', depots.create);
+  app.delete('/depots/:uuid', depots.remove);
 
   /* Depot distributions routes */
   app.get('/depots/:depotId/distributions', depots.listDistributions);

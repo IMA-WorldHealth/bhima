@@ -54,6 +54,14 @@ describe('The /depots API endpoint :: ', function () {
     is_warehouse : 1
   };
 
+  /** removable depot */
+  var removableDepot = {
+    uuid : uuid.v4(),
+    text : 'Removable Depot',
+    enterprise_id : 1,
+    is_warehouse : 1
+  };
+
   it('POST /depots create a new depot in the database', function () {
     return agent.post('/depots')
     .send(newDepot)
@@ -101,6 +109,23 @@ describe('The /depots API endpoint :: ', function () {
     return agent.get('/depots')
     .then(function (res) {
       helpers.api.listed(res, 2);
+    })
+    .catch(helpers.handler);
+  });
+
+  it('POST /depots create a removable depot in the database', function () {
+    return agent.post('/depots')
+    .send(removableDepot)
+    .then(function (res) {
+      helpers.api.created(res);
+    })
+    .catch(helpers.handler);
+  });
+
+  it('DELETE /depots should delete an existing depot', function () {
+    return agent.delete('/depots/' + removableDepot.uuid)
+    .then(function (res) {
+      helpers.api.deleted(res);
     })
     .catch(helpers.handler);
   });

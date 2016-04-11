@@ -20,7 +20,7 @@ describe('Depots management tests suit :: ', function () {
   };
 
   var updateDepot = {
-    text : ' => E2E_updated_depot',
+    text : 'E2E_updated_depot',
     is_warehouse : 1
   };
 
@@ -38,7 +38,7 @@ describe('Depots management tests suit :: ', function () {
 
   it('successfully edits a depot', function () {
     element(by.name('depot-' + depot.text )).click();
-    element(by.model('DepotCtrl.depot.text')).sendKeys(updateDepot.text);
+    FormUtils.input('DepotCtrl.depot.text', updateDepot.text);
     element(by.model('DepotCtrl.depot.is_warehouse')).click();
     FormUtils.buttons.submit();
     FormUtils.exists(by.id('update_success'), true);
@@ -49,6 +49,12 @@ describe('Depots management tests suit :: ', function () {
     FormUtils.input('DepotCtrl.depot.text', '');
     FormUtils.buttons.submit();
     FormUtils.exists(by.id('create_success'), false);
+  });
+
+  it('successfully delete a depot', function () {
+    element(by.name('delete-' + updateDepot.text )).click();
+    FormUtils.buttons.submit();
+    FormUtils.exists(by.id('delete_success'), true);
   });
 
 });
