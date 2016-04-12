@@ -180,7 +180,7 @@ function AccountService($http, util, sessionService) {
     var accountClean = {
       enterprise_id : sessionService.enterprise.id,
       type_id : account.type_id,
-      label : account.title,
+      label : account.label,
       parent : account.parent,
       locked : account.locked,
       cc_id : account.cc_id,
