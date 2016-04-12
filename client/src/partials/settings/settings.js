@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('settings', SettingsController);
 
 SettingsController.$inject = [
-  '$http', '$routeParams', '$location', 'LanguageService', 'SessionService'
+  '$state', 'LanguageService', 'SessionService'
 ];
 
 /**
@@ -10,30 +10,25 @@ SettingsController.$inject = [
  *
  * The settings page allows a user to control the local application settings,
  * such as display language.
+ *
+ * @constructor
  */
-function SettingsController($http, $routeParams, $location, Languages, Session) {
+function SettingsController($state, Languages, Session) {
   var vm = this;
 
   // the url to return to (using the back button)
-  vm.url = $routeParams.url || '';
+  vm.previous = $state.params.previous;
 
   // load settings from services
   vm.settings = { language : Languages.key };
+
+  // bind methods/services to the view
+  vm.languageService = Languages;
+  vm.logout = Session.logout;
 
   /** bind the language service for use in the view */
   Languages.read()
   .then(function (languages) {
     vm.languages = languages;
   });
-
-  vm.languageService = Languages;
-
-  /** returns a user to the previous url */
-  vm.back = back;
-
-  function back() {
-    $location.url(vm.url);
-  }
-
-  vm.logout = Session.logout;
 }

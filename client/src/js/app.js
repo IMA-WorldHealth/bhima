@@ -49,7 +49,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl: 'partials/exchange/exchange.html'
   })
   .state('settings', {
-    url : '/settings',
+    url : '/settings?previous',
     controller: 'settings as SettingsCtrl',
     templateUrl: 'partials/settings/settings.html'
   })
