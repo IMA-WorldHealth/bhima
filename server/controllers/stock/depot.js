@@ -8,7 +8,8 @@
 
 var uuid = require('node-uuid'),
     db = require('../../lib/db'),
-    distributions = require('./depots/distributions');
+    distributions = require('./depots/distributions'),
+	NotFound = require('../../lib/errors/NotFound');	
 
 /** expose depots routes */
 exports.list   = list;
@@ -67,7 +68,9 @@ function update(req, res, next) {
   db.exec(query, [req.body, uid])
   .then(selectDepot)
   .then(function (rows) {
-    if (!rows.length) { return next(new req.codes.ERR_NOT_FOUND()); }
+    if (!rows.length) { 
+	  throw new NotFound(`Could not find a depot with uuid ${uuid.unparse(uid)}`);
+	}
     res.status(200).send(rows);
   })
   .catch(next)

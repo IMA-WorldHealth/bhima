@@ -5,6 +5,7 @@
  */
 var db = require('../../lib/db');
 var uuid = require('node-uuid');
+var NotFound = require('../../lib/errors/NotFound');
 
 // GET /Grade
 function lookupGrade(uid, codes) {
@@ -19,7 +20,7 @@ function lookupGrade(uid, codes) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a grade with uuid ${uuid.unparse(uid)}`);
     }
 
     return rows[0];
@@ -125,7 +126,7 @@ function del(req, res, next) {
 
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a Grade with uuid ${db.bid(req.params.uuid)}`);
     }
 
     res.status(204).json();

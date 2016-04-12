@@ -1,5 +1,6 @@
 var db = require('../lib/db');
 var uuid = require('node-uuid');
+var NotFound = require('../lib/errors/NotFound');
 
 /* The Location API
 *
@@ -203,7 +204,7 @@ function lookupVillage(uuid, codes) {
   db.exec(sql, [uuid])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a village with uuid ${uuid}`);
     }
 
     return rows[0];
@@ -224,7 +225,7 @@ function lookupSector(uuid, codes) {
   db.exec(sql, [uuid])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a sector with uuid ${uuid}`);
     }
 
     return rows[0];
@@ -243,7 +244,7 @@ function lookupProvince(uuid, codes) {
   db.exec(sql, [uuid])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a province with uuid ${uuid}`);
     }
 
     return rows[0];
@@ -261,7 +262,7 @@ function lookupCountry(uuid, codes) {
   db.exec(sql, [uuid])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a country with uuid ${uuid}`);
     }
 
     return rows[0];
@@ -295,7 +296,7 @@ exports.detail = function detail(req, res, next) {
   db.exec(sql, [ uid ])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a location with id ${id}`);
     }
 
     res.status(200).json(rows[0]);

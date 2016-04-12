@@ -16,6 +16,7 @@
 
 var db = require('./../../lib/db');
 var uuid = require('node-uuid');
+var NotFound    = require('./../../lib/errors/NotFound');
 
 /**
  * Preprocess INSERT/UPDATE data to convert uuids into binary uuids, as well as
@@ -193,7 +194,7 @@ function lookupEmployee(id, codes) {
   return db.exec(sql, [id])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a Employee with id ${id}`);
     }
 
     return rows[0];
@@ -282,7 +283,7 @@ exports.update = function update(req, res, next) {
   transaction.execute()
     .then(function (results) {
       if (!results[2].affectedRows) {
-        throw new req.codes.ERR_NOT_FOUND();
+        throw new NotFound(`Could not find a Employee with id ${req.params.id}`);
       }
 
       return lookupEmployee(req.params.id, req.codes);

@@ -7,6 +7,7 @@
  * @requires lib/db
  */
 
+var NotFound = require('../../lib/errors/NotFound'); 
 const db = require('../../lib/db');
 
 /**
@@ -47,7 +48,7 @@ function lookupDiscount(id, codes) {
 
     // if no matches in the database, throw a 404
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a discount with id ${id}`);
     }
 
     // return a single record

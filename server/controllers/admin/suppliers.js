@@ -6,6 +6,7 @@
 
 const db = require('../../lib/db');
 const uuid = require('node-uuid');
+var NotFound = require('../../lib/errors/NotFound');
 
 function lookupSupplier(uuid, codes) {
   'use strict';
@@ -23,7 +24,7 @@ function lookupSupplier(uuid, codes) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a Supplier with uuid ${uuid}`);
     }
 
     return rows[0];

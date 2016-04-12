@@ -6,6 +6,7 @@
 * supported by the application.
 */
 var db = require('../../lib/db');
+var NotFound = require('../../lib/errors/NotFound');
 
 /*
 * TODO - PROPOSAL: rename cash_box to cashbox in the database.  Easier for everything
@@ -173,7 +174,7 @@ exports.delete = function del(req, res, next) {
   db.exec(sql, [req.params.id])
   .then(function (rows) {
     if (!rows.affectedRows) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a cash box with id ${req.params.id}`);
     }
 
     res.status(204).json();
@@ -219,7 +220,7 @@ exports.currencies.details = function detailCurrencies(req, res, next) {
   db.exec(sql, [req.params.id, req.params.currencyId])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a cash box account currency with id ${req.params.currencyId}`);
     }
 
     res.status(200).json(rows[0]);

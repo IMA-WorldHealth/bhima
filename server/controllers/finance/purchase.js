@@ -1,5 +1,6 @@
 var q = require('q');
 var db = require('./../../lib/db');
+var NotFound = require('./../../lib/errors/NotFound');
 const uuid = require('node-uuid');
 
 /**
@@ -53,7 +54,7 @@ function lookupPurchaseOrder(uid, codes) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a purchase with uuid ${uuid.unparse(uid)}`);
     }
 
     // store the record for return
