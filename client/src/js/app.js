@@ -316,7 +316,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   .state('journal', {
     url : '/journal',
     controller : 'JournalController as JournalCtrl',
-    templateUrl : 'partials/2.X-journal/journal.html'
+    templateUrl : 'partials/journal/journal.html'
   })
 
   /* debtors routes */
