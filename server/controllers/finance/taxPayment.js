@@ -1,5 +1,5 @@
 var parser = require('./../../lib/parser');
-var uuid = require('./../../lib/guid');
+var uuid = require('node-uuid');
 var db = require('./../../lib/db');
 var sanitize = require('./../../lib/sanitize');
 var journal = require('./journal');

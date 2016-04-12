@@ -16,7 +16,7 @@
 */
 
 var db      = require('../../../lib/db');
-var uuid    = require('../../../lib/guid'),
+var uuid    = require('node-uuid'),
     q       = require('q'),
     journal = require('../../finance/journal');
 
