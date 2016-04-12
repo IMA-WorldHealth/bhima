@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('JournalGroupingService', JournalGroupingService);
 
 JournalGroupingService.$inject = [
-  'uiGridGroupingConstants', '$filter', 'SessionService'
+  'uiGridGroupingConstants', '$filter', 'SessionService', '$timeout'
 ];
 
 /**
@@ -12,7 +12,7 @@ JournalGroupingService.$inject = [
  * client side posting journal module. It also provides a number of helper
  * methods that can be used to provide custom transaction grouping.
  */
-function JournalGroupingService(uiGridGroupingConstants, $filter, Session) {
+function JournalGroupingService(uiGridGroupingConstants, $filter, Session, $timeout) {
   var service = this;
 
   // variable used to track and share the current grids API object
@@ -67,6 +67,21 @@ function JournalGroupingService(uiGridGroupingConstants, $filter, Session) {
       if (!initialised) {
         gridApi.treeBase.expandAllRows();
         initialised = true;
+
+        /**
+         * default to grouping by transaction.
+         *
+         * $timeout hacks because no gridRendered() event that reliably checks if both
+         * data and gridOptions exist.  For more discussion, see these threads:
+         *  https://github.com/angular-ui/ui-grid/issues/2038
+         *  https://github.com/angular-ui/ui-grid/issues/4027
+         *
+         * Note that we are passing `false` as the third parameter to prevent extra
+         * $dirty checking.
+         *
+         * @todo - ensure this method works with asynchronous grid loading
+         */
+        $timeout(groupByTransaction, 0, false);
       }
     });
   }
@@ -116,7 +131,7 @@ function JournalGroupingService(uiGridGroupingConstants, $filter, Session) {
       }
     };
 
-    /** @todo expose a succinct API for the service, if necessary */
+    // return service API as needed
     return {
       groupByTransaction : groupByTransaction
     };

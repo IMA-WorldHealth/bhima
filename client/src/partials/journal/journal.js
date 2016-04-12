@@ -39,14 +39,14 @@ function JournalController(Transactions, Sorting, Grouping, Pagination) {
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {};
 
+  // bind the transactions service to populate the grid component
+  vm.gridOptions.data = Transactions.list.data;
+
   // Initialise each of the journal utilities, providing them access to the journal
   // configuration options
   sorting = new Sorting(vm.gridOptions);
-  grouping = new Grouping(vm.gridOptions);
   pagination = new Pagination(vm.gridOptions, Transactions.list.data);
-
-  // bind the transactions service to populate the grid component
-  vm.gridOptions.data = Transactions.list.data;
+  grouping = new Grouping(vm.gridOptions);
 
   /**
    * Column definitions; specify the configuration and behaviour for each column
@@ -83,4 +83,5 @@ function JournalController(Transactions, Sorting, Grouping, Pagination) {
     // @fixme this field should not come from the database as 'cc'
     { field : 'cc', displayName : 'Cost Center', visible : false }
   ];
+
 }
