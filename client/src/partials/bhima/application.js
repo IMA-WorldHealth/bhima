@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
 .controller('ApplicationController', ApplicationController);
 
 ApplicationController.$inject = [
-  '$location', '$timeout', 'AppCache', 'appstate',
-  'connect', 'util', 'SessionService', 'LanguageService'
+  '$timeout', 'AppCache', 'appstate', 'connect', 'util',
+  'SessionService', 'LanguageService', '$state'
 ];
 
-function ApplicationController($location, $timeout, AppCache, appstate, connect, util, Session, Languages) {
+function ApplicationController($timeout, AppCache, appstate, connect, util, Session, Languages, $state) {
   var vm = this;
 
   // load in the application cache
@@ -130,6 +130,6 @@ function ApplicationController($location, $timeout, AppCache, appstate, connect,
   };
 
   vm.settings = function settings() {
-    $location.path('/settings');
+    $state.go('settings', { previous : $state.$current.name });
   };
 }
