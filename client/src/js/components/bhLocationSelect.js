@@ -1,5 +1,4 @@
-/** TODO - move this to bhima.components when @dedrickenc's PR lands */
-angular.module('bhima.directives')
+angular.module('bhima.components')
 
 /**
  * Location Selection Component - bhLocationSelect
@@ -185,7 +184,7 @@ function LocationSelectController(Locations, $scope, Modal) {
     // during $scope churn).
     if (!vm.locationUuid) { return; }
 
-    // if the location is already selected, do not reload all datasoures.  This
+    // if the location is already selected, do not reload all datasources.  This
     // condition will occur when we manually called updateLocationUuid() from
     // the village <select> element.
     if (vm.village && vm.locationUuid === vm.village.uuid) { return; }

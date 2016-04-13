@@ -64,7 +64,8 @@
  cashBoxFinderController.$inject = ['CashboxService'];
  
  //component implementation
-angular.module('bhima.components').component('bhCashBoxFinder', {
+angular.module('bhima.components')
+.component('bhCashBoxFinder', {
 	templateUrl : '/partials/templates/bhCashBoxFinder.tmpl.html',
  	controller : cashBoxFinderController,
  	bindings : {

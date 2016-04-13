@@ -1,4 +1,4 @@
-angular.module('bhima.directives')
+angular.module('bhima.components')
 .component('bhCurrencyInput', {
   templateUrl : 'partials/templates/bhCurrencyInput.tmpl.html',
   controller: CurrencyInputController,

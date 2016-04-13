@@ -19,7 +19,7 @@
 */
 
 /** Find Debtor Group Controller */
-function findDebtorGroupController($http, DebtorGroupService) {
+function FindDebtorGroupController($http, DebtorGroupService) {
   var ctrl         = this,
       callback     = this.callback;
 
@@ -90,19 +90,19 @@ function findDebtorGroupController($http, DebtorGroupService) {
 }
 
 /** Inject dependencies to the controller */
-findDebtorGroupController.$inject = ['$http', 'DebtorGroupService'];
+FindDebtorGroupController.$inject = ['$http', 'DebtorGroupService'];
 
 /** Find Debtor Group Object definition */
-var findDebtorGroupComponent = {
+var bhFindDebtorGroupComponent = {
   bindings : {
     isConvention : '<',
     locked       : '<',
     callback     : '&onSearchComplete'
   },
   templateUrl : 'partials/templates/findDebtorGroup.tmpl.html',
-  controller  : findDebtorGroupController
+  controller  : FindDebtorGroupController
 };
 
 /** Component for BHIMA */
-angular.module('bhima.directives')
-.component('bhFindDebtorgroup', findDebtorGroupComponent);
+angular.module('bhima.components')
+.component('bhFindDebtorgroup', bhFindDebtorGroupComponent);
