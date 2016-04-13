@@ -50,15 +50,15 @@
   },
 
   "ERRORS" :{
-    "UNAUTHORIZED" : "Unauthorized"    
+    "UNAUTHORIZED" : "Unauthorized"
   },
 
   "CASH" : {
-    "TITLE" : "Auxilliairy Cashbox",
+    "TITLE" : "Cash Window",
     "PAYMENT" : "Payment",
     "CURRENT_CASHBOX" : "Current Cashbox",
     "TRANSFER" : {
-      "TITLE" : "Transfert"
+      "TITLE" : "Transfers"
     },
     "VOUCHER" : {
       "CASHBOXES"         : {
@@ -73,17 +73,16 @@
       "DEBTOR_INVOICES" : "Debtor Invoices",
       "RECEIPTS_TITLE"  : "Cash Payment Receipt",
       "SLIP"  : "Cash Voucher",
-      "TITLE" : "Cash Receipt"
+      "TITLE" : "Cash Window"
     },
     "DEBTOR_INVOICES" : {
-      "TITLE" : "Debtor Invoice"
+      "TITLE" : "Debtor Invoices"
     },
     "SELECTION" : {
-      "TITLE" : "Selection caisse",
-      "GO_TO_CASHBOX_PAGE" : "Go to cashbox page",
+      "TITLE" : "Selection Cashbox",
+      "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
       "MISSING_CASH" : "Missing Cash"
     }
-
   },
 
   "COUNTRY": {
@@ -105,7 +104,7 @@
     "TITLE"          : "Donor management",
     "UPDATE"         : "Modify a Donor"
   },
-  
+
   "PERMISSIONS" : {
     "TITLE"       : "Users and Permissions Management",
     "ADD_USER" : "Add a New User",
@@ -173,7 +172,7 @@
     "DEPOTS_LIST" : "Depots list",
     "EDIT_DEPOT"  : "Edit the information in a Depot",
     "MAIN" : {
-      "TITLE" : "Depot Management"  
+      "TITLE" : "Depot Management"
     },
     "NO_DEPOT" : "No Depot",
     "TITLE" : "Depot Management"
@@ -187,7 +186,7 @@
    "HELP_TXT_3"     : "Lock the selected debtor group.  No new transactions can be recorded for a locked group",
    "HELP_TXT_4"     : "Create a new debtor group",
     "INFO"                   : "Group Information",
-    "NEW"                    : "Add a Debtor Group",     
+    "NEW"                    : "Add a Debtor Group",
     "NEW_DEBTOR_GRP"         : "New Debtor Group",
     "TITLE"                  : "Debtor Group Management"
   },
@@ -238,16 +237,16 @@
       "ACCOUNT_TITLE"           : "Account Text",
       "ACCOUNT_TYPE"            : "Account Type",
       "ADDR_1"                  : "Address 1",
-      "ADDR_2"                  : "Address 2",  
+      "ADDR_2"                  : "Address 2",
       "ADDRESS"                 : "Adress",
       "ADDRESS1"                : "Adress",
-      "ADDRESS2"                : "Additional address",          
+      "ADDRESS2"                : "Additional address",
       "ACCOUNT"                 : "Account",
       "ACCOUNT_NUMBER"          : "Account Number",
-      "AMOUNT"                  : "Amount",  
+      "AMOUNT"                  : "Amount",
       "APPLY_BILLING_SERVICES"  : "Apply billing service",
       "APPLY_DISCOUNTS"         : "Apply discounts",
-      "APPLY_SUBSIDIES"         : "Apply subsidies",    
+      "APPLY_SUBSIDIES"         : "Apply subsidies",
       "ASSET"                   : "Asset",
       "AUXILIARY"               : "Auxiliary",
       "BALANCE"                 : "Balance",
@@ -279,7 +278,7 @@
       "DESCRIPTION"             : "Description",
       "DEBITOR_GROUP"           : "Debtor Group",
       "DEBTOR_GROUP"            : "Form debtor group record",
-      "DISTRIBUTABLE"           : "Distribuable",      
+      "DISTRIBUTABLE"           : "Distribuable",
       "DOB"                     : "Date of Birth",
       "DUE"                     : "Payment Due",
       "EDIT"                    : "Edit",
@@ -324,7 +323,7 @@
       "MALE"                    : "Male",
       "MARITAL_STATUS"          : "Martial Status",
       "MIDDLE_NAME"             : "Middle Name",
-      "MOTHER_NAME"             : "Mother's Name",     
+      "MOTHER_NAME"             : "Mother's Name",
       "MAX_CREDIT"              : "Max Credit",
       "NAME"                    : "Name",
       "NB_CHILD"                : "Child count",
@@ -334,11 +333,11 @@
       "NO_DISTRIBUTABLE"        : "Not distributable",
       "HOSPITAL_FILE_NR"        : "File Number",
       "ORIGIN_LOCATION"         : "Origin Location",
-      "OPTIONAL_INFO"           : "Optional Information",      
+      "OPTIONAL_INFO"           : "Optional Information",
       "RECIPIENT"               : "Recipient",
       "PASSIVE"                 : "Passive",
       "PASSWORD"                : "Password",
-      "PATIENT"                 : "patient",
+      "PATIENT"                 : "Patient",
       "PATIENT_DETAILS"         : "Patient Details",
       "PATIENT_ID"              : "ID Patient",
       "PATIENT_NAME"            : "Patient Name",
@@ -361,7 +360,7 @@
       "RELIGION"                : "Religion",
       "RESULT_ACCOUNT_SCT"      : "Result Account section",
       "RETYPE"                  : "Retype",
-      "SEARCH"                  : "Search",    
+      "SEARCH"                  : "Search",
       "SECOND_NAME"             : "Last Name",
       "SECTOR"                  : "Sector",
       "SELECT"                  : "Select",
@@ -374,7 +373,7 @@
       "STATUS"                  : "Status",
       "SUBSIDIES"               : "Subsidies Applied",
       "TELEPHONE"               : "Telephone",
-      "TEL"                     : "TEL",         
+      "TEL"                     : "TEL",
       "TRANSFER_ACCOUNT"        : "Transfer Account",
       "TITLE"                   : "Title",
       "TITLE_ACCOUNT"           : "Title Account",
@@ -382,16 +381,16 @@
       "TOTAL"                   : "Total",
       "TOTAL_BILLED"            : "Total Billed",
       "TOTAL_PAID"              : "Total Paid",
-      "TYPE"                    : "Type",      
+      "TYPE"                    : "Type",
       "UNCONFIGURED"            : "Unconfigured",
-      "USERNAME"                : "Username",      
+      "USERNAME"                : "Username",
       "UPDATE_PATIENT_GROUP"    : "Patient group membership updated",
       "UPDATE_GROUP_DEBTOR"     : "Debtor group assignment updated",
       "VALUE"                   : "Value",
       "VILLAGE"                 : "Village",
       "VILLAGE_NAME"            : "Village Name",
       "VILLE"                   : "Township/Commune",
-      "YOB"                     : "Year of Birth",    
+      "YOB"                     : "Year of Birth",
       "ZS"                      : "Select an health zone"
     },
 
@@ -412,12 +411,12 @@
       "ENTER_EMAIL"           : "Enter email",
       "ENTER_NOTES"           : "Enter notes",
       "SEARCH_NAME"           : "Search by Name",
-      "SEARCH_PATIENT_ID"     : "Search by Patient ID"      
+      "SEARCH_PATIENT_ID"     : "Search by Patient ID"
     },
 
     "SELECTS" : {
       "EMPTY"                   : "Empty",
-      "SELECT_ACCOUNT"          : "Select an account",      
+      "SELECT_ACCOUNT"          : "Select an account",
       "SELECT_ACCOUNT_TYPE"     : "Select Account Type",
       "SELECT_BALANCE_SECTION"  : "Select Balance Sheet Section",
       "SELECT_COST_CENTER"    : "Select cost center",
@@ -440,7 +439,7 @@
       "SELECT_SECTOR"               : "Select a sector",
       "SELECT_SERVICE"              : "Select a Service",
       "SELECT_SEX"                  : "Select a sex",
-      "SELECT_VILLAGE"              : "Select village",      
+      "SELECT_VILLAGE"              : "Select village",
       "SELECT_ZS"                   : "Select an health zone"
     },
 
@@ -467,10 +466,10 @@
       "SAVE"              : "Save",
       "SELECT_INVOICES"   : "Select Invoices",
       "SEARCH"            : "Search",
-      "SUBMIT"            : "Submit",      
+      "SUBMIT"            : "Submit",
       "SUBMIT_CHANGES"    : "Submit Changes",
       "UPDATE_PASSWORD"   : "Update Password"
-      
+
     },
 
     "ERRORS" : {
@@ -501,7 +500,7 @@
       "LOADING"               : "Loading",
       "FOUND"                 : "Found",
       "NO_RECORDS_DATABASE"   : "There are no records in the database for this query",
-      "PATIENT_FOUND"         : "Patient Found",    
+      "PATIENT_FOUND"         : "Patient Found",
       "PATIENT_NOT_FOUND"     : "Patient Not Found",
       "ITEMS_FULL"            : "There are no additional inventory items that be assigned to this invoice.",
       "NO_RECIPIENT"          : "An invoice must have a recipient before assigning items.",
@@ -525,7 +524,7 @@
       "MAXLENGTH"     : "Maximum length not respected",
       "DATE"          : "Date mistyped",
       "DATE_MIN"      : "This date is set too far in the past.",
-      "DATE_MAX"      : "This date is set too far in the future.",      
+      "DATE_MAX"      : "This date is set too far in the future.",
       "DATE_REQUIRED" : "This date is required.",
       "INVALID_DATE"    : "Invalid date",
       "PASSWORD_MATCH"  : "the password does not match",
@@ -558,7 +557,7 @@
 
   "LOCATION": {
     "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
-    "DESCRIPTION_2"         : "The saving and Updating of a Location",  
+    "DESCRIPTION_2"         : "The saving and Updating of a Location",
     "LOCALITY"              : "Locality",
     "LOCATION"              : "Location",
     "LOCATION_MANAGER"      : "Location Manager",
@@ -572,7 +571,7 @@
   },
 
 
-  "PATIENT_INVOICE": { 
+  "PATIENT_INVOICE": {
     "PAGE_TITLE"          : "Patient Invoice",
     "BILLING_SERVICES"    : "Billing Services Applied",
     "INVALID_DETAILS"     : "This invoice contains invalid details",
@@ -590,7 +589,7 @@
 
   "PATIENT_GROUP": {
     "ADD_PATIENT_GROUP"     : "New Patient Group",
-    "ALL_PATIENT_GROUP"     : "All Patient groups", 
+    "ALL_PATIENT_GROUP"     : "All Patient groups",
     "DESCRIPTION1"          : "Patient groups are uses to assign the appropriate discounts to types of patients that merit them.  Use this module to register, modify, and remove patient groups and their benefits",
     "DESCRIPTION2"          : "Modify a Patient Group",
     "EDIT_PATIENT_GROUP"   : "Update form Patient Group",
@@ -602,13 +601,13 @@
   },
 
   "PATIENT_REG": {
-    "FIND_PATIENT"             : "Find a patient",
+    "FIND_PATIENT"             : "Find a Patient",
     "PAGE_TITLE"               : "Patient Registration",
     "PATIENT_DETAILS"          : "Patient Details",
     "REGISTER_PATIENT"         : "Register Patient",
     "TITLE"                    : "Title",
     "VIEW_PATIENT_RECORDS"     :  "View Patient Records"
-  }, 
+  },
 
   "PRICE_LIST": {
     "ADD_PRICE_LIST"   : "Add a Price List",
@@ -616,7 +615,7 @@
     "HELP_TXT_1"       : "Select an action on the left to edit pricelist properties",
     "HELP_TXT_2"       : "Edit the price list's metadata",
     "HELP_TXT_3"       : "Remove the price list",
-    "ITEMS"            : "Items",    
+    "ITEMS"            : "Items",
     "NEW_PRICE_LIST"   : "New Price List",
     "NO_RECORDS"       : "No Records",
     "PRICE_LIST_ITEMS" : "Price liste items",
@@ -682,8 +681,8 @@
       "COST_CENTER"         : "Cost Center",
       "COUNTRY"             : "Country",
       "CURRENCY"            : "Currency",
-      "DATE"                : "Date", 
-      "DESCRIPTION"         : "Description",     
+      "DATE"                : "Date",
+      "DESCRIPTION"         : "Description",
       "EMAIL"               : "Email",
       "EMPTY"               : "There are no records to display.",
       "ENTERPRISE_ID"       : "ID Enterprise",
@@ -697,7 +696,7 @@
       "EDIT"                : "Edit",
       "ID"                  : "ID",
       "IS_ASSET"            : "Is asset ?",
-      "IS_BRUT_LINK"        : "Is brut link ?",      
+      "IS_BRUT_LINK"        : "Is brut link ?",
       "IS_CONVENTION"       : "Is Convention",
       "LABEL"               : "Label",
       "LAST_NAME"           : "Last Name",
@@ -708,8 +707,8 @@
       "NATURE"              : "Nature",
       "NOTE"                : "Note",
       "NR"                  : "Nr",
-      "NUM"                 : "Number",      
-      "PASSIVE"             : "Passive",       
+      "NUM"                 : "Number",
+      "PASSIVE"             : "Passive",
       "PERCENT"             : "Percentage",
       "PHONE"               : "Telephone",
       "POSITION"            : "Position",
@@ -717,7 +716,7 @@
       "PROFIT"              : "Profit",
       "PROFIT_CENTER"       : "Profit Center",
       "PROVINCE"            : "Province",
-      "RATE"                : "Rate",      
+      "RATE"                : "Rate",
       "REF"                 : "Ref.",
       "REFERENCE"           : "Reference",
       "REF_GROUP"           : "Ref. Groupe",
@@ -741,19 +740,19 @@
     "CHARGE"               : "Charge",
     "CONFIRM"              : "Are you sure you want to delete this Result section",
     "DELETE_SUCCESS"       : "Deleted successfully",
-    "EDIT"                 : "Edit Result Section",   
+    "EDIT"                 : "Edit Result Section",
     "NEW"                  : "New Result Section",
     "NO_SECTION_RESULTAT"  : "No Result Section",
     "PROFIT"               : "Profit",
     "SAVE_SUCCESS"         : "Saved Successfully",
-    "TITLE"                : "Result Section", 
-    "UPDATE_SUCCESS"       : "Update Successfully"  
+    "TITLE"                : "Result Section",
+    "UPDATE_SUCCESS"       : "Update Successfully"
   },
 
   "SECTION_BILAN" : {
     "ADD_SECTION_BILAN"    : "Add a bilan Section",
     "ALERT"                : "Bilan section management",
-    "ALL"                  : "All Bilan Sections", 
+    "ALL"                  : "All Bilan Sections",
     "EDIT"                 : "Bilan section editing",
     "NEW"                  : "New bilan section",
     "NO_SECTION_BILAN"     : "No bilan section found",
@@ -790,7 +789,6 @@
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "All Transactions",
    "AUTHORIZE_PURCHASE"        : "Authorization",
-   "AUXILLARY_CASH_RECORD"     : "Auxillary Cash Records",
    "BALANCE_MENSUELLE"         : "Monthly balance",
    "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
@@ -800,7 +798,7 @@
    "BUDGET_ANALYSIS"           : "Budget Analysis",
    "BUDGET_BY_ACCOUNT"         : "Budget by Account",
    "BUDGET_MANAGEMENT"         : "Budget Management",
-   "CASH_PAYMENTS"             : "Cash Payments",
+   "CASH_WINDOW"               : "Cash Window",
    "CASHBOX_MANAGEMENT"        : "Cashbox Management",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Treasure Configuration",
    "CASH_FLOW"                 : "Cash Flow",
@@ -935,10 +933,9 @@
    "USERS"                     : "Users",
    "VALIDATE_PURCHASE"         : "Validation"
    },
-
   "VOUCHERS" : {
     "SIMPLE" : {
-      "TITLE" :  "Transfer Slip" 
+      "TITLE" :  "Transfer Slip"
     }
-  }  
+  }
 }

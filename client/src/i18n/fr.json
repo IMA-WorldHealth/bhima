@@ -1,6 +1,6 @@
 {
   "ACCOUNT": {
-    "ACCOUNT_CHART"   : "Plan Comptable",    
+    "ACCOUNT_CHART"   : "Plan Comptable",
     "ACCOUNT_COST"    : "Comptes des charges et pertes par nature",
     "ACCOUNT_LIST"    : "Liste des comptes",
     "ACCOUNT_NUMBER"  : "Numéro de Compte",
@@ -86,7 +86,7 @@
    "REGISTER"         : "Enregistrer un pays",
    "REGISTERED"       : "Pays Enregistrées",
    "TITLE"            : "Gestion des Pays"
-   },  
+   },
 
   "PERMISSIONS" : {
     "TITLE" : "Utilisateur et droits",
@@ -126,7 +126,7 @@
   },
 
   "ERRORS" :{
-    "UNAUTHORIZED" : "Non autorisé"    
+    "UNAUTHORIZED" : "Non autorisé"
   },
 
   "SUBSIDY" : {
@@ -174,7 +174,7 @@
     "DEPOTS_LIST" : "Liste des dépôts",
     "EDIT_DEPOT"  : "Editer les informations d'un dépôt",
     "MAIN" : {
-      "TITLE" : "Gestion des dépôts"  
+      "TITLE" : "Gestion des dépôts"
     },
     "NO_DEPOT" : "Aucun dépôt",
     "TITLE" : "Gestion des dépôts"
@@ -188,7 +188,7 @@
     "HELP_TXT_3"             : "Bloquer le Groupe de debiteur sélectionné. Aucune transaction ne pourra etre Effectuée avec ce groupe",
     "HELP_TXT_4"             : "Crée un nouveau groupe de debiteur",
     "INFO"                   : "Information du Groupe",
-    "NEW"                    : "Ajouter un Groupe Débiteur",     
+    "NEW"                    : "Ajouter un Groupe Débiteur",
     "NEW_DEBTOR_GRP"         : "Nouveau Groupe de Débiteur",
     "TITLE"                  : "Gestion des Groupes des Débiteurs"
   },
@@ -239,16 +239,16 @@
       "ACCOUNT_TITLE"           : "Libelle de Compte",
       "ACCOUNT_TYPE"            : "Type de Compte",
       "ADDR_1"                  : "Adresse 1",
-      "ADDR_2"                  : "Adresse 2",  
+      "ADDR_2"                  : "Adresse 2",
       "ADDRESS"                 : "Adresse",
       "ADDRESS1"                : "Adresse",
-      "ADDRESS2"                : "Complément d'Adresse",          
+      "ADDRESS2"                : "Complément d'Adresse",
       "ACCOUNT"                 : "Compte",
       "ACCOUNT_NUMBER"          : "Numéro de Compte",
-      "AMOUNT"                  : "Montant",  
+      "AMOUNT"                  : "Montant",
       "APPLY_BILLING_SERVICES"  : "Appliquer facturation",
       "APPLY_DISCOUNTS"         : "Appliquer réduction",
-      "APPLY_SUBSIDIES"         : "Appliquer subvention",    
+      "APPLY_SUBSIDIES"         : "Appliquer subvention",
       "ASSET"                   : "Actif",
       "AUXILIARY"               : "Auxilliaire",
       "BALANCE"                 : "Balance",
@@ -280,7 +280,7 @@
       "DESCRIPTION"             : "Description",
       "DEBITOR_GROUP"           : "Groupe Débiteur",
       "DEBTOR_GROUP"            : "Formulaire d'enregistrement de groupe débiteur",
-      "DISTRIBUTABLE"           : "Distribuable",      
+      "DISTRIBUTABLE"           : "Distribuable",
       "DOB"                     : "Date de Naissance",
       "DUE"                     : "Payment Due",
       "EDIT"                    : "Editer",
@@ -325,7 +325,7 @@
       "MALE"                    : "Homme",
       "MARITAL_STATUS"          : "Etat Civil",
       "MIDDLE_NAME"             : "Post-nom",
-      "MOTHER_NAME"             : "Nom de la Mère",      
+      "MOTHER_NAME"             : "Nom de la Mère",
       "MAX_CREDIT"              : "Crédit Max",
       "NAME"                    : "Nom",
       "NB_CHILD"                : "Nombre Enfant",
@@ -335,10 +335,11 @@
       "NO_DISTRIBUTABLE"        : "Non distribuable",
       "HOSPITAL_FILE_NR"        : "Numero Fiche",
       "ORIGIN_LOCATION"         : "Localisation d'origine",
-      "OPTIONAL_INFO"           : "Informations optionnelles",      
+      "OPTIONAL_INFO"           : "Informations optionnelles",
       "RECIPIENT"               : "Facture de ",
       "RESULT_ACCOUNT_SCT"      : "Section Compte de Résultat",
-      "PASSIVE"                 : "Passive", 
+      "PASSIVE"                 : "Passive",
+      "PASSIVE"                 : "Passive",
       "PASSWORD"                : "Mot de passe",
       "PATIENT"                 : "patient",
       "PATIENT_DETAILS"         : "Détails Patient",
@@ -362,7 +363,7 @@
       "REFERENCE_GROUP"         : "Groupe de référence",
       "RELIGION"                : "Religion",
       "RETYPE"                  : "Retaper",
-      "SEARCH"                  : "Chercher",    
+      "SEARCH"                  : "Chercher",
       "SECOND_NAME"             : "Nom",
       "SECTOR"                  : "Secteur",
       "SELECT"                  : "Sélectionner",
@@ -375,7 +376,7 @@
       "STATUS"                  : "Etat",
       "SUBSIDIES"               : "Les subventions appliqués",
       "TELEPHONE"               : "Téléphone",
-      "TEL"                     : "Tél",         
+      "TEL"                     : "Tél",
       "TRANSFER_ACCOUNT"        : "Compte transfert",
       "TITLE"                   : "Titre",
       "TITLE_ACCOUNT"           : "Comptes Titre",
@@ -383,16 +384,16 @@
       "TOTAL"                   : "Total",
       "TOTAL_BILLED"            : "Total Facture",
       "TOTAL_PAID"              : "Total paye",
-      "TYPE"                    : "Type",      
+      "TYPE"                    : "Type",
       "UNCONFIGURED"            : "Non configuree",
-      "USERNAME"                : "Nom Utilisateur",      
+      "USERNAME"                : "Nom Utilisateur",
       "UPDATE_PATIENT_GROUP"    : "Mettre à jour les groupes de patients",
       "UPDATE_GROUP_DEBTOR"     : "Mettre à jour le Groupe débiteur",
       "VALUE"                   : "Valeur",
       "VILLAGE"                 : "Village",
       "VILLAGE_NAME"            : "Nom du Village",
-      "VILLE"                   : "Ville/Commune", 
-      "YOB"                     : "Année de Naissance",     
+      "VILLE"                   : "Ville/Commune",
+      "YOB"                     : "Année de Naissance",
       "ZS"                      : "Zone de sante"
     },
 
@@ -413,7 +414,7 @@
       "ENTER_EMAIL" : "Entrer l'adresse e-mail",
       "ENTER_NOTES"   : "Entrer les notes",
       "SEARCH_NAME"             : "Chercher Par Nom",
-      "SEARCH_PATIENT_ID"       : "Chercher ID Patient"      
+      "SEARCH_PATIENT_ID"       : "Chercher ID Patient"
     },
 
     "SELECTS" : {
@@ -441,7 +442,7 @@
       "SELECT_SECTOR"                 : "Sélectionner secteur",
       "SELECT_SERVICE"                : "Sélectionner un Service",
       "SELECT_SEX"                    : "Sélectionner le sexe",
-      "SELECT_VILLAGE"                : "Sélectionner village",      
+      "SELECT_VILLAGE"                : "Sélectionner village",
       "SELECT_ZS"                     : "Sélectionner zone de sante"
     },
 
@@ -468,10 +469,10 @@
       "SAVE"              : "Sauver",
       "SELECT_INVOICES"   : "Sélectionner la(les) Facture(s)",
       "SEARCH"            : "Rechercher",
-      "SUBMIT"            : "Soumettre",      
+      "SUBMIT"            : "Soumettre",
       "SUBMIT_CHANGES"    : "Soumettre des changements",
       "UPDATE_PASSWORD"   : "Modifier mot de passe"
-      
+
     },
 
     "ERRORS" : {
@@ -503,10 +504,10 @@
       "LOADING"               : "Chargement en cours",
       "FOUND"                 : "Trouvée",
       "NO_RECORDS_DATABASE"   : "Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
-      "PATIENT_FOUND"         : "Patient Trouvé",      
+      "PATIENT_FOUND"         : "Patient Trouvé",
       "PATIENT_NOT_FOUND"     : "Patient Non Trouvé",
       "ITEMS_FULL"            : "Il n'y a pas d'articles supplémentaires qui seront affectés à cette facture.",
-      "NO_RECIPIENT"          : "Une facture doit appartenir à une personne avant d'assigner les éléments.",      
+      "NO_RECIPIENT"          : "Une facture doit appartenir à une personne avant d'assigner les éléments.",
       "DANGER_ZONE"           : "Zone Dangereuse",
       "UNAUTHORIZED"          : "Non autorisée"
     },
@@ -527,7 +528,7 @@
       "MAXLENGTH"     : "Longueur maximale non respectee",
       "DATE"          : "Date mal saisie",
       "DATE_MIN"      : "Cette date est trop loin dans le passé.",
-      "DATE_MAX"      : "Cette date est fixée trop loin dans le future.",      
+      "DATE_MAX"      : "Cette date est fixée trop loin dans le future.",
       "DATE_REQUIRED" : "Cette date est nécessaire.",
       "INVALID_DATE"    : "Date invalide",
       "PASSWORD_MATCH"  : "Mot de passe ne correspond pas",
@@ -547,10 +548,9 @@
     }
   },
 
-
   "LOCATION": {
     "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
-    "DESCRIPTION_2"         : "La création, la mis à jour d'une localisation",  
+    "DESCRIPTION_2"         : "La création, la mis à jour d'une localisation",
     "LOCALITY"              : "Localite",
     "LOCATION"              : "Localisation",
     "LOCATION_MANAGER"      : "Gestion des localisations",
@@ -563,7 +563,7 @@
     "TITLE"                 : "Gestion des localisations"
   },
 
-  "PATIENT_INVOICE": { 
+  "PATIENT_INVOICE": {
     "PAGE_TITLE"          : "Facture des patients",
     "BILLING_SERVICES"    : "Les services de facturation appliquée",
     "INVALID_DETAILS"     : "Cette facture contient des détails invalides",
@@ -581,7 +581,7 @@
 
   "PATIENT_GROUP": {
     "ADD_PATIENT_GROUP"           : "Nouveau Groupe de Patients",
-    "ALL_PATIENT_GROUP" : "Groupes Patients Enregistrées", 
+    "ALL_PATIENT_GROUP" : "Groupes Patients Enregistrées",
     "DESCRIPTION1"  : "Group Patient est utilisée pour assigner un discount aux patients qui le meritent. utiliser ce module pour Enregsitrer, modifier, et effacer un group patient",
     "DESCRIPTION2"  : "Modifier un Groupe Patient",
     "EDIT_PATIENT_GROUP" : "Formulaire de mise à jour de Groupe de patients",
@@ -599,7 +599,7 @@
     "REGISTER_PATIENT"         : "Enregistrer le Patient",
     "TITLE"                    : "Titre",
     "VIEW_PATIENT_RECORDS"     : "Voir Tous les enregistrements"
-  }, 
+  },
 
   "PRICE_LIST": {
     "ADD_PRICE_LIST"   : "Ajouter une List",
@@ -607,7 +607,7 @@
     "HELP_TXT_1"       : "Choisier une action à gauche pour editer la liste de prix",
     "HELP_TXT_2"       : "Editer les metadonnées de la Liste",
     "HELP_TXT_3"       : "Effacer la Liste",
-    "ITEMS"            : "Items",    
+    "ITEMS"            : "Items",
     "NEW_PRICE_LIST"   : "Nouvelle Liste des Prix",
     "NO_RECORDS"       : "Pas d'enregistrement",
     "PRICE_LIST_ITEMS" : "Eléments de la liste des prix",
@@ -684,8 +684,8 @@
       "COST_CENTER"         : "Centre de cout",
       "COUNTRY"             : "Pays",
       "CURRENCY"            : "Monnaie",
-      "DATE"                : "Date", 
-      "DESCRIPTION"         : "Description",     
+      "DATE"                : "Date",
+      "DESCRIPTION"         : "Description",
       "EMAIL"               : "Email",
       "EMPTY"               : "Il n'y a pas d'enregistrements à afficher.",
       "ENTERPRISE_ID"       : "ID enterprise",
@@ -699,7 +699,7 @@
       "EDIT"                : "Editer",
       "ID"                  : "ID",
       "IS_ASSET"            : "Actif ?",
-      "IS_BRUT_LINK"        : "Est un brut ?",      
+      "IS_BRUT_LINK"        : "Est un brut ?",
       "IS_CONVENTION"       : "Convention",
       "LABEL"               : "Label",
       "LAST_NAME"           : "Nom",
@@ -710,8 +710,8 @@
       "NATURE"              : "Nature",
       "NOTE"                : "Note",
       "NR"                  : "N°",
-      "NUM"                 : "Numéro",      
-      "PASSIVE"             : "Passive",       
+      "NUM"                 : "Numéro",
+      "PASSIVE"             : "Passive",
       "PERCENT"             : "Pourcentage",
       "PHONE"               : "Telephone",
       "POSITION"            : "Position",
@@ -719,7 +719,7 @@
       "PROFIT"              : "Profit",
       "PROFIT_CENTER"       : "Centre de profit",
       "PROVINCE"            : "Province",
-      "RATE"                : "Taux",      
+      "RATE"                : "Taux",
       "REF"                 : "Réf.",
       "REFERENCE"           : "Référence",
       "REF_GROUP"           : "Groupe de Réf.",
@@ -731,7 +731,7 @@
       "TOTAL"               : "Total",
       "TEXT"                : "Text",
       "TYPE"                : "Type",
-      "VALUE"               : "Valeur",     
+      "VALUE"               : "Valeur",
       "VILLAGE"             : "Village"
     }
   },
@@ -739,7 +739,7 @@
   "SECTION_BILAN" : {
     "ADD_SECTION_BILAN"    : "Ajouter une section Bilan",
     "ALERT"                : "Bilan section management",
-    "ALL"                  : "Tous les sections du bilan", 
+    "ALL"                  : "Tous les sections du bilan",
     "EDIT"                 : "Editer une section bilan",
     "NEW"                  : "Nouvelle section du bilan",
     "NO_SECTION_BILAN"     : "Pas de section du bilan",
@@ -776,7 +776,6 @@
     "ADMIN"                     : "Admin",
     "ALL_TRANSACTIONS"          : "Toutes les Transactions",
     "AUTHORIZE_PURCHASE"        : "Authorisation",
-    "AUXILLARY_CASH_RECORD"     : "Historique Caisse Auxilliaire",
     "BALANCE_MENSUELLE"         : "Balance Mensuelle",
     "BALANCE_SHEET"             : "Feuille de Balance",
     "BENEFICIARY"               : "Bénéficiaire",
@@ -789,7 +788,7 @@
     "CASHBOX_MANAGEMENT"        : "Caisses et Banques",
     "CASHBOX_ACCOUNT_MANAGEMENT": "Configuration Tresorerie",
     "CASH_FLOW"                 : "Cash Flow",
-    "CASH_PAYMENTS"             : "Paiements",
+    "CASH_WINDOW"               : "Paiements",
     "CAUTION"                   : "Paiement Anticipatif",
     "CHART_OF_ACCOUNTS"         : "Plan Comptable",
     "CLIENT"                    : "Client",
@@ -805,11 +804,11 @@
     "CREDITOR_GRP"              : "Groupe Créditeur",
     "CREDIT_NOTE"               : "Note de Crédit",
     "CURRENCY"                  : "Monnaie",
-    "DAILY_CONSUMPTION"         : "Consommation",  
+    "DAILY_CONSUMPTION"         : "Consommation",
     "DASHBOARD" : {
       "FINANCE" : "Tableau de bord de Finance",
       "TITLE"   : "Tableau de bord"
-    },     
+    },
     "DEBTOR_AGING"              : "Débiteur",
     "DEBITOR_GROUP_REPORT"      : "Etat Groupe Debiteur",
     "DEBTOR_GRP"                : "Groupe Débiteur",
@@ -926,5 +925,5 @@
     "SIMPLE" : {
       "TITLE" : "Bordereau de transfert"
     }
-  }  
+  }
 }

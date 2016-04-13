@@ -2,7 +2,7 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-      <li class="static">{{ "CASH.VOUCHER.TITLE" | translate }}</li>
+      <li class="static">{{ "CASH.TITLE" | translate }}</li>
       <li class="title">{{ CashCtrl.cashbox.text }}</li>
     </ol>
   </div>
@@ -14,7 +14,6 @@
 
       <!-- Switch Cashbox Form and Transfer -->
       <div class="col-md-4 col-md-push-8 pad-bottom">
-        <p><u>{{ "CASH.VOUCHER.CASHBOXES.CURRENT_CASHBOX" | translate }}</u>: <strong data-cashbox-text>{{ CashCtrl.cashbox.text }}</strong></p>
         <p>
           <button class="btn btn-warning" ng-click="CashCtrl.changeCashbox()" data-change-cashbox>
             <span class="glyphicon glyphicon-inbox"></span> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
