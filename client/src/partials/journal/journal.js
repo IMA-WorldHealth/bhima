@@ -44,13 +44,10 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
   sorting    = new Sorting(vm.gridOptions);
   grouping   = new Grouping(vm.gridOptions);
   pagination = new Pagination(vm.gridOptions, Transactions.list.data);
-  filtering  = new Filtering();
+  filtering  = new Filtering(vm.gridOptions);
 
   // bind the transactions service to populate the grid component
   vm.gridOptions.data = Transactions.list.data;
-
-  // enable filter option
-  vm.gridOptions.enableFiltering = true;
 
   /**
    * Column defintions; specify the configuration and behaviour for each column

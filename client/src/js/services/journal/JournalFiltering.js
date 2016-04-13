@@ -21,7 +21,10 @@ function JournalFilteringService() {
     return cellDateString.indexOf(searchValue) !== -1;
   }
 
-  function filterInstance() {
+  function filterInstance(gridOptions) {
+    // global filtering configuration
+    gridOptions.enableFiltering = true;
+
     return {
       byDate : filterByDate
     };
