@@ -1,4 +1,4 @@
-/* global element, by, beforeEach, inject, broswer */
+/* global element, by, browser */
 
 var GridTestUtils = require('../shared/gridTestUtils.spec.js');
 
