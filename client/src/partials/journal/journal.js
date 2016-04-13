@@ -54,28 +54,20 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
 
   /**
    * Column defintions; specify the configuration and behaviour for each column
-   * Initialise each of the journal utilities, providing them access to the journal
+   * in the journal grid. Initialise each of the journal utilities,
+   * providing them access to the journal
    * configuration options :
    *    sorting = new Sorting(vm.gridOptions);
    *    pagination = new Pagination(vm.gridOptions, Transactions.list.data);
    *    grouping = new Grouping(vm.gridOptions);
    *    filtering  = new Filtering();
-   */
-
-  /**
-   * Column definitions; specify the configuration and behaviour for each column
-   * in the journal grid.
-   *
-   * - Note:  Setting the grouping priority without sorting by the same column will
-   *          cause unexpected behaviour (splitting up of groups) when sorting
-   *          other columns. This can be avoided by setting default sort and group.
+   * Note:
+   *   Setting the grouping priority without sorting by the same column will
+   *   cause unexpected behaviour (splitting up of groups) when sorting
+   *   other columns. This can be avoided by setting default sort and group.
    */
   vm.gridOptions.columnDefs = [
-    { field : 'trans_date',
-      displayName : 'Date',
-      cellFilter : 'date:"mediumDate"',
-      filter : { condition : filtering.byDate }
-    },
+    { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
     { field : 'description', displayName : 'Description' },
     { field : 'account_number', displayName : 'Account' },
     { field : 'debit_equiv', displayName : 'Debit' },
