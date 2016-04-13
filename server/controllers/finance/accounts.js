@@ -1,22 +1,87 @@
-//TODO Refactor/define accounts API
+/**
+ * Account Controller
+ *
+ * @desc Implements CRUD operations on the Account entity.
+ *
+ * This module implements the following routes:
+ * GET    /accounts
+ * GET    /accounts/:id
+ * GET    /accounts/:id/balance/
+ * POST   /accounts
+ * PUT    /accounts/:id
+ *
+ * @module finance/account
+ */
 
 var db = require('../../lib/db');
-var sanitize = require('../../lib/sanitize');
+const NotFound = require('../../lib/errors/NotFound');
 
-// GET /accounts
-exports.list = function list(req, res, next) {
+/**
+ * Create a new account entity.
+ *
+ * POST /accounts
+ */
+function create (req, res, next) {
   'use strict';
 
-  // TODO
-  // This should probably take a query string for filtering to
-  // make it more useful all around.
-  // Some ideas:
-  // ?classe=5, etc...
+  var record = req.body;
+  var createAccountQuery = 'INSERT INTO account SET ?';
+
+  delete record.id;
+
+  db.exec(createAccountQuery, [record])
+  .then(function (result) {
+      res.status(201).json({id : result.insertId});
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+ * Updates an account.
+ *
+ * PUT /accounts/:id
+ */
+function update (req, res, next) {
+  'use strict';
+
+  var queryData = req.body;
+  var accountId = req.params.id;
+  var updateAccountQuery = 'UPDATE account SET ? WHERE id = ?';
+
+  delete queryData.id;
+
+  lookupAccount(accountId)
+    .then(function () {
+      return db.exec(updateAccountQuery, [queryData, accountId]);
+    })
+    .then(function() {
+      return lookupAccount(accountId);
+    })
+    .then(function (account) {
+      res.status(200).json(account);
+    })
+    .catch(next)
+    .done();
+}
+
+function list (req, res, next) {
+  'use strict';
 
   var sql =
-    'SELECT a.id, a.number, a.label, a.parent, at.type ' +
-    'FROM account AS a JOIN account_type AS at ON ' +
-      'a.type_id = at.id';
+    'SELECT a.id, a.number, a.label, a.locked FROM account AS a';
+
+  if (req.query.full === '1') {
+
+    sql =
+      'SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset, ' +
+      'a.reference_id, a.is_brut_link, a.is_charge, a.number, ' +
+      'a.label, a.parent, a.type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.type_id = at.id';
+  }
+
+  if (req.query.locked === '0') {
+    sql+=' WHERE a.locked = 0';
+  }
 
   sql += ' ORDER BY a.number;';
 
@@ -26,184 +91,75 @@ exports.list = function list(req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
+function detail(req, res, next) {
+  'use strict';
 
-// FIXME Moved from uncategorised - code must be refactored
-// --------------------------------------------------------
-exports.listInExAccounts = function (req, res, next) {
-  var enterprise_id = sanitize.escape(req.params.id_enterprise);
-  var sql =
-    'SELECT temp.`id`, temp.`number`, temp.`label`, temp.`classe`, account_type.`type`, ' +
-           'temp.`parent`, temp.`balance`' +  // , temp.`fixed`
-    ' FROM (' +
-        'SELECT account.id, account.number, account.label, account.classe, account.type_id, ' +
-               'account.parent, period_total.credit - period_total.debit as balance ' +  // account.fixed,
-        'FROM account LEFT JOIN period_total ' +
-        'ON account.id=period_total.account_id ' +
-        'WHERE account.enterprise_id = ' + enterprise_id +
-        ' AND (account.classe IN (\'6\', \'7\') OR ((account.classe IN (\'1\', \'2\', \'5\')) ))' +
-    ' ) ' +
-    'AS temp JOIN account_type ' +
-    'ON temp.type_id = account_type.id ' +
-    'ORDER BY CAST(temp.number AS CHAR(10));';
-
-  function process(accounts) {
-    var InExAccounts = accounts.filter(function(item) {
-      var account_6_7 = item.number.toString().indexOf('6') === 0 || item.number.toString().indexOf('7') === 0,
-        account_1_2_5 = item.number.toString().indexOf('1') === 0 || item.number.toString().indexOf('2') === 0 || item.number.toString().indexOf('5') === 0;
-      return account_6_7 || account_1_2_5;
-    });
-    return InExAccounts;
-  }
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(process(rows));
-  })
+  lookupAccount(req.params.id)
+   .then(function (account) {
+      res.status(200).json(account);
+   })
   .catch(next)
   .done();
-};
+}
 
-exports.listEnterpriseAccounts = function (req, res, next) {
-  var sql =
-    'SELECT account.id, account.number, account.label FROM account ' +
-    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
-      'AND account.parent <> 0 ' +
-      'AND account.is_ohada = 1 ' +
-      'AND account.cc_id IS NULL ' +
-      'AND account.type_id <> 3';
+function getBalance (req, res, next){
+  'use strict';
 
-  function process(accounts) {
-    var availablechargeAccounts = accounts.filter(function(item) {
-      return item.number.toString().indexOf('6') === 0;
-    });
-    return availablechargeAccounts;
+  var accountId = req.params.id, optional = '';
+  var params = [accountId];
+
+  if(req.query.journal === '1') {
+    optional = ' UNION ALL SELECT pj.account_id, IFNULL(SUM(pj.debit), 0) AS debit, IFNULL(SUM(pj.credit), 0) AS credit, IFNULL((pj.debit - pj.credit), 0) AS balance FROM posting_journal AS pj WHERE pj.account_id = ? GROUP BY pj.account_id';
+    params.push(accountId);
   }
 
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(process(rows));
-  })
-  .catch(next)
-  .done();
-};
+  var accountSoldQuery = 'SELECT t.account_id, IFNULL(SUM(t.debit), 0) AS debit, IFNULL(SUM(t.credit), 0) AS credit, IFNULL(t.balance, 0) AS balance FROM' +
+    ' (SELECT gl.account_id, IFNULL(SUM(gl.debit), 0) AS debit, IFNULL(SUM(gl.credit), 0) AS credit, IFNULL((gl.debit - gl.credit), 0) AS balance FROM' +
+    ' general_ledger AS gl WHERE gl.account_id = ? GROUP BY gl.account_id' + optional + ' ) AS t GROUP BY t.account_id';
 
-exports.listEnterpriseProfitAccounts = function (req, res, next) {
+  lookupAccount(accountId)
+    .then(function (account) {
+      return db.exec(accountSoldQuery, params);
+    })
+    .then(function (rows){
+
+      var response = (rows.length === 0) ?
+       {account_id : accountId, debit : 0, credit : 0, balance : 0 } :
+       rows[0];
+
+      res.status(200).json(response);
+    })
+    .catch(next)
+    .done();
+}
+
+function lookupAccount(id) {
+  'use strict';
+
   var sql =
-    'SELECT account.id, account.number, account.label FROM account ' +
-    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
-      'AND account.parent <> 0 ' +
-      'AND account.is_ohada = 1 ' +
-      'AND account.pc_id IS NULL ' +
-      'AND account.type_id <> 3';
+    'SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset, ' +
+    'a.reference_id, a.is_brut_link, a.is_charge, a.number, ' +
+    'a.label, a.parent, a.type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.type_id = at.id WHERE a.id = ?';
 
-  function process(accounts) {
-    var availablechargeAccounts = accounts.filter(function(item) {
-      return item.number.toString().indexOf('7') === 0;
+  return db.exec(sql, id)
+    .then(function(rows) {
+      // Record Not Found !
+      if (rows.length === 0) {
+        throw new NotFound(`Record Not Found with id: ${id}`);
+      }
+
+      return rows[0];
     });
-    return availablechargeAccounts;
-  }
+}
 
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(process(rows));
-  })
-  .catch(next)
-  .done();
-};
+function isEmptyObject(object) {
+  return Object.keys(object).length === 0;
+}
 
-exports.listIncomeAccounts = function (req, res, next) {
-  var sql ='SELECT id, enterprise_id, number, label FROM account WHERE number LIKE "6%" AND type_id <> "3"';
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listExpenseAccounts = function (req, res, next) {
-  var sql ='SELECT id, enterprise_id, number, label FROM account WHERE number LIKE "7%" AND type_id <> "3"';
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.getClassSolde = function (req, res, next) {
-
-  var account_class = req.params.account_class,
-      fiscal_year_id = req.params.fiscal_year;
-
-  var sql =
-    'SELECT `ac`.`id`, `ac`.`number`, `ac`.`label`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
-    'FROM (' +
-      '(' +
-        'SELECT `account`.`id`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
-          0 + ' AS debit, ' + 0 + ' AS credit, ' +
-          'SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`,' +
-          'SUM(`posting_journal`.`credit_equiv`) AS `credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
-          '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
-        'FROM `posting_journal` JOIN `account` ON `account`.`id`=`posting_journal`.`account_id` WHERE `posting_journal`.`fiscal_year_id`=? AND `account`.`classe`=? GROUP BY `posting_journal`.`account_id` ' +
-      ') UNION ALL (' +
-        'SELECT `account`.`id`, `general_ledger`.`fiscal_year_id`, `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, '+
-          0 + ' AS credit, ' + 0 + ' AS debit, ' +
-          'SUM(`general_ledger`.`debit_equiv`) AS `debit_equiv`, ' +
-          'SUM(`general_ledger`.`credit_equiv`) AS `credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
-          '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
-        'FROM `general_ledger` JOIN `account` ON `account`.`id`=`general_ledger`.`account_id` WHERE `general_ledger`.`fiscal_year_id`=? AND `account`.`classe`=? GROUP BY `general_ledger`.`account_id` ' +
-      ')' +
-    ') AS `t`, `account` AS `ac` ' +
-    'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=? AND t.fiscal_year_id = ? ';
-
-  db.exec(sql, [fiscal_year_id, account_class, fiscal_year_id, account_class, account_class, fiscal_year_id])
-  .then(function (data) {
-    res.send(data);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-/**
-  * Get Type Solde
-  * This function is reponsible to return a solde
-  * according `account_type`, `account is charge` and `fiscal year` given
-  */
-exports.getTypeSolde = function (req, res, next) {
-
-  var fiscalYearId = req.params.fiscal_year,
-        accountType   = req.params.type_id,
-        accountIsCharge = req.params.is_charge;
-
-  var sql =
-      'SELECT `ac`.`id`, `ac`.`number`, `ac`.`label`, `ac`.`type_id`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
-      'FROM (' +
-        '(' +
-          'SELECT `account`.`id`, `account`.`type_id`, `account`.`is_charge`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
-            0 + ' AS debit, ' + 0 + ' AS credit, ' +
-            'SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`,' +
-            'SUM(`posting_journal`.`credit_equiv`) AS `credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
-            '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
-          'FROM `posting_journal` JOIN `account` ON `account`.`id`=`posting_journal`.`account_id` WHERE `posting_journal`.`fiscal_year_id`=? AND `account`.`type_id`=? AND `account`.`is_charge`=? GROUP BY `posting_journal`.`account_id` ' +
-        ') UNION ALL (' +
-          'SELECT `account`.`id`, `account`.`type_id`, `account`.`is_charge`, `general_ledger`.`fiscal_year_id`, `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, '+
-            0 + ' AS credit, ' + 0 + ' AS debit, ' +
-            'SUM(`general_ledger`.`debit_equiv`) AS `debit_equiv`, ' +
-            'SUM(`general_ledger`.`credit_equiv`) AS `credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
-            '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
-          'FROM `general_ledger` JOIN `account` ON `account`.`id`=`general_ledger`.`account_id` WHERE `general_ledger`.`fiscal_year_id`=? AND `account`.`type_id`=? AND `account`.`is_charge`=? GROUP BY `general_ledger`.`account_id` ' +
-        ')' +
-      ') AS `t`, `account` AS `ac` ' +
-      'WHERE `t`.`account_id` = `ac`.`id` AND (`ac`.`type_id`=? AND `ac`.`is_charge`=?) AND t.fiscal_year_id = ? ';
-
-  db.exec(sql, [fiscalYearId, accountType, accountIsCharge, fiscalYearId, accountType, accountIsCharge, accountType, accountIsCharge, fiscalYearId])
-  .then(function (data) {
-    res.send(data);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
+exports.list = list;
+exports.create = create;
+exports.update = update;
+exports.detail = detail;
+exports.getBalance = getBalance;
