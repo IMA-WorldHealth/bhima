@@ -112,7 +112,7 @@ CREATE TABLE `cash` (
   KEY `cashbox_id` (`cashbox_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`debtor_uuid`) REFERENCES `debitor` (`uuid`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -192,10 +192,10 @@ CREATE TABLE `client` (
   `name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `address` varchar(100) DEFAULT NULL,
-  `debitor_uuid` BINARY(16) DEFAULT NULL,
+  `debtor_uuid` BINARY(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `debitor_uuid` (`debitor_uuid`),
-  FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`)
+  KEY `debtor_uuid` (`debtor_uuid`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -450,7 +450,7 @@ CREATE TABLE `credit_note` (
   `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
   `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `cost`            DECIMAL(19,4) UNSIGNED NOT NULL,
-  `debitor_uuid`    BINARY(16) NOT NULL,
+  `debtor_uuid`    BINARY(16) NOT NULL,
   `seller_id`       SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
   `sale_uuid`       BINARY(36) NOT NULL,
   `note_date`       DATE NOT NULL,
@@ -459,10 +459,10 @@ CREATE TABLE `credit_note` (
   PRIMARY KEY (`uuid`),
   KEY `reference` (`reference`),
   KEY `project_id` (`project_id`),
-  KEY `debitor_uuid` (`debitor_uuid`),
+  KEY `debtor_uuid` (`debtor_uuid`),
   KEY `sale_uuid` (`sale_uuid`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`sale_uuid`) REFERENCES `sale` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -513,19 +513,19 @@ CREATE TABLE `currency` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `debitor`;
-CREATE TABLE `debitor` (
+DROP TABLE IF EXISTS `debtor`;
+CREATE TABLE `debtor` (
   `uuid` BINARY(16) NOT NULL,
   `group_uuid` BINARY(16) NOT NULL,
   `text` text,
   PRIMARY KEY (`uuid`),
   KEY `group_uuid` (`group_uuid`),
-  FOREIGN KEY (`group_uuid`) REFERENCES `debitor_group` (`uuid`) ON DELETE CASCADE
+  FOREIGN KEY (`group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `debitor_group`;
-CREATE TABLE `debitor_group` (
+DROP TABLE IF EXISTS `debtor_group`;
+CREATE TABLE `debtor_group` (
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `uuid` BINARY(16) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -552,50 +552,50 @@ CREATE TABLE `debitor_group` (
   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS debitor_group_billing_service;
+DROP TABLE IF EXISTS debtor_group_billing_service;
 
-CREATE TABLE debitor_group_billing_service (
+CREATE TABLE debtor_group_billing_service (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `debitor_group_uuid`      BINARY(16) NOT NULL,
+  `debtor_group_uuid`      BINARY(16) NOT NULL,
   `billing_service_id`      SMALLINT UNSIGNED NOT NULL,
   `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `debitor_group_uuid` (`debitor_group_uuid`),
+  KEY `debtor_group_uuid` (`debtor_group_uuid`),
   KEY `billing_service_id` (`billing_service_id`),
   FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`debitor_group_uuid`) REFERENCES `debitor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `debitor_group_history`;
-CREATE TABLE `debitor_group_history` (
+DROP TABLE IF EXISTS `debtor_group_history`;
+CREATE TABLE `debtor_group_history` (
   `uuid` BINARY(16) NOT NULL,
-  `debitor_uuid` BINARY(16) DEFAULT NULL,
-  `debitor_group_uuid` BINARY(16) DEFAULT NULL,
+  `debtor_uuid` BINARY(16) DEFAULT NULL,
+  `debtor_group_uuid` BINARY(16) DEFAULT NULL,
   `income_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` smallint(5) unsigned DEFAULT NULL,
   PRIMARY KEY (`uuid`),
-  KEY `debitor_uuid` (`debitor_uuid`),
-  KEY `debitor_group_uuid` (`debitor_group_uuid`),
+  KEY `debtor_uuid` (`debtor_uuid`),
+  KEY `debtor_group_uuid` (`debtor_group_uuid`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
-  FOREIGN KEY (`debitor_group_uuid`) REFERENCES `debitor_group` (`uuid`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
+  FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS debitor_group_subsidy;
+DROP TABLE IF EXISTS debtor_group_subsidy;
 
-CREATE TABLE debitor_group_subsidy (
+CREATE TABLE debtor_group_subsidy (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `debitor_group_uuid`      BINARY(16) NOT NULL,
+  `debtor_group_uuid`      BINARY(16) NOT NULL,
   `subsidy_id`              SMALLINT UNSIGNED NOT NULL,
   `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `debitor_group_uuid` (`debitor_group_uuid`),
+  KEY `debtor_group_uuid` (`debtor_group_uuid`),
   KEY `subsidy_id` (`subsidy_id`),
   FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`debitor_group_uuid`) REFERENCES `debitor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -680,20 +680,20 @@ CREATE TABLE `employee` (
   `service_id`    SMALLINT(5) UNSIGNED DEFAULT NULL,
   `location_id`   BINARY(16) NOT NULL,
   `creditor_uuid` BINARY(16) DEFAULT NULL,
-  `debitor_uuid`  BINARY(16) DEFAULT NULL,
+  `debtor_uuid`  BINARY(16) DEFAULT NULL,
   `locked`        TINYINT(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fonction_id` (`fonction_id`),
   KEY `service_id` (`service_id`),
   KEY `location_id` (`location_id`),
   KEY `creditor_uuid` (`creditor_uuid`),
-  KEY `debitor_uuid` (`debitor_uuid`),
+  KEY `debtor_uuid` (`debtor_uuid`),
   KEY `grade_id` (`grade_id`),
   FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
-  FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`grade_id`) REFERENCES `grade` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -702,17 +702,17 @@ DROP TABLE IF EXISTS `employee_invoice`;
 CREATE TABLE `employee_invoice` (
   `uuid` BINARY(16) NOT NULL,
   `project_id` smallint(5) unsigned NOT NULL,
-  `debitor_uuid` BINARY(16) NOT NULL,
+  `debtor_uuid` BINARY(16) NOT NULL,
   `creditor_uuid` BINARY(16) NOT NULL,
   `note` text,
   `authorized_by` varchar(80) NOT NULL,
   `date` date NOT NULL,
   `total` decimal(14,4) NOT NULL DEFAULT '0.0000',
   PRIMARY KEY (`uuid`),
-  KEY `debitor_uuid` (`debitor_uuid`),
+  KEY `debtor_uuid` (`debtor_uuid`),
   KEY `project_id` (`project_id`),
   KEY `creditor_uuid` (`creditor_uuid`),
-  FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -851,19 +851,19 @@ DROP TABLE IF EXISTS `group_invoice`;
 CREATE TABLE `group_invoice` (
   `uuid` BINARY(16) NOT NULL,
   `project_id` smallint(5) unsigned NOT NULL,
-  `debitor_uuid` BINARY(16) NOT NULL,
+  `debtor_uuid` BINARY(16) NOT NULL,
   `group_uuid` BINARY(16) NOT NULL,
   `note` text,
   `authorized_by` varchar(80) NOT NULL,
   `date` date NOT NULL,
   `total` decimal(14,4) NOT NULL DEFAULT '0.0000',
   PRIMARY KEY (`uuid`),
-  KEY `debitor_uuid` (`debitor_uuid`),
+  KEY `debtor_uuid` (`debtor_uuid`),
   KEY `project_id` (`project_id`),
   KEY `group_uuid` (`group_uuid`),
-  FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`group_uuid`) REFERENCES `debitor_group` (`uuid`)
+  FOREIGN KEY (`group_uuid`) REFERENCES `debtor_group` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1243,7 +1243,7 @@ CREATE TABLE `patient` (
   `uuid`                 BINARY(16) NOT NULL,
   `project_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `reference`            INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `debitor_uuid`         BINARY(16) NOT NULL,
+  `debtor_uuid`         BINARY(16) NOT NULL,
   `creditor_uuid`        BINARY(16),
   `first_name`           VARCHAR(150) NOT NULL,
   `last_name`            VARCHAR(150) NOT NULL,
@@ -1274,11 +1274,11 @@ CREATE TABLE `patient` (
   UNIQUE KEY `creditor_uuid` (`creditor_uuid`),
   KEY `reference` (`reference`),
   KEY `project_id` (`project_id`),
-  KEY `debitor_uuid` (`debitor_uuid`),
+  KEY `debtor_uuid` (`debtor_uuid`),
   KEY `origin_location_id` (`origin_location_id`),
   KEY `current_location_id` (`current_location_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
   FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1677,7 +1677,7 @@ CREATE TABLE `sale` (
   `reference`     INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `uuid`          BINARY(16) NOT NULL,
   `cost`          DECIMAL(19,4) UNSIGNED NOT NULL,
-  `debitor_uuid`  BINARY(16) NOT NULL,
+  `debtor_uuid`  BINARY(16) NOT NULL,
   `service_id`    SMALLINT(5) UNSIGNED DEFAULT NULL,
   `user_id`       SMALLINT(5) UNSIGNED NOT NULL,
   `discount`      MEDIUMINT(8) UNSIGNED DEFAULT 0,
@@ -1688,11 +1688,11 @@ CREATE TABLE `sale` (
   PRIMARY KEY (`uuid`),
   KEY `reference` (`reference`),
   KEY `project_id` (`project_id`),
-  KEY `debitor_uuid` (`debitor_uuid`),
+  KEY `debtor_uuid` (`debtor_uuid`),
   KEY `service_id` (`service_id`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
