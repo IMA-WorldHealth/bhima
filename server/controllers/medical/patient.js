@@ -18,6 +18,7 @@
 const db        = require('../../lib/db');
 const uuid      = require('node-uuid');
 const BadRequest  = require('../../lib/errors/BadRequest');
+var NotFound = require('../../lib/errors/NotFound');
 
 // create a new patient
 exports.create = create;
@@ -211,7 +212,7 @@ function handleFetchPatient(uid, codes) {
   return db.exec(patientDetailQuery, uid)
     .then(function (rows) {
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound(`Could not find a patient with uuid ${uuid.unparse(uid)}`);
       }
       return rows[0];
     });
@@ -235,7 +236,7 @@ function groups(req, res, next) {
   db.exec(patientExistenceQuery, [uid])
     .then(function (rows) {
       if (isEmpty(rows)) {
-        throw new req.codes.ERR_NOT_FOUND();
+        throw new NotFound(`Could not find an assignation patient with uuid ${uuid.unparse(uid)}`);
       }
 
       return db.exec(patientGroupsQuery, [uid]);

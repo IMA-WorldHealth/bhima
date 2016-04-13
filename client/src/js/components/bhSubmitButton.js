@@ -6,6 +6,6 @@ angular.module('bhima.components')
   template :
     '<button type="submit" class="btn btn-primary" ng-disabled="$ctrl.loadingState" data-method="submit">' +
       '<span class="glyphicon glyphicon-refresh" ng-show="$ctrl.loadingState"></span> ' +
-      '{{ ($ctrl.loadingState ? "UTIL.LOADING" : "FORM.BUTTONS.SUBMIT") | translate }} ' +
+      '{{ ($ctrl.loadingState ? "FORM.INFOS.LOADING" : "FORM.BUTTONS.SUBMIT") | translate }} ' +
     '</button>'
 });
