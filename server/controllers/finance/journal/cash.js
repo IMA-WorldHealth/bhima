@@ -31,11 +31,11 @@ function handleRounding(id) {
       '(SELECT credit_equiv, debit_equiv, account_id, inv_po_id, deb_cred_uuid FROM posting_journal ' +
       'UNION ' +
       'SELECT credit_equiv, debit_equiv, account_id, inv_po_id, deb_cred_uuid FROM general_ledger) AS p ' +
-    'JOIN debitor AS d JOIN debitor_group as dg ON ' +
+    'JOIN debtor AS d JOIN debtor_group as dg ON ' +
       'c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ' +
       'ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id AND ' +
-      'p.deb_cred_uuid = s.debitor_uuid AND  p.account_id = dg.account_id AND ' +
-      'd.uuid = s.debitor_uuid AND d.group_uuid = dg.uuid ' +
+      'p.deb_cred_uuid = s.debtor_uuid AND  p.account_id = dg.account_id AND ' +
+      'd.uuid = s.debtor_uuid AND d.group_uuid = dg.uuid ' +
     'WHERE c.uuid = ? ' +
     'GROUP BY c.uuid;';
 
@@ -156,7 +156,7 @@ exports.payment = function (id, userId, callback) {
 
     var account_type = state.reference.type !== 'E' ? 'credit_account' : 'debit_account' ;
 
-    // Are they a debitor or a creditor?
+    // Are they a debtor or a creditor?
     state.deb_cred_type = state.reference.type === 'E' ? '\'D\'' : '\'C\'';
 
     // calculate exchange rate.  If money coming in, credit is cash.cost,
@@ -314,7 +314,7 @@ exports.refund = function (id, userId, callback) {
 
   sql =
     'SELECT cash_discard.project_id, cash_discard.reference, cash_discard.uuid, cash_discard.cost, ' +
-      'cash_discard.debitor_uuid, cash_discard.cash_uuid, cash_discard.date, cash_discard.description, ' +
+      'cash_discard.debtor_uuid, cash_discard.cash_uuid, cash_discard.date, cash_discard.description, ' +
       'cash_discard.posted, cash.document_id, cash.type, cash.date, cash.debit_account, cash.credit_account, ' +
       'cash.deb_cred_uuid, cash.deb_cred_type, cash.currency_id, cash_item.allocated_cost, cash_item.invoice_uuid ' +
     'FROM cash_discard JOIN cash JOIN cash_item ON ' +

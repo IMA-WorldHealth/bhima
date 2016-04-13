@@ -19,7 +19,7 @@ function creditNote(id, userId, cb) {
   var sql, data, reference, cfg = {}, queries = {};
 
   sql =
-    'SELECT credit_note.project_id, project.enterprise_id, credit_note.cost, credit_note.debitor_uuid, note_date, credit_note.sale_uuid, ' +
+    'SELECT credit_note.project_id, project.enterprise_id, credit_note.cost, credit_note.debtor_uuid, note_date, credit_note.sale_uuid, ' +
       'credit_note.description, inventory_uuid, quantity, sale_item.uuid as item_uuid, ' +
       'transaction_price, debit, credit, service.profit_center_id ' +
     'FROM credit_note JOIN sale JOIN service JOIN sale_item JOIN inventory JOIN inventory_unit JOIN project ' +
@@ -156,7 +156,7 @@ function create(id, userId, cb, caution) {
 
   sql =
     'SELECT sale.project_id, project.enterprise_id, sale.uuid, enterprise.currency_id, ' +
-      'sale.debitor_uuid, sale.user_id, sale.discount, sale.date, ' +
+      'sale.debtor_uuid, sale.user_id, sale.discount, sale.date, ' +
       'sale.cost, sale.description, sale_item.uuid as item_uuid, sale_item.transaction_price, sale_item.debit, ' +
       'sale_item.credit, sale_item.quantity, inventory.group_uuid, service.profit_center_id ' +
     'FROM sale JOIN sale_item JOIN inventory JOIN project JOIN enterprise JOIN service ON ' +
@@ -240,9 +240,9 @@ function create(id, userId, cb, caution) {
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
       'SELECT sale.project_id, ' + [sanitize.escape(uuid.v4()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
         'sale.date, sale.description, ' + [sanitize.escape(item.account_id), item.value, 0, item.value, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-        reference.currency_id + ', sale.debitor_uuid, \'D\', sale.uuid, ' + [cfg.originId, userId].join(', ') + ' ' +
-      'FROM sale JOIN debitor JOIN debitor_group ON ' +
-        'sale.debitor_uuid=debitor.uuid AND debitor.group_uuid=debitor_group.uuid ' +
+        reference.currency_id + ', sale.debtor_uuid, \'D\', sale.uuid, ' + [cfg.originId, userId].join(', ') + ' ' +
+      'FROM sale JOIN debtor JOIN debtor_group ON ' +
+        'sale.debtor_uuid=debtor.uuid AND debtor.group_uuid=debtor_group.uuid ' +
       'WHERE sale.uuid = ' + sanitize.escape(id) + ';';
       subsidies_cost += item.value;
       queries.subsidies.push(sql);
@@ -255,10 +255,10 @@ function create(id, userId, cb, caution) {
         'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
       'SELECT sale.project_id, ' + [sanitize.escape(uuid.v4()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
-        'sale.date, sale.description, debitor_group.account_id, ' + [reference.cost - subsidies_cost, 0, reference.cost - subsidies_cost, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-        reference.currency_id + ', sale.debitor_uuid, \'D\', sale.uuid, ' + [cfg.originId, userId].join(', ') + ' ' +
-      'FROM sale JOIN debitor JOIN debitor_group ON ' +
-        'sale.debitor_uuid=debitor.uuid AND debitor.group_uuid=debitor_group.uuid ' +
+        'sale.date, sale.description, debtor_group.account_id, ' + [reference.cost - subsidies_cost, 0, reference.cost - subsidies_cost, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
+        reference.currency_id + ', sale.debtor_uuid, \'D\', sale.uuid, ' + [cfg.originId, userId].join(', ') + ' ' +
+      'FROM sale JOIN debtor JOIN debtor_group ON ' +
+        'sale.debtor_uuid=debtor.uuid AND debtor.group_uuid=debtor_group.uuid ' +
       'WHERE sale.uuid=' + sanitize.escape(id) + ';';
   }
 
@@ -315,10 +315,10 @@ function create(id, userId, cb, caution) {
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
           'SELECT ' + ['\'' + uuid.v4() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.date)), '\''+descript+'\''].join(',') + ', ' +
-            'debitor_group.account_id, ' + [0, transAmount, 0, transAmount, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
+            'debtor_group.account_id, ' + [0, transAmount, 0, transAmount, reference.currency_id, '\'' + reference.debtor_uuid + '\''].join(',') +
             ', \'D\', null, ' + [cfg.originId, userId].join(',') + ' ' +
-          'FROM debitor_group WHERE debitor_group.uuid= (' +
-          'SELECT debitor.group_uuid FROM debitor WHERE debitor.uuid='+ sanitize.escape(reference.debitor_uuid) +');';
+          'FROM debtor_group WHERE debtor_group.uuid= (' +
+          'SELECT debtor.group_uuid FROM debtor WHERE debtor.uuid='+ sanitize.escape(reference.debtor_uuid) +');';
 
       queries.DebitorCrediting =
         'INSERT INTO posting_journal '+
@@ -326,10 +326,10 @@ function create(id, userId, cb, caution) {
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
           'SELECT ' + ['\'' + uuid.v4() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.date)), '\''+descript+'\''].join(',') + ', ' +
-            'debitor_group.account_id, ' + [transAmount, 0, transAmount, 0, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
+            'debtor_group.account_id, ' + [transAmount, 0, transAmount, 0, reference.currency_id, '\'' + reference.debtor_uuid + '\''].join(',') +
             ', \'D\', ' + [sanitize.escape(reference.uuid), cfg.originId, userId].join(',') + ' ' +
-          'FROM debitor_group WHERE debitor_group.uuid= (' +
-          'SELECT debitor.group_uuid FROM debitor WHERE debitor.uuid='+ sanitize.escape(reference.debitor_uuid) +');';
+          'FROM debtor_group WHERE debtor_group.uuid= (' +
+          'SELECT debtor.group_uuid FROM debtor WHERE debtor.uuid='+ sanitize.escape(reference.debtor_uuid) +');';
 
       return q.all([
         db.exec(queries.cautionDebiting),

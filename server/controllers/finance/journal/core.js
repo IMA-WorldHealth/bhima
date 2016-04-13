@@ -43,15 +43,15 @@ checks.validPeriod = function (enterpriseId, date) {
   });
 };
 
-// checks if the deb_cred_uuid field is actually a debitor or a creditor.
+// checks if the deb_cred_uuid field is actually a debtor or a creditor.
 checks.validDebtorOrCreditor = function (id) {
-  // NOTE: This is NOT STRICT. It may find a debitor when a creditor was
+  // NOTE: This is NOT STRICT. It may find a debtor when a creditor was
   // requested, or vice versa.  This is fine for the checks here, but not
   // for posting to the general ledger.
   var sql =
     'SELECT uuid ' +
     'FROM (' +
-      'SELECT debitor.uuid FROM debitor WHERE uuid = ? ' +
+      'SELECT debtor.uuid FROM debtor WHERE uuid = ? ' +
     'UNION ' +
       'SELECT creditor.uuid FROM creditor WHERE uuid = ?' +
     ')c;';

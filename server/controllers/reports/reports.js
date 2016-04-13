@@ -17,7 +17,7 @@ var bilanContext                       = require('./data/bilan');
 var grandLivreContext                  = require('./data/grand_livre');
 var EmployeeStateContext               = require('./data/employee_state');
 var accountResultContext               = require('./data/account_result');
-var debitorGroupReportContext          = require('./data/debitor_group_report');
+var debtorGroupReportContext          = require('./data/debtor_group_report');
 var debtorGroupAnnualReportContext     = require('./data/debtor_group_annual_report');
 var variationExploitationContext       = require('./data/variation_exploitation');
 
@@ -50,9 +50,9 @@ var documentHandler = {
     template : dots.account_result, //templating provider
     context :  accountResultContext // data provider
   },
-  debitor_group_report : {
-    template : dots.debitor_group_report,
-    context :  debitorGroupReportContext
+  debtor_group_report : {
+    template : dots.debtor_group_report,
+    context :  debtorGroupReportContext
   },
   debtor_group_annual_report : {
     template : dots.debtor_group_annual_report,

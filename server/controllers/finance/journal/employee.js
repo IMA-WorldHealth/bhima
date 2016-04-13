@@ -17,7 +17,7 @@ function invoice(id, userId, cb) {
   var sql, references = {}, cfg = {};
 
   sql =
-    'SELECT employee_invoice.uuid, employee_invoice.project_id, project.enterprise_id, employee_invoice.debitor_uuid,  ' +
+    'SELECT employee_invoice.uuid, employee_invoice.project_id, project.enterprise_id, employee_invoice.debtor_uuid,  ' +
       'employee_invoice.note, employee_invoice.authorized_by, employee_invoice.date, ' +
       'employee_invoice.total, employee_invoice_item.invoice_uuid, employee_invoice_item.cost, ' +
       'employee_invoice_item.uuid as gid ' +
@@ -80,11 +80,11 @@ function invoice(id, userId, cb) {
             'creditor_group.account_id, employee_invoice_item.cost, 0, ' +
             'employee_invoice_item.cost, 0, enterprise.currency_id,  ' +
             'employee_invoice.creditor_uuid, \'C\', employee_invoice_item.invoice_uuid, ?, ? ' +
-          'FROM employee_invoice JOIN employee_invoice_item JOIN debitor JOIN creditor JOIN debitor_group JOIN creditor_group JOIN sale JOIN project JOIN enterprise ON ' +
+          'FROM employee_invoice JOIN employee_invoice_item JOIN debtor JOIN creditor JOIN debtor_group JOIN creditor_group JOIN sale JOIN project JOIN enterprise ON ' +
           '  employee_invoice.uuid = employee_invoice_item.payment_uuid AND ' +
-          '  employee_invoice.debitor_uuid = debitor.uuid  AND ' +
+          '  employee_invoice.debtor_uuid = debtor.uuid  AND ' +
           '  employee_invoice.creditor_uuid = creditor.uuid  AND ' +
-          '  debitor.group_uuid = debitor_group.uuid AND ' +
+          '  debtor.group_uuid = debtor_group.uuid AND ' +
           '  creditor.group_uuid = creditor_group.uuid AND ' +
           '  employee_invoice_item.invoice_uuid = sale.uuid AND ' +
           '  employee_invoice.project_id = project.id AND ' +
@@ -105,13 +105,13 @@ function invoice(id, userId, cb) {
             'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
             'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
           'SELECT employee_invoice.project_id, ?, ?, ?, ?, ?, ?, ' +
-            'debitor_group.account_id, 0, employee_invoice_item.cost, ' +
+            'debtor_group.account_id, 0, employee_invoice_item.cost, ' +
             '0, employee_invoice_item.cost, enterprise.currency_id,  ' +
-            'employee_invoice.debitor_uuid, \'D\', employee_invoice_item.invoice_uuid, ?, ? ' +
-          'FROM employee_invoice JOIN employee_invoice_item JOIN debitor JOIN debitor_group JOIN sale JOIN project JOIN enterprise ON ' +
+            'employee_invoice.debtor_uuid, \'D\', employee_invoice_item.invoice_uuid, ?, ? ' +
+          'FROM employee_invoice JOIN employee_invoice_item JOIN debtor JOIN debtor_group JOIN sale JOIN project JOIN enterprise ON ' +
             'employee_invoice.uuid = employee_invoice_item.payment_uuid AND ' +
-            'employee_invoice.debitor_uuid = debitor.uuid  AND ' +
-            'debitor.group_uuid = debitor_group.uuid AND ' +
+            'employee_invoice.debtor_uuid = debtor.uuid  AND ' +
+            'debtor.group_uuid = debtor_group.uuid AND ' +
             'employee_invoice_item.invoice_uuid = sale.uuid AND ' +
             'employee_invoice.project_id = project.id AND ' +
             'project.enterprise_id = enterprise.id ' +

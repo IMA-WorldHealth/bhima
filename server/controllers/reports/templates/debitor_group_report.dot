@@ -13,7 +13,7 @@
   </hgroup>
 
   <h6 class="clean-title">
-    {{=it.dataStructure.TITLE}} {{=it.debitorGroupName}} {{=it.reportDate}}
+    {{=it.dataStructure.TITLE}} {{=it.debtorGroupName}} {{=it.reportDate}}
   </h6>
 
   <section>

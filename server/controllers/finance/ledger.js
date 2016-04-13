@@ -13,8 +13,8 @@ var q =  require('q');
 var db = require('./../../lib/db');
 var sanitize = require('./../../lib/sanitize');
 
-exports.debitor = debtor;
-exports.debitor_group = debitorGroup;
+exports.debtor = debtor;
+exports.debtor_group = debtorGroup;
 exports.employee_invoice = employeeInvoice;
 exports.distributableSale = distributableSale;
 
@@ -44,7 +44,7 @@ exports.compileDebtorLedgerSale = function (req, res, next) {
 };
 
 exports.compileGroupLedger = function (req, res, next) {
-  debitorGroup(req.params.id)
+  debtorGroup(req.params.id)
   .then(function (rows) {
     res.send(rows);
   })
@@ -88,9 +88,9 @@ function debtor(id) {
 
   var query =
     'SELECT account_id ' +
-    'FROM debitor JOIN debitor_group ON ' +
-      'debitor.group_uuid = debitor_group.uuid ' +
-    'WHERE debitor.uuid=' + id +';';
+    'FROM debtor JOIN debtor_group ON ' +
+      'debtor.group_uuid = debtor_group.uuid ' +
+    'WHERE debtor.uuid=' + id +';';
 
   db.exec(query)
   .then(function (ans) {
@@ -161,15 +161,15 @@ function debtor(id) {
   return defer.promise;
 }
 
-function debitorGroup(id) {
+function debtorGroup(id) {
   var defer = q.defer();
 
   // debtor query
-  if (!id) { defer.reject(new Error('No debitor_group id selected!')); }
+  if (!id) { defer.reject(new Error('No debtor_group id selected!')); }
 
   var query =
-    'SELECT `debitor_group`.`account_id` FROM `debitor_group` ' +
-    ' WHERE `debitor_group`.`uuid`=?';
+    'SELECT `debtor_group`.`account_id` FROM `debtor_group` ' +
+    ' WHERE `debtor_group`.`uuid`=?';
 
   db.exec(query, [id])
   .then(function (ans) {
@@ -236,7 +236,7 @@ function employeeInvoice(id) {
   var defer = q.defer();
 
   // debtor query
-  if (!id) { defer.reject(new Error('No debitor_group id selected!')); }
+  if (!id) { defer.reject(new Error('No debtor_group id selected!')); }
   else { id = sanitize.escape(id); }
 
   var query =
@@ -317,9 +317,9 @@ function distributableSale(id) {
 
   var query =
     'SELECT `account_id` ' +
-    'FROM `debitor` JOIN `debitor_group` ON ' +
-      '`debitor`.`group_uuid` = `debitor_group`.`uuid` ' +
-    'WHERE `debitor`.`uuid`=' + id +';';
+    'FROM `debtor` JOIN `debtor_group` ON ' +
+      '`debtor`.`group_uuid` = `debtor_group`.`uuid` ' +
+    'WHERE `debtor`.`uuid`=' + id +';';
 
   db.exec(query)
   .then(function (ans) {
@@ -388,7 +388,7 @@ function distributableSale(id) {
   return defer.promise;
 }
 
-// Sale Balance debitor
+// Sale Balance debtor
 function debtorSale(id, saleId) {
   var defer = q.defer();
 
@@ -398,9 +398,9 @@ function debtorSale(id, saleId) {
 
   var query =
     'SELECT account_id ' +
-    'FROM debitor JOIN debitor_group ON ' +
-      'debitor.group_uuid = debitor_group.uuid ' +
-    'WHERE debitor.uuid=' + id +';';
+    'FROM debtor JOIN debtor_group ON ' +
+      'debtor.group_uuid = debtor_group.uuid ' +
+    'WHERE debtor.uuid=' + id +';';
 
   db.exec(query)
   .then(function (ans) {

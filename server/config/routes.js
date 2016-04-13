@@ -206,11 +206,11 @@ exports.configure = function (app) {
 
   // ledger routes
   // TODO : needs renaming
-  app.get('/ledgers/debitor/:id', ledger.compileDebtorLedger);
-  app.get('/ledgers/debitor_group/:id', ledger.compileGroupLedger);
+  app.get('/ledgers/debtor/:id', ledger.compileDebtorLedger);
+  app.get('/ledgers/debtor_group/:id', ledger.compileGroupLedger);
   app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);
   app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
-  app.get('/ledgers/debitor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
+  app.get('/ledgers/debtor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.getFiscalYears);

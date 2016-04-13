@@ -73,16 +73,16 @@ function convert(data) {
     data.origin_location_id = db.bid(data.origin_location_id);
   }
 
-  if (data.debitor_uuid) {
-    data.debitor_uuid = db.bid(data.debitor_uuid);
+  if (data.debtor_uuid) {
+    data.debtor_uuid = db.bid(data.debtor_uuid);
   }
 
   if (data.creditor_uuid) {
     data.creditor_uuid = db.bid(data.creditor_uuid);
   }
 
-  if (data.debitor_group_uuid) {
-    data.debitor_group_uuid = db.bid(data.debitor_group_uuid);
+  if (data.debtor_group_uuid) {
+    data.debtor_group_uuid = db.bid(data.debtor_group_uuid);
   }
 
   if (data.dob) {
@@ -124,9 +124,9 @@ function create(req, res, next) {
   finance = convert(finance);
   medical = convert(medical);
 
-  medical.debitor_uuid = finance.uuid;
+  medical.debtor_uuid = finance.uuid;
 
-  writeDebtorQuery = 'INSERT INTO debitor (uuid, group_uuid, text) VALUES ' +
+  writeDebtorQuery = 'INSERT INTO debtor (uuid, group_uuid, text) VALUES ' +
     '(?, ?, ?)';
 
   writePatientQuery = 'INSERT INTO patient SET ?';
@@ -134,7 +134,7 @@ function create(req, res, next) {
   transaction = db.transaction();
 
   transaction
-    .addQuery(writeDebtorQuery, [finance.uuid, finance.debitor_group_uuid, generatePatientText(medical)])
+    .addQuery(writeDebtorQuery, [finance.uuid, finance.debtor_group_uuid, generatePatientText(medical)])
     .addQuery(writePatientQuery, [medical]);
 
   transaction.execute()
@@ -198,15 +198,15 @@ function update(req, res, next) {
 
 function handleFetchPatient(uid, codes) {
   var patientDetailQuery =
-    `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debitor_uuid) AS debitor_uuid, p.first_name,
+    `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
       p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
       BUID(p.origin_location_id) as origin_location_id, p.reference, p.title, p.address_1, p.address_2,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, proj.abbr, d.text,
-      dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debitor_group_uuid,
-      dg.locked, dg.name as debitor_group_name
-    FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg
-    ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
+      dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
+      dg.locked, dg.name as debtor_group_name
+    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg
+    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
     WHERE p.uuid = ?;`;
 
   return db.exec(patientDetailQuery, uid)
@@ -387,15 +387,15 @@ function searchReference (req, res, next) {
   // use MYSQL to look up the reference
   // TODO This could probably be optimized
   sql =
-    'SELECT q.uuid, q.project_id, q.debitor_uuid, q.first_name, q.last_name, q.middle_name, ' +
+    'SELECT q.uuid, q.project_id, q.debtor_uuid, q.first_name, q.last_name, q.middle_name, ' +
       'q.sex, q.dob, q.origin_location_id, q.reference, q.text, ' +
       'q.account_id, q.price_list_uuid, q.is_convention, q.locked ' +
     'FROM (' +
-      'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, ' +
+      'SELECT p.uuid, p.project_id, p.debtor_uuid, p.first_name, p.last_name, p.middle_name, ' +
       'p.sex, p.dob, CONCAT(proj.abbr, p.reference) AS reference, p.origin_location_id, d.text, ' +
       'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
-      'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-        'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
+      'FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg ' +
+        'ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
     ') AS q ' +
     'WHERE q.reference = ?;';
 
@@ -426,11 +426,11 @@ function searchFuzzy(req, res, next) {
 
   // search on the match parameter
   sql =
-    `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debitor_uuid) AS debitor_uuid, p.first_name,
+    `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
       p.last_name,  p.middle_name, p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) as price_list_uuid, dg.is_convention, dg.locked
-    FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg
-    ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
+    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg
+    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
     WHERE
       LEFT(LOWER(CONCAT(p.last_name, \' \', p.middle_name, \' \', p.first_name )), CHAR_LENGTH(?)) = ? OR
       LEFT(LOWER(CONCAT(p.last_name, \' \', p.first_name, \' \', p.middle_name)), CHAR_LENGTH(?)) = ? OR
@@ -507,7 +507,7 @@ function search(req, res, next) {
   }
 
   var columns =
-      'BUID(q.uuid) AS uuid, q.project_id, q.reference, BUID(q.debitor_uuid) as debitor_uuid, ' +
+      'BUID(q.uuid) AS uuid, q.project_id, q.reference, BUID(q.debtor_uuid) as debtor_uuid, ' +
       'q.first_name, q.last_name, q.middle_name, q.sex, q.dob, q.registration_date ';
 
   // customize returned columns according detailled results or not
@@ -523,15 +523,15 @@ function search(req, res, next) {
   // build the main part of the sql query
   sql =
     `SELECT ${columns} FROM (
-      SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debitor_uuid AS debitor_uuid,
+      SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debtor_uuid AS debtor_uuid,
         p.creditor_uuid, p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name,
         p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer,
         p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2,
         p.renewal, p.origin_location_id, p.current_location_id, p.registration_date,
         p.title, p.notes, p.hospital_no, d.text, proj.abbr,
         dg.account_id, BUID(dg.price_list_uuid) as price_list_uuid, dg.is_convention, dg.locked
-      FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg
-        ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
+      FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg
+        ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
       ) AS q `;
 
   // complete the sql query according parameters of search
@@ -608,14 +608,14 @@ function billingServices(req, res, next) {
 
       // get all of the billing services from debtor group subscriptions
       'SELECT * ' +
-      'FROM debitor_group_billing_service ' +
-      'WHERE debitor_group_uuid = ' +
+      'FROM debtor_group_billing_service ' +
+      'WHERE debtor_group_uuid = ' +
 
-        // find the debitor group uuid
-        '(SELECT debitor_group_uuid ' +
-        'FROM debitor ' +
+        // find the debtor group uuid
+        '(SELECT debtor_group_uuid ' +
+        'FROM debtor ' +
         'LEFT JOIN patient ' +
-        'ON patient.debitor_uuid = debitor.uuid ' +
+        'ON patient.debtor_uuid = debtor.uuid ' +
         'WHERE patient.uuid = ?)' +
       ') AS patient_services ' +
 
@@ -661,16 +661,16 @@ function subsidies(req, res, next) {
         'WHERE patient_uuid = ?) ' +
     'UNION ' +
 
-      // get all subsidies from debitor group subscriptions
+      // get all subsidies from debtor group subscriptions
       'SELECT * ' +
-      'FROM debitor_group_subsidy ' +
-      'WHERE debitor_group_uuid = ' +
+      'FROM debtor_group_subsidy ' +
+      'WHERE debtor_group_uuid = ' +
 
-        // find the debitor group uuid
-        '(SELECT debitor_group_uuid ' +
-        'FROM debitor ' +
+        // find the debtor group uuid
+        '(SELECT debtor_group_uuid ' +
+        'FROM debtor ' +
         'LEFT JOIN patient ' +
-        'ON patient.debitor_uuid = debitor.uuid ' +
+        'ON patient.debtor_uuid = debtor.uuid ' +
         'WHERE patient.uuid = ?)' +
       ') AS patient_services ' +
 

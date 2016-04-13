@@ -46,7 +46,7 @@ function lookupDebtorGroup(uid) {
     `SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, BUID(location_id) as location_id,
       phone, email, note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
       apply_subsidies, apply_discounts, apply_billing_services
-    FROM debitor_group
+    FROM debtor_group
     WHERE uuid = ?;`;
 
   return db.exec(sql, [uid])
@@ -106,7 +106,7 @@ function convert(data) {
  * };
  */
 function create(req, res, next) {
-  var sql = 'INSERT INTO debitor_group SET ? ;';
+  var sql = 'INSERT INTO debtor_group SET ? ;';
 
   // convert any incoming uuids into binary
   var data = convert(req.body);
@@ -130,7 +130,7 @@ function create(req, res, next) {
  * @function update
  */
 function update(req, res, next) {
-  var sql = 'UPDATE debitor_group SET ? WHERE uuid = ?;';
+  var sql = 'UPDATE debtor_group SET ? WHERE uuid = ?;';
   const uid = db.bid(req.params.uuid);
 
   // convert any incoming uuids to binary
@@ -185,14 +185,14 @@ function detail(req, res, next) {
  */
 function list(req, res, next) {
   var sql =
-    'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention FROM debitor_group ';
+    'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention FROM debtor_group ';
 
   if (req.query.detailed === '1') {
     sql =
       `SELECT uuid, name, account_id, BUID(location_id) as location_id, phone, email, note, locked,
         max_credit, is_convention, price_list_uuid,
         apply_subsidies, apply_discounts, apply_billing_services
-      FROM debitor_group `;
+      FROM debtor_group `;
 
     delete req.query.detailed;
   }

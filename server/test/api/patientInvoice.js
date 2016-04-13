@@ -36,7 +36,7 @@ describe('The /sales API', function () {
   var mockSale = {
     project_id: 1,
     cost: 35,
-    debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+    debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
     date: new Date('2016-01-13'),
     description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
     service_id: 1,
@@ -49,7 +49,7 @@ describe('The /sales API', function () {
   var missingSaleItems = {
     project_id: 1,
     cost: 8.5,
-    debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+    debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
     date: new Date('2016-01-13'),
     description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
     service_id: 1,
@@ -59,7 +59,7 @@ describe('The /sales API', function () {
   var missingSaleDate = {
     project_id: 1,
     cost: 35.0,
-    debitor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+    debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
     description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
     service_id: 1,
     is_distributable: true,
@@ -163,8 +163,8 @@ describe('The /sales API', function () {
     });
 
     // valid filter, all results
-    it('GET /sales/search?debitor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two sales', function () {
-      return agent.get('/sales/search?debitor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
+    it('GET /sales/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two sales', function () {
+      return agent.get('/sales/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
         .then(function (res) {
           helpers.api.listed(res, numCreatedSales);
         })

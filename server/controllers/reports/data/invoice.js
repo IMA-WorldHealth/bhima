@@ -82,16 +82,16 @@ exports.compile = function (options) {
 
     sql =
       'SELECT patient.hospital_no, patient.sex, CONCAT(patient.first_name, " ", patient.middle_name, " ", patient.last_name) AS patientName, ' +
-        'patient.profession, CONCAT(project.abbr, patient.reference) AS code, debitor_group.name AS groupName, patient.registration_date, ' +
+        'patient.profession, CONCAT(project.abbr, patient.reference) AS code, debtor_group.name AS groupName, patient.registration_date, ' +
         'patient.dob ' +
-      'FROM debitor JOIN patient JOIN debitor_group JOIN project ON ' +
-        'debitor.uuid = patient.debitor_uuid AND ' +
-        'debitor_group.uuid = debitor.group_uuid AND ' +
+      'FROM debtor JOIN patient JOIN debtor_group JOIN project ON ' +
+        'debtor.uuid = patient.debtor_uuid AND ' +
+        'debtor_group.uuid = debtor.group_uuid AND ' +
         'project.id = patient.project_id ' +
-      'WHERE debitor.uuid = ?';
+      'WHERE debtor.uuid = ?';
 
     // Query for recipient information
-    return db.exec(sql, [initialLineItem.debitor_uuid]);
+    return db.exec(sql, [initialLineItem.debtor_uuid]);
   })
   .then(function (result) {
     context.recipient = result[0];
