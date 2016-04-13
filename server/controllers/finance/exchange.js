@@ -5,6 +5,7 @@
 * rates.
 */
 var db = require('../../lib/db');
+var NotFound = require('../../lib/errors/NotFound');
 
 // GET /exchange
 //
@@ -86,7 +87,7 @@ exports.update = function update(req, res, next) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+	  throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
     }
 
     res.status(200).json(rows[0]);
@@ -107,7 +108,7 @@ exports.delete = function del(req, res, next) {
 
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
     }
 
     res.status(204).json();

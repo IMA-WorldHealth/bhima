@@ -1,68 +1,74 @@
 'use strict';
 
-/** 
- * @description 
- * BHIMA fork of angular's native currency filter. 
- * Allows currency to be defined for each filter individually. 
+/**
+ * BHIMA fork of angular's native currency filter.
+ * Allows currency to be defined for each filter individually.
  * Currency IDs are used to fetch configuration files asynchronously from the server.
- * Completely seperates locale from currency format to facilitate reliable accounting.
+ * Completely separates locale from currency format to facilitate reliable accounting.
  * Clearly fails given an unsupported currency ID or configuration.
  *
  * @param {number} amount Value to be converted into currency
- * @param {number} currencyId ID for 
+ * @param {number} currencyId ID for
  * @returns {string} Valid supported currency or error string
- */ 
+ */
 
 angular.module('bhima.filters')
-.filter('currency', ['currencyFormat', 'SessionService', function (CurrencyFormat, Session) { 
-  var requireCurrencyDefinition = false;     
-  
+.filter('currency', CurrencyFilter);
+
+CurrencyFilter.$inject = [
+  'currencyFormat', 'SessionService'
+];
+
+
+function CurrencyFilter(CurrencyFormat, Session) {
+  var requireCurrencyDefinition = false;
+
   function currencyFilter(amount, currencyId) {
     var formatConfiguration;
-    var amountUndefined = angular.isUndefined(amount) || angular === null; 
+    var amountUndefined = angular.isUndefined(amount) || angular === null;
 
-    if (angular.isUndefined(currencyId)) { 
+    if (angular.isUndefined(currencyId)) {
 
-      if (requireCurrencyDefinition) { 
+      if (requireCurrencyDefinition) {
         return formatError('INVALID_CURRENCY_DEFINITION', amount);
-      } else { 
-        
-        // Display enterprise currency unless otherwise specified 
+      } else {
+
+        // Display enterprise currency unless otherwise specified
         currencyId = Session.enterprise.currency_id;
       }
     }
-    
-    // Terminate early to reduce calculations for ill formed requests 
-    if (amountUndefined) { 
+
+    // Terminate early to reduce calculations for ill formed requests
+    if (amountUndefined) {
       return null;
     }
 
-    // Currency cache has not yet retrieved available currency index 
-    if (!CurrencyFormat.indexReady()) { 
+    // Currency cache has not yet retrieved available currency index
+    if (!CurrencyFormat.indexReady()) {
       return null;
     }
-    
+
     formatConfiguration = CurrencyFormat.request(currencyId);
-    
+
     // No configuration found - definition is probably being fetched
-    if (angular.isUndefined(formatConfiguration)) { 
+    if (angular.isUndefined(formatConfiguration)) {
       return null;
     }
-    
+
     // Currency ID did not match a currency ID or format configuration was not found
-    if (!formatConfiguration.supported) { 
+    if (!formatConfiguration.supported) {
       return formatError('CURRENCY_NOT_SUPPORTED', amount);
     }
-    
+
     return formatNumber(amount, formatConfiguration.PATTERNS[1], formatConfiguration.GROUP_SEP, formatConfiguration.DECIMAL_SEP)
       .replace(/\u00A4/g, formatConfiguration.CURRENCY_SYM);
   }
 
-  // Utility methods
-  function formatError(message, amount) { 
+  // utility methods
+  function formatError(message, amount) {
     return message.concat('(', amount, ')');
   }
-  
+
   // Formatting method directly from angular native filter - does not support BHIMA coding guidelines
   var DECIMAL_SEP = '.';
   function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
@@ -134,7 +140,7 @@ angular.module('bhima.filters')
         fraction += '0';
       }
 
-      if (fractionSize && fractionSize !== "0") formatedText += decimalSep + fraction.substr(0, fractionSize); // jshint ignore:line
+      if (fractionSize && fractionSize !== '0') { formatedText += decimalSep + fraction.substr(0, fractionSize); }
     } else {
       if (fractionSize > 0 && number < 1) {
         formatedText = number.toFixed(fractionSize);
@@ -153,5 +159,6 @@ angular.module('bhima.filters')
   }
 
   currencyFilter.$stateful = true;
+
   return currencyFilter;
-}]);
+}

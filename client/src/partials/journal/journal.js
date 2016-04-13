@@ -49,11 +49,21 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
   // bind the transactions service to populate the grid component
   vm.gridOptions.data = Transactions.list.data;
 
-  // enable filter by default
+  // enable filter option
   vm.gridOptions.enableFiltering = true;
 
   /**
    * Column defintions; specify the configuration and behaviour for each column
+   * Initialise each of the journal utilities, providing them access to the journal
+   * configuration options :
+   *    sorting = new Sorting(vm.gridOptions);
+   *    pagination = new Pagination(vm.gridOptions, Transactions.list.data);
+   *    grouping = new Grouping(vm.gridOptions);
+   *    filtering  = new Filtering();
+   */
+
+  /**
+   * Column definitions; specify the configuration and behaviour for each column
    * in the journal grid.
    *
    * - Note:  Setting the grouping priority without sorting by the same column will
@@ -91,4 +101,5 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
     // @fixme this field should not come from the database as 'cc'
     { field : 'cc', displayName : 'Cost Center', visible : false }
   ];
+
 }

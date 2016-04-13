@@ -5,6 +5,7 @@
 
 */
 var db = require('../../lib/db');
+var NotFound = require('../../lib/errors/NotFound');
 
 // GET /Function
 function lookupFunction(id, codes) {
@@ -18,7 +19,7 @@ function lookupFunction(id, codes) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a Function with id ${id}`);
     }
 
     return rows[0];
@@ -115,7 +116,7 @@ function del(req, res, next) {
 
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a function with id ${req.params.id}`);
     }
 
     res.status(204).json();

@@ -6,6 +6,7 @@
 *  And it is not possible to remove an Enterprise
 */
 var db = require('../../lib/db');
+var NotFound    = require('../../lib/errors/NotFound');
 
 // converts uuids appropriately
 function convert(data) {
@@ -50,7 +51,7 @@ exports.detail = function detail(req, res, next) {
   db.exec(sql, [enterpriseId])
   .then(function (rows) {
     if (!rows.length) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find an Enterprise with id ${enterpriseId}`);
     }
     res.status(200).json(rows[0]);
   })
@@ -100,7 +101,7 @@ exports.update = function update(req, res, next) {
   db.exec(sql, [queryData, enterpriseId])
   .then(function (row) {
     if (!row.affectedRows) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find an Enterprise with id ${enterpriseId}`);
     }
 
     var sql2 = 'SELECT id, name, abbr, phone, email, location_id, logo, currency_id, po_box FROM enterprise WHERE id = ?;';

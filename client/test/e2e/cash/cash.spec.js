@@ -28,17 +28,6 @@ describe('Cash Payments Module', function () {
     text : 'Test Primary Cashbox B',
   };
 
-  /**
-  * This function is used to extract the path after the URL hash
-  */
-  function getCurrentPath() {
-    return browser.getCurrentUrl()
-    .then(function (url) {
-      var partial = url.split('#')[1];
-      return '#'.concat(partial);
-    });
-  }
-
   describe('Cashbox Select Interface', function () {
 
     it('navigating to /cash/:unknownId should reroute to /cash', function () {
@@ -47,7 +36,7 @@ describe('Cash Payments Module', function () {
       browser.get(path.concat('/unknownId'));
 
       // the page should be rerouted to the '/cash' page.
-      expect(getCurrentPath()).to.eventually.equal(path);
+      expect(helpers.getCurrentPath()).to.eventually.equal(path);
     });
 
     it('navigating to a known cashbox should not be re-routed', function () {
@@ -59,7 +48,7 @@ describe('Cash Payments Module', function () {
       browser.get(target);
 
       // confirm that we actually go to the page
-      expect(getCurrentPath()).to.eventually.equal(target);
+      expect(helpers.getCurrentPath()).to.eventually.equal(target);
     });
 
     it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', function () {
@@ -73,13 +62,13 @@ describe('Cash Payments Module', function () {
       // make sure all $http/$timeout requests clear before moving forward
       browser.waitForAngular();
 
-      expect(getCurrentPath()).to.eventually.equal(target);
+      expect(helpers.getCurrentPath()).to.eventually.equal(target);
 
       // attempt to return to /cash manually
       browser.get(path);
 
       // expect that we were routed back to cashbox A
-      expect(getCurrentPath()).to.eventually.equal(target);
+      expect(helpers.getCurrentPath()).to.eventually.equal(target);
     });
 
     it('navigating to /cash after a selection is made should re-route to /cash/:id', function () {
@@ -95,13 +84,13 @@ describe('Cash Payments Module', function () {
       browser.waitForAngular();
 
       // confirm that we actually go to the page
-      expect(getCurrentPath()).to.eventually.equal(target);
+      expect(helpers.getCurrentPath()).to.eventually.equal(target);
 
       // attempt to return to the cash page manually
       browser.get(path);
 
       // the browser should be rerouted to the cashboxB page
-      expect(getCurrentPath()).to.eventually.equal(target);
+      expect(helpers.getCurrentPath()).to.eventually.equal(target);
     });
 
     it('should allow a user to select and deselect a cashbox', function () {
@@ -111,7 +100,7 @@ describe('Cash Payments Module', function () {
 
       // navigate to the cash payements module
       browser.get(targetInitial);
-      expect(getCurrentPath()).to.eventually.equal(targetInitial);
+      expect(helpers.getCurrentPath()).to.eventually.equal(targetInitial);
 
       // make sure we are in the correct cashbox
       var hasCashboxAText = EC.textToBePresentInElement($('[data-cashbox-text]'), cashboxA.text);
@@ -124,7 +113,7 @@ describe('Cash Payments Module', function () {
       browser.waitForAngular();
 
       // ensure we get back to the cashbox select module
-      expect(getCurrentPath()).to.eventually.equal(path);
+      expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
       // attempt to navigate (via the buttons) to cashboxB as our new target
       var btn = element(by.id('cashbox-'.concat(cashboxB.id)));
@@ -133,7 +122,7 @@ describe('Cash Payments Module', function () {
       browser.waitForAngular();
 
       // verify that we get to the cashboxB page
-      expect(getCurrentPath()).to.eventually.equal(targetFinal);
+      expect(helpers.getCurrentPath()).to.eventually.equal(targetFinal);
     });
   });
 

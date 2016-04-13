@@ -5,6 +5,7 @@
 
 */
 var db = require('../../lib/db');
+var NotFound = require('../../lib/errors/NotFound');
 const uuid = require('node-uuid');
 
 // GET /creditor_groups 
@@ -19,7 +20,7 @@ function lookupCreditorGroup(uuid, codes) {
   return db.exec(sql, [uuid])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a debtor with uuid ${uuid}`);
     }
     return rows[0];
   });

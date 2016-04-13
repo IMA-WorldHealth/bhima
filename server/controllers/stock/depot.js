@@ -8,13 +8,15 @@
 
 var uuid = require('node-uuid'),
     db = require('../../lib/db'),
-    distributions = require('./depots/distributions');
+    distributions = require('./depots/distributions'),
+	NotFound = require('../../lib/errors/NotFound');	
 
 /** expose depots routes */
 exports.list   = list;
 exports.detail = detail;
 exports.create = create;
 exports.update = update;
+exports.remove = remove;
 
 /** expose depots distributions routes */
 exports.createDistributions = createDistributions;
@@ -50,6 +52,26 @@ function create(req, res, next) {
 }
 
 /**
+* DELETE /depots
+* delete an existing depot in the database
+*
+* @function remove
+*/
+function remove(req, res, next) {
+  'use strict';
+
+  var query = 'DELETE FROM depot WHERE uuid = ?';
+  const uid = db.bid(req.params.uuid);
+
+  db.exec(query, [uid])
+  .then(function () {
+    res.status(204).send({});
+  })
+  .catch(next)
+  .done();
+}
+
+/**
 * PUT /depots
 * Edit an existing depot in the database
 *
@@ -67,7 +89,9 @@ function update(req, res, next) {
   db.exec(query, [req.body, uid])
   .then(selectDepot)
   .then(function (rows) {
-    if (!rows.length) { return next(new req.codes.ERR_NOT_FOUND()); }
+    if (!rows.length) { 
+	  throw new NotFound(`Could not find a depot with uuid ${uuid.unparse(uid)}`);
+	}
     res.status(200).send(rows);
   })
   .catch(next)

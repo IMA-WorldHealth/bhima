@@ -30,17 +30,21 @@
           </select>
         </div>
 
+
+        <button
+          ng-if="SettingsCtrl.previous"
+          class="btn btn-default"
+          ui-sref="{{ SettingsCtrl.previous }}"
+          data-back-button>
+          <span class="glyphicon glyphicon-circle-arrow-left"></span> {{ "UTIL.BACK" | translate }}
+        </button>
+
         <button
           class="btn btn-default"
           ng-click="SettingsCtrl.logout()">
           <span class="glyphicon glyphicon-log-out"></span> {{ "SETTINGS.LOGOUT" | translate }}
         </button>
-
       </div>
     </div>
-
-    <button ng-if="!!SettingsCtrl.url" class="btn btn-sm btn-default" ng-click="SettingsCtrl.back()">
-      <span class="glyphicon glyphicon-circle-arrow-left"></span> {{ "UTIL.BACK" | translate }}
-    </button>
   </div>
 </div>

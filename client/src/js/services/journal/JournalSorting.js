@@ -28,11 +28,11 @@ function JournalSortingService() {
    * This sort assumes IDs will be in the format:
    * STRING INTEGER
    *
-   * @params {object}   a           The first object
-   * @params {object}   b           The second object for comparison
-   * @params {object}   rowA        UI Grid row storing all attributes of the first object
-   * @params {object}   rowB        UI Grid row storing all attributes of the second object
-   * @params {Boolean}  dierection  ASC or DESC
+   * @param {object}   a           The first object
+   * @param {object}   b           The second object for comparison
+   * @param {object}   rowA        UI Grid row storing all attributes of the first object
+   * @param {object}   rowB        UI Grid row storing all attributes of the second object
+   * @param {Boolean}  dierection  ASC or DESC
    * @return {Integer}              An integer represeting this elements position relative to others, in 
    *                                this case (compare sort) -1, 0, or 1
    */

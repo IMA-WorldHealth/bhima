@@ -16,6 +16,7 @@ function DepotService($http, util) {
   service.getAvailableStock = getAvailableStock;
   service.create = create;
   service.update = update;
+  service.remove = remove;
 
   /* ------------------------------------------------------------------------ */
 
@@ -62,6 +63,17 @@ function DepotService($http, util) {
   */
   function update(uuid, depot) {
     return $http.put(baseUrl + uuid, depot)
+    .then(util.unwrapHttpResponse);
+  }
+
+  /**
+  * @function delete
+  * @param {string} uuid The depot uuid
+  * @param {object} depot The update depot data
+  * @description Delete an existing depot
+  */
+  function remove(uuid, depot) {
+    return $http.delete(baseUrl + uuid, depot)
     .then(util.unwrapHttpResponse);
   }
 

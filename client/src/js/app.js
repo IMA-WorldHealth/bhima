@@ -49,7 +49,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl: 'partials/exchange/exchange.html'
   })
   .state('settings', {
-    url : '/settings',
+    url : '/settings?previous',
     controller: 'settings as SettingsCtrl',
     templateUrl: 'partials/settings/settings.html'
   })
@@ -316,7 +316,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   .state('journal', {
     url : '/journal',
     controller : 'JournalController as JournalCtrl',
-    templateUrl : 'partials/2.X-journal/journal.html'
+    templateUrl : 'partials/journal/journal.html'
   })
 
   /* debtors routes */
@@ -331,9 +331,10 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   .state('references', {
     url : '/references',
-    controller: 'ReferenceController',
+    controller: 'ReferenceController as ReferenceCtrl',
     templateUrl: 'partials/references/references.html'
   })
+
   .state('referenceGroups', {
     url : '/references/groups',
     controller: 'ReferenceGroupController as ReferenceGroupCtrl',

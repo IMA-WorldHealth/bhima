@@ -15,6 +15,7 @@
 
 const db    = require('../../lib/db');
 const uuid  = require('node-uuid');
+var NotFound = require('../../lib/errors/NotFound');
 
 /**
  * Lists all price lists in the database
@@ -78,7 +79,7 @@ function lookupPriceList(uid, codes) {
 
     // if no matches found, send a 404 error
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a price list with uuid ${uuid.unparse(uid)}`);
     }
 
     priceList = rows[0];

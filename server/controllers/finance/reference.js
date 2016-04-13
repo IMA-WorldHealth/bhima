@@ -1,9 +1,10 @@
 var db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
 function detail(req, res, next) {
   'use strict';
 
-  lookupReference (req.params.id, req.codes)
+  lookupReference (req.params.id)
     .then(function (row) {
       res.status(200).json(row);
     })
@@ -19,8 +20,12 @@ function list(req, res, next) {
 
   if (req.query.full === '1') {
     sql =
-      'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id ' +
-      'FROM reference AS r';
+      'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id, ' + 
+      'rg.text AS reference_group_text, sr.text AS section_resultat_text ' + 
+      'FROM reference AS r ' +
+      'LEFT JOIN reference_group AS rg ON rg.id = r.reference_group_id ' +
+      'LEFT JOIN section_resultat AS sr ON sr.id = r.section_resultat_id '; 
+
   }
 
   sql += ' ORDER BY r.ref;';
@@ -37,6 +42,7 @@ function create (req, res, next) {
   'use strict';
 
   var record = req.body;
+
   var createReferenceQuery = 'INSERT INTO reference SET ?';
 
   delete record.id;
@@ -58,12 +64,12 @@ function update (req, res, next) {
 
   delete queryData.id;
 
-  lookupReference(referenceId, req.codes)
+  lookupReference(referenceId)
     .then(function () {
       return db.exec(updateReferenceQuery, [queryData, referenceId]);
     })
     .then(function (result) {
-      return lookupReference(referenceId, req.codes);
+      return lookupReference(referenceId);
     })
     .then(function (reference) {
       res.status(200).json(reference);
@@ -77,7 +83,7 @@ function remove (req, res, next) {
   var referenceId = req.params.id;
   var removeReferenceQuery = 'DELETE FROM reference WHERE id=?';
 
-  lookupReference(referenceId, req.codes)
+  lookupReference(referenceId)
     .then(function () {
       return db.exec(removeReferenceQuery, [referenceId]);
     })
@@ -88,15 +94,16 @@ function remove (req, res, next) {
     .done();
 }
 
-function lookupReference(id, codes) {
+function lookupReference(id) {
   var sql =
     'SELECT r.id, r.text, r.ref, r.is_report, r.position, r.reference_group_id, r.section_resultat_id ' +
     'FROM reference AS r WHERE r.id = ?';
 
   return db.exec(sql, id)
-    .then(function (rows) {
+    .then(function (rows) {      
+      // Record Not Found !
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound(`Could not find a reference with id ${id}`);
       }
 
       return rows[0];
