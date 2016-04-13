@@ -81,8 +81,8 @@ function PatientEdit($scope, $translate, $stateParams, $location, $anchorScroll,
   
   // Update the view to reflect changes made in update modal
   function updateDebtorModel(debtorGroupUuid, debtorGroupName) { 
-    viewModel.medical.debitor_group_uuid = debtorGroupUuid;
-    viewModel.medical.debitor_group_name = debtorGroupName;
+    viewModel.medical.debtor_group_uuid = debtorGroupUuid;
+    viewModel.medical.debtor_group_name = debtorGroupName;
     viewModel.updatedDebtorGroup = true;
   }
   

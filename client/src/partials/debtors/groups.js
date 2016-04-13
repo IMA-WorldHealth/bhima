@@ -9,15 +9,15 @@ function DebtorGroupController($scope, $translate, connect, appstate, validate, 
   var dependencies = {};
   $scope.enterprise = Session.enterprise;
 
-  dependencies.debitor_group = {
+  dependencies.debtor_group = {
     query : {
       identifier : 'uuid',
       tables : {
-        'debitor_group' : {
+        'debtor_group' : {
           columns : ['uuid', 'name', 'account_id', 'location_id', 'phone', 'email', 'note', 'locked', 'max_credit', 'is_convention', 'price_list_uuid']
         }
       },
-      where : ['debitor_group.enterprise_id=' + $scope.enterprise.id]
+      where : ['debtor_group.enterprise_id=' + $scope.enterprise.id]
     }
   };
 
@@ -93,7 +93,7 @@ function DebtorGroupController($scope, $translate, connect, appstate, validate, 
   };
 
   $scope.lock = function (group) {
-    connect.put('debitor_group', [{uuid: group.uuid, locked: group.locked}], ['uuid'])
+    connect.put('debtor_group', [{uuid: group.uuid, locked: group.locked}], ['uuid'])
     .catch(handler);
   };
 
@@ -101,10 +101,10 @@ function DebtorGroupController($scope, $translate, connect, appstate, validate, 
     $scope.newGroup.enterprise_id = $scope.enterprise.id;
     $scope.newGroup.uuid = uuid();
     var data = connect.clean($scope.newGroup);
-    connect.post('debitor_group', [data])
+    connect.post('debtor_group', [data])
     .then(function (res) {
       data.id = res.data.insertId;
-      $scope.debitor_group.post(data);
+      $scope.debtor_group.post(data);
       $scope.action = '';
       messenger.success($translate.instant('DEBITOR_GRP.SUCCES'));
     })
@@ -121,9 +121,9 @@ function DebtorGroupController($scope, $translate, connect, appstate, validate, 
       data.price_list_uuid = null;
     }
 
-    connect.put('debitor_group', [data], ['uuid'])
+    connect.put('debtor_group', [data], ['uuid'])
     .then(function () {
-      $scope.debitor_group.put(data);
+      $scope.debtor_group.put(data);
       $scope.action = '';
       $scope.editGroup = {}; // reset
       messenger.success($translate.instant('DEBITOR_GRP.SUCCES'));

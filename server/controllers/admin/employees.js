@@ -270,14 +270,14 @@ exports.update = function update(req, res, next) {
   };
 
   var updateCreditor = 'UPDATE creditor SET ? WHERE creditor.uuid = ?';
-  var updateDebitor = 'UPDATE debtor SET ? WHERE debtor.uuid = ?';
+  var updateDebtor = 'UPDATE debtor SET ? WHERE debtor.uuid = ?';
   var sql = 'UPDATE employee SET ? WHERE employee.id = ?';
 
   transaction = db.transaction();
 
   transaction
     .addQuery(updateCreditor, [creditor, creditor.uuid])
-    .addQuery(updateDebitor, [debtor, debtor.uuid])
+    .addQuery(updateDebtor, [debtor, debtor.uuid])
     .addQuery(sql, [clean, req.params.id]);
 
   transaction.execute()
@@ -330,14 +330,14 @@ exports.create = function create(req, res, next) {
   delete employee.creditor_group_uuid;
 
   var writeCreditor = 'INSERT INTO creditor SET ?';
-  var writeDebitor = 'INSERT INTO debtor SET ?';
+  var writeDebtor = 'INSERT INTO debtor SET ?';
   var sql = 'INSERT INTO employee SET ?';
 
   transaction = db.transaction();
 
   transaction
     .addQuery(writeCreditor, [creditor])
-    .addQuery(writeDebitor, [debtor])
+    .addQuery(writeDebtor, [debtor])
     .addQuery(sql, [employee]);
 
   transaction.execute()

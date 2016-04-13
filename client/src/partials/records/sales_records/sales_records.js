@@ -207,9 +207,9 @@ angular.module('bhima.controllers')
       var total = 0, evaluated = {};
 
       $scope.model.sale.data.forEach(function (sale) {
-        if (evaluated[sale.debitor_uuid]) { return; }
+        if (evaluated[sale.debtor_uuid]) { return; }
         total++;
-        evaluated[sale.debitor_uuid] = true;
+        evaluated[sale.debtor_uuid] = true;
       });
 
       return total;

@@ -58,7 +58,7 @@ checks.validDebtorOrCreditor = function (id) {
   return db.exec(sql, [id, id])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new Error('No Debitor or Creditor found with id: ' + id);
+      throw new Error('No Debtor or Creditor found with id: ' + id);
     }
     return q(rows);
   });

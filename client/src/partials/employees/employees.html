@@ -211,12 +211,12 @@
                 </div>                 
               </div>
               
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.debitor_group_uuid.$invalid }">
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.debtor_group_uuid.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.DEBITOR_GROUP" | translate }}</label>
-                <select class="form-control" name="debitor_group_uuid" ng-model="EmployeeCtrl.employee.debitor_group_uuid" id="bhima-employee-debitor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debitorGroups | orderBy:'name'" required>
+                <select class="form-control" name="debtor_group_uuid" ng-model="EmployeeCtrl.employee.debtor_group_uuid" id="bhima-employee-debtor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debtorGroups | orderBy:'name'" required>
                   <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_DEBITOR_GROUP" | translate }} -- </option>
                 </select>
-                <div class="help-block" ng-messages="CreateForm.debitor_group_uuid.$error" ng-show="CreateForm.$submitted">
+                <div class="help-block" ng-messages="CreateForm.debtor_group_uuid.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                
               </div>
@@ -387,12 +387,12 @@
                 </div>                 
               </div>
               
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && UpdateForm.debitor_group_uuid.$invalid }">
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && UpdateForm.debtor_group_uuid.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.DEBITOR_GROUP" | translate }}</label>
-                <select class="form-control" name="debitor_group_uuid" ng-model="EmployeeCtrl.employee.debitor_group_uuid" id="bhima-employee-debitor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debitorGroups | orderBy:'name'" required>
+                <select class="form-control" name="debtor_group_uuid" ng-model="EmployeeCtrl.employee.debtor_group_uuid" id="bhima-employee-debtor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debtorGroups | orderBy:'name'" required>
                   <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_DEBITOR_GROUP" | translate }} -- </option>
                 </select>
-                <div class="help-block" ng-messages="UpdateForm.debitor_group_uuid.$error" ng-show="UpdateForm.$submitted">
+                <div class="help-block" ng-messages="UpdateForm.debtor_group_uuid.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                
               </div>

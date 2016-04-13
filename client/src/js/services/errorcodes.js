@@ -28,13 +28,13 @@ angular.module('bhima.services')
     },
     'ERR_TXN_EMPTY_DC_TYPE' : {
       ref                   : 'ERR_TXN_EMPTY_DC_TYPE',
-      title                 : 'Empty Debitor/Creditor Type',
-      description           : 'Empty debitor/creditor type detected in transaction(s) with debitor/creditor id present',
+      title                 : 'Empty Debtor/Creditor Type',
+      description           : 'Empty debtor/creditor type detected in transaction(s) with debtor/creditor id present',
     },
     'ERR_TXN_EMPTY_DC_UUID' : {
       ref                   : 'ERR_TXN_EMPTY_DC_UUID',
-      title                 : 'Empty Debitor/Creditor ID',
-      description           : 'Empty debitor/creditor ID detected in transaction(s) with debitor/creditor type present',
+      title                 : 'Empty Debtor/Creditor ID',
+      description           : 'Empty debtor/creditor ID detected in transaction(s) with debtor/creditor type present',
     },
     'ERR_TXN_UNRECOGNIZED_DATE' : {
       ref                       : 'ERR_TXN_UNRECOGNIZED_DATE',
@@ -43,8 +43,8 @@ angular.module('bhima.services')
     },
     'ERR_TXN_UNRECOGNIZED_DC_UUID' : {
       ref                          : 'ERR_TXN_UNRECOGNIZED_DC_UUID',
-      title                        : 'Unrecognized Debitor/Creditor ID',
-      description                  : 'Unrecognized debitor/creditor ID in transaction(s)',
+      title                        : 'Unrecognized Debtor/Creditor ID',
+      description                  : 'Unrecognized debtor/creditor ID in transaction(s)',
     },
     'ERR_HTTP_UNREACHABLE' : {
       title                : 'Server Unreachable',

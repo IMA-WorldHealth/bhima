@@ -64,7 +64,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
 
     // load Debtor Groups
     DebtorGroups.read().then(function (data) {
-      vm.debitorGroups = data;
+      vm.debtorGroups = data;
     }).catch(handler);
 
   }

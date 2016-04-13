@@ -15,7 +15,7 @@
             {{ "DEBITOR_GROUP_REPORT.DEBITOR_GROUP" | translate }}
           </label>
           <div>
-            <select class="form-bhima" ng-model="debtorGroupReportCtrl.debitor_group_uuid" ng-options="dg.uuid as dg.name for dg in debtorGroupReportCtrl.debitorGroup.data" required>
+            <select class="form-bhima" ng-model="debtorGroupReportCtrl.debtor_group_uuid" ng-options="dg.uuid as dg.name for dg in debtorGroupReportCtrl.debtorGroup.data" required>
               <option value="" disabled>-- {{ "SELECT.DEBITOR_GROUP" | translate }} --</option>
             </select>
           </div>
@@ -54,7 +54,7 @@
 
         <button
           class="btn btn-default"
-          ng-disabled="debtorGroupReportCtrl.building || !debtorGroupReportCtrl.debitor_group_uuid"
+          ng-disabled="debtorGroupReportCtrl.building || !debtorGroupReportCtrl.debtor_group_uuid"
           ng-click="debtorGroupReportCtrl.generateDocument()" 
           ng-if="!debtorGroupReportCtrl.generatedDocumentPath">{{debtorGroupReportCtrl.building ? debtorGroupReportCtrl.loading : debtorGroupReportCtrl.generate_doc}}
         </button>

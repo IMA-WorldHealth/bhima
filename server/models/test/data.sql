@@ -231,7 +231,7 @@ INSERT INTO `patient_group` VALUES
 INSERT INTO `debtor` VALUES
   (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/2/Patient'),
   (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/1/Patient'),
-  (HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Employee/Test Debitor');
+  (HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Employee/Test Debtor');
 
 
 INSERT INTO `patient` VALUES
@@ -331,7 +331,7 @@ INSERT INTO `price_list` (`enterprise_id`, `uuid`, `label`) VALUES
 -- (20,'Donor management','TREE.DONOR_MANAGEMENT','',1,'/partials/donor_management/','/donor_management/'),
 -- (21,'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/inventory/price_list'),
 -- (23,'Creditor Groups','TREE.CREDITOR_GRP','',30,'/partials/creditor/group/','/creditors/creditor_group'),
--- (24,'Debitor Groups','TREE.DEBTOR_GRP','',30,'/partials/debtor/','/debtor/debtor_group'),
+-- (24,'Debtor Groups','TREE.DEBTOR_GRP','',30,'/partials/debtor/','/debtor/debtor_group'),
 -- (25,'General Ledger','TREE.GENERAL_LEDGER','',30,'/partials/reports/ledger/','/reports/ledger/general_ledger'),
 -- (26,'Location Manager','TREE.LOCATION','',1,'/partials/location/location.html','/location'),
 -- (27,'Chart of Accounts','TREE.CHART_OF_ACCOUNTS','',129,'/partials/reports/chart_of_accounts/','/reports/chart_of_accounts/'),
@@ -409,7 +409,7 @@ INSERT INTO `price_list` (`enterprise_id`, `uuid`, `label`) VALUES
 -- (117,'Budget Analysis','TREE.BUDGET_ANALYSIS','analyse du budget courant avec les precedants',8,'/partials/budget/analysis','/budgeting/analysis/'),
 -- (118,'Report Taxes paiments','TREE.REPORT_TAXES','Report taxes paiements',57,'/partials/reports/taxes_payment/','/reports/taxes_payment/'),
 -- (119,'Report Cotisation paiements','TREE.REPORT_COTISATION','Report Cotisation paiements',57,'/partials/reports/cotisation_payment/','/reports/cotisation_payment/'),
--- (120,'Rapport situation group debite','TREE.DEBITOR_GROUP_REPORT','pour voir le rapport pdf detaille de group de debiteur',128,'/partials/reports/debtor_group_report','/reports/debtor_group_report/'),
+-- (120,'Rapport situation group debite','TREE.DEBTOR_GROUP_REPORT','pour voir le rapport pdf detaille de group de debiteur',128,'/partials/reports/debtor_group_report','/reports/debtor_group_report/'),
 -- (122,'Purchase','TREE.PURCHASE_ORDER','Purchase management',0,'/','/'),
 -- (123,'Purchase Report','TREE.REPORTS','Purchase Report',122,'/','/'),
 -- (124,'Inventory','TREE.INVENTORY','Inventory management',0,'/','/'),

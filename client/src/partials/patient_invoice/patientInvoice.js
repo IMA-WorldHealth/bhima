@@ -126,7 +126,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
   vm.submit = submit;
   vm.clear = clear;
 
-  // TODO potentially move this into debitor configuration within invoice
+  // TODO potentially move this into debtor configuration within invoice
   // TODO very temporary code
   function configureInvoice(patient) {
     var configureQueue = [];
@@ -153,7 +153,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
           vm.Invoice.items.setPriceList(priceListResult);
         }
         vm.Invoice.recipient = patient;
-        vm.Invoice.details.debitor_uuid = patient.debitor_uuid;
+        vm.Invoice.details.debtor_uuid = patient.debtor_uuid;
       });
   }
 

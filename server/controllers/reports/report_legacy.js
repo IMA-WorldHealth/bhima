@@ -96,7 +96,7 @@ function debtorAging (params){
   var def = q.defer();
   params = JSON.parse(params);
   var requette =
-    'SELECT period.id, period.period_start, period.period_stop, debtor.uuid as idDebitor, debtor.text, general_ledger.debit, general_ledger.credit, general_ledger.account_id ' +
+    'SELECT period.id, period.period_start, period.period_stop, debtor.uuid as idDebtor, debtor.text, general_ledger.debit, general_ledger.credit, general_ledger.account_id ' +
     'FROM debtor, debtor_group, general_ledger, period WHERE debtor_group.uuid = debtor.group_uuid AND debtor.uuid = general_ledger.deb_cred_uuid ' +
     'AND general_ledger.`deb_cred_type`=\'D\' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debtor_group.account_id AND general_ledger.`fiscal_year_id`=\''+params.fiscal_id +'\'';
 

@@ -320,7 +320,7 @@ function create(id, userId, cb, caution) {
           'FROM debtor_group WHERE debtor_group.uuid= (' +
           'SELECT debtor.group_uuid FROM debtor WHERE debtor.uuid='+ sanitize.escape(reference.debtor_uuid) +');';
 
-      queries.DebitorCrediting =
+      queries.DebtorCrediting =
         'INSERT INTO posting_journal '+
           '(uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
@@ -333,7 +333,7 @@ function create(id, userId, cb, caution) {
 
       return q.all([
         db.exec(queries.cautionDebiting),
-        db.exec(queries.DebitorCrediting)
+        db.exec(queries.DebtorCrediting)
       ]);
     }
     return q();

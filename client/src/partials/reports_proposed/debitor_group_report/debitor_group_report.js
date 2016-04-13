@@ -2,19 +2,19 @@ var DebtorGroupReportController = function ($http, $translate, validate, reportC
 
   var vm = this,
   generatedDocumentPath = null,
-  serverUtilityPath = '/report/build/debitor_group_report',
+  serverUtilityPath = '/report/build/debtor_group_report',
   configuration = reportConfigService.configuration,
   dependencies = {};
 
-  dependencies.debitorGroup = {
+  dependencies.debtorGroup = {
       query : {
         identifier : 'uuid',
         tables : {
-          'debitor_group' : {
+          'debtor_group' : {
             columns : ['uuid', 'name', 'account_id', 'is_convention']
           }
         },
-        where : ['debitor_group.is_convention=1']
+        where : ['debtor_group.is_convention=1']
       }
   };
 
@@ -43,7 +43,7 @@ var DebtorGroupReportController = function ($http, $translate, validate, reportC
     configurationObject.language = configuration.language.selected.value;
     configurationObject.enterprise = configuration.enterprise;
     configurationObject.project = configuration.project;    
-    configurationObject.dg = vm.debitorGroup.get(vm.debitor_group_uuid);
+    configurationObject.dg = vm.debtorGroup.get(vm.debtor_group_uuid);
     configurationObject.unsoldOnly = vm.unsold_only;
     configurationObject.involveJournal = vm.involve_journal;
 

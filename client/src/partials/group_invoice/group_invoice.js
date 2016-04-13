@@ -35,20 +35,20 @@ function GroupInvoiceController($translate, connect, validate, messenger, uuid, 
   /* ------------------------------------------------------------------------ */
 
   dependencies.invoices = {
-    query : 'ledgers/debitor/'
+    query : 'ledgers/debtor/'
   };
 
   dependencies.conventions = {
     required: true,
     query : {
       tables : {
-        'debitor_group'  : {
+        'debtor_group'  : {
           columns : ['uuid', 'name', 'account_id']
         }
       },
       where : [
-        'debitor_group.is_convention<>0', 'AND',
-        'debitor_group.enterprise_id=' + vm.project.enterprise_id
+        'debtor_group.is_convention<>0', 'AND',
+        'debtor_group.enterprise_id=' + vm.project.enterprise_id
       ]
     }
   };
@@ -57,14 +57,14 @@ function GroupInvoiceController($translate, connect, validate, messenger, uuid, 
     required : true,
     query : {
       tables : {
-        'debitor' : {
+        'debtor' : {
           columns : ['uuid', 'text']
         },
-        'debitor_group' : {
+        'debtor_group' : {
           columns : ['account_id']
         }
       },
-      join : ['debitor.group_uuid=debitor_group.uuid']
+      join : ['debtor.group_uuid=debtor_group.uuid']
     }
   };
 
@@ -169,7 +169,7 @@ function GroupInvoiceController($translate, connect, validate, messenger, uuid, 
     var payment = vm.payment;
     payment.project_id = vm.project.id;
     payment.group_uuid = vm.convention.uuid;
-    payment.debitor_uuid  = vm.debtor.uuid;
+    payment.debtor_uuid  = vm.debtor.uuid;
     payment.total = vm.paymentBalance;
     payment.date = new Date();
     vm.action = 'confirm';
