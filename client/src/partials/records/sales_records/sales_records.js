@@ -1,3 +1,5 @@
+/* jshint forin:false */
+
 angular.module('bhima.controllers')
 .controller('salesRecords', [
   '$scope',

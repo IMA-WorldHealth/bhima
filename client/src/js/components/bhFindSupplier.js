@@ -37,7 +37,7 @@ function FindSupplierComponent(SupplierService) {
   /**
   * @method searchByName
   *
-  * @param {string} text Supplier name 
+  * @param {string} text Supplier name
   *
   * @description This function make a call to BHIMA API for getting suppliers
   * according the name of supplier.
@@ -114,9 +114,7 @@ function FindSupplierComponent(SupplierService) {
   */
   function readInput(event) {
     if (event.keyCode === 13) {
-      submit();
       event.preventDefault();
     }
   }
-
 }

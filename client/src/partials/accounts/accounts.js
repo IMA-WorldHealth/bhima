@@ -86,11 +86,11 @@ function AccountsController(accountService, costCenterService, profitCenterServi
 
   function discareCC() {
     vm.account.cc_id = null;
-  };
+  }
 
   function discarePC() {
     vm.account.pc_id = null;
-  };
+  }
 
   function create() {
     vm.view = 'create';

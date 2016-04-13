@@ -1,3 +1,4 @@
+/* jshint forin: false */
 angular.module('bhima.controllers')
 .controller('stock.loss_record', [
   '$scope',
@@ -47,10 +48,10 @@ angular.module('bhima.controllers')
             purchase_item : { columns : ['unit_price']}
           },
           join : [
-            'consumption.uuid=consumption_loss.consumption_uuid', 
-            'consumption.tracking_number=stock.tracking_number', 
+            'consumption.uuid=consumption_loss.consumption_uuid',
+            'consumption.tracking_number=stock.tracking_number',
             'stock.inventory_uuid=inventory.uuid',
-            'stock.purchase_order_uuid=purchase.uuid', 
+            'stock.purchase_order_uuid=purchase.uuid',
             'purchase.uuid=purchase_item.purchase_uuid',
             'purchase_item.inventory_uuid=inventory.uuid'
           ]
@@ -107,10 +108,10 @@ angular.module('bhima.controllers')
 	            purchase_item : { columns : ['unit_price']}
 	          },
 	          join : [
-	            'consumption.uuid=consumption_loss.consumption_uuid', 
-	            'consumption.tracking_number=stock.tracking_number', 
+	            'consumption.uuid=consumption_loss.consumption_uuid',
+	            'consumption.tracking_number=stock.tracking_number',
 	            'stock.inventory_uuid=inventory.uuid',
-	            'stock.purchase_order_uuid=purchase.uuid', 
+	            'stock.purchase_order_uuid=purchase.uuid',
 	            'purchase.uuid=purchase_item.purchase_uuid',
 	            'purchase_item.inventory_uuid=inventory.uuid'
 	          ],

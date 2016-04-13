@@ -33,7 +33,7 @@ function IntegerValidatorDirective() {
           return true;
         }
         return false;
-      }
+      };
     }
   };
 }

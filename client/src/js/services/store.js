@@ -1,3 +1,4 @@
+/* jshint forin:false */
 angular.module('bhima.services')
 .factory('store', function () {
 

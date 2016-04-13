@@ -71,7 +71,7 @@ function JournalPaginationService() {
       if (upperBoundElement.trans_id === comparisonElement.trans_id) { 
 
         // filter out this transaction id 
-        data = data.filter(row => { return row.trans_id !== upperBoundElement.trans_id });
+        data = data.filter(row => { return row.trans_id !== upperBoundElement.trans_id; });
       }
     }
     

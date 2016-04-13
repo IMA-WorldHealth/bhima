@@ -75,7 +75,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
     // take the first rate matching the currency (since we reversed the
     // rate orders, this is the most recent rate).
     return rates.reduce(function (map, row) {
-      if (!map[row.currency_id]) { map[row.currency_id] = { rate: row.rate, rowid : row.id } }
+      if (!map[row.currency_id]) { map[row.currency_id] = { rate: row.rate, rowid : row.id }; }
       return map;
     }, {});
   }
@@ -125,7 +125,7 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
     var result = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
     if (!result) {
       vm.view = 'default';
-      return
+      return;
     } else {
       vm.view = 'delete_confirm';
       Rates.delete(id)
