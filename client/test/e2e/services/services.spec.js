@@ -1,4 +1,4 @@
-/*global it, element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -16,7 +16,7 @@ describe('Services Module', function () {
   };
 
   var DEFAULT_SERVICE = 4;
-  var SERVICE_RANK = helpers.random(DEFAULT_SERVICE);
+  var SERVICE_RANK = 4;
 
   var DELETE_SUCCESS = 1;
   var DELETE_ERROR = 3;
