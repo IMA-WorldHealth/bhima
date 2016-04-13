@@ -30,6 +30,22 @@ function DepotManagementController($translate, DepotService, SessionService) {
     }
   ];
 
+  /** variables */
+  var map = {
+    create : {
+      title : 'DEPOT.ADD_DEPOT',
+      submit : createDepot
+    },
+    update : {
+      title : 'DEPOT.EDIT_DEPOT',
+      submit : updateDepot
+    },
+    remove : {
+      title : 'FORM.DIALOGS.CONFIRM_DELETE',
+      submit : removeDepot
+    }
+  };
+
   /** init variables */
   vm.state = {};
   vm.depot = {};
@@ -38,6 +54,7 @@ function DepotManagementController($translate, DepotService, SessionService) {
   vm.update = update;
   vm.cancel = cancel;
   vm.submit = submit;
+  vm.remove = remove;
   vm.refreshValidation = refreshValidation;
 
   /** Load depots */
@@ -58,20 +75,19 @@ function DepotManagementController($translate, DepotService, SessionService) {
     initialise('action', 'create');
   }
 
+  function remove(id) {
+    initialise('action', 'remove', id);
+  }
+
   function cancel() {
     initialise('default');
   }
 
-  function submit(invalid) {
-    if (invalid) {
-      vm.state.errored = true;
+  function submit(actionForm) {
+    if (actionForm.$invalid) {
+      return;
     }
-    if (vm.depot.text && vm.action === 'create') {
-      createDepot();
-    }
-    if (vm.depot.uuid && vm.depot.text && vm.action === 'update') {
-      updateDepot(vm.depot.uuid);
-    }
+    map[vm.action].submit(vm.depot.uuid);
   }
 
   function createDepot() {
@@ -82,7 +98,7 @@ function DepotManagementController($translate, DepotService, SessionService) {
       vm.view = 'success';
     })
     .then(depotsList)
-    .catch(error);
+    .catch(errorHandler);
   }
 
   function updateDepot(uuid) {
@@ -92,10 +108,20 @@ function DepotManagementController($translate, DepotService, SessionService) {
       vm.view = 'success';
     })
     .then(depotsList)
-    .catch(error);
+    .catch(errorHandler);
   }
 
-  function error(err) {
+  function removeDepot(uuid) {
+    DepotService.remove(uuid, vm.depot)
+    .then(function (res) {
+      vm.state.removed = true;
+      vm.view = 'success';
+    })
+    .then(depotsList)
+    .catch(errorHandler);
+  }
+
+  function errorHandler(err) {
     vm.state.errored = true;
     console.log(err);
   }
@@ -106,11 +132,9 @@ function DepotManagementController($translate, DepotService, SessionService) {
     vm.action = action;
     vm.depot  = {};
 
-    vm.actionTitle =
-      action === 'create' ? 'DEPOT.ADD_DEPOT' :
-      action === 'update' ? 'DEPOT.EDIT_DEPOT' : '';
+    vm.actionTitle = map[action].title;
 
-    if (uuid && action === 'update') {
+    if (uuid && (action === 'update' || action === 'remove')) {
       DepotService.getDepots(uuid)
       .then(function (depot) {
         vm.depot = depot;
@@ -126,6 +150,7 @@ function DepotManagementController($translate, DepotService, SessionService) {
     vm.state.errored = false;
     vm.state.updated = false;
     vm.state.created = false;
+    vm.state.removed = false;
   };
 
 }

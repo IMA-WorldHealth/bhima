@@ -15,6 +15,7 @@ exports.list   = list;
 exports.detail = detail;
 exports.create = create;
 exports.update = update;
+exports.remove = remove;
 
 /** expose depots distributions routes */
 exports.createDistributions = createDistributions;
@@ -44,6 +45,26 @@ function create(req, res, next) {
   db.exec(query, [req.body])
   .then(function () {
     res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+* DELETE /depots
+* delete an existing depot in the database
+*
+* @function remove
+*/
+function remove(req, res, next) {
+  'use strict';
+
+  var query = 'DELETE FROM depot WHERE uuid = ?';
+  const uid = db.bid(req.params.uuid);
+
+  db.exec(query, [uid])
+  .then(function () {
+    res.status(204).send({});
   })
   .catch(next)
   .done();

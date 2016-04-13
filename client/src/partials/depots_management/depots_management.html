@@ -35,7 +35,15 @@
                     ng-click="DepotCtrl.update(depot.uuid)">
                     <i class="glyphicon glyphicon-pencil"></i> {{ 'FORM.BUTTONS.EDIT' | translate }}
                   </a>
+
+                  <a name="delete-{{depot.text}}" class="btn btn-xs btn-danger"
+                    ng-click="DepotCtrl.remove(depot.uuid)">
+                    <i class="glyphicon glyphicon-trash"></i> {{ 'FORM.BUTTONS.DELETE' | translate }}
+                  </a>
                 </td>
+              </tr>
+              <tr ng-if="!DepotCtrl.depotList.length">
+                <td colspan="4" class="text-center"><i>{{ "DEPOT.NO_DEPOT" | translate }}</i></td>
               </tr>
             </tbody>
           </table>
@@ -50,7 +58,9 @@
         </div>
 
         <div ng-switch-when="action">
-          <form class="panel panel-primary" name="ActionForm" ng-submit="DepotCtrl.submit(ActionForm.$invalid)" novalidate>
+          <form class="panel panel-primary"
+            ng-class="{ 'panel-danger': DepotCtrl.action === 'remove'}"
+            name="ActionForm" ng-submit="DepotCtrl.submit(ActionForm)" novalidate>
             <div class="panel-heading">
               {{ DepotCtrl.actionTitle | translate }}
             </div>
@@ -63,8 +73,7 @@
                 <input
                   class="form-control"
                   name="text"
-                  ng-model="DepotCtrl.depot.text"
-                  ng-change="DepotCtrl.refreshValidation()" required>
+                  ng-model="DepotCtrl.depot.text" required>
                 <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -111,6 +120,9 @@
           </h4>
           <h4 id="create_success" ng-if="DepotCtrl.state.created">
             <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.SAVE_SUCCESS" | translate }}
+          </h4>
+          <h4 id="delete_success" ng-if="DepotCtrl.state.removed">
+            <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.DELETE_SUCCESS" | translate }}
           </h4>
         </div>
 
