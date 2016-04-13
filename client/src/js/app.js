@@ -331,9 +331,10 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   .state('references', {
     url : '/references',
-    controller: 'ReferenceController',
+    controller: 'ReferenceController as ReferenceCtrl',
     templateUrl: 'partials/references/references.html'
   })
+
   .state('referenceGroups', {
     url : '/references/groups',
     controller: 'ReferenceGroupController as ReferenceGroupCtrl',

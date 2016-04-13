@@ -313,6 +313,7 @@
       "IS_PASSIVE"              : "Is passive",
       "IS_PERCENT"              : "Is Percent",
       "IS_PROFIT"               : "Is profit?",
+      "IS_REPORT"               : "Is report ?",
       "IS_TITLE"                : "Est ce un titre?",
       "IS_WAREHOUSE"            : "Is warehouse ?",
       "LABEL"                   : "Label",
@@ -358,6 +359,7 @@
       "REFERENCE"               : "Reference",
       "REFERENCE_GROUP"         : "Reference Group",
       "RELIGION"                : "Religion",
+      "RESULT_ACCOUNT_SCT"      : "Result Account section",
       "RETYPE"                  : "Retype",
       "SEARCH"                  : "Search",    
       "SECOND_NAME"             : "Last Name",
@@ -415,7 +417,7 @@
 
     "SELECTS" : {
       "EMPTY"                   : "Empty",
-      "SELECT_ACCOUNT"          : "Select an account",
+      "SELECT_ACCOUNT"          : "Select an account",      
       "SELECT_ACCOUNT_TYPE"     : "Select Account Type",
       "SELECT_BALANCE_SECTION"  : "Select Balance Sheet Section",
       "SELECT_COST_CENTER"    : "Select cost center",
@@ -432,12 +434,14 @@
       "SELECT_PROFIT_CENTER"  : "Select profit center",
       "SELECT_PROVINCE"       : "Select a province",
       "SELECT_REFERENCE"      : "Select a Reference",
-      "SELECT_ROOT_ACCOUNT"   : "Select a Root Account",
-      "SELECT_SECTOR"         : "Select a sector",
-      "SELECT_SERVICE"        : "Select a Service",
-      "SELECT_SEX"            : "Select a sex",
-      "SELECT_VILLAGE"        : "Select village",      
-      "SELECT_ZS"             : "Select an health zone"
+      "SELECT_REFERENCE_GROUP"      : "Select a Reference Group",
+      "SELECT_RESULT_ACCOUNT_SCT"   : "Select a Result Account section",
+      "SELECT_ROOT_ACCOUNT"         : "Select a Root Account",
+      "SELECT_SECTOR"               : "Select a sector",
+      "SELECT_SERVICE"              : "Select a Service",
+      "SELECT_SEX"                  : "Select a sex",
+      "SELECT_VILLAGE"              : "Select village",      
+      "SELECT_ZS"                   : "Select an health zone"
     },
 
     "BUTTONS" : {
@@ -541,20 +545,17 @@
     }
   },
 
-
-  "LOCATION": {
-    "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
-    "LOCALITY"              : "Locality",
-    "LOCATION"              : "Location",
-    "LOCATION_MANAGER"      : "Location Manager",
-    "MANAGER_CONFIGURATION" : "Location Manager Configuration",
-    "MANAGE_COUNTRY"        : "Manage Country",
-    "MANAGE_PROVINCE"       : "Manage Province",
-    "MANAGE_SECTOR"         : "Manage Sector",
-    "MANAGE_VILLAGE"        : "Manage Village",
-    "REGISTERED"            : "Registered Locations",
-    "TITLE"                 : "Location Manager"
+  "REFERENCE": {
+    "ADD"            : "Add a Reference",
+    "ALERT"          : "Reference management module is a module that has been designed to allow administration of existing References within the organization, the table is left to record, to update the attributes of a Reference and the deletion.",
+    "ALERT_2"        : "Two references to the same reference groups can not have the same position",
+    "NEW_REFERENCE"  : "New Reference",
+    "NO_REFERENCES"  : "No Reference have been registered.",
+    "REGISTERED"     : "Registered References",
+    "TITLE"          : "Reference management",
+    "UPD_REFERENCE"  : "Update Reference"
   },
+
 
   "PATIENT_INVOICE": { 
     "PAGE_TITLE"          : "Patient Invoice",
@@ -702,8 +703,11 @@
       "PROFIT_CENTER"       : "Profit Center",
       "PROVINCE"            : "Province",
       "RATE"                : "Rate",      
+      "REF"                 : "Ref.",
       "REFERENCE"           : "Reference",
+      "REF_GROUP"           : "Ref. Groupe",
       "REFERENCE_GROUP"     : "Reference Group",
+      "RESULT_ACCOUNT_SCT"  : "Result Account section",
       "SECTOR"              : "Sector",
       "SERVICE"             : "Service",
       "RESULT"              : "Result",
@@ -713,6 +717,22 @@
       "VALUE"               : "Value",
       "VILLAGE"             : "Village"
     }
+  },
+
+  "SECTION_RESULTAT" : {
+    "ADD"                  : "Add",
+    "ALERT"                : "Result Section Management",
+    "ALL"                  : "All Result Section",
+    "CHARGE"               : "Charge",
+    "CONFIRM"              : "Are you sure you want to delete this Result section",
+    "DELETE_SUCCESS"       : "Deleted successfully",
+    "EDIT"                 : "Edit Result Section",   
+    "NEW"                  : "New Result Section",
+    "NO_SECTION_RESULTAT"  : "No Result Section",
+    "PROFIT"               : "Profit",
+    "SAVE_SUCCESS"         : "Saved Successfully",
+    "TITLE"                : "Result Section", 
+    "UPDATE_SUCCESS"       : "Update Successfully"  
   },
 
   "SECTION_BILAN" : {
