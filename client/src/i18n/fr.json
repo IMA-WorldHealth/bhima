@@ -548,6 +548,21 @@
   },
 
 
+  "LOCATION": {
+    "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
+    "DESCRIPTION_2"         : "La création, la mis à jour d'une localisation",  
+    "LOCALITY"              : "Localite",
+    "LOCATION"              : "Localisation",
+    "LOCATION_MANAGER"      : "Gestion des localisations",
+    "MANAGER_CONFIGURATION" : "Configuration de la Gestion de localisations",
+    "MANAGE_COUNTRY"        : "Gerer Les Pays",
+    "MANAGE_PROVINCE"       : "Gerer Les Province",
+    "MANAGE_SECTOR"         : "Gerer Les Secteurs",
+    "MANAGE_VILLAGE"        : "Gerer Les Villages",
+    "REGISTERED"            : "Localisations Enregistrées",
+    "TITLE"                 : "Gestion des localisations"
+  },
+
   "PATIENT_INVOICE": { 
     "PAGE_TITLE"          : "Facture des patients",
     "BILLING_SERVICES"    : "Les services de facturation appliquée",
@@ -745,6 +760,7 @@
     "ADD_SUPPLIER"          : "Ajouter un fournisseur",
     "EDIT_SUPPLIER"         : "Formulaire de mise à jour des fournisseurs",
     "NEW_SUPPLIER"          : "Formulaire d'enregistrement des fournisseurs",
+    "NO_SUPPLIER"           : "Aucun fournisseur n'a été enregistrer",
     "INFO"                  : "Le module Gestion des fournisseurs permet de contrôler le statut des fournisseurs en fonction de leurs produits et services et d’offrir aux gestionnaires une vue complète et rapide du dossier fournisseur.",
     "REGISTERED"            : "Les fournisseurs inscrits",
     "SUPPLIER"              : "Fournisseur",

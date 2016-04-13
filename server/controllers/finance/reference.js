@@ -103,7 +103,7 @@ function lookupReference(id) {
     .then(function (rows) {      
       // Record Not Found !
       if (rows.length === 0) {
-        throw new NotFound(`Record Not Found with id: ${id}`);
+        throw new NotFound(`Could not find a reference with id ${id}`);
       }
 
       return rows[0];

@@ -14,6 +14,7 @@ var _    = require('lodash');
 var util = require('../../lib/util');
 
 var journal = require('./journal');
+var NotFound = require('../../lib/errors/NotFound');
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
@@ -86,7 +87,7 @@ function lookupSale(uid, codes) {
   return db.exec(saleDetailQuery, [uid])
     .then(function (rows) {
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound(`Could not find an Inventory with uuid ${uuid.unparse(uid)}`);
       }
 
       record = rows[0];
@@ -291,7 +292,7 @@ function reference(req, res, next) {
   db.exec(sql, [ req.params.reference ])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a sale with reference ${req.params.reference}`);
     }
 
     // references should be unique -- send back only the first result

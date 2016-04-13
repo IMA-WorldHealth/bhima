@@ -11,6 +11,7 @@
 
 
 var db = require('../../lib/db');
+var NotFound = require('../../lib/errors/NotFound');
 
 /**
 * Returns an array of profit centers
@@ -188,7 +189,7 @@ function lookupProfitCenter (id, codes) {
   return db.exec(sql, id)
     .then(function (rows) {
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound(`Could not find a profit center with id ${id}`);
       }
       return rows[0];
     });

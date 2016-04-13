@@ -6,6 +6,7 @@
  */
 
 var db = require('../../lib/db');
+var NotFound = require('../../lib/errors/NotFound');
 
 /** list currencies in the database */
 exports.list = function list(req, res, next) {
@@ -36,7 +37,7 @@ exports.detail = function detail(req, res, next) {
   db.exec(sql, [ req.params.id ])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a currency with id ${req.params.id}`);
     }
 
     res.status(200).json(rows[0]);

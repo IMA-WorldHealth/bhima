@@ -1,4 +1,5 @@
 var db = require('../../lib/db');
+var NotFound = require('../../lib/errors/NotFound');
 
 function lookupSubsidy(id, codes) {
   'use strict';
@@ -9,7 +10,7 @@ function lookupSubsidy(id, codes) {
   return db.exec(sql, id)
     .then(function (rows) {
       if (rows.length === 0) {
-        throw new codes.ERR_NOT_FOUND();
+        throw new NotFound(`Could not find a subsidy with id ${id}`);
       }
       return rows[0];
     });

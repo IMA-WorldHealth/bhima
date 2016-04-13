@@ -16,6 +16,7 @@
 */
 var db = require('../lib/db');
 var q  = require('q');
+var NotFound = require('../lib/errors/NotFound');
 
 // namespaces for /users/:id/projects and /users/:id/permissions
 exports.projects = {};
@@ -59,7 +60,7 @@ function lookupUserDetails(id, codes) {
   .then(function (rows) {
 
     if (!rows.length) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find an user with id ${id}`);
     }
 
     // bind user data to ship back
@@ -387,7 +388,7 @@ exports.delete = function del(req, res, next) {
 
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      throw new req.codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a user with id ${req.params.id}`);
     }
 
     res.status(204).send();

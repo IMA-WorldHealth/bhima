@@ -14,7 +14,8 @@
 'use strict';
 
 var q  = require('q'),
-    db = require('../lib/db');
+    db = require('../lib/db'),
+	NotFound = require('../lib/errors/NotFound');
 
 /** Create a new donor */
 exports.create = create;
@@ -55,7 +56,9 @@ function update(req, res, next) {
 		return db.exec('SELECT id, name FROM donor WHERE id = ?', [req.params.id]);
 	})
 	.then(function (rows) {
-		if (!rows.length) { return next(new req.codes.ERR_NOT_FOUND()); }
+		if (!rows.length) { 
+			throw new NotFound(`Could not find a donor with id ${req.params.id}`);
+		}
 		res.status(200).send(rows[0]);
 	})
 	.catch(next);

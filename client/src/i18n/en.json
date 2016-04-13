@@ -556,6 +556,21 @@
     "UPD_REFERENCE"  : "Update Reference"
   },
 
+  "LOCATION": {
+    "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
+    "DESCRIPTION_2"         : "The saving and Updating of a Location",  
+    "LOCALITY"              : "Locality",
+    "LOCATION"              : "Location",
+    "LOCATION_MANAGER"      : "Location Manager",
+    "MANAGER_CONFIGURATION" : "Location Manager Configuration",
+    "MANAGE_COUNTRY"        : "Manage Country",
+    "MANAGE_PROVINCE"       : "Manage Province",
+    "MANAGE_SECTOR"         : "Manage Sector",
+    "MANAGE_VILLAGE"        : "Manage Village",
+    "REGISTERED"            : "Registered Locations",
+    "TITLE"                 : "Location Manager"
+  },
+
 
   "PATIENT_INVOICE": { 
     "PAGE_TITLE"          : "Patient Invoice",
@@ -759,6 +774,7 @@
     "ADD_SUPPLIER"          : "Add a supplier",
     "EDIT_SUPPLIER"         : "Supplier Update Form",
     "NEW_SUPPLIER"          : "Supplier Registration Form",
+    "NO_SUPPLIER"           : "No supplier have been registered",
     "INFO"                  : "The Supplier Management module allows to monitor the status of suppliers based on their products and services and offer managers a complete and quick view of the provider file.",
     "REGISTERED"            : "Registered Suppliers",
     "SUPPLIER"              : "supplier",

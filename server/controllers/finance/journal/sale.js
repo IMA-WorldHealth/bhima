@@ -1,6 +1,6 @@
 var q         = require('q'),
     core      = require('./core'),
-    uuid      = require('../../../lib/guid'),
+	uuid      = require('node-uuid'),
     sanitize  = require('../../../lib/sanitize'),
     validate  = require('../../../lib/validate')(),
     util      = require('../../../lib/util'),
@@ -114,7 +114,7 @@ function creditNote(id, userId, cb) {
       item.deb_cred_uuid = item.deb_cred_uuid || null;
 
       params = [
-        uuid(), item.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+        uuid.v4(), item.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
         item.doc_num, reference.description, item.account_id, item.credit, item.debit, item.credit_equiv,
         item.debit_equiv, item.currency_id, item.deb_cred_uuid, item.inv_po_id, item.cost_ctrl_id, cfg.originId,
         item.user_id, item.cc_id, item.pc_id
@@ -238,7 +238,7 @@ function create(id, userId, cb, caution) {
         '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
-      'SELECT sale.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
+      'SELECT sale.project_id, ' + [sanitize.escape(uuid.v4()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
         'sale.date, sale.description, ' + [sanitize.escape(item.account_id), item.value, 0, item.value, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
         reference.currency_id + ', sale.debitor_uuid, \'D\', sale.uuid, ' + [cfg.originId, userId].join(', ') + ' ' +
       'FROM sale JOIN debitor JOIN debitor_group ON ' +
@@ -254,7 +254,7 @@ function create(id, userId, cb, caution) {
         '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
-      'SELECT sale.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
+      'SELECT sale.project_id, ' + [sanitize.escape(uuid.v4()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
         'sale.date, sale.description, debitor_group.account_id, ' + [reference.cost - subsidies_cost, 0, reference.cost - subsidies_cost, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
         reference.currency_id + ', sale.debitor_uuid, \'D\', sale.uuid, ' + [cfg.originId, userId].join(', ') + ' ' +
       'FROM sale JOIN debitor JOIN debitor_group ON ' +
@@ -273,7 +273,7 @@ function create(id, userId, cb, caution) {
           '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, pc_id) ' +
-        'SELECT sale.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
+        'SELECT sale.project_id, ' + [sanitize.escape(uuid.v4()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
           'sale.date, sale.description, inventory_group.sales_account, sale_item.debit, sale_item.credit, ' +
           'sale_item.debit, sale_item.credit, ' + reference.currency_id + ', NULL, ' +
           ' null, sale.uuid, ' + [cfg.originId, userId].join(', ') + ', if (ISNULL(account.pc_id), \'' + item.profit_center_id + '\', account.pc_id) ' +
@@ -314,7 +314,7 @@ function create(id, userId, cb, caution) {
           '(uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
-          'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.date)), '\''+descript+'\''].join(',') + ', ' +
+          'SELECT ' + ['\'' + uuid.v4() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.date)), '\''+descript+'\''].join(',') + ', ' +
             'debitor_group.account_id, ' + [0, transAmount, 0, transAmount, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
             ', \'D\', null, ' + [cfg.originId, userId].join(',') + ' ' +
           'FROM debitor_group WHERE debitor_group.uuid= (' +
@@ -325,7 +325,7 @@ function create(id, userId, cb, caution) {
           '(uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
-          'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.date)), '\''+descript+'\''].join(',') + ', ' +
+          'SELECT ' + ['\'' + uuid.v4() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.date)), '\''+descript+'\''].join(',') + ', ' +
             'debitor_group.account_id, ' + [transAmount, 0, transAmount, 0, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
             ', \'D\', ' + [sanitize.escape(reference.uuid), cfg.originId, userId].join(',') + ' ' +
           'FROM debitor_group WHERE debitor_group.uuid= (' +
@@ -399,7 +399,7 @@ function caution(id, userId, cb) {
       'VALUES (?);';
 
     params = [
-      reference.project_id, uuid(), cfg.fiscalYearId, cfg.periodId, transId, new Date(),
+      reference.project_id, uuid.v4(), cfg.fiscalYearId, cfg.periodId, transId, new Date(),
       reference.description, reference.credit_account, reference.cost, 0, cfg.credit_equiv,
       cfg.debit_equiv, reference.currency_id, reference.deb_cred_uuid, 'D', id,
       cfg.originId, userId
@@ -419,7 +419,7 @@ function caution(id, userId, cb) {
       'VALUES (?);';
 
     params = [
-      reference.project_id, uuid(), cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+      reference.project_id, uuid.v4(), cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
       reference.description, reference.debit_account, 0, reference.cost, cfg.debit_equiv,
       cfg.credit_equiv, reference.currency_id, null, null, id, cfg.originId, userId
     ];
