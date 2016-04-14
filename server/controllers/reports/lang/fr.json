@@ -62,7 +62,7 @@
 		"POSTNOM" : "Prenom"
 	},
 
-	"DEBITOR_GROUP_REPORT" : {
+	"DEBTOR_GROUP_REPORT" : {
 		"TITLE" : "Etat Financier Groupe Debiteur",
 		"ENTERPRISE" : "Entreprise",
 		"DEBIT" : "Debit",

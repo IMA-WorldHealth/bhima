@@ -28,7 +28,7 @@ function FindConventionDirective ($compile, validate, messenger, Appcache, $pars
         required : true,
         query : {
           tables : {
-            debitor_group : { columns : ['uuid', 'name', 'account_id', 'phone','email']}
+            debtor_group : { columns : ['uuid', 'name', 'account_id', 'phone','email']}
           }
         }
       };
@@ -41,7 +41,7 @@ function FindConventionDirective ($compile, validate, messenger, Appcache, $pars
       // Expose
       scope.validateNameSearch         = validateNameSearch;
       scope.findConvention.refresh     = resetSearch;
-      scope.submitDebitorGroup         = submitDebitorGroup;
+      scope.submitDebtorGroup         = submitDebtorGroup;
       scope.findConvention.updateState = updateState;
 
       // Loading data
@@ -64,7 +64,7 @@ function FindConventionDirective ($compile, validate, messenger, Appcache, $pars
         scope.findConvention.submitSuccess = true;
       }
 
-      function submitDebitorGroup (value) {
+      function submitDebtorGroup (value) {
         stateMap[scope.findConvention.state](value);
       }
 

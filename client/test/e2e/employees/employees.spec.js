@@ -94,8 +94,8 @@ describe('Employees Module', function () {
       .first()
       .click();
 
-    // select an Debitor Group
-    FU.select('EmployeeCtrl.employee.debitor_group_uuid')
+    // select an Debtor Group
+    FU.select('EmployeeCtrl.employee.debtor_group_uuid')
       .enabled()
       .first()
       .click();
@@ -163,7 +163,7 @@ describe('Employees Module', function () {
     FU.validation.error('EmployeeCtrl.employee.grade_id');
     FU.validation.error('EmployeeCtrl.employee.fonction_id');
     FU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
-    FU.validation.error('EmployeeCtrl.employee.debitor_group_uuid');
+    FU.validation.error('EmployeeCtrl.employee.debtor_group_uuid');
     FU.validation.error('EmployeeCtrl.employee.adresse');
 
     // the following fields are not required

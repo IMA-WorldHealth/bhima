@@ -26,7 +26,7 @@ function StockDistributionsController($q, $http, $routeParams, $location, connec
     depot : $routeParams.depotId,
     lotSelectionSuccess : false,
     lotSelectionFailure : false,
-    dataDebitor : []
+    dataDebtor : []
   };
 
   var dependencies = {};
@@ -67,7 +67,7 @@ function StockDistributionsController($q, $http, $routeParams, $location, connec
 
   function initialiseDistributionDetails(patient) {
     vm.session.patient = patient;
-    return $http.get('/ledgers/debitor/' + patient.debitor_uuid).then(startup).catch(function (err){console.log('error when fecthing data');});
+    return $http.get('/ledgers/debtor/' + patient.debtor_uuid).then(startup).catch(function (err){console.log('error when fecthing data');});
   }
 
   function startup(model) {

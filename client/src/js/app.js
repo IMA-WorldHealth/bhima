@@ -756,7 +756,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/reports/operating_account/operating_account.html'
   })
   .state('/reports/debtor_aging', {
-    controller: 'reportDebitorAging',
+    controller: 'reportDebtorAging',
     templateUrl: 'partials/reports/debtor_aging/debtor_aging.html'
   })
   .state('/reports/account_statement/:id?', {
@@ -819,9 +819,9 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'configureBilan',
     templateUrl : 'partials/reports_proposed/bilan/bilan.html'
   })
-  .state('/reports/debitor_group_report', {
+  .state('/reports/debtor_group_report', {
     controller : 'DebtorGroupReportController as debtorGroupReportCtrl',
-    templateUrl : 'partials/reports_proposed/debitor_group_report/debitor_group_report.html'
+    templateUrl : 'partials/reports_proposed/debtor_group_report/debtor_group_report.html'
   })
   .state('/reports/result_account', {
     controller : 'configureResult',

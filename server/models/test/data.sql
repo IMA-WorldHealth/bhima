@@ -218,7 +218,7 @@ INSERT INTO `inventory` VALUES
   (1, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 'INV1', 'Second Test inventory item', 10.0, 10, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP),
   (1, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 'INV2', 'Third Test Inventory Item', 105.0, 10, HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'), 2, 0, 0, 0, 0, 0, 1, 1, CURRENT_TIMESTAMP);
 
-INSERT INTO `debitor_group` VALUES
+INSERT INTO `debtor_group` VALUES
   (1,HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Test Debtor Group',3631, HUID('03a329b2-03fe-4f73-b40f-56a2870cc7e6'),NULL,NULL,NULL,0,0,0,NULL,1,1,1),
   (1,HUID('66f03607-bfbc-4b23-aa92-9321ca0ff586'),'Second Test Debtor Group',3631,HUID('03a329b2-03fe-4f73-b40f-56a2870cc7e6'),NULL,NULL,NULL,0,0,0,NULL,1,1,1);
 
@@ -228,10 +228,10 @@ INSERT INTO `patient_group` VALUES
   (HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),1,NULL,'Test Patient Group 2','Test Patient Group 2 Note','2016-03-10 08:44:23'),
   (HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da22'),1,NULL,'Test Patient Group 3','Test Patient Group 2 Note','2016-03-12 08:44:23');
 
-INSERT INTO `debitor` VALUES
+INSERT INTO `debtor` VALUES
   (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/2/Patient'),
   (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/1/Patient'),
-  (HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Employee/Test Debitor');
+  (HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Employee/Test Debtor');
 
 
 INSERT INTO `patient` VALUES
@@ -286,7 +286,7 @@ INSERT INTO `service` VALUES
   (3, 1, 'Medecine Interne', 1, 1);
 
 
-INSERT INTO sale (project_id, reference, uuid, cost, debitor_uuid, service_id, user_id, discount, date, description, timestamp, is_distributable) VALUES
+INSERT INTO sale (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, discount, date, description, timestamp, is_distributable) VALUES
   (1,2,HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'),75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,0,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
   (1,1,HUID('c44619e0-3a88-4754-a750-a414fc9567bf'),25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,0,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
 
@@ -331,7 +331,7 @@ INSERT INTO `price_list` (`enterprise_id`, `uuid`, `label`) VALUES
 -- (20,'Donor management','TREE.DONOR_MANAGEMENT','',1,'/partials/donor_management/','/donor_management/'),
 -- (21,'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/inventory/price_list'),
 -- (23,'Creditor Groups','TREE.CREDITOR_GRP','',30,'/partials/creditor/group/','/creditors/creditor_group'),
--- (24,'Debitor Groups','TREE.DEBTOR_GRP','',30,'/partials/debtor/','/debtor/debtor_group'),
+-- (24,'Debtor Groups','TREE.DEBTOR_GRP','',30,'/partials/debtor/','/debtor/debtor_group'),
 -- (25,'General Ledger','TREE.GENERAL_LEDGER','',30,'/partials/reports/ledger/','/reports/ledger/general_ledger'),
 -- (26,'Location Manager','TREE.LOCATION','',1,'/partials/location/location.html','/location'),
 -- (27,'Chart of Accounts','TREE.CHART_OF_ACCOUNTS','',129,'/partials/reports/chart_of_accounts/','/reports/chart_of_accounts/'),
@@ -409,7 +409,7 @@ INSERT INTO `price_list` (`enterprise_id`, `uuid`, `label`) VALUES
 -- (117,'Budget Analysis','TREE.BUDGET_ANALYSIS','analyse du budget courant avec les precedants',8,'/partials/budget/analysis','/budgeting/analysis/'),
 -- (118,'Report Taxes paiments','TREE.REPORT_TAXES','Report taxes paiements',57,'/partials/reports/taxes_payment/','/reports/taxes_payment/'),
 -- (119,'Report Cotisation paiements','TREE.REPORT_COTISATION','Report Cotisation paiements',57,'/partials/reports/cotisation_payment/','/reports/cotisation_payment/'),
--- (120,'Rapport situation group debite','TREE.DEBITOR_GROUP_REPORT','pour voir le rapport pdf detaille de group de debiteur',128,'/partials/reports/debitor_group_report','/reports/debitor_group_report/'),
+-- (120,'Rapport situation group debite','TREE.DEBTOR_GROUP_REPORT','pour voir le rapport pdf detaille de group de debiteur',128,'/partials/reports/debtor_group_report','/reports/debtor_group_report/'),
 -- (122,'Purchase','TREE.PURCHASE_ORDER','Purchase management',0,'/','/'),
 -- (123,'Purchase Report','TREE.REPORTS','Purchase Report',122,'/','/'),
 -- (124,'Inventory','TREE.INVENTORY','Inventory management',0,'/','/'),

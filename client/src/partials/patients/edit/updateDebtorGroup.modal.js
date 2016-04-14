@@ -10,9 +10,9 @@ function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateMo
   debtors.groups()
     .then(function (debtorGroups) { 
   
-      viewModel.debitor_group_uuid = patient.debitor_group_uuid;
+      viewModel.debtor_group_uuid = patient.debtor_group_uuid;
 
-      // setDebtorGroup(patient.debitor_group_uuid);
+      // setDebtorGroup(patient.debtor_group_uuid);
 
       viewModel.debtorGroups = debtorGroups;
     });
@@ -40,15 +40,15 @@ function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateMo
     }
   
     updateRequest = { 
-      group_uuid : viewModel.debitor_group_uuid
+      group_uuid : viewModel.debtor_group_uuid
     };
     
-    debtors.update(patient.debitor_uuid, updateRequest)
+    debtors.update(patient.debtor_uuid, updateRequest)
       .then(function (result) { 
       
         updateModel(
-          viewModel.debitor_group_uuid,
-          fetchGroupName(viewModel.debitor_group_uuid));
+          viewModel.debtor_group_uuid,
+          fetchGroupName(viewModel.debtor_group_uuid));
         
         closeModal();
       });

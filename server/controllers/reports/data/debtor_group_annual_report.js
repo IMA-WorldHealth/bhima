@@ -88,7 +88,7 @@ exports.compile = function (options) {
     sql =
       'SELECT account.id, account.number, dg.name, ' +
         'IFNULL(SUM(pt.debit), 0) AS debit, IFNULL(SUM(pt.credit), 0) AS credit ' +
-      'FROM debitor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
+      'FROM debtor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
       'JOIN account ON account.id = dg.account_id ' +
       'JOIN period AS p ON pt.period_id = p.id ' +
       'WHERE p.period_stop <= DATE(?) ' +
@@ -117,7 +117,7 @@ exports.compile = function (options) {
     sql =
       'SELECT account.id, account.number, dg.name, ' +
         'IFNULL(SUM(pt.debit), 0) AS debit, IFNULL(SUM(pt.credit), 0) AS credit ' +
-      'FROM debitor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
+      'FROM debtor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
       'JOIN account ON account.id = dg.account_id ' +
       'JOIN period AS p ON pt.period_id = p.id ' +
       'WHERE p.fiscal_year_id = ? ' +
@@ -148,7 +148,7 @@ exports.compile = function (options) {
     sql =
       'SELECT account.id, account.number, dg.name, ' +
         'SUM(IFNULL(pt.debit, 0) - IFNULL(pt.credit, 0)) AS balance ' +
-      'FROM debitor_group AS dg JOIN account ON account.id = dg.account_id ' +
+      'FROM debtor_group AS dg JOIN account ON account.id = dg.account_id ' +
       'LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
       'JOIN period AS p ON pt.period_id = p.id ' +
       'WHERE p.period_stop <= DATE(?) ' +

@@ -21,7 +21,7 @@ describe('(/patients) The Patients API', function () {
 
   var mockDebtor = {
     uuid:                mockDebtorUuid,
-    debitor_group_uuid:  '4de0fe47-177f-4d30-b95f-cff8166400b4'
+    debtor_group_uuid:  '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
 
   var mockPatient = {
@@ -56,7 +56,7 @@ describe('(/patients) The Patients API', function () {
 
   var mockMissingRequest = {
     finance : {
-      debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+      debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
     },
     medical : missingParamsPatient
   };
@@ -80,7 +80,7 @@ describe('(/patients) The Patients API', function () {
 
   var simultaneousRequest = {
     finance : {
-      debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+      debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
     },
     medical : simultaneousPatient
   };

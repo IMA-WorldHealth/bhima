@@ -46,7 +46,7 @@ describe('(/employees) the employees API endpoint', function () {
       service_id : 1,
       location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
       creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-      debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+      debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
 
   var updateEmployee = {
@@ -68,7 +68,7 @@ describe('(/employees) the employees API endpoint', function () {
       service_id : 1,
       location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
       creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-      debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+      debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
 
   };
 

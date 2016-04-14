@@ -41,9 +41,9 @@ function list(req, res, next) {
 
   saleListQuery =
     'SELECT CONCAT(project.abbr, sale.reference) AS reference, BUID(sale.uuid) as uuid, cost,' +
-      'BUID(sale.debitor_uuid) as debitor_uuid, user_id, date, is_distributable ' +
+      'BUID(sale.debtor_uuid) as debtor_uuid, user_id, date, is_distributable ' +
     'FROM sale ' +
-      'LEFT JOIN patient ON sale.debitor_uuid = patient.debitor_uuid ' +
+      'LEFT JOIN patient ON sale.debtor_uuid = patient.debtor_uuid ' +
       'JOIN project ON sale.project_id = project.id;';
 
   db.exec(saleListQuery)
@@ -70,10 +70,10 @@ function lookupSale(uid, codes) {
 
   var saleDetailQuery =
     'SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
-      'BUID(sale.debitor_uuid) AS debitor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debitor_name, ' +
+      'BUID(sale.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name, ' +
       'user_id, discount, date, sale.is_distributable ' +
     'FROM sale ' +
-    'LEFT JOIN patient ON patient.debitor_uuid = sale.debitor_uuid ' +
+    'LEFT JOIN patient ON patient.debtor_uuid = sale.debtor_uuid ' +
     'JOIN project ON project.id = sale.project_id ' +
     'WHERE sale.uuid = ?';
 
@@ -144,8 +144,8 @@ function create(req, res, next) {
   }
 
   /** @todo - abstract this into a generic "convert" method */
-  if (sale.debitor_uuid) {
-    sale.debitor_uuid = db.bid(sale.debitor_uuid);
+  if (sale.debtor_uuid) {
+    sale.debtor_uuid = db.bid(sale.debtor_uuid);
   }
 
   // implicitly provide user information based on user session
@@ -229,15 +229,15 @@ function search(req, res, next) {
 
   var sql =
     'SELECT BUID(sale.uuid) as uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference, ' +
-      'sale.cost, BUID(sale.debitor_uuid) as debitor_uuid, sale.user_id, sale.discount, ' +
+      'sale.cost, BUID(sale.debtor_uuid) as debtor_uuid, sale.user_id, sale.discount, ' +
       'sale.date, sale.is_distributable ' +
     'FROM sale JOIN project ON project.id = sale.project_id ' +
     'WHERE ';
 
   var conditions = [];
 
-  if (req.query.debitor_uuid) {
-    req.query.debitor_uuid = db.bid(req.query.debitor_uuid);
+  if (req.query.debtor_uuid) {
+    req.query.debtor_uuid = db.bid(req.query.debtor_uuid);
   }
 
   if (req.query.uuid) {

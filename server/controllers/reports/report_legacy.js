@@ -92,13 +92,13 @@ function finance(reportParameters) {
   return db.exec(initialQuery);
 }
 
-function debitorAging (params){
+function debtorAging (params){
   var def = q.defer();
   params = JSON.parse(params);
   var requette =
-    'SELECT period.id, period.period_start, period.period_stop, debitor.uuid as idDebitor, debitor.text, general_ledger.debit, general_ledger.credit, general_ledger.account_id ' +
-    'FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.uuid = debitor.group_uuid AND debitor.uuid = general_ledger.deb_cred_uuid ' +
-    'AND general_ledger.`deb_cred_type`=\'D\' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`=\''+params.fiscal_id +'\'';
+    'SELECT period.id, period.period_start, period.period_stop, debtor.uuid as idDebtor, debtor.text, general_ledger.debit, general_ledger.credit, general_ledger.account_id ' +
+    'FROM debtor, debtor_group, general_ledger, period WHERE debtor_group.uuid = debtor.group_uuid AND debtor.uuid = general_ledger.deb_cred_uuid ' +
+    'AND general_ledger.`deb_cred_type`=\'D\' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debtor_group.account_id AND general_ledger.`fiscal_year_id`=\''+params.fiscal_id +'\'';
 
   return db.exec(requette);
 }
@@ -186,11 +186,11 @@ function saleRecords(params) {
   }
 
   var requestSql =
-    'SELECT sale.uuid, sale.reference, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, ' +
+    'SELECT sale.uuid, sale.reference, sale.cost, sale.currency_id, sale.debtor_uuid, sale.invoice_date, ' +
     'sale.note, sale.posted, sale.seller_id, credit_note.uuid as `creditId`, credit_note.description as `creditDescription`, ' +
     'credit_note.posted as `creditPosted`, first_name, last_name, middle_name, patient.project_id as `patientProjectId`, patient.reference as `patientReference`, project.abbr as `projectAbbr`, CONCAT(project.abbr, sale.reference) as `hr_id` ' +
     'FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid ' +
-    'LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid ' +
+    'LEFT JOIN patient on sale.debtor_uuid = patient.debtor_uuid ' +
     'LEFT JOIN project on sale.project_id = project.id ' +
     'WHERE sale.invoice_date >= ? AND sale.invoice_date <= ? ';
 
@@ -225,7 +225,7 @@ function cashAuxillaryRecords(params) {
     'cash.description, cash_discard.uuid as `cashDiscardId`, cash_discard.description as `cashDiscardDescription`, ' +
     'cash_discard.posted, cash.user_id, first_name, middle_name, last_name, patient.reference as `patientReference`,  project.abbr as `projectAbbr`, CONCAT(project.abbr, cash.reference) as `hr_id` ' +
     'FROM cash LEFT JOIN cash_discard on cash.uuid = cash_discard.cash_uuid ' +
-    'LEFT JOIN patient on cash.deb_cred_uuid = patient.debitor_uuid ' +
+    'LEFT JOIN patient on cash.deb_cred_uuid = patient.debtor_uuid ' +
     'LEFT JOIN project on cash.project_id = project.id ' +
     'WHERE cash.date >= ? AND cash.date <= ? ';
 
@@ -319,7 +319,7 @@ function patientRecords(params) {
   }
 
   var sql =
-    'SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, middle_name, hospital_no, last_name, dob, father_name, ' +
+    'SELECT patient.uuid, patient.reference, project.abbr, debtor_uuid, first_name, middle_name, hospital_no, last_name, dob, father_name, ' +
         'sex, religion, renewal, registration_date, date, CONCAT(user.first,\' \',user.last) AS registrar ' +
       'FROM `patient` JOIN `patient_visit` JOIN `project` JOIN `user` ON ' +
         '`patient`.`uuid`=`patient_visit`.`patient_uuid` AND ' +
@@ -346,7 +346,7 @@ function patientNewVisit(params) {
   }
 
   var sql =
-    'SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, middle_name, hospital_no, last_name, dob, father_name, ' +
+    'SELECT patient.uuid, patient.reference, project.abbr, debtor_uuid, first_name, middle_name, hospital_no, last_name, dob, father_name, ' +
         'sex, religion, renewal, registration_date, date, CONCAT(user.first,\' \',user.last) AS registrar ' +
       'FROM `patient` JOIN `patient_visit` JOIN `project` JOIN `user` ON ' +
         '`patient`.`uuid`=`patient_visit`.`patient_uuid` AND ' +
@@ -374,7 +374,7 @@ function patientOldVisit(params) {
   }
 
   var sql =
-    'SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, middle_name, hospital_no, last_name, dob, father_name, ' +
+    'SELECT patient.uuid, patient.reference, project.abbr, debtor_uuid, first_name, middle_name, hospital_no, last_name, dob, father_name, ' +
         'sex, religion, renewal, registration_date, date, CONCAT(user.first,\' \',user.last) AS registrar ' +
       'FROM `patient` JOIN `patient_visit` JOIN `project` JOIN `user` ON ' +
         '`patient`.`uuid`=`patient_visit`.`patient_uuid` AND ' +
@@ -402,8 +402,8 @@ function paymentRecords(params) {
       'JOIN project AS pr ON c.project_id = pr.id ' +
       'JOIN `currency` AS cr ON c.currency_id = cr.id ' +
       'JOIN `cash_item` AS ci ON ci.cash_uuid = c.uuid ' +
-      'JOIN `debitor` AS d ON c.deb_cred_uuid = d.uuid ' +
-      'JOIN `patient` AS p ON d.uuid = p.debitor_uuid ' +
+      'JOIN `debtor` AS d ON c.deb_cred_uuid = d.uuid ' +
+      'JOIN `patient` AS p ON d.uuid = p.debtor_uuid ' +
       'JOIN sale AS s ON ci.invoice_uuid = s.uuid ' +
       'LEFT JOIN `cash_discard` AS cd  ON c.uuid = cd.cash_uuid ' +
     'WHERE c.project_id IN (' + _id + ') AND DATE(c.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') AND cd.cash_uuid IS NULL ' +
@@ -422,15 +422,15 @@ function patientStanding(params) {
       sql =
       'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, `aggregate`.`trans_date`, `aggregate`.`account_id`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id`, `aggregate`.`account_id`, `aggregate`.`is_convention` ' +
       'FROM ( ' +
-        'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id`, `posting_journal`.`account_id`, `debitor_group`.`is_convention` ' +
+        'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id`, `posting_journal`.`account_id`, `debtor_group`.`is_convention` ' +
         'FROM `posting_journal` ' +
-        'JOIN `debitor_group` ON `debitor_group`.`account_id` =  `posting_journal`.`account_id` ' +
-        'WHERE `posting_journal`.`deb_cred_uuid`= ? AND `debitor_group`.`account_id`= ? AND `posting_journal`.`deb_cred_type`=\'D\' AND `debitor_group`.`is_convention` = 0 ' +
+        'JOIN `debtor_group` ON `debtor_group`.`account_id` =  `posting_journal`.`account_id` ' +
+        'WHERE `posting_journal`.`deb_cred_uuid`= ? AND `debtor_group`.`account_id`= ? AND `posting_journal`.`deb_cred_type`=\'D\' AND `debtor_group`.`is_convention` = 0 ' +
       'UNION ' +
-        'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id`, `general_ledger`.`account_id`, `debitor_group`.`is_convention` ' +
+        'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id`, `general_ledger`.`account_id`, `debtor_group`.`is_convention` ' +
         'FROM `general_ledger` ' +
-        'JOIN `debitor_group` ON `debitor_group`.`account_id` =  `general_ledger`.`account_id` ' +
-        'WHERE `general_ledger`.`deb_cred_uuid`= ? AND `debitor_group`.`account_id`= ? AND `general_ledger`.`deb_cred_type`=\'D\' AND `debitor_group`.`is_convention` = 0) as aggregate ' +
+        'JOIN `debtor_group` ON `debtor_group`.`account_id` =  `general_ledger`.`account_id` ' +
+        'WHERE `general_ledger`.`deb_cred_uuid`= ? AND `debtor_group`.`account_id`= ? AND `general_ledger`.`deb_cred_type`=\'D\' AND `debtor_group`.`is_convention` = 0) as aggregate ' +
       'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
 
   db.exec(sql, [params.id, params.account_id, params.id, params.account_id])
@@ -1177,7 +1177,7 @@ function generate(request, params, done) {
   */
   var route = {
     'finance'               : finance,
-    'debitorAging'          : debitorAging,
+    'debtorAging'          : debtorAging,
     'saleRecords'           : saleRecords,
     'distributionPatients'  : distributionPatients,
     'distributionServices'  : distributionServices,

@@ -195,7 +195,7 @@
 
                 <label for="new-debtor-group" class="col-md-3 control-label">{{"FORM.LABELS.DEBITOR_GROUP" | translate }}</label>
                 <div class="col-md-9">
-                  <select class="form-control" name="debtorGroup" id="debtor-group" ng-model="PatientRegCtrl.finance.debitor_group_uuid" ng-options="g.uuid as g.name for g in PatientRegCtrl.options.debtorGroups | orderBy:'name'" required>
+                  <select class="form-control" name="debtorGroup" id="debtor-group" ng-model="PatientRegCtrl.finance.debtor_group_uuid" ng-options="g.uuid as g.name for g in PatientRegCtrl.options.debtorGroups | orderBy:'name'" required>
                     <option value="" disabled="disabled">-- {{"FORM.SELECTS.SELECT_DEBITOR_GROUP" | translate }} --</option>
                   </select>
 

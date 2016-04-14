@@ -31,8 +31,8 @@ function convert(data) {
     data.grade_id = db.bid(data.grade_id);
   }
 
-  if (data.debitor_group_uuid) {
-    data.debitor_group_uuid = db.bid(data.debitor_group_uuid);
+  if (data.debtor_group_uuid) {
+    data.debtor_group_uuid = db.bid(data.debtor_group_uuid);
   }
 
   if (data.creditor_group_uuid) {
@@ -43,8 +43,8 @@ function convert(data) {
     data.creditor_uuid = db.bid(data.creditor_uuid);
   }
 
-  if (data.debitor_uuid) {
-    data.debitor_uuid = db.bid(data.debitor_uuid);
+  if (data.debtor_uuid) {
+    data.debtor_uuid = db.bid(data.debtor_uuid);
   }
 
   if (data.location_id) {
@@ -82,12 +82,12 @@ exports.list = function (req, res, next) {
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, BUID(employee.location_id) AS location_id,
-      grade.code AS code_grade, BUID(debitor.uuid) as debitor_uuid, debitor.text AS debitor_text, BUID(debitor.group_uuid) as debitor_group_uuid,
+      grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text, BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
      JOIN grade ON employee.grade_id = grade.uuid
      JOIN fonction ON employee.fonction_id = fonction.id
-     JOIN debitor ON employee.debitor_uuid = debitor.uuid
+     JOIN debtor ON employee.debtor_uuid = debtor.uuid
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
      ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC;`;
@@ -178,14 +178,14 @@ function lookupEmployee(id, codes) {
       employee.locked, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
-      employee.daily_salary, BUID(employee.location_id) as location_id, grade.code AS code_grade, BUID(debitor.uuid) as debitor_uuid,
-      debitor.text AS debitor_text, BUID(debitor.group_uuid) as debitor_group_uuid,
+      employee.daily_salary, BUID(employee.location_id) as location_id, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
+      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
       JOIN grade ON employee.grade_id = grade.uuid
       JOIN fonction ON employee.fonction_id = fonction.id
-      JOIN debitor ON employee.debitor_uuid = debitor.uuid
+      JOIN debtor ON employee.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
       LEFT JOIN service ON service.id = employee.service_id
@@ -240,9 +240,9 @@ exports.update = function update(req, res, next) {
     text : 'Crediteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
   };
 
-  var debitor = {
-    uuid : employee.debitor_uuid,
-    group_uuid : employee.debitor_group_uuid,
+  var debtor = {
+    uuid : employee.debtor_uuid,
+    group_uuid : employee.debtor_group_uuid,
     text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
   };
 
@@ -270,14 +270,14 @@ exports.update = function update(req, res, next) {
   };
 
   var updateCreditor = 'UPDATE creditor SET ? WHERE creditor.uuid = ?';
-  var updateDebitor = 'UPDATE debitor SET ? WHERE debitor.uuid = ?';
+  var updateDebtor = 'UPDATE debtor SET ? WHERE debtor.uuid = ?';
   var sql = 'UPDATE employee SET ? WHERE employee.id = ?';
 
   transaction = db.transaction();
 
   transaction
     .addQuery(updateCreditor, [creditor, creditor.uuid])
-    .addQuery(updateDebitor, [debitor, debitor.uuid])
+    .addQuery(updateDebtor, [debtor, debtor.uuid])
     .addQuery(sql, [clean, req.params.id]);
 
   transaction.execute()
@@ -309,7 +309,7 @@ exports.create = function create(req, res, next) {
   // cast as data object and add unique ids
   var data = req.body;
   data.creditor_uuid = uuid.v4();
-  data.debitor_uuid = uuid.v4();
+  data.debtor_uuid = uuid.v4();
 
   // convert uuids to binary uuids as necessary
   var employee = convert(data);
@@ -320,24 +320,24 @@ exports.create = function create(req, res, next) {
     text : 'Crediteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
   };
 
-  var debitor = {
-    uuid : employee.debitor_uuid,
-    group_uuid : employee.debitor_group_uuid,
+  var debtor = {
+    uuid : employee.debtor_uuid,
+    group_uuid : employee.debtor_group_uuid,
     text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
   };
 
-  delete employee.debitor_group_uuid;
+  delete employee.debtor_group_uuid;
   delete employee.creditor_group_uuid;
 
   var writeCreditor = 'INSERT INTO creditor SET ?';
-  var writeDebitor = 'INSERT INTO debitor SET ?';
+  var writeDebtor = 'INSERT INTO debtor SET ?';
   var sql = 'INSERT INTO employee SET ?';
 
   transaction = db.transaction();
 
   transaction
     .addQuery(writeCreditor, [creditor])
-    .addQuery(writeDebitor, [debitor])
+    .addQuery(writeDebtor, [debtor])
     .addQuery(sql, [employee]);
 
   transaction.execute()

@@ -33,7 +33,7 @@ exports.balance = function() { /** @todo - noop */ };
 function update(req, res, next) {
 
   var sql =
-    'UPDATE debitor SET ? WHERE uuid = ?';
+    'UPDATE debtor SET ? WHERE uuid = ?';
 
   // delete the uuid if it exists
   delete req.body.uuid;
@@ -66,7 +66,7 @@ function update(req, res, next) {
 function lookupDebtor(uid) {
   var sql =
     'SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text ' +
-    'FROM debitor ' +
+    'FROM debtor ' +
     'WHERE uuid = ?';
 
   return db.exec(sql, [uid])
@@ -105,7 +105,7 @@ function invoices(req, res, next) {
 
   // get the debtor invoice uuids from the sales table
   var sql =
-    'SELECT uuid FROM sale WHERE debitor_uuid = ?;';
+    'SELECT uuid FROM sale WHERE debtor_uuid = ?;';
 
   db.exec(sql, [uid])
   .then(function (uuids) {
@@ -173,7 +173,7 @@ function balance(req, res, next) {
 
   // make sure the debtor exists
   var sql =
-    'SELECT BUID(uuid) as uuid FROM debitor WHERE uuid = ?;';
+    'SELECT BUID(uuid) as uuid FROM debtor WHERE uuid = ?;';
 
   db.exec(sql, [uid])
   .then(function (rows) {

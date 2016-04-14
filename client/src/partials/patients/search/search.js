@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           patient : {
-            columns : ['uuid', 'first_name', 'last_name', 'dob', 'father_name', 'mother_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'address_1', 'address_2', 'current_location_id', 'debitor_uuid', 'registration_date', 'reference', 'middle_name', 'hospital_no']
+            columns : ['uuid', 'first_name', 'last_name', 'dob', 'father_name', 'mother_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'address_1', 'address_2', 'current_location_id', 'debtor_uuid', 'registration_date', 'reference', 'middle_name', 'hospital_no']
           },
           project : {
             columns : ['abbr']

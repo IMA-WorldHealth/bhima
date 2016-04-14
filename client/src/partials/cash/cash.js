@@ -147,7 +147,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $statePara
 
   // fired after a patient is found via the find-patient directive
   function usePatient(patient) {
-    vm.payment.debtor_uuid = patient.debitor_uuid;
+    vm.payment.debtor_uuid = patient.debtor_uuid;
     vm.patient = patient;
   }
 

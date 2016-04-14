@@ -153,7 +153,7 @@ exports.getTopDebtors = function (req, res, next) {
       'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM posting_journal WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
       'UNION ' +
       'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
-    ') AS journal JOIN debitor AS d JOIN debitor_group AS dg ON ' +
+    ') AS journal JOIN debtor AS d JOIN debtor_group AS dg ON ' +
       'd.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid ' +
     'WHERE balance <> 0 ' +
     'ORDER BY balance DESC ' +
@@ -176,7 +176,7 @@ exports.getTopDebtorGroups = function (req, res, next) {
       accounts, sql;
 
   sql =
-    'SELECT account_id FROM debitor_group;';
+    'SELECT account_id FROM debtor_group;';
 
   db.exec(sql)
   .then(function (rows) {
@@ -189,7 +189,7 @@ exports.getTopDebtorGroups = function (req, res, next) {
         'UNION ' +
         'SELECT account_id, debit_equiv, credit_equiv FROM general_ledger WHERE account_id IN (?) ' +
      ') AS t JOIN account AS a ON t.account_id = a.id ' +
-     'JOIN debitor_group AS dg ON t.account_id = dg.account_id ' +
+     'JOIN debtor_group AS dg ON t.account_id = dg.account_id ' +
      'GROUP BY t.account_id ' +
      'ORDER BY balance DESC ' +
      'LIMIT ?;';
