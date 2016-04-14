@@ -60,7 +60,7 @@ function detail(req, res, next) {
 
   const uid = db.bid(req.params.uuid);
 
-  lookupGrade(uid, req.codes)
+  lookupGrade(uid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -105,7 +105,7 @@ function update(req, res, next) {
 
   db.exec(sql, [req.body, uid])
   .then(function () {
-    return lookupGrade(uid, req.codes);
+    return lookupGrade(uid);
   })
   .then(function (record) {
     res.status(200).json(record);

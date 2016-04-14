@@ -70,7 +70,7 @@ function detail(req, res, next) {
 
   const uid = db.bid(req.params.uuid);
 
-  lookupSupplier(uid, req.codes)
+  lookupSupplier(uid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -126,7 +126,7 @@ function update(req, res, next) {
 
   db.exec(sql, [data, uid])
   .then(function () {
-    return lookupSupplier(uid, req.codes);
+    return lookupSupplier(uid);
   })
   .then(function (record) {
     res.status(200).json(record);

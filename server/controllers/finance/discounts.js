@@ -151,7 +151,7 @@ exports.update = function update(req, res, next) {
     'UPDATE discount SET ? WHERE id = ?;';
 
   // ensure the record exists by looking it up first
-  lookupDiscount(id, req.codes)
+  lookupDiscount(id)
   .then(function (record) {
 
     // run the update query
@@ -159,7 +159,7 @@ exports.update = function update(req, res, next) {
   }).then(function (rows) {
 
     // read the changes from the database
-    return lookupDiscount(id, req.codes);
+    return lookupDiscount(id);
   }).then(function (discount) {
 
     // return the fully changed database record
@@ -184,7 +184,7 @@ exports.delete = function del(req, res, next) {
     'DELETE FROM discount WHERE id = ?;';
 
   // make sure the record actually exists
-  lookupDiscount(id, req.codes)
+  lookupDiscount(id)
   .then(function (discount) {
 
     // run the delete query

@@ -118,7 +118,7 @@ function helperGetCashbox(id, codes) {
 exports.details = function details(req, res, next) {
   'use strict';
 
-  helperGetCashbox(req.params.id, req.codes)
+  helperGetCashbox(req.params.id)
   .then(function (cashbox) {
     res.status(200).json(cashbox);
   })
@@ -153,7 +153,7 @@ exports.update = function update(req, res, next) {
 
   db.exec(sql, [req.body, req.params.id])
   .then(function (rows) {
-    return helperGetCashbox(req.params.id, req.codes);
+    return helperGetCashbox(req.params.id);
   })
   .then(function (cashbox) {
     res.status(200).json(cashbox);

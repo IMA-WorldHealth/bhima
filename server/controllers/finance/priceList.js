@@ -109,7 +109,7 @@ exports.details = function details(req, res, next) {
 
   const uid = db.bid(req.params.uuid);
 
-  lookupPriceList(uid, req.codes)
+  lookupPriceList(uid)
   .then(function (priceList) {
     res.status(200).json(priceList);
   })
@@ -309,7 +309,7 @@ exports.delete = function del(req, res, next) {
     'DELETE FROM price_list WHERE uuid = ?;';
 
   // ensure that the price list exists
-  lookupPriceList(uid, req.codes)
+  lookupPriceList(uid)
   .then(function () {
     return db.exec(sql, [ uid ]);
   })

@@ -166,7 +166,7 @@ function generatePatientText(patient) {
 function detail(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
-  handleFetchPatient(uid, req.codes)
+  handleFetchPatient(uid)
     .then(function(patientDetail) {
       res.status(200).json(patientDetail);
     })
@@ -187,7 +187,7 @@ function update(req, res, next) {
 
   db.exec(updatePatientQuery, [data, patientId])
     .then(function (result) {
-      return handleFetchPatient(patientId, req.codes);
+      return handleFetchPatient(patientId);
     })
     .then(function (updatedPatient) {
       res.status(200).json(updatedPatient);

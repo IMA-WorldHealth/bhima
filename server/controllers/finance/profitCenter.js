@@ -105,12 +105,12 @@ function update(req, res, next) {
 
   delete queryData.id;
 
-  lookupProfitCenter(profitCenterId, req.codes)
+  lookupProfitCenter(profitCenterId)
     .then(function () {
       return db.exec(updateProfitCenterQuery, [queryData, profitCenterId]);
     })
     .then(function (result) {
-      return lookupProfitCenter(profitCenterId, req.codes);
+      return lookupProfitCenter(profitCenterId);
     })
     .then(function (profitCenter) {
       res.status(200).json(profitCenter);
@@ -137,7 +137,7 @@ function remove(req, res, next) {
   var profitCenterId = req.params.id;
   var removeProfitCenterQuery = 'DELETE FROM profit_center WHERE id = ?';
 
-  lookupProfitCenter(profitCenterId, req.codes)
+  lookupProfitCenter(profitCenterId)
     .then(function () {
       return db.exec(removeProfitCenterQuery, [profitCenterId]);
     })
@@ -164,7 +164,7 @@ function remove(req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupProfitCenter(req.params.id, req.codes)
+  lookupProfitCenter(req.params.id)
     .then(function (row) {
       res.status(200).json(row);
     })

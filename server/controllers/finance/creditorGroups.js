@@ -58,7 +58,7 @@ function detail(req, res, next) {
 
   const uid = db.bid(req.params.uuid);
 
-  lookupCreditorGroup(uid, req.codes)
+  lookupCreditorGroup(uid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -100,7 +100,7 @@ function update(req, res, next) {
 
   db.exec(sql, [req.body, uid])
   .then(function () {
-    return lookupCreditorGroup(uid, req.codes);
+    return lookupCreditorGroup(uid);
   })
   .then(function (record) {
     res.status(200).json(record);

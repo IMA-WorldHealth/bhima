@@ -107,12 +107,12 @@ function update (req, res, next) {
     return next(new req.codes.ERR_BAD_VALUE());
   }
 
-  lookupService(serviceId, req.codes)
+  lookupService(serviceId)
     .then(function () {
       return db.exec(updateServiceQuery, [queryData, serviceId]);
     })
     .then(function (result) {
-      return lookupService(serviceId, req.codes);
+      return lookupService(serviceId);
     })
     .then(function (service) {
       res.status(200).json(service);
@@ -138,7 +138,7 @@ function remove (req, res, next) {
   var serviceId = req.params.id;
   var removeServiceQuery = 'DELETE FROM service WHERE id=?';
 
-  lookupService(serviceId, req.codes)
+  lookupService(serviceId)
     .then(function () {
       return db.exec(removeServiceQuery, [serviceId]);
     })
@@ -165,7 +165,7 @@ function remove (req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupService(req.params.id, req.codes)
+  lookupService(req.params.id)
     .then(function (row) {
       res.status(200).json(row);
     })

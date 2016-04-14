@@ -105,7 +105,7 @@ function lookupSale(uid, codes) {
 function details(req, res, next) {
   var uid = db.bid(req.params.uuid);
 
-  lookupSale(uid, req.codes)
+  lookupSale(uid)
   .then(function (record) {
     res.status(200).json(record);
   })
