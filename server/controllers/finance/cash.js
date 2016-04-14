@@ -21,6 +21,7 @@ const db   = require('../../lib/db');
 const uuid = require('node-uuid');
 var NotFound = require('../../lib/errors/NotFound');
 var BadRequest = require('../../lib/errors/BadRequest');
+var ProtectedField = require('../../lib/errors/ProtectedField');
 
 /** retrieves the details of a cash payment */
 exports.detail = detail;
@@ -246,7 +247,7 @@ function update(req, res, next) {
 
   // if we have a protected key, emit an error
   if (hasProtectedKey) {
-    return next(new req.codes.ERR_PROTECTED_FIELD());
+    throw new ProtectedField('The update request attempted to change a protected field.');
   }
 
   // delete the uuid if it exists

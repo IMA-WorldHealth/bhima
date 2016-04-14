@@ -8,7 +8,7 @@ var uuid = require('node-uuid');
 var NotFound = require('../../lib/errors/NotFound');
 
 // GET /Grade
-function lookupGrade(uid, codes) {
+function lookupGrade(uid) {
   'use strict';
 
   var sql =

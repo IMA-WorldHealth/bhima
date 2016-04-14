@@ -1,7 +1,10 @@
 var db = require('../../lib/db');
 var NotFound = require('../../lib/errors/NotFound');
+var EmptyBody = require('../../lib/errors/EmptyBody');
+var ParametersRequired = require('../../lib/errors/ParametersRequired'); 
+var BadValue = require('../../lib/errors/BadValue');
 
-function lookupSubsidy(id, codes) {
+function lookupSubsidy(id) {
   'use strict';
 
   var sql =
@@ -124,11 +127,11 @@ function isEmptyObject(object) {
   return Object.keys(object).length === 0;
 }
 
-function checkData (obj, codes) {
-  if (isEmptyObject(obj)) { throw new codes.ERR_EMPTY_BODY();}
-  if (!obj.value) { throw new codes.ERR_PARAMETERS_REQUIRED();}
-  if (obj.value <= 0) { throw new codes.ERR_BAD_VALUE();}
-  if (isNaN(obj.value)) { throw new codes.ERR_BAD_VALUE();}
+function checkData (obj) {
+  if (isEmptyObject(obj)) { throw new EmptyBody(`You cannot submit a PUT/POST request with an empty body to the server.`);}
+  if (!obj.value) { throw new ParametersRequired(`The request requires at least one parameter.`);}
+  if (obj.value <= 0) { throw new BadValue(`You sent a bad value for some parameters`);}
+  if (isNaN(obj.value)) { throw new BadValue(`You sent a bad value for some parameters`);}
 }
 
 exports.list = list;

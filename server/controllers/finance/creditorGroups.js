@@ -9,7 +9,7 @@ var NotFound = require('../../lib/errors/NotFound');
 const uuid = require('node-uuid');
 
 // GET /creditor_groups 
-function lookupCreditorGroup(uuid, codes) {
+function lookupCreditorGroup(uuid) {
   'use strict';
 
   var sql =

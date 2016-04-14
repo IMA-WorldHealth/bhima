@@ -19,6 +19,7 @@ const db        = require('../../lib/db');
 const uuid      = require('node-uuid');
 const BadRequest  = require('../../lib/errors/BadRequest');
 var NotFound = require('../../lib/errors/NotFound');
+var ParametersRequired = require('../../lib/errors/ParametersRequired');
 
 // create a new patient
 exports.create = create;
@@ -196,7 +197,7 @@ function update(req, res, next) {
     .done();
 }
 
-function handleFetchPatient(uid, codes) {
+function handleFetchPatient(uid) {
   var patientDetailQuery =
     `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
       p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
@@ -495,7 +496,7 @@ function search(req, res, next) {
 
   try {
     var missingRequiredParameters = (!qReference && !qName && !qFields);
-    if (missingRequiredParameters) { throw new req.codes.ERR_PARAMETERS_REQUIRED(); }
+    if (missingRequiredParameters) { throw new ParametersRequired(`The request requires at least one parameter.`); }
 
     qFields = qFields ? JSON.parse(qFields) : null;
     qDetail = Number(qDetail);
@@ -569,7 +570,9 @@ function search(req, res, next) {
 
   } else {
     // throw an error in other cases
-    return next(new req.codes.ERR_PARAMETERS_REQUIRED());
+    return next(
+	  new ParametersRequired(`The request requires at least one parameter.`)
+	);
   }
 
   if (qLimit && typeof(qLimit) === 'number') {

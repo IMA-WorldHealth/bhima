@@ -25,7 +25,7 @@ function linkPurchaseItems(purchaseItems, purchaseUuid) {
 }
 
 // looks up a single purchase record and associated purchase_items
-function lookupPurchaseOrder(uid, codes) {
+function lookupPurchaseOrder(uid) {
   'use strict';
 
   var record;
@@ -184,7 +184,7 @@ function detail(req, res, next) {
 
   var uid = db.bid(req.params.uuid);
 
-  lookupPurchaseOrder(uid, req.codes)
+  lookupPurchaseOrder(uid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -206,7 +206,7 @@ function update(req, res, next) {
   .then(function () {
 
     // fetch the changed object from the database
-    return lookupPurchaseOrder(uid, req.codes);
+    return lookupPurchaseOrder(uid);
   })
   .then(function (record) {
     res.status(200).json(record);

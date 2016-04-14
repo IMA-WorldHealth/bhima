@@ -72,7 +72,7 @@ exports.list = function list(req, res, next) {
 };
 
 // get cashboxes
-function helperGetCashbox(id, codes) {
+function helperGetCashbox(id) {
   'use strict';
 
   var sql,
@@ -86,7 +86,7 @@ function helperGetCashbox(id, codes) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a cashbox with id ${id}`);
     }
 
     cashbox = rows[0];

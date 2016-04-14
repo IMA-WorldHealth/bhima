@@ -103,7 +103,7 @@ function remove (req, res, next) {
     .done();
 }
 
-function lookupAccountType(id, codes){
+function lookupAccountType(id){
   'use strict';
   
   var sql = 

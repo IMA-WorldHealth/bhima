@@ -8,6 +8,7 @@
  */
 
 var NotFound = require('../../lib/errors/NotFound'); 
+var NegativeValue = require('../../lib/errors/NegativeValue');
 const db = require('../../lib/db');
 
 /**
@@ -30,10 +31,9 @@ function convert(data) {
  * if the record does not exist, otherwise returns the record.
  *
  * @param {number} id
- * @param {object} codes
  * @returns {Promise} record
  */
-function lookupDiscount(id, codes) {
+function lookupDiscount(id) {
   'use strict';
 
   var sql =
@@ -65,7 +65,7 @@ function lookupDiscount(id, codes) {
 exports.detail = function detail(req, res, next) {
   'use strict';
 
-  lookupDiscount(req.params.id, req.codes)
+  lookupDiscount(req.params.id)
   .then(function (discount) {
     res.status(200).json(discount);
   })
@@ -106,7 +106,9 @@ exports.create = function create(req, res, next) {
   var data = convert(req.body.discount);
 
   if (data.value < 0) {
-    return next(new req.codes.ERR_NEGATIVE_VALUES());
+    return next(
+	  new NegativeValue(`${data.value} must to be positive, but received a negative value.`)
+	);
   }
 
   var sql =

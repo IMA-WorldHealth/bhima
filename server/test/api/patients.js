@@ -97,18 +97,18 @@ describe('(/patients) The Patients API', function () {
         .then(function (res) {
           helpers.api.errored(res, 400);
 
-          expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
+          expect(res.body.code).to.be.equals('ERRORS.PARAMETERS_REQUIRED');
           return agent.get('/patients/search/?');
         })
         .then(function (res) {
           helpers.api.errored(res, 400);
 
-          expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
+          expect(res.body.code).to.be.equals('ERRORS.PARAMETERS_REQUIRED');
           return agent.get('/patients/search');
         })
         .then(function (res) {
           helpers.api.errored(res, 400);
-          expect(res.body.code).to.be.equals('ERR_PARAMETERS_REQUIRED');
+          expect(res.body.code).to.be.equals('ERRORS.PARAMETERS_REQUIRED');
         })
         .catch(helpers.handler);
     });

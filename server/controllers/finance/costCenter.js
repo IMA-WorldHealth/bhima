@@ -174,11 +174,10 @@ function detail(req, res, next) {
 * Return a cost center instance from the database
 *
 * @param {integer} id of acost center
-* @param {object} codes object which contain errors code
 *
 */
 
-function lookupCostCenter(id, codes) {
+function lookupCostCenter(id) {
   'use strict';
 
   var sql =

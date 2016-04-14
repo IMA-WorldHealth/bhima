@@ -16,7 +16,8 @@
 
 var db = require('./../../lib/db');
 var uuid = require('node-uuid');
-var NotFound    = require('./../../lib/errors/NotFound');
+var NotFound = require('./../../lib/errors/NotFound');
+var BadRequest = require('../../lib/errors/BadRequest');
 
 /**
  * Preprocess INSERT/UPDATE data to convert uuids into binary uuids, as well as
@@ -169,7 +170,7 @@ exports.checkOffday = function checkHoliday(req, res, next) {
   .done();
 };
 
-function lookupEmployee(id, codes) {
+function lookupEmployee(id) {
 
   var sql =
     `SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
@@ -212,7 +213,7 @@ function lookupEmployee(id, codes) {
 * employees.details(req, res, next);
 */
 exports.detail = function detail(req, res, next) {
-  lookupEmployee(req.params.id, req.codes)
+  lookupEmployee(req.params.id)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -286,7 +287,7 @@ exports.update = function update(req, res, next) {
         throw new NotFound(`Could not find a Employee with id ${req.params.id}`);
       }
 
-      return lookupEmployee(req.params.id, req.codes);
+      return lookupEmployee(req.params.id);
     })
     .then(function (rows) {
       res.status(200).json(rows);
@@ -369,7 +370,9 @@ exports.search = function search(req, res, next){
   }else if(req.params.key === 'names'){
     searchOption = 'LOWER(CONCAT(employee.prenom, employee.name, employee.postnom))';
   }else{
-    return next(new req.codes.ERR_BAD_VALUE());
+    return next(
+	  new BadRequest('You sent a bad value for some parameters in research employee.')
+	);
   }
 
   sql =

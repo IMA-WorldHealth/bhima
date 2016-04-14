@@ -51,13 +51,11 @@ exports.list = function list(req, res, next) {
 
 /**
  * @param {number} id
- * @param {object} codes
  * @desc Queries the price_list and price_list_item tables for a pricle list
  * with the given ID.
  *
  * @example
  * // lookup price list
- * lookupPriceList(1, codes)
  * .then(function (priceList) {
  *   res.status(200).json(priceList);
  * })
@@ -66,7 +64,7 @@ exports.list = function list(req, res, next) {
  *
  * @returns {Promise}
  */
-function lookupPriceList(uid, codes) {
+function lookupPriceList(uid) {
   'use strict';
 
   var priceList;

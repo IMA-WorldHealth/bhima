@@ -8,7 +8,7 @@ var db = require('../../lib/db');
 var NotFound = require('../../lib/errors/NotFound');
 
 // GET /Function
-function lookupFunction(id, codes) {
+function lookupFunction(id) {
   'use strict';
 
   var sql =
