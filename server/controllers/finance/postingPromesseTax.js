@@ -2,7 +2,7 @@ var q       = require('q');
 
 var db      = require('./../../lib/db');
 var parser  = require('./../../lib/parser');
-var uuid    = require('./../../lib/guid');
+var uuid    = require('node-uuid');
 
 var journal = require('./journal');
 

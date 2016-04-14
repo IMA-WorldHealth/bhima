@@ -1,6 +1,6 @@
 var q        = require('q'),
     db       = require('../../../lib/db'),
-    uuid     = require('../../../lib/guid'),
+    uuid     = require('node-uuid'),
     validate = require('../../../lib/validate')(),
     core     = require('./core');
 

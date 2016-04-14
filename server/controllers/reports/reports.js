@@ -7,7 +7,7 @@ var winston = require('winston');
 var dots                               = require('dot').process({path : path.join(__dirname, 'templates')});
 
 var wkhtmltopdf                        = require('wkhtmltopdf');
-var uuid                               = require('./../../lib/guid');
+var uuid                               = require('node-uuid');
 var config                             = require('./config');
 
 // Document contexts
@@ -107,7 +107,7 @@ exports.build = function (req, res, next) {
 
   function renderPDF(reportData) {
     var compiledReport;
-    var hash = uuid();
+    var hash = uuid.v4();
 
     var format = options.format || 'standard';
     var language = options.language || 'en';
@@ -135,7 +135,7 @@ exports.build = function (req, res, next) {
 // Return configuration object for wkhtmltopdf process
 function buildConfiguration(hash, size) {
   var context = config[size] || config.standard;
-  hash = hash || uuid();
+  hash = hash || uuid.v4();
 
   context.output = writePath.concat(hash, '.pdf');
   return context;

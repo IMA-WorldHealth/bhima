@@ -1,6 +1,6 @@
 var q         = require('q'),
     core      = require('./core'),
-	uuid      = require('node-uuid'),
+    uuid      = require('node-uuid'),
     sanitize  = require('../../../lib/sanitize'),
     validate  = require('../../../lib/validate')(),
     util      = require('../../../lib/util'),

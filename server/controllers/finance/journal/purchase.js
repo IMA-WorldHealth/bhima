@@ -1,5 +1,5 @@
 var q         = require('q'),
-    uuid      = require('../../../lib/guid'),
+    uuid      = require('node-uuid'),
     db        = require('../../../lib/db'),
     validate  = require('../../../lib/validate')(),
     core      = require('./core');

@@ -52,7 +52,7 @@
 
 var q = require('q'),
     db = require('../../lib/db'),
-    uuid = require('../../lib/guid'),
+    uuid = require('node-uuid'),
     util = require('../../lib/util');
 
 // utility function to sum an array of objects
