@@ -28,7 +28,6 @@ var journal              = require('../controllers/finance/journal');
 var ledger               = require('../controllers/finance/ledger');
 var fiscal               = require('../controllers/finance/fiscal');
 var gl                   = require('../controllers/finance/ledgers/general');
-var accounts             = require('../controllers/finance/accounts');
 var analytics            = require('../controllers/finance/analytics');
 var purchase             = require('../controllers/finance/purchase');
 var budget               = require('../controllers/finance/budget');
@@ -43,7 +42,7 @@ var enterprises          = require('../controllers/admin/enterprises');
 var employees            = require('../controllers/admin/employees');
 var priceList            = require('../controllers/finance/priceList');
 var billingServices      = require('../controllers/finance/billingServices');
-var account              = require('../controllers/finance/account');
+var accounts             = require('../controllers/finance/accounts');
 var accountType          = require('../controllers/finance/accountType');
 var costCenter           = require('../controllers/finance/costCenter');
 var profitCenter         = require('../controllers/finance/profitCenter');
@@ -114,11 +113,11 @@ exports.configure = function (app) {
   app.put('/locations/countries/:uuid', locations.update.country);
 
   // API for account routes crud
-  app.get('/accounts', account.list);
-  app.get('/accounts/:id', account.detail);
-  app.get('/accounts/:id/balance', account.getBalance);
-  app.post('/accounts', account.create);
-  app.put('/accounts/:id', account.update);
+  app.get('/accounts', accounts.list);
+  app.get('/accounts/:id', accounts.detail);
+  app.get('/accounts/:id/balance', accounts.getBalance);
+  app.post('/accounts', accounts.create);
+  app.put('/accounts/:id', accounts.update);
 
   //API for account type routes crud
   app.get('/account_types', accountType.list);
@@ -253,12 +252,6 @@ exports.configure = function (app) {
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
 
-  app.get('/getAccount6', accounts.listIncomeAccounts);
-  app.get('/getAccount7/', accounts.listExpenseAccounts);
-  app.get('/getClassSolde/:account_class/:fiscal_year', accounts.getClassSolde);
-  app.get('/getTypeSolde/:fiscal_year/:type_id/:is_charge', accounts.getTypeSolde);
-
-
   app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
   app.post('/payTax/', taxPayment.submit);
   app.put('/setTaxPayment/', taxPayment.setTaxPayment);
@@ -342,12 +335,6 @@ exports.configure = function (app) {
   // currencies API
   app.get('/currencies', currencies.list);
   app.get('/currencies/:id', currencies.detail);
-
-  // accounts controller
-  app.get('/accounts', accounts.list);
-  app.get('/InExAccounts/:id_enterprise/', accounts.listInExAccounts);
-  app.get('/availableAccounts/:id_enterprise/', accounts.listEnterpriseAccounts);
-  app.get('/availableAccounts_profit/:id_enterprise/', accounts.listEnterpriseProfitAccounts);
 
   // Patient invoice API
 
