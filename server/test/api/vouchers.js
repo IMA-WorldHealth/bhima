@@ -6,7 +6,7 @@ var expect = chai.expect;
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-var uuid    = require('node-uuid');
+const uuid = require('node-uuid');
 
 /**
 * The /vouchers API endpoint
@@ -34,13 +34,13 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
     currency_id : 1,
     amount : 10,
     description : 'Voucher Transaction',
-    document_uuid : uuid.v4(),
     user_id : 1,
     items : [{
       uuid : uuid.v4(),
       account_id : 3631,
       debit : 10,
       credit : 0,
+      document_uuid : uuid.v4(),
       voucher_uuid : vUuid
     }, {
       account_id: 3628,
@@ -52,9 +52,9 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
 
   // NOTE: this voucher does not have any uuids
   var items = [
-    { account_id: 3631, debit: 11, credit: 0 },
-    { account_id: 3637, debit: 0,  credit:11 },
-    { account_id: 3627, debit: 0,  credit:12 },
+    { account_id: 3631, debit: 11, credit: 0, document_uuid : uuid.v4(), entity_uuid : uuid.v4() },
+    { account_id: 3637, debit: 0,  credit: 11, document_uuid : uuid.v4(), entity_uuid : uuid.v4() },
+    { account_id: 3627, debit: 0,  credit: 12 },
     { account_id: 3628, debit: 12, credit: 0 }
   ];
 
@@ -64,11 +64,11 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
     currency_id : 1,
     amount : 23,
     description : 'Multiple Voucher Transaction',
-    document_uuid : uuid.v4(),
     user_id : 1,
     items : items
   };
 
+  // only one item - bad transaction
   var badVoucher = {
     uuid : uuid.v4(),
     date : date,
@@ -76,7 +76,6 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
     currency_id : 1,
     amount : 10,
     description : 'Voucher Transaction',
-    document_uuid : uuid.v4(),
     items : [{
       uuid : uuid.v4(),
       account_id : 3631,
@@ -185,18 +184,6 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       })
       .then(function (res) {
         helpers.api.listed(res, 0);
-        return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid);
-      })
-      .then(function (res) {
-        helpers.api.listed(res, 2);
-        return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=unknown');
-      })
-      .then(function (res) {
-        helpers.api.listed(res, 0);
-        return agent.get('/vouchers/?document_uuid=' + voucher.document_uuid + '&reference=1');
-      })
-      .then(function (res) {
-        helpers.api.listed(res, 2);
         return agent.get('/vouchers/?project_id=' + voucher.project_id + '&reference=1');
       })
       .then(function (res) {
@@ -204,6 +191,4 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       })
       .catch(helpers.handler);
   });
-
-
 });
