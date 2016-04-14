@@ -59,7 +59,7 @@ describe('patient registration', function () {
     element(by.id('male')).click();
 
     // set the debtor group
-    var select = element(by.model('PatientRegCtrl.finance.debitor_group_uuid'));
+    var select = element(by.model('PatientRegCtrl.finance.debtor_group_uuid'));
     var option = select.element(by.cssContainingText('option', 'Second Test Debtor Group'));
     option.click();
 
@@ -97,7 +97,7 @@ describe('patient registration', function () {
 
       // the following fields should be required
       FU.validation.error('PatientRegCtrl.medical.last_name');
-      FU.validation.error('PatientRegCtrl.finance.debitor_group_uuid');
+      FU.validation.error('PatientRegCtrl.finance.debtor_group_uuid');
       FU.validation.error('PatientRegCtrl.medical.dob');
 
       // first name is not and title
