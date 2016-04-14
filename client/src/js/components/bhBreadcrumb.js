@@ -109,5 +109,5 @@ var breadcrumb = {
 };
 
 /** Component for BHIMA */
-angular.module('bhima.directives')
+angular.module('bhima.components')
 .component('bhBreadcrumb', breadcrumb);
