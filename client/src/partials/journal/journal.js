@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 JournalController.$inject = [
   'TransactionService', 'JournalSortingService', 'JournalGroupingService',
-  'JournalPaginationService'
+  'JournalPaginationService', 'JournalFilteringService'
 ];
 
 /**
@@ -29,39 +29,46 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Transactions, Sorting, Grouping, Pagination) {
+function JournalController(Transactions, Sorting, Grouping, Pagination, Filtering) {
   var vm = this;
 
-  // Journal utilities
-  var sorting, grouping, pagination;
+  // Journal utilites
+  var sorting, grouping, pagination, filtering;
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {};
 
+  // Initialise each of the journal utilites, providing them access to the journal
+  // configuration options
+  sorting    = new Sorting(vm.gridOptions);
+  grouping   = new Grouping(vm.gridOptions);
+  pagination = new Pagination(vm.gridOptions, Transactions.list.data);
+  filtering  = new Filtering(vm.gridOptions);
+
   // bind the transactions service to populate the grid component
   vm.gridOptions.data = Transactions.list.data;
 
-  // Initialise each of the journal utilities, providing them access to the journal
-  // configuration options
-  sorting = new Sorting(vm.gridOptions);
-  pagination = new Pagination(vm.gridOptions, Transactions.list.data);
-  grouping = new Grouping(vm.gridOptions);
-
   /**
-   * Column definitions; specify the configuration and behaviour for each column
-   * in the journal grid.
-   *
-   * - Note:  Setting the grouping priority without sorting by the same column will
-   *          cause unexpected behaviour (splitting up of groups) when sorting
-   *          other columns. This can be avoided by setting default sort and group.
+   * Column defintions; specify the configuration and behaviour for each column
+   * in the journal grid. Initialise each of the journal utilities,
+   * providing them access to the journal
+   * configuration options :
+   *    sorting = new Sorting(vm.gridOptions);
+   *    pagination = new Pagination(vm.gridOptions, Transactions.list.data);
+   *    grouping = new Grouping(vm.gridOptions);
+   *    filtering  = new Filtering();
+   * Note:
+   *   Setting the grouping priority without sorting by the same column will
+   *   cause unexpected behaviour (splitting up of groups) when sorting
+   *   other columns. This can be avoided by setting default sort and group.
    */
   vm.gridOptions.columnDefs = [
-    { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"' },
+    { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
     { field : 'description', displayName : 'Description' },
     { field : 'account_number', displayName : 'Account' },
     { field : 'debit_equiv', displayName : 'Debit' },
-    { field : 'credit_equiv', displayName : 'Credit', },
+    { field : 'credit_equiv', displayName : 'Credit' },
     { field : 'trans_id',
       displayName : 'Transaction',
       sortingAlgorithm : sorting.transactionIds,
@@ -72,7 +79,7 @@ function JournalController(Transactions, Sorting, Grouping, Pagination) {
     // @todo this should be formatted as a currency icon vs. an ID
     { field : 'currency_id', displayName : 'Currency', visible: false },
 
-    // @todo this should be formatted showing the debtor/creditor
+    // @todo this should be formatted showing the debitor/credior
     { field : 'deb_cred_uuid', displayName : 'Recipient', visible : false },
 
     // @fixme inv_po_id -> reference
