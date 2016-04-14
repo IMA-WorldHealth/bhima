@@ -322,12 +322,44 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* debtors routes */
-
-  .state('debtors/groups', {
-    url : '/debtors/groups',
+  .state('debtorGroups', {
+    url : '/debtors/groups/:uuid',
+    // url : '/debtors/groups',
+    abstract : true,
+    params : { 
+      uuid : { squash : true, value : null }
+    },
+    // url : '/notathing',
     controller : 'DebtorGroupController as GroupCtrl',
     templateUrl: 'partials/debtors/groups.html'
   })
+
+    .state('debtorGroups.list', { 
+      url : '',
+      templateUrl : 'partials/debtors/groups.list.html'
+    })
+
+    .state('debtorGroups.create', {
+      
+      // setting the URL as simply create mathces as a :uuid - there should be a way to set orders
+      // this should ideally route to /create
+      url : '/create/new',
+      templateUrl : 'partials/debtors/groups.create.html', 
+      controller : function () { console.log('create state fired'); }
+    })
+    
+    .state('debtorGroups.update', { 
+      url : '/update',
+      // key : 'COLUMNS.EDIT',
+      template : '<div><p>This is update content</p></div>',
+      controller : function () { console.log('update state fired'); }
+    })
+
+    .state('debtorGroups.delete', { 
+      url : '/delete', 
+      template : '<div><p>This is a delete content</p></div>',
+      constroller : function () { console.log('delete state fired'); }
+    })
 
   /* references routes */
 

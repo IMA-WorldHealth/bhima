@@ -1,0 +1,43 @@
+<div class="container-fluid"> 
+<div class="row">
+  <div class="col-md-4">
+    
+    <a ng-href="#/debtors/groups">
+      <span class="glyphicon glyphicon-circle-arrow-left"></span>
+      Back to Debtor Groups
+    </a>
+    <h4>Debtor Group</h4>
+
+    <form name="debtorGroup" class="form">
+      <div class="form-group">
+        <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
+        <input name="name" class="form-control" required> 
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">{{ "COLUMNS.ACCOUNT" | translate }}</label>
+        <input name="account" class="form-control" required> 
+      </div>
+        
+      <div class="form-group">
+        <label class="control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
+        <input name="priceList" class="form-control" required> 
+      </div>
+      
+      <div class="form-group">
+        <label class="control-label">{{ "COLUMNS.MAX_CREDIT" | translate }}</label>
+        <input name="maxCredit" class="form-control" required> 
+      </div>
+    </form>
+
+    <div class="pull-right">
+      <label class="control-label">
+        <input type="checkbox">
+        Create another debtor group
+      </label>
+      <!-- <button class="btn btn-default btn-sm">Cancel</button> -->
+      <button class="btn btn-primary btn-sm">Submit</button>
+    </div>
+  </div>
+</div>
+</div>

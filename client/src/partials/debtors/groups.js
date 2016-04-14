@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupController', DebtorGroupController);
 
-DebtorGroupController.$inject = ['DebtorGroupService'];
+DebtorGroupController.$inject = ['$state', 'DebtorGroupService'];
 
 /** @todo model groups in the Debtors service - even if it delegates to another file */
-function DebtorGroupController(DebtorGroups) { 
+function DebtorGroupController($state, DebtorGroups) { 
   var vm = this;
-  
+
   // pagination configuration 
   vm.pageSize     = 10;
   vm.currentPage  = 1;

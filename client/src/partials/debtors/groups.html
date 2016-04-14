@@ -15,97 +15,20 @@
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
       <li class="title">{{ "DEBTOR_GRP.TITLE" | translate }}</li>
+      <!-- <span class="label label-warning">{{GroupCtrl.current.key | translate}}</span> -->
     </ol>
-  
+    
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <a ng-href="#/debtors/groups/create/new" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-plus"></span>
+          Create Debtor Group
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 
 <div class="flex-content">
-  <div class="container text-center">
-  
-    <!-- TODO Translate -->
-    <!-- TODO Discuss if a header or description is required -->
-    <!-- <h1>Debtor Groups Utility</h1> -->
-  
-    <div class="row">
-    <div class="col-md-8 col-md-offset-2">
-      
-      <div class="panel panel-default" style="margin-bottom : 0px;">
-        <div class="panel-heading clearfix" style="text-align : left">
-
-          <a href ng-click="GroupCtrl.toggleFilter()">Filter <span class="caret" ng-class="{'rotate' : GroupCtrl.filterActive}"></span></a>
-          <!-- <button class="btn btn-xs btn-default"><span class="glyphicon glyphicon-filter"></span></button> -->
-          <div class="pull-right">
-            <span class="label label-primary">{{GroupCtrl.sort.key | translate}}</span>
-            <span uib-dropdown>
-              <a href uib-dropdown-toggle>Sort <span class="caret"></span></a>
-              <ul class="dropdown-menu-right textflow" uib-dropdown-menu>
-                <li ng-repeat="option in GroupCtrl.sortOptions">
-                  <a href ng-click="GroupCtrl.setOrder(option)">{{ option.key | translate }}</a>
-                </li>
-                <li role="seperator" class="divider"></li>
-                <li><a ng-click="GroupCtrl.setOrder()"><span class="glyphicon glyphicon-remove"></span> Clear</a></li>
-              </ul>
-            </span>
-          </div>
-        </div>
-      
-        <!-- TODO Translate -->
-        <input ng-model="GroupCtrl.filter" ng-show="GroupCtrl.filterActive" class="form-control" placeholder="Filter by name..." style="border-radius: 0"></input>
-      </div>
-
-      <div 
-        ng-repeat=
-        "debtorGroup in GroupCtrl.debtorGroups 
-          | filter    : {name : GroupCtrl.filter}
-          | orderBy   : GroupCtrl.sort.attribute:GroupCtrl.sort.reverse
-          | startFrom :(GroupCtrl.currentPage-1)*GroupCtrl.pageSize 
-          | limitTo   :GroupCtrl.pageSize">
-
-        <div class="panel panel-default" style="margin-bottom : 3px !important;">
-          <div class="panel-body text-left">
-            <div class="row">
-              <div class="col-md-12">
-                <h4 style="margin-top : 0px;">{{debtorGroup.name}}</h4>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-9">
-                
-                <div class="row">
-                  <div class="col-md-6 textflow">
-                    <span class="glyphicon glyphicon-list"></span> Last transaction - <a href>2 hours ago</a>
-                  </div>
-                  <div class="col-md-6">
-                    
-                    <span class="glyphicon glyphicon-user"></span> 10 Debtors subscribed
-                  </div>
-                </div>
-                
-                <div class="row">
-                  <div class="col-md-12">
-                    <span class="glyphicon glyphicon-time"></span> Created 2 weeks ago by <a href>Steven</a>
-                  </div>
-                </div>
-
-              </div>
-
-              <div class="col-md-3">
-                <button class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></button>
-                <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>  
-
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <uib-pagination total-items="GroupCtrl.debtorGroups.length" max-size="GroupCtrl.pageSize" ng-model="GroupCtrl.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;"></uib-pagination>
-      </div>
-    </div>
-  </div>
+  <div ui-view></div>
 </div>
