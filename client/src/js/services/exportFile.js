@@ -1,5 +1,9 @@
+/* jshint forin: false */
+
 angular.module('bhima.services')
-.service('exportFile', function () {
+.service('exportFile', ExportFile);
+
+function ExportFile() {
 	var LF = '%0A',
 			SP = '%20',
 			HT = '%09',
@@ -74,7 +78,7 @@ angular.module('bhima.services')
 			var row = '';
 			var counter = 1;
 			for (var i in objectItem) {
-				row += (counter++ < Object.keys(objectItem).length) ? sanitize(objectItem[i]) + separator : sanitize(objectItem[i]);
+        row += (counter++ < Object.keys(objectItem).length) ? sanitize(objectItem[i]) + separator : sanitize(objectItem[i]);
 			}
 			data += row + LF;
 		});
@@ -94,7 +98,7 @@ angular.module('bhima.services')
 			var row = '';
 			var counter = 1;
 			for (var i in objectItem) {
-				row += (counter++ < Object.keys(objectItem).length) ? sanitize(objectItem[i]) + HT : sanitize(objectItem[i]);
+        row += (counter++ < Object.keys(objectItem).length) ? sanitize(objectItem[i]) + HT : sanitize(objectItem[i]);
 			}
 			data += row + LF;
 		});
@@ -109,29 +113,28 @@ angular.module('bhima.services')
 	function preDataJSONV2(fileData) {
 		var result = [];
 		for (var i in fileData.data) {
-			var obj = {};
-			for (var j in fileData.column) {
-				obj[fileData.column[j]] = fileData.data[i][j];
+      var obj = {};
+      for (var j in fileData.column) {
+        obj[fileData.column[j]] = fileData.data[i][j];
 			}
-			result.push(obj);
+      result.push(obj);
 		}
 		return JSON.stringify(result, null, 2);
 	}
 
 	function builder(preData, fileName, fileFormat, genDate) {
-		var e, today = new Date(), 
+		var e, today = new Date(),
 			date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-');
 
 		var path = genDate ? fileName + '-' + date + '.' + fileFormat : fileName + '.' + fileFormat;
 
-		
-	    e = document.createElement('a');
-	    e.href = 'data:attachment/'+ fileFormat +',' + preData;
-	    e.className = 'no-print';
-	    e.target = '_blank';
-	    e.download = path;
-	    document.body.appendChild(e);
-	    e.click();
+	  e = document.createElement('a');
+	  e.href = 'data:attachment/'+ fileFormat +',' + preData;
+	  e.className = 'no-print';
+	  e.target = '_blank';
+	  e.download = path;
+	  document.body.appendChild(e);
+	  e.click();
 	}
 
 	function csv(fileData, fileName, genDate, separator) {
@@ -251,7 +254,9 @@ angular.module('bhima.services')
 			d = data.map(function (item) {
 				var obj = [];
 				for (var i in item) {
-					obj.push(item[i]);
+          if (item.hasOwnProperty(i)) {
+            obj.push(item[i]);
+          }
 				}
 				return obj;
 			});
@@ -292,4 +297,4 @@ angular.module('bhima.services')
 	};
 
 	return exportFile;
-});
+}

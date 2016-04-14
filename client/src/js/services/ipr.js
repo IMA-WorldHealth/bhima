@@ -1,3 +1,4 @@
+/* jshint forin:false */
 angular.module('bhima.services')
 .service('ipr', [
   'validate',

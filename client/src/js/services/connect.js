@@ -2,10 +2,10 @@ angular.module('bhima.services')
 .factory('connect', ConnectFactory);
 
 ConnectFactory.$inject = [
-  '$http', '$q', 'liberror', 'messenger', 'store',
+  '$http', '$q', 'store',
 ];
 
-function ConnectFactory($http, $q, liberror, messenger, Store) {
+function ConnectFactory($http, $q, Store) {
   // Summary:
   //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
   //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to
@@ -13,15 +13,6 @@ function ConnectFactory($http, $q, liberror, messenger, Store) {
 
   //  TODO : set flag for automatically flushing model updates to server
   //  TODO : All calls to the server should be ?q={} rather than ?{} for easy parsing
-
-  // Error namespace
-  var httpError = liberror.namespace('CONNECT');
-
-  // TODO : this is kind of duplicating.  Make liberror propogate errors
-  function capture (err) {
-    httpError.capture(err);
-    return $q.reject(err);
-  }
 
   function req(defn, stringIdentifier) {
     //summary:
@@ -55,8 +46,7 @@ function ConnectFactory($http, $q, liberror, messenger, Store) {
           identifier  : defn.identifier || stringIdentifier
         });
         return $q.when(model);
-      })
-      .catch(capture);
+      });
   }
 
   function fetch(defn) {
@@ -70,8 +60,7 @@ function ConnectFactory($http, $q, liberror, messenger, Store) {
     return $http.get(query)
       .then(function (res) {
         return $q.when(res.data);
-      })
-      .catch(capture);
+      });
   }
 
   function put(table, data, pk) {
@@ -81,20 +70,17 @@ function ConnectFactory($http, $q, liberror, messenger, Store) {
       pk    : pk
     };
     return $http
-      .put('/data/', formatObject)
-      .catch(capture);
+      .put('/data/', formatObject);
   }
 
   function post(table, data) {
     return $http
-      .post('/data/', {table : table, data : data})
-      .catch(capture);
+      .post('/data/', {table : table, data : data});
   }
 
   function del(table, column, id) {
     return $http
-      .delete(['/data', table, column, id].join('/'))
-      .catch(capture);
+      .delete(['/data', table, column, id].join('/'));
   }
 
   // utility function

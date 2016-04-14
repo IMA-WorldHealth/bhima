@@ -203,7 +203,7 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
 
     for (var i = don.lots.data.length - 1; i >= 0; i--) {
       var donation = don.lots.data[i];
-      if(donation.lot_number === '' || donation.lot_number == null || donation.quantity <= 0 || donation.expiration_date <= vm.session.date){
+      if(donation.lot_number === '' || donation.lot_number === null || donation.quantity <= 0 || donation.expiration_date <= vm.session.date){
         cleaned = false;
         break;
       }

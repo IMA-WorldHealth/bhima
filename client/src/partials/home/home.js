@@ -52,7 +52,7 @@ function HomeController($translate, appstate, Currencies, Rates, SessionService,
     // take the first rate matching the currency (since we reversed the
     // rate orders, this is the most recent rate).
     return rates.reduce(function (map, row) {
-      if (!map[row.currency_id]) { map[row.currency_id] = { rate: row.rate, rowid : row.id } }
+      if (!map[row.currency_id]) { map[row.currency_id] = { rate: row.rate, rowid : row.id }; }
       return map;
     }, {});
   }
