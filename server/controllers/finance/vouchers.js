@@ -19,6 +19,7 @@ const util = require('../../lib/util');
 const db   = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
+const journal = require('./journal/voucher');
 
 /** Get list of vouchers */
 exports.list = list;
@@ -146,15 +147,15 @@ function create(req, res, next) {
   items = _.map(items, util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid'));
 
   // initialise the transaction handler
-  var txn = db.transaction();
+  var transaction = db.transaction();
 
   // build the SQL query
-  txn
+  transaction
     .addQuery('INSERT INTO voucher SET ?', [ voucher ])
     .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?', [ items ]);
 
   // execute the transaction
-  txn.execute()
+  journal(transaction, voucher.uuid)
   .then(function (rows) {
     res.status(201).json({
       uuid: vuid

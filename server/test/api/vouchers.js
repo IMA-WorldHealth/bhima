@@ -26,12 +26,12 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
 
   var vUuid = uuid.v4();
 
-  // balanced transaction with two lines
+  // balanced transaction with two lines (USD)
   var voucher = {
     uuid : vUuid,
     date : date,
     project_id : 1,
-    currency_id : 1,
+    currency_id : helpers.data.USD,
     amount : 10,
     description : 'Voucher Transaction',
     user_id : 1,
@@ -61,7 +61,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
   var secondVoucher = {
     date : date,
     project_id : 1,
-    currency_id : 1,
+    currency_id : helpers.data.USD,
     amount : 23,
     description : 'Multiple Voucher Transaction',
     user_id : 1,

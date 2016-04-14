@@ -1,11 +1,6 @@
 var db        = require('./../../lib/db');
 var sanitize  = require('./../../lib/sanitize');
 
-var cotisationPayment          = require('./../finance/cotisationPayment')();
-var promessePayment            = require('./../finance/postingPromessePayment')();
-var promesseCotisation         = require('./../finance/postingPromesseCotisation')();
-var promesseTax                = require('./../finance/postingPromesseTax')();
-
 exports.listPaiementData = function (req, res, next) {
   var sql = 'SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement_period.dateFrom,' +
           ' paiement_period.dateTo, paiement.currency_id,' +
@@ -64,33 +59,6 @@ exports.listPaymentByEnterprise = function (req, res, next) {
   .done();
 };
 
-exports.payCotisation = function (req, res, next) {
-  cotisationPayment.execute(req.body, req.session.user.id, function (err, ans) {
-    if (err) { return next(err); }
-    res.send({resp: ans});
-  });
-};
-
-exports.payPromesse = function (req, res, next) {
-  promessePayment.execute(req.body, req.session.user.id, function (err, ans) {
-    if (err) { return next(err); }
-    res.send({resp: ans});
-  });
-};
-
-exports.payPromesseCotisation = function (req, res, next) {
-  promesseCotisation.execute(req.body, req.session.user.id, function (err, ans) {
-    if (err) { return next(err); }
-    res.send({resp: ans});
-  });
-};
-
-exports.payPromesseTax = function (req, res, next) {
-  promesseTax.execute(req.body, req.session.user.id, function (err, ans) {
-    if (err) { return next(err); }
-    res.send({resp: ans});
-  });
-};
 
 exports.setCotisationPayment = function (req, res, next) {
   var sql = 'UPDATE cotisation_paiement SET posted=1' +

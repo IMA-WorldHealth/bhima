@@ -17,7 +17,6 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 var port = process.env.PORT || '8080';
 exports.baseUrl = 'https://localhost:' + port;
 
-
 // login using the base URL and user
 exports.login = function login(agent) {
   'use strict';
@@ -63,7 +62,6 @@ exports.identical = function identical(objectA, objectB) {
     return objectA[key] === objectB[key];
   });
 };
-
 
 /**
  * Ensures that a create API request has returned the expected results for
@@ -232,3 +230,14 @@ api.listed = function listed(res, len) {
   // assert that the length is the expected length.
   expect(res.body).to.have.length(len);
 };
+
+
+/**
+ * Data helpers to clarify the code
+ * @public
+ */
+exports.data = {
+  USD : 2,
+  FC : 1
+};
+
