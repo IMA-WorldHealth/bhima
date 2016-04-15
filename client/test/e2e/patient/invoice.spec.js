@@ -30,7 +30,7 @@ describe('patient invoice', function () {
     browser.get(path);
   });
 
-  it('invoices a patient for a single item', function () {
+  it.skip('invoices a patient for a single item', function () {
     var page = new PatientInvoicePage();
 
     // prepare the page with default patient, service, etc
@@ -52,7 +52,7 @@ describe('patient invoice', function () {
     expect(element(by.id('temp-success-message')).isPresent()).to.eventually.equal(true);
   });
 
-  it('invoices a patient for multiple items', function () {
+  it.skip('invoices a patient for multiple items', function () {
     var page = new PatientInvoicePage();
 
     // prepare the page with default patient, service, etc

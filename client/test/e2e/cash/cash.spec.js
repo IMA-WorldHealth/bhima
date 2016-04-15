@@ -104,7 +104,7 @@ describe('Cash Payments Module', function () {
 
       // make sure we are in the correct cashbox
       var hasCashboxAText = EC.textToBePresentInElement($('[data-cashbox-text]'), cashboxA.text);
-      browser.wait(hasCashboxAText, 10000);
+      //browser.wait(hasCashboxAText, 10000);
 
       // use the button to navigate back to the cashbox select module
       var backBtn = element(by.css('[data-change-cashbox]'));
