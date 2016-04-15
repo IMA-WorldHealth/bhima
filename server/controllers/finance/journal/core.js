@@ -11,6 +11,9 @@
 'use strict';
 
 /**
+ * Set up the SQL transaction with default variables useful for posting records
+ * to the posting journal.
+ *
  * @param {object} transaction - the transaction object
  *
  * NOTE - this expects SQL variables "@date" and "@enterpriseId" to be set.
@@ -56,23 +59,38 @@ exports.setup = function setup(transaction) {
     )
 
     // set up the @enterpriseCurrencyId
-    .addQuery(
-      `SET @enterpriseCurrencyId = (
+    .addQuery(`
+      SET @enterpriseCurrencyId = (
         SELECT currency_id FROM enterprise WHERE id = @enterpriseId
-      );`
-    )
+      );
+    `)
 
-    // set up the @exchange SQL variable
-    // if the currency is the enterprise currency, we will set @exchange to 1
-    .addQuery(
-      `SET @exchange = (
-        SELECT IF(@currencyId=@enterpriseCurrencyId, 1, 1 / rate) FROM exchange_rate
+    // set up the @rate SQL variable
+    .addQuery(`
+      SET @rate = (
+        SELECT rate FROM exchange_rate
         WHERE enterprise_id = @enterpriseId
           AND currency_id = @currencyId
-          AND date <= DATE(@date)
+          AND date <= @date
       ORDER BY date DESC
-      LIMIT 1);`
-    );
+      LIMIT 1);
+    `)
+
+    // if the currency is the enterprise currency, we will set @exchange to 1,
+    // otherwise it is 1/@rate
+    .addQuery(
+      `SET @exchange = (SELECT IF(@currencyId = @enterpriseCurrencyId, 1, 1/@rate));`
+    )
+
+    // error handling query - uses stored procedure PostingJournalErrorHandler
+    // to make sure we have all the SQL variables properly set (not NULL);
+    .addQuery(`
+      CALL PostingJournalErrorHandler(
+        @enterpriseId, @projectId, @fiscalId, @periodId, @exchange, @date
+      );
+    `);
 
   return transaction;
 };
+
+

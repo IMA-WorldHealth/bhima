@@ -6,6 +6,7 @@
 'use strict';
 
 const core = require('./core');
+const q = require('q');
 
 /**
  * @param {object} transaction - the transaction query object
@@ -44,7 +45,8 @@ module.exports = function post(transaction, uuid) {
 
 
   // this function sets up the dates, fiscal year, and exchange rate for this
-  // posting session
+  // posting session and ensures they all exist before attempting to write to
+  // the posting journal.
   core.setup(transaction);
 
   /**
@@ -68,5 +70,9 @@ module.exports = function post(transaction, uuid) {
       WHERE v.uuid = ?;`, [uuid]
     );
 
-  return transaction.execute();
+  return transaction.execute()
+    .catch(function (error) {
+      /** @todo - custom error handling based on SQLSTATE */
+      return q.reject(error);
+    });
 };
