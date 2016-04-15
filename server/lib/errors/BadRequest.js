@@ -11,11 +11,11 @@ var util = require('util');
  * const BadRequest = require('lib/errors/BadRequest');
  *
  * // use the error in either a promise chain or directly via next()
- * return next(new BadRequest('Some description...'));
+ * return next(new BadRequest('Some description...', 'ERRORS.KEY'));
  *
  * @constructor
  */
-function BadRequest(description) {
+function BadRequest(description, key) {
   'use strict';
 
   // make sure we have a working stack trace
@@ -25,7 +25,7 @@ function BadRequest(description) {
   this.status = 400;
 
   // bhima status code (for $translation)
-  this.code = 'ERRORS.BAD_REQUEST';
+  this.code = key || 'ERRORS.BAD_REQUEST';
 
   // default to an empty string if no description passed in
   this.description = description || '';

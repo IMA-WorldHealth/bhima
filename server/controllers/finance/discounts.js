@@ -8,7 +8,7 @@
  */
 
 var NotFound = require('../../lib/errors/NotFound'); 
-var NegativeValue = require('../../lib/errors/NegativeValue');
+var BadRequest = require('../../lib/errors/BadRequest');
 const db = require('../../lib/db');
 
 /**
@@ -107,7 +107,7 @@ exports.create = function create(req, res, next) {
 
   if (data.value < 0) {
     return next(
-	  new NegativeValue(`${data.value} must to be positive, but received a negative value.`)
+	  new BadRequest(`${data.value} must to be positive, but received a negative value.`, `ERRORS.NEGATIVE_VALUE`)
 	);
   }
 

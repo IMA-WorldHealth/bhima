@@ -1,8 +1,6 @@
 var db = require('../../lib/db');
+var BadRequest = require('../../lib/errors/BadRequest');
 var NotFound = require('../../lib/errors/NotFound');
-var EmptyBody = require('../../lib/errors/EmptyBody');
-var ParametersRequired = require('../../lib/errors/ParametersRequired'); 
-var BadValue = require('../../lib/errors/BadValue');
 
 function lookupSubsidy(id) {
   'use strict';
@@ -128,10 +126,10 @@ function isEmptyObject(object) {
 }
 
 function checkData (obj) {
-  if (isEmptyObject(obj)) { throw new EmptyBody(`You cannot submit a PUT/POST request with an empty body to the server.`);}
-  if (!obj.value) { throw new ParametersRequired(`The request requires at least one parameter.`);}
-  if (obj.value <= 0) { throw new BadValue(`You sent a bad value for some parameters`);}
-  if (isNaN(obj.value)) { throw new BadValue(`You sent a bad value for some parameters`);}
+  if (isEmptyObject(obj)) { throw new BadRequest(`You cannot submit a PUT/POST request with an empty body to the server.`, `ERRORS.EMPTY_BODY`);}
+  if (!obj.value) { throw new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`);}
+  if (obj.value <= 0) { throw new BadRequest(`You sent a bad value for some parameters`,  `ERRORS.BAD_VALUE`);}
+  if (isNaN(obj.value)) { throw new BadRequest(`You sent a bad value for some parameters`, `ERRORS.BAD_VALUE`);}
 }
 
 exports.list = list;

@@ -36,11 +36,6 @@ var Forbidden           = require('../lib/errors/Forbidden');
 var NotFound            = require('../lib/errors/NotFound');
 var InternalServerError = require('../lib/errors/InternalServerError');
 
-var ProtectedField = require('../lib/errors/ProtectedField');
-var NegativeValue = require('../lib/errors/NegativeValue');
-var EmptyBody = require('../lib/errors/EmptyBody');
-var BadValue = require('../lib/errors/BadValue');
-var ParametersRequired = require('../lib/errors/ParametersRequired');
 /**
  * This function identifies whether a parameter is a native error of JS or not.
  *
@@ -70,12 +65,7 @@ function isApiError(error) {
     error instanceof Unauthorized ||
     error instanceof Forbidden ||
     error instanceof BadRequest ||
-    error instanceof InternalServerError ||
-	error instanceof ProtectedField ||
-	error instanceof NegativeValue ||
-	error instanceof EmptyBody ||
-	error instanceof BadValue ||
-	error instanceof ParametersRequired	
+    error instanceof InternalServerError
 	);
 }
 

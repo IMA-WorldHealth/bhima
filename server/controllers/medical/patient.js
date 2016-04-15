@@ -15,11 +15,10 @@
 
 'use strict';
 
-const db        = require('../../lib/db');
-const uuid      = require('node-uuid');
+const db = require('../../lib/db');
+const uuid = require('node-uuid');
 const BadRequest  = require('../../lib/errors/BadRequest');
-var NotFound = require('../../lib/errors/NotFound');
-var ParametersRequired = require('../../lib/errors/ParametersRequired');
+const NotFound = require('../../lib/errors/NotFound');
 
 // create a new patient
 exports.create = create;
@@ -496,7 +495,7 @@ function search(req, res, next) {
 
   try {
     var missingRequiredParameters = (!qReference && !qName && !qFields);
-    if (missingRequiredParameters) { throw new ParametersRequired(`The request requires at least one parameter.`); }
+    if (missingRequiredParameters) { throw new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`); }
 
     qFields = qFields ? JSON.parse(qFields) : null;
     qDetail = Number(qDetail);
@@ -571,7 +570,7 @@ function search(req, res, next) {
   } else {
     // throw an error in other cases
     return next(
-	  new ParametersRequired(`The request requires at least one parameter.`)
+	  new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`)
 	);
   }
 

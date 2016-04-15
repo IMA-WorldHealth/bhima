@@ -17,7 +17,7 @@
 var db = require('../lib/db');
 var q  = require('q');
 var NotFound = require('../lib/errors/NotFound');
-var ProtectedField = require('../lib/errors/ProtectedField');
+var BadRequest = require('../lib/errors/BadRequest');
 
 // namespaces for /users/:id/projects and /users/:id/permissions
 exports.projects = {};
@@ -306,7 +306,7 @@ exports.update = function update(req, res, next) {
   // if the password is sent the the
   if (data.password) {
     return next(
-	  new ProtectedField(`The update request attempted to change a protected field.`)
+	  new BadRequest(`The update request attempted to change a protected field.`, `ERRORS.PROTECTED_FIELD`)
 	);
   }
 
