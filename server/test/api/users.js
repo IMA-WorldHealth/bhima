@@ -143,7 +143,7 @@ describe('(/users) Users and Permissions Interface', function () {
       .send({ password : 'I am super secret.' })
       .then(function (res) {
         helpers.api.errored(res, 400);
-        expect(res.body.code).to.equal('ERR_PROTECTED_FIELD');
+        expect(res.body.code).to.equal('ERRORS.PROTECTED_FIELD');
       })
       .catch(helpers.handler);
   });

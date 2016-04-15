@@ -21,7 +21,7 @@ var NotFound = require('../../lib/errors/NotFound');
 function detail(req, res, next){
   'use strict';
 
-  lookupAccountType(req.params.id, req.codes)
+  lookupAccountType(req.params.id)
     .then(function (row) {
       res.status(200).json(row);
   })
@@ -74,12 +74,12 @@ function update (req, res, next){
 
   delete queryData.id;
 
-  lookupAccountType(accountTypeId, req.codes)
+  lookupAccountType(accountTypeId)
     .then(function (){
       return db.exec(updateAccountTypeQuery, [queryData, accountTypeId]);
     }) 
    .then(function (){
-      return lookupAccountType(accountTypeId, req.codes);
+      return lookupAccountType(accountTypeId);
   })
   .then(function (accountType){
     res.status(200).json(accountType);
@@ -92,7 +92,7 @@ function remove (req, res, next) {
   var accountTypeId = req.params.id;
   var removeAccountTypeQuery = 'DELETE FROM account_type WHERE id=?';
 
-  lookupAccountType(accountTypeId, req.codes)
+  lookupAccountType(accountTypeId)
     .then(function (){
       return db.exec(removeAccountTypeQuery, [accountTypeId]);
     })
@@ -103,7 +103,7 @@ function remove (req, res, next) {
     .done();
 }
 
-function lookupAccountType(id, codes){
+function lookupAccountType(id){
   'use strict';
   
   var sql = 

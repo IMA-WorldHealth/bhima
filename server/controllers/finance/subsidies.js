@@ -1,7 +1,8 @@
 var db = require('../../lib/db');
+var BadRequest = require('../../lib/errors/BadRequest');
 var NotFound = require('../../lib/errors/NotFound');
 
-function lookupSubsidy(id, codes) {
+function lookupSubsidy(id) {
   'use strict';
 
   var sql =
@@ -19,7 +20,7 @@ function lookupSubsidy(id, codes) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupSubsidy(req.params.id, req.codes)
+  lookupSubsidy(req.params.id)
   .then(function (row) {
     res.status(200).json(row);
   })
@@ -62,7 +63,7 @@ function create (req, res, next) {
   delete record.id;
 
   try {
-    checkData(record, req.codes);
+    checkData(record);
   } catch (err) {
     return next(err);
   }
@@ -85,17 +86,17 @@ function update(req, res, next) {
   delete queryData.id;
 
   try {
-    checkData(queryData, req.codes);
+    checkData(queryData);
   } catch (err) {
     return next(err);
   }
 
-  lookupSubsidy(subsidyId, req.codes)
+  lookupSubsidy(subsidyId)
   .then(function () {
     return db.exec(updateSubsidyQuery, [queryData, subsidyId]);
   })
   .then(function () {
-    return lookupSubsidy(subsidyId, req.codes);
+    return lookupSubsidy(subsidyId);
   })
   .then(function (subsidy) {
     res.status(200).json(subsidy);
@@ -109,7 +110,7 @@ function remove(req, res, next) {
   var subsidyId = req.params.id;
   var removeSubsidyQuery = 'DELETE FROM subsidy WHERE id = ?';
 
-  lookupSubsidy(subsidyId, req.codes)
+  lookupSubsidy(subsidyId)
     .then(function () {
       return db.exec(removeSubsidyQuery, [subsidyId]);
     })
@@ -124,11 +125,11 @@ function isEmptyObject(object) {
   return Object.keys(object).length === 0;
 }
 
-function checkData (obj, codes) {
-  if (isEmptyObject(obj)) { throw new codes.ERR_EMPTY_BODY();}
-  if (!obj.value) { throw new codes.ERR_PARAMETERS_REQUIRED();}
-  if (obj.value <= 0) { throw new codes.ERR_BAD_VALUE();}
-  if (isNaN(obj.value)) { throw new codes.ERR_BAD_VALUE();}
+function checkData (obj) {
+  if (isEmptyObject(obj)) { throw new BadRequest(`You cannot submit a PUT/POST request with an empty body to the server.`, `ERRORS.EMPTY_BODY`);}
+  if (!obj.value) { throw new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`);}
+  if (obj.value <= 0) { throw new BadRequest(`You sent a bad value for some parameters`,  `ERRORS.BAD_VALUE`);}
+  if (isNaN(obj.value)) { throw new BadRequest(`You sent a bad value for some parameters`, `ERRORS.BAD_VALUE`);}
 }
 
 exports.list = list;

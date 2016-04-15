@@ -17,6 +17,7 @@
 var db = require('../lib/db');
 var q  = require('q');
 var NotFound = require('../lib/errors/NotFound');
+var BadRequest = require('../lib/errors/BadRequest');
 
 // namespaces for /users/:id/projects and /users/:id/permissions
 exports.projects = {};
@@ -46,7 +47,7 @@ exports.list = function list(req, res, next) {
 };
 
 // helper function to get a single user, including project details
-function lookupUserDetails(id, codes) {
+function lookupUserDetails(id) {
   'use strict';
 
   var sql, data;
@@ -100,7 +101,7 @@ function lookupUserDetails(id, codes) {
 exports.details = function details(req, res, next) {
   'use strict;';
 
-  lookupUserDetails(req.params.id, req.codes)
+  lookupUserDetails(req.params.id)
   .then(function (data) {
     res.status(200).json(data);
   })
@@ -304,7 +305,9 @@ exports.update = function update(req, res, next) {
 
   // if the password is sent the the
   if (data.password) {
-    return next(new req.codes.ERR_PROTECTED_FIELD());
+    return next(
+	  new BadRequest(`The update request attempted to change a protected field.`, `ERRORS.PROTECTED_FIELD`)
+	);
   }
 
   var hasProjects = (projects && projects.length > 0);
@@ -336,7 +339,7 @@ exports.update = function update(req, res, next) {
   .then(function () {
 
     // fetch the entire changed resource to send back to the client
-    return lookupUserDetails(req.params.id, req.codes);
+    return lookupUserDetails(req.params.id);
   })
   .then(function (data) {
     res.status(200).json(data);
@@ -362,7 +365,7 @@ exports.password = function updatePassword(req, res, next) {
 
   db.exec(sql, [req.body.password, req.params.id])
   .then(function () {
-    return lookupUserDetails(req.params.id, req.codes);
+    return lookupUserDetails(req.params.id);
   })
   .then(function (data) {
     res.status(200).json(data);

@@ -189,7 +189,7 @@ exports.countries = function countries(req, res, next) {
 };
 
 
-function lookupVillage(uuid, codes) {
+function lookupVillage(uuid) {
   'use strict';
 
   var sql =
@@ -211,7 +211,7 @@ function lookupVillage(uuid, codes) {
   });
 }
 
-function lookupSector(uuid, codes) {
+function lookupSector(uuid) {
   'use strict';
 
   var sql =
@@ -232,7 +232,7 @@ function lookupSector(uuid, codes) {
   });
 }
 
-function lookupProvince(uuid, codes) {
+function lookupProvince(uuid) {
   'use strict';
 
   var sql =
@@ -251,7 +251,7 @@ function lookupProvince(uuid, codes) {
   });
 }
 
-function lookupCountry(uuid, codes) {
+function lookupCountry(uuid) {
   'use strict';
 
   var sql =
@@ -478,7 +478,7 @@ exports.update.country = function updateCountry(req, res, next) {
 
   db.exec(sql, [data, uid])
   .then(function () {
-    return lookupCountry(uid, req.codes);
+    return lookupCountry(uid);
   })
   .then(function (record) {
     res.status(200).json(record);
@@ -509,7 +509,7 @@ exports.update.province = function updateProvince(req, res, next) {
 
   db.exec(sql, [data, uid])
   .then(function () {
-    return lookupProvince(uid, req.codes);
+    return lookupProvince(uid);
   })
   .then(function (record) {
     res.status(200).json(record);
@@ -540,7 +540,7 @@ exports.update.sector = function updateSector(req, res, next) {
 
   db.exec(sql, [data, uid])
   .then(function () {
-    return lookupSector(uid, req.codes);
+    return lookupSector(uid);
   })
   .then(function (record) {
     res.status(200).json(record);
@@ -571,7 +571,7 @@ exports.update.village = function updateVillage(req, res, next) {
 
   db.exec(sql, [data, uid])
   .then(function () {
-    return lookupVillage(uid, req.codes);
+    return lookupVillage(uid);
   })
   .then(function (record) {
     res.status(200).json(record);

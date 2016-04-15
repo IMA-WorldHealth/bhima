@@ -8,6 +8,7 @@
  */
 
 var NotFound = require('../../lib/errors/NotFound'); 
+var BadRequest = require('../../lib/errors/BadRequest');
 const db = require('../../lib/db');
 
 /**
@@ -30,10 +31,9 @@ function convert(data) {
  * if the record does not exist, otherwise returns the record.
  *
  * @param {number} id
- * @param {object} codes
  * @returns {Promise} record
  */
-function lookupDiscount(id, codes) {
+function lookupDiscount(id) {
   'use strict';
 
   var sql =
@@ -65,7 +65,7 @@ function lookupDiscount(id, codes) {
 exports.detail = function detail(req, res, next) {
   'use strict';
 
-  lookupDiscount(req.params.id, req.codes)
+  lookupDiscount(req.params.id)
   .then(function (discount) {
     res.status(200).json(discount);
   })
@@ -106,7 +106,9 @@ exports.create = function create(req, res, next) {
   var data = convert(req.body.discount);
 
   if (data.value < 0) {
-    return next(new req.codes.ERR_NEGATIVE_VALUES());
+    return next(
+	  new BadRequest(`${data.value} must to be positive, but received a negative value.`, `ERRORS.NEGATIVE_VALUE`)
+	);
   }
 
   var sql =
@@ -151,7 +153,7 @@ exports.update = function update(req, res, next) {
     'UPDATE discount SET ? WHERE id = ?;';
 
   // ensure the record exists by looking it up first
-  lookupDiscount(id, req.codes)
+  lookupDiscount(id)
   .then(function (record) {
 
     // run the update query
@@ -159,7 +161,7 @@ exports.update = function update(req, res, next) {
   }).then(function (rows) {
 
     // read the changes from the database
-    return lookupDiscount(id, req.codes);
+    return lookupDiscount(id);
   }).then(function (discount) {
 
     // return the fully changed database record
@@ -184,7 +186,7 @@ exports.delete = function del(req, res, next) {
     'DELETE FROM discount WHERE id = ?;';
 
   // make sure the record actually exists
-  lookupDiscount(id, req.codes)
+  lookupDiscount(id)
   .then(function (discount) {
 
     // run the delete query

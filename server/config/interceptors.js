@@ -17,7 +17,14 @@
  * @requires lib/errors/Unauthorized
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
+ * @requires lib/errors/NotFound
  * @requires lib/errors/InternalServerError
+ 
+ * @requires lib/errors/ProtectedField
+ * @requires lib/errors/NegativeValue
+ * @requires lib/errors/EmptyBody
+ * @requires lib/errors/BadValue
+ * @requires lib/errors/ParametersRequired
  */
 
 var errors = require('./codes');
@@ -59,7 +66,7 @@ function isApiError(error) {
     error instanceof Forbidden ||
     error instanceof BadRequest ||
     error instanceof InternalServerError
-  );
+	);
 }
 
 /**

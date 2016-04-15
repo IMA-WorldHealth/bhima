@@ -246,7 +246,7 @@ function update(req, res, next) {
 
   // if we have a protected key, emit an error
   if (hasProtectedKey) {
-    return next(new req.codes.ERR_PROTECTED_FIELD());
+    throw new BadRequest('The update request attempted to change a protected field.', 'ERRORS.PROTECTED_FIELD');
   }
 
   // delete the uuid if it exists

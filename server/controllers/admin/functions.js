@@ -8,7 +8,7 @@ var db = require('../../lib/db');
 var NotFound = require('../../lib/errors/NotFound');
 
 // GET /Function
-function lookupFunction(id, codes) {
+function lookupFunction(id) {
   'use strict';
 
   var sql =
@@ -55,7 +55,7 @@ function detail(req, res, next) {
 
   var id = req.params.id;
 
-  lookupFunction(id, req.codes)
+  lookupFunction(id)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -94,7 +94,7 @@ function update(req, res, next) {
 
   db.exec(sql, [req.body, req.params.id])
   .then(function () {
-    return lookupFunction(req.params.id, req.codes);
+    return lookupFunction(req.params.id);
   })
   .then(function (record) {
     // all updates completed successfull, return full object to client

@@ -61,9 +61,8 @@ function list(req, res, next) {
  * Find a sale by id in the database.
  *
  * @param {string} uid - the uuid of the sale in question
- * @param {object} codes - the application's HTTP error codes
  */
-function lookupSale(uid, codes) {
+function lookupSale(uid) {
   'use strict';
 
   var record;
@@ -105,7 +104,7 @@ function lookupSale(uid, codes) {
 function details(req, res, next) {
   var uid = db.bid(req.params.uuid);
 
-  lookupSale(uid, req.codes)
+  lookupSale(uid)
   .then(function (record) {
     res.status(200).json(record);
   })

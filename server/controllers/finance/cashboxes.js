@@ -72,7 +72,7 @@ exports.list = function list(req, res, next) {
 };
 
 // get cashboxes
-function helperGetCashbox(id, codes) {
+function helperGetCashbox(id) {
   'use strict';
 
   var sql,
@@ -86,7 +86,7 @@ function helperGetCashbox(id, codes) {
   .then(function (rows) {
 
     if (rows.length === 0) {
-      throw new codes.ERR_NOT_FOUND();
+      throw new NotFound(`Could not find a cashbox with id ${id}`);
     }
 
     cashbox = rows[0];
@@ -118,7 +118,7 @@ function helperGetCashbox(id, codes) {
 exports.details = function details(req, res, next) {
   'use strict';
 
-  helperGetCashbox(req.params.id, req.codes)
+  helperGetCashbox(req.params.id)
   .then(function (cashbox) {
     res.status(200).json(cashbox);
   })
@@ -153,7 +153,7 @@ exports.update = function update(req, res, next) {
 
   db.exec(sql, [req.body, req.params.id])
   .then(function (rows) {
-    return helperGetCashbox(req.params.id, req.codes);
+    return helperGetCashbox(req.params.id);
   })
   .then(function (cashbox) {
     res.status(200).json(cashbox);

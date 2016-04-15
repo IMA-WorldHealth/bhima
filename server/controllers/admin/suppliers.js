@@ -8,7 +8,7 @@ const db = require('../../lib/db');
 const uuid = require('node-uuid');
 var NotFound = require('../../lib/errors/NotFound');
 
-function lookupSupplier(uuid, codes) {
+function lookupSupplier(uuid) {
   'use strict';
 
   var record;
@@ -70,7 +70,7 @@ function detail(req, res, next) {
 
   const uid = db.bid(req.params.uuid);
 
-  lookupSupplier(uid, req.codes)
+  lookupSupplier(uid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -126,7 +126,7 @@ function update(req, res, next) {
 
   db.exec(sql, [data, uid])
   .then(function () {
-    return lookupSupplier(uid, req.codes);
+    return lookupSupplier(uid);
   })
   .then(function (record) {
     res.status(200).json(record);

@@ -11,6 +11,7 @@
 
 var db = require('../../lib/db');
 var NotFound = require('../../lib/errors/NotFound');
+var BadRequest = require('../../lib/errors/BadRequest');
 
 /**
 * Returns an array of services
@@ -104,15 +105,17 @@ function update (req, res, next) {
   delete queryData.id;
 
   if(!isValidData(queryData)) {
-    return next(new req.codes.ERR_BAD_VALUE());
+    return next(
+	  new BadRequest('You sent a bad value for some parameters in Update Service.')
+	);
   }
 
-  lookupService(serviceId, req.codes)
+  lookupService(serviceId)
     .then(function () {
       return db.exec(updateServiceQuery, [queryData, serviceId]);
     })
     .then(function (result) {
-      return lookupService(serviceId, req.codes);
+      return lookupService(serviceId);
     })
     .then(function (service) {
       res.status(200).json(service);
@@ -138,7 +141,7 @@ function remove (req, res, next) {
   var serviceId = req.params.id;
   var removeServiceQuery = 'DELETE FROM service WHERE id=?';
 
-  lookupService(serviceId, req.codes)
+  lookupService(serviceId)
     .then(function () {
       return db.exec(removeServiceQuery, [serviceId]);
     })
@@ -165,7 +168,7 @@ function remove (req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupService(req.params.id, req.codes)
+  lookupService(req.params.id)
     .then(function (row) {
       res.status(200).json(row);
     })
@@ -177,11 +180,10 @@ function detail(req, res, next) {
 * Return a service instance from the database
 *
 * @param {integer} id of a service
-* @param {object} codes object which contain errors code
 *
 */
 
-function lookupService(id, codes) {
+function lookupService(id) {
   'use strict';
 
   var sql =

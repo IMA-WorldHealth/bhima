@@ -103,12 +103,12 @@ function update (req, res, next) {
 
   delete queryData.id;
 
-  lookupCostCenter(costCenterId, req.codes)
+  lookupCostCenter(costCenterId)
     .then(function () {
       return db.exec(updateCostCenterQuery, [queryData, costCenterId]);
     })
     .then(function (result) {
-      return lookupCostCenter(costCenterId, req.codes);
+      return lookupCostCenter(costCenterId);
     })
     .then(function (costCenter) {
       res.status(200).json(costCenter);
@@ -135,7 +135,7 @@ function remove (req, res, next) {
   var costCenterId = req.params.id;
   var removeCostCenterQuery = 'DELETE FROM cost_center WHERE id = ?';
 
-  lookupCostCenter(costCenterId, req.codes)
+  lookupCostCenter(costCenterId)
     .then(function () {
       return db.exec(removeCostCenterQuery, [costCenterId]);
     })
@@ -162,7 +162,7 @@ function remove (req, res, next) {
 function detail(req, res, next) {
   'use strict';
 
-  lookupCostCenter(req.params.id, req.codes)
+  lookupCostCenter(req.params.id)
     .then(function (row) {
       res.status(200).json(row);
     })
@@ -174,11 +174,10 @@ function detail(req, res, next) {
 * Return a cost center instance from the database
 *
 * @param {integer} id of acost center
-* @param {object} codes object which contain errors code
 *
 */
 
-function lookupCostCenter(id, codes) {
+function lookupCostCenter(id) {
   'use strict';
 
   var sql =
@@ -210,7 +209,7 @@ function getCostValue (req, res, next){
   var sql = null, optionalCondition = '';
 
 
-  lookupCostCenter(req.params.id, req.codes)
+  lookupCostCenter(req.params.id)
     .then(function (){   
       sql = 
         'SELECT ac.id FROM account AS ac WHERE ac.cc_id = ? AND ac.is_title=0';
