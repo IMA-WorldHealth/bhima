@@ -28,7 +28,7 @@ describe('(/login) The login API', function () {
 
         helpers.api.errored(res, 401);
 
-        expect(res.body.code).to.equal('ERR_NOT_AUTHENTICATED');
+        expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);
   });
@@ -40,7 +40,7 @@ describe('(/login) The login API', function () {
 
         helpers.api.errored(res, 401);
 
-        expect(res.body.code).to.equal('ERR_NOT_AUTHENTICATED');
+        expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);
   });

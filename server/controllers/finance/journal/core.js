@@ -92,5 +92,3 @@ exports.setup = function setup(transaction) {
 
   return transaction;
 };
-
-

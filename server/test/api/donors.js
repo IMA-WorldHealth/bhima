@@ -65,7 +65,7 @@ describe('The /donors API endpoint :: ', function () {
     .send({})
     .then(function (res) {
       helpers.api.errored(res, 400);
-      expect(res.body.code).to.be.equal('ERR_EMPTY_BODY');
+      expect(res.body.code).to.be.equal('ERRORS.EMPTY_BODY');
     })
     .catch(helpers.handler);
   });
