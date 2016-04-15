@@ -3,18 +3,24 @@
  *
  * This core module of the posting journal sets the posting session for
  * modules that will be posting data to the posting journal.
- *
- *
- *
  */
 
 'use strict';
 
+const q = require('q');
+const BadRequest = require('../../../lib/errors/BadRequest');
+
 /**
  * Set up the SQL transaction with default variables useful for posting records
- * to the posting journal.
+ * to the posting journal.  In the final query, it checks that no values are
+ * corrupt before passing the transaction back for the copying query.
+ *
+ * If a value is missing/NULL, the stored procedure PostingJournalErrorHandler()
+ * will SIGNAL an error, terminating the transaction.  This is expected to be
+ * handled using the handler() function below.
  *
  * @param {object} transaction - the transaction object
+ * @returns {object} transaction - the same transaction, with added queries
  *
  * NOTE - this expects SQL variables "@date" and "@enterpriseId" to be set.
  */
@@ -91,4 +97,60 @@ exports.setup = function setup(transaction) {
     `);
 
   return transaction;
+};
+
+/**
+ * Core Error Handler
+ *
+ * This function will catch database errors generated during the posting
+ * transaction, and properly convert them into JavaScript errors to be
+ * sent to the client.
+ *
+ * @param {Error} error - the error object thrown by MySQL.
+ * @returns {Promise} handled - a rejected promise with converted error.
+ */
+exports.handler = function handler(error) {
+  let handled;
+
+  switch (error.sqlState) {
+    case '45001':
+      handled = new BadRequest(
+        'No enterprise found in the database.',
+        'ERRORS.NO_ENTERPRISE'
+      );
+      break;
+
+    case '45002':
+      handled = new BadRequest(
+        'No project found in the database.',
+        'ERRORS.NO_PROJECT'
+      );
+      break;
+
+    case '45003':
+      handled = new BadRequest(
+        'No fiscal year found in the database for the provided date.',
+        'ERRORS.NO_FISCAL_YEAR'
+      );
+      break;
+
+    case '45004':
+      handled = new BadRequest(
+        'No period found in the database for the provided date.',
+        'ERRORS.NO_FISCAL_YEAR'
+      );
+      break;
+
+    case '45005':
+      handled = new BadRequest(
+        'No exchange rate found in the database for the provided date.',
+        'ERRORS.NO_EXCHANGE_RATE'
+      );
+      break;
+
+    default:
+      handled = error;
+  }
+
+  return q.reject(handled);
 };

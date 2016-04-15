@@ -11,7 +11,7 @@ const uuid = require('node-uuid');
 /**
 * The /vouchers API endpoint
 *
-* @desc This test suit is about the vouchers table
+* This test suit is about the vouchers table
 */
 describe('(/vouchers) The vouchers HTTP endpoint', function () {
   'use strict';
@@ -73,7 +73,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
     uuid : uuid.v4(),
     date : date,
     project_id : 1,
-    currency_id : 1,
+    currency_id : helpers.data.USD,
     amount : 10,
     description : 'Voucher Transaction',
     items : [{
@@ -81,6 +81,28 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       account_id : 3631,
       debit : 10,
       credit : 0,
+    }]
+  };
+
+  // this voucher will not have an exchange rate
+  var predatedVoucher = {
+    uuid : uuid.v4(),
+    date : new Date('2000-01-01'),
+    project_id : 1,
+    currency_id : helpers.data.FC,
+    amount : 10,
+    description : 'Voucher Transaction',
+    user_id : 1,
+    items : [{
+      uuid : uuid.v4(),
+      account_id : 3627,
+      debit : 10,
+      credit : 0,
+    }, {
+      uuid : uuid.v4(),
+      account_id : 3637,
+      debit : 0,
+      credit : 10,
     }]
   };
 
@@ -147,6 +169,16 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
         helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
+  });
+
+  it('POST /vouchers will reject a voucher with an invalid exchange rate', function () {
+    return agent.post('/vouchers')
+    .send({ voucher : predatedVoucher })
+    .then(function (res) {
+      helpers.api.errored(res, 400);
+      expect(res.body.code).to.equal('ERRORS.NO_FISCAL_YEAR');
+    })
+    .catch(helpers.handler);
   });
 
   it('GET /vouchers returns a list of vouchers', function () {

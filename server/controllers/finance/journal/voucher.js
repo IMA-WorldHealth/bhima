@@ -1,18 +1,20 @@
-/**
- *
- *
- */
-
 'use strict';
 
 const core = require('./core');
 const q = require('q');
 
 /**
+ * This function is responsible for posting new records from the `voucher` table
+ * into the posting journal.  It expects to be passed a transaction object and
+ * the (binary) uuid of the voucher to be posted.
+ *
+ * Using the core.js file, it initiates checks to make sure that the data is
+ * valid before posting.  If any invalid data is found, MySQL signals an error,
+ * ending the transaction, and clearing all temporary variables.
+ *
  * @param {object} transaction - the transaction query object
  * @param {object} uuid - the binary voucher uuid being posted to the journal
  *
- * This function posts data from the `voucher` table to the posting journal.
  */
 module.exports = function post(transaction, uuid) {
 
@@ -71,8 +73,5 @@ module.exports = function post(transaction, uuid) {
     );
 
   return transaction.execute()
-    .catch(function (error) {
-      /** @todo - custom error handling based on SQLSTATE */
-      return q.reject(error);
-    });
+    .catch(core.handler);
 };
