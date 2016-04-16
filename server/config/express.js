@@ -1,17 +1,19 @@
 /**
 * Express Server Configuration
 */
-var express    = require('express'),
-    compress   = require('compression'),
-    bodyParser = require('body-parser'),
-    session    = require('express-session'),
-    FileStore  = require('session-file-store')(session),
-    morgan     = require('morgan'),
-    fs         = require('fs'),
-    winston    = require('winston');
+const express    = require('express');
+const compress   = require('compression');
+const bodyParser = require('body-parser');
+const session    = require('express-session');
+const FileStore  = require('session-file-store')(session);
+const morgan     = require('morgan');
+const fs         = require('fs');
+const winston    = require('winston');
+const _          = require('lodash');
 
-var codes = require('../config/codes');
-var interceptors = require('../config/interceptors');
+const interceptors = require('./interceptors');
+const BadRequest = require('../lib/errors/BadRequest');
+const Unauthorized = require('../lib/errors/Unauthorized');
 
 // Accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
@@ -38,14 +40,6 @@ exports.configure = function configure(app) {
     retries: 50
   }));
 
-  // bind error codes to the express stack
-  // this allows you to later throw errors via the
-  // call req.codes.ERR_NOT_FOUND, etc..
-  app.use(function (req, res, next) {
-    req.codes = codes;
-    next();
-  });
-
   // reject PUTs and POSTs with empty objects in the data property with a 400
   // error
   app.use(function (req, res, next) {
@@ -54,16 +48,14 @@ exports.configure = function configure(app) {
     }
 
     // make sure the body object contains something
-    var emptyBody = Object.keys(req.body).length === 0;
-
-    if (emptyBody) {
-      next(new req.codes.ERR_EMPTY_BODY());
+    if (_.isEmpty(req.body)) {
+      next(new BadRequest('You cannot POST/PUT an empty object', 'ERRORS.EMPTY_BODY'));
     } else {
       next();
     }
   });
 
-  // provide a stream for morgan to write to 
+  // provide a stream for morgan to write to
   winston.stream = {
     write : function (message, encoding) {
       winston.info(message.trim());
@@ -92,7 +84,7 @@ exports.configure = function configure(app) {
 
     if (req.session.user === undefined && !within(req.path, publicRoutes)) {
       winston.log('debug', 'Rejecting unauthorized acces to %s from %s', req.path, req.ip);
-      next(new req.codes.ERR_NOT_AUTHENTICATED());
+      next(new Unauthorized('You are not logged into the system.'));
     } else {
       next();
     }

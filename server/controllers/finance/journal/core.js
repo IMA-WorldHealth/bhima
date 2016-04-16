@@ -1,198 +1,156 @@
-// controllers/journal/core.js
-
-/*
- * This controller provides core utilities to all the
- * posting functions.  Any utility shared between two
- * posting checks should be contained here.
+/**
+ * Posting Journal Core
  *
- * First, common checks are defined.
- * Then shared queries are defined.
- * Finally, shared errors are defined.
- *
- * TODO
- *   - Formalize error handling. Each error should return an
- *   error code to be translated and logged.
- *   - remove the redundent myExchangeRate() and ExchangeRate()
+ * This core module of the posting journal sets the posting session for
+ * modules that will be posting data to the posting journal.
  */
 
-var q = require('q'),
-    db = require('../../../lib/db'),
-    Store = require('../../../lib/store');
+'use strict';
 
-// shared checks
-var checks = {};
+const q = require('q');
+const BadRequest = require('../../../lib/errors/BadRequest');
 
-// check if the date is within a valid period that is not locked
-// NOTE: this does not check
-//   1) if the date is in the future
-//   2) if the period belongs to the correct enterprise
-checks.validPeriod = function (enterpriseId, date) {
-  var sql =
-    'SELECT period.id, period.fiscal_year_id ' +
-    'FROM period ' +
-    'JOIN fiscal_year ON fiscal_year.id = period.fiscal_year_id '+
-    'WHERE period.period_start <= ? AND ' +
-      'period.period_stop >= ? AND ' +
-      'period.locked = 0 AND fiscal_year.locked = 0;';
-  return db.exec(sql, [date, date])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new Error('No period found to match the posted date : ' + date);
-    }
-    return q(rows);
-  });
+/**
+ * Set up the SQL transaction with default variables useful for posting records
+ * to the posting journal.  In the final query, it checks that no values are
+ * corrupt before passing the transaction back for the copying query.
+ *
+ * If a value is missing/NULL, the stored procedure PostingJournalErrorHandler()
+ * will SIGNAL an error, terminating the transaction.  This is expected to be
+ * handled using the handler() function below.
+ *
+ * @param {object} transaction - the transaction object
+ * @returns {object} transaction - the same transaction, with added queries
+ *
+ * NOTE - this expects SQL variables "@date" and "@enterpriseId" to be set.
+ */
+exports.setup = function setup(transaction) {
+
+  transaction
+
+    // set up the @fiscalId SQL variable
+    .addQuery(
+      `SET @fiscalId = (
+        SELECT id FROM fiscal_year
+        WHERE @date BETWEEN
+          DATE(CONCAT(start_year, '-', start_month, '-01'))
+        AND
+          DATE(ADDDATE(CONCAT(start_year, '-', start_month, '-01'), INTERVAL number_of_months MONTH))
+        AND
+          enterprise_id = @enterpriseId
+      );`
+    )
+
+    // set the @periodId SQL variable
+    .addQuery(
+      `SET @periodId = (
+        SELECT id FROM period WHERE
+          DATE(@date) BETWEEN DATE(period_start) AND DATE(period_stop)
+        AND
+          fiscal_year_id = @fiscalId
+      );`
+    )
+
+    // set the @transId SQL variable
+    .addQuery(
+      `SET @transId = (SELECT CONCAT(abbr, IFNULL(MAX(increment), 1)) AS id FROM (
+        SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, 4))) + 1 AS increment
+        FROM posting_journal JOIN project ON posting_journal.project_id = project.id
+        WHERE posting_journal.project_id = @projectId
+      UNION
+        SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, 4))) + 1 AS increment
+        FROM general_ledger JOIN project ON general_ledger.project_id = project.id
+        WHERE general_ledger.project_id = @projectId)c
+      );`
+    )
+
+    // set up the @enterpriseCurrencyId
+    .addQuery(`
+      SET @enterpriseCurrencyId = (
+        SELECT currency_id FROM enterprise WHERE id = @enterpriseId
+      );
+    `)
+
+    // set up the @rate SQL variable
+    .addQuery(`
+      SET @rate = (
+        SELECT rate FROM exchange_rate
+        WHERE enterprise_id = @enterpriseId
+          AND currency_id = @currencyId
+          AND date <= @date
+      ORDER BY date DESC
+      LIMIT 1);
+    `)
+
+    // if the currency is the enterprise currency, we will set @exchange to 1,
+    // otherwise it is 1/@rate
+    .addQuery(
+      `SET @exchange = (SELECT IF(@currencyId = @enterpriseCurrencyId, 1, 1/@rate));`
+    )
+
+    // error handling query - uses stored procedure PostingJournalErrorHandler
+    // to make sure we have all the SQL variables properly set (not NULL);
+    .addQuery(`
+      CALL PostingJournalErrorHandler(
+        @enterpriseId, @projectId, @fiscalId, @periodId, @exchange, @date
+      );
+    `);
+
+  return transaction;
 };
 
-// checks if the deb_cred_uuid field is actually a debtor or a creditor.
-checks.validDebtorOrCreditor = function (id) {
-  // NOTE: This is NOT STRICT. It may find a debtor when a creditor was
-  // requested, or vice versa.  This is fine for the checks here, but not
-  // for posting to the general ledger.
-  var sql =
-    'SELECT uuid ' +
-    'FROM (' +
-      'SELECT debtor.uuid FROM debtor WHERE uuid = ? ' +
-    'UNION ' +
-      'SELECT creditor.uuid FROM creditor WHERE uuid = ?' +
-    ')c;';
-  return db.exec(sql, [id, id])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new Error('No Debtor or Creditor found with id: ' + id);
-    }
-    return q(rows);
-  });
+/**
+ * Core Error Handler
+ *
+ * This function will catch database errors generated during the posting
+ * transaction, and properly convert them into JavaScript errors to be
+ * sent to the client.
+ *
+ * @param {Error} error - the error object thrown by MySQL.
+ * @returns {Promise} handled - a rejected promise with converted error.
+ */
+exports.handler = function handler(error) {
+  let handled;
+
+  switch (error.sqlState) {
+    case '45001':
+      handled = new BadRequest(
+        'No enterprise found in the database.',
+        'ERRORS.NO_ENTERPRISE'
+      );
+      break;
+
+    case '45002':
+      handled = new BadRequest(
+        'No project found in the database.',
+        'ERRORS.NO_PROJECT'
+      );
+      break;
+
+    case '45003':
+      handled = new BadRequest(
+        'No fiscal year found in the database for the provided date.',
+        'ERRORS.NO_FISCAL_YEAR'
+      );
+      break;
+
+    case '45004':
+      handled = new BadRequest(
+        'No period found in the database for the provided date.',
+        'ERRORS.NO_FISCAL_YEAR'
+      );
+      break;
+
+    case '45005':
+      handled = new BadRequest(
+        'No exchange rate found in the database for the provided date.',
+        'ERRORS.NO_EXCHANGE_RATE'
+      );
+      break;
+
+    default:
+      handled = error;
+  }
+
+  return q.reject(handled);
 };
-
-// shared queries
-var queries = {};
-
-// find the origin (id) of a table involved in the transaction
-queries.origin = function (table) {
-  // uses the transaction_type table to derive an origin_id
-  // to post to the journal.  Returns the id.
-
-  var sql =
-    'SELECT id, service_txt FROM transaction_type WHERE service_txt = ?;';
-
-  return db.exec(sql, [table])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new Error('Cannot find origin for transaction type : ' + table);
-    }
-
-    // FIXME this is kind of dangerous
-    return q(rows[0].id);
-  });
-};
-
-// get a new transaction id for a given project
-queries.transactionId = function (projectId) {
-  'use strict';
-
-  var sql =
-    'SELECT CONCAT(abbr, IFNULL(MAX(increment), 1)) AS id FROM (' +
-      'SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, 4))) + 1 AS increment ' +
-      'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-      'WHERE posting_journal.project_id = ? ' +
-    'UNION ' +
-      'SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, 4))) + 1 AS increment ' +
-      'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
-      'WHERE general_ledger.project_id = ?)c;';
-
-  return db.exec(sql, [projectId, projectId])
-  .then(function (rows) {
-
-    // This is guaranteed to be defined if a project is defined.
-    // Even if there is no data in the posting journal and/or
-    // general ledger
-    return q(rows[0].id);
-  });
-};
-
-// find the correct periodId for a given date
-queries.period = function (date) {
-  'use strict';
-
-  var sql =
-    'SELECT period.id, period.fiscal_year_id FROM period ' +
-    'JOIN fiscal_year ON fiscal_year.id=period.fiscal_year_id ' +
-    'WHERE fiscal_year.locked = 0 AND (period_start <= DATE(?) AND ' +
-      'period_stop >= DATE(?));';
-
-  return db.exec(sql, [date, date])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new Error('Pas de periode pour la date : ' + date + ' et verifie que \'annee fiscale n\'est pas fermee');
-    }
-    return q(rows[0]);
-  });
-};
-
-// get the exchange rate for a given date
-queries.exchangeRate = function (date) {
-  'use strict';
-
-  // expects a mysql-compatible date
-
-  var sql =
-    'SELECT exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, ' +
-      'exchange_rate.min_monentary_unit ' +
-      'enterprise.currency_id AS \'enterprise_currency_id\' ' +      
-    'FROM exchange_rate JOIN currency ON exchange_rate.currency_id = currency.id ' +
-    'JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id ' +
-    'WHERE exchange_rate.date = DATE(?);';
-
-  return db.exec(sql, [date])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new Error('No exchange rate found for date : ' + date);
-    }
-
-    var store = new Store();
-    rows.forEach(function (line) {
-      store.post({ id : line.currency_id, rate : line.rate });
-      store.post({ id : line.enterprise_id, rate : 1});
-    });
-
-    return q(store);
-  });
-};
-
-// get the exchange rate for a given date
-queries.myExchangeRate = function (date) {
-  'use strict';
-
-  // expects a mysql-compatible date
-  var sql =
-    'SELECT exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, ' +
-    'enterprise.currency_id AS \'enterprise_currency_id\' ' +
-    'FROM exchange_rate JOIN currency ON ' +
-      'exchange_rate.currency_id = currency.id ' +
-      'JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id ' +
-    'WHERE exchange_rate.date = DATE(?);';
-
-  return db.exec(sql, [date])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new Error('No exchange rate found for date : ' + date);
-    }
-
-    var store = new Store();
-    rows.forEach(function (line) {
-      store.post({ id : line.currency_id, rate : line.rate });
-      store.post({ id : line.enterprise_currency_id, rate : 1});
-    });
-
-    return q(store);
-  });
-};
-
-// shared errors
-// TODO
-var errors = {};
-
-// expose to controllers
-exports.checks = checks;
-exports.queries = queries;
-exports.errors = errors;

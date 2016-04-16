@@ -24,7 +24,6 @@ var inventory            = require('../controllers/stock/inventory');
 var depots               = require('../controllers/stock/depot');
 var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
 var trialbalance         = require('../controllers/finance/trialbalance');
-var journal              = require('../controllers/finance/journal');
 var ledger               = require('../controllers/finance/ledger');
 var fiscal               = require('../controllers/finance/fiscal');
 var gl                   = require('../controllers/finance/ledgers/general');
@@ -197,11 +196,6 @@ exports.configure = function (app) {
   app.post('/journal/trialbalance', trialbalance.postTrialBalance);
   app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
 
-  app.get('/journal/:table/:id', journal.lookupTable);
-
-  // TODO Transition to journal API (this route should be /journal)
-  app.get('/journal_list/', journal.transactions);
-
 
   // ledger routes
   // TODO : needs renaming
@@ -264,10 +258,6 @@ exports.configure = function (app) {
   app.get('/getDataPaiement/', payroll.listPaiementData);
   app.get('/getEmployeePayment/:id', payroll.listPaymentByEmployee);
   app.get('/getEnterprisePayment/:employee_id', payroll.listPaymentByEnterprise);
-  app.post('/payCotisation/', payroll.payCotisation);
-  app.post('/posting_promesse_payment/', payroll.payPromesse);
-  app.post('/posting_promesse_cotisation/', payroll.payPromesseCotisation);
-  app.post('/posting_promesse_tax/', payroll.payPromesseTax);
   app.put('/setCotisationPayment/', payroll.setCotisationPayment);
   app.get('/getEmployeeCotisationPayment/:id', payroll.listEmployeeCotisationPayments);
   app.get('/taxe_ipr_currency/', payroll.listTaxCurrency);

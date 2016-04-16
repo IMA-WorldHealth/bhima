@@ -13,12 +13,13 @@
 * @requires lib/errors/NotFound
 */
 
-var _    = require('lodash');
-var uuid = require('node-uuid');
-var util = require('../../lib/util');
-var db   = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
-var BadRequest = require('../../lib/errors/BadRequest');
+const _    = require('lodash');
+const uuid = require('node-uuid');
+const util = require('../../lib/util');
+const db   = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
+const journal = require('./journal/voucher');
 
 /** Get list of vouchers */
 exports.list = list;
@@ -36,11 +37,11 @@ exports.create = create;
 */
 function list(req, res, next) {
   var query =
-    'SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount, ' +
-      'v.description, BUID(v.document_uuid) as document_uuid, ' +
-      'v.user_id, BUID(vi.uuid) AS voucher_item_uuid, ' +
-      'vi.account_id, vi.debit, vi.credit ' +
-    'FROM voucher v JOIN voucher_item vi ON vi.voucher_uuid = v.uuid ';
+    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount,
+      v.description, BUID(vi.document_uuid) as document_uuid,
+      v.user_id, BUID(vi.uuid) AS voucher_item_uuid,
+      vi.account_id, vi.debit, vi.credit
+    FROM voucher v JOIN voucher_item vi ON vi.voucher_uuid = v.uuid `;
 
   // convert binary params if they exist
   if (req.query.document_uuid) {
@@ -65,18 +66,18 @@ function list(req, res, next) {
 */
 function detail(req, res, next) {
   var query =
-    'SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount, ' +
-      'v.description, v.document_uuid, v.user_id, BUID(vi.uuid) AS voucher_item_uuid, ' +
-      'vi.account_id, vi.debit, vi.credit ' +
-    'FROM voucher v JOIN voucher_item vi ON vi.voucher_uuid = v.uuid ' +
-    'WHERE v.uuid = ?;';
+    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount,
+      v.description, BUID(vi.document_uuid), v.user_id, BUID(vi.uuid) AS voucher_item_uuid,
+      vi.account_id, vi.debit, vi.credit
+    FROM voucher v JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
+    WHERE v.uuid = ?;`;
 
   var id = db.bid(req.params.uuid);
 
   db.exec(query, id)
   .then(function (rows) {
     if (!rows.length) {
-      throw new NotFound('Could not find a voucher with id ' + req.params.id);
+      throw new NotFound(`Could not find a voucher with id ${req.params.id}`);
     }
     res.status(200).json(rows[0]);
   })
@@ -102,8 +103,8 @@ function create(req, res, next) {
   if (items.length < 2) {
     return next(
       new BadRequest(
-        'Expected there to be at least two items, but ' +
-        'only received ? items.'.replace('?', items.length)
+        `Expected there to be at least two items, but only received
+        ${items.length} items.`
       )
     );
   }
@@ -117,14 +118,10 @@ function create(req, res, next) {
     voucher.date = new Date(voucher.date);
   }
 
-  // convert the document uuid if it exists
-  if (voucher.document_uuid) {
-    voucher.document_uuid = db.bid(voucher.document_uuid);
-  }
 
   // make sure the voucher has an id
-  var uid = voucher.uuid || uuid.v4();
-  voucher.uuid = db.bid(uid);
+  var vuid = voucher.uuid || uuid.v4();
+  voucher.uuid = db.bid(vuid);
 
   // preprocess the items so they have uuids as required
   items.forEach(function (item) {
@@ -133,25 +130,35 @@ function create(req, res, next) {
     item.uuid = db.bid(item.uuid || uuid.v4());
 
     // make sure the items reference the voucher correctly
-    item.voucher_uuid = db.bid(item.voucher_uuid || uid);
+    item.voucher_uuid = db.bid(item.voucher_uuid || vuid);
+
+    // convert the document uuid if it exists
+    if (item.document_uuid) {
+      item.document_uuid = db.bid(item.document_uuid);
+    }
+
+    // convert the entity uuid if it exists
+    if (item.entity_uuid) {
+      item.entity_uuid = db.bid(item.entity_uuid);
+    }
   });
 
   // map items into an array of arrays
   items = _.map(items, util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid'));
 
   // initialise the transaction handler
-  var txn = db.transaction();
+  var transaction = db.transaction();
 
   // build the SQL query
-  txn
+  transaction
     .addQuery('INSERT INTO voucher SET ?', [ voucher ])
     .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?', [ items ]);
 
   // execute the transaction
-  txn.execute()
+  journal(transaction, voucher.uuid)
   .then(function (rows) {
     res.status(201).json({
-      uuid: uid
+      uuid: vuid
     });
   })
   .catch(next)
