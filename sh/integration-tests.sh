@@ -9,6 +9,9 @@ DB_USER='bhima'
 DB_PASS='HISCongo2013'
 DB_NAME='bhima_test'
 
+# set build timeout
+TIMEOUT=${BUILD_TIMEOUT:-8}
+
 # build the test database
 mysql -u $DB_USER -p$DB_PASS -e "DROP DATABASE IF EXISTS $DB_NAME ;"
 mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
@@ -22,7 +25,7 @@ echo "Building server ...."
 npm run dev &
 
 # make sure we have enough time for the server to start
-sleep 8
+sleep $TIMEOUT
 
 echo "Running tests ..."
 
