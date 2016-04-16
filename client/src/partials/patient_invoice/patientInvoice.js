@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   '$q', '$location', 'PatientService', 'PriceLists', 'PatientInvoice',
-  'Invoice', 'util', 'ServiceService', 'SessionService', 'DateService'
+  'Invoice', 'util', 'ServiceService', 'SessionService', 'DateService',
+  'ReceiptModal'
 ];
 
 /**
@@ -18,13 +19,13 @@ PatientInvoiceController.$inject = [
  *
  * @module bhima/controllers/PatientInvoiceController
  */
-function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates) {
+function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates, Receipts) {
   var vm = this;
   vm.Invoice = new Invoice();
 
   // bind the enterprise to the enterprise currency
   vm.enterprise = Session.enterprise;
-
+   
   var gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
@@ -88,9 +89,19 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
       .then(handleCompleteInvoice);
   }
 
-  function handleCompleteInvoice(result) {
+  function handleCompleteInvoice(invoice) {
     vm.Invoice.items.removeCache();
-    $location.path('/invoice/sale/'.concat(result.uuid));
+  
+    Receipts.invoice(invoice.uuid)
+    .then(function (result) { 
+ 
+      // receipt closed fired
+      console.log('got closed');
+    })
+    .catch(function (error) { 
+      
+      // receipt closed rejected
+    });
   }
 
   // reset everything in the controller - default values
