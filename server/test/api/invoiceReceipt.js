@@ -47,7 +47,6 @@ describe('/reports/invoices Receipts Interface', function () {
   // utility methods 
   function expectReportSuccess(result) { 
     var recipientKeys = ['items', 'recipient', 'enterprise'];
-    
     expect(result).to.have.status(200);
     expect(result).to.be.json;
     expect(result.body).to.contain.all.keys(recipientKeys);

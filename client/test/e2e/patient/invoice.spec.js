@@ -19,7 +19,7 @@ var PatientInvoicePage = require('./invoice.page.js');
  *   - Test for price list
  *   - Test for discount
  */
-describe.only('patient invoice', function () {
+describe('patient invoice', function () {
   'use strict';
 
   /** @const */

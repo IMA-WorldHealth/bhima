@@ -166,9 +166,8 @@ function generatePatientText(patient) {
 
 /** @todo review if this many details should be returned under a patient end point */
 function detail(req, res, next) {
-  const uid = db.bid(req.params.uuid);
 
-  handleFetchPatient(uid)
+  handleFetchPatient(req.params.uuid)
     .then(function(patientDetail) {
       res.status(200).json(patientDetail);
     })
@@ -179,7 +178,8 @@ function detail(req, res, next) {
 function update(req, res, next) {
   var updatePatientQuery;
   var data = convert(req.body);
-  var patientId = db.bid(req.params.uuid);
+  var patientUuid = req.params.uuid; 
+  var buid = db.bid(patientUuid);
 
   // prevent updating the patient's uuid
   delete data.uuid;
@@ -187,9 +187,9 @@ function update(req, res, next) {
   updatePatientQuery =
     'UPDATE patient SET ? WHERE uuid = ?';
 
-  db.exec(updatePatientQuery, [data, patientId])
+  db.exec(updatePatientQuery, [data, buid])
     .then(function (result) {
-      return handleFetchPatient(patientId);
+      return handleFetchPatient(patientUuid);
     })
     .then(function (updatedPatient) {
       res.status(200).json(updatedPatient);
@@ -198,7 +198,11 @@ function update(req, res, next) {
     .done();
 }
 
-function handleFetchPatient(uid) {
+function handleFetchPatient(patientUuid) {
+  
+  // convert uuid to database usable binary uuid
+  var buid = db.bid(patientUuid);
+
   var patientDetailQuery =
     `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
       p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
@@ -211,10 +215,10 @@ function handleFetchPatient(uid) {
     ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
     WHERE p.uuid = ?;`;
 
-  return db.exec(patientDetailQuery, uid)
+  return db.exec(patientDetailQuery, buid)
     .then(function (rows) {
       if (rows.length === 0) {
-        throw new NotFound(`Could not find a patient with uuid ${uuid.unparse(uid)}`);
+        throw new NotFound(`Could not find a patient with uuid ${patientUuid}`);
       }
       return rows[0];
     });

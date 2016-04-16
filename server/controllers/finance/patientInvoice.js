@@ -63,17 +63,17 @@ function list(req, res, next) {
  *
  * Find a sale by id in the database.
  *
- * @param {string} uid - the uuid of the sale in question
+ * @param {Blob} uid - the uuid of the sale in question
  */
-function lookupSale(uid) {
+function lookupSale(invoiceUuid) {
   'use strict';
-
   var record;
+  var buid = db.bid(invoiceUuid);
 
   var saleDetailQuery =
     'SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
       'BUID(sale.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name, ' +
-      'user_id, discount, date, sale.is_distributable ' +
+      'BUID(patient.uuid) as patient_uuid, user_id, discount, date, sale.is_distributable ' +
     'FROM sale ' +
     'LEFT JOIN patient ON patient.debtor_uuid = sale.debtor_uuid ' +
     'JOIN project ON project.id = sale.project_id ' +
@@ -86,14 +86,15 @@ function lookupSale(uid) {
     'LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid ' +
     'WHERE sale_uuid = ?';
 
-  return db.exec(saleDetailQuery, [uid])
+  return db.exec(saleDetailQuery, [buid])
     .then(function (rows) {
+
       if (rows.length === 0) {
-        throw new NotFound(`Could not find an Inventory with uuid ${uuid.unparse(uid)}`);
+        throw new NotFound(`Could not find a sale with uuid ${uuid.unparse(buid)}`);
       }
 
       record = rows[0];
-      return db.exec(saleItemsQuery, [uid]);
+      return db.exec(saleItemsQuery, [buid]);
     })
     .then(function (rows) {
       record.items = rows;
@@ -105,9 +106,9 @@ function lookupSale(uid) {
  * @todo Read the balance remaining on the debtors account given the sale as an auxillary step
  */
 function details(req, res, next) {
-  var uid = db.bid(req.params.uuid);
-
-  lookupSale(uid)
+  
+  // this assumes a value must be past for this route to initially match 
+  lookupSale(req.params.uuid)
   .then(function (record) {
     res.status(200).json(record);
   })
