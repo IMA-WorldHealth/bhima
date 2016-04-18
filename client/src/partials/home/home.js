@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
 .controller('HomeController', HomeController);
 
 HomeController.$inject = [
-  '$translate', 'appstate', 'CurrencyService', 'ExchangeRateService', 'SessionService', 'SessionService'
+  '$translate', 'CurrencyService', 'ExchangeRateService', 'SessionService', 'SessionService'
 ];
 
-function HomeController($translate, appstate, Currencies, Rates, SessionService, Session) {
+function HomeController($translate, Currencies, Rates, SessionService, Session) {
   var vm = this;
 
   vm.today = new Date();
@@ -56,20 +56,4 @@ function HomeController($translate, appstate, Currencies, Rates, SessionService,
       return map;
     }, {});
   }
-
-
-  // listen for changes in exchange rate and update accordingly
-//  appstate.register('exchange_rate', loadDailyExchangeRate);
-
-  // FIXME
-  // This doesn't account for multiple currencies
-/*  function loadDailyExchangeRate() {
-    vm.hasDailyRate = exchange.hasDailyRate();
-
-    vm.exchangeRate = vm.hasDailyRate ?
-        '1 $ = ' + exchange.rate(100, 2, vm.today) + ' Fc' :
-        $translate.instant('HOME.UNDEFINED');
-  }
-*/
-//  loadDailyExchangeRate();
 }
