@@ -39,8 +39,16 @@ function SimpleJournalVoucherController(AppCache, Vouchers, $translate, Accounts
   // load the list of accounts
   Accounts.list()
   .then(function (accounts) {
-    vm.accounts = accounts;
+    vm.accounts = removeChildren(accounts);
   });
+
+  function removeChildren(accounts) {
+    var accountsOnly = accounts.map(function (item) {
+      delete item.children;
+      return item;
+    });
+    return accountsOnly;
+  }
 
   // load the available currencies
   Currencies.read()
@@ -61,21 +69,18 @@ function SimpleJournalVoucherController(AppCache, Vouchers, $translate, Accounts
     // delete any state indicators (if they exist)
     delete vm.created;
 
-    // this is the voucher form to be submitted
-    vm.voucher = {};
-
-    // set up default voucher values
-    vm.voucher.date = new Date();
-
-    /** @todo - these should be set on the server */
-    vm.voucher.user_id = Session.user.id;
-    vm.voucher.project_id = Session.project.id;
-
     // current timestamp to limit date
     vm.timestamp = new Date();
+
+    // set up default voucher values
+    vm.voucher = {};
+    vm.voucher.date = new Date();
+
   }
 
   function submit(form) {
+    // reset the state
+    vm.created = false;
 
     // clear the old error if it exists
     delete vm.httpError;
@@ -85,12 +90,20 @@ function SimpleJournalVoucherController(AppCache, Vouchers, $translate, Accounts
       return;
     }
 
+    /** @todo - these should be set on the server */
+    vm.voucher.user_id = Session.user.id;
+    vm.voucher.project_id = Session.project.id;
+
     // turn the voucher into double-entry accounting
     return Vouchers.createSimple(vm.voucher)
     .then(function (res) {
 
       /** @todo - need a better way to handle state */
       vm.created = true;
+
+      /** setup the voucher object to init state */
+      form.$setPristine();
+      vm.voucher = {};
     })
 
     // attach the error's translatable text to the view

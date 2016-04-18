@@ -50,7 +50,8 @@
   },
 
   "ERRORS" :{
-    "UNAUTHORIZED" : "Unauthorized"
+    "UNAUTHORIZED"     : "Unauthorized",
+    "NO_EXCHANGE_RATE" : "No Exchange rate defined"
   },
 
   "CASH" : {
