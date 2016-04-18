@@ -52,6 +52,7 @@
                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
                    uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
+                   typeahead-editable="false"
                    ng-model="SimpleVoucherCtrl.voucher.fromAccount"
                    required>
                  <div class="help-block" ng-messages="SimpleVoucherForm.fromAccount.$error" ng-show="SimpleVoucherForm.$submitted">
@@ -69,8 +70,9 @@
                    class="form-control"
                    name="toAccount"
                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
-                   uib-typeahead="account as account.label for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
+                   uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
+                   typeahead-editable="false"
                    ng-model="SimpleVoucherCtrl.voucher.toAccount"
                    required>
                  <div class="help-block" ng-messages="SimpleVoucherForm.toAccount.$error" ng-show="SimpleVoucherForm.$submitted">
@@ -109,28 +111,22 @@
               </bh-currency-input>
 
               <div class="form-group">
-                <button type="submit" class="btn btn-primary" data-method="submit" ng-disabled="SimpleVoucherCtrl.created">
-                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
-                </button>
-
-                <!-- @todo - random hacks to make things look pretty - need  state handler-->
-                <button
-                  type="button"
-                  class="btn btn-default"
-                  ng-show="SimpleVoucherCtrl.created"
-                  ng-click="SimpleVoucherCtrl.reset(); SimpleVoucherForm.$setPristine();">
-                  {{ "FORM.BUTTONS.RESET" | translate }}
-                </button>
+                <div class="pull-right">
+                  <bh-loading-button loading-state="SimpleVoucherForm.$loading" ng-disabled="SimpleVoucherCtrl.created">
+                    {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                  </bh-loading-button>
+                </div>
+                <div class="clearfix"></div>
               </div>
 
               <!-- translate the server-sent error for the client -->
-              <p class="text-danger" ng-show="SimpleVoucherCtrl.httpError">
+              <p class="alert alert-danger" ng-show="SimpleVoucherCtrl.httpError">
                 <span class="glyphicon glyphicon-exclamation-sign"></span>{{ SimpleVoucherCtrl.httpError | translate }}
               </p>
 
               <!-- displays: "Record created successfully!" -->
-              <p class="text-success" ng-show="SimpleVoucherCtrl.created">
-                <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.LABELS.CREATED" | translate }}
+              <p class="alert alert-success" ng-show="SimpleVoucherCtrl.created && SimpleVoucherForm.$pristine">
+                <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.INFOS.SAVE_SUCCESS" | translate }}
               </p>
             </form>
           </div>

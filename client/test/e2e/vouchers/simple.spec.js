@@ -12,7 +12,7 @@ helpers.configure(chai);
 
 describe('Simple Vouchers', function () {
   'use strict';
-  
+
   var path = '#/vouchers/simple';
 
   var voucher = {
@@ -57,4 +57,3 @@ describe('Simple Vouchers', function () {
   });
 
 });
-

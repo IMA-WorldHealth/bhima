@@ -126,7 +126,8 @@
   },
 
   "ERRORS" :{
-    "UNAUTHORIZED" : "Non autorisé"
+    "UNAUTHORIZED"     : "Non autorisé",
+    "NO_EXCHANGE_RATE" : "Aucun taux de change defini"
   },
 
   "SUBSIDY" : {
