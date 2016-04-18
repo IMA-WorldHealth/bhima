@@ -77,10 +77,6 @@ function convert(data) {
     data.debtor_uuid = db.bid(data.debtor_uuid);
   }
 
-  if (data.creditor_uuid) {
-    data.creditor_uuid = db.bid(data.creditor_uuid);
-  }
-
   if (data.debtor_group_uuid) {
     data.debtor_group_uuid = db.bid(data.debtor_group_uuid);
   }
@@ -519,7 +515,7 @@ function search(req, res, next) {
   // customize returned columns according detailled results or not
   if (qDetail) {
     columns +=
-      `, q.abbr, BUID(q.creditor_uuid) as creditor_uuid, q.father_name, q.mother_name, q.profession, q.employer,
+      `, q.abbr, q.father_name, q.mother_name, q.profession, q.employer,
       q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status,
       q.phone, q.email, q.address_1, q.address_2, q.renewal, BUID(q.origin_location_id) as origin_location_id,
       BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.hospital_no,
@@ -530,7 +526,7 @@ function search(req, res, next) {
   sql =
     `SELECT ${columns} FROM (
       SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debtor_uuid AS debtor_uuid,
-        p.creditor_uuid, p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name,
+        p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name,
         p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer,
         p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2,
         p.renewal, p.origin_location_id, p.current_location_id, p.registration_date,
