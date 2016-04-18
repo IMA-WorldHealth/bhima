@@ -1,7 +1,6 @@
 'use strict';
 
 const core = require('./core');
-const q = require('q');
 
 /**
  * This function is responsible for posting new records from the `voucher` table
@@ -20,30 +19,15 @@ module.exports = function post(transaction, uuid) {
 
   transaction
 
-    // set up the @date SQL variable
-    .addQuery(`SET @date = (SELECT date FROM voucher WHERE uuid = ?);`, [uuid])
-
-    // set up the @enterpriseId SQL variable
-    .addQuery(
-      `SET @enterpriseId = (
-        SELECT e.id FROM enterprise AS e JOIN project AS p JOIN voucher AS v
-          ON e.id = p.enterprise_id AND p.id = v.project_id
-        WHERE v.uuid = ?);`, [uuid]
-    )
-
-    // set the @projectId SQL variable
-    .addQuery(
-      `SET @projectId = (
-        SELECT project_id FROM voucher WHERE voucher.uuid = ?
-      );`, [uuid]
-    )
-
-    // set up the @currencyId SQL variable
-    .addQuery(
-      `SET @currencyId = (
-        SELECT currency_id FROM voucher WHERE voucher.uuid = ?
-      );`, [uuid]
-    );
+    // set up the SQL variables for core.js to consume
+    .addQuery(`
+      SELECT voucher.date, enterprise.id, project.id, voucher.currency_id
+      INTO @date, @enterpriseId, @projectId, @currencyId
+      FROM voucher JOIN project JOIN enterprise ON
+        voucher.project_id = project.id AND
+        project.enterprise_id = enterprise.id
+      WHERE voucher.uuid = ?;
+    `, [uuid]);
 
 
   // this function sets up the dates, fiscal year, and exchange rate for this

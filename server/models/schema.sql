@@ -734,20 +734,26 @@ CREATE TABLE `employee_invoice_item` (
 
 DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `name` text NOT NULL,
-  `abbr` varchar(50) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `email` varchar(70) DEFAULT NULL,
-  `location_id` BINARY(16) DEFAULT NULL,
-  `logo` varchar(70) DEFAULT NULL,
-  `currency_id` tinyint(3) unsigned NOT NULL,
-  `po_box` varchar(30) DEFAULT NULL,
+  `id`              SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name`            TEXT NOT NULL,
+  `abbr`            VARCHAR(50) DEFAULT NULL,
+  `phone`           VARCHAR(20) DEFAULT NULL,
+  `email`           VARCHAR(100) DEFAULT NULL,
+  `location_id`     BINARY(16) DEFAULT NULL,
+  `logo`            VARCHAR(100) DEFAULT NULL,
+  `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
+  `po_box`          VARCHAR(30) DEFAULT NULL,
+  `gain_account_id` INT UNSIGNED NULL,
+  `loss_account_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
   KEY `location_id` (`location_id`),
   KEY `currency_id` (`currency_id`),
+  KEY `gain_account_id` (`gain_account_id`),
+  KEY `loss_account_id` (`loss_account_id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`)
+  FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
+  FOREIGN KEY (`gain_account_id`) REFERENCES `account` (`id`),
+  FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

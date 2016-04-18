@@ -81,12 +81,21 @@ exports.setup = function setup(transaction) {
 
     // if the currency is the enterprise currency, we will set @exchange to 1,
     // otherwise it is 1/@rate
-    .addQuery(
-      `SET @exchange = (SELECT IF(@currencyId = @enterpriseCurrencyId, 1, 1/@rate));`
-    )
+    .addQuery(`
+      SET @exchange = (SELECT IF(@currencyId = @enterpriseCurrencyId, 1, 1/@rate));
+    `)
+
+    // determine the gain/loss account ids
+    .addQuery(`
+      SELECT gain_account_id, loss_account_id
+      INTO @gainAccountId, @lossAccountId
+      FROM enterprise WHERE id = @enterpriseId
+    `)
 
     // error handling query - uses stored procedure PostingJournalErrorHandler
     // to make sure we have all the SQL variables properly set (not NULL);
+    // If any variables are not properly defined, this will SIGNAL an SQL error
+    // resulting in a transaction ROLLBACK.
     .addQuery(`
       CALL PostingJournalErrorHandler(
         @enterpriseId, @projectId, @fiscalId, @periodId, @exchange, @date
