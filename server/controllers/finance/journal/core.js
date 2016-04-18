@@ -32,10 +32,7 @@ exports.setup = function setup(transaction) {
     .addQuery(
       `SET @fiscalId = (
         SELECT id FROM fiscal_year
-        WHERE @date BETWEEN
-          DATE(CONCAT(start_year, '-', start_month, '-01'))
-        AND
-          DATE(ADDDATE(CONCAT(start_year, '-', start_month, '-01'), INTERVAL number_of_months MONTH))
+        WHERE @date BETWEEN start_date AND DATE(ADDDATE(start_date, INTERVAL number_of_months MONTH))
         AND
           enterprise_id = @enterpriseId
       );`
@@ -45,7 +42,7 @@ exports.setup = function setup(transaction) {
     .addQuery(
       `SET @periodId = (
         SELECT id FROM period WHERE
-          DATE(@date) BETWEEN DATE(period_start) AND DATE(period_stop)
+          DATE(@date) BETWEEN DATE(start_date) AND DATE(end_date)
         AND
           fiscal_year_id = @fiscalId
       );`
