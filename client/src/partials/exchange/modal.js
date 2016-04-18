@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 ExchangeModalController.$inject = [
   'ExchangeRateService', 'CurrencyService',
-  'SessionService', '$uibModalInstance', 'data', 'exchange'
+  'SessionService', '$uibModalInstance', 'data'
 ];
 
-function ExchangeModalController(Rates, Currencies, Session, $uibModalInstance, data, exchange) {
+function ExchangeModalController(Rates, Currencies, Session, $uibModalInstance, data) {
   var vm = this;
 
   // bind variables
