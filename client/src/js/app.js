@@ -345,7 +345,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
       // this should ideally route to /create
       url : '/create/new',
       templateUrl : 'partials/debtors/groups.create.html', 
-      controller : function () { console.log('create state fired'); }
+      controller : 'DebtorGroupCreateController as GroupCreateCtrl'
     })
     
     .state('debtorGroups.update', { 

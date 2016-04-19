@@ -1,10 +1,10 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupController', DebtorGroupController);
 
-DebtorGroupController.$inject = ['$state', 'DebtorGroupService'];
+DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService'];
 
 /** @todo model groups in the Debtors service - even if it delegates to another file */
-function DebtorGroupController($state, DebtorGroups) { 
+function DebtorGroupController($state, DebtorGroups, Accounts, Prices) { 
   var vm = this;
 
   // pagination configuration 
@@ -14,6 +14,20 @@ function DebtorGroupController($state, DebtorGroups) {
   
   vm.toggleFilter = toggleFilter;
   vm.setOrder = setOrder;
+
+  /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
+  Accounts.list()
+    .then(function (accounts) { 
+      vm.accounts = accounts;
+    });
+
+  /* @todo This controller should not be concerned about individual price lists */
+  /* @tood All read/ list API methods should be uniform on the client */
+  Prices.read() 
+    .then(function (priceLists) { 
+      vm.priceLists = priceLists;
+      console.log('got price lists', priceLists);
+    });
 
   vm.sortOptions = [
     { attribute : 'name', key : 'COLUMNS.SORTING.NAME_ASC', reverse : false },
@@ -36,7 +50,7 @@ function DebtorGroupController($state, DebtorGroups) {
     
     /** @todo scroll to alert demonstrating error */
   }
-
+  
   function toggleFilter() { 
     if (vm.filterActive) { 
 
