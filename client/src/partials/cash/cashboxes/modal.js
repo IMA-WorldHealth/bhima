@@ -16,8 +16,13 @@ CashboxCurrencyModalController.$inject = [
 function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data) {
   var vm = this;
 
+  // if a currency matches, we are updating.  Otherwise, we are creating.
+  var currencyIds = cashbox.currencies.map(function (row) {
+    return row.currency_id;
+  });
+
   // determine whether we will send a POST or a PUT request to the server
-  var method = (cashbox.currencies.indexOf(currency.id) > -1) ?
+  var method = (currencyIds.indexOf(currency.id) > -1) ?
     'update' :
     'create';
 
@@ -43,17 +48,8 @@ function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency
   function startup() {
 
     // load accounts and properly formats their labels
-    Accounts.list()
+    Accounts.read()
       .then(function (accounts) {
-
-        console.log('got accounts:', accounts);
-
-        // compute account labels once and use for all time
-        // @todo should this be done in the account service?
-        accounts.forEach(function (account) {
-          account.label = account.number + ' ' + account.label;
-        });
-
         vm.accounts = accounts;
       })
       .catch(handler);
@@ -74,9 +70,9 @@ function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency
       Boxes.currencies.update(vm.cashbox.id, vm.data);
 
     // upon successful completion, close the modal or error out
-    promise
-      .then(ModalInstance.close)
-      .catch(handler);
+  return promise
+    .then(function () { ModalInstance.close(); })
+    .catch(handler);
   }
 
   // startup the controller

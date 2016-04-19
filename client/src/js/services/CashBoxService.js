@@ -20,7 +20,7 @@ function CashboxService($http, util) {
   service.update = update;
   service.delete = del;
 
-  // cashbox-currency methods 
+  // cashbox-currency methods
   service.currencies = {};
   service.currencies.read = readCurrencies;
   service.currencies.create = createCurrencies;
@@ -33,6 +33,8 @@ function CashboxService($http, util) {
   }
 
   function create(box) {
+    delete box.currencies;
+    delete box.type;
     return $http.post(baseUrl, { cashbox: box })
       .then(util.unwrapHttpResponse);
   }
@@ -47,7 +49,6 @@ function CashboxService($http, util) {
 
     return $http.put(baseUrl.concat(id), box)
       .then(util.unwrapHttpResponse);
-
   }
 
   // DELETE a cashbox in the database
@@ -62,7 +63,7 @@ function CashboxService($http, util) {
     var url = baseUrl + id + '/currencies/';
 
     // attach the currencyId if it exists
-    url.concat(currencyId || '');
+    url =  url.concat(currencyId || '');
 
     return $http.get(url)
       .then(util.unwrapHttpResponse);

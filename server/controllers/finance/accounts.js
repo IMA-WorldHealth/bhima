@@ -13,7 +13,7 @@
  * @module finance/account
  */
 
-var db = require('../../lib/db');
+const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
 /**
@@ -68,10 +68,10 @@ function update (req, res, next) {
 function list (req, res, next) {
   'use strict';
 
-  var sql =
+  let sql =
     'SELECT a.id, a.number, a.label, a.locked FROM account AS a';
 
-  if (req.query.full === '1') {
+  if (req.query.detailed === '1') {
 
     sql =
       'SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset, ' +

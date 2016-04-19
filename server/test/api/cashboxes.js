@@ -34,8 +34,6 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
     transfer_account_id:      3631
   };
 
-
-
   it('GET /cashboxes returns a list of cashboxes', function () {
     return agent.get('/cashboxes')
       .then(function (res) {

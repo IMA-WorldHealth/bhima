@@ -1,4 +1,3 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
@@ -56,9 +55,9 @@ function AccountsController(accountService, costCenterService, profitCenterServi
   function cancel() {
     vm.view = 'default';
   }
-  
-  //This function cancels the information that should not exist 
-  //in the event of one or another type of accounts (balance or income/expense)  
+
+  //This function cancels the information that should not exist
+  //in the event of one or another type of accounts (balance or income/expense)
   function dataByTypes(){
     if(vm.account.type.type === 'balance'){
       vm.account.is_charge = null;
@@ -69,8 +68,8 @@ function AccountsController(accountService, costCenterService, profitCenterServi
     }
   }
 
-  //This function first looks up the name type of account with the ID 
-  //and then cancels the information that should not exist in the event of one 
+  //This function first looks up the name type of account with the ID
+  //and then cancels the information that should not exist in the event of one
   //or another type of accounts (balance or operating account)
   function typeAccount(typeId, accountTypes){
     vm.account.type = accountTypeService.getTypeText(typeId, accountTypes);
@@ -94,11 +93,11 @@ function AccountsController(accountService, costCenterService, profitCenterServi
 
   function create() {
     vm.view = 'create';
-    vm.account = { 
+    vm.account = {
       is_title : 0,
       parent : 0,
-      locked : 0 
-    };    
+      locked : 0
+    };
   }
 
   // switch to update mode
@@ -109,10 +108,11 @@ function AccountsController(accountService, costCenterService, profitCenterServi
     vm.account = data;
   }
 
-  
+
   // refresh the displayed Accounts
   function refreshAccounts() {
-    return accountService.list().then(function (data) {
+    return accountService.read(null, { detailed : 1 })
+    .then(function (data) {
       vm.accounts = data;
       vm.loading = false;
     });
@@ -128,7 +128,7 @@ function AccountsController(accountService, costCenterService, profitCenterServi
     var creation = (vm.view === 'create');
 
     var account = angular.copy(vm.account);
-    
+
     promise = (creation) ?
       accountService.create(account) :
       accountService.update(account.id, account);
@@ -139,9 +139,9 @@ function AccountsController(accountService, costCenterService, profitCenterServi
       })
       .then(function () {
         vm.view = creation ? 'create_success' : 'update_success';
-      })      
+      })
       .catch(handler);
   }
 
-  startup();  
+  startup();
 }

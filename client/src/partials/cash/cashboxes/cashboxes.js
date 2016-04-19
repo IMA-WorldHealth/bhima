@@ -50,7 +50,6 @@ function CashboxController($window, Modal, Session, Projects, Boxes, Currencies,
 
     // load cashboxes
     Boxes.read().then(function (data) {
-      console.log(data);
       vm.cashboxes = data;
     }).catch(handler);
 
@@ -185,7 +184,6 @@ function CashboxController($window, Modal, Session, Projects, Boxes, Currencies,
           return vm.box;
         },
         data : function () {
-
           // catch in case of 404, none specified default to empty object
           return Boxes.currencies.read(vm.box.id, currency.id)
             .catch(function () { return {}; });

@@ -15,7 +15,7 @@ function SubsidyController(Subsidy , Accounts, $window, $translate) {
   vm.create = create;
   vm.submit = submit;
   vm.update = update;
-  vm.del    = del;  
+  vm.del    = del;
   vm.cancel = cancel;
 
   function handler(error) {
@@ -28,7 +28,7 @@ function SubsidyController(Subsidy , Accounts, $window, $translate) {
     vm.session.loading = true;
 
     // load accounts and properly formats their labels
-    Accounts.list(null, { full : 1 })
+    Accounts.read(null, { detailed : 1 })
     .then(function (accounts) {
       vm.accounts = accounts;
     })
@@ -54,7 +54,7 @@ function SubsidyController(Subsidy , Accounts, $window, $translate) {
     vm.subsidy = data;
   }
 
-  
+
   // refresh the displayed Subsidies
   function refreshSubsidies() {
     return Subsidy.read(null, { detailed : 1 })
@@ -81,7 +81,7 @@ function SubsidyController(Subsidy , Accounts, $window, $translate) {
       })
       .then(function () {
         vm.view = creation ? 'create_success' : 'update_success';
-      })      
+      })
       .catch(handler);
   }
 
@@ -108,5 +108,5 @@ function SubsidyController(Subsidy , Accounts, $window, $translate) {
     });
   }
 
-  startup();  
+  startup();
 }

@@ -75,10 +75,9 @@ exports.list = function list(req, res, next) {
 function helperGetCashbox(id) {
   'use strict';
 
-  var sql,
-      cashbox;
+  let cashbox;
 
-  sql =
+  let sql =
     `SELECT id, label, project_id, is_auxiliary FROM cash_box
     WHERE id = ?;`;
 
@@ -93,8 +92,7 @@ function helperGetCashbox(id) {
 
     // query the currencies supported by this cashbox
     sql =
-      `SELECT currency_id, account_id,transfer_account_id
-      FROM cash_box_account_currency
+      `SELECT currency_id FROM cash_box_account_currency
       WHERE cash_box_id = ?;`;
 
     return db.exec(sql, [cashbox.id]);
@@ -109,11 +107,11 @@ function helperGetCashbox(id) {
 }
 
 /**
-* GET /cashboxes/:id
-*
-* Returns the details of a specific cashbox, including the supported currencies
-* and their accounts.
-*/
+ * GET /cashboxes/:id
+ *
+ * Returns the details of a specific cashbox, including the supported currencies
+ * and their accounts.
+ */
 exports.details = function details(req, res, next) {
   'use strict';
 
@@ -221,19 +219,14 @@ exports.currencies.details = function detailCurrencies(req, res, next) {
 exports.currencies.create = function createCurrency(req, res, next) {
   'use strict';
 
-  var sql;
-  var data = req.body;
-  data.cashbox_id = req.params.id;
+  let data = req.body;
+  data.cash_box_id = req.params.id;
 
-  sql =
-    `INSERT INTO cash_box_account_currency (
-      currency_id, account_id, transfer_account_id, cash_box_id
-    ) VALUES (?);`;
+  let sql =
+    'INSERT INTO cash_box_account_currency SET ?;';
 
-  db.exec(sql, [[
-    data.currency_id, data.account_id, data.transfer_account_id,
-    data.cashbox_id
-  ]]).then(function (row) {
+  db.exec(sql, [data])
+  .then(function (row) {
     res.status(201).json({ id: row.insertId });
   })
   .catch(next)
