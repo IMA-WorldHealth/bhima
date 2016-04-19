@@ -45,53 +45,17 @@ function ApplicationController($timeout, AppCache, appstate, connect, util, Sess
   function loadState() {
     var currencies, exchangeRate, fiscalYear;
 
-    exchangeRate = {
-      'tables' : {
-        'exchange_rate' : {'columns' : ['id', 'enterprise_id', 'currency_id', 'rate', 'date'] },
-        'enterprise'  : {'columns' : ['id', 'currency_id::enterprise_currency_id']}
-      },
-      join : ['exchange_rate.enterprise_id=enterprise.id']
-    };
-
     fiscalYear = {
       'tables' : {
-        'period' : { 'columns' : ['id', 'period_start', 'period_stop', 'fiscal_year_id'] },
-        'fiscal_year' : { 'columns': ['fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id'] }
+        'period' : { 'columns' : ['id', 'start_date', 'end_date', 'fiscal_year_id'] },
+        'fiscal_year' : { 'columns': ['label', 'start_date', 'previous_fiscal_year_id', 'enterprise_id'] }
       },
       join : ['period.fiscal_year_id=fiscal_year.id'],
-      where : ['period.period_start<=' + util.sqlDate(), 'AND', 'period.period_stop>=' + util.sqlDate()]
-    };
-
-    currencies = {
-      'tables' : {
-        'currency' : {
-          'columns' : ['id', 'name', 'symbol', 'min_monentary_unit']
-        }
-      }
+      where : ['period.start_date<=' + util.sqlDate(), 'AND', 'period.end_date>=' + util.sqlDate()]
     };
 
     // set appstate variables
-    // TODO : Loading exchange rates should be moved into a service
-    // where only the pages needing exchange rates load them.
     setEnvironmentVariable('fiscalYears', fiscalYear);
-    setEnvironmentVariable('currencies', currencies);
-    setEnvironmentVariable('exchange_rate', exchangeRate);
-
-    // FIXME hack to make sure that appstate has user,
-    // project, and enterprise defined
-    $timeout(function () {
-
-      // FIXME hack to make receipts work with locations
-      var project = Session.project;
-      project.location_id = Session.enterprise.location_id;
-
-      appstate.set('enterprise', Session.enterprise);
-      appstate.set('project', Session.project);
-      appstate.set('user', Session.user);
-
-      // TODO Position this to gaurantee the project is populated
-      vm.projectName = Session.project.name;
-    });
 
     // FIXME
     // set DEPRECATED appstate variables until we can change them
@@ -107,6 +71,7 @@ function ApplicationController($timeout, AppCache, appstate, connect, util, Sess
 
     // Optionally expand sidebar
     // vm.sidebarExpanded = true;
+    vm.projectName = Session.project.name;
   }
 
   // utility function to set appstate() variables

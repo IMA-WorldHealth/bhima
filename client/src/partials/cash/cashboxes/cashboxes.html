@@ -21,7 +21,7 @@
     <div class="row">
 
       <div class="col-md-6">
-        <table class="table table-striped table-bordered table-condensed" style="max-height:600px; overflow:auto;">
+        <table class="table table-striped table-bordered table-condensed" style="max-height:80vh; overflow:auto;">
           <thead>
             <tr>
               <th colspan="2">{{ "TABLE.COLUMNS.NAME" | translate }}</th>
@@ -29,9 +29,11 @@
           </thead>
           <tbody>
             <tr ng-repeat="box in CashCtrl.cashboxes track by box.id">
-              <td>{{ box.text }}</td>
+              <td>{{ box.label}}</td>
               <td class="text-right">
-                <a class="btn btn-xs btn-default" ng-click="CashCtrl.update(box.id)"><i class="glyphicon glyphicon-pencil"></i> {{ "FORM.BUTTONS.EDIT" | translate }}</a>
+                <a class="btn btn-xs btn-default" ng-click="CashCtrl.update(box.id)">
+                  <i class="glyphicon glyphicon-pencil"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
+                </a>
               </td>
             </tr>
           </tbody>
@@ -55,8 +57,8 @@
               <label class="control-label">
                 {{ "FORM.LABELS.NAME" | translate }}
               </label>
-              <input class="form-control" name="text" ng-model="CashCtrl.box.text" required>
-              <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
+              <input class="form-control" name="label" ng-model="CashCtrl.box.label" required>
+              <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
                 <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
               </div>
             </div>
@@ -85,7 +87,12 @@
               <label class="control-label">
                 {{ "FORM.LABELS.PROJECT" | translate }}
               </label>
-              <select class="form-control" name="project" ng-model="CashCtrl.box.project_id" ng-options="project.id as project.name for project in CashCtrl.projects" required>
+              <select
+                class="form-control"
+                name="project"
+                ng-model="CashCtrl.box.project_id"
+                ng-options="project.id as project.name for project in CashCtrl.projects track by project.id"
+                required>
                 <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
               </select>
               <div class="help-block" ng-messages="CreateForm.project.$error" ng-show="CreateForm.$submitted">
@@ -115,8 +122,8 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.NAME" | translate }}
                 </label>
-                <input class="form-control" name="text" ng-model="CashCtrl.box.text" required>
-                <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
+                <input class="form-control" name="label" ng-model="CashCtrl.box.label" required>
+                <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
@@ -164,7 +171,7 @@
                   class="form-control"
                   name="project"
                   ng-model="CashCtrl.box.project_id"
-                  ng-options="project.id as project.name for project in CashCtrl.projects track by project.id"
+                  ng-options="project.id as project.name for project in CashCtrl.projects"
                   required>
                   <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
                 </select>

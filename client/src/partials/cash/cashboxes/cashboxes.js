@@ -12,6 +12,9 @@ CashboxController.$inject = [
 * This controller is responsible for creating new cashboxes for the enterprise.
 * A valid cashbox must have accounts defined for each enterprise currency, for
 * ease of use thought the application.
+*
+* @todo - use ui-router for managing state
+* @todo - use delete modal here
 */
 function CashboxController($window, Modal, Session, Projects, Boxes, Currencies, StateFactory) {
   var vm = this;
@@ -47,6 +50,7 @@ function CashboxController($window, Modal, Session, Projects, Boxes, Currencies,
 
     // load cashboxes
     Boxes.read().then(function (data) {
+      console.log(data);
       vm.cashboxes = data;
     }).catch(handler);
 
@@ -161,7 +165,10 @@ function CashboxController($window, Modal, Session, Projects, Boxes, Currencies,
     }
   }
 
-  // configure the currency account for a cashbox
+  /**
+   * configure the currency account for a cashbox
+   * @todo - should this be in it's own service?
+   */
   function configureCurrency(currency) {
 
     var instance = Modal.open({
