@@ -1,0 +1,51 @@
+<form name="columnsConfigForm" ng-submit="ColumnsConfigModalCtrl.submit()" novalidate>
+
+  <div class="modal-header">
+    <h4>{{ "POSTING_JOURNAL.COLUMNS_CONFIG.TITLE" | translate }}</h4>
+  </div>
+
+  <div class="modal-body">
+
+    <p class="text-info">      
+      {{ "POSTING_JOURNAL.COLUMNS_CONFIG.HELP" | translate }}
+    </p>   
+
+    <hr/>
+
+    <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns">
+      <label>
+        <input
+          type="checkbox"
+          name="is_visible"
+          ng-true-value="true"
+          ng-false-value="false"
+          data-journal-column-option="{{ col.field }}"
+          ng-model="col.visible"> {{col.displayName}}
+      </label>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="submit"
+      id="submit-config"
+      class="btn btn-primary"
+      data-method="submit"
+      data-columns-config-submit
+      >
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </button>
+
+    <button
+      type="button"
+      id="reset-config"
+      class="btn btn-default"
+      ng-click="ColumnsConfigModalCtrl.reset()"
+      data-columns-config-cancel>
+      {{ "FORM.BUTTONS.RESET" | translate }}
+    </button>
+  </div>
+</form>
+
+
+

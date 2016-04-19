@@ -9,7 +9,8 @@ helpers.configure(chai);
 const JournalCorePage = require('./journal.page.js');
 const GridObjectTest = require('../shared/gridObjectTestUtils.spec.js');
 
-describe('Posting Journal Core', function () {
+
+describe.only('Posting Journal Core', function () {
   'use strict';
 
   const path = '#/journal';
@@ -23,6 +24,36 @@ describe('Posting Journal Core', function () {
     var journal = new JournalCorePage();
 
     // @todo Test updated to test current system, updated with final mock transaction algorithm
-    expect(journal.totalRows()).to.eventually.be.above(initialTransactionRows);
+    expect(journal.getTotalRows()).to.eventually.be.above(initialTransactionRows);
   });
+
+  it('reset the number of visible columns to default', function (){
+
+    before(() => browser.get(path));
+
+    var defaultVisibleColumnNumber = 6;
+    var journalPage = new JournalPage();
+
+    journalPage.showColumnConfigDialog();
+    journalPage.resetColumnConfig();
+
+    expect(journalPage.getColumnCount()).to.eventually.equal(defaultVisibleColumnNumber);
+  });
+
+  it('Change a state of a journal grid column', function (){
+
+    before(() => browser.get(path));
+
+    var journalPage = new JournalPage();
+    var visibleColumnsNumberBefore = journalPage.getColumnCount();
+
+    journalPage.showColumnConfigDialog();
+    journalPage.changeDescriptionState();
+    journalPage.submitButton();
+
+    journalPage.getColumnCount()
+    .then(function (visibleColumnsNumberAfter){
+      expect(visibleColumnsNumberBefore).to.eventually.equal(visibleColumnsNumberAfter + 1);
+    });
+  });  
 });

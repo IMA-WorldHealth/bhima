@@ -1,4 +1,13 @@
 {
+  "POSTING_JOURNAL" : {
+    "TITLE" : "Journal de saisie",
+    "SHOW_HIDE_COLUMNS" : "Afficher/Cacher colonnes",
+    "COLUMNS_CONFIG" : {
+      "TITLE" : "Afficher ou cacher les colonnes",
+      "HELP" : "Caucher pour afficher la colonne sur la grille du journal"
+    }
+  },
+
   "ACCOUNT": {
     "ACCOUNT_CHART"  : "Plan Comptable",
     "ACCOUNT_COST"   : "Comptes des charges et pertes par nature",

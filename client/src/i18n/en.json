@@ -1,4 +1,14 @@
 {
+
+  "POSTING_JOURNAL" : {
+    "TITLE" : "Posting journal",
+    "SHOW_HIDE_COLUMNS" : "Show/Hide columns",
+    "COLUMNS_CONFIG" : {
+      "TITLE" : "Show or Hide columns",
+      "HELP" : "Check to show the column at journal grid"
+    }
+  },
+  
   "ACCOUNT": {
     "ACCOUNT_CHART"  : "Chart of Accounts",
     "ACCOUNT_COST"   : "Costs Accounts",
