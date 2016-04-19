@@ -7,13 +7,13 @@ CashboxCurrencyModalController.$inject = [
 ];
 
 /**
-* CashboxCurrencyModalController
-*
-* This modal is responsible for creating the currency infrastructure behind
-* cashboxes.  Each cashbox must a currencied account defined for each currency
-* supported by the application.
-*/
-function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, cashbox, data) {
+ * Cashbox Currency Modal Controller
+ *
+ * This modal is responsible for creating the currency infrastructure behind
+ * cashboxes.  Each cashbox must a currencied account defined for each currency
+ * supported by the application.
+ */
+function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data) {
   var vm = this;
 
   // determine whether we will send a POST or a PUT request to the server
@@ -28,7 +28,7 @@ function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, ca
   vm.data.currency_id = currency.id;
 
   // bind methods to the view-model
-  vm.dismiss = $instance.dismiss;
+  vm.dismiss = ModalInstance.dismiss;
   vm.submit = submit;
 
   /* ------------------------------------------------------------------------ */
@@ -45,6 +45,8 @@ function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, ca
     // load accounts and properly formats their labels
     Accounts.list()
       .then(function (accounts) {
+
+        console.log('got accounts:', accounts);
 
         // compute account labels once and use for all time
         // @todo should this be done in the account service?
@@ -73,7 +75,7 @@ function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, ca
 
     // upon successful completion, close the modal or error out
     promise
-      .then($instance.close)
+      .then(ModalInstance.close)
       .catch(handler);
   }
 

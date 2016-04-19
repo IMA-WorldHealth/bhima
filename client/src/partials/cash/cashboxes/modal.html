@@ -51,12 +51,12 @@
       </select>
     </div>
 
-    <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.virement_account_id.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.transfer_account_id.$invalid }">
       <label class="control-label">{{ "FORM.LABELS.TRANSFER_ACCOUNT" | translate }}</label>
       <select
         class="form-control"
-        name="virement_account_id"
-        ng-model="CashboxModalCtrl.data.virement_account_id"
+        name="transfer_account_id"
+        ng-model="CashboxModalCtrl.data.transfer_account_id"
         ng-options="account.id as account.label disable when account.type === 'title' for account in ::CashboxModalCtrl.accounts"
         required>
         <option value="" disabled>{{ "FORM.SELECTS.SELECT_ACCOUNT" | translate }}</option>

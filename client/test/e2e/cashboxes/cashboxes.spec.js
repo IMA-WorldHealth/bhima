@@ -33,7 +33,7 @@ describe('Cashbox Module', function () {
     // switch to the create form
     FU.buttons.create();
 
-    FU.input('CashCtrl.box.text', cashbox.name);
+    FU.input('CashCtrl.box.label', cashbox.name);
     FU.radio('CashCtrl.box.type', cashbox.type);
 
     // select the first non-disabled option
@@ -60,7 +60,7 @@ describe('Cashbox Module', function () {
     // navigate to the update form for the second item
     update(2);
 
-    FU.input('CashCtrl.box.text', 'New Cashbox Name');
+    FU.input('CashCtrl.box.label', 'New Cashbox Name');
     FU.radio('CashCtrl.box.type', cashbox.type);
 
     // make sure no messages are displayed
@@ -203,7 +203,7 @@ describe('Cashbox Module', function () {
 
     // everything should have error highlights
     FU.validation.error('CashCtrl.box.project_id');
-    FU.validation.error('CashCtrl.box.text');
+    FU.validation.error('CashCtrl.box.label');
     FU.validation.error('CashCtrl.box.type');
   });
 });
