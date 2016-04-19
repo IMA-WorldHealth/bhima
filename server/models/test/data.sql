@@ -201,15 +201,15 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
 
-INSERT INTO `cash_box` VALUES
-  (1,'Test Primary Cashbox A',1,0,0),
-  (2,'Test Aux Cashbox B',1,1,1);
+INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
+  (1,'Test Primary Cashbox A',1,0),
+  (2,'Test Aux Cashbox B',1,1);
 
 INSERT INTO `cash_box_account_currency` VALUES
-  (1,1,1,3626,3626,3626,3626),
-  (2,2,1,3627,3627,3627,3627),
-  (3,1,2,3627,3627,3627,3627),
-  (4,2,2,3627,3627,3627,3627);
+  (1,1,1,3626,3626),
+  (2,2,1,3627,3627),
+  (3,1,2,3627,3627),
+  (4,2,2,3627,3627);
 
 INSERT INTO `transaction_type` VALUES
   (1,'pcash_transfert'),

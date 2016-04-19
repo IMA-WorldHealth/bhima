@@ -153,11 +153,10 @@ CREATE TABLE `cash_discard` (
 
 DROP TABLE IF EXISTS `cash_box`;
 CREATE TABLE `cash_box` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `text` text NOT NULL,
-  `project_id` smallint(5) unsigned NOT NULL,
-  `is_auxillary` tinyint(1) NOT NULL DEFAULT 0,
-  `is_bank` tinyint(1) NOT NULL DEFAULT 0,
+  `id`            MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label`         TEXT NOT NULL,
+  `project_id`    SMALLINT(5) UNSIGNED NOT NULL,
+  `is_auxiliary`  TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
@@ -166,24 +165,20 @@ CREATE TABLE `cash_box` (
 
 DROP TABLE IF EXISTS `cash_box_account_currency`;
 CREATE TABLE `cash_box_account_currency` (
-  `id` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `currency_id` tinyint unsigned NOT NULL,
-  `cash_box_id` mediumint unsigned NOT NULL,
-  `account_id` int unsigned NOT NULL,
-  `gain_exchange_account_id` int unsigned NOT NULL,
-  `loss_exchange_account_id` int unsigned NOT NULL,
-  `virement_account_id` int unsigned NOT NULL,
+  `id`                  MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `currency_id`         TINYINT UNSIGNED NOT NULL,
+  `cash_box_id`         MEDIUMINT UNSIGNED NOT NULL,
+  `account_id`          INT UNSIGNED NOT NULL,
+  `transfer_account_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `currency_id` (`currency_id`),
   KEY `cash_box_id` (`cash_box_id`),
   KEY `account_id` (`account_id`),
-  KEY `gain_exchange_account_id` (`gain_exchange_account_id`),
-  KEY `loss_exchange_account_id` (`loss_exchange_account_id`),
+  KEY `transfer_account_id` (`transfer_account_id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
   FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`gain_exchange_account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`loss_exchange_account_id`) REFERENCES `account` (`id`)
+  FOREIGN KEY (`transfer_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `client`;

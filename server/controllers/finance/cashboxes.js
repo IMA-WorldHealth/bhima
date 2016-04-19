@@ -5,8 +5,8 @@
 * cashbox must have a name, and as many accounts as there are currencies
 * supported by the application.
 */
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
 /*
 * TODO - PROPOSAL: rename cash_box to cashbox in the database.  Easier for everything
@@ -17,37 +17,37 @@ var NotFound = require('../../lib/errors/NotFound');
 * GET /cashboxes
 * Lists available cashboxes, defaulting to all in the database.  Pass in the
 * optional parameters:
-*  1) project_id={id}
-*  2) is_auxillary={1|0}
-*  3) is_bank={1|0}
+*  1) ?project_id={id}
+*  2) ?is_auxiliary={1|0}
+*  3) ?detailed={1|0}
 * to filter results appropriately.
 */
 exports.list = function list(req, res, next) {
   'use strict';
 
-  var sql,
-      possibleConditions = ['project_id', 'is_auxillary', 'is_bank'],
+  let possibleConditions = ['project_id', 'is_auxiliary'],
       providedConditions = Object.keys(req.query),
       conditions = [];
 
-  sql =
-    'SELECT id, text FROM cash_box ';
+  let sql =
+    'SELECT id, label FROM cash_box ';
 
-  if(req.query.full === '1') {
-    sql = 'SELECT cash_box.id, text, account_id, ' +
-      'gain_exchange_account_id, loss_exchange_account_id, virement_account_id, symbol ' +
-      'FROM cash_box JOIN cash_box_account_currency ON ' +
-      'cash_box.id = cash_box_account_currency.cash_box_id JOIN currency ON ' +
-      'currency.id = cash_box_account_currency.currency_id ';
+  if (req.query.detailed === '1') {
+    sql =
+      `SELECT cash_box.id, label, account_id, transfer_account_id, symbol
+      FROM cash_box JOIN cash_box_account_currency ON
+      cash_box.id = cash_box_account_currency.cash_box_id JOIN currency ON
+      currency.id = cash_box_account_currency.currency_id `;
   }
 
-  delete req.query.full;
+  delete req.query.detailed;
 
   // loop through conditions if they exist, escaping them and adding them
   // to the query string.
+  /** @todo -- use the queryConditions() function already written */
   if (providedConditions.length > 0) {
     possibleConditions.forEach(function (k) {
-      var key = req.query[k];
+      let key = req.query[k];
 
       // if the key exists, add it to a list of growing conditions
       if (key) {
@@ -79,24 +79,23 @@ function helperGetCashbox(id) {
       cashbox;
 
   sql =
-    'SELECT id, text, project_id, is_auxillary, is_bank FROM cash_box ' +
-    'WHERE id = ?;';
+    `SELECT id, label, project_id, is_auxiliary FROM cash_box
+    WHERE id = ?;`;
 
   return db.exec(sql, [id])
   .then(function (rows) {
 
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a cashbox with id ${id}`);
+    if (!rows.length) {
+      throw new NotFound(`Could not find a cashbox with id ${id}.`);
     }
 
     cashbox = rows[0];
 
     // query the currencies supported by this cashbox
     sql =
-      'SELECT currency_id, account_id, gain_exchange_account_id, ' +
-        'loss_exchange_account_id, virement_account_id ' +
-      'FROM cash_box_account_currency ' +
-      'WHERE cash_box_id = ?;';
+      `SELECT currency_id, account_id,transfer_account_id
+      FROM cash_box_account_currency
+      WHERE cash_box_id = ?;`;
 
     return db.exec(sql, [cashbox.id]);
   })
@@ -130,12 +129,11 @@ exports.details = function details(req, res, next) {
 exports.create = function create(req, res, next) {
   'use strict';
 
-  var sql,
-      box = req.body.cashbox;
+  let box = req.body.cashbox;
+  let sql =
+    'INSERT INTO cash_box SET ?;';
 
-  sql = 'INSERT INTO cash_box (text, project_id, is_auxillary, is_bank) VALUES (?);';
-
-  db.exec(sql, [[box.text, box.project_id, box.is_auxillary, box.is_bank]])
+  db.exec(sql, [ box ])
   .then(function (row) {
     res.status(201).json({ id : row.insertId });
   })
@@ -147,9 +145,7 @@ exports.create = function create(req, res, next) {
 exports.update = function update(req, res, next) {
   'use strict';
 
-  var sql;
-
-  sql = 'UPDATE cash_box SET ? WHERE id = ?;';
+  let sql = 'UPDATE cash_box SET ? WHERE id = ?;';
 
   db.exec(sql, [req.body, req.params.id])
   .then(function (rows) {
@@ -167,9 +163,7 @@ exports.update = function update(req, res, next) {
 exports.delete = function del(req, res, next) {
   'use strict';
 
-  var sql;
-
-  sql = 'DELETE FROM cash_box WHERE id = ?';
+  let sql = 'DELETE FROM cash_box WHERE id = ?';
 
   db.exec(sql, [req.params.id])
   .then(function (rows) {
@@ -177,7 +171,7 @@ exports.delete = function del(req, res, next) {
       throw new NotFound(`Could not find a cash box with id ${req.params.id}`);
     }
 
-    res.status(204).json();
+    res.sendStatus(204);
   })
   .catch(next)
   .done();
@@ -190,12 +184,9 @@ exports.currencies = {};
 exports.currencies.list = function listCurrencies(req, res, next) {
   'use strict';
 
-  var sql;
-
-  sql =
-    'SELECT id, currency_id, loss_exchange_account_id, account_id, ' +
-      'gain_exchange_account_id, virement_account_id ' +
-    'FROM cash_box_account_currency WHERE cash_box_id = ?;';
+  let sql =
+    `SELECT id, currency_id, account_id, transfer_account_id
+    FROM cash_box_account_currency WHERE cash_box_id = ?;`;
 
   db.exec(sql, [req.params.id])
   .then(function (rows) {
@@ -209,18 +200,15 @@ exports.currencies.list = function listCurrencies(req, res, next) {
 exports.currencies.details = function detailCurrencies(req, res, next) {
   'use strict';
 
-  var sql;
-
-  sql =
-    'SELECT id, loss_exchange_account_id, account_id, ' +
-      'gain_exchange_account_id, virement_account_id ' +
-    'FROM cash_box_account_currency ' +
-    'WHERE cash_box_id = ? AND currency_id = ?;';
+  let sql =
+    `SELECT id, account_id, transfer_account_id
+    FROM cash_box_account_currency
+    WHERE cash_box_id = ? AND currency_id = ?;`;
 
   db.exec(sql, [req.params.id, req.params.currencyId])
   .then(function (rows) {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a cash box account currency with id ${req.params.currencyId}`);
+    if (!rows.length) {
+      throw new NotFound(`Could not find a cash box account currency with id ${req.params.currencyId}.`);
     }
 
     res.status(200).json(rows[0]);
@@ -238,14 +226,12 @@ exports.currencies.create = function createCurrency(req, res, next) {
   data.cashbox_id = req.params.id;
 
   sql =
-    'INSERT INTO cash_box_account_currency (' +
-      'currency_id, account_id, virement_account_id, gain_exchange_account_id, ' +
-      'loss_exchange_account_id, cash_box_id ' +
-    ') VALUES (?);';
+    `INSERT INTO cash_box_account_currency (
+      currency_id, account_id, transfer_account_id, cash_box_id
+    ) VALUES (?);`;
 
   db.exec(sql, [[
-    data.currency_id, data.account_id, data.virement_account_id,
-    data.gain_exchange_account_id, data.loss_exchange_account_id,
+    data.currency_id, data.account_id, data.transfer_account_id,
     data.cashbox_id
   ]]).then(function (row) {
     res.status(201).json({ id: row.insertId });
@@ -258,28 +244,27 @@ exports.currencies.create = function createCurrency(req, res, next) {
 exports.currencies.update = function updateCurrency(req, res, next) {
   'use strict';
 
-  var sql;
   var data = req.body;
 
-  sql =
-    'UPDATE cash_box_account_currency SET ? ' +
-    'WHERE cash_box_id = ? AND currency_id = ?;';
+  let sql =
+    `UPDATE cash_box_account_currency SET ?
+    WHERE cash_box_id = ? AND currency_id = ?;`;
 
   db.exec(sql, [data, req.params.id, req.params.currencyId])
   .then(function (result) {
 
     // send the changed object to the client
     sql =
-      'SELECT id, loss_exchange_account_id, account_id, ' +
-        'gain_exchange_account_id, virement_account_id ' +
-      'FROM cash_box_account_currency ' +
-      'WHERE cash_box_id = ? AND currency_id = ?;';
+      `SELECT id, account_id, transfer_account_id
+      FROM cash_box_account_currency
+      WHERE cash_box_id = ? AND currency_id = ?;`;
 
     return db.exec(sql, [req.params.id, req.params.currencyId ]);
   })
   .then(function (rows) {
 
     // in case an unknown id is sent to the server
+    /** @todo - review this decision */
     if (!rows.length) {
       return res.status(200).json({});
     }
