@@ -1,20 +1,22 @@
+'use strict';
 /**
  * Patient Invoice API Controller
  *.@module controllers/finance/patientInvoice
  *
  * @todo (required) major bug - Sale items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
  * @todo GET /sales/patient/:uuid - retrieve all patient invoices for a specific patient
- * @todo Factor in subsidies, this depends on price lists and billing services infrastructre
+ *    - should this be /patients/:uuid/invoices?
+ * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
  * @todo Credit note logic pending on clear design
  */
-var q    = require('q');
-var db   = require('../../lib/db');
+const q    = require('q');
+const db   = require('../../lib/db');
 const uuid = require('node-uuid');
-var _    = require('lodash');
-var util = require('../../lib/util');
+const _    = require('lodash');
+const util = require('../../lib/util');
+const journal = require('./journal/invoices');
 
-var journal = require('./journal');
-var NotFound = require('../../lib/errors/NotFound');
+const NotFound = require('../../lib/errors/NotFound');
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
@@ -39,10 +41,14 @@ exports.lookupSale = lookupSale;
 /** Undo the financial effects of a sale generating an equal and opposite credit note. */
 // exports.reverse = reverse;
 
+/**
+ * list
+ *
+ * Retrieves a list of all patient invoices in the database
+ */
 function list(req, res, next) {
-  var saleListQuery;
 
-  saleListQuery =
+  let saleListQuery =
     `SELECT CONCAT(project.abbr, sale.reference) AS reference, BUID(sale.uuid) as uuid, cost,
       BUID(sale.debtor_uuid) as debtor_uuid, user_id, date, is_distributable
     FROM sale
@@ -63,14 +69,13 @@ function list(req, res, next) {
  *
  * Find a sale by id in the database.
  *
- * @param {Blob} uid - the uuid of the sale in question
+ * @param {string} invoiceUuid - the uuid of the sale in question
  */
 function lookupSale(invoiceUuid) {
-  'use strict';
-  var record;
-  var buid = db.bid(invoiceUuid);
+  let record;
+  let buid = db.bid(invoiceUuid);
 
-  var saleDetailQuery =
+  let saleDetailQuery =
     `SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost,
       BUID(sale.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,
       BUID(patient.uuid) as patient_uuid, user_id, discount, date, sale.is_distributable
@@ -79,7 +84,7 @@ function lookupSale(invoiceUuid) {
     JOIN project ON project.id = sale.project_id
     WHERE sale.uuid = ?`;
 
-  var saleItemsQuery =
+  let saleItemsQuery =
     `SELECT BUID(sale_item.uuid) as uuid, sale_item.quantity, sale_item.inventory_price,
       sale_item.transaction_price, inventory.code, inventory.text, inventory.consumable
     FROM sale_item
@@ -89,8 +94,8 @@ function lookupSale(invoiceUuid) {
   return db.exec(saleDetailQuery, [buid])
     .then(function (rows) {
 
-      if (rows.length === 0) {
-        throw new NotFound(`Could not find a sale with uuid ${uuid.unparse(buid)}`);
+      if (!rows.length) {
+        throw new NotFound(`Could not find a sale with uuid ${invoiceUuid}`);
       }
 
       record = rows[0];
@@ -103,11 +108,11 @@ function lookupSale(invoiceUuid) {
 }
 
 /**
- * @todo Read the balance remaining on the debtors account given the sale as an auxillary step
+ * @todo Read the balance remaining on the debtors account given the sale as an auxiliary step
  */
 function details(req, res, next) {
-  
-  // this assumes a value must be past for this route to initially match 
+
+  // this assumes a value must be past for this route to initially match
   lookupSale(req.params.uuid)
   .then(function (record) {
     res.status(200).json(record);
@@ -117,10 +122,8 @@ function details(req, res, next) {
 }
 
 function create(req, res, next) {
-  'use strict';
-
-  var insertSaleQuery, insertSaleItemQuery;
-  var transaction;
+  let insertSaleQuery, insertSaleItemQuery;
+  let transaction;
 
   var sale = req.body.sale;
   var items = sale.items || [];
@@ -167,7 +170,7 @@ function create(req, res, next) {
   });
 
   // create a filter to align sale item columns to the sql columns
-  var filter =
+  let filter =
     util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'sale_uuid');
 
   // prepare sale items for insertion into database
@@ -177,8 +180,8 @@ function create(req, res, next) {
     'INSERT INTO sale SET ?';
 
   insertSaleItemQuery =
-    `INSERT INTO sale_item (uuid, inventory_uuid, quantity, 
-        transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?`;
+    `INSERT INTO sale_item (uuid, inventory_uuid, quantity,
+        'transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?;`;
 
   transaction = db.transaction();
 
@@ -189,13 +192,8 @@ function create(req, res, next) {
   // insert sale item lines
     .addQuery(insertSaleItemQuery, [ items ]);
 
-  transaction.execute()
+  journal(transaction, sale.uuid)
     .then(function () {
-
-      /** @todo Update to use latest journal interface */
-      return postSaleRecord(sale.uuid, req.body.caution, req.session.user.id);
-    })
-    .then(function (results) {
       res.status(201).json({
         uuid : uuid.unparse(sale.uuid)
       });
@@ -205,39 +203,16 @@ function create(req, res, next) {
 }
 
 /**
- * @deprecated since version 2.X
- * Wrapper method to allow the module to use the current journal
- * interface. This will be replaced with the new server journal interface
- * implementation.
- * @returns {Object} Promise object to be fulfilled on journal posting
- *
- * @todo/@fixme - make this work!
- */
-function postSaleRecord(saleUuid, caution, userId) {
-  var deferred = q.defer();
-
-  journal.request('sale', saleUuid, userId, function (error, result) {
-    return deferred.resolve(result);
-  }, caution);
-  return deferred.promise;
-}
-
-/**
  * Searches for a sale by query parameters provided.
  *
  * GET sales/search
  */
 function search(req, res, next) {
-  'use strict';
-
-  var sql =
+  let sql =
     `SELECT BUID(sale.uuid) as uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference,
       sale.cost, BUID(sale.debtor_uuid) as debtor_uuid, sale.user_id, sale.discount,
       sale.date, sale.is_distributable
-    FROM sale JOIN project ON project.id = sale.project_id
-    WHERE `;
-
-  var conditions = [];
+    FROM sale JOIN project ON project.id = sale.project_id `;
 
   if (req.query.debtor_uuid) {
     req.query.debtor_uuid = db.bid(req.query.debtor_uuid);
@@ -247,26 +222,9 @@ function search(req, res, next) {
     req.query.uuid = db.bid(req.query.uuid);
   }
 
-  // look through the query string and template their key/values to the SQL query
-  var tmpl = Object.keys(req.query).map(function (key) {
+  let queryObject = util.queryCondtion(sql, req.query);
 
-    // add the key + value to the conditions array
-    conditions = conditions.concat(key, req.query[key]);
-
-    // return the template string
-    return '?? = ?';
-  });
-
-  // if the client didn't send any data, simply search 'WHERE 1' to return all
-  // results in the database.
-  if (_.isEmpty(req.query)) {
-    sql += '1';
-  }
-
-  // add in the WHERE conditions to the sql tempalte
-  sql += tmpl.join(' AND ') + ';';
-
-  db.exec(sql, conditions)
+  db.exec(queryObject.query, queryObject.conditions)
   .then(function (rows) {
     res.status(200).json(rows);
   })
@@ -284,9 +242,7 @@ function search(req, res, next) {
  * GET sales/references/:reference
  */
 function reference(req, res, next) {
-  'use strict';
-
-  var sql =
+  let sql =
     `SELECT BUID(s.uuid) as uuid FROM (
       SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference
       FROM sale JOIN project ON sale.project_id = project.id
@@ -294,7 +250,7 @@ function reference(req, res, next) {
 
   db.exec(sql, [ req.params.reference ])
   .then(function (rows) {
-    if (rows.length === 0) {
+    if (!rows.length) {
       throw new NotFound(`Could not find a sale with reference ${req.params.reference}`);
     }
 
