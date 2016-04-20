@@ -6,12 +6,15 @@ var helpers = require('./helpers');
 helpers.configure(chai);
 
 describe('(/patient_groups) Patient Group API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+
+  // log in before test suite
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   var newPatientGroup = {
     enterprise_id : 1,
     uuid : '2c6a2854-efb9-11e5-a4d7-9c4e36a322c8',
-    price_list_uuid : '2e39c855-6f2b-48d7-af7f-746f0552f7b7',
+    price_list_uuid : helpers.data.PRICE_LIST,
     name : 'Test Patient group 1',
     note : 'The first test patient group inserted'
   };
@@ -27,9 +30,6 @@ describe('(/patient_groups) Patient Group API', function () {
   var responseKeys = [
     'enterprise_id', 'uuid', 'price_list_uuid', 'name', 'note', 'created_at'
   ];
-
-  // log in before test suite
-  before(helpers.login(agent));
 
   it('POST /patient_groups adds a patient group', function () {
     return agent.post('/patient_groups')

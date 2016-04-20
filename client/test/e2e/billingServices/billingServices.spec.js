@@ -14,11 +14,8 @@ var FU = require('../shared/FormUtils');
 describe('Billing Services', function () {
   'use strict';
 
-  /** @const */
-  var path = '#/admin/billing_services';
-
-  /** @const */
-  var gridId = 'BillingServicesGrid';
+  const path = '#/admin/billing_services';
+  const gridId = 'BillingServicesGrid';
 
   before(function ()  { browser.get(path); });
 
@@ -53,7 +50,7 @@ describe('Billing Services', function () {
     var rows = grid.element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
-    expect(rows.count()).to.eventually.equal(1);
+    expect(rows.count()).to.eventually.equal(3);
   });
 
   it('can update a billing service', function () {
@@ -88,7 +85,6 @@ describe('Billing Services', function () {
     var rows = grid.element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
-    expect(rows.count()).to.eventually.equal(0);
-
+    expect(rows.count()).to.eventually.equal(2);
   });
 });

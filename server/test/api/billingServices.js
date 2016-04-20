@@ -1,3 +1,4 @@
+/* jshint expr:true*/
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -11,9 +12,8 @@ helpers.configure(chai);
 describe('(/billing_services) Billing Services API', function () {
   'use strict';
 
-  var agent = chai.request.agent(helpers.baseUrl);
-
   /** logs in at the beginning of the test suite */
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
   var billingServiceA = {
@@ -39,10 +39,10 @@ describe('(/billing_services) Billing Services API', function () {
   /** logs in before the test suite */
   before(helpers.login(agent));
 
-  it('GET /billing_services should return an empty list of billing services', function () {
+  it('GET /billing_services should return a list of two billing service', function () {
     return agent.get('/billing_services')
       .then(function (res) {
-        helpers.api.listed(res, 0);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
@@ -106,10 +106,10 @@ describe('(/billing_services) Billing Services API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /billing_services?detailed=1 should return a detailed list of one billing service', function () {
+  it('GET /billing_services?detailed=1 should return a detailed list of three billing services', function () {
     return agent.get('/billing_services?detailed=1')
       .then(function (res) {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 3);
         expect(res.body[0]).to.contain.all.keys(responseKeys);
       })
       .catch(helpers.handler);

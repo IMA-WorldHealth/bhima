@@ -1,13 +1,15 @@
 /* jshint expr: true */
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var helpers = require('./helpers');
-var uuid    = require('node-uuid');
+const helpers = require('./helpers');
+const uuid    = require('node-uuid');
 helpers.configure(chai);
 
 describe('(/debtor_groups) The debtor groups HTTP API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+  // Logs in before each test
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   var debtorGroup = {
     enterprise_id : 1,
@@ -38,7 +40,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
     locked : 1,
     max_credit : 1000,
     is_convention : 1,
-    price_list_uuid : '2e39c855-6f2b-48d7-af7f-746f0552f7b7',
+    price_list_uuid : helpers.data.PRICE_LIST,
     apply_discounts : 1,
     apply_billing_services : 1,
     apply_subsidies : 1
@@ -108,9 +110,6 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
   };
 
   var allDebtorGroups;
-
-  // Logs in before each test
-  before(helpers.login(agent));
 
   it('POST /debtor_groups/ create a new debtor group (unlocked)', function () {
     return agent.post('/debtor_groups/')

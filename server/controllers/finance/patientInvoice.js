@@ -181,7 +181,7 @@ function create(req, res, next) {
 
   insertSaleItemQuery =
     `INSERT INTO sale_item (uuid, inventory_uuid, quantity,
-        'transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?;`;
+        transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?;`;
 
   transaction = db.transaction();
 

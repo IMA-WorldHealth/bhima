@@ -17,7 +17,7 @@ module.exports = function post(transaction, uuid) {
 
     // set up SQL variables for the posting journal checks
     .addQuery(`
-      SELECT sale.date, enterprise.id, project.id, enterprise.currencyId
+      SELECT sale.date, enterprise.id, project.id, enterprise.currency_id
       INTO @date, @enterpriseId, @projectId, @currencyId
       FROM sale JOIN project JOIN enterprise ON
         sale.project_id = project.id AND
