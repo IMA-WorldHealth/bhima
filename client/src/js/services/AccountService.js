@@ -15,9 +15,6 @@ function AccountService($http, util, sessionService) {
   service.read = read;
   service.label = label;
 
-  /** @deprecated */
-  service.list = list;
-
   service.getBalance = getBalance;
   service.getChildren = getChildren;
 
@@ -54,24 +51,6 @@ function AccountService($http, util, sessionService) {
         // return order(accounts);
         return accounts;
       });
-  }
-
-  // return a list of accounts
-  function list() {
-    return $http.get('/accounts?full=1') // TODO - this should only be /accounts
-      .then(util.unwrapHttpResponse)
-      .then(function (accounts) {
-
-        // hack to make sure accounts are properly rendered on cashboxes page
-        // FIXME - make /accounts return the account type w/o query string
-        // and preformat the numberLabel elsewhere
-        accounts.forEach(function (account) {
-          account.hrlabel = label(account);
-        });
-
-        return accounts;
-      })
-      .then(order);
   }
 
   function getBalance(account_id, opt){
@@ -140,11 +119,11 @@ function AccountService($http, util, sessionService) {
   }
 
   /**
-  *@helper  
+  *@helper
   * This Method Creat an account
   **/
   function create(account) {
-    var classAccount = String(account.number).charAt(0), 
+    var classAccount = String(account.number).charAt(0),
       accountClean = {
         enterprise_id : sessionService.enterprise.id,
         type_id : account.type.id,
@@ -154,7 +133,7 @@ function AccountService($http, util, sessionService) {
         locked : account.locked,
         cc_id : account.cc_id,
         pc_id : account.pc_id,
-        classe : classAccount,     
+        classe : classAccount,
         is_asset : account.is_asset,
         reference_id : account.reference_id,
         is_brut_link : account.is_brut_link,
@@ -168,8 +147,8 @@ function AccountService($http, util, sessionService) {
 
   /**
   * @desc It updates an account
-  * @param {Integer} id, account id to update 
-  * @param {object} account, account to update 
+  * @param {Integer} id, account id to update
+  * @param {object} account, account to update
   * @example
   * service.update(id, account)
   * .then(function (res){
@@ -184,7 +163,7 @@ function AccountService($http, util, sessionService) {
       parent : account.parent,
       locked : account.locked,
       cc_id : account.cc_id,
-      pc_id : account.pc_id,     
+      pc_id : account.pc_id,
       is_asset : account.is_asset,
       reference_id : account.reference_id,
       is_brut_link : account.is_brut_link,

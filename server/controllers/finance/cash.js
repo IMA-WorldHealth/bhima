@@ -12,15 +12,17 @@
 * currencies.  The API accepts a cashbox ID during cash payment creation and
 * looks up the correct account based on the cashbox_id + currency.
 *
-* @requires lib/db
 * @requires node-uuid
+* @requires lib/db
 * @requires lib/errors/NotFound
 * @requires lib/errors/BadRequest
+* @requires journal/cash
 */
-const db   = require('../../lib/db');
 const uuid = require('node-uuid');
-var NotFound = require('../../lib/errors/NotFound');
-var BadRequest = require('../../lib/errors/BadRequest');
+const db   = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
+const journal = require('./journal/cash');
 
 /** retrieves the details of a cash payment */
 exports.detail = detail;

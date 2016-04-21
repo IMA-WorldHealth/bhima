@@ -7,17 +7,22 @@ CashboxCurrencyModalController.$inject = [
 ];
 
 /**
-* CashboxCurrencyModalController
-*
-* This modal is responsible for creating the currency infrastructure behind
-* cashboxes.  Each cashbox must a currencied account defined for each currency
-* supported by the application.
-*/
-function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, cashbox, data) {
+ * Cashbox Currency Modal Controller
+ *
+ * This modal is responsible for creating the currency infrastructure behind
+ * cashboxes.  Each cashbox must a currencied account defined for each currency
+ * supported by the application.
+ */
+function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data) {
   var vm = this;
 
+  // if a currency matches, we are updating.  Otherwise, we are creating.
+  var currencyIds = cashbox.currencies.map(function (row) {
+    return row.currency_id;
+  });
+
   // determine whether we will send a POST or a PUT request to the server
-  var method = (cashbox.currencies.indexOf(currency.id) > -1) ?
+  var method = (currencyIds.indexOf(currency.id) > -1) ?
     'update' :
     'create';
 
@@ -28,7 +33,7 @@ function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, ca
   vm.data.currency_id = currency.id;
 
   // bind methods to the view-model
-  vm.dismiss = $instance.dismiss;
+  vm.dismiss = ModalInstance.dismiss;
   vm.submit = submit;
 
   /* ------------------------------------------------------------------------ */
@@ -43,15 +48,8 @@ function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, ca
   function startup() {
 
     // load accounts and properly formats their labels
-    Accounts.list()
+    Accounts.read()
       .then(function (accounts) {
-
-        // compute account labels once and use for all time
-        // @todo should this be done in the account service?
-        accounts.forEach(function (account) {
-          account.label = account.number + ' ' + account.label;
-        });
-
         vm.accounts = accounts;
       })
       .catch(handler);
@@ -72,9 +70,9 @@ function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, ca
       Boxes.currencies.update(vm.cashbox.id, vm.data);
 
     // upon successful completion, close the modal or error out
-    promise
-      .then($instance.close)
-      .catch(handler);
+  return promise
+    .then(function () { ModalInstance.close(); })
+    .catch(handler);
   }
 
   // startup the controller

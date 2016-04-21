@@ -1,14 +1,15 @@
 /* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
 
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-var components = require('../shared/components');
 
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
+
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
 
 describe('Accounts Module', function () {
   'use strict';
@@ -29,10 +30,7 @@ describe('Accounts Module', function () {
       number : '3384012'
   };
 
-  var defaultAccount = 11;
-  var accountRank = helpers.random(defaultAccount);
-
-
+  var accountRank = 7;
 
   // navigate to the account module before each test
   beforeEach(function () {
@@ -44,7 +42,7 @@ describe('Accounts Module', function () {
     // swtich to the create form
     FU.buttons.create();
     FU.input('AccountsCtrl.account.label', accountBalance.label);
-    element(by.model('AccountsCtrl.account.type')).element(by.cssContainingText('option', accountBalance.type)).click(); 
+    element(by.model('AccountsCtrl.account.type')).element(by.cssContainingText('option', accountBalance.type)).click();
     FU.radio('AccountsCtrl.account.is_asset', accountBalance.is_asset);
     FU.input('AccountsCtrl.account.number', accountBalance.number);
 
@@ -91,7 +89,7 @@ describe('Accounts Module', function () {
     // swtich to the create form
     FU.buttons.create();
     FU.input('AccountsCtrl.account.label', accountIncomeExpence.label);
-    element(by.model('AccountsCtrl.account.type')).element(by.cssContainingText('option', accountIncomeExpence.type)).click(); 
+    element(by.model('AccountsCtrl.account.type')).element(by.cssContainingText('option', accountIncomeExpence.type)).click();
     FU.input('AccountsCtrl.account.number', accountIncomeExpence.number);
     FU.radio('AccountsCtrl.account.is_charge', accountIncomeExpence.is_charge);
 

@@ -238,6 +238,7 @@ api.listed = function listed(res, len) {
  */
 exports.data = {
   USD : 2,
-  FC : 1
+  FC : 1,
+  PROJECT : 1
 };
 
