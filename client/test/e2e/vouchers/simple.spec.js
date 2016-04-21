@@ -53,7 +53,7 @@ describe('Simple Vouchers', function () {
     FU.buttons.submit();
 
     // assert that validation text appears
-    expect(element(by.css('.text-success')).isPresent()).to.eventually.equal(true);
+    expect(element(by.css('.alert-success')).isPresent()).to.eventually.equal(true);
   });
 
 });

@@ -476,8 +476,6 @@ exports.update = {};
 exports.update.country = function updateCountry(req, res, next) {
   'use strict';
 
-  const uid = db.bid(req.params.uuid);
-
   var sql =
     'UPDATE country SET ? WHERE uuid = ?;';
 
@@ -486,9 +484,9 @@ exports.update.country = function updateCountry(req, res, next) {
 
   var data = convert(req.body);
 
-  db.exec(sql, [data, uid])
+  db.exec(sql, [data, req.params.uuid])
   .then(function () {
-    return lookupCountry(uid);
+    return lookupCountry(req.params.uuid);
   })
   .then(function (record) {
     res.status(200).json(record);
@@ -507,8 +505,6 @@ exports.update.country = function updateCountry(req, res, next) {
 exports.update.province = function updateProvince(req, res, next) {
   'use strict';
 
-  const uid = db.bid(req.params.uuid);
-
   var sql =
     'UPDATE province SET ? WHERE uuid = ?;';
 
@@ -517,9 +513,9 @@ exports.update.province = function updateProvince(req, res, next) {
 
   var data = convert(req.body);
 
-  db.exec(sql, [data, uid])
+  db.exec(sql, [data, req.params.uuid])
   .then(function () {
-    return lookupProvince(uid);
+    return lookupProvince(req.params.uuid);
   })
   .then(function (record) {
     res.status(200).json(record);
@@ -538,8 +534,6 @@ exports.update.province = function updateProvince(req, res, next) {
 exports.update.sector = function updateSector(req, res, next) {
   'use strict';
 
-  const uid = db.bid(req.params.uuid);
-
   var sql =
     'UPDATE sector SET ? WHERE uuid = ?;';
 
@@ -548,9 +542,9 @@ exports.update.sector = function updateSector(req, res, next) {
 
   var data = convert(req.body);
 
-  db.exec(sql, [data, uid])
+  db.exec(sql, [data, req.params.uuid])
   .then(function () {
-    return lookupSector(uid);
+    return lookupSector(req.params.uuid);
   })
   .then(function (record) {
     res.status(200).json(record);
@@ -569,8 +563,6 @@ exports.update.sector = function updateSector(req, res, next) {
 exports.update.village = function updateVillage(req, res, next) {
   'use strict';
 
-  const uid = db.bid(req.params.uuid);
-
   var sql =
     'UPDATE village SET ? WHERE uuid = ?;';
 
@@ -579,9 +571,9 @@ exports.update.village = function updateVillage(req, res, next) {
 
   var data = convert(req.body);
 
-  db.exec(sql, [data, uid])
+  db.exec(sql, [data, req.params.uuid])
   .then(function () {
-    return lookupVillage(uid);
+    return lookupVillage(req.params.uuid);
   })
   .then(function (record) {
     res.status(200).json(record);
