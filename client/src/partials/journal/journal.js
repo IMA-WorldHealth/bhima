@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 JournalController.$inject = [
   'TransactionService', 'JournalSortingService', 'JournalGroupingService',
-  'JournalPaginationService', 'JournalFilteringService', 'JournalColumnConfigService', 'AppCache', '$uibModal'
+  'JournalPaginationService', 'JournalFilteringService', 'JournalColumnConfigService', '$uibModal'
 ];
 
 /**
@@ -30,7 +30,7 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Transactions, Sorting, Grouping, Pagination, Filtering, ColumnConfig, AppCache, Modal) {
+function JournalController(Transactions, Sorting, Grouping, Pagination, Filtering, ColumnConfig, Modal) {
   var vm = this;
 
   // Journal utilites
@@ -38,9 +38,7 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
 
   //column list
   var columns = null; 
-
-  //An appcache instance
-  var cache = AppCache('JournalGrid');
+  
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
@@ -48,11 +46,10 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
 
   // Initialise each of the journal utilites, providing them access to the journal
   // configuration options
-  columnConfig = new ColumnConfig(vm.gridOptions); //This service should be responsible of initializing columns?
   sorting    = new Sorting(vm.gridOptions);
+  filtering  = new Filtering(vm.gridOptions);
   grouping   = new Grouping(vm.gridOptions);
   pagination = new Pagination(vm.gridOptions, Transactions.list.data);
-  filtering  = new Filtering(vm.gridOptions);
 
   // bind the transactions service to populate the grid component
   vm.gridOptions.data = Transactions.list.data;
@@ -66,49 +63,55 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
    *    pagination = new Pagination(vm.gridOptions, Transactions.list.data);
    *    grouping = new Grouping(vm.gridOptions);
    *    filtering  = new Filtering();
-   *    columnConfig = new ColumnConfig(vm.gridOptions);   *    
+   *
    * Note:
-   *   Setting the grouping priority without sorting by the same column will
-   *   cause unexpected behaviour (splitting up of groups) when sorting
-   *   other columns. This can be avoided by setting default sort and group.
+   *   1. Setting the grouping priority without sorting by the same column will
+   *      cause unexpected behaviour (splitting up of groups) when sorting
+   *      other columns. This can be avoided by setting default sort and group.
+   *
+   *   2. To avoid some unmeaningfull column, we are using column such as project_name,
+   *      account_number, ... instead of project_id, account_id so the request to fetch data
+   *      should be a join to get expected columns name
+   *
    *  @todo using ui-grid internazation if necessary for columns label
    */
 
     columns = [
-      { field : 'uuid', displayName : 'ID', visible : false },
-      { field : 'project_name', displayName : 'Project', visible : false },
-      { field : 'period_summary', displayName : 'Period', visible : false },
-      { field : 'doc_num', displayName : 'Doc Num', visible : false},
-      { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate }, visible : true },
-      { field : 'description', displayName : 'Description', visible : true },
-      { field : 'account_number', displayName : 'Account', visible : true },
-      { field : 'debit_equiv', displayName : 'Debit', visible : true },
-      { field : 'credit_equiv', displayName : 'Credit', visible : true },
+      { field : 'uuid', displayName : 'ID'},
+      { field : 'project_name', displayName : 'Project'},
+      { field : 'period_summary', displayName : 'Period'},
+      { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
+      { field : 'description', displayName : 'Description' },
+      { field : 'account_number', displayName : 'Account' },
+      { field : 'debit_equiv', displayName : 'Debit' },
+      { field : 'credit_equiv', displayName : 'Credit' },
       { field : 'trans_id', 
         displayName : 'Transaction', 
         sortingAlgorithm : sorting.transactionIds,
         sort : { priority : 0, direction : 'asc' },
-        grouping : { groupPriority : 0 }, 
-        visible : true
+        grouping : { groupPriority : 0 }
       },
     
       // @todo this should be formatted as a currency icon vs. an ID
-      { field : 'currency_id', displayName : 'Currency', visible: false },
+      { field : 'currency_id', displayName : 'Currency'},
       
       // @todo this should be formatted showing the debitor/credior
-      { field : 'deb_cred_uuid', displayName : 'Recipient', visible : false }, 
-      { field : 'deb_cred_type', displayName : 'Recipient Type', visible : false }, 
+      { field : 'entity_uuid', displayName : 'Recipient'}, 
+      { field : 'entity_type', displayName : 'Recipient Type'}, 
 
-      // @fixme inv_po_id -> reference
-      { field : 'inv_po_id', displayName : 'Reference Document', visible : false },
-      { field : 'user', displayName : 'Responsible', visible : false },
+      { field : 'reference_uuid', displayName : 'Reference Document'},
+      { field : 'record_uuid', displayName : 'Reference Document'},
+      { field : 'user', displayName : 'Responsible'},
       
       // @fixme this field should not come from the database as 'cc'
-      { field : 'cc', displayName : 'Cost Center', visible : false },
-      { field : 'pc', displayName : 'Profit Center', visible : false }
+      { field : 'cc_id', displayName : 'Cost Center'},
+      { field : 'pc_id', displayName : 'Profit Center'}
     ];
 
-    vm.gridOptions.columnDefs = cache.columns ? resetColumns(cache.columns) : columns;
+    vm.gridOptions.columnDefs = columns;
+
+    //adding additional service for columns config, the column service need columns tobe set before process
+    columnConfig = new ColumnConfig(vm.gridOptions);
 
     // This function opens a modal to let the user show or Hide columns
     vm.openColumnConfigModal = function openColumnConfigModal() {
@@ -120,61 +123,13 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
         backdrop:    'static',
         animation:   true,
         resolve:     {
-          columnList:  function columnListProvider() { return vm.gridOptions.columnDefs; },
-          defaultColumns : function defaultColumnListProvider () { return angular.copy(columns);}
+          visibilityList : function visibilityListProvider() { return columnConfig.getCurrentVisibility(); },
+          defaultVisibility : function defaultVisibilityProvider () { return columnConfig.getDefaultVisibility();}
         }
       });
 
       instance.result.then(function (result) {
-        vm.gridOptions.columnDefs = result.columns;
-        columnConfig.refreshColumns();
-        cache.columns = result.columns;
+        columnConfig.applyConfiguration(result.configList);
       });
     };
-
-  /**
-  * This method is there to fix problem caused by fetching column from cache
-  * When columns are fetched from cache, sorting functionnality does not work
-  * this function is there to reset this functionnality
-  *
-  * @todo This is a lazy solution, we must refactor our cache module or redesign our posting journal module
-  **/  
-  function resetSorting (){
-    cache.columns.map(function (item){
-      if(item.sort){
-        item.sortingAlgorithm = sorting.transactionIds;
-        return item;
-      }
-      return item;
-    });
-  }
-
-  /**
-  * This method is there to fix problem caused by fetching column from cache
-  * When columns are fetched from cache, filtering functionnality does not work
-  * this function is there to reset this functionnality
-  *
-  * @todo This is a lazy solution, we must refactor our cache module or redesign our posting journal module
-  **/ 
-  function resetFiltering (){
-    cache.columns.map(function (item){
-      if(item.sort){
-        item.sortingAlgorithm = sorting.transactionIds;
-        return item;
-      }
-      return item;
-    });
-  }
-
-  /** 
-  * A facade to call resetSorting and resetFiltering method
-  * @return {object} array of columns
-  **/
-
-  function resetColumns (){
-    resetSorting();
-    resetFiltering();
-    return cache.columns;
-  } 
-
 }

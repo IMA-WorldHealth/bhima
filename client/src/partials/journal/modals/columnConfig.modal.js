@@ -1,30 +1,33 @@
 angular.module('bhima.controllers')
 .controller('ColumnsConfigModalController', ColumnsConfigModalController);
 
-ColumnsConfigModalController.$inject = [ '$uibModalInstance', 'columnList', 'defaultColumns'];
+ColumnsConfigModalController.$inject = [ '$uibModalInstance', 'visibilityList', 'defaultVisibility'];
 
 /**
- * @module cash/modals/CashTransferModalController
+ * @module journal/modals/columnConfig.modal
  *
- * @description This controller is responsible transfering money between auxillary cash and a virement account
+ * @description This controller is responsible for showing or Hiding columns
 */
-
-function ColumnsConfigModalController(ModalInstance, columnList, defaultColumns) {
+function ColumnsConfigModalController(ModalInstance, visibilityList, defaultVisibility) {
   var vm = this; 
 
-  vm.columns = columnList;
-  vm.defaultColumns = defaultColumns;
+  vm.visibilityList = visibilityList;
+  vm.defaultvisibilityList = defaultVisibility;
+
+  //the middle of the list to print element on two columns
+  vm.middle = Math.round( Object.keys(visibilityList).length / 2 ); 
   
   /**
   * @function submit
   * @description for submitting a dialog content
   **/
   function submit (){
-    ModalInstance.close({ columns : vm.columns }); 
+    ModalInstance.close({ configList : vm.visibilityList }); 
   }
 
-  function reset (){
-    ModalInstance.close({ columns : vm.defaultColumns });
+  //reset the column visibilty to their default configuration
+  function reset (){ 
+    vm.visibilityList = vm.defaultvisibilityList;
   }  
 
   /**expose function to the scope**/ 
