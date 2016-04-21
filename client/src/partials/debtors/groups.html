@@ -15,12 +15,20 @@
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
       <li class="title">{{ "DEBTOR_GRP.TITLE" | translate }}</li>
+      <li class="static">Exception Data: {{GroupCtrl.exceptionobject}}</li>
+
       <!-- <span class="label label-warning">{{GroupCtrl.current.key | translate}}</span> -->
     </ol>
+
+    {{GroupCtrl.state.current.data}}
+
+
     
     <div class="toolbar">
       <div class="toolbar-item">
-        <a ng-href="#/debtors/groups/create/new" class="btn btn-default btn-sm">
+        <a 
+          ui-sref="debtorGroups.create()"
+          class="btn btn-default btn-sm">
           <span class="glyphicon glyphicon-plus"></span>
           Create Debtor Group
         </a>

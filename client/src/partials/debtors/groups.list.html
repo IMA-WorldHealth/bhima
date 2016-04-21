@@ -52,8 +52,7 @@
       "debtorGroup in GroupCtrl.debtorGroups 
         | filter    : {name : GroupCtrl.filter}
         | orderBy   : GroupCtrl.sort.attribute:GroupCtrl.sort.reverse
-        | startFrom :(GroupCtrl.currentPage-1)*GroupCtrl.pageSize 
-        | limitTo   :GroupCtrl.pageSize">
+        | limitTo   : GroupCtrl.pageSize : (GroupCtrl.currentPage-1)*GroupCtrl.pageSize ">
 
       <div class="panel panel-default" style="margin-bottom : 3px !important;">
         <div class="panel-body text-left">

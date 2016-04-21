@@ -1,14 +1,14 @@
 angular.module('bhima.services')
 .service('DebtorGroupService', DebtorGroupService);
 
-DebtorGroupService.$inject = ['$http', 'util'];
+DebtorGroupService.$inject = ['$http', 'util', 'SessionService'];
 
 /**
 * Debtor Group Service
 *
 * This service implements CRUD operations for the /debtor_groups API endpoint
 */
-function DebtorGroupService($http, util) {
+function DebtorGroupService($http, util, SessionService) {
   var service = this;
   var baseUrl = '/debtor_groups/';
 
@@ -35,6 +35,10 @@ function DebtorGroupService($http, util) {
   * @description This function is responsible for create new debtor group
   */
   function create(debtorGroup) {
+
+    // augment object with session values 
+    debtorGroup.enterprise_id = SessionService.enterprise.id;
+
     return $http.post(baseUrl, debtorGroup)
     .then(util.unwrapHttpResponse);
   }

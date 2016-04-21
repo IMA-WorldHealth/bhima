@@ -14,7 +14,9 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices) {
   
   vm.toggleFilter = toggleFilter;
   vm.setOrder = setOrder;
-
+  
+  vm.state = $state; 
+  
   /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
   Accounts.list()
     .then(function (accounts) { 
@@ -67,13 +69,3 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices) {
     vm.sort = attribute;
   }
 }
-
-angular.module('bhima.filters')
-.filter('startFrom', function () { 
-  return function (input, index) { 
-    
-    // assume page values are 1..2..3..4..etc.
-    index = +index;
-    return input.slice(index);
-  }
-});

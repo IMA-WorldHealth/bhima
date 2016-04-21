@@ -21,14 +21,16 @@ ScrollService.$inject = ['$location', '$anchorScroll', '$timeout'];
  */
 function ScrollService($location, $anchorScroll, $timeout) { 
   var scrollDelay = 0;
-
+  
   // Always scroll an additional 50 pixels to ensure element is visiable 
   $anchorScroll.yOffset = 50;
 
   /** 
+   * @deprecated
+   * 
    * This method is responsible for scrolling to a specific element. It uses 
    * angular $location and $anchorScroll services. 
-   *
+   * 
    * @params {String} elementId   Element identifier (html attribute `id`) to 
    *                              be scrolled to. 
    */
@@ -45,7 +47,7 @@ function ScrollService($location, $anchorScroll, $timeout) {
       $anchorScroll();
     }
   }
-  
+
   /** 
    * This is a wrapper method to ensure $anchorScroll is called within an $apply 
    * block.
@@ -56,8 +58,11 @@ function ScrollService($location, $anchorScroll, $timeout) {
    */
   function applyScrollTo(elementId) { 
     var invokeApply = true;
-    
-    $timeout(scrollTo, scrollDelay, invokeApply, elementId);
+   
+    // we now make a call to $anchorScroll, directly passing the element ID, the
+    // primary difference between this and the scrollTo method is that it does 
+    // not alter the browser URL (location hash) or history.
+    $timeout($anchorScroll, scrollDelay, invokeApply, elementId);
   }
 
   return applyScrollTo;
