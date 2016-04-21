@@ -69,7 +69,7 @@ CREATE TABLE billing_service (
   `account_id`      INT(10) UNSIGNED NOT NULL,
   `label`           VARCHAR(200) NOT NULL,
   `description`     TEXT,
-  `value`           DECIMAL(10,2) UNSIGNED NOT NULL,
+  `value`           DECIMAL(10,4) UNSIGNED NOT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -99,7 +99,7 @@ CREATE TABLE `cash` (
   `date`            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `debtor_uuid`     BINARY(16) NOT NULL,
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
-  `amount`          DECIMAL(19,2) UNSIGNED NOT NULL DEFAULT 0.00,
+  `amount`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `cashbox_id`      MEDIUMINT(8) UNSIGNED NOT NULL,
   `description`     TEXT,
@@ -125,7 +125,7 @@ DROP TABLE IF EXISTS `cash_item`;
 CREATE TABLE `cash_item` (
   `uuid`            BINARY(16) NOT NULL,
   `cash_uuid`       BINARY(16) NOT NULL,
-  `amount`          DECIMAL(19,2) UNSIGNED NOT NULL DEFAULT 0.00,
+  `amount`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `invoice_uuid`    BINARY(16) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `cash_uuid` (`cash_uuid`),
@@ -613,7 +613,7 @@ CREATE TABLE discount (
   `description`         TEXT,
   `inventory_uuid`      BINARY(16) NOT NULL,
   `account_id`          INT(10) UNSIGNED NOT NULL,
-  `value`               DECIMAL(10,2) NOT NULL,
+  `value`               DECIMAL(10,4) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `account_id` (`account_id`),
@@ -702,7 +702,7 @@ CREATE TABLE `employee_invoice` (
   `note` text,
   `authorized_by` varchar(80) NOT NULL,
   `date` date NOT NULL,
-  `total` decimal(14,4) NOT NULL DEFAULT '0.0000',
+  `total` decimal(14,4) NOT NULL DEFAULT 0.0,
   PRIMARY KEY (`uuid`),
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `project_id` (`project_id`),
@@ -855,7 +855,7 @@ CREATE TABLE `group_invoice` (
   `note` text,
   `authorized_by` varchar(80) NOT NULL,
   `date` date NOT NULL,
-  `total` decimal(14,4) NOT NULL DEFAULT '0.0000',
+  `total` decimal(14,4) NOT NULL DEFAULT 0.0,
   PRIMARY KEY (`uuid`),
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `project_id` (`project_id`),
@@ -916,8 +916,8 @@ CREATE TABLE `inventory` (
   `uuid` BINARY(16) NOT NULL,
   `code` varchar(30) NOT NULL,
   `text` text,
-  `price` decimal(10,4) unsigned NOT NULL DEFAULT '0.0000',
-  `purchase_price` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT '0.0000',
+  `price` decimal(10,4) unsigned NOT NULL DEFAULT 0.0,
+  `purchase_price` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0.0,
   `group_uuid` BINARY(16) NOT NULL,
   `unit_id` smallint(5) unsigned DEFAULT NULL,
   `unit_weight` mediumint(9) DEFAULT 0,
@@ -1379,7 +1379,7 @@ CREATE TABLE `primary_cash` (
   `deb_cred_type` varchar(1) DEFAULT NULL,
   `currency_id` tinyint(3) unsigned NOT NULL,
   `account_id` int(10) unsigned NOT NULL,
-  `cost` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `cost` decimal(19,4) unsigned NOT NULL DEFAULT 0.0,
   `user_id` smallint(5) unsigned NOT NULL,
   `description` text,
   `cash_box_id` mediumint(8) unsigned NOT NULL,
@@ -1405,8 +1405,8 @@ DROP TABLE IF EXISTS `primary_cash_item`;
 CREATE TABLE `primary_cash_item` (
   `uuid` varBINARY(16) NOT NULL,
   `primary_cash_uuid` varBINARY(16) NOT NULL,
-  `debit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
-  `credit` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `debit` decimal(19,4) unsigned NOT NULL DEFAULT 0.0,
+  `credit` decimal(19,4) unsigned NOT NULL DEFAULT 0.0,
   `inv_po_id` varBINARY(16) DEFAULT NULL,
   `document_uuid` varBINARY(16) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
@@ -1480,7 +1480,7 @@ CREATE TABLE `purchase` (
   `project_id` smallint(5) unsigned NOT NULL,
   `reference` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `uuid` BINARY(16) NOT NULL,
-  `cost` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
+  `cost` decimal(19,4) unsigned NOT NULL DEFAULT 0.0,
   `currency_id` tinyint(3) unsigned NOT NULL,
   `creditor_uuid` BINARY(16) DEFAULT NULL,
   `discount` mediumint(8) unsigned DEFAULT 0,
@@ -1614,9 +1614,9 @@ CREATE TRIGGER sale_reference BEFORE INSERT ON sale
 FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM sale WHERE sale.project_id = new.project_id);
 
 DROP TABLE IF EXISTS sale_billing_service;
-CREATE TABLE `sale_billing_service` (
+CREATE TABLE sale_billing_service (
   `sale_uuid`               BINARY(16) NOT NULL,
-  `value`                   DECIMAL(10,2) NOT NULL,
+  `value`                   DECIMAL(10,4) NOT NULL,
   `billing_service_id`      SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`sale_uuid`, `value`),
   KEY `sale_uuid` (`sale_uuid`),
@@ -1634,8 +1634,8 @@ CREATE TABLE `sale_item` (
   `quantity` INT(10) UNSIGNED NOT NULL,
   `inventory_price` decimal(19,4) DEFAULT NULL,
   `transaction_price` decimal(19,4) NOT NULL,
-  `debit` decimal(19,4) NOT NULL DEFAULT '0.0000',
-  `credit` decimal(19,4) NOT NULL DEFAULT '0.0000',
+  `debit` decimal(19,4) NOT NULL DEFAULT 0.0,
+  `credit` decimal(19,4) NOT NULL DEFAULT 0.0,
   PRIMARY KEY (`uuid`),
   KEY `sale_uuid` (`sale_uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
@@ -1643,26 +1643,11 @@ CREATE TABLE `sale_item` (
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `sale_subsidy`;
-
-CREATE TABLE `sale_subsidy` (
-  `uuid`            BINARY(16) NOT NULL,
-  `sale_uuid`       BINARY(16) NOT NULL,
-  `subsidy_uuid`    BINARY(16) NOT NULL,
-  `value`           DECIMAL(19,4) DEFAULT '0.0000',
-  PRIMARY KEY (`uuid`),
-  KEY `sale_uuid` (`sale_uuid`),
-  KEY `subsidy_uuid` (`subsidy_uuid`),
-  FOREIGN KEY (`sale_uuid`) REFERENCES `sale` (`uuid`) ON DELETE CASCADE,
-  FOREIGN KEY (`subsidy_uuid`) REFERENCES `subsidy` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS sale_subsidy;
 
 CREATE TABLE `sale_subsidy` (
   `sale_uuid`       BINARY(16) NOT NULL,
-  `value`           DECIMAL(10,2) NOT NULL,
+  `value`           DECIMAL(10,4) NOT NULL,
   `subsidy_id`      SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`sale_uuid`, `value`),
   KEY `sale_uuid` (`sale_uuid`),
@@ -1743,7 +1728,7 @@ CREATE TABLE subsidy (
   `account_id`      INT UNSIGNED NOT NULL,
   `label`           VARCHAR(200) NOT NULL,
   `description`     TEXT,
-  `value`           DECIMAL(10,2) NOT NULL,
+  `value`           DECIMAL(10,4) NOT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

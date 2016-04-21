@@ -1,7 +1,7 @@
 /**
  * The /billing_service API module
  *
- * @module finance/billingServices
+ * @module controllers/finance/billingServices
  *
  * @description This module is responsible for CRUD operations on the billing_service
  * table.  A billing_service increases a patient's invoice by a set percentage
@@ -13,10 +13,10 @@
  * @requires lib/errors/BadRequest
  *
  */
-var _          = require('lodash');
-var db         = require('../../lib/db');
-var NotFound   = require('../../lib/errors/NotFound');
-var BadRequest = require('../../lib/errors/BadRequest');
+const _          = require('lodash');
+const db         = require('../../lib/db');
+const NotFound   = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 
 /**
  * Looks up a billing service by id.

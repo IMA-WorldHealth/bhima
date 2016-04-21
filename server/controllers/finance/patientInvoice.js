@@ -17,6 +17,7 @@ const util = require('../../lib/util');
 const journal = require('./journal/invoices');
 
 const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
@@ -121,41 +122,11 @@ function details(req, res, next) {
   .done();
 }
 
-function create(req, res, next) {
-  let insertSaleQuery, insertSaleItemQuery;
-  let transaction;
+// temp
+var u = require('util');
 
-  var sale = req.body.sale;
-  var items = sale.items || [];
-
-  // TODO Billing service + subsidy posting journal interface
-  // Billing services and subsidies are sent from the client, the client
-  // has calculated the charge associated with each subsidy and billing service
-  // - the financial posting logic depends on the future posting journal logic,
-  // it must be decided if the server will have the final say in the cost calculation
-  var billingServices = sale.billingServices || [];
-  var subsidies = sale.subsidies || [];
-
-  // remove the unused properties on sale
-  delete sale.items;
-  delete sale.billingServices;
-  delete sale.subsidies;
-
-  // provide UUID if the client has not specified
-  sale.uuid = db.bid(sale.uuid || uuid.v4());
-
-  // make sure that the dates have been properly transformed before insert
-  if (sale.date) {
-    sale.date = new Date(sale.date);
-  }
-
-  /** @todo - abstract this into a generic "convert" method */
-  if (sale.debtor_uuid) {
-    sale.debtor_uuid = db.bid(sale.debtor_uuid);
-  }
-
-  // implicitly provide user information based on user session
-  sale.user_id = req.session.user.id;
+// process sale items, transforming UUIDs into binary.
+function processSaleItems(sale, items) {
 
   // make sure that sale items have their uuids
   items.forEach(function (item) {
@@ -176,21 +147,189 @@ function create(req, res, next) {
   // prepare sale items for insertion into database
   items = _.map(items, filter);
 
-  insertSaleQuery =
+  return items;
+}
+
+/**
+ * POST /sales
+ *
+ * The function is responsible for billing a patient and calculating the total
+ * due on their invoice.  It will create a record in the `sale` table.
+ *
+ * Up to three additional tables may be affected:
+ *  1. `sale_items`
+ *  2. `sale_billing_service`
+ *  3. `sale_subsidy`
+ *
+ * The invoicing procedure of a patient's total invoice goes like this:
+ *  1. First, the total sum of the sale items are recorded as sent from the
+ *  client.  The Patient Invoice module is allowed to edit the item costs as it
+ *  sees fit, so we use the POSTed costs.
+ *  2. Next, each billing service is added to the invoice by writing records to
+ *  the `sale_billing_service` table.  The cost of each billing service is
+ *  determined by multiplying the billing service's value (as a percentage) to
+ *  the total invoice cost.
+ *  3. Finally, the subsidy for the bill is determined.  NOTE - as of #343, we
+ *  are only allowing a single subsidy per invoice.  The array of subsidies is
+ *  treated identically to the billing_services, except that it subtracts from
+ *  the total bill amount.
+ *
+ * @todo - change the API to pass in only an array of billingService and subsidy
+ * ids.
+ * @todo - clean up the code by moving conversions into a convert() function.
+ */
+function create(req, res, next) {
+  let transaction;
+
+  // alias body properties on local variables
+  let sale = req.body.sale;
+  let items = sale.items || [];
+
+  /**
+   * @todo - the client should only send back an array of ids for the billing
+   * services and subsidies.  We have to look them up anyway, so might as well
+   * save HTTP bandwidth.
+   */
+  let billingServices = [];
+  if (sale.billingServices && sale.billingServices.items) {
+    billingServices = sale.billingServices.items;
+  }
+
+  let subsidies = [];
+  if (sale.subsidies && sale.subsidies.items) {
+    subsidies = sale.subsidies.items;
+  }
+
+  // remove the unused properties on sale object before insertion to the
+  // database
+  delete sale.items;
+  delete sale.billingServices;
+  delete sale.subsidies;
+
+  // provide UUID if the client has not specified
+  sale.uuid = db.bid(sale.uuid || uuid.v4());
+
+  // make sure that the dates have been properly transformed before insert
+  if (sale.date) {
+    sale.date = new Date(sale.date);
+  }
+
+  /** @todo - abstract this into a generic "convert" method */
+  if (sale.debtor_uuid) {
+    sale.debtor_uuid = db.bid(sale.debtor_uuid);
+  }
+
+  // implicitly provide user information based on user session
+  sale.user_id = req.session.user.id;
+
+  // properly convert UUIDs and link sale to sale components.
+  items = processSaleItems(sale, items);
+  /** @todo - remove these maps, since we'll send back an array of ids */
+  billingServices = billingServices.map(billingService => billingService.billing_service_id);
+  subsidies = subsidies.map(subsidy => subsidy.subsidy_id);
+
+  /**
+   * @todo move this check higher in the call stack, as once the API has changed
+   */
+  if (subsidies.length > 1) {
+    throw new BadRequest(`
+      An invoice is not allowed to have more than one subsidy.  The
+      submitted invoice has ${subsidies.length} subsidies.
+    `);
+  }
+
+  // queries
+
+  let insertSaleQuery =
     'INSERT INTO sale SET ?';
 
-  insertSaleItemQuery =
+  let insertSaleItemQuery =
     `INSERT INTO sale_item (uuid, inventory_uuid, quantity,
         transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?;`;
+
+  let itemSumCost  = `
+    SET @totalItemsCost = (
+      SELECT SUM(credit) AS cost FROM sale_item WHERE sale_uuid = ?
+    );
+  `;
+
+  let insertSaleBillingServicesQuery = `
+    INSERT INTO sale_billing_service (sale_uuid, value, billing_service_id)
+    SELECT ?, (billing_service.value / 100) * @totalItemsCost, billing_service.id
+    FROM billing_service WHERE id IN (?);
+  `;
+
+  let billingSumCost =  `
+    SET @billingSumCost = (
+      SELECT SUM(value) AS value FROM sale_billing_service WHERE sale_uuid = ?
+    );
+  `;
+
+  let combinedSumCost = `
+    SET @combinedSumCost = @totalItemsCost + IFNULL(@billingSumCost, 0);
+  `;
+
+  let insertSaleSubsidyQuery = `
+    INSERT INTO sale_subsidy (sale_uuid, value, subsidy_id)
+    SELECT ?, (subsidy.value / 100) * @totalItemsCost, billing_service.id
+    FROM subsidy WHERE id IN (?);
+  `;
+
+  let subsidySumCost = `
+    SET @subsidySumCost = (
+      SELECT SUM(value) AS value from sale_subsidy WHERE sale_uuid = ?
+    );
+  `;
+
+  let finalSumCost = `
+    SET @finalSumCost = @combinedSumCost - IFNULL(@subsidySumCost, 0);
+  `;
+
+  let updateSaleCostQuery = `
+    UPDATE sale SET cost = @finalSumCost WHERE uuid = ?;
+  `;
 
   transaction = db.transaction();
 
   // insert sale line
   transaction
-    .addQuery(insertSaleQuery, [ sale ])
+    .addQuery(insertSaleQuery, [sale])
 
   // insert sale item lines
-    .addQuery(insertSaleItemQuery, [ items ]);
+    .addQuery(insertSaleItemQuery, [items])
+
+  // calculate total cost
+    .addQuery(itemSumCost, [sale.uuid]);
+
+  // if there are billing services, apply them to the bill
+  if (billingServices.length) {
+    transaction
+
+    // insert the billing services
+      .addQuery(insertSaleBillingServicesQuery, [sale.uuid, billingServices])
+
+    // calculate the combined charge
+      .addQuery(billingSumCost, [sale.uuid]);
+  }
+
+  // calculate the new sum of the sale
+  transaction
+    .addQuery(combinedSumCost);
+
+  // if there are subsidies, insert them
+  if (subsidies.length) {
+    transaction
+      .addQuery(insertSaleSubsidyQuery, [subsidies])
+
+      .addQuery(subsidySumCost, [sale.uuid]);
+  }
+
+  // make sure that the final computation of costs is correct.
+  transaction
+    .addQuery(finalSumCost)
+
+  // update the original sale with the cost
+    .addQuery(updateSaleCostQuery, [sale.uuid]);
 
   journal(transaction, sale.uuid)
     .then(function () {
@@ -205,7 +344,7 @@ function create(req, res, next) {
 /**
  * Searches for a sale by query parameters provided.
  *
- * GET sales/search
+ * GET /sales/search
  */
 function search(req, res, next) {
   let sql =

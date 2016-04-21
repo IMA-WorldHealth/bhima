@@ -1,5 +1,5 @@
 /* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
 var chai = require('chai');
 var expect = chai.expect;
@@ -27,22 +27,22 @@ describe('Price List Module', function () {
   var item1 = {
     label : 'Item 1',
     value : 15
-  }
+  };
 
   var item2 = {
     label : 'Item 2',
     value : 30
-  }
+  };
 
   var item3 = {
     label : 'Item 3',
     value : 45
-  }
+  };
 
   var item4 = {
     label : 'Item 4',
     value : 60
-  }
+  };
 
   var defaultPriceList = 1;
   var priceListID1 = 1;
@@ -59,7 +59,7 @@ describe('Price List Module', function () {
     FU.buttons.create();
     FU.input('PriceListCtrl.priceList.label', priceList.label);
     FU.input('PriceListCtrl.priceList.description', priceList.description);
-  
+
     // submit the page to the server
     FU.buttons.submit();
     // expect a nice validation message
@@ -70,27 +70,27 @@ describe('Price List Module', function () {
     element(by.id('price_list_' + priceListID1 )).click();
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item1.label);
-    FU.input('ModalCtrl.data.value', item1.value); 
+    FU.input('ModalCtrl.data.value', item1.value);
     element(by.id('is_percentage')).click();
 
     // select an Invetory
     FU.select('ModalCtrl.data.inventory_uuid')
       .enabled()
       .first()
-      .click();    
+      .click();
     // Saving Item
     element(by.id('submit-price-list')).click();
 
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item2.label);
-    FU.input('ModalCtrl.data.value', item2.value); 
+    FU.input('ModalCtrl.data.value', item2.value);
 
     // select an Invetory
     FU.select('ModalCtrl.data.inventory_uuid')
       .enabled()
       .first()
-      .click();    
-    // Saving Item 
+      .click();
+    // Saving Item
     element(by.id('submit-price-list')).click();
     FU.buttons.submit();
     // expect a nice validation message
@@ -105,28 +105,28 @@ describe('Price List Module', function () {
 
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item3.label);
-    FU.input('ModalCtrl.data.value', item3.value); 
+    FU.input('ModalCtrl.data.value', item3.value);
 
     // select an Invetory
     FU.select('ModalCtrl.data.inventory_uuid')
       .enabled()
       .first()
-      .click();    
+      .click();
     // Saving Item
     element(by.id('submit-price-list')).click();
 
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item4.label);
-    FU.input('ModalCtrl.data.value', item4.value); 
+    FU.input('ModalCtrl.data.value', item4.value);
     element(by.id('is_percentage')).click();
     // select an Invetory
     FU.select('ModalCtrl.data.inventory_uuid')
       .enabled()
       .first()
-      .click();    
-    // Saving Item 
+      .click();
+    // Saving Item
     element(by.id('submit-price-list')).click();
-    FU.buttons.submit();    
+    FU.buttons.submit();
     // expect a nice validation message
     FU.exists(by.id('create_success'), true);
   });
@@ -141,17 +141,17 @@ describe('Price List Module', function () {
     // swtich to the create form
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item1.label);
-    FU.input('ModalCtrl.data.value', item1.value); 
+    FU.input('ModalCtrl.data.value', item1.value);
 
     // select an Invetory
     FU.select('ModalCtrl.data.inventory_uuid')
       .enabled()
       .first()
-      .click();    
+      .click();
     // Saving Item
     element(by.id('submit-price-list')).click();
 
-    FU.buttons.submit();    
+    FU.buttons.submit();
     // expect a nice validation message
     FU.exists(by.id('update_success'), true);
   });
