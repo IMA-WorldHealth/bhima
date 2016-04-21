@@ -122,6 +122,7 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
         size:        'md',
         backdrop:    'static',
         animation:   true,
+        keyboard  : false,
         resolve:     {
           visibilityList : function visibilityListProvider() { return columnConfig.getCurrentVisibility(); },
           defaultVisibility : function defaultVisibilityProvider () { return columnConfig.getDefaultVisibility();}
