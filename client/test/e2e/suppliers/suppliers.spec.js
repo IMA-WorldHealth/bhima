@@ -1,21 +1,18 @@
-/* jshint expr:true */
 /* global element, by, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-var components = require('../shared/components');
-
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('Suppliers Module', function () {
   'use strict';
 
-  var path = '#/creditors';
+  const path = '#/creditors';
+  before(() => browser.get(path));
 
-  var supplier = {
+  const supplier = {
     name : 'Alpha Lmtd',
     address_1 : '45 Street Blvd',
     address_2 : '30 june Blvd',
@@ -25,16 +22,11 @@ describe('Suppliers Module', function () {
     phone : '025495950001'
   };
 
-  var supplierRank = 1;
+  const supplierRank = 1;
 
-  // navigate to the Supplier module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
+  it('successfully creates a new supplier', function () {
 
-  it('successfully creates a new Supplier', function () {
-
-    // swtich to the create form
+    // switch to the create form
     FU.buttons.create();
     FU.input('SupplierCtrl.supplier.name', supplier.name);
 
@@ -47,15 +39,10 @@ describe('Suppliers Module', function () {
       .click();
 
     FU.input('SupplierCtrl.supplier.phone', supplier.phone);
-
     FU.input('SupplierCtrl.supplier.email', supplier.email);
-
     FU.input('SupplierCtrl.supplier.address_1', supplier.address_1);
-
     FU.input('SupplierCtrl.supplier.address_2', supplier.address_2);
-
     FU.input('SupplierCtrl.supplier.fax', supplier.fax);
-
     FU.input('SupplierCtrl.supplier.note', supplier.note);
 
     // submit the page to the server
@@ -84,14 +71,15 @@ describe('Suppliers Module', function () {
     // switch to the create form
     FU.buttons.create();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
     element(by.id('submit-supplier')).click();
 
     // the following fields should be required
     FU.validation.error('SupplierCtrl.supplier.name');
     FU.validation.error('SupplierCtrl.supplier.creditor_uuid');
     FU.validation.error('SupplierCtrl.supplier.address_1');
+
     // the following fields are not required
     FU.validation.ok('SupplierCtrl.supplier.international');
     FU.validation.ok('SupplierCtrl.supplier.phone');
@@ -101,5 +89,4 @@ describe('Suppliers Module', function () {
     FU.validation.ok('SupplierCtrl.supplier.fax');
     FU.validation.ok('SupplierCtrl.supplier.note');
   });
-
 });

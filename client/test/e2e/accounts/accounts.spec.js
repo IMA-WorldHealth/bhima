@@ -1,9 +1,7 @@
-/* jshint expr:true */
 /* global element, by, browser */
 
-var chai = require('chai');
-var expect = chai.expect;
-
+const chai = require('chai');
+const expect = chai.expect;
 
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
@@ -14,32 +12,28 @@ const components = require('../shared/components');
 describe('Accounts Module', function () {
   'use strict';
 
-  var path = '#/accounts';
+  const path = '#/accounts';
+  before(() => browser.get(path));
 
-  var accountBalance = {
-      label : 'Compte de Balance',
-      type : 'balance',
-      is_asset : 1,
-      number : '4503500'
+  const accountBalance = {
+    label : 'Compte de Balance',
+    type : 'balance',
+    is_asset : 1,
+    number : '4503500'
   };
 
-  var accountIncomeExpence = {
-      label : 'Compte Income Expence',
-      type : 'income/expense',
-      is_charge : 0,
-      number : '3384012'
+  const accountIncomeExpence = {
+    label : 'Compte Income Expence',
+    type : 'income/expense',
+    is_charge : 0,
+    number : '3384012'
   };
 
-  var accountRank = 7;
+  const accountRank = 7;
 
-  // navigate to the account module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
+  it('successfully creates a new account type balance', function () {
 
-  it('Successfully creates a new account type Balance', function () {
-
-    // swtich to the create form
+    // switch to the create form
     FU.buttons.create();
     FU.input('AccountsCtrl.account.label', accountBalance.label);
     element(by.model('AccountsCtrl.account.type')).element(by.cssContainingText('option', accountBalance.type)).click();
@@ -59,9 +53,7 @@ describe('Accounts Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-
   it('successfully edits an account', function () {
-
     element(by.id('account-upd-' + accountRank )).click();
 
     // modify the account name
@@ -84,7 +76,7 @@ describe('Accounts Module', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('Successfully creates a new account type Income Expence', function () {
+  it('successfully creates a new account type income expense', function () {
 
     // swtich to the create form
     FU.buttons.create();
@@ -117,8 +109,8 @@ describe('Accounts Module', function () {
     // switch to the create form
     FU.buttons.create();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-account')).click();
 
@@ -131,5 +123,4 @@ describe('Accounts Module', function () {
     FU.validation.ok('AccountsCtrl.account.is_title');
     FU.validation.ok('AccountsCtrl.account.parent');
   });
-
 });

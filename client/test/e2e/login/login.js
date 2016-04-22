@@ -1,31 +1,29 @@
-/*global describe, it, beforeEach, inject, browser */
+/* jshint expr:true*/
+/* global protractor, by, element, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
+helpers.configure(chai);
 
-chai.use(chaiAsPromised);
-var expect = chai.expect;
+describe('Login Page', function () {
 
-describe('login page', function () {
-
-  beforeEach(function () {
-    browser.get('#/login');
-  });
+  before(() => browser.get('#/login'));
 
   it('rejects an undefined user', function () {
-    element(by.model('LoginCtrl.credentials.username')).sendKeys('undefineds');
-    element(by.model('LoginCtrl.credentials.password')).sendKeys('undefined1');
+    FU.input('LoginCtrl.credentials.username', 'undefineds');
+    FU.input('LoginCtrl.credentials.password', 'undefined1');
     element(by.id('submit')).click();
 
-    expect(element(by.css('.help-block')).isPresent()).to.eventually.be.true;
+    FU.exists(by.css('.help-block'), true);
   });
-
 
   it('rejects user missing a username', function () {
     element(by.model('LoginCtrl.credentials.username')).sendKeys('username');
     element(by.id('submit')).click();
 
-    expect(element(by.css('.help-block')).isPresent()).to.eventually.be.true;
+    FU.exists(by.css('.help-block'), true);
   });
 
 
@@ -33,7 +31,7 @@ describe('login page', function () {
     element(by.model('LoginCtrl.credentials.password')).sendKeys('password');
     element(by.id('submit')).click();
 
-    expect(element(by.css('.help-block')).isPresent()).to.eventually.be.true;
+    FU.exists(by.css('.help-block'), true);
   });
 
 
@@ -44,13 +42,11 @@ describe('login page', function () {
     expect(defaultProject).to.not.be.empty;
   });
 
-
-  // TODO - how to we esnure that this user doesn't exist in production?
   it('allows a successful user to login', function () {
-    element(by.model('LoginCtrl.credentials.username')).sendKeys('admin');
-    element(by.model('LoginCtrl.credentials.password')).sendKeys('1');
+    FU.exists('LoginCtrl.credentials.username', 'superuser');
+    FU.exists('LoginCtrl.credentials.password', 'superuser');
     element(by.id('submit')).click();
 
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + '#/');
+    expect(helpers.getCurrentPath()).to.eventually.equal('#/');
   });
 });

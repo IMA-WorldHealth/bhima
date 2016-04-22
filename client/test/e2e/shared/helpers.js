@@ -28,3 +28,15 @@ exports.getCurrentPath = function getCurrentPath() {
     return '#'.concat(partial);
   });
 };
+
+// shared data
+exports.data = {
+
+  // location IDs for the location select component
+  locations : [
+   'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
+   'f6fc7469-7e58-45cb-b87c-f08af93edade', // Bas Congo,
+   '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', // Tshikapa,
+   '1f162a10-9f67-4788-9eff-c1fea42fcc9b'  // kele
+  ]
+};

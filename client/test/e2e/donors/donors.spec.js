@@ -1,58 +1,47 @@
-/* jshint expr: true */
-/* element, by, inject, browser */
+/* global element, by, inject, browser */
+const chai    = require('chai');
+const expect  = chai.expect;
 
-var chai    = require('chai');
-var expect  = chai.expect;
-var helpers = require('../shared/helpers');
-
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-var FormUtils = require('../shared/FormUtils');
-var components = require('../shared/components');
+describe('Donor Management', function () {
+  before(() => browser.get('#/donors'));
 
-describe('Donor management tests suit :: ', function () {
-
-  var PATH = '#/donors';
-
-  var donor = {
+  const donor = {
     name : 'IMA WorldHealth (E2E)'
   };
 
-  var updateDonor = {
+  const updateDonor = {
     name : 'IMA (updated)'
   };
 
-  /** navigate to the donors management module */
-  beforeEach(function () {
-    browser.get(PATH);
-  });
-
   it('successfully creates a new donor', function () {
-    FormUtils.buttons.create();
-    FormUtils.input('DonorCtrl.donor.name', donor.name);
-    FormUtils.buttons.submit();
-    FormUtils.exists(by.id('create_success'), true);
+    FU.buttons.create();
+    FU.input('DonorCtrl.donor.name', donor.name);
+    FU.buttons.submit();
+    FU.exists(by.id('create_success'), true);
   });
 
   it('successfully edits a donor', function () {
-    element(by.name('edit-' + donor.name )).click();
-    FormUtils.input('DonorCtrl.donor.name', '');
-    element(by.model('DonorCtrl.donor.name')).sendKeys(updateDonor.name);
-    FormUtils.buttons.submit();
-    FormUtils.exists(by.id('update_success'), true);
+    element(by.name('edit-' + donor.name)).click();
+    FU.input('DonorCtrl.donor.name', updateDonor.name);
+    FU.buttons.submit();
+    FU.exists(by.id('update_success'), true);
   });
 
   it('successfully delete a donor', function () {
-    element(by.name('delete-' + updateDonor.name )).click();
-    FormUtils.buttons.submit();
-    FormUtils.exists(by.id('delete_success'), true);
+    element(by.name('delete-' + updateDonor.name)).click();
+    FU.buttons.submit();
+    FU.exists(by.id('delete_success'), true);
   });
 
-  it('Dont create when incorrect donor name', function () {
-    FormUtils.buttons.create();
-    FormUtils.input('DonorCtrl.donor.name', '');
-    FormUtils.buttons.submit();
-    FormUtils.exists(by.id('create_success'), false);
+  it('don\'t create when incorrect donor name', function () {
+    FU.buttons.create();
+    FU.input('DonorCtrl.donor.name', '');
+    FU.buttons.submit();
+    FU.exists(by.id('create_success'), false);
   });
-
 });

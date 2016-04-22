@@ -1,33 +1,28 @@
-/* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, inject, browser */
 
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('Locations/Provinces Management', function () {
+describe('Provinces Management', function () {
   'use strict';
 
-  var path = '#/locations/province';
+  const path = '#/locations/province';
 
-  var province = {
+  before(() => browser.get(path));
+
+  const province = {
     name : 'A Province for Test'
   };
 
-  var defaultProvince = 14;
-  var provinceRank  = 1;
+  const defaultProvince = 14;
+  const provinceRank  = 1;
 
-  // navigate to the employee module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
-
-  it('successfully creates a new Province', function () {
-    // swtich to the create form
+  it('successfully creates a new province', function () {
+    // switch to the create form
     FU.buttons.create();
 
     // select an Country
@@ -37,7 +32,7 @@ describe('Locations/Provinces Management', function () {
       .click();
 
     FU.input('ProvinceCtrl.province.name', province.name);
-  
+
     // submit the page to the server
     FU.buttons.submit();
 
@@ -45,8 +40,8 @@ describe('Locations/Provinces Management', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully edits an Province ', function () {
-    element(by.id('province-' + provinceRank )).click();
+  it('successfully edits a province', function () {
+    element(by.id('province-' + provinceRank)).click();
 
     // Update an Country
     FU.select('ProvinceCtrl.province.country_uuid')
@@ -67,8 +62,8 @@ describe('Locations/Provinces Management', function () {
     // switch to the create form
     element(by.id('create')).click();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path );
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     // submit the page to the server
     FU.buttons.submit();
@@ -77,5 +72,4 @@ describe('Locations/Provinces Management', function () {
     FU.validation.error('ProvinceCtrl.province.country_uuid');
     FU.validation.error('ProvinceCtrl.province.name');
   });
-
 });

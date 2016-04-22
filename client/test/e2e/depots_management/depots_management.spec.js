@@ -1,60 +1,51 @@
-/* jshint expr: true */
-/* element, by, inject, browser */
+/* global element, by, inject, browser */
+const chai    = require('chai');
+const expect  = chai.expect;
 
-var chai    = require('chai');
-var expect  = chai.expect;
-var helpers = require('../shared/helpers');
-
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-var FormUtils = require('../shared/FormUtils');
-var components = require('../shared/components');
+describe('Depots Management', function () {
 
-describe('Depots management tests suit :: ', function () {
+  // navigate to the page
+  before(() => browser.get('#/depots_management'));
 
-  var PATH = '#/depots_management';
-
-  var depot = {
+  const depot = {
     text : 'E2E_new_depot',
     is_warehouse : 0
   };
 
-  var updateDepot = {
+  const updateDepot = {
     text : 'E2E_updated_depot',
     is_warehouse : 1
   };
 
-  /** navigate to the depots management module */
-  beforeEach(function () {
-    browser.get(PATH);
-  });
-
   it('successfully creates a new depot', function () {
-    FormUtils.buttons.create();
-    FormUtils.input('DepotCtrl.depot.text', depot.text);
-    FormUtils.buttons.submit();
-    FormUtils.exists(by.id('create_success'), true);
+    FU.buttons.create();
+    FU.input('DepotCtrl.depot.text', depot.text);
+    FU.buttons.submit();
+    FU.exists(by.id('create_success'), true);
   });
 
   it('successfully edits a depot', function () {
-    element(by.name('depot-' + depot.text )).click();
-    FormUtils.input('DepotCtrl.depot.text', updateDepot.text);
+    element(by.name('depot-' + depot.text)).click();
+    FU.input('DepotCtrl.depot.text', updateDepot.text);
     element(by.model('DepotCtrl.depot.is_warehouse')).click();
-    FormUtils.buttons.submit();
-    FormUtils.exists(by.id('update_success'), true);
+    FU.buttons.submit();
+    FU.exists(by.id('update_success'), true);
   });
 
-  it('Dont create when incorrect depot name', function () {
-    FormUtils.buttons.create();
-    FormUtils.input('DepotCtrl.depot.text', '');
-    FormUtils.buttons.submit();
-    FormUtils.exists(by.id('create_success'), false);
+  it('don\'t create when incorrect depot name', function () {
+    FU.buttons.create();
+    FU.input('DepotCtrl.depot.text', '');
+    FU.buttons.submit();
+    FU.exists(by.id('create_success'), false);
   });
 
   it('successfully delete a depot', function () {
-    element(by.name('delete-' + updateDepot.text )).click();
-    FormUtils.buttons.submit();
-    FormUtils.exists(by.id('delete_success'), true);
+    element(by.name('delete-' + updateDepot.text)).click();
+    FU.buttons.submit();
+    FU.exists(by.id('delete_success'), true);
   });
-
 });

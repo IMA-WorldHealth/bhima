@@ -1,66 +1,49 @@
-/* jshint expr:true */
 /* global element, by, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-var components = require('../shared/components');
-
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('Employees Module', function () {
   'use strict';
 
-  var path = '#/employees';
+  const path = '#/employees';
+  before(() => browser.get(path));
 
-  var employee = {
-      code : 'HBB80',
-      prenom : 'Sherlock',
-      name : 'Holms',
-      postnom : 'Doyle',
-      sexe : 'M',
-      dob : new Date('1960-06-30'),
-      date_embauche : new Date('1997-05-17'),
-      nb_spouse : 1,
-      nb_enfant : 2,
-      bank : 'BIAC',
-      bank_account : '00-99-88-77',
-      email : 'me@info.com',
-      adresse : '221B Baker Street'
+  const employee = {
+    code : 'HBB80',
+    prenom : 'Sherlock',
+    name : 'Holmes',
+    postnom : 'Doyle',
+    sexe : 'M',
+    dob : new Date('1960-06-30'),
+    date_embauche : new Date('1997-05-17'),
+    nb_spouse : 1,
+    nb_enfant : 2,
+    bank : 'BIAC',
+    bank_account : '00-99-88-77',
+    email : 'me@info.com',
+    adresse : '221B Baker Street'
   };
 
-  var defaultEmployee = 2;
-  var employeeRank = helpers.random(defaultEmployee);
-
-  /** locations to be used in the patient select */
-  /** FIX ME : we should remember to move these locations into a helper function */
-  var locations = [
-   'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
-   'f6fc7469-7e58-45cb-b87c-f08af93edade', // Bas Congo,
-   '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', // Tshikapa,
-   '1f162a10-9f67-4788-9eff-c1fea42fcc9b'  // kele
-  ];
-
-
-  // navigate to the employee module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
+  const defaultEmployee = 2;
+  const employeeRank = helpers.random(defaultEmployee);
 
   it('successfully creates a new employee', function () {
 
-    // swtich to the create form
+    // switch to the create form
     FU.buttons.create();
     FU.input('EmployeeCtrl.employee.prenom', employee.prenom);
     FU.input('EmployeeCtrl.employee.name', employee.name);
     FU.input('EmployeeCtrl.employee.postnom', employee.postnom);
 
-    // select the properdate
+    // select the proper date
     components.dateEditor.set(employee.dob, 'employee-dob');
 
-    // select a Sexe
+    // select a sex
     FU.select('EmployeeCtrl.employee.sexe')
       .enabled()
       .first()
@@ -68,7 +51,7 @@ describe('Employees Module', function () {
     FU.input('EmployeeCtrl.employee.nb_spouse', employee.nb_spouse);
     FU.input('EmployeeCtrl.employee.nb_enfant', employee.nb_enfant);
 
-    // select the properdate
+    // select the proper date
     components.dateEditor.set(employee.date_embauche, 'employee-date-hired');
 
     FU.input('EmployeeCtrl.employee.code', employee.code);
@@ -104,7 +87,7 @@ describe('Employees Module', function () {
     FU.input('EmployeeCtrl.employee.adresse', employee.adresse);
 
     // select the locations specified
-    components.locationSelect.set(locations);
+    components.locationSelect.set(helpers.data.locations);
 
     FU.input('EmployeeCtrl.employee.bank', employee.bank);
     FU.input('EmployeeCtrl.employee.bank_account', employee.bank_account);
@@ -116,9 +99,7 @@ describe('Employees Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-
   it('successfully edits an employee', function () {
-
     element(by.id('employee-upd-' + employeeRank )).click();
 
     // modify the employee name
@@ -141,14 +122,13 @@ describe('Employees Module', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-
   it('correctly blocks invalid form submission with relevant error classes', function () {
 
     // switch to the create form
     element(by.id('create')).click();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-employee')).click();
 

@@ -9,7 +9,7 @@ const FU = require('../shared/FormUtils');
 
 describe('Cashbox Module', function () {
 
-  const path = '#/cashboxes';
+  before(() => browser.get('#/cashboxes'));
 
   const cashbox = {
     label:    'Test Principal Cashbox',
@@ -22,11 +22,6 @@ describe('Cashbox Module', function () {
       .$$('a')
       .click();
   }
-
-  // navigate to the cashbox module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
 
   it('successfully creates a new cashbox', function () {
 

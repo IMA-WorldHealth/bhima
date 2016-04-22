@@ -1,61 +1,52 @@
-/* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, inject, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('Locations/Villages Management', function () {
+describe('Villages Management', function () {
   'use strict';
 
-  var path = '#/locations/village';
+  const path = '#/locations/village';
+  before(() => browser.get(path));
 
-  var village = {
+  const village = {
     name : 'A Village for Test'
   };
 
-  var locations = {
+  const locations = {
     country   : 'République Démocratique du Congo',
     province  : 'Kasai Occidental',
-    sector    : 'Kananga' 
+    sector    : 'Kananga'
   };
 
-  var locationsUpdate = {
+  const locationsUpdate = {
     country   : 'République Démocratique du Congo',
     province  : 'Bas Congo',
-    sector    : 'Kimvula' 
+    sector    : 'Kimvula'
   };
 
+  const defaultVillage = 201;
+  const villageRank = helpers.random(defaultVillage);
 
-  var defaultVillage  = 201;
-
-  var villageRank   = helpers.random(defaultVillage);  
-
-  // navigate to the employee module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
-
-  it('successfully creates a new Village', function () {
-    // swtich to the create form
+  it('successfully creates a new village', function () {
+    // switch to the create form
     FU.buttons.create();
 
-    // select an Country
-    element(by.model('VillageCtrl.village.country_uuid')).element(by.cssContainingText('option', locations.country)).click();      
+    // select an country
+    element(by.model('VillageCtrl.village.country_uuid')).element(by.cssContainingText('option', locations.country)).click();
 
-    // select an Province
+    // select an province
     element(by.model('VillageCtrl.village.province_uuid')).element(by.cssContainingText('option', locations.province)).click();
 
-    // select an Sector
+    // select an sector
     element(by.model('VillageCtrl.village.sector_uuid')).element(by.cssContainingText('option', locations.sector)).click();
 
-    // Set village name
+    // set village name
     FU.input('VillageCtrl.village.name', village.name);
-  
+
     // submit the page to the server
     FU.buttons.submit();
 
@@ -63,20 +54,19 @@ describe('Locations/Villages Management', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-
-  it('successfully edits a Village ', function () {
+  it('successfully edits a village', function () {
     element(by.id('village-' + villageRank )).click();
 
-    // Update a Country
-    element(by.model('VillageCtrl.village.country_uuid')).element(by.cssContainingText('option', locationsUpdate.country)).click();      
+    // update a country
+    element(by.model('VillageCtrl.village.country_uuid')).element(by.cssContainingText('option', locationsUpdate.country)).click();
 
-    // Update an Province
+    // update an province
     element(by.model('VillageCtrl.village.province_uuid')).element(by.cssContainingText('option', locationsUpdate.province)).click();
 
-    // Update an Sector
+    // update an sector
     element(by.model('VillageCtrl.village.sector_uuid')).element(by.cssContainingText('option', locationsUpdate.sector)).click();
 
-    // modify the Village Name
+    // modify the village name
     FU.input('VillageCtrl.village.name', 'Village Update');
 
     element(by.id('change_village')).click();
@@ -85,13 +75,12 @@ describe('Locations/Villages Management', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-
   it('correctly blocks invalid form submission with relevant error classes', function () {
     // switch to the create form
     element(by.id('create')).click();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     // submit the page to the server
     FU.buttons.submit();
@@ -102,5 +91,4 @@ describe('Locations/Villages Management', function () {
     FU.validation.error('VillageCtrl.village.sector_uuid');
     FU.validation.error('VillageCtrl.village.name');
   });
-
 });
