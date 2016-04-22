@@ -13,9 +13,9 @@ exports.list = function list(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT c.id, c.name, c.note, c.format_key, ' +
-      'c.symbol, c.min_monentary_unit ' +
-    'FROM currency AS c;';
+    `SELECT c.id, c.name, c.note, c.format_key,
+      c.symbol, c.min_monentary_unit
+    FROM currency AS c;`;
 
   db.exec(sql)
   .then(function (rows) {
@@ -29,10 +29,10 @@ exports.list = function list(req, res, next) {
 exports.detail = function detail(req, res, next) {
 
   var sql =
-    'SELECT c.id, c.name, c.note, c.format_key, ' +
-      'c.symbol, c.min_monentary_unit ' +
-    'FROM currency AS c ' +
-    'WHERE c.id = ?;';
+    `SELECT c.id, c.name, c.note, c.format_key,
+      c.symbol, c.min_monentary_unit
+    FROM currency AS c
+    WHERE c.id = ?;`;
 
   db.exec(sql, [ req.params.id ])
   .then(function (rows) {

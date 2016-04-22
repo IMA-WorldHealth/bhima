@@ -94,21 +94,21 @@ exports.getCashBoxHistory = function (req, res, next) {
     // check if we are including the posting journal or not
     if (req.query.hasPostingJournal) {
       sql =
-        'SELECT COUNT(trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
-          'SUM(debit_equiv - credit_equiv) AS balance, trans_date, account_id ' +
-        'FROM (' +
-          'SELECT trans_id, account_id, trans_date, debit_equiv, credit_equiv ' +
-          'FROM posting_journal ' +
-          'UNION SELECT trans_id, account_id, trans_date, debit_equiv, credit_equiv ' +
-          'FROM general_ledger' +
-        ')c ' +
-        'WHERE account_id IN (?) ';
+        `SELECT COUNT(trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
+          SUM(debit_equiv - credit_equiv) AS balance, trans_date, account_id 
+        FROM (
+          SELECT trans_id, account_id, trans_date, debit_equiv, credit_equiv
+          FROM posting_journal
+          UNION SELECT trans_id, account_id, trans_date, debit_equiv, credit_equiv
+          FROM general_ledger
+        )c
+        WHERE account_id IN (?)`;
     } else {
       sql =
-        'SELECT COUNT(trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
-          'SUM(debit_equiv - credit_equiv) AS balance, trans_date, account_id ' +
-        'FROM general_ledger ' +
-        'WHERE account_id IN (?) ';
+        `SELECT COUNT(trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, 
+         SUM(debit_equiv - credit_equiv) AS balance, trans_date, account_id 
+        FROM general_ledger
+        WHERE account_id IN (?)`;
     }
 
     // now we tackle the grouping using MySQL's Date/Time functions
@@ -148,16 +148,16 @@ exports.getTopDebtors = function (req, res, next) {
 
   // pull in the debtors owing the most, group names, and balancek
   sql =
-    'SELECT journal.deb_cred_uuid AS uuid, journal.balance, dg.name AS debtorGroupName, d.text AS debtorText ' +
-    'FROM (' +
-      'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM posting_journal WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
-      'UNION ' +
-      'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
-    ') AS journal JOIN debtor AS d JOIN debtor_group AS dg ON ' +
-      'd.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid ' +
-    'WHERE balance <> 0 ' +
-    'ORDER BY balance DESC ' +
-    'LIMIT ?;';
+    `SELECT journal.deb_cred_uuid AS uuid, journal.balance, dg.name AS debtorGroupName, d.text AS debtorText
+    FROM (
+      SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM posting_journal WHERE deb_cred_type = 'D' GROUP BY deb_cred_uuid
+      UNION
+      SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger WHERE deb_cred_type = 'D' GROUP BY deb_cred_uuid
+    ) AS journal JOIN debtor AS d JOIN debtor_group AS dg ON
+      d.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid
+    WHERE balance <> 0
+    ORDER BY balance DESC
+    LIMIT ?;`;
 
   // default to large number in case no limit is provided
   db.exec(sql, [isNaN(limit) ? 1000000 : limit])
@@ -184,15 +184,15 @@ exports.getTopDebtorGroups = function (req, res, next) {
 
     // find the debtor groups owing the most, group names, and balance
     sql =
-      'SELECT dg.uuid, dg.name, SUM(t.debit_equiv - t.credit_equiv) AS balance, a.number FROM (' +
-        'SELECT account_id, debit_equiv, credit_equiv FROM posting_journal WHERE account_id IN (?) ' +
-        'UNION ' +
-        'SELECT account_id, debit_equiv, credit_equiv FROM general_ledger WHERE account_id IN (?) ' +
-     ') AS t JOIN account AS a ON t.account_id = a.id ' +
-     'JOIN debtor_group AS dg ON t.account_id = dg.account_id ' +
-     'GROUP BY t.account_id ' +
-     'ORDER BY balance DESC ' +
-     'LIMIT ?;';
+      `SELECT dg.uuid, dg.name, SUM(t.debit_equiv - t.credit_equiv) AS balance, a.number FROM (
+        SELECT account_id, debit_equiv, credit_equiv FROM posting_journal WHERE account_id IN (?) 
+        UNION 
+        SELECT account_id, debit_equiv, credit_equiv FROM general_ledger WHERE account_id IN (?)
+     ) AS t JOIN account AS a ON t.account_id = a.id
+     JOIN debtor_group AS dg ON t.account_id = dg.account_id
+     GROUP BY t.account_id
+     ORDER BY balance DESC
+     LIMIT ?;`;
 
     // default to large number in case no limit is provided
     // FIXME - can we do better?

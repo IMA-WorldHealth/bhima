@@ -34,8 +34,8 @@ function list (req, res, next) {
   if (req.query.full === '1') {
 
     sql =
-      'SELECT p.id, p.text, p.project_id, p.note, pr.name, pr.abbr, pr.enterprise_id, pr.zs_id ' +
-      'FROM profit_center AS p JOIN project AS pr ON p.project_id = pr.id';
+      `SELECT p.id, p.text, p.project_id, p.note, pr.name, pr.abbr, pr.enterprise_id, pr.zs_id
+      FROM profit_center AS p JOIN project AS pr ON p.project_id = pr.id`;
   }
 
   if(req.query.available === '1') {
@@ -225,10 +225,10 @@ function getProfitValue (req, res, next){
       }
 
       sql =
-        'SELECT IFNULL(SUM(t.credit_equiv - t.debit_equiv), 0) as profit ' +
-        'FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN ' +
-        'profit_center AS pc ON gl.pc_id = pc.id WHERE gl.pc_id = ? ' + optionalCondition + ') ' +
-        'AS t';
+        `SELECT IFNULL(SUM(t.credit_equiv - t.debit_equiv), 0) as profit
+        FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN 
+        profit_center AS pc ON gl.pc_id = pc.id WHERE gl.pc_id = ? ${optionalCondition}) 
+        AS t`;
 
       return db.exec(sql, req.params.id);
     })

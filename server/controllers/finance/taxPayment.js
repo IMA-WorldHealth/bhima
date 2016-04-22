@@ -28,8 +28,8 @@ exports.submit = function (req, res, next) {
 };
 
 exports.setTaxPayment = function (req, res, next) {
-  var sql = 'UPDATE tax_paiement SET posted = 1 ' +
-            'WHERE tax_paiement.paiement_uuid=' + sanitize.escape(req.body.paiement_uuid) + ' AND tax_paiement.tax_id=' + sanitize.escape(req.body.tax_id);
+  var sql = `UPDATE tax_paiement SET posted = 1 ' +
+            WHERE tax_paiement.paiement_uuid=${sanitize.escape(req.body.paiement_uuid)} AND tax_paiement.tax_id = ${sanitize.escape(req.body.tax_id)}`;
 
   db.exec(sql)
   .then(function (result) {

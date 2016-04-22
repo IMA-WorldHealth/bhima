@@ -92,12 +92,12 @@ exports.sectors = function sectors(req, res, next) {
   // send a larger response if detailed is 1
   if (req.query.detailed === '1') {
     sql =
-      'SELECT BUID(sector.uuid) as uuid, sector.name, ' +
-        'province.name AS province_name, BUID(province.uuid) AS provinceUuid, country.name AS country_name,  ' +
-        'BUID(country.uuid) AS countryUuid ' +
-      'FROM sector JOIN province JOIN country ON ' +
-        'sector.province_uuid = province.uuid AND ' +
-        'province.country_uuid = country.uuid ';
+      `SELECT BUID(sector.uuid) as uuid, sector.name,
+        province.name AS province_name, BUID(province.uuid) AS provinceUuid, country.name AS country_name,
+        BUID(country.uuid) AS countryUuid
+      FROM sector JOIN province JOIN country ON
+        sector.province_uuid = province.uuid AND
+        province.country_uuid = country.uuid`;
 
   } else {
     sql =
@@ -140,9 +140,9 @@ exports.provinces = function provinces(req, res, next) {
   // send a larger response if detailed is 1
   if (req.query.detailed === '1') {
     sql =
-      'SELECT BUID(province.uuid) as uuid, province.name, country.name AS country_name, BUID(province.country_uuid) AS countryUuid ' +
-      'FROM province JOIN country ON ' +
-        'province.country_uuid = country.uuid ';
+      `SELECT BUID(province.uuid) as uuid, province.name, country.name AS country_name, BUID(province.country_uuid) AS countryUuid
+      FROM province JOIN country ON
+      province.country_uuid = country.uuid`;
   } else {
     sql =
       'SELECT BUID(province.uuid) as uuid, province.name FROM province ';
@@ -177,8 +177,8 @@ exports.countries = function countries(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT BUID(country.uuid) as uuid, country.name FROM country ' +
-    'ORDER BY country.name ASC;';
+    `SELECT BUID(country.uuid) as uuid, country.name FROM country
+    ORDER BY country.name ASC;`;
 
   db.exec(sql)
   .then(function (data) {
@@ -196,13 +196,13 @@ function lookupVillage(uid) {
   const bid = db.bid(uid);
 
   var sql =
-    'SELECT BUID(village.uuid) as uuid, village.name, sector.name AS sector_name, BUID(sector.uuid) AS sector_uuid, ' +
-    'province.name AS province_name, country.name AS country_name ' +
-    'FROM village JOIN sector JOIN province JOIN country ON ' +
-      'village.sector_uuid = sector.uuid AND ' +
-      'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid = country.uuid ' +
-    'WHERE village.uuid = ?;';
+    `SELECT BUID(village.uuid) as uuid, village.name, sector.name AS sector_name, BUID(sector.uuid) AS sector_uuid,
+    province.name AS province_name, country.name AS country_name
+    FROM village JOIN sector JOIN province JOIN country ON
+      village.sector_uuid = sector.uuid AND
+      sector.province_uuid = province.uuid AND
+      province.country_uuid = country.uuid
+    WHERE village.uuid = ?;`;
 
   db.exec(sql, [bid])
   .then(function (rows) {
@@ -221,12 +221,12 @@ function lookupSector(uid) {
   const bid = db.bid(uid);
 
   var sql =
-    'SELECT BUID(sector.uuid) as uuid, sector.name, ' +
-      'province.name AS province_name, country.name AS country_name ' +
-    'FROM sector JOIN province JOIN country ON ' +
-      'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid = country.uuid ' +
-    'WHERE sector.uuid = ?;';
+    `SELECT BUID(sector.uuid) as uuid, sector.name,
+      province.name AS province_name, country.name AS country_name
+    FROM sector JOIN province JOIN country ON
+      sector.province_uuid = province.uuid AND
+      province.country_uuid = country.uuid
+    WHERE sector.uuid = ?;`;
 
   db.exec(sql, [bid])
   .then(function (rows) {
@@ -244,10 +244,10 @@ function lookupProvince(uid) {
   const bid = db.bid(uid);
 
   var sql =
-    'SELECT BUID(province.uuid) as uuid, province.name, country.name AS country_name ' +
-    'FROM province JOIN country ON ' +
-      'province.country_uuid = country.uuid ' +
-    'WHERE province.uuid = ?;';
+    `SELECT BUID(province.uuid) as uuid, province.name, country.name AS country_name
+    FROM province JOIN country ON
+      province.country_uuid = country.uuid
+    WHERE province.uuid = ?;`;
 
   db.exec(sql, [bid])
   .then(function (rows) {
@@ -265,9 +265,9 @@ function lookupCountry(uid) {
   const bid = db.bid(uid);
 
   var sql =
-    'SELECT BUID(country.uuid) as uuid, country.name ' +
-    'FROM country ' +
-    'WHERE country.uuid = ?;';
+    `SELECT BUID(country.uuid) as uuid, country.name
+    FROM country
+    WHERE country.uuid = ?;`;
 
   db.exec(sql, [bid])
   .then(function (rows) {
@@ -331,13 +331,13 @@ exports.list = function list(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,' +
-      'BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid, ' +
-      'country.name AS country, BUID(country.uuid) AS countryUuid ' +
-    'FROM village, sector, province, country ' +
-    'WHERE village.sector_uuid = sector.uuid AND ' +
-      'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid = country.uuid ;';
+    `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
+      BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
+      country.name AS country, BUID(country.uuid) AS countryUuid
+    FROM village, sector, province, country
+    WHERE village.sector_uuid = sector.uuid AND
+      sector.province_uuid = province.uuid AND
+      province.country_uuid = country.uuid ;`;
 
   db.exec(sql)
   .then(function (data) {

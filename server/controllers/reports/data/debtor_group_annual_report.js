@@ -49,9 +49,9 @@ exports.compile = function (options) {
 
   // get some metadata about the fiscal year
   sql =
-    'SELECT fy.fiscal_year_txt AS label, MIN(p.period_start) AS start, MAX(p.period_stop) AS stop, fy.previous_fiscal_year ' +
-    'FROM fiscal_year AS fy JOIN period AS p ON fy.id = p.fiscal_year_id ' +
-    'WHERE fy.id = ? AND p.period_number <> 0;';
+    `SELECT fy.fiscal_year_txt AS label, MIN(p.period_start) AS start, MAX(p.period_stop) AS stop, fy.previous_fiscal_year
+    FROM fiscal_year AS fy JOIN period AS p ON fy.id = p.fiscal_year_id
+    WHERE fy.id = ? AND p.period_number <> 0;`;
 
   return db.exec(sql, [fiscalYearId])
   .then(function (rows) {
@@ -66,9 +66,9 @@ exports.compile = function (options) {
     };
 
     sql =
-      'SELECT fy.fiscal_year_txt AS label, MIN(p.period_start) AS start, MAX(p.period_stop) AS stop ' +
-      'FROM fiscal_year AS fy JOIN period AS p ON fy.id = p.fiscal_year_id ' +
-      'WHERE fy.id = ? AND p.period_number <> 0;';
+      `SELECT fy.fiscal_year_txt AS label, MIN(p.period_start) AS start, MAX(p.period_stop) AS stop
+      FROM fiscal_year AS fy JOIN period AS p ON fy.id = p.fiscal_year_id
+      WHERE fy.id = ? AND p.period_number <> 0;`;
 
     return db.exec(sql, [year.previous_fiscal_year]);
   })
@@ -86,13 +86,13 @@ exports.compile = function (options) {
     // get the opening balances for the year by summing all periods less than
     // the start of the first one.
     sql =
-      'SELECT account.id, account.number, dg.name, ' +
-        'IFNULL(SUM(pt.debit), 0) AS debit, IFNULL(SUM(pt.credit), 0) AS credit ' +
-      'FROM debtor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
-      'JOIN account ON account.id = dg.account_id ' +
-      'JOIN period AS p ON pt.period_id = p.id ' +
-      'WHERE p.period_stop <= DATE(?) ' +
-      'GROUP BY account.id;';
+      `SELECT account.id, account.number, dg.name,
+        IFNULL(SUM(pt.debit), 0) AS debit, IFNULL(SUM(pt.credit), 0) AS credit
+      FROM debtor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id
+      JOIN account ON account.id = dg.account_id
+      JOIN period AS p ON pt.period_id = p.id
+      WHERE p.period_stop <= DATE(?)
+      GROUP BY account.id;`;
 
     return db.exec(sql, [context.meta.startDate]);
   })
@@ -115,13 +115,13 @@ exports.compile = function (options) {
 
     // get the debits and credits for the entire year
     sql =
-      'SELECT account.id, account.number, dg.name, ' +
-        'IFNULL(SUM(pt.debit), 0) AS debit, IFNULL(SUM(pt.credit), 0) AS credit ' +
-      'FROM debtor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
-      'JOIN account ON account.id = dg.account_id ' +
-      'JOIN period AS p ON pt.period_id = p.id ' +
-      'WHERE p.fiscal_year_id = ? ' +
-      'GROUP BY account.id;';
+      `SELECT account.id, account.number, dg.name,
+        IFNULL(SUM(pt.debit), 0) AS debit, IFNULL(SUM(pt.credit), 0) AS credit
+      FROM debtor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id
+      JOIN account ON account.id = dg.account_id
+      JOIN period AS p ON pt.period_id = p.id
+      WHERE p.fiscal_year_id = ?
+      GROUP BY account.id;`;
 
     return db.exec(sql, [fiscalYearId]);
   })
@@ -146,13 +146,13 @@ exports.compile = function (options) {
 
     // get the ending balance (movements + beginning balances)
     sql =
-      'SELECT account.id, account.number, dg.name, ' +
-        'SUM(IFNULL(pt.debit, 0) - IFNULL(pt.credit, 0)) AS balance ' +
-      'FROM debtor_group AS dg JOIN account ON account.id = dg.account_id ' +
-      'LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
-      'JOIN period AS p ON pt.period_id = p.id ' +
-      'WHERE p.period_stop <= DATE(?) ' +
-      'GROUP BY account.id;';
+      `SELECT account.id, account.number, dg.name,
+        SUM(IFNULL(pt.debit, 0) - IFNULL(pt.credit, 0)) AS balance
+      FROM debtor_group AS dg JOIN account ON account.id = dg.account_id
+      LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id
+      JOIN period AS p ON pt.period_id = p.id
+      WHERE p.period_stop <= DATE(?)
+      GROUP BY account.id;`;
 
     return db.exec(sql, [context.meta.stopDate]);
   })

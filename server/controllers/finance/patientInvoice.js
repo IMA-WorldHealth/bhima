@@ -43,11 +43,11 @@ function list(req, res, next) {
   var saleListQuery;
 
   saleListQuery =
-    'SELECT CONCAT(project.abbr, sale.reference) AS reference, BUID(sale.uuid) as uuid, cost,' +
-      'BUID(sale.debtor_uuid) as debtor_uuid, user_id, date, is_distributable ' +
-    'FROM sale ' +
-      'LEFT JOIN patient ON sale.debtor_uuid = patient.debtor_uuid ' +
-      'JOIN project ON sale.project_id = project.id;';
+    `SELECT CONCAT(project.abbr, sale.reference) AS reference, BUID(sale.uuid) as uuid, cost,
+      BUID(sale.debtor_uuid) as debtor_uuid, user_id, date, is_distributable
+    FROM sale
+      LEFT JOIN patient ON sale.debtor_uuid = patient.debtor_uuid
+      JOIN project ON sale.project_id = project.id;`;
 
   db.exec(saleListQuery)
     .then(function (rows) {
@@ -71,20 +71,20 @@ function lookupSale(invoiceUuid) {
   var buid = db.bid(invoiceUuid);
 
   var saleDetailQuery =
-    'SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
-      'BUID(sale.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name, ' +
-      'BUID(patient.uuid) as patient_uuid, user_id, discount, date, sale.is_distributable ' +
-    'FROM sale ' +
-    'LEFT JOIN patient ON patient.debtor_uuid = sale.debtor_uuid ' +
-    'JOIN project ON project.id = sale.project_id ' +
-    'WHERE sale.uuid = ?';
+    `SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost,
+      BUID(sale.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,
+      BUID(patient.uuid) as patient_uuid, user_id, discount, date, sale.is_distributable
+    FROM sale
+    LEFT JOIN patient ON patient.debtor_uuid = sale.debtor_uuid
+    JOIN project ON project.id = sale.project_id
+    WHERE sale.uuid = ?`;
 
   var saleItemsQuery =
-    'SELECT BUID(sale_item.uuid) as uuid, sale_item.quantity, sale_item.inventory_price, ' +
-      'sale_item.transaction_price, inventory.code, inventory.text, inventory.consumable ' +
-    'FROM sale_item ' +
-    'LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid ' +
-    'WHERE sale_uuid = ?';
+    `SELECT BUID(sale_item.uuid) as uuid, sale_item.quantity, sale_item.inventory_price,
+      sale_item.transaction_price, inventory.code, inventory.text, inventory.consumable
+    FROM sale_item
+    LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid
+    WHERE sale_uuid = ?`;
 
   return db.exec(saleDetailQuery, [buid])
     .then(function (rows) {
@@ -177,8 +177,8 @@ function create(req, res, next) {
     'INSERT INTO sale SET ?';
 
   insertSaleItemQuery =
-    'INSERT INTO sale_item (uuid, inventory_uuid, quantity, ' +
-        'transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?';
+    `INSERT INTO sale_item (uuid, inventory_uuid, quantity, 
+        transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?`;
 
   transaction = db.transaction();
 
@@ -231,11 +231,11 @@ function search(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT BUID(sale.uuid) as uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference, ' +
-      'sale.cost, BUID(sale.debtor_uuid) as debtor_uuid, sale.user_id, sale.discount, ' +
-      'sale.date, sale.is_distributable ' +
-    'FROM sale JOIN project ON project.id = sale.project_id ' +
-    'WHERE ';
+    `SELECT BUID(sale.uuid) as uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference,
+      sale.cost, BUID(sale.debtor_uuid) as debtor_uuid, sale.user_id, sale.discount,
+      sale.date, sale.is_distributable
+    FROM sale JOIN project ON project.id = sale.project_id
+    WHERE `;
 
   var conditions = [];
 
@@ -287,10 +287,10 @@ function reference(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT BUID(s.uuid) as uuid FROM (' +
-      'SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference ' +
-      'FROM sale JOIN project ON sale.project_id = project.id ' +
-    ')s WHERE s.reference = ?;';
+    `SELECT BUID(s.uuid) as uuid FROM (
+      SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference
+      FROM sale JOIN project ON sale.project_id = project.id
+    )s WHERE s.reference = ?;`;
 
   db.exec(sql, [ req.params.reference ])
   .then(function (rows) {

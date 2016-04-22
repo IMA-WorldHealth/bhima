@@ -41,10 +41,10 @@ exports.compile = function (options) {
   }
 
   var sql =
-    'SELECT * FROM sale_item LEFT JOIN sale ON sale_item.sale_uuid = sale.uuid ' +
-    'LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid ' +
-    'LEFT JOIN project ON sale.project_id = project.id WHERE sale.uuid = ? ' +
-    'ORDER BY inventory.code;';
+    `SELECT * FROM sale_item LEFT JOIN sale ON sale_item.sale_uuid = sale.uuid
+    LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid
+    LEFT JOIN project ON sale.project_id = project.id WHERE sale.uuid = ?
+    ORDER BY inventory.code;`;
 
   return db.exec(sql, [saleId])
   .then(function (rows) {
@@ -63,11 +63,11 @@ exports.compile = function (options) {
     projectId = context.invoice.items[0].project_id;
 
     sql =
-      'SELECT project.id, enterprise.id AS enterprise_id, enterprise.name, project.abbr, ' +
-        'enterprise.abbr AS enterpriseAbbr, enterprise.phone, enterprise.email, enterprise.location_id, ' +
-        'enterprise.po_box ' +
-      'FROM project JOIN enterprise ON project.enterprise_id = enterprise.id ' +
-      'WHERE project.id = ?';
+      `SELECT project.id, enterprise.id AS enterprise_id, enterprise.name, project.abbr,
+        enterprise.abbr AS enterpriseAbbr, enterprise.phone, enterprise.email, enterprise.location_id,
+        enterprise.po_box
+      FROM project JOIN enterprise ON project.enterprise_id = enterprise.id
+      WHERE project.id = ?`;
 
     // Query for enterprise information
     return db.exec(sql, [projectId]);
@@ -81,14 +81,14 @@ exports.compile = function (options) {
     context.invoice.date = fmtDate(initialLineItem.invoice_date);
 
     sql =
-      'SELECT patient.hospital_no, patient.sex, CONCAT(patient.first_name, " ", patient.middle_name, " ", patient.last_name) AS patientName, ' +
-        'patient.profession, CONCAT(project.abbr, patient.reference) AS code, debtor_group.name AS groupName, patient.registration_date, ' +
-        'patient.dob ' +
-      'FROM debtor JOIN patient JOIN debtor_group JOIN project ON ' +
-        'debtor.uuid = patient.debtor_uuid AND ' +
-        'debtor_group.uuid = debtor.group_uuid AND ' +
-        'project.id = patient.project_id ' +
-      'WHERE debtor.uuid = ?';
+      `SELECT patient.hospital_no, patient.sex, CONCAT(patient.first_name, " ", patient.middle_name, " ", patient.last_name) AS patientName,
+        patient.profession, CONCAT(project.abbr, patient.reference) AS code, debtor_group.name AS groupName, patient.registration_date,
+        patient.dob
+      FROM debtor JOIN patient JOIN debtor_group JOIN project ON
+        debtor.uuid = patient.debtor_uuid AND
+        debtor_group.uuid = debtor.group_uuid AND
+        project.id = patient.project_id
+      WHERE debtor.uuid = ?`;
 
     // Query for recipient information
     return db.exec(sql, [initialLineItem.debtor_uuid]);

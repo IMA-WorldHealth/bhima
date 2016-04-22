@@ -28,16 +28,16 @@ function getStockLevels(options) {
   //
   // TODO - is this optimal?
   sql =
-    'SELECT i.uuid AS uuid, IFNULL(t.quantity, 0) AS quantity ' +
-    'FROM inventory AS i LEFT JOIN (' +
-      'SELECT s.inventory_uuid AS uuid, ' +
-        'SUM(s.quantity - c.quantity) AS quantity ' +
-      'FROM stock AS s LEFT JOIN consumption AS c ON ' +
-        's.tracking_number = c.tracking_number ' +
-      'WHERE c.canceled <> 1 ' +
-      'GROUP BY s.inventory_uuid ' +
-    ') AS t ON i.uuid = t.uuid ' +
-    'GROUP BY i.uuid;';
+    `SELECT i.uuid AS uuid, IFNULL(t.quantity, 0) AS quantity
+    FROM inventory AS i LEFT JOIN (
+      SELECT s.inventory_uuid AS uuid,
+        SUM(s.quantity - c.quantity) AS quantity
+      FROM stock AS s LEFT JOIN consumption AS c ON
+        s.tracking_number = c.tracking_number
+      WHERE c.canceled <> 1
+      GROUP BY s.inventory_uuid
+    ) AS t ON i.uuid = t.uuid
+    GROUP BY i.uuid;`;
 
   return db.exec(sql);
 }
@@ -55,11 +55,11 @@ function getStockLevelsById(uuid, options) {
   var sql;
 
   sql =
-    'SELECT s.inventory_uuid, SUM(s.quantity - IFNULL(c.quantity, 0)) AS quantity ' +
-    'FROM stock AS s LEFT JOIN consumption AS c ON ' +
-      's.tracking_number = c.tracking_number ' +
-    'WHERE s.inventory_uuid = ? ' +
-    'GROUP BY s.inventory_uuid;';
+    `SELECT s.inventory_uuid, SUM(s.quantity - IFNULL(c.quantity, 0)) AS quantity
+    FROM stock AS s LEFT JOIN consumption AS c ON
+      s.tracking_number = c.tracking_number
+    WHERE s.inventory_uuid = ?
+    GROUP BY s.inventory_uuid;`;
 
   return db.exec(sql, [uuid]);
 }
@@ -81,12 +81,12 @@ function getAverageStockLevels(options) {
   // TODO - figure out dates
 
   sql =
-    'SELECT s.inventory_uuid AS uuid, ' +
-      'SUM(s.quantity - c.quantity) AS quantity ' +
-    'FROM stock AS s LEFT JOIN consumption AS c ON ' +
-      's.tracking_number = c.tracking_number ' +
-    'WHERE c.canceled <> 1 AND s.inventory_uuid = ? ' +
-    'GROUP BY s.inventory_uuid;';
+    `SELECT s.inventory_uuid AS uuid, 
+      SUM(s.quantity - c.quantity) AS quantity
+    FROM stock AS s LEFT JOIN consumption AS c ON
+      s.tracking_number = c.tracking_number
+    WHERE c.canceled <> 1 AND s.inventory_uuid = ?
+    GROUP BY s.inventory_uuid;`;
 
   return db.exec(sql, []);
 }

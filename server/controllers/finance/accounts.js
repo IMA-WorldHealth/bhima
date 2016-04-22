@@ -74,16 +74,16 @@ function list (req, res, next) {
   if (req.query.detailed === '1') {
 
     sql =
-      'SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset, ' +
-      'a.reference_id, a.is_brut_link, a.is_charge, a.number, ' +
-      'a.label, a.parent, a.type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.type_id = at.id';
+      `SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset,
+      a.reference_id, a.is_brut_link, a.is_charge, a.number,
+      a.label, a.parent, a.type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.type_id = at.id`;
   }
 
   if (req.query.locked === '0') {
-    sql+=' WHERE a.locked = 0';
+    sql+=` WHERE a.locked = 0`;
   }
 
-  sql += ' ORDER BY a.number;';
+  sql += ` ORDER BY a.number;`;
 
   db.exec(sql)
   .then(function (rows) {
@@ -115,9 +115,9 @@ function getBalance (req, res, next){
     params.push(accountId);
   }
 
-  var accountSoldQuery = 'SELECT t.account_id, IFNULL(SUM(t.debit), 0) AS debit, IFNULL(SUM(t.credit), 0) AS credit, IFNULL(t.balance, 0) AS balance FROM' +
-    ' (SELECT gl.account_id, IFNULL(SUM(gl.debit), 0) AS debit, IFNULL(SUM(gl.credit), 0) AS credit, IFNULL((gl.debit - gl.credit), 0) AS balance FROM' +
-    ' general_ledger AS gl WHERE gl.account_id = ? GROUP BY gl.account_id' + optional + ' ) AS t GROUP BY t.account_id';
+  var accountSoldQuery = `SELECT t.account_id, IFNULL(SUM(t.debit), 0) AS debit, IFNULL(SUM(t.credit), 0) AS credit, IFNULL(t.balance, 0) AS balance FROM
+    (SELECT gl.account_id, IFNULL(SUM(gl.debit), 0) AS debit, IFNULL(SUM(gl.credit), 0) AS credit, IFNULL((gl.debit - gl.credit), 0) AS balance FROM
+    general_ledger AS gl WHERE gl.account_id = ? GROUP BY gl.account_id ${optional} ) AS t GROUP BY t.account_id`;
 
   lookupAccount(accountId)
     .then(function (account) {
@@ -139,9 +139,9 @@ function lookupAccount(id) {
   'use strict';
 
   var sql =
-    'SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset, ' +
-    'a.reference_id, a.is_brut_link, a.is_charge, a.number, ' +
-    'a.label, a.parent, a.type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.type_id = at.id WHERE a.id = ?';
+    `SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created, a.classe, a.is_asset,
+    a.reference_id, a.is_brut_link, a.is_charge, a.number,
+    a.label, a.parent, a.type_id, a.is_title, at.type FROM account AS a JOIN account_type AS at ON a.type_id = at.id WHERE a.id = ?`;
 
   return db.exec(sql, id)
     .then(function(rows) {

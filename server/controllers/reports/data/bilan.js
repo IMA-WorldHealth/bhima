@@ -15,16 +15,15 @@ exports.compile = function compile(options) {
   var deferred = q.defer(), context = {}, infos = {}, assetData = {}, passiveData = {};
   var bilanDate = new Date();
   var sql =
-    'SELECT `acc`.`id` AS `accountId`, `acc`.`label` AS `accounTxt`, `acc`.`number` AS `accountNumber`, ' +
-    '`acc`.`is_brut_link` AS `accountIsBrutLink`, `ref`.`id` AS `referenceId`, `ref`.`ref` AS `referenceAbbr`, `ref`.`text` AS `referenceLabel`, ' +
-    '`ref`.`position` AS `referencePosition`, `gref`.`id` AS `greferenceId`, `ref`.`is_report` AS `referenceIsReport`, ' +
-    '`gref`.`reference_group` AS `greferenceAbbr`, `gref`.`text` AS `greferenceLabel`, `gref`.`position` AS `greferencePosition`, ' +
-    '`sbl`.`id` AS `sectionBilanId`, `sbl`.`text` AS `sectionBilanLabel`, `sbl`.`is_actif` AS `sectionBilanIsActif`, ' +
-    '`sbl`.`position` AS `sectionBilanPosition`, SUM(`gld`.`debit_equiv`) AS `generalLegderDebit`, SUM(`gld`.`credit_equiv`) AS `generalLegderCredit` ' +
-    'FROM `section_bilan` `sbl` JOIN `reference_group` `gref` ON `sbl`.`id` = `gref`.`section_bilan_id` JOIN `reference` `ref` ON `gref`.`id` = `ref`.`reference_group_id` ' +
-    'JOIN `account` `acc` ON `acc`.`reference_id` = `ref`.`id` JOIN `general_ledger` `gld` ON `gld`.`account_id` = `acc`.`id` WHERE `gld`.`trans_date`<= (SELECT MAX(`period_stop`) ' +
-    'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? GROUP BY `gld`.`account_id` ORDER BY `sbl`.`position`, `gref`.`position`, `ref`.`position` DESC;';
-
+    `SELECT acc.id AS accountId, acc.label AS accounTxt, acc.number AS accountNumber,
+    acc.is_brut_link AS accountIsBrutLink, ref.id AS referenceId, ref.ref AS referenceAbbr, ref.text AS referenceLabel,
+    ref.position AS referencePosition, gref.id AS greferenceId, ref.is_report AS referenceIsReport,
+    gref.reference_group AS greferenceAbbr, gref.text AS greferenceLabel, gref.position AS greferencePosition,
+    sbl.id AS sectionBilanId, sbl.text AS sectionBilanLabel, sbl.is_actif AS sectionBilanIsActif,
+    sbl.position AS sectionBilanPosition, SUM(gld.debit_equiv) AS generalLegderDebit, SUM(gld.credit_equiv) AS generalLegderCredit
+    FROM section_bilan sbl JOIN reference_group gref ON sbl.id = gref.section_bilan_id JOIN reference ref ON gref.id = ref.reference_group_id
+    JOIN account acc ON acc.reference_id = ref.id JOIN general_ledger gld ON gld.account_id = acc.id WHERE gld.trans_date<= (SELECT MAX(period_stop)
+    FROM period WHERE period.fiscal_year_id=?) AND acc.is_ohada=? GROUP BY gld.account_id ORDER BY sbl.position, gref.position, ref.position DESC;`;
   //populating context object
   context.reportDate = bilanDate.toDateString();
   context.options = options;
