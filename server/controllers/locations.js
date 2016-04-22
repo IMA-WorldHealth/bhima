@@ -106,8 +106,8 @@ exports.sectors = function sectors(req, res, next) {
 
 
   sql += (req.query.province) ?
-    'WHERE sector.province_uuid = ? ORDER BY sector.name ASC;' :
-    'ORDER BY sector.name ASC;';
+    ' WHERE sector.province_uuid = ? ORDER BY sector.name ASC;' :
+    ' ORDER BY sector.name ASC;';
 
   if (req.query.province) {
     req.query.province = db.bid(req.query.province);
@@ -150,8 +150,8 @@ exports.provinces = function provinces(req, res, next) {
 
 
   sql += (req.query.country) ?
-    'WHERE province.country_uuid = ? ORDER BY province.name ASC;' :
-    'ORDER BY province.name ASC;';
+    ' WHERE province.country_uuid = ? ORDER BY province.name ASC;' :
+    ' ORDER BY province.name ASC;';
 
   if (req.query.country) {
     req.query.country = db.bid(req.query.country);
