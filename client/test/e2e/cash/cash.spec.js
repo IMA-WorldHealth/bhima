@@ -13,16 +13,13 @@ const FU = require('../shared/FormUtils');
 
 describe('Cash Payments Module', function () {
 
-  /** @const */
   const path = '#/cash';
-
-  /** @const cashboxes defined in models/test/data.sql */
-  var cashboxA = {
+  const cashboxA = {
     id: 1,
     text : 'Test Primary Cashbox A',
   };
 
-  var cashboxB = {
+  const cashboxB = {
     id: 2,
     text : 'Test Primary Cashbox B',
   };
@@ -58,9 +55,6 @@ describe('Cash Payments Module', function () {
       // implicitly choose cashbox A by navigating to it directly
       browser.get(target);
 
-      // make sure all $http/$timeout requests clear before moving forward
-      browser.waitForAngular();
-
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
 
       // attempt to return to /cash manually
@@ -78,9 +72,6 @@ describe('Cash Payments Module', function () {
       // emulate a selection by simply going to the direct URL
       // this should set the cashbox ID in localstorage
       browser.get(target);
-
-      // make sure all $http/$timeout requests clear before moving forward
-      browser.waitForAngular();
 
       // confirm that we actually go to the page
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
@@ -109,16 +100,12 @@ describe('Cash Payments Module', function () {
       var backBtn = element(by.css('[data-change-cashbox]'));
       backBtn.click();
 
-      browser.waitForAngular();
-
       // ensure we get back to the cashbox select module
       expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
       // attempt to navigate (via the buttons) to cashboxB as our new target
       var btn = element(by.id('cashbox-'.concat(cashboxB.id)));
       btn.click();
-
-      browser.waitForAngular();
 
       // verify that we get to the cashboxB page
       expect(helpers.getCurrentPath()).to.eventually.equal(targetFinal);
