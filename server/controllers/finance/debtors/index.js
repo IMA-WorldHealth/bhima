@@ -65,9 +65,9 @@ function update(req, res, next) {
  */
 function lookupDebtor(uid) {
   var sql =
-    'SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text ' +
-    'FROM debtor ' +
-    'WHERE uuid = ?';
+    `SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text
+    FROM debtor 
+    WHERE uuid = ?`;
 
   return db.exec(sql, [uid])
   .then(function (rows) {

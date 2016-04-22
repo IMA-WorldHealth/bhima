@@ -69,13 +69,13 @@ function getItemsMetadata() {
   'use strict';
 
   var sql =
-    'SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit, ' +
-      'it.text AS type, ig.name AS groupName, i.consumable, i.stock_min, ' +
-      'i.stock_max, i.origin_stamp AS timestamp ' +
-    'FROM inventory AS i JOIN inventory_type AS it ' +
-      'JOIN inventory_unit AS iu JOIN inventory_group AS ig ON ' +
-      'i.type_id = it.id AND i.group_uuid = ig.uuid AND ' +
-      'i.unit_id = iu.id;';
+    `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
+      it.text AS type, ig.name AS groupName, i.consumable, i.stock_min,
+      i.stock_max, i.origin_stamp AS timestamp
+    FROM inventory AS i JOIN inventory_type AS it
+      JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
+      i.type_id = it.id AND i.group_uuid = ig.uuid AND
+      i.unit_id = iu.id;`;
 
   return db.exec(sql);
 }
@@ -92,14 +92,14 @@ function getItemsMetadataById(uuid) {
   'use strict';
 
   var sql =
-    'SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit, ' +
-      'it.text AS type, ig.name AS groupName, i.consumable, i.stock_min, ' +
-      'i.stock_max, i.origin_stamp AS timestamp ' +
-    'FROM inventory AS i JOIN inventory_type AS it ' +
-      'JOIN inventory_unit AS iu JOIN inventory_group AS ig ON ' +
-      'i.type_id = it.id AND i.group_uuid = ig.uuid AND ' +
-      'i.unit_id = iu.id ' +
-    'WHERE i.uuid = ?;';
+    `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
+      it.text AS type, ig.name AS groupName, i.consumable, i.stock_min,
+      i.stock_max, i.origin_stamp AS timestamp
+    FROM inventory AS i JOIN inventory_type AS it
+      JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
+      i.type_id = it.id AND i.group_uuid = ig.uuid AND
+      i.unit_id = iu.id
+    WHERE i.uuid = ?;`;
 
   return db.exec(sql, [uuid]);
 }

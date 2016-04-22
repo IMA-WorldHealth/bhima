@@ -13,9 +13,9 @@ function lookupCreditorGroup(uuid) {
   'use strict';
 
   var sql =
-    'SELECT enterprise_id, BUID(uuid) as uuid, name, account_id, locked ' +
-    'FROM creditor_group ' +
-    'WHERE creditor_group.uuid = ? ';
+    `SELECT enterprise_id, BUID(uuid) as uuid, name, account_id, locked
+    FROM creditor_group
+    WHERE creditor_group.uuid = ? `;
 
   return db.exec(sql, [uuid])
   .then(function (rows) {
@@ -36,8 +36,8 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1'){
     sql =
-      'SELECT enterprise_id, BUID(uuid) as uuid, name, account_id, locked ' +
-      'FROM creditor_group ;';
+      `SELECT enterprise_id, BUID(uuid) as uuid, name, account_id, locked
+      FROM creditor_group ;`;
   }
 
   db.exec(sql)

@@ -29,16 +29,16 @@ exports.list = function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql =
-      'SELECT BUID(uuid) as uuid, label, created_at, description ' +
-      'FROM price_list ' +
-      'WHERE enterprise_id = ? ' +
-      'ORDER BY label;';
+      `SELECT BUID(uuid) as uuid, label, created_at, description
+      FROM price_list
+      WHERE enterprise_id = ?
+      ORDER BY label;`;
   } else {
     sql =
-      'SELECT BUID(uuid) as uuid, label ' +
-      'FROM price_list ' +
-      'WHERE enterprise_id = ? ' +
-      'ORDER BY label;';
+      `SELECT BUID(uuid) as uuid, label
+      FROM price_list
+      WHERE enterprise_id = ?
+      ORDER BY label;`;
   }
 
   db.exec(sql, [req.session.enterprise.id])
@@ -69,8 +69,8 @@ function lookupPriceList(uid) {
 
   var priceList;
   var sql =
-    'SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at ' +
-    'FROM price_list WHERE uuid = ?;';
+    `SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at
+    FROM price_list WHERE uuid = ?;`;
 
   return db.exec(sql, [ uid ])
   .then(function (rows) {
@@ -83,8 +83,8 @@ function lookupPriceList(uid) {
     priceList = rows[0];
 
     sql =
-      'SELECT BUID(uuid) as uuid, BUID(inventory_uuid) as inventory_uuid, label, value, is_percentage, created_at ' +
-      'FROM price_list_item WHERE price_list_uuid = ?;';
+      `SELECT BUID(uuid) as uuid, BUID(inventory_uuid) as inventory_uuid, label, value, is_percentage, created_at
+      FROM price_list_item WHERE price_list_uuid = ?;`;
 
     return db.exec(sql, [ uid ]);
   })
@@ -191,11 +191,11 @@ exports.create = function create(req, res, next) {
   var data = req.body.list;
   var trans = db.transaction();
   var priceListSql =
-    'INSERT INTO price_list (uuid, label, description, enterprise_id) ' +
-    'VALUES (?, ?, ?, ?);';
+    `INSERT INTO price_list (uuid, label, description, enterprise_id)
+    VALUES (?, ?, ?, ?);`;
   var priceListItemSql =
-    'INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid, ' +
-    'label, value, is_percentage) VALUES ?;';
+    `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
+    label, value, is_percentage) VALUES ?;`;
 
   // generate a UUID if not provided
   data.uuid = db.bid(data.uuid || uuid.v4());
@@ -245,8 +245,8 @@ exports.update = function update(req, res, next) {
     'DELETE FROM price_list_item WHERE price_list_uuid = ?';
 
   var priceListCreateItemSql =
-    'INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid, ' +
-    'label, value, is_percentage) VALUES ?;';
+    `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
+    label, value, is_percentage) VALUES ?;`;
 
   var trans = db.transaction();
   const uid = db.bid(req.params.uuid);

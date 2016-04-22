@@ -12,9 +12,9 @@ function lookupGrade(uid) {
   'use strict';
 
   var sql =
-    'SELECT BUID(uuid) as uuid, code, text, basic_salary ' +
-    'FROM grade ' +
-    'WHERE grade.uuid = ? ';
+    `SELECT BUID(uuid) as uuid, code, text, basic_salary
+    FROM grade 
+    WHERE grade.uuid = ?`;
 
   return db.exec(sql, [uid])
   .then(function (rows) {

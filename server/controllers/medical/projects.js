@@ -21,24 +21,24 @@ exports.list = function list(req, res, next) {
 
   // send a larger response if complete is 1
   if (req.query.complete === '1') {
-    sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
-      'project.zs_id, project.name, project.locked ' +
-    'FROM project;';
+    sql = `SELECT project.id, project.enterprise_id, project.abbr,
+      project.zs_id, project.name, project.locked
+    FROM project;`;
   } else {
     sql =
       'SELECT project.id, project.name FROM project;';
   }
 
   if (req.query.locked === '0') {
-    sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
-      'project.zs_id, project.name, project.locked ' +
-    'FROM project WHERE project.locked = 0;';
+    sql = `SELECT project.id, project.enterprise_id, project.abbr,
+      project.zs_id, project.name, project.locked
+    FROM project WHERE project.locked = 0;`;
   }
 
   if (req.query.locked === '1') {
-    sql = 'SELECT project.id, project.enterprise_id, project.abbr, ' +
-      'project.zs_id, project.name, project.locked ' +
-    'FROM project WHERE project.locked = 1;';
+    sql = `SELECT project.id, project.enterprise_id, project.abbr,
+      project.zs_id, project.name, project.locked
+    FROM project WHERE project.locked = 1;`;
   }
 
   if (req.query.incomplete_locked === '0'){
@@ -69,10 +69,10 @@ exports.details = function details(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT project.id, project.enterprise_id, project.abbr, ' +
-      'project.zs_id, project.name, project.locked ' +
-    'FROM project ' +
-    'WHERE project.id = ?;';
+    `SELECT project.id, project.enterprise_id, project.abbr,
+      project.zs_id, project.name, project.locked
+    FROM project
+    WHERE project.id = ?;`;
 
   db.exec(sql, [ req.params.id ])
   .then(function (rows) {
@@ -129,10 +129,10 @@ exports.update = function update(req, res, next) {
   .then(function () {
 
     sql =
-      'SELECT project.id, project.enterprise_id, project.abbr, ' +
-        'project.zs_id, project.name, project.locked ' +
-      'FROM project ' +
-      'WHERE project.id = ?;';
+      `SELECT project.id, project.enterprise_id, project.abbr,
+        project.zs_id, project.name, project.locked
+      FROM project
+      WHERE project.id = ?;`;
 
     return db.exec(sql, [req.params.id]);
   })

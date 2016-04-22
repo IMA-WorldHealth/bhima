@@ -55,8 +55,8 @@ function createDistributions(depotId, body, session) {
   // like it could/should be redesigned
 
   sql =
-    'INSERT INTO consumption (uuid, depot_uuid, date, document_id, tracking_number, quantity, unit_price) ' +
-    'VALUES (?, ?, ?, ?, ?, ?, ?);';
+    `INSERT INTO consumption (uuid, depot_uuid, date, document_id, tracking_number, quantity, unit_price)
+    VALUES (?, ?, ?, ?, ?, ?, ?);`;
 
   queries = body.data.map(function (row) {
     row.id = uuid();

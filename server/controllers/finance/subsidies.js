@@ -34,10 +34,10 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql = 
-      'SELECT subsidy.id, subsidy.account_id, subsidy.label, subsidy.description, subsidy.value, subsidy.created_at, ' +
-      'subsidy.updated_at, account.number ' +
-      'FROM subsidy ' +
-      'JOIN account ON account.id = subsidy.account_id';       
+      `SELECT subsidy.id, subsidy.account_id, subsidy.label, subsidy.description, subsidy.value, subsidy.created_at,
+      subsidy.updated_at, account.number
+      FROM subsidy
+      JOIN account ON account.id = subsidy.account_id`;       
   } else {
     sql =
       'SELECT id, label, value FROM subsidy';

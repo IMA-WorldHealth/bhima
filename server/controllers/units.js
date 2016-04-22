@@ -10,8 +10,8 @@ exports.list = function list(req, res, next) {
   'use strict';
 
   var sql = 
-    'SELECT unit.id, unit.name, unit.key, unit.description, unit.parent ' +
-    'FROM unit WHERE unit.id <> ?;';
+    `SELECT unit.id, unit.name, unit.key, unit.description, unit.parent
+    FROM unit WHERE unit.id <> ?;`;
 
   db.exec(sql, [ ROOT_NODE ])
   .then(function (rows) {

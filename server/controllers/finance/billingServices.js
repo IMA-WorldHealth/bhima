@@ -29,10 +29,10 @@ function lookupBillingService(id) {
   'use strict';
 
   var sql =
-    'SELECT bs.id, bs.account_id, bs.label, bs.description, bs.value, ' +
-      'bs.created_at, bs.updated_at, a.number ' +
-    'FROM billing_service AS bs JOIN account AS a ON bs.account_id = a.id ' +
-    'WHERE bs.id = ?;';
+    `SELECT bs.id, bs.account_id, bs.label, bs.description, bs.value,
+      bs.created_at, bs.updated_at, a.number
+    FROM billing_service AS bs JOIN account AS a ON bs.account_id = a.id
+    WHERE bs.id = ?;`;
 
   return db.exec(sql, [ id ])
   .then(function (rows) {
@@ -82,18 +82,18 @@ exports.list = function list(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT bs.id, bs.label, bs.created_at ' +
-    'FROM billing_service AS bs ' +
-    'ORDER BY bs.label;';
+    `SELECT bs.id, bs.label, bs.created_at
+    FROM billing_service AS bs
+    ORDER BY bs.label;`;
 
   // provide as more information as necessary, if the client asks for it.
   if (req.query.detailed === '1') {
     sql =
-      'SELECT bs.id, bs.label, bs.created_at, bs.updated_at, bs.account_id, ' +
-        'bs.description, bs.value, a.number ' +
-      'FROM billing_service AS bs JOIN account AS a ' +
-        'ON bs.account_id = a.id ' +
-      'ORDER BY bs.id;';
+      `SELECT bs.id, bs.label, bs.created_at, bs.updated_at, bs.account_id,
+        bs.description, bs.value, a.number
+      FROM billing_service AS bs JOIN account AS a
+        ON bs.account_id = a.id
+      ORDER BY bs.id;`;
   }
 
   db.exec(sql)
@@ -134,8 +134,8 @@ exports.create = function create(req, res, next) {
   }
 
   var sql =
-    'INSERT INTO billing_service (account_id, label, description, value) ' +
-    'VALUES (?, ?, ?, ?);';
+    `INSERT INTO billing_service (account_id, label, description, value)
+    VALUES (?, ?, ?, ?);`;
 
   db.exec(sql, [ data.account_id, data.label, data.description, data.value ])
   .then(function (results) {

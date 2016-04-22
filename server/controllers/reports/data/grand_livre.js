@@ -24,15 +24,15 @@ exports.compile = function (options) {
   // NOTE -- we expect all abbreviations to be 3 characters long.  Anything else
   // will break this query.
   sql =
-    'SELECT gl.trans_id, gl.trans_date, gl.description, ' +
-      'gl.debit_equiv, gl.credit_equiv, account.number, ' +
-      'fiscal_year.fiscal_year_txt, cost_center.text AS cc, profit_center.text AS pc ' +
-    'FROM general_ledger AS gl JOIN account ON account.id = gl.account_id ' +
-    'JOIN fiscal_year ON fiscal_year.id = gl.fiscal_year_id ' +
-    'LEFT JOIN cost_center ON cost_center.id = gl.cc_id ' +
-    'LEFT JOIN profit_center ON profit_center.id = gl.pc_id ' +
-    'WHERE gl.fiscal_year_id = ? ' +
-    'ORDER BY CAST(SUBSTRING(gl.trans_id FROM 4) AS unsigned), LEFT(gl.trans_id, 3);';
+    `SELECT gl.trans_id, gl.trans_date, gl.description,
+      gl.debit_equiv, gl.credit_equiv, account.number,
+      fiscal_year.fiscal_year_txt, cost_center.text AS cc, profit_center.text AS pc
+    FROM general_ledger AS gl JOIN account ON account.id = gl.account_id
+    JOIN fiscal_year ON fiscal_year.id = gl.fiscal_year_id
+    LEFT JOIN cost_center ON cost_center.id = gl.cc_id
+    LEFT JOIN profit_center ON profit_center.id = gl.pc_id
+    WHERE gl.fiscal_year_id = ?
+    ORDER BY CAST(SUBSTRING(gl.trans_id FROM 4) AS unsigned), LEFT(gl.trans_id, 3);`;
 
   return db.exec(sql, [fiscalYearId])
   .then(function (data) {

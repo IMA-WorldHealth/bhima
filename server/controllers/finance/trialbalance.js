@@ -77,11 +77,11 @@ function createErrorReport(code, isFatal, rows) {
 // Ensure no accounts are locked in the transactions
 function checkAccountsLocked(transactions) {
   var sql =
-    'SELECT COUNT(pj.uuid) AS count, pj.trans_id ' +
-    'FROM posting_journal AS pj LEFT JOIN account ' +
-      'ON pj.account_id = account.id ' +
-    'WHERE account.locked = 1 AND pj.trans_id IN (?) ' +
-    'GROUP BY pj.trans_id;';
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id
+    FROM posting_journal AS pj LEFT JOIN account
+      ON pj.account_id = account.id
+    WHERE account.locked = 1 AND pj.trans_id IN (?)
+    GROUP BY pj.trans_id;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -97,11 +97,11 @@ function checkAccountsLocked(transactions) {
 // make sure there are no missing accounts in the transactions
 function checkMissingAccounts(transactions) {
   var sql =
-    'SELECT COUNT(pj.uuid), pj.trans_id ' +
-    'FROM posting_journal AS pj LEFT JOIN account ON ' +
-      'pj.account_id = account.id ' +
-    'WHERE pj.trans_id IN (?) AND account.id IS NULL ' +
-    'GROUP BY pj.trans_id';
+    `SELECT COUNT(pj.uuid), pj.trans_id
+    FROM posting_journal AS pj LEFT JOIN account ON
+      pj.account_id = account.id
+    WHERE pj.trans_id IN (?) AND account.id IS NULL
+    GROUP BY pj.trans_id`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -117,11 +117,11 @@ function checkMissingAccounts(transactions) {
 // make sure dates are in their correct period
 function checkDateInPeriod(transactions) {
   var sql =
-    'SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.period_start, p.period_stop ' +
-    'FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id ' +
-    'WHERE pj.trans_date NOT BETWEEN p.period_start AND p.period_stop AND ' +
-      'pj.trans_id IN (?) ' +
-    'GROUP BY pj.trans_id;';
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.period_start, p.period_stop
+    FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id
+    WHERE pj.trans_date NOT BETWEEN p.period_start AND p.period_stop AND
+      pj.trans_id IN (?)
+    GROUP BY pj.trans_id;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -136,10 +136,10 @@ function checkDateInPeriod(transactions) {
 // make sure fiscal years and periods exist for all transactions
 function checkPeriodAndFiscalYearExists(transactions) {
   var sql =
-    'SELECT COUNT(pj.uuid) AS count, pj.trans_id ' +
-    'FROM posting_journal AS pj ' +
-    'WHERE pj.trans_id IN (?) AND (pj.period_id IS NULL OR pj.fiscal_year_id IS NULL) ' +
-    'GROUP BY pj.trans_id;';
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id
+    FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?) AND (pj.period_id IS NULL OR pj.fiscal_year_id IS NULL)
+    GROUP BY pj.trans_id;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -157,10 +157,10 @@ function checkPeriodAndFiscalYearExists(transactions) {
 function checkTransactionsBalanced(transactions) {
 
   var sql =
-    'SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance ' +
-    'FROM posting_journal AS pj ' +
-    'WHERE pj.trans_id IN (?) ' +
-    'GROUP BY trans_id HAVING balance <> 0;';
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance
+    FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?)
+    GROUP BY trans_id HAVING balance <> 0;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -177,9 +177,9 @@ function checkTransactionsBalanced(transactions) {
 function checkDebtorCreditorExists(transactions) {
 
   var sql =
-    'SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj ' +
-    'WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = \'D\' OR pj.deb_cred_type = \'C\') ' +
-    'GROUP BY trans_id HAVING deb_cred_uuid IS NULL;';
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = 'D' OR pj.deb_cred_type = 'C')
+    GROUP BY trans_id HAVING deb_cred_uuid IS NULL;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -195,9 +195,9 @@ function checkDebtorCreditorExists(transactions) {
 // issue a warning if a transaction involving a debtor/creditor does not use a doc_num
 function checkDocumentNumberExists(transactions) {
   var sql =
-    'SELECT COUNT(pj.uuid) AS count, pj.doc_num, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj ' +
-    'WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = \'D\' OR pj.deb_cred_type = \'C\') ' +
-    'GROUP BY pj.trans_id HAVING pj.doc_num IS NULL;';
+    `SELECT COUNT(pj.uuid) AS count, pj.doc_num, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = 'D' OR pj.deb_cred_type = 'C')
+    GROUP BY pj.trans_id HAVING pj.doc_num IS NULL;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -259,17 +259,17 @@ exports.postTrialBalance = function (req, res, next) {
     // attempt to calculate a summary of the before, credit, debit, and after
     // state of each account in the posting journal
     var sql =
-      'SELECT pt.debit, pt.credit, '  +
-      'pt.account_id, pt.balance, account.number ' +
-      'FROM  account JOIN ( ' +
-        'SELECT SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
-        'posting_journal.account_id, (period_total.debit - period_total.credit) AS balance ' +
-        'FROM posting_journal LEFT JOIN period_total ' +
-        'ON posting_journal.account_id = period_total.account_id ' +
-        'WHERE posting_journal.trans_id IN (?) ' +
-        'GROUP BY posting_journal.account_id' +
-        ') AS pt ' +
-      'ON account.id = pt.account_id;';
+      `SELECT pt.debit, pt.credit,
+      pt.account_id, pt.balance, account.number
+      FROM  account JOIN (
+        SELECT SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
+        posting_journal.account_id, (period_total.debit - period_total.credit) AS balance
+        FROM posting_journal LEFT JOIN period_total
+        ON posting_journal.account_id = period_total.account_id
+        WHERE posting_journal.trans_id IN (?)
+        GROUP BY posting_journal.account_id
+        ) AS pt
+      ON account.id = pt.account_id;`;
 
     return db.exec(sql, [transactions]);
   })
@@ -280,9 +280,9 @@ exports.postTrialBalance = function (req, res, next) {
 
     // attempt to calculate the date range of the transactions
     var sql =
-      'SELECT COUNT(trans_id) AS rows, COUNT(DISTINCT(trans_id)) AS transactions, ' +
-        'MIN(DATE(trans_date)) AS mindate, MAX(DATE(trans_date)) AS maxdate ' +
-      'FROM posting_journal WHERE trans_id IN (?);';
+      `SELECT COUNT(trans_id) AS rows, COUNT(DISTINCT(trans_id)) AS transactions,
+        MIN(DATE(trans_date)) AS mindate, MAX(DATE(trans_date)) AS maxdate
+      FROM posting_journal WHERE trans_id IN (?);`;
 
     return db.exec(sql, [transactions]);
   })
@@ -337,9 +337,9 @@ exports.postToGeneralLedger = function (req, res, next) {
     // we assume from here on that trial balance checks have passed
     // let's open up a posting session
     sql =
-      'INSERT INTO posting_session ' +
-      'SELECT max(posting_session.id) + 1, ?, ? ' +
-      'FROM posting_session;';
+      `INSERT INTO posting_session
+      SELECT max(posting_session.id) + 1, ?, ?
+      FROM posting_session;`;
 
     return db.exec(sql, [req.session.user.id, new Date()]);
   })
@@ -349,15 +349,15 @@ exports.postToGeneralLedger = function (req, res, next) {
     var sessionId = result.insertId;
 
     sql =
-      'INSERT INTO general_ledger ' +
-        '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
-        'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
-        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, comment, cost_ctrl_id, ' +
-        'origin_id, user_id, cc_id, pc_id, session_id) ' +
-      'SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
-        'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
-        'deb_cred_uuid, deb_cred_type,inv_po_id, comment, cost_ctrl_id, origin_id, user_id, cc_id, pc_id, ? ' +
-      'FROM posting_journal WHERE trans_id IN (?);';
+      `INSERT INTO general_ledger ' +
+        (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num,
+        description, account_id, debit, credit, debit_equiv, credit_equiv,
+        currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, comment, cost_ctrl_id,
+        origin_id, user_id, cc_id, pc_id, session_id)
+      SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num,
+        description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+        deb_cred_uuid, deb_cred_type,inv_po_id, comment, cost_ctrl_id, origin_id, user_id, cc_id, pc_id, ?
+      FROM posting_journal WHERE trans_id IN (?);`;
     return db.exec(sql, [sessionId, transactions]);
   })
   .then(function () {
@@ -365,12 +365,12 @@ exports.postToGeneralLedger = function (req, res, next) {
     // Sum all transactions for a given period from the PJ
     // into period_total, updating old values if necessary.
     sql =
-      'INSERT INTO period_total (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id) ' +
-      'SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id, ' +
-        'period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-        'WHERE trans_id IN (?) ' +
-      'GROUP BY period_id, account_id ' +
-      'ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);';
+      `INSERT INTO period_total (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id)
+      SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id,
+        period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id
+        WHERE trans_id IN (?)
+      GROUP BY period_id, account_id
+      ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);`;
 
     return db.exec(sql, [transactions]);
   })
