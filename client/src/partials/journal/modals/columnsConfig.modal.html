@@ -14,29 +14,25 @@
 
     <div class="row">
       <div class="col-xs-6">
-        <div class="checkbox" ng-repeat="vl in ColumnsConfigModalCtrl.visibilityList | limitTo : ColumnsConfigModalCtrl.middle : 0">
+        <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.middle : 0">
           <label>
             <input
               type="checkbox"
               name="is_visible"
-              ng-true-value="true"
-              ng-false-value="false"
-              data-journal-column-option="{{ vl.field }}"
-              ng-model="vl.visible"> {{vl.displayName}}
+              data-journal-column-option="{{ col.field }}"
+              ng-model="col.visible"> {{col.displayName}}
           </label>
         </div>
       </div>
 
       <div class="col-xs-6">
-        <div class="checkbox" ng-repeat="vl in ColumnsConfigModalCtrl.visibilityList | limitTo : ColumnsConfigModalCtrl.middle : ColumnsConfigModalCtrl.middle">
+        <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.middle : ColumnsConfigModalCtrl.middle">
           <label>
             <input
               type="checkbox"
               name="is_visible"
-              ng-true-value="true"
-              ng-false-value="false"
-              data-journal-column-option="{{ vl.field }}"
-              ng-model="vl.visible"> {{vl.displayName}}
+              data-journal-column-option="{{ coll.field }}"
+              ng-model="col.visible"> {{col.displayName}}
           </label>
         </div>
       </div>

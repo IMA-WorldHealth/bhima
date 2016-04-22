@@ -1,13 +1,13 @@
 angular.module('bhima.services')
 .service('JournalColumnConfigService', JournalColumnConfigService);
 
-JournalColumnConfigService.$inject = ['uiGridConstants', 'AppCache'];
+JournalColumnConfigService.$inject = ['uiGridConstants', 'AppCache', '$uibModal', 'JournalColumnUtility'];
 
 /**
  * Posting Journal Column config Service 
  * This service is responsible of Showing and Hiding column
 */
-function JournalColumnConfigService(uiGridConstants, AppCache) { 
+function JournalColumnConfigService(uiGridConstants, AppCache, Modal, Util) { 
   var service = this; 
   
   // Variable used to track and share the current grids API object
@@ -18,50 +18,25 @@ function JournalColumnConfigService(uiGridConstants, AppCache) {
   var cache = AppCache('columnConfigService');
 
   //default visibility configuartion
-  var defaultVisibility = [ 
-    {field:  'uuid', displayName : 'ID', visible : false},
-    {field : 'project_name', displayName : 'Project', visible : false},
-    {field : 'period_summary', displayName : 'Period', visible : false},
-    {field : 'trans_date', displayName : 'Date', visible : true}, 
-    {field : 'description', displayName : 'Description', visible : true},
-    {field : 'account_number', displayName : 'Account', visible : true},
-    {field : 'debit_equiv', displayName : 'Debit', visible : true},
-    {field : 'credit_equiv', displayName : 'Credit', visible : true},
-    {field : 'trans_id', displayName : 'Transaction', visible : true},
-    {field : 'currency_id', displayName : 'Currency', visible : false},
-    {field : 'entity_uuid', displayName : 'Recipient', visible : false},
-    {field : 'entity_type', displayName : 'Recipient Type', visible : false},
-    {field : 'reference_uuid', displayName : 'Reference', visible : false},
-    {field : 'record_uuid', displayName : 'Reference Document', visible : false},
-    {field : 'user', displayName : 'Responsible', visible : false},      
-    {field : 'cc_id', displayName : 'Cost center', visible : false},
-    {field : 'pc_id', displayName : 'Profit center', visible : false}
-  ];
-
-  /**
-  * This function send back the default grid columns configuration
-  * in terms of visibility
-  * 
-  * @return {{array}} an array of configuration
-  **/
-  function getDefaultVisibility (){
-    return defaultVisibility;
-  }
-
-  /**
-  * This function send back the current grid columns configuration
-  * in terms of visibility
-  * 
-  * @return {{array}} an array of configuration
-  **/
-  function getCurrentVisibility (){
-    var current = [];
-    service.gridOptions.columnDefs.forEach(function (item){
-      current.push({field : item.field, displayName : item.displayName, visible :item.visible});
-    });
-
-    return current;
-  }
+  var defaultVisibility = { 
+    'uuid' : false,
+    'project_name' : false,
+    'period_summary' : false,
+    'trans_date' : true, 
+    'description' : true,
+    'account_number' : true,
+    'debit_equiv' : true,
+    'credit_equiv' : true,
+    'trans_id' : true,
+    'currency_id' : false,
+    'entity_uuid' : false,
+    'entity_type' : false,
+    'reference_uuid' : false,
+    'record_uuid' : false,
+    'user' : false,      
+    'cc_id' : false,
+    'pc_id' : false
+  };
 
   /**
   * A function to refresh the columns grid, without that user is supposed to 
@@ -77,8 +52,14 @@ function JournalColumnConfigService(uiGridConstants, AppCache) {
   * when the service is loaded
   **/
   function applyConfiguration (configuration){
-    service.gridOptions.columnDefs.forEach(function (item){
-      item.visible = getVisibity(configuration, item.field);
+    gridApi.core.on.renderingComplete(null, function(){
+      configuration.forEach(function (item){
+        if(item.visible){
+          gridApi.grid.getColumn(item.field).showColumn();
+        }else{
+          gridApi.grid.getColumn(item.field).hideColumn();
+        }      
+      }); 
     });
 
     cache.configuration = configuration;
@@ -86,13 +67,27 @@ function JournalColumnConfigService(uiGridConstants, AppCache) {
   }
 
   /**
-  * Utility function to filter a array of column and send back the visible value
-  * @return {{boolean}}
+  * Define and show the column visibility
+  * state to let the user set visibility
   **/
-  function getVisibity (configuration, field){
-    return configuration.filter(function (item){
-      return item.field === field;
-    })[0].visible;
+  function openColumnConfigModal (){
+
+    var instance = Modal.open({
+      templateUrl: 'partials/journal/modals/columnsConfig.modal.html',
+      controller:  'ColumnsConfigModalController as ColumnsConfigModalCtrl',
+      size:        'md',
+      backdrop:    'static',
+      animation:   true,
+      keyboard  : false,
+      resolve:     {
+        columns : function visibilityListProvider() { return service.gridOptions.columnDefs; },
+        defaultVisibility : function defaultVisibilityProvider () { return defaultVisibility;}
+      }
+    });
+
+    instance.result.then(function (result) {
+      applyConfiguration(result.configList);
+    });
   }
 
   /**
@@ -109,8 +104,7 @@ function JournalColumnConfigService(uiGridConstants, AppCache) {
     gridOptions.onRegisterApi = function (api) { 
       gridApi = api;
 
-      applyConfiguration(cache.configuration || defaultVisibility);
-
+      applyConfiguration(cache.configuration || Util.getConfiguration(defaultVisibility));
 
       // Call the method that had previously been registered to request the grids api
       if (angular.isDefined(cacheGridApi)) { 
@@ -120,9 +114,7 @@ function JournalColumnConfigService(uiGridConstants, AppCache) {
 
     // Expose service API
     return { 
-      getCurrentVisibility : getCurrentVisibility,
-      getDefaultVisibility : getDefaultVisibility,
-      applyConfiguration : applyConfiguration
+      openColumnConfigModal : openColumnConfigModal
     };
   } 
 

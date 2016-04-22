@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 JournalController.$inject = [
   'TransactionService', 'JournalSortingService', 'JournalGroupingService',
-  'JournalPaginationService', 'JournalFilteringService', 'JournalColumnConfigService', '$uibModal'
+  'JournalPaginationService', 'JournalFilteringService', 'JournalColumnConfigService'
 ];
 
 /**
@@ -50,6 +50,9 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
   filtering  = new Filtering(vm.gridOptions);
   grouping   = new Grouping(vm.gridOptions);
   pagination = new Pagination(vm.gridOptions, Transactions.list.data);
+  columnConfig = new ColumnConfig(vm.gridOptions);
+
+
 
   // bind the transactions service to populate the grid component
   vm.gridOptions.data = Transactions.list.data;
@@ -74,63 +77,46 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
    *      should be a join to get expected columns name
    *
    *  @todo using ui-grid internazation if necessary for columns label
-   */
+  */
 
-    columns = [
-      { field : 'uuid', displayName : 'ID'},
-      { field : 'project_name', displayName : 'Project'},
-      { field : 'period_summary', displayName : 'Period'},
-      { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
-      { field : 'description', displayName : 'Description' },
-      { field : 'account_number', displayName : 'Account' },
-      { field : 'debit_equiv', displayName : 'Debit' },
-      { field : 'credit_equiv', displayName : 'Credit' },
-      { field : 'trans_id', 
-        displayName : 'Transaction', 
-        sortingAlgorithm : sorting.transactionIds,
-        sort : { priority : 0, direction : 'asc' },
-        grouping : { groupPriority : 0 }
-      },
+  columns = [
+    { field : 'uuid', displayName : 'ID'},
+    { field : 'project_name', displayName : 'Project'},
+    { field : 'period_summary', displayName : 'Period'},
+    { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
+    { field : 'description', displayName : 'Description' },
+    { field : 'account_number', displayName : 'Account' },
+    { field : 'debit_equiv', displayName : 'Debit' },
+    { field : 'credit_equiv', displayName : 'Credit' },
+    { field : 'trans_id', 
+      displayName : 'Transaction', 
+      sortingAlgorithm : sorting.transactionIds,
+      sort : { priority : 0, direction : 'asc' },
+      grouping : { groupPriority : 0 }
+    },
+  
+    // @todo this should be formatted as a currency icon vs. an ID
+    { field : 'currency_id', displayName : 'Currency'},
     
-      // @todo this should be formatted as a currency icon vs. an ID
-      { field : 'currency_id', displayName : 'Currency'},
-      
-      // @todo this should be formatted showing the debitor/credior
-      { field : 'entity_uuid', displayName : 'Recipient'}, 
-      { field : 'entity_type', displayName : 'Recipient Type'}, 
+    // @todo this should be formatted showing the debitor/credior
+    { field : 'entity_uuid', displayName : 'Recipient'}, 
+    { field : 'entity_type', displayName : 'Recipient Type'}, 
 
-      { field : 'reference_uuid', displayName : 'Reference Document'},
-      { field : 'record_uuid', displayName : 'Reference Document'},
-      { field : 'user', displayName : 'Responsible'},
-      
-      // @fixme this field should not come from the database as 'cc'
-      { field : 'cc_id', displayName : 'Cost Center'},
-      { field : 'pc_id', displayName : 'Profit Center'}
-    ];
+    { field : 'reference_uuid', displayName : 'Reference Document'},
+    { field : 'record_uuid', displayName : 'Reference Document'},
+    { field : 'user', displayName : 'Responsible'},
+    
+    // @fixme this field should not come from the database as 'cc'
+    { field : 'cc_id', displayName : 'Cost Center'},
+    { field : 'pc_id', displayName : 'Profit Center'}
+  ];
 
-    vm.gridOptions.columnDefs = columns;
+  vm.gridOptions.columnDefs = columns;
 
-    //adding additional service for columns config, the column service need columns tobe set before process
-    columnConfig = new ColumnConfig(vm.gridOptions);
+  
+  // This function opens a modal through column service to let the user show or Hide columns
+  vm.openColumnConfigModal = function openColumnConfigModal() {
+    columnConfig.openColumnConfigModal();      
+  };
 
-    // This function opens a modal to let the user show or Hide columns
-    vm.openColumnConfigModal = function openColumnConfigModal() {
-
-      var instance = Modal.open({
-        templateUrl: 'partials/journal/modals/columnsConfig.modal.html',
-        controller:  'ColumnsConfigModalController as ColumnsConfigModalCtrl',
-        size:        'md',
-        backdrop:    'static',
-        animation:   true,
-        keyboard  : false,
-        resolve:     {
-          visibilityList : function visibilityListProvider() { return columnConfig.getCurrentVisibility(); },
-          defaultVisibility : function defaultVisibilityProvider () { return columnConfig.getDefaultVisibility();}
-        }
-      });
-
-      instance.result.then(function (result) {
-        columnConfig.applyConfiguration(result.configList);
-      });
-    };
 }

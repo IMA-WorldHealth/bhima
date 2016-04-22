@@ -1,33 +1,33 @@
 angular.module('bhima.controllers')
 .controller('ColumnsConfigModalController', ColumnsConfigModalController);
 
-ColumnsConfigModalController.$inject = [ '$uibModalInstance', 'visibilityList', 'defaultVisibility'];
+ColumnsConfigModalController.$inject = [ '$uibModalInstance', 'columns', 'defaultVisibility', 'JournalColumnUtility'];
 
 /**
  * @module journal/modals/columnConfig.modal
  *
  * @description This controller is responsible for showing or Hiding columns
 */
-function ColumnsConfigModalController(ModalInstance, visibilityList, defaultVisibility) {
+function ColumnsConfigModalController(ModalInstance, columns, defaultVisibility, Util) {
   var vm = this; 
 
-  vm.visibilityList = visibilityList;
+  vm.columns = columns;
   vm.defaultvisibilityList = defaultVisibility;
 
   //the middle of the list to print element on two columns
-  vm.middle = Math.round( Object.keys(visibilityList).length / 2 ); 
+  vm.middle = Math.round( Object.keys(columns).length / 2 ); 
   
   /**
   * @function submit
   * @description for submitting a dialog content
   **/
   function submit (){
-    ModalInstance.close({ configList : vm.visibilityList }); 
+    ModalInstance.close({ configList : vm.columns }); 
   }
 
   //reset the column visibilty to their default configuration
   function reset (){ 
-    vm.visibilityList = vm.defaultvisibilityList;
+    vm.columns = Util.toggleVisibility(vm.columns, vm.defaultvisibilityList);
   }  
 
   /**expose function to the scope**/ 
