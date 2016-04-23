@@ -16,13 +16,16 @@
 
 <body ng-app="bhima" ng-strict-di>
 
+
 <div
   id="app-container"
   class="flex-container"
   ng-class="{'expanded' : AppCtrl.sidebarExpanded}"
   ng-controller="ApplicationController as AppCtrl">
+  
+  <growl-notifications></growl-notifications>
+  
   <div class="flex-page">
-
     <!-- Sidebar -->
     <!-- TODO: Load the default position for the sidebar before angular is bootstrapped-->
     <div class="sidebar" ng-cloak>

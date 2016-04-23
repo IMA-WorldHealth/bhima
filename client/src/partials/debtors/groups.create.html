@@ -1,4 +1,11 @@
-<div id="anchor" class="container-fluid"> 
+<!-- <div ng-repeat="notification in GroupCreateCtrl.notifications | limitTo : 2"> -->
+  <growl-notification ng-repeat="notification in GroupCreateCtrl.notifications" class="fading" ttl="5000">
+    <span class="glyphicon glyphicon-check"></span>
+    {{notification.message}}
+  </growl-notification>
+<!-- </div> -->
+
+<div class="container-fluid"> 
   <div class="row">
     <div class="col-xs-12">
       <uib-alert id="groupException" type="danger" ng-if="GroupCreateCtrl.exception">
@@ -51,8 +58,9 @@
             class="form-control"
             name="account"
             placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
-            uib-typeahead="account.id as account.hrlabel for account in GroupCtrl.accounts | filter:$viewValue | limitTo:10"
+            uib-typeahead="account as account.hrlabel for account in GroupCtrl.accounts | filter:$viewValue | limitTo:10"
             typeahead-template-url="partials/templates/typeahead/accounts.html"
+            typeahead-editable="false"
             ng-model="GroupCreateCtrl.group.account_id"
             autocomplete="off"
             autocorrect="off"

@@ -4,7 +4,7 @@ var bhima = angular.module('bhima', [
   'ngStorage', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns',
-  'ui.grid.grouping'
+  'ui.grid.grouping', 'growlNotifications', 'ngAnimate'
 ]);
 
 
@@ -326,37 +326,38 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     url : '/debtors/groups/:uuid',
     // url : '/debtors/groups',
     abstract : true,
-    params : { 
-      uuid : { squash : true, value : null }
+    params : {
+      uuid : { squash : true, value : null },
+      created : { squash : true, value : null }
     },
     // url : '/notathing',
     controller : 'DebtorGroupController as GroupCtrl',
     templateUrl: 'partials/debtors/groups.html'
   })
 
-    .state('debtorGroups.list', { 
+    .state('debtorGroups.list', {
       url : '',
       templateUrl : 'partials/debtors/groups.list.html'
     })
 
     .state('debtorGroups.create', {
-      
+
       // setting the URL as simply create mathces as a :uuid - there should be a way to set orders
       // this should ideally route to /create
       url : '/create/new',
-      templateUrl : 'partials/debtors/groups.create.html', 
+      templateUrl : 'partials/debtors/groups.create.html',
       controller : 'DebtorGroupCreateController as GroupCreateCtrl'
     })
-    
-    .state('debtorGroups.update', { 
+
+    .state('debtorGroups.update', {
       url : '/update',
       // key : 'COLUMNS.EDIT',
       template : '<div><p>This is update content</p></div>',
       controller : function () { console.log('update state fired'); }
     })
 
-    .state('debtorGroups.delete', { 
-      url : '/delete', 
+    .state('debtorGroups.delete', {
+      url : '/delete',
       template : '<div><p>This is a delete content</p></div>',
       constroller : function () { console.log('delete state fired'); }
     })

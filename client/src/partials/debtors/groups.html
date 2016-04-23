@@ -7,27 +7,52 @@
   .rotate { 
     transform : rotate(180deg);
   }
+
+  growl-notifications { 
+    /*position : fixed;
+    top : 50px;
+    right : 30px;
+    z-index : 1000;*/
+    width : 100%;
+    position : fixed;
+    top : 0px;
+    left : 56px;
+    z-index : 1000;
+  }
+
+  .expanded > growl-notifications { 
+    left : 260px;
+  }
+
+  growl-notifications growl-notification { 
+    background-color : #77A13F;
+    /*border : 1px solid;
+    border-color : #4cae4c;*/
+    border-left : 5px solid #638638;
+    height : 51px;
+    color : #fff;
+    padding : 15px 10px;
+    display : block; 
+    width : 100%
+    border-radius : 2px;
+  }
 </style>
 </div>
 <div class="flex-header">
   <div class="bhima-title">
-
+    
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
       <li class="title">{{ "DEBTOR_GRP.TITLE" | translate }}</li>
-      <li class="static">Exception Data: {{GroupCtrl.exceptionobject}}</li>
-
       <!-- <span class="label label-warning">{{GroupCtrl.current.key | translate}}</span> -->
     </ol>
-
-    {{GroupCtrl.state.current.data}}
-
-
     
+   
     <div class="toolbar">
       <div class="toolbar-item">
         <a 
-          ui-sref="debtorGroups.create()"
+          ng-if="GroupCtrl.state.current.name==='debtorGroups.list'"
+          ui-sref="debtorGroups.create"
           class="btn btn-default btn-sm">
           <span class="glyphicon glyphicon-plus"></span>
           Create Debtor Group
@@ -37,6 +62,13 @@
   </div>
 </div>
 
-<div class="flex-content">
-  <div ui-view></div>
+<!-- 
+     Style adjusment is made for autoscroll which will scroll to the top of the 
+     ui-view - because the padding is on the flex-content it will not consider this
+     the top resulting in 0 padding. This should be considered going forward with 
+     the structure styles
+-->
+<div style="padding-top : 0px;" class="flex-content">
+  
+  <div id="anchor" style="padding-top : 5px;" ui-view autoscroll></div>
 </div>

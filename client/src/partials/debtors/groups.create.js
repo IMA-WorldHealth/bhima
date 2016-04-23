@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
 .controller('DebtorGroupCreateController', DebtorGroupCreateController);
 
 DebtorGroupCreateController.$inject = [
-  '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'uuid'
+  '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'uuid', '$uiViewScroll'
 ];
 
-function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Uuid) { 
+function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Uuid, $uiViewScroll) { 
   var vm = this;
 
   // default new group policies
@@ -14,6 +14,22 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     discounts : true,
     billingServices : false
   };
+  
+  // window.state = $state;
+  vm.notifications = [];
+  
+  vm.addNotification = addNotification;
+  function addNotification (message) { 
+
+    if (vm.notifications.length) { 
+      vm.notifications.shift();
+      console.log(vm.notifications);
+    }
+  
+    vm.notifications.push({ 
+      message : message
+    });
+  }
 
   settupDefaults();
 
@@ -41,6 +57,8 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   }
   
   function submit(groupForm) { 
+    var submitGroup;
+
     groupForm.$setSubmitted();
   
         console.log(groupForm);
@@ -49,17 +67,34 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
       return;
     }
 
-    DebtorGroups.create(vm.group)
+    // in order to display account correctly the entire account is stored in the 
+    // ng-model, we should extract this
+    submitGroup = angular.copy(vm.group);
+    submitGroup.account_id = vm.group.account_id.id;
+
+    DebtorGroups.create(submitGroup)
       .then(function (result) { 
         
-        vm.written = true;
+        // vm.written = true;
+        
+        addNotification('Debtor group recorded successfully');
 
         // Debtor group created
         if (vm.resetOnCompletion) { 
-          // settupDefaults();
-          // groupForm.$setUntouched();
-          // groupForm.$setPristine();
+
+          // reset module state (model + form) 
+          settupDefaults();
+          groupForm.$setUntouched();
+          groupForm.$setPristine();
+  
+          // move view to the top - ready to create another entity
           ScrollTo('anchor');
+          // $state.reload();
+        
+        } else { 
+        
+          // navigate back to list view
+          $state.go('debtorGroups.list', { created : submitGroup });
         }
       })
       .catch(handleRequestError);

@@ -1,10 +1,10 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupController', DebtorGroupController);
 
-DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService'];
+DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval'];
 
 /** @todo model groups in the Debtors service - even if it delegates to another file */
-function DebtorGroupController($state, DebtorGroups, Accounts, Prices) { 
+function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval) { 
   var vm = this;
 
   // pagination configuration 
@@ -14,8 +14,10 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices) {
   
   vm.toggleFilter = toggleFilter;
   vm.setOrder = setOrder;
+
+  vm.state = $state;
   
-  vm.state = $state; 
+  // $interval(function () { console.log('calling status'); Status.exception({val : 5}) }, 3000);
   
   /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
   Accounts.list()
