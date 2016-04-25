@@ -2,18 +2,20 @@ angular.module('bhima.controllers')
 .controller('ApplicationController', ApplicationController);
 
 ApplicationController.$inject = [
-  'AppCache', 'SessionService', 'LanguageService', '$state'
+  'AppCache', 'SessionService', 'LanguageService', '$state', '$rootScope'
 ];
 
-function ApplicationController(AppCache, Session, Languages, $state) {
+/**
+ * Application Controller
+ *
+ * This top-level controller is currently  responsible for initializing language
+ * loading and controlling the side-bar hide/show methods.
+ */
+function ApplicationController(AppCache, Session, Languages, $state, $rootScope) {
   var vm = this;
 
   // load in the application cache
   var cache = AppCache('preferences');
-
-  // Default sidebar state
-  /** @todo Load sidebar state before angular is bootstrapped to remove 'flicker' */
-  vm.sidebarExpanded = false;
 
   // set up the languages for the application, including default languages
   // the 'true' parameter forces refresh
@@ -23,23 +25,32 @@ function ApplicationController(AppCache, Session, Languages, $state) {
     return !!Session.user;
   };
 
-  // toggle session settings
-  if (vm.isLoggedIn()) {
-    vm.sidebarExpanded = cache.sidebar && cache.sidebar.expanded;
-    vm.projectName = Session.project.name;
-  }
+  // Default sidebar state
+  /** @todo Load sidebar state before angular is bootstrapped to remove 'flicker' */
+  vm.sidebarExpanded = vm.isLoggedIn() ? (cache.sidebar && cache.sidebar.expanded) : false;
+
+  vm.project = Session.project;
 
   /**
    * Application Structure methods
    */
   vm.toggleSidebar = function toggleSidebar() {
-    if (vm.isLoggedIn()) {
-      vm.sidebarExpanded = !vm.sidebarExpanded;
-      cache.sidebar = { expanded : vm.sidebarExpanded };
-    }
+    vm.sidebarExpanded = !vm.sidebarExpanded;
+    cache.sidebar = { expanded : vm.sidebarExpanded };
   };
+
+  $rootScope.$on('login', function () {
+    vm.sidebarExpanded = cache.sidebar && cache.sidebar.expanded;
+    vm.project = Session.project;
+  });
+
+  $rootScope.$on('logout', function () {
+    vm.sidebarExpanded = false;
+    delete vm.project;
+  });
 
   vm.settings = function settings() {
     $state.go('settings', { previous : $state.$current.name });
   };
+
 }

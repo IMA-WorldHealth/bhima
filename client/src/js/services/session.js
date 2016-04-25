@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('SessionService', SessionService);
 
 SessionService.$inject = [
-  '$sessionStorage', '$http', '$location', 'util'
+  '$sessionStorage', '$http', '$location', 'util', '$rootScope'
 ];
 
 /**
@@ -11,10 +11,15 @@ SessionService.$inject = [
  * This service is responsible for retaining the client's session in session
  * storage.  It contains the methods for login and logout.
  *
+ * If any service/component needs to be alerted of a change in login state, the
+ * SessionService emits two events: 'login' and 'logout' via $rootScope that can
+ * be listened to throughout the application.  Currently, only
+ * ApplicationController consumes these events.
+ *
  * @module services/SessionService.js
  * @constructor
  */
-function SessionService($sessionStorage, $http, $location, util) {
+function SessionService($sessionStorage, $http, $location, util, $rootScope) {
   var service = this;
 
   // set up the storage instance
@@ -75,6 +80,9 @@ function SessionService($sessionStorage, $http, $location, util) {
         // navigate to the main page
         $location.url('/');
 
+        // notify login event
+        $rootScope.$emit('login');
+
         return session;
       });
   }
@@ -88,8 +96,11 @@ function SessionService($sessionStorage, $http, $location, util) {
     return $http.get('/logout')
       .then(function () {
 
-        // destro the user's session from $storage
+        // destroy the user's session from $storage
         destroy();
+
+        // notify the logout event
+        $rootScope.$emit('logout');
 
         // navigate to the main page
         $location.url('/login');
