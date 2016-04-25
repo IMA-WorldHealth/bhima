@@ -1,18 +1,16 @@
-/* jshint expr:true */
 /* global element, by, inject, browser */
 
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var helpers = require('../shared/helpers');
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('locations (create modal)', function () {
   'use strict';
 
-  beforeEach(function () {
-    browser.get('#/patients/register');
-  });
+  before(() => browser.get('#/patients/register'));
 
   /** location to be created */
   var newLocation = {
@@ -48,12 +46,6 @@ describe('locations (create modal)', function () {
 
     var submit = root.element(by.css('[type=submit]'));
     submit.click();
-
-  }
-
-  // assert that something either exists or not
-  function exists(target, bool) {
-    expect(element(by.css(target)).isPresent()).to.eventually.equal(bool);
   }
 
   it('will register a new country', function () {
@@ -74,14 +66,14 @@ describe('locations (create modal)', function () {
     submit();
 
     // it should close the modal
-    exists(selector, false);
+    FU.exists(by.css(selector), false);
   });
 
   it('will register a new province', function () {
 
     open();
 
-    exists(selector, true);
+    FU.exists(by.css(selector), true);
 
     // switch to the province view
     view('province');
@@ -101,14 +93,14 @@ describe('locations (create modal)', function () {
     submit();
 
     // it should close the modal
-    exists(selector, false);
+    FU.exists(by.css(selector), false);
   });
 
   it('will register a new sector', function () {
 
     open();
 
-    exists(selector, true);
+    FU.exists(by.css(selector), true);
 
     // switch to the sector view
     view('sector');
@@ -132,14 +124,14 @@ describe('locations (create modal)', function () {
     submit();
 
     // it should close the modal
-    exists(selector, false);
+    FU.exists(by.css(selector), false);
   });
 
   it('will register a new village', function () {
 
     open();
 
-    exists(selector, true);
+    FU.exists(by.css(selector), true);
 
     // switch to the village view
     view('village');
@@ -167,7 +159,7 @@ describe('locations (create modal)', function () {
     submit();
 
     // it should close the modal
-    exists(selector, false);
+    FU.exists(by.css(selector), false);
   });
 });
 

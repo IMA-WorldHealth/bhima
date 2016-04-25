@@ -1,52 +1,44 @@
 /* global element, by, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('Locations /sectors Management', function () {
+describe('Sectors Management', function () {
   'use strict';
 
-  var path = '#/locations/sector';
+  before(() => browser.get('#/locations/sector'));
 
-  var sector = {
-    name : 'A Sector for Test'
+  const sector = {
+    name :'A Sector for Test'
   };
 
-  var locations = {
-    country : 'République Démocratique du Congo',
-    province : 'BANDUNDU'
+  const locations = {
+    country :'République Démocratique du Congo',
+    province :'BANDUNDU'
   };
 
-  var locationsUpdate = {
-    country : 'République Démocratique du Congo',
-    province : 'Bas Congo'
+  const locationsUpdate = {
+    country :'République Démocratique du Congo',
+    province :'Bas Congo'
   };
 
-  var defaultSector   = 209;
+  const defaultSector = 209;
+  const sectorRank = 1;
 
-  var sectorRank    = 1;
-
-  // navigate to the employee module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
-
-  it('successfully creates a new Sector', function () {
-    // swtich to the create form
+  it('successfully creates a new sector', function () {
+    // switch to the create form
     FU.buttons.create();
 
-    // select an Country
+    // select an country
     element(by.model('SectorCtrl.sector.country_uuid')).element(by.cssContainingText('option', locations.country)).click();
 
-    // select an Province
+    // select an province
     element(by.model('SectorCtrl.sector.province_uuid')).element(by.cssContainingText('option', locations.province)).click();
 
-    // Set the Sector Name
+    // set the sector name
     FU.input('SectorCtrl.sector.name', sector.name);
 
     // submit the page to the server
@@ -56,16 +48,18 @@ describe('Locations /sectors Management', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully edits a Sector ', function () {
+  it('successfully edits a sector', function () {
     element(by.id('sector-' + sectorRank )).click();
 
-    // Update an Country
-    element(by.model('SectorCtrl.sector.country_uuid')).element(by.cssContainingText('option', locationsUpdate.country)).click();
+    // update a country
+    element(by.model('SectorCtrl.sector.country_uuid'))
+      .element(by.cssContainingText('option', locationsUpdate.country))
+      .click();
 
-    // Update an Province
+    // update a province
     element(by.model('SectorCtrl.sector.province_uuid')).element(by.cssContainingText('option', locationsUpdate.province)).click();
 
-    // modify the Sector Name
+    // modify the sector name
     FU.input('SectorCtrl.sector.name', 'Sector Update');
 
     element(by.id('change_sector')).click();
@@ -74,13 +68,12 @@ describe('Locations /sectors Management', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-
   it('correctly blocks invalid form submission with relevant error classes', function () {
     // switch to the create form
     element(by.id('create')).click();
 
     // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    expect(helpers.getCurrentPath()).to.eventually.equal('#/locations/sector');
 
     // submit the page to the server
     FU.buttons.submit();

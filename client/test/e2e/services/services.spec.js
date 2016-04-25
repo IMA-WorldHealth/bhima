@@ -1,30 +1,25 @@
 /* global element, by, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var FormUtils = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
+const FormUtils = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('Services Module', function () {
 
   // shared methods
-  var path = '#/services';
-  var SERVICE = {
+  const path = '#/services';
+  before(() => browser.get(path));
+
+  const SERVICE = {
     name : 'A service E2E',
   };
 
-  var DEFAULT_SERVICE = 4;
-  var SERVICE_RANK = 4;
-
-  var DELETE_SUCCESS = 1;
-  var DELETE_ERROR = 3;
-
-  // navigate to the Service module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
+  const DEFAULT_SERVICE = 4;
+  const SERVICE_RANK = 4;
+  const DELETE_SUCCESS = 1;
+  const DELETE_ERROR = 3;
 
   it('successfully creates a new service', function () {
     FormUtils.buttons.create();
@@ -56,17 +51,18 @@ describe('Services Module', function () {
   });
 
   it('successfully edits an service', function () {
-    element(by.id('service-upd-' + SERVICE_RANK )).click();
+    element(by.id('service-upd-' + SERVICE_RANK)).click();
     FormUtils.input('ServicesCtrl.service.name', 'Updated');
     element(by.id('change_service')).click();
 
     FormUtils.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevent error classes', function () {
+  it('correctly blocks invalid form submission with relevant error classes', function () {
     FormUtils.buttons.create();
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-service')).click();
 
@@ -80,19 +76,19 @@ describe('Services Module', function () {
   });
 
   it('successfully delete an service', function () {
-    element(by.id('service-del-' + DELETE_SUCCESS )).click();
+    element(by.id('service-del-' + DELETE_SUCCESS)).click();
     browser.switchTo().alert().accept();
     FormUtils.exists(by.id('delete_success'), true);
   });
 
   it('no way to delete a service', function () {
-    element(by.id('service-del-' + DELETE_ERROR )).click();
+    element(by.id('service-del-' + DELETE_ERROR)).click();
     browser.switchTo().alert().accept();
     FormUtils.exists(by.id('delete_error'), true);
   });
 
   it('cancellation of removal process of a service', function () {
-    element(by.id('service-del-' + DELETE_ERROR )).click();
+    element(by.id('service-del-' + DELETE_ERROR)).click();
     browser.switchTo().alert().dismiss();
     FormUtils.exists(by.id('default'), true);
   });

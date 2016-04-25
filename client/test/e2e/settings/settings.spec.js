@@ -1,20 +1,16 @@
 /* global browser, element, by, protractor */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-// import testing utiliites
-var helpers = require('../shared/helpers');
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
-
-var FU = require('../shared/FormUtils');
 
 describe('Settings', function () {
 
-  it('loads the page, and selects a language', function () {
+  before(() => browser.get('#/settings'));
 
-    // load the settings page w/o backwards navigation
-    browser.get('#/settings');
+  it('loads the page, and selects a language', function () {
 
     // confirm that we can change the languages
     // ideally, we should check that the language changed, but this

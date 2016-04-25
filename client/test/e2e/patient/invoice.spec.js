@@ -1,15 +1,13 @@
-/* jshint expr:true */
 /* global element, by, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('../shared/helpers');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-var FU = require('../shared/FormUtils');
-var GU = require('../shared/gridTestUtils.spec.js');
-var PatientInvoicePage = require('./invoice.page.js');
+const FU = require('../shared/FormUtils');
+const GU = require('../shared/gridTestUtils.spec.js');
+const PatientInvoicePage = require('./invoice.page.js');
 
 /**
  * Simple Tests for Patient Invoicing
@@ -19,11 +17,10 @@ var PatientInvoicePage = require('./invoice.page.js');
  *   - Test for price list
  *   - Test for discount
  */
-describe('patient invoice', function () {
+describe('Patient Invoice', function () {
   'use strict';
 
-  /** @const */
-  var path = '#/invoices/patient';
+  const path = '#/invoices/patient';
 
   // navigate to the patient invoice page
   beforeEach(function () {
@@ -44,10 +41,8 @@ describe('patient invoice', function () {
 
     // attempt to submit the page.
     page.submit();
-    
-    /** @todo - this can validate totals and receipt content in the future */
-    browser.waitForAngular();
-    FU.exists(by.id('receipt'), true); 
+
+    FU.exists(by.id('receipt'), true);
   });
 
   it.skip('invoices a patient for multiple items', function () {
@@ -85,20 +80,18 @@ describe('patient invoice', function () {
 
     // submit the page
     page.submit();
-  
-    browser.waitForAngular();
+
     /** @todo - this can validate totals and receipt content in the future */
-    FU.exists(by.id('receipt'), true); 
+    FU.exists(by.id('receipt'), true);
 
   });
-
 
   it('blocks submission if no patient is available', function () {
 
     // get a new page
     var page = new PatientInvoicePage();
 
-    // this patientdoesn exist
+    // this patient doesn't exist
     page.patient('TPA1.1');
 
     // make sure the "add rows" button is still disabled

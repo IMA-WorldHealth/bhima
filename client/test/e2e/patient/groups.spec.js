@@ -1,24 +1,20 @@
-/* jshint expr:true */
 /* global element, by, browser */
 
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var helpers = require('../shared/helpers');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-var FU = require('../shared/FormUtils');
+const FU = require('../shared/FormUtils');
 
 describe('Patient Groups', function () {
-  var path = '#/patients/groups';
 
-  // navigate to the page before login
-  before(function () {
-    browser.get(path);
-  });
+  // navigate to the page before running test suite
+  before(() => browser.get('#/patients/groups'));
 
   // a new group to create
-  var group = {
+  const group = {
     name : 'HIV Patients',
     note: 'These are patients that suffer from HIV and ' +
       'benefit from medical discounts.'

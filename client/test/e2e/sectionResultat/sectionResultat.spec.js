@@ -1,37 +1,28 @@
-/* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, inject, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-var components = require('../shared/components');
-
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('Section resultats Module', function () {
+describe('Section Resultats Module', function () {
   'use strict';
 
-  var path = '#/section_resultat';
+  const path = '#/section_resultat';
+  before(() => browser.get(path));
 
-  var sectionResultat = {
+  const sectionResultat = {
     text : 'A Special Section Result',
     position : 3,
-    is_charge : 0 
+    is_charge : 0
   };
 
-  var sectionResultatRank = 1;
-
-
-  // navigate to the SectionResultat module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
+  const sectionResultatRank = 1;
 
   it('successfully creates a new SectionResultat', function () {
 
-    // swtich to the create form
+    // switch to the create form
     FU.buttons.create();
     FU.input('sectionResultatCtrl.sectionResultat.text', sectionResultat.text);
     FU.radio('sectionResultatCtrl.sectionResultat.is_charge', sectionResultat.is_charge);
@@ -43,7 +34,6 @@ describe('Section resultats Module', function () {
     // expect a nice validation message
     FU.exists(by.id('create_success'), true);
   });
-
 
   it('successfully edits an sectionResultat', function () {
 
@@ -63,8 +53,8 @@ describe('Section resultats Module', function () {
     // switch to the create form
     FU.buttons.create();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-sectionResultat')).click();
 
@@ -83,5 +73,4 @@ describe('Section resultats Module', function () {
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);
   });
-
 });

@@ -1,30 +1,23 @@
 /* global inject, browser, element, by */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-// import ui-grid testing utiliites
-var gridUtils = require('../shared/gridObjectTestUtils.spec.js');
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-
+const gridUtils = require('../shared/gridObjectTestUtils.spec.js');
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('Permissions Module', function () {
 
-  var path = '#/permissions';
-  var mockUser = {
+  before(() => browser.get('#/permissions'));
+
+  const mockUser = {
     first:    'Mock',
     last:     'User',
     username: 'mockuser',
     email:    'mockuser@email.com',
     password: 'cheese'
   };
-
-  // pre-load premissions page
-  beforeEach(function () {
-    browser.get(path);
-  });
 
   // new user creation
   it('creates a new user', function () {
@@ -71,11 +64,10 @@ describe('Permissions Module', function () {
     FU.validation.error('PermissionsCtrl.user.passwordVerify');
   });
 
-  /*
-  it('edits the previously created user', function (done) {
+  it.skip('edits the previously created user', function (done) {
 
     // use the UI grid to select the previously created user
-    gridUtils.
+    //gridUtils.
 
     // fill in user data
     element(by.model('PermissionsCtrl.user.first')).sendKeys(mockUser.first);
@@ -92,10 +84,5 @@ describe('Permissions Module', function () {
 
     // submit the user
     element(by.id('submitCreate')).click();
-
-    // check for a success message
-    expect(element(by.css('.bh-form-message.bh-form-message-success')).isPresent()).to.eventually.equal(true)
-    .then(function () { done(); });
   });
-  */
 });

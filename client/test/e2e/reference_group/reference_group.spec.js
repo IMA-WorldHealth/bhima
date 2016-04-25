@@ -1,37 +1,28 @@
-/* jshint expr:true */
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, inject, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-var components = require('../shared/components');
-
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('Reference Group Module', function () {
   'use strict';
 
-  var path = '#/references/groups';
+  const path = '#/references/groups';
+  before(() => browser.get(path));
 
-  var referenceGroup = {
+  const referenceGroup = {
     reference_group   : 'BC',
     text              : 'A new Reference Group',
-    position          : 5  
+    position          : 5
   };
 
-  var referenceGroupRank = 1;
-
-
-  // navigate to the ReferenceGroup module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
+  const referenceGroupRank = 1;
 
   it('successfully creates a new ReferenceGroup', function () {
 
-    // swtich to the create form
+    // switch to the create form
     FU.buttons.create();
     FU.input('ReferenceGroupCtrl.referenceGroup.reference_group', referenceGroup.reference_group);
     FU.input('ReferenceGroupCtrl.referenceGroup.text', referenceGroup.text);
@@ -50,10 +41,9 @@ describe('Reference Group Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
+  it('successfully edits an ReferenceGroup', function () {
 
-  it('successfully edits an referenceGroup', function () {
-
-    element(by.id('referenceGroup-upd-' + referenceGroupRank )).click();
+    element(by.id('referenceGroup-upd-' + referenceGroupRank)).click();
     // modify the referenceGroup reference_group
     FU.input('ReferenceGroupCtrl.referenceGroup.reference_group', 'RG');
 
@@ -70,8 +60,8 @@ describe('Reference Group Module', function () {
     // switch to the create form
     FU.buttons.create();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-referenceGroup')).click();
 
@@ -83,7 +73,7 @@ describe('Reference Group Module', function () {
   });
 
   it('successfully delete a ReferenceGroup', function () {
-    element(by.id('referenceGroup-del-' + referenceGroupRank )).click();
+    element(by.id('referenceGroup-del-' + referenceGroupRank)).click();
 
     // click the alert asking for permission
     browser.switchTo().alert().accept();
@@ -91,5 +81,4 @@ describe('Reference Group Module', function () {
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);
   });
-
 });
