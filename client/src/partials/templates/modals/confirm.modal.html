@@ -13,7 +13,7 @@
       </uib-alert>
     </div>
 
-    <!-- translateable prompt -->
+    <!-- translatable prompt -->
     <p class="text-left">
       <span class="glyphicon glyphicon-info-sign text-primary"></span>
       {{ (ConfirmModalCtrl.prompt || 'FORM.DIALOGS.CONFIRM_DELETE') | translate }}
@@ -22,6 +22,7 @@
 
   <div class="modal-footer">
     <bh-loading-button loading-state="ConfirmModalForm.$loading" data-modal-submit>
+      {{ "FORM.BUTTON.SUBMIT" | translate }}
     </bh-loading-button>
     <button type="button" class="btn btn-default" ng-click="ConfirmModalCtrl.dismiss()" data-model-cancel>
       {{ "FORM.BUTTONS.CANCEL" | translate }}
