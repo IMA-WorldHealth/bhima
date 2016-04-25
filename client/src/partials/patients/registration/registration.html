@@ -1,230 +1,227 @@
 <div class="flex-header">
   <div class="bhima-title">
-
     <ol class="headercrumb">
       <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
       <li class="title">{{ "PATIENT_REG.PAGE_TITLE" | translate }}</li>
     </ol>
-
   </div>
 </div>
 
 <div class="flex-content">
   <div class="container-fluid">
-    
+
     <!-- Module wide error handling -->
     <div class="row">
       <div class="col-md-12">
-        
+
         <uib-alert id="exceptionAlert" type="danger" ng-show="PatientRegCtrl.exception">
-          <span class="glyphicon glyphicon-exclamation-sign"></span> 
+          <span class="glyphicon glyphicon-exclamation-sign"></span>
           <b>{{ PatientRegCtrl.exception.data.code | translate }}</b> ({{PatientRegCtrl.exception.status}} - {{PatientRegCtrl.exception.data.description}})
         </uib-alert>
       </div>
     </div>
-    
+
     <div class="row">
 
-      <!-- Patient Details Form -->
-      <div class="col-md-7">
-        <div id="patient-details" class="panel panel-primary">
-          <div class="panel-heading">{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</div>
-          <div class="panel-body">
+      <form name="details" class="form-horizontal" bh-submit="PatientRegCtrl.registerPatient(details)" novalidate>
 
-            <form name="details"  class="form-horizontal">
+        <!-- Patient Details Form -->
+        <div class="col-md-7">
+          <div id="patient-details" class="panel panel-primary">
+            <div class="panel-heading">{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</div>
+              <div class="panel-body">
 
-              <!-- Last Name -->
-              <div
-                class="form-group has-feedback"
-                ng-class="{'has-error' : details.lastName.$invalid && details.$submitted}">
+                <!-- Last Name -->
+                <div
+                  class="form-group has-feedback"
+                  ng-class="{'has-error' : details.lastName.$invalid && details.$submitted}">
 
-                <label for="second-name" class="col-md-3 control-label">{{ "FORM.LABELS.SECOND_NAME" | translate }}</label>
-                <div class="col-md-9">
-                  <input id="second-name" class="form-control" name="lastName" ng-model="PatientRegCtrl.medical.last_name" required>
-                  
-                  <div class="help-block" ng-messages="details.lastName.$error" ng-show="details.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-              </div>
+                  <label for="second-name" class="col-md-3 control-label">{{ "FORM.LABELS.SECOND_NAME" | translate }}</label>
+                  <div class="col-md-9">
+                    <input id="second-name" class="form-control" name="lastName" ng-model="PatientRegCtrl.medical.last_name" required>
 
-              <!-- Middle Name -->
-              <div
-                class="form-group has-feedback"
-                ng-class="{'has-error' : details.middleName.$invalid && details.$submitted}">
-
-                <label for="middle-name" class="col-md-3 control-label">{{ "FORM.LABELS.MIDDLE_NAME" | translate }}</label>
-                <div class="col-md-9">
-                  <input id="middle-name" class="form-control" name="middleName" ng-model="PatientRegCtrl.medical.middle_name" required>
-                  
-                  <div class="help-block" ng-messages="details.middleName.$error" ng-show="details.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- First Name -->
-              <div
-                class="form-group has-feedback"
-                ng-class="{'has-error' : details.firstName.$invalid && details.$submitted}">
-
-                <label for="new-first-name" class="col-md-3 control-label">{{ "FORM.LABELS.FIRST_NAME" | translate }}</label>
-                <div class="col-md-9">
-                  <input id="new-first-name" class="form-control" name="first-name" ng-model="PatientRegCtrl.medical.first_name">
-                </div>
-              </div>
-
-              <!-- Hospital File Number -->
-              <div
-                class="form-group has-feedback"
-                ng-class="{'has-error' : details.hospitalNumber.$invalid && details.$submitted || details.hospitalNumber.$error.unique}">
-
-                <label for="new-hospital-number" class="col-md-3 control-label">{{ "FORM.LABELS.HOSPITAL_FILE_NR" | translate }} </label>
-                <div class="col-md-9">
-                  <input 
-                    id="new-hospital-number"
-                    name="hospitalNumber"
-                    class="form-control"
-                    autocomplete="off"
-                    ng-model="PatientRegCtrl.medical.hospital_no"
-                    bh-unique="/patients/hospital_number"
-                    required>
-                  
-                  <span ng-if="details.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
-                  <span ng-if="details.hospitalNumber.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
-                  
-                  <div class="help-block" ng-messages="details.hospitalNumber.$error" ng-show="details.$submitted || details.hospitalNumber.$error.unique">
-                    <p ng-messages-include="partials/templates/messages.tmpl.html"></p> 
-                  </div>
-                </div>
-              </div>
-
-              <!-- Year of Birth -->
-              <div class="form-group"
-                ng-if="!PatientRegCtrl.fullDateEnabled"
-                ng-class="{'has-error' : details.yob.$invalid && details.$submitted}">
-
-                <label for="yob" class="col-md-3 control-label">{{ "FORM.LABELS.YOB" | translate }}</label>
-                <div class="col-md-9">
-                  <div class="input-group">
-                    <input id="yob" name="yob" type="text" class="form-control" ng-model="PatientRegCtrl.yob" ng-change="PatientRegCtrl.calculateYOB(details.yob.$modelValue)" required>
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button" ng-click="PatientRegCtrl.enableFullDate()">{{ "FORM.BUTTONS.ENTER_FULL_DATE" | translate }}</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Full date of birth -->
-              <div class="form-group has-feedback"
-                ng-class="{'has-error' : details.dob.$invalid && details.$submitted}">
-
-                <label for="patient-dob" class="col-md-3 control-label">{{ "FORM.LABELS.DOB" | translate }}</label>
-                <div class="col-md-9">
-                  <input required name="dob" id="patient-dob" type="date" class="form-control" ng-disabled="!PatientRegCtrl.fullDateEnabled" ng-model="PatientRegCtrl.medical.dob" min="{{PatientRegCtrl.minDOB | date : 'yyyy-MM-dd'}}" max="{{PatientRegCtrl.maxDOB | date : 'yyyy-MM-dd'}}">
-    
-                  <!-- ng-if used to remove element for various test cases - this is not required for functionality -->
-                  <div ng-if="details.dob.$invalid">
-                    <div class="help-block" ng-messages="details.dob.$error" data-date-error>
-                      <div ng-messages-include="partials/templates/dates.messages.tmpl.html"></div>
+                    <div class="help-block" ng-messages="details.lastName.$error" ng-show="details.$submitted">
+                      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Gender -->
-              <div id="gender" class="form-group has-feedback"
-                ng-class="{'has-error' : details.genderOptions.$invalid && details.$submitted}">
-                <label for="male" class="col-md-3 control-label"> {{ "FORM.LABELS.GENDER" | translate }} </label>
-                <div class="col-md-9">
-                  <label class="radio-inline">
-                    <input type="radio" name="genderOptions" id="male" value="M" ng-model="PatientRegCtrl.medical.sex" required>
-                    {{ "FORM.LABELS.MALE" | translate }}
-                  </label>
+                <!-- Middle Name -->
+                <div
+                  class="form-group has-feedback"
+                  ng-class="{'has-error' : details.middleName.$invalid && details.$submitted}">
 
-                  <label class="radio-inline">
-                    <input type="radio" name="genderOptions" id="female" value="F" ng-model="PatientRegCtrl.medical.sex" required>
-                    {{ "FORM.LABELS.FEMALE" | translate }}
-                  </label>
-                  
-                  <div class="help-block" ng-messages="details.genderOptions.$error" ng-show="details.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  <label for="middle-name" class="col-md-3 control-label">{{ "FORM.LABELS.MIDDLE_NAME" | translate }}</label>
+                  <div class="col-md-9">
+                    <input id="middle-name" class="form-control" name="middleName" ng-model="PatientRegCtrl.medical.middle_name" required>
+
+                    <div class="help-block" ng-messages="details.middleName.$error" ng-show="details.$submitted">
+                      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Seperate location settings -->
-              <hr>
+                <!-- First Name -->
+                <div
+                  class="form-group has-feedback"
+                  ng-class="{'has-error' : details.firstName.$invalid && details.$submitted}">
 
-              <!-- Location -->
-              <div class="row">
-                <div class="col-md-5 col-md-offset-1">
-                    <h4>{{ "FORM.LABELS.ORIGIN_LOCATION" | translate }}</h4>
+                  <label for="new-first-name" class="col-md-3 control-label">{{ "FORM.LABELS.FIRST_NAME" | translate }}</label>
+                  <div class="col-md-9">
+                    <input id="new-first-name" class="form-control" name="first-name" ng-model="PatientRegCtrl.medical.first_name">
+                  </div>
+                </div>
+
+                <!-- Hospital File Number -->
+                <div
+                  class="form-group has-feedback"
+                  ng-class="{'has-error' : details.hospitalNumber.$invalid && details.$submitted || details.hospitalNumber.$error.unique}">
+
+                  <label for="new-hospital-number" class="col-md-3 control-label">{{ "FORM.LABELS.HOSPITAL_FILE_NR" | translate }} </label>
+                  <div class="col-md-9">
+                    <input
+                      id="new-hospital-number"
+                      name="hospitalNumber"
+                      class="form-control"
+                      autocomplete="off"
+                      ng-model="PatientRegCtrl.medical.hospital_no"
+                      bh-unique="/patients/hospital_number"
+                      required>
+
+                    <span ng-if="details.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
+                    <span ng-if="details.hospitalNumber.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
+
+                    <div class="help-block" ng-messages="details.hospitalNumber.$error" ng-show="details.$submitted || details.hospitalNumber.$error.unique">
+                      <p ng-messages-include="partials/templates/messages.tmpl.html"></p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Year of Birth -->
+                <div class="form-group"
+                  ng-if="!PatientRegCtrl.fullDateEnabled"
+                  ng-class="{'has-error' : details.yob.$invalid && details.$submitted}">
+
+                  <label for="yob" class="col-md-3 control-label">{{ "FORM.LABELS.YOB" | translate }}</label>
+                  <div class="col-md-9">
+                    <div class="input-group">
+                      <input id="yob" name="yob" type="text" class="form-control" ng-model="PatientRegCtrl.yob" ng-change="PatientRegCtrl.calculateYOB(details.yob.$modelValue)" required>
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" ng-click="PatientRegCtrl.enableFullDate()">{{ "FORM.BUTTONS.ENTER_FULL_DATE" | translate }}</button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Full date of birth -->
+                <div class="form-group has-feedback"
+                  ng-class="{'has-error' : details.dob.$invalid && details.$submitted}">
+
+                  <label for="patient-dob" class="col-md-3 control-label">{{ "FORM.LABELS.DOB" | translate }}</label>
+                  <div class="col-md-9">
+                    <input required name="dob" id="patient-dob" type="date" class="form-control" ng-disabled="!PatientRegCtrl.fullDateEnabled" ng-model="PatientRegCtrl.medical.dob" min="{{PatientRegCtrl.minDOB | date : 'yyyy-MM-dd'}}" max="{{PatientRegCtrl.maxDOB | date : 'yyyy-MM-dd'}}">
+
+                    <!-- ng-if used to remove element for various test cases - this is not required for functionality -->
+                    <div ng-if="details.dob.$invalid">
+                      <div class="help-block" ng-messages="details.dob.$error" data-date-error>
+                        <div ng-messages-include="partials/templates/dates.messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gender -->
+                <div id="gender" class="form-group has-feedback"
+                  ng-class="{'has-error' : details.genderOptions.$invalid && details.$submitted}">
+                  <label for="male" class="col-md-3 control-label"> {{ "FORM.LABELS.GENDER" | translate }} </label>
+                  <div class="col-md-9">
+                    <label class="radio-inline">
+                      <input type="radio" name="genderOptions" id="male" value="M" ng-model="PatientRegCtrl.medical.sex" required>
+                      {{ "FORM.LABELS.MALE" | translate }}
+                    </label>
+
+                    <label class="radio-inline">
+                      <input type="radio" name="genderOptions" id="female" value="F" ng-model="PatientRegCtrl.medical.sex" required>
+                      {{ "FORM.LABELS.FEMALE" | translate }}
+                    </label>
+
+                    <div class="help-block" ng-messages="details.genderOptions.$error" ng-show="details.$submitted">
+                      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- separate location settings -->
+                <hr>
+
+                <!-- Location -->
+                <div class="row">
+                  <div class="col-md-5 col-md-offset-1">
+                      <h4>{{ "FORM.LABELS.ORIGIN_LOCATION" | translate }}</h4>
+                      <bh-location-select
+                        id="origin-location-id"
+                        validation-trigger="details.$submitted"
+                        location-uuid="PatientRegCtrl.medical.origin_location_id">
+                      </bh-location-select>
+                  </div>
+
+                  <!-- Seperate location searches given a certain screen size -->
+                  <div class="visible-sm-block visible-xs-block"><hr></div>
+
+                  <div class="col-md-5 col-md-offset-1">
+                    <h4>{{ "FORM.LABELS.CURRENT_LOCATION" | translate }}</h4>
                     <bh-location-select
-                      id="origin-location-id"
+                      id="current-location-id"
                       validation-trigger="details.$submitted"
-                      location-uuid="PatientRegCtrl.medical.origin_location_id">
+                      location-uuid="PatientRegCtrl.medical.current_location_id">
                     </bh-location-select>
-                </div>
-
-                <!-- Seperate location searches given a certain screen size -->
-                <div class="visible-sm-block visible-xs-block"><hr></div>
-
-                <div class="col-md-5 col-md-offset-1">
-                  <h4>{{ "FORM.LABELS.CURRENT_LOCATION" | translate }}</h4>
-                  <bh-location-select
-                    id="current-location-id"
-                    validation-trigger="details.$submitted"
-                    location-uuid="PatientRegCtrl.medical.current_location_id">
-                  </bh-location-select>
-                </div>
-              </div>
-
-              <!-- Seperate finance settings -->
-              <hr>
-
-              <!-- Debtor Group -->
-              <div class="form-group has-feedback"
-                ng-class="{'has-error' : details.debtorGroup.$invalid && details.$submitted}">
-                
-                <!-- Warning for incomplete data - the page will not be able to continue -->
-                <uib-alert type="warning" ng-if="PatientRegCtrl.options.debtorGroups.length === 0">
-                  <span class="glyphicon glyphicon-warning-sign"></span>
-                  {{ "FORM.LABELS.NO_DEBTOR_GROUPS" | translate }} <b>{{ "FORM.LABELS.CONTACT_ADMIN" | translate }}</b>
-                </uib-alert>
-
-                <label for="new-debtor-group" class="col-md-3 control-label">{{"FORM.LABELS.DEBITOR_GROUP" | translate }}</label>
-                <div class="col-md-9">
-                  <select class="form-control" name="debtorGroup" id="debtor-group" ng-model="PatientRegCtrl.finance.debtor_group_uuid" ng-options="g.uuid as g.name for g in PatientRegCtrl.options.debtorGroups | orderBy:'name'" required>
-                    <option value="" disabled="disabled">-- {{"FORM.SELECTS.SELECT_DEBITOR_GROUP" | translate }} --</option>
-                  </select>
-
-                  <div class="help-block" ng-messages="details.debtorGroup.$error" ng-show="details.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
                 </div>
-              </div>
-            </form>
-          </div>
 
-          <div class="panel-footer">
-           
-            <p class="text-danger" ng-if="details.$submitted && details.$invalid">
-              <span class="glyphicon glyphicon-remove-sign"></span> {{ "FORM.INFOS.RECORD_ERROR" | translate }}
-            </p>
-            <button type="submit" ng-click="PatientRegCtrl.registerPatient(details)" class="btn btn-primary btn-sm" data-method="submit">
-              {{ "FORM.BUTTONS.REGISTER_PATIENT" | translate }}
-            </button>
+                <!-- Seperate finance settings -->
+                <hr>
+
+                <!-- Debtor Group -->
+                <div class="form-group has-feedback"
+                  ng-class="{'has-error' : details.debtorGroup.$invalid && details.$submitted}">
+
+                  <!-- Warning for incomplete data - the page will not be able to continue -->
+                  <uib-alert type="warning" ng-if="PatientRegCtrl.options.debtorGroups.length === 0">
+                    <span class="glyphicon glyphicon-warning-sign"></span>
+                    {{ "FORM.LABELS.NO_DEBTOR_GROUPS" | translate }} <b>{{ "FORM.LABELS.CONTACT_ADMIN" | translate }}</b>
+                  </uib-alert>
+
+                  <label for="new-debtor-group" class="col-md-3 control-label">{{"FORM.LABELS.DEBITOR_GROUP" | translate }}</label>
+                  <div class="col-md-9">
+                    <select class="form-control" name="debtorGroup" id="debtor-group" ng-model="PatientRegCtrl.finance.debtor_group_uuid" ng-options="g.uuid as g.name for g in PatientRegCtrl.options.debtorGroups | orderBy:'name'" required>
+                      <option value="" disabled="disabled">-- {{"FORM.SELECTS.SELECT_DEBITOR_GROUP" | translate }} --</option>
+                    </select>
+
+                    <div class="help-block" ng-messages="details.debtorGroup.$error" ng-show="details.$submitted">
+                      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="panel-footer text-right">
+              <p class="text-danger" ng-if="details.$submitted && details.$invalid">
+                <span class="glyphicon glyphicon-remove-sign"></span> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
+              </p>
+              <bh-loading-button loading-state="details.$loading">
+                {{ "FORM.BUTTONS.REGISTER_PATIENT" | translate }}
+              </bh-loading-button>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
 
       <!-- Optional Information Form -->
       <div class="col-md-5">
         <div id="registration-type" class="panel panel-default">
           <div class="panel-heading">{{ "FORM.LABELS.OPTIONAL_INFO" | translate }}</div>
           <div class="panel-body">
-            <form class="form-horizontal">
+            <form class="form-horizontal" novalidate>
 
               <div class="form-group">
                 <label for="title" class="control-label">{{ "FORM.LABELS.PHONE_NO" | translate }}</label>
