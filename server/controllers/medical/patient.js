@@ -174,7 +174,7 @@ function detail(req, res, next) {
 function update(req, res, next) {
   var updatePatientQuery;
   var data = convert(req.body);
-  var patientUuid = req.params.uuid; 
+  var patientUuid = req.params.uuid;
   var buid = db.bid(patientUuid);
 
   // prevent updating the patient's uuid
@@ -195,7 +195,7 @@ function update(req, res, next) {
 }
 
 function handleFetchPatient(patientUuid) {
-  
+
   // convert uuid to database usable binary uuid
   var buid = db.bid(patientUuid);
 
@@ -531,7 +531,7 @@ function search(req, res, next) {
         p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2,
         p.renewal, p.origin_location_id, p.current_location_id, p.registration_date,
         p.title, p.notes, p.hospital_no, d.text, proj.abbr,
-        dg.account_id, BUID(dg.price_list_uuid) as price_list_uuid, dg.is_convention, dg.locked
+        dg.account_id, dg.price_list_uuid as price_list_uuid, dg.is_convention, dg.locked
       FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg
         ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
       ) AS q `;

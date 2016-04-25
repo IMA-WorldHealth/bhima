@@ -23,9 +23,9 @@ module.exports.take = take;
 * @return {object} The object which contains the query and conditions
 */
 function queryCondition(sql, params) {
-  var conditions = [];
+  let conditions = [];
 
-  var criteria = Object.keys(params).map(function (item) {
+  let criteria = Object.keys(params).map(function (item) {
     conditions = conditions.concat(item, params[item]);
     return '?? = ?';
   }).join(' AND ');

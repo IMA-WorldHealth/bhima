@@ -81,8 +81,7 @@ describe('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  // NOTE : Temporary skips while we are sorting the posting journal routes out
-  it.skip('POST /sales will record a valid patient invoice and return success from the posting journal', function () {
+  it('POST /sales will record a valid patient invoice and return success from the posting journal', function () {
     return agent.post('/sales')
       .send({ sale : mockSale })
       .then(function (res) {
@@ -97,7 +96,7 @@ describe('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  it.skip('GET /sales/:uuid returns a valid patient invoice', function () {
+  it('GET /sales/:uuid returns a valid patient invoice', function () {
     return agent.get('/sales/' + mockSale.uuid)
       .then(function (res) {
         expect(res).to.have.status(200);

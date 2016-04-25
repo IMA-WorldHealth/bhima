@@ -294,12 +294,36 @@ INSERT INTO `service` VALUES
   (2, 1, 'Administration', 1, 1),
   (3, 1, 'Medecine Interne', 1, 1);
 
+-- billing service configuration
 
+INSERT INTO `billing_service` VALUES
+  (1, 3626, 'Test Billing Service', 'Example billing service', 20, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (2, 3626, 'Second Test Billing Service', 'Example billing service 2', 10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `patient_group_billing_service` VALUES
+  (1, HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'), 1, CURRENT_TIMESTAMP);
+
+INSERT INTO `debtor_group_billing_service` VALUES
+  (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 2, CURRENT_TIMESTAMP);
+
+-- subsidy configuration
+
+INSERT INTO `subsidy` VALUES
+  (1, 3626, 'Test Subsidy', 'Subsidy for test purposes', 50, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (2, 3626, 'Second Test Subsidy', 'Second subsidy for test purposes', 20, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `patient_group_subsidy` VALUES
+  (1, HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'), 1, CURRENT_TIMESTAMP);
+
+INSERT INTO `debtor_group_subsidy` VALUES
+  (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 1, CURRENT_TIMESTAMP);
+
+-- patient invoices
 INSERT INTO sale (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, discount, date, description, timestamp, is_distributable) VALUES
   (1,2,HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'),75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,0,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
   (1,1,HUID('c44619e0-3a88-4754-a750-a414fc9567bf'),25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,0,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
 
-INSERT INTO `sale_item` VALUES
+INSERT INTO sale_item VALUES
   (HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'),HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000);
 
 SET @pjid = HUID(UUID());
@@ -322,8 +346,14 @@ INSERT INTO `exchange_rate` VALUES
 INSERT INTO `employee` VALUES
   (1,'E1','Dedrick','Kitamuka','Mvuezolo','M','1980-02-01 00:00:00','2016-02-02 00:00:00',1,3,HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),500,NULL,NULL,'kinshasa','0896611111','my@email.com',1,3,HUID('bfd8563e-72db-4698-af0f-55bd7849369e'),HUID('42d3756a-7770-4bb8-a899-7953cd859892'),HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),NULL);
 
-INSERT INTO `price_list` (`enterprise_id`, `uuid`, `label`) VALUES
-  (1, HUID('2e39c855-6f2b-48d7-af7f-746f0552f7b7'), 'Test Price List');
+INSERT INTO `price_list` VALUES
+  (HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 1, 'Test Price List', 'Price list for test purposes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `price_list_item` VALUES
+  (HUID(UUID()), HUID('cf05da13-b477-11e5-b297-023919d3d5b0'), HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), '', 100, 1, CURRENT_TIMESTAMP),
+  (HUID(UUID()), HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), '', 100, 1, CURRENT_TIMESTAMP);
+
+UPDATE debtor_group SET price_list_uuid = HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0') WHERE uuid = HUID('4de0fe47-177f-4d30-b95f-cff8166400b4');
 
 -- 1.X Routes
 -- ----------
