@@ -10,7 +10,7 @@ const JournalCorePage = require('./journal.page.js');
 const GridObjectTest = require('../shared/gridObjectTestUtils.spec.js');
 
 
-describe.only('Posting Journal Core', function () {
+describe('Posting Journal Core', function () {
   'use strict';
 
   const path = '#/journal';
@@ -29,22 +29,20 @@ describe.only('Posting Journal Core', function () {
 
   it('reset the number of visible columns to default', function (){
 
-    before(() => browser.get(path));
-
     var defaultVisibleColumnNumber = 6;
-    var journalPage = new JournalPage();
+    var journalPage = new JournalCorePage();
 
     journalPage.showColumnConfigDialog();
     journalPage.resetColumnConfig();
+    journalPage.submitButton();
 
     expect(journalPage.getColumnCount()).to.eventually.equal(defaultVisibleColumnNumber);
+
   });
 
   it('Change a state of a journal grid column', function (){
 
-    before(() => browser.get(path));
-
-    var journalPage = new JournalPage();
+    var journalPage = new JournalCorePage();
     var visibleColumnsNumberBefore = journalPage.getColumnCount();
 
     journalPage.showColumnConfigDialog();
