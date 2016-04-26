@@ -22,7 +22,7 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql
 echo "Building server ...."
 
 # build and start the server
-npm run dev &
+npm run dev_windows &
 
 # make sure we have enough time for the server to start
 sleep $TIMEOUT

@@ -36,10 +36,10 @@ INSERT INTO unit VALUES
   (109, 'Section du bilan','TREE.SECTION_BILAN','',30,'/partials/section_bilan/','/section_bilan/'),
   (110, 'Section resultat','TREE.SECTION_RESULTAT','',30,'/partials/section_resultat/','/section_resultat/'),
   (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',30,'/partials/references/groups','/references/groups'),
-  (112, 'Reference','TREE.REFERENCE','References',30,'/partials/references','/references'),  
+  (112, 'Reference','TREE.REFERENCE','References',30,'/partials/references','/references'),
   (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple'),
-  (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services');
-
+  (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services'),
+  (136, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 30, '/partials/vouchers/complex', '/vouchers/complex');
 
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
@@ -187,7 +187,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (135, 1),
 
 -- Patient Group Module
-(29, 1);
+(29, 1),
+
+-- complex Journal Vouchers
+(136, 1);
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);

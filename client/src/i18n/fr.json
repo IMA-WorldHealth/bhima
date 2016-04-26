@@ -627,7 +627,7 @@
   },
   "SETTINGS": {
     "TITLE" : "Paramètres"
-  },  
+  },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Ajout d'une subvention",
     "ADD_SUBSIDY"      : "Ajouter subvention",
@@ -736,6 +736,7 @@
     "CAUTION"                    : "Paiement Anticipatif",
     "CHART_OF_ACCOUNTS"          : "Plan Comptable",
     "CLIENT"                     : "Client",
+    "COMPLEX_JOURNAL_VOUCHER"    : "Ajout de transactions",
     "COMPTE_RESULTAT"            : "Compte Resultat",
     "CONFIG_ACCOUNTING"          : "Configuration Comptes",
     "CONFIG_RUBRIC"              : "Configuration Rubriques",
@@ -877,6 +878,10 @@
   "VOUCHERS": {
     "SIMPLE": {
       "TITLE" : "Bordereau de transfert"
+    },
+    "COMPLEX": {
+      "TITLE" : "Ajour de transactions",
+      "DESCRIPTION" : "Ce module permet de passer des transactions avancees dans le journal"
     }
   }
 }

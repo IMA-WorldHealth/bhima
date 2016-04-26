@@ -1,0 +1,87 @@
+<!-- breadcrumb header -->
+<bh-breadcrumb
+  path="ComplexVoucherCtrl.paths">
+</bh-breadcrumb>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <i class="glyphicon glyphicon-file"></i> {{ "VOUCHERS.COMPLEX.TITLE" | translate }}
+          </div>
+
+          <div class="panel-body">
+            <form name="SimpleVoucherForm" bh-submit="ComplexVoucherCtrl.submit(SimpleVoucherForm)" autocomplete="off" novalidate>
+
+              <bh-date-editor
+                date-value="ComplexVoucherCtrl.voucher.date"
+                validation-trigger="SimpleVoucherForm.$submitted"
+                max-date="ComplexVoucherCtrl.timestamp"
+              >
+              </bh-date-editor>
+
+              <div
+                class="form-group"
+                ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.description.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
+                <textarea
+                  class="form-control"
+                  name="description"
+                  ng-model="ComplexVoucherCtrl.voucher.description"
+                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
+                  required>
+                </textarea>
+                <div class="help-block" ng-messages="SimpleVoucherForm.description.$error" ng-show="SimpleVoucherForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <!-- @TODO - use a currency selection component -->
+              <div
+                class="radio"
+                ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.currency.$invalid }">
+                <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
+                <label ng-repeat="currency in ComplexVoucherCtrl.currencies track by currency.id" class="radio-inline">
+                  <input
+                    name="currency"
+                    type="radio"
+                    ng-model="ComplexVoucherCtrl.voucher.currency_id"
+                    ng-value="currency.id"
+                    data-currency-option="{{ currency.id }}"
+                    required>
+                  {{ currency.label }}
+                </label>
+
+                <div class="help-block" ng-messages="SimpleVoucherForm.currency.$error" ng-show="SimpleVoucherForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <!-- translate the server-sent error for the client -->
+              <p class="alert alert-danger" ng-show="ComplexVoucherCtrl.httpError">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>{{ ComplexVoucherCtrl.httpError | translate }}
+              </p>
+
+              <!-- displays: "Record created successfully!" -->
+              <p class="alert alert-success" ng-show="ComplexVoucherCtrl.created && SimpleVoucherForm.$pristine">
+                <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.INFOS.SAVE_SUCCESS" | translate }}
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="alert alert-info">
+          <h3>{{ 'VOUCHERS.COMPLEX.TITLE' | translate }}</h3>
+          <p>
+            {{ 'VOUCHERS.COMPLEX.DESCRIPTION' | translate }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
