@@ -90,7 +90,7 @@ function JournalSortingService() {
     // Gloabl sorting configuration
     gridOptions.enableSorting = true;
 
-    // Register for the Grid API
+    // // Register for the Grid API
     gridOptions.onRegisterApi = function (api) { 
       gridApi = api;
   
