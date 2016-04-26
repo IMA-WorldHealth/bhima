@@ -28,6 +28,14 @@ module.exports = function post(transaction, uuid) {
   // set up shared variables (such as transId and detect errors)
   transaction = core.setup(transaction);
 
+  // actually post the transaction
+  transaction
+    .addQuery(`
+      CALL PostPatientInvoice(
+        ?, @transId, @projectId, @fiscalYearId, @periodId, @currencyId
+      );
+    `, [uuid]);
+
   return transaction.execute()
     .catch(core.handler);
 };

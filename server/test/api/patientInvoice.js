@@ -9,7 +9,7 @@ var helpers = require('./helpers');
 helpers.configure(chai);
 
 /** The /sales API endpoint */
-describe('The /sales API', function () {
+describe.only('The /sales API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   /** login at the start of the test */
@@ -73,7 +73,7 @@ describe('The /sales API', function () {
   /** @const a reference for one of the sales in the database */
   var REFERENCE = 'TPA1';
 
-  it('GET /sales returns a list of patient invoices', function () {
+  it.skip('GET /sales returns a list of patient invoices', function () {
     return agent.get('/sales')
       .then(function (res) {
         helpers.api.listed(res, numSales);
@@ -96,7 +96,7 @@ describe('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /sales/:uuid returns a valid patient invoice', function () {
+  it.skip('GET /sales/:uuid returns a valid patient invoice', function () {
     return agent.get('/sales/' + mockSale.uuid)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -114,7 +114,7 @@ describe('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /sales/:uuid returns 404 for an invalid patient invoice', function () {
+  it.skip('GET /sales/:uuid returns 404 for an invalid patient invoice', function () {
     return agent.get('/sales/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
@@ -122,7 +122,7 @@ describe('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /sales returns 400 for an empty patient invoice request object', function () {
+  it.skip('POST /sales returns 400 for an empty patient invoice request object', function () {
     return agent.post('/sales')
       .send({})
       .then(function (res) {
@@ -131,7 +131,7 @@ describe('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /sales returns 400 for a patient invoice missing a date', function () {
+  it.skip('POST /sales returns 400 for a patient invoice missing a date', function () {
     return agent.post('/sales')
       .send({ sale : missingSaleDate })
       .then(function (res) {
@@ -140,7 +140,7 @@ describe('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /sales returns 400 for a patient invoice missing sale items', function () {
+  it.skip('POST /sales returns 400 for a patient invoice missing sale items', function () {
     return agent.post('/sales')
       .send({ sale : missingSaleItems })
       .then(function (res) {
