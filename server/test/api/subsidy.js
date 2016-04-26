@@ -6,7 +6,9 @@ var helpers = require('./helpers');
 helpers.configure(chai);
 
 describe('(/subsidies) The subsidy API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+  // ensure the client is logged in before tests start
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   var newSubsidy = {
     account_id:  3626,
@@ -26,13 +28,11 @@ describe('(/subsidies) The subsidy API', function () {
     'id', 'account_id', 'label', 'description', 'value', 'created_at', 'updated_at'
   ];
 
-  // ensure the client is logged in before tests start
-  before(helpers.login(agent));
 
-  it('GET /subsidies returns an empty list of subsidies', function () {
+  it('GET /subsidies returns a list of two subsidies', function () {
       return agent.get('/subsidies')
         .then(function (res) {
-          helpers.api.listed(res, 0);
+          helpers.api.listed(res, 2);
         })
         .catch(helpers.handler);
     });
@@ -52,7 +52,7 @@ describe('(/subsidies) The subsidy API', function () {
      .catch(helpers.handler);
   });
 
-  it('POST /subsidies refuses to add a wrong subsidy', function () {
+  it('POST /subsidies refuses to add an incorrectly formatted subsidy', function () {
     return agent.post('/subsidies')
       .send(wrongSubsidy)
       .then(function (res) {
@@ -61,10 +61,10 @@ describe('(/subsidies) The subsidy API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /subsidies returns an array of one subsidy', function () {
+  it('GET /subsidies returns an array of three subsidies', function () {
       return agent.get('/subsidies')
         .then(function (res) {
-          helpers.api.listed(res, 1);
+          helpers.api.listed(res, 3);
         })
         .catch(helpers.handler);
     });

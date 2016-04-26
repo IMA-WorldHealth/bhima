@@ -1,18 +1,18 @@
-/*global describe, it, element, by, beforeEach, inject, browser */
+/* global element, by, inject, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
-var expect = chai.expect;
+const helpers = require('../shared/helpers');
+helpers.configure(chai);
 
-var FormUtils = require('../shared/FormUtils');
-var components = require('../shared/components');
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
 
-describe('The Enterprises Module', function () {
+describe('Enterprises Module', function () {
 
-  // shared methods
-  var path = '#/enterprises';
-  var ENTERPRISE = {
+  const path = '#/enterprises';
+  const enterpriseId = 1;
+  const enterprise = {
     name : 'Interchurch Medical Assistance',
     abbr : 'IMA',
     email : 'ima@imaworldhealth.com',
@@ -21,67 +21,57 @@ describe('The Enterprises Module', function () {
     currency_id : 1
   };
 
-  var locations = [
-   'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
-   'f6fc7469-7e58-45cb-b87c-f08af93edade', // Bas Congo,
-   '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', // Tshikapa,
-   '1f162a10-9f67-4788-9eff-c1fea42fcc9b' // kele
-  ];
+  // navigate to the enterprise module before running tests
+  before(() => browser.get(path));
 
-  var ENTERPRISE_ID = 1;
-
-  // navigate to the enterprise module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
 
   it('successfully creates a new enterprise', function () {
-    FormUtils.buttons.create();
+    FU.buttons.create();
 
-    FormUtils.input('EnterpriseCtrl.enterprise.name', ENTERPRISE.name);
-    FormUtils.input('EnterpriseCtrl.enterprise.abbr', ENTERPRISE.abbr);
-    FormUtils.input('EnterpriseCtrl.enterprise.email', ENTERPRISE.email);
-    FormUtils.input('EnterpriseCtrl.enterprise.po_box', ENTERPRISE.po_box);
-    FormUtils.input('EnterpriseCtrl.enterprise.phone', ENTERPRISE.phone);
+    FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
+    FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
+    FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
+    FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
+    FU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
 
     // select the locations specified
-    components.locationSelect.set(locations);
+    components.locationSelect.set(helpers.data.locations);
 
-    FormUtils.radio('EnterpriseCtrl.enterprise.currency_id', ENTERPRISE.currency_id);
+    FU.radio('EnterpriseCtrl.enterprise.currency_id', enterprise.currency_id);
 
     // submit the page to the server
-    FormUtils.buttons.submit();
+    FU.buttons.submit();
 
-    expect(element(by.id('create_success')).isPresent()).to.eventually.be.true;
+    FU.exists(by.id('create_success'), true);
   });
 
 
   it('successfully edits an enterprise', function () {
-    element(by.id('enterprise-' + ENTERPRISE_ID )).click();
-    element(by.model('EnterpriseCtrl.enterprise.name')).sendKeys('Enterprise UPDATED');
-    element(by.model('EnterpriseCtrl.enterprise.abbr')).sendKeys('EnUpdt');
-    element(by.id('change_enterprise')).click();
+    element(by.id('enterprise-' + enterpriseId)).click();
 
-    expect(element(by.id('update_success')).isPresent()).to.eventually.be.true;
+    FU.input('EnterpriseCtrl.enterprise.name', 'Enterprise UPDATED');
+    FU.input('EnterpriseCtrl.enterprise.abbr', 'Enterprise EnUpdt');
+
+    element(by.id('change_enterprise')).click();
+    FU.exists(by.id('update_success'), true);
   });
 
 
-  it('correctly blocks invalid form submission with relevent error classes', function () {
-    FormUtils.buttons.create();
-    FormUtils.buttons.submit();
+  it('correctly blocks invalid form submission with relevant error classes', function () {
+    FU.buttons.create();
+    FU.buttons.submit();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     // The following fields should be required
-    expect(element(by.model('EnterpriseCtrl.enterprise.name')).getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(element(by.model('EnterpriseCtrl.enterprise.abbr')).getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(element(by.model('EnterpriseCtrl.enterprise.currency_id')).getAttribute('class')).to.eventually.contain('ng-invalid');
+    FU.validation.error('EnterpriseCtrl.enterprise.name');
+    FU.validation.error('EnterpriseCtrl.enterprise.abbr');
+    FU.validation.error('EnterpriseCtrl.enterprise.currency_id');
 
     // The following fields is not required
-    expect(element(by.model('EnterpriseCtrl.enterprise.email')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
-    expect(element(by.model('EnterpriseCtrl.enterprise.po_box')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
-    expect(element(by.model('EnterpriseCtrl.enterprise.phone')).getAttribute('class')).to.eventually.not.contain('ng-invalid');
+    FU.validation.ok('EnterpriseCtrl.enterprise.email');
+    FU.validation.ok('EnterpriseCtrl.enterprise.po_box');
+    FU.validation.ok('EnterpriseCtrl.enterprise.phone');
   });
-
 });

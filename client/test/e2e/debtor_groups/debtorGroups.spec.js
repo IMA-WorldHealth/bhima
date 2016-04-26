@@ -1,44 +1,37 @@
 /* global element, by, browser */
+const chai    = require('chai');
+const expect  = chai.expect;
 
-var chai    = require('chai');
-var expect  = chai.expect;
-
-var helpers = require('../shared/helpers');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-var FormUtils = require('../shared/FormUtils');
-var components = require('../shared/components');
+const FormUtils = require('../shared/FormUtils');
+const components = require('../shared/components');
 
 describe('Debtor Groups', function () {
+  'use strict';
 
-  var PATH = '#/debtor_groups';
+  before(() => browser.get('#/debtor_groups'));
 
-  var groupUuid = '4de0fe47-177f-4d30-b95f-cff8166400b4';
+  const groupUuid = '4de0fe47-177f-4d30-b95f-cff8166400b4';
 
-  var debtorGroup = {
+  const debtorGroup = {
     name : '(E2E) Debtor Group',
     account_id : 3638,
-    location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : '(E2E) Nouveau debtor group de test',
     max_credit : 2500
   };
 
-  var update = {
+  const update = {
     name : '(E2E) Debtor Group (updated)',
     account_id : 3638,
-    location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
     phone : '0818061031',
     email : 'debtorgroup@info.com (updated)',
     note : '(E2E) Nouveau debtor group de test (updated)',
     max_credit : 5500
   };
-
-  /** navigate to the debtor group module */
-  beforeEach(function () {
-    browser.get(PATH);
-  });
 
   it('creates a new debtor group', function () {
     FormUtils.buttons.create();
@@ -65,16 +58,7 @@ describe('Debtor Groups', function () {
     FormUtils.input('DebtorGroupCtrl.debtorGroup.email', debtorGroup.email);
     FormUtils.input('DebtorGroupCtrl.debtorGroup.note', debtorGroup.note);
 
-
-    /** location Kele in Bas-Congo */
-    var locations = [
-     'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
-     'f6fc7469-7e58-45cb-b87c-f08af93edade', // Bas Congo,
-     '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', // Tshikapa,
-     '1f162a10-9f67-4788-9eff-c1fea42fcc9b' // kele
-    ];
-
-    components.locationSelect.set(locations);
+    components.locationSelect.set(helpers.data.locations);
 
     FormUtils.buttons.submit();
 

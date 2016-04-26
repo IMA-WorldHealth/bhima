@@ -17,6 +17,7 @@ module.exports = function(config) {
     files: [
       'client/vendor/angular/angular.js',
       'client/vendor/angular-mocks/angular-mocks.js',
+      'bin/client/js/vendor.min.js',
       'bin/client/js/bhima.min.js',
       'client/test/unit/**/*.spec.js'
     ],
@@ -31,7 +32,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
     },
-    
+
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
@@ -66,5 +67,5 @@ module.exports = function(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity
-  })
-}
+  });
+};

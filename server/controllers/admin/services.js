@@ -34,11 +34,11 @@ function list (req, res, next) {
 
   if (req.query.full === '1') {
     sql =
-      'SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id, ' + 
-      'cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name ' +
-      'FROM service AS s JOIN enterprise AS e ON s.enterprise_id = e.id ' +
-      'LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id LEFT JOIN ' +
-      'profit_center AS pc ON s.profit_center_id = pc.id';
+      `SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id, 
+       cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
+       FROM service AS s JOIN enterprise AS e ON s.enterprise_id = e.id
+       LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id LEFT JOIN
+       profit_center AS pc ON s.profit_center_id = pc.id`;
   }
 
   sql += ' ORDER BY s.name;';

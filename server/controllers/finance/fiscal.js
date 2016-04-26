@@ -157,8 +157,8 @@ function createNewYear(data) {
 
   // template the fiscal year query
   sql =
-    'INSERT INTO fiscal_year (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES ' +
-      '(?, ?, ?, ?, ?, ?);';
+    `INSERT INTO fiscal_year (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES
+      (?, ?, ?, ?, ?, ?);`;
 
   return db.exec(sql, [enterpriseId, monthNo, fiscalYearText, startMonth, startYear, previousFiscalYear]);
 }

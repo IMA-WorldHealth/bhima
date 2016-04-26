@@ -1,3 +1,4 @@
+/*jshint -W079 */
 /**
  * Build Script
  * @TODO
@@ -6,42 +7,39 @@
  * between the install requirements of a developer and a production environment.
  */
 
-var gulp       = require('gulp'),
-    gulpif     = require('gulp-if'),
-    concat     = require('gulp-concat'),
-    uglify     = require('gulp-uglify'),
-    cssnano    = require('gulp-cssnano'),
-    jshint     = require('gulp-jshint'),
-    flatten    = require('gulp-flatten'),
-    path       = require('path'),
-    iife       = require('gulp-iife'),
-    rimraf     = require('rimraf'),
-    gutil      = require('gulp-util'),
-    less       = require('gulp-less'),
+const gulp    = require('gulp');
+const gulpif  = require('gulp-if');
+const concat  = require('gulp-concat');
+const uglify  = require('gulp-uglify');
+const cssnano = require('gulp-cssnano');
+const jshint  = require('gulp-jshint');
+const flatten = require('gulp-flatten');
+const path    = require('path');
+const iife    = require('gulp-iife');
+const rimraf  = require('rimraf');
+const gutil   = require('gulp-util');
+const less    = require('gulp-less');
 
     // mocha for server-side testing
-    mocha      = require('gulp-mocha'),
+const mocha = require('gulp-mocha');
 
-    // protractor for e2e tests
-    protractor = require('gulp-protractor').protractor,
+// protractor for e2e tests
+const protractor = require('gulp-protractor').protractor;
 
-    // child process for custom scripts
-    exec       = require('child_process').exec;
+// child process for custom scripts
+const exec = require('child_process').exec;
 
-/**
- * @const
- * toggle client javascript minification
- */
-var UGLIFY = false,
+// toggle client javascript minification
+const UGLIFY = false;
 
-    // path to the jshintrc to use
-    JSHINT_PATH = '.jshintrc',
+// path to the jshintrc to use
+const JSHINT_PATH = '.jshintrc';
 
-    // the output folder for built server files
-    SERVER_FOLDER = './bin/server/',
+// the output folder for built server files
+const SERVER_FOLDER = './bin/server/';
 
-    // the output folder for built client files
-    CLIENT_FOLDER = './bin/client/';
+// the output folder for built client files
+const CLIENT_FOLDER = './bin/client/';
 
 
 // resource paths

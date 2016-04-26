@@ -37,11 +37,11 @@ function lookupDiscount(id) {
   'use strict';
 
   var sql =
-    'SELECT d.id, d.label, d.description, BUID(d.inventory_uuid) as inventory_uuid, ' +
-      'd.account_id, d.value, a.number, i.text as inventoryLabel ' +
-    'FROM discount AS d JOIN inventory AS i ON d.inventory_uuid = i.uuid ' +
-    'JOIN account AS a ON d.account_id = a.id ' +
-    'WHERE d.id = ?;';
+    `SELECT d.id, d.label, d.description, BUID(d.inventory_uuid) as inventory_uuid,
+      d.account_id, d.value, a.number, i.text as inventoryLabel
+    FROM discount AS d JOIN inventory AS i ON d.inventory_uuid = i.uuid
+    JOIN account AS a ON d.account_id = a.id
+    WHERE d.id = ?;`;
 
   return db.exec(sql, [ id ])
   .then(function (rows) {

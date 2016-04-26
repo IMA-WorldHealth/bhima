@@ -12,8 +12,8 @@ function lookupFunction(id) {
   'use strict';
 
   var sql =
-    'SELECT id, fonction_txt FROM fonction ' +
-    'WHERE fonction.id = ? ';
+    `SELECT id, fonction_txt FROM fonction
+    WHERE fonction.id = ?`;
 
   return db.exec(sql, [id])
   .then(function (rows) {

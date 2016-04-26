@@ -1,29 +1,25 @@
 /* global browser, element, by, protractor */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-// import testing utiliites
-var helpers = require('../shared/helpers');
+// import testing utilities
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-var components = require('../shared/components');
-var GU = require('../shared/gridTestUtils.spec.js');
-var EC = protractor.ExpectedConditions;
-var FU = require('../shared/FormUtils');
+const components = require('../shared/components');
+const GU = require('../shared/gridTestUtils.spec.js');
+const EC = protractor.ExpectedConditions;
+const FU = require('../shared/FormUtils');
 
 describe('Cash Payments Module', function () {
 
-  /** @const */
-  var path = '#/cash';
-
-  /** @const cashboxes defined in models/test/data.sql */
-  var cashboxA = {
+  const path = '#/cash';
+  const cashboxA = {
     id: 1,
     text : 'Test Primary Cashbox A',
   };
 
-  var cashboxB = {
+  const cashboxB = {
     id: 2,
     text : 'Test Primary Cashbox B',
   };
@@ -59,9 +55,6 @@ describe('Cash Payments Module', function () {
       // implicitly choose cashbox A by navigating to it directly
       browser.get(target);
 
-      // make sure all $http/$timeout requests clear before moving forward
-      browser.waitForAngular();
-
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
 
       // attempt to return to /cash manually
@@ -79,9 +72,6 @@ describe('Cash Payments Module', function () {
       // emulate a selection by simply going to the direct URL
       // this should set the cashbox ID in localstorage
       browser.get(target);
-
-      // make sure all $http/$timeout requests clear before moving forward
-      browser.waitForAngular();
 
       // confirm that we actually go to the page
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
@@ -110,16 +100,12 @@ describe('Cash Payments Module', function () {
       var backBtn = element(by.css('[data-change-cashbox]'));
       backBtn.click();
 
-      browser.waitForAngular();
-
       // ensure we get back to the cashbox select module
       expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
       // attempt to navigate (via the buttons) to cashboxB as our new target
       var btn = element(by.id('cashbox-'.concat(cashboxB.id)));
       btn.click();
-
-      browser.waitForAngular();
 
       // verify that we get to the cashboxB page
       expect(helpers.getCurrentPath()).to.eventually.equal(targetFinal);
@@ -221,21 +207,19 @@ describe('Cash Payments Module', function () {
 
   describe('Cash Transfer ', function (){
 
-    /** navigate to the page before each function */
-    beforeEach(function () {
-      browser.get(path);
-    });
+    /** navigate to the page before tests */
+    before(() => browser.get(path));
 
-    //This transfer should succed
-    var mockTransfer = {
+    // This transfer should succeed
+    const mockTransfer = {
       amount : 100
     };
 
-    it('should make a transfert between selected auxillary cash and a virement account', function (){
+    it('should make a transfer between selected auxiliary cash and a transfer account', function (){
 
-      //click the transfert button
-      var transfertBtn = element(by.css('[data-perform-transfer]'));
-      transfertBtn.click();
+      // click the transfer button
+      var transferBtn = element(by.css('[data-perform-transfer]'));
+      transferBtn.click();
 
       //choosing CDF as transfer currency
       var CDFRadio = element(by.css('[data-transfer-currency-option="1"]'));
@@ -248,7 +232,7 @@ describe('Cash Payments Module', function () {
       var transferSubmitBtn =  element(by.id('submit-transfer'));
       transferSubmitBtn.click();
 
-      FU.exists(by.id('succed-label'), true);
+      FU.exists(by.id('succeed-label'), true);
     });
   });
 });

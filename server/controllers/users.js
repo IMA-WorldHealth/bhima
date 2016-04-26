@@ -35,8 +35,8 @@ exports.list = function list(req, res, next) {
   var sql;
 
   sql =
-    'SELECT user.id, CONCAT(user.first, \' \', user.last) AS displayname, ' +
-      'user.username FROM user;';
+    `SELECT user.id, CONCAT(user.first, ' ', user.last) AS displayname,
+      user.username FROM user;`;
 
   db.exec(sql)
   .then(function (rows) {
@@ -53,9 +53,9 @@ function lookupUserDetails(id) {
   var sql, data;
 
   sql =
-    'SELECT user.id, user.username, user.email, user.first, user.last, ' +
-      'user.active, user.last_login AS lastLogin ' +
-    'FROM user WHERE user.id = ?;';
+    `SELECT user.id, user.username, user.email, user.first, user.last,
+      user.active, user.last_login AS lastLogin
+    FROM user WHERE user.id = ?;`;
 
   return db.exec(sql, [id])
   .then(function (rows) {
@@ -69,8 +69,8 @@ function lookupUserDetails(id) {
 
     // query project permissions
     sql =
-      'SELECT pp.project_id FROM project_permission AS pp ' +
-      'WHERE user_id = ?;';
+      `SELECT pp.project_id FROM project_permission AS pp
+      WHERE user_id = ?;`;
 
     return db.exec(sql, [id])
     .then(function (rows) {
@@ -118,9 +118,9 @@ exports.projects.list = function listProjects(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT pp.id, pp.project_id, project.name ' +
-    'FROM project_permission AS pp JOIN project ON pp.project_id = project.id ' +
-    'WHERE pp.user_id = ?;';
+    `SELECT pp.id, pp.project_id, project.name
+    FROM project_permission AS pp JOIN project ON pp.project_id = project.id
+    WHERE pp.user_id = ?;`;
 
   db.exec(sql, [req.params.id])
   .then(function (rows) {
@@ -139,8 +139,8 @@ exports.permissions.list = function listPermissions(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT permission.id, permission.unit_id FROM permission ' +
-    'WHERE permission.user_id = ?;';
+    `SELECT permission.id, permission.unit_id FROM permission
+    WHERE permission.user_id = ?;`;
 
   db.exec(sql, [req.params.id])
   .then(function (rows) {
@@ -406,8 +406,8 @@ exports.getLanguages = function languages(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT lang.id, lang.name, lang.key, lang.locale_key AS localeKey ' +
-    'FROM language AS lang;';
+    `SELECT lang.id, lang.name, lang.key, lang.locale_key AS localeKey
+    FROM language AS lang;`;
 
   db.exec(sql)
   .then(function (rows) {
@@ -420,8 +420,8 @@ exports.getLanguages = function languages(req, res, next) {
 // TODO -- remove this.
 exports.authenticatePin = function authenticatePin(req, res, next) {
   var decrypt = req.params.pin >> 5;
-  var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user.id +
-    ' AND pin = \'' + decrypt + '\';';
+  var sql = `SELECT pin FROM user WHERE user.id = ' + req.session.user.id
+    AND pin = '${decrypt}';`;
 
   db.exec(sql)
   .then(function (rows) {

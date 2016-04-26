@@ -35,10 +35,10 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql = 
-      'SELECT reference_group.id, reference_group.reference_group, reference_group.text, reference_group.position, ' +
-      'reference_group.section_bilan_id, section_bilan.text AS sectionBilanText ' + 
-      'FROM reference_group ' + 
-      'JOIN section_bilan ON section_bilan.id = reference_group.section_bilan_id';
+      `SELECT reference_group.id, reference_group.reference_group, reference_group.text, reference_group.position,
+      reference_group.section_bilan_id, section_bilan.text AS sectionBilanText
+      FROM reference_group
+      JOIN section_bilan ON section_bilan.id = reference_group.section_bilan_id`;
 
    } else {
     sql =

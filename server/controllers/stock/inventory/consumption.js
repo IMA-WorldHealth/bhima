@@ -35,42 +35,42 @@ function getItemConsumption(uuid, options) {
   switch (group) {
     case 'year':
       sql =
-        'SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, \'%Y-%m-%d\') AS `date` ' +
-        'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
-          'ON c.tracking_number = s.tracking_number AND ' +
-          's.inventory_uuid = i.uuid ' +
-        'WHERE i.uuid = ? AND ' + where +
-        'GROUP BY i.uuid, YEAR(c.date)';
+        `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, '%Y-%m-%d') AS 'date' 
+        FROM consumption AS c JOIN stock AS s JOIN inventory AS i
+          ON c.tracking_number = s.tracking_number AND
+          s.inventory_uuid = i.uuid
+        WHERE i.uuid = ? AND ${where}
+        GROUP BY i.uuid, YEAR(c.date)`;
       break;
 
     case 'month':
       sql =
-        'SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, \'%Y-%m-01\') AS `date` ' +
-        'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
-          'ON c.tracking_number = s.tracking_number AND ' +
-          's.inventory_uuid = i.uuid ' +
-        'WHERE i.uuid = ? AND ' + where +
-        'GROUP BY i.uuid, YEAR(c.date), MONTH(c.date)';
+        `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, '%Y-%m-01') AS 'date'
+        FROM consumption AS c JOIN stock AS s JOIN inventory AS i
+          ON c.tracking_number = s.tracking_number AND
+          s.inventory_uuid = i.uuid
+        WHERE i.uuid = ? AND ${where}
+        GROUP BY i.uuid, YEAR(c.date), MONTH(c.date)`;
       break;
 
     case 'week' :
       sql =
-        'SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, c.date ' +
-        'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
-          'ON c.tracking_number = s.tracking_number AND ' +
-          's.inventory_uuid = i.uuid ' +
-        'WHERE i.uuid = ? AND ' + where +
-        'GROUP BY i.uuid, YEAR(c.date), MONTH(c.date), WEEK(c.date)';
+        `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, c.date
+        FROM consumption AS c JOIN stock AS s JOIN inventory AS i
+          ON c.tracking_number = s.tracking_number AND
+          s.inventory_uuid = i.uuid
+        WHERE i.uuid = ? AND ${where}
+        GROUP BY i.uuid, YEAR(c.date), MONTH(c.date), WEEK(c.date)`;
       break;
 
     default:
       sql =
-        'SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE(c.date) AS `date` ' +
-        'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
-          'ON c.tracking_number = s.tracking_number AND ' +
-          's.inventory_uuid = i.uuid ' +
-        'WHERE i.uuid = ? AND ' + where +
-        'GROUP BY i.uuid, DATE(c.date)';
+        `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE(c.date) AS 'date'
+        FROM consumption AS c JOIN stock AS s JOIN inventory AS i
+          ON c.tracking_number = s.tracking_number AND
+          s.inventory_uuid = i.uuid
+        WHERE i.uuid = ? AND ${where}
+        GROUP BY i.uuid, DATE(c.date)`;
       break;
   }
 
@@ -110,16 +110,15 @@ function getAverageItemConsumption(uuid, options) {
   //
   // We add one to the DATEDIFF to prevent division by 0
   sql =
-    'SELECT SUM(c.quantity) / (DATEDIFF(' + difference +
-      ') + 1) AS average ' +
-    'FROM (' +
-      'SELECT i.uuid, c.quantity, c.date ' +
-      'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
-        'ON c.tracking_number = s.tracking_number AND ' +
-        's.inventory_uuid = i.uuid ' +
-      'WHERE c.canceled <> 1 AND i.uuid = ? AND ' + where +
-    ') AS c ' +
-    'GROUP BY c.uuid;';
+    `SELECT SUM(c.quantity) / (DATEDIFF(${difference}) + 1) AS average
+    FROM (
+      SELECT i.uuid, c.quantity, c.date
+      FROM consumption AS c JOIN stock AS s JOIN inventory AS i
+        ON c.tracking_number = s.tracking_number AND
+        s.inventory_uuid = i.uuid
+      WHERE c.canceled <> 1 AND i.uuid = ? AND ${where}
+    ) AS c
+    GROUP BY c.uuid;`;
 
   return db.exec(sql, params);
 }

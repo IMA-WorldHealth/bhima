@@ -1,8 +1,10 @@
 var bhima = angular.module('bhima', [
-  'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'bhima.components', 'ui.router',
-  'ui.bootstrap', 'pascalprecht.translate', 'ngStorage', 'chart.js', 'tmh.dynamicLocale',
-  'ngFileUpload', 'ui.grid', 'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns', 'angularMoment', 'ngMessages',
-  'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.grouping'
+  'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters',
+  'bhima.components', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate',
+  'ngStorage', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
+  'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
+  'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns',
+  'ui.grid.grouping'
 ]);
 
 

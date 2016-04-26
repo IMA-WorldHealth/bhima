@@ -1,20 +1,23 @@
+'use strict';
 /**
  * Patient Invoice API Controller
  *.@module controllers/finance/patientInvoice
  *
  * @todo (required) major bug - Sale items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
  * @todo GET /sales/patient/:uuid - retrieve all patient invoices for a specific patient
- * @todo Factor in subsidies, this depends on price lists and billing services infrastructre
+ *    - should this be /patients/:uuid/invoices?
+ * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
  * @todo Credit note logic pending on clear design
  */
-var q    = require('q');
-var db   = require('../../lib/db');
+const q    = require('q');
+const db   = require('../../lib/db');
 const uuid = require('node-uuid');
-var _    = require('lodash');
-var util = require('../../lib/util');
+const _    = require('lodash');
+const util = require('../../lib/util');
+const journal = require('./journal/invoices');
 
-var journal = require('./journal');
-var NotFound = require('../../lib/errors/NotFound');
+const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
@@ -39,15 +42,19 @@ exports.lookupSale = lookupSale;
 /** Undo the financial effects of a sale generating an equal and opposite credit note. */
 // exports.reverse = reverse;
 
+/**
+ * list
+ *
+ * Retrieves a list of all patient invoices in the database
+ */
 function list(req, res, next) {
-  var saleListQuery;
 
-  saleListQuery =
-    'SELECT CONCAT(project.abbr, sale.reference) AS reference, BUID(sale.uuid) as uuid, cost,' +
-      'BUID(sale.debtor_uuid) as debtor_uuid, user_id, date, is_distributable ' +
-    'FROM sale ' +
-      'LEFT JOIN patient ON sale.debtor_uuid = patient.debtor_uuid ' +
-      'JOIN project ON sale.project_id = project.id;';
+  let saleListQuery =
+    `SELECT CONCAT(project.abbr, sale.reference) AS reference, BUID(sale.uuid) as uuid, cost,
+      BUID(sale.debtor_uuid) as debtor_uuid, user_id, date, is_distributable
+    FROM sale
+      LEFT JOIN patient ON sale.debtor_uuid = patient.debtor_uuid
+      JOIN project ON sale.project_id = project.id;`;
 
   db.exec(saleListQuery)
     .then(function (rows) {
@@ -63,34 +70,33 @@ function list(req, res, next) {
  *
  * Find a sale by id in the database.
  *
- * @param {Blob} uid - the uuid of the sale in question
+ * @param {string} invoiceUuid - the uuid of the sale in question
  */
 function lookupSale(invoiceUuid) {
-  'use strict';
-  var record;
-  var buid = db.bid(invoiceUuid);
+  let record;
+  let buid = db.bid(invoiceUuid);
 
-  var saleDetailQuery =
-    'SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost, ' +
-      'BUID(sale.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name, ' +
-      'BUID(patient.uuid) as patient_uuid, user_id, discount, date, sale.is_distributable ' +
-    'FROM sale ' +
-    'LEFT JOIN patient ON patient.debtor_uuid = sale.debtor_uuid ' +
-    'JOIN project ON project.id = sale.project_id ' +
-    'WHERE sale.uuid = ?';
+  let saleDetailQuery =
+    `SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost,
+      BUID(sale.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,
+      BUID(patient.uuid) as patient_uuid, user_id, discount, date, sale.is_distributable
+    FROM sale
+    LEFT JOIN patient ON patient.debtor_uuid = sale.debtor_uuid
+    JOIN project ON project.id = sale.project_id
+    WHERE sale.uuid = ?`;
 
-  var saleItemsQuery =
-    'SELECT BUID(sale_item.uuid) as uuid, sale_item.quantity, sale_item.inventory_price, ' +
-      'sale_item.transaction_price, inventory.code, inventory.text, inventory.consumable ' +
-    'FROM sale_item ' +
-    'LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid ' +
-    'WHERE sale_uuid = ?';
+  let saleItemsQuery =
+    `SELECT BUID(sale_item.uuid) as uuid, sale_item.quantity, sale_item.inventory_price,
+      sale_item.transaction_price, inventory.code, inventory.text, inventory.consumable
+    FROM sale_item
+    LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid
+    WHERE sale_uuid = ?`;
 
   return db.exec(saleDetailQuery, [buid])
     .then(function (rows) {
 
-      if (rows.length === 0) {
-        throw new NotFound(`Could not find a sale with uuid ${uuid.unparse(buid)}`);
+      if (!rows.length) {
+        throw new NotFound(`Could not find a sale with uuid ${invoiceUuid}`);
       }
 
       record = rows[0];
@@ -103,11 +109,11 @@ function lookupSale(invoiceUuid) {
 }
 
 /**
- * @todo Read the balance remaining on the debtors account given the sale as an auxillary step
+ * @todo Read the balance remaining on the debtors account given the sale as an auxiliary step
  */
 function details(req, res, next) {
-  
-  // this assumes a value must be past for this route to initially match 
+
+  // this assumes a value must be past for this route to initially match
   lookupSale(req.params.uuid)
   .then(function (record) {
     res.status(200).json(record);
@@ -116,24 +122,86 @@ function details(req, res, next) {
   .done();
 }
 
+// temp
+var u = require('util');
+
+// process sale items, transforming UUIDs into binary.
+function processSaleItems(sale, items) {
+
+  // make sure that sale items have their uuids
+  items.forEach(function (item) {
+    item.uuid = db.bid(item.uuid || uuid.v4());
+    item.sale_uuid = sale.uuid;
+
+    // should every item have an inventory uuid?
+    item.inventory_uuid = db.bid(item.inventory_uuid);
+
+    // FIXME -- where is this supposed to have been defined?
+    item.debit = 0;
+  });
+
+  // create a filter to align sale item columns to the sql columns
+  let filter =
+    util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'sale_uuid');
+
+  // prepare sale items for insertion into database
+  items = _.map(items, filter);
+
+  return items;
+}
+
+/**
+ * POST /sales
+ *
+ * The function is responsible for billing a patient and calculating the total
+ * due on their invoice.  It will create a record in the `sale` table.
+ *
+ * Up to three additional tables may be affected:
+ *  1. `sale_items`
+ *  2. `sale_billing_service`
+ *  3. `sale_subsidy`
+ *
+ * The invoicing procedure of a patient's total invoice goes like this:
+ *  1. First, the total sum of the sale items are recorded as sent from the
+ *  client.  The Patient Invoice module is allowed to edit the item costs as it
+ *  sees fit, so we use the POSTed costs.
+ *  2. Next, each billing service is added to the invoice by writing records to
+ *  the `sale_billing_service` table.  The cost of each billing service is
+ *  determined by multiplying the billing service's value (as a percentage) to
+ *  the total invoice cost.
+ *  3. Finally, the subsidy for the bill is determined.  NOTE - as of #343, we
+ *  are only allowing a single subsidy per invoice.  The array of subsidies is
+ *  treated identically to the billing_services, except that it subtracts from
+ *  the total bill amount.
+ *
+ * @todo - change the API to pass in only an array of billingService and subsidy
+ * ids.
+ * @todo - clean up the code by moving conversions into a convert() function.
+ */
 function create(req, res, next) {
-  'use strict';
+  let transaction;
 
-  var insertSaleQuery, insertSaleItemQuery;
-  var transaction;
+  // alias body properties on local variables
+  let sale = req.body.sale;
+  let items = sale.items || [];
 
-  var sale = req.body.sale;
-  var items = sale.items || [];
+  /**
+   * @todo - the client should only send back an array of ids for the billing
+   * services and subsidies.  We have to look them up anyway, so might as well
+   * save HTTP bandwidth.
+   */
+  let billingServices = [];
+  if (sale.billingServices && sale.billingServices.items) {
+    billingServices = sale.billingServices.items;
+  }
 
-  // TODO Billing service + subsidy posting journal interface
-  // Billing services and subsidies are sent from the client, the client
-  // has calculated the charge associated with each subsidy and billing service
-  // - the financial posting logic depends on the future posting journal logic,
-  // it must be decided if the server will have the final say in the cost calculation
-  var billingServices = sale.billingServices || [];
-  var subsidies = sale.subsidies || [];
+  let subsidies = [];
+  if (sale.subsidies && sale.subsidies.items) {
+    subsidies = sale.subsidies.items;
+  }
 
-  // remove the unused properties on sale
+  // remove the unused properties on sale object before insertion to the
+  // database
   delete sale.items;
   delete sale.billingServices;
   delete sale.subsidies;
@@ -154,48 +222,117 @@ function create(req, res, next) {
   // implicitly provide user information based on user session
   sale.user_id = req.session.user.id;
 
-  // make sure that sale items have their uuids
-  items.forEach(function (item) {
-    item.uuid = db.bid(item.uuid || uuid.v4());
-    item.sale_uuid = sale.uuid;
+  // properly convert UUIDs and link sale to sale components.
+  items = processSaleItems(sale, items);
+  /** @todo - remove these maps, since we'll send back an array of ids */
+  billingServices = billingServices.map(billingService => billingService.billing_service_id);
+  subsidies = subsidies.map(subsidy => subsidy.subsidy_id);
 
-    // should every item have an inventory uuid?
-    item.inventory_uuid = db.bid(item.inventory_uuid);
+  /**
+   * @todo move this check higher in the call stack, as once the API has changed
+   */
+  if (subsidies.length > 1) {
+    throw new BadRequest(`
+      An invoice is not allowed to have more than one subsidy.  The
+      submitted invoice has ${subsidies.length} subsidies.
+    `);
+  }
 
-    // FIXME -- where is this supposed to have been defined?
-    item.debit = 0;
-  });
+  // queries
 
-  // create a filter to align sale item columns to the sql columns
-  var filter =
-    util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'sale_uuid');
-
-  // prepare sale items for insertion into database
-  items = _.map(items, filter);
-
-  insertSaleQuery =
+  let insertSaleQuery =
     'INSERT INTO sale SET ?';
 
-  insertSaleItemQuery =
-    'INSERT INTO sale_item (uuid, inventory_uuid, quantity, ' +
-        'transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?';
+  let insertSaleItemQuery =
+    `INSERT INTO sale_item (uuid, inventory_uuid, quantity,
+        transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?;`;
+
+  let itemSumCost  = `
+    SET @totalItemsCost = (
+      SELECT SUM(credit) AS cost FROM sale_item WHERE sale_uuid = ?
+    );
+  `;
+
+  let insertSaleBillingServicesQuery = `
+    INSERT INTO sale_billing_service (sale_uuid, value, billing_service_id)
+    SELECT ?, (billing_service.value / 100) * @totalItemsCost, billing_service.id
+    FROM billing_service WHERE id IN (?);
+  `;
+
+  let billingSumCost =  `
+    SET @billingSumCost = (
+      SELECT SUM(value) AS value FROM sale_billing_service WHERE sale_uuid = ?
+    );
+  `;
+
+  let combinedSumCost = `
+    SET @combinedSumCost = @totalItemsCost + IFNULL(@billingSumCost, 0);
+  `;
+
+  let insertSaleSubsidyQuery = `
+    INSERT INTO sale_subsidy (sale_uuid, value, subsidy_id)
+    SELECT ?, (subsidy.value / 100) * @totalItemsCost, billing_service.id
+    FROM subsidy WHERE id IN (?);
+  `;
+
+  let subsidySumCost = `
+    SET @subsidySumCost = (
+      SELECT SUM(value) AS value from sale_subsidy WHERE sale_uuid = ?
+    );
+  `;
+
+  let finalSumCost = `
+    SET @finalSumCost = @combinedSumCost - IFNULL(@subsidySumCost, 0);
+  `;
+
+  let updateSaleCostQuery = `
+    UPDATE sale SET cost = @finalSumCost WHERE uuid = ?;
+  `;
 
   transaction = db.transaction();
 
   // insert sale line
   transaction
-    .addQuery(insertSaleQuery, [ sale ])
+    .addQuery(insertSaleQuery, [sale])
 
   // insert sale item lines
-    .addQuery(insertSaleItemQuery, [ items ]);
+    .addQuery(insertSaleItemQuery, [items])
 
-  transaction.execute()
+  // calculate total cost
+    .addQuery(itemSumCost, [sale.uuid]);
+
+  // if there are billing services, apply them to the bill
+  if (billingServices.length) {
+    transaction
+
+    // insert the billing services
+      .addQuery(insertSaleBillingServicesQuery, [sale.uuid, billingServices])
+
+    // calculate the combined charge
+      .addQuery(billingSumCost, [sale.uuid]);
+  }
+
+  // calculate the new sum of the sale
+  transaction
+    .addQuery(combinedSumCost);
+
+  // if there are subsidies, insert them
+  if (subsidies.length) {
+    transaction
+      .addQuery(insertSaleSubsidyQuery, [subsidies])
+
+      .addQuery(subsidySumCost, [sale.uuid]);
+  }
+
+  // make sure that the final computation of costs is correct.
+  transaction
+    .addQuery(finalSumCost)
+
+  // update the original sale with the cost
+    .addQuery(updateSaleCostQuery, [sale.uuid]);
+
+  journal(transaction, sale.uuid)
     .then(function () {
-
-      /** @todo Update to use latest journal interface */
-      return postSaleRecord(sale.uuid, req.body.caution, req.session.user.id);
-    })
-    .then(function (results) {
       res.status(201).json({
         uuid : uuid.unparse(sale.uuid)
       });
@@ -205,39 +342,16 @@ function create(req, res, next) {
 }
 
 /**
- * @deprecated since version 2.X
- * Wrapper method to allow the module to use the current journal
- * interface. This will be replaced with the new server journal interface
- * implementation.
- * @returns {Object} Promise object to be fulfilled on journal posting
- *
- * @todo/@fixme - make this work!
- */
-function postSaleRecord(saleUuid, caution, userId) {
-  var deferred = q.defer();
-
-  journal.request('sale', saleUuid, userId, function (error, result) {
-    return deferred.resolve(result);
-  }, caution);
-  return deferred.promise;
-}
-
-/**
  * Searches for a sale by query parameters provided.
  *
- * GET sales/search
+ * GET /sales/search
  */
 function search(req, res, next) {
-  'use strict';
-
-  var sql =
-    'SELECT BUID(sale.uuid) as uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference, ' +
-      'sale.cost, BUID(sale.debtor_uuid) as debtor_uuid, sale.user_id, sale.discount, ' +
-      'sale.date, sale.is_distributable ' +
-    'FROM sale JOIN project ON project.id = sale.project_id ' +
-    'WHERE ';
-
-  var conditions = [];
+  let sql =
+    `SELECT BUID(sale.uuid) as uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference,
+      sale.cost, BUID(sale.debtor_uuid) as debtor_uuid, sale.user_id, sale.discount,
+      sale.date, sale.is_distributable
+    FROM sale JOIN project ON project.id = sale.project_id `;
 
   if (req.query.debtor_uuid) {
     req.query.debtor_uuid = db.bid(req.query.debtor_uuid);
@@ -247,26 +361,9 @@ function search(req, res, next) {
     req.query.uuid = db.bid(req.query.uuid);
   }
 
-  // look through the query string and template their key/values to the SQL query
-  var tmpl = Object.keys(req.query).map(function (key) {
+  let queryObject = util.queryCondtion(sql, req.query);
 
-    // add the key + value to the conditions array
-    conditions = conditions.concat(key, req.query[key]);
-
-    // return the template string
-    return '?? = ?';
-  });
-
-  // if the client didn't send any data, simply search 'WHERE 1' to return all
-  // results in the database.
-  if (_.isEmpty(req.query)) {
-    sql += '1';
-  }
-
-  // add in the WHERE conditions to the sql tempalte
-  sql += tmpl.join(' AND ') + ';';
-
-  db.exec(sql, conditions)
+  db.exec(queryObject.query, queryObject.conditions)
   .then(function (rows) {
     res.status(200).json(rows);
   })
@@ -284,17 +381,15 @@ function search(req, res, next) {
  * GET sales/references/:reference
  */
 function reference(req, res, next) {
-  'use strict';
-
-  var sql =
-    'SELECT BUID(s.uuid) as uuid FROM (' +
-      'SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference ' +
-      'FROM sale JOIN project ON sale.project_id = project.id ' +
-    ')s WHERE s.reference = ?;';
+  let sql =
+    `SELECT BUID(s.uuid) as uuid FROM (
+      SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference
+      FROM sale JOIN project ON sale.project_id = project.id
+    )s WHERE s.reference = ?;`;
 
   db.exec(sql, [ req.params.reference ])
   .then(function (rows) {
-    if (rows.length === 0) {
+    if (!rows.length) {
       throw new NotFound(`Could not find a sale with reference ${req.params.reference}`);
     }
 

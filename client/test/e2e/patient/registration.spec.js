@@ -1,21 +1,20 @@
-/* jshint expr:true */
+/* jshint expr: true */
 /* global element, by, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('../shared/helpers');
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
-
-var components = require('../shared/components');
-var FU = require('../shared/FormUtils');
 
 describe('patient registration', function () {
   'use strict';
 
-  var registrationPath = '#/patients/register';
+  const registrationPath = '#/patients/register';
+  beforeEach(() => browser.get(registrationPath));
 
-  var mockPatient = {
+  const mockPatient = {
     first_name : 'Mock',
     middle_name : 'Patient',
     last_name : 'First',
@@ -25,20 +24,7 @@ describe('patient registration', function () {
     hospital_no : 120
   };
 
-  /** locations to be used in the patient select */
-  var locations = [
-   'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
-   'f6fc7469-7e58-45cb-b87c-f08af93edade', // Bas Congo,
-   '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', // Tshikapa,
-   '1f162a10-9f67-4788-9eff-c1fea42fcc9b'  // kele
-  ];
-
-  var uniqueHospitalNumber = 1020;
-
-  // navigate to the patient registration page
-  beforeEach(function () {
-    browser.get(registrationPath);
-  });
+  const uniqueHospitalNumber = 1020;
 
   it('successfully registers a valid patient', function (done) {
 
@@ -52,8 +38,8 @@ describe('patient registration', function () {
     FU.input('PatientRegCtrl.yob', mockPatient.yob);
 
     // set the locations via the "locations" array
-    components.locationSelect.set(locations, 'origin-location-id');
-    components.locationSelect.set(locations, 'current-location-id');
+    components.locationSelect.set(helpers.data.locations, 'origin-location-id');
+    components.locationSelect.set(helpers.data.locations, 'current-location-id');
 
     // set the gender of the patient
     element(by.id('male')).click();
@@ -66,10 +52,8 @@ describe('patient registration', function () {
     // submit the patient registration form
     FU.buttons.submit();
 
-    expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/patients/edit/')
-    .then(function () {
-      done();
-    });
+    expect(helpers.getCurrentPath()).to.eventually.contain('#/patients/edit/')
+    .then(() => done());
   });
 
   it('correctly updates date of birth given a valid year of birth', function () {
@@ -79,7 +63,6 @@ describe('patient registration', function () {
     var calculatedDOB = element(by.model('PatientRegCtrl.medical.dob')).getText();
     expect(calculatedDOB).to.be.defined;
     expect(calculatedDOB).to.not.be.empty;
-
     // Expect required DOB (requires known formatting etc.)
   });
 
@@ -93,7 +76,7 @@ describe('patient registration', function () {
       FU.buttons.submit();
 
       // verify form has not been successfully submitted
-      expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + registrationPath);
+      expect(helpers.getCurrentPath()).to.eventually.equal(registrationPath);
 
       // the following fields should be required
       FU.validation.error('PatientRegCtrl.medical.last_name');

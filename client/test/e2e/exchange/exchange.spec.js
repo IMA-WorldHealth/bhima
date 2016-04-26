@@ -1,42 +1,40 @@
-/* jshint expr:true */
 /* global element, by, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('../shared/helpers');
-var FU = require('../shared/FormUtils');
-var components = require('../shared/components');
+const helpers = require('../shared/helpers');
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
+helpers.configure(chai);
 
 describe('Exchange Rate Module', function () {
+  'use strict';
 
-  var path = '#/exchange';
-  var exchangeRate = {
+  const path = '#/exchange';
+  before(() => browser.get(path));
+
+  const exchangeRate = {
     date : new Date('06-30-2015'),
     rate : '900'
   };
 
-  var newExchangeRate ={
+  const newExchangeRate ={
     date : new Date('02-15-2016'),
     rate : '950'
   };
 
-  var updateExchangeRate ={
+  const updateExchangeRate ={
     rate : '930'
   };
 
-  var DELETE_RATE = 1;
-  var DEFAULT_EXCHANGE = 1;
-  var CURRENCY_RANK = helpers.random(DEFAULT_EXCHANGE);
-  var DELETE_SUCCESS = 4;
-  var DELETE_ERROR = 1;
-  var RATE = 2;
-  var RATE_RANK = helpers.random(RATE);
+  const DELETE_RATE = 1;
+  const DEFAULT_EXCHANGE = 1;
+  const CURRENCY_RANK = helpers.random(DEFAULT_EXCHANGE);
+  const DELETE_SUCCESS = 4;
+  const DELETE_ERROR = 1;
+  const RATE = 2;
+  const RATE_RANK = helpers.random(RATE);
 
-  // navigate to the page one
-  beforeEach(function () {
-    browser.get(path);
-  });
 
   it('successfully delete an exchange rate ', function () {
     element(by.id('rate-' + DELETE_RATE )).click();
@@ -58,7 +56,7 @@ describe('Exchange Rate Module', function () {
     // enable previous date checkbox
     element(by.id('previous')).click();
 
-    // set up the new date via the datepicker
+    // set up the new date via the date-picker
     components.dateEditor.set(exchangeRate.date);
     element(by.id('current-' + CURRENCY_RANK )).click();
     FU.input('ModalCtrl.data.rate',newExchangeRate.rate);
@@ -118,8 +116,8 @@ describe('Exchange Rate Module', function () {
 
     element(by.id('current-' + CURRENCY_RANK )).click();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     // attempt to submit the form
     FU.buttons.submit();

@@ -12,7 +12,10 @@ function clone(array) {
 
 /** tests for the /accounts API endpoint */
 describe('(/accounts) The account API', function () {
+  // login before the test suite
   var agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
+
 
   var newAccount = {
     type_id : 1,
@@ -41,14 +44,10 @@ describe('(/accounts) The account API', function () {
     'label', 'parent', 'type_id', 'is_title', 'type'
   ];
 
-  // login before the test suite
-  before(helpers.login(agent));
-
-  /** @todo - make this "detailed=1" instead of "full" for parity with other APIs */
-  it('GET /accounts?full=1 returns the full list of account', function () {
-    return agent.get('/accounts?full=1')
+  it('GET /accounts?detailed=1 returns the full list of account', function () {
+    return agent.get('/accounts?detailed=1')
       .then(function (res) {
-        helpers.api.listed(res, 10);
+        helpers.api.listed(res, 14);
       })
       .catch(helpers.handler);
   });
@@ -56,12 +55,8 @@ describe('(/accounts) The account API', function () {
   it('GET /accounts returns a simple list of account', function () {
     return agent.get('/accounts')
       .then(function (res) {
-        helpers.api.listed(res, 10);
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(10);
-       })
+        helpers.api.listed(res, 14);
+      })
       .catch(helpers.handler);
    });
 

@@ -34,8 +34,8 @@ function list (req, res, next) {
 
   if (req.query.full === '1') {
     sql =
-      'SELECT c.id, c.text, c.project_id, c.note, c.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id ' +
-      'FROM cost_center AS c JOIN project AS p ON c.project_id = p.id';
+      `SELECT c.id, c.text, c.project_id, c.note, c.is_principal, p.name, p.abbr, p.enterprise_id, p.zs_id
+      FROM cost_center AS c JOIN project AS p ON c.project_id = p.id`;
   }
 
   if(req.query.available === '1') {
@@ -224,10 +224,10 @@ function getCostValue (req, res, next){
       }
 
       sql =
-        'SELECT IFNULL(SUM(t.debit_equiv - t.credit_equiv), 0) AS cost ' +
-        'FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN ' +
-        'cost_center AS cc ON gl.cc_id = cc.id WHERE gl.cc_id=?' + optionalCondition + ') ' +
-        'AS t';
+        `SELECT IFNULL(SUM(t.debit_equiv - t.credit_equiv), 0) AS cost
+        FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN 
+        cost_center AS cc ON gl.cc_id = cc.id WHERE gl.cc_id=? '${optionalCondition}')
+        AS t`;
 
       return db.exec(sql, req.params.id);
     })

@@ -55,8 +55,8 @@ exports.detail = function detail(req, res, next) {
 
 function lookupEnterprise(id) { 
   var sql = 
-    'SELECT id, name, abbr, email, po_box, phone, location_id, logo, currency_id ' +
-    'FROM enterprise WHERE id = ?';
+    `SELECT id, name, abbr, email, po_box, phone, location_id, logo, currency_id 
+    FROM enterprise WHERE id = ?`;
   
   return db.exec(sql, [id])
   .then(function (rows) {

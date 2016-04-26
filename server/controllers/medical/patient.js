@@ -174,7 +174,7 @@ function detail(req, res, next) {
 function update(req, res, next) {
   var updatePatientQuery;
   var data = convert(req.body);
-  var patientUuid = req.params.uuid; 
+  var patientUuid = req.params.uuid;
   var buid = db.bid(patientUuid);
 
   // prevent updating the patient's uuid
@@ -195,7 +195,7 @@ function update(req, res, next) {
 }
 
 function handleFetchPatient(patientUuid) {
-  
+
   // convert uuid to database usable binary uuid
   var buid = db.bid(patientUuid);
 
@@ -327,9 +327,9 @@ function list(req, res, next) {
   var listPatientsQuery;
 
   listPatientsQuery =
-    'SELECT p.uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name, ' +
-      'p.middle_name, p.last_name ' +
-    'FROM patient AS p JOIN project AS pr ON p.project_id = pr.id';
+    `SELECT p.uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name,
+      p.middle_name, p.last_name
+    FROM patient AS p JOIN project AS pr ON p.project_id = pr.id`;
 
   db.exec(listPatientsQuery)
   .then(function (result) {
@@ -363,9 +363,9 @@ function hospitalNumberExists(req, res, next) {
   var hospitalNumber = req.params.id;
 
   verifyQuery =
-    'SELECT uuid, hospital_no ' +
-    'FROM patient ' +
-    'WHERE hospital_no = ?';
+    `SELECT uuid, hospital_no
+    FROM patient
+    WHERE hospital_no = ?`;
 
   db.exec(verifyQuery, [hospitalNumber])
     .then(function (result) {
@@ -389,17 +389,17 @@ function searchReference (req, res, next) {
   // use MYSQL to look up the reference
   // TODO This could probably be optimized
   sql =
-    'SELECT q.uuid, q.project_id, q.debtor_uuid, q.first_name, q.last_name, q.middle_name, ' +
-      'q.sex, q.dob, q.origin_location_id, q.reference, q.text, ' +
-      'q.account_id, q.price_list_uuid, q.is_convention, q.locked ' +
-    'FROM (' +
-      'SELECT p.uuid, p.project_id, p.debtor_uuid, p.first_name, p.last_name, p.middle_name, ' +
-      'p.sex, p.dob, CONCAT(proj.abbr, p.reference) AS reference, p.origin_location_id, d.text, ' +
-      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
-      'FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg ' +
-        'ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
-    ') AS q ' +
-    'WHERE q.reference = ?;';
+    `SELECT q.uuid, q.project_id, q.debtor_uuid, q.first_name, q.last_name, q.middle_name,
+      q.sex, q.dob, q.origin_location_id, q.reference, q.text,
+      q.account_id, q.price_list_uuid, q.is_convention, q.locked
+    FROM (
+      SELECT p.uuid, p.project_id, p.debtor_uuid, p.first_name, p.last_name, p.middle_name,
+      p.sex, p.dob, CONCAT(proj.abbr, p.reference) AS reference, p.origin_location_id, d.text,
+      dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked
+      FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg
+        ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
+    ) AS q
+    WHERE q.reference = ?;`;
 
   db.exec(sql, [reference])
   .then(function (rows) {
@@ -531,7 +531,7 @@ function search(req, res, next) {
         p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2,
         p.renewal, p.origin_location_id, p.current_location_id, p.registration_date,
         p.title, p.notes, p.hospital_no, d.text, proj.abbr,
-        dg.account_id, BUID(dg.price_list_uuid) as price_list_uuid, dg.is_convention, dg.locked
+        dg.account_id, dg.price_list_uuid as price_list_uuid, dg.is_convention, dg.locked
       FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg
         ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
       ) AS q `;
@@ -541,13 +541,13 @@ function search(req, res, next) {
   if (qName && !qReference) {
     // Final sql query for finding patient by names : first_name, middle_name or last_name
     sql +=
-        'WHERE ' +
-        'LEFT(LOWER(CONCAT(q.last_name, \' \', q.middle_name, \' \', q.first_name )), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(q.last_name, \' \', q.first_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(q.first_name, \' \', q.middle_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(q.first_name, \' \', q.last_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(q.middle_name, \' \', q.last_name, \' \', q.first_name)), CHAR_LENGTH(?)) = ? OR ' +
-        'LEFT(LOWER(CONCAT(q.middle_name, \' \', q.first_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? ';
+        `WHERE
+        LEFT(LOWER(CONCAT(q.last_name, \' \', q.middle_name, \' \', q.first_name )), CHAR_LENGTH(?)) = ? OR
+        LEFT(LOWER(CONCAT(q.last_name, \' \', q.first_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR
+        LEFT(LOWER(CONCAT(q.first_name, \' \', q.middle_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? OR
+        LEFT(LOWER(CONCAT(q.first_name, \' \', q.last_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR
+        LEFT(LOWER(CONCAT(q.middle_name, \' \', q.last_name, \' \', q.first_name)), CHAR_LENGTH(?)) = ? OR
+        LEFT(LOWER(CONCAT(q.middle_name, \' \', q.first_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? `;
 
     data = [qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName];
 
@@ -572,8 +572,8 @@ function search(req, res, next) {
   } else {
     // throw an error in other cases
     return next(
-	  new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`)
-	);
+    new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`)
+  );
   }
 
   if (qLimit && typeof(qLimit) === 'number') {

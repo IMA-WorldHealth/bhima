@@ -1,31 +1,24 @@
 /* global browser, element, by */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-// import testing utiliites
-var components = require('../shared/components');
-var FU = require('../shared/FormUtils');
-
-var helpers = require('../shared/helpers');
+const components = require('../shared/components');
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('Simple Vouchers', function () {
   'use strict';
 
-  var path = '#/vouchers/simple';
+  before(() => browser.get('#/vouchers/simple'));
 
-  var voucher = {
+  const voucher = {
     date : new Date((new Date()).getDate() - 1),
     toAccount : 'Test Debtor Group Account',
     fromAccount: '4600 - Test Inventory Accounts',
     description : 'Awesome description',
     amount : 100
   };
-
-  beforeEach(function () {
-    browser.get(path);
-  });
 
   it('can create a simple voucher', function () {
 
@@ -53,7 +46,6 @@ describe('Simple Vouchers', function () {
     FU.buttons.submit();
 
     // assert that validation text appears
-    expect(element(by.css('.text-success')).isPresent()).to.eventually.equal(true);
+    expect(element(by.css('.alert-success')).isPresent()).to.eventually.equal(true);
   });
-
 });

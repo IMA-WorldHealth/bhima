@@ -32,10 +32,7 @@ exports.setup = function setup(transaction) {
     .addQuery(
       `SET @fiscalId = (
         SELECT id FROM fiscal_year
-        WHERE @date BETWEEN
-          DATE(CONCAT(start_year, '-', start_month, '-01'))
-        AND
-          DATE(ADDDATE(CONCAT(start_year, '-', start_month, '-01'), INTERVAL number_of_months MONTH))
+        WHERE @date BETWEEN start_date AND DATE(ADDDATE(start_date, INTERVAL number_of_months MONTH))
         AND
           enterprise_id = @enterpriseId
       );`
@@ -45,7 +42,7 @@ exports.setup = function setup(transaction) {
     .addQuery(
       `SET @periodId = (
         SELECT id FROM period WHERE
-          DATE(@date) BETWEEN DATE(period_start) AND DATE(period_stop)
+          DATE(@date) BETWEEN DATE(start_date) AND DATE(end_date)
         AND
           fiscal_year_id = @fiscalId
       );`
@@ -84,12 +81,21 @@ exports.setup = function setup(transaction) {
 
     // if the currency is the enterprise currency, we will set @exchange to 1,
     // otherwise it is 1/@rate
-    .addQuery(
-      `SET @exchange = (SELECT IF(@currencyId = @enterpriseCurrencyId, 1, 1/@rate));`
-    )
+    .addQuery(`
+      SET @exchange = (SELECT IF(@currencyId = @enterpriseCurrencyId, 1, 1/@rate));
+    `)
+
+    // determine the gain/loss account ids
+    .addQuery(`
+      SELECT gain_account_id, loss_account_id
+      INTO @gainAccountId, @lossAccountId
+      FROM enterprise WHERE id = @enterpriseId
+    `)
 
     // error handling query - uses stored procedure PostingJournalErrorHandler
     // to make sure we have all the SQL variables properly set (not NULL);
+    // If any variables are not properly defined, this will SIGNAL an SQL error
+    // resulting in a transaction ROLLBACK.
     .addQuery(`
       CALL PostingJournalErrorHandler(
         @enterpriseId, @projectId, @fiscalId, @periodId, @exchange, @date

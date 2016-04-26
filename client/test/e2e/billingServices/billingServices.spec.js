@@ -1,26 +1,21 @@
 /* global browser, element, by, protractor */
-
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
 // import testing utiliites
-var helpers = require('../shared/helpers');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-var components = require('../shared/components');
-var GU = require('../shared/gridTestUtils.spec.js');
-var FU = require('../shared/FormUtils');
+const GU = require('../shared/gridTestUtils.spec.js');
+const FU = require('../shared/FormUtils');
 
 describe('Billing Services', function () {
   'use strict';
 
-  /** @const */
-  var path = '#/admin/billing_services';
+  const path = '#/admin/billing_services';
+  const gridId = 'BillingServicesGrid';
 
-  /** @const */
-  var gridId = 'BillingServicesGrid';
-
-  before(function ()  { browser.get(path); });
+  before(() => browser.get(path));
 
   it('can create a billing service', function () {
 
@@ -53,7 +48,7 @@ describe('Billing Services', function () {
     var rows = grid.element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
-    expect(rows.count()).to.eventually.equal(1);
+    expect(rows.count()).to.eventually.equal(3);
   });
 
   it('can update a billing service', function () {
@@ -88,7 +83,6 @@ describe('Billing Services', function () {
     var rows = grid.element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
-    expect(rows.count()).to.eventually.equal(0);
-
+    expect(rows.count()).to.eventually.equal(2);
   });
 });

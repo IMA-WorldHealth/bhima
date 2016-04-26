@@ -24,23 +24,23 @@ exports.compile = function (options) {
   // This is the following SQL query in proper format
   // SELECT CONCAT(first_name, ' ', last_name) AS name, f.uuid, SUM(c1) AS c1, SUM(c2) AS c2, SUM(c3) AS c3, SUM(c4) AS c4, SUM(c5) as c5 FROM (SELECT g.uuid, IF(age BETWEEN 0 AND 30, balance, NULL) c1, IF(age BETWEEN 31 AND 60, balance, NULL) c2, IF(age BETWEEN 61 AND 90, balance, NULL) c3, IF(age BETWEEN 91 AND 120, balance, NULL) c4, IF(age>120, balance, NULL) c5 FROM (SELECT d.uuid, dg.account_id, TIMESTAMPDIFF(DAY, gl.trans_date, CURDATE()) AS age , debit_equiv - credit_equiv AS balance FROM debtor_group AS dg JOIN debtor AS d JOIN general_ledger as gl ON d.group_uuid = dg.uuid AND gl.deb_cred_uuid = d.uuid GROUP BY d.uuid, age) AS g) AS f JOIN patient AS p ON f.uuid = p.debtor_uuid GROUP BY uuid;
   var sql =
-    'SELECT CONCAT(first_name, " ", last_name) AS name, f.uuid, SUM(c1) AS c1, SUM(c2) AS c2, ' +
-      'SUM(c3) AS c3, SUM(c4) AS c4, SUM(c5) as c5 ' +
-    'FROM (' +
-      'SELECT g.uuid, IF(age BETWEEN 0 AND 30, balance, NULL) c1, IF(age BETWEEN 31 AND 60, balance, NULL) c2, ' +
-        'IF(age BETWEEN 61 AND 90, balance, NULL) c3, IF(age BETWEEN 91 AND 120, balance, NULL) c4, ' +
-        'IF(age>120, balance, NULL) c5 ' +
-      'FROM (' +
-        'SELECT d.uuid, dg.account_id, TIMESTAMPDIFF(DAY, gl.trans_date, CURDATE()) AS age, ' +
-          '(debit_equiv - credit_equiv) AS balance ' +
-        'FROM debtor_group AS dg JOIN debtor AS d JOIN general_ledger as gl ON ' +
-          'd.group_uuid = dg.uuid AND ' +
-          'gl.deb_cred_uuid = d.uuid ' +
-        'GROUP BY d.uuid, age' +
-      ') AS g' +
-    ') AS f ' +
-    'JOIN patient AS p ON f.uuid = p.debtor_uuid ' +
-    'GROUP BY uuid;';
+    `SELECT CONCAT(first_name, " ", last_name) AS name, f.uuid, SUM(c1) AS c1, SUM(c2) AS c2,
+      SUM(c3) AS c3, SUM(c4) AS c4, SUM(c5) as c5
+    FROM (
+      SELECT g.uuid, IF(age BETWEEN 0 AND 30, balance, NULL) c1, IF(age BETWEEN 31 AND 60, balance, NULL) c2,
+        IF(age BETWEEN 61 AND 90, balance, NULL) c3, IF(age BETWEEN 91 AND 120, balance, NULL) c4,
+        IF(age>120, balance, NULL) c5
+      FROM (
+        SELECT d.uuid, dg.account_id, TIMESTAMPDIFF(DAY, gl.trans_date, CURDATE()) AS age,
+          (debit_equiv - credit_equiv) AS balance
+        FROM debtor_group AS dg JOIN debtor AS d JOIN general_ledger as gl ON
+          d.group_uuid = dg.uuid AND
+          gl.deb_cred_uuid = d.uuid
+        GROUP BY d.uuid, age
+      ) AS g
+    ) AS f
+    JOIN patient AS p ON f.uuid = p.debtor_uuid
+    GROUP BY uuid;`;
 
   // NOTE
   // The above SQL query does not do (global) totalling.  They must be calculated

@@ -11,9 +11,12 @@ CashboxController.$inject = [
 *
 * This controller is responsible for creating new cashboxes for the enterprise.
 * A valid cashbox must have accounts defined for each enterprise currency, for
-* ease of use trhought the application.
+* ease of use thought the application.
+*
+* @todo - use ui-router for managing state
+* @todo - use delete modal here
 */
-function CashboxController($window, $uibModal, Session, Projects, Boxes, Currencies, StateFactory) {
+function CashboxController($window, Modal, Session, Projects, Boxes, Currencies, StateFactory) {
   var vm = this;
 
   // bind variables
@@ -75,14 +78,8 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
       .then(function (data) {
 
         // workaround until we build a type column into the database.
-        // converts is_aux and is_bank columns into radio button select
-        if (data.is_auxillary) {
-          data.type = 'auxillary';
-        } else if (data.is_bank) {
-          data.type = 'bank';
-        } else {
-          data.type = 'primary';
-        }
+        // converts is_auxiliary into radio buttons
+        data.type = (data.is_auxiliary) ? 'auxiliary' : 'primary';
 
         // bind the cashbox to the view
         vm.box = data;
@@ -133,21 +130,7 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
     var creation = (vm.view === 'create');
     var box = angular.copy(vm.box);
 
-    // convert radio buttons into db columns
-    switch (box.type) {
-      case 'bank' :
-        box.is_bank = 1;
-        box.is_auxillary = 0;
-        break;
-      case 'auxillary' :
-        box.is_bank = 0;
-        box.is_auxillary = 1;
-        break;
-      default :
-        box.is_bank = 0;
-        box.is_auxillary = 0;
-        break;
-    }
+    box.is_auxiliary = (box.type === 'auxiliary') ?  0 : 1;
 
     promise = (creation) ?
       Boxes.create(box) :
@@ -165,6 +148,7 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
       .catch(handler);
   }
 
+  /** @todo - this should be a modal */
   function del(box) {
     var yes =
       $window.confirm('Are you sure you want to delete this cashbox?');
@@ -180,10 +164,13 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
     }
   }
 
-  // configure the currency account for a cashbox
+  /**
+   * configure the currency account for a cashbox
+   * @todo - should this be in it's own service?
+   */
   function configureCurrency(currency) {
 
-    var instance = $uibModal.open({
+    var instance = Modal.open({
       templateUrl : 'partials/cash/cashboxes/modal.html',
       controller : 'CashboxCurrencyModalController as CashboxModalCtrl',
       size : 'md',
@@ -197,7 +184,6 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
           return vm.box;
         },
         data : function () {
-
           // catch in case of 404, none specified default to empty object
           return Boxes.currencies.read(vm.box.id, currency.id)
             .catch(function () { return {}; });

@@ -1,18 +1,18 @@
-/*global element, by, beforeEach, browser */
+/* global element, by, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var expect = chai.expect;
-chai.use(chaiAsPromised);
+const helpers = require('../shared/helpers');
+helpers.configure(chai);
 
-var FU = require('../shared/FormUtils');
+const FU = require('../shared/FormUtils');
 
 describe('Cashbox Module', function () {
 
-  var path = '#/cashboxes';
+  before(() => browser.get('#/cashboxes'));
 
-  var cashbox = {
-    name:    'Test Principal Cashbox',
+  const cashbox = {
+    label:    'Test Principal Cashbox',
     type:    1,
     project: 1
   };
@@ -23,17 +23,12 @@ describe('Cashbox Module', function () {
       .click();
   }
 
-  // navigate to the cashbox module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
-
   it('successfully creates a new cashbox', function () {
 
     // switch to the create form
     FU.buttons.create();
 
-    FU.input('CashCtrl.box.text', cashbox.name);
+    FU.input('CashCtrl.box.label', cashbox.label);
     FU.radio('CashCtrl.box.type', cashbox.type);
 
     // select the first non-disabled option
@@ -58,9 +53,9 @@ describe('Cashbox Module', function () {
   it('successfully edits a cashbox', function () {
 
     // navigate to the update form for the second item
-    update(2);
+    update(1);
 
-    FU.input('CashCtrl.box.text', 'New Cashbox Name');
+    FU.input('CashCtrl.box.label', 'New Cashbox Name');
     FU.radio('CashCtrl.box.type', cashbox.type);
 
     // make sure no messages are displayed
@@ -91,20 +86,8 @@ describe('Cashbox Module', function () {
       .last()
       .click();
 
-    // choose a random loss on exchange account
-    FU.select('CashboxModalCtrl.data.loss_exchange_account_id')
-      .enabled()
-      .last()
-      .click();
-
-    // choose a random gain on exchange account
-    FU.select('CashboxModalCtrl.data.gain_exchange_account_id')
-      .enabled()
-      .last()
-      .click();
-
     // choose a random transfer account
-    FU.select('CashboxModalCtrl.data.virement_account_id')
+    FU.select('CashboxModalCtrl.data.transfer_account_id')
       .enabled()
       .last()
       .click();
@@ -129,22 +112,8 @@ describe('Cashbox Module', function () {
     // confirm that the modal appears
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    // NOTE -- we are forgetting to change the gain account id!
-
     // choose a random cash account
     FU.select('CashboxModalCtrl.data.account_id')
-      .enabled()
-      .first()
-      .click();
-
-    // choose a random loss on exchange account
-    FU.select('CashboxModalCtrl.data.loss_exchange_account_id')
-      .enabled()
-      .first()
-      .click();
-
-    // choose a random transfer account
-    FU.select('CashboxModalCtrl.data.virement_account_id')
       .enabled()
       .first()
       .click();
@@ -158,14 +127,10 @@ describe('Cashbox Module', function () {
 
     // these inputs should not have error states
     FU.validation.ok('CashboxModalCtrl.data.account_id');
-    FU.validation.ok('CashboxModalCtrl.data.loss_exchange_account_id');
-    FU.validation.ok('CashboxModalCtrl.data.virement_account_id');
+    FU.validation.error('CashboxModalCtrl.data.transfer_account_id');
 
-    // this input should show an error state to the user
-    FU.validation.error('CashboxModalCtrl.data.gain_exchange_account_id');
-
-    // select a valid currency account
-    FU.select('CashboxModalCtrl.data.gain_exchange_account_id')
+    // choose a random transfer account
+    FU.select('CashboxModalCtrl.data.transfer_account_id')
       .enabled()
       .first()
       .click();
@@ -203,7 +168,7 @@ describe('Cashbox Module', function () {
 
     // everything should have error highlights
     FU.validation.error('CashCtrl.box.project_id');
-    FU.validation.error('CashCtrl.box.text');
+    FU.validation.error('CashCtrl.box.label');
     FU.validation.error('CashCtrl.box.type');
   });
 });

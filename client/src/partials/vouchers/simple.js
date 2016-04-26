@@ -37,7 +37,7 @@ function SimpleJournalVoucherController(AppCache, Vouchers, $translate, Accounts
   vm.submit = submit;
 
   // load the list of accounts
-  Accounts.list()
+  Accounts.read(null, { detailed : 1 })
   .then(function (accounts) {
     vm.accounts = removeChildren(accounts);
   });

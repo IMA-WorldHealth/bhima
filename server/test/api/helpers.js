@@ -238,6 +238,8 @@ api.listed = function listed(res, len) {
  */
 exports.data = {
   USD : 2,
-  FC : 1
+  FC : 1,
+  PROJECT : 1,
+  PRICE_LIST : '75e09694-dd5c-11e5-a8a2-6c29955775b0'
 };
 

@@ -53,11 +53,11 @@ function buildTree(userId) {
   // For this query to render properly on the client, the user
   // must also have permission to access the parents of leaf nodes
   var sql =
-      'SELECT unit.id, unit.name, unit.parent, ' +
-        'unit.url, unit.path, unit.key ' +
-      'FROM permission JOIN unit ON ' +
-        'permission.unit_id = unit.id ' +
-      'WHERE permission.user_id = ?';
+      `SELECT unit.id, unit.name, unit.parent,
+        unit.url, unit.path, unit.key
+      FROM permission JOIN unit ON
+        permission.unit_id = unit.id
+      WHERE permission.user_id = ?`;
 
   return db.exec(sql, [userId])
   .then(function (units) {

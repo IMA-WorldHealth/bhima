@@ -12,15 +12,17 @@
 * currencies.  The API accepts a cashbox ID during cash payment creation and
 * looks up the correct account based on the cashbox_id + currency.
 *
-* @requires lib/db
 * @requires node-uuid
+* @requires lib/db
 * @requires lib/errors/NotFound
 * @requires lib/errors/BadRequest
+* @requires journal/cash
 */
-const db   = require('../../lib/db');
 const uuid = require('node-uuid');
-var NotFound = require('../../lib/errors/NotFound');
-var BadRequest = require('../../lib/errors/BadRequest');
+const db   = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
+const journal = require('./journal/cash');
 
 /** retrieves the details of a cash payment */
 exports.detail = detail;
@@ -48,15 +50,15 @@ function lookupCashRecord(id) {
   let record;
 
   const cashRecordSql =
-    'SELECT BUID(cash.uuid) as uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference, ' +
-      'cash.date, cash.debtor_uuid, cash.currency_id, cash.amount, ' +
-      'cash.description, cash.cashbox_id, cash.is_caution, cash.user_id ' +
-    'FROM cash JOIN project ON cash.project_id = project.id ' +
-    'WHERE cash.uuid = ?;';
+    `SELECT BUID(cash.uuid) as uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference,
+      cash.date, cash.debtor_uuid, cash.currency_id, cash.amount,
+      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id
+    FROM cash JOIN project ON cash.project_id = project.id
+    WHERE cash.uuid = ?;`;
 
   const cashItemsRecordSql =
-    'SELECT BUID(cash_item.uuid) AS uuid, cash_item.amount, BUID(cash_item.invoice_uuid) as invoice_uuid ' +
-    'FROM cash_item WHERE cash_item.cash_uuid = ?;';
+    `SELECT BUID(cash_item.uuid) AS uuid, cash_item.amount, BUID(cash_item.invoice_uuid) as invoice_uuid
+    FROM cash_item WHERE cash_item.cash_uuid = ?;`;
 
   const cashDiscardRecordSql =
     'SELECT BUID(cash_uuid) AS uuid FROM cash_discard WHERE cash_uuid = ?;';
@@ -100,9 +102,9 @@ function list(req, res, next) {
   'use strict';
 
   const sql =
-    'SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference, ' +
-      'cash.date, cash.amount '  +
-    'FROM cash JOIN project ON cash.project_id = project.id;';
+    `SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference,
+      cash.date, cash.amount 
+    FROM cash JOIN project ON cash.project_id = project.id;`;
 
   db.exec(sql)
   .then(function (rows) {
@@ -194,8 +196,8 @@ function create(req, res, next) {
     'INSERT INTO cash SET ?;';
 
   const writeCashItemsSql =
-    'INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) ' +
-    'VALUES ?;';
+    `INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid)
+    VALUES ?;`;
 
   let transaction = db.transaction();
   transaction.addQuery(writeCashSql, [ data ]);
@@ -298,10 +300,10 @@ function reference(req, res, next) {
   var ref = req.params.reference;
 
   const sql =
-    'SELECT BUID(c.uuid) AS uuid FROM (' +
-      'SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference ' +
-      'FROM cash JOIN project ON cash.project_id = project.id' +
-    ')c WHERE c.reference = ?;';
+    `SELECT BUID(c.uuid) AS uuid FROM (
+      SELECT cash.uuid, CONCAT(project.abbr, cash.reference) AS reference
+      FROM cash JOIN project ON cash.project_id = project.id
+    )c WHERE c.reference = ?;`;
 
   db.exec(sql, [ ref ])
   .then(function (rows) {

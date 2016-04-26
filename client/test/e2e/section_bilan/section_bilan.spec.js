@@ -1,32 +1,24 @@
-/* jshint expr:true */
 /* global element, by, browser */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var FU = require('../shared/FormUtils');
-var helpers = require('../shared/helpers');
-var components = require('../shared/components');
-
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('Section Bilan Module', function () {
   'use strict';
 
-  var path = '#/section_bilan';
+  const path = '#/section_bilan';
+  before(() => browser.get(path));
 
-  var sectionBilan = {
+  const sectionBilan = {
     text : 'A Special Section Result',
     position : 3,
     is_actif : 0
   };
 
-  var sectionId = 2;
-
-  // navigate to the SectionBilan module before each test
-  beforeEach(function () {
-    browser.get(path);
-  });
+  const sectionId = 2;
 
   it('creates a new sectionbilan', function () {
 
@@ -45,7 +37,7 @@ describe('Section Bilan Module', function () {
   });
 
   it('edits an sectionbilan', function () {
-    element(by.id('sectionBilan-upd-' + sectionId )).click();
+    element(by.id('sectionBilan-upd-' + sectionId)).click();
     // modify the sectionBilan text
     FU.input('sectionBilanCtrl.sectionBilan.text', 'Updated');
     // modify the sectionBilan Is Actif
@@ -61,8 +53,8 @@ describe('Section Bilan Module', function () {
     // switch to the create form
     FU.buttons.create();
 
-    // Verify form has not been successfully submitted
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + path);
+    // verify form has not been successfully submitted
+    expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-sectionBilan')).click();
 

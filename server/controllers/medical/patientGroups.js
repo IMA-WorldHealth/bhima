@@ -38,8 +38,8 @@ function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql =
-      'SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at, pl.label AS priceListLable, pl.description ' +
-      'FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid';
+      `SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at, pl.label AS priceListLable, pl.description
+      FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid`;
   }
 
   sql += ' ORDER BY pg.name;';
@@ -148,8 +148,8 @@ function lookupPatientGroup(uid) {
   'use strict';
 
   var sql =
-    'SELECT BUID(pg.uuid) as uuid, pg.name, pg.enterprise_id, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at ' +
-    'FROM patient_group AS pg WHERE pg.uuid = ?';
+    `SELECT BUID(pg.uuid) as uuid, pg.name, pg.enterprise_id, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at
+    FROM patient_group AS pg WHERE pg.uuid = ?`;
 
   return db.exec(sql, [uid])
   .then(function (rows) {
