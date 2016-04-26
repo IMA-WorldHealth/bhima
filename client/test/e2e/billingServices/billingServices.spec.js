@@ -75,7 +75,7 @@ describe('Billing Services', function () {
     FU.exists(by.css('[data-confirm-modal]'), true);
 
     // click the "accept" button
-    element(by.css('[data-modal-submit]')).click();
+    element(by.id('confirm_modal')).click();
 
     // check that the grid does not have any rows in it anymore
     var grid = GU.getGrid(gridId);

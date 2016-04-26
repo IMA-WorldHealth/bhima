@@ -157,7 +157,7 @@ describe('Price List Module', function () {
     element(by.id('price_delete_' + priceListID1 )).click();
 
     // accept the alert
-    browser.switchTo().alert().accept();
+    element(by.id('confirm_modal')).click();
 
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);

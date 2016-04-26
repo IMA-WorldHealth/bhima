@@ -78,7 +78,7 @@ describe('Patient Groups', function () {
     FU.buttons.delete();
 
     // reject the alert that appears
-    browser.switchTo().alert().accept();
+    element(by.id('confirm_modal')).click();
 
     // expect the row to eventually be cleared
     FU.exists(by.id(deleteUuid), false);

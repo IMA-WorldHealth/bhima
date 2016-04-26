@@ -76,20 +76,35 @@ describe('Services Module', function () {
   });
 
   it('successfully delete an service', function () {
+<<<<<<< 1e8712e9d81e1c86381b1247b3c2e22f11a86119
     element(by.id('service-del-' + DELETE_SUCCESS)).click();
     browser.switchTo().alert().accept();
+=======
+    element(by.id('service-del-' + DELETE_SUCCESS )).click();
+    element(by.id('confirm_modal')).click();
+>>>>>>> replacement for $window.confirm() By Modal service
     FormUtils.exists(by.id('delete_success'), true);
   });
 
   it('no way to delete a service', function () {
+<<<<<<< 1e8712e9d81e1c86381b1247b3c2e22f11a86119
     element(by.id('service-del-' + DELETE_ERROR)).click();
     browser.switchTo().alert().accept();
+=======
+    element(by.id('service-del-' + DELETE_ERROR )).click();
+    element(by.id('confirm_modal')).click();
+>>>>>>> replacement for $window.confirm() By Modal service
     FormUtils.exists(by.id('delete_error'), true);
   });
 
   it('cancellation of removal process of a service', function () {
+<<<<<<< 1e8712e9d81e1c86381b1247b3c2e22f11a86119
     element(by.id('service-del-' + DELETE_ERROR)).click();
     browser.switchTo().alert().dismiss();
+=======
+    element(by.id('service-del-' + DELETE_ERROR )).click();
+    element(by.id('dismiss_modal')).click();
+>>>>>>> replacement for $window.confirm() By Modal service
     FormUtils.exists(by.id('default'), true);
   });
 });

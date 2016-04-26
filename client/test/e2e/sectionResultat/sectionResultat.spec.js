@@ -68,7 +68,7 @@ describe('Section Resultats Module', function () {
     element(by.id('sectionResultat-del-' + sectionResultatRank )).click();
 
     // click the alert asking for permission
-    browser.switchTo().alert().accept();
+    element(by.id('confirm_modal')).click();
 
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);

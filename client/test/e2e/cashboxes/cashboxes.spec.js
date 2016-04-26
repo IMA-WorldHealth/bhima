@@ -152,7 +152,7 @@ describe('Cashbox Module', function () {
     FU.buttons.delete();
 
     // confirm the deletion
-    browser.switchTo().alert().accept();
+    element(by.id('confirm_modal')).click();
 
     // check to see if we are in the default state
     FU.exists(by.css('.alert.alert-info'), true);

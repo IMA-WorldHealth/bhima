@@ -99,7 +99,7 @@ describe('Projects Module', function () {
     element(by.id('project-del-' + deleteSuccess)).click();
 
     // click the alert asking for permission
-    browser.switchTo().alert().accept();
+    element(by.id('confirm_modal')).click();
 
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);
@@ -111,7 +111,7 @@ describe('Projects Module', function () {
     element(by.id('project-del-' + deleteError)).click();
 
     // accept the alert
-    browser.switchTo().alert().accept();
+    element(by.id('confirm_modal')).click();
 
     // the module should show an error message (and none others)
     FU.exists(by.id('delete_error'), true);
@@ -125,7 +125,7 @@ describe('Projects Module', function () {
     element(by.id('project-del-' + deleteError)).click();
 
     // reject the alert that appears
-    browser.switchTo().alert().dismiss();
+    element(by.id('dismiss_modal')).click();
 
     // make sure that we have the default interface (and no others)
     FU.exists(by.id('default'), true);

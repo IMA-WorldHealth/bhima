@@ -68,7 +68,7 @@ describe('Section Bilan Module', function () {
     element(by.id('sectionBilan-del-' + sectionId)).click();
 
     // click the alert asking for permission
-    browser.switchTo().alert().accept();
+    element(by.id('confirm_modal')).click();
 
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);
