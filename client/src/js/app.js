@@ -327,8 +327,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     // url : '/debtors/groups',
     abstract : true,
     params : {
-      uuid : { squash : true, value : null },
-      created : { squash : true, value : null }
+      uuid : { squash : true, value : null }
     },
     // url : '/notathing',
     controller : 'DebtorGroupController as GroupCtrl',
@@ -337,7 +336,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
     .state('debtorGroups.list', {
       url : '',
-      templateUrl : 'partials/debtors/groups.list.html'
+      templateUrl : 'partials/debtors/groups.list.html',
     })
 
     .state('debtorGroups.create', {
@@ -346,14 +345,15 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
       // this should ideally route to /create
       url : '/create/new',
       templateUrl : 'partials/debtors/groups.create.html',
-      controller : 'DebtorGroupCreateController as GroupCreateCtrl'
+      controller : 'DebtorGroupCreateController as GroupEditCtrl'
     })
 
     .state('debtorGroups.update', {
       url : '/update',
       // key : 'COLUMNS.EDIT',
-      template : '<div><p>This is update content</p></div>',
-      controller : function () { console.log('update state fired'); }
+      templateUrl : 'partials/debtors/groups.create.html',
+      controller : 'DebtorGroupUpdateController as GroupEditCtrl',
+      data : { label : null }
     })
 
     .state('debtorGroups.delete', {

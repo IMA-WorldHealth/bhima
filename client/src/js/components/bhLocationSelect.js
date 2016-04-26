@@ -179,7 +179,7 @@ function LocationSelectController(Locations, $scope, Modal) {
    * @private
    */
   function loadLocation() {
-
+    
     // make sure we actually have an initial location (prevents needless firing
     // during $scope churn).
     if (!vm.locationUuid) { return; }
@@ -237,7 +237,7 @@ function LocationSelectController(Locations, $scope, Modal) {
    * over application efficiency.  This could be optimized as the application
    * evolves.
    */
-  $scope.$watch('vm.locationUuid', loadLocation);
+  $scope.$watch('$ctrl.locationUuid', loadLocation);
 
   /**
    * Open "Add a Location" modal

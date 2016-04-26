@@ -19,20 +19,7 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
   
   // $interval(function () { console.log('calling status'); Status.exception({val : 5}) }, 3000);
   
-  /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
-  Accounts.list()
-    .then(function (accounts) { 
-      vm.accounts = accounts;
-    });
-
-  /* @todo This controller should not be concerned about individual price lists */
-  /* @tood All read/ list API methods should be uniform on the client */
-  Prices.read() 
-    .then(function (priceLists) { 
-      vm.priceLists = priceLists;
-      console.log('got price lists', priceLists);
-    });
-
+  
   vm.sortOptions = [
     { attribute : 'name', key : 'COLUMNS.SORTING.NAME_ASC', reverse : false },
     { attribute : 'name', key : 'COLUMNS.SORTING.NAME_DSC', reverse : true },

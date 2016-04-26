@@ -51,6 +51,10 @@ function DebtorGroupService($http, util, SessionService) {
   */
   function update(uuid, debtorGroup) {
     var url = baseUrl.concat(uuid);
+
+    // ensure we are never sending a UUID to update 
+    delete debtorGroup.uuid;
+
     return $http.put(url, debtorGroup)
     .then(util.unwrapHttpResponse);
   }

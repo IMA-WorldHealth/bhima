@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
 .controller('DebtorGroupCreateController', DebtorGroupCreateController);
 
 DebtorGroupCreateController.$inject = [
-  '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'uuid', '$uiViewScroll'
+    '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', '$uiViewScroll'
 ];
 
-function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Uuid, $uiViewScroll) { 
+function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Accounts, Prices, Uuid, $uiViewScroll) { 
   var vm = this;
 
   // default new group policies
@@ -15,17 +15,25 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     billingServices : false
   };
   
-  // window.state = $state;
+  /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
+  Accounts.list()
+    .then(function (accounts) { 
+      vm.accounts = accounts;
+    });
+
+  /* @todo This controller should not be concerned about individual price lists */
+  /* @tood All read/ list API methods should be uniform on the client */
+  Prices.read() 
+    .then(function (priceLists) { 
+      vm.priceLists = priceLists;
+      console.log('got price lists', priceLists);
+    });
+
   vm.notifications = [];
   
   vm.addNotification = addNotification;
   function addNotification (message) { 
-
-    if (vm.notifications.length) { 
-      vm.notifications.shift();
-      console.log(vm.notifications);
-    }
-  
+    vm.notifications.shift();
     vm.notifications.push({ 
       message : message
     });
@@ -94,7 +102,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
         } else { 
         
           // navigate back to list view
-          $state.go('debtorGroups.list', { created : submitGroup });
+          $state.go('debtorGroups.list', null, {reload : true});
         }
       })
       .catch(handleRequestError);

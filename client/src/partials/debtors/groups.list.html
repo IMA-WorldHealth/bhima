@@ -61,7 +61,8 @@
               <h4 style="margin-top : 0px;">{{debtorGroup.name}}</h4>
             </div>
             <div class="col-md-6 text-float-util">
-              <a ng-href="#/debtors/groups/uuid/update" class=""><span class="glyphicon glyphicon-edit"></span> Edit Debtor Group</a>
+              <!-- <a ng-href="#/debtors/groups/{{debtorGroup.uuid}}/update" class=""><span class="glyphicon glyphicon-edit"></span> Edit Debtor Group</a> -->
+              <a ui-sref="debtorGroups.update({uuid : debtorGroup.uuid})" class=""><span class="glyphicon glyphicon-edit"></span> Edit Debtor Group</a>
             </div>
           </div>
 
