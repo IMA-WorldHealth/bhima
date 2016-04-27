@@ -29,7 +29,6 @@ var fiscal               = require('../controllers/finance/fiscal');
 var gl                   = require('../controllers/finance/ledgers/general');
 var analytics            = require('../controllers/finance/analytics');
 var purchase             = require('../controllers/finance/purchase');
-var budget               = require('../controllers/finance/budget');
 var taxPayment           = require('../controllers/finance/taxPayment');
 var donations            = require('../controllers/finance/donations');
 var debtors              = require('../controllers/finance/debtors');
@@ -407,10 +406,6 @@ exports.configure = function (app) {
   app.delete('/users/:id', users.delete);
   // @deprecated
   app.get('/editsession/authenticate/:pin', users.authenticatePin);
-
-  // budget controller
-  app.post('/budget/upload', budget.upload);
-  app.post('/budget/update', budget.update);
 
   // projects controller
   app.get('/projects/:id', projects.details);
