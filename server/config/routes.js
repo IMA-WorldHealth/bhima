@@ -70,8 +70,6 @@ var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
 var creditors            = require('../controllers/finance/creditors.js');
 
-// middleware for handle uploaded file
-var multipart = require('connect-multiparty');
 
 exports.configure = function (app) {
   winston.debug('Configuring routes');
@@ -330,7 +328,7 @@ exports.configure = function (app) {
   app.get('/sales/search', patientInvoice.search);
   app.get('/sales/:uuid', patientInvoice.details);
   app.get('/sales/references/:reference', patientInvoice.reference);
-  
+
   // Reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', invoiceReceipt.build);
 
@@ -411,7 +409,7 @@ exports.configure = function (app) {
   app.get('/editsession/authenticate/:pin', users.authenticatePin);
 
   // budget controller
-  app.post('/budget/upload', multipart({ uploadDir: 'client/upload'}), budget.upload);
+  app.post('/budget/upload', budget.upload);
   app.post('/budget/update', budget.update);
 
   // projects controller
