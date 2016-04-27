@@ -122,9 +122,6 @@ function details(req, res, next) {
   .done();
 }
 
-// temp
-var u = require('util');
-
 // process sale items, transforming UUIDs into binary.
 function processSaleItems(sale, items) {
 
@@ -235,7 +232,7 @@ function create(req, res, next) {
     throw new BadRequest(`
       An invoice is not allowed to have more than one subsidy.  The
       submitted invoice has ${subsidies.length} subsidies.
-    `);
+    `, 'ERRORS.TOO_MANY_SUBSIDIES');
   }
 
   // queries
@@ -271,7 +268,7 @@ function create(req, res, next) {
 
   let insertSaleSubsidyQuery = `
     INSERT INTO sale_subsidy (sale_uuid, value, subsidy_id)
-    SELECT ?, (subsidy.value / 100) * @totalItemsCost, billing_service.id
+    SELECT ?, (subsidy.value / 100) * @totalItemsCost, subsidy.id
     FROM subsidy WHERE id IN (?);
   `;
 
@@ -319,7 +316,7 @@ function create(req, res, next) {
   // if there are subsidies, insert them
   if (subsidies.length) {
     transaction
-      .addQuery(insertSaleSubsidyQuery, [subsidies])
+      .addQuery(insertSaleSubsidyQuery, [sale.uuid, subsidies])
 
       .addQuery(subsidySumCost, [sale.uuid]);
   }

@@ -160,3 +160,35 @@ exports.handler = function handler(error) {
 
   return q.reject(handled);
 };
+
+/**
+ * @todo - this is a hack.  Find a way around this.
+ *
+ * Since we do not close our MySQL connections (instead we return them to the
+ * pool), we need to UNSET all of our local variables potentially defined in
+ * the previous functions.
+ *
+ * This choices are:
+ *  1) Ensure connections are destroyed when they are released.  This seems to
+ *  go against the philosophy of node-mysql.
+ *  2) Transition to using only MySQL procedures for posting data to the posting
+ *  journal.  Transactions will still be necessary to group operations (sale,
+ *  sale_items, PostPatientInvoice, for example).
+ */
+exports.cleanup = function cleanup(transaction) {
+  transaction
+    .addQuery(`
+      SELECT
+        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL
+      INTO
+        @totalItemsCost, @combinedSumCost, @billingSumCost,
+        @finalSumCost, @subsidySumCost, @exchange, @enterpriseId,
+        @fiscalYearId, @periodId, @transId, @enterpriseCurrencyId, @rate,
+        @gainAccountId, @lossAccountId, @currencyId, @date;
+    `);
+
+  return transaction;
+};

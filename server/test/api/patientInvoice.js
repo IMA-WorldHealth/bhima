@@ -182,13 +182,15 @@ function BillingScenarios() {
    */
   const simpleInvoice = {
     project_id: helpers.data.PROJECT,
-    // cost: 35,  // this cost should be calculated by the server.
+    // cost: 35,  // this cost should be calculated by the server (see test).
     debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
     date: new Date('2016-01-13'),
     description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
     service_id: helpers.data.ADMIN_SERVICE,
     user_id : helpers.data.OTHERUSER,
     is_distributable: true,
+
+    /** @todo - change this API to not need credit/debit fields */
     items : [{
       inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
       quantity: 1,
@@ -270,6 +272,140 @@ function BillingScenarios() {
       })
       .then((res) => {
         helpers.api.errored(res, 400);
+      })
+      .catch(helpers.handler);
+  });
+
+  /**
+   * This scenario tests that billing services work properly.  The simple
+   * billing service invoice will include a single billing service, and checks
+   * that the cost is correctly calculated.
+   *
+   * Implicit Checks:
+   *  1) `user_id` is not required (default: current user)
+   */
+  const simpleBillingServiceInvoice = {
+    project_id: helpers.data.PROJECT,
+    debtor_uuid: '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
+    date: new Date('2016-01-28'),
+    description: 'A simple billing service invoice',
+    service_id: helpers.data.ADMIN_SERVICE,
+    is_distributable : true,
+
+    /** @todo - change this API to not need credit/debit fields */
+    items : [{
+      inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      quantity: 15,
+      inventory_price: 5,
+      transaction_price: 5,
+      credit: 75,
+    }, {
+      inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
+      quantity: 1,
+      inventory_price: 25,
+      transaction_price: 25,
+      credit: 25,
+    }],
+
+    /** @todo - change this API to take in an array of billing service ids */
+    billingServices : {
+      items : [{
+        billing_service_id : 1
+        // value : 20, // this is not required by the API (unsafe), but useful
+                       // to see for the test scenario. This is a percentage.
+      }]
+    }
+  };
+
+  it('creates and posts a patient invoice (simple + 1 billing service)', () => {
+    return agent.post('/sales')
+      .send({ sale : simpleBillingServiceInvoice })
+      .then(function (res) {
+        helpers.api.created(res);
+
+        // make sure we can locate the invoice in the database
+        return agent.get('/sales/'.concat(res.body.uuid));
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+
+        // ensure the data in the database is correct
+        let invoice = res.body;
+
+        // this is the invoice cost ($100) + 20% ($20) of billing service
+        expect(invoice.cost).to.equal(120);
+        expect(invoice.items).to.have.length(2);
+        expect(invoice.discount).to.equal(0);
+      })
+      .catch(helpers.handler);
+  });
+
+
+  /**
+   * This scenario tests that subsidies work properly.  The simple subsidy will
+   * absorb some of a patient's cost into a subsidy account.  The API only
+   * supports a single subsidy per invoice.  See #343 for more information.
+   */
+  const simpleSubsidyInvoice = {
+    project_id: helpers.data.PROJECT,
+    debtor_uuid: '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
+    date: new Date('2016-01-28'),
+    description: 'A simple subsidy invoice',
+    service_id: helpers.data.ADMIN_SERVICE,
+    is_distributable : true,
+
+    /** @todo - change this API to not need credit/debit fields */
+    items : [{
+      inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      quantity: 25,
+      inventory_price: 0.25,
+      transaction_price: 0.21,
+      credit: 5.25,
+    }, {
+      inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
+      quantity: 7,
+      inventory_price: 4.87,
+      transaction_price: 4.87,
+      credit: 34.09
+    }, {
+      inventory_uuid: 'c48a3c4b-c07d-4899-95af-411f7708e296',
+      quantity: 13,
+      inventory_price: 2.50,
+      transaction_price: 3.15,
+      credit: 40.95,
+    }],
+
+    /** @todo - change this API to take in an array of subsidy ids */
+    subsidies : {
+      items : [{
+        subsidy_id : 1
+        // value : 50, // this is not required by the API (unsafe), but useful
+                       // to see for the test scenario. This is a percentage.
+      }]
+    }
+  };
+
+  it('creates and posts a patient invoice (simple + 1 subsidy)', () => {
+    return agent.post('/sales')
+      .send({ sale : simpleSubsidyInvoice })
+      .then(function (res) {
+        helpers.api.created(res);
+
+        // make sure we can locate the invoice in the database
+        return agent.get('/sales/'.concat(res.body.uuid));
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+
+        // ensure the data in the database is correct
+        let invoice = res.body;
+
+        // this is the cost ($80.29) - 50% ($40.145) of subsidy
+        expect(invoice.cost).to.equal(40.145);
+        expect(invoice.items).to.have.length(3);
+        expect(invoice.discount).to.equal(0);
       })
       .catch(helpers.handler);
   });
