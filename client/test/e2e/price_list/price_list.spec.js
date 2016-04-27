@@ -6,6 +6,8 @@ const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
+const components = require('../shared/components');
+
 describe('Price List Module', function () {
   'use strict';
 
@@ -157,7 +159,7 @@ describe('Price List Module', function () {
     element(by.id('price_delete_' + priceListID1 )).click();
 
     // accept the alert
-    element(by.id('confirm_modal')).click();
+    components.modalAction.confirm();
 
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);

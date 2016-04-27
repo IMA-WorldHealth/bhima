@@ -7,6 +7,7 @@ const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
 
 describe('Patient Groups', function () {
 
@@ -78,7 +79,7 @@ describe('Patient Groups', function () {
     FU.buttons.delete();
 
     // reject the alert that appears
-    element(by.id('confirm_modal')).click();
+    components.modalAction.confirm();
 
     // expect the row to eventually be cleared
     FU.exists(by.id(deleteUuid), false);

@@ -4,6 +4,8 @@ const expect = chai.expect;
 
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
+const components = require('../shared/components');
+
 helpers.configure(chai);
 
 describe('Subsidies Module', function () {
@@ -78,7 +80,7 @@ describe('Subsidies Module', function () {
     element(by.id('subsidy-del-' + subsidyRank)).click();
 
     // click the alert asking for permission
-    element(by.id('confirm_modal')).click();
+    components.modalAction.confirm();
 
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);

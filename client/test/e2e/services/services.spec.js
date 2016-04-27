@@ -4,6 +4,8 @@ const expect = chai.expect;
 
 const FormUtils = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
+const components = require('../shared/components');
+
 helpers.configure(chai);
 
 describe('Services Module', function () {
@@ -77,20 +79,20 @@ describe('Services Module', function () {
 
   it('successfully delete an service', function () {
     element(by.id('service-del-' + DELETE_SUCCESS )).click();
-    element(by.id('confirm_modal')).click();
+    components.modalAction.confirm();
 
     FormUtils.exists(by.id('delete_success'), true);
   });
 
   it('no way to delete a service', function () {
     element(by.id('service-del-' + DELETE_ERROR )).click();
-    element(by.id('confirm_modal')).click();
+    components.modalAction.confirm();
     FormUtils.exists(by.id('delete_error'), true);
   });
 
   it('cancellation of removal process of a service', function () {
     element(by.id('service-del-' + DELETE_ERROR )).click();
-    element(by.id('dismiss_modal')).click();
+    components.modalAction.dismiss();
     FormUtils.exists(by.id('default'), true);
   });
 });

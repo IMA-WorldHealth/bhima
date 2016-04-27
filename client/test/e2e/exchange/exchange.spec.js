@@ -42,7 +42,8 @@ describe('Exchange Rate Module', function () {
     // submit the page to the server
     element(by.id('delete')).click();
 
-    element(by.id('confirm_modal')).click();
+    //Confirm the action by a click on the buttom confirm
+    components.modalAction.confirm();
 
     // make sure the success message is present
     FU.exists(by.id('delete_success'), true);

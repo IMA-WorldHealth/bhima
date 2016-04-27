@@ -4,6 +4,8 @@ const expect = chai.expect;
 
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
+const components = require('../shared/components');
+
 helpers.configure(chai);
 
 describe('Section Resultats Module', function () {
@@ -68,8 +70,8 @@ describe('Section Resultats Module', function () {
     element(by.id('sectionResultat-del-' + sectionResultatRank )).click();
 
     // click the alert asking for permission
-    element(by.id('confirm_modal')).click();
-
+    components.modalAction.confirm();
+ 
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);
   });
