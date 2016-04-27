@@ -8,6 +8,7 @@ helpers.configure(chai);
 
 const GU = require('../shared/gridTestUtils.spec.js');
 const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
 
 describe('Billing Services', function () {
   'use strict';
@@ -74,8 +75,8 @@ describe('Billing Services', function () {
     // expect the modal to appear
     FU.exists(by.css('[data-confirm-modal]'), true);
 
-    // click the "accept" button
-    element(by.css('[data-modal-submit]')).click();
+    //Confirm the action by a click on the buttom confirm
+    components.modalAction.confirm();
 
     // check that the grid does not have any rows in it anymore
     var grid = GU.getGrid(gridId);

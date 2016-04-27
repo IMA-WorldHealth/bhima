@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('CashboxController', CashboxController);
 
 CashboxController.$inject = [
-  '$window', '$uibModal', 'SessionService', 'ProjectService', 'CashboxService',
-  'CurrencyService', 'FormStateFactory'
+  '$uibModal', 'SessionService', 'ProjectService', 'CashboxService',
+  'CurrencyService', 'FormStateFactory', 'ModalService'
 ];
 
 /**
@@ -16,7 +16,7 @@ CashboxController.$inject = [
 * @todo - use ui-router for managing state
 * @todo - use delete modal here
 */
-function CashboxController($window, Modal, Session, Projects, Boxes, Currencies, StateFactory) {
+function CashboxController(Modal, Session, Projects, Boxes, Currencies, StateFactory, ModalService) {
   var vm = this;
 
   // bind variables
@@ -150,18 +150,18 @@ function CashboxController($window, Modal, Session, Projects, Boxes, Currencies,
 
   /** @todo - this should be a modal */
   function del(box) {
-    var yes =
-      $window.confirm('Are you sure you want to delete this cashbox?');
-
-    if (yes) {
-      Boxes.delete(box.id)
-      .then(function (message) {
-        vm.view = 'default';
-        vm.state.delete();
-        return refreshBoxes();
-      })
-      .catch(handler);
-    }
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (yes){
+      if (yes) {
+        Boxes.delete(box.id)
+        .then(function (message) {
+          vm.view = 'default';
+          vm.state.delete();
+          return refreshBoxes();
+        })
+        .catch(handler);
+      }
+    });
   }
 
   /**

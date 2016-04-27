@@ -25,9 +25,9 @@ ModalService.$inject = [ '$uibModal' ];
  */
 function ModalService(Modal) {
   var service = this;
-
-  service.confirm = confirm;
-
+  
+  service.alert = alert;
+  service.confirm = confirm;  
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -53,6 +53,20 @@ function ModalService(Modal) {
     });
 
     return instance.result;
+  }
+
+  function alert(prompt, options) { 
+    // default options for modal rendering
+    var opts = options || {};
+
+    var instance = Modal.open({
+      animation : opts.animation || false,
+      keyboard : opts.keyboard || true,
+      size : opts.size || 'md',
+      controller : 'AlertModalController as AlertModalCtrl',
+      resolve : { prompt : function provider() { return prompt;} },
+      templateUrl : '/partials/templates/modals/alert.modal.html'
+    });
   }
 
 

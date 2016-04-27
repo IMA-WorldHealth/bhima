@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'EnterpriseService', 'FinancialService', '$translate', '$window', 'SessionService'
+  'ServiceService', 'EnterpriseService', 'FinancialService', '$translate', 'SessionService', 'ModalService'
 ];
 
-function ServicesController(Services, Enterprises, FinancialService, $translate, $window, SessionService) {
+function ServicesController(Services, Enterprises, FinancialService, $translate, SessionService, ModalService) {
   var vm = this;
 
   vm.enterprises = [];
@@ -100,26 +100,27 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
   }
 
   // switch to delete warning mode
-  function del(service) {
-    var bool =  $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
-
+  function del(service) {   
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool){
      // if the user clicked cancel, reset the view and return
-     if (!bool) {
-        vm.view = 'default';
-        return;
-     }
+       if (!bool) {
+          vm.view = 'default';
+          return;
+       }
 
-    // if we get there, the user wants to delete a service
-    vm.view = 'delete_confirm';
-    Services.delete(service.id)
-    .then(function () {
-       vm.view = 'delete_success';
-       return refreshServices();
-    })
-    .catch(function (error) {
-      vm.HTTPError = error;
-      vm.view = 'delete_error';
-    });
+      // if we get there, the user wants to delete a service
+      vm.view = 'delete_confirm';
+      Services.delete(service.id)
+      .then(function () {
+         vm.view = 'delete_success';
+         return refreshServices();
+      })
+      .catch(function (error) {
+        vm.HTTPError = error;
+        vm.view = 'delete_error';
+      });
+    });  
   }
 
 

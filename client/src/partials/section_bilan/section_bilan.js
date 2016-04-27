@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('sectionBilanController', sectionBilanController);
 
 sectionBilanController.$inject = [
-  'SectionBilanService', '$window', '$translate'
+  'SectionBilanService', '$translate', 'ModalService'
 ];
 
-function sectionBilanController(sectionBilanService, $window, $translate) {
+function sectionBilanController(sectionBilanService, $translate, ModalService) {
   var vm = this;
   vm.view = 'default';
 
@@ -88,25 +88,26 @@ function sectionBilanController(sectionBilanService, $window, $translate) {
 
   // switch to delete warning mode
   function del(sectionBilan) {
-    var bool = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool){
+       // if the user clicked cancel, reset the view and return
+      if (!bool) {
+          vm.view = 'default';
+          return;
+      }
 
-     // if the user clicked cancel, reset the view and return
-     if (!bool) {
-        vm.view = 'default';
-        return;
-     }
-
-    // if we get there, the user wants to delete a Section Bilan
-    vm.view = 'delete_confirm';
-    sectionBilanService.delete(sectionBilan.id)
-    .then(function () {
-       vm.view = 'delete_success';
-       return refreshSectionBilans();
-    })
-    .catch(function (error) {
-      vm.HTTPError = error;
-      vm.view = 'delete_error';
-    });
+      // if we get there, the user wants to delete a Section Bilan
+      vm.view = 'delete_confirm';
+      sectionBilanService.delete(sectionBilan.id)
+      .then(function () {
+         vm.view = 'delete_success';
+         return refreshSectionBilans();
+      })
+      .catch(function (error) {
+        vm.HTTPError = error;
+        vm.view = 'delete_error';
+      });
+    });  
   }
 
   startup();  

@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('ReferenceController', ReferenceController);
 
 ReferenceController.$inject = [
-  'ReferenceService', 'ReferenceGroupService', 'SectionResultatService', '$window', '$translate'
+  'ReferenceService', 'ReferenceGroupService', 'SectionResultatService', '$translate', 'ModalService'
 ];
 
-function ReferenceController(referenceService, referenceGroupService, sectionResultatService, $window, $translate) {
+function ReferenceController(referenceService, referenceGroupService, sectionResultatService, $translate, ModalService) {
   var vm = this;
   vm.view = 'default';
 
@@ -94,25 +94,26 @@ function ReferenceController(referenceService, referenceGroupService, sectionRes
 
   // switch to delete warning mode
   function del(reference) {
-    var bool = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
-
-     // if the user clicked cancel, reset the view and return
-     if (!bool) {
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool){
+       // if the user clicked cancel, reset the view and return
+      if (!bool) {
         vm.view = 'default';
         return;
-     }
+      }
 
-    // if we get there, the user wants to delete a Reference
-    vm.view = 'delete_confirm';
-    referenceService.delete(reference.id)
-    .then(function () {
-       vm.view = 'delete_success';
-       return refreshReferences();
-    })
-    .catch(function (error) {
-      vm.HTTPError = error;
-      vm.view = 'delete_error';
-    });
+      // if we get there, the user wants to delete a Reference
+      vm.view = 'delete_confirm';
+      referenceService.delete(reference.id)
+      .then(function () {
+         vm.view = 'delete_success';
+         return refreshReferences();
+      })
+      .catch(function (error) {
+        vm.HTTPError = error;
+        vm.view = 'delete_error';
+      });
+    });  
   }
 
   startup();  
