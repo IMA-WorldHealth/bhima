@@ -31,6 +31,20 @@ exports.login = function login(agent) {
   };
 };
 
+/**
+ * Clones the object and removes the field, to test if the field is required
+ * and the server error codes
+ *
+ * @param {Object} object - any valid JS object
+ * @param {String} field - a key on the passed in object
+ * @returns {Object} clone - the copied object missing the propertay
+ */
+exports.mask = function mask(object, field) {
+  var clone = JSON.parse(JSON.stringify(object));
+  delete clone[field];
+  return clone;
+};
+
 // generic configuration for chai
 exports.configure = function configure(chai) {
   'use strict';
@@ -80,7 +94,7 @@ exports.identical = function identical(objectA, objectB) {
  *
  *   // do something useful with the response, like further tests
  * })
- * .catch(helpers.hanlder);
+ * .catch(helpers.handler);
  */
 api.created = function created(res) {
   'use strict';
@@ -109,7 +123,7 @@ api.created = function created(res) {
 };
 
 /**
- * Ensures that an API request has properly errored with translateable text.
+ * Ensures that an API request has properly errored with translatable text.
  *
  * @method errored
  * @param {object} res - the HTTP response object
@@ -121,9 +135,9 @@ api.created = function created(res) {
  * .then(function (res) {
  *   helpers.api.errored(res);
  * })
- * .catch(helpers.hanlder);
+ * .catch(helpers.handler);
  */
-api.errored = function errored(res, status) {
+api.errored = function errored(res, status, key) {
   'use strict';
 
   var keys = [ 'code' ];
@@ -138,6 +152,11 @@ api.errored = function errored(res, status) {
 
   // ensure the error properties conform to standards
   expect(res.body.code).to.be.a('string');
+
+  // if a key was passed in, expect that key
+  if (key) {
+    expect(res.body.code).to.equal(key);
+  }
 };
 
 /**
@@ -240,6 +259,9 @@ exports.data = {
   USD : 2,
   FC : 1,
   PROJECT : 1,
-  PRICE_LIST : '75e09694-dd5c-11e5-a8a2-6c29955775b0'
+  PRICE_LIST : '75e09694-dd5c-11e5-a8a2-6c29955775b0',
+  ADMIN_SERVICE : 2,
+  SUPERUSER : 1,
+  OTHERUSER : 2,
 };
 

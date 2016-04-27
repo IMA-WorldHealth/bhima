@@ -1,79 +1,32 @@
 /* jshint expr:true */
-
-var chai = require('chai');
-var expect = chai.expect;
-var uuid = require('node-uuid');
+const chai = require('chai');
+const expect = chai.expect;
+const uuid = require('node-uuid');
 
 /** import test helpers */
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 /** The /sales API endpoint */
-describe.only('The /sales API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+describe('The /sales API', function () {
+  'use strict';
 
   /** login at the start of the test */
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  // mock sale items
-  var mockItems = [{
-    inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
-    quantity: 1,
-    inventory_price: 10,
-    transaction_price: 10,
-    credit: 10,
-    debit: 0
-  }, {
-    inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
-    quantity: 1,
-    inventory_price: 25,
-    transaction_price: 25,
-    credit: 25,
-    debit: 0
-  }];
-
-  // mock sale that should succeed
-  var mockSale = {
-    project_id: 1,
-    cost: 35,
-    debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
-    date: new Date('2016-01-13'),
-    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
-    service_id: 1,
-    is_distributable: true,
-    items : mockItems
-  };
-
-  // error cases
-
-  var missingSaleItems = {
-    project_id: 1,
-    cost: 8.5,
-    debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
-    date: new Date('2016-01-13'),
-    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
-    service_id: 1,
-    is_distributable: true,
-  };
-
-  var missingSaleDate = {
-    project_id: 1,
-    cost: 35.0,
-    debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
-    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
-    service_id: 1,
-    is_distributable: true,
-    items : mockItems
-  };
-
   /** @const total number of sales in the database */
-  var numSales = 2;
-  var numCreatedSales = 3;
+  const numSales = 2;
+  const numCreatedSales = 3;
+  const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
 
   /** @const a reference for one of the sales in the database */
-  var REFERENCE = 'TPA1';
+  const reference = 'TPA1';
 
-  it.skip('GET /sales returns a list of patient invoices', function () {
+  // run the 'BillingScenarios' test suite
+  describe('(POST /sales)', BillingScenarios);
+
+  it('GET /sales returns a list of patient invoices', function () {
     return agent.get('/sales')
       .then(function (res) {
         helpers.api.listed(res, numSales);
@@ -81,23 +34,8 @@ describe.only('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /sales will record a valid patient invoice and return success from the posting journal', function () {
-    return agent.post('/sales')
-      .send({ sale : mockSale })
-      .then(function (res) {
-        helpers.api.created(res);
-        mockSale.uuid = res.body.uuid;
-        return agent.get('/sales/' + mockSale.uuid);
-      })
-      .then(function (res) {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-      })
-      .catch(helpers.handler);
-  });
-
-  it.skip('GET /sales/:uuid returns a valid patient invoice', function () {
-    return agent.get('/sales/' + mockSale.uuid)
+  it('GET /sales/:uuid returns a valid patient invoice', function () {
+    return agent.get('/sales/'.concat(fetchableInvoiceUuid))
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -105,16 +43,14 @@ describe.only('The /sales API', function () {
         var sale = res.body;
 
         expect(sale).to.not.be.empty;
-        /** @todo -- change the sales API to make it more pleasing to use */
-        expect(sale).to.have.property('items');
+        expect(sale).to.contain.keys('uuid', 'cost', 'date', 'items');
         expect(sale.items).to.not.be.empty;
-        expect(sale).to.contain.keys('uuid', 'cost', 'date');
         expect(sale.items[0]).to.contain.keys('uuid', 'code', 'quantity');
       })
       .catch(helpers.handler);
   });
 
-  it.skip('GET /sales/:uuid returns 404 for an invalid patient invoice', function () {
+  it('GET /sales/:uuid returns 404 for an invalid patient invoice', function () {
     return agent.get('/sales/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
@@ -122,36 +58,10 @@ describe.only('The /sales API', function () {
       .catch(helpers.handler);
   });
 
-  it.skip('POST /sales returns 400 for an empty patient invoice request object', function () {
-    return agent.post('/sales')
-      .send({})
-      .then(function (res) {
-        helpers.api.errored(res, 400);
-      })
-      .catch(helpers.handler);
-  });
-
-  it.skip('POST /sales returns 400 for a patient invoice missing a date', function () {
-    return agent.post('/sales')
-      .send({ sale : missingSaleDate })
-      .then(function (res) {
-        helpers.api.errored(res, 400);
-      })
-      .catch(helpers.handler);
-  });
-
-  it.skip('POST /sales returns 400 for a patient invoice missing sale items', function () {
-    return agent.post('/sales')
-      .send({ sale : missingSaleItems })
-      .then(function (res) {
-        helpers.api.errored(res, 400);
-      })
-      .catch(helpers.handler);
-  });
 
   describe.skip('(/sales/search) Search interface for the sales table', function () {
 
-    // no params provided
+    // no parameters provided
     it('GET /sales/search should return all sales if no query string provided', function () {
       return agent.get('/sales/search')
         .then(function (res) {
@@ -225,7 +135,7 @@ describe.only('The /sales API', function () {
   describe('(/sales/references) reference interface for the sales table', function () {
 
     it('GET /sales/reference/:reference should return a uuid for a valid sale reference', function () {
-      return agent.get('/sales/references/'.concat(REFERENCE))
+      return agent.get('/sales/references/'.concat(reference))
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -243,3 +153,124 @@ describe.only('The /sales API', function () {
     });
   });
 });
+
+/**
+ * Patient Invoicing Scenarios
+ *
+ * This test suite goes through a variety of testing scenarios to ensure the
+ * API is bullet-proof.
+ */
+function BillingScenarios() {
+  'use strict';
+
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
+
+  /**
+   * A simple invoice that should be posted without issue.  This demonstrates
+   * that the POST /sales route works as intended for the simple invoicing of
+   * patients.  Demonstrates:
+   *  1) @todo the "debit" field is not required in sale_items and should be
+   *    removed in the future
+   *  2) The is_distributed field takes a boolean value
+   *  3) Uuids are not required and will be generated by the server.
+   *  4) The 'cost' field is not required and will be (correctly) calculated by
+   *    the server
+   *  5) Changing the 'inventory_price' does not have side-effects - it is only
+   *    the 'transaction_price' that has any bearing.
+   *  6) The 'user_id' should be ignored, and default to the logged in user.
+   */
+  const simpleInvoice = {
+    project_id: helpers.data.PROJECT,
+    // cost: 35,  // this cost should be calculated by the server.
+    debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+    date: new Date('2016-01-13'),
+    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
+    service_id: helpers.data.ADMIN_SERVICE,
+    user_id : helpers.data.OTHERUSER,
+    is_distributable: true,
+    items : [{
+      inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      quantity: 1,
+      inventory_price: 8,
+      transaction_price: 10,
+      credit: 10,
+    }, {
+      inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
+      quantity: 1,
+      inventory_price: 25,
+      transaction_price: 25,
+      credit: 25,
+    }]
+  };
+
+  it('creates and posts a patient invoice (simple)', () => {
+    return agent.post('/sales')
+      .send({ sale : simpleInvoice })
+      .then(function (res) {
+        helpers.api.created(res);
+
+        // make sure we can locate the invoice in the database
+        return agent.get('/sales/'.concat(res.body.uuid));
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+
+        // ensure the data in the database is correct
+        let invoice = res.body;
+        expect(invoice.cost).to.equal(35);
+        expect(invoice.items).to.have.length(2);
+        expect(invoice.discount).to.equal(0);
+
+        // NOTE - this is not what was sent, but the server has corrected it.
+        expect(invoice.user_id).to.equal(helpers.data.SUPERUSER);
+      })
+      .catch(helpers.handler);
+  });
+
+  /**
+   * These tests check a few error conditions to make sure the server's API
+   * doesn't break on errors.
+   */
+  it('handles error scenarios for simple invoicing', () => {
+
+    // test what happens when the debtor is missing
+    let missingDebtorUuid = helpers.mask(simpleInvoice, 'debtor_uuid');
+
+    return agent.post('/sales')
+      .send({ sale : missingDebtorUuid })
+      .then((res) => {
+        helpers.api.errored(res, 400);
+
+        // what happens when there is no date sent to the server
+        let missingDate = helpers.mask(simpleInvoice, 'date');
+        return agent.post('/sales').send({ sale : missingDate });
+      })
+      .then((res) => {
+        helpers.api.errored(res, 400);
+
+        // what happens when no items are sent to the server
+        let missingItems = helpers.mask(simpleInvoice, 'items');
+        return agent.post('/sales').send({ sale : missingItems });
+      })
+      .then((res) => {
+        helpers.api.errored(res, 400);
+
+        // what happens when no description is sent to the server
+        let missingDescription = helpers.mask(simpleInvoice, 'description');
+        return agent.post('/sales').send({ sale : missingDescription });
+      })
+      .then((res) => {
+        helpers.api.errored(res, 400);
+
+        // make sure an empty object fails
+        let emptyObject = {};
+        return agent.post('/sales').send({ sale : emptyObject });
+      })
+      .then((res) => {
+        helpers.api.errored(res, 400);
+      })
+      .catch(helpers.handler);
+  });
+}
