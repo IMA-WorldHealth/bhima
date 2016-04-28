@@ -10,6 +10,7 @@ const morgan     = require('morgan');
 const fs         = require('fs');
 const winston    = require('winston');
 const _          = require('lodash');
+const helmet     = require('helmet');
 
 const interceptors = require('./interceptors');
 const BadRequest = require('../lib/errors/BadRequest');
@@ -21,8 +22,17 @@ exports.configure = function configure(app) {
 
   winston.log('debug', 'Configuring middleware');
 
-  // middleware
   app.use(compress());
+
+  // helmet guards
+  app.use(helmet.frameguard({ action : 'deny' }));
+  app.use(helmet.hsts({ maxAge: 7776000000 })); // ninety days in ms
+  app.use(helmet.hidePoweredBy());
+  app.use(helmet.ieNoOpen());
+  app.use(helmet.noSniff());
+  app.use(helmet.dnsPrefetchControl());
+  app.use(helmet.xssFilter());
+
   app.use(bodyParser.json({ limit : '8mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
 
