@@ -28,16 +28,10 @@ function NotifyService($interval) {
    * Display a success notification
    */
   function success(message) {
-    // if (notifications.length) {
-      // notifications[0].alive = false;
-
-      // notifications.shift();
-    // }
-    //
 
     /** @todo analysis on the heap allocation implications should be done this */
     var n = {
-      ttl : 20000,
+      ttl : 5000,
       alive : true,
       message : message
     }

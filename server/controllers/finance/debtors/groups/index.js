@@ -185,14 +185,25 @@ function detail(req, res, next) {
  */
 function list(req, res, next) {
   var sql =
-    'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention FROM debtor_group ';
+    'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention, created_at FROM debtor_group ';
 
   if (req.query.detailed === '1') {
+
+    /**
+     * JOIN -> GROUP favoured over nested SELECT for potential performance reasons,
+     * more modular solution would be:
+     * (SELECT COUNT(uuid) from debtor where group_uuid = debtor_group.uuid) as total_debtors
+     */
     sql =
-      `SELECT uuid, name, account_id, BUID(location_id) as location_id, phone, email, note, locked,
-        max_credit, is_convention, price_list_uuid,
-        apply_subsidies, apply_discounts, apply_billing_services
-      FROM debtor_group `;
+      `
+      SELECT BUID(debtor_group.uuid) as uuid, name, account_id, BUID(location_id) as location_id, phone, email, note, locked,
+        max_credit, is_convention, BUID(price_list_uuid) as price_list_uuid, debtor_group.created_at,
+        apply_subsidies, apply_discounts, apply_billing_services, COUNT(debtor.uuid) as total_debtors
+      FROM debtor_group
+      LEFT JOIN debtor
+      ON debtor.group_uuid = debtor_group.uuid
+      GROUP BY debtor_group.uuid
+      `;
 
     delete req.query.detailed;
   }

@@ -276,6 +276,7 @@
       "CURRENCIES"             : "Currencies",
       "CURRENCY"               : "Currency",
       "CURRENT_LOCATION"       : "Current Location",
+      "CREATED"                : "Created",
       "DATE"                   : "Date",
       "DEBITOR_GROUP"          : "Debtor Group",
       "DEBTOR_GROUP"           : "Form debtor group record",
@@ -720,7 +721,15 @@
       "TOTAL"              : "Total",
       "TYPE"               : "Type",
       "VALUE"              : "Value",
-      "VILLAGE"            : "Village"
+      "VILLAGE"            : "Village",
+
+      "SORTING": {
+        "NAME_ASC" : "Name [A-Z]",
+        "NAME_DSC" : "Name [Z-A]",
+        "CREATED_ASC" : "Oldest",
+        "CREATED_DSC" : "Newest",
+        "TOTAL_ASC" : "Largest"
+      }
     }
   },
   "TREE": {

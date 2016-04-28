@@ -2,27 +2,27 @@
 <!-- TODO Discuss if a header or description is required -->
 <!-- <h1>Debtor Groups Utility</h1> -->
 <style>
-  .footer-locked { 
+  .footer-locked {
     background-color : #D9534F;
     color : white;
   }
-  
-  .text-float-util { 
+
+  .text-float-util {
     text-align : right;
   }
 
-  @media (max-width: 992px) { 
-    .text-float-util { 
+  @media (max-width: 992px) {
+    .text-float-util {
       text-align : left;
     }
   }
   /* TODO Move to less using propoer breakpoints */
-  @media 
+  @media
 </style>
 <div class="container text-center">
 <div class="row">
 <div class="col-md-8 col-md-offset-2">
-      
+
     <div class="panel panel-default" style="margin-bottom : 0px;">
       <div class="panel-heading clearfix" style="text-align : left">
 
@@ -42,14 +42,14 @@
           </span>
         </div>
       </div>
-    
+
       <!-- TODO Translate -->
       <input ng-model="GroupCtrl.filter" ng-show="GroupCtrl.filterActive" class="form-control" placeholder="Filter by name..." style="border-radius: 0"></input>
     </div>
 
-    <div 
+    <div
       ng-repeat=
-      "debtorGroup in GroupCtrl.debtorGroups 
+      "debtorGroup in GroupCtrl.debtorGroups
         | filter    : {name : GroupCtrl.filter}
         | orderBy   : GroupCtrl.sort.attribute:GroupCtrl.sort.reverse
         | limitTo   : GroupCtrl.pageSize : (GroupCtrl.currentPage-1)*GroupCtrl.pageSize ">
@@ -58,7 +58,7 @@
         <div class="panel-body text-left">
           <div class="row">
             <div class="col-md-6">
-              <h4 style="margin-top : 0px;">{{debtorGroup.name}}</h4>
+              <h4 style="margin-top : 0px;"><span ng-if="debtorGroup.locked" style="color : #D9534F;" class="glyphicon glyphicon-lock"></span> {{debtorGroup.name}}</h4>
             </div>
             <div class="col-md-6 text-float-util">
               <!-- <a ng-href="#/debtors/groups/{{debtorGroup.uuid}}/update" class=""><span class="glyphicon glyphicon-edit"></span> Edit Debtor Group</a> -->
@@ -68,33 +68,23 @@
 
           <div class="row">
             <div class="col-md-9">
-              
+
               <div class="row">
                 <div class="col-md-6 textflow">
-                  <span class="glyphicon glyphicon-list"></span> Last transaction - <a href>2 hours ago</a>
+                  <span class="glyphicon glyphicon-time"></span> {{ "FORM.LABELS.CREATED" | translate }} <span am-time-ago="debtorGroup.created_at"></span>
                 </div>
                 <div class="col-md-6">
-                  
-                  <span class="glyphicon glyphicon-user"></span> 10 Debtors subscribed
-                </div>
-              </div>
-              
-              <div class="row">
-                <div class="col-md-12">
-                  <span class="glyphicon glyphicon-time"></span> Created 2 weeks ago by <a href>Steven</a>
+
+                  <span class="glyphicon glyphicon-list-alt"></span> <b>{{debtorGroup.total_debtors}}</b> Debtors subscribed
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div ng-if="debtorGroup.locked" class="panel-footer footer-locked text-left">
-          <span class="glyphicon glyphicon-lock"></span> This group is locked
-        </div>
-
       </div>
     </div>
   </div>
-</div> 
+</div>
 
 <div class="row">
       <div class="col-md-8 col-md-offset-2">
