@@ -912,15 +912,7 @@ function localeConfig(tmhDynamicLocaleProvider) {
   tmhDynamicLocaleProvider.defaultLocale('fr-be');
 }
 
-// Logs HTTP errors to the console, even if uncaught
-// TODO - in production, we shouldn't log as many errors
-function authConfig($httpProvider) {
-  $httpProvider.interceptors.push(['$injector', function ($injector) {
-    return $injector.get('AuthInjectorFactory');
-  }]);
-}
-
-// Redirect to login if not signed in.
+// redirect to login if not signed in.
 function startupConfig($rootScope, $location, SessionService, amMoment) {
   $rootScope.$on('$stateChangeStart', function (event, next) {
     if (!SessionService.user) {
@@ -942,25 +934,29 @@ function localStorageConfig($localStorageProvider) {
 }
 
 /**
- * This function is responsible for configuring anulgar's $http service. Any
- * relevent services/ factories are registered at this point.
+ * This function is responsible for configuring angular's $http service. Any
+ * relevant services/ factories are registered at this point.
  *
- * @params {Object} $httpProvider   Angular provider bject containing
+ * @params {Object} $httpProvider   Angular provider inject containing
  *                                  'interceptors' that are chained on any HTTP request
  */
 function httpConfig($httpProvider) {
+
+  // register an auth injector, which logs $http errors to the console, even if
+  // caught by a .catch() statement.
+  // TODO - in production, we shouldn't log as many errors
+  $httpProvider.interceptors.push('AuthInjectorFactory');
 
   // register error handling interceptor
   $httpProvider.interceptors.push('ErrorInterceptor');
 }
 
-// configuration
+// configure services, providers, factories
 bhima.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
-bhima.config(['$httpProvider', authConfig]);
 bhima.config(['$localStorageProvider', localStorageConfig]);
 bhima.config(['$httpProvider', httpConfig]);
 
-// run
+// run the application
 bhima.run(['$rootScope', '$location', 'SessionService', 'amMoment', startupConfig]);

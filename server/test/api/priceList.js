@@ -1,18 +1,17 @@
 /* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
 /** import test helpers */
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 /**
  * The /prices API endpoint
  */
 describe('(/prices ) The price list API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
 
-  /** login before each request */
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
 
@@ -152,7 +151,7 @@ describe('(/prices ) The price list API', function () {
       .then(function (res) {
         helpers.api.errored(res, 400);
 
-        expect(res.body.code).to.equal('DB.ER_BAD_NULL_ERROR');
+        expect(res.body.code).to.equal('ERRORS.BAD_REQUEST');
 
         // make sure we didn't gain a price list!
         return agent.get('/prices');
