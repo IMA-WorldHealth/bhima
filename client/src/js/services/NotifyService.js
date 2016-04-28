@@ -37,7 +37,7 @@ function NotifyService($interval) {
     var formatMessage = {
       ttl : TTL,
       message : message
-    }
+    };
 
     // very brief and naive performance analysis shows that this is cheaper in terms
     // of memory usage vs. setting the array length to 0, shift() or pop(). This

@@ -20,9 +20,8 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
   Accounts.list()
     .then(function (accounts) {
-      vm.accounts = accounts
-
-      return DebtorGroups.read(target)
+      vm.accounts = accounts;
+      return DebtorGroups.read(target);
     })
     .then(function (result) {
       vm.group = result;
@@ -53,9 +52,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
 
     // hack price lists - classic
-    console.log(submitDebtorGroup.price_list_uuid);
     submitDebtorGroup.price_list_uuid = submitDebtorGroup.price_list_uuid || null;
-    // console.log(submitDebtorGroup.price_list_uuid);
 
     // temporary work-around for displaying an entire account in the typeahead
     if (submitDebtorGroup.account_id) {

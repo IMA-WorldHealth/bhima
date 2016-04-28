@@ -8,9 +8,6 @@ module.exports = {
   },
 
   dismiss : function dismiss() {
-    // browser.driver.wait(protractor.until.elementIsVisible(element(by.css('[data-dismiss="notification"]'))));
     return element(by.css('[data-dismiss="notification"]')).click();
-    // browser.ignoreSynchronization = false;
-    // return t;
   }
 };

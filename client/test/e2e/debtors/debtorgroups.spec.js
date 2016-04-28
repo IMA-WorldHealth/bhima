@@ -8,7 +8,7 @@ helpers.configure(chai);
 var components = require('../shared/components');
 var FU = require('../shared/FormUtils');
 
-describe.only('Debtor Groups Management', function () {
+describe('Debtor Groups Management', function () {
   'use strict';
 
 
@@ -24,8 +24,6 @@ describe.only('Debtor Groups Management', function () {
 
   it('creates a debtor group', function () {
     FU.buttons.create();
-
-    // FU.exists(by.css('[name="debtorGroup"]'), true);
 
     // Account selection
     /** @todo Suggested helper AccountSelect.selectFirst('setInput') */
@@ -45,8 +43,6 @@ describe.only('Debtor Groups Management', function () {
 
     FU.buttons.submit();
 
-    // FU.exists(by.css('[data-success-notification]'), true);
-    // element(by.css('[data-dismiss="notification"]')).click();
     components.notification.verify();
     components.notification.dismiss();
 
@@ -63,14 +59,7 @@ describe.only('Debtor Groups Management', function () {
 
     FU.buttons.submit();
 
-    // browser.driver.wait(protractor.until.elementIsVisible(element(by.css('[data-success-entry]'))));
     components.notification.verify();
     components.notification.dismiss();
-    // FU.exists(by.css('[data-success-notification]'), true);
-    // element(by.css('[data-dismiss="notification"]')).click();
-  });
-
-  it('displays created and updated groups', function () {
-
   });
 });

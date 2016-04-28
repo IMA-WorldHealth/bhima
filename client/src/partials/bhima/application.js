@@ -11,7 +11,7 @@ ApplicationController.$inject = [
  * This top-level controller is currently  responsible for initializing language
  * loading and controlling the side-bar hide/show methods.
  */
-function ApplicationController(AppCache, Session, Languages, $state, $rootScope, NotifyService) {
+function ApplicationController(AppCache, Session, Languages, $state, $rootScope, Notify) {
   var vm = this;
 
   // load in the application cache
@@ -23,9 +23,6 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
 
   // expose notifications list to the application level view
   vm.notifications = Notify.list;
-  vm.someFunc = function someFunc() {
-    console.log('called on exit');
-  }
 
   // set up the languages for the application, including default languages
   // the 'true' parameter forces refresh
