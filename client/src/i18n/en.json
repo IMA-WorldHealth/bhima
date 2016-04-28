@@ -113,7 +113,29 @@
     "INFO"           : "Group Information",
     "NEW"            : "Add a Debtor Group",
     "NEW_DEBTOR_GRP" : "New Debtor Group",
-    "TITLE"          : "Debtor Group Management"
+    "TITLE"          : "Debtor Group Management",
+    "SUBSCRIBED"     : "Debtors subscribed",
+    "BACK"           : "Back to Debtor Groups",
+    "CREATE"         : "Create Debtor Group",
+    "CREATE_ANOTHER" : "Create another Debtor Group",
+    "POLICIES" : {
+      "TITLE" : "Group Policies",
+      "SUBSIDIES" : {
+        "TITLE" : "Subsidies",
+        "INFO"  : "With this configuration unchecked no member of this debtor group will qualify for any subsidies",
+        "LABEL" : "This group qualifies for subsidies"
+      },
+      "DISCOUNTS" : {
+        "TITLE" : "Discounts",
+        "INFO" : "With this configuration unchecked no member of this debtor group will qualify for any discounts",
+        "LABEL" : "This group qualifies for discounts"
+      },
+      "BILLING_SERVICES" : {
+        "TITLE" : "Billing Services",
+        "INFO" : "With this configuration option checked all members of this debtor group will be exempt from paying automatically applied billing services",
+        "LABEL" : "This group is exempt from paying billing services"
+      }
+    }
   },
   "DEPOT": {
     "ADD_DEPOT"   : "Add a Depot",
@@ -331,6 +353,7 @@
       "MALE"                   : "Male",
       "MARITAL_STATUS"         : "Martial Status",
       "MAX_CREDIT"             : "Max Credit",
+      "MAX_CREDIT_INFO"        : "The maximum credit value this debtor group can collect before being warned. A value of 0 means no maximum limit.",
       "MIDDLE_NAME"            : "Middle Name",
       "MOTHER_NAME"            : "Mother's Name",
       "NAME"                   : "Name",
@@ -421,7 +444,8 @@
       "ENTER_USERNAME"     : "Enter username",
       "ENTER_VILLAGE"      : "Enter village",
       "SEARCH_NAME"        : "Search by Name",
-      "SEARCH_PATIENT_ID"  : "Search by Patient ID"
+      "SEARCH_PATIENT_ID"  : "Search by Patient ID",
+      "FILTER_NAME"        : "Filter by name..."
     },
     "SELECTS": {
       "EMPTY"                     : "Empty",
@@ -560,7 +584,8 @@
     "PRICE_LIST_ITEMS" : "Price list items",
     "TITLE"            : "Price List Management",
     "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups",
-    "UPDATE"           : "Update a Price List"
+    "UPDATE"           : "Update a Price List",
+    "NONE"             : "Apply no price list"
   },
   "PROJECT": {
     "ADDING_PROJECT"  : "Adding a new project",
@@ -724,11 +749,16 @@
       "VILLAGE"            : "Village",
 
       "SORTING": {
+        "LABEL"    : "Sort",
         "NAME_ASC" : "Name [A-Z]",
         "NAME_DSC" : "Name [Z-A]",
         "CREATED_ASC" : "Oldest",
         "CREATED_DSC" : "Newest",
         "TOTAL_ASC" : "Largest"
+      },
+
+      "FILTERING": {
+        "LABEL"   : "Filter"
       }
     }
   },

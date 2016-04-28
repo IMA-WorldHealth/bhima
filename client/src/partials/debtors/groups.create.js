@@ -5,6 +5,14 @@ DebtorGroupCreateController.$inject = [
     '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', '$uiViewScroll', 'NotifyService'
 ];
 
+/**
+ * This controller is responsible for creating a debtor group. It provides
+ * utility functions for submission and error handling.
+ *
+ * @todo refactor code to remove redundant features introduced previously
+ *
+ * @module debtor/groups/create
+ */
 function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Accounts, Prices, Uuid, $uiViewScroll, Notify) {
   var vm = this;
 
@@ -26,31 +34,29 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   Prices.read()
     .then(function (priceLists) {
       vm.priceLists = priceLists;
-      console.log('got price lists', priceLists);
     });
 
+  // expose state for optional view elements
   vm.state = $state;
+
   settupDefaults();
-  console.log(vm.state);
 
   function settupDefaults() {
-
     vm.createSessionId = Uuid();
 
     /* object to collect all form model values */
     vm.group = {};
-
     vm.group.uuid = vm.createSessionId;
 
     // set default values
     vm.group.location_id = SessionService.enterprise.location_id;
 
+    // assigning policy logic
     vm.group.apply_discounts = policies.subsidies;
     vm.group.apply_subsidies = policies.discounts;
     vm.group.apply_billing_services = !policies.billingServices;
 
     vm.group.max_credit = 0;
-
     vm.submit = submit;
   }
 
@@ -59,7 +65,6 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
     groupForm.$setSubmitted();
 
-        console.log(groupForm);
     // ensure all Angular form validation checks have passed
     if (groupForm.$invalid) {
       return;
@@ -70,14 +75,8 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     submitGroup = angular.copy(vm.group);
     submitGroup.account_id = vm.group.account_id.id;
 
-    console.log('submitting price list', submitGroup.price_list_uuid);
-    console.log('submitting price list', typeof(submitGroup.price_list_uuid));
-
     DebtorGroups.create(submitGroup)
       .then(function (result) {
-
-        // vm.written = true;
-
         Notify.success('Debtor group recorded successfully');
 
         // Debtor group created
@@ -89,9 +88,8 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
           groupForm.$setPristine();
 
           // move view to the top - ready to create another entity
-          ScrollTo('anchor');
           // $state.reload();
-
+          ScrollTo('anchor');
         } else {
 
           // navigate back to list view

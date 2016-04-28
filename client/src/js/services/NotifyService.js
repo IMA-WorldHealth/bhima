@@ -8,17 +8,19 @@ NotifyService.$inject = ['$interval'];
  * user.
  *
  * @todo  this is a placeholder service - it should be properly developed with
- *        the all features and unit test
- * @todo  feature - success/warning/failure messages
+ *        the all features and relevent tests
+ * @todo  feature - success/warning/failure messages - styles, data tags
  * @todo  unit tests
  */
 function NotifyService($interval) {
   var service = this;
 
-  // this was historically a list - this doesn't play nice with angular-growl
-  var notifications = [];
-  var index = 0;
+  // default time to live of 5 seconds
+  var TTL = 5000;
 
+  // this stores all notification instances - for now this will only be allowed
+  // to store one notification however it can be extended in the future
+  var notifications = [];
   service.success = success;
 
   /** expose notifications for application level view */
@@ -26,15 +28,20 @@ function NotifyService($interval) {
 
   /**
    * Display a success notification
+   *
+   * @todo extend for optiosn
    */
   function success(message) {
 
     /** @todo analysis on the heap allocation implications should be done this */
-    var n = {
-      ttl : 5000,
-      alive : true,
+    var formatMessage = {
+      ttl : TTL,
       message : message
     }
-    notifications[0] = n;
+
+    // very brief and naive performance analysis shows that this is cheaper in terms
+    // of memory usage vs. setting the array length to 0, shift() or pop(). This
+    // could be improved
+    notifications[0] = formatMessage;
   }
 }

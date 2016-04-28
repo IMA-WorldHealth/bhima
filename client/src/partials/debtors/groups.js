@@ -3,11 +3,21 @@ angular.module('bhima.controllers')
 
 DebtorGroupController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', '$interval'];
 
-/** @todo model groups in the Debtors service - even if it delegates to another file */
+/**
+ * This controller is responsible for loading debtor groups and providing basic
+ * sorting/ filtering utilites.
+ *
+ * @todo  Pass debtor groups into create/ update states to reduce the number of
+ *        HTTP requests made - these pages should also link back to this controller
+ *        without calling refresh : true and just passing back the object that changed
+ *
+ * @module finance/debtors/groups
+ */
 function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval) {
   var vm = this;
 
   // pagination configuration
+  /** @todo this should all be moved to a component */
   vm.pageSize     = 10;
   vm.currentPage  = 1;
   vm.debtorGroups = [];
@@ -36,10 +46,9 @@ function DebtorGroupController($state, DebtorGroups, Accounts, Prices, $interval
 
     // expose error to view
     vm.exception = error;
-
-    /** @todo scroll to alert demonstrating error */
   }
 
+  // Naive filter toggle - performance analysis should be done on this
   function toggleFilter() {
     if (vm.filterActive) {
 

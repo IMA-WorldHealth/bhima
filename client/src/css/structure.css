@@ -685,17 +685,17 @@ growl-notification.fading.ng-leave.ng-leave-active {
 }
 
 /** Temporary utility styles */
-.textflow { 
+.textflow {
   overflow : hidden;
   text-overflow : ellipsis;
   white-space : nowrap;
 }
-.rotate { 
+.rotate {
   transform : rotate(180deg);
 }
 
 /** Temporary notification styles */
-growl-notifications { 
+growl-notifications {
   width : 100%;
   position : fixed;
   top : 0px;
@@ -703,20 +703,20 @@ growl-notifications {
   z-index : 1000;
 }
 
-.expanded > growl-notifications { 
+.expanded > growl-notifications {
   left : 260px;
- 
+
   /** @todo width calculation are a hack - the notification doesn't need to be fixed */
   width : calc(100% - 205px) !important;
 }
 
-growl-notifications growl-notification { 
+growl-notifications growl-notification {
   background-color : #77A13F;
   border-left : 5px solid #638638;
   height : 51px;
   color : #fff;
   padding : 15px 10px;
-  display : block; 
+  display : block;
   /* padding-right : 35px; */
 
   /** @todo width calculation are a hack - the notification doesn't need to be fixed */
@@ -728,3 +728,15 @@ growl-notification .close {
   right: -21px;
   color: inherit;
 }
+
+/* 'Card' Utility class */
+.text-float-util {
+  text-align : right;
+}
+
+@media (max-width: 992px) {
+  .text-float-util {
+    text-align : left;
+  }
+}
+
