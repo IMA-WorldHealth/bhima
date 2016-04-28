@@ -54,7 +54,7 @@
         | orderBy   : GroupCtrl.sort.attribute:GroupCtrl.sort.reverse
         | limitTo   : GroupCtrl.pageSize : (GroupCtrl.currentPage-1)*GroupCtrl.pageSize ">
 
-      <div class="panel panel-default" style="margin-bottom : 3px !important;">
+      <div class="panel panel-default" style="margin-bottom : 3px !important;" data-group-entry>
         <div class="panel-body text-left">
           <div class="row">
             <div class="col-md-6">
@@ -62,7 +62,7 @@
             </div>
             <div class="col-md-6 text-float-util">
               <!-- <a ng-href="#/debtors/groups/{{debtorGroup.uuid}}/update" class=""><span class="glyphicon glyphicon-edit"></span> Edit Debtor Group</a> -->
-              <a ui-sref="debtorGroups.update({uuid : debtorGroup.uuid})" class=""><span class="glyphicon glyphicon-edit"></span> Edit Debtor Group</a>
+              <a data-method="update" ui-sref="debtorGroups.update({uuid : debtorGroup.uuid})" class=""><span class="glyphicon glyphicon-edit"></span> Edit Debtor Group</a>
             </div>
           </div>
 

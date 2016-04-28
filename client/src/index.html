@@ -22,9 +22,9 @@
   class="flex-container"
   ng-class="{'expanded' : AppCtrl.sidebarExpanded}"
   ng-controller="ApplicationController as AppCtrl">
-  
+
   <growl-notifications></growl-notifications>
-  
+
   <div class="flex-page">
     <!-- Sidebar -->
     <!-- TODO: Load the default position for the sidebar before angular is bootstrapped-->
@@ -61,6 +61,7 @@
         </div>
 
         <div class="flex-footer" ng-cloak>
+
           <ul>
             <li>
               <a class="session" ng-click="AppCtrl.settings()">
@@ -88,6 +89,17 @@
     <!-- End page -->
 
     <div class="flex-view" ui-view></div>
+
+    <!-- System wide notifications -->
+    <div class="ng-cloak">
+      <growl-notification data-success-notification ng-repeat="notification in AppCtrl.notifications" on-close="AppCtrl.someFunc()" class="fading" cancel="true" ttl="notification.ttl">
+        <span class="glyphicon glyphicon-check"></span>
+        {{notification.id}}
+        {{notification.message}}
+
+        <button type="button" class="close" ng-click="$growlNotification.remove()" data-dismiss="notification"><span>&times;</span></button>
+      </growl-notification>
+    </div>
   </div>
 </div>
 

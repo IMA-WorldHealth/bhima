@@ -486,18 +486,18 @@ ol.headercrumb {
    padding-left: 7px;
  }
 
-.fixedColumn { 
+.fixedColumn {
   float : left;
   position : relative;
-  
+
 }
 
 /**
- * Styles used for printing, receipts and reports 
+ * Styles used for printing, receipts and reports
  * @todo move this to less
  */
-.bh-modal-content { 
-  position : relative; 
+.bh-modal-content {
+  position : relative;
   padding : 15px;
 
   /** @todo review this */
@@ -505,17 +505,17 @@ ol.headercrumb {
   overflow-y : auto;
 }
 
-.receipt { 
+.receipt {
   width : 100%
 }
 
 /* Report tables */
-.total-row > td { 
-  font-weight : bold; 
+.total-row > td {
+  font-weight : bold;
 }
 
-@media print { 
-  body * { 
+@media print {
+  body * {
     visibility : hidden;
   }
 
@@ -525,31 +525,31 @@ ol.headercrumb {
 
   /* Style required to fix single page overflow problem */
   /* .flex-continar : height (cannot be 100%) */
-  .flex-container { 
+  .flex-container {
     height : inherit;
   }
-  
+
   /* .modal : overflow (cannot be hidden) */
-  .modal-open .modal { 
+  .modal-open .modal {
     overflow-x : initial;
     overflow-y : initial;
   }
 
-  .modal { 
+  .modal {
     overflow : initial;
   }
 
-  .bh-print, .bh-print * { 
+  .bh-print, .bh-print * {
     visibility : visible;
   }
 
-  .bh-print { 
+  .bh-print {
     position : absolute;
     left : 0;
     top : 0;
   }
-  
-  .bh-modal-content { 
+
+  .bh-modal-content {
     position : initial;
   }
 }
@@ -663,7 +663,7 @@ ol.headercrumb {
 growl-notification.fading.ng-move{
     -webkit-animation-name: fadeInDown;
     animation-name: fadeInDown;
-  
+
     -webkit-animation-duration: 0.3s;
     animation-duration: 0.3s;
     -webkit-animation-fill-mode: both;
@@ -674,18 +674,57 @@ growl-notification.fading.ng-move.ng-move-active { }
 
 growl-notification.fading.ng-leave {
     opacity: 1;
-    -webkit-transition: 0.2s linear all; /* Safari/Chrome */
-    transition: 0.2s linear all; /* All other modern browsers and IE10+ */
 
-    /* -webkit-animation-name: hinge; */
-    /* animation-name: hinge; */
-  
-    /* -webkit-animation-duration: 3s; */
-    /* animation-duration: 3s; */
-    /* -webkit-animation-fill-mode: both; */
-    /* animation-fill-mode: both; */
+    /* this time adjusts the length of the fadeout animation*/
+    -webkit-transition: 0s linear all;
+    transition: 0s linear all;
 }
 
 growl-notification.fading.ng-leave.ng-leave-active {
     opacity: 0;
+}
+
+/** Temporary utility styles */
+.textflow { 
+  overflow : hidden;
+  text-overflow : ellipsis;
+  white-space : nowrap;
+}
+.rotate { 
+  transform : rotate(180deg);
+}
+
+/** Temporary notification styles */
+growl-notifications { 
+  width : 100%;
+  position : fixed;
+  top : 0px;
+  left : 56px;
+  z-index : 1000;
+}
+
+.expanded > growl-notifications { 
+  left : 260px;
+ 
+  /** @todo width calculation are a hack - the notification doesn't need to be fixed */
+  width : calc(100% - 205px) !important;
+}
+
+growl-notifications growl-notification { 
+  background-color : #77A13F;
+  border-left : 5px solid #638638;
+  height : 51px;
+  color : #fff;
+  padding : 15px 10px;
+  display : block; 
+  /* padding-right : 35px; */
+
+  /** @todo width calculation are a hack - the notification doesn't need to be fixed */
+  width : calc(100% - 55px);
+}
+
+growl-notification .close {
+  top: -2px;
+  right: -21px;
+  color: inherit;
 }

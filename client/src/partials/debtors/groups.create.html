@@ -1,11 +1,4 @@
-<!-- <div ng-repeat="notification in GroupEditCtrl.notifications | limitTo : 2"> -->
-  <growl-notification ng-repeat="notification in GroupEditCtrl.notifications" class="fading" ttl="5000">
-    <span class="glyphicon glyphicon-check"></span>
-    {{notification.message}}
-  </growl-notification>
-<!-- </div> -->
-
-<div class="container-fluid"> 
+<div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
       <uib-alert id="groupException" type="danger" ng-if="GroupEditCtrl.exception">
@@ -27,31 +20,32 @@
       </a></p>
     </div>
   </div>
-  
+
   <div class="row">
     <div class="col-md-5">
-      
+
       <form name="debtorGroup" class="form">
-        
+
         <!-- <fieldset> -->
           <!-- <legend>{{ "FORM.DETAILS" | translate }}</legend> -->
-        <div 
+        <div
           class="form-group has-feedback"
           ng-class="{'has-error' : debtorGroup.name.$invalid && debtorGroup.$submitted}">
 
-                  
+
           <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-          <input name="name" ng-model="GroupEditCtrl.group.name" class="form-control" autocomplete="off" required> 
+          <input name="name" ng-model="GroupEditCtrl.group.name" class="form-control" autocomplete="off" required>
 
           <div class="help-block" ng-messages="debtorGroup.name.$error" ng-show="debtorGroup.$submitted">
             <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
           </div>
         </div>
-  
+
         <!-- @todo this should be a directive - this controller should not have to consider accounts -->
-        <div 
+        <div
           class="form-group has-feedback"
-          ng-class="{'has-error' : debtorGroup.account.$invalid && debtorGroup.$submitted}">
+          data-component-find-account
+          ng-class="{'has-error' : debtorGroup.account_id.$invalid && debtorGroup.$submitted}">
 
           <label class="control-label">{{ "TABLE.COLUMNS.ACCOUNT" | translate }}</label>
           <input
@@ -67,37 +61,38 @@
             autocapitalize="off"
             required>
 
-          <div class="help-block" ng-messages="debtorGroup.account.$error" ng-show="debtorGroup.$submitted">
+          <div class="help-block" ng-messages="debtorGroup.account_id.$error" ng-show="debtorGroup.$submitted">
             <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
           </div>
         </div>
-        
-        <div 
+
+        <!-- TODO The UI should show an option that allows you apply a price list, if this is checked then you can select an option -->
+        <div
           class="form-group has-feedback"
           ng-class="{'has-error' : debtorGroup.price_list.$invalid && debtorGroup.$submitted}">
-          
+
           <label class="control-label">{{ "TABLE.COLUMNS.PRICE_LIST" | translate }}</label>
-          <select 
-            name="price_list" 
-            ng-model="GroupEditCtrl.group.price_list_uuid" 
-            ng-options="priceList.uuid as priceList.label for priceList in GroupEditCtrl.priceLists" 
-            class="form-control" 
-            required>
-            <option value="" disabled="disabled">{{ "FORM.SELECTS.SELECT_PRICE_LIST" | translate }}</option>
+          <select
+            name="price_list"
+            ng-model="GroupEditCtrl.group.price_list_uuid"
+            ng-options="priceList.uuid as priceList.label for priceList in GroupEditCtrl.priceLists"
+            class="form-control">
+            <!-- <option value="" disabled="disabled">{{ "FORM.SELECTS.SELECT_PRICE_LIST" | translate }}</option> -->
+            <option value="">Apply no price list</option>
           </select>
-          
+
           <div class="help-block" ng-messages="debtorGroup.price_list.$error" ng-show="debtorGroup.$submitted">
             <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
           </div>
         </div>
-       
-        <div 
+
+        <div
           class="form-group has-feedback"
           ng-class="{'has-error' : debtorGroup.max_credit.$invalid && debtorGroup.$submitted}">
-          
+
           <label class="control-label">{{ "FORM.LABELS.MAX_CREDIT" | translate }}</label>
           <p class="text-info"><span class="glyphicon glyphicon-info-sign"></span> The maximum credit value this debtor group can collect before being warned. A value of 0 means no maximum limit.</p>
-          <input type="number" ng-model="GroupEditCtrl.group.max_credit" name="max_credit" class="form-control" autocomplete="off" bh-integer required> 
+          <input type="number" ng-model="GroupEditCtrl.group.max_credit" name="max_credit" class="form-control" autocomplete="off" bh-integer required>
 
           <div class="help-block" ng-messages="debtorGroup.max_credit.$error" ng-show="debtorGroup.$submitted">
             <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -109,32 +104,32 @@
           <textarea class="form-control" ng-model="GroupEditCtrl.group.note" autocomplete="off" name="notes"></textarea>
         </div>
         <!-- </fieldset> -->
-        
+
         <!-- <fieldset> -->
           <!-- <legend>Contact</legend> -->
 
-                
+
           <div class="form-group">
             <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
             <input name="phone" ng-model="GroupEditCtrl.group.phone" autocomplete="off" class="form-control">
           </div>
 
-          <div 
+          <div
             class="form-group"
             ng-class="{'has-error' : debtorGroup.email.$invalid && debtorGroup.$submitted}">
             <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
             <input name="email" ng-model="GroupEditCtrl.group.email" type="email" autocomplete="off" class="form-control">
-            
+
             <div class="help-block" ng-messages="debtorGroup.email.$error" ng-show="debtorGroup.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
             </div>
 
           </div>
-      
+
           <div class="form-group">
             <!-- <label class="control-label">{{ "COLUMNS.EMAIL" | translate }}</label> -->
             <!-- <input name="email" type="email" class="form-control"> -->
-            <bh-location-select 
+            <bh-location-select
               id="location"
               name="location_id"
               validation-trigger="debtorGroup.$submitted"
@@ -144,36 +139,36 @@
 
         <!-- </fieldset> -->
       </form>
-    
+
       <!-- @todo remove temporary style hack -->
       <div class="clearfix" style="margin-bottom : 5px">
         <div class="pull-right" style="text-align : right">
-          <p 
+          <p
             class="text-danger"
             ng-if="debtorGroup.$submitted && debtorGroup.$invalid">
             <span class="glyphicon glyphicon-remove-sign"></span> {{ "FORM.ERRORS.RECORD_ERROR" | translate }}</p>
 
           <!-- @todo remove temporary style hack -->
-          <div ng-if="GroupEditCtrl.state.current.name==='create'" class="checkbox" style="display : inline-block; padding-right : 5px;">
+          <div ng-if="GroupEditCtrl.state.current.name==='debtorGroups.create'" class="checkbox" style="display : inline-block; padding-right : 5px;">
             <label>
               <input type="checkbox" ng-model="GroupEditCtrl.resetOnCompletion">
               Create another debtor group
             </label>
           </div>
-          
+
           <!-- <button class="btn btn-default btn-sm">Cancel</button> -->
-          <button ng-click="GroupEditCtrl.submit(debtorGroup)" class="btn btn-primary btn-sm">Submit</button>
+          <button data-method="submit" type="submit" ng-click="GroupEditCtrl.submit(debtorGroup)" class="btn btn-primary btn-sm">Submit</button>
         </div>
       </div>
     </div>
 
     <div class="col-md-7">
-      
+
       <hr class="visible-sm"></hr>
-      
+
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-book"></span> 
+          <span class="glyphicon glyphicon-book"></span>
           Group Policies
         </div>
         <div class="panel panel-body">
@@ -185,11 +180,11 @@
               <!-- Only show if the subsidies option is unchecked -->
               <p ng-if="GroupEditCtrl.group.apply_subsidies===false" class="text-info">
                 <span class="glyphicon glyphicon-info-sign"></span> With this configuration unchecked no member of this debtor group will qualify for any subsidies
-              </p> 
+              </p>
               <div class="checkbox">
                 <label>
                   <input ng-model="GroupEditCtrl.group.apply_subsidies" type="checkbox">
-                  This group qualifies for subsidies 
+                  This group qualifies for subsidies
                 </label>
               </div>
             </div>
@@ -199,12 +194,12 @@
               <h5><b>Discounts</b></h5>
               <p ng-if="GroupEditCtrl.group.apply_discounts===false" class="text-info">
                 <span class="glyphicon glyphicon-info-sign"></span> With this configuration unchecked no member of this debtor group will qualify for any discounts
-              </p> 
-              
+              </p>
+
               <div class="checkbox">
                 <label>
                   <input ng-model="GroupEditCtrl.group.apply_discounts" type="checkbox">
-                  This group qualifies for discounts 
+                  This group qualifies for discounts
                 </label>
               </div>
             </div>
@@ -214,12 +209,12 @@
               <h5><b>Billing Services</b></h5>
               <p ng-if="GroupEditCtrl.group.apply_billing_services===false" class="text-info">
                 <span class="glyphicon glyphicon-info-sign"></span> With this configuration option checked all members of this debtor group will be exempt from paying automatically applied billing services
-              </p> 
+              </p>
 
               <div class="checkbox">
                 <label>
                   <input ng-model="GroupEditCtrl.group.apply_billing_services" ng-true-value="false" ng-false-value="true" type="checkbox">
-                  This group is exmempt from paying billing services 
+                  This group is exmempt from paying billing services
                 </label>
               </div>
             </div>
@@ -231,13 +226,13 @@
               <!-- Placeholder - these features are not yet supported in 2.x -->
               <!--
               <hr>
-              
+
               <button class="btn btn-default">
                 <span class="glyphicon glyphicon-lock"></span>
                 Lock Debtor Group
-              </button> 
-      
-              <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete Debtor Group</button> 
+              </button>
+
+              <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete Debtor Group</button>
               -->
             </div>
           </div>

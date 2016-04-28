@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('ApplicationController', ApplicationController);
 
 ApplicationController.$inject = [
-  'AppCache', 'SessionService', 'LanguageService', '$state', '$rootScope'
+  'AppCache', 'SessionService', 'LanguageService', '$state', '$rootScope', 'NotifyService'
 ];
 
 /**
@@ -11,11 +11,21 @@ ApplicationController.$inject = [
  * This top-level controller is currently  responsible for initializing language
  * loading and controlling the side-bar hide/show methods.
  */
-function ApplicationController(AppCache, Session, Languages, $state, $rootScope) {
+function ApplicationController(AppCache, Session, Languages, $state, $rootScope, NotifyService) {
   var vm = this;
 
   // load in the application cache
   var cache = AppCache('preferences');
+
+  // Default sidebar state
+  /** @todo Load sidebar state before angular is bootstraped to remove 'flicker' */
+  vm.sidebarExpanded = false;
+
+  // expose notifications list to the application level view
+  vm.notifications = Notify.list;
+  vm.someFunc = function someFunc() {
+    console.log('called on exit');
+  }
 
   // set up the languages for the application, including default languages
   // the 'true' parameter forces refresh

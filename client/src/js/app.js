@@ -336,7 +336,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
     .state('debtorGroups.list', {
       url : '',
-      templateUrl : 'partials/debtors/groups.list.html',
+      templateUrl : 'partials/debtors/groups.list.html'
     })
 
     .state('debtorGroups.create', {
@@ -347,19 +347,12 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
       templateUrl : 'partials/debtors/groups.create.html',
       controller : 'DebtorGroupCreateController as GroupEditCtrl'
     })
-
     .state('debtorGroups.update', {
       url : '/update',
       // key : 'COLUMNS.EDIT',
       templateUrl : 'partials/debtors/groups.create.html',
       controller : 'DebtorGroupUpdateController as GroupEditCtrl',
       data : { label : null }
-    })
-
-    .state('debtorGroups.delete', {
-      url : '/delete',
-      template : '<div><p>This is a delete content</p></div>',
-      constroller : function () { console.log('delete state fired'); }
     })
 
   /* references routes */
