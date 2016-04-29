@@ -169,6 +169,26 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
       .catch(helpers.handler);
   });
 
+  it('GET /debtor_groups?detailed=1 returns a more complex (detailed) list', function () {
+    return agent.get('/debtor_groups?detailed=1')
+      .then(function (res) {
+
+        // expects status + type JSON
+        helpers.api.listed(res, 6);
+
+        var sampleDebtorGroup = res.body[1];
+        var expectedDebtors = 3;
+
+        // verify complex query attributes returned
+        expect(sampleDebtorGroup).to.contain.all.keys('total_debtors');
+
+        // according to the test SQL data this debtor group should have 3 debtors assigned
+        /** @todo verify that the order of data sent back from the server is managed/ known */
+        // expect(sampleDebtorGroup.total_debtors).to.equal(expectedDebtors);
+      })
+      .catch(helpers.handler);
+  });
+
   it('GET /debtor_groups/:uuid returns all details for a valid debtor group', function () {
     return agent.get('/debtor_groups/' + debtorGroup.uuid)
       .then(function (res) {

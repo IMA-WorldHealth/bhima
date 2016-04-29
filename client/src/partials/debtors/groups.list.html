@@ -1,0 +1,69 @@
+<div class="container text-center">
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+
+    <div class="panel panel-default" style="margin-bottom : 0px;">
+      <div class="panel-heading clearfix" style="text-align : left">
+
+        <a href ng-click="GroupCtrl.toggleFilter()">{{ "TABLE.COLUMNS.FILTERING.LABEL" | translate }} <span class="caret" ng-class="{'rotate' : GroupCtrl.filterActive}"></span></a>
+        <div class="pull-right">
+          <span class="label label-primary">{{GroupCtrl.sort.key | translate}}</span>
+          <span uib-dropdown>
+            <a href uib-dropdown-toggle>{{ "TABLE.COLUMNS.SORTING.LABEL" | translate }} <span class="caret"></span></a>
+            <ul class="dropdown-menu-right textflow" uib-dropdown-menu>
+              <li ng-repeat="option in GroupCtrl.sortOptions">
+                <a href ng-click="GroupCtrl.setOrder(option)">{{ option.key | translate }}</a>
+              </li>
+              <li role="seperator" class="divider"></li>
+              <li><a ng-click="GroupCtrl.setOrder()"><span class="glyphicon glyphicon-remove"></span> {{ "FORM.BUTTONS.CLEAR" | translate }}</a></li>
+            </ul>
+          </span>
+        </div>
+      </div>
+
+      <input ng-model="GroupCtrl.filter" ng-show="GroupCtrl.filterActive" class="form-control" placeholder="{{'FORM.PLACE_HOLDERS.FILTER_NAME' | translate }}" style="border-radius: 0"></input>
+    </div>
+
+    <div
+      ng-repeat=
+      "debtorGroup in GroupCtrl.debtorGroups
+        | filter    : {name : GroupCtrl.filter}
+        | orderBy   : GroupCtrl.sort.attribute:GroupCtrl.sort.reverse
+        | limitTo   : GroupCtrl.pageSize : (GroupCtrl.currentPage-1)*GroupCtrl.pageSize ">
+
+      <div class="panel panel-default" style="margin-bottom : 3px !important;" data-group-entry>
+        <div class="panel-body text-left">
+          <div class="row">
+            <div class="col-md-6">
+              <h4 style="margin-top : 0px;"><span ng-if="debtorGroup.locked" style="color : #D9534F;" class="glyphicon glyphicon-lock"></span><b>{{debtorGroup.name}}</b></h4>
+            </div>
+            <div class="col-md-6 text-float-util">
+              <a data-method="update" ui-sref="debtorGroups.update({uuid : debtorGroup.uuid})" class=""><span class="glyphicon glyphicon-edit"></span> {{ "DEBTOR_GRP.EDIT" | translate }}</a>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-9">
+
+              <div class="row">
+                <div class="col-md-6 textflow">
+                  <span class="glyphicon glyphicon-time"></span> {{ "FORM.LABELS.CREATED" | translate }} <span am-time-ago="debtorGroup.created_at"></span>
+                </div>
+                <div class="col-md-6">
+
+                  <span class="glyphicon glyphicon-list-alt"></span> <b>{{debtorGroup.total_debtors}}</b> Debtors subscribed
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <uib-pagination total-items="GroupCtrl.debtorGroups.length" max-size="GroupCtrl.pageSize" ng-model="GroupCtrl.currentPage" previous-text="&lsaquo;" next-text="&rsaquo;"></uib-pagination>
+    </div>
+  </div>
+</div>

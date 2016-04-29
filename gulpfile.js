@@ -76,6 +76,10 @@ var paths = {
       'client/vendor/Chart.js/Chart.min.js',
       'client/vendor/angular-chart.js/dist/angular-chart.min.js',
 
+      // Angular Growl
+      // 'client/vendor/angular-growl-notifications/dist/angular-growl-notifications.js',
+      'client/vendor/angular-animate/angular-animate.js',
+
       // MomentJS
       'client/vendor/moment/moment.js',
       'client/vendor/angular-moment/angular-moment.js',
