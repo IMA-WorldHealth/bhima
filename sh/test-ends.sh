@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# bash script mode
+set -euo pipefail
+
 # This assumes you run tests from the top level bhima directory.
 
 echo "Building test database for end to end tests ..."
