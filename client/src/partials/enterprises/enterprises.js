@@ -23,7 +23,6 @@ function EnterpriseController(Enterprises, Currencies, StateFactory) {
   vm.submit = submit;
 
   function handler(error) {
-    console.error(error);
     vm.state.error();
   }
 

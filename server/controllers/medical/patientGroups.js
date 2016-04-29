@@ -1,31 +1,19 @@
 /**
 * The /patient_groups HTTP API endpoint
 *
-* @module medical/patient_groups
+* @module medical/patientGroups
 *
 * @description This controller is responsible for implementing all crud and others custom request
 * on the patient groups table through the `/patient_groups` endpoint.
 *
 * @requires lib/db
 * @requires node_uuid
-**/
+* @requires lib/errors/NotFOund
+*/
 
-var db = require('../../lib/db');
-var uuid = require('node-uuid');
-var NotFound = require('../../lib/errors/NotFound');
-
-// converts data's uuids to binary uuids as required
-function convert(data) {
-  var keys = [ 'price_list_uuid' ];
-
-  keys.forEach(function (key) {
-    if (data[key]) {
-      data[key] = db.bid(data[key]);
-    }
-  });
-
-  return data;
-}
+const db = require('../../lib/db');
+const uuid = require('node-uuid');
+const NotFound = require('../../lib/errors/NotFound');
 
 /**
 * Returns an array of patient groups
@@ -58,7 +46,7 @@ function list(req, res, next) {
 function create(req, res, next) {
   'use strict';
 
-  var record = convert(req.body);
+  let record = db.convert(req.body, ['price_list_uuid']);
 
   // provide UUID if the client has not specified
   record.uuid = db.bid(record.uuid || uuid.v4());
@@ -82,7 +70,7 @@ function update(req, res, next) {
   var uid = db.bid(req.params.uuid);
   var sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
 
-  var data = convert(req.body);
+  var data = db.convert(req.body, ['price_list_uuid']);
 
   if (data.created_at) {
     data.created_at = new Date(data.created_at);
@@ -110,6 +98,7 @@ function update(req, res, next) {
 * Remove a patient group in the database
 */
 function remove(req, res, next) {
+  'use strict';
   const id = db.bid(req.params.uuid);
   var sql = 'DELETE FROM patient_group WHERE uuid = ?';
 

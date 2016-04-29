@@ -169,10 +169,41 @@ function bid(hexUuid) {
   return new Buffer(uuid.parse(hexUuid));
 }
 
+/**
+ * Converts values on the data object to binary uuids if they exist.  If not, it
+ * will gracefully skip the key.
+ *
+ * @method convert
+ * @param {Object} data - an object with uuids to convert to binary
+ * @param {Array} keys - an array of keys on the data object, specifying which
+ * fields to convert
+ * @returns {Object} data - the data object, now converted
+ *
+ */
+function convert(data, keys) {
+  'use strict';
+
+  // clone the object
+  let clone = JSON.parse(JSON.stringify(data));
+
+  // loop through each key
+  keys.forEach(function (key) {
+
+    // the key exists on the object and value is a string
+    if (clone[key] && typeof clone[key] === 'string') {
+      clone[key] = bid(clone[key]);
+    }
+  });
+
+  return clone;
+}
+
+
 module.exports = {
   initialise:  initialise,
   exec:        exec,
   transaction: transaction,
   escape:      sanitize,
+  convert:     convert,
   bid:         bid
 };
