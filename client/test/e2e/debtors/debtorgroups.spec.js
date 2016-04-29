@@ -18,8 +18,9 @@ describe('Debtor Groups Management', function () {
   before(function () { browser.get(root); });
 
   it('lists base test debtor groups', function () {
+    var initialGroups = 3;
 
-    expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(2);
+    expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(initialGroups);
   });
 
   it('creates a debtor group', function () {

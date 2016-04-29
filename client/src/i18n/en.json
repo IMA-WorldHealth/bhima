@@ -8,7 +8,7 @@
       "HELP" : "Check to show the column at journal grid"
     }
   },
-  
+
   "ACCOUNT": {
     "ACCOUNT_CHART"  : "Chart of Accounts",
     "ACCOUNT_COST"   : "Costs Accounts",
@@ -118,6 +118,8 @@
     "BACK"           : "Back to Debtor Groups",
     "CREATE"         : "Create Debtor Group",
     "CREATE_ANOTHER" : "Create another Debtor Group",
+    "CREATED"        : "Debtor group recorded successfully",
+    "UPDATED"        : "Debtor group record updated",
     "POLICIES" : {
       "TITLE" : "Group Policies",
       "SUBSIDIES" : {

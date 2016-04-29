@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('DebtorGroupCreateController', DebtorGroupCreateController);
 
 DebtorGroupCreateController.$inject = [
-    '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', '$uiViewScroll', 'NotifyService'
+    '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', 'NotifyService', '$translate'
 ];
 
 /**
@@ -13,7 +13,7 @@ DebtorGroupCreateController.$inject = [
  *
  * @module debtor/groups/create
  */
-function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Accounts, Prices, Uuid, $uiViewScroll, Notify) {
+function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Accounts, Prices, Uuid, Notify, $translate) {
   var vm = this;
 
   // default new group policies
@@ -24,7 +24,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   };
 
   /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
-  Accounts.list()
+  Accounts.read()
     .then(function (accounts) {
       vm.accounts = accounts;
     });
@@ -77,7 +77,9 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
     DebtorGroups.create(submitGroup)
       .then(function (result) {
-        Notify.success('Debtor group recorded successfully');
+
+        /** @todo notify library can accept a key */
+        Notify.success($translate.instant('DEBTOR_GRP.CREATED'));
 
         // Debtor group created
         if (vm.resetOnCompletion) {

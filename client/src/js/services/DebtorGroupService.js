@@ -36,7 +36,8 @@ function DebtorGroupService($http, util, SessionService) {
   */
   function create(debtorGroup) {
 
-    // augment object with session values 
+    // augment object with session values
+    /** @todo standardise throughout services/ APIs where this information is populated; client vs. server */
     debtorGroup.enterprise_id = SessionService.enterprise.id;
 
     return $http.post(baseUrl, debtorGroup)
@@ -52,7 +53,7 @@ function DebtorGroupService($http, util, SessionService) {
   function update(uuid, debtorGroup) {
     var url = baseUrl.concat(uuid);
 
-    // ensure we are never sending a UUID to update 
+    // ensure we are never sending a UUID to update
     delete debtorGroup.uuid;
 
     return $http.put(url, debtorGroup)

@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
 
-DebtorGroupsUpdateController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', 'ScrollService', 'util', 'NotifyService'];
+DebtorGroupsUpdateController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', 'ScrollService', 'util', 'NotifyService', '$translate'];
 
-function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, ScrollTo, util, Notify) {
+function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, ScrollTo, util, Notify, $translate) {
   var vm = this;
   var target = $state.params.uuid;
 
@@ -18,7 +18,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
       vm.priceLists = priceLists;
     });
 
-  Accounts.list()
+  Accounts.read()
     .then(function (accounts) {
       vm.accounts = accounts;
       return DebtorGroups.read(target);
@@ -61,7 +61,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
     DebtorGroups.update(target, submitDebtorGroup)
       .then(function (result) {
-        Notify.success('Debtor Group successfully written');
+        Notify.success($translate.instant('DEBTOR_GRP.UPDATED'));
         $state.go('debtorGroups.list', null, {reload : true});
       })
       .catch(handleRequestError);

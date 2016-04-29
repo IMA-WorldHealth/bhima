@@ -324,12 +324,10 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   /* debtors routes */
   .state('debtorGroups', {
     url : '/debtors/groups/:uuid',
-    // url : '/debtors/groups',
     abstract : true,
     params : {
       uuid : { squash : true, value : null }
     },
-    // url : '/notathing',
     controller : 'DebtorGroupController as GroupCtrl',
     templateUrl: 'partials/debtors/groups.html'
   })
@@ -344,13 +342,12 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
       // setting the URL as simply create mathces as a :uuid - there should be a way to set orders
       // this should ideally route to /create
       url : '/create/new',
-      templateUrl : 'partials/debtors/groups.create.html',
+      templateUrl : 'partials/debtors/groups.edit.html',
       controller : 'DebtorGroupCreateController as GroupEditCtrl'
     })
     .state('debtorGroups.update', {
       url : '/update',
-      // key : 'COLUMNS.EDIT',
-      templateUrl : 'partials/debtors/groups.create.html',
+      templateUrl : 'partials/debtors/groups.edit.html',
       controller : 'DebtorGroupUpdateController as GroupEditCtrl',
       data : { label : null }
     })

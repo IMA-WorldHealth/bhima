@@ -17,10 +17,6 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
   // load in the application cache
   var cache = AppCache('preferences');
 
-  // Default sidebar state
-  /** @todo Load sidebar state before angular is bootstraped to remove 'flicker' */
-  vm.sidebarExpanded = false;
-
   // expose notifications list to the application level view
   vm.notifications = Notify.list;
 
