@@ -1,6 +1,5 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupCreateController', DebtorGroupCreateController);
-
 DebtorGroupCreateController.$inject = [
     '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', 'NotifyService', '$translate'
 ];
@@ -30,7 +29,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     });
 
   /* @todo This controller should not be concerned about individual price lists */
-  /* @tood All read/ list API methods should be uniform on the client */
+  /* @todo All read/ list API methods should be uniform on the client */
   Prices.read()
     .then(function (priceLists) {
       vm.priceLists = priceLists;
@@ -78,8 +77,6 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
     DebtorGroups.create(submitGroup)
       .then(function (result) {
-
-        /** @todo notify library can accept a key */
         Notify.success('DEBTOR_GRP.CREATED');
 
         // Debtor group created

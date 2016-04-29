@@ -7,9 +7,6 @@ NotifyService.$inject = ['$translate'];
  * This service is responsible for displaying system wide notifications to the
  * user.
  *
- * @todo  this is a placeholder service - it should be properly developed with
- *        the all features and relevent tests
- * @todo  feature - success/warning/failure messages - styles, data tags
  * @todo  unit tests
  */
 function NotifyService($translate) {
@@ -17,6 +14,12 @@ function NotifyService($translate) {
 
   // default time to live of 5 seconds
   var TTL = 5000;
+
+  // this will be used to specify how long a major error will be displayed,
+  // these errors are usually out of the control of the user, they will probably
+  // only be resolved by system administrators/ restarting the system (resulting
+  // in a refreshed page)
+  var ERROR_TTL = 60000;
 
   // this stores all notification instances - for now this will only be allowed
   // to store one notification however it can be extended in the future
@@ -57,11 +60,6 @@ function NotifyService($translate) {
   /** expose notifications for application level view */
   service.list = notifications;
 
-  /**
-   * Display a success notification
-   *
-   * @todo extend for optiosn
-   */
   function success(key, ttl) {
     setNotification(key, ttl, formatOptions.success);
   }
@@ -84,7 +82,6 @@ function NotifyService($translate) {
    * By default the time to live of an error notification is significantly longer.
    */
   function handleError(error) {
-    var ERROR_TTL = 60000;
     setNotification(error.data.code, ERROR_TTL, formatOptions.error);
   }
 

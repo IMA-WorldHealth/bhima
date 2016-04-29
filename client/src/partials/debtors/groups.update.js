@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
 
-DebtorGroupsUpdateController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', 'ScrollService', 'util', 'NotifyService', '$translate', '$anchorScroll'];
+DebtorGroupsUpdateController.$inject = ['$state', 'DebtorGroupService', 'AccountService', 'PriceListService', 'ScrollService', 'util', 'NotifyService', '$translate'];
 
-function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, ScrollTo, util, Notify, $translate, $anchorScroll) {
+function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, ScrollTo, util, Notify, $translate) {
   var vm = this;
   var target = $state.params.uuid;
 

@@ -694,39 +694,6 @@ growl-notification.fading.ng-leave.ng-leave-active {
   transform : rotate(180deg);
 }
 
-/** Temporary notification styles */
-growl-notifications {
-  width : 100%;
-  position : fixed;
-  top : 0px;
-  left : 56px;
-  z-index : 1000;
-}
-
-.expanded > growl-notifications {
-  left : 260px;
-
-  /** @todo width calculation are a hack - the notification doesn't need to be fixed */
-  width : calc(100% - 205px) !important;
-}
-
-growl-notifications growl-notification {
-  background : #fff;
-  border-left : 5px solid #9A9A9A;
-  height : 51px;
-  padding : 15px 10px;
-  display : block;
-
-  /** @todo width calculation are a hack - the notification doesn't need to be fixed */
-  width : calc(100% - 55px);
-}
-
-growl-notification .close {
-  top: -2px;
-  right: -21px;
-  color: inherit;
-}
-
 .notification-success {
   border-left : 5px solid #638638;
   background-color : #77A13F;
@@ -752,10 +719,9 @@ growl-notification .close {
 }
 
 .notification-error {
-
-  border-left : #fff;
   color : #fff;
   background-color : #d9534f;
+  border-left : #fff;
 }
 
 .notification-icon {
