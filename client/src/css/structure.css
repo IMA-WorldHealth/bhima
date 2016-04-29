@@ -694,39 +694,47 @@ growl-notification.fading.ng-leave.ng-leave-active {
   transform : rotate(180deg);
 }
 
-/** Temporary notification styles */
-growl-notifications {
-  width : 100%;
-  position : fixed;
-  top : 0px;
-  left : 56px;
-  z-index : 1000;
-}
-
-.expanded > growl-notifications {
-  left : 260px;
-
-  /** @todo width calculation are a hack - the notification doesn't need to be fixed */
-  width : calc(100% - 205px) !important;
-}
-
-growl-notifications growl-notification {
-  background-color : #77A13F;
+.notification-success {
   border-left : 5px solid #638638;
-  height : 51px;
+  background-color : #77A13F;
   color : #fff;
-  padding : 15px 10px;
-  display : block;
-  /* padding-right : 35px; */
-
-  /** @todo width calculation are a hack - the notification doesn't need to be fixed */
-  width : calc(100% - 55px);
 }
 
-growl-notification .close {
-  top: -2px;
-  right: -21px;
-  color: inherit;
+.notification-danger {
+  background-color : #f2dede;
+  border-left : 5px solid #a94442;
+  color : #a94442;
+}
+
+.notification-info {
+  color : #085484;
+  background-color : #64BDEE;
+  border-left : 5px solid #085484;
+}
+
+.notification-warn {
+  color : #8a6d3b;
+  background-color : #fcf8e3;
+  border-left : 5px solid #8a6d3b;
+}
+
+.notification-error {
+  color : #fff;
+  background-color : #d9534f;
+  border-left : #fff;
+}
+
+.notification-icon {
+  display : inline-block;
+  vertical-align : top;
+}
+
+.notification-message {
+  display : inline-block;
+  text-overflow : ellipsis;
+  overflow : hidden;
+  white-space : nowrap;
+  max-width : calc(100% - 50px);
 }
 
 /* 'Card' Utility class */

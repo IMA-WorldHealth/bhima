@@ -180,7 +180,8 @@
   },
   "ERRORS": {
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
-    "UNAUTHORIZED"     : "Unauthorized"
+    "UNAUTHORIZED"     : "Unauthorized",
+    "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Adding an exchange Rate",

@@ -43,13 +43,13 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
     // ensure we don't make HTTP requests if the form is invalid - exit early
     if (debtorGroupForm.$invalid) {
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return false;
     }
 
     /** @todo filterDirtyFormElements should be updated to factor in nested forms */
     // submitDebtorGroup = util.filterDirtyFormElements(debtorGroupForm);
     submitDebtorGroup = angular.copy(vm.group);
-
 
     // hack price lists - classic
     submitDebtorGroup.price_list_uuid = submitDebtorGroup.price_list_uuid || null;
@@ -61,10 +61,10 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
     DebtorGroups.update(target, submitDebtorGroup)
       .then(function (result) {
-        Notify.success($translate.instant('DEBTOR_GRP.UPDATED'));
+        Notify.success('DEBTOR_GRP.UPDATED');
         $state.go('debtorGroups.list', null, {reload : true});
       })
-      .catch(handleRequestError);
+      .catch(Notify.handleError);
   }
 
   /**
@@ -90,11 +90,5 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
       return false;
     });
     return accountResult;
-  }
-
-  /** @todo Move this method into a service */
-  function handleRequestError(error) {
-    vm.exception = error;
-    ScrollTo('groupException');
   }
 }
