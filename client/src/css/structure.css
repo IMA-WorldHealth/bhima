@@ -711,13 +711,11 @@ growl-notifications {
 }
 
 growl-notifications growl-notification {
-  background-color : #77A13F;
-  border-left : 5px solid #638638;
+  background : #fff;
+  border-left : 5px solid #9A9A9A;
   height : 51px;
-  color : #fff;
   padding : 15px 10px;
   display : block;
-  /* padding-right : 35px; */
 
   /** @todo width calculation are a hack - the notification doesn't need to be fixed */
   width : calc(100% - 55px);
@@ -727,6 +725,30 @@ growl-notification .close {
   top: -2px;
   right: -21px;
   color: inherit;
+}
+
+.notification-success {
+  border-left : 5px solid #638638;
+  background-color : #77A13F;
+  color : #fff;
+}
+
+.notification-danger {
+  background-color : #f2dede;
+  border-left : 5px solid #a94442;
+  color : #a94442;
+}
+
+.notification-info {
+  color : #085484;
+  background-color : #64BDEE;
+  border-left : 5px solid #085484;
+}
+
+.notification-warn {
+  color : #8a6d3b;
+  background-color : #fcf8e3;
+  border-left : 5px solid #8a6d3b;
 }
 
 /* 'Card' Utility class */

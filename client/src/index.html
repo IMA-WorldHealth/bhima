@@ -92,8 +92,8 @@
 
     <!-- System wide notifications -->
     <div class="ng-cloak">
-      <growl-notification data-success-notification ng-repeat="notification in AppCtrl.notifications" class="fading ng-animate-enabled" ttl="notification.ttl">
-        <span class="glyphicon glyphicon-check"></span>
+      <growl-notification data-success-notification ng-repeat="notification in AppCtrl.notifications" ng-class="notification.format" class="fading ng-animate-enabled" ttl="notification.ttl">
+        <span ng-class="notification.icon" class="glyphicon"></span>
         {{notification.message}}
 
         <button type="button" class="close" ng-click="$growlNotification.remove()" data-dismiss="notification"><span>&times;</span></button>

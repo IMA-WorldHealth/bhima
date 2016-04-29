@@ -61,7 +61,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
     DebtorGroups.update(target, submitDebtorGroup)
       .then(function (result) {
-        Notify.success($translate.instant('DEBTOR_GRP.UPDATED'));
+        Notify.success('DEBTOR_GRP.UPDATED');
         $state.go('debtorGroups.list', null, {reload : true});
       })
       .catch(handleRequestError);

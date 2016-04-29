@@ -79,7 +79,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
       .then(function (result) {
 
         /** @todo notify library can accept a key */
-        Notify.success($translate.instant('DEBTOR_GRP.CREATED'));
+        Notify.success('DEBTOR_GRP.CREATED');
 
         // Debtor group created
         if (vm.resetOnCompletion) {
