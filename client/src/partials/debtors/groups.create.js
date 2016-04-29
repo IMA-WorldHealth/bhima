@@ -67,6 +67,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
     // ensure all Angular form validation checks have passed
     if (groupForm.$invalid) {
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return;
     }
 
@@ -98,11 +99,6 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
           $state.go('debtorGroups.list', null, {reload : true});
         }
       })
-      .catch(handleRequestError);
-  }
-
-  function handleRequestError(error) {
-    vm.exception = error;
-    ScrollTo('groupException');
+      .catch(Notify.handleError);
   }
 }

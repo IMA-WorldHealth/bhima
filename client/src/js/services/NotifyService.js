@@ -39,10 +39,20 @@ function NotifyService($translate) {
     warn : {
       format  : 'notification-warn',
       icon    : 'glyphicon-warning-sign'
+    },
+    error : {
+      format  : 'notification-error',
+      icon    : 'glyphicon-remove-sign'
     }
   };
 
+  // alias styles
   service.success = success;
+  service.danger = danger;
+  service.info = info;
+  service.warn = warn;
+
+  service.handleError = handleError;
 
   /** expose notifications for application level view */
   service.list = notifications;
@@ -52,27 +62,40 @@ function NotifyService($translate) {
    *
    * @todo extend for optiosn
    */
-  function success(key, options) {
-    setNotification(key, formatOptions.success);
+  function success(key, ttl) {
+    setNotification(key, ttl, formatOptions.success);
   }
 
-  function danger(key, options) {
-    setNotification(key, formatOptions.danger);
+  function danger(key, ttl) {
+    setNotification(key, ttl, formatOptions.danger);
   }
 
-  function info(key, options ) {
-    setNotification(key, formatOptions.info);
+  function info(key, ttl) {
+    setNotification(key, ttl, formatOptions.info);
   }
 
-  function warn(key, options) {
-    setNotification(key, formatOptions.warn);
+  function warn(key, ttl) {
+    setNotification(key, ttl, formatOptions.warn);
+  }
+
+  /**
+   * This method is not simply a formatting alias - it accepts an error object
+   * and parses it to show relevent information in the notification.
+   * By default the time to live of an error notification is significantly longer.
+   */
+  function handleError(error) {
+    var ERROR_TTL = 60000;
+    setNotification(error.data.code, ERROR_TTL, formatOptions.error);
   }
 
   /** @todo analysis on the heap allocation implications should be done this */
-  function setNotification(key, options) {
+  function setNotification(key, ttl, options) {
     var message = $translate.instant(key);
+
+    // if the request has overridden the time to live, use that, otherwise use the global default
+    var ttl = ttl || TTL;
     var formatNotification = {
-      ttl : TTL,
+      ttl : ttl,
       message : message
     };
 

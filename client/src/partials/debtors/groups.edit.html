@@ -1,14 +1,5 @@
 <div class="container-fluid">
 
-  <!-- Error handling - this should be replaced by a notification -->
-  <div class="row">
-    <div class="col-xs-12">
-      <uib-alert id="groupException" type="danger" ng-if="GroupEditCtrl.exception">
-        <span class="glyphicon glyphicon-exclamation-sign"></span>
-        <b>{{GroupEditCtrl.exception.data.code | translate }}</b> {{GroupEditCtrl.exception.data.description}}
-      </uib-alert>
-    </div>
-  </div>
   <div class="row">
     <div class="col-xs-12">
       <p><a ng-href="#/debtors/groups">
@@ -124,10 +115,6 @@
       <!-- @todo remove temporary style hack -->
       <div class="clearfix" style="margin-bottom : 5px">
         <div class="pull-right" style="text-align : right">
-          <p
-            class="text-danger"
-            ng-if="debtorGroup.$submitted && debtorGroup.$invalid">
-            <span class="glyphicon glyphicon-remove-sign"></span> {{ "FORM.ERRORS.RECORD_ERROR" | translate }}</p>
 
           <!-- @todo remove temporary style hack -->
           <div ng-if="GroupEditCtrl.state.current.name==='debtorGroups.create'" class="checkbox" style="display : inline-block; padding-right : 5px;">

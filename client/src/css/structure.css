@@ -751,6 +751,26 @@ growl-notification .close {
   border-left : 5px solid #8a6d3b;
 }
 
+.notification-error {
+
+  border-left : #fff;
+  color : #fff;
+  background-color : #d9534f;
+}
+
+.notification-icon {
+  display : inline-block;
+  vertical-align : top;
+}
+
+.notification-message {
+  display : inline-block;
+  text-overflow : ellipsis;
+  overflow : hidden;
+  white-space : nowrap;
+  max-width : calc(100% - 50px);
+}
+
 /* 'Card' Utility class */
 .text-float-util {
   text-align : right;
