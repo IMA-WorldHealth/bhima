@@ -28,7 +28,7 @@ describe('Debtor Groups', function () {
     name : '(E2E) Debtor Group (updated)',
     account_id : 3638,
     phone : '0818061031',
-    email : 'debtorgroup@info.com (updated)',
+    email : 'debtorgroupupdated@info.com',
     note : '(E2E) Nouveau debtor group de test (updated)',
     max_credit : 5500
   };

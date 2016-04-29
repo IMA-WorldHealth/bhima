@@ -92,7 +92,7 @@
 
     <!-- System wide notifications -->
     <div class="ng-cloak">
-      <growl-notification data-success-notification ng-repeat="notification in AppCtrl.notifications" class="fading" ttl="notification.ttl">
+      <growl-notification data-success-notification ng-repeat="notification in AppCtrl.notifications" class="fading ng-animate-enabled" ttl="notification.ttl">
         <span class="glyphicon glyphicon-check"></span>
         {{notification.message}}
 

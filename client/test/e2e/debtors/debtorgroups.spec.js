@@ -10,6 +10,7 @@ var FU = require('../shared/FormUtils');
 
 describe('Debtor Groups Management', function () {
   'use strict';
+  var initialGroups = 3;
 
 
   /** @const */
@@ -18,7 +19,6 @@ describe('Debtor Groups Management', function () {
   before(function () { browser.get(root); });
 
   it('lists base test debtor groups', function () {
-    var initialGroups = 3;
 
     expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(initialGroups);
   });
@@ -47,7 +47,7 @@ describe('Debtor Groups Management', function () {
     components.notification.verify();
     components.notification.dismiss();
 
-    expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(3);
+    expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(initialGroups + 1);
   });
 
   it('updates a debtor group', function () {

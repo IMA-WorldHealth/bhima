@@ -974,12 +974,23 @@ function httpConfig($httpProvider) {
   $httpProvider.interceptors.push('ErrorInterceptor');
 }
 
+/**
+ * Configure ng-animate - currently this library tries to apply to all elements
+ * which has significant performance implications. Filtering the scope to only
+ * elements wit 'ng-animate-enabled' allows the library to be used without the
+ * performance hit.
+ */
+function animateConfig($animateProvider) {
+  $animateProvider.classNameFilter(/ng-animate-enabled/);
+}
+
 // configure services, providers, factories
 bhima.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$localStorageProvider', localStorageConfig]);
 bhima.config(['$httpProvider', httpConfig]);
+bhima.config(['$animateProvider', animateConfig]);
 
 // run the application
 bhima.run(['$rootScope', '$location', 'SessionService', 'amMoment', startupConfig]);
