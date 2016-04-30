@@ -65,6 +65,9 @@ function LocationSelectController(Locations, $scope, Modal) {
   vm.updateLocationUuid = updateLocationUuid;
   vm.modal = openAddLocationModal;
 
+  // set default component name if none has been set
+  vm.name = vm.name || 'LocationSelectForm';
+
   /** disabled bindings for individual <select>s */
   vm.disabled = {
     village:  true,

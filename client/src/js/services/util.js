@@ -11,8 +11,6 @@ function UtilService($filter) {
   };
 
   service.filterDirtyFormElements = function filterDirtyFormElements(formDefinition) {
-
-    console.log('[util] formDefintion', formDefinition);
     var response = {};
 
     angular.forEach(formDefinition, function (value, key) {
