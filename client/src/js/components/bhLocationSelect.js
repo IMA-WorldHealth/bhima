@@ -10,6 +10,7 @@ angular.module('bhima.components')
     locationUuid:      '=', // two-way binding
     disable:           '<', // one-way binding
     validationTrigger: '<', // one-way binding
+    name:              '@'
   }
 });
 
@@ -169,7 +170,17 @@ function LocationSelectController(Locations, $scope, Modal) {
 
   /** updates the exposed location uuid for the client to use */
   function updateLocationUuid() {
-    vm.locationUuid = vm.village.uuid;
+
+    if (vm.village) {
+
+      // this exposes the true value of the component to the top level form validation
+      // and can be used in util.filterDirtyFormElements
+      /** @todo if this technique is considered useful it should be formalised (potential directive) */
+      if (angular.isDefined(vm.name)) {
+        $scope[vm.name].$bhValue = vm.village.uuid;
+      }
+      vm.locationUuid = vm.village.uuid;
+    }
   }
 
   /**
@@ -179,7 +190,7 @@ function LocationSelectController(Locations, $scope, Modal) {
    * @private
    */
   function loadLocation() {
-    
+
     // make sure we actually have an initial location (prevents needless firing
     // during $scope churn).
     if (!vm.locationUuid) { return; }
@@ -213,6 +224,8 @@ function LocationSelectController(Locations, $scope, Modal) {
         uuid : initial.countryUuid,
         country : initial.country,
       };
+
+      updateLocationUuid();
 
       // refresh all data sources to allow a user to use the <select> elements.
       loadProvinces()

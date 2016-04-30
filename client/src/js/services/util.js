@@ -10,19 +10,27 @@ function UtilService($filter) {
     return response.data;
   };
 
-  service.filterDirtyFormElements = function filterDirtyFormElements(formDefinition) { 
+  service.filterDirtyFormElements = function filterDirtyFormElements(formDefinition) {
+
+    console.log('[util] formDefintion', formDefinition);
     var response = {};
 
-    angular.forEach(formDefinition, function (value, key) { 
+    angular.forEach(formDefinition, function (value, key) {
 
       // Determine angular elements, these can be ignored
       var isAngularAttribute = key.substring(0, 1) === '$';
-      
-      if (!isAngularAttribute) { 
-        
-        // Only format and assign dirty values that have changed 
-        if (value.$dirty) { 
-          response[key] = value.$modelValue;
+
+      if (!isAngularAttribute) {
+
+        // Only format and assign dirty values that have changed
+        if (value.$dirty) {
+
+          // any standard ng-model element will provide an $modelValue, according
+          // to the latest 2.x standards more complex bhima components or bhima
+          // component wrappers will expose $bhValue
+
+          // accounts for empty string values
+          response[key] = angular.isDefined(value.$modelValue) ? value.$modelValue : value.$bhValue;
         }
       }
     });
@@ -78,7 +86,7 @@ function UtilService($filter) {
 
   // Normalize a name:
   //  * remove all extra whitespace
-  //  * capitalize the first letter of each word in the name 
+  //  * capitalize the first letter of each word in the name
   //    (lowercase the rest of each word)
   //  * Undefined names are not changed (for form fields)
   service.normalizeName = function (name) {
