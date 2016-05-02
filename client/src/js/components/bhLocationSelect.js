@@ -14,7 +14,7 @@ angular.module('bhima.components')
   }
 });
 
-LocationSelectController.$inject =  [ 'LocationService', '$scope' ];
+LocationSelectController.$inject =  [ 'LocationService', '$scope', '$timeout' ];
 
 /**
  * Location Select Controller
@@ -52,7 +52,7 @@ LocationSelectController.$inject =  [ 'LocationService', '$scope' ];
  * </bh-location-select>
  *
  */
-function LocationSelectController(Locations, $scope, Modal) {
+function LocationSelectController(Locations, $scope, $timeout) {
   var vm = this;
 
   /** loading indicator */
@@ -66,7 +66,32 @@ function LocationSelectController(Locations, $scope, Modal) {
   vm.modal = openAddLocationModal;
 
   // set default component name if none has been set
-  vm.name = vm.name || 'LocationSelectForm';
+  vm.name = vm.name || 'LocationComponentForm';
+
+  // wrap the alias call in a $timeout to ensure that the component link/ compile process has run
+  $timeout(aliasComponentForm);
+
+  /**
+   * This function assigns a reference to the components form onto the $scope
+   * object so that it can be accessed directly in the view. This is required
+   * because the component dynamically sets the form name based on the `vm.name`
+   * variable.
+   *
+   * This is a convenience method as the controller is available to the $scope
+   * thorugh the $ctrl variable. It translates the template from:
+   *
+   * `this[$ctrl.name].formVariable`
+   *
+   * into
+   *
+   *  `LocationForm.formVariable`
+   *
+   *  This improves readability and reduces the number of potential lookups required
+   *  in the Angular template.
+   */
+  function aliasComponentForm() {
+    $scope.LocationForm = $scope[vm.name];
+  }
 
   /** disabled bindings for individual <select>s */
   vm.disabled = {

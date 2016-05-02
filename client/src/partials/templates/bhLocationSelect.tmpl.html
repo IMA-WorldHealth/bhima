@@ -3,12 +3,21 @@
   a child form is added for validation purposes, and to make the HTML easier
   to read.
 -->
-<fieldset ng-disabled="$ctrl.disable"  ng-form="{{$ctrl.name}}" ng-model="somevaluetwo" data-bh-location-select>
+<!--
+  ng-form name is dynamically set by the controller - this form is aliased
+  as 'LocationForm' and made available to the template through `aliasComponentForm()`
+-->
+
+<!-- name="LocationForm" -->
+<fieldset
+  ng-disabled="$ctrl.disable"
+  ng-form="{{$ctrl.name}}"
+  data-bh-location-select>
 
   <!-- allows a user to select a country -->
   <div class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && this[$ctrl.name].country.$invalid }"
-    >
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.country.$invalid }">
+
     <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
     <select
       class="form-control"
@@ -24,7 +33,7 @@
 
   <!-- allows a user to select a province based on the selected country uuid -->
   <div class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && this[$ctrl.name].province.$invalid }"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.province.$invalid }"
     >
     <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
     <select
@@ -42,7 +51,7 @@
 
   <!-- allows a user to select a sector based on the selected province uuid -->
   <div class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && this[$ctrl.name].sector.$invalid }"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.sector.$invalid }"
     >
     <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
     <select
@@ -60,7 +69,7 @@
 
   <!-- allows a user to select a village based on the selected sector uuid -->
   <div class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && this[$ctrl.name].village.$invalid }"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.village.$invalid }"
     >
     <label class="control-label">{{ "FORM.LABELS.VILLAGE" | translate }}</label>
     <select
@@ -76,7 +85,7 @@
     </select>
 
     <!-- validation messages shown on form errors-->
-    <p class="help-block text-danger" ng-messages="this[$ctrl.name].$error" ng-show="$ctrl.validationTrigger">
+    <p class="help-block text-danger" ng-messages="LocationForm.$error" ng-show="$ctrl.validationTrigger">
       <span ng-messages-include="partials/templates/messages.tmpl.html"></span>
     </p>
   </div>
