@@ -45,7 +45,7 @@
     "q": "~1.4.1",
     "session-file-store": "0.2.0",
     "winston": "^2.1.1",
-    "wkhtmltopdf": "^0.1.5"
+    "wkhtmltopdf": "^0.3.0"
   },
   "devDependencies": {
     "bower": "^1.7.7",
