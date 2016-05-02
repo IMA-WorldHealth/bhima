@@ -1,17 +1,12 @@
 /**
-* Cashboxes Controller
-*
-* This controller is responsible for creating and updating cashboxes.  Every
-* cashbox must have a name, and as many accounts as there are currencies
-* supported by the application.
-*/
+ * Cashboxes Controller
+ *
+ * This controller is responsible for creating and updating cashboxes.  Every
+ * cashbox must have a name, and as many accounts as there are currencies
+ * supported by the application.
+ */
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
-
-/*
-* TODO - PROPOSAL: rename cash_box to cashbox in the database.  Easier for everything
-* in life.
-*/
 
 /**
 * GET /cashboxes
@@ -51,7 +46,7 @@ exports.list = function list(req, res, next) {
 
       // if the key exists, add it to a list of growing conditions
       if (key) {
-        conditions.push(k + ' = ' + db.sanitize(key));
+        conditions.push(k + ' = ' + db.escape(key));
       }
     });
   }
