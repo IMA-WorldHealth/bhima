@@ -59,6 +59,9 @@ module.exports = function post(transaction, uuid) {
       WHERE c.uuid = ?;`, [uuid]
     );
 
+
+  // clean up the transaction's local variables
+  transaction = core.cleanup(transaction);
   return transaction.execute()
     .catch(core.handler);
 };
