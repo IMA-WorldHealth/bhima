@@ -1,4 +1,5 @@
 var chai = require('chai');
+var uuid = require('node-uuid');
 var expect = chai.expect;
 
 var helpers = require('./helpers');
@@ -9,9 +10,17 @@ describe('(/debtors) The /debtors API', function () {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
+  var debtorKeys = ['uuid', 'group_uuid', 'text'];
+
   var inspectDebtorGroup;
   var debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
   var emptyDebtorUuid = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
+
+  var newDebtor = {
+    uuid : uuid.v4(),
+    group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
+    text : 'Debtor for Test'
+  };
 
 
  it.skip('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', function () {
@@ -45,4 +54,34 @@ describe('(/debtors) The /debtors API', function () {
       })
       .catch(helpers.handler);
   });
+
+  it('POST /debtors should create a new debtor', function () {
+    return agent.post('/debtors')
+      .send(newDebtor)
+      .then(function (res) {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /debtors should return a list of all debtors', function () {
+    return agent.get('/debtors')
+      .then(function (res) {
+        /** @fixme need use helpers.api.listed but data are provided from other test modules */
+        expect(res.body).to.not.be.empty;
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /debtors/:uuid should return detail of a specifying debtor', function () {
+    return agent.get('/debtors/:uuid'.replace(':uuid', newDebtor.uuid))
+      .then(function (res) {
+        expect(res.body).to.contain.all.keys(debtorKeys);
+        expect(res.body.uuid).to.be.equal(newDebtor.uuid);
+        expect(res.body.group_uuid).to.be.equal(newDebtor.group_uuid);
+        expect(res.body.text).to.be.equal(newDebtor.text);
+      })
+      .catch(helpers.handler);
+  });
+
 });
