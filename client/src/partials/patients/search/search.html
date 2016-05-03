@@ -1,0 +1,29 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
+      <li class="title">{{ "PATIENT_SEARCH.PAGE_TITLE" | translate }}</li>
+    </ol>
+  </div>
+</div>
+
+<div class="flex-util">
+  <div class="toolbar">
+    <div class="toolbar-item">
+      <button>
+        <span class="glyphicon glyphicon-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+      </button>  
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div ui-grid="PatientSearchCtrl.uiGridOptions" style="height : calc(100vh - 65px)" ui-grid-auto-resize ui-grid-resize-columns ui-grid-move-columns>
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>

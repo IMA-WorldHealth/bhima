@@ -47,7 +47,7 @@ function PatientService($http, util, Session) {
    * @return {Object}       Promise object that will return patient details
    */
   function detail(uuid) {
-    return $http.get(baseUrl.concat(uuid))
+    return $http.get(baseUrl.concat(uuid || ''))
       .then(util.unwrapHttpResponse);
   }
   

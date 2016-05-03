@@ -45,6 +45,7 @@ function DateService() {
   service.current = {};
   service.next = {};
   service.util = {};
+  service.getAge = getAge;
 
   /*
   * Very generic function to subtract days, months, years
@@ -217,7 +218,7 @@ function DateService() {
   // yet another javascript date string function
   // expects a date object
   // return 'YYYY-MM-DD' format
-  service.util.str = function (date) {
+  service.util.str = function (date, simple) {
 
     // if we pass in a string, return it right away
     if (typeof date === 'string') { return date; }
@@ -232,4 +233,54 @@ function DateService() {
 
     return [year, month, day].join('-');
   };
+
+  // get an age object for the person with years, months, days
+  // inspired by http://stackoverflow.com/questions/7833709/calculating-age-in-months-and-days  
+  
+  function getAge(date) {
+    var age = {},
+        today = new Date();
+
+    // convert to date object
+    date = new Date(date);
+
+    var y   = [today.getFullYear(), date.getFullYear()],
+      ydiff = y[0] - y[1],
+      m     = [today.getMonth(), date.getMonth()],
+      mdiff = m[0] - m[1],
+      d     = [today.getDate(), date.getDate()],
+      ddiff = d[0] - d[1];
+
+    if (mdiff < 0 || (mdiff=== 0 && ddiff<0)) { --ydiff; }
+
+    if (mdiff < 0) { mdiff+= 12; }
+
+    if (ddiff < 0) {
+      date.setMonth(m[1]+1, 0);
+      ddiff = date.getDate()-d[1]+d[0];
+      --mdiff;
+    }
+
+    age.years  = ydiff > 0 ? ydiff : 0;
+    age.months = mdiff > 0 ? mdiff : 0;
+    age.days   = ddiff > 0 ? ddiff : 0;
+    
+    if(age.years > 0) {
+      age.duration = age.years;
+      age.period = (age.years === 1)? 'PATIENT_SEARCH.YEAR_OLD' : 'PATIENT_SEARCH.YEARS_OLD';  
+    }
+
+    if((age.years === 0) && (age.months > 1)) {
+      age.duration = age.months;
+      age.period = (age.months === 1)? 'PATIENT_SEARCH.MONTH' : 'PATIENT_SEARCH.MONTHS';  
+    }
+
+    if((age.years === 0) && (age.months === 0)) {
+      age.duration = age.days;
+      age.period = (age.days === 1)? 'PATIENT_SEARCH.DAY' : 'PATIENT_SEARCH.DAYS';  
+    }    
+
+    return age;
+  }
+
 }
