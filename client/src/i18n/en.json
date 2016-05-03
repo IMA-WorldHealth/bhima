@@ -660,9 +660,12 @@
       "CODE"               : "Code",
       "COST_CENTER"        : "Cost Center",
       "COUNTRY"            : "Country",
-      "CURRENCY"           : "Currency",
+      "CREDIT"             : "Credit",
+      "CURRENCY"           : "Monnaie",
       "DATE"               : "Date",
+      "DEBIT"              : "Debit",
       "DESCRIPTION"        : "Description",
+      "DOCUMENT"           : "Document",
       "EDIT"               : "Edit",
       "EMAIL"              : "Email",
       "EMPTY"              : "There are no records to display.",
@@ -880,8 +883,13 @@
       "TITLE" : "Simple Vouchers"
     },
     "COMPLEX": {
-      "TITLE" : "Advanced Journal Vouchers",
-      "DESCRIPTION" : "This Module allows you to make advanced journal transactions manually"
+      "ADD_ITEMS"   : "Add item(s)",
+      "DESCRIPTION" : "This Module allows you to make advanced journal transactions manually",
+      "ENTITY"      : "Entity (Debtor/Creditor)",
+      "REFERENCE"   : "Reference",
+      "ROWS"        : "Row(s)",
+      "TITLE"       : "Advanced Journal Vouchers",
+      "TRANSACTION" : "Transaction(s)"
     }
   }
 }

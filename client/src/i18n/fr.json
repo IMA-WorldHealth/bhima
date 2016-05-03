@@ -660,9 +660,12 @@
       "CODE"               : "Code",
       "COST_CENTER"        : "Centre de cout",
       "COUNTRY"            : "Pays",
+      "CREDIT"             : "Credit",
       "CURRENCY"           : "Monnaie",
       "DATE"               : "Date",
+      "DEBIT"              : "Debit",
       "DESCRIPTION"        : "Description",
+      "DOCUMENT"           : "Document",
       "EDIT"               : "Editer",
       "EMAIL"              : "Email",
       "EMPTY"              : "Il n'y a pas d'enregistrements à afficher.",
@@ -880,8 +883,13 @@
       "TITLE" : "Bordereau de transfert"
     },
     "COMPLEX": {
-      "TITLE" : "Ajour de transactions",
-      "DESCRIPTION" : "Ce module permet de passer des transactions avancees dans le journal"
+      "ADD_ITEMS"   : "Ajouter item(s)",
+      "DESCRIPTION" : "Ce module permet de passer des transactions avancees dans le journal",
+      "ENTITY"      : "Entité (Debiteur/Crediteur)",
+      "REFERENCE"   : "Reference",
+      "ROWS"        : "Ligne(s)",
+      "TITLE"       : "Ajour de transactions",
+      "TRANSACTION" : "Transaction(s)"
     }
   }
 }
