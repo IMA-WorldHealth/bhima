@@ -69,6 +69,7 @@ describe('(/debtors) The /debtors API', function () {
       .then(function (res) {
         /** @fixme need use helpers.api.listed but data are provided from other test modules */
         expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.length.at.least(1);
       })
       .catch(helpers.handler);
   });
