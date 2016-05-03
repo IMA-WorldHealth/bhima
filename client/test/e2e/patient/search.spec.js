@@ -5,7 +5,7 @@ const expect = chai.expect;
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
-const GridObjectTest = require('../shared/gridObjectTestUtils.spec.js');
+const gridTestUtils = require('../shared/gridTestUtils.spec.js');
 
 helpers.configure(chai);
 
