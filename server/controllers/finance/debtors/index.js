@@ -23,9 +23,38 @@ var uuid        = require('node-uuid');
 var NotFound    = require('../../../lib/errors/NotFound');
 var BadRequest  = require('../../../lib/errors/BadRequest');
 
+exports.list   = list;
+exports.detail = detail;
 exports.update = update;
 exports.invoices = invoices;
 exports.balance = function() { /** @todo - noop */ };
+
+/**
+ * List of debtors
+ */
+function list(req, res, next) {
+  var sql =
+    `SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text FROM debtor`;
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).send(rows);
+  })
+  .catch(next);
+}
+
+/**
+ * Detail of debtors
+ */
+function detail(req, res, next) {
+  var uid = db.bid(req.params.uuid);
+
+  lookupDebtor(uid)
+  .then(function (debtor) {
+    res.status(200).json(debtor);
+  })
+  .catch(next);
+}
 
 /**
  * Updates a debtor's details (particularly group_uuid)
@@ -66,7 +95,7 @@ function update(req, res, next) {
 function lookupDebtor(uid) {
   var sql =
     `SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text
-    FROM debtor 
+    FROM debtor
     WHERE uuid = ?`;
 
   return db.exec(sql, [uid])
