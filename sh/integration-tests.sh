@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# bash script mode
+set -euo pipefail
+
 # This assumes you run tests from the top level bhima directory.
 
 echo "Building test database for integration tests ..."
@@ -22,7 +25,10 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/test/data.sql
 echo "Building server ...."
 
 # build and start the server
-npm run dev_windows &
+./node_modules/.bin/gulp build
+cd bin
+NODE_ENV=development node server/app.js &
+NODE_PID=$!
 
 # make sure we have enough time for the server to start
 sleep $TIMEOUT
@@ -32,7 +38,7 @@ echo "Running tests ..."
 # run the tests
 mocha server/test/api/
 
-echo "Cleaning up node instances ..."
+echo "Cleaning up test instance"
 
-# kill the server (and all other matching processes)
-killall node
+# kill the server
+kill $NODE_PID

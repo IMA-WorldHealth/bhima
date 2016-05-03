@@ -4,6 +4,8 @@ dist: trusty
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
 
 services:
   - mysql
@@ -11,6 +13,7 @@ services:
 language: node_js
 node_js:
   - node
+  - '5'
   - '4.3'
   - '4.2'
   - '4.1'
@@ -22,7 +25,8 @@ before_script:
 script:
   - bash sh/deploy.sh
   - sleep 5
-  - mocha server/test/api
+  - ./node_modules/.bin/mocha server/test/api
+  - ./node_modules/.bin/karma start --single-run
 
 git:
   depth: 3

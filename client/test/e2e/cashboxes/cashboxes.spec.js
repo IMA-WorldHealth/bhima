@@ -6,6 +6,7 @@ const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
 
 describe('Cashbox Module', function () {
 
@@ -152,7 +153,7 @@ describe('Cashbox Module', function () {
     FU.buttons.delete();
 
     // confirm the deletion
-    browser.switchTo().alert().accept();
+    components.modalAction.confirm();
 
     // check to see if we are in the default state
     FU.exists(by.css('.alert.alert-info'), true);

@@ -1,11 +1,10 @@
 /* jshint expr: true */
-
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
 /** import test helpers */
-var helpers = require('./helpers');
-var uuid    = require('node-uuid');
+const helpers = require('./helpers');
+const uuid    = require('node-uuid');
 helpers.configure(chai);
 
 /**
@@ -13,12 +12,11 @@ helpers.configure(chai);
 *
 * @desc This test suit is about the crud operation with depots
 */
-describe('The /depots API endpoint :: ', function () {
+describe('(/depots) The depots API ', function () {
   'use strict';
 
-  var agent = chai.request.agent(helpers.baseUrl);
-
   /** login before test suite */
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
   /** new depot object */
@@ -37,7 +35,7 @@ describe('The /depots API endpoint :: ', function () {
     is_warehouse : 0
   };
 
-  /** debot object with missing uuid */
+  /** depot object with missing uuid */
   var badDepot = {
     text : 'New Depot',
     enterprise_id : 1,
@@ -80,12 +78,11 @@ describe('The /depots API endpoint :: ', function () {
 
   it('POST /depots should not create when missing data', function () {
     delete badDepot.enterprise_id;
-
     return agent.post('/depots')
     .send(badDepot)
     .then(function (res) {
       helpers.api.errored(res, 400);
-      expect(res.body.code).to.be.equal('DB.ER_NO_DEFAULT_FOR_FIELD');
+      expect(res.body.code).to.be.equal('ERRORS.BAD_REQUEST');
     })
     .catch(helpers.handler);
   });
@@ -127,5 +124,4 @@ describe('The /depots API endpoint :: ', function () {
     })
     .catch(helpers.handler);
   });
-
 });

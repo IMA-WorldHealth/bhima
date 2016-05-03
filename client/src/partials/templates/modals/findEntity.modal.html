@@ -1,26 +1,50 @@
-<div class="panel panel-default">
+<div class="">
   <div class="panel-heading">
-    <i class="glyphicon glyphicon-search"></i>
-    <h3>{{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}</h3>
+    <h4><i class="glyphicon glyphicon-search"></i> {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}</h4>
   </div>
 
   <div class="panel-body">
-    <!-- type  -->
+
     <div class="form-group">
+
       <div class="input-group">
-        <span class="input-group-addon">{{ 'VOUCHERS.COMPLEX.TYPE' | translate }}</span>
-        <select class="form-control">
-          <option value="D"><b>D</b> {{ 'VOUCHERS.COMPLEX.DEBTOR' | translate }}</option>
-          <option value="C"><b>D</b> {{ 'VOUCHERS.COMPLEX.CREDITOR' | translate }}</option>
-        </select>
-      </div>
-    </div>
 
-    <!-- entity  -->
-    <div class="form-group">
-      <div class="">
+        <!-- dropdown button -->
+        <div class="input-group-btn" uib-dropdown tabindex=-1>
+          <button class="btn btn-default" type="button" uib-dropdown-toggle>
+            {{ $ctrl.selectedTypeLabel | translate }} <span class="caret"></span>
+          </button>
+          <ul uib-dropdown-menu>
+            <li ng-repeat="type in $ctrl.types">
+              <a href="" ng-click="$ctrl.setType(type)">
+                {{ type.label | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- /dropdown button -->
+
+        <input type="text" class="form-control">
 
       </div>
+
     </div>
+  </div>
+
+  <div class="panel-footer">
+    <div class="pull-right">
+      <button type="button" class="btn btn-default"
+        ng-click="$ctrl.cancel()">
+        <i class="glyphicon glyphicon-ban-circle"></i>
+        {{ 'FORM.BUTTONS.CANCEL' | translate }}
+      </button>
+
+      <button type="button" class="btn btn-success"
+        ng-click="$ctrl.submit()">
+        {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+        <i class="glyphicon glyphicon-ok"></i>
+      </button>
+    </div>
+    <div class="clearfix"></div>
   </div>
 </div>

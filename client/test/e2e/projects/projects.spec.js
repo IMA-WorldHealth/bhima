@@ -4,6 +4,8 @@ const expect = chai.expect;
 
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
+const components = require('../shared/components');
+
 helpers.configure(chai);
 
 describe('Projects Module', function () {
@@ -99,7 +101,7 @@ describe('Projects Module', function () {
     element(by.id('project-del-' + deleteSuccess)).click();
 
     // click the alert asking for permission
-    browser.switchTo().alert().accept();
+    components.modalAction.confirm();
 
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);
@@ -111,7 +113,7 @@ describe('Projects Module', function () {
     element(by.id('project-del-' + deleteError)).click();
 
     // accept the alert
-    browser.switchTo().alert().accept();
+    components.modalAction.confirm();
 
     // the module should show an error message (and none others)
     FU.exists(by.id('delete_error'), true);
@@ -125,7 +127,7 @@ describe('Projects Module', function () {
     element(by.id('project-del-' + deleteError)).click();
 
     // reject the alert that appears
-    browser.switchTo().alert().dismiss();
+    components.modalAction.dismiss();
 
     // make sure that we have the default interface (and no others)
     FU.exists(by.id('default'), true);

@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientGroupController', PatientGroupController);
 
 PatientGroupController.$inject = [
-  'PatientGroupService', 'PriceListService', 'SessionService', '$translate', '$window'
+  'PatientGroupService', 'PriceListService', 'SessionService', '$translate', 'ModalService'
 ];
 
 /**
@@ -17,7 +17,7 @@ PatientGroupController.$inject = [
  *
  *  @constructor
  */
-function PatientGroupController (PatientGroups, PriceLists, Session, $translate, $window) {
+function PatientGroupController (PatientGroups, PriceLists, Session, $translate, ModalService) {
   var vm = this;
 
   // by default, set loading to false.
@@ -112,21 +112,22 @@ function PatientGroupController (PatientGroups, PriceLists, Session, $translate,
 
   // this function is responsible of removing a patient group
   function remove() {
-    var bool =
-       $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
+    
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool){
+      // if the user cancels, return immediately.
+      if (!bool) { return; }
 
-    // if the user cancels, return immediately.
-    if (!bool) { return; }
-
-    PatientGroups.delete(vm.patientGroup.uuid)
-    .then(function (message) {
-      vm.view = 'default';
-      return loadPatientGroups();
-    })
-    .then(function (groups) {
-      vm.groups = groups;
-    })
-    .catch(handler);
+      PatientGroups.delete(vm.patientGroup.uuid)
+      .then(function (message) {
+        vm.view = 'default';
+        return loadPatientGroups();
+      })
+      .then(function (groups) {
+        vm.groups = groups;
+      })
+      .catch(handler);
+    });  
   }
 
   // this method is load the list of patient group

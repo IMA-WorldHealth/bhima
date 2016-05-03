@@ -168,6 +168,9 @@
   min-height : 52px;
   max-height : 52px;
   border-bottom : 1px solid #ccc;
+
+  box-shadow : 0px 2px 4px -3px gray;
+  z-index : 900;
 }
 
 .flex-util {
@@ -483,18 +486,18 @@ ol.headercrumb {
    padding-left: 7px;
  }
 
-.fixedColumn { 
+.fixedColumn {
   float : left;
   position : relative;
-  
+
 }
 
 /**
- * Styles used for printing, receipts and reports 
+ * Styles used for printing, receipts and reports
  * @todo move this to less
  */
-.bh-modal-content { 
-  position : relative; 
+.bh-modal-content {
+  position : relative;
   padding : 15px;
 
   /** @todo review this */
@@ -502,17 +505,17 @@ ol.headercrumb {
   overflow-y : auto;
 }
 
-.receipt { 
+.receipt {
   width : 100%
 }
 
 /* Report tables */
-.total-row > td { 
-  font-weight : bold; 
+.total-row > td {
+  font-weight : bold;
 }
 
-@media print { 
-  body * { 
+@media print {
+  body * {
     visibility : hidden;
   }
 
@@ -522,31 +525,226 @@ ol.headercrumb {
 
   /* Style required to fix single page overflow problem */
   /* .flex-continar : height (cannot be 100%) */
-  .flex-container { 
+  .flex-container {
     height : inherit;
   }
-  
+
   /* .modal : overflow (cannot be hidden) */
-  .modal-open .modal { 
+  .modal-open .modal {
     overflow-x : initial;
     overflow-y : initial;
   }
 
-  .modal { 
+  .modal {
     overflow : initial;
   }
 
-  .bh-print, .bh-print * { 
+  .bh-print, .bh-print * {
     visibility : visible;
   }
 
-  .bh-print { 
+  .bh-print {
     position : absolute;
     left : 0;
     top : 0;
   }
-  
-  .bh-modal-content { 
+
+  .bh-modal-content {
     position : initial;
   }
 }
+
+@-webkit-keyframes fadeInDown {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+.fadeInDown {
+  -webkit-animation-name: fadeInDown;
+  animation-name: fadeInDown;
+}
+
+@-webkit-keyframes hinge {
+  0% {
+    -webkit-transform-origin: top left;
+    transform-origin: top left;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+  }
+
+  20%, 60% {
+    -webkit-transform: rotate3d(0, 0, 1, 80deg);
+    transform: rotate3d(0, 0, 1, 80deg);
+    -webkit-transform-origin: top left;
+    transform-origin: top left;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+  }
+
+  40%, 80% {
+    -webkit-transform: rotate3d(0, 0, 1, 60deg);
+    transform: rotate3d(0, 0, 1, 60deg);
+    -webkit-transform-origin: top left;
+    transform-origin: top left;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+    opacity: 1;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 700px, 0);
+    transform: translate3d(0, 700px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes hinge {
+  0% {
+    -webkit-transform-origin: top left;
+    transform-origin: top left;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+  }
+
+  20%, 60% {
+    -webkit-transform: rotate3d(0, 0, 1, 80deg);
+    transform: rotate3d(0, 0, 1, 80deg);
+    -webkit-transform-origin: top left;
+    transform-origin: top left;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+  }
+
+  40%, 80% {
+    -webkit-transform: rotate3d(0, 0, 1, 60deg);
+    transform: rotate3d(0, 0, 1, 60deg);
+    -webkit-transform-origin: top left;
+    transform-origin: top left;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+    opacity: 1;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 700px, 0);
+    transform: translate3d(0, 700px, 0);
+    opacity: 0;
+  }
+}
+
+.hinge {
+  -webkit-animation-name: hinge;
+  animation-name: hinge;
+}
+
+growl-notification.fading.ng-move{
+    -webkit-animation-name: fadeInDown;
+    animation-name: fadeInDown;
+
+    -webkit-animation-duration: 0.3s;
+    animation-duration: 0.3s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+growl-notification.fading.ng-move.ng-move-active { }
+
+growl-notification.fading.ng-leave {
+    opacity: 1;
+
+    /* this time adjusts the length of the fadeout animation*/
+    -webkit-transition: 0s linear all;
+    transition: 0s linear all;
+}
+
+growl-notification.fading.ng-leave.ng-leave-active {
+    opacity: 0;
+}
+
+/** Temporary utility styles */
+.textflow {
+  overflow : hidden;
+  text-overflow : ellipsis;
+  white-space : nowrap;
+}
+.rotate {
+  transform : rotate(180deg);
+}
+
+.notification-success {
+  border-left : 5px solid #638638;
+  background-color : #77A13F;
+  color : #fff;
+}
+
+.notification-danger {
+  background-color : #f2dede;
+  border-left : 5px solid #a94442;
+  color : #a94442;
+}
+
+.notification-info {
+  color : #085484;
+  background-color : #64BDEE;
+  border-left : 5px solid #085484;
+}
+
+.notification-warn {
+  color : #8a6d3b;
+  background-color : #fcf8e3;
+  border-left : 5px solid #8a6d3b;
+}
+
+.notification-error {
+  color : #fff;
+  background-color : #d9534f;
+  border-left : #fff;
+}
+
+.notification-icon {
+  display : inline-block;
+  vertical-align : top;
+}
+
+.notification-message {
+  display : inline-block;
+  text-overflow : ellipsis;
+  overflow : hidden;
+  white-space : nowrap;
+  max-width : calc(100% - 50px);
+}
+
+/* 'Card' Utility class */
+.text-float-util {
+  text-align : right;
+}
+
+@media (max-width: 992px) {
+  .text-float-util {
+    text-align : left;
+  }
+}
+

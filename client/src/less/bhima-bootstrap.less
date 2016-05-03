@@ -8,6 +8,48 @@
 
 @border-radius-base: 2px;
 
+@ima-green:           #77a13f;
+@ima-dark-orange:     #e57b14;
+@ima-dark-blue:       #085484;
+@ima-light-orange:    #fdba64;
+@ima-light-blue:      #6fbdee;
+  
+/** @todo move all structure code into less with configurable variables */
+/** 
+* Application structure variables - these widths are used to determine how much 
+* space the tree navigation takes up in its `expanded` and `collapsed` states. 
+*/
+@expanded-offset:  260px;
+@collapsed-offset: 56px;
+@nav-height:       51px;
+
+/**
+* Notifications
+*/
+growl-notifications { 
+  width : 100%;
+  position : fixed;
+  top : 0px;
+  left : @collapsed-offset;
+  z-index : 1000;
+}
+
+.expanded > growl-notifications { 
+  left : @expanded-offset;
+  width : calc(~'100% - (@{expanded-offset} - @{collapsed-offset})');
+}
+
+growl-notifications growl-notification {
+  background : #fff;
+  border-left : 5px solid #9A9A9A;
+  height : @nav-height;
+  padding : 15px 10px;
+  display : block;
+
+  /** @todo width calculation are a hack - the notification doesn't need to be fixed */
+  width : calc(~'100% - @{collapsed-offset}');
+}
+
 /**
 * remove the spinners (arrows) in inputs in chrome and firefox
 */
@@ -15,6 +57,32 @@
 ::-webkit-outer-spin-button { -webkit-appearance: none;}
 input[type=number] {-moz-appearance: textfield;}
 
+/** 
+ * This overrides the `width` specification added by bootstrap at different 
+ * screen sizes for the .container class. As the Tree navigation pushes the view
+ * if it is expanded BHIMA cannot gaurantee there is enough space for these widths, 
+ * overriding this with max-width doesn't force the container to the specified size
+ */
+@media (min-width: 768px) { 
+  .container { 
+    max-width : 730px;
+    width : auto;
+  }
+}
+
+@media (min-width : 992px) { 
+  .container { 
+    max-width : 950px;
+    width : auto;
+  }
+}
+
+@media (min-width : 1200px) { 
+  .container { 
+    max-width : 1150px;
+    width : auto;
+  }
+}
 
 /**
 * Slightly pad the bottom of elements.  Useful for the floating columns on top

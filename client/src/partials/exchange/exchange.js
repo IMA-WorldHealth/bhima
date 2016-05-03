@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('ExchangeRateController', ExchangeRateController);
 
 ExchangeRateController.$inject = [
-  'SessionService', 'DateService', 'CurrencyService', 'ExchangeRateService', '$uibModal', '$window', '$translate'
+  'SessionService', 'DateService', 'CurrencyService', 'ExchangeRateService', '$uibModal', '$translate', 'ModalService'
 ];
 
 /**
@@ -11,7 +11,7 @@ ExchangeRateController.$inject = [
 *
 * @controller ExchangeRateController
 */
-function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $window, $translate) {
+function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $translate, ModalService) {
   var vm = this;
 
   // bind data
@@ -122,21 +122,23 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $w
 
   // switch to delete warning mode
   function del(id) {
-    var result = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
-    if (!result) {
-      vm.view = 'default';
-      return;
-    } else {
-      vm.view = 'delete_confirm';
-      Rates.delete(id)
-      .then(function (response) {
-        startup();
-        vm.feedback = 'delete_success';
-      }).catch(function (error) {
-        vm.feedback = 'delete_error';
-        vm.HTTPError = error;
-      });
-    }
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (result){
+      if (!result) {
+        vm.view = 'default';
+        return;
+      } else {
+        vm.view = 'delete_confirm';
+        Rates.delete(id)
+        .then(function (response) {
+          startup();
+          vm.feedback = 'delete_success';
+        }).catch(function (error) {
+          vm.feedback = 'delete_error';
+          vm.HTTPError = error;
+        });
+      }
+    });
   }
 
   // startup the module

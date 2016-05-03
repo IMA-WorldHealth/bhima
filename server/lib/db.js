@@ -1,25 +1,23 @@
 // server/lib/db.js
 
-// TODO rewrite documentation - this module can now be required by any controller module throughout the application
-// TODO Seperate DB wrapper and DB methods - this module should just initialise a new DB instance
-// new db(config, etc.) and return it in module exports
+// TODO separate DB wrapper and DB methods - this module should just initialise
+// a new DB instance new db(config, etc.) and return it in module exports
 
 // TODO EVERY query to the DB is currently handled on it's own connection, one
 // HTTP request can result in tens of connections. Performance checks for
-// sharing connections between request sessions (also allowing for shraring a
+// sharing connections between request sessions (also allowing for sharing a
 // transaction between unrelated components)
+'use strict';
 
-var q       = require('q');
-var mysql   = require('mysql');
-var winston = require('winston');
-var util    = require('util');
+const q       = require('q');
+const mysql   = require('mysql');
+const winston = require('winston');
 const uuid  = require('node-uuid');
 
-var con;
+let con;
 
-// Initiliase module on startup - create once and allow db to be required anywhere
+// initialize module on startup - create once and allow db to be required anywhere
 function initialise() {
-  'use strict';
 
   // configure MySQL via environmental variables
   if (process.env.DB_URL) {
@@ -51,17 +49,6 @@ function exec(sql, params) {
   });
 
   return dfd.promise;
-}
-
-function execute(sql, callback) {
-  con.getConnection(function (err, connection) {
-    if (err) { return callback(err); }
-    connection.query(sql, function (err, results) {
-      connection.release();
-      if (err) { return callback(err); }
-      return callback(null, results);
-    });
-  });
 }
 
 function execTransaction(queryList) {
@@ -132,14 +119,14 @@ function transaction() {
   self.addQuery = addQuery;
   self.execute = execution;
 
-  // Format the query, params request and insert into the list of querys to be
+  // Format the query, params request and insert into the list of queries to be
   // executed
   function addQuery(query, params) {
-
     self.queryList.push({
       query : query,
       params : params
     });
+
     return self;
   }
 
@@ -182,12 +169,41 @@ function bid(hexUuid) {
   return new Buffer(uuid.parse(hexUuid));
 }
 
+/**
+ * Converts values on the data object to binary uuids if they exist.  If not, it
+ * will gracefully skip the key.
+ *
+ * @method convert
+ * @param {Object} data - an object with uuids to convert to binary
+ * @param {Array} keys - an array of keys on the data object, specifying which
+ * fields to convert
+ * @returns {Object} data - the data object, now converted
+ *
+ */
+function convert(data, keys) {
+  'use strict';
+
+  // clone the object
+  let clone = JSON.parse(JSON.stringify(data));
+
+  // loop through each key
+  keys.forEach(function (key) {
+
+    // the key exists on the object and value is a string
+    if (clone[key] && typeof clone[key] === 'string') {
+      clone[key] = bid(clone[key]);
+    }
+  });
+
+  return clone;
+}
+
+
 module.exports = {
   initialise:  initialise,
   exec:        exec,
   transaction: transaction,
-  execute:     util.deprecate(execute, 'db.execute() is deprecated, use db.exec() instead.'),
-  sanitize:    util.deprecate(sanitize, 'db.sanitize() is deprecated, use db.escape instead.'),
   escape:      sanitize,
+  convert:     convert,
   bid:         bid
 };

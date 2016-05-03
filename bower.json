@@ -33,7 +33,8 @@
     "angular-messages": "^1.5.0",
     "ngstorage": "^0.3.10",
     "Chart.js": "^1.0.2",
-    "angular-chart.js": "^0.9.0"
+    "angular-chart.js": "^0.9.0",
+    "angular-animate": "^1.5.5"
   },
   "resolutions": {
     "angular": "^1.5.0"

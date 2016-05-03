@@ -1,6 +1,6 @@
 /**
-* Express Server Configuration
-*/
+ * Express Server Configuration
+ */
 const express    = require('express');
 const compress   = require('compression');
 const bodyParser = require('body-parser');
@@ -10,19 +10,29 @@ const morgan     = require('morgan');
 const fs         = require('fs');
 const winston    = require('winston');
 const _          = require('lodash');
+const helmet     = require('helmet');
 
 const interceptors = require('./interceptors');
 const BadRequest = require('../lib/errors/BadRequest');
 const Unauthorized = require('../lib/errors/Unauthorized');
 
-// Accept generic express instances (initialised in app.js)
+// accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
   'use strict';
 
   winston.log('debug', 'Configuring middleware');
 
-  // middleware
   app.use(compress());
+
+  // helmet guards
+  app.use(helmet.frameguard({ action : 'deny' }));
+  app.use(helmet.hsts({ maxAge: 7776000000 })); // ninety days in ms
+  app.use(helmet.hidePoweredBy());
+  app.use(helmet.ieNoOpen());
+  app.use(helmet.noSniff());
+  app.use(helmet.dnsPrefetchControl());
+  app.use(helmet.xssFilter());
+
   app.use(bodyParser.json({ limit : '8mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -43,16 +53,12 @@ exports.configure = function configure(app) {
   // reject PUTs and POSTs with empty objects in the data property with a 400
   // error
   app.use(function (req, res, next) {
-    if (req.method !== 'PUT' && req.method !== 'POST') {
-      return next();
+    if ((req.method === 'PUT' || req.method === 'POST') && _.isEmpty(req.body)) {
+      return next(
+        new BadRequest('You cannot POST/PUT an empty object', 'ERRORS.EMPTY_BODY')
+      );
     }
-
-    // make sure the body object contains something
-    if (_.isEmpty(req.body)) {
-      next(new BadRequest('You cannot POST/PUT an empty object', 'ERRORS.EMPTY_BODY'));
-    } else {
-      next();
-    }
+    next();
   });
 
   // provide a stream for morgan to write to
@@ -66,7 +72,6 @@ exports.configure = function configure(app) {
   // options: combined | common | dev | short | tiny
   app.use(morgan('combined', { stream : winston.stream }));
 
-
   // serve static files from a single location
   // NOTE the assumption is that this entire directory is public -
   // there is no need to authenticate users to access the public
@@ -77,13 +82,13 @@ exports.configure = function configure(app) {
   // quick way to find out if a value is in an array
   function within(value, array) { return array.indexOf(value.trim()) !== -1; }
 
-  // Only allow routes to use /login, /projects, /logout, and /language if session does not exists
+  // Only allow routes to use /login, /projects, /logout, and /languages if a
+  // user session does not exists
+  let publicRoutes = ['/login', '/languages', '/projects/', '/logout'];
+
   app.use(function (req, res, next) {
-
-    var publicRoutes = ['/login', '/languages', '/projects/', '/logout'];
-
-    if (req.session.user === undefined && !within(req.path, publicRoutes)) {
-      winston.log('debug', 'Rejecting unauthorized acces to %s from %s', req.path, req.ip);
+    if (_.isUndefined(req.session.user) && !within(req.path, publicRoutes)) {
+      winston.log('debug', 'Rejecting unauthorized access to %s from %s', req.path, req.ip);
       next(new Unauthorized('You are not logged into the system.'));
     } else {
       next();
@@ -93,10 +98,5 @@ exports.configure = function configure(app) {
 
 /** configures error handlers */
 exports.errorHandling = function errorHandling(app) {
-  'use strict';
-
-  app.use(interceptors.newErrorHandler);
-  app.use(interceptors.apiErrorHandler);
-  app.use(interceptors.databaseErrorHandler);
-  app.use(interceptors.catchAllErrorHandler);
+  app.use(interceptors.handler);
 };

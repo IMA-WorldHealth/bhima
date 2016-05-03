@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('ProjectController', ProjectController);
 
 ProjectController.$inject = [
-   'ProjectService', 'EnterpriseService', 'SnisService', 'FormStateFactory', '$translate', '$window'
+   'ProjectService', 'EnterpriseService', 'SnisService', 'FormStateFactory', '$translate', 'ModalService'
 ];
 
-function ProjectController(Projects, Enterprises, SnisService, StateFactory, $translate, $window) {
+function ProjectController(Projects, Enterprises, SnisService, StateFactory, $translate, ModalService) {
   var vm = this;
 
   vm.enterprises = [];
@@ -64,20 +64,22 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory, $tr
 
   // switch to delete warning mode
   function del(project) {
-    var result = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
-    if(result){
-      vm.view = 'delete_confirm';
-      Projects.delete(project.id)
-      .then(function (response) {
-        refreshProjects();
-        vm.view = 'delete_success';
-      }).catch(function (error) {
-        vm.view = 'delete_error';
-        vm.HTTPError = error;
-      });
-    } else {
-      vm.view = 'default';
-    } 
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (result){
+      if(result){
+        vm.view = 'delete_confirm';
+        Projects.delete(project.id)
+        .then(function (response) {
+          refreshProjects();
+          vm.view = 'delete_success';
+        }).catch(function (error) {
+          vm.view = 'delete_error';
+          vm.HTTPError = error;
+        });
+      } else {
+        vm.view = 'default';
+      } 
+    });    
   }
 
   // refresh the displayed Projects

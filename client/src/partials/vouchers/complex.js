@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 ComplexJournalVoucherController.$inject = [
   'VoucherService', '$translate', 'AccountService',
-  'CurrencyService', 'SessionService', '$uibModal'
+  'CurrencyService', 'SessionService', 'FindEntityService'
 ];
 
 /**
@@ -16,7 +16,7 @@ ComplexJournalVoucherController.$inject = [
  *
  * @todo - Implement caching mechanism for incomplete forms (via AppCache)
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, Modal) {
+function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity) {
   var vm = this;
 
   // bread crumb paths
@@ -36,6 +36,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   vm.removeVoucherItem = removeVoucherItem;
   vm.checkRowValidity  = checkRowValidity;
   vm.selectAccount     = selectAccount;
+  vm.openEntityModal   = FindEntity.openModal;
 
   // load the list of accounts
   Accounts.read()
@@ -174,24 +175,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     if (form.$invalid) {
       return;
     }
-
-  }
-
-  /**
-   * Entity Modal
-   */
-  function openEntityModal(row) {
-
-    var instance = Modal.open({
-      templateUrl : 'partials/templates/modals/findEntity.modal.html',
-      controller  : 'FindEntityModalController as FindEntityModalCtrl',
-      size        : 'md',
-      animation   : false
-    });
-
-    instance.result.then(function (result) {
-      row.entity = result.entity;
-    });
 
   }
 

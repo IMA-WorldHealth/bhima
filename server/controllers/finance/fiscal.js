@@ -190,7 +190,7 @@ function createPeriods(fiscalYearId, start, end) {
     template.push([fiscalYearId, i+1, periodStart, periodStop]);
   }
 
-  sql += db.sanitize(template) + ';';
+  sql += db.escape(template) + ';';
 
   // sanitize turns the template into (a,b), (c,d) ..
   return db.exec(sql);

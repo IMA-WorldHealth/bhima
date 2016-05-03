@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('PriceListController', PriceListController);
 
 PriceListController.$inject = [
-  'PriceListService', '$window', '$translate', '$uibModal', 'InventoryService'
+  'PriceListService', '$translate', '$uibModal', 'InventoryService', 'ModalService'
 ];
 
-function PriceListController(PriceListService, $window, $translate, $uibModal, Inventory) {
+function PriceListController(PriceListService, $translate, $uibModal, Inventory, ModalService) {
   var vm = this;
   vm.view = 'default';
 
@@ -55,7 +55,7 @@ function PriceListController(PriceListService, $window, $translate, $uibModal, I
     if (vm.pricelistItems.length > 1) {
       vm.pricelistItems.splice(vm.pricelistItems.indexOf(item), 1);
     } else {
-      $window.alert($translate.instant('PRICE_LIST.UNABLE_TO_DELETE'));
+      ModalService.alert('PRICE_LIST.UNABLE_TO_DELETE');
     }  
   }
 
@@ -116,25 +116,26 @@ function PriceListController(PriceListService, $window, $translate, $uibModal, I
 
   // switch to delete warning mode
   function del(priceList) {
-    var bool = $window.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'));
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool){
+       // if the user clicked cancel, reset the view and return
+       if (!bool) {
+          vm.view = 'default';
+          return;
+       }
 
-     // if the user clicked cancel, reset the view and return
-     if (!bool) {
-        vm.view = 'default';
-        return;
-     }
-
-    // if we get there, the user wants to delete a priceList
-    vm.view = 'delete_confirm';
-    PriceListService.delete(priceList.uuid)
-    .then(function () {
-       vm.view = 'delete_success';
-       return refreshPriceList();
-    })
-    .catch(function (error) {
-      vm.HTTPError = error;
-      vm.view = 'delete_error';
-    });
+      // if we get there, the user wants to delete a priceList
+      vm.view = 'delete_confirm';
+      PriceListService.delete(priceList.uuid)
+      .then(function () {
+         vm.view = 'delete_success';
+         return refreshPriceList();
+      })
+      .catch(function (error) {
+        vm.HTTPError = error;
+        vm.view = 'delete_error';
+      });
+    });  
   }
 
   // Add pricelist Item in a  modal

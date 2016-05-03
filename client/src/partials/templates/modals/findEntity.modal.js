@@ -1,22 +1,38 @@
 angular.module('bhima.controllers')
 .controller('FindEntityModalController', FindEntityModalController);
 
-FindEntityModalController.$inject = ['$uibModalInstance', 'prompt'];
+FindEntityModalController.$inject = ['$uibModalInstance'];
 
 /**
  * Find Entity Modal Controller
  *
  * This controller provides bindings for the find entity modal.
  */
-function FindEntityModalController(Instance, prompt) {
+function FindEntityModalController(Instance) {
   var vm = this;
 
-  /**
-   * bind the prompt to the view, if provided
-   * @todo - should this be done automatically with controllerAs?
-   */
-  vm.prompt = prompt;
+  vm.types = [
+    { code : 'D', label : 'VOUCHERS.COMPLEX.DEBTOR' },
+    { code : 'C', label : 'VOUCHERS.COMPLEX.CREDITOR' }
+  ];
 
-  // bind modal controls
-  vm.close = Instance.close;
+  vm.selectedTypeLabel = 'VOUCHERS.COMPLEX.DEB_CRED';
+
+  vm.setType = setType;
+  vm.submit = submit;
+  vm.cancel = cancel;
+
+  function setType(type) {
+    vm.selectedType = type;
+    vm.selectedTypeLabel = type.label;
+  }
+
+  function submit() {
+    Instance.close(vm.selectedType);
+  }
+
+  function cancel() {
+    Instance.dismiss('cancel');
+  }
+
 }

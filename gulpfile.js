@@ -41,7 +41,6 @@ const SERVER_FOLDER = './bin/server/';
 // the output folder for built client files
 const CLIENT_FOLDER = './bin/client/';
 
-
 // resource paths
 var paths = {
   client : {
@@ -76,6 +75,10 @@ var paths = {
       // ChartJS
       'client/vendor/Chart.js/Chart.min.js',
       'client/vendor/angular-chart.js/dist/angular-chart.min.js',
+
+      // Angular Growl
+      // 'client/vendor/angular-growl-notifications/dist/angular-growl-notifications.js',
+      'client/vendor/angular-animate/angular-animate.js',
 
       // MomentJS
       'client/vendor/moment/moment.js',
@@ -216,7 +219,7 @@ gulp.task('client-lint-i18n', function (cb) {
  	});
 });
 
-// watchs for any change and builds the appropriate route
+// watches for any change and builds the appropriate route
 gulp.task('watch-client', function () {
   gulp.watch(paths.client.css, ['client-minify-css']);
   gulp.watch(paths.client.javascript, ['client-compile-js']);

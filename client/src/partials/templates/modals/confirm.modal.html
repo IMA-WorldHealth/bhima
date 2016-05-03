@@ -1,5 +1,5 @@
 <!-- leverage a form to get a loading indicator on the button -->
-<form name="ConfirmModalForm" bh-submit="ConfirmModalCtrl.submit()" data-confirm-modal>
+<form name="ConfirmModalForm" ng-submit="ConfirmModalCtrl.submit()" data-confirm-modal>
   <div class="modal-header">
     <h4>{{ "FORM.LABELS.CONFIRMATION" | translate }}</h4>
   </div>
@@ -21,10 +21,11 @@
   </div>
 
   <div class="modal-footer">
-    <bh-loading-button loading-state="ConfirmModalForm.$loading" data-modal-submit>
-      {{ "FORM.BUTTON.SUBMIT" | translate }}
-    </bh-loading-button>
-    <button type="button" class="btn btn-default" ng-click="ConfirmModalCtrl.dismiss()" data-model-cancel>
+    <button class="btn btn-default" id="confirm_modal" type="submit" data-method="submit">
+      {{ "FORM.BUTTONS.CONFIRM" | translate }}
+    </button>
+
+    <button type="button" class="btn btn-default" id="dismiss_modal" ng-click="ConfirmModalCtrl.dismiss()" data-model-cancel>
       {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
   </div>

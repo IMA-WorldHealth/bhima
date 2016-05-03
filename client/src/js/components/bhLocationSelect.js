@@ -10,10 +10,11 @@ angular.module('bhima.components')
     locationUuid:      '=', // two-way binding
     disable:           '<', // one-way binding
     validationTrigger: '<', // one-way binding
+    name:              '@'
   }
 });
 
-LocationSelectController.$inject =  [ 'LocationService', '$scope' ];
+LocationSelectController.$inject =  [ 'LocationService', '$scope', '$timeout' ];
 
 /**
  * Location Select Controller
@@ -51,7 +52,7 @@ LocationSelectController.$inject =  [ 'LocationService', '$scope' ];
  * </bh-location-select>
  *
  */
-function LocationSelectController(Locations, $scope, Modal) {
+function LocationSelectController(Locations, $scope, $timeout) {
   var vm = this;
 
   /** loading indicator */
@@ -63,6 +64,34 @@ function LocationSelectController(Locations, $scope, Modal) {
   vm.loadProvinces = loadProvinces;
   vm.updateLocationUuid = updateLocationUuid;
   vm.modal = openAddLocationModal;
+
+  // set default component name if none has been set
+  vm.name = vm.name || 'LocationComponentForm';
+
+  // wrap the alias call in a $timeout to ensure that the component link/ compile process has run
+  $timeout(aliasComponentForm);
+
+  /**
+   * This function assigns a reference to the components form onto the $scope
+   * object so that it can be accessed directly in the view. This is required
+   * because the component dynamically sets the form name based on the `vm.name`
+   * variable.
+   *
+   * This is a convenience method as the controller is available to the $scope
+   * thorugh the $ctrl variable. It translates the template from:
+   *
+   * `this[$ctrl.name].formVariable`
+   *
+   * into
+   *
+   *  `LocationForm.formVariable`
+   *
+   *  This improves readability and reduces the number of potential lookups required
+   *  in the Angular template.
+   */
+  function aliasComponentForm() {
+    $scope.LocationForm = $scope[vm.name];
+  }
 
   /** disabled bindings for individual <select>s */
   vm.disabled = {
@@ -169,7 +198,17 @@ function LocationSelectController(Locations, $scope, Modal) {
 
   /** updates the exposed location uuid for the client to use */
   function updateLocationUuid() {
-    vm.locationUuid = vm.village.uuid;
+
+    if (vm.village) {
+
+      // this exposes the true value of the component to the top level form validation
+      // and can be used in util.filterDirtyFormElements
+      /** @todo if this technique is considered useful it should be formalised (potential directive) */
+      if (angular.isDefined(vm.name)) {
+        $scope[vm.name].$bhValue = vm.village.uuid;
+      }
+      vm.locationUuid = vm.village.uuid;
+    }
   }
 
   /**
@@ -214,6 +253,8 @@ function LocationSelectController(Locations, $scope, Modal) {
         country : initial.country,
       };
 
+      updateLocationUuid();
+
       // refresh all data sources to allow a user to use the <select> elements.
       loadProvinces()
       .then(loadSectors)
@@ -237,7 +278,7 @@ function LocationSelectController(Locations, $scope, Modal) {
    * over application efficiency.  This could be optimized as the application
    * evolves.
    */
-  $scope.$watch('vm.locationUuid', loadLocation);
+  $scope.$watch('$ctrl.locationUuid', loadLocation);
 
   /**
    * Open "Add a Location" modal

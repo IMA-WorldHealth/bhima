@@ -16,13 +16,16 @@
 
 <body ng-app="bhima" ng-strict-di>
 
+
 <div
   id="app-container"
   class="flex-container"
   ng-class="{'expanded' : AppCtrl.sidebarExpanded}"
   ng-controller="ApplicationController as AppCtrl">
-  <div class="flex-page">
 
+  <growl-notifications></growl-notifications>
+
+  <div class="flex-page">
     <!-- Sidebar -->
     <!-- TODO: Load the default position for the sidebar before angular is bootstrapped-->
     <div class="sidebar" ng-cloak>
@@ -58,6 +61,7 @@
         </div>
 
         <div class="flex-footer" ng-cloak>
+
           <ul>
             <li>
               <a class="session" ng-click="AppCtrl.settings()">
@@ -85,6 +89,16 @@
     <!-- End page -->
 
     <div class="flex-view" ui-view></div>
+
+    <!-- System wide notifications -->
+    <div class="ng-cloak">
+      <growl-notification data-success-notification ng-repeat="notification in AppCtrl.notifications" ng-class="notification.format" class="fading ng-animate-enabled" ttl="notification.ttl">
+      <div class="notification-icon"><span ng-class="notification.icon" class="glyphicon"></span></div>
+      <div class="notification-message" title="{{notification.message}}">{{notification.message}}</div>
+
+        <button type="button" class="close" ng-click="$growlNotification.remove()" data-dismiss="notification"><span>&times;</span></button>
+      </growl-notification>
+    </div>
   </div>
 </div>
 
