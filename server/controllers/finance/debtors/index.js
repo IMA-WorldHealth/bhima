@@ -23,30 +23,11 @@ var uuid        = require('node-uuid');
 var NotFound    = require('../../../lib/errors/NotFound');
 var BadRequest  = require('../../../lib/errors/BadRequest');
 
-exports.create = create;
 exports.list   = list;
 exports.detail = detail;
 exports.update = update;
 exports.invoices = invoices;
 exports.balance = function() { /** @todo - noop */ };
-
-/**
- * Create a new debtor
- */
-function create(req, res, next) {
-  var sql =
-    `INSERT INTO debtor SET ?`;
-
-  var params = JSON.parse(JSON.stringify(req.body));
-  params.uuid = db.bid(params.uuid);
-  params.group_uuid = db.bid(params.group_uuid);
-
-  db.exec(sql, [params])
-  .then(function (rows) {
-    res.status(201).json({ uuid : req.body.uuid });
-  })
-  .catch(next);
-}
 
 /**
  * List of debtors

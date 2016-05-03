@@ -372,7 +372,6 @@ exports.configure = function (app) {
   app.put('/debtors/:uuid', debtors.update);
   app.get('/debtors/:uuid', debtors.detail);
   app.get('/debtors', debtors.list);
-  app.post('/debtors', debtors.create);
 
   /** Debtor Groups API */
   app.get('/debtor_groups', debtorGroups.list);

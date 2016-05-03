@@ -230,7 +230,7 @@ INSERT INTO `inventory` VALUES
 INSERT INTO `debtor_group` VALUES
   (1,HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Test Debtor Group',3631, HUID('03a329b2-03fe-4f73-b40f-56a2870cc7e6'),NULL,NULL,NULL,0,10,0,NULL,1,1,1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   (1,HUID('66f03607-bfbc-4b23-aa92-9321ca0ff586'),'Second Test Debtor Group',3631,HUID('03a329b2-03fe-4f73-b40f-56a2870cc7e6'),NULL,NULL,NULL,0,300,0,NULL,1,1,1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-  
+
 INSERT INTO `patient_group` VALUES
   (HUID('0b8fcc00-8640-479d-872a-31d36361fcfd'),1,NULL,'Test Patient Group 1','Test Patient Group 1 Note','2016-03-10 08:44:23'),
   (HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),1,NULL,'Test Patient Group 2','Test Patient Group 2 Note','2016-03-10 08:44:23'),
@@ -239,7 +239,8 @@ INSERT INTO `patient_group` VALUES
 INSERT INTO `debtor` VALUES
   (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/2/Patient'),
   (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Patient/1/Patient'),
-  (HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Employee/Test Debtor');
+  (HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Employee/Test Debtor'),
+  (HUID('1fa862d0-2d30-4550-8052-e9aa6dbc467e'),HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'),'Anonymous/Test Debtor');
 
 
 INSERT INTO `patient` VALUES

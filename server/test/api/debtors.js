@@ -55,15 +55,6 @@ describe('(/debtors) The /debtors API', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /debtors should create a new debtor', function () {
-    return agent.post('/debtors')
-      .send(newDebtor)
-      .then(function (res) {
-        helpers.api.created(res);
-      })
-      .catch(helpers.handler);
-  });
-
   it('GET /debtors should return a list of all debtors', function () {
     return agent.get('/debtors')
       .then(function (res) {
@@ -75,12 +66,12 @@ describe('(/debtors) The /debtors API', function () {
   });
 
   it('GET /debtors/:uuid should return detail of a specifying debtor', function () {
-    return agent.get('/debtors/:uuid'.replace(':uuid', newDebtor.uuid))
+    return agent.get('/debtors/:uuid'.replace(':uuid', '1fa862d0-2d30-4550-8052-e9aa6dbc467e'))
       .then(function (res) {
         expect(res.body).to.contain.all.keys(debtorKeys);
-        expect(res.body.uuid).to.be.equal(newDebtor.uuid);
-        expect(res.body.group_uuid).to.be.equal(newDebtor.group_uuid);
-        expect(res.body.text).to.be.equal(newDebtor.text);
+        expect(res.body.uuid).to.be.equal('1fa862d0-2d30-4550-8052-e9aa6dbc467e');
+        expect(res.body.group_uuid).to.be.equal('4de0fe47-177f-4d30-b95f-cff8166400b4');
+        expect(res.body.text).to.be.equal('Anonymous/Test Debtor');
       })
       .catch(helpers.handler);
   });
