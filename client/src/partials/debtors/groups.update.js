@@ -44,15 +44,17 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
     // ensure we don't make HTTP requests if the form is invalid - exit early
     if (debtorGroupForm.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
-      return false;
+      return;
     }
 
-    /** @todo filterDirtyFormElements should be updated to factor in nested forms */
-    // submitDebtorGroup = util.filterDirtyFormElements(debtorGroupForm);
-    submitDebtorGroup = angular.copy(vm.group);
+    // catch 'nothing has changed' and redirect to list page
+    if (debtorGroupForm.$pristine) {
+      Notify.warn('FORM.ERRORS.NO_CHANGE');
+      $state.go('debtorGroups.list', null, {reload : true});
+      return;
+    }
 
-    // hack price lists - classic
-    submitDebtorGroup.price_list_uuid = submitDebtorGroup.price_list_uuid || null;
+    submitDebtorGroup = util.filterDirtyFormElements(debtorGroupForm);
 
     // temporary work-around for displaying an entire account in the typeahead
     if (submitDebtorGroup.account_id) {

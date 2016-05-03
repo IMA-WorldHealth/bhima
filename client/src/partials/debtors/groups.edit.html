@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" ng-form="debtorGroup">
 
   <div class="row">
     <div class="col-xs-12">
@@ -12,7 +12,8 @@
   <div class="row">
     <div class="col-md-5">
 
-      <form name="debtorGroup" class="form" autocomplete="off" autocorrect="off" autocapitalize="off">
+      <!-- Debtor group details form elements -->
+      <div autocomplete="off" autocorrect="off" autocapitalize="off">
         <div
           class="form-group has-feedback"
           ng-class="{'has-error' : debtorGroup.name.$invalid && debtorGroup.$submitted}">
@@ -55,7 +56,7 @@
 
           <label class="control-label">{{ "TABLE.COLUMNS.PRICE_LIST" | translate }}</label>
           <select
-            name="price_list"
+            name="price_list_uuid"
             ng-model="GroupEditCtrl.group.price_list_uuid"
             ng-options="priceList.uuid as priceList.label for priceList in GroupEditCtrl.priceLists"
             class="form-control">
@@ -82,7 +83,7 @@
 
         <div class="form-group">
           <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
-          <textarea class="form-control" ng-model="GroupEditCtrl.group.note" name="notes"></textarea>
+          <textarea class="form-control" ng-model="GroupEditCtrl.group.note" name="note"></textarea>
         </div>
 
         <div class="form-group">
@@ -103,6 +104,7 @@
         </div>
 
         <div class="form-group">
+          <!-- required -->
           <bh-location-select
             id="location"
             name="location_id"
@@ -110,7 +112,7 @@
             location-uuid="GroupEditCtrl.group.location_id"
             required></bh-location-select>
         </div>
-      </form>
+      </div>
 
       <!-- @todo remove temporary style hack -->
       <div class="clearfix" style="margin-bottom : 5px">
@@ -151,7 +153,7 @@
               </p>
               <div class="checkbox">
                 <label>
-                  <input ng-model="GroupEditCtrl.group.apply_subsidies" type="checkbox">
+                  <input ng-model="GroupEditCtrl.group.apply_subsidies" name="apply_subsidies" type="checkbox">
                   {{"DEBTOR_GRP.POLICIES.SUBSIDIES.LABEL" | translate }}
                 </label>
               </div>
@@ -165,7 +167,7 @@
               </p>
               <div class="checkbox">
                 <label>
-                  <input ng-model="GroupEditCtrl.group.apply_discounts" type="checkbox">
+                  <input ng-model="GroupEditCtrl.group.apply_discounts" name="apply_discounts" type="checkbox">
                   {{"DEBTOR_GRP.POLICIES.DISCOUNTS.LABEL" | translate }}
                 </label>
               </div>
@@ -179,7 +181,7 @@
               </p>
               <div class="checkbox">
                 <label>
-                  <input ng-model="GroupEditCtrl.group.apply_billing_services" ng-true-value="false" ng-false-value="true" type="checkbox">
+                  <input ng-model="GroupEditCtrl.group.apply_billing_services" name="apply_billing_services" ng-true-value="false" ng-false-value="true" type="checkbox">
                   {{ "DEBTOR_GRP.POLICIES.BILLING_SERVICES.LABEL" | translate }}
                 </label>
               </div>
