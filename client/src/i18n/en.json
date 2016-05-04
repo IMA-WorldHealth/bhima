@@ -35,7 +35,9 @@
     "LOGIN_PLACEHOLDER_USERNAME" : "Enter your username",
     "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it.",
     "WELCOME"                    : "Welcome to bhima!",
-    "GOODBYE"                    : "Thank you for using bhima.  Come back soon!"
+    "GOODBYE"                    : "Thank you for using bhima.  Come back soon!",
+    "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application.",
+    "CANNOT_RETURN_TO_LOGIN"     : "You are currently logged in.  To return to the login page, please log out using the settings page."
   },
   "BILLING_SERVICES": {
     "BTN": {

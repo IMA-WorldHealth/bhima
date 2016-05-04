@@ -937,11 +937,32 @@ function localeConfig(tmhDynamicLocaleProvider) {
 }
 
 // redirect to login if not signed in.
-function startupConfig($rootScope, $location, SessionService, amMoment) {
-  $rootScope.$on('$stateChangeStart', function (event, next) {
-    if (!SessionService.user) {
-      $location.url('/login');
+function startupConfig($rootScope, $state, SessionService, amMoment, Notify) {
+
+  // make sure the user is logged in and allowed to access states when
+  // navigating by URL.  This is pure an authentication issue.
+  $rootScope.$on('$locationChangeStart', function (event, next) {
+
+    var isLoggedIn = !!SessionService.user;
+    var isLoginState = next.indexOf('#/login') !== -1;
+
+    // if the user is logged in and trying to access the login state, deny the
+    // attempt with a message "Cannot return to login.  Please log out from the
+    // Settings Page."
+    if (isLoggedIn && isLoginState) {
+      event.preventDefault();
+      Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
+
+    // if the user is not logged in and trying to access any other state, deny
+    // the attempt with a message that their session expired and redirect them
+    // to the login page.
+    } else if (!isLoggedIn && !isLoginState) {
+      event.preventDefault();
+      Notify.warn('AUTH.UNAUTHENTICATED');
+      $state.go('login', {}, { notify : false });
     }
+
+    // else, the user is free to continue as they wish
   });
 
   // make sure $stateChangeErrors are emitted to the console.
@@ -994,4 +1015,4 @@ bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
 
 // run the application
-bhima.run(['$rootScope', '$location', 'SessionService', 'amMoment', startupConfig]);
+bhima.run(['$rootScope', '$state', 'SessionService', 'amMoment', 'NotifyService', startupConfig]);
