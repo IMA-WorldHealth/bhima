@@ -30,7 +30,6 @@
           </select>
         </div>
 
-
         <button
           ng-if="SettingsCtrl.previous"
           class="btn btn-default"
@@ -41,7 +40,8 @@
 
         <button
           class="btn btn-default"
-          ng-click="SettingsCtrl.logout()">
+          ng-click="SettingsCtrl.logout()"
+          data-logout-button>
           <span class="glyphicon glyphicon-log-out"></span> {{ "FORM.BUTTONS.LOGOUT" | translate }}
         </button>
       </div>

@@ -31,7 +31,7 @@ NODE_ENV=development node server/app.js &
 NODE_PID=$!
 
 # make sure we have enough time for the server to start
-echo "Sleeping for $TIMEOUT"
+echo "Sleeping for $TIMEOUT seconds"
 sleep $TIMEOUT
 
 echo "Running tests ..."
