@@ -1,13 +1,22 @@
 <div class="">
   <div class="panel-heading">
-    <h4><i class="glyphicon glyphicon-search"></i> {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}</h4>
+    <h4>
+      <i class="glyphicon glyphicon-search"></i>
+      {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}
+      <span
+        ng-if="$ctrl.result.uuid"
+        ng-click="$ctrl.refresh()" 
+        class="btn btn-default pull-right">
+        <i class="glyphicon glyphicon-refresh"></i>
+      </span>
+    </h4>
   </div>
 
   <div class="panel-body">
 
     <div class="form-group">
 
-      <div class="input-group">
+      <div ng-if="!$ctrl.result.uuid" class="input-group">
 
         <!-- dropdown button -->
         <div class="input-group-btn" uib-dropdown tabindex=-1>
@@ -24,8 +33,21 @@
         </div>
         <!-- /dropdown button -->
 
-        <input type="text" class="form-control">
+        <input type="text" class="form-control"
+          ng-model="$ctrl.entity"
+          placeholder="{{ $ctrl.placeholder | translate }}..."
+          uib-typeahead="entity as entity.text for entity in $ctrl.entities | limitTo: 10"
+          typeahead-on-select="$ctrl.selectEntity($item)"
+          autocomplete="off"
+          autocorrect="off">
 
+      </div>
+
+      <div ng-if="$ctrl.result.uuid" class="bg-success">
+        <h4 class="text-center text-success" style="padding:10px; margin:0px;">
+          <i class="glyphicon glyphicon-user"></i>
+          {{ $ctrl.result.label }}
+        </h4>
       </div>
 
     </div>

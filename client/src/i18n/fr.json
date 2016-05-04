@@ -893,17 +893,23 @@
       "TITLE" : "Bordereau de transfert"
     },
     "COMPLEX": {
-      "ADD_ITEMS"   : "Ajouter item(s)",
-      "CREDITOR"    : "Crediteur (C)",
-      "DEBTOR"      : "Debiteur (D)",
-      "DEB_CRED"    : "Debtor/Creditor",
-      "DESCRIPTION" : "Ce module permet de passer des transactions avancees dans le journal",
-      "ENTITY"      : "Entité (Debiteur/Crediteur)",
-      "REFERENCE"   : "Reference",
-      "ROWS"        : "Ligne(s)",
-      "TITLE"       : "Ajour de transactions",
-      "TRANSACTION" : "Transaction(s)",
-      "TYPE"        : "Type"
+      "ADD_ITEMS"            : "Ajouter item(s)",
+      "CASH_PAYMENT"         : "Paiement Caisse",
+      "CREDITOR"             : "Crediteur (C)",
+      "DEBTOR"               : "Debiteur (D)",
+      "DEB_CRED"             : "Debtor/Creditor",
+      "DESCRIPTION"          : "Ce module permet de passer des transactions avancees dans le journal",
+      "ENTITY"               : "Entité (Debiteur/Crediteur)",
+      "PATIENT_INVOICE"      : "Facture Patient",
+      "PLACEHOLDER_CREDITOR" : "Entrer un crediteur",
+      "PLACEHOLDER_DEBTOR"   : "Entrer un debiteur",
+      "REFERENCE"            : "Reference",
+      "ROWS"                 : "Ligne(s)",
+      "SELECT_DOCUMENT_TYPE" : "Veuillez selectionner le type de document",
+      "TITLE"                : "Ajour de transactions",
+      "TRANSACTION"          : "Transaction(s)",
+      "TYPE"                 : "Type",
+      "VOUCHER"              : "Bordereau de Transfert"
     }
   }
 }

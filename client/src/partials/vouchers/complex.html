@@ -149,13 +149,21 @@
                 </td>
                 <td style="width:15%">
                   <button class="btn btn-default btn-block"
-                    ng-click="ComplexVoucherCtrl.openEntityModal(row)">
-                    <i class="glyphicon glyphicon-plus"></i>
-                    {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}
+                    ng-click="ComplexVoucherCtrl.openEntityModal(row)"
+                    ng-class="{'btn-success': row.entity.type=='D', 'btn-warning': row.entity.type=='C'}">
+                    <span ng-if="row.entity.uuid">
+                      <i class="glyphicon glyphicon-user"></i>
+                      {{ row.entity.label }}
+                    </span>
+                    <span ng-if="!row.entity.uuid">
+                      <i class="glyphicon glyphicon-plus"></i>
+                      {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}
+                    </span>
                   </button>
                 </td>
                 <td style="width:15%">
-                  <button class="btn btn-default btn-block">
+                  <button class="btn btn-default btn-block"
+                    ng-click="ComplexVoucherCtrl.openReferenceModal(row)">
                     <i class="glyphicon glyphicon-plus"></i>
                     {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }}
                   </button>

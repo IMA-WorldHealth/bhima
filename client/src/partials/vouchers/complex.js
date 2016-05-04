@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 ComplexJournalVoucherController.$inject = [
   'VoucherService', '$translate', 'AccountService',
-  'CurrencyService', 'SessionService', 'FindEntityService'
+  'CurrencyService', 'SessionService', 'FindEntityService',
+  'FindReferenceService'
 ];
 
 /**
@@ -16,7 +17,7 @@ ComplexJournalVoucherController.$inject = [
  *
  * @todo - Implement caching mechanism for incomplete forms (via AppCache)
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity) {
+function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference) {
   var vm = this;
 
   // bread crumb paths
@@ -31,12 +32,13 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   // bind the startup method as a reset method
   vm.reset  = startup;
   vm.submit = submit;
-  vm.currencySymbol    = currencySymbol;
-  vm.addVoucherItem    = addVoucherItem;
-  vm.removeVoucherItem = removeVoucherItem;
-  vm.checkRowValidity  = checkRowValidity;
-  vm.selectAccount     = selectAccount;
-  vm.openEntityModal   = FindEntity.openModal;
+  vm.currencySymbol     = currencySymbol;
+  vm.addVoucherItem     = addVoucherItem;
+  vm.removeVoucherItem  = removeVoucherItem;
+  vm.checkRowValidity   = checkRowValidity;
+  vm.selectAccount      = selectAccount;
+  vm.openEntityModal    = FindEntity.openModal;
+  vm.openReferenceModal = FindReference.openModal;
 
   // load the list of accounts
   Accounts.read()

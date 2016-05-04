@@ -936,17 +936,23 @@
       "TITLE" : "Simple Vouchers"
     },
     "COMPLEX": {
-      "ADD_ITEMS"   : "Add item(s)",
-      "CREDITOR"    : "Creditor (C)",
-      "DEBTOR"      : "Debitor (D)",
-      "DEB_CRED"    : "Debtor/Creditor",
-      "DESCRIPTION" : "This Module allows you to make advanced journal transactions manually",
-      "ENTITY"      : "Entity (Debtor/Creditor)",
-      "REFERENCE"   : "Reference",
-      "ROWS"        : "Row(s)",
-      "TITLE"       : "Advanced Journal Vouchers",
-      "TRANSACTION" : "Transaction(s)",
-      "TYPE"        : "Type"
+      "ADD_ITEMS"            : "Add item(s)",
+      "CASH_PAYMENT"         : "Cash Payment",
+      "CREDITOR"             : "Creditor (C)",
+      "DEBTOR"               : "Debitor (D)",
+      "DEB_CRED"             : "Debtor/Creditor",
+      "DESCRIPTION"          : "This Module allows you to make advanced journal transactions manually",
+      "ENTITY"               : "Entity (Debtor/Creditor)",
+      "PATIENT_INVOICE"      : "Patient Invoice",
+      "PLACEHOLDER_CREDITOR" : "Enter a creditor",
+      "PLACEHOLDER_DEBTOR"   : "Enter a debtor",
+      "REFERENCE"            : "Reference",
+      "ROWS"                 : "Row(s)",
+      "SELECT_DOCUMENT_TYPE" : "Please select the document type",
+      "TITLE"                : "Advanced Journal Vouchers",
+      "TRANSACTION"          : "Transaction(s)",
+      "TYPE"                 : "Type",
+      "VOUCHER"              : "Voucher"
     }
   }
 }
