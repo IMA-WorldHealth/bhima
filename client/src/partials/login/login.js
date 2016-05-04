@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('LoginController', LoginController);
 
 LoginController.$inject = [
-  'appcache', 'SessionService', 'LanguageService', 'ProjectService'
+  'appcache', 'SessionService', 'LanguageService', 'ProjectService',
+  'NotifyService'
 ];
 
 /**
@@ -10,7 +11,7 @@ LoginController.$inject = [
  *
  * The login controller powers the bhima login page.
  */
-function LoginController(AppCache, Session, Languages, Projects) {
+function LoginController(AppCache, Session, Languages, Projects, Notify) {
   var vm = this;
 
   // the is the same as the SettingsContoller
@@ -18,8 +19,8 @@ function LoginController(AppCache, Session, Languages, Projects) {
 
   // tracks the number of login attempts made by this user to show a
   // "forgot password" message if too many requests are made
-  var loginAttempts = 0;
-  var maxLoginAttempts = 3;
+  var attempts = 0;
+  var maxAttempts = 3;
 
   // contains the values from the login form
   vm.credentials = {};
@@ -63,9 +64,6 @@ function LoginController(AppCache, Session, Languages, Projects) {
   // logs the user in, creates the user client session
   function login(form) {
 
-    // clear previous HTTP errors if they exist
-    delete vm.error;
-
     // if the form is not valid, do not generate an $http request
     if (form.$invalid) { return; }
 
@@ -76,12 +74,14 @@ function LoginController(AppCache, Session, Languages, Projects) {
     })
     .catch(function (response) {
 
-      // bind the $http error to the view
-      vm.error = response.data;
+      // if the user has tried too many times, display a fatal error working for
+      // ten seconds.
+      if (maxAttempts <= attempts++) {
+        return Notify.fatal('AUTH.TOO_MANY_TRYS', 10000);
+      }
 
-      // augment the count and rebind the excessive attempts variable
-      loginAttempts++;
-      vm.excessiveAttempts = (maxLoginAttempts <= loginAttempts);
+      // use growl-notifications to display an error at the top of the window
+      Notify.danger(response.data.code);
     });
   }
 }

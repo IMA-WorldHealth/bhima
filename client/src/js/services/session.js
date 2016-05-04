@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('SessionService', SessionService);
 
 SessionService.$inject = [
-  '$sessionStorage', '$http', '$location', 'util', '$rootScope'
+  '$sessionStorage', '$http', '$location', 'util', '$rootScope', 'NotifyService'
 ];
 
 /**
@@ -19,7 +19,7 @@ SessionService.$inject = [
  * @module services/SessionService.js
  * @constructor
  */
-function SessionService($sessionStorage, $http, $location, util, $rootScope) {
+function SessionService($sessionStorage, $http, $location, util, $rootScope, Notify) {
   var service = this;
 
   // set up the storage instance
@@ -83,6 +83,9 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
         // notify login event
         $rootScope.$emit('login');
 
+        // display welcome message
+        Notify.info('AUTH.WELCOME', 5000);
+
         return session;
       });
   }
@@ -104,6 +107,9 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
 
         // navigate to the main page
         $location.url('/login');
+
+        // bid the user farewell
+        Notify.info('AUTH.GOODBYE', 5000);
       });
   }
 

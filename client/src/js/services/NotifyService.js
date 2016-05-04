@@ -54,6 +54,7 @@ function NotifyService($translate) {
   service.danger = danger;
   service.info = info;
   service.warn = warn;
+  service.fatal = fatal;
 
   service.handleError = handleError;
 
@@ -76,6 +77,11 @@ function NotifyService($translate) {
     setNotification(key, ttl, formatOptions.warn);
   }
 
+  // this should only be used in rare circumstances, such as the login page
+  function fatal(key, ttl) {
+    setNotification(key, ttl, formatOptions.error);
+  }
+
   /**
    * This method is not simply a formatting alias - it accepts an error object
    * and parses it to show relevent information in the notification.
@@ -90,7 +96,7 @@ function NotifyService($translate) {
     var message = $translate.instant(key);
 
     // if the request has overridden the time to live, use that, otherwise use the global default
-    var ttl = ttl || TTL;
+    ttl = ttl || TTL;
     var formatNotification = {
       ttl : ttl,
       message : message
