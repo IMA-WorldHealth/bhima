@@ -103,6 +103,10 @@
     "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
   },
   "DEBTOR_GRP": {
+    "BACK"           : "Retour vers les groupes débiteurs",
+    "CREATE"         : "Créer un Groupe débiteur",
+    "CREATE_ANOTHER" : "Créer un autre Groupe débiteur",
+    "CREATED"        : "Groupes débiteurs enregistrés avec succès",
     "EDIT"           : "Editer le groupe debiteur",
     "GROUPS"         : "Groupes Débiteurs",
     "HELP_TXT_1"     : "Cette interface vous permet de visualiser, trouver, et configurer un groupe de debiteur",
@@ -112,7 +116,27 @@
     "INFO"           : "Information du Groupe",
     "NEW"            : "Ajouter un Groupe Débiteur",
     "NEW_DEBTOR_GRP" : "Nouveau Groupe de Débiteur",
-    "TITLE"          : "Gestion des Groupes des Débiteurs"
+    "POLICIES" : {
+      "TITLE" : "Les stratégies de groupe",
+      "SUBSIDIES" : {
+        "TITLE" : "Subventions",
+        "INFO"  : "Avec cette configuration, aucun membre de ce groupe débiteur ne sera subventionné",
+        "LABEL" : "Ce groupe est qualifié pour les subventions"
+      },
+      "DISCOUNTS" : {
+        "TITLE" : "Réductions",
+        "INFO" : "Avec cette configuration, aucun membre de ce groupe débiteur n'aura des réductions",
+        "LABEL" : "Ce groupe est qualifié pour les réductions"
+      },
+      "BILLING_SERVICES" : {
+        "TITLE" : "Services des facturations",
+        "INFO" : "Avec cette configuration, tous les membres de ce groupe débiteur sera exonéré de paiement des services de facturation appliqués automatiquement",
+        "LABEL" : "Ce groupe est exempté du paiement des services de facturation"
+      }
+    },    
+    "TITLE"          : "Gestion des Groupes des Débiteurs",
+    "SUBSCRIBED"     : "Débiteurs abonnés",
+    "UPDATED"        : "Enregistrement du groupe débiteur mis à jour"
   },
   "DEPOT": {
     "ADD_DEPOT"   : "Ajouter un dépôt",
@@ -154,6 +178,7 @@
     "TITLE"                    : "Gestion des entreprises"
   },
   "ERRORS": {
+    "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
     "UNAUTHORIZED"     : "Non autorisé"
   },
@@ -271,6 +296,7 @@
       "CONTACT"                : "Contact",
       "COST_CENTER"            : "Centre de cout",
       "COUNTRY"                : "Pays",
+      "CREATED"                : "Crée",
       "CREDITOR_GROUP"         : "Groupe Créditeur",
       "CURRENCIES"             : "Monnaies",
       "CURRENCY"               : "Monnaie",
@@ -329,6 +355,7 @@
       "MALE"                   : "Homme",
       "MARITAL_STATUS"         : "Etat Civil",
       "MAX_CREDIT"             : "Crédit Max",
+      "MAX_CREDIT_INFO"        : "La valeur de crédit maximum de ce groupe débiteur peut recueillir avant d'être mis en garde. Une valeur de 0 signifie aucune limite maximale.",
       "MIDDLE_NAME"            : "Post-nom",
       "MOTHER_NAME"            : "Nom de la Mère",
       "NAME"                   : "Nom",
@@ -418,6 +445,7 @@
       "ENTER_SECTOR"       : "Entrer secteur",
       "ENTER_USERNAME"     : "Entrer le nom utilisateur",
       "ENTER_VILLAGE"      : "Entrer village",
+      "FILTER_NAME"        : "Filtrer par Nom...",
       "SEARCH_NAME"        : "Chercher Par Nom",
       "SEARCH_PATIENT_ID"  : "Chercher ID Patient"
     },
@@ -564,6 +592,7 @@
     "ITEMS"            : "Items",
     "NEW_PRICE_LIST"   : "Nouvelle Liste des Prix",
     "NO_RECORDS"       : "Pas d'enregistrement",
+    "NONE"             : "Appliquer aucune liste de prix",
     "PRICE_LIST_ITEMS" : "Eléments de la liste des prix",
     "TITLE"            : "Liste des Prix",
     "UNABLE_TO_DELETE" : "La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / groupes débiteurs",
@@ -689,6 +718,9 @@
       "EMPTY"              : "Il n'y a pas d'enregistrements à afficher.",
       "ENTERPRISE_ID"      : "ID enterprise",
       "EXCHANGE_RATE"      : "Taux de change",
+      "FILTERING": {
+        "LABEL"   : "Filtre"
+      },      
       "FIRST_NAME"         : "Prenom",
       "FUNCTION"           : "Fonction",
       "GENDER"             : "Genre",
@@ -730,6 +762,14 @@
       "RESULT_ACCOUNT_SCT" : "Section Compte Résultat",
       "SECTOR"             : "Secteur",
       "SERVICE"            : "Service",
+      "SORTING": {
+        "LABEL"    : "Tri",
+        "NAME_ASC" : "Nom [A-Z]",
+        "NAME_DSC" : "Nom [Z-A]",
+        "CREATED_ASC" : "Le plus ancien",
+        "CREATED_DSC" : "Le plus récent",
+        "TOTAL_ASC" : "Le plus grand"
+      },      
       "TEXT"               : "Text",
       "TOTAL"              : "Total",
       "TYPE"               : "Type",
