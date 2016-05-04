@@ -15,7 +15,7 @@ PatientService.$inject = [ '$http', 'util', 'SessionService' ];
  * var Patients = PatientService;
  * 
  * // returns patient details
- * Patients.detail(uuid)...
+ * Patients.list(uuid)...
  *
  * // creates a patient 
  * Patients.create(medicalDetails, financeDetails)...
@@ -26,7 +26,7 @@ function PatientService($http, util, Session) {
   var service = this;
   var baseUrl = '/patients/';
 
-  service.detail = detail;
+  service.list = list;
   service.create = create;
   service.update = update;
   service.groups = groups;
@@ -46,8 +46,8 @@ function PatientService($http, util, Session) {
    * @param {String} uuid   The patient's UUID 
    * @return {Object}       Promise object that will return patient details
    */
-  function detail(uuid) {
-    return $http.get(baseUrl.concat(uuid))
+  function list(uuid) {
+    return $http.get(baseUrl.concat(uuid || ''))
       .then(util.unwrapHttpResponse);
   }
   

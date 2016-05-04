@@ -15,6 +15,7 @@ INSERT INTO unit VALUES
   (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',30,'/partials/accounts/','/accounts'),
   (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
   (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register'),
+  (15,  'Patient Registry','TREE.PATIENT_REGISTRY','Patient Registry',12,'/partials/patients/registry/','/patients/registry'),
   (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/partials/patient_invoice/','/invoices/patient'),
   (18,  'Cash Window','TREE.CASH_WINDOW','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
   (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/partials/creditors/','/creditors'),
@@ -125,6 +126,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Patient Registration
 (14,1),
+
+-- Patient Search
+(15,1),
 
 -- Patient Invoice
 (16,1),
@@ -246,6 +250,11 @@ INSERT INTO `debtor` VALUES
 INSERT INTO `patient` VALUES
   (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'),1,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'Test','2','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),'2015-11-14 07:04:49',NULL,NULL,'Patient','110'),
   (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'),1,1,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'Test','1','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),'2015-11-14 07:04:49',NULL,NULL,'Patient','100');
+
+INSERT INTO `patient_visit` VALUES
+  (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', 1),
+  (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2016-04-28 00:00:00', 3),
+  (HUID('4c6aa8b4da22-847d-710f-9fb5-112a9b20'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2016-01-10 00:00:00', 2);  
 
 INSERT INTO `assignation_patient` VALUES
   (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'));
