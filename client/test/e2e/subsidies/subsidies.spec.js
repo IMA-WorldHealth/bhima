@@ -21,7 +21,7 @@ describe('Subsidies Module', function () {
   };
 
   const defaultSubsidy = 0;
-  const subsidyRank = 1;
+  const subsidyRank = 2;
 
   it('successfully creates a new subsidy', function () {
 

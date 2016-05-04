@@ -104,6 +104,10 @@
     "ER_ROW_IS_REFERENCED_2" : "Cannot delete entry since it has been used in a transaction."
   },
   "DEBTOR_GRP": {
+    "BACK"           : "Back to Debtor Groups",
+    "CREATE"         : "Create Debtor Group",
+    "CREATE_ANOTHER" : "Create another Debtor Group",
+    "CREATED"        : "Debtor group recorded successfully",
     "EDIT"           : "Edit Debtor Group",
     "GROUPS"         : "Debtor Groups",
     "HELP_TXT_1"     : "This interface allows you to review, find, and configure debtor groups",
@@ -113,13 +117,6 @@
     "INFO"           : "Group Information",
     "NEW"            : "Add a Debtor Group",
     "NEW_DEBTOR_GRP" : "New Debtor Group",
-    "TITLE"          : "Debtor Group Management",
-    "SUBSCRIBED"     : "Debtors subscribed",
-    "BACK"           : "Back to Debtor Groups",
-    "CREATE"         : "Create Debtor Group",
-    "CREATE_ANOTHER" : "Create another Debtor Group",
-    "CREATED"        : "Debtor group recorded successfully",
-    "UPDATED"        : "Debtor group record updated",
     "POLICIES" : {
       "TITLE" : "Group Policies",
       "SUBSIDIES" : {
@@ -137,7 +134,10 @@
         "INFO" : "With this configuration option checked all members of this debtor group will be exempt from paying automatically applied billing services",
         "LABEL" : "This group is exempt from paying billing services"
       }
-    }
+    },
+    "TITLE"          : "Debtor Group Management",
+    "SUBSCRIBED"     : "Debtors subscribed",
+    "UPDATED"        : "Debtor group record updated"
   },
   "DEPOT": {
     "ADD_DEPOT"   : "Add a Depot",
@@ -179,9 +179,9 @@
     "TITLE"                    : "Enterprise Management"
   },
   "ERRORS": {
+    "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network.",
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
-    "UNAUTHORIZED"     : "Unauthorized",
-    "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network."
+    "UNAUTHORIZED"     : "Unauthorized"
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Adding an exchange Rate",
@@ -446,9 +446,9 @@
       "ENTER_SECTOR"       : "Enter sector",
       "ENTER_USERNAME"     : "Enter username",
       "ENTER_VILLAGE"      : "Enter village",
+      "FILTER_NAME"        : "Filter by name...",
       "SEARCH_NAME"        : "Search by Name",
-      "SEARCH_PATIENT_ID"  : "Search by Patient ID",
-      "FILTER_NAME"        : "Filter by name..."
+      "SEARCH_PATIENT_ID"  : "Search by Patient ID"
     },
     "SELECTS": {
       "EMPTY"                     : "Empty",
@@ -565,6 +565,15 @@
     "TITLE"                : "Title",
     "VIEW_PATIENT_RECORDS" : "View Patient Records"
   },
+  "PATIENT_REGISTRY" : {
+    "DAY"                   : "day",
+    "DAYS"                  : "days",
+    "MONTH"                 : "month",
+    "MONTHS"                : "months",
+    "YEAR_OLD"              : "year old",
+    "YEARS_OLD"             : "years old",
+    "TITLE"                 : "Patients Registry"
+  },
   "PERMISSIONS": {
     "ADDING_USER"   : "Add a user",
     "ADD_USER"      : "Add a New User",
@@ -584,11 +593,11 @@
     "ITEMS"            : "Items",
     "NEW_PRICE_LIST"   : "New Price List",
     "NO_RECORDS"       : "No Records",
+    "NONE"             : "Apply no price list",
     "PRICE_LIST_ITEMS" : "Price list items",
     "TITLE"            : "Price List Management",
     "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups",
-    "UPDATE"           : "Update a Price List",
-    "NONE"             : "Apply no price list"
+    "UPDATE"           : "Update a Price List"
   },
   "PROJECT": {
     "ADDING_PROJECT"  : "Adding a new project",
@@ -693,6 +702,7 @@
       "ABBREVIATION"       : "Abbreviation",
       "ACCOUNT"            : "Account",
       "ACTION"             : "Action",
+      "AGE"                : "Age",
       "AMOUNT"             : "Amount",
       "ASSET"              : "Asser",
       "BALANCE_SECTION"    : "Balance Sheet Section",
@@ -703,6 +713,7 @@
       "CREDIT"             : "Credit",
       "CURRENCY"           : "Monnaie",
       "DATE"               : "Date",
+      "DATE_REGISTERED"    : "Date Registered",
       "DEBIT"              : "Debit",
       "DESCRIPTION"        : "Description",
       "DOCUMENT"           : "Document",
@@ -711,8 +722,12 @@
       "EMPTY"              : "There are no records to display.",
       "ENTERPRISE_ID"      : "ID Enterprise",
       "EXCHANGE_RATE"      : "Exchange Rate",
+      "FILTERING": {
+        "LABEL"   : "Filter"
+      },
       "FIRST_NAME"         : "First Name",
       "FUNCTION"           : "Function",
+      "GENDER"             : "Gender",
       "GRADE"              : "Grade",
       "ID"                 : "ID",
       "INVENTORY"          : "Inventory",
@@ -722,6 +737,8 @@
       "IS_WAREHOUSE"       : "Is Warehouse ?",
       "LABEL"              : "Label",
       "LAST_NAME"          : "Last Name",
+      "LAST_TRANSACTION"   : "Last Transactions",
+      "LAST_VISIT"         : "Last Visit",
       "LISTS"              : "Registered price list",
       "LOADING"            : "Fetching data from the server.",
       "LOCKED"             : "Locked",
@@ -731,6 +748,7 @@
       "NR"                 : "Nr",
       "NUM"                : "Number",
       "PASSIVE"            : "Passive",
+      "PATIENT_ID"         : "ID Patient",
       "PERCENT"            : "Percentage",
       "PHONE"              : "Telephone",
       "POSITION"           : "Position",
@@ -748,12 +766,6 @@
       "RESULT_ACCOUNT_SCT" : "Result Account section",
       "SECTOR"             : "Sector",
       "SERVICE"            : "Service",
-      "TEXT"               : "Text",
-      "TOTAL"              : "Total",
-      "TYPE"               : "Type",
-      "VALUE"              : "Value",
-      "VILLAGE"            : "Village",
-
       "SORTING": {
         "LABEL"    : "Sort",
         "NAME_ASC" : "Name [A-Z]",
@@ -762,10 +774,11 @@
         "CREATED_DSC" : "Newest",
         "TOTAL_ASC" : "Largest"
       },
-
-      "FILTERING": {
-        "LABEL"   : "Filter"
-      }
+      "TEXT"               : "Text",
+      "TOTAL"              : "Total",
+      "TYPE"               : "Type",
+      "VALUE"              : "Value",
+      "VILLAGE"            : "Village"
     }
   },
   "TREE": {
@@ -861,7 +874,7 @@
     "PATIENT_RECORDS"            : "Patient Records",
     "PATIENT_REGISTRATION"       : "Patient Registration",
     "PATIENT_REGISTRATIONS"      : "Patient Registrations",
-    "PATIENT_SEARCH"             : "Patient Search",
+    "PATIENT_REGISTRY"           : "Patients Registry",
     "PATIENT_STANDING"           : "Patient Standing",
     "PATIENT_VISIT_STATUS"       : "Patient Visits",
     "PAYMENT_PERIOD"             : "Payment Period Management",

@@ -327,9 +327,14 @@ function list(req, res, next) {
   var listPatientsQuery;
 
   listPatientsQuery =
-    `SELECT p.uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name,
-      p.middle_name, p.last_name
-    FROM patient AS p JOIN project AS pr ON p.project_id = pr.id`;
+    `SELECT BUID(p.uuid) AS uuid, p.reference, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName,
+      p.first_name, p.last_name, p.middle_name, CONCAT(pr.abbr, p.reference) AS patientRef, p.dob, p.sex,
+      p.registration_date, MAX(pv.date) AS last_visit
+    FROM patient AS p
+    JOIN project AS pr ON p.project_id = pr.id
+    LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
+    GROUP BY p.uuid
+    ORDER BY p.registration_date DESC, p.last_name ASC`;
 
   db.exec(listPatientsQuery)
   .then(function (result) {
