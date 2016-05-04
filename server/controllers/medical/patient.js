@@ -327,7 +327,7 @@ function list(req, res, next) {
   var listPatientsQuery;
 
   listPatientsQuery =
-    `SELECT p.reference, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName, p.uuid,
+    `SELECT BUID(p.uuid) AS uuid, p.reference, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName,
       p.first_name, p.last_name, p.middle_name, CONCAT(pr.abbr, p.reference) AS patientRef, p.dob, p.sex,
       p.registration_date, MAX(pv.date) AS last_visit
     FROM patient AS p

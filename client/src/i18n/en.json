@@ -565,14 +565,14 @@
     "TITLE"                : "Title",
     "VIEW_PATIENT_RECORDS" : "View Patient Records"
   },
-  "PATIENT_SEARCH" : {
+  "PATIENT_REGISTRY" : {
     "DAY"                   : "day",              
     "DAYS"                  : "days",
     "MONTH"                 : "month",
     "MONTHS"                : "months",
     "YEAR_OLD"              : "year old",
     "YEARS_OLD"             : "years old",    
-    "PAGE_TITLE"            : "Patient Search"
+    "TITLE"                 : "Patients Registry"
   },  
   "PERMISSIONS": {
     "ADDING_USER"   : "Add a user",
@@ -872,7 +872,7 @@
     "PATIENT_RECORDS"            : "Patient Records",
     "PATIENT_REGISTRATION"       : "Patient Registration",
     "PATIENT_REGISTRATIONS"      : "Patient Registrations",
-    "PATIENT_SEARCH"             : "Patient Search",
+    "PATIENT_REGISTRY"           : "Patients Registry",
     "PATIENT_STANDING"           : "Patient Standing",
     "PATIENT_VISIT_STATUS"       : "Patient Visits",
     "PAYMENT_PERIOD"             : "Payment Period Management",

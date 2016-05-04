@@ -536,14 +536,14 @@
     "TITLE"                : "Titre",
     "VIEW_PATIENT_RECORDS" : "Voir Tous les enregistrements"
   },
-  "PATIENT_SEARCH" : {
+  "PATIENT_REGISTRY" : {
     "DAY"                   : "jour",              
     "DAYS"                  : "jours",
     "MONTH"                 : "mois",
     "MONTHS"                : "mois",
     "YEAR_OLD"              : "an",
     "YEARS_OLD"             : "ans",
-    "PAGE_TITLE"            : "Recherche des patients"
+    "TITLE"                 : "Registre des patients"
   },
   "PERMISSIONS": {
     "ADDING_USER"   : "Ajout utilisateur",
@@ -829,7 +829,7 @@
     "PATIENT_RECORDS"            : "Historique Patients",
     "PATIENT_REGISTRATION"       : "Enregistrement Patient",
     "PATIENT_REGISTRATIONS"      : "Enregistrement Patients",
-    "PATIENT_SEARCH"             : "Recherche des Patients",
+    "PATIENT_REGISTRY"           : "Registre des patients",
     "PATIENT_STANDING"           : "Patients",
     "PATIENT_VISIT_STATUS"       : "Patient Visitations",
     "PAYMENT_PERIOD"             : "Gestion Périodes",

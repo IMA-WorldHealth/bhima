@@ -1,21 +1,19 @@
 angular.module('bhima.controllers')
-.controller('PatientSearchController', PatientSearchController);
+.controller('PatientRegistryController', PatientRegistryController);
 
-PatientSearchController.$inject = [
-  '$translate', 'PatientService', 'DateService'
+PatientRegistryController.$inject = [
+  '$translate', 'PatientService',
 ];
 
 /** 
- * Users and Permission Controller 
+ * Patient Registry Controller 
  * 
- * This module is responsible for handling the creation
- * of users and assigning permissions to existing modules.
+ * This module is responsible for the management
+ * of Patient Registry.
  *
- * @todo Password insecure alert or not
  */
-function PatientSearchController($translate, Patients, dateService) {
+function PatientRegistryController($translate, Patients) {
   var vm = this;
-
   // options for the UI grid
   
   /** TODO MANAGE COLUMN : LAST_TRANSACTION */
@@ -34,22 +32,13 @@ function PatientSearchController($translate, Patients, dateService) {
     enableSorting : true
   };
 
-  /** @todo manage state without strings */
-  vm.state = 'default'; // this is default || create || update
-
-
-  // TODO
-  function handler(error) {
-    throw error;
-  }
-
-  // load user grid
+  // load Patient Registry Grid
   function loadGrid() {
-    Patients.detail().then(function (patients) {
+    Patients.list().then(function (patients) {
 
       patients.forEach(function (patient) {
-        var patientAge = dateService.getAge(patient.dob,'simple');
-        patient.patientAge = patientAge.duration + ' ' + $translate.instant(patientAge.period); 
+        var patientAge = moment(patient.dob).fromNow();
+        patient.patientAge = patientAge; 
       });      
       vm.uiGridOptions.data = patients;
     });

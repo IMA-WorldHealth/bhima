@@ -5,10 +5,10 @@ const helpers = require('../shared/helpers');
 
 helpers.configure(chai);
 
-describe('Research Patient UI Grid ', function () {
+describe('Patient Registry UI Grid ', function () {
   'use strict';
 
-  const path = '#/patients/search';
+  const path = '#/patients/registry';
   before(() => browser.get(path));
 
   it('grid should have 3 visible rows', function () {
