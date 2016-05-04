@@ -19,11 +19,12 @@
             </button>
             <ul role="menu" uib-dropdown-menu>
               <li role="menuitem" ng-repeat="(key, lang) in LoginCtrl.languages">
-                <a ng-click="LoginCtrl.languageService.set(key)">{{ lang.name }}</a>
+                <a ng-click="LoginCtrl.languageService.set(key)" href>
+                  {{ lang.name }}
+                </a>
               </li>
             </ul>
           </div>
-          <h4>{{ "LOGIN.TITLE" | translate }}</h4>
         </div>
 
         <div class="panel-body">

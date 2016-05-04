@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
 .controller('LoginController', LoginController);
 
 LoginController.$inject = [
-  'appcache', 'SessionService',
-  'LanguageService', 'ProjectService'
+  'appcache', 'SessionService', 'LanguageService', 'ProjectService'
 ];
 
 /**
