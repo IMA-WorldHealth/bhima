@@ -959,10 +959,25 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify) {
     } else if (!isLoggedIn && !isLoginState) {
       event.preventDefault();
       Notify.warn('AUTH.UNAUTHENTICATED');
-      $state.go('login', {}, { notify : false });
+      $state.go('login');
     }
 
     // else, the user is free to continue as they wish
+  });
+
+  // the above $locationChangeStart is not enough in the case that $state.go()
+  // is used (as it is on the /settings page).  If an attacker manages to
+  // trigger a $state.go() to the login state, it will not be stopped - the
+  // $locationChangeStart event will only prevent the URL from changing ... not
+  // the actual state transition!  So, we need this to stop $stateChange events.
+  $rootScope.$on('$stateChangeStart', function (event, next) {
+    var isLoggedIn = !!SessionService.user;
+    var isLoginState = next.name.indexOf('login') !== -1;
+
+    if (isLoggedIn && isLoginState) {
+      event.preventDefault();
+      Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
+    }
   });
 
   // make sure $stateChangeErrors are emitted to the console.
