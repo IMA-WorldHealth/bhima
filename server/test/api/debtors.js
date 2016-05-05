@@ -1,8 +1,8 @@
-var chai = require('chai');
-var uuid = require('node-uuid');
-var expect = chai.expect;
+const chai = require('chai');
+const uuid = require('node-uuid');
+const expect = chai.expect;
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 describe('(/debtors) The /debtors API', function () {
@@ -10,13 +10,12 @@ describe('(/debtors) The /debtors API', function () {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  var debtorKeys = ['uuid', 'group_uuid', 'text'];
+  const debtorKeys = ['uuid', 'group_uuid', 'text'];
 
-  var inspectDebtorGroup;
-  var debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
-  var emptyDebtorUuid = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
+  const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
+  const emptyDebtorUuid = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
 
-  var newDebtor = {
+  let newDebtor = {
     uuid : uuid.v4(),
     group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
     text : 'Debtor for Test'
@@ -58,9 +57,7 @@ describe('(/debtors) The /debtors API', function () {
   it('GET /debtors should return a list of all debtors', function () {
     return agent.get('/debtors')
       .then(function (res) {
-        /** @fixme need use helpers.api.listed but data are provided from other test modules */
-        expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length.at.least(1);
+        helpers.api.listed(res, 4);
       })
       .catch(helpers.handler);
   });

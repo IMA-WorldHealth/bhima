@@ -1,16 +1,15 @@
 /* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-/** import test helpers */
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-/** The /cash API endpoint */
-describe('(/cash) Cash Payments Interface ', function () {
+describe('(/cash) Cash Payments', function () {
   'use strict';
 
-  var agent = chai.request.agent(helpers.baseUrl);
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   var CASHBOX_ID  = 1;   // Test Primary Cashbox A
   var CURRENCY_ID = 2;   // Congolese Francs
@@ -24,8 +23,6 @@ describe('(/cash) Cash Payments Interface ', function () {
   ];
   var REFERENCE = 'TPA1';
 
-  /** login before test start request */
-  before(helpers.login(agent));
 
   // no cash payments have been made yet
   it('GET /cash returns an empty list with no cash payments', function () {

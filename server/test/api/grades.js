@@ -1,20 +1,22 @@
 /* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
-var uuid    = require('node-uuid');
+const chai = require('chai');
+const expect = chai.expect;
+const uuid  = require('node-uuid');
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 /**
-* The /grades API endpoint
-*
-* This test suite implements full CRUD on the /grades   HTTP API endpoint.
-*/
-describe('The /grades  API endpoint', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+ * The /grades API endpoint
+ *
+ * This test suite implements full CRUD on the /grades   HTTP API endpoint.
+ */
+describe('(/grades) API endpoint', function () {
 
-  // Grade we will add during this test suite.
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
+
+  // grade we will add during this test suite.
   var grade = {
     uuid : uuid.v4(),
     code : 'G2',
@@ -22,23 +24,20 @@ describe('The /grades  API endpoint', function () {
     basic_salary : 150
   };
 
-  var GRADE_KEY = ['uuid', 'code', 'text', 'basic_salary'];
+  const responseKeys = ['uuid', 'code', 'text', 'basic_salary'];
+  const numGrades = 2;
 
-  var NUM_GRADES = 2;
-
-  // login before test suite
-  before(helpers.login(agent));
 
   it('GET /grades returns a list of grade ', function () {
     return agent.get('/grades')
     .then(function (res) {
-      helpers.api.listed(res, NUM_GRADES);
+      helpers.api.listed(res, numGrades);
     })
     .catch(helpers.handler);
   });
 
 
-  it('POST /grades  should create a new grade', function () {
+  it('POST /grades should create a new grade', function () {
     return agent.post('/grades')
     .send(grade)
     .then(function (res) {
@@ -48,7 +47,7 @@ describe('The /grades  API endpoint', function () {
   });
 
   it('GET /grades/:uuid should not be found for unknown uuid', function () {
-    return agent.get('/grades/unknownGrade')
+    return agent.get('/grades/unknown')
     .then(function (res) {
       helpers.api.errored(res, 404);
     })
@@ -60,7 +59,7 @@ describe('The /grades  API endpoint', function () {
       .send({ basic_salary : 2000 })
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res.body).to.have.keys(GRADE_KEY);
+        expect(res.body).to.have.keys(responseKeys);
         expect(res.body.basic_salary).to.equal(2000);
       })
       .catch(helpers.handler);
@@ -75,20 +74,19 @@ describe('The /grades  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /GRADES/:UUID will send back a 404 if the grade does not exist', function () {
-    return agent.delete('/grades/inknowGrade')
+  it('DELETE /grades/:uuid will send back a 404 if the grade does not exist', function () {
+    return agent.delete('/grades/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /GRADES/:UUID should delete a grade ', function () {
+  it('DELETE /grades/:uuid should delete a grade', function () {
     return agent.delete('/grades/' + grade.uuid)
       .then(function (res) {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);
   });
-
 });
