@@ -1,12 +1,24 @@
-// server/lib/db.js
-
-// TODO separate DB wrapper and DB methods - this module should just initialise
-// a new DB instance new db(config, etc.) and return it in module exports
-
-// TODO EVERY query to the DB is currently handled on it's own connection, one
-// HTTP request can result in tens of connections. Performance checks for
-// sharing connections between request sessions (also allowing for sharing a
-// transaction between unrelated components)
+/**
+ * @overview
+ * This file houses the database connector for the application.
+ *
+ * @todo separate DB wrapper and DB methods - this module should just initialise
+ * a new DB instance new db(config, etc.) and return it in module exports.
+ *
+ * @todo EVERY query to the DB is currently handled on it's own connection, one
+ * HTTP request can result in tens of connections. Performance checks for
+ * sharing connections between request sessions (also allowing for sharing a
+ * transaction between unrelated components)
+ *
+ * @todo refactor this entire interface into a nicer modular system.
+ *
+ * @todo improve documentation immensely!
+ *
+ * @requires q
+ * @requires mysql
+ * @requires winston
+ * @requires node-uuid
+ */
 
 'use strict';
 
@@ -157,29 +169,62 @@ function sanitize(x) {
 }
 
 /**
+ * @function bid
+ *
+ * @description
  * Converts a (dash separated) string uuid to a binary buffer for insertion
  * into the database.
  *
- * @method bid
  * @param {string} hexUuid - a 36 character length string to be inserted into
  * the database
  * @returns {buffer} uuid - a 16-byte binary buffer for insertion into the
  * database
+ *
+ * @example
+ * // load the database odule
+ * const db = require('db');
+ *
+ * // some uuid string
+ * let uuid = '7dfa6933-1165-4924-abb6-822138ec47d7'
+ * let binary = db.bid(uuid);
+ *
+ * // ... later ...
+ *
+ * // the binary uuid will now be inserted as binary into MySQL
+ * db.exec('INSERT INTO table SET uuid = ?;', binary);
  */
 function bid(hexUuid) {
   return new Buffer(uuid.parse(hexUuid));
 }
 
 /**
+ * @function convert
+ *
+ * @description
  * Converts values on the data object to binary uuids if they exist.  If not, it
  * will gracefully skip the key.
  *
- * @method convert
  * @param {Object} data - an object with uuids to convert to binary
  * @param {Array} keys - an array of keys on the data object, specifying which
  * fields to convert
  * @returns {Object} data - the data object, now converted
  *
+ * @example
+ * // example data with two uuids needing conversion to binary
+ * let data = {
+ *   key : 'value',
+ *   id : 'ee727be0-7fde-4d21-8d8b-a726830f6e37',
+ *   date : new Date(),
+ *   link : '26dc9608-d039-4677-95ab-31530da2411b'
+ * };
+ *
+ * // convert the two keys (using db.bid())
+ * data = db.convert(data, ['id', 'link']);
+ *
+ * // ... later ...
+ *
+ * // the converted values can be safely inserted into MySQL as binary
+ * db.exec('INSERT into table SET ?;', [data]);
  */
 function convert(data, keys) {
 
@@ -197,7 +242,6 @@ function convert(data, keys) {
 
   return clone;
 }
-
 
 module.exports = {
   initialise:  initialise,
