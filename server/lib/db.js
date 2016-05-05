@@ -7,6 +7,7 @@
 // HTTP request can result in tens of connections. Performance checks for
 // sharing connections between request sessions (also allowing for sharing a
 // transaction between unrelated components)
+
 'use strict';
 
 const q       = require('q');
@@ -181,7 +182,6 @@ function bid(hexUuid) {
  *
  */
 function convert(data, keys) {
-  'use strict';
 
   // clone the object
   let clone = JSON.parse(JSON.stringify(data));
