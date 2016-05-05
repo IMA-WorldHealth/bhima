@@ -8,5 +8,4 @@ Before submitting this pull request, please verify that you have:
 
 For a more detailed checklist, [see the official review checklist](https://docs.google.com/document/d/1nupLVLRXgSZJQo_acLgrwvPnN8RukfSiwRhSToj81uU/pub) that this PR will be evaluated against.
 
-Ensuring that the above checkboxes are completed will help speed the review process
-and help build a stronger application.  Thanks!
+Ensuring that the above checkboxes are completed will help speed the review process and help build a stronger application.  Thanks!

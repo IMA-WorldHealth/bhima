@@ -2,6 +2,7 @@ BHIMA
 =================
 
 [![Build Status](https://travis-ci.org/IMA-WorldHealth/bhima-2.X.svg)](https://travis-ci.org/IMA-WorldHealth/bhima-2.X)
+[![API Doc](https://doclets.io/IMA-WorldHealth/bhima-2.X/master.svg)](https://doclets.io/IMA-WorldHealth/bhima-2.X/master)
 
 _Bhima is alpha version software. Please do not use this in a commerical context._
 
@@ -35,8 +36,8 @@ for more information.
 
 Installation
 -------------------
-See the [install guide](./docs/INSTALL.md).
+See the [installation guide](./docs/INSTALL.md).
 
 License
 ---------------
-Bhima is licensed under GPL v2.0.  [Read the License](./LICENSE).
+Bhima is licensed under GPL-2.0.  [Read the License](./LICENSE).
