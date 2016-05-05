@@ -15,31 +15,31 @@
     "src"
   ],
   "dependencies": {
-    "angular": "^1.5.0",
+    "angular": "^1.5.5",
+    "angular-animate": "^1.5.5",
+    "angular-sanitize": "^1.5.5",
+    "angular-messages": "^1.5.5",
     "angular-bootstrap": "^1.2.1",
-    "angular-sanitize": "^1.5.0",
-    "angular-translate": "^2.10.0",
-    "angular-translate-loader-static-files": "^2.10.0",
-    "angular-translate-loader-url": "^2.10.0",
-    "jquery": "^2.2.1",
+    "angular-ui-router": "^0.2.18",
+    "angular-ui-grid": "^3.1.1",
+    "angular-translate": "^2.11.0",
+    "angular-translate-loader-static-files": "^2.11.0",
+    "angular-translate-loader-url": "^2.11.0",
+    "jquery": "^2.2.3",
     "ng-file-upload": "^12.0.1",
     "ng-file-upload-shim": "^12.0.1",
-    "angular-ui-grid": "^3.1.1",
-    "angular-ui-router": "^0.2.18",
-    "bootstrap": "~3.3.6",
+    "bootstrap": "^3.3.6",
     "angular-moment": "^1.0.0",
-    "moment": "^2.11.2",
-    "angular-dynamic-locale": "~0.1.29",
-    "angular-messages": "^1.5.0",
+    "moment": "^2.13.0",
+    "angular-dynamic-locale": "^0.1.30",
     "ngstorage": "^0.3.10",
-    "Chart.js": "^1.0.2",
-    "angular-chart.js": "^0.9.0",
-    "angular-animate": "^1.5.5"
-  },
-  "resolutions": {
-    "angular": "^1.5.0"
+    "Chart.js": "^1.1.1",
+    "angular-chart.js": "^0.10.2"
   },
   "devDependencies": {
     "angular-mocks": "^1.5.3"
+  },
+  "resolutions": {
+    "angular": "1.5.5"
   }
 }
