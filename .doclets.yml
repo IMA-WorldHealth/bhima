@@ -1,0 +1,6 @@
+dir: server
+
+packageJson: package.json
+
+articles:
+  - Readme: README.md
