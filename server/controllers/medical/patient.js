@@ -1,17 +1,19 @@
 /**
-* The /patient HTTP API endpoint
-*
-* @module medical/patient
-*
-* @desc This module is responsible for handling all crud operations relatives to patients
-* and define all patient api functions
-*
-* @requires lib/db
-* @requires lib/node-uuid
-*
-* @todo Review naming conventions
-* @todo Remove or refactor methods to fit new API standards
-*/
+ * The /patient HTTP API endpoint
+ *
+ * This module is responsible for handling all crud operations relatives to patients
+ * and define all patient api functions
+ *
+ * @module medical/patient
+ *
+ * @requires lib/db
+ * @requires lib/node-uuid
+ * @requires lib/errors/BadRequest
+ * @requires lib/errors/NotFound
+ *
+ * @todo Review naming conventions
+ * @todo Remove or refactor methods to fit new API standards
+ */
 
 'use strict';
 
@@ -284,7 +286,6 @@ function updateGroups(req, res, next) {
     });
   }
 
-
   // Clear assigned groups
   removeAssignmentsQuery =
     'DELETE FROM assignation_patient ' +
@@ -367,8 +368,8 @@ function hospitalNumberExists(req, res, next) {
   var verifyQuery;
   var hospitalNumber = req.params.id;
 
-  verifyQuery =
-    `SELECT uuid, hospital_no
+  verifyQuery = `
+    SELECT uuid, hospital_no
     FROM patient
     WHERE hospital_no = ?`;
 
@@ -483,13 +484,13 @@ function isEmpty(array) {
 }
 
 /**
-* GET /patient/search?name={string}&detail={boolean}&limit={number}
-* GET /patient/search?reference={string}&detail={boolean}&limit={number}
-* GET /patient/search?fields={object}
-*
-* @desc This function is responsible to find a patient with detailled informations or not
-* and with a limited rows or not
-*/
+ * GET /patient/search?name={string}&detail={boolean}&limit={number}
+ * GET /patient/search?reference={string}&detail={boolean}&limit={number}
+ * GET /patient/search?fields={object}
+ *
+ * @desc This function is responsible to find a patient with detailled informations or not
+ * and with a limited rows or not
+ */
 function search(req, res, next) {
 
   var sql,
@@ -593,10 +594,11 @@ function search(req, res, next) {
   .done();
 }
 
+
 function billingServices(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
-  /** @todo (OPTIMISATION) Two additional SELECTs to select group uuids can be written as JOINs. */
+  // @todo (OPTIMISATION) Two additional SELECTs to select group uuids can be written as JOINs.
   var patientsServiceQuery =
 
     // get the final information needed to apply billing services to an invoice

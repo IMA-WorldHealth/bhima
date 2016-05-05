@@ -1,33 +1,39 @@
 /**
-* The /patient_groups HTTP API endpoint
-*
-* @module medical/patientGroups
-*
-* @description This controller is responsible for implementing all crud and others custom request
-* on the patient groups table through the `/patient_groups` endpoint.
-*
-* @requires lib/db
-* @requires node_uuid
-* @requires lib/errors/NotFOund
-*/
+ * The /patient_groups HTTP API endpoint
+ *
+ * @module medical/patientGroups
+ *
+ * @description This controller is responsible for implementing all crud and others custom request
+ * on the patient groups table through the `/patient_groups` endpoint.
+ *
+ * @requires lib/db
+ * @requires node-uuid
+ * @requires lib/errors/NotFound
+ */
+
+'use strict';
 
 const db = require('../../lib/db');
 const uuid = require('node-uuid');
 const NotFound = require('../../lib/errors/NotFound');
 
 /**
-* Returns an array of patient groups
-*/
+ * Returns an array of patient groups
+ */
 function list(req, res, next) {
-  'use strict';
 
-  var sql =
-    'SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at FROM patient_group AS pg';
+  let sql = `
+    SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) AS price_list_uuid,
+      pg.note, pg.created_at
+    FROM patient_group AS pg
+  `;
 
   if (req.query.detailed === '1') {
-    sql =
-      `SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at, pl.label AS priceListLable, pl.description
-      FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid`;
+    sql = `
+      SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) AS price_list_uuid,
+        pg.note, pg.created_at, pl.label AS priceListLable, pl.description
+      FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid
+    `;
   }
 
   sql += ' ORDER BY pg.name;';
@@ -41,17 +47,15 @@ function list(req, res, next) {
 }
 
 /**
-* Create a patient group in the database
-*/
+ * Create a patient group in the database
+ */
 function create(req, res, next) {
-  'use strict';
 
   let record = db.convert(req.body, ['price_list_uuid']);
+  let sql = 'INSERT INTO patient_group SET ?';
 
   // provide UUID if the client has not specified
   record.uuid = db.bid(record.uuid || uuid.v4());
-
-  var sql = 'INSERT INTO patient_group SET ?';
 
   db.exec(sql, [ record ])
   .then(function (result) {
@@ -62,10 +66,9 @@ function create(req, res, next) {
 }
 
 /**
-* Update a patient group in the database
-*/
+ * Update a patient group in the database
+ */
 function update(req, res, next) {
-  'use strict';
 
   var uid = db.bid(req.params.uuid);
   var sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
@@ -95,19 +98,17 @@ function update(req, res, next) {
 }
 
 /**
-* Remove a patient group in the database
-*/
+ * Remove a patient group in the database
+ */
 function remove(req, res, next) {
-  'use strict';
   const id = db.bid(req.params.uuid);
-  var sql = 'DELETE FROM patient_group WHERE uuid = ?';
+  let sql = 'DELETE FROM patient_group WHERE uuid = ?';
 
   db.exec(sql, [ id ])
   .then(function (rows) {
     if (!rows.affectedRows) {
-      throw new NotFound('No patient group found with id ' + uuid.unparse(id));
+      throw new NotFound(`No patient group found with uuid ${req.params.uuid}`);
     }
-
     res.sendStatus(204);
   })
   .catch(next)
@@ -115,11 +116,9 @@ function remove(req, res, next) {
 }
 
 /**
-* Return a patient group details from the database
-*/
+ * Return a patient group details from the database
+ */
 function detail(req, res, next) {
-  'use strict';
-
   lookupPatientGroup(db.bid(req.params.uuid))
   .then(function (row) {
     res.status(200).json(row);
@@ -129,13 +128,11 @@ function detail(req, res, next) {
 }
 
 /**
-* Return a patient group instance from the database
-*
-* @param {integer} id of a service
-*/
+ * Return a patient group instance from the database
+ *
+ * @param {String} uid the uuid of the patinet group
+ */
 function lookupPatientGroup(uid) {
-  'use strict';
-
   var sql =
     `SELECT BUID(pg.uuid) as uuid, pg.name, pg.enterprise_id, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at
     FROM patient_group AS pg WHERE pg.uuid = ?`;
