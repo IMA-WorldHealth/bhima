@@ -11,7 +11,7 @@
         <div class="panel panel-default">
 
           <div class="panel-body">
-            <form name="ComplexVoucherForm" bh-submit="ComplexVoucherCtrl.submit(ComplexVoucherForm)" autocomplete="off" novalidate>
+            <form name="ComplexVoucherForm" novalidate>
 
               <bh-date-editor
                 date-value="ComplexVoucherCtrl.voucher.date"
@@ -163,9 +163,16 @@
                 </td>
                 <td style="width:15%">
                   <button class="btn btn-default btn-block"
-                    ng-click="ComplexVoucherCtrl.openReferenceModal(row)">
-                    <i class="glyphicon glyphicon-plus"></i>
-                    {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }}
+                    ng-click="ComplexVoucherCtrl.openReferenceModal(row)"
+                    ng-class="{'btn-info': row.reference.uuid}">
+                    <span ng-if="row.reference.uuid">
+                      <i class="glyphicon glyphicon-file"></i>
+                      {{ row.reference.reference }}
+                    </span>
+                    <span ng-if="!row.reference.uuid">
+                      <i class="glyphicon glyphicon-plus"></i>
+                      {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }}
+                    </span>
                   </button>
                 </td>
                 <td>
@@ -189,7 +196,8 @@
             <div class="pull-right">
               <button
                 class="btn btn-primary"
-                ng-disabled="!ComplexVoucherCtrl.validInput">
+                ng-disabled="!ComplexVoucherCtrl.validInput"
+                ng-click="ComplexVoucherCtrl.submit(ComplexVoucherForm)">
                 {{ "FORM.BUTTONS.SUBMIT" | translate }}
               </button>
             </div>

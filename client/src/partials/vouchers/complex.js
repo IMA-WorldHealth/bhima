@@ -85,6 +85,47 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     };
   }
 
+  function handleVoucher() {
+    var voucher;
+    if (vm.sumCredit === vm.sumDebit) {
+      voucher = {
+        project_id : Session.project.id,
+        date : vm.voucher.date,
+        description : vm.voucher.description,
+        currency_id : vm.voucher.currency_id,
+        amount : vm.sumDebit,
+        user_id : Session.user.id,
+      };
+    }
+    return voucher;
+  }
+
+  function handleVoucherItems() {
+    var voucherItems = [];
+    if (vm.validInput) {
+
+      var entity_uuid = undefined;
+      var document_uuid = undefined;
+
+      vm.rows.forEach(function (row) {
+
+        entity_uuid = row.entity && row.entity.uuid ? row.entity.uuid : '';
+        document_uuid = row.reference && row.reference.document_uuid ? row.reference.document_uuid : '';
+
+        var line = {
+          account_id    : row.account_id,
+          debit         : row.debit,
+          credit        : row.credit,
+          document_uuid : document_uuid,
+          entity_uuid   : entity_uuid
+        };
+
+        voucherItems.push(line);
+      });
+    }
+    return voucherItems;
+  }
+
   /** validation function */
   function validRowsInput() {
 
@@ -175,8 +216,21 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
     // stop submission if the form is invalid
     if (form.$invalid) {
+      console.log('invalid');
       return;
     }
+
+    checkRowValidity();
+
+    var voucherItems = handleVoucherItems();
+
+    var voucher = handleVoucher();
+
+    if (voucherItems.length > 0) {
+      voucher.items = voucherItems;
+    }
+
+    console.log(voucher);
 
   }
 
