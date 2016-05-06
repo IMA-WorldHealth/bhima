@@ -13,9 +13,13 @@
 angular.module('bhima.controllers')
 .controller('PatientEdit', PatientEdit);
 
-PatientEdit.$inject = ['$scope', '$translate', '$stateParams', '$location', '$anchorScroll', '$uibModal', 'PatientService', 'util', 'moment'];
+PatientEdit.$inject = [
+  '$scope', '$translate', '$stateParams', '$anchorScroll',
+  '$uibModal', 'PatientService', 'util', 'moment', 'NotifyService',
+  'ScrollService', 'PatientGroupModal'
+];
 
-function PatientEdit($scope, $translate, $stateParams, $location, $anchorScroll, $uibModal, patients, util, moment) {
+function PatientEdit($scope, $translate, $stateParams, $anchorScroll, $uibModal, patients, util, moment, Notify, ScrollTo, GroupModal) {
   var viewModel = this;
   var referenceId = $stateParams.uuid;
 
@@ -23,6 +27,7 @@ function PatientEdit($scope, $translate, $stateParams, $location, $anchorScroll,
   viewModel.unknownId = false;
   viewModel.minDOB = util.minDOB;
   viewModel.maxDOB = util.maxDOB;
+
 
   if (referenceId) {
     buildPage(referenceId);
@@ -95,94 +100,50 @@ function PatientEdit($scope, $translate, $stateParams, $location, $anchorScroll,
   }
 
   // TODO Clearer naming conventions
-  // submit a request to change patient details
-  viewModel.updatePatient = function updatePatient(patient) {
-    var patientIsUpdated = $scope.details.$dirty || $scope.optional.$dirty;
-    var changedDetails, changedOptional, changedDefinition;
+  viewModel.updatePatient = function updatePatient(patientDetailsForm) {
+    var submitPatient;
+    patientDetailsForm.$setSubmitted();
 
-    viewModel.updatedPatientDetails = false;
-
-    $scope.details.$setSubmitted();
-
-    if (!patientIsUpdated) {
-
-      // No updates need to happen - save HTTP requests
-      // TODO Inform user of early exit state
+    if (patientDetailsForm.$pristine) {
+      Notify.warn('PATIENT_EDIT.RECORD_SAME');
       return;
     }
 
-    if ($scope.details.$invalid) {
-
-      // Form is not ready to be submitted to the server
+    if (patientDetailsForm.$invalid) {
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return;
     }
 
-    changedDetails = util.filterDirtyFormElements($scope.details);
-    changedOptional = util.filterDirtyFormElements($scope.optional);
-
-    changedDefinition = angular.extend(changedDetails, changedOptional);
+    submitPatient = util.filterDirtyFormElements(patientDetailsForm);
 
     // TODO Use latest data formatting/ sanitastion standards
     // Ensure date is submitted in a valid format
-    if (changedDefinition.dob) {
-      changedDefinition.dob = util.sqlDate(changedDefinition.dob);
+    if (submitPatient.dob) {
+      submitPatient.dob = util.sqlDate(submitPatient.dob);
     }
 
-    patients.update(patient.uuid, changedDefinition)
+    patients.update(viewModel.medical.uuid, submitPatient)
       .then(function (updatedPatient) {
 
-        // Update status
-        viewModel.updatedPatientDetails = true;
+        Notify.success('FORM.INFOS.UPDATE_SUCCESS');
 
         // Update view
         formatPatientAttributes(updatedPatient);
         viewModel.medical = updatedPatient;
 
         // Reset forms dirty values
-        $scope.details.$setPristine();
-        $scope.optional.$setPristine();
-        $scope.details.$submitted = false;
-      });
+        patientDetailsForm.$setPristine();
+        patientDetailsForm.$submitted = false;
+      })
+      .catch(Notify.handleError);
   };
-
-  // Callback passed to find patient directive
-  /*viewModel.confirmPatient = function confirmPatient(patient) {
-    var pageReferred = angular.isDefined(referenceId);
-
-    if (pageReferred) {
-
-      // Build the page given a correctly linked patient UUID
-      // TODO Catch 404 patient not found response and show meaningful error
-      buildPage(patient.uuid);
-    } else {
-
-      // Navigate correctly using patient as reference
-      $location.path('/patients/edit/'.concat(patient.uuid));
-    }
-  };*/
 
   viewModel.updateDebtorGroup = function updateDebtorGroup() {
 
     // Reset updated flag
     viewModel.updatedDebtorGroup = false;
 
-    // Provide modal
-    var modalInstance = $uibModal.open({
-      animation : true,
-      templateUrl : 'partials/patients/edit/updateDebtorGroup.tmpl.html',
-      controller : 'UpdateDebtorGroup as UpdateDebtorGroupCtrl',
-      size : 'md',
-      keyboard : false,
-      backdrop : 'static',
-      resolve : {
-        patient : function () {
-          return viewModel.medical;
-        },
-        updateModel : function () {
-          return updateDebtorModel;
-        }
-      }
-    });
+    GroupModal.updateDebtor(viewModel.medical, updateDebtorModel);
   };
 
   viewModel.updatePatientGroups = function updatePatientGroups() {
@@ -190,29 +151,10 @@ function PatientEdit($scope, $translate, $stateParams, $location, $anchorScroll,
     // Reset updated flag
     viewModel.updatedPatientGroups = false;
 
-    var modalInstance = $uibModal.open({
-      animation : true,
-      templateUrl : 'partials/patients/edit/updatePatientGroups.tmpl.html',
-      controller : 'UpdatePatientGroups as UpdatePatientGroupsCtrl',
-      size : 'md',
-      keyboard : false,
-      backdrop : 'static',
-      resolve : {
-        sessionPatient : function () {
-          return viewModel.medical;
-        },
-        sessionGroups : function () {
-          return viewModel.finance.patientGroups;
-        },
-        updateModel : function () {
-          return updatePatientGroupsModel;
-        }
-      }
-    });
+    GroupModal.updateGroupConfig(viewModel.medical, viewModel.finance.patientGroups, updatePatientGroupsModel);
   };
 
   viewModel.scrollToSubmission = function scrollToSubmission() {
-    $location.hash('submission');
-    $anchorScroll();
+    ScrollTo('submission');
   };
 }
