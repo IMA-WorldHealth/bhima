@@ -37,11 +37,14 @@ exports.create = create;
 */
 function list(req, res, next) {
   var query =
-    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount,
+    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, BUID(vi.document_uuid) as document_uuid,
       v.user_id, BUID(vi.uuid) AS voucher_item_uuid,
-      vi.account_id, vi.debit, vi.credit
-    FROM voucher v JOIN voucher_item vi ON vi.voucher_uuid = v.uuid `;
+      vi.account_id, vi.debit, vi.credit,
+      CONCAT(p.abbr, v.reference) AS reference 
+    FROM voucher v
+    JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
+    JOIN project p ON p.id = v.project_id `;
 
   // convert binary params if they exist
   if (req.query.document_uuid) {

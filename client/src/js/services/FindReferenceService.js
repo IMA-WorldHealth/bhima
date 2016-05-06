@@ -21,8 +21,8 @@ function FindReferenceService(Modal) {
         }
       }
     });
-    instance.result.then(function (result) {
-      row.entity = result;
+    instance.result.then(function (reference) {
+      row.reference = reference;
     });
   }
 
