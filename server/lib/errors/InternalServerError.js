@@ -1,8 +1,13 @@
-var util = require('util');
+const util = require('util');
 
 /**
- * This implements an HTTP error code that should eventually be passed through
- * next() to an error handling middleware.
+ * @class InternalServerError
+ *
+ * @description
+ * A custom error to wrap the 500 HTTP status code within the server.  This
+ * should only be thrown in a context where it can be caught by ExpressJS's
+ * {@link http://expressjs.com/en/guide/routing.html|next } function and
+ * returned to the client.
  *
  * @param {String} description - a custom description to be sent to the client
  *
@@ -10,10 +15,18 @@ var util = require('util');
  * // import the error into a controller
  * const InternalServerError = require('lib/errors/InternalServerError');
  *
- * // use the error in either a promise chain or directly via next()
- * return next(new InternalServerError('Some description...'));
+ * throw new InternalServerError('A fatal error occurred!');
  *
- * @constructor
+ * // or by calling next in the server context
+ * next(new InternalServerError('Oops!'));
+ *
+ * // or by combining both in a promise chain!
+ * Promise.then(() => {
+ *   throw new InternalServerError('This will be caught in Promise.catch()');
+ * })
+ * .catch(next);
+ *
+ * @requires util
  */
 function InternalServerError(description) {
   'use strict';

@@ -1,19 +1,35 @@
-var util = require('util');
+const util = require('util');
 
 /**
- * This implements an HTTP error code that should eventually be passed through
- * next() to an error handling middleware.
+ * @class BadRequest
+ *
+ * @description
+ * A custom error to wrap the 400 HTTP status code within the server.  This
+ * should only be thrown in a context where it can be caught by ExpressJS's
+ * {@link http://expressjs.com/en/guide/routing.html|next } function and
+ * returned to the client.
  *
  * @param {String} description - a custom description to be sent to the client
+ * @param {String} key - a i18n key for translation on the client
  *
  * @example
  * // import the error into a controller
- * const BadRequest = require('lib/errors/BadRequest');
+ * const BadRequest = require('lib/errors/BadRequest', 'SOME.KEY');
  *
- * // use the error in either a promise chain or directly via next()
- * return next(new BadRequest('Some description...', 'ERRORS.KEY'));
+ * // use by directly throwing ...
+ * throw new BadRequest('An authentication error occurred!');
  *
- * @constructor
+ * // or by calling next (in the server context)
+ * // note: the i18n key is optional
+ * next(new BadRequest('Some description...'));
+ *
+ * // or by combining both in a promise chain!
+ * Promise.then(() => {
+ *   throw new BadRequest('This will be caught in Promise.catch()', 'OH.NO');
+ * })
+ * .catch(next);
+ *
+ * @requires util
  */
 function BadRequest(description, key) {
   'use strict';
