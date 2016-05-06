@@ -24,9 +24,12 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
   // the 'true' parameter forces refresh
   Languages.read(true);
 
-  vm.isLoggedIn = function isLoggedIn() {
+  vm.isLoggedIn = isLoggedIn;
+
+  // check if the user has a valid session.
+  function isLoggedIn() {
     return !!Session.user;
-  };
+  }
 
   // Default sidebar state
   /** @todo Load sidebar state before angular is bootstrapped to remove 'flicker' */
@@ -38,6 +41,7 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
    * Application Structure methods
    */
   vm.toggleSidebar = function toggleSidebar() {
+    if (!isLoggedIn()) { return; }
     vm.sidebarExpanded = !vm.sidebarExpanded;
     cache.sidebar = { expanded : vm.sidebarExpanded };
   };
@@ -52,7 +56,9 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
     delete vm.project;
   });
 
+  // go to the settings page
   vm.settings = function settings() {
+    if (!isLoggedIn()) { return; }
     $state.go('settings', { previous : $state.$current.name });
   };
 

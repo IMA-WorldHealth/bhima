@@ -32,9 +32,9 @@
     "LOGIN"                      : "Se connecter",
     "LOGIN_PLACEHOLDER_PASSWORD" : "Entrez votre mot de passe",
     "LOGIN_PLACEHOLDER_USERNAME" : "Entrez votre nom d'utilisateur",
-    "LOGOUT_SUCCESS"             : "Vous n'etes pas connecté",
-    "RESET"                      : "Annuler",
-    "TOO_MANY_TRYS"              : "Si vous avez oublié votre login ou votre mot de passe? S'il vous plaît demander à l'administrateur du système pour le réinitialiser."
+    "TOO_MANY_TRYS"              : "Avez-vous oublié votre login ou votre mot de passe? S'il vous plaît demander à l'administrateur du système pour le réinitialiser.",
+    "WELCOME"                    : "Bienvenue à bhima!",
+    "GOODBYE"                    : "Merci d'utiliser bhima!  Reviennez bientôt!"
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -180,7 +180,7 @@
   "ERRORS": {
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
-    "UNAUTHORIZED"     : "Non autorisé"
+    "UNAUTHORIZED"     : "Vous avez soumis une mauvais nom et mot de passe.  Entrez un nom et mot de passe valid pour continuer."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Ajout d'un taux",
@@ -675,7 +675,7 @@
   },
   "SETTINGS": {
     "TITLE" : "Paramètres"
-  },  
+  },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Ajout d'une subvention",
     "ADD_SUBSIDY"      : "Ajouter subvention",

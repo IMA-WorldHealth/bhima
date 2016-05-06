@@ -15,11 +15,9 @@ describe('Debtor Groups Management', function () {
 
   /** @const */
   var root = '#/debtors/groups';
-
   before(function () { browser.get(root); });
 
   it('lists base test debtor groups', function () {
-
     expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(initialGroups);
   });
 
