@@ -54,7 +54,6 @@ function NotifyService($translate) {
   service.danger = danger;
   service.info = info;
   service.warn = warn;
-  service.fatal = fatal;
 
   service.handleError = handleError;
 
@@ -75,11 +74,6 @@ function NotifyService($translate) {
 
   function warn(key, ttl) {
     setNotification(key, ttl, formatOptions.warn);
-  }
-
-  // this should only be used in rare circumstances, such as the login page
-  function fatal(key, ttl) {
-    setNotification(key, ttl, formatOptions.error);
   }
 
   /**

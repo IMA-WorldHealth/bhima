@@ -77,7 +77,7 @@ function LoginController(AppCache, Session, Languages, Projects, Notify) {
       // if the user has tried too many times, display a fatal error working for
       // ten seconds.
       if (maxAttempts <= attempts++) {
-        return Notify.fatal('AUTH.TOO_MANY_TRYS', 10000);
+        return Notify.danger('AUTH.TOO_MANY_TRYS');
       }
 
       // use growl-notifications to display an error at the top of the window

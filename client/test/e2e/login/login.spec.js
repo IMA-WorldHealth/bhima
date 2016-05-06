@@ -23,7 +23,6 @@ describe('Login Page', function () {
 
     // click the logout button and close the growl notification
     element(by.css('[data-logout-button]')).click();
-    components.notification.dismiss();
   });
 
   it('rejects an invalid username/password combo with (only) a growl notification', function () {
