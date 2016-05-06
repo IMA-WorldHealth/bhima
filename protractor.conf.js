@@ -1,4 +1,4 @@
-/* global by,browser,element */
+/* global by,browser, element */
 
 var q = require('q');
 
