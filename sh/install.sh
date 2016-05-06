@@ -11,7 +11,6 @@ mysql -h $DB_HOST -u root -e "SET GLOBAL sql_mode='STRICT_ALL_TABLES';"
 mysql -h $DB_HOST -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS' WITH GRANT OPTION;"
 mysql -h $DB_HOST -u root -e "FLUSH PRIVILEGES;"
 
-
 # setup database
 mysql -h $DB_HOST -u root -e "DROP SCHEMA IF EXISTS $DB_NAME;"
 mysql -h $DB_HOST -u $DB_USER -p$DB_PASS -e "CREATE SCHEMA $DB_NAME CHARACTER SET utf8 COLLATE utf8_unicode_ci;"

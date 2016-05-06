@@ -50,10 +50,10 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
 
   // modify the browsers to use Travis identifiers
   config.multiCapabilities = [{
-    'browserName': 'firefox',
-     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-     'build': process.env.TRAVIS_BUILD_NUMBER,
-  }, {
+    // 'browserName': 'firefox',
+    //  'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+    //  'build': process.env.TRAVIS_BUILD_NUMBER,
+  // }, {
     'browserName': 'chrome',
      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
      'build': process.env.TRAVIS_BUILD_NUMBER,
