@@ -1,5 +1,8 @@
 /**
- * Express Server Configuration
+ * @overview
+ * The application's middleware configuration.
+ *
+ * @todo - this could probably be separated by functionality.
  */
 const express    = require('express');
 const compress   = require('compression');
