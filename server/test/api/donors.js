@@ -1,27 +1,19 @@
 /* jshint expr: true */
-/* describe, it, beforeEach */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-/** import test helpers */
-var helpers = require('./helpers');
-var uuid    = require('node-uuid');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-
 /**
-* The /donors API endpoint
-*
-* @desc This test suit is about the crud operation with donors
-*
-*/
-describe('The /donors API endpoint :: ', function () {
+ * The /donors API endpoint
+ *
+ * This test suit is about the crud operation with donors
+ */
+describe('(/donors) Donors', function () {
   'use strict';
 
-  var agent = chai.request.agent(helpers.baseUrl);
-
-  /** login before each request */
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
   /** new donors object */
@@ -37,7 +29,6 @@ describe('The /donors API endpoint :: ', function () {
   var updateDonor = {
     name : 'ASSP'
   };
-
 
   it('POST /donors create a new donor in the database', function () {
     return agent.post('/donors')

@@ -1,8 +1,13 @@
-var util = require('util');
+const util = require('util');
 
 /**
- * This implements an HTTP error code that should eventually be passed through
- * next() to an error handling middleware.
+ * @class Unauthorized
+ *
+ * @description
+ * A custom error to wrap the 401 HTTP status code within the server.  This
+ * should only be thrown in a context where it can be caught by ExpressJS's
+ * {@link http://expressjs.com/en/guide/routing.html|next } function and
+ * returned to the client.
  *
  * @param {String} description - a custom description to be sent to the client
  *
@@ -10,10 +15,19 @@ var util = require('util');
  * // import the error into a controller
  * const Unauthorized = require('lib/errors/Unauthorized');
  *
- * // use the error in either a promise chain or directly pass to next()
- * return next(new Unauthorized('Some description...'));
+ * // use by directly throwing ...
+ * throw new Unauthorized('An authentication error occurred!');
  *
- * @constructor
+ * // or by calling next in the server context
+ * next(new Unauthorized('Some description...'));
+ *
+ * // or by combining both in a promise chain!
+ * Promise.then(() => {
+ *   throw new Unauthorized('This will be caught in Promise.catch()');
+ * })
+ * .catch(next);
+ *
+ * @requires util
  */
 function Unauthorized(description) {
   'use strict';

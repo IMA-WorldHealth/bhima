@@ -1,24 +1,22 @@
 /* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 /**
-* The /employees API endpoint
-*
-* This test suite implements full CRUD on the /employees HTTP API endpoint.
-*/
+ * The /employees API endpoint
+ *
+ * This test suite implements full CRUD on the /employees HTTP API endpoint.
+ */
 describe('(/employees) the employees API endpoint', function () {
   'use strict';
 
-  var agent = chai.request.agent(helpers.baseUrl);
-
-  /** login before test suite */
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  var numEmployees = 1;
+  const numEmployees = 1;
 
   // custom dates
   var embaucheDate  = new Date('2016-01-01'),
@@ -27,49 +25,48 @@ describe('(/employees) the employees API endpoint', function () {
 
   // employee we will add during this test suite.
   var employee = {
-      code : 'x500',
-      prenom : 'Carolus',
-      name : 'Magnus',
-      postnom : 'Charlemagne',
-      sexe : 'M',
-      dob : dob1,
-      date_embauche : embaucheDate,
-      nb_spouse : 0,
-      nb_enfant : 0,
-      grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
-      daily_salary : 50,
-      bank : 'BIAC',
-      bank_account : '00-99-88-77',
-      email : 'me@info.com',
-      fonction_id : 1,
-      locked : 0,
-      service_id : 1,
-      location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
-      creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-      debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+    code : 'x500',
+    prenom : 'Carolus',
+    name : 'Magnus',
+    postnom : 'Charlemagne',
+    sexe : 'M',
+    dob : dob1,
+    date_embauche : embaucheDate,
+    nb_spouse : 0,
+    nb_enfant : 0,
+    grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    daily_salary : 50,
+    bank : 'BIAC',
+    bank_account : '00-99-88-77',
+    email : 'me@info.com',
+    fonction_id : 1,
+    locked : 0,
+    service_id : 1,
+    location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
+    creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
+    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
 
   var updateEmployee = {
-      code : 'x500',
-      prenom : 'Charle',
-      name : 'Magne',
-      postnom : 'De France',
-      sexe : 'M',
-      dob : dob2,
-      date_embauche : embaucheDate,
-      nb_spouse : 0,
-      nb_enfant : 0,
-      grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
-      daily_salary : 50,
-      bank : 'BIAC',
-      bank_account : '00-99-88-77',
-      email : 'me@info.com',
-      fonction_id : 1,
-      service_id : 1,
-      location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
-      creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-      debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
-
+    code : 'x500',
+    prenom : 'Charle',
+    name : 'Magne',
+    postnom : 'De France',
+    sexe : 'M',
+    dob : dob2,
+    date_embauche : embaucheDate,
+    nb_spouse : 0,
+    nb_enfant : 0,
+    grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    daily_salary : 50,
+    bank : 'BIAC',
+    bank_account : '00-99-88-77',
+    email : 'me@info.com',
+    fonction_id : 1,
+    service_id : 1,
+    location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
+    creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
+    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
 
   it('POST /employee should create a new employee', function () {
@@ -192,12 +189,12 @@ describe('(/employees) the employees API endpoint', function () {
   });
 
   /**
-  * @function checkValidUpdate
-  * @desc This function test if an updated value returned by the server
-  * correspond correctly to the update sended
-  * @param {object} emp The employee object to test
-  * @param {object} update The correct employee update
-  */
+   * @function checkValidUpdate
+   * @desc This function test if an updated value returned by the server
+   * correspond correctly to the update sended
+   * @param {object} emp The employee object to test
+   * @param {object} update The correct employee update
+   */
   function checkValidUpdate(employee, update) {
     // add a missing property due to alias in db query
     employee.code = employee.code_employee;

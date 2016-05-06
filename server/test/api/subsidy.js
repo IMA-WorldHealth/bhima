@@ -1,12 +1,12 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('(/subsidies) The subsidy API', function () {
-  // ensure the client is logged in before tests start
+describe('(/subsidies) Subsidies', function () {
+
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
@@ -24,10 +24,9 @@ describe('(/subsidies) The subsidy API', function () {
     value:       -10
   };
 
-  var responseKeys = [
+  const responseKeys = [
     'id', 'account_id', 'label', 'description', 'value', 'created_at', 'updated_at'
   ];
-
 
   it('GET /subsidies returns a list of two subsidies', function () {
       return agent.get('/subsidies')
