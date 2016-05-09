@@ -8,7 +8,7 @@ const express    = require('express');
 const compress   = require('compression');
 const bodyParser = require('body-parser');
 const session    = require('express-session');
-const FileStore  = require('session-file-store')(session);
+const RedisStore = require('connect-redis')(session);
 const morgan     = require('morgan');
 const fs         = require('fs');
 const winston    = require('winston');
@@ -23,18 +23,12 @@ const Unauthorized = require('../lib/errors/Unauthorized');
 exports.configure = function configure(app) {
   'use strict';
 
-  winston.log('debug', 'Configuring middleware');
+  winston.debug('Configuring middleware.');
 
   app.use(compress());
 
   // helmet guards
-  app.use(helmet.frameguard({ action : 'deny' }));
-  app.use(helmet.hsts({ maxAge: 7776000000 })); // ninety days in ms
-  app.use(helmet.hidePoweredBy());
-  app.use(helmet.ieNoOpen());
-  app.use(helmet.noSniff());
-  app.use(helmet.dnsPrefetchControl());
-  app.use(helmet.xssFilter());
+  app.use(helmet());
 
   app.use(bodyParser.json({ limit : '8mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
@@ -42,14 +36,12 @@ exports.configure = function configure(app) {
   // stores session in a file store so that server restarts do
   // not interrupt sessions.
   app.use(session({
-    store             : new FileStore({
-      reapInterval      : Number(process.env.SESS_REAP_INTERVAL),
-    }),
-    secret            : process.env.SESS_SECRET,
-    saveUninitialized : Boolean(process.env.SESS_SAVE_UNINITIALIZED),
-    resave            : Boolean(process.env.SESS_RESAVE),
-    unset             : process.env.SESS_UNSET,
-    cookie            : { secure : true },
+    store: new RedisStore(),
+    secret: process.env.SESS_SECRET,
+    resave: Boolean(process.env.SESS_RESAVE),
+    saveUninitialized: Boolean(process.env.SESS_UNINITIALIZED),
+    unset: process.env.SESS_UNSET,
+    cookie: { secure : true },
     retries: 50
   }));
 
