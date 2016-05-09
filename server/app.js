@@ -83,7 +83,11 @@ function configureLogger() {
   }
 
   // be sure to log unhandled exceptions
-  winston.handleExceptions(new winston.transports.Console());
+  winston.handleExceptions(new winston.transports.Console({
+    humanReadableUnhandledException: true,
+    colorize: true,
+    prettyPrint: true
+  }));
 }
 
 /**

@@ -5,7 +5,7 @@ var expect = chai.expect;
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('(/patient_groups) Patient Group API', function () {
+describe('(/patients/groups) Patient Group API', function () {
 
   // log in before test suite
   const agent = chai.request.agent(helpers.baseUrl);
@@ -31,14 +31,14 @@ describe('(/patient_groups) Patient Group API', function () {
     'enterprise_id', 'uuid', 'price_list_uuid', 'name', 'note', 'created_at'
   ];
 
-  it('POST /patient_groups adds a patient group', function () {
-    return agent.post('/patient_groups')
+  it('POST /patients/groups adds a patient group', function () {
+    return agent.post('/patients/groups')
       .send(newPatientGroup)
       .then(function (res) {
         helpers.api.created(res);
 
         newPatientGroup.uuid = res.body.uuid;
-        return agent.get('/patient_groups/' + newPatientGroup.uuid);
+        return agent.get('/patients/groups/' + newPatientGroup.uuid);
       })
       .then(function (res){
         expect(res).to.have.status(200);
@@ -47,14 +47,14 @@ describe('(/patient_groups) Patient Group API', function () {
      .catch(helpers.handler);
   });
 
-  it('POST /patient_groups adds a patient group with a null price list', function () {
-    return agent.post('/patient_groups')
+  it('POST /patients/groups adds a patient group with a null price list', function () {
+    return agent.post('/patients/groups')
       .send(PatientGroupWithoutPriceList)
       .then(function (res) {
         helpers.api.created(res);
 
         PatientGroupWithoutPriceList.uuid = res.body.uuid;
-        return agent.get('/patient_groups/' + PatientGroupWithoutPriceList.uuid);
+        return agent.get('/patients/groups/' + PatientGroupWithoutPriceList.uuid);
       })
       .then(function (res){
         expect(res).to.have.status(200);
@@ -63,16 +63,16 @@ describe('(/patient_groups) Patient Group API', function () {
      .catch(helpers.handler);
   });
 
-  it('GET /patient_groups returns a list of patient groups', function () {
-    return agent.get('/patient_groups')
+  it('GET /patients/groups returns a list of patient groups', function () {
+    return agent.get('/patients/groups')
       .then(function (res) {
         helpers.api.listed(res, 5);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /patient_groups/:uuid returns one patient group', function () {
-    return agent.get('/patient_groups/'+ newPatientGroup.uuid)
+  it('GET /patients/groups/:uuid returns one patient group', function () {
+    return agent.get('/patients/groups/'+ newPatientGroup.uuid)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -83,10 +83,10 @@ describe('(/patient_groups) Patient Group API', function () {
       .catch(helpers.handler);
   });
 
-  it('PUT /patient_groups/:uuid updates the newly added patient group', function () {
+  it('PUT /patients/groups/:uuid updates the newly added patient group', function () {
     var updateInfo = {name : 'test updated patient group'};
 
-    return agent.put('/patient_groups/'+ newPatientGroup.uuid)
+    return agent.put('/patients/groups/'+ newPatientGroup.uuid)
       .send(updateInfo)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -97,11 +97,11 @@ describe('(/patient_groups) Patient Group API', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /patient_groups/:uuid deletes a patient group', function () {
-    return agent.delete('/patient_groups/' + newPatientGroup.uuid)
+  it('DELETE /patients/groups/:uuid deletes a patient group', function () {
+    return agent.delete('/patients/groups/' + newPatientGroup.uuid)
       .then(function (res) {
         helpers.api.deleted(res);
-        return agent.get('/patient_groups/' + newPatientGroup.uuid);
+        return agent.get('/patients/groups/' + newPatientGroup.uuid);
       })
       .then(function (res) {
         helpers.api.errored(res, 404);
