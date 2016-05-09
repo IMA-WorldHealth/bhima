@@ -221,6 +221,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
     // stop submission if the form is invalid
     if (form.$invalid) {
+      console.log('invalid');
       return;
     }
 
