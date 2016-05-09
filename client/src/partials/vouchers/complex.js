@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 ComplexJournalVoucherController.$inject = [
   'VoucherService', '$translate', 'AccountService',
   'CurrencyService', 'SessionService', 'FindEntityService',
-  'FindReferenceService'
+  'FindReferenceService', 'NotifyService'
 ];
 
 /**
@@ -17,7 +17,7 @@ ComplexJournalVoucherController.$inject = [
  *
  * @todo - Implement caching mechanism for incomplete forms (via AppCache)
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference) {
+function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify) {
   var vm = this;
 
   // bread crumb paths
@@ -25,9 +25,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     label : $translate.instant('VOUCHERS.COMPLEX.TITLE'),
     current: true
   }];
-
-  // init valriables
-  vm.rows = [];
 
   // bind the startup method as a reset method
   vm.reset  = startup;
@@ -168,8 +165,15 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
   /** check validity */
   function checkRowValidity() {
+    vm.posted = false;
     vm.rowsInput = validRowsInput();
-    vm.validInput = vm.rowsInput.validAmount && vm.rowsInput.validAccount && vm.rowsInput.validTotals ? true : false;
+    vm.validInput = vm.rowsInput.validAmount && vm.rowsInput.validAccount && vm.rowsInput.validTotals && vm.rows.length > 1 ? true : false;
+    vm.notifyMessage =
+      !vm.rowsInput.validAmount ? { icon : 'glyphicon glyphicon-alert', label : 'VOUCHERS.COMPLEX.ERROR_AMOUNT' } :
+      !vm.rowsInput.validAccount ? { icon : 'glyphicon glyphicon-alert', label : 'VOUCHERS.COMPLEX.ERROR_ACCOUNT' } :
+      !vm.rowsInput.validTotals ? { icon : 'glyphicon glyphicon-alert', label : 'VOUCHERS.COMPLEX.ERROR_TOTALS' } :
+      vm.rowsInput.validTotals && vm.validInput ? { icon : 'glyphicon glyphicon-check', label : 'VOUCHERS.COMPLEX.VALID_TOTALS' } :
+      { iconn : '', label : '' };
     summation();
   }
 
@@ -190,8 +194,8 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
   /** run the module on startup and refresh */
   function startup() {
-    // delete any state indicators (if they exist)
-    delete vm.created;
+    // init posted variable
+    vm.posted = false;
 
     // current timestamp to limit date
     vm.timestamp = new Date();
@@ -204,6 +208,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     vm.voucher.currency_id = Session.enterprise.currency_id;
 
     // init voucher items with two rows
+    vm.rows = [];
     vm.rows.push(generateRow());
     vm.rows.push(generateRow());
 
@@ -229,7 +234,17 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       voucher.items = voucherItems;
     }
 
-    console.log(voucher);
+    return Vouchers.create(voucher)
+    .then(function (result) {
+      Notify.success('VOUCHERS.COMPLEX.CREATE_SUCCESS');
+      form.$setPristine();
+      startup();
+      checkRowValidity();
+      vm.posted = true;
+    })
+    .catch(function (err) {
+      Notify.danger('VOUCHERS.COMPLEX.CREATE_ERROR');
+    });
 
   }
 

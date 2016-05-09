@@ -41,7 +41,7 @@ function list(req, res, next) {
       v.description, BUID(vi.document_uuid) as document_uuid,
       v.user_id, BUID(vi.uuid) AS voucher_item_uuid,
       vi.account_id, vi.debit, vi.credit,
-      CONCAT(p.abbr, v.reference) AS reference 
+      CONCAT(p.abbr, v.reference) AS reference
     FROM voucher v
     JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
     JOIN project p ON p.id = v.project_id `;

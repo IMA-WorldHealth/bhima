@@ -950,11 +950,16 @@
     "COMPLEX": {
       "ADD_ITEMS"            : "Ajouter item(s)",
       "CASH_PAYMENT"         : "Paiement Caisse",
+      "CREATE_SUCCESS"       : "Transaction postée avec succes",
+      "CREATE_ERROR"         : "Une erreur s'est produite lors du post",
       "CREDITOR"             : "Crediteur (C)",
       "DEBTOR"               : "Debiteur (D)",
       "DEB_CRED"             : "Debtor/Creditor",
       "DESCRIPTION"          : "Ce module permet de passer des transactions avancees dans le journal",
       "ENTITY"               : "Entité (Debiteur/Crediteur)",
+      "ERROR_ACCOUNT"         : "Les comptes selectionnés sont invalides",
+      "ERROR_AMOUNT"         : "Les montants sont invalides",
+      "ERROR_TOTALS"         : "Les totaux ne sont pas balancés",
       "PATIENT_INVOICE"      : "Facture Patient",
       "PLACEHOLDER_CREDITOR" : "Entrer un crediteur",
       "PLACEHOLDER_DEBTOR"   : "Entrer un debiteur",
@@ -964,6 +969,7 @@
       "TITLE"                : "Ajour de transactions",
       "TRANSACTION"          : "Transaction(s)",
       "TYPE"                 : "Type",
+      "VALID_TOTALS"         : "Les transactions sont valides (Transactions balancées)",
       "VOUCHER"              : "Bordereau de Transfert"
     }
   }

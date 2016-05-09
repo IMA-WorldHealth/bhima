@@ -10,6 +10,9 @@ FindReferenceModalController.$inject = [
  * Find Reference Modal Controller
  *
  * This controller provides bindings for the find references modal.
+ * @todo Implement the Patient Invoices Data list for the references
+ * @todo Implement the Cash Payment Data list for the references
+ * @todo Implement the link to the document for exactitude of the reference
  */
 function FindReferenceModalController($scope, Instance, Debtor, Creditor, Voucher, Filtering, Data) {
   var vm = this;
@@ -71,13 +74,18 @@ function FindReferenceModalController($scope, Instance, Debtor, Creditor, Vouche
   });
 
   function referencePatientInvoice() {
-    Debtor.invoices(vm.selectedEntity.uuid)
-    .then(function (list) {
-      vm.gridOptions.data = list;
-    });
+    /**
+    * @fixme the balance value is not correct for the document references
+    * The correct value is the amount of the invoice in the receipt
+    */
+    return;
   }
 
   function referenceCashPayment() {
+    /**
+    * @fixme the balance value is not correct for the document references
+    * The correct value is the amount of the invoice in the receipt
+    */
     return;
   }
 

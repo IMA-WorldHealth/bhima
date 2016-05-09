@@ -59,16 +59,6 @@
                   </div>
                 </div>
 
-                <!-- translate the server-sent error for the client -->
-                <p class="alert alert-danger" ng-show="ComplexVoucherCtrl.httpError">
-                  <span class="glyphicon glyphicon-exclamation-sign"></span>{{ ComplexVoucherCtrl.httpError | translate }}
-                </p>
-
-                <!-- displays: "Record created successfully!" -->
-                <p class="alert alert-success" ng-show="ComplexVoucherCtrl.created && ComplexVoucherForm.$pristine">
-                  <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.INFOS.SAVE_SUCCESS" | translate }}
-                </p>
-
             </div>
           </div>
         </div>
@@ -94,7 +84,7 @@
               </div>
 
               <div class="pull-right">
-                <button class="btn btn-default" ng-click="ComplexVoucherCtrl.addVoucherItem()">
+                <button type="button" class="btn btn-default" ng-click="ComplexVoucherCtrl.addVoucherItem()">
                   {{ 'VOUCHERS.COMPLEX.ADD_ITEMS' | translate }}
                   <i class="glyphicon glyphicon-plus"></i>
                 </button>
@@ -119,6 +109,7 @@
                   <td style="width:30%">
                     <input
                       ng-model="row.account"
+                      ng-change="ComplexVoucherCtrl.checkRowValidity()"
                       type="text"
                       placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
                       uib-typeahead="account as account.number + ' ' + account.label for account in ComplexVoucherCtrl.accounts | filter:$viewValue | limitTo:8"
@@ -150,6 +141,7 @@
                   </td>
                   <td style="width:15%">
                     <button class="btn btn-default btn-block"
+                      type="button"
                       ng-click="ComplexVoucherCtrl.openEntityModal(row)"
                       ng-class="{'btn-success': row.entity.type=='D', 'btn-warning': row.entity.type=='C'}">
                       <span ng-if="row.entity.uuid">
@@ -164,6 +156,7 @@
                   </td>
                   <td style="width:15%">
                     <button class="btn btn-default btn-block"
+                      type="button"
                       ng-click="ComplexVoucherCtrl.openReferenceModal(row)"
                       ng-class="{'btn-info': row.reference.uuid}">
                       <span ng-if="row.reference.uuid">
@@ -177,7 +170,9 @@
                     </button>
                   </td>
                   <td>
-                    <button class="btn btn-danger pull-right" ng-click="ComplexVoucherCtrl.removeVoucherItem($index)">
+                    <button class="btn btn-danger pull-right"
+                      type="button"
+                      ng-click="ComplexVoucherCtrl.removeVoucherItem($index)">
                       <i class="glyphicon glyphicon-trash"></i>
                     </button>
                   </td>
@@ -194,6 +189,12 @@
             </table>
 
             <div class="panel-footer">
+              <div ng-if="!ComplexVoucherCtrl.posted" class="pull-left">
+                <span ng-class="{'text-danger': !ComplexVoucherCtrl.validInput, 'text-success': ComplexVoucherCtrl.validInput}">
+                  <i ng-class="ComplexVoucherCtrl.notifyMessage.icon"></i>
+                  {{ ComplexVoucherCtrl.notifyMessage.label | translate }}
+                </span>
+              </div>
               <div class="pull-right">
                 <button
                   class="btn btn-primary"
