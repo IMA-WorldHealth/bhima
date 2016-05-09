@@ -961,6 +961,7 @@
       "ERROR_ACCOUNT"         : "Selected accounts are invalid",
       "ERROR_AMOUNT"         : "Amount's values are invalid",
       "ERROR_TOTALS"         : "The totals are not balanced",
+      "INVALID_VALUES"       : "There are invalid values detected",
       "PATIENT_INVOICE"      : "Patient Invoice",
       "PLACEHOLDER_CREDITOR" : "Enter a creditor",
       "PLACEHOLDER_DEBTOR"   : "Enter a debtor",

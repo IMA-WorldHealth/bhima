@@ -960,6 +960,7 @@
       "ERROR_ACCOUNT"         : "Les comptes selectionnés sont invalides",
       "ERROR_AMOUNT"         : "Les montants sont invalides",
       "ERROR_TOTALS"         : "Les totaux ne sont pas balancés",
+      "INVALID_VALUES"       : "Detection des valeurs invalides",
       "PATIENT_INVOICE"      : "Facture Patient",
       "PLACEHOLDER_CREDITOR" : "Entrer un crediteur",
       "PLACEHOLDER_DEBTOR"   : "Entrer un debiteur",

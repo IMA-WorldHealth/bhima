@@ -16,6 +16,8 @@ ComplexJournalVoucherController.$inject = [
  * @constructor
  *
  * @todo - Implement caching mechanism for incomplete forms (via AppCache)
+ * @todo - Implement Patient Invoices data and Cash Payment data for modal
+ * @todo - Implement a mean to categorise transactions for cashflow reports 
  */
 function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify) {
   var vm = this;
@@ -27,7 +29,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   }];
 
   // bind the startup method as a reset method
-  vm.reset  = startup;
   vm.submit = submit;
   vm.currencySymbol     = currencySymbol;
   vm.addVoucherItem     = addVoucherItem;
@@ -62,16 +63,19 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     return Currencies.symbol(currency_id);
   }
 
+  /** Add transaction row */
   function addVoucherItem() {
     vm.rows.push(generateRow());
     checkRowValidity();
   }
 
+  /** remove transaction row */
   function removeVoucherItem(index) {
     vm.rows.splice(index, 1);
     checkRowValidity();
   }
 
+  /** generate row element */
   function generateRow() {
     return {
       account_id    : undefined,
@@ -82,6 +86,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     };
   }
 
+  /** clean and generate voucher correct data */
   function handleVoucher() {
     var voucher;
     if (vm.sumCredit === vm.sumDebit) {
@@ -97,6 +102,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     return voucher;
   }
 
+  /** clean and generate voucher items data */
   function handleVoucherItems() {
     var voucherItems = [];
     if (vm.validInput) {
@@ -187,6 +193,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     });
   }
 
+  /** select account id for the row */
   function selectAccount(account, row) {
     row.account_id = account.id;
     checkRowValidity();
@@ -217,11 +224,12 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     vm.sumCredit = 0;
   }
 
+  /** submit data */
   function submit(form) {
 
     // stop submission if the form is invalid
     if (form.$invalid) {
-      console.log('invalid');
+      Notify.danger('VOUCHERS.COMPLEX.INVALID_VALUES');
       return;
     }
 
