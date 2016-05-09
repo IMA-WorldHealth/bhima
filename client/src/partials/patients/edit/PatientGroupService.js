@@ -37,7 +37,7 @@ function PatientGroupModal(Modal) {
           return patientEntity;
         },
 
-        // FIXME
+        /** @todo investigate passing multiple params through $modal.close to remove callback methods */
         updateModel : function () {
           return callback;
         }
@@ -46,7 +46,8 @@ function PatientGroupModal(Modal) {
 
     angular.extend(debtorGroupConfig, modalConfig);
 
-    return Modal.open(debtorGroupConfig);
+    var modalInstance = Modal.open(debtorGroupConfig);
+    return modalInstance.result;
   }
 
   function updateGroupConfig(patientEntity, groups, callback) {
@@ -61,7 +62,7 @@ function PatientGroupModal(Modal) {
           return groups;
         },
 
-        // FIXME
+        /** @todo investigate passing multiple params through $modal.close to remove callback methods */
         updateModel : function () {
           return callback;
         }
@@ -70,6 +71,7 @@ function PatientGroupModal(Modal) {
 
     angular.extend(patientGroupConfig, modalConfig);
 
-    return Modal.open(patientGroupConfig);
+    var modalInstance = Modal.open(patientGroupConfig);
+    return modalInstance.result;
   }
 }

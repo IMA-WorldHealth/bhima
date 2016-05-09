@@ -1,32 +1,18 @@
-// TODO Known bug: If a patients hospital number is updated the original registered value will still
-// be the only value ignored by the validation - the new value will be reported as an error if changed 'already registered'
-
-// TODO Refactor patient find directive to not use $scope.watch
-// TODO No action is taken if default parameter is not a valid patient
-
-// FIXME Patient UUID reference downloads and searches for patient redundantly
-// this should be addressed by updating the find patient directive to only return a UUID
-// and have the page responsible for using the UUID as required (potentially optionally?)
-
-// TODO Address location/ routing hack, deep linking functionality should not be implemented
-// in a different way by every controller - apply uniform (routing?) standards across pages
 angular.module('bhima.controllers')
 .controller('PatientEdit', PatientEdit);
 
 PatientEdit.$inject = [
-  '$scope', '$translate', '$stateParams', '$anchorScroll',
-  '$uibModal', 'PatientService', 'util', 'moment', 'NotifyService',
-  'ScrollService', 'PatientGroupModal'
+  '$stateParams', 'PatientService', 'util', 'moment', 'NotifyService', 'ScrollService', 'PatientGroupModal'
 ];
 
-function PatientEdit($scope, $translate, $stateParams, $anchorScroll, $uibModal, patients, util, moment, Notify, ScrollTo, GroupModal) {
-  var viewModel = this;
+function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, GroupModal) {
+  var vm = this;
   var referenceId = $stateParams.uuid;
-
-  viewModel.patient = null;
-  viewModel.unknownId = false;
-  viewModel.minDOB = util.minDOB;
-  viewModel.maxDOB = util.maxDOB;
+  
+  vm.patient = null;
+  vm.unknownId = false;
+  vm.minDOB = util.minDOB;
+  vm.maxDOB = util.maxDOB;
 
 
   if (referenceId) {
@@ -35,13 +21,15 @@ function PatientEdit($scope, $translate, $stateParams, $anchorScroll, $uibModal,
 
   function buildPage(patientId) {
     collectPatient(patientId)
-      .then(function (result) {
+      .then(function () {
 
         return collectGroups(patientId);
       })
       .catch(function (error) {
-
-        viewModel.unknownId = true;
+        
+        // handle error and update view to show no results - this could be improved
+        Notify.handleError(error);
+        vm.unknownId = true;
       });
   }
 
@@ -50,16 +38,16 @@ function PatientEdit($scope, $translate, $stateParams, $anchorScroll, $uibModal,
     // TODO Full patient/details object should be passed through find patient directive
     // 1. Only download id + name in patient directive
     // 2. Download full patients/details on selection
-    return patients.detail(patientId)
+    return patients.read(patientId)
       .then(function (patient) {
 
         formatPatientAttributes(patient);
-        viewModel.medical = patient;
+        vm.medical = patient;
       });
   }
 
   function formatPatientAttributes(patient) {
-
+    
     // Sanitise DOB for HTML Date Input
     patient.dob = new Date(patient.dob);
 
@@ -68,11 +56,6 @@ function PatientEdit($scope, $translate, $stateParams, $anchorScroll, $uibModal,
           ' ', patient.middle_name,
           ' ', patient.last_name);
 
-    // Assign age
-    // FIXME Translate value is not returned unless page is fully initialised - this will usually fail on refresh
-    /*$translate('PATIENT_EDIT.'.concat(patient.sex))
-      .then(function (res) { patient.displayGender = res; });*/
-
     patient.displayGender = patient.sex;
     patient.displayAge = moment().diff(patient.dob, 'years');
   }
@@ -80,27 +63,26 @@ function PatientEdit($scope, $translate, $stateParams, $anchorScroll, $uibModal,
   function collectGroups(patientId) {
     patients.groups(patientId)
       .then(function (result) {
-        viewModel.finance = {patientGroups : result};
+        vm.finance = {patientGroups : result};
       });
   }
 
   // Update the view to reflect changes made in update modal
   function updateDebtorModel(debtorGroupUuid, debtorGroupName) {
-    viewModel.medical.debtor_group_uuid = debtorGroupUuid;
-    viewModel.medical.debtor_group_name = debtorGroupName;
-    viewModel.updatedDebtorGroup = true;
+    vm.medical.debtor_group_uuid = debtorGroupUuid;
+    vm.medical.debtor_group_name = debtorGroupName;
+    Notify.success('FORM.INFO.UPDATE_SUCCESS');
   }
 
   // Update the view to reflect changes made in update modal
   function updatePatientGroupsModel(updated) {
-    viewModel.updatedPatientGroups = true;
-    viewModel.finance.patientGroups = [];
-
-    viewModel.finance.patientGroups = updated;
+    vm.finance.patientGroups = [];
+    Notify.success('FORM.INFO.UPDATE_SUCCESS');
+    vm.finance.patientGroups = updated;
   }
 
   // TODO Clearer naming conventions
-  viewModel.updatePatient = function updatePatient(patientDetailsForm) {
+  vm.updatePatient = function updatePatient(patientDetailsForm) {
     var submitPatient;
     patientDetailsForm.$setSubmitted();
 
@@ -116,20 +98,17 @@ function PatientEdit($scope, $translate, $stateParams, $anchorScroll, $uibModal,
 
     submitPatient = util.filterDirtyFormElements(patientDetailsForm);
 
-    // TODO Use latest data formatting/ sanitastion standards
-    // Ensure date is submitted in a valid format
     if (submitPatient.dob) {
       submitPatient.dob = util.sqlDate(submitPatient.dob);
     }
 
-    patients.update(viewModel.medical.uuid, submitPatient)
+    patients.update(vm.medical.uuid, submitPatient)
       .then(function (updatedPatient) {
-
         Notify.success('FORM.INFOS.UPDATE_SUCCESS');
 
         // Update view
         formatPatientAttributes(updatedPatient);
-        viewModel.medical = updatedPatient;
+        vm.medical = updatedPatient;
 
         // Reset forms dirty values
         patientDetailsForm.$setPristine();
@@ -138,23 +117,15 @@ function PatientEdit($scope, $translate, $stateParams, $anchorScroll, $uibModal,
       .catch(Notify.handleError);
   };
 
-  viewModel.updateDebtorGroup = function updateDebtorGroup() {
-
-    // Reset updated flag
-    viewModel.updatedDebtorGroup = false;
-
-    GroupModal.updateDebtor(viewModel.medical, updateDebtorModel);
+  vm.updateDebtorGroup = function updateDebtorGroup() {
+    GroupModal.updateDebtor(vm.medical, updateDebtorModel);
   };
 
-  viewModel.updatePatientGroups = function updatePatientGroups() {
-
-    // Reset updated flag
-    viewModel.updatedPatientGroups = false;
-
-    GroupModal.updateGroupConfig(viewModel.medical, viewModel.finance.patientGroups, updatePatientGroupsModel);
+  vm.updatePatientGroups = function updatePatientGroups() {
+    GroupModal.updateGroupConfig(vm.medical, vm.finance.patientGroups, updatePatientGroupsModel);
   };
 
-  viewModel.scrollToSubmission = function scrollToSubmission() {
+  vm.scrollToSubmission = function scrollToSubmission() {
     ScrollTo('submission');
   };
 }

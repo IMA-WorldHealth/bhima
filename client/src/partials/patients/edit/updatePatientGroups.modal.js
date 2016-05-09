@@ -12,22 +12,15 @@ function UpdatePatientGroups($scope, $uibModalInstance, patients, sessionPatient
   sessionGroups.forEach(function (patientGroup) { 
     viewModel.subscribedGroups[patientGroup.uuid] = true; 
   });
-  // /TODO
-  
-  console.log('session', sessionGroups);
 
   // TODO Handle errors with generic modal exception display (inform system administrator)
   patients.groups()
     .then(function (result) { 
-      console.log('got results', result);
       viewModel.patientGroups = result;
     });
 
   viewModel.confirmGroups = function confirmGroup() { 
     var formIsUpdated = $scope.groupForm.$dirty;
-    var updateRequest;
-
-    console.log($scope.groupForm);
     
     // Simply exit the modal
     if (!formIsUpdated) { 
@@ -35,9 +28,8 @@ function UpdatePatientGroups($scope, $uibModalInstance, patients, sessionPatient
       return;
     }
 
-    console.log(viewModel.subscribedGroups);
     patients.updateGroups(sessionPatient.uuid, viewModel.subscribedGroups)
-      .then(function (result) { 
+      .then(function () { 
 
         // TODO move to method
         var formatControllerResponse = [];
@@ -45,13 +37,10 @@ function UpdatePatientGroups($scope, $uibModalInstance, patients, sessionPatient
         // Fetch each of the updated group definitions and collect them in an array 
         Object.keys(viewModel.subscribedGroups).forEach(function (groupKey) { 
           
-          console.log('checking key', groupKey);
-          console.log(viewModel.subscribedGroups[groupKey]);
           if (viewModel.subscribedGroups[groupKey]) { 
             formatControllerResponse.push(fetchGroupObject(groupKey));
           }
         });
-        // /TODO 
         
         updateModel(formatControllerResponse);
         closeModal();
@@ -61,14 +50,12 @@ function UpdatePatientGroups($scope, $uibModalInstance, patients, sessionPatient
   // TODO Refactor - use stores?
   function fetchGroupObject(uuid) { 
     var groupObject;
-    console.log('fetch', uuid);
     viewModel.patientGroups.some(function (patientGroup) { 
       if (patientGroup.uuid === uuid) {
         groupObject = patientGroup;
         return true;
       }
     });
-    console.log('return', groupObject);
     return groupObject;
   }
   

@@ -35,12 +35,6 @@
               <div class="form-group">
                 <label class="control-label">{{ "FORM.LABELS.GROUPS_PATIENT_TITLE" | translate }}</label>
 
-                <p
-                  class="text-success form-control-static"
-                  ng-if="PatientEditCtrl.updatedPatientGroups">
-                  <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}
-                </p>
-
                 <!-- Iterate through patient groups -->
                  <ul
                  class="form-control-static"
@@ -66,12 +60,6 @@
               <!-- Debtor Group -->
               <div class="form-group">
                 <label class="control-label">{{ "FORM.LABELS.GROUPS_DEBTOR_TITLE" | translate }}</label>
-
-                <p
-                  class="text-success form-control-static"
-                  ng-if="PatientEditCtrl.updatedDebtorGroup">
-                  <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}
-                </p>
 
                 <ul class="form-control-static">
                   <li>{{ PatientEditCtrl.medical.debtor_group_name }}</li>
