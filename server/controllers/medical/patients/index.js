@@ -10,6 +10,8 @@
  * @requires lib/node-uuid
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
+ * @requires medical/patients/groups
+ * @requires medical/patients/documents
  *
  * @todo Review naming conventions
  * @todo Remove or refactor methods to fit new API standards
@@ -23,9 +25,11 @@ const uuid = require('node-uuid');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
 const groups = require('./groups');
+const documents = require('./documents');
 
-// bind groups
+// bind submodules
 exports.groups = groups;
+exports.documents = documents;
 
 // create a new patient
 exports.create = create;

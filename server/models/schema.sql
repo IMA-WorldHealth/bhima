@@ -1206,7 +1206,9 @@ DROP TABLE IF EXISTS `patient_document`;
 CREATE TABLE `patient_document` (
   `uuid`         BINARY(16) NOT NULL,
   `patient_uuid` BINARY(16) NOT NULL,
-  `path`         TEXT NOT NULL,
+  `label`        TEXT NOT NULL,
+  `link`         TEXT NOT NULL,
+  `timestamp`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

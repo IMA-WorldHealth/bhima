@@ -8,7 +8,7 @@
  * controllers, allowing for modules to subscribe to different
  * levels of authority
  */
-var winston              = require('winston');
+const winston            = require('winston');
 var auth                 = require('../controllers/auth');
 var data                 = require('../controllers/data');
 var users                = require('../controllers/users');
@@ -18,7 +18,6 @@ var patients             = require('../controllers/medical/patients');
 var patientGroups        = require('../controllers/medical/patientGroups');
 var snis                 = require('../controllers/medical/snis');
 var projects             = require('../controllers/medical/projects');
-var legacyReports        = require('../controllers/reports/report_legacy');
 var reports              = require('../controllers/reports/reports.js');
 var inventory            = require('../controllers/stock/inventory');
 var depots               = require('../controllers/stock/depot');
@@ -66,6 +65,8 @@ var referenceGroup       = require('../controllers/finance/referenceGroup');
 var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
 var creditors            = require('../controllers/finance/creditors.js');
+
+const upload = require('../lib/uploader');
 
 // expose routes to the server.
 exports.configure = function (app) {
@@ -193,7 +194,6 @@ exports.configure = function (app) {
   // trial balance routes
   app.post('/journal/trialbalance', trialbalance.postTrialBalance);
   app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
-
 
   // ledger routes
   // TODO : needs renaming
@@ -356,6 +356,11 @@ exports.configure = function (app) {
   // app.get('/patients/search', patient.search);
   app.get('/patients/search/name/:value', patients.searchFuzzy);
   app.get('/patients/search/reference/:value', patients.searchReference);
+
+  app.get('/patients/:uuid/documents', patients.documents.list);
+  app.post('/patients/:uuid/documents', upload.middleware('docs', 'documents'), patients.documents.create);
+  app.delete('/patients/:uuid/documents/all', patients.documents.deleteAll);
+  app.delete('/patients/:uuid/documents/:documentUuid', patients.documents.delete);
 
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
