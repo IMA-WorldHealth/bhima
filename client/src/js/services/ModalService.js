@@ -25,9 +25,14 @@ ModalService.$inject = [ '$uibModal' ];
  */
 function ModalService(Modal) {
   var service = this;
-  
+
   service.alert = alert;
-  service.confirm = confirm;  
+  service.confirm = confirm;
+  service.openSelectCashbox = openSelectCashbox;
+  service.openPatientReceipt = openPatientReceipt;
+  service.openDebtorInvoices = openDebtorInvoices;
+  service.openTransfer = openTransfer;
+
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -55,7 +60,7 @@ function ModalService(Modal) {
     return instance.result;
   }
 
-  function alert(prompt, options) { 
+  function alert(prompt, options) {
     // default options for modal rendering
     var opts = options || {};
 
@@ -69,5 +74,80 @@ function ModalService(Modal) {
     });
   }
 
+  /**
+   * Select cashbox modal
+   */
+  function openSelectCashbox(request) {
+    var cashboxIsSet = request.cashbox && request.cashbox.id;
+    var instance = Modal.open({
+      templateUrl : 'partials/cash/modals/selectCashbox.modal.html',
+      controller  : 'SelectCashboxModalController',
+      controllerAs: '$ctrl',
+      size        : 'md',
+      backdrop    : 'static',
+      animation   : true,
+      resolve     : {
+        cashboxId : function () { return request.cashboxId || cashboxIsSet; }
+      }
+    });
+
+    return instance.result;
+  }
+
+  /**
+   * Cash Receipt Modal
+   */
+  function openPatientReceipt(request) {
+
+    var instance = Modal.open({
+      templateUrl: 'partials/cash/modals/receipt.modal.html',
+      controller:  'CashReceiptModalController as CashReceiptModalCtrl',
+      size:        'md',
+      backdrop:    'static',
+      animation:   false,
+      resolve : {
+        uuid : function uuidProvider() { return request.uuid; },
+        patientUuid : function patientUuidProvider() { return request.patientUuid; }
+      }
+    });
+  }
+
+  function openDebtorInvoices(request) {
+
+    var instance = Modal.open({
+      templateUrl: 'partials/cash/modals/invoices.modal.html',
+      controller:  'CashInvoiceModalController as CashInvoiceModalCtrl',
+      size:        'md',
+      backdrop:    'static',
+      animation:   false,
+      resolve:     {
+        debtorId:  function debtorIdProvider() { return request.debtorUuid; },
+        invoiceIds : function invoiceIdsProvider() {
+
+          if (!request.invoices) { return []; }
+
+          return request.invoices.map(function (invoice) {
+            return invoice.sale_uuid;
+          });
+        }
+      }
+    });
+
+    return instance.result;
+  }
+
+  function openTransfer(request) {
+
+    var instance = Modal.open({
+      templateUrl: 'partials/cash/modals/transfer.modal.html',
+      controller:  'CashTransferModalController as CashTransferModalCtrl',
+      size:        'md',
+      backdrop:    'static',
+      animation:   true,
+      resolve:     {
+        cashBox:  function cashBoxProvider() { return request.cashbox; }
+      }
+    });
+  }
 
 }

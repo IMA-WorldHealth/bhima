@@ -77,7 +77,7 @@
         "LINK"            : "Click here to add it.",
         "MISSING"         : "Don't see your cashbox?",
         "TRANSFER"        : "Transfer Funds",
-        "UNCONFIGURED"    : "You have not configured a cashbox yet.  Please choose a cashbox from the list below to continue."
+        "UNCONFIGURED"    : "You have not configured a cashbox yet.  Please choose a cashbox by clicking the button (Change Cashbox)"
       },
         "DEBTOR_INVOICES" : "Debtor Invoices",
         "RECEIPTS_TITLE"  : "Cash Payment Receipt",

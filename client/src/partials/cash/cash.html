@@ -3,7 +3,7 @@
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
       <li class="static">{{ "CASH.TITLE" | translate }}</li>
-      <li class="title">{{ CashCtrl.cashbox.text }}</li>
+      <li class="title">{{ CashCtrl.cashbox.label }}</li>
     </ol>
   </div>
 </div>
@@ -13,28 +13,42 @@
     <div class="row">
 
       <!-- Switch Cashbox Form and Transfer -->
-      <div class="col-md-4 col-md-push-8 pad-bottom">
-        <p>
-          <button class="btn btn-warning" ng-click="CashCtrl.changeCashbox()" data-change-cashbox>
-            <span class="glyphicon glyphicon-inbox"></span> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
-          </button>
-        </p>
+      <div class="col-md-2">
 
-        <p>
-          <button class="btn btn-primary" ng-click="CashCtrl.openTransferModal()" data-perform-transfer>
-            <span class="glyphicon glyphicon-export"></span> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
-          </button>
-        </p>
+        <button class="btn btn-warning btn-block" ng-click="CashCtrl.openSelectCashboxModal()" data-change-cashbox>
+          <span class="glyphicon glyphicon-inbox"></span> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
+        </button>
+
+        <button class="btn btn-primary btn-block" ng-click="CashCtrl.openTransferModal()" data-perform-transfer>
+          <span class="glyphicon glyphicon-export"></span> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
+        </button>
+
+        <div class="alert alert-info btn-block">
+          <p style="margin-bottom: 10px;" ng-if="!CashCtrl.cashbox.id">
+            <i class="glyphicon glyphicon-info-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.UNCONFIGURED" | translate }}
+            <span class="glyphicon glyphicon-inbox"></span>
+          </p>
+
+          <p>
+            <i class="glyphicon glyphicon-question-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
+            <a href="#/cashboxes">
+              <i class="glyphicon glyphicon-link"></i> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
+            </a>
+          </p>
+        </div>
+
       </div>
 
       <!-- Cash Voucher Form -->
-      <div class="col-md-8 col-md-pull-4">
+      <div class="col-md-8">
         <div class="panel panel-primary">
           <div class="panel-heading">
             <span class="glyphicon glyphicon-barcode"></span>
-            {{ "CASH.VOUCHER.SLIP" | translate }}
+            {{ "CASH.VOUCHER.SLIP" | translate }} <strong> :: {{ CashCtrl.cashbox.label }} ::</strong>
           </div>
           <div class="panel-body">
+
+            <!-- <h2 class="text">{{ CashCtrl.cashbox.label }}</h2> -->
 
             <form name="CashVoucherForm" bh-submit="CashCtrl.submit()" novalidate>
 

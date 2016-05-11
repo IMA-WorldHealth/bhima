@@ -2,8 +2,9 @@ angular.module('bhima.controllers')
 .controller('CashController', CashController);
 
 CashController.$inject = [
-  'CashService', 'CashboxService', 'AppCache', 'CurrencyService', '$uibModal',
-  '$stateParams', '$location', 'PatientService', 'ExchangeRateService', 'SessionService'
+  'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
+  '$stateParams', '$location', 'PatientService', 'ExchangeRateService', 'SessionService',
+  'ModalService'
 ];
 
 /**
@@ -21,7 +22,7 @@ CashController.$inject = [
  *
  * @module bhima/controllers/CashController
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $stateParams, $location, Patients, Exchange, Session) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $location, Patients, Exchange, Session, ModalService) {
 
   /** @const controller view-model alias */
   var vm = this;
@@ -42,6 +43,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $statePara
   vm.currencies = Currencies;
   vm.openInvoicesModal = openInvoicesModal;
   vm.openTransferModal = openTransferModal;
+  vm.openSelectCashboxModal = openSelectCashboxModal;
   vm.changeCashbox = changeCashbox;
   vm.usePatient = usePatient;
   vm.hasFutureDate = hasFutureDate;
@@ -56,6 +58,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $statePara
     // to the cashboxes page.
     if (error.status === 404) {
       $location.url('/cash');
+      openSelectCashboxModal();
 
     // for any error that has a translatable error code, bind to view
     } else if (error.data && error.data.code) {
@@ -97,19 +100,58 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $statePara
    */
   function startup() {
 
+    if ((!cache.cashbox || (cache.cashbox && !cache.cashbox.id)) && !cashboxId) {
+
+      /**
+       * first case :
+       * No data in the cache && No data in stateParams
+       */
+      openSelectCashboxModal();
+
+    } else if (cache.cashbox && cache.cashbox.id && !cashboxId) {
+
+      /**
+       * second case :
+       * Data in the cache && No data in stateParams
+       * Be sure data in cache has correct authorization according project
+       */
+      Cashboxes.read(cache.cashbox.id)
+      .then(function (cashbox) {
+        cashbox = handleAuth(cashbox);
+        if (cashbox.id) {
+          vm.cashbox = cashbox;
+          cache.cashbox = cashbox;
+        } else {
+          openSelectCashboxModal();
+        }
+      }).catch(handler);
+
+    } else if (cashboxId) {
+
+      /**
+       * third case :
+       * Data in stateParams
+       * Be sure data in cache has correct authorization according project
+       */
+       Cashboxes.read(cashboxId)
+       .then(function (cashbox) {
+         cashbox = handleAuth(cashbox);
+         if (cashbox.id) {
+           vm.cashbox = cashbox;
+           cache.cashbox = cashbox;
+         } else {
+           openSelectCashboxModal();
+         }
+       }).catch(handler);
+
+    }
+
     /** This is the actual payment form */
     vm.payment = { date : new Date() };
 
     // timestamp to compare date values
     vm.timestamp = new Date();
     vm.enterprise = Session.enterprise;
-
-    // load the cashbox on startup
-    Cashboxes.read(cashboxId)
-    .then(function (cashbox) {
-      vm.cashbox = cashbox;
-      cache.cashbox = cashbox;
-    }).catch(handler);
 
     // load currencies for later templating
     Currencies.read();
@@ -118,24 +160,8 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $statePara
     Exchange.read();
   }
 
-  // submits the form to the server
-  function submit() {
-
-    // make sure the form cannot be clicked more than once via disabling.
-
-    // add in the cashbox id
-    vm.payment.cashbox_id = cashboxId;
-
-    // submit the cash payment
-    return Cash.create(vm.payment)
-    .then(function (response) {
-
-      // display the receipt in a modal
-      openReceiptModal(response.uuid);
-    })
-    .catch(function (error) {
-      vm.HttpError = error; 
-    });
+  function handleAuth(cashbox) {
+    return (cashbox.project_id === Session.project.id && cashbox.is_auxiliary === 1) ? cashbox : {};
   }
 
   /**
@@ -151,55 +177,29 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $statePara
     vm.patient = patient;
   }
 
-  /**
-   * Cash Receipt Modal
-   */
+  /** Receipt Modal */
   function openReceiptModal(uuid) {
+    ModalService.openPatientReceipt({ uuid: uuid, patientUuid: vm.patient.uuid });
+  }
 
-    var instance = Modal.open({
-      templateUrl: 'partials/cash/modals/receipt.modal.html',
-      controller:  'CashReceiptModalController as CashReceiptModalCtrl',
-      size:        'md',
-      backdrop:    'static',
-      animation:   false,
-      resolve : {
-        uuid : function uuidProvider() { return uuid; },
-        patientUuid : function patientUuidProvider() { return vm.patient.uuid; }
-      }
+  /** Transfer Modal */
+  function openTransferModal() {
+    ModalService.openTransfer({ cashbox: vm.cashbox });
+  }
+
+  /** Select Cashbox Modal */
+  function openSelectCashboxModal() {
+    ModalService.openSelectCashbox({ cashbox: cache.cashbox, cashboxId: cashboxId })
+    .then(function (result) {
+      vm.cashbox = result;
+      $location.url('/cash/' + vm.cashbox.id);
     });
   }
 
-  /**
-   * receive open invoices from the invoice modal
-   *
-   * @todo refactor this into a separate invoices modal component, that can
-   * be injected into any controller.
-   */
+  /** Debtor Invoices Modal */
   function openInvoicesModal() {
-
-    var instance = Modal.open({
-      templateUrl: 'partials/cash/modals/invoices.modal.html',
-      controller:  'CashInvoiceModalController as CashInvoiceModalCtrl',
-      size:        'md',
-      backdrop:    'static',
-      animation:   false,
-      resolve:     {
-        debtorId:  function debtorIdProvider() { return vm.payment.debtor_uuid; },
-        invoiceIds : function invoiceIdsProvider() {
-
-          // if no invoices have been initialized, pass in an empty array.
-          if (!vm.payment.invoices) { return []; }
-
-          return vm.payment.invoices.map(function (invoice) {
-            return invoice.sale_uuid;
-          });
-        }
-      }
-    });
-
-    // fired when the modal closes
-    instance.result.then(function (result) {
-
+    ModalService.openDebtorInvoices({ debtorUuid: vm.payment.debtor_uuid, invoices: vm.payment.invoices })
+    .then(function (result) {
       // clear HTTP errors if we are taking further action.
       vm.HttpError = null;
 
@@ -210,20 +210,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $statePara
       vm.slip = {};
       vm.slip.rawTotal = result.total;
       digestExchangeRate();
-    });
-  }
-
-  function openTransferModal() {
-
-    var instance = Modal.open({
-      templateUrl: 'partials/cash/modals/transfer.modal.html',
-      controller:  'CashTransferModalController as CashTransferModalCtrl',
-      size:        'md',
-      backdrop:    'static',
-      animation:   true,
-      resolve:     {
-        cashBox:  function cashBoxProvider() { return vm.cashbox; }
-      }
     });
   }
 
@@ -245,6 +231,24 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Modal, $statePara
     // bind the correct exchanged total
     vm.slip.total =
       Exchange.convertFromEnterpriseCurrency(vm.payment.currency_id, vm.payment.date, vm.slip.rawTotal);
+  }
+
+  // submits the form to the server
+  function submit() {
+
+    // add in the cashbox id
+    vm.payment.cashbox_id = cashboxId;
+
+    // submit the cash payment
+    return Cash.create(vm.payment)
+    .then(function (response) {
+
+      // display the receipt in a modal
+      openReceiptModal(response.uuid);
+    })
+    .catch(function (error) {
+      vm.HttpError = error;
+    });
   }
 
   // start up the module

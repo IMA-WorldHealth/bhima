@@ -74,7 +74,7 @@
         "LINK"            : "Cliquez ici pour l'ajouter.",
         "MISSING"         : "Vous ne trouvez pas votre caisse?",
         "TRANSFER"        : "Transférer Fonds",
-        "UNCONFIGURED"    : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse dans la liste ci-dessous pour continuer."
+        "UNCONFIGURED"    : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse en cliquant sur le bouton (Changer de Caisse)"
       },
       "DEBTOR_INVOICES" : "Factures des débiteurs",
       "RECEIPTS_TITLE"  : "Reçu de paiement des factures",
@@ -133,7 +133,7 @@
         "INFO" : "Avec cette configuration, tous les membres de ce groupe débiteur sera exonéré de paiement des services de facturation appliqués automatiquement",
         "LABEL" : "Ce groupe est exempté du paiement des services de facturation"
       }
-    },    
+    },
     "TITLE"          : "Gestion des Groupes des Débiteurs",
     "SUBSCRIBED"     : "Débiteurs abonnés",
     "UPDATED"        : "Enregistrement du groupe débiteur mis à jour"
@@ -565,7 +565,7 @@
     "VIEW_PATIENT_RECORDS" : "Voir Tous les enregistrements"
   },
   "PATIENT_REGISTRY" : {
-    "DAY"                   : "jour",              
+    "DAY"                   : "jour",
     "DAYS"                  : "jours",
     "MONTH"                 : "mois",
     "MONTHS"                : "mois",
@@ -720,7 +720,7 @@
       "EXCHANGE_RATE"      : "Taux de change",
       "FILTERING": {
         "LABEL"   : "Filtre"
-      },      
+      },
       "FIRST_NAME"         : "Prenom",
       "FUNCTION"           : "Fonction",
       "GENDER"             : "Genre",
@@ -733,8 +733,8 @@
       "IS_WAREHOUSE"       : "Entrepôt ?",
       "LABEL"              : "Label",
       "LAST_NAME"          : "Nom",
-      "LAST_TRANSACTION"   : "Derniers Transactions",      
-      "LAST_VISIT"         : "Derniere visite",      
+      "LAST_TRANSACTION"   : "Derniers Transactions",
+      "LAST_VISIT"         : "Derniere visite",
       "LISTS"              : "Liste des prix enregistrés",
       "LOADING"            : "Récupération des données à partir du serveur.",
       "LOCKED"             : "Bloquée",
@@ -769,7 +769,7 @@
         "CREATED_ASC" : "Le plus ancien",
         "CREATED_DSC" : "Le plus récent",
         "TOTAL_ASC" : "Le plus grand"
-      },      
+      },
       "TEXT"               : "Text",
       "TOTAL"              : "Total",
       "TYPE"               : "Type",

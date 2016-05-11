@@ -418,14 +418,11 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* cash routes */
-
-  .state('/cash', {
-    url : '/cash',
-    controller: 'CashboxSelectController as CashboxSelectCtrl',
-    templateUrl: '/partials/cash/cashboxSelect.html'
-  })
   .state('/cash/:id', {
     url : '/cash/:id',
+    params : {
+      id : { squash: true, value: null }
+    },
     controller: 'CashController as CashCtrl',
     templateUrl: '/partials/cash/cash.html'
   })
