@@ -11,9 +11,6 @@ function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateMo
     .then(function (debtorGroups) { 
   
       viewModel.debtor_group_uuid = patient.debtor_group_uuid;
-
-      // setDebtorGroup(patient.debtor_group_uuid);
-
       viewModel.debtorGroups = debtorGroups;
     });
 
@@ -58,6 +55,6 @@ function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateMo
   viewModel.closeModal = closeModal;
 
   function closeModal() { 
-    $uibModalInstance.close(1, 2, 3);
+    $uibModalInstance.close();
   }
 }

@@ -26,7 +26,7 @@ function PatientGroupModal(Modal) {
    * This function if responsible for configuring and openening a modal to update
    * debtor groups given a patient and a complete callback
    *
-   * @params Object     patientEntity
+   * @param Object     patientEntity
    */
   function updateDebtor(patientEntity, callback) {
     var debtorGroupConfig = {

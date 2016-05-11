@@ -51,6 +51,7 @@
               <div class="form-group">
 
                 <button
+                  data-update-group-patient
                   id="submission"
                   class="btn btn-warning btn-block"
                   ng-click="PatientEditCtrl.updatePatientGroups()">{{ "FORM.BUTTONS.GROUPS_PATIENT_UPDATE" | translate }}
@@ -70,6 +71,7 @@
               <div class="form-group">
 
                 <button
+                  data-update-group-debtor
                   class="btn btn-warning btn-block"
                   ng-click="PatientEditCtrl.updateDebtorGroup()">{{ "FORM.BUTTONS.GROUPS_DEBTOR_UPDATE" | translate }}</button>
               </div>
@@ -93,7 +95,7 @@
               <div class="form-horizontal">
 
                 <div class="form-group">
-                  <label for="date-registered" class="col-md-3 control-label">{{ "PATIENT_EDIT.REGISTERED" | translate }}</label>
+                  <label class="col-md-3 control-label">{{ "PATIENT_EDIT.REGISTERED" | translate }}</label>
                   <div class="col-md-9">
                     <p class="form-control-static"><span am-time-ago="PatientEditCtrl.medical.registration_date"></span></p>
                   </div>
@@ -153,7 +155,6 @@
                     <span ng-if="patientDetails.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
                     <!-- <p ng-if="patientDetails.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
 
-                    <!-- TODO Translate -->
                     <p id="hospitalNumber-alert" ng-if="patientDetails.$error.hospitalNumber" class="help-block">{{ "FORM.LABELS.PATIENT_EXIST" | translate }}</p>
                   </div>
                 </div>
@@ -217,6 +218,7 @@
               <!-- Submission -->
                 <button
                   type="submit"
+                  data-method="submit"
                   ng-click="PatientEditCtrl.updatePatient(patientDetails)"
                   class="btn btn-sm btn-primary">{{ "FORM.BUTTONS.SUBMIT_CHANGES" | translate }}</button>
             </div>
