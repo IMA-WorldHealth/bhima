@@ -545,14 +545,14 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'PatientGroupController as PatientGroupCtrl',
     templateUrl: 'partials/patients/groups/groups.html'
   })
-  .state('/patients/groups/assignment', {
-    controller: 'AssignPatientGroupController',
-    templateUrl: 'partials/patients/groups/assignment.html'
+
+  /* Patient record */
+  .state('patientRecord', {
+    url : '/patients/:patientID',
+    controller: 'PatientRecordController as PatientRecordCtrl',
+    templateUrl: 'partials/patients/record/patient_record.html'
   })
-  .state('/patients/debtor', {
-    controller : 'group.debtor.reassignment',
-    templateUrl : 'partials/patients/debtor/swap.html'
-  })
+
   .state('/trialbalance/print', {
     controller : 'TrialBalancePrintController as PrintCtrl',
     templateUrl : 'partials/journal/trialbalance/print.html'

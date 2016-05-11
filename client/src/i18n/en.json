@@ -576,6 +576,9 @@
     "TITLE"                : "Title",
     "VIEW_PATIENT_RECORDS" : "View Patient Records"
   },
+  "PATIENT_RECORDS": {
+    "TITLE" : "Patients"
+  },
   "PATIENT_REGISTRY" : {
     "DAY"                   : "day",
     "DAYS"                  : "days",
