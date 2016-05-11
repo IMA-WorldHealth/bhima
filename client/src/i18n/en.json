@@ -216,6 +216,7 @@
       "LOGOUT"                : "Logout",
       "NOT_CONFIGURED"        : "Not Configured",
       "OK"                    : "OK",
+      "PRINT"                 : "Print",
       "RECOVER_ITEMS"         : "Recover Items",
       "REGISTER_PATIENT"      : "Register Patient",
       "RESET"                 : "Reset",

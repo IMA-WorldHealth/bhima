@@ -207,7 +207,8 @@ INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
 
 INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (1,'Test Primary Cashbox A',1,0),
-  (2,'Test Aux Cashbox B',1,1);
+  (2,'Test Aux Cashbox A',1,1),
+  (3,'Test Aux Cashbox B',1,1);
 
 INSERT INTO `cash_box_account_currency` VALUES
   (1,1,1,3626,3626),
@@ -254,7 +255,7 @@ INSERT INTO `patient` VALUES
 INSERT INTO `patient_visit` VALUES
   (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', 1),
   (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2016-04-28 00:00:00', 3),
-  (HUID('4c6aa8b4da22-847d-710f-9fb5-112a9b20'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2016-01-10 00:00:00', 2);  
+  (HUID('4c6aa8b4da22-847d-710f-9fb5-112a9b20'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2016-01-10 00:00:00', 2);
 
 INSERT INTO `assignation_patient` VALUES
   (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'));

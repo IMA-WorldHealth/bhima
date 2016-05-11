@@ -4,6 +4,7 @@
 
 <div class="list-group">
   <button type="button" class="list-group-item"
+    id="cashbox_{{ cash.id }}"
     ng-repeat="cash in $ctrl.cashboxes"
     ng-click="$ctrl.selectCashbox(cash.id, $index)"
     ng-class="{'active' : $ctrl.indexSelected === $index}">
@@ -14,14 +15,14 @@
 </div>
 
 <div class="modal-footer">
-  <button type="button" name="button" class="pull-left btn btn-default"
+  <button type="button" id="modal-cancel" class="pull-left btn btn-default"
     ng-click="$ctrl.dismiss()"
-    ng-disabled="!$ctrl.cashboxId">
+    ng-disabled="!$ctrl.cashboxId" data-cashbox-modal-cancel>
     {{ 'FORM.BUTTONS.CANCEL' | translate }}
   </button>
-  <button type="button" name="button" class="pull-right btn btn-primary"
+  <button type="button" id="modal-ok" class="pull-right btn btn-primary"
     ng-click="$ctrl.close()"
-    ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id">
+    ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id" data-cashbox-modal-submit>
     {{ 'FORM.BUTTONS.OK' | translate }}
   </button>
   <div class="clearfix"></div>

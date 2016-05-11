@@ -102,7 +102,13 @@
 </div>
 
 <div class="modal-footer">
-  <button  class="btn btn-success" ng-click="CashReceiptModalCtrl.cancel()">
-    {{ "FORM.BUTTONS.DISMISS" | translate }}
+  <button  class="pull-left btn btn-default" ng-click="CashReceiptModalCtrl.cancel()">
+    {{ "FORM.BUTTONS.CANCEL" | translate }}
   </button>
+
+  <button  class="pull-right btn btn-primary" ng-click="CashReceiptModalCtrl.print()">
+    <i class="glyphicon glyphicon-print"></i>
+    {{ "FORM.BUTTONS.PRINT" | translate }}
+  </button>
+  <div class="clearfix"></div>
 </div>
