@@ -11,7 +11,7 @@ const components = require('../shared/components');
 describe('Debtor Groups', function () {
   'use strict';
 
-  before(() => browser.get('#/debtor_groups'));
+  before(() => helpers.navigate('#/debtor_groups'));
 
   const groupUuid = '4de0fe47-177f-4d30-b95f-cff8166400b4';
 

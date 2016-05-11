@@ -2,17 +2,17 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const FormUtils = require('../shared/FormUtils');
+const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Services Module', function () {
+describe('Services', function () {
 
   // shared methods
   const path = '#/services';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const SERVICE = {
     name : 'A service E2E',
@@ -24,44 +24,44 @@ describe('Services Module', function () {
   const DELETE_ERROR = 3;
 
   it('successfully creates a new service', function () {
-    FormUtils.buttons.create();
+    FU.buttons.create();
 
-    FormUtils.input('ServicesCtrl.service.name', SERVICE.name);
+    FU.input('ServicesCtrl.service.name', SERVICE.name);
 
     // select a random, enterprise
-    FormUtils.select('ServicesCtrl.service.enterprise_id')
+    FU.select('ServicesCtrl.service.enterprise_id')
       .enabled()
       .first()
       .click();
 
     // select a random, cost center
-    FormUtils.select('ServicesCtrl.service.cost_center_id')
+    FU.select('ServicesCtrl.service.cost_center_id')
       .enabled()
       .first()
       .click();
 
     // select a random, profit center
-    FormUtils.select('ServicesCtrl.service.profit_center_id')
+    FU.select('ServicesCtrl.service.profit_center_id')
       .enabled()
       .first()
       .click();
 
     // submit the page to the server
-    FormUtils.buttons.submit();
+    FU.buttons.submit();
 
-    FormUtils.exists(by.id('create_success'), true);
+    FU.exists(by.id('create_success'), true);
   });
 
   it('successfully edits an service', function () {
     element(by.id('service-upd-' + SERVICE_RANK)).click();
-    FormUtils.input('ServicesCtrl.service.name', 'Updated');
+    FU.input('ServicesCtrl.service.name', 'Updated');
     element(by.id('change_service')).click();
 
-    FormUtils.exists(by.id('update_success'), true);
+    FU.exists(by.id('update_success'), true);
   });
 
   it('correctly blocks invalid form submission with relevant error classes', function () {
-    FormUtils.buttons.create();
+    FU.buttons.create();
 
     // verify form has not been successfully submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
@@ -69,30 +69,30 @@ describe('Services Module', function () {
     element(by.id('submit-service')).click();
 
     // The following fields should be required
-    FormUtils.validation.error('ServicesCtrl.service.name');
-    FormUtils.validation.error('ServicesCtrl.service.enterprise_id');
+    FU.validation.error('ServicesCtrl.service.name');
+    FU.validation.error('ServicesCtrl.service.enterprise_id');
 
     // The following fields is not required
-    FormUtils.validation.ok('ServicesCtrl.service.cost_center_id');
-    FormUtils.validation.ok('ServicesCtrl.service.profit_center_id');
+    FU.validation.ok('ServicesCtrl.service.cost_center_id');
+    FU.validation.ok('ServicesCtrl.service.profit_center_id');
   });
 
   it('successfully delete an service', function () {
     element(by.id('service-del-' + DELETE_SUCCESS )).click();
     components.modalAction.confirm();
 
-    FormUtils.exists(by.id('delete_success'), true);
+    FU.exists(by.id('delete_success'), true);
   });
 
   it('no way to delete a service', function () {
     element(by.id('service-del-' + DELETE_ERROR )).click();
     components.modalAction.confirm();
-    FormUtils.exists(by.id('delete_error'), true);
+    FU.exists(by.id('delete_error'), true);
   });
 
   it('cancellation of removal process of a service', function () {
     element(by.id('service-del-' + DELETE_ERROR )).click();
     components.modalAction.dismiss();
-    FormUtils.exists(by.id('default'), true);
+    FU.exists(by.id('default'), true);
   });
 });

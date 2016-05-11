@@ -23,9 +23,7 @@ describe('Patient Invoice', function () {
   const path = '#/invoices/patient';
 
   // navigate to the patient invoice page
-  beforeEach(function () {
-    browser.get(path);
-  });
+  beforeEach(() => helpers.navigate(path));
 
   it.skip('invoices a patient for a single item', function () {
     var page = new PatientInvoicePage();

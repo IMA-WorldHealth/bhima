@@ -1,5 +1,4 @@
 /* global element, by, browser */
-
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -12,7 +11,7 @@ const components = require('../shared/components');
 describe('Patient Groups', function () {
 
   // navigate to the page before running test suite
-  before(() => browser.get('#/patients/groups'));
+  before(() => helpers.navigate('#/patients/groups'));
 
   // a new group to create
   const group = {

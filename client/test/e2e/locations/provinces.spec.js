@@ -12,7 +12,7 @@ describe('Provinces Management', function () {
 
   const path = '#/locations/province';
 
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const province = {
     name : 'A Province for Test'

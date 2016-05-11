@@ -12,7 +12,7 @@ describe('patient registration', function () {
   'use strict';
 
   const registrationPath = '#/patients/register';
-  beforeEach(() => browser.get(registrationPath));
+  beforeEach(() => helpers.navigate(registrationPath));
 
   const mockPatient = {
     first_name : 'Mock',
@@ -70,6 +70,9 @@ describe('patient registration', function () {
   // with the system
   describe('form validation', function () {
 
+    // refresh the page to make sure previous data is cleared
+    before(() => browser.refresh());
+
     it('correctly blocks invalid form submission with relevent error classes', function () {
 
       // submit the patient registration form
@@ -101,17 +104,6 @@ describe('patient registration', function () {
 
       FU.input('PatientRegCtrl.yob', testMinYear);
       FU.exists(by.css('[data-date-error]'), true);
-    });
-
-    it('correctly identifies duplicate hospital numbers (async)', function () {
-
-      // resend the (assumed) correctly registered patients hospital number
-      FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
-      FU.exists(by.id('unique-error-icon'), true);
-
-      // put in a unique hospital number
-      FU.input('PatientRegCtrl.medical.hospital_no', uniqueHospitalNumber);
-      FU.exists(by.id('unique-error-icon'), false);
     });
   });
 

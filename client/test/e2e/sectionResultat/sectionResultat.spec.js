@@ -1,4 +1,4 @@
-/* global element, by, inject, browser */
+/* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -12,7 +12,7 @@ describe('Section Resultats Module', function () {
   'use strict';
 
   const path = '#/section_resultat';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const sectionResultat = {
     text : 'A Special Section Result',
@@ -71,7 +71,7 @@ describe('Section Resultats Module', function () {
 
     // click the alert asking for permission
     components.modalAction.confirm();
- 
+
     // make sure that the delete message appears
     FU.exists(by.id('delete_success'), true);
   });
