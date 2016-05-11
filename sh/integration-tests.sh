@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # bash script mode
-set -euo pipefail
+set -uo pipefail
 
 # This assumes you run tests from the top level bhima directory.
 

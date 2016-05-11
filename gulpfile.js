@@ -23,9 +23,6 @@ const less    = require('gulp-less');
     // mocha for server-side testing
 const mocha = require('gulp-mocha');
 
-// protractor for e2e tests
-const protractor = require('gulp-protractor').protractor;
-
 // child process for custom scripts
 const exec = require('child_process').exec;
 
@@ -278,21 +275,6 @@ gulp.task('build-server', function () {
 });
 
 /* -------------------------------------------------------------------------- */
-
-/**
- * Testing Client Builds
- *
- * The following tasks will run unit and end-to-end tests on bhima.
- */
-
-// run the selenium server for e2e tests
-gulp.task('client-test-e2e', function () {
-  return gulp.src(paths.client.e2etest)
-    .pipe(protractor({
-      configFile : 'protractor.conf.js'
-    }))
-    .on('error', function (e) { throw e; });
-});
 
 /** shared utilities */
 
