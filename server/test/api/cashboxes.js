@@ -15,8 +15,8 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
   before(helpers.login(agent));
 
   /** @const */
-  const numCashboxes = 2;
-  const numAuxCashboxes = 1;
+  const numCashboxes = 3;
+  const numAuxCashboxes = 2;
   const NUMBER_OF_CASHBOX_CURRENCIES = 2;
   const numCashboxCurrencies = 4;
 
