@@ -50,7 +50,7 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
       .catch(helpers.api.handler);
   });
 
-  // @fixme- investigate weird behavior with express-session.
+  // @fixme - investigate weird behavior with express-session.
   it.skip('POST /patients/:uuid/documents without a document should throw an error', () => {
     return agent
       .post(`/patients/${patientUuid}/documents`)
