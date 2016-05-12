@@ -11,7 +11,7 @@ const GU = require('../shared/gridTestUtils.spec.js');
 const EC = protractor.ExpectedConditions;
 const FU = require('../shared/FormUtils');
 
-describe.only('Cash Payments Module', function () {
+describe('Cash Payments Module', function () {
 
   const path = '#/cash';
 
