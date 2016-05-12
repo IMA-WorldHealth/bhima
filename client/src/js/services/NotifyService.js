@@ -90,7 +90,7 @@ function NotifyService($translate) {
     var message = $translate.instant(key);
 
     // if the request has overridden the time to live, use that, otherwise use the global default
-    var ttl = ttl || TTL;
+    ttl = ttl || TTL;
     var formatNotification = {
       ttl : ttl,
       message : message

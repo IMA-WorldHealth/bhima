@@ -1,18 +1,18 @@
 /* jshint expr:true */
+const chai = require('chai');
+const expect = chai.expect;
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 /**
-* The /users API endpoint
-*
-* This test suite implements full CRUD on the /users HTTP API endpoint.
-*/
-describe('(/users) Users and Permissions Interface', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+ * The /users API endpoint
+ *
+ * This test suite implements full CRUD on the /users HTTP API endpoint.
+ */
+describe('(/users) Users and Permissions', function () {
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   var newUser = {
     username : 'newUser',
@@ -28,8 +28,6 @@ describe('(/users) Users and Permissions Interface', function () {
     password : 'password',
   };
 
-  // login before each request
-  before(helpers.login(agent));
 
   it('GET /users returns a list of users', function () {
     return agent.get('/users')

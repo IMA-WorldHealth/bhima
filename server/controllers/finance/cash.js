@@ -1,23 +1,24 @@
 /**
-* Cash Controller
-*
-* @module finance/cash
-*
-* This controller is responsible for processing cash payments for patients. The
-* payments can either be against an previous invoice (sale payment) or a future
-* invoice (cautionary payment).
-*
-* In order to reduce the burden of accounting on the user, the user will first
-* select a cashbox which implicitly bundles in cash accounts for all supported
-* currencies.  The API accepts a cashbox ID during cash payment creation and
-* looks up the correct account based on the cashbox_id + currency.
-*
-* @requires node-uuid
-* @requires lib/db
-* @requires lib/errors/NotFound
-* @requires lib/errors/BadRequest
-* @requires journal/cash
-*/
+ * Cash Controller
+ *
+ *
+ * This controller is responsible for processing cash payments for patients. The
+ * payments can either be against an previous invoice (sale payment) or a future
+ * invoice (cautionary payment).
+ *
+ * In order to reduce the burden of accounting on the user, the user will first
+ * select a cashbox which implicitly bundles in cash accounts for all supported
+ * currencies.  The API accepts a cashbox ID during cash payment creation and
+ * looks up the correct account based on the cashbox_id + currency.
+ *
+ * @module finance/cash
+ *
+ * @requires node-uuid
+ * @requires lib/db
+ * @requires lib/errors/NotFound
+ * @requires lib/errors/BadRequest
+ * @requires finance/journal/cash
+ */
 const uuid = require('node-uuid');
 const db   = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
@@ -103,7 +104,7 @@ function list(req, res, next) {
 
   const sql =
     `SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference,
-      cash.date, cash.amount 
+      cash.date, cash.amount
     FROM cash JOIN project ON cash.project_id = project.id;`;
 
   db.exec(sql)

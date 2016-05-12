@@ -12,10 +12,13 @@ const core = require('./core');
  * These are handled at the transaction level, within a MySQL function, and
  * bubbled up through journal/core.js.
  *
+ * @module finance/journal/cash
+ * @requires finance/journal/core
+ *
  * @todo - introduce code to perform generic gain/loss on rounding using the SQL
  * variables @gainAccountId and @lossAccountId.
  */
-module.exports = function post(transaction, uuid) {
+function post(transaction, uuid) {
 
   transaction
 
@@ -64,4 +67,6 @@ module.exports = function post(transaction, uuid) {
   transaction = core.cleanup(transaction);
   return transaction.execute()
     .catch(core.handler);
-};
+}
+
+module.exports = post;

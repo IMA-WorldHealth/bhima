@@ -5,9 +5,9 @@ PatientRegistryController.$inject = [
   '$translate', 'PatientService',
 ];
 
-/** 
- * Patient Registry Controller 
- * 
+/**
+ * Patient Registry Controller
+ *
  * This module is responsible for the management
  * of Patient Registry.
  *
@@ -15,7 +15,7 @@ PatientRegistryController.$inject = [
 function PatientRegistryController($translate, Patients) {
   var vm = this;
   // options for the UI grid
-  
+
   /** TODO MANAGE COLUMN : LAST_TRANSACTION */
   vm.uiGridOptions = {
     appScopeProvider : vm, // ensure that the controller's `this` variable is bound to appScope
@@ -27,19 +27,19 @@ function PatientRegistryController($translate, Patients) {
       { field : 'sex', name : $translate.instant('TABLE.COLUMNS.GENDER') },
       { field : 'registration_date', cellFilter:'date', name : $translate.instant('TABLE.COLUMNS.DATE_REGISTERED') },
       { field : 'last_visit', cellFilter:'date', name : $translate.instant('TABLE.COLUMNS.LAST_VISIT') },
-      { field : '', name : $translate.instant('TABLE.COLUMNS.LAST_TRANSACTION') }  
+      { field : '', name : $translate.instant('TABLE.COLUMNS.LAST_TRANSACTION') }
     ],
     enableSorting : true
   };
 
   // load Patient Registry Grid
   function loadGrid() {
-    Patients.list().then(function (patients) {
+    Patients.read().then(function (patients) {
 
       patients.forEach(function (patient) {
         var patientAge = moment(patient.dob).fromNow();
-        patient.patientAge = patientAge; 
-      });      
+        patient.patientAge = patientAge;
+      });
       vm.uiGridOptions.data = patients;
     });
   }

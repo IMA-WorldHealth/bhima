@@ -1,8 +1,8 @@
 /* jshint expr : true */
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 // cheeky method to duplicate an array
@@ -10,12 +10,11 @@ function clone(array) {
   return array.filter(function (element) { return 1; });
 }
 
-/** tests for the /accounts API endpoint */
-describe('(/accounts) The account API', function () {
-  // login before the test suite
-  var agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
+describe('(/accounts) Accounts', function () {
 
+  // login before the test suite
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   var newAccount = {
     type_id : 1,
@@ -36,9 +35,9 @@ describe('(/accounts) The account API', function () {
 
   var DELETABLE_ACCOUNT_ID = 3636;
   var FETCHABLE_ACCOUNT_ID = 3626;
-  var ACCOUNT_ID_FOR_BALANCE = 3631;
+  var balanceAccountId = 3631;
 
-  var responseKeys = [
+  const responseKeys = [
     'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
     'reference_id', 'is_brut_link', 'is_charge', 'number',
     'label', 'parent', 'type_id', 'is_title', 'type'
@@ -126,7 +125,7 @@ describe('(/accounts) The account API', function () {
   });
 
   it('GET /accounts/:id/balance?journal=1 returns the balance of a provided account_id, scans the journal also', function () {
-    return agent.get('/accounts/:id/balance?journal=1'.replace(':id', ACCOUNT_ID_FOR_BALANCE))
+    return agent.get('/accounts/:id/balance?journal=1'.replace(':id', balanceAccountId))
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;

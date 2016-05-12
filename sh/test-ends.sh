@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # bash script mode
-set -euo pipefail
+set -uo pipefail
 
 # This assumes you run tests from the top level bhima directory.
 
@@ -31,13 +31,11 @@ NODE_ENV=development node server/app.js &
 NODE_PID=$!
 
 # make sure we have enough time for the server to start
-echo "Sleeping for $TIMEOUT"
+echo "Sleeping for $TIMEOUT seconds"
 sleep $TIMEOUT
 
-echo "Running tests ..."
-
-# FIXME Remove combination of gulp and shell scripts favouring one or the other
-gulp client-test-e2e
+echo "Running tests using protractor."
+../node_modules/.bin/protractor ../protractor.conf.js
 
 echo "Cleaning up node instances ..."
 

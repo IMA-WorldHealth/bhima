@@ -52,7 +52,7 @@ function CashReceiptModalController(uuid, patientUuid, ModalInstance, Cash, Proj
         Projects.read(receipt.project_id),
 
         // load in the patient details
-        Patients.detail(patientUuid),
+        Patients.read(patientUuid),
 
         // ensure the exchange rates are loaded
         Exchange.read(),

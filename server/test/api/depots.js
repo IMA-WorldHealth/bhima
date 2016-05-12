@@ -8,14 +8,13 @@ const uuid    = require('node-uuid');
 helpers.configure(chai);
 
 /**
-* The /depots API endpoint
-*
-* @desc This test suit is about the crud operation with depots
-*/
+ * The /depots API endpoint
+ *
+ * @desc This test suit is about the crud operation with depots
+ */
 describe('(/depots) The depots API ', function () {
   'use strict';
 
-  /** login before test suite */
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 

@@ -19,11 +19,11 @@
     "CREATE"         : "Create Chart of Accounts",
     "GENERATE"       : "Generate Account Report",
     "HELP_TXT_1"     : "Chart of accounts for",
-    "HELP_TXT_2"     : "Account information and relationshions are shown in the table on the right",
+    "HELP_TXT_2"     : "Account information and relationships are shown in the table on the right",
     "HELP_TXT_3"     : "Click 'Add Account' to add an account",
     "NEW"            : "New Account",
-    "NOT_FOUND"      : "Aucun compte enregistrés...",
-    "TITLE"          : "Account Managment",
+    "NOT_FOUND"      : "Not accounts found.",
+    "TITLE"          : "Account Management",
     "TITLE_ACCOUNT"  : "Title Account"
   },
   "AUTH": {
@@ -33,9 +33,11 @@
     "LOGIN"                      : "Login",
     "LOGIN_PLACEHOLDER_PASSWORD" : "Enter your password",
     "LOGIN_PLACEHOLDER_USERNAME" : "Enter your username",
-    "LOGOUT_SUCCESS"             : "You are now logged out.",
-    "RESET"                      : "Reset",
-    "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it."
+    "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it.",
+    "WELCOME"                    : "Welcome to bhima!",
+    "GOODBYE"                    : "Thank you for using bhima.  Come back soon!",
+    "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application.",
+    "CANNOT_RETURN_TO_LOGIN"     : "You are currently logged in.  To return to the login page, please log out using the settings page."
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -181,7 +183,8 @@
   "ERRORS": {
     "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network.",
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
-    "UNAUTHORIZED"     : "Unauthorized"
+    "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue.",
+    "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Adding an exchange Rate",
@@ -227,15 +230,15 @@
       "CONFIRM_DELETE" : "Do you confirm the deletion ?"
     },
     "ERRORS": {
-      "CONNECTION"         : "Connexion error",
+      "CONNECTION"         : "Connection error",
       "GENERIC"            : "The form contains errors.",
       "HAS_ERROR"          : "Contains an error",
       "HAS_ERRORS"         : "The form contains errors.  Please correct them and resubmit.",
       "MIN_CURRENCY_UNIT"  : "This value is too small for the selected currency.",
-      "MISSING"            : "Missing information",
+      "MISSING"            : "This form is missing required fields (marked in red).",
       "MISSING_CASHBOX_ID" : "Missing Cashbox",
       "MISSING_DEBTOR_ID"  : "Identifying missing Debtor",
-      "RECORD_ERROR"       : "Please resolve any errors on the form. (Marked in red)",
+      "RECORD_ERROR"       : "Please resolve any errors on the form (marked in red).",
       "REQUIRED"           : "This value is required."
     },
     "INFOS": {
@@ -248,7 +251,6 @@
       "GROUPS_PATIENT"       : "Assign the patient to patient groups from the options below. Press 'confirm' to permenantly update the patient's subscribed groups.",
       "ITEMS_FULL"           : "There are no additional inventory items that be assigned to this invoice.",
       "LOADING"              : "Loading",
-      "MANY_TRYS"            : "Many trys",
       "NOT_CONFIGURED"       : "The accounts for this currency have not been configured yet.",
       "NO_INVOICES_SELECTED" : "No invoices selected",
       "NO_RECIPIENT"         : "An invoice must have a recipient before assigning items.",
@@ -257,7 +259,6 @@
       "PATIENT_FOUND"        : "Patient Found",
       "PATIENT_NOT_FOUND"    : "Patient Not Found",
       "SAVE_SUCCESS"         : "Save success",
-      "UNAUTHORIZED"         : "Unauthorized",
       "UPDATE_SUCCESS"       : "Updated successfully"
     },
     "LABELS": {

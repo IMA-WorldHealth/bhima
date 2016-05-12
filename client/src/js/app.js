@@ -942,10 +942,46 @@ function localeConfig(tmhDynamicLocaleProvider) {
 }
 
 // redirect to login if not signed in.
-function startupConfig($rootScope, $location, SessionService, amMoment) {
+function startupConfig($rootScope, $state, SessionService, amMoment, Notify) {
+
+  // make sure the user is logged in and allowed to access states when
+  // navigating by URL.  This is pure an authentication issue.
+  $rootScope.$on('$locationChangeStart', function (event, next) {
+
+    var isLoggedIn = !!SessionService.user;
+    var isLoginState = next.indexOf('#/login') !== -1;
+
+    // if the user is logged in and trying to access the login state, deny the
+    // attempt with a message "Cannot return to login.  Please log out from the
+    // Settings Page."
+    if (isLoggedIn && isLoginState) {
+      event.preventDefault();
+      Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
+
+    // if the user is not logged in and trying to access any other state, deny
+    // the attempt with a message that their session expired and redirect them
+    // to the login page.
+    } else if (!isLoggedIn && !isLoginState) {
+      event.preventDefault();
+      Notify.warn('AUTH.UNAUTHENTICATED');
+      $state.go('login');
+    }
+
+    // else, the user is free to continue as they wish
+  });
+
+  // the above $locationChangeStart is not enough in the case that $state.go()
+  // is used (as it is on the /settings page).  If an attacker manages to
+  // trigger a $state.go() to the login state, it will not be stopped - the
+  // $locationChangeStart event will only prevent the URL from changing ... not
+  // the actual state transition!  So, we need this to stop $stateChange events.
   $rootScope.$on('$stateChangeStart', function (event, next) {
-    if (!SessionService.user) {
-      $location.url('/login');
+    var isLoggedIn = !!SessionService.user;
+    var isLoginState = next.name.indexOf('login') !== -1;
+
+    if (isLoggedIn && isLoginState) {
+      event.preventDefault();
+      Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
     }
   });
 
@@ -999,4 +1035,4 @@ bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
 
 // run the application
-bhima.run(['$rootScope', '$location', 'SessionService', 'amMoment', startupConfig]);
+bhima.run(['$rootScope', '$state', 'SessionService', 'amMoment', 'NotifyService', startupConfig]);

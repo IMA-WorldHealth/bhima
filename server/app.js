@@ -1,54 +1,124 @@
-var express = require('express'),
-    https   = require('https'),
-    winston = require('winston'),
-    fs      = require('fs');
+/**
+ * @overview
+ * Basic Hospital Information Management Application
+ *
+ * This is the central server of bhima.  It is responsible for setting up the
+ * HTTP server, logging infrastructure, and environmental variables.  These are
+ * global throughout the application, and are configured here.
+ *
+ * The application routes are configured in {@link server/config/routes}, while
+ * the middleware is configured in {@link server/config/express}.
+ *
+ * @requires fs
+ * @requires https
+ * @requires dotenv
+ * @requires express
+ * @requires winston
+ *
+ * @requires config/express
+ * @requires config/routes
+ * @requires lib/db
+ * @requires lib/pluginManager
+ *
+ * @license GPL-2.0
+ * @copyright IMA World Health 2016
+ */
 
-function loadEnvironmentalVariables() {
+'use strict';
 
-  // warn the user if the process does not have a NODE_ENV variable configured
-  if (!process.env.NODE_ENV) {
-    process.env.NODE_ENV = 'production';
-  }
+const fs = require('fs');
+const https = require('https');
+const express = require('express');
+const winston = require('winston');
+const db = require('./lib/db');
+
+let app = express();
+
+/**
+ * @function configureEnvironmentVariables
+ *
+ * @description
+ * Uses dotenv to add environmental variables from the .env.* file to the
+ * process object.  If the NODE_ENV system variable is not set, the function
+ * defaults to 'production'
+ */
+function configureEnvironmentVariables() {
+
+  // if the process NODE_ENV is not set, default to production.
+  process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
   // normalize the environmental variable name
-  var env = process.env.NODE_ENV.toLowerCase();
+  let env = process.env.NODE_ENV.toLowerCase();
 
   // decode the file path for the environmental variables.
-  var fPath = 'server/.env.{env}'.replace('{env}', env);
+  let dotfile = `server/.env.${env}`.trim();
 
   // load the environmnetal variables into process using the dotenv module
-  console.log('[app] Loading configuration from file: %s', fPath);
-  require('dotenv').config({ path : fPath.toString().trim() });
+  console.log(`[app] Loading configuration from ${dotfile}.`);
+  require('dotenv').config({ path : dotfile });
 }
 
+/**
+ * @function configureLogger
+ *
+ * @description
+ * Harnesses winston to log both events uniformly across the server.  This
+ * includes HTTP requests (using morgan), application events, and plugin events.
+ *
+ * By default, the only configured logging interface is the console.  This
+ * should not be the case in production.  If the LOG_FILE environmental
+ * variable exists, the server will use it write all logs.
+ *
+ */
 function configureLogger() {
-  var logFile = process.env.LOG_FILE;
+
+  // set logging levels to that found in the configuration file (default: warn)
+  winston.level = process.env.LOG_LEVEL || 'warn';
+
+  let logFile = process.env.LOG_FILE;
 
   // allow logging to a file if needed
   if (logFile) {
     winston.add(winston.transports.File, { filename : logFile });
   }
 
-  // set logging levels to that found in the file
-  winston.level = process.env.LOG_LEVEL;
-
-  // make sure to log unhandled exceptions
+  // be sure to log unhandled exceptions
   winston.handleExceptions(new winston.transports.Console());
 }
 
-loadEnvironmentalVariables();
+/**
+ * @function configureServer
+ *
+ * @description
+ * Set up the HTTPS server by loading the correct SSL configuration from the
+ * file system and listening on the required port.
+ */
+function configureServer() {
 
+  // credentials
+  const key = fs.readFileSync(process.env.TLS_KEY, 'utf8');
+  const cert = fs.readFileSync(process.env.TLS_CERT, 'utf8');
+  const credentials = { key : key , cert : cert };
+
+  // destruct the environmental variables
+  const port = process.env.PORT;
+  const mode = process.env.NODE_ENV;
+
+  // create the server
+  https.createServer(credentials, app)
+    .listen(process.env.PORT, () => {
+      winston.info(`Server started in mode ${mode} on port ${port}.`);
+    });
+
+}
+
+// run configuration tools
+configureEnvironmentVariables();
 configureLogger();
-
-// SSL credentials
-var privateKey  = fs.readFileSync(process.env.TLS_KEY, 'utf8');
-var certificate = fs.readFileSync(process.env.TLS_CERT, 'utf8');
-var credentials = { key : privateKey, cert : certificate };
+configureServer();
 
 // configure the database for use within the application
-require('./lib/db').initialise();
-
-var app = express();
+db.initialise();
 
 // Configure application middleware stack, inject authentication session
 require('./config/express').configure(app);
@@ -56,23 +126,16 @@ require('./config/express').configure(app);
 // Link routes
 require('./config/routes').configure(app);
 
-// link error hanlding
+// link error handling
 require('./config/express').errorHandling(app);
 
 // Load and configure plugins
-// TODO - find a better way to load in a list of plugins
+// @todo - find a better way to load in a list of plugins
 require('./lib/pluginManager')(app, []);
 
-// start the server
-https.createServer(credentials, app)
-  .listen(process.env.PORT, logApplicationStart);
-
-process.on('uncaughtException', handleUncaughtExceptions);
-
-function logApplicationStart() {
-  winston.log('info', 'BHIMA server started in mode %s on port %s.', process.env.NODE_ENV.toLowerCase(), process.env.PORT);
-}
-
-function handleUncaughtExceptions(err) {
+// ensure the process terminates gracefully when an error occurs.
+process.on('uncaughtException', (exception) => {
+  console.error(exception);
   process.exit(1);
-}
+});
+

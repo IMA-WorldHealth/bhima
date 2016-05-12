@@ -15,7 +15,7 @@ PatientService.$inject = [ '$http', 'util', 'SessionService' ];
  * var Patients = PatientService;
  *
  * // returns patient details
- * Patients.list(uuid)...
+ * Patients.read(uuid)...
  *
  * // creates a patient
  * Patients.create(medicalDetails, financeDetails)...
@@ -28,6 +28,7 @@ function PatientService($http, util, Session) {
 
   service.list = list;
   service.detail = list;
+  service.read = read;
   service.create = create;
   service.update = update;
   service.groups = groups;
@@ -44,10 +45,10 @@ function PatientService($http, util, Session) {
    * This method returns information on a patient given the patients UUID. This
    * route provides almost all of the patients attributes.
    *
-   * @param {String} uuid   The patient's UUID
+   * @param {String|Null} uuid   The patient's UUID  (could be null)
    * @return {Object}       Promise object that will return patient details
    */
-  function list(uuid) {
+  function read(uuid) {
     return $http.get(baseUrl.concat(uuid || ''))
       .then(util.unwrapHttpResponse);
   }

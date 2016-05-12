@@ -1,16 +1,15 @@
 /**
- * @module config/interceptors
- *
- * @description This modules defines a unified error handler for the server.
+ * @overview
+ * This modules defines a unified error handler for the server.
  * Each controller is expected to define specific errors that are uniformly
  * sent to the client using the using the error functions found in `lib/errors/`.
  *
  * The only unexpected errors are database errors, uniformly treated as
  * BadRequests (HTTP stats code 400).
  *
+ * @requires winston
  * @requires lib/errors/BadRequest
  */
-
 const winston = require('winston');
 const BadRequest = require('../lib/errors/BadRequest');
 

@@ -1,4 +1,5 @@
 /**
+ * @overview
  * Application Routing
  *
  * Initialise link between server paths and controller logic
@@ -6,7 +7,6 @@
  * @TODO Pass authenticate and authorize middleware down through
  * controllers, allowing for modules to subscribe to different
  * levels of authority
- *
  */
 var winston              = require('winston');
 var auth                 = require('../controllers/auth');
@@ -46,10 +46,8 @@ var costCenter           = require('../controllers/finance/costCenter');
 var profitCenter         = require('../controllers/finance/profitCenter');
 var reference            = require('../controllers/finance/reference');
 var subsidies            = require('../controllers/finance/subsidies');
-
 var patientInvoice       = require('../controllers/finance/patientInvoice');
 var invoiceReceipt       = require('../controllers/finance/reports/invoiceReceipt');
-
 var discounts            = require('../controllers/finance/discounts');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
 var depreciatedReports   = require('../controllers/categorised/reports_depreciate');
@@ -69,7 +67,7 @@ var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
 var creditors            = require('../controllers/finance/creditors.js');
 
-
+// expose routes to the server.
 exports.configure = function (app) {
   winston.debug('Configuring routes');
 
@@ -93,7 +91,7 @@ exports.configure = function (app) {
   app.put('/data', data.update);
   app.delete('/data/:table/:column/:value', data.deleteRecord);
 
-  /**  API for locations */
+  // API for locations
   app.get('/locations/villages', locations.villages);
   app.get('/locations/sectors', locations.sectors);
   app.get('/locations/provinces', locations.provinces);
@@ -118,7 +116,7 @@ exports.configure = function (app) {
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
 
-  //API for account type routes crud
+  // API for account type routes crud
   app.get('/account_types', accountType.list);
   app.get('/account_types/:id', accountType.detail);
   app.post('/account_types', accountType.create);
@@ -355,7 +353,7 @@ exports.configure = function (app) {
   app.get('/patients/search/name/:value', patient.searchFuzzy);
   app.get('/patients/search/reference/:value', patient.searchReference);
 
-  /** patient group routes**/
+  // patient group routes
   app.get('/patient_groups', patientGroup.list);
   app.get('/patient_groups/:uuid', patientGroup.detail);
   app.post('/patient_groups', patientGroup.create);
@@ -363,7 +361,7 @@ exports.configure = function (app) {
   app.delete('/patient_groups/:uuid', patientGroup.remove);
 
 
-  /** Debtors API */
+  // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
   /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */
   app.get('/debtors/groups', debtorGroups.list);
@@ -373,7 +371,7 @@ exports.configure = function (app) {
   app.get('/debtors/:uuid', debtors.detail);
   app.get('/debtors', debtors.list);
 
-  /** Debtor Groups API */
+  // Debtor Groups API
   app.get('/debtor_groups', debtorGroups.list);
   app.get('/debtor_groups/:uuid', debtorGroups.detail);
   app.get('/debtor_groups/:uuid/invoices', debtorGroups.invoices);
@@ -435,7 +433,7 @@ exports.configure = function (app) {
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
 
-  /** cash (aux/primary) */
+  // cash API
   app.get('/cash', cash.list);
   app.get('/cash/:uuid', cash.detail);
   app.post('/cash', cash.create);
@@ -455,14 +453,14 @@ exports.configure = function (app) {
 
   // employees api
 
-  /** employees */
+  // employees
   app.get('/employees', employees.list);
   app.get('/employees/:id', employees.detail);
   app.get('/employees/:key/:value', employees.search);
   app.put('/employees/:id', employees.update);
   app.post('/employees', employees.create);
 
-  /** billing services */
+  // billing services
   app.get('/billing_services', billingServices.list);
   app.get('/billing_services/:id', billingServices.detail);
   app.post('/billing_services', billingServices.create);
@@ -470,52 +468,52 @@ exports.configure = function (app) {
   app.delete('/billing_services/:id', billingServices.delete);
 
 
-  /** discounts */
+  // discounts
   app.get('/discounts', discounts.list);
   app.get('/discounts/:id', discounts.detail);
   app.post('/discounts', discounts.create);
   app.put('/discounts/:id', discounts.update);
   app.delete('/discounts/:id', discounts.delete);
 
-  /** voucher api endpoint */
+  // voucher api endpoint
   app.get('/vouchers', vouchers.list);
   app.get('/vouchers/:uuid', vouchers.detail);
   app.post('/vouchers', vouchers.create);
 
-  /** Suppliers api */
+  // suppliers api
   app.get('/suppliers/search', suppliers.search);
   app.get('/suppliers', suppliers.list);
   app.get('/suppliers/:uuid', suppliers.detail);
   app.post('/suppliers', suppliers.create);
   app.put('/suppliers/:uuid', suppliers.update);
 
-  /** purchase */
+  // purchase
   app.post('/purchase', purchase.create);
   app.get('/purchase', purchase.list);
   app.get('/purchase/:uuid', purchase.detail);
   app.put('/purchase/:uuid', purchase.update);
 
-  /** functions api */
+  // functions api
   app.get('/functions', functions.list);
   app.get('/functions/:id', functions.detail);
   app.post('/functions', functions.create);
   app.put('/functions/:id', functions.update);
   app.delete('/functions/:id', functions.delete);
 
-  /** Grades api */
+  // grades api
   app.get('/grades', grades.list);
   app.get('/grades/:uuid', grades.detail);
   app.post('/grades', grades.create);
   app.put('/grades/:uuid', grades.update);
   app.delete('/grades/:uuid', grades.delete);
 
-  /** Creditor Groups API */
+  // creditor groups API
   app.post('/creditor_groups', creditorGroups.create);
   app.get('/creditor_groups', creditorGroups.list);
   app.get('/creditor_groups/:uuid', creditorGroups.detail);
   app.put('/creditor_groups/:uuid', creditorGroups.update);
 
-	/** Donors API */
+	// donors API
 	app.get('/donors', donors.list);
 	app.get('/donors/:id', donors.detail);
 	app.post('/donors', donors.create);

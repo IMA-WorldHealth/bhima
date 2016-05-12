@@ -84,6 +84,6 @@ describe('Billing Services', function () {
     var rows = grid.element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
-    expect(rows.count()).to.eventually.equal(3);
+    expect(rows.count()).to.eventually.equal(2);
   });
 });

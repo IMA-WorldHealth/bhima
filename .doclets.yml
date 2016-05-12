@@ -1,0 +1,10 @@
+dir: server
+
+branches:
+  - master
+  - documentation
+
+packageJson: package.json
+
+articles:
+  - Readme: README.md

@@ -27,6 +27,7 @@ describe('SessionService', function () {
 
   // load bhima.services
   beforeEach(() => {
+    module('pascalprecht.translate');
     module('ngStorage');
     module('bhima.services');
   });

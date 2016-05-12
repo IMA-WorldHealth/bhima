@@ -1,4 +1,33 @@
-var util = require('util');
+const util = require('util');
+
+/**
+ * @class Forbidden
+ *
+ * @description
+ * A custom error to wrap the 403 HTTP status code within the server.  This
+ * should only be thrown in a context where it can be caught by ExpressJS's
+ * {@link http://expressjs.com/en/guide/routing.html|next } function and
+ * returned to the client.
+ *
+ * @param {String} description - a custom description to be sent to the client
+ *
+ * @example
+ * // import the error into a controller
+ * const Forbidden = require('lib/errors/Forbidden');
+ *
+ * throw new Forbidden('You are not allowed to access this resource!');
+ *
+ * // or by calling next in the server context
+ * next(new Forbidden('Oops!'));
+ *
+ * // or by combining both in a promise chain!
+ * Promise.then(() => {
+ *   throw new Forbidden('This will be caught in Promise.catch()');
+ * })
+ * .catch(next);
+ *
+ * @requires util
+ */
 
 /**
  * This implements an HTTP error code that should eventually be passed through
