@@ -29,6 +29,7 @@
       <div class="btn-group btn-group-justified">
         <div class="btn-group">
           <button class="text-center btn btn-primary btn-lg"
+            data-button-patient-invoice
             ng-click="$ctrl.selectDocType('patient_invoice')">
             <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
             {{ 'VOUCHERS.COMPLEX.PATIENT_INVOICE' | translate }}
@@ -37,7 +38,8 @@
 
         <div class="btn-group">
           <button class="text-center btn btn-primary btn-lg"
-            ng-click="$ctrl.selectDocType('cash_payment')">
+            ng-click="$ctrl.selectDocType('cash_payment')"
+            data-button-cash-payment>
             <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
             {{ 'VOUCHERS.COMPLEX.CASH_PAYMENT' | translate }}
           </button>
@@ -45,7 +47,8 @@
 
         <div class="btn-group">
           <button class="text-center btn btn-primary btn-lg"
-            ng-click="$ctrl.selectDocType('voucher')">
+            ng-click="$ctrl.selectDocType('voucher')"
+            data-button-voucher>
             <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
             {{ 'VOUCHERS.COMPLEX.VOUCHER' | translate }}
           </button>
@@ -72,14 +75,16 @@
   <div class="panel-footer">
     <div class="pull-right">
       <button type="button" class="btn btn-default"
-        ng-click="$ctrl.cancel()">
+        ng-click="$ctrl.cancel()"
+        data-button-cancel>
         <i class="glyphicon glyphicon-ban-circle"></i>
         {{ 'FORM.BUTTONS.CANCEL' | translate }}
       </button>
 
       <button type="button" class="btn btn-primary"
         ng-if="$ctrl.documentTypeSelected"
-        ng-click="$ctrl.submit()">
+        ng-click="$ctrl.submit()"
+        data-button-submit>
         {{ 'FORM.BUTTONS.SUBMIT' | translate }}
         <i class="glyphicon glyphicon-ok"></i>
       </button>

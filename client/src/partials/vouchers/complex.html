@@ -82,7 +82,8 @@
               </div>
 
               <div class="pull-right">
-                <button type="button" class="btn btn-default" ng-click="ComplexVoucherCtrl.addVoucherItem()">
+                <button type="button" class="btn btn-default" ng-click="ComplexVoucherCtrl.addVoucherItem()"
+                  data-button-add-item>
                   {{ 'VOUCHERS.COMPLEX.ADD_ITEMS' | translate }}
                   <i class="glyphicon glyphicon-plus"></i>
                 </button>
@@ -113,6 +114,7 @@
                       uib-typeahead="account as account.number + ' ' + account.label for account in ComplexVoucherCtrl.accounts | filter:$viewValue | limitTo:8"
                       typeahead-editable="false"
                       typeahead-on-select="ComplexVoucherCtrl.selectAccount($item, row)"
+                      data-account-row="{{ $index }}"
                       class="form-control">
                   </td>
                   <td style="width:15%">
@@ -122,6 +124,7 @@
                         ng-change="ComplexVoucherCtrl.checkRowValidity()"
                         type="number"
                         class="form-control input-number"
+                        data-debit-row="{{ $index }}"
                         required>
                       <span class="input-group-addon">{{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</span>
                     </div>
@@ -133,6 +136,7 @@
                         ng-change="ComplexVoucherCtrl.checkRowValidity()"
                         type="number"
                         class="form-control input-number"
+                        data-credit-row="{{ $index }}"
                         required>
                       <span class="input-group-addon">{{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</span>
                     </div>
@@ -141,7 +145,8 @@
                     <button class="btn btn-default btn-block"
                       type="button"
                       ng-click="ComplexVoucherCtrl.openEntityModal(row)"
-                      ng-class="{'btn-success': row.entity.type=='D', 'btn-warning': row.entity.type=='C'}">
+                      ng-class="{'btn-success': row.entity.type=='D', 'btn-warning': row.entity.type=='C'}"
+                      data-entity-row="{{ $index }}">
                       <span ng-if="row.entity.uuid">
                         <i class="glyphicon glyphicon-user"></i>
                         {{ row.entity.label }}
@@ -156,7 +161,8 @@
                     <button class="btn btn-default btn-block"
                       type="button"
                       ng-click="ComplexVoucherCtrl.openReferenceModal(row)"
-                      ng-class="{'btn-info': row.reference.uuid}">
+                      ng-class="{'btn-info': row.reference.uuid}"
+                      data-reference-row="{{ $index }}">
                       <span ng-if="row.reference.uuid">
                         <i class="glyphicon glyphicon-file"></i>
                         {{ row.reference.reference }}
@@ -197,12 +203,14 @@
                 <button
                   class="btn btn-primary"
                   ng-disabled="!ComplexVoucherCtrl.validInput"
-                  ng-click="ComplexVoucherCtrl.submit(ComplexVoucherForm)">
+                  ng-click="ComplexVoucherCtrl.submit(ComplexVoucherForm)"
+                  data-submit>
                   {{ "FORM.BUTTONS.SUBMIT" | translate }}
                 </button>
               </div>
               <div class="clearfix"></div>
             </div>
+            <div ng-if="ComplexVoucherCtrl.posted" id="create-success"></div>
           </div>
         </div>
       </div>

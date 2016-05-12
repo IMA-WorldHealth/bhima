@@ -56,13 +56,15 @@
   <div class="panel-footer">
     <div class="pull-right">
       <button type="button" class="btn btn-default"
-        ng-click="$ctrl.cancel()">
+        ng-click="$ctrl.cancel()"
+        data-button-cancel>
         <i class="glyphicon glyphicon-ban-circle"></i>
         {{ 'FORM.BUTTONS.CANCEL' | translate }}
       </button>
 
       <button type="button" class="btn btn-primary"
-        ng-click="$ctrl.submit()">
+        ng-click="$ctrl.submit()"
+        data-button-submit>
         {{ 'FORM.BUTTONS.SUBMIT' | translate }}
         <i class="glyphicon glyphicon-ok"></i>
       </button>
