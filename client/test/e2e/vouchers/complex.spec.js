@@ -11,7 +11,7 @@ const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/gridTestUtils.spec');
 
-describe.only('Complex voucher Test :: ', function () {
+describe('Complex voucher Test :: ', function () {
 
   'use strict';
 
