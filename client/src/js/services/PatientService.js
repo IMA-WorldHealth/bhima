@@ -26,8 +26,6 @@ function PatientService($http, util, Session) {
   var service = this;
   var baseUrl = '/patients/';
 
-  service.list = list;
-  service.detail = list;
   service.read = read;
   service.create = create;
   service.update = update;
