@@ -116,6 +116,8 @@ function create(req, res, next) {
   // convert dates to a date objects
   if (voucher.date) {
     voucher.date = new Date(voucher.date);
+  } else {
+    voucher.date = new Date();
   }
 
 
@@ -161,6 +163,8 @@ function create(req, res, next) {
       uuid: vuid
     });
   })
-  .catch(next)
+  .catch(function (err) {
+    next(err);
+  })
   .done();
 }
