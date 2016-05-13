@@ -25,14 +25,14 @@
 
         <div class="alert alert-info btn-block">
           <p style="margin-bottom: 10px;" ng-if="!CashCtrl.cashbox.id">
-            <i class="glyphicon glyphicon-info-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.UNCONFIGURED" | translate }}
+            <span class="glyphicon glyphicon-info-sign"></span> {{ "CASH.VOUCHER.CASHBOXES.UNCONFIGURED" | translate }}
             <span class="glyphicon glyphicon-inbox"></span>
           </p>
 
           <p>
-            <i class="glyphicon glyphicon-question-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
+            <span class="glyphicon glyphicon-question-sign"></span> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
             <a href="#/cashboxes">
-              <i class="glyphicon glyphicon-link"></i> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
+              <span class="glyphicon glyphicon-link"></span> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
             </a>
           </p>
         </div>
@@ -47,8 +47,6 @@
             {{ "CASH.VOUCHER.SLIP" | translate }} <strong> :: {{ CashCtrl.cashbox.label }} ::</strong>
           </div>
           <div class="panel-body">
-
-            <!-- <h2 class="text">{{ CashCtrl.cashbox.label }}</h2> -->
 
             <form name="CashVoucherForm" bh-submit="CashCtrl.submit()" novalidate>
 

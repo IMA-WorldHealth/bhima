@@ -15,15 +15,14 @@
 </div>
 
 <div class="modal-footer">
-  <button type="button" id="modal-cancel" class="pull-left btn btn-default"
+  <button type="button" id="modal-ok" class="btn btn-primary"
+    ng-click="$ctrl.close()"
+    ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id" data-cashbox-modal-submit>
+    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+  </button>
+  <button type="button" id="modal-cancel" class="btn btn-default"
     ng-click="$ctrl.dismiss()"
     ng-disabled="!$ctrl.cashboxId" data-cashbox-modal-cancel>
     {{ 'FORM.BUTTONS.CANCEL' | translate }}
   </button>
-  <button type="button" id="modal-ok" class="pull-right btn btn-primary"
-    ng-click="$ctrl.close()"
-    ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id" data-cashbox-modal-submit>
-    {{ 'FORM.BUTTONS.OK' | translate }}
-  </button>
-  <div class="clearfix"></div>
 </div>

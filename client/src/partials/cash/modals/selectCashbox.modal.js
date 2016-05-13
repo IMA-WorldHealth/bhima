@@ -1,7 +1,10 @@
 angular.module('bhima.controllers')
 .controller('SelectCashboxModalController', SelectCashboxModalController);
 
-SelectCashboxModalController.$inject = ['SessionService', '$uibModalInstance', 'CashboxService', '$location', 'AppCache', 'cashboxId'];
+SelectCashboxModalController.$inject = [
+  'SessionService', '$uibModalInstance', 'CashboxService',
+  '$location', 'AppCache', 'cashboxId'
+];
 
 function SelectCashboxModalController(Session, Instance, Cashboxes, $location, AppCache, CashboxId) {
 

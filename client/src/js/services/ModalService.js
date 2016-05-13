@@ -87,21 +87,21 @@ function ModalService(Modal) {
     /**
      * request contains :
      * cashboxId => the cashbox id send in url : /cash/:id
-     * cashbox.id => the cashbox id which is in the cache 
+     * cashbox.id => the cashbox id which is in the cache
+     * if no cashbox is set in the cache or in the url display a particular modal
      */
-    var cashboxIsSet = request.cashbox && request.cashbox.id;
+    var cashboxIsSet = request.cache_cashbox_id && request.url_cashbox_id;
 
     var params = angular.extend(modalParameters, {
       templateUrl : 'partials/cash/modals/selectCashbox.modal.html',
       controller  : 'SelectCashboxModalController',
       controllerAs: '$ctrl',
       resolve     : {
-        cashboxId : function () { return request.cashboxId || cashboxIsSet; }
+        cashboxId : function () { return cashboxIsSet; }
       }
     });
 
     var instance = Modal.open(params);
-
     return instance.result;
   }
 
@@ -110,33 +110,30 @@ function ModalService(Modal) {
    */
   function openPatientReceipt(request) {
 
-    var instance = Modal.open({
-      templateUrl: 'partials/cash/modals/receipt.modal.html',
-      controller:  'CashReceiptModalController as CashReceiptModalCtrl',
-      size:        'md',
-      backdrop:    'static',
-      animation:   false,
-      resolve : {
+    var params = angular.extend(modalParameters, {
+      templateUrl : 'partials/cash/modals/receipt.modal.html',
+      controller  : 'CashReceiptModalController as CashReceiptModalCtrl',
+      resolve     : {
         uuid : function uuidProvider() { return request.uuid; },
         patientUuid : function patientUuidProvider() { return request.patientUuid; }
       }
     });
+
+    var instance = Modal.open(params);
   }
 
+  /**
+   * Debtor invoices Modal
+   */
   function openDebtorInvoices(request) {
 
-    var instance = Modal.open({
-      templateUrl: 'partials/cash/modals/invoices.modal.html',
-      controller:  'CashInvoiceModalController as CashInvoiceModalCtrl',
-      size:        'md',
-      backdrop:    'static',
-      animation:   false,
-      resolve:     {
-        debtorId:  function debtorIdProvider() { return request.debtorUuid; },
+    var params = angular.extend(modalParameters, {
+      templateUrl : 'partials/cash/modals/invoices.modal.html',
+      controller  : 'CashInvoiceModalController as CashInvoiceModalCtrl',
+      resolve     : {
+        debtorId : function debtorIdProvider() { return request.debtorUuid; },
         invoiceIds : function invoiceIdsProvider() {
-
           if (!request.invoices) { return []; }
-
           return request.invoices.map(function (invoice) {
             return invoice.sale_uuid;
           });
@@ -144,21 +141,24 @@ function ModalService(Modal) {
       }
     });
 
+    var instance = Modal.open(params);
     return instance.result;
   }
 
+  /**
+   * Transfer Modal
+   */
   function openTransfer(request) {
 
-    var instance = Modal.open({
-      templateUrl: 'partials/cash/modals/transfer.modal.html',
-      controller:  'CashTransferModalController as CashTransferModalCtrl',
-      size:        'md',
-      backdrop:    'static',
-      animation:   true,
-      resolve:     {
+    var params = angular.extend(modalParameters, {
+      templateUrl : 'partials/cash/modals/transfer.modal.html',
+      controller  : 'CashTransferModalController as CashTransferModalCtrl',
+      resolve     : {
         cashBox:  function cashBoxProvider() { return request.cashbox; }
       }
     });
+
+    var instance = Modal.open(params);
   }
 
 }
