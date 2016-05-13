@@ -1,4 +1,5 @@
 /**
+ * @overview
  * Authentication Controller
  *
  * This controller is responsible for managing user authentication and
@@ -8,35 +9,47 @@
  * user's ability to selected routes.
  *
  * @requires lib/db
+ * @requires lib/eventd
  * @requires lib/errors/Unauthorized
  * @requires lib/errors/Forbidden
  * @requires lib/errors/InternalServerError
  */
+'use strict';
 
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 const Forbidden = require('../lib/errors/Forbidden');
 const InternalServerError = require('../lib/errors/InternalServerError');
+const eventd = require('../lib/eventd');
 
 // POST /login
-// This route will accept a login request with the
-// username, password and project id for user.  Upon
-// successful login, it creates a user session with
-// all enterprise, project, and user data for easy access.
-exports.login = function login(req, res, next) {
-  'use strict';
+exports.login = login;
 
+// GET /logout
+exports.logout = logout;
+
+/**
+ * @method login
+ *
+ * @description
+ * Logs a client into the server.  The /login route accepts a POST request with
+ * a username, password, and project id.  It checks if the username and password
+ * exist in the database, then verifies that the user has permission to access
+ * the database all enterprise, project, and user data for easy access.
+ */
+function login(req, res, next) {
   let username = req.body.username;
   let password = req.body.password;
   let projectId = req.body.project;
 
   const session = {};
 
-  let sql =
-    `SELECT user.id, user.username, user.first, user.last, user.email, project.enterprise_id , project.id AS project_id
+  let sql = `
+    SELECT user.id, user.username, user.first, user.last, user.email, project.enterprise_id , project.id AS project_id
     FROM user JOIN project_permission JOIN project ON
       user.id = project_permission.user_id AND project.id = project_permission.project_id
-    WHERE user.username = ? AND user.password = PASSWORD(?) AND project_permission.project_id = ?;`;
+    WHERE user.username = ? AND user.password = PASSWORD(?) AND project_permission.project_id = ?;
+  `;
 
   db.exec(sql, [username, password, projectId])
   .then(function (rows) {
@@ -63,7 +76,8 @@ exports.login = function login(req, res, next) {
     }
 
     // update the database for when the user logged in
-    sql = 'UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;';
+    sql =
+      'UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;';
 
     return db.exec(sql, [new Date(), session.user.id]);
   })
@@ -82,6 +96,7 @@ exports.login = function login(req, res, next) {
     return db.exec(sql, [session.user.enterprise_id]);
   })
   .then(function (rows) {
+
     if (rows.length === 0) {
       throw new InternalServerError('There are no enterprises registered in the database!');
     }
@@ -103,29 +118,49 @@ exports.login = function login(req, res, next) {
     session.project = rows[0];
 
     // bind the session variables
+    req.session.project = session.project;
     req.session.user = session.user;
     req.session.enterprise = session.enterprise;
-    req.session.project = session.project;
+
+    // broadcast LOGIN event
+    eventd.publish(eventd.channels.APP, {
+      event: eventd.events.LOGIN,
+      entity: eventd.entities.USER,
+      user_id : req.session.user.id,
+      id: session.user.id
+    });
 
     // send the session data back to the client
     res.status(200).json(session);
   })
   .catch(next)
   .done();
-};
+}
 
-// GET  /logout
-// Destroys a user's session
-exports.logout = function logout(req, res, next) {
-
-  var sql =
-    'UPDATE user SET user.active = 0 WHERE user.id = ?';
+/**
+ * @method logout
+ *
+ * Destroys the server side session and sets the user as inactive.
+ */
+function logout(req, res, next) {
+  let sql =
+    'UPDATE user SET user.active = 0 WHERE user.id = ?;';
 
   db.exec(sql, [req.session.user.id])
-  .then(function () {
+  .then(() => {
+
+    // broadcast LOGOUT event
+    eventd.publish(eventd.channels.APP, {
+      event: eventd.events.LOGOUT,
+      entity: eventd.entities.USER,
+      user_id : req.session.user.id,
+      id: req.session.user.id,
+    });
+
+    // destroy the session
     req.session.destroy();
-    res.status(200).send();
+    res.sendStatus(200);
   })
   .catch(next)
   .done();
-};
+}
