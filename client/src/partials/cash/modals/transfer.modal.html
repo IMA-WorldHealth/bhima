@@ -14,7 +14,7 @@
     <uib-alert type="info" ng-show="CashTransferModalCtrl.cashBox">
       <p>{{ "FORM.LABELS.FINANCIAL_DETAIL" | translate }} </p>
 
-      <p>{{"FORM.LABELS.CASHBOX" | translate}} : {{ CashTransferModalCtrl.cashBox.text }} </p>
+      <p>{{"FORM.LABELS.CASHBOX" | translate}} : <strong>{{ CashTransferModalCtrl.cashBox.label }}</strong> </p>
       <div ng-if="CashTransferModalCtrl.currency_id">
         <p>{{"FORM.LABELS.BALANCE" | translate}} : {{CashTransferModalCtrl.cashAccountBalance.balance | currency:CashTransferModalCtrl.currency_id}}</p>
       </div>

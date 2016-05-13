@@ -189,7 +189,8 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
 
   /** Select Cashbox Modal */
   function openSelectCashboxModal() {
-    ModalService.openSelectCashbox({ cashbox: cache.cashbox, cashboxId: cashboxId })
+    var cache_cashbox_id = cache.cashbox && cache.cashbox.id ? cache.cashbox.id : undefined;
+    ModalService.openSelectCashbox({ cache_cashbox_id: cache_cashbox_id, url_cashbox_id: cashboxId })
     .then(function (result) {
       vm.cashbox = result;
       $location.url('/cash/' + vm.cashbox.id);
