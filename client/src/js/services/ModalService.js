@@ -26,6 +26,12 @@ ModalService.$inject = [ '$uibModal' ];
 function ModalService(Modal) {
   var service = this;
 
+  var modalParameters = {
+    size : 'md',
+    backdrop : 'static',
+    animation : false
+  };
+
   service.alert = alert;
   service.confirm = confirm;
   service.openSelectCashbox = openSelectCashbox;
@@ -78,18 +84,23 @@ function ModalService(Modal) {
    * Select cashbox modal
    */
   function openSelectCashbox(request) {
+    /**
+     * request contains :
+     * cashboxId => the cashbox id send in url : /cash/:id
+     * cashbox.id => the cashbox id which is in the cache 
+     */
     var cashboxIsSet = request.cashbox && request.cashbox.id;
-    var instance = Modal.open({
+
+    var params = angular.extend(modalParameters, {
       templateUrl : 'partials/cash/modals/selectCashbox.modal.html',
       controller  : 'SelectCashboxModalController',
       controllerAs: '$ctrl',
-      size        : 'md',
-      backdrop    : 'static',
-      animation   : true,
       resolve     : {
         cashboxId : function () { return request.cashboxId || cashboxIsSet; }
       }
     });
+
+    var instance = Modal.open(params);
 
     return instance.result;
   }
