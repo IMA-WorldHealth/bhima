@@ -2,11 +2,16 @@
  * @module medical/patient
  *
  * @description
+ * The /patient HTTP API endpoint
+ *
+ * @description
  * This module is responsible for handling all crud operations relatives to patients
  * and define all patient API functions.
  *
+ *
  * @requires lodash
  * @requires lib/db
+ * @requires lib/topic
  * @requires lib/node-uuid
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
@@ -21,6 +26,7 @@
 
 const _ = require('lodash');
 const db = require('../../../lib/db');
+const topic = require('../../lib/topic');
 const uuid = require('node-uuid');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
@@ -119,6 +125,14 @@ function create(req, res, next) {
       res.status(201).json({
         uuid : uuid.unparse(medical.uuid)
       });
+
+      // publish a CREATE event on the medical channel
+      topic.publish(topic.channels.MEDICAL, {
+        event: topic.events.CREATE,
+        entity: topic.entities.PATIENT,
+        user_id: req.session.user.id,
+        uuid: uuid.unparse(medical.uuid)
+      });
     })
     .catch(next)
     .done();
@@ -131,7 +145,15 @@ function generatePatientText(patient) {
 }
 
 /**
- * Returns details associated to a patient directly and indirectly
+ * @method detail
+ *
+ * @description
+ * Returns details associated to a patient directly and indirectly.
+ *
+ * @example
+ * var patient = require('medical/patient');
+ * patient.detail(req, res, next);
+ *
  * @todo review if this many details should be returned under a patient end point
  */
 function detail(req, res, next) {
@@ -164,6 +186,14 @@ function update(req, res, next) {
     })
     .then(function (updatedPatient) {
       res.status(200).json(updatedPatient);
+
+      // publish an UPDATE event on the medical channel
+      topic.publish(topic.channels.MEDICAL, {
+        event: topic.events.UPDATE,
+        entity: topic.entities.PATIENT,
+        user_id: req.session.user.id,
+        uuid: patientUuid
+      });
     })
     .catch(next)
     .done();
@@ -172,7 +202,7 @@ function update(req, res, next) {
 function handleFetchPatient(patientUuid) {
 
   // convert uuid to database usable binary uuid
-  var buid = db.bid(patientUuid);
+  let buid = db.bid(patientUuid);
 
   var patientDetailQuery =
     `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
@@ -340,11 +370,14 @@ function visit(req, res, next) {
     .done();
 }
 
+/**
+ * @function logVisit
+ */
 function logVisit(patientData, userId) {
-  var visitId = db.bid(uuid.v4());
-  var sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?)';
-  return db.exec(sql, [visitId, db.bid(patientData.uuid), userId]);
+  let visitId = db.bid(uuid.v4());
+  let sql =
+    'INSERT INTO patient_visit (uuid, patient_uuid, registered_by) VALUES (?);';
+  return db.exec(sql, [[visitId, db.bid(patientData.uuid), userId]]);
 }
 
 /**

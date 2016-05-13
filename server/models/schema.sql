@@ -751,6 +751,16 @@ CREATE TABLE `enterprise` (
   FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `event`;
+CREATE TABLE `event` (
+  `timestamp`   TIMESTAMP NOT NULL,
+  `user_id`     SMALLINT(5) UNSIGNED NOT NULL,
+  `channel`     TEXT NOT NULL,
+  `type`        TEXT NOT NULL,
+  `data`        TEXT NOT NULL, -- TODO, this should be JSON in newer MySQL
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `exchange_rate`;
 CREATE TABLE `exchange_rate` (
