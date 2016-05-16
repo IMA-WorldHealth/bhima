@@ -8,7 +8,9 @@
  * controllers, allowing for modules to subscribe to different
  * levels of authority
  */
-const winston            = require('winston');
+'use strict';
+
+var winston              = require('winston');
 var auth                 = require('../controllers/auth');
 var data                 = require('../controllers/data');
 var users                = require('../controllers/users');
@@ -63,7 +65,7 @@ var referenceGroup       = require('../controllers/finance/referenceGroup');
 var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
 var creditors            = require('../controllers/finance/creditors.js');
-const events             = require('../controllers/events');
+const system             = require('../controllers/system');
 
 const upload = require('../lib/uploader');
 
@@ -76,13 +78,16 @@ exports.configure = function configure(app) {
   app.get('/projects', projects.list);
   app.get('/units', units.list);
 
-  // event architecture
-  app.get('/events', events.list);
-  app.get('/stream', events.stream);
-
+  // auth gateway
   app.post('/login', auth.login);
   app.get('/logout', auth.logout);
 
+  // system and event helpers
+  app.get('system/events', system.events);
+  app.get('system/stream', system.stream);
+  app.get('system/information', system.info);
+
+  // exchange rate modules
   app.get('/exchange', exchange.list);
   app.post('/exchange', exchange.create);
   app.put('/exchange/:id', exchange.update);
