@@ -1,4 +1,4 @@
-/* global inject, browser, element, by */
+/* global browser, element, by */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -9,7 +9,7 @@ helpers.configure(chai);
 
 describe('Permissions Module', function () {
 
-  before(() => browser.get('#/permissions'));
+  before(() => helpers.navigate('#/permissions'));
 
   const mockUser = {
     first:    'Mock',

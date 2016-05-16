@@ -9,7 +9,7 @@ helpers.configure(chai);
 describe('Sectors Management', function () {
   'use strict';
 
-  before(() => browser.get('#/locations/sector'));
+  before(() => helpers.navigate('#/locations/sector'));
 
   const sector = {
     name :'A Sector for Test'

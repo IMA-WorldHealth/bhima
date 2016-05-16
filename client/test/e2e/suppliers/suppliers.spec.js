@@ -6,11 +6,11 @@ const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('Suppliers Module', function () {
+describe('Suppliers', function () {
   'use strict';
 
   const path = '#/creditors';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const supplier = {
     name : 'Alpha Lmtd',

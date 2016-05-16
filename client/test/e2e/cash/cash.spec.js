@@ -117,7 +117,7 @@ describe('Cash Payments Module', function () {
 
     /** navigate to the page before each function */
     beforeEach(function () {
-      browser.get(path);
+      helpers.navigate(path);
     });
 
     // this code assumes that the find-patient directive is well tested.
@@ -160,9 +160,12 @@ describe('Cash Payments Module', function () {
 
       // expect the receipt modal to appear
       FU.exists(by.css('[data-cash-receipt-modal]'), true);
+
+      // dismiss the modal
+      element(by.css('[data-modal-action="dismiss"]')).click();
     });
 
-    /** @todo - once posting is figured out, this test should be uncommented and work */
+    /** @todo - once invoice posting is figured out, this test should be uncommented and work */
     it.skip('should make a payment against previous invoices', function () {
       var gridId = 'debtorInvoicesGrid';
 
@@ -202,13 +205,16 @@ describe('Cash Payments Module', function () {
 
       // expect the receipt modal to appear
       FU.exists(by.css('[data-cash-receipt-modal]'), true);
+
+      // dismiss the modal
+      element(by.css('[data-modal-action="dismiss"]')).click();
     });
   });
 
   describe('Cash Transfer ', function (){
 
-    /** navigate to the page before tests */
-    before(() => browser.get(path));
+    // navigate to the page before tests
+    before(() => helpers.navigate(path));
 
     // This transfer should succeed
     const mockTransfer = {
@@ -229,10 +235,11 @@ describe('Cash Payments Module', function () {
       components.currencyInput.set(mockTransfer.amount, 'transferCurrencyInput');
 
       // submit the modal button
-      var transferSubmitBtn =  element(by.id('submit-transfer'));
+      var transferSubmitBtn = element(by.id('submit-transfer'));
       transferSubmitBtn.click();
 
       FU.exists(by.id('succeed-label'), true);
+      element(by.css('[data-modal-action="dismiss"]')).click();
     });
   });
 });

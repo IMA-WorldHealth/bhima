@@ -1,4 +1,4 @@
-/* global element, by, inject, browser */
+/* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -12,7 +12,7 @@ describe('Reference Module', function () {
   'use strict';
 
   const path = '#/references';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const reference = {
     ref : 'AD',

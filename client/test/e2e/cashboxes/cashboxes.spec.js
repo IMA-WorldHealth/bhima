@@ -10,7 +10,7 @@ const components = require('../shared/components');
 
 describe('Cashbox Module', function () {
 
-  before(() => browser.get('#/cashboxes'));
+  before(() => helpers.navigate('#/cashboxes'));
 
   const cashbox = {
     label:    'Test Principal Cashbox',

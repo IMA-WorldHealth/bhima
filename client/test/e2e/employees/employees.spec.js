@@ -11,7 +11,7 @@ describe('Employees Module', function () {
   'use strict';
 
   const path = '#/employees';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const employee = {
     code : 'HBB80',

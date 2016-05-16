@@ -1,4 +1,4 @@
-/* global browser, element, by, protractor */
+/* global browser, element, by */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -8,7 +8,7 @@ helpers.configure(chai);
 
 describe('Settings', function () {
 
-  before(() => browser.get('#/settings'));
+  before(() => helpers.navigate('#/settings'));
 
   it('loads the page, and selects a language', function () {
 
@@ -27,7 +27,7 @@ describe('Settings', function () {
   it('uses the back button to return to previous state', function () {
 
     // load the settings page w/o backwards navigation
-    browser.get('#/settings?previous=index');
+    helpers.navigate('#/settings?previous=index');
 
     var btn = '[data-back-button]';
 

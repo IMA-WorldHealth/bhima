@@ -7,11 +7,11 @@ const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 helpers.configure(chai);
 
-describe('Exchange Rate Module', function () {
+describe('Exchange Rate', function () {
   'use strict';
 
   const path = '#/exchange';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const exchangeRate = {
     date : new Date('06-30-2015'),
@@ -125,5 +125,7 @@ describe('Exchange Rate Module', function () {
 
     // The following fields should be required
     FU.validation.error('ModalCtrl.data.rate');
+
+    FU.buttons.cancel();
   });
 });

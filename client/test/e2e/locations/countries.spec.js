@@ -1,4 +1,4 @@
-/* global element, by, inject, browser */
+/* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -12,7 +12,7 @@ describe('Countries Management', function () {
   const path = '#/locations/country';
 
   // navigate to the page before the test suite
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const country = {
     name : 'A Country for Test'

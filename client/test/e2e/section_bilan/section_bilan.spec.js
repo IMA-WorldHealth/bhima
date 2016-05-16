@@ -12,7 +12,7 @@ describe('Section Bilan Module', function () {
   'use strict';
 
   const path = '#/section_bilan';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const sectionBilan = {
     text : 'A Special Section Result',

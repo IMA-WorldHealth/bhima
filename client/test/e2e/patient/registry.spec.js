@@ -1,4 +1,4 @@
-/* global element, by, inject, browser */
+/* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
 const helpers = require('../shared/helpers');
@@ -9,7 +9,7 @@ describe('Patient Registry UI Grid ', function () {
   'use strict';
 
   const path = '#/patients/registry';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   it('grid should have 3 visible rows', function () {
     var defaultVisibleRowNumber = 3;
