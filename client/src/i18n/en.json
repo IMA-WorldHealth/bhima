@@ -774,6 +774,7 @@
       "PHONE"              : "Telephone",
       "POSITION"           : "Position",
       "PO_BOX"             : "Poste Office Box",
+      "PRICE"              : "Price",
       "PRICE_LIST"         : "Price List",
       "PROFIT"             : "Profit",
       "PROFIT_CENTER"      : "Profit Center",
@@ -797,9 +798,11 @@
       },
       "TEXT"               : "Text",
       "TOTAL"              : "Total",
+      "TRANSACTION_ID"     : "Transaction ID",
       "TYPE"               : "Type",
       "VALUE"              : "Value",
-      "VILLAGE"            : "Village"
+      "VILLAGE"            : "Village",
+      "QUANTITY"           : "Quantity"
     }
   },
   "TREE": {

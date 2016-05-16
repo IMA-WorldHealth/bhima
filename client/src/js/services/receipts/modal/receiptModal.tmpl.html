@@ -10,11 +10,11 @@
 
 <!-- TODO Investigate if this should use latest ui-router standards -->
 <div ng-switch on="ReceiptCtrl.renderer">
-  
+
   <!-- JSON Should be exposed to a view provided by the template passed to the -->
   <!-- controller by the Receipt Modal service -->
   <div ng-switch-when="json">
-    
+
     <!-- TODO Modal height etc. should be standardised -->
     <div class="bh-modal-content">
       <div ng-include="ReceiptCtrl.template"></div>
@@ -24,7 +24,7 @@
   <!-- PDFs are downloaded through the GET request - they can be displayed using -->
   <!-- ng-src -->
   <div ng-switch-when="pdf">
-    
+
     <!-- Google Chrome obejct seems to add 5px below outside or margin/padding model - this can be removed if it causes issues -->
     <object id="pdf" ng-src="{{ReceiptCtrl.receipt}}" type="application/pdf" style="width : 100%; height : 50vh; margin-bottom : -5px;">
       <!-- TODO: Translate -->
@@ -35,6 +35,15 @@
   <!-- CSV -->
 
   <!-- Excel -->
+
+  <!-- HTML -->
+  <div ng-switch-when="html">
+
+    <div class="bh-modal-content">
+      <div ng-bind-html="ReceiptCtrl.receipt"></div>
+    </div>
+    <!-- {{ReceiptCtrl.receipt}} -->
+  </div>
 </div>
 
 <div class="modal-footer">

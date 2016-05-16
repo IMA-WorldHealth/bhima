@@ -4,7 +4,7 @@ var bhima = angular.module('bhima', [
   'ngStorage', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns',
-  'ui.grid.grouping', 'growlNotifications', 'ngAnimate'
+  'ui.grid.grouping', 'growlNotifications', 'ngAnimate', 'ngSanitize'
 ]);
 
 

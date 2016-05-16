@@ -21,13 +21,11 @@ module.exports = renderJSON;
 
 /**
  * JSON Render Method
- *
- * @param {Object} data      Contains data in any format that will be used to
+ * @params {Object} data      Contains data in any format that will be used to
  *                            drive the final report - this will be exposed to
  *                            the view by the renderer.
- * @param {Object} options   (Optional) parameters that can be passed to switch
+ * @params {Object} options   (Optional) parameters that can be passed to switch
  *                            render features on/off.
- *
  * @returns {Object}          JSON Object representing a report that can be sent
  *                            to the client.
  */

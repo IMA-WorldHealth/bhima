@@ -27,11 +27,14 @@ var supportedRender = {};
 
 // currently supports only JSON rendering
 supportedRender.json = require('../../../lib/renderers/json');
+supportedRender.html = require('../../../lib/renderers/html');
 
 const defaultRender = 'json';
 
 const FLAG_TRUE = 1;
 const SUCCESS_STATUS = 200;
+
+const template = './server/controllers/finance/reports/invoice.receipt.handlebars';
 
 exports.build = build;
 
@@ -86,7 +89,7 @@ function build(req, res, next) {
     .then(function (headerResult) {
       _.extend(invoiceResponse, headerResult);
 
-      return render(invoiceResponse);
+      return render(invoiceResponse, template);
     })
     .then(function (renderedResult) {
 

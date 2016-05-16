@@ -1,0 +1,77 @@
+<link href="/css/bhima-bootstrap.css" rel="stylesheet">
+<div id="receipt" class="bh-print receipt">
+
+  <div class="row">
+  <div class="col-xs-12">
+    <h4 style="text-decoration : underline;">
+      {{translate "TREE.PATIENT_INVOICE"}}
+    </h4>
+  </div>
+  </div>
+
+  <div class="row">
+  <!-- Use xs to ensure it never collapses -->
+  <div class="col-xs-4">
+    <label>{{translate "FORM.LABELS.RECIPIENT"}}</label>
+    <p>
+      {{recipient.first_name}}
+      {{recipient.middle_name}}
+      {{recipient.last_name}}
+    </p>
+  </div>
+  <div class="col-xs-4">
+    <label>{{translate "TABLE.COLUMNS.TRANSACTION_ID"}}</label>
+    <p>{{reference}}</p>
+  </div>
+  <div class="col-xs-4">
+    <label>{{enterprise.name}}</label>
+    <p>{{enterprise.email}}</p>
+    <p>{{enterprise.phone}}</p>
+  </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{translate "TABLE.COLUMNS.CODE"}}</th>
+            <th>{{translate "TABLE.COLUMNS.DESCRIPTION"}}</th>
+            <th>{{translate "TABLE.COLUMNS.QUANTITY"}}</th>
+            <th>{{translate "TABLE.COLUMNS.PRICE"}}</th>
+            <th>{{translate "TABLE.COLUMNS.AMOUNT"}}</th>
+          </tr>
+        </thead>
+
+        <!-- Line items -->
+        <tbody>
+          {{#each items}}
+          <tr>
+            <td>{{this.code}}</td>
+            <td>{{this.text}}</td>
+            <td>{{this.quantity}}</td>
+            <td>{{this.transaction_price}}</td>
+            <td>{{multiple this.quantity this.transaction_price}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+
+        <!-- Totals -->
+        <tbody>
+          <tr class="total-row">
+            <td colspan="4">{{translate "FORM.LABELS.TOTAL"}}</td>
+            <td>{{currency cost}}</td>
+          </tr>
+          <!-- <tr> -->
+          <!--   <td colspan="4">{{ "INVOICE.AMOUNT_RECEIVED"}}</td> -->
+          <!--   <td>{{ credit}}</td> -->
+          <!-- </tr> -->
+          <!-- <tr> -->
+          <!--   <td colspan="4">{{ "INVOICE.BALANCE_DUE"}}</td> -->
+          <!--   <td>{{balance}}</td> -->
+          <!-- </tr> -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
