@@ -73,7 +73,7 @@ describe('SessionService', function () {
 
   it('emits a login event', () => {
     var called = false;
-    rootScope.$on('login', () => { called = true; });
+    rootScope.$on('session:login', () => { called = true; });
 
     // send a POST /login request
     Session.login(user);
@@ -88,7 +88,7 @@ describe('SessionService', function () {
 
   it('emits a logout event', () => {
     var called = false;
-    rootScope.$on('logout', () => { called = true; });
+    rootScope.$on('session:logout', () => { called = true; });
 
     Session.logout();
 

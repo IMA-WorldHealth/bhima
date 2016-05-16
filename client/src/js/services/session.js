@@ -6,8 +6,9 @@ SessionService.$inject = [
 ];
 
 /**
- * Session Service
+ * @module SessionService
  *
+ * @description
  * This service is responsible for retaining the client's session in session
  * storage.  It contains the methods for login and logout.
  *
@@ -16,7 +17,6 @@ SessionService.$inject = [
  * be listened to throughout the application.  Currently, only
  * ApplicationController consumes these events.
  *
- * @module services/SessionService.js
  * @constructor
  */
 function SessionService($sessionStorage, $http, $location, util, $rootScope) {
@@ -81,7 +81,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
         $location.url('/');
 
         // notify login event
-        $rootScope.$emit('login');
+        $rootScope.$emit('session:login');
 
         return session;
       });
@@ -100,7 +100,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
         destroy();
 
         // notify the logout event
-        $rootScope.$emit('logout');
+        $rootScope.$emit('session:logout');
 
         // navigate to the main page
         $location.url('/login');
@@ -113,6 +113,9 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     service.enterprise = $storage.enterprise;
     service.project = $storage.project;
   }
+
+  // if the $rootScope emits 'session.destroy', destroy the session
+  $rootScope.$on('session:destroy', destroy);
 
   // initialize loading to see if the user is already logged in
   load();
