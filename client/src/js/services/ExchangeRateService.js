@@ -162,7 +162,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
     return amount * rate;
   }
 
-  // get the current exchagne rate for a currency
+  // get the current exchange rate for a currency
   function getCurrentRate(currencyId) {
     return getExchangeRate(currencyId, new Date());
   }

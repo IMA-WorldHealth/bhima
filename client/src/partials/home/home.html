@@ -1,45 +1,86 @@
 <div class="flex-header">
   <div class="bhima-title">
-
     <ol class="headercrumb">
-      <li class="static">{{ "HOME.TITLE" | translate }}</li>
-      <li class="title">{{HomeCtrl.enterprise.name}}</span></li>
+      <li class="static">{{ ::"HOME.TITLE" | translate }}</li>
+      <li class="title">{{ ::HomeCtrl.enterprise.name }}</li>
     </ol>
-
   </div>
 </div>
 
 <div class="flex-content">
   <div class="container-fluid">
-    
-    <div class="page-header">
-      <h1>{{HomeCtrl.enterprise.name}}</h1>
-    </div>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">{{ "HOME.TITLE" | translate }}</div>
-      <div class="panel-body"> 
-        <div class="row">
-          <div class="col-sm-3">
-            {{ "HOME.PROJECT_NAME" | translate }}:
-            <br><strong>{{ HomeCtrl.project.name }}</strong>
-          </div>
-          <div class="col-sm-3">
-            {{ "HOME.TODAY" | translate }}:
-            <br><strong>{{ HomeCtrl.today | date }}</strong>
-          </div>
-          <div class="col-sm-3">
-            {{ "HOME.EXCHANGE_RATE" | translate }}:
-            <div ng-repeat="(id, row) in HomeCtrl.current">
-              <strong> 1 {{ HomeCtrl.symbolCurrency(HomeCtrl.enterprise.currency_id) }} = {{ row.rate | currency:id }} </strong>
-            </div>  
-           
-          </div>
-          <div class="col-sm-3">
-            {{ "HOME.CONNECTED_USER" | translate }}:
-            <br><strong>{{ HomeCtrl.user.first }} - {{ HomeCtrl.user.last }}</strong>
+    <div class="row">
+
+      <div class="col-md-8">
+        <div class="panel panel-default" style="min-height:30vh;">
+          <div class="panel-body">
+            <h4>
+              {{ ::HomeCtrl.project.name }} <small>{{ ::HomeCtrl.project.abbr }}</small>
+              <small class="pull-right"><span class="glyphicon glyphicon-calendar"></span> {{ ::HomeCtrl.today | date }}</small>
+            </h4>
+            <dl>
+              <dt>{{ ::"FORM.LABELS.CURRENCY" | translate }}</dt>
+              <dd>{{ ::HomeCtrl.enterprise.currencyLabel }}</dd>
+
+              <dt>{{ ::"TABLE.COLUMNS.EXCHANGE_RATE" | translate }}</dt>
+              <dd>
+                <div ng-repeat="currency in HomeCtrl.currencies track by currency.id" style="padding-left:15px;">
+                  <em>{{ currency.name }}</em> {{ currency.rate | currency:currency.id }}
+                  <a href ui-sref="exchange">
+                    <span class="glyphicon glyphicon-link"></span>
+                    {{ ::"FORM.BUTTONS.UPDATE" | translate }}
+                  </a>
+                </div>
+              </dd>
+
+              <dt>{{ ::"TREE.FISCAL_YEAR" | translate }}</dt>
+              <dd>
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width: 20%;">
+                    30%
+                  </div>
+                </div>
+              </dd>
+            </dl>
+
           </div>
         </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="panel panel-default" style="min-height:30vh;">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-info-sign"></span> {{ ::"SYSTEM.INFORMATION" | translate }}
+          </div>
+          <div class="panel-body">
+            <dl class="dl-horizontal">
+              <dt>{{ ::"SYSTEM.PLATFORM" | translate }}</dt>
+              <dd>{{ ::HomeCtrl.system.platform }}</dd>
+
+              <dt>{{ ::"SYSTEM.CPUS" | translate }}</dt>
+              <dd>{{ ::HomeCtrl.system.numCPUs }}</dd>
+
+              <dt>{{ ::"SYSTEM.MACHINE_UPTIME" | translate }}</dt>
+              <dd>{{ HomeCtrl.system.machineUptime | amDurationFormat }}</dd>
+
+              <dt>{{ ::"SYSTEM.PROCESS_UPTIME" | translate }}</dt>
+              <dd>{{ HomeCtrl.system.processUptime | amDurationFormat }}</dd>
+
+              <dt>{{ ::"SYSTEM.MEMORY_USAGE" | translate }}</dt>
+              <dd>{{ ::HomeCtrl.system.memoryUsage | number }}%</dd>
+
+              <dt>{{ ::"SYSTEM.VERSION" | translate }}</dt>
+              <dd>{{ ::HomeCtrl.system.version }}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <h1>TODO: Graphic</h1>
       </div>
     </div>
   </div>

@@ -1,9 +1,9 @@
 @import "bootstrap.less";
 
 /**
-* gutter width halfed for container padding, odd values cause overflow scroll
-* bars with current application structure
-*/
+ * gutter width halfed for container padding, odd values cause overflow scroll
+ * bars with current application structure
+ */
 @grid-gutter-width: 10px;
 
 @border-radius-base: 2px;
@@ -13,20 +13,20 @@
 @ima-dark-blue:       #085484;
 @ima-light-orange:    #fdba64;
 @ima-light-blue:      #6fbdee;
-  
+
 /** @todo move all structure code into less with configurable variables */
-/** 
-* Application structure variables - these widths are used to determine how much 
-* space the tree navigation takes up in its `expanded` and `collapsed` states. 
-*/
+/**
+ * Application structure variables - these widths are used to determine how much
+ * space the tree navigation takes up in its `expanded` and `collapsed` states.
+ */
 @expanded-offset:  260px;
 @collapsed-offset: 56px;
 @nav-height:       51px;
 
 /**
-* Notifications
-*/
-growl-notifications { 
+ * Notifications
+ */
+growl-notifications {
   width : 100%;
   position : fixed;
   top : 0px;
@@ -34,7 +34,7 @@ growl-notifications {
   z-index : 1000;
 }
 
-.expanded > growl-notifications { 
+.expanded > growl-notifications {
   left : @expanded-offset;
   width : calc(~'100% - (@{expanded-offset} - @{collapsed-offset})');
 }
@@ -57,28 +57,28 @@ growl-notifications growl-notification {
 ::-webkit-outer-spin-button { -webkit-appearance: none;}
 input[type=number] {-moz-appearance: textfield;}
 
-/** 
- * This overrides the `width` specification added by bootstrap at different 
+/**
+ * This overrides the `width` specification added by bootstrap at different
  * screen sizes for the .container class. As the Tree navigation pushes the view
- * if it is expanded BHIMA cannot gaurantee there is enough space for these widths, 
+ * if it is expanded BHIMA cannot gaurantee there is enough space for these widths,
  * overriding this with max-width doesn't force the container to the specified size
  */
-@media (min-width: 768px) { 
-  .container { 
+@media (min-width: 768px) {
+  .container {
     max-width : 730px;
     width : auto;
   }
 }
 
-@media (min-width : 992px) { 
-  .container { 
+@media (min-width : 992px) {
+  .container {
     max-width : 950px;
     width : auto;
   }
 }
 
-@media (min-width : 1200px) { 
-  .container { 
+@media (min-width : 1200px) {
+  .container {
     max-width : 1150px;
     width : auto;
   }

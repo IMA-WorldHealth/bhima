@@ -34,15 +34,16 @@ function stream(req, res) {
   res.set('Content-Control', 'no-cache');
 
   // this listener publishes events to the client as server-sent events
-  function eventsener(data) {
-    res.write(`data: ${JSON.stringify(data)}\n\n`).flush();
+  function listener(data) {
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+    res.flush();
   }
 
   // listener for server events and echo them to the client
-  Topic.subscribe(Topic.channels.ALL, eventsener);
+  Topic.subscribe(Topic.channels.ALL, listener);
 
   // remove listener on when the client closes the connection
-  res.on('close', () => Topic.unsubscribe(Topic.channels.ALL, eventsener));
+  res.on('close', () => Topic.unsubscribe(Topic.channels.ALL, listener));
 }
 
 // events the events in the database
@@ -72,7 +73,7 @@ function info(req, res) {
     numCPUs : os.cpus().length,
     machineUptime : os.uptime() * 1000,       // change to milliseconds
     processUptime : process.uptime() * 1000,  // change to milliseconds
-    memoryUsage : 1 - (os.freemem() / os.totalmem()),
+    memoryUsage : (1 - (os.freemem() / os.totalmem()))*100,
     version : pkg.version
   };
 

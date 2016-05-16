@@ -83,9 +83,9 @@ exports.configure = function configure(app) {
   app.get('/logout', auth.logout);
 
   // system and event helpers
-  app.get('system/events', system.events);
-  app.get('system/stream', system.stream);
-  app.get('system/information', system.info);
+  app.get('/system/events', system.events);
+  app.get('/system/stream', system.stream);
+  app.get('/system/information', system.info);
 
   // exchange rate modules
   app.get('/exchange', exchange.list);
