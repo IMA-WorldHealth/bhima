@@ -184,7 +184,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
   it('GET /vouchers returns a list of vouchers', function () {
     return agent.get('/vouchers')
       .then(function (res) {
-        helpers.api.listed(res, 6);
+        helpers.api.listed(res, 12);
       })
       .catch(helpers.handler);
   });

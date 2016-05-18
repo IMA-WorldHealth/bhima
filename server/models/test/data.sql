@@ -257,7 +257,7 @@ INSERT INTO `patient` VALUES
 INSERT INTO `patient_visit` VALUES
   (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', 1),
   (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2016-04-28 00:00:00', 3),
-  (HUID('4c6aa8b4da22-847d-710f-9fb5-112a9b20'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2016-01-10 00:00:00', 2);  
+  (HUID('4c6aa8b4da22-847d-710f-9fb5-112a9b20'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2016-01-10 00:00:00', 2);
 
 INSERT INTO `assignation_patient` VALUES
   (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'));
@@ -366,6 +366,21 @@ INSERT INTO `price_list_item` VALUES
   (HUID(UUID()), HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), '', 100, 1, CURRENT_TIMESTAMP);
 
 UPDATE debtor_group SET price_list_uuid = HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0') WHERE uuid = HUID('4de0fe47-177f-4d30-b95f-cff8166400b4');
+
+-- voucher sample data
+INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, description, user_id) VALUES
+  (HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534'), CURRENT_TIMESTAMP, 1, 2, 100, 'Sample voucher data one', 1),
+  (HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), CURRENT_TIMESTAMP, 1, 2, 200, 'Sample voucher data two', 1),
+  (HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), CURRENT_TIMESTAMP, 1, 2, 300, 'Sample voucher data three', 1);
+
+-- voucher items sample data
+INSERT INTO `voucher_item` VALUES
+  (HUID(UUID()), 3627, 100, 0, HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 100, HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3627, 200, 0, HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 200, HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3627, 300, 0, HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 300, HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), HUID(UUID()), HUID(UUID()));
 
 -- 1.X Routes
 -- ----------
