@@ -14,14 +14,20 @@ const FU = require('../shared/FormUtils');
 describe('Cash Payments Module', function () {
 
   const path = '#/cash';
+
   const cashboxA = {
     id: 1,
-    text : 'Test Primary Cashbox A',
+    text : 'Test Primary Cashbox A'
   };
 
   const cashboxB = {
     id: 2,
-    text : 'Test Primary Cashbox B',
+    text : 'Test Aux Cashbox A'
+  };
+
+  const cashboxC = {
+    id: 3,
+    text : 'Test Aux Cashbox B'
   };
 
   describe('Cashbox Select Interface', function () {
@@ -61,10 +67,10 @@ describe('Cash Payments Module', function () {
       browser.get(path);
 
       // expect that we were routed back to cashbox A
-      expect(helpers.getCurrentPath()).to.eventually.equal(target);
+      expect(helpers.getCurrentPath()).to.eventually.equal(path);
     });
 
-    it('navigating to /cash after a selection is made should re-route to /cash/:id', function () {
+    it('navigating to /cash after a selection is made should re-route to /cash', function () {
 
       // our target is cashboxB
       var target = path.concat('/' + cashboxB.id);
@@ -80,36 +86,38 @@ describe('Cash Payments Module', function () {
       browser.get(path);
 
       // the browser should be rerouted to the cashboxB page
-      expect(helpers.getCurrentPath()).to.eventually.equal(target);
+      expect(helpers.getCurrentPath()).to.eventually.equal(path);
     });
 
     it('should allow a user to select and deselect a cashbox', function () {
-
-      var targetInitial = path.concat('/' + cashboxA.id);
-      var targetFinal = path.concat('/' + cashboxB.id);
-
-      // navigate to the cash payements module
-      browser.get(targetInitial);
-      expect(helpers.getCurrentPath()).to.eventually.equal(targetInitial);
-
-      // make sure we are in the correct cashbox
-      var hasCashboxAText = EC.textToBePresentInElement($('[data-cashbox-text]'), cashboxA.text);
-      //browser.wait(hasCashboxAText, 10000);
-
-      // use the button to navigate back to the cashbox select module
-      var backBtn = element(by.css('[data-change-cashbox]'));
-      backBtn.click();
-
-      // ensure we get back to the cashbox select module
-      expect(helpers.getCurrentPath()).to.eventually.equal(path);
-
-      // attempt to navigate (via the buttons) to cashboxB as our new target
-      var btn = element(by.id('cashbox-'.concat(cashboxB.id)));
-      btn.click();
-
+      // the auxiliary cashbox is the target
+      var targetAuxiliary1 = path.concat('/' + cashboxC.id);
+      // navigate to a page that display the select cashbox modal
+      browser.get(path.concat('/unknownId'));
+      // select the auxiliary cashbox C displayed
+      var cbxItem = element(by.id('cashbox_' + cashboxC.id));
+      cbxItem.click();
+      // click on the ok button of the modal box
+      var okButton = element(by.css('[data-cashbox-modal-submit]'));
+      okButton.click()
       // verify that we get to the cashboxB page
-      expect(helpers.getCurrentPath()).to.eventually.equal(targetFinal);
+      expect(helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary1);
+
+      // the auxiliary cashbox is the target
+      var targetAuxiliary2 = path.concat('/' + cashboxB.id);
+      // use the button to navigate back to the cashbox select module
+      element(by.css('[data-change-cashbox]')).click();
+      // select the auxiliary cashbox B displayed
+      var cbxItem = element(by.id('cashbox_' + cashboxB.id));
+      cbxItem.click();
+      // click on the ok button of the modal box
+      var okButton = element(by.css('[data-cashbox-modal-submit]'));
+      okButton.click()
+      // verify that we get to the cashboxB page
+      expect(helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary2);
+
     });
+
   });
 
   /** tests for the cash payments form page */
@@ -242,4 +250,5 @@ describe('Cash Payments Module', function () {
       element(by.css('[data-modal-action="dismiss"]')).click();
     });
   });
+
 });

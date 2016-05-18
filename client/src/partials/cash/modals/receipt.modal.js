@@ -18,6 +18,7 @@ function CashReceiptModalController(uuid, patientUuid, ModalInstance, Cash, Proj
 
   // bind close modal method
   vm.cancel = ModalInstance.dismiss;
+  vm.print  = handlePrint;
   vm.isEnterpriseCurrency = isEnterpriseCurrency;
   vm.fmtCurrency = fmtCurrency;
 
@@ -27,6 +28,11 @@ function CashReceiptModalController(uuid, patientUuid, ModalInstance, Cash, Proj
   /** generic error handler temporarily */
   function handler(error) {
     vm.error = error;
+  }
+
+  /** @todo implement a good way print function */
+  function handlePrint() {
+    return ;
   }
 
   /** fired to start up the receipt module */
