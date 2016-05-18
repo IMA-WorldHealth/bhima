@@ -11,7 +11,7 @@ var FU = require('../shared/FormUtils');
 describe('Debtor Groups Management', function () {
   'use strict';
 
-  let initialGroups = 3;
+  let initialGroups = 7;
 
   /** @const */
   var root = '#/debtors/groups';
