@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  '$translate', 'PatientService',
+  '$translate', 'PatientService', '$uibModal'
 ];
 
 /**
@@ -12,10 +12,9 @@ PatientRegistryController.$inject = [
  * of Patient Registry.
  *
  */
-function PatientRegistryController($translate, Patients) {
+function PatientRegistryController($translate, Patients, $uibModal) {
   var vm = this;
   // options for the UI grid
-
   
   vm.search = search;
   vm.momentAge = momentAge;
@@ -39,7 +38,7 @@ function PatientRegistryController($translate, Patients) {
 
   // load Patient Registry Grid
   function loadGrid() {
-    Patients.list().then(function (patients) {
+    Patients.read().then(function (patients) {
       patients.forEach(function (patient) {
         patient.patientAge = momentAge(patient.dob); 
       });      

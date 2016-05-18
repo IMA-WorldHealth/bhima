@@ -202,6 +202,7 @@
       "BACK"                  : "Back",
       "CANCEL"                : "Cancel",
       "CLEAR"                 : "Clear",
+      "CLOSE"                 : "Close",
       "CONFIGURE"             : "Configure",
       "CONFIRM"               : "Confirm",
       "CONNECTION"            : "Connexion",
@@ -225,6 +226,10 @@
       "SELECT_INVOICES"       : "Select Invoices",
       "SUBMIT"                : "Submit",
       "SUBMIT_CHANGES"        : "Submit Changes",
+      "THIS_MONTH"            : "This Month",
+      "THIS_WEEK"             : "This Week",
+      "THIS_YEAR"             : "This Year",
+      "TODAY"                 : "Today",
       "UPDATE_PASSWORD"       : "Update Password"
     },
     "DIALOGS": {
@@ -261,6 +266,7 @@
       "PATIENT_FOUND"        : "Patient Found",
       "PATIENT_NOT_FOUND"    : "Patient Not Found",
       "SAVE_SUCCESS"         : "Save success",
+      "SEARCH"               : "Search",
       "UPDATE_SUCCESS"       : "Updated successfully"
     },
     "LABELS": {
@@ -274,6 +280,7 @@
       "ADDRESS2"               : "Additional address",
       "ADDR_1"                 : "Address 1",
       "ADDR_2"                 : "Address 2",
+      "ALL_GENDER"             : "All Gender",
       "AMOUNT"                 : "Amount",
       "APPLY_BILLING_SERVICES" : "Apply billing service",
       "APPLY_DISCOUNTS"        : "Apply discounts",
@@ -306,6 +313,7 @@
       "CURRENT_LOCATION"       : "Current Location",
       "CREATED"                : "Created",
       "DATE"                   : "Date",
+      "DATE_REGISTRATION"      : "Date Registration",
       "DEBITOR_GROUP"          : "Debtor Group",
       "DEBTOR_GROUP"           : "Form debtor group record",
       "DESCRIPTION"            : "Description",

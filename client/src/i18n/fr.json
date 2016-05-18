@@ -198,6 +198,7 @@
       "BACK"                  : "Précédent",
       "CANCEL"                : "Annuler",
       "CLEAR"                 : "Effacer",
+      "CLOSE"                 : "Fermer",
       "CONFIGURE"             : "Configurer",
       "CONFIRM"               : "Confirmer",
       "CONNECTION"            : "Connexion",
@@ -221,6 +222,10 @@
       "SELECT_INVOICES"       : "Sélectionner la(les) Facture(s)",
       "SUBMIT"                : "Soumettre",
       "SUBMIT_CHANGES"        : "Soumettre des changements",
+      "THIS_MONTH"            : "Ce mois",
+      "THIS_WEEK"             : "Cette semaine",
+      "THIS_YEAR"             : "Cette année",
+      "TODAY"                 : "Aujourd'hui",
       "UPDATE_PASSWORD"       : "Modifier mot de passe"
     },
     "DIALOGS": {
@@ -258,6 +263,7 @@
       "PATIENT_FOUND"        : "Patient Trouvé",
       "PATIENT_NOT_FOUND"    : "Patient Non Trouvé",
       "SAVE_SUCCESS"         : "Enregistrement avec succès",
+      "SEARCH"               : "Recherche",
       "UNAUTHORIZED"         : "Non autorisée",
       "UPDATE_SUCCESS"       : "Mise a jour avec succès"
     },
@@ -272,6 +278,7 @@
       "ADDRESS2"               : "Complément d'Adresse",
       "ADDR_1"                 : "Adresse 1",
       "ADDR_2"                 : "Adresse 2",
+      "ALL_GENDER"             : "Tous les genres",
       "AMOUNT"                 : "Montant",
       "APPLY_BILLING_SERVICES" : "Appliquer facturation",
       "APPLY_DISCOUNTS"        : "Appliquer réduction",
@@ -304,6 +311,7 @@
       "CURRENCY"               : "Monnaie",
       "CURRENT_LOCATION"       : "Localisation actuelle",
       "DATE"                   : "Date",
+      "DATE_REGISTRATION"      : "Date d'enregistrement",
       "DEBITOR_GROUP"          : "Groupe Débiteur",
       "DEBTOR_GROUP"           : "Formulaire d'enregistrement de groupe débiteur",
       "DESCRIPTION"            : "Description",
