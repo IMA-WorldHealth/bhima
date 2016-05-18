@@ -1,13 +1,6 @@
 {
 
-  "POSTING_JOURNAL" : {
-    "TITLE" : "Posting journal",
-    "SHOW_HIDE_COLUMNS" : "Show/Hide columns",
-    "COLUMNS_CONFIG" : {
-      "TITLE" : "Show or Hide columns",
-      "HELP" : "Check to show the column at journal grid"
-    }
-  },
+
 
   "ACCOUNT": {
     "ACCOUNT_CHART"  : "Chart of Accounts",
@@ -27,6 +20,7 @@
     "TITLE_ACCOUNT"  : "Title Account"
   },
   "AUTH": {
+    "CANNOT_RETURN_TO_LOGIN"     : "You are currently logged in.  To return to the login page, please log out using the settings page.",
     "ERR_LOGIN"                  : "Error: Username and password combination are incorrect.",
     "ERR_MISSING_DATA"           : "A username and password are required!",
     "ERR_NO_PERMISSIONS"         : "This user does not have any permissions.  Please contact a system administrator.",
@@ -36,8 +30,8 @@
     "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it.",
     "WELCOME"                    : "Welcome to bhima!",
     "GOODBYE"                    : "Thank you for using bhima.  Come back soon!",
-    "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application.",
-    "CANNOT_RETURN_TO_LOGIN"     : "You are currently logged in.  To return to the login page, please log out using the settings page."
+    "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application."
+    
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -257,6 +251,7 @@
       "GROUPS_PATIENT"       : "Assign the patient to patient groups from the options below. Press 'confirm' to permenantly update the patient's subscribed groups.",
       "ITEMS_FULL"           : "There are no additional inventory items that be assigned to this invoice.",
       "LOADING"              : "Loading",
+      "MANY_TRYS"            : "Many tries",
       "NOT_CONFIGURED"       : "The accounts for this currency have not been configured yet.",
       "NO_FILTERS_APPLIED"   : "No filters applied",
       "NO_INVOICES_SELECTED" : "No invoices selected",
@@ -267,6 +262,7 @@
       "PATIENT_NOT_FOUND"    : "Patient Not Found",
       "SAVE_SUCCESS"         : "Save success",
       "SEARCH"               : "Search",
+      "UNAUTHORIZED"         : "Unauthorized",
       "UPDATE_SUCCESS"       : "Updated successfully"
     },
     "LABELS": {
@@ -595,6 +591,14 @@
     "TITLE"         : "Users and Permissions Management",
     "UPDATING_USER" : "Edits a user's metadata"
   },
+  "POSTING_JOURNAL" : {
+    "TITLE" : "Posting journal",
+    "SHOW_HIDE_COLUMNS" : "Show/Hide columns",
+    "COLUMNS_CONFIG" : {
+      "TITLE" : "Show or Hide columns",
+      "HELP" : "Check to show the column at journal grid"
+    }
+  },  
   "PRICE_LIST": {
     "ADD_ITEMS"        : "Add an Item",
     "ADD_PRICE_LIST"   : "Add a Price List",

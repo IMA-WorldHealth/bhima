@@ -1,12 +1,4 @@
 {
-  "POSTING_JOURNAL" : {
-    "TITLE" : "Journal de saisie",
-    "SHOW_HIDE_COLUMNS" : "Afficher/Cacher colonnes",
-    "COLUMNS_CONFIG" : {
-      "TITLE" : "Afficher ou cacher les colonnes",
-      "HELP" : "Caucher pour afficher la colonne sur la grille du journal"
-    }
-  },
 
   "ACCOUNT": {
     "ACCOUNT_CHART"  : "Plan Comptable",
@@ -26,6 +18,7 @@
     "TITLE_ACCOUNT"  : "Comptes Titre"
   },
   "AUTH": {
+    "CANNOT_RETURN_TO_LOGIN"     : "Vous êtes actuellement connecté. Pour revenir à la page de connexion, Veuillez vous déconnecter à l'aide de la page des paramètres.",
     "ERR_LOGIN"                  : "Erreur: Nom d'utilisateur et mot de passe ne sont pas correct.",
     "ERR_MISSING_DATA"           : "Erreur: Nom d'utilisateur et mot de passe sont nécessaires.",
     "ERR_NO_PERMISSIONS"         : "Cet utilisateur ne possède pas les autorisations. S'il vous plaît contactez l'administrateur du système.",
@@ -34,7 +27,8 @@
     "LOGIN_PLACEHOLDER_USERNAME" : "Entrez votre nom d'utilisateur",
     "TOO_MANY_TRYS"              : "Avez-vous oublié votre login ou votre mot de passe? S'il vous plaît demander à l'administrateur du système pour le réinitialiser.",
     "WELCOME"                    : "Bienvenue à bhima!",
-    "GOODBYE"                    : "Merci d'utiliser bhima!  Reviennez bientôt!"
+    "GOODBYE"                    : "Merci d'utiliser bhima!  Reviennez bientôt!",
+    "UNAUTHENTICATED"            : "Vous avez été déconnecté. Veuillez vous reconnecté avec d'utiliser l'application."
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -592,6 +586,14 @@
     "SUPER"         : "super utilisateur",
     "TITLE"         : "Utilisateur et droits",
     "UPDATING_USER" : "Mise a jour utilisateur"
+  },
+  "POSTING_JOURNAL" : {
+    "TITLE" : "Journal de saisie",
+    "SHOW_HIDE_COLUMNS" : "Afficher/Cacher colonnes",
+    "COLUMNS_CONFIG" : {
+      "TITLE" : "Afficher ou cacher les colonnes",
+      "HELP" : "Caucher pour afficher la colonne sur la grille du journal"
+    }
   },
   "PRICE_LIST": {
     "ADD_ITEMS"        : "Ajouter un Item",
