@@ -13,11 +13,11 @@ CashTransferModalController.$inject = [
 */
 
 function CashTransferModalController(ModalInstance, currencyService, voucherService, cashBoxService, accountService, cashService, cashBox) {
-  var vm = this; 
+  var vm = this;
 
   /** Attaching service to the scope **/
   vm.cashBox = cashBox;
-  vm.currencyService = currencyService; 
+  vm.currencyService = currencyService;
   vm.cashBoxService = cashBoxService;
 
   /** init success to false**/
@@ -31,7 +31,7 @@ function CashTransferModalController(ModalInstance, currencyService, voucherServ
   function submit (invalid){
     if (invalid) { return; }
     var record = cashService.getTransferRecord(vm.cashAccountCurrency, vm.amount, vm.currency_id);
-    voucherService.create(record)      
+    voucherService.create(record)
     .then(function (res){
       vm.success = true;
     });
@@ -44,7 +44,7 @@ function CashTransferModalController(ModalInstance, currencyService, voucherServ
   function handleCurrencyChange () {
     cashBoxService.currencies.read(vm.cashBox.id, vm.currency_id)
     .then(function (cashAccountCurrency){
-      vm.cashAccountCurrency = cashAccountCurrency; 
+      vm.cashAccountCurrency = cashAccountCurrency;
       return  accountService.getBalance(vm.cashAccountCurrency.account_id, { params : { journal : 1 }});
     })
     .then(function (balance){
@@ -52,7 +52,7 @@ function CashTransferModalController(ModalInstance, currencyService, voucherServ
     });
   }
 
-  /**expose function to the scope**/ 
+  /**expose function to the scope**/
   vm.submit = submit;
   vm.cancel = cancel;
   vm.handleCurrencyChange = handleCurrencyChange;

@@ -210,7 +210,8 @@ INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
 
 INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (1,'Test Primary Cashbox A',1,0),
-  (2,'Test Aux Cashbox B',1,1);
+  (2,'Test Aux Cashbox A',1,1),
+  (3,'Test Aux Cashbox B',1,1);
 
 INSERT INTO `cash_box_account_currency` VALUES
   (1,1,1,3626,3626),

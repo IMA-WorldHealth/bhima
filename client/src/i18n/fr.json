@@ -74,7 +74,7 @@
         "LINK"            : "Cliquez ici pour l'ajouter.",
         "MISSING"         : "Vous ne trouvez pas votre caisse?",
         "TRANSFER"        : "Transférer Fonds",
-        "UNCONFIGURED"    : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse dans la liste ci-dessous pour continuer."
+        "UNCONFIGURED"    : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse en cliquant sur le bouton (Changer de Caisse)"
       },
       "DEBTOR_INVOICES" : "Factures des débiteurs",
       "RECEIPTS_TITLE"  : "Reçu de paiement des factures",
@@ -212,6 +212,7 @@
       "LINK_SUBMISSION"       : "Lien vers l'envoie d'un formulaire",
       "NOT_CONFIGURED"        : "Non configuree",
       "OK"                    : "OK",
+      "PRINT"                 : "Imprimer",
       "RECOVER_ITEMS"         : "Retrouver un article",
       "REGISTER_PATIENT"      : "Enregistrer le Patient",
       "RESET"                 : "Reinitialiser",

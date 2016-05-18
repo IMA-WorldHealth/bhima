@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h4>{{ 'CASH.SELECTION.TITLE' | translate }}</h4>
+</div>
+
+<div class="list-group">
+  <button type="button" class="list-group-item"
+    id="cashbox_{{ cash.id }}"
+    ng-repeat="cash in $ctrl.cashboxes"
+    ng-click="$ctrl.selectCashbox(cash.id, $index)"
+    ng-class="{'active' : $ctrl.indexSelected === $index}">
+    <span class="glyphicon glyphicon-inbox"></span>
+    {{ cash.label }}
+    <span ng-if="$ctrl.indexSelected === $index" class="pull-right"><i class="glyphicon glyphicon-ok"></i></span>
+  </button>
+</div>
+
+<div class="modal-footer">
+  <button type="button" id="modal-ok" class="btn btn-primary"
+    ng-click="$ctrl.close()"
+    ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id" data-cashbox-modal-submit>
+    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+  </button>
+  <button type="button" id="modal-cancel" class="btn btn-default"
+    ng-click="$ctrl.dismiss()"
+    ng-disabled="!$ctrl.cashboxId" data-cashbox-modal-cancel>
+    {{ 'FORM.BUTTONS.CANCEL' | translate }}
+  </button>
+</div>

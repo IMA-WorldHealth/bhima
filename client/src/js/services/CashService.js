@@ -163,33 +163,40 @@ function CashService($http, util, Exchange, uuid, sessionService ) {
   * This methode is responsible to create a voucher object and it back
   **/
   function getTransferRecord (cashAccountCurrency, amount, currency_id){
-
+    /**
+     * The date field is set at the server side
+     * @todo the date in timestamp type in the database
+     */
     var voucher = {
       uuid : uuid(),
       project_id : sessionService.project.id,
       currency_id : currency_id,
       amount : amount,
       description : generateTransferDescription(),
-      user_id : sessionService.user.id
-    };   
+      user_id : sessionService.user.id,
+      items : []
+    };
 
-    var cashVoucherLine = [
-      uuid (),
-      cashAccountCurrency.account_id,
-      0,
-      amount,
-      voucher.uuid
-    ];
+    var cashVoucherLine = {
+      uuid : uuid (),
+      account_id : cashAccountCurrency.account_id,
+      debit : 0,
+      credit : amount,
+      voucher_uuid : voucher.uuid
+    };
 
-    var transferVoucherLine = [
-      uuid (),
-      cashAccountCurrency.virement_account_id,
-      amount,
-      0,
-      voucher.uuid
-    ];
+    var transferVoucherLine = {
+      uuid : uuid (),
+      account_id : cashAccountCurrency.transfer_account_id,
+      debit : amount,
+      credit : 0,
+      voucher_uuid : voucher.uuid
+    };
 
-    return {voucher : voucher, voucher_item : [cashVoucherLine, transferVoucherLine]};
+    voucher.items.push(cashVoucherLine);
+    voucher.items.push(transferVoucherLine);
+
+    return { voucher : voucher };
   }
 
   /**
