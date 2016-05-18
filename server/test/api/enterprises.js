@@ -1,14 +1,13 @@
 /* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 /**
  * The /enterprises API endpoint
- *
- * This test suite implements full CRUD on the /enterprises hTTP API endpoint.
+ * This test suite implements full CRUD on the /enterprises HTTP API endpoint.
  */
 describe('(/enterprises) The /enterprises API endpoint', function () {
   var agent = chai.request.agent(helpers.baseUrl);
@@ -65,15 +64,6 @@ describe('(/enterprises) The /enterprises API endpoint', function () {
       })
       .then(function (res) {
         expect(res).to.have.status(200);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('POST /enterprises will not register an invalid enterprises', function () {
-    return agent.post('/enterprises')
-      .send({})
-      .then(function (res) {
-        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });

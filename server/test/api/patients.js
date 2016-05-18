@@ -1,18 +1,19 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
+const q = require('q');
 
-var q = require('q');
-
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('(/patients) The Patients API', function () {
+describe('(/patients) Patients', function () {
   'use strict';
 
-  var agent = chai.request.agent(helpers.baseUrl);
+  // ensure the client is logged into before test suite
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
-  var preparedTestPatientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
+  var patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
 
   // TODO Should this import UUID library and track mock patient throughout?
   var mockPatientUuid = '85bf7a85-16d9-4ae5-b5c0-1fec9748d2f9';
@@ -85,11 +86,8 @@ describe('(/patients) The Patients API', function () {
     medical : simultaneousPatient
   };
 
-  // ensure the client is logged into before test suite
-  before(helpers.login(agent));
-
   // HTTP API Test for /patients/search/ routes
-  describe('The /patients/search API', function () {
+  describe('(/search) Patient Search', function () {
 
     it('GET /patients/search with missing necessary parameters', function () {
 
@@ -113,8 +111,7 @@ describe('(/patients) The Patients API', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with `reference` parameter', function () {
-
+    it('GET /patients/search with \'reference\' parameter', function () {
       return agent.get('/patients/search/?reference=TPA1')
         .then(function (res) {
           helpers.api.listed(res, 1);
@@ -122,8 +119,7 @@ describe('(/patients) The Patients API', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with `name` parameter', function () {
-
+    it('GET /patients/search with \'name\' parameter', function () {
       return agent.get('/patients/search/?name=Test')
         .then(function (res) {
           helpers.api.listed(res, 2);
@@ -154,7 +150,6 @@ describe('(/patients) The Patients API', function () {
     });
 
     it('GET /patients/search with `detail` and `limit` parameters', function () {
-      // NOTE: the table `patient` contains only two (2) records
       return agent.get('/patients/search/?name=Test&detail=1&limit=5')
         .then(function (res) {
           var expected = [
@@ -197,7 +192,7 @@ describe('(/patients) The Patients API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /patients/:id finds and retrieves the details of the registered patient', function () {
+  it('GET /patients/:uuid finds and retrieves the details of the registered patient', function () {
     return agent.get('/patients/' + mockPatientUuid)
       .then(function (res) {
         var retrievedDetails;
@@ -215,7 +210,7 @@ describe('(/patients) The Patients API', function () {
       });
   });
 
-  it('GET /patients/:id will return not found for invalid id', function () {
+  it('GET /patients/:uuid will return not found for invalid id', function () {
     return agent.get('/patients/unknownid')
       .then(function (res) {
         helpers.api.errored(res, 404);
@@ -240,63 +235,6 @@ describe('(/patients) The Patients API', function () {
       })
       .catch(helpers.handler);
 
-  });
-
-  it('GET /patients/:uuid/groups will return a list of the patients groups', function () {
-    var groupRoute = '/patients/'.concat(preparedTestPatientUuid).concat('/groups');
-    var SUBSCRIBED_PATIENT_GROUPS = 1;
-
-    return agent.get(groupRoute)
-      .then(function (res) {
-        helpers.api.listed(res, SUBSCRIBED_PATIENT_GROUPS);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /patients/:uuid/groups will return 404 not found for invalid request', function () {
-
-    return agent.get('/patients/unknownid/groups')
-      .then(function (res) {
-        helpers.api.errored(res, 404);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /patients/groups will return a list of all patient groups', function () {
-    var TOTAL_PATIENT_GROUPS = 4;
-
-    return agent.get('/patients/groups')
-      .then(function (res) {
-        helpers.api.listed(res, TOTAL_PATIENT_GROUPS);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /patients/hospital_number/:id/exists correctly identifies existing record', function () {
-    var existingNumber = 100;
-
-    return agent.get('/patients/hospital_number/'.concat(existingNumber, '/exists'))
-      .then(function (result) {
-
-        expect(result).to.have.status(200);
-        expect(result.body).to.not.be.empty;
-        expect(result.body).to.be.true;
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /patients/hospital_number/:id/exists correctly identifies unique record', function () {
-
-    return agent.get('/patients/hospital_number/190/exists')
-      .then(function (result) {
-
-        expect(result).to.have.status(200);
-
-        // chair returns an empty object for the body on this response - the text
-        // property seems to be unaffected
-        expect(result.text).to.equal('false');
-      })
-      .catch(helpers.handler);
   });
 
   it.skip('Simultaneous patient registration requests respect reference lock', function () {
@@ -356,66 +294,13 @@ describe('(/patients) The Patients API', function () {
       .catch(helpers.handler);
   });
 
- describe('Updating patient group assignment', function () {
+  // hospital number uniqueness tests
+  describe('/hospital_number/:id/exists', HospitalNumber);
 
-   it('POST /patients/:id/groups will update a patients groups', function () {
-
-     // 0b8fcc00-8640-479d-872a-31d36361fcfd
-     var groupAssignment = {
-       assignments : ['112a9fb5-847d-4c6a-9b20-710fa8b4da24']
-     };
-
-     return agent.post('/patients/'.concat(mockPatientUuid, '/groups'))
-      .send(groupAssignment)
-      .then(function (res) {
-
-        var assignResult;
-
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-
-        assignResult = res.body[1];
-
-        expect(assignResult.affectedRows).to.equal(groupAssignment.assignments.length);
-      })
-      .catch(helpers.handler);
-   });
-
-   /*
-   it('Specified patients group assignments reflect the recent update', function () {
-
-     // Not implemented
-     expect(true).to.be.false;
-   });
-
-   it('POST /patients/:id/groups will fail with 400 for a bad group request', function () {
-
-     // Not implemented
-     expect(true).to.be.false;
-   });
-
-   it('POST /patients/:id/groups will fail with 400 for an invalid patient ID', function () {
-
-     // Not implemented
-     expect(true).to.be.false;
-   });
-
-   it('POST /patients/:id/groups will fail with 400 MISSING_INFO if no assignments object is passed', function () {
-
-     // Not implemented
-     expect(true).to.be.false;
-   });
-
-   it('POST /patients/:id/groups with no group assignments removes all patients group assignments', function () {
-
-     // Not implemented
-     expect(true).to.be.false;
-    });*/
-  });
+  // patient group tests
+  describe('(/:uuid/groups)', PatientGroups);
 
   // TODO get information on the registered patient - ensure details route is correct
-  // TODO Reject duplicate hospital number
-  // TODO Test that transaction is rolled back successfully gien invalid patient
 
   function delayPatientRequest(timeout, hospitalNo) {
     var deferred = q.defer();
@@ -437,3 +322,77 @@ describe('(/patients) The Patients API', function () {
     return deferred.promise;
   }
 });
+
+
+// Tests for /patients/:uuid/groups
+function PatientGroups() {
+  'use strict';
+
+  // get an agent
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
+
+  // shared constants
+  const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
+  const totalPatientGroups = 4;
+  const subscribedPatientGroups = 1;
+
+  it('GET /patients/:uuid/groups will return a list of the patients groups', function () {
+    return agent.get(`/patients/${patientUuid}/groups`)
+      .then(function (res) {
+        helpers.api.listed(res, subscribedPatientGroups);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /patients/:uuid/groups will return 404 not found for invalid request', () =>{
+    return agent.get('/patients/unknownid/groups')
+      .then(function (res) {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /patients/:uuid/groups will update a patient\'s groups', () => {
+   const assignments = ['112a9fb5-847d-4c6a-9b20-710fa8b4da24'];
+
+   return agent.post(`/patients/${patientUuid}/groups`)
+    .send({ assignments : assignments })
+    .then(function (res) {
+      expect(res).to.have.status(200);
+      expect(res.body).to.not.be.empty;
+      expect(res.body[0].affectedRows).to.equal(assignments.length);
+    })
+    .catch(helpers.handler);
+  });
+}
+
+
+// Tests for /patients/hospital_number/:id/exists
+function HospitalNumber() {
+
+  // get an agent
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
+
+  const existingNumber = 100;
+  const absentNumber = 3.3;
+
+  it('GET /patients/hospital_number/:id/exists returns true for a used number', function () {
+    return agent.get(`/patients/hospital_number/${existingNumber}/exists`)
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.text).to.equal('true');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /patients/hospital_number/:id/exists false for a new number', function () {
+    return agent.get(`/patients/hospital_number/${absentNumber}/exists`)
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.text).to.equal('false');
+      })
+      .catch(helpers.handler);
+  });
+}

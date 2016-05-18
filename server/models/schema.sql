@@ -1201,6 +1201,18 @@ CREATE TABLE `patient` (
 CREATE TRIGGER patient_reference BEFORE INSERT ON patient
 FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM patient WHERE patient.project_id = new.project_id);
 
+DROP TABLE IF EXISTS `patient_document`;
+
+CREATE TABLE `patient_document` (
+  `uuid`         BINARY(16) NOT NULL,
+  `patient_uuid` BINARY(16) NOT NULL,
+  `label`        TEXT NOT NULL,
+  `link`         TEXT NOT NULL,
+  `timestamp`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY `patient_uuid` (`patient_uuid`),
+  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `patient_group`;
 
 CREATE TABLE `patient_group` (

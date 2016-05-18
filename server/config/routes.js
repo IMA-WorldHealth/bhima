@@ -8,17 +8,16 @@
  * controllers, allowing for modules to subscribe to different
  * levels of authority
  */
-var winston              = require('winston');
+const winston            = require('winston');
 var auth                 = require('../controllers/auth');
 var data                 = require('../controllers/data');
 var users                = require('../controllers/users');
 var locations            = require('../controllers/locations');
 var tree                 = require('../controllers/tree');
-var patient              = require('../controllers/medical/patient');
-var patientGroup         = require('../controllers/medical/patientGroups');
+var patients             = require('../controllers/medical/patients');
+var patientGroups        = require('../controllers/medical/patientGroups');
 var snis                 = require('../controllers/medical/snis');
 var projects             = require('../controllers/medical/projects');
-var legacyReports        = require('../controllers/reports/report_legacy');
 var reports              = require('../controllers/reports/reports.js');
 var inventory            = require('../controllers/stock/inventory');
 var depots               = require('../controllers/stock/depot');
@@ -66,6 +65,8 @@ var referenceGroup       = require('../controllers/finance/referenceGroup');
 var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
 var creditors            = require('../controllers/finance/creditors.js');
+
+const upload = require('../lib/uploader');
 
 // expose routes to the server.
 exports.configure = function (app) {
@@ -193,7 +194,6 @@ exports.configure = function (app) {
   // trial balance routes
   app.post('/journal/trialbalance', trialbalance.postTrialBalance);
   app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
-
 
   // ledger routes
   // TODO : needs renaming
@@ -329,37 +329,38 @@ exports.configure = function (app) {
   // Reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', invoiceReceipt.build);
 
+  // patient group routes
+  app.get('/patients/groups', patientGroups.list);
+  app.get('/patients/groups/:uuid', patientGroups.detail);
+  app.post('/patients/groups', patientGroups.create);
+  app.put('/patients/groups/:uuid', patientGroups.update);
+  app.delete('/patients/groups/:uuid', patientGroups.remove);
+
+  app.get('/patients/search', patients.search);
+  app.post('/patients/visit', patients.visit);
+
   // Patients API
-  app.get('/patients', patient.list);
-  app.post('/patients', patient.create);
-  app.put('/patients/:uuid', patient.update);
+  app.get('/patients', patients.list);
+  app.post('/patients', patients.create);
+  app.get('/patients/:uuid', patients.details);
+  app.put('/patients/:uuid', patients.update);
+  app.get('/patients/:uuid/groups', patients.groups.list);
+  app.post('/patients/:uuid/groups', patients.groups.update);
 
-  app.get('/patients/search', patient.search);
-  app.get('/patients/groups', patient.listGroups);
-  app.get('/patients/:uuid', patient.details);
+  app.get('/patients/hospital_number/:id/exists', patients.hospitalNumberExists);
 
-  app.get('/patients/:uuid/groups', patient.groups);
-  app.post('/patients/:uuid/groups', patient.updateGroups);
-
-  app.get('/patients/hospital_number/:id/exists', patient.hospitalNumberExists);
-
-  app.get('/patients/:uuid/services', patient.billingServices);
-  app.get('/patients/:uuid/prices', patient.priceLists);
-  app.get('/patients/:uuid/subsidies', patient.subsidies);
-
-  app.post('/patients/visit', patient.visit);
+  app.get('/patients/:uuid/services', patients.billingServices);
+  app.get('/patients/:uuid/prices', patients.priceLists);
+  app.get('/patients/:uuid/subsidies', patients.subsidies);
 
   // app.get('/patients/search', patient.search);
-  app.get('/patients/search/name/:value', patient.searchFuzzy);
-  app.get('/patients/search/reference/:value', patient.searchReference);
+  app.get('/patients/search/name/:value', patients.searchFuzzy);
+  app.get('/patients/search/reference/:value', patients.searchReference);
 
-  // patient group routes
-  app.get('/patient_groups', patientGroup.list);
-  app.get('/patient_groups/:uuid', patientGroup.detail);
-  app.post('/patient_groups', patientGroup.create);
-  app.put('/patient_groups/:uuid', patientGroup.update);
-  app.delete('/patient_groups/:uuid', patientGroup.remove);
-
+  app.get('/patients/:uuid/documents', patients.documents.list);
+  app.post('/patients/:uuid/documents', upload.middleware('docs', 'documents'), patients.documents.create);
+  app.delete('/patients/:uuid/documents/all', patients.documents.deleteAll);
+  app.delete('/patients/:uuid/documents/:documentUuid', patients.documents.delete);
 
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
@@ -380,9 +381,8 @@ exports.configure = function (app) {
 
   // search stuff
   // TODO merge with patients API
-  app.get('/patient/:uuid', patient.details);
-  app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
-  app.get('/patient/search/reference/:reference', patient.searchReference);
+  app.get('/patient/search/fuzzy/:match', patients.searchFuzzy);
+  app.get('/patient/search/reference/:reference', patients.searchReference);
 
   // analytics for financial dashboard
   // cash flow analytics
