@@ -32,6 +32,7 @@ function stream(req, res) {
   // ensure the socket hangs open forever
   res.set('Content-Type', 'text/event-stream');
   res.set('Content-Control', 'no-cache');
+  res.set('Connection', 'keep-alive');
 
   // this listener publishes events to the client as server-sent events
   function listener(data) {
@@ -40,10 +41,12 @@ function stream(req, res) {
   }
 
   // listener for server events and echo them to the client
-  Topic.subscribe(Topic.channels.ALL, listener);
+  let subscription = Topic.subscribe(Topic.channels.ALL, listener);
 
   // remove listener on when the client closes the connection
-  res.on('close', () => Topic.unsubscribe(Topic.channels.ALL, listener));
+  res.on('close', () => {
+    Topic.unsubscribe(Topic.channels.ALL, subscription);
+  });
 }
 
 // events the events in the database
@@ -69,12 +72,12 @@ function info(req, res) {
 
   // data to be returned to the client
   const data = {
-    platform : platformString,
-    numCPUs : os.cpus().length,
-    machineUptime : os.uptime() * 1000,       // change to milliseconds
-    processUptime : process.uptime() * 1000,  // change to milliseconds
-    memoryUsage : (1 - (os.freemem() / os.totalmem()))*100,
-    version : pkg.version
+    platform: platformString,
+    numCPUs: os.cpus().length,
+    machineUptime: os.uptime() * 1000,       // change to milliseconds
+    processUptime: process.uptime() * 1000,  // change to milliseconds
+    memoryUsage: (1 - (os.freemem() / os.totalmem()))*100,
+    version: pkg.version,
   };
 
   // respond with the system statistics

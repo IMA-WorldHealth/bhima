@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ ::"HOME.TITLE" | translate }}</li>
-      <li class="title">{{ ::HomeCtrl.enterprise.name }}</li>
+      <li class="static">{{ ::HomeCtrl.enterprise.name }}</li>
+      <li class="title">{{ ::HomeCtrl.project.name }}</li>
     </ol>
   </div>
 </div>
@@ -48,6 +48,7 @@
         </div>
       </div>
 
+      <!-- system information panel -->
       <div class="col-md-4">
         <div class="panel panel-default" style="min-height:30vh;">
           <div class="panel-heading">
@@ -56,10 +57,10 @@
           <div class="panel-body">
             <dl class="dl-horizontal">
               <dt>{{ ::"SYSTEM.PLATFORM" | translate }}</dt>
-              <dd>{{ ::HomeCtrl.system.platform }}</dd>
+              <dd>{{ HomeCtrl.system.platform }}</dd>
 
               <dt>{{ ::"SYSTEM.CPUS" | translate }}</dt>
-              <dd>{{ ::HomeCtrl.system.numCPUs }}</dd>
+              <dd>{{ HomeCtrl.system.numCPUs }}</dd>
 
               <dt>{{ ::"SYSTEM.MACHINE_UPTIME" | translate }}</dt>
               <dd>{{ HomeCtrl.system.machineUptime | amDurationFormat }}</dd>
@@ -68,10 +69,10 @@
               <dd>{{ HomeCtrl.system.processUptime | amDurationFormat }}</dd>
 
               <dt>{{ ::"SYSTEM.MEMORY_USAGE" | translate }}</dt>
-              <dd>{{ ::HomeCtrl.system.memoryUsage | number }}%</dd>
+              <dd>{{ HomeCtrl.system.memoryUsage | number }}%</dd>
 
               <dt>{{ ::"SYSTEM.VERSION" | translate }}</dt>
-              <dd>{{ ::HomeCtrl.system.version }}</dd>
+              <dd>{{ HomeCtrl.system.version }}</dd>
             </dl>
           </div>
         </div>
@@ -79,8 +80,42 @@
     </div>
 
     <div class="row">
-      <div class="col-md-12 text-center">
-        <h1>TODO: Graphic</h1>
+      <div class="col-md-12">
+        <div class="panel panel-default" style="max-height: 50vh; padding:15px;">
+
+          <!-- temp dropwdown -->
+          <div class="pull-right" uib-dropdown>
+            <button class="btn btn-default btn-" uib-dropdown-toggle>
+              <span class="glyphicon glyphicon-cog"></span>
+              <span class="caret"></span>
+            </button>
+            <ul role="menu" uib-dropdown-menu>
+              <li
+                role="menuitem"
+                ng-repeat="chart in HomeCtrl.charts track by chart.label"
+                ng-class="{ 'active' : HomeCtrl.selected == chart.label }">
+                <a
+                  ng-click="HomeCtrl.selectChart(chart)"
+                  ng-disabled="HomeCtrl.selected==chart.label"
+                  href>
+                  {{ chart.label | translate }}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- title -->
+          <h4>{{ ::"SYSTEM.EVENTS" | translate }} <small>{{ HomeCtrl.graph.label | translate }}</small></h4>
+          <canvas
+            height="75vh"
+            class="chart chart-line"
+            chart-data="HomeCtrl.graph.data"
+            chart-labels="HomeCtrl.graph.labels"
+            chart-series="HomeCtrl.graph.series"
+            chart-options="HomeCtrl.graph.options"
+            chart-colors="HomeCtrl.graph.colors">
+          </canvas>
+        </div>
       </div>
     </div>
   </div>

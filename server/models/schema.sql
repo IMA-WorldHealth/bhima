@@ -1857,14 +1857,14 @@ CREATE TABLE `unit` (
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
-  `id`        SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(80) NOT NULL,
-  `password` VARCHAR(100) NOT NULL,
-  `first` text NOT NULL,
-  `last` text NOT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `active` tinyint(4) NOT NULL DEFAULT 0,
-  `pin` char(4) NOT NULL DEFAULT 0,
+  `id`          SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username`    VARCHAR(80) NOT NULL,
+  `password`    VARCHAR(100) NOT NULL,
+  `first`       TEXT NOT NULL,
+  `last`        TEXT NOT NULL,
+  `email`       VARCHAR(100) DEFAULT NULL,
+  `active`      TINYINT(4) NOT NULL DEFAULT 0,
+  `pin`         CHAR(4) NOT NULL DEFAULT 0,
   `last_login`  TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

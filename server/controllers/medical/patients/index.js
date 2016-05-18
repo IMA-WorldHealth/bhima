@@ -26,7 +26,7 @@
 
 const _ = require('lodash');
 const db = require('../../../lib/db');
-const topic = require('../../lib/topic');
+const topic = require('../../../lib/topic');
 const uuid = require('node-uuid');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');

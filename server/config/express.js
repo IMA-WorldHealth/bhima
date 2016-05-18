@@ -15,6 +15,7 @@ const winston    = require('winston');
 const _          = require('lodash');
 const helmet     = require('helmet');
 const path       = require('path');
+const Redis      = require('ioredis');
 
 const interceptors = require('./interceptors');
 const Unauthorized = require('../lib/errors/Unauthorized');
@@ -37,7 +38,7 @@ exports.configure = function configure(app) {
   // stores session in a file store so that server restarts do not interrupt
   // client sessions.
   app.use(session({
-    store: new RedisStore(),
+    store: new RedisStore({client: new Redis() }),
     secret: process.env.SESS_SECRET,
     resave: Boolean(process.env.SESS_RESAVE),
     saveUninitialized: Boolean(process.env.SESS_UNINITIALIZED),

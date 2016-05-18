@@ -107,23 +107,23 @@ function deserialize(data) {
  * subscribing to messages.
  *
  * @example
- * const topic = require('lib/topic');
+ * const Topic = require('lib/Topic');
  *
  * // set up a listener on the MEDICAL channel
- * topic.subscribe(topic.channels.MEDICAL, (data) => {
+ * Topic.subscribe(Topic.channels.MEDICAL, (data) => {
  *   console.log('The MEDICAL channel received ${data}');
  * });
  *
  * // subscribe to every event by listening on the ALL channel
- * topic.subscribe(topic.channels.ALL, (data) => {
+ * Topic.subscribe(Topic.channels.ALL, (data) => {
  *   console.log('This will fire on every event published.);
  * });
  *
- * topic.publish(topic.channels.MEDICAL, { message : 'hi' });
+ * Topic.publish(Topic.channels.MEDICAL, { message : 'hi' });
  * // console: 'The MEDICAL channel received { message : "hi" }'
  * // console: 'This will fire on every event published.'
  *
- * topic.unsubscribe(topic.channels.ALL);
+ * Topic.unsubscribe(Topic.channels.ALL);
  */
 class Topic {
 
@@ -188,7 +188,10 @@ class Topic {
       winston.info(`Subscription count on channel [${channel}] is now [${count}].`);
     });
 
-    this.subscriber.on('message', (channel, data) => callback(deserialize(data)));
+    // open a subscription to the channel
+    let subscription = (channel, data) => callback(deserialize(data));
+    this.subscriber.on('message', subscription);
+    return subscription;
   }
 
   /**
@@ -199,8 +202,9 @@ class Topic {
    *
    * @param {String} channel - the channel to unsubscribe from.
    */
-  unsubscribe(channel) {
+  unsubscribe(channel, subscription) {
     this.subscriber.unsubscribe(channel);
+    this.subscriber.removeListener('message', subscription);
   }
 
   /** possible channels to subscribe to using the subscribe() method */

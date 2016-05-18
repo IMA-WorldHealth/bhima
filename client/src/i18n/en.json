@@ -723,7 +723,8 @@
     "MACHINE_UPTIME" : "Server Uptime",
     "PROCESS_UPTIME" : "Process Uptime",
     "MEMORY_USAGE" : "Memory Usage",
-    "VERSION": "Version"
+    "VERSION": "Version",
+    "EVENTS" : "System Events"
   },
   "TABLE": {
     "COLUMNS": {
@@ -1004,5 +1005,12 @@
       "VALID_TOTALS"         : "Transactions are valid (balanced transaction)",
       "VOUCHER"              : "Voucher"
     }
+  },
+  "GRAPHS" : {
+    "PATIENT_REGISTRATIONS" : "Patient Registrations",
+    "PATIENT_INVOICES" : "Patient Invoices",
+    "MEDICINE_DISTRIBUTIONS" : "Medicine Distributions",
+    "LOGINS" : "Logins",
+    "PURCHASES" : "Purchases"
   }
 }
