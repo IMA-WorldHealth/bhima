@@ -25,9 +25,12 @@ var Enterprises = require('../../admin/enterprises');
 
 var supportedRender = {};
 
+var wkhtmltopdf = require('wkhtmltopdf');
+
 // currently supports only JSON rendering
 supportedRender.json = require('../../../lib/renderers/json');
 supportedRender.html = require('../../../lib/renderers/html');
+supportedRender.pdf = require('../../../lib/renderers/pdf');
 
 const defaultRender = 'json';
 
@@ -69,10 +72,10 @@ function build(req, res, next) {
   var invoiceResponse = {};
 
   var renderTarget = queryString.render || defaultRender;
-  var render = supportedRender[renderTarget];
+  var renderer = supportedRender[renderTarget];
 
   /** @todo delegate to additional method */
-  if (_.isUndefined(render)) {
+  if (_.isUndefined(renderer)) {
     throw new BadRequest('Render target provided is invalid or not supported by this report '.concat(renderTarget));
   }
 
@@ -89,12 +92,21 @@ function build(req, res, next) {
     .then(function (headerResult) {
       _.extend(invoiceResponse, headerResult);
 
-      return render(invoiceResponse, template);
+      return renderer.render(invoiceResponse, template, res);
     })
     .then(function (renderedResult) {
 
+      console.log('got rendered result', renderedResult);
+
       // send the final (rendered) object to the client
-      res.status(SUCCESS_STATUS).send(renderedResult);
+      // res.status(SUCCESS_STATUS).send(renderedResult);
+      res.set(renderer.headers).send(renderedResult);
+
+      // wkhtmltopdf('<h1>test</h1><p>this is content</p>', {pageSize : 'A4'})
+        // .pipe(res.set('Content-Type', 'application/pdf'));
+
+      // res.send(renderedResult);
+      return;
     })
     .catch(next)
     .done();

@@ -21,14 +21,14 @@ function ReceiptService($http, util) {
   /**
    * Fetch invoice report data from /reports/invoices/:uuid
    *
-   * @param {String} uuid      Target invoice UUID to report on
-   * @param {Object} options   Configuration options for the server generated
+   * @params {String} uuid      Target invoice UUID to report on
+   * @params {Object} options   Configuration options for the server generated
    *                            report, this includes things like render target.
    * @return {Promise}          Eventually returns report object from server
    */
   function invoice(uuid, options) {
     var route = '/reports/invoices/'.concat(uuid);
-    return $http.get(route, { params : options })
+    return $http.get(route, { params : options, responseType : 'arraybuffer' })
       .then(util.unwrapHttpResponse);
   }
 }

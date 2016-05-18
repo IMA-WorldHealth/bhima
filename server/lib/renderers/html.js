@@ -5,7 +5,7 @@ var numeral     = require('numeral');
 var formatDollar = '$0,0.00';
 var formatFranc = '0.0,00 FC';
 
-module.exports = renderHTML;
+exports.render = renderHTML;
 
 var hbs = exhbs.create({
   helpers : {

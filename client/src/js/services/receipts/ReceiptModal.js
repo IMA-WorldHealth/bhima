@@ -36,7 +36,7 @@ function ReceiptModal(Modal, Receipts) {
     var options = {
       title       : 'PATIENT_INVOICE.PAGE_TITLE',
       identifier  : 'reference',
-      renderer    : 'html',
+      renderer    : 'pdf',
       template    : 'partials/patient_invoice/receipt/invoice.receipt.tmpl.html',
     };
 

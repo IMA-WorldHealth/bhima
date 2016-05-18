@@ -17,7 +17,7 @@
  */
 var q = require('q');
 
-module.exports = renderJSON;
+exports.render = renderJSON;
 
 /**
  * JSON Render Method
