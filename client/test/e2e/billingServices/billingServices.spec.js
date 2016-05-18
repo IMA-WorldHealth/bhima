@@ -16,7 +16,7 @@ describe('Billing Services', function () {
   const path = '#/admin/billing_services';
   const gridId = 'BillingServicesGrid';
 
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   it('can create a billing service', function () {
 

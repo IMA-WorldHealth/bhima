@@ -1,4 +1,4 @@
-/* global element, by, inject, browser */
+/* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -10,7 +10,7 @@ describe('Villages Management', function () {
   'use strict';
 
   const path = '#/locations/village';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const village = {
     name : 'A Village for Test'

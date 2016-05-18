@@ -994,7 +994,7 @@ function localStorageConfig($localStorageProvider) {
  * This function is responsible for configuring angular's $http service. Any
  * relevant services/ factories are registered at this point.
  *
- * @params {Object} $httpProvider   Angular provider inject containing
+ * @param {Object} $httpProvider   Angular provider inject containing
  *                                  'interceptors' that are chained on any HTTP request
  */
 function httpConfig($httpProvider) {

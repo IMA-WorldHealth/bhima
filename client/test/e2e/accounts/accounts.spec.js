@@ -13,7 +13,7 @@ describe('Accounts Module', function () {
   'use strict';
 
   const path = '#/accounts';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const accountBalance = {
     label : 'Compte de Balance',

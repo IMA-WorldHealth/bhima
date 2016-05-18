@@ -18,7 +18,7 @@ describe('Projects Module', function () {
   };
 
   // navigate to the project module before starting
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const defaultProject = 3;
   const enterpriseRank = helpers.random(defaultProject);

@@ -1,4 +1,4 @@
-<form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm.$invalid)" novalidate>
+<form name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm.$invalid)" novalidate>
   <div class="modal-header">
     <h4>{{ 'EXCHANGE.ADDING_RATE' | translate }}</h4>
   </div>
@@ -9,24 +9,26 @@
     </uib-alert>
 
     <div class="form-group">
-      <label>{{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }}</label> 
+      <label>{{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }}</label>
       <p class="form-control-static">{{ ModalCtrl.enterpriseCurrency }} : {{ 1 |  currency:ModalCtrl.enterpriseCurrencyId }}</p>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }">
       <label class="control-label">{{ ModalCtrl.text | translate }} : {{ ModalCtrl.data.date | date }} : {{ ModalCtrl.selectedCurrency }}</label>
-      <input type="number" class="form-control" name="rate" required id="bhima-project-abbr" min="0" ng-model="ModalCtrl.data.rate">
+      <input type="number" class="form-control" name="rate" required min="0" ng-model="ModalCtrl.data.rate">
       <div class="help-block" ng-messages="ModalForm.rate.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-      </div>      
+      </div>
     </div>
 
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" id="submit-project" type="submit" data-method="submit">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel">
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit">
       {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </button>
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
   </div>
 </form>

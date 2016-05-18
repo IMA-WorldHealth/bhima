@@ -8,7 +8,7 @@ const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe('Donor Management', function () {
-  before(() => browser.get('#/donors'));
+  before(() => helpers.navigate('#/donors'));
 
   const donor = {
     name : 'IMA WorldHealth (E2E)'

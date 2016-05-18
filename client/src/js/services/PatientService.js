@@ -4,7 +4,7 @@ angular.module('bhima.services')
 PatientService.$inject = [ '$http', 'util', 'SessionService' ];
 
 /**
- * Patient Service
+ * @module PatientService
  *
  * This service is reponsible for providing an interface between angular
  * module controllers and the server /patients API.
@@ -20,7 +20,6 @@ PatientService.$inject = [ '$http', 'util', 'SessionService' ];
  * // creates a patient
  * Patients.create(medicalDetails, financeDetails)...
  *
- * @module services/PatientService
  */
 function PatientService($http, util, Session) {
   var service = this;
@@ -56,8 +55,8 @@ function PatientService($http, util, Session) {
    * for submission and forwards it to the server /patients/create API. It can
    * be used for creating new patient records in the database.
    *
-   * @params {Object} medical   A patients medical information.
-   * @params {Object} finance   A patients financial information.
+   * @param {Object} medical   A patients medical information.
+   * @param {Object} finance   A patients financial information.
    * @returns {Object}          Promise object returning success/failure confirmation.
    */
   function create(medical, finance) {
@@ -107,8 +106,8 @@ function PatientService($http, util, Session) {
    * provided. Note: This process will clear all previous groups and leave the
    * patient subscribed to only the groups passed to this method.
    *
-   * @params {String} uuid              The target patient's UUID
-   * @params {Array}  subsribedGroups   An array of group UUIDs
+   * @param {String} uuid              The target patient's UUID
+   * @param {Array}  subscribedGroups  An array of group UUIDs
    * @return {Object}                   Promise object returning success/ failure
    *                                    confiramtion.
    */

@@ -10,7 +10,7 @@ helpers.configure(chai);
 describe('Simple Vouchers', function () {
   'use strict';
 
-  before(() => browser.get('#/vouchers/simple'));
+  before(() => helpers.navigate('#/vouchers/simple'));
 
   const voucher = {
     date : new Date((new Date()).getDate() - 1),
