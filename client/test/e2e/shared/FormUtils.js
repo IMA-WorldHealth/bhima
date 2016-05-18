@@ -64,6 +64,8 @@ ElementArrayFinder.prototype.enabled = function () {
 // However, this decision can be reviewed
 var buttons =  {
   create : function create() { return $('[data-method="create"]').click(); },
+  create : function create() { return $('[data-method="create"]').click(); },
+  search : function search() { return $('[data-method="search"]').click(); },
   submit : function submit() {
     return $('[data-method="submit"]').click();
   },

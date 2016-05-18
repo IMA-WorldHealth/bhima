@@ -15,8 +15,8 @@ module.exports = {
    * @param {Date} date - a date object
    * @param {string} id - a CSS id to select on.
    */
-  set: function set(date, id) {
-
+  set: function set(date, id, elementClick) {
+    var elementClick = (elementClick || '.header-image');
     // fail hard if the user did not pass into
     if (!(date instanceof Date)) {
       throw new TypeError('You  must provide a date object to the set() method.');
@@ -49,6 +49,6 @@ module.exports = {
     // clicks that are made to any elements it is covering.  In order to make
     // the dropdown go away, we will click on the top-left bhima logo to blur
     // the dropdown and remove it.
-    element(by.css('.header-image')).click();
+    element(by.css(elementClick)).click();
   }
 };
