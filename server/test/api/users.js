@@ -108,15 +108,6 @@ describe('(/users) Users and Permissions', function () {
       .catch(helpers.handler);
   });
 
-  it('PUT /users/:id with empty object will send 400 error code', function () {
-    return agent.put('/users/' + newUser.id)
-      .send({})
-      .then(function (res) {
-        helpers.api.errored(res, 400);
-      })
-      .catch(helpers.handler);
-  });
-
   it('PUT /users/:id will update a user\'s projects', function () {
     return agent.put('/users/' + newUser.id)
       .send({ projects : [1, 2] })

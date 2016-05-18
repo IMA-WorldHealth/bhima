@@ -10,7 +10,7 @@ PatientGroupService.$inject = ['$http', 'util'];
 */
 function PatientGroupService($http, util) {
   var service = this;
-  var baseUrl = '/patient_groups/';
+  var baseUrl = '/patients/groups/';
 
   service.read = read;
   service.create = create;

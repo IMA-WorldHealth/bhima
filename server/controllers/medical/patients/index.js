@@ -1,15 +1,17 @@
 /**
- * The /patient HTTP API endpoint
- *
- * This module is responsible for handling all crud operations relatives to patients
- * and define all patient api functions
- *
  * @module medical/patient
  *
+ * @description
+ * This module is responsible for handling all crud operations relatives to patients
+ * and define all patient API functions.
+ *
+ * @requires lodash
  * @requires lib/db
  * @requires lib/node-uuid
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
+ * @requires medical/patients/groups
+ * @requires medical/patients/documents
  *
  * @todo Review naming conventions
  * @todo Remove or refactor methods to fit new API standards
@@ -17,10 +19,17 @@
 
 'use strict';
 
-const db = require('../../lib/db');
+const _ = require('lodash');
+const db = require('../../../lib/db');
 const uuid = require('node-uuid');
-const BadRequest  = require('../../lib/errors/BadRequest');
-const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../../lib/errors/BadRequest');
+const NotFound = require('../../../lib/errors/NotFound');
+const groups = require('./groups');
+const documents = require('./documents');
+
+// bind submodules
+exports.groups = groups;
+exports.documents = documents;
 
 // create a new patient
 exports.create = create;
@@ -36,15 +45,6 @@ exports.list = list;
 
 // search patients
 exports.search = search;
-
-// get the patient group
-exports.groups = groups;
-
-// update patient group
-exports.updateGroups = updateGroups;
-
-// get list of groups
-exports.listGroups = listGroups;
 
 // check if a hospital file number is assigned to any patients
 exports.hospitalNumberExists = hospitalNumberExists;
@@ -63,47 +63,14 @@ exports.billingServices = billingServices;
 exports.priceLists = priceLists;
 exports.subsidies = subsidies;
 
-/**
- * Converts dates and uuids to objects to enter into the database
- */
-function convert(data) {
-  if (data.current_location_id) {
-    data.current_location_id = db.bid(data.current_location_id);
-  }
-
-  if (data.origin_location_id) {
-    data.origin_location_id = db.bid(data.origin_location_id);
-  }
-
-  if (data.debtor_uuid) {
-    data.debtor_uuid = db.bid(data.debtor_uuid);
-  }
-
-  if (data.debtor_group_uuid) {
-    data.debtor_group_uuid = db.bid(data.debtor_group_uuid);
-  }
-
-  if (data.dob) {
-    data.dob = new Date(data.dob);
-  }
-
-  if (data.registration_date) {
-    data.registration_date = new Date(data.registration_date);
-  }
-
-  return data;
-}
-
 /** expose patient detail query internally */
 exports.lookupPatient = handleFetchPatient;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
-  var writeDebtorQuery, calculateReferenceQuery, writePatientQuery;
+  var writeDebtorQuery, writePatientQuery;
   var invalidParameters;
   var patientText;
-
-  var transaction;
 
   var createRequestData = req.body;
 
@@ -112,18 +79,28 @@ function create(req, res, next) {
 
   // Debtor group required for financial modelling
   invalidParameters = !finance || !medical;
-
   if (invalidParameters) {
-    throw new BadRequest('Both `financial` and `medical` information must be provided to register a patient.');
+    return next(
+      new BadRequest(
+        'Both "financial" and "medical" information must be provided to register a patient.'
+      )
+    );
   }
 
-  // Optionally allow client to specify UUID
-  finance.uuid = db.bid(finance.uuid || uuid.v4());
-  medical.uuid = db.bid(medical.uuid || uuid.v4());
+  // optionally allow client to specify UUID
+  finance.uuid = finance.uuid || uuid.v4();
+  medical.uuid = medical.uuid || uuid.v4();
 
-  finance = convert(finance);
-  medical = convert(medical);
+  if (medical.dob) {
+    medical.dob = new Date(medical.dob);
+  }
 
+  if (medical.registration_date) {
+    medical.registration_date = new Date(medical.registration_date);
+  }
+
+  finance = db.convert(finance, ['uuid', 'debtor_group_uuid']);
+  medical = db.convert(medical, ['uuid', 'current_location_id', 'origin_location_id']);
   medical.debtor_uuid = finance.uuid;
 
   writeDebtorQuery = 'INSERT INTO debtor (uuid, group_uuid, text) VALUES ' +
@@ -131,7 +108,7 @@ function create(req, res, next) {
 
   writePatientQuery = 'INSERT INTO patient SET ?';
 
-  transaction = db.transaction();
+  let transaction = db.transaction();
 
   transaction
     .addQuery(writeDebtorQuery, [finance.uuid, finance.debtor_group_uuid, generatePatientText(medical)])
@@ -154,28 +131,24 @@ function generatePatientText(patient) {
 }
 
 /**
-* Returns details associated to a patient directly and indirectly
-*
-* @example
-* // GET /patients/uuid : Get details associated to a patient directly and indirectly
-* var patient = require('medical/patient');
-* patient.detail(req, res, next);
-*/
-
-/** @todo review if this many details should be returned under a patient end point */
+ * Returns details associated to a patient directly and indirectly
+ * @todo review if this many details should be returned under a patient end point
+ */
 function detail(req, res, next) {
-
   handleFetchPatient(req.params.uuid)
-    .then(function(patientDetail) {
-      res.status(200).json(patientDetail);
+    .then(function(patient) {
+      res.status(200).json(patient);
     })
     .catch(next)
     .done();
 }
 
+/**
+ * Updates a patient group
+ */
 function update(req, res, next) {
   var updatePatientQuery;
-  var data = convert(req.body);
+  var data = db.convert(req.body, ['debtor_uuid', 'current_location_id', 'origin_location_id']);
   var patientUuid = req.params.uuid;
   var buid = db.bid(patientUuid);
 
@@ -222,120 +195,19 @@ function handleFetchPatient(patientUuid) {
     });
 }
 
-function groups(req, res, next) {
-  var patientGroupsQuery;
-  var patientExistenceQuery;
-  const uid = db.bid(req.params.uuid);
-
-  // just check if the patient exists
-  patientExistenceQuery =
-    'SELECT uuid FROM patient WHERE uuid = ?;';
-
-  // read patient groups
-  patientGroupsQuery =
-    `SELECT patient_group.name, patient_group.note, patient_group.created_at, BUID(patient_group.uuid) as uuid
-    FROM assignation_patient LEFT JOIN patient_group ON patient_group_uuid = patient_group.uuid
-    WHERE patient_uuid = ?`;
-
-  db.exec(patientExistenceQuery, [uid])
-    .then(function (rows) {
-      if (isEmpty(rows)) {
-        throw new NotFound(`Could not find an assignation patient with uuid ${uuid.unparse(uid)}`);
-      }
-
-      return db.exec(patientGroupsQuery, [uid]);
-    })
-    .then(function(patientGroups) {
-      res.status(200).json(patientGroups);
-    })
-    .catch(next)
-    .done();
-}
-
-function listGroups(req, res, next) {
-  var listGroupsQuery =
-    `SELECT BUID(uuid) as uuid, name, note, created_at, BUID(price_list_uuid) as price_list_uuid
-    FROM patient_group`;
-
-  db.exec(listGroupsQuery)
-    .then(function(allPatientGroups) {
-      res.status(200).json(allPatientGroups);
-    })
-    .catch(next)
-    .done();
-}
-
-// Accepts an array of patient group UUIDs that will be assigned to the
-// patient provided in the route
-function updateGroups(req, res, next) {
-  var removeAssignmentsQuery;
-  var createAssignmentsQuery;
-  var assignmentData;
-  var transaction;
-
-  // If UUID is not passed this route will not match - invalid uuids in this case
-  // will be responded to with a bad request (mysql)
-  var patientId = db.bid(req.params.uuid);
-
-  // TODO make sure assignments is an array etc. - test for these cases
-  if (!req.body.assignments) {
-    return res.status(400)
-    .json({
-      code : 'ERROR.ERR_MISSING_INFO',
-      reason: 'Request must specify an `assignment` object containing an array of patient group ids'
-    });
-  }
-
-  // Clear assigned groups
-  removeAssignmentsQuery =
-    'DELETE FROM assignation_patient ' +
-    'WHERE patient_uuid = ?';
-
-  // Insert new relationships
-  createAssignmentsQuery =
-    'INSERT INTO assignation_patient (uuid, patient_uuid, patient_group_uuid) VALUES ?';
-
-  // Map each requested patient group uuid to the current patient ID to be
-  // inserted into the database
-  assignmentData = req.body.assignments.map(function (patientGroupId) {
-    return [
-      db.bid(uuid.v4()),
-      patientId,
-      db.bid(patientGroupId)
-    ];
-  });
-
-  transaction = db.transaction();
-
-  transaction.addQuery(removeAssignmentsQuery, [patientId]);
-
-  // Create query is not executed unless patient groups have been specified
-  if (assignmentData.length) {
-    transaction.addQuery(createAssignmentsQuery, [assignmentData]);
-  }
-
-  transaction.execute()
-    .then(function (result) {
-
-      // TODO send back correct ids
-      res.status(200).json(result);
-    })
-    .catch(next)
-    .done();
-}
-
 function list(req, res, next) {
   var listPatientsQuery;
 
-  listPatientsQuery =
-    `SELECT BUID(p.uuid) AS uuid, p.reference, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName,
+  listPatientsQuery = `
+    SELECT BUID(p.uuid) AS uuid, p.reference, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName,
       p.first_name, p.last_name, p.middle_name, CONCAT(pr.abbr, p.reference) AS patientRef, p.dob, p.sex,
       p.registration_date, MAX(pv.date) AS last_visit
     FROM patient AS p
     JOIN project AS pr ON p.project_id = pr.id
     LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
     GROUP BY p.uuid
-    ORDER BY p.registration_date DESC, p.last_name ASC`;
+    ORDER BY p.registration_date DESC, p.last_name ASC
+  `;
 
   db.exec(listPatientsQuery)
   .then(function (result) {
@@ -365,19 +237,16 @@ function list(req, res, next) {
  *                      false - hospital number passed in has not been found
  */
 function hospitalNumberExists(req, res, next) {
-  var verifyQuery;
-  var hospitalNumber = req.params.id;
+  let hospitalNumber = req.params.id;
 
-  verifyQuery = `
-    SELECT uuid, hospital_no
-    FROM patient
-    WHERE hospital_no = ?`;
+  let verifyQuery =
+    'SELECT uuid, hospital_no FROM patient WHERE hospital_no = ?';
 
   db.exec(verifyQuery, [hospitalNumber])
     .then(function (result) {
 
       // if the result is not empty the hospital number exists (return this Boolean)
-      res.status(200).json( !isEmpty(result) );
+      res.status(200).json( !_.isEmpty(result) );
     })
     .catch(next)
     .done();
@@ -388,9 +257,8 @@ function hospitalNumberExists(req, res, next) {
  * @desc Performs a search on the patient reference (e.g. HBB123)
  * @todo - is this ever used?
  */
-function searchReference (req, res, next) {
-
-  var sql, reference = req.params.reference;
+function searchReference(req, res, next) {
+  let sql, reference = req.params.reference;
 
   // use MYSQL to look up the reference
   // TODO This could probably be optimized
@@ -410,7 +278,7 @@ function searchReference (req, res, next) {
   db.exec(sql, [reference])
   .then(function (rows) {
 
-    if (isEmpty(rows)) {
+    if (_.isEmpty(rows)) {
       res.status(404).send();
     } else {
       res.status(200).json(rows[0]);
@@ -479,16 +347,13 @@ function logVisit(patientData, userId) {
   return db.exec(sql, [visitId, db.bid(patientData.uuid), userId]);
 }
 
-function isEmpty(array) {
-  return array.length === 0;
-}
-
 /**
  * GET /patient/search?name={string}&detail={boolean}&limit={number}
  * GET /patient/search?reference={string}&detail={boolean}&limit={number}
  * GET /patient/search?fields={object}
  *
- * @desc This function is responsible to find a patient with detailled informations or not
+ * @description
+ * This function is responsible to find a patient with detailed informations or not
  * and with a limited rows or not
  */
 function search(req, res, next) {
@@ -503,7 +368,9 @@ function search(req, res, next) {
 
   try {
     var missingRequiredParameters = (!qReference && !qName && !qFields);
-    if (missingRequiredParameters) { throw new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`); }
+    if (missingRequiredParameters) {
+      throw new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`);
+    }
 
     qFields = qFields ? JSON.parse(qFields) : null;
     qDetail = Number(qDetail);

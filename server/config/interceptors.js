@@ -39,7 +39,7 @@ const map = {
  *
  * This error handler interprets all errors and sends them to the client.
  */
-exports.handler = function hanlder(error, req, res, next) {
+exports.handler = function handler(error, req, res, next) {
 
   // log the error to the error log (NOTE: in production, this should be 'error')
   winston.log('debug', error);

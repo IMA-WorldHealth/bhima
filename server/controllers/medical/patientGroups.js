@@ -1,10 +1,10 @@
 /**
- * The /patient_groups HTTP API endpoint
- *
  * @module medical/patientGroups
  *
  * @description This controller is responsible for implementing all crud and others custom request
  * on the patient groups table through the `/patient_groups` endpoint.
+ *
+ * The /patient_groups HTTP API endpoint
  *
  * @requires lib/db
  * @requires node-uuid
@@ -18,7 +18,8 @@ const uuid = require('node-uuid');
 const NotFound = require('../../lib/errors/NotFound');
 
 /**
- * Returns an array of patient groups
+ * @method list()
+ * Returns an array of patient groups.
  */
 function list(req, res, next) {
 
@@ -50,7 +51,6 @@ function list(req, res, next) {
  * Create a patient group in the database
  */
 function create(req, res, next) {
-
   let record = db.convert(req.body, ['price_list_uuid']);
   let sql = 'INSERT INTO patient_group SET ?';
 

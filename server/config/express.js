@@ -14,10 +14,11 @@ const fs         = require('fs');
 const winston    = require('winston');
 const _          = require('lodash');
 const helmet     = require('helmet');
+const path       = require('path');
 
 const interceptors = require('./interceptors');
-const BadRequest = require('../lib/errors/BadRequest');
 const Unauthorized = require('../lib/errors/Unauthorized');
+const uploads      = require('../lib/uploader');
 
 // accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
@@ -33,8 +34,8 @@ exports.configure = function configure(app) {
   app.use(bodyParser.json({ limit : '8mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
 
-  // stores session in a file store so that server restarts do
-  // not interrupt sessions.
+  // stores session in a file store so that server restarts do not interrupt
+  // client sessions.
   app.use(session({
     store: new RedisStore(),
     secret: process.env.SESS_SECRET,
@@ -45,34 +46,20 @@ exports.configure = function configure(app) {
     retries: 50
   }));
 
-  // reject PUTs and POSTs with empty objects in the data property with a 400
-  // error
-  app.use(function (req, res, next) {
-    if ((req.method === 'PUT' || req.method === 'POST') && _.isEmpty(req.body)) {
-      return next(
-        new BadRequest('You cannot POST/PUT an empty object', 'ERRORS.EMPTY_BODY')
-      );
-    }
-    next();
-  });
-
   // provide a stream for morgan to write to
   winston.stream = {
-    write : function (message, encoding) {
-      winston.info(message.trim());
-    }
+    write : message => winston.info(message.trim())
   };
 
-  // morgan logger setup
+  // http logger setup
   // options: combined | common | dev | short | tiny
   app.use(morgan('combined', { stream : winston.stream }));
 
-  // serve static files from a single location
-  // NOTE the assumption is that this entire directory is public -
-  // there is no need to authenticate users to access the public
+  // public static directories include the entire client and the uploads
   // directory.
-  var days = 1000 * 60 * 60 * 24;
+  const days = 1000 * 60 * 60 * 24;
   app.use(express.static('client/', { maxAge : 7*days }));
+  app.use(`/${uploads.directory}`, express.static(uploads.directory));
 
   // quick way to find out if a value is in an array
   function within(value, array) { return array.indexOf(value.trim()) !== -1; }
@@ -83,7 +70,7 @@ exports.configure = function configure(app) {
 
   app.use(function (req, res, next) {
     if (_.isUndefined(req.session.user) && !within(req.path, publicRoutes)) {
-      winston.log('debug', 'Rejecting unauthorized access to %s from %s', req.path, req.ip);
+      winston.debug(`Rejecting unauthorized access to ${req.path} from ${req.ip}`);
       next(new Unauthorized('You are not logged into the system.'));
     } else {
       next();
@@ -91,7 +78,7 @@ exports.configure = function configure(app) {
   });
 };
 
-/** configures error handlers */
+// configures error handlers
 exports.errorHandling = function errorHandling(app) {
   app.use(interceptors.handler);
 };

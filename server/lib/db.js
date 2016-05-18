@@ -207,7 +207,7 @@ function bid(hexUuid) {
  * @param {Object} data - an object with uuids to convert to binary
  * @param {Array} keys - an array of keys on the data object, specifying which
  * fields to convert
- * @returns {Object} data - the data object, now converted
+ * @returns {Object} data - the data converted object
  *
  * @example
  * // example data with two uuids needing conversion to binary
@@ -227,20 +227,16 @@ function bid(hexUuid) {
  * db.exec('INSERT into table SET ?;', [data]);
  */
 function convert(data, keys) {
-
-  // clone the object
-  let clone = JSON.parse(JSON.stringify(data));
-
   // loop through each key
   keys.forEach(function (key) {
 
     // the key exists on the object and value is a string
-    if (clone[key] && typeof clone[key] === 'string') {
-      clone[key] = bid(clone[key]);
+    if (data [key] && typeof data[key] === 'string') {
+      data[key] = bid(data[key]);
     }
   });
 
-  return clone;
+  return data;
 }
 
 module.exports = {

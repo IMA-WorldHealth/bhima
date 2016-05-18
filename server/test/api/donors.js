@@ -56,7 +56,7 @@ describe('(/donors) Donors', function () {
     .send({})
     .then(function (res) {
       helpers.api.errored(res, 400);
-      expect(res.body.code).to.be.equal('ERRORS.EMPTY_BODY');
+      expect(res.body.code).to.be.equal('ERRORS.BAD_REQUEST');
     })
     .catch(helpers.handler);
   });
