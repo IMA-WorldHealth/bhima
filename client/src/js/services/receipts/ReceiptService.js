@@ -9,8 +9,6 @@ ReceiptService.$inject = ['$http', 'util'];
  * This service is responsible for interfacing with any receipts routes on the
  * server.
  *
- * @todo  currently this server 1:1 maps with the ReceiptModal service/controller.
- *        This relationship improved or justified with unit tests.
  * @module services/receipts/ReciptService
  */
 function ReceiptService($http, util) {
@@ -28,7 +26,12 @@ function ReceiptService($http, util) {
    */
   function invoice(uuid, options) {
     var route = '/reports/invoices/'.concat(uuid);
-    return $http.get(route, { params : options, responseType : 'arraybuffer' })
+    var responseType = null;
+    
+    if (options.render === 'pdf') { 
+      responseType = 'arraybuffer';
+    }
+    return $http.get(route, { params : options, responseType : responseType })
       .then(util.unwrapHttpResponse);
   }
 }

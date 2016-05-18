@@ -10,10 +10,6 @@ ReceiptModal.$inject = ['$uibModal', 'ReceiptService'];
  * receipts modal controller and providing a clean interface to be used within
  * module controllers.
  *
- * @todo Discuss how the render target PDF should be templated. Suggestion:
- *       - IF pdf   - use /src/services/receipts/modal/pdf.tmpl.html
- *       - IF json  - specifiy individual target /partials/patient_invoice/receipt/...
- *
  * @module services/receipts/ReceiptModal
  */
 function ReceiptModal(Modal, Receipts) {
@@ -36,15 +32,14 @@ function ReceiptModal(Modal, Receipts) {
     var options = {
       title       : 'PATIENT_INVOICE.PAGE_TITLE',
       identifier  : 'reference',
-      renderer    : 'pdf',
-      template    : 'partials/patient_invoice/receipt/invoice.receipt.tmpl.html',
+      renderer    : 'pdf'
     };
 
     var invoiceRequest = Receipts.invoice(uuid, { render : options.renderer });
     var invoiceProvider = {
       resolve : {
         receipt       : function receiptProvider() { return { promise : invoiceRequest }; },
-        options       : function templateProvider() { return options; },
+        options       : function optionsProvider() { return options; },
       }
     };
 

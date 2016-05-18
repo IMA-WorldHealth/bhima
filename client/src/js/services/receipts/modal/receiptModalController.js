@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('ReceiptModalController', ReceiptModalController);
 
-ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce','receipt', 'options'];
+ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce', 'NotifyService', 'receipt', 'options'];
 
 /**
  * Receipt Modal Controller
@@ -13,31 +13,36 @@ ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce','receip
  * @params {String} template  Path to the template or resource to load
  * @params {String} render    Render target used to generate report
  */
-function ReceiptModalController($modalInstance, $window, $sce, receipt, options) {
+function ReceiptModalController($modalInstance, $window, $sce, Notify, receipt, options) {
   var vm = this;
-
+  
+  vm.print = print;
+  vm.close = close;
+  
   // expose options to the view
   angular.extend(vm, options);
 
   receipt.promise
     .then(function (result) {
-
-      // receipt has successfully loaded
-      // vm.receipt = result;
-
-      var file = new Blob([result], {type : 'application/pdf'});
-      var fileURL = URL.createObjectURL(file);
-
-      vm.receipt = $sce.trustAsResourceUrl(fileURL);
-      console.log(vm.receipt);
+      // special case for pdf rendering
+      if (options.renderer === 'pdf') { 
+        // store downloaded base64 PDF file in a browser blob - this will be accessible through 'blob://...'
+        var file = new Blob([result], {type : 'application/pdf'});
+        
+        // determine the direct path to the newly (temporarily) stored PDF file
+        var fileURL = URL.createObjectURL(file);
+  
+        // trust and expose the file to the view to embed the PDF
+        vm.receipt = $sce.trustAsResourceUrl(fileURL);  
+      } else { 
+        // simply expose receipt object to view
+        vm.receipt = result;
+      }
     })
-    .catch(function (error) {
-
-      // receipt has failed - show error state
-    });
-
-  vm.print = function print() {
-
+    .catch(Notify.handleError);
+  
+  function print() {
+    /**@todo This printing could be exposed by a directive/ component */
     // special case for embedded content
     if (options.renderer === 'pdf') {
       $window.frames.pdf.contentWindow.print();
@@ -46,7 +51,8 @@ function ReceiptModalController($modalInstance, $window, $sce, receipt, options)
     $window.print();
   };
 
-  vm.close = function close() {
+  /** @todo use dismiss vs. close to handle error and complete exit */
+  function close() {
     $modalInstance.close();
   };
 }
