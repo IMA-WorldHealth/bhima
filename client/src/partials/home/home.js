@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('HomeController', HomeController);
 
 HomeController.$inject = [
-  'CurrencyService', 'ExchangeRateService', 'SessionService', 'SystemService', '$interval', '$translate'
+  'CurrencyService', 'ExchangeRateService', 'SessionService', 'SystemService', '$interval', '$translate', '$scope'
 ];
 
 /**
@@ -11,7 +11,7 @@ HomeController.$inject = [
  * This controller powers the system dashboard shown by default when the  user
  * signs in.
  */
-function HomeController(Currencies, Rates, Session, System, $interval, $translate) {
+function HomeController(Currencies, Rates, Session, System, $interval, $translate, $scope) {
   var vm = this;
 
   vm.today = new Date();
@@ -54,8 +54,15 @@ function HomeController(Currencies, Rates, Session, System, $interval, $translat
 
   // set up an interval to periodically reload the system information data
   // (every five seconds)
-  $interval(loadSystemInformation, 5000, false);
+  var poll = $interval(loadSystemInformation, 5000, false);
 
+  // make sure the polling is cleaned up on the $rootChange and the controller's
+  // $scope is destroyed
+  $scope.$on('$destroy', function () {
+    $interval.cancel(poll);
+  });
+
+  // query system events
   System.events()
     .then(function (events) {
       vm.events = events;

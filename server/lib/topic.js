@@ -128,7 +128,7 @@ function deserialize(data) {
 class Topic {
 
   /**
-   * @cosntructor
+   * @constructor
    *
    * @description
    * Creates two Redis instances, one for sending and the other for receiving.
