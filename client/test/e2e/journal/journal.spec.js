@@ -18,7 +18,7 @@ describe('Posting Journal Core', function () {
 
   // this will be run before every single test ('it') - navigating the browser
   // to the correct page.
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   it('displays initial transactions loaded from database', function () {
     var journal = new JournalCorePage();
@@ -53,5 +53,5 @@ describe('Posting Journal Core', function () {
     .then(function (visibleColumnsNumberAfter){
       expect(visibleColumnsNumberBefore).to.eventually.equal(visibleColumnsNumberAfter + 1);
     });
-  });  
+  });
 });

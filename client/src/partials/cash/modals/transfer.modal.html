@@ -18,13 +18,13 @@
       <div ng-if="CashTransferModalCtrl.currency_id">
         <p>{{"FORM.LABELS.BALANCE" | translate}} : {{CashTransferModalCtrl.cashAccountBalance.balance | currency:CashTransferModalCtrl.currency_id}}</p>
       </div>
-    </uib-alert>   
+    </uib-alert>
 
     <hr/>
 
     <div class="radio" ng-class="{ 'has-error' : TransferForm.$submitted && TransferForm.currency.$invalid }">
       <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
-      <label 
+      <label
         ng-repeat="currency in CashTransferModalCtrl.cashBox.currencies track by currency.currency_id"
         class="radio-inline">
           <input
@@ -63,8 +63,7 @@
       class="btn btn-primary"
       data-method="submit"
       ng-disabled="!CashTransferModalCtrl.cashBox"
-      data-transfer-modal-submit
-      >
+      data-modal-action="submit">
       {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </button>
 
@@ -72,7 +71,7 @@
       type="button"
       class="btn btn-default"
       ng-click="CashTransferModalCtrl.cancel()"
-      data-transfer-modal-cancel>
+      data-modal-action="dismiss">
       {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
   </div>

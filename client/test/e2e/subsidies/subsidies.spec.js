@@ -1,4 +1,4 @@
-/* global element, by, inject, browser */
+/* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -12,7 +12,7 @@ describe('Subsidies Module', function () {
   'use strict';
 
   const path = '#/subsidies';
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
   const subsidy = {
     label : 'IMA SUBSIDY',

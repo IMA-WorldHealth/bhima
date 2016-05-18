@@ -1,26 +1,34 @@
-/* jshint expr:true */
 /* global element, by, browser */
 
 /**
- * Test helpers
+ * @overview helpers
  *
- * This module contains utilities that are useful in tests, but not specifically
+ * @description
+ * This file contains utilities that are useful in tests, but not specifically
  * tied to forms or modules.
  */
 
-/** gets a random number within the range(0, n) */
+'use strict';
+
+// gets a random number within the range(0, n)
 exports.random = function random(n) {
-  'use strict';
   return Math.floor((n) * Math.random() + 1);
 };
 
+// wrapper for browser navigation without reloading the page
+exports.navigate = function navigate(path) {
+  let destination = path.replace('#/', '');
+  browser.setLocation(destination);
+};
+
+// configures the chai assertion library
 exports.configure = function configure(chai) {
-  'use strict';
 
   // enable promise chaining for chai assertions
   chai.use(require('chai-as-promised'));
 };
 
+// get the browser path after the hash
 exports.getCurrentPath = function getCurrentPath() {
   return browser.getCurrentUrl()
   .then(function (url) {

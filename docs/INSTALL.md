@@ -1,63 +1,62 @@
 Bhima Installation Guide
 ===========================
 
-*NOTE* This guide is built for bhima version 2.X.  If you are attempting to build
-version 1.X, see [this repository](https://github.com/IMA-WorldHealth/bhima-1.X).
+*NOTE* This guide is built for bhima version 2.X.  If you are attempting to build version 1.X, see [this repository](https://github.com/IMA-WorldHealth/bhima-1.X).
 
-This guide will get you up and running with bhima locally.  Please note that
-bhima is under active development and should *not* be used commercially.
+This guide will get you up and running with bhima locally.  Please note that bhima is under active development and should *not* be used commercially.  If you are interested in development progress, shoot us a line at <developers@imaworldhealth.org>.
 
-_Note: bhima depends on MySQL (or MariaDB) and NodeJS in order to function.  Be
-sure to grab the latest version for both before building the application._
+###### Dependencies
+Before you begin the installation process, please make sure you have all the bhima dependencies installed locally.  We only test on Linux, so your best bet is to use a Linux you are familiar with.  Please make sure you have recent version of:
+ 1. [MySQL](http://dev.mysql.com/downloads/) (5.6 or greater)
+ 2. [Redis](redis.io)
+ 3. [NodeJS](https://nodejs.org/en/) (we recommend using [node version manager](https://github.com/creationix/nvm)).
+
 
 ###### Getting the source
-Clone the source using git from the [bhima github repository]
-(https://github.com/IMA-WorldHealth/bhima).
-```bash
-$ git clone https://github.com/IMA-WorldHealth/bhima-2.X bhima-2.X
-$ cd bhima-2.X
-```
-
-###### Building the source
-Bhima uses the [gulpjs](http://www.gulpjs.com) build tool to build from source.
-Install it globally with npm and install other all npm dependencies, then run
-the `gulp build` command in the client directory as shown below.
+Clone the source using git from the [bhima github repository] (https://github.com/IMA-WorldHealth/bhima-2.x).
 
 ```bash
-$ # Inside the bhima-2.X/ directory
-$ npm install -g gulp later dot mocha bower
-$ npm install
-$ bower install -f
-$ gulp build
-# lots of console output..
+git clone https://github.com/IMA-WorldHealth/bhima-2.X.git bhima-2.X
+cd bhima-2.X
 ```
 
-Alternatively, you can use the installation script found in the `/sh` folder to
-download all dependencies, build the server and databases.  The syntax looks like
-this:
+###### Building from source
+We use the [gulpjs](http://www.gulpjs.com) build tool to build from source, installed with `npm`.
 
 ```bash
-$ # inside the bhima-2.X directory
-$ ./sh/install.sh -d
-```
+# Inside the bhima-2.X/ directory
 
-For full usage information, use the `-h` help flag.
+# install all node modules
+npm install --no-progress --loglevel http
+
+# install client-side dependencies with bower
+./node_modules/.bin/bower install -f
+
+# build the application
+./node_modules/.bin/gulp build
+```
 
 ###### Creating a database
-Bhima database structure is contained in the file `server/sql/bhima.sql`.  For
-an initial setup, bhima also includes a file `server/sql/base.sql` to get the
-application up and running rapidly.  Build one or both, and customize further
-from within the running application.
+The database structure is contained in the following files:
+ 1. `server/models/schema.sql`
+ 2. `server/models/procedures.sql`
+
+For an initial setup, bhima also includes a file `server/models/test/data.sql` that contains sample data to get the application up and running rapidly.  Build all three and customize further from within the running application.
+
+Alternative, you might use the `install.sh` script, customized with your environmental variables as shown below:
+
+```sh
+# install the database
+./sh/install.sh
+```
+
+###### Configuring the Application
+Copy the `.env.sample` environmental variable file into `.env.production` and set your preferred environmental variables where required.  Make sure this file is in the root directory.
 
 ###### Running the application
-Running bhima is super easy!  Just type `npm run app`.
-
+Running the application is super easy!  Just type `npm run app` in the application root directory.
 
 ###### Verify the install
-Navigate to https://localhost:8080 in the browser to verify the installation.
-You should be greated with a login page.
+Navigate to [https://localhost:8080](https://localhost:8080) in the browser to verify the installation.  You should be greeted with a login page.
 
-###### Advanced - configuring the application
-All configuration options are found in the configuration file located in
-`server/config.json`.  These options are straightforward and documented
-elsewhere.
+Enjoy using bhima!

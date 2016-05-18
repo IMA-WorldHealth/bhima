@@ -1,5 +1,4 @@
-/* global element, by, inject, browser */
-
+/* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -10,7 +9,7 @@ helpers.configure(chai);
 describe('locations (create modal)', function () {
   'use strict';
 
-  before(() => browser.get('#/patients/register'));
+  before(() => helpers.navigate('#/patients/register'));
 
   /** location to be created */
   var newLocation = {

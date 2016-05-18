@@ -10,10 +10,9 @@
 <div class="flex-content">
   <div class="container-fluid">
 
-    <!-- Module wide error handling -->
+    <!-- module wide error handling -->
     <div class="row">
       <div class="col-md-12">
-
         <uib-alert id="exceptionAlert" type="danger" ng-show="PatientRegCtrl.exception">
           <span class="glyphicon glyphicon-exclamation-sign"></span>
           <b>{{ PatientRegCtrl.exception.data.code | translate }}</b> ({{PatientRegCtrl.exception.status}} - {{PatientRegCtrl.exception.data.description}})

@@ -22,7 +22,7 @@ describe('Enterprises Module', function () {
   };
 
   // navigate to the enterprise module before running tests
-  before(() => browser.get(path));
+  before(() => helpers.navigate(path));
 
 
   it('successfully creates a new enterprise', function () {

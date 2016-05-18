@@ -89,7 +89,7 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, S
    * @todo  Discuss if this should be a library to account for standard client side errors,
    *        -1 for offline etc. This should not have to be done everywhere.
    *        This could be implemented with an $http interceptor.
-   * @params  {object}  error  An Error object that has been sent from the server.
+   * @param  {object}  error  An Error object that has been sent from the server.
    */
   function handleServerError(error) {
     viewModel.exception = error;

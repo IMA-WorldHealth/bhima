@@ -46,15 +46,19 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
     cache.sidebar = { expanded : vm.sidebarExpanded };
   };
 
-  $rootScope.$on('login', function () {
+  // resets the application if either a destroy or logout event is called
+  function reset() {
+    vm.sidebarExpanded = false;
+    delete vm.project;
+  }
+
+  $rootScope.$on('session:login', function () {
     vm.sidebarExpanded = cache.sidebar && cache.sidebar.expanded;
     vm.project = Session.project;
   });
 
-  $rootScope.$on('logout', function () {
-    vm.sidebarExpanded = false;
-    delete vm.project;
-  });
+  $rootScope.$on('session:logout', reset);
+  $rootScope.$on('session:destroy', reset);
 
   // go to the settings page
   vm.settings = function settings() {

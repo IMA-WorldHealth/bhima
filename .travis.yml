@@ -9,6 +9,7 @@ before_install:
 
 services:
   - mysql
+  - redis-server
 
 language: node_js
 node_js:
