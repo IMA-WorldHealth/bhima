@@ -80,7 +80,7 @@
 
                 <div
                     class="form-group"
-                    ng-class="{'has-error' : detailsForm.$submitted && detailsForm.$invalid}">
+                    ng-class="{'has-error' : detailsForm.$submitted && detailsForm.notes.$invalid}">
                   <label for="invoice-note">{{ "FORM.LABELS.NOTES" | translate }}</label>
                   <textarea
                       id="invoice-note"
