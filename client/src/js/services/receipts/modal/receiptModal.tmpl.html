@@ -13,14 +13,18 @@
       ng-if="ReceiptCtrl.notifyCreated"
       style="padding-top : 8px"
       class="pull-right">
-    <spank class="text-success">
+    <span class="text-success">
       <span class="glyphicon glyphicon-ok-circle"></span>
       {{ReceiptCtrl.createdKey | translate}}
     </span>
   </div>
 </div>
 
-<!-- TODO Investigate if this should use latest ui-router standards -->
+<!-- Tempoarary Loading State -->
+<div style="padding : 10px;" ng-if="!ReceiptCtrl.receipt">
+  <p class="text-info"><span class="glyphicon glyphicon-hourglass"></span> {{"RECEIPTS.LOADING"}}</p>
+</div>
+
 <div ng-switch on="ReceiptCtrl.renderer">
 
   <!-- PDF -->

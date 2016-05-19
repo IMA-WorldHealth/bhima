@@ -93,20 +93,12 @@ function build(req, res, next) {
     .then(function (headerResult) {
       _.extend(invoiceResponse, headerResult);
 
-      return renderer.render(invoiceResponse, template, res);
+      return renderer.render(invoiceResponse, template);
     })
     .then(function (renderedResult) {
 
-      console.log('got rendered result', renderedResult);
-
       // send the final (rendered) object to the client
-      // res.status(SUCCESS_STATUS).send(renderedResult);
       res.set(renderer.headers).send(renderedResult);
-
-      // wkhtmltopdf('<h1>test</h1><p>this is content</p>', {pageSize : 'A4'})
-        // .pipe(res.set('Content-Type', 'application/pdf'));
-
-      // res.send(renderedResult);
       return;
     })
     .catch(next)
