@@ -5,23 +5,24 @@
 <div class="modal-body">
 
   <p class="text-info">
-  {{ "FORM.INFOS.GROUPS_PATIENT" | translate }}   
+  {{ "FORM.INFOS.GROUPS_PATIENT" | translate }}
   </p>
-  <p class="text-warning" ng-if="UpdatePatientGroupsCtrl.patientGroups.length === 0"> 	
-  {{ "PATIENT_EDIT.WARN" | translate }}   
+  <p class="text-warning" ng-if="UpdatePatientGroupsCtrl.patientGroups.length === 0">
+  {{ "PATIENT_EDIT.WARN" | translate }}
   </p>
 
   <form name="groupForm">
     <div class="form-group has-feedback">
-    
+
       <label class="control-label">{{ "FORM.LABELS.GROUPS_PATIENT_TITLE" | translate }}</label>
-      
-      <div 
+
+      <div
         class="checkbox"
         ng-repeat="group in UpdatePatientGroupsCtrl.patientGroups | orderBy:'name'">
         <label>
-        <input 
-          type="checkbox" 
+        <input
+          data-group-option
+          type="checkbox"
           name="subscribedGroups"
           ng-model="UpdatePatientGroupsCtrl.subscribedGroups[group.uuid]">
         {{group.name}}
@@ -32,13 +33,14 @@
 </div>
 
 <div class="modal-footer">
-  <button 
+  <button
     class="btn btn-default"
     ng-click="UpdatePatientGroupsCtrl.closeModal()">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
-  <button 
+  <button
     class="btn btn-default"
+    data-confirm-group
     ng-click="UpdatePatientGroupsCtrl.confirmGroups()"
     ng-disabled="UpdatePatientGroupsCtrl.patientGroups.length === 0">
-      {{ "FORM.BUTTONS.CONFIRM" | translate }}    
+      {{ "FORM.BUTTONS.CONFIRM" | translate }}
     </button>
 </div>
