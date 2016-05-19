@@ -490,7 +490,7 @@ function search(req, res, next) {
     } 
 
     if(qDob) {
-      // Research from patient registration dates
+      // Research from patient birth dates
       if(qDob.dateFrom && qDob.dateTo){
         if(data.length){
           conjonction = ' AND ';

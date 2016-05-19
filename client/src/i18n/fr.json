@@ -254,6 +254,7 @@
       "NO_RECIPIENT"         : "Une facture doit appartenir à une personne avant d'assigner les éléments.",
       "NO_RECORDS_DATABASE"  : "Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
       "OPERATION_SUCCESS"    : "Opération effectuée avec succès",
+      "PATIENTS"             : "Patients",
       "PATIENT_FOUND"        : "Patient Trouvé",
       "PATIENT_NOT_FOUND"    : "Patient Non Trouvé",
       "SAVE_SUCCESS"         : "Enregistrement avec succès",

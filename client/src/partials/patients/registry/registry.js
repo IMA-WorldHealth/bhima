@@ -53,21 +53,15 @@ function PatientRegistryController($translate, Patients, $uibModal) {
 
   // Search and filter data in Patiens Registry
   function search() {
-    $uibModal.open({
-      templateUrl : 'partials/patients/registry/modal.html',
-      size : 'md',
-      animation : true,
-      controller : 'PatientRegistryModalController as ModalCtrl'
-    }).result
+    Patients.openSearchModal()
     .then(function (data) {
       var response = data.response;
       vm.filters = data.filters
-
       response.forEach(function (patient) {
         patient.patientAge = momentAge(patient.dob); 
       });      
       vm.uiGridOptions.data = response;
-    });       
+    });
   }
 
   function momentAge(patientAge){

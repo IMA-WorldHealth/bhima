@@ -258,6 +258,7 @@
       "NO_RECIPIENT"         : "An invoice must have a recipient before assigning items.",
       "NO_RECORDS_DATABASE"  : "There are no records in the database for this query",
       "OPERATION_SUCCESS"    : "Operation performed successfully",
+      "PATIENTS"             : "Patients",
       "PATIENT_FOUND"        : "Patient Found",
       "PATIENT_NOT_FOUND"    : "Patient Not Found",
       "SAVE_SUCCESS"         : "Save success",

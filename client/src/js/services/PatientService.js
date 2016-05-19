@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('PatientService', PatientService);
 
-PatientService.$inject = [ '$http', 'util', 'SessionService' ];
+PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal'];
 
 /**
  * @module PatientService
@@ -21,7 +21,7 @@ PatientService.$inject = [ '$http', 'util', 'SessionService' ];
  * Patients.create(medicalDetails, financeDetails)...
  *
  */
-function PatientService($http, util, Session) {
+function PatientService($http, util, Session, $uibModal) {
   var service = this;
   var baseUrl = '/patients/';
 
@@ -34,6 +34,7 @@ function PatientService($http, util, Session) {
 
   service.billingServices = billingServices;
   service.subsidies = subsidies;
+  service.openSearchModal = openSearchModal;
 
   /** uses the "search" endpoint to pass query strings to the database */
   service.search = search;
@@ -282,6 +283,15 @@ function PatientService($http, util, Session) {
       propertyPatientFilter.push(dataConfiguration);      
     }
     return propertyPatientFilter;
+  }
+
+  function openSearchModal(){
+    return $uibModal.open({
+      templateUrl : 'partials/patients/registry/modal.html',
+      size : 'md',
+      animation : true,
+      controller : 'PatientRegistryModalController as ModalCtrl'
+    }).result;
   }
 
   return service;

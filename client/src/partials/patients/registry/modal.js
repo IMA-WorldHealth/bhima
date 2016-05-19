@@ -2,41 +2,19 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryModalController', PatientRegistryModalController);
 
 PatientRegistryModalController.$inject = [
-  '$uibModalInstance', 'InventoryService', 'PatientService', 'util'
+  '$uibModalInstance', 'InventoryService', 'PatientService', 'util', 'DateService'
 ];
 
-function PatientRegistryModalController( $uibModalInstance, Inventory, patients, util) {
+function PatientRegistryModalController( $uibModalInstance, Inventory, patients, util, dateService) {
   var vm = this;
 
-  vm.period = {
-    today : {
-      cacheKey : 'today',
-      translateKey : 'FORM.BUTTONS.TODAY',
-      id : 'today'
-    },
-    week : {
-      cacheKey : 'week',
-      translateKey : 'FORM.BUTTONS.THIS_WEEK',
-      id : 'week'
-    },
-    month : {
-      cacheKey : 'month',
-      translateKey : 'FORM.BUTTONS.THIS_MONTH',
-      id : 'month'
-    },
-    year : {
-      cacheKey : 'year',
-      translateKey : 'FORM.BUTTONS.THIS_YEAR',
-      id : 'year'
-    }
-  };  
-
+  vm.period = dateService.period();
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
   vm.setTimes = setTimes;
   vm.today = new Date();
-
+  vm.patient = {};
 
   vm.data = { is_percentage : 0 };
 
@@ -63,33 +41,21 @@ function PatientRegistryModalController( $uibModalInstance, Inventory, patients,
   }
 
   function setTimes(times){
-    if (times === 'today'){
-      vm.patient = { 
-        dateRegistrationFrom : new Date(),
-        dateRegistrationTo : new Date() 
-      };
+     // the dateRegistrationTo never changes, so we set it at the beginning
+     vm.patient.dateRegistrationTo = new Date();
 
-    } else if (times === 'week'){
-      vm.patient = { 
-        dateRegistrationFrom : new Date(),
-        dateRegistrationTo : new Date() 
-      }; 
-      vm.patient.dateRegistrationFrom.setDate(vm.patient.dateRegistrationTo.getDate() - vm.patient.dateRegistrationTo.getDay());
-    
-    } else if (times === 'month') {
-      vm.patient = { 
-        dateRegistrationFrom : new Date(),
-        dateRegistrationTo : new Date() 
-      }; 
-      vm.patient.dateRegistrationFrom.setDate(1);
-    
-    } else {
-      var fullYear = new Date().getFullYear();
-
-      vm.patient = { 
-        dateRegistrationFrom :new Date(fullYear + '-1-1'),
-        dateRegistrationTo : new Date() 
-      };      
+     switch (times) {
+        case 'today' :
+          vm.patient.dateRegistrationFrom = new Date();
+          break;
+        case 'week' :
+          vm.patient.dateRegistrationFrom = dateService.previous.week();
+          break;
+        case 'month' :
+          vm.patient.dateRegistrationFrom = dateService.previous.month();
+          break;
+        default:
+          vm.patient.dateRegistrationFrom = dateService.previous.year();
     }
   }
 

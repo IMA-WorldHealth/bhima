@@ -14,6 +14,7 @@ module.exports = {
    *
    * @param {Date} date - a date object
    * @param {string} id - a CSS id to select on.
+   * @param {string} elementClick - determine a css class that will clicked to close the selection component Dates.   
    */
   set: function set(date, id, elementClick) {
     var elementClick = (elementClick || '.header-image');
