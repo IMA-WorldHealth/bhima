@@ -1,21 +1,20 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('./helpers');
-var uuid    = require('node-uuid');
-
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
+const uuid    = require('node-uuid');
 helpers.configure(chai);
 
-/**
-* The /purchase API endpoint
-*
-* This test suite implements full CRUD on the /purchase HTTP API endpoint.
-*
-* @todo - this API endpoint should be called /purchases
-*/
+/*
+ * The /purchase API endpoint
+ *
+ * This test suite implements full CRUD on the /purchase HTTP API endpoint.
+ *
+ * @todo - this API endpoint should be called /purchases
+ */
 describe('(/purchase) The /purchase API endpoint', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   // purchase we will add during this test suite.
   var purchase_order = {
@@ -60,9 +59,6 @@ describe('(/purchase) The /purchase API endpoint', function () {
     'last', 'creditor_uuid', 'timestamp', 'note', 'paid_uuid', 'confirmed', 'closed', 'is_direct', 'is_donation', 'emitter_id',
     'is_authorized', 'is_validate', 'confirmed_by', 'is_integration', 'purchaser_id', 'receiver_id'
   ];
-
-  // ensure the client is logged in before executing the test suite
-  before(helpers.login(agent));
 
   it('POST /purchase should create a new purchase order', function () {
     return agent.post('/purchase')

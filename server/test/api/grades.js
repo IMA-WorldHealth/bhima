@@ -6,7 +6,7 @@ const uuid  = require('node-uuid');
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
+/*
  * The /grades API endpoint
  *
  * This test suite implements full CRUD on the /grades   HTTP API endpoint.

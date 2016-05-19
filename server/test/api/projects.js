@@ -1,17 +1,17 @@
 /* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /projects API endpoint
-*
-* This test suite implements full CRUD on the /projects HTTP API endpoint.
-*/
+/*
+ * The /projects API endpoint
+ *
+ * This test suite implements full CRUD on the /projects HTTP API endpoint.
+ */
 describe('(/projects) The projects API endpoint', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+  const agent = chai.request.agent(helpers.baseUrl);
 
   // project we will add during this test suite.
   var project = {
@@ -26,8 +26,8 @@ describe('(/projects) The projects API endpoint', function () {
     'id', 'name', 'abbr', 'enterprise_id', 'zs_id', 'locked'
   ];
 
-  /** @const number of projects defined in the dtabase */
-  var numProjects = 3;
+  /* number of projects defined in the database */
+  const numProjects = 3;
 
   // make sure the client is authenticated.
   before(helpers.login(agent));

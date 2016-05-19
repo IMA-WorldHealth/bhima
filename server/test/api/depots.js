@@ -1,54 +1,51 @@
-/* jshint expr: true */
+// jshint expr: true
 const chai = require('chai');
 const expect = chai.expect;
 
-/** import test helpers */
+// import test helpers
 const helpers = require('./helpers');
 const uuid    = require('node-uuid');
 helpers.configure(chai);
 
-/**
- * The /depots API endpoint
- *
- * @desc This test suit is about the crud operation with depots
- */
+// The /depots API endpoint
+// @desc This test suit is about the crud operation with depots
 describe('(/depots) The depots API ', function () {
   'use strict';
 
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  /** new depot object */
+  // new depot object
   var newDepot = {
     uuid : uuid.v4(),
-    /** the reference column is auto increment by a trigger */
+    // the reference column is auto increment by a trigger
     text : 'New Depot',
     enterprise_id : 1,
     is_warehouse : 0
   };
 
-  /** second depot object */
+  // second depot object
   var secondDepot = {
     text : 'Second Depot',
     enterprise_id : 1,
     is_warehouse : 0
   };
 
-  /** depot object with missing uuid */
+  // depot object with missing uuid
   var badDepot = {
     text : 'New Depot',
     enterprise_id : 1,
     is_warehouse : 0
   };
 
-  /** update depot */
+  // update depot
   var editDepot = {
     uuid : uuid.v4(),
     text : 'Edited Depot',
     is_warehouse : 1
   };
 
-  /** removable depot */
+  // removable depot
   var removableDepot = {
     uuid : uuid.v4(),
     text : 'Removable Depot',

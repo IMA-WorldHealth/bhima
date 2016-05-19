@@ -1,14 +1,13 @@
 /* jshint expr: true */
-// Test Helpers
 
 'use strict';
 
 // import plugins
-var expect = require('chai').expect;
-var chaiHttp = require('chai-http');
-var chaiDatetime =  require('chai-datetime');
+const expect = require('chai').expect;
+const chaiHttp = require('chai-http');
+const chaiDatetime =  require('chai-datetime');
 
-/**
+/*
  * Configure NodeJS/Mocha to continue working even with invalid TLS certs
  * This explicitly disables cert errors for the parent Node process, and
  * should only be done for testing cases.
@@ -16,7 +15,7 @@ var chaiDatetime =  require('chai-datetime');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 // base URL for all tests
-var port = process.env.PORT || '8080';
+const port = process.env.PORT || '8080';
 exports.baseUrl = 'https://localhost:' + port;
 
 // login using the base URL and user
@@ -63,10 +62,10 @@ exports.handler = function handler(err) {
   throw err;
 };
 
-/** bindings for API-specific response tests */
-var api = exports.api = {};
+/* bindings for API-specific response tests */
+const api = exports.api = {};
 
-/** ensure that objectA's key/values are contained in and identical to objectB's */
+/* ensure that objectA's key/values are contained in and identical to objectB's */
 exports.identical = function identical(objectA, objectB) {
   return Object.keys(objectA).every(function (key) {
     return objectA[key] === objectB[key];
@@ -152,11 +151,12 @@ api.errored = function errored(res, status, key) {
 };
 
 /**
- * @TODO
+ * @description
  * Ensures that an original object has been updated.  Does not support
  * deep equality.
  *
  * @note - this will have some issues with dates.
+ * @todo
  *
  * @method updated
  * @param {object} res - the HTTP response object
@@ -236,10 +236,8 @@ api.listed = function listed(res, len) {
   expect(res.body).to.have.length(len);
 };
 
-
-/**
+/*
  * Data helpers to clarify the code
- * @public
  */
 exports.data = {
   USD : 2,
@@ -250,4 +248,3 @@ exports.data = {
   SUPERUSER : 1,
   OTHERUSER : 2,
 };
-

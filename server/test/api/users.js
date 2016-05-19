@@ -5,7 +5,7 @@ const expect = chai.expect;
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
+/*
  * The /users API endpoint
  *
  * This test suite implements full CRUD on the /users HTTP API endpoint.

@@ -3,24 +3,24 @@ const chai = require('chai');
 const expect = chai.expect;
 const uuid = require('node-uuid');
 
-/** import test helpers */
+/* import test helpers */
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-/** The /sales API endpoint */
+/* The /sales API endpoint */
 describe('The /sales API', function () {
   'use strict';
 
-  /** login at the start of the test */
+  // login at the start of the test */
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  /** @const total number of sales in the database */
+  /* total number of sales in the database */
   const numSales = 2;
   const numCreatedSales = 3;
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
 
-  /** @const a reference for one of the sales in the database */
+  /* a reference for one of the sales in the database */
   const reference = 'TPA1';
 
   // run the 'BillingScenarios' test suite
@@ -154,7 +154,7 @@ describe('The /sales API', function () {
   });
 });
 
-/**
+/*
  * Patient Invoicing Scenarios
  *
  * This test suite goes through a variety of testing scenarios to ensure the
@@ -166,7 +166,7 @@ function BillingScenarios() {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  /**
+  /*
    * A simple invoice that should be posted without issue.  This demonstrates
    * that the POST /sales route works as intended for the simple invoicing of
    * patients.  Demonstrates:
@@ -190,7 +190,7 @@ function BillingScenarios() {
     user_id : helpers.data.OTHERUSER,
     is_distributable: true,
 
-    /** @todo - change this API to not need credit/debit fields */
+    /* @todo - change this API to not need credit/debit fields */
     items : [{
       inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
       quantity: 1,
@@ -231,7 +231,7 @@ function BillingScenarios() {
       .catch(helpers.handler);
   });
 
-  /**
+  /*
    * These tests check a few error conditions to make sure the server's API
    * doesn't break on errors.
    */
@@ -276,7 +276,7 @@ function BillingScenarios() {
       .catch(helpers.handler);
   });
 
-  /**
+  /*
    * This scenario tests that billing services work properly.  The simple
    * billing service invoice will include a single billing service, and checks
    * that the cost is correctly calculated.
@@ -292,7 +292,7 @@ function BillingScenarios() {
     service_id: helpers.data.ADMIN_SERVICE,
     is_distributable : true,
 
-    /** @todo - change this API to not need credit/debit fields */
+    /* @todo - change this API to not need credit/debit fields */
     items : [{
       inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
       quantity: 15,
@@ -307,7 +307,7 @@ function BillingScenarios() {
       credit: 25,
     }],
 
-    /** @todo - change this API to take in an array of billing service ids */
+    /* @todo - change this API to take in an array of billing service ids */
     billingServices : {
       items : [{
         billing_service_id : 1
@@ -342,7 +342,7 @@ function BillingScenarios() {
   });
 
 
-  /**
+  /*
    * This scenario tests that subsidies work properly.  The simple subsidy will
    * absorb some of a patient's cost into a subsidy account.  The API only
    * supports a single subsidy per invoice.  See #343 for more information.
@@ -355,7 +355,7 @@ function BillingScenarios() {
     service_id: helpers.data.ADMIN_SERVICE,
     is_distributable : true,
 
-    /** @todo - change this API to not need credit/debit fields */
+    /* @todo - change this API to not need credit/debit fields */
     items : [{
       inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
       quantity: 25,
@@ -376,7 +376,7 @@ function BillingScenarios() {
       credit: 40.95,
     }],
 
-    /** @todo - change this API to take in an array of subsidy ids */
+    /* @todo - change this API to take in an array of subsidy ids */
     subsidies : {
       items : [{
         subsidy_id : 1

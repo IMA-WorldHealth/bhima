@@ -1,13 +1,12 @@
 /* jshint expr: true */
-var chai = require('chai');
-var expect = chai.expect;
-
-/** import test helpers */
-var helpers = require('./helpers');
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 describe('(/reference_group) The Reference Group API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+  const agent = chai.request.agent(helpers.baseUrl);
+  beforeEach(helpers.login(agent));
 
   var newReferenceGroup = {
     reference_group   : 'AR',
@@ -19,8 +18,6 @@ describe('(/reference_group) The Reference Group API', function () {
   var responseKeys = [
     'id', 'reference_group', 'text', 'position', 'section_bilan_id'
   ];
-
-  beforeEach(helpers.login(agent));
 
   it('POST /reference_group adds a reference group', function () {
     return agent.post('/reference_group')

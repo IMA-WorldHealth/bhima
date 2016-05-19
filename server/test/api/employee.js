@@ -1,11 +1,10 @@
 /* jshint expr:true*/
 const chai = require('chai');
 const expect = chai.expect;
-
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
+/*
  * The /employees API endpoint
  *
  * This test suite implements full CRUD on the /employees HTTP API endpoint.
@@ -199,9 +198,7 @@ describe('(/employees) the employees API endpoint', function () {
     // add a missing property due to alias in db query
     employee.code = employee.code_employee;
     expect(employee).to.contain.all.keys(update);
-
-    /** @fixme -- manual treatment of dates is sub-optimal.  Can we do better? */
-    for (var i in update) {
+    for (let i in update) {
       if (i === 'dob' || i === 'date_embauche') {
         expect(new Date(employee[i])).to.equalDate(new Date(update[i]));
       } else {

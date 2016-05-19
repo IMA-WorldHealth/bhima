@@ -1,28 +1,23 @@
 /* jshint expr: true */
-var chai = require('chai');
-var expect = chai.expect;
-
-/** import test helpers */
-var helpers = require('./helpers');
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 const uuid = require('node-uuid');
 
-/**
-* The /vouchers API endpoint
-*
-* This test suit is about the vouchers table
-*/
+/*
+ * The /vouchers API endpoint
+ *
+ * This test suit is about the vouchers table
+ */
 describe('(/vouchers) The vouchers HTTP endpoint', function () {
   'use strict';
 
-  var agent = chai.request.agent(helpers.baseUrl);
-
-  /** login before tests suite executes */
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  /** Test with dates */
-  var date = new Date();
+  const date = new Date();
 
   var vUuid = uuid.v4();
 

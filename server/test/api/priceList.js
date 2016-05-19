@@ -2,27 +2,26 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-/** import test helpers */
+/* import test helpers */
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
+/*
  * The /prices API endpoint
  */
-describe('(/prices ) The price list API', function () {
-
+describe('(/prices ) Price List', function () {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
 
   // constants
-  var emptyPriceList = {
+  const emptyPriceList = {
     uuid : 'da4be62a-4310-4088-97a4-57c14cab49c8',
     label : 'Test Empty Price List',
     description : 'A price list without items attached yet.'
   };
 
-  var priceListItems = [{
+  const priceListItems = [{
     inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
     label : 'Test $10 reduction on an item',
     is_percentage : false,
@@ -50,7 +49,7 @@ describe('(/prices ) The price list API', function () {
     }]
   };
 
-  var responseKeys = [
+  const responseKeys = [
     'uuid', 'label', 'description', 'created_at', 'updated_at', 'items'
   ];
 

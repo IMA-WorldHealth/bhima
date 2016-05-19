@@ -5,7 +5,7 @@ const expect = chai.expect;
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
+/*
  * The /donors API endpoint
  *
  * This test suit is about the crud operation with donors
@@ -16,7 +16,7 @@ describe('(/donors) Donors', function () {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  /** new donors object */
+  /* new donors object */
   var newDonor = {
     name : 'IMA WorldHealth'
   };
@@ -25,7 +25,7 @@ describe('(/donors) Donors', function () {
     name : 'SANRU'
   };
 
-  /** update donor object */
+  /* update donor object */
   var updateDonor = {
     name : 'ASSP'
   };

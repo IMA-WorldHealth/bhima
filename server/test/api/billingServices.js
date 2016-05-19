@@ -1,30 +1,30 @@
 /* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
 // import test helpers
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /billing_services API endpoint
-*/
+/*
+ * The /billing_services API endpoint
+ */
 describe('(/billing_services) Billing Services API', function () {
   'use strict';
 
-  /** logs in at the beginning of the test suite */
+  /* logs in at the beginning of the test suite */
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  var billingServiceA = {
+  const billingServiceA = {
     account_id:  3628,  // Test Capital Account Two
     label:       'Test Billing Service A',
     description: 'This is definitely a billing service.',
     value:       13.0
   };
 
-  /// test negative values
-  var billingServiceB = {
+  // test negative values
+  const billingServiceB = {
     account_id:  3627,  // Test Capital Account One
     label:       'Test Billing Service B',
     description: 'Billing Services should not have negative values, right?',
@@ -35,9 +35,6 @@ describe('(/billing_services) Billing Services API', function () {
     'id', 'account_id', 'label', 'description', 'value',
     'number', 'created_at', 'updated_at'
   ];
-
-  /** logs in before the test suite */
-  before(helpers.login(agent));
 
   it('GET /billing_services should return a list of two billing service', function () {
     return agent.get('/billing_services')

@@ -1,20 +1,19 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-/** import test helpers */
-var helpers = require('./helpers');
+/* import test helpers */
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-/** The /cashboxes API endpoint */
+/* The /cashboxes API endpoint */
 describe('(/cashboxes) The Cashboxes API endpoint', function () {
   'use strict';
 
-  /** login before the first request */
-  var agent = chai.request.agent(helpers.baseUrl);
+  /* login before the first request */
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  /** @const */
   const numCashboxes = 3;
   const numAuxCashboxes = 2;
   const NUMBER_OF_CASHBOX_CURRENCIES = 2;
@@ -29,9 +28,9 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
 
   // new cashbox account currency
   const BOX_CURRENCY = {
-    currency_id:              1,
-    account_id:               3631,
-    transfer_account_id:      3631
+    currency_id:         1,
+    account_id:          3631,
+    transfer_account_id: 3631
   };
 
   it('GET /cashboxes returns a list of cashboxes', function () {
@@ -54,7 +53,6 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
   it('GET /cashboxes?detailed=1 returns a list of cashboxes with expanded properties', function () {
     return agent.get('/cashboxes?detailed=1')
       .then(function (res) {
-        /** @todo - make sure this tests the "expanded" properties */
         helpers.api.listed(res, numCashboxCurrencies);
       })
       .catch(helpers.handler);
