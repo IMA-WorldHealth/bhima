@@ -533,6 +533,15 @@
   "LOGIN": {
     "TITLE" : "Authentication"
   },
+  "PATIENT_DOCUMENT" : {
+    "ADD"       : "Add",
+    "DOCUMENTS" : "Documents",
+    "DOWNLOAD"  : "Download",
+    "OVERVIEW"  : "Overview",
+    "POSTED_BY" : "Posted by",
+    "SEARCH"    : "Search documents",
+    "TITLE"     : "Patient Documents"
+  },
   "PATIENT_EDIT": {
     "FINANCIAL_INFO" : "Financial Information",
     "PAGE_TITLE"     : "Edit Patient Details",
@@ -866,6 +875,7 @@
     "NEW_BUDGET"                 : "Create Budget",
     "OFFDAY_MANAGEMENT"          : "Offday management",
     "OPERATING_ACCOUNT"          : "Operating Account",
+    "PATIENT_DOCUMENT"           : "Patient Documents",
     "PATIENT_GRP"                : "Patient Groups",
     "PATIENT_GRP_ASSIGNMENT"     : "Patient Group Assignment",
     "PATIENT_INVOICE"            : "Patient Invoice",
