@@ -566,7 +566,8 @@
     "BILLING_SERVICES"   : "Billing Services Applied",
     "INVALID_DETAILS"    : "This invoice contains invalid details",
     "INVALID_ITEMS"      : "This invoice contains invalid items",
-    "PAGE_TITLE"         : "Patient Invoice"
+    "PAGE_TITLE"         : "Patient Invoice",
+    "SUCCESS"            : "Patient invoice successfully recorded."
   },
   "PATIENT_REG": {
     "FIND_PATIENT"         : "Find a Patient",
@@ -786,6 +787,7 @@
       "REF_GROUP"          : "Ref. Groupe",
       "RESULT"             : "Result",
       "RESULT_ACCOUNT_SCT" : "Result Account section",
+      "RECEIPT"            : "Receipt",
       "SECTOR"             : "Sector",
       "SERVICE"            : "Service",
       "SORTING": {

@@ -1,11 +1,22 @@
 <div class="modal-header">
+  <div style="display : inline-block">
   <ol class="headercrumb">
     <li class="static">{{ ReceiptCtrl.title | translate }}</li>
     <li class="title">
-      {{ "COLUMNS.RECEIPT" | translate }}
+      {{ "TABLE.COLUMNS.RECEIPT" | translate }}
       <span ng-if="ReceiptCtrl.identifier" class="label label-warning">{{ReceiptCtrl.receipt[ReceiptCtrl.identifier]}}</span>
     </li>
   </ol>
+  </div>
+  <div
+      ng-if="ReceiptCtrl.notifyCreated"
+      style="padding-top : 8px"
+      class="pull-right">
+    <spank class="text-success">
+      <span class="glyphicon glyphicon-ok-circle"></span>
+      {{ReceiptCtrl.createdKey | translate}}
+    </span>
+  </div>
 </div>
 
 <!-- TODO Investigate if this should use latest ui-router standards -->

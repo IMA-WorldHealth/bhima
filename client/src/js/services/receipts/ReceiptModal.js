@@ -26,13 +26,21 @@ function ReceiptModal(Modal, Receipts) {
   // expose available receipts
   service.invoice = invoice;
 
-  function invoice(uuid) {
+  /**
+   * Invokes a patient invoice receipt
+   * 
+   * @param {String} uuid             Target invoice UUID
+   * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
+   */
+  function invoice(uuid, notifyCreated) {
 
     /** @todo Discuss if these should be overridable from the controller or if the config should be set here */
     var options = {
-      title       : 'PATIENT_INVOICE.PAGE_TITLE',
-      identifier  : 'reference',
-      renderer    : 'pdf'
+      title         : 'PATIENT_INVOICE.PAGE_TITLE',
+      createdKey    : 'PATIENT_INVOICE.SUCCESS',
+      identifier    : 'reference',
+      renderer      : 'pdf',
+      notifyCreated : notifyCreated
     };
 
     var invoiceRequest = Receipts.invoice(uuid, { render : options.renderer });
