@@ -12,6 +12,7 @@
 
     <div class="row">
 
+      <!-- project information panel -->
       <div class="col-md-8">
         <div class="panel panel-default" style="min-height:30vh;">
           <div class="panel-body">
@@ -34,13 +35,24 @@
                 </div>
               </dd>
 
-              <dt>{{ ::"TREE.FISCAL_YEAR" | translate }}</dt>
+              <dt>
+                {{ ::"TREE.FISCAL_YEAR" | translate }}
+                <a href>
+                  <span class="glyphicon glyphicon-info-sign text-info"></span>
+                </a>
+              </dt>
               <dd>
+
+                <!--
+                  todo: this is very temporary.  Depends on having a fiscal year service to
+                  load information about the fiscal year (such as progress through it)
+                -->
                 <div class="progress">
                   <div class="progress-bar" role="progressbar" style="width: 20%;">
                     30%
                   </div>
                 </div>
+
               </dd>
             </dl>
 
@@ -79,14 +91,17 @@
       </div>
     </div>
 
+    <!--
+      chart graphic
+      @todo - should this be in a separate <ui-view>?
+    -->
     <div class="row">
       <div class="col-md-12">
         <div class="panel panel-default" style="max-height: 50vh; padding:15px;">
-
-          <!-- temp dropwdown -->
           <div class="pull-right" uib-dropdown>
-            <button class="btn btn-default btn-" uib-dropdown-toggle>
-              <span class="glyphicon glyphicon-cog"></span>
+            <button class="btn btn-default" uib-dropdown-toggle>
+              <span class="glyphicon glyphicon-cog" ng-hide="HomeCtrl.selected"></span>
+              {{ HomeCtrl.selected | translate }}
               <span class="caret"></span>
             </button>
             <ul role="menu" uib-dropdown-menu>
@@ -104,7 +119,6 @@
             </ul>
           </div>
 
-          <!-- title -->
           <h4>{{ ::"SYSTEM.EVENTS" | translate }} <small>{{ HomeCtrl.graph.label | translate }}</small></h4>
           <canvas
             height="75vh"

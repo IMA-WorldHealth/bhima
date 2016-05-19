@@ -2,16 +2,23 @@ angular.module('bhima.controllers')
 .controller('HomeController', HomeController);
 
 HomeController.$inject = [
-  'CurrencyService', 'ExchangeRateService', 'SessionService', 'SystemService', '$interval', '$translate', '$scope'
+  'CurrencyService', 'ExchangeRateService', 'SessionService', 'SystemService',
+  '$interval', '$translate', '$scope', 'NotifyService'
 ];
 
 /**
  * Home Controller (system dashboard)
  *
- * This controller powers the system dashboard shown by default when the  user
- * signs in.
+ * This controller powers the system dashboard shown by default when the user
+ * signs in. This is currently not very informative since the system is missing
+ * the infrastructure to power the dashboard completely.
+ *
+ * @todo - remove the fake graph generation code and replace with actual system
+ * activity, such as patient registrations.
+ * @todo - implement fiscal year client-side services to get relevant fiscal year
+ * services and information.
  */
-function HomeController(Currencies, Rates, Session, System, $interval, $translate, $scope) {
+function HomeController(Currencies, Rates, Session, System, $interval, $translate, $scope, Notify) {
   var vm = this;
 
   vm.today = new Date();
@@ -39,7 +46,8 @@ function HomeController(Currencies, Rates, Session, System, $interval, $translat
       vm.currencies.forEach(function (currency) {
         currency.rate = Rates.getCurrentRate(currency.id);
       });
-    });
+    })
+    .catch(Notify.handleError);
 
   // loads system information from the server
   function loadSystemInformation() {
@@ -70,6 +78,7 @@ function HomeController(Currencies, Rates, Session, System, $interval, $translat
 
 
   // FAKE GRAPH STUFF
+  // TODO - remove this stuff
 
   function randomWalk(initial, duration) {
 
