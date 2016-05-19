@@ -53,8 +53,7 @@ describe('(/users) Users and Permissions', function () {
     return agent.post('/users')
       .send(badUser)
       .then(function (res) {
-        helpers.api.errored(res, 400);
-        expect(res.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
+        helpers.api.errored(res, 400, 'ERRORS.BAD_REQUEST');
       })
       .catch(helpers.handler);
   });

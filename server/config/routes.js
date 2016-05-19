@@ -13,7 +13,7 @@
 var winston              = require('winston');
 var auth                 = require('../controllers/auth');
 var data                 = require('../controllers/data');
-var users                = require('../controllers/users');
+const users              = require('../controllers/admin/users');
 var locations            = require('../controllers/locations');
 var tree                 = require('../controllers/tree');
 var patients             = require('../controllers/medical/patients');
@@ -66,6 +66,7 @@ var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
 var creditors            = require('../controllers/finance/creditors.js');
 const system             = require('../controllers/system');
+const languages          = require('../controllers/admin/languages');
 
 const upload = require('../lib/uploader');
 
@@ -74,7 +75,7 @@ exports.configure = function configure(app) {
   winston.debug('Configuring routes');
 
   // exposed to the outside without authentication
-  app.get('/languages', users.getLanguages);
+  app.get('/languages', languages.list);
   app.get('/projects', projects.list);
   app.get('/units', units.list);
 
@@ -392,16 +393,14 @@ exports.configure = function configure(app) {
 
   // users controller
   app.get('/users', users.list);
-  app.get('/users/:id', users.details);
+  app.post('/users', users.create);
+  app.get('/users/:id', users.detail);
+  app.put('/users/:id', users.update);
+  app.delete('/users/:id', users.delete);
   app.get('/users/:id/projects', users.projects.list);
   app.get('/users/:id/permissions', users.permissions.list);
-  app.post('/users', users.create);
-  app.post('/users/:id/permissions', users.permissions.assign);
-  app.put('/users/:id', users.update);
+  app.post('/users/:id/permissions', users.permissions.create);
   app.put('/users/:id/password', users.password);
-  app.delete('/users/:id', users.delete);
-  // @deprecated
-  app.get('/editsession/authenticate/:pin', users.authenticatePin);
 
   // projects controller
   app.get('/projects/:id', projects.details);
