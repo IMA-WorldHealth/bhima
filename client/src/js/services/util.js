@@ -105,4 +105,18 @@ function UtilService($filter) {
 
   // TODO This value is set in angular utilities - it could be configured on the enterprise
   service.minimumDate = new Date('1900-01-01');
+
+  // utility function
+  service.clean = function clean(o) {
+    // clean off the $$hashKey and other angular bits and delete undefined
+    var cleaned = {};
+    for (var k in o) {
+      if (k !== '$$hashKey' && angular.isDefined(o[k]) && o[k] !== '' && o[k] !== null) {
+        cleaned[k] = o[k];
+      }
+    }
+    return cleaned;
+  };
+
+
 }

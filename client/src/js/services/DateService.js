@@ -45,6 +45,7 @@ function DateService() {
   service.current = {};
   service.next = {};
   service.util = {};
+  service.period = {};
 
   /*
   * Very generic function to subtract days, months, years
@@ -74,6 +75,31 @@ function DateService() {
     }
 
     return date;
+  }
+
+  /*
+  *It return main period of times and duration
+  */
+  service.period = function () {
+    var per = {
+      today : {
+        cacheKey : 'today',
+        translateKey : 'FORM.BUTTONS.TODAY'
+      },
+      week : {
+        cacheKey : 'week',
+        translateKey : 'FORM.BUTTONS.THIS_WEEK'
+      },
+      month : {
+        cacheKey : 'month',
+        translateKey : 'FORM.BUTTONS.THIS_MONTH'
+      },
+      year : {
+        cacheKey : 'year',
+        translateKey : 'FORM.BUTTONS.THIS_YEAR'
+      }
+    };
+    return per; 
   }
 
   /* ------------------------------------------------------------------------ */
@@ -232,5 +258,7 @@ function DateService() {
 
     return [year, month, day].join('-');
   };
+
+
 
 }

@@ -1,12 +1,4 @@
 {
-  "POSTING_JOURNAL" : {
-    "TITLE" : "Journal de saisie",
-    "SHOW_HIDE_COLUMNS" : "Afficher/Cacher colonnes",
-    "COLUMNS_CONFIG" : {
-      "TITLE" : "Afficher ou cacher les colonnes",
-      "HELP" : "Caucher pour afficher la colonne sur la grille du journal"
-    }
-  },
 
   "ACCOUNT": {
     "ACCOUNT_CHART"  : "Plan Comptable",
@@ -26,6 +18,7 @@
     "TITLE_ACCOUNT"  : "Comptes Titre"
   },
   "AUTH": {
+    "CANNOT_RETURN_TO_LOGIN"     : "Vous êtes actuellement connecté. Pour revenir à la page de connexion, Veuillez vous déconnecter à l'aide de la page des paramètres.",
     "ERR_LOGIN"                  : "Erreur: Nom d'utilisateur et mot de passe ne sont pas correct.",
     "ERR_MISSING_DATA"           : "Erreur: Nom d'utilisateur et mot de passe sont nécessaires.",
     "ERR_NO_PERMISSIONS"         : "Cet utilisateur ne possède pas les autorisations. S'il vous plaît contactez l'administrateur du système.",
@@ -34,7 +27,8 @@
     "LOGIN_PLACEHOLDER_USERNAME" : "Entrez votre nom d'utilisateur",
     "TOO_MANY_TRYS"              : "Avez-vous oublié votre login ou votre mot de passe? S'il vous plaît demander à l'administrateur du système pour le réinitialiser.",
     "WELCOME"                    : "Bienvenue à bhima!",
-    "GOODBYE"                    : "Merci d'utiliser bhima!  Reviennez bientôt!"
+    "GOODBYE"                    : "Merci d'utiliser bhima!  Reviennez bientôt!",
+    "UNAUTHENTICATED"            : "Vous avez été déconnecté. Veuillez vous reconnecté avec d'utiliser l'application."
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -198,6 +192,7 @@
       "BACK"                  : "Précédent",
       "CANCEL"                : "Annuler",
       "CLEAR"                 : "Effacer",
+      "CLOSE"                 : "Fermer",
       "CONFIGURE"             : "Configurer",
       "CONFIRM"               : "Confirmer",
       "CONNECTION"            : "Connexion",
@@ -221,6 +216,10 @@
       "SELECT_INVOICES"       : "Sélectionner la(les) Facture(s)",
       "SUBMIT"                : "Soumettre",
       "SUBMIT_CHANGES"        : "Soumettre des changements",
+      "THIS_MONTH"            : "Ce mois",
+      "THIS_WEEK"             : "Cette semaine",
+      "THIS_YEAR"             : "Cette année",
+      "TODAY"                 : "Aujourd'hui",
       "UPDATE_PASSWORD"       : "Modifier mot de passe"
     },
     "DIALOGS": {
@@ -250,13 +249,16 @@
       "LOADING"              : "Chargement en cours",
       "MANY_TRYS"            : "Plusieurs tentatives",
       "NOT_CONFIGURED"       : "Les comptes ne sont pas configuree.",
+      "NO_FILTERS_APPLIED"   : "Aucun filtrage des données",
       "NO_INVOICES_SELECTED" : "Aucune facture sélectionnée",
       "NO_RECIPIENT"         : "Une facture doit appartenir à une personne avant d'assigner les éléments.",
       "NO_RECORDS_DATABASE"  : "Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
       "OPERATION_SUCCESS"    : "Opération effectuée avec succès",
+      "PATIENTS"             : "Patients",
       "PATIENT_FOUND"        : "Patient Trouvé",
       "PATIENT_NOT_FOUND"    : "Patient Non Trouvé",
       "SAVE_SUCCESS"         : "Enregistrement avec succès",
+      "SEARCH"               : "Recherche",
       "UNAUTHORIZED"         : "Non autorisée",
       "UPDATE_SUCCESS"       : "Mise a jour avec succès"
     },
@@ -271,6 +273,7 @@
       "ADDRESS2"               : "Complément d'Adresse",
       "ADDR_1"                 : "Adresse 1",
       "ADDR_2"                 : "Adresse 2",
+      "ALL_GENDER"             : "Tous les genres",
       "AMOUNT"                 : "Montant",
       "APPLY_BILLING_SERVICES" : "Appliquer facturation",
       "APPLY_DISCOUNTS"        : "Appliquer réduction",
@@ -303,6 +306,7 @@
       "CURRENCY"               : "Monnaie",
       "CURRENT_LOCATION"       : "Localisation actuelle",
       "DATE"                   : "Date",
+      "DATE_REGISTRATION"      : "Date d'enregistrement",
       "DEBITOR_GROUP"          : "Groupe Débiteur",
       "DEBTOR_GROUP"           : "Formulaire d'enregistrement de groupe débiteur",
       "DESCRIPTION"            : "Description",
@@ -584,6 +588,14 @@
     "TITLE"         : "Utilisateur et droits",
     "UPDATING_USER" : "Mise a jour utilisateur"
   },
+  "POSTING_JOURNAL" : {
+    "TITLE" : "Journal de saisie",
+    "SHOW_HIDE_COLUMNS" : "Afficher/Cacher colonnes",
+    "COLUMNS_CONFIG" : {
+      "TITLE" : "Afficher ou cacher les colonnes",
+      "HELP" : "Caucher pour afficher la colonne sur la grille du journal"
+    }
+  },
   "PRICE_LIST": {
     "ADD_ITEMS"        : "Ajouter un Item",
     "ADD_PRICE_LIST"   : "Ajouter une List",
@@ -714,6 +726,7 @@
       "DATE"               : "Date",
       "DATE_REGISTERED"    : "Date d'enregistrement",
       "DESCRIPTION"        : "Description",
+      "DOB"                : "Date de naissance",
       "EDIT"               : "Editer",
       "EMAIL"              : "Email",
       "EMPTY"              : "Il n'y a pas d'enregistrements à afficher.",
@@ -726,6 +739,7 @@
       "FUNCTION"           : "Fonction",
       "GENDER"             : "Genre",
       "GRADE"              : "Grade",
+      "HOSPITAL_FILE_NR"   : "Numero Fiche",
       "ID"                 : "ID",
       "INVENTORY"          : "Inventaire",
       "IS_ASSET"           : "Actif ?",
