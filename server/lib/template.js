@@ -11,6 +11,7 @@
  * 
  * @returns {Function} handlebars render method, accepting a template and a context
 */
+'use strict';
 const exphbs = require('express-handlebars');
 const numeral = require('numeral');
 

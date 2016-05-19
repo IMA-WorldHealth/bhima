@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('ReceiptModalController', ReceiptModalController);
 
-ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce', 'NotifyService', 'receipt', 'options'];
+ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce', 'ReceiptService', 'receipt', 'options'];
 
 /**
  * Receipt Modal Controller
@@ -10,11 +10,14 @@ ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce', 'Notif
  *                            by the service wrapping the receipt modal). The promise
  *                            is stored in an object to ensure the modal is evaluated
  *                            before the HTTP request (promise) is resolved.
- * @params {String} template  Path to the template or resource to load
- * @params {String} render    Render target used to generate report
+ * @param {String} template  Path to the template or resource to load
+ * @param {String} render    Render target used to generate report
  */
-function ReceiptModalController($modalInstance, $window, $sce, Notify, receipt, options) {
+function ReceiptModalController($modalInstance, $window, $sce, Receipts, receipt, options) {
   var vm = this;
+ 
+  // expose available receipt renderers to view
+  vm.renderers = Receipts.renderers;
   
   vm.print = print;
   vm.close = close;
@@ -25,7 +28,7 @@ function ReceiptModalController($modalInstance, $window, $sce, Notify, receipt, 
   receipt.promise
     .then(function (result) {
       // special case for pdf rendering
-      if (options.renderer === 'pdf') { 
+      if (options.renderer === Receipts.renderers.PDF) { 
         // store downloaded base64 PDF file in a browser blob - this will be accessible through 'blob://...'
         var file = new Blob([result], {type : 'application/pdf'});
         
@@ -42,9 +45,11 @@ function ReceiptModalController($modalInstance, $window, $sce, Notify, receipt, 
     .catch(Notify.handleError);
   
   function print() {
+    
     /**@todo This printing could be exposed by a directive/ component */
-    // special case for embedded content
-    if (options.renderer === 'pdf') {
+    if (options.renderer === Receipts.renderers.PDF) {
+      
+      // iframes in the DOM are all stored under the $window.frames object, this accesses the iframe with id 'pdf'
       $window.frames.pdf.contentWindow.print();
       return;
     }

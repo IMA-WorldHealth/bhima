@@ -33,12 +33,12 @@ supportedRender.json = require('../../../lib/renderers/json');
 supportedRender.html = require('../../../lib/renderers/html');
 supportedRender.pdf = require('../../../lib/renderers/pdf');
 
-const defaultRender = 'json';
+var defaultRender = 'json';
 
-const FLAG_TRUE = 1;
-const SUCCESS_STATUS = 200;
+var FLAG_TRUE = 1;
+var SUCCESS_STATUS = 200;
 
-const template = path.normalize('./server/controllers/finance/reports/invoice.receipt.handlebars');
+var template = path.normalize('./server/controllers/finance/reports/invoice.receipt.handlebars');
 
 exports.build = build;
 

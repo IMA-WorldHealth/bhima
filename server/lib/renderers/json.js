@@ -15,10 +15,10 @@ exports.render = renderJSON;
 
 /**
  * JSON Render Method
- * @params {Object} data      Contains data in any format that will be used to
+ * @param {Object} data      Contains data in any format that will be used to
  *                            drive the final report - this will be exposed to
  *                            the view by the renderer.
- * @params {Object} options   (Optional) parameters that can be passed to switch
+ * @param {Object} options   (Optional) parameters that can be passed to switch
  *                            render features on/off.
  * @returns {Object}          JSON Object representing a report that can be sent
  *                            to the client.

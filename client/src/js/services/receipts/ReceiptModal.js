@@ -39,7 +39,7 @@ function ReceiptModal(Modal, Receipts) {
       title         : 'PATIENT_INVOICE.PAGE_TITLE',
       createdKey    : 'PATIENT_INVOICE.SUCCESS',
       identifier    : 'reference',
-      renderer      : 'pdf',
+      renderer      : Receipts.renderers.PDF,
       notifyCreated : notifyCreated
     };
 

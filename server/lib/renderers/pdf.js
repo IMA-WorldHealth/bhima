@@ -7,7 +7,9 @@
  * @requires stream-to-promise
  * @requires path
  * @requires q
+ * @requires process
  */
+'use strict';
 const wkhtmltopdf     = require('wkhtmltopdf');
 const q               = require('q');
 const streamToPromise = require('stream-to-promise');

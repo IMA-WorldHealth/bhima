@@ -104,7 +104,8 @@ describe('Patient Invoice', function () {
 
     // get a new page
     var page = new PatientInvoicePage();
-
+    page.btns.clear.click();
+    
     // set up a valid invoice
     page.prepare();
 

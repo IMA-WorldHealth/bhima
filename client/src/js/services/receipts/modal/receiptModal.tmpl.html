@@ -28,7 +28,7 @@
 <div ng-switch on="ReceiptCtrl.renderer">
 
   <!-- PDF -->
-  <div ng-switch-when="pdf">
+  <div ng-switch-when="ReceiptCtrl.renderers.PDF">
 
     <iframe
       id="pdf"
@@ -41,7 +41,7 @@
   </div>
 
   <!-- HTML -->
-  <div ng-switch-when="html">
+  <div ng-switch-when="ReceiptCtrl.renderers.HTML">
 
     <div class="bh-modal-content">
       <div ng-bind-html="ReceiptCtrl.receipt"></div>
