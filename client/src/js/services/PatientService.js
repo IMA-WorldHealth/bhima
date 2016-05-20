@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('PatientService', PatientService);
 
-PatientService.$inject = [ '$http', 'util', 'SessionService' ];
+PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal'];
 
 /**
  * @module PatientService
@@ -21,7 +21,7 @@ PatientService.$inject = [ '$http', 'util', 'SessionService' ];
  * Patients.create(medicalDetails, financeDetails)...
  *
  */
-function PatientService($http, util, Session) {
+function PatientService($http, util, Session, $uibModal) {
   var service = this;
   var baseUrl = '/patients/';
 
@@ -34,13 +34,15 @@ function PatientService($http, util, Session) {
 
   service.billingServices = billingServices;
   service.subsidies = subsidies;
+  service.openSearchModal = openSearchModal;
 
   /** uses the "search" endpoint to pass query strings to the database */
   service.search = search;
-
-  /**
-   * This method returns information on a patient given the patients UUID. This
-   * route provides almost all of the patients attributes.
+  service.patientFilters = patientFilters;
+  
+  /** 
+   * This method returns information on a patient given the patients UUID. This 
+   * route provides almost all of the patients attributes. 
    *
    * @param {String|Null} uuid   The patient's UUID  (could be null)
    * @return {Object}       Promise object that will return patient details
@@ -134,6 +136,26 @@ function PatientService($http, util, Session) {
    */
   function search(options) {
     var target = baseUrl.concat('search');
+    /**
+      * Convertion of dateRegistrationFrom and dateRegistrationTo because 
+      * In the database the column registration_date and dob (date of birth) is type DATETIME
+    */
+
+    if(options.dateRegistrationFrom){
+      options.dateRegistrationFrom = util.convertToMysqlDate(options.dateRegistrationFrom);  
+    }  
+    
+    if(options.dateRegistrationTo){
+      options.dateRegistrationTo = util.convertToMysqlDate(options.dateRegistrationTo);  
+    }
+
+    if(options.dateBirthFrom){
+      options.dateBirthFrom = util.convertToMysqlDate(options.dateBirthFrom);  
+    }
+
+    if(options.dateBirthTo){
+      options.dateBirthTo = util.convertToMysqlDate(options.dateBirthTo);
+    }
 
     return $http.get(target, { params : options })
       .then(util.unwrapHttpResponse);
@@ -194,6 +216,83 @@ function PatientService($http, util, Session) {
     return root.concat(patientUuid, '/', path);
   }
 
+
+  /*
+  * This function prepares the headers patient properties which were filtered,
+  * Special treatment occurs when processing data related to the date
+  */
+  function patientFilters(patient){
+    var propertyPatientFilter = [];
+
+    if(patient.dateRegistrationFrom && patient.dateRegistrationTo){
+      var dataConfiguration = {
+        title : 'FORM.LABELS.DATE_REGISTRATION', 
+        reference1 : patient.dateRegistrationFrom, 
+        reference2 : patient.dateRegistrationTo         
+      };
+      propertyPatientFilter.push(dataConfiguration);      
+    }
+
+    if(patient.name){
+      var dataConfiguration = {
+        title : 'FORM.LABELS.NAME', 
+        reference1 : patient.name,        
+      };
+      propertyPatientFilter.push(dataConfiguration);
+    }
+
+    if(patient.reference){
+      var dataConfiguration = {
+        title : 'FORM.LABELS.REFERENCE', 
+        reference1 : patient.reference,        
+      };
+      propertyPatientFilter.push(dataConfiguration);
+    }
+
+    if(patient.fields){
+      if(patient.fields.hospital_no){
+        var dataConfiguration = {
+          title : 'FORM.LABELS.HOSPITAL_FILE_NR', 
+          reference1 : patient.fields.hospital_no,        
+        };
+        propertyPatientFilter.push(dataConfiguration);
+      }      
+    }
+
+    if(patient.sex && patient.sex !== 'all'){
+      var sexPatient;
+      if(patient.sex === 'M') {
+        sexPatient = 'FORM.LABELS.MALE';
+      } else {
+        sexPatient = 'FORM.LABELS.FEMALE';
+      }
+      
+      var dataConfiguration = { 
+        title : 'FORM.LABELS.GENDER', 
+        reference1 : patient.sex,        
+      };
+      propertyPatientFilter.push(dataConfiguration);
+    }
+
+    if(patient.dateBirthFrom && patient.dateBirthTo){
+      var dataConfiguration = {
+        title : 'TABLE.COLUMNS.DOB', 
+        reference1 : patient.dateBirthFrom, 
+        reference2 : patient.dateBirthTo         
+      };
+      propertyPatientFilter.push(dataConfiguration);      
+    }
+    return propertyPatientFilter;
+  }
+
+  function openSearchModal(){
+    return $uibModal.open({
+      templateUrl : 'partials/patients/registry/modal.html',
+      size : 'md',
+      animation : true,
+      controller : 'PatientRegistryModalController as ModalCtrl'
+    }).result;
+  }
 
   return service;
 }

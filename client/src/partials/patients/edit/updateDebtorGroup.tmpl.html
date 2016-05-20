@@ -9,10 +9,10 @@
   </p>
   <form name="groupForm">
     <div class="form-group has-feedback">
-    
+
       <label for="debtor-group" class="control-label">{{ "FORM.LABELS.GROUPS_DEBTOR_TITLE" | translate }}</label>
-      <select 
-        class="form-control" 
+      <select
+        class="form-control"
         name="debtorGroup"
         ng-options="group.uuid as group.name for group in UpdateDebtorGroupCtrl.debtorGroups | orderBy :'name'"
         ng-model="UpdateDebtorGroupCtrl.debtor_group_uuid">
@@ -23,10 +23,11 @@
 </div>
 
 <div class="modal-footer">
-  <button 
+  <button
     class="btn btn-default"
     ng-click="UpdateDebtorGroupCtrl.closeModal()">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
-  <button 
+  <button
+    data-confirm-group
     class="btn btn-default"
     ng-click="UpdateDebtorGroupCtrl.confirmGroup()">{{ "FORM.BUTTONS.CONFIRM" | translate }}</button>
 </div>

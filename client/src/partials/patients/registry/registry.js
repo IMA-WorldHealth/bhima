@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  '$translate', 'PatientService',
+  '$translate', 'PatientService', '$uibModal'
 ];
 
 /**
@@ -12,22 +12,26 @@ PatientRegistryController.$inject = [
  * of Patient Registry.
  *
  */
-function PatientRegistryController($translate, Patients) {
+function PatientRegistryController($translate, Patients, $uibModal) {
   var vm = this;
   // options for the UI grid
-
+  
+  vm.search = search;
+  vm.momentAge = momentAge;
+    
   /** TODO MANAGE COLUMN : LAST_TRANSACTION */
   vm.uiGridOptions = {
     appScopeProvider : vm, // ensure that the controller's `this` variable is bound to appScope
     enableColumnMenus : false,
     columnDefs : [
-      { field : 'patientRef', name : $translate.instant('TABLE.COLUMNS.PATIENT_ID') },
+      { field : 'reference', name : $translate.instant('TABLE.COLUMNS.REFERENCE') },
       { field : 'patientName', name : $translate.instant('TABLE.COLUMNS.NAME') },
       { field : 'patientAge', name : $translate.instant('TABLE.COLUMNS.AGE') },
       { field : 'sex', name : $translate.instant('TABLE.COLUMNS.GENDER') },
+      { field : 'hospital_no', name : $translate.instant('TABLE.COLUMNS.HOSPITAL_FILE_NR') },
       { field : 'registration_date', cellFilter:'date', name : $translate.instant('TABLE.COLUMNS.DATE_REGISTERED') },
       { field : 'last_visit', cellFilter:'date', name : $translate.instant('TABLE.COLUMNS.LAST_VISIT') },
-      { field : '', name : $translate.instant('TABLE.COLUMNS.LAST_TRANSACTION') }
+      { field : 'dob', cellFilter:'date', name : $translate.instant('TABLE.COLUMNS.DOB') }  
     ],
     enableSorting : true
   };
@@ -35,11 +39,9 @@ function PatientRegistryController($translate, Patients) {
   // load Patient Registry Grid
   function loadGrid() {
     Patients.read().then(function (patients) {
-
       patients.forEach(function (patient) {
-        var patientAge = moment(patient.dob).fromNow();
-        patient.patientAge = patientAge;
-      });
+        patient.patientAge = momentAge(patient.dob); 
+      });      
       vm.uiGridOptions.data = patients;
     });
   }
@@ -47,6 +49,23 @@ function PatientRegistryController($translate, Patients) {
   // called on modules start
   function startup() {
     loadGrid();
+  }
+
+  // Search and filter data in Patiens Registry
+  function search() {
+    Patients.openSearchModal()
+    .then(function (data) {
+      var response = data.response;
+      vm.filters = data.filters
+      response.forEach(function (patient) {
+        patient.patientAge = momentAge(patient.dob); 
+      });      
+      vm.uiGridOptions.data = response;
+    });
+  }
+
+  function momentAge(patientAge){
+    return moment(patientAge).fromNow();
   }
 
   // fire up the module

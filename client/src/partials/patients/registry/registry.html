@@ -10,11 +10,17 @@
 <div class="flex-util">
   <div class="toolbar">
     <div class="toolbar-item">
-      <button>
+      <button ng-click="PatientRegistryCtrl.search()" data-method="search">
         <span class="glyphicon glyphicon-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
       </button>  
     </div>
   </div>
+</div>
+
+<div class="flex-util">
+  <bh-filters-applied 
+    filters="PatientRegistryCtrl.filters">
+  </bh-filters-applied>
 </div>
 
 <div class="flex-content">

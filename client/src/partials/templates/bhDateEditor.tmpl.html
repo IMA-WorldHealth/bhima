@@ -31,11 +31,11 @@
         is-open="$ctrl.editMode"
         datepicker-options="$ctrl.options"
         show-button-bar="false"
-        datepicker-append-to-body="true"
         data-date-editor-input
         ng-readonly="!$ctrl.editMode"
         ng-disabled="$ctrl.disabled"
-        required>
+        ng-required="required"
+        >
       <span class="input-group-btn">
         <button
           type="button"

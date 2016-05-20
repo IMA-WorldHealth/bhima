@@ -198,10 +198,10 @@ function handleFetchPatient(patientUuid) {
 function list(req, res, next) {
   var listPatientsQuery;
 
-  listPatientsQuery = `
-    SELECT BUID(p.uuid) AS uuid, p.reference, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName,
-      p.first_name, p.last_name, p.middle_name, CONCAT(pr.abbr, p.reference) AS patientRef, p.dob, p.sex,
-      p.registration_date, MAX(pv.date) AS last_visit
+  listPatientsQuery =
+    `SELECT BUID(p.uuid) AS uuid, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName,
+      p.first_name, p.last_name, p.middle_name, CONCAT(pr.abbr, p.reference) AS reference, p.dob, p.sex,
+      p.registration_date, p.hospital_no, MAX(pv.date) AS last_visit
     FROM patient AS p
     JOIN project AS pr ON p.project_id = pr.id
     LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
@@ -359,18 +359,25 @@ function logVisit(patientData, userId) {
 function search(req, res, next) {
 
   var sql,
-      data       = [],
-      qReference = req.query.reference,
-      qName      = req.query.name,
-      qFields    = req.query.fields,
-      qDetail    = req.query.detail || 0,
-      qLimit     = req.query.limit;
+    data       = [],
+    qReference = req.query.reference,
+    qName      = req.query.name,
+    qSex       = req.query.sex,
+    qFields    = req.query.fields,
+    qDetail    = req.query.detail || 0,
+    qLimit     = req.query.limit,
+    qDateReg = {
+      dateFrom    : req.query.dateRegistrationFrom,
+      dateTo      : req.query.dateRegistrationTo
+    },        
+    qDob = {
+      dateFrom    : req.query.dateBirthFrom,
+      dateTo      : req.query.dateBirthTo
+    };
 
   try {
-    var missingRequiredParameters = (!qReference && !qName && !qFields);
-    if (missingRequiredParameters) {
-      throw new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`);
-    }
+    var missingRequiredParameters = (!qReference && !qName && !qFields && !qSex && !qDateReg.dateFrom && !qDateReg.dateTo && !qDob.dateFrom && !qDob.dateTo);
+    if (missingRequiredParameters) { throw new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`); }
 
     qFields = qFields ? JSON.parse(qFields) : null;
     qDetail = Number(qDetail);
@@ -382,7 +389,7 @@ function search(req, res, next) {
   }
 
   var columns =
-      'BUID(q.uuid) AS uuid, q.project_id, q.reference, BUID(q.debtor_uuid) as debtor_uuid, ' +
+      'BUID(q.uuid) AS uuid, q.project_id, q.reference, q.patientName, BUID(q.debtor_uuid) as debtor_uuid, ' +
       'q.first_name, q.last_name, q.middle_name, q.sex, q.dob, q.registration_date ';
 
   // customize returned columns according detailled results or not
@@ -392,61 +399,114 @@ function search(req, res, next) {
       q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status,
       q.phone, q.email, q.address_1, q.address_2, q.renewal, BUID(q.origin_location_id) as origin_location_id,
       BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.hospital_no,
-      q.text, q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked `;
+      q.text, q.account_id, BUID(q.price_list_uuid) as price_list_uuid, q.is_convention, q.locked, q.last_visit `;
   }
 
   // build the main part of the sql query
   sql =
     `SELECT ${columns} FROM (
-      SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.debtor_uuid AS debtor_uuid,
+      SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName, p.debtor_uuid AS debtor_uuid,
         p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name,
         p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer,
         p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2,
         p.renewal, p.origin_location_id, p.current_location_id, p.registration_date,
         p.title, p.notes, p.hospital_no, d.text, proj.abbr,
-        dg.account_id, dg.price_list_uuid as price_list_uuid, dg.is_convention, dg.locked
-      FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg
-        ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
+        dg.account_id, dg.price_list_uuid as price_list_uuid, dg.is_convention, dg.locked, MAX(pv.date) AS last_visit
+        FROM patient AS p 
+        JOIN project AS proj ON p.project_id = proj.id
+        JOIN debtor AS d ON p.debtor_uuid = d.uuid
+        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+        LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid  
+        GROUP BY p.uuid
       ) AS q `;
 
   // complete the sql query according parameters of search
   // such as by: name, reference or by a set of criteria
-  if (qName && !qReference) {
-    // Final sql query for finding patient by names : first_name, middle_name or last_name
-    sql +=
-        `WHERE
-        LEFT(LOWER(CONCAT(q.last_name, \' \', q.middle_name, \' \', q.first_name )), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.last_name, \' \', q.first_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.first_name, \' \', q.middle_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.first_name, \' \', q.last_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.middle_name, \' \', q.last_name, \' \', q.first_name)), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.middle_name, \' \', q.first_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? `;
+  if (qName || qReference || qFields || qSex || qDateReg || qDob) {
+    var conjonction = 'WHERE '; 
 
-    data = [qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName];
+    if (qName && !qReference) {
+      // Final sql query for finding patient by names : first_name, middle_name or last_name
+      sql +=
+          `WHERE
+          (LEFT(LOWER(CONCAT(q.last_name, \' \', q.middle_name, \' \', q.first_name )), CHAR_LENGTH(?)) = ? OR
+          LEFT(LOWER(CONCAT(q.last_name, \' \', q.first_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR
+          LEFT(LOWER(CONCAT(q.first_name, \' \', q.middle_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? OR
+          LEFT(LOWER(CONCAT(q.first_name, \' \', q.last_name, \' \', q.middle_name)), CHAR_LENGTH(?)) = ? OR
+          LEFT(LOWER(CONCAT(q.middle_name, \' \', q.last_name, \' \', q.first_name)), CHAR_LENGTH(?)) = ? OR
+          LEFT(LOWER(CONCAT(q.middle_name, \' \', q.first_name, \' \', q.last_name)), CHAR_LENGTH(?)) = ? )`;
 
-  } else if (qFields && !qReference) {
-    // Final sql query for finding patients by a set of criteria
-    // defined in an object. Ex. : { sex: "M", last_name: "Doe" }
-    data = [];
+      data = [qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName];
+    }
 
-    // building the where clause criteria
-    var criteria = Object.keys(qFields).map(function (item) {
-      data.push(qFields[item]);
-      return 'q.' + item + ' = ?';
-    }).join(' AND ');
+    if(qSex && !qReference){
+      
+      if(data.length){
+        conjonction = ' AND ';
+      } 
 
-    sql += 'WHERE ' + criteria;
+      if(qSex !== "all"){
+        sql += conjonction + 'q.sex = ?';
+        data.push(qSex);
+      }
+    }
 
-  } else if (qReference) {
-    // Final sql query for finding patient identified by a reference. Ex. HBB123
-    sql += 'WHERE q.reference = ? ';
-    data = [qReference];
+    if (qFields && !qReference) {
+      
+      // Final sql query for finding patients by a set of criteria
+      // defined in an object. Ex. : { sex: "M", last_name: "Doe" }
 
-  } else {
+      // building the where clause criteria
+      if(data.length){
+        conjonction = ' AND ';
+      }  
+
+      var criteria = Object.keys(qFields).map(function (item) {
+        data.push(qFields[item]);
+        return 'q.' + item + ' = ?';          
+      }).join(' AND ');
+      
+      sql += conjonction + criteria;
+    } 
+
+    if (qReference) {
+      // Final sql query for finding patient identified by a reference. Ex. HBB123
+      sql += 'WHERE q.reference = ? ';
+      data = [qReference];
+
+    }
+
+    if(qDateReg) {
+      // Research from patient registration dates
+      if(qDateReg.dateFrom && qDateReg.dateTo){
+        if(data.length){
+          conjonction = ' AND ';
+        } 
+
+        sql += conjonction + ' (DATE(q.registration_date) >= ? AND DATE(q.registration_date) <= ? )';
+        data.push(qDateReg.dateFrom);
+        data.push(qDateReg.dateTo);        
+      }
+    } 
+
+    if(qDob) {
+      // Research from patient birth dates
+      if(qDob.dateFrom && qDob.dateTo){
+        if(data.length){
+          conjonction = ' AND ';
+        } 
+
+        sql += conjonction + ' (DATE(q.dob) >= ? AND DATE(q.dob) <= ? )';
+        data.push(qDob.dateFrom);
+        data.push(qDob.dateTo);
+      }
+    }
+
+  }  else {
     // throw an error in other cases
     return next(
     new BadRequest(`The request requires at least one parameter.`, `ERRORS.PARAMETERS_REQUIRED`)
-  );
+    );
   }
 
   if (qLimit && typeof(qLimit) === 'number') {
