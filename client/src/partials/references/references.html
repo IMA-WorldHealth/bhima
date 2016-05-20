@@ -99,7 +99,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "REFERENCE.NEW_REFERENCE" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="ReferenceCtrl.submit(CreateForm)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="ReferenceCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.ref.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE" | translate }}</label>
@@ -178,7 +178,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ "REFERENCE.UPD_REFERENCE" | translate }} </b> </div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="ReferenceCtrl.submit(UpdateForm)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="ReferenceCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.ref.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE" | translate }}</label>
