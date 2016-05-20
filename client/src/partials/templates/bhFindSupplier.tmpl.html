@@ -4,6 +4,9 @@
     'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
     'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
     }"
+  autocomplete="off" 
+  autocapitalize="off" 
+  autocorrect="off" 
   novalidate>
 
   <!-- inline input zone -->
@@ -25,9 +28,6 @@
       typeahead-loading="$ctrl.loadingSuppliers"
       typeahead-template-url="/partials/templates/supplierListe.tmpl.html"
       typeahead-on-select="$ctrl.selectSupplier($item)"
-      autocomplete="off"
-      autocorrect="off"
-      autocapitalize="off"
       ng-required="$ctrl.required">
   </div>
   <!-- /inline input zone -->

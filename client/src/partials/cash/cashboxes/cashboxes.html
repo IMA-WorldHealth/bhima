@@ -51,7 +51,7 @@
           <div class="panel-heading">
             {{ "CASHBOX.ADD_CASHBOX" | translate }}
           </div>
-          <form class="panel-body" name="CreateForm" ng-submit="CashCtrl.submit(CreateForm.$invalid)" novalidate>
+          <form class="panel-body" name="CreateForm" ng-submit="CashCtrl.submit(CreateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
             <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
               <label class="control-label">
@@ -112,7 +112,7 @@
         </div>
 
         <div ng-switch-when="update">
-          <form class="panel panel-primary" name="UpdateForm" ng-submit="CashCtrl.submit(UpdateForm.$invalid)" novalidate>
+          <form class="panel panel-primary" name="UpdateForm" ng-submit="CashCtrl.submit(UpdateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
             <div class="panel-heading">
               {{ "FORM.LABELS.EDIT" | translate }}
             </div>

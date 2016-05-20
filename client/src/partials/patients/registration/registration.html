@@ -22,7 +22,7 @@
 
     <div class="row">
 
-      <form name="details" class="form-horizontal" bh-submit="PatientRegCtrl.registerPatient(details)" novalidate>
+      <form name="details" class="form-horizontal" bh-submit="PatientRegCtrl.registerPatient(details)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
         <!-- Patient Details Form -->
         <div class="col-md-7">
@@ -220,7 +220,7 @@
         <div id="registration-type" class="panel panel-default">
           <div class="panel-heading">{{ "FORM.LABELS.OPTIONAL_INFO" | translate }}</div>
           <div class="panel-body">
-            <form class="form-horizontal" novalidate>
+            <form class="form-horizontal" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group">
                 <label for="title" class="control-label">{{ "FORM.LABELS.PHONE_NO" | translate }}</label>

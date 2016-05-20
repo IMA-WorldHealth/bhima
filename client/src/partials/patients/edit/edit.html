@@ -29,7 +29,7 @@
             {{ "PATIENT_EDIT.FINANCIAL_INFO" | translate }}
           </div>
           <div class="panel-body">
-            <form name="finance">
+            <form name="finance" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <!-- Patient Group -->
               <div class="form-group">
@@ -83,7 +83,7 @@
 
       <div class="col-md-7 col-md-pull-5">
 
-        <div ng-form="patientDetails">
+        <div ng-form="patientDetails" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
           <div class="panel panel-default">
             <div class="panel-heading">
               {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
