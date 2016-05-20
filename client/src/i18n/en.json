@@ -28,7 +28,6 @@
     "WELCOME"                    : "Welcome to bhima!",
     "GOODBYE"                    : "Thank you for using bhima.  Come back soon!",
     "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application."
-
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -176,8 +175,7 @@
   "ERRORS": {
     "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network.",
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
-    "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue.",
-    "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network."
+    "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Adding an exchange Rate",
@@ -546,7 +544,8 @@
     "PAGE_TITLE"     : "Edit Patient Details",
     "RECORD_SAME"    : "No changes have been made to the form. Update the patients details and then press submit.",
     "REGISTERED"     : "Registered",
-    "WARN"           : "No patient groups have been found. Patient groups must be registered with the system before they can be assigned to patients"
+    "WARN"           : "No patient groups have been found. Patient groups must be registered with the system before they can be assigned to patients",
+    "EDIT_DETAILS"   : "Edit Details"
   },
   "PATIENT_GROUP": {
     "ADD_PATIENT_GROUP"  : "New Patient Group",
@@ -577,7 +576,8 @@
     "VIEW_PATIENT_RECORDS" : "View Patient Records"
   },
   "PATIENT_RECORDS": {
-    "TITLE" : "Patients"
+    "TITLE" : "Patients",
+    "UPLOAD_PICTURE" : "Upload Patient Photo"
   },
   "PATIENT_REGISTRY" : {
     "DAY"                   : "day",

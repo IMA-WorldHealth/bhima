@@ -5,18 +5,6 @@
       <li class="static">{{ "PATIENT_RECORDS.TITLE" | translate }}</li>
       <li class="title">{{ PatientRecordCtrl.patient.name }}</li>
     </ol>
-
-    <div class="toolbar">
-      <div class="toolbar-item">
-        <a
-          data-method="edit"
-          ng-href="/#/patients/edit/{{::PatientRecordCtrl.patient.uuid}}"
-          class="btn btn-default btn-sm">
-          <span class="glyphicon glyphicon-edit"></span>
-          Edit Details
-        </a>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -28,43 +16,33 @@
       <div class="col-md-12">
 
         <div class="panel panel-primary">
-          <div class="panel-heading">
+          <div class="panel-heading clearfix">
             <span class="glyphicon glyphicon-list-alt"></span>
-            Patient Details
+            {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
           </div>
 
           <div class="panel-body">
-
             <div class="col-sm-4">
-
-              <div class="form-horizontal">
+              <div>
 
                 <div class="form-group">
-                  <label class="col-sm-4 control-label">Name</label>
-                  <div class="col-sm-8">
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.name}}</p>
-                  </div>
+                  <label class="control-label">{{"FORM.LABELS.NAME" | translate}}</label>
+                  <p class="form-control-static">{{::PatientRecordCtrl.patient.name}}</p>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-4 control-label">Patient ID</label>
-                  <div class="col-sm-8">
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.abbr}} {{::PatientRecordCtrl.patient.reference}}</p>
-                  </div>
+                  <label class="control-label">{{"FORM.LABELS.PATIENT_ID" | translate}}</label>
+                  <p class="form-control-static">{{::PatientRecordCtrl.patient.abbr}} {{::PatientRecordCtrl.patient.reference}}</p>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-4 control-label">Hospital Number</label>
-                  <div class="col-sm-8">
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.hospital_no}}</p>
-                  </div>
+                  <label class="control-label">{{"FORM.LABELS.HOSPITAL_FILE_NR" | translate}}</label>
+                  <p class="form-control-static">{{::PatientRecordCtrl.patient.hospital_no}}</p>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-4 control-label">Date Registered</label>
-                  <div class="col-sm-8">
-                    <p class="form-control-static"><span am-time-ago="PatientRecordCtrl.patient.registration_date"></span></p>
-                  </div>
+                  <label class="control-label">{{ "TABLE.COLUMNS.DATE_REGISTERED" | translate }}</label>
+                  <p class="form-control-static"><span am-time-ago="PatientRecordCtrl.patient.registration_date"></span></p>
                 </div>
 
               </div>
@@ -73,17 +51,13 @@
             <div class="col-sm-4">
               <div class="form-horizontal">
                 <div class="form-group">
-                  <label class="col-sm-4 control-label">Age</label>
-                  <div class="col-sm-8">
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.age}}</p>
-                  </div>
+                  <label class="control-label">{{ "TABLE.COLUMNS.AGE" | translate }}</label>
+                  <p class="form-control-static">{{::PatientRecordCtrl.patient.age}}</p>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-4 control-label">Gender</label>
-                  <div class="col-sm-8">
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.sex}}</p>
-                  </div>
+                  <label class="control-label">{{ "TABLE.COLUMNS.GENDER" | translate }}</label>
+                  <p class="form-control-static">{{::PatientRecordCtrl.patient.sex}}</p>
                 </div>
 
               </div>
@@ -97,7 +71,14 @@
                 </div>
               </div>
 
-              <a class="btn btn-default btn-block"><span class="glyphicon glyphicon-upload"></span> Upload Patient Photo</a>
+              <a class="btn btn-default btn-block" disabled><span class="glyphicon glyphicon-upload"></span> {{ "PATIENT_RECORDS.UPLOAD_PICTURE" | translate }}</a>
+              <a
+                data-method="edit"
+                ng-href="/#/patients/{{::PatientRecordCtrl.patient.uuid}}/edit"
+                class="btn btn-default btn-block">
+                <span class="glyphicon glyphicon-edit"></span>
+                {{ "PATIENT_EDIT.EDIT_DETAILS" | translate }}
+              </a>
             </div>
           </div>
         </div>
@@ -112,7 +93,7 @@
           <div class="panel-heading">
             <span class="glyphicon glyphicon-time"></span> Activity
           </div>
-          <div class="panel-body" style="height : 250px">
+          <div class="panel-body" style="height : 250px;">
 
             <!-- Placeholder - not implemented -->
             <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
@@ -121,7 +102,6 @@
           </div>
         </div>
       </div>
-
 
       <!-- Patient Bill Panel -->
       <div class="col-sm-6">
@@ -172,7 +152,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>

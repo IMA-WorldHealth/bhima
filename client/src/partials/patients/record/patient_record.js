@@ -7,6 +7,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment) {
   var vm = this;
   var patientID = $stateParams.patientID;
 
+  /** @fixme if no uuid is provided this will download all the patients through the base url '/' */
   Patients.read(patientID)
     .then(function (result) {
       vm.patient = result;
@@ -14,7 +15,6 @@ function PatientRecordController($stateParams, Patients, Notify, moment) {
       /** @todo move to service or mysql query */
       vm.patient.name = [vm.patient.first_name, vm.patient.middle_name, vm.patient.last_name].join(' ');
       vm.patient.age = moment().diff(vm.patient.dob, 'years');
-      console.log('got patient', result);
     })
     .catch(Notify.handleError);
 }

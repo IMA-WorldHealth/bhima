@@ -3,8 +3,17 @@
 
     <ol class="headercrumb">
       <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
-      <li class="title">{{ "PATIENT_EDIT.PAGE_TITLE" | translate }}</li>
+      <li class="static">{{ "PATIENT_RECORDS.TITLE" | translate }}</li>
+      <li class="title">{{ PatientEditCtrl.medical.name }}</li>
     </ol>
+
+    <!-- ng-show to stop flickering on load -->
+    <span
+        ng-show="PatientEditCtrl.medical.name"
+        style="margin-left : 5px"
+        class="label label-warning">
+      EDIT
+    </span>
 
   </div>
 </div>
