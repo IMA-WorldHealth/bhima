@@ -153,7 +153,10 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.note.$invalid }">
                 <label class="control-label" for="note">{{ "FORM.LABELS.NOTES" | translate }}</label>
-                <textarea class="form-control" name="note" id="note" ng-model="SupplierCtrl.supplier.note" rows="3"></textarea>
+                <textarea class="form-control" name="note" id="note" ng-maxlength="SupplierCtrl.maxLength" ng-model="SupplierCtrl.supplier.note" rows="3"></textarea>
+                <div class="help-block" ng-messages="CreateForm.note.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>				
               </div>
 
               <div class="form-group">
@@ -168,7 +171,7 @@
               <!-- error feedback area -->
               <div ng-if="SupplierCtrl.state.errored && CreateForm.$submitted"
                 class="text-danger" data-role="feedback" style="margin-top:10px;">
-                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
+                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
               </div>
 
             </form>
@@ -250,8 +253,11 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.note.$invalid }">
                 <label class="control-label" for="note">{{ "FORM.LABELS.NOTES" | translate }}</label>
-                <textarea class="form-control" name="note" id="note" ng-model="SupplierCtrl.supplier.note" rows="3"></textarea>
-              </div>
+                <textarea class="form-control" name="note" id="note" ng-maxlength="SupplierCtrl.maxLength" ng-model="SupplierCtrl.supplier.note" rows="3"></textarea>
+                <div class="help-block" ng-messages="UpdateForm.note.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+			  </div>
 
               <div class="form-group">
                 <button class="btn btn-default" id="change_supplier" type="submit" data-method="submit">
@@ -265,9 +271,8 @@
               <!-- error feedback area -->
               <div ng-if="SupplierCtrl.state.errored && UpdateForm.$submitted"
                 class="text-danger" data-role="feedback" style="margin-top:10px;">
-                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
-              </div>
-              
+                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
+              </div>              
             </form>
           </div>         
         </div>
