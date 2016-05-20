@@ -17,7 +17,6 @@
           <table class="table table-condensed">
             <thead>
               <tr>
-                <th>{{ "TABLE.COLUMNS.REFERENCE" | translate }}</th>
                 <th>{{ "TABLE.COLUMNS.NAME" | translate }}</th>
                 <th>{{ "TABLE.COLUMNS.IS_WAREHOUSE" | translate }}</th>
                 <th>{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
@@ -25,7 +24,6 @@
             </thead>
             <tbody>
               <tr ng-repeat="depot in DepotCtrl.depotList">
-                <td>{{ depot.reference }}</td>
                 <td>{{ depot.text }}</td>
                 <td>
                   <i ng-if="depot.is_warehouse" class="glyphicon glyphicon-ok-sign"></i>
