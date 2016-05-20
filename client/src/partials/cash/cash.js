@@ -59,6 +59,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
     // timestamp to compare date values
     vm.timestamp = new Date();
     vm.enterprise = Session.enterprise;
+    vm.payment.currency_id = vm.enterprise.currency_id;
 
     // check if there is a cached cashbox, either in $localStorage or $stateParams
     var noCachedCashbox = (!cache.cashbox || (cache.cashbox && !cache.cashbox.id)) && !cashboxId;
@@ -140,12 +141,13 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
     Modals.openTransfer({ cashbox: vm.cashbox });
   }
 
-  /* Select Cashbox Modal */
+  /** Select Cashbox Modal */
   function openSelectCashboxModal() {
-    var id = cache.cashbox && cache.cashbox.id ? cache.cashbox.id : undefined;
-    Modals.openSelectCashbox({ cache_cashbox_id: id, url_cashbox_id: cashboxId })
+    var cashboxId = vm.cashbox && vm.cashbox.id;
+    Modals.openSelectCashbox({ cashboxId : cashboxId })
     .then(function (cashbox) {
       vm.cashbox = cashbox;
+      cache.cashbox = cashbox;
       $location.url('/cash/' + vm.cashbox.id);
       calculateDisabledIds();
     });
