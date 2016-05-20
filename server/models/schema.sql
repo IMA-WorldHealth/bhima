@@ -599,7 +599,7 @@ CREATE TABLE debtor_group_subsidy (
 DROP TABLE IF EXISTS `depot`;
 CREATE TABLE `depot` (
   `uuid` BINARY(16) NOT NULL,
-  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `reference` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` text,
   `enterprise_id` smallint(5) unsigned NOT NULL,
   `is_warehouse` smallint(5) unsigned NOT NULL DEFAULT 0,
