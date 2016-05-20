@@ -1,5 +1,5 @@
-<ng-form name="CurrencyForm">
-  <div class="radio" ng-class="{ 'has-error' : ($ctrl.validationTrigger && CurrencyForm.$invalid) || $ctrl.allDisabled }" data-bh-currency-select>
+<ng-form name="$ctrl.form">
+  <div class="radio" ng-class="{ 'has-error' : ($ctrl.validationTrigger && $ctrl.form.$invalid) || $ctrl.allDisabled }" data-bh-currency-select>
     <p class="control-label">
       <strong>{{ "FORM.LABELS.CURRENCY" | translate }}</strong>
     </p>
@@ -22,7 +22,7 @@
     </label>
 
     <!-- radio button validation messages -->
-    <div class="help-block" ng-messages="CurrencyForm.currency.$error" ng-show="$ctrl.validationTrigger">
+    <div class="help-block" ng-messages="$ctrl.form.currency.$error" ng-show="$ctrl.validationTrigger">
       <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
     </div>
 

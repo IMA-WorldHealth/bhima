@@ -97,5 +97,8 @@ function bhCurrencySelect($scope, Currencies) {
 
     // if the two array lengths are equal, it means every currency is disabled
     $ctrl.allDisabled = ($ctrl.currencies.length === array.length);
+    if ($ctrl.allDisabled) {
+      $ctrl.form.$setValidity('currencies', false);
+    }
   });
 }

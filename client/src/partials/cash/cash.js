@@ -183,14 +183,10 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
   }
 
   // submits the form to the server
-  function submit() {
-    var cashboxId = (cashboxId) ? cashboxId :
-      (cache.cashbox && cache.cashbox.id) ? cache.cashbox.id : null;
-
-    if (!cashboxId) { return ; }
+  function submit(form) {
 
     // add in the cashbox id
-    vm.payment.cashbox_id = cashboxId;
+    vm.payment.cashbox_id = vm.cashbox.id;
 
     // submit the cash payment
     return Cash.create(vm.payment)
