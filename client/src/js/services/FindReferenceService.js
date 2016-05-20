@@ -8,7 +8,12 @@ function FindReferenceService(Modal) {
 
   service.openModal = openModal;
 
-  function openModal(row) {
+  /**
+   * @function openModal
+   * @description open the modal for references (patient invoices, cash payment and vuocher)
+   * @param {object} entity the entity parameter is not required, it's for specifying the entity's references
+   */
+  function openModal(entity) {
     var instance = Modal.open({
       templateUrl  : 'partials/templates/modals/findReference.modal.html',
       controller   : 'FindReferenceModalController',
@@ -16,14 +21,12 @@ function FindReferenceService(Modal) {
       size         : 'lg',
       animation    : true,
       resolve      : {
-        data : function () {
-          return row;
+        entity : function () {
+          return entity || {};
         }
       }
     });
-    instance.result.then(function (reference) {
-      row.reference = reference;
-    });
+    return instance.result;
   }
 
 }

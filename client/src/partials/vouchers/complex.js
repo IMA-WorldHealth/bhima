@@ -17,7 +17,7 @@ ComplexJournalVoucherController.$inject = [
  *
  * @todo - Implement caching mechanism for incomplete forms (via AppCache)
  * @todo - Implement Patient Invoices data and Cash Payment data for modal
- * @todo - Implement a mean to categorise transactions for cashflow reports 
+ * @todo - Implement a mean to categorise transactions for cashflow reports
  */
 function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify) {
   var vm = this;
@@ -34,18 +34,13 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   vm.addVoucherItem     = addVoucherItem;
   vm.removeVoucherItem  = removeVoucherItem;
   vm.checkRowValidity   = checkRowValidity;
-  vm.selectAccount      = selectAccount;
-  vm.openEntityModal    = FindEntity.openModal;
-  vm.openReferenceModal = FindReference.openModal;
+  vm.openEntityModal    = openEntityModal;
+  vm.openReferenceModal = openReferenceModal;
 
   // load the list of accounts
   Accounts.read()
   .then(function (accounts) {
-    vm.accounts = accounts.map(function (item) {
-      // remove children accounts
-      delete item.children;
-      return item;
-    });
+    vm.accounts = accounts;
   });
 
   // load the available currencies
@@ -57,6 +52,22 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     vm.currencies = currencies;
   });
 
+  /** Entity modal */
+  function openEntityModal(row) {
+    FindEntity.openModal()
+    .then(function (entity) {
+      row.entity = entity;
+    });
+  }
+
+  /** Reference modal */
+  function openReferenceModal(row) {
+    FindReference.openModal(row.entity)
+    .then(function (reference) {
+      row.reference = reference;
+    });
+  }
+
   /** Get the selected currency symbol */
   function currencySymbol(currency_id) {
     if (!currency_id) { return ; }
@@ -66,13 +77,13 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   /** Add transaction row */
   function addVoucherItem() {
     vm.rows.push(generateRow());
-    checkRowValidity();
+    refreshState();
   }
 
   /** remove transaction row */
   function removeVoucherItem(index) {
     vm.rows.splice(index, 1);
-    checkRowValidity();
+    refreshState();
   }
 
   /** generate row element */
@@ -91,12 +102,12 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     var voucher;
     if (vm.sumCredit === vm.sumDebit) {
       voucher = {
-        project_id : Session.project.id,
-        date : vm.voucher.date,
+        project_id  : Session.project.id,
+        date        : vm.voucher.date,
         description : vm.voucher.description,
         currency_id : vm.voucher.currency_id,
-        amount : vm.sumDebit,
-        user_id : Session.user.id,
+        amount      : vm.sumDebit,
+        user_id     : Session.user.id,
       };
     }
     return voucher;
@@ -105,27 +116,26 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   /** clean and generate voucher items data */
   function handleVoucherItems() {
     var voucherItems = [];
-    if (vm.validInput) {
+    var account_id = undefined;
+    var entity_uuid = undefined;
+    var document_uuid = undefined;
 
-      var entity_uuid = undefined;
-      var document_uuid = undefined;
+    voucherItems = vm.rows.map(function (row) {
 
-      vm.rows.forEach(function (row) {
+      account_id = row.account && row.account.id ? row.account.id : '';
+      entity_uuid = row.entity && row.entity.uuid ? row.entity.uuid : '';
+      document_uuid = row.reference && row.reference.document_uuid ? row.reference.document_uuid : '';
 
-        entity_uuid = row.entity && row.entity.uuid ? row.entity.uuid : '';
-        document_uuid = row.reference && row.reference.document_uuid ? row.reference.document_uuid : '';
+      return {
+        account_id    : account_id,
+        debit         : row.debit,
+        credit        : row.credit,
+        document_uuid : document_uuid,
+        entity_uuid   : entity_uuid
+      };
 
-        var line = {
-          account_id    : row.account_id,
-          debit         : row.debit,
-          credit        : row.credit,
-          document_uuid : document_uuid,
-          entity_uuid   : entity_uuid
-        };
+    });
 
-        voucherItems.push(line);
-      });
-    }
     return voucherItems;
   }
 
@@ -169,8 +179,8 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     };
   }
 
-  /** check validity */
-  function checkRowValidity() {
+  /** check validity and refresh all bonding data */
+  function refreshState() {
     vm.posted = false;
     vm.rowsInput = validRowsInput();
     vm.validInput = vm.rowsInput.validAmount && vm.rowsInput.validAccount && vm.rowsInput.validTotals && vm.rows.length > 1 ? true : false;
@@ -179,8 +189,37 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       !vm.rowsInput.validAccount ? { icon : 'glyphicon glyphicon-alert', label : 'VOUCHERS.COMPLEX.ERROR_ACCOUNT' } :
       !vm.rowsInput.validTotals ? { icon : 'glyphicon glyphicon-alert', label : 'VOUCHERS.COMPLEX.ERROR_TOTALS' } :
       vm.rowsInput.validTotals && vm.validInput ? { icon : 'glyphicon glyphicon-check', label : 'VOUCHERS.COMPLEX.VALID_TOTALS' } :
-      { iconn : '', label : '' };
+      { icon : '', label : '' };
     summation();
+  }
+
+  /** checking validity of a row */
+  function checkRowValidity(index) {
+    if (angular.isUndefined(index)) { return; }
+
+    var row = vm.rows[index];
+
+    /** validity of the amount */
+    var validAmount =
+      ((row.debit > 0 && !row.credit) || (!row.debit && row.credit > 0)) &&
+      (angular.isDefined(row.debit) && angular.isDefined(row.credit));
+
+    /** must have an account defined */
+    var validAccount = (row.account && row.account.id);
+
+    /** validity of the row */
+    vm.rows[index].isValid = validAccount && validAmount;
+
+    /**
+     * refresh the ui to the real state
+     * This function does a lot of process but it usefull for informing the user
+     * it notify about :
+     * -- the validity of all amount given
+     * -- the validity of totals (balanced or not)
+     * -- the validity of accounts
+     * -- the validity of missing values
+     */
+    refreshState();
   }
 
   /** summation */
@@ -191,12 +230,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       vm.sumDebit += row.debit;
       vm.sumCredit += row.credit;
     });
-  }
-
-  /** select account id for the row */
-  function selectAccount(account, row) {
-    row.account_id = account.id;
-    checkRowValidity();
   }
 
   /** run the module on startup and refresh */
@@ -233,7 +266,8 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       return;
     }
 
-    checkRowValidity();
+    // get the updated state of the module with all checks made
+    refreshState();
 
     var voucherItems = handleVoucherItems();
 
@@ -248,7 +282,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       Notify.success('VOUCHERS.COMPLEX.CREATE_SUCCESS');
       form.$setPristine();
       startup();
-      checkRowValidity();
+      refreshState();
       vm.posted = true;
     })
     .catch(function (err) {

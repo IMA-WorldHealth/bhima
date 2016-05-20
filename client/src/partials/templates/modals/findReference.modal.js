@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('FindReferenceModalController', FindReferenceModalController);
 
 FindReferenceModalController.$inject = [
-  '$scope', '$uibModalInstance', 'DebtorService',
-  'CreditorService', 'VoucherService', 'JournalFilteringService', 'data'
+  '$uibModalInstance', 'DebtorService',
+  'CreditorService', 'VoucherService', 'JournalFilteringService', 'entity'
 ];
 
 /**
@@ -14,7 +14,7 @@ FindReferenceModalController.$inject = [
  * @todo Implement the Cash Payment Data list for the references
  * @todo Implement the link to the document for exactitude of the reference
  */
-function FindReferenceModalController($scope, Instance, Debtor, Creditor, Voucher, Filtering, Data) {
+function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filtering, Entity) {
   var vm = this;
 
   vm.result = {};
@@ -51,8 +51,7 @@ function FindReferenceModalController($scope, Instance, Debtor, Creditor, Vouche
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-    /** @fixme: use of $scope is not optimal */
-    vm.gridApi.selection.on.rowSelectionChanged($scope, rowSelectionCallback);
+    vm.gridApi.selection.on.rowSelectionChanged(null, rowSelectionCallback);
   }
 
   function rowSelectionCallback(row) {
@@ -145,7 +144,7 @@ function FindReferenceModalController($scope, Instance, Debtor, Creditor, Vouche
   }
 
   function startup() {
-    vm.selectedEntity = Data.entity || {};
+    vm.selectedEntity = Entity || {};
   }
 
 }

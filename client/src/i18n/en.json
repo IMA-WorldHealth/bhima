@@ -421,6 +421,7 @@
       "TOTAL_BILLED"           : "Total Billed",
       "TOTAL_PAID"             : "Total Paid",
       "TO_ACCOUNT"             : "To Account",
+      "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Unconfigured",
@@ -441,6 +442,8 @@
     "PLACE_HOLDERS": {
       "ENTER_ACCOUNT"      : "Enter account",
       "ENTER_COUNTRY"      : "Enter Country",
+      "ENTER_CREDITOR"     : "Enter Creditor",
+      "ENTER_DEBTOR"       : "Enter Debtor",
       "ENTER_DESCRIPTION"  : "Enter description",
       "ENTER_EMAIL"        : "Enter email",
       "ENTER_MAX_CREDIT"   : "Enter max credit",
@@ -981,14 +984,10 @@
       "ERROR_TOTALS"         : "The totals are not balanced",
       "INVALID_VALUES"       : "There are invalid values detected",
       "PATIENT_INVOICE"      : "Patient Invoice",
-      "PLACEHOLDER_CREDITOR" : "Enter a creditor",
-      "PLACEHOLDER_DEBTOR"   : "Enter a debtor",
       "REFERENCE"            : "Reference",
       "ROWS"                 : "Row(s)",
       "SELECT_DOCUMENT_TYPE" : "Please select the document type",
       "TITLE"                : "Advanced Journal Vouchers",
-      "TRANSACTION"          : "Transaction(s)",
-      "TYPE"                 : "Type",
       "VALID_TOTALS"         : "Transactions are valid (balanced transaction)",
       "VOUCHER"              : "Voucher"
     }

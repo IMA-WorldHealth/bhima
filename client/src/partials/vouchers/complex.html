@@ -78,7 +78,7 @@
             <div class="panel-heading">
               <div class="btn pull-left">
                 <i class="glyphicon glyphicon-list-alt"></i>
-                {{ 'VOUCHERS.COMPLEX.TRANSACTION' | translate }}
+                {{ 'FORM.LABELS.TRANSACTION' | translate }}
               </div>
 
               <div class="pull-right">
@@ -95,6 +95,7 @@
             <table class="table table-condensed table-striped">
               <thead>
                 <tr>
+                  <th>#</th>
                   <th>{{ 'TABLE.COLUMNS.ACCOUNT' | translate }}</th>
                   <th class="text-center">{{ 'TABLE.COLUMNS.DEBIT' | translate }}</th>
                   <th class="text-center">{{ 'TABLE.COLUMNS.CREDIT' | translate }}</th>
@@ -104,16 +105,26 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="row in ComplexVoucherCtrl.rows">
+                <tr class="normalRow"
+                  ng-repeat="row in ComplexVoucherCtrl.rows"
+                  ng-class="{'validRow': row.isValid, 'invalidRow': !row.isValid}">
+                  <td>
+                    <span ng-if="row.isValid" class="text-success iconRow">
+                      <span class="glyphicon glyphicon-ok"></span>
+                    </span>
+                    <span ng-if="!row.isValid" class="text-danger iconRow">
+                      <span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                  </td>
                   <td style="width:30%">
                     <input
                       ng-model="row.account"
-                      ng-change="ComplexVoucherCtrl.checkRowValidity()"
+                      ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                       type="text"
                       placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
                       uib-typeahead="account as account.number + ' ' + account.label for account in ComplexVoucherCtrl.accounts | filter:$viewValue | limitTo:8"
                       typeahead-editable="false"
-                      typeahead-on-select="ComplexVoucherCtrl.selectAccount($item, row)"
+                      typeahead-on-select="ComplexVoucherCtrl.checkRowValidity($index)"
                       data-account-row="{{ $index }}"
                       class="form-control">
                   </td>
@@ -121,9 +132,9 @@
                     <div class="input-group">
                       <input
                         ng-model="row.debit"
-                        ng-change="ComplexVoucherCtrl.checkRowValidity()"
+                        ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                         type="number"
-                        class="form-control input-number"
+                        class="form-control text-right"
                         data-debit-row="{{ $index }}"
                         required>
                       <span class="input-group-addon">{{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</span>
@@ -133,9 +144,9 @@
                     <div class="input-group">
                       <input
                         ng-model="row.credit"
-                        ng-change="ComplexVoucherCtrl.checkRowValidity()"
+                        ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                         type="number"
-                        class="form-control input-number"
+                        class="form-control text-right"
                         data-credit-row="{{ $index }}"
                         required>
                       <span class="input-group-addon">{{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</span>
@@ -184,7 +195,7 @@
               </tbody>
               <tfoot>
                 <tr>
-                  <th>{{ ComplexVoucherCtrl.rows.length | number }} {{ 'VOUCHERS.COMPLEX.ROWS' | translate }}</th>
+                  <th colspan="2">{{ ComplexVoucherCtrl.rows.length | number }} {{ 'VOUCHERS.COMPLEX.ROWS' | translate }}</th>
                   <th class="text-center">{{ ComplexVoucherCtrl.sumDebit | number }} {{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</th>
                   <th class="text-center">{{ ComplexVoucherCtrl.sumCredit | number }} {{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</th>
                   <th colspan="3">&nbsp;</th>
@@ -192,7 +203,7 @@
               </tfoot>
             </table>
 
-            <div class="panel-footer">
+            <div class="panel-footer clearfix">
               <div ng-if="!ComplexVoucherCtrl.posted" class="pull-left">
                 <span ng-class="{'text-danger': !ComplexVoucherCtrl.validInput, 'text-success': ComplexVoucherCtrl.validInput}">
                   <i ng-class="ComplexVoucherCtrl.notifyMessage.icon"></i>
@@ -208,7 +219,6 @@
                   {{ "FORM.BUTTONS.SUBMIT" | translate }}
                 </button>
               </div>
-              <div class="clearfix"></div>
             </div>
             <div ng-if="ComplexVoucherCtrl.posted" id="create-success"></div>
           </div>

@@ -1,3 +1,17 @@
 .input-number {
   text-align: right;
 }
+.normalRow {
+  border-left: 5px solid white;
+}
+.validRow {
+  border-left: 5px solid green;
+}
+.invalidRow {
+  border-left: 5px solid red;
+}
+.iconRow {
+  display: block;
+  text-align: center;
+  padding-top: 7px;
+}

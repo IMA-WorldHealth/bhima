@@ -8,7 +8,7 @@ function FindEntityService(Modal) {
 
   service.openModal = openModal;
 
-  function openModal(row) {
+  function openModal() {
     var instance = Modal.open({
       templateUrl  : 'partials/templates/modals/findEntity.modal.html',
       controller   : 'FindEntityModalController',
@@ -16,9 +16,7 @@ function FindEntityService(Modal) {
       size         : 'md',
       animation    : true
     });
-    instance.result.then(function (result) {
-      row.entity = result;
-    });
+    return instance.result;
   }
 
 }
