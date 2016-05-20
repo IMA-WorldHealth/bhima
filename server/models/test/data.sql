@@ -38,7 +38,8 @@ INSERT INTO unit VALUES
   (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',30,'/partials/references/groups','/references/groups'),
   (112, 'Reference','TREE.REFERENCE','References',30,'/partials/references','/references'),
   (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple'),
-  (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services');
+  (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services'),
+  (136, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 30, '/partials/vouchers/complex', '/vouchers/complex');
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
@@ -195,7 +196,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (135, 1),
 
 -- Patient Group Module
-(29, 1);
+(29, 1),
+
+-- complex Journal Vouchers
+(136, 1);
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
@@ -359,6 +363,21 @@ INSERT INTO `price_list_item` VALUES
   (HUID(UUID()), HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), '', 100, 1, CURRENT_TIMESTAMP);
 
 UPDATE debtor_group SET price_list_uuid = HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0') WHERE uuid = HUID('4de0fe47-177f-4d30-b95f-cff8166400b4');
+
+-- voucher sample data
+INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, description, user_id) VALUES
+  (HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534'), CURRENT_TIMESTAMP, 1, 2, 100, 'Sample voucher data one', 1),
+  (HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), CURRENT_TIMESTAMP, 1, 2, 200, 'Sample voucher data two', 1),
+  (HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), CURRENT_TIMESTAMP, 1, 2, 300, 'Sample voucher data three', 1);
+
+-- voucher items sample data
+INSERT INTO `voucher_item` VALUES
+  (HUID(UUID()), 3627, 100, 0, HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 100, HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3627, 200, 0, HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 200, HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3627, 300, 0, HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 300, HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), HUID(UUID()), HUID(UUID()));
 
 -- 1.X Routes
 -- ----------

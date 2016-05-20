@@ -13,7 +13,7 @@ function VoucherService ($http, util) {
 
   /** send an http request to create a voucher**/
   function create(voucher) {
-    return $http.post(baseUrl, voucher)
+    return $http.post(baseUrl, { voucher : voucher })
     .then(util.unwrapHttpResponse);
   }
 
