@@ -99,7 +99,7 @@ function update(req, res, next) {
 
   function selectDepot(rows) {
     var sql =
-      `SELECT BUID(uuid) as uuid, reference, text, enterprise_id, is_warehouse
+      `SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse
       FROM depot WHERE uuid = ?`;
     return db.exec(sql, [uid]);
   }
@@ -115,7 +115,7 @@ function list(req, res, next) {
   'use strict';
 
   var sql =
-    `SELECT BUID(uuid) as uuid, reference, text, is_warehouse
+    `SELECT BUID(uuid) as uuid, text, is_warehouse
     FROM depot
     WHERE enterprise_id = ?;`;
 
@@ -139,7 +139,7 @@ function detail(req, res, next) {
   var uid = db.bid(req.params.uuid);
 
   var sql =
-    `SELECT BUID(d.uuid) as uuid, d.reference, d.text, d.is_warehouse
+    `SELECT BUID(d.uuid) as uuid, d.text, d.is_warehouse
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ?;`;
 

@@ -59,7 +59,7 @@
           <form class="panel panel-primary"
             ng-class="{ 'panel-danger': DonorCtrl.action === 'remove'}"
             name="ActionForm"
-            ng-submit="DonorCtrl.submit(ActionForm)" novalidate>
+            ng-submit="DonorCtrl.submit(ActionForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
             <div class="panel-heading">
               <i ng-show="DonorCtrl.action === 'remove'" class="glyphicon glyphicon-alert"></i>
               {{ DonorCtrl.actionTitle | translate }}

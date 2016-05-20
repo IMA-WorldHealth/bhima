@@ -98,7 +98,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "REFERENCE_GROUP.NEW_REFERENCE" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="ReferenceGroupCtrl.submit(CreateForm)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="ReferenceGroupCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.reference_group.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE_GROUP" | translate }}</label>
@@ -146,7 +146,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ "REFERENCE_GROUP.UPD_REFERENCE" | translate }} </b> </div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="ReferenceGroupCtrl.submit(UpdateForm)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="ReferenceGroupCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.reference_group.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE_GROUP" | translate }}</label>

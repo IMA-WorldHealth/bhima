@@ -599,12 +599,10 @@ CREATE TABLE debtor_group_subsidy (
 DROP TABLE IF EXISTS `depot`;
 CREATE TABLE `depot` (
   `uuid` BINARY(16) NOT NULL,
-  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `text` text,
   `enterprise_id` smallint(5) unsigned NOT NULL,
   `is_warehouse` smallint(5) unsigned NOT NULL DEFAULT 0,
-  PRIMARY KEY (`uuid`),
-  KEY `reference` (`reference`)
+  PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS discount;

@@ -78,7 +78,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'SECTOR.REGISTER' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="SectorCtrl.submit(CreateForm)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="SectorCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
@@ -138,7 +138,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'SECTOR.EDIT' | translate }}</div>
           <div class="panel-body">        
-            <form class="panel-body" name="UpdateForm" ng-submit="SectorCtrl.submit(UpdateForm)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="SectorCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
                 <select 
