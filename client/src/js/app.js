@@ -516,13 +516,8 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* Patient Edit */
-  .state('patients/edit/', {
-    url  : '/patients/edit',
-    controller  : 'PatientEditFind as PatientEditFindCtrl',
-    templateUrl : 'partials/patients/edit/find.html'
-  })
-  .state('patients/edit/:patientID', {
-    url : '/patients/edit/:patientID',
+  .state('patientEdit', {
+    url : '/patients/edit/:uuid',
     controller: 'PatientEdit as PatientEditCtrl',
     templateUrl: 'partials/patients/edit/edit.html'
   })
