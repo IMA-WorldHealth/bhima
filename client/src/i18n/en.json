@@ -67,7 +67,8 @@
         "CURRENT_CASHBOX" : "Current Cashbox",
         "LINK"            : "Click here to add it.",
         "MISSING"         : "Don't see your cashbox?",
-        "TRANSFER"        : "Transfer Funds"
+        "TRANSFER"        : "Transfer Funds",
+        "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue"
       },
         "DEBTOR_INVOICES" : "Debtor Invoices",
         "RECEIPTS_TITLE"  : "Cash Payment Receipt",

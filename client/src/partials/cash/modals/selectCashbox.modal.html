@@ -2,7 +2,7 @@
   <h4>{{ 'CASH.SELECTION.TITLE' | translate }}</h4>
 </div>
 
-<div class="modal-body">
+<div class="modal-body" data-cashbox-modal>
 
   <!-- link to cashboxes page if cashboxes not found -->
   <p class="text-info">
@@ -24,7 +24,7 @@
       style="cursor:pointer;"
       >
 
-      <span id="cashbox_{{ cashbox.id }}">
+      <span id="cashbox-{{ cashbox.id }}">
         <span class="glyphicon glyphicon-inbox"></span> {{ cashbox.label }}
       </span>
 

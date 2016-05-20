@@ -3,8 +3,8 @@ angular.module('bhima.controllers')
 
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
-  '$stateParams', '$location', 'PatientService', 'ExchangeRateService', 'SessionService',
-  'ModalService', 'NotifyService'
+  '$stateParams', '$location', 'ExchangeRateService', 'SessionService',
+  'ModalService', 'NotifyService', '$q'
 ];
 
 /**
@@ -16,12 +16,11 @@ CashController.$inject = [
  * against previous invoices (sales).  The cash payments module provides
  * functionality to pay both in multiple currencies.
  *
- * @todo documentation improvements
- * @todo should the $location routing and/or appcache be in a service?
- * @todo move invoices modal into a service
- * @todo move receipt modal into a service
+ * @todo - documentation improvements
+ * @todo - deep link cashbox module from various states
+ * @todo - move away from $location routing to $state routing.
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $location, Patients, Exchange, Session, Modals, Notify) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $location, Exchange, Session, Modals, Notify, $q) {
 
   /* controller view-model alias */
   var vm = this;
@@ -38,17 +37,10 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
   vm.openInvoicesModal = openInvoicesModal;
   vm.openTransferModal = openTransferModal;
   vm.openSelectCashboxModal = openSelectCashboxModal;
-  vm.changeCashbox = changeCashbox;
   vm.usePatient = usePatient;
   vm.digestExchangeRate = digestExchangeRate;
   vm.toggleVoucherType = toggleVoucherType;
   vm.submit = submit;
-
-  // removes the cashbox from the local cache
-  function changeCashbox() {
-    delete cache.cashbox;
-    $location.path('/cash');
-  }
 
   // fired on controller start or form refresh
   function startup() {
@@ -62,7 +54,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
     vm.payment.currency_id = vm.enterprise.currency_id;
 
     // check if there is a cached cashbox, either in $localStorage or $stateParams
-    var noCachedCashbox = (!cache.cashbox || (cache.cashbox && !cache.cashbox.id)) && !cashboxId;
+    var noCachedCashbox = !cashboxId && (!cache.cashbox || !cache.cashbox.id);
 
     // if there is no data in the cache or $stateParams, open the cashbox selection modal
     if (noCachedCashbox) {
@@ -74,7 +66,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
     // elsewhere.
 
     // get the cashbox id
-    var id = cache.cashbox.id || cashboxId;
+    var id = cashboxId || cache.cashbox.id;
 
     Currencies.read()
     .then(function (currencies) {
@@ -89,11 +81,20 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
         return openSelectCashboxModal();
       }
 
-      // bind the cashbox
-      vm.cashbox = cashbox;
-      cache.cashbox = cashbox;
+      // set the cashbox selection in localstorage and in URL
+      setCashboxSelection(cashbox);
+    })
+    .catch(function (error) {
 
-      calculateDisabledIds();
+      // if we hit a 404 error, we don't have a valid cashbox.
+      if (error.status === 404) {
+        Notify.danger('VOUCHER.CASHBOXES.NO_CASHBOX_SELECTED');
+        openSelectCashboxModal();
+
+      // otherwise, display a system error
+      } else {
+        return $q.reject(error);
+      }
     })
     .catch(Notify.handleError);
 
@@ -145,12 +146,15 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
   function openSelectCashboxModal() {
     var cashboxId = vm.cashbox && vm.cashbox.id;
     Modals.openSelectCashbox({ cashboxId : cashboxId })
-    .then(function (cashbox) {
-      vm.cashbox = cashbox;
-      cache.cashbox = cashbox;
-      $location.url('/cash/' + vm.cashbox.id);
-      calculateDisabledIds();
-    });
+    .then(setCashboxSelection);
+  }
+
+  // caches the cashbox
+  function setCashboxSelection(cashbox) {
+    vm.cashbox = cashbox;
+    cache.cashbox = cashbox;
+    $location.url('cash/' + vm.cashbox.id);
+    calculateDisabledIds();
   }
 
   /* Debtor Invoices Modal */

@@ -1,10 +1,12 @@
 /* global element, by */
+'use strict';
+
 /**
  * test harness for the currency select component described in the component
  * bhCurrencySelect.js.
  * @public
  */
-exports.currencySelect = {
+module.exports = {
   selector : '[data-bh-currency-select]',
 
   /**

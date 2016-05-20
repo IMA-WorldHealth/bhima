@@ -8,6 +8,8 @@
  * @module e2e/componets
  * @public
  */
+'use strict';
+
 module.exports = {
   currencySelect:  require('./bhCurrencySelect'),
   locationSelect:  require('./bhLocationSelect'),
