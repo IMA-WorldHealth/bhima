@@ -2,27 +2,54 @@
   <h4>{{ 'CASH.SELECTION.TITLE' | translate }}</h4>
 </div>
 
-<div class="list-group">
-  <button type="button" class="list-group-item"
-    id="cashbox_{{ cash.id }}"
-    ng-repeat="cash in $ctrl.cashboxes"
-    ng-click="$ctrl.selectCashbox(cash.id, $index)"
-    ng-class="{'active' : $ctrl.indexSelected === $index}">
-    <span class="glyphicon glyphicon-inbox"></span>
-    {{ cash.label }}
-    <span ng-if="$ctrl.indexSelected === $index" class="pull-right"><i class="glyphicon glyphicon-ok"></i></span>
-  </button>
+<div class="modal-body">
+
+  <!-- link to cashboxes page if cashboxes not found -->
+  <p class="text-info">
+    <span class="glyphicon glyphicon-question-sign"></span> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
+
+    <!-- @fixme - this is kind of a hack to get the modal to close -->
+    <a href ui-sref="cashboxes" ng-click="$ctrl.dismiss()">
+      <span class="glyphicon glyphicon-link"></span> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
+    </a>
+  </p>
+
+  <!-- list of cashboxes -->
+  <ul class="list-group">
+    <li
+      class="list-group-item"
+      ng-repeat="cashbox in $ctrl.cashboxes"
+      ng-class="{'active' : $ctrl.selectedCashbox.id === cashbox.id}"
+      ng-click="$ctrl.selectCashbox(cashbox.id)"
+      style="cursor:pointer;"
+      >
+
+      <span id="cashbox_{{ cashbox.id }}">
+        <span class="glyphicon glyphicon-inbox"></span> {{ cashbox.label }}
+      </span>
+
+      <span ng-show="$ctrl.selectedCashbox.id === cashbox.id" class="badge">
+        <span class="glyphicon glyphicon-ok"></span>
+      </span>
+    </li>
+  </ul>
 </div>
 
 <div class="modal-footer">
-  <button type="button" id="modal-ok" class="btn btn-primary"
-    ng-click="$ctrl.close()"
-    ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id" data-cashbox-modal-submit>
-    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
-  </button>
-  <button type="button" id="modal-cancel" class="btn btn-default"
+  <button
+    type="button"
+    class="btn btn-default"
     ng-click="$ctrl.dismiss()"
-    ng-disabled="!$ctrl.cashboxId" data-cashbox-modal-cancel>
+    ng-disabled="!$ctrl.cashboxId"
+    data-cashbox-modal-cancel>
     {{ 'FORM.BUTTONS.CANCEL' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    ng-click="$ctrl.close()"
+    ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id"
+    data-cashbox-modal-submit>
+    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
   </button>
 </div>

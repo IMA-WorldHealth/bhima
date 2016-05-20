@@ -9,6 +9,7 @@
  * @public
  */
 module.exports = {
+  currencySelect:  require('./bhCurrencySelect'),
   locationSelect:  require('./bhLocationSelect'),
   currencyInput:   require('./bhCurrencyInput'),
   findPatient:     require('./bhFindPatient'),
@@ -17,6 +18,3 @@ module.exports = {
   modalAction:     require('./bhModalAction'),
   notification:    require('./notify')
 };
-
-
-

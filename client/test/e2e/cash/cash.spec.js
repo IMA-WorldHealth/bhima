@@ -99,7 +99,7 @@ describe('Cash Payments Module', function () {
       cbxItem.click();
       // click on the ok button of the modal box
       var okButton = element(by.css('[data-cashbox-modal-submit]'));
-      okButton.click()
+      okButton.click();
       // verify that we get to the cashboxB page
       expect(helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary1);
 
@@ -108,11 +108,11 @@ describe('Cash Payments Module', function () {
       // use the button to navigate back to the cashbox select module
       element(by.css('[data-change-cashbox]')).click();
       // select the auxiliary cashbox B displayed
-      var cbxItem = element(by.id('cashbox_' + cashboxB.id));
+      cbxItem = element(by.id('cashbox_' + cashboxB.id));
       cbxItem.click();
       // click on the ok button of the modal box
-      var okButton = element(by.css('[data-cashbox-modal-submit]'));
-      okButton.click()
+      okButton = element(by.css('[data-cashbox-modal-submit]'));
+      okButton.click();
       // verify that we get to the cashboxB page
       expect(helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary2);
 

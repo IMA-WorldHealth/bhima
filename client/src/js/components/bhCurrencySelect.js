@@ -3,23 +3,41 @@ angular.module('bhima.components')
   controller : bhCurrencySelect,
   templateUrl : 'partials/templates/bhCurrencySelect.tmpl.html',
   bindings : {
-    validationTrigger : '<',
-    currencyId : '=',
-    disableIds : '<',
-    onChange : '&'
+    validationTrigger: '<',
+    currencyId: '=',
+    disableIds: '<?',
+    onChange: '&?',
+    cashboxId: '<?'
   }
 });
 
 bhCurrencySelect.$inject = [ '$scope', 'CurrencyService' ];
 
 /**
- * Currency Selection Component
+ * @module components/bhCurrencySelect
  *
+ * @description
  * This is a radio button currency selection component for choosing currencies
  * in a form.  If a list of currencies are passed in, these are used instead of
  * the application's currencies.
  *
- * @module components/bhCurrencySelect
+ * BINDINGS
+ *  - [currency-id]
+ *      The model value for the underlying `<input>`s.  This
+ *      is two-way bound to the parent controller.
+ *
+ *  - [validation-trigger]
+ *      a boolean that can be passed in
+ *      to show validation messages will only show if this boolean is true.  It
+ *      is useful to bind `ParentForm.$submitted` value to this attribute.
+ *
+ *  - [on-change]
+ *      a callback bound the `ng-change` event on the `<input>`s.
+ *
+ *  - [disable-ids]
+ *      an array of currency ids to be disabled as required.
+ *  - [cashbox-id]
+ *      the cashbox id of the bound cashbox
  *
  * @example
  * <!-- simple usage -->
@@ -39,22 +57,6 @@ bhCurrencySelect.$inject = [ '$scope', 'CurrencyService' ];
  *   validation-trigger="ParentForm.$submitted"
  *   >
  * </bh-currency-select>
- *
- * BINDINGS
- *  - [currency-id]
- *      The model value for the underlying `<input>`s.  This
- *      is two-way bound to the parent controller.
- *
- *  - [validation-trigger]
- *      a boolean that can be passed in
- *      to show validation messages will only show if this boolean is true.  It
- *      is useful to bind `ParentForm.$submitted` value to this attribute.
- *
- *  - [on-change]
- *      a callback bound the `ng-change` event on the `<input>`s.
- *
- *  - [disable-ids]
- *      an array of currency ids to be disabled as required.
  */
 function bhCurrencySelect($scope, Currencies) {
   var $ctrl = this;
@@ -82,17 +84,18 @@ function bhCurrencySelect($scope, Currencies) {
 
   // watch the disabledIds array for changes, and disable the ids in the the
   // view based on which ids are present in it
-  $scope.$watch(function () {
+  $scope.$watchCollection(function () {
     return $ctrl.disableIds;
   }, function (array) {
-
-    // ensure the array exists and has values
-    if (!array || !array.length) { return; }
+    array = array || [];
 
     // loop through the currencies, disabling the currencies with ids in the
     // disabledIds array.
     $ctrl.currencies.forEach(function (currency) {
       currency.disabled = array.indexOf(currency.id) > -1;
     });
+
+    // if the two array lengths are equal, it means every currency is disabled
+    $ctrl.allDisabled = ($ctrl.currencies.length === array.length);
   });
 }
