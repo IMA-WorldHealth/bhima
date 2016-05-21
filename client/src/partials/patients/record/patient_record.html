@@ -7,147 +7,157 @@
     </ol>
   </div>
 </div>
-
 <div class="flex-content">
+
+  <!-- Unknown patient state -->
+  <!-- @todo this should be made into a component, it is used in a number of different modules -->
+  <div class="container-fluid" ng-if="!PatientRecordCtrl.patient && PatientRecordCtrl.loading===false">
+    <div class="alert alert-danger">
+      <span class="glyphicon glyphicon-search"></span> Unable to find patient with that ID. Check with your system administrator
+    </div>
+  </div>
+
   <div class="container">
 
-    <!-- Patient deatils row -->
-    <div class="row">
-      <div class="col-md-12">
+    <div ng-if="PatientRecordCtrl.patient">
+      <!-- Patient deatils row -->
+      <div class="row">
+        <div class="col-md-12">
 
-        <div class="panel panel-primary">
-          <div class="panel-heading clearfix">
-            <span class="glyphicon glyphicon-list-alt"></span>
-            {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
-          </div>
-
-          <div class="panel-body">
-            <div class="col-sm-4">
-              <div>
-
-                <div class="form-group">
-                  <label class="control-label">{{"FORM.LABELS.NAME" | translate}}</label>
-                  <p class="form-control-static">{{::PatientRecordCtrl.patient.name}}</p>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">{{"FORM.LABELS.PATIENT_ID" | translate}}</label>
-                  <p class="form-control-static">{{::PatientRecordCtrl.patient.abbr}} {{::PatientRecordCtrl.patient.reference}}</p>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">{{"FORM.LABELS.HOSPITAL_FILE_NR" | translate}}</label>
-                  <p class="form-control-static">{{::PatientRecordCtrl.patient.hospital_no}}</p>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">{{ "TABLE.COLUMNS.DATE_REGISTERED" | translate }}</label>
-                  <p class="form-control-static"><span am-time-ago="PatientRecordCtrl.patient.registration_date"></span></p>
-                </div>
-
-              </div>
+          <div class="panel panel-primary">
+            <div class="panel-heading clearfix">
+              <span class="glyphicon glyphicon-list-alt"></span>
+              {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
             </div>
 
-            <div class="col-sm-4">
-              <div class="form-horizontal">
-                <div class="form-group">
-                  <label class="control-label">{{ "TABLE.COLUMNS.AGE" | translate }}</label>
-                  <p class="form-control-static">{{::PatientRecordCtrl.patient.age}}</p>
-                </div>
+            <div class="panel-body">
+              <div class="col-sm-4">
+                <div>
 
-                <div class="form-group">
-                  <label class="control-label">{{ "TABLE.COLUMNS.GENDER" | translate }}</label>
-                  <p class="form-control-static">{{::PatientRecordCtrl.patient.sex}}</p>
-                </div>
+                  <div class="form-group">
+                    <label class="control-label">{{"FORM.LABELS.NAME" | translate}}</label>
+                    <p class="form-control-static">{{::PatientRecordCtrl.patient.name}}</p>
+                  </div>
 
-              </div>
-            </div>
+                  <div class="form-group">
+                    <label class="control-label">{{"FORM.LABELS.PATIENT_ID" | translate}}</label>
+                    <p class="form-control-static">{{::PatientRecordCtrl.patient.abbr}} {{::PatientRecordCtrl.patient.reference}}</p>
+                  </div>
 
-            <div class="col-sm-4">
-              <div style="border : 1px solid #ccc; height : 200px;">
-                <!-- no image placeholder -->
-                <div ng-if="!PatientRecordCtrl.patient.image" style="text-align : center;">
-                  <span style="font-size : 3em; color : #ccc; padding-top: 70px;" class="glyphicon glyphicon-picture"></span>
+                  <div class="form-group">
+                    <label class="control-label">{{"FORM.LABELS.HOSPITAL_FILE_NR" | translate}}</label>
+                    <p class="form-control-static">{{::PatientRecordCtrl.patient.hospital_no}}</p>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label">{{ "TABLE.COLUMNS.DATE_REGISTERED" | translate }}</label>
+                    <p class="form-control-static"><span am-time-ago="PatientRecordCtrl.patient.registration_date"></span></p>
+                  </div>
+
                 </div>
               </div>
 
-              <a class="btn btn-default btn-block" disabled><span class="glyphicon glyphicon-upload"></span> {{ "PATIENT_RECORDS.UPLOAD_PICTURE" | translate }}</a>
-              <a
-                data-method="edit"
-                ng-href="/#/patients/{{::PatientRecordCtrl.patient.uuid}}/edit"
-                class="btn btn-default btn-block">
-                <span class="glyphicon glyphicon-edit"></span>
-                {{ "PATIENT_EDIT.EDIT_DETAILS" | translate }}
-              </a>
+              <div class="col-sm-4">
+                <div class="form-horizontal">
+                  <div class="form-group">
+                    <label class="control-label">{{ "TABLE.COLUMNS.AGE" | translate }}</label>
+                    <p class="form-control-static">{{::PatientRecordCtrl.patient.age}}</p>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label">{{ "TABLE.COLUMNS.GENDER" | translate }}</label>
+                    <p class="form-control-static">{{::PatientRecordCtrl.patient.sex}}</p>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div style="border : 1px solid #ccc; height : 200px;">
+                  <!-- no image placeholder -->
+                  <div ng-if="!PatientRecordCtrl.patient.image" style="text-align : center;">
+                    <span style="font-size : 3em; color : #ccc; padding-top: 70px;" class="glyphicon glyphicon-picture"></span>
+                  </div>
+                </div>
+
+                <a class="btn btn-default btn-block" disabled><span class="glyphicon glyphicon-upload"></span> {{ "PATIENT_RECORDS.UPLOAD_PICTURE" | translate }}</a>
+                <a
+                  data-method="edit"
+                  ng-href="/#/patients/{{::PatientRecordCtrl.patient.uuid}}/edit"
+                  class="btn btn-default btn-block">
+                  <span class="glyphicon glyphicon-edit"></span>
+                  {{ "PATIENT_EDIT.EDIT_DETAILS" | translate }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- End patient details row -->
+
+      <div class="row">
+
+        <!-- Patient Activity Panel -->
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <span class="glyphicon glyphicon-time"></span> Activity
+            </div>
+            <div class="panel-body" style="height : 250px;">
+
+              <!-- Placeholder - not implemented -->
+              <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
+                <span class="glyphicon glyphicon-wrench"></span> Not Implemented
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patient Bill Panel -->
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <span class="glyphicon glyphicon-file"></span> Patient Visit
+            </div>
+            <div class="panel-body" style="height : 250px;">
+
+              <!-- Placeholder - not implemented -->
+              <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
+                <span class="glyphicon glyphicon-wrench"></span> Not Implemented
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div> <!-- End patient details row -->
 
-    <div class="row">
+      <div class="row">
+        <!-- Patient Documents -->
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <span class="glyphicon glyphicon-paperclip"></span> Patient Documents
+            </div>
+            <div class="panel-body" style="height : 250px;">
 
-      <!-- Patient Activity Panel -->
-      <div class="col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <span class="glyphicon glyphicon-time"></span> Activity
-          </div>
-          <div class="panel-body" style="height : 250px;">
-
-            <!-- Placeholder - not implemented -->
-            <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
-              <span class="glyphicon glyphicon-wrench"></span> Not Implemented
+              <!-- Placeholder - not implemented -->
+              <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
+                <span class="glyphicon glyphicon-wrench"></span> Not Implemented
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Patient Bill Panel -->
-      <div class="col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <span class="glyphicon glyphicon-file"></span> Patient Visit
-          </div>
-          <div class="panel-body" style="height : 250px;">
-
-            <!-- Placeholder - not implemented -->
-            <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
-              <span class="glyphicon glyphicon-wrench"></span> Not Implemented
+        <!-- Patient Bill Panel -->
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <span class="glyphicon glyphicon-file"></span> Latest Bill
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <div class="panel-body" style="height : 250px;">
 
-    <div class="row">
-      <!-- Patient Documents -->
-      <div class="col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <span class="glyphicon glyphicon-paperclip"></span> Patient Documents
-          </div>
-          <div class="panel-body" style="height : 250px;">
-
-            <!-- Placeholder - not implemented -->
-            <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
-              <span class="glyphicon glyphicon-wrench"></span> Not Implemented
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Patient Bill Panel -->
-      <div class="col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <span class="glyphicon glyphicon-file"></span> Latest Bill
-          </div>
-          <div class="panel-body" style="height : 250px;">
-
-            <!-- Placeholder - not implemented -->
-            <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
-              <span class="glyphicon glyphicon-wrench"></span> Not Implemented
+              <!-- Placeholder - not implemented -->
+              <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
+                <span class="glyphicon glyphicon-wrench"></span> Not Implemented
+              </div>
             </div>
           </div>
         </div>

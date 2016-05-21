@@ -586,7 +586,7 @@
     "MONTHS"                : "months",
     "YEAR_OLD"              : "year old",
     "YEARS_OLD"             : "years old",
-    "TITLE"                 : "Patients Registry"
+    "TITLE"                 : "Patients"
   },
   "PERMISSIONS": {
     "ADDING_USER"   : "Add a user",
