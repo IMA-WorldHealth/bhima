@@ -13,7 +13,8 @@ function PatientInvoicePage() {
     submit : element(by.id('btn-submit-invoice')),
     add : element(by.id('btn-add-rows')),
     distributable : element(by.id('distributable')),
-    notDistributable : element(by.id('not-distributable'))
+    notDistributable : element(by.id('not-distributable')),
+    clear : element(by.id('clear'))
   };
 
   var gridId = page.gridId = 'invoice-grid';

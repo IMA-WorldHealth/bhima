@@ -64,6 +64,9 @@ var paths = {
       'client/vendor/angular/angular.min.js',
       'client/vendor/angular-messages/angular-messages.min.js',
 
+      // Angular Sanitize
+      'client/vendor/angular-sanitize/angular-sanitize.js',
+
       // Angular UI
       'client/vendor/angular-ui-router/release/angular-ui-router.min.js',
       'client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',

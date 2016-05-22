@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 PatientInvoiceController.$inject = [
   '$q', '$location', 'PatientService', 'PriceLists', 'PatientInvoice',
   'Invoice', 'util', 'ServiceService', 'SessionService', 'DateService',
-  'ReceiptModal'
+  'ReceiptModal', 'NotifyService'
 ];
 
 /**
@@ -19,7 +19,7 @@ PatientInvoiceController.$inject = [
  *
  * @module bhima/controllers/PatientInvoiceController
  */
-function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates, Receipts) {
+function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates, Receipts, Notify) {
   var vm = this;
   vm.Invoice = new Invoice();
 
@@ -67,6 +67,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
 
     // if the form is invalid, return right away
     if (detailsForm.$invalid) {
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return;
     }
 
@@ -74,7 +75,8 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
     var invalidItem = vm.Invoice.items.verify();
 
     if (angular.isDefined(invalidItem)) {
-
+      Notify.danger('PATIENT_INVOICE.INVALID_INVOICE_ITEMS');
+      
       // show the user where the error is
       vm.gridApi.core.scrollTo(invalidItem);
       return;
@@ -86,17 +88,24 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
     // 3. Charged billing services - each of these have the global charge calculated by the client
     // 4. Charged subsidies - each of these have the global charge calculated by the client
     PatientInvoice.create(vm.Invoice.details, items, vm.Invoice.billingServices, vm.Invoice.subsidies)
-      .then(handleCompleteInvoice);
+      .then(function (result) { 
+        detailsForm.$setPristine();
+        detailsForm.$setUntouched();
+        return result;
+      })
+      .then(handleCompleteInvoice)
+      .catch(Notify.handleError);
   }
 
+  window.Receipts = Receipts;
   function handleCompleteInvoice(invoice) {
     vm.Invoice.items.removeCache();
-
-    Receipts.invoice(invoice.uuid)
+    clear();
+    
+    Receipts.invoice(invoice.uuid, true)
     .then(function (result) {
 
       // receipt closed fired
-      console.log('got closed');
     })
     .catch(function (error) {
 
@@ -105,8 +114,9 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
   }
 
   // reset everything in the controller - default values
-  function clear() {
-
+  function clear(detailsForm) {
+  
+    /** @todo all reset values should be implicit in the Invoice service - this controller should not be concerned with this */
     // Default values
     vm.itemIncrement = 1;
 
@@ -117,19 +127,25 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
     vm.dateLocked = true;
 
     // Set default invoice date to today
-    // FIXME encapsulate invoice reset logic within service
     vm.Invoice.details.date = new Date();
     vm.Invoice.recipient = null;
     vm.Invoice.items.recovered = false;
+    vm.Invoice.details.description = null;
     vm.Invoice.items.clearItems(true, false);
+  
+    /** @todo this is a bad pattern, clean this up */
 
+    if (detailsForm) {
+      detailsForm.$setPristine();
+      detailsForm.$setUntouched();
+    }
     if (vm.services) {
       vm.Invoice.details.service_id = vm.services[0].id;
     }
 
-    // if (vm.patientSearch) {
-    //   vm.patientSearch.reset();
-    // }
+    if (vm.patientSearch) {
+      vm.patientSearch.reset();
+    }
   }
 
   vm.gridOptions = gridOptions;

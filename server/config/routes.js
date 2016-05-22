@@ -18,7 +18,6 @@ var patients             = require('../controllers/medical/patients');
 var patientGroups        = require('../controllers/medical/patientGroups');
 var snis                 = require('../controllers/medical/snis');
 var projects             = require('../controllers/medical/projects');
-var reports              = require('../controllers/reports/reports.js');
 var inventory            = require('../controllers/stock/inventory');
 var depots               = require('../controllers/stock/depot');
 var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
@@ -46,10 +45,9 @@ var profitCenter         = require('../controllers/finance/profitCenter');
 var reference            = require('../controllers/finance/reference');
 var subsidies            = require('../controllers/finance/subsidies');
 var patientInvoice       = require('../controllers/finance/patientInvoice');
-var invoiceReceipt       = require('../controllers/finance/reports/invoiceReceipt');
+var invoiceReceipt       = require('../controllers/finance/reports/invoice.receipt');
 var discounts            = require('../controllers/finance/discounts');
 var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
-var depreciatedReports   = require('../controllers/categorised/reports_depreciate');
 var payroll              = require('../controllers/categorised/payroll');
 var units                = require('../controllers/units');
 var debtorGroups         = require('../controllers/finance/debtors/groups');
@@ -184,11 +182,6 @@ exports.configure = function (app) {
   app.put('/subsidies/:id', subsidies.update);
   app.delete('/subsidies/:id', subsidies.remove);
 
-
-  // -> Add :route
-  app.post('/report/build/:route', reports.build);
-  app.get('/report/serve/:target', reports.serve);
-
   app.post('/consumption_loss/', consumptionLoss.execute);
 
   // trial balance routes
@@ -240,10 +233,6 @@ exports.configure = function (app) {
   app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
   app.post('/payTax/', taxPayment.submit);
   app.put('/setTaxPayment/', taxPayment.setTaxPayment);
-
-  // TODO Remove or upgrade (model in database) every report from report_depreciate
-  app.get('/getDistinctInventories/', depreciatedReports.listDistinctInventory);
-  app.get('/getReportPayroll/', depreciatedReports.buildPayrollReport);
 
   // Payroll
   app.get('/getDataPaiement/', payroll.listPaiementData);
