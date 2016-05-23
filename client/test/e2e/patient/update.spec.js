@@ -10,10 +10,10 @@ const components = require('../shared/components');
 helpers.configure(chai);
 
 describe('Patient Edit', function () {
-  const root = '#/patients/edit/';
+  const root = '#/patients/';
   const patient = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
-  const path = root.concat(patient);
+  const path = root.concat(patient, '/edit');
 
   beforeEach(function () {
     browser.get(path);

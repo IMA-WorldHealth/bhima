@@ -63,10 +63,10 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, S
       .then(function (confirmation) {
         //var patientCardPath = '/invoices/patient/';
         /** @fixme -  temporary path for end to end tests while we develop receipts */
-        var patientCardPath = '/patients/edit/';
+        var patientCardPath = '/patients/';
 
         //TODO Hospital card should receive a value that notifies the user of register success
-        $location.path(patientCardPath.concat(confirmation.uuid));
+        $location.path(patientCardPath.concat(confirmation.uuid, '/edit'));
       })
       .catch(handleServerError);
   }

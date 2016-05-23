@@ -12,8 +12,8 @@
   <!-- Unknown patient state -->
   <!-- @todo this should be made into a component, it is used in a number of different modules -->
   <div class="container-fluid" ng-if="!PatientRecordCtrl.patient && PatientRecordCtrl.loading===false">
-    <div class="alert alert-danger">
-      <span class="glyphicon glyphicon-search"></span> Unable to find patient with that ID. Check with your system administrator
+    <div class="alert alert-danger" id="nopatient">
+      <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_RECORDS.NOT_FOUND" | translate }}
     </div>
   </div>
 
@@ -36,17 +36,17 @@
 
                   <div class="form-group">
                     <label class="control-label">{{"FORM.LABELS.NAME" | translate}}</label>
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.name}}</p>
+                    <p class="form-control-static" id="name">{{::PatientRecordCtrl.patient.name}}</p>
                   </div>
 
                   <div class="form-group">
                     <label class="control-label">{{"FORM.LABELS.PATIENT_ID" | translate}}</label>
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.abbr}} {{::PatientRecordCtrl.patient.reference}}</p>
+                    <p class="form-control-static" id="patientID">{{::PatientRecordCtrl.patient.abbr}} {{::PatientRecordCtrl.patient.reference}}</p>
                   </div>
 
                   <div class="form-group">
                     <label class="control-label">{{"FORM.LABELS.HOSPITAL_FILE_NR" | translate}}</label>
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.hospital_no}}</p>
+                    <p class="form-control-static" id="hospitalNo">{{::PatientRecordCtrl.patient.hospital_no}}</p>
                   </div>
 
                   <div class="form-group">
@@ -61,12 +61,12 @@
                 <div class="form-horizontal">
                   <div class="form-group">
                     <label class="control-label">{{ "TABLE.COLUMNS.AGE" | translate }}</label>
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.age}}</p>
+                    <p class="form-control-static" id="age">{{::PatientRecordCtrl.patient.age}}</p>
                   </div>
 
                   <div class="form-group">
                     <label class="control-label">{{ "TABLE.COLUMNS.GENDER" | translate }}</label>
-                    <p class="form-control-static">{{::PatientRecordCtrl.patient.sex}}</p>
+                    <p class="form-control-static" id="gender">{{::PatientRecordCtrl.patient.sex}}</p>
                   </div>
 
                 </div>

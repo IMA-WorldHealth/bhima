@@ -23,7 +23,7 @@ describe('Patient Registry UI Grid ', function () {
 
   var grid = element(by.id('patient-registry'));
 
-  const path = '#/patients/registry';
+  const path = '#/patients';
   before(() => helpers.navigate(path));
 
   it('grid should have 3 visible rows', function () {

@@ -577,7 +577,8 @@
   },
   "PATIENT_RECORDS": {
     "TITLE" : "Patients",
-    "UPLOAD_PICTURE" : "Upload Patient Photo"
+    "UPLOAD_PICTURE" : "Upload Patient Photo",
+    "NOT_FOUND" : "Unable to find patient with that ID. Please check with your system administrator."
   },
   "PATIENT_REGISTRY" : {
     "DAY"                   : "day",
@@ -586,7 +587,8 @@
     "MONTHS"                : "months",
     "YEAR_OLD"              : "year old",
     "YEARS_OLD"             : "years old",
-    "TITLE"                 : "Patients"
+    "TITLE"                 : "Patients",
+    "RECORD"                : "Record"
   },
   "PERMISSIONS": {
     "ADDING_USER"   : "Add a user",
