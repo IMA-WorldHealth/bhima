@@ -105,7 +105,7 @@
           <div class="panel-heading">
             {{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }} {{ ExchangeCtrl.formatCurrency(ExchangeCtrl.enterprise.currency_id) }}
           </div>
-          <form name="RateForm" class="panel-body form-horizontal" ng-submit="ExchangeCtrl.submit(RateForm.$invalid)" novalidate>
+          <form name="RateForm" class="panel-body form-horizontal" ng-submit="ExchangeCtrl.submit(RateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
             <h3>{{ "EXCHANGE.REVIEW" | translate }} :</h3>
 
             <bh-date-editor

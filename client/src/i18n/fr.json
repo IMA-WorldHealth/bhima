@@ -417,6 +417,7 @@
       "TOTAL_BILLED"           : "Total Facture",
       "TOTAL_PAID"             : "Total paye",
       "TO_ACCOUNT"             : "Au Compte",
+      "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Compte transfert",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Non configuree",
@@ -437,6 +438,8 @@
     "PLACE_HOLDERS": {
       "ENTER_ACCOUNT"      : "Entrer le compte",
       "ENTER_COUNTRY"      : "Entrer le nom pays",
+      "ENTER_CREDITOR"     : "Entrer un crediteur",
+      "ENTER_DEBTOR"       : "Entrer un debiteur",
       "ENTER_DESCRIPTION"  : "Entrer une description",
       "ENTER_EMAIL"        : "Entrer l'adresse e-mail",
       "ENTER_MAX_CREDIT"   : "Entrer le crédit maximale",
@@ -731,10 +734,13 @@
       "CODE"               : "Code",
       "COST_CENTER"        : "Centre de cout",
       "COUNTRY"            : "Pays",
+      "CREDIT"             : "Credit",
       "CURRENCY"           : "Monnaie",
       "DATE"               : "Date",
       "DATE_REGISTERED"    : "Date d'enregistrement",
+      "DEBIT"              : "Debit",
       "DESCRIPTION"        : "Description",
+      "DOCUMENT"           : "Document",
       "DOB"                : "Date de naissance",
       "EDIT"               : "Editer",
       "EMAIL"              : "Email",
@@ -825,6 +831,7 @@
     "CAUTION"                    : "Paiement Anticipatif",
     "CHART_OF_ACCOUNTS"          : "Plan Comptable",
     "CLIENT"                     : "Client",
+    "COMPLEX_JOURNAL_VOUCHER"    : "Ajout de transactions",
     "COMPTE_RESULTAT"            : "Compte Resultat",
     "CONFIG_ACCOUNTING"          : "Configuration Comptes",
     "CONFIG_RUBRIC"              : "Configuration Rubriques",
@@ -967,6 +974,28 @@
   "VOUCHERS": {
     "SIMPLE": {
       "TITLE" : "Bordereau de transfert"
+    },
+    "COMPLEX": {
+      "ADD_ITEMS"            : "Ajouter item(s)",
+      "CASH_PAYMENT"         : "Paiement Caisse",
+      "CREATE_SUCCESS"       : "Transaction postée avec succes",
+      "CREATE_ERROR"         : "Une erreur s'est produite lors du post",
+      "CREDITOR"             : "Crediteur (C)",
+      "DEBTOR"               : "Debiteur (D)",
+      "DEB_CRED"             : "Debtor/Creditor",
+      "DESCRIPTION"          : "Ce module permet de passer des transactions avancees dans le journal",
+      "ENTITY"               : "Entité (Debiteur/Crediteur)",
+      "ERROR_ACCOUNT"         : "Les comptes selectionnés sont invalides",
+      "ERROR_AMOUNT"         : "Les montants sont invalides",
+      "ERROR_TOTALS"         : "Les totaux ne sont pas balancés",
+      "INVALID_VALUES"       : "Detection des valeurs invalides",
+      "PATIENT_INVOICE"      : "Facture Patient",
+      "REFERENCE"            : "Reference",
+      "ROWS"                 : "Ligne(s)",
+      "SELECT_DOCUMENT_TYPE" : "Veuillez selectionner le type de document",
+      "TITLE"                : "Ajour de transactions",
+      "VALID_TOTALS"         : "Les transactions sont valides (Transactions balancées)",
+      "VOUCHER"              : "Bordereau de Transfert"
     }
   }
 }

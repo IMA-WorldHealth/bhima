@@ -56,7 +56,7 @@
         </div>
 
         <div ng-switch-when="action">
-          <form class="panel panel-primary" name="ActionForm" ng-submit="DebtorGroupCtrl.submit(ActionForm.$invalid)" novalidate>
+          <form class="panel panel-primary" name="ActionForm" ng-submit="DebtorGroupCtrl.submit(ActionForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
             <div class="panel-heading">
               {{ DebtorGroupCtrl.actionTitle | translate }}
             </div>

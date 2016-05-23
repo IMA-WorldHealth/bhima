@@ -1,35 +1,51 @@
 <div class="modal-header">
+  <div style="display : inline-block">
   <ol class="headercrumb">
     <li class="static">{{ ReceiptCtrl.title | translate }}</li>
     <li class="title">
-      {{ "COLUMNS.RECEIPT" | translate }}
+      {{ "TABLE.COLUMNS.RECEIPT" | translate }}
       <span ng-if="ReceiptCtrl.identifier" class="label label-warning">{{ReceiptCtrl.receipt[ReceiptCtrl.identifier]}}</span>
     </li>
   </ol>
+  </div>
+  <div
+      id="receipt-confirm-created"
+      ng-if="ReceiptCtrl.notifyCreated"
+      style="padding-top : 8px"
+      class="pull-right">
+    <span class="text-success">
+      <span class="glyphicon glyphicon-ok-circle"></span>
+      {{ReceiptCtrl.createdKey | translate}}
+    </span>
+  </div>
 </div>
 
-<!-- TODO Investigate if this should use latest ui-router standards -->
+<!-- Tempoarary Loading State -->
+<div style="padding : 10px;" ng-if="!ReceiptCtrl.receipt">
+  <p class="text-info"><span class="glyphicon glyphicon-hourglass"></span> {{"RECEIPTS.LOADING"}}</p>
+</div>
+
 <div ng-switch on="ReceiptCtrl.renderer">
-  
-  <!-- JSON Should be exposed to a view provided by the template passed to the -->
-  <!-- controller by the Receipt Modal service -->
-  <div ng-switch-when="json">
-    
-    <!-- TODO Modal height etc. should be standardised -->
-    <div class="bh-modal-content">
-      <div ng-include="ReceiptCtrl.template"></div>
-    </div>
+
+  <!-- PDF -->
+  <div ng-switch-when="ReceiptCtrl.renderers.PDF">
+
+    <iframe
+      id="pdf"
+      ng-src="{{ReceiptCtrl.receipt}}"
+      type="application/pdf"
+      style="width : 100%; height : 50vh; margin-bottom : -5px; border : none;">
+      <!-- TODO: Translate -->
+       <!--<p>Unable to display PDF. Please contact your system administrator</p>-->
+    </iframe>
   </div>
 
-  <!-- PDFs are downloaded through the GET request - they can be displayed using -->
-  <!-- ng-src -->
-  <div ng-switch-when="pdf">
-    
-    <!-- Google Chrome obejct seems to add 5px below outside or margin/padding model - this can be removed if it causes issues -->
-    <object id="pdf" ng-src="{{ReceiptCtrl.receipt}}" type="application/pdf" style="width : 100%; height : 50vh; margin-bottom : -5px;">
-      <!-- TODO: Translate -->
-      <p>Unable to display PDF. Please contact your system administrator</p>
-    </object>
+  <!-- HTML -->
+  <div ng-switch-when="ReceiptCtrl.renderers.HTML">
+
+    <div class="bh-modal-content">
+      <div ng-bind-html="ReceiptCtrl.receipt"></div>
+    </div>
   </div>
 
   <!-- CSV -->

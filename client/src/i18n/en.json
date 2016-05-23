@@ -31,7 +31,7 @@
     "WELCOME"                    : "Welcome to bhima!",
     "GOODBYE"                    : "Thank you for using bhima.  Come back soon!",
     "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application."
-    
+
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -421,6 +421,7 @@
       "TOTAL_BILLED"           : "Total Billed",
       "TOTAL_PAID"             : "Total Paid",
       "TO_ACCOUNT"             : "To Account",
+      "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Unconfigured",
@@ -441,6 +442,8 @@
     "PLACE_HOLDERS": {
       "ENTER_ACCOUNT"      : "Enter account",
       "ENTER_COUNTRY"      : "Enter Country",
+      "ENTER_CREDITOR"     : "Enter Creditor",
+      "ENTER_DEBTOR"       : "Enter Debtor",
       "ENTER_DESCRIPTION"  : "Enter description",
       "ENTER_EMAIL"        : "Enter email",
       "ENTER_MAX_CREDIT"   : "Enter max credit",
@@ -572,7 +575,8 @@
     "BILLING_SERVICES"   : "Billing Services Applied",
     "INVALID_DETAILS"    : "This invoice contains invalid details",
     "INVALID_ITEMS"      : "This invoice contains invalid items",
-    "PAGE_TITLE"         : "Patient Invoice"
+    "PAGE_TITLE"         : "Patient Invoice",
+    "SUCCESS"            : "Patient invoice successfully recorded."
   },
   "PATIENT_REG": {
     "FIND_PATIENT"         : "Find a Patient",
@@ -608,7 +612,7 @@
       "TITLE" : "Show or Hide columns",
       "HELP" : "Check to show the column at journal grid"
     }
-  },  
+  },
   "PRICE_LIST": {
     "ADD_ITEMS"        : "Add an Item",
     "ADD_PRICE_LIST"   : "Add a Price List",
@@ -735,10 +739,13 @@
       "CODE"               : "Code",
       "COST_CENTER"        : "Cost Center",
       "COUNTRY"            : "Country",
-      "CURRENCY"           : "Currency",
+      "CREDIT"             : "Credit",
+      "CURRENCY"           : "Monnaie",
       "DATE"               : "Date",
       "DATE_REGISTERED"    : "Date Registered",
+      "DEBIT"              : "Debit",
       "DESCRIPTION"        : "Description",
+      "DOCUMENT"           : "Document",
       "DOB"                : "Date of birth",
       "EDIT"               : "Edit",
       "EMAIL"              : "Email",
@@ -777,6 +784,7 @@
       "PHONE"              : "Telephone",
       "POSITION"           : "Position",
       "PO_BOX"             : "Poste Office Box",
+      "PRICE"              : "Price",
       "PRICE_LIST"         : "Price List",
       "PROFIT"             : "Profit",
       "PROFIT_CENTER"      : "Profit Center",
@@ -788,6 +796,7 @@
       "REF_GROUP"          : "Ref. Groupe",
       "RESULT"             : "Result",
       "RESULT_ACCOUNT_SCT" : "Result Account section",
+      "RECEIPT"            : "Receipt",
       "SECTOR"             : "Sector",
       "SERVICE"            : "Service",
       "SORTING": {
@@ -800,9 +809,11 @@
       },
       "TEXT"               : "Text",
       "TOTAL"              : "Total",
+      "TRANSACTION_ID"     : "Transaction ID",
       "TYPE"               : "Type",
       "VALUE"              : "Value",
-      "VILLAGE"            : "Village"
+      "VILLAGE"            : "Village",
+      "QUANTITY"           : "Quantity"
     }
   },
   "TREE": {
@@ -829,6 +840,7 @@
     "CAUTION"                    : "Caution",
     "CHART_OF_ACCOUNTS"          : "Chart of Accounts",
     "CLIENT"                     : "Clients",
+    "COMPLEX_JOURNAL_VOUCHER"    : "Journal Vouchers",
     "COMPTE_RESULTAT"            : "Result Account",
     "CONFIG_ACCOUNTING"          : "Configuration accounting",
     "CONFIG_RUBRIC"              : "Configuration Rubrics",
@@ -970,7 +982,29 @@
   },
   "VOUCHERS": {
     "SIMPLE": {
-      "TITLE" : "Transfer Slip"
+      "TITLE" : "Simple Vouchers"
+    },
+    "COMPLEX": {
+      "ADD_ITEMS"            : "Add item(s)",
+      "CASH_PAYMENT"         : "Cash Payment",
+      "CREATE_SUCCESS"       : "Successfully posted",
+      "CREATE_ERROR"         : "An error occured when post",
+      "CREDITOR"             : "Creditor (C)",
+      "DEBTOR"               : "Debitor (D)",
+      "DEB_CRED"             : "Debtor/Creditor",
+      "DESCRIPTION"          : "This Module allows you to make advanced journal transactions manually",
+      "ENTITY"               : "Entity (Debtor/Creditor)",
+      "ERROR_ACCOUNT"         : "Selected accounts are invalid",
+      "ERROR_AMOUNT"         : "Amount's values are invalid",
+      "ERROR_TOTALS"         : "The totals are not balanced",
+      "INVALID_VALUES"       : "There are invalid values detected",
+      "PATIENT_INVOICE"      : "Patient Invoice",
+      "REFERENCE"            : "Reference",
+      "ROWS"                 : "Row(s)",
+      "SELECT_DOCUMENT_TYPE" : "Please select the document type",
+      "TITLE"                : "Advanced Journal Vouchers",
+      "VALID_TOTALS"         : "Transactions are valid (balanced transaction)",
+      "VOUCHER"              : "Voucher"
     }
   }
 }

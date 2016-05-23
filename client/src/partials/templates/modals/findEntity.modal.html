@@ -1,0 +1,69 @@
+<div class="modal-header">
+  <h4>
+    <i class="glyphicon glyphicon-search"></i>
+    {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}
+    <span
+      ng-if="$ctrl.result.uuid"
+      ng-click="$ctrl.refresh()"
+      class="btn btn-default pull-right">
+      <i class="glyphicon glyphicon-refresh"></i>
+    </span>
+  </h4>
+</div>
+
+<div class="modal-body clearfix">
+
+  <div class="form-group">
+
+    <div ng-if="!$ctrl.result.uuid" class="input-group">
+
+      <!-- dropdown button -->
+      <div class="input-group-btn" uib-dropdown tabindex=-1>
+        <button class="btn btn-default" type="button" uib-dropdown-toggle>
+          {{ $ctrl.selectedTypeLabel | translate }} <span class="caret"></span>
+        </button>
+        <ul uib-dropdown-menu>
+          <li ng-repeat="type in $ctrl.types">
+            <a href="" ng-click="$ctrl.setType(type)">
+              {{ type.label | translate }}
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- /dropdown button -->
+
+      <input type="text" class="form-control"
+        ng-model="$ctrl.entity"
+        placeholder="{{ $ctrl.placeholder | translate }}..."
+        uib-typeahead="entity as entity.text for entity in $ctrl.entities | limitTo: 10"
+        typeahead-on-select="$ctrl.selectEntity($item)"
+        autocomplete="off"
+        autocorrect="off">
+
+    </div>
+
+    <div ng-if="$ctrl.result.uuid" class="bg-success">
+      <h4 class="text-center text-success" style="padding:10px; margin:0px;">
+        <i class="glyphicon glyphicon-user"></i>
+        {{ $ctrl.result.label }}
+      </h4>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer clearfix">
+  <div class="pull-right">
+    <button type="button" class="btn btn-default"
+      ng-click="$ctrl.cancel()"
+      data-button-cancel>
+      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    </button>
+
+    <button type="button" class="btn btn-primary"
+      ng-click="$ctrl.submit()"
+      data-button-submit>
+      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+    </button>
+  </div>
+</div>

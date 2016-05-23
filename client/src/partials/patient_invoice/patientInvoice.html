@@ -15,7 +15,7 @@
       <div class="col-xs-12">
         <div class="panel panel-default">
           <div class="panel-body">
-            <form name="detailsForm" novalidate>
+            <form name="detailsForm" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
               <div class="col-md-6">
 
                 <div class="form-group">
@@ -78,9 +78,17 @@
                     max-date="PatientInvoiceCtrl.timestamp">
                 </bh-date-editor>
 
-                <div class="form-group">
+                <div
+                    class="form-group"
+                    ng-class="{'has-error' : detailsForm.$submitted && detailsForm.notes.$invalid}">
                   <label for="invoice-note">{{ "FORM.LABELS.NOTES" | translate }}</label>
-                  <textarea id="invoice-note" ng-model="PatientInvoiceCtrl.Invoice.details.description" name="notes" class="form-control" rows="4">
+                  <textarea
+                      id="invoice-note"
+                      ng-model="PatientInvoiceCtrl.Invoice.details.description"
+                      name="notes"
+                      class="form-control"
+                      rows="4"
+                      required>
                   </textarea>
                   <div class="help-block" ng-messages="detailsForm.notes.$error" ng-show="detailsForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -220,14 +228,9 @@
           ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
           ng-click="PatientInvoiceCtrl.submit(detailsForm)">{{ "FORM.BUTTONS.SUBMIT" | translate }}</button>
         <button
+          id="clear"
           class="btn btn-default"
-          ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
-          ng-click="PatientInvoiceCtrl.clear()"><span class="glyphicon glyphicon-ban-circle"></span> {{ "FORM.BUTTONS.CLEAR" | translate }}</button>
-        <p
-          class="text-danger"
-          ng-if="detailsForm.$submitted && detailsForm.$invalid">
-          <span class="glyphicon glyphicon glyphicon-exclamation-sign"></span> {{ "FORM.INFOS.INVALID_DETAILS" | translate }}
-        </p>
+          ng-click="PatientInvoiceCtrl.clear(detailsForm)"><span class="glyphicon glyphicon-ban-circle"></span> {{ "FORM.BUTTONS.CLEAR" | translate }}</button>
         <p
           class="text-danger"
           ng-if="PatientInvoiceCtrl.Invoice.items.invalid && detailsForm.$submitted">

@@ -8,7 +8,10 @@
       'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
       'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
       }"
-    novalidate>
+    autocomplete="off" 
+	autocapitalize="off" 
+	autocorrect="off" 
+	novalidate>
 
     <!-- inline input zone -->
     <div class="input-group" ng-if="$ctrl.showSearchView">
@@ -55,9 +58,6 @@
         typeahead-loading="$ctrl.loadingPatients"
         typeahead-template-url="/partials/templates/patientListe.tmpl.html"
         typeahead-on-select="$ctrl.selectPatient($item)"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
         ng-required="$ctrl.required">
 
       <!-- submit button for search by ID -->
@@ -156,7 +156,10 @@
       <div class="form-group has-feedback"
         ng-class="{'has-success': $ctrl.loadStatus ==='loaded', 'has-error': $ctrl.loadStatus === 'error'}"
         ng-form="FindPatientForm"
-        novalidate>
+        autocomplete="off" 
+		autocapitalize="off" 
+		autocorrect="off" 
+		novalidate>
 
         <!-- input zone -->
         <div class="input-group input-group-sm">

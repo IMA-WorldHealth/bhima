@@ -87,7 +87,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "PRICE_LIST.ADD_PRICE_LIST" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="PriceListCtrl.submit(CreateForm.$invalid)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="PriceListCtrl.submit(CreateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
@@ -146,7 +146,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'PRICE_LIST.UPDATE' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="PriceListCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="PriceListCtrl.submit(UpdateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>

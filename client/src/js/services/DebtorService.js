@@ -3,18 +3,18 @@ angular.module('bhima.services')
 
 DebtorService.$inject = [ '$http', 'util' ];
 
-/** 
- * Debtor Service 
+/**
+ * Debtor Service
  *
- * This service is responsible for providing an interface between angular 
- * module controllers and the server /debtors API endpoint. It also provides 
- * a number of utility methods for correctly packaging requests. 
+ * This service is responsible for providing an interface between angular
+ * module controllers and the server /debtors API endpoint. It also provides
+ * a number of utility methods for correctly packaging requests.
  *
- * @example 
+ * @example
  * Controller.$inject = ['DebtorService'];
  *
  * var Debtors = DebtorService;
- * 
+ *
  * // Returns all debtor groups
  * Debtors.groups()
  *
@@ -28,6 +28,9 @@ DebtorService.$inject = [ '$http', 'util' ];
 function DebtorService($http, util) {
   var service = this;
 
+  /** returns a list of debtors */
+  service.read = read;
+
   /** update the details of a debtor */
   service.update = update;
 
@@ -39,6 +42,13 @@ function DebtorService($http, util) {
 
   /** returns a list of invoices owed to a given debtor */
   service.invoices = invoices;
+
+  function read(uuid) {
+    var path = '/debtors/';
+
+    return $http.get(path.concat(uuid || ''))
+      .then(util.unwrapHttpResponse);
+  }
 
   function groupDetail(uuid) {
     var path = '/debtors/groups/';

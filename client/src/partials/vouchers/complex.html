@@ -1,0 +1,229 @@
+<!-- breadcrumb header -->
+<bh-breadcrumb
+  path="ComplexVoucherCtrl.paths">
+</bh-breadcrumb>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <form name="ComplexVoucherForm" novalidate>
+      <!-- desctiption  -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+
+            <div class="panel-body">
+
+                <bh-date-editor
+                  date-value="ComplexVoucherCtrl.voucher.date"
+                  max-date="ComplexVoucherCtrl.timestamp"
+                >
+                </bh-date-editor>
+
+                <div
+                  class="form-group"
+                  ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.description.$invalid }">
+                  <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
+                  <textarea
+                    class="form-control"
+                    name="description"
+                    ng-model="ComplexVoucherCtrl.voucher.description"
+                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
+                    required>
+                  </textarea>
+                  <div class="help-block" ng-messages="ComplexVoucherForm.description.$error" ng-show="ComplexVoucherForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <!-- @TODO - use a currency selection component -->
+                <div
+                  class="radio"
+                  ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.currency.$invalid }">
+                  <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
+                  <label ng-repeat="currency in ComplexVoucherCtrl.currencies track by currency.id"
+                    class="radio-inline">
+                    <input
+                      name="currency"
+                      type="radio"
+                      ng-model="ComplexVoucherCtrl.voucher.currency_id"
+                      ng-value="currency.id"
+                      data-currency-option="{{ currency.id }}"
+                      required>
+                    {{ currency.label }}
+                  </label>
+
+                  <div class="help-block" ng-messages="ComplexVoucherForm.currency.$error" ng-show="ComplexVoucherForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="alert alert-info">
+            <h3>{{ 'VOUCHERS.COMPLEX.TITLE' | translate }}</h3>
+            <p>
+              {{ 'VOUCHERS.COMPLEX.DESCRIPTION' | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- detail of transaction  -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <div class="btn pull-left">
+                <i class="glyphicon glyphicon-list-alt"></i>
+                {{ 'FORM.LABELS.TRANSACTION' | translate }}
+              </div>
+
+              <div class="pull-right">
+                <button type="button" class="btn btn-default" ng-click="ComplexVoucherCtrl.addVoucherItem()"
+                  data-button-add-item>
+                  {{ 'VOUCHERS.COMPLEX.ADD_ITEMS' | translate }}
+                  <i class="glyphicon glyphicon-plus"></i>
+                </button>
+              </div>
+
+              <div class="clearfix"></div>
+            </div>
+
+            <table class="table table-condensed table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>{{ 'TABLE.COLUMNS.ACCOUNT' | translate }}</th>
+                  <th class="text-center">{{ 'TABLE.COLUMNS.DEBIT' | translate }}</th>
+                  <th class="text-center">{{ 'TABLE.COLUMNS.CREDIT' | translate }}</th>
+                  <th class="text-center">{{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}</th>
+                  <th class="text-center">{{ 'TABLE.COLUMNS.REFERENCE' | translate }}</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="normalRow"
+                  ng-repeat="row in ComplexVoucherCtrl.rows"
+                  ng-class="{'validRow': row.isValid, 'invalidRow': !row.isValid}">
+                  <td>
+                    <span ng-if="row.isValid" class="text-success iconRow">
+                      <span class="glyphicon glyphicon-ok"></span>
+                    </span>
+                    <span ng-if="!row.isValid" class="text-danger iconRow">
+                      <span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                  </td>
+                  <td style="width:30%">
+                    <input
+                      ng-model="row.account"
+                      ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
+                      type="text"
+                      placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+                      uib-typeahead="account as account.number + ' ' + account.label for account in ComplexVoucherCtrl.accounts | filter:$viewValue | limitTo:8"
+                      typeahead-editable="false"
+                      typeahead-on-select="ComplexVoucherCtrl.checkRowValidity($index)"
+                      data-account-row="{{ $index }}"
+                      class="form-control">
+                  </td>
+                  <td style="width:15%">
+                    <div class="input-group">
+                      <input
+                        ng-model="row.debit"
+                        ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
+                        type="number"
+                        class="form-control text-right"
+                        data-debit-row="{{ $index }}"
+                        required>
+                      <span class="input-group-addon">{{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</span>
+                    </div>
+                  </td>
+                  <td style="width:15%">
+                    <div class="input-group">
+                      <input
+                        ng-model="row.credit"
+                        ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
+                        type="number"
+                        class="form-control text-right"
+                        data-credit-row="{{ $index }}"
+                        required>
+                      <span class="input-group-addon">{{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</span>
+                    </div>
+                  </td>
+                  <td style="width:15%">
+                    <button class="btn btn-default btn-block"
+                      type="button"
+                      ng-click="ComplexVoucherCtrl.openEntityModal(row)"
+                      ng-class="{'btn-success': row.entity.type=='D', 'btn-warning': row.entity.type=='C'}"
+                      data-entity-row="{{ $index }}">
+                      <span ng-if="row.entity.uuid">
+                        <i class="glyphicon glyphicon-user"></i>
+                        {{ row.entity.label }}
+                      </span>
+                      <span ng-if="!row.entity.uuid">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}
+                      </span>
+                    </button>
+                  </td>
+                  <td style="width:15%">
+                    <button class="btn btn-default btn-block"
+                      type="button"
+                      ng-click="ComplexVoucherCtrl.openReferenceModal(row)"
+                      ng-class="{'btn-info': row.reference.uuid}"
+                      data-reference-row="{{ $index }}">
+                      <span ng-if="row.reference.uuid">
+                        <i class="glyphicon glyphicon-file"></i>
+                        {{ row.reference.reference }}
+                      </span>
+                      <span ng-if="!row.reference.uuid">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }}
+                      </span>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger pull-right"
+                      type="button"
+                      ng-click="ComplexVoucherCtrl.removeVoucherItem($index)">
+                      <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="2">{{ ComplexVoucherCtrl.rows.length | number }} {{ 'VOUCHERS.COMPLEX.ROWS' | translate }}</th>
+                  <th class="text-center">{{ ComplexVoucherCtrl.sumDebit | number }} {{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</th>
+                  <th class="text-center">{{ ComplexVoucherCtrl.sumCredit | number }} {{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}</th>
+                  <th colspan="3">&nbsp;</th>
+                </tr>
+              </tfoot>
+            </table>
+
+            <div class="panel-footer clearfix">
+              <div ng-if="!ComplexVoucherCtrl.posted" class="pull-left">
+                <span ng-class="{'text-danger': !ComplexVoucherCtrl.validInput, 'text-success': ComplexVoucherCtrl.validInput}">
+                  <i ng-class="ComplexVoucherCtrl.notifyMessage.icon"></i>
+                  {{ ComplexVoucherCtrl.notifyMessage.label | translate }}
+                </span>
+              </div>
+              <div class="pull-right">
+                <button
+                  class="btn btn-primary"
+                  ng-disabled="!ComplexVoucherCtrl.validInput"
+                  ng-click="ComplexVoucherCtrl.submit(ComplexVoucherForm)"
+                  data-submit>
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                </button>
+              </div>
+            </div>
+            <div ng-if="ComplexVoucherCtrl.posted" id="create-success"></div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

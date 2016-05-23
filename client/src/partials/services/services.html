@@ -94,7 +94,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'SERVICE.ADDING_SERVICE' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="ServicesCtrl.submit(CreateForm.$invalid)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="ServicesCtrl.submit(CreateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                 <label class="control-label" for="bhima-service-name">{{ 'FORM.LABELS.NAME' | translate }}</label>
@@ -147,7 +147,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'SERVICE.EDITING_SERVICE' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="ServicesCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="ServicesCtrl.submit(UpdateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label" for="bhima-service-name">{{ 'FORM.LABELS.NAME' | translate }}</label>

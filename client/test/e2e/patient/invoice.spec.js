@@ -9,6 +9,7 @@ const FU = require('../shared/FormUtils');
 const GU = require('../shared/gridTestUtils.spec.js');
 const PatientInvoicePage = require('./invoice.page.js');
 
+const components = require('../shared/components');
 /**
  * Simple Tests for Patient Invoicing
  *
@@ -39,8 +40,8 @@ describe('Patient Invoice', function () {
 
     // attempt to submit the page.
     page.submit();
-
-    FU.exists(by.id('receipt'), true);
+    
+    FU.exists(by.id('receipt-confirm-created'), true);
   });
 
   it.skip('invoices a patient for multiple items', function () {
@@ -80,7 +81,7 @@ describe('Patient Invoice', function () {
     page.submit();
 
     /** @todo - this can validate totals and receipt content in the future */
-    FU.exists(by.id('receipt'), true);
+    FU.exists(by.id('receipt-confirm-created'), true);
 
   });
 
@@ -99,19 +100,23 @@ describe('Patient Invoice', function () {
     expect(page.btns.submit.isEnabled()).to.eventually.equal(false);
   });
 
-  it.skip('blocks submission for an invalid grid', function () {
+  it('blocks submission for an invalid grid', function () {
 
     // get a new page
     var page = new PatientInvoicePage();
-
+    page.btns.clear.click();
+    
     // set up a valid invoice
     page.prepare();
 
     // add two rows to grid.
     page.addRows(1);
 
-    // make sure the button is still disabled
-    expect((page.btns.submit.isEnabled())).to.eventually.equal(false);
+    page.submit();
+    
+    /** @todo this should use the latest notification components tests methods when they are merged in #388*/
+    components.notification.verify();
+    components.notification.dismiss();
   });
 
   it('shows appropriate error messages for required data');

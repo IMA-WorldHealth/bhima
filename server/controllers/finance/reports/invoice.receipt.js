@@ -14,6 +14,7 @@
 var uuid        = require('node-uuid');
 var q           = require('q');
 var _           = require('lodash');
+var path        = require('path');
 
 var db          = require('../../../lib/db');
 var NotFound    = require('../../../lib/errors/NotFound');
@@ -25,13 +26,19 @@ var Enterprises = require('../../admin/enterprises');
 
 var supportedRender = {};
 
+var wkhtmltopdf = require('wkhtmltopdf');
+
 // currently supports only JSON rendering
 supportedRender.json = require('../../../lib/renderers/json');
+supportedRender.html = require('../../../lib/renderers/html');
+supportedRender.pdf = require('../../../lib/renderers/pdf');
 
-const defaultRender = 'json';
+var defaultRender = 'json';
 
-const FLAG_TRUE = 1;
-const SUCCESS_STATUS = 200;
+var FLAG_TRUE = 1;
+var SUCCESS_STATUS = 200;
+
+var template = path.normalize('./server/controllers/finance/reports/invoice.receipt.handlebars');
 
 exports.build = build;
 
@@ -66,10 +73,10 @@ function build(req, res, next) {
   var invoiceResponse = {};
 
   var renderTarget = queryString.render || defaultRender;
-  var render = supportedRender[renderTarget];
+  var renderer = supportedRender[renderTarget];
 
   /** @todo delegate to additional method */
-  if (_.isUndefined(render)) {
+  if (_.isUndefined(renderer)) {
     throw new BadRequest('Render target provided is invalid or not supported by this report '.concat(renderTarget));
   }
 
@@ -86,12 +93,13 @@ function build(req, res, next) {
     .then(function (headerResult) {
       _.extend(invoiceResponse, headerResult);
 
-      return render(invoiceResponse);
+      return renderer.render(invoiceResponse, template);
     })
     .then(function (renderedResult) {
 
       // send the final (rendered) object to the client
-      res.status(SUCCESS_STATUS).send(renderedResult);
+      res.set(renderer.headers).send(renderedResult);
+      return;
     })
     .catch(next)
     .done();

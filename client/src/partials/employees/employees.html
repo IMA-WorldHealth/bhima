@@ -93,7 +93,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'EMPLOYEE.REGISTRATION_FORM' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="EmployeeCtrl.submit(CreateForm.$invalid)" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="EmployeeCtrl.submit(CreateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.prenom.$invalid }">
                 <label class="control-label" for="bhima-employee-prenom">{{ 'FORM.LABELS.FIRST_NAME' | translate }}</label>
@@ -269,7 +269,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'EMPLOYEE.EDIT' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="EmployeeCtrl.submit(UpdateForm.$invalid)" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="EmployeeCtrl.submit(UpdateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.prenom.$invalid }">
                 <label class="control-label" for="bhima-employee-prenom">{{ 'FORM.LABELS.FIRST_NAME' | translate }}</label>
