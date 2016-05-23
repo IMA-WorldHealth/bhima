@@ -5,6 +5,7 @@ DepotManagementController.$inject = ['$translate', 'DepotService', 'SessionServi
 
 /**
  * Depot Management Controller
+ *
  * This controller is about the depot management module in the admin zone
  * It's responsible for creating, editing and updating a depot
  */
@@ -14,23 +15,20 @@ function DepotManagementController($translate, DepotService, SessionService, uti
   var vm = this;
 
   /** breadcrumb configurations */
-  vm.bcPaths = [
-    {
-      label: $translate.instant('DEPOT.MAIN.TITLE'),
-      current: true
-    }
-  ];
-  vm.bcButtons = [
-    {
-      dataMethod : 'create',
-      color  : 'btn-default',
-      icon   : 'glyphicon glyphicon-plus-sign',
-      label  : $translate.instant('DEPOT.ADD_DEPOT'),
-      action : create
-    }
-  ];
+  vm.bcPaths = [{
+    label: $translate.instant('DEPOT.MAIN.TITLE'),
+    current: true
+  }];
 
-  /** variables */
+  vm.bcButtons = [{
+    dataMethod : 'create',
+    color  : 'btn-default',
+    icon   : 'glyphicon glyphicon-plus-sign',
+    label  : $translate.instant('DEPOT.ADD_DEPOT'),
+    action : create
+  }];
+
+  /* variables */
   var map = {
     create : {
       title : 'DEPOT.ADD_DEPOT',
@@ -62,7 +60,7 @@ function DepotManagementController($translate, DepotService, SessionService, uti
   depotsList();
 
   function depotsList() {
-    DepotService.getDepots()
+    DepotService.read()
     .then(function (list) {
       vm.depotList = list;
     });
@@ -113,7 +111,7 @@ function DepotManagementController($translate, DepotService, SessionService, uti
   }
 
   function removeDepot(uuid) {
-    DepotService.remove(uuid, vm.depot)
+    DepotService.delete(uuid)
     .then(function (res) {
       vm.state.removed = true;
       vm.view = 'success';
@@ -136,7 +134,7 @@ function DepotManagementController($translate, DepotService, SessionService, uti
     vm.actionTitle = map[action].title;
 
     if (uuid && (action === 'update' || action === 'remove')) {
-      DepotService.getDepots(uuid)
+      DepotService.read(uuid)
       .then(function (depot) {
         vm.depot = depot;
       });
@@ -153,5 +151,4 @@ function DepotManagementController($translate, DepotService, SessionService, uti
     vm.state.created = false;
     vm.state.removed = false;
   };
-
 }

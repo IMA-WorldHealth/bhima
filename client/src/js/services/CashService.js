@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('CashService', CashService);
 
 CashService.$inject = [
-  'PrototypeApiService', 'ExchangeRateService', 'SessionService'
+  'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment'
 ];
 
 /**
@@ -11,7 +11,7 @@ CashService.$inject = [
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(PrototypeApiService, Exchange, Session) {
+function CashService(PrototypeApiService, Exchange, Session, moment) {
   var service = this;
 
   // inherit prototype API methods
@@ -145,6 +145,6 @@ function CashService(PrototypeApiService, Exchange, Session) {
    * @private
    */
   function generateTransferDescription (){
-    return 'Transfer Voucher/'.concat(new Date().toISOString().slice(0, 10), '/', Session.user.id);
+    return 'Transfer Voucher/'.concat(moment().format('YYYY-MM-DD'), '/', Session.user.id);
   }
 }

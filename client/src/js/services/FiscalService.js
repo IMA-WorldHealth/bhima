@@ -4,10 +4,13 @@ angular.module('bhima.services')
 FiscalService.$inject = ['PrototypeApiService'];
 
 /**
- * Fiscal Service
+ * @class FiscalService
+ * @extends PrototypeApiService
  *
  * This service is responsible for loading the Fiscal Years and Periods, as well
  * as providing metadata like period totals, opening balances and such.
+ *
+ * @requires PrototypeApiService
  */
 function FiscalService(PrototypeApiService) {
   var service = this;

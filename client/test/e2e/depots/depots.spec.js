@@ -1,6 +1,6 @@
 /* global element, by, inject, browser */
-const chai    = require('chai');
-const expect  = chai.expect;
+const chai   = require('chai');
+const expect = chai.expect;
 
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
@@ -9,7 +9,7 @@ helpers.configure(chai);
 describe('Depots Management', function () {
 
   // navigate to the page
-  before(() => helpers.navigate('#/depots_management'));
+  before(() => helpers.navigate('#/depots'));
 
   const depot = {
     text : 'E2E_new_depot',

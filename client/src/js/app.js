@@ -135,21 +135,21 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/reports_proposed/invoice/invoice.html'
   })
 
-  /* Admin : depot management */
-  .state('/depots_management', {
-    url : '/depots_management',
+  /* admin : depot management */
+  .state('depots', {
+    url : '/depots',
     controller : 'DepotManagementController as DepotCtrl',
-    templateUrl : 'partials/depots_management/depots_management.html'
+    templateUrl : 'partials/depots/depots.html'
   })
 
-  /* Admin : debtor group management */
+  /* admin : debtor group management */
   .state('debtor_groups', {
     url : '/debtor_groups',
     controller : 'DebtorGroupsController as DebtorGroupCtrl',
     templateUrl : 'partials/debtor_groups/debtor_groups.html'
   })
 
-  /* Admin: donors management */
+  /* admin: donors management */
   .state('donors', {
     url : '/donors',
     controller : 'DonorsController as DonorCtrl',
@@ -574,11 +574,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* depot routes */
-  .state('depots', {
-    url : '/depots',
-    controller : 'DepotController as DepotCtrl',
-    templateUrl : 'partials/depots/depots.html'
-  })
   .state('/depots/:depotId/entry', {
     controller : 'DepotEntryController',
     templateUrl : 'partials/depots/entry/entry.html'
