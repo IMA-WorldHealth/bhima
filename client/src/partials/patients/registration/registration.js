@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$location', 'ScrollService', 'PatientService', 'DebtorService',
-  'SessionService', 'util'
+  '$location', 'PatientService', 'DebtorService',
+  'SessionService', 'util', 'NotifyService'
 ];
 
 /**
@@ -16,7 +16,7 @@ PatientRegistrationController.$inject = [
  *
  * @module controllers/PatientRegistrationController
  */
-function PatientRegistrationController($location, ScrollTo, Patients, Debtors, Session, util) {
+function PatientRegistrationController($location, Patients, Debtors, Session, util, Notify) {
   var viewModel = this;
 
   // models for collecting patient data in logical groups
@@ -78,7 +78,7 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, S
         //TODO Hospital card should receive a value that notifies the user of register success
         $location.path(patientCardPath.concat(confirmation.uuid, '/edit'));
       })
-      .catch(handleServerError);
+      .catch(Notify.handleError);
   }
 
   /**
@@ -90,19 +90,5 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, S
 
   function calculateYOB(value) {
     viewModel.medical.dob = value && value.length === 4 ? new Date(value + '-' + util.defaultBirthMonth) : undefined;
-  }
-
-  /**
-   * This method is responsible for handling exceptions thrown by the server
-   * that the client has not anticipated.
-   *
-   * @todo  Discuss if this should be a library to account for standard client side errors,
-   *        -1 for offline etc. This should not have to be done everywhere.
-   *        This could be implemented with an $http interceptor.
-   * @param  {object}  error  An Error object that has been sent from the server.
-   */
-  function handleServerError(error) {
-    viewModel.exception = error;
-    ScrollTo('exceptionAlert');
   }
 }

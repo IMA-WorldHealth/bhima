@@ -31,14 +31,20 @@ exports.headers = headers;
  * @param {String} template   Path to a handlebars template
  * @returns {Promise}         Promise resolving in compiled PDF 
  */
-function renderPDF(context, template) {
+function renderPDF(context, template, options) {
   // pdf requires absolute path to be passed to templates to be picked up by wkhtmltopdf on windows
   context.absolutePath = path.join(process.cwd(), 'client');
 
   return html.render(context, template)
     .then(function (htmlStringResult) {
+      
+      // only apply specific options for now
+      var pageSize = options.pageSize || 'A4';
+      var orientation = options.orientation || 'portrait';
+      var pdfOptions = { pageSize, orientation };
+      
       // pass the compiled html string to the wkhtmltopdf process, this is just a wrapper for the CLI utility
-      let pdfStream = wkhtmltopdf(htmlStringResult);
+      let pdfStream = wkhtmltopdf(htmlStringResult, pdfOptions);
       
       // this promise will only be resolved once the stream 'end' event is fired - with this implementation this will not allow the client to
       // receive chunks of data as they are available

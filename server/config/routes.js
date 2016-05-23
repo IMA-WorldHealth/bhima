@@ -17,6 +17,7 @@ const users              = require('../controllers/admin/users');
 var locations            = require('../controllers/locations');
 var tree                 = require('../controllers/tree');
 var patients             = require('../controllers/medical/patients');
+var patientReceipt       = require('../controllers/medical/reports/patient.receipt');
 var patientGroups        = require('../controllers/medical/patientGroups');
 var snis                 = require('../controllers/medical/snis');
 var projects             = require('../controllers/medical/projects');
@@ -325,7 +326,8 @@ exports.configure = function configure(app) {
 
   // Reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', invoiceReceipt.build);
-
+  app.get('/reports/patient/:uuid', patientReceipt.build);
+  
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
   app.get('/patients/groups/:uuid', patientGroups.detail);

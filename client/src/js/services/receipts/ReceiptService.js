@@ -40,4 +40,16 @@ function ReceiptService($http, util) {
     return $http.get(route, {params: options, responseType: responseType})
       .then(util.unwrapHttpResponse);
   }
+  
+  function patient(uuid, options) {
+    var route ='/reports/patient/'.concat(uuid);
+    var responseType = null;
+    
+    if (options.render === renderers.PDF) { 
+      responseType = 'arraybuffer';
+    }
+    
+    return $http.get(route, {params : options, responseType : responseType})
+      .then(util.unwrapHttpResponse);  
+  }
 }
