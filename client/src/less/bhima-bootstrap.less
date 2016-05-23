@@ -51,8 +51,30 @@ growl-notifications growl-notification {
 }
 
 /**
-* remove the spinners (arrows) in inputs in chrome and firefox
-*/
+ * Make sure the input groups have nice validation
+ */
+.has-success .btn.btn-default,
+.has-success .input-group-addon {
+  color : @state-success-text;
+  border-color: @state-success-text;
+}
+
+.has-error .btn.btn-default,
+.has-error .input-group-addon {
+  color: @state-danger-text;
+  border-color: @state-danger-text;
+}
+
+.has-warning .btn.btn-default,
+.has-warning .input-group-addon {
+  color: @state-warning-text;
+  border-color: @state-warning-text;
+  background-color: @state-warning-bg;
+}
+
+/**
+ * remove the spinners (arrows) in inputs in chrome and firefox
+ */
 ::-webkit-inner-spin-button { -webkit-appearance: none;}
 ::-webkit-outer-spin-button { -webkit-appearance: none;}
 input[type=number] {-moz-appearance: textfield;}
@@ -85,9 +107,9 @@ input[type=number] {-moz-appearance: textfield;}
 }
 
 /**
-* Slightly pad the bottom of elements.  Useful for the floating columns on top
-* of each other on small screens.
-*/
+ * Slightly pad the bottom of elements.  Useful for the floating columns on top
+ * of each other on small screens.
+ */
 .pad-bottom {
   padding-bottom : @grid-gutter-width / 2;
 }
