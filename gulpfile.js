@@ -70,7 +70,7 @@ var paths = {
       'client/vendor/angular-ui-grid/ui-grid.min.js',
 
       // ChartJS
-      'client/vendor/Chart.js/Chart.js',
+      'client/vendor/Chart.js/dist/Chart.bundle.min.js',
       'client/vendor/angular-chart.js/dist/angular-chart.min.js',
 
       // Angular Growl

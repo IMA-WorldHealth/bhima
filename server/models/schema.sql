@@ -751,6 +751,16 @@ CREATE TABLE `enterprise` (
   FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `event`;
+CREATE TABLE `event` (
+  `timestamp`   TIMESTAMP NOT NULL,
+  `user_id`     SMALLINT(5) UNSIGNED NOT NULL,
+  `channel`     TEXT NOT NULL,
+  `type`        TEXT NOT NULL,
+  `data`        TEXT NOT NULL, -- TODO, this should be JSON in newer MySQL
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `exchange_rate`;
 CREATE TABLE `exchange_rate` (
@@ -1847,14 +1857,14 @@ CREATE TABLE `unit` (
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
-  `id`        SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(80) NOT NULL,
-  `password` VARCHAR(100) NOT NULL,
-  `first` text NOT NULL,
-  `last` text NOT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `active` tinyint(4) NOT NULL DEFAULT 0,
-  `pin` char(4) NOT NULL DEFAULT 0,
+  `id`          SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username`    VARCHAR(80) NOT NULL,
+  `password`    VARCHAR(100) NOT NULL,
+  `first`       TEXT NOT NULL,
+  `last`        TEXT NOT NULL,
+  `email`       VARCHAR(100) DEFAULT NULL,
+  `active`      TINYINT(4) NOT NULL DEFAULT 0,
+  `pin`         CHAR(4) NOT NULL DEFAULT 0,
   `last_login`  TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -219,14 +219,14 @@
       "SELECT_INVOICES"       : "Select Invoices",
       "SUBMIT"                : "Submit",
       "SUBMIT_CHANGES"        : "Submit Changes",
-      "THIS_MONTH"            : "This Month",
       "THIS_WEEK"             : "This Week",
       "THIS_YEAR"             : "This Year",
       "TODAY"                 : "Today",
-      "UPDATE_PASSWORD"       : "Update Password"
+      "UPDATE_PASSWORD"       : "Update Password",
+      "UPDATE"                : "Update"
     },
     "DIALOGS": {
-      "CONFIRM_DELETE" : "Do you confirm the deletion ?"
+      "CONFIRM_DELETE" : "Do you confirm the deletion?"
     },
     "ERRORS": {
       "CONNECTION"         : "Connection error",
@@ -716,6 +716,16 @@
     "SUPPLIER_DETAILS" : "Details",
     "TITLE"            : "Suppliers Management"
   },
+  "SYSTEM" : {
+    "PLATFORM" : "Platform",
+    "INFORMATION" : "System Information",
+    "CPUS" : "Number of CPUs",
+    "MACHINE_UPTIME" : "Server Uptime",
+    "PROCESS_UPTIME" : "Process Uptime",
+    "MEMORY_USAGE" : "Memory Usage",
+    "VERSION": "Version",
+    "EVENTS" : "System Events"
+  },
   "TABLE": {
     "COLUMNS": {
       "ABBREVIATION"       : "Abbreviation",
@@ -995,5 +1005,12 @@
       "VALID_TOTALS"         : "Transactions are valid (balanced transaction)",
       "VOUCHER"              : "Voucher"
     }
+  },
+  "GRAPHS" : {
+    "PATIENT_REGISTRATIONS" : "Patient Registrations",
+    "PATIENT_INVOICES" : "Patient Invoices",
+    "MEDICINE_DISTRIBUTIONS" : "Medicine Distributions",
+    "LOGINS" : "Logins",
+    "PURCHASES" : "Purchases"
   }
 }
