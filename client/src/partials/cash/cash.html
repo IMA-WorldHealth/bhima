@@ -1,7 +1,6 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
       <li class="static">{{ "CASH.TITLE" | translate }}</li>
       <li class="title">{{ CashCtrl.cashbox.label }}</li>
     </ol>
@@ -22,21 +21,6 @@
         <button class="btn btn-primary btn-block" ng-click="CashCtrl.openTransferModal()" data-perform-transfer>
           <span class="glyphicon glyphicon-export"></span> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
         </button>
-
-        <div class="alert alert-info btn-block">
-          <p style="margin-bottom: 10px;" ng-if="!CashCtrl.cashbox.id">
-            <span class="glyphicon glyphicon-info-sign"></span> {{ "CASH.VOUCHER.CASHBOXES.UNCONFIGURED" | translate }}
-            <span class="glyphicon glyphicon-inbox"></span>
-          </p>
-
-          <p>
-            <span class="glyphicon glyphicon-question-sign"></span> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
-            <a href="#/cashboxes">
-              <span class="glyphicon glyphicon-link"></span> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
-            </a>
-          </p>
-        </div>
-
       </div>
 
       <!-- Cash Voucher Form -->
@@ -44,11 +28,11 @@
         <div class="panel panel-primary">
           <div class="panel-heading">
             <span class="glyphicon glyphicon-barcode"></span>
-            {{ "CASH.VOUCHER.SLIP" | translate }} <strong> :: {{ CashCtrl.cashbox.label }} ::</strong>
+            {{ "CASH.VOUCHER.SLIP" | translate }} <span class="pull-right">{{ CashCtrl.cashbox.label }}</span>
           </div>
           <div class="panel-body">
 
-            <form name="CashVoucherForm" bh-submit="CashCtrl.submit()" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="CashVoucherForm" bh-submit="CashCtrl.submit(CashVoucherForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <fieldset ng-disabled="CashVoucherForm.$loading">
 
@@ -64,24 +48,14 @@
                 </bh-date-editor>
 
                 <!-- currency selection -->
-                <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.currency.$invalid }">
-                  <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
-                  <label ng-repeat="currency in CashCtrl.cashbox.currencies track by currency.currency_id" class="radio-inline">
-                    <input
-                      name="currency"
-                      type="radio"
-                      ng-model="CashCtrl.payment.currency_id"
-                      ng-value="currency.currency_id"
-                      ng-change="CashCtrl.digestExchangeRate()"
-                      data-currency-option="{{ currency.currency_id }}"
-                      required>
-                    {{ CashCtrl.currencies.format(currency.currency_id); }}
-                  </label>
-
-                  <div class="help-block" ng-messages="CashVoucherForm.currency.$error" ng-show="CashVoucherForm.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
+                <bh-currency-select
+                  currency-id="CashCtrl.payment.currency_id"
+                  validation-trigger="CashVoucherForm.$submitted"
+                  on-change="CashCtrl.digestExchangeRate()"
+                  disable-ids="CashCtrl.disabledCurrencyIds"
+                  cashbox-id="CashCtrl.cashbox.id"
+                  >
+                </bh-currency-select>
 
                 <!-- determine if we are creating a caution or an invoice payment -->
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
@@ -179,16 +153,11 @@
                   >
                 </bh-currency-input>
 
-                <div class="form-group">
+                <div class="form-group text-right">
                   <bh-loading-button loading-state="CashVoucherForm.$loading">
                     {{ "FORM.BUTTONS.SUBMIT" | translate }}
                   </bh-loading-button>
                 </div>
-
-                <!-- show any HTTP errors that are logged from the server -->
-                <p ng-show="CashCtrl.HttpError" class="text-danger">
-                  <span class="glyphicon glyphicon-alert"></span> {{ CashCtrl.HttpError | translate }}
-                </p>
               </fieldset>
             </form>
           </div>

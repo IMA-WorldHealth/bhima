@@ -1,4 +1,4 @@
-/* global browser, element, by, protractor */
+/* global browser, element, by */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -8,17 +8,11 @@ helpers.configure(chai);
 
 const components = require('../shared/components');
 const GU = require('../shared/gridTestUtils.spec.js');
-const EC = protractor.ExpectedConditions;
 const FU = require('../shared/FormUtils');
 
 describe('Cash Payments Module', function () {
 
   const path = '#/cash';
-
-  const cashboxA = {
-    id: 1,
-    text : 'Test Primary Cashbox A'
-  };
 
   const cashboxB = {
     id: 2,
@@ -32,98 +26,76 @@ describe('Cash Payments Module', function () {
 
   describe('Cashbox Select Interface', function () {
 
-    it('navigating to /cash/:unknownId should reroute to /cash', function () {
+    it('navigating to /cash/:unknown should send a notification error ', function () {
 
-      // navigate to the
-      browser.get(path.concat('/unknownId'));
+      // navigate to an invalid cashbox
+      helpers.navigate(path.concat('/unknown'));
 
-      // the page should be rerouted to the '/cash' page.
-      expect(helpers.getCurrentPath()).to.eventually.equal(path);
-    });
+      // expect the 'cashbox selection' modal to appear
+      FU.exists(by.css('[data-cashbox-modal]'), true);
 
-    it('navigating to a known cashbox should not be re-routed', function () {
+      // expect a notification error
+      // components.notification.hasError();
 
-      // our target is cashboxA
-      var target = path.concat('/' + cashboxA.id);
+      // select a cashbox
+      element(by.id('cashbox-3')).click();
+      element(by.css('[data-cashbox-modal-submit]')).click();
 
-      // simply going to the page should set the cashbox ID in localstorage
-      browser.get(target);
-
-      // confirm that we actually go to the page
-      expect(helpers.getCurrentPath()).to.eventually.equal(target);
+      // expect the 'cashbox selection' modal to disappear
+      FU.exists(by.css('[data-cashbox-modal]'), false);
     });
 
     it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', function () {
 
-      // our target is cashboxA
-      var target = path.concat('/' + cashboxA.id);
+      // our target is cashbox B
+      var target = path.concat('/' + cashboxB.id);
 
-      // implicitly choose cashbox A by navigating to it directly
-      browser.get(target);
+      // implicitly choose cashbox B by navigating to it directly
+      helpers.navigate(target);
 
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
 
       // attempt to return to /cash manually
-      browser.get(path);
+      helpers.navigate(path);
 
-      // expect that we were routed back to cashbox A
-      expect(helpers.getCurrentPath()).to.eventually.equal(path);
-    });
+      // the cashbox selection modal should not appear
+      FU.exists(by.css('[data-cashbox-modal]'), false);
 
-    it('navigating to /cash after a selection is made should re-route to /cash', function () {
-
-      // our target is cashboxB
-      var target = path.concat('/' + cashboxB.id);
-
-      // emulate a selection by simply going to the direct URL
-      // this should set the cashbox ID in localstorage
-      browser.get(target);
-
-      // confirm that we actually go to the page
+      // the url should be the original target
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
-
-      // attempt to return to the cash page manually
-      browser.get(path);
-
-      // the browser should be rerouted to the cashboxB page
-      expect(helpers.getCurrentPath()).to.eventually.equal(path);
     });
 
     it('should allow a user to select and deselect a cashbox', function () {
+
       // the auxiliary cashbox is the target
       var targetAuxiliary1 = path.concat('/' + cashboxC.id);
-      // navigate to a page that display the select cashbox modal
-      browser.get(path.concat('/unknownId'));
-      // select the auxiliary cashbox C displayed
-      var cbxItem = element(by.id('cashbox_' + cashboxC.id));
-      cbxItem.click();
-      // click on the ok button of the modal box
-      var okButton = element(by.css('[data-cashbox-modal-submit]'));
-      okButton.click()
-      // verify that we get to the cashboxB page
+
+      helpers.navigate(targetAuxiliary1);
+
+      // verify that we get to the cashboxC page
       expect(helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary1);
 
       // the auxiliary cashbox is the target
       var targetAuxiliary2 = path.concat('/' + cashboxB.id);
+
       // use the button to navigate back to the cashbox select module
       element(by.css('[data-change-cashbox]')).click();
+
       // select the auxiliary cashbox B displayed
-      var cbxItem = element(by.id('cashbox_' + cashboxB.id));
-      cbxItem.click();
+      element(by.id('cashbox-' + cashboxB.id)).click();
+
       // click on the ok button of the modal box
-      var okButton = element(by.css('[data-cashbox-modal-submit]'));
-      okButton.click()
+      element(by.css('[data-cashbox-modal-submit]')).click();
+
       // verify that we get to the cashboxB page
       expect(helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary2);
-
     });
-
   });
 
-  /** tests for the cash payments form page */
+  /* tests for the cash payments form page */
   describe('Cash Payments Form Page', function () {
 
-    /** navigate to the page before each function */
+    /* navigate to the page before each function */
     beforeEach(function () {
       helpers.navigate(path);
     });
@@ -156,9 +128,8 @@ describe('Cash Payments Module', function () {
       var cautionOption = element(by.css('[data-caution-option="1"]'));
       cautionOption.click();
 
-      // select the FC currency from the currency
-      var FC = element(by.css('[data-currency-option="1"]'));
-      FC.click();
+      // select the FC currency from the currency select
+      components.currencySelect.set(1);
 
       // enter the amount to pay for a caution
       components.currencyInput.set(mockCautionPayment.amount, null);
@@ -202,8 +173,7 @@ describe('Cash Payments Module', function () {
       modalSubmit.click();
 
       // select the USD currency from the currency radio buttons
-      var USD = element(by.css('[data-currency-option="2"]'));
-      USD.click();
+      components.currencySelect.set(2);
 
       // enter the amount to pay for an invoice
       components.currencyInput.set(mockInvoicesPayment.amount, null);

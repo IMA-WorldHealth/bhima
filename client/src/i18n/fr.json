@@ -67,8 +67,7 @@
         "CURRENT_CASHBOX" : "Caisse auxilliare courant",
         "LINK"            : "Cliquez ici pour l'ajouter.",
         "MISSING"         : "Vous ne trouvez pas votre caisse?",
-        "TRANSFER"        : "Transférer Fonds",
-        "UNCONFIGURED"    : "Vous n'avez pas encore configuré une caisse. S'il vous plaît choisir une caisse en cliquant sur le bouton (Changer de Caisse)"
+        "TRANSFER"        : "Transférer Fonds"
       },
       "DEBTOR_INVOICES" : "Factures des débiteurs",
       "RECEIPTS_TITLE"  : "Reçu de paiement des factures",

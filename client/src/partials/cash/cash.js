@@ -3,170 +3,130 @@ angular.module('bhima.controllers')
 
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
-  '$stateParams', '$location', 'PatientService', 'ExchangeRateService', 'SessionService',
-  'ModalService'
+  '$stateParams', '$location', 'ExchangeRateService', 'SessionService',
+  'ModalService', 'NotifyService', '$q'
 ];
 
 /**
- * The Cash Payments Controller
+ * @class CashController
  *
+ * @description
  * This controller is responsible for binding the cash payments controller to
  * its view.  Cash payments can be made against future invocies (cautions) or
  * against previous invoices (sales).  The cash payments module provides
  * functionality to pay both in multiple currencies.
  *
- * @todo documentation improvements
- * @todo should the $location routing and/or appcache be in a service?
- * @todo move invoices modal into a service
- * @todo move receipt modal into a service
- *
- * @module bhima/controllers/CashController
+ * @todo - documentation improvements
+ * @todo - deep link cashbox module from various states
+ * @todo - move away from $location routing to $state routing.
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $location, Patients, Exchange, Session, ModalService) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $location, Exchange, Session, Modals, Notify, $q) {
 
-  /** @const controller view-model alias */
+  /* controller view-model alias */
   var vm = this;
 
-  /**
-  * @const persistent cashbox store
-  * This should be the same as in CashboxSelect Controller
-  */
+  /*
+   * persistent cashbox store. This should be the same as in CashboxSelect Controller
+   */
   var cache = AppCache('CashPayments');
 
-  /** @const id of the currently select cashbox */
+  /* id of the currently select cashbox */
   var cashboxId = $stateParams.id;
 
-  /** default to dots for currency symbol */
-  vm.currencyLabel = '...';
-
   // bind methods
-  vm.currencies = Currencies;
   vm.openInvoicesModal = openInvoicesModal;
   vm.openTransferModal = openTransferModal;
   vm.openSelectCashboxModal = openSelectCashboxModal;
-  vm.changeCashbox = changeCashbox;
   vm.usePatient = usePatient;
-  vm.hasFutureDate = hasFutureDate;
   vm.digestExchangeRate = digestExchangeRate;
   vm.toggleVoucherType = toggleVoucherType;
   vm.submit = submit;
 
-  // temporary error handler until an application-wide method is described
-  function handler(error) {
-
-    // if we have received 404 for while reading the cashbox, reroute
-    // to the cashboxes page.
-    if (error.status === 404) {
-      $location.url('/cash');
-      openSelectCashboxModal();
-
-    // for any error that has a translatable error code, bind to view
-    } else if (error.data && error.data.code) {
-      vm.HttpError = error.data.code;
-
-    // unclear what action to take - throw the error.
-    } else {
-      throw error;
-    }
-  }
-
-  /**
-   * warns if the date is in the future
-   * @todo - refactor into an angular.component.
-   * @see Issue #58.
-   */
-  function hasFutureDate() {
-    return (vm.payment.date > vm.timestamp);
-  }
-
-  /**
-   * switches the date flag to allow users to edit the date.
-   * @todo refactor into an angular.component
-   * @see Issue #58.
-   */
-  function toggleDateInput() {
-    vm.lockDateInput = !vm.lockDateInput;
-  }
-
-  // removes the cashbox from the local cache
-  function changeCashbox() {
-    delete cache.cashbox;
-    $location.path('/cash');
-  }
-
-  /**
-   * Fired on controller start or form refresh
-   * @private
-   */
+  // fired on controller start or form refresh
   function startup() {
 
-    if ((!cache.cashbox || (cache.cashbox && !cache.cashbox.id)) && !cashboxId) {
-
-      /**
-       * first case :
-       * No data in the cache && No data in stateParams
-       */
-      openSelectCashboxModal();
-
-    } else if (cache.cashbox && cache.cashbox.id && !cashboxId) {
-
-      /**
-       * second case :
-       * Data in the cache && No data in stateParams
-       * Be sure data in cache has correct authorization according project
-       */
-      Cashboxes.read(cache.cashbox.id)
-      .then(function (cashbox) {
-        cashbox = handleAuth(cashbox);
-        if (cashbox.id) {
-          vm.cashbox = cashbox;
-          cache.cashbox = cashbox;
-        } else {
-          openSelectCashboxModal();
-        }
-      }).catch(handler);
-
-    } else if (cashboxId) {
-
-      /**
-       * third case :
-       * Data in stateParams
-       * Be sure data in cache has correct authorization according project
-       */
-       Cashboxes.read(cashboxId)
-       .then(function (cashbox) {
-         cashbox = handleAuth(cashbox);
-         if (cashbox.id) {
-           vm.cashbox = cashbox;
-           cache.cashbox = cashbox;
-         } else {
-           openSelectCashboxModal();
-         }
-       }).catch(handler);
-
-    }
-
-    /** This is the actual payment form */
+    /* This is the actual payment form */
     vm.payment = { date : new Date() };
 
     // timestamp to compare date values
     vm.timestamp = new Date();
     vm.enterprise = Session.enterprise;
+    vm.payment.currency_id = vm.enterprise.currency_id;
 
-    // load currencies for later templating
-    Currencies.read();
+    // check if there is a cached cashbox, either in $localStorage or $stateParams
+    var noCachedCashbox = !cashboxId && (!cache.cashbox || !cache.cashbox.id);
+
+    // if there is no data in the cache or $stateParams, open the cashbox selection modal
+    if (noCachedCashbox) {
+      return openSelectCashboxModal();
+    }
+
+    // if we got here, a cashbox id exists in either $stateParams or the
+    // appcache.  We will bias towards $stateParams to allow linking from
+    // elsewhere.
+
+    // get the cashbox id
+    var id = cashboxId || cache.cashbox.id;
+
+    Currencies.read()
+    .then(function (currencies) {
+      vm.currencies = currencies;
+      return Cashboxes.read(id);
+    })
+    .then(function (cashbox) {
+
+      // make sure the cashbox we got was valid.  If not, open the cashbox
+      // selection modal.  If so, allow through
+      if (!validCashbox(cashbox)) {
+        return openSelectCashboxModal();
+      }
+
+      // set the cashbox selection in localstorage and in URL
+      setCashboxSelection(cashbox);
+    })
+    .catch(function (error) {
+
+      // if we hit a 404 error, we don't have a valid cashbox.
+      if (error.status === 404) {
+        Notify.danger('VOUCHER.CASHBOXES.NO_CASHBOX_SELECTED');
+        openSelectCashboxModal();
+
+      // otherwise, display a system error
+      } else {
+        return $q.reject(error);
+      }
+    })
+    .catch(Notify.handleError);
 
     // make sure we have exchange
-    Exchange.read();
+    Exchange.read()
+    .catch(Notify.handleError);
   }
 
-  function handleAuth(cashbox) {
-    return (cashbox.project_id === Session.project.id && cashbox.is_auxiliary === 1) ? cashbox : {};
+  function calculateDisabledIds() {
+    // collect cashbox ids in an array
+    var cashboxCurrencyIds = vm.cashbox.currencies.reduce(function (array, currency) {
+      return array.concat(currency.currency_id);
+    }, []);
+
+    // find all ids that are not cashbox ids, to disable them
+    vm.disabledCurrencyIds = vm.currencies.reduce(function (array, currency) {
+      var bool = (cashboxCurrencyIds.indexOf(currency.id) === -1);
+      return array.concat(bool ? currency.id : []);
+    }, []);
+  }
+
+  // returns true if the cashbox belongs to the project and is valid
+  function validCashbox(cashbox) {
+    return (
+      cashbox.project_id === Session.project.id &&
+      cashbox.is_auxiliary === 1
+    );
   }
 
   /**
-  * clears the invoices field whenever the voucher type changes for a better UX
-  */
+   * clears the invoices field whenever the voucher type changes for a better UX
+   */
   function toggleVoucherType() {
     delete vm.payment.invoices;
   }
@@ -177,33 +137,30 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
     vm.patient = patient;
   }
 
-  /** Receipt Modal */
-  function openReceiptModal(uuid) {
-    ModalService.openPatientReceipt({ uuid: uuid, patientUuid: vm.patient.uuid });
-  }
-
   /** Transfer Modal */
   function openTransferModal() {
-    ModalService.openTransfer({ cashbox: vm.cashbox });
+    Modals.openTransfer({ cashbox: vm.cashbox });
   }
 
   /** Select Cashbox Modal */
   function openSelectCashboxModal() {
-    var cache_cashbox_id = cache.cashbox && cache.cashbox.id ? cache.cashbox.id : undefined;
-    ModalService.openSelectCashbox({ cache_cashbox_id: cache_cashbox_id, url_cashbox_id: cashboxId })
-    .then(function (result) {
-      vm.cashbox = result;
-      $location.url('/cash/' + vm.cashbox.id);
-    });
+    var cashboxId = vm.cashbox && vm.cashbox.id;
+    Modals.openSelectCashbox({ cashboxId : cashboxId })
+    .then(setCashboxSelection);
   }
 
-  /** Debtor Invoices Modal */
-  function openInvoicesModal() {
-    ModalService.openDebtorInvoices({ debtorUuid: vm.payment.debtor_uuid, invoices: vm.payment.invoices })
-    .then(function (result) {
-      // clear HTTP errors if we are taking further action.
-      vm.HttpError = null;
+  // caches the cashbox
+  function setCashboxSelection(cashbox) {
+    vm.cashbox = cashbox;
+    cache.cashbox = cashbox;
+    $location.url('cash/' + vm.cashbox.id);
+    calculateDisabledIds();
+  }
 
+  /* Debtor Invoices Modal */
+  function openInvoicesModal() {
+    Modals.openDebtorInvoices({ debtorUuid: vm.payment.debtor_uuid, invoices: vm.payment.invoices })
+    .then(function (result) {
       // bind the selected invoices
       vm.payment.invoices = result.invoices;
 
@@ -216,11 +173,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
 
   // exchanges the payment at the bottom of the previous invoice slip.
   function digestExchangeRate() {
-
-    // this is purely for UI considerations.  We want to update the currency
-    // input's symbol when the currency changes (prompting a
-    // digestExchangeRate()) call.
-    vm.currencyLabel = Currencies.symbol(vm.payment.currency_id);
 
     // make sure we have all the required data before attempting to exchange
     // any values
@@ -235,26 +187,22 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, $stateParams, $lo
   }
 
   // submits the form to the server
-  function submit() {
-
-    var cashbox_id = (cashboxId) ? cashboxId :
-      (cache.cashbox && cache.cashbox.id) ? cache.cashbox.id : null;
-
-    if (!cashbox_id) { return ; }
+  function submit(form) {
 
     // add in the cashbox id
-    vm.payment.cashbox_id = cashbox_id;
+    vm.payment.cashbox_id = vm.cashbox.id;
 
     // submit the cash payment
     return Cash.create(vm.payment)
     .then(function (response) {
 
-      // display the receipt in a modal
-      openReceiptModal(response.uuid);
+      // open cash receipt
+      Modals.openPatientReceipt({
+        uuid: response.uuid,
+        patientUuid: vm.patient.uuid
+      });
     })
-    .catch(function (error) {
-      vm.HttpError = error;
-    });
+    .catch(Notify.handleError);
   }
 
   // start up the module
