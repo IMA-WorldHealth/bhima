@@ -37,7 +37,7 @@ sleep $TIMEOUT
 echo "Running tests ..."
 
 # run the tests
-mocha server/test/api/
+../node_modules/.bin/mocha server/test/api/
 
 echo "Cleaning up test instance"
 
