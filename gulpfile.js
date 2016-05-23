@@ -20,9 +20,6 @@ const rimraf  = require('rimraf');
 const gutil   = require('gulp-util');
 const less    = require('gulp-less');
 
-    // mocha for server-side testing
-const mocha = require('gulp-mocha');
-
 // child process for custom scripts
 const exec = require('child_process').exec;
 
