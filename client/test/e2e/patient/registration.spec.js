@@ -52,7 +52,7 @@ describe('patient registration', function () {
     // submit the patient registration form
     FU.buttons.submit();
 
-    expect(helpers.getCurrentPath()).to.eventually.contain('#/patients/edit/')
+    expect(helpers.getCurrentPath()).to.eventually.contain('/edit')
     .then(() => done());
   });
 

@@ -748,3 +748,7 @@ growl-notification.fading.ng-leave.ng-leave-active {
   }
 }
 
+/* static pages that do not require header overflow */
+.flex-header.static {
+  box-shadow : none;
+}

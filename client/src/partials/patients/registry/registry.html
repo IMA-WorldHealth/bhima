@@ -1,23 +1,25 @@
-<div class="flex-header">
+<div class="flex-header static">
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
       <li class="title">{{ "PATIENT_REGISTRY.TITLE" | translate }}</li>
     </ol>
-  </div>
-</div>
 
-<div class="flex-util">
-  <div class="toolbar">
-    <div class="toolbar-item">
-      <button ng-click="PatientRegistryCtrl.search()" data-method="search">
-        <span class="glyphicon glyphicon-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
-      </button>  
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+            ng-click="PatientRegistryCtrl.search()"
+            data-method="search"
+            class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="flex-util">
+<!-- @todo remove hardcoded styles -->
+<div class="flex-util" style="min-height : 35px; padding-top : 7px">
   <bh-filters-applied 
     filters="PatientRegistryCtrl.filters">
   </bh-filters-applied>
@@ -27,7 +29,24 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        <div id="patient-registry" ui-grid="PatientRegistryCtrl.uiGridOptions" style="height : calc(100vh - 65px)" ui-grid-auto-resize ui-grid-resize-columns ui-grid-move-columns>
+        <div id="patient-registry" ui-grid="PatientRegistryCtrl.uiGridOptions" style="height : calc(100vh - 102px)" ui-grid-auto-resize ui-grid-resize-columns ui-grid-move-columns>
+
+          <!-- @todo these states can probably be a component that accepts loading and data -->
+          <!-- No Records State -->
+          <div class="grid-msg-overlay" ng-hide="PatientRegistryCtrl.loading || PatientRegistryCtrl.uiGridOptions.data.length > 0">
+            <div class="msg">
+              <span class="text-info">
+                <span class="glyphicon glyphicon-info-sign"></span> {{ "TABLE.COLUMNS.EMPTY" | translate }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div class="grid-msg-overlay" ng-show="PatientRegistryCtrl.loading">
+            <div class="msg">
+              <span><span class="glyphicon glyphicon-refresh"></span> {{ "TABLE.COLUMNS.LOADING" | translate }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>  
