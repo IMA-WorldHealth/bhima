@@ -25,6 +25,13 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.maxDOB = util.maxDOB;    
   vm.maxDateEmbauche = Employees.maxDateEmbauche;
 
+  // Maxlength field for Employee Registration 
+  vm.maxLength = util.maxTextLength; 
+  vm.length70 = util.length70;
+  vm.length50 = util.length50;
+  vm.length30 = util.length30;
+  vm.length20 = util.length20;    
+
 
 
   function handler(error) {

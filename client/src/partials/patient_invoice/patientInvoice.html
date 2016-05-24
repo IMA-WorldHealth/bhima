@@ -77,7 +77,6 @@
                     min-date="PatientInvoiceCtrl.minimumDate"
                     max-date="PatientInvoiceCtrl.timestamp">
                 </bh-date-editor>
-
                 <div
                     class="form-group"
                     ng-class="{'has-error' : detailsForm.$submitted && detailsForm.notes.$invalid}">
@@ -87,6 +86,7 @@
                       ng-model="PatientInvoiceCtrl.Invoice.details.description"
                       name="notes"
                       class="form-control"
+                      ng-maxlength="PatientInvoiceCtrl.maxLength"
                       rows="4"
                       required>
                   </textarea>

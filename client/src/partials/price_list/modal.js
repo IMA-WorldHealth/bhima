@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
 .controller('PriceListModalController', PriceListModalController);
 
 PriceListModalController.$inject = [
-  '$uibModalInstance', 'InventoryService'
+  '$uibModalInstance', 'InventoryService', 'util'
 ];
 
-function PriceListModalController( $uibModalInstance, Inventory) {
+function PriceListModalController( $uibModalInstance, Inventory, util) {
   var vm = this;
 
   // bind variables
@@ -23,6 +23,7 @@ function PriceListModalController( $uibModalInstance, Inventory) {
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
+  vm.length250 = util.length250;
 
   vm.data = { is_percentage : 0 };
 

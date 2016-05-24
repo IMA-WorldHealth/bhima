@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
-  'AccountService', 'CostCenterService', 'ProfitCenterService', 'ReferenceService', 'AccountTypeService'
+  'AccountService', 'CostCenterService', 'ProfitCenterService', 'ReferenceService', 'AccountTypeService', 'util'
 ];
 
-function AccountsController(accountService, costCenterService, profitCenterService, referenceService, accountTypeService) {
+function AccountsController(accountService, costCenterService, profitCenterService, referenceService, accountTypeService, util) {
   var vm = this;
   vm.view = 'default';
 
@@ -18,6 +18,8 @@ function AccountsController(accountService, costCenterService, profitCenterServi
   vm.typeAccount = typeAccount;
   vm.discareCC = discareCC;
   vm.discarePC = discarePC;
+
+  vm.maxLength = util.maxTextLength;
 
   function handler(error) {
     console.error(error);

@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('SubsidyController', SubsidyController);
 
 SubsidyController.$inject = [
-  'SubsidyService', 'AccountService', '$translate', 'ModalService'
+  'SubsidyService', 'AccountService', '$translate', 'ModalService', 'util'
 ];
 
-function SubsidyController(Subsidy , Accounts, $translate, ModalService) {
+function SubsidyController(Subsidy , Accounts, $translate, ModalService, util) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -17,6 +17,9 @@ function SubsidyController(Subsidy , Accounts, $translate, ModalService) {
   vm.update = update;
   vm.del    = del;
   vm.cancel = cancel;
+
+  vm.length250 = 200;
+  vm.maxLength = util.maxTextLength;
 
   function handler(error) {
     console.error(error);

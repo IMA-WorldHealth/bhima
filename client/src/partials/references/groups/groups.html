@@ -102,12 +102,18 @@
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.reference_group.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE_GROUP" | translate }}</label>
-                <input type="text" class="form-control" name="reference_group" ng-model="ReferenceGroupCtrl.referenceGroup.reference_group" required>
+                <input type="text" class="form-control" name="reference_group" ng-maxlength="ReferenceGroupCtrl.referenceAbbrLength" ng-model="ReferenceGroupCtrl.referenceGroup.reference_group" required>
+                <div class="help-block" ng-messages="CreateForm.reference_group.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
               </div>
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
-                <input type="text" class="form-control" name="text" ng-model="ReferenceGroupCtrl.referenceGroup.text" required>
+                <input type="text" class="form-control" ng-maxlength="ReferenceGroupCtrl.maxLength" name="text" ng-model="ReferenceGroupCtrl.referenceGroup.text" required>
+                <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <hr>
@@ -115,6 +121,9 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.position.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.POSITION" | translate }}</label>
                 <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceGroupCtrl.referenceGroup.position" required>
+                <div class="help-block" ng-messages="CreateForm.position.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.section_bilan_id.$invalid }">
@@ -128,6 +137,9 @@
                   required>
                   <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_BALANCE_SECTION" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="CreateForm.section_bilan_id.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                  
               </div>
 
               <div class="form-group">
@@ -150,12 +162,18 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.reference_group.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE_GROUP" | translate }}</label>
-                <input type="text" class="form-control" name="reference_group" ng-model="ReferenceGroupCtrl.referenceGroup.reference_group" required>
+                <input type="text" class="form-control" name="reference_group" ng-maxlength="ReferenceGroupCtrl.referenceAbbrLength" ng-model="ReferenceGroupCtrl.referenceGroup.reference_group" required>
+                <div class="help-block" ng-messages="UpdateForm.reference_group.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
             
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
-                <input type="text" class="form-control" name="text" ng-model="ReferenceGroupCtrl.referenceGroup.text" required>
+                <input type="text" class="form-control" name="text" ng-maxlength="ReferenceGroupCtrl.maxLength" ng-model="ReferenceGroupCtrl.referenceGroup.text" required>
+                <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
 
               <hr>
@@ -163,6 +181,9 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.position.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.POSITION" | translate }}</label>
                 <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceGroupCtrl.referenceGroup.position" required>
+                <div class="help-block" ng-messages="UpdateForm.referenceGroup.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>               
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.section_bilan_id.$invalid }">
@@ -175,6 +196,9 @@
                   ng-options="section.id as section.text for section in ReferenceGroupCtrl.sectionBilans" required>
                   <option value="" disabled> -- {{ "FORM.LABELS.BALANCE_SECTION" | translate }} -- </option>
                 </select>
+                <div class="help-block" ng-messages="UpdateForm.section_bilan_id.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                 
               </div>
 
               <div class="form-group">

@@ -53,6 +53,9 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
   vm.toggleUnitChildren = toggleUnitChildren;
   vm.toggleSuperUserPermissions = toggleSuperUserPermissions;
 
+  vm.maxLength = util.maxTextLength;
+  vm.userName = 80;
+  vm.length100 = util.length100;  
   /* ------------------------------------------------------------------------ */
 
   // TODO

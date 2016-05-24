@@ -3,18 +3,23 @@ angular.module('bhima.controllers')
 .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'CurrencyService', 'FormStateFactory'
+  'EnterpriseService', 'CurrencyService', 'FormStateFactory', 'util'
 ];
 
 /**
  * Enterprise Controller
  */
-function EnterpriseController(Enterprises, Currencies, StateFactory) {
+function EnterpriseController(Enterprises, Currencies, StateFactory, util) {
   var vm = this;
 
   vm.enterprises = [];
   vm.state = new StateFactory();
   vm.view = 'default';
+  vm.maxLength = util.maxTextLength;
+  vm.length50 = util.length50;
+  vm.length20 = util.length20;
+  vm.length100 = util.length100;
+  vm.length30 = util.length30;
 
   // bind methods
   vm.create = create;

@@ -76,6 +76,7 @@
                     placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_NAME' | translate }}..."
                     ng-model="DebtorGroupCtrl.debtorGroup.name"
                     ng-change="DebtorGroupCtrl.refreshValidation()"
+                    ng-maxlength="DebtorGroupCtrl.length100"
                     required>
                   <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -202,7 +203,7 @@
               <fieldset>
                 <legend>{{ "FORM.LABELS.CONTACT" | translate }}</legend>
                 <!-- phone  -->
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.phone.$invalid }">
                   <label class="control-label">
                     {{ "FORM.LABELS.PHONE" | translate }}
                   </label>
@@ -210,19 +211,27 @@
                     class="form-control"
                     name="phone"
                     placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_PHONE' | translate }}..."
+                    ng-maxlength="DebtorGroupCtrl.length20"
                     ng-model="DebtorGroupCtrl.debtorGroup.phone">
+                  <div class="help-block" ng-messages="ActionForm.phone.$error" ng-show="ActionForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>                    
                 </div>
 
                 <!-- email  -->
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.email.$invalid }">
                   <label class="control-label">
                     {{ "FORM.LABELS.EMAIL" | translate }}
                   </label>
                   <input
                     class="form-control"
                     name="email"
+                    ng-maxlength="DebtorGroupCtrl.length100"
                     placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_EMAIL' | translate }}..."
                     ng-model="DebtorGroupCtrl.debtorGroup.email">
+                  <div class="help-block" ng-messages="ActionForm.email.$error" ng-show="ActionForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>                    
                 </div>
 
                 <!-- debtor group location  -->

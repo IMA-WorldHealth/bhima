@@ -71,6 +71,7 @@
                 <input
                   class="form-control"
                   name="text"
+                  ng-maxlength="DepotCtrl.maxLength"
                   ng-model="DepotCtrl.depot.text" required>
                 <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

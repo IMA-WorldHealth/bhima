@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('DebtorGroupsController', DebtorGroupsController);
 
-DebtorGroupsController.$inject = ['$http', '$translate', 'DebtorGroupService', 'SessionService', 'uuid'];
+DebtorGroupsController.$inject = ['$http', '$translate', 'DebtorGroupService', 'SessionService', 'uuid', 'util'];
 
 /**
  * Debtor Groups Controller
@@ -9,7 +9,7 @@ DebtorGroupsController.$inject = ['$http', '$translate', 'DebtorGroupService', '
  * It's responsible for creating and updating a debtor group
  * @todo Implementing the delete method for deleting debtor groups
  */
-function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
+function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid, util) {
   'use strict';
 
   var vm = this;
@@ -40,6 +40,9 @@ function DebtorGroupsController($http, $translate, DebtorGroup, Session, uuid) {
   vm.cancel = cancel;
   vm.submit = submit;
   vm.refreshValidation = refreshValidation;
+  vm.length100 = util.length100;
+  vm.length20 = util.length20;
+  vm.length100 = util.length100;  
 
   /** Load necessary data */
   debtorGroupsList();

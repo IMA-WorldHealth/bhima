@@ -53,11 +53,11 @@
           </div>
           <form class="panel-body" name="CreateForm" ng-submit="CashCtrl.submit(CreateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
-            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
+            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
               <label class="control-label">
                 {{ "FORM.LABELS.NAME" | translate }}
               </label>
-              <input class="form-control" name="label" ng-model="CashCtrl.box.label" required>
+              <input class="form-control" name="label" ng-model="CashCtrl.box.label" ng-maxlength="CashCtrl.maxLength" required>
               <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
                 <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
               </div>
@@ -118,11 +118,11 @@
             </div>
             <div class="panel-body">
 
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">
                   {{ "FORM.LABELS.NAME" | translate }}
                 </label>
-                <input class="form-control" name="label" ng-model="CashCtrl.box.label" required>
+                <input class="form-control" name="label" ng-model="CashCtrl.box.label" ng-maxlength="CashCtrl.maxLength" required>
                 <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>

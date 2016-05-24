@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('sectionResultatController', sectionResultatController);
 
 sectionResultatController.$inject = [
-  'SectionResultatService', '$translate', 'ModalService'
+  'SectionResultatService', '$translate', 'ModalService', 'util'
 ];
 
-function sectionResultatController(sectionResultatService, $translate, ModalService) {
+function sectionResultatController(sectionResultatService, $translate, ModalService, util) {
   var vm = this;
   vm.view = 'default';
 
@@ -16,6 +16,8 @@ function sectionResultatController(sectionResultatService, $translate, ModalServ
   vm.update = update;
   vm.cancel = cancel;
   vm.del    = del;  
+
+  vm.maxLength = util.maxTextLength;
 
   vm.doTranslate = doTranslate;
 

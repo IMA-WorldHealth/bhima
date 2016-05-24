@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('SectorController', SectorController);
 
 SectorController.$inject = [
-  'LocationService'
+  'LocationService', 'util'
 ];
 
-function SectorController(locationService) {
+function SectorController(locationService, util) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -17,8 +17,8 @@ function SectorController(locationService) {
   vm.update = update;
   vm.cancel = cancel;
 
-
   vm.loadProvinces = loadProvinces;
+  vm.maxLength = util.maxTextLength;
 
   function handler(error) {
     console.error(error);

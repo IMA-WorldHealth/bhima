@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('BillingServicesUpdateController', BillingServicesUpdateController);
 
 BillingServicesUpdateController.$inject = [
-  '$state', 'BillingServicesService', 'AccountService', '$uibModalInstance'
+  '$state', 'BillingServicesService', 'AccountService', '$uibModalInstance', 'util'
 ];
 
 /**
@@ -12,7 +12,7 @@ BillingServicesUpdateController.$inject = [
  * Importantly, both this controller and the BillingServicesCreateController
  * use the same template, billing_services/form.html.
  */
-function BillingServicesUpdateController($state, BillingServices, Accounts, ModalInstance) {
+function BillingServicesUpdateController($state, BillingServices, Accounts, ModalInstance, util) {
   var vm = this;
 
   // the form title is defined in the JS to allow us to reuse templates
@@ -27,6 +27,9 @@ function BillingServicesUpdateController($state, BillingServices, Accounts, Moda
   // the submit method to POST data to the server
   vm.submit = submit;
   vm.dismiss = ModalInstance.dismiss;
+
+  vm.length200 = util.length200;
+  vm.maxLength = util.maxTextLength;
 
   // fired on application startup
   function startup() {

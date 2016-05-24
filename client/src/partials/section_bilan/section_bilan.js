@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('sectionBilanController', sectionBilanController);
 
 sectionBilanController.$inject = [
-  'SectionBilanService', '$translate', 'ModalService'
+  'SectionBilanService', '$translate', 'ModalService', 'util'
 ];
 
-function sectionBilanController(sectionBilanService, $translate, ModalService) {
+function sectionBilanController(sectionBilanService, $translate, ModalService, util) {
   var vm = this;
   vm.view = 'default';
 
@@ -18,6 +18,7 @@ function sectionBilanController(sectionBilanService, $translate, ModalService) {
   vm.del    = del;  
 
   vm.doTranslate = doTranslate;
+  vm.maxLength = util.maxTextLength;
 
   function handler(error) {
     console.error(error);

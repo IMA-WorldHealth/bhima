@@ -32,6 +32,16 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, S
   viewModel.enableFullDate = enableFullDate;
   viewModel.calculateYOB = calculateYOB;
 
+  // Maxlength field for Patient Registration 
+  viewModel.maxLength = util.maxTextLength; 
+  viewModel.length150 = util.length150;
+  viewModel.length100 = util.length100;
+  viewModel.length50 = util.length50;
+  viewModel.length40 = util.length40;
+  viewModel.length30 = util.length30;
+  viewModel.length16 = util.length16;  
+  viewModel.length12 = util.length12;
+
   // Set up page elements data (debtor select data)
   Debtors.groups()
     .then(function (results) {

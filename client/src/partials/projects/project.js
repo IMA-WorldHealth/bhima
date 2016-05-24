@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('ProjectController', ProjectController);
 
 ProjectController.$inject = [
-   'ProjectService', 'EnterpriseService', 'SnisService', 'FormStateFactory', '$translate', 'ModalService'
+   'ProjectService', 'EnterpriseService', 'SnisService', 'FormStateFactory', '$translate', 'ModalService', 'util'
 ];
 
-function ProjectController(Projects, Enterprises, SnisService, StateFactory, $translate, ModalService) {
+function ProjectController(Projects, Enterprises, SnisService, StateFactory, $translate, ModalService, util) {
   var vm = this;
 
   vm.enterprises = [];
@@ -19,6 +19,9 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory, $tr
   vm.cancel = cancel;
   vm.submit = submit;
   vm.del = del;
+  
+  vm.maxLength = util.maxTextLength;
+  vm.length50 = 3;  
 
   function handler(error) {
     console.error(error);

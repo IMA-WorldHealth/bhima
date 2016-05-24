@@ -80,7 +80,7 @@
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_COUNTRY' | translate }}" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_COUNTRY' | translate }}" ng-maxlength="CountryCtrl.countryLength" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
                 <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                 
@@ -105,7 +105,7 @@
             <form class="panel-body" name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_COUNTRY' | translate }}" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_COUNTRY' | translate }}" ng-maxlength="CountryCtrl.countryLength" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
                 <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                 

@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('ProvinceController', ProvinceController);
 
 ProvinceController.$inject = [
-  'LocationService'
+  'LocationService', 'util'
 ];
 
-function ProvinceController(locationService) {
+function ProvinceController(locationService, util) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -17,7 +17,7 @@ function ProvinceController(locationService) {
   vm.submit = submit;
   vm.update = update;
   vm.cancel = cancel;
-
+  vm.maxLength = util.maxTextLength;
 
   function handler(error) {
     console.error(error);

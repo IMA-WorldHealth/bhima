@@ -1,17 +1,19 @@
 angular.module('bhima.controllers')
 .controller('DonorsController', DonorsController);
 
-DonorsController.$inject = ['$http', '$translate', 'DonorService', 'SessionService', 'uuid'];
+DonorsController.$inject = ['$http', '$translate', 'DonorService', 'SessionService', 'uuid', 'util'];
 
 /**
  * Donors Controller
  * This controller is about donors management module in the admin zone
  * It's responsible for crud operations for donors
  */
-function DonorsController($http, $translate, DonorService, Session, uuid) {
+function DonorsController($http, $translate, DonorService, Session, uuid, util) {
   'use strict';
 
   var vm = this;
+  
+  vm.maxLength = util.maxTextLength;
 
   /** breadcrumb configurations */
   vm.bcPaths = [

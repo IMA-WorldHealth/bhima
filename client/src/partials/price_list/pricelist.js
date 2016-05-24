@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('PriceListController', PriceListController);
 
 PriceListController.$inject = [
-  'PriceListService', '$translate', '$uibModal', 'InventoryService', 'ModalService'
+  'PriceListService', '$translate', '$uibModal', 'InventoryService', 'ModalService', 'util'
 ];
 
-function PriceListController(PriceListService, $translate, $uibModal, Inventory, ModalService) {
+function PriceListController(PriceListService, $translate, $uibModal, Inventory, ModalService, util) {
   var vm = this;
   vm.view = 'default';
 
@@ -19,6 +19,9 @@ function PriceListController(PriceListService, $translate, $uibModal, Inventory,
   vm.addItem  = addItem;
   vm.getInventory = getInventory;
   vm.removeItem = removeItem;
+
+  vm.length250 = util.length250;
+  vm.maxLength = util.maxTextLength;
 
   function handler(error) {
     console.error(error);

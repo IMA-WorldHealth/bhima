@@ -26,6 +26,8 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
   // bind the enterprise to the enterprise currency
   vm.enterprise = Session.enterprise;
 
+  vm.maxLength = util.maxTextLength; 
+  
   var gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,

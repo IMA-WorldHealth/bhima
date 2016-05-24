@@ -103,7 +103,7 @@
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.ref.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE" | translate }}</label>
-                <input type="text" class="form-control" name="ref" ng-model="ReferenceCtrl.reference.ref" required>
+                <input type="text" class="form-control" name="ref" ng-maxlength="ReferenceCtrl.referenceAbbrLength" ng-model="ReferenceCtrl.reference.ref" required>
                 <div class="help-block" ng-messages="CreateForm.ref.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                 
@@ -111,7 +111,7 @@
             
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
-                <input type="text" class="form-control" name="text" ng-model="ReferenceCtrl.reference.text" required>
+                <input type="text" class="form-control" ng-maxlength="ReferenceCtrl.maxLength" name="text" ng-model="ReferenceCtrl.reference.text" required>
                 <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                
@@ -182,7 +182,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.ref.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE" | translate }}</label>
-                <input type="text" class="form-control" name="ref" ng-model="ReferenceCtrl.reference.ref" required>
+                <input type="text" class="form-control" name="ref" ng-maxlength="ReferenceCtrl.referenceAbbrLength" ng-model="ReferenceCtrl.reference.ref" required>
                 <div class="help-block" ng-messages="UpdateForm.ref.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                 
@@ -190,7 +190,7 @@
             
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
-                <input type="text" class="form-control" name="text" ng-model="ReferenceCtrl.reference.text" required>
+                <input type="text" class="form-control" name="text" ng-maxlength="ReferenceCtrl.maxLength"  ng-model="ReferenceCtrl.reference.text" required>
                 <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                  

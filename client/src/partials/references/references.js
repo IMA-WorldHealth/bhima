@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('ReferenceController', ReferenceController);
 
 ReferenceController.$inject = [
-  'ReferenceService', 'ReferenceGroupService', 'SectionResultatService', '$translate', 'ModalService'
+  'ReferenceService', 'ReferenceGroupService', 'SectionResultatService', '$translate', 'ModalService', 'util'
 ];
 
-function ReferenceController(referenceService, referenceGroupService, sectionResultatService, $translate, ModalService) {
+function ReferenceController(referenceService, referenceGroupService, sectionResultatService, $translate, ModalService, util) {
   var vm = this;
   vm.view = 'default';
 
@@ -16,6 +16,9 @@ function ReferenceController(referenceService, referenceGroupService, sectionRes
   vm.update = update;
   vm.cancel = cancel;
   vm.del    = del;  
+
+  vm.maxLength = util.maxTextLength;
+  vm.referenceAbbrLength = util.length4;  
 
   function handler(error) {
     console.error(error);

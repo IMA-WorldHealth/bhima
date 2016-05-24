@@ -1,14 +1,14 @@
 angular.module('bhima.controllers')
 .controller('DepotManagementController', DepotManagementController);
 
-DepotManagementController.$inject = ['$translate', 'DepotService', 'SessionService'];
+DepotManagementController.$inject = ['$translate', 'DepotService', 'SessionService', 'util'];
 
 /**
  * Depot Management Controller
  * This controller is about the depot management module in the admin zone
  * It's responsible for creating, editing and updating a depot
  */
-function DepotManagementController($translate, DepotService, SessionService) {
+function DepotManagementController($translate, DepotService, SessionService, util) {
   'use strict';
 
   var vm = this;
@@ -56,6 +56,7 @@ function DepotManagementController($translate, DepotService, SessionService) {
   vm.submit = submit;
   vm.remove = remove;
   vm.refreshValidation = refreshValidation;
+  vm.maxLength = util.maxTextLength;
 
   /** Load depots */
   depotsList();

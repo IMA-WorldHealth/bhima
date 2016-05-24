@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('CountryController', CountryController);
 
 CountryController.$inject = [
-  'LocationService'
+  'LocationService', 'util'
 ];
 
-function CountryController(locationService) {
+function CountryController(locationService, util) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -16,7 +16,7 @@ function CountryController(locationService) {
   vm.submit = submit;
   vm.update = update;
   vm.cancel = cancel;
-
+  vm.countryLength = util.length45; 
 
   function handler(error) {
     console.error(error);

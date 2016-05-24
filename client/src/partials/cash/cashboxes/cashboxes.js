@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CashboxController.$inject = [
   '$uibModal', 'SessionService', 'ProjectService', 'CashboxService',
-  'CurrencyService', 'FormStateFactory', 'ModalService'
+  'CurrencyService', 'FormStateFactory', 'ModalService', 'util'
 ];
 
 /**
@@ -16,7 +16,7 @@ CashboxController.$inject = [
 * @todo - use ui-router for managing state
 * @todo - use delete modal here
 */
-function CashboxController(Modal, Session, Projects, Boxes, Currencies, StateFactory, ModalService) {
+function CashboxController(Modal, Session, Projects, Boxes, Currencies, StateFactory, ModalService, util) {
   var vm = this;
 
   // bind variables
@@ -32,6 +32,8 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, StateFac
   vm.submit = submit;
   vm.delete = del;
   vm.configureCurrency = configureCurrency;
+
+  vm.maxLength = util.maxTextLength;
 
   /* ------------------------------------------------------------------------ */
 
