@@ -4,11 +4,13 @@
  *
  * Initialise link between server paths and controller logic
  *
- * @TODO Pass authenticate and authorize middleware down through
+ * @todo Pass authenticate and authorize middleware down through
  * controllers, allowing for modules to subscribe to different
  * levels of authority
  */
-const winston            = require('winston');
+'use strict';
+
+var winston              = require('winston');
 var auth                 = require('../controllers/auth');
 var data                 = require('../controllers/data');
 var users                = require('../controllers/users');
@@ -63,22 +65,29 @@ var referenceGroup       = require('../controllers/finance/referenceGroup');
 var sectionResultats     = require('../controllers/finance/sectionResultat');
 var sectionBilans        = require('../controllers/finance/sectionBilan');
 var creditors            = require('../controllers/finance/creditors.js');
+const system             = require('../controllers/system');
 
 const upload = require('../lib/uploader');
 
 // expose routes to the server.
-exports.configure = function (app) {
+exports.configure = function configure(app) {
   winston.debug('Configuring routes');
 
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
   app.get('/projects', projects.list);
-
   app.get('/units', units.list);
 
+  // auth gateway
   app.post('/login', auth.login);
   app.get('/logout', auth.logout);
 
+  // system and event helpers
+  app.get('/system/events', system.events);
+  app.get('/system/stream', system.stream);
+  app.get('/system/information', system.info);
+
+  // exchange rate modules
   app.get('/exchange', exchange.list);
   app.post('/exchange', exchange.create);
   app.put('/exchange/:id', exchange.update);
@@ -130,22 +139,20 @@ exports.configure = function (app) {
   app.put('/cost_centers/:id', costCenter.update);
   app.delete('/cost_centers/:id', costCenter.remove);
 
-  //API for service routes
-
+  // API for service routes
   app.post('/services', services.create);
   app.get('/services', services.list);
   app.get('/services/:id', services.detail);
   app.put('/services/:id', services.update);
   app.delete('/services/:id', services.remove);
 
-  //API for profit_center routes crud
+  // API for profit_center routes crud
   app.get('/profit_centers', profitCenter.list);
   app.get('/profit_centers/:id', profitCenter.detail);
   app.get('/profit_centers/:id/profit', profitCenter.getProfitValue);
   app.post('/profit_centers', profitCenter.create);
   app.put('/profit_centers/:id', profitCenter.update);
   app.delete('/profit_centers/:id', profitCenter.remove);
-
 
   //API for reference routes crud
   app.get('/references', reference.list);

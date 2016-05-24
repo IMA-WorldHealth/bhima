@@ -1,7 +1,4 @@
 {
-
-
-
   "ACCOUNT": {
     "ACCOUNT_CHART"  : "Chart of Accounts",
     "ACCOUNT_COST"   : "Costs Accounts",
@@ -57,7 +54,7 @@
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
       "MISSING_CASH"       : "Missing Cash",
-      "TITLE"              : "Selection Cashbox"
+      "TITLE"              : "Select a Cashbox"
     },
     "TITLE"           : "Cash Window",
     "TRANSFER": {
@@ -71,7 +68,7 @@
         "LINK"            : "Click here to add it.",
         "MISSING"         : "Don't see your cashbox?",
         "TRANSFER"        : "Transfer Funds",
-        "UNCONFIGURED"    : "You have not configured a cashbox yet.  Please choose a cashbox by clicking the button (Change Cashbox)"
+        "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue"
       },
         "DEBTOR_INVOICES" : "Debtor Invoices",
         "RECEIPTS_TITLE"  : "Cash Payment Receipt",
@@ -85,7 +82,9 @@
     "CONFIG_ACCOUNTS" : "Configuration of Account",
     "DANGER_ZONE"     : "Danger Zone",
     "DESCRIPTION"     : "This module is responsible for cashbox management",
-    "TITLE"           : "Cashbox Management"
+    "TITLE"           : "Cashbox Management",
+    "NO_SUPPORTED_CURRENCIES" : "This cashbox does not have any supported currencies.",
+    "SET_CURRENCY_ACCOUNTS" : "Set currency accounts for this cashbox."
   },
   "COUNTRY": {
     "CONFIGURATION" : "Country Manager Configuration ",
@@ -220,14 +219,14 @@
       "SELECT_INVOICES"       : "Select Invoices",
       "SUBMIT"                : "Submit",
       "SUBMIT_CHANGES"        : "Submit Changes",
-      "THIS_MONTH"            : "This Month",
       "THIS_WEEK"             : "This Week",
       "THIS_YEAR"             : "This Year",
       "TODAY"                 : "Today",
-      "UPDATE_PASSWORD"       : "Update Password"
+      "UPDATE_PASSWORD"       : "Update Password",
+      "UPDATE"                : "Update"
     },
     "DIALOGS": {
-      "CONFIRM_DELETE" : "Do you confirm the deletion ?"
+      "CONFIRM_DELETE" : "Do you confirm the deletion?"
     },
     "ERRORS": {
       "CONNECTION"         : "Connection error",
@@ -728,6 +727,16 @@
     "SUPPLIER_DETAILS" : "Details",
     "TITLE"            : "Suppliers Management"
   },
+  "SYSTEM" : {
+    "PLATFORM" : "Platform",
+    "INFORMATION" : "System Information",
+    "CPUS" : "Number of CPUs",
+    "MACHINE_UPTIME" : "Server Uptime",
+    "PROCESS_UPTIME" : "Process Uptime",
+    "MEMORY_USAGE" : "Memory Usage",
+    "VERSION": "Version",
+    "EVENTS" : "System Events"
+  },
   "TABLE": {
     "COLUMNS": {
       "ABBREVIATION"       : "Abbreviation",
@@ -1009,5 +1018,12 @@
       "VALID_TOTALS"         : "Transactions are valid (balanced transaction)",
       "VOUCHER"              : "Voucher"
     }
+  },
+  "GRAPHS" : {
+    "PATIENT_REGISTRATIONS" : "Patient Registrations",
+    "PATIENT_INVOICES" : "Patient Invoices",
+    "MEDICINE_DISTRIBUTIONS" : "Medicine Distributions",
+    "LOGINS" : "Logins",
+    "PURCHASES" : "Purchases"
   }
 }

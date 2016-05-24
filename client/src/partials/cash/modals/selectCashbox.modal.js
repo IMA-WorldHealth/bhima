@@ -2,21 +2,21 @@ angular.module('bhima.controllers')
 .controller('SelectCashboxModalController', SelectCashboxModalController);
 
 SelectCashboxModalController.$inject = [
-  'SessionService', '$uibModalInstance', 'CashboxService',
-  '$location', 'AppCache', 'cashboxId'
+  'SessionService', '$uibModalInstance', 'CashboxService', 'cashboxId'
 ];
 
-function SelectCashboxModalController(Session, Instance, Cashboxes, $location, AppCache, CashboxId) {
+/**
+ * This modal selects the active cashbox on the cash page
+ */
+function SelectCashboxModalController(Session, Instance, Cashboxes, cashboxId) {
 
   /** @const view-model alias */
   var vm = this;
 
-  var cache = AppCache('CashPayments');
-
   vm.selectCashbox = selectCashbox;
   vm.dismiss = dismiss;
   vm.close   = close;
-  vm.cashboxId = CashboxId;
+  vm.cashboxId = cashboxId;
 
   /* ------------------------------------------------------------------------ */
 
@@ -34,15 +34,17 @@ function SelectCashboxModalController(Session, Instance, Cashboxes, $location, A
       vm.cashboxes = cashboxes;
     })
     .catch(handler);
+
+    if (cashboxId) {
+      selectCashbox(cashboxId);
+    }
   }
 
   // fired when a user selects a cashbox from a list
-  function selectCashbox(id, index) {
+  function selectCashbox(id) {
     Cashboxes.read(id)
     .then(function (cashbox) {
-      vm.indexSelected = index;
       vm.selectedCashbox = cashbox;
-      cache.cashbox = cashbox;
     })
     .catch(handler);
   }

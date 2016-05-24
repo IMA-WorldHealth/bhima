@@ -20,9 +20,6 @@ const rimraf  = require('rimraf');
 const gutil   = require('gulp-util');
 const less    = require('gulp-less');
 
-    // mocha for server-side testing
-const mocha = require('gulp-mocha');
-
 // child process for custom scripts
 const exec = require('child_process').exec;
 
@@ -73,7 +70,7 @@ var paths = {
       'client/vendor/angular-ui-grid/ui-grid.min.js',
 
       // ChartJS
-      'client/vendor/Chart.js/Chart.js',
+      'client/vendor/Chart.js/dist/Chart.bundle.min.js',
       'client/vendor/angular-chart.js/dist/angular-chart.min.js',
 
       // Angular Growl

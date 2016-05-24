@@ -10,7 +10,7 @@ CashboxCurrencyModalController.$inject = [
  * Cashbox Currency Modal Controller
  *
  * This modal is responsible for creating the currency infrastructure behind
- * cashboxes.  Each cashbox must a currencied account defined for each currency
+ * cashboxes.  Each cashbox must have a currencied account defined for each currency
  * supported by the application.
  */
 function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data) {

@@ -85,25 +85,15 @@ function ModalService(Modal) {
    * Select cashbox modal
    */
   function openSelectCashbox(request) {
-    /**
-     * request contains :
-     * cashboxId => the cashbox id send in url : /cash/:id
-     * cashbox.id => the cashbox id which is in the cache
-     * if no cashbox is set in the cache or in the url display a particular modal
-     */
-    var cashboxIsSet = request.cache_cashbox_id && request.url_cashbox_id;
-
     var params = angular.extend(modalParameters, {
       templateUrl : 'partials/cash/modals/selectCashbox.modal.html',
-      controller  : 'SelectCashboxModalController',
-      controllerAs: '$ctrl',
+      controller  : 'SelectCashboxModalController as $ctrl',
       resolve     : {
-        cashboxId : function () { return cashboxIsSet; }
+        cashboxId : function cashboxIdProvider() { return request.cashboxId; }
       }
     });
 
-    var instance = Modal.open(params);
-    return instance.result;
+    return Modal.open(params).result;
   }
 
   /**
@@ -127,7 +117,6 @@ function ModalService(Modal) {
    * Debtor invoices Modal
    */
   function openDebtorInvoices(request) {
-
     var params = angular.extend(modalParameters, {
       templateUrl : 'partials/cash/modals/invoices.modal.html',
       controller  : 'CashInvoiceModalController as CashInvoiceModalCtrl',
@@ -150,7 +139,6 @@ function ModalService(Modal) {
    * Transfer Modal
    */
   function openTransfer(request) {
-
     var params = angular.extend(modalParameters, {
       templateUrl : 'partials/cash/modals/transfer.modal.html',
       controller  : 'CashTransferModalController as CashTransferModalCtrl',

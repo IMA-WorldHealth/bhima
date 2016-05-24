@@ -1,0 +1,37 @@
+<ng-form name="$ctrl.form">
+  <div class="radio" ng-class="{ 'has-error' : ($ctrl.validationTrigger && $ctrl.form.$invalid) || $ctrl.allDisabled }" data-bh-currency-select>
+    <p class="control-label">
+      <strong>{{ "FORM.LABELS.CURRENCY" | translate }}</strong>
+    </p>
+
+    <!-- repeat each currency in the application -->
+    <label
+      ng-repeat="currency in $ctrl.currencies track by currency.id"
+      class="radio-inline"
+      ng-class="{ 'disabled' : currency.disabled }">
+      <input
+        name="currency"
+        type="radio"
+        ng-model="$ctrl.currencyId"
+        ng-value="currency.id"
+        ng-change="$ctrl.onChange"
+        data-currency-option="{{ currency.id }}"
+        ng-disabled="currency.disabled"
+        required>
+      {{ currency.label }}
+    </label>
+
+    <!-- radio button validation messages -->
+    <div class="help-block" ng-messages="$ctrl.form.currency.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
+
+    <!-- show danger message if all currencies are disabled -->
+    <p class="help-block" ng-show="$ctrl.allDisabled">
+      <span class="glyphicon glyphicon-exclamation-sign"></span> {{ "CASHBOX.NO_SUPPORTED_CURRENCIES" | translate }}
+      <a ng-show="$ctrl.cashboxId" ng-href="#/cashboxes/{{$ctrl.cashboxId}}" class="text-danger">
+        <strong><span class="glyphicon glyphicon-link"></span> {{ "CASHBOX.SET_CURRENCY_ACCOUNTS" | translate }}</strong>
+      </a>
+    </p>
+  </div>
+</ng-form>
