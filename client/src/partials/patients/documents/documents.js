@@ -14,9 +14,11 @@ function PatientDocumentsController($translate, $state, $uibModal, patients, uti
     current: true
   }];
 
+  /** global objects */
+  vm.patient = {};
+
   /** expose to the view */
-  vm.setPatient = setPatient;
-  vm.params = {};
+  vm.setPatient  = setPatient;
 
   /** functions definition */
   function setPatient(patient) {

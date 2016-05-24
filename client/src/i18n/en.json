@@ -543,13 +543,15 @@
     "TITLE" : "Authentication"
   },
   "PATIENT_DOCUMENT" : {
-    "ADD"       : "Add",
-    "DOCUMENTS" : "Documents",
-    "DOWNLOAD"  : "Download",
-    "OVERVIEW"  : "Overview",
-    "POSTED_BY" : "Posted by",
-    "SEARCH"    : "Search documents",
-    "TITLE"     : "Patient Documents"
+    "ADD"         : "Add",
+    "DOCUMENTS"   : "Documents",
+    "DOWNLOAD"    : "Download",
+    "OVERVIEW"    : "Overview",
+    "POSTED_BY"   : "Posted by",
+    "SEARCH"      : "Search documents",
+    "TITLE"       : "Patient Documents",
+    "UPLOAD_FILE" : "File to upload",
+    "UPLOAD_SUCCESS" : "File uploading successfully"
   },
   "PATIENT_EDIT": {
     "FINANCIAL_INFO" : "Financial Information",
@@ -808,6 +810,7 @@
         "TOTAL_ASC" : "Largest"
       },
       "TEXT"               : "Text",
+      "TITLE"              : "Title",
       "TOTAL"              : "Total",
       "TRANSACTION_ID"     : "Transaction ID",
       "TYPE"               : "Type",

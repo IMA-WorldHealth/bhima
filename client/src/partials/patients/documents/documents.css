@@ -44,3 +44,12 @@
   filter: grayscale(0%);
   margin-top: -50px;
 }
+
+.document-upload-thumbnail {
+  display: block;
+  width: 100%;
+  margin: auto;
+  margin-bottom: 10px;
+  -webkit-filter: grayscale(75%);
+  filter: grayscale(75%);
+}

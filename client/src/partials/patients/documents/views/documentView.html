@@ -9,7 +9,7 @@
           {{ 'PATIENT_DOCUMENT.DOCUMENTS' | translate }}
         </div>
 
-        <button class="pull-right btn btn-default" type="button">
+        <button ng-click="DocViewCtrl.addDocument()" class="pull-right btn btn-default" type="button">
           <span class="glyphicon glyphicon-paperclip"></span>
           {{ 'PATIENT_DOCUMENT.ADD' | translate }}
         </button>
@@ -22,148 +22,46 @@
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-search"></span>
             </span>
-            <input class="form-control" ng-model="DocViewCtrl.searchDocument" type="text" placeholder="{{ 'PATIENT_DOCUMENT.SEARCH' | translate }}...">
+            <input
+              class="form-control"
+              ng-model="DocViewCtrl.searchDocument"
+              type="text"
+              placeholder="{{ 'PATIENT_DOCUMENT.SEARCH' | translate }}...">
           </div>
         </div>
 
         <!-- documents template -->
         <div class="row">
           <!-- document informations  -->
-          <div class="col-xs-12 col-md-6 col-lg-4">
+          <div class="col-xs-12 col-md-6 col-lg-4"
+            ng-repeat="document in DocViewCtrl.patientDocuments | filter: DocViewCtrl.searchDocument">
             <div class="document">
               <div class="crop">
-                <img class="document-thumbnail" src="assets/IMAicon.jpg" />
+                <img class="document-thumbnail" ng-src="{{ document.link }}" />
               </div>
-              <h4>Document has a long title for it's name</h4>
-              <h5>
+              <h4>{{ document.label}}</h4>
+              <!-- <h5>
                 <span class="glyphicon glyphicon-file"></span>
                 File name <small> ~ (11kb)</small>
-              </h5>
-              <div>
+              </h5> -->
+              <!-- <div>
                 <span class="glyphicon glyphicon-user"></span>
                 {{ 'PATIENT_DOCUMENT.POSTED_BY' | translate }} Bruce Mbayo,
                 <span class="glyphicon glyphicon-calendar"></span> 17 Avr. 2016
-              </div>
+              </div> -->
               <div class="document-actions">
                 <button type="button" class="btn btn-default btn-sm" name="button">
                   <span class="glyphicon glyphicon-zoom-in"></span>
                   {{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}
                 </button>
-                <button type="button" class="btn btn-default btn-sm" name="button">
+                <a ng-href="/{{ document.link }}" download="{{ document.label }}" type="button" class="btn btn-default btn-sm" name="button">
                   <span class="glyphicon glyphicon-download"></span>
                   {{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-xs-12 col-md-6 col-lg-4">
-            <div class="document">
-              <div class="crop">
-                <img class="document-thumbnail" src="assets/IMAicon.jpg" />
-              </div>
-              <h4>Document has a long title for it's name</h4>
-              <h5>
-                <span class="glyphicon glyphicon-file"></span>
-                File name <small> ~ (11kb)</small>
-              </h5>
-              <div>
-                <span class="glyphicon glyphicon-user"></span>
-                {{ 'PATIENT_DOCUMENT.POSTED_BY' | translate }} Bruce Mbayo,
-                <span class="glyphicon glyphicon-calendar"></span> 17 Avr. 2016
-              </div>
-              <div class="document-actions">
-                <button type="button" class="btn btn-default btn-sm" name="button">
-                  <span class="glyphicon glyphicon-zoom-in"></span>
-                  {{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}
-                </button>
-                <button type="button" class="btn btn-default btn-sm" name="button">
-                  <span class="glyphicon glyphicon-download"></span>
-                  {{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-xs-12 col-md-6 col-lg-4">
-            <div class="document">
-              <div class="crop">
-                <img class="document-thumbnail" src="assets/IMAicon.jpg" />
-              </div>
-              <h4>Document has a long title for it's name</h4>
-              <h5>
-                <span class="glyphicon glyphicon-file"></span>
-                File name <small> ~ (11kb)</small>
-              </h5>
-              <div>
-                <span class="glyphicon glyphicon-user"></span>
-                {{ 'PATIENT_DOCUMENT.POSTED_BY' | translate }} Bruce Mbayo,
-                <span class="glyphicon glyphicon-calendar"></span> 17 Avr. 2016
-              </div>
-              <div class="document-actions">
-                <button type="button" class="btn btn-default btn-sm" name="button">
-                  <span class="glyphicon glyphicon-zoom-in"></span>
-                  {{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}
-                </button>
-                <button type="button" class="btn btn-default btn-sm" name="button">
-                  <span class="glyphicon glyphicon-download"></span>
-                  {{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-xs-12 col-md-6 col-lg-4">
-            <div class="document">
-              <div class="crop">
-                <img class="document-thumbnail" src="assets/IMAicon.jpg" />
-              </div>
-              <h4>Document has a long title for it's name</h4>
-              <h5>
-                <span class="glyphicon glyphicon-file"></span>
-                File name <small> ~ (11kb)</small>
-              </h5>
-              <div>
-                <span class="glyphicon glyphicon-user"></span>
-                {{ 'PATIENT_DOCUMENT.POSTED_BY' | translate }} Bruce Mbayo,
-                <span class="glyphicon glyphicon-calendar"></span> 17 Avr. 2016
-              </div>
-              <div class="document-actions">
-                <button type="button" class="btn btn-default btn-sm" name="button">
-                  <span class="glyphicon glyphicon-zoom-in"></span>
-                  {{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}
-                </button>
-                <button type="button" class="btn btn-default btn-sm" name="button">
-                  <span class="glyphicon glyphicon-download"></span>
-                  {{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-xs-12 col-md-6 col-lg-4">
-            <div class="document">
-              <div class="crop">
-                <img class="document-thumbnail" src="assets/IMAicon.jpg" />
-              </div>
-              <h4>Document has a long title for it's name</h4>
-              <h5>
-                <span class="glyphicon glyphicon-file"></span>
-                File name <small> ~ (11kb)</small>
-              </h5>
-              <div>
-                <span class="glyphicon glyphicon-user"></span>
-                {{ 'PATIENT_DOCUMENT.POSTED_BY' | translate }} Bruce Mbayo,
-                <span class="glyphicon glyphicon-calendar"></span> 17 Avr. 2016
-              </div>
-              <div class="document-actions">
-                <button type="button" class="btn btn-default btn-sm" name="button">
-                  <span class="glyphicon glyphicon-zoom-in"></span>
-                  {{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}
-                </button>
-                <button type="button" class="btn btn-default btn-sm" name="button">
-                  <span class="glyphicon glyphicon-download"></span>
-                  {{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}
+                </a>
+                <button type="button" class="btn btn-danger btn-sm" name="button"
+                  ng-click="DocViewCtrl.deleteDocument(document.uuid)">
+                  <span class="glyphicon glyphicon-trash"></span>
+                  {{ 'FORM.BUTTONS.DELETE' | translate }}
                 </button>
               </div>
             </div>

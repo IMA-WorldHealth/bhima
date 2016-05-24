@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <span class="glyphicon glyphicon-paperclip"></span>
+  {{ 'PATIENT_DOCUMENT.ADD' | translate }} {{ 'PATIENT_DOCUMENT.DOCUMENTS' | translate }}
+  <span class="label label-primary"> {{ $ctrl.patient.abbr + $ctrl.patient.reference }}</span>
+</div>
+
+<div class="modal-body">
+  <form class="form" name="documentForm" novalidate>
+
+    <div class="form-group">
+      <label class="require" for="title">{{ 'FORM.LABELS.TITLE' | translate }}</label>
+      <input
+        class="form-control"
+        type="text"
+        name="title"
+        ng-model="$ctrl.title"
+        required>
+    </div>
+
+    <!-- thumbnail  -->
+    <img class="document-upload-thumbnail" ngf-src="$ctrl.file || 'assets/placeholder.gif'">
+
+    <!-- progress bar  -->
+    <div class="progress" ng-show="$ctrl.file.progress >= 0">
+      <div class="progress-bar progress-bar-success progress-bar-striped active"
+        style="width:{{$ctrl.file.progress}}%"
+        ng-bind="$ctrl.file.progress + '%'"></div>
+    </div>
+
+    <!-- dismiss button  -->
+    <div ng-show="$ctrl.file" class="form-group">
+      <button
+        class="btn btn-danger btn-sm"
+        ng-click="$ctrl.file = null"
+        >
+        <span class="glyphicon glyphicon-trash"></span> {{ 'FORM.BUTTONS.DISMISS' | translate }}
+      </button>
+      {{ $ctrl.file.name }}
+    </div>
+
+    <!-- file upload  -->
+    <div
+      class="btn btn-default"
+      ngf-pattern="'image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,pptx,.txt,.csv'"
+      ngf-select
+      name="file"
+      ng-model="$ctrl.file">
+      <span class="glyphicon glyphicon-paperclip"></span>
+      {{ 'PATIENT_DOCUMENT.UPLOAD_FILE' | translate }}
+    </div>
+    <!-- end file upload  -->
+
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="submit"
+    class="btn btn-primary"
+    ng-disabled="!$ctrl.title && $ctrl.uploaded"
+    ng-click="$ctrl.submit(documentForm)">
+    {{ "FORM.BUTTONS.SUBMIT" | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="$ctrl.close()">
+    {{ "FORM.BUTTONS.CLOSE" | translate }}
+  </button>
+</div>

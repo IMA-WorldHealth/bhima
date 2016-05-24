@@ -539,13 +539,15 @@
     "TITLE" : "Authentification"
   },
   "PATIENT_DOCUMENT" : {
-    "ADD"       : "Ajouter",
-    "DOCUMENTS" : "Documents",
-    "DOWNLOAD"  : "Telecharger",
-    "OVERVIEW"  : "Aperçu",
-    "POSTED_BY" : "Posté par",
-    "SEARCH"    : "Chercher documents",
-    "TITLE"     : "Documents de Patient"
+    "ADD"         : "Ajouter",
+    "DOCUMENTS"   : "Documents",
+    "DOWNLOAD"    : "Telecharger",
+    "OVERVIEW"    : "Aperçu",
+    "POSTED_BY"   : "Posté par",
+    "SEARCH"      : "Chercher documents",
+    "TITLE"       : "Documents de Patient",
+    "UPLOAD_FILE" : "Fichier à téléverser (upload)",
+    "UPLOAD_SUCCESS" : "Fichier envoyé avec success"
   },
   "PATIENT_EDIT": {
     "FINANCIAL_INFO" : "Information financière",
@@ -801,6 +803,7 @@
         "TOTAL_ASC" : "Le plus grand"
       },
       "TEXT"               : "Text",
+      "TITLE"              : "Titre",
       "TOTAL"              : "Total",
       "TYPE"               : "Type",
       "VALUE"              : "Valeur",
