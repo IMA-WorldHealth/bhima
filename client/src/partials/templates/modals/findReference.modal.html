@@ -1,33 +1,36 @@
 <div class="modal-header">
   <h4>
-    <span ng-if="!$ctrl.documentTypeSelected">
-      <i class="glyphicon glyphicon-search"></i>
+    <span ng-hide="$ctrl.documentTypeSelected">
+      <span class="glyphicon glyphicon-search"></span>
       {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }} /
       <b class="label label-primary">{{ $ctrl.selectedEntity.label }}</b>
     </span>
 
-    <span ng-if="$ctrl.documentTypeSelected">
-      <i class="glyphicon glyphicon-search"></i>
+    <span ng-show="$ctrl.documentTypeSelected">
+      <span class="glyphicon glyphicon-search"></span>
       {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }} /
       {{ $ctrl.documentTypeLabel | translate }} /
       <b class="label label-primary">{{ $ctrl.selectedEntity.label }}</b>
+
       <span
         ng-click="$ctrl.refresh()"
         class="btn btn-default pull-right">
-        <i class="glyphicon glyphicon-refresh"></i>
+        <span class="glyphicon glyphicon-refresh"></span>
       </span>
     </span>
   </h4>
 </div>
 
 <div class="modal-body clearfix">
+
   <!-- select document type  -->
-  <div ng-if="!$ctrl.documentTypeSelected">
+  <div ng-hide="$ctrl.documentTypeSelected">
     <p class="text-center"><em>{{ 'VOUCHERS.COMPLEX.SELECT_DOCUMENT_TYPE' | translate }}</em></p>
 
     <div class="btn-group btn-group-justified">
       <div class="btn-group">
-        <button class="text-center btn btn-primary btn-lg"
+        <button
+          class="text-center btn btn-primary btn-lg"
           data-button-patient-invoice
           ng-click="$ctrl.selectDocType('patient_invoice')">
           <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
@@ -36,7 +39,8 @@
       </div>
 
       <div class="btn-group">
-        <button class="text-center btn btn-primary btn-lg"
+        <button
+          class="text-center btn btn-primary btn-lg"
           ng-click="$ctrl.selectDocType('cash_payment')"
           data-button-cash-payment>
           <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
@@ -45,7 +49,8 @@
       </div>
 
       <div class="btn-group">
-        <button class="text-center btn btn-primary btn-lg"
+        <button
+          class="text-center btn btn-primary btn-lg"
           ng-click="$ctrl.selectDocType('voucher')"
           data-button-voucher>
           <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
@@ -56,7 +61,7 @@
   </div>
 
   <!-- select references  -->
-  <div ng-if="$ctrl.documentTypeSelected">
+  <div ng-show="$ctrl.documentTypeSelected">
     <div class="col-xs-12">
       <div
         id="referenceGrid"
@@ -66,22 +71,23 @@
       </div>
     </div>
   </div>
-
 </div>
 
-<div class="modal-footer clearfix">
-  <div class="pull-right">
-    <button type="button" class="btn btn-default"
-      ng-click="$ctrl.cancel()"
-      data-button-cancel>
-      {{ 'FORM.BUTTONS.CANCEL' | translate }}
-    </button>
+<div class="modal-footer text-right" data-reference-modal>
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="$ctrl.cancel()"
+    data-method="cancel">
+    {{ 'FORM.BUTTONS.CANCEL' | translate }}
+  </button>
 
-    <button type="button" class="btn btn-primary"
-      ng-if="$ctrl.documentTypeSelected"
-      ng-click="$ctrl.submit()"
-      data-button-submit>
-      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
-    </button>
-  </div>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    ng-show="$ctrl.documentTypeSelected"
+    ng-click="$ctrl.submit()"
+    data-method="submit">
+    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+  </button>
 </div>

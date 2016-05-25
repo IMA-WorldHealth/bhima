@@ -47,7 +47,7 @@ function AccountService($http, util, sessionService) {
           });
         }
 
-        /** @todo make this ordering work */
+        /* @todo make this ordering work */
         // return order(accounts);
         return accounts;
       });

@@ -11,18 +11,19 @@ describe('Patient Record', function () {
 
   const root = '#/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
-  
+
   const patient = {
     name : 'Test Patient 2',
-    id : 'TPA 1',
+    id : 'TPA TPA1',
     hospital_no : '110',
     age : '25',
     gender : 'M'
   };
+
   const path = root.concat(id);
-  
+
   before(() => helpers.navigate(path));
-  
+
   it('downloads and correctly displays patient information', function () {
     expect(element(by.id('name')).getText()).to.eventually.equal(patient.name);
     expect(element(by.id('patientID')).getText()).to.eventually.equal(patient.id);
@@ -30,11 +31,12 @@ describe('Patient Record', function () {
     expect(element(by.id('age')).getText()).to.eventually.equal(patient.age);
     expect(element(by.id('gender')).getText()).to.eventually.equal(patient.gender);
   });
-  
+
   it('informs the user that there is no patient for invalid request', function () {
     helpers.navigate(root.concat('invalidid'));
-    components.notification.hasError(); 
+    components.notification.hasError();
     expect(element(by.id('nopatient')).isPresent()).to.eventually.equal(true);
-  })
+  });
+
 });
 

@@ -1,15 +1,18 @@
-.input-number {
-  text-align: right;
-}
+
+/* @todo - write these in less */
+
 .normalRow {
-  border-left: 5px solid white;
+  border-left: 2px solid white;
 }
+
 .validRow {
-  border-left: 5px solid green;
+  border-left: 2px solid #3c763d;
 }
+
 .invalidRow {
-  border-left: 5px solid red;
+  border-left: 2px solid #d9534f;
 }
+
 .iconRow {
   display: block;
   text-align: center;

@@ -40,7 +40,7 @@ describe('Patient Invoice', function () {
 
     // attempt to submit the page.
     page.submit();
-    
+
     FU.exists(by.id('receipt-confirm-created'), true);
   });
 
@@ -105,7 +105,7 @@ describe('Patient Invoice', function () {
     // get a new page
     var page = new PatientInvoicePage();
     page.btns.clear.click();
-    
+
     // set up a valid invoice
     page.prepare();
 
@@ -113,7 +113,7 @@ describe('Patient Invoice', function () {
     page.addRows(1);
 
     page.submit();
-    
+
     /** @todo this should use the latest notification components tests methods when they are merged in #388*/
     components.notification.verify();
     components.notification.dismiss();
