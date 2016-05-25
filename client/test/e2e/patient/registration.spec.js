@@ -51,9 +51,9 @@ describe('patient registration', function () {
 
     // submit the patient registration form
     FU.buttons.submit();
-
-    expect(helpers.getCurrentPath()).to.eventually.contain('/edit')
-    .then(() => done());
+  
+    FU.exists(by.id('receipt-confirm-created'), true);
+    done();
   });
 
   it('correctly updates date of birth given a valid year of birth', function () {
@@ -89,6 +89,8 @@ describe('patient registration', function () {
       // first name is not and title
       FU.validation.ok('PatientRegCtrl.medical.first_name');
       FU.validation.ok('PatientRegCtrl.medical.title');
+      
+      components.notification.hasDanger();
     });
 
     it('correctly alerts for minimum and maximum dates', function () {
