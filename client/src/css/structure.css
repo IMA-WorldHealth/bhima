@@ -215,7 +215,7 @@
 
   /** @todo determine if these should be assigned to another element */
   padding-top : 5px;
-  min-width : 250px;
+  min-width : 350px;
   height : 100vh;
 }
 
@@ -420,9 +420,11 @@ li.selected {
   padding: 8px 0px;
   list-style: none;
   border-radius: 2px;
+
 }
 ol.headercrumb {
   margin-bottom : 0px !important;
+  white-space : nowrap;
 }
 .headercrumb > li {
   display: inline-block;
