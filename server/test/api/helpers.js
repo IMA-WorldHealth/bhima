@@ -1,6 +1,8 @@
 /* jshint expr: true */
 // Test Helpers
 
+'use strict';
+
 // import plugins
 var expect = require('chai').expect;
 var chaiHttp = require('chai-http');
@@ -19,8 +21,6 @@ exports.baseUrl = 'https://localhost:' + port;
 
 // login using the base URL and user
 exports.login = function login(agent) {
-  'use strict';
-
   // base user defined in test data
   var user = { username : 'superuser', password : 'superuser', project: 1};
 
@@ -47,8 +47,6 @@ exports.mask = function mask(object, field) {
 
 // generic configuration for chai
 exports.configure = function configure(chai) {
-  'use strict';
-
   // workaround for low node versions
   if (!global.Promise) {
     var q = require('q');
@@ -70,8 +68,6 @@ var api = exports.api = {};
 
 /** ensure that objectA's key/values are contained in and identical to objectB's */
 exports.identical = function identical(objectA, objectB) {
-  'use strict';
-
   return Object.keys(objectA).every(function (key) {
     return objectA[key] === objectB[key];
   });
@@ -97,8 +93,6 @@ exports.identical = function identical(objectA, objectB) {
  * .catch(helpers.handler);
  */
 api.created = function created(res) {
-  'use strict';
-
   // make sure the response has correct HTTP headers
   expect(res).to.have.status(201);
   expect(res).to.be.json;
@@ -138,8 +132,6 @@ api.created = function created(res) {
  * .catch(helpers.handler);
  */
 api.errored = function errored(res, status, key) {
-  'use strict';
-
   var keys = [ 'code' ];
 
   // make sure the response has the correct HTTP headers
@@ -175,8 +167,6 @@ api.errored = function errored(res, status, key) {
  * agent.get('some/id') // TODO
  */
 api.updated = function updated(res, original, changedKeys) {
-  'use strict';
-
   // make sure the response has the correct HTTP headers
   expect(res).to.have.status(200);
   expect(res).to.be.json;
@@ -214,8 +204,6 @@ api.updated = function updated(res, original, changedKeys) {
  * .catch(helpers.handler);
  */
 api.deleted = function deleted(res) {
-  'use strict';
-
   // make sure that the response has the correct HTTP headers
   expect(res).to.have.status(204);
   expect(res.body).to.be.empty;
@@ -240,8 +228,6 @@ api.deleted = function deleted(res) {
  * .catch(helpers.handler);
  */
 api.listed = function listed(res, len) {
-  'use strict';
-
   // make sure that the response has the correct HTTP headers
   expect(res).to.have.status(200);
   expect(res).to.be.json;

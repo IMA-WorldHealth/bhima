@@ -116,9 +116,9 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   /** clean and generate voucher items data */
   function handleVoucherItems() {
     var voucherItems = [];
-    var account_id = undefined;
-    var entity_uuid = undefined;
-    var document_uuid = undefined;
+    var account_id;
+    var entity_uuid;
+    var document_uuid;
 
     voucherItems = vm.rows.map(function (row) {
 

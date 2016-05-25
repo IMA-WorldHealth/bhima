@@ -1,28 +1,30 @@
 <div class="modal-header">
   <h4>
-    <span ng-if="!$ctrl.documentTypeSelected">
-      <i class="glyphicon glyphicon-search"></i>
+    <span ng-hide="$ctrl.documentTypeSelected">
+      <span class="glyphicon glyphicon-search"></span>
       {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }} /
       <b class="label label-primary">{{ $ctrl.selectedEntity.label }}</b>
     </span>
 
-    <span ng-if="$ctrl.documentTypeSelected">
-      <i class="glyphicon glyphicon-search"></i>
+    <span ng-show="$ctrl.documentTypeSelected">
+      <span class="glyphicon glyphicon-search"></span>
       {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }} /
       {{ $ctrl.documentTypeLabel | translate }} /
       <b class="label label-primary">{{ $ctrl.selectedEntity.label }}</b>
+
       <span
         ng-click="$ctrl.refresh()"
         class="btn btn-default pull-right">
-        <i class="glyphicon glyphicon-refresh"></i>
+        <span class="glyphicon glyphicon-refresh"></span>
       </span>
     </span>
   </h4>
 </div>
 
 <div class="modal-body clearfix">
+
   <!-- select document type  -->
-  <div ng-if="!$ctrl.documentTypeSelected">
+  <div ng-hide="$ctrl.documentTypeSelected">
     <p class="text-center"><em>{{ 'VOUCHERS.COMPLEX.SELECT_DOCUMENT_TYPE' | translate }}</em></p>
 
     <div class="btn-group btn-group-justified">

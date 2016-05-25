@@ -1,11 +1,10 @@
 /* global browser, by, element, protractor */
+'use strict';
 
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('./helpers');
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
-
 
 // Overide the element.all() prototype function provided by protractor to attach custom methods
 // @TODO - is there a better way without overriding the prototype function?
@@ -64,11 +63,8 @@ ElementArrayFinder.prototype.enabled = function () {
 // However, this decision can be reviewed
 var buttons =  {
   create : function create() { return $('[data-method="create"]').click(); },
-  create : function create() { return $('[data-method="create"]').click(); },
   search : function search() { return $('[data-method="search"]').click(); },
-  submit : function submit() {
-    return $('[data-method="submit"]').click();
-  },
+  submit : function submit() { return $('[data-method="submit"]').click(); },
   cancel : function cancel() { return $('[data-method="cancel"]').click(); },
   back   : function back() { return $('[data-method="back"]').click(); },
   delete : function delet() { return $('[data-method="delete"]').click(); }
@@ -124,6 +120,24 @@ module.exports = {
   // asserts whether an element exists or not
   exists : function exists(locator, bool) {
     expect(element(locator).isPresent()).to.eventually.equal(bool);
+  },
+
+  // select the item in the typeahead that matches the value given
+  // by label
+  typeahead: function typeahead(model, label) {
+    this.input(model, label);
+
+    // select the item of the dropdown menu matching the label
+    let option = element(by.cssContainingText('.dropdown-menu > [role="option"]', label));
+    option.click();
+  },
+
+  // select an item from the dropdown menu identified by 'selector'
+  dropdown: function dropdown(selector, label) {
+    element(by.css(selector)).click();
+
+    let option = element(by.cssContainingText('[uib-dropdown-menu] > li', label));
+    option.click();
   },
 
   // bind commonly used form buttons  These require specific data tags to be
