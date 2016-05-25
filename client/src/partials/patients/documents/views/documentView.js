@@ -2,22 +2,25 @@ angular.module('bhima.controllers')
 .controller('DocumentViewController', DocumentViewController);
 
 DocumentViewController.$inject = [
-  'ModalService', '$state', 'DocumentService', 'Upload', 'NotifyService'
+  'ModalService', '$state', 'DocumentService', 'NotifyService'
 ];
 
-function DocumentViewController(Modal, $state, Document, Upload, Notify) {
+function DocumentViewController(Modal, $state, Document, Notify) {
   var vm = this;
 
-  /** global objects */
+  // global objects
   vm.patientUuid = $state.params.patient_uuid;
 
-  /** expose to the view */
+  // expose to the view
   vm.addDocument = addDocument;
   vm.deleteDocument = deleteDocument;
 
+  // startup the view
+  listDocument();
+
   /** function add documents modal */
   function addDocument() {
-    Modal.openAddDocument({ patient_uuid: vm.patientUuid })
+    Modal.openUploadDocument({ patient_uuid: vm.patientUuid })
     .then(listDocument);
   }
 
@@ -27,18 +30,17 @@ function DocumentViewController(Modal, $state, Document, Upload, Notify) {
     .then(function () {
       Notify.success('FORM.INFOS.DELETE_SUCCESS');
       listDocument();
-    });
+    })
+    .catch(Notify.handleError);
   }
 
-  /** gettint patient document */
+  /** getting patient document */
   function listDocument() {
     Document.read(vm.patientUuid)
     .then(function (documents) {
       vm.patientDocuments = documents;
-    });
+    })
+    .catch(Notify.handleError);
   }
-
-  /** startup the view */
-  listDocument();
 
 }

@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
 .controller('PatientDocumentsController', PatientDocumentsController);
 
 PatientDocumentsController.$inject = [
-  '$translate', '$state', '$uibModal', 'PatientService', 'util'
+  '$translate', '$state'
 ];
 
-function PatientDocumentsController($translate, $state, $uibModal, patients, util) {
+function PatientDocumentsController($translate, $state) {
   var vm = this;
 
   /** breadcrumb definitions */

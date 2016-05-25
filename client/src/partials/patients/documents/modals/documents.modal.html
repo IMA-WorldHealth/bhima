@@ -1,14 +1,14 @@
 <div class="modal-header">
-  <span class="glyphicon glyphicon-paperclip"></span>
-  {{ 'PATIENT_DOCUMENT.ADD' | translate }} {{ 'PATIENT_DOCUMENT.DOCUMENTS' | translate }}
-  <span class="label label-primary"> {{ $ctrl.patient.abbr + $ctrl.patient.reference }}</span>
+  <span class="glyphicon glyphicon-user"></span>
+  {{ 'FORM.LABELS.PATIENT' | translate }} / <b>{{ $ctrl.patient.reference }}</b> /
+  {{ 'FORM.LABELS.DOCUMENT' | translate }} / <span class="label label-primary"> {{ 'PATIENT_DOCUMENT.UPLOAD' | translate }}</span>
 </div>
 
 <div class="modal-body">
   <form class="form" name="documentForm" novalidate>
 
     <div class="form-group">
-      <label class="require" for="title">{{ 'FORM.LABELS.TITLE' | translate }}</label>
+      <label class="control-label" for="title">{{ 'PATIENT_DOCUMENT.DOCUMENT_TITLE' | translate }}</label>
       <input
         class="form-control"
         type="text"
@@ -18,7 +18,7 @@
     </div>
 
     <!-- thumbnail  -->
-    <img class="document-upload-thumbnail" ngf-src="$ctrl.file || 'assets/placeholder.gif'">
+    <img class="document-upload-thumbnail" ngf-thumbnail="{{ '$ctrl.thumbnail' }}">
 
     <!-- progress bar  -->
     <div class="progress" ng-show="$ctrl.file.progress >= 0">
@@ -31,7 +31,7 @@
     <div ng-show="$ctrl.file" class="form-group">
       <button
         class="btn btn-danger btn-sm"
-        ng-click="$ctrl.file = null"
+        ng-click="$ctrl.dismiss($ctrl.file)"
         >
         <span class="glyphicon glyphicon-trash"></span> {{ 'FORM.BUTTONS.DISMISS' | translate }}
       </button>
@@ -42,7 +42,7 @@
     <div
       class="btn btn-default"
       ngf-pattern="'image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,pptx,.txt,.csv'"
-      ngf-select
+      ngf-select="$ctrl.setThumbnail($ctrl.file)"
       name="file"
       ng-model="$ctrl.file">
       <span class="glyphicon glyphicon-paperclip"></span>
@@ -55,16 +55,16 @@
 
 <div class="modal-footer">
   <button
-    type="submit"
-    class="btn btn-primary"
-    ng-disabled="!$ctrl.title && $ctrl.uploaded"
-    ng-click="$ctrl.submit(documentForm)">
-    {{ "FORM.BUTTONS.SUBMIT" | translate }}
-  </button>
-  <button
     type="button"
     class="btn btn-default"
     ng-click="$ctrl.close()">
     {{ "FORM.BUTTONS.CLOSE" | translate }}
+  </button>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    ng-disabled="!$ctrl.title || $ctrl.uploadState === 'uploading'"
+    ng-click="$ctrl.submit(documentForm)">
+    {{ "FORM.BUTTONS.SUBMIT" | translate }}
   </button>
 </div>

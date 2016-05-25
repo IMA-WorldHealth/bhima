@@ -7,7 +7,7 @@ function DocumentService($http, util) {
   var service = this;
   var baseUrl = '/patients/';
 
-  /** expose the service */
+  // expose the service
   service.read = read;
   service.remove = remove;
   service.removeAll = removeAll;
@@ -21,19 +21,19 @@ function DocumentService($http, util) {
   function read(patientUuid) {
     if (!patientUuid) { return ; }
 
-    return $http.get(baseUrl.concat(patientUuid).concat('/documents'))
+    return $http.get(baseUrl.concat(patientUuid, '/documents'))
       .then(util.unwrapHttpResponse);
   }
 
   /** delete document */
   function remove(patientUuid, documentUuid) {
-    return $http.delete(baseUrl.concat(patientUuid).concat('/documents/').concat(documentUuid))
+    return $http.delete(baseUrl.concat(patientUuid, '/documents/', documentUuid))
       .then(util.unwrapHttpResponse);
   }
 
   /** delete all document */
-  function removeAll(patientUuid, documentUuid) {
-    return $http.delete(baseUrl.concat(patientUuid).concat('/documents'))
+  function removeAll(patientUuid) {
+    return $http.delete(baseUrl.concat(patientUuid, '/documents'))
       .then(util.unwrapHttpResponse);
   }
 

@@ -207,7 +207,7 @@ function handleFetchPatient(patientUuid) {
   var patientDetailQuery =
     `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
       p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
-      BUID(p.origin_location_id) as origin_location_id, p.reference, p.title, p.address_1, p.address_2,
+      BUID(p.origin_location_id) as origin_location_id, CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
@@ -402,7 +402,7 @@ function search(req, res, next) {
     qDateReg = {
       dateFrom    : req.query.dateRegistrationFrom,
       dateTo      : req.query.dateRegistrationTo
-    },        
+    },
     qDob = {
       dateFrom    : req.query.dateBirthFrom,
       dateTo      : req.query.dateBirthTo
@@ -445,18 +445,18 @@ function search(req, res, next) {
         p.renewal, p.origin_location_id, p.current_location_id, p.registration_date,
         p.title, p.notes, p.hospital_no, d.text, proj.abbr,
         dg.account_id, dg.price_list_uuid as price_list_uuid, dg.is_convention, dg.locked, MAX(pv.date) AS last_visit
-        FROM patient AS p 
+        FROM patient AS p
         JOIN project AS proj ON p.project_id = proj.id
         JOIN debtor AS d ON p.debtor_uuid = d.uuid
         JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-        LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid  
+        LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
         GROUP BY p.uuid
       ) AS q `;
 
   // complete the sql query according parameters of search
   // such as by: name, reference or by a set of criteria
   if (qName || qReference || qFields || qSex || qDateReg || qDob) {
-    var conjonction = 'WHERE '; 
+    var conjonction = 'WHERE ';
 
     if (qName && !qReference) {
       // Final sql query for finding patient by names : first_name, middle_name or last_name
@@ -473,10 +473,10 @@ function search(req, res, next) {
     }
 
     if(qSex && !qReference){
-      
+
       if(data.length){
         conjonction = ' AND ';
-      } 
+      }
 
       if(qSex !== "all"){
         sql += conjonction + 'q.sex = ?';
@@ -485,22 +485,22 @@ function search(req, res, next) {
     }
 
     if (qFields && !qReference) {
-      
+
       // Final sql query for finding patients by a set of criteria
       // defined in an object. Ex. : { sex: "M", last_name: "Doe" }
 
       // building the where clause criteria
       if(data.length){
         conjonction = ' AND ';
-      }  
+      }
 
       var criteria = Object.keys(qFields).map(function (item) {
         data.push(qFields[item]);
-        return 'q.' + item + ' = ?';          
+        return 'q.' + item + ' = ?';
       }).join(' AND ');
-      
+
       sql += conjonction + criteria;
-    } 
+    }
 
     if (qReference) {
       // Final sql query for finding patient identified by a reference. Ex. HBB123
@@ -514,20 +514,20 @@ function search(req, res, next) {
       if(qDateReg.dateFrom && qDateReg.dateTo){
         if(data.length){
           conjonction = ' AND ';
-        } 
+        }
 
         sql += conjonction + ' (DATE(q.registration_date) >= ? AND DATE(q.registration_date) <= ? )';
         data.push(qDateReg.dateFrom);
-        data.push(qDateReg.dateTo);        
+        data.push(qDateReg.dateTo);
       }
-    } 
+    }
 
     if(qDob) {
       // Research from patient birth dates
       if(qDob.dateFrom && qDob.dateTo){
         if(data.length){
           conjonction = ' AND ';
-        } 
+        }
 
         sql += conjonction + ' (DATE(q.dob) >= ? AND DATE(q.dob) <= ? )';
         data.push(qDob.dateFrom);

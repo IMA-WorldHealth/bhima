@@ -38,7 +38,7 @@ function ModalService(Modal) {
   service.openPatientReceipt = openPatientReceipt;
   service.openDebtorInvoices = openDebtorInvoices;
   service.openTransfer = openTransfer;
-  service.openAddDocument = openAddDocument;
+  service.openUploadDocument = openUploadDocument;
 
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
@@ -151,9 +151,9 @@ function ModalService(Modal) {
   }
 
   /**
-   * Add document Modal
+   * upload document Modal
    */
-  function openAddDocument(request) {
+  function openUploadDocument(request) {
 
     var params = angular.extend(modalParameters, {
       templateUrl  : 'partials/patients/documents/modals/documents.modal.html',

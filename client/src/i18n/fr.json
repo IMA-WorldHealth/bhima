@@ -312,6 +312,7 @@
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
       "DOB"                    : "Date de Naissance",
+      "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
       "EDIT"                   : "Editer",
       "EMAIL"                  : "Email",
@@ -538,14 +539,16 @@
     "TITLE" : "Authentification"
   },
   "PATIENT_DOCUMENT" : {
-    "ADD"         : "Ajouter",
-    "DOCUMENTS"   : "Documents",
-    "DOWNLOAD"    : "Telecharger",
-    "OVERVIEW"    : "Aperçu",
-    "POSTED_BY"   : "Posté par",
-    "SEARCH"      : "Chercher documents",
-    "TITLE"       : "Documents de Patient",
-    "UPLOAD_FILE" : "Fichier à téléverser (upload)",
+    "ADD"            : "Ajouter",
+    "DOCUMENT_TITLE" : "Titre du document",
+    "DOCUMENT_LIST"  : "Liste des documents",
+    "DOWNLOAD"       : "Telecharger",
+    "OVERVIEW"       : "Aperçu",
+    "POSTED_BY"      : "Posté par",
+    "SEARCH"         : "Chercher documents",
+    "TITLE"          : "Documents de Patient",
+    "UPLOAD"         : "Telecharger vers le serveur",
+    "UPLOAD_FILE"    : "Fichier à téléverser (upload)",
     "UPLOAD_SUCCESS" : "Fichier envoyé avec success"
   },
   "PATIENT_EDIT": {
