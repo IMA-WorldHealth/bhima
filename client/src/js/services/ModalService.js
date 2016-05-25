@@ -38,6 +38,7 @@ function ModalService(Modal) {
   service.openPatientReceipt = openPatientReceipt;
   service.openDebtorInvoices = openDebtorInvoices;
   service.openTransfer = openTransfer;
+  service.openUploadDocument = openUploadDocument;
 
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
@@ -142,11 +143,29 @@ function ModalService(Modal) {
       templateUrl : 'partials/cash/modals/transfer.modal.html',
       controller  : 'CashTransferModalController as CashTransferModalCtrl',
       resolve     : {
-        cashBox:  function cashBoxProvider() { return request.cashbox; }
+        cashBox:  function transferProvider() { return request.cashbox; }
       }
     });
 
     var instance = Modal.open(params);
+  }
+
+  /**
+   * upload document Modal
+   */
+  function openUploadDocument(request) {
+
+    var params = angular.extend(modalParameters, {
+      templateUrl  : 'partials/patients/documents/modals/documents.modal.html',
+      controller   : 'PatientDocumentsModalController',
+      controllerAs : '$ctrl',
+      resolve : {
+        patientUuid :  function patientProvider() { return request.patient_uuid; }
+      }
+    });
+
+    var instance = Modal.open(params);
+    return instance.result;
   }
 
 }

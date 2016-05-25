@@ -312,6 +312,7 @@
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
       "DOB"                    : "Date de Naissance",
+      "DOCUMENT"               : "Document",
       "DUE"                    : "Payment Due",
       "EDIT"                   : "Editer",
       "EMAIL"                  : "Email",
@@ -536,6 +537,19 @@
   },
   "LOGIN": {
     "TITLE" : "Authentification"
+  },
+  "PATIENT_DOCUMENT" : {
+    "ADD"            : "Ajouter",
+    "DOCUMENT_TITLE" : "Titre du document",
+    "DOCUMENT_LIST"  : "Liste des documents",
+    "DOWNLOAD"       : "Telecharger",
+    "OVERVIEW"       : "Aperçu",
+    "POSTED_BY"      : "Posté par",
+    "SEARCH"         : "Chercher documents",
+    "TITLE"          : "Documents de Patient",
+    "UPLOAD"         : "Telecharger vers le serveur",
+    "UPLOAD_FILE"    : "Fichier à téléverser (upload)",
+    "UPLOAD_SUCCESS" : "Fichier envoyé avec success"
   },
   "PATIENT_EDIT": {
     "FINANCIAL_INFO" : "Information financière",
@@ -791,6 +805,7 @@
         "TOTAL_ASC" : "Le plus grand"
       },
       "TEXT"               : "Text",
+      "TITLE"              : "Titre",
       "TOTAL"              : "Total",
       "TYPE"               : "Type",
       "VALUE"              : "Valeur",
@@ -884,6 +899,7 @@
     "NEW_BUDGET"                 : "Creation Budget",
     "OFFDAY_MANAGEMENT"          : "Gestion des jours fériés",
     "OPERATING_ACCOUNT"          : "Compte d'exploitation",
+    "PATIENT_DOCUMENT"           : "Documents de Patient",
     "PATIENT_GRP"                : "Groupe des Patients",
     "PATIENT_GRP_ASSIGNMENT"     : "Assignation Groupe",
     "PATIENT_INVOICE"            : "Facturation des patients",

@@ -1,0 +1,20 @@
+<!-- breadcrumb header -->
+<bh-breadcrumb
+  path="PatientDocCtrl.paths">
+</bh-breadcrumb>
+
+<div class="flex-content">
+  <div class="container">
+
+    <!-- find patient  -->
+    <bh-find-patient
+      type="inline"
+      suppress-reset="false"
+      on-search-complete="PatientDocCtrl.setPatient(patient)">
+    </bh-find-patient>
+
+    <!-- document view  -->
+    <div ui-view="document"></div>
+
+  </div>
+</div>
