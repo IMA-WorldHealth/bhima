@@ -29,7 +29,8 @@
 
     <div class="btn-group btn-group-justified">
       <div class="btn-group">
-        <button class="text-center btn btn-primary btn-lg"
+        <button
+          class="text-center btn btn-primary btn-lg"
           data-button-patient-invoice
           ng-click="$ctrl.selectDocType('patient_invoice')">
           <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
@@ -38,7 +39,8 @@
       </div>
 
       <div class="btn-group">
-        <button class="text-center btn btn-primary btn-lg"
+        <button
+          class="text-center btn btn-primary btn-lg"
           ng-click="$ctrl.selectDocType('cash_payment')"
           data-button-cash-payment>
           <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
@@ -47,7 +49,8 @@
       </div>
 
       <div class="btn-group">
-        <button class="text-center btn btn-primary btn-lg"
+        <button
+          class="text-center btn btn-primary btn-lg"
           ng-click="$ctrl.selectDocType('voucher')"
           data-button-voucher>
           <h2 class="glyphicon glyphicon-list-alt"></h2> <br>
@@ -58,7 +61,7 @@
   </div>
 
   <!-- select references  -->
-  <div ng-if="$ctrl.documentTypeSelected">
+  <div ng-show="$ctrl.documentTypeSelected">
     <div class="col-xs-12">
       <div
         id="referenceGrid"
@@ -68,22 +71,23 @@
       </div>
     </div>
   </div>
-
 </div>
 
-<div class="modal-footer clearfix">
-  <div class="pull-right">
-    <button type="button" class="btn btn-default"
-      ng-click="$ctrl.cancel()"
-      data-button-cancel>
-      {{ 'FORM.BUTTONS.CANCEL' | translate }}
-    </button>
+<div class="modal-footer text-right" data-reference-modal>
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="$ctrl.cancel()"
+    data-method="cancel">
+    {{ 'FORM.BUTTONS.CANCEL' | translate }}
+  </button>
 
-    <button type="button" class="btn btn-primary"
-      ng-if="$ctrl.documentTypeSelected"
-      ng-click="$ctrl.submit()"
-      data-button-submit>
-      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
-    </button>
-  </div>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    ng-show="$ctrl.documentTypeSelected"
+    ng-click="$ctrl.submit()"
+    data-method="submit">
+    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+  </button>
 </div>

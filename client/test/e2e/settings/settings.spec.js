@@ -15,10 +15,7 @@ describe('Settings', function () {
     // confirm that we can change the languages
     // ideally, we should check that the language changed, but this
     // test should only confirm that things are open.
-    FU.select('SettingsCtrl.settings.language')
-      .enabled()
-      .last()
-      .click();
+    FU.select('SettingsCtrl.settings.language').get(1).click();
 
     // make sure that the "back" button doesn't exist
     FU.exists(by.css('[data-back-button]'), false);

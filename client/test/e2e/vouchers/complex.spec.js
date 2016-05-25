@@ -1,16 +1,11 @@
 /* global browser, element, by */
 'use strict';
 
-const chai = require('chai');
-const expect = chai.expect;
 const helpers = require('../shared/helpers');
-helpers.configure(chai);
-
 const components = require('../shared/components');
-const FU = require('../shared/FormUtils');
 const ComplexVoucherPage = require('./complex.page');
 
-describe.only('Complex Vouchers', function () {
+describe('Complex Vouchers', function () {
 
   before(() => helpers.navigate('vouchers/complex'));
 
@@ -23,9 +18,9 @@ describe.only('Complex Vouchers', function () {
       description : 'Complex voucher test e2e',
       rows : [
         { account : 'Test Debtor', debit: 17, credit: 0, entity : { type : 'D', name: 'Patient/2/Patient' }},
-        { account : 'Test Capital One', debit: 0, credit: 7, },
-        { account : 'Test Capital Two', debit: 0, credit: 5 },
-        { account : 'Test Balance', debit: 0, credit: 5 }
+        { account : 'Test Capital One', debit: 0, credit: 7, reference : { type : 'voucher', index : 0 }},
+        { account : 'Test Capital Two', debit: 0, credit: 5, reference : { type : 'voucher', index : 2 }},
+        { account : 'Test Balance', debit: 0, credit: 5, reference : { type : 'voucher', index : 1 }}
       ]
     };
 

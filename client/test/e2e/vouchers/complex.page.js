@@ -8,6 +8,7 @@ helpers.configure(chai);
 
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
+const GU = require('../shared/gridTestUtils.spec.js');
 
 /**
  * @class Row
@@ -64,7 +65,7 @@ class Row {
   // sets the entity
   entity(type, name) {
     // click the 'open entity modal' button
-    $(this._selectors.entity).click();
+    this._node.$(this._selectors.entity).click();
 
     // the modal is now open
 
@@ -80,7 +81,17 @@ class Row {
 
   // sets the reference
   reference(type, index) {
-    // @todo - implement this.
+    // click the 'open reference modal' button
+    this._node.$(this._selectors.reference).click();
+
+    // select the type
+    // supported : 'voucher', 'cash-payment', 'patient-invoice'
+    $(`[data-button-${type}]`).click();
+
+    GU.selectRow('referenceGrid', index);
+
+    // submit the modal
+    $('[data-reference-modal]').$('[data-method="submit"]').click();
   }
 }
 

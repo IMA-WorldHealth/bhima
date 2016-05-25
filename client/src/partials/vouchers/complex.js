@@ -188,7 +188,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       !vm.rowsInput.validAmount ? { icon : 'glyphicon glyphicon-alert', label : 'VOUCHERS.COMPLEX.ERROR_AMOUNT' } :
       !vm.rowsInput.validAccount ? { icon : 'glyphicon glyphicon-alert', label : 'VOUCHERS.COMPLEX.ERROR_ACCOUNT' } :
       !vm.rowsInput.validTotals ? { icon : 'glyphicon glyphicon-alert', label : 'VOUCHERS.COMPLEX.ERROR_TOTALS' } :
-      vm.rowsInput.validTotals && vm.validInput ? { icon : 'glyphicon glyphicon-check', label : 'VOUCHERS.COMPLEX.VALID_TOTALS' } :
+      vm.rowsInput.validTotals && vm.validInput ? { icon : 'glyphicon glyphicon-ok-sign', label : 'VOUCHERS.COMPLEX.VALID_TOTALS' } :
       { icon : '', label : '' };
     summation();
   }

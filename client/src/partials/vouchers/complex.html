@@ -11,53 +11,49 @@
       <div class="row">
         <div class="col-md-6">
           <div class="panel panel-default">
+            <bh-date-editor
+              date-value="ComplexVoucherCtrl.voucher.date"
+              max-date="ComplexVoucherCtrl.timestamp"
+            >
+            </bh-date-editor>
 
-            <div class="panel-body">
+            <div
+              class="form-group"
+              ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.description.$invalid }">
+              <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
+              <textarea
+                class="form-control"
+                name="description"
+                ng-model="ComplexVoucherCtrl.voucher.description"
+                placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
+                required>
+              </textarea>
+              <div class="help-block" ng-messages="ComplexVoucherForm.description.$error" ng-show="ComplexVoucherForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
 
-                <bh-date-editor
-                  date-value="ComplexVoucherCtrl.voucher.date"
-                  max-date="ComplexVoucherCtrl.timestamp"
-                >
-                </bh-date-editor>
+            <!-- @TODO - use a currency selection component -->
+            <div
+              class="radio"
+              ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.currency.$invalid }">
+              <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
+              <label
+                ng-repeat="currency in ComplexVoucherCtrl.currencies track by currency.id"
+                class="radio-inline">
+                <input
+                  name="currency"
+                  type="radio"
+                  ng-model="ComplexVoucherCtrl.voucher.currency_id"
+                  ng-value="currency.id"
+                  data-currency-option="{{ currency.id }}"
+                  required>
+                {{ currency.label }}
+              </label>
 
-                <div
-                  class="form-group"
-                  ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.description.$invalid }">
-                  <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
-                  <textarea
-                    class="form-control"
-                    name="description"
-                    ng-model="ComplexVoucherCtrl.voucher.description"
-                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
-                    required>
-                  </textarea>
-                  <div class="help-block" ng-messages="ComplexVoucherForm.description.$error" ng-show="ComplexVoucherForm.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-
-                <!-- @TODO - use a currency selection component -->
-                <div
-                  class="radio"
-                  ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.currency.$invalid }">
-                  <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
-                  <label ng-repeat="currency in ComplexVoucherCtrl.currencies track by currency.id"
-                    class="radio-inline">
-                    <input
-                      name="currency"
-                      type="radio"
-                      ng-model="ComplexVoucherCtrl.voucher.currency_id"
-                      ng-value="currency.id"
-                      data-currency-option="{{ currency.id }}"
-                      required>
-                    {{ currency.label }}
-                  </label>
-
-                  <div class="help-block" ng-messages="ComplexVoucherForm.currency.$error" ng-show="ComplexVoucherForm.$submitted">
-                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-
+              <div class="help-block" ng-messages="ComplexVoucherForm.currency.$error" ng-show="ComplexVoucherForm.$submitted">
+                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -74,7 +70,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="panel panel-default">
-            <div class="panel-heading clearfix">
+            <div class="panel-heading">
 
               <!--
                 Hack styles to make text behave look like class "btn".  This should be formalized into a class
@@ -100,8 +96,8 @@
                   <th class="text-center">#</th>
                   <th style="width:30%">{{ 'TABLE.COLUMNS.ACCOUNT' | translate }}</th>
                   <th>&nbsp;</th>
-                  <th style="width:15%" class="text-center">{{ 'TABLE.COLUMNS.DEBIT' | translate }}</th>
-                  <th style="width:15%" class="text-center">{{ 'TABLE.COLUMNS.CREDIT' | translate }}</th>
+                  <th style="width:15%">{{ 'TABLE.COLUMNS.DEBIT' | translate }}</th>
+                  <th style="width:15%">{{ 'TABLE.COLUMNS.CREDIT' | translate }}</th>
                   <th style="width:15%" class="text-center">{{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}</th>
                   <th style="width:15%" class="text-center">{{ 'TABLE.COLUMNS.REFERENCE' | translate }}</th>
                   <th>&nbsp;</th>
@@ -109,22 +105,23 @@
               </thead>
 
               <tbody>
-                <tr class="normalRow"
+                <tr
+                  class="normalRow"
                   ng-repeat="row in ComplexVoucherCtrl.rows"
                   ng-class="{'validRow': row.isValid, 'invalidRow': !row.isValid}"
                   data-row="{{ $index }}">
                   <td>
                     <span ng-show="row.isValid" class="text-success iconRow">
-                      <span class="glyphicon glyphicon-ok"></span>
+                      <span class="glyphicon glyphicon-ok-sign"></span>
                     </span>
+
                     <span ng-hide="row.isValid" class="text-danger iconRow">
-                      <span class="glyphicon glyphicon-remove"></span>
+                      <span class="glyphicon glyphicon-exclamation-sign"></span>
                     </span>
                   </td>
                   <td>
                     <input
                       ng-model="row.account"
-                      ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                       type="text"
                       placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
                       uib-typeahead="account as account.hrlabel for account in ComplexVoucherCtrl.accounts | filter:$viewValue | limitTo:8 "
@@ -142,7 +139,7 @@
                       ng-model="row.debit"
                       ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                       type="number"
-                      class="form-control"
+                      class="form-control text-right"
                       data-debit-input
                       required>
                   </td>
@@ -151,7 +148,7 @@
                       ng-model="row.credit"
                       ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                       type="number"
-                      class="form-control"
+                      class="form-control text-right"
                       data-credit-input
                       required>
                   </td>
@@ -180,7 +177,7 @@
                       type="button"
                       ng-click="ComplexVoucherCtrl.openReferenceModal(row)"
                       ng-class="{'btn-info': row.reference.uuid}"
-                      data-reference-row="{{ $index }}">
+                      data-reference-button>
 
                       <!-- state: has reference -->
                       <span ng-show="row.reference.uuid">
@@ -213,17 +210,15 @@
               </tfoot>
             </table>
 
-            <div class="panel-footer text-right">
+            <div class="panel-footer clearfix">
 
-              <div ng-hide="ComplexVoucherCtrl.posted">
-                <span ng-class="{'text-danger': !ComplexVoucherCtrl.validInput, 'text-success': ComplexVoucherCtrl.validInput}">
-                  <i ng-class="ComplexVoucherCtrl.notifyMessage.icon"></i>
-                  {{ ComplexVoucherCtrl.notifyMessage.label | translate }}
-                </span>
-              </div>
+              <span ng-class="{'text-danger': !ComplexVoucherCtrl.validInput, 'text-success': ComplexVoucherCtrl.validInput}" ng-hide="ComplexVoucherCtrl.posted">
+                <span ng-class="ComplexVoucherCtrl.notifyMessage.icon"></span>
+                {{ ComplexVoucherCtrl.notifyMessage.label | translate }}
+              </span>
 
               <button
-                class="btn btn-primary"
+                class="btn btn-primary pull-right"
                 ng-disabled="!ComplexVoucherCtrl.validInput"
                 ng-click="ComplexVoucherCtrl.submit(ComplexVoucherForm)"
                 data-method="submit">
@@ -231,7 +226,6 @@
               </button>
               </div>
             </div>
-            <div ng-show="ComplexVoucherCtrl.posted" id="create-success"></div>
           </div>
         </div>
       </div>

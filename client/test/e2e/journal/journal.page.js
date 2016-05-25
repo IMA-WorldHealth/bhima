@@ -2,7 +2,7 @@
 
 // var GridTestUtils = require('../shared/gridTestUtils.spec.js');
 
-function JournalCorePage() { 
+function JournalCorePage() {
   var page = this;
 
   /**
@@ -20,13 +20,13 @@ function JournalCorePage() {
   var journalGridRows = journalGrid.element( by.css('.ui-grid-render-container-body')).all( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index') );
   var journalGridColumns = journalGrid.element( by.css('.ui-grid-render-container-body')).element( by.css('.ui-grid-header') ).all( by.repeater('col in colContainer.renderedColumns track by col.uid') );
 
-  // this method is taken from gridTestUtils.spec.js, the standard UI Grid 
+  // this method is taken from gridTestUtils.spec.js, the standard UI Grid
   // testing framework (mocha incompatability)
-  function getTotalRows() { 
+  function getTotalRows() {
     return journalGridRows.count();
   }
 
-  function getColumnCount( expectedNumCols ) {    
+  function getColumnCount( expectedNumCols ) {
     return journalGridColumns.count();
   }
 
@@ -51,9 +51,9 @@ function JournalCorePage() {
   page.getTotalRows = getTotalRows;
   page.showColumnConfigDialog = showColumnConfigDialog;
   page.changeDescriptionState = changeDescriptionState;
-  page.submitButton = submitConfig; 
+  page.submitButton = submitConfig;
   page.getColumnCount = getColumnCount;
   page.resetColumnConfig = resetColumnConfig;
-  
+
 }
 module.exports = JournalCorePage;
