@@ -522,7 +522,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   /* Patient Edit */
   .state('patientEdit', {
-    url : '/patients/edit/:uuid',
+    url : '/patients/:uuid/edit',
     controller: 'PatientEdit as PatientEditCtrl',
     templateUrl: 'partials/patients/edit/edit.html'
   })
@@ -550,8 +550,8 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/patient_invoice/patientInvoice.html'
   })
 
-  .state('/patients/registry/', {
-    url  : '/patients/registry',
+  .state('patientRegistry', {
+    url  : '/patients',
     controller: 'PatientRegistryController as PatientRegistryCtrl',
     templateUrl: '/partials/patients/registry/registry.html'
   })
@@ -560,14 +560,14 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'PatientGroupController as PatientGroupCtrl',
     templateUrl: 'partials/patients/groups/groups.html'
   })
-  .state('/patients/groups/assignment', {
-    controller: 'AssignPatientGroupController',
-    templateUrl: 'partials/patients/groups/assignment.html'
+
+  /* Patient record */
+  .state('patientRecord', {
+    url : '/patients/:patientID',
+    controller: 'PatientRecordController as PatientRecordCtrl',
+    templateUrl: 'partials/patients/record/patient_record.html'
   })
-  .state('/patients/debtor', {
-    controller : 'group.debtor.reassignment',
-    templateUrl : 'partials/patients/debtor/swap.html'
-  })
+
   .state('/trialbalance/print', {
     controller : 'TrialBalancePrintController as PrintCtrl',
     templateUrl : 'partials/journal/trialbalance/print.html'
