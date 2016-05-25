@@ -8,11 +8,11 @@ Limitations of current templating structure:
     <li ng-repeat-start="unit in $ctrl.units">
       <a ng-click="$ctrl.toggleUnit(unit)">
         <span
-          class="glyphicon"
+          class="fa"
           ng-class="{
-          'glyphicon-exclamation-sign' : unit.children.length === 0,
-          'glyphicon-folder-open' : unit.open && unit.children.length > 0,
-          'glyphicon-folder-close' : !unit.open && unit.children.length > 0}">
+          'fa-exclamation-circle' : unit.children.length === 0,
+          'fa-folder-open' : unit.open && unit.children.length > 0,
+          'fa-folder' : !unit.open && unit.children.length > 0}">
         </span>
         <span class="tree-title">{{ unit.key | translate }}</span>
       </a>
@@ -26,7 +26,7 @@ Limitations of current templating structure:
       class="file"
       ng-class="{ 'selected' : child.selected }">
       <a ng-click="$ctrl.navigate(child)">
-        <span class="glyphicon glyphicon-file"></span>
+        <span class="fa fa-file"></span>
         <span class="tree-title">{{ child.key | translate }}</a></span>
       </a>
     </li>
