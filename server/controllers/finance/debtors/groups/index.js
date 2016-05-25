@@ -13,11 +13,11 @@
 * @requires lib/errors/NotFound
 */
 
-var q  = require('q');
-var uuid = require('node-uuid');
-var db = require('../../../../lib/db');
-var util = require('../../../../lib/util');
-var NotFound = require('../../../../lib/errors/NotFound');
+const q  = require('q');
+const uuid = require('node-uuid');
+const db = require('../../../../lib/db');
+const util = require('../../../../lib/util');
+const NotFound = require('../../../../lib/errors/NotFound');
 
 /** Create a new debtor group */
 exports.create = create;
@@ -60,27 +60,6 @@ function lookupDebtorGroup(uid) {
 }
 
 /**
- * Converts incoming uuids into binary uuids, if they exist.  This works for both
- * PUT and POST requests
- *
- * @param {Object} data - the incoming data object to be inserted into the
- * database
- * @returns {object} data - the same data object, with uuids cast as binary.
- */
-function convert(data) {
-
-  if (data.location_id) {
-    data.location_id = db.bid(data.location_id);
-  }
-
-  if (data.price_list_uuid) {
-    data.price_list_uuid = db.bid(data.price_list_uuid);
-  }
-
-  return data;
-}
-
-/**
  * POST /debtor_groups/
  *
  * This function is responsible for creating a new debtor group.
@@ -106,10 +85,10 @@ function convert(data) {
  * };
  */
 function create(req, res, next) {
-  var sql = 'INSERT INTO debtor_group SET ? ;';
+  const sql = 'INSERT INTO debtor_group SET ? ;';
 
   // convert any incoming uuids into binary
-  var data = convert(req.body);
+  const data = db.convert(req.body, ['price_list_uuid', 'location_id']);
 
   // generate a uuid if one doesn't exist, and convert to binary
   data.uuid = db.bid(data.uuid || uuid.v4());
@@ -134,7 +113,7 @@ function update(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   // convert any incoming uuids to binary
-  const data = convert(req.body);
+  const data = db.convert(req.body, ['price_list_uuid', 'location_id']);
 
   // prevent updating the uuid, if it exists
   delete data.uuid;

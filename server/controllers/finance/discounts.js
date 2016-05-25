@@ -7,24 +7,9 @@
  * @requires lib/db
  */
 
-var NotFound = require('../../lib/errors/NotFound'); 
+var NotFound = require('../../lib/errors/NotFound');
 var BadRequest = require('../../lib/errors/BadRequest');
 const db = require('../../lib/db');
-
-/**
- * Converts needed fields into binary
- *
- * @param {Object} data - the data to be entered into the database
- * @returns {Object} data - the incoming data with uuids cast as binary
- */
-function convert(data) {
-
-  if (data.inventory_uuid) {
-    data.inventory_uuid = db.bid(data.inventory_uuid);
-  }
-
-  return data;
-}
 
 /**
  * @desc Looks up a discount in the database by its id.  Throws a prmoise error
@@ -103,7 +88,7 @@ exports.create = function create(req, res, next) {
   'use strict';
 
   // expects the proposed record to be namespaced by "discount"
-  var data = convert(req.body.discount);
+  var data = db.convert(req.body.discount, ['inventory_uuid']);
 
   if (data.value < 0) {
     return next(
@@ -136,7 +121,7 @@ exports.update = function update(req, res, next) {
 
   // no namespace necessary for updates -- allows middleware to catch empty
   // req.body's
-  var data = convert(req.body);
+  var data = db.convert(req.body, ['inventory_uuid']);
   var id = req.params.id;
 
   // remove the id if it exists (prevent attacks on data integrity)
