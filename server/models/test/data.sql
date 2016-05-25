@@ -39,7 +39,7 @@ INSERT INTO unit VALUES
   (112, 'Reference','TREE.REFERENCE','References',30,'/partials/references','/references'),
   (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple'),
   (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services'),
-  (136, 'Patient Documents', 'TREE.PATIENT_DOCUMENT', 'Patient Document Module', 12, '/partials/patients/documents', '/patients/documents'),
+  -- (136, 'Patient Documents', 'TREE.PATIENT_DOCUMENT', 'Patient Document Module', 12, '/partials/patients/documents', '/patients/documents'),
   (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 30, '/partials/vouchers/complex', '/vouchers/complex');
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
@@ -200,7 +200,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (29, 1),
 
 -- Patient documents
-(136, 1),
+-- (136, 1),
 
 -- complex Journal Vouchers
 (137, 1);

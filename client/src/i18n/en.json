@@ -287,6 +287,7 @@
       "BANK"                   : "Bank",
       "BANK_ACCOUNT"           : "Bank Account",
       "BILLING_SERVICES"       : "Billing Services Applied",
+      "BY"                     : "By",
       "BY_ID"                  : "By Id",
       "BY_NAME"                : "By Name",
       "CANCELED"               : "Canceled",
@@ -407,6 +408,12 @@
       "SERVICE"                : "Service",
       "SET_DATE"               : "Change Date",
       "SEX"                    : "Sex",
+      "SIZE_BYTES"             : "Bytes",
+      "SIZE_KB"                : "Kb",
+      "SIZE_MB"                : "Mb",
+      "SIZE_GB"                : "Gb",
+      "SIZE_TB"                : "Tb",
+      "SIZE_PB"                : "Pb",
       "SPOUSE"                 : "Spouse's Name",
       "SPOUSE_EMPLOYER"        : "Spouse's Employer",
       "SPOUSE_PROFESSION"      : "Spouse's Occupation",
@@ -444,6 +451,7 @@
       "ENTER_CREDITOR"     : "Enter Creditor",
       "ENTER_DEBTOR"       : "Enter Debtor",
       "ENTER_DESCRIPTION"  : "Enter description",
+      "ENTER_DOCUMENT_NAME": "Enter Document Name",
       "ENTER_EMAIL"        : "Enter email",
       "ENTER_MAX_CREDIT"   : "Enter max credit",
       "ENTER_NAME"         : "Enter Name",
@@ -542,10 +550,14 @@
     "TITLE" : "Authentication"
   },
   "PATIENT_DOCUMENT" : {
-    "ADD"            : "Add",
+    "ADD"            : "Add documents",
+    "DISPLAY_LIST"   : "Display as list",
+    "DISPLAY_THUMBNAIL" : "Display as thumbnail",
     "DOCUMENT_TITLE" : "Document Title",
     "DOCUMENT_LIST"  : "Documents List",
+    "DOCUMENTS"      : "Patient's Documents",
     "DOWNLOAD"       : "Download",
+    "NO_DOCUMENT"    : "No Document Found",
     "OVERVIEW"       : "Overview",
     "POSTED_BY"      : "Posted by",
     "SEARCH"         : "Search documents",
@@ -582,6 +594,11 @@
     "PAGE_TITLE"         : "Patient Invoice",
     "SUCCESS"            : "Patient invoice successfully recorded."
   },
+  "PATIENT_RECORDS": {
+    "TITLE"              : "Patients",
+    "UPLOAD_PICTURE"     : "Upload Patient Photo",
+    "NOT_FOUND"          : "Unable to find patient with that ID. Please check with your system administrator."
+  },
   "PATIENT_REG": {
     "FIND_PATIENT"         : "Find a Patient",
     "PAGE_TITLE"           : "Patient Registration",
@@ -590,11 +607,6 @@
     "TITLE"                : "Title",
     "VIEW_PATIENT_RECORDS" : "View Patient Records",
     "SUCCEESS"             : "Patient record successfully written"
-  },
-  "PATIENT_RECORDS": {
-    "TITLE" : "Patients",
-    "UPLOAD_PICTURE" : "Upload Patient Photo",
-    "NOT_FOUND" : "Unable to find patient with that ID. Please check with your system administrator."
   },
   "PATIENT_REGISTRY" : {
     "DAY"                   : "day",

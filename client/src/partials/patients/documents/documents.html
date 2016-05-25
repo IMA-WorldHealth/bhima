@@ -1,20 +1,43 @@
-<!-- breadcrumb header -->
-<bh-breadcrumb
-  path="PatientDocCtrl.paths">
-</bh-breadcrumb>
+<div class="flex-header">
+  <div class="bhima-title">
+
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.HOSPITAL" | translate }}</li>
+      <li class="static">
+        <a ng-href="#/patients">
+          {{ "PATIENT_RECORDS.TITLE" | translate }}
+        </a>
+      </li>
+      <li class="title">
+        <a ng-href="#/patients/{{ PatientDocCtrl.patientUuid }}">
+          {{ PatientDocCtrl.formatedPatientName }}
+        </a>
+      </li>
+    </ol>
+
+    <!-- ng-show to stop flickering on load -->
+    <span
+        ng-show="PatientDocCtrl.formatedPatientName"
+        style="margin-left : 5px"
+        class="label label-warning">
+      <span style="text-transform : uppercase">{{ "FORM.LABELS.DOCUMENT" | translate }}</span>
+    </span>
+
+  </div>
+</div>
 
 <div class="flex-content">
   <div class="container">
 
-    <!-- find patient  -->
-    <bh-find-patient
-      type="inline"
-      suppress-reset="false"
-      on-search-complete="PatientDocCtrl.setPatient(patient)">
-    </bh-find-patient>
-
-    <!-- document view  -->
-    <div ui-view="document"></div>
+    <!-- find document  -->
+    <bh-find-document
+      patient-uuid="PatientDocCtrl.patientUuid"
+      enable-patient-details="false"
+      enable-search="true"
+      enable-option-bar="true"
+      display="thumbnail">
+    </bh-find-document>
+    <!-- end find document  -->
 
   </div>
 </div>

@@ -65,7 +65,7 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
     return agent.get(`/patients/${patientUuid}/documents`)
       .then(function (res) {
         helpers.api.listed(res, 4);
-        expect(res.body[0]).to.have.keys('uuid', 'label', 'link');
+        expect(res.body[0]).to.have.keys('uuid', 'label', 'link', 'timestamp', 'mimetype', 'size', 'user_id', 'first', 'last');
       })
       .catch(helpers.api.handler);
   });

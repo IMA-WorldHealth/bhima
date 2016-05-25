@@ -284,6 +284,7 @@
       "BANK"                   : "Banque",
       "BANK_ACCOUNT"           : "Compte Bancaire",
       "BILLING_SERVICES"       : "Les services de facturation appliquée",
+      "BY"                     : "Par",
       "BY_ID"                  : "Par id",
       "BY_NAME"                : "Par nom",
       "CANCELED"               : "Annulee",
@@ -404,6 +405,12 @@
       "SERVICE"                : "Service",
       "SET_DATE"               : "Changer la Date",
       "SEX"                    : "Sexe",
+      "SIZE_BYTES"             : "Octets",
+      "SIZE_KB"                : "Ko",
+      "SIZE_MB"                : "Mo",
+      "SIZE_GB"                : "Go",
+      "SIZE_TB"                : "To",
+      "SIZE_PB"                : "Po",
       "SPOUSE"                 : "Nom de l'époux(se)",
       "SPOUSE_EMPLOYER"        : "Employeur(époux(se))",
       "SPOUSE_PROFESSION"      : "Profession (époux(se))",
@@ -441,6 +448,7 @@
       "ENTER_CREDITOR"     : "Entrer un crediteur",
       "ENTER_DEBTOR"       : "Entrer un debiteur",
       "ENTER_DESCRIPTION"  : "Entrer une description",
+      "ENTER_DOCUMENT_NAME": "Entrer le nom du document",
       "ENTER_EMAIL"        : "Entrer l'adresse e-mail",
       "ENTER_MAX_CREDIT"   : "Entrer le crédit maximale",
       "ENTER_NAME"         : "Entrer le nom",
@@ -539,10 +547,14 @@
     "TITLE" : "Authentification"
   },
   "PATIENT_DOCUMENT" : {
-    "ADD"            : "Ajouter",
+    "ADD"            : "Ajouter documents",
+    "DISPLAY_LIST"   : "Affichage en list",
+    "DISPLAY_THUMBNAIL" : "Affichage en miniature",
     "DOCUMENT_TITLE" : "Titre du document",
     "DOCUMENT_LIST"  : "Liste des documents",
+    "DOCUMENTS"      : "Documents du patient",
     "DOWNLOAD"       : "Telecharger",
+    "NO_DOCUMENT"    : "Aucun document trouvé",
     "OVERVIEW"       : "Aperçu",
     "POSTED_BY"      : "Posté par",
     "SEARCH"         : "Chercher documents",
@@ -556,7 +568,8 @@
     "PAGE_TITLE"     : "Modifier Patient",
     "RECORD_SAME"    : "Aucun changement n'a été apporté sur le formulaire. Mettez à jour les détails de patients et appuyez sur soumettre.",
     "REGISTERED"     : "Patient Enregistré",
-    "WARN"           : "Aucun groupes de patients n'a été trouvée. Les groupes de patients doivent être enregistrés dans le système avant l'affectation des patients"
+    "WARN"           : "Aucun groupes de patients n'a été trouvée. Les groupes de patients doivent être enregistrés dans le système avant l'affectation des patients",
+    "EDIT_DETAILS"   : "Modifier les details"
   },
   "PATIENT_GROUP": {
     "ADD_PATIENT_GROUP"  : "Nouveau Groupe de Patients",
@@ -576,6 +589,11 @@
     "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
     "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
     "PAGE_TITLE"         : "Facture des patients"
+  },
+  "PATIENT_RECORDS": {
+    "TITLE"              : "Patients",
+    "UPLOAD_PICTURE"     : "Telecharger Photo Patient",
+    "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
   },
   "PATIENT_REG": {
     "FIND_PATIENT"         : "Trouver Patient",
