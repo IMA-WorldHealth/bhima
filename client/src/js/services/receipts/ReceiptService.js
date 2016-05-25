@@ -20,6 +20,7 @@ function ReceiptService($http, util) {
   };
   
   service.invoice = invoice;
+  service.patient = patient;
   service.renderers = renderers;
   
   /**

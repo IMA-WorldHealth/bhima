@@ -32,6 +32,8 @@ exports.headers = headers;
  * @returns {Promise}         Promise resolving in compiled PDF 
  */
 function renderPDF(context, template, options) {
+  var options = options || {};
+  
   // pdf requires absolute path to be passed to templates to be picked up by wkhtmltopdf on windows
   context.absolutePath = path.join(process.cwd(), 'client');
 

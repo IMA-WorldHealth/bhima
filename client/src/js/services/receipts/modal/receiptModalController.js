@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('ReceiptModalController', ReceiptModalController);
 
-ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce', 'ReceiptService', 'receipt', 'options'];
+ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce', 'ReceiptService', 'NotifyService', 'receipt', 'options'];
 
 /**
  * Receipt Modal Controller
@@ -13,9 +13,10 @@ ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce', 'Recei
  * @param {String} template  Path to the template or resource to load
  * @param {String} render    Render target used to generate report
  */
-function ReceiptModalController($modalInstance, $window, $sce, Receipts, receipt, options) {
+function ReceiptModalController($modalInstance, $window, $sce, Receipts, Notify, receipt, options) {
   var vm = this;
- 
+  
+  
   // expose available receipt renderers to view
   vm.renderers = Receipts.renderers;
   
@@ -24,11 +25,12 @@ function ReceiptModalController($modalInstance, $window, $sce, Receipts, receipt
   
   // expose options to the view
   angular.extend(vm, options);
-
+  
   receipt.promise
     .then(function (result) {
       // special case for pdf rendering
       if (options.renderer === Receipts.renderers.PDF) { 
+        
         // store downloaded base64 PDF file in a browser blob - this will be accessible through 'blob://...'
         var file = new Blob([result], {type : 'application/pdf'});
         

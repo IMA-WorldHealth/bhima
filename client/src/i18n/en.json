@@ -308,7 +308,7 @@
       "CURRENT_LOCATION"       : "Current Location",
       "CREATED"                : "Created",
       "DATE"                   : "Date",
-      "DATE_REGISTRATION"      : "Date Registration",
+      "DATE_REGISTRATION"      : "Date of Registration",
       "DEBITOR_GROUP"          : "Debtor Group",
       "DEBTOR_GROUP"           : "Form debtor group record",
       "DESCRIPTION"            : "Description",
@@ -588,7 +588,8 @@
     "PATIENT_DETAILS"      : "Patient Details",
     "REGISTER_PATIENT"     : "Register Patient",
     "TITLE"                : "Title",
-    "VIEW_PATIENT_RECORDS" : "View Patient Records"
+    "VIEW_PATIENT_RECORDS" : "View Patient Records",
+    "SUCCEESS"             : "Patient record successfully written"
   },
   "PATIENT_RECORDS": {
     "TITLE" : "Patients",

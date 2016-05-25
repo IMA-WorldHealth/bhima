@@ -50,6 +50,9 @@ var paths = {
     ],
     vendorStyle : [
       'client/vendor/**/*.{css,ttf,woff,woff2,eot,svg}',
+      
+      // this is very cheeky
+      'client/vendor/moment/moment.js',
       '!client/vendor/**/src{,/**}',
       '!client/vendor/**/js{,/**}'
     ],

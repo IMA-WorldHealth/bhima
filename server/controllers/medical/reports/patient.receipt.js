@@ -33,9 +33,8 @@ function build(req, res, next) {
   }
   
   Patients.lookupPatient(patientID)
-    .then(function (details) { 
-      
-      return renderer.render({ patient : details }, template, receiptOptions);
+    .then(function (patient) { 
+      return renderer.render({ patient }, template, receiptOptions);
     })
     .then(function (result) { 
       

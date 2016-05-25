@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientRegistrationController.$inject = [
   '$location', 'PatientService', 'DebtorService',
-  'SessionService', 'util', 'NotifyService'
+  'SessionService', 'util', 'NotifyService', 'ReceiptModal', 'ScrollService'
 ];
 
 /**
@@ -16,18 +16,11 @@ PatientRegistrationController.$inject = [
  *
  * @module controllers/PatientRegistrationController
  */
-function PatientRegistrationController($location, Patients, Debtors, Session, util, Notify) {
+function PatientRegistrationController($location, Patients, Debtors, Session, util, Notify, Receipts, ScrollTo) {
   var viewModel = this;
 
-  // models for collecting patient data in logical groups
-  viewModel.finance = {};
-  viewModel.medical = {};
   viewModel.options = {};
-
-  // bind default villages
-  viewModel.medical.origin_location_id = Session.enterprise.location_id;
-  viewModel.medical.current_location_id = Session.enterprise.location_id;
-
+  
   viewModel.registerPatient = registerPatient;
   viewModel.enableFullDate = enableFullDate;
   viewModel.calculateYOB = calculateYOB;
@@ -47,38 +40,59 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
     .then(function (results) {
       viewModel.options.debtorGroups = results;
     })
-    .catch(handleServerError);
-
+    .catch(Notify.handleError);
+  
   // Define limits for DOB
   viewModel.minDOB = util.minDOB;
   viewModel.maxDOB = util.maxDOB;
-
+  
+  settupRegistration();
+  
   function registerPatient(patientDetailsForm) {
 
     // Register submitted action - explicit as the button is outside of the scope of the form
     patientDetailsForm.$setSubmitted();
-
+    
+    /** @todo once the bh-submit directive supports controller overriden $invalid handling this should be udpated */
+    patientDetailsForm.$loading = true;
+    
     if (patientDetailsForm.$invalid) {
-
       // End propegation for invalid state - this could scroll to an $invalid element on the form
+      Notify.danger('FORM.ERRORS.INVALID'); 
+      patientDetailsForm.$loading = false;
       return;
     }
 
     Patients.create(viewModel.medical, viewModel.finance)
       .then(function (result) {
-
         // create patient success - mark as visiting
         return Patients.logVisit(result.uuid);
       })
       .then(function (confirmation) {
-        //var patientCardPath = '/invoices/patient/';
-        /** @fixme -  temporary path for end to end tests while we develop receipts */
-        var patientCardPath = '/patients/';
+        Receipts.patient(confirmation.uuid, true);
 
-        //TODO Hospital card should receive a value that notifies the user of register success
-        $location.path(patientCardPath.concat(confirmation.uuid, '/edit'));
+        // reset form state
+        patientDetailsForm.$setPristine();
+        patientDetailsForm.$setUntouched();
+        settupRegistration();
+        
+        ScrollTo('anchor');
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(function () { 
+        patientDetailsForm.$loading = false; 
+      });
+  }
+  
+  function settupRegistration() { 
+    viewModel.finance = {};
+    viewModel.medical = {};
+    
+    viewModel.fullDateEnabled = false;
+    viewModel.yob = null;
+    
+    viewModel.medical.origin_location_id = Session.enterprise.location_id;
+    viewModel.medical.current_location_id = Session.enterprise.location_id;  
   }
 
   /**
