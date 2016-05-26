@@ -14,7 +14,7 @@ angular.module('bhima.components')
 bhCurrencySelect.$inject = [ '$scope', 'CurrencyService' ];
 
 /**
- * @module components/bhCurrencySelect
+ * @class bhCurrencySelect
  *
  * @description
  * This is a radio button currency selection component for choosing currencies
@@ -63,6 +63,7 @@ function bhCurrencySelect($scope, Currencies) {
 
   // bind the currency service to the view
   $ctrl.service = Currencies;
+  $ctrl.valid = true;
 
   // default currencies to an empty list
   $ctrl.currencies = [];
@@ -84,9 +85,7 @@ function bhCurrencySelect($scope, Currencies) {
 
   // watch the disabledIds array for changes, and disable the ids in the the
   // view based on which ids are present in it
-  $scope.$watchCollection(function () {
-    return $ctrl.disableIds;
-  }, function (array) {
+  $scope.$watchCollection('$ctrl.disableIds', function (array) {
     if (!array) { return; }
 
     // loop through the currencies, disabling the currencies with ids in the

@@ -29,11 +29,13 @@ function VoucherService(PrototypeApiService) {
     return PrototypeApiService.create.call(service, { voucher : voucher });
   }
 
-
   /**
-   * Creates a simple journal voucher, transforming the object into double-entry
-   * accounting
    * @method createSimple
+   *
+   * @description
+   * Creates a simple journal voucher, transforming the object into double-entry
+   * accounting.
+   *
    * @param {object} voucher - the raw journal voucher
    */
   function createSimple(voucher) {

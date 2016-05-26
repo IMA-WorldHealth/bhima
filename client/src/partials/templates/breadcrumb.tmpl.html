@@ -2,12 +2,11 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li class="static">
-        <a href="#/">{{ "HOME.BHIMA" | translate }}</a>
-      </li>
-      <li ng-repeat="p in vm.bcPaths" class="title" id="{{ p.id }}" data-method="{{ p.dataMethod }}">
-        <span ng-if="p.current">{{ p.label }}</span>
-        <span ng-if="!p.current"><a ng-href="{{ p.link }}">{{ p.label }}</a></span>
+      <li ng-repeat="p in vm.bcPaths" id="{{ p.id }}" data-method="{{ p.dataMethod }}"  ng-class="{ 'static' : !$last, 'title' : $last }">
+        <span ng-hide="p.link">{{ p.label | translate }}</span>
+        <span ng-show="p.link">
+          <a ng-href="{{ p.link }}" href>{{ p.label | translate }}</a>
+        </span>
       </li>
     </ol>
 
@@ -20,7 +19,7 @@
           </button>
           <ul class="pull-right" uib-dropdown-menu>
             <li ng-repeat="opt in d.option">
-              <a href="" ng-click="vm.helperDropdown(opt, d)" id="{{ opt.id }}" data-method="{{ opt.dataMethod }}">
+              <a href ng-click="vm.helperDropdown(opt, d)" id="{{ opt.id }}" data-method="{{ opt.dataMethod }}">
                 {{ opt.label | translate }}
               </a>
             </li>
@@ -29,24 +28,23 @@
       </div>
 
       <!-- buttons -->
-      <div class="toolbar-item btn-group btn-group-sm" ng-if="vm.bcButtons.length">
+      <div class="toolbar-item btn-group btn-group-sm" ng-show="vm.bcButtons.length">
         <button class="btn"
           id="{{ a.id }}"
           ng-class="a.color"
           ng-repeat="a in vm.bcButtons"
           ng-click="a.action(a.label)"
           data-method="{{ a.dataMethod }}">
-          <i class="{{ a.icon }}"></i> {{ a.label }}
+          <span class="{{ a.icon }}"></span> {{ a.label }}
         </button>
       </div>
 
       <!-- labels -->
       <div class="toolbar-item" ng-if="vm.bcLabels.length">
         <label ng-repeat="l in vm.bcLabels" id="{{ l.id }}" data-method="{{ l.dataMethod }}">
-          <b><i class="{{ l.icon }}"></i> {{ l.label }}</b>
+          <strong><span class="{{ l.icon }}"></span> {{ l.label | translate }}</strong>
         </label>
       </div>
     </div>
-
   </div>
 </div>

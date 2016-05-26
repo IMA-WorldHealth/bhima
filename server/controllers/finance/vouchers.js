@@ -123,6 +123,9 @@ function create(req, res, next) {
     voucher.date = new Date();
   }
 
+  // attach session information
+  voucher.user_id = req.session.user.id;
+  voucher.project_id = req.session.project.id;
 
   // make sure the voucher has an id
   var vuid = voucher.uuid || uuid.v4();
@@ -166,8 +169,6 @@ function create(req, res, next) {
       uuid: vuid
     });
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 }
