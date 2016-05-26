@@ -24,19 +24,15 @@ describe('Suppliers', function () {
 
   const supplierRank = 1;
 
-  it('successfully creates a new supplier', function () {
-
-    // switch to the create form
+  it('creates a new supplier', function () {
     FU.buttons.create();
+
     FU.input('SupplierCtrl.supplier.name', supplier.name);
 
     element(by.id('international')).click();
 
     // select an Creditor
-    FU.select('SupplierCtrl.supplier.creditor_uuid')
-      .enabled()
-      .first()
-      .click();
+    FU.select('SupplierCtrl.supplier.creditor_uuid', 'Fournisseur');
 
     FU.input('SupplierCtrl.supplier.phone', supplier.phone);
     FU.input('SupplierCtrl.supplier.email', supplier.email);
@@ -47,12 +43,10 @@ describe('Suppliers', function () {
 
     // submit the page to the server
     FU.buttons.submit();
-
-    // expect a nice validation message
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully edits an supplier', function () {
+  it('edits an supplier', function () {
     element(by.id('supplier-upd-' + supplierRank )).click();
 
     // modify the supplier name
@@ -62,16 +56,13 @@ describe('Suppliers', function () {
     FU.input('SupplierCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
 
     FU.buttons.submit();
-
-    // make sure the success message appears
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
-    // switch to the create form
+  it('blocks invalid form submission with relevant error classes', function () {
     FU.buttons.create();
 
-    // verify form has not been successfully submitted
+    // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
     element(by.id('submit-supplier')).click();
 

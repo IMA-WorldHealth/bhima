@@ -8,7 +8,7 @@ helpers.configure(chai);
 const FormUtils = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Debtor Groups', function () {
+describe.skip('Debtor Groups', function () {
   'use strict';
 
   before(() => helpers.navigate('#/debtor_groups'));

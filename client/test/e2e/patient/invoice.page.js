@@ -2,7 +2,6 @@
 
 var FU = require('../shared/FormUtils');
 var GU = require('../shared/gridTestUtils.spec.js');
-
 var findPatient = require('../shared/components/bhFindPatient');
 var dateEditor = require('../shared/components/bhDateEditor');
 
@@ -44,10 +43,7 @@ function PatientInvoicePage() {
     btns.distributable.click();
 
     // select the first enabled service in the list
-    FU.select('PatientInvoiceCtrl.Invoice.details.service_id')
-      .enabled()
-      .last()
-      .click();
+    FU.select('PatientInvoiceCtrl.Invoice.details.service_id', 'Administration');
   };
 
   // try to click the submit button

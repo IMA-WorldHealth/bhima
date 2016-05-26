@@ -28,23 +28,9 @@ describe('Services', function () {
 
     FU.input('ServicesCtrl.service.name', SERVICE.name);
 
-    // select a random, enterprise
-    FU.select('ServicesCtrl.service.enterprise_id')
-      .enabled()
-      .first()
-      .click();
-
-    // select a random, cost center
-    FU.select('ServicesCtrl.service.cost_center_id')
-      .enabled()
-      .first()
-      .click();
-
-    // select a random, profit center
-    FU.select('ServicesCtrl.service.profit_center_id')
-      .enabled()
-      .first()
-      .click();
+    FU.select('ServicesCtrl.service.enterprise_id', 'Test Enterprise');
+    FU.select('ServicesCtrl.service.cost_center_id', 'cost center 1');
+    FU.select('ServicesCtrl.service.profit_center_id', 'profit center 1');
 
     // submit the page to the server
     FU.buttons.submit();

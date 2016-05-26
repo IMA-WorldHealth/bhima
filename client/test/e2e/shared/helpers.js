@@ -1,5 +1,4 @@
 /* global element, by, browser */
-
 /**
  * @overview helpers
  *

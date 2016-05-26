@@ -108,8 +108,9 @@ module.exports = {
   },
 
   // get a <select> element by its ng-model.
-  select: function select(model) {
-    return element(by.model(model)).all(by.tagName('option'));
+  select: function select(model, option) {
+    var root = element(by.model(model));
+    return root.element(by.cssContainingText('option', option)).click();
   },
 
   // get a radio button by its position and click
@@ -139,6 +140,7 @@ module.exports = {
     let option = element(by.cssContainingText('[uib-dropdown-menu] > li', label));
     option.click();
   },
+
 
   // bind commonly used form buttons  These require specific data tags to be
   // leveraged effectively.

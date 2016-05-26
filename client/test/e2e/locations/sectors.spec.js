@@ -11,9 +11,7 @@ describe('Sectors Management', function () {
 
   before(() => helpers.navigate('#/locations/sector'));
 
-  const sector = {
-    name :'A Sector for Test'
-  };
+  const sector = { name :'Test Sector' };
 
   const locations = {
     country :'République Démocratique du Congo',
@@ -25,18 +23,15 @@ describe('Sectors Management', function () {
     province :'Bas Congo'
   };
 
-  const defaultSector = 209;
-  const sectorRank = 1;
+  const sectorId = 1;
 
-  it('successfully creates a new sector', function () {
+  it('creates a new sector', function () {
     // switch to the create form
     FU.buttons.create();
 
     // select an country
-    element(by.model('SectorCtrl.sector.country_uuid')).element(by.cssContainingText('option', locations.country)).click();
-
-    // select an province
-    element(by.model('SectorCtrl.sector.province_uuid')).element(by.cssContainingText('option', locations.province)).click();
+    FU.select('SectorCtrl.sector.country_uuid', locations.country);
+    FU.select('SectorCtrl.sector.province_uuid', locations.province);
 
     // set the sector name
     FU.input('SectorCtrl.sector.name', sector.name);
@@ -48,16 +43,11 @@ describe('Sectors Management', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully edits a sector', function () {
-    element(by.id('sector-' + sectorRank )).click();
+  it('edits a sector', function () {
+    element(by.id('sector-' + sectorId )).click();
 
-    // update a country
-    element(by.model('SectorCtrl.sector.country_uuid'))
-      .element(by.cssContainingText('option', locationsUpdate.country))
-      .click();
-
-    // update a province
-    element(by.model('SectorCtrl.sector.province_uuid')).element(by.cssContainingText('option', locationsUpdate.province)).click();
+    FU.select('SectorCtrl.sector.country_uuid', locationsUpdate.country);
+    FU.select('SectorCtrl.sector.province_uuid', locationsUpdate.province);
 
     // modify the sector name
     FU.input('SectorCtrl.sector.name', 'Sector Update');
@@ -68,7 +58,7 @@ describe('Sectors Management', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', function () {
     // switch to the create form
     element(by.id('create')).click();
 
@@ -83,5 +73,4 @@ describe('Sectors Management', function () {
     FU.validation.error('SectorCtrl.sector.province_uuid');
     FU.validation.error('SectorCtrl.sector.name');
   });
-
 });

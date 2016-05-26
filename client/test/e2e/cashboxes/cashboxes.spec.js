@@ -1,7 +1,6 @@
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
-
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
@@ -13,30 +12,26 @@ describe('Cashbox Module', function () {
   before(() => helpers.navigate('#/cashboxes'));
 
   const cashbox = {
-    label:    'Test Principal Cashbox',
-    type:    1,
-    project: 1
+    label: 'Test Principal Cashbox',
+    type: 1,
+    project: 'Test Project A'
   };
 
+  // clicks the 'update' button on the cashbox at $index n in the table
   function update(n) {
     return element(by.repeater('box in CashCtrl.cashboxes track by box.id').row(n))
       .$$('a')
       .click();
   }
 
-  it('successfully creates a new cashbox', function () {
+  it('creates a new cashbox', function () {
 
     // switch to the create form
     FU.buttons.create();
 
     FU.input('CashCtrl.box.label', cashbox.label);
     FU.radio('CashCtrl.box.type', cashbox.type);
-
-    // select the first non-disabled option
-    FU.select('CashCtrl.box.project_id')
-      .enabled()
-      .first()
-      .click();
+    FU.select('CashCtrl.box.project_id', 'Test Project A');
 
     // submit the page to the server
     FU.buttons.submit();
@@ -81,17 +76,8 @@ describe('Cashbox Module', function () {
     FU.exists(by.css('[uib-modal-window]'), true);
     FU.exists(by.name('CashboxModalForm'), true);
 
-    // choose a random cash account
-    FU.select('CashboxModalCtrl.data.account_id')
-      .enabled()
-      .last()
-      .click();
-
-    // choose a random transfer account
-    FU.select('CashboxModalCtrl.data.transfer_account_id')
-      .enabled()
-      .last()
-      .click();
+    FU.select('CashboxModalCtrl.data.account_id', 'Test Gain Account');
+    FU.select('CashboxModalCtrl.data.transfer_account_id', 'Test Loss Account');
 
     // submit the modal
     FU.modal.submit();
@@ -113,11 +99,7 @@ describe('Cashbox Module', function () {
     // confirm that the modal appears
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    // choose a random cash account
-    FU.select('CashboxModalCtrl.data.account_id')
-      .enabled()
-      .first()
-      .click();
+    FU.select('CashboxModalCtrl.data.account_id', 'Test Item Account');
 
     // submit the modal
     FU.modal.submit();
@@ -130,11 +112,7 @@ describe('Cashbox Module', function () {
     FU.validation.ok('CashboxModalCtrl.data.account_id');
     FU.validation.error('CashboxModalCtrl.data.transfer_account_id');
 
-    // choose a random transfer account
-    FU.select('CashboxModalCtrl.data.transfer_account_id')
-      .enabled()
-      .first()
-      .click();
+    FU.select('CashboxModalCtrl.data.transfer_account_id', 'Test Expense Accounts');
 
     // submit the modal
     FU.modal.submit();

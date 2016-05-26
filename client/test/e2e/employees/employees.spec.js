@@ -1,13 +1,13 @@
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
-
-const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('Employees Module', function () {
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
+
+describe('Employees', function () {
   'use strict';
 
   const path = '#/employees';
@@ -29,60 +29,31 @@ describe('Employees Module', function () {
     adresse : '221B Baker Street'
   };
 
-  const defaultEmployee = 2;
-  const employeeRank = helpers.random(defaultEmployee);
+  const employeeId = helpers.random(2);
 
-  it('successfully creates a new employee', function () {
-
-    // switch to the create form
+  it('creates a new employee', function () {
     FU.buttons.create();
+
     FU.input('EmployeeCtrl.employee.prenom', employee.prenom);
     FU.input('EmployeeCtrl.employee.name', employee.name);
     FU.input('EmployeeCtrl.employee.postnom', employee.postnom);
 
-    // select the proper date
+    // input the date of birth
     components.dateEditor.set(employee.dob, 'employee-dob');
+    FU.select('EmployeeCtrl.employee.sexe', 'F');
 
-    // select a sex
-    FU.select('EmployeeCtrl.employee.sexe')
-      .enabled()
-      .first()
-      .click();
     FU.input('EmployeeCtrl.employee.nb_spouse', employee.nb_spouse);
     FU.input('EmployeeCtrl.employee.nb_enfant', employee.nb_enfant);
 
-    // select the proper date
+    // select the proper hiring date
     components.dateEditor.set(employee.date_embauche, 'employee-date-hired');
 
     FU.input('EmployeeCtrl.employee.code', employee.code);
-    // select an Service
-    FU.select('EmployeeCtrl.employee.service_id')
-      .enabled()
-      .first()
-      .click();
-    // select an Grade
-    FU.select('EmployeeCtrl.employee.grade_id')
-      .enabled()
-      .first()
-      .click();
-    // select an Fonction
-    FU.select('EmployeeCtrl.employee.fonction_id')
-      .enabled()
-      .first()
-      .click();
-
-    // select an Creditor Group
-    FU.select('EmployeeCtrl.employee.creditor_group_uuid')
-      .enabled()
-      .first()
-      .click();
-
-    // select an Debtor Group
-    FU.select('EmployeeCtrl.employee.debtor_group_uuid')
-      .enabled()
-      .first()
-      .click();
-
+    FU.select('EmployeeCtrl.employee.service_id', 'Administration');
+    FU.select('EmployeeCtrl.employee.grade_id', 'A1');
+    FU.select('EmployeeCtrl.employee.fonction_id', 'Infirmier');
+    FU.select('EmployeeCtrl.employee.creditor_group_uuid', 'Personnel');
+    FU.select('EmployeeCtrl.employee.debtor_group_uuid', 'Test Debtor Group');
     FU.input('EmployeeCtrl.employee.email', employee.email);
     FU.input('EmployeeCtrl.employee.adresse', employee.adresse);
 
@@ -99,8 +70,8 @@ describe('Employees Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully edits an employee', function () {
-    element(by.id('employee-upd-' + employeeRank )).click();
+  it('edits an employee', function () {
+    element(by.id('employee-upd-' + employeeId )).click();
 
     // modify the employee name
     FU.input('EmployeeCtrl.employee.name', ' Elementary');
@@ -113,8 +84,8 @@ describe('Employees Module', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('successfully unlock an employee', function () {
-    element(by.id('employee-upd-' + employeeRank )).click();
+  it('unlocks an employee', function () {
+    element(by.id('employee-upd-' + employeeId )).click();
     element(by.id('bhima-employee-locked')).click();
     element(by.id('change_employee')).click();
 
@@ -122,12 +93,10 @@ describe('Employees Module', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', function () {
+    FU.buttons.create();
 
-    // switch to the create form
-    element(by.id('create')).click();
-
-    // verify form has not been successfully submitted
+    // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-employee')).click();
@@ -137,7 +106,6 @@ describe('Employees Module', function () {
     FU.validation.error('EmployeeCtrl.employee.name');
     FU.validation.error('EmployeeCtrl.employee.postnom');
     FU.validation.error('EmployeeCtrl.employee.sexe');
-
     FU.validation.error('EmployeeCtrl.employee.code');
     FU.validation.error('EmployeeCtrl.employee.service_id');
     FU.validation.error('EmployeeCtrl.employee.grade_id');

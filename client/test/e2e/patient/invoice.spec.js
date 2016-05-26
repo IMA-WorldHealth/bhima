@@ -6,11 +6,11 @@ const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
-const GU = require('../shared/gridTestUtils.spec.js');
 const PatientInvoicePage = require('./invoice.page.js');
 
 const components = require('../shared/components');
-/**
+
+/*
  * Simple Tests for Patient Invoicing
  *
  * TODO
@@ -86,8 +86,6 @@ describe('Patient Invoice', function () {
   });
 
   it('blocks submission if no patient is available', function () {
-
-    // get a new page
     var page = new PatientInvoicePage();
 
     // this patient doesn't exist
@@ -101,8 +99,6 @@ describe('Patient Invoice', function () {
   });
 
   it('blocks submission for an invalid grid', function () {
-
-    // get a new page
     var page = new PatientInvoicePage();
     page.btns.clear.click();
 
