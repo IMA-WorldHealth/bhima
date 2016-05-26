@@ -21,7 +21,7 @@
     </div>
 
     <div class="form-group"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.country.$error }"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.country.$invalid }"
       >
       <label class="control-label">
         {{ "FORM.LABELS.COUNTRY" | translate }}
@@ -47,7 +47,7 @@
     </div>
 
     <div class="form-group"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.province.$error }"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.province.$invalid }"
       ng-if="LocationModalCtrl.view.index > 1"
       >
       <label class="control-label">
@@ -75,7 +75,7 @@
 
     <div class="form-group"
       ng-if="LocationModalCtrl.view.index > 2"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.sector.$error }"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.sector.$invalid }"
       >
       <label class="control-label">
         {{ "FORM.LABELS.SECTOR" | translate }}
@@ -100,7 +100,7 @@
 
     <div class="form-group"
       ng-if="LocationModalCtrl.view.index > 3"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.village.$error }"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.village.$invalid }"
       >
       <label class="control-label">
         {{ "FORM.LABELS.VILLAGE" | translate }}
