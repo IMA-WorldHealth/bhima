@@ -1,0 +1,23 @@
+<div class="grid-msg-overlay" ng-show="!$ctrl.errorState && ($ctrl.loadingState || $ctrl.emptyState)">
+
+  <!-- indicate that the grid is loading -->
+  <div class="msg" ng-show="$ctrl.loadingState">
+    <span><span class="fa fa-spinner fa-spin"></span> {{ "TABLE.COLUMNS.LOADING" | translate }}</span>
+  </div>
+
+  <!-- indicate that there is no data for the requested query -->
+  <div class="msg" ng-show="!$ctrl.loadingState && $ctrl.emptyState">
+    <span class="text-info">
+      <span class="fa fa-info-circle"></span> {{ "TABLE.COLUMNS.EMPTY" | translate }}
+    </span>
+  </div>
+</div>
+
+<div class="grid-msg-overlay" ng-show="$ctrl.errorState">
+  <!-- indicate that some error occurred -->
+  <div class="msg" ng-show="$ctrl.errorState">
+    <span class="text-danger">
+      <span class="fa fa-warning"></span> {{ "ERRORS.UNKNOWN" | translate }}
+    </span>
+  </div>
+</div>
