@@ -129,7 +129,6 @@
                       uib-typeahead="account as account.hrlabel for account in ComplexVoucherCtrl.accounts | filter:$viewValue | limitTo:8 "
                       typeahead-editable="false"
                       typeahead-on-select="ComplexVoucherCtrl.checkRowValidity($index)"
-                      data-account-input
                       class="form-control"
                       required>
                   </td>
@@ -142,7 +141,6 @@
                       ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                       type="number"
                       class="form-control text-right"
-                      data-debit-input
                       required>
                   </td>
                   <td>
@@ -151,7 +149,6 @@
                       ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                       type="number"
                       class="form-control text-right"
-                      data-credit-input
                       required>
                   </td>
                   <td>

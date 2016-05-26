@@ -26,17 +26,7 @@ describe('Billing Services', function () {
     // anticipate that the form should come up
     FU.exists(by.css('[name="BillingServicesForm"]'), true);
 
-    var root = element(by.css('[data-component-find-account]'));
-
-    // search for a particular account using the account input
-    var accountInput = root.element(by.model('BillingServicesFormCtrl.model.account'));
-    accountInput.sendKeys('410');
-
-    // click select the proper account
-    var option = root.all(by.repeater('match in matches track by $index')).first();
-    option.click();
-
-    // fill in the rest of the fields
+    FU.typeahead('BillingServicesFormCtrl.model.account', '410');
     FU.input('BillingServicesFormCtrl.model.label', 'Value Added Tax');
     FU.input('BillingServicesFormCtrl.model.description', 'A tax added for people who want value!');
     FU.input('BillingServicesFormCtrl.model.value', 25);

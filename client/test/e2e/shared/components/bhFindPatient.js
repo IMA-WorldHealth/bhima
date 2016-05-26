@@ -1,5 +1,7 @@
 /* global browser, element, by */
 
+const FU = require('../FormUtils');
+
 /**
  * hooks for the find patient component described in the component
  * bhFindPatient.js.
@@ -21,7 +23,7 @@ module.exports = {
     var tmpl = (mode === 'id') ? 'ID' : 'NAME';
 
     // click the correct dropdown item
-    var option = element(by.css('[data-find-patient-option="FORM.LABELS.PATIENT_?"]'.replace('?', tmpl)));
+    var option = element(by.css(`[data-find-patient-option="FORM.LABELS.PATIENT_${tmpl}"]`));
     option.click();
   },
 
@@ -36,13 +38,8 @@ module.exports = {
     // set the input to "find by name" mode
     this.mode('name');
 
-    // get the input and enter the id provided
-    var input = root.element(by.model('$ctrl.nameInput'));
-    input.sendKeys(name);
-
-    // get the first option and click it
-    var option = root.all(by.repeater('match in matches track by $index')).first();
-    option.click();
+    // get the input and enter the name provided
+    FU.typeahead('$ctrl.nameInput', name);
   },
 
   /**
@@ -54,8 +51,7 @@ module.exports = {
     this.mode('id');
 
     // get the input and enter the id provided
-    var input = element(by.model('$ctrl.idInput'));
-    input.sendKeys(id);
+    FU.input('$ctrl.idInput', id);
 
     // submit the id to the server
     var submit = element(by.css('[data-find-patient-submit]'));

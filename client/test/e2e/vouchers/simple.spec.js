@@ -25,16 +25,9 @@ describe('Simple Vouchers', function () {
     // configure the date to yesterday
     components.dateEditor.set(voucher.date);
 
-    var option;
-
     // select the appropriate accounts
-    FU.input('SimpleVoucherCtrl.voucher.toAccount', voucher.toAccount);
-    option = element.all(by.repeater('match in matches track by $index')).last();
-    option.click();
-
-    FU.input('SimpleVoucherCtrl.voucher.fromAccount', voucher.fromAccount);
-    option = element.all(by.repeater('match in matches track by $index')).last();
-    option.click();
+    FU.typeahead('SimpleVoucherCtrl.voucher.toAccount', voucher.toAccount);
+    FU.typeahead('SimpleVoucherCtrl.voucher.fromAccount', voucher.fromAccount);
 
     // check the USD radio option
     element(by.css('[data-currency-option="2"]')).click();
