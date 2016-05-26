@@ -11,48 +11,50 @@
       <div class="row">
         <div class="col-md-6">
           <div class="panel panel-default">
-            <bh-date-editor
-              date-value="ComplexVoucherCtrl.voucher.date"
-              max-date="ComplexVoucherCtrl.timestamp"
-            >
-            </bh-date-editor>
+            <div class="panel-body">
+              <bh-date-editor
+                date-value="ComplexVoucherCtrl.voucher.date"
+                max-date="ComplexVoucherCtrl.timestamp"
+              >
+              </bh-date-editor>
 
-            <div
-              class="form-group"
-              ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.description.$invalid }">
-              <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
-              <textarea
-                class="form-control"
-                name="description"
-                ng-model="ComplexVoucherCtrl.voucher.description"
-                placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
-                required>
-              </textarea>
-              <div class="help-block" ng-messages="ComplexVoucherForm.description.$error" ng-show="ComplexVoucherForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <!-- @TODO - use a currency selection component -->
-            <div
-              class="radio"
-              ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.currency.$invalid }">
-              <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
-              <label
-                ng-repeat="currency in ComplexVoucherCtrl.currencies track by currency.id"
-                class="radio-inline">
-                <input
-                  name="currency"
-                  type="radio"
-                  ng-model="ComplexVoucherCtrl.voucher.currency_id"
-                  ng-value="currency.id"
-                  data-currency-option="{{ currency.id }}"
+              <div
+                class="form-group"
+                ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.description.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
+                <textarea
+                  class="form-control"
+                  name="description"
+                  ng-model="ComplexVoucherCtrl.voucher.description"
+                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
                   required>
-                {{ currency.label }}
-              </label>
+                </textarea>
+                <div class="help-block" ng-messages="ComplexVoucherForm.description.$error" ng-show="ComplexVoucherForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
 
-              <div class="help-block" ng-messages="ComplexVoucherForm.currency.$error" ng-show="ComplexVoucherForm.$submitted">
-                <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+              <!-- @TODO - use a currency selection component -->
+              <div
+                class="radio"
+                ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.currency.$invalid }">
+                <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
+                <label
+                  ng-repeat="currency in ComplexVoucherCtrl.currencies track by currency.id"
+                  class="radio-inline">
+                  <input
+                    name="currency"
+                    type="radio"
+                    ng-model="ComplexVoucherCtrl.voucher.currency_id"
+                    ng-value="currency.id"
+                    data-currency-option="{{ currency.id }}"
+                    required>
+                  {{ currency.label }}
+                </label>
+
+                <div class="help-block" ng-messages="ComplexVoucherForm.currency.$error" ng-show="ComplexVoucherForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
               </div>
             </div>
           </div>
