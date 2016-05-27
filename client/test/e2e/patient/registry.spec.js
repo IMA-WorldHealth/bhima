@@ -18,7 +18,7 @@ describe('Patient Registry UI Grid ', function () {
     dateBirthFrom : new Date('2016-05-01'),
     dateBirthTo : new Date('2016-05-16'),
     dateBirthFrom2 : new Date('1960-06-30'),
-    dateBirthTo2 : new Date('2016-05-16')    
+    dateBirthTo2 : new Date('2016-05-16')
   };
 
   var grid = element(by.id('patient-registry'));
@@ -52,7 +52,7 @@ describe('Patient Registry UI Grid ', function () {
 
     // set the gender of the patient
     element(by.id('male')).click();
-    
+
     // submit the page to the server
     FU.buttons.submit();
 
@@ -65,7 +65,7 @@ describe('Patient Registry UI Grid ', function () {
     FU.buttons.search();
     FU.input('ModalCtrl.patient.name', paramResearch.name1);
     element(by.id('week')).click();
-    
+
     // submit the page to the server
     FU.buttons.submit();
     // The Grid should be have 1 visible rows
@@ -78,7 +78,7 @@ describe('Patient Registry UI Grid ', function () {
     element(by.id('year')).click();
     // set the gender of the patient
     element(by.id('female')).click();
-    
+
     // submit the page to the server
     FU.buttons.submit();
     // The Grid should be have 0 visible rows
@@ -93,7 +93,7 @@ describe('Patient Registry UI Grid ', function () {
     components.dateEditor.set(paramResearch.dateRegistrationTo, 'date-registration-to', '.bhima-title');
     components.dateEditor.set(paramResearch.dateBirthFrom, 'date-birth-from', '.bhima-title');
     components.dateEditor.set(paramResearch.dateBirthTo, 'date-birth-to', '.bhima-title');
-    
+
     // submit the page to the server
     FU.buttons.submit();
     // The Grid should be have 0 visible rows
@@ -108,7 +108,7 @@ describe('Patient Registry UI Grid ', function () {
 
     components.dateEditor.set(paramResearch.dateBirthFrom2, 'date-birth-from', '.bhima-title');
     components.dateEditor.set(paramResearch.dateBirthTo2, 'date-birth-to', '.bhima-title');
-    
+
     // submit the page to the server
     FU.buttons.submit();
     // The Grid should be have # visible rows

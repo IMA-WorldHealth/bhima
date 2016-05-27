@@ -175,7 +175,8 @@
   "ERRORS": {
     "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network.",
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
-    "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue."
+    "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue.",
+    "UNKNOWN" : "An error occurred."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Adding an exchange Rate",

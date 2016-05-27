@@ -24,20 +24,20 @@ function PatientRegistryModalController( $uibModalInstance, Inventory, patients,
 
     var patient = angular.copy(vm.patient);
     patient.detail = 1;
-    
+
     var promise = patients.search(patient);
     var patientFilters = patients.patientFilters(patient);
 
     promise
-    .then(function (response) {   
+    .then(function (response) {
       var data = {
         response : response,
-        filters   : patientFilters 
+        filters   : patientFilters
       };
-      
+
       return $uibModalInstance.close(data);
 
-    });    
+    });
   }
 
   function setTimes(times){
