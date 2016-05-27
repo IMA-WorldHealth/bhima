@@ -8,21 +8,12 @@
 </div>
 
 <div class="flex-content">
-  <div class="container-fluid">
+  <div class="container-fluid" id="anchor">
 
-    <!-- module wide error handling -->
-    <div class="row">
-      <div class="col-md-12">
-        <uib-alert id="exceptionAlert" type="danger" ng-show="PatientRegCtrl.exception">
-          <span class="glyphicon glyphicon-exclamation-sign"></span>
-          <b>{{ PatientRegCtrl.exception.data.code | translate }}</b> ({{PatientRegCtrl.exception.status}} - {{PatientRegCtrl.exception.data.description}})
-        </uib-alert>
-      </div>
-    </div>
-
+    <div ng-form="details">
     <div class="row">
 
-      <form name="details" class="form-horizontal" bh-submit="PatientRegCtrl.registerPatient(details)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+      <div class="form-horizontal" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
         <!-- Patient Details Form -->
         <div class="col-md-7">
@@ -123,7 +114,7 @@
                     <input required name="dob" id="patient-dob" type="date" class="form-control" ng-disabled="!PatientRegCtrl.fullDateEnabled" ng-model="PatientRegCtrl.medical.dob" min="{{PatientRegCtrl.minDOB | date : 'yyyy-MM-dd'}}" max="{{PatientRegCtrl.maxDOB | date : 'yyyy-MM-dd'}}">
 
                     <!-- ng-if used to remove element for various test cases - this is not required for functionality -->
-                    <div ng-if="details.dob.$invalid">
+                    <div ng-if="details.dob.$invalid && details.$submitted">
                       <div class="help-block" ng-messages="details.dob.$error" data-date-error>
                         <div ng-messages-include="partials/templates/dates.messages.tmpl.html"></div>
                       </div>
@@ -206,23 +197,20 @@
             </div>
 
             <div class="panel-footer text-right">
-              <p class="text-danger" ng-if="details.$submitted && details.$invalid">
-                <span class="glyphicon glyphicon-remove-sign"></span> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
-              </p>
-              <bh-loading-button loading-state="details.$loading">
+              <bh-loading-button ng-click="PatientRegCtrl.registerPatient(details)" loading-state="details.$loading">
                 {{ "FORM.BUTTONS.REGISTER_PATIENT" | translate }}
               </bh-loading-button>
             </div>
           </div>
         </div>
-      </form>
+      </div>
 
       <!-- Optional Information Form -->
       <div class="col-md-5">
         <div id="registration-type" class="panel panel-default">
           <div class="panel-heading">{{ "FORM.LABELS.OPTIONAL_INFO" | translate }}</div>
           <div class="panel-body">
-            <form name="defaults" class="form-horizontal" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <div class="form-horizontal" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
 
               <div class="form-group" ng-class="{'has-error' : defaults.title.$invalid && details.$submitted}">
                 <label for="title" class="control-label">{{ "FORM.LABELS.TITLE" | translate }}</label>
@@ -239,13 +227,15 @@
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                
               </div>
-
-              <div class="form-group" ng-class="{'has-error' : defaults.phone.$invalid && details.$submitted}">
+              <div
+                  class="form-group"
+                  ng-class="{'has-error' : details.email.$invalid && details.$submitted}">
                 <label for="email" class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
-                <input type="email" name="email" class="form-control" ng-maxlength="PatientRegCtrl.length40" id="email" ng-model="PatientRegCtrl.medical.email">
-                <div class="help-block" ng-messages="defaults.email.$error" ng-show="details.$submitted">
+                <input type="email" class="form-control" name="email" id="email" ng-maxLength="PatientRegCtrl.length40" ng-model="PatientRegCtrl.medical.email">
+
+                <div class="help-block" ng-messages="details.email.$error" ng-show="details.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>              
+                </div>
               </div>
 
               <div class="form-group" ng-class="{'has-error' : defaults.address1.$invalid && details.$submitted}">
@@ -343,10 +333,11 @@
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </div>

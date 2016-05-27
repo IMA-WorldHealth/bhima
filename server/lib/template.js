@@ -15,6 +15,8 @@
 const exphbs = require('express-handlebars');
 const numeral = require('numeral');
 
+// this is very cheeky
+const moment = require('./../../client/vendor/moment');
 const en = require('./../../client/i18n/en.json');
 
 const formatDollar = '$0,0.00';
@@ -24,7 +26,9 @@ const hbs = exphbs.create({
   helpers : {
     translate : translate,
     multiple : multiply,
-    currency : currency
+    currency : currency,
+    date : date,
+    age : age
   }
 });
 
@@ -72,6 +76,15 @@ function currency(value, currencyKey) {
   var formatExpression = formatDollar;
 
   return numeral(value).format(formatExpression);
+}
+
+function date(value) { 
+  var dateValue = new Date(value);
+  return dateValue.toDateString();
+}
+
+function age(dob) { 
+  return moment().diff(dob, 'years');
 }
 
 module.exports  = hbs;

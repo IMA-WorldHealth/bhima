@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$location', 'ScrollService', 'PatientService', 'DebtorService',
-  'SessionService', 'util'
+  '$location', 'PatientService', 'DebtorService',
+  'SessionService', 'util', 'NotifyService', 'ReceiptModal', 'ScrollService'
 ];
 
 /**
@@ -16,18 +16,11 @@ PatientRegistrationController.$inject = [
  *
  * @module controllers/PatientRegistrationController
  */
-function PatientRegistrationController($location, ScrollTo, Patients, Debtors, Session, util) {
+function PatientRegistrationController($location, Patients, Debtors, Session, util, Notify, Receipts, ScrollTo) {
   var viewModel = this;
 
-  // models for collecting patient data in logical groups
-  viewModel.finance = {};
-  viewModel.medical = {};
   viewModel.options = {};
-
-  // bind default villages
-  viewModel.medical.origin_location_id = Session.enterprise.location_id;
-  viewModel.medical.current_location_id = Session.enterprise.location_id;
-
+  
   viewModel.registerPatient = registerPatient;
   viewModel.enableFullDate = enableFullDate;
   viewModel.calculateYOB = calculateYOB;
@@ -47,38 +40,59 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, S
     .then(function (results) {
       viewModel.options.debtorGroups = results;
     })
-    .catch(handleServerError);
-
+    .catch(Notify.handleError);
+  
   // Define limits for DOB
   viewModel.minDOB = util.minDOB;
   viewModel.maxDOB = util.maxDOB;
-
+  
+  settupRegistration();
+  
   function registerPatient(patientDetailsForm) {
 
     // Register submitted action - explicit as the button is outside of the scope of the form
     patientDetailsForm.$setSubmitted();
-
+    
+    /** @todo once the bh-submit directive supports controller overriden $invalid handling this should be udpated */
+    patientDetailsForm.$loading = true;
+    
     if (patientDetailsForm.$invalid) {
-
       // End propegation for invalid state - this could scroll to an $invalid element on the form
+      Notify.danger('FORM.ERRORS.INVALID'); 
+      patientDetailsForm.$loading = false;
       return;
     }
 
     Patients.create(viewModel.medical, viewModel.finance)
       .then(function (result) {
-
         // create patient success - mark as visiting
         return Patients.logVisit(result.uuid);
       })
       .then(function (confirmation) {
-        //var patientCardPath = '/invoices/patient/';
-        /** @fixme -  temporary path for end to end tests while we develop receipts */
-        var patientCardPath = '/patients/';
+        Receipts.patient(confirmation.uuid, true);
 
-        //TODO Hospital card should receive a value that notifies the user of register success
-        $location.path(patientCardPath.concat(confirmation.uuid, '/edit'));
+        // reset form state
+        patientDetailsForm.$setPristine();
+        patientDetailsForm.$setUntouched();
+        settupRegistration();
+        
+        ScrollTo('anchor');
       })
-      .catch(handleServerError);
+      .catch(Notify.handleError)
+      .finally(function () { 
+        patientDetailsForm.$loading = false; 
+      });
+  }
+  
+  function settupRegistration() { 
+    viewModel.finance = {};
+    viewModel.medical = {};
+    
+    viewModel.fullDateEnabled = false;
+    viewModel.yob = null;
+    
+    viewModel.medical.origin_location_id = Session.enterprise.location_id;
+    viewModel.medical.current_location_id = Session.enterprise.location_id;  
   }
 
   /**
@@ -90,19 +104,5 @@ function PatientRegistrationController($location, ScrollTo, Patients, Debtors, S
 
   function calculateYOB(value) {
     viewModel.medical.dob = value && value.length === 4 ? new Date(value + '-' + util.defaultBirthMonth) : undefined;
-  }
-
-  /**
-   * This method is responsible for handling exceptions thrown by the server
-   * that the client has not anticipated.
-   *
-   * @todo  Discuss if this should be a library to account for standard client side errors,
-   *        -1 for offline etc. This should not have to be done everywhere.
-   *        This could be implemented with an $http interceptor.
-   * @param  {object}  error  An Error object that has been sent from the server.
-   */
-  function handleServerError(error) {
-    viewModel.exception = error;
-    ScrollTo('exceptionAlert');
   }
 }
