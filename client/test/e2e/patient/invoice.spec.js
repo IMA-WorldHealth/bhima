@@ -114,9 +114,7 @@ describe('Patient Invoice', function () {
 
     page.submit();
 
-    /** @todo this should use the latest notification components tests methods when they are merged in #388*/
     components.notification.verify();
-    components.notification.dismiss();
   });
 
   it('shows appropriate error messages for required data');

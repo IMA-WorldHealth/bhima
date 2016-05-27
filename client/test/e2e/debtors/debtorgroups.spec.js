@@ -43,7 +43,6 @@ describe('Debtor Groups Management', function () {
     FU.buttons.submit();
 
     components.notification.verify();
-    components.notification.dismiss();
 
     expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(initialGroups + 1);
   });
@@ -59,6 +58,5 @@ describe('Debtor Groups Management', function () {
     FU.buttons.submit();
 
     components.notification.verify();
-    components.notification.dismiss();
   });
 });
