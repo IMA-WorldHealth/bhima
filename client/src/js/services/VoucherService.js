@@ -61,7 +61,7 @@ function VoucherService(PrototypeApiService) {
     // bind the voucher items
     clean.items = items;
 
-    return PrototypeApiService.call(service, { voucher : clean });
+    return PrototypeApiService.create.call(service, { voucher : clean });
   }
 
   return service;

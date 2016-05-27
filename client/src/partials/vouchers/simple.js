@@ -52,8 +52,10 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
   }
 
   function submit(form) {
+
     // stop submission if the form is invalid
     if (form.$invalid) {
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return;
     }
 
