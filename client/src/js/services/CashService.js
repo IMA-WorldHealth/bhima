@@ -1,48 +1,29 @@
-/**
- * CashService
- *
- * This service interacts with the server-side /cash API.
- *
- * @module services/CashService
- */
-
 angular.module('bhima.services')
 .service('CashService', CashService);
 
-CashService.$inject = [ '$http', 'util', 'ExchangeRateService', 'uuid', 'SessionService' ];
+CashService.$inject = [
+  'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment'
+];
 
 /**
- * A service to interact with the server-side /cash API.
+ * @class CashService
  *
- * @constructor CashService
+ * @description
+ * A service to interact with the server-side /cash API.
  */
-function CashService($http, util, Exchange, uuid, sessionService ) {
+function CashService(PrototypeApiService, Exchange, Session, moment) {
   var service = this;
-  var baseUrl = '/cash/';
 
-  service.read = read;
+  // inherit prototype API methods
+  angular.extend(service, PrototypeApiService);
+
+  // bind the base url
+  service.url = '/cash/';
+
+  // custom methods
   service.create = create;
-  service.update = update;
-  service.delete = remove;
   service.reference = reference;
   service.getTransferRecord = getTransferRecord;
-
-  /**
-   * Fetchs cash payments from the server.  If an uuid is specified, will read a
-   * single JSON out of the service, otherwise, fetches every cash payment in the
-   * database.
-   *
-   * @method read
-   * @param {string} uuid (optional) - a cash payment UUID
-   * @param {object} options - parameters to be passed as HTTP query strings
-   * @returns {object|array} payments One or more cash payments.
-   */
-  function read(uuid, options) {
-    var target = baseUrl.concat(uuid || '');
-
-    return $http.get(target, options)
-      .then(util.unwrapHttpResponse);
-  }
 
   /**
    * Cash Payments can be made to multiple invoices.  This function loops
@@ -83,9 +64,11 @@ function CashService($http, util, Exchange, uuid, sessionService ) {
   }
 
   /**
+   * @method create
+   *
+   * @description
    * Creates a cash payment from a JSON passed from a form.
    *
-   * @method create
    * @param {object} data A JSON object containing the cash payment record defn
    * @returns {object} payment A promise resolved with the database uuid.
    */
@@ -109,101 +92,59 @@ function CashService($http, util, Exchange, uuid, sessionService ) {
     // remove data.invoices property before submission to the server
     delete data.invoices;
 
-    return $http.post(baseUrl, { payment : data })
-      .then(util.unwrapHttpResponse);
-  }
-
-  /**
-   * Fetchs cash payments from the server.  If an id is specified, will read a single
-   * JSON out of the service, otherwise, fetches every cash payment in the database.
-   *
-   * @method update
-   * @param {string} uuid A cash payment UUID
-   * @returns {object} payments A promise containing the entire cash payment record
-   */
-  function update(uuid, data) {
-    var target = baseUrl.concat(uuid);
-    return $http.put(target, data)
-      .then(util.unwrapHttpResponse);
-  }
-
-  /**
-   * Deletes cash payments from the database based on the id passed in.
-   *
-   * @method delete
-   * @param {string} uuid A cash payment UUID
-   * @returns {promise} promise - a resolved or rejected empty promise
-   */
-  function remove(uuid) {
-    var target = baseUrl.concat(uuid);
-
-    // Technically, we are not returning any body, so unwrappHttpResponse does
-    // not do anything.  However, to keep uniformity with the API, I've included
-    // it.
-    return $http.delete(target)
-      .then(util.unwrapHttpResponse);
+    // call the prototype create method with the formatted data
+    return PrototypeApiService.create.call(service, { payment : data });
   }
 
   /**
    * Searches for a cash payment by its reference.
    *
    * @method reference
-   * @param {string} reference
-   * @returns {promise} promise - a resolved or rejected promise with the
+   * @param {String} reference
+   * @returns {Promise} promise - a resolved or rejected promise with the
    * result sent from the server.
    */
   function reference(ref) {
-    var target = baseUrl + 'references/' + ref;
-
-    return $http.get(target)
-      .then(util.unwrapHttpResponse);
+    var target = service.url.concat('references/', ref);
+    return this.$http.get(target)
+      .then(this.util.unwrapHttpResponse);
   }
 
   /**
-  * This methode is responsible to create a voucher object and it back
-  **/
-  function getTransferRecord (cashAccountCurrency, amount, currency_id){
+   * This method is responsible to create a voucher object and it back
+   */
+  function getTransferRecord(cashAccountCurrency, amount, currencyId) {
     /**
      * The date field is set at the server side
      * @todo the date in timestamp type in the database
      */
     var voucher = {
-      uuid : uuid(),
-      project_id : sessionService.project.id,
-      currency_id : currency_id,
+      project_id : Session.project.id,
+      currency_id : currencyId,
       amount : amount,
       description : generateTransferDescription(),
-      user_id : sessionService.user.id,
-      items : []
-    };
+      user_id : Session.user.id,
 
-    var cashVoucherLine = {
-      uuid : uuid (),
-      account_id : cashAccountCurrency.account_id,
-      debit : 0,
-      credit : amount,
-      voucher_uuid : voucher.uuid
+      // two lines (debit and credit) to be recorded in the database
+      items : [{
+        account_id : cashAccountCurrency.account_id,
+        debit : 0,
+        credit : amount,
+      }, {
+        account_id : cashAccountCurrency.transfer_account_id,
+        debit : amount,
+        credit : 0,
+      }]
     };
-
-    var transferVoucherLine = {
-      uuid : uuid (),
-      account_id : cashAccountCurrency.transfer_account_id,
-      debit : amount,
-      credit : 0,
-      voucher_uuid : voucher.uuid
-    };
-
-    voucher.items.push(cashVoucherLine);
-    voucher.items.push(transferVoucherLine);
 
     return { voucher : voucher };
   }
 
   /**
-  * This methode is responsible to generate a description for the transfer operation
-  * @private
-  **/
+   * This method is responsible to generate a description for the transfer operation.
+   * @private
+   */
   function generateTransferDescription (){
-    return ['Transfer voucher', new Date().toISOString().slice(0, 10), sessionService.user.id].join('/');
+    return 'Transfer Voucher/'.concat(moment().format('YYYY-MM-DD'), '/', Session.user.id);
   }
 }

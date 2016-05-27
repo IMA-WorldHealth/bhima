@@ -43,8 +43,6 @@ function PatientService($http, util, Session, $uibModal, Documents) {
   // document exposition definition
   service.Documents = Documents;
 
-
-
   /**
    * This method returns information on a patient given the patients UUID. This
    * route provides almost all of the patients attributes.
@@ -141,24 +139,25 @@ function PatientService($http, util, Session, $uibModal, Documents) {
    */
   function search(options) {
     var target = baseUrl.concat('search');
-    /**
-      * Convertion of dateRegistrationFrom and dateRegistrationTo because
-      * In the database the column registration_date and dob (date of birth) is type DATETIME
-    */
 
-    if(options.dateRegistrationFrom){
+    /*
+     * Convertion of dateRegistrationFrom and dateRegistrationTo because
+     * In the database the column registration_date and dob (date of birth) is type DATETIME
+     */
+
+    if (options.dateRegistrationFrom) {
       options.dateRegistrationFrom = util.convertToMysqlDate(options.dateRegistrationFrom);
     }
 
-    if(options.dateRegistrationTo){
+    if (options.dateRegistrationTo) {
       options.dateRegistrationTo = util.convertToMysqlDate(options.dateRegistrationTo);
     }
 
-    if(options.dateBirthFrom){
+    if (options.dateBirthFrom) {
       options.dateBirthFrom = util.convertToMysqlDate(options.dateBirthFrom);
     }
 
-    if(options.dateBirthTo){
+    if (options.dateBirthTo) {
       options.dateBirthTo = util.convertToMysqlDate(options.dateBirthTo);
     }
 
@@ -223,14 +222,16 @@ function PatientService($http, util, Session, $uibModal, Documents) {
 
 
   /*
-  * This function prepares the headers patient properties which were filtered,
-  * Special treatment occurs when processing data related to the date
-  */
-  function patientFilters(patient){
+   * This function prepares the headers patient properties which were filtered,
+   * Special treatment occurs when processing data related to the date
+   * @todo - this might be better in it's own service
+   */
+  function patientFilters(patient) {
     var propertyPatientFilter = [];
+    var dataConfiguration;
 
-    if(patient.dateRegistrationFrom && patient.dateRegistrationTo){
-      var dataConfiguration = {
+    if (patient.dateRegistrationFrom && patient.dateRegistrationTo) {
+      dataConfiguration = {
         title : 'FORM.LABELS.DATE_REGISTRATION',
         reference1 : patient.dateRegistrationFrom,
         reference2 : patient.dateRegistrationTo
@@ -238,25 +239,25 @@ function PatientService($http, util, Session, $uibModal, Documents) {
       propertyPatientFilter.push(dataConfiguration);
     }
 
-    if(patient.name){
-      var dataConfiguration = {
+    if (patient.name) {
+      dataConfiguration = {
         title : 'FORM.LABELS.NAME',
         reference1 : patient.name,
       };
       propertyPatientFilter.push(dataConfiguration);
     }
 
-    if(patient.reference){
-      var dataConfiguration = {
+    if (patient.reference) {
+      dataConfiguration = {
         title : 'FORM.LABELS.REFERENCE',
         reference1 : patient.reference,
       };
       propertyPatientFilter.push(dataConfiguration);
     }
 
-    if(patient.fields){
-      if(patient.fields.hospital_no){
-        var dataConfiguration = {
+    if (patient.fields) {
+      if (patient.fields.hospital_no) {
+        dataConfiguration = {
           title : 'FORM.LABELS.HOSPITAL_FILE_NR',
           reference1 : patient.fields.hospital_no,
         };
@@ -264,33 +265,34 @@ function PatientService($http, util, Session, $uibModal, Documents) {
       }
     }
 
-    if(patient.sex && patient.sex !== 'all'){
+    if (patient.sex && patient.sex !== 'all') {
       var sexPatient;
-      if(patient.sex === 'M') {
+      if (patient.sex === 'M') {
         sexPatient = 'FORM.LABELS.MALE';
       } else {
         sexPatient = 'FORM.LABELS.FEMALE';
       }
 
-      var dataConfiguration = {
+      dataConfiguration = {
         title : 'FORM.LABELS.GENDER',
         reference1 : patient.sex,
       };
       propertyPatientFilter.push(dataConfiguration);
     }
 
-    if(patient.dateBirthFrom && patient.dateBirthTo){
-      var dataConfiguration = {
+    if (patient.dateBirthFrom && patient.dateBirthTo) {
+      dataConfiguration = {
         title : 'TABLE.COLUMNS.DOB',
         reference1 : patient.dateBirthFrom,
         reference2 : patient.dateBirthTo
       };
       propertyPatientFilter.push(dataConfiguration);
     }
+
     return propertyPatientFilter;
   }
 
-  function openSearchModal(){
+  function openSearchModal() {
     return $uibModal.open({
       templateUrl : 'partials/patients/registry/modal.html',
       size : 'md',

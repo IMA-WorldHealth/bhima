@@ -1,5 +1,5 @@
 <ng-form name="$ctrl.form">
-  <div class="radio" ng-class="{ 'has-error' : ($ctrl.validationTrigger && $ctrl.form.$invalid) || $ctrl.allDisabled }" data-bh-currency-select>
+  <div class="radio" ng-class="{ 'has-error' : ($ctrl.validationTrigger && $ctrl.form.$invalid) || !$ctrl.valid}" data-bh-currency-select>
     <p class="control-label">
       <strong>{{ "FORM.LABELS.CURRENCY" | translate }}</strong>
     </p>
@@ -27,7 +27,7 @@
     </div>
 
     <!-- show danger message if all currencies are disabled -->
-    <p class="help-block" ng-show="$ctrl.allDisabled">
+    <p class="help-block" ng-hide="$ctrl.valid">
       <span class="glyphicon glyphicon-exclamation-sign"></span> {{ "CASHBOX.NO_SUPPORTED_CURRENCIES" | translate }}
       <a ng-show="$ctrl.cashboxId" ng-href="#/cashboxes/{{$ctrl.cashboxId}}" class="text-danger">
         <strong><span class="glyphicon glyphicon-link"></span> {{ "CASHBOX.SET_CURRENCY_ACCOUNTS" | translate }}</strong>

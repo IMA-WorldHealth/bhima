@@ -1,28 +1,34 @@
 angular.module('bhima.services')
 .service('VoucherService', VoucherService);
 
-VoucherService.$inject = [ '$http', 'util' ];
+VoucherService.$inject = ['PrototypeApiService'];
 
-function VoucherService ($http, util) {
+/**
+ * @class VoucherService
+ * @extends PrototypeApiService
+ *
+ * @description
+ * This service manages posting data to the database via the /vouchers/ URL.
+ *
+ * @requires PrototypeApiService
+ */
+function VoucherService(PrototypeApiService) {
   var service = this;
-  var baseUrl = '/vouchers/';
 
-  service.create = create;
-  service.read = read;
+  // inherit prototype API service methods
+  angular.extend(service, PrototypeApiService);
+
+  service.url = '/vouchers/';
   service.createSimple = createSimple;
+  service.create = create;
 
-  /** send an http request to create a voucher**/
+  /**
+   * Wraps the prototype create method.
+   */
   function create(voucher) {
-    return $http.post(baseUrl, { voucher : voucher })
-    .then(util.unwrapHttpResponse);
+    return PrototypeApiService.create.call(service, { voucher : voucher });
   }
 
-  /**send a http request to read a voucher **/
-  function read(id) {
-     var url = baseUrl.concat(id || '');
-     return $http.get(url)
-     .then(util.unwrapHttpResponse);
-  }
 
   /**
    * Creates a simple journal voucher, transforming the object into double-entry
@@ -53,8 +59,7 @@ function VoucherService ($http, util) {
     // bind the voucher items
     clean.items = items;
 
-    return $http.post(baseUrl, { voucher : clean })
-    .then(util.unwrapHttpResponse);
+    return PrototypeApiService.call(service, { voucher : clean });
   }
 
   return service;

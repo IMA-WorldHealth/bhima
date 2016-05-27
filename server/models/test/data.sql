@@ -30,7 +30,7 @@ INSERT INTO unit VALUES
   (61,  'Employee','TREE.EMPLOYEE','Employees management',57,'partials/employees/','/employees'),
   (82,  'Subsidies','TREE.SUBSIDY','Handles the subsidy situation',1,'/partials/subsidies/','/subsidies'),
   (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
-  (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots_management/', '/depots_management'),
+  (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots/', '/depots'),
   (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtor_groups/', '/debtor_groups'),
   (108, 'Donors Management', 'TREE.DONOR_MANAGEMENT', 'Donors Management module', 1, '/partials/donors/', '/donors'),
   (109, 'Section du bilan','TREE.SECTION_BILAN','',30,'/partials/section_bilan/','/section_bilan/'),

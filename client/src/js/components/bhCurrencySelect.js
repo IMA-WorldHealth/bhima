@@ -87,7 +87,7 @@ function bhCurrencySelect($scope, Currencies) {
   $scope.$watchCollection(function () {
     return $ctrl.disableIds;
   }, function (array) {
-    array = array || [];
+    if (!array) { return; }
 
     // loop through the currencies, disabling the currencies with ids in the
     // disabledIds array.
@@ -96,9 +96,7 @@ function bhCurrencySelect($scope, Currencies) {
     });
 
     // if the two array lengths are equal, it means every currency is disabled
-    $ctrl.allDisabled = ($ctrl.currencies.length === array.length);
-    if ($ctrl.allDisabled) {
-      $ctrl.form.$setValidity('currencies', false);
-    }
+    $ctrl.valid = ($ctrl.currencies.length !== array.length);
+    $ctrl.form.currency.$setValidity('currency', $ctrl.valid);
   });
 }
