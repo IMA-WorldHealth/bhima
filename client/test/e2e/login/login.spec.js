@@ -32,10 +32,6 @@ describe('Login Page', function () {
 
     FU.exists(by.css('.help-block'), false);
     components.notification.verify();
-
-    // close the growl notification
-    components.notification.dismiss();
-    FU.exists(by.css('[data-bh-growl-notification]'), false);
   });
 
   it('rejects user missing a username with (only) a help block', function () {
@@ -85,7 +81,6 @@ describe('Login Page', function () {
     element(by.id('submit')).click();
 
     expect(helpers.getCurrentPath()).to.eventually.equal('#/');
-    components.notification.verify();
   });
 
   it('page refresh preserves the use session', function () {
