@@ -22,18 +22,31 @@ function bhSubmitDirective() {
         FormController.$loading = !FormController.$loading;
       };
 
+      // check to see if an object is a promise
+      function isPromise(object) {
+        return object && angular.isFunction(object.finally);
+      }
+
       // bind to the 'submit' event
       $element.bind('submit', function (e) {
 
-        // return the form if the input is invalid.
-        if (FormController.$invalid) { return; }
-
+        // start the loading state
         FormController.$toggleLoading();
 
-        $scope.submit()
-        .finally(function () {
+        // fire the submit method
+        var response = $scope.submit();
+
+        // the response is a promise, toggle the loading state on
+        // fulfillment/rejection
+        if (isPromise(response)) {
+          response.finally(function () {
+            FormController.$toggleLoading();
+          });
+
+        // otherwise, toggle the loading state off right away.
+        } else {
           FormController.$toggleLoading();
-        });
+        }
       });
     }
   };
