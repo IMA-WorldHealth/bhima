@@ -33,6 +33,7 @@
                   name="description"
                   ng-model="SimpleVoucherCtrl.voucher.description"
                   placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
+                  ng-maxlength="SimpleVoucherCtrl.maxLength"
                   required>
                 </textarea>
                 <div class="help-block" ng-messages="SimpleVoucherForm.description.$error" ng-show="SimpleVoucherForm.$submitted">

@@ -76,7 +76,7 @@
                   <label class="control-label">
                     {{ "FORM.LABELS.NAME" | translate }}
                   </label>
-                  <input class="form-control" name="name" ng-model="PatientGroupCtrl.patientGroup.name" required>
+                  <input class="form-control" name="name" ng-maxlength="PatientGroupCtrl.length100" ng-model="PatientGroupCtrl.patientGroup.name" required>
                   <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
@@ -102,7 +102,7 @@
                   <label class="control-label">
                     {{ "FORM.LABELS.NOTES" | translate }}
                   </label>
-                  <textarea class="form-control" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
+                  <textarea class="form-control" ng-maxlength="PatientGroupCtrl.maxLength" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
                   <div class="help-block" ng-messages="CreateForm.note.$error" ng-show="CreateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
@@ -135,7 +135,7 @@
                   <label class="control-label">
                     {{ "FORM.LABELS.NAME" | translate }}
                   </label>
-                  <input class="form-control" name="name" ng-model="PatientGroupCtrl.patientGroup.name" required>
+                  <input class="form-control" name="name" ng-maxlength="PatientGroupCtrl.length100" ng-model="PatientGroupCtrl.patientGroup.name" required>
                   <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
@@ -157,12 +157,12 @@
                   </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.note.$invalid }">
                   <label class="control-label">
                     {{ "FORM.LABELS.NOTES" | translate }}
                   </label>
-                  <textarea class="form-control" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
-                  <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
+                  <textarea class="form-control" ng-maxlength="PatientGroupCtrl.maxLength" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
+                  <div class="help-block" ng-messages="UpdateForm.note.$error" ng-show="UpdateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
                 </div>

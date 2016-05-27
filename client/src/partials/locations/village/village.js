@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('VillageController', VillageController);
 
 VillageController.$inject = [
-  'LocationService'
+  'LocationService', 'util'
 ];
 
-function VillageController(locationService) {
+function VillageController(locationService, util) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -21,6 +21,7 @@ function VillageController(locationService) {
 
   vm.loadProvinces = loadProvinces;
   vm.loadSectors = loadSectors;
+  vm.maxLength = util.maxTextLength;
 
   function handler(error) {
     console.error(error);

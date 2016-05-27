@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientGroupController', PatientGroupController);
 
 PatientGroupController.$inject = [
-  'PatientGroupService', 'PriceListService', 'SessionService', '$translate', 'ModalService'
+  'PatientGroupService', 'PriceListService', 'SessionService', '$translate', 'ModalService', 'util'
 ];
 
 /**
@@ -17,8 +17,11 @@ PatientGroupController.$inject = [
  *
  *  @constructor
  */
-function PatientGroupController (PatientGroups, PriceLists, Session, $translate, ModalService) {
+function PatientGroupController (PatientGroups, PriceLists, Session, $translate, ModalService, util) {
   var vm = this;
+
+  vm.length100 = util.length100;
+  vm.maxLength = util.maxTextLength;
 
   // by default, set loading to false.
   vm.loading = false;

@@ -103,6 +103,25 @@ function UtilService($filter) {
   service.minDOB = new Date('1900-01-01');
   service.maxDOB = new Date();
 
+  // Define the maxlength for text
+  service.maxTextLength = 1000;
+
+  // Define the maxLength By Value
+  service.length250 = 250;
+  service.length200 = 200;  
+  service.length150 = 150;
+  service.length100 = 100;
+  service.length70 = 70;
+  service.length50 = 50;
+  service.length50 = 45;  
+  service.length40 = 40;
+  service.length30 = 30;
+  service.length20 = 20;  
+  service.length16 = 16;  
+  service.length12 = 12;
+  service.length12 = 4;
+
+
   // TODO This value is set in angular utilities - it could be configured on the enterprise
   service.minimumDate = new Date('1900-01-01');
 

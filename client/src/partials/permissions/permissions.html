@@ -51,7 +51,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.firstname.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.FIRST_NAME" | translate }}</label>
-                <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
+                <input name="firstname" ng-model="PermissionsCtrl.user.first" ng-maxlength="PermissionsCtrl.maxLength" class="form-control" required>
                 <div class="help-block" ng-messages="CreateForm.firstname.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -59,7 +59,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.lastname.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.LAST_NAME" | translate }}</label>
-                <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
+                <input name="lastname" ng-model="PermissionsCtrl.user.last" ng-maxlength="PermissionsCtrl.maxLength" class="form-control" required>
                 <div class="help-block" ng-messages="CreateForm.lastname.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -67,7 +67,7 @@
 
               <div class="form-group"  ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.username.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.USERNAME" | translate }}</label>
-                <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
+                <input name="username" ng-maxlength="PermissionsCtrl.userName" ng-model="PermissionsCtrl.user.username" class="form-control" required>
                 <div class="help-block" ng-messages="CreateForm.username.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -75,7 +75,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.email.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
-                <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email" required>
+                <input name="email" ng-maxlength="PermissionsCtrl.length100" ng-model="PermissionsCtrl.user.email" class="form-control" type="email" required>
                 <div class="help-block" ng-messages="CreateForm.email.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -137,7 +137,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.firstname.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.FIRST_NAME" | translate }}</label>
-                <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
+                <input name="firstname" ng-model="PermissionsCtrl.user.first" ng-maxlength="PermissionsCtrl.maxLength" class="form-control" required>
                 <div class="help-block" ng-messages="UpdateForm.firstname.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -145,7 +145,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.lastname.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.LAST_NAME" | translate }}</label>
-                <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
+                <input name="lastname" ng-model="PermissionsCtrl.user.last" ng-maxlength="PermissionsCtrl.maxLength" class="form-control" required>
                 <div class="help-block" ng-messages="UpdateForm.lastname.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -153,7 +153,7 @@
 
               <div class="form-group"  ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.username.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.USERNAME" | translate }}</label>
-                <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
+                <input name="username" ng-maxlength="PermissionsCtrl.userName" ng-model="PermissionsCtrl.user.username" class="form-control" required>
                 <div class="help-block" ng-messages="UpdateForm.username.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -161,10 +161,10 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.email.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
-                <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email">
-                <p class="help-block" ng-if="UpdateForm.$submitted && UpdateForm.email.$invalid">
-                  {{ "FORM.VALIDATIONS.REQUIRED_EMAIL" | translate }}
-                </p>
+                <input name="email" ng-maxlength="PermissionsCtrl.length100" ng-model="PermissionsCtrl.user.email" class="form-control" type="email">
+                <div class="help-block" ng-messages="UpdateForm.username.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.projects.$invalid }">

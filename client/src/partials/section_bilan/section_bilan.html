@@ -111,7 +111,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-                <input type="text" class="form-control" name="text" ng-model="sectionBilanCtrl.sectionBilan.text" required>
+                <input type="text" class="form-control" name="text" ng-maxlength="sectionBilanCtrl.maxLength" ng-model="sectionBilanCtrl.sectionBilan.text" required>
                 <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -164,7 +164,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-                <input type="text" class="form-control" name="text" ng-model="sectionBilanCtrl.sectionBilan.text" required>
+                <input type="text" class="form-control" name="text" ng-maxlength="sectionBilanCtrl.maxLength" ng-model="sectionBilanCtrl.sectionBilan.text" required>
                 <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>

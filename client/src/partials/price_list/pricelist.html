@@ -91,7 +91,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
-                <input type="text" class="form-control" name="label" ng-model="PriceListCtrl.priceList.label" required>
+                <input type="text" class="form-control" ng-maxlength="PriceListCtrl.length250" name="label" ng-model="PriceListCtrl.priceList.label" required>
                 <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                
@@ -99,7 +99,10 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
                 <label class="control-label" for="description">{{ 'FORM.LABELS.DESCRIPTION' | translate }}</label>
-                <textarea class="form-control" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
+                <textarea class="form-control" name="description" ng-maxlength="PriceListCtrl.maxLength" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
+                <div class="help-block" ng-messages="CreateForm.description.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                
               </div>
               
               <hr>
@@ -150,7 +153,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
-                <input type="text" class="form-control" name="label" ng-model="PriceListCtrl.priceList.label" required>
+                <input type="text" class="form-control" name="label" ng-maxlength="PriceListCtrl.length250" ng-model="PriceListCtrl.priceList.label" required>
                 <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>               
@@ -158,7 +161,10 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
                 <label class="control-label" for="description">{{ 'FORM.LABELS.DESCRIPTION' | translate }}</label>
-                <textarea class="form-control" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
+                <textarea class="form-control" name="description" ng-maxlength="PriceListCtrl.maxLength" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
+                <div class="help-block" ng-messages="UpdateForm.description.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>                  
               </div>
 
               

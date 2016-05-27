@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('SupplierController', SupplierController);
 
 SupplierController.$inject = [
-  'SupplierService', 'CreditorService'
+  'SupplierService', 'CreditorService', 'util'
 ];
 
-function SupplierController(supplierService, creditorService) {
+function SupplierController(supplierService, creditorService, util) {
   var vm = this;
   
   vm.view = 'default';
@@ -18,6 +18,8 @@ function SupplierController(supplierService, creditorService) {
   vm.update = update;
   vm.cancel = cancel; 
 
+  vm.maxLength = util.maxTextLength;
+  
   function handler(error) {
     console.error(error);
   }

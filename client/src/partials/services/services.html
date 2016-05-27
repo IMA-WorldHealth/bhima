@@ -98,7 +98,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                 <label class="control-label" for="bhima-service-name">{{ 'FORM.LABELS.NAME' | translate }}</label>
-                <input type="text" class="form-control" name="name" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
+                <input type="text" class="form-control" name="name" ng-maxlength="ServicesCtrl.maxLength" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
                 <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>  
@@ -151,7 +151,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label" for="bhima-service-name">{{ 'FORM.LABELS.NAME' | translate }}</label>
-                <input type="text" class="form-control" name="name" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
+                <input type="text" class="form-control" name="name" id="bhima-service-name" ng-maxlength="ServicesCtrl.maxLength" ng-model="ServicesCtrl.service.name" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>                 

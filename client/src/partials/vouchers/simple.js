@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SimpleJournalVoucherController.$inject = [
   'AppCache', 'VoucherService', '$translate', 'AccountService',
-  'CurrencyService', 'SessionService'
+  'CurrencyService', 'SessionService', 'util'
 ];
 
 /**
@@ -20,12 +20,13 @@ SimpleJournalVoucherController.$inject = [
  * @todo - Implement Voucher Templates to allow users to save pre-selected
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(AppCache, Vouchers, $translate, Accounts, Currencies, Session) {
+function SimpleJournalVoucherController(AppCache, Vouchers, $translate, Accounts, Currencies, Session, util) {
   var vm = this;
 
   // cache to save work-in-progress data and pre-fabricated templates
   var cache = AppCache('JournalVouchers');
 
+  vm.maxLength = util.maxTextLength; 
   // bread crumb paths
   vm.paths = [{
     label : $translate.instant('VOUCHERS.SIMPLE.TITLE'),

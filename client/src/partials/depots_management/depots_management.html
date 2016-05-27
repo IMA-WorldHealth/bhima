@@ -71,6 +71,7 @@
                 <input
                   class="form-control"
                   name="text"
+                  ng-maxlength="DepotCtrl.maxLength"
                   ng-model="DepotCtrl.depot.text" required>
                 <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -104,7 +105,7 @@
               <!-- error feedback area -->
               <div ng-if="DepotCtrl.state.errored && ActionForm.$submitted"
                 class="text-danger" data-role="feedback" style="margin-top:10px;">
-                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.HAS_ERRORS" | translate }}
+                <i class="glyphicon glyphicon-remove-sign"></i> {{ "FORM.ERRORS.HAS_ERRORS" | translate }}
               </div>
 
             </div>

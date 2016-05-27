@@ -14,6 +14,15 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
   vm.minDOB = util.minDOB;
   vm.maxDOB = util.maxDOB;
 
+  // Maxlength field for Patient Registration 
+  vm.maxLength = util.maxTextLength; 
+  vm.length150 = util.length150;
+  vm.length100 = util.length100;
+  vm.length50 = util.length50;
+  vm.length40 = util.length40;
+  vm.length30 = util.length30;
+  vm.length16 = util.length16;  
+  vm.length12 = util.length12;
 
   if (referenceId) {
     buildPage(referenceId);

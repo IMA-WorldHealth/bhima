@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'EnterpriseService', 'FinancialService', '$translate', 'SessionService', 'ModalService'
+  'ServiceService', 'EnterpriseService', 'FinancialService', '$translate', 'SessionService', 'ModalService', 'util'
 ];
 
-function ServicesController(Services, Enterprises, FinancialService, $translate, SessionService, ModalService) {
+function ServicesController(Services, Enterprises, FinancialService, $translate, SessionService, ModalService, util) {
   var vm = this;
 
   vm.enterprises = [];
@@ -14,6 +14,8 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
   vm.state = 'default';  
   vm.view = 'default';
   vm.projectId = SessionService.project.id;
+
+  vm.maxLength = util.maxTextLength;
 
   // bind methods
   vm.create = create;

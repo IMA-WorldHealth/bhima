@@ -39,6 +39,7 @@
         class="form-control"
         name="label"
         ng-model="BillingServicesFormCtrl.model.label"
+        ng-maxlength="BillingServicesFormCtrl.length200"
         required>
       <div class="help-block" ng-messages="BillingServicesForm.label.$error" ng-show="BillingServicesForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -59,6 +60,7 @@
         name="description"
         ng-model="BillingServicesFormCtrl.model.description"
         placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
+        ng-maxlength="BillingServicesFormCtrl.maxLength"
         required>
       </textarea>
       <div class="help-block" ng-messages="BillingServicesForm.description.$error" ng-show="BillingServicesForm.$submitted">

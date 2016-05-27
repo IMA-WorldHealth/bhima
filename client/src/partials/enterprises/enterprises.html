@@ -88,7 +88,7 @@
                 <label class="control-label">
                   {{ 'FORM.LABELS.NAME' | translate }}
                 </label>
-                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" required>
+                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" ng-maxlength="EnterpriseCtrl.maxLength" required>
                 <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -98,34 +98,37 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.ABBREVIATION" | translate }}
                 </label>
-                <input type="text" class="form-control" name="abbr" required ng-model="EnterpriseCtrl.enterprise.abbr">
+                <input type="text" class="form-control" name="abbr" required ng-model="EnterpriseCtrl.enterprise.abbr" ng-maxlength="EnterpriseCtrl.length50">
                 <div class="help-block" ng-messages="CreateForm.abbr.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.po_box.$invalid }">
                 <label class="control-label">
                   {{ "FORM.LABELS.PO_BOX" | translate }}
                 </label>
-                <input type="text" class="form-control" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <input type="text" class="form-control" name="po_box" ng-maxlength="EnterpriseCtrl.length30" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <div class="help-block" ng-messages="CreateForm.po_box.$error" ng-show="CreateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>              
               </div>
 
-              <div class="form-group">
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.email.$invalid }">
                 <label class="control-label">
                   {{ "FORM.LABELS.EMAIL" | translate }}
                 </label>
-                <input type="email" class="form-control" name="email" ng-model="EnterpriseCtrl.enterprise.email">
+                <input type="email" class="form-control" name="email" ng-maxlength="EnterpriseCtrl.length100" ng-model="EnterpriseCtrl.enterprise.email">
                 <div class="help-block" ng-messages="CreateForm.email.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.phone.$invalid }">
                 <label class="control-label">
                   {{ "FORM.LABELS.PHONE" | translate }}
                 </label>
-                <input type="tel" class="form-control" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
+                <input type="tel" class="form-control" name="phone" ng-maxlength="EnterpriseCtrl.length20" ng-model="EnterpriseCtrl.enterprise.phone">
                 <div class="help-block" ng-messages="CreateForm.phone.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -171,7 +174,7 @@
                 <label class="control-label">
                   {{ 'FORM.LABELS.NAME' | translate }}
                 </label>
-                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" required>
+                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" ng-maxlength="EnterpriseCtrl.maxLength" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -181,30 +184,33 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.ABBREVIATION" | translate }}
                 </label>
-                <input type="text" class="form-control" name="abbr" required ng-model="EnterpriseCtrl.enterprise.abbr">
+                <input type="text" class="form-control" name="abbr" ng-maxlength="EnterpriseCtrl.length50" required ng-model="EnterpriseCtrl.enterprise.abbr">
                 <div class="help-block" ng-messages="UpdateForm.abbr.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.po_box.$invalid }">
                 <label class="control-label">
                   {{ "FORM.LABELS.PO_BOX" | translate }}
                 </label>
-                <input type="text" class="form-control" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <input type="text" class="form-control" name="po_box" ng-maxlength="EnterpriseCtrl.length30" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <div class="help-block" ng-messages="UpdateForm.po_box.$error" ng-show="UpdateForm.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>              
               </div>
 
-              <div class="form-group">
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.email.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
-                <input type="email" class="form-control" name="email" ng-model="EnterpriseCtrl.enterprise.email">
+                <input type="email" class="form-control" name="email" ng-maxlength="EnterpriseCtrl.length100" ng-model="EnterpriseCtrl.enterprise.email">
                 <div class="help-block" ng-messages="UpdateForm.email.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.phone.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
-                <input type="tel" class="form-control" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
+                <input type="tel" class="form-control" name="phone" ng-maxlength="EnterpriseCtrl.length20" ng-model="EnterpriseCtrl.enterprise.phone">
                 <div class="help-block" ng-messages="UpdateForm.phone.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
