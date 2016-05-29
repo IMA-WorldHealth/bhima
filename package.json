@@ -39,7 +39,7 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.11.3",
     "helmet": "^2.0.0",
-    "ioredis": "^1.15.1",
+    "ioredis": "^2.0.0",
     "lodash": "^4.13.1",
     "mkdirp": "^0.5.1",
     "morgan": "^1.6.1",
