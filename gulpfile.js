@@ -6,7 +6,6 @@
  * not all are required to build bhima?  In this format, there is no difference
  * between the install requirements of a developer and a production environment.
  */
-
 const gulp    = require('gulp');
 const gulpif  = require('gulp-if');
 const concat  = require('gulp-concat');
@@ -24,7 +23,7 @@ const less    = require('gulp-less');
 const exec = require('child_process').exec;
 
 // toggle client javascript minification
-const UGLIFY = false;
+const UGLIFY = true;
 
 // path to the jshintrc to use
 const JSHINT_PATH = '.jshintrc';
