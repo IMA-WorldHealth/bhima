@@ -81,26 +81,11 @@
                  </div>
                </div>
 
-              <!-- @TODO - use a currency selection component -->
-              <div
-                class="radio"
-                ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.currency.$invalid }">
-                <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
-                <label ng-repeat="currency in SimpleVoucherCtrl.currencies track by currency.id" class="radio-inline">
-                  <input
-                    name="currency"
-                    type="radio"
-                    ng-model="SimpleVoucherCtrl.voucher.currency_id"
-                    ng-value="currency.id"
-                    data-currency-option="{{ currency.id }}"
-                    required>
-                  {{ currency.label }}
-                </label>
-
-                <div class="help-block" ng-messages="SimpleVoucherForm.currency.$error" ng-show="SimpleVoucherForm.$submitted">
-                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
+               <bh-currency-select
+                 currency-id="SimpleVoucherCtrl.voucher.currency_id"
+                 validation-trigger="SimpleVoucherForm.$submitted"
+                 >
+               </bh-currency-select>
 
               <bh-currency-input
                 data-voucher-currency-input
@@ -111,24 +96,11 @@
                 >
               </bh-currency-input>
 
-              <div class="form-group">
-                <div class="pull-right">
-                  <bh-loading-button loading-state="SimpleVoucherForm.$loading" ng-disabled="SimpleVoucherCtrl.created">
-                    {{ "FORM.BUTTONS.SUBMIT" | translate }}
-                  </bh-loading-button>
-                </div>
-                <div class="clearfix"></div>
+              <div class="form-group text-right">
+                <bh-loading-button loading-state="SimpleVoucherForm.$loading" ng-disabled="SimpleVoucherCtrl.created">
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                </bh-loading-button>
               </div>
-
-              <!-- translate the server-sent error for the client -->
-              <p class="alert alert-danger" ng-show="SimpleVoucherCtrl.httpError">
-                <span class="glyphicon glyphicon-exclamation-sign"></span>{{ SimpleVoucherCtrl.httpError | translate }}
-              </p>
-
-              <!-- displays: "Record created successfully!" -->
-              <p class="alert alert-success" ng-show="SimpleVoucherCtrl.created && SimpleVoucherForm.$pristine">
-                <span class="glyphicon glyphicon-ok-sign"></span> {{ "FORM.INFOS.SAVE_SUCCESS" | translate }}
-              </p>
             </form>
           </div>
         </div>

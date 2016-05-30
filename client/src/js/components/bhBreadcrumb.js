@@ -1,31 +1,45 @@
-/**
-* <bh-breadcrumb></bh-breadcrumb>
-*
-* The Breadcrumb component is responsible to display the breadcrumb navigation
-* and all action buttons attached to it.
-*
-* This component take these attributes :
-*   - path : which take an array which contains paths
-*   - button : which takes an array of button objects
-*   - dropdown : which takes an array of object as dropdown
-*   - label : which takes an array of label objects
-*
-* @example
-* // Simple breadcrumb navigation
-* // In the view
-* <bh-breadcrumb
-*   path="MyCtrl.bcPaths"
-*   button="MyCtrl.bcButtons"
-*   dropdown="MyCtrl.bcDropdowns"
-*   Label="MyCtrl.bcLabels">
-* </bh-breadcrumb>
-*/
+angular.module('bhima.components')
+.component('bhBreadcrumb', {
+  bindings: {
+    path: '<',
+    button: '<',
+    label: '<',
+    dropdown: '<'
+  },
+  templateUrl  : 'partials/templates/breadcrumb.tmpl.html',
+  controller   : BreadcrumbController,
+  controllerAs : 'vm'
+});
 
-/** Breadcrumb controller defintion */
+
+/**
+ *
+ * @class bhBreadcrumb
+ *
+ * @description
+ * The Breadcrumb component is responsible to display the breadcrumb navigation
+ * and all action buttons attached to it.
+ *
+ * This component take these attributes :
+ *   - path : which take an array which contains paths
+ *   - button : which takes an array of button objects
+ *   - dropdown : which takes an array of object as dropdown
+ *   - label : which takes an array of label objects
+ *
+ * @example
+ * <!-- Simple breadcrumb navigation in the view -->
+ * <bh-breadcrumb
+ *   path="MyCtrl.bcPaths"
+ *   button="MyCtrl.bcButtons"
+ *   dropdown="MyCtrl.bcDropdowns"
+ *   Label="MyCtrl.bcLabels">
+ * </bh-breadcrumb>
+*/
 function BreadcrumbController() {
   var vm = this;
 
-  /** Paths definition
+  /**
+   * Paths definition
    * @example
    * vm.bcPaths = [
    *  { label: 'path1', link: '#/path1_link_to_go' },
@@ -33,9 +47,10 @@ function BreadcrumbController() {
    *  { label: 'path3', link: '#/path1_link_to_go', current: true },
    * ];
    */
-  vm.bcPaths     = this.path || [];
+  vm.bcPaths = vm.path || [];
 
-  /** Buttons definition
+  /**
+   * Buttons definition
    * @example
    * vm.bcButtons = [
    *  { icon: 'glyphicon glyphicon-print', label: 'Print', action: buttonAction },
@@ -43,9 +58,10 @@ function BreadcrumbController() {
    *  { icon: 'glyphicon glyphicon-refresh', label: 'Refresh', action: buttonAction }
    * ];
    */
-  vm.bcButtons   = this.button || [];
+  vm.bcButtons = vm.button || [];
 
-  /** Labels definition
+  /**
+   * Labels definition
    * @example
    * vm.bcLabels = [
    *  { icon: 'glyphicon glyphicon-print', label: 'My Label 1' },
@@ -53,9 +69,10 @@ function BreadcrumbController() {
    *  { label: 'My label 3' }
    * ];
    */
-  vm.bcLabels    = this.label || [];
+  vm.bcLabels = vm.label || [];
 
-  /** Dropdowns definition
+  /**
+   * Dropdowns definition
    * @example
    * vm.bcDropdowns = [
    *  {
@@ -76,38 +93,16 @@ function BreadcrumbController() {
    *  }
    * ];
    */
-  vm.bcDropdowns = this.dropdown || [];
+  vm.bcDropdowns = vm.dropdown || [];
 
-  /** call the apropriate function and update the dropdown label */
-  vm.helperDropdown = function (child, parent) {
+  /** call the appropriate function and update the dropdown label */
+  vm.helperDropdown = function helperDropdown(child, parent) {
     parent.selected = child.label;
     child.action(child);
   };
 
-  /** Init dropdown buttons */
-  (function initDropdown() {
-    if (vm.bcDropdowns && vm.bcDropdowns.length > 0) {
-      vm.bcDropdowns.forEach(function (elem) {
-        elem.selected = elem.label;
-      });
-    }
-  })();
-
+  // init dropdown buttons
+  vm.bcDropdowns.forEach(function (elem) {
+    elem.selected = elem.label;
+  });
 }
-
-/** Breadcrumb Component definition */
-var breadcrumb = {
-    bindings   : {
-      path     : '<',
-      button   : '<',
-      label    : '<',
-      dropdown : '<'
-    },
-    templateUrl  : 'partials/templates/breadcrumb.tmpl.html',
-    controller   : BreadcrumbController,
-    controllerAs : 'vm'
-};
-
-/** Component for BHIMA */
-angular.module('bhima.components')
-.component('bhBreadcrumb', breadcrumb);
