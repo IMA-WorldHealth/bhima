@@ -1,6 +1,8 @@
-var q = require('q');
-var db = require('./../../lib/db');
-var NotFound = require('./../../lib/errors/NotFound');
+'use strict';
+
+const q = require('q');
+const db = require('./../../lib/db');
+const NotFound = require('./../../lib/errors/NotFound');
 const uuid = require('node-uuid');
 
 /**
@@ -25,10 +27,8 @@ function linkPurchaseItems(purchaseItems, purchaseUuid) {
 }
 
 // looks up a single purchase record and associated purchase_items
-function lookupPurchaseOrder(uid) {
-  'use strict';
-
-  var record;
+function lookupPurchaseOrder(uuid) {
+  let record;
 
   var sqlPurchase =
     `SELECT BUID(purchase.uuid) as uuid, purchase.reference, purchase.cost, purchase.discount,
@@ -48,19 +48,17 @@ function lookupPurchaseOrder(uid) {
       purchase_item.quantity, purchase_item.unit_price, purchase_item.total, inventory.text
     FROM purchase_item
     JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
-    WHERE purchase_item.purchase_uuid = ?`;
+    WHERE purchase_item.purchase_uuid = ?;`;
 
-  return db.exec(sqlPurchase, [uid])
+  return db.exec(sqlPurchase, [db.bid(uuid)])
   .then(function (rows) {
-
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a purchase with uuid ${uuid.unparse(uid)}`);
+    if (!rows.length) {
+      throw new NotFound(`Could not find a purchase with uuid ${uuid}`);
     }
 
     // store the record for return
     record = rows[0];
-
-    return db.exec(sqlPurchaseItem, [uid]);
+    return db.exec(sqlPurchaseItem, [db.bid(uuid)]);
   })
   .then(function (rows) {
 
@@ -71,31 +69,10 @@ function lookupPurchaseOrder(uid) {
   });
 }
 
-// convert uuids and dates for insertion into database
-function convert(data) {
-
-  if (data.purchase_date) {
-    data.purchase_date = new Date(data.purchase_date);
-  }
-
-  if (data.creditor_uuid) {
-    data.creditor_uuid = db.bid(data.creditor_uuid);
-  }
-
-  if (data.paid_uuid) {
-    data.paid_uuid = db.bid(data.paid_uuid);
-  }
-
-  return data;
-}
-
-
 /**
  * Create a Purchase Order in the database
  */
 function create (req, res, next) {
-  'use strict';
-
   var purchase = req.body;
   var transaction;
   var purchaseOrder = purchase.purchase_order;
@@ -113,7 +90,12 @@ function create (req, res, next) {
   // default to a new uuid if the client did not provide one
   purchaseOrder.uuid = db.bid(purchaseOrder.uuid || uuid.v4());
 
-  purchaseOrder = convert(purchaseOrder);
+  purchaseOrder = db.convert(purchaseOrder, ['creditor_uuid', 'paid_uuid']);
+
+  if (purchaseOrder.purchase_date) {
+    purchaseOrder.purchase_date = new Date(purchaseOrder.purchase_date);
+  }
+
 
   var sqlPurchase = 'INSERT INTO purchase SET ?';
 
@@ -144,7 +126,6 @@ function create (req, res, next) {
 * Returns the details of a single project
 */
 function list (req, res, next) {
-  'use strict';
   var sql;
 
   sql =
@@ -180,11 +161,7 @@ function list (req, res, next) {
 }
 
 function detail(req, res, next) {
-  'use strict';
-
-  var uid = db.bid(req.params.uuid);
-
-  lookupPurchaseOrder(uid)
+  lookupPurchaseOrder(req.params.uuid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -195,18 +172,12 @@ function detail(req, res, next) {
 
 // PUT /purchase/:uuid
 function update(req, res, next) {
-  'use strict';
-
-  var uid = db.bid(req.params.uuid);
-
   var sql =
     'UPDATE purchase SET ? WHERE uuid = ?;';
 
-  db.exec(sql, [req.body, uid])
+  db.exec(sql, [req.body, db.bid(req.params.uuid)])
   .then(function () {
-
-    // fetch the changed object from the database
-    return lookupPurchaseOrder(uid);
+    return lookupPurchaseOrder(req.params.uuid);
   })
   .then(function (record) {
     res.status(200).json(record);

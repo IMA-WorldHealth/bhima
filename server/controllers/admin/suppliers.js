@@ -1,41 +1,33 @@
 /**
-* Supplier Controller
-*
-* This controller exposes an API to the client for reading and writing Supplier
-*/
+ * Supplier Controller
+ *
+ * This controller exposes an API to the client for reading and writing Supplier
+ */
+'use strict';
 
 const db = require('../../lib/db');
 const uuid = require('node-uuid');
-var NotFound = require('../../lib/errors/NotFound');
+const NotFound = require('../../lib/errors/NotFound');
 
 function lookupSupplier(uuid) {
-  'use strict';
-
-  var record;
-
-  var sql =
-    `SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
+  const sql = `
+    SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
       supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note,
       supplier.phone, supplier.international, supplier.locked
     FROM supplier
     WHERE supplier.uuid = ?`;
 
-  return db.exec(sql, [uuid])
+  return db.exec(sql, [db.bid(uuid)])
   .then(function (rows) {
-
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a Supplier with uuid ${uuid}`);
+    if (!rows.length) {
+      throw new NotFound(`Could not find a supplier with uuid ${uuid}`);
     }
 
     return rows[0];
   });
 }
 
-
-// The Supplier  is assumed from the session.
 function list(req, res, next) {
-  'use strict';
-
   var sql;
 
   sql =
@@ -61,16 +53,12 @@ function list(req, res, next) {
 }
 
 /**
-* GET /supplier/:uuid
-*
-* Returns the detail of a single Supplier
-*/
+ * GET /supplier/:uuid
+ *
+ * Returns the detail of a single Supplier
+ */
 function detail(req, res, next) {
-  'use strict';
-
-  const uid = db.bid(req.params.uuid);
-
-  lookupSupplier(uid)
+  lookupSupplier(req.params.uuid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -78,27 +66,14 @@ function detail(req, res, next) {
   .done();
 }
 
-// convert uuids to binary uuids in preparation for database insertion
-function convert(data) {
-
-  if (data.creditor_uuid) {
-    data.creditor_uuid = db.bid(data.creditor_uuid);
-  }
-
-  return data;
-}
-
-
 // POST /supplier
 function create(req, res, next) {
-  'use strict';
-
-  var data = convert(req.body);
+  const data = db.convert(req.body, ['creditor_uuid']);
 
   // provide uuid if the client has not specified
   data.uuid = db.bid(data.uuid || uuid());
 
-  var sql =
+  let sql =
     'INSERT INTO supplier SET ? ';
 
   db.exec(sql, [data])
@@ -112,21 +87,17 @@ function create(req, res, next) {
 
 // PUT /supplier/:uuid
 function update(req, res, next) {
-  'use strict';
-
-  const uid = db.bid(req.params.uuid);
-
-  var sql =
+  let sql =
     'UPDATE supplier SET ? WHERE uuid = ?;';
 
-  var data = convert(req.body);
+  const data = db.convert(req.body, ['creditor_uuid']);
 
   // prevent updating the uuid
   delete data.uuid;
 
-  db.exec(sql, [data, uid])
+  db.exec(sql, [data, db.bid(req.params.uuid)])
   .then(function () {
-    return lookupSupplier(uid);
+    return lookupSupplier(req.params.uuid);
   })
   .then(function (record) {
     res.status(200).json(record);
@@ -135,26 +106,22 @@ function update(req, res, next) {
   .done();
 }
 
-// GET /SUPPLIER/SEARCH
+// GET /supplier/search
 function search(req, res, next) {
-  var sql;
-  var limit = Number(req.query.limit);
+  let limit = Number(req.query.limit);
 
-  var name = req.query.name;
-  var condition = '%' + name + '%';
-
-  sql =
+  let sql =
     `SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
       supplier.address_1, supplier.address_2, supplier.email,
       supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
     FROM supplier
-    WHERE supplier.name LIKE ?;`;
+    WHERE supplier.name LIKE "%?%"`;
 
   if (limit) {
     sql += ' LIMIT ' + Math.floor(limit) + ';';
   }
 
-  db.exec(sql, [condition])
+  db.exec(sql, [req.query.name])
   .then(function (rows) {
     res.status(200).json(rows);
   })

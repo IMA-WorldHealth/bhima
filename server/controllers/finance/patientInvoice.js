@@ -173,7 +173,6 @@ function processSaleItems(sale, items) {
  *
  * @todo - change the API to pass in only an array of billingService and subsidy
  * ids.
- * @todo - clean up the code by moving conversions into a convert() function.
  */
 function create(req, res, next) {
   let transaction;

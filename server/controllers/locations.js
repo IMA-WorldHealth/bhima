@@ -1,44 +1,23 @@
 /* The Location API
-*
-* routes:
-*   /locations/villages
-*   /locations/sectors
-*   /locations/provinces
-*   /locations/village/:uuid
-*   /locations/sector/:uuid
-*   /locations/province/:uuid
-*   /locations/detail/:uuid
-*   /locations/detail/
-*
-* Each endpoint returns a table with all information available.
-* Endpoints taking UUIDs return only the records matching the UUID
-*/
+ *
+ * routes:
+ *   /locations/villages
+ *   /locations/sectors
+ *   /locations/provinces
+ *   /locations/village/:uuid
+ *   /locations/sector/:uuid
+ *   /locations/province/:uuid
+ *   /locations/detail/:uuid
+ *
+ * Each endpoint returns a table with all information available.
+ * Endpoints taking UUIDs return only the records matching the UUID
+ */
+
+'use strict';
 
 const db = require('../lib/db');
 const uuid = require('node-uuid');
 const NotFound = require('../lib/errors/NotFound');
-
-// convert uuids to binary uuids if need be
-function convert(data) {
-
-  if (data.village_uuid) {
-    data.village_uuid = db.bid(data.village_uuid);
-  }
-
-  if (data.sector_uuid) {
-    data.sector_uuid = db.bid(data.sector_uuid);
-  }
-
-  if (data.province_uuid) {
-    data.province_uuid = db.bid(data.province_uuid);
-  }
-
-  if (data.country_uuid) {
-    data.country_uuid = db.bid(data.country_uuid);
-  }
-
-  return data;
-}
 
 /**
  * GET /locations/villages
@@ -52,8 +31,6 @@ function convert(data) {
  * @return {array} an array of (uuid, name)
  */
 exports.villages = function villages(req, res, next) {
-  'use strict';
-
   var sql =
     'SELECT BUID(village.uuid) as uuid, village.name FROM village ';
 
@@ -85,8 +62,6 @@ exports.villages = function villages(req, res, next) {
  * @return {array} an array of (uuid, name)
  */
 exports.sectors = function sectors(req, res, next) {
-  'use strict';
-
   var sql;
 
   // send a larger response if detailed is 1
@@ -133,8 +108,6 @@ exports.sectors = function sectors(req, res, next) {
  * @return {array} an array of (uuid, name)
  */
 exports.provinces = function provinces(req, res, next) {
-  'use strict';
-
   var sql;
 
   // send a larger response if detailed is 1
@@ -174,8 +147,6 @@ exports.provinces = function provinces(req, res, next) {
  * @return {array} an array of (uuid, name)
  */
 exports.countries = function countries(req, res, next) {
-  'use strict';
-
   var sql =
     `SELECT BUID(country.uuid) as uuid, country.name FROM country
     ORDER BY country.name ASC;`;
@@ -190,8 +161,6 @@ exports.countries = function countries(req, res, next) {
 
 
 function lookupVillage(uid) {
-  'use strict';
-
   // convert hex uuid into binary
   const bid = db.bid(uid);
 
@@ -215,8 +184,6 @@ function lookupVillage(uid) {
 }
 
 function lookupSector(uid) {
-  'use strict';
-
   // convert hex to binary
   const bid = db.bid(uid);
 
@@ -239,8 +206,6 @@ function lookupSector(uid) {
 }
 
 function lookupProvince(uid) {
-  'use strict';
-
   const bid = db.bid(uid);
 
   var sql =
@@ -260,8 +225,6 @@ function lookupProvince(uid) {
 }
 
 function lookupCountry(uid) {
-  'use strict';
-
   const bid = db.bid(uid);
 
   var sql =
@@ -290,8 +253,6 @@ function lookupCountry(uid) {
  * sector, countryUuid, country}
  */
 exports.detail = function detail(req, res, next) {
-  'use strict';
-
   const bid = db.bid(req.params.uuid);
 
   var sql =
@@ -328,8 +289,6 @@ exports.detail = function detail(req, res, next) {
  * sector, countryUuid, country}
  */
 exports.list = function list(req, res, next) {
-  'use strict';
-
   var sql =
     `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
       BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
@@ -361,8 +320,6 @@ exports.create = {};
  * @returns {string} uuid - the unique id for the country.
  */
 exports.create.country = function createCountry(req, res, next) {
-  'use strict';
-
   // create a UUID if not provided
   req.body.uuid = db.bid(req.body.uuid || uuid.v4());
 
@@ -387,9 +344,9 @@ exports.create.country = function createCountry(req, res, next) {
  * @returns {string} uuid - the uuid for the province.
  */
 exports.create.province = function createProvince(req, res, next) {
-  'use strict';
-
-  var data = convert(req.body);
+  const data = db.convert(req.body, [
+    'village_uuid', 'sector_uuid', 'province_uuid', 'country_uuid'
+  ]);
 
   // create a UUID if not provided
   data.uuid = db.bid(data.uuid || uuid.v4());
@@ -416,9 +373,7 @@ exports.create.province = function createProvince(req, res, next) {
  * @returns {string} uuid - the unique id for the sector.
  */
 exports.create.sector = function createSector(req, res, next) {
-  'use strict';
-
-  var data = convert(req.body);
+  const data = db.convert(req.body, ['province_uuid']);
 
   // create a UUID if not provided
   data.uuid = db.bid(data.uuid || uuid.v4());
@@ -444,9 +399,7 @@ exports.create.sector = function createSector(req, res, next) {
  * @returns {string} uuid - the unique id for the village.
  */
 exports.create.village = function createVillage(req, res, next) {
-  'use strict';
-
-  var data = convert(req.body);
+  const data = db.convert(req.body, ['sector_uuid']);
 
   // create a UUID if not provided
   data.uuid = db.bid(data.uuid || uuid.v4());
@@ -474,15 +427,15 @@ exports.update = {};
  * @method updateCountry
  */
 exports.update.country = function updateCountry(req, res, next) {
-  'use strict';
-
-  var sql =
+  const sql =
     'UPDATE country SET ? WHERE uuid = ?;';
 
   // prevent updating the uuid
   delete req.body.uuid;
 
-  var data = convert(req.body);
+  const data = db.convert(req.body, [
+    'village_uuid', 'sector_uuid', 'province_uuid', 'country_uuid'
+  ]);
 
   db.exec(sql, [data, req.params.uuid])
   .then(function () {
@@ -503,15 +456,15 @@ exports.update.country = function updateCountry(req, res, next) {
  * @method updateProvince
  */
 exports.update.province = function updateProvince(req, res, next) {
-  'use strict';
-
   var sql =
     'UPDATE province SET ? WHERE uuid = ?;';
 
   // prevent updating the uuid
   delete req.body.uuid;
 
-  var data = convert(req.body);
+  const data = db.convert(req.body, [
+    'village_uuid', 'sector_uuid', 'province_uuid', 'country_uuid'
+  ]);
 
   db.exec(sql, [data, req.params.uuid])
   .then(function () {
@@ -532,15 +485,15 @@ exports.update.province = function updateProvince(req, res, next) {
  * @method updateSector
  */
 exports.update.sector = function updateSector(req, res, next) {
-  'use strict';
-
   var sql =
     'UPDATE sector SET ? WHERE uuid = ?;';
 
   // prevent updating the uuid
   delete req.body.uuid;
 
-  var data = convert(req.body);
+  const data = db.convert(req.body, [
+    'village_uuid', 'sector_uuid', 'province_uuid', 'country_uuid'
+  ]);
 
   db.exec(sql, [data, req.params.uuid])
   .then(function () {
@@ -561,15 +514,15 @@ exports.update.sector = function updateSector(req, res, next) {
  * @method updateVillage
  */
 exports.update.village = function updateVillage(req, res, next) {
-  'use strict';
-
   var sql =
     'UPDATE village SET ? WHERE uuid = ?;';
 
   // prevent updating the uuid
   delete req.body.uuid;
 
-  var data = convert(req.body);
+  const data = db.convert(req.body, [
+    'village_uuid', 'sector_uuid', 'province_uuid', 'country_uuid'
+  ]);
 
   db.exec(sql, [data, req.params.uuid])
   .then(function () {

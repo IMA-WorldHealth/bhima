@@ -1,90 +1,43 @@
 /**
-* The /employees HTTP API endpoint
-*
-* @module admin/employees
-*
-* @description This controller is responsible for implementing all crud on the
-* employees table through the `/employees` endpoint.
-*
-* @requires lib/db
-*
-* NOTE: This api does not handle the deletion of employees because
-* that subject is not in the actuality.
-*/
+ * @module admin/employees
+ *
+ * @description
+ * This controller is responsible for implementing all crud on the
+ * employees table through the `/employees` endpoint.
+ * The /employees HTTP API endpoint
+ *
+ * @requires lib/db
+ *
+ * NOTE: This api does not handle the deletion of employees because
+ * that subject is not in the actuality.
+ */
 
 'use strict';
 
-var db = require('./../../lib/db');
-var uuid = require('node-uuid');
-var NotFound = require('./../../lib/errors/NotFound');
-var BadRequest = require('../../lib/errors/BadRequest');
+const db = require('./../../lib/db');
+const uuid = require('node-uuid');
+const NotFound = require('./../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 
 /**
- * Preprocess INSERT/UPDATE data to convert uuids into binary uuids, as well as
- * preprocess dates into date objects
+ * Returns an array of each employee in the database
  *
- * @param {Object} data - the data to be posted/put into the database
- * @returns {Object} data - the same data object, with dates and uuids converted
+ * @example
+ * // GET /employees : Get list of employees
+ * var employees = require('admin/employees');
+ * employees.list(request, response, next);
  */
-function convert(data) {
-
-  if (data.grade_id) {
-    data.grade_id = db.bid(data.grade_id);
-  }
-
-  if (data.debtor_group_uuid) {
-    data.debtor_group_uuid = db.bid(data.debtor_group_uuid);
-  }
-
-  if (data.creditor_group_uuid) {
-    data.creditor_group_uuid = db.bid(data.creditor_group_uuid);
-  }
-
-  if (data.creditor_uuid) {
-    data.creditor_uuid = db.bid(data.creditor_uuid);
-  }
-
-  if (data.debtor_uuid) {
-    data.debtor_uuid = db.bid(data.debtor_uuid);
-  }
-
-  if (data.location_id) {
-    data.location_id = db.bid(data.location_id);
-  }
-
-  if (data.dob) {
-    data.dob = new Date(data.dob);
-  }
-
-  if (data.date_embauche) {
-    data.date_embauche = new Date(data.date_embauche);
-  }
-
-  return data;
-}
-
-/**
-* Returns an array of each employee in the database
-*
-* @param {object} request The express request object
-* @param {object} response The express response object
-* @param {object} next The express middleware next object
-*
-* @example
-* // GET /employees : Get list of employees
-* var employees = require('admin/employees');
-* employees.list(request, response, next);
-*/
 exports.list = function (req, res, next) {
   var sql =
-    `SELECT
-      employee.id, employee.code AS code_employee, employee.prenom, employee.name,
+    `SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
       employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
-      employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked, grade.text, grade.basic_salary,
-      fonction.id AS fonction_id, fonction.fonction_txt,
-      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account, employee.daily_salary, BUID(employee.location_id) AS location_id,
-      grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
-      BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text, BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
+      employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
+      grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
+      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
+      employee.daily_salary, BUID(employee.location_id) AS location_id, grade.code AS code_grade,
+      BUID(debtor.uuid) as debtor_uuid, debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
+      BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
+      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
     FROM employee
      JOIN grade ON employee.grade_id = grade.uuid
      JOIN fonction ON employee.fonction_id = fonction.id
@@ -102,17 +55,17 @@ exports.list = function (req, res, next) {
 };
 
 /**
-* Get list of availaible holidays for an employee
-*/
+ * Get list of availaible holidays for an employee
+ */
 exports.listHolidays = function (req, res, next) {
   var pp = JSON.parse(req.params.pp);
   var sql =
-    `SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.percentage, holiday.dateTo 
-     FROM holiday WHERE 
-     ((holiday.dateFrom >= ? AND holiday.dateFrom <= ?)
-     (holiday.dateTo >= ? AND holiday.dateTo <= ?) OR 
-     (holiday.dateFrom <= ? AND holiday.dateTo >a ?)) AND
-     holiday.employee_id = ? ;`;
+    `SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.percentage, holiday.dateTo
+     FROM holiday WHERE
+       ((holiday.dateFrom >= ? AND holiday.dateFrom <= ?)
+       (holiday.dateTo >= ? AND holiday.dateTo <= ?) OR
+       (holiday.dateFrom <= ? AND holiday.dateTo >= ?)) AND
+       holiday.employee_id = ?;`;
 
   var data = [
     pp.dateFrom, pp.dateTo,
@@ -171,8 +124,7 @@ exports.checkOffday = function checkHoliday(req, res, next) {
 };
 
 function lookupEmployee(id) {
-
-  var sql =
+  let sql =
     `SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
       employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
@@ -231,7 +183,17 @@ exports.detail = function detail(req, res, next) {
 * employees.update(req, res, next);
 */
 exports.update = function update(req, res, next) {
-  var employee = convert(req.body);
+  var employee = db.convert(req.body, [
+    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id'
+  ]);
+
+  if (employee.dob) {
+    employee.dob = new Date(employee.dob);
+  }
+
+  if (employee.date_embauche) {
+    employee.date_embauche = new Date(employee.date_embauche);
+  }
 
   var transaction;
 
@@ -313,7 +275,17 @@ exports.create = function create(req, res, next) {
   data.debtor_uuid = uuid.v4();
 
   // convert uuids to binary uuids as necessary
-  var employee = convert(data);
+  var employee = db.convert(req.body, [
+    'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id'
+  ]);
+
+  if (employee.dob) {
+    employee.dob = new Date(employee.dob);
+  }
+
+  if (employee.date_embauche) {
+    employee.date_embauche = new Date(employee.date_embauche);
+  }
 
   var creditor = {
     uuid : employee.creditor_uuid,
