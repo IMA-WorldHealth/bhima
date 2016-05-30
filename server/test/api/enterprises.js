@@ -5,12 +5,12 @@ const expect = chai.expect;
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
+/*
  * The /enterprises API endpoint
  * This test suite implements full CRUD on the /enterprises HTTP API endpoint.
  */
 describe('(/enterprises) The /enterprises API endpoint', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+  const agent = chai.request.agent(helpers.baseUrl);
 
   // ensure that the client is logged into the test suite
   before(helpers.login(agent));
@@ -45,10 +45,10 @@ describe('(/enterprises) The /enterprises API endpoint', function () {
     currency_id : null
   };
 
-  /** @const the number of enterprises registered in the test db */
+  /*  the number of enterprises registered in the test db */
   var numEnterprises = 2;
 
-  /** response keys from a detailed query */
+  /* response keys from a detailed query */
   var responseKeys = [
     'id', 'name', 'abbr', 'email', 'po_box', 'phone',
     'location_id', 'logo', 'currency_id'
@@ -114,7 +114,7 @@ describe('(/enterprises) The /enterprises API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  /** @todo - make this work; currently broken or unimplemented */
+  /* @todo - make this work; currently broken or unimplemented */
   it.skip('GET /enterprises/:id returns a 404 error for unknown enterprises', function () {
     return agent.get('/enterprises/unknown')
       .then(function (res) {

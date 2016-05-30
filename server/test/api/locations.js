@@ -1,91 +1,87 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
-var uuid = require('node-uuid');
+const chai = require('chai');
+const expect = chai.expect;
+const uuid = require('node-uuid');
 
-/** import test helpers */
-var helpers = require('./helpers');
+/* import test helpers */
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 
-/**
-* The /locations API endpoint
-*/
+/*
+ * The /locations API endpoint
+ */
 describe('(/locations) Locations Interface', function () {
+  const agent = chai.request.agent(helpers.baseUrl);
 
-  var agent = chai.request.agent(helpers.baseUrl);
-
-  /** login before each request */
+  /* login before each request */
   before(helpers.login(agent));
 
-  /**
+  /*
    * number of test villages, sectors, provinces, and countries in the test
    * dataset.
-   * @const
    */
-  var numVillages = 200;
-  var numSectors  = 208;
-  var numProvinces = 13;
-  var numCountries = 241;
+  const numVillages = 200;
+  const numSectors  = 208;
+  const numProvinces = 13;
+  const numCountries = 241;
 
-  /**
+  /*
    * Selected sector, province, and country uuids to test the query string
    * filtering of the dataset.
-   * @const
    */
-  var sectorUuid = '4c9d1f3d-d5af-47ca-80fd-357c2f1fa807'; // Luebo
-  var provinceUuid = '5cf83463-2718-4a65-abdd-f9ad2fe4e195'; // Kasai Occidental
-  var countryUuid = 'dbe330b6-5cde-4830-8c30-dc00eccd1a5f'; // DRC
+  const sectorUuid = '4c9d1f3d-d5af-47ca-80fd-357c2f1fa807'; // Luebo
+  const provinceUuid = '5cf83463-2718-4a65-abdd-f9ad2fe4e195'; // Kasai Occidental
+  const countryUuid = 'dbe330b6-5cde-4830-8c30-dc00eccd1a5f'; // DRC
 
-  /**
+  /*
    * the filtered record counts associated with the previous filters
-   * @const
    */
-  var numFilteredVillages = 13;
-  var numFilteredSectors = 11;
-  var numFilteredProvinces = 13;
+  const numFilteredVillages = 13;
+  const numFilteredSectors = 11;
+  const numFilteredProvinces = 13;
 
-  /** @const the test enterprise's location uuid */
-  var detailUuid = 'a0a8998d-af22-4a73-9071-bd43a23f77e3';
+  /* the test enterprise's location uuid */
+  const detailUuid = 'a0a8998d-af22-4a73-9071-bd43a23f77e3';
 
   it('GET /locations/villages should return a list of villages', function () {
     return agent.get('/locations/villages')
-    .then(function (res) {
+      .then(function (res) {
 
-      // check that we received the correct number of villages
-      helpers.api.listed(res, numVillages);
-    })
-    .catch(helpers.handler);
+        // check that we received the correct number of villages
+        helpers.api.listed(res, numVillages);
+      })
+      .catch(helpers.handler);
   });
 
   it('GET /locations/villages?sector={uuid} should return a filtered list of villages', function () {
-    return agent.get('/locations/villages?sector='.concat(sectorUuid))
-    .then(function (res) {
+    return agent.get(`/locations/villages?sector=${sectorUuid}`)
+      .then(function (res) {
 
-      // check that we received the correct number of villages
-      helpers.api.listed(res, numFilteredVillages);
-    })
-    .catch(helpers.handler);
+        // check that we received the correct number of villages
+        helpers.api.listed(res, numFilteredVillages);
+      })
+      .catch(helpers.handler);
   });
 
   it('GET /locations/sectors should return a list of sectors', function () {
     return agent.get('/locations/sectors')
-    .then(function (res) {
+      .then(function (res) {
 
-      // check that we received the correct number of sectors
-      helpers.api.listed(res, numSectors);
-    })
-    .catch(helpers.handler);
+        // check that we received the correct number of sectors
+        helpers.api.listed(res, numSectors);
+      })
+      .catch(helpers.handler);
   });
 
   it('GET /locations/sectors?province={uuid} should return a filtered list of sectors', function () {
-    return agent.get('/locations/sectors?province='.concat(provinceUuid))
-    .then(function (res) {
+    return agent.get(`/locations/sectors?province=${provinceUuid}`)
+      .then(function (res) {
 
-      // check that we received the correct number of sectors
-      helpers.api.listed(res, numFilteredSectors);
-    })
-    .catch(helpers.handler);
+        // check that we received the correct number of sectors
+        helpers.api.listed(res, numFilteredSectors);
+      })
+      .catch(helpers.handler);
   });
 
   it('GET /locations/provinces should return a list of provinces', function () {
@@ -99,7 +95,7 @@ describe('(/locations) Locations Interface', function () {
   });
 
   it('GET /locations/provinces?country={uuid} should return a filtered list of provinces', function () {
-    return agent.get('/locations/provinces?country='.concat(countryUuid))
+    return agent.get(`/locations/provinces?country=${countryUuid}`)
     .then(function (res) {
 
       // check that we received the correct number of provinces
@@ -134,64 +130,64 @@ describe('(/locations) Locations Interface', function () {
     .catch(helpers.handler);
   });
 
-  /** CREATE methods */
+  /* CREATE methods */
 
-  var country = {
+  const country = {
     uuid : uuid.v4(),
     name : 'Test Country'
   };
 
-  var province = {
+  const province = {
     uuid : uuid.v4(),
     name : 'Test Province',
     country_uuid : country.uuid
   };
 
-  var sector = {
+  const sector = {
     uuid : uuid.v4(),
     name : 'Test Sector',
     province_uuid : province.uuid
   };
 
-  var village = {
-    uuid : uuid.v4(),
-    namem : 'Test Village',
-    sector_uuid : sector.uuid
+  const village = {
+    uuid: uuid.v4(),
+    name: 'Test Village',
+    sector_uuid: sector.uuid
   };
 
   it('POST /locations/countries should create a country', function () {
     return agent.post('/locations/countries')
-    .send(country)
-    .then(function (res) {
-      helpers.api.created(res);
-    })
-    .catch(helpers.handler);
+      .send(country)
+      .then(function (res) {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
   });
 
   it('POST /locations/provinces should create a province', function () {
     return agent.post('/locations/provinces')
-    .send(province)
-    .then(function (res) {
-      helpers.api.created(res);
-    })
-    .catch(helpers.handler);
+      .send(province)
+      .then(function (res) {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
   });
 
   it('POST /locations/sectors should create a sector', function () {
     return agent.post('/locations/sectors')
-    .send(sector)
-    .then(function (res) {
-      helpers.api.created(res);
-    })
-    .catch(helpers.handler);
+      .send(sector)
+      .then(function (res) {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
   });
 
   it('POST /locations/villages should create a village', function () {
     return agent.post('/locations/villages')
-    .send(village)
-    .then(function (res) {
-      helpers.api.created(res);
-    })
-    .catch(helpers.handler);
+      .send(village)
+      .then(function (res) {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
   });
 });

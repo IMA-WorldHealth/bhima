@@ -1,22 +1,19 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
-
-/** import test helpers */
-var helpers = require('./helpers');
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 describe('(/currencies) currencies API routes', function () {
   'use strict';
 
-  var agent = chai.request.agent(helpers.baseUrl);
-  var currencyId = 1;
-  var keys = [
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
+
+  const currencyId = 1;
+  const keys = [
     'id', 'name', 'note', 'format_key', 'symbol', 'min_monentary_unit'
   ];
-
-  /** login before each request */
-  before(helpers.login(agent));
 
   it('GET /currencies should return a list of currencies', function () {
     return agent.get('/currencies')
@@ -43,7 +40,4 @@ describe('(/currencies) currencies API routes', function () {
       })
       .catch(helpers.handler);
   });
-
-
-
 });

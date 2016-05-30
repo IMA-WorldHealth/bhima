@@ -1,29 +1,25 @@
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('./helpers');
+/* jshint expr:true*/
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /functions  API endpoint
-*
-* This test suite implements full CRUD on the /functions  HTTP API endpoint.
-*/
+/*
+ * The /functions  API endpoint
+ *
+ * This test suite implements full CRUD on the /functions  HTTP API endpoint.
+ */
 describe('The /functions  API endpoint', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
-
-      // Function we will add during this test suite.
-  var fonction = {
-    fonction_txt : 'Anestiologiste'
-  };
- 
-  var FUNCTION_KEY = ['id', 'fonction_txt'];
-
-  var NUM_FUNCTIONS = 2;
-
-  // login before each request
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
+  // Function we will add during this test suite.
+  const fonction = {
+    fonction_txt : 'Anestiologiste'
+  };
+
+  const FUNCTION_KEY = ['id', 'fonction_txt'];
+  const NUM_FUNCTIONS = 2;
 
   it('GET /FUNCTIONS returns a list of function ', function () {
     return agent.get('/functions')
@@ -32,7 +28,6 @@ describe('The /functions  API endpoint', function () {
     })
     .catch(helpers.handler);
   });
-
 
   it('POST /FUNCTIONS should create a new Function', function () {
     return agent.post('/functions')
@@ -87,5 +82,4 @@ describe('The /functions  API endpoint', function () {
       })
       .catch(helpers.handler);
   });
-
 });

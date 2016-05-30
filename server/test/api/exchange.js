@@ -1,31 +1,25 @@
 /* jshint expr: true */
-
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('./helpers');
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /exchange API endpoint
-*/
+/*
+ * The /exchange API endpoint
+ */
 describe('The /exchange API endpoint', function () {
-  'use strict';
-
-  var agent = chai.request.agent(helpers.baseUrl);
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   // constants
-  var RATE = {
+  const RATE = {
     enterprise_id   :1,    // Enterprise ID
     currency_id     :1,    // FC in test database
     rate            :930,
     date            :new Date('2015-10-10')
   };
 
-  var RATE_KEY = ['id', 'enterprise_id', 'currency_id', 'enterprise_currency_id', 'rate', 'date'];
-
-  // login before each request
-  before(helpers.login(agent));
+  const RATE_KEY = ['id', 'enterprise_id', 'currency_id', 'enterprise_currency_id', 'rate', 'date'];
 
   it('GET /exchange returns a list of exchange rates', function () {
     return agent.get('/exchange')
@@ -34,7 +28,6 @@ describe('The /exchange API endpoint', function () {
       })
       .catch(helpers.handler);
   });
-
 
   it('POST /exchange creates a new exchange rate', function () {
     return agent.post('/exchange')

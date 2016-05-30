@@ -1,20 +1,14 @@
 /* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('./helpers');
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /discounts API endpoint
-*/
+/*
+ * The /discounts API endpoint
+ */
 describe('(/discounts) Discounts Interface', function () {
-  'use strict';
-
-  // bind agent for authenticated requrests
-  var agent = chai.request.agent(helpers.baseUrl);
-
-  // login before each request
+  const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
   var ACCOUNT_ID = 3636;  // Test Inventory Account

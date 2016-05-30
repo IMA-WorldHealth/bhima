@@ -1,19 +1,19 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('./helpers');
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
+/*
  * @todo - there are some tests missing:
  *  - invalid POSTs
  *  - 404s on PUTs
  */
 describe('(/cost_centers) The cost center API', function () {
- var agent = chai.request.agent(helpers.baseUrl);
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
- var newCostCenter = {
+  const newCostCenter = {
     project_id : 1,
     text : 'tested cost',
     note : 'test inserted',
@@ -27,8 +27,6 @@ describe('(/cost_centers) The cost center API', function () {
     'project_id', 'id', 'text', 'note', 'is_principal'
   ];
 
-  // ensure that the client is logged in before tests start
-  before(helpers.login(agent));
 
   it('GET /cost_centers returns a list of cost centers', function () {
     return agent.get('/cost_centers')
@@ -38,7 +36,7 @@ describe('(/cost_centers) The cost center API', function () {
       .catch(helpers.handler);
   });
 
-  /** @todo - make this route ?detailed=1 to conform to standards */
+  /* @todo - make this route ?detailed=1 to conform to standards */
   it('GET /cost_centers?full=1 returns a full list of cost centers', function () {
     return agent.get('/cost_centers?full=1')
       .then(function (res) {
@@ -83,7 +81,7 @@ describe('(/cost_centers) The cost center API', function () {
       .catch(helpers.handler);
   });
 
-  /** @todo - should this return a simple number? */
+  /* @todo - should this return a simple number? */
   it('GET /cost_centers/:id/cost returns the cost of a provided cost center', function () {
     return agent.get('/cost_centers/:id/cost'.replace(':id', FETCHABLE_COST_CENTER_ID))
       .then(function (res) {

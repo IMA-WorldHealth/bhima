@@ -1,13 +1,12 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
-
-/** import test helpers */
-var helpers = require('./helpers');
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 describe('(/reference) The Reference API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   var newReference = {
     is_report : 0,
@@ -24,9 +23,6 @@ describe('(/reference) The Reference API', function () {
   var responseKeys = [
     'id', 'is_report', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id'
   ];
-
-  before(helpers.login(agent));
-  
 
   it('GET /references returns a full list of references', function () {
     return agent.get('/references?full=1')

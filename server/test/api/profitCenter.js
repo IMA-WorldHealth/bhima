@@ -1,18 +1,18 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
-
-var helpers = require('./helpers');
+const chai = require('chai');
+const expect = chai.expect;
+const helpers = require('./helpers');
 helpers.configure(chai);
 
 
-/**
+/*
  * @todo - there are some tests missing:
  *  - invalid POSTs
  *  - 404s on PUTs
  */
-describe('(/profit_centers) The profit center API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+describe('(/profit_centers) Profit Center', function () {
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   var newProfitCenter = {
     project_id : 1,
@@ -27,8 +27,6 @@ describe('(/profit_centers) The profit center API', function () {
     'project_id', 'id', 'text', 'note'
   ];
 
-  // make sure the client is logged in before the tests start
-  before(helpers.login(agent));
 
   it('GET /profit_centers returns a list of profit centers', function () {
     return agent.get('/profit_centers')
@@ -38,7 +36,7 @@ describe('(/profit_centers) The profit center API', function () {
      .catch(helpers.handler);
   });
 
-  /** @todo - make this route ?detailed=1 to conform to standards */
+  /* @todo - make this route ?detailed=1 to conform to standards */
   it('GET /profit_centers?full=1 returns a full list of profit centers', function () {
     return agent.get('/profit_centers?full=1')
       .then(function (res) {

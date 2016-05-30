@@ -1,18 +1,19 @@
 /* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
-var uuid    = require('node-uuid');
+const chai = require('chai');
+const expect = chai.expect;
+const uuid    = require('node-uuid');
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
-* The /supplier API endpoint
-*
-* This test suite implements full CRUD on the /supplier HTTP API endpoint.
-*/
+/*
+ * The /supplier API endpoint
+ *
+ * This test suite implements full CRUD on the /supplier HTTP API endpoint.
+ */
 describe('(/supplier) The supplier API endpoint', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
 
   // supplier we will add during this test suite.
   var supplier = {
@@ -31,21 +32,19 @@ describe('(/supplier) The supplier API endpoint', function () {
 
   var SUPPLIER_KEY = [
     'uuid', 'creditor_uuid', 'name', 'address_1', 'address_2',
-   'email', 'fax', 'note', 'phone', 'international', 'locked'
+    'email', 'fax', 'note', 'phone', 'international', 'locked'
   ];
 
   var FILTER = {
-      name : 'UPD',
-      limit : 20
+    name : 'UPD',
+    limit : 20
   };
 
   var NOT_FOUND = {
-      name : 'TEST',
-      limit : 20
+    name : 'TEST',
+    limit : 20
   };
 
-  // login before each request
-  before(helpers.login(agent));
 
   it('POST /supplier should create a new supplier ', function () {
     return agent.post('/suppliers')
@@ -121,7 +120,7 @@ describe('(/supplier) The supplier API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  /**
+  /*
    * @todo - Theses tests dod not actually test anything.  A /search endpoint
    * should always return 200 OK.  A better test will check that content
    * filtering happened.
@@ -138,7 +137,7 @@ describe('(/supplier) The supplier API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  /** @todo - see above */
+  /* @todo - see above */
   it('GET /supplier/search the filter returns an empty list because of key words to send to server', function () {
     return agent.get('/suppliers/search')
       .send(NOT_FOUND)

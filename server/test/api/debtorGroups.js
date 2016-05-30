@@ -183,7 +183,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
         expect(sampleDebtorGroup).to.contain.all.keys('total_debtors');
 
         // according to the test SQL data this debtor group should have 3 debtors assigned
-        /** @todo verify that the order of data sent back from the server is managed/ known */
+        /* @todo verify that the order of data sent back from the server is managed/ known */
         // expect(sampleDebtorGroup.total_debtors).to.equal(expectedDebtors);
       })
       .catch(helpers.handler);

@@ -1,11 +1,11 @@
 /* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('(/account_types) The account types API', function () {
+describe('(/account_types) Account Types', function () {
   var agent = chai.request.agent(helpers.baseUrl);
   var newAccountType = {
     type : 'test account type 1'
@@ -14,7 +14,6 @@ describe('(/account_types) The account types API', function () {
   var DELETABLE_ACCOUNT_TYPE_ID = 3;
   var FETCHABLE_ACCOUNT_TYPE_ID = 1;
 
-  /** @const */
   var numAccountTypes = 2;
 
   // logs the client into the app

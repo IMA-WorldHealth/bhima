@@ -2,11 +2,10 @@
 const chai = require('chai');
 const expect = chai.expect;
 const uuid    = require('node-uuid');
-
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-/**
+/*
  * The /creditor_groups API endpoint
  *
  * This test suite implements full CRUD on the /creditor_groups HTTP API endpoint.
