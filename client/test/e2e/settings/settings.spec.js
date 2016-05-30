@@ -12,10 +12,10 @@ describe('Settings', function () {
 
   it('loads the page, and selects a language', function () {
 
-    // confirm that we can change the languages
+    // confirm that we can change the languages (to French)
     // ideally, we should check that the language changed, but this
     // test should only confirm that things are open.
-    FU.select('SettingsCtrl.settings.language').get(1).click();
+    FU.select('SettingsCtrl.settings.language', 'Fr');
 
     // make sure that the "back" button doesn't exist
     FU.exists(by.css('[data-back-button]'), false);

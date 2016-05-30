@@ -25,7 +25,7 @@ describe('Enterprises Module', function () {
   before(() => helpers.navigate(path));
 
 
-  it('successfully creates a new enterprise', function () {
+  it('creates a new enterprise', function () {
     FU.buttons.create();
 
     FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
@@ -46,22 +46,22 @@ describe('Enterprises Module', function () {
   });
 
 
-  it('successfully edits an enterprise', function () {
+  it('edits an enterprise', function () {
     element(by.id('enterprise-' + enterpriseId)).click();
 
-    FU.input('EnterpriseCtrl.enterprise.name', 'Enterprise UPDATED');
-    FU.input('EnterpriseCtrl.enterprise.abbr', 'Enterprise EnUpdt');
+    FU.input('EnterpriseCtrl.enterprise.name', 'Test Enterprise Updated');
+    FU.input('EnterpriseCtrl.enterprise.abbr', 'TEU');
 
     element(by.id('change_enterprise')).click();
     FU.exists(by.id('update_success'), true);
   });
 
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', function () {
     FU.buttons.create();
     FU.buttons.submit();
 
-    // verify form has not been successfully submitted
+    // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     // The following fields should be required

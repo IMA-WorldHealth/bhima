@@ -1,5 +1,4 @@
-/* global element, by, inject, browser */
-
+/* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -14,23 +13,16 @@ describe('Provinces Management', function () {
 
   before(() => helpers.navigate(path));
 
-  const province = {
-    name : 'A Province for Test'
-  };
+  const province = { name : 'Test Province' };
 
-  const defaultProvince = 14;
+  const numProvinces = 14;
   const provinceRank  = 1;
 
-  it('successfully creates a new province', function () {
+  it('creates a new province', function () {
     // switch to the create form
     FU.buttons.create();
 
-    // select an Country
-    FU.select('ProvinceCtrl.province.country_uuid')
-      .enabled()
-      .first()
-      .click();
-
+    FU.select('ProvinceCtrl.province.country_uuid', 'Test Country');
     FU.input('ProvinceCtrl.province.name', province.name);
 
     // submit the page to the server
@@ -40,16 +32,10 @@ describe('Provinces Management', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully edits a province', function () {
+  it('edits a province', function () {
     element(by.id('province-' + provinceRank)).click();
 
-    // Update an Country
-    FU.select('ProvinceCtrl.province.country_uuid')
-      .enabled()
-      .first()
-      .click();
-
-    // modify the Province Name
+    FU.select('ProvinceCtrl.province.country_uuid', 'Test Country');
     FU.input('ProvinceCtrl.province.name', 'Province Update');
 
     element(by.id('change_province')).click();
@@ -58,8 +44,7 @@ describe('Provinces Management', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
-    // switch to the create form
+  it('blocks invalid form submission with relevant error classes', function () {
     element(by.id('create')).click();
 
     // verify form has not been successfully submitted

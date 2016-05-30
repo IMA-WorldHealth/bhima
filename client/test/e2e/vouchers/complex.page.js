@@ -25,47 +25,27 @@ class Row {
 
     // store a reference to the <tr> dom element
     this._node = $(`[data-row="${index}"]`);
-
-    // selectors for buttons/inputs in the row
-    this._selectors = {
-      account: '[data-account-input]',
-      credit: '[data-credit-input]',
-      debit: '[data-debit-input]',
-      entity: '[data-entity-button]',
-      reference: '[data-reference-button]'
-    };
-  }
-
-  // inputs the number in to the <input> matched by the selector
-  _input(selector, number) {
-    let input = this._node.$(selector);
-    input.clear();
-    input.sendKeys(number);
   }
 
   // account setter
   account(number) {
-    this._input(this._selectors.account, number);
-
-    // click the first matching option in the list
-    let option = element.all(by.repeater('match in matches track by $index')).first();
-    option.click();
+    FU.typeahead('row.account', number, this._node);
   }
 
   // sets the debit value
   debit(number) {
-    this._input(this._selectors.debit, number);
+    FU.input('row.debit', number, this._node);
   }
 
   // sets the credit value
   credit(number) {
-    this._input(this._selectors.credit, number);
+    FU.input('row.credit', number, this._node);
   }
 
   // sets the entity
   entity(type, name) {
     // click the 'open entity modal' button
-    this._node.$(this._selectors.entity).click();
+    this._node.$('[data-entity-button]').click();
 
     // the modal is now open
 
@@ -82,7 +62,7 @@ class Row {
   // sets the reference
   reference(type, index) {
     // click the 'open reference modal' button
-    this._node.$(this._selectors.reference).click();
+    this._node.$('[data-reference-button]').click();
 
     // select the type
     // supported : 'voucher', 'cash-payment', 'patient-invoice'

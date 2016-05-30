@@ -14,18 +14,16 @@ describe('Countries Management', function () {
   // navigate to the page before the test suite
   before(() => helpers.navigate(path));
 
-  const country = {
-    name : 'A Country for Test'
-  };
+  const country = { name : 'Test Country' };
 
-  const defaultCountry  = 242;
-  const countryRank = helpers.random(defaultCountry);
+  const numCountries = 242;
+  const id = helpers.random(numCountries);
 
-  it('successfully creates a new country', function () {
-    // switch to the create form
+  it('creates a new country', function () {
     FU.buttons.create();
 
     FU.input('CountryCtrl.country.name', country.name);
+
     // submit the page to the server
     FU.buttons.submit();
 
@@ -34,8 +32,8 @@ describe('Countries Management', function () {
   });
 
 
-  it('successfully edits an country', function () {
-    element(by.id('country-' + countryRank )).click();
+  it('edits an country', function () {
+    element(by.id('country-' + id)).click();
 
     // modify the country name
     FU.input('CountryCtrl.country.name', 'Republique Of The Holy See');
@@ -45,7 +43,7 @@ describe('Countries Management', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', function () {
     // switch to the create form
     element(by.id('create')).click();
 

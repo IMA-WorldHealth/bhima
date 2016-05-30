@@ -1,40 +1,35 @@
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
-
-const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
-const components = require('../shared/components');
-
 helpers.configure(chai);
 
-describe('Reference Group Module', function () {
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
+
+describe('Reference Group', function () {
   'use strict';
 
   const path = '#/references/groups';
   before(() => helpers.navigate(path));
 
   const referenceGroup = {
-    reference_group   : 'BC',
-    text              : 'A new Reference Group',
-    position          : 5
+    reference_group: 'BC',
+    text:            'A new Reference Group',
+    position:        5
   };
 
   const referenceGroupRank = 1;
 
-  it('successfully creates a new ReferenceGroup', function () {
+  it('creates a new referencegroup', function () {
 
     // switch to the create form
     FU.buttons.create();
+
     FU.input('ReferenceGroupCtrl.referenceGroup.reference_group', referenceGroup.reference_group);
     FU.input('ReferenceGroupCtrl.referenceGroup.text', referenceGroup.text);
     FU.input('ReferenceGroupCtrl.referenceGroup.position', referenceGroup.position);
-
-    // select a section_bilan_id
-    FU.select('ReferenceGroupCtrl.referenceGroup.section_bilan_id')
-      .enabled()
-      .first()
-      .click();
+    FU.select('ReferenceGroupCtrl.referenceGroup.section_bilan_id', 'Section Bilan 1');
 
     // submit the page to the server
     FU.buttons.submit();
@@ -43,14 +38,14 @@ describe('Reference Group Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully edits an ReferenceGroup', function () {
+  it('edits an referencegroup', function () {
 
     element(by.id('referenceGroup-upd-' + referenceGroupRank)).click();
     // modify the referenceGroup reference_group
     FU.input('ReferenceGroupCtrl.referenceGroup.reference_group', 'RG');
 
     // modify the referenceGroup text
-    FU.input('ReferenceGroupCtrl.referenceGroup.text', 'Updated');
+    FU.input('ReferenceGroupCtrl.referenceGroup.text', 'Reference Group 1 Updated');
 
     element(by.id('change_referenceGroup')).click();
 
@@ -58,11 +53,10 @@ describe('Reference Group Module', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
-    // switch to the create form
+  it('blocks invalid form submission with relevant error classes', function () {
     FU.buttons.create();
 
-    // verify form has not been successfully submitted
+    // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-referenceGroup')).click();
@@ -74,7 +68,7 @@ describe('Reference Group Module', function () {
     FU.validation.error('ReferenceGroupCtrl.referenceGroup.section_bilan_id');
   });
 
-  it('successfully delete a ReferenceGroup', function () {
+  it('deletes a referencegroup', function () {
     element(by.id('referenceGroup-del-' + referenceGroupRank)).click();
 
     // click the alert asking for permission

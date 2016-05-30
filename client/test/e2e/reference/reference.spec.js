@@ -5,7 +5,6 @@ const expect = chai.expect;
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
-
 helpers.configure(chai);
 
 describe('Reference Module', function () {
@@ -26,21 +25,13 @@ describe('Reference Module', function () {
 
     // switch to the create form
     FU.buttons.create();
+
+    // input form fields
     FU.input('ReferenceCtrl.reference.ref', reference.ref);
     FU.input('ReferenceCtrl.reference.text', reference.text);
     FU.input('ReferenceCtrl.reference.position', reference.position);
-
-    // select a reference_group_id
-    FU.select('ReferenceCtrl.reference.reference_group_id')
-      .enabled()
-      .first()
-      .click();
-
-    // select a section_resultat_id
-    FU.select('ReferenceCtrl.reference.section_resultat_id')
-      .enabled()
-      .first()
-      .click();
+    FU.select('ReferenceCtrl.reference.reference_group_id', 'Reference Group 1');
+    FU.select('ReferenceCtrl.reference.section_resultat_id', 'Section Resultat 1');
 
     // submit the page to the server
     FU.buttons.submit();

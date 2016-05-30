@@ -1,5 +1,5 @@
 /* jshint expr:true*/
-/* global protractor, by, element, browser */
+/* global by, element, browser */
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -14,12 +14,14 @@ helpers.configure(chai);
 describe('Login Page', function () {
   'use strict';
 
+  // routes used in tests
   let settings = 'settings';
+  let login = 'login';
 
   before(() => {
 
     // access the settings page
-    browser.setLocation(settings);
+    helpers.navigate(settings);
 
     // click the logout button and close the growl notification
     element(by.css('[data-logout-button]')).click();
@@ -68,7 +70,7 @@ describe('Login Page', function () {
     FU.exists(by.css('[data-bh-growl-notification]'), false);
 
     // attempt to navigate to the settings page
-    browser.setLocation(settings);
+    helpers.navigate(settings);
 
     // assert that we are still on the login page with a notification
     expect(helpers.getCurrentPath()).to.eventually.equal('#/login');
@@ -84,7 +86,7 @@ describe('Login Page', function () {
   });
 
   it('page refresh preserves the use session', function () {
-    browser.setLocation(settings);
+    helpers.navigate(settings);
     browser.refresh();
     expect(helpers.getCurrentPath()).to.eventually.equal('#/' + settings);
   });
@@ -92,13 +94,13 @@ describe('Login Page', function () {
   it('prevents access to the login page after login', function () {
 
     // go to the setting page (for example)
-    browser.setLocation(settings);
+    helpers.navigate(settings);
 
     // assert that we get to the settings page
     expect(helpers.getCurrentPath()).to.eventually.equal('#/' + settings);
 
     // attempt to access the login page.
-    browser.setLocation('login');
+    helpers.navigate(login);
 
     // assert that a growl notification was shown
     components.notification.verify();

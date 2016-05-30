@@ -1,26 +1,24 @@
 /* global element, by, browser */
+
+/**
+ * @todo - this page is complex enough to merit a PriceList page object.
+ */
 const chai = require('chai');
 const expect = chai.expect;
-
-const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
+const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Price List Module', function () {
+describe('Price Lists', function () {
   'use strict';
 
   const path = '#/prices';
   before(() => helpers.navigate(path));
 
-  const priceList = {
-    label : 'Price list without Items',
-    description : 'Description of price list without Item'
-  };
-
   const priceList2 = {
-    label : 'Price list with 2 items '
+    label : 'Price list with two items'
   };
 
   const item1 = {
@@ -43,23 +41,26 @@ describe('Price List Module', function () {
     value : 60
   };
 
-  const defaultPriceList = 1;
   const priceListID1 = 1;
   const priceListID2 = 2;
 
   it('prices should create a price list without price list items', function () {
-    // swtich to the create form
+    const list = {
+      label: 'Price list without Items',
+      description: 'Description of price list without an item.'
+    };
+
     FU.buttons.create();
-    FU.input('PriceListCtrl.priceList.label', priceList.label);
-    FU.input('PriceListCtrl.priceList.description', priceList.description);
+
+    FU.input('PriceListCtrl.priceList.label', list.label);
+    FU.input('PriceListCtrl.priceList.description', list.description);
 
     // submit the page to the server
     FU.buttons.submit();
-    // expect a nice validation message
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully add price_list_items to a price list', function () {
+  it('add price_list_items to a price list', function () {
     element(by.id('price_list_' + priceListID1 )).click();
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item1.label);
@@ -67,11 +68,7 @@ describe('Price List Module', function () {
     element(by.id('is_percentage')).click();
 
     // select an Invetory
-    FU.select('ModalCtrl.data.inventory_uuid')
-      .enabled()
-      .first()
-      .click();
-    // Saving Item
+    FU.select('ModalCtrl.data.inventory_uuid', 'Test Inventory Item');
     element(by.id('submit-price-list')).click();
 
     element(by.id('add_item')).click();
@@ -79,10 +76,7 @@ describe('Price List Module', function () {
     FU.input('ModalCtrl.data.value', item2.value);
 
     // select an Invetory
-    FU.select('ModalCtrl.data.inventory_uuid')
-      .enabled()
-      .first()
-      .click();
+    FU.select('ModalCtrl.data.inventory_uuid', 'Second Test Inventory Item');
 
     // saving item
     element(by.id('submit-price-list')).click();
@@ -93,46 +87,35 @@ describe('Price List Module', function () {
   });
 
   it('prices should create a price list with two items', function () {
-    // switch to the create form
     FU.buttons.create();
+
     FU.input('PriceListCtrl.priceList.label', priceList2.label);
 
+    // select an inventory item
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item3.label);
     FU.input('ModalCtrl.data.value', item3.value);
-
-    // select an inventory item
-    FU.select('ModalCtrl.data.inventory_uuid')
-      .enabled()
-      .first()
-      .click();
-
-    // saving item
+    FU.select('ModalCtrl.data.inventory_uuid', 'Test Inventory Item');
     element(by.id('submit-price-list')).click();
 
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item4.label);
     FU.input('ModalCtrl.data.value', item4.value);
     element(by.id('is_percentage')).click();
+    FU.select('ModalCtrl.data.inventory_uuid', 'Test Inventory Item');
+    FU.select('ModalCtrl.data.inventory_uuid', 'Second Test Inventory Item');
 
-    // select an inventory item
-    FU.select('ModalCtrl.data.inventory_uuid')
-      .enabled()
-      .first()
-      .click();
-
-    // saving item
     element(by.id('submit-price-list')).click();
-    FU.buttons.submit();
 
-    // expect a nice validation message
+    FU.buttons.submit();
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully edit a price list ', function () {
+  it('edits a price list ', function () {
     element(by.id('price_list_' + priceListID1 )).click();
-    FU.input('PriceListCtrl.priceList.label', ' Update');
-    FU.input('PriceListCtrl.priceList.description', 'Added description of a price list');
+
+    FU.input('PriceListCtrl.priceList.label', 'Updated List');
+    FU.input('PriceListCtrl.priceList.description', 'Added description of a price list.');
 
     element(by.id('remove_item_1')).click();
 
@@ -142,20 +125,16 @@ describe('Price List Module', function () {
     FU.input('ModalCtrl.data.value', item1.value);
 
     // select an inventory item
-    FU.select('ModalCtrl.data.inventory_uuid')
-      .enabled()
-      .first()
-      .click();
+    FU.select('ModalCtrl.data.inventory_uuid', 'Test Inventory Item');
 
     // saving item
     element(by.id('submit-price-list')).click();
 
     FU.buttons.submit();
-    // expect a nice validation message
     FU.exists(by.id('update_success'), true);
   });
 
-  it('successfully delete a price list', function () {
+  it('deletes a price list', function () {
     element(by.id('price_delete_' + priceListID1 )).click();
 
     // accept the alert
@@ -166,12 +145,10 @@ describe('Price List Module', function () {
   });
 
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
-
-    // switch to the create form
+  it('blocks invalid form submission with relevant error classes', function () {
     element(by.id('create')).click();
 
-    // verify form has not been successfully submitted
+    // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-priceList')).click();

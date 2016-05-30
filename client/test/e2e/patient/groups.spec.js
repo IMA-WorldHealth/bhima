@@ -1,10 +1,5 @@
 /* global element, by, browser */
-const chai = require('chai');
-const expect = chai.expect;
-
 const helpers = require('../shared/helpers');
-helpers.configure(chai);
-
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
@@ -15,7 +10,7 @@ describe('Patient Groups', function () {
 
   // a new group to create
   const group = {
-    name : 'HIV Patients',
+    name: 'HIV Patients',
     note: 'These are patients that suffer from HIV and ' +
       'benefit from medical discounts.'
   };
@@ -24,22 +19,14 @@ describe('Patient Groups', function () {
   var deleteUuid = 'group-112a9fb5-847d-4c6a-9b20-710fa8b4da22';
 
   it('creates a patient group', function () {
-
-    // get the create form
     FU.buttons.create();
 
     // expect the create form to exist
     FU.exists(by.css('[data-create-form]'), true);
 
     // fill in the form details
-
     FU.input('PatientGroupCtrl.patientGroup.name', group.name);
-
-    FU.select('PatientGroupCtrl.patientGroup.price_list_uuid')
-      .enabled()
-      .first()
-      .click();
-
+    FU.select('PatientGroupCtrl.patientGroup.price_list_uuid', 'Test Price List');
     FU.input('PatientGroupCtrl.patientGroup.note', group.note);
 
     // submit the form
@@ -50,8 +37,6 @@ describe('Patient Groups', function () {
   });
 
   it('updates a patient group', function () {
-
-    // click the update button
     var row = element(by.id(deleteUuid));
     row.click();
 
@@ -71,7 +56,6 @@ describe('Patient Groups', function () {
   });
 
   it('deletes a patient group', function () {
-    // click the update button
     var row = element(by.id(deleteUuid));
     row.click();
 

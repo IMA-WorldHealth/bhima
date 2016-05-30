@@ -1,14 +1,13 @@
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
-
-const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
-const components = require('../shared/components');
-
 helpers.configure(chai);
 
-describe('Subsidies Module', function () {
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
+
+describe('Subsidies', function () {
   'use strict';
 
   const path = '#/subsidies';
@@ -23,19 +22,13 @@ describe('Subsidies Module', function () {
   const defaultSubsidy = 0;
   const subsidyRank = 2;
 
-  it('successfully creates a new subsidy', function () {
+  it('creates a new subsidy', function () {
 
     // switch to the create form
     FU.buttons.create();
     FU.input('SubsidyCtrl.subsidy.label', subsidy.label);
     FU.input('SubsidyCtrl.subsidy.value', subsidy.value);
-
-    // select an Account
-    FU.select('SubsidyCtrl.subsidy.account_id')
-      .enabled()
-      .first()
-      .click();
-
+    FU.select('SubsidyCtrl.subsidy.account_id', 'Test Debtor Account');
     FU.input('SubsidyCtrl.subsidy.description', subsidy.description);
 
     // submit the page to the server
@@ -46,7 +39,7 @@ describe('Subsidies Module', function () {
   });
 
 
-  it('successfully edits an subsidy', function () {
+  it('edits an subsidy', function () {
     element(by.id('subsidy-upd-' + subsidyRank)).click();
     // modify the subsidy label
     FU.input('SubsidyCtrl.subsidy.label', 'Updated');
@@ -59,11 +52,11 @@ describe('Subsidies Module', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', function () {
     // switch to the create form
     element(by.id('create')).click();
 
-    // verify form has not been successfully submitted
+    // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-subsidy')).click();
@@ -76,7 +69,7 @@ describe('Subsidies Module', function () {
     FU.validation.ok('SubsidyCtrl.subsidy.description');
   });
 
-  it('successfully delete a subsidy', function () {
+  it('deletes a subsidy', function () {
     element(by.id('subsidy-del-' + subsidyRank)).click();
 
     // click the alert asking for permission

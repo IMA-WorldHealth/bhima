@@ -1,16 +1,13 @@
 /* global element, by, browser */
 const chai = require('chai');
 const expect = chai.expect;
-
-const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
-const components = require('../shared/components');
-
 helpers.configure(chai);
 
-describe('Projects Module', function () {
-  'use strict';
+const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
 
+describe('Projects', function () {
   const path = '#/projects';
   const project = {
     name : 'Test Project D',
@@ -32,18 +29,8 @@ describe('Projects Module', function () {
 
     FU.input('ProjectCtrl.project.name', project.name);
     FU.input('ProjectCtrl.project.abbr', project.abbr);
-
-    // select an enterprise
-    FU.select('ProjectCtrl.project.enterprise_id')
-      .enabled()
-      .first()
-      .click();
-
-    // select a health zone (zone de sante)
-    FU.select('ProjectCtrl.project.zs_id')
-      .enabled()
-      .first()
-      .click();
+    FU.select('ProjectCtrl.project.enterprise_id', 'Test');
+    FU.select('ProjectCtrl.project.zs_id', 'Zone Sante A');
 
     // submit the page to the server
     FU.buttons.submit();
@@ -67,7 +54,7 @@ describe('Projects Module', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('successfully unlock an project', function () {
+  it('unlock an project', function () {
     element(by.id('project-upd-' + enterpriseRank)).click();
 
     element(by.id('change_project')).click();
@@ -77,12 +64,12 @@ describe('Projects Module', function () {
   });
 
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', function () {
 
     // switch to the create form
     element(by.id('create')).click();
 
-    // verify form has not been successfully submitted
+    // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-project')).click();
@@ -97,7 +84,7 @@ describe('Projects Module', function () {
     FU.validation.ok('ProjectCtrl.project.locked');
   });
 
-  it('delete an project', function () {
+  it('deletes an project', function () {
     element(by.id('project-del-' + deleteSuccess)).click();
 
     // click the alert asking for permission
