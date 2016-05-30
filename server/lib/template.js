@@ -1,14 +1,14 @@
 /**
- * @description 
+ * @description
  * This service is a wrapper for the express handlebars library. It sets the required configuration options and provides
- * a number of helper methods that are exposed to templates. 
- * - translate - convert a translation key into the current languages text 
- * - multiply - multiply two numbers together 
+ * a number of helper methods that are exposed to templates.
+ * - translate - convert a translation key into the current languages text
+ * - multiply - multiply two numbers together
  * - currency - convert a number into a currency string based on currently selected currency
- * 
+ *
  * @requires express-handlebars
  * @requires numeral
- * 
+ *
  * @returns {Function} handlebars render method, accepting a template and a context
 */
 'use strict';
@@ -16,7 +16,7 @@ const exphbs = require('express-handlebars');
 const numeral = require('numeral');
 
 // this is very cheeky
-const moment = require('./../../client/vendor/moment');
+const moment = require('moment');
 const en = require('./../../client/i18n/en.json');
 
 const formatDollar = '$0,0.00';
@@ -78,12 +78,12 @@ function currency(value, currencyKey) {
   return numeral(value).format(formatExpression);
 }
 
-function date(value) { 
+function date(value) {
   var dateValue = new Date(value);
   return dateValue.toDateString();
 }
 
-function age(dob) { 
+function age(dob) {
   return moment().diff(dob, 'years');
 }
 
