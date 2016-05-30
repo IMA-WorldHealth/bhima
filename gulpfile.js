@@ -23,7 +23,7 @@ const less    = require('gulp-less');
 const exec = require('child_process').exec;
 
 // toggle client javascript minification
-const UGLIFY = true;
+const UGLIFY = false;
 
 // path to the jshintrc to use
 const JSHINT_PATH = '.jshintrc';
@@ -49,7 +49,7 @@ var paths = {
     ],
     vendorStyle : [
       'client/vendor/**/*.{css,ttf,woff,woff2,eot,svg}',
-      
+
       // this is very cheeky
       'client/vendor/moment/moment.js',
       '!client/vendor/**/src{,/**}',
