@@ -528,19 +528,9 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   .state('patientDocuments', {
-    url    : '/patients/documents',
+    url    : '/patients/:patient_uuid/documents',
     controller  : 'PatientDocumentsController as PatientDocCtrl',
     templateUrl : 'partials/patients/documents/documents.html'
-  })
-
-  .state('patientDocuments.view', {
-    params : { patient_uuid: null },
-    views  : {
-      'document@patientDocuments' : {
-        controller  : 'DocumentViewController as DocViewCtrl',
-        templateUrl : 'partials/patients/documents/views/documentView.html'
-      }
-    }
   })
 
   /* Patient Invoicing */

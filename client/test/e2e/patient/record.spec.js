@@ -14,7 +14,7 @@ describe('Patient Record', function () {
 
   const patient = {
     name : 'Test Patient 2',
-    id : 'TPA TPA1',
+    id : 'TPA1',
     hospital_no : '110',
     age : '25',
     gender : 'M'
@@ -39,4 +39,3 @@ describe('Patient Record', function () {
   });
 
 });
-

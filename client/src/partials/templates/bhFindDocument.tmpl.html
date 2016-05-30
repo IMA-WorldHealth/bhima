@@ -1,0 +1,179 @@
+<div class="patient-document">
+
+    <!-- Patient details informations  -->
+    <div ng-if="$ctrl.session.enablePatientDetails" class="pd-patient">
+      <b><i class="fa fa-universal-access"></i> {{ $ctrl.session.patient.reference }} / </b>
+      {{ $ctrl.session.patient.first_name + ' ' + $ctrl.session.patient.last_name + ' ' + $ctrl.session.patient.middle_name }}
+    </div>
+
+    <!-- Search Documents  -->
+    <div ng-if="$ctrl.session.enableSearch" class="pd-search">
+      <div class="input-group">
+        <span class="input-group-addon">
+          <i class="fa fa-search"></i>
+        </span>
+        <input
+          ng-model="$ctrl.searchByName"
+          type="text"
+          placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DOCUMENT_NAME' | translate }}..."
+          class="form-control">
+      </div>
+    </div>
+
+    <!-- Documents  -->
+    <div class="pd-documents">
+
+      <!-- heading  -->
+      <div ng-if="$ctrl.session.enableOptionBar" class="heading">
+        <div class="left">
+          <b><i class="fa fa-universal-access"></i> {{ $ctrl.session.patient.reference }} / </b>
+          {{ $ctrl.session.patient.first_name + ' ' + $ctrl.session.patient.last_name + ' ' + $ctrl.session.patient.middle_name }}
+          ({{ $ctrl.session.patientDocuments.length }})
+        </div>
+
+        <div class="btn-group">
+          <button
+            type="button"
+            title="{{ 'PATIENT_DOCUMENT.DISPLAY_THUMBNAIL' | translate }}"
+            class="btn btn-sm btn-primary"
+            ng-click="$ctrl.switchDisplay('thumbnail')">
+            <i class="fa fa-file-image-o"></i>
+          </button>
+
+          <button
+            type="button"
+            title="{{ 'PATIENT_DOCUMENT.DISPLAY_LIST' | translate }}"
+            class="btn btn-sm btn-primary"
+            ng-click="$ctrl.switchDisplay('list')">
+            <i class="fa fa-list"></i>
+          </button>
+
+          <button
+            type="button"
+            title="{{ 'PATIENT_DOCUMENT.ADD' | translate }}"
+            class="btn btn-sm btn-primary"
+            ng-click="$ctrl.addDocument()">
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- list of documents  -->
+      <ng-switch on="$ctrl.session.display">
+        <!-- list dispaly mode  -->
+        <div ng-switch-default class="display-list">
+          <ul class="media-list">
+              <li class="document media" ng-click="$ctrl.toggleAction($index)"
+                ng-repeat="doc in $ctrl.session.patientDocuments | filter: $ctrl.searchByName">
+                <a class="media-left">
+                  <i class="fa fa-3x" ng-class="{{ '$ctrl.mimeIcon(doc.mimetype).icon' }}"></i>
+                </a>
+                <div class="media-body">
+                  <b class="btn-sm pull-right">
+                    <i ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="fa fa-angle-up"></i>
+                    <i ng-hide="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="fa fa-angle-down"></i>
+                  </b>
+
+                  <h4 class="media-heading">{{ doc.label }}</h4>
+
+                  <div ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index">
+                    <i class="fa fa-file-o"></i>
+                    {{ $ctrl.mimeIcon(doc.mimetype).label }} (~{{ doc.size | bytes }})
+                  </div>
+
+                  <i class="fa fa-calendar-o"></i>
+                  {{ doc.timestamp | date }}, {{ 'FORM.LABELS.BY' | translate }}
+                  {{ doc.first + ' ' + doc.last }}
+
+                  <div ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="document-action" style="border-top:1px solid #ccc; padding-top:5px;">
+                    <button
+                      title="{{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}"
+                      type="button"
+                      class="btn btn-sm btn-default">
+                      <i class="fa fa-eye"></i>
+                    </button>
+
+                    <a
+                      ng-href="/{{ doc.link }}" download="{{ doc.label }}"
+                      title="{{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}"
+                      type="button"
+                      class="btn btn-sm btn-default">
+                      <i class="fa fa-download"></i>
+                    </a>
+
+                    <button
+                      ng-click="$ctrl.deleteDocument(doc.uuid)"
+                      title="{{ 'FORM.BUTTONS.DELETE' | translate }}"
+                      type="button"
+                      class="btn btn-sm btn-danger">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+        </div>
+
+        <!-- thumbnail display mode  -->
+        <div ng-switch-when="thumbnail" class="display-thumbnail">
+          <div class="document" ng-click="$ctrl.toggleAction($index)"
+              ng-repeat="doc in $ctrl.session.patientDocuments | filter: $ctrl.searchByName">
+              <div class="crop">
+                <div class="document-icon">
+                  <img ng-show="$ctrl.mimeIcon(doc.mimetype).icon === 'fa-file-image-o'" class="document-thumbnail" ng-src="{{ doc.link }}" />
+                  <i ng-hide="$ctrl.mimeIcon(doc.mimetype).icon === 'fa-file-image-o'" class="fa" ng-class="{{ '$ctrl.mimeIcon(doc.mimetype).icon' }}"></i>
+                </div>
+              </div>
+              <div class="document-lable">
+                <b class="btn-sm pull-right">
+                  <i ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="fa fa-angle-up"></i>
+                  <i ng-hide="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="fa fa-angle-down"></i>
+                </b>
+
+                <h4 class="media-heading">{{ doc.label }}</h4>
+
+                <div ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index">
+                  <i class="fa fa-file-o"></i>
+                  {{ $ctrl.mimeIcon(doc.mimetype).label }} (~{{ doc.size | bytes }})
+                </div>
+
+                <i class="fa fa-calendar-o"></i>
+                {{ doc.timestamp | date }}, {{ 'FORM.LABELS.BY' | translate }}
+                {{ doc.first + ' ' + doc.last }}
+              </div>
+              <div ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="document-actions">
+                <button
+                  title="{{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}"
+                  type="button"
+                  class="btn btn-sm btn-default">
+                  <i class="fa fa-eye"></i>
+                </button>
+
+                <a
+                  ng-href="/{{ doc.link }}" download="{{ doc.label }}"
+                  title="{{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}"
+                  type="button"
+                  class="btn btn-sm btn-default">
+                  <i class="fa fa-download"></i>
+                </a>
+
+                <button
+                  ng-click="$ctrl.deleteDocument(doc.uuid)"
+                  title="{{ 'FORM.BUTTONS.DELETE' | translate }}"
+                  type="button"
+                  class="btn btn-sm btn-danger">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </div>
+        </div>
+      </ng-switch>
+
+      <!-- no result  -->
+      <div ng-if="!$ctrl.session.patientDocuments.length" class="alert alert-info">
+        {{ 'PATIENT_DOCUMENT.NO_DOCUMENT' | translate }}
+      </div>
+
+    </div>
+
+</div>

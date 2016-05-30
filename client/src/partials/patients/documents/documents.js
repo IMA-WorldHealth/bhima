@@ -2,28 +2,22 @@ angular.module('bhima.controllers')
 .controller('PatientDocumentsController', PatientDocumentsController);
 
 PatientDocumentsController.$inject = [
-  '$translate', '$state'
+  '$state', 'PatientService', 'NotifyService'
 ];
 
-function PatientDocumentsController($translate, $state) {
+function PatientDocumentsController($state, Patients, Notify) {
   var vm = this;
 
-  /** breadcrumb definitions */
-  vm.paths = [{
-    label : $translate.instant('PATIENT_DOCUMENT.TITLE'),
-    current: true
-  }];
-
   /** global objects */
-  vm.patient = {};
+  vm.patientUuid = $state.params.patient_uuid;
 
-  /** expose to the view */
-  vm.setPatient  = setPatient;
-
-  /** functions definition */
-  function setPatient(patient) {
-    vm.patient = patient;
-    $state.go('patientDocuments.view', { patient_uuid: patient.uuid });
-  }
+  /** getting patient details */
+  Patients.read(vm.patientUuid)
+  .then(function (patient) {
+    vm.formatedPatientName = patient.first_name.concat(
+      ' ', patient.middle_name,
+      ' ', patient.last_name);
+  })
+  .catch(Notify.handleError);
 
 }

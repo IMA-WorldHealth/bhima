@@ -50,7 +50,7 @@ function create(req, res, next) {
   }
 
   const sql =
-    'INSERT INTO patient_document (uuid, patient_uuid, label, link) VALUES ?;';
+    'INSERT INTO patient_document (uuid, patient_uuid, label, link, mimetype, size, user_id) VALUES ?;';
 
   // make sure the records are properly formatted
   let records = req.files.map(file => {
@@ -58,7 +58,10 @@ function create(req, res, next) {
       db.bid(file.filename),
       db.bid(req.params.uuid),
       file.originalname,
-      file.link
+      file.link,
+      file.mimetype,
+      file.size,
+      req.session.user.id
     ];
   });
 
@@ -87,7 +90,9 @@ function list(req, res, next) {
   const dir = process.env.UPLOAD_DIR;
 
   let sql = `
-    SELECT BUID(uuid) AS uuid, label, link FROM patient_document
+    SELECT BUID(d.uuid) AS uuid, d.label, d.link, d.timestamp, d.mimetype, d.size,
+    u.id AS user_id, u.first, u.last  
+    FROM patient_document d JOIN user u ON u.id = d.user_id
     WHERE patient_uuid = ?;
   `;
 

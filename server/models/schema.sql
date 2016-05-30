@@ -1217,8 +1217,12 @@ CREATE TABLE `patient_document` (
   `label`        TEXT NOT NULL,
   `link`         TEXT NOT NULL,
   `timestamp`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `mimetype`     TEXT NOT NULL,
+  `size`         INTEGER unsigned NOT NULL,
+  `user_id`      SMALLINT(5) unsigned NOT NULL,
   KEY `patient_uuid` (`patient_uuid`),
-  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `patient_group`;
