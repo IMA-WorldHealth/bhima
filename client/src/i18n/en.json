@@ -844,6 +844,7 @@
       "TITLE"              : "Title",
       "TOTAL"              : "Total",
       "TRANSACTION_ID"     : "Transaction ID",
+      "TRANSACTION_PRICE"  : "Transaction Price",
       "TYPE"               : "Type",
       "VALUE"              : "Value",
       "VILLAGE"            : "Village",

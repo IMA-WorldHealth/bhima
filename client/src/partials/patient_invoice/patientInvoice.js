@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
 PatientInvoiceController.$inject = [
-  '$q', '$location', 'PatientService', 'PriceLists', 'PatientInvoice',
-  'Invoice', 'util', 'ServiceService', 'SessionService', 'DateService',
-  'ReceiptModal', 'NotifyService'
+  '$q', 'PatientService', 'PriceListService', 'PatientInvoice', 'Invoice', 'util',
+  'ServiceService', 'SessionService', 'DateService', 'ReceiptModal',
+  'NotifyService'
 ];
 
 /**
@@ -19,32 +19,33 @@ PatientInvoiceController.$inject = [
  *
  * @module bhima/controllers/PatientInvoiceController
  */
-function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates, Receipts, Notify) {
+function PatientInvoiceController($q, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates, Receipts, Notify) {
   var vm = this;
   vm.Invoice = new Invoice();
 
   // bind the enterprise to the enterprise currency
   vm.enterprise = Session.enterprise;
 
-  vm.maxLength = util.maxTextLength; 
-  
+  vm.maxLength = util.maxTextLength;
+
   var gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
     columnDefs : [
-      { field : 'status', width : 25, displayName : '', cellTemplate : 'partials/patient_invoice/templates/grid/status.tmpl.html' },
-      { field : 'code', cellTemplate :  'partials/patient_invoice/templates/grid/code.tmpl.html' },
-      { field : 'description' },
-      { field : 'quantity', cellTemplate : 'partials/patient_invoice/templates/grid/quantity.tmpl.html' },
-      { field : 'transaction_price', cellTemplate : 'partials/patient_invoice/templates/grid/unit.tmpl.html' },
-      { field : 'amount', cellTemplate : 'partials/patient_invoice/templates/grid/amount.tmpl.html' },
-      { field : 'actions', width : 25, cellTemplate : 'partials/patient_invoice/templates/grid/actions.tmpl.html' }
+      { field: 'status', width: 25, displayName : '', cellTemplate : 'partials/patient_invoice/templates/grid/status.tmpl.html' },
+      { field: 'code', displayName: 'TABLE.COLUMNS.CODE', headerCellFilter: 'translate', cellTemplate :  'partials/patient_invoice/templates/grid/code.tmpl.html' },
+      { field: 'description', displayName: 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
+      { field: 'quantity', displayName: 'TABLE.COLUMNS.QUANTITY', headerCellFilter: 'translate', cellTemplate : 'partials/patient_invoice/templates/grid/quantity.tmpl.html' },
+      { field: 'transaction_price', displayName: 'TABLE.COLUMNS.TRANSACTION_PRICE', headerCellFilter: 'translate', cellTemplate : 'partials/patient_invoice/templates/grid/unit.tmpl.html' },
+      { field: 'amount', displayName: 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate', cellTemplate : 'partials/patient_invoice/templates/grid/amount.tmpl.html' },
+      { field: 'actions', width : 25, cellTemplate : 'partials/patient_invoice/templates/grid/actions.tmpl.html' }
     ],
     onRegisterApi : exposeGridScroll,
     data : vm.Invoice.items.rows
   };
 
+  // called when the grid is initialized
   function exposeGridScroll(gridApi) {
     vm.gridApi = gridApi;
   }
@@ -78,7 +79,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
 
     if (angular.isDefined(invalidItem)) {
       Notify.danger('PATIENT_INVOICE.INVALID_INVOICE_ITEMS');
-      
+
       // show the user where the error is
       vm.gridApi.core.scrollTo(invalidItem);
       return;
@@ -90,7 +91,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
     // 3. Charged billing services - each of these have the global charge calculated by the client
     // 4. Charged subsidies - each of these have the global charge calculated by the client
     PatientInvoice.create(vm.Invoice.details, items, vm.Invoice.billingServices, vm.Invoice.subsidies)
-      .then(function (result) { 
+      .then(function (result) {
         detailsForm.$setPristine();
         detailsForm.$setUntouched();
         return result;
@@ -99,11 +100,10 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
       .catch(Notify.handleError);
   }
 
-  window.Receipts = Receipts;
   function handleCompleteInvoice(invoice) {
     vm.Invoice.items.removeCache();
     clear();
-    
+
     Receipts.invoice(invoice.uuid, true)
     .then(function (result) {
 
@@ -117,7 +117,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
 
   // reset everything in the controller - default values
   function clear(detailsForm) {
-  
+
     /** @todo all reset values should be implicit in the Invoice service - this controller should not be concerned with this */
     // Default values
     vm.itemIncrement = 1;
@@ -134,7 +134,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
     vm.Invoice.items.recovered = false;
     vm.Invoice.details.description = null;
     vm.Invoice.items.clearItems(true, false);
-  
+
     /** @todo this is a bad pattern, clean this up */
 
     if (detailsForm) {
@@ -167,7 +167,7 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
     configureQueue.push(Patients.subsidies(patient.uuid));
 
     if (patient.price_list_uuid) {
-      configureQueue.push(PriceLists.detail(patient.price_list_uuid));
+      configureQueue.push(PriceLists.read(patient.price_list_uuid));
     }
 
     $q.all(configureQueue)

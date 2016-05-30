@@ -6,6 +6,7 @@ InvoiceService.$inject = [
 ];
 
 /**
+ * @class Invoice
  * Invoice Service
  *
  * This service provides a model for generic to be used by any controller,
@@ -30,10 +31,11 @@ function InvoiceService(InvoiceItems, AppCache) {
       current += billingService.charge;
       return current;
     }, 0);
+
     return billingCharge;
   }
 
-  // This is a seperate (very similar) method to calculating billing services
+  // This is a separate(very similar) method to calculating billing services
   // as subsidies will require additional logic to limit subsidising more then 100%
   function calculateSubsidies(subsidies, total) {
 
@@ -44,6 +46,7 @@ function InvoiceService(InvoiceItems, AppCache) {
       current += subsidy.charge;
       return current;
     }, 0);
+
     return subsidyReduction;
   }
 
