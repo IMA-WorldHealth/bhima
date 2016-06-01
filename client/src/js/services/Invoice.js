@@ -2,123 +2,165 @@ angular.module('bhima.services')
   .service('Invoice', InvoiceService);
 
 InvoiceService.$inject = [
-  'InvoiceItems', 'AppCache'
+  'InvoiceItems', 'PatientService', 'PriceListService'
 ];
 
 /**
  * @class Invoice
  * Invoice Service
  *
- * This service provides a model for generic to be used by any controller,
- * patient, purchase orders etc.
+ * @description
+ * This service provides helpers functions for the patient invoice controller.
+ * It is responsible for setting the form data for the invoice.
  *
  * @todo Discuss - currently all total values are force calculated by
  * in the angular digest loop (from the angular template) - this vs. $watch
  *
  * @todo (required) Only the maximum of the bill should be subsidised
- *
- * @example
- * var invoice = new Invoice('cacheKey');
  */
-function InvoiceService(InvoiceItems, AppCache) {
+function InvoiceService(InvoiceItems, Patients, PriceLists) {
 
+  // Reduce method - assigns the current billing services charge to the billing
+  // service and adds to the running total
   function calculateBillingServices(billingServices, total) {
-
-    // Reduce method - assigns the current billing services charge to the billing
-    // service and adds to the running total
-    var billingCharge = billingServices.reduce(function (current, billingService) {
+    return billingServices.reduce(function (current, billingService) {
       billingService.charge = (total / 100) * billingService.value;
-      current += billingService.charge;
-      return current;
+      return current + billingService.charge;
     }, 0);
-
-    return billingCharge;
   }
 
   // This is a separate(very similar) method to calculating billing services
   // as subsidies will require additional logic to limit subsidising more then 100%
   function calculateSubsidies(subsidies, total) {
 
-    var subsidyReduction = subsidies.reduce(function (current, subsidy) {
-
-      // All values are percentages
+    // All values are percentages
+    return subsidies.reduce(function (current, subsidy) {
       subsidy.charge = (total / 100) *  subsidy.value;
-      current += subsidy.charge;
-      return current;
+      return current + subsidy.charge;
     }, 0);
-
-    return subsidyReduction;
   }
 
-  // Reduce method
-  function sumTotalCost(currentCost, item) {
-    var itemIsValid =
-      angular.isNumber(item.quantity) &&
-      angular.isNumber(item.transaction_price);
-
-    if (itemIsValid) {
-      item.credit = (item.quantity * item.transaction_price);
-      currentCost += item.credit;
-    }
-    return currentCost;
-  }
 
   // Invoice instance - this should only exist during the controllers lifespan
-  function InvoiceModel() {
+  function Invoice() {
+    this.rows = new InvoiceItems('SaleItems');
+    this.setup();
+  }
+
+  // initial setup and clearing of the invoice
+  Invoice.prototype.setup = function setup() {
+
+    // the invoice details
+    this.details = {
+      is_distributable : 1,
+      date : new Date(),
+      cost : 0,
+      description : null
+    };
+
+    // the recipient is null
+    this.recipient = null;
+
+    // this object holds the abstract properties of the invoice
+    this.billingServices = [];
+    this.subsidies = [];
+    this.rows.clear();
+
+    // this object holds the totals for the invoice.
+    this.totals = {
+      billingServices : 0,
+      subsidies : 0,
+      rows : 0
+    };
+  };
+
+
+  /**
+   * @method setPatient
+   *
+   * @description
+   * This method downloads the patient's billing services, price lists, and
+   * subsidies to be applied to the bill.  It sets also sets the `recipient`
+   * and `debtor_uuid` properties on the invoice.
+   *
+   * @param {Object} patient - a patient object as read out of the database.
+   */
+  Invoice.prototype.setPatient = function setPatient(patient) {
     var invoice = this;
 
-    invoice.billingServices = {
-      items : [],
-      total : 0
-    };
+    // load the billing services and bind to the invoice
+    Patients.billingServices(patient.uuid)
+    .then(function (billingServices) {
+      invoice.billingServices = billingServices;
+    });
 
-    invoice.subsidies = {
-      items : [],
-      total : 0
-    };
+    // load the subsidies and bind to the invoice
+    Patients.subsidies(patient.uuid)
+    .then(function (subsidies) {
+      invoice.subsidies = subsidies;
+    });
 
-    invoice.rows = {
-
-      // TODO This should also be initialised
-      items : new InvoiceItems('saleItems'),
-      total : 0
-    };
-
-    invoice.total = 0;
-
-    invoice.details = { is_distributable : '1' };
-    invoice.recipient = null;
-
-    function configureGlobalCosts(recipientServices, recipientSubsidies) {
-      invoice.billingServices.items = recipientServices;
-      invoice.subsidies.items = recipientSubsidies;
+    if (patient.price_list_uuid) {
+      PriceLists.read(patient.price_list_uuid)
+      .then(function (priceList) {
+        invoice.rows.setPriceList(priceList);
+      });
     }
 
-    function total() {
-      var total = 0;
+    invoice.recipient = patient;
+    invoice.details.debtor_uuid = patient.debtor_uuid;
+    invoice.rows.addItems(1);
+  };
 
-      invoice.rows.total = invoice.rows.items.currentRows.data.reduce(sumTotalCost, 0);
-      total = invoice.rows.total;
+  /**
+   * @method setService
+   *
+   * @description
+   * This method simply sets the `service_id` property of the invoice.
+   *
+   * @param {Object} service - a service object as read from the database
+   */
+  Invoice.prototype.setService = function setService(service) {
+    this.details.service_id = service.id;
+  };
 
-      invoice.billingServices.total = calculateBillingServices(invoice.billingServices.items, total);
-      total += invoice.billingServices.total;
 
-      invoice.subsidies.total = calculateSubsidies(invoice.subsidies.items, total);
-      total -= invoice.subsidies.total;
+  /**
+   * @method retotal
+   *
+   * @description
+   * Calculates the totals for the invoice by:
+   *  1) Summing all the values in the grid (invoice items)
+   *  2) Calculating the additions due to billing services
+   *  3) Calculating the reductions due to subsidies
+   *  4) Reporting the "grand total" owed after all are applied
+   *
+   * This method should be called anytime the values of the grid change,
+   * but otherwise, only on setPatient() completion.
+   */
+  Invoice.prototype.retotal = function retotal() {
+    var invoice = this;
+    var totals = invoice.totals;
+    var grandTotal = 0;
 
-      // Invoice cost as modelled in the database does not factor in billing services
-      // or subsidies
-      invoice.details.cost = invoice.rows.total;
-      return total;
-    }
+    // sum the rows in the invoice
+    var rowSum = invoice.rows.sum();
+    totals.rows = rowSum;
+    grandTotal += rowSum;
 
-    invoice.configureGlobalCosts = configureGlobalCosts;
-    invoice.total = total;
+    // calculate the billing services total and increase the bill by that much
+    totals.billingServices = calculateBillingServices(invoice.billingServices, grandTotal);
+    grandTotal += totals.billingServices;
 
-    // Alias items as these are frequently used
-    invoice.items = invoice.rows.items;
+    // calculate the subsidies total and decrease the bill by that much
+    totals.subsidies = calculateSubsidies(invoice.subsidies, grandTotal);
+    grandTotal -= totals.subsidies;
 
-    return invoice;
-  }
-  return InvoiceModel;
+    // Invoice cost as modelled in the database does not factor in billing services
+    // or subsidies
+    invoice.details.cost = rowSum;
+    return grandTotal;
+  };
+
+  return Invoice;
 }

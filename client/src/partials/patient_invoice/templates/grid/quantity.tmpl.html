@@ -5,5 +5,6 @@
     ng-disabled="!row.entity.confirmed"
     class="form-control"
     style="padding-left : 5px !important"
-    ng-model="row.entity.quantity">
+    ng-model="row.entity.quantity"
+    ng-model-options="{ 'debounce' : { 'default' : 250, 'blur' : 0 }}">
 </div>
