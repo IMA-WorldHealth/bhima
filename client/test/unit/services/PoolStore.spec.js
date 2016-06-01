@@ -3,15 +3,8 @@
 describe('PoolStore', function () {
   'use strict';
 
-  const data = [{
-    id: 1,
-    name: 'Bob'
-  }, {
-    id: 2,
-    name: 'Sarah'
-  }];
-
   let PoolStore;
+  let data;
 
   beforeEach(() => {
     module('bhima.services');
@@ -19,6 +12,11 @@ describe('PoolStore', function () {
 
   beforeEach(inject((_PoolStore_) => {
     PoolStore = _PoolStore_;
+
+    data = [
+      { id: 1, name: 'Bob' },
+      { id: 2, name: 'Sarah' }
+    ];
   }));
 
   it('#constructor() runs with sane defaults', () => {

@@ -37,12 +37,8 @@ function StoreService() {
    * @param {Array} data - an array of objects that will be stored in the instance.
    */
   Store.prototype.setData = function setData(data) {
-    var index = this.index = {};
-    this.data = angular.copy(data);
-    var identifier = this.identifier;
-    for (var i = 0, l = data.length; i < l; i += 1) {
-      index[data[i][identifier]] = i;
-    }
+    this.data = data;
+    this.recalculateIndex();
   };
 
   /**
@@ -78,7 +74,7 @@ function StoreService() {
     var identifier = this.identifier;
 
     // default to an empty array if data not provided
-    if (!this.data) { this.data = []; }
+    if (!data) { this.data = []; }
 
     var id = object[identifier];
 
@@ -126,6 +122,17 @@ function StoreService() {
   };
 
   /**
+   * @method clear
+   *
+   * @description
+   * Clears all data from the store and recalculates the index.
+   */
+  Store.prototype.clear = function clear() {
+    this.data.length = 0;
+    this.recalculateIndex();
+  };
+
+  /**
    * @method recalculateIndex
    *
    * @description
@@ -133,7 +140,7 @@ function StoreService() {
    */
   Store.prototype.recalculateIndex = function recalculateIndex() {
     var data = this.data;
-    var index = this.index;
+    var index = this.index = {};
     var identifier = this.identifier;
 
     for (var i = 0, l = data.length; i < l; i += 1) {

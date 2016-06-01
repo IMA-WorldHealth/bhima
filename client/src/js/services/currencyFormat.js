@@ -11,7 +11,7 @@ angular.module('bhima.services')
 .factory('currencyFormat', currencyFormat);
 
 currencyFormat.$inject = [
-  'CurrencyService', '$http', 'store'
+  'CurrencyService', '$http', 'Store'
 ];
 
 function currencyFormat(Currencies, $http, Store) {
@@ -59,11 +59,7 @@ function currencyFormat(Currencies, $http, Store) {
 
   function addFormat(formatObject) {
     /** @FIXME Resolve issue with initial Store data to just allow post. */
-    if (angular.isUndefined(currentFormats.data.length)) {
-      currentFormats.setData([formatObject]);
-    } else {
-      currentFormats.post(formatObject);
-    }
+    currentFormats.post(formatObject);
   }
 
   /**

@@ -41,6 +41,7 @@ function PoolStoreService(Store) {
     return item;
   };
 
+
   // return the unavailable item to the pool
   PoolStore.prototype.free = function free(id) {
     var item = this.unavailable.get(id);
