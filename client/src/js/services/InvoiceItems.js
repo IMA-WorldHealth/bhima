@@ -92,7 +92,7 @@ function InvoiceItemsService(InventoryService, Store, AppCache, PatientInvoiceIt
         var priceReference = items.priceList.get(item.inventory_uuid);
 
         if (angular.isDefined(priceReference)) {
-          item.priceListApplied = true;
+          item._hasPriceList = true;
 
           if (priceReference.is_percentage) {
 
@@ -113,7 +113,7 @@ function InvoiceItemsService(InventoryService, Store, AppCache, PatientInvoiceIt
       // filters out valid items
       var invalidItems = items.rows.filter(function (row) {
         row.validate();
-        return row.invalid;
+        return row._invalid;
       });
 
       return invalidItems;
@@ -124,7 +124,7 @@ function InvoiceItemsService(InventoryService, Store, AppCache, PatientInvoiceIt
         row.validate();
 
         // only sum valid rows
-        if (row.valid) {
+        if (row._valid) {
           row.credit = (row.quantity * row.transaction_price);
           return aggregate + row.credit;
         } else {

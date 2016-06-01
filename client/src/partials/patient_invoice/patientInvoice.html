@@ -46,7 +46,7 @@
 
                 <label class="control-label">
                   {{ "FORM.LABELS.TYPE" | translate }}
-                  <span class="text-info glyphicon glyphicon-info-sign"></span>
+                  <span class="text-info fa fa-info-circle"></span>
                 </label>
 
                 <!-- TODO distributable vs. non distributable sales should be designed/reviewed carefully -->
@@ -112,7 +112,7 @@
             ng-class="{'btn-primary' : PatientInvoiceCtrl.Invoice.rows.cacheAvailable && PatientInvoiceCtrl.Invoice.recipient}"
             ng-click="PatientInvoiceCtrl.Invoice.rows.recoverCache()"
             ng-disabled="!PatientInvoiceCtrl.Invoice.rows.cacheAvailable || !PatientInvoiceCtrl.Invoice.recipient">
-            <span class="glyphicon glyphicon-floppy-open"></span> {{ "FORM.BUTTONS.RECOVER_ITEMS" | translate }}
+            <span class="fa fa-recycle"></span> {{ "FORM.BUTTONS.RECOVER_ITEMS" | translate }}
           </button>
         </div>
 
@@ -124,7 +124,7 @@
               class="btn btn-default btn-sm"
               ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
               ng-click="PatientInvoiceCtrl.Invoice.rows.addItems(PatientInvoiceCtrl.itemIncrement)">
-              <span class="glyphicon glyphicon-plus-sign"></span> {{ "FORM.BUTTONS.ADD" | translate }}
+              <span class="fa fa-plus-circle"></span> {{ "FORM.BUTTONS.ADD" | translate }}
             </button>
           </span>
           <input
@@ -139,7 +139,7 @@
           style="padding-top : 10px;"
           class="text-warning"
           ng-if="PatientInvoiceCtrl.Invoice.rows.inventoryLoaded && PatientInvoiceCtrl.Invoice.rows.allAssigned()">
-          <span class="glyphicon glyphicon-info-sign"></span>
+          <span class="fa fa-info-circle"></span>
           {{ "FORM.INFOS.ITEMS_FULL" | translate }}
         </p>
 
@@ -147,7 +147,7 @@
           style="padding-top : 10px;"
           class="text-info"
           ng-if="!PatientInvoiceCtrl.Invoice.recipient">
-          <span class="glyphicon glyphicon-info-sign"></span>
+          <span class="fa fa-info-circle"></span>
           {{ "FORM.INFOS.NO_RECIPIENT" | translate }}
         </p>
       </div>
@@ -217,7 +217,7 @@
           <h4>{{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}</h4>
 
           <!-- This is actually what causes all of the values referenced to be updated on every change -->
-          <h4><strong>{{ PatientInvoiceCtrl.Invoice.retotal() | currency:PatientInvoiceCtrl.enterprise.currency_id }}</strong></h4>
+          <h4><strong>{{ PatientInvoiceCtrl.Invoice.totals.grandTotal | currency:PatientInvoiceCtrl.enterprise.currency_id }}</strong></h4>
         </div>
       </div>
     </div>
@@ -236,12 +236,12 @@
           id="clear"
           class="btn btn-default"
           ng-click="PatientInvoiceCtrl.clear(detailsForm)">
-          <span class="glyphicon glyphicon-ban-circle"></span> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          {{ "FORM.BUTTONS.CLEAR" | translate }}
         </button>
         <p
           class="text-danger"
           ng-if="PatientInvoiceCtrl.Invoice.rows.invalid && detailsForm.$submitted">
-          <span class="glyphicon glyphicon glyphicon-exclamation-sign"></span> {{ "FORM.INFOS.INVALID_ITEMS" | translate }}
+          <span class="fa fa-exclamation-circle"></span> {{ "FORM.INFOS.INVALID_ITEMS" | translate }}
         </p>
       </div>
     </div>

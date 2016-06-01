@@ -1,2 +1,18 @@
-<div ng-hide="row.entity.confirmed" class="bg-danger" style="padding: 5px;"><span class="text-danger fa fa-exclamation-circle"></span></div>
-<div ng-show="row.entity.confirmed" class="bg-success" style="padding: 5px;"><span class="text-success fa fa-check-circle"></span></div>
+<div ng-hide="row.entity._valid"
+  ng-class="{
+    'bg-warning text-warning' : !row.entity._initialised,
+    'bg-danger text-danger' : row.entity._initialised
+  }"
+  style="padding: 5px;">
+
+  <!-- warning state: invalid, but not initialised yet -->
+  <span ng-hide="row.entity._initialised" class="fa fa-exclamation-circle"></span>
+
+  <!-- error state: invalid and initialised -->
+  <span ng-show="row.entity._initialised" class="fa fa-times-circle"></span>
+</div>
+
+<div ng-show="row.entity._valid" class="bg-success" style="padding: 5px;">
+  <!-- success state: valid and initialised -->
+  <span class="text-success fa fa-check-circle"></span>
+</div>

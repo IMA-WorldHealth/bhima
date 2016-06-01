@@ -1,5 +1,5 @@
 <div style="padding : 5px;" id="inventory-code-dropdown">
-  <div ng-if="!row.entity.confirmed">
+  <div ng-if="!row.entity._initialised">
     <!-- TODO Design and implement custom typeahead template -->
     <input
       class="form-control"
@@ -7,12 +7,12 @@
       uib-typeahead="item.uuid as item for item in grid.appScope.Invoice.rows.inventoryItems.available.data"
       typeahead-template-url="/partials/templates/inventoryItems.tmpl.html"
       ng-model="row.entity.inventory_uuid"
-      typeahead-on-select="grid.appScope.Invoice.rows.configureItem(row.entity)">
+      typeahead-on-select="grid.appScope.Invoice.configureItem(row.entity)">
   </div>
-  <div ng-if="row.entity.confirmed">
+  <div ng-if="row.entity._initialised">
     <span
       class="text-info"
-      ng-show="row.entity.priceListApplied"
+      ng-show="row.entity._hasPriceList"
       uib-popover="{{ 'PATIENT_INVOICE.BASE_PRICE_ALTERED' | translate }}"
       popover-placement="right"
       popover-append-to-body="true"

@@ -20,10 +20,10 @@ PatientInvoiceController.$inject = [
  */
 function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Services, Session, Dates, Receipts, Notify) {
   var vm = this;
-  vm.Invoice = new Invoice();
 
-  // bind the enterprise to the enterprise currency
+  // bind the enterprise to get the enterprise currency id
   vm.enterprise = Session.enterprise;
+  vm.Invoice = new Invoice();
 
   // application constants
   vm.maxLength = util.maxTextLength;
@@ -41,7 +41,7 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
       { field: 'quantity', displayName: 'TABLE.COLUMNS.QUANTITY', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/quantity.tmpl.html' },
       { field: 'transaction_price', displayName: 'TABLE.COLUMNS.TRANSACTION_PRICE', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/unit.tmpl.html' },
       { field: 'amount', displayName: 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/amount.tmpl.html' },
-      { field: 'actions', width : 25, cellTemplate: 'partials/patient_invoice/templates/grid/actions.tmpl.html' }
+      { field: 'actions', width: 25, cellTemplate: 'partials/patient_invoice/templates/grid/actions.tmpl.html' }
     ],
     onRegisterApi : exposeGridScroll,
     data : vm.Invoice.rows.rows
@@ -60,14 +60,8 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
     });
   }
 
-  // Invoice total and items are successfully sent and written to the server
-  // - Billing services are sent to the server but NOT recorded
-  // - Subsidies are sent to the server but NOT recorded
-  // - TODO the final value of a sale can only be determined after checking all
-  //        billing services, subsidies and the cost of the sale
+  // invoice total and items are successfully sent and written to the server
   function submit(detailsForm) {
-    var items = angular.copy(vm.Invoice.rows.rows);
-    console.log('vm.Invoice.rows', vm.Invoice.rows);
 
     // update value for form validation
     detailsForm.$setSubmitted();
@@ -82,7 +76,7 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
     var invalidItems = vm.Invoice.rows.validate();
 
     if (invalidItems.length) {
-      Notify.danger('PATIENT_INVOICE.INVALID_INVOICE_ITEMS');
+      Notify.danger('PATIENT_INVOICE.INVALID_ITEMS');
 
       var firstInvalidItem = invalidItems[0];
 
@@ -90,6 +84,9 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
       vm.gridApi.core.scrollTo(firstInvalidItem);
       return;
     }
+
+    // copy the rows for insertion
+    var items = angular.copy(vm.Invoice.rows.rows);
 
     // invoice consists of
     // 1. Invoice details
@@ -104,6 +101,11 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
       })
       .then(handleCompleteInvoice)
       .catch(Notify.handleError);
+  }
+
+  // this function will be called whenever items change in the grid.
+  function handleChange() {
+    vm.Invoice.digest();
   }
 
   function handleCompleteInvoice(invoice) {
@@ -150,6 +152,7 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
   vm.setPatient = setPatient;
   vm.submit = submit;
   vm.clear = clear;
+  vm.handleChange = handleChange;
 
   // read in services and bind to the view
   Services.read()

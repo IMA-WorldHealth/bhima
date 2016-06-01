@@ -26,9 +26,16 @@ function PatientInvoiceItemService(uuid) {
   function PatientInvoiceItem(inventoryItem) {
 
     // defaults
-    this.confirmed = false;
-    this.priceListApplied = false;
     this.uuid = uuid();
+
+    // instance variable tracks if the row is valid
+    this._valid = false;
+
+    // instance variable tracks if the row has an inventory uuid
+    this._initialised = false;
+
+    // instance variable to track if a price list has altered the row's price.
+    this._hasPriceList = false;
 
     // if inventoryItem exists, call the configure method right away
     if (inventoryItem) {
@@ -42,28 +49,23 @@ function PatientInvoiceItemService(uuid) {
    * @description
    * Validation for single PatientInvoiceItem.  This is a prototype method since
    * we are expecting to create potentially many items in an invoice.
-   *
-   * @returns {Boolean} - the validity of the current item.  True is the item is
-   * valid, false if it is not.
    */
   PatientInvoiceItem.prototype.validate = function validate() {
     var item = this;
 
     // ensure the numbers are valid in the invoice
-    var hasValidNumbers = angular.isNumber(item.quantity) &&
+    var hasValidNumbers =
+      angular.isNumber(item.quantity) &&
       angular.isNumber(item.transaction_price) &&
       item.quantity > 0 &&
       item.transaction_price >= 0;
 
-    // item must be confirmed
-    var isConfirmed = item.confirmed;
+    // the item is only initialised if it has an inventory item
+    item._initialised = angular.isDefined(item.inventory_uuid);
 
-    // alias both valid and invalid for sy
-    item.valid = isConfirmed && hasValidNumbers;
-    item.invalid = !item.valid;
-
-    // return the boolean
-    return item.valid;
+    // alias both valid and invalid for easy reading
+    item._valid = item._initialised && hasValidNumbers;
+    item._invalid = !item._valid;
   };
 
   /**
@@ -71,6 +73,8 @@ function PatientInvoiceItemService(uuid) {
    *
    * @description
    * This method configures the PatientInvoiceItem with an inventory item.
+   *
+   * @param {Object} inventoryItem - an inventory item to copy into the view
    */
   PatientInvoiceItem.prototype.configure = function configure(inventoryItem) {
     this.quantity = 1;
@@ -79,7 +83,8 @@ function PatientInvoiceItemService(uuid) {
     this.transaction_price = inventoryItem.price;
     this.inventory_price = inventoryItem.price;
     this.inventory_uuid = inventoryItem.uuid;
-    this.confirmed = true;
+
+    this.validate();
   };
 
   return PatientInvoiceItem;

@@ -13,9 +13,6 @@ InvoiceService.$inject = [
  * This service provides helpers functions for the patient invoice controller.
  * It is responsible for setting the form data for the invoice.
  *
- * @todo Discuss - currently all total values are force calculated by
- * in the angular digest loop (from the angular template) - this vs. $watch
- *
  * @todo (required) Only the maximum of the bill should be subsidised
  */
 function InvoiceService(InvoiceItems, Patients, PriceLists) {
@@ -70,8 +67,12 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
     this.totals = {
       billingServices : 0,
       subsidies : 0,
-      rows : 0
+      rows : 0,
+      grandTotal : 0
     };
+
+    // trigger a totals digest
+    this.digest();
   };
 
 
@@ -92,24 +93,28 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
     Patients.billingServices(patient.uuid)
     .then(function (billingServices) {
       invoice.billingServices = billingServices;
+      invoice.digest();
     });
 
     // load the subsidies and bind to the invoice
     Patients.subsidies(patient.uuid)
     .then(function (subsidies) {
       invoice.subsidies = subsidies;
+      invoice.digest();
     });
 
     if (patient.price_list_uuid) {
       PriceLists.read(patient.price_list_uuid)
       .then(function (priceList) {
         invoice.rows.setPriceList(priceList);
+        invoice.digest();
       });
     }
 
     invoice.recipient = patient;
     invoice.details.debtor_uuid = patient.debtor_uuid;
     invoice.rows.addItems(1);
+    invoice.digest();
   };
 
   /**
@@ -138,14 +143,16 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
    * This method should be called anytime the values of the grid change,
    * but otherwise, only on setPatient() completion.
    */
-  Invoice.prototype.retotal = function retotal() {
+  Invoice.prototype.digest = function digest() {
     var invoice = this;
     var totals = invoice.totals;
     var grandTotal = 0;
 
-    // sum the rows in the invoice
+    // Invoice cost as modelled in the database does not factor in billing services
+    // or subsidies
     var rowSum = invoice.rows.sum();
     totals.rows = rowSum;
+    invoice.details.cost = rowSum;
     grandTotal += rowSum;
 
     // calculate the billing services total and increase the bill by that much
@@ -156,11 +163,18 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
     totals.subsidies = calculateSubsidies(invoice.subsidies, grandTotal);
     grandTotal -= totals.subsidies;
 
-    // Invoice cost as modelled in the database does not factor in billing services
-    // or subsidies
-    invoice.details.cost = rowSum;
-    return grandTotal;
+    // bind the grandTotal
+    totals.grandTotal = grandTotal;
   };
+
+  /**
+   * This method exists purely to intercept the change call from the grid.
+   */
+  Invoice.prototype.configureItem = function configureItem(item) {
+    this.rows.configureItem(item);
+    this.digest();
+  };
+
 
   return Invoice;
 }
