@@ -17,7 +17,7 @@ const components = require('../shared/components');
  *   - Test for price list
  *   - Test for discount
  */
-describe.only('Patient Invoice', function () {
+describe('Patient Invoice', function () {
   'use strict';
 
   const path = '#/invoices/patient';

@@ -42,7 +42,9 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
    */
   vm.toggleSidebar = function toggleSidebar() {
     if (!isLoggedIn()) { return; }
+
     vm.sidebarExpanded = !vm.sidebarExpanded;
+    $rootScope.$broadcast('nav:toggle', vm.sidebarExpanded);
     cache.sidebar = { expanded : vm.sidebarExpanded };
   };
 

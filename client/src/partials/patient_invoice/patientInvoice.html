@@ -198,7 +198,9 @@
           </div>
         </div>
 
-        <div class="fixedColumn" style="padding-left : 5px; text-align : right; text-overflow : elpisis; width : {{ PatientInvoiceCtrl.trackColumns.trackedWidth }}px;">
+        <div
+          class="fixedColumn"
+          style="padding-left : 5px; text-align : right; text-overflow : elpisis; width : {{ PatientInvoiceCtrl.trackColumns.trackedWidth }}px;">
 
           <!-- totals of the rows in the grid -->
           <h4>{{ PatientInvoiceCtrl.Invoice.totals.rows | currency:PatientInvoiceCtrl.enterprise.currency_id }}</h4>
