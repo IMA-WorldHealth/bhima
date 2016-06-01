@@ -1,14 +1,16 @@
-/* global element, by, beforeEach, inject, browser */
+/* global element, by, browser */
 
-var FU = require('../shared/FormUtils');
-var GU = require('../shared/gridTestUtils.spec.js');
-var findPatient = require('../shared/components/bhFindPatient');
-var dateEditor = require('../shared/components/bhDateEditor');
+'use strict';
+
+const FU = require('../shared/FormUtils');
+const GU = require('../shared/gridTestUtils.spec.js');
+const findPatient = require('../shared/components/bhFindPatient');
+const dateEditor = require('../shared/components/bhDateEditor');
 
 function PatientInvoicePage() {
-  var page = this;
+  const page = this;
 
-  var btns = {
+  const btns = {
     submit : element(by.id('btn-submit-invoice')),
     add : element(by.id('btn-add-rows')),
     distributable : element(by.id('distributable')),
@@ -16,8 +18,8 @@ function PatientInvoicePage() {
     clear : element(by.id('clear'))
   };
 
-  var gridId = page.gridId = 'invoice-grid';
-  var grid = GU.getGrid(gridId);
+  const gridId = page.gridId = 'invoice-grid';
+  const grid = GU.getGrid(gridId);
 
   // sets a patient to the id passed in
   page.patient = function patient(id) {
@@ -31,7 +33,7 @@ function PatientInvoicePage() {
     findPatient.findById('TPA1');
 
     // set the date to the start of this year
-    dateEditor.set(new Date('2016-01-01'));
+    dateEditor.set(new Date('2016-01-02'));
 
     // set a test description
     FU.input(
@@ -67,20 +69,14 @@ function PatientInvoicePage() {
   // add an inventory item to the grid
   page.addInventoryItem = function addInvoiceItem(rowNumber, itemLabel) {
 
-    // first column of the last row
-    var itemCell = GU.dataCell(gridId, rowNumber, 1);
+    // first column of the nth row
+    const itemCell = GU.dataCell(gridId, rowNumber, 1);
 
-    // get the typeahead input
-    var input = itemCell.element(by.model('row.entity.inventory_uuid'));
-
-    // make sure that it is all clear
-    input.clear();
-
-    // send the inventory item label
-    input.sendKeys(itemLabel);
+    // enter data into the typeahead input.  We cannot use FU.typeahead because it is appended to the body.
+    FU.input('row.entity.inventory_uuid', itemLabel, itemCell);
 
     // the typeahead should be open - use an id to click the right item
-    element(by.id('inv-code-?'.replace('?', itemLabel))).click();
+    element(by.id(`inv-code-${itemLabel}`)).click();
   };
 
   /**
@@ -93,17 +89,9 @@ function PatientInvoicePage() {
    */
   page.adjustItemPrice = function adjustItemPrice(rowNumber, price) {
 
-    // first column of the last row
-    var priceCell = GU.dataCell(gridId, rowNumber, 4);
-
-    // locate the price input
-    var input = priceCell.element(by.model('row.entity.transaction_price'));
-
-    // clear the input
-    input.clear();
-
-    // adjust the price
-    input.sendKeys(price);
+    // fourth column of the last nth row
+    const priceCell = GU.dataCell(gridId, rowNumber, 4);
+    FU.input('row.entity.transaction_price', price, priceCell);
   };
 
   /**
@@ -116,17 +104,14 @@ function PatientInvoicePage() {
    */
   page.adjustItemQuantity = function adjustItemQuantity(rowNumber, quantity) {
 
-    // third column column of the n-th row
-    var quantityCell = GU.dataCell(gridId, rowNumber, 3);
+    // third column column of the nth row
+    const quantityCell = GU.dataCell(gridId, rowNumber, 3);
+    FU.input('row.entity.quantity', quantity, quantityCell);
+  };
 
-    // locate the quantity input
-    var input = quantityCell.element(by.model('row.entity.quantity'));
-
-    // clear the input
-    input.clear();
-
-    // adjust the quantity
-    input.sendKeys(quantity);
+  // click the reset modal button
+  page.reset = function reset() {
+    $('[data-action="close"]').click();
   };
 
   // bind the buttons for external use

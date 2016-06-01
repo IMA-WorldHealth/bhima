@@ -110,10 +110,10 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
 
   function handleCompleteInvoice(invoice) {
     // vm.Invoice.rows.removeCache();
-    clear();
 
     Receipts.invoice(invoice.uuid, true)
     .then(function (result) {
+      clear();
 
       // receipt closed fired
     })

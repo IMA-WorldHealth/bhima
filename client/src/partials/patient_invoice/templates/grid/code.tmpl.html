@@ -1,12 +1,13 @@
-<div style="padding : 5px;" id="inventory-code-dropdown">
+<div style="padding : 5px;">
   <div ng-if="!row.entity._initialised">
     <!-- TODO Design and implement custom typeahead template -->
     <input
       class="form-control"
-      typeahead-append-to-body="true"
-      uib-typeahead="item.uuid as item for item in grid.appScope.Invoice.rows.inventoryItems.available.data"
-      typeahead-template-url="/partials/templates/inventoryItems.tmpl.html"
       ng-model="row.entity.inventory_uuid"
+      typeahead-editable="false"
+      typeahead-append-to-body="true"
+      uib-typeahead="item.uuid as item for item in grid.appScope.Invoice.rows.inventoryItems.available.data | filter:$viewValue | limitTo:8"
+      typeahead-template-url="/partials/templates/inventoryItems.tmpl.html"
       typeahead-on-select="grid.appScope.Invoice.configureItem(row.entity)">
   </div>
   <div ng-if="row.entity._initialised">
