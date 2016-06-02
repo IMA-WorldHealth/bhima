@@ -200,6 +200,7 @@
       "EDIT"                  : "Editer",
       "EDIT_PERMISSIONS"      : "Editer permission",
       "ENTER_FULL_DATE"       : "Saisie Date Exact",
+      "FILTER"                : "Filtre",
       "GROUPS_DEBTOR_UPDATE"  : "L'assignation au groupe débiteur est à jour",
       "GROUPS_PATIENT_UPDATE" : "Mettre à jour l'assignation à un groupe",
       "LOGOUT"                : "Déconnexion",
@@ -267,6 +268,7 @@
       "ACCOUNT_NUMBER"         : "Numéro de Compte",
       "ACCOUNT_TITLE"          : "Libelle de Compte",
       "ACCOUNT_TYPE"           : "Type de Compte",
+      "ADD"                    : "Ajouter",
       "ADDRESS"                : "Adresse",
       "ADDRESS1"               : "Adresse",
       "ADDRESS2"               : "Complément d'Adresse",
@@ -387,6 +389,7 @@
       "PREVIOUS_DATE"          : "Date precedente",
       "PRICE_LIST"             : "Liste de Prix",
       "PRINCIPAL"              : "Principale",
+      "PRINT"                  : "Imprimer",
       "PROFESSION"             : "Profession",
       "PROFIT"                 : "Profit",
       "PROFIT_CENTER"          : "Centre de profit",
@@ -528,6 +531,9 @@
     "SYSTEM"         : "Hospital Management System",
     "TITLE"          : "Bhima",
     "TODAY"          : "Date du jour"
+  },
+  "INVENTORY" : {
+    "LIST" : "Liste des données d'inventaire"
   },
   "LOCATION": {
     "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
@@ -907,7 +913,10 @@
     "INCOME_EXPENSE"             : "Recettes/Dépense",
     "INCOME_REPORT"              : "Recettes",
     "INVENTORY"                  : "Inventaires",
+    "INVENTORY_GROUP"            : "Groupe",
+    "INVENTORY_LIST"             : "Liste",
     "INVENTORY_MANAGEMENT"       : "Gestion des Inventaires ",
+    "INVENTORY_TYPE"             : "Type",
     "INVENTORY_VIEW"             : "Stocks",
     "JOURNAL_VOUCHER"            : "Ajout Transactions",
     "LOCATION"                   : "Localisations",

@@ -203,6 +203,7 @@
       "EDIT"                  : "Edit",
       "EDIT_PERMISSIONS"      : "Edit Permission",
       "ENTER_FULL_DATE"       : "Enter Full Date",
+      "FILTER"                : "Filter",
       "GROUPS_DEBTOR_UPDATE"  : "Update Group Debtor",
       "GROUPS_PATIENT_UPDATE" : "Update Group Assignments",
       "LINK_SUBMISSION"       : "Link to Submission",
@@ -270,6 +271,7 @@
       "ACCOUNT_NUMBER"         : "Account Number",
       "ACCOUNT_TITLE"          : "Account Text",
       "ACCOUNT_TYPE"           : "Account Type",
+      "ADD"                    : "Add",
       "ADDRESS"                : "Address",
       "ADDRESS1"               : "Address",
       "ADDRESS2"               : "Additional address",
@@ -390,6 +392,7 @@
       "PREVIOUS_DATE"          : "Previous Date",
       "PRICE_LIST"             : "Price List",
       "PRINCIPAL"              : "Principal",
+      "PRINT"                  : "Print",
       "PROFESSION"             : "Profession",
       "PROFIT"                 : "Profit",
       "PROFIT_CENTER"          : "Profit Center",
@@ -531,6 +534,9 @@
     "SYSTEM"         : "Hospital Management System",
     "TITLE"          : "Bhima",
     "TODAY"          : "Date of day"
+  },
+  "INVENTORY" : {
+    "LIST" : "Inventory Data List"
   },
   "LOCATION": {
     "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
@@ -927,7 +933,10 @@
     "INCOME_EXPENSE"             : "Income/Expense",
     "INCOME_REPORT"              : "Incomes",
     "INVENTORY"                  : "Inventory",
+    "INVENTORY_GROUP"            : "Group",
+    "INVENTORY_LIST"             : "List",
     "INVENTORY_MANAGEMENT"       : "Inventory Management",
+    "INVENTORY_TYPE"             : "Type",
     "INVENTORY_VIEW"             : "Stock",
     "JOURNAL_VOUCHER"            : "Journal Voucher",
     "LOCATION"                   : "Locations Management",

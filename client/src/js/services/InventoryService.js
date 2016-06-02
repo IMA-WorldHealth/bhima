@@ -7,7 +7,9 @@ function InventoryService($http) {
   var service = this;
 
   // bind service methods
-  service.getInventoryItems = getInventoryItems;
+  service.read = read;
+  // FIXME this getInventoryItems function need to be deleted
+  service.getInventoryItems = read;
 
   /* ------------------------------------------------------------------------ */
 
@@ -20,7 +22,7 @@ function InventoryService($http) {
   }
 
   // optionally takes in a UUID to specify a single item
-  function getInventoryItems(uuid) {
+  function read(uuid) {
     var url = uuid ?
       '/inventory/:uuid/metadata' :
       '/inventory/metadata';

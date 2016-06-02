@@ -39,6 +39,7 @@ function ModalService(Modal) {
   service.openDebtorInvoices = openDebtorInvoices;
   service.openTransfer = openTransfer;
   service.openUploadDocument = openUploadDocument;
+  service.openPrinterData = openPrinterData;
 
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
@@ -167,5 +168,26 @@ function ModalService(Modal) {
     var instance = Modal.open(params);
     return instance.result;
   }
+
+  /**
+   * Page for printing in Modal
+   */
+   function openPrinterData(request) {
+
+     var params = angular.extend(modalParameters, {
+       templateUrl  : 'partials/templates/modals/printData.modal.html',
+       controller   : 'PrintDataModalController',
+       controllerAs : '$ctrl',
+       size         : 'lg',
+       backdrop     : 'static',
+       animation    : false,
+       resolve : {
+         data :  function dataProvider() { return request; }
+       }
+     });
+
+     var instance = Modal.open(params);
+   }
+
 
 }
