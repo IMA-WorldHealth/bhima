@@ -1,16 +1,16 @@
 angular.module('bhima.services')
-  .service('PoolStore', PoolStoreService);
+  .service('Pool', PoolService);
 
-PoolStoreService.$inject = [ 'Store' ];
+PoolService.$inject = [ 'Store' ];
 
-function PoolStoreService(Store) {
+function PoolService(Store) {
 
-  function PoolStore(identifier, data) {
+  function Pool(identifier, data) {
     this.initialize(identifier, data);
   }
 
   // initialize the stores with data
-  PoolStore.prototype.initialize = function initialize(identifier, data) {
+  Pool.prototype.initialize = function initialize(identifier, data) {
 
     // make sure the data array is defined
     data = data || [];
@@ -32,30 +32,32 @@ function PoolStoreService(Store) {
   };
 
   // remove the item from the pool
-  PoolStore.prototype.use = function use(id) {
+  Pool.prototype.use = function use(id) {
     var item = this.available.get(id);
     if (item) {
       this.available.remove(id);
       this.unavailable.post(item);
     }
+
     return item;
   };
 
 
   // return the unavailable item to the pool
-  PoolStore.prototype.free = function free(id) {
+  Pool.prototype.release = function release(id) {
     var item = this.unavailable.get(id);
     if (item) {
       this.unavailable.remove(id);
       this.available.post(item);
     }
+
     return item;
   };
 
-  // the total number of items stored in the PoolStore
-  PoolStore.prototype.size = function size() {
+  // the total number of items stored in the Pool
+  Pool.prototype.size = function size() {
     return this._size;
   };
 
-  return PoolStore;
+  return Pool;
 }

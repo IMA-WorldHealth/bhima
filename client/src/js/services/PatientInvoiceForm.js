@@ -1,18 +1,17 @@
 angular.module('bhima.services')
-  .service('Invoice', InvoiceService);
+  .service('PatientInvoiceForm', PatientInvoiceFormService);
 
-InvoiceService.$inject = [
+PatientInvoiceFormService.$inject = [
   'PatientService', 'PriceListService', 'InventoryService', 'AppCache', 'Store',
-  'PoolStore', 'PatientInvoiceItemService'
+  'Pool', 'PatientInvoiceItemService'
 ];
 
 /**
- * @class Invoice
- * Invoice Service
+ * @class PatientInvoiceForm
  *
  * @description
- * The Invoice class manages the totalling, caching, and validation associated
- * with the Patient Invoice module.  You must specify a cacheKey to enable the
+ * The PatientInvoiceForm class manages the totalling, caching, and validation associated
+ * with the Patient PatientInvoiceForm module.  You must specify a cacheKey to enable the
  * class to be instantiated correctly.
  *
  * @todo (required) If all priceLists are percentages of the base price, we
@@ -20,7 +19,7 @@ InvoiceService.$inject = [
  * @todo (required) Discuss if all subsidies/billings services are percentages.
  * @todo (required) Only the maximum of the bill should be subsidised
  */
-function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem) {
+function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem) {
 
   // Reduce method - assigns the current billing services charge to the billing
   // service and adds to the running total
@@ -64,16 +63,16 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    * @constructor
    *
    * @description
-   * This function constructs a new instance of the Invoice class.
+   * This function constructs a new instance of the PatientInvoiceForm class.
    *
    * @param {String} cacheKey - the AppCache key under which to store the
    * invoice.
    */
-  function Invoice(cacheKey) {
+  function PatientInvoiceForm(cacheKey) {
 
     if (!cacheKey) {
       throw new Error(
-        'Invoice service expected a cacheKey, but it was not provided.'
+        'PatientInvoiceForm expected a cacheKey, but it was not provided.'
       );
     }
 
@@ -81,7 +80,7 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
     this.cache = AppCache(cacheKey);
 
     // set up the inventory
-    // this will be referred to as Invoice.inventory.available.data
+    // this will be referred to as PatientInvoiceForm.inventory.available.data
     this.inventory = new Pool({ identifier: 'uuid', data : [] });
 
     // set up the inventory
@@ -92,15 +91,15 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
       }.bind(this));
 
     // setup the rows of the grid as a store
-    // this will be referred to as Invoice.store.data
+    // this will be referred to as PatientInvoiceForm.store.data
     this.store = new Store({ identifier : 'uuid', data: [] });
 
-    // this.rows = new InvoiceItems('SaleItems');
+    // this.rows = new PatientInvoiceFormItems('SaleItems');
     this.setup();
   }
 
   // initial setup and clearing of the invoice
-  Invoice.prototype.setup = function setup() {
+  PatientInvoiceForm.prototype.setup = function setup() {
 
     // the invoice details
     this.details = {
@@ -145,7 +144,7 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    * This method digests the invoice, then returns all invalid items in the
    * invoice to be dealt with by the user.
    */
-  Invoice.prototype.validate = function validate() {
+  PatientInvoiceForm.prototype.validate = function validate() {
     this.digest();
 
     // filters out valid items
@@ -170,7 +169,7 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    *
    * @param {Object} patient - a patient object as read out of the database.
    */
-  Invoice.prototype.setPatient = function setPatient(patient) {
+  PatientInvoiceForm.prototype.setPatient = function setPatient(patient) {
     var invoice = this;
 
     // load the billing services and bind to the invoice
@@ -215,7 +214,7 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    * @param {Object} priceList - a list of prices loaded based on the patient's
    * group affiliations.
    */
-  Invoice.prototype.setPriceList = function setPriceList(priceList) {
+  PatientInvoiceForm.prototype.setPriceList = function setPriceList(priceList) {
     this.prices.setData(priceList.items);
   };
 
@@ -227,7 +226,7 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    *
    * @param {Object} service - a service object as read from the database
    */
-  Invoice.prototype.setService = function setService(service) {
+  PatientInvoiceForm.prototype.setService = function setService(service) {
     this.details.service_id = service.id;
   };
 
@@ -245,12 +244,12 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    * This method should be called anytime the values of the grid change,
    * and on setPatient() completion.
    */
-  Invoice.prototype.digest = function digest() {
+  PatientInvoiceForm.prototype.digest = function digest() {
     var invoice = this;
     var totals = this.totals;
     var grandTotal = 0;
 
-    // Invoice cost as modelled in the database does not factor in billing services
+    // PatientInvoiceForm cost as modelled in the database does not factor in billing services
     // or subsidies
     var baseCost = calculateBaseInvoiceCost(this.store.data);
     totals.rows = baseCost;
@@ -270,7 +269,7 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
   };
 
   // clears the store of items
-  Invoice.prototype.clear = function clear() {
+  PatientInvoiceForm.prototype.clear = function clear() {
     var invoice = this;
 
     // copy the data so that forEach() doesn't get confused.
@@ -283,18 +282,18 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
   };
 
   /*
-   * Invoice Item Methods
+   * PatientInvoiceForm Item Methods
    */
 
   /**
    * @method addItem
    *
    * @description
-   * Adds a new PatientInvoiceItem to the store.  If the inventory is all used
+   * Adds a new PatientPatientInvoiceFormItem to the store.  If the inventory is all used
    * up, return silently.  This is so that we do not add rows that cannot be
    * configured with inventory items.
    */
-  Invoice.prototype.addItem = function addItem() {
+  PatientInvoiceForm.prototype.addItem = function addItem() {
 
     // we cannot insert more rows than our max inventory size
     var maxRows = this.inventory.size();
@@ -315,14 +314,14 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    *
    * @description
    * Removes a specific item from the store. If the item has been configured,
-   * also free the associated inventory item so that it may be used again.
+   * also release the associated inventory item so that it may be used again.
    *
    * @param {Object} item - the item/row to be removed from the store
    */
-  Invoice.prototype.removeItem = function removeItem(item) {
+  PatientInvoiceForm.prototype.removeItem = function removeItem(item) {
     this.store.remove(item.uuid);
     if (item.inventory_uuid) {
-      this.inventory.free(item.inventory_uuid);
+      this.inventory.release(item.inventory_uuid);
     }
   };
 
@@ -337,12 +336,12 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    *
    * @param {Object} item - the item/row to be configured
    */
-  Invoice.prototype.configureItem = function configureItem(item) {
+  PatientInvoiceForm.prototype.configureItem = function configureItem(item) {
 
     // remove the item from the pool
     var inventoryItem = this.inventory.use(item.inventory_uuid);
 
-    // configure the PatientInvoiceItem with the inventory values
+    // configure the PatientPatientInvoiceFormItem with the inventory values
     item.configure(inventoryItem);
 
     // apply the price list, if it exists
@@ -364,7 +363,7 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    * patient invoice.  After reading the value, it re-digests the invoice to
    * perform validation and computer totals.
    */
-  Invoice.prototype.readCache = function readCache() {
+  PatientInvoiceForm.prototype.readCache = function readCache() {
 
     // copy the cache temporarily
     var cp = angular.copy(this.cache);
@@ -396,7 +395,7 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    * This method writes values from the invoice into the application cache for
    * later recovery.
    */
-  Invoice.prototype.writeCache = function writeCache() {
+  PatientInvoiceForm.prototype.writeCache = function writeCache() {
     this.cache.details = this.details;
     this.cache.recipient = this.recipient;
     this.cache.items = angular.copy(this.store.data);
@@ -408,7 +407,7 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    * @description
    * This method deletes the items from the application cache.
    */
-  Invoice.prototype.clearCache = function clearCache() {
+  PatientInvoiceForm.prototype.clearCache = function clearCache() {
     delete this.cache.details;
     delete this.cache.recipient;
     delete this.cache.items;
@@ -420,9 +419,9 @@ function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, 
    * @description
    * Checks to see if the invoice has cached items to recover.
    */
-  Invoice.prototype.hasCacheAvailable =  function hasCacheAvailable() {
+  PatientInvoiceForm.prototype.hasCacheAvailable =  function hasCacheAvailable() {
     return Object.keys(this.cache).length > 0;
   };
 
-  return Invoice;
+  return PatientInvoiceForm;
 }

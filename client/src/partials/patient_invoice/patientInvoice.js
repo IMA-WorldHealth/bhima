@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
 PatientInvoiceController.$inject = [
-  'PatientService', 'PatientInvoiceService', 'Invoice', 'util', 'ServiceService',
+  'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'ServiceService',
   'SessionService', 'DateService', 'ReceiptModal', 'NotifyService'
 ];
 
@@ -17,12 +17,12 @@ PatientInvoiceController.$inject = [
  *
  * @module PatientInvoiceController
  */
-function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Services, Session, Dates, Receipts, Notify) {
+function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify) {
   var vm = this;
 
   // bind the enterprise to get the enterprise currency id
   vm.enterprise = Session.enterprise;
-  vm.Invoice = new Invoice('PatientInvoiceModule');
+  vm.Invoice = new PatientInvoiceForm('PatientInvoiceForm');
 
   // application constants
   vm.maxLength = util.maxTextLength;
