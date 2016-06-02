@@ -13,7 +13,6 @@ PatientInvoiceController.$inject = [
  * @todo (required) Design and implement how cautions are assigned. Client vs. Server
  * @todo (required) Sale made outside of fiscal year error should be handled and shown to user
  * @todo (required) Billing services and subsidies should be ignored for specific debtors
- * @todo Known bug - sidebar expanding and collapsing does not redraw totals columns (listen and update?)
  * @todo Total rows formatted to show subsidy as subtraction and make clear running total
  *
  * @module PatientInvoiceController
@@ -23,7 +22,7 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
 
   // bind the enterprise to get the enterprise currency id
   vm.enterprise = Session.enterprise;
-  vm.Invoice = new Invoice();
+  vm.Invoice = new Invoice('PatientInvoiceModule');
 
   // application constants
   vm.maxLength = util.maxTextLength;
@@ -44,7 +43,7 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
       { field: 'actions', width: 25, cellTemplate: 'partials/patient_invoice/templates/grid/actions.tmpl.html' }
     ],
     onRegisterApi : exposeGridScroll,
-    data : vm.Invoice.rows.rows
+    data : vm.Invoice.store.data
   };
 
   // called when the grid is initialized
@@ -73,7 +72,7 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
     }
 
     // ask service items to validate themselves - if anything is returned it is invalid
-    var invalidItems = vm.Invoice.rows.validate();
+    var invalidItems = vm.Invoice.validate();
 
     if (invalidItems.length) {
       Notify.danger('PATIENT_INVOICE.INVALID_ITEMS');
@@ -86,7 +85,7 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
     }
 
     // copy the rows for insertion
-    var items = angular.copy(vm.Invoice.rows.rows);
+    var items = angular.copy(vm.Invoice.store.data);
 
     // invoice consists of
     // 1. Invoice details
@@ -106,6 +105,13 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
   // this function will be called whenever items change in the grid.
   function handleChange() {
     vm.Invoice.digest();
+  }
+
+  // adds n items to the grid (unless the inventory is used up)
+  function addItems(n) {
+    while (n--) {
+      vm.Invoice.addItem();
+    }
   }
 
   function handleCompleteInvoice(invoice) {
@@ -129,7 +135,6 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
     // set timestamp to today
     vm.timestamp = Dates.current.day();
 
-    vm.Invoice.rows.recovered = false;
     vm.Invoice.setup();
 
     /** @todo this is a bad pattern, clean this up */
@@ -152,6 +157,7 @@ function PatientInvoiceController(Patients, PatientInvoices, Invoice, util, Serv
   vm.setPatient = setPatient;
   vm.submit = submit;
   vm.clear = clear;
+  vm.addItems = addItems;
   vm.handleChange = handleChange;
 
   // read in services and bind to the view

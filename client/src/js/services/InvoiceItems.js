@@ -34,7 +34,6 @@ function InvoiceItemsService(InventoryService, Store, AppCache, PatientInvoiceIt
 
     var appcache = AppCache(cacheKey);
 
-    var initialItem = false;
     var priceList = null;
 
     // state variables

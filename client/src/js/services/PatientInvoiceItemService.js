@@ -87,5 +87,33 @@ function PatientInvoiceItemService(uuid) {
     this.validate();
   };
 
+
+  /**
+   * @method applyPriceList
+   *
+   * @description
+   * This method uses a price list entry to set a new price and toggle the price
+   * list attribute on the instance
+   *
+   * @param {Object} priceListItem - a price list item from the database
+   */
+  PatientInvoiceItem.prototype.applyPriceList = function applyPriceList(priceListItem) {
+    this._hasPriceList = true;
+
+    // if the price list is a percentage of the cost, calculate that percentage and
+    // apply to the transaction_price
+    if (priceListItem.is_percentage ) {
+      this.transaction_price += (this.transaction_price / 100) * priceListItem.value;
+
+    // otherwise, we are setting a new price manually. Simply replace the
+    // transaction_price with the new price.
+    } else {
+      this.transaction_price = priceListItem.value;
+    }
+
+    this.validate();
+  };
+
+
   return PatientInvoiceItem;
 }

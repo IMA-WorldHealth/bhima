@@ -2,7 +2,8 @@ angular.module('bhima.services')
   .service('Invoice', InvoiceService);
 
 InvoiceService.$inject = [
-  'InvoiceItems', 'PatientService', 'PriceListService'
+  'PatientService', 'PriceListService', 'InventoryService', 'AppCache', 'Store',
+  'PoolStore', 'PatientInvoiceItemService'
 ];
 
 /**
@@ -10,12 +11,16 @@ InvoiceService.$inject = [
  * Invoice Service
  *
  * @description
- * This service provides helpers functions for the patient invoice controller.
- * It is responsible for setting the form data for the invoice.
+ * The Invoice class manages the totalling, caching, and validation associated
+ * with the Patient Invoice module.  You must specify a cacheKey to enable the
+ * class to be instantiated correctly.
  *
+ * @todo (required) If all priceLists are percentages of the base price, we
+ * should be able to simply this logic.
+ * @todo (required) Discuss if all subsidies/billings services are percentages.
  * @todo (required) Only the maximum of the bill should be subsidised
  */
-function InvoiceService(InvoiceItems, Patients, PriceLists) {
+function InvoiceService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem) {
 
   // Reduce method - assigns the current billing services charge to the billing
   // service and adds to the running total
@@ -37,10 +42,60 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
     }, 0);
   }
 
+  // this method calculates the base invoice cost by summing all the items in
+  // the invoice.  To make sure that items are correctly counted, it validates
+  // each row before processing it.
+  function calculateBaseInvoiceCost(items) {
+    return items.reduce(function (aggregate, row) {
+      row.validate();
 
-  // Invoice instance - this should only exist during the controllers lifespan
-  function Invoice() {
-    this.rows = new InvoiceItems('SaleItems');
+      // only sum valid rows
+      if (row._valid) {
+        row.credit = (row.quantity * row.transaction_price);
+        return aggregate + row.credit;
+      } else {
+        return aggregate;
+      }
+    }, 0);
+  }
+
+
+  /**
+   * @constructor
+   *
+   * @description
+   * This function constructs a new instance of the Invoice class.
+   *
+   * @param {String} cacheKey - the AppCache key under which to store the
+   * invoice.
+   */
+  function Invoice(cacheKey) {
+
+    if (!cacheKey) {
+      throw new Error(
+        'Invoice service expected a cacheKey, but it was not provided.'
+      );
+    }
+
+    // bind the cache key
+    this.cache = AppCache(cacheKey);
+
+    // set up the inventory
+    // this will be referred to as Invoice.inventory.available.data
+    this.inventory = new Pool({ identifier: 'uuid', data : [] });
+
+    // set up the inventory
+    // @todo - if necessary, we could call this in a reload() or setup() method
+    Inventory.getInventoryItems()
+      .then(function (data) {
+        this.inventory.initialize('uuid', data);
+      }.bind(this));
+
+    // setup the rows of the grid as a store
+    // this will be referred to as Invoice.store.data
+    this.store = new Store({ identifier : 'uuid', data: [] });
+
+    // this.rows = new InvoiceItems('SaleItems');
     this.setup();
   }
 
@@ -55,13 +110,15 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
       description : null
     };
 
+    // tracks the price list of the inventory items
+    this.prices = new Store({ identifier : 'inventory_uuid' });
+
     // the recipient is null
     this.recipient = null;
 
     // this object holds the abstract properties of the invoice
     this.billingServices = [];
     this.subsidies = [];
-    this.rows.clear();
 
     // this object holds the totals for the invoice.
     this.totals = {
@@ -71,8 +128,35 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
       grandTotal : 0
     };
 
+    // remove all items from the store as needed
+    this.clear();
+
+    this._valid = false ;
+    this._invalid = true;
+
     // trigger a totals digest
     this.digest();
+  };
+
+  /**
+   * @method validate
+   *
+   * @description
+   * This method digests the invoice, then returns all invalid items in the
+   * invoice to be dealt with by the user.
+   */
+  Invoice.prototype.validate = function validate() {
+    this.digest();
+
+    // filters out valid items
+    var invalidItems = this.store.data.filter(function (row) {
+      return row._invalid;
+    });
+
+    this._invalid = invalidItems.length > 0;
+    this._valid = !this._invalid;
+
+    return invalidItems;
   };
 
 
@@ -103,18 +187,36 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
       invoice.digest();
     });
 
+    // the patient's price list when complete
     if (patient.price_list_uuid) {
       PriceLists.read(patient.price_list_uuid)
       .then(function (priceList) {
-        invoice.rows.setPriceList(priceList);
+        invoice.setPriceList(priceList);
         invoice.digest();
       });
     }
 
     invoice.recipient = patient;
     invoice.details.debtor_uuid = patient.debtor_uuid;
-    invoice.rows.addItems(1);
+
+    // add a single item to the invoice to begin
+    invoice.addItem();
+
+    // run validation and calculation
     invoice.digest();
+  };
+
+  /**
+   * @method setPriceList
+   *
+   * @description
+   * This method sets the inventory price list for the patient.
+   *
+   * @param {Object} priceList - a list of prices loaded based on the patient's
+   * group affiliations.
+   */
+  Invoice.prototype.setPriceList = function setPriceList(priceList) {
+    this.prices.setData(priceList.items);
   };
 
   /**
@@ -141,19 +243,19 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
    *  4) Reporting the "grand total" owed after all are applied
    *
    * This method should be called anytime the values of the grid change,
-   * but otherwise, only on setPatient() completion.
+   * and on setPatient() completion.
    */
   Invoice.prototype.digest = function digest() {
     var invoice = this;
-    var totals = invoice.totals;
+    var totals = this.totals;
     var grandTotal = 0;
 
     // Invoice cost as modelled in the database does not factor in billing services
     // or subsidies
-    var rowSum = invoice.rows.sum();
-    totals.rows = rowSum;
-    invoice.details.cost = rowSum;
-    grandTotal += rowSum;
+    var baseCost = calculateBaseInvoiceCost(this.store.data);
+    totals.rows = baseCost;
+    invoice.details.cost = baseCost;
+    grandTotal += baseCost;
 
     // calculate the billing services total and increase the bill by that much
     totals.billingServices = calculateBillingServices(invoice.billingServices, grandTotal);
@@ -167,12 +269,159 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
     totals.grandTotal = grandTotal;
   };
 
+  // clears the store of items
+  Invoice.prototype.clear = function clear() {
+    var invoice = this;
+
+    // copy the data so that forEach() doesn't get confused.
+    var cp = angular.copy(this.store.data);
+
+    // remove each item from the store
+    cp.forEach(function (item) {
+      invoice.removeItem(item);
+    });
+  };
+
+  /*
+   * Invoice Item Methods
+   */
+
   /**
-   * This method exists purely to intercept the change call from the grid.
+   * @method addItem
+   *
+   * @description
+   * Adds a new PatientInvoiceItem to the store.  If the inventory is all used
+   * up, return silently.  This is so that we do not add rows that cannot be
+   * configured with inventory items.
+   */
+  Invoice.prototype.addItem = function addItem() {
+
+    // we cannot insert more rows than our max inventory size
+    var maxRows = this.inventory.size();
+    if (this.store.data.length >= maxRows) {
+      return;
+    }
+
+    // add the item to the store
+    var item = new PatientInvoiceItem();
+    this.store.post(item);
+
+    // return a reference to the item
+    return item;
+  };
+
+  /**
+   * @method removeItem
+   *
+   * @description
+   * Removes a specific item from the store. If the item has been configured,
+   * also free the associated inventory item so that it may be used again.
+   *
+   * @param {Object} item - the item/row to be removed from the store
+   */
+  Invoice.prototype.removeItem = function removeItem(item) {
+    this.store.remove(item.uuid);
+    if (item.inventory_uuid) {
+      this.inventory.free(item.inventory_uuid);
+    }
+  };
+
+  /**
+   * @method configureItem
+   *
+   * @description
+   * New items still need to be configured with references to the inventory item
+   * that is being invoiced.  This method attaches the inventory_uuid to the
+   * item, removes the referenced inventory item from the pool, and sets the
+   * price of the item based on the patient's price list.
+   *
+   * @param {Object} item - the item/row to be configured
    */
   Invoice.prototype.configureItem = function configureItem(item) {
-    this.rows.configureItem(item);
+
+    // remove the item from the pool
+    var inventoryItem = this.inventory.use(item.inventory_uuid);
+
+    // configure the PatientInvoiceItem with the inventory values
+    item.configure(inventoryItem);
+
+    // apply the price list, if it exists
+    var price = this.prices.get(item.inventory_uuid);
+    if (angular.isDefined(price)) {
+      item.applyPriceList(price);
+    }
+
+    // make sure to validate and calculate new totals
     this.digest();
+  };
+
+
+  /**
+   * @method readCache
+   *
+   * @description
+   * This method reads the values out of the application cache and into the
+   * patient invoice.  After reading the value, it re-digests the invoice to
+   * perform validation and computer totals.
+   */
+  Invoice.prototype.readCache = function readCache() {
+
+    // copy the cache temporarily
+    var cp = angular.copy(this.cache);
+
+    // set the details to the cached ones
+    this.details = cp.details;
+
+    // set the patient
+    this.setPatient(cp.recipient);
+
+    // setPatient() adds an item.  Remove it before configuring data
+    this.store.clear();
+
+    // loop through the cached items, configuring them
+    cp.items.forEach(function (cacheItem) {
+      var item = this.addItem();
+      item.inventory_uuid = cacheItem.inventory_uuid;
+      this.configureItem(item);
+    }.bind(this));
+
+    // digest validation and totals
+    this.digest();
+  };
+
+  /**
+   * @method writeCache
+   *
+   * @description
+   * This method writes values from the invoice into the application cache for
+   * later recovery.
+   */
+  Invoice.prototype.writeCache = function writeCache() {
+    this.cache.details = this.details;
+    this.cache.recipient = this.recipient;
+    this.cache.items = angular.copy(this.store.data);
+  };
+
+  /**
+   * @method clearCache
+   *
+   * @description
+   * This method deletes the items from the application cache.
+   */
+  Invoice.prototype.clearCache = function clearCache() {
+    delete this.cache.details;
+    delete this.cache.recipient;
+    delete this.cache.items;
+  };
+
+  /**
+   * @method hasCacheAvailable
+   *
+   * @description
+   * Checks to see if the invoice has cached items to recover.
+   */
+  Invoice.prototype.hasCacheAvailable =  function hasCacheAvailable() {
+    return Object.keys(this.cache).length > 0;
   };
 
   return Invoice;
