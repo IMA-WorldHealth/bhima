@@ -591,6 +591,9 @@
     "BILLING_SERVICES"   : "Billing Services Applied",
     "INVALID_DETAILS"    : "This invoice contains invalid details",
     "INVALID_ITEMS"      : "This invoice contains invalid items",
+    "BILLING_SERVICE_BREAKDOWN"          : "Billing Services Breakdown",
+    "SUBSIDY_BREAKDOWN"  : "Subsidy Breakdown",
+    "COMBINED_SUBSIDIES" : "Combined Subsidies",
     "PAGE_TITLE"         : "Patient Invoice",
     "SUCCESS"            : "Patient invoice successfully recorded."
   },

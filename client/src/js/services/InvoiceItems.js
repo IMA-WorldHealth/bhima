@@ -16,7 +16,6 @@ InvoiceItemsService.$inject = [
  * - Clearing an invoice will maintain the cache
 
  * @todo (required) cache methods should be removed into their own service
- * @todo refactor API/rename methods
  * @todo (required) all percentages/value manipulations should be rounded to a standard (or done at total calculation)
  * @todo (required) Service was designed to download inventory items at the service level and return items instance using this (move intentory loading out of instance)
  *

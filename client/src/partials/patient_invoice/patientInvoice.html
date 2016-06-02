@@ -78,8 +78,8 @@
                     max-date="PatientInvoiceCtrl.timestamp">
                 </bh-date-editor>
                 <div
-                    class="form-group"
-                    ng-class="{'has-error' : detailsForm.$submitted && detailsForm.notes.$invalid}">
+                  class="form-group"
+                  ng-class="{'has-error' : detailsForm.$submitted && detailsForm.notes.$invalid }">
                   <label for="invoice-note">{{ "FORM.LABELS.NOTES" | translate }}</label>
                   <textarea
                       id="invoice-note"
@@ -181,17 +181,30 @@
 
             <h4>
               {{ "FORM.LABELS.BILLING_SERVICES" | translate }}
-              <a
-                href=""
-                ng-click="PatientInvoiceCtrl.expandBillingServices=!PatientInvoiceCtrl.expandBillingServices"
-                ng-disabled="PatientInvoiceCtrl.Invoice.billingServices.length">
-                <span class="label label-primary">{{ PatientInvoiceCtrl.Invoice.billingServices.length }}</span>
-              </a>
+
+              <!-- popover template definitions temporarily at the base of this file -->
+              <span
+                class="text-info"
+                ng-show="PatientInvoiceCtrl.Invoice.billingServices.length > 0"
+                uib-popover-template="'billingServicesPopover.tmpl.html'"
+                popover-placement="right"
+                popover-append-to-body="true"
+                popover-trigger="mouseenter">
+                <span class="fa fa-info-circle"></span>
+              </span>
             </h4>
 
             <h4>
               {{ "FORM.LABELS.SUBSIDIES" | translate }}
-              <span class="label label-default">{{ PatientInvoiceCtrl.Invoice.subsidies.length }}</span>
+              <span
+                class="text-info"
+                ng-show="PatientInvoiceCtrl.Invoice.subsidies.length > 0"
+                uib-popover-template="'subsidiesPopover.tmpl.html'"
+                popover-placement="right"
+                popover-append-to-body="true"
+                popover-trigger="mouseenter">
+                <span class="fa fa-info-circle"></span>
+              </span>
             </h4>
 
             <h4><strong>{{ "FORM.LABELS.DUE" | translate }}</strong></h4>
@@ -205,18 +218,13 @@
           <!-- totals of the rows in the grid -->
           <h4>{{ PatientInvoiceCtrl.Invoice.totals.rows | currency:PatientInvoiceCtrl.enterprise.currency_id }}</h4>
 
-          <!-- the expanded tab for billing services-->
-          <div ng-show="PatientInvoiceCtrl.expandBillingServices">
-            <hr>
-            <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices.items">
-              {{ service.charge | currency:PatientInvoiceCtrl.enterprise.currency_id }}
-            </h4>
-            <hr>
-          </div>
-
           <!-- totals contributed by both billing services and subsidies -->
-          <h4>{{ PatientInvoiceCtrl.Invoice.totals.billingServices | currency:PatientInvoiceCtrl.enterprise.currency_id }}</h4>
-          <h4>{{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}</h4>
+          <h4>
+            + {{ PatientInvoiceCtrl.Invoice.totals.billingServices | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+          </h4>
+          <h4>
+            - {{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+          </h4>
 
           <!-- This is actually what causes all of the values referenced to be updated on every change -->
           <h4><strong>{{ PatientInvoiceCtrl.Invoice.totals.grandTotal | currency:PatientInvoiceCtrl.enterprise.currency_id }}</strong></h4>
@@ -249,3 +257,53 @@
     </div>
   </div>
 </div>
+
+<script type="text/ng-template" id="billingServicesPopover.tmpl.html">
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th colspan="2">{{ "PATIENT_INVOICE.BILLING_SERVICE_BREAKDOWN" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices track by service.billing_service_id">
+        <td>{{ service.label }}</td>
+        <td class="text-right">{{ service.value }}%</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>{{ "FORM.LABELS.TOTAL" | translate }}</th>
+        <th class="text-right">
+          {{ PatientInvoiceCtrl.Invoice.totals.billingServices | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+</script>
+
+<script type="text/ng-template" id="subsidiesPopover.tmpl.html">
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th colspan="2">{{ "PATIENT_INVOICE.SUBSIDY_BREAKDOWN" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ "PATIENT_INVOICE.COMBINED_SUBSIDIES" | translate  }}</td>
+        <td class="text-right">
+          {{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>{{ "FORM.LABELS.TOTAL" | translate }}</th>
+        <th class="text-right">
+          {{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+</script>

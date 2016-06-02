@@ -131,7 +131,7 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
 
 
   /**
-   * @method retotal
+   * @method digest
    *
    * @description
    * Calculates the totals for the invoice by:
@@ -174,7 +174,6 @@ function InvoiceService(InvoiceItems, Patients, PriceLists) {
     this.rows.configureItem(item);
     this.digest();
   };
-
 
   return Invoice;
 }

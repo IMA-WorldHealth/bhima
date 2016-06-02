@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @description
  * Provides asynchronous GET requests for currency configuration files, fetched
@@ -58,7 +56,6 @@ function currencyFormat(Currencies, $http, Store) {
   }
 
   function addFormat(formatObject) {
-    /** @FIXME Resolve issue with initial Store data to just allow post. */
     currentFormats.post(formatObject);
   }
 
