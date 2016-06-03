@@ -5,7 +5,8 @@
 * handling.
 */
 
-var db = require('../../../lib/db');
+var uuid = require('node-uuid');
+    db = require('../../../lib/db');
 
 // this should be a const in future ES versions
 var errors = {
@@ -38,9 +39,56 @@ var errors = {
 exports.getIds = getIds;
 exports.getItemsMetadata = getItemsMetadata;
 exports.getItemsMetadataById = getItemsMetadataById;
+exports.createItemsMetadata = createItemsMetadata;
+exports.updateItemsMetadata = updateItemsMetadata;
 exports.hasBoth = hasBoth;
 exports.errors = errors;
 exports.errorHandler = errorHandler;
+
+/**
+* Create inventory metadata in the database
+*
+* @function createItemsMetadata
+* @return {Promise} Returns a database query promise
+*/
+function createItemsMetadata(req, next) {
+  let record = req.body;
+
+  record.enterprise_id = req.session.enterprise.id;
+  record.uuid = db.bid(record.uuid || uuid.v4());
+  record.group_uuid = db.bid(record.group_uuid);
+
+  let sql = `INSERT INTO inventory SET ?;`;
+  return db.exec(sql, [record])
+  .then(() => {
+    return uuid.unparse(record.uuid);
+  })
+  .catch(next);
+}
+
+/**
+* Update inventory metadata in the database
+*
+* @function updateItemsMetadata
+* @return {Promise} Returns a database query promise
+*/
+function updateItemsMetadata(req, next) {
+  let record = req.body;
+  let identifier = db.bid(req.params.uuid);
+
+  record.uuid = identifier;
+  record.group_uuid = db.bid(record.group_uuid);
+
+  let sql = `UPDATE inventory SET ? WHERE uuid = ?;`;
+  return db.exec(sql, [record, identifier])
+  .then(() => {
+    return getItemsMetadataById(identifier)
+  })
+  .then((metadata) => {
+    return metadata;
+  })
+  .catch(next);
+}
 
 /**
 * Find all inventory UUIDs in the database.

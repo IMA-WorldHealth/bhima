@@ -254,8 +254,10 @@ exports.configure = function configure(app) {
   app.post('/posting_donation/', donations.post);
 
   /*  Inventory and Stock Managment */
+  app.post('/inventory/metadata', inventory.createInventoryItems);
   app.get('/inventory/metadata', inventory.getInventoryItems);
   app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
+  app.put('/inventory/:uuid/metadata', inventory.updateInventoryItems);
 
   app.get('/inventory/consumption', inventory.getInventoryConsumption);
   app.get('/inventory/:uuid/consumption', inventory.getInventoryConsumptionById);
@@ -327,7 +329,7 @@ exports.configure = function configure(app) {
   // Reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', invoiceReceipt.build);
   app.get('/reports/patient/:uuid', patientReceipt.build);
-  
+
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
   app.get('/patients/groups/:uuid', patientGroups.detail);

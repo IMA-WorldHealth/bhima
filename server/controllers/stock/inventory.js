@@ -38,7 +38,9 @@ var core        = require('./inventory/core'),
     stats       = require('./inventory/status');
 
 // exposed routes
-exports.getInventoryItems = getInventoryItems;
+exports.createInventoryItems  = createInventoryItems;
+exports.updateInventoryItems  = updateInventoryItems;
+exports.getInventoryItems     = getInventoryItems;
 exports.getInventoryItemsById = getInventoryItemsById;
 
 exports.getInventoryConsumptionById = getInventoryConsumptionById;
@@ -58,6 +60,40 @@ exports.getInventoryStatusById = getInventoryStatusById;
 
 exports.getInventoryDonations = getInventoryDonations;
 exports.getInventoryDonationsById = getInventoryDonationsById;
+
+/**
+ * POST /inventory/metadata
+ * Create a new inventory data entry
+ */
+function createInventoryItems(req, res, next) {
+  'use strict';
+
+  core.createItemsMetadata(req)
+  .then((identifier) => {
+    res.status(201).json({ uuid: identifier });
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * PUT /inventory/:uuid/metadata
+ * Update an inventory data entry
+ */
+function updateInventoryItems(req, res, next) {
+  'use strict';
+
+  core.updateItemsMetadata(req)
+  .then((metadata) => {
+    res.status(200).send(metadata);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
 
 /**
 * GET /inventory/metadata
@@ -461,7 +497,7 @@ function getInventoryLots(req, res, next) {
 * Retrieve all active lots (quantity > 0) for a given inventory item.  NOTE -
 * this query does not filter by expiration date or any other stock metadata.
 * Returns an array of lots to the client.
-* 
+*
 * @function getInventoryLotsById
 */
 function getInventoryLotsById(req, res, next) {
