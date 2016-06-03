@@ -1,4 +1,6 @@
 /**
+ * @overview template
+ *
  * @description
  * This service is a wrapper for the express handlebars library. It sets the required configuration options and provides
  * a number of helper methods that are exposed to templates.
@@ -8,6 +10,7 @@
  *
  * @requires express-handlebars
  * @requires numeral
+ * @requires moment
  *
  * @returns {Function} handlebars render method, accepting a template and a context
 */
@@ -33,6 +36,8 @@ const hbs = exphbs.create({
 });
 
 /**
+ * @function translate
+ *
  * This helper method is responsible for looking up a translation value from
  * a JSON object. It allows the template to specify nested keys a string as follows
  *  'FIRST_CATEGORY.SECOND_CATEGORY.ATTRIBUTE'

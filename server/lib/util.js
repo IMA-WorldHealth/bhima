@@ -1,6 +1,8 @@
 /**
- * @module lib/util
- * @description This module contains useful utility functions
+ * @module util
+ *
+ * @description
+ * This module contains useful utility functions
  */
 
 'use strict';
@@ -10,11 +12,16 @@ module.exports.queryCondition = queryCondition;
 module.exports.take = take;
 
 /**
-* @function queryCondition
-* @description build query string conditions
-* @param {object} params - The req.query object
-* @return {object} The object which contains the query and conditions
-*/
+ * @function queryCondition
+ *
+ * @description
+ * Build query string conditions
+ *
+ * @param {object} params - The req.query object
+ * @return {object} The object which contains the query and conditions
+ *
+ * @todo - should this be in db?  Something like db.conditions()?
+ */
 function queryCondition(sql, params) {
   let conditions = [];
 
@@ -28,13 +35,15 @@ function queryCondition(sql, params) {
 }
 
 /**
+ * @function take
+ *
+ * @description
  * Creates a filter to be passed to a Array.map() function.  This filter will
  * flatten an array of JSONs in to an array of arrays with values matching the
  * keys specified as arguments, in the order that they are specified.
  *
- * @method take
- * @returns {function} filter - a filtering function to that will convert an
- * object to an array with the given keys.
+ * @returns {Function} filter - a filtering function to that will convert an
+ *   object to an array with the given keys.
  *
  * @example
  * var _ = require('lodash');

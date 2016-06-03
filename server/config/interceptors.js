@@ -1,5 +1,5 @@
 /**
- * @overview
+ * @overview interceptors
  * This modules defines a unified error handler for the server.
  * Each controller is expected to define specific errors that are uniformly
  * sent to the client using the using the error functions found in `lib/errors/`.
@@ -8,7 +8,7 @@
  * BadRequests (HTTP stats code 400).
  *
  * @requires winston
- * @requires lib/errors/BadRequest
+ * @requires BadRequest
  */
 const winston = require('winston');
 const BadRequest = require('../lib/errors/BadRequest');
@@ -48,6 +48,9 @@ exports.handler = function handler(error, req, res, next) {
   if (error.sqlState) {
     error = new BadRequest(map[error.code]);
   }
+
+  // prevent invalid http error codes.
+  if (!error.status) { error.status = 500; }
 
   // send to the client with the appropriate status code
   res.status(error.status).json(error);

@@ -1,5 +1,5 @@
 /**
- * @module lib/uploader
+ * @module uploader
  *
  * @description
  * This module is responsible for configuring uploading middleware for the
@@ -53,6 +53,10 @@ exports.middleware = Uploader;
 /**
  * @constructor
  *
+ * @description
+ * A middleware wrapper for multer to generate unique filenames and store files
+ * in the upload directory.
+ *
  * @param {String} prefix - the directory name to prefix paths with (required)
  * @param {String} fields - the name given to the files uploaded (required)
  */
@@ -83,4 +87,3 @@ function Uploader(prefix, fields) {
   // set up multer as the middleware
   return multer({ storage: storage }).array(fields);
 }
-

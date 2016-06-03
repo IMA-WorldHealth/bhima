@@ -6,7 +6,7 @@ const util = require('util');
  * @description
  * A custom error to wrap the 400 HTTP status code within the server.  This
  * should only be thrown in a context where it can be caught by ExpressJS's
- * {@link http://expressjs.com/en/guide/routing.html|next } function and
+ * {@link http://expressjs.com/en/guide/routing.html|next()} function and
  * returned to the client.
  *
  * @param {String} description - a custom description to be sent to the client
@@ -14,14 +14,14 @@ const util = require('util');
  *
  * @example
  * // import the error into a controller
- * const BadRequest = require('lib/errors/BadRequest', 'SOME.KEY');
+ * const BadRequest = require('lib/errors/BadRequest');
  *
  * // use by directly throwing ...
  * throw new BadRequest('An authentication error occurred!');
  *
  * // or by calling next (in the server context)
  * // note: the i18n key is optional
- * next(new BadRequest('Some description...'));
+ * next(new BadRequest('Some description...', 'SOME.KEY');
  *
  * // or by combining both in a promise chain!
  * Promise.then(() => {

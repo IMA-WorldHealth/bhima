@@ -1,5 +1,5 @@
 /**
- * @overview
+ * @overview db
  * This file houses the database connector for the application.
  *
  * @todo separate DB wrapper and DB methods - this module should just initialise
