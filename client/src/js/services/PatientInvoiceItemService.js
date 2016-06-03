@@ -7,8 +7,12 @@ PatientInvoiceItemService.$inject = [ 'uuid' ];
  * @class PatientInvoiceItemService
  *
  * @description
- * This class implements the defaults for a patient invoice item.  It implements
- * a single method, `validate()`, to determine whether the item is valid or not.
+ * This class implements the defaults for a patient invoice item.  The class is
+ * instantiated with every row of the Patient Invoice module's grid.  It
+ * implements the following convenience methods:
+ *  1. validate() - sets the `_valid` and `_invalid` flags on the row
+ *  2. configure() - sets up the row's inventory item reference
+ *  3. applyPriceList() - apply's the price list to the row
  */
 function PatientInvoiceItemService(uuid) {
 
@@ -21,7 +25,7 @@ function PatientInvoiceItemService(uuid) {
    * set later.
    *
    * @param {Object} inventoryItem - an inventory item to use as the inventory
-   * line.
+   *   line.
    */
   function PatientInvoiceItem(inventoryItem) {
 
@@ -84,6 +88,7 @@ function PatientInvoiceItemService(uuid) {
     this.inventory_price = inventoryItem.price;
     this.inventory_uuid = inventoryItem.uuid;
 
+    // rest eh validation flags.
     this.validate();
   };
 
@@ -113,7 +118,6 @@ function PatientInvoiceItemService(uuid) {
 
     this.validate();
   };
-
 
   return PatientInvoiceItem;
 }

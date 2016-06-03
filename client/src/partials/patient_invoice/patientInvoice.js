@@ -7,15 +7,14 @@ PatientInvoiceController.$inject = [
 ];
 
 /**
- * Patient Invoice Controller
+ * @module PatientInvoiceController
+ *
+ * @description
+ * This module binds the Patient Invoice Form service to the view.
  *
  * @todo (required) Tabbing through UI grid. Code -> Quantity -> Price
- * @todo (required) Design and implement how cautions are assigned. Client vs. Server
  * @todo (required) Sale made outside of fiscal year error should be handled and shown to user
- * @todo (required) Billing services and subsidies should be ignored for specific debtors
- * @todo Total rows formatted to show subsidy as subtraction and make clear running total
- *
- * @module PatientInvoiceController
+ * @todo (requires) use a loading button for the form loading state.
  */
 function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify) {
   var vm = this;
@@ -28,6 +27,15 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.maxLength = util.maxTextLength;
   vm.minimumDate = util.minimumDate;
   vm.itemIncrement = 1;
+
+  // read in services and bind to the view
+  Services.read()
+  .then(function (services) {
+    vm.services = services;
+
+    // default to the first service
+    vm.Invoice.setService(services[0]);
+  });
 
   var gridOptions = {
     appScopeProvider : vm,
@@ -45,6 +53,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     onRegisterApi : exposeGridScroll,
     data : vm.Invoice.store.data
   };
+
 
   // called when the grid is initialized
   function exposeGridScroll(gridApi) {
@@ -160,14 +169,6 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.addItems = addItems;
   vm.handleChange = handleChange;
 
-  // read in services and bind to the view
-  Services.read()
-  .then(function (services) {
-    vm.services = services;
-
-    // default to the first service
-    vm.Invoice.setService(services[0]);
-  });
 
   // Set initial default values
   clear();

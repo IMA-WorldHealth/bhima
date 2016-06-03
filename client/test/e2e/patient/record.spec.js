@@ -37,5 +37,4 @@ describe('Patient Record', function () {
     components.notification.hasError();
     expect(element(by.id('nopatient')).isPresent()).to.eventually.equal(true);
   });
-
 });
