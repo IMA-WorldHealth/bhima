@@ -83,10 +83,13 @@ function PatientInvoiceService($http, util, Session) {
 
   // remove the source items from invoice items - if they exist
   function filterInventorySource(item) {
-    delete item.description;
-    delete item.confirmed;
     delete item.code;
-    delete item.priceListApplied;
+    delete item.description;
+    delete item._valid;
+    delete item._invalid;
+    delete item._initialised;
+    delete item._hasPriceList;
+
     return item;
   }
 
