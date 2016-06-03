@@ -31,7 +31,7 @@ INSERT INTO unit VALUES
   (82,  'Subsidies','TREE.SUBSIDY','Handles the subsidy situation',1,'/partials/subsidies/','/subsidies'),
   (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
   (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots/', '/depots'),
-  (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtor_groups/', '/debtor_groups'),
+  (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtors/groups/', '/debtors/groups'),
   (108, 'Donors Management', 'TREE.DONOR_MANAGEMENT', 'Donors Management module', 1, '/partials/donors/', '/donors'),
   (109, 'Section du bilan','TREE.SECTION_BILAN','',30,'/partials/section_bilan/','/section_bilan/'),
   (110, 'Section resultat','TREE.SECTION_RESULTAT','',30,'/partials/section_resultat/','/section_resultat/'),
@@ -40,7 +40,7 @@ INSERT INTO unit VALUES
   (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple'),
   (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services'),
   -- (136, 'Patient Documents', 'TREE.PATIENT_DOCUMENT', 'Patient Document Module', 12, '/partials/patients/documents', '/patients/documents'),
-  (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 30, '/partials/vouchers/complex', '/vouchers/complex');
+  (137, 'Complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal Vouchers Module', 30, '/partials/vouchers/complex', '/vouchers/complex');
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
