@@ -5,30 +5,29 @@ const expect = chai.expect;
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('(/account_types) Account Types', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+describe('(/accounts/types) Account Types', function () {
+  const agent = chai.request.agent(helpers.baseUrl);
+  before(helpers.login(agent));
+
   var newAccountType = {
-    type : 'test account type 1'
+    type : 'Test Account Type 1'
   };
 
   var DELETABLE_ACCOUNT_TYPE_ID = 3;
   var FETCHABLE_ACCOUNT_TYPE_ID = 1;
-
   var numAccountTypes = 2;
 
-  // logs the client into the app
-  before(helpers.login(agent));
 
-  it('GET /account_types returns a list of account type', function () {
-    return agent.get('/account_types')
+  it('GET /accounts/types returns a list of account type', function () {
+    return agent.get('/accounts/types/')
       .then(function (res) {
         helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /account_types/:id returns one account type', function () {
-    return agent.get('/account_types/'+ FETCHABLE_ACCOUNT_TYPE_ID)
+  it('GET /accounts/types/:id returns one account type', function () {
+    return agent.get('/accounts/types/'+ FETCHABLE_ACCOUNT_TYPE_ID)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -39,13 +38,13 @@ describe('(/account_types) Account Types', function () {
      .catch(helpers.handler);
   });
 
-  it('POST /account_types adds an account type', function () {
-    return agent.post('/account_types')
+  it('POST /accounts/types adds an account type', function () {
+    return agent.post('/accounts/types')
       .send(newAccountType)
       .then(function (res) {
         helpers.api.created(res);
         newAccountType.id = res.body.id;
-        return agent.get('/account_types/' + newAccountType.id);
+        return agent.get('/accounts/types/' + newAccountType.id);
       })
       .then(function (res) {
           expect(res).to.have.status(200);
@@ -54,9 +53,9 @@ describe('(/account_types) Account Types', function () {
       .catch(helpers.handler);
   });
 
-  it('PUT /account_types/:id updates the newly added account type', function () {
+  it('PUT /accounts/types/:id updates the newly added account type', function () {
     var updateInfo = { type : 'updated value' };
-    return agent.put('/account_types/' + newAccountType.id)
+    return agent.put('/accounts/types/' + newAccountType.id)
       .send(updateInfo)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -67,11 +66,11 @@ describe('(/account_types) Account Types', function () {
       .catch(helpers.handler);
   });
 
-   it('DELETE /account_types/:id deletes a account type', function () {
-    return agent.delete('/account_types/' + DELETABLE_ACCOUNT_TYPE_ID)
+   it('DELETE /accounts/types/:id deletes a account type', function () {
+    return agent.delete('/accounts/types/' + DELETABLE_ACCOUNT_TYPE_ID)
       .then(function (res) {
         helpers.api.deleted(res);
-        return agent.get('/account_types/' + DELETABLE_ACCOUNT_TYPE_ID);
+        return agent.get('/accounts/types/' + DELETABLE_ACCOUNT_TYPE_ID);
       })
       .then(function (res) {
         helpers.api.errored(res, 404);
