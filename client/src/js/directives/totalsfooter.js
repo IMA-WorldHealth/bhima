@@ -16,19 +16,22 @@ function TotalsFooterDirective() {
     template : '<ng-transclude></ng-transclude>',
     link : function linkFn(scope) {
 
-      // Varaiable to track grid columns in order to calculate widths
+      // Variable to track grid columns in order to calculate widths
       var columns;
       var coreReference;
 
+      // FIXME hard-coded navigation offset
+      var navigationOffset = 0;
+
       // Object to be exposed to parent scope - allowing custom widths to be set
-      // dependendent on the columns of the grid object provided
+      // dependent on the columns of the grid object provided
       var trackGridColumns = { width : null };
 
       // Reference grid passed in parameter - this will be used to calculate
       // %'s for column widths
       var grid = scope.grid;
 
-      // This variable keeps track of the current callabck to be fired on
+      // This variable keeps track of the current callback to be fired on
       // API registration - this can be refined if someone can think of a better
       // way of exposing the columns object without adding controller code
       var interceptOnRegisterApi = grid.onRegisterApi;
@@ -37,6 +40,14 @@ function TotalsFooterDirective() {
       // this will determine the column that the totals should line up with
       // (defaults to 1 column)
       var leadingColumns = scope.leadingColumns || 1;
+
+      // the $rootScope will send a 'nav:toggle' event when the navigation is toggled open/close.
+      // this allows us to update the column when the navigation flexed.
+      // FIXME hardcoded navigation offset
+      scope.$on('nav:toggle', function (e, open) {
+        navigationOffset = (open) ? 260 : 0;
+        updateColumnWidths();
+      });
 
       grid.onRegisterApi = function intercept(gridApi) {
         var columnReference;
@@ -65,7 +76,7 @@ function TotalsFooterDirective() {
 
       function updateColumnWidths() {
         trackGridColumns.width = columns.reduce(sumColumnWidths, 0);
-        trackGridColumns.trackedWidth = columns[leadingColumns].drawnWidth;
+        trackGridColumns.trackedWidth = columns[leadingColumns].drawnWidth - navigationOffset;
       }
 
       function sumColumnWidths(currentWidth, column, index) {

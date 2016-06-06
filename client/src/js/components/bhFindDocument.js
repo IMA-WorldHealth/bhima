@@ -110,7 +110,7 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
       result = { icon : 'fa-file-powerpoint-o', label : 'MS Power Point' };
     } else {
       result = { icon : 'fa-file-o', label : 'Fichier' };
-    };
+    }
 
     return result;
   }

@@ -20,19 +20,19 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
   var viewModel = this;
 
   viewModel.options = {};
-  
+
   viewModel.registerPatient = registerPatient;
   viewModel.enableFullDate = enableFullDate;
   viewModel.calculateYOB = calculateYOB;
 
-  // Maxlength field for Patient Registration 
-  viewModel.maxLength = util.maxTextLength; 
+  // Maxlength field for Patient Registration
+  viewModel.maxLength = util.maxTextLength;
   viewModel.length150 = util.length150;
   viewModel.length100 = util.length100;
   viewModel.length50 = util.length50;
   viewModel.length40 = util.length40;
   viewModel.length30 = util.length30;
-  viewModel.length16 = util.length16;  
+  viewModel.length16 = util.length16;
   viewModel.length12 = util.length12;
 
   // Set up page elements data (debtor select data)
@@ -41,24 +41,24 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
       viewModel.options.debtorGroups = results;
     })
     .catch(Notify.handleError);
-  
+
   // Define limits for DOB
   viewModel.minDOB = util.minDOB;
   viewModel.maxDOB = util.maxDOB;
-  
+
   settupRegistration();
-  
+
   function registerPatient(patientDetailsForm) {
 
     // Register submitted action - explicit as the button is outside of the scope of the form
     patientDetailsForm.$setSubmitted();
-    
+
     /** @todo once the bh-submit directive supports controller overriden $invalid handling this should be udpated */
     patientDetailsForm.$loading = true;
-    
+
     if (patientDetailsForm.$invalid) {
       // End propegation for invalid state - this could scroll to an $invalid element on the form
-      Notify.danger('FORM.ERRORS.INVALID'); 
+      Notify.danger('FORM.ERRORS.INVALID');
       patientDetailsForm.$loading = false;
       return;
     }
@@ -75,24 +75,24 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
         patientDetailsForm.$setPristine();
         patientDetailsForm.$setUntouched();
         settupRegistration();
-        
+
         ScrollTo('anchor');
       })
       .catch(Notify.handleError)
-      .finally(function () { 
-        patientDetailsForm.$loading = false; 
+      .finally(function () {
+        patientDetailsForm.$loading = false;
       });
   }
-  
-  function settupRegistration() { 
+
+  function settupRegistration() {
     viewModel.finance = {};
     viewModel.medical = {};
-    
+
     viewModel.fullDateEnabled = false;
     viewModel.yob = null;
-    
+
     viewModel.medical.origin_location_id = Session.enterprise.location_id;
-    viewModel.medical.current_location_id = Session.enterprise.location_id;  
+    viewModel.medical.current_location_id = Session.enterprise.location_id;
   }
 
   /**

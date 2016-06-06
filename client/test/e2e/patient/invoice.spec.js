@@ -7,7 +7,6 @@ helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const PatientInvoicePage = require('./invoice.page.js');
-
 const components = require('../shared/components');
 
 /*
@@ -26,7 +25,7 @@ describe('Patient Invoice', function () {
   // navigate to the patient invoice page
   beforeEach(() => helpers.navigate(path));
 
-  it.skip('invoices a patient for a single item', function () {
+  it('invoices a patient for a single item', function () {
     var page = new PatientInvoicePage();
 
     // prepare the page with default patient, service, etc
@@ -42,9 +41,10 @@ describe('Patient Invoice', function () {
     page.submit();
 
     FU.exists(by.id('receipt-confirm-created'), true);
+    page.reset();
   });
 
-  it.skip('invoices a patient for multiple items', function () {
+  it('invoices a patient for multiple items', function () {
     var page = new PatientInvoicePage();
 
     // prepare the page with default patient, service, etc
@@ -82,7 +82,7 @@ describe('Patient Invoice', function () {
 
     /** @todo - this can validate totals and receipt content in the future */
     FU.exists(by.id('receipt-confirm-created'), true);
-
+    page.reset();
   });
 
   it('blocks submission if no patient is available', function () {
@@ -110,10 +110,9 @@ describe('Patient Invoice', function () {
 
     page.submit();
 
-    components.notification.verify();
+    // there should be a danger notification
+    components.notification.hasDanger();
   });
-
-  it('shows appropriate error messages for required data');
 
   it('can calculate totals correctly');
 });

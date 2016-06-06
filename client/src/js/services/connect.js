@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .factory('connect', ConnectFactory);
 
 ConnectFactory.$inject = [
-  '$http', '$q', 'store',
+  '$http', '$q', 'Store',
 ];
 
 function ConnectFactory($http, $q, Store) {
