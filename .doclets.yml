@@ -1,8 +1,14 @@
-dir: server
+files:
+  - server/*.js
+  - server/lib/*.js
+  - server/lib/**/*.js
+  - server/config/*.js
+  - server/config/**/*.js
+  - server/controllers/*.js
+  - server/controllers/**/*.js
 
 branches:
   - master
-  - documentation
 
 packageJson: package.json
 

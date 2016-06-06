@@ -6,9 +6,9 @@
  * operations on the `user` table.
  *
  * @requires lodash
- * @requires lib/db
- * @requires lib/errors/NotFound
- * @requires lib/errors/BadRequest
+ * @requires db
+ * @requires NotFound
+ * @requires BadRequest
  */
 
 'use strict';
@@ -38,7 +38,7 @@ exports.password = password;
  * full details of the user, including a list of their project and permission
  * ids.
  *
- * @param {Number} id - the id of a user in the databaes
+ * @param {Number} id - the id of a user in the database
  * @returns {Promise} A promise object with
  */
 function lookupUser(id) {
@@ -78,10 +78,13 @@ function lookupUser(id) {
 
 
 /**
- * GET /users
+ * @function list
  *
+ * @description
  * If the client queries to /users endpoint, the API will respond with an array
  * of zero or more JSON objects, with id, and username keys.
+ *
+ * GET /users
  */
 function list(req, res, next) {
   let sql =
@@ -98,14 +101,17 @@ function list(req, res, next) {
 
 
 /**
- * GET /users/:id
+ * @function detail
  *
+ * @description
  * This endpoint will return a single JSON object containing the full user row
  * for the user with matching ID.  If no matching user exists, it will return a
  * 404 error.
  *
  * For consistency with the CREATE method, this route also returns a user's project
  * permissions.
+ *
+ * GET /users/:id
  */
 function detail(req, res, next) {
   lookupUser(req.params.id)
@@ -118,14 +124,18 @@ function detail(req, res, next) {
 
 
 /**
- * POST /users
+ * @function create
  *
+ * @description
  * This endpoint creates a new user from a JSON object.  Required columns are
  * enforced in the database.  Unlike before, the user is created with project
  * permissions.  A user without project access does not make any sense.
  *
  * If the checks succeed, the user password is hashed and stored in the database.
  * A single JSON is returned to the client with the user id.
+ *
+ * POST /users
+ *
  */
 function create(req, res, next) {
   let data = req.body;
@@ -159,6 +169,9 @@ function create(req, res, next) {
 
 
 /**
+ * @function update
+ *
+ * @description
  * PUT /users/:id
  *
  * This endpoint updates a user's information with ID :id.  If the user is not
@@ -226,6 +239,9 @@ function update(req, res, next) {
 }
 
 /**
+ * @function password
+ *
+ * @description
  * PUT /users/:id/password
  *
  * This endpoint updates a user's password with ID :id.  If the user is not
@@ -248,6 +264,9 @@ function password(req, res, next) {
 
 
 /**
+ * @function remove
+ *
+ * @description
  * DELETE /users/:id
  *
  * If the user exists delete it.

@@ -1,24 +1,30 @@
 /**
- * PluginManager.js
- *
+ * @overview PluginManager
  * A bare bones plugin manager.  It is meant to look very much like the linux
  * process management.  It creates hooks for the startup of plugins, restarts,
  * and halts.
  *
-*/
+ * @requires path
+ * @requires child_process
+ * @requires winston
+ */
 
-var path    = require('path');
-var thread  = require('child_process');
-var winston = require('winston');
+const path    = require('path');
+const thread  = require('child_process');
+const winston = require('winston');
 
-var MAX_RESTARTS = 3;
+const MAX_RESTARTS = 3;
 
-/*
- * An instance of a plugin.
- * @constructor
- * @param {string} script - the script to execute a node process on.
+/**
+ * @class Plugin
  *
-*/
+ * @constructor
+ *
+ * @description
+ * Constructs an instance of Plugin on a target script.
+ *
+ * @param {string} script - the script to execute a node process on
+ */
 function Plugin(script) {
 
   // the location of the program
@@ -36,7 +42,13 @@ function Plugin(script) {
 }
 
 
-/** performs the initial fork, and sets up handlers */
+/**
+ * @method startup
+ *
+ * @description
+ * Performs the initial fork of the script. It sets up exit and error handlers
+ * for the Plugin, ensuring that it restarts correctly as needed.
+ */
 Plugin.prototype.startup = function () {
 
   // fork the process and assign it to this.process
@@ -50,7 +62,14 @@ Plugin.prototype.startup = function () {
 };
 
 
-/** exit handler for the underlying process */
+/**
+ * @method exitHandler
+ *
+ * @description
+ * Ensures that the Plugin implements proper exiting behavior.  If an internal
+ * error occurs, the Plugin attempts to restart itself.  If an external kill
+ * signal is received, there is no attempt to restart the script.
+ */
 Plugin.prototype.exitHandler = function (code, signal) {
 
   // 0 is the successful exit code
@@ -62,13 +81,22 @@ Plugin.prototype.exitHandler = function (code, signal) {
     if (this.restarts < this.maxRestarts) {
       this.startup();
       this.restarts++;
-      winston.log('info', '%s died. Restarting %d out of %d times.', this.script, this.restarts, this.maxRestarts);
+      winston.info(
+        `${this.script} died. Attempting ${this.restarts} out of ${this.maxRestarts} restarts.`
+      );
     }
   }
 };
 
 
-/** nice event emitter for the underlying process */
+/**
+ * @method emit
+ *
+ * @description
+ * Emits events to the underlying process via node's child_process module.
+ *
+ * @param {String} event - an event to be sent to the underlying node process
+ */
 Plugin.prototype.emit = function (event, data) {
   this.process.send({ event : event, data : data });
 };
@@ -80,22 +108,36 @@ Plugin.prototype.kill = function (code) {
 };
 
 
-/** wraps process.on() */
+/**
+ * @method register
+ *
+ * @description
+ * Wraps `process.on()` to register callbacks
+ *
+ * @todo - implement subscribe/unsubscribe() methods
+ *
+ * @param {String} event - an event to be sent to the underlying node process
+ */
 Plugin.prototype.register = function (event, callback) {
   this.process.on(event, callback);
 };
 
 
 /**
- * A class to manage all plugins.
+ * @class PluginManager
+ *
+ * @description
+ * A class to manage all plugins and hook them up to the server events.
+ *
  * @constructor
+ *
  * @param {Array} cfgArray - configuration array with plugins names and scripts
  */
 function PluginManager(cfgArray) {
   'use strict';
 
-  var plugins = this.plugins = {};
-  var NAMESPACE = 'PluginManager';
+  const plugins = this.plugins = {};
+  const NAMESPACE = 'PluginManager';
 
   // PluginManager Methods
 
@@ -117,10 +159,10 @@ function PluginManager(cfgArray) {
   this.killChildren = function (e) {
     winston.log('debug', '[%s] Killing all subprocesses', NAMESPACE);
 
-    // look through the
+    // loop through the plugins, terminating each
     Object.keys(plugins).forEach(function (key) {
       var plugin = plugins[key];
-      winston.log('debug', '[%s] Sending kill signal to %s', NAMESPACE, plugin.script);
+      winston.debug(`[${NAMESPACE}] Sending kill signal to ${plugin.script}`);
       plugin.kill('SIGTERM');
     });
 

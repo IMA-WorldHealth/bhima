@@ -1,17 +1,27 @@
-// module: server/controllers/tree.js
+/**
+ * @overview Tree
+ *
+ * @description
+ * This module is responsible for constructing each person's tree based on their
+ * module/unit permissions in the database.
+ *
+ * @requires db
+ */
 
-var db = require('../lib/db');
+'use strict';
+
+const db = require('../lib/db');
 
 // we assume the root node/unit has id 0
-var ROOT_NODE = 0;
-
-// This module is responsible for constructing each
-// person's tree based on their permissions in the
-// database.
+const ROOT_NODE = 0;
 
 /**
-* HTTP Controllers
-*/
+ * @function generate
+ *
+ * @description
+ * The HTTP handler that returns a user's tree based on their session
+ * information.
+ */
 exports.generate = function (req, res, next) {
 
   buildTree(req.session.user.id)
@@ -22,10 +32,20 @@ exports.generate = function (req, res, next) {
   .done();
 };
 
-// This method builds a tree data structure of
-// units and children of a specified parentId.
+/**
+ * @function getChildren
+ *
+ * @description
+ * Recursive function that builds a nested tree of modules the user has access
+ * too.
+ *
+ * @param {Array} units - the array of units/modules a user has permission to
+ * @param {Number} parentId - the id of the parent node to group the children
+ *   under.
+ * @returns {Array} - the array of children for the parent node.
+ */
 function getChildren(units, parentId) {
-  var children;
+  let children;
 
   // Base case: There are no child units
   // Return null
@@ -46,18 +66,25 @@ function getChildren(units, parentId) {
   return children;
 }
 
+/**
+ * @function buildTree
+ *
+ * @description
+ * Selects the permissions from the database and builds the user's tree.
+ *
+ * @param {Number} userId - the id of the user
+ * @returns {Promise} - the built tree, if it exists.
+ */
 function buildTree(userId) {
-  'use strict';
 
   // NOTE
   // For this query to render properly on the client, the user
   // must also have permission to access the parents of leaf nodes
-  var sql =
-      `SELECT unit.id, unit.name, unit.parent,
-        unit.url, unit.path, unit.key
-      FROM permission JOIN unit ON
-        permission.unit_id = unit.id
-      WHERE permission.user_id = ?`;
+  let sql = `
+    SELECT unit.id, unit.name, unit.parent, unit.url, unit.path, unit.key
+    FROM permission JOIN unit ON permission.unit_id = unit.id
+    WHERE permission.user_id = ?;
+  `;
 
   return db.exec(sql, [userId])
   .then(function (units) {

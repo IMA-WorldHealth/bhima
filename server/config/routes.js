@@ -1,8 +1,9 @@
 /**
- * @overview
+ * @overview routes
  * Application Routing
  *
- * Initialise link between server paths and controller logic
+ * This file initializes the links between route controllers and the express
+ * HTTP server.
  *
  * @todo Pass authenticate and authorize middleware down through
  * controllers, allowing for modules to subscribe to different
@@ -327,7 +328,7 @@ exports.configure = function configure(app) {
   // Reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', invoiceReceipt.build);
   app.get('/reports/patient/:uuid', patientReceipt.build);
-  
+
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
   app.get('/patients/groups/:uuid', patientGroups.detail);
@@ -510,12 +511,12 @@ exports.configure = function configure(app) {
   app.get('/creditor_groups/:uuid', creditorGroups.detail);
   app.put('/creditor_groups/:uuid', creditorGroups.update);
 
-	// donors API
-	app.get('/donors', donors.list);
-	app.get('/donors/:id', donors.detail);
-	app.post('/donors', donors.create);
-	app.put('/donors/:id', donors.update);
-	app.delete('/donors/:id', donors.remove);
+  // donors API
+  app.get('/donors', donors.list);
+  app.get('/donors/:id', donors.detail);
+  app.post('/donors', donors.create);
+  app.put('/donors/:id', donors.update);
+  app.delete('/donors/:id', donors.remove);
 
   app.get('/creditors', creditors.list);
   app.get('/creditors/:uuid', creditors.detail);
