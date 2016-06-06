@@ -16,7 +16,7 @@ describe('Patient Record', function () {
     name : 'Test Patient 2',
     id : 'TPA1',
     hospital_no : '110',
-    age : '25',
+    age : '26',
     gender : 'M'
   };
 
