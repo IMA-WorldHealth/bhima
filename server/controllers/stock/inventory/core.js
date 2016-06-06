@@ -51,19 +51,19 @@ exports.errorHandler = errorHandler;
 * @function createItemsMetadata
 * @return {Promise} Returns a database query promise
 */
-function createItemsMetadata(req, next) {
-  let record = req.body;
+function createItemsMetadata(record, session) {
 
-  record.enterprise_id = req.session.enterprise.id;
+  record.enterprise_id = session.enterprise.id;
   record.uuid = db.bid(record.uuid || uuid.v4());
   record.group_uuid = db.bid(record.group_uuid);
 
   let sql = `INSERT INTO inventory SET ?;`;
+  /*
+   * return a promise which can contains result or error which is caught
+   * in the main controller (inventory.js)
+   */
   return db.exec(sql, [record])
-  .then(() => {
-    return uuid.unparse(record.uuid);
-  })
-  .catch(next);
+  .then(() => uuid.unparse(record.uuid));
 }
 
 /**
@@ -72,22 +72,19 @@ function createItemsMetadata(req, next) {
 * @function updateItemsMetadata
 * @return {Promise} Returns a database query promise
 */
-function updateItemsMetadata(req, next) {
-  let record = req.body;
-  let identifier = db.bid(req.params.uuid);
+function updateItemsMetadata(record, identifier) {
 
+  identifier = db.bid(identifier);
   record.uuid = identifier;
   record.group_uuid = db.bid(record.group_uuid);
 
   let sql = `UPDATE inventory SET ? WHERE uuid = ?;`;
+  /*
+   * return a promise which can contains result or error which is caught
+   * in the main controller (inventory.js)
+   */
   return db.exec(sql, [record, identifier])
-  .then(() => {
-    return getItemsMetadataById(identifier)
-  })
-  .then((metadata) => {
-    return metadata;
-  })
-  .catch(next);
+  .then(() => getItemsMetadataById(identifier));
 }
 
 /**

@@ -35,13 +35,20 @@ var core        = require('./inventory/core'),
     leadtimes   = require('./inventory/leadtimes'),
     lots        = require('./inventory/lots'),
     donations   = require('./inventory/donations'),
-    stats       = require('./inventory/status');
+    stats       = require('./inventory/status'),
+    groups      = require('./inventory/groups');
 
 // exposed routes
 exports.createInventoryItems  = createInventoryItems;
 exports.updateInventoryItems  = updateInventoryItems;
 exports.getInventoryItems     = getInventoryItems;
 exports.getInventoryItemsById = getInventoryItemsById;
+
+// expose inventory group methods
+exports.createInventoryGroups  = createInventoryGroups;
+exports.updateInventoryGroups  = updateInventoryGroups;
+exports.listInventoryGroups    = listInventoryGroups;
+exports.detailsInventoryGroups = detailsInventoryGroups;
 
 exports.getInventoryConsumptionById = getInventoryConsumptionById;
 exports.getInventoryConsumption = getInventoryConsumption;
@@ -68,7 +75,7 @@ exports.getInventoryDonationsById = getInventoryDonationsById;
 function createInventoryItems(req, res, next) {
   'use strict';
 
-  core.createItemsMetadata(req)
+  core.createItemsMetadata(req.body, req.session)
   .then((identifier) => {
     res.status(201).json({ uuid: identifier });
   })
@@ -85,9 +92,9 @@ function createInventoryItems(req, res, next) {
 function updateInventoryItems(req, res, next) {
   'use strict';
 
-  core.updateItemsMetadata(req)
+  core.updateItemsMetadata(req.body, req.params.uuid)
   .then((metadata) => {
-    res.status(200).send(metadata);
+    res.status(200).json(metadata);
   })
   .catch(function (error) {
     core.errorHandler(error, req, res, next);
@@ -142,6 +149,75 @@ function getInventoryItemsById(req, res, next) {
   })
   .done();
 }
+
+/**
+ * POST /inventory/groups
+ * Create a new inventory group
+ */
+function createInventoryGroups(req, res, next) {
+  'use strict';
+
+  groups.create(req.body)
+  .then((identifier) => {
+    res.status(201).json({ uuid: identifier });
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * PUT /inventory/groups/:uuid
+ * Create a new inventory group
+ */
+function updateInventoryGroups(req, res, next) {
+  'use strict';
+
+  groups.update(req.body, req.params.uuid)
+  .then((rows) => {
+    res.status(201).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * GET /inventory/groups
+ * get the list of inventory groups
+ */
+function listInventoryGroups(req, res, next) {
+  'use strict';
+
+  groups.list()
+  .then((rows) => {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * GET /inventory/groups/:uuid
+ * get the list of inventory groups
+ */
+function detailsInventoryGroups(req, res, next) {
+  'use strict';
+
+  groups.details(req.params.uuid)
+  .then((rows) => {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
 
 /**
 * GET /inventory/:uuid/consumption

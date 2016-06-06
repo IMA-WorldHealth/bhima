@@ -259,6 +259,15 @@ exports.configure = function configure(app) {
   app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
   app.put('/inventory/:uuid/metadata', inventory.updateInventoryItems);
 
+  /** Inventory Group API endpoints */
+  app.post('/inventory/groups', inventory.createInventoryGroups);
+  app.get('/inventory/groups', inventory.listInventoryGroups);
+  app.get('/inventory/groups/:uuid', inventory.detailsInventoryGroups);
+  app.put('/inventory/groups/:uuid', inventory.updateInventoryGroups);
+
+
+  /** @todo: These routes below need to be implemented */
+  /*
   app.get('/inventory/consumption', inventory.getInventoryConsumption);
   app.get('/inventory/:uuid/consumption', inventory.getInventoryConsumptionById);
 
@@ -279,6 +288,7 @@ exports.configure = function configure(app) {
 
   app.get('/inventory/donations', inventory.getInventoryDonations);
   app.get('/inventory/:uuid/donations', inventory.getInventoryDonationsById);
+  */
 
   /* Depot routes */
   app.get('/depots', depots.list);
