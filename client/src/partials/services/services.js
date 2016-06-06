@@ -1,4 +1,3 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('ServicesController', ServicesController);
 
@@ -11,7 +10,7 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
 
   vm.enterprises = [];
   vm.choosen = {};
-  vm.state = 'default';  
+  vm.state = 'default';
   vm.view = 'default';
   vm.projectId = SessionService.project.id;
 
@@ -23,7 +22,7 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
   vm.cancel = cancel;
   vm.submit = submit;
   vm.del    = del;
-  vm.more   = more;  
+  vm.more   = more;
 
 
   function handler(error) {
@@ -70,29 +69,29 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
   }
 
   // switch to update mode
-  // data is an object that contains all the information of a service 
+  // data is an object that contains all the information of a service
   function update(data) {
     setState('default');
     vm.service= data;
     vm.view = 'update';
   }
 
-  // switch to view more information about 
-  // data is an object that contains all the information of a service 
+  // switch to view more information about
+  // data is an object that contains all the information of a service
   function more(data) {
     setState('default');
     vm.service= data;
     vm.choosen.service = data.name;
     var ccId = data.cost_center_id;
     var pcId = data.profit_center_id;
-    
-    // load Cost Center value for a specific service 
+
+    // load Cost Center value for a specific service
     FinancialService.getCost(vm.projectId,ccId).
     then(function (data) {
       vm.choosen.charge = data.cost;
     }).catch(handler);
 
-    // load Profit Center value for a specific service 
+    // load Profit Center value for a specific service
     FinancialService.getProfit(vm.projectId,pcId).
     then(function (data) {
       vm.choosen.profit = data.profit;
@@ -102,7 +101,7 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
   }
 
   // switch to delete warning mode
-  function del(service) {   
+  function del(service) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
     .then(function (bool){
      // if the user clicked cancel, reset the view and return
@@ -122,7 +121,7 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
         vm.HTTPError = error;
         vm.view = 'delete_error';
       });
-    });  
+    });
   }
 
 
@@ -153,7 +152,7 @@ function ServicesController(Services, Enterprises, FinancialService, $translate,
       .then(function () {
         update(service.id);
         vm.view = creation ? 'create_success' : 'update_success';
-      })      
+      })
       .catch(handler);
   }
 

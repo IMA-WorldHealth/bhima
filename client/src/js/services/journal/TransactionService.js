@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 // @todo uuid is currently only used for creating mock transactions - this should
 // be removed as soon as this is no longer needed
-TransactionService.$inject = ['$http', 'store', 'uuid'];
+TransactionService.$inject = ['$http', 'Store', 'uuid'];
 
 /**
  * Transactions Service

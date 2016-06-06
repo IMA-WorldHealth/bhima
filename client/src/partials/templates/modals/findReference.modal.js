@@ -32,7 +32,7 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
       label : 'VOUCHERS.COMPLEX.VOUCHER',
       action : referenceVoucher
     }
-  }
+  };
 
   vm.selectDocType = selectDocType;
   vm.submit  = submit;

@@ -1,42 +1,49 @@
 angular.module('bhima.services')
 .service('DateService', DateService);
 
-/*
-* Date Service
-*
-* Provides logical namespacing for common date manipulations,
-* such as getting the current day, week, month, year.  Includes
-* tooling to for previous weeks and dates.
-*
-* NOTE - by design, these all return the values at midnight of the
-* start of the selected date element.  For example, DateService.next.month()
-* will return the midnight on the first day of the coming month.  If you
-* wanted to construct a date range for the month you were in, it would
-* look like this:
-*
-* var range = {
-*   start : DateService.current.month(), // The 1st of this month
-*   end : DateService.next.month()       // The 1st of next month
-* };
-*
-* Similarly, if you wanted to get the previous week:
-*
-* var range = {
-*   start : DateService.previous.week(), // Sunday of past week (> 7 days ago)
-*   end : DateService.current.week()     // Sunday of this week
-* };
-*
-* However, if you want to specify the two months ago through the end
-* of the current month, it might look like this:
-*
-* var range = {
-*   start : DateService.previous.nMonth(2),  // start two months before this month
-*   end : DateService.next.month()           // run through the end of this month
-* };                                         // total months = 3 month span!
-*
-* *NEW*
-*  Provides a generic date-to-string function that returns a same date string
-*/
+/**
+ * @class DateService
+ *
+ * @description
+ * Provides logical namespacing for common date manipulations,
+ * such as getting the current day, week, month, year.  Includes
+ * tooling to for previous weeks and dates.
+ *
+ * NOTE - by design, these all return the values at midnight of the
+ * start of the selected date element.  For example, DateService.next.month()
+ * will return the midnight on the first day of the coming month.  If you
+ * wanted to construct a date range for the month you were in, it would
+ * look like this:
+ *
+ * @example
+ * var range = {
+ *   start : DateService.current.month(), // The 1st of this month
+ *   end : DateService.next.month()       // The 1st of next month
+ * };
+ *
+ *
+ * Similarly, if you wanted to get the previous week:
+ *
+ * @example
+ * var range = {
+ *   start : DateService.previous.week(), // Sunday of past week (> 7 days ago)
+ *   end : DateService.current.week()     // Sunday of this week
+ * };
+ *
+ *
+ * However, if you want to specify the two months ago through the end
+ * of the current month, it might look like this:
+ *
+ * @example
+ * var range = {
+ *   start : DateService.previous.nMonth(2),  // start two months before this month
+ *   end : DateService.next.month()           // run through the end of this month
+ * };                                         // total months = 3 month span!
+ *
+ *
+ * *NEW*
+ *  Provides a generic date-to-string function that returns a same date string
+ */
 function DateService() {
   var service = this;
 
@@ -78,10 +85,10 @@ function DateService() {
   }
 
   /*
-  *It return main period of times and duration
-  */
+   * It return main period of times and duration
+   */
   service.period = function () {
-    var per = {
+    return {
       today : {
         cacheKey : 'today',
         translateKey : 'FORM.BUTTONS.TODAY'
@@ -99,8 +106,7 @@ function DateService() {
         translateKey : 'FORM.BUTTONS.THIS_YEAR'
       }
     };
-    return per; 
-  }
+  };
 
   /* ------------------------------------------------------------------------ */
 
@@ -258,7 +264,4 @@ function DateService() {
 
     return [year, month, day].join('-');
   };
-
-
-
 }
