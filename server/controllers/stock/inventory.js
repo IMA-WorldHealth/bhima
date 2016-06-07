@@ -37,7 +37,8 @@ var core        = require('./inventory/core'),
     donations   = require('./inventory/donations'),
     stats       = require('./inventory/status'),
     groups      = require('./inventory/groups'),
-    types       = require('./inventory/types');
+    types       = require('./inventory/types'),
+    units       = require('./inventory/units');
 
 // exposed routes
 exports.createInventoryItems  = createInventoryItems;
@@ -56,6 +57,12 @@ exports.createInventoryTypes  = createInventoryTypes;
 exports.updateInventoryTypes  = updateInventoryTypes;
 exports.listInventoryTypes    = listInventoryTypes;
 exports.detailsInventoryTypes = detailsInventoryTypes;
+
+// expose inventory units methods
+exports.createInventoryUnits  = createInventoryUnits;
+exports.updateInventoryUnits  = updateInventoryUnits;
+exports.listInventoryUnits    = listInventoryUnits;
+exports.detailsInventoryUnits = detailsInventoryUnits;
 
 exports.getInventoryConsumptionById = getInventoryConsumptionById;
 exports.getInventoryConsumption = getInventoryConsumption;
@@ -318,7 +325,7 @@ function createInventoryUnits(req, res, next) {
  * PUT /inventory/units/:id
  * Create a new inventory units
  */
-function updateInventoryTypes(req, res, next) {
+function updateInventoryUnits(req, res, next) {
   'use strict';
 
   units.update(req.body, req.params.id)
