@@ -266,6 +266,18 @@ exports.configure = function configure(app) {
   app.get('/inventory/groups/:uuid', inventory.detailsInventoryGroups);
   app.put('/inventory/groups/:uuid', inventory.updateInventoryGroups);
 
+  /** Inventory Type API endpoints */
+  app.post('/inventory/types', inventory.createInventoryTypes);
+  app.get('/inventory/types', inventory.listInventoryTypes);
+  app.get('/inventory/types/:id', inventory.detailsInventoryTypes);
+  app.put('/inventory/types/:id', inventory.updateInventoryTypes);
+
+  /** Inventory Units API endpoints */
+  app.post('/inventory/units', inventory.createInventoryUnits);
+  app.get('/inventory/units', inventory.listInventoryUnits);
+  app.get('/inventory/units/:id', inventory.detailsInventoryUnits);
+  app.put('/inventory/units/:id', inventory.updateInventoryUnits);
+
 
   /** @todo: These routes below need to be implemented */
   /*

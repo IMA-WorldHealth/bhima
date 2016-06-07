@@ -55,6 +55,14 @@ describe('(/inventory) The inventory HTTP API', function () {
     sales_account : 3631
   };
 
+  let inventoryType = {
+    text : '[Test] Article Laboratoire'
+  };
+
+  let updateType = {
+    text : '[Test] Article Chirurgie'
+  };
+
   it('GET /inventory/metadata returns the list of inventory metadata', () => {
     return agent.get('/inventory/metadata')
       .then((res) => {
@@ -88,6 +96,8 @@ describe('(/inventory) The inventory HTTP API', function () {
       })
       .catch(helpers.handler);
   });
+
+  // ========================== inventory groups ==============================
 
   // create inventory group
   it('POST /inventory/group create a new inventory group', () => {
@@ -135,6 +145,55 @@ describe('(/inventory) The inventory HTTP API', function () {
         for(var i in group) {
           expect(group[i]).to.be.equals(updateGroup[i]);
         }
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
+
+  // ========================== inventory types ===============================
+
+  // create inventory type
+  it('POST /inventory/types create a new inventory types', () => {
+    return agent.post('/inventory/types')
+      .send(inventoryType)
+      .then((res) => {
+        inventoryType.id = res.body.id;
+        helpers.api.created(res);
+        expect(res.body.id).to.be.equal(inventoryType.id);
+      })
+      .catch(helpers.handler);
+  });
+
+  // update inventory type
+  it('PUT /inventory/types/:id updates an existing inventory type', () => {
+    return agent.put('/inventory/types/' + inventoryType.id)
+      .send(updateType)
+      .then((res) => {
+        let type = res.body[0];
+        updateType.id = inventoryType.id;
+        expect(type).to.contain.all.keys(Object.keys(updateType));
+        expect(type).to.be.deep.equals(updateType);
+      })
+      .catch(helpers.handler);
+  });
+
+  // list of inventory type
+  it('GET /inventory/types returns list of inventory types', () => {
+    return agent.get('/inventory/types')
+      .then((res) => {
+        countInventoryTypes = res.body.length;
+        helpers.api.listed(res, countInventoryTypes);
+      })
+      .catch(helpers.handler);
+  });
+
+  // detailS of inventory types
+  it('GET /inventory/types returns details of an inventory type', () => {
+    return agent.get('/inventory/types/' + inventoryType.id)
+      .then((res) => {
+        let type = res.body[0];
+        expect(type).to.contain.all.keys(Object.keys(inventoryType));
+        expect(type).to.be.deep.equals(updateType);
         helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);

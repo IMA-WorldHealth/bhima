@@ -36,7 +36,8 @@ var core        = require('./inventory/core'),
     lots        = require('./inventory/lots'),
     donations   = require('./inventory/donations'),
     stats       = require('./inventory/status'),
-    groups      = require('./inventory/groups');
+    groups      = require('./inventory/groups'),
+    types       = require('./inventory/types');
 
 // exposed routes
 exports.createInventoryItems  = createInventoryItems;
@@ -49,6 +50,12 @@ exports.createInventoryGroups  = createInventoryGroups;
 exports.updateInventoryGroups  = updateInventoryGroups;
 exports.listInventoryGroups    = listInventoryGroups;
 exports.detailsInventoryGroups = detailsInventoryGroups;
+
+// expose inventory types methods
+exports.createInventoryTypes  = createInventoryTypes;
+exports.updateInventoryTypes  = updateInventoryTypes;
+exports.listInventoryTypes    = listInventoryTypes;
+exports.detailsInventoryTypes = detailsInventoryTypes;
 
 exports.getInventoryConsumptionById = getInventoryConsumptionById;
 exports.getInventoryConsumption = getInventoryConsumption;
@@ -68,6 +75,7 @@ exports.getInventoryStatusById = getInventoryStatusById;
 exports.getInventoryDonations = getInventoryDonations;
 exports.getInventoryDonationsById = getInventoryDonationsById;
 
+// ======================= inventory metadata =============================
 /**
  * POST /inventory/metadata
  * Create a new inventory data entry
@@ -150,6 +158,7 @@ function getInventoryItemsById(req, res, next) {
   .done();
 }
 
+// ======================= inventory group =============================
 /**
  * POST /inventory/groups
  * Create a new inventory group
@@ -209,6 +218,144 @@ function detailsInventoryGroups(req, res, next) {
   'use strict';
 
   groups.details(req.params.uuid)
+  .then((rows) => {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+// ======================= inventory type =============================
+/**
+ * POST /inventory/types
+ * Create a new inventory types
+ */
+function createInventoryTypes(req, res, next) {
+  'use strict';
+
+  types.create(req.body)
+  .then((id) => {
+    res.status(201).json({ id: id });
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * PUT /inventory/types/:id
+ * Create a new inventory types
+ */
+function updateInventoryTypes(req, res, next) {
+  'use strict';
+
+  types.update(req.body, req.params.id)
+  .then((rows) => {
+    res.status(201).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * GET /inventory/types
+ * get the list of inventory types
+ */
+function listInventoryTypes(req, res, next) {
+  'use strict';
+
+  types.list()
+  .then((rows) => {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * GET /inventory/types/:id
+ * get the list of inventory types
+ */
+function detailsInventoryTypes(req, res, next) {
+  'use strict';
+
+  types.details(req.params.id)
+  .then((rows) => {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+// ======================= inventory unit =============================
+/**
+ * POST /inventory/units
+ * Create a new inventory units
+ */
+function createInventoryUnits(req, res, next) {
+  'use strict';
+
+  units.create(req.body)
+  .then((id) => {
+    res.status(201).json({ id: id });
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * PUT /inventory/units/:id
+ * Create a new inventory units
+ */
+function updateInventoryTypes(req, res, next) {
+  'use strict';
+
+  units.update(req.body, req.params.id)
+  .then((rows) => {
+    res.status(201).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * GET /inventory/units
+ * get the list of inventory units
+ */
+function listInventoryUnits(req, res, next) {
+  'use strict';
+
+  units.list()
+  .then((rows) => {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * GET /inventory/units/:id
+ * get the list of inventory units
+ */
+function detailsInventoryUnits(req, res, next) {
+  'use strict';
+
+  units.details(req.params.id)
   .then((rows) => {
     res.status(200).json(rows);
   })
