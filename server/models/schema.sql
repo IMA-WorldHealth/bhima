@@ -1276,13 +1276,14 @@ DROP TABLE IF EXISTS `patient_visit`;
 CREATE TABLE `patient_visit` (
   `uuid` BINARY(16) NOT NULL,
   `patient_uuid` BINARY(16) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `registered_by` smallint(5) unsigned NOT NULL,
+  `start_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `end_date` datetime DEFAULT NULL,
+  `user_id` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `patient_uuid` (`patient_uuid`),
-  KEY `registered_by` (`registered_by`),
+  KEY `user_id` (`user_id`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`registered_by`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

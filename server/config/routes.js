@@ -361,7 +361,9 @@ exports.configure = function configure(app) {
   app.post('/patients/:uuid/documents', upload.middleware('docs', 'documents'), patients.documents.create);
   app.delete('/patients/:uuid/documents/all', patients.documents.deleteAll);
   app.delete('/patients/:uuid/documents/:documentUuid', patients.documents.delete);
-
+  
+  app.get('/patients/:uuid/visits', patients.checkin.list);
+  
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
   /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */
