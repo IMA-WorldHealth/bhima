@@ -9,7 +9,7 @@
  * user's ability to selected routes.
  *
  * @requires lib/db
- * @requires lib/topic
+ * @requires Topic
  * @requires lib/errors/Unauthorized
  * @requires lib/errors/Forbidden
  * @requires lib/errors/InternalServerError
@@ -20,7 +20,7 @@ const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 const Forbidden = require('../lib/errors/Forbidden');
 const InternalServerError = require('../lib/errors/InternalServerError');
-const topic = require('../lib/topic');
+const Topic = require('../lib/topic');
 
 // POST /login
 exports.login = login;
@@ -123,9 +123,9 @@ function login(req, res, next) {
     req.session.enterprise = session.enterprise;
 
     // broadcast LOGIN event
-    topic.publish(topic.channels.APP, {
-      event: topic.events.LOGIN,
-      entity: topic.entities.USER,
+    Topic.publish(Topic.channels.APP, {
+      event: Topic.events.LOGIN,
+      entity: Topic.entities.USER,
       user_id : req.session.user.id,
       id: session.user.id
     });
@@ -150,9 +150,9 @@ function logout(req, res, next) {
   .then(() => {
 
     // broadcast LOGOUT event
-    topic.publish(topic.channels.APP, {
-      event: topic.events.LOGOUT,
-      entity: topic.entities.USER,
+    Topic.publish(Topic.channels.APP, {
+      event: Topic.events.LOGOUT,
+      entity: Topic.entities.USER,
       user_id : req.session.user.id,
       id: req.session.user.id,
     });

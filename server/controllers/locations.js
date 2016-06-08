@@ -18,6 +18,7 @@
 const db = require('../lib/db');
 const uuid = require('node-uuid');
 const NotFound = require('../lib/errors/NotFound');
+const Topic = require('../lib/topic');
 
 /**
  * GET /locations/villages
@@ -28,7 +29,7 @@ const NotFound = require('../lib/errors/NotFound');
  *  ?sector={uuid}
  *
  * @method villages
- * @return {array} an array of (uuid, name)
+ * @return {Array} an array of (uuid, name)
  */
 exports.villages = function villages(req, res, next) {
   var sql =
@@ -59,7 +60,7 @@ exports.villages = function villages(req, res, next) {
  *  ?province={uuid}
  *
  * @method sectors
- * @return {array} an array of (uuid, name)
+ * @return {Array} an array of (uuid, name)
  */
 exports.sectors = function sectors(req, res, next) {
   var sql;
@@ -73,7 +74,6 @@ exports.sectors = function sectors(req, res, next) {
       FROM sector JOIN province JOIN country ON
         sector.province_uuid = province.uuid AND
         province.country_uuid = country.uuid`;
-
   } else {
     sql =
       'SELECT BUID(sector.uuid) as uuid, sector.name FROM sector ';
@@ -105,7 +105,7 @@ exports.sectors = function sectors(req, res, next) {
  *  ?country={uuid}
  *
  * @method provinces
- * @return {array} an array of (uuid, name)
+ * @return {Array} an array of (uuid, name)
  */
 exports.provinces = function provinces(req, res, next) {
   var sql;
@@ -321,14 +321,22 @@ exports.create = {};
  */
 exports.create.country = function createCountry(req, res, next) {
   // create a UUID if not provided
-  req.body.uuid = db.bid(req.body.uuid || uuid.v4());
+  req.body.uuid = req.body.uuid || uuid.v4();
 
   var sql =
     'INSERT INTO country (uuid, name) VALUES (?, ?);';
 
-  db.exec(sql, [req.body.uuid, req.body.name])
+  db.exec(sql, [ db.bid(req.body.uuid), req.body.name])
   .then(function (row) {
-    res.status(201).json({ uuid : uuid.unparse(req.body.uuid) });
+
+    Topic.publish(Topic.channels.ADMIN, {
+      event: Topic.events.CREATE,
+      entity: Topic.entities.LOCATION,
+      user_id: req.session.user.id,
+      uuid: req.body.uuid
+    });
+
+    res.status(201).json({ uuid : req.body.uuid });
   })
   .catch(next)
   .done();
@@ -349,14 +357,22 @@ exports.create.province = function createProvince(req, res, next) {
   ]);
 
   // create a UUID if not provided
-  data.uuid = db.bid(data.uuid || uuid.v4());
+  data.uuid = data.uuid || uuid.v4();
 
   var sql =
     'INSERT INTO province (uuid, name, country_uuid) VALUES (?);';
 
-  db.exec(sql, [[data.uuid, data.name, data.country_uuid]])
+  db.exec(sql, [[db.bid(data.uuid), data.name, data.country_uuid]])
   .then(function (row) {
-    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+
+    Topic.publish(Topic.channels.ADMIN, {
+      event: Topic.events.CREATE,
+      entity: Topic.entities.LOCATION,
+      user_id: req.session.user.id,
+      uuid: data.uuid
+    });
+
+    res.status(201).json({ uuid : data.uuid });
   })
   .catch(next)
   .done();
@@ -376,14 +392,22 @@ exports.create.sector = function createSector(req, res, next) {
   const data = db.convert(req.body, ['province_uuid']);
 
   // create a UUID if not provided
-  data.uuid = db.bid(data.uuid || uuid.v4());
+  data.uuid = data.uuid || uuid.v4();
 
   var sql =
     'INSERT INTO sector (uuid, name, province_uuid) VALUES (?);';
 
-  db.exec(sql, [[data.uuid, data.name, data.province_uuid]])
+  db.exec(sql, [[db.bid(data.uuid), data.name, data.province_uuid]])
   .then(function (row) {
-    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+
+    Topic.publish(Topic.channels.ADMIN, {
+      event: Topic.events.CREATE,
+      entity: Topic.entities.LOCATION,
+      user_id: req.session.user.id,
+      uuid: data.uuid
+    });
+
+    res.status(201).json({ uuid: data.uuid });
   })
   .catch(next)
   .done();
@@ -402,21 +426,29 @@ exports.create.village = function createVillage(req, res, next) {
   const data = db.convert(req.body, ['sector_uuid']);
 
   // create a UUID if not provided
-  data.uuid = db.bid(data.uuid || uuid.v4());
+  data.uuid = data.uuid || uuid.v4();
 
   var sql =
     'INSERT INTO village (uuid, name, sector_uuid) VALUES (?);';
 
-  db.exec(sql, [[data.uuid, data.name, data.sector_uuid]])
+  db.exec(sql, [[ db.bid(data.uuid), data.name, data.sector_uuid ]])
   .then(function (row) {
-    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+
+    Topic.publish(Topic.channels.ADMIN, {
+      event: Topic.events.CREATE,
+      entity: Topic.entities.LOCATION,
+      user_id: req.session.user.id,
+      uuid: data.uuid
+    });
+
+    res.status(201).json({ uuid: data.uuid });
   })
   .catch(next)
   .done();
 };
 
 
-/** bindings for Update methods */
+/** bindings for update methods */
 exports.update = {};
 
 /**

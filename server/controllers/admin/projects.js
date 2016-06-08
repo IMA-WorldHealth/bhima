@@ -7,17 +7,20 @@
 * NOTE: this endpoint does not filter for enterprise ID.  We should probably
 * move to doing this in the future.
 */
-var db = require('../../lib/db');
+'use strict';
+
+
+const db = require('../../lib/db');
 
 /**
-* GET /projects?complete={0|1}
-*
-* Returns an array of {id, name} for each project in the database.
-*/
+ * GET /projects?complete={0|1}
+ *
+ * Returns an array of {id, name} for each project in the database.
+ */
 exports.list = function list(req, res, next) {
   'use strict';
 
-  var sql;
+  let sql;
 
   // send a larger response if complete is 1
   if (req.query.complete === '1') {
@@ -41,12 +44,12 @@ exports.list = function list(req, res, next) {
     FROM project WHERE project.locked = 1;`;
   }
 
-  if (req.query.incomplete_locked === '0'){
+  if (req.query.incomplete_locked === '0') {
     sql =
       'SELECT project.id, project.name FROM project WHERE project.locked = 0;';
-  }  
+  }
 
-  if (req.query.incomplete_locked === '1'){
+  if (req.query.incomplete_locked === '1') {
     sql =
       'SELECT project.id, project.name FROM project WHERE project.locked = 1;';
   }
@@ -68,7 +71,7 @@ exports.list = function list(req, res, next) {
 exports.details = function details(req, res, next) {
   'use strict';
 
-  var sql =
+  let sql =
     `SELECT project.id, project.enterprise_id, project.abbr,
       project.zs_id, project.name, project.locked
     FROM project
@@ -99,7 +102,7 @@ exports.details = function details(req, res, next) {
 exports.create = function create(req, res, next) {
   'use strict';
 
-  var sql, data = req.body;
+  let sql, data = req.body;
 
   sql =
     'INSERT INTO project (name, abbr, enterprise_id, zs_id, locked) VALUES (?, ?, ?, ?, ?);';
@@ -120,7 +123,7 @@ exports.create = function create(req, res, next) {
 exports.update = function update(req, res, next) {
   'use strict';
 
-  var sql;
+  let sql;
 
   sql =
     'UPDATE project SET ? WHERE id = ?;';
@@ -152,7 +155,7 @@ exports.update = function update(req, res, next) {
 exports.delete = function del(req, res, next) {
   'use strict';
 
-  var sql =
+  let sql =
     'DELETE FROM project WHERE id = ?;';
 
   db.exec(sql, [req.params.id])

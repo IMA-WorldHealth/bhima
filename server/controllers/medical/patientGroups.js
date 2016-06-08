@@ -1,14 +1,16 @@
 /**
- * @module medical/patientGroups
+ * @module patientGroups
  *
- * @description This controller is responsible for implementing all crud and others custom request
- * on the patient groups table through the `/patient_groups` endpoint.
+ * @description
+ * This controller is responsible for implementing all crud and others custom
+ * requests on the patient groups table through the `/patients/groups` endpoint.
  *
  * The /patient_groups HTTP API endpoint
  *
- * @requires lib/db
+ * @requires db
  * @requires node-uuid
- * @requires lib/errors/NotFound
+ * @requires NotFound
+ * @requires Topic
  */
 
 'use strict';
@@ -16,9 +18,12 @@
 const db = require('../../lib/db');
 const uuid = require('node-uuid');
 const NotFound = require('../../lib/errors/NotFound');
+const Topic = require('../../lib/topic');
 
 /**
- * @method list()
+ * @method list
+ *
+ * @description
  * Returns an array of patient groups.
  */
 function list(req, res, next) {
@@ -48,6 +53,9 @@ function list(req, res, next) {
 }
 
 /**
+ * @method create
+ *
+ * @description
  * Create a patient group in the database
  */
 function create(req, res, next) {
@@ -55,25 +63,35 @@ function create(req, res, next) {
   let sql = 'INSERT INTO patient_group SET ?';
 
   // provide UUID if the client has not specified
-  record.uuid = db.bid(record.uuid || uuid.v4());
+  let uid = record.uuid || uuid.v4();
+  record.uuid = db.bid(uid);
 
   db.exec(sql, [ record ])
   .then(function (result) {
-    res.status(201).json({ uuid: uuid.unparse(record.uuid) });
+
+    Topic.publish(Topic.channels.MEDICAL, {
+      event: Topic.events.CREATE,
+      entity: Topic.entities.PATIENT_GROUP,
+      user_id: req.session.user.id,
+      uuid: uid
+    });
+
+    res.status(201).json({ uuid: uid });
   })
   .catch(next)
   .done();
 }
 
 /**
+ * @method update
+ *
+ * @description
  * Update a patient group in the database
  */
 function update(req, res, next) {
+  let sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
 
-  var uid = db.bid(req.params.uuid);
-  var sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
-
-  var data = db.convert(req.body, ['price_list_uuid']);
+  let data = db.convert(req.body, ['price_list_uuid']);
 
   if (data.created_at) {
     data.created_at = new Date(data.created_at);
@@ -82,15 +100,23 @@ function update(req, res, next) {
   // make sure we aren't updating the uuid
   delete data.uuid;
 
-  db.exec(sql, [data, uid])
+  db.exec(sql, [data, db.bid(req.params.uuid)])
   .then(function (rows) {
     if (!rows.affectedRows) {
-      throw new NotFound('No patient group found with id ' + uuid.unparse(uid));
+      throw new NotFound(`No patient group found with id ${req.params.uuid}`);
     }
 
-    return lookupPatientGroup(uid);
+    return lookupPatientGroup(req.params.uuid);
   })
   .then(function (group) {
+
+    Topic.publish(Topic.channels.MEDICAL, {
+      event: Topic.events.UPDATE,
+      entity: Topic.entities.PATIENT_GROUP,
+      user_id: req.session.user.id,
+      uuid: req.params.uuid
+    });
+
     res.status(200).json(group);
   })
   .catch(next)
@@ -98,6 +124,9 @@ function update(req, res, next) {
 }
 
 /**
+ * @method remove
+ *
+ * @description
  * Remove a patient group in the database
  */
 function remove(req, res, next) {
@@ -116,10 +145,13 @@ function remove(req, res, next) {
 }
 
 /**
+ * @method details
+ *
+ * @description
  * Return a patient group details from the database
  */
 function detail(req, res, next) {
-  lookupPatientGroup(db.bid(req.params.uuid))
+  lookupPatientGroup(req.params.uuid)
   .then(function (row) {
     res.status(200).json(row);
   })
@@ -128,22 +160,28 @@ function detail(req, res, next) {
 }
 
 /**
+ * @method lookupPatientGroup
+ *
+ * @description
  * Return a patient group instance from the database
  *
- * @param {String} uid the uuid of the patinet group
+ * @param {String} uid - the uuid of the patient group
+ * @returns {Promise} - the result of the database query database
  */
 function lookupPatientGroup(uid) {
-  var sql =
-    `SELECT BUID(pg.uuid) as uuid, pg.name, pg.enterprise_id, BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at
-    FROM patient_group AS pg WHERE pg.uuid = ?`;
+  const sql = `
+    SELECT BUID(pg.uuid) as uuid, pg.name, pg.enterprise_id,
+      BUID(pg.price_list_uuid) as price_list_uuid, pg.note, pg.created_at
+    FROM patient_group AS pg WHERE pg.uuid = ?;
+  `;
 
-  return db.exec(sql, [uid])
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound('No patient group found with id ' + uuid.unparse(uid));
-    }
-    return rows[0];
-  });
+  return db.exec(sql, [db.bid(uid)])
+    .then(function (rows) {
+      if (!rows.length) {
+        throw new NotFound('No patient group found with id ' + uuid.unparse(uid));
+      }
+      return rows[0];
+    });
 }
 
 exports.list = list;

@@ -17,6 +17,7 @@ const _ = require('lodash');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
+const Topic = require('../../../lib/topic');
 
 // expose submodules
 exports.permissions = require('./permissions');
@@ -124,17 +125,17 @@ function detail(req, res, next) {
 
 
 /**
- * @function create
+ * @method create
  *
  * @description
+ * POST /users
+ *
  * This endpoint creates a new user from a JSON object.  Required columns are
  * enforced in the database.  Unlike before, the user is created with project
  * permissions.  A user without project access does not make any sense.
  *
  * If the checks succeed, the user password is hashed and stored in the database.
  * A single JSON is returned to the client with the user id.
- *
- * POST /users
  *
  */
 function create(req, res, next) {
@@ -160,6 +161,13 @@ function create(req, res, next) {
   })
   .then(function () {
 
+    Topic.publish(Topic.channels.ADMIN, {
+      event: Topic.events.CREATE,
+      entity: Topic.entities.USER,
+      user_id: req.session.user.id,
+      id : userId
+    });
+
     // send the ID back to the client
     res.status(201).json({ id : userId });
   })
@@ -169,7 +177,7 @@ function create(req, res, next) {
 
 
 /**
- * @function update
+ * @method update
  *
  * @description
  * PUT /users/:id
@@ -232,6 +240,14 @@ function update(req, res, next) {
   transaction.execute()
   .then(() => lookupUser(req.params.id))
   .then(function (data) {
+
+    Topic.publish(Topic.channels.ADMIN, {
+      event: Topic.events.UPDATE,
+      entity: Topic.entities.USER,
+      user_id: req.session.user.id,
+      id : req.params.id
+    });
+
     res.status(200).json(data);
   })
   .catch(next)
@@ -280,6 +296,13 @@ function remove(req, res, next) {
     if (row.affectedRows === 0) {
       throw new NotFound(`Could not find a user with id ${req.params.id}`);
     }
+
+    Topic.publish(Topic.channels.ADMIN, {
+      event: Topic.events.DELETE,
+      entity: Topic.entities.USER,
+      user_id: req.session.user.id,
+      id : req.params.id
+    });
 
     res.sendStatus(204);
   })

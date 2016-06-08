@@ -29,20 +29,23 @@ const events = {
   DELETE: 'delete',
   REPORT: 'report',
   LOGIN: 'login',
-  LOGOUT: 'logout'
+  LOGOUT: 'logout',
+  SEARCH: 'search'
 };
 
 // event entities
 const entities = {
-  PATIENT : 'patient',
-  INVOICE : 'invoice',
-  PAYMENT : 'payment',
-  VOUCHER : 'voucher',
-  PATIENT_GROUP : 'patient group',
-  DEBTOR_GROUP : 'debtor_group',
-  EMPLOYEE : 'employee',
-  USER : 'user',
-  PERMISSION : 'permission',
+  PATIENT: 'patient',
+  INVOICE: 'invoice',
+  PAYMENT: 'payment',
+  VOUCHER: 'voucher',
+  PATIENT_GROUP: 'patient group',
+  DEBTOR_GROUP: 'debtor_group',
+  EMPLOYEE: 'employee',
+  USER: 'user',
+  PERMISSION: 'permission',
+  LOCATION: 'location',
+  CASHBOX: 'cashbox'
 };
 
 // event channels
@@ -51,7 +54,8 @@ const channels = {
   APP: 'app',
   MEDICAL: 'medical',
   FINANCE: 'finance',
-  INVENTORY: 'inventory'
+  INVENTORY: 'inventory',
+  ADMIN: 'administration'
 };
 
 // writes events into the event database table

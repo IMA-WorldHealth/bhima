@@ -21,7 +21,7 @@ var patients             = require('../controllers/medical/patients');
 var patientReceipt       = require('../controllers/medical/reports/patient.receipt');
 var patientGroups        = require('../controllers/medical/patientGroups');
 var snis                 = require('../controllers/medical/snis');
-var projects             = require('../controllers/medical/projects');
+var projects             = require('../controllers/admin/projects');
 var inventory            = require('../controllers/stock/inventory');
 var depots               = require('../controllers/stock/depot');
 var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
@@ -441,14 +441,14 @@ exports.configure = function configure(app) {
 
   // cashbox controller
   app.get('/cashboxes', cashboxes.list);
-  app.get('/cashboxes/:id', cashboxes.details);
+  app.get('/cashboxes/:id', cashboxes.detail);
   app.post('/cashboxes', cashboxes.create);
   app.put('/cashboxes/:id', cashboxes.update);
   app.delete('/cashboxes/:id', cashboxes.delete);
 
   // cashbox currencies
   app.get('/cashboxes/:id/currencies', cashboxes.currencies.list);
-  app.get('/cashboxes/:id/currencies/:currencyId', cashboxes.currencies.details);
+  app.get('/cashboxes/:id/currencies/:currencyId', cashboxes.currencies.detail);
   app.post('/cashboxes/:id/currencies', cashboxes.currencies.create);
   app.put('/cashboxes/:id/currencies/:currencyId', cashboxes.currencies.update);
 

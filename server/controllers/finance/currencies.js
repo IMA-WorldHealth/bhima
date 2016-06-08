@@ -1,8 +1,10 @@
 /**
+ * @module Currencies
+ *
  * Supports two routes for reading currency information from the database.
  *
- * @module finance/currencies
- * @requires lib/db
+ * @requires db
+ * @requires NotFound
  */
 
 var db = require('../../lib/db');
