@@ -17,7 +17,7 @@
           
           <div class="form-group" ng-class="{ 'has-error' : FiscalForm.$submitted && FiscalForm.label.$invalid }">
             <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-            <input type="text" class="form-control" name="label" ng-model="FiscalManageCtrl.fiscal.label" required>
+            <input type="text" class="form-control" ng-maxlength="FiscalManageCtrl.maxLength" name="label" ng-model="FiscalManageCtrl.fiscal.label" required>
             <div class="help-block" ng-messages="FiscalForm.label.$error" ng-show="FiscalForm.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
             </div>                

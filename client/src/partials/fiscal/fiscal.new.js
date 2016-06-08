@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('FiscalCreateController', FiscalCreateController);
 FiscalCreateController.$inject = [
-    '$state', 'ScrollService', 'FiscalService', 'NotifyService'
+    '$state', 'ScrollService', 'FiscalService', 'NotifyService', 'util'
 ];
 
 /**
@@ -12,12 +12,14 @@ FiscalCreateController.$inject = [
  *
  * @module fiscal/new
  */
-function FiscalCreateController($state, ScrollTo, fiscalService, Notify) {
+function FiscalCreateController($state, ScrollTo, fiscalService, Notify, util) {
   var vm = this;
   // expose state for optional view elements
   vm.state   = $state;
   vm.fiscal  = {};
   vm.endDate = endDate;
+
+  vm.maxLength = util.maxTextLength; 
 
   function endDate(){
     var start_date = new Date(vm.fiscal.start_date);
