@@ -1,0 +1,83 @@
+<div class="flex-util" style="text-align:center">
+  <div class="container">
+    <strong>{{"FISCAL.TITLE" | translate }}</strong>  
+  </div>  
+</div>
+
+<div class="container-fluid">
+  <div class="container text-center">
+    <table style="width:75%; margin:auto" class="table table-condensed">
+      <thead>
+        <tr>
+          <th style="width:33%">
+            <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'label', order: FiscalCtrl.sortByName})">
+              {{"FORM.LABELS.NAME" | translate }} <span ng-if="FiscalCtrl.sorted === 'label'" class="glyphicon glyphicon-menu-{{FiscalCtrl.nameDesc}}"></span>
+            </a>
+          </th>
+
+          <th style="width:34%">
+            <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'created_at', order: FiscalCtrl.sortByDateCreated})">
+              {{"FORM.LABELS.DATE_CREATED" | translate }} <span ng-if="FiscalCtrl.sorted === 'created_at'" class="glyphicon glyphicon-menu-{{FiscalCtrl.dateDesc}}"></span>
+            </a>
+          </th>
+          <th style="width:33%">
+            <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'number_of_months', order: FiscalCtrl.sortByNumbrerOfMonth})">
+              {{"FORM.LABELS.NB_MONTH" | translate }} <span ng-if="FiscalCtrl.sorted === 'number_of_months'" class="glyphicon glyphicon-menu-{{FiscalCtrl.nbMonthDesc}}"></span>
+            </a>  
+          </th>
+        </tr>
+      </thead>
+    </table>
+
+    <div ng-repeat="fiscal in FiscalCtrl.fiscalYears | limitTo : FiscalCtrl.pageSize : (FiscalCtrl.currentPage - 1)*FiscalCtrl.pageSize ">
+      <div class="panel panel-default" style="margin-bottom : 3px !important;" data-group-entry>
+        <div class="panel-body text-left">
+          <div class="row">
+            <div>
+              <h4 style="margin-top : 0px;"><strong>{{fiscal.label}}</strong> 
+              <span ng-if="fiscal.locked" style="color : #ABABAB;" > [ {{"FORM.INFOS.CLOSED" | translate }} ]</span></h4>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-6 textflow">
+                  <span class="glyphicon glyphicon-calendar"></span> {{ fiscal.start_date | date: "y/MM" }} - {{ fiscal.end_date | date: "y/MM" }} ({{ fiscal.number_of_months }} {{ "FORM.LABELS.PERIODS" | translate }} ) 
+                </div>
+                <div class="col-md-6">
+                  <a data-method="update" ui-sref="fiscal.update({id : fiscal.id})" id="update_{{$index+1}}" class="btn btn-xs btn-default">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </a>&nbsp; 
+                  <a ng-click="FiscalCtrl.del(fiscal)" id="remove_{{$index+1}}" class="btn btn-xs btn-danger">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </a>&nbsp;
+                  <span ng-if="fiscal.id === FiscalCtrl.current[0].previous_fiscal_year_id" class="label label-danger"> 
+                    {{ "FORM.INFOS.PREVIOUS" | translate }} 
+                  </span>
+                  <span ng-if="fiscal.id === FiscalCtrl.current[0].fiscal_year_id" class="label label-primary"> 
+                    {{ "FORM.INFOS.CURRENT" | translate }} 
+                  </span>                  
+                </div>                
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <span class="glyphicon glyphicon-time"></span> {{ "FORM.INFOS.CREATED" | translate }} <span am-time-ago="fiscal.created_at"></span>
+              , {{ "FORM.INFOS.BY" | translate}} <span style="color:#337ab7; font-weight: bold; text-decoration:underline">{{ fiscal.first }} {{ fiscal.last }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>  
+    <div>
+      <uib-pagination total-items="FiscalCtrl.fiscalYears.length" ng-model='FiscalCtrl.currentPage' items-per-page='FiscalCtrl.pageSize' next-text="&rsaquo;" previous-text="&lsaquo;" first-text="&lsaquo;&lsaquo;" last-text="&rsaquo;&rsaquo;" boundary-links="true">
+      </uib-pagination>
+    </div>
+
+  </div>
+
+  </div>  
+</div>
