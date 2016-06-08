@@ -4,28 +4,34 @@
  * @description
  * This controller is responsible for the Patient Check In feature, this allows a hospital to track when returning
  * patients visit the hospital.
-  *
-  * It is responsible for reading and writing to the `patient_visit` database table as well as responding to HTTP
-  * requests.
-  *
-  * @requires  lib/db
-  */
-  'use strict'
+ *
+ * It is responsible for reading and writing to the `patient_visit` database table as well as responding to HTTP
+ * requests.
+ *
+ * @requires  node-uuid
+ * @requires  lib/db
+ * @requires  lib/topic
+ */
+'use strict'
 
-  const db = require('../../../lib/db');
+const uuid  = require('node-uuid');
 
-  exports.list = list;
+const db    = require('../../../lib/db');
+const topic = require('../../../lib/topic');
 
-  /**
-   * @method list
-   *
-   * @description
-   * List all records of the patients visit given a specified identifier.
-   *
-   * GET /patients/:uuid/visits
-   */
-  function list(req, res, next) {
-    const patientUuid = req.params.uuid;
+exports.list = list;
+exports.create = create;
+
+/**
+ * @method list
+ *
+ * @description
+ * List all records of the patients visit given a specified identifier.
+ *
+ * GET /patients/:uuid/visits
+ */
+function list(req, res, next) {
+  const patientUuid = req.params.uuid;
 
   let listVisitsQuery =
     `
@@ -40,6 +46,43 @@
   db.exec(listVisitsQuery, [db.bid(patientUuid)])
     .then(function (visits) {
       res.status(200).json(visits);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method checkin
+ *
+ * @description
+ * Write a record into the patient_visit table checking a patient into a visit.
+ *
+ * POST /patients/:uuid/checkin
+ */
+function create(req, res, next) {
+  const patientUuid = req.params.uuid;
+
+  let checkinQuery =
+    `
+      INSERT INTO patient_visit
+        (uuid, patient_uuid, start_date, user_id)
+      VALUES
+        (?, ?, CURRENT_TIMESTAMP, ?)
+    `;
+
+  db.exec(checkinQuery, [db.bid(uuid.v4()), db.bid(patientUuid), req.session.user.id])
+    .then(function (checkin) {
+      res.status(201).json({
+        uuid : patientUuid
+      });
+      
+      // public patient change (checkin) event
+      topic.publish(topic.channels.MEDICAL, {
+        event: topic.events.UPDATE,
+        entity: topic.entities.PATIENT,
+        user_id: req.session.user.id,
+        uuid: patientUuid
+      });
     })
     .catch(next)
     .done();

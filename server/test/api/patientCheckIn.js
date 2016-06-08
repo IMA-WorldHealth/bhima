@@ -22,5 +22,14 @@ describe('Patient Check In', () => {
         expect(result.body[0]).to.have.keys('patient_uuid', 'start_date', 'end_date', 'user_id', 'username');
       })
       .catch(helpers.api.help);
+  });
+  
+  it('POST /patients/:uuid/checkin records a patient visit', () => {
+    return agent.post(`/patients/${patientUuid}/checkin`)
+      .then(function (result) { 
+        
+        expect(result).to.have.status(201);
+        expect(result.body).to.have.keys('uuid');
+      });
   })
 });
