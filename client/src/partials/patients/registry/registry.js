@@ -16,7 +16,7 @@ function PatientRegistryController(Patients, $uibModal, Notify, moment) {
   var vm = this;
 
   var patientActionsTemplate =
-    '<div style="padding : 5px"><a ui-sref="patientRecord({patientID : row.entity.uuid})"><span class="glyphicon glyphicon-list-alt"></span> {{ "PATIENT_REGISTRY.RECORD" | translate }}</a> <a ui-sref="patientEdit({uuid : row.entity.uuid})"><span class="glyphicon glyphicon-edit"></span> {{ "TABLE.COLUMNS.EDIT" | translate }}</a></div>';
+    '<div style="padding : 5px"><a ui-sref="patientRecord.details({patientID : row.entity.uuid})"><span class="glyphicon glyphicon-list-alt"></span> {{ "PATIENT_REGISTRY.RECORD" | translate }}</a> <a ui-sref="patientEdit({uuid : row.entity.uuid})"><span class="glyphicon glyphicon-edit"></span> {{ "TABLE.COLUMNS.EDIT" | translate }}</a></div>';
 
   vm.search = search;
   vm.momentAge = momentAge;

@@ -103,41 +103,6 @@
 
       <div class="row">
 
-        <!-- Patient Activity Panel -->
-        <div class="col-sm-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <span class="glyphicon glyphicon-time"></span> Activity
-            </div>
-            <div class="panel-body" style="height : 250px;">
-
-              <!-- Placeholder - not implemented -->
-              <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
-                <span class="glyphicon glyphicon-wrench"></span> Not Implemented
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Patient Bill Panel -->
-        <div class="col-sm-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <span class="glyphicon glyphicon-file"></span> Patient Visit
-            </div>
-            <div class="panel-body" style="height : 250px;">
-
-              <!-- Placeholder - not implemented -->
-              <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
-                <span class="glyphicon glyphicon-wrench"></span> Not Implemented
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <!-- Patient Documents -->
         <div class="col-sm-6">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -161,6 +126,14 @@
 
         <!-- Patient Bill Panel -->
         <div class="col-sm-6">
+          <div ui-view="checkin"></div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <!-- Patient Bill Panel -->
+        <div class="col-sm-12">
           <div class="panel panel-default">
             <div class="panel-heading">
               <span class="glyphicon glyphicon-file"></span> Latest Bill

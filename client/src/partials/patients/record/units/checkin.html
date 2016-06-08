@@ -1,0 +1,41 @@
+<style>
+  .icon-spacer {
+    margin-left : 18px;
+  }
+
+  .subtext {
+    color : #838383;
+  }
+</style>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    {{ "PATIENT_RECORDS.CHECK_IN.TITLE" | translate }}
+  </div>
+  <div class="panel-body" style="height : 250px; overflow : hidden">
+    <p class="text-info">
+        <i class="fa fa-info-circle"></i>
+        {{ "PATIENT_RECORDS.CHECK_IN.NOT_RECENT" | translate }}
+    </p>
+
+    <a class="btn btn-default btn-block">
+      <i class="fa fa-sign-in"></i>
+      {{ "PATIENT_RECORDS.CHECK_IN.SUBMIT" | translate }}
+    </a>
+
+    <br>
+    <p><b>{{ "PATIENT_RECORDS.CHECK_IN.RECENT" | translate }}</b></p>
+
+    <p class="text-warning">
+      <span class="fa fa-warning"></span>
+      {{ "PATIENT_RECORDS.CHECK_IN.ORIGINAL" | translate }}
+    </p>
+
+    <ul class="list-unstyled">
+      <li>
+        <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} 30 minutes ago
+        <br>
+        <span class="icon-spacer subtext"><i>08/02/1992 08:23</i></span>
+      </li>
+    </ul>
+  </div>
+</div>
