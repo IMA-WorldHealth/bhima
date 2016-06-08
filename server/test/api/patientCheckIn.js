@@ -24,6 +24,17 @@ describe('Patient Check In', () => {
       .catch(helpers.api.help);
   });
   
+  it('GET /patients/:uuid/visits?limit=n limits the results', () => {
+    const LIMIT = 1;
+    return agent.get(`/patients/${patientUuid}/visits?limit=${LIMIT}`)
+      .then(function (result) { 
+        expect(result).to.have.status(200); 
+        expect(result.body.length).to.equal(LIMIT);
+        expect(result.body[0]).to.have.keys('patient_uuid', 'start_date', 'end_date', 'user_id', 'username');
+      })
+      .catch(helpers.api.help);
+  });
+  
   it('POST /patients/:uuid/checkin records a patient visit', () => {
     return agent.post(`/patients/${patientUuid}/checkin`)
       .then(function (result) { 

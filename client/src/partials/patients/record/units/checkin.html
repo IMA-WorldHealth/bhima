@@ -25,16 +25,18 @@
     <br>
     <p><b>{{ "PATIENT_RECORDS.CHECK_IN.RECENT" | translate }}</b></p>
 
-    <p class="text-warning">
+    <p
+        ng-if="CheckInCtrl.loaded && CheckInCtrl.visits.length===0"
+        class="text-warning">
       <span class="fa fa-warning"></span>
       {{ "PATIENT_RECORDS.CHECK_IN.ORIGINAL" | translate }}
     </p>
 
     <ul class="list-unstyled">
-      <li>
-        <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} 30 minutes ago
+      <li ng-repeat="visit in CheckInCtrl.visits">
+        <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} <span am-time-ago="visit.start_date"></span> by {{visit.username}}
         <br>
-        <span class="icon-spacer subtext"><i>08/02/1992 08:23</i></span>
+        <span class="icon-spacer subtext"><i>{{visit.start_date | date : 'medium'}}</i></span>
       </li>
     </ul>
   </div>

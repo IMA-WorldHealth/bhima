@@ -11,6 +11,7 @@
  * @requires  node-uuid
  * @requires  lib/db
  * @requires  lib/topic
+ * @requires  lib/errors/BadRequest
  */
 'use strict'
 
@@ -18,6 +19,8 @@ const uuid  = require('node-uuid');
 
 const db    = require('../../../lib/db');
 const topic = require('../../../lib/topic');
+
+const BadRequest = require('../../../lib/errors/BadRequest');
 
 exports.list = list;
 exports.create = create;
@@ -32,6 +35,16 @@ exports.create = create;
  */
 function list(req, res, next) {
   const patientUuid = req.params.uuid;
+  let limitQuery = '';
+
+  if (req.query.limit) {
+    
+    // validate query string is valid - do not template in anything sent from the client
+    if (isNaN(Number(req.query.limit))) { 
+      throw new BadRequest('limit query must be a valid number');
+    }
+    limitQuery = `LIMIT ${req.query.limit}`;
+  }
 
   let listVisitsQuery =
     `
@@ -40,7 +53,8 @@ function list(req, res, next) {
       FROM patient_visit 
       JOIN user on patient_visit.user_id = user.id
       WHERE patient_uuid = ?
-      ORDER BY start_date ASC
+      ORDER BY start_date DESC
+      ${limitQuery}
     `;
 
   db.exec(listVisitsQuery, [db.bid(patientUuid)])
