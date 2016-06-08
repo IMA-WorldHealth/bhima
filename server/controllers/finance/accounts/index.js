@@ -80,13 +80,15 @@ function update(req, res, next) {
  * @method list
  *
  * @description
- * Lists all accounts in the database
+ * Lists all accounts in the database.
  *
- * GET /accounts/:id
+ * GET /accounts
  */
 function list(req, res, next) {
   let sql =
     'SELECT a.id, a.number, a.label, a.locked FROM account AS a';
+
+  let locked;
 
   if (req.query.detailed === '1') {
     sql = `
@@ -97,8 +99,14 @@ function list(req, res, next) {
     `;
   }
 
-  if (req.query.locked === '0') {
-    sql +=` WHERE a.locked = 0`;
+  // convert locked to a number if it exists
+  if (req.query.locked) {
+    locked = Number(req.query.locked);
+  }
+
+  // if locked is a number, filter on it
+  if (!isNaN(locked)) {
+    sql += ` WHERE a.locked = ${locked}`;
   }
 
   sql += ` ORDER BY a.number;`;
