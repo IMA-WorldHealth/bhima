@@ -1,0 +1,42 @@
+<head>
+  <title>{{translate "PATIENT_REG.PATIENT_REGISTRATIONS"}}</title>
+  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h4>{{translate "PATIENT_REG.PATIENT_REGISTRATIONS"}}</h4>
+  </header>
+
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>{{translate "TABLE.COLUMNS.REFERENCE" }}</th>
+        <th>{{translate "TABLE.COLUMNS.NAME" }}</th>
+        <th>{{translate "TABLE.COLUMNS.DOB" }}</th>
+        <th>{{translate "TABLE.COLUMNS.GENDER" }}</th>
+        <th>{{translate "TABLE.COLUMNS.HOSPITAL_FILE_NR" }}</th>
+        <th>{{translate "TABLE.COLUMNS.DATE_REGISTERED" }}</th>
+        <th>{{translate "TABLE.COLUMNS.LAST_VISIT" }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each patients}}
+        <tr>
+          <td>{{this.reference}}</td>
+          <td>{{this.name}}</td>
+          <td>{{this.dob}}</td>
+          <td>{{this.sex}}</td>
+          <td>{{this.hospital_no}}</td>
+          <td>{{this.date_registered}}</td>
+          <td>{{this.last_visit}}</td>
+        </tr>
+      {{else}}
+        <tr>
+          <td colspan="7" class="text-center">
+            {{translate "TABLE.COLUMNS.EMPTY"}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</body>

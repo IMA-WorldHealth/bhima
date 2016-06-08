@@ -382,9 +382,6 @@ exports.configure = function configure(app) {
   app.get('/patients/:uuid/services', patients.billingServices);
   app.get('/patients/:uuid/subsidies', patients.subsidies);
 
-  // app.get('/patients/search', patient.search);
-  app.get('/patients/search/name/:value', patients.searchFuzzy);
-  app.get('/patients/search/reference/:value', patients.searchReference);
 
   app.get('/patients/:uuid/documents', patients.documents.list);
   app.post('/patients/:uuid/documents', upload.middleware('docs', 'documents'), patients.documents.create);
@@ -411,10 +408,6 @@ exports.configure = function configure(app) {
   app.post('/debtor_groups', debtorGroups.create);
   app.put('/debtor_groups/:uuid', debtorGroups.update);
 
-  // search stuff
-  // TODO merge with patients API
-  app.get('/patient/search/fuzzy/:match', patients.searchFuzzy);
-  app.get('/patient/search/reference/:reference', patients.searchReference);
 
   // analytics for financial dashboard
   // cash flow analytics

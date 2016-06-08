@@ -17,12 +17,15 @@ module.exports.take = take;
  * @description
  * Build query string conditions
  *
- * @param {object} params - The req.query object
- * @return {object} The object which contains the query and conditions
+ * @param {String} sql - the SQL string
+ * @param {Object} params - The req.query object
+ * @param {Boolean} excludeWhere - should we append a WHERE condition?
+ * @return {Object} The object which contains the query and conditions
  *
  * @todo - should this be in db?  Something like db.conditions()?
+ * @todo - allow prexisting conditions to be passed in
  */
-function queryCondition(sql, params) {
+function queryCondition(sql, params, excludeWhere) {
   let conditions = [];
 
   let criteria = Object.keys(params).map(function (item) {
@@ -30,9 +33,14 @@ function queryCondition(sql, params) {
     return '?? = ?';
   }).join(' AND ');
 
-  sql += (Object.keys(params).length > 0) ? 'WHERE ' + criteria : '';
+  if (Object.keys(params).length === 0) {
+    excludeWhere = true;
+  }
+
+  sql += (excludeWhere ? '' : 'WHERE ') + criteria;
   return { query: sql, conditions : conditions };
 }
+
 
 /**
  * @function take

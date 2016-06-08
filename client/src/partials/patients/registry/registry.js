@@ -2,17 +2,15 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  'PatientService', '$uibModal', 'NotifyService', 'moment'
+  'PatientService', 'NotifyService', 'moment'
 ];
 
 /**
  * Patient Registry Controller
  *
- * This module is responsible for the management
- * of Patient Registry.
- *
+ * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, $uibModal, Notify, moment) {
+function PatientRegistryController(Patients, Notify, moment) {
   var vm = this;
 
   var patientActionsTemplate =
@@ -50,8 +48,8 @@ function PatientRegistryController(Patients, $uibModal, Notify, moment) {
 
   // load Patient Registry Grid
   function loadGrid() {
-    vm.loading = true;
     vm.hasError = false;
+    toggleLoadingIndicator();
 
     Patients.read()
       .then(function (patients) {
@@ -62,14 +60,15 @@ function PatientRegistryController(Patients, $uibModal, Notify, moment) {
       })
       .catch(handler)
       .finally(function () {
-        vm.loading = false;
+        toggleLoadingIndicator();
       });
   }
 
-  // Search and filter data in Patiens Registry
+  // search and filter data in Patient Registry
   function search() {
-    vm.loading = true;
     vm.hasError = false;
+    toggleLoadingIndicator();
+
     Patients.openSearchModal()
       .then(function (data) {
         var response = data.response;
@@ -81,13 +80,18 @@ function PatientRegistryController(Patients, $uibModal, Notify, moment) {
       })
       .catch(handler)
       .finally(function () {
-        vm.loading = false;
+        toggleLoadingIndicator();
       });
   }
 
   // moment() provides the current date, similar to the new Date() API. This requests the difference between two dates
   function momentAge(dateOfBirth){
     return moment().diff(dateOfBirth, 'years');
+  }
+
+  // toggles the loading indicator on or off
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
   }
 
   // fire up the module
