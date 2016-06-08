@@ -12,7 +12,9 @@
     {{ "PATIENT_RECORDS.CHECK_IN.TITLE" | translate }}
   </div>
   <div class="panel-body" style="height : 250px; overflow : hidden">
-    <p class="text-info">
+    <p
+        ng-if="CheckInCtrl.outdatedVisit"
+        class="text-info">
         <i class="fa fa-info-circle"></i>
         {{ "PATIENT_RECORDS.CHECK_IN.NOT_RECENT" | translate }}
     </p>
@@ -33,8 +35,8 @@
     </p>
 
     <ul class="list-unstyled">
-      <li ng-repeat="visit in CheckInCtrl.visits">
-        <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} <span am-time-ago="visit.start_date"></span> by {{visit.username}}
+      <li ng-repeat="visit in CheckInCtrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
+        <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} <b><span am-time-ago="visit.start_date"></span></b> by {{visit.username}}
         <br>
         <span class="icon-spacer subtext"><i>{{visit.start_date | date : 'medium'}}</i></span>
       </li>
