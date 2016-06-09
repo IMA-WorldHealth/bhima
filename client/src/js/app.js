@@ -415,12 +415,12 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/inventory/distribution/distribution.html'
   })
 
-  /* sales routes */
-  .state('sales', {
-    url : '/sales',
-    controller: 'sales',
-    templateUrl: '/partials/sales/sales.html'
-  })
+  /* invoices routes */
+  // .state('invoices', {
+  //   url : '/invoices',
+  //   controller: 'invoices',
+  //   templateUrl: '/partials/invoices/invoices.html'
+  // })
 
   /* cash routes */
   .state('/cash/:id', {

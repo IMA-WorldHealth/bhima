@@ -172,8 +172,8 @@ exports.handler = function handler(error) {
  *  1) Ensure connections are destroyed when they are released.  This seems to
  *  go against the philosophy of node-mysql.
  *  2) Transition to using only MySQL procedures for posting data to the posting
- *  journal.  Transactions will still be necessary to group operations (sale,
- *  sale_items, PostPatientInvoice, for example).
+ *  journal.  Transactions will still be necessary to group operations (invoice,
+ *  invoice_items, PostPatientInvoice, for example).
  */
 exports.cleanup = function cleanup(transaction) {
   transaction

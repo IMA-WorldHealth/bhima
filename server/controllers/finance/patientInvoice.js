@@ -3,8 +3,8 @@
  * Patient Invoice API Controller
  *.@module controllers/finance/patientInvoice
  *
- * @todo (required) major bug - Sale items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
- * @todo GET /sales/patient/:uuid - retrieve all patient invoices for a specific patient
+ * @todo (required) major bug - Invoice items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
+ * @todo GET /invoices/patient/:uuid - retrieve all patient invoices for a specific patient
  *    - should this be /patients/:uuid/invoices?
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
  * @todo Credit note logic pending on clear design
@@ -32,14 +32,14 @@ exports.create = create;
 exports.search = search;
 
 /**
- * Retrieves a sale uuid by searching for a human readable reference (e.g. HBB123)
+ * Retrieves an invoice uuid by searching for a human readable reference (e.g. HBB123)
  */
 exports.reference = reference;
 
-/** Expose lookup sale for other controllers to use internally */
-exports.lookupSale = lookupSale;
+/** Expose lookup invoice for other controllers to use internally */
+exports.lookupInvoice = lookupInvoice;
 
-/** Undo the financial effects of a sale generating an equal and opposite credit note. */
+/** Undo the financial effects of a invoice generating an equal and opposite credit note. */
 // exports.reverse = reverse;
 
 /**
@@ -49,14 +49,14 @@ exports.lookupSale = lookupSale;
  */
 function list(req, res, next) {
 
-  let saleListQuery =
-    `SELECT CONCAT(project.abbr, sale.reference) AS reference, BUID(sale.uuid) as uuid, cost,
-      BUID(sale.debtor_uuid) as debtor_uuid, user_id, date, is_distributable
-    FROM sale
-      LEFT JOIN patient ON sale.debtor_uuid = patient.debtor_uuid
-      JOIN project ON sale.project_id = project.id;`;
+  let invoiceListQuery =
+    `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
+      BUID(invoice.debtor_uuid) as debtor_uuid, user_id, date, is_distributable
+    FROM invoice 
+      LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
+      JOIN project ON invoice.project_id = project.id;`;
 
-  db.exec(saleListQuery)
+  db.exec(invoiceListQuery)
     .then(function (rows) {
       res.status(200).json(rows);
     })
@@ -66,41 +66,41 @@ function list(req, res, next) {
 
 
 /**
- * lookupSale
+ * lookupInvoice
  *
- * Find a sale by id in the database.
+ * Find an invoice by id in the database.
  *
- * @param {string} invoiceUuid - the uuid of the sale in question
+ * @param {string} invoiceUuid - the uuid of the invoice in question
  */
-function lookupSale(invoiceUuid) {
+function lookupInvoice(invoiceUuid) {
   let record;
   let buid = db.bid(invoiceUuid);
 
-  let saleDetailQuery =
-    `SELECT BUID(sale.uuid) as uuid, CONCAT(project.abbr, sale.reference) AS reference, sale.cost,
-      BUID(sale.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,
-      BUID(patient.uuid) as patient_uuid, user_id, discount, date, sale.is_distributable
-    FROM sale
-    LEFT JOIN patient ON patient.debtor_uuid = sale.debtor_uuid
-    JOIN project ON project.id = sale.project_id
-    WHERE sale.uuid = ?`;
+  let invoiceDetailQuery =
+    `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference, invoice.cost,
+      BUID(invoice.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,
+      BUID(patient.uuid) as patient_uuid, user_id, date, invoice.is_distributable
+    FROM invoice
+    LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
+    JOIN project ON project.id = invoice.project_id
+    WHERE invoice.uuid = ?`;
 
-  let saleItemsQuery =
-    `SELECT BUID(sale_item.uuid) as uuid, sale_item.quantity, sale_item.inventory_price,
-      sale_item.transaction_price, inventory.code, inventory.text, inventory.consumable
-    FROM sale_item
-    LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid
-    WHERE sale_uuid = ?`;
+  let invoiceItemsQuery =
+    `SELECT BUID(invoice_item.uuid) as uuid, invoice_item.quantity, invoice_item.inventory_price,
+      invoice_item.transaction_price, inventory.code, inventory.text, inventory.consumable
+    FROM invoice_item
+    LEFT JOIN inventory ON invoice_item.inventory_uuid = inventory.uuid
+    WHERE invoice_uuid = ?`;
 
-  return db.exec(saleDetailQuery, [buid])
+  return db.exec(invoiceDetailQuery, [buid])
     .then(function (rows) {
 
       if (!rows.length) {
-        throw new NotFound(`Could not find a sale with uuid ${invoiceUuid}`);
+        throw new NotFound(`Could not find a invoice with uuid ${invoiceUuid}`);
       }
 
       record = rows[0];
-      return db.exec(saleItemsQuery, [buid]);
+      return db.exec(invoiceItemsQuery, [buid]);
     })
     .then(function (rows) {
       record.items = rows;
@@ -109,12 +109,12 @@ function lookupSale(invoiceUuid) {
 }
 
 /**
- * @todo Read the balance remaining on the debtors account given the sale as an auxiliary step
+ * @todo Read the balance remaining on the debtors account given the invoice as an auxiliary step
  */
 function details(req, res, next) {
 
   // this assumes a value must be past for this route to initially match
-  lookupSale(req.params.uuid)
+  lookupInvoice(req.params.uuid)
   .then(function (record) {
     res.status(200).json(record);
   })
@@ -122,13 +122,13 @@ function details(req, res, next) {
   .done();
 }
 
-// process sale items, transforming UUIDs into binary.
-function processSaleItems(sale, items) {
+// process invoice items, transforming UUIDs into binary.
+function processInvoiceItems(invoice, items) {
 
-  // make sure that sale items have their uuids
+  // make sure that invoice items have their uuids
   items.forEach(function (item) {
     item.uuid = db.bid(item.uuid || uuid.v4());
-    item.sale_uuid = sale.uuid;
+    item.invoice_uuid = invoice.uuid;
 
     // should every item have an inventory uuid?
     item.inventory_uuid = db.bid(item.inventory_uuid);
@@ -137,33 +137,33 @@ function processSaleItems(sale, items) {
     item.debit = 0;
   });
 
-  // create a filter to align sale item columns to the sql columns
+  // create a filter to align invoice item columns to the sql columns
   let filter =
-    util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'sale_uuid');
+    util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'invoice_uuid');
 
-  // prepare sale items for insertion into database
+  // prepare invoice items for insertion into database
   items = _.map(items, filter);
 
   return items;
 }
 
 /**
- * POST /sales
+ * POST /invoices
  *
  * The function is responsible for billing a patient and calculating the total
- * due on their invoice.  It will create a record in the `sale` table.
+ * due on their invoice.  It will create a record in the `invoice` table.
  *
  * Up to three additional tables may be affected:
- *  1. `sale_items`
- *  2. `sale_billing_service`
- *  3. `sale_subsidy`
+ *  1. `invoice_items`
+ *  2. `invoice_billing_service`
+ *  3. `invoice_subsidy`
  *
  * The invoicing procedure of a patient's total invoice goes like this:
- *  1. First, the total sum of the sale items are recorded as sent from the
+ *  1. First, the total sum of the invoice items are recorded as sent from the
  *  client.  The Patient Invoice module is allowed to edit the item costs as it
  *  sees fit, so we use the POSTed costs.
  *  2. Next, each billing service is added to the invoice by writing records to
- *  the `sale_billing_service` table.  The cost of each billing service is
+ *  the `invoice_billing_service` table.  The cost of each billing service is
  *  determined by multiplying the billing service's value (as a percentage) to
  *  the total invoice cost.
  *  3. Finally, the subsidy for the bill is determined.  NOTE - as of #343, we
@@ -178,8 +178,8 @@ function create(req, res, next) {
   let transaction;
 
   // alias body properties on local variables
-  let sale = req.body.sale;
-  let items = sale.items || [];
+  let invoice = req.body.invoice;
+  let items = invoice.items || [];
 
   /**
    * @todo - the client should only send back an array of ids for the billing
@@ -187,39 +187,39 @@ function create(req, res, next) {
    * save HTTP bandwidth.
    */
   let billingServices = [];
-  if (sale.billingServices && sale.billingServices.items) {
-    billingServices = sale.billingServices.items;
+  if (invoice.billingServices && invoice.billingServices.items) {
+    billingServices = invoice.billingServices.items;
   }
 
   let subsidies = [];
-  if (sale.subsidies && sale.subsidies.items) {
-    subsidies = sale.subsidies.items;
+  if (invoice.subsidies && invoice.subsidies.items) {
+    subsidies = invoice.subsidies.items;
   }
 
-  // remove the unused properties on sale object before insertion to the
+  // remove the unused properties on invoice object before insertion to the
   // database
-  delete sale.items;
-  delete sale.billingServices;
-  delete sale.subsidies;
+  delete invoice.items;
+  delete invoice.billingServices;
+  delete invoice.subsidies;
 
   // provide UUID if the client has not specified
-  sale.uuid = db.bid(sale.uuid || uuid.v4());
+  invoice.uuid = db.bid(invoice.uuid || uuid.v4());
 
   // make sure that the dates have been properly transformed before insert
-  if (sale.date) {
-    sale.date = new Date(sale.date);
+  if (invoice.date) {
+    invoice.date = new Date(invoice.date);
   }
 
   /** @todo - abstract this into a generic "convert" method */
-  if (sale.debtor_uuid) {
-    sale.debtor_uuid = db.bid(sale.debtor_uuid);
+  if (invoice.debtor_uuid) {
+    invoice.debtor_uuid = db.bid(invoice.debtor_uuid);
   }
 
   // implicitly provide user information based on user session
-  sale.user_id = req.session.user.id;
+  invoice.user_id = req.session.user.id;
 
-  // properly convert UUIDs and link sale to sale components.
-  items = processSaleItems(sale, items);
+  // properly convert UUIDs and link invoice to invoice components.
+  items = processInvoiceItems(invoice, items);
   /** @todo - remove these maps, since we'll send back an array of ids */
   billingServices = billingServices.map(billingService => billingService.billing_service_id);
   subsidies = subsidies.map(subsidy => subsidy.subsidy_id);
@@ -234,30 +234,31 @@ function create(req, res, next) {
     `, 'ERRORS.TOO_MANY_SUBSIDIES');
   }
 
+
   // queries
 
-  let insertSaleQuery =
-    'INSERT INTO sale SET ?';
+  let insertInvoiceQuery =
+    'INSERT INTO invoice SET ?';
 
-  let insertSaleItemQuery =
-    `INSERT INTO sale_item (uuid, inventory_uuid, quantity,
-        transaction_price, inventory_price, debit, credit, sale_uuid) VALUES ?;`;
+  let insertInvoiceItemQuery =
+    `INSERT INTO invoice_item (uuid, inventory_uuid, quantity,
+        transaction_price, inventory_price, debit, credit, invoice_uuid) VALUES ?;`;
 
   let itemSumCost  = `
     SET @totalItemsCost = (
-      SELECT SUM(credit) AS cost FROM sale_item WHERE sale_uuid = ?
+      SELECT SUM(credit) AS cost FROM invoice_item WHERE invoice_uuid = ?
     );
   `;
 
-  let insertSaleBillingServicesQuery = `
-    INSERT INTO sale_billing_service (sale_uuid, value, billing_service_id)
+  let insertInvoiceBillingServicesQuery = `
+    INSERT INTO invoice_billing_service (invoice_uuid, value, billing_service_id)
     SELECT ?, (billing_service.value / 100) * @totalItemsCost, billing_service.id
     FROM billing_service WHERE id IN (?);
   `;
 
   let billingSumCost =  `
     SET @billingSumCost = (
-      SELECT SUM(value) AS value FROM sale_billing_service WHERE sale_uuid = ?
+      SELECT SUM(value) AS value FROM invoice_billing_service WHERE invoice_uuid = ?
     );
   `;
 
@@ -265,15 +266,15 @@ function create(req, res, next) {
     SET @combinedSumCost = @totalItemsCost + IFNULL(@billingSumCost, 0);
   `;
 
-  let insertSaleSubsidyQuery = `
-    INSERT INTO sale_subsidy (sale_uuid, value, subsidy_id)
+  let insertInvoiceSubsidyQuery = `
+    INSERT INTO invoice_subsidy (invoice_uuid, value, subsidy_id)
     SELECT ?, (subsidy.value / 100) * @totalItemsCost, subsidy.id
     FROM subsidy WHERE id IN (?);
   `;
 
   let subsidySumCost = `
     SET @subsidySumCost = (
-      SELECT SUM(value) AS value from sale_subsidy WHERE sale_uuid = ?
+      SELECT SUM(value) AS value from invoice_subsidy WHERE invoice_uuid = ?
     );
   `;
 
@@ -281,56 +282,56 @@ function create(req, res, next) {
     SET @finalSumCost = @combinedSumCost - IFNULL(@subsidySumCost, 0);
   `;
 
-  let updateSaleCostQuery = `
-    UPDATE sale SET cost = @finalSumCost WHERE uuid = ?;
+  let updateInvoiceCostQuery = `
+    UPDATE invoice SET cost = @finalSumCost WHERE uuid = ?;
   `;
 
   transaction = db.transaction();
 
-  // insert sale line
+  // insert invoice line
   transaction
-    .addQuery(insertSaleQuery, [sale])
+    .addQuery(insertInvoiceQuery, [invoice])
 
-  // insert sale item lines
-    .addQuery(insertSaleItemQuery, [items])
+  // insert invoice item lines
+    .addQuery(insertInvoiceItemQuery, [items])
 
   // calculate total cost
-    .addQuery(itemSumCost, [sale.uuid]);
+    .addQuery(itemSumCost, [invoice.uuid]);
 
   // if there are billing services, apply them to the bill
   if (billingServices.length) {
     transaction
 
     // insert the billing services
-      .addQuery(insertSaleBillingServicesQuery, [sale.uuid, billingServices])
+      .addQuery(insertInvoiceBillingServicesQuery, [invoice.uuid, billingServices])
 
     // calculate the combined charge
-      .addQuery(billingSumCost, [sale.uuid]);
+      .addQuery(billingSumCost, [invoice.uuid]);
   }
 
-  // calculate the new sum of the sale
+  // calculate the new sum of the invoice
   transaction
     .addQuery(combinedSumCost);
 
   // if there are subsidies, insert them
   if (subsidies.length) {
     transaction
-      .addQuery(insertSaleSubsidyQuery, [sale.uuid, subsidies])
+      .addQuery(insertInvoiceSubsidyQuery, [invoice.uuid, subsidies])
 
-      .addQuery(subsidySumCost, [sale.uuid]);
+      .addQuery(subsidySumCost, [invoice.uuid]);
   }
 
   // make sure that the final computation of costs is correct.
   transaction
     .addQuery(finalSumCost)
 
-  // update the original sale with the cost
-    .addQuery(updateSaleCostQuery, [sale.uuid]);
+  // update the original invoice with the cost
+    .addQuery(updateInvoiceCostQuery, [invoice.uuid]);
 
-  journal(transaction, sale.uuid)
+  journal(transaction, invoice.uuid)
     .then(function () {
       res.status(201).json({
-        uuid : uuid.unparse(sale.uuid)
+        uuid : uuid.unparse(invoice.uuid)
       });
     })
     .catch(next)
@@ -338,16 +339,16 @@ function create(req, res, next) {
 }
 
 /**
- * Searches for a sale by query parameters provided.
+ * Searches for a invoice by query parameters provided.
  *
- * GET /sales/search
+ * GET /invoices/search
  */
 function search(req, res, next) {
   let sql =
-    `SELECT BUID(sale.uuid) as uuid, sale.project_id, CONCAT(project.abbr, sale.reference) AS reference,
-      sale.cost, BUID(sale.debtor_uuid) as debtor_uuid, sale.user_id, sale.discount,
-      sale.date, sale.is_distributable
-    FROM sale JOIN project ON project.id = sale.project_id `;
+    `SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
+      invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id,
+      invoice.date, invoice.is_distributable
+    FROM invoice JOIN project ON project.id = invoice.project_id `;
 
   if (req.query.debtor_uuid) {
     req.query.debtor_uuid = db.bid(req.query.debtor_uuid);
@@ -368,25 +369,25 @@ function search(req, res, next) {
 }
 
 /**
- * Searches for a particular sale uuid by reference string.
+ * Searches for a particular invoice uuid by reference string.
  *
  * NOTE - this cannot be combined with the /search route since it would require
  * wrapping a MySQL query in an outer query to do the filtering.  This would be
  * highly inefficient in most cases, or lead to complex code.
  *
- * GET sales/references/:reference
+ * GET invoices/references/:reference
  */
 function reference(req, res, next) {
   let sql =
-    `SELECT BUID(s.uuid) as uuid FROM (
-      SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS reference
-      FROM sale JOIN project ON sale.project_id = project.id
-    )s WHERE s.reference = ?;`;
+    `SELECT BUID(i.uuid) as uuid FROM (
+      SELECT invoice.uuid, CONCAT(project.abbr, invoice.reference) AS reference
+      FROM invoice JOIN project ON invoice.project_id = project.id
+    ) i WHERE i.reference = ?;`;
 
   db.exec(sql, [ req.params.reference ])
   .then(function (rows) {
     if (!rows.length) {
-      throw new NotFound(`Could not find a sale with reference ${req.params.reference}`);
+      throw new NotFound(`Could not find a invoice with reference ${req.params.reference}`);
     }
 
     // references should be unique -- send back only the first result

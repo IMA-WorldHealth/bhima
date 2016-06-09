@@ -13,7 +13,7 @@ PatientInvoiceController.$inject = [
  * This module binds the Patient Invoice Form service to the view.
  *
  * @todo (required) Tabbing through UI grid. Code -> Quantity -> Price
- * @todo (required) Sale made outside of fiscal year error should be handled and shown to user
+ * @todo (required) Invoice made outside of fiscal year error should be handled and shown to user
  * @todo (requires) use a loading button for the form loading state.
  */
 function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify) {

@@ -203,8 +203,8 @@ exports.configure = function configure(app) {
   app.get('/ledgers/debtor/:id', ledger.compileDebtorLedger);
   app.get('/ledgers/debtor_group/:id', ledger.compileGroupLedger);
   app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);
-  app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
-  app.get('/ledgers/debtor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
+  // app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
+  // app.get('/ledgers/debtor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.getFiscalYears);
@@ -346,11 +346,11 @@ exports.configure = function configure(app) {
   // Patient invoice API
 
   // TODO Decide if the route should be named patient invoice
-  app.get('/sales', patientInvoice.list);
-  app.post('/sales', patientInvoice.create);
-  app.get('/sales/search', patientInvoice.search);
-  app.get('/sales/:uuid', patientInvoice.details);
-  app.get('/sales/references/:reference', patientInvoice.reference);
+  app.get('/invoices', patientInvoice.list);
+  app.post('/invoices', patientInvoice.create);
+  app.get('/invoices/search', patientInvoice.search);
+  app.get('/invoices/:uuid', patientInvoice.details);
+  app.get('/invoices/references/:reference', patientInvoice.reference);
 
   // Reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', invoiceReceipt.build);

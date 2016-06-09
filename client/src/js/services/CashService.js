@@ -52,7 +52,7 @@ function CashService(PrototypeApiService, Exchange, Session, moment) {
         totalAmount -= allocatedAmount;
 
         // return a slice of the data
-        return { sale_uuid : invoice.sale_uuid, amount : allocatedAmount };
+        return { invoice_uuid : invoice.invoice_uuid, amount : allocatedAmount };
       })
 
     // filter out invoices that do not have amounts allocated to them
@@ -84,7 +84,7 @@ function CashService(PrototypeApiService, Exchange, Session, moment) {
     // ensure that the caution flag is a Number
     data.is_caution = Number(data.is_caution);
 
-    // process the sale items, allocating costs to each of them
+    // process the invoice item, allocating costs to each of them
     if (data.is_caution === 0) {
       data.items = allocatePaymentAmounts(data);
     }

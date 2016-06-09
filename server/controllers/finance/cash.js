@@ -3,7 +3,7 @@
  *
  *
  * This controller is responsible for processing cash payments for patients. The
- * payments can either be against an previous invoice (sale payment) or a future
+ * payments can either be against an previous invoice (invoice payment) or a future
  * invoice (cautionary payment).
  *
  * In order to reduce the burden of accounting on the user, the user will first
@@ -144,7 +144,7 @@ function detail(req, res, next) {
 
 /**
  * POST /cash
- * Creates a cash payment against one or many previous sales or a cautionary
+ * Creates a cash payment against one or many previous invoices or a cautionary
  * payment.  If a UUID is not provided, one is automatically generated.
  */
 function create(req, res, next) {
@@ -181,7 +181,7 @@ function create(req, res, next) {
         db.bid(item.uuid || uuid.v4()),
         item.cash_uuid,
         item.amount,
-        db.bid(item.sale_uuid)
+        db.bid(item.invoice_uuid)
       ];
     });
   }

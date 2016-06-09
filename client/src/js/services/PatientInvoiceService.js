@@ -6,13 +6,13 @@ PatientInvoiceService.$inject = [ '$http', 'util', 'SessionService' ];
 /**
  * Patient Invoice Service
  *
- * Allows direct querying of the /sales API.  Normally this should be done
+ * Allows direct querying of the /invoices API.  Normally this should be done
  * through the PatientService, but for queries not tied to particular patients,
  * this service is particularly useful.
  */
 function PatientInvoiceService($http, util, Session) {
   var service = this;
-  var baseUrl = '/sales/';
+  var baseUrl = '/invoices/';
 
   service.read = read;
   service.reference = reference;
@@ -22,7 +22,7 @@ function PatientInvoiceService($http, util, Session) {
    * @method read
    *
    * @description
-   * Retrieves a particular sale by UUID or a list of all sales if no UUID is
+   * Retrieves a particular invoice by UUID or a list of all invoices if no UUID is
    * specified.
    *
    * @param {String} uuid (optional) - the uuid of the patient invoice to look
@@ -75,7 +75,7 @@ function PatientInvoiceService($http, util, Session) {
     invoice.billingServices = billingServices;
     invoice.subsidies = subsidies;
 
-    return $http.post(baseUrl, { sale : invoice })
+    return $http.post(baseUrl, { invoice : invoice })
       .then(util.unwrapHttpResponse);
   }
 

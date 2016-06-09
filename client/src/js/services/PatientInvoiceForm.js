@@ -96,7 +96,7 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
     // this will be referred to as PatientInvoiceForm.store.data
     this.store = new Store({ identifier : 'uuid', data: [] });
 
-    // this.rows = new PatientInvoiceFormItems('SaleItems');
+    // this.rows = new PatientInvoiceFormItems('InvoiceItems');
     this.setup();
   }
 

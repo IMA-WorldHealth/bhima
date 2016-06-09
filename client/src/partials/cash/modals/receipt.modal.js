@@ -51,7 +51,7 @@ function CashReceiptModalController(uuid, patientUuid, ModalInstance, Cash, Proj
         // read in the cashboxes to tell the user where it was created
         Cashboxes.read(receipt.cashbox_id),
 
-        // find out who created the sale
+        // find out who created the invoice
         Users.read(receipt.user_id),
 
         // get the project information
@@ -82,7 +82,7 @@ function CashReceiptModalController(uuid, patientUuid, ModalInstance, Cash, Proj
       vm.receipt.total =
         Exchange.convertFromEnterpriseCurrency(vm.receipt.currency_id, vm.receipt.date, vm.receipt.amount);
 
-      // calculate the exchange rate on the date of sale
+      // calculate the exchange rate on the date of invoice
       vm.rate =
         Exchange.getExchangeRate(vm.receipt.currency_id, vm.receipt.date);
 

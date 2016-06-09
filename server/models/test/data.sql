@@ -332,11 +332,11 @@ INSERT INTO `debtor_group_subsidy` VALUES
   (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 1, CURRENT_TIMESTAMP);
 
 -- patient invoices
-INSERT INTO sale (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, discount, date, description, timestamp, is_distributable) VALUES
-  (1,2,HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'),75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,0,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
-  (1,1,HUID('c44619e0-3a88-4754-a750-a414fc9567bf'),25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,0,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
+INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at, is_distributable) VALUES
+  (1,2,HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'),75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
+  (1,1,HUID('c44619e0-3a88-4754-a750-a414fc9567bf'),25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
 
-INSERT INTO sale_item VALUES
+INSERT INTO invoice_item VALUES
   (HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'),HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000);
 
 SET @pjid = HUID(UUID());
