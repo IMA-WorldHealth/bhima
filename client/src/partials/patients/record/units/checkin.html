@@ -1,12 +1,3 @@
-<style>
-  .icon-spacer {
-    margin-left : 18px;
-  }
-
-  .subtext {
-    color : #838383;
-  }
-</style>
 <div class="panel panel-default">
   <div class="panel-heading">
     {{ "PATIENT_RECORDS.CHECK_IN.TITLE" | translate }}
@@ -19,10 +10,14 @@
         {{ "PATIENT_RECORDS.CHECK_IN.NOT_RECENT" | translate }}
     </p>
 
-    <a class="btn btn-default btn-block">
+    <bh-loading-button
+        id="checkin"
+        loading-state="CheckInCtrl.checkingIn"
+        button-class="btn-default btn-block"
+        ng-click="CheckInCtrl.checkin()">
       <i class="fa fa-sign-in"></i>
       {{ "PATIENT_RECORDS.CHECK_IN.SUBMIT" | translate }}
-    </a>
+    </bh-loading-button>
 
     <br>
     <p><b>{{ "PATIENT_RECORDS.CHECK_IN.RECENT" | translate }}</b></p>
@@ -35,10 +30,10 @@
     </p>
 
     <ul class="list-unstyled">
-      <li ng-repeat="visit in CheckInCtrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
+      <li data-check-entry ng-repeat="visit in CheckInCtrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
         <i class="fa fa-check-square-o"></i> {{ "PATIENT_RECORDS.CHECK_IN.ITEM" | translate }} <b><span am-time-ago="visit.start_date"></span></b> by {{visit.username}}
         <br>
-        <span class="icon-spacer subtext"><i>{{visit.start_date | date : 'medium'}}</i></span>
+        <span class="icon-spacer text-muted"><i>{{visit.start_date | date : 'medium'}}</i></span>
       </li>
     </ul>
   </div>

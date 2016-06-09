@@ -1,20 +1,17 @@
 angular.module('bhima.controllers')
 .controller('PatientRecordController', PatientRecordController);
 
-PatientRecordController.$inject = ['$state', '$stateParams', 'PatientService', 'NotifyService', 'moment'];
+PatientRecordController.$inject = ['$stateParams', 'PatientService', 'NotifyService', 'moment'];
 
-function PatientRecordController($state, $stateParams, Patients, Notify, moment) {
+function PatientRecordController($stateParams, Patients, Notify, moment) {
   var vm = this;
   var patientID = $stateParams.patientID;
   
-  console.log('Patient Controller Fired');
-  // $state.transitionTo('patientRecord.units');
-  
   vm.loading = true;
+
   /** @fixme if no uuid is provided this will download all the patients through the base url '/' */
   Patients.read(patientID)
     .then(function (result) {
-      console.log('downloaded', result);
       vm.patient = result;
       vm.loading = false;
 
@@ -26,5 +23,4 @@ function PatientRecordController($state, $stateParams, Patients, Notify, moment)
       vm.loading = false;
       Notify.handleError(error);
     });
-
 }

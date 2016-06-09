@@ -609,7 +609,8 @@
       "NOT_RECENT" : "This patient has not recently been checked in, check the patient in to track this hospital visit.",
       "ORIGINAL"  : "This patient has never been checked in.",
       "RECENT"  : "Recent Visits",
-      "ITEM" : "Checked in"
+      "ITEM" : "Checked in",
+      "SUCCESS" : "Patient has been checked in"
     }
   },
   "PATIENT_REG": {

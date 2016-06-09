@@ -34,42 +34,32 @@
               <div class="col-sm-4">
                 <div>
 
-                  <div class="form-group">
-                    <label class="control-label">{{"FORM.LABELS.NAME" | translate}}</label>
-                    <p class="form-control-static" id="name">{{::PatientRecordCtrl.patient.name}}</p>
-                  </div>
+                  <dl>
+                    <dt>{{"FORM.LABELS.NAME" | translate}}</dt>
+                    <dd id="name">{{::PatientRecordCtrl.patient.name}}</dd>
 
-                  <div class="form-group">
-                    <label class="control-label">{{"FORM.LABELS.PATIENT_ID" | translate}}</label>
-                    <p class="form-control-static" id="patientID">{{::PatientRecordCtrl.patient.reference}}</p>
-                  </div>
+                    <dt>{{"FORM.LABELS.PATIENT_ID" | translate}}</dt>
+                    <dd id="patientID">{{::PatientRecordCtrl.patient.reference}}</dd>
 
-                  <div class="form-group">
-                    <label class="control-label">{{"FORM.LABELS.HOSPITAL_FILE_NR" | translate}}</label>
-                    <p class="form-control-static" id="hospitalNo">{{::PatientRecordCtrl.patient.hospital_no}}</p>
-                  </div>
+                    <dt>{{"FORM.LABELS.HOSPITAL_FILE_NR" | translate}}</dt>
+                    <dd id="hospitalNo">{{::PatientRecordCtrl.patient.hospital_no}}</dd>
 
-                  <div class="form-group">
-                    <label class="control-label">{{ "TABLE.COLUMNS.DATE_REGISTERED" | translate }}</label>
-                    <p class="form-control-static"><span am-time-ago="PatientRecordCtrl.patient.registration_date"></span></p>
-                  </div>
+                    <dt>{{ "TABLE.COLUMNS.DATE_REGISTERED" | translate }}</dt>
+                    <dd><span am-time-ago="PatientRecordCtrl.patient.registration_date"></span></dd>
+                  </dl>
 
                 </div>
               </div>
 
               <div class="col-sm-4">
-                <div class="form-horizontal">
-                  <div class="form-group">
-                    <label class="control-label">{{ "TABLE.COLUMNS.AGE" | translate }}</label>
-                    <p class="form-control-static" id="age">{{::PatientRecordCtrl.patient.age}}</p>
-                  </div>
 
-                  <div class="form-group">
-                    <label class="control-label">{{ "TABLE.COLUMNS.GENDER" | translate }}</label>
-                    <p class="form-control-static" id="gender">{{::PatientRecordCtrl.patient.sex}}</p>
-                  </div>
+                <dl>
+                  <dt>{{ "TABLE.COLUMNS.AGE" | translate }}</dt>
+                  <dd id="age">{{::PatientRecordCtrl.patient.age}}</dd>
 
-                </div>
+                  <dt>{{ "TABLE.COLUMNS.GENDER" | translate }}</dt>
+                  <dd id="gender">{{::PatientRecordCtrl.patient.sex}}</dd>
+                </dl>
               </div>
 
               <div class="col-sm-4">

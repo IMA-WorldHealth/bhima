@@ -38,12 +38,13 @@ function list(req, res, next) {
   let limitQuery = '';
 
   if (req.query.limit) {
-    
+    const limit = Number(req.query.limit);
+
     // validate query string is valid - do not template in anything sent from the client
-    if (isNaN(Number(req.query.limit))) { 
+    if (isNaN(limit)) {
       throw new BadRequest('limit query must be a valid number');
     }
-    limitQuery = `LIMIT ${req.query.limit}`;
+    limitQuery = `LIMIT ${limit}`;
   }
 
   let listVisitsQuery =

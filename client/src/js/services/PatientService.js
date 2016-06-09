@@ -30,7 +30,6 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   service.update = update;
   service.groups = groups;
   service.updateGroups = updateGroups;
-  service.logVisit = logVisit;
 
   service.billingServices = billingServices;
   service.subsidies = subsidies;
@@ -122,11 +121,6 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
     var path = baseUrl.concat(uuid, '/groups');
 
     return $http.post(path, options)
-      .then(util.unwrapHttpResponse);
-  }
-
-  function logVisit(patientUuid) {
-    return $http.post(baseUrl.concat('visit'), {uuid : patientUuid})
       .then(util.unwrapHttpResponse);
   }
 

@@ -67,12 +67,8 @@ exports.searchReference = searchReference;
 // Search fuzzy
 exports.searchFuzzy = searchFuzzy;
 
-// log patient visit
-exports.visit = visit;
-
 /** @todo discuss if these should be handled by the entity APIs or by patients. */
 exports.billingServices = billingServices;
-exports.priceLists = priceLists;
 exports.subsidies = subsidies;
 
 /** expose patient detail query internally */
@@ -361,31 +357,6 @@ function searchFuzzy(req, res, next) {
   .done();
 }
 
-function visit(req, res, next) {
-  var visitData = req.body;
-
-  logVisit(visitData, req.session.user.id)
-    .then(function (result) {
-
-      // Assign patient ID as confirmation
-      result.uuid = visitData.uuid;
-
-      res.status(200).send(result);
-    })
-    .catch(next)
-    .done();
-}
-
-/**
- * @function logVisit
- */
-function logVisit(patientData, userId) {
-  let visitId = db.bid(uuid.v4());
-  let sql =
-    'INSERT INTO patient_visit (uuid, patient_uuid, registered_by) VALUES (?);';
-  return db.exec(sql, [[visitId, db.bid(patientData.uuid), userId]]);
-}
-
 /**
  * GET /patient/search?name={string}&detail={boolean}&limit={number}
  * GET /patient/search?reference={string}&detail={boolean}&limit={number}
@@ -606,15 +577,6 @@ function billingServices(req, res, next) {
     })
     .catch(next)
     .done();
-}
-
-function priceLists(req, res, next) {
-  var uid = db.bid(req.params.uuid);
-
-  // var patientPriceListQuery = '
-    // 'SELECT * FROM price_lists
-  // var patientPricesQuery =
-  //   'SELECT
 }
 
 function subsidies(req, res, next) {

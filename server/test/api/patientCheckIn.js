@@ -26,7 +26,8 @@ describe('Patient Check In', () => {
   
   it('GET /patients/:uuid/visits?limit=n limits the results', () => {
     const LIMIT = 1;
-    return agent.get(`/patients/${patientUuid}/visits?limit=${LIMIT}`)
+    return agent.get(`/patients/${patientUuid}/visits`)
+      .query({ limit : LIMIT })
       .then(function (result) { 
         expect(result).to.have.status(200); 
         expect(result.body.length).to.equal(LIMIT);
