@@ -44,7 +44,8 @@ INSERT INTO unit VALUES
   (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
   (140, 'Inventory Group', 'TREE.INVENTORY_GROUP', 'Inventory group module', 138, '/partials/inventory/groups', '/inventory/groups'),
-  (141, 'Inventory Type', 'TREE.INVENTORY_TYPE', 'Inventory type module', 138, '/partials/inventory/types', '/inventory/types');
+  (141, 'Inventory Type', 'TREE.INVENTORY_TYPE', 'Inventory type module', 138, '/partials/inventory/types', '/inventory/types'),
+  (141, 'Inventory Unit', 'TREE.INVENTORY_UNIT', 'Inventory unit module', 138, '/partials/inventory/units', '/inventory/units');
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');

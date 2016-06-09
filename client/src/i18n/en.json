@@ -943,6 +943,7 @@
     "INVENTORY_LIST"             : "List",
     "INVENTORY_MANAGEMENT"       : "Inventory Management",
     "INVENTORY_TYPE"             : "Type",
+    "INVENTORY_UNIT"             : "Dosage Form",
     "INVENTORY_VIEW"             : "Stock",
     "JOURNAL_VOUCHER"            : "Journal Voucher",
     "LOCATION"                   : "Locations Management",

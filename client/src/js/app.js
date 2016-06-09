@@ -382,12 +382,12 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'InventoryListController as InventoryCtrl',
     templateUrl : 'partials/inventory/list/list.html'
   })
+  .state('/inventory/groups', {
+    url : '/inventory/groups',
+    controller : 'InventoryGroupsController as InventoryCtrl',
+    templateUrl : 'partials/inventory/groups/groups.html'
+  })
   // @TODO IMPLEMENT THEM
-  // .state('/inventory/groups', {
-  //   url : '/inventory/groups',
-  //   controller : 'InventoryGroupsController as InventoryCtrl',
-  //   templateUrl : 'partials/inventory/groups/groups.html'
-  // })
   // .state('/inventory/types',  {
   //   url : '/inventory/types',
   //   controller : 'InventoryTypesController as InventoryCtrl',

@@ -917,6 +917,7 @@
     "INVENTORY_LIST"             : "Liste",
     "INVENTORY_MANAGEMENT"       : "Gestion des Inventaires ",
     "INVENTORY_TYPE"             : "Type",
+    "INVENTORY_UNIT"             : "Forme Galenique",
     "INVENTORY_VIEW"             : "Stocks",
     "JOURNAL_VOUCHER"            : "Ajout Transactions",
     "LOCATION"                   : "Localisations",
