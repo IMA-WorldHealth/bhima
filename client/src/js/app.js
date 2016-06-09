@@ -916,14 +916,17 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'ReportPatientVisitStatus',
     templateUrl : '/partials/reports/patient_visit_status/patient_visit_status.html'
   })
+  .state('/reports/stock_entry', {
+    controller : 'ReportStockEntryController',
+    templateUrl : 'partials/reports/stock/stock_entry/stock_entry.html'
+  })
   .state('/error404', {
     url : '/error404',
     controller : 'error404Controller as error404Ctrl',
     templateUrl : 'partials/error404/error404.html'
   });
   
-  $urlRouterProvider.otherwise('/error404');
-}
+  $urlRouterProvider.otherwise('/error404');}
 
 function translateConfig($translateProvider) {
   //TODO Review i18n and determine if this it the right solution/grade_employers/
