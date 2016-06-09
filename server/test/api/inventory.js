@@ -6,7 +6,7 @@ const helpers = require('./helpers');
 const uuid    = require('node-uuid');
 helpers.configure(chai);
 
-describe('(/inventory) The inventory HTTP API', function () {
+describe('(/inventory) The inventory HTTP API :: ', function () {
 
   // Logs in before each test
   const agent = chai.request.agent(helpers.baseUrl);
@@ -14,6 +14,12 @@ describe('(/inventory) The inventory HTTP API', function () {
 
   // default number of inventory groups
   let countInventoryGroups = 0;
+  let countInventorytypes  = 0;
+  let countInventoryUnits  = 0;
+
+  // auto increment id catcher
+  let inventoryUnitId,
+      inventoryTypeId;
 
   // inventory list items
   let metadata = {
@@ -61,6 +67,14 @@ describe('(/inventory) The inventory HTTP API', function () {
 
   let updateType = {
     text : '[Test] Article Chirurgie'
+  };
+
+  let inventoryUnit = {
+    text : '[Test] Comprimés'
+  };
+
+  let updateUnit = {
+    text : '[Test] Gellule'
   };
 
   it('GET /inventory/metadata returns the list of inventory metadata', () => {
@@ -150,6 +164,15 @@ describe('(/inventory) The inventory HTTP API', function () {
       .catch(helpers.handler);
   });
 
+  // delete the inventory groups
+  it('DELETE /inventroy/groups delete an existing inventory group', () => {
+    return agent.delete('/inventory/groups/' + inventoryGroup.id)
+      .then((res) => {
+        helpers.api.deleted(res);
+      })
+      .catch(helpers.handler);
+  });
+
   // ========================== inventory types ===============================
 
   // create inventory type
@@ -195,6 +218,73 @@ describe('(/inventory) The inventory HTTP API', function () {
         expect(type).to.contain.all.keys(Object.keys(inventoryType));
         expect(type).to.be.deep.equals(updateType);
         helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
+
+  // delete the inventory types
+  it('DELETE /inventroy/types delete an existing inventory types', () => {
+    return agent.delete('/inventory/types/' + inventoryType.id)
+      .then((res) => {
+        helpers.api.deleted(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  // ========================== inventory units ===============================
+
+  // create inventory type
+  it('POST /inventory/units create a new inventory units', () => {
+    return agent.post('/inventory/units')
+      .send(inventoryUnit)
+      .then((res) => {
+        inventoryUnit.id = res.body.id;
+        helpers.api.created(res);
+        expect(res.body.id).to.be.equal(inventoryUnit.id);
+      })
+      .catch(helpers.handler);
+  });
+
+  // update inventory units
+  it('PUT /inventory/units/:id updates an existing inventory units', () => {
+    return agent.put('/inventory/units/' + inventoryUnit.id)
+      .send(updateUnit)
+      .then((res) => {
+        let unit = res.body[0];
+        updateUnit.id = inventoryUnit.id;
+        expect(unit).to.contain.all.keys(Object.keys(updateUnit));
+        expect(unit).to.be.deep.equals(updateUnit);
+      })
+      .catch(helpers.handler);
+  });
+
+  // list of inventory units
+  it('GET /inventory/units returns list of inventory units', () => {
+    return agent.get('/inventory/units')
+      .then((res) => {
+        countInventoryUnits = res.body.length;
+        helpers.api.listed(res, countInventoryUnits);
+      })
+      .catch(helpers.handler);
+  });
+
+  // detailS of inventory units
+  it('GET /inventory/units returns details of an inventory unit', () => {
+    return agent.get('/inventory/units/' + inventoryUnit.id)
+      .then((res) => {
+        let unit = res.body[0];
+        expect(unit).to.contain.all.keys(Object.keys(inventoryUnit));
+        expect(unit).to.be.deep.equals(updateUnit);
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
+
+  // delete the inventory unit
+  it('DELETE /inventroy/units delete an existing inventory unit', () => {
+    return agent.delete('/inventory/units/' + inventoryUnit.id)
+      .then((res) => {
+        helpers.api.deleted(res);
       })
       .catch(helpers.handler);
   });

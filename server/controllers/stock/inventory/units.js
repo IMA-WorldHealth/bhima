@@ -11,6 +11,7 @@ exports.list    = list;
 exports.details = details;
 exports.create  = create;
 exports.update  = update;
+exports.remove  = remove;
 
 /** list inventory unit */
 function list () {
@@ -52,6 +53,14 @@ function update (record, id) {
    */
   return db.exec(sql, [record, id])
   .then(() => getUnits(id));
+}
+
+/** remove inventory unit */
+function remove (id) {
+  'use strict';
+
+  let sql = 'DELETE FROM inventory_unit WHERE id = ?;';
+  return db.exec(sql, [id]);
 }
 
 /**

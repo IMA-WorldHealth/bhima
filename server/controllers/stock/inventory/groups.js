@@ -12,6 +12,7 @@ exports.list    = list;
 exports.details = details;
 exports.create  = create;
 exports.update  = update;
+exports.remove  = remove;
 
 /** list inventory group */
 function list () {
@@ -74,4 +75,13 @@ function getGroups(uid) {
   uid = (uid) ? db.bid(uid) : undefined;
   sql += (uid) ? ' WHERE uuid = ?;' : ';';
   return db.exec(sql, [uid]);
+}
+
+/** remove inventory group */
+function remove (uuid) {
+  'use strict';
+
+  let uib = db.bid(uuid);
+  let sql = 'DELETE FROM inventory_group WHERE uuid = ?;';
+  return db.exec(sql, [uib]);
 }

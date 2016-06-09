@@ -51,18 +51,21 @@ exports.createInventoryGroups  = createInventoryGroups;
 exports.updateInventoryGroups  = updateInventoryGroups;
 exports.listInventoryGroups    = listInventoryGroups;
 exports.detailsInventoryGroups = detailsInventoryGroups;
+exports.deleteInventoryGroups  = deleteInventoryGroups;
 
 // expose inventory types methods
 exports.createInventoryTypes  = createInventoryTypes;
 exports.updateInventoryTypes  = updateInventoryTypes;
 exports.listInventoryTypes    = listInventoryTypes;
 exports.detailsInventoryTypes = detailsInventoryTypes;
+exports.deleteInventoryTypes  = deleteInventoryTypes;
 
 // expose inventory units methods
 exports.createInventoryUnits  = createInventoryUnits;
 exports.updateInventoryUnits  = updateInventoryUnits;
 exports.listInventoryUnits    = listInventoryUnits;
 exports.detailsInventoryUnits = detailsInventoryUnits;
+exports.deleteInventoryUnits  = deleteInventoryUnits;
 
 exports.getInventoryConsumptionById = getInventoryConsumptionById;
 exports.getInventoryConsumption = getInventoryConsumption;
@@ -234,6 +237,23 @@ function detailsInventoryGroups(req, res, next) {
   .done();
 }
 
+/**
+ * DELETE /inventory/groups/:uuid
+ * delete an inventory group
+ */
+function deleteInventoryGroups(req, res, next) {
+  'use strict';
+
+  groups.remove(req.params.uuid)
+  .then(() => {
+    res.status(204).send();
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
 // ======================= inventory type =============================
 /**
  * POST /inventory/types
@@ -303,6 +323,23 @@ function detailsInventoryTypes(req, res, next) {
   .done();
 }
 
+/**
+ * DELETE /inventory/types/:id
+ * delete an inventory types
+ */
+function deleteInventoryTypes(req, res, next) {
+  'use strict';
+
+  types.remove(req.params.id)
+  .then(() => {
+    res.status(204).send();
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
 // ======================= inventory unit =============================
 /**
  * POST /inventory/units
@@ -365,6 +402,23 @@ function detailsInventoryUnits(req, res, next) {
   units.details(req.params.id)
   .then((rows) => {
     res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * DELETE /inventory/units/:id
+ * delete an inventory unit
+ */
+function deleteInventoryUnits(req, res, next) {
+  'use strict';
+
+  units.remove(req.params.id)
+  .then(() => {
+    res.status(204).send();
   })
   .catch(function (error) {
     core.errorHandler(error, req, res, next);

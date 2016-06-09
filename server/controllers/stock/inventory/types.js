@@ -11,6 +11,7 @@ exports.list    = list;
 exports.details = details;
 exports.create  = create;
 exports.update  = update;
+exports.remove  = remove;
 
 /** list inventory type */
 function list () {
@@ -63,5 +64,13 @@ function getTypes(id) {
 
   let sql = `SELECT id, text FROM inventory_type `;
   sql += (id) ? ' WHERE id = ?;' : ';';
+  return db.exec(sql, [id]);
+}
+
+/** remove inventory type */
+function remove (id) {
+  'use strict';
+
+  let sql = 'DELETE FROM inventory_type WHERE id = ?;';
   return db.exec(sql, [id]);
 }
