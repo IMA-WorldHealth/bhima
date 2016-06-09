@@ -323,6 +323,7 @@
       "EMPLOYER"               : "Employer",
       "ENTERPRISE"             : "Enterprise",
       "ENTERPRISE_ID"          : "ID enterprise",
+      "ERROR_404"              : "Error 404",
       "EXCHANGE_RATE"          : "Exchange Rate",
       "FATHER_NAME"            : "Father's Name",
       "FAX"                    : "Fax",
@@ -520,7 +521,8 @@
     },
     "WARNNINGS": {
       "EMPTY_SELECTION" : "Empty Selection",
-      "NOT_FOUND"       : "Not found"
+      "NOT_FOUND"       : "Not found",
+      "PAGE_NOT_FOUND"  : "The page you requested could not be found"
     }
   },
   "HOME": {

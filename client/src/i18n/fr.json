@@ -320,6 +320,7 @@
       "EMPLOYER"               : "Employeur",
       "ENTERPRISE"             : "Entreprise",
       "ENTERPRISE_ID"          : "ID entreprise",
+      "ERROR_404"              : "Erreur 404",
       "EXCHANGE_RATE"          : "Taux d'echange",
       "FATHER_NAME"            : "Nom du Père",
       "FAX"                    : "Fax",
@@ -517,7 +518,8 @@
     },
     "WARNNINGS": {
       "EMPTY_SELECTION" : "Selection vide",
-      "NOT_FOUND"       : "Non trouvee"
+      "NOT_FOUND"       : "Non trouvee",
+      "PAGE_NOT_FOUND"  : "La page demandée n'a pas été trouvée"
     }
   },
   "HOME": {
