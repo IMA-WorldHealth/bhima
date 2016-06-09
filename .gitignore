@@ -34,3 +34,7 @@ integrations.log
 #ignore the tmp file
 
 /utilities/tmp/
+
+#ignore webstorm files
+
+.idea/*
