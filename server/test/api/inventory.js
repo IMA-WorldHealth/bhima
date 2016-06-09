@@ -14,15 +14,6 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  // default number of inventory groups
-  let countInventoryGroups = 0;
-  let countInventorytypes  = 0;
-  let countInventoryUnits  = 0;
-
-  // auto increment id catcher
-  let inventoryUnitId,
-      inventoryTypeId;
-
   // inventory list items
   let metadata = {
     uuid : uuid.v4(),
@@ -79,29 +70,29 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
     text : '[Test] Gellule'
   };
 
-  it('GET /inventory/metadata returns the list of inventory metadata', () => {
+  it('GET /inventory/metadata returns the list of inventory metadata', function () {
     return agent.get('/inventory/metadata')
-      .then((res) => {
+      .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });
 
-  it('POST /inventory/metadata create a new inventory metadata', () => {
+  it('POST /inventory/metadata create a new inventory metadata', function () {
     return agent.post('/inventory/metadata')
       .send(metadata)
-      .then((res) => {
+      .then(function (res) {
         helpers.api.created(res);
         expect(res.body.uuid).to.be.equal(metadata.uuid);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /inventory/:uuid/metadata update an existing inventory metadata', () => {
+  it('PUT /inventory/:uuid/metadata update an existing inventory metadata', function () {
     return agent.put('/inventory/' + metadata.uuid + '/metadata')
       .send(metadataUpdate)
-      .then((res) => {
+      .then(function (res) {
         // NOTE: Returned data are from the /inventory/:uuid/metadata API
         // these data are not sended by the test but come from join with other table :
         // label, groupNmae, type, unit
@@ -116,10 +107,10 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   // ========================== inventory groups ==============================
 
   // create inventory group
-  it('POST /inventory/group create a new inventory group', () => {
+  it('POST /inventory/group create a new inventory group', function () {
     return agent.post('/inventory/groups')
       .send(inventoryGroup)
-      .then((res) => {
+      .then(function (res) {
         helpers.api.created(res);
         expect(res.body.uuid).to.be.equal(inventoryGroup.uuid);
       })
@@ -127,10 +118,10 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // update inventory group
-  it('PUT /inventory/group/:uuid updates an existing inventory group', () => {
+  it('PUT /inventory/group/:uuid updates an existing inventory group', function () {
     return agent.put('/inventory/groups/' + inventoryGroup.uuid)
       .send(updateGroup)
-      .then((res) => {
+      .then(function (res) {
         let group = res.body[0];
         updateGroup.uuid = inventoryGroup.uuid;
         expect(group).to.contain.all.keys(Object.keys(updateGroup));
@@ -142,9 +133,9 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // list of inventory groups
-  it('GET /inventory/group returns list of inventory groups', () => {
+  it('GET /inventory/group returns list of inventory groups', function () {
     return agent.get('/inventory/groups')
-      .then((res) => {
+      .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
       })
@@ -152,9 +143,9 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // detailS of inventory groups
-  it('GET /inventory/group returns details of an inventory group', () => {
+  it('GET /inventory/group returns details of an inventory group', function () {
     return agent.get('/inventory/groups/' + inventoryGroup.uuid)
-      .then((res) => {
+      .then(function (res) {
         let group = res.body[0];
         expect(group).to.contain.all.keys(Object.keys(inventoryGroup));
         // compare value to the last update of our request
@@ -167,9 +158,9 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // delete the inventory groups
-  it('DELETE /inventroy/groups delete an existing inventory group', () => {
+  it('DELETE /inventroy/groups delete an existing inventory group', function () {
     return agent.delete('/inventory/groups/' + inventoryGroup.id)
-      .then((res) => {
+      .then(function (res) {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);
@@ -178,10 +169,10 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   // ========================== inventory types ===============================
 
   // create inventory type
-  it('POST /inventory/types create a new inventory types', () => {
+  it('POST /inventory/types create a new inventory types', function () {
     return agent.post('/inventory/types')
       .send(inventoryType)
-      .then((res) => {
+      .then(function (res) {
         inventoryType.id = res.body.id;
         helpers.api.created(res);
         expect(res.body.id).to.be.equal(inventoryType.id);
@@ -190,10 +181,10 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // update inventory type
-  it('PUT /inventory/types/:id updates an existing inventory type', () => {
+  it('PUT /inventory/types/:id updates an existing inventory type', function () {
     return agent.put('/inventory/types/' + inventoryType.id)
       .send(updateType)
-      .then((res) => {
+      .then(function (res) {
         let type = res.body[0];
         updateType.id = inventoryType.id;
         expect(type).to.contain.all.keys(Object.keys(updateType));
@@ -203,9 +194,9 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // list of inventory type
-  it('GET /inventory/types returns list of inventory types', () => {
+  it('GET /inventory/types returns list of inventory types', function () {
     return agent.get('/inventory/types')
-      .then((res) => {
+      .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
       })
@@ -213,9 +204,9 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // detailS of inventory types
-  it('GET /inventory/types returns details of an inventory type', () => {
+  it('GET /inventory/types returns details of an inventory type', function () {
     return agent.get('/inventory/types/' + inventoryType.id)
-      .then((res) => {
+      .then(function (res) {
         let type = res.body[0];
         expect(type).to.contain.all.keys(Object.keys(inventoryType));
         expect(type).to.be.deep.equals(updateType);
@@ -225,9 +216,9 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // delete the inventory types
-  it('DELETE /inventroy/types delete an existing inventory types', () => {
+  it('DELETE /inventroy/types delete an existing inventory types', function () {
     return agent.delete('/inventory/types/' + inventoryType.id)
-      .then((res) => {
+      .then(function (res) {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);
@@ -236,10 +227,10 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   // ========================== inventory units ===============================
 
   // create inventory type
-  it('POST /inventory/units create a new inventory units', () => {
+  it('POST /inventory/units create a new inventory units', function () {
     return agent.post('/inventory/units')
       .send(inventoryUnit)
-      .then((res) => {
+      .then(function (res) {
         inventoryUnit.id = res.body.id;
         helpers.api.created(res);
         expect(res.body.id).to.be.equal(inventoryUnit.id);
@@ -248,10 +239,10 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // update inventory units
-  it('PUT /inventory/units/:id updates an existing inventory units', () => {
+  it('PUT /inventory/units/:id updates an existing inventory units', function () {
     return agent.put('/inventory/units/' + inventoryUnit.id)
       .send(updateUnit)
-      .then((res) => {
+      .then(function (res) {
         let unit = res.body[0];
         updateUnit.id = inventoryUnit.id;
         expect(unit).to.contain.all.keys(Object.keys(updateUnit));
@@ -261,9 +252,9 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // list of inventory units
-  it('GET /inventory/units returns list of inventory units', () => {
+  it('GET /inventory/units returns list of inventory units', function () {
     return agent.get('/inventory/units')
-      .then((res) => {
+      .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
       })
@@ -271,9 +262,9 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // detailS of inventory units
-  it('GET /inventory/units returns details of an inventory unit', () => {
+  it('GET /inventory/units returns details of an inventory unit', function () {
     return agent.get('/inventory/units/' + inventoryUnit.id)
-      .then((res) => {
+      .then(function (res) {
         let unit = res.body[0];
         expect(unit).to.contain.all.keys(Object.keys(inventoryUnit));
         expect(unit).to.be.deep.equals(updateUnit);
@@ -283,9 +274,9 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   });
 
   // delete the inventory unit
-  it('DELETE /inventroy/units delete an existing inventory unit', () => {
+  it('DELETE /inventroy/units delete an existing inventory unit', function () {
     return agent.delete('/inventory/units/' + inventoryUnit.id)
-      .then((res) => {
+      .then(function (res) {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);
