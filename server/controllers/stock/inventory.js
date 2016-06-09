@@ -25,6 +25,8 @@
 * results.
 */
 
+'use strict';
+
 var db = require('../../lib/db'),
     q  = require('q');
 
@@ -91,7 +93,6 @@ exports.getInventoryDonationsById = getInventoryDonationsById;
  * Create a new inventory data entry
  */
 function createInventoryItems(req, res, next) {
-  'use strict';
 
   core.createItemsMetadata(req.body, req.session)
   .then((identifier) => {
@@ -108,7 +109,6 @@ function createInventoryItems(req, res, next) {
  * Update an inventory data entry
  */
 function updateInventoryItems(req, res, next) {
-  'use strict';
 
   core.updateItemsMetadata(req.body, req.params.uuid)
   .then((metadata) => {
@@ -127,7 +127,6 @@ function updateInventoryItems(req, res, next) {
 * @function getInventoryItems
 */
 function getInventoryItems(req, res, next) {
-  'use strict';
 
   core.getItemsMetadata()
   .then(function (rows) {
@@ -150,7 +149,6 @@ function getInventoryItems(req, res, next) {
 * @function getInventoryItemsById
 */
 function getInventoryItemsById(req, res, next) {
-  'use strict';
 
   var uuid = req.params.uuid;
 
@@ -174,7 +172,6 @@ function getInventoryItemsById(req, res, next) {
  * Create a new inventory group
  */
 function createInventoryGroups(req, res, next) {
-  'use strict';
 
   groups.create(req.body)
   .then((identifier) => {
@@ -191,7 +188,6 @@ function createInventoryGroups(req, res, next) {
  * Create a new inventory group
  */
 function updateInventoryGroups(req, res, next) {
-  'use strict';
 
   groups.update(req.body, req.params.uuid)
   .then((rows) => {
@@ -208,7 +204,6 @@ function updateInventoryGroups(req, res, next) {
  * get the list of inventory groups
  */
 function listInventoryGroups(req, res, next) {
-  'use strict';
 
   groups.list()
   .then((rows) => {
@@ -225,7 +220,6 @@ function listInventoryGroups(req, res, next) {
  * get the list of inventory groups
  */
 function detailsInventoryGroups(req, res, next) {
-  'use strict';
 
   groups.details(req.params.uuid)
   .then((rows) => {
@@ -242,9 +236,8 @@ function detailsInventoryGroups(req, res, next) {
  * delete an inventory group
  */
 function deleteInventoryGroups(req, res, next) {
-  'use strict';
 
-  groups.remove(req.params.uuid)
+  units.remove(req.params.uuid)
   .then(() => {
     res.status(204).send();
   })
@@ -260,7 +253,6 @@ function deleteInventoryGroups(req, res, next) {
  * Create a new inventory types
  */
 function createInventoryTypes(req, res, next) {
-  'use strict';
 
   types.create(req.body)
   .then((id) => {
@@ -277,7 +269,6 @@ function createInventoryTypes(req, res, next) {
  * Create a new inventory types
  */
 function updateInventoryTypes(req, res, next) {
-  'use strict';
 
   types.update(req.body, req.params.id)
   .then((rows) => {
@@ -294,7 +285,6 @@ function updateInventoryTypes(req, res, next) {
  * get the list of inventory types
  */
 function listInventoryTypes(req, res, next) {
-  'use strict';
 
   types.list()
   .then((rows) => {
@@ -311,7 +301,6 @@ function listInventoryTypes(req, res, next) {
  * get the list of inventory types
  */
 function detailsInventoryTypes(req, res, next) {
-  'use strict';
 
   types.details(req.params.id)
   .then((rows) => {
@@ -328,9 +317,8 @@ function detailsInventoryTypes(req, res, next) {
  * delete an inventory types
  */
 function deleteInventoryTypes(req, res, next) {
-  'use strict';
 
-  types.remove(req.params.id)
+  units.remove(req.params.id)
   .then(() => {
     res.status(204).send();
   })
@@ -346,7 +334,6 @@ function deleteInventoryTypes(req, res, next) {
  * Create a new inventory units
  */
 function createInventoryUnits(req, res, next) {
-  'use strict';
 
   units.create(req.body)
   .then((id) => {
@@ -363,7 +350,6 @@ function createInventoryUnits(req, res, next) {
  * Create a new inventory units
  */
 function updateInventoryUnits(req, res, next) {
-  'use strict';
 
   units.update(req.body, req.params.id)
   .then((rows) => {
@@ -380,7 +366,6 @@ function updateInventoryUnits(req, res, next) {
  * get the list of inventory units
  */
 function listInventoryUnits(req, res, next) {
-  'use strict';
 
   units.list()
   .then((rows) => {
@@ -397,7 +382,6 @@ function listInventoryUnits(req, res, next) {
  * get the list of inventory units
  */
 function detailsInventoryUnits(req, res, next) {
-  'use strict';
 
   units.details(req.params.id)
   .then((rows) => {
@@ -414,7 +398,6 @@ function detailsInventoryUnits(req, res, next) {
  * delete an inventory unit
  */
 function deleteInventoryUnits(req, res, next) {
-  'use strict';
 
   units.remove(req.params.id)
   .then(() => {
@@ -438,7 +421,6 @@ function deleteInventoryUnits(req, res, next) {
 * Returns the consumption of a stock by the inventory item.
 */
 function getInventoryConsumptionById(req, res, next) {
-  'use strict';
 
   var data,
       uuid = req.params.uuid,
@@ -493,7 +475,6 @@ function getInventoryConsumptionById(req, res, next) {
 * query is used, we return inventory metadata with the consumption.
 */
 function getInventoryConsumption(req, res, next) {
-  'use strict';
 
   var data,
       uuid = req.params.uuid,
@@ -557,7 +538,6 @@ function getInventoryConsumption(req, res, next) {
 * single inventory item.
 */
 exports.getInventoryLeadTimesById = function (req, res, next) {
-  'use strict';
 
   var uuid = req.params.uuid,
       options = req.query;
@@ -583,7 +563,6 @@ exports.getInventoryLeadTimesById = function (req, res, next) {
 * single inventory item.
 */
 exports.getInventoryLeadTimes = function (req, res, next) {
-  'use strict';
 
   var options = req.query;
 
@@ -613,7 +592,6 @@ exports.getInventoryLeadTimes = function (req, res, next) {
 *   end={date}
 */
 function getInventoryStockLevels(req, res, next) {
-  'use strict';
 
   var options = req.query;
 
@@ -646,7 +624,6 @@ function getInventoryStockLevels(req, res, next) {
 *   end={date}
 */
 function getInventoryStockLevelsById(req, res, next) {
-  'use strict';
 
    var options = req.query,
       uuid = req.params.uuid;
@@ -684,9 +661,8 @@ function getInventoryStockLevelsById(req, res, next) {
 *   end={date}
 */
 function getInventoryExpirations(req, res, next) {
-  'use strict';
 
-   var options = req.query;
+  var options = req.query;
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
@@ -713,9 +689,8 @@ function getInventoryExpirations(req, res, next) {
 *   end={date}
 */
 function getInventoryExpirationsById(req, res, next) {
-  'use strict';
 
-   var options = req.query,
+  var options = req.query,
       uuid = req.params.uuid;
 
   // enforce that both parameters exist or neither exist
@@ -785,7 +760,6 @@ function getInventoryLots(req, res, next) {
 * @function getInventoryLotsById
 */
 function getInventoryLotsById(req, res, next) {
-  'use strict';
 
   var uuid = req.params.uuid;
 
@@ -812,7 +786,6 @@ function getInventoryLotsById(req, res, next) {
 *   3) shortage (below minimum required level)
 */
 function getInventoryStatus(req, res, next) {
-  'use strict';
 
   core.getIds()
   .then(function (rows) {
@@ -843,7 +816,6 @@ function getInventoryStatus(req, res, next) {
 *   3) shortage (below minimum required level)
 */
 function getInventoryStatusById(req, res, next) {
-  'use strict';
 
   var uuid = req.params.uuid;
 
@@ -862,7 +834,6 @@ function getInventoryStatusById(req, res, next) {
 * Retrieve all donations from the inventory.
 */
 function getInventoryDonations(req, res, next) {
-  'use strict';
 
   donations.getInventoryDonations()
   .then(function (data) {
@@ -880,7 +851,6 @@ function getInventoryDonations(req, res, next) {
 * type.
 */
 function getInventoryDonationsById(req, res, next) {
-  'use strict';
 
   var uuid = req.params.uuid;
 
