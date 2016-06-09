@@ -43,7 +43,6 @@ var employees            = require('../controllers/admin/employees');
 var priceList            = require('../controllers/finance/priceList');
 var billingServices      = require('../controllers/finance/billingServices');
 var accounts             = require('../controllers/finance/accounts');
-var accountType          = require('../controllers/finance/accountType');
 var costCenter           = require('../controllers/finance/costCenter');
 var profitCenter         = require('../controllers/finance/profitCenter');
 var reference            = require('../controllers/finance/reference');
@@ -120,6 +119,13 @@ exports.configure = function configure(app) {
   app.put('/locations/provinces/:uuid', locations.update.province);
   app.put('/locations/countries/:uuid', locations.update.country);
 
+  // API for account type routes CRUD
+  app.get('/accounts/types', accounts.types.list);
+  app.get('/accounts/types/:id', accounts.types.detail);
+  app.post('/accounts/types', accounts.types.create);
+  app.put('/accounts/types/:id', accounts.types.update);
+  app.delete('/accounts/types/:id', accounts.types.remove);
+
   // API for account routes crud
   app.get('/accounts', accounts.list);
   app.get('/accounts/:id', accounts.detail);
@@ -127,14 +133,8 @@ exports.configure = function configure(app) {
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
 
-  // API for account type routes crud
-  app.get('/account_types', accountType.list);
-  app.get('/account_types/:id', accountType.detail);
-  app.post('/account_types', accountType.create);
-  app.put('/account_types/:id', accountType.update);
-  app.delete('/account_types/:id', accountType.remove);
 
-  //API for cost_center routes crud
+  // API for cost_center routes crud
   app.get('/cost_centers', costCenter.list);
   app.get('/cost_centers/:id', costCenter.detail);
   app.get('/cost_centers/:id/cost', costCenter.getCostValue);
@@ -216,7 +216,7 @@ exports.configure = function configure(app) {
   // snis controller
   app.get('/snis/healthZones',snis.healthZones);
 
-  /**
+  /*
    * refactor-categorisation
    *
    * @todo test all routes below to ensure no broken links
