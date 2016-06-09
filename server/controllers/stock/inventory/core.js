@@ -5,7 +5,10 @@
 * handling.
 */
 
-var db = require('../../../lib/db');
+'use strict';
+
+var uuid = require('node-uuid'),
+    db = require('../../../lib/db');
 
 // this should be a const in future ES versions
 var errors = {
@@ -38,9 +41,53 @@ var errors = {
 exports.getIds = getIds;
 exports.getItemsMetadata = getItemsMetadata;
 exports.getItemsMetadataById = getItemsMetadataById;
+exports.createItemsMetadata = createItemsMetadata;
+exports.updateItemsMetadata = updateItemsMetadata;
 exports.hasBoth = hasBoth;
 exports.errors = errors;
 exports.errorHandler = errorHandler;
+
+/**
+* Create inventory metadata in the database
+*
+* @function createItemsMetadata
+* @return {Promise} Returns a database query promise
+*/
+function createItemsMetadata(record, session) {
+
+  record.enterprise_id = session.enterprise.id;
+  record.uuid = db.bid(record.uuid || uuid.v4());
+  record.group_uuid = db.bid(record.group_uuid);
+
+  let sql = `INSERT INTO inventory SET ?;`;
+  /*
+   * return a promise which can contains result or error which is caught
+   * in the main controller (inventory.js)
+   */
+  return db.exec(sql, [record])
+  .then(() => uuid.unparse(record.uuid));
+}
+
+/**
+* Update inventory metadata in the database
+*
+* @function updateItemsMetadata
+* @return {Promise} Returns a database query promise
+*/
+function updateItemsMetadata(record, identifier) {
+
+  identifier = db.bid(identifier);
+  record.uuid = identifier;
+  record.group_uuid = db.bid(record.group_uuid);
+
+  let sql = `UPDATE inventory SET ? WHERE uuid = ?;`;
+  /*
+   * return a promise which can contains result or error which is caught
+   * in the main controller (inventory.js)
+   */
+  return db.exec(sql, [record, identifier])
+  .then(() => getItemsMetadataById(identifier));
+}
 
 /**
 * Find all inventory UUIDs in the database.
@@ -49,7 +96,6 @@ exports.errorHandler = errorHandler;
 * @return {Promise} Returns a database query promise
 */
 function getIds() {
-  'use strict';
 
   // TODO - should we be filtering on enterprise id in these queries?
   var sql =
@@ -66,7 +112,6 @@ function getIds() {
 * @return {Promise} Returns a database query promise
 */
 function getItemsMetadata() {
-  'use strict';
 
   var sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
@@ -89,7 +134,6 @@ function getItemsMetadata() {
 * @return {Promise} Returns a database query promise
 */
 function getItemsMetadataById(uuid) {
-  'use strict';
 
   var sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,

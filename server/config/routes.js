@@ -255,9 +255,35 @@ exports.configure = function configure(app) {
   app.post('/posting_donation/', donations.post);
 
   /*  Inventory and Stock Managment */
+  app.post('/inventory/metadata', inventory.createInventoryItems);
   app.get('/inventory/metadata', inventory.getInventoryItems);
   app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
+  app.put('/inventory/:uuid/metadata', inventory.updateInventoryItems);
 
+  /** Inventory Group API endpoints */
+  app.post('/inventory/groups', inventory.createInventoryGroups);
+  app.get('/inventory/groups', inventory.listInventoryGroups);
+  app.get('/inventory/groups/:uuid', inventory.detailsInventoryGroups);
+  app.put('/inventory/groups/:uuid', inventory.updateInventoryGroups);
+  app.delete('/inventory/groups/:uuid', inventory.deleteInventoryGroups);
+
+  /** Inventory Type API endpoints */
+  app.post('/inventory/types', inventory.createInventoryTypes);
+  app.get('/inventory/types', inventory.listInventoryTypes);
+  app.get('/inventory/types/:id', inventory.detailsInventoryTypes);
+  app.put('/inventory/types/:id', inventory.updateInventoryTypes);
+  app.delete('/inventory/types/:id', inventory.deleteInventoryTypes);
+
+  /** Inventory Units API endpoints */
+  app.post('/inventory/units', inventory.createInventoryUnits);
+  app.get('/inventory/units', inventory.listInventoryUnits);
+  app.get('/inventory/units/:id', inventory.detailsInventoryUnits);
+  app.put('/inventory/units/:id', inventory.updateInventoryUnits);
+  app.delete('/inventory/units/:id', inventory.deleteInventoryUnits);
+
+
+  /** @todo: These routes below need to be implemented */
+  /*
   app.get('/inventory/consumption', inventory.getInventoryConsumption);
   app.get('/inventory/:uuid/consumption', inventory.getInventoryConsumptionById);
 
@@ -278,6 +304,7 @@ exports.configure = function configure(app) {
 
   app.get('/inventory/donations', inventory.getInventoryDonations);
   app.get('/inventory/:uuid/donations', inventory.getInventoryDonationsById);
+  */
 
   /* Depot routes */
   app.get('/depots', depots.list);

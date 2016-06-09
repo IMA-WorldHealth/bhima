@@ -927,7 +927,6 @@ CREATE TABLE `inventory` (
   `code` varchar(30) NOT NULL,
   `text` text,
   `price` decimal(10,4) unsigned NOT NULL DEFAULT 0.0,
-  `purchase_price` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0.0,
   `group_uuid` BINARY(16) NOT NULL,
   `unit_id` smallint(5) unsigned DEFAULT NULL,
   `unit_weight` mediumint(9) DEFAULT 0,
