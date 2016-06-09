@@ -40,6 +40,11 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'ProjectController as ProjectCtrl',
     templateUrl : 'partials/projects/projects.html'
   })
+  .state('fiscal', {
+    url : '/fiscal',
+    controller: 'FiscalController as FiscalCtrl',
+    templateUrl: 'partials/fiscal/fiscal.html'
+  })
   .state('exchange', {
     url : '/exchange',
     controller : 'ExchangeRateController as ExchangeCtrl',
@@ -66,7 +71,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/cash/extra_payment/extra_payment.html'
   })
 
-  /**co
+  /**
    * @fixme - this is to allow end to end testing of the patient invoice module
    * @todo - replace this with a real receipt.
    */
@@ -83,7 +88,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'cashDiscard',
     templateUrl: 'partials/cash/discard/discard.html'
   })
-  .state('nfigBilan', {
+  .state('configBilan', {
     url: '/section_bilan',
     controller : 'sectionBilanController as sectionBilanCtrl',
     templateUrl : 'partials/section_bilan/section_bilan.html'
@@ -352,33 +357,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
       data : { label : null }
     })
 
-  
-  /* Fiscal Year */
-  .state('fiscal', {
-    url : '/fiscal/:id',
-    abstract : true,
-    params : {
-      id : { squash : true, value : null }
-    },    
-    controller: 'FiscalController as FiscalCtrl',
-    templateUrl: 'partials/fiscal/fiscal.html'
-  })
-
-    .state('fiscal.list', {
-      url : '',
-      templateUrl : 'partials/fiscal/fiscal.list.html'
-    })
-    .state('fiscal.create', {
-      url : '/fiscal/new',
-      controller : 'FiscalCreateController as FiscalManageCtrl',
-      templateUrl : 'partials/fiscal/fiscal.manage.html'
-    })
-    .state('fiscal.update', {
-      url : '/fiscal/update',
-      controller : 'FiscalUpdateController as FiscalManageCtrl',
-      templateUrl : 'partials/fiscal/fiscal.manage.html',
-      data : { label : null }
-    })
   /* references routes */
 
   .state('references', {
@@ -937,10 +915,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   .state('/reports/patient_visit_status', {
     controller : 'ReportPatientVisitStatus',
     templateUrl : '/partials/reports/patient_visit_status/patient_visit_status.html'
-  })
-  .state('/reports/stock_entry', {
-    controller : 'ReportStockEntryController',
-    templateUrl : 'partials/reports/stock/stock_entry/stock_entry.html'
   })
   .state('/error404', {
     url : '/error404',
