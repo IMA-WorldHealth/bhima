@@ -5,7 +5,9 @@
 * handling.
 */
 
-var uuid = require('node-uuid');
+'use strict';
+
+var uuid = require('node-uuid'),
     db = require('../../../lib/db');
 
 // this should be a const in future ES versions
@@ -94,7 +96,6 @@ function updateItemsMetadata(record, identifier) {
 * @return {Promise} Returns a database query promise
 */
 function getIds() {
-  'use strict';
 
   // TODO - should we be filtering on enterprise id in these queries?
   var sql =
@@ -111,7 +112,6 @@ function getIds() {
 * @return {Promise} Returns a database query promise
 */
 function getItemsMetadata() {
-  'use strict';
 
   var sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
@@ -134,7 +134,6 @@ function getItemsMetadata() {
 * @return {Promise} Returns a database query promise
 */
 function getItemsMetadataById(uuid) {
-  'use strict';
 
   var sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
