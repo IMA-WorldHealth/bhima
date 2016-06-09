@@ -6,7 +6,7 @@ const util = require('util');
  * @description
  * A custom error to wrap the 403 HTTP status code within the server.  This
  * should only be thrown in a context where it can be caught by ExpressJS's
- * {@link http://expressjs.com/en/guide/routing.html|next } function and
+ * {@link http://expressjs.com/en/guide/routing.html|next()} function and
  * returned to the client.
  *
  * @param {String} description - a custom description to be sent to the client

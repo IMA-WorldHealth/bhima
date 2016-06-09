@@ -15,51 +15,52 @@ ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce', 'Recei
  */
 function ReceiptModalController($modalInstance, $window, $sce, Receipts, Notify, receipt, options) {
   var vm = this;
-  
-  
+
+
   // expose available receipt renderers to view
   vm.renderers = Receipts.renderers;
-  
+
   vm.print = print;
   vm.close = close;
-  
+
   // expose options to the view
   angular.extend(vm, options);
-  
+
   receipt.promise
     .then(function (result) {
       // special case for pdf rendering
-      if (options.renderer === Receipts.renderers.PDF) { 
-        
+      if (options.renderer === Receipts.renderers.PDF) {
+
         // store downloaded base64 PDF file in a browser blob - this will be accessible through 'blob://...'
         var file = new Blob([result], {type : 'application/pdf'});
-        
+
         // determine the direct path to the newly (temporarily) stored PDF file
         var fileURL = URL.createObjectURL(file);
-  
+
         // trust and expose the file to the view to embed the PDF
-        vm.receipt = $sce.trustAsResourceUrl(fileURL);  
-      } else { 
+        vm.receipt = $sce.trustAsResourceUrl(fileURL);
+      } else {
         // simply expose receipt object to view
         vm.receipt = result;
       }
     })
     .catch(Notify.handleError);
-  
+
   function print() {
-    
+
     /**@todo This printing could be exposed by a directive/ component */
     if (options.renderer === Receipts.renderers.PDF) {
-      
+
       // iframes in the DOM are all stored under the $window.frames object, this accesses the iframe with id 'pdf'
       $window.frames.pdf.contentWindow.print();
       return;
     }
+
     $window.print();
-  };
+  }
 
   /** @todo use dismiss vs. close to handle error and complete exit */
   function close() {
     $modalInstance.close();
-  };
+  }
 }

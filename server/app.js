@@ -1,5 +1,5 @@
 /**
- * @overview
+ * @overview server
  * Basic Hospital Information Management Application
  *
  * This is the central server of bhima.  It is responsible for setting up the
@@ -17,8 +17,8 @@
  *
  * @requires config/express
  * @requires config/routes
- * @requires lib/db
- * @requires lib/pluginManager
+ * @requires db
+ * @requires PluginManager
  *
  * @license GPL-2.0
  * @copyright IMA World Health 2016
@@ -135,7 +135,7 @@ require('./config/express').errorHandling(app);
 
 // Load and configure plugins
 // @todo - find a better way to load in a list of plugins
-require('./lib/pluginManager')(app, []);
+require('./lib/PluginManager')(app, []);
 
 // ensure the process terminates gracefully when an error occurs.
 process.on('uncaughtException', (exception) => {

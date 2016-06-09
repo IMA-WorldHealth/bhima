@@ -16,7 +16,7 @@ describe('Patient Record', function () {
     name : 'Test Patient 2',
     id : 'TPA1',
     hospital_no : '110',
-    age : '25',
+    age : '26',
     gender : 'M'
   };
 
@@ -37,5 +37,4 @@ describe('Patient Record', function () {
     components.notification.hasError();
     expect(element(by.id('nopatient')).isPresent()).to.eventually.equal(true);
   });
-
 });

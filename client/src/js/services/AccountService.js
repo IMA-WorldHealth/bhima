@@ -1,14 +1,16 @@
 angular.module('bhima.services')
 .service('AccountService', AccountService);
 
-AccountService.$inject = ['$http', 'util', 'SessionService'];
+AccountService.$inject = [
+  '$http', 'util', 'SessionService'
+];
 
 /**
-* Account Service
-*
-* A service wrapper for the /accounts HTTP endpoint.
-*/
-function AccountService($http, util, sessionService) {
+ * Account Service
+ *
+ * A service wrapper for the /accounts HTTP endpoint.
+ */
+function AccountService($http, util, Session) {
   var service = this;
   var baseUrl = '/accounts/';
 
@@ -64,10 +66,13 @@ function AccountService($http, util, sessionService) {
   }
 
   /**
+   * @method getChildren
+   *
+   * @description
    * This method builds a tree data structure of accounts and children of a
    * specified parentId.
    *
-   * @method
+   * @returns {Array} - an array of children
    */
   function getChildren(accounts, parentId) {
     var children;
@@ -91,8 +96,12 @@ function AccountService($http, util, sessionService) {
   }
 
   /**
-   * flattens a tree data structure (must have children property) in place.
-   * @method
+   * @method flatten
+   *
+   * @description
+   * Flattens a tree data structure (must have `children` property) in place.
+   *
+   * @returns {Array} - the flattened array
    */
   function flatten(tree) {
     return tree.reduce(function (array, node) {
@@ -102,8 +111,14 @@ function AccountService($http, util, sessionService) {
   }
 
   /**
-   * creates a proper account ordering by first creating an account tree and then
-   * flattening in place.
+   * @method order
+   *
+   * @description
+   * Creates a proper account ordering by first creating an account tree and
+   * then flattening in place.
+   *
+   * @param {Array} accounts - a list of account objects
+   * @returns {Array} - the properly ordered list of account objects
    */
   function order(accounts) {
 
@@ -119,13 +134,13 @@ function AccountService($http, util, sessionService) {
   }
 
   /**
-  *@helper
-  * This Method Creat an account
-  **/
+   * @helper
+   * This Method Creat an account
+   */
   function create(account) {
     var classAccount = String(account.number).charAt(0),
       accountClean = {
-        enterprise_id : sessionService.enterprise.id,
+        enterprise_id : Session.enterprise.id,
         type_id : account.type.id,
         number : account.number,
         label : account.label,
@@ -146,18 +161,23 @@ function AccountService($http, util, sessionService) {
   }
 
   /**
-  * @desc It updates an account
-  * @param {Integer} id, account id to update
-  * @param {object} account, account to update
-  * @example
-  * service.update(id, account)
-  * .then(function (res){
-  *   your code here
-  *  });
-  **/
+   * @method update
+   *
+   * @description
+   * Updates the account in the database..
+   *
+   * @param {Number} id - account id to update
+   * @param {Object} account - account to update
+   *
+   * @example
+   * service.update(id, account)
+   * .then(function (res){
+   *   // your code here
+   *  });
+   */
   function update(id, account) {
     var accountClean = {
-      enterprise_id : sessionService.enterprise.id,
+      enterprise_id : Session.enterprise.id,
       type_id : account.type_id,
       label : account.label,
       parent : account.parent,

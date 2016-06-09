@@ -2,67 +2,74 @@ angular.module('bhima.controllers')
 .controller('PatientInvoiceController', PatientInvoiceController);
 
 PatientInvoiceController.$inject = [
-  '$q', '$location', 'PatientService', 'PriceLists', 'PatientInvoice',
-  'Invoice', 'util', 'ServiceService', 'SessionService', 'DateService',
-  'ReceiptModal', 'NotifyService'
+  'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'ServiceService',
+  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService'
 ];
 
 /**
- * Patient Invoice Controller
+ * @module PatientInvoiceController
+ *
+ * @description
+ * This module binds the Patient Invoice Form service to the view.
  *
  * @todo (required) Tabbing through UI grid. Code -> Quantity -> Price
- * @todo (required) Design and implement how cautions are assigned. Client vs. Server
  * @todo (required) Sale made outside of fiscal year error should be handled and shown to user
- * @todo (required) Billing services and subsidies should be ignored for specific debtors
- * @todo Known bug - sidebar expanding and collapsing does not redraw totals columns (listen and update?)
- * @todo Total rows formatted to show subsidy as subtraction and make clear running total
- *
- * @module bhima/controllers/PatientInvoiceController
+ * @todo (requires) use a loading button for the form loading state.
  */
-function PatientInvoiceController($q, $location, Patients, PriceLists, PatientInvoice, Invoice, util, Services, Session, Dates, Receipts, Notify) {
+function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify) {
   var vm = this;
-  vm.Invoice = new Invoice();
 
-  // bind the enterprise to the enterprise currency
+  // bind the enterprise to get the enterprise currency id
   vm.enterprise = Session.enterprise;
+  vm.Invoice = new PatientInvoiceForm('PatientInvoiceForm');
 
-  vm.maxLength = util.maxTextLength; 
-  
+  // application constants
+  vm.maxLength = util.maxTextLength;
+  vm.minimumDate = util.minimumDate;
+  vm.itemIncrement = 1;
+
+  // read in services and bind to the view
+  Services.read()
+  .then(function (services) {
+    vm.services = services;
+
+    // default to the first service
+    vm.Invoice.setService(services[0]);
+  });
+
   var gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
     columnDefs : [
-      { field : 'status', width : 25, displayName : '', cellTemplate : 'partials/patient_invoice/templates/grid/status.tmpl.html' },
-      { field : 'code', cellTemplate :  'partials/patient_invoice/templates/grid/code.tmpl.html' },
-      { field : 'description' },
-      { field : 'quantity', cellTemplate : 'partials/patient_invoice/templates/grid/quantity.tmpl.html' },
-      { field : 'transaction_price', cellTemplate : 'partials/patient_invoice/templates/grid/unit.tmpl.html' },
-      { field : 'amount', cellTemplate : 'partials/patient_invoice/templates/grid/amount.tmpl.html' },
-      { field : 'actions', width : 25, cellTemplate : 'partials/patient_invoice/templates/grid/actions.tmpl.html' }
+      { field: 'status', width: 25, displayName : '', cellTemplate: 'partials/patient_invoice/templates/grid/status.tmpl.html' },
+      { field: 'code', displayName: 'TABLE.COLUMNS.CODE', headerCellFilter: 'translate', cellTemplate:  'partials/patient_invoice/templates/grid/code.tmpl.html' },
+      { field: 'description', displayName: 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
+      { field: 'quantity', displayName: 'TABLE.COLUMNS.QUANTITY', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/quantity.tmpl.html' },
+      { field: 'transaction_price', displayName: 'TABLE.COLUMNS.TRANSACTION_PRICE', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/unit.tmpl.html' },
+      { field: 'amount', displayName: 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate', cellTemplate: 'partials/patient_invoice/templates/grid/amount.tmpl.html' },
+      { field: 'actions', width: 25, cellTemplate: 'partials/patient_invoice/templates/grid/actions.tmpl.html' }
     ],
     onRegisterApi : exposeGridScroll,
-    data : vm.Invoice.items.rows
+    data : vm.Invoice.store.data
   };
 
+
+  // called when the grid is initialized
   function exposeGridScroll(gridApi) {
     vm.gridApi = gridApi;
   }
 
   function setPatient(patient) {
     var uuid = patient.uuid;
-
     Patients.read(uuid)
-      .then(configureInvoice);
+    .then(function (patient) {
+      vm.Invoice.setPatient(patient);
+    });
   }
 
-  // Invoice total and items are successfully sent and written to the server
-  // - Billing services are sent to the server but NOT recorded
-  // - Subsidies are sent to the server but NOT recorded
-  // - TODO the final value of a sale can only be determined after checking all
-  //        billing services, subsidies and the cost of the sale
+  // invoice total and items are successfully sent and written to the server
   function submit(detailsForm) {
-    var items = angular.copy(vm.Invoice.items.rows);
 
     // update value for form validation
     detailsForm.$setSubmitted();
@@ -74,23 +81,28 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
     }
 
     // ask service items to validate themselves - if anything is returned it is invalid
-    var invalidItem = vm.Invoice.items.verify();
+    var invalidItems = vm.Invoice.validate();
 
-    if (angular.isDefined(invalidItem)) {
-      Notify.danger('PATIENT_INVOICE.INVALID_INVOICE_ITEMS');
-      
+    if (invalidItems.length) {
+      Notify.danger('PATIENT_INVOICE.INVALID_ITEMS');
+
+      var firstInvalidItem = invalidItems[0];
+
       // show the user where the error is
-      vm.gridApi.core.scrollTo(invalidItem);
+      vm.gridApi.core.scrollTo(firstInvalidItem);
       return;
     }
+
+    // copy the rows for insertion
+    var items = angular.copy(vm.Invoice.store.data);
 
     // invoice consists of
     // 1. Invoice details
     // 2. Invoice items
     // 3. Charged billing services - each of these have the global charge calculated by the client
     // 4. Charged subsidies - each of these have the global charge calculated by the client
-    PatientInvoice.create(vm.Invoice.details, items, vm.Invoice.billingServices, vm.Invoice.subsidies)
-      .then(function (result) { 
+    PatientInvoices.create(vm.Invoice.details, items, vm.Invoice.billingServices, vm.Invoice.subsidies)
+      .then(function (result) {
         detailsForm.$setPristine();
         detailsForm.$setUntouched();
         return result;
@@ -99,13 +111,24 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
       .catch(Notify.handleError);
   }
 
-  window.Receipts = Receipts;
+  // this function will be called whenever items change in the grid.
+  function handleChange() {
+    vm.Invoice.digest();
+  }
+
+  // adds n items to the grid (unless the inventory is used up)
+  function addItems(n) {
+    while (n--) {
+      vm.Invoice.addItem();
+    }
+  }
+
   function handleCompleteInvoice(invoice) {
-    vm.Invoice.items.removeCache();
-    clear();
-    
+    // vm.Invoice.rows.removeCache();
+
     Receipts.invoice(invoice.uuid, true)
     .then(function (result) {
+      clear();
 
       // receipt closed fired
     })
@@ -117,32 +140,21 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
 
   // reset everything in the controller - default values
   function clear(detailsForm) {
-  
-    /** @todo all reset values should be implicit in the Invoice service - this controller should not be concerned with this */
-    // Default values
-    vm.itemIncrement = 1;
 
     // set timestamp to today
     vm.timestamp = Dates.current.day();
 
-    vm.minimumDate = util.minimumDate;
-    vm.dateLocked = true;
+    vm.Invoice.setup();
 
-    // Set default invoice date to today
-    vm.Invoice.details.date = new Date();
-    vm.Invoice.recipient = null;
-    vm.Invoice.items.recovered = false;
-    vm.Invoice.details.description = null;
-    vm.Invoice.items.clearItems(true, false);
-  
     /** @todo this is a bad pattern, clean this up */
 
     if (detailsForm) {
       detailsForm.$setPristine();
       detailsForm.$setUntouched();
     }
+
     if (vm.services) {
-      vm.Invoice.details.service_id = vm.services[0].id;
+      vm.Invoice.setService(vm.services[0]);
     }
 
     if (vm.patientSearch) {
@@ -154,44 +166,9 @@ function PatientInvoiceController($q, $location, Patients, PriceLists, PatientIn
   vm.setPatient = setPatient;
   vm.submit = submit;
   vm.clear = clear;
+  vm.addItems = addItems;
+  vm.handleChange = handleChange;
 
-  // TODO potentially move this into debtor configuration within invoice
-  // TODO very temporary code
-  function configureInvoice(patient) {
-    var configureQueue = [];
-
-    // Prompt initial invoice item
-    vm.Invoice.items.configureBase();
-
-    configureQueue.push(Patients.billingServices(patient.uuid));
-    configureQueue.push(Patients.subsidies(patient.uuid));
-
-    if (patient.price_list_uuid) {
-      configureQueue.push(PriceLists.detail(patient.price_list_uuid));
-    }
-
-    $q.all(configureQueue)
-      .then(function (result) {
-        var billingResult = result[0];
-        var subsidiesResult = result[1];
-        var priceListResult = result[2];
-
-        // TODO All of these can be settup in one method exposed by the service
-        vm.Invoice.configureGlobalCosts(billingResult, subsidiesResult);
-        if (priceListResult) {
-          vm.Invoice.items.setPriceList(priceListResult);
-        }
-        vm.Invoice.recipient = patient;
-        vm.Invoice.details.debtor_uuid = patient.debtor_uuid;
-      });
-  }
-
-  // read in services and bind to the view
-  Services.read()
-  .then(function (services) {
-    vm.services = services;
-    vm.Invoice.details.service_id = vm.services[0].id;
-  });
 
   // Set initial default values
   clear();

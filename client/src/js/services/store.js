@@ -1,119 +1,152 @@
 /* jshint forin:false */
 angular.module('bhima.services')
-.factory('store', function () {
+.service('Store', StoreService);
 
-  return function (options, target) {
+/**
+ * @class Store
+ *
+ * @description
+ * This class implements an object data store, similar to Dojo's Memory Store.  It could
+ * forseeably be replaced by a WeakMap() in the future.
+ */
+function StoreService() {
 
-    // the data store, similar to Dojo's Memory Store.
+  /** @constructor */
+  function Store(options) {
+
+    // default to empty options
     options = options || {};
-    // globals
+
+    // default index and data
     this.index = {};
-    this.data = {};
+    this.data = [];
 
-    // locals
-    var queue = [];
-    var identifier = options.identifier || 'id'; // id property
+    // default the identifier to 'id'
+    this.identifier = options.identifier || 'id';
 
-    // set an array of data
-    this.setData = function (data) {
-      var index = this.index = {};
-      this.data = data;
+    if (options.data) { this.setData(options.data); }
+  }
 
-      for (var i = 0, l = data.length; i < l; i += 1) {
-        index[data[i][identifier]] = i;
-      }
-    };
-
-    // constructor function
-    var self = this;
-    (function contructor () {
-      for (var k in options) {
-        self[k] = options[k];
-      }
-      // set data if it is defined
-      if (options.data) { self.setData(options.data); }
-      self.identifier = identifier;
-    })();
-
-    // get an item from the local store
-    this.get = function (id) {
-      return this.data[this.index[id]];
-    };
-
-    // put is for UPDATES
-    this.put = function (object, opts) {
-      var data = this.data,
-          index = this.index,
-          id = object[identifier] = (opts && 'id' in opts) ? opts.id : identifier in object ?  object[identifier] : false;
-
-      if (!id) { throw 'No id property in the object.  Expected property: ' + identifier; }
-
-      // merge or overwrite
-      if (opts && opts.overwrite) {
-        data[index[id]] = object; // overwrite
-      } else {
-        var ref = data[index[id]];
-        if (!ref) { ref = {}; }
-        for (var k in object) {
-          ref[k] = object[k]; // merge
-        }
-      }
-      // enqueue item for sync
-      queue.push({method: 'PUT', url: '/data/'+ target});
-    };
-
-    // post is for INSERTS
-    this.post = function (object, opts) {
-
-      var data = this.data,
-          index = this.index,
-          id = object[identifier] = (opts && 'id' in opts) ? opts.id : identifier in object ?  object[identifier] : Math.random();
-      index[id] = data.push(object) - 1;
-      // enqueue item for sync
-      queue.push({method: 'POST', url: '/data/' + target, data: object});
-    };
-
-    this.remove = function (id) {
-      var data = this.data,
-          index = this.index;
-      if (id in index) {
-        data.splice(index[id], 1);
-        this.setData(data);
-        queue.push({method: 'DELETE', url: '/data/' + target + '/' + id});
-      }
-    };
-
-    this.contains = function (id) {
-      // check to see if an object with
-      // this id exists in the store.
-      return !!this.get(id);
-    };
-
-    /*
-     *  TODO : Impliment sync when using websockets
-    this.sync = function () {
-      // sync the data from the client to the server
-      var fail = [];
-      queue.forEach(function (req) {
-        $http(req)
-        .success(function () {
-        })
-        .error(function (data, status, headers, config) {
-          alert('An error in data transferred occured with status:', status);
-          fail.push(req);
-        });
-      });
-      queue = fail;
-    };
-    */
-
-    this.recalculateIndex = function () {
-      var data = this.data, index = this.index;
-      for (var i = 0, l = data.length; i < l; i += 1) {
-        index[data[i][identifier]] = i;
-      }
-    };
-
-    return this;
+  /**
+   * @method setData
+   *
+   * @description
+   * This method reinitializes the store with new data, freeing the old to be
+   * garbage collected.
+   *
+   * @param {Array} data - an array of objects that will be stored in the instance.
+   */
+  Store.prototype.setData = function setData(data) {
+    this.data = data;
+    this.recalculateIndex();
   };
-});
+
+  /**
+   * @method get
+   *
+   * @description
+   * This method retrieves an item from the store by its identifier.  If the id
+   * is not found, it returns undefined.
+   *
+   * @param {Number|String} id - the identifier of the object in the store.
+   *
+   * @return {Object|Undefined} the retrieved object from the store if an id
+   * matches.  Otherwise, it returns undefined.
+   */
+  Store.prototype.get = function get(id) {
+    var key = this.index[id];
+    if (angular.isUndefined(key)) { return; }
+    return this.data[key];
+  };
+
+  /**
+   * @method post
+   *
+   * @description
+   * This method inserts and object into the store.  If the object is missing
+   * the store identifier property, an error is thrown.
+   *
+   * @param {Object} object - an object to be inserted into the store.
+   */
+  Store.prototype.post = function post(object) {
+    var data = this.data;
+    var index = this.index;
+    var identifier = this.identifier;
+
+    // default to an empty array if data not provided
+    if (!data) { this.data = []; }
+
+    var id = object[identifier];
+
+    if (angular.isUndefined(id)) {
+      throw new Error(
+        'Trying to insert an object without the identity property "' + identifier + '".\n' +
+        'Failing object: ' + JSON.stringify(object)
+      );
+    }
+
+    index[id] = data.push(object) - 1;
+  };
+
+  /**
+   * @method remove
+   *
+   * @description
+   * This method removes an object from the store by its identifier.
+   *
+   * @param {Object} object - an object to be inserted into the store
+   */
+   Store.prototype.remove = function remove(id) {
+    var data = this.data;
+    var index = this.index;
+
+    if (id in index) {
+      data.splice(index[id], 1);
+      this.setData(data);
+    }
+  };
+
+  /**
+   * @method contains
+   *
+   * @description
+   * This method returns true if an object matching the provided id exists in
+   * the store.
+   *
+   * @param {Number|String} id - the identifier of the object in the store.
+   *
+   * @return {Boolean} - true if the value exists in the store.
+   */
+  Store.prototype.contains = function contains(id) {
+    return !!this.get(id);
+  };
+
+  /**
+   * @method clear
+   *
+   * @description
+   * Clears all data from the store and recalculates the index.
+   */
+  Store.prototype.clear = function clear() {
+    this.data.length = 0;
+    this.recalculateIndex();
+  };
+
+  /**
+   * @method recalculateIndex
+   *
+   * @description
+   * Recalculates the stores index when data is added/removed via other methods.
+   */
+  Store.prototype.recalculateIndex = function recalculateIndex() {
+    var data = this.data;
+    var index = this.index = {};
+    var identifier = this.identifier;
+
+    for (var i = 0, l = data.length; i < l; i += 1) {
+      index[data[i][identifier]] = i;
+    }
+  };
+
+  return Store;
+}

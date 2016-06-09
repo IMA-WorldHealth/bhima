@@ -14,7 +14,7 @@ angular.module('bhima.components')
   }
 });
 
-FindPatientComponent.$inject = ['PatientService', 'AppCache'];
+FindPatientComponent.$inject = [ 'PatientService', 'AppCache' ];
 
 /**
  * The Find Patient Component
@@ -292,5 +292,4 @@ function FindPatientComponent(Patients, AppCache) {
   vm.api = {
     reset : reload
   };
-
 }

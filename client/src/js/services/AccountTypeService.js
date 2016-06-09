@@ -6,17 +6,17 @@ AccountTypeService.$inject = ['$http', 'util'];
 /**
 * Account Type Service
 *
-* A service wrapper for the /account_types HTTP endpoint.  
+* A service wrapper for the /account_types HTTP endpoint.
 */
 function AccountTypeService($http, util) {
   var service = this;
-  var baseUrl = '/account_types/';
+  var baseUrl = '/accounts/types/';
 
   service.getAccountType = getAccountType;
   service.getTypeText = getTypeText;
 
   /**
-  *@helper  
+  *@helper
   * This Method return a list of Account Type
   **/
   function getAccountType(id, params) {
@@ -26,16 +26,16 @@ function AccountTypeService($http, util) {
   }
 
   /**
-  *@helper  
-  * This Method return a text an Account Type 
+  *@helper
+  * This Method return a text an Account Type
   **/
   function getTypeText(typeId, accountTypes){
     var accountText =  accountTypes.filter(function (item) {
       return item.id  === typeId;
-    }); 
+    });
 
     return accountText[0].type;
-  }  
+  }
 
   return service;
 }
