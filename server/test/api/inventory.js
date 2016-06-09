@@ -143,8 +143,8 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   it('GET /inventory/group returns list of inventory groups', () => {
     return agent.get('/inventory/groups')
       .then((res) => {
-        countInventoryGroups = res.body.length;
-        helpers.api.listed(res, countInventoryGroups);
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });
@@ -204,8 +204,8 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   it('GET /inventory/types returns list of inventory types', () => {
     return agent.get('/inventory/types')
       .then((res) => {
-        countInventoryTypes = res.body.length;
-        helpers.api.listed(res, countInventoryTypes);
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });
@@ -262,8 +262,8 @@ describe('(/inventory) The inventory HTTP API :: ', function () {
   it('GET /inventory/units returns list of inventory units', () => {
     return agent.get('/inventory/units')
       .then((res) => {
-        countInventoryUnits = res.body.length;
-        helpers.api.listed(res, countInventoryUnits);
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });
