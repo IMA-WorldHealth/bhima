@@ -756,5 +756,9 @@ growl-notification.fading.ng-leave.ng-leave-active {
 }
 
 .icon-spacer {
-  margin-left : 18px;
+  margin-left: 18px;
+}
+
+.text-clear {
+  font-weight : normal !important;
 }
