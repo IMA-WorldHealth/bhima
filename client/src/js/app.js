@@ -384,8 +384,8 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
   .state('/inventory/groups', {
     url : '/inventory/groups',
-    controller : 'InventoryGroupsController as InventoryCtrl',
-    templateUrl : 'partials/inventory/groups/groups.html'
+    templateUrl : 'partials/inventory/groups/groups.html',
+    controller : 'InventoryGroupsController as InventoryCtrl'
   })
   // @TODO IMPLEMENT THEM
   // .state('/inventory/types',  {

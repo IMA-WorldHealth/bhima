@@ -40,6 +40,8 @@ function ModalService(Modal) {
   service.openTransfer = openTransfer;
   service.openUploadDocument = openUploadDocument;
   service.openPrinterData = openPrinterData;
+  // inventory group action : add or edit
+  service.openInventoryGroupActions = openInventoryGroupActions;
 
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
@@ -188,6 +190,27 @@ function ModalService(Modal) {
 
      var instance = Modal.open(params);
    }
+
+   /**
+    * Inventory Group Actions
+    */
+    function openInventoryGroupActions(request) {
+
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/inventory/groups/modals/actions.tmpl.html',
+        controller   : 'InventoryGroupsActionsModalController',
+        controllerAs : '$ctrl',
+        size         : 'xs',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
 
 
 }

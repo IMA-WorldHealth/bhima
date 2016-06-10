@@ -404,6 +404,7 @@
       "RELIGION"               : "Religion",
       "RESULT_ACCOUNT_SCT"     : "Result Account section",
       "RETYPE"                 : "Retype",
+      "SALE"                   : "Sale",
       "SEARCH"                 : "Search",
       "SECOND_NAME"            : "Last Name",
       "SECTOR"                 : "Sector",
@@ -421,6 +422,7 @@
       "SPOUSE_EMPLOYER"        : "Spouse's Employer",
       "SPOUSE_PROFESSION"      : "Spouse's Occupation",
       "STATUS"                 : "Status",
+      "STOCK"                  : "Stock",
       "SUBSIDIES"              : "Subsidies Applied",
       "TEL"                    : "TEL",
       "TELEPHONE"              : "Telephone",
@@ -436,6 +438,7 @@
       "UNCONFIGURED"           : "Unconfigured",
       "UPDATE_GROUP_DEBTOR"    : "Debtor group assignment updated",
       "UPDATE_PATIENT_GROUP"   : "Patient group membership updated",
+      "USE"                    : "Use",
       "USERNAME"               : "Username",
       "VALUE"                  : "Value",
       "VILLAGE"                : "Village",
@@ -450,6 +453,7 @@
     },
     "PLACE_HOLDERS": {
       "ENTER_ACCOUNT"      : "Enter account",
+      "ENTER_CODE"         : "Entrer code",
       "ENTER_COUNTRY"      : "Enter Country",
       "ENTER_CREDITOR"     : "Enter Creditor",
       "ENTER_DEBTOR"       : "Enter Debtor",
@@ -536,7 +540,12 @@
     "TODAY"          : "Date of day"
   },
   "INVENTORY" : {
-    "LIST" : "Inventory Data List"
+    "ADD_GROUP"  : "Add inventory group",
+    "CONTAINS"   : "Contains",
+    "EDIT_GROUP" : "Edit inventory group",
+    "ELEMENT"    : "Elt",
+    "LIST"       : "Inventory Data List",
+    "LIST_GROUP" : "Inventory Groups"
   },
   "LOCATION": {
     "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",

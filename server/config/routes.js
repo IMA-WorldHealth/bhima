@@ -264,6 +264,7 @@ exports.configure = function configure(app) {
   app.post('/inventory/groups', inventory.createInventoryGroups);
   app.get('/inventory/groups', inventory.listInventoryGroups);
   app.get('/inventory/groups/:uuid', inventory.detailsInventoryGroups);
+  app.get('/inventory/groups/:uuid/count', inventory.countInventoryGroups);
   app.put('/inventory/groups/:uuid', inventory.updateInventoryGroups);
   app.delete('/inventory/groups/:uuid', inventory.deleteInventoryGroups);
 

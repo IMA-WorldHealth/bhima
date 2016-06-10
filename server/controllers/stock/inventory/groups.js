@@ -13,6 +13,7 @@ exports.details = details;
 exports.create  = create;
 exports.update  = update;
 exports.remove  = remove;
+exports.countInventory = countInventory;
 
 /** list inventory group */
 function list () {
@@ -74,6 +75,23 @@ function getGroups(uid) {
 
   uid = (uid) ? db.bid(uid) : undefined;
   sql += (uid) ? ' WHERE uuid = ?;' : ';';
+  return db.exec(sql, [uid]);
+}
+
+/**
+ * Count inventory in the group
+ * @param {string} uid the group uuid
+ */
+function countInventory(uid) {
+  'use strict';
+
+  uid = (uid) ? db.bid(uid) : undefined;
+
+  let sql = `
+    SELECT COUNT(*) AS inventory_counted
+    FROM inventory WHERE group_uuid = ?;
+    `;
+
   return db.exec(sql, [uid]);
 }
 

@@ -1,0 +1,81 @@
+<div>
+  <div class="modal-header">
+    <i class="fa fa-list"></i>
+    {{ 'INVENTORY.ADD_GROUP' | translate }}
+  </div>
+
+  <div class="modal-body">
+    <form name="ActionForm" method="post" novalidate>
+      <div class="form-group">
+        <label for="">{{ 'FORM.LABELS.NAME' | translate }}</label>
+        <input ng-model="$ctrl.session.name"
+          class="form-control"
+          type="text"
+          placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_NAME' | translate }}..."
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="">{{ 'FORM.LABELS.CODE' | translate }}</label>
+        <input ng-model="$ctrl.session.code"
+          class="form-control"
+          type="text"
+          placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_CODE' | translate }}..."
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="">
+          {{ 'FORM.SELECTS.SELECT_ACCOUNT' | translate }} ({{ 'FORM.LABELS.SALE' | translate }})
+        </label>
+        <input class="form-control" type="text"
+          ng-model="$ctrl.session.salesAccount"
+          uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
+          typeahead-template-url="partials/templates/typeahead/accounts.html"
+          typeahead-editable="false"
+          placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+          >
+      </div>
+
+      <div class="form-group">
+        <label for="">
+          {{ 'FORM.SELECTS.SELECT_ACCOUNT' | translate }} ({{ 'FORM.LABELS.STOCK' | translate }})
+        </label>
+        <input class="form-control" type="text"
+          ng-model="$ctrl.session.stockAccount"
+          uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
+          typeahead-template-url="partials/templates/typeahead/accounts.html"
+          typeahead-editable="false"
+          placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+          >
+      </div>
+
+      <div class="form-group">
+        <label for="">
+          {{ 'FORM.SELECTS.SELECT_ACCOUNT' | translate }} ({{ 'FORM.LABELS.CHARGE' | translate }})
+        </label>
+        <input class="form-control" type="text"
+          ng-model="$ctrl.session.cogsAccount"
+          uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
+          typeahead-template-url="partials/templates/typeahead/accounts.html"
+          typeahead-editable="false"
+          placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+          >
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-default btn-sm"
+      ng-click="$ctrl.cancel()">
+      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    </button>
+    <button type="button"
+      class="btn btn-primary btn-sm"
+      ng-disabled="ActionForm.$invalid"
+      ng-click="$ctrl.submit()">
+      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+    </button>
+  </div>
+</div>

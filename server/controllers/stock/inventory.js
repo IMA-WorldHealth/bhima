@@ -54,6 +54,7 @@ exports.updateInventoryGroups  = updateInventoryGroups;
 exports.listInventoryGroups    = listInventoryGroups;
 exports.detailsInventoryGroups = detailsInventoryGroups;
 exports.deleteInventoryGroups  = deleteInventoryGroups;
+exports.countInventoryGroups   = countInventoryGroups;
 
 // expose inventory types methods
 exports.createInventoryTypes  = createInventoryTypes;
@@ -188,7 +189,7 @@ function createInventoryGroups(req, res, next) {
  * Create a new inventory group
  */
 function updateInventoryGroups(req, res, next) {
-
+  console.log('>>>>>>>>>>>>>', req.body)
   groups.update(req.body, req.params.uuid)
   .then((rows) => {
     res.status(201).json(rows);
@@ -237,9 +238,25 @@ function detailsInventoryGroups(req, res, next) {
  */
 function deleteInventoryGroups(req, res, next) {
 
-  units.remove(req.params.uuid)
+  groups.remove(req.params.uuid)
   .then(() => {
     res.status(204).send();
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+ * GET /inventory/groups/:uuid/count
+ * count inventory in the group
+ */
+function countInventoryGroups(req, res, next) {
+
+  groups.countInventory(req.params.uuid)
+  .then((rows) => {
+    res.status(200).json(rows[0].inventory_counted);
   })
   .catch(function (error) {
     core.errorHandler(error, req, res, next);
@@ -318,7 +335,7 @@ function detailsInventoryTypes(req, res, next) {
  */
 function deleteInventoryTypes(req, res, next) {
 
-  units.remove(req.params.id)
+  types.remove(req.params.id)
   .then(() => {
     res.status(204).send();
   })

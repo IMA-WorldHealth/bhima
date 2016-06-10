@@ -401,6 +401,7 @@
       "RELIGION"               : "Religion",
       "RESULT_ACCOUNT_SCT"     : "Section Compte de Résultat",
       "RETYPE"                 : "Retaper",
+      "SALE"                   : "Vente",
       "SEARCH"                 : "Chercher",
       "SECOND_NAME"            : "Nom",
       "SECTOR"                 : "Secteur",
@@ -418,6 +419,7 @@
       "SPOUSE_EMPLOYER"        : "Employeur(époux(se))",
       "SPOUSE_PROFESSION"      : "Profession (époux(se))",
       "STATUS"                 : "Etat",
+      "STOCK"                  : "Stock",
       "SUBSIDIES"              : "Les subventions appliqués",
       "TEL"                    : "Tél",
       "TELEPHONE"              : "Téléphone",
@@ -433,6 +435,7 @@
       "UNCONFIGURED"           : "Non configuree",
       "UPDATE_GROUP_DEBTOR"    : "Mettre à jour le Groupe débiteur",
       "UPDATE_PATIENT_GROUP"   : "Mettre à jour les groupes de patients",
+      "USE"                    : "Utilisation",
       "USERNAME"               : "Nom Utilisateur",
       "VALUE"                  : "Valeur",
       "VILLAGE"                : "Village",
@@ -447,6 +450,7 @@
     },
     "PLACE_HOLDERS": {
       "ENTER_ACCOUNT"      : "Entrer le compte",
+      "ENTER_CODE"         : "Entrer le code",
       "ENTER_COUNTRY"      : "Entrer le nom pays",
       "ENTER_CREDITOR"     : "Entrer un crediteur",
       "ENTER_DEBTOR"       : "Entrer un debiteur",
@@ -533,7 +537,12 @@
     "TODAY"          : "Date du jour"
   },
   "INVENTORY" : {
-    "LIST" : "Liste des données d'inventaire"
+    "ADD_GROUP"  : "Ajouter Groupe d'inventaires",
+    "CONTAINS"   : "Contient",
+    "EDIT_GROUP" : "Modifier Groupe d'inventaires",
+    "ELEMENT"    : "Elt",
+    "LIST"       : "Liste des données d'inventaire",
+    "LIST_GROUP" : "Groupes d'inventaires"
   },
   "LOCATION": {
     "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",

@@ -45,7 +45,7 @@ INSERT INTO unit VALUES
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
   (140, 'Inventory Group', 'TREE.INVENTORY_GROUP', 'Inventory group module', 138, '/partials/inventory/groups', '/inventory/groups'),
   (141, 'Inventory Type', 'TREE.INVENTORY_TYPE', 'Inventory type module', 138, '/partials/inventory/types', '/inventory/types'),
-  (141, 'Inventory Unit', 'TREE.INVENTORY_UNIT', 'Inventory unit module', 138, '/partials/inventory/units', '/inventory/units');
+  (142, 'Inventory Unit', 'TREE.INVENTORY_UNIT', 'Inventory unit module', 138, '/partials/inventory/units', '/inventory/units');
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
@@ -220,7 +220,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (140, 1),
 
 -- inventory type module
-(141, 1);
+(141, 1),
+
+-- inventory unit module
+(142, 1);
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
