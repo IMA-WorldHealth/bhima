@@ -132,9 +132,9 @@ function invoices(req, res, next) {
   const uid = req.params.uuid;
   var options = req.query;
 
-  // get the debtor invoice uuids from the sales table
+  // get the debtor invoice uuids from the invoice table
   var sql =
-    'SELECT uuid FROM sale WHERE debtor_uuid = ?;';
+    'SELECT uuid FROM invoice WHERE debtor_uuid = ?;';
 
   db.exec(sql, [uid])
   .then(function (uuids) {
@@ -146,7 +146,7 @@ function invoices(req, res, next) {
 
     // select all invoice and payments against invoices from the combined ledger
     sql =
-      `SELECT BUID(i.uuid) as uuid, CONCAT(project.abbr, sale.reference) as reference,
+      `SELECT BUID(i.uuid) as uuid, CONCAT(project.abbr, invoice.reference) as reference,
         credit, debit, BUID(entity_uuid) as entity_uuid
       FROM (
         SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid '
@@ -160,8 +160,8 @@ function invoices(req, res, next) {
           WHERE reference_uuid IN (?) AND entity_uuid = ?
         ) AS ledger
         GROUP BY entity_uuid
-      ) AS i JOIN sale ON i.uuid = sale.uuid
-      JOIN project ON sale.project_id = project.id `;
+      ) AS i JOIN invoice ON i.uuid = invoice.uuid
+      JOIN project ON invoice.project_id = project.id `;
 
     /**
      * @todo - put in balance

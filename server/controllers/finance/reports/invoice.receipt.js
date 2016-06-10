@@ -7,7 +7,7 @@
  * on the clients request).
  *
  * @todo  rename internal lookup method
- *        Invoices.lookupSale -> Invoices...
+ *        Invoices.lookupInvoice -> Invoices...
  * @todo  get balance information on the invoice
  * @module finance/reports
  */
@@ -124,5 +124,5 @@ function headerData(patientUuid, enterpriseId) {
 }
 
 function reportData(uuid) {
-  return Invoices.lookupSale(uuid);
+  return Invoices.lookupInvoice(uuid);
 }

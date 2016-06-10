@@ -69,7 +69,7 @@ $$
 
 -- Credit For Cautions
 CREATE PROCEDURE PostPatientInvoice(
-  suuid BINARY(16),  -- the UUID of the patient invoice
+  iuuid BINARY(16),  -- the UUID of the patient invoice
   transId TEXT,
   projectId INT,
   fiscalYearId INT,

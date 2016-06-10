@@ -7,51 +7,51 @@ const uuid = require('node-uuid');
 const helpers = require('./helpers');
 helpers.configure(chai);
 
-/* The /sales API endpoint */
-describe('The /sales API', function () {
+/* The /invoices API endpoint */
+describe('The /invoices API', function () {
   'use strict';
 
   // login at the start of the test */
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  /* total number of sales in the database */
-  const numSales = 2;
-  const numCreatedSales = 3;
+  /* total number of invoices in the database */
+  const numInvoices = 2;
+  const numCreatedInvoices = 3;
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
 
-  /* a reference for one of the sales in the database */
+  /* a reference for one of the invoices in the database */
   const reference = 'TPA1';
 
   // run the 'BillingScenarios' test suite
-  describe('(POST /sales)', BillingScenarios);
+  describe('(POST /invoices)', BillingScenarios);
 
-  it('GET /sales returns a list of patient invoices', function () {
-    return agent.get('/sales')
+  it('GET /invoices returns a list of patient invoices', function () {
+    return agent.get('/invoices')
       .then(function (res) {
-        helpers.api.listed(res, numSales);
+        helpers.api.listed(res, numInvoices);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /sales/:uuid returns a valid patient invoice', function () {
-    return agent.get('/sales/'.concat(fetchableInvoiceUuid))
+  it('GET /invoices/:uuid returns a valid patient invoice', function () {
+    return agent.get('/invoices/'.concat(fetchableInvoiceUuid))
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
 
-        var sale = res.body;
+        var invoice = res.body;
 
-        expect(sale).to.not.be.empty;
-        expect(sale).to.contain.keys('uuid', 'cost', 'date', 'items');
-        expect(sale.items).to.not.be.empty;
-        expect(sale.items[0]).to.contain.keys('uuid', 'code', 'quantity');
+        expect(invoice).to.not.be.empty;
+        expect(invoice).to.contain.keys('uuid', 'cost', 'date', 'items');
+        expect(invoice.items).to.not.be.empty;
+        expect(invoice.items[0]).to.contain.keys('uuid', 'code', 'quantity');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /sales/:uuid returns 404 for an invalid patient invoice', function () {
-    return agent.get('/sales/unknown')
+  it('GET /invoices/:uuid returns 404 for an invalid patient invoice', function () {
+    return agent.get('/invoices/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
       })
@@ -59,29 +59,29 @@ describe('The /sales API', function () {
   });
 
 
-  describe.skip('(/sales/search) Search interface for the sales table', function () {
+  describe.skip('(/invoices/search) Search interface for the invoices table', function () {
 
     // no parameters provided
-    it('GET /sales/search should return all sales if no query string provided', function () {
-      return agent.get('/sales/search')
+    it('GET /invoices/search should return all invoices if no query string provided', function () {
+      return agent.get('/invoices/search')
         .then(function (res) {
-          helpers.api.listed(res, numCreatedSales);
+          helpers.api.listed(res, numCreatedInvoices);
         })
         .catch(helpers.handler);
     });
 
     // valid filter, all results
-    it('GET /sales/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two sales', function () {
-      return agent.get('/sales/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
+    it('GET /invoices/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two invoices', function () {
+      return agent.get('/invoices/search?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
         .then(function (res) {
-          helpers.api.listed(res, numCreatedSales);
+          helpers.api.listed(res, numCreatedInvoices);
         })
         .catch(helpers.handler);
     });
 
     // valid filter, but no results expected
-    it('GET /sales/search?cost=0 should return no sales', function () {
-      return agent.get('/sales/search?cost=0')
+    it('GET /invoices/search?cost=0 should return no invoices', function () {
+      return agent.get('/invoices/search?cost=0')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -91,8 +91,8 @@ describe('The /sales API', function () {
     });
 
     // invalid filter should fail with database error
-    it('GET /sales/search?invalidKey=invalidValue should error w/ 400 status', function () {
-      return agent.get('/sales/search?invalidKey=invalidValue')
+    it('GET /invoices/search?invalidKey=invalidValue should error w/ 400 status', function () {
+      return agent.get('/invoices/search?invalidKey=invalidValue')
         .then(function (res) {
           helpers.api.errored(res, 400);
         })
@@ -100,8 +100,8 @@ describe('The /sales API', function () {
     });
 
     // filter should find exactly one result
-    it('GET /sales/search?cost=75 should return a single sale', function () {
-      return agent.get('/sales/search?cost=75')
+    it('GET /invoices/search?cost=75 should return a single invoice', function () {
+      return agent.get('/invoices/search?cost=75')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -111,8 +111,8 @@ describe('The /sales API', function () {
     });
 
     // filter should combine to find the same result as above
-    it('GET /sales/search?cost=75&project_id=1 should return a single sale (combined filter)', function () {
-      return agent.get('/sales/search?cost=75&project_id=1')
+    it('GET /invoices/search?cost=75&project_id=1 should return a single invoice (combined filter)', function () {
+      return agent.get('/invoices/search?cost=75&project_id=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -121,8 +121,8 @@ describe('The /sales API', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /sales/search?cost=15&project_id=1 should not return any results', function () {
-      return agent.get('/sales/search?cost=15&project_id=1')
+    it('GET /invoices/search?cost=15&project_id=1 should not return any results', function () {
+      return agent.get('/invoices/search?cost=15&project_id=1')
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -132,10 +132,10 @@ describe('The /sales API', function () {
     });
   });
 
-  describe('(/sales/references) reference interface for the sales table', function () {
+  describe('(/invoices/references) reference interface for the invoices table', function () {
 
-    it('GET /sales/reference/:reference should return a uuid for a valid sale reference', function () {
-      return agent.get('/sales/references/'.concat(reference))
+    it('GET /invoices/reference/:reference should return a uuid for a valid invoice reference', function () {
+      return agent.get('/invoices/references/'.concat(reference))
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -144,8 +144,8 @@ describe('The /sales API', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /sales/references/:reference should fail for an invalid sale reference', function () {
-      return agent.get('/sales/references/unknown')
+    it('GET /invoices/references/:reference should fail for an invalid invoice reference', function () {
+      return agent.get('/invoices/references/unknown')
         .then(function (res) {
           helpers.api.errored(res, 404);
         })
@@ -168,9 +168,9 @@ function BillingScenarios() {
 
   /*
    * A simple invoice that should be posted without issue.  This demonstrates
-   * that the POST /sales route works as intended for the simple invoicing of
+   * that the POST /invoices route works as intended for the simple invoicing of
    * patients.  Demonstrates:
-   *  1) @todo the "debit" field is not required in sale_items and should be
+   *  1) @todo the "debit" field is not required in invoice_items and should be
    *    removed in the future
    *  2) The is_distributed field takes a boolean value
    *  3) Uuids are not required and will be generated by the server.
@@ -196,24 +196,24 @@ function BillingScenarios() {
       quantity: 1,
       inventory_price: 8,
       transaction_price: 10,
-      credit: 10,
+      credit: 10
     }, {
       inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
       quantity: 1,
       inventory_price: 25,
       transaction_price: 25,
-      credit: 25,
+      credit: 25
     }]
   };
 
   it('creates and posts a patient invoice (simple)', () => {
-    return agent.post('/sales')
-      .send({ sale : simpleInvoice })
+    return agent.post('/invoices')
+      .send({ invoice : simpleInvoice })
       .then(function (res) {
         helpers.api.created(res);
 
         // make sure we can locate the invoice in the database
-        return agent.get('/sales/'.concat(res.body.uuid));
+        return agent.get('/invoices/'.concat(res.body.uuid));
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -223,7 +223,6 @@ function BillingScenarios() {
         let invoice = res.body;
         expect(invoice.cost).to.equal(35);
         expect(invoice.items).to.have.length(2);
-        expect(invoice.discount).to.equal(0);
 
         // NOTE - this is not what was sent, but the server has corrected it.
         expect(invoice.user_id).to.equal(helpers.data.SUPERUSER);
@@ -240,35 +239,35 @@ function BillingScenarios() {
     // test what happens when the debtor is missing
     let missingDebtorUuid = helpers.mask(simpleInvoice, 'debtor_uuid');
 
-    return agent.post('/sales')
-      .send({ sale : missingDebtorUuid })
+    return agent.post('/invoices')
+      .send({ invoice : missingDebtorUuid })
       .then((res) => {
         helpers.api.errored(res, 400);
 
         // what happens when there is no date sent to the server
         let missingDate = helpers.mask(simpleInvoice, 'date');
-        return agent.post('/sales').send({ sale : missingDate });
+        return agent.post('/invoices').send({ invoice : missingDate });
       })
       .then((res) => {
         helpers.api.errored(res, 400);
 
         // what happens when no items are sent to the server
         let missingItems = helpers.mask(simpleInvoice, 'items');
-        return agent.post('/sales').send({ sale : missingItems });
+        return agent.post('/invoices').send({ invoice : missingItems });
       })
       .then((res) => {
         helpers.api.errored(res, 400);
 
         // what happens when no description is sent to the server
         let missingDescription = helpers.mask(simpleInvoice, 'description');
-        return agent.post('/sales').send({ sale : missingDescription });
+        return agent.post('/invoices').send({ invoice : missingDescription });
       })
       .then((res) => {
         helpers.api.errored(res, 400);
 
         // make sure an empty object fails
         let emptyObject = {};
-        return agent.post('/sales').send({ sale : emptyObject });
+        return agent.post('/invoices').send({ invoice : emptyObject });
       })
       .then((res) => {
         helpers.api.errored(res, 400);
@@ -298,13 +297,13 @@ function BillingScenarios() {
       quantity: 15,
       inventory_price: 5,
       transaction_price: 5,
-      credit: 75,
+      credit: 75
     }, {
       inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
       quantity: 1,
       inventory_price: 25,
       transaction_price: 25,
-      credit: 25,
+      credit: 25
     }],
 
     /* @todo - change this API to take in an array of billing service ids */
@@ -318,13 +317,13 @@ function BillingScenarios() {
   };
 
   it('creates and posts a patient invoice (simple + 1 billing service)', () => {
-    return agent.post('/sales')
-      .send({ sale : simpleBillingServiceInvoice })
+    return agent.post('/invoices')
+      .send({ invoice : simpleBillingServiceInvoice })
       .then(function (res) {
         helpers.api.created(res);
 
         // make sure we can locate the invoice in the database
-        return agent.get('/sales/'.concat(res.body.uuid));
+        return agent.get('/invoices/'.concat(res.body.uuid));
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -336,7 +335,6 @@ function BillingScenarios() {
         // this is the invoice cost ($100) + 20% ($20) of billing service
         expect(invoice.cost).to.equal(120);
         expect(invoice.items).to.have.length(2);
-        expect(invoice.discount).to.equal(0);
       })
       .catch(helpers.handler);
   });
@@ -361,7 +359,7 @@ function BillingScenarios() {
       quantity: 25,
       inventory_price: 0.25,
       transaction_price: 0.21,
-      credit: 5.25,
+      credit: 5.25
     }, {
       inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
       quantity: 7,
@@ -373,7 +371,7 @@ function BillingScenarios() {
       quantity: 13,
       inventory_price: 2.50,
       transaction_price: 3.15,
-      credit: 40.95,
+      credit: 40.95
     }],
 
     /* @todo - change this API to take in an array of subsidy ids */
@@ -387,13 +385,13 @@ function BillingScenarios() {
   };
 
   it('creates and posts a patient invoice (simple + 1 subsidy)', () => {
-    return agent.post('/sales')
-      .send({ sale : simpleSubsidyInvoice })
+    return agent.post('/invoices')
+      .send({ invoice : simpleSubsidyInvoice })
       .then(function (res) {
         helpers.api.created(res);
 
         // make sure we can locate the invoice in the database
-        return agent.get('/sales/'.concat(res.body.uuid));
+        return agent.get('/invoices/'.concat(res.body.uuid));
       })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -405,7 +403,6 @@ function BillingScenarios() {
         // this is the cost ($80.29) - 50% ($40.145) of subsidy
         expect(invoice.cost).to.equal(40.145);
         expect(invoice.items).to.have.length(3);
-        expect(invoice.discount).to.equal(0);
       })
       .catch(helpers.handler);
   });
