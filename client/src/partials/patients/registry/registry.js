@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  'PatientService', 'NotifyService', 'moment'
+  'PatientService', 'NotifyService', 'moment', 'ReceiptModal'
 ];
 
 /**
@@ -10,7 +10,7 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, Notify, moment, Modals) {
+function PatientRegistryController(Patients, Notify, moment, Receipt) {
   var vm = this;
 
   var patientActionsTemplate =
@@ -73,6 +73,7 @@ function PatientRegistryController(Patients, Notify, moment, Modals) {
       .then(function (data) {
         var response = data.response;
         vm.filters = data.filters;
+        console.log(data.filters);
         response.forEach(function (patient) {
           patient.patientAge = momentAge(patient.dob);
         });
@@ -84,8 +85,16 @@ function PatientRegistryController(Patients, Notify, moment, Modals) {
       });
   }
 
+  // open a print modal to print all patient registrations to date
   function print() {
-    //Modals.
+
+    // @todo(jniles): eventually, we would like to populate this with the
+    // filters before sending the report request.  However, the client-side
+    // modeling of filters is not up to par yet.
+    var options = {};
+
+    // @todo(jniles): Make reports and receipts use the same rendering modal
+    Receipt.patientRegistrations(options);
   }
 
   // moment() provides the current date, similar to the new Date() API. This requests the difference between two dates

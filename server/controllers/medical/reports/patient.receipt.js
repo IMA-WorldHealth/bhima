@@ -25,7 +25,7 @@ function build(req, res, next) {
   var queryString = req.query;
   var patientID = req.params.uuid;
 
-  var renderTarget = queryString.render || defaultRender;
+  var renderTarget = queryString.renderer || defaultRender;
   var renderer = supportedRender[renderTarget];
 
   if (_.isUndefined(renderer)) {
