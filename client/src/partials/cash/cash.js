@@ -13,7 +13,7 @@ CashController.$inject = [
  * @description
  * This controller is responsible for binding the cash payments controller to
  * its view.  Cash payments can be made against future invocies (cautions) or
- * against previous invoices (sales).  The cash payments module provides
+ * against previous invoices.  The cash payments module provides
  * functionality to pay both in multiple currencies.
  *
  * @todo - documentation improvements

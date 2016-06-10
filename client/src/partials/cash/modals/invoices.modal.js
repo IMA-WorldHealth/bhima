@@ -65,7 +65,7 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
         // loop through each invoice id passed in and reselect those that have
         // previously been selected
         vm.gridOptions.data.forEach(function (invoice) {
-          if (invoiceIds.indexOf(invoice.sale_uuid) > -1) {
+          if (invoiceIds.indexOf(invoice.invoice_uuid) > -1) {
             vm.selectRow(invoice);
           }
         });

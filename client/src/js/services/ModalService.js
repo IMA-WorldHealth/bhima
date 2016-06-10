@@ -125,7 +125,7 @@ function ModalService(Modal) {
         invoiceIds : function invoiceIdsProvider() {
           if (!request.invoices) { return []; }
           return request.invoices.map(function (invoice) {
-            return invoice.sale_uuid;
+            return invoice.invoice_uuid;
           });
         }
       }
