@@ -103,9 +103,17 @@ function AccountService($http, util, Session) {
    *
    * @returns {Array} - the flattened array
    */
-  function flatten(tree) {
+  function flatten(tree, depth) {
+    var depth = depth || 0;
+    depth += 1;
+    
+    console.log('flattening with depth', depth);
+    
     return tree.reduce(function (array, node) {
-      var items = [node].concat(node.children ? flatten(node.children) : []);
+      if (node.children.length) {
+        node.$$treeLevel = depth;
+      }
+      var items = [node].concat(node.children ? flatten(node.children, depth) : []);
       return array.concat(items);
     }, []);
   }

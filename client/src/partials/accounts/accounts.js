@@ -5,145 +5,29 @@ AccountsController.$inject = [
   'AccountService', 'CostCenterService', 'ProfitCenterService', 'ReferenceService', 'AccountTypeService', 'util'
 ];
 
-function AccountsController(accountService, costCenterService, profitCenterService, referenceService, accountTypeService, util) {
+function AccountsController(Accounts, costCenterService, profitCenterService, referenceService, accountTypeService, util) { 
   var vm = this;
-  vm.view = 'default';
 
-  // bind methods
-  vm.create = create;
-  vm.submit = submit;
-  vm.update = update;
-  vm.cancel = cancel;
-  vm.dataByTypes = dataByTypes;
-  vm.typeAccount = typeAccount;
-  vm.discareCC = discareCC;
-  vm.discarePC = discarePC;
+  vm.gridOptions = {
+    enableSorting : false,
+    showTreeExpandNoChildren : true
+  };
 
-  vm.maxLength = util.maxTextLength;
+  var columns = [
+    { field : 'id', displayName : 'FORM.LABELS.ACCOUNT_NUMBER', headerCellFilter : 'translate' },
+    { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate' }
+  ]
+  
+  vm.gridOptions.columnDefs = columns;
+  
+  Accounts.read(null, {detailed : 1})
+    .then(function (result) { 
+      vm.gridOptions.data = result;
+      console.log(result);
 
-  function handler(error) {
-    console.error(error);
-  }
-
-  // fired on startup
-  function startup() {
-    // start up loading indicator
-    vm.loading = true;
-
-    // load Account Type
-    accountTypeService.getAccountType().then(function (data) {
-      vm.accountTypes = data;
-    }).catch(handler);
-
-    // load Cost Center
-    costCenterService.read().then(function (data) {
-      vm.costCenters = data;
-    }).catch(handler);
-
-    // load Profit Center
-    profitCenterService.read().then(function (data) {
-      vm.profitCenters = data;
-    }).catch(handler);
-
-    // load Reference
-    referenceService.read().then(function (data) {
-      vm.references = data;
-    }).catch(handler);
-
-    // load accounts
-    refreshAccounts();
-  }
-
-  function cancel() {
-    vm.view = 'default';
-  }
-
-  //This function cancels the information that should not exist
-  //in the event of one or another type of accounts (balance or income/expense)
-  function dataByTypes(){
-    if(vm.account.type.type === 'balance'){
-      vm.account.is_charge = null;
-      vm.account.cc_id = null;
-      vm.account.pc_id = null;
-    } else if (vm.account.type.type === 'income/expense'){
-      vm.account.is_asset = null;
-    }
-  }
-
-  //This function first looks up the name type of account with the ID
-  //and then cancels the information that should not exist in the event of one
-  //or another type of accounts (balance or operating account)
-  function typeAccount(typeId, accountTypes){
-    vm.account.type = accountTypeService.getTypeText(typeId, accountTypes);
-
-    if(vm.account.type === 'balance'){
-      vm.account.is_charge = null;
-      vm.account.cc_id = null;
-      vm.account.pc_id = null;
-    } else if (vm.account.type === 'income/expense'){
-      vm.account.is_asset = null;
-    }
-  }
-
-  function discareCC() {
-    vm.account.cc_id = null;
-  }
-
-  function discarePC() {
-    vm.account.pc_id = null;
-  }
-
-  function create() {
-    vm.view = 'create';
-    vm.account = {
-      is_title : 0,
-      parent : 0,
-      locked : 0
-    };
-  }
-
-  // switch to update mode
-  // data is an object that contains all the information of a account
-  function update(data) {
-    data.title = data.label;
-    vm.view = 'update';
-    vm.account = data;
-  }
-
-
-  // refresh the displayed Accounts
-  function refreshAccounts() {
-    return accountService.read(null, { detailed : 1 })
-    .then(function (data) {
-      vm.accounts = data;
-      vm.loading = false;
+      var treeStructure = Accounts.getChildren(result, 0);
+      var flat = Accounts.flatten(treeStructure);
+      
+      console.log(flat);
     });
-  }
-
-  // form submission
-  function submit(form) {
-
-    // stop submission if the form is invalid
-    if (form.$invalid) { return; }
-
-    var promise;
-    var creation = (vm.view === 'create');
-
-    var account = angular.copy(vm.account);
-
-    promise = (creation) ?
-      accountService.create(account) :
-      accountService.update(account.id, account);
-
-    promise
-      .then(function (response) {
-        return refreshAccounts();
-      })
-      .then(function () {
-        vm.view = creation ? 'create_success' : 'update_success';
-      })
-      .catch(handler);
-  }
-
-  startup();
 }
