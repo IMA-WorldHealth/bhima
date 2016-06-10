@@ -2,12 +2,14 @@
  * @overview reports/registrations
  *
  * @description
- * This file contains code to create a PDF report of all patient registrations.
+ * This file contains code to create a PDF report of all patient registrations,
+ * matching query conditions passed from the patient registry UI grid.
  *
  * @requires path
  * @requires db
  * @requires lodash
  * @requires BadRequest
+ * @requires Patients
  * @requires renderers/json
  * @requires renderers/html
  * @requires renderers/pdf
@@ -15,8 +17,10 @@
 
 const path = require('path');
 const _ = require('lodash');
+
 const BadRequest = require('../../../lib/errors/BadRequest');
-const Patients = require('../../../controllers/patients');
+
+const Patients = require('../patients');
 
 // group supported renderers
 const renderers = {
@@ -25,13 +29,28 @@ const renderers = {
   'pdf': require('../../../lib/renderers/pdf'),
 };
 
+// default rendering parameters
 const defaults = {
-  pageSize : 'A4',
-  orientation : 'landscape',
-  renderer : 'pdf'
+  pageSize: 'A4',
+  renderer: 'pdf',
 };
 
+// path to the template to render
 const template = path.normalize('./server/controllers/medical/reports/registrations.handlebars');
+
+// translation key mappings for dynamic filters
+// Basically, to show a pretty filter bar, this will translate URL query params
+// into human-readable text to be placed in the report, showing the properties
+// filtered on.
+// TODO - make sure this is translated before being handed to the report.
+const qsTranslations = {
+  'reference' : 'TABLE.COLUMNS.REFERENCE',
+  'name' : 'TABLE.COLUMNS.NAME',
+  'dob' : 'TABLE.COLUMNS.DOB',
+  'sex' : 'TABLE.COLUMNS.GENDER',
+  'hospital_no' : 'TABLE.COLUMNS.HOSPITAL_FILE_NR',
+  'date_registered' : 'TABLE.COLUMNS.DATE_REGISTRATED',
+};
 
 /**
  * @method build
@@ -55,8 +74,18 @@ function build(req, res, next) {
   // delete from the query string
   delete qs.renderer;
 
+  // clone the query string filters for "metadata"
+  const metadata = {
+    filters: _.clone(qs),
+    timestamp: new Date(),
+    filtersI18n: qsTranslations
+  };
+
+  // enforced detailed
+  qs.detailed = 1;
+
   Patients.find(qs)
-  .then(patients => renderer.render({ patients, metadata: qs }, template, defaults))
+  .then(patients => renderer.render({ patients, metadata }, template, defaults))
   .then(result => {
     res.set(renderer.headers).send(result);
   })
@@ -64,3 +93,4 @@ function build(req, res, next) {
   .done();
 }
 
+module.exports = build;

@@ -1,7 +1,9 @@
 angular.module('bhima.controllers')
 .controller('ReceiptModalController', ReceiptModalController);
 
-ReceiptModalController.$inject = ['$uibModalInstance', '$window', '$sce', 'ReceiptService', 'NotifyService', 'receipt', 'options'];
+ReceiptModalController.$inject = [
+  '$uibModalInstance', '$window', '$sce', 'ReceiptService', 'NotifyService', 'receipt', 'options'
+];
 
 /**
  * Receipt Modal Controller

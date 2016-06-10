@@ -344,7 +344,7 @@ function find(options) {
   // if the find should included detailed results
   if (options.detailed) {
       detailedColumns = `
-        , q.abbr, q.father_name, q.mother_name, q.profession, q.employer,
+        , q.abbr, q.father_name, q.mother_name, q.profession, q.employer, q.hospital_no,
         q.spouse, q.spouse_profession, q.spouse_employer, q.religion, q.marital_status,
         q.phone, q.email, q.address_1, q.address_2, q.renewal, BUID(q.origin_location_id) as origin_location_id,
         BUID(q.current_location_id) as current_location_id, q.registration_date, q.title, q.notes, q.hospital_no,
@@ -440,6 +440,13 @@ function find(options) {
   if (!isNaN(limit)) {
     sql += 'LIMIT ?;';
     parameters.push(limit);
+  }
+
+  // if nothing was submitted to the search, get all records
+  if (!parameters.length) {
+
+    // this writes in WHERE 1; to the SQL query
+    sql += ' 1;';
   }
 
   return db.exec(sql, parameters);

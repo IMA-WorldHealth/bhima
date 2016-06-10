@@ -26,10 +26,10 @@ function ReceiptModal(Modal, Receipts) {
   // expose available receipts
   service.invoice = invoice;
   service.patient = patient;
-  
+
   /**
    * Invokes a patient invoice receipt
-   * 
+   *
    * @param {String} uuid             Target invoice UUID
    * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
    */
@@ -56,7 +56,7 @@ function ReceiptModal(Modal, Receipts) {
     var instance = Modal.open(configuration);
     return instance.result;
   }
-  
+
   function patient(uuid, notifyCreated) {
 
     var options = {

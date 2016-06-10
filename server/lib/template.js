@@ -31,6 +31,7 @@ const hbs = exphbs.create({
     multiple : multiply,
     currency : currency,
     date : date,
+    timestamp : timestamp,
     age : age
   }
 });
@@ -83,9 +84,32 @@ function currency(value, currencyKey) {
   return numeral(value).format(formatExpression);
 }
 
+/**
+ * @method date
+ *
+ * @description
+ * This method returns a string date for a particular value, providing the full
+ * date in DD/MM/YYYY formatting.
+ *
+ * @param {Date} value - the date value to be transformed
+ * @returns {String} - the formatted string for insertion into templates
+ */
 function date(value) {
-  var dateValue = new Date(value);
-  return dateValue.toDateString();
+  return moment(value).format('DD/MM/YYYY');
+}
+
+/**
+ * @method timestamp
+ *
+ * @description
+ * This method returns the timestamp of a particular value, showing the full date,
+ * hours, minutes and seconds associated with the timestamp.
+ *
+ * @param {Date} value - the date value to be transformed
+ * @returns {String} - the formatted string for insertion into templates
+ */
+function timestamp(value) {
+  return moment(value).format('DD/MM/YYYY HH:mm:ss');
 }
 
 function age(dob) {

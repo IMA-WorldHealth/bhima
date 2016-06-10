@@ -9,7 +9,7 @@
   </div>
 
   <div class="modal-body" style="overflow: auto; max-height: 300px;">
-    <legend>{{ "FORM.LABELS.DATE_REGISTRATION" | translate }}</legend>  
+    <legend>{{ "FORM.LABELS.DATE_REGISTRATION" | translate }}</legend>
     <fieldset>
       <div class="row text-center">
         <div class="btn-group">
@@ -27,10 +27,10 @@
         </div>
       </div>
       <hr>
-   
+
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateFrom.$invalid }">
         <div class="col-md-9">
-          <div class="input-group">          
+          <div class="input-group">
             <bh-date-editor
               id = "date-registration-from"
               date-value="ModalCtrl.patient.dateRegistrationFrom"
@@ -41,8 +41,8 @@
           </div>
         </div>
       </div>
-      
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateTo.$invalid }">  
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateTo.$invalid }">
         <div class="col-md-9">
           <div class="input-group">
             <bh-date-editor
@@ -53,9 +53,9 @@
             >
             </bh-date-editor>
           </div>
-        </div>      
-      </div>  
-      <br>      
+        </div>
+      </div>
+      <br>
     </fieldset>
 
     <legend>{{ "FORM.LABELS.PATIENT_DETAILS" | translate }}</legend>
@@ -65,7 +65,7 @@
         <input type="text" class="form-control" name="name" id="name" ng-model="ModalCtrl.patient.name">
         <div class="help-block" ng-messages="ModalForm.name.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>                 
+        </div>
       </div>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
@@ -73,7 +73,7 @@
         <input type="text" class="form-control" name="reference" id="reference" ng-model="ModalCtrl.patient.reference">
         <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>                 
+        </div>
       </div>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hospital_no.$invalid }">
@@ -81,18 +81,13 @@
         <input type="text" class="form-control" name="hospital_no" id="hospital_no" ng-model="ModalCtrl.patient.fields.hospital_no">
         <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>                 
+        </div>
       </div>
 
       <div id="gender" class="form-group has-feedback"
         ng-class="{'has-error' : ModalForm.genderOptions.$invalid && ModalForm.$submitted}">
         <label for="male" class="col-md-3 control-label"> {{ "FORM.LABELS.GENDER" | translate }} </label>
         <div class="col-md-9">
-          <label class="radio-inline">
-            <input type="radio" name="genderOptions" id="all" value="all" ng-model="ModalCtrl.patient.sex">
-            {{ "FORM.LABELS.ALL_GENDER" | translate }}
-          </label>
-
           <label class="radio-inline">
             <input type="radio" name="genderOptions" id="male" value="M" ng-model="ModalCtrl.patient.sex">
             {{ "FORM.LABELS.MALE" | translate }}
@@ -107,10 +102,10 @@
             <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
           </div>
         </div>
-      </div>      
+      </div>
     </fieldset>
 
-    <legend>{{ "FORM.LABELS.DOB" | translate }}</legend>  
+    <legend>{{ "FORM.LABELS.DOB" | translate }}</legend>
     <fieldset>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateFrom.$invalid }">
@@ -126,8 +121,8 @@
           </div>
         </div>
       </div>
-      
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateTo.$invalid }">  
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateTo.$invalid }">
         <div class="col-md-9">
           <div class="input-group">
             <bh-date-editor
@@ -138,12 +133,12 @@
             >
             </bh-date-editor>
           </div>
-        </div>      
-      </div>  
-      <br>      
+        </div>
+      </div>
+      <br>
     </fieldset>
   </div>
-    
+
   <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.BUTTONS.CLOSE" | translate }}</button>
     <button class="btn btn-default" id="patient_search" type="submit" data-method="submit">

@@ -10,7 +10,7 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, Notify, moment) {
+function PatientRegistryController(Patients, Notify, moment, Modals) {
   var vm = this;
 
   var patientActionsTemplate =
@@ -18,12 +18,12 @@ function PatientRegistryController(Patients, Notify, moment) {
 
   vm.search = search;
   vm.momentAge = momentAge;
+  vm.print = print;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
 
   /** TODO manage column : last_transaction */
-  // the column attribute `displayName` must be used in favour of `name` in order to allow `headerCellFilter` to function
   vm.uiGridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
@@ -82,6 +82,10 @@ function PatientRegistryController(Patients, Notify, moment) {
       .finally(function () {
         toggleLoadingIndicator();
       });
+  }
+
+  function print() {
+    //Modals.
   }
 
   // moment() provides the current date, similar to the new Date() API. This requests the difference between two dates

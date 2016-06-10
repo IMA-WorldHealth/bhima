@@ -1,42 +1,83 @@
 <head>
   <title>{{translate "PATIENT_REG.PATIENT_REGISTRATIONS"}}</title>
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
+  <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
+  <style>
+    .pills span {
+      margin : 1px 2px;
+    }
+
+    .pills span:first {
+      margin-left: 0;
+    }
+
+
+    .table-mini {
+      font-size: 0.8em;
+    }
+
+    .table-mini tr td,
+    .table-mini tr th {
+      padding : 1px;
+    }
+
+  </style>
 </head>
 <body>
   <header>
-    <h4>{{translate "PATIENT_REG.PATIENT_REGISTRATIONS"}}</h4>
+    <h4>
+      {{translate "PATIENT_REG.PATIENT_REGISTRATIONS"}}
+      <small class="pull-right">
+        <i class="fa fa-calendar"></i> {{timestamp metadata.timestamp }}
+      </small>
+    </h4>
   </header>
 
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>{{translate "TABLE.COLUMNS.REFERENCE" }}</th>
-        <th>{{translate "TABLE.COLUMNS.NAME" }}</th>
-        <th>{{translate "TABLE.COLUMNS.DOB" }}</th>
-        <th>{{translate "TABLE.COLUMNS.GENDER" }}</th>
-        <th>{{translate "TABLE.COLUMNS.HOSPITAL_FILE_NR" }}</th>
-        <th>{{translate "TABLE.COLUMNS.DATE_REGISTERED" }}</th>
-        <th>{{translate "TABLE.COLUMNS.LAST_VISIT" }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each patients}}
-        <tr>
-          <td>{{this.reference}}</td>
-          <td>{{this.name}}</td>
-          <td>{{this.dob}}</td>
-          <td>{{this.sex}}</td>
-          <td>{{this.hospital_no}}</td>
-          <td>{{this.date_registered}}</td>
-          <td>{{this.last_visit}}</td>
+  <p class="pills">
+    {{#each metadata.filters}}
+      <span class="label label-primary text-capitalize">
+        <i class="fa fa-filter"></i> {{@key}}: {{this}}
+      </span>
+    {{/each}}
+  </p>
+
+  <section>
+    <table class="table table-bordered table-condensed table-mini">
+      <thead>
+        <tr class="text-capitalize text-center">
+          <th>{{translate "TABLE.COLUMNS.REFERENCE" }}</th>
+          <th>{{translate "TABLE.COLUMNS.NAME" }}</th>
+          <th>{{translate "TABLE.COLUMNS.DOB" }}</th>
+          <th>{{translate "TABLE.COLUMNS.GENDER" }}</th>
+          <th>{{translate "TABLE.COLUMNS.HOSPITAL_FILE_NR" }}</th>
+          <th>{{translate "TABLE.COLUMNS.DATE_REGISTERED" }}</th>
+          <th>{{translate "TABLE.COLUMNS.LAST_VISIT" }}</th>
         </tr>
-      {{else}}
+      </thead>
+      <tbody>
+        {{#each patients}}
+          <tr>
+            <td>{{this.reference}}</td>
+            <td>{{this.patientName}}</td>
+            <td>{{date this.dob}}</td>
+            <td>{{this.sex}}</td>
+            <td>{{this.hospital_no}}</td>
+            <td>{{date this.registration_date}}</td>
+            <td>{{date this.last_visit}}</td>
+          </tr>
+        {{else}}
+          <tr>
+            <td colspan="7" class="text-center">
+              {{translate "TABLE.COLUMNS.EMPTY"}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+      <tfoot>
         <tr>
-          <td colspan="7" class="text-center">
-            {{translate "TABLE.COLUMNS.EMPTY"}}
-          </td>
+          <th colspan="7" class="text-right">{{translate "FORM.LABELS.TOTAL" }} {{ patients.length }}</th>
         </tr>
-      {{/each}}
-    </tbody>
-  </table>
+      </tfoot>
+    </table>
+  </section>
 </body>
