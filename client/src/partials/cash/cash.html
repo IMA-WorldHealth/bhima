@@ -93,7 +93,7 @@
                     <tbody>
 
                       <!-- show a list of previous invoices to pay again -->
-                      <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.sale_uuid">
+                      <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.invoice_uuid">
                         <td>{{ invoice.reference }}</td>
                         <td>{{ invoice.date | date }}</td>
                         <td class="text-right">{{ invoice.cost | currency:CashCtrl.enterprise.currency_id }}</td>
@@ -134,7 +134,7 @@
                     <span class="glyphicon glyphicon-plus-sign"></span> {{ "FORM.BUTTONS.SELECT_INVOICES" | translate }}
                   </button>
 
-                  <!-- show informational message if there are not sales selected -->
+                  <!-- show informational message if there are not invoice selected -->
                   <p ng-if="CashCtrl.payment.invoices.length === 0" class="text-center text-primary">
                     <span class="glyphicon glyphicon-info-sign"></span> {{ "CASH.VOUCHER.NO_INVOICES_SELECTED" | translate }}
                   </p>

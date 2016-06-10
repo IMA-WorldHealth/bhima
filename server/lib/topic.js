@@ -29,7 +29,7 @@ const events = {
   DELETE: 'delete',
   REPORT: 'report',
   LOGIN: 'login',
-  LOGOUT: 'logout',
+  LOGOUT: 'logout'
 };
 
 // event entities

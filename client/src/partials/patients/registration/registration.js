@@ -64,10 +64,6 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
     }
 
     Patients.create(viewModel.medical, viewModel.finance)
-      .then(function (result) {
-        // create patient success - mark as visiting
-        return Patients.logVisit(result.uuid);
-      })
       .then(function (confirmation) {
         Receipts.patient(confirmation.uuid, true);
 

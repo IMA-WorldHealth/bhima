@@ -203,8 +203,8 @@ exports.configure = function configure(app) {
   app.get('/ledgers/debtor/:id', ledger.compileDebtorLedger);
   app.get('/ledgers/debtor_group/:id', ledger.compileGroupLedger);
   app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);
-  app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
-  app.get('/ledgers/debtor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
+  // app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
+  // app.get('/ledgers/debtor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.getFiscalYears);
@@ -347,11 +347,11 @@ exports.configure = function configure(app) {
   // Patient invoice API
 
   // TODO Decide if the route should be named patient invoice
-  app.get('/sales', patientInvoice.list);
-  app.post('/sales', patientInvoice.create);
-  app.get('/sales/search', patientInvoice.search);
-  app.get('/sales/:uuid', patientInvoice.details);
-  app.get('/sales/references/:reference', patientInvoice.reference);
+  app.get('/invoices', patientInvoice.list);
+  app.post('/invoices', patientInvoice.create);
+  app.get('/invoices/search', patientInvoice.search);
+  app.get('/invoices/:uuid', patientInvoice.details);
+  app.get('/invoices/references/:reference', patientInvoice.reference);
 
   // Reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', invoiceReceipt.build);
@@ -365,7 +365,6 @@ exports.configure = function configure(app) {
   app.delete('/patients/groups/:uuid', patientGroups.remove);
 
   app.get('/patients/search', patients.search);
-  app.post('/patients/visit', patients.visit);
 
   // Patients API
   app.get('/patients', patients.list);
@@ -378,7 +377,6 @@ exports.configure = function configure(app) {
   app.get('/patients/hospital_number/:id/exists', patients.hospitalNumberExists);
 
   app.get('/patients/:uuid/services', patients.billingServices);
-  app.get('/patients/:uuid/prices', patients.priceLists);
   app.get('/patients/:uuid/subsidies', patients.subsidies);
 
   // app.get('/patients/search', patient.search);
@@ -390,6 +388,9 @@ exports.configure = function configure(app) {
   app.delete('/patients/:uuid/documents/all', patients.documents.deleteAll);
   app.delete('/patients/:uuid/documents/:documentUuid', patients.documents.delete);
 
+  app.get('/patients/:uuid/visits', patients.checkin.list);
+  app.post('/patients/:uuid/checkin', patients.checkin.create);
+  
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
   /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */

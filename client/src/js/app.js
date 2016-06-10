@@ -403,12 +403,12 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/inventory/distribution/distribution.html'
   })
 
-  /* sales routes */
-  .state('sales', {
-    url : '/sales',
-    controller: 'sales',
-    templateUrl: '/partials/sales/sales.html'
-  })
+  /* invoices routes */
+  // .state('invoices', {
+  //   url : '/invoices',
+  //   controller: 'invoices',
+  //   templateUrl: '/partials/invoices/invoices.html'
+  // })
 
   /* cash routes */
   .state('/cash/:id', {
@@ -541,10 +541,20 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   /* Patient record */
   .state('patientRecord', {
+    abstract : true,
     url : '/patients/:patientID',
-    controller: 'PatientRecordController as PatientRecordCtrl',
-    templateUrl: 'partials/patients/record/patient_record.html'
+    templateUrl: 'partials/patients/record/patient_record.html',
+    controller: 'PatientRecordController as PatientRecordCtrl'
   })
+    .state('patientRecord.details', {
+      url : '',
+      views : {
+        'checkin@patientRecord' : { 
+          templateUrl : 'partials/patients/record/units/checkin.html',
+          controller : 'CheckInController as CheckInCtrl'
+        }
+      }
+    })
 
   .state('/trialbalance/print', {
     controller : 'TrialBalancePrintController as PrintCtrl',

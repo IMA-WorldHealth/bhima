@@ -3,11 +3,11 @@
 const core = require('./core');
 
 /**
- * This module will post new records from the `sale` table into the posting
- * journal.  It is expected to receive a transaction object and a (binary) sale
+ * This module will post new records from the `invoice` table into the posting
+ * journal.  It is expected to receive a transaction object and a (binary) invoice
  * uuid to post into the `posting_journal` table.
  *
- * In order to post sales, the module must implement billing services, subsidies,
+ * In order to post invoices, the module must implement billing services, subsidies,
  * caution calculation and discounts..
  *
  */
@@ -17,12 +17,12 @@ module.exports = function post(transaction, uuid) {
 
     // set up SQL variables for the posting journal checks
     .addQuery(`
-      SELECT sale.date, enterprise.id, project.id, enterprise.currency_id
+      SELECT invoice.date, enterprise.id, project.id, enterprise.currency_id
       INTO @date, @enterpriseId, @projectId, @currencyId
-      FROM sale JOIN project JOIN enterprise ON
-        sale.project_id = project.id AND
+      FROM invoice JOIN project JOIN enterprise ON
+        invoice.project_id = project.id AND
         project.enterprise_id = enterprise.id
-      WHERE sale.uuid = ?;
+      WHERE invoice.uuid = ?;
     `, [uuid]);
 
   // set up shared variables (such as transId and detect errors)

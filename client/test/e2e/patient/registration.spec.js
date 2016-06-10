@@ -51,7 +51,6 @@ describe('patient registration', function () {
 
     // submit the patient registration form
     FU.buttons.submit();
-  
     FU.exists(by.id('receipt-confirm-created'), true);
     done();
   });

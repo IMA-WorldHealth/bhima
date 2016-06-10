@@ -6,8 +6,9 @@ PatientRecordController.$inject = ['$stateParams', 'PatientService', 'NotifyServ
 function PatientRecordController($stateParams, Patients, Notify, moment) {
   var vm = this;
   var patientID = $stateParams.patientID;
-
+  
   vm.loading = true;
+
   /** @fixme if no uuid is provided this will download all the patients through the base url '/' */
   Patients.read(patientID)
     .then(function (result) {
@@ -22,5 +23,4 @@ function PatientRecordController($stateParams, Patients, Notify, moment) {
       vm.loading = false;
       Notify.handleError(error);
     });
-
 }

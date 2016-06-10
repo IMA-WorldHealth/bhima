@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('PatientService', PatientService);
 
-PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal', 'DocumentService'];
+PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal', 'DocumentService', 'VisitService'];
 
 /**
  * @module PatientService
@@ -21,7 +21,7 @@ PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal', 'Docu
  * Patients.create(medicalDetails, financeDetails)...
  *
  */
-function PatientService($http, util, Session, $uibModal, Documents) {
+function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   var service = this;
   var baseUrl = '/patients/';
 
@@ -30,7 +30,6 @@ function PatientService($http, util, Session, $uibModal, Documents) {
   service.update = update;
   service.groups = groups;
   service.updateGroups = updateGroups;
-  service.logVisit = logVisit;
 
   service.billingServices = billingServices;
   service.subsidies = subsidies;
@@ -42,6 +41,7 @@ function PatientService($http, util, Session, $uibModal, Documents) {
 
   // document exposition definition
   service.Documents = Documents;
+  service.Visits = Visits;
 
   /**
    * This method returns information on a patient given the patients UUID. This
@@ -121,11 +121,6 @@ function PatientService($http, util, Session, $uibModal, Documents) {
     var path = baseUrl.concat(uuid, '/groups');
 
     return $http.post(path, options)
-      .then(util.unwrapHttpResponse);
-  }
-
-  function logVisit(patientUuid) {
-    return $http.post(baseUrl.concat('visit'), {uuid : patientUuid})
       .then(util.unwrapHttpResponse);
   }
 
