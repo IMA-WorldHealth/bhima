@@ -754,3 +754,7 @@ growl-notification.fading.ng-leave.ng-leave-active {
 .flex-header.static {
   box-shadow : none;
 }
+
+.icon-spacer {
+  margin-left : 18px;
+}

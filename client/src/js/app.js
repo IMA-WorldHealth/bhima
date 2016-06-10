@@ -553,10 +553,20 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   /* Patient record */
   .state('patientRecord', {
+    abstract : true,
     url : '/patients/:patientID',
-    controller: 'PatientRecordController as PatientRecordCtrl',
-    templateUrl: 'partials/patients/record/patient_record.html'
+    templateUrl: 'partials/patients/record/patient_record.html',
+    controller: 'PatientRecordController as PatientRecordCtrl'
   })
+    .state('patientRecord.details', {
+      url : '',
+      views : {
+        'checkin@patientRecord' : { 
+          templateUrl : 'partials/patients/record/units/checkin.html',
+          controller : 'CheckInController as CheckInCtrl'
+        }
+      }
+    })
 
   .state('/trialbalance/print', {
     controller : 'TrialBalancePrintController as PrintCtrl',

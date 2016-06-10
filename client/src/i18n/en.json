@@ -602,7 +602,16 @@
   "PATIENT_RECORDS": {
     "TITLE"              : "Patients",
     "UPLOAD_PICTURE"     : "Upload Patient Photo",
-    "NOT_FOUND"          : "Unable to find patient with that ID. Please check with your system administrator."
+    "NOT_FOUND"          : "Unable to find patient with that ID. Please check with your system administrator.",
+    "CHECK_IN" : {
+      "TITLE" : "Check In",
+      "SUBMIT" : "Check Patient In",
+      "NOT_RECENT" : "This patient has not recently been checked in, check the patient in to track this hospital visit.",
+      "ORIGINAL"  : "This patient has never been checked in.",
+      "RECENT"  : "Recent Visits",
+      "ITEM" : "Checked in",
+      "SUCCESS" : "Patient has been checked in"
+    }
   },
   "PATIENT_REG": {
     "FIND_PATIENT"         : "Find a Patient",

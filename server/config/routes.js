@@ -364,7 +364,6 @@ exports.configure = function configure(app) {
   app.delete('/patients/groups/:uuid', patientGroups.remove);
 
   app.get('/patients/search', patients.search);
-  app.post('/patients/visit', patients.visit);
 
   // Patients API
   app.get('/patients', patients.list);
@@ -377,7 +376,6 @@ exports.configure = function configure(app) {
   app.get('/patients/hospital_number/:id/exists', patients.hospitalNumberExists);
 
   app.get('/patients/:uuid/services', patients.billingServices);
-  app.get('/patients/:uuid/prices', patients.priceLists);
   app.get('/patients/:uuid/subsidies', patients.subsidies);
 
   // app.get('/patients/search', patient.search);
@@ -389,6 +387,9 @@ exports.configure = function configure(app) {
   app.delete('/patients/:uuid/documents/all', patients.documents.deleteAll);
   app.delete('/patients/:uuid/documents/:documentUuid', patients.documents.delete);
 
+  app.get('/patients/:uuid/visits', patients.checkin.list);
+  app.post('/patients/:uuid/checkin', patients.checkin.create);
+  
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
   /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */
