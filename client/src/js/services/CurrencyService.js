@@ -124,6 +124,7 @@ function CurrencyService($http, $q, util) {
    * @returns {String} A label associated with the currency or an empty string
    */
   function format(id) {
+    if (!id) { return; }
     return namer(id) + ' (' + symbol(id) + ')';
   }
 
