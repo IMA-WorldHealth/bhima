@@ -19,7 +19,7 @@ INSERT INTO unit VALUES
   (15,  'Patient Registry','TREE.PATIENT_REGISTRY','Patient Registry',12,'/partials/patients/registry/','/patients'),
   (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/partials/patient_invoice/','/invoices/patient'),
   (18,  'Cash Window','TREE.CASH_WINDOW','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
-  (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/partials/creditors/','/creditors'),
+  (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/partials/suppliers/','/suppliers'),
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
   (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),

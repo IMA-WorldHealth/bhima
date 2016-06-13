@@ -456,15 +456,15 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   /* creditor routes */
 
-  .state('creditors', {
-    url : '/creditors',
+  .state('suppliers', {
+    url : '/suppliers',
     controller: 'SupplierController as SupplierCtrl',
-    templateUrl: '/partials/creditors/creditors.html'
+    templateUrl: '/partials/suppliers/suppliers.html'
   })
   .state('creditors/groups', {
     url : '/creditors/groups',
     controller: 'CreditorGroupController',
-    templateUrl: 'partials/creditors/groups/groups.html'
+    templateUrl: 'partials/suppliers/groups/groups.html'
   })
 
   /* purchase routes */
@@ -583,7 +583,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     .state('patientRecord.details', {
       url : '',
       views : {
-        'checkin@patientRecord' : { 
+        'checkin@patientRecord' : {
           templateUrl : 'partials/patients/record/units/checkin.html',
           controller : 'CheckInController as CheckInCtrl'
         }

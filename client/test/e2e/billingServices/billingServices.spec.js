@@ -53,7 +53,7 @@ describe('Billing Services', function () {
     // update the label
     FU.input('BillingServicesFormCtrl.model.label', 'Value Reduced Tax');
 
-    // submit the forn
+    // submit the form
     FU.buttons.submit();
   });
 

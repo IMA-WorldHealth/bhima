@@ -3,67 +3,56 @@ angular.module('bhima.controllers')
 
 CashboxController.$inject = [
   '$uibModal', 'SessionService', 'ProjectService', 'CashboxService',
-  'CurrencyService', 'FormStateFactory', 'ModalService', 'util'
+  'CurrencyService', 'ModalService', 'util', 'NotifyService'
 ];
 
 /**
-* Cashbox Controller
-*
-* This controller is responsible for creating new cashboxes for the enterprise.
-* A valid cashbox must have accounts defined for each enterprise currency, for
-* ease of use thought the application.
-*
-* @todo - use ui-router for managing state
-* @todo - use delete modal here
-*/
-function CashboxController(Modal, Session, Projects, Boxes, Currencies, StateFactory, ModalService, util) {
+ * Cashbox Controller
+ *
+ * This controller is responsible for creating new cashboxes for the enterprise.
+ * A valid cashbox must have accounts defined for each enterprise currency, for
+ * ease of use thought the application.
+ */
+function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalService, util, Notify) {
   var vm = this;
 
   // bind variables
   vm.enterprise = Session.enterprise;
   vm.project = Session.project;
-  vm.state = new StateFactory();
-  vm.view = 'default';
 
   // bind methods
   vm.create = create;
   vm.update = update;
   vm.cancel = cancel;
   vm.submit = submit;
-  vm.delete = del;
+  vm.delete = remove;
   vm.configureCurrency = configureCurrency;
 
   vm.maxLength = util.maxTextLength;
 
   /* ------------------------------------------------------------------------ */
 
-  function handler(error) {
-    console.error(error);
-    vm.state.error();
-  }
-
   // fired on startup
   function startup() {
 
     // load projects
-    Projects.read().then(function (data) {
-      vm.projects = data;
-    }).catch(handler);
+    Projects.read().then(function (projects) {
+      vm.projects = projects;
+    }).catch(Notify.handleError);
 
     // load cashboxes
-    Boxes.read().then(function (data) {
-      vm.cashboxes = data;
-    }).catch(handler);
+    Boxes.read().then(function (cashboxes) {
+      vm.cashboxes = cashboxes;
+    }).catch(Notify.handleError);
 
-    Currencies.read().then(function (data) {
-      vm.currencies = data;
-    }).catch(handler);
+    Currencies.read().then(function (currencies) {
+      vm.currencies = currencies;
+    }).catch(Notify.handleError);
 
-    vm.state.reset();
+    vm.view = 'default';
   }
 
   function cancel() {
-    vm.state.reset();
     vm.view = 'default';
   }
 
@@ -93,12 +82,11 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, StateFac
 
   // switch to update mode
   function update(id) {
-    vm.state.reset();
     loadCashbox(id)
       .then(function () {
         vm.view = 'update';
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
   // check if a currency is in the data.currencies array
@@ -124,8 +112,11 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, StateFac
   }
 
   // form submission
-  function submit(invalid) {
-    if (invalid) { return; }
+  function submit(form) {
+    if (form.$invalid) {
+      // Notify.danger('FORM.ERRORS.HAS_ERRORS');
+      return;
+    }
 
     var cashboxId;
     var promise;
@@ -138,31 +129,31 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, StateFac
       Boxes.create(box) :
       Boxes.update(box.id, box);
 
-    promise
+    return promise
       .then(function (response) {
         cashboxId = response.id;
         return refreshBoxes();
       })
       .then(function () {
+        Notify.success(creation ? 'FORM.INFOS.CREATE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
         update(cashboxId);
-        vm.state[creation ? 'create' : 'update']();
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
-  /** @todo - this should be a modal */
-  function del(box) {
+  function remove(box) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (yes){
-      if (yes) {
-        Boxes.delete(box.id)
-        .then(function (message) {
-          vm.view = 'default';
-          vm.state.delete();
-          return refreshBoxes();
-        })
-        .catch(handler);
-      }
+    .then(function (bool) {
+
+      if (!bool) { return; }
+
+      Boxes.delete(box.id)
+      .then(function (message) {
+        vm.view = 'default';
+        Notify.success('FORM.INFOS.DELETE_SUCCESS');
+        return refreshBoxes();
+      })
+      .catch(Notify.handleError);
     });
   }
 
@@ -194,9 +185,12 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, StateFac
     });
 
     instance.result
-      .then(function (data) {
-        vm.state.update();
-        return loadCashbox(vm.box.id);
+      .then(function () {
+        Notify.success('FORM.INFOS.UPDATE_SUCCESS');
+        update(vm.cashbox.id);
+      })
+      .catch(function (data) {
+        if (data) { Notify.handleError(data); }
       });
   }
 

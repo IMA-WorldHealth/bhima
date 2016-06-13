@@ -7,7 +7,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Cashbox Module', function () {
+describe('Cashboxes', function () {
 
   before(() => helpers.navigate('#/cashboxes'));
 
@@ -37,13 +37,10 @@ describe('Cashbox Module', function () {
     FU.buttons.submit();
 
     // make sure the success message shows
-    FU.exists(FU.feedback.success(), true);
+    components.notification.hasSuccess();
 
     // click the cancel button
     FU.buttons.cancel();
-
-    // make sure the message is cleared
-    FU.exists(FU.feedback.success(), false);
   });
 
   it('successfully edits a cashbox', function () {
@@ -54,13 +51,10 @@ describe('Cashbox Module', function () {
     FU.input('CashCtrl.box.label', 'New Cashbox Name');
     FU.radio('CashCtrl.box.type', cashbox.type);
 
-    // make sure no messages are displayed
-    FU.exists(FU.feedback.success(), false);
-
     FU.buttons.submit();
 
-    // success message!
-    FU.exists(FU.feedback.success(), true);
+    // make sure the success message shows
+    components.notification.hasSuccess();
   });
 
   it('allows the user to change currency accounts', function () {
@@ -83,7 +77,7 @@ describe('Cashbox Module', function () {
     FU.modal.submit();
 
     // confirm that the success feedback message was displaced
-    FU.exists(FU.feedback.success(), true);
+    components.notification.hasSuccess();
   });
 
   // forget to change the gain exchange account id
@@ -106,7 +100,6 @@ describe('Cashbox Module', function () {
 
     // confirm that the modal did not disappear
     FU.exists(by.css('[uib-modal-window]'), true);
-    FU.exists(FU.feedback.error(), true);
 
     // these inputs should not have error states
     FU.validation.ok('CashboxModalCtrl.data.account_id');
@@ -117,9 +110,7 @@ describe('Cashbox Module', function () {
     // submit the modal
     FU.modal.submit();
 
-    // confirm that the modal did not disappear
-    FU.exists(by.css('[uib-modal-window]'), false);
-    FU.exists(FU.feedback.error(), false);
+    components.notification.hasSuccess();
   });
 
   it('allows you to delete a cashbox', function () {
@@ -133,8 +124,7 @@ describe('Cashbox Module', function () {
     // confirm the deletion
     components.modalAction.confirm();
 
-    // check to see if we are in the default state
-    FU.exists(by.css('.alert.alert-info'), true);
+    components.notification.hasSuccess();
   });
 
   it('performs form validation', function () {
@@ -149,5 +139,7 @@ describe('Cashbox Module', function () {
     FU.validation.error('CashCtrl.box.project_id');
     FU.validation.error('CashCtrl.box.label');
     FU.validation.error('CashCtrl.box.type');
+
+    // components.notification.hasDanger();
   });
 });
