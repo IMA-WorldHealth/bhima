@@ -1,44 +1,45 @@
 /**
-* The /services HTTP API endpoint
-*
-* @module admin/services
-*
-* @description This controller is responsible for implementing all crud and others custom request
-* on the services table through the `/services` endpoint.
-*
-* @requires lib/db
-**/ 
+ * @overview Services
+ *
+ * @description
+ * The /services HTTP API endpoint
+ *
+ * @description
+ * This controller is responsible for implementing all crud and others custom request
+ * on the services table through the `/services` endpoint.
+ *
+ * @requires db
+ * @requires NotFound
+ * @requires BadRequest
+ * @requires Topic
+ */
 
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
-var BadRequest = require('../../lib/errors/BadRequest');
+'use strict';
+
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
+const Topic = require('../../lib/topic');
 
 /**
-* Returns an array of services
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
-*
-* @example
-* // GET /services : Get list of services
-* var services = require('admin/services');
-* services.list(req, res, next);
-*/
-
-function list (req, res, next) {
-  'use strict';
-
-  var sql =
+ * @method list
+ *
+ * @description
+ * Returns an array of services from the database.
+ */
+function list(req, res, next) {
+  let sql =
     'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id FROM service AS s';
 
   if (req.query.full === '1') {
-    sql =
-      `SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id, 
-       cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
-       FROM service AS s JOIN enterprise AS e ON s.enterprise_id = e.id
-       LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id LEFT JOIN
-       profit_center AS pc ON s.profit_center_id = pc.id`;
+    sql = `
+      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id,
+        s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
+        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
+      FROM service AS s
+      JOIN enterprise AS e ON s.enterprise_id = e.id
+      LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id
+      LEFT JOIN profit_center AS pc ON s.profit_center_id = pc.id`;
   }
 
   sql += ' ORDER BY s.name;';
@@ -52,28 +53,27 @@ function list (req, res, next) {
 }
 
 /**
-* Create a service in the database
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
-*
-* @example
-* // POST /services : Insert a service
-* var services = require('admin/services');
-* services.create(req, res, next);
-*/
-
-function create (req, res, next) {
-  'use strict';
-
-  var record = req.body;
-  var createServiceQuery = 'INSERT INTO service SET ?';
+ * @method create
+ *
+ * @description
+ * Create a service in the database
+ */
+function create(req, res, next) {
+  let record = req.body;
+  let sql = 'INSERT INTO service SET ?';
 
   delete record.id;
 
-  db.exec(createServiceQuery, [record])
+  db.exec(sql, [record])
     .then(function (result) {
+
+      Topic.publish(Topic.channels.ADMIN, {
+        event: Topic.events.CREATE,
+        entity: Topic.entities.SERVICE,
+        user_id: req.session.user.id,
+        id : result.insertId
+      });
+
       res.status(201).json({ id: result.insertId });
     })
     .catch(next)
@@ -89,35 +89,34 @@ function create (req, res, next) {
 *
 * @example
 * // PUT /services : update a service
-* var services = require('admin/services');
+* let services = require('admin/services');
 * services.update(req, res, next);
 */
 
 
-function update (req, res, next) {
-  'use strict';
-
-  var queryData = req.body;
-  var serviceId = req.params.id;
-  var updateServiceQuery = 'UPDATE service SET ? WHERE id = ?';
-
+function update(req, res, next) {
+  let queryData = req.body;
+  let sql = 'UPDATE service SET ? WHERE id = ?;';
 
   delete queryData.id;
 
-  if(!isValidData(queryData)) {
-    return next(
-	  new BadRequest('You sent a bad value for some parameters in Update Service.')
-	);
-  }
-
-  lookupService(serviceId)
-    .then(function () {
-      return db.exec(updateServiceQuery, [queryData, serviceId]);
-    })
+  db.exec(sql, [queryData, req.params.id])
     .then(function (result) {
-      return lookupService(serviceId);
+      if (!result.affectedRows) {
+        throw new NotFound(`Could not find a service with id ${req.params.id}.`);
+      }
+
+      return lookupService(req.params.id);
     })
     .then(function (service) {
+
+      Topic.publish(Topic.channels.ADMIN, {
+        event: Topic.events.UPDATE,
+        entity: Topic.entities.SERVICE,
+        user_id: req.session.user.id,
+        id : req.params.id
+      });
+
       res.status(200).json(service);
     })
     .catch(next)
@@ -125,49 +124,42 @@ function update (req, res, next) {
 }
 
 /**
-* Remove a service in the database
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
-*
-* @example
-* // DELETE /services : delete a service
-* var services = require('admin/services');
-* service.remove(req, res, next);
-*/
+ * @method remove
+ *
+ * @description
+ * Remove a service in the database.
+ */
+function remove(req, res, next) {
+  let sql = 'DELETE FROM service WHERE id = ?;';
 
-function remove (req, res, next) {
-  var serviceId = req.params.id;
-  var removeServiceQuery = 'DELETE FROM service WHERE id=?';
+  db.exec(sql, [req.params.id])
+    .then(function (result) {
 
-  lookupService(serviceId)
-    .then(function () {
-      return db.exec(removeServiceQuery, [serviceId]);
-    })
-    .then(function () {
-      res.status(204).send();
+      if (!result.affectedRows) {
+        throw new NotFound(`Could not find a service with id ${req.params.id}.`);
+      }
+
+
+      Topic.publish(Topic.channels.ADMIN, {
+        event: Topic.events.DELETE,
+        entity: Topic.entities.SERVICE,
+        user_id: req.session.user.id,
+        id: req.params.id
+      });
+
+      res.sendStatus(204);
     })
     .catch(next)
     .done();
 }
 
 /**
-* Return a service details from the database
-*
-* @param {object} req The express request object
-* @param {object} res The express response object
-* @param {object} next The express object to pass the controle to the next middleware
-*
-* @example
-* // GET /services : returns a service detail
-* vaservices = require('admin/services');
-*services.detail(req, res, next);
-*/
-
+ * @method detail
+ *
+ * @description
+ * Return a service details from the database
+ */
 function detail(req, res, next) {
-  'use strict';
-
   lookupService(req.params.id)
     .then(function (row) {
       res.status(200).json(row);
@@ -177,48 +169,27 @@ function detail(req, res, next) {
 }
 
 /**
-* Return a service instance from the database
-*
-* @param {integer} id of a service
-*
-*/
-
+ * @method lookupService
+ *
+ * @description
+ * Return a service instance from the database
+ *
+ * @param {Number} id - the id of a service
+ * @returns {Promise} - returns the result of teh database query
+ */
 function lookupService(id) {
-  'use strict';
-
-  var sql =
-    'SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id FROM service AS s WHERE s.id=?';
+  let sql =`
+    SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id
+    FROM service AS s WHERE s.id = ?;
+  `;
 
   return db.exec(sql, id)
     .then(function (rows) {
       if (rows.length === 0) {
-        throw new NotFound(`Could not find a Service with id ${id}`);
+        throw new NotFound(`Could not find a service with id ${id}.`);
       }
       return rows[0];
     });
-}
-
-/**
-* Return a boolean answer to know if a service is well formated for an update
-* @param {object} service object which represente a service instance
-*
-*/
-
-function isValidData (service){
-
-  if (service.cost_center_id) {
-    if (isNaN(Number(service.cost_center_id))) {
-      return false;
-    }
-  }
-
-  if (service.profit_center_id) {
-    if (isNaN(Number(service.profit_center_id))) {
-      return false;
-    }
-  }
-
-  return true;
 }
 
 exports.list = list;

@@ -1,15 +1,19 @@
 /**
- * @module admin/employees
+ * @module employees
  *
  * @description
  * This controller is responsible for implementing all crud on the
  * employees table through the `/employees` endpoint.
  * The /employees HTTP API endpoint
  *
- * @requires lib/db
- *
  * NOTE: This api does not handle the deletion of employees because
  * that subject is not in the actuality.
+ *
+ * @requires db
+ * @requires uuid
+ * @requires NotFound
+ * @requires BadRequest
+ * @requires Topic
  */
 
 'use strict';
@@ -18,18 +22,23 @@ const db = require('./../../lib/db');
 const uuid = require('node-uuid');
 const NotFound = require('./../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
+const Topic = require('../../lib/topic');
+
+exports.list = list;
+exports.create = create;
+exports.update = update;
+exports.detail = detail;
+exports.search = search;
 
 /**
- * Returns an array of each employee in the database
+ * @method list
  *
- * @example
- * // GET /employees : Get list of employees
- * var employees = require('admin/employees');
- * employees.list(request, response, next);
+ * @description
+ * Returns an array of each employee in the database
  */
-exports.list = function (req, res, next) {
-  var sql =
-    `SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
+function list(req, res, next) {
+  const sql = `
+    SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
       employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
@@ -44,7 +53,8 @@ exports.list = function (req, res, next) {
      JOIN debtor ON employee.debtor_uuid = debtor.uuid
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-     ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC;`;
+     ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC;
+  `;
 
   db.exec(sql)
   .then(function (rows) {
@@ -52,14 +62,14 @@ exports.list = function (req, res, next) {
   })
   .catch(next)
   .done();
-};
+}
 
 /**
  * Get list of availaible holidays for an employee
  */
 exports.listHolidays = function (req, res, next) {
-  var pp = JSON.parse(req.params.pp);
-  var sql =
+  let pp = JSON.parse(req.params.pp);
+  let sql =
     `SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.percentage, holiday.dateTo
      FROM holiday WHERE
        ((holiday.dateFrom >= ? AND holiday.dateFrom <= ?)
@@ -67,7 +77,7 @@ exports.listHolidays = function (req, res, next) {
        (holiday.dateFrom <= ? AND holiday.dateTo >= ?)) AND
        holiday.employee_id = ?;`;
 
-  var data = [
+  let data = [
     pp.dateFrom, pp.dateTo,
     pp.dateFrom, pp.dateTo,
     pp.dateFrom, pp.dateFrom,
@@ -86,12 +96,12 @@ exports.listHolidays = function (req, res, next) {
 * Check an existing holiday
 */
 exports.checkHoliday = function (req, res, next) {
-  var sql =
+  let sql =
     `SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM holiday WHERE employee_id = ?
      AND ((dateFrom >= ?) OR (dateTo >= ?) OR (dateFrom >= ?) OR (dateTo >= ?))
      AND ((dateFrom <= ?) OR (dateTo <= ?) OR (dateFrom <= ?) OR (dateTo <= ?))`;
 
-  var data = [
+  let data = [
     req.query.employee_id,
     req.query.dateFrom, req.query.dateFrom, req.query.dateTo, req.query.dateTo,
     req.query.dateFrom, req.query.dateFrom, req.query.dateTo, req.query.dateTo
@@ -111,10 +121,10 @@ exports.checkHoliday = function (req, res, next) {
 };
 
 /**
-* Check an existing offday
-*/
+ * Check an existing offday
+ */
 exports.checkOffday = function checkHoliday(req, res, next) {
-  var sql ='SELECT * FROM offday WHERE date = ? AND id <> ?';
+  let sql ='SELECT * FROM offday WHERE date = ? AND id <> ?';
   db.exec(sql, [req.query.date, req.query.id])
   .then(function (rows) {
     res.status(200).json(rows);
@@ -123,9 +133,18 @@ exports.checkOffday = function checkHoliday(req, res, next) {
   .done();
 };
 
+/**
+ * @method lookupEmployee
+ *
+ * @description
+ * Looks up an employee in the database by their id.
+ *
+ * @param {Number} id - the id of the employee to look up
+ * @returns {Promise} - the result of the database query.
+ */
 function lookupEmployee(id) {
-  let sql =
-    `SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
+  let sql = `
+    SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
       employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
       employee.locked, grade.text, grade.basic_salary,
@@ -142,48 +161,42 @@ function lookupEmployee(id) {
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
       LEFT JOIN service ON service.id = employee.service_id
-    WHERE employee.id = ?;`;
+    WHERE employee.id = ?;
+  `;
 
   return db.exec(sql, [id])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new NotFound(`Could not find a Employee with id ${id}`);
+      throw new NotFound(`Could not find an employee with id ${id}.`);
     }
 
     return rows[0];
   });
 }
 
-
-
 /**
-* Returns an object of details of an employee referenced by an `id` in the database
-*
-* @example
-* // GET /employees/:id : Get details of an employee
-* var employees = require('admin/employees');
-* employees.details(req, res, next);
-*/
-exports.detail = function detail(req, res, next) {
+ * @method detail
+ *
+ * @description
+ * Returns an object of details of an employee referenced by an `id` in the database
+ */
+function detail(req, res, next) {
   lookupEmployee(req.params.id)
   .then(function (record) {
     res.status(200).json(record);
   })
   .catch(next)
   .done();
-};
+}
 
 /**
-* Update details of an employee referenced by an `id` in the database
-*
-*
-* @example
-* // PUT /employees/:id : Update details of an employee
-* var employees = require('admin/employees');
-* employees.update(req, res, next);
-*/
-exports.update = function update(req, res, next) {
-  var employee = db.convert(req.body, [
+ * @method update
+ *
+ * @description
+ * Update details of an employee referenced by an `id` in the database
+ */
+function update(req, res, next) {
+  let employee = db.convert(req.body, [
     'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id'
   ]);
 
@@ -195,21 +208,21 @@ exports.update = function update(req, res, next) {
     employee.date_embauche = new Date(employee.date_embauche);
   }
 
-  var transaction;
+  let transaction;
 
-  var creditor = {
+  let creditor = {
     uuid : employee.creditor_uuid,
     group_uuid : employee.creditor_group_uuid,
     text : 'Crediteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
   };
 
-  var debtor = {
+  let debtor = {
     uuid : employee.debtor_uuid,
     group_uuid : employee.debtor_group_uuid,
     text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
   };
 
-  var clean = {
+  let clean = {
     prenom : employee.prenom,
     name : employee.name,
     postnom : employee.postnom,
@@ -232,9 +245,9 @@ exports.update = function update(req, res, next) {
     code : employee.code
   };
 
-  var updateCreditor = 'UPDATE creditor SET ? WHERE creditor.uuid = ?';
-  var updateDebtor = 'UPDATE debtor SET ? WHERE debtor.uuid = ?';
-  var sql = 'UPDATE employee SET ? WHERE employee.id = ?';
+  let updateCreditor = 'UPDATE creditor SET ? WHERE creditor.uuid = ?';
+  let updateDebtor = 'UPDATE debtor SET ? WHERE debtor.uuid = ?';
+  let sql = 'UPDATE employee SET ? WHERE employee.id = ?';
 
   transaction = db.transaction();
 
@@ -246,8 +259,15 @@ exports.update = function update(req, res, next) {
   transaction.execute()
     .then(function (results) {
       if (!results[2].affectedRows) {
-        throw new NotFound(`Could not find a Employee with id ${req.params.id}`);
+        throw new NotFound(`Could not find an employee with id ${req.params.id}.`);
       }
+
+      Topic.publish(Topic.channels.ADMIN, {
+        event: Topic.events.UPDATE,
+        entity: Topic.entities.EMPLOYEE,
+        user_id: req.session.user.id,
+        id : req.params.id
+      });
 
       return lookupEmployee(req.params.id);
     })
@@ -256,26 +276,24 @@ exports.update = function update(req, res, next) {
     })
     .catch(next)
     .done();
-};
+}
 
 /**
-* This function is responsible for creating a new employee in the database
-*
-* @example
-* // POST /employees/ : Create a new employee
-* var employees = require('admin/employees');
-* employees.create(req, res, next);
-*/
-exports.create = function create(req, res, next) {
-  var transaction;
+ * @method create
+ *
+ * @description
+ * This function is responsible for creating a new employee in the database
+ */
+function create(req, res, next) {
+  let transaction;
 
   // cast as data object and add unique ids
-  var data = req.body;
+  let data = req.body;
   data.creditor_uuid = uuid.v4();
   data.debtor_uuid = uuid.v4();
 
   // convert uuids to binary uuids as necessary
-  var employee = db.convert(req.body, [
+  let employee = db.convert(req.body, [
     'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id'
   ]);
 
@@ -287,13 +305,13 @@ exports.create = function create(req, res, next) {
     employee.date_embauche = new Date(employee.date_embauche);
   }
 
-  var creditor = {
+  let creditor = {
     uuid : employee.creditor_uuid,
     group_uuid : employee.creditor_group_uuid,
     text : 'Crediteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
   };
 
-  var debtor = {
+  let debtor = {
     uuid : employee.debtor_uuid,
     group_uuid : employee.debtor_group_uuid,
     text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
@@ -302,9 +320,9 @@ exports.create = function create(req, res, next) {
   delete employee.debtor_group_uuid;
   delete employee.creditor_group_uuid;
 
-  var writeCreditor = 'INSERT INTO creditor SET ?';
-  var writeDebtor = 'INSERT INTO debtor SET ?';
-  var sql = 'INSERT INTO employee SET ?';
+  let writeCreditor = 'INSERT INTO creditor SET ?';
+  let writeDebtor = 'INSERT INTO debtor SET ?';
+  let sql = 'INSERT INTO employee SET ?';
 
   transaction = db.transaction();
 
@@ -315,40 +333,46 @@ exports.create = function create(req, res, next) {
 
   transaction.execute()
     .then(function (results) {
-      res.status(201).json({
-        id: results[2].insertId
+
+      // @todo - why is this not a UUID, but grade_id is a uuid?
+      let employeeId = results[2].insertId;
+
+      Topic.publish(Topic.channels.ADMIN, {
+        event: Topic.events.CREATE,
+        entity: Topic.entities.EMPLOYEE,
+        user_id: req.session.user.id,
+        id : employeeId
       });
+
+      res.status(201).json({ id: employeeId });
     })
     .catch(next)
     .done();
-};
+}
 
 /**
-*This function is responsible for looking for employee by names or code
-*
-* @example
-* // GET /employees/names/x
-* var employees = require('admin/employees');
-* employees.search(req, res, next);
-**/
+ * @method search
+ *
+ * @description
+ * This function is responsible for looking for employee by names or code
+ *
+ */
+function search(req, res, next) {
+  let searchOption = '', sql = '';
+  let keyValue = '%' + req.params.value + '%';
 
-exports.search = function search(req, res, next){
-
-  var searchOption = '', sql = '';
-  var keyValue = '%' + req.params.value + '%';
-
-  if (req.params.key === 'code'){
+  if (req.params.key === 'code') {
     searchOption = 'LOWER(employee.code)';
-  }else if(req.params.key === 'names'){
+  } else if (req.params.key === 'names') {
     searchOption = 'LOWER(CONCAT(employee.prenom, employee.name, employee.postnom))';
-  }else{
+  } else {
     return next(
-	  new BadRequest('You sent a bad value for some parameters in research employee.')
-	);
+      new BadRequest('You sent a bad value for some parameters in research employee.')
+    );
   }
 
-  sql =
-    `SELECT
+  sql = `
+    SELECT
       employee.id, employee.code AS code_employee, employee.prenom, employee.name,
       employee.postnom, employee.locked, employee.bank, employee.bank_account,
       BUID(creditor.uuid) as creditor_uuid, BUID(creditor.group_uuid) as creditor_group_uuid,
@@ -356,12 +380,20 @@ exports.search = function search(req, res, next){
     FROM employee
     JOIN creditor ON employee.creditor_uuid = creditor.uuid
     JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-    WHERE ${searchOption} LIKE ? LIMIT 10;`;
+    WHERE ${searchOption} LIKE ? LIMIT 10;
+  `;
 
   db.exec(sql, [keyValue])
   .then(function (rows) {
+
+    Topic.publish(Topic.channels.ADMIN, {
+      event: Topic.events.SEARCH,
+      entity: Topic.entities.EMPLOYEE,
+      user_id: req.session.user.id
+    });
+
     res.status(200).json(rows);
   })
   .catch(next)
   .done();
-};
+}

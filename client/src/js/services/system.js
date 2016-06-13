@@ -22,7 +22,7 @@ function SystemService($http, util) {
   }
 
   function events() {
-    // forcably clear the event queue
+    // forcibly clear the event queue
     service.stream.length = 0;
 
     return $http.get(baseUrl.concat('/events'))
@@ -34,9 +34,22 @@ function SystemService($http, util) {
     service.stream.push(JSON.parse(event.data));
   }
 
+  function handleErrorEvent(event) {
+    if (event.readyState === EventSource.CLOSED) {
+      console.log('Connection was closed.');
+    }
+  }
+
+  function handleOpenEvent(event) {
+    console.log('Connection was open.');
+  }
+
   // set up event stream
   var source = new EventSource(baseUrl.concat('/stream'));
+
+  source.addEventListener('open', handleOpenEvent, false);
   source.addEventListener('message', handleServerSentEvent, false);
+  source.addEventListener('error', handleErrorEvent, false);
 
   return service;
 }

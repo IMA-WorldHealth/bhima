@@ -13,6 +13,7 @@
  * @requires lib/node-uuid
  * @requires lib/db
  * @requires lib/topic
+ * @requires lib/node-uuid
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
  * @requires medical/patients/groups
@@ -25,7 +26,7 @@
 
 'use strict';
 
-const _    = require('lodash');
+const _ = require('lodash');
 const uuid = require('node-uuid');
 
 const db    = require('../../../lib/db');
@@ -151,12 +152,6 @@ function generatePatientText(patient) {
  *
  * @description
  * Returns details associated to a patient directly and indirectly.
- *
- * @example
- * var patient = require('medical/patient');
- * patient.detail(req, res, next);
- *
- * @todo review if this many details should be returned under a patient end point
  */
 function detail(req, res, next) {
   handleFetchPatient(req.params.uuid)
@@ -168,6 +163,9 @@ function detail(req, res, next) {
 }
 
 /**
+ * @method update
+ *
+ * @description
  * Updates a patient group
  */
 function update(req, res, next) {
@@ -449,13 +447,13 @@ function search(req, res, next) {
       data = [qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName, qName];
     }
 
-    if(qSex && !qReference){
+    if (qSex && !qReference) {
 
-      if(data.length){
+      if (data.length) {
         conjonction = ' AND ';
       }
 
-      if(qSex !== "all"){
+      if (qSex !== 'all') {
         sql += conjonction + 'q.sex = ?';
         data.push(qSex);
       }
@@ -467,7 +465,7 @@ function search(req, res, next) {
       // defined in an object. Ex. : { sex: "M", last_name: "Doe" }
 
       // building the where clause criteria
-      if(data.length){
+      if (data.length) {
         conjonction = ' AND ';
       }
 
@@ -486,10 +484,10 @@ function search(req, res, next) {
 
     }
 
-    if(qDateReg) {
+    if (qDateReg) {
       // Research from patient registration dates
-      if(qDateReg.dateFrom && qDateReg.dateTo){
-        if(data.length){
+      if (qDateReg.dateFrom && qDateReg.dateTo) {
+        if (data.length) {
           conjonction = ' AND ';
         }
 
@@ -499,10 +497,10 @@ function search(req, res, next) {
       }
     }
 
-    if(qDob) {
+    if (qDob) {
       // Research from patient birth dates
-      if(qDob.dateFrom && qDob.dateTo){
-        if(data.length){
+      if (qDob.dateFrom && qDob.dateTo) {
+        if (data.length) {
           conjonction = ' AND ';
         }
 
@@ -525,6 +523,14 @@ function search(req, res, next) {
 
   db.exec(sql, data)
   .then(function (rows) {
+
+    // publish a SEARCH event on the medical channel
+    topic.publish(topic.channels.MEDICAL, {
+      event: topic.events.SEARCH,
+      entity: topic.entities.PATIENT,
+      user_id: req.session.user.id,
+    });
+
     res.status(200).json(rows);
   })
   .catch(next)
