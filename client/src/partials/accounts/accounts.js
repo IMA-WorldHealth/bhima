@@ -2,18 +2,20 @@ angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
-  'AccountService', 'CostCenterService', 'ProfitCenterService', 'ReferenceService', 'AccountTypeService',
-  'util', 'NotifyService'
+  '$state', 'AccountService', 'NotifyService'
 ];
 
 /**
  * Note : all flattening and depth display depends on account order, if a reorder or filter is performed this 
  * may need to be recalculated
  */
-function AccountsController(Accounts, Notify) { 
-
+function AccountsController($state, Accounts, Notify) { 
+  
+  console.log('parent accounts controller');
   var vm = this;
-
+  vm.targetId = $state.params.id; 
+  console.log('$stateParams', $state.params.id);
+  
   var leafRowTemplate = `
       <div
         ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"

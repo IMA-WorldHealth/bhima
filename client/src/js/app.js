@@ -1,17 +1,23 @@
+angular.module('bhima.routes')
+  .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+    console.log('bhima routes init mate');
+
+
+  }]);
+
 var bhima = angular.module('bhima', [
   'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters',
-  'bhima.components', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate',
+  'bhima.components', 'bhima.routes', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate',
   'ngStorage', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.treeView',
   'ui.grid.grouping', 'growlNotifications', 'ngAnimate', 'ngSanitize'
 ]);
 
-
 function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider) {
+
   // allow trailing slashes in routes
   $urlMatcherFactoryProvider.strictMode(false);
-
   /* misc routes */
 
   $stateProvider
@@ -83,11 +89,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     url : '/section_resultat',
     controller : 'sectionResultatController as sectionResultatCtrl',
     templateUrl : 'partials/section_resultat/section_resultat.html'
-  })
-  .state('accounts', {
-    url : '/accounts',
-    controller: 'AccountsController as AccountsCtrl',
-    templateUrl: 'partials/accounts/accounts.html'
   })
   .state('subsidies', {
     url : '/subsidies',

@@ -105,9 +105,7 @@ function AccountService($http, util, Session) {
    */
   function flatten(tree, depth) {
     var depth = isNaN(depth) ? -1 : depth;
-
     depth += 1;
-    console.log('flattening with depth', depth);
     
     return tree.reduce(function (array, node) {
       node.$$treeLevel = depth;
