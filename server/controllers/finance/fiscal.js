@@ -25,9 +25,13 @@ function lookupFiscalYear(id) {
 // GET /fiscal
 function list (req, res, next) {
   'use strict';
-  var sql;
+  let sql;
+  let params = [];
 
+  // make a complex query
   if (req.query.detailed === '1') {
+    params = params.concat(req.session.enterprise.id);
+
     sql =
       `SELECT f.id, f.enterprise_id, f.number_of_months, f.label, f.start_date, 
        f.previous_fiscal_year_id, f.locked, f.created_at, f.updated_at, f.note, DATE_ADD(start_date, INTERVAL number_of_months MONTH) AS end_date, 
@@ -37,26 +41,22 @@ function list (req, res, next) {
        WHERE f.enterprise_id = ? `;
 
     if(req.query.by && req.query.order){
-      sql += " ORDER BY " + req.query.by + " " + req.query.order + " ;";
+      params = params.concat(req.query.by, req.query.order);
+      sql += ` ORDER BY ? ?;`;
     }
-
-    db.exec(sql, [req.session.enterprise.id])
-    .then(function (rows) {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-
+  // execute the query  
   } else {
     sql =
       'SELECT id, label FROM fiscal_year';
-    db.exec(sql)
-    .then(function (rows) {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-  }  
+  }
+
+  // execute the query
+  db.exec(sql, params)
+  .then(rows => {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
 }
 
 // GET / Current Fiscal
@@ -64,6 +64,7 @@ function getFiscalYearsByDate(req, res, next){
   'use strict';
   var sql,
     date = req.query.date;
+    
   sql =
     `SELECT p.fiscal_year_id, f.previous_fiscal_year_id  
      FROM period AS p
@@ -159,7 +160,7 @@ function remove(req, res, next) {
       return db.exec(sql, [fiscalYearId]);
     })
     .then(function () {
-      res.status(204).send();
+      res.sendStatus(204);
     })
     .catch(next)
     .done();

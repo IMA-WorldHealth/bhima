@@ -12,7 +12,7 @@ describe('Fiscal year Module', function () {
   'use strict';
 
   const path = '#/fiscal';
-  var pathNew = '#/fiscal/fiscal/new';
+  var pathNew = '#/fiscal/create/new';
 
   before(() => helpers.navigate(path));
 
@@ -22,7 +22,6 @@ describe('Fiscal year Module', function () {
     number_of_months : 12,
     note : 'Note for the new fiscal Year'
   };
-  var fiscalId = 3;
 
   it('blocks invalid form submission with relevant error classes', function () {
     // switch to the create form
@@ -54,10 +53,11 @@ describe('Fiscal year Module', function () {
 
 
   it('edits a fiscal Year', function () {
-    element(by.id('update_' + fiscalId)).click();
+    var updateButton = element.all(by.css('[data-group-entry]'));
+    updateButton.all(by.css('[data-method="update"]')).last().click();
 
     // modify the fiscal year label and note
-    FU.input('FiscalManageCtrl.fiscal.label', ' 2017 update');
+    FU.input('FiscalManageCtrl.fiscal.label', ' 2017 update Comm Annnnn');
     FU.input('FiscalManageCtrl.fiscal.note', ' Complement note');
     
     FU.buttons.submit();
@@ -65,7 +65,8 @@ describe('Fiscal year Module', function () {
   });
 
   it('delete a fiscal Year', function () {
-    element(by.id('remove_' + fiscalId)).click();
+    var deleteButton = element.all(by.css('[data-group-entry]'));
+    deleteButton.all(by.css('[data-method="delete"]')).last().click();
 
     // click the alert asking for permission
     components.modalAction.confirm();

@@ -20,7 +20,7 @@ describe('(Fiscal_Years) The Fiscal Years API', function () {
   before(helpers.login(agent));
 
   it('POST /fiscal_years adds a fiscal year', function () {
-    return agent.post('/fiscal/create')
+    return agent.post('/fiscal')
       .send(newFiscalYear)
       .then(function (res) {
         helpers.api.created(res);
@@ -59,7 +59,7 @@ describe('(Fiscal_Years) The Fiscal Years API', function () {
       note : 'New note in the test'
     };
 
-    return agent.put('/fiscal/update/'+ newFiscalYear.id)
+    return agent.put('/fiscal/'+ newFiscalYear.id)
       .send(updateData)
       .then(function (res) {
         expect(res).to.have.status(200);

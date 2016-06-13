@@ -210,8 +210,8 @@ exports.configure = function configure(app) {
   app.get('/fiscal', fiscal.list);
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
-  app.post('/fiscal/create', fiscal.create); 
-  app.put('/fiscal/update/:id', fiscal.update);
+  app.post('/fiscal', fiscal.create); 
+  app.put('/fiscal/:id', fiscal.update);
   app.delete('/fiscal/:id', fiscal.remove);  
 
   /* load a user's tree */

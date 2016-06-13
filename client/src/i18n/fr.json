@@ -252,8 +252,7 @@
     "INFOS": {
       "BY"                   : "Par",
       "CLOSE_FISCAL_YEAR"    : "Clôturer l'année fiscale",            
-      "CLOSED"               : "Fermée",
-      "CREATE"               : "CRÉATION",      
+      "CLOSED"               : "Fermée",      
       "CREATED"              : "Crée",
       "CREATE_SUCCESS"       : "Crée avec succès",
       "CURRENT"              : "Actuel",
@@ -281,7 +280,6 @@
       "SAVE_SUCCESS"         : "Enregistrement avec succès",
       "SEARCH"               : "Recherche",
       "UNAUTHORIZED"         : "Non autorisée",
-      "UPDATE"                  : "MISE À JOUR",
       "UPDATE_SUCCESS"          : "Mise à jour avec succès",
       "VIEW_BEGINNING_BALACE"   : "Aperçue de la balance d'ouverture"
     },
@@ -324,6 +322,7 @@
       "CONTACT"                : "Contact",
       "COST_CENTER"            : "Centre de cout",
       "COUNTRY"                : "Pays",
+      "CREATE"                 : "CRÉATION",      
       "CREATED"                : "Crée",
       "CREDITOR_GROUP"         : "Groupe Créditeur",
       "CURRENCIES"             : "Monnaies",
@@ -457,6 +456,7 @@
       "TRANSFER_ACCOUNT"       : "Compte transfert",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Non configuree",
+      "UPDATE"                 : "MISE À JOUR",
       "UPDATE_GROUP_DEBTOR"    : "Mettre à jour le Groupe débiteur",
       "UPDATE_PATIENT_GROUP"   : "Mettre à jour les groupes de patients",
       "USERNAME"               : "Nom Utilisateur",

@@ -3,9 +3,6 @@ angular.module('bhima.controllers')
 
 FiscalController.$inject = ['$state', 'FiscalService', '$interval', 'ModalService', 'NotifyService'];
 
-/**
-
- */
 function FiscalController($state, fiscalService, $interval, ModalService, Notify) {
   var vm = this;
   var today = new Date(); 
@@ -29,6 +26,7 @@ function FiscalController($state, fiscalService, $interval, ModalService, Notify
   function refreshFiscalYear(){
     return fiscalService.read(null,{ detailed : 1 })
     .then(function (fiscalYears) {
+
       vm.fiscalYears = fiscalYears;
     });
   }
@@ -38,12 +36,7 @@ function FiscalController($state, fiscalService, $interval, ModalService, Notify
   .then(function (current) {
     vm.current = current;
   })
-  .catch(handleException);
-
-  function handleException(error) {
-    // expose error to view
-    vm.exception = error;
-  }
+  .catch(Notify.handleError);
 
   // switch to delete warning mode
   function del(fiscal) {
@@ -61,7 +54,6 @@ function FiscalController($state, fiscalService, $interval, ModalService, Notify
       })
       .catch(function (error) {
         Notify.danger('FISCAL.CAN_NOT_DELETE_FY');
-        vm.HTTPError = error;
       });
     });  
   }
@@ -98,7 +90,7 @@ function FiscalController($state, fiscalService, $interval, ModalService, Notify
     .then(function (fiscalYears) {
       vm.fiscalYears = fiscalYears;
     })
-    .catch(handleException);
+    .catch(Notify.handleError);
   }
   refreshFiscalYear();
 

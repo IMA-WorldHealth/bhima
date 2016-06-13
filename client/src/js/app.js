@@ -369,7 +369,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
       templateUrl : 'partials/fiscal/fiscal.list.html'
     })
     .state('fiscal.create', {
-      url : '/fiscal/new',
+      url : '/create/new',
       controller : 'FiscalCreateController as FiscalManageCtrl',
       templateUrl : 'partials/fiscal/fiscal.manage.html'
     })

@@ -1,49 +1,37 @@
 angular.module('bhima.controllers')
 .controller('FiscalCreateController', FiscalCreateController);
 FiscalCreateController.$inject = [
-    '$state', 'ScrollService', 'FiscalService', 'NotifyService', 'util'
+    '$state', 'FiscalService', 'NotifyService', 'util', 'moment'
 ];
 
 /**
- * This controller is responsible for creating a debtor group. It provides
+ * This controller is responsible for creating a fiscal year. It provides
  * utility functions for submission and error handling.
- *
- * @todo refactor code to remove redundant features introduced previously
  *
  * @module fiscal/new
  */
-function FiscalCreateController($state, ScrollTo, fiscalService, Notify, util) {
+function FiscalCreateController($state, fiscalService, Notify, util, moment) {
   var vm = this;
   // expose state for optional view elements
   vm.state   = $state;
   vm.fiscal  = {};
   vm.endDate = endDate;
+  vm.submit = submit;
 
   vm.maxLength = util.maxTextLength; 
 
   function endDate(){
     var start_date = new Date(vm.fiscal.start_date);
     var previousDay;
-    vm.end_date = start_date.setMonth(start_date.getMonth() + vm.fiscal.number_of_months);
-  }
 
-  function handleException(error) {
-    // expose error to view
-    vm.exception = error;
-  }
-
-  settupDefaults();
-
-  function settupDefaults() {
-    vm.submit = submit;
+    vm.end_date = new Date(moment(start_date).month(vm.fiscal.number_of_months));
   }
 
   function submit(fiscal) {    
-    var submitFiscal;
     fiscal.$setSubmitted();
 
     // ensure all Angular form validation checks have passed
-    if (fiscal.$invalid || !vm.fiscal.start_date) {
+    if (fiscal.$invalid) {
        Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return;
     }
@@ -65,6 +53,6 @@ function FiscalCreateController($state, ScrollTo, fiscalService, Notify, util) {
       // navigate back to list view
       $state.go('fiscal.list', null, {reload : true});      
     })      
-    .catch(handleException); 
+    .catch(Notify.handleError); 
   }
 }
