@@ -919,10 +919,13 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   .state('/reports/stock_entry', {
     controller : 'ReportStockEntryController',
     templateUrl : 'partials/reports/stock/stock_entry/stock_entry.html'
+  })
+  .state('/error404', {
+    url : '/error404',
+    templateUrl : 'partials/error404/error404.html'
   });
-
-  $urlRouterProvider.otherwise('/');
-}
+  
+  $urlRouterProvider.otherwise('/error404');}
 
 function translateConfig($translateProvider) {
   //TODO Review i18n and determine if this it the right solution/grade_employers/
