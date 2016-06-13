@@ -922,7 +922,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
   .state('/error404', {
     url : '/error404',
-    controller : 'error404Controller as error404Ctrl',
     templateUrl : 'partials/error404/error404.html'
   });
   
