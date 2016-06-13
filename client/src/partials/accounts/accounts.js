@@ -2,14 +2,18 @@ angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
-  'AccountService', 'CostCenterService', 'ProfitCenterService', 'ReferenceService', 'AccountTypeService', 'util'
+  'AccountService', 'CostCenterService', 'ProfitCenterService', 'ReferenceService', 'AccountTypeService',
+  'util', 'NotifyService'
 ];
 
-function AccountsController(Accounts, costCenterService, profitCenterService, referenceService, accountTypeService, util) { 
+/**
+ * Note : all flattening and depth display depends on account order, if a reorder or filter is performed this 
+ * may need to be recalculated
+ */
+function AccountsController(Accounts, Notify) { 
+
   var vm = this;
 
-  
-  
   var leafRowTemplate = `
       <div
         ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"
@@ -22,9 +26,10 @@ function AccountsController(Accounts, costCenterService, profitCenterService, re
        </div>
   `;
   
-  var indentCellTemplate = '<div class="ui-grid-cell-contents" ><span style="padding-left : {{row.treeLevel * 20}}px;"></span>{{grid.getCellValue(row, col)}}</div>';
-
+  var indentCellTemplate = '<div ng-class="{\'text-action\' : row.treeNode.children.length > 0}" class="ui-grid-cell-contents" ng-click="grid.api.treeBase.toggleRowTreeState(row)"><span style="padding-left : {{row.treeLevel * 20}}px;"></span><i ng-if="row.entity.locked" class="fa fa-lock"></i> {{grid.getCellValue(row, col)}}</div>';
+  
   vm.gridOptions = {
+    appScopeProvider : vm,
     enableSorting : false,
     // enableGroupHeaderSelection : true
     showTreeExpandNoChildren : false,
@@ -50,5 +55,6 @@ function AccountsController(Accounts, costCenterService, profitCenterService, re
   Accounts.read(null, {detailed : 1})
     .then(function (result) { 
       vm.gridOptions.data = Accounts.order(result); 
-    });
+    })
+    .catch(Notify.handleError);
 }

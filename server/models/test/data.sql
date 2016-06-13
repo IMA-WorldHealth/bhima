@@ -47,7 +47,14 @@ INSERT INTO unit VALUES
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
   (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration');
 
-INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
+INSERT INTO `account_type` VALUES
+
+-- Reserved system account types
+(1, 'income', 'ACCOUNTS.INCOME'),
+(2, 'expense', 'ACCOUNTS.EXPENSE'),
+(3, 'balance', 'ACCOUNTS.BALANCE'),
+(4, 'title', 'ACCOUNTS.TITLE');
+
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
 INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES (1,'Congolese Francs','fc','Fc',NULL,50.00),(2,'United States Dollars','usd','$',NULL,0.01);
 
@@ -63,20 +70,20 @@ INSERT INTO `enterprise` VALUES
 INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,1,0),(2,'Test Project B','TPB',1,2,0),(3,'Test Project C','TPC',1,2,0);
 
 INSERT INTO `account` VALUES
-  (3626,2,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,1,1),
-  (3627,2,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 13:26:13',1,1,NULL,0,NULL,0),
-  (3628,2,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 13:27:13',1,1,NULL,0,NULL,0),
-  (3629,2,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,1,1),
-  (3630,2,1,410000,'Test Debtor Accounts 1',3629,0,NULL,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,NULL,0),
-  (3631,2,1,410002,'Test Debtor Accounts 2',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3635,2,1,410001,'Test Debtor Accounts 3',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3636,2,1,4600,'Test Inventory Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
-  (3637,2,1,46001,'Test Item Account',3636,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,0),
-  (3638,2,1,47001,'Test Debtor Group Accounts 4',3626,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3639,2,1,57000,'Test Income Accounts',0,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3640,2,1,57003,'Test Gain Account',3639,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3641,2,1,67000,'Test Expense Accounts',0,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
-  (3642,2,1,67003,'Test Loss Account',3641,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0);
+  (3626,4,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,1,1),
+  (3627,3,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 13:26:13',1,1,NULL,0,NULL,0),
+  (3628,3,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 13:27:13',1,1,NULL,0,NULL,0),
+  (3629,4,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,1,1),
+  (3630,3,1,4100,'Test Debtor Accounts',3629,0,NULL,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,NULL,0),
+  (3631,3,1,41000,'Test Debtor Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3635,3,1,41000,'Test Debtor Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3636,4,1,4600,'Test Inventory Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3637,3,1,46001,'Test Item Account',3636,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,0),
+  (3638,3,1,47001,'Test Debtor Group Account',3626,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3639,4,1,57000,'Test Income Accounts',0,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3640,3,1,57003,'Test Gain Account',3639,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3641,4,1,67000,'Test Expense Accounts',0,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0),
+  (3642,3,1,67003,'Test Loss Account',3641,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,0,NULL,0);
 
 -- attach gain/loss accounts to the enterprise
 UPDATE enterprise SET `gain_account_id` = 3640, `loss_account_id` = 3641;
