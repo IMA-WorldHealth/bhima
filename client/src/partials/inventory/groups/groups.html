@@ -26,8 +26,8 @@
           <tr>
             <th></th><th></th><th></th>
             <th class="text-center"><small>{{ 'FORM.LABELS.SALE' | translate }}</small></th>
-            <th class="text-center"><small>{{ 'FORM.LABELS.CHARGE' | translate }}</small></th>
             <th class="text-center"><small>{{ 'FORM.LABELS.STOCK' | translate }}</small></th>
+            <th class="text-center"><small>{{ 'FORM.LABELS.CHARGE' | translate }}</small></th>
           </tr>
         </thead>
 
@@ -37,8 +37,8 @@
             <td>{{ group.name }}</td>
             <td>{{ group.inventory_counted }} <small>{{ 'INVENTORY.ELEMENT' | translate | lowercase }}(s)</small></td>
             <td class="text-center">{{ group.saleAccountNumber }}</td>
-            <td class="text-center">{{ group.cogsAccountNumber }}</td>
             <td class="text-center">{{ group.stockAccountNumber }}</td>
+            <td class="text-center">{{ group.cogsAccountNumber }}</td>
             <td>
               <a style="cursor:pointer; text-decoration:none;" ng-click="InventoryCtrl.editInventoryGroup(group.uuid)"><i class="fa fa-edit"></i> {{ 'FORM.LABELS.EDIT' | translate }}</a>
             </td>

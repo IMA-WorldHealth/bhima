@@ -50,13 +50,28 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
     Instance.dismiss();
   }
 
+  /** format data to data structure in the db */
   function cleanForSubmit(session) {
     return {
       name : session.name,
       code : session.code,
-      sales_account : session.salesAccount.id,
-      stock_account : session.stockAccount.id,
-      cogs_account : session.cogsAccount.id
+      sales_account : session.salesAccount ? session.salesAccount.id : null,
+      stock_account : session.stockAccount ? session.stockAccount.id : null,
+      cogs_account  : session.cogsAccount ? session.cogsAccount.id : null
+    };
+  }
+
+  /**
+   * essential Account Detail
+   * This function affect a correct object to the uib typeahead input text
+   */
+  function essentialAccountDetail(account) {
+    return {
+      id : account.id,
+      number  : account.number,
+      label   : account.label,
+      locked  : account.locked,
+      hrlabel : String(account.number).concat(' - ', account.label)
     };
   }
 
@@ -75,6 +90,37 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
       InventoryGroup.read(vm.identifier)
       .then(function (group) {
         vm.session = group[0];
+
+        // if the account Id is undefined or null the Account Service returns an array or account
+        // to fix it we assign a inexisting account Id 'undefinedIdentifier'
+        var sales_account =
+          group[0].sales_account ? group[0].sales_account : 'undefinedIdentifier';
+        var stock_account =
+          group[0].stock_account ? group[0].stock_account : 'undefinedIdentifier';
+        var cogs_account =
+          group[0].cogs_account ? group[0].cogs_account : 'undefinedIdentifier';
+
+        // sales accounts
+        Account.read(sales_account)
+        .then(function (account) {
+          vm.session.salesAccount = essentialAccountDetail(account);
+        })
+        .catch(Notify.errorHandler);
+
+        // stock accounts
+        Account.read(stock_account)
+        .then(function (account) {
+          vm.session.stockAccount = essentialAccountDetail(account);
+        })
+        .catch(Notify.errorHandler);
+
+        // cogs accounts
+        Account.read(cogs_account)
+        .then(function (account) {
+          vm.session.cogsAccount = essentialAccountDetail(account);
+        })
+        .catch(Notify.errorHandler);
+
       })
       .catch(Notify.errorHandler);
     }

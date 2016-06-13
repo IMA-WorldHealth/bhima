@@ -61,7 +61,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
   /** init the module */
   function startup() {
 
-    // get accounts list
+    // initializes inventory group list with associate accounts 
     Account.read()
     .then(handleAccountList)
     .then(InventoryGroup.read)
