@@ -59,8 +59,8 @@ function ExchangeModalController(Rates, Currencies, Session, ModalInstance, Noti
 
     return promise
       .then(function (data) {
-        var operation = creation ? 'create_success' : 'update_success';
-        return ModalInstance.close(operation);
+        Notify.success(creation ? 'FORM.INFOS.SAVE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
+        return ModalInstance.close();
       })
       .catch(Notify.handleError);
   }

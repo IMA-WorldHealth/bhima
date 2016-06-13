@@ -29,7 +29,7 @@ describe('Exchange Rate', function () {
 
   const DELETE_RATE = 1;
   const DEFAULT_EXCHANGE = 1;
-  const CURRENCY_RANK = helpers.random(DEFAULT_EXCHANGE);
+  const CURRENCY_RANK = 1;
   const DELETE_SUCCESS = 4;
   const DELETE_ERROR = 1;
   const RATE = 2;
@@ -40,13 +40,13 @@ describe('Exchange Rate', function () {
     element(by.id('rate-' + DELETE_RATE )).click();
 
     // submit the page to the server
-    element(by.id('delete')).click();
+    FU.buttons.delete();
 
     //Confirm the action by a click on the buttom confirm
     components.modalAction.confirm();
 
     // make sure the success message is present
-    FU.exists(by.id('delete_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('sets a new exchange rate', function () {
@@ -66,7 +66,7 @@ describe('Exchange Rate', function () {
     FU.buttons.submit();
 
     // check that the success banner is shown
-    FU.exists(by.id('create_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('adds exchange rates previous dates', function () {
@@ -87,21 +87,20 @@ describe('Exchange Rate', function () {
     FU.buttons.submit();
 
     // check that the success banner is shown
-    FU.exists(by.id('create_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('updates currency exchange rates from the already recorded rate', function () {
     element(by.id('rate-' + RATE_RANK )).click();
 
-    // submit the page to the server
-    element(by.id('submit')).click();
+    $('[data-method="edit"]').click();
     FU.input('ModalCtrl.data.rate',updateExchangeRate.rate);
 
     // submit the form
     FU.buttons.submit();
 
     // check that the success banner is shown
-    FU.exists(by.id('update_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('correctly blocks invalid form submission with relevant error classes', function () {
@@ -122,6 +121,9 @@ describe('Exchange Rate', function () {
 
     // attempt to submit the form
     FU.buttons.submit();
+
+    // @todo - ensure that modal can benefit from notification overlays
+    // components.notification.hasDanger();
 
     // The following fields should be required
     FU.validation.error('ModalCtrl.data.rate');

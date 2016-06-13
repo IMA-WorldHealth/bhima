@@ -1,29 +1,44 @@
 /* global browser, element, by, protractor */
-var chai    = require('chai');
-var expect  = chai.expect;
+const chai    = require('chai');
+const expect  = chai.expect;
 
 module.exports = {
   verify : function verify() {
-    expect(element(by.css('[data-bh-growl-notification]')).isPresent()).to.eventually.equal(true);
+    expect(
+      $('[data-bh-growl-notification]').isPresent(),
+      'Expected a growl notification to be present, but could not find one.'
+    ).to.eventually.equal(true);
     dismiss();
   },
 
   hasSuccess : function hasSuccess() {
-    expect(element(by.css('[data-notification-type="notification-success"]')).isPresent()).to.eventually.equal(true);
+    expect(
+      $('[data-notification-type="notification-success"]').isPresent(),
+      'Expected a growl success notification to be present, but could not find one.'
+    ).to.eventually.equal(true);
     dismiss();
   },
 
   hasWarn : function hasWarn() {
-    expect(element(by.css('[data-notification-type="notification-warn"]')).isPresent()).to.eventually.equal(true);
+    expect(
+      $('[data-notification-type="notification-warn"]').isPresent(),
+      'Expected a growl warning notification to be present, but could not find one.'
+    ).to.eventually.equal(true);
     dismiss();
   },
 
   hasInfo : function hasInfo() {
-    expect(element(by.css('[data-notification-type="notification-info"]')).isPresent()).to.eventually.equal(true);
+    expect(
+      $('[data-notification-type="notification-info"]').isPresent(),
+      'Expected a growl information notification to be present, but could not find one.'
+    ).to.eventually.equal(true);
   },
 
   hasDanger : function hasDanger() {
-    expect(element(by.css('[data-notification-type="notification-danger"]')).isPresent()).to.eventually.equal(true);
+    expect(
+      $('[data-notification-type="notification-danger"]').isPresent(),
+      'Expected a growl danger notification to be present, but could not find one.'
+    ).to.eventually.equal(true);
     dismiss();
   },
 

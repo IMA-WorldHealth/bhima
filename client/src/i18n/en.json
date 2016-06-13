@@ -186,7 +186,7 @@
     "NEW_RATE"            : "New Rate",
     "REVIEW"              : "Review Rates ",
     "REVIEW_RATE"         : "Review the exchange Rate",
-    "TITLE"               : "Configure Exchange Rates"
+    "TITLE"               : "Exchange Rates"
   },
   "FISCAL": {
     "CAN_NOT_DELETE_FY"     : "Can not delete this fiscal year because there are transanctions of which were made",
