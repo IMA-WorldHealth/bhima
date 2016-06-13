@@ -189,7 +189,6 @@ function createInventoryGroups(req, res, next) {
  * Create a new inventory group
  */
 function updateInventoryGroups(req, res, next) {
-  console.log('>>>>>>>>>>>>>', req.body)
   groups.update(req.body, req.params.uuid)
   .then((rows) => {
     res.status(201).json(rows);

@@ -13,6 +13,10 @@ InventoryGroupsController.$inject = [
 function InventoryGroupsController($translate, InventoryGroup, Account, Notify, Modal) {
   var vm = this;
 
+  /** global variables */
+  vm.created = false;
+  vm.updated = false;
+  
   /** paths in the headercrumb */
   vm.bcPaths = [
     { label : 'TREE.INVENTORY' },
@@ -23,7 +27,8 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
   vm.bcButtons = [{
     icon: 'fa fa-plus',
     label: $translate.instant('FORM.LABELS.ADD'),
-    action: addInventoryGroup, color: 'btn-primary'
+    action: addInventoryGroup, color: 'btn-primary',
+    dataMethod : 'create'
   }];
 
   // expose to the view
@@ -39,6 +44,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     Modal.openInventoryGroupActions(request)
     .then(function (res) {
       if (res.uuid) {
+        vm.created = true;
         Notify.success('FORM.INFOS.CREATE_SUCCESS');
       }
     })
@@ -52,6 +58,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
 
     Modal.openInventoryGroupActions(request)
     .then(function (res) {
+      vm.updated = true;
       Notify.success('FORM.INFOS.UPDATE_SUCCESS');
     })
     .then(startup)
@@ -61,7 +68,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
   /** init the module */
   function startup() {
 
-    // initializes inventory group list with associate accounts 
+    // initializes inventory group list with associate accounts
     Account.read()
     .then(handleAccountList)
     .then(InventoryGroup.read)

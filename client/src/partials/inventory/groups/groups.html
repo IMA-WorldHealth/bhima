@@ -40,12 +40,18 @@
             <td class="text-center">{{ group.stockAccountNumber }}</td>
             <td class="text-center">{{ group.cogsAccountNumber }}</td>
             <td>
-              <a style="cursor:pointer; text-decoration:none;" ng-click="InventoryCtrl.editInventoryGroup(group.uuid)"><i class="fa fa-edit"></i> {{ 'FORM.LABELS.EDIT' | translate }}</a>
+              <a style="cursor:pointer; text-decoration:none;"
+                ng-click="InventoryCtrl.editInventoryGroup(group.uuid)"
+                data-edit="{{ group.code }}">
+                <i class="fa fa-edit"></i> {{ 'FORM.LABELS.EDIT' | translate }}
+              </a>
             </td>
           </tr>
         </tbody>
       </table>
 
+      <div ng-if="InventoryCtrl.created" id="create_success"></div>
+      <div ng-if="InventoryCtrl.updated" id="update_success"></div>
     </div>
 
   </div>

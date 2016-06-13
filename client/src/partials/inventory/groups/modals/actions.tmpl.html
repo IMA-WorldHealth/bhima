@@ -32,7 +32,7 @@
         ng-model="$ctrl.session.salesAccount"
         uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
-        typeahead-editable="false"
+        typeahead-editable="true"
         placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
         >
     </div>
@@ -45,7 +45,7 @@
         ng-model="$ctrl.session.stockAccount"
         uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
-        typeahead-editable="false"
+        typeahead-editable="true"
         placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
         >
     </div>
@@ -58,7 +58,7 @@
         ng-model="$ctrl.session.cogsAccount"
         uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
-        typeahead-editable="false"
+        typeahead-editable="true"
         placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
         >
     </div>
@@ -74,7 +74,8 @@
   <button type="button"
     class="btn btn-primary btn-sm"
     ng-disabled="ActionForm.$invalid"
-    ng-click="$ctrl.submit()">
+    ng-click="$ctrl.submit()"
+    data-method="submit">
     {{ 'FORM.BUTTONS.SUBMIT' | translate }}
   </button>
 </div>

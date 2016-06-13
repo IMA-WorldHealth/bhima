@@ -1,0 +1,55 @@
+/* global element, by, inject, browser */
+'use strict';
+
+const chai   = require('chai');
+const expect = chai.expect;
+
+const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
+helpers.configure(chai);
+
+describe.only('Inventory Group ::', () => {
+  'use strict';
+
+  // navigate to the page
+  before(() => helpers.navigate('#/inventory/groups'));
+
+  const group = {
+    name : '[E2E] Inventory Group',
+    code : '1704',
+    sales_account : 'Test Capital One',
+    stock_account : 'Test Capital Two',
+    cogs_account  : 'Test Balance'
+  };
+
+  const updateGroup = {
+    name : '[E2E] Inventory Group updated',
+    code : '2504',
+    sales_account : 'Test Inventory Accounts',
+    stock_account : '',
+    cogs_account  : ''
+  };
+
+  it('Successfully creates a new inventory group', () => {
+    FU.buttons.create();
+    FU.input('$ctrl.session.name', group.name);
+    FU.input('$ctrl.session.code', group.code);
+    FU.typeahead('$ctrl.session.salesAccount', group.sales_account);
+    FU.typeahead('$ctrl.session.stockAccount', group.stock_account);
+    FU.typeahead('$ctrl.session.cogsAccount', group.cogs_account);
+    FU.buttons.submit();
+    FU.exists(by.id('create_success'), true);
+  });
+
+  it('Successfully updates an existing inventory group', () => {
+    element(by.css('[data-edit="' + group.code +'"]')).click();
+    FU.input('$ctrl.session.name', updateGroup.name);
+    FU.input('$ctrl.session.code', updateGroup.code);
+    FU.typeahead('$ctrl.session.salesAccount', updateGroup.sales_account);
+    element(by.model('$ctrl.session.stockAccount')).clear();
+    element(by.model('$ctrl.session.cogsAccount')).clear();
+    FU.buttons.submit();
+    FU.exists(by.id('update_success'), true);
+  });
+
+});
