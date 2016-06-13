@@ -5,7 +5,7 @@ var expect = chai.expect;
 var helpers = require('./helpers');
 helpers.configure(chai);
 
-describe('(Fiscal_Years) The Fiscal Years API', function () {
+describe('(/fiscal) The Fiscal Years API', function () {
   var agent = chai.request.agent(helpers.baseUrl);
 
   var newFiscalYear = {
@@ -19,7 +19,7 @@ describe('(Fiscal_Years) The Fiscal Years API', function () {
 
   before(helpers.login(agent));
 
-  it('POST /fiscal_years adds a fiscal year', function () {
+  it('POST /fiscal adds a fiscal year', function () {
     return agent.post('/fiscal')
       .send(newFiscalYear)
       .then(function (res) {
@@ -68,7 +68,7 @@ describe('(Fiscal_Years) The Fiscal Years API', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /fiscal_years/:id deletes a fiscal year', function () {
+  it('DELETE /fiscal/:id deletes a fiscal year', function () {
     return agent.delete('/fiscal/' + newFiscalYear.id)
       .then(function (res) {
         helpers.api.deleted(res);

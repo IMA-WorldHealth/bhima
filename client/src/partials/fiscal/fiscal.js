@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
 .controller('FiscalController', FiscalController);
 
-FiscalController.$inject = ['$state', 'FiscalService', '$interval', 'ModalService', 'NotifyService'];
+FiscalController.$inject = ['$state', 'FiscalService', 'ModalService', 'NotifyService'];
 
-function FiscalController($state, fiscalService, $interval, ModalService, Notify) {
+function FiscalController($state, fiscalService, ModalService, Notify) {
   var vm = this;
   var today = new Date(); 
 
