@@ -207,8 +207,12 @@ exports.configure = function configure(app) {
   // app.get('/ledgers/debtor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
 
   /* fiscal year controller */
-  app.get('/fiscal', fiscal.getFiscalYears);
-  app.post('/fiscal/create', fiscal.createFiscalYear);
+  app.get('/fiscal', fiscal.list);
+  app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
+  app.get('/fiscal/:id', fiscal.detail);
+  app.post('/fiscal', fiscal.create); 
+  app.put('/fiscal/:id', fiscal.update);
+  app.delete('/fiscal/:id', fiscal.remove);  
 
   /* load a user's tree */
   app.get('/tree', tree.generate);
@@ -333,7 +337,7 @@ exports.configure = function configure(app) {
   // stock API
   app.get('/donations', donations.getRecentDonations);
 
-  app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
+  //app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
 
   // general ledger controller
   // transitioning to a more traditional angular application architecture

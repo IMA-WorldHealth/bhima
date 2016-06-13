@@ -1,0 +1,41 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.ACCOUNTING" | translate }}</li>
+      <li class="static">{{ "TREE.FISCAL_YEAR" | translate }}</li>
+      <li class="title" ng-if="FiscalCtrl.state.current.name==='fiscal.create'">
+        <span class="label label-success">{{ "FORM.LABELS.CREATE" | translate }}</span>
+      </li>
+
+      <li class="title" ng-if="FiscalCtrl.state.current.name==='fiscal.update'">
+        <span class="label label-danger">{{ "FORM.LABELS.UPDATE" | translate }}</span>
+      </li>      
+    </ol>
+    
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <a 
+          ng-if="FiscalCtrl.state.current.name==='fiscal.list'"
+          data-method="create"
+          ui-sref="fiscal.create"
+          class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-plus"></span>
+          {{'FORM.BUTTONS.ENTITY' | translate}}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 
+     Style adjusment is made for autoscroll which will scroll to the top of the 
+     ui-view - because the padding is on the flex-content it will not consider this
+     the top resulting in 0 padding. This should be considered going forward with 
+     the structure styles
+-->
+<div style="padding-top : 0px;" class="flex-content">
+  
+  <div id="anchor" style="padding-top : 5px;" ui-view autoscroll></div>
+</div>
+
