@@ -35,7 +35,7 @@ function SystemService($http, util) {
   }
 
   function handleErrorEvent(event) {
-    if (event.readyState == EventSource.CLOSED) {
+    if (event.readyState === EventSource.CLOSED) {
       console.log('Connection was closed.');
     }
   }

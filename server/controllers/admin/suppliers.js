@@ -91,7 +91,7 @@ function create(req, res, next) {
   const data = db.convert(req.body, ['creditor_uuid']);
 
   // provide uuid if the client has not specified
-  const uid = data.uuid || uuid();
+  const uid = data.uuid || uuid.v4();
   data.uuid = db.bid(uid);
 
   let sql =
