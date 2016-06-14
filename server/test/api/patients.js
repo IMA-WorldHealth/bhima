@@ -90,14 +90,7 @@ describe('(/patients) Patients', function () {
   describe('(/search) Patient Search', function () {
 
     it('GET /patients/search with missing necessary parameters', function () {
-
-      return agent.get('/patients/search/?uuid="81af634f-321a-40de-bc6f-ceb1167a9f65"')
-        .then(function (res) {
-          helpers.api.errored(res, 400);
-
-          expect(res.body.code).to.be.equals('ERRORS.PARAMETERS_REQUIRED');
-          return agent.get('/patients/search/?');
-        })
+      return agent.get('/patients/search/?')
         .then(function (res) {
           helpers.api.errored(res, 400);
 
@@ -120,19 +113,19 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search with \'name\' parameter', function () {
-      return agent.get('/patients/search/?name=Test')
+      let conditions = { name : 'Test' };
+      return agent.get('/patients/search/')
+        .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 2);
         })
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with a set of parameters (fields) as an object', function () {
-      var fields = {
-        sex: 'M',
-        last_name: 2
-      };
-      return agent.get('/patients/search/?fields='+JSON.stringify(fields))
+    it('GET /patients/search should be composable', function () {
+      let conditions = { sex: 'M', last_name: 2 };
+      return agent.get('/patients/search/')
+        .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
         })
@@ -140,7 +133,9 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search with `name` and `reference` parameters for the priority of reference', function () {
-      return agent.get('/patients/search/?name=Test&reference=TPA1')
+      let conditions = { name : 'Test', reference : 'TPA1' };
+      return agent.get('/patients/search/')
+        .query(conditions)
         .then(function (res) {
           helpers.api.listed(res, 1);
           expect(res.body[0].reference).to.exist;
@@ -149,8 +144,11 @@ describe('(/patients) Patients', function () {
         .catch(helpers.handler);
     });
 
-    it('GET /patients/search with `detail` and `limit` parameters', function () {
-      return agent.get('/patients/search/?name=Test&detail=1&limit=5')
+    it('GET /patients/search with detailed and limit parameters', function () {
+      let conditions = { detailed: 1, limit: 5, name: 'Test' };
+
+      return agent.get('/patients/search/')
+        .query(conditions)
         .then(function (res) {
           var expected = [
             'father_name', 'mother_name', 'profession', 'employer', 'spouse', 'spouse_employer',

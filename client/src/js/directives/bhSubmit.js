@@ -33,6 +33,9 @@ function bhSubmitDirective() {
         // start the loading state
         FormController.$toggleLoading();
 
+        // make sure the form is registered as submitted
+        FormController.$setSubmitted();
+
         // fire the submit method
         var response = $scope.submit();
 

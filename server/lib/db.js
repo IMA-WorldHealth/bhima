@@ -51,14 +51,14 @@ function exec(sql, params) {
   con.getConnection(function (err, connection) {
     if (err) { return dfd.reject(err); }
 
-    var qs = connection.query(sql, params, function (err, results) {
+    var qs = connection.query(sql.trim(), params, function (err, results) {
       connection.release();
       if (err) { return dfd.reject(err); }
       dfd.resolve(results);
     });
 
     // log the SQL if in debug mode
-    winston.log('debug', qs.sql);
+    winston.log('debug', qs.sql.trim());
   });
 
   return dfd.promise;

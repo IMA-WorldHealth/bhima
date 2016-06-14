@@ -11,6 +11,7 @@
  * @requires lib/node-uuid
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
+ * @requires Topic
  */
 'use strict';
 
@@ -19,6 +20,7 @@ const db = require('../../../lib/db');
 const uuid = require('node-uuid');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
+const Topic = require('../../../lib/topic');
 
 // GET /patients/:uuid/groups
 exports.list = list;
@@ -27,10 +29,10 @@ exports.list = list;
 exports.update = update;
 
 /**
- * @method list()
+ * @method list
  *
- * @description Given a patient, this will list the groups to which they are
- * registered.
+ * @description
+ * Given a patient, this will list the groups to which they are registered.
  */
 function list(req, res, next) {
   const id = db.bid(req.params.uuid);
@@ -61,12 +63,16 @@ function list(req, res, next) {
     .done();
 }
 
-// accepts an array of patient group UUIDs that will be assigned to the
-// patient provided in the route
+/**
+ * @method update
+ *
+ * @description
+ * This endpoint accepts an array of patient group unique ids that will be
+ * assigned to the patient id provided in the route.  If no ids are provided,
+ * the route will simply remove all patient group assignments from the patient.
+ */
 function update(req, res, next) {
-  // If UUID is not passed this route will not match - invalid uuids in this case
-  // will be responded to with a bad request (mysql)
-  let patientId = db.bid(req.params.uuid);
+  const patientId = db.bid(req.params.uuid);
 
   // TODO make sure assignments is an array etc. - test for these cases
   if (!req.body.assignments) {
@@ -107,6 +113,13 @@ function update(req, res, next) {
 
   transaction.execute()
     .then(function (result) {
+
+      Topic.publish(Topic.channels.MEDICAL, {
+        event: Topic.events.UPDATE,
+        entity: Topic.entities.PATIENT,
+        user_id: req.session.user.id,
+        uuid: req.params.uuid
+      });
 
       // TODO send back correct ids
       res.status(200).json(result);

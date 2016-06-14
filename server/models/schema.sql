@@ -760,9 +760,13 @@ CREATE TABLE `fiscal_year` (
   `locked`                    TINYINT(1) NOT NULL DEFAULT 0,
   `created_at`                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`                TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  `user_id`                   SMALLINT(5) UNSIGNED NOT NULL,
+  `note`                      TEXT,  
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

@@ -8,7 +8,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Enterprises Module', function () {
+describe('Enterprises', function () {
 
   const path = '#/enterprises';
   const enterpriseId = 1;
@@ -42,7 +42,7 @@ describe('Enterprises Module', function () {
     // submit the page to the server
     FU.buttons.submit();
 
-    FU.exists(by.id('create_success'), true);
+    components.notification.hasSuccess();
   });
 
 
@@ -52,8 +52,8 @@ describe('Enterprises Module', function () {
     FU.input('EnterpriseCtrl.enterprise.name', 'Test Enterprise Updated');
     FU.input('EnterpriseCtrl.enterprise.abbr', 'TEU');
 
-    element(by.id('change_enterprise')).click();
-    FU.exists(by.id('update_success'), true);
+    FU.buttons.submit();
+    components.notification.hasSuccess();
   });
 
 

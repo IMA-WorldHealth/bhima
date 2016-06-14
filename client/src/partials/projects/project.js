@@ -1,55 +1,46 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('ProjectController', ProjectController);
 
 ProjectController.$inject = [
-   'ProjectService', 'EnterpriseService', 'SnisService', 'FormStateFactory', '$translate', 'ModalService', 'util'
+   'ProjectService', 'EnterpriseService', 'SnisService',
+   'ModalService', 'util', 'NotifyService'
 ];
 
-function ProjectController(Projects, Enterprises, SnisService, StateFactory, $translate, ModalService, util) {
+function ProjectController(Projects, Enterprises, SnisService, ModalService, util, Notify) {
   var vm = this;
-
-  vm.enterprises = [];
-  vm.state = new StateFactory();
-  vm.view = 'default';
 
   // bind methods
   vm.create = create;
   vm.update = update;
   vm.cancel = cancel;
   vm.submit = submit;
-  vm.del = del;
-  
-  vm.maxLength = util.maxTextLength;
-  vm.length50 = 3;  
+  vm.remove = remove;
 
-  function handler(error) {
-    console.error(error);
-    vm.state.error();
-  }
+  vm.maxLength = util.maxTextLength;
+  vm.length3 = 3;
 
   // fired on startup
   function startup() {
-    // load Projects
-    refreshProjects();
+    vm.view = 'default';
 
-    // load Enterprises
-    Enterprises.read().then(function (data) {
-      vm.enterprises = data;
-    }).catch(handler);
+    // load projects
+    refreshProjects().catch(Notify.handleError);
 
-    SnisService.healthZones().then(function (data) {
-      data.forEach(function (l) {
-        l.format = l.zone + ' - ' + l.territoire + ' (' + l.province + ')';
-      });
-      vm.zones = data;
-    }).catch(handler);
+    // load enterprises
+    Enterprises.read()
+      .then(function (enterprises) {
+        vm.enterprises = enterprises;
+      })
+      .catch(Notify.handleError);
 
-    vm.state.reset();
+    SnisService.healthZones()
+      .then(function (zones) {
+        vm.zones = zones;
+      })
+      .catch(Notify.handleError);
   }
 
   function cancel() {
-    vm.state.reset();
     vm.view = 'default';
   }
 
@@ -60,42 +51,39 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory, $tr
 
   // switch to update mode
   function update(data) {
-    vm.state.reset();
-    vm.project= data;
     vm.view = 'update';
+    vm.project = data;
   }
 
   // switch to delete warning mode
-  function del(project) {
+  function remove(id) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (result){
-      if(result){
-        vm.view = 'delete_confirm';
-        Projects.delete(project.id)
-        .then(function (response) {
-          refreshProjects();
-          vm.view = 'delete_success';
-        }).catch(function (error) {
-          vm.view = 'delete_error';
-          vm.HTTPError = error;
-        });
-      } else {
-        vm.view = 'default';
-      } 
-    });    
-  }
+    .then(function (bool) {
+      if (!bool) { return; }
 
-  // refresh the displayed Projects
-  function refreshProjects() {
-    return Projects.read(null, { complete : 1 })
-    .then(function (data) {
-      vm.projects = data;
+      Projects.delete(id)
+        .then(function () {
+          Notify.success('FORM.INFOS.DELETE_SUCCESS');
+          return refreshProjects();
+        })
+        .catch(Notify.handleError);
     });
   }
 
+  // refresh the displayed projects
+  function refreshProjects() {
+    return Projects.read(null, { complete : 1 })
+      .then(function (projects) {
+        vm.projects = projects;
+      });
+  }
+
   // form submission
-  function submit(invalid) {
-    if (invalid) { return; }
+  function submit(form) {
+    if (form.$invalid) {
+      Notify.danger('FORM.ERRORS.HAS_ERRORS');
+      return;
+    }
 
     var promise;
     var creation = (vm.view === 'create');
@@ -105,15 +93,15 @@ function ProjectController(Projects, Enterprises, SnisService, StateFactory, $tr
       Projects.create(project) :
       Projects.update(project.id, project);
 
-    promise
+    return promise
       .then(function (response) {
         return refreshProjects();
       })
       .then(function () {
         update(project.id);
-        vm.view = creation ? 'create_success' : 'update_success';
-      })      
-      .catch(handler);
+        Notify.success(creation ? 'FORM.INFOS.CREATE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
+      })
+      .catch(Notify.handleError);
   }
 
   startup();

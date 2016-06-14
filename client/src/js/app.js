@@ -40,11 +40,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'ProjectController as ProjectCtrl',
     templateUrl : 'partials/projects/projects.html'
   })
-  .state('fiscal', {
-    url : '/fiscal',
-    controller: 'FiscalController as FiscalCtrl',
-    templateUrl: 'partials/fiscal/fiscal.html'
-  })
   .state('exchange', {
     url : '/exchange',
     controller : 'ExchangeRateController as ExchangeCtrl',
@@ -357,6 +352,33 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
       data : { label : null }
     })
 
+  
+  /* Fiscal Year */
+  .state('fiscal', {
+    url : '/fiscal/:id',
+    abstract : true,
+    params : {
+      id : { squash : true, value : null }
+    },    
+    controller: 'FiscalController as FiscalCtrl',
+    templateUrl: 'partials/fiscal/fiscal.html'
+  })
+
+    .state('fiscal.list', {
+      url : '',
+      templateUrl : 'partials/fiscal/fiscal.list.html'
+    })
+    .state('fiscal.create', {
+      url : '/create/new',
+      controller : 'FiscalCreateController as FiscalManageCtrl',
+      templateUrl : 'partials/fiscal/fiscal.manage.html'
+    })
+    .state('fiscal.update', {
+      url : '/fiscal/update',
+      controller : 'FiscalUpdateController as FiscalManageCtrl',
+      templateUrl : 'partials/fiscal/fiscal.manage.html',
+      data : { label : null }
+    })
   /* references routes */
 
   .state('references', {
@@ -438,15 +460,15 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   /* creditor routes */
 
-  .state('creditors', {
-    url : '/creditors',
+  .state('suppliers', {
+    url : '/suppliers',
     controller: 'SupplierController as SupplierCtrl',
-    templateUrl: '/partials/creditors/creditors.html'
+    templateUrl: '/partials/suppliers/suppliers.html'
   })
   .state('creditors/groups', {
     url : '/creditors/groups',
     controller: 'CreditorGroupController',
-    templateUrl: 'partials/creditors/groups/groups.html'
+    templateUrl: 'partials/suppliers/groups/groups.html'
   })
 
   /* purchase routes */
@@ -923,10 +945,13 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   .state('/reports/stock_entry', {
     controller : 'ReportStockEntryController',
     templateUrl : 'partials/reports/stock/stock_entry/stock_entry.html'
+  })
+  .state('/error404', {
+    url : '/error404',
+    templateUrl : 'partials/error404/error404.html'
   });
-
-  $urlRouterProvider.otherwise('/');
-}
+  
+  $urlRouterProvider.otherwise('/error404');}
 
 function translateConfig($translateProvider) {
   //TODO Review i18n and determine if this it the right solution/grade_employers/

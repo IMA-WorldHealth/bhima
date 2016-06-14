@@ -289,7 +289,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
 
   function openSearchModal() {
     return $uibModal.open({
-      templateUrl : 'partials/patients/registry/modal.html',
+      templateUrl : 'partials/patients/registry/search.modal.html',
       size : 'md',
       animation : true,
       controller : 'PatientRegistryModalController as ModalCtrl'

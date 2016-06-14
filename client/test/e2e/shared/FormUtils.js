@@ -38,12 +38,18 @@ var validation = {
 
   // an error state is present
   error : function error(model) {
-    expect(element(by.model(model)).getAttribute('class')).to.eventually.contain('ng-invalid');
+    expect(
+      element(by.model(model)).getAttribute('class'),
+      `Expected ${model} to be invalid, but could not find the ng-invalid class.`
+    ).to.eventually.contain('ng-invalid');
   },
 
   // no error state present
   ok : function success(model) {
-    expect(element(by.model(model)).getAttribute('class')).to.eventually.contain('ng-valid');
+    expect(
+      element(by.model(model)).getAttribute('class'),
+      `Expected ${model} to be valid, but could not find the ng-valid class.`
+    ).to.eventually.contain('ng-valid');
   }
 };
 

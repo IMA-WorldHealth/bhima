@@ -10,8 +10,16 @@
         <button
             ng-click="PatientRegistryCtrl.search()"
             data-method="search"
-            class="btn btn-default btn-sm">
-          <span class="glyphicon glyphicon-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+            class="btn btn-default">
+          <span class="fa fa-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+        </button>
+      </div>
+      <div class="toolbar-item">
+        <button
+            ng-click="PatientRegistryCtrl.print()"
+            data-method="print"
+            class="btn btn-default">
+          <span class="fa fa-print"></span> {{ "FORM.BUTTONS.PRINT" | translate }}
         </button>
       </div>
     </div>

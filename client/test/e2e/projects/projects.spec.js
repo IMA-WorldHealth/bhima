@@ -18,7 +18,7 @@ describe('Projects', function () {
   before(() => helpers.navigate(path));
 
   const defaultProject = 3;
-  const enterpriseRank = helpers.random(defaultProject);
+  const projectRank = helpers.random(defaultProject);
   const deleteSuccess = 3;
   const deleteError = 1;
 
@@ -36,43 +36,44 @@ describe('Projects', function () {
     FU.buttons.submit();
 
     // expect a nice validation message
-    FU.exists(by.id('create_success'), true);
+    components.notification.hasSuccess();
   });
 
 
-  it('edits an project', function () {
+  it('edits a project', function () {
 
-    element(by.id('project-upd-' + enterpriseRank)).click();
+    element(by.id('project-upd-' + projectRank)).click();
 
     // modify the project name
     FU.input('ProjectCtrl.project.name', 'Updated');
 
-    element(by.id('locked')).click();
-    element(by.id('change_project')).click();
+    element(by.model('ProjectCtrl.project.locked')).click();
+    FU.buttons.submit();
 
     // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
+    components.notification.hasSuccess();
   });
 
-  it('unlock an project', function () {
-    element(by.id('project-upd-' + enterpriseRank)).click();
+  it('unlock a project', function () {
+    element(by.id('project-upd-' + projectRank)).click();
 
-    element(by.id('change_project')).click();
+    // submit the page to the server
+    FU.buttons.submit();
 
     // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
+    components.notification.hasSuccess();
   });
 
 
   it('blocks invalid form submission with relevant error classes', function () {
 
     // switch to the create form
-    element(by.id('create')).click();
+    FU.buttons.create();
 
     // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
-    element(by.id('submit-project')).click();
+    FU.buttons.submit();
 
     // the following fields should be required
     FU.validation.error('ProjectCtrl.project.name');
@@ -84,14 +85,14 @@ describe('Projects', function () {
     FU.validation.ok('ProjectCtrl.project.locked');
   });
 
-  it('deletes an project', function () {
+  it('deletes a project', function () {
     element(by.id('project-del-' + deleteSuccess)).click();
 
     // click the alert asking for permission
     components.modalAction.confirm();
 
     // make sure that the delete message appears
-    FU.exists(by.id('delete_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('does not delete a project that has foreign key conditions', function () {
@@ -103,22 +104,6 @@ describe('Projects', function () {
     components.modalAction.confirm();
 
     // the module should show an error message (and none others)
-    FU.exists(by.id('delete_error'), true);
-    FU.exists(by.id('default'), false);
-    FU.exists(by.id('delete_success'), false);
-  });
-
-  it('cancellation of removal process of a project', function () {
-
-    // click the remove a project
-    element(by.id('project-del-' + deleteError)).click();
-
-    // reject the alert that appears
-    components.modalAction.dismiss();
-
-    // make sure that we have the default interface (and no others)
-    FU.exists(by.id('default'), true);
-    FU.exists(by.id('delete_success'), false);
-    FU.exists(by.id('delete_error'), false);
+    components.notification.hasError();
   });
 });

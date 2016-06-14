@@ -14,10 +14,10 @@ angular.module('bhima.components')
   controller : LoadingButtonController
 });
 
-/** @todo This behaviour should be implmented using default transclude when it is available in the project supported Angular */
-function LoadingButtonController() { 
+/** @todo This behaviour should be implemented using default transclude when it is available in the project supported Angular */
+function LoadingButtonController() {
   var component = this;
- 
+
   // set default values for button class
   component.buttonClass = component.buttonClass || 'btn-primary';
 }

@@ -14,11 +14,12 @@ INSERT INTO unit VALUES
   (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
   (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',30,'/partials/accounts/','/accounts'),
   (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
+  (13,  'Fiscal Year','TREE.FISCAL_YEAR','Fiscal year configuration page',30,'/partials/fiscal/','/fiscal'),
   (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register'),
   (15,  'Patient Registry','TREE.PATIENT_REGISTRY','Patient Registry',12,'/partials/patients/registry/','/patients'),
   (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/partials/patient_invoice/','/invoices/patient'),
   (18,  'Cash Window','TREE.CASH_WINDOW','Cash payments against past or future invoices',5,'/partials/cash/','/cash'),
-  (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/partials/creditors/','/creditors'),
+  (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/partials/suppliers/','/suppliers'),
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
   (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
@@ -79,32 +80,13 @@ INSERT INTO `account` VALUES
 -- attach gain/loss accounts to the enterprise
 UPDATE enterprise SET `gain_account_id` = 3640, `loss_account_id` = 3641;
 
--- testing financial transactions
-INSERT INTO `fiscal_year` (`enterprise_id`, `number_of_months`, `label`, `start_date`, `previous_fiscal_year_id`) VALUES
-  (1,12,'Test Fiscal Year 2015', DATE('2015-01-01'), NULL),
-  (1,12,'Test Fiscal Year 2016', DATE('2016-01-01'), 1);
-
-INSERT INTO `period` VALUES
-  (1,2,1,'2016-01-01','2016-01-31',0),
-  (2,2,2,'2016-02-01','2016-02-29',0),
-  (3,2,3,'2016-03-01','2016-03-31',0),
-  (4,2,4,'2016-04-01','2016-04-30',0),
-  (5,2,5,'2016-05-01','2016-05-31',0),
-  (6,2,6,'2016-06-01','2016-06-30',0),
-  (7,2,7,'2016-07-01','2016-07-31',0),
-  (8,2,8,'2016-08-01','2016-08-31',0),
-  (9,2,9,'2016-09-01','2016-09-30',0),
-  (10,2,0,'2016-10-01','2016-10-31',0),
-  (11,2,1,'2016-11-01','2016-11-30',0),
-  (12,2,2,'2016-12-01','2016-12-31',0);
-
-
 -- create test users
 INSERT INTO user (id, username, password, first, last, email) VALUES
   (1, 'superuser', PASSWORD('superuser'), 'Super', 'User', 'SuperUser@test.org'),
   (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular', 'User', 'RegUser@test.org'),
   (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No', 'Permissrepertoireions', 'Invalid@test.org'),
   (4, 'admin', PASSWORD('1'), 'Admin', 'User', 'admin@test.org');
+
 
 -- Only modules updated and written to 2X standards should be registered in the application tree
 INSERT INTO permission (unit_id, user_id) VALUES
@@ -126,6 +108,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- [Folder] Hospital
 (12,1),
+
+-- Fiscal Year
+(13,1),
 
 -- Patient Registration
 (14,1),
@@ -216,6 +201,27 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- inventory configuration module
 (140, 1);
+
+
+-- testing financial transactions
+INSERT INTO `fiscal_year` (`enterprise_id`, `number_of_months`, `label`, `start_date`, `previous_fiscal_year_id`, `user_id`, `note`) VALUES
+  (1,12,'Test Fiscal Year 2015', DATE('2015-01-01'), NULL, 1, 'Note for 2015'),
+  (1,12,'Test Fiscal Year 2016', DATE('2016-01-01'), 1, 1, 'Note for 2016');
+  
+INSERT INTO `period` VALUES
+  (1,2,1,'2016-01-01','2016-01-31',0),
+  (2,2,2,'2016-02-01','2016-02-29',0),
+  (3,2,3,'2016-03-01','2016-03-31',0),
+  (4,2,4,'2016-04-01','2016-04-30',0),
+  (5,2,5,'2016-05-01','2016-05-31',0),
+  (6,2,6,'2016-06-01','2016-06-30',0),
+  (7,2,7,'2016-07-01','2016-07-31',0),
+  (8,2,8,'2016-08-01','2016-08-31',0),
+  (9,2,9,'2016-09-01','2016-09-30',0),
+  (10,2,0,'2016-10-01','2016-10-31',0),
+  (11,2,1,'2016-11-01','2016-11-30',0),
+  (12,2,2,'2016-12-01','2016-12-31',0);
+
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
@@ -394,6 +400,7 @@ INSERT INTO `voucher_item` VALUES
   (HUID(UUID()), 3628, 0, 200, HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), HUID(UUID()), HUID(UUID())),
   (HUID(UUID()), 3627, 300, 0, HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), HUID(UUID()), HUID(UUID())),
   (HUID(UUID()), 3628, 0, 300, HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), HUID(UUID()), HUID(UUID()));
+
 
 -- 1.X Routes
 -- ----------

@@ -11,7 +11,6 @@ function SupplierService($http, util) {
   service.update = update;
   service.search = search; 
 
-
   function create(supplier) {
     return $http.post('/suppliers', supplier)
     .then(util.unwrapHttpResponse);

@@ -27,6 +27,13 @@ exports.events = events;
 exports.info = info;
 
 // event stream to be set to the client
+/**
+ * @method stream
+ *
+ * @description
+ * This is a server-sent event stream to be send data to the client in real
+ * time.  This is useful for system activity monitoring.
+ */
 function stream(req, res) {
 
   // ensure the socket hangs open forever
@@ -36,7 +43,7 @@ function stream(req, res) {
 
   // this listener publishes events to the client as server-sent events
   function listener(data) {
-    res.write(`data: ${JSON.stringify(data)}\n\n`);
+    res.write(`retry: 10000\ndata: ${JSON.stringify(data)}\n\n`);
     res.flush();
   }
 
@@ -49,15 +56,26 @@ function stream(req, res) {
   });
 }
 
-// events the events in the database
+/**
+ * @method events
+ *
+ * @description
+ * Retrieved cached events from the database. Events are stored with a
+ * timestamp, some metadata, and a large TEXT blob.  The TEXT blob must
+ * be parsed into valid JSON structure before being shipped to the client.
+ *
+ * @todo - should the parsing happen on the client?
+ */
 function events(req, res, next) {
   let sql = `
-    SELECT event.data FROM event LIMIT 500;
+    SELECT event.data FROM event LIMIT 1000;
   `;
 
   db.exec(sql)
   .then(rows => {
-    let events = rows.map(row => JSON.parse(row.data));
+
+      // events are stored as TEXT, that need to be parsed into JSON data.
+    let events = rows.map(row => row.data);
     res.status(200).json(events);
   })
   .catch(next)

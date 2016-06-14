@@ -1,20 +1,18 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'CurrencyService', 'FormStateFactory', 'util'
+  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService'
 ];
 
 /**
  * Enterprise Controller
  */
-function EnterpriseController(Enterprises, Currencies, StateFactory, util) {
+function EnterpriseController(Enterprises, Currencies, util, Notify) {
   var vm = this;
 
-  vm.enterprises = [];
-  vm.state = new StateFactory();
   vm.view = 'default';
+  vm.enterprises = [];
   vm.maxLength = util.maxTextLength;
   vm.length50 = util.length50;
   vm.length20 = util.length20;
@@ -27,29 +25,24 @@ function EnterpriseController(Enterprises, Currencies, StateFactory, util) {
   vm.cancel = cancel;
   vm.submit = submit;
 
-  function handler(error) {
-    vm.state.error();
-  }
-
   // fired on startup
   function startup() {
 
-    // load Enterprises
+    // load enterprises
     Enterprises.read(null, { detailed : 1 })
     .then(function (enterprises) {
       vm.enterprises = enterprises;
-    }).catch(handler);
+    }).catch(Notify.handleError);
 
     Currencies.read()
     .then(function (currencies) {
       vm.currencies = currencies;
-    }).catch(handler);
+    }).catch(Notify.handleError);
 
-    vm.state.reset();
+    vm.view = 'default';
   }
 
   function cancel() {
-    vm.state.reset();
     vm.view = 'default';
   }
 
@@ -58,15 +51,9 @@ function EnterpriseController(Enterprises, Currencies, StateFactory, util) {
     vm.enterprise = {};
   }
 
-  // Load a enterprise from the server
-  function loadEnterprise(data) {
-    vm.enterprise = data;
-  }
-
   // switch to update mode
   function update(id) {
-    vm.state.reset();
-    loadEnterprise(id);
+    vm.enterprise = id;
     vm.view = 'update';
   }
 
@@ -79,8 +66,11 @@ function EnterpriseController(Enterprises, Currencies, StateFactory, util) {
   }
 
   // form submission
-  function submit(invalid) {
-    if (invalid) { return; }
+  function submit(form) {
+    if (form.$invalid) {
+      Notify.danger('FORM.ERRORS.HAS_ERRORS');
+      return;
+    }
 
     var promise;
     var creation = (vm.view === 'create');
@@ -90,15 +80,15 @@ function EnterpriseController(Enterprises, Currencies, StateFactory, util) {
       Enterprises.create(enterprise) :
       Enterprises.update(enterprise.id, enterprise);
 
-    promise
-      .then(function (response) {
+    return promise
+      .then(function () {
         return refreshEnterprises();
       })
       .then(function () {
         update(enterprise.id);
-        vm.view = creation ? 'create_success' : 'update_success';
+        Notify.success(creation ? 'FORM.INFOS.SAVE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
   startup();

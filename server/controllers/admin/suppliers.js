@@ -1,13 +1,16 @@
 /**
+ * @overview
  * Supplier Controller
  *
- * This controller exposes an API to the client for reading and writing Supplier
+ * @description
+ * This controller exposes an API to the client for reading and writing supplier
  */
 'use strict';
 
 const db = require('../../lib/db');
 const uuid = require('node-uuid');
 const NotFound = require('../../lib/errors/NotFound');
+const Topic = require('../../lib/topic');
 
 function lookupSupplier(uuid) {
   const sql = `
@@ -15,26 +18,32 @@ function lookupSupplier(uuid) {
       supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note,
       supplier.phone, supplier.international, supplier.locked
     FROM supplier
-    WHERE supplier.uuid = ?`;
+    WHERE supplier.uuid = ?;
+  `;
 
   return db.exec(sql, [db.bid(uuid)])
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound(`Could not find a supplier with uuid ${uuid}`);
-    }
+    .then(function (rows) {
+      if (!rows.length) {
+        throw new NotFound(`Could not find a supplier with uuid ${uuid}`);
+      }
 
-    return rows[0];
-  });
+      return rows[0];
+    });
 }
 
+/**
+ * @method list
+ *
+ * @description
+ * This method lists all suppliers registered in the database.
+ */
 function list(req, res, next) {
-  var sql;
-
-  sql =
-    `SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid,
+  let sql = `
+    SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid,
       supplier.name, supplier.address_1, supplier.address_2, supplier.email,
       supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
-    FROM supplier `;
+    FROM supplier
+  `;
 
   if (req.query.locked === '0') {
     sql += 'WHERE supplier.locked = 0 ';
@@ -53,7 +62,10 @@ function list(req, res, next) {
 }
 
 /**
- * GET /supplier/:uuid
+ * @method detail
+ *
+ * @description
+ * GET /suppliers/:uuid
  *
  * Returns the detail of a single Supplier
  */
@@ -66,26 +78,50 @@ function detail(req, res, next) {
   .done();
 }
 
-// POST /supplier
+/**
+ * @method create
+ *
+ * @description
+ * POST /supplier
+ *
+ * This method creates a new supplier entity in the database and sets up the
+ * creditor for the it.
+ */
 function create(req, res, next) {
   const data = db.convert(req.body, ['creditor_uuid']);
 
   // provide uuid if the client has not specified
-  data.uuid = db.bid(data.uuid || uuid());
+  const uid = data.uuid || uuid.v4();
+  data.uuid = db.bid(uid);
 
   let sql =
     'INSERT INTO supplier SET ? ';
 
   db.exec(sql, [data])
   .then(function (row) {
-    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+
+    Topic.publish(Topic.channels.INVENTORY, {
+      event: Topic.events.CREATE,
+      entity: Topic.entities.SUPPLIER,
+      user_id: req.session.user.id,
+      uuid: uid
+    });
+
+    res.status(201).json({ uuid : uid });
   })
   .catch(next)
   .done();
 }
 
 
-// PUT /supplier/:uuid
+/**
+ * @method update
+ *
+ * @description
+ * PUT /suppliers/:uuid
+ *
+ * Updates a supplier in the datababase.
+ */
 function update(req, res, next) {
   let sql =
     'UPDATE supplier SET ? WHERE uuid = ?;';
@@ -100,25 +136,41 @@ function update(req, res, next) {
     return lookupSupplier(req.params.uuid);
   })
   .then(function (record) {
+
+    Topic.publish(Topic.channels.INVENTORY, {
+      event: Topic.events.UPDATE,
+      entity: Topic.entities.SUPPLIER,
+      user_id: req.session.user.id,
+      uuid: req.params.uuid
+    });
+
     res.status(200).json(record);
   })
   .catch(next)
   .done();
 }
 
-// GET /supplier/search
+/**
+ * @method search
+ *
+ * @description
+ * GET /suppliers/search
+ *
+ * This method search for a supplier by their name.
+ */
 function search(req, res, next) {
   let limit = Number(req.query.limit);
 
-  let sql =
-    `SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
+  let sql = `
+    SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
       supplier.address_1, supplier.address_2, supplier.email,
       supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
     FROM supplier
-    WHERE supplier.name LIKE "%?%"`;
+    WHERE supplier.name LIKE "%?%"
+  `;
 
   if (limit) {
-    sql += ' LIMIT ' + Math.floor(limit) + ';';
+    sql += 'LIMIT ' + Math.floor(limit) + ';';
   }
 
   db.exec(sql, [req.query.name])
