@@ -540,12 +540,19 @@
     "TODAY"          : "Date of day"
   },
   "INVENTORY" : {
-    "ADD_GROUP"  : "Add inventory group",
-    "CONTAINS"   : "Contains",
-    "EDIT_GROUP" : "Edit inventory group",
-    "ELEMENT"    : "Elt",
-    "LIST"       : "Inventory Data List",
-    "LIST_GROUP" : "Inventory Groups"
+    "ADD_GROUP"     : "Add inventory group",
+    "ADD_TYPE"      : "Add inventory type",
+    "ADD_UNIT"      : "Add inventory galenical form",
+    "CONFIGURATION" : "Configurations",
+    "CONTAINS"      : "Contains",
+    "EDIT_GROUP"    : "Edit inventory group",
+    "EDIT_TYPE"     : "Edit inventory type",
+    "EDIT_UNIT"     : "Edit inventory galenical form",
+    "ELEMENT"       : "Elt",
+    "LIST"          : "Inventory Data List",
+    "LIST_GROUP"    : "Inventory Groups",
+    "LIST_TYPE"     : "Inventory Types",
+    "LIST_UNIT"     : "Inventory galenical form"
   },
   "LOCATION": {
     "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
@@ -957,6 +964,7 @@
     "INCOME_EXPENSE"             : "Income/Expense",
     "INCOME_REPORT"              : "Incomes",
     "INVENTORY"                  : "Inventory",
+    "INVENTORY_CONFIGURATION"    : "Configurations",
     "INVENTORY_GROUP"            : "Group",
     "INVENTORY_LIST"             : "List",
     "INVENTORY_MANAGEMENT"       : "Inventory Management",

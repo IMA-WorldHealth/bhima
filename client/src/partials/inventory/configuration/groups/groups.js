@@ -3,36 +3,30 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 InventoryGroupsController.$inject = [
-  '$translate', 'InventoryGroupService', 'AccountService', 'NotifyService', 'ModalService'
+  '$translate', 'InventoryGroupService', 'AccountService',
+  'NotifyService', 'ModalService', 'Store'
 ];
 
 /**
  * Inventory Group Controller ]
  * This controller is responsible for handling inventory group module
  */
-function InventoryGroupsController($translate, InventoryGroup, Account, Notify, Modal) {
-  var vm = this;
+function InventoryGroupsController($translate, InventoryGroup, Account, Notify, Modal, Store) {
+  var vm = this, AccountStore;
 
   /** global variables */
   vm.created = false;
   vm.updated = false;
-  
+
   /** paths in the headercrumb */
   vm.bcPaths = [
     { label : 'TREE.INVENTORY' },
     { label : 'TREE.INVENTORY_GROUP' }
   ];
 
-  /** buttons in the headercrumb */
-  vm.bcButtons = [{
-    icon: 'fa fa-plus',
-    label: $translate.instant('FORM.LABELS.ADD'),
-    action: addInventoryGroup, color: 'btn-primary',
-    dataMethod : 'create'
-  }];
-
   // expose to the view
   vm.editInventoryGroup = editInventoryGroup;
+  vm.addInventoryGroup = addInventoryGroup;
 
   // startup
   startup();
@@ -44,7 +38,6 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     Modal.openInventoryGroupActions(request)
     .then(function (res) {
       if (res.uuid) {
-        vm.created = true;
         Notify.success('FORM.INFOS.CREATE_SUCCESS');
       }
     })
@@ -58,7 +51,6 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
 
     Modal.openInventoryGroupActions(request)
     .then(function (res) {
-      vm.updated = true;
       Notify.success('FORM.INFOS.UPDATE_SUCCESS');
     })
     .then(startup)
@@ -79,22 +71,31 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     // handle the list of accounts
     function handleAccountList(list) {
       vm.accountList = list;
+      AccountStore = new Store({ id : 'id', data : list });
     }
 
     // handle the list of group
     function handleGroupList(list) {
-      vm.groupList = list;
-      vm.groupList.forEach(function (group) {
-        group.stockAccountNumber = getAccountNumber(group.stock_account);
-        group.saleAccountNumber = getAccountNumber(group.sales_account);
-        group.cogsAccountNumber = getAccountNumber(group.cogs_account);
+      list.forEach(function (group) {
+        // stock account
+        group.stockAccountNumber = AccountStore.get(group.stock_account) ?
+          AccountStore.get(group.stock_account).number : '';
+
+        // sales account
+        group.saleAccountNumber  = AccountStore.get(group.sales_account) ?
+          AccountStore.get(group.sales_account).number : '';
+
+        // charge account
+        group.cogsAccountNumber  = AccountStore.get(group.cogs_account) ?
+          AccountStore.get(group.cogs_account).number : '';
       });
-      return vm.groupList;
+      return list;
     }
 
     // handle number of inventory in group
     function countInventory(list) {
-      list.forEach(function (item) {
+      vm.groupList = list;
+      vm.groupList.forEach(function (item) {
         InventoryGroup.count(item.uuid)
         .then(function (number) {
           item.inventory_counted = number;
@@ -103,17 +104,6 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
       });
     }
 
-  }
-
-  /** get account from id */
-  function getAccountNumber(id) {
-    for(var i = 0; i < vm.accountList.length; i++) {
-      var account = vm.accountList[i];
-      if (account.id == id) {
-        return account.number;
-      }
-    }
-    return null;
   }
 
 }

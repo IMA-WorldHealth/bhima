@@ -382,10 +382,26 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'InventoryListController as InventoryCtrl',
     templateUrl : 'partials/inventory/list/list.html'
   })
-  .state('/inventory/groups', {
-    url : '/inventory/groups',
-    templateUrl : 'partials/inventory/groups/groups.html',
-    controller : 'InventoryGroupsController as InventoryCtrl'
+  .state('/inventory/configuration', {
+    url : '/inventory/configuration',
+    views : {
+      '' : {
+        templateUrl : 'partials/inventory/configuration/configuration.html',
+        controller : 'InventoryConfigurationController as InventoryCtrl'
+      },
+      'groups@/inventory/configuration' : {
+        templateUrl : 'partials/inventory/configuration/groups/groups.html',
+        controller : 'InventoryGroupsController as GroupsCtrl'
+      },
+      'types@/inventory/configuration' : {
+        templateUrl : 'partials/inventory/configuration/types/types.html',
+        controller : 'InventoryTypesController as TypesCtrl'
+      },
+      'units@/inventory/configuration' : {
+        templateUrl : 'partials/inventory/configuration/units/units.html',
+        controller : 'InventoryUnitsController as UnitsCtrl'
+      }
+    }
   })
   // @TODO IMPLEMENT THEM
   // .state('/inventory/types',  {
@@ -549,7 +565,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     .state('patientRecord.details', {
       url : '',
       views : {
-        'checkin@patientRecord' : { 
+        'checkin@patientRecord' : {
           templateUrl : 'partials/patients/record/units/checkin.html',
           controller : 'CheckInController as CheckInCtrl'
         }

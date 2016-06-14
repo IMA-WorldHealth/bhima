@@ -12,13 +12,13 @@ function InventoryTypeService($http, util) {
 
   // exposed methods
   service.read = read;
-  Service.update = update;
+  service.update = update;
   service.create = create;
   service.remove = remove;
 
   /** create inventory type */
   function create(record) {
-    return $http.post(baseUrl)
+    return $http.post(baseUrl, record)
     .then(util.unwrapHttpResponse);
   }
 
@@ -29,8 +29,8 @@ function InventoryTypeService($http, util) {
   }
 
   /** udate an existing inventory type */
-  function update(uuid) {
-    return $http.put(baseUrl.concat(uuid || ''))
+  function update(uuid, record) {
+    return $http.put(baseUrl.concat(uuid || ''), record)
     .then(util.unwrapHttpResponse);
   }
 

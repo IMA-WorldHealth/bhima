@@ -33,12 +33,12 @@ function details (identifier) {
 function create (record) {
   'use strict';
 
-  let sql = `INSERT INTO inventory_unit SET ?;`;
+  let sql = `INSERT INTO inventory_unit (text) VALUES (?);`;
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
    */
-  return db.exec(sql, [record])
+  return db.exec(sql, [record.text])
   .then(row => row.insertId);
 }
 

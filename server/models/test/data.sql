@@ -43,9 +43,7 @@ INSERT INTO unit VALUES
   (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 30, '/partials/vouchers/complex', '/vouchers/complex'),
   (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
-  (140, 'Inventory Group', 'TREE.INVENTORY_GROUP', 'Inventory group module', 138, '/partials/inventory/groups', '/inventory/groups'),
-  (141, 'Inventory Type', 'TREE.INVENTORY_TYPE', 'Inventory type module', 138, '/partials/inventory/types', '/inventory/types'),
-  (142, 'Inventory Unit', 'TREE.INVENTORY_UNIT', 'Inventory unit module', 138, '/partials/inventory/units', '/inventory/units');
+  (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration');
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
@@ -216,14 +214,8 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- inventory list module
 (139, 1),
 
--- inventory group module
-(140, 1),
-
--- inventory type module
-(141, 1),
-
--- inventory unit module
-(142, 1);
+-- inventory configuration module
+(140, 1);
 
 -- give test permission to both projects
 INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);

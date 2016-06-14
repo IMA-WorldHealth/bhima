@@ -93,12 +93,9 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
 
         // if the account Id is undefined or null the Account Service returns an array or account
         // to fix it we assign a inexisting account Id 'undefinedIdentifier'
-        var sales_account =
-          group[0].sales_account ? group[0].sales_account : 'undefinedIdentifier';
-        var stock_account =
-          group[0].stock_account ? group[0].stock_account : 'undefinedIdentifier';
-        var cogs_account =
-          group[0].cogs_account ? group[0].cogs_account : 'undefinedIdentifier';
+        var sales_account = group[0].sales_account || 'undefinedIdentifier';
+        var stock_account = group[0].stock_account || 'undefinedIdentifier';
+        var cogs_account  = group[0].cogs_account || 'undefinedIdentifier';
 
         // sales accounts
         Account.read(sales_account)

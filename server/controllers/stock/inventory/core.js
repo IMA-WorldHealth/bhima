@@ -115,7 +115,7 @@ function getItemsMetadata() {
 
   var sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
-      it.text AS type, ig.name AS groupName, i.consumable, i.stock_min,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
       i.stock_max, i.origin_stamp AS timestamp
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
@@ -137,7 +137,7 @@ function getItemsMetadataById(uuid) {
 
   var sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.text AS unit,
-      it.text AS type, ig.name AS groupName, i.consumable, i.stock_min,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.stock_min,
       i.stock_max, i.origin_stamp AS timestamp
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON

@@ -43,6 +43,12 @@ function ModalService(Modal) {
   // inventory group action : add or edit
   service.openInventoryGroupActions = openInventoryGroupActions;
 
+  // inventory type action : add or edit
+  service.openInventoryTypeActions = openInventoryTypeActions;
+
+  // inventory unit action : add or edit
+  service.openInventoryUnitActions = openInventoryUnitActions;
+
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -197,7 +203,7 @@ function ModalService(Modal) {
     function openInventoryGroupActions(request) {
 
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/inventory/groups/modals/actions.tmpl.html',
+        templateUrl  : 'partials/inventory/configuration/groups/modals/actions.tmpl.html',
         controller   : 'InventoryGroupsActionsModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
@@ -211,6 +217,45 @@ function ModalService(Modal) {
       var instance = Modal.open(params);
       return instance.result;
     }
+
+    /** Inventory Types Modal for actions */
+    function openInventoryTypeActions(request) {
+
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/inventory/configuration/types/modals/actions.tmpl.html',
+        controller   : 'InventoryTypeActionsModalController',
+        controllerAs : '$ctrl',
+        size         : 'xs',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    /** Inventory Units Modals for actions */
+    function openInventoryUnitActions(request) {
+
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/inventory/configuration/units/modals/actions.tmpl.html',
+        controller   : 'InventoryUnitActionsModalController',
+        controllerAs : '$ctrl',
+        size         : 'xs',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
 
 
 }

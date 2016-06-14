@@ -537,12 +537,19 @@
     "TODAY"          : "Date du jour"
   },
   "INVENTORY" : {
-    "ADD_GROUP"  : "Ajouter Groupe d'inventaires",
-    "CONTAINS"   : "Contient",
-    "EDIT_GROUP" : "Modifier Groupe d'inventaires",
-    "ELEMENT"    : "Elt",
-    "LIST"       : "Liste des données d'inventaire",
-    "LIST_GROUP" : "Groupes d'inventaires"
+    "ADD_GROUP"     : "Ajouter Groupe d'inventaires",
+    "ADD_TYPE"      : "Ajouter Types d'inventaires",
+    "ADD_UNIT"      : "Ajouter Forme d'inventaires",
+    "CONFIGURATION" : "Configurations",
+    "CONTAINS"      : "Contient",
+    "EDIT_GROUP"    : "Modifier Groupe d'inventaires",
+    "EDIT_TYPE"     : "Modifier Types d'inventaires",
+    "EDIT_UNIT"     : "Modifier Forme d'inventaires",
+    "ELEMENT"       : "Elt",
+    "LIST"          : "Liste des données d'inventaire",
+    "LIST_GROUP"    : "Groupes d'inventaires",
+    "LIST_TYPE"     : "Types d'inventaires",
+    "LIST_UNIT"     : "Formes d'inventaires"
   },
   "LOCATION": {
     "DESCRIPTION"           : "La gestion des Localisation est utilisée pour créer des Localisations, La localisation est tres important quand vous créez un patient et ainsi de suite. Utiliser Ce module pour",
@@ -922,6 +929,7 @@
     "INCOME_EXPENSE"             : "Recettes/Dépense",
     "INCOME_REPORT"              : "Recettes",
     "INVENTORY"                  : "Inventaires",
+    "INVENTORY_CONFIGURATION"    : "Configurations",
     "INVENTORY_GROUP"            : "Groupe",
     "INVENTORY_LIST"             : "Liste",
     "INVENTORY_MANAGEMENT"       : "Gestion des Inventaires ",
