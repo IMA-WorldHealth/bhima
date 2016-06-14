@@ -2,15 +2,17 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static">{{ "TREE.ADMIN" | translate }}</li>
-      <li class="active">{{ "PROJECT.TITLE" | translate }}</li>
+      <li class="title">{{ "PROJECT.TITLE" | translate }}</li>
     </ol>
-  </div>
-</div>
 
-<div class="flex-util">
-  <button class="btn btn-sm btn-default" id="create" ng-click="ProjectCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROJECT.ADD_PROJECT' | translate }}
-  </button>
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default" ng-click="ProjectCtrl.create()" data-method="create">
+          <i class="fa fa-plus-circle"></i> {{ 'PROJECT.ADD_PROJECT' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="flex-content">
@@ -33,17 +35,19 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="project in ProjectCtrl.projects | orderBy:'name' track by project.id" ng-class="{ 'btn-primary' : editProject.id == project.id }">
+              <tr ng-repeat="project in ProjectCtrl.projects | orderBy:'name' track by project.id">
                 <td>{{ project.id }}</td>
                 <td>{{ project.name }}</td>
                 <td>{{ project.abbr }}</td>
                 <td>{{ project.enterprise_id }}</td>
                 <td>
-                  <a class="btn btn-xs btn-default" ng-click="ProjectCtrl.update(project)" id="project-upd-{{ project.id }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                  <a class="btn btn-xs btn-default" ng-click="ProjectCtrl.update(project)" id="project-upd-{{ project.id }}">
+                    <span class="fa fa-pencil"></span>
+                  </a>
                 </td>
-                <td>
-                  <a class="btn btn-xs btn-default" ng-click="ProjectCtrl.del(project)" id="project-del-{{ project.id }}" class="danger">
-                    <span class="glyphicon glyphicon-trash"></span>
+                <td class="text-danger">
+                  <a class="btn btn-xs btn-default" ng-click="ProjectCtrl.remove(project.id)" id="project-del-{{ project.id }}">
+                    <span class="fa fa-trash"></span>
                   </a>
                 </td>
               </tr>
@@ -56,49 +60,31 @@
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
             <h4>{{ 'PROJECT.TITLE' | translate }}</h4>
-            <p> {{ 'PROJECT.DESCRIPTION' | translate }}</p>
-          </div>
-        </div>
-
-        <div ng-switch-when="create_success">
-          <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
-          </div>
-        </div>
-
-        <div ng-switch-when="update_success">
-          <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_success">
-          <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'FORM.INFOS.DELETE_SUCCESS' | translate }} </h4>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_error">
-          <div class="alert alert-danger" id="delete_error">
-            <h4>{{ ProjectCtrl.HTTPError.data.code | translate }} </h4>
+            <p>{{ 'PROJECT.DESCRIPTION' | translate }}</p>
           </div>
         </div>
 
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'PROJECT.ADDING_PROJECT' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="ProjectCtrl.submit(CreateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form
+              name="CreateForm"
+              bh-submit="ProjectCtrl.submit(CreateForm)"
+              autocomplete="off"
+              autocapitalize="off"
+              autocorrect="off"
+              novalidate>
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
-                <label class="control-label" for="bhima-project-name">{{ 'FORM.LABELS.NAME' | translate }}</label>
-                <input type="text" class="form-control" name="name" id="bhima-project-name" ng-maxlength="ProjectCtrl.maxLength" ng-model="ProjectCtrl.project.name" required>
+                <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
+                <input type="text" class="form-control" name="name" ng-maxlength="ProjectCtrl.maxLength" ng-model="ProjectCtrl.project.name" required>
                 <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.abbr.$invalid }">
-                <label for="bhima-project-abbr" class="control-label">{{ "FORM.LABELS.ABBREVIATION" | translate }}</label>
-                <input type="text" class="form-control" name="abbr" required id="bhima-project-abbr" ng-maxlength="ProjectCtrl.length50" ng-model="ProjectCtrl.project.abbr">
+                <label class="control-label">{{ "FORM.LABELS.ABBREVIATION" | translate }}</label>
+                <input type="text" class="form-control" name="abbr"ng-maxlength="ProjectCtrl.length3" ng-model="ProjectCtrl.project.abbr" required >
                 <div class="help-block" ng-messages="CreateForm.abbr.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -106,8 +92,8 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.enterprise_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
-                <select class="form-control" name="enterprise_id" ng-model="ProjectCtrl.project.enterprise_id" id="bhima-enterprise-enterprise_id" ng-options="e.id as e.name for e in ProjectCtrl.enterprises | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }} -- </option>
+                <select class="form-control" name="enterprise_id" ng-model="ProjectCtrl.project.enterprise_id"  ng-options="e.id as e.name for e in ProjectCtrl.enterprises | orderBy:'name'" required>
+                  <option value="" disabled>{{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.enterprise_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -117,8 +103,13 @@
               <!-- zone de sante for snis -->
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.zs_id.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.ZS' | translate }}</label>
-                <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" id="bhima-project-zs" ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ZS' | translate }} -- </option>
+                <select
+                  class="form-control"
+                  name="zs_id"
+                  ng-model="ProjectCtrl.project.zs_id"
+                  ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'"
+                  required>
+                  <option value="" disabled>{{ 'FORM.SELECTS.SELECT_ZS' | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.zs_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -128,18 +119,24 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.locked.$invalid }">
                 <label class="control-label">
-                  <input type="checkbox"  name="locked" id="locked" ng-true-value="1" ng-false-value="0"
-                    ng-model="ProjectCtrl.project.locked">  {{ "FORM.LABELS.LOCKED" | translate }}
+                  <input
+                    type="checkbox"
+                    name="locked"
+                    ng-true-value="1"
+                    ng-false-value="0"
+                    ng-model="ProjectCtrl.project.locked">
+                    {{ "FORM.LABELS.LOCKED" | translate }}
                 </label>
               </div>
 
               <div class="form-group">
-                  <button class="btn btn-default" id="submit-project" type="submit" data-method="submit">
-                    {{ "FORM.BUTTONS.SUBMIT" | translate }}
-                  </button>
-                  <button class="btn btn-default" type="button" ng-click="ProjectCtrl.cancel()" data-method="cancel">
-                    {{ "FORM.BUTTONS.CANCEL" | translate }}
-                  </button>
+                <bh-loading-button loading-state="CreateForm.$loading">
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                </bh-loading-button>
+
+                <button class="btn btn-default" type="button" ng-click="ProjectCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.CANCEL" | translate }}
+                </button>
               </div>
             </form>
           </div>
@@ -148,18 +145,26 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'PROJECT.EDITING_PROJECT' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="ProjectCtrl.submit(UpdateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form
+              name="UpdateForm"
+              bh-submit="ProjectCtrl.submit(UpdateForm)"
+              autocomplete="off"
+              autocapitalize="off"
+              autocorrect="off"
+              novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
-                <label class="control-label" for="bhima-project-name">{{ 'FORM.LABELS.NAME' | translate }}</label>
-                <input type="text" class="form-control" name="name" id="bhima-project-name" ng-maxlength="ProjectCtrl.maxLength" ng-model="ProjectCtrl.project.name" required>
+                <label class="control-label">{
+                  { 'FORM.LABELS.NAME' | translate }}
+                </label>
+                <input type="text" class="form-control" name="name" ng-maxlength="ProjectCtrl.maxLength" ng-model="ProjectCtrl.project.name" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.abbr.$invalid }">
-                <label for="bhima-project-abbr" class="control-label">{{ "FORM.LABELS.ABBREVIATION" | translate }}</label>
-                <input type="text" class="form-control" name="abbr" required id="bhima-project-abbr" ng-maxlength="ProjectCtrl.length50" ng-model="ProjectCtrl.project.abbr">
+                <label class="control-label">{{ "FORM.LABELS.ABBREVIATION" | translate }}</label>
+                <input type="text" class="form-control" name="abbr" ng-maxlength="ProjectCtrl.length3" ng-model="ProjectCtrl.project.abbr" required >
                 <div class="help-block" ng-messages="UpdateForm.abbr.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -167,8 +172,8 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.enterprise_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
-                <select class="form-control" name="enterprise_id" ng-model="ProjectCtrl.project.enterprise_id" id="bhima-enterprise-enterprise_id" ng-options="e.id as e.name for e in ProjectCtrl.enterprises | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }} -- </option>
+                <select class="form-control" name="enterprise_id" ng-model="ProjectCtrl.project.enterprise_id" ng-options="e.id as e.name for e in ProjectCtrl.enterprises | orderBy:'name'" required>
+                  <option value="" disabled>{{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.enterprise_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -178,8 +183,8 @@
               <!-- zone de sante for snis -->
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.zs_id.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.ZS' | translate }}</label>
-                <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" id="bhima-project-zs" ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ZS' | translate }} -- </option>
+                <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'" required>
+                  <option value="" disabled>{{ 'FORM.SELECTS.SELECT_ZS' | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.zs_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -189,17 +194,22 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.locked.$invalid }">
                 <label class="control-label">
-                  <input type="checkbox"  name="locked" id="locked" ng-true-value="1" ng-false-value="0"
-                    ng-model="ProjectCtrl.project.locked">  {{ "FORM.LABELS.LOCKED" | translate }}
+                  <input
+                    type="checkbox"
+                    name="locked"
+                    ng-true-value="1"
+                    ng-false-value="0"
+                    ng-model="ProjectCtrl.project.locked">
+                    {{ "FORM.LABELS.LOCKED" | translate }}
                 </label>
               </div>
               <div class="form-group">
-                  <button class="btn btn-default" id="change_project" type="submit" data-method="submit">
-                    {{ "FORM.BUTTONS.SUBMIT" | translate }}
-                  </button>
-                  <button class="btn btn-default" type="button" ng-click="ProjectCtrl.cancel()" data-method="cancel">
-                    {{ "FORM.BUTTONS.CANCEL" | translate }}
-                  </button>
+                <bh-loading-button loading-state="UpdateForm.$loading">
+                  {{ "FORM.BUTTONS.SUBMIT" | translate }}
+                </bh-loading-button>
+                <button class="btn btn-default" type="button" ng-click="ProjectCtrl.cancel()" data-method="cancel">
+                  {{ "FORM.BUTTONS.CANCEL" | translate }}
+                </button>
               </div>
             </form>
           </div>

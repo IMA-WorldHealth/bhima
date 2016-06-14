@@ -9,7 +9,7 @@ helpers.configure(chai);
 describe('Suppliers', function () {
   'use strict';
 
-  const path = '#/creditors';
+  const path = '#/suppliers';
   before(() => helpers.navigate(path));
 
   const supplier = {
