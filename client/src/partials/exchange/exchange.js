@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('ExchangeRateController', ExchangeRateController);
 
 ExchangeRateController.$inject = [
-  'SessionService', 'DateService', 'CurrencyService', 'ExchangeRateService', '$uibModal', '$translate', 'ModalService'
+  'SessionService', 'DateService', 'CurrencyService', 'ExchangeRateService',
+  '$uibModal', '$translate', 'ModalService', 'NotifyService'
 ];
 
 /**
@@ -11,7 +12,7 @@ ExchangeRateController.$inject = [
 *
 * @controller ExchangeRateController
 */
-function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $translate, ModalService) {
+function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $translate, ModalService, Notify) {
   var vm = this;
 
   // bind data
@@ -22,45 +23,41 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $t
   vm.form       = { date : vm.today };
   vm.create     = create;
   vm.update     = update;
-  vm.del = del;  
+  vm.delete = remove;
+
+  vm.Currencies = Currencies;
+
   // bind methods
-  vm.formatCurrency = formatCurrency;
   vm.setExchangeRate = setExchangeRate;
 
   /* ------------------------------------------------------------------------ */
 
-  // generic error handler
-  function handler(error) {
-    console.log(error);
-  }
-
   // start up the module
   function startup() {
-    vm.feedback = null;
+
     // load supported currencies
-    Currencies.read().then(function (data) {
-      vm.currencies = data;
+    Currencies.read()
+      .then(function (data) {
+        vm.currencies = data;
 
-      // filter out the enteprise currency
-      vm.outCurrencies = vm.currencies.filter(function (currency) {
-        return currency.id !== Session.enterprise.currency_id;
-      });
-      vm.form.id = null;
-      vm.rates = null;
-      vm.current = null;
-      // load supported rates
-      return Rates.read(true);
-    })
-    .then(function (data) {
-      vm.form.date = vm.today;
-      vm.rates = data;
-      vm.current = calculateCurrentRates(data);
-    })
-    .catch(handler);
-  }
+        // filter out the enterprise currency
+        vm.outCurrencies = vm.currencies.filter(function (currency) {
+          return currency.id !== Session.enterprise.currency_id;
+        });
 
-  function formatCurrency(id) {
-    return Currencies.name(id) + ' (' + Currencies.symbol(id) + ')';
+        vm.form.id = null;
+        vm.rates = null;
+        vm.current = null;
+
+        // load supported rates
+        return Rates.read(true);
+      })
+      .then(function (data) {
+        vm.form.date = vm.today;
+        vm.rates = data;
+        vm.current = calculateCurrentRates(data);
+      })
+      .catch(Notify.handleError);
   }
 
   // NOTE -- this is very similar code to some in the ExchangeRateService.
@@ -82,62 +79,56 @@ function ExchangeRateController(Session, Dates, Currencies, Rates, $uibModal, $t
 
   // set the exchange rate for a currency id in a new modal
   function setExchangeRate(id, row) {
-    if(vm.form.date){
-      vm.feedback = 'default';
-      var identifiant = vm.form.id ? vm.form.id : ''; 
-
-      $uibModal.open({
-        templateUrl : 'partials/exchange/modal.html',
-        size : 'md',
-        animation : true,
-        controller : 'ExchangeRateModalController as ModalCtrl',
-        resolve : {
-          data : {
-            id : identifiant,
-            date : vm.form.date,
-            currency_id : id
-          }
-        },
-      }).result
-      .then(function (operation) {
-        vm.view = 'default';
-        startup();
-        vm.feedback = operation;
-      });        
-    } else {
-      vm.feedback = 'invalid-date';
+    if (!vm.form.date) {
+      Notify.danger('FORM.VALIDATIONS.INVALID_DATE');
+      return;
     }
+
+    var identifiant = vm.form.id || '';
+
+    var instance = $uibModal.open({
+      templateUrl : 'partials/exchange/modal.html',
+      size : 'md',
+      animation : true,
+      controller : 'ExchangeRateModalController as ModalCtrl',
+      resolve : {
+        data : {
+          id : identifiant,
+          date : vm.form.date,
+          currency_id : id
+        }
+      },
+    }).result;
+
+    instance.then(function () {
+      vm.view = 'default';
+      startup();
+    });
   }
 
-  function update(data){
+  function update(data) {
     vm.view = 'update';
     vm.form = data;
   }
 
-  function create(){
+  function create() {
     vm.form = { date : new Date() };
     vm.view = 'default';
-    vm.feedback = null;
   }
 
   // switch to delete warning mode
-  function del(id) {
+  function remove(id) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (result){
-      if (!result) {
-        vm.view = 'default';
-        return;
-      } else {
-        vm.view = 'delete_confirm';
-        Rates.delete(id)
-        .then(function (response) {
+    .then(function (bool) {
+      if (!bool) { return; }
+
+      Rates.delete(id)
+        .then(function () {
+          Notify.success('FORM.INFOS.DELETE_SUCCESS');
+          vm.view = 'default';
           startup();
-          vm.feedback = 'delete_success';
-        }).catch(function (error) {
-          vm.feedback = 'delete_error';
-          vm.HTTPError = error;
-        });
-      }
+        })
+        .catch(Notify.handleError);
     });
   }
 

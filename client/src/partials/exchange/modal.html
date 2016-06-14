@@ -1,4 +1,4 @@
-<form name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+<form name="ModalForm" bh-submit="ModalCtrl.submit(ModalForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
   <div class="modal-header">
     <h4>{{ 'EXCHANGE.ADDING_RATE' | translate }}</h4>
   </div>
@@ -10,11 +10,15 @@
 
     <div class="form-group">
       <label>{{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }}</label>
-      <p class="form-control-static">{{ ModalCtrl.enterpriseCurrency }} : {{ 1 |  currency:ModalCtrl.enterpriseCurrencyId }}</p>
+      <p class="form-control-static">
+        {{ ModalCtrl.enterpriseCurrency }} : {{ 1 |  currency:ModalCtrl.enterpriseCurrencyId }}
+      </p>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }">
-      <label class="control-label">{{ ModalCtrl.text | translate }} : {{ ModalCtrl.data.date | date }} : {{ ModalCtrl.selectedCurrency }}</label>
+      <label class="control-label">
+        {{ ModalCtrl.text | translate }} : {{ ModalCtrl.data.date | date }} : {{ ModalCtrl.selectedCurrency }}
+      </label>
       <input type="number" class="form-control" name="rate" required min="0" ng-model="ModalCtrl.data.rate">
       <div class="help-block" ng-messages="ModalForm.rate.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -27,8 +31,8 @@
     <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel">
       {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
-    <button type="submit" class="btn btn-primary" data-method="submit">
+    <bh-loading-button loading-state="ModalForm.$loading">
       {{ "FORM.BUTTONS.SUBMIT" | translate }}
-    </button>
+    </bh-loading-button>
   </div>
 </form>
