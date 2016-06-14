@@ -24,7 +24,7 @@
       </thead>
 
       <tbody>
-        <tr ng-repeat="type in TypesCtrl.typeList">
+        <tr ng-repeat="type in TypesCtrl.typeList | orderBy: 'text'">
           <td>{{ $index + 1 }}</td>
           <td>{{ type.text }}</td>
           <td>

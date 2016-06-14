@@ -1,40 +1,55 @@
-<div class="modal-header">
-  <i class="fa fa-list"></i>
-  <span ng-if="$ctrl.action==='add'">{{ 'INVENTORY.ADD_GROUP' | translate }}</span>
-  <span ng-if="$ctrl.action==='edit'">{{ 'INVENTORY.EDIT_GROUP' | translate }}</span>
-</div>
+<form name="ActionForm" method="post" novalidate>
+  <div class="modal-header">
+    <i class="fa fa-list"></i>
+    <span ng-if="$ctrl.action==='add'">{{ 'INVENTORY.ADD_GROUP' | translate }}</span>
+    <span ng-if="$ctrl.action==='edit'">{{ 'INVENTORY.EDIT_GROUP' | translate }}</span>
+  </div>
 
-<div class="modal-body">
-  <form name="ActionForm" method="post" novalidate>
-    <div class="form-group">
-      <label for="">{{ 'FORM.LABELS.NAME' | translate }}</label>
+  <div class="modal-body">
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.name.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
       <input ng-model="$ctrl.session.name"
         class="form-control"
         type="text"
+        name="name"
         placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_NAME' | translate }}..."
         required>
+      <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="">{{ 'FORM.LABELS.CODE' | translate }}</label>
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.code.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.CODE' | translate }}</label>
       <input ng-model="$ctrl.session.code"
         class="form-control"
         type="text"
+        name="code"
         placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_CODE' | translate }}..."
         required>
+      <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="">
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.salesAccount.$invalid }">
+      <label class="control-label">
         {{ 'FORM.SELECTS.SELECT_ACCOUNT' | translate }} ({{ 'FORM.LABELS.SALE' | translate }})
       </label>
-      <input class="form-control" type="text"
+      <input class="form-control" type="text" name="salesAccount"
         ng-model="$ctrl.session.salesAccount"
         uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
         typeahead-editable="true"
         placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
-        >
+        required>
+      <div class="help-block" ng-messages="ActionForm.salesAccount.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
     </div>
 
     <div class="form-group">
@@ -62,20 +77,20 @@
         placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
         >
     </div>
-  </form>
-</div>
 
-<div class="modal-footer">
-  <button type="button"
-    class="btn btn-default btn-sm"
-    ng-click="$ctrl.cancel()">
-    {{ 'FORM.BUTTONS.CANCEL' | translate }}
-  </button>
-  <button type="button"
-    class="btn btn-primary btn-sm"
-    ng-disabled="ActionForm.$invalid"
-    ng-click="$ctrl.submit()"
-    data-method="submit">
-    {{ 'FORM.BUTTONS.SUBMIT' | translate }}
-  </button>
-</div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-default btn-sm"
+      ng-click="$ctrl.cancel()">
+      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    </button>
+    <button type="submit"
+      class="btn btn-primary btn-sm"
+      ng-click="$ctrl.submit(ActionForm)"
+      data-method="submit">
+      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+    </button>
+  </div>
+</form>

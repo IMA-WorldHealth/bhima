@@ -19,7 +19,11 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
   startup();
 
   /** submit data */
-  function submit() {
+  function submit(form) {
+    if (form.$invalid) {
+      return;
+    }
+
     var record = cleanForSubmit(vm.session);
     map[vm.action](record, vm.identifier)
     .then(function (res) {

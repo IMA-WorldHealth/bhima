@@ -40,56 +40,73 @@ describe.only('Inventory Configuration ::', () => {
   const unit = { text : '[E2E] Inventory Unit' };
   const updateUnit = { text : '[E2E] Inventory Unit updated' };
 
-  it('Successfully creates a new inventory group', () => {
-    element(by.css('[data-create-group]')).click();
-    FU.input('$ctrl.session.name', group.name);
-    FU.input('$ctrl.session.code', group.code);
-    FU.typeahead('$ctrl.session.salesAccount', group.sales_account);
-    FU.typeahead('$ctrl.session.stockAccount', group.stock_account);
-    FU.typeahead('$ctrl.session.cogsAccount', group.cogs_account);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-  });
+  describe('Groups ::', () => {
+    // navigate to the page
+    before(() => helpers.navigate('#/inventory/configuration'));
 
-  it('Successfully updates an existing inventory group', () => {
-    element(by.css('[data-edit-group="' + group.code +'"]')).click();
-    FU.input('$ctrl.session.name', updateGroup.name);
-    FU.input('$ctrl.session.code', updateGroup.code);
-    FU.typeahead('$ctrl.session.salesAccount', updateGroup.sales_account);
-    element(by.model('$ctrl.session.stockAccount')).clear();
-    element(by.model('$ctrl.session.cogsAccount')).clear();
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    it('Successfully creates a new inventory group', () => {
+      element(by.css('[data-create-group]')).click();
+      FU.input('$ctrl.session.name', group.name);
+      FU.input('$ctrl.session.code', group.code);
+      FU.typeahead('$ctrl.session.salesAccount', group.sales_account);
+      FU.typeahead('$ctrl.session.stockAccount', group.stock_account);
+      FU.typeahead('$ctrl.session.cogsAccount', group.cogs_account);
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
+
+    it('Successfully updates an existing inventory group', () => {
+      element(by.css('[data-edit-group="' + group.code +'"]')).click();
+      FU.input('$ctrl.session.name', updateGroup.name);
+      FU.input('$ctrl.session.code', updateGroup.code);
+      FU.typeahead('$ctrl.session.salesAccount', updateGroup.sales_account);
+      element(by.model('$ctrl.session.stockAccount')).clear();
+      element(by.model('$ctrl.session.cogsAccount')).clear();
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
+
   });
 
   // test inventory type
-  it('Successfully creates a new inventory type', () => {
-    element(by.css('[data-create-type]')).click();
-    FU.input('$ctrl.session.text', type.text);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-  });
+  describe('Types ::', () => {
+    // navigate to the page
+    before(() => helpers.navigate('#/inventory/configuration'));
 
-  it('Successfully updates an existing inventory type', () => {
-    element(by.css('[data-edit-type="' + type.text +'"]')).click();
-    FU.input('$ctrl.session.text', updateType.text);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    it('Successfully creates a new inventory type', () => {
+      element(by.css('[data-create-type]')).click();
+      FU.input('$ctrl.session.text', type.text);
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
+
+    it('Successfully updates an existing inventory type', () => {
+      element(by.css('[data-edit-type="' + type.text +'"]')).click();
+      FU.input('$ctrl.session.text', updateType.text);
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
+
   });
 
   // test inventory unit
-  it('Successfully creates a new inventory unit', () => {
-    element(by.css('[data-create-unit]')).click();
-    FU.input('$ctrl.session.text', unit.text);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-  });
+  describe('Units ::', () => {
+    // navigate to the page
+    before(() => helpers.navigate('#/inventory/configuration'));
 
-  it('Successfully updates an existing inventory unit', () => {
-    element(by.css('[data-edit-unit="' + unit.text +'"]')).click();
-    FU.input('$ctrl.session.text', updateUnit.text);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    it('Successfully creates a new inventory unit', () => {
+      element(by.css('[data-create-unit]')).click();
+      FU.input('$ctrl.session.text', unit.text);
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
+
+    it('Successfully updates an existing inventory unit', () => {
+      element(by.css('[data-edit-unit="' + unit.text +'"]')).click();
+      FU.input('$ctrl.session.text', updateUnit.text);
+      FU.buttons.submit();
+      components.notification.hasSuccess();
+    });
   });
 
 });
