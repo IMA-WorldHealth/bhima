@@ -4,14 +4,14 @@ angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
-  '$state', 'AccountService', 'NotifyService'
+  '$state', 'AccountStoreService', 'AccountService', 'NotifyService'
 ];
 
 /**
  * Note : all flattening and depth display depends on account order, if a reorder or filter is performed this 
  * may need to be recalculated
  */
-function AccountsController($state, Accounts, Notify) { 
+function AccountsController($state, AccountStore, Accounts, Notify) { 
   
   console.log('parent accounts controller');
   var vm = this;
@@ -30,8 +30,9 @@ function AccountsController($state, Accounts, Notify) {
        </div>
   `;
   
-  var indentCellTemplate = '<div class="ui-grid-cell-contents"><span ng-click="grid.api.treeBase.toggleRowTreeState(row)" ng-class="{\'text-action\' : row.treeNode.children.length > 0}"> <span style="padding-left : {{row.treeLevel * 20}}px;"></span><i ng-if="row.entity.locked" class="fa fa-lock"></i> {{grid.getCellValue(row, col)}}</span> <a ng-if="row.treeNode.children.length > 0" ui-sref="accounts.create">Add child</a></div>';
-  
+  var indentCellTemplate = '<div class="ui-grid-cell-contents"><span ng-click="grid.api.treeBase.toggleRowTreeState(row)" ng-class="{\'text-action\' : row.treeNode.children.length > 0}"> <span style="padding-left : {{row.treeLevel * 20}}px;"></span><i ng-if="row.entity.locked" class="fa fa-lock"></i> {{grid.getCellValue(row, col)}}</span> <a ng-if="row.treeNode.children.length > 0" ui-sref="accounts.create"> <i class="fa fa-plus-square-o"></i> Add child</a></div>';
+  var actionsCellTemplate = '<div class="ui-grid-cell-contents"><a ui-sref="accounts.edit({id:row.entity.id})"><i class="fa fa-edit"></i> Edit {{row.entity.number}}</a></div>'; 
+ 
   vm.gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
@@ -48,15 +49,16 @@ function AccountsController($state, Accounts, Notify) {
   };
   
   var columns = [
-    { field : 'id', displayName : '', cellClass : 'text-right', width : 70},
-    { field : 'label', displayName : 'FORM.LABELS.ACCOUNT', cellTemplate : indentCellTemplate, headerCellFilter : 'translate' }
+    { field : 'number', displayName : '', cellClass : 'text-right', width : 70},
+    { field : 'label', displayName : 'FORM.LABELS.ACCOUNT', cellTemplate : indentCellTemplate, headerCellFilter : 'translate' },
+    { name : 'actions', displayName : '', cellTemplate : actionsCellTemplate, headerCellFilter : 'translate', width : 140 }
     // { field : 'parent', displayName : 'FORM.LABELS.PARENT', headerCellFilter : 'translate' },
     // { field : '$$treeLevel', displayName : '$$treeLevel', headerCellFilter : 'translate'}
   ];
   
   vm.gridOptions.columnDefs = columns;
   
-  Accounts.read(null, {detailed : 1})
+  AccountStore.readCache()
     .then(function (result) { 
       vm.gridOptions.data = Accounts.order(result);
     })
