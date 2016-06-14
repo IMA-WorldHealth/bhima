@@ -1,0 +1,39 @@
+<!-- @todo Remove convuluted isCreateState form display logic -->
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-class="{
+      'title' : AccountEditCtrl.isCreateState,
+      'static' : !AccountEditCtrl.isCreateState}">
+      {{ "ACCOUNT.TITLE" | translate }}
+      <label class="label label-warning" ng-if="AccountEditCtrl.isCreateState">CREATE</label>
+    </li>
+
+    <li ng-if="!AccountEditCtrl.isCreateState" class="title">
+      {{AccountEditCtrl.account.label}}
+    </li>
+  </ol>
+</div>
+
+<div class="modal-body">
+  <!-- Failure message -->
+  <div class="alert alert-danger" ng-if="AccountEditCtrl.accountFailed">
+    <i class="fa fa-exclamation-circle"></i>
+    <b>{{AccountEditCtrl.accountFailed.status}}</b> {{AccountEditCtrl.accountFailed.code | translate}}
+  </div>
+
+  <!-- Account form -->
+  <div ng-show="AccountEditCtrl.account || AccountEditCtrl.isCreateState" ng-form="Account">
+    <div class="form-group">
+      <label>Number</label>
+      <input class="form-control" ng-model="AccountEditCtrl.account.number" name="number">
+    </div>
+    <div class="form-group">
+      <label>Name</label>
+      <input class="form-control" ng-model="AccountEditCtrl.account.label" name="name">
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default btn-sm" ng-click="AccountEditCtrl.close()" data-action="close">Close</button>
+</div>

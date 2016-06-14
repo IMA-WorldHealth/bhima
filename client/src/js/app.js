@@ -472,7 +472,7 @@ function localeConfig(tmhDynamicLocaleProvider) {
 }
 
 // redirect to login if not signed in.
-function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $location) {
+function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location) {
 
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
@@ -522,6 +522,10 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $lo
       event.preventDefault();
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
     }
+
+    // clean up any modals that are currently active, this allows modules to use onEnter state modals
+    // without considering all exit cases
+    $uibModalStack.dismissAll();
 
     var currentPath = $location.$$path;
     var paths = SessionService.path;
@@ -587,4 +591,4 @@ bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
 
 // run the application
-bhima.run(['$rootScope', '$state', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig]);
+bhima.run(['$rootScope', '$state', '$uibModalStack', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig]);

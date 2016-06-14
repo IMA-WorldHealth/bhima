@@ -1,3 +1,5 @@
+/** @todo Cache accounts on download and expose store to add new and updated accounts */
+/** @todo Accounts should be sorted whilst strictly in the tree structure by account ID */
 angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
@@ -28,7 +30,7 @@ function AccountsController($state, Accounts, Notify) {
        </div>
   `;
   
-  var indentCellTemplate = '<div ng-class="{\'text-action\' : row.treeNode.children.length > 0}" class="ui-grid-cell-contents" ng-click="grid.api.treeBase.toggleRowTreeState(row)"><span style="padding-left : {{row.treeLevel * 20}}px;"></span><i ng-if="row.entity.locked" class="fa fa-lock"></i> {{grid.getCellValue(row, col)}}</div>';
+  var indentCellTemplate = '<div class="ui-grid-cell-contents"><span ng-click="grid.api.treeBase.toggleRowTreeState(row)" ng-class="{\'text-action\' : row.treeNode.children.length > 0}"> <span style="padding-left : {{row.treeLevel * 20}}px;"></span><i ng-if="row.entity.locked" class="fa fa-lock"></i> {{grid.getCellValue(row, col)}}</span> <a ng-if="row.treeNode.children.length > 0" ui-sref="accounts.create">Add child</a></div>';
   
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -36,7 +38,7 @@ function AccountsController($state, Accounts, Notify) {
     // enableGroupHeaderSelection : true
     showTreeExpandNoChildren : false,
     enableColumnMenus : false,
-    showHeader : true,
+    // showHeader : true,
     rowTemplate : leafRowTemplate,
     onRegisterApi : function (api) {
       api.grid.registerDataChangeCallback(function () {
@@ -56,7 +58,7 @@ function AccountsController($state, Accounts, Notify) {
   
   Accounts.read(null, {detailed : 1})
     .then(function (result) { 
-      vm.gridOptions.data = Accounts.order(result); 
+      vm.gridOptions.data = Accounts.order(result);
     })
     .catch(Notify.handleError);
 }

@@ -1,3 +1,17 @@
+function accountsModal($state, $modal) { 
+  var instance = $modal.open({
+              keyboard : false,
+              backdrop : 'static',
+              templateUrl: 'partials/accounts/edit/accounts.edit.modal.html',
+              controller: 'AccountEditController as AccountEditCtrl'
+            })
+            
+          instance.result.then(function (result) { 
+            console.log('thenned'); 
+          });
+          window.modal = $modal;
+          console.log('on enter create', $modal);  
+}
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) { 
     
@@ -11,15 +25,7 @@ angular.module('bhima.routes')
     
       .state('accounts.create', {
         url : '/create',
-        onEnter :['$state', '$uibModal', function ($state, $modal) { 
-          $modal.open({
-            template : '<p>Create mate</p>',
-            controller : function () { console.log('modal controller') }
-          });
-          window.modal = $modal;
-          console.log('on enter create', $modal);  
-        }],
-        onExit : ['$uibModal', '$uibModalStack', function ($modal, stack) { console.log('on exit'); stack.dismissAll();}]
+        onEnter :['$state', '$uibModal', accountsModal] 
       })
       .state('accounts.list', {
         url : '/:id',
@@ -33,15 +39,6 @@ angular.module('bhima.routes')
         params : { 
           id : { squash : true, value : null }
         },
-        onEnter :['$state', '$uibModal', function ($state, $modal) { 
-          
-          $modal.open({
-            template : '<p>Edit mate -- {{targetId}}</p>',
-            controller : ['$scope', '$state', function ($scope, $state) { $scope.targetId = $state.params.id; console.log('modal controller') }]
-          });
-          window.modal = $modal;
-          console.log('on enter create', $modal);  
-        }],
-        onExit : ['$uibModal', '$timeout', '$uibModalStack', '$state', function ($modal, $timeout, stack, $state) { console.log('on exit'); stack.dismissAll(); /*$state.go('^.list');*/ }]
+        onEnter :['$state', '$uibModal', accountsModal]
       })
   }])
