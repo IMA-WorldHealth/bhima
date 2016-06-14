@@ -32,11 +32,10 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   ];
 
   // edit button template
-  var editTemplate = '<div class="text-center">' +
-    '<button class="btn btn-sm btn-default" ng-click="grid.appScope.editInventoryItem(row.entity)">' +
+  var editTemplate = '<div style="padding: 5px;">' +
+    '<a title="{{ \'FORM.LABELS.EDIT\' | translate }}" href="" ng-click="grid.appScope.editInventoryItem(row.entity)">' +
     '<i class="fa fa-edit"></i> ' +
-    '{{ "FORM.LABELS.EDIT" | translate }}' +
-    '</button></div>';
+    '</a></div>';
 
   // consumable icon template
   var iconTemplate = '<div class="text-center">' +
@@ -58,7 +57,8 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
       { field : 'price', displayName : 'Price'},
       { field : 'type', displayName : 'Type'},
       { field : 'unit', displayName : 'Unit'},
-      { field : 'action', displayName : '',
+      { field : 'action', displayName : '...',
+        width: 25,
         cellTemplate: editTemplate,
         enableFiltering: false,
         enableColumnMenu: false
@@ -95,7 +95,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   /** enable filter */
   function toggleFilter() {
     vm.filterEnabled = !vm.filterEnabled;
-    vm.bcButtons[0].color = vm.filterEnabled ? 'btn-success' : 'btn-default';
+    vm.bcButtons[0].color = vm.filterEnabled ? 'btn-default active' : 'btn-default';
     vm.gridOptions.enableFiltering = vm.filterEnabled;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
