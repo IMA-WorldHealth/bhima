@@ -1,6 +1,6 @@
 /**
  * @module medical/patients/checkin
- * 
+ *
  * @description
  * This controller is responsible for the Patient Check In feature, this allows a hospital to track when returning
  * patients visit the hospital.
@@ -13,7 +13,7 @@
  * @requires  lib/topic
  * @requires  lib/errors/BadRequest
  */
-'use strict'
+'use strict';
 
 const uuid  = require('node-uuid');
 
@@ -51,7 +51,7 @@ function list(req, res, next) {
     `
       SELECT
         BUID(patient_uuid) as patient_uuid, start_date, end_date, user_id, username
-      FROM patient_visit 
+      FROM patient_visit
       JOIN user on patient_visit.user_id = user.id
       WHERE patient_uuid = ?
       ORDER BY start_date DESC
@@ -90,7 +90,7 @@ function create(req, res, next) {
       res.status(201).json({
         uuid : patientUuid
       });
-      
+
       // public patient change (checkin) event
       topic.publish(topic.channels.MEDICAL, {
         event: topic.events.UPDATE,

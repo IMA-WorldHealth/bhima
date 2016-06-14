@@ -5,10 +5,11 @@ PatientRegistryModalController.$inject = [
   '$uibModalInstance', 'InventoryService', 'PatientService', 'util', 'DateService'
 ];
 
-function PatientRegistryModalController( $uibModalInstance, Inventory, patients, util, dateService) {
+function PatientRegistryModalController(ModalInstance, Inventory, Patients, util, Dates) {
   var vm = this;
 
-  vm.period = dateService.period();
+  vm.period = Dates.period();
+
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
@@ -23,10 +24,10 @@ function PatientRegistryModalController( $uibModalInstance, Inventory, patients,
     vm.patient = util.clean(vm.patient);
 
     var patient = angular.copy(vm.patient);
-    patient.detail = 1;
+    patient.detailed = 1;
 
-    var promise = patients.search(patient);
-    var patientFilters = patients.patientFilters(patient);
+    var promise = Patients.search(patient);
+    var patientFilters = Patients.patientFilters(patient);
 
     promise
     .then(function (response) {
@@ -35,7 +36,7 @@ function PatientRegistryModalController( $uibModalInstance, Inventory, patients,
         filters   : patientFilters
       };
 
-      return $uibModalInstance.close(data);
+      return ModalInstance.close(data);
 
     });
   }
@@ -49,18 +50,18 @@ function PatientRegistryModalController( $uibModalInstance, Inventory, patients,
           vm.patient.dateRegistrationFrom = new Date();
           break;
         case 'week' :
-          vm.patient.dateRegistrationFrom = dateService.previous.week();
+          vm.patient.dateRegistrationFrom = Dates.previous.week();
           break;
         case 'month' :
-          vm.patient.dateRegistrationFrom = dateService.previous.month();
+          vm.patient.dateRegistrationFrom = Dates.previous.month();
           break;
         default:
-          vm.patient.dateRegistrationFrom = dateService.previous.year();
+          vm.patient.dateRegistrationFrom = Dates.previous.year();
     }
   }
 
   function cancel() {
-    $uibModalInstance.dismiss();
+    ModalInstance.dismiss();
   }
 
 }

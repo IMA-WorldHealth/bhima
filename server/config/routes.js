@@ -18,7 +18,6 @@ const users              = require('../controllers/admin/users');
 var locations            = require('../controllers/locations');
 var tree                 = require('../controllers/tree');
 var patients             = require('../controllers/medical/patients');
-var patientReceipt       = require('../controllers/medical/reports/patient.receipt');
 var patientGroups        = require('../controllers/medical/patientGroups');
 var snis                 = require('../controllers/medical/snis');
 var projects             = require('../controllers/admin/projects');
@@ -68,6 +67,7 @@ var sectionBilans        = require('../controllers/finance/sectionBilan');
 var creditors            = require('../controllers/finance/creditors.js');
 const system             = require('../controllers/system');
 const languages          = require('../controllers/admin/languages');
+const medicalReports     = require('../controllers/medical/reports');
 
 const upload = require('../lib/uploader');
 
@@ -134,7 +134,7 @@ exports.configure = function configure(app) {
   app.put('/accounts/:id', accounts.update);
 
 
-  // API for cost_center routes crud
+  // API for cost_center routes CRUD
   app.get('/cost_centers', costCenter.list);
   app.get('/cost_centers/:id', costCenter.detail);
   app.get('/cost_centers/:id/cost', costCenter.getCostValue);
@@ -258,7 +258,7 @@ exports.configure = function configure(app) {
 
   app.post('/posting_donation/', donations.post);
 
-  /*  Inventory and Stock Managment */
+  /*  Inventory and Stock Management */
   app.post('/inventory/metadata', inventory.createInventoryItems);
   app.get('/inventory/metadata', inventory.getInventoryItems);
   app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
@@ -356,9 +356,10 @@ exports.configure = function configure(app) {
   app.get('/invoices/:uuid', patientInvoice.details);
   app.get('/invoices/references/:reference', patientInvoice.reference);
 
-  // Reports API: Invoices (receipts)
+  // reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', invoiceReceipt.build);
-  app.get('/reports/patient/:uuid', patientReceipt.build);
+  app.get('/reports/patient/registrations', medicalReports.patientRegistrations);
+  app.get('/reports/patient/:uuid', medicalReports.patientReceipt);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
@@ -382,9 +383,6 @@ exports.configure = function configure(app) {
   app.get('/patients/:uuid/services', patients.billingServices);
   app.get('/patients/:uuid/subsidies', patients.subsidies);
 
-  // app.get('/patients/search', patient.search);
-  app.get('/patients/search/name/:value', patients.searchFuzzy);
-  app.get('/patients/search/reference/:value', patients.searchReference);
 
   app.get('/patients/:uuid/documents', patients.documents.list);
   app.post('/patients/:uuid/documents', upload.middleware('docs', 'documents'), patients.documents.create);
@@ -411,10 +409,6 @@ exports.configure = function configure(app) {
   app.post('/debtor_groups', debtorGroups.create);
   app.put('/debtor_groups/:uuid', debtorGroups.update);
 
-  // search stuff
-  // TODO merge with patients API
-  app.get('/patient/search/fuzzy/:match', patients.searchFuzzy);
-  app.get('/patient/search/reference/:reference', patients.searchReference);
 
   // analytics for financial dashboard
   // cash flow analytics

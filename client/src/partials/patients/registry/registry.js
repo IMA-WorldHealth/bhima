@@ -2,17 +2,15 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  'PatientService', '$uibModal', 'NotifyService', 'moment'
+  'PatientService', 'NotifyService', 'moment', 'ReceiptModal'
 ];
 
 /**
  * Patient Registry Controller
  *
- * This module is responsible for the management
- * of Patient Registry.
- *
+ * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, $uibModal, Notify, moment) {
+function PatientRegistryController(Patients, Notify, moment, Receipt) {
   var vm = this;
 
   var patientActionsTemplate =
@@ -20,12 +18,12 @@ function PatientRegistryController(Patients, $uibModal, Notify, moment) {
 
   vm.search = search;
   vm.momentAge = momentAge;
+  vm.print = print;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
 
   /** TODO manage column : last_transaction */
-  // the column attribute `displayName` must be used in favour of `name` in order to allow `headerCellFilter` to function
   vm.uiGridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
@@ -50,8 +48,8 @@ function PatientRegistryController(Patients, $uibModal, Notify, moment) {
 
   // load Patient Registry Grid
   function loadGrid() {
-    vm.loading = true;
     vm.hasError = false;
+    toggleLoadingIndicator();
 
     Patients.read()
       .then(function (patients) {
@@ -62,18 +60,20 @@ function PatientRegistryController(Patients, $uibModal, Notify, moment) {
       })
       .catch(handler)
       .finally(function () {
-        vm.loading = false;
+        toggleLoadingIndicator();
       });
   }
 
-  // Search and filter data in Patiens Registry
+  // search and filter data in Patient Registry
   function search() {
-    vm.loading = true;
     vm.hasError = false;
+    toggleLoadingIndicator();
+
     Patients.openSearchModal()
       .then(function (data) {
         var response = data.response;
         vm.filters = data.filters;
+        console.log(data.filters);
         response.forEach(function (patient) {
           patient.patientAge = momentAge(patient.dob);
         });
@@ -81,13 +81,30 @@ function PatientRegistryController(Patients, $uibModal, Notify, moment) {
       })
       .catch(handler)
       .finally(function () {
-        vm.loading = false;
+        toggleLoadingIndicator();
       });
+  }
+
+  // open a print modal to print all patient registrations to date
+  function print() {
+
+    // @todo(jniles): eventually, we would like to populate this with the
+    // filters before sending the report request.  However, the client-side
+    // modeling of filters is not up to par yet.
+    var options = {};
+
+    // @todo(jniles): Make reports and receipts use the same rendering modal
+    Receipt.patientRegistrations(options);
   }
 
   // moment() provides the current date, similar to the new Date() API. This requests the difference between two dates
   function momentAge(dateOfBirth){
     return moment().diff(dateOfBirth, 'years');
+  }
+
+  // toggles the loading indicator on or off
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
   }
 
   // fire up the module

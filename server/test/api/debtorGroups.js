@@ -152,7 +152,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
   });
 
   it('POST /debtor_groups don\'t create when with missing data', function () {
-    return agent.post('/debtor_groups/')
+    return agent.post('/debtor_groups')
     .send(invalidGroup)
     .then(function (res) {
       helpers.api.errored(res, 400);
@@ -170,7 +170,8 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
   });
 
   it('GET /debtor_groups?detailed=1 returns a more complex (detailed) list', function () {
-    return agent.get('/debtor_groups?detailed=1')
+    return agent.get('/debtor_groups')
+      .query({ detailed : 1 })
       .then(function (res) {
 
         // expects status + type JSON
@@ -211,12 +212,12 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
     var totalLockedGroup = getTotal(allDebtorGroups, 'locked', 1);
     var totalUnlockedGroup = getTotal(allDebtorGroups, 'locked', 0);
 
-    return agent.get('/debtor_groups?locked=1')
+    return agent.get('/debtor_groups').query({ locked: 1 })
       .then(function (res) {
         helpers.api.listed(res, totalLockedGroup);
         expect(res.body[0].locked).to.exist;
         expect(res.body[0].locked).to.be.equal(1);
-        return agent.get('/debtor_groups/?locked=0');
+        return agent.get('/debtor_groups/?locked=0').query({ locked: 1 });
       })
       .then(function (res) {
         helpers.api.listed(res, totalUnlockedGroup);
@@ -230,12 +231,12 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
     var totalConvention = getTotal(allDebtorGroups, 'is_convention', 1);
     var totalNotConvention = getTotal(allDebtorGroups, 'is_convention', 0);
 
-    return agent.get('/debtor_groups?is_convention=1')
+    return agent.get('/debtor_groups').query({ is_convention : 1 })
       .then(function (res) {
         helpers.api.listed(res, totalConvention);
         expect(res.body[0].is_convention).to.exist;
         expect(res.body[0].is_convention).to.be.equal(1);
-        return agent.get('/debtor_groups/?is_convention=0');
+        return agent.get('/debtor_groups').query({ is_convention : 0 });
       })
       .then(function (res) {
         helpers.api.listed(res, totalNotConvention);

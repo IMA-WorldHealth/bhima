@@ -647,6 +647,7 @@
   "PATIENT_REG": {
     "FIND_PATIENT"         : "Find a Patient",
     "PAGE_TITLE"           : "Patient Registration",
+    "PATIENT_REGISTRATIONS" : "Patient Registrations",
     "PATIENT_DETAILS"      : "Patient Details",
     "REGISTER_PATIENT"     : "Register Patient",
     "TITLE"                : "Title",

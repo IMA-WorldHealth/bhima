@@ -72,7 +72,7 @@ function build(req, res, next) {
 
   var invoiceResponse = {};
 
-  var renderTarget = queryString.render || defaultRender;
+  var renderTarget = queryString.renderer || defaultRender;
   var renderer = supportedRender[renderTarget];
 
   /** @todo delegate to additional method */
