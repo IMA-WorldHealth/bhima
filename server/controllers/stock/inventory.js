@@ -144,7 +144,7 @@ function getInventoryItems(req, res, next) {
 }
 
 /**
-* GET /inventory/:uuid/metadata
+* GET /inventory/metadata/:uuid
 * Returns a description of the item from the inventory table.
 *
 * @function getInventoryItemsById
