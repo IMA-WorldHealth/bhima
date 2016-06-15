@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('InvoiceRegistryController', InvoiceRegistryController);
 
 InvoiceRegistryController.$inject = [
-  'PatientInvoiceService', '$uibModal', 'NotifyService', 'util'
+  'PatientInvoiceService', '$uibModal', 'NotifyService', 'util', 'ReceiptModal'
 ];
 
 /**
@@ -12,15 +12,17 @@ InvoiceRegistryController.$inject = [
  * of Invoice Registry.
  *
  */
-function InvoiceRegistryController(Invoices, $uibModal, Notify, util) {
+function InvoiceRegistryController(Invoices, $uibModal, Notify, util, Receipt) {
     var vm = this;
 
     var invoiceActionsTemplate =
-        '<div style="padding : 5px"><a ui-sref="invoiceRecord.details({invoice_uuid : row.entity.uuid})"><span class="glyphicon glyphicon-list-alt"></span> {{ "INVOICE_REGISTRY.RECORD" | translate }}</a> <a ui-sref="invoiceEdit({uuid : row.entity.uuid})"><span class="glyphicon glyphicon-edit"></span> {{ "TABLE.COLUMNS.EDIT" | translate }}</a></div>';
+        '<div style="padding : 5px"><a ng-click="grid.appScope.showBill(row.entity.uuid)">' +
+        '<span class="glyphicon glyphicon-list-alt"></span> {{ "TABLE.COLUMNS.BILL" | translate }}</a></div>';
 
 
     vm.search = search;
-    vm.momentAge = util.getMomentAge;
+    vm.showBill = showBill;
+    vm.momentAge = util.getMomentAge;    
 
     // track if module is making a HTTP request for invoices
     vm.loading = false;
@@ -33,7 +35,7 @@ function InvoiceRegistryController(Invoices, $uibModal, Notify, util) {
             { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
             { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate' },
             { field : 'patientNames', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
-            { field : 'cost', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate'  },
+            { field : 'cost', cellFilter:'currency', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate'  },
             { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
             { field : 'createdBy', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
             { name : 'Actions', displayName : '', cellTemplate : invoiceActionsTemplate }
@@ -83,8 +85,17 @@ function InvoiceRegistryController(Invoices, $uibModal, Notify, util) {
             });
     }
 
+    //show bill function to view the bill
+    function showBill (uuid){
+        Receipt.invoice(uuid, true)
+            .then(function (result) {
+                // receipt closed fired
+            })
+            .catch(function (error) {
+                // receipt closed rejected
+            });
+    }
+
     // fire up the module
     loadGrid();
-  
-  
 }

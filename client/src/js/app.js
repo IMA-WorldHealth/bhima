@@ -80,6 +80,12 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'InvoiceRegistryController as InvoiceRegistryCtrl',
     templateUrl: '/partials/patient_invoice/registry/registry.html'
   })
+
+  .state('invoiceEdit', {
+    url : '/invoices/:uuid/edit',
+    controller : 'InvoiceEditController as InvoiceEditCtrl',
+    templateUrl : '/partials/patient_invoice/edit/edit.html'
+  })
   .state('invoice', {
     url : '/invoice/:originId/:invoiceId',
     controller: 'receipts',
