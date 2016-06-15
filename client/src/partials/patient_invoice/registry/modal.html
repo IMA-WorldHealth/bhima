@@ -1,0 +1,134 @@
+<form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm)" novalidate>
+  <div class="modal-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static">{{ "FORM.INFOS.INVOICES" | translate }}</li>
+        <li class="title">{{ "FORM.INFOS.SEARCH" | translate }}</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="modal-body" style="overflow: auto; max-height: 300px;">
+    <legend>{{ "FORM.LABELS.BILLING_DATE" | translate }}</legend>
+    <fieldset>
+      <div class="row text-center">
+        <div class="btn-group">
+          <button
+            ng-repeat="(key, view) in ModalCtrl.period track by $index"
+            type="button"
+            class="btn btn-default"
+            ng-class="{ 'active' : ModalCtrl.view.index === view.index }"
+            ng-click="ModalCtrl.setTimes(view.cacheKey)"
+            id = "{{ view.cacheKey }}"
+            data-time-view-key="{{ key }}"
+            >
+            {{ view.translateKey | translate }}
+          </button>
+        </div>
+      </div>
+      <hr>
+   
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateFrom.$invalid }">
+        <div class="col-md-9">
+          <div class="input-group">          
+            <bh-date-editor
+              id = "billing-date-from"
+              date-value="ModalCtrl.invoice.billingDateFrom"
+              validation-trigger="ModalForm.$submitted"
+              max-date="ModalCtrl.today"
+            >
+            </bh-date-editor>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateTo.$invalid }">  
+        <div class="col-md-9">
+          <div class="input-group">
+            <bh-date-editor
+              id = "billing-date-to"
+              date-value="ModalCtrl.invoice.billingDateTo"
+              validation-trigger="ModalForm.$submitted"
+              max-date="ModalCtrl.today"
+            >
+            </bh-date-editor>
+          </div>
+        </div>      
+      </div>  
+      <br>      
+    </fieldset>
+
+    <legend>{{ "FORM.LABELS.INVOICES_DETAILS" | translate }}</legend>
+    <fieldset>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
+        <label class="control-label" for="reference">{{ 'FORM.LABELS.REFERENCE' | translate }}</label>
+        <input type="text" class="form-control" name="reference" id="reference" ng-model="ModalCtrl.invoice.reference">
+        <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.service.$invalid }">
+        <label class="control-label" for="service">{{ 'FORM.LABELS.SERVICE' | translate }}</label>
+        <select
+          class="form-control"
+          name="service"
+          ng-model="ModalCtrl.invoice.service_id"
+          id="service"
+          ng-options="s.id as s.name for s in ModalCtrl.services | orderBy:'name'">
+          <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_SERVICE' | translate }} -- </option>
+        </select>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.user.$invalid }">
+        <label class="control-label" for="user">{{ 'FORM.LABELS.USER' | translate }}</label>
+        <select
+          class="form-control"
+          name="user"
+          ng-model="ModalCtrl.invoice.user_id"
+          id="user"
+          ng-options="u.id as u.displayname for u in ModalCtrl.users | orderBy:'displayname'">
+          <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_USER' | translate }} -- </option>
+        </select>
+      </div>
+
+      <div
+        id="distributable"
+        class="form-group has-feedback"
+        ng-class="{'has-error' : ModalForm.distributableOptions.$invalid && ModalForm.$submitted}">
+        <label for="distributable" class="col-md-3 control-label"> {{ "FORM.LABELS.DISTRIBUTABLE" | translate }} </label>
+        <div class="col-md-9">
+          <label class="radio-inline">
+            <input type="radio" name="distributableOptions" id="all" value="all" ng-model="ModalCtrl.invoice.is_distributable">
+            {{ "FORM.LABELS.ALL" | translate }}
+          </label>
+
+          <label class="radio-inline">
+            <input type="radio" name="distributableOptions" id="yes" value="1" ng-model="ModalCtrl.invoice.is_distributable">
+            {{ "FORM.LABELS.YES" | translate }}
+          </label>
+
+          <label class="radio-inline">
+            <input type="radio" name="distributableOptions" id="no" value="0" ng-model="ModalCtrl.invoice.is_distributable">
+            {{ "FORM.LABELS.NO" | translate }}
+          </label>
+
+          <div class="help-block" ng-messages="ModalForm.distributableOptions.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+      </div>
+
+    </fieldset>
+
+
+  </div>
+    
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.BUTTONS.CLOSE" | translate }}</button>
+    <button class="btn btn-default" id="invoice_search" type="submit" data-method="submit">
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </button>
+  </div>
+</form>
