@@ -12,13 +12,14 @@ function InventoryGroupService($http, util) {
 
   // exposed methods
   service.read = read;
-  Service.update = update;
+  service.update = update;
   service.create = create;
   service.remove = remove;
+  service.count  = count;
 
   /** create inventory group */
   function create(record) {
-    return $http.post(baseUrl)
+    return $http.post(baseUrl, record)
     .then(util.unwrapHttpResponse);
   }
 
@@ -29,14 +30,20 @@ function InventoryGroupService($http, util) {
   }
 
   /** udate an existing inventory group */
-  function update(uuid) {
-    return $http.put(baseUrl.concat(uuid || ''))
+  function update(uuid, record) {
+    return $http.put(baseUrl.concat(uuid || ''), record)
     .then(util.unwrapHttpResponse);
   }
 
   /** delete an existing inventory group */
   function remove(uuid) {
     return $http.delete(baseUrl.concat(uuid))
+    .then(util.unwrapHttpResponse);
+  }
+
+  /** count inventory in groups */
+  function count(uuid) {
+    return $http.get(baseUrl.concat(uuid, '/count'))
     .then(util.unwrapHttpResponse);
   }
 }

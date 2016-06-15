@@ -14,28 +14,7 @@ describe('(/inventory) The inventory HTTP API :: ', () => {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
-  // inventory list items
-  let metadata = {
-    uuid : uuid.v4(),
-    code : '1000007', // code must be unique
-    text : 'Inventory Article for Test',
-    price : 5,
-    group_uuid : '1410dfe0-b478-11e5-b297-023919d3d5b0',
-    unit_id : 1,
-    type_id : 1,
-    consumable : 0
-  };
-
-  let metadataUpdate = {
-    uuid : metadata.uuid,
-    code : '1000007', // code must be unique
-    text : '[Update] Inventory Article for Test',
-    price : 10,
-    group_uuid : '1410dfe0-b478-11e5-b297-023919d3d5b0',
-    unit_id : 1,
-    type_id : 1,
-    consumable : 0
-  };
+  let inventoryList;
 
   let inventoryGroup = {
     uuid : uuid.v4(),
@@ -69,40 +48,6 @@ describe('(/inventory) The inventory HTTP API :: ', () => {
   let updateUnit = {
     text : '[Test] Gellule'
   };
-
-  it('GET /inventory/metadata returns the list of inventory metadata', () => {
-    return agent.get('/inventory/metadata')
-      .then((res) => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-      })
-      .catch(helpers.handler);
-  });
-
-  it('POST /inventory/metadata create a new inventory metadata', () => {
-    return agent.post('/inventory/metadata')
-      .send(metadata)
-      .then((res) => {
-        helpers.api.created(res);
-        expect(res.body.uuid).to.be.equal(metadata.uuid);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('PUT /inventory/:uuid/metadata update an existing inventory metadata', () => {
-    return agent.put('/inventory/' + metadata.uuid + '/metadata')
-      .send(metadataUpdate)
-      .then((res) => {
-        // NOTE: Returned data are from the /inventory/:uuid/metadata API
-        // these data are not sended by the test but come from join with other table :
-        // label, groupNmae, type, unit
-        expect(res.body[0].uuid).to.be.equal(metadataUpdate.uuid);
-        expect(res.body[0].code).to.be.equal(metadataUpdate.code);
-        expect(res.body[0].text).to.be.equal(metadataUpdate.label);
-        expect(res.body[0].price).to.be.equal(metadataUpdate.price);
-      })
-      .catch(helpers.handler);
-  });
 
   // ========================== inventory groups ==============================
 
@@ -278,6 +223,79 @@ describe('(/inventory) The inventory HTTP API :: ', () => {
     return agent.delete('/inventory/units/' + inventoryUnit.id)
       .then((res) => {
         helpers.api.deleted(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  // ============================ inventory metadata ===========================
+
+  // inventory list items
+  let metadata = {
+    uuid : uuid.v4(),
+    code : '1000012', // code must be unique
+    text : '[IT] Inventory Article',
+    price : 5,
+    group_uuid : inventoryGroup.uuid,
+    unit_id : 1,
+    type_id : 1,
+    consumable : 0
+  };
+
+  let metadataUpdate = {
+    uuid : metadata.uuid,
+    code : '1000012', // code must be unique
+    text : '[IT] Inventory Article updated',
+    price : 10,
+    group_uuid : inventoryGroup.uuid,
+    unit_id : 1,
+    type_id : 1,
+    consumable : 0
+  };
+
+  it('POST /inventory/metadata create a new inventory metadata', () => {
+    return agent.post('/inventory/metadata')
+      .send(metadata)
+      .then((res) => {
+        helpers.api.created(res);
+        expect(res.body.uuid).to.be.equal(metadata.uuid);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /inventory/:uuid/metadata update an existing inventory metadata', () => {
+    return agent.put('/inventory/' + metadata.uuid + '/metadata')
+      .send(metadataUpdate)
+      .then((res) => {
+        // NOTE: Returned data are from the /inventory/:uuid/metadata API
+        // these data are not sended by the test but come from join with other table :
+        // label, groupNmae, type, unit
+        expect(res.body[0].uuid).to.be.equal(metadataUpdate.uuid);
+        expect(res.body[0].code).to.be.equal(metadataUpdate.code);
+        expect(res.body[0].text).to.be.equal(metadataUpdate.label);
+        expect(res.body[0].price).to.be.equal(metadataUpdate.price);
+        expect(res.body[0].group_uuid).to.be.equal(metadataUpdate.group_uuid);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata returns the list of inventory metadata', () => {
+    return agent.get('/inventory/metadata')
+      .then((res) => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        inventoryList = res.body;
+      })
+      .catch(helpers.handler);
+  });
+
+  // count inventory in the group
+  it('GET /inventory/groups/:uuid/count', () => {
+    return agent.get('/inventory/groups/' + inventoryGroup.uuid + '/count')
+      .then((res) => {
+        var countInventory = inventoryList.filter((item) => {
+          return item.group_uuid === inventoryGroup.uuid;
+        }).length;
+        expect(res.body).to.be.equal(countInventory);
       })
       .catch(helpers.handler);
   });

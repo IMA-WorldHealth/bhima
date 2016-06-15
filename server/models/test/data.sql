@@ -41,7 +41,10 @@ INSERT INTO unit VALUES
   (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple'),
   (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services'),
   -- (136, 'Patient Documents', 'TREE.PATIENT_DOCUMENT', 'Patient Document Module', 12, '/partials/patients/documents', '/patients/documents'),
-  (137, 'Complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal Vouchers Module', 30, '/partials/vouchers/complex', '/vouchers/complex');
+  (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 30, '/partials/vouchers/complex', '/vouchers/complex'),
+  (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
+  (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
+  (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration');
 
 INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance');
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
@@ -188,7 +191,16 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- (136, 1),
 
 -- complex Journal Vouchers
-(137, 1);
+(137, 1),
+
+-- inventory module
+(138, 1),
+
+-- inventory list module
+(139, 1),
+
+-- inventory configuration module
+(140, 1);
 
 
 -- testing financial transactions

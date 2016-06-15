@@ -32,13 +32,13 @@ function details (identifier) {
 /** create new inventory type */
 function create (record) {
   'use strict';
-
-  let sql = `INSERT INTO inventory_type SET ?;`;
+  
+  let sql = `INSERT INTO inventory_type (text) VALUES (?);`;
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
    */
-  return db.exec(sql, [record])
+  return db.exec(sql, [record.text])
   .then(row => row.insertId);
 }
 

@@ -20,6 +20,7 @@ module.exports = {
 
   hasInfo : function hasInfo() {
     expect(element(by.css('[data-notification-type="notification-info"]')).isPresent()).to.eventually.equal(true);
+    dismiss();
   },
 
   hasDanger : function hasDanger() {

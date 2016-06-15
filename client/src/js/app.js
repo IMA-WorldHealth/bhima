@@ -397,36 +397,40 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   .state('/inventory', {
     controller: 'inventory',
-    templateUrl: '/partials/inventory/inventory.html'
+    templateUrl: '/partials/inventory/index.html'
   })
-  .state('/inventory/view', {
-    controller : 'inventoryView',
-    templateUrl:'/partials/inventory/view/view.html'
+  .state('/inventory/list', {
+    url : '/inventory/list',
+    controller : 'InventoryListController as InventoryCtrl',
+    templateUrl : 'partials/inventory/list/list.html'
   })
-  .state('/inventory/register', {
-    controller: 'InventoryRegisterController',
-    templateUrl: '/partials/inventory/register/register.html'
+  .state('/inventory/configuration', {
+    url : '/inventory/configuration',
+    views : {
+      '' : {
+        templateUrl : 'partials/inventory/configuration/configuration.html',
+        controller : 'InventoryConfigurationController as InventoryCtrl'
+      },
+      'groups@/inventory/configuration' : {
+        templateUrl : 'partials/inventory/configuration/groups/groups.html',
+        controller : 'InventoryGroupsController as GroupsCtrl'
+      },
+      'types@/inventory/configuration' : {
+        templateUrl : 'partials/inventory/configuration/types/types.html',
+        controller : 'InventoryTypesController as TypesCtrl'
+      },
+      'units@/inventory/configuration' : {
+        templateUrl : 'partials/inventory/configuration/units/units.html',
+        controller : 'InventoryUnitsController as UnitsCtrl'
+      }
+    }
   })
-  .state('/inventory/update', {
-    controller : 'InventoryUpdateController',
-    templateUrl : 'partials/inventory/update_item/update_item.html'
-  })
-  .state('/inventory/groups', {
-    controller : 'inventory.groups',
-    templateUrl : 'partials/inventory/groups/groups.html'
-  })
-  .state('/inventory/types',  {
-    controller : 'InventoryTypeController',
-    templateUrl : 'partials/inventory/types/types.html'
-  })
-  .state('/inventory/manifest', {
-    controller : 'inventory.manifest',
-    templateUrl : 'partials/inventory/manifest/manifest.html'
-  })
-  .state('/inventory/depot', {
-    controller : 'inventory.depot',
-    templateUrl : 'partials/inventory/depot/depot.html'
-  })
+  // @TODO IMPLEMENT THEM
+  // .state('/inventory/types',  {
+  //   url : '/inventory/types',
+  //   controller : 'InventoryTypesController as InventoryCtrl',
+  //   templateUrl : 'partials/inventory/types/types.html'
+  // })
   .state('prices', {
     url : '/prices',
     controller: 'PriceListController as PriceListCtrl',
