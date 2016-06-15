@@ -10,7 +10,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe.only('Inventory Configuration ::', () => {
+describe('Inventory Configuration ::', () => {
   'use strict';
 
   // navigate to the page
