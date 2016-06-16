@@ -156,7 +156,6 @@ describe('Invoice Registry page', function () {
 
     it('shows the proof of the invoice correctly', function () {
         var invoiceRegistry = new InvoiceRegistryPage();
-        var filterModal = new modalPage();
         var invoiceProof = new ReceiptModalPage();
 
         invoiceRegistry.showInvoiceProof(0);
