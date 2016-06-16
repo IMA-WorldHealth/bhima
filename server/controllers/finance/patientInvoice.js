@@ -406,7 +406,6 @@ function search(req, res, next) {
 
   db.exec(queryObject.query, queryObject.conditions)
   .then(function (rows) {
-      console.log('data', rows);
     res.status(200).json(rows);
   })
   .catch(next)
