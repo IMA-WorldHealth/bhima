@@ -18,19 +18,22 @@ function AccountsController($state, AccountStore, Accounts, Notify) {
   vm.targetId = $state.params.id; 
   console.log('$stateParams', $state.params.id);
   
+  /** @todo get this from constant definition */
+  vm.TITLE_ACCOUNT = 4;
+  
   var leafRowTemplate = `
       <div
         ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"
         ui-grid-one-bind-id-grid="rowRenderIndex + '-' + col.uid + '-cell'"
         class="ui-grid-cell"
-        ng-class="{ 'ui-grid-row-header-cell': col.isRowHeader, 'text-clear' : row.treeNode.children.length === 0 }"
+        ng-class="{ 'ui-grid-row-header-cell': col.isRowHeader, 'text-clear' : row.entity.type_id !== grid.appScope.TITLE_ACCOUNT }"
         data-vals="{{col.isRowHeader}}"
         role="{{col.isRowHeader ? 'rowheader' : 'gridcell'}}"
         ui-grid-cell>
        </div>
   `;
   
-  var indentCellTemplate = '<div class="ui-grid-cell-contents"><span ng-click="grid.api.treeBase.toggleRowTreeState(row)" ng-class="{\'text-action\' : row.treeNode.children.length > 0}"> <span style="padding-left : {{row.treeLevel * 20}}px;"></span><i ng-if="row.entity.locked" class="fa fa-lock"></i> {{grid.getCellValue(row, col)}}</span> <a ng-if="row.treeNode.children.length > 0" ui-sref="accounts.create"> <i class="fa fa-plus-square-o"></i> Add child</a></div>';
+  var indentCellTemplate = '<div class="ui-grid-cell-contents"><span ng-click="grid.api.treeBase.toggleRowTreeState(row)" ng-class="{\'text-action\' : row.treeNode.children.length > 0}"> <span style="padding-left : {{row.treeLevel * 20}}px;"></span><i ng-if="row.entity.locked" class="fa fa-lock"></i> {{grid.getCellValue(row, col)}}</span> <a ng-if="row.entity.type_id === grid.appScope.TITLE_ACCOUNT" ui-sref="accounts.create({ parentId : row.entity.id })"> <i class="fa fa-plus-square-o"></i> Add child account</a></div>';
   var actionsCellTemplate = '<div class="ui-grid-cell-contents"><a ui-sref="accounts.edit({id:row.entity.id})"><i class="fa fa-edit"></i> Edit {{row.entity.number}}</a></div>'; 
  
   vm.gridOptions = {

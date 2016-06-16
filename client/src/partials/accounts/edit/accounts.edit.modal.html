@@ -9,7 +9,7 @@
     </li>
 
     <li ng-if="!AccountEditCtrl.isCreateState" class="title">
-      {{AccountEditCtrl.account.label}}
+      {{::AccountEditCtrl.account.label}}
     </li>
   </ol>
 </div>
@@ -22,30 +22,60 @@
   </div>
 
   <!-- Account form -->
-  <div ng-show="AccountEditCtrl.account || AccountEditCtrl.isCreateState" ng-form="Account">
-    <div class="form-group">
-      <label>Number</label>
-      <input class="form-control" ng-model="AccountEditCtrl.account.number" name="number">
+  <div ng-show="AccountEditCtrl.account || AccountEditCtrl.isCreateState" ng-form="AccountForm">
+    <div class="form-group"
+         ng-class="{'has-error' : AccountForm.number.$invalid && AccountForm.$submitted}">
+      <label class="control-label">Number</label>
+      <input class="form-control" ng-model="AccountEditCtrl.account.number" name="number" required>
+      <div class="help-block" ng-messages="AccountForm.number.$error" ng-show="AccountForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Name</label>
-      <input class="form-control" ng-model="AccountEditCtrl.account.label" name="name">
+    <div class="form-group"
+         ng-class="{'has-error' : AccountForm.label.$invalid && AccountForm.$submitted}">
+      <label class="control-label">Name</label>
+      <input class="form-control" ng-model="AccountEditCtrl.account.label" name="label" required>
+      <div class="help-block" ng-messages="AccountForm.label.$error" ng-show="AccountForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label>{{ "FORM.LABELS.PARENT" | translate }}</label> <a href><i class="fa fa-level-up"></i> Set as root account</a>
+    <div class="form-group"
+         ng-class="{'has-error' : AccountForm.type_id.$invalid && AccountForm.$submitted}">
+      <label class="control-label">Type</label>
+      <select class="form-control" ng-model="AccountEditCtrl.account.type_id" ng-options="entry.id as (entry.translation_key | translate) for entry in AccountEditCtrl.types" name="type_id" required></select>
+      <div class="help-block" ng-messages="AccountForm.type_id.$error" ng-show="AccountForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+    <div class="form-group"
+         ng-class="{'has-error' : AccountForm.account.$invalid && AccountForm.$submitted}">
+      <label class="control-label">{{ "FORM.LABELS.PARENT_ACCOUNT" | translate }}</label>
+      <a href ng-click="AccountEditCtrl.setRootAccount()"><i class="fa fa-level-up"></i> Set as root account</a>
+      <p ng-show="AccountEditCtrl.account.parent.id === AccountEditCtrl.ROOT_ACCOUNT" class="text-info"><i class="fa fa-info-circle"></i> This is account is set as a child of the root account. This means it will be at the highest level in the chart of accounts.</p>
       <input
         class="form-control"
-        name="account"
+        name="parent"
         ng-model="AccountEditCtrl.account.parent"
-        uib-typeahead="account.hrlabel for account in AccountEditCtrl.accounts | filter:$viewValue | limitTo:6"
+        uib-typeahead="account as account.hrlabel for account in AccountEditCtrl.accounts | filter:$viewValue | limitTo:6"
         typeahead-editable="false"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
         required>
+      <div class="help-block" ng-messages="AccountForm.account.$error" ng-show="AccountForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="modal-footer">
+  <div class="checkbox" style="display : inline-block" ng-if="AccountEditCtrl.isCreateState">
+    <label>
+      <input type="checkbox"> Create another account
+    </label>
+  </div>
   <button class="btn btn-default btn-sm" ng-click="AccountEditCtrl.close()" data-action="close">Close</button>
+  <button class="btn btn-primary btn-sm" ng-click="AccountEditCtrl.updateAccount(AccountForm)" data-action="close">
+    <span ng-if="AccountEditCtrl.isCreateState">Create Account</span>
+    <span ng-if="!AccountEditCtrl.isCreateState">Update Account</span>
+  </button>
 </div>

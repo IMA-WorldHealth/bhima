@@ -47,7 +47,7 @@ function detail(req, res, next) {
  */
 function list(req, res, next) {
   let sql =
-    'SELECT `id`, `type` FROM account_type;';
+    'SELECT `id`, `type`, `translation_key` FROM account_type;';
 
   db.exec(sql)
     .then(function (rows) {

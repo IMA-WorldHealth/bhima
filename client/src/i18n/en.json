@@ -14,7 +14,14 @@
     "NEW"            : "New Account",
     "NOT_FOUND"      : "Not accounts found.",
     "TITLE"          : "Account Management",
-    "TITLE_ACCOUNT"  : "Title Account"
+    "TITLE_ACCOUNT"  : "Title Account",
+
+    "TYPES" : {
+      "INCOME" : "Income",
+      "EXPENSE" : "Expense",
+      "BALANCE" : "Balance",
+      "TITLE" : "Title"
+    }
   },
   "AUTH": {
     "CANNOT_RETURN_TO_LOGIN"     : "You are currently logged in.  To return to the login page, please log out using the settings page.",
@@ -420,6 +427,7 @@
       "NO_DISTRIBUTABLE"       : "Not distributable",
       "OPTIONAL_INFO"          : "Optional Information",
       "ORIGIN_LOCATION"        : "Origin Location",
+      "PARENT_ACCOUNT"         : "Parent Account",
       "PASSIVE"                : "Passive",
       "PASSWORD"               : "Password",
       "PATIENT"                : "Patient",

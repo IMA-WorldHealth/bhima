@@ -25,6 +25,9 @@ angular.module('bhima.routes')
     
       .state('accounts.create', {
         url : '/create',
+        params : {
+          parentId : { squash : true, value : null }
+        },
         onEnter :['$state', '$uibModal', accountsModal] 
       })
       .state('accounts.list', {

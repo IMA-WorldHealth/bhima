@@ -50,10 +50,10 @@ INSERT INTO unit VALUES
 INSERT INTO `account_type` VALUES
 
 -- Reserved system account types
-(1, 'income', 'ACCOUNTS.INCOME'),
-(2, 'expense', 'ACCOUNTS.EXPENSE'),
-(3, 'balance', 'ACCOUNTS.BALANCE'),
-(4, 'title', 'ACCOUNTS.TITLE');
+(1, 'income', 'ACCOUNT.TYPES.INCOME'),
+(2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
+(3, 'balance', 'ACCOUNT.TYPES.BALANCE'),
+(4, 'title', 'ACCOUNT.TYPES.TITLE');
 
 INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
 INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES (1,'Congolese Francs','fc','Fc',NULL,50.00),(2,'United States Dollars','usd','$',NULL,0.01);
