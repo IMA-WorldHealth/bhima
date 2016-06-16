@@ -1,0 +1,47 @@
+<div class="flex-header static">
+    <div class="bhima-title">
+        <ol class="headercrumb">
+            <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+            <li class="title">{{ "INVOICE_REGISTRY.TITLE" | translate }}</li>
+        </ol>
+
+        <div class="toolbar">
+            <div class="toolbar-item">
+                <button
+                    id="filterButton"
+                    ng-click="InvoiceRegistryCtrl.search()"
+                    data-method="search"
+                    class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- @todo remove hardcoded styles -->
+<div class="flex-util" style="min-height : 35px; padding-top : 7px">
+    <bh-filters-applied filters="InvoiceRegistryCtrl.filters">
+    </bh-filters-applied>
+</div>
+
+<div class="flex-content">
+    <div class="container-fluid">
+        <div
+            id="invoice-registry"
+            ui-grid="InvoiceRegistryCtrl.uiGridOptions"
+            style="height : calc(100vh - 102px)"
+            ui-grid-auto-resize
+            ui-grid-resize-columns
+            ui-grid-move-columns>
+
+            <bh-grid-loading-indicator
+                    loading-state="InvoiceRegistryCtrl.loading"
+                    empty-state="InvoiceRegistryCtrl.uiGridOptions.data.length === 0"
+                    error-state="InvoiceRegistryCtrl.hasError"
+            >
+            </bh-grid-loading-indicator>
+        </div>
+    </div>
+</div>
+

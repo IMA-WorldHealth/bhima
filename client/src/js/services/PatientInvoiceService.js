@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
-PatientInvoiceService.$inject = [ '$http', 'util', 'SessionService' ];
+PatientInvoiceService.$inject = [ '$http', '$uibModal', 'util', 'SessionService', 'UserService', 'ServiceService' ];
 
 /**
  * Patient Invoice Service
@@ -10,13 +10,16 @@ PatientInvoiceService.$inject = [ '$http', 'util', 'SessionService' ];
  * through the PatientService, but for queries not tied to particular patients,
  * this service is particularly useful.
  */
-function PatientInvoiceService($http, util, Session) {
+function PatientInvoiceService($http, $uibModal, util, Session, Users, Services) {
   var service = this;
   var baseUrl = '/invoices/';
 
   service.read = read;
   service.reference = reference;
   service.create = create;
+  service.search = search;
+  service.openSearchModal = openSearchModal;
+  service.invoiceFilters = invoiceFilters;
 
   /**
    * @method read
@@ -79,6 +82,22 @@ function PatientInvoiceService($http, util, Session) {
       .then(util.unwrapHttpResponse);
   }
 
+  /**
+   * @method search
+   *
+   * @description
+   * This method is reponsible of seaching for invoice(s) based on passed parameters
+   *
+   * @returns {Promise} - a promise resolving to the HTTP result.
+   */
+
+  function search (options) {
+    var target = baseUrl.concat('search');
+
+    return $http.get(target, { params : options })
+        .then(util.unwrapHttpResponse);
+  }
+
   // utility methods
 
   // remove the source items from invoice items - if they exist
@@ -93,5 +112,83 @@ function PatientInvoiceService($http, util, Session) {
     return item;
   }
 
+  //open a dialog box to help user filtering invoices
+  function openSearchModal() {
+    return $uibModal.open({
+      templateUrl : 'partials/patient_invoice/registry/modal.html',
+      size : 'md',
+      animation : true,
+      keyboard  : false,
+      backdrop : 'static',
+      controller : 'InvoiceRegistryModalController as ModalCtrl'
+    }, true).result;
+  }
+
+
+  /*
+   * This function prepares the headers invoice properties which were filtered,
+   * Special treatment occurs when processing data related to the date
+   * @todo - this might be better in it's own service
+   */
+  function invoiceFilters(invoice) {
+    var propertyInvoiceFilter = [];
+    var dataConfiguration;
+
+    if (invoice.billingDateFrom && invoice.billingDateTo) {
+      dataConfiguration = {
+        title : 'FORM.LABELS.BILLING_DATE',
+        reference1 : invoice.billingDateFrom,
+        reference2 : invoice.billingDateTo
+      };
+      propertyInvoiceFilter.push(dataConfiguration);
+    }
+
+    if (invoice.reference) {
+      dataConfiguration = {
+        title : 'FORM.LABELS.REFERENCE',
+        reference1 : invoice.reference,
+      };
+      propertyInvoiceFilter.push(dataConfiguration);
+    }
+    if (invoice.service_id) {
+        
+        Services.read(invoice.service_id)
+            .then(function (data) {
+                dataConfiguration = {
+                    title : 'FORM.LABELS.SERVICE',
+                    reference1 : data.name
+                };
+                propertyInvoiceFilter.push(dataConfiguration);
+            });      
+    }
+
+    if (invoice.user_id) {
+
+        Users.read(invoice.user_id)
+            .then(function (data) {
+                dataConfiguration = {
+                    title : 'FORM.LABELS.USER',
+                    reference1 : data.displayname
+                };
+                propertyInvoiceFilter.push(dataConfiguration);
+            });
+    }
+
+    if (invoice.is_distributable && invoice.is_distributable !== 'all') {
+        var isDistributableInvoice;
+        if (invoice.is_distributable === '1') {
+            isDistributableInvoice = 'FORM.LABELS.YES';
+        } else {
+            isDistributableInvoice = 'FORM.LABELS.NO';
+        }
+
+        dataConfiguration = {
+            title: 'FORM.LABELS.DISTRIBUTABLE',
+            reference1: invoice.is_distributable
+        };
+        propertyInvoiceFilter.push(dataConfiguration);
+    }
+    return propertyInvoiceFilter;
+  }
   return service;
 }

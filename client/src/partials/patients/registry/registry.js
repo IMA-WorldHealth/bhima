@@ -1,24 +1,19 @@
-angular.module('bhima.controllers')
-.controller('PatientRegistryController', PatientRegistryController);
-
-PatientRegistryController.$inject = [
-  'PatientService', 'NotifyService', 'moment', 'ReceiptModal'
-];
-
 /**
  * Patient Registry Controller
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, Notify, moment, Receipt) {
+function PatientRegistryController(Patients, Notify, moment, Receipt, util) {
   var vm = this;
 
   var patientActionsTemplate =
-    '<div style="padding : 5px"><a ui-sref="patientRecord.details({patientID : row.entity.uuid})"><span class="glyphicon glyphicon-list-alt"></span> {{ "PATIENT_REGISTRY.RECORD" | translate }}</a> <a ui-sref="patientEdit({uuid : row.entity.uuid})"><span class="glyphicon glyphicon-edit"></span> {{ "TABLE.COLUMNS.EDIT" | translate }}</a></div>';
+      '<div style="padding : 5px"><a ui-sref="patientRecord.details({patientID : row.entity.uuid})"><span class="glyphicon glyphicon-list-alt"></span> {{ "PATIENT_REGISTRY.RECORD" | translate }}</a> <a ui-sref="patientEdit({uuid : row.entity.uuid})"><span class="glyphicon glyphicon-edit"></span> {{ "TABLE.COLUMNS.EDIT" | translate }}</a></div>';
 
   vm.search = search;
-  vm.momentAge = momentAge;
+
+  vm.momentAge = util.getMomentAge;
   vm.print = print;
+
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -52,16 +47,16 @@ function PatientRegistryController(Patients, Notify, moment, Receipt) {
     toggleLoadingIndicator();
 
     Patients.read()
-      .then(function (patients) {
-        patients.forEach(function (patient) {
-          patient.patientAge = momentAge(patient.dob);
+        .then(function (patients) {
+          patients.forEach(function (patient) {
+            patient.patientAge = util.getMomentAge(patient.dob);
+          });
+          vm.uiGridOptions.data = patients;
+        })
+        .catch(handler)
+        .finally(function () {
+          toggleLoadingIndicator();
         });
-        vm.uiGridOptions.data = patients;
-      })
-      .catch(handler)
-      .finally(function () {
-        toggleLoadingIndicator();
-      });
   }
 
   // search and filter data in Patient Registry
@@ -70,19 +65,19 @@ function PatientRegistryController(Patients, Notify, moment, Receipt) {
     toggleLoadingIndicator();
 
     Patients.openSearchModal()
-      .then(function (data) {
-        var response = data.response;
-        vm.filters = data.filters;
-        console.log(data.filters);
-        response.forEach(function (patient) {
-          patient.patientAge = momentAge(patient.dob);
+        .then(function (data) {
+          var response = data.response;
+          vm.filters = data.filters;
+          console.log(data.filters);
+          response.forEach(function (patient) {
+            patient.patientAge = util.getMomentAge(patient.dob);
+          });
+          vm.uiGridOptions.data = response;
+        })
+        .catch(handler)
+        .finally(function () {
+          toggleLoadingIndicator();
         });
-        vm.uiGridOptions.data = response;
-      })
-      .catch(handler)
-      .finally(function () {
-        toggleLoadingIndicator();
-      });
   }
 
   // open a print modal to print all patient registrations to date
@@ -97,11 +92,6 @@ function PatientRegistryController(Patients, Notify, moment, Receipt) {
     Receipt.patientRegistrations(options);
   }
 
-  // moment() provides the current date, similar to the new Date() API. This requests the difference between two dates
-  function momentAge(dateOfBirth){
-    return moment().diff(dateOfBirth, 'years');
-  }
-
   // toggles the loading indicator on or off
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
@@ -110,3 +100,10 @@ function PatientRegistryController(Patients, Notify, moment, Receipt) {
   // fire up the module
   loadGrid();
 }
+
+angular.module('bhima.controllers')
+.controller('PatientRegistryController', PatientRegistryController);
+
+PatientRegistryController.$inject = [
+  'PatientService', 'NotifyService', 'moment', 'ReceiptModal', 'util'
+];

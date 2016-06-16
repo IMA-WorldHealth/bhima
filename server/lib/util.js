@@ -25,6 +25,7 @@ module.exports.take = take;
  * @todo - should this be in db?  Something like db.conditions()?
  * @todo - allow prexisting conditions to be passed in
  */
+
 function queryCondition(sql, params, excludeWhere) {
   let conditions = [];
 

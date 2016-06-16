@@ -1,9 +1,9 @@
 angular.module('bhima.services')
 .service('util', UtilService);
 
-UtilService.$inject = ['$filter' ];
+UtilService.$inject = ['$filter', 'moment' ];
 
-function UtilService($filter) {
+function UtilService($filter, moment) {
   var service = this;
 
   service.unwrapHttpResponse = function unwrapHttpResponse(response) {
@@ -133,5 +133,10 @@ function UtilService($filter) {
       }
     }
     return cleaned;
+  };
+
+  // moment() provides the current date, similar to the new Date() API. This requests the difference between two dates
+  service.getMomentAge = function (date, duration) {
+    return duration ? moment().diff(date, duration) : moment().diff(date);
   };
 }

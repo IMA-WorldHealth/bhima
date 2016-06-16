@@ -310,6 +310,7 @@
       "BALANCE_SECTION"        : "Balance Sheet Section",
       "BANK"                   : "Bank",
       "BANK_ACCOUNT"           : "Bank Account",
+      "BILLING_DATE"           : "Billing Date",
       "BILLING_SERVICES"       : "Billing Services Applied",
       "BY"                     : "By",
       "BY_ID"                  : "By Id",
@@ -373,6 +374,7 @@
       "INTL"                   : "Internationale",
       "INVENTORY"              : "Inventory",
       "INVOICE"                : "Invoice Payment",
+      "INVOICES_DETAILS"       : "Invoices Details",
       "IS_ASSET"               : "Asset ?",
       "IS_BRUT_LINK"           : "Is Brut Link ?",
       "IS_CHARGE"              : "Is charge ?",
@@ -543,6 +545,7 @@
       "SELECT_SECTOR"             : "Select a sector",
       "SELECT_SERVICE"            : "Select a Service",
       "SELECT_SEX"                : "Select a sex",
+      "SELECT_USER"               : "Select User",
       "SELECT_VILLAGE"            : "Select village",
       "SELECT_ZS"                 : "Select an health zone"
     },
@@ -598,6 +601,9 @@
     "LIST_GROUP"    : "Inventory Groups",
     "LIST_TYPE"     : "Inventory Types",
     "LIST_UNIT"     : "Inventory galenical form"
+  },
+  "INVOICE_REGISTRY" : {
+    "TITLE" : "Invoice Registry"
   },
   "LOCATION": {
     "DESCRIPTION"           : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
@@ -850,8 +856,11 @@
       "AMOUNT"             : "Amount",
       "ASSET"              : "Asser",
       "BALANCE_SECTION"    : "Balance Sheet Section",
+      "BILLING_DATE"       : "Billing Date",
+      "BY"                 : "By",
       "CHARGE"             : "Charge",
       "CODE"               : "Code",
+      "COST"               : "Cost",
       "COST_CENTER"        : "Cost Center",
       "COUNTRY"            : "Country",
       "CREDIT"             : "Credit",
@@ -894,6 +903,7 @@
       "NR"                 : "Nr",
       "NUM"                : "Number",
       "PASSIVE"            : "Passive",
+      "PATIENT"            : "Patient",
       "PATIENT_ID"         : "ID Patient",
       "PERCENT"            : "Percentage",
       "PHONE"              : "Telephone",
@@ -1017,6 +1027,7 @@
     "INVENTORY_TYPE"             : "Type",
     "INVENTORY_UNIT"             : "Dosage Form",
     "INVENTORY_VIEW"             : "Stock",
+    "INVOICE_REGISTRY"           : "Invoices Registry",
     "JOURNAL_VOUCHER"            : "Journal Voucher",
     "LOCATION"                   : "Locations Management",
     "LOSS_RECORDS"               : "Stock loss",

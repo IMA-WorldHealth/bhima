@@ -47,7 +47,7 @@ function lookupUser(id) {
 
   let sql = `
     SELECT user.id, user.username, user.email, user.first, user.last,
-      user.active, user.last_login AS lastLogin
+      user.active, user.last_login AS lastLogin, CONCAT(user.first, ' ', user.last) AS displayname
     FROM user WHERE user.id = ?;
   `;
 
