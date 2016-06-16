@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('InvoiceRegistryController', InvoiceRegistryController);
 
 InvoiceRegistryController.$inject = [
-  'PatientInvoiceService', '$uibModal', 'NotifyService', 'util', 'ReceiptModal'
+  'PatientInvoiceService', 'NotifyService', 'util', 'ReceiptModal'
 ];
 
 /**
@@ -12,7 +12,7 @@ InvoiceRegistryController.$inject = [
  * of Invoice Registry.
  *
  */
-function InvoiceRegistryController(Invoices, $uibModal, Notify, util, Receipt) {
+function InvoiceRegistryController(Invoices, Notify, util, Receipt) {
     var vm = this;
 
     var invoiceActionsTemplate =

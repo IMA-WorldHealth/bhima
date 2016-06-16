@@ -361,6 +361,11 @@ function search(req, res, next) {
     JOIN user ON user.id = invoice.user_id 
     JOIN project ON project.id = invoice.project_id `;
 
+  if(req.query.is_distributable && req.query.is_distributable === 'all'){
+    //In this case it means not filterinf based on distibutable
+    delete req.query.is_distributable;
+  }
+
   //if there is parameter to filter on, we add the WHERE clause
   if(Object.keys(req.query).length > 0) {sql += 'WHERE ';}
 
@@ -390,11 +395,6 @@ function search(req, res, next) {
       delete req.query.billingDateTo;
   }
 
-  if(req.query.is_distributable && req.query.is_distributable === 'all'){
-      additionalTokenQuery.push(' invoice.is_distributable = ? OR invoice.is_distributable = ?');
-      additionalTokenCondition = additionalTokenCondition.concat(1, 0);
-      delete req.query.is_distributable;
-  }
 
   let queryObject = util.queryCondition(sql, req.query, true);
 

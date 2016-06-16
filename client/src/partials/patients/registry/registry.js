@@ -92,11 +92,6 @@ function PatientRegistryController(Patients, Notify, moment, Receipt, util) {
     Receipt.patientRegistrations(options);
   }
 
-  // moment() provides the current date, similar to the new Date() API. This requests the difference between two dates
-  // function momentAge(dateOfBirth){
-  //   return moment().diff(dateOfBirth, 'years');
-  // }
-
   // toggles the loading indicator on or off
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;

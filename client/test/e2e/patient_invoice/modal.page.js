@@ -24,20 +24,20 @@ function modalPage () {
 
 
     //interfaces
-    function chooseToday() {
-        todayButton.click();
-    }
+    function setRange(range) {
+        switch (range){
+            case 'today' : todayButton.click();
+                break;
 
-    function chooseWeek (){
-        weekButton.click();
-    }
+            case 'week' : weekButton.click();
+                break;
 
-    function chooseMonth (){
-        monthButton.click();
-    }
+            case 'month' : monthButton.click();
+                break;
 
-    function chooseYear (){
-        yearButton.click();
+            case 'year' : yearButton.click();
+                break;
+        }
     }
 
     function setReference(value) {
@@ -69,10 +69,7 @@ function modalPage () {
     }
 
     // expose interfaces
-    page.chooseToday = chooseToday;
-    page.chooseWeek = chooseWeek;
-    page.chooseMonth = chooseMonth;
-    page.chooseYear = chooseYear;
+    page.setRange = setRange;
     page.setReference = setReference;
     page.setServiceChoice = setServiceChoice;
     page.setUserChoice = setUserChoice;

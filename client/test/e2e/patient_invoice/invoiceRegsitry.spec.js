@@ -44,7 +44,7 @@ describe('Invoice Registry page', function () {
         var filterModal = new modalPage();
         
         invoiceRegistry.showFilterDialog();
-        filterModal.chooseToday();
+        filterModal.setRange('today');
         filterModal.submit();
         expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.todayBillNumber);
     });
@@ -54,7 +54,7 @@ describe('Invoice Registry page', function () {
         var filterModal = new modalPage();
 
         invoiceRegistry.showFilterDialog();
-        filterModal.chooseWeek();
+        filterModal.setRange('week');
         filterModal.submit();
         expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.weekBillNumber);
     });
@@ -64,7 +64,7 @@ describe('Invoice Registry page', function () {
         var filterModal = new modalPage();
 
         invoiceRegistry.showFilterDialog();
-        filterModal.chooseMonth();
+        filterModal.setRange('month');
         filterModal.submit();
         expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.monthBillNumber);
     });
@@ -74,7 +74,7 @@ describe('Invoice Registry page', function () {
         var filterModal = new modalPage();
 
         invoiceRegistry.showFilterDialog();
-        filterModal.chooseYear();
+        filterModal.setRange('year');
         filterModal.submit();
         expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.yearBillNumber);
     });
@@ -144,7 +144,7 @@ describe('Invoice Registry page', function () {
         var filterModal = new modalPage();
 
         invoiceRegistry.showFilterDialog();
-        filterModal.chooseYear();
+        filterModal.setRange('year');
         filterModal.setReference(paramResearch.referenceValue);
         filterModal.setServiceChoice(paramResearch.serviceValue);
         filterModal.setUserChoice(paramResearch.userValue);
@@ -154,7 +154,7 @@ describe('Invoice Registry page', function () {
         expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(1);
     });
 
-    it('shows the proof of the invoice coorectly', function () {
+    it('shows the proof of the invoice correctly', function () {
         var invoiceRegistry = new InvoiceRegistryPage();
         var filterModal = new modalPage();
         var invoiceProof = new ReceiptModalPage();
