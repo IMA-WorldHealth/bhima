@@ -31,7 +31,7 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
       return;
     }
 
-    var record = cleanForSubmit(vm.session);
+    var record = Inventory.clean(vm.session);
     map[vm.action](record, vm.identifier)
     .then(function (res) {
       Instance.close(res);
@@ -59,22 +59,6 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
   /** cancel action */
   function cancel() {
     Instance.dismiss();
-  }
-
-  /** format data to data structure in the db */
-  function cleanForSubmit(session) {
-    return {
-      uuid        : session.uuid,
-      code        : session.code,
-      price       : session.price,
-      text        : session.label,
-      group_uuid  : session.group.uuid,
-      unit_id     : session.unit.id,
-      type_id     : session.type.id,
-      unit_weight : session.unit_weight,
-      unit_volume : session.unit_volume,
-      consumable  : session.consumable
-    };
   }
 
   /** startup */

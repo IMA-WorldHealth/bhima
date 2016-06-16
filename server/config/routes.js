@@ -265,7 +265,8 @@ exports.configure = function configure(app) {
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
 
   /**
-   * @fixme: these routes below are deprecated
+   * @deprecated: /inventory/:uuid/metadata route
+   * these routes below are deprecated
    * use /inventory/metadata/:uuid route for the API instead
    */
   app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);

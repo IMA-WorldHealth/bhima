@@ -13,6 +13,7 @@ function InventoryService($http, util) {
   service.read   = read;
   service.create = create;
   service.update = update;
+  service.clean  = clean;
 
   // FIXME this getInventoryItems function need to be deleted
   service.getInventoryItems = read;
@@ -35,6 +36,22 @@ function InventoryService($http, util) {
   function update(uuid, record) {
     return $http.put(baseUrl.concat(uuid), record)
       .then(util.unwrapHttpResponse);
+  }
+
+  /** format data to data structure in the db */
+  function clean(session) {
+    return {
+      uuid        : session.uuid,
+      code        : session.code,
+      price       : session.price,
+      text        : session.label,
+      group_uuid  : session.group ? session.group.uuid : null,
+      unit_id     : session.unit ? session.unit.id : null,
+      type_id     : session.type ? session.type.id : null,
+      unit_weight : session.unit_weight,
+      unit_volume : session.unit_volume,
+      consumable  : session.consumable
+    };
   }
 
 }
