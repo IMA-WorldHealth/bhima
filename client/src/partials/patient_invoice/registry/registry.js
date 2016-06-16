@@ -44,8 +44,10 @@ function InvoiceRegistryController(Invoices, Notify, util, Receipt) {
     };
 
     function handler(error) {
-        vm.hasError = true;
-        Notify.handleError(error);
+        if(error){
+            vm.hasError = true;
+            Notify.handleError(error);
+        }
     }
 
     // load Invoice Registry Grid
@@ -87,7 +89,7 @@ function InvoiceRegistryController(Invoices, Notify, util, Receipt) {
 
     //show bill function to view the bill
     function showBill (uuid){
-        Receipt.invoice(uuid, true)
+        Receipt.invoice(uuid, false)
             .then(function (result) {
                 // receipt closed fired
             })

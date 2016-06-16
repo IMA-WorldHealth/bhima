@@ -94,18 +94,6 @@ function PatientInvoiceService($http, $uibModal, util, Session, Users, Services)
   function search (options) {
     var target = baseUrl.concat('search');
 
-    /*
-     * Convertion of billingDateFrom and billingDateTo
-     */
-
-    if (options.billingDateFrom) {
-      options.billingDateFrom = util.convertToMysqlDate(options.billingDateFrom);
-    }
-
-    if (options.billingDateTo) {
-      options.billingDateTo = util.convertToMysqlDate(options.billingDateTo);
-    }
-
     return $http.get(target, { params : options })
         .then(util.unwrapHttpResponse);
   }
@@ -131,8 +119,9 @@ function PatientInvoiceService($http, $uibModal, util, Session, Users, Services)
       size : 'md',
       animation : true,
       keyboard  : false,
+      backdrop : 'static',
       controller : 'InvoiceRegistryModalController as ModalCtrl'
-    }).result;
+    }, true).result;
   }
 
 
