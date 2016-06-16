@@ -59,7 +59,7 @@ describe('Inventory List ::', () => {
   });
 
   it('Successfully updates an existing inventory item (metadata)', () => {
-    element(by.css('[data-edit-metadata="' + metadata.text + '"]')).click();
+    element(by.css('[data-edit-metadata="' + metadata.code + '"]')).click();
     FU.input('$ctrl.session.label', metadataUpdate.text);
     FU.input('$ctrl.session.code', metadataUpdate.code);
     element(by.model('$ctrl.session.consumable')).click();

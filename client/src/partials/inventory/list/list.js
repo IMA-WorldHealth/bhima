@@ -43,7 +43,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   var editTemplate = '<div style="padding: 5px;">' +
     '<a title="{{ \'FORM.LABELS.EDIT\' | translate }}" href="" ' +
     'ng-click="grid.appScope.editInventoryItem(row.entity)" ' +
-    'data-edit-metadata="{{ row.entity.label }}">' +
+    'data-edit-metadata="{{ row.entity.code }}">' +
     '<i class="fa fa-edit"></i> ' +
     '</a></div>';
 
