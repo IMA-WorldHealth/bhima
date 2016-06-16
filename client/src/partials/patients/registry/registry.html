@@ -8,9 +8,9 @@
     <div class="toolbar">
       <div class="toolbar-item">
         <button
-            ng-click="PatientRegistryCtrl.search()"
-            data-method="search"
-            class="btn btn-default">
+          ng-click="PatientRegistryCtrl.search()"
+          data-method="search"
+          class="btn btn-default">
           <span class="fa fa-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
         </button>
       </div>
@@ -29,8 +29,15 @@
 <!-- @todo remove hardcoded styles -->
 <div class="flex-util" style="min-height : 35px; padding-top : 7px">
   <bh-filters-applied
-    filters="PatientRegistryCtrl.filters">
+    filters="PatientRegistryCtrl.filtersFmt"
+    on-remove-filter="PatientRegistryCtrl.onRemoveFilter(filter)"
+    >
   </bh-filters-applied>
+
+  <a ng-click="PatientRegistryCtrl.clearFilters()" ng-show="PatientRegistryCtrl.filtersFmt.length > 0" href class="text-danger" data-method="clear">
+    <i class="fa fa-ban text-danger"></i>
+    {{ "FORM.INFOS.CLEAR_FILTERS" | translate }}
+  </a>
 </div>
 
 <div class="flex-content">

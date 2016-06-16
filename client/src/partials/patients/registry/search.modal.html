@@ -1,4 +1,12 @@
-<form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm)" novalidate>
+<form
+  name="ModalForm"
+  ng-submit="ModalCtrl.submit(ModalForm)"
+  autocomplete="off"
+  autocapitalize="off"
+  autocorrect="off"
+  data-modal="patient-search"
+  novalidate>
+
   <div class="modal-header">
     <div class="bhima-title">
       <ol class="headercrumb">
@@ -8,140 +16,220 @@
     </div>
   </div>
 
-  <div class="modal-body" style="overflow: auto; max-height: 300px;">
-    <legend>{{ "FORM.LABELS.DATE_REGISTRATION" | translate }}</legend>
+  <div class="modal-body" style="overflow: auto; max-height: 600px;">
     <fieldset>
-      <div class="row text-center">
-        <div class="btn-group">
-          <button
-            ng-repeat="(key, view) in ModalCtrl.period track by $index"
-            type="button"
-            class="btn btn-default"
-            ng-class="{ 'active' : ModalCtrl.view.index === view.index }"
-            ng-click="ModalCtrl.setTimes(view.cacheKey)"
-            id = "{{ view.cacheKey }}"
-            data-time-view-key="{{ key }}"
-            >
-            {{ view.translateKey | translate }}
-          </button>
-        </div>
-      </div>
-      <hr>
+      <legend>
+        <i class="fa fa-calendar"></i> {{ "FORM.LABELS.DATE_REGISTRATION" | translate }}
+      </legend>
 
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateFrom.$invalid }">
-        <div class="col-md-9">
+      <ul class="list-inline" data-date-registration>
+        <li ng-repeat="(key, view) in ModalCtrl.periods track by key">
+          <a ng-click="ModalCtrl.setDateRange('registration', view.cacheKey)" data-date-range="{{ key }}" href>
+            {{ ::view.translateKey | translate }}
+          </a>
+        </li>
+        <li class="pull-right">
+          <a href ng-click="ModalCtrl.clear('registration')" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </li>
+      </ul>
+
+      <!-- registration date input -->
+      <div class="row">
+        <div class="col-md-5">
           <div class="input-group">
-            <bh-date-editor
-              id = "date-registration-from"
-              date-value="ModalCtrl.patient.dateRegistrationFrom"
-              validation-trigger="ModalForm.$submitted"
-              max-date="ModalCtrl.today"
-            >
-            </bh-date-editor>
+            <input
+              id="date-registration-from"
+              type="text"
+              class="form-control"
+              ng-model="ModalCtrl.params.dateRegistrationFrom"
+              uib-datepicker-popup="yyyy-MM-dd"
+              is-open="ModalCtrl.dateRegistrationFromIsOpen"
+              datepicker-options="ModalCtrl.dateOptions"
+              show-button-bar="false"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="ModalCtrl.dateRegistrationFromIsOpen =! ModalCtrl.dateRegistrationFromIsOpen">
+                  <i class="fa fa-calendar-plus-o"></i>
+                </button>
+              </span>
+          </div>
+        </div>
+
+        <div class="col-md-2 text-center">
+          <hr />
+        </div>
+
+        <div class="col-md-5">
+          <div class="input-group">
+            <input
+              id="date-registration-to"
+              type="text"
+              class="form-control"
+              ng-model="ModalCtrl.params.dateRegistrationTo"
+              uib-datepicker-popup="yyyy-MM-dd"
+              is-open="ModalCtrl.dateRegistrationToIsOpen"
+              datepicker-options="ModalCtrl.dateOptions"
+              show-button-bar="false"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="ModalCtrl.dateRegistrationToIsOpen =! ModalCtrl.dateRegistrationToIsOpen">
+                  <i class="fa fa-calendar-plus-o"></i>
+                </button>
+              </span>
           </div>
         </div>
       </div>
-
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateTo.$invalid }">
-        <div class="col-md-9">
-          <div class="input-group">
-            <bh-date-editor
-              id = "date-registration-to"
-              date-value="ModalCtrl.patient.dateRegistrationTo"
-              validation-trigger="ModalForm.$submitted"
-              max-date="ModalCtrl.today"
-            >
-            </bh-date-editor>
-          </div>
-        </div>
-      </div>
-      <br>
     </fieldset>
 
-    <legend>{{ "FORM.LABELS.PATIENT_DETAILS" | translate }}</legend>
+    <br />
+
     <fieldset>
+      <legend>
+        <i class="fa fa-users"></i> {{ "FORM.LABELS.PATIENT_DETAILS" | translate }}
+      </legend>
+
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.name.$invalid }">
-        <label class="control-label" for="name">{{ 'FORM.LABELS.NAME' | translate }}</label>
-        <input type="text" class="form-control" name="name" id="name" ng-model="ModalCtrl.patient.name">
+        <label class="control-label">
+          {{ 'FORM.LABELS.NAME' | translate }}
+        </label>
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('name')" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </span>
+        <input type="text" class="form-control" name="name" ng-model="ModalCtrl.params.name">
         <div class="help-block" ng-messages="ModalForm.name.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
         </div>
       </div>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
-        <label class="control-label" for="reference">{{ 'FORM.LABELS.REFERENCE' | translate }}</label>
-        <input type="text" class="form-control" name="reference" id="reference" ng-model="ModalCtrl.patient.reference">
+        <label class="control-label">
+          {{ 'FORM.LABELS.REFERENCE' | translate }}
+        </label>
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('reference')" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </span>
+        <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.params.reference">
         <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
         </div>
       </div>
 
       <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hospital_no.$invalid }">
-        <label class="control-label" for="reference">{{ 'FORM.LABELS.HOSPITAL_FILE_NR' | translate }}</label>
-        <input type="text" class="form-control" name="hospital_no" id="hospital_no" ng-model="ModalCtrl.patient.fields.hospital_no">
+        <label class="control-label">
+          {{ 'FORM.LABELS.HOSPITAL_FILE_NR' | translate }}
+        </label>
+        <span style="display:inline-block;" class="pull-right">
+          <a href ng-click="ModalCtrl.clear('hospital_no')" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </span>
+        <input type="text" class="form-control" name="hospital_no" ng-model="ModalCtrl.params.hospital_no">
         <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
           <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
         </div>
       </div>
 
-      <div id="gender" class="form-group has-feedback"
-        ng-class="{'has-error' : ModalForm.genderOptions.$invalid && ModalForm.$submitted}">
-        <label for="male" class="col-md-3 control-label"> {{ "FORM.LABELS.GENDER" | translate }} </label>
-        <div class="col-md-9">
-          <label class="radio-inline">
-            <input type="radio" name="genderOptions" id="male" value="M" ng-model="ModalCtrl.patient.sex">
-            {{ "FORM.LABELS.MALE" | translate }}
-          </label>
+      <div class="radio">
+        <p class="control-label">
+          <strong>{{ "FORM.LABELS.GENDER" | translate }}</strong>
+          <a href ng-click="ModalCtrl.clear('sex')" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </p>
 
-          <label class="radio-inline">
-            <input type="radio" name="genderOptions" id="female" value="F" ng-model="ModalCtrl.patient.sex">
-            {{ "FORM.LABELS.FEMALE" | translate }}
-          </label>
+        <label>
+          <input type="radio" name="sex" id="male" value="M" ng-model="ModalCtrl.params.sex">
+          {{ "FORM.LABELS.MALE" | translate }}
+        </label>
+      </div>
 
-          <div class="help-block" ng-messages="ModalForm.genderOptions.$error" ng-show="ModalForm.$submitted">
-            <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="sex" id="female" value="F" ng-model="ModalCtrl.params.sex">
+          {{ "FORM.LABELS.FEMALE" | translate }}
+        </label>
       </div>
     </fieldset>
 
-    <legend>{{ "FORM.LABELS.DOB" | translate }}</legend>
     <fieldset>
+      <legend>
+        <i class="fa fa-calendar"></i> {{ "FORM.LABELS.DOB" | translate }}
+      </legend>
 
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateFrom.$invalid }">
-        <div class="col-md-9">
+      <ul class="list-inline" data-date-dob>
+        <li ng-repeat="(key, view) in ModalCtrl.periods track by key">
+          <a ng-click="ModalCtrl.setDateRange('dob', view.cacheKey)" data-date-range="{{ key }}"  href>
+            {{ ::view.translateKey | translate }}
+          </a>
+        </li>
+        <li class="pull-right">
+          <a href ng-click="ModalCtrl.clear('dob')" tabindex="-1" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </li>
+      </ul>
+
+      <!-- registration date input -->
+      <div class="row">
+        <div class="col-md-5">
           <div class="input-group">
-            <bh-date-editor
-              id = "date-birth-from"
-              date-value = "ModalCtrl.patient.dateBirthFrom"
-              validation-trigger = "ModalForm.$submitted"
-              max-date = "ModalCtrl.today"
-            >
-            </bh-date-editor>
+            <input
+              id="date-birth-from"
+              type="text"
+              class="form-control"
+              ng-model="ModalCtrl.params.dateBirthFrom"
+              uib-datepicker-popup="yyyy-MM-dd"
+              is-open="ModalCtrl.dateBirthFromIsOpen"
+              datepicker-options="ModalCtrl.dateOptions"
+              show-button-bar="false"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="ModalCtrl.dateBirthFromIsOpen =! ModalCtrl.dateBirthFromIsOpen">
+                  <i class="fa fa-calendar-plus-o"></i>
+                </button>
+              </span>
+          </div>
+        </div>
+
+        <div class="col-md-2 text-center">
+          <hr />
+        </div>
+
+        <div class="col-md-5">
+          <div class="input-group">
+            <input
+              id="date-birth-to"
+              ng-model="ModalCtrl.params.dateBirthTo"
+              type="text"
+              class="form-control"
+              ng-model="ModalCtrl.params.dateBirthTo"
+              uib-datepicker-popup="yyyy-MM-dd"
+              is-open="ModalCtrl.dateBirthToIsOpen"
+              datepicker-options="ModalCtrl.dateOptions"
+              show-button-bar="false"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="ModalCtrl.dateBirthToIsOpen =! ModalCtrl.dateBirthToIsOpen">
+                  <i class="fa fa-calendar-plus-o"></i>
+                </button>
+              </span>
           </div>
         </div>
       </div>
-
-      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.dateTo.$invalid }">
-        <div class="col-md-9">
-          <div class="input-group">
-            <bh-date-editor
-              id = "date-birth-to"
-              date-value="ModalCtrl.patient.dateBirthTo"
-              validation-trigger="ModalForm.$submitted"
-              max-date="ModalCtrl.today"
-            >
-            </bh-date-editor>
-          </div>
-        </div>
-      </div>
-      <br>
     </fieldset>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.BUTTONS.CLOSE" | translate }}</button>
-    <button class="btn btn-default" id="patient_search" type="submit" data-method="submit">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel">
+      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit">
       {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </button>
   </div>

@@ -1,15 +1,17 @@
-<div ng-hide="$ctrl.filters">
-  <span class="text-muted fa fa-filter"></span> {{ "FORM.INFOS.NO_FILTERS_APPLIED" | translate }}
+<div ng-hide="$ctrl.filters" class="text-muted">
+  <i class="fa fa-filter"></i> {{ "FORM.INFOS.NO_FILTERS_APPLIED" | translate }}
 </div>
 
-<div ng-if="$ctrl.filters">
-  <span class="text-primary fa fa-filter"></span>
-  <span ng-repeat="f in $ctrl.filters">
-    <span class="label label-primary">
-      ({{ f.title | translate }})
-      <strong ng-hide="f.reference2"> {{ f.reference1 }} </strong>
-      <strong ng-show="f.reference2"> {{ f.reference1 | date }} - {{ f.reference2 | date }} </strong>
-    </span>
-    &nbsp;
+<div ng-if="$ctrl.filters" data-bh-filter-bar>
+
+  <!-- TODO: these should be a custom CSS class.  Label is just too small! -->
+  <span class="label label-primary" ng-repeat="filter in $ctrl.filters" style="margin-right: 5px;">
+    <i class="fa fa-filter"></i>
+    {{ filter.displayName | translate }}{{ filter.comparitor ? " " + filter.comparitor : ":" }}
+    {{ filter.viewValue }}
+
+    <a href ng-click="$ctrl.onRemoveFilter({ filter : filter.field })" style="color:#fff; margin-left:5px;">
+      <i class="fa fa-close"></i>
+    </a>
   </span>
 </div>
