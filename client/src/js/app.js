@@ -74,6 +74,12 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     url : '/invoice/sale/:invoiceId',
     template: '<div id="temp-success-message">Successfully created a patient invoice!</div>'
   })
+
+  .state('invoiceRegistry', {
+    url  : '/invoices',
+    controller: 'InvoiceRegistryController as InvoiceRegistryCtrl',
+    templateUrl: '/partials/patient_invoice/registry/registry.html'
+  })
   .state('invoice', {
     url : '/invoice/:originId/:invoiceId',
     controller: 'receipts',

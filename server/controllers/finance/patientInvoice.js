@@ -51,9 +51,12 @@ function list(req, res, next) {
 
   let invoiceListQuery =
     `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, user_id, date, is_distributable
+      BUID(invoice.debtor_uuid) as debtor_uuid, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames, 
+      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, user_id, date, is_distributable
     FROM invoice 
       LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
+      JOIN service ON service.id = invoice.service_id 
+      JOIN user ON user.id = invoice.user_id 
       JOIN project ON invoice.project_id = project.id;`;
 
   db.exec(invoiceListQuery)
@@ -344,11 +347,28 @@ function create(req, res, next) {
  * GET /invoices/search
  */
 function search(req, res, next) {
+
+  let additionalTokenQuery = [], additionalTokenCondition = [];
+
   let sql =
     `SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
-      invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id,
-      invoice.date, invoice.is_distributable
-    FROM invoice JOIN project ON project.id = invoice.project_id `;
+      invoice.date, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames, invoice.cost,
+       BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
+        service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy 
+    FROM invoice 
+    LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid 
+    JOIN service ON service.id = invoice.service_id 
+    JOIN user ON user.id = invoice.user_id 
+    JOIN project ON project.id = invoice.project_id `;
+
+  if(req.query.is_distributable && req.query.is_distributable === 'all'){
+    //In this case it means not filterinf based on distibutable
+    delete req.query.is_distributable;
+  }
+
+  //if there is parameter to filter on, we add the WHERE clause
+  if(Object.keys(req.query).length > 0) {sql += 'WHERE ';}
+
 
   if (req.query.debtor_uuid) {
     req.query.debtor_uuid = db.bid(req.query.debtor_uuid);
@@ -358,7 +378,31 @@ function search(req, res, next) {
     req.query.uuid = db.bid(req.query.uuid);
   }
 
-  let queryObject = util.queryCondtion(sql, req.query);
+  if(req.query.reference){
+    additionalTokenQuery.push(' CONCAT(project.abbr, invoice.reference) = ?');
+    additionalTokenCondition = additionalTokenCondition.concat(req.query.reference);
+    delete req.query.reference;
+  }
+
+  if(req.query.billingDateFrom && req.query.billingDateTo){
+
+      additionalTokenQuery.push(' DATE(invoice.date) >= DATE(?)');
+      additionalTokenCondition = additionalTokenCondition.concat(req.query.billingDateFrom);
+      delete req.query.billingDateFrom;
+
+      additionalTokenQuery.push(' DATE(invoice.date) <= DATE(?)');
+      additionalTokenCondition = additionalTokenCondition.concat(req.query.billingDateTo);
+      delete req.query.billingDateTo;
+  }
+
+
+  let queryObject = util.queryCondition(sql, req.query, true);
+
+  queryObject.query = (queryObject.conditions.length > 0 && additionalTokenQuery.length > 0) ?
+      queryObject.query.concat(' AND', additionalTokenQuery.join(' AND')) :
+      queryObject.query.concat(additionalTokenQuery.join(' AND'));
+
+  queryObject.conditions = queryObject.conditions.concat(additionalTokenCondition);
 
   db.exec(queryObject.query, queryObject.conditions)
   .then(function (rows) {

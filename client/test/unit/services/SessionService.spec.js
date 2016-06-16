@@ -29,6 +29,7 @@ describe('SessionService', function () {
   beforeEach(() => {
     module('pascalprecht.translate');
     module('ngStorage');
+  module('angularMoment');
     module('bhima.services');
   });
 
