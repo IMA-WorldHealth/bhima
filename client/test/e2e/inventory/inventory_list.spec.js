@@ -11,7 +11,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe.only('Inventory List ::', () => {
+describe('Inventory List ::', () => {
   'use strict';
 
   // navigate to the page
@@ -36,7 +36,7 @@ describe.only('Inventory List ::', () => {
     code : uniqueIdentifier.concat('_updated'),
     text : '[E2E] Inventory Article updated',
     price : 7.77,
-    group : 'Updated Inventory Group',
+    group : 'Inventory Group',
     type  : 'Service',
     unit  : 'Pill',
     unit_weight : 7,
