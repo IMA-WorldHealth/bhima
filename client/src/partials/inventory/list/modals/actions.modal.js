@@ -77,20 +77,6 @@ function InventoryListActionsModalController(Account, Inventory, InventoryGroup,
     };
   }
 
-  /**
-   * essential Account Detail
-   * This function affect a correct object to the uib typeahead input text
-   */
-  function essentialAccountDetail(account) {
-    return {
-      id : account.id,
-      number  : account.number,
-      label   : account.label,
-      locked  : account.locked,
-      hrlabel : String(account.number).concat(' - ', account.label)
-    };
-  }
-
   /** startup */
   function startup() {
     vm.action = Data.action;
