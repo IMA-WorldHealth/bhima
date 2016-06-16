@@ -201,7 +201,19 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (139, 1),
 
 -- inventory configuration module
-(140, 1);
+(140, 1),
+
+-- Update permission for Regular user
+
+-- Account Management
+(6,2),
+
+-- Fiscal Year
+(13,2),
+
+-- [Folder] Accounting
+(30, 2);
+
 
 
 -- testing financial transactions
@@ -225,7 +237,7 @@ INSERT INTO `period` VALUES
 
 
 -- give test permission to both projects
-INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
+INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2),(3,2,1);
 
 INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (1,'Test Primary Cashbox A',1,0),

@@ -94,7 +94,7 @@ describe('(/login) The login API', function () {
       .send(validUser)
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res.body).to.have.keys('enterprise', 'user', 'project');
+        expect(res.body).to.have.keys('enterprise', 'user', 'project', 'path');
         expect(res.body.user).to.contain.all.keys('id', 'enterprise_id', 'first', 'last', 'project_id', 'username', 'email');
         expect(res.body.enterprise).to.contain.all.keys('id', 'currency_id', 'currencySymbol');
         expect(res.body.project).to.contain.all.keys('id', 'name', 'abbr', 'enterprise_id');
