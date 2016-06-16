@@ -952,6 +952,10 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'ReportStockEntryController',
     templateUrl : 'partials/reports/stock/stock_entry/stock_entry.html'
   })
+  .state('/error403', {
+    url : '/error403',
+    templateUrl : 'partials/error403/error403.html'
+  })
   .state('/error404', {
     url : '/error404',
     templateUrl : 'partials/error404/error404.html'
@@ -979,14 +983,17 @@ function localeConfig(tmhDynamicLocaleProvider) {
 }
 
 // redirect to login if not signed in.
-function startupConfig($rootScope, $state, SessionService, amMoment, Notify) {
+function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $location) {
 
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
   $rootScope.$on('$locationChangeStart', function (event, next) {
-
     var isLoggedIn = !!SessionService.user;
     var isLoginState = next.indexOf('#/login') !== -1;
+
+    if($location.$$path === '/error403'){
+      $state.go('/error403');
+    }
 
     // if the user is logged in and trying to access the login state, deny the
     // attempt with a message "Cannot return to login.  Please log out from the
@@ -1012,6 +1019,12 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify) {
   // trigger a $state.go() to the login state, it will not be stopped - the
   // $locationChangeStart event will only prevent the URL from changing ... not
   // the actual state transition!  So, we need this to stop $stateChange events.
+  
+  // var paths recovered all the path that the user is allowed to enter
+  // Tests if the path has elements and other common paths are not called 
+  // if the test is positive, the current path is verified in the path list 
+  // if the current path does not exist in the path list in this case the user will rédirrigé to error403 page
+  
   $rootScope.$on('$stateChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
     var isLoginState = next.name.indexOf('login') !== -1;
@@ -1019,6 +1032,23 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify) {
     if (isLoggedIn && isLoginState) {
       event.preventDefault();
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
+    }
+
+    var paths = SessionService.path;
+    var authorized = 0;
+    var currentPath = $location.$$path;
+
+    if(paths && currentPath !== '/' && currentPath !=='/settings' && currentPath !== '/login' && currentPath !== '/error404'){
+      paths.forEach(function (data) {
+        var position = currentPath.indexOf(data.path);
+        if(position === 0){
+          authorized = 1;
+        }
+      });
+
+      if(authorized === 0){
+        $location.path('/error403');        
+      }
     }
   });
 
@@ -1072,4 +1102,4 @@ bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
 
 // run the application
-bhima.run(['$rootScope', '$state', 'SessionService', 'amMoment', 'NotifyService', startupConfig]);
+bhima.run(['$rootScope', '$state', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig]);

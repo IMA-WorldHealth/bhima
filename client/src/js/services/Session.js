@@ -40,10 +40,11 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
 
   // set the user, enterprise, and project for the session
   // this should happen right after login
-  function create(user, enterprise, project) {
+  function create(user, enterprise, project, path) {
     $storage.user = user;
     $storage.enterprise = enterprise;
     $storage.project = project;
+    $storage.path = path;
 
     // update bindings
     load();
@@ -54,6 +55,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     delete $storage.user;
     delete $storage.enterprise;
     delete $storage.project;
+    delete $storage.path;
 
     // update bindings
     load();
@@ -73,9 +75,8 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     return $http.post('/login', credentials)
       .then(util.unwrapHttpResponse)
       .then(function (session) {
-
         // create the user session in the $storage
-        create(session.user, session.enterprise, session.project);
+        create(session.user, session.enterprise, session.project, session.path);
 
         // navigate to the main page
         $location.url('/');
@@ -112,6 +113,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     service.user = $storage.user;
     service.enterprise = $storage.enterprise;
     service.project = $storage.project;
+    service.path = $storage.path;
   }
 
   // if the $rootScope emits 'session.destroy', destroy the session
