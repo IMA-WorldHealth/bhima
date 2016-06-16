@@ -73,4 +73,29 @@ describe('Inventory List ::', () => {
     components.notification.hasSuccess();
   });
 
+  it('Dont creates a new inventory item (metadata) for invalid data', () => {
+    FU.buttons.create();
+    FU.input('$ctrl.session.label', metadata.text);
+    FU.input('$ctrl.session.unit_weight', metadata.unit_weight);
+    FU.input('$ctrl.session.unit_volume', metadata.unit_volume);
+    FU.buttons.submit();
+
+    // missing data
+    let code = element(by.model('$ctrl.session.code'));
+    let price = element(by.model('$ctrl.session.price'));
+    let group = element(by.model('$ctrl.session.group'));
+    let type = element(by.model('$ctrl.session.type'));
+    let unit = element(by.model('$ctrl.session.unit'));
+
+    expect(code.getAttribute('class')).to.eventually.contain('ng-invalid');
+    expect(price.getAttribute('class')).to.eventually.contain('ng-invalid');
+    expect(group.getAttribute('class')).to.eventually.contain('ng-invalid');
+    expect(type.getAttribute('class')).to.eventually.contain('ng-invalid');
+    expect(unit.getAttribute('class')).to.eventually.contain('ng-invalid');
+
+    // be sure not success
+    expect(element(by.css('[data-notification-type="notification-success"]')).isPresent())
+      .to.eventually.equal(false);
+  });
+
 });
