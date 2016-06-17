@@ -55,10 +55,8 @@ function PatientRegistryController(Patients, Notify, moment, Receipt, AppCache, 
 
   // error handler
   function handler(error) {
-    if (error) {
-      vm.hasError = true;
-      Notify.handleError(error);
-    }
+    vm.hasError = true;
+    Notify.handleError(error);
   }
 
   // this uses function loads patients from the database with search parameters
@@ -78,9 +76,8 @@ function PatientRegistryController(Patients, Notify, moment, Receipt, AppCache, 
     // hook the returned patients up to the grid.
     request.then(function (patients) {
 
-      // this will improve with @dedrickenc's pull requst
       patients.forEach(function (patient) {
-        patient.patientAge = util.getMomentAge(patient.dob);
+        patient.patientAge = util.getMomentAge(patient.dob, 'years');
       });
 
       // put data in the grid
@@ -94,8 +91,12 @@ function PatientRegistryController(Patients, Notify, moment, Receipt, AppCache, 
 
   // search and filter data in Patient Registry
   function search() {
-    Patients.openSearchModal()
+    Patients.openSearchModal(vm.filters)
       .then(function (parameters) {
+
+        // no parameters means the modal was dismissed.
+        if (!parameters) { return; }
+
         cacheFilters(parameters);
         return load(vm.filters);
       });
@@ -122,7 +123,7 @@ function PatientRegistryController(Patients, Notify, moment, Receipt, AppCache, 
 
   // open a print modal to print all patient registrations to date
   function print() {
-    var options = vm.filters || {};
+    var options = angular.copy(vm.filters || {});
 
     // @todo(jniles): Make reports and receipts use the same rendering modal
     Receipt.patientRegistrations(options);

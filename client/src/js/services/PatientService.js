@@ -6,20 +6,17 @@ PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal', 'Docu
 /**
  * @module PatientService
  *
- * This service is reponsible for providing an interface between angular
+ * This service is responsible for providing an interface between angular
  * module controllers and the server /patients API.
  *
  * @example
- * Controller.$inject = ['PatientService'];
+ * function Controller(Patients) {
+ *   // returns patient details
+ *   Patients.read(uuid).then(callback);
  *
- * var Patients = PatientService;
- *
- * // returns patient details
- * Patients.read(uuid)...
- *
- * // creates a patient
- * Patients.create(medicalDetails, financeDetails)...
- *
+ *   // creates a patient
+ *   Patients.create(medicalDetails, financeDetails).then(callback);
+*   }
  */
 function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   var service = this;
@@ -133,7 +130,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
    * paramSerializer
    */
   function search(options) {
-    options = options || {};
+    options = angular.copy(options || {});
 
     var target = baseUrl.concat('search');
 
@@ -200,22 +197,21 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   }
 
 
-  /*
+  /**
    * This function prepares the headers patient properties which were filtered,
    * Special treatment occurs when processing data related to the date
    * @todo - this might be better in it's own service
    */
   function formatFilterParameters(params) {
-
     var columns = [
       { field: 'name', displayName: 'FORM.LABELS.NAME' },
       { field: 'sex', displayName: 'FORM.LABELS.GENDER' },
       { field: 'hospital_no', displayName: 'FORM.LABELS.HOSPITAL_NO' },
       { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },
-      { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '>', ngFilter:'date' },
-      { field: 'dateRegistrationFrom', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', ngFilter:'date' },
-      { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', ngFilter:'date' },
+      { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '>', ngFilter:'date' },
+      { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', ngFilter:'date' },
+      { field: 'dateRegistrationFrom', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', ngFilter:'date' },
+      { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', ngFilter:'date' },
     ];
 
     // returns columns from filters
@@ -231,13 +227,23 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
     });
   }
 
-  function openSearchModal() {
+  /**
+   * @method openSearchModal
+   *
+   * @param {Object} params - an object of filter parameters to be passed to
+   *   the modal.
+   * @returns {Promise} modalInstance
+   */
+  function openSearchModal(params) {
     return $uibModal.open({
       templateUrl: 'partials/patients/registry/search.modal.html',
       size: 'md',
       keyboard: false,
       animation: true,
-      controller: 'PatientRegistryModalController as ModalCtrl'
+      controller: 'PatientRegistryModalController as ModalCtrl',
+      resolve : {
+        params : function paramsProvider() { return params; }
+      }
     }).result;
   }
 

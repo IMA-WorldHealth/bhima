@@ -29,7 +29,7 @@ function ReceiptService($http, util) {
    *
    * @param {String} uuid      Target invoice UUID to report on
    * @param {Object} options   Configuration options for the server generated
-   *                           report, this includes things like render target.
+   *                           report, this includes things like renderer target.
    * @return {Promise}         Eventually returns report object from server
    */
   function invoice(uuid, options) {
@@ -62,8 +62,6 @@ function ReceiptService($http, util) {
     if (options.renderer === renderers.PDF) {
       responseType = 'arraybuffer';
     }
-
-    delete options.render;
 
     return $http.get(route, {params : options, responseType : responseType})
       .then(util.unwrapHttpResponse);

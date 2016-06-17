@@ -51,6 +51,7 @@ function translate(translateCode, languageKey) {
   if (!translateCode) {
     return;
   }
+
   const codeList = translateCode.split('.');
 
   /**
@@ -95,7 +96,8 @@ function currency(value, currencyKey) {
  * @returns {String} - the formatted string for insertion into templates
  */
 function date(value) {
-  return moment(value).format('DD/MM/YYYY');
+  let date = moment(value);
+  return date.isValid() ? date.format('DD/MM/YYYY') :  '';
 }
 
 /**

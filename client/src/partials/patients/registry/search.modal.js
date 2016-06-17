@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryModalController', PatientRegistryModalController);
 
 PatientRegistryModalController.$inject = [
-  '$uibModalInstance', 'PatientService', 'DateService'
+  '$uibModalInstance', 'PatientService', 'DateService', 'params'
 ];
 
 /**
@@ -10,17 +10,19 @@ PatientRegistryModalController.$inject = [
  *
  * @description
  * This controller is responsible for setting up the filters for the patient
- * search functionality on the patient registry page.
+ * search functionality on the patient registry page.  Filters that are already
+ * applied to the grid can be passed in via the params inject.
  */
-function PatientRegistryModalController(ModalInstance, Patients, Dates) {
+function PatientRegistryModalController(ModalInstance, Patients, Dates, params) {
   var vm = this;
 
   // bind period labels from the service
   vm.periods = Dates.period();
   vm.today = new Date();
 
-  // this will hold the parameters
-  vm.params = {};
+  // bind filters if they have already been applied.  Otherwise, default to an
+  // empty object.
+  vm.params = params || {};
 
   // bind methods
   vm.submit = submit;
@@ -28,6 +30,7 @@ function PatientRegistryModalController(ModalInstance, Patients, Dates) {
   vm.clear = clear;
   vm.setDateRange = setDateRange;
 
+  // returns the parameters to the parent controller
   function submit(form) {
     if (form.$invalid) { return; }
 
@@ -43,7 +46,8 @@ function PatientRegistryModalController(ModalInstance, Patients, Dates) {
     return ModalInstance.close(parameters);
   }
 
-  // clears search parameters
+  // clears search parameters.  Custom logic if a date is used so that we can
+  // clear two properties.
   function clear(value) {
     if (value === 'registration') {
       delete vm.params.dateRegistrationFrom;
@@ -87,7 +91,8 @@ function PatientRegistryModalController(ModalInstance, Patients, Dates) {
     }
   }
 
+  // dismiss the modal
   function cancel() {
-    ModalInstance.dismiss();
+    ModalInstance.close();
   }
 }

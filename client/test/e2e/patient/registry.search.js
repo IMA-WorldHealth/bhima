@@ -59,6 +59,7 @@ function PatientRegistrySearch() {
 
     expectNumberOfGridRows(1);
     expectNumberOfFilters(1);
+    FU.buttons.clear();
   });
 
   // demonstrates additive filters
@@ -70,6 +71,7 @@ function PatientRegistrySearch() {
 
     expectNumberOfGridRows(2);
     expectNumberOfFilters(2);
+    FU.buttons.clear();
   });
 
   // demonstrates that additive + time-delimited filtering works
@@ -81,6 +83,7 @@ function PatientRegistrySearch() {
 
     expectNumberOfGridRows(1);
     expectNumberOfFilters(3);
+    FU.buttons.clear();
   });
 
   // demonstrates that sex + time-delimited filtering works
@@ -92,6 +95,7 @@ function PatientRegistrySearch() {
 
     expectNumberOfGridRows(1);
     expectNumberOfFilters(3);
+    FU.buttons.clear();
   });
 
   // changes every single date input manually.
@@ -107,6 +111,7 @@ function PatientRegistrySearch() {
 
     expectNumberOfGridRows(0);
     expectNumberOfFilters(4);
+    FU.buttons.clear();
   });
 
   // combines dates with manual date manipulation
@@ -119,8 +124,10 @@ function PatientRegistrySearch() {
     element(by.id('male')).click();
 
     FU.buttons.submit();
+
     expectNumberOfGridRows(2);
     expectNumberOfFilters(3);
+    FU.buttons.clear();
   });
 
   // clears filters to assert that the "error state" bug does not occur when the
@@ -135,7 +142,7 @@ function PatientRegistrySearch() {
     expectNumberOfFilters(3);
 
     // click the "clear filters" button
-    $('[data-method="clear"]').click();
+    FU.buttons.clear();
 
     // the filter bar shouldn't exist
     expectNumberOfGridRows(defaultVisibleRowNumber);
@@ -143,23 +150,23 @@ function PatientRegistrySearch() {
   });
 
   it('should remember the cached filters', () => {
+
     FU.buttons.search();
 
-    // Add all the filters (7 in total)
-    $('[data-date-registration]').$('[data-date-range="today"]').click();
+    // Add all the filters (4 in total)
     $('[data-date-dob]').$('[data-date-range="year"]').click();
     element(by.id('male')).click();
     FU.input('ModalCtrl.params.name', 'Some Non-Existant Patient');
-    FU.input('ModalCtrl.params.reference', 'TPA#');
 
     FU.buttons.submit();
 
     expectNumberOfGridRows(0);
-    expectNumberOfFilters(7);
+    expectNumberOfFilters(4);
 
     browser.refresh();
 
     expectNumberOfGridRows(0);
-    expectNumberOfFilters(7);
+    expectNumberOfFilters(4);
+    FU.buttons.clear();
   });
 }
