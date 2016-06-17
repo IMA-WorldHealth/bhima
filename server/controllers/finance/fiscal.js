@@ -41,8 +41,7 @@ function list (req, res, next) {
        WHERE f.enterprise_id = ? `;
 
     if(req.query.by && req.query.order){
-      params = params.concat(req.query.by, req.query.order);
-      sql += ` ORDER BY ? ?;`;
+      sql += ` ORDER BY ${req.query.by} ${req.query.order};`;
     }
   // execute the query  
   } else {
