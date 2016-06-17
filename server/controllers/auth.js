@@ -64,7 +64,10 @@ function login(req, res, next) {
 
     // next make sure this user has permissions
     sql =
-      'SELECT user_id, unit_id FROM permission WHERE user_id = ?';
+      `SELECT p.user_id, p.unit_id, u.path
+        FROM permission AS p
+        JOIN unit AS u ON u.id = p.unit_id
+        WHERE p.user_id = ? `;
 
     return db.exec(sql, [session.user.id]);
   })
@@ -74,6 +77,8 @@ function login(req, res, next) {
     if (rows.length === 0) {
       throw new Unauthorized('This user does not have any permissions.');
     }
+
+    session.path = rows;
 
     // update the database for when the user logged in
     sql =
@@ -121,6 +126,7 @@ function login(req, res, next) {
     req.session.project = session.project;
     req.session.user = session.user;
     req.session.enterprise = session.enterprise;
+    req.session.path = session.path;
 
     // broadcast LOGIN event
     Topic.publish(Topic.channels.APP, {

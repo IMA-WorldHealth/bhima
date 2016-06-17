@@ -11,7 +11,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe.only('Inventory List ::', () => {
+describe('Inventory List ::', () => {
   'use strict';
 
   // navigate to the page
