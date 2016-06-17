@@ -10,10 +10,11 @@ INSERT INTO unit VALUES
   (0,   'Root','TREE.ROOT','The unseen root node',NULL,'/partials/index.html','/root'),
   (1,   'Admin','TREE.ADMIN','The Administration Super-Category',0,'/partials/admin/index.html','/admin'),
   (2,   'Enterprise', 'TREE.ENTERPRISE', 'Manage the registered enterprises from here', 1, '/partials/enterprise/', '/enterprises'),
-  (3,  'Invoice Registry','TREE.INVOICE_REGISTRY','Invoice Registry',5,'/partials/invoices/registry/','/invoices'),
+  (3,   'Invoice Registry','TREE.INVOICE_REGISTRY','Invoice Registry',5,'/partials/invoices/registry/','/invoices'),
   (4,   'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/user_permission/','/permissions'),
   (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
   (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',30,'/partials/accounts/','/accounts'),
+  (9,   'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',30,'/partials/journal/','/journal'),
   (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
   (13,  'Fiscal Year','TREE.FISCAL_YEAR','Fiscal year configuration page',30,'/partials/fiscal/','/fiscal'),
   (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register'),
@@ -35,8 +36,8 @@ INSERT INTO unit VALUES
   (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots/', '/depots'),
   (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtors/groups/', '/debtors/groups'),
   (108, 'Donors Management', 'TREE.DONOR_MANAGEMENT', 'Donors Management module', 1, '/partials/donors/', '/donors'),
-  (109, 'Section du bilan','TREE.SECTION_BILAN','',30,'/partials/section_bilan/','/section_bilan/'),
-  (110, 'Section resultat','TREE.SECTION_RESULTAT','',30,'/partials/section_resultat/','/section_resultat/'),
+  (109, 'Section du bilan','TREE.SECTION_BILAN','',30,'/partials/section_bilan/','/section_bilan'),
+  (110, 'Section resultat','TREE.SECTION_RESULTAT','',30,'/partials/section_resultat/','/section_resultat'),
   (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',30,'/partials/references/groups','/references/groups'),
   (112, 'Reference','TREE.REFERENCE','References',30,'/partials/references','/references'),
   (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple'),
@@ -98,6 +99,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Enterprise Management
 (2,1),
 
+-- Patient Invoice
+(3,1),
+
 -- Users and permissions
 (4,1),
 
@@ -106,6 +110,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Account Management
 (6,1),
+
+-- Posting Journal Management
+(9,1),
 
 -- [Folder] Hospital
 (12,1),
@@ -201,7 +208,19 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (139, 1),
 
 -- inventory configuration module
-(140, 1);
+(140, 1),
+
+-- Update permission for Regular user
+
+-- Account Management
+(6,2),
+
+-- Fiscal Year
+(13,2),
+
+-- [Folder] Accounting
+(30, 2);
+
 
 
 -- testing financial transactions
@@ -225,7 +244,7 @@ INSERT INTO `period` VALUES
 
 
 -- give test permission to both projects
-INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2);
+INSERT INTO `project_permission` VALUES (1,1,1),(2,1,2),(3,2,1);
 
 INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (1,'Test Primary Cashbox A',1,0),

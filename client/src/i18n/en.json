@@ -351,6 +351,7 @@
       "END_DATE"               : "End Date",
       "ENTERPRISE"             : "Enterprise",
       "ENTERPRISE_ID"          : "ID enterprise",
+      "ERROR_403"              : "Error 403",
       "ERROR_404"              : "Error 404",
       "EXCHANGE_RATE"          : "Exchange Rate",
       "FATHER_NAME"            : "Father's Name",
@@ -560,6 +561,7 @@
     },
     "WARNNINGS": {
       "EMPTY_SELECTION" : "Empty Selection",
+      "NOT_AUTHORISED"  : "The requested page is not authorised",
       "NOT_FOUND"       : "Not found",
       "PAGE_NOT_FOUND"  : "The page you requested could not be found"
     }
