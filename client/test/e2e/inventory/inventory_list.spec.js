@@ -80,18 +80,15 @@ describe('Inventory List ::', () => {
     FU.input('$ctrl.session.unit_volume', metadata.unit_volume);
     FU.buttons.submit();
 
-    // missing data
-    let code = element(by.model('$ctrl.session.code'));
-    let price = element(by.model('$ctrl.session.price'));
-    let group = element(by.model('$ctrl.session.group'));
-    let type = element(by.model('$ctrl.session.type'));
-    let unit = element(by.model('$ctrl.session.unit'));
-
-    expect(code.getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(price.getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(group.getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(type.getAttribute('class')).to.eventually.contain('ng-invalid');
-    expect(unit.getAttribute('class')).to.eventually.contain('ng-invalid');
+    // check validations
+    FU.validation.ok('$ctrl.session.label');
+    FU.validation.ok('$ctrl.session.unit_weight');
+    FU.validation.ok('$ctrl.session.unit_volume');
+    FU.validation.error('$ctrl.session.code');
+    FU.validation.error('$ctrl.session.price');
+    FU.validation.error('$ctrl.session.group');
+    FU.validation.error('$ctrl.session.type');
+    FU.validation.error('$ctrl.session.unit');
 
     // be sure not success
     expect(element(by.css('[data-notification-type="notification-success"]')).isPresent())
