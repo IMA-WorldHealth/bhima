@@ -98,6 +98,7 @@ describe('(/login) The login API', function () {
         expect(res.body.user).to.contain.all.keys('id', 'enterprise_id', 'first', 'last', 'project_id', 'username', 'email');
         expect(res.body.enterprise).to.contain.all.keys('id', 'currency_id', 'currencySymbol');
         expect(res.body.project).to.contain.all.keys('id', 'name', 'abbr', 'enterprise_id');
+        expect(res.body.path[0]).to.contain.all.keys('path', 'unit_id', 'user_id');
       })
       .catch(helpers.handler);
   });

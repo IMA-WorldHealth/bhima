@@ -989,9 +989,9 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $lo
   // navigating by URL.  This is pure an authentication issue.
   $rootScope.$on('$locationChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
-    var isLoginState = next.indexOf('#/login') !== -1;
+    var isLoginState = next.indexOf('#/login') !== -1;   
 
-    if($location.$$path === '/error403'){
+    if (next.indexOf('/error403') !== -1) {
       $state.go('/error403');
     }
 
@@ -1034,19 +1034,15 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $lo
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
     }
 
-    var paths = SessionService.path;
-    var authorized = 0;
     var currentPath = $location.$$path;
+    var paths = SessionService.path;
 
     if(paths && currentPath !== '/' && currentPath !=='/settings' && currentPath !== '/login' && currentPath !== '/error404'){
-      paths.forEach(function (data) {
-        var position = currentPath.indexOf(data.path);
-        if(position === 0){
-          authorized = 1;
-        }
+      var authorized = paths.some(function (data) {
+        return currentPath.indexOf(data.path) === 0;
       });
 
-      if(authorized === 0){
+      if(!authorized){
         $location.path('/error403');        
       }
     }
