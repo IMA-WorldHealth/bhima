@@ -210,9 +210,9 @@ exports.configure = function configure(app) {
   app.get('/fiscal', fiscal.list);
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
-  app.post('/fiscal', fiscal.create); 
+  app.post('/fiscal', fiscal.create);
   app.put('/fiscal/:id', fiscal.update);
-  app.delete('/fiscal/:id', fiscal.remove);  
+  app.delete('/fiscal/:id', fiscal.remove);
 
   /* load a user's tree */
   app.get('/tree', tree.generate);
@@ -261,6 +261,14 @@ exports.configure = function configure(app) {
   /*  Inventory and Stock Management */
   app.post('/inventory/metadata', inventory.createInventoryItems);
   app.get('/inventory/metadata', inventory.getInventoryItems);
+  app.get('/inventory/metadata/:uuid', inventory.getInventoryItemsById);
+  app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
+
+  /**
+   * @deprecated: /inventory/:uuid/metadata route
+   * these routes below are deprecated
+   * use /inventory/metadata/:uuid route for the API instead
+   */
   app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
   app.put('/inventory/:uuid/metadata', inventory.updateInventoryItems);
 
@@ -392,7 +400,7 @@ exports.configure = function configure(app) {
 
   app.get('/patients/:uuid/visits', patients.checkin.list);
   app.post('/patients/:uuid/checkin', patients.checkin.create);
-  
+
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
   /** @deprecated `/debtors/groups/:uuid` please use `/debtor_groups/:uuid` at the client side */

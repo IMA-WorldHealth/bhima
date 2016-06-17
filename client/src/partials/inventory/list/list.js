@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 InventoryListController.$inject = [
-  '$translate', 'InventoryService', 'NotifyService', 'uiGridConstants', 'ModalService'
+  '$translate', 'InventoryService', 'NotifyService',
+  'uiGridConstants', 'ModalService'
 ];
 
 /**
@@ -26,21 +27,30 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
   /** buttons in the headercrumb */
   vm.bcButtons = [
-    { icon: 'fa fa-filter', label: $translate.instant('FORM.BUTTONS.FILTER'), action: toggleFilter, color: 'btn-default' },
-    { icon: 'fa fa-plus', label: $translate.instant('FORM.LABELS.ADD'), action: addInventoryItem, color: 'btn-primary' },
-    { icon: 'fa fa-print', label: $translate.instant('FORM.LABELS.PRINT'), action: printList, color: 'btn-default' }
+    { icon: 'fa fa-filter', label: $translate.instant('FORM.BUTTONS.FILTER'),
+      action: toggleFilter, color: 'btn-default'
+    },
+    { icon: 'fa fa-plus', label: $translate.instant('FORM.LABELS.ADD'),
+      action: addInventoryItem, color: 'btn-default',
+      dataMethod: 'create'
+    },
+    { icon: 'fa fa-print', label: $translate.instant('FORM.LABELS.PRINT'),
+      action: printList, color: 'btn-default'
+    }
   ];
 
   // edit button template
   var editTemplate = '<div style="padding: 5px;">' +
-    '<a title="{{ \'FORM.LABELS.EDIT\' | translate }}" href="" ng-click="grid.appScope.editInventoryItem(row.entity)">' +
+    '<a title="{{ \'FORM.LABELS.EDIT\' | translate }}" href="" ' +
+    'ng-click="grid.appScope.editInventoryItem(row.entity)" ' +
+    'data-edit-metadata="{{ row.entity.code }}">' +
     '<i class="fa fa-edit"></i> ' +
     '</a></div>';
 
   // consumable icon template
   var iconTemplate = '<div class="text-center">' +
-    '<i ng-show="row.entity.consumable" class="text-success fa fa-check-circle-o fa-2x"></i>' +
-    '<i ng-show="!row.entity.consumable" class="text-warning fa fa-times-circle-o fa-2x"></i>' +
+    '<i ng-show="row.entity.consumable === 1" class="text-success fa fa-check-circle-o fa-2x"></i>' +
+    '<i ng-show="row.entity.consumable === 0" class="text-warning fa fa-times-circle-o fa-2x"></i>' +
     '</div>';
 
   // grid default options
@@ -57,6 +67,8 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
       { field : 'price', displayName : 'Price'},
       { field : 'type', displayName : 'Type'},
       { field : 'unit', displayName : 'Unit'},
+      { field : 'unit_weight', displayName : 'Weight'},
+      { field : 'unit_volume', displayName : 'Volume'},
       { field : 'action', displayName : '...',
         width: 25,
         cellTemplate: editTemplate,
@@ -82,14 +94,28 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   /** initial setting start */
   startup();
 
-  /** @todo: function for adding inventory items */
+  /** add inventory item */
   function addInventoryItem() {
-    return;
+    var request = { action : 'add' };
+
+    return Modal.openInventoryListActions(request)
+    .then(function (res) {
+      startup();
+      Notify.success($translate.instant('FORM.INFOS.SAVE_SUCCESS'));
+    })
+    .catch(Notify.errorHandler);
   }
 
-  /** @todo: function for updating inventory item */
+  /** update inventory item */
   function editInventoryItem(inventory) {
-    return;
+    var request = { action : 'edit', identifier : inventory.uuid };
+
+    return Modal.openInventoryListActions(request)
+    .then(function (res) {
+      startup();
+      Notify.success($translate.instant('FORM.INFOS.UPDATE_SUCCESS'));
+    })
+    .catch(Notify.errorHandler);
   }
 
   /** enable filter */

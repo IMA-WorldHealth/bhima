@@ -1,0 +1,137 @@
+<form name="ActionForm" method="post" novalidate>
+  <div class="modal-header">
+    <i class="fa fa-list"></i>
+    <span ng-if="$ctrl.action==='add'">{{ 'INVENTORY.ADD_METADATA' | translate }}</span>
+    <span ng-if="$ctrl.action==='edit'">{{ 'INVENTORY.EDIT_METADATA' | translate }}</span>
+  </div>
+
+  <div class="modal-body">
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.code.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.CODE' | translate }}</label>
+      <input ng-model="$ctrl.session.code"
+        class="form-control"
+        type="text"
+        name="code"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_CODE' | translate }}..."
+        required>
+      <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.text.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
+      <input ng-model="$ctrl.session.label"
+        class="form-control"
+        type="text"
+        name="text"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_NAME' | translate }}..."
+        required>
+      <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="consumable"
+          ng-true-value="1" ng-false-value="0"
+          ng-model="$ctrl.session.consumable">
+         {{ 'FORM.LABELS.CONSUMABLE' | translate }}
+      </label>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.price.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.PRICE' | translate }}</label>
+      <input class="form-control" type="text" name="price"
+        ng-model="$ctrl.session.price"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_PRICE' | translate }}..."
+        required>
+      <div class="help-block" ng-messages="ActionForm.price.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.group.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.GROUP' | translate }}</label>
+      <select
+        class="form-control"
+        name="group"
+        ng-model="$ctrl.session.group"
+        ng-options="ig as ig.name for ig in $ctrl.inventoryGroupList"
+        required>
+        <option value="" disabled>-- {{ 'FORM.SELECTS.SELECT_INVENTORY_GROUP' | translate }} --</option>
+      </select>
+      <div class="help-block" ng-messages="ActionForm.group.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.type.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.TYPE' | translate }}</label>
+      <select
+        class="form-control"
+        name="type"
+        ng-model="$ctrl.session.type"
+        ng-options="type as type.text for type in $ctrl.inventoryTypeList"
+        required>
+        <option value="" disabled>-- {{ 'FORM.SELECTS.SELECT_INVENTORY_TYPE' | translate }} --</option>
+      </select>
+      <div class="help-block" ng-messages="ActionForm.type.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.unit.$invalid }">
+      <label class="control-label">{{ 'FORM.LABELS.UNIT' | translate }}</label>
+      <select
+        class="form-control"
+        name="unit"
+        ng-model="$ctrl.session.unit"
+        ng-options="unit as unit.text for unit in $ctrl.inventoryUnitList"
+        required>
+        <option value="" disabled>-- {{ 'FORM.SELECTS.SELECT_INVENTORY_UNIT' | translate }} --</option>
+      </select>
+      <div class="help-block" ng-messages="ActionForm.unit.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label">{{ 'FORM.LABELS.UNIT_WEIGHT' | translate }}</label>
+      <input class="form-control" type="number" step="1" name="unit_weight"
+        ng-model="$ctrl.session.unit_weight"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_UNIT_WEIGHT' | translate }}...">
+    </div>
+
+    <div class="form-group">
+      <label class="control-label">{{ 'FORM.LABELS.UNIT_VOLUME' | translate }}</label>
+      <input class="form-control" type="number" step="1" name="unit_volume"
+        ng-model="$ctrl.session.unit_volume"
+        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_UNIT_VOLUME' | translate }}...">
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-default btn-sm"
+      data-method="cancel"
+      ng-click="$ctrl.cancel()">
+      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    </button>
+    <button type="submit"
+      class="btn btn-primary btn-sm"
+      ng-click="$ctrl.submit(ActionForm)"
+      data-method="submit">
+      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+    </button>
+  </div>
+</form>
