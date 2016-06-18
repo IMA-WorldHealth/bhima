@@ -49,7 +49,7 @@
     "node-uuid": "^1.4.7",
     "numeral": "^1.5.3",
     "q": "~1.4.1",
-    "stream-to-promise": "^1.1.0",
+    "stream-to-promise": "^2.0.0",
     "winston": "^2.1.1",
     "wkhtmltopdf": "^0.3.1"
   },
