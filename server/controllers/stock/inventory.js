@@ -42,11 +42,14 @@ var core        = require('./inventory/core'),
     types       = require('./inventory/types'),
     units       = require('./inventory/units');
 
+var listReceipt = require('./inventory/receipts/list');
+
 // exposed routes
-exports.createInventoryItems  = createInventoryItems;
-exports.updateInventoryItems  = updateInventoryItems;
-exports.getInventoryItems     = getInventoryItems;
-exports.getInventoryItemsById = getInventoryItemsById;
+exports.createInventoryItems    = createInventoryItems;
+exports.updateInventoryItems    = updateInventoryItems;
+exports.getInventoryItems       = getInventoryItems;
+exports.getInventoryItemsById   = getInventoryItemsById;
+exports.getInventoryItemReceipt = getInventoryItemReceipt;
 
 // expose inventory group methods
 exports.createInventoryGroups  = createInventoryGroups;
@@ -165,6 +168,30 @@ function getInventoryItemsById(req, res, next) {
     core.errorHandler(error, req, res, next);
   })
   .done();
+}
+
+/**
+* GET /inventory/metadata/receipt
+* Returns a pdf file for inventory metadata
+*
+* @function getInventoryItemReceipt
+*/
+function getInventoryItemReceipt(req, res, next) {
+
+  core.getItemsMetadata()
+  .then((rows) => {
+    return listReceipt.build(rows, req.query);
+  })
+  .then((result) => {
+    let renderer = {
+      'pdf'  : '"Content-Type" : "application/pdf"',
+      'html' : '"Content-Type" : "application/html"',
+      'json' : '"Content-Type" : "application/json"'
+    };
+    let headers = req.query ? renderer[req.query.renderer] : renderer['pdf'];
+    res.set(headers).send(result);
+  })
+  .catch(next);
 }
 
 // ======================= inventory group =============================

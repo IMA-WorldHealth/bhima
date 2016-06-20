@@ -128,8 +128,13 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
   /** print inventory list */
   function printList() {
-    var params = formaData(vm.gridOptions);
-    return Modal.openPrinterData(params);
+    // var params = formaData(vm.gridOptions);
+    // return Modal.openPrinterData(params);
+    Inventory.receipt('pdf')
+    .then(function (result) {
+      console.log(result);
+    })
+    .catch(Notify.errorHandler);
   }
 
   /**
