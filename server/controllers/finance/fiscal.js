@@ -41,14 +41,17 @@ function list (req, res, next) {
        WHERE f.enterprise_id = ? `;
 
     if(req.query.by && req.query.order){
-      sql += ` ORDER BY ${req.query.by} ${req.query.order};`;
+      const direction = (req.query.order === 'ASC') ? 'ASC' : 'DESC';
+      params.push(req.query.by);
+
+      sql += ` ORDER BY ?? ${direction} `;
     }
-  // execute the query  
+    
   } else {
     sql =
       'SELECT id, label FROM fiscal_year';
   }
-
+  
   // execute the query
   db.exec(sql, params)
   .then(rows => {
