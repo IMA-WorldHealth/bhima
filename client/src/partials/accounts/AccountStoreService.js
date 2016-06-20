@@ -24,7 +24,7 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
     .then(function (result) { 
       accounts.setData(result);
       initialLoad = false;
-      console.log('returning newly set cache');
+      // console.log('returning newly set cache');
       return accounts.data;
     });
   
@@ -42,46 +42,46 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
   
   function readTypes() {
     if (initTypeLoad) { 
-      console.log('types not cachced - returning promise');
+      // console.log('types not cachced - returning promise');
       return typeRequest;
     }
-    console.log('types cached - data resolved');
+    // console.log('types cached - data resolved');
     return $q.resolve(accountTypes.data);
   }
   
   // returns a promise containing an account store
   function readCache() { 
     if (initialLoad) { 
-      console.log('cache request - not ready');
+      // console.log('cache request - not ready');
       return request;
     } 
-    console.log('returning cached version');
+    // console.log('returning cached version');
     return $q.resolve(accounts.data);
   }
   
   function store() { 
     if (initialLoad) { 
-      console.log('store request - not ready');
+      // console.log('store request - not ready');
       return request.then(function () { 
-        console.log('returning accounts');
+        // console.log('returning accounts');
         return accounts;
       });
     }
     
-    console.log('returning cached store');
+    // console.log('returning cached store');
     return $q.resolve(accounts);
   }
   
   function typeStore() { 
     if (initTypeLoad) { 
-      console.log('store request - not ready');
+      // console.log('store request - not ready');
       return typeRequest.then(function () { 
-        console.log('returning account types');
+        // console.log('returning account types');
         return accountTypes;
       });
     }
     
-    console.log('returning cached store');
+    // console.log('returning cached store');
     return $q.resolve(accountTypes);
   }
 }

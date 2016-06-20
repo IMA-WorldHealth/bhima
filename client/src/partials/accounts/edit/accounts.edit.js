@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
 .controller('AccountEditController', AccountEditController);
 
-AccountEditController.$inject = ['$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util'];
+AccountEditController.$inject = ['$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util'];
 
-function AccountEditController($state, AccountStore, Accounts, Notify, util) {
+function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util) {
   var vm = this;
   var id = $state.params.id;
   var parentId = $state.params.parentId;
@@ -23,7 +23,6 @@ function AccountEditController($state, AccountStore, Accounts, Notify, util) {
   vm.accountFailed = null;
    
   // alias this comparison as it is used many times in the template
-  console.log(id);
   AccountStore.store()
       .then(function (store) {
 
@@ -35,8 +34,6 @@ function AccountEditController($state, AccountStore, Accounts, Notify, util) {
         });
         
         vm.accounts = vm.store.data;
-  
-        console.log('acc', vm.accounts);
         
         if (angular.isDefined(id)) {
           var account = store.get(id);
@@ -74,7 +71,6 @@ function AccountEditController($state, AccountStore, Accounts, Notify, util) {
             
             vm.types = vm.typeStore.data;
 
-            console.log('USING TYPE ID', vm.account.type_id);
             
             if (id) {
               // var accountId = vm.account.type_id.id || vm.account.type_id;
@@ -83,12 +79,10 @@ function AccountEditController($state, AccountStore, Accounts, Notify, util) {
               vm.account.type_id = vm.types[0].id;
             }
             
-            
-            console.log('done');
-            console.log('vm.store', vm.store);
-            console.log('vm.typeStore', vm.typeStore);
-            console.log('using account', vm.account);
+            console.log('using account', account);
           })
+        
+        
       })
       .catch(function (error) { 
         // All modals of this type will need to handle this error - as this is not done through the Notify 
@@ -124,16 +118,12 @@ function AccountEditController($state, AccountStore, Accounts, Notify, util) {
     
     var requireDirty = !vm.isCreateState;
     
-    window.form = accountForm;
-    console.log('dirty elements', util.filterFormElements(accountForm));
-    
     accountForm.$setSubmitted(); 
     if (accountForm.$invalid) { 
       return;
     }
     
     if (!accountForm.$dirty) { 
-      console.log('nothing changed.');
       return; 
     }
   
@@ -144,22 +134,23 @@ function AccountEditController($state, AccountStore, Accounts, Notify, util) {
       delete submit.account;
       submit.parent = vm.account.parent.id;
     }
-  
-    console.log(vm.account);
-    console.log('submitting for creation', submit);
-    
     
     if (vm.isCreateState) { 
       Accounts.create(submit)
-        .then(function (result) { 
+        .then(function (result) {
+  
+          
+          // update the id so this account can be directly edited
+          submit.id = result.id;
+          $rootScope.$broadcast('ACCOUNT_CREATED', submit);
           Notify.success('account made'); 
           close();
         });
        
     } else { 
       Accounts.update(vm.account.id, submit)
-        .then(function (result) { 
-          console.log('updated', result);
+        .then(function (result) {
+          $rootScope.$broadcast('ACCOUNT_UPDATED', result);
           Notify.success('Update success');
           close();
         });

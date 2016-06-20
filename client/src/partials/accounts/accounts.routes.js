@@ -10,7 +10,6 @@ function accountsModal($state, $modal) {
             console.log('thenned'); 
           });
           window.modal = $modal;
-          console.log('on enter create', $modal);  
 }
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) { 
