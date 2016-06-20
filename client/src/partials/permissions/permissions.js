@@ -52,10 +52,13 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
   vm.checkboxOffset = checkboxOffset;
   vm.toggleUnitChildren = toggleUnitChildren;
   vm.toggleSuperUserPermissions = toggleSuperUserPermissions;
+  vm.toggleParents = toggleParents;
 
   vm.maxLength = util.maxTextLength;
   vm.userName = 80;
   vm.length100 = util.length100;  
+
+  var isDefined = angular.isDefined;
   /* ------------------------------------------------------------------------ */
 
   // TODO
@@ -231,8 +234,28 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
     .then(util.unwrapHttpResponse);
   }
 
+  // traverse upwards, toggling parents
+  function toggleParents(unit) {
+    if(unit.parent !== 0 && unit.checked ){
+      var parent = vm.units.filter(function (item) {
+        return item.id  === unit.parent;
+      });
+      parent[0].checked = unit.checked;
+
+      if (parent[0].parent) {
+        vm.toggleParents(parent);
+      } 
+    } 
+  }
+
   // toggle the selection all child nodes
-  function toggleUnitChildren(unit, children) {
+  function toggleUnitChildren(unit, children) { 
+    if (!unit.checked) { vm.super = false; }
+
+    if(unit.parent !== 0){
+      vm.toggleParents(unit); // traverse upwards, toggling parents  
+    }
+    
     children.forEach(function (node) {
       node.checked = unit.checked;
       if (node.children) {
@@ -242,12 +265,9 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
   }
 
   // toggles all permissions to match there super user permission's setting
-  function toggleSuperUserPermissions() {
+  function toggleSuperUserPermissions(bool) {
     vm.units.forEach(function (node) {
-      node.checked = vm.super;
-      if (node.children) {
-        toggleUnitChildren(node, node.children);
-      }
+      node.checked = bool;
     });
   }
 
