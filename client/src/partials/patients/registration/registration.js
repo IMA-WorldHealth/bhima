@@ -17,88 +17,75 @@ PatientRegistrationController.$inject = [
  * @module controllers/PatientRegistrationController
  */
 function PatientRegistrationController($location, Patients, Debtors, Session, util, Notify, Receipts, ScrollTo) {
-  var viewModel = this;
+  var vm = this;
 
-  viewModel.options = {};
+  vm.submit = submit;
+  vm.enableFullDate = enableFullDate;
+  vm.calculateYOB = calculateYOB;
 
-  viewModel.registerPatient = registerPatient;
-  viewModel.enableFullDate = enableFullDate;
-  viewModel.calculateYOB = calculateYOB;
-
-  // Maxlength field for Patient Registration
-  viewModel.maxLength = util.maxTextLength;
-  viewModel.length150 = util.length150;
-  viewModel.length100 = util.length100;
-  viewModel.length50 = util.length50;
-  viewModel.length40 = util.length40;
-  viewModel.length30 = util.length30;
-  viewModel.length16 = util.length16;
-  viewModel.length12 = util.length12;
+  // maxlength field for Patient Registration
+  vm.maxLength = util.maxTextLength;
+  vm.length150 = util.length150;
+  vm.length100 = util.length100;
+  vm.length50 = util.length50;
+  vm.length30 = util.length30;
 
   // Set up page elements data (debtor select data)
   Debtors.groups()
     .then(function (results) {
-      viewModel.options.debtorGroups = results;
+      vm.debtorGroups = results;
     })
     .catch(Notify.handleError);
 
-  // Define limits for DOB
-  viewModel.minDOB = util.minDOB;
-  viewModel.maxDOB = util.maxDOB;
+  // define limits for DOB
+  vm.datepickerOptions = {
+    maxDate : util.maxDOB,
+    minDate : util.minDOB
+  };
 
   settupRegistration();
 
-  function registerPatient(patientDetailsForm) {
+  function submit(RegistrationForm) {
 
-    // Register submitted action - explicit as the button is outside of the scope of the form
-    patientDetailsForm.$setSubmitted();
-
-    /** @todo once the bh-submit directive supports controller overriden $invalid handling this should be udpated */
-    patientDetailsForm.$loading = true;
-
-    if (patientDetailsForm.$invalid) {
-      // End propegation for invalid state - this could scroll to an $invalid element on the form
+    if (RegistrationForm.$invalid) {
+      // end propagation for invalid state - this could scroll to an $invalid element on the form
       Notify.danger('FORM.ERRORS.INVALID');
-      patientDetailsForm.$loading = false;
       return;
     }
 
-    Patients.create(viewModel.medical, viewModel.finance)
+    return Patients.create(vm.medical, vm.finance)
       .then(function (confirmation) {
         Receipts.patient(confirmation.uuid, true);
 
         // reset form state
-        patientDetailsForm.$setPristine();
-        patientDetailsForm.$setUntouched();
+        RegistrationForm.$setPristine();
+        RegistrationForm.$setUntouched();
         settupRegistration();
 
         ScrollTo('anchor');
       })
-      .catch(Notify.handleError)
-      .finally(function () {
-        patientDetailsForm.$loading = false;
-      });
+      .catch(Notify.handleError);
   }
 
   function settupRegistration() {
-    viewModel.finance = {};
-    viewModel.medical = {};
+    vm.finance = {};
+    vm.medical = {};
 
-    viewModel.fullDateEnabled = false;
-    viewModel.yob = null;
+    vm.fullDateEnabled = false;
+    vm.yob = null;
 
-    viewModel.medical.origin_location_id = Session.enterprise.location_id;
-    viewModel.medical.current_location_id = Session.enterprise.location_id;
+    vm.medical.origin_location_id = Session.enterprise.location_id;
+    vm.medical.current_location_id = Session.enterprise.location_id;
   }
 
-  /**
+  /*
    * Date and location utility methods
    */
   function enableFullDate() {
-    viewModel.fullDateEnabled = true;
+    vm.fullDateEnabled = true;
   }
 
   function calculateYOB(value) {
-    viewModel.medical.dob = value && value.length === 4 ? new Date(value + '-' + util.defaultBirthMonth) : undefined;
+    vm.medical.dob = value && value.length === 4 ? new Date(value + '-' + util.defaultBirthMonth) : undefined;
   }
 }

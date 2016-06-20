@@ -98,6 +98,11 @@ module.exports = {
     expect(element(locator).isPresent()).to.eventually.equal(bool);
   },
 
+  // asserts whether an element is visible on the page or not.
+  visible: function visible(locator, bool) {
+    expect(element(locator).isDisplayed()).to.eventually.equal(bool);
+  },
+
   /**
    * @method typeahead
    *

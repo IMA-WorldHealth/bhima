@@ -17,7 +17,7 @@ UniqueDirective.$inject = ['$q', 'UniqueValidatorService'];
  *
  * @example
  *
- * // will result in a HTTP GET request to /users/attribute/:value/exists
+ * <!-- will result in a HTTP GET request to /users/attribute/:value/exists -->
  * <input id="email" type="email" bh-unique="/users/attribute">
  *
  * @module directives/bhUnique
