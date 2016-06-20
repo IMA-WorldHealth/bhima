@@ -218,7 +218,7 @@
             <li class="list-group-item">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" ng-model="PermissionsCtrl.super" ng-change="PermissionsCtrl.toggleSuperUserPermissions()">
+                  <input type="checkbox" ng-model="PermissionsCtrl.super" ng-change="PermissionsCtrl.toggleSuperUserPermissions(PermissionsCtrl.super)">
                   {{ "PERMISSIONS.SUPER" | translate }}
                 </label>
               </div>
