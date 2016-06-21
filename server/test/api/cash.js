@@ -53,7 +53,8 @@ describe('(/cash) Cash Payments', function () {
       project_id:  PROJECT_ID,
       date:        new Date('2015-01-01'),
       user_id:     USER_ID,
-      is_caution:  1
+      is_caution:  1,
+      description : 'A caution payment'
     };
 
     // create a caution payment
@@ -98,7 +99,8 @@ describe('(/cash) Cash Payments', function () {
       items:       INVOICES,
       project_id:  PROJECT_ID,
       user_id  :   USER_ID,
-      is_caution:  0
+      is_caution:  0,
+      description : 'This is a description'
     };
 
     var INVALID_INVOICE_PAYMENT = {
@@ -109,7 +111,8 @@ describe('(/cash) Cash Payments', function () {
       items:       [],
       project_id:  PROJECT_ID,
       user_id  :   USER_ID,
-      is_caution:  0
+      is_caution:  0,
+      description : 'This an invalid description'
     };
 
     // create a cash payment
@@ -214,7 +217,8 @@ describe('(/cash) Cash Payments', function () {
         project_id:  PROJECT_ID,
         date:        new Date('2015-01-01'),
         user_id:     USER_ID,
-        is_caution:  1
+        is_caution:  1,
+        description : 'This is a confused payment'
       };
 
       return agent.post('/cash')

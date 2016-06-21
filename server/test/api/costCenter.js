@@ -20,7 +20,7 @@ describe('(/cost_centers) The cost center API', function () {
     is_principal : 1
   };
 
-  var DELETABLE_COST_CENTER_ID = 2;
+  var DELETABLE_COST_CENTER_ID = 3;
   var FETCHABLE_COST_CENTER_ID = 1;
 
   var responseKeys = [
@@ -31,7 +31,7 @@ describe('(/cost_centers) The cost center API', function () {
   it('GET /cost_centers returns a list of cost centers', function () {
     return agent.get('/cost_centers')
       .then(function (res) {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
@@ -40,7 +40,7 @@ describe('(/cost_centers) The cost center API', function () {
   it('GET /cost_centers?full=1 returns a full list of cost centers', function () {
     return agent.get('/cost_centers?full=1')
       .then(function (res) {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
      .catch(helpers.handler);
   });

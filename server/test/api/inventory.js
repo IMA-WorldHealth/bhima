@@ -19,7 +19,7 @@ describe('(/inventory) The inventory HTTP API :: ', () => {
   let inventoryGroup = {
     uuid : uuid.v4(),
     code : '10',
-    name : 'Test Inventory Group',
+    name : 'Test Inventory Group 2',
     stock_account : 3635,
     cogs_account  : 3636,
     sales_account : 3637

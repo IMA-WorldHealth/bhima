@@ -29,7 +29,7 @@ describe('Services', function () {
     FU.input('ServicesCtrl.service.name', SERVICE.name);
 
     FU.select('ServicesCtrl.service.enterprise_id', 'Test Enterprise');
-    FU.select('ServicesCtrl.service.cost_center_id', 'cost center 1');
+    FU.select('ServicesCtrl.service.cost_center_id', 'cost center 2');
     FU.select('ServicesCtrl.service.profit_center_id', 'profit center 1');
 
     // submit the page to the server

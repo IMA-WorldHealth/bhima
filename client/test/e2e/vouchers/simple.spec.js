@@ -13,7 +13,7 @@ describe('Simple Vouchers', function () {
 
   const voucher = {
     date: yesterday,
-    toAccount: 'Test Debtor Group Account',
+    toAccount: 'Test Debtor Accounts 1',
     fromAccount: 'Test Inventory Accounts',
     description: 'Awesome description',
     amount: 100.12
@@ -27,8 +27,8 @@ describe('Simple Vouchers', function () {
     FU.input('SimpleVoucherCtrl.voucher.description', voucher.description);
 
     // select the appropriate accounts
-    FU.typeahead('SimpleVoucherCtrl.voucher.toAccount', voucher.toAccount);
     FU.typeahead('SimpleVoucherCtrl.voucher.fromAccount', voucher.fromAccount);
+    FU.typeahead('SimpleVoucherCtrl.voucher.toAccount', voucher.toAccount);
 
     components.currencySelect.set(2);
     components.currencyInput.set(voucher.amount);
