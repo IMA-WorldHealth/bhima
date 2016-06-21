@@ -15,10 +15,10 @@
 
 'use strict';
 
-const db = require('../lib/db');
+const db = require('../../lib/db');
 const uuid = require('node-uuid');
-const NotFound = require('../lib/errors/NotFound');
-const Topic = require('../lib/topic');
+const NotFound = require('../../lib/errors/NotFound');
+const Topic = require('../../lib/topic');
 
 /**
  * GET /locations/villages
