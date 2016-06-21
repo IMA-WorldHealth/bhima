@@ -30,7 +30,7 @@ var ledger               = require('../controllers/finance/ledger');
 var fiscal               = require('../controllers/finance/fiscal');
 var gl                   = require('../controllers/finance/ledgers/general');
 var analytics            = require('../controllers/finance/analytics');
-var purchase             = require('../controllers/finance/purchase');
+const purchases          = require('../controllers/finance/purchases');
 var taxPayment           = require('../controllers/finance/taxPayment');
 var donations            = require('../controllers/finance/donations');
 var debtors              = require('../controllers/finance/debtors');
@@ -528,10 +528,10 @@ exports.configure = function configure(app) {
   app.put('/suppliers/:uuid', suppliers.update);
 
   // purchase
-  app.post('/purchase', purchase.create);
-  app.get('/purchase', purchase.list);
-  app.get('/purchase/:uuid', purchase.detail);
-  app.put('/purchase/:uuid', purchase.update);
+  app.post('/purchases', purchases.create);
+  app.get('/purchases', purchases.list);
+  app.get('/purchases/:uuid', purchases.detail);
+  app.put('/purchases/:uuid', purchases.update);
 
   // functions api
   app.get('/functions', functions.list);
