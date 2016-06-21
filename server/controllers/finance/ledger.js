@@ -11,7 +11,6 @@
 
 var q =  require('q');
 var db = require('./../../lib/db');
-var sanitize = require('./../../lib/sanitize');
 
 exports.debtor = debtor;
 exports.debtor_group = debtorGroup;
@@ -84,7 +83,7 @@ function debtor(id) {
 
   // debtor query
   if (!id) { defer.reject(new Error('No debtor id selected!')); }
-  else { id = sanitize.escape(id); }
+  else { id = db.escape(id); }
 
   var query =
     `SELECT account_id
@@ -237,7 +236,7 @@ function employeeInvoice(id) {
 
   // debtor query
   if (!id) { defer.reject(new Error('No debtor_group id selected!')); }
-  else { id = sanitize.escape(id); }
+  else { id = db.escape(id); }
 
   var query =
     `SELECT creditor_group.account_id
@@ -313,7 +312,7 @@ function distributableSale(id) {
 
   // debtor query
   if (!id) { defer.reject(new Error('No debtor id selected!')); }
-  else { id = sanitize.escape(id); }
+  else { id = db.escape(id); }
 
   var query =
     `SELECT account_id
@@ -372,7 +371,7 @@ function distributableSale(id) {
           FROM general_ledger
         )
       ) AS t JOIN sale AS s on t.inv_po_id = s.uuid
-      WHERE t.inv_po_id IN ("${invoices.join('","')}") 
+      WHERE t.inv_po_id IN ("${invoices.join('","')}")
       AND t.account_id = '${account_id}'
       GROUP BY t.inv_po_id;`;
 
@@ -394,7 +393,7 @@ function debtorSale(id, saleId) {
 
   // debtor query
   if (!id) { defer.reject(new Error('No debtor id selected!')); }
-  else { id = sanitize.escape(id); }
+  else { id = db.escape(id); }
 
   var query =
     `SELECT account_id
@@ -415,7 +414,7 @@ function debtorSale(id, saleId) {
       UNION
         SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id
         FROM general_ledger AS g
-        WHERE g.deb_cred_uuid = '${id$}' AND g.account_id = '${account}')
+        WHERE g.deb_cred_uuid = '${id}' AND g.account_id = '${account}')
       AS c;`;
 
     return db.exec(query);
@@ -455,7 +454,7 @@ function debtorSale(id, saleId) {
       JOIN sale AS s ON t.inv_po_id = s.uuid
       JOIN project AS p ON s.project_id = p.id
       LEFT JOIN consumption AS c ON t.inv_po_id = c.document_id
-      WHERE t.inv_po_id ='${anitize.escape(saleId)}'
+      WHERE t.inv_po_id ='${db.escape(saleId)}'
       AND t.account_id = '${account_id}'
       GROUP BY t.inv_po_id;`;
 

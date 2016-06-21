@@ -19,7 +19,6 @@ const upload = require('../lib/uploader');
 
 // unclassified routes
 const auth                 = require('../controllers/auth');
-// var data                 = require('../controllers/data');
 const tree                 = require('../controllers/tree');
 const units                = require('../controllers/units');
 const cashflow             = require('../controllers/cashflow');
@@ -46,7 +45,6 @@ const medicalReports = require('../controllers/medical/reports');
 // stock and inventory routes
 const inventory            = require('../controllers/stock/inventory');
 const depots               = require('../controllers/stock/depot');
-const consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
 
 // finance routes
 const trialbalance     = require('../controllers/finance/trialbalance');
@@ -104,14 +102,6 @@ exports.configure = function configure(app) {
   app.post('/exchange', exchange.create);
   app.put('/exchange/:id', exchange.update);
   app.delete('/exchange/:id', exchange.delete);
-
-  // application data
-  /*
-  app.post('/data', data.create);
-  app.get('/data', data.read);
-  app.put('/data', data.update);
-  app.delete('/data/:table/:column/:value', data.deleteRecord);
- */
 
   // API for locations
   app.get('/locations/villages', locations.villages);
@@ -204,8 +194,6 @@ exports.configure = function configure(app) {
   app.put('/subsidies/:id', subsidies.update);
   app.delete('/subsidies/:id', subsidies.remove);
 
-  app.post('/consumption_loss/', consumptionLoss.execute);
-
   // journal routes
   app.get('/journal', journal.list);
 
@@ -240,7 +228,6 @@ exports.configure = function configure(app) {
   app.get('/getCheckOffday/', employees.checkOffday);
 
   app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
-  app.post('/payTax/', taxPayment.submit);
   app.put('/setTaxPayment/', taxPayment.setTaxPayment);
 
   // Payroll
