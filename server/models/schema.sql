@@ -639,43 +639,6 @@ CREATE TABLE discount (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-DROP TABLE IF EXISTS `donation_item`;
-CREATE TABLE `donation_item` (
-  `uuid` BINARY(16) NOT NULL,
-  `donation_uuid` BINARY(16) NOT NULL,
-  `tracking_number` BINARY(16) NOT NULL,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `donation_item_1` (`donation_uuid`, `tracking_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `donation`;
-CREATE TABLE `donation` (
-  `uuid`         BINARY(16) NOT NULL,
-  `donor_id`     INT(11) unsigned NOT NULL,
-  `employee_id`  INT(11) UNSIGNED NOT NULL,
-  `date`         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_received`  TINYINT(1) NOT NULL DEFAULT 0,
-  `is_confirmed` TINYINT(1) NOT NULL DEFAULT 0,
-  `confirmed_by` INT(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `donor_id` (`donor_id`),
-  KEY `employee_id` (`employee_id`),
-  FOREIGN KEY (`donor_id`) REFERENCES `donor` (`id`),
-  FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `donor`;
-CREATE TABLE `donor` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(80) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `donor_1` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
   `id`            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
