@@ -128,33 +128,20 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
   /** print inventory list */
   function printList() {
-    // var params = formaData(vm.gridOptions);
-    // return Modal.openPrinterData(params);
+    var buttonState = JSON.parse(JSON.stringify(vm.bcButtons[2]));
+    vm.bcButtons[2].disabled = true;
+    vm.bcButtons[2].icon = 'fa fa-spinner fa-pulse';
+
     Inventory.receipt('pdf')
     .then(function (result) {
-      console.log(result);
+      vm.receipt = result;
+      return Modal.openPrinterData({ receipt: vm.receipt, renderer: 'pdf' });
+    })
+    .then(function () {
+      vm.bcButtons[2] = JSON.parse(JSON.stringify(buttonState));
+      vm.bcButtons[2].action = printList;
     })
     .catch(Notify.errorHandler);
-  }
-
-  /**
-   * format data for modal printer page
-   * @fixme: need of server generate pdf because data
-   * for inventory are very huge for the client
-   */
-  function formaData(gridOptions) {
-    var headers = {};
-    var rows = gridOptions.data;
-
-    gridOptions.columnDefs.forEach(function (col) {
-      headers[col.field] = col.displayName;
-    });
-
-    return {
-      title : 'INVENTORY.LIST',
-      headers : headers,
-      rows : rows
-    };
   }
 
   /** startup */

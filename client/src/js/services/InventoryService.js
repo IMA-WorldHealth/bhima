@@ -41,7 +41,8 @@ function InventoryService($http, util) {
 
   /** get inventory metadata report */
   function receipt(filetype) {
-    return $http.get('/inventory/receipts/metadata')
+    var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
+    return $http.get('/inventory/receipts/metadata', { responseType: responseType })
       .then(util.unwrapHttpResponse);
   }
 

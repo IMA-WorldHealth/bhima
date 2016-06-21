@@ -178,9 +178,15 @@ function getInventoryItemsById(req, res, next) {
 */
 function getInventoryItemReceipt(req, res, next) {
 
+  let request = {
+    query : req.query,
+    enterprise : req.session.enterprise,
+    project : req.session.project
+  };
+
   core.getItemsMetadata()
   .then((rows) => {
-    return listReceipt.build(rows, req.query);
+    return listReceipt.build(rows, request);
   })
   .then((result) => {
     let renderer = {

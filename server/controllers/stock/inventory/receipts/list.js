@@ -18,11 +18,12 @@ exports.build = build;
  * @param {array} data inventory list of metadata
  * @return {object} promise
  */
-function build(data, queryString) {
+function build(data, request) {
 
+  let queryString   = request.query;
   let defaultRender = 'pdf';
   let template = path.normalize('./server/controllers/stock/inventory/receipts/list.handlebars');
-  let receiptOptions = { pageSize : 'A4' };
+  let receiptOptions = { pageSize : 'A4', orientation: 'landscape' };
 
   let renderTarget = (queryString && queryString.renderer) ? queryString.renderer : defaultRender;
   let renderer     = supportedRender[renderTarget];
@@ -31,5 +32,11 @@ function build(data, queryString) {
     throw new BadRequest('Render target provided is invalid or not supported by this report '.concat(renderTarget));
   }
 
-  return renderer.render({ data }, template, receiptOptions);
+  let model = {
+    enterprise : request.enterprise,
+    project : request.project,
+    data : data
+  };
+
+  return renderer.render({ model }, template, receiptOptions);
 }

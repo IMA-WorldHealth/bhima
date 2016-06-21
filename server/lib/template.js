@@ -32,7 +32,9 @@ const hbs = exphbs.create({
     currency : currency,
     date : date,
     timestamp : timestamp,
-    age : age
+    age : age,
+    uppercase : uppercase,
+    lowercase : lowercase
   }
 });
 
@@ -114,6 +116,14 @@ function timestamp(value) {
 
 function age(dob) {
   return moment().diff(dob, 'years');
+}
+
+function uppercase(value) {
+  return String(value).toUpperCase();
+}
+
+function lowercase(value) {
+  return String(value).toLowerCase();
 }
 
 module.exports  = hbs;

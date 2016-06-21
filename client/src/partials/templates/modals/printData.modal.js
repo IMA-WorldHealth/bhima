@@ -2,32 +2,45 @@ angular.module('bhima.controllers')
 .controller('PrintDataModalController', PrintDataModalController);
 
 // dependencies injection
-PrintDataModalController.$inject = ['SessionService', '$uibModalInstance', 'data'];
+PrintDataModalController.$inject = [
+  'ReceiptService', '$uibModalInstance', '$sce',
+  '$window', 'data'];
 
 /**
  * Print Data Modal Controller
  * This controller is responsible of formating array of data in a simple modal
  * page for printing
  */
-function PrintDataModalController(Session, Instance, Data) {
+function PrintDataModalController(Receipts, Instance, $sce, $window, Data) {
   var vm = this;
 
-  // data required variables
-  vm.dataTitle = Data.title;
-  vm.dataHeaders = Data.headers;
-  vm.dataRows = Data.rows;
+  vm.renderer = Data.renderer;
 
-  // enterprise header data
-  vm.enterprise = Session.enterprise;
-  vm.project = Session.project;
+  if (vm.renderer === 'pdf') {
+
+    // store downloaded base64 PDF file in a browser blob - this will be accessible through 'blob://...'
+    var file = new Blob([Data.receipt], { type : 'application/pdf'});
+
+    // determine the direct path to the newly (temporarily) stored PDF file
+    var fileURL = URL.createObjectURL(file);
+
+    // trust and expose the file to the view to embed the PDF
+    vm.receipt = $sce.trustAsResourceUrl(fileURL);
+  } else {
+    // simply expose receipt object to view
+    vm.receipt = Data.renderer;
+  }
 
   // Instance manipulation
-  vm.cancel = function cancel() {
-    Instance.dismiss('cancel');
+  vm.close = function close() {
+    Instance.close();
   };
 
   vm.print = function () {
-    print();
+    if (vm.renderer === 'pdf') {
+      return $window.frames.pdf.contentWindow.print();
+    }
+    $window.print();
     Instance.close();
   }
 
