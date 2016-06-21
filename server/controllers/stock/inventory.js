@@ -23,6 +23,8 @@
 * As per REST conventions, the routes with a UUID return a single
 * JSON instance or 404 NOT FOUND.  The others return an array of
 * results.
+*
+* TODO: We should migrate the inventory to using the regular bhima 2.x guidelines.
 */
 
 'use strict';
@@ -186,16 +188,15 @@ function getInventoryItemReport(req, res, next) {
   };
 
   core.getItemsMetadata()
-  .then((rows) => {
-    return listReceipt.build(rows, request);
-  })
-  .then((result) => {
-    let renderer = {
+  .then(rows => listReceipt.build(rows, request))
+  .then(result => {
+    const renderer = {
       'pdf'  : '"Content-Type" : "application/pdf"',
       'html' : '"Content-Type" : "application/html"',
       'json' : '"Content-Type" : "application/json"'
     };
-    let headers = req.query && req.query.renderer ? renderer[req.query.renderer] : renderer['pdf'];
+    let headerKey = req.query.renderer || 'pdf';
+    let headers = renderer[headerKey];
     res.set(headers).send(result);
   })
   .catch(next);

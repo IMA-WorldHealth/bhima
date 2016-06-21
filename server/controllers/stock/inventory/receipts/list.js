@@ -2,12 +2,15 @@
 
 const path = require('path');
 const BadRequest = require('../../../../lib/errors/BadRequest');
-
-let supportedRender = {
+const supportedRender = {
   json : require('../../../../lib/renderers/json'),
   html : require('../../../../lib/renderers/html'),
   pdf  : require('../../../../lib/renderers/pdf')
 };
+
+const defaultRender = 'pdf';
+const template = path.normalize('./server/controllers/stock/inventory/receipts/list.handlebars');
+const receiptOptions = { pageSize : 'A4', orientation: 'landscape' };
 
 // export the receipt object
 exports.build = build;
@@ -22,10 +25,6 @@ function build(data, request) {
   'use strict';
 
   let queryString   = request.query;
-  let defaultRender = 'pdf';
-  let template = path.normalize('./server/controllers/stock/inventory/receipts/list.handlebars');
-  let receiptOptions = { pageSize : 'A4', orientation: 'landscape' };
-
   let renderTarget = (queryString && queryString.renderer) ? queryString.renderer : defaultRender;
   let renderer     = supportedRender[renderTarget];
 

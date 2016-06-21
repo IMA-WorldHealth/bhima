@@ -134,8 +134,8 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
     Inventory.report('pdf')
     .then(function (result) {
-      vm.receipt = result;
-      return Modal.openPrinterData({ receipt: vm.receipt, renderer: 'pdf' });
+      vm.report = result;
+      return Modal.openReports({ report: vm.report, renderer: 'pdf' });
     })
     .then(function () {
       vm.bcButtons[2] = JSON.parse(JSON.stringify(buttonState));

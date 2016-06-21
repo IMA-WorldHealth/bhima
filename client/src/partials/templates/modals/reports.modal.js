@@ -1,17 +1,16 @@
 angular.module('bhima.controllers')
-.controller('PrintDataModalController', PrintDataModalController);
+.controller('ReportsModalController', ReportsModalController);
 
 // dependencies injection
-PrintDataModalController.$inject = [
+ReportsModalController.$inject = [
   'ReceiptService', '$uibModalInstance', '$sce',
   '$window', 'data'];
 
 /**
- * Print Data Modal Controller
- * This controller is responsible of formating array of data in a simple modal
- * page for printing
+ * Reports Modal Controller
+ * This controller is responsible display document as report 
  */
-function PrintDataModalController(Receipts, Instance, $sce, $window, Data) {
+function ReportsModalController(Receipts, Instance, $sce, $window, Data) {
   var vm = this;
 
   vm.renderer = Data.renderer;
@@ -19,7 +18,7 @@ function PrintDataModalController(Receipts, Instance, $sce, $window, Data) {
   if (vm.renderer === 'pdf') {
 
     // store downloaded base64 PDF file in a browser blob - this will be accessible through 'blob://...'
-    var file = new Blob([Data.receipt], { type : 'application/pdf'});
+    var file = new Blob([Data.report], { type : 'application/pdf'});
 
     // determine the direct path to the newly (temporarily) stored PDF file
     var fileURL = URL.createObjectURL(file);
@@ -28,7 +27,7 @@ function PrintDataModalController(Receipts, Instance, $sce, $window, Data) {
     vm.report = $sce.trustAsResourceUrl(fileURL);
   } else {
     // simply expose receipt object to view
-    vm.report = Data.renderer;
+    vm.report = Data.report;
   }
 
   // Instance manipulation
