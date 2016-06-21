@@ -177,7 +177,8 @@ function getInventoryItemsById(req, res, next) {
 * @function getInventoryItemReceipt
 */
 function getInventoryItemReceipt(req, res, next) {
-
+  'use strict';
+  
   let request = {
     query : req.query,
     enterprise : req.session.enterprise,

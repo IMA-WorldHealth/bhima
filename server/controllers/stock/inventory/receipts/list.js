@@ -19,6 +19,7 @@ exports.build = build;
  * @return {object} promise
  */
 function build(data, request) {
+  'use strict';
 
   let queryString   = request.query;
   let defaultRender = 'pdf';
