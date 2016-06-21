@@ -235,7 +235,7 @@ exports.create = function create(req, res, next) {
       uuid : uuid.unparse(data.uuid)
     });
   })
-  .catch(function(err){console.log(err); next();})
+  .catch(next)
   .done();
 };
 
