@@ -17,7 +17,7 @@ describe('(/enterprises) The /enterprises API endpoint', function () {
 
   var enterprise = {
     name : 'enterprises',
-    abbr : 'enterprises',
+    abbr : 'T.E.S.T',
     email : 'enterprises@test.org',
     po_box : 'enterprises',
     phone : '2016',

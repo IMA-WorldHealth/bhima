@@ -83,7 +83,7 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
   // switch to update mode
   function update(id) {
     loadCashbox(id)
-      .then(function () {
+      .then(function (cashbox) {
         vm.view = 'update';
       })
       .catch(Notify.handleError);
@@ -187,7 +187,7 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
     instance.result
       .then(function () {
         Notify.success('FORM.INFOS.UPDATE_SUCCESS');
-        update(vm.cashbox.id);
+        update(vm.box.id);
       })
       .catch(function (data) {
         if (data) { Notify.handleError(data); }

@@ -41,6 +41,11 @@ describe('Price Lists', function () {
     value : 60
   };
 
+  const item5 = {
+    label : 'Item 5',
+    value : 75
+  };
+
   const priceListID1 = 1;
   const priceListID2 = 2;
 
@@ -62,24 +67,24 @@ describe('Price Lists', function () {
 
   it('add price_list_items to a price list', function () {
     element(by.id('price_list_' + priceListID1 )).click();
+
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item1.label);
     FU.input('ModalCtrl.data.value', item1.value);
     element(by.id('is_percentage')).click();
+    FU.select('ModalCtrl.data.inventory_uuid', 'First Test Inventory Item');
 
-    // select an Invetory
-    FU.select('ModalCtrl.data.inventory_uuid', 'Test Inventory Item');
     element(by.id('submit-price-list')).click();
+
 
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item2.label);
     FU.input('ModalCtrl.data.value', item2.value);
-
-    // select an Invetory
     FU.select('ModalCtrl.data.inventory_uuid', 'Second Test Inventory Item');
 
-    // saving item
     element(by.id('submit-price-list')).click();
+
+
     FU.buttons.submit();
 
     // expect a nice validation message
@@ -95,14 +100,14 @@ describe('Price Lists', function () {
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item3.label);
     FU.input('ModalCtrl.data.value', item3.value);
-    FU.select('ModalCtrl.data.inventory_uuid', 'Test Inventory Item');
+    FU.select('ModalCtrl.data.inventory_uuid', 'First Test Inventory Item');
     element(by.id('submit-price-list')).click();
 
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item4.label);
     FU.input('ModalCtrl.data.value', item4.value);
     element(by.id('is_percentage')).click();
-    FU.select('ModalCtrl.data.inventory_uuid', 'Test Inventory Item');
+    FU.select('ModalCtrl.data.inventory_uuid', 'First Test Inventory Item');
     FU.select('ModalCtrl.data.inventory_uuid', 'Second Test Inventory Item');
 
     element(by.id('submit-price-list')).click();
@@ -121,11 +126,11 @@ describe('Price Lists', function () {
 
     // switch to the create form
     element(by.id('add_item')).click();
-    FU.input('ModalCtrl.data.label', item1.label);
-    FU.input('ModalCtrl.data.value', item1.value);
+    FU.input('ModalCtrl.data.label', item5.label);
+    FU.input('ModalCtrl.data.value', item5.value);
 
     // select an inventory item
-    FU.select('ModalCtrl.data.inventory_uuid', 'Test Inventory Item');
+    FU.select('ModalCtrl.data.inventory_uuid', 'First Test Inventory Item');
 
     // saving item
     element(by.id('submit-price-list')).click();

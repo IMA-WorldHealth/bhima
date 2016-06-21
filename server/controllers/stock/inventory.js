@@ -100,6 +100,7 @@ function createInventoryItems(req, res, next) {
     res.status(201).json({ uuid: identifier });
   })
   .catch(function (error) {
+    console.log(error);
     core.errorHandler(error, req, res, next);
   })
   .done();

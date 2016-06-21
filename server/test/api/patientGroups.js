@@ -15,7 +15,7 @@ describe('(/patients/groups) Patient Group API', function () {
     enterprise_id : 1,
     uuid : '2c6a2854-efb9-11e5-a4d7-9c4e36a322c8',
     price_list_uuid : helpers.data.PRICE_LIST,
-    name : 'Test Patient group 1',
+    name : 'Test Patient group 4',
     note : 'The first test patient group inserted'
   };
 
@@ -23,7 +23,7 @@ describe('(/patients/groups) Patient Group API', function () {
     enterprise_id : 1,
     uuid : '30eba520-efa7-11e5-a4d7-9c4e36a322c8',
     price_list_uuid : null,
-    name : 'Test Patient group 2',
+    name : 'Test Patient group 5',
     note : 'The second patient group there is no price list'
   };
 

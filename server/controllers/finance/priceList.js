@@ -16,6 +16,7 @@
 const db    = require('../../lib/db');
 const uuid  = require('node-uuid');
 var NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 
 /**
  * Lists all price lists in the database
@@ -197,6 +198,17 @@ exports.create = function create(req, res, next) {
     `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
     label, value, is_percentage) VALUES ?;`;
 
+
+  if(data.items){
+    var hasInventoryUuid = data.items.every(function (pi) {
+      return pi.inventory_uuid ? true : false;
+    });
+
+    if(!hasInventoryUuid){
+      throw new BadRequest(`One or more inventory_uuid are missed.`);
+    }
+  }
+
   // generate a UUID if not provided
   data.uuid = db.bid(data.uuid || uuid.v4());
   // if the client didn't send price list items, do not create them.
@@ -223,7 +235,7 @@ exports.create = function create(req, res, next) {
       uuid : uuid.unparse(data.uuid)
     });
   })
-  .catch(next)
+  .catch(function(err){console.log(err); next();})
   .done();
 };
 
@@ -273,6 +285,7 @@ exports.update = function update(req, res, next) {
 
     // only trigger price list item updates if the items have been sent back to
     // the server
+
     if (items) {
       trans.addQuery(priceListDeleteItemSql, [ uid ]);
       trans.addQuery(priceListCreateItemSql, [ items ]);

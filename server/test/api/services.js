@@ -11,7 +11,7 @@ describe('(/services) The Service API', function () {
   var newService = {
     enterprise_id : 1,
     name : 'tested Service',
-    cost_center_id : 1,
+    cost_center_id : 2,
     profit_center_id : 1
   };
 
