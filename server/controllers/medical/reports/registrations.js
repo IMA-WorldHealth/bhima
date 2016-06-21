@@ -6,17 +6,19 @@
  * matching query conditions passed from the patient registry UI grid.
  *
  * @requires path
- * @requires db
  * @requires lodash
+ * @requires moment
  * @requires BadRequest
  * @requires Patients
  * @requires renderers/json
  * @requires renderers/html
  * @requires renderers/pdf
  */
+'use strict';
 
 const path = require('path');
 const _ = require('lodash');
+const moment = require('moment');
 
 const BadRequest = require('../../../lib/errors/BadRequest');
 
@@ -42,15 +44,29 @@ const template = path.normalize('./server/controllers/medical/reports/registrati
 // Basically, to show a pretty filter bar, this will translate URL query params
 // into human-readable text to be placed in the report, showing the properties
 // filtered on.
-// TODO - make sure this is translated before being handed to the report.
-const qsTranslations = {
-  'reference' : 'TABLE.COLUMNS.REFERENCE',
-  'name' : 'TABLE.COLUMNS.NAME',
-  'dob' : 'TABLE.COLUMNS.DOB',
-  'sex' : 'TABLE.COLUMNS.GENDER',
-  'hospital_no' : 'TABLE.COLUMNS.HOSPITAL_FILE_NR',
-  'date_registered' : 'TABLE.COLUMNS.DATE_REGISTRATED',
-};
+function formatFilters(qs) {
+  const columns = [
+    { field: 'name', displayName: 'FORM.LABELS.NAME' },
+    { field: 'sex', displayName: 'FORM.LABELS.GENDER' },
+    { field: 'hospital_no', displayName: 'FORM.LABELS.HOSPITAL_NO' },
+    { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
+    { field: 'dateBirthFrom', displayName: 'FORM.LABELS.DOB', comparitor: '>', isDate: true },
+    { field: 'dateBirthTo', displayName: 'FORM.LABELS.DOB', comparitor: '<', isDate: true },
+    { field: 'dateRegistrationFrom', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', isDate: true },
+    { field: 'dateRegistrationTo', displayName: 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', isDate: true }
+  ];
+
+  return columns.filter(column => {
+    let value = qs[column.field];
+
+    if (!_.isUndefined(value)) {
+      column.value = value;
+      return true;
+    } else {
+      return false;
+    }
+  });
+}
 
 /**
  * @method build
@@ -74,17 +90,17 @@ function build(req, res, next) {
   // delete from the query string
   delete qs.renderer;
 
-  // clone the query string filters for "metadata"
+  const params = _.clone(qs);
+
   const metadata = {
-    filters: _.clone(qs),
     timestamp: new Date(),
-    filtersI18n: qsTranslations
+    filters: formatFilters(qs)
   };
 
   // enforced detailed
-  qs.detailed = 1;
+  params.detailed = 1;
 
-  Patients.find(qs)
+  Patients.find(params)
   .then(patients => renderer.render({ patients, metadata }, template, defaults))
   .then(result => {
     res.set(renderer.headers).send(result);

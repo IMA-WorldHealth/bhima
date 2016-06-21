@@ -67,6 +67,7 @@
         "CURRENT_CASHBOX" : "Caisse auxilliare courant",
         "LINK"            : "Cliquez ici pour l'ajouter.",
         "MISSING"         : "Vous ne trouvez pas votre caisse?",
+        "NO_CASHBOX_SELECTED" : "Vous avez pas sélectionné une caisse. S'il vous plaît choisir une caisse pour continuer",
         "TRANSFER"        : "Transférer Fonds"
       },
       "DEBTOR_INVOICES" : "Factures des débiteurs",
@@ -81,6 +82,8 @@
     "CONFIG_ACCOUNTS" : "Configuration comptes",
     "DANGER_ZONE"     : "Zone reservee",
     "DESCRIPTION"     : "Ce module est responsable de la gestion de caisse",
+    "NO_SUPPORTED_CURRENCIES" : "Aucune monnaie n'est configuré pour cette Cette.",
+    "SET_CURRENCY_ACCOUNTS" : "Définir la configuration des comptes des monnaie pour cette caisse.",
     "TITLE"           : "Gestion caisse"
   },
   "COUNTRY": {
@@ -173,7 +176,8 @@
   "ERRORS": {
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
-    "UNAUTHORIZED"     : "Vous avez soumis une mauvais nom et mot de passe.  Entrez un nom et mot de passe valid pour continuer."
+    "UNAUTHORIZED"     : "Vous avez soumis une mauvais nom et mot de passe.  Entrez un nom et mot de passe valid pour continuer.",
+    "UNKNOWN" : "Une erreur est survenue."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Ajout d'un taux",
@@ -233,7 +237,8 @@
       "THIS_WEEK"             : "Cette semaine",
       "THIS_YEAR"             : "Cette année",
       "TODAY"                 : "Aujourd'hui",
-      "UPDATE_PASSWORD"       : "Modifier mot de passe"
+      "UPDATE_PASSWORD"       : "Modifier mot de passe",
+      "UPDATE"                : "Mettre à jour"
     },
     "DIALOGS": {
       "CONFIRM_DELETE" : "Confirmez vous la suppression ?"
@@ -579,6 +584,13 @@
       "PAGE_NOT_FOUND"  : "La page demandée n'a pas été trouvée"
     }
   },
+  "GRAPHS" : {
+    "PATIENT_REGISTRATIONS" : "Enregistrement de patients",
+    "PATIENT_INVOICES" : "Factures de patients",
+    "MEDICINE_DISTRIBUTIONS" : "Distrubitions des médicaments",
+    "LOGINS" : "Logins",
+    "PURCHASES" : "Achats"
+  },
   "HOME": {
     "BHIMA"          : "Bhima",
     "CONNECTED_USER" : "Utilisateur Connecte",
@@ -666,28 +678,48 @@
   "PATIENT_INVOICE": {
     "BASE_PRICE_ALTERED" : "Le prix de base pour cet élément de ligne a été complétée par une liste de prix.",
     "BILLING_SERVICES"   : "Les services de facturation appliquée",
+    "BILLING_SERVICE_BREAKDOWN" : "Le service des facturations est disfonctionnel",
+    "COMBINED_SUBSIDIES" : "Les subventions combinées",
+    "DISTRIBUTION_TYPE"  : "Type des distributions",
+    "DISTRIBUTION_TYPE_EXPLANATION" : "Cette option détermine si les éléments de facturation peuvent être distribués à la pharmacie ou si elles ont déjà été consommés.",
     "INVALID_DETAILS"    : "Cette facture contient des détails invalides",
     "INVALID_ITEMS"      : "Cette facture contient des articles invalides",
-    "PAGE_TITLE"         : "Facture des patients"
+    "PAGE_TITLE"         : "Facture des patients",
+    "SUBSIDY_BREAKDOWN"  : "Subvention disfonctionnelle",
+    "SUCCESS"            : "Facture des patients enregistrés avec succès."
+
   },
   "PATIENT_RECORDS": {
+    "CHECK_IN" : {
+      "TITLE" : "Vérification",
+      "SUBMIT" : "Vérification des patients",
+      "NOT_RECENT" : "Ce patient n'a pas récemment été vérifiée, vérifier le patient pour la suivi de cette visite à l'hôpital.",
+      "ORIGINAL"  : "Ce patient n'a jamais été vérifiée.",
+      "RECENT"  : "Visites récentes",
+      "ITEM" : "Vérifiée",
+      "SUCCESS" : "Le patient a déjà été vérifié"
+    },    
     "TITLE"              : "Patients",
-    "UPLOAD_PICTURE"     : "Telecharger Photo Patient",
+    "UPLOAD_PICTURE"     : "Télécharger Photo Patient",
     "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
   },
   "PATIENT_REG": {
     "FIND_PATIENT"         : "Trouver Patient",
     "PAGE_TITLE"           : "Enregistrement des Patients",
     "PATIENT_DETAILS"      : "Détails Patient",
-    "REGISTER_PATIENT"     : "Enregistrer le Patient",
-    "TITLE"                : "Titre",
-    "VIEW_PATIENT_RECORDS" : "Voir Tous les enregistrements"
+    "PATIENT_REGISTRATIONS"   : "Enregistration des patients",
+    "REGISTER_PATIENT"        : "Enregistrer le Patient",
+    "TITLE"                   : "Titre",
+    "SUCCESS"                 : "Le patient a déjà été vérifié",
+    "VIEW_PATIENT_RECORDS"    : "Voir Tous les enregistrements",
+    "SUCCEESS"                : "Enregistrement des patient avec succès"
   },
   "PATIENT_REGISTRY" : {
     "DAY"                   : "jour",
     "DAYS"                  : "jours",
     "MONTH"                 : "mois",
     "MONTHS"                : "mois",
+    "RECORD"                : "Enregistrement",
     "YEAR_OLD"              : "an",
     "YEARS_OLD"             : "ans",
     "TITLE"                 : "Registre des patients"
@@ -823,6 +855,16 @@
     "SUPPLIER_DETAILS" : "Détails",
     "TITLE"            : "Gestion des fournisseurs"
   },
+  "SYSTEM" : {
+    "PLATFORM" : "Plate-forme",
+    "INFORMATION" : "Système d'information",
+    "CPUS" : "Nombre des processeurs Number of CPUs",
+    "MACHINE_UPTIME" : "Durée de fonctionnement du serveur",
+    "PROCESS_UPTIME" : "Durée de fonctionnement des processus",
+    "MEMORY_USAGE" : "Usage de la mémoire",
+    "VERSION": "Version",
+    "EVENTS" : "Evement système"
+  },  
   "TABLE": {
     "COLUMNS": {
       "ABBREVIATION"       : "Abbreviation",
@@ -887,11 +929,14 @@
       "PHONE"              : "Telephone",
       "POSITION"           : "Position",
       "PO_BOX"             : "Boite postale",
+      "PRICE"              : "Prix",
       "PRICE_LIST"         : "Liste de prix",
       "PROFIT"             : "Profit",
       "PROFIT_CENTER"      : "Centre de profit",
       "PROVINCE"           : "Province",
+      "QUANTITY"           : "Quantité",
       "RATE"               : "Taux",
+      "RECEIPT"            : "Reçu",
       "REF"                : "Réf.",
       "REFERENCE"          : "Référence",
       "REFERENCE_GROUP"    : "Groupe de référence",
@@ -911,6 +956,8 @@
       "TEXT"               : "Text",
       "TITLE"              : "Titre",
       "TOTAL"              : "Total",
+      "TRANSACTION_ID"     : "ID de la transaction",
+      "TRANSACTION_PRICE"  : "Coût de la Transaction",
       "TYPE"               : "Type",
       "VALUE"              : "Valeur",
       "VILLAGE"            : "Village"

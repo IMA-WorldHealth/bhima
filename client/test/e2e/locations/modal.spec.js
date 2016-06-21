@@ -9,10 +9,10 @@ describe('locations (create modal)', function () {
 
   /** location to be created */
   var newLocation = {
-    country:  'Test Country',
-    province: 'Test Province',
-    sector:   'Test Sector',
-    village:  'Test Village'
+    country:  'Test Country 2',
+    province: 'Test Province 2',
+    sector:   'Test Sector 2',
+    village:  'Test Village 2'
   };
 
   var selector = '[data-location-modal]';

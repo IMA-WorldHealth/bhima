@@ -23,12 +23,25 @@ describe('(/prices ) Price List', function () {
 
   const priceListItems = [{
     inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
-    label : 'Test $10 reduction on an item',
+    label : 'Test $11 reduction on an item',
     is_percentage : false,
     value : 10
   }, {
     inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
-    label : 'Test 12% reduction on an item',
+    label : 'Test 13% reduction on an item',
+    is_percentage : true,
+    value : 12
+  }];
+
+
+  const priceListItems2 = [{
+    inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+    label : 'Test $20 reduction on an item',
+    is_percentage : false,
+    value : 10
+  }, {
+    inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
+    label : 'Test 25% reduction on an item',
     is_percentage : true,
     value : 12
   }];
@@ -103,7 +116,7 @@ describe('(/prices ) Price List', function () {
 
   it('PUT /prices should update the (empty) price list with price list items', function () {
     return agent.put('/prices/' + emptyPriceList.uuid)
-      .send({ list : { items : priceListItems }})
+      .send({ list : { items : priceListItems2}})
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;

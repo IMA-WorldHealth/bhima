@@ -16,6 +16,7 @@
 const db    = require('../../lib/db');
 const uuid  = require('node-uuid');
 var NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 
 /**
  * Lists all price lists in the database
@@ -273,6 +274,7 @@ exports.update = function update(req, res, next) {
 
     // only trigger price list item updates if the items have been sent back to
     // the server
+
     if (items) {
       trans.addQuery(priceListDeleteItemSql, [ uid ]);
       trans.addQuery(priceListCreateItemSql, [ items ]);

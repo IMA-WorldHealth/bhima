@@ -8,9 +8,9 @@
       'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
       'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
       }"
-    autocomplete="off" 
-	autocapitalize="off" 
-	autocorrect="off" 
+    autocomplete="off"
+	autocapitalize="off"
+	autocorrect="off"
 	novalidate>
 
     <!-- inline input zone -->
@@ -111,11 +111,11 @@
             popover-append-to-body="true">
            <span class="glyphicon glyphicon-info-sign"></span>
           </a>
-          
+
           <!-- Only shown if the controller has not specified suppressReset -->
-          <a 
+          <a
             ng-if="!$ctrl.suppressReset"
-            class="btn btn-default" 
+            class="btn btn-default"
             ng-click="$ctrl.reload()">
            <span class="glyphicon glyphicon-refresh"></span>
           </a>
@@ -156,9 +156,9 @@
       <div class="form-group has-feedback"
         ng-class="{'has-success': $ctrl.loadStatus ==='loaded', 'has-error': $ctrl.loadStatus === 'error'}"
         ng-form="FindPatientForm"
-        autocomplete="off" 
-		autocapitalize="off" 
-		autocorrect="off" 
+        autocomplete="off"
+		autocapitalize="off"
+		autocorrect="off"
 		novalidate>
 
         <!-- input zone -->

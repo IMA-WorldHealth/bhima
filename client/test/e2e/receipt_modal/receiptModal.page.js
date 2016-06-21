@@ -6,7 +6,8 @@
 function ReceiptModalPage(){
     var page = this;
     
-    var closeButton = element(by.css('[data-action="close"]'));
+    var closeButton = element(by.id('receipt_modal_close'));
+
 
     function close() {
         closeButton.click();

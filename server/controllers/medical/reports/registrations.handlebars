@@ -36,7 +36,14 @@
   <p class="pills">
     {{#each metadata.filters}}
       <span class="label label-primary text-capitalize">
-        <i class="fa fa-filter"></i> {{@key}}: {{this}}
+        {{! this madness is to make sure dates are properly formatted }}
+        <i class="fa fa-filter"></i> {{translate this.displayName}}:
+
+        {{#if this.comparitor}} {{this.comparitor}} {{/if}}
+
+        {{#if this.isDate}} {{date this.value}}
+        {{else}} {{this.value}} {{/if}}
+
       </span>
     {{/each}}
   </p>

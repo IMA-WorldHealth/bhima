@@ -9,11 +9,12 @@ helpers.configure(chai);
 // These buttons depend on custom data tags to indicate actions.  This seems
 // cleaner than using a whole bunch of ids which may potentially collide.
 // However, this decision can be reviewed
-var buttons =  {
+const buttons =  {
   create: function create() { return $('[data-method="create"]').click(); },
   search: function search() { return $('[data-method="search"]').click(); },
   submit: function submit() { return $('[data-method="submit"]').click(); },
   cancel: function cancel() { return $('[data-method="cancel"]').click(); },
+  clear: function clear() { return $('[data-method="clear"]').click(); },
   back: function back() { return $('[data-method="back"]').click(); },
   delete: function delet() { return $('[data-method="delete"]').click(); }
 };

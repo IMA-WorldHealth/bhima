@@ -13,11 +13,13 @@ module.exports = {
    * Sets the date input's value to the passed in value
    *
    * @param {Date} date - a date object
-   * @param {string} id - a CSS id to select on.
-   * @param {string} elementClick - determine a css class that will clicked to close the selection component Dates.   
+   * @param {String} id - a CSS id to select on.
+   * @param {String} elementClick - determine a css class that will clicked to
+   *   close the selection component Dates.
    */
   set: function set(date, id, elementClick) {
-    var elementClick = (elementClick || '.header-image');
+    elementClick = (elementClick || '.header-image');
+
     // fail hard if the user did not pass into
     if (!(date instanceof Date)) {
       throw new TypeError('You  must provide a date object to the set() method.');
@@ -34,7 +36,6 @@ module.exports = {
     input.clear();
 
     // format the date appropriately.
-
     var year = date.getFullYear();
 
     var _month = String(date.getMonth() + 1) ;

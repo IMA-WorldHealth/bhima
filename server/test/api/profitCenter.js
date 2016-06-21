@@ -20,7 +20,7 @@ describe('(/profit_centers) Profit Center', function () {
     note : 'test inserted'
   };
 
-  var DELETABLE_PROFIT_CENTER_ID = 2;
+  var DELETABLE_PROFIT_CENTER_ID = 3;
   var FETCHABLE_PROFIT_CENTER_ID = 1;
 
   var responseKeys = [
@@ -31,7 +31,7 @@ describe('(/profit_centers) Profit Center', function () {
   it('GET /profit_centers returns a list of profit centers', function () {
     return agent.get('/profit_centers')
       .then(function (res) {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
      .catch(helpers.handler);
   });
@@ -40,7 +40,7 @@ describe('(/profit_centers) Profit Center', function () {
   it('GET /profit_centers?full=1 returns a full list of profit centers', function () {
     return agent.get('/profit_centers?full=1')
       .then(function (res) {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
