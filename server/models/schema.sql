@@ -1,4 +1,3 @@
-drop database bhima_test; create database bhima_test; use bhima_test;
 SET foreign_key_checks = 0;
 
 SET names 'utf8';
