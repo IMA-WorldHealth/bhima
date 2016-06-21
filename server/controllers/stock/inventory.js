@@ -49,7 +49,7 @@ exports.createInventoryItems    = createInventoryItems;
 exports.updateInventoryItems    = updateInventoryItems;
 exports.getInventoryItems       = getInventoryItems;
 exports.getInventoryItemsById   = getInventoryItemsById;
-exports.getInventoryItemReceipt = getInventoryItemReceipt;
+exports.getInventoryItemReport  = getInventoryItemReport;
 
 // expose inventory group methods
 exports.createInventoryGroups  = createInventoryGroups;
@@ -174,11 +174,11 @@ function getInventoryItemsById(req, res, next) {
 * GET /inventory/metadata/receipt
 * Returns a pdf file for inventory metadata
 *
-* @function getInventoryItemReceipt
+* @function getInventoryItemReport
 */
-function getInventoryItemReceipt(req, res, next) {
+function getInventoryItemReport(req, res, next) {
   'use strict';
-  
+
   let request = {
     query : req.query,
     enterprise : req.session.enterprise,
@@ -195,7 +195,7 @@ function getInventoryItemReceipt(req, res, next) {
       'html' : '"Content-Type" : "application/html"',
       'json' : '"Content-Type" : "application/json"'
     };
-    let headers = req.query ? renderer[req.query.renderer] : renderer['pdf'];
+    let headers = req.query && req.query.renderer ? renderer[req.query.renderer] : renderer['pdf'];
     res.set(headers).send(result);
   })
   .catch(next);

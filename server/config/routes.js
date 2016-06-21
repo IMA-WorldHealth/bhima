@@ -265,7 +265,7 @@ exports.configure = function configure(app) {
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
 
   // route for inventory list receipt
-  app.get('/inventory/receipts/metadata', inventory.getInventoryItemReceipt);
+  app.get('/inventory/reports/metadata', inventory.getInventoryItemReport);
 
   /**
    * @deprecated: /inventory/:uuid/metadata route

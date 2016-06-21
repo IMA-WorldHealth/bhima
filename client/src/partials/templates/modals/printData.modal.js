@@ -25,10 +25,10 @@ function PrintDataModalController(Receipts, Instance, $sce, $window, Data) {
     var fileURL = URL.createObjectURL(file);
 
     // trust and expose the file to the view to embed the PDF
-    vm.receipt = $sce.trustAsResourceUrl(fileURL);
+    vm.report = $sce.trustAsResourceUrl(fileURL);
   } else {
     // simply expose receipt object to view
-    vm.receipt = Data.renderer;
+    vm.report = Data.renderer;
   }
 
   // Instance manipulation
@@ -39,8 +39,9 @@ function PrintDataModalController(Receipts, Instance, $sce, $window, Data) {
   vm.print = function () {
     if (vm.renderer === 'pdf') {
       return $window.frames.pdf.contentWindow.print();
+    } else {
+      $window.print();
     }
-    $window.print();
     Instance.close();
   }
 

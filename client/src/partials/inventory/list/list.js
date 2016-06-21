@@ -132,7 +132,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     vm.bcButtons[2].disabled = true;
     vm.bcButtons[2].icon = 'fa fa-spinner fa-pulse';
 
-    Inventory.receipt('pdf')
+    Inventory.report('pdf')
     .then(function (result) {
       vm.receipt = result;
       return Modal.openPrinterData({ receipt: vm.receipt, renderer: 'pdf' });
