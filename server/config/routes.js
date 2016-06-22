@@ -25,6 +25,7 @@ var inventory            = require('../controllers/stock/inventory');
 var depots               = require('../controllers/stock/depot');
 var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
 var trialbalance         = require('../controllers/finance/trialbalance');
+var journal              = require('../controllers/finance/journal/index');
 var ledger               = require('../controllers/finance/ledger');
 var fiscal               = require('../controllers/finance/fiscal');
 var gl                   = require('../controllers/finance/ledgers/general');
@@ -193,6 +194,9 @@ exports.configure = function configure(app) {
   app.delete('/subsidies/:id', subsidies.remove);
 
   app.post('/consumption_loss/', consumptionLoss.execute);
+
+  // journal routes
+  app.get('/journal', journal.list);
 
   // trial balance routes
   app.post('/journal/trialbalance', trialbalance.postTrialBalance);
