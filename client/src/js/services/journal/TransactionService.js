@@ -23,7 +23,7 @@ function TransactionService($http, Store, uuid) {
   var service = this;
 
   // @todo update service to use latest posting jounral interface/ API
-  var source = '/journal_list';
+  var source = '/journal';
 
   // model to contain transactions - storing this information in a store
   // allows us to perform gets/puts based on a transactions UUID locally

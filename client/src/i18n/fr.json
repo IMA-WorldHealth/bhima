@@ -353,6 +353,7 @@
       "EDIT"                   : "Editer",
       "EMAIL"                  : "Email",
       "EMPLOYER"               : "Employeur",
+      "END"                    : "Fin",
       "END_DATE"               : "Date de fin",
       "ENTERPRISE"             : "Entreprise",
       "ENTERPRISE_ID"          : "ID entreprise",
@@ -460,6 +461,7 @@
       "SPOUSE"                 : "Nom de l'époux(se)",
       "SPOUSE_EMPLOYER"        : "Employeur(époux(se))",
       "SPOUSE_PROFESSION"      : "Profession (époux(se))",
+      "START"                  : "Début",
       "STATUS"                 : "Etat",
       "STOCK"                  : "Stock",
       "SUBSIDIES"              : "Les subventions appliqués",
@@ -698,7 +700,7 @@
       "RECENT"  : "Visites récentes",
       "ITEM" : "Vérifiée",
       "SUCCESS" : "Le patient a déjà été vérifié"
-    },    
+    },
     "TITLE"              : "Patients",
     "UPLOAD_PICTURE"     : "Télécharger Photo Patient",
     "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
@@ -864,7 +866,7 @@
     "MEMORY_USAGE" : "Usage de la mémoire",
     "VERSION": "Version",
     "EVENTS" : "Evement système"
-  },  
+  },
   "TABLE": {
     "COLUMNS": {
       "ABBREVIATION"       : "Abbreviation",
