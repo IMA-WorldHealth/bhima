@@ -198,17 +198,6 @@ exports.create = function create(req, res, next) {
     `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
     label, value, is_percentage) VALUES ?;`;
 
-
-  if(data.items){
-    var hasInventoryUuid = data.items.every(function (pi) {
-      return pi.inventory_uuid ? true : false;
-    });
-
-    if(!hasInventoryUuid){
-      throw new BadRequest(`One or more inventory_uuid are missed.`);
-    }
-  }
-
   // generate a UUID if not provided
   data.uuid = db.bid(data.uuid || uuid.v4());
   // if the client didn't send price list items, do not create them.

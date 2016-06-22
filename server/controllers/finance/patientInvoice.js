@@ -211,23 +211,11 @@ function create(req, res, next) {
   // make sure that the dates have been properly transformed before insert
   if (invoice.date) {
     invoice.date = new Date(invoice.date);
-  }else{
-    throw new BadRequest(`An invoice is not allowed to miss a date.`);
-  }
-
-  if(items.length < 1){
-    throw new BadRequest(`An invoice is not allowed to miss a items.`);
-  }
-
-  if(!invoice.description){
-    throw new BadRequest(`An invoice is not allowed to miss a description.`);
   }
 
   /** @todo - abstract this into a generic "convert" method */
   if (invoice.debtor_uuid) {
     invoice.debtor_uuid = db.bid(invoice.debtor_uuid);
-  }else{
-    throw new BadRequest(`An invoice is not allowed to miss a debtor ID.`);
   }
 
   // implicitly provide user information based on user session
