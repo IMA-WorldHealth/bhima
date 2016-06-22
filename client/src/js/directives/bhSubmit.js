@@ -27,8 +27,8 @@ function bhSubmitDirective() {
         return object && angular.isFunction(object.finally);
       }
 
-      // bind to the 'submit' event
-      $element.bind('submit', function (e) {
+      // the function is called on the 'submit' event
+      function submitEventHandler() {
 
         // start the loading state
         FormController.$toggleLoading();
@@ -50,6 +50,12 @@ function bhSubmitDirective() {
         } else {
           FormController.$toggleLoading();
         }
+
+      }
+
+      // bind to the 'submit' event, ensure a $digest loop is run
+      $element.bind('submit', function () {
+        $scope.$apply(submitEventHandler);
       });
     }
   };

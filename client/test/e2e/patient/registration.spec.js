@@ -11,8 +11,8 @@ helpers.configure(chai);
 describe('patient registration', function () {
   'use strict';
 
-  const registrationPath = '#/patients/register';
-  beforeEach(() => helpers.navigate(registrationPath));
+  const path = '#/patients/register';
+  beforeEach(() => helpers.navigate(path));
 
   const mockPatient = {
     first_name : 'Mock',
@@ -26,7 +26,7 @@ describe('patient registration', function () {
 
   const uniqueHospitalNumber = 1020;
 
-  it('successfully registers a valid patient', function (done) {
+  it('registers a valid patient', function (done) {
 
     // patient name
     FU.input('PatientRegCtrl.medical.last_name', mockPatient.last_name);
@@ -37,17 +37,15 @@ describe('patient registration', function () {
     FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
     FU.input('PatientRegCtrl.yob', mockPatient.yob);
 
+    // set the gender of the patient
+    element(by.id('male')).click();
+
     // set the locations via the "locations" array
     components.locationSelect.set(helpers.data.locations, 'origin-location-id');
     components.locationSelect.set(helpers.data.locations, 'current-location-id');
 
-    // set the gender of the patient
-    element(by.id('male')).click();
-
     // set the debtor group
-    var select = element(by.model('PatientRegCtrl.finance.debtor_group_uuid'));
-    var option = select.element(by.cssContainingText('option', 'Second Test Debtor Group'));
-    option.click();
+    FU.select('PatientRegCtrl.finance.debtor_group_uuid', 'Second Test Debtor Group');
 
     // submit the patient registration form
     FU.buttons.submit();
@@ -60,9 +58,9 @@ describe('patient registration', function () {
     FU.input('PatientRegCtrl.yob', validYear);
 
     var calculatedDOB = element(by.model('PatientRegCtrl.medical.dob')).getText();
+
     expect(calculatedDOB).to.be.defined;
     expect(calculatedDOB).to.not.be.empty;
-    // Expect required DOB (requires known formatting etc.)
   });
 
   // This test group assumes the previous mock patient has been successfully registered
@@ -72,30 +70,31 @@ describe('patient registration', function () {
     // refresh the page to make sure previous data is cleared
     before(() => browser.refresh());
 
-    it('correctly blocks invalid form submission with relevent error classes', function () {
+    it('blocks invalid form submission with relevent error classes', function () {
 
       // submit the patient registration form
       FU.buttons.submit();
 
-      // verify form has not been successfully submitted
-      expect(helpers.getCurrentPath()).to.eventually.equal(registrationPath);
+      // verify form has not been submitted
+      expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
       // the following fields should be required
       FU.validation.error('PatientRegCtrl.medical.last_name');
       FU.validation.error('PatientRegCtrl.finance.debtor_group_uuid');
       FU.validation.error('PatientRegCtrl.medical.dob');
 
-      // first name is not and title
+      // first name and title are optional
       FU.validation.ok('PatientRegCtrl.medical.first_name');
       FU.validation.ok('PatientRegCtrl.medical.title');
-      
+
       components.notification.hasDanger();
     });
 
-    it('correctly alerts for minimum and maximum dates', function () {
+    it('alerts for minimum and maximum dates', function () {
       var testMaxYear = '9000';
-      var testMinYear = '1000';
       var validYear = '2000';
+      var testMinYear = '1000';
+
 
       FU.input('PatientRegCtrl.yob', testMaxYear);
       FU.exists(by.css('[data-date-error]'), true);
@@ -107,6 +106,4 @@ describe('patient registration', function () {
       FU.exists(by.css('[data-date-error]'), true);
     });
   });
-
-  /** @TODO Test attempting to register an invalid patient - look for specific error classes and help blocks */
 });
