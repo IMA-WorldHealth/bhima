@@ -22,20 +22,30 @@ angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
-  '$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService'
+  '$rootScope', '$state', 'AccountGridService', 'AccountStoreService', 'AccountService', 'NotifyService'
 ];
 
 /**
  * Note : all flattening and depth display depends on account order, if a reorder or filter is performed this 
  * may need to be recalculated
  */
-function AccountsController($rootScope, $state, AccountStore, Accounts, Notify) { 
+function AccountsController($rootScope, $state, AccountGrid, AccountStore, Accounts, Notify) { 
   
   var vm = this;
   var initialRequestCache; 
   
   vm.targetId = $state.params.id; 
-
+  
+  vm.Accounts = new AccountGrid();
+  
+  vm.Accounts.settup()
+    .then(bindGridData)
+    .catch(Notify.handleError);
+  
+  function bindGridData() { 
+    vm.gridOptions.data = vm.Accounts.data;
+  }
+  
   /** @todo get this from constant definition */
   vm.TITLE_ACCOUNT = 4;
   vm.ROOT_ACCOUNT = 0;
@@ -80,21 +90,10 @@ function AccountsController($rootScope, $state, AccountStore, Accounts, Notify) 
     { field : 'number', displayName : '', cellClass : 'text-right', width : 70},
     { field : 'label', displayName : 'FORM.LABELS.ACCOUNT', cellTemplate : indentCellTemplate, headerCellFilter : 'translate' },
     { name : 'actions', displayName : '', cellTemplate : actionsCellTemplate, headerCellFilter : 'translate', width : 140 }
-    // { field : 'parent', displayName : 'FORM.LABELS.PARENT', headerCellFilter : 'translate' },
-    // { field : '$$treeLevel', displayName : '$$treeLevel', headerCellFilter : 'translate'}
   ];
   
   vm.gridOptions.columnDefs = columns;
   
-  AccountStore.readCache()
-    .then(function (result) { 
-      initialRequestCache = angular.copy(result);
-      
-      vm.gridOptions.data = Accounts.order(result);
-    })
-    .catch(Notify.handleError);
-
-  /** @todo split into 3 methods*/
   // insert flat 
   // build order tree 
   // insert live - this maintains the expand/ collapse state of the current tree
@@ -102,80 +101,6 @@ function AccountsController($rootScope, $state, AccountStore, Accounts, Notify) 
   // 1. insert account into correct order in the data - accounts are ordered by number implicitly when returned from the server
   // 2. build an account tree of new data set with the new account - this will ensure the hierachy is respected
   // 3. set the grids data to the newly generated flat list
-  function updateViewInsert(event, account) {
-
-    account.number = Number(account.number);
-    account.hrlabel = Accounts.label(account);
-    
-    insertAccountOrdered(initialRequestCache, account);
-    
-    // returns index and account details
-    var insertAccount = accountGroupedDetails(initialRequestCache, account);
-    
-    // insert into grid options with new account - this process ensures that previous expand/ collapse configuration
-    // remains the same
-    vm.gridOptions.data.splice(insertAccount.index, 0, insertAccount.details);
-
-    // account has been inserted, ensure relationships are updated
-    recalculateAccountChildren(insertAccount.details);
-  }
-  
-  function recalculateAccountChildren(updatedAccount) { 
-    AccountStore.store().then(function (result) {
-      
-      // update store with the updated grid store
-      result.setData(vm.gridOptions.data);
-
-      // hack - ensure children pointer relationship is maintained
-      if (updatedAccount.parent !== vm.ROOT_ACCOUNT) {
-
-        var parent = result.get(updatedAccount.parent);
-
-        parent.children = parent.children || [];
-        parent.children.push(updatedAccount);
-      }
-    })
-  }
-  
-  // function will insert a new account ordered by the appropriate number
-  function insertAccountOrdered(list, account) { 
-    var insertIndex = list.length;
-     
-    list.some(function (item, index) {
-      
-      // convert to string as this is the comparison done on the server
-      if (Number(item.number) > Number(account.number)) {
-        insertIndex = index;
-        return true;
-      }
-      return false;
-    });
-
-    list.splice(insertIndex, 0, account);
-    return list;
-  }
-  
-  // returns where and what should be inserted into an ordered list, ensuring the calculation respects groups
-  function accountGroupedDetails(list, account) { 
-     var mockGroupedList = Accounts.order(angular.copy(list));
-
-    // find placed object...
-    var targetIndex = -1;
-    var targetObject = null
-    mockGroupedList.some(function (object, index) {
-      if (object.id === account.id) {
-        targetObject = object;
-        targetIndex = index;
-        return true;
-      }
-      return false;
-    });
-    
-    return { 
-      index : targetIndex,
-      details : targetObject 
-    };
-  }
 
   // assume the only entities that can be updated here are account text (name - label) and parent
   function updateViewEdit(event, account) { 
@@ -215,6 +140,9 @@ function AccountsController($rootScope, $state, AccountStore, Accounts, Notify) 
   // parent state into the onEnter callback. for this reason $rootScope is used for now
   
   // this is implemented because it this is a very heavy page to force an entire reload
-  $rootScope.$on('ACCOUNT_CREATED', updateViewInsert);
+  
+  // AccountGrid.insertAccount
+  // AccountGrid.updateAccount
+  $rootScope.$on('ACCOUNT_CREATED', vm.Accounts.updateViewInsert.bind(vm.Accounts));
   $rootScope.$on('ACCOUNT_UPDATED', updateViewEdit);
 }

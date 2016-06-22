@@ -1,16 +1,4 @@
-function accountsModal($state, $modal) { 
-  var instance = $modal.open({
-              keyboard : false,
-              backdrop : 'static',
-              templateUrl: 'partials/accounts/edit/accounts.edit.modal.html',
-              controller: 'AccountEditController as AccountEditCtrl'
-            })
-            
-          instance.result.then(function (result) { 
-            console.log('thenned'); 
-          });
-          window.modal = $modal;
-}
+
 angular.module('bhima.routes')
   .config(['$stateProvider', function ($stateProvider) { 
     
@@ -43,4 +31,17 @@ angular.module('bhima.routes')
         },
         onEnter :['$state', '$uibModal', accountsModal]
       })
-  }])
+  }]);
+
+function accountsModal($state, $modal) { 
+  var instance = $modal.open({
+              keyboard : false,
+              backdrop : 'static',
+              templateUrl: 'partials/accounts/edit/accounts.edit.modal.html',
+              controller: 'AccountEditController as AccountEditCtrl'
+            })
+            
+          instance.result.then(function (result) { 
+            // clean up action
+          });
+}
