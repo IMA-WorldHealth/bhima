@@ -24,7 +24,7 @@ describe('Posting Journal Core', function () {
     var journal = new JournalCorePage();
 
     // @todo Test updated to test current system, updated with final mock transaction algorithm
-    expect(journal.getTotalRows()).to.eventually.be.above(initialTransactionRows);
+    expect(journal.getTotalRows()).to.eventually.be.at.least(initialTransactionRows);
   });
 
   it('reset the number of visible columns to default', function (){
