@@ -34,7 +34,7 @@
     "angular-dynamic-locale": "^0.1.30",
     "ngstorage": "^0.3.10",
     "Chart.js": "^2.1.6",
-    "angular-chart.js": "~1.0.0-alpha6",
+    "angular-chart.js": "~1.0.0-beta1",
     "components-font-awesome": "^4.6.3"
   },
   "devDependencies": {
