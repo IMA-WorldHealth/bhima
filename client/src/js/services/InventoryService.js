@@ -14,6 +14,7 @@ function InventoryService($http, util) {
   service.create = create;
   service.update = update;
   service.clean  = clean;
+  service.report = report;
 
   // FIXME this getInventoryItems function need to be deleted
   service.getInventoryItems = read;
@@ -36,6 +37,18 @@ function InventoryService($http, util) {
   function update(uuid, record) {
     return $http.put(baseUrl.concat(uuid), record)
       .then(util.unwrapHttpResponse);
+  }
+
+  /** get inventory metadata report */
+  function report(filetype) {
+    var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
+    var params = { renderer: filetype };
+
+    return $http.get('/inventory/reports/metadata', {
+      params: params,
+      responseType: responseType
+    })
+    .then(util.unwrapHttpResponse);
   }
 
   /** format data to data structure in the db */

@@ -34,7 +34,8 @@
           ng-class="a.color"
           ng-repeat="a in vm.bcButtons"
           ng-click="a.action(a.label)"
-          data-method="{{ a.dataMethod }}">
+          data-method="{{ a.dataMethod }}"
+          ng-disabled="a.disabled">
           <span class="{{ a.icon }}"></span> {{ a.label }}
         </button>
       </div>

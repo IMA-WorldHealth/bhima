@@ -39,7 +39,8 @@ function ModalService(Modal) {
   service.openDebtorInvoices = openDebtorInvoices;
   service.openTransfer = openTransfer;
   service.openUploadDocument = openUploadDocument;
-  service.openPrinterData = openPrinterData;
+  // modal for reporting
+  service.openReports = openReports;
   // inventory group action : add or edit
   service.openInventoryGroupActions = openInventoryGroupActions;
 
@@ -183,11 +184,11 @@ function ModalService(Modal) {
   /**
    * Page for printing in Modal
    */
-   function openPrinterData(request) {
+   function openReports(request) {
 
      var params = angular.extend(modalParameters, {
-       templateUrl  : 'partials/templates/modals/printData.modal.html',
-       controller   : 'PrintDataModalController',
+       templateUrl  : 'partials/templates/modals/reports.modal.html',
+       controller   : 'ReportsModalController',
        controllerAs : '$ctrl',
        size         : 'lg',
        backdrop     : 'static',
