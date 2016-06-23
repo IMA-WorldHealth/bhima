@@ -6,7 +6,7 @@ function InvoiceRegistryPage() {
   var searchButton = element(by.id('filterButton'));
   var grid = element(by.id('invoice-registry'));
   var gridRows = grid.element( by.css('.ui-grid-render-container-body')).all( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
-  var invoiceProofReference = element(by.id('receipt_modal_close')); //getting one off modal component here we have got the close button
+  var invoiceProofReference = element(by.id('receipt_modal_footer')); //getting one off modal component here we have got the footer div
 
   function getInvoiceNumber() {
     return gridRows.count();

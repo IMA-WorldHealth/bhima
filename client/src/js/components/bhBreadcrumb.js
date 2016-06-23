@@ -95,9 +95,11 @@ function BreadcrumbController() {
    */
   vm.bcDropdowns = vm.dropdown || [];
 
-  /** call the appropriate function and update the dropdown label */
+  vm.dropDownItemSelectedLabel = ''; //for the test purpose
+
+  /** call the appropriate function and update the dropdown label **/
   vm.helperDropdown = function helperDropdown(child, parent) {
-    parent.selected = child.label;
+    vm.dropDownItemSelectedLabel = parent.selected = child.label;
     child.action(child);
   };
 
