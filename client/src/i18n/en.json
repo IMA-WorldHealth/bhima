@@ -283,13 +283,15 @@
       "OTHER_ACTIONS"        : "Other Actions",
       "PATIENTS"             : "Patients",
       "PATIENT_FOUND"        : "Patient Found",
-      "PATIENT_NOT_FOUND"    : "Patient Not Found",
-      "PREVIOUS"             : "Previous",
-      "SAVE_SUCCESS"         : "Save success",
-      "SEARCH"               : "Search",
-      "UNAUTHORIZED"         : "Unauthorized",
-      "UPDATE_SUCCESS"          : "Updated successfully",
-      "VIEW_BEGINNING_BALACE"   : "View Beginning Balance"
+      "PATIENT_NOT_FOUND"           : "Patient Not Found",
+      "PATIENT_SUCC_TRANSFERRED"    : "The patient's image was successfully transferred",
+      "PREVIOUS"                    : "Previous",
+      "SAVE_SUCCESS"                : "Save success",
+      "SEARCH"                      : "Search",
+      "UNAUTHORIZED"                : "Unauthorized",
+      "UPDATE_SUCCESS"              : "Updated successfully",
+      "UPLOAD_PICTURE_FAILED"       : "The selected file is not an picture",
+      "VIEW_BEGINNING_BALACE"       : "View Beginning Balance"
     },
     "LABELS": {
       "ABBREVIATION"           : "Abréviation",
@@ -686,6 +688,7 @@
   },
   "PATIENT_RECORDS": {
     "TITLE"              : "Patients",
+    "UPDATE_PICTURE"     : "Update Patient Photo",
     "UPLOAD_PICTURE"     : "Upload Patient Photo",
     "NOT_FOUND"          : "Unable to find patient with that ID. Please check with your system administrator.",
     "CHECK_IN" : {

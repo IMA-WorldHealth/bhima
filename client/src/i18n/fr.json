@@ -282,13 +282,15 @@
       "OTHER_ACTIONS"        : "Autres actions",
       "PATIENTS"             : "Patients",
       "PATIENT_FOUND"        : "Patient Trouvé",
-      "PATIENT_NOT_FOUND"    : "Patient Non Trouvé",
-      "PREVIOUS"             : "Précédent",
-      "SAVE_SUCCESS"         : "Enregistrement avec succès",
-      "SEARCH"               : "Recherche",
-      "UNAUTHORIZED"         : "Non autorisée",
-      "UPDATE_SUCCESS"          : "Mise à jour avec succès",
-      "VIEW_BEGINNING_BALACE"   : "Aperçue de la balance d'ouverture"
+      "PATIENT_NOT_FOUND"           : "Patient Non Trouvé",
+      "PATIENT_SUCC_TRANSFERRED"    : "L'image du patient a été transféré avec succès",
+      "PREVIOUS"                    : "Précédent",
+      "SAVE_SUCCESS"                : "Enregistrement avec succès",
+      "SEARCH"                      : "Recherche",
+      "UNAUTHORIZED"                : "Non autorisée",
+      "UPDATE_SUCCESS"              : "Mise à jour avec succès",
+      "UPLOAD_PICTURE_FAILED"       : "Le fichier selectionné n'est pas une image",
+      "VIEW_BEGINNING_BALACE"       : "Aperçue de la balance d'ouverture"
     },
     "LABELS": {
       "ABBREVIATION"           : "Abbreviation",
@@ -702,6 +704,7 @@
       "SUCCESS" : "Le patient a déjà été vérifié"
     },
     "TITLE"              : "Patients",
+    "UPDATE_PICTURE"     : "Mettre à jour la Photo",
     "UPLOAD_PICTURE"     : "Télécharger Photo Patient",
     "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
   },

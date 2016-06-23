@@ -404,6 +404,7 @@ exports.configure = function configure(app) {
   app.post('/patients/:uuid/documents', upload.middleware('docs', 'documents'), patients.documents.create);
   app.delete('/patients/:uuid/documents/all', patients.documents.deleteAll);
   app.delete('/patients/:uuid/documents/:documentUuid', patients.documents.delete);
+  app.post('/patients/:uuid/pictures', upload.middleware('pics', 'pictures'), patients.pictures.set);
 
   app.get('/patients/:uuid/visits', patients.checkin.list);
   app.post('/patients/:uuid/checkin', patients.checkin.create);
