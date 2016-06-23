@@ -48,7 +48,7 @@
       </div>
     </div>
     <div class="form-group"
-         ng-class="{'has-error' : AccountForm.account.$invalid && AccountForm.$submitted}">
+         ng-class="{'has-error' : AccountForm.parent.$invalid && AccountForm.$submitted}">
       <label class="control-label">{{ "FORM.LABELS.PARENT_ACCOUNT" | translate }}</label>
       <a href ng-click="AccountEditCtrl.setRootAccount()"><i class="fa fa-level-up"></i> Set as root account</a>
       <p ng-show="AccountEditCtrl.account.parent.id === AccountEditCtrl.ROOT_ACCOUNT" class="text-info"><i class="fa fa-info-circle"></i> This is account is set as a child of the root account. This means it will be at the highest level in the chart of accounts.</p>
@@ -60,7 +60,7 @@
         typeahead-editable="false"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
         required>
-      <div class="help-block" ng-messages="AccountForm.account.$error" ng-show="AccountForm.$submitted">
+      <div class="help-block" ng-messages="AccountForm.parent.$error" ng-show="AccountForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
