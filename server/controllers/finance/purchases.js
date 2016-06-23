@@ -81,10 +81,10 @@ function lookupPurchaseOrder(uid) {
 
   let sql = `
     SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
-      p.cost, p.date, c.text AS supplier, p.user_id,
-      BUID(p.creditor_uuid) as creditor_uuid, p.note
+      p.cost, p.date, s.name AS supplier, p.user_id,
+      BUID(p.supplier_uuid) as supplier_uuid, p.note
     FROM purchase AS p
-    JOIN creditor AS c ON c.uuid = p.creditor_uuid
+    JOIN supplier AS s ON s.uuid = p.supplier_uuid
     JOIN project AS pr ON p.project_id = pr.id
     WHERE p.uuid = ?;
   `;
@@ -136,7 +136,7 @@ function create(req, res, next) {
   const puid = data.uuid || uuid.v4();
   data.uuid = db.bid(puid);
 
-  data = db.convert(data, ['creditor_uuid']);
+  data = db.convert(data, ['supplier_uuid']);
 
   if (data.date) {
     data.date = new Date(data.date);
@@ -184,19 +184,19 @@ function list(req, res, next) {
 
   sql = `
     SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
-      p.cost, p.date, BUID(p.creditor_uuid) as creditor_uuid
+      p.cost, p.date, BUID(p.supplier_uuid) as supplier_uuid
     FROM purchase AS p
-    JOIN creditor AS c ON c.uuid = p.creditor_uuid
+    JOIN supplier AS s ON s.uuid = p.supplier_uuid
     JOIN project AS pr ON p.project_id = pr.id;
   `;
 
   if (req.query.detailed === '1') {
     sql = `
       SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
-        p.cost, p.date, c.text AS supplier, p.user_id, p.note,
-        BUID(p.creditor_uuid) as creditor_uuid
+        p.cost, p.date, s.name AS supplier, p.user_id, p.note,
+        BUID(p.supplier_uuid) as supplier_uuid
       FROM purchase AS p
-      JOIN creditor AS c ON c.uuid = p.creditor_uuid
+      JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id;
     `;
   }
@@ -238,7 +238,7 @@ function update(req, res, next) {
   const sql =
     'UPDATE purchase SET ? WHERE uuid = ?;';
 
-  const data = db.convert(req.body, ['creditor_uuid']);
+  const data = db.convert(req.body, ['supplier_uuid']);
 
   // protect from updating the purchase's uuid
   delete data.uuid;

@@ -9,7 +9,7 @@ function SupplierService($http, util) {
   service.create = create;
   service.read = read;
   service.update = update;
-  service.search = search; 
+  service.search = search;
 
   function create(supplier) {
     return $http.post('/suppliers', supplier)
@@ -37,8 +37,3 @@ function SupplierService($http, util) {
 
   return service;
 }
-
-
-
-
-

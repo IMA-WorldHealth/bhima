@@ -18,9 +18,6 @@ function PurchaseOrderService($http, util) {
   /** @method read */
   service.read = read;
 
-  /** @method reference */
-  service.reference = reference;
-
 
   /**
    * Retrieves a purchase order by UUID or lists all purchases if no UUID is
@@ -35,18 +32,6 @@ function PurchaseOrderService($http, util) {
   function read(uuid, options) {
     var target = baseUrl.concat(uuid || '');
     return $http.get(target, options)
-      .then(util.unwrapHttpResponse);
-  }
-
-  /**
-   * Searches for a particular purchase order by its reference
-   *
-   * @param {string} ref - the reference to search for
-   * @returns {promise} promise - a resolved or rejected result from the server
-   */
-  function reference(ref) {
-    var target = baseUrl + 'references/' + ref;
-    return $http.get(target)
       .then(util.unwrapHttpResponse);
   }
 

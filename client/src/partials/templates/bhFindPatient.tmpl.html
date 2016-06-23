@@ -1,6 +1,6 @@
 <div ng-switch="type" data-find-patient>
 
-  <!-- Inline Find Patient Directive UI  -->
+  <!-- inline Find Patient Directive UI  -->
   <div class="form-group has-feedback"
     ng-switch-default
     ng-form="FindPatientForm"
@@ -9,9 +9,9 @@
       'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
       }"
     autocomplete="off"
-	autocapitalize="off"
-	autocorrect="off"
-	novalidate>
+    autocapitalize="off"
+    autocorrect="off"
+    novalidate>
 
     <!-- inline input zone -->
     <div class="input-group" ng-if="$ctrl.showSearchView">
