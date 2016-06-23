@@ -26,7 +26,7 @@
     <div class="form-group"
          ng-class="{'has-error' : AccountForm.number.$invalid && AccountForm.$submitted}">
       <label class="control-label">Number</label>
-      <input class="form-control" ng-model="AccountEditCtrl.account.number" name="number" required>
+      <input class="form-control" ng-model="AccountEditCtrl.account.number" name="number" bh-integer required>
       <div class="help-block" ng-messages="AccountForm.number.$error" ng-show="AccountForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
@@ -50,7 +50,7 @@
     <div class="form-group"
          ng-class="{'has-error' : AccountForm.parent.$invalid && AccountForm.$submitted}">
       <label class="control-label">{{ "FORM.LABELS.PARENT_ACCOUNT" | translate }}</label>
-      <a href ng-click="AccountEditCtrl.setRootAccount()"><i class="fa fa-level-up"></i> Set as root account</a>
+      <a href ng-click="AccountEditCtrl.setRootAccount(AccountForm)"><i class="fa fa-level-up"></i> Set as root account</a>
       <p ng-show="AccountEditCtrl.account.parent.id === AccountEditCtrl.ROOT_ACCOUNT" class="text-info"><i class="fa fa-info-circle"></i> This is account is set as a child of the root account. This means it will be at the highest level in the chart of accounts.</p>
       <input
         class="form-control"
@@ -68,13 +68,20 @@
 </div>
 
 <div class="modal-footer">
+  <div>
+    <p ng-if="AccountForm.$submitted && AccountForm.$pristine && !AccountEditCtrl.isCreateState" class="text-warning"><i class="fa fa-warning"></i> Nothing has changed on this form</p>
+    <p ng-if="AccountForm.$submitted && AccountForm.$invalid" class="text-danger"><i class="fa fa-exclamation-circle"></i> There is an error on this form (marked in red)</p>
+    <!--p class="text-danger"><i class="fa fa-exclamation-circle"></i> Unable to delete the account</p-->
+    <p ng-if="AccountEditCtrl.error" class="text-danger"><i class="fa fa-exclamation-circle"></i> {{AccountEditCtrl.error.data.code | translate}}</p>
+
+  </div>
   <div class="checkbox" style="display : inline-block" ng-if="AccountEditCtrl.isCreateState">
     <label>
-      <input type="checkbox"> Create another account
+      <input type="checkbox" ng-model="AccountEditCtrl.batchCreate"> Create another account
     </label>
   </div>
   <button class="btn btn-default btn-sm" ng-click="AccountEditCtrl.close()" data-action="close">Close</button>
-  <button class="btn btn-primary btn-sm" ng-click="AccountEditCtrl.updateAccount(AccountForm)" data-action="close">
+  <button ng-disabled="AccountEditCtrl.accountFailed" class="btn btn-primary btn-sm" ng-click="AccountEditCtrl.updateAccount(AccountForm)" data-action="close">
     <span ng-if="AccountEditCtrl.isCreateState">Create Account</span>
     <span ng-if="!AccountEditCtrl.isCreateState">Update Account</span>
   </button>
