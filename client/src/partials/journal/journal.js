@@ -2,8 +2,9 @@ angular.module('bhima.controllers')
 .controller('JournalController', JournalController);
 
 JournalController.$inject = [
-  'TransactionService', 'JournalSortingService', 'JournalGroupingService',
-  'JournalPaginationService', 'JournalFilteringService', 'JournalColumnConfigService'
+  'TransactionService', 'JournalService', 'JournalSortingService', 'JournalGroupingService',
+  'JournalPaginationService', 'JournalFilteringService', 'JournalColumnConfigService',
+  'NotifyService'
 ];
 
 /**
@@ -30,15 +31,15 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Transactions, Sorting, Grouping, Pagination, Filtering, ColumnConfig, Modal) {
+function JournalController(Transactions, Journal, Sorting, Grouping, Pagination, Filtering, ColumnConfig, Notify) {
   var vm = this;
 
   // Journal utilites
   var sorting, grouping, pagination, filtering, columnConfig;
 
   //column list
-  var columns = null; 
-  
+  var columns = null;
+
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
@@ -55,8 +56,14 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
 
 
   // bind the transactions service to populate the grid component
-  vm.gridOptions.data = Transactions.list.data;
- 
+
+  // Popoulate the grid with posting journal data
+  Journal.read()
+  .then(function (list) {
+    vm.gridOptions.data = list;
+  })
+  .catch(Notify.errorHandler);
+
   /**
    * Column defintions; specify the configuration and behaviour for each column
    * in the journal grid. Initialise each of the journal utilities,
@@ -80,43 +87,44 @@ function JournalController(Transactions, Sorting, Grouping, Pagination, Filterin
   */
 
   columns = [
-    { field : 'uuid', displayName : 'ID'},
-    { field : 'project_name', displayName : 'Project'},
-    { field : 'period_summary', displayName : 'Period'},
-    { field : 'trans_date', displayName : 'Date', cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
-    { field : 'description', displayName : 'Description' },
-    { field : 'account_number', displayName : 'Account' },
-    { field : 'debit_equiv', displayName : 'Debit' },
-    { field : 'credit_equiv', displayName : 'Credit' },
-    { field : 'trans_id', 
-      displayName : 'Transaction', 
+    { field : 'uuid', displayName : 'TABLE.COLUMNS.ID', headerCellFilter: 'translate' },
+    { field : 'project_name', displayName : 'TABLE.COLUMNS.PROJECT', headerCellFilter: 'translate' },
+    { field : 'period_end', displayName : 'TABLE.COLUMNS.PERIOD', headerCellFilter: 'translate' , cellTemplate : 'partials/templates/bhPeriod.tmpl.html' },
+    { field : 'trans_date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate' , cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
+    { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
+    { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
+    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate'  },
+    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate' },
+    { field : 'trans_id',
+      displayName : 'TABLE.COLUMNS.TRANSACTION',
+      headerCellFilter: 'translate' ,
       sortingAlgorithm : sorting.transactionIds,
       sort : { priority : 0, direction : 'asc' },
       grouping : { groupPriority : 0 }
     },
-  
-    // @todo this should be formatted as a currency icon vs. an ID
-    { field : 'currency_id', displayName : 'Currency'},
-    
-    // @todo this should be formatted showing the debitor/credior
-    { field : 'entity_uuid', displayName : 'Recipient'}, 
-    { field : 'entity_type', displayName : 'Recipient Type'}, 
 
-    { field : 'reference_uuid', displayName : 'Reference Document'},
-    { field : 'record_uuid', displayName : 'Reference Document'},
-    { field : 'user', displayName : 'Responsible'},
-    
+    // @todo this should be formatted as a currency icon vs. an ID
+    { field : 'currency_id', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate' },
+
+    // @todo this should be formatted showing the debitor/credior
+    { field : 'entity_uuid', displayName : 'TABLE.COLUMNS.RECIPIENT', headerCellFilter: 'translate' },
+    { field : 'entity_type', displayName : 'TABLE.COLUMNS.RECIPIENT_TYPE', headerCellFilter: 'translate' },
+
+    { field : 'reference_uuid', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
+    { field : 'record_uuid', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate' },
+    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate' },
+
     // @fixme this field should not come from the database as 'cc'
-    { field : 'cc_id', displayName : 'Cost Center'},
-    { field : 'pc_id', displayName : 'Profit Center'}
+    { field : 'cc_id', displayName : 'TABLE.COLUMNS.COST_CENTER', headerCellFilter: 'translate' },
+    { field : 'pc_id', displayName : 'TABLE.COLUMNS.PROFIT_CENTER', headerCellFilter: 'translate' }
   ];
 
   vm.gridOptions.columnDefs = columns;
 
-  
+
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
-    columnConfig.openColumnConfigModal();      
+    columnConfig.openColumnConfigModal();
   };
 
 }

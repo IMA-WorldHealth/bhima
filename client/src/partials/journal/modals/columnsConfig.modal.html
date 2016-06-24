@@ -6,9 +6,9 @@
 
   <div class="modal-body">
 
-    <p class="text-info">      
+    <p class="text-info">
       {{ "POSTING_JOURNAL.COLUMNS_CONFIG.HELP" | translate }}
-    </p>   
+    </p>
 
     <hr/>
 
@@ -20,7 +20,7 @@
               type="checkbox"
               name="is_visible"
               data-journal-column-option="{{ col.field }}"
-              ng-model="col.visible"> {{col.displayName}}
+              ng-model="col.visible"> {{ col.displayName | translate }}
           </label>
         </div>
       </div>
@@ -32,7 +32,7 @@
               type="checkbox"
               name="is_visible"
               data-journal-column-option="{{ coll.field }}"
-              ng-model="col.visible"> {{col.displayName}}
+              ng-model="col.visible"> {{ col.displayName | translate }}
           </label>
         </div>
       </div>
@@ -57,9 +57,6 @@
       data-columns-config-submit
       >
       {{ "FORM.BUTTONS.SUBMIT" | translate }}
-    </button>    
+    </button>
   </div>
 </form>
-
-
-

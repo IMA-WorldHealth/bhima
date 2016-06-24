@@ -77,6 +77,7 @@ const referenceGroup   = require('../controllers/finance/referenceGroup');
 const sectionResultats = require('../controllers/finance/sectionResultat');
 const sectionBilans    = require('../controllers/finance/sectionBilan');
 const creditors        = require('../controllers/finance/creditors.js');
+const journal          = require('../controllers/finance/journal');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -193,6 +194,9 @@ exports.configure = function configure(app) {
   app.put('/subsidies/:id', subsidies.update);
   app.delete('/subsidies/:id', subsidies.remove);
 
+  // journal routes
+  app.get('/journal', journal.list);
+
   // trial balance routes
   app.post('/journal/trialbalance', trialbalance.postTrialBalance);
   app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
@@ -239,6 +243,9 @@ exports.configure = function configure(app) {
   app.get('/inventory/metadata', inventory.getInventoryItems);
   app.get('/inventory/metadata/:uuid', inventory.getInventoryItemsById);
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
+
+  // route for inventory list receipt
+  app.get('/inventory/reports/metadata', inventory.getInventoryItemReport);
 
   /**
    * @deprecated: /inventory/:uuid/metadata route
@@ -365,6 +372,7 @@ exports.configure = function configure(app) {
   app.post('/patients/:uuid/documents', upload.middleware('docs', 'documents'), patients.documents.create);
   app.delete('/patients/:uuid/documents/all', patients.documents.deleteAll);
   app.delete('/patients/:uuid/documents/:documentUuid', patients.documents.delete);
+  app.post('/patients/:uuid/pictures', upload.middleware('pics', 'pictures'), patients.pictures.set);
 
   app.get('/patients/:uuid/visits', patients.checkin.list);
   app.post('/patients/:uuid/checkin', patients.checkin.create);

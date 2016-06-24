@@ -284,13 +284,15 @@
       "OTHER_ACTIONS"        : "Other Actions",
       "PATIENTS"             : "Patients",
       "PATIENT_FOUND"        : "Patient Found",
-      "PATIENT_NOT_FOUND"    : "Patient Not Found",
-      "PREVIOUS"             : "Previous",
-      "SAVE_SUCCESS"         : "Save success",
-      "SEARCH"               : "Search",
-      "UNAUTHORIZED"         : "Unauthorized",
-      "UPDATE_SUCCESS"          : "Updated successfully",
-      "VIEW_BEGINNING_BALACE"   : "View Beginning Balance"
+      "PATIENT_NOT_FOUND"           : "Patient Not Found",
+      "PATIENT_SUCC_TRANSFERRED"    : "The patient's image was successfully transferred",
+      "PREVIOUS"                    : "Previous",
+      "SAVE_SUCCESS"                : "Save success",
+      "SEARCH"                      : "Search",
+      "UNAUTHORIZED"                : "Unauthorized",
+      "UPDATE_SUCCESS"              : "Updated successfully",
+      "UPLOAD_PICTURE_FAILED"       : "The selected file is not an picture",
+      "VIEW_BEGINNING_BALACE"       : "View Beginning Balance"
     },
     "LABELS": {
       "ABBREVIATION"           : "Abréviation",
@@ -355,6 +357,7 @@
       "EDIT"                   : "Edit",
       "EMAIL"                  : "Email",
       "EMPLOYER"               : "Employer",
+      "END"                    : "End",
       "END_DATE"               : "End Date",
       "ENTERPRISE"             : "Enterprise",
       "ENTERPRISE_ID"          : "ID enterprise",
@@ -466,6 +469,7 @@
       "SPOUSE"                 : "Spouse's Name",
       "SPOUSE_EMPLOYER"        : "Spouse's Employer",
       "SPOUSE_PROFESSION"      : "Spouse's Occupation",
+      "START"                  : "Start",
       "STATUS"                 : "Status",
       "STOCK"                  : "Stock",
       "SUBSIDIES"              : "Subsidies Applied",
@@ -503,7 +507,7 @@
       "CREATION" : "Creation",
       "EDITION"  : "Edition"
     },
-    "PLACE_HOLDERS": {
+    "PLACEHOLDERS": {
       "ENTER_ACCOUNT"      : "Enter account",
       "ENTER_CODE"         : "Enter code",
       "ENTER_COUNTRY"      : "Enter Country",
@@ -586,6 +590,7 @@
       "UNIQUE"         : "This field must be unique. This value is already taken."
     },
     "WARNNINGS": {
+      "BAD_FILE_TYPE"   : "Bad file type",
       "EMPTY_SELECTION" : "Empty Selection",
       "NOT_AUTHORISED"  : "The requested page is not authorised",
       "NOT_FOUND"       : "Not found",
@@ -691,6 +696,7 @@
   },
   "PATIENT_RECORDS": {
     "TITLE"              : "Patients",
+    "UPDATE_PICTURE"     : "Update Patient Photo",
     "UPLOAD_PICTURE"     : "Upload Patient Photo",
     "NOT_FOUND"          : "Unable to find patient with that ID. Please check with your system administrator.",
     "CHECK_IN" : {
@@ -934,6 +940,7 @@
       "PATIENT"            : "Patient",
       "PATIENT_ID"         : "ID Patient",
       "PERCENT"            : "Percentage",
+      "PERIOD"             : "Period",
       "PHONE"              : "Telephone",
       "POSITION"           : "Position",
       "PO_BOX"             : "Poste Office Box",
@@ -941,15 +948,20 @@
       "PRICE_LIST"         : "Price List",
       "PROFIT"             : "Profit",
       "PROFIT_CENTER"      : "Profit Center",
+      "PROJECT"            : "Project",
       "PROVINCE"           : "Province",
       "RATE"               : "Rate",
+      "RECEIPT"            : "Receipt",
+      "RECIPIENT"          : "Recipient",
+      "RECIPIENT_TYPE"     : "Recipient Type",
+      "RECORD"             : "Record",
       "REF"                : "Ref.",
       "REFERENCE"          : "Reference",
       "REFERENCE_GROUP"    : "Reference Group",
       "REF_GROUP"          : "Ref. Groupe",
+      "RESPONSIBLE"        : "Responsible",
       "RESULT"             : "Result",
       "RESULT_ACCOUNT_SCT" : "Result Account section",
-      "RECEIPT"            : "Receipt",
       "SECTOR"             : "Sector",
       "SERVICE"            : "Service",
       "SORTING": {
@@ -963,6 +975,7 @@
       "TEXT"               : "Text",
       "TITLE"              : "Title",
       "TOTAL"              : "Total",
+      "TRANSACTION"        : "Transaction",
       "TRANSACTION_ID"     : "Transaction ID",
       "TRANSACTION_PRICE"  : "Transaction Price",
       "TYPE"               : "Type",

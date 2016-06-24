@@ -10,7 +10,7 @@ helpers.configure(chai);
  *
  * This test suite implements full CRUD on the /purchases HTTP API endpoint.
  */
-  describe('(/purchases) Purchases', () => {
+describe('(/purchases) Purchases', () => {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 

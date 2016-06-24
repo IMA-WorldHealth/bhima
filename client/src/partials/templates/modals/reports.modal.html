@@ -1,0 +1,35 @@
+<div class="modal-body bh-print">
+
+  <!-- PDF -->
+  <div ng-if="$ctrl.renderer === 'pdf'">
+    <iframe
+      id="pdf"
+      ng-src="{{$ctrl.report}}"
+      type="application/pdf"
+      style="width : 100%; height : 50vh; border : none;">
+    </iframe>
+  </div>
+
+  <!-- HTML -->
+  <div ng-if="$ctrl.renderer === 'html'">
+    <div class="bh-modal-content">
+      <div ng-bind-html="$ctrl.report"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="$ctrl.close()">
+    {{ "FORM.BUTTONS.CLOSE" | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    ng-click="$ctrl.print()">
+    {{ "FORM.BUTTONS.PRINT" | translate }}
+  </button>
+</div>

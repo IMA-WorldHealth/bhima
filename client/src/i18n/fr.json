@@ -257,6 +257,7 @@
     },
     "INFOS": {
       "BY"                   : "Par",
+      "CLEAR_FILTERS"        : "Rafraîchir le filtre",
       "CLOSE_FISCAL_YEAR"    : "Clôturer l'année fiscale",
       "CLOSED"               : "Fermée",
       "CREATED"              : "Crée",
@@ -282,13 +283,15 @@
       "OTHER_ACTIONS"        : "Autres actions",
       "PATIENTS"             : "Patients",
       "PATIENT_FOUND"        : "Patient Trouvé",
-      "PATIENT_NOT_FOUND"    : "Patient Non Trouvé",
-      "PREVIOUS"             : "Précédent",
-      "SAVE_SUCCESS"         : "Enregistrement avec succès",
-      "SEARCH"               : "Recherche",
-      "UNAUTHORIZED"         : "Non autorisée",
-      "UPDATE_SUCCESS"          : "Mise à jour avec succès",
-      "VIEW_BEGINNING_BALACE"   : "Aperçue de la balance d'ouverture"
+      "PATIENT_NOT_FOUND"           : "Patient Non Trouvé",
+      "PATIENT_SUCC_TRANSFERRED"    : "L'image du patient a été transféré avec succès",
+      "PREVIOUS"                    : "Précédent",
+      "SAVE_SUCCESS"                : "Enregistrement avec succès",
+      "SEARCH"                      : "Recherche",
+      "UNAUTHORIZED"                : "Non autorisée",
+      "UPDATE_SUCCESS"              : "Mise à jour avec succès",
+      "UPLOAD_PICTURE_FAILED"       : "Le fichier selectionné n'est pas une image",
+      "VIEW_BEGINNING_BALACE"       : "Aperçue de la balance d'ouverture"
     },
     "LABELS": {
       "ABBREVIATION"           : "Abbreviation",
@@ -353,6 +356,7 @@
       "EDIT"                   : "Editer",
       "EMAIL"                  : "Email",
       "EMPLOYER"               : "Employeur",
+      "END"                    : "Fin",
       "END_DATE"               : "Date de fin",
       "ENTERPRISE"             : "Entreprise",
       "ENTERPRISE_ID"          : "ID entreprise",
@@ -460,6 +464,7 @@
       "SPOUSE"                 : "Nom de l'époux(se)",
       "SPOUSE_EMPLOYER"        : "Employeur(époux(se))",
       "SPOUSE_PROFESSION"      : "Profession (époux(se))",
+      "START"                  : "Début",
       "STATUS"                 : "Etat",
       "STOCK"                  : "Stock",
       "SUBSIDIES"              : "Les subventions appliqués",
@@ -496,7 +501,7 @@
       "CREATION" : "Creation",
       "EDITION"  : "Edition"
     },
-    "PLACE_HOLDERS": {
+    "PLACEHOLDERS": {
       "ENTER_ACCOUNT"      : "Entrer le compte",
       "ENTER_CODE"         : "Entrer le code",
       "ENTER_COUNTRY"      : "Entrer le nom pays",
@@ -561,6 +566,7 @@
       "DATE"           : "Date mal saisie",
       "DATE_MAX"       : "Cette date est fixée trop loin dans le future.",
       "DATE_MIN"       : "Cette date est trop loin dans le passé.",
+      "DATE_RANGE"     : "This date is outside the allowed range.",
       "DATE_REQUIRED"  : "Cette date est nécessaire.",
       "EMAIL"          : "Email mal saisie",
       "EXCEPTION"      : "Il y avait un problème de validation avec ce champ. S'il vous plaît vérifier votre connexion Internet.",
@@ -578,6 +584,7 @@
       "UNIQUE"         : "Ce champ doit être unique. Cette valeur a déjà été utilisée."
     },
     "WARNNINGS": {
+      "BAD_FILE_TYPE"   : "Type de fichier incorrect",
       "EMPTY_SELECTION" : "Sélection vide",
       "NOT_AUTHORISED"  : "La page demandée n'est pas autorisée",
       "NOT_FOUND"       : "Non trouvee",
@@ -698,8 +705,9 @@
       "RECENT"  : "Visites récentes",
       "ITEM" : "Vérifiée",
       "SUCCESS" : "Le patient a déjà été vérifié"
-    },    
+    },
     "TITLE"              : "Patients",
+    "UPDATE_PICTURE"     : "Mettre à jour la Photo",
     "UPLOAD_PICTURE"     : "Télécharger Photo Patient",
     "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
   },
@@ -864,7 +872,7 @@
     "MEMORY_USAGE" : "Usage de la mémoire",
     "VERSION": "Version",
     "EVENTS" : "Evement système"
-  },  
+  },
   "TABLE": {
     "COLUMNS": {
       "ABBREVIATION"       : "Abbreviation",
@@ -926,6 +934,7 @@
       "PATIENT"            : "Patient",
       "PATIENT_ID"         : "Patient Id",
       "PERCENT"            : "Pourcentage",
+      "PERIOD"             : "Période",
       "PHONE"              : "Telephone",
       "POSITION"           : "Position",
       "PO_BOX"             : "Boite postale",
@@ -933,14 +942,19 @@
       "PRICE_LIST"         : "Liste de prix",
       "PROFIT"             : "Profit",
       "PROFIT_CENTER"      : "Centre de profit",
+      "PROJECT"            : "Projet",
       "PROVINCE"           : "Province",
       "QUANTITY"           : "Quantité",
       "RATE"               : "Taux",
       "RECEIPT"            : "Reçu",
+      "RECIPIENT"          : "Recepteur",
+      "RECIPIENT_TYPE"     : "Type",
+      "RECORD"             : "Enregistrement",
       "REF"                : "Réf.",
       "REFERENCE"          : "Référence",
       "REFERENCE_GROUP"    : "Groupe de référence",
       "REF_GROUP"          : "Groupe de Réf.",
+      "RESPONSIBLE"        : "Responsable",
       "RESULT"             : "Resultat",
       "RESULT_ACCOUNT_SCT" : "Section Compte Résultat",
       "SECTOR"             : "Secteur",
@@ -956,6 +970,7 @@
       "TEXT"               : "Text",
       "TITLE"              : "Titre",
       "TOTAL"              : "Total",
+      "TRANSACTION"        : "Transaction",
       "TRANSACTION_ID"     : "ID de la transaction",
       "TRANSACTION_PRICE"  : "Coût de la Transaction",
       "TYPE"               : "Type",
