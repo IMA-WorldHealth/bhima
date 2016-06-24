@@ -12,23 +12,60 @@ PrototypeApiService.$inject = ['$http', 'util'];
  * that are required for each.  Full CRUD is implemented in this service,
  * extending from a base url.
  *
- * Child services are expected to use angular.extend() to inherit the basic
- * methods and properties from this service.
+ * Child services are expected to call this prototype service directly to
+ * inherit the methods and properties from this service.
+ *
+ * @example
+ * var service = new PrototypeApiService('/interface');
+ *
+ * // You can now use service.create(), service.update(), service.delete(),
+ * // service.read(), and service.search() without any extra work!
+ *
+ * service.create(data).then(function (res) {
+ *   // Yay!  Create success!
+ * })
+ * .catch(function (err) {
+ *   // oh no!  Some error occurred!
+ * });
+ *
+ * service.get(id).then(function (res) {
+ *   // Yay!  Got an object!
+ * }).catch(function (err) {
+ *   // oops.  Something strange happened...
+ * });
  *
  * @requires $http
  * @requires util
  */
 function PrototypeApiService($http, util) {
 
-  /** bind the required $http and util services */
-  this.$http = $http;
-  this.$util = util;
+  // will be passed back as the prototype API service
+  function Api(url) {
 
-  // basic API methods
-  this.create = create;
-  this.read = read;
-  this.update = update;
-  this.delete = remove;
+    // if the developer forgot to call new, call it for them
+    if (!(this instanceof Api)) {
+      return new Api(url);
+    }
+
+    angular.extend(this, { url : url });
+  }
+
+  // bind methods to the prototype
+  Api.prototype.create = create;
+  Api.prototype.read = read;
+  Api.prototype.update = update;
+  Api.prototype.delete = remove;
+  Api.prototype.search = search;
+  Api.prototype.$http = $http;
+  Api.prototype.util = util;
+
+  // bind functions directly for ease of calling in services which need to
+  // modify the functions before executing them.
+  Api.create = create;
+  Api.read = read;
+  Api.update = update;
+  Api.delete = remove;
+  Api.search = search;
 
   /**
    * @method read
@@ -72,7 +109,7 @@ function PrototypeApiService($http, util) {
     var target = this.url.concat(id || '');
 
     // send the GET request
-    return this.$http.get(target, { params : parameters })
+    return $http.get(target, { params : parameters })
       .then(util.unwrapHttpResponse);
   }
 
@@ -104,7 +141,7 @@ function PrototypeApiService($http, util) {
     var target = this.url.concat(id);
 
     // send the PUT request
-    return this.$http.put(target, data)
+    return $http.put(target, data)
       .then(util.unwrapHttpResponse);
   }
 
@@ -131,7 +168,7 @@ function PrototypeApiService($http, util) {
     var target = this.url;
 
     // send the POST request
-    return this.$http.post(target, data)
+    return $http.post(target, data)
       .then(util.unwrapHttpResponse);
   }
 
@@ -147,8 +184,8 @@ function PrototypeApiService($http, util) {
    * @returns {Promise} - the promise with the identifier from the database
    *
    * @example
-   * // POST data to the url "/route"
-   * service.create({ text : "Hello World!" }).then(function (data) {
+   * // DELETE data with "id" from "/route" interface
+   * service.delete({ text : "Hello World!" }).then(function (data) {
    *   // data an object containing the identifier.  Usually "id" or "uuid"
    * });
    */
@@ -158,7 +195,36 @@ function PrototypeApiService($http, util) {
     var target = this.url.concat(id);
 
     // send the DELETE request
-    return this.$http.delete(target)
+    return $http.delete(target)
       .then(util.unwrapHttpResponse);
   }
+
+  /**
+   * @method search
+   *
+   * @description
+   * Sends an HTTP GET request to the url "/route/search" with properly formatted
+   * query strings to query the database. The expected response is a `200 OK`
+   * HTTP status code.
+   *
+   * @param {Object} parameters - the query conditions to filter data in the database
+   * @returns {Promise} - the promise with the identifier from the database
+   *
+   * @example
+   * // GET "/route/search" with formatted query strings
+   * service.search({ text : "Hello World!" }).then(function (data) {
+   *   // data an object containing the identifier.  Usually "id" or "uuid"
+   * });
+   */
+  function search(parameters) {
+
+    // append 'search' to the base url
+    var target = this.url.concat('search');
+
+    // return the query to the controller
+    return $http.get(target, { params : parameters })
+      .then(util.unwrapHttpResponse);
+  }
+
+  return Api;
 }

@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('FiscalService', FiscalService);
 
-FiscalService.$inject = ['PrototypeApiService', '$http', 'util'];
+FiscalService.$inject = [ 'PrototypeApiService' ];
 
 /**
  * @class FiscalService
@@ -12,35 +12,25 @@ FiscalService.$inject = ['PrototypeApiService', '$http', 'util'];
  *
  * @requires PrototypeApiService
  */
-function FiscalService(PrototypeApiService, $http, util) {
-  var service = this;
+function FiscalService(Api) {
 
-  // inherit from the PrototypeApiService
-  angular.extend(service, PrototypeApiService);
+  // extend the PrototypeApiService with fiscal routes
+  var service = new Api('/fiscal/');
 
-  // the service URL
-  service.url = '/fiscal/';
   service.fiscalYearDate = fiscalYearDate;
-  service.create = create;
-
 
   /**
-  * To get a Fiscal Year by Date
-  *
-  **/
+   * @method fiscalYearDate
+   *
+   * @description
+   * Find the fiscal year for a given date.
+   */
   function fiscalYearDate(params) {
     var url = service.url.concat('date');
-        
-    return $http.get(url, { params : params })
-      .then(util.unwrapHttpResponse);
-  }
 
-  /**
-   * Wraps the prototype create method.
-   */
-  function create(fiscal) {
-    return PrototypeApiService.create.call(service, fiscal);
-  }  
+    return service.$http.get(url, { params : params })
+      .then(service.util.unwrapHttpResponse);
+  }
 
   return service;
 }

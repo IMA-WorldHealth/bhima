@@ -3,11 +3,15 @@ angular.module('bhima.services')
 
 PriceListService.$inject = ['PrototypeApiService'];
 
-function PriceListService(PrototypeApiService) {
-  var service = this;
-
-  // extend with the prototype methods
-  angular.extend(service, PrototypeApiService, { url : '/prices/' });
+/**
+ * @class PriceListService
+ * @extends PrototypeApiService
+ *
+ * @description
+ * Encapsulates common requests to the /prices/ URL.
+ */
+function PriceListService(Api) {
+  var service = new Api('/prices/');
 
   service.create = create;
   service.update = update;
@@ -18,7 +22,7 @@ function PriceListService(PrototypeApiService) {
    * @description
    * This method creates a price list in the database.
    *
-   * @param {object} price list, price list to create
+   * @param {Object} priceList - price list to create
    *
    * @example
    * service.create(priceList)
@@ -27,24 +31,25 @@ function PriceListService(PrototypeApiService) {
    *  });
    */
   function create(list) {
-    return PrototypeApiService.create.call(service, { list : list });
+    return Api.create.call(service, { list : list });
   }
 
   /**
    * @method update
    *
-   * @param {Integer} id, price list id to update
-   * @param {Object} price list, price list to update
+   * @param {String} uuid -  price list uuid to update
+   * @param {Object} priceList -  price list to update
    *
    * @example
-   * service.update(id, price list)
+   * service.update(id, priceList)
    * .then(function (res){
    *   your code here
    *  });
    */
   function update(uuid, list) {
     delete list.created_at;
-    return PrototypeApiService.update.call(service, uuid, { list : list });
+
+    return Api.update.call(service, uuid, { list : list });
   }
 
   return service;
