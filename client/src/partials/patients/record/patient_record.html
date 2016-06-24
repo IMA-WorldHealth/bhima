@@ -64,11 +64,11 @@
 
               <div class="col-sm-4">
                 <div style="border : 1px solid #ccc; height : 200px;">
-                  <div ng-if="!PatientRecordCtrl.patient.picture_patient" style="text-align : center;">
+                  <div ng-if="!PatientRecordCtrl.patient.avatar" style="text-align : center;">
                     <span style="font-size : 3em; color : #ccc; padding-top: 70px;" class="glyphicon glyphicon-picture"></span>
                   </div>
-                  <div ng-if="PatientRecordCtrl.patient.picture_patient" style="text-align : center;">
-                    <img ng-src="{{ PatientRecordCtrl.patient.picture_patient }}" width="120"> 
+                  <div ng-if="PatientRecordCtrl.patient.avatar" style="text-align : center;">
+                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}" width="120"> 
                   </div>
                 </div>
 

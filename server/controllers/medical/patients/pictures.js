@@ -28,7 +28,7 @@ exports.set = set;
  *
  * @description
  * This method checked if req.files.length is isset
- * Update the field picture_patient in table patient
+ * Update the field avatar in table patient
  * Transfert the field in Server
  *
  * POST /patients/:uuid/pictures
@@ -43,7 +43,7 @@ function set(req, res, next) {
 
   var data = {};
 
-  data.picture_patient = req.files[0].link;
+  data.avatar = req.files[0].link;
 
   var buid = db.bid(req.params.uuid);
 

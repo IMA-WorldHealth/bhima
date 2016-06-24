@@ -211,7 +211,7 @@ function handleFetchPatient(patientUuid) {
       p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
       BUID(p.origin_location_id) as origin_location_id, CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
-      p.spouse_profession, p.spouse_employer, p.notes, p.picture_patient, proj.abbr, d.text,
+      p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
       dg.locked, dg.name as debtor_group_name
     FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg
