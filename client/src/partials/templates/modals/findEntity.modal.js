@@ -51,8 +51,8 @@ function FindEntityModalController(Instance, Debtor, Creditor) {
     vm.entities = vm.selectedType.code === 'D' ? vm.debtorList :
       vm.selectedType.code === 'C' ? vm.creditorList : [];
 
-    vm.placeholder = vm.selectedType.code === 'D' ? 'FORM.PLACE_HOLDERS.ENTER_DEBTOR' :
-      vm.selectedType.code === 'C' ? 'FORM.PLACE_HOLDERS.ENTER_CREDITOR' : '';
+    vm.placeholder = vm.selectedType.code === 'D' ? 'FORM.PLACEHOLDERS.ENTER_DEBTOR' :
+      vm.selectedType.code === 'C' ? 'FORM.PLACEHOLDERS.ENTER_CREDITOR' : '';
   }
 
   function refresh() {

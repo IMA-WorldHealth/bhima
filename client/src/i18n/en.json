@@ -499,7 +499,7 @@
       "CREATION" : "Creation",
       "EDITION"  : "Edition"
     },
-    "PLACE_HOLDERS": {
+    "PLACEHOLDERS": {
       "ENTER_ACCOUNT"      : "Enter account",
       "ENTER_CODE"         : "Entrer code",
       "ENTER_COUNTRY"      : "Enter Country",
