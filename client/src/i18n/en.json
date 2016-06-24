@@ -580,9 +580,11 @@
       "NUMBER"         : "Must be a number",
       "PASSWORD_MATCH" : "The passwords do not match!",
       "REQUIRED"       : "This field cannot be empty.",
+      "REQUIRED_EMAIL" : "Required Email",
       "UNIQUE"         : "This field must be unique. This value is already taken."
     },
     "WARNNINGS": {
+      "BAD_FILE_TYPE"   : "Bad file type",
       "EMPTY_SELECTION" : "Empty Selection",
       "NOT_AUTHORISED"  : "The requested page is not authorised",
       "NOT_FOUND"       : "Not found",

@@ -73,8 +73,8 @@
                 </div>
 
                 <label class="btn btn-default btn-block">
-                    <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.textButton }} 
-                    <input type="file" accept="image/*" ngf-max-height="1000" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
+                    <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.uploadButtonText | translate }} 
+                    <input type="file" accept="image/*" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
                 </label>
 
                 <a

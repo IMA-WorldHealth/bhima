@@ -50,21 +50,9 @@ function set(req, res, next) {
   const sql =
     'UPDATE patient SET ? WHERE uuid = ?';
 
-  let records = req.files.map(file => {
-    return [
-      db.bid(file.filename),
-      db.bid(req.params.uuid),
-      file.originalname,
-      file.link,
-      file.mimetype,
-      file.size,
-      req.session.user.id
-    ];
-  });
-
   db.exec(sql,  [ data, buid ])
   .then(function (updatedPatient) {
-    res.status(200).json(updatedPatient);
+    res.status(200).json({link : data.avatar});
   })
   .catch(next)
   .done();
