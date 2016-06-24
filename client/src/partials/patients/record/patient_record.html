@@ -72,9 +72,11 @@
                   </div>
                 </div>
 
-                <button class="btn btn-default btn-block" type="file" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" accept="image/*" ngf-max-height="1000" ngf-max-size="2MB">   <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.textButton }} 
-                </button>
-                
+                <label class="btn btn-default btn-block">
+                    <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.textButton }} 
+                    <input type="file" accept="image/*" ngf-max-height="1000" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
+                </label>
+
                 <a
                   data-method="edit"
                   ng-href="/#/patients/{{::PatientRecordCtrl.patient.uuid}}/edit"
