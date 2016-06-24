@@ -71,7 +71,7 @@
     "gulp-uglify": "^1.5.2",
     "gulp-util": "^3.0.7",
     "jshint": "^2.8.0",
-    "karma": "^0.13.22",
+    "karma": "^1.0.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^1.0.1",
     "karma-mocha": "^1.0.1",
