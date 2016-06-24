@@ -498,7 +498,7 @@
       "CREATION" : "Creation",
       "EDITION"  : "Edition"
     },
-    "PLACE_HOLDERS": {
+    "PLACEHOLDERS": {
       "ENTER_ACCOUNT"      : "Entrer le compte",
       "ENTER_CODE"         : "Entrer le code",
       "ENTER_COUNTRY"      : "Entrer le nom pays",

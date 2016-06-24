@@ -14,7 +14,7 @@
         class="form-control"
         type="text"
         name="name"
-        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_NAME' | translate }}..."
+        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_NAME' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -28,7 +28,7 @@
         class="form-control"
         type="text"
         name="code"
-        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_CODE' | translate }}..."
+        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_CODE' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -45,7 +45,7 @@
         uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
         typeahead-editable="true"
-        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.salesAccount.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -61,7 +61,7 @@
         uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
         typeahead-editable="true"
-        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
         >
     </div>
 
@@ -74,7 +74,7 @@
         uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
         typeahead-editable="true"
-        placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
         >
     </div>
 
