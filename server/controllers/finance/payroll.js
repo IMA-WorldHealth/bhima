@@ -1,5 +1,4 @@
 var db        = require('./../../lib/db');
-var sanitize  = require('./../../lib/sanitize');
 
 exports.listPaiementData = function (req, res, next) {
   var sql = 'SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement_period.dateFrom,' +
@@ -15,7 +14,7 @@ exports.listPaiementData = function (req, res, next) {
           ' JOIN paiement_period ON paiement_period.id = paiement.paiement_period_id' +
           ' JOIN exchange_rate ON exchange_rate.date = paiement.paiement_date' +
           ' JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id' +
-          ' WHERE paiement.uuid = ' + sanitize.escape(req.query.invoiceId);
+          ' WHERE paiement.uuid = ' + db.escape(req.query.invoiceId);
 
   db.exec(sql)
   .then(function (result) {
@@ -31,7 +30,7 @@ exports.listPaymentByEmployee = function (req, res, next) {
           ' JOIN paiement p ON e.id=p.employee_id ' +
           ' JOIN tax_paiement z ON z.paiement_uuid=p.uuid ' +
           ' JOIN tax t ON t.id=z.tax_id ' +
-          ' WHERE p.paiement_period_id=' + sanitize.escape(req.params.id) + ' AND t.is_employee=1 ' +
+          ' WHERE p.paiement_period_id=' + db.escape(req.params.id) + ' AND t.is_employee=1 ' +
           ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
 
   db.exec(sql)
@@ -48,7 +47,7 @@ exports.listPaymentByEnterprise = function (req, res, next) {
           ' JOIN paiement p ON e.id=p.employee_id ' +
           ' JOIN tax_paiement z ON z.paiement_uuid=p.uuid ' +
           ' JOIN tax t ON t.id=z.tax_id ' +
-          ' WHERE p.paiement_period_id=' + sanitize.escape(req.params.employee_id) + ' AND t.is_employee=0 ' +
+          ' WHERE p.paiement_period_id=' + db.escape(req.params.employee_id) + ' AND t.is_employee=0 ' +
           ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
 
   db.exec(sql)
@@ -62,7 +61,7 @@ exports.listPaymentByEnterprise = function (req, res, next) {
 
 exports.setCotisationPayment = function (req, res, next) {
   var sql = 'UPDATE cotisation_paiement SET posted=1' +
-          ' WHERE cotisation_paiement.paiement_uuid=' + sanitize.escape(req.body.paiement_uuid) + ' AND cotisation_paiement.cotisation_id=' + sanitize.escape(req.body.cotisation_id);
+          ' WHERE cotisation_paiement.paiement_uuid=' + db.escape(req.body.paiement_uuid) + ' AND cotisation_paiement.cotisation_id=' + db.escape(req.body.cotisation_id);
 
   db.exec(sql)
   .then(function (result) {
@@ -78,7 +77,7 @@ exports.listEmployeeCotisationPayments = function (req, res, next) {
           ' JOIN paiement p ON e.id=p.employee_id ' +
           ' JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid ' +
           ' JOIN cotisation t ON t.id=z.cotisation_id ' +
-          ' WHERE p.paiement_period_id=' + sanitize.escape(req.params.id) + ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
+          ' WHERE p.paiement_period_id=' + db.escape(req.params.id) + ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
 
   db.exec(sql)
   .then(function (result) {

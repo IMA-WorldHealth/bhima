@@ -8,69 +8,76 @@
  * @todo Pass authenticate and authorize middleware down through
  * controllers, allowing for modules to subscribe to different
  * levels of authority
+ *
+ * @requires winston
+ * @requires uploader
  */
 'use strict';
 
-var winston              = require('winston');
-var auth                 = require('../controllers/auth');
-var data                 = require('../controllers/data');
-const users              = require('../controllers/admin/users');
-var locations            = require('../controllers/locations');
-var tree                 = require('../controllers/tree');
-var patients             = require('../controllers/medical/patients');
-var patientGroups        = require('../controllers/medical/patientGroups');
-var snis                 = require('../controllers/medical/snis');
-var projects             = require('../controllers/admin/projects');
-var inventory            = require('../controllers/stock/inventory');
-var depots               = require('../controllers/stock/depot');
-var consumptionLoss      = require('../controllers/stock/inventory/depreciate/consumptionLoss');
-var trialbalance         = require('../controllers/finance/trialbalance');
-var journal              = require('../controllers/finance/journal/index');
-var ledger               = require('../controllers/finance/ledger');
-var fiscal               = require('../controllers/finance/fiscal');
-var gl                   = require('../controllers/finance/ledgers/general');
-var analytics            = require('../controllers/finance/analytics');
-var purchase             = require('../controllers/finance/purchase');
-var taxPayment           = require('../controllers/finance/taxPayment');
-var donations            = require('../controllers/finance/donations');
-var debtors              = require('../controllers/finance/debtors');
-var cashboxes            = require('../controllers/finance/cashboxes');
-var exchange             = require('../controllers/finance/exchange');
-var cash                 = require('../controllers/finance/cash');
-var cashflow             = require('../controllers/cashflow');
-var enterprises          = require('../controllers/admin/enterprises');
-var employees            = require('../controllers/admin/employees');
-var priceList            = require('../controllers/finance/priceList');
-var billingServices      = require('../controllers/finance/billingServices');
-var accounts             = require('../controllers/finance/accounts');
-var costCenter           = require('../controllers/finance/costCenter');
-var profitCenter         = require('../controllers/finance/profitCenter');
-var reference            = require('../controllers/finance/reference');
-var subsidies            = require('../controllers/finance/subsidies');
-var patientInvoice       = require('../controllers/finance/patientInvoice');
-var invoiceReceipt       = require('../controllers/finance/reports/invoice.receipt');
-var discounts            = require('../controllers/finance/discounts');
-var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
-var payroll              = require('../controllers/categorised/payroll');
-var units                = require('../controllers/units');
-var debtorGroups         = require('../controllers/finance/debtors/groups');
-var currencies           = require('../controllers/finance/currencies');
-var services             = require('../controllers/admin/services');
-var vouchers             = require('../controllers/finance/vouchers');
-var suppliers            = require('../controllers/admin/suppliers');
-var functions            = require('../controllers/admin/functions');
-var grades               = require('../controllers/admin/grades');
-var creditorGroups       = require('../controllers/finance/creditorGroups');
-var donors               = require('../controllers/donors');
-var referenceGroup       = require('../controllers/finance/referenceGroup');
-var sectionResultats     = require('../controllers/finance/sectionResultat');
-var sectionBilans        = require('../controllers/finance/sectionBilan');
-var creditors            = require('../controllers/finance/creditors.js');
-const system             = require('../controllers/system');
-const languages          = require('../controllers/admin/languages');
-const medicalReports     = require('../controllers/medical/reports');
-
+const winston            = require('winston');
 const upload = require('../lib/uploader');
+
+// unclassified routes
+const auth                 = require('../controllers/auth');
+const tree                 = require('../controllers/tree');
+const units                = require('../controllers/units');
+const cashflow             = require('../controllers/cashflow');
+const system             = require('../controllers/system');
+
+// admin routes
+const users        = require('../controllers/admin/users');
+const projects     = require('../controllers/admin/projects');
+const enterprises  = require('../controllers/admin/enterprises');
+const employees    = require('../controllers/admin/employees');
+const services     = require('../controllers/admin/services');
+const suppliers    = require('../controllers/admin/suppliers');
+const functions    = require('../controllers/admin/functions');
+const grades       = require('../controllers/admin/grades');
+const languages    = require('../controllers/admin/languages');
+const locations    = require('../controllers/admin/locations');
+
+// medical routes
+const patients       = require('../controllers/medical/patients');
+const patientGroups  = require('../controllers/medical/patientGroups');
+const snis           = require('../controllers/medical/snis');
+const medicalReports = require('../controllers/medical/reports');
+
+// stock and inventory routes
+const inventory            = require('../controllers/stock/inventory');
+const depots               = require('../controllers/stock/depot');
+
+// finance routes
+const trialbalance     = require('../controllers/finance/trialbalance');
+const ledger           = require('../controllers/finance/ledger');
+const fiscal           = require('../controllers/finance/fiscal');
+const gl               = require('../controllers/finance/ledgers/general');
+const analytics        = require('../controllers/finance/analytics');
+const purchases        = require('../controllers/finance/purchases');
+const taxPayment       = require('../controllers/finance/taxPayment');
+const debtors          = require('../controllers/finance/debtors');
+const cashboxes        = require('../controllers/finance/cashboxes');
+const exchange         = require('../controllers/finance/exchange');
+const cash             = require('../controllers/finance/cash');
+const priceList        = require('../controllers/finance/priceList');
+const billingServices  = require('../controllers/finance/billingServices');
+const accounts         = require('../controllers/finance/accounts');
+const costCenter       = require('../controllers/finance/costCenter');
+const profitCenter     = require('../controllers/finance/profitCenter');
+const reference        = require('../controllers/finance/reference');
+const subsidies        = require('../controllers/finance/subsidies');
+const patientInvoice   = require('../controllers/finance/patientInvoice');
+const invoiceReceipt   = require('../controllers/finance/reports/invoice.receipt');
+const discounts        = require('../controllers/finance/discounts');
+const payroll          = require('../controllers/finance/payroll');
+const debtorGroups     = require('../controllers/finance/debtors/groups');
+const currencies       = require('../controllers/finance/currencies');
+const vouchers         = require('../controllers/finance/vouchers');
+const creditorGroups   = require('../controllers/finance/creditorGroups');
+const referenceGroup   = require('../controllers/finance/referenceGroup');
+const sectionResultats = require('../controllers/finance/sectionResultat');
+const sectionBilans    = require('../controllers/finance/sectionBilan');
+const creditors        = require('../controllers/finance/creditors.js');
+const journal          = require('../controllers/finance/journal');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -95,12 +102,6 @@ exports.configure = function configure(app) {
   app.post('/exchange', exchange.create);
   app.put('/exchange/:id', exchange.update);
   app.delete('/exchange/:id', exchange.delete);
-
-  // application data
-  app.post('/data', data.create);
-  app.get('/data', data.read);
-  app.put('/data', data.update);
-  app.delete('/data/:table/:column/:value', data.deleteRecord);
 
   // API for locations
   app.get('/locations/villages', locations.villages);
@@ -158,21 +159,21 @@ exports.configure = function configure(app) {
   app.put('/profit_centers/:id', profitCenter.update);
   app.delete('/profit_centers/:id', profitCenter.remove);
 
-  //API for reference routes crud
+  // API for reference routes crud
   app.get('/references', reference.list);
   app.get('/references/:id', reference.detail);
   app.post('/references', reference.create);
   app.put('/references/:id', reference.update);
   app.delete('/references/:id', reference.remove);
 
-  //API for section resultats crud
+  // API for section resultats crud
   app.get('/section_resultats', sectionResultats.list);
   app.get('/section_resultats/:id', sectionResultats.detail);
   app.post('/section_resultats', sectionResultats.create);
   app.put('/section_resultats/:id', sectionResultats.update);
   app.delete('/section_resultats/:id', sectionResultats.remove);
 
-  //API for section bilans crud
+  // API for section bilans crud
   app.get('/section_bilans', sectionBilans.list);
   app.get('/section_bilans/:id', sectionBilans.detail);
   app.post('/section_bilans', sectionBilans.create);
@@ -193,8 +194,6 @@ exports.configure = function configure(app) {
   app.put('/subsidies/:id', subsidies.update);
   app.delete('/subsidies/:id', subsidies.remove);
 
-  app.post('/consumption_loss/', consumptionLoss.execute);
-
   // journal routes
   app.get('/journal', journal.list);
 
@@ -207,8 +206,6 @@ exports.configure = function configure(app) {
   app.get('/ledgers/debtor/:id', ledger.compileDebtorLedger);
   app.get('/ledgers/debtor_group/:id', ledger.compileGroupLedger);
   app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);
-  // app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
-  // app.get('/ledgers/debtor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);
@@ -224,24 +221,6 @@ exports.configure = function configure(app) {
   // snis controller
   app.get('/snis/healthZones',snis.healthZones);
 
-  /*
-   * refactor-categorisation
-   *
-   * @todo test all routes below to ensure no broken links
-   */
-  // DEPRECIATED Inventory routes - these should be removed as soon as possible
-  // FIXME Depreciate routes
-  app.get('/lot/:inventory_uuid', depreciatedInventory.getInventoryLot);
-  app.get('/stockIn/:depot_uuid/:df/:dt', depreciatedInventory.stockIn);
-  app.get('/inv_in_depot/:depot_uuid', depreciatedInventory.inventoryByDepot);
-  app.get('/getExpiredTimes/', depreciatedInventory.listExpiredTimes);
-  app.get('/getStockEntry/', depreciatedInventory.listStockEntry);
-  app.get('/getStockConsumption/', depreciatedInventory.listStockConsumption);
-  app.get('/monthlyConsumptions/:inventory_uuid/:nb', depreciatedInventory.listMonthlyConsumption);
-  app.get('/getConsumptionTrackingNumber/', depreciatedInventory.listConsumptionByTrackingNumber);
-  app.get('/getMonthsBeforeExpiration/:id', depreciatedInventory.formatLotsForExpiration);
-  app.get('/stockIntegration/', depreciatedInventory.getStockIntegration);
-
   // Employee management
   app.get('/employee_list/', employees.list);
   app.get('/holiday_list/:pp/:employee_id', employees.listHolidays);
@@ -249,7 +228,6 @@ exports.configure = function configure(app) {
   app.get('/getCheckOffday/', employees.checkOffday);
 
   app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
-  app.post('/payTax/', taxPayment.submit);
   app.put('/setTaxPayment/', taxPayment.setTaxPayment);
 
   // Payroll
@@ -259,8 +237,6 @@ exports.configure = function configure(app) {
   app.put('/setCotisationPayment/', payroll.setCotisationPayment);
   app.get('/getEmployeeCotisationPayment/:id', payroll.listEmployeeCotisationPayments);
   app.get('/taxe_ipr_currency/', payroll.listTaxCurrency);
-
-  app.post('/posting_donation/', donations.post);
 
   /*  Inventory and Stock Management */
   app.post('/inventory/metadata', inventory.createInventoryItems);
@@ -321,9 +297,6 @@ exports.configure = function configure(app) {
 
   app.get('/inventory/status', inventory.getInventoryStatus);
   app.get('/inventory/:uuid/status', inventory.getInventoryStatusById);
-
-  app.get('/inventory/donations', inventory.getInventoryDonations);
-  app.get('/inventory/:uuid/donations', inventory.getInventoryDonationsById);
   */
 
   /* Depot routes */
@@ -349,11 +322,6 @@ exports.configure = function configure(app) {
   app.get('/depots/:depotId/expirations', depots.listStockExpirations);
 
   /* continuing on ... */
-
-  // stock API
-  app.get('/donations', donations.getRecentDonations);
-
-  //app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
 
   // general ledger controller
   // transitioning to a more traditional angular application architecture
@@ -508,7 +476,6 @@ exports.configure = function configure(app) {
   app.put('/billing_services/:id', billingServices.update);
   app.delete('/billing_services/:id', billingServices.delete);
 
-
   // discounts
   app.get('/discounts', discounts.list);
   app.get('/discounts/:id', discounts.detail);
@@ -529,10 +496,10 @@ exports.configure = function configure(app) {
   app.put('/suppliers/:uuid', suppliers.update);
 
   // purchase
-  app.post('/purchase', purchase.create);
-  app.get('/purchase', purchase.list);
-  app.get('/purchase/:uuid', purchase.detail);
-  app.put('/purchase/:uuid', purchase.update);
+  app.post('/purchases', purchases.create);
+  app.get('/purchases', purchases.list);
+  app.get('/purchases/:uuid', purchases.detail);
+  app.put('/purchases/:uuid', purchases.update);
 
   // functions api
   app.get('/functions', functions.list);
@@ -553,13 +520,6 @@ exports.configure = function configure(app) {
   app.get('/creditor_groups', creditorGroups.list);
   app.get('/creditor_groups/:uuid', creditorGroups.detail);
   app.put('/creditor_groups/:uuid', creditorGroups.update);
-
-  // donors API
-  app.get('/donors', donors.list);
-  app.get('/donors/:id', donors.detail);
-  app.post('/donors', donors.create);
-  app.put('/donors/:id', donors.update);
-  app.delete('/donors/:id', donors.remove);
 
   app.get('/creditors', creditors.list);
   app.get('/creditors/:uuid', creditors.detail);
