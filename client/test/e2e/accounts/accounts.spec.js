@@ -10,98 +10,132 @@ const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
+const AccountsPage = require('./accounts.page.js');
 const components = require('../shared/components');
 
-describe('Accounts', function () {
+describe.only('Account Management', function () {
   const path = '#/accounts';
   before(() => helpers.navigate(path));
 
-  const accountBalance = {
-    label : 'Compte de Balance',
-    type : 'balance',
-    is_asset : 1,
-    number : '4503500'
+
+  const INITIAL_ACCOUNTS = 14;
+  let addedAccounts = 0;
+
+  // this is an account at the top of the grid - until this test is improved it relies
+  // on the account being visible to verify each test
+  const accountGroup = {
+    id : 3626,
+    numberOfChildren : 3
   };
 
-  const accountIncomeExpense = {
-    label : 'Compte Income Expence',
-    type : 'income/expense',
-    is_charge : 0,
-    number : '3384012'
+  const account = {
+    id : 3636,
+    number : 4600,
+    type : 'Titre',
+    label : 'Test Inventory Accounts',
+    parent : {
+      number : 40000
+    }
   };
 
-  const accountRank = 7;
+  var page = new AccountsPage();
+  it('lists initial accounts', function () {
+    page.expectGridRows(INITIAL_ACCOUNTS);
+  });
 
-  it('creates a new account type balance', function () {
-    FU.buttons.create();
+  it('expands and collapses title accounts on title click', function () {
+    page.toggleTitleRow(accountGroup.id);
+    page.expectGridRows(INITIAL_ACCOUNTS - accountGroup.numberOfChildren);
+    page.toggleTitleRow(accountGroup.id);
+    page.expectGridRows(INITIAL_ACCOUNTS);
+  });
 
-    FU.input('AccountsCtrl.account.label', accountBalance.label);
-    FU.select('AccountsCtrl.account.type', accountBalance.type);
-    FU.radio('AccountsCtrl.account.is_asset', accountBalance.is_asset);
-    FU.input('AccountsCtrl.account.number', accountBalance.number);
-    FU.select('AccountsCtrl.account.reference_id', 'Reference bilan 1');
+  it('create state populates parent field through in-line create', function () {
+    page.openAddChild(account.id);
 
-    // submit the page to the server
+    // this relies on the account typeahead/ select to display the account with account number
+    // if this changes this test will have to be updated
+    expect(page.EditModal.parent()).to.eventually.contain(account.number);
+  });
+
+  it('creates a single account', function () {
+    FU.input('AccountEditCtrl.account.number', '46002');
+    FU.input('AccountEditCtrl.account.label', 'Second Test Item Account');
+
+    // relies on french translation
+    FU.select('AccountEditCtrl.account.type_id', 'Titre').click();
+    FU.buttons.submit();
+    addedAccounts += 1;
+
+    components.notification.hasSuccess();
+  });
+
+  it('edit state populates account data on clicking edit', function () {
+    page.openEdit(account.id);
+    expect(element(by.id('number-static')).getText()).to.eventually.equal(String(account.number));
+    expect(element(by.id('type-static')).getText()).to.eventually.equal(account.type);
+    expect(element(by.model('AccountEditCtrl.account.label')).getAttribute('value')).to.eventually.equal(account.label);
+  });
+
+  it('updates an account title and parent', function () {
+    FU.input('AccountEditCtrl.account.label', 'Updated inventory accounts');
+    FU.typeahead('AccountEditCtrl.account.parent', 'Test Income');
     FU.buttons.submit();
 
-    // expect a nice validation message
-    FU.exists(by.id('create_success'), true);
+    components.notification.hasSuccess();
   });
 
-  it('edits an account', function () {
-    element(by.id('account-upd-' + accountRank )).click();
+  var numberOfAccounts = 3;
+  it('creates multiple accounts with the batch option selected', function () {
+    var parentNumber = 70000;
+    var mockAccount = {
+      number : parentNumber,
+      label : 'End to End Test: '
+    };
 
-    // modify the account name
-    FU.input('AccountsCtrl.account.label', ' Updated');
-
-    element(by.id('locked')).click();
-    element(by.id('change_account')).click();
-
-    // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
-  });
-
-  it('unlock an account', function () {
-    element(by.id('account-upd-' + accountRank )).click();
-    element(by.id('locked')).click();
-    element(by.id('change_account')).click();
-
-    // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
-  });
-
-  it('creates a new account type income expense', function () {
     FU.buttons.create();
 
-    FU.input('AccountsCtrl.account.label', accountIncomeExpense.label);
-    FU.select('AccountsCtrl.account.type', accountIncomeExpense.type);
-    FU.input('AccountsCtrl.account.number', accountIncomeExpense.number);
-    FU.radio('AccountsCtrl.account.is_charge', accountIncomeExpense.is_charge);
-    FU.select('AccountsCtrl.account.cc_id', 'cost center 1');
-    FU.select('AccountsCtrl.account.reference_id', 'Reference bilan 1');
+    // set modal to create any number of accounts
+    page.toggleBatchCreate();
 
-    // submit the page to the server
+    // create top title account
+    FU.input('AccountEditCtrl.account.number', mockAccount.number);
+    FU.input('AccountEditCtrl.account.label', mockAccount.label.concat(0));
+
+    // relies on french translation
+    FU.select('AccountEditCtrl.account.type_id', 'Titre').click();
+
     FU.buttons.submit();
+    addedAccounts += 1;
 
-    // expect a nice validation message
-    FU.exists(by.id('create_success'), true);
+
+    // set to this parent
+    FU.typeahead('AccountEditCtrl.account.parent', parentNumber);
+    // set to income
+    FU.select('AccountEditCtrl.account.type_id', 'Recettes').click();
+
+    for (var i = 0; i < numberOfAccounts - 1; i++) {
+      mockAccount.number += 20;
+      createAccount(mockAccount, i);
+    }
+
+    mockAccount.number += 20;
+    page.toggleBatchCreate();
+    createAccount(mockAccount, numberOfAccounts);
+
+    components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', function () {
-    FU.buttons.create();
-
-    // verify form has not been submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
-
-    element(by.id('submit-account')).click();
-
-    // the following fields should be required
-    FU.validation.error('AccountsCtrl.account.label');
-    FU.validation.error('AccountsCtrl.account.type');
-    FU.validation.error('AccountsCtrl.account.number');
-
-    // the following fields are not required
-    FU.validation.ok('AccountsCtrl.account.is_title');
-    FU.validation.ok('AccountsCtrl.account.parent');
+  it('displays all created accounts with model refresh', function () {
+    browser.refresh();
+    expect(page.getRowCount()).to.eventually.equal(INITIAL_ACCOUNTS + addedAccounts);
   });
+
+  function createAccount(account, index) {
+    FU.input('AccountEditCtrl.account.number', account.number);
+    FU.input('AccountEditCtrl.account.label', account.label.concat(index));
+
+    FU.buttons.submit();
+    addedAccounts += 1;
+  }
 });

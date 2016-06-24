@@ -1,13 +1,14 @@
 /** @todo server should not accept not a number */
 /** @todo server shouldn't allow bigger than an integer */
+/** @todo server should not allow updating fields that are not white listed */
 angular.module('bhima.controllers')
 .controller('AccountEditController', AccountEditController);
 
-AccountEditController.$inject = ['$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util'];
+AccountEditController.$inject = ['$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util', 'bhConstants'];
 
 /** @todo use loading button */
 /** @todo re-factor account store (cache) + type API */
-function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util) {
+function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util, Constants) {
   var vm = this;
   var id = $state.params.id;
   var parentId = $state.params.parentId;
@@ -15,6 +16,8 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   vm.close = close;
   vm.setRootAccount = setRootAccount;
   vm.updateAccount = updateAccount;
+
+  vm.Constants = Constants;
 
   vm.batchCreate = false;
   vm.account = null;
@@ -25,12 +28,14 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
 
   /** @todo this should be defined as an application wide constant */
   vm.ROOT_ACCOUNT = 0;
+  vm.TITLE_ACCOUNT = 4;
   vm.accountFailed = null;
 
   settupAccount();
 
   function settupAccount() {
     var cacheType = null;
+    var cacheParent = null;
 
     // alias this comparison as it is used many times in the template
     AccountStore.store()
@@ -67,7 +72,9 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
           } else {
 
             if (vm.account) {
+              // console.log('resetting for new account', vm.account);
               cacheType = vm.account.type_id;
+              cacheParent = vm.account.parent.id;
             }
 
             vm.account = {};
@@ -76,8 +83,9 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
               vm.account.parent = vm.store.get(parentId);
               // vm.account.parent = parentId;
             } else {
+
               // set root account
-              vm.account.parent = vm.store.get(0);
+              vm.account.parent = vm.store.get(cacheParent) || vm.store.get(0);
             }
           }
 
@@ -199,4 +207,10 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   function handleModalError(error) {
     vm.error = error;
   }
+
+  function getTypeTitle(typeId) {
+    return vm.typeStore.get(typeId).translation_key;
+  }
+
+  vm.getTypeTitle = getTypeTitle;
 }

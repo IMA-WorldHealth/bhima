@@ -555,6 +555,19 @@ function localStorageConfig($localStorageProvider) {
 }
 
 /**
+ * @todo some of these constants are system standards, others should be
+ * populated according to the enterprise configuration
+ */
+function constantConfig() {
+  return {
+    accounts : {
+      ROOT : 0,
+      TITLE : 4
+    }
+  };
+}
+
+/**
  * This function is responsible for configuring angular's $http service. Any
  * relevant services/ factories are registered at this point.
  *
@@ -581,6 +594,8 @@ function httpConfig($httpProvider) {
 function animateConfig($animateProvider) {
   $animateProvider.classNameFilter(/ng-animate-enabled/);
 }
+
+bhima.constant('bhConstants', constantConfig());
 
 // configure services, providers, factories
 bhima.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', bhimaConfig]);

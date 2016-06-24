@@ -13,13 +13,16 @@ angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
-  '$rootScope', 'AccountGridService', 'NotifyService'
+  '$rootScope', 'AccountGridService', 'NotifyService', 'bhConstants'
 ];
 
-function AccountsController($rootScope, AccountGrid, Notify) {
+function AccountsController($rootScope, AccountGrid, Notify, Constants) {
   var vm = this;
 
   /** @todo get this from constant definition */
+  vm.Constants = Constants;
+
+  console.log('vm.constants', vm.Constants);
   vm.TITLE_ACCOUNT = 4;
   vm.ROOT_ACCOUNT = 0;
 

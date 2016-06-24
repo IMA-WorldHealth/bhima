@@ -1,6 +1,8 @@
 <div class="ui-grid-cell-contents">
-  <a ui-sref="accounts.edit({id:row.entity.id})">
+  <a
+    id="account-edit-{{row.entity.id}}"
+    ui-sref="accounts.edit({id:row.entity.id})">
     <i class="fa fa-edit"></i>
-    Edit {{row.entity.number}}
+    {{ "TABLE.COLUMNS.EDIT" | translate }} {{row.entity.number}}
   </a>
 </div>
