@@ -1177,6 +1177,7 @@ CREATE TABLE `patient` (
   `notes`                TEXT,
   `middle_name`          VARCHAR(150),
   `hospital_no`          VARCHAR(150),
+  `avatar`               VARCHAR(150),
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_1` (`hospital_no`),
   UNIQUE KEY `patient_2` (`project_id`, `reference`),
