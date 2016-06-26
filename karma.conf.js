@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai-spies', 'chai'],
 
 
     // list of files / patterns to load in the browser
@@ -19,7 +19,9 @@ module.exports = function(config) {
       'client/vendor/angular-mocks/angular-mocks.js',
       'bin/client/js/vendor.min.js',
       'bin/client/js/bhima.min.js',
-      'client/test/unit/**/*.spec.js'
+      'client/test/unit/**/*.spec.js',
+
+      'bin/client/partials/**/*.html'
     ],
 
 
@@ -31,6 +33,12 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      '**/*.html' : ['ng-html2js']
+    },
+
+    ngHtml2JsPreprocessor : {
+      stripPrefix : 'bin/client/',
+      moduleName : 'templates'
     },
 
     // test results reporter to use

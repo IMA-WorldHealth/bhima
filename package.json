@@ -60,6 +60,7 @@
     "chai-as-promised": "^5.1.0",
     "chai-datetime": "^1.4.0",
     "chai-http": "^1.0.0",
+    "chai-spies": "^0.7.1",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-cssnano": "^2.1.1",
@@ -73,8 +74,10 @@
     "jshint": "^2.8.0",
     "karma": "^1.0.0",
     "karma-chai": "^0.1.0",
+    "karma-chai-spies": "^0.1.4",
     "karma-chrome-launcher": "^1.0.1",
     "karma-mocha": "^1.0.1",
+    "karma-ng-html2js-preprocessor": "^1.0.0",
     "mocha": "^2.5.3",
     "protractor": "^3.1.1",
     "rimraf": "^2.4.3"

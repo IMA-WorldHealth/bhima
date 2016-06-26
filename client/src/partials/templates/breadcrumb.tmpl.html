@@ -2,10 +2,10 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li ng-repeat="p in vm.bcPaths" id="{{ p.id }}" data-method="{{ p.dataMethod }}"  ng-class="{ 'static' : !$last, 'title' : $last }">
+      <li ng-repeat="p in vm.bcPaths" data-method="{{ p.dataMethod }}"  ng-class="{ 'static' : !$last, 'title' : $last }">
         <span ng-hide="p.link">{{ p.label | translate }}</span>
         <span ng-show="p.link">
-          <a ng-href="{{ p.link }}" href>{{ p.label | translate }}</a>
+          <a ng-href="{{ p.link }}" id="{{ p.id }}" href>{{ p.label | translate }}</a>
         </span>
       </li>
     </ol>
