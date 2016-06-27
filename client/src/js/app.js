@@ -440,16 +440,16 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'cash.cashbox_account',
     templateUrl : 'partials/cash/cashboxes/currencies/currencies.html'
   })
-  .state('/error403', {
+  .state('error403', {
     url : '/error403',
     templateUrl : 'partials/error403/error403.html'
   })
-  .state('/error404', {
+  .state('error404', {
     url : '/error404',
     templateUrl : 'partials/error404/error404.html'
   });
   
-  $urlRouterProvider.otherwise('/error404');}
+  $urlRouterProvider.otherwise('error404');}
 
 function translateConfig($translateProvider) {
   //TODO Review i18n and determine if this it the right solution/grade_employers/
