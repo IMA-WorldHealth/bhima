@@ -4,8 +4,11 @@ angular.module('bhima.components')
     pdfUrl : '@',
     options : '<'
   },
+  transclude : true,
   template :
-    '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()"></bh-loading-button>' +
+    '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()">' +
+    '<span><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
+    '</bh-loading-button>' +
     '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
   controller : bhPDFPrintController
 });
@@ -92,6 +95,13 @@ function bhPDFPrintController($window, $http, $sce, $timeout) {
     return combined;
   }
 
+  /**
+   * @method toggleLoading
+   *
+   * @description
+   * This method is responsible for updating the loading state for the controllers
+   * HTTP requests.
+   */
   function toggleLoading() {
     component.$loading = !component.$loading;
   }

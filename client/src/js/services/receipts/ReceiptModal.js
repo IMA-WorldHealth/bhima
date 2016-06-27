@@ -26,7 +26,7 @@ function ReceiptModal(Modal, Receipts) {
   // expose available receipts
   service.invoice = invoice;
   service.patient = patient;
-  service.patientRegistrations = patientRegistrations;
+  /** service.patientRegistrations = patientRegistrations; */
 
   /**
    * Invokes a patient invoice receipt
@@ -81,8 +81,8 @@ function ReceiptModal(Modal, Receipts) {
     return instance.result;
   }
 
-  // in this case, the options are actually all filters from the ui-grid
-  function patientRegistrations(options) {
+  /** @deprecated ? */
+  /* function patientRegistrations(options) {
     var reportOptions = {
       title: 'PATIENT_REG.PATIENT_REGISTRATIONS',
       renderer: Receipts.renderers.PDF,
@@ -101,5 +101,5 @@ function ReceiptModal(Modal, Receipts) {
     var configuration = angular.extend(modalConfiguration, reportProvider);
     var instance = Modal.open(configuration);
     return instance.result;
-  }
+  }*/
 }

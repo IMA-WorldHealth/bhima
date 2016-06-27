@@ -22,7 +22,7 @@ function ReceiptService($http, util) {
   service.invoice = invoice;
   service.patient = patient;
   service.renderers = renderers;
-  service.patientRegistrations = patientRegistrations;
+  /** service.patientRegistrations = patientRegistrations; */
 
   /**
    * Fetch invoice report data from /reports/invoices/:uuid
@@ -55,7 +55,8 @@ function ReceiptService($http, util) {
       .then(util.unwrapHttpResponse);
   }
 
-  function patientRegistrations(options) {
+  /** @deprecated */
+  /* function patientRegistrations(options) {
     var route = '/reports/patient/registrations';
     var responseType = null;
 
@@ -65,5 +66,5 @@ function ReceiptService($http, util) {
 
     return $http.get(route, {params : options, responseType : responseType})
       .then(util.unwrapHttpResponse);
-  }
+  } */
 }
