@@ -1,14 +1,3 @@
-/** @todo there are performance issues on this page - this should be because of  row/ cell templates, informally investigate */
-/** @todo you should not be able to change the type of a title account with children */
-/** @todo you cannot update the number or type of an account */
-/** @todo business logic for deleting an account */
-
-/**
- * Business rules implemented
- * 1. you cannot update an account number
- * 2. you cannot update an account type
- * 3. you can only delete an ccount if it is unused
- */
 angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
@@ -16,21 +5,26 @@ AccountsController.$inject = [
   '$rootScope', 'AccountGridService', 'NotifyService', 'bhConstants'
 ];
 
+/**
+ * @module AccountsController
+ *
+ * @todo there are performance issues on this page - this should be because of  row/ cell templates, investigate
+ *
+ * @description
+ * This controller is responsible for configuring the Accounts Management UI grid
+ * and connecting it with the Accounts data model.
+ */
 function AccountsController($rootScope, AccountGrid, Notify, Constants) {
   var vm = this;
-
-  /** @todo get this from constant definition */
   vm.Constants = Constants;
 
-  console.log('vm.constants', vm.Constants);
-  vm.TITLE_ACCOUNT = 4;
-  vm.ROOT_ACCOUNT = 0;
+  // account title indent value in pixels
+  vm.indentTitleSpace = 20;
 
-  vm.indentTitleSpace = 20; // indent value in pixels
+  // this flag will determine if the grid should expand the rows on data change
   vm.initialDataSet = true;
 
   vm.Accounts = new AccountGrid();
-
   vm.Accounts.settup()
     .then(bindGridData)
     .catch(Notify.handleError);
@@ -58,6 +52,8 @@ function AccountsController($rootScope, AccountGrid, Notify, Constants) {
   $rootScope.$on('ACCOUNT_UPDATED', handleUpdatedAccount);
 
   function handleUpdatedAccount(event, account) {
+    // check to see if the underlying accounts model requires a grid refresh
+    // it will return true if it is required
     var forceRefresh = vm.Accounts.updateViewEdit(event, account);
 
     if (forceRefresh) {

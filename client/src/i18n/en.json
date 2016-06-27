@@ -9,6 +9,8 @@
     "ALL_ACCOUNT"    : "All Accounts",
     "CREATE"         : "Create New Account",
     "CREATE_ANOTHER" : "Create another account",
+    "CREATED"        : "Account record written",
+    "UPDATED"        : "Account record udpated",
     "GENERATE"       : "Generate Account Report",
     "HELP_TXT_1"     : "Chart of accounts for",
     "HELP_TXT_2"     : "Account information and relationships are shown in the table on the right",

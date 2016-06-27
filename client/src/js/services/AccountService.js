@@ -106,10 +106,10 @@ function AccountService($http, util, Session) {
   function flatten(tree, depth) {
     var depth = isNaN(depth) ? -1 : depth;
     depth += 1;
-    
+
     return tree.reduce(function (array, node) {
       node.$$treeLevel = depth;
-      
+
       var items = [node].concat(node.children ? flatten(node.children, depth) : []);
       return array.concat(items);
     }, []);
@@ -143,29 +143,6 @@ function AccountService($http, util, Session) {
    * This Method Creat an account
    */
   function create(account) {
-    
-    if (!angular.isDefined(account.enterprise_id)) { 
-      account.enterprise_id = Session.enterprise.id;
-    }
-    /*var classAccount = String(account.number).charAt(0),
-      accountClean = {
-        enterprise_id : Session.enterprise.id,
-        type_id : account.type.id,
-        number : account.number,
-        label : account.label,
-        parent : account.parent,
-        number : account.number,
-        locked : account.locked,
-        cc_id : account.cc_id,
-        pc_id : account.pc_id,
-        classe : classAccount,
-        is_asset : account.is_asset,
-        reference_id : account.reference_id,
-        is_brut_link : account.is_brut_link,
-        is_title : account.is_title,
-        is_charge : account.is_charge
-      };*/
-
     return $http.post(baseUrl, account)
       .then(util.unwrapHttpResponse);
   }
@@ -186,22 +163,6 @@ function AccountService($http, util, Session) {
    *  });
    */
   function update(id, account) {
-    /*var accountClean = {
-      enterprise_id : Session.enterprise.id,
-      type_id : account.type_id,
-      label : account.label,
-      parent : account.parent,
-      locked : account.locked,
-      number : account.number,
-      cc_id : account.cc_id,
-      pc_id : account.pc_id,
-      is_asset : account.is_asset,
-      reference_id : account.reference_id,
-      is_brut_link : account.is_brut_link,
-      is_title : account.is_title,
-      is_charge : account.is_charge
-    };*/
-
     return $http.put(baseUrl.concat(id), account)
       .then(util.unwrapHttpResponse);
   }

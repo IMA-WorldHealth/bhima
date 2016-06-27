@@ -1,13 +1,6 @@
-angular.module('bhima.routes')
-  .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-    console.log('bhima routes init mate');
-
-
-  }]);
-
 var bhima = angular.module('bhima', [
   'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters',
-  'bhima.components', 'bhima.routes', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate',
+  'bhima.components', 'bhima.routes', 'ui.bootstrap', 'pascalprecht.translate',
   'ngStorage', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.treeView',

@@ -72,6 +72,9 @@ function create(req, res, next) {
 
   delete record.id;
 
+  /** @todo design/ update account types to allow setting a translation_key - the implications of this are system wide */
+  record.translation_key = '';
+
   db.exec(sql, [record])
     .then(function (result) {
       res.status(201).json({ id: result.insertId});

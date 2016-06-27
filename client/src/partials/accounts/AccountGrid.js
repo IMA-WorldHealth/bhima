@@ -3,19 +3,25 @@ angular.module('bhima.services')
 
 AccountGridService.$inject = ['AccountStoreService', 'AccountService', 'Store'];
 
+/**
+ * @class AccountGridService
+ *
+ * @description
+ * This service is responsible for collecting data required to populate the
+ * Account Management module, it also provides helper methods for dynamically
+ * adding and removing data.
+ */
 function AccountGridService(AccountStore, Accounts, Store, Notify) {
   /**
    * @constructor
    *
    * @description
-   * @todo sets up the account grid
+   * Intialises a new Account Grid object, setting default values
    */
   function AccountGrid() {
-    // store that will be used to hold accounts
-    this._cachedAccountList = null;
-
-    // exposed variables and methods
     this._store = null;
+
+    // exposed variables
     this.data = null;
   }
 
@@ -28,9 +34,8 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
   AccountGrid.prototype.settup = function settup() {
 
     // Fetch initial set of accounts
-    return AccountStore.store()
+    return AccountStore.accounts()
       .then(function (result) {
-        this._cachedAccountList = angular.copy(result.data);
         this._store = result;
 
         // order and expose data made available through the store
@@ -57,23 +62,35 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
     return a.number - b.number;
   }
 
-  AccountGrid.prototype.insertDifference = function insertDifference(account, index) {
-    this.data.splice(index, 0, account);
-  }
-
   AccountGrid.prototype.updateViewInsert = function updateViewInsert(event, account) {
     var insertedIndex;
 
     account.number = Number(account.number);
     account.hrlabel = Accounts.label(account);
 
+    // update local store
     this._store.post(account);
-
     this.formatStore();
     insertedIndex = this._store.index[account.id];
+
+    // live update the grid data - this does not require the grid to redraw and
+    // maintains the expand/ collapse states
     this.insertDifference(account, insertedIndex);
   };
 
+  /**
+   * @method updateViewEdit
+   *
+   * @description
+   * This method updates an account in the current store based on edits passed
+   * in from the account update state. If the parent has changed it will request
+   * that the grid updates the store with new data, otherwise an in-line change
+   * can be made.
+   *
+   * @param {Event}   event   Angular $broadcast event
+   * @param {Object}  account The udpated account object
+   * @return {Boolean} This value reflects if the Grid must be refreshed or not
+   */
   AccountGrid.prototype.updateViewEdit = function updateViewEdit(event, account) {
     var storeRecord = this._store.get(account.id);
     var parentHasChanged = account.parent !== storeRecord.parent;
@@ -93,6 +110,10 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
     this.data.splice(this._store.index[account.id], 1, storeRecord);
     return false;
   };
+
+  AccountGrid.prototype.insertDifference = function insertDifference(account, index) {
+    this.data.splice(index, 0, account);
+  }
 
   return AccountGrid;
 }

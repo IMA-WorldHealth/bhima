@@ -7,175 +7,165 @@ angular.module('bhima.controllers')
 AccountEditController.$inject = ['$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util', 'bhConstants'];
 
 /** @todo use loading button */
-/** @todo re-factor account store (cache) + type API */
 function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util, Constants) {
+  var accountStore, typeStore;
   var vm = this;
-  var id = $state.params.id;
-  var parentId = $state.params.parentId;
+  var id = $state.params.id, parentId = $state.params.parentId;
+  vm.Constants = Constants;
 
-  vm.close = close;
+  // expose utility methods
   vm.setRootAccount = setRootAccount;
   vm.updateAccount = updateAccount;
-
-  vm.Constants = Constants;
+  vm.getTypeTitle = getTypeTitle;
+  vm.close = close;
 
   vm.batchCreate = false;
   vm.account = null;
 
+  // states that are available as sibling states - these can be used to show and hide
+  // relevent components
   vm.states = {
-    create : 'accounts.create'
+    create : 'accounts.create',
+    edit : 'accounts.edit'
   };
-
-  /** @todo this should be defined as an application wide constant */
-  vm.ROOT_ACCOUNT = 0;
-  vm.TITLE_ACCOUNT = 4;
-  vm.accountFailed = null;
-
-  settupAccount();
-
-  function settupAccount() {
-    var cacheType = null;
-    var cacheParent = null;
-
-    // alias this comparison as it is used many times in the template
-    AccountStore.store()
-        .then(function (store) {
-
-          vm.store = angular.copy(store);
-          vm.store.post({
-            id : 0,
-            label : 'ROOT ACCOUNT',
-            hrlabel : '0 ROOT ACCOUNT'
-          });
-
-          vm.accounts = vm.store.data;
-
-          /** @todo move to another function */
-          if (angular.isDefined(id)) {
-            var account = store.get(id);
-            if (!account) {
-
-              /** @todo fake not found - this should be handled in the store */
-              var notfound = new Error('Not Found');
-              notfound.data = {};
-              notfound.data.status = 404;
-              notfound.data.code = 'ERRORS.NOT_FOUND';
-              throw notfound;
-            }
-
-            vm.account = angular.copy(account);
-
-            var accountParentId = vm.account.parent.id || vm.account.parent;
-            vm.account.parent = vm.store.get(accountParentId);
-            // vm.account.parent =
-
-          } else {
-
-            if (vm.account) {
-              // console.log('resetting for new account', vm.account);
-              cacheType = vm.account.type_id;
-              cacheParent = vm.account.parent.id;
-            }
-
-            vm.account = {};
-            // the account does not already exist - check to see if there is a predefined parent
-            if (parentId) {
-              vm.account.parent = vm.store.get(parentId);
-              // vm.account.parent = parentId;
-            } else {
-
-              // set root account
-              vm.account.parent = vm.store.get(cacheParent) || vm.store.get(0);
-            }
-          }
-
-          AccountStore.typeStore()
-            .then(function (result) {
-              vm.typeStore = angular.copy(result);
-
-              vm.types = vm.typeStore.data;
-
-
-              if (id) {
-                // var accountId = vm.account.type_id.id || vm.account.type_id;
-                // vm.account.type_i;
-              } else {
-
-                vm.account.type_id = cacheType || vm.types[0].id;
-              }
-
-              console.log('using account', account);
-            })
-
-
-        })
-        .catch(function (error) {
-          // All modals of this type will need to handle this error - as this is not done through the Notify
-          // service this should be designed
-          vm.accountFailed = error.data;
-        });
-
-  }
- /*
-  AccountStore.readCache()
-    .then(function (result) {
-
-      vm.accounts = angular.copy(result);
-      vm.accounts.push({
-        id : 0,
-        label : 'ROOT ACCOUNT',
-        hrlabel : '0 ROOT ACCOUNT'
-      });
-
-      console.log(vm.accounts);
-
-      if (!id) {
-        setRootAccount()
-      } else {
-
-      }
-    });*/
 
   vm.state = angular.copy($state.current.name);
   vm.isCreateState = vm.state === vm.states.create;
 
-  function updateAccount(accountForm) {
+  // varaibles to track custom modal error handling, these will be replaced
+  // with either the Notification library or a uniform modal error handling utility
+  vm.fetchError = null;
+  vm.accountNotFound = null;
 
-    var requireDirty = !vm.isCreateState;
+  vm.rootAccount = {
+    id : 0,
+    number : 0,
+    type_id : Constants.accounts.TITLE,
+    label : 'ROOT ACCOUNT'
+  };
+  vm.rootAccount.hrlabel = Accounts.label(vm.rootAccount);
 
-    accountForm.$setSubmitted();
-    if (accountForm.$invalid) {
+  /** @todo design how these are served for stores */
+  vm.notFound = {
+    status : 404,
+    code : 'ERRORS.NOT_FOUND'
+  };
+
+  settupPage()
+    .then(setAccount);
+
+  /**
+   * @method settupPage
+   *
+   * @description
+   * Initialise required variables and fetch initial stores for udpating/ creating
+   * accounts.
+   */
+  function settupPage() {
+
+    return AccountStore.accounts()
+      .then(function (accounts) {
+        accountStore = angular.copy(accounts);
+        accountStore.post(vm.rootAccount);
+        vm.accounts = accountStore.data;
+
+        return AccountStore.types();
+      })
+      .then(function (types) {
+        typeStore = types;
+        vm.types = typeStore.data;
+      });
+  }
+
+  /**
+   * @fixme
+   * account store is not updated on creation or update
+   */
+  function setAccount() {
+    if (angular.isDefined(id)) {
+      // account has been specified; set up updating this account
+      loadAccountDetails(id);
+    } else {
+      // no account specified - a new account will be created
+      defineNewAccount();
+    }
+  }
+
+  function loadAccountDetails(accountId) {
+    // load in the account details
+    var accountParentId;
+    var account = accountStore.get(accountId);
+
+    // if no account is found either the store is out of date or a bad reference
+    // has been passed
+    if (!account) {
+      mockAccountNotFound();
       return;
     }
 
+    vm.account = angular.copy(account);
+    accountParentId = vm.account.parent.id || vm.account.parent;
+    vm.account.parent = accountStore.get(accountParentId);
+  }
+
+  function defineNewAccount() {
+    // defining a new account
+    // if a previous account existed - use these settings for the next account (batch creation)
+    var cacheType, cacheParent;
+
+    if (vm.account) {
+      cacheType = vm.account.type_id;
+      cacheParent = vm.account.parent.id;
+    }
+    vm.account = {};
+
+    // default parent -check to see if there is a requested parent ID has been passed in
+    if (parentId) {
+      vm.account.parent = accountStore.get(parentId);
+    } else {
+      // set root account
+      vm.account.parent = accountStore.get(cacheParent) || accountStore.get(vm.rootAccount.id);
+    }
+
+    // default type
+    vm.account.type_id = cacheType || vm.types[0].id;
+  }
+
+
+  /** @todo re-factor method - potentially these two actions should be split into two controllers */
+  function updateAccount(accountForm) {
+    // only require form to have changed if this is not the create state (no initial values)
+    var requireDirty = !vm.isCreateState;
+    accountForm.$setSubmitted();
+
+    if (accountForm.$invalid) {
+      return;
+    }
     if (!accountForm.$dirty) {
       return;
     }
 
+    // this will return all elements if requireDirty is set to false
     var submit = util.filterFormElements(accountForm, requireDirty);
 
     // filter parent
     if (submit.parent) {
-      delete submit.account;
       submit.parent = vm.account.parent.id;
     }
 
     if (vm.isCreateState) {
 
-      console.log('submitting account', submit);
       Accounts.create(submit)
         .then(function (result) {
-          vm.error = null;
+          vm.fetchError = null;
 
           // update the id so this account can be directly edited
           submit.id = result.id;
           $rootScope.$broadcast('ACCOUNT_CREATED', submit);
-          Notify.success('account made');
+          Notify.success('ACCOUNT.CREATED');
 
           if (vm.batchCreate) {
-            settupAccount();
-            accountForm.$setPristine();
-            accountForm.$setUntouched();
+            resetModal(accountForm);
           } else {
             close();
           }
@@ -185,18 +175,32 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
     } else {
       Accounts.update(vm.account.id, submit)
         .then(function (result) {
-          vm.error = null;
+          vm.fetchError = null;
+
           $rootScope.$broadcast('ACCOUNT_UPDATED', result);
-          Notify.success('Update success');
+          Notify.success('ACCOUNT.UPDATED');
           close();
         })
         .catch(handleModalError);
     }
   }
 
+  function resetModal(accountForm) {
+    accountForm.$setPristine();
+    accountForm.$setUntouched();
+    settupPage()
+      .then(setAccount);
+  }
+
+  function getTypeTitle(typeId) {
+    if (typeStore) {
+      return typeStore.get(typeId).translation_key;
+    }
+  }
+
   function setRootAccount(accountForm) {
     accountForm.parent.$setDirty();
-    vm.account.parent = vm.store.get(0);
+    vm.account.parent = accountStore.get(vm.rootAccount.id);
   }
 
   function close() {
@@ -204,13 +208,22 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
     $state.go('^.list');
   }
 
+  /**
+   * @method mockAccountNotFound
+   *
+   * @description
+   * This method mocks a 404 returned from the database - if this becomes a common
+   * pattern on the client this could be handled and returned from the store
+   */
+  function mockAccountNotFound() {
+    var error = new Error();
+    error.data = vm.notFound;
+    vm.accountNotFound = error.data;
+    throw error;
+  }
+
+  // sipmly exposes the error to the view
   function handleModalError(error) {
-    vm.error = error;
+    vm.fetchError = error;
   }
-
-  function getTypeTitle(typeId) {
-    return vm.typeStore.get(typeId).translation_key;
-  }
-
-  vm.getTypeTitle = getTypeTitle;
 }

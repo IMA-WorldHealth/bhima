@@ -3,7 +3,7 @@
 /*
  * @todo - this should have it's own Accounts Page Object.  It is complex enough.
  */
-
+'use strict';
 const chai = require('chai');
 const expect = chai.expect;
 const helpers = require('../shared/helpers');
@@ -13,7 +13,7 @@ const FU = require('../shared/FormUtils');
 const AccountsPage = require('./accounts.page.js');
 const components = require('../shared/components');
 
-describe.only('Account Management', function () {
+describe('Account Management', function () {
   const path = '#/accounts';
   before(() => helpers.navigate(path));
 
@@ -30,7 +30,7 @@ describe.only('Account Management', function () {
 
   const account = {
     id : 3636,
-    number : 4600,
+    number : 46000,
     type : 'Titre',
     label : 'Test Inventory Accounts',
     parent : {
@@ -108,13 +108,12 @@ describe.only('Account Management', function () {
     FU.buttons.submit();
     addedAccounts += 1;
 
-
     // set to this parent
     FU.typeahead('AccountEditCtrl.account.parent', parentNumber);
     // set to income
     FU.select('AccountEditCtrl.account.type_id', 'Recettes').click();
 
-    for (var i = 0; i < numberOfAccounts - 1; i++) {
+    for (var i = 1; i < numberOfAccounts; i++) {
       mockAccount.number += 20;
       createAccount(mockAccount, i);
     }
@@ -134,7 +133,6 @@ describe.only('Account Management', function () {
   function createAccount(account, index) {
     FU.input('AccountEditCtrl.account.number', account.number);
     FU.input('AccountEditCtrl.account.label', account.label.concat(index));
-
     FU.buttons.submit();
     addedAccounts += 1;
   }

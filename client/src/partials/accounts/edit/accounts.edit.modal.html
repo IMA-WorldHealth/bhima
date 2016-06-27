@@ -15,9 +15,9 @@
 
 <div class="modal-body">
   <!-- Failure message -->
-  <div class="alert alert-danger" ng-if="AccountEditCtrl.accountFailed">
+  <div class="alert alert-danger" ng-if="AccountEditCtrl.accountNotFound">
     <i class="fa fa-exclamation-circle"></i>
-    <b>{{AccountEditCtrl.accountFailed.status}}</b> {{AccountEditCtrl.accountFailed.code | translate}}
+    <b>{{AccountEditCtrl.accountFailed.status}}</b> {{AccountEditCtrl.accountNotFound.code | translate}}
   </div>
 
   <!-- Account form -->
@@ -47,7 +47,7 @@
 
     <div ng-if="!AccountEditCtrl.isCreateState" class="form-group">
       <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label>
-      <p class="form-control-static" id="type-static">{{::AccountEditCtrl.getTypeTitle(AccountEditCtrl.account.type_id) | translate }}</p>
+      <p class="form-control-static" ng-if="AccountEditCtrl.account" id="type-static">{{::AccountEditCtrl.getTypeTitle(AccountEditCtrl.account.type_id) | translate }}</p>
     </div>
 
     <div ng-if="AccountEditCtrl.isCreateState" class="form-group"
@@ -83,7 +83,7 @@
     <!-- @todo business logic rules will have to be displayed along with these messages when implemented with features (Edit, Delete, Lock etc.) -->
     <p ng-if="AccountForm.$submitted && AccountForm.$pristine && !AccountEditCtrl.isCreateState" class="text-warning"><i class="fa fa-warning"></i> {{ "ACCOUNTS.RECORD_SAME" | translate }}</p>
     <p ng-if="AccountForm.$submitted && AccountForm.$invalid" class="text-danger"><i class="fa fa-exclamation-circle"></i> {{ "FORM.ERRORS.RECORD_ERROR" | translate }}</p>
-    <p ng-if="AccountEditCtrl.error" class="text-danger"><i class="fa fa-exclamation-circle"></i> {{AccountEditCtrl.error.data.code | translate}}</p>
+    <p ng-if="AccountEditCtrl.fetchError" class="text-danger"><i class="fa fa-exclamation-circle"></i> {{AccountEditCtrl.fetchError.data.code | translate}}</p>
   </div>
   <div class="checkbox" style="display : inline-block" ng-if="AccountEditCtrl.isCreateState">
     <label>
@@ -91,7 +91,7 @@
     </label>
   </div>
   <button class="btn btn-default btn-sm" data-method="cancel" ng-click="AccountEditCtrl.close()" data-action="close">{{ "FORM.BUTTONS.CLOSE" | translate }}</button>
-  <button ng-disabled="AccountEditCtrl.accountFailed" data-method="submit" class="btn btn-primary btn-sm" ng-click="AccountEditCtrl.updateAccount(AccountForm)" data-action="close">
+  <button ng-disabled="AccountEditCtrl.accountNotFound || AccountEditCtrl.error" data-method="submit" class="btn btn-primary btn-sm" ng-click="AccountEditCtrl.updateAccount(AccountForm)" data-action="close">
     <span ng-if="AccountEditCtrl.isCreateState">{{ "ACCOUNT.SUBMIT_CREATE" | translate }}</span>
     <span ng-if="!AccountEditCtrl.isCreateState">{{ "ACCOUNT.SUBMIT_UPDATE" | translate }}</span>
   </button>
