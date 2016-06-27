@@ -1,3 +1,5 @@
+/* jshint expr:true */
+/* global element, by, browser */
 
 function InvoiceRegistryPage() {
   var page = this;
@@ -30,4 +32,5 @@ function InvoiceRegistryPage() {
   page.showInvoiceProof = showInvoiceProof;
   page.isInvoiceProofPresent = isInvoiceProofPresent;
 }
+
 module.exports = InvoiceRegistryPage;

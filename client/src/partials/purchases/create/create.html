@@ -175,10 +175,11 @@
     <div class="row" style="padding-top : 5px; padding-bottom : 5px;">
       <div class="col-md-12 text-right">
         <button
-          id="btn-submit-invoice"
+          type="submit"
           class="btn btn-primary"
           ng-disabled="!PurchaseCtrl.supplier"
-          ng-click="PurchaseCtrl.submit(PurchaseOrderForm)">
+          ng-click="PurchaseCtrl.submit(PurchaseOrderForm)"
+          data-method="submit">
           {{ "FORM.BUTTONS.SUBMIT" | translate }}
         </button>
         <button

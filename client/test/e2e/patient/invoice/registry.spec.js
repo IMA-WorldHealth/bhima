@@ -3,14 +3,12 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const helpers = require('../shared/helpers');
+const helpers = require('../../shared/helpers');
 helpers.configure(chai);
 
-const InvoiceRegistryPage = require('./invoiceRegistry.page.js');
+const InvoiceRegistryPage = require('./registry.page.js');
 const modalPage = require('./modal.page.js');
-const ReceiptModalPage = require('../receipt_modal/receiptModal.page.js');
-
-
+const ReceiptModalPage = require('../../receipt_modal/receiptModal.page.js');
 
 describe('Invoice Registry page', function () {
   'use strict';
@@ -36,7 +34,7 @@ describe('Invoice Registry page', function () {
 
   it('displays all invoices loaded from database', function () {
     var invoiceRegistry = new InvoiceRegistryPage();
-    expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.initialBillNumber);
+    expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.initialBillNumber);
   });
 
     it('filters invoices of today correctly', function () {
@@ -46,7 +44,7 @@ describe('Invoice Registry page', function () {
         invoiceRegistry.showFilterDialog();
         filterModal.setRange('today');
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.todayBillNumber);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.todayBillNumber);
     });
 
     it('filters invoices of the week correctly', function () {
@@ -56,7 +54,7 @@ describe('Invoice Registry page', function () {
         invoiceRegistry.showFilterDialog();
         filterModal.setRange('week');
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.weekBillNumber);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.weekBillNumber);
     });
 
     it('filters invoices of the month correctly', function () {
@@ -66,7 +64,7 @@ describe('Invoice Registry page', function () {
         invoiceRegistry.showFilterDialog();
         filterModal.setRange('month');
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.monthBillNumber);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.monthBillNumber);
     });
 
     it('filters invoices of the year correctly', function () {
@@ -76,7 +74,7 @@ describe('Invoice Registry page', function () {
         invoiceRegistry.showFilterDialog();
         filterModal.setRange('year');
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.yearBillNumber);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.yearBillNumber);
     });
 
     it('filters invoices by reference correctly', function () {
@@ -86,7 +84,7 @@ describe('Invoice Registry page', function () {
         invoiceRegistry.showFilterDialog();
         filterModal.setReference(paramResearch.referenceValue);
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(1);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(1);
     });
 
     it('filters invoices by service correctly', function () {
@@ -96,7 +94,7 @@ describe('Invoice Registry page', function () {
         invoiceRegistry.showFilterDialog();
         filterModal.setServiceChoice(paramResearch.serviceValue);
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.initialBillNumber);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.initialBillNumber);
     });
 
     it('filters invoices by user correctly', function () {
@@ -106,7 +104,7 @@ describe('Invoice Registry page', function () {
         invoiceRegistry.showFilterDialog();
         filterModal.setUserChoice(paramResearch.userValue);
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.initialBillNumber);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.initialBillNumber);
     });
 
     it('filters distributable invoice only correctly', function () {
@@ -114,9 +112,9 @@ describe('Invoice Registry page', function () {
         var filterModal = new modalPage();
 
         invoiceRegistry.showFilterDialog();
-        filterModal.chooseDistributableOnly()
+        filterModal.chooseDistributableOnly();
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.distributableInvoiceNumber);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.distributableInvoiceNumber);
     });
 
     it('filters no distributable only correctly', function () {
@@ -126,7 +124,7 @@ describe('Invoice Registry page', function () {
         invoiceRegistry.showFilterDialog();
         filterModal.chooseNoDistributableOnly();
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.noDistributableInvoiceNumber);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.noDistributableInvoiceNumber);
     });
 
     it('filters distributable or not invoice correctly', function () {
@@ -136,7 +134,7 @@ describe('Invoice Registry page', function () {
         invoiceRegistry.showFilterDialog();
         filterModal.chooseNoYesDistributable();
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(paramResearch.initialBillNumber);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(paramResearch.initialBillNumber);
     });
 
     it('filters by providing all parameters correctly', function () {
@@ -151,7 +149,7 @@ describe('Invoice Registry page', function () {
         filterModal.chooseNoDistributableOnly();
         filterModal.chooseNoYesDistributable();
         filterModal.submit();
-        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.be.equal(1);
+        expect(invoiceRegistry.getInvoiceNumber()).to.eventually.equal(1);
     });
 
     it('shows the proof of the invoice correctly', function () {

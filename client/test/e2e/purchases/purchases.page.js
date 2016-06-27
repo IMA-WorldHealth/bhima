@@ -4,49 +4,18 @@
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/gridTestUtils.spec.js');
-const findPatient = require('../shared/components/bhFindPatient');
-const dateEditor = require('../shared/components/bhDateEditor');
 
-function PatientInvoicePage() {
+function PurchaseOrderPage() {
   const page = this;
 
   const btns = {
-    submit : element(by.id('btn-submit-invoice')),
+    submit : $('[data-method="submit"]'),
     add : element(by.id('btn-add-rows')),
-    distributable : element(by.id('distributable')),
-    notDistributable : element(by.id('not-distributable')),
     clear : element(by.id('clear'))
   };
 
-  const gridId = page.gridId = 'invoice-grid';
+  const gridId = page.gridId = 'purchase-order-grid';
   const grid = GU.getGrid(gridId);
-
-  // sets a patient to the id passed in
-  page.patient = function patient(id) {
-    findPatient.findById(id);
-  };
-
-  // sets a default patient, service, date, and note
-  page.prepare = function prepare() {
-
-    // set a patient with id TPA1
-    findPatient.findById('TPA1');
-
-    // set the date to the start of this year
-    dateEditor.set(new Date('2016-01-02'));
-
-    // set a test description
-    FU.input(
-      'PatientInvoiceCtrl.Invoice.details.description',
-      'This is a temporary description.  It can be pretty long.'
-    );
-
-    // set this invoice to be distributable
-    btns.distributable.click();
-
-    // select the first enabled service in the list
-    FU.select('PatientInvoiceCtrl.Invoice.details.service_id', 'Administration');
-  };
 
   // try to click the submit button
   page.submit = function submit() {
@@ -55,7 +24,7 @@ function PatientInvoicePage() {
 
   // adds n rows to the grid
   page.addRows = function addRows(n) {
-    FU.input('PatientInvoiceCtrl.itemIncrement', n);
+    FU.input('PurchaseCtrl.itemIncrement', n);
     btns.add.click();
   };
 
@@ -67,16 +36,16 @@ function PatientInvoicePage() {
   };
 
   // add an inventory item to the grid
-  page.addInventoryItem = function addInvoiceItem(rowNumber, itemLabel) {
+  page.addInventoryItem = function addInvoiceItem(rowNumber, code) {
 
     // first column of the nth row
     const itemCell = GU.dataCell(gridId, rowNumber, 1);
 
     // enter data into the typeahead input.  We cannot use FU.typeahead because it is appended to the body.
-    FU.input('row.entity.inventory_uuid', itemLabel, itemCell);
+    FU.input('row.entity.inventory_uuid', code, itemCell);
 
     // the typeahead should be open - use an id to click the right item
-    element(by.id(`inv-code-${itemLabel}`)).click();
+    element(by.id(`inv-code-${code}`)).click();
   };
 
   /**
@@ -90,8 +59,8 @@ function PatientInvoicePage() {
   page.adjustItemPrice = function adjustItemPrice(rowNumber, price) {
 
     // fourth column of the last nth row
-    const priceCell = GU.dataCell(gridId, rowNumber, 4);
-    FU.input('row.entity.transaction_price', price, priceCell);
+    const priceCell = GU.dataCell(gridId, rowNumber, 5);
+    FU.input('row.entity.unit_price', price, priceCell);
   };
 
   /**
@@ -105,7 +74,7 @@ function PatientInvoicePage() {
   page.adjustItemQuantity = function adjustItemQuantity(rowNumber, quantity) {
 
     // third column column of the nth row
-    const quantityCell = GU.dataCell(gridId, rowNumber, 3);
+    const quantityCell = GU.dataCell(gridId, rowNumber, 4);
     FU.input('row.entity.quantity', quantity, quantityCell);
   };
 
@@ -114,9 +83,13 @@ function PatientInvoicePage() {
     $('[data-action="close"]').click();
   };
 
+  page.clear = function clear() {
+    $('[data-action="clear"]').click();
+  };
+
   // bind the buttons for external use
   page.btns = btns;
 }
 
 // expose to the world!
-module.exports = PatientInvoicePage;
+module.exports = PurchaseOrderPage;

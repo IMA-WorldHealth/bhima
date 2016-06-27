@@ -1,6 +1,8 @@
 /**
  * Created by Dedrick Kitamuka on 15/06/2016.
  */
+/* jshint expr:true */
+/* global element, by, browser */
 
 function modalPage () {
     var page = this;
@@ -43,7 +45,7 @@ function modalPage () {
     function setReference(value) {
         referenceField.clear().sendKeys(value);
     }
-    
+
     function setServiceChoice (choice) {
         serviceSelect.element(by.cssContainingText('option', choice));
     }
@@ -80,4 +82,3 @@ function modalPage () {
 }
 
 module.exports = modalPage;
-
