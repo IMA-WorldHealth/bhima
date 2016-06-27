@@ -22,6 +22,13 @@
           <span class="fa fa-print"></span> {{ "FORM.BUTTONS.PRINT" | translate }}
         </button>
       </div>
+
+      <div class="toolbar-item">
+        <bh-pdf-print
+          pdf-url="reports/patient/registrations"
+          options="PatientRegistryCtrl.filters">
+        </bh-pdf-print>
+      </div>
     </div>
   </div>
 </div>
