@@ -336,6 +336,7 @@
       "COST_CENTER"            : "Cost Center",
       "CONSUMABLE"             : "Consumable",
       "COUNTRY"                : "Country",
+      "CREDIT"                 : "Credit",
       "CREDITOR_GROUP"         : "Creditor Group",
       "CURRENCIES"             : "Currencies",
       "CURRENCY"               : "Currency",
@@ -345,6 +346,7 @@
       "DATE"                   : "Date",
       "DATE_CREATED"           : "Date Created",
       "DATE_REGISTRATION"      : "Registration Date",
+      "DEBIT"                  : "Debit",
       "DEBITOR_GROUP"          : "Debtor Group",
       "DEBTOR_GROUP"           : "Form debtor group record",
       "DESCRIPTION"            : "Description",
@@ -455,6 +457,7 @@
       "SERVICE"                : "Service",
       "SET_DATE"               : "Change Date",
       "SEX"                    : "Sex",
+      "SIGNATURE"              : "Signature",
       "SIZE_BYTES"             : "Bytes",
       "SIZE_KB"                : "Kb",
       "SIZE_MB"                : "Mb",
@@ -1157,6 +1160,7 @@
       "TITLE"              : "Simple Voucher",
       "TRANSFER"           : "Money Transfer"
     },
+    "TITLE" : "Voucher",
     "COMPLEX": {
       "ADD_ITEMS"            : "Add item(s)",
       "CASH_PAYMENT"         : "Cash Payment",

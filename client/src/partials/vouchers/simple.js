@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SimpleJournalVoucherController.$inject = [
   'AppCache', 'VoucherService', 'AccountService', 'SessionService', 'util',
-  'NotifyService', '$filter'
+  'NotifyService', 'ModalService'
 ];
 
 /**
@@ -18,7 +18,7 @@ SimpleJournalVoucherController.$inject = [
  * @todo - Implement Voucher Templates to allow users to save pre-selected
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify, $filter) {
+function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify, Modal) {
   var vm = this;
 
   // cache to save work-in-progress data and pre-fabricated templates
@@ -82,10 +82,25 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     // submit the voucher
     return Vouchers.createSimple(vm.voucher)
     .then(function (res) {
-      Notify.success('FORM.INFO.UPDATE_SUCCESS');
 
-      /* setup the voucher object to init state */
+      // Generate the document
+      return Vouchers.report(res.uuid, 'pdf');
+    })
+    .then(function (report) {
+
+      // handle the modal of the report
+      return Modal.openReports({ report: report, renderer: 'pdf' });
+    })
+    .then(function () {
+
+      // Notify for the success of the action
+      Notify.success('FORM.INFO.UPDATE_SUCCESS');
+        
+      // setup the voucher object to init state
       form.$setPristine();
+      vm.incomeExpense = undefined;
+      vm.descriptionPrefix = undefined;
+      vm.selectedType = undefined;
 
       // rerun the startup script
       startup();

@@ -338,6 +338,7 @@
       "CONSUMABLE"             : "Consommable",
       "CREATE"                 : "CRÉATION",
       "CREATED"                : "Crée",
+      "CREDIT"                 : "Crédit",
       "CREDITOR_GROUP"         : "Groupe Créditeur",
       "CURRENCIES"             : "Monnaies",
       "CURRENCY"               : "Monnaie",
@@ -345,6 +346,7 @@
       "DATE"                   : "Date",
       "DATE_CREATED"           : "Date de création",
       "DATE_REGISTRATION"      : "Date d'enregistrement",
+      "DEBIT"                  : "Débit",
       "DEBITOR_GROUP"          : "Groupe Débiteur",
       "DEBTOR_GROUP"           : "Formulaire d'enregistrement de groupe débiteur",
       "DESCRIPTION"            : "Description",
@@ -455,6 +457,7 @@
       "SERVICE"                : "Service",
       "SET_DATE"               : "Changer la Date",
       "SEX"                    : "Sexe",
+      "SIGNATURE"              : "Signature",
       "SIZE_BYTES"             : "Octets",
       "SIZE_KB"                : "Ko",
       "SIZE_MB"                : "Mo",
@@ -1165,6 +1168,7 @@
       "TITLE"              : "Bordereau de transfert",
       "TRANSFER"           : "Transfert d'argent"
     },
+    "TITLE" : "Quittance",
     "COMPLEX": {
       "ADD_ITEMS"            : "Ajouter item(s)",
       "CASH_PAYMENT"         : "Paiement Caisse",

@@ -1,24 +1,3 @@
-<style>
-  .select2 > .select2-choice.ui-select-match {
-      /* Because of the inclusion of Bootstrap */
-      height: 29px;
-  }
-
-  .selectize-control > .selectize-dropdown {
-      top: 36px;
-  }
-  /* Some additional styling to demonstrate that append-to-body helps achieve the proper z-index layering. */
-  .select-box {
-    background: #fff;
-    position: relative;
-    z-index: 1;
-  }
-  .alert-info.positioned {
-    margin-top: 1em;
-    position: relative;
-    z-index: 10000; /* The select2 dropdown has a z-index of 9999 */
-  }
-</style>
 <!-- breadcrumb header -->
 <bh-breadcrumb
   path="SimpleVoucherCtrl.paths">
@@ -82,7 +61,7 @@
                   class="form-control"
                   name="description"
                   ng-model="SimpleVoucherCtrl.voucher.description"
-                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
+                  placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_DESCRIPTION' | translate }}"
                   ng-maxlength="SimpleVoucherCtrl.maxLength"
                   required>
                 </textarea>
@@ -100,7 +79,7 @@
                  <input
                    class="form-control"
                    name="fromAccount"
-                   placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+                   placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
                    uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
                    typeahead-editable="false"
@@ -120,7 +99,7 @@
                  <input
                    class="form-control"
                    name="toAccount"
-                   placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+                   placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
                    uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
                    typeahead-editable="false"

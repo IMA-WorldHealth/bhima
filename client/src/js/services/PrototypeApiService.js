@@ -17,6 +17,7 @@ PrototypeApiService.$inject = ['$http', 'util'];
  *
  * @requires $http
  * @requires util
+ * @fixme Please fix some examples below their refer often to the create method
  */
 function PrototypeApiService($http, util) {
 
@@ -29,6 +30,7 @@ function PrototypeApiService($http, util) {
   this.read = read;
   this.update = update;
   this.delete = remove;
+  this.report = report;
 
   /**
    * @method read
@@ -159,6 +161,34 @@ function PrototypeApiService($http, util) {
 
     // send the DELETE request
     return this.$http.delete(target)
+      .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method reports
+   *
+   * @description
+   * Sends an HTTP GET request to the url "/route/reports/:id"
+   * to get a document as a report.
+   *
+   * @param {Number} id - the identifier of the URL route.
+   * @param {String} filetype - the report file type (pdf, json, html)
+   * @returns {Promise} - the promise
+   */
+  function report(id, filetype) {
+
+    // append the id to the base url
+    var target = this.url.concat('reports/', id);
+
+    // filetype setup
+    var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
+    var params = { renderer: filetype };
+
+    // send the GET request
+    return this.$http.get(target, {
+      params: params,
+      responseType: responseType
+    })
       .then(util.unwrapHttpResponse);
   }
 }

@@ -21,12 +21,20 @@ function VoucherService(PrototypeApiService) {
   service.url = '/vouchers/';
   service.createSimple = createSimple;
   service.create = create;
+  service.report = report;
 
   /**
    * Wraps the prototype create method.
    */
   function create(voucher) {
     return PrototypeApiService.create.call(service, { voucher : voucher });
+  }
+
+  /**
+   * Wraps the prototype report method.
+   */
+  function report(id, filetype) {
+    return PrototypeApiService.report.call(service, id, filetype);
   }
 
   /**
