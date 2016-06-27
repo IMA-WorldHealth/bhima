@@ -38,6 +38,9 @@ angular.module('bhima.components')
 function BreadcrumbController() {
   var vm = this;
 
+  //variable to prefix all our ids at the view
+  vm.prefix = 'breadcrumb-';
+
   /**
    * Paths definition
    * @example
@@ -95,9 +98,11 @@ function BreadcrumbController() {
    */
   vm.bcDropdowns = vm.dropdown || [];
 
-  /** call the appropriate function and update the dropdown label */
+
+  /** call the appropriate function and update the dropdown label **/
   vm.helperDropdown = function helperDropdown(child, parent) {
     parent.selected = child.label;
+
     child.action(child);
   };
 
