@@ -77,6 +77,19 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
       vm.gridApi.core.scrollTo(firstInvalidItem);
       return;
     }
+
+    // copy the purchase order object into something that can be sent to the server
+    var order = angular.copy(vm.order.details);
+    order.items = angular.copy(vm.order.store.data);
+
+    return Purchases.create(order)
+      .then(function (res) {
+        console.log(res);
+
+        // reset the module
+        clear(form);
+      })
+      .catch(Notify.handleError);
   }
 
   // fired whenever an input in the grid is changed.

@@ -142,6 +142,9 @@ function create(req, res, next) {
     data.date = new Date(data.date);
   }
 
+  data.user_id = req.session.user.id;
+  data.project_id = req.session.project.id;
+
   const sql =
     'INSERT INTO purchase SET ?';
 

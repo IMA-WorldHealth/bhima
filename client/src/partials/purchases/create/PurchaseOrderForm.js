@@ -58,10 +58,9 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
     // the order details
     this.details = {
-      payment_method: 1,
+      payment_method: 'FORM.LABELS.ON_DELIVERY',
       date: new Date(),
       cost: 0,
-      description: null
     };
 
     // the supplier is null

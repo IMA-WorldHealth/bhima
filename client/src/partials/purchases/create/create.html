@@ -11,7 +11,7 @@
   <div class="container-fluid">
 
     <!--
-      top description panel for the purchase order.details
+      top note panel for the purchase order.details
       inspired by the patient invoice page's ergonomics
     -->
     <div class="row">
@@ -52,19 +52,19 @@
 
                   <div class="radio" style="margin-top:0;">
                     <label>
-                      <input type="radio" name="paymentMethod" id="on-purchase" value="0" ng-model="PurchaseCtrl.order.details.payment_method" required>
+                      <input type="radio" name="paymentMethod" id="on-purchase" value="FORM.LABELS.ON_PURCHASE" ng-model="PurchaseCtrl.order.details.payment_method" required>
                       {{ "FORM.LABELS.ON_PURCHASE" | translate }}
                     </label>
                   </div>
                   <div class="radio">
                     <label>
-                      <input type="radio" name="paymentMethod" id="on-delivery" value="1" ng-model="PurchaseCtrl.order.details.payment_method" required>
+                      <input type="radio" name="paymentMethod" id="on-delivery" value="FORM.LABELS.ON_DELIVERY" ng-model="PurchaseCtrl.order.details.payment_method" required>
                       {{ "FORM.LABELS.ON_DELIVERY" | translate }}
                     </label>
                   </div>
                   <div class="radio">
                     <label>
-                      <input type="radio" name="paymentMethod" id="other" value="2" ng-model="PurchaseCtrl.order.details.payment_method" required>
+                      <input type="radio" name="paymentMethod" id="other" value="FORM.LABELS.OTHER" ng-model="PurchaseCtrl.order.details.payment_method" required>
                       {{ "FORM.LABELS.OTHER" | translate }}
                     </label>
                   </div>
@@ -89,7 +89,7 @@
                   ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.notes.$invalid }">
                   <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
                   <textarea
-                    ng-model="PurchaseCtrl.order.details.description"
+                    ng-model="PurchaseCtrl.order.details.note"
                     name="notes"
                     class="form-control"
                     rows="4"
