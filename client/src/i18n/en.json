@@ -476,6 +476,7 @@
       "TO_ACCOUNT"             : "To Account",
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
+      "TRANSFER_TYPE"          : "Transfer Type",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Unconfigured",
       "UPDATE"                 : "UPDATE",
@@ -556,6 +557,7 @@
       "SELECT_SECTOR"             : "Select a sector",
       "SELECT_SERVICE"            : "Select a Service",
       "SELECT_SEX"                : "Select a sex",
+      "SELECT_TRANSFER_TYPE"      : "Select a transfer type",
       "SELECT_USER"               : "Select User",
       "SELECT_VILLAGE"            : "Select village",
       "SELECT_ZS"                 : "Select an health zone"
@@ -1137,7 +1139,18 @@
   },
   "VOUCHERS": {
     "SIMPLE": {
-      "TITLE" : "Simple Vouchers"
+      "CASH_PAYMENT"       : "Client Payment",
+      "CASH_RETURN"        : "Cash Return (Payback)",
+      "CONVENTION_PAYMENT" : "Convention Payment",
+      "EXPENSE"            : "Expenses",
+      "INCOME"             : "Incomes",
+      "SALARY_PAYMENT"     : "Salary Payment",
+      "GENERIC_EXPENSE"    : "Other Expenses",
+      "GENERIC_INCOME"     : "Other Incomes",
+      "PURCHASES"          : "Purchases",
+      "SUPPORT_INCOME"     : "Support Incomes",
+      "TITLE"              : "Simple Voucher",
+      "TRANSFER"           : "Money Transfer"
     },
     "COMPLEX": {
       "ADD_ITEMS"            : "Add item(s)",

@@ -1,3 +1,24 @@
+<style>
+  .select2 > .select2-choice.ui-select-match {
+      /* Because of the inclusion of Bootstrap */
+      height: 29px;
+  }
+
+  .selectize-control > .selectize-dropdown {
+      top: 36px;
+  }
+  /* Some additional styling to demonstrate that append-to-body helps achieve the proper z-index layering. */
+  .select-box {
+    background: #fff;
+    position: relative;
+    z-index: 1;
+  }
+  .alert-info.positioned {
+    margin-top: 1em;
+    position: relative;
+    z-index: 10000; /* The select2 dropdown has a z-index of 9999 */
+  }
+</style>
 <!-- breadcrumb header -->
 <bh-breadcrumb
   path="SimpleVoucherCtrl.paths">
@@ -24,10 +45,39 @@
               >
               </bh-date-editor>
 
+              <div class="form-group">
+                <label for="">{{ 'FORM.LABELS.TRANSFER_TYPE' | translate }}</label>
+                <select class="form-control"
+                  ng-model="SimpleVoucherCtrl.selectedType"
+                  ng-change="SimpleVoucherCtrl.buildDescription()" required>
+                  <option value="" disabled>--- {{ 'FORM.SELECTS.SELECT_TRANSFER_TYPE' | translate }} ---</option>
+
+                  <!-- incomes  -->
+                  <optgroup label="{{ 'VOUCHERS.SIMPLE.INCOME' | translate }}">
+                    <option value="{{ item }}" ng-repeat="item in SimpleVoucherCtrl.incomes">{{ item.text | translate }}</option>
+                  </optgroup>
+
+                  <!-- expenses  -->
+                  <optgroup label="{{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }}">
+                    <option value="{{ item }}" ng-repeat="item in SimpleVoucherCtrl.expenses">{{ item.text | translate }}</option>
+                  </optgroup>
+                </select>
+              </div>
+
               <div
                 class="form-group"
                 ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.description.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
+                <label>
+                  {{ "FORM.LABELS.DESCRIPTION" | translate }}
+                  <span
+                    style="display: inline-block"
+                    class="label"
+                    ng-class="{'label-success': SimpleVoucherCtrl.incomeExpense==='income', 'label-warning': SimpleVoucherCtrl.incomeExpense==='expense'}">
+                    {{ SimpleVoucherCtrl.descriptionPrefix }}
+                    <span ng-if="SimpleVoucherCtrl.incomeExpense==='income'">({{ 'VOUCHERS.SIMPLE.INCOME' | translate }})</span>
+                    <span ng-if="SimpleVoucherCtrl.incomeExpense==='expense'">({{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }})</span>
+                  </span>
+                </label>
                 <textarea
                   class="form-control"
                   name="description"

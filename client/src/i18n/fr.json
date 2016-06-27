@@ -475,6 +475,7 @@
       "TO_ACCOUNT"             : "Au Compte",
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Compte transfert",
+      "TRANSFER_TYPE"          : "Type de Transfert",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Non configuree",
       "UNIT"                   : "Forme galenique",
@@ -555,6 +556,7 @@
       "SELECT_SECTOR"             : "Sélectionner secteur",
       "SELECT_SERVICE"            : "Sélectionner un Service",
       "SELECT_SEX"                : "Sélectionner le sexe",
+      "SELECT_TRANSFER_TYPE"      : "Sélectionner le type de transfert",
       "SELECT_USER"               : "Selectionner Utilisateur",
       "SELECT_VILLAGE"            : "Sélectionner village",
       "SELECT_ZS"                 : "Sélectionner zone de sante"
@@ -1144,7 +1146,18 @@
   },
   "VOUCHERS": {
     "SIMPLE": {
-      "TITLE" : "Bordereau de transfert"
+      "CASH_PAYMENT"       : "Paiement des clients",
+      "CASH_RETURN"        : "Remboursement",
+      "CONVENTION_PAYMENT" : "Paiement des Conventions",
+      "EXPENSE"            : "Dépenses",
+      "INCOME"             : "Récettes",
+      "SALARY_PAYMENT"     : "Paiement des Salaires",
+      "GENERIC_EXPENSE"    : "Autres Depenses",
+      "GENERIC_INCOME"     : "Autres Recettes",
+      "PURCHASES"          : "Achats",
+      "SUPPORT_INCOME"     : "Paiement Prise en charge",
+      "TITLE"              : "Bordereau de transfert",
+      "TRANSFER"           : "Transfert d'argent"
     },
     "COMPLEX": {
       "ADD_ITEMS"            : "Ajouter item(s)",

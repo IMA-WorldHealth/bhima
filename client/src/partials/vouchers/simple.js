@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SimpleJournalVoucherController.$inject = [
   'AppCache', 'VoucherService', 'AccountService', 'SessionService', 'util',
-  'NotifyService'
+  'NotifyService', '$filter'
 ];
 
 /**
@@ -18,7 +18,7 @@ SimpleJournalVoucherController.$inject = [
  * @todo - Implement Voucher Templates to allow users to save pre-selected
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify) {
+function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify, $filter) {
   var vm = this;
 
   // cache to save work-in-progress data and pre-fabricated templates
@@ -30,8 +30,22 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     { label : 'VOUCHERS.SIMPLE.TITLE' }
   ];
 
-  // bind the submit method
+  // transfer type
+  vm.transferType = [
+    { id: 0, text: 'VOUCHERS.SIMPLE.GENERIC_INCOME', incomeExpense: 'income', prefix: 'REC. GEN' },
+    { id: 1, text: 'VOUCHERS.SIMPLE.CASH_PAYMENT', incomeExpense: 'income', prefix: 'CASH' },
+    { id: 2, text: 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', incomeExpense: 'income', prefix: 'CONV' },
+    { id: 3, text: 'VOUCHERS.SIMPLE.SUPPORT_INCOME', incomeExpense: 'income', prefix: 'PEC' },
+    { id: 4, text: 'VOUCHERS.SIMPLE.TRANSFER', incomeExpense: 'income', prefix: 'TRANSF' },
+    { id: 5, text: 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', incomeExpense: 'expense', prefix: 'DEP. GEN' },
+    { id: 6, text: 'VOUCHERS.SIMPLE.SALARY_PAYMENT', incomeExpense: 'expense', prefix: 'SALAIRE' },
+    { id: 7, text: 'VOUCHERS.SIMPLE.CASH_RETURN', incomeExpense: 'expense', prefix: 'PAYBACK' },
+    { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' }
+  ];
+
+  // expose methods to the view
   vm.submit = submit;
+  vm.buildDescription = buildDescription;
 
   // load the list of accounts
   Accounts.read()
@@ -49,6 +63,9 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     vm.voucher = {};
     vm.voucher.date = new Date();
     vm.voucher.currency_id = Session.enterprise.currency_id;
+
+    // group the list of type
+    groupType();
   }
 
   function submit(form) {
@@ -58,6 +75,9 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return;
     }
+
+    // description prefix
+    vm.voucher.description =  String(vm.descriptionPrefix).concat('/', vm.voucher.description);
 
     // submit the voucher
     return Vouchers.createSimple(vm.voucher)
@@ -72,6 +92,27 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     })
     .catch(Notify.handleError);
   }
+
+  function groupType() {
+    vm.incomes = vm.transferType.filter(function (item) {
+      return item.incomeExpense === 'income';
+    });
+    vm.expenses = vm.transferType.filter(function (item) {
+      return item.incomeExpense === 'expense';
+    });
+  }
+
+  function buildDescription() {
+    if (!vm.selectedType) { return; }
+
+    var current = new Date();
+    var selected = JSON.parse(vm.selectedType);
+    vm.incomeExpense = selected.incomeExpense;
+
+    vm.descriptionPrefix = String(Session.project.abbr)
+      .concat('/', selected.prefix, '/')
+      .concat(current.toDateString());
+  };
 
   startup();
 }
