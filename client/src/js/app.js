@@ -74,10 +74,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'receipts',
     templateUrl: 'partials/receipts/receipts.html'
   })
-  .state('/cash_discard/:receiptId?', {
-    controller: 'cashDiscard',
-    templateUrl: 'partials/cash/discard/discard.html'
-  })
   .state('configBilan', {
     url: '/section_bilan',
     controller : 'sectionBilanController as sectionBilanCtrl',
@@ -93,14 +89,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'AccountsController as AccountsCtrl',
     templateUrl: 'partials/accounts/accounts.html'
   })
-  .state('dashboards/finance', {
-    url : '/dashboards/finance',
-    templateUrl : 'partials/dashboard/finance.html'
-  })
-  .state('/config_accounting', {
-    controller: 'ConfigAccountingController as ConfigAccountCtrl',
-    templateUrl: 'partials/payroll/config_accounting/config_accounting.html'
-  })
   .state('subsidies', {
     url : '/subsidies',
     controller : 'SubsidyController as SubsidyCtrl',
@@ -114,50 +102,35 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/depots/depots.html'
   })
 
-  /* admin : debtor group management */
-  .state('debtor_groups', {
-    url : '/debtor_groups',
-    controller : 'DebtorGroupsController as DebtorGroupCtrl',
-    templateUrl : 'partials/debtor_groups/debtor_groups.html'
-  })
-
   /* employees routes */
   .state('employees', {
     url : '/employees',
     controller : 'EmployeeController as EmployeeCtrl',
     templateUrl : 'partials/employees/employees.html'
   })
-  .state('/employees/fonction', {
-    controller : 'FonctionController',
-    templateUrl : 'partials/employees/fonction/fonction.html'
-  })
-  .state('/employees/grades', {
-    controller : 'EmployeeGradeController',
-    templateUrl : 'partials/employees/grades/grades.html'
-  })
   /* location routes */
 
-  .state('/locations', {
+  .state('locations', {
     url : '/locations',
     controller : 'LocationController as LocationCtrl',
     templateUrl: 'partials/locations/locations.html'
   })
-  .state('locations/village', {
+  .state('locationsVillage', {
     url : '/locations/village',
     controller : 'VillageController as VillageCtrl',
     templateUrl: 'partials/locations/village/village.html'
   })
-  .state('locations/sector', {
+  .state('locationsSector', {
     url : '/locations/sector',
     controller : 'SectorController as SectorCtrl',
     templateUrl: 'partials/locations/sector/sector.html'
   })
-  .state('locations/province', {
+  .state('locationsProvince', {
     url : '/locations/province',
     controller : 'ProvinceController as ProvinceCtrl',
     templateUrl: 'partials/locations/province/province.html'
   })
-  .state('locations/country', {
+  .state('locationsCountry', {
     url : '/locations/country',
     controller : 'CountryController as CountryCtrl',
     templateUrl: 'partials/locations/country/country.html'
@@ -233,15 +206,11 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   /* journal routes */
 
-  .state('/journal', {
-    controller: 'journal.grid',
-    templateUrl:'partials/journal/journal.html'
-  })
-  .state('/journal/print', {
+  .state('journalPrint', {
     controller : 'journal.print',
     templateUrl : 'partials/journal/print.html'
   })
-  .state('/journal/voucher', {
+  .state('journalVoucher', {
     controller: 'JournalVoucherController as JournalVoucherCtrl',
     templateUrl: 'partials/journal/voucher/voucher.html'
   })
@@ -250,7 +219,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'SimpleJournalVoucherController as SimpleVoucherCtrl',
     templateUrl: 'partials/vouchers/simple.html'
   })
-  .state('/vouchers/complex', {
+  .state('vouchersComplex', {
     url : '/vouchers/complex',
     controller: 'ComplexJournalVoucherController as ComplexVoucherCtrl',
     templateUrl: 'partials/vouchers/complex.html'
@@ -337,31 +306,31 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   /* inventory routes */
 
-  .state('/inventory', {
+  .state('inventory', {
     controller: 'inventory',
     templateUrl: '/partials/inventory/index.html'
   })
-  .state('/inventory/list', {
+  .state('inventoryList', {
     url : '/inventory/list',
     controller : 'InventoryListController as InventoryCtrl',
     templateUrl : 'partials/inventory/list/list.html'
   })
-  .state('/inventory/configuration', {
+  .state('inventoryConfiguration', {
     url : '/inventory/configuration',
     views : {
       '' : {
         templateUrl : 'partials/inventory/configuration/configuration.html',
         controller : 'InventoryConfigurationController as InventoryCtrl'
       },
-      'groups@/inventory/configuration' : {
+      'groups@inventoryConfiguration' : {
         templateUrl : 'partials/inventory/configuration/groups/groups.html',
         controller : 'InventoryGroupsController as GroupsCtrl'
       },
-      'types@/inventory/configuration' : {
+      'types@inventoryConfiguration' : {
         templateUrl : 'partials/inventory/configuration/types/types.html',
         controller : 'InventoryTypesController as TypesCtrl'
       },
-      'units@/inventory/configuration' : {
+      'units@inventoryConfiguration' : {
         templateUrl : 'partials/inventory/configuration/units/units.html',
         controller : 'InventoryUnitsController as UnitsCtrl'
       }
@@ -387,7 +356,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   // })
 
   /* cash routes */
-  .state('/cash/:id', {
+  .state('cashId', {
     url : '/cash/:id',
     params : {
       id : { squash: true, value: null }
@@ -403,29 +372,10 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'SupplierController as SupplierCtrl',
     templateUrl: '/partials/suppliers/suppliers.html'
   })
-  /* cost center routes */
-
-  .state('/cost_center', {
-    controller: 'CostCenterController as CenterCtrl',
-    templateUrl: 'partials/cost_center/cost_center.html'
-  })
-  .state('/cost_center/center', {
-    controller: 'AnalysisCostCenterController as CenterCtrl',
-    templateUrl: 'partials/cost_center/center/analysis_center.html'
-  })
-  .state('/cost_center/assigning', {
-    controller: 'CostCenterAssignmentController',
-    templateUrl: 'partials/cost_center/assigning/assigning.html'
-  })
-  .state('/cost_center/allocation', {
-    controller: 'CostCenterAllocationController as CenterCtrl',
-    templateUrl: 'partials/cost_center/allocation/allocation.html'
-  })
-
 
   /* patients routes */
 
-  .state('patients/register', {
+  .state('patientsRegister', {
     url : '/patients/register',
     controller: 'PatientRegistrationController as PatientRegCtrl',
     templateUrl: 'partials/patients/registration/registration.html'
@@ -478,7 +428,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
         }
       }
     })
-
 
   /* cashbox routes */
   .state('cashboxes', {
