@@ -639,43 +639,6 @@ CREATE TABLE discount (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-DROP TABLE IF EXISTS `donation_item`;
-CREATE TABLE `donation_item` (
-  `uuid` BINARY(16) NOT NULL,
-  `donation_uuid` BINARY(16) NOT NULL,
-  `tracking_number` BINARY(16) NOT NULL,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `donation_item_1` (`donation_uuid`, `tracking_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `donation`;
-CREATE TABLE `donation` (
-  `uuid`         BINARY(16) NOT NULL,
-  `donor_id`     INT(11) unsigned NOT NULL,
-  `employee_id`  INT(11) UNSIGNED NOT NULL,
-  `date`         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_received`  TINYINT(1) NOT NULL DEFAULT 0,
-  `is_confirmed` TINYINT(1) NOT NULL DEFAULT 0,
-  `confirmed_by` INT(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `donor_id` (`donor_id`),
-  KEY `employee_id` (`employee_id`),
-  FOREIGN KEY (`donor_id`) REFERENCES `donor` (`id`),
-  FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `donor`;
-CREATE TABLE `donor` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(80) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `donor_1` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
   `id`            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -781,7 +744,7 @@ CREATE TABLE `fiscal_year` (
   `created_at`                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`                TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   `user_id`                   SMALLINT(5) UNSIGNED NOT NULL,
-  `note`                      TEXT,  
+  `note`                      TEXT,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fiscal_year_1` (`label`),
   UNIQUE KEY `fiscal_year_2` (`enterprise_id`, `start_date`),
@@ -1177,6 +1140,7 @@ CREATE TABLE `patient` (
   `notes`                TEXT,
   `middle_name`          VARCHAR(150),
   `hospital_no`          VARCHAR(150),
+  `avatar`               VARCHAR(150),
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_1` (`hospital_no`),
   UNIQUE KEY `patient_2` (`project_id`, `reference`),
@@ -1488,40 +1452,25 @@ CREATE TABLE `province` (
 DROP TABLE IF EXISTS `purchase`;
 
 CREATE TABLE `purchase` (
-  `project_id` smallint(5) unsigned NOT NULL,
-  `reference` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `uuid` BINARY(16) NOT NULL,
-  `cost` decimal(19,4) unsigned NOT NULL DEFAULT 0.0,
-  `currency_id` tinyint(3) unsigned NOT NULL,
+  `uuid`          BINARY(16) NOT NULL,
+  `project_id`    SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`     INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `cost`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0,
+  `currency_id`   TINYINT(3) UNSIGNED NOT NULL,
   `creditor_uuid` BINARY(16) DEFAULT NULL,
-  `discount` mediumint(8) unsigned DEFAULT 0,
-  `purchase_date` date NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `note` text,
-  `paid` tinyint(1) DEFAULT 0,
-  `paid_uuid` BINARY(16) DEFAULT NULL,
-  `confirmed` tinyint(1) NOT NULL DEFAULT 0,
-  `closed` tinyint(1) DEFAULT 0,
-  `is_direct` tinyint(1) DEFAULT 0,
-  `is_donation` tinyint(1) DEFAULT 0,
-  `emitter_id` smallint(5) unsigned NOT NULL,
-  `is_authorized` tinyint(1) DEFAULT 0,
-  `is_validate` tinyint(1) DEFAULT 0,
-  `confirmed_by` int(10) unsigned DEFAULT NULL,
-  `is_integration` tinyint(1) DEFAULT NULL,
-  `purchaser_id` int(10) unsigned DEFAULT NULL,
-  `receiver_id` int(10) unsigned DEFAULT NULL,
+  `date`          DATETIME NOT NULL,
+  `created_at`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id`       SMALLINT(5) UNSIGNED NOT NULL,
+  `note`          TEXT,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_1` (`project_id`, `reference`),
   KEY `project_id` (`project_id`),
   KEY `reference` (`reference`),
   KEY `creditor_uuid` (`creditor_uuid`),
-  KEY `paid_uuid` (`paid_uuid`),
-  KEY `receiver_id` (`receiver_id`),
+  KEY `user_id` (`user_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
-  FOREIGN KEY (`paid_uuid`) REFERENCES `primary_cash` (`uuid`),
-  FOREIGN KEY (`receiver_id`) REFERENCES `employee` (`id`)
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TRIGGER purchase_reference BEFORE INSERT ON purchase
@@ -1530,8 +1479,8 @@ FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM purc
 DROP TABLE IF EXISTS `purchase_item`;
 
 CREATE TABLE `purchase_item` (
-  `purchase_uuid` BINARY(16) NOT NULL,
   `uuid` BINARY(16) NOT NULL,
+  `purchase_uuid` BINARY(16) NOT NULL,
   `inventory_uuid` BINARY(16) NOT NULL,
   `quantity` int(10) unsigned DEFAULT 0,
   `unit_price` decimal(10,4) unsigned NOT NULL,

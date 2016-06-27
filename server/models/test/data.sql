@@ -35,7 +35,6 @@ INSERT INTO unit VALUES
   (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
   (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots/', '/depots'),
   (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtors/groups/', '/debtors/groups'),
-  (108, 'Donors Management', 'TREE.DONOR_MANAGEMENT', 'Donors Management module', 1, '/partials/donors/', '/donors'),
   (109, 'Section du bilan','TREE.SECTION_BILAN','',30,'/partials/section_bilan/','/section_bilan'),
   (110, 'Section resultat','TREE.SECTION_RESULTAT','',30,'/partials/section_resultat/','/section_resultat'),
   (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',30,'/partials/references/groups','/references/groups'),
@@ -171,9 +170,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 --  Debtor Groups Management
 (107,1),
 
---  Donators Management
-(108,1),
-
 --  Bilan Section Management
 (109,1),
 
@@ -290,8 +286,8 @@ INSERT INTO `debtor` VALUES
 
 
 INSERT INTO `patient` VALUES
-  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'),1,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'Test','2','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),'2015-11-14 07:04:49',NULL,NULL,'Patient','110'),
-  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'),1,1,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'Test','1','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'F',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),'2015-11-14 07:04:49',NULL,NULL,'Patient','100');
+  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'),1,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'Test','2','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),'2015-11-14 07:04:49',NULL,NULL,'Patient','110', ''),
+  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'),1,1,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'Test','1','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'F',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),HUID('bda70b4b-8143-47cf-a683-e4ea7ddd4cff'),'2015-11-14 07:04:49',NULL,NULL,'Patient','100', '');
 
 INSERT INTO `patient_visit` VALUES
   (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', NULL, 1),

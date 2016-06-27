@@ -64,13 +64,19 @@
 
               <div class="col-sm-4">
                 <div style="border : 1px solid #ccc; height : 200px;">
-                  <!-- no image placeholder -->
-                  <div ng-if="!PatientRecordCtrl.patient.image" style="text-align : center;">
+                  <div ng-if="!PatientRecordCtrl.patient.avatar" style="text-align : center;">
                     <span style="font-size : 3em; color : #ccc; padding-top: 70px;" class="glyphicon glyphicon-picture"></span>
+                  </div>
+                  <div ng-if="PatientRecordCtrl.patient.avatar" style="text-align : center;">
+                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}" width="120"> 
                   </div>
                 </div>
 
-                <a class="btn btn-default btn-block" disabled><span class="glyphicon glyphicon-upload"></span> {{ "PATIENT_RECORDS.UPLOAD_PICTURE" | translate }}</a>
+                <label class="btn btn-default btn-block">
+                    <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.uploadButtonText | translate }} 
+                    <input type="file" accept="image/*" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
+                </label>
+
                 <a
                   data-method="edit"
                   ng-href="/#/patients/{{::PatientRecordCtrl.patient.uuid}}/edit"
