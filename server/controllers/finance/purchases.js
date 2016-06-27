@@ -32,6 +32,9 @@ exports.detail = detail;
 // Update properties of a purchase Order
 exports.update = update;
 
+// allows other controller to benefit from the lookup method
+exports.lookup = lookupPurchaseOrder;
+
 
 /**
  * @function linkPurchaseItems

@@ -787,6 +787,10 @@
     "PAYMENT_METHOD_EXPLANATION" : "This field provides the agreed the payment conditions of the purchase order.  A purchase can either be paid up front, at delivery, or in some other combination of payments.",
     "ERRORS" : {
       "INVALID_ITEMS" : "Some of the purchase order items have errors.  Please correct these mistakes and resubmit the purchase order."
+    },
+    "RECEIPT" : {
+      "TITLE" : "Purchase Order Receipt",
+      "SUCCESS" : "Purchase Order created."
     }
   },
   "REFERENCE": {

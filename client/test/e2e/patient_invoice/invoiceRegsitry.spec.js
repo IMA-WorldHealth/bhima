@@ -42,7 +42,7 @@ describe('Invoice Registry page', function () {
     it('filters invoices of today correctly', function () {
         var invoiceRegistry = new InvoiceRegistryPage();
         var filterModal = new modalPage();
-        
+
         invoiceRegistry.showFilterDialog();
         filterModal.setRange('today');
         filterModal.submit();

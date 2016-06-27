@@ -3,11 +3,11 @@ angular.module('bhima.controllers')
 
 PurchaseOrderController.$inject = [
   'PurchaseOrderService', 'PurchaseOrderForm', 'SupplierService', 'NotifyService',
-  'SessionService', 'util'
+  'SessionService', 'util', 'ReceiptModal'
 ];
 
 
-function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Session, util) {
+function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Session, util, Receipts) {
   var vm = this;
 
   // create a new purchase order form
@@ -84,7 +84,9 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Se
 
     return Purchases.create(order)
       .then(function (res) {
-        console.log(res);
+
+        // open the receipt modal
+        Receipts.purchase(res.uuid, true);
 
         // reset the module
         clear(form);

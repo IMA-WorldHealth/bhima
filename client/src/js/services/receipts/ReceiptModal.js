@@ -26,6 +26,7 @@ function ReceiptModal(Modal, Receipts) {
   // expose available receipts
   service.invoice = invoice;
   service.patient = patient;
+  service.purchase = purchase;
   service.patientRegistrations = patientRegistrations;
 
   /**
@@ -95,6 +96,28 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt       : function reportProvider () { return { promise : reportRequest }; },
         options       : function optionsProvider() { return reportOptions; },
+      }
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+  function purchase(uuid, notifyCreated) {
+    var options = {
+      title         : 'PURCHASES.PAGE_TITLE',
+      createdKey    : 'PURCHASES.RECEIPT.SUCCESS',
+      identifier    : 'reference',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated
+    };
+
+    var purchaseRequest = Receipts.purchase(uuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt       : function receiptProvider() { return { promise : purchaseRequest}; },
+        options       : function optionsProvider() { return options; },
       }
     };
 

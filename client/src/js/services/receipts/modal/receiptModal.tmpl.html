@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<!-- Tempoarary Loading State -->
+<!-- Temporary Loading State -->
 <div style="padding : 10px;" ng-if="!ReceiptCtrl.receipt">
   <p class="text-info"><span class="glyphicon glyphicon-hourglass"></span> {{"RECEIPTS.LOADING"}}</p>
 </div>
@@ -36,9 +36,6 @@
       ng-src="{{ReceiptCtrl.receipt}}"
       type="application/pdf"
       style="width : 100%; height : 50vh; margin-bottom : -5px; border : none;">
-        <style>
-          #zoom-toolbar { display: none; }
-        </style>
     </iframe>
   </div>
 
