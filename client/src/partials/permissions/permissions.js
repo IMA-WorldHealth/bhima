@@ -6,9 +6,9 @@ PermissionsController.$inject = [
   'ProjectService', 'NodeTreeService'
 ];
 
-/** 
- * Users and Permission Controller 
- * 
+/**
+ * Users and Permission Controller
+ *
  * This module is responsible for handling the creation
  * of users and assigning permissions to existing modules.
  *
@@ -18,10 +18,10 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
   var vm = this;
 
   var editTemplate =
-    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.edit(row.entity)">{{ "FORM.BUTTONS.EDIT" | translate }}</a></div>';
-  
-  var permissionTemplate = 
-    '<div style="margin: 0px 5px 5px 5px;"><a class="btn btn-sm btn-default btn-block" ng-click="grid.appScope.editPermissions(row.entity)">{{ "FORM.BUTTONS.EDIT_PERMISSIONS" | translate }}</a></div>';
+    '<div class="ui-grid-cell-contents"><a href ng-click="grid.appScope.edit(row.entity)"><i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}</a></div>';
+
+  var permissionTemplate =
+    '<div class="ui-grid-cell-contents"><a href ng-click="grid.appScope.editPermissions(row.entity)"><i class="fa fa-key"></i> {{ "FORM.BUTTONS.EDIT_PERMISSIONS" | translate }}</a></div>';
 
   // options for the UI grid
   vm.uiGridOptions = {
@@ -56,7 +56,7 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
 
   vm.maxLength = util.maxTextLength;
   vm.userName = 80;
-  vm.length100 = util.length100;  
+  vm.length100 = util.length100;
 
   var isDefined = angular.isDefined;
   /* ------------------------------------------------------------------------ */
@@ -244,18 +244,18 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
 
       if (parent[0].parent) {
         vm.toggleParents(parent);
-      } 
-    } 
+      }
+    }
   }
 
   // toggle the selection all child nodes
-  function toggleUnitChildren(unit, children) { 
+  function toggleUnitChildren(unit, children) {
     if (!unit.checked) { vm.super = false; }
 
     if(unit.parent !== 0){
-      vm.toggleParents(unit); // traverse upwards, toggling parents  
+      vm.toggleParents(unit); // traverse upwards, toggling parents
     }
-    
+
     children.forEach(function (node) {
       node.checked = unit.checked;
       if (node.children) {
