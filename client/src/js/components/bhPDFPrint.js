@@ -42,6 +42,7 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
  * </bh-pdf-print>
  */
 function bhPDFPrintController($window, $http, $sce, $timeout) {
+  var cachedRequest;
   var component = this;
 
   /** @todo update all options (receipt modal + direct print directive to use bhConstants included in account management PR */
@@ -65,6 +66,13 @@ function bhPDFPrintController($window, $http, $sce, $timeout) {
     var url = component.pdfUrl;
     var configuration = requestOptions();
 
+    // check to see if this request has been made before - if it has we will use the local resource
+    if (angular.equals(configuration, cachedRequest)) {
+      printEmbeddedContent();
+      return;
+    }
+
+    cachedRequest = configuration;
     component.$loading = true;
 
     // return the value to allow the controller to perform error handling

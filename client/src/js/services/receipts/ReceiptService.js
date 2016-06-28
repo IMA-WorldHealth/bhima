@@ -54,17 +54,4 @@ function ReceiptService($http, util) {
     return $http.get(route, {params : options, responseType : responseType})
       .then(util.unwrapHttpResponse);
   }
-
-  /** @deprecated */
-  /* function patientRegistrations(options) {
-    var route = '/reports/patient/registrations';
-    var responseType = null;
-
-    if (options.renderer === renderers.PDF) {
-      responseType = 'arraybuffer';
-    }
-
-    return $http.get(route, {params : options, responseType : responseType})
-      .then(util.unwrapHttpResponse);
-  } */
 }

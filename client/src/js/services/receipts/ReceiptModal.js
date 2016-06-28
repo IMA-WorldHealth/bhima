@@ -80,26 +80,4 @@ function ReceiptModal(Modal, Receipts) {
     var instance = Modal.open(configuration);
     return instance.result;
   }
-
-  /** @deprecated ? */
-  /* function patientRegistrations(options) {
-    var reportOptions = {
-      title: 'PATIENT_REG.PATIENT_REGISTRATIONS',
-      renderer: Receipts.renderers.PDF,
-    };
-
-    options.renderer = Receipts.renderers.PDF;
-
-    var reportRequest = Receipts.patientRegistrations(options);
-    var reportProvider = {
-      resolve : {
-        receipt       : function reportProvider () { return { promise : reportRequest }; },
-        options       : function optionsProvider() { return reportOptions; },
-      }
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
-  }*/
 }
