@@ -32,14 +32,21 @@ exports.build = build;
  * NOTE: the returned data are get by a spread(document, headers) function
  * and the result is sended with res.set(headers).send(document)
  */
-function build(data, req, templateUrl, options) {
+function build(req, data, templateUrl, options) {
   'use strict';
 
-  /** Requirement for report */
+  // Requirement for report
   let request = {
     query : req.query,
     enterprise : req.session.enterprise,
     project : req.session.project
+  };
+
+  // The model to send to the view template
+  let model = {
+    enterprise : request.enterprise,
+    project : request.project,
+    data : data
   };
 
   /*
@@ -60,11 +67,7 @@ function build(data, req, templateUrl, options) {
     throw new BadRequest('Render target provided is invalid or not supported by this report '.concat(renderTarget));
   }
 
-  let model = {
-    enterprise : request.enterprise,
-    project : request.project,
-    data : data
-  };
+  const report = renderer.render({ model }, template, pageOptions);
 
-  return q.all([renderer.render({ model }, template, pageOptions), headers]);
+  return q.all([report, headers]);
 }

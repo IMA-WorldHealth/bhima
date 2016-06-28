@@ -33,12 +33,12 @@
 
                   <!-- incomes  -->
                   <optgroup label="{{ 'VOUCHERS.SIMPLE.INCOME' | translate }}">
-                    <option value="{{ item }}" ng-repeat="item in SimpleVoucherCtrl.incomes">{{ item.text | translate }}</option>
+                    <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in SimpleVoucherCtrl.incomes">{{ item.text | translate }}</option>
                   </optgroup>
 
                   <!-- expenses  -->
                   <optgroup label="{{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }}">
-                    <option value="{{ item }}" ng-repeat="item in SimpleVoucherCtrl.expenses">{{ item.text | translate }}</option>
+                    <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in SimpleVoucherCtrl.expenses">{{ item.text | translate }}</option>
                   </optgroup>
                 </select>
               </div>

@@ -171,14 +171,14 @@ function PrototypeApiService($http, util) {
    * Sends an HTTP GET request to the url "/route/reports/:id"
    * to get a document as a report.
    *
-   * @param {Number} id - the identifier of the URL route.
+   * @param {String} param - A parameter for the URL route.
    * @param {String} filetype - the report file type (pdf, json, html)
    * @returns {Promise} - the promise
    */
-  function report(id, filetype) {
+  function report(param, filetype) {
 
     // append the id to the base url
-    var target = this.url.concat('reports/', id);
+    var target = this.url.concat('reports/', param);
 
     // filetype setup
     var responseType = filetype === 'pdf' ? 'arraybuffer' : null;

@@ -13,6 +13,7 @@ describe('Simple Vouchers', function () {
 
   const voucher = {
     date: yesterday,
+    type: 'transfer',
     toAccount: 'Test Debtor Accounts 1',
     fromAccount: 'Test Inventory Accounts',
     description: 'Awesome description',
@@ -25,6 +26,8 @@ describe('Simple Vouchers', function () {
     components.dateEditor.set(voucher.date);
 
     FU.input('SimpleVoucherCtrl.voucher.description', voucher.description);
+    element(by.model('SimpleVoucherCtrl.selectedType')).click();
+    element(by.css('[data-item="1"]')).click();
 
     // select the appropriate accounts
     FU.typeahead('SimpleVoucherCtrl.voucher.fromAccount', voucher.fromAccount);
@@ -35,6 +38,11 @@ describe('Simple Vouchers', function () {
 
     // submit the form
     FU.buttons.submit();
-    components.notification.hasSuccess();
+
+    // is the modal is openned
+    FU.exists(by.css('[data-modal-box]'), true);
+
+    // close the modal
+    FU.modal.close();
   });
 });

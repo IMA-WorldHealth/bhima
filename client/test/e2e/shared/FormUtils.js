@@ -23,7 +23,9 @@ const buttons =  {
 // data tags used in form buttons.
 var modal = {
   submit: function submit() { return $('[uib-modal-window] [data-method="submit"]').click(); },
-  cancel: function cancel() { return $('[uib-modal-window] [data-method="cancel"]').click(); }
+  cancel: function cancel() { return $('[uib-modal-window] [data-method="cancel"]').click(); },
+  close: function close() { return $('[uib-modal-window] [data-method="close"]').click(); },
+  print: function print() { return $('[uib-modal-window] [data-method="print"]').click(); }
 };
 
 // convenience methods to see if the form contains feedback text.  Returns locators.
