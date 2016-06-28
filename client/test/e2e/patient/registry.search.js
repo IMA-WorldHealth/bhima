@@ -115,7 +115,7 @@ function PatientRegistrySearch() {
   });
 
   // combines dates with manual date manipulation
-  it('setting dates manually should find three patients.', function () {
+  it('setting dates manually should find two patients.', function () {
     FU.buttons.search();
 
     FU.input('ModalCtrl.params.dateBirthFrom', parameters.dateBirthFrom2);
