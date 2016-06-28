@@ -15,12 +15,10 @@
         </button>
       </div>
       <div class="toolbar-item">
-        <button
-            ng-click="PatientRegistryCtrl.print()"
-            data-method="print"
-            class="btn btn-default">
-          <span class="fa fa-print"></span> {{ "FORM.BUTTONS.PRINT" | translate }}
-        </button>
+        <bh-pdf-print
+          pdf-url="reports/patient/registrations"
+          options="PatientRegistryCtrl.filters">
+        </bh-pdf-print>
       </div>
     </div>
   </div>
@@ -31,8 +29,7 @@
   <bh-filters-applied
     style="max-width:90%"
     filters="PatientRegistryCtrl.filtersFmt"
-    on-remove-filter="PatientRegistryCtrl.onRemoveFilter(filter)"
-    >
+    on-remove-filter="PatientRegistryCtrl.onRemoveFilter(filter)">
   </bh-filters-applied>
 
   <a

@@ -22,7 +22,7 @@ function ReceiptService($http, util) {
   service.invoice = invoice;
   service.patient = patient;
   service.renderers = renderers;
-  service.patientRegistrations = patientRegistrations;
+  /** service.patientRegistrations = patientRegistrations; */
 
   /**
    * Fetch invoice report data from /reports/invoices/:uuid
@@ -45,18 +45,6 @@ function ReceiptService($http, util) {
 
   function patient(uuid, options) {
     var route ='/reports/patient/'.concat(uuid);
-    var responseType = null;
-
-    if (options.renderer === renderers.PDF) {
-      responseType = 'arraybuffer';
-    }
-
-    return $http.get(route, {params : options, responseType : responseType})
-      .then(util.unwrapHttpResponse);
-  }
-
-  function patientRegistrations(options) {
-    var route = '/reports/patient/registrations';
     var responseType = null;
 
     if (options.renderer === renderers.PDF) {
