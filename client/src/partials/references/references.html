@@ -41,8 +41,8 @@
               <tr ng-if="ReferenceCtrl.session.loading" class="text-center">
                 <td colspan="8"><loading-indicator></loading-indicator></td>
               </tr>
-              <tr 
-              ng-repeat="reference in ReferenceCtrl.references | orderBy:'number' | orderBy:'text' " 
+              <tr
+              ng-repeat="reference in ReferenceCtrl.references | orderBy:'number' | orderBy:'text' "
               ng-class="{'rowSelected' : ReferenceCtrl.reference.id === reference.id}" >
                 <td>{{$index + 1}}</td>
                 <td>{{ reference.ref }}</td>
@@ -55,7 +55,7 @@
               </tr>
               <tr ng-if="!ReferenceCtrl.references.length">
                 <td colspan="8">{{ "REFERENCE.NO_REFERENCES" | translate }}</td>
-              </tr> 
+              </tr>
             </tbody>
           </table>
         </div>
@@ -93,28 +93,28 @@
           <div class="alert alert-danger" id="delete_error">
             <h4>{{ ReferenceCtrl.HTTPError.data.code | translate }} </h4>
           </div>
-        </div>        
+        </div>
 
         <!-- Form for adding reference -->
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "REFERENCE.NEW_REFERENCE" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="ReferenceCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
-            
+            <form name="CreateForm" ng-submit="ReferenceCtrl.submit(CreateForm)" bh-form-defaults novalidate>
+
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.ref.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE" | translate }}</label>
                 <input type="text" class="form-control" name="ref" ng-maxlength="ReferenceCtrl.referenceAbbrLength" ng-model="ReferenceCtrl.reference.ref" required>
                 <div class="help-block" ng-messages="CreateForm.ref.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
-            
+
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
                 <input type="text" class="form-control" ng-maxlength="ReferenceCtrl.maxLength" name="text" ng-model="ReferenceCtrl.reference.text" required>
                 <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.position.$invalid }">
@@ -122,27 +122,27 @@
                 <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceCtrl.reference.position" required>
                 <div class="help-block" ng-messages="CreateForm.position.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_report.$invalid }">
                 <label class="control-label">
-                  <input type="checkbox"  name="is_report" id="is_report" ng-true-value="1" ng-false-value="0" 
+                  <input type="checkbox"  name="is_report" id="is_report" ng-true-value="1" ng-false-value="0"
                     ng-model="ReferenceCtrl.reference.is_report">  {{ 'FORM.LABELS.IS_REPORT' | translate }}
-                </label>  
-              </div> 
+                </label>
+              </div>
 
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.reference_group_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE_GROUP" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="reference_group_id" 
-                  ng-model="ReferenceCtrl.reference.reference_group_id" 
-                  id="reference_group_id"  
+                <select
+                  class="form-control"
+                  name="reference_group_id"
+                  ng-model="ReferenceCtrl.reference.reference_group_id"
+                  id="reference_group_id"
                   ng-options="reference.id as reference.text for reference in ReferenceCtrl.referenceGroups"
                   >
                   <option value=""> -- {{ "FORM.SELECTS.SELECT_REFERENCE_GROUP" | translate }} -- </option>
@@ -151,11 +151,11 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.section_resultat_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.RESULT_ACCOUNT_SCT" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="section_resultat_id" 
-                  ng-model="ReferenceCtrl.reference.section_resultat_id" 
-                  id="section_resultat_id"  
+                <select
+                  class="form-control"
+                  name="section_resultat_id"
+                  ng-model="ReferenceCtrl.reference.section_resultat_id"
+                  id="section_resultat_id"
                   ng-options="section.id as section.text for section in ReferenceCtrl.sectionResultats"
                   >
                   <option value=""> -- {{ "FORM.SELECTS.SELECT_RESULT_ACCOUNT_SCT" | translate }} -- </option>
@@ -171,29 +171,29 @@
                 </button>
               </div>
             </form>
-          </div>        
+          </div>
         </div>
 
         <!-- Form for updating reference -->
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ "REFERENCE.UPD_REFERENCE" | translate }} </b> </div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="ReferenceCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="UpdateForm" ng-submit="ReferenceCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.ref.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE" | translate }}</label>
                 <input type="text" class="form-control" name="ref" ng-maxlength="ReferenceCtrl.referenceAbbrLength" ng-model="ReferenceCtrl.reference.ref" required>
                 <div class="help-block" ng-messages="UpdateForm.ref.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
-            
+
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-maxlength="ReferenceCtrl.maxLength"  ng-model="ReferenceCtrl.reference.text" required>
                 <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                  
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.position.$invalid }">
@@ -201,27 +201,27 @@
                 <input type="number" class="form-control"  min="0" name="position" ng-model="ReferenceCtrl.reference.position" required>
                 <div class="help-block" ng-messages="UpdateForm.position.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                  
+                </div>
               </div>
 
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_report.$invalid }">
                 <label class="control-label">
-                  <input type="checkbox"  name="is_report" id="is_report" ng-true-value="1" ng-false-value="0" 
+                  <input type="checkbox"  name="is_report" id="is_report" ng-true-value="1" ng-false-value="0"
                     ng-model="ReferenceCtrl.reference.is_report">  {{ 'FORM.LABELS.IS_REPORT' | translate }}
-                </label>  
-              </div> 
+                </label>
+              </div>
 
               <hr>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.reference_group_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.REFERENCE_GROUP" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="reference_group_id" 
-                  ng-model="ReferenceCtrl.reference.reference_group_id" 
-                  id="reference_group_id"  
+                <select
+                  class="form-control"
+                  name="reference_group_id"
+                  ng-model="ReferenceCtrl.reference.reference_group_id"
+                  id="reference_group_id"
                   ng-options="reference.id as reference.text for reference in ReferenceCtrl.referenceGroups"
                   >
                   <option value=""> -- {{ "FORM.SELECTS.SELECT_REFERENCE_GROUP" | translate }} -- </option>
@@ -230,11 +230,11 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.section_resultat_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.RESULT_ACCOUNT_SCT" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="section_resultat_id" 
-                  ng-model="ReferenceCtrl.reference.section_resultat_id" 
-                  id="section_resultat_id"  
+                <select
+                  class="form-control"
+                  name="section_resultat_id"
+                  ng-model="ReferenceCtrl.reference.section_resultat_id"
+                  id="section_resultat_id"
                   ng-options="section.id as section.text for section in ReferenceCtrl.sectionResultats"
                   >
                   <option value=""> -- {{ "FORM.SELECTS.SELECT_RESULT_ACCOUNT_SCT" | translate }} -- </option>
@@ -248,12 +248,12 @@
                   {{ "FORM.BUTTONS.CANCEL" | translate }}
                 </button>
               </div>
-              
+
             </form>
-          </div>         
+          </div>
         </div>
 
       </div>
     </div>
-  </div>  
+  </div>
 </div>

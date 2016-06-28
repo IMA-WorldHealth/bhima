@@ -22,7 +22,7 @@
           </div>
 
           <div class="panel-body">
-            <form name="LoginForm" bh-submit="LoginCtrl.login(LoginForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="LoginForm" bh-submit="LoginCtrl.login(LoginForm)" bh-form-defaults novalidate>
               <div
                 class="form-group"
                 ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.username.$invalid }">
@@ -37,8 +37,6 @@
                     class="form-control"
                     ng-model="LoginCtrl.credentials.username"
                     placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_USERNAME' | translate }}"
-                    autocomplete="off"
-                    autocorrect="off"
                     autofocus
                     required />
                 </div>
