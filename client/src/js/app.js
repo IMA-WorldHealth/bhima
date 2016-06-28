@@ -530,7 +530,7 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $lo
         return currentPath.indexOf(data.path) === 0;
       });
 
-      if(!authorized){
+      if (!authorized) {
         $location.path('/error403');
       }
     }

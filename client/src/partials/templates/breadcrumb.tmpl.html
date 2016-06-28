@@ -2,10 +2,10 @@
   <div class="bhima-title">
 
     <ol class="headercrumb">
-      <li ng-repeat="p in vm.bcPaths" id="{{ p.id }}" data-method="{{ p.dataMethod }}"  ng-class="{ 'static' : !$last, 'title' : $last }">
+      <li ng-repeat="p in vm.bcPaths" data-method="{{ p.dataMethod }}"  ng-class="{ 'static' : !$last, 'title' : $last }">
         <span ng-hide="p.link">{{ p.label | translate }}</span>
         <span ng-show="p.link">
-          <a ng-href="{{ p.link }}" href>{{ p.label | translate }}</a>
+          <a ng-href="{{ p.link }}" id="{{ vm.prefix + p.id }}" href>{{ p.label | translate }}</a>
         </span>
       </li>
     </ol>
@@ -14,12 +14,12 @@
       <!-- dropdown buttons -->
       <div class="toolbar-item" ng-if="vm.bcDropdowns.length">
         <span ng-repeat="d in vm.bcDropdowns" uib-dropdown>
-          <button class="btn btn-sm" ng-class="d.color" id="{{ d.id }}" data-method="{{ d.dataMethod }}" uib-dropdown-toggle>
+          <button class="btn btn-sm" ng-class="d.color" id="{{ vm.prefix + d.id }}" data-method="{{ d.dataMethod }}" uib-dropdown-toggle>
             {{ d.selected | translate }} <span class="caret"></span>
           </button>
           <ul class="pull-right" uib-dropdown-menu>
             <li ng-repeat="opt in d.option">
-              <a href ng-click="vm.helperDropdown(opt, d)" id="{{ opt.id }}" data-method="{{ opt.dataMethod }}">
+              <a href ng-click="vm.helperDropdown(opt, d)" id="{{ vm.prefix + opt.id }}" data-method="{{ opt.dataMethod }}">
                 {{ opt.label | translate }}
               </a>
             </li>
@@ -30,7 +30,7 @@
       <!-- buttons -->
       <div class="toolbar-item btn-group btn-group-sm" ng-show="vm.bcButtons.length">
         <button class="btn"
-          id="{{ a.id }}"
+          id="{{ vm.prefix + a.id }}"
           ng-class="a.color"
           ng-repeat="a in vm.bcButtons"
           ng-click="a.action(a.label)"
@@ -42,7 +42,7 @@
 
       <!-- labels -->
       <div class="toolbar-item" ng-if="vm.bcLabels.length">
-        <label ng-repeat="l in vm.bcLabels" id="{{ l.id }}" data-method="{{ l.dataMethod }}">
+        <label ng-repeat="l in vm.bcLabels" id="{{ vm.prefix + l.id }}" data-method="{{ l.dataMethod }}">
           <strong><span class="{{ l.icon }}"></span> {{ l.label | translate }}</strong>
         </label>
       </div>

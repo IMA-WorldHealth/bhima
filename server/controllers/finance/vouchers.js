@@ -175,12 +175,14 @@ function create(req, res, next) {
 * @method report
 */
 function report(req, res, next) {
+  'use strict';
+
   let reportUrl = './server/controllers/finance/reports/voucher.receipt.handlebars';
   let reportOptions = { pageSize : 'A5', orientation: 'landscape' };
 
   getVouchers(req.params.uuid)
   .then(rows => rm.build(req, rows, reportUrl, reportOptions))
-  .spread(function (document, headers) {
+  .spread((document, headers) => {
     res.set(headers).send(document);
   })
   .catch(next)
