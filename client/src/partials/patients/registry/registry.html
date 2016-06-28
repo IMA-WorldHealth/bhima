@@ -27,8 +27,9 @@
 </div>
 
 <!-- @todo remove hardcoded styles -->
-<div class="flex-util" style="min-height : 35px; padding-top : 7px">
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
   <bh-filters-applied
+    style="max-width:90%"
     filters="PatientRegistryCtrl.filtersFmt"
     on-remove-filter="PatientRegistryCtrl.onRemoveFilter(filter)"
     >

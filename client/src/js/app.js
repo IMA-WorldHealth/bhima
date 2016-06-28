@@ -263,14 +263,14 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
       data : { label : null }
     })
 
-  
+
   /* Fiscal Year */
   .state('fiscal', {
     url : '/fiscal/:id',
     abstract : true,
     params : {
       id : { squash : true, value : null }
-    },    
+    },
     controller: 'FiscalController as FiscalCtrl',
     templateUrl: 'partials/fiscal/fiscal.html'
   })
@@ -448,7 +448,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     url : '/error404',
     templateUrl : 'partials/error404/error404.html'
   });
-  
+
   $urlRouterProvider.otherwise('error404');}
 
 function translateConfig($translateProvider) {
@@ -477,7 +477,7 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $lo
   // navigating by URL.  This is pure an authentication issue.
   $rootScope.$on('$locationChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
-    var isLoginState = next.indexOf('#/login') !== -1;   
+    var isLoginState = next.indexOf('#/login') !== -1;
 
     if (next.indexOf('/error403') !== -1) {
       $state.go('/error403');
@@ -507,12 +507,12 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $lo
   // trigger a $state.go() to the login state, it will not be stopped - the
   // $locationChangeStart event will only prevent the URL from changing ... not
   // the actual state transition!  So, we need this to stop $stateChange events.
-  
+
   // var paths recovered all the path that the user is allowed to enter
-  // Tests if the path has elements and other common paths are not called 
-  // if the test is positive, the current path is verified in the path list 
+  // Tests if the path has elements and other common paths are not called
+  // if the test is positive, the current path is verified in the path list
   // if the current path does not exist in the path list in this case the user will rédirrigé to error403 page
-  
+
   $rootScope.$on('$stateChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
     var isLoginState = next.name.indexOf('login') !== -1;
@@ -530,8 +530,8 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $lo
         return currentPath.indexOf(data.path) === 0;
       });
 
-      if(!authorized){
-        $location.path('/error403');        
+      if (!authorized) {
+        $location.path('/error403');
       }
     }
   });
