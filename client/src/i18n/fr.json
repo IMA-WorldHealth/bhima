@@ -1187,7 +1187,7 @@
       "REFERENCE"            : "Reference",
       "ROWS"                 : "Ligne(s)",
       "SELECT_DOCUMENT_TYPE" : "Veuillez selectionner le type de document",
-      "TITLE"                : "Ajour de transactions",
+      "TITLE"                : "Ajout des transactions",
       "VALID_TOTALS"         : "Les transactions sont valides (Transactions balancées)",
       "VOUCHER"              : "Bordereau de Transfert"
     }
