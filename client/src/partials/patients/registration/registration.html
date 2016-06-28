@@ -14,9 +14,7 @@
     <form
       name="PatientRegistrationForm"
       bh-submit="PatientRegCtrl.submit(PatientRegistrationForm)"
-      autocomplete="off"
-      autocapitalize="off"
-      autocorrect="off"
+      bh-form-defaults
       novalidate>
 
       <div class="row">
@@ -84,7 +82,6 @@
                       <input
                         name="hospitalNumber"
                         class="form-control"
-                        autocomplete="off"
                         ng-model="PatientRegCtrl.medical.hospital_no"
                         bh-unique="/patients/hospital_number"
                         ng-maxlength="PatientRegCtrl.length150"

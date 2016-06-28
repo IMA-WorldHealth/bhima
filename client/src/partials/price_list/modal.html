@@ -1,4 +1,4 @@
-<form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+<form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalForm.$invalid)" bh-form-defaults novalidate>
   <div class="modal-header">
     <h4>{{ 'PRICE_LIST.PRICE_LIST_ITEMS' | translate }}</h4>
   </div>
@@ -10,7 +10,7 @@
       <input type="text" class="form-control" name="label" ng-maxlength="ModalCtrl.length250" ng-model="ModalCtrl.data.label" required>
       <div class="help-block" ng-messages="ModalForm.label.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-      </div>      
+      </div>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.value.$invalid }">
@@ -18,13 +18,13 @@
       <input type="number" class="form-control" name="value" ng-model="ModalCtrl.data.value" required>
       <div class="help-block" ng-messages="ModalForm.value.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-      </div>      
+      </div>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.is_percentage.$invalid }">
       <label class="control-label">
         <input type="checkbox"  name="is_percentage" id="is_percentage" ng-true-value="1" ng-false-value="0" ng-model="ModalCtrl.data.is_percentage">  {{ 'FORM.LABELS.IS_PERCENT' | translate }}
-      </label>  
+      </label>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
@@ -34,7 +34,7 @@
       </select>
       <div class="help-block" ng-messages="ModalForm.inventory_uuid.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-      </div>      
+      </div>
     </div>
 
   </div>

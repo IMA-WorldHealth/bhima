@@ -70,7 +70,7 @@
             </div>
 
             <div class="panel-body">
-              <form name="CreateForm" bh-submit="PatientGroupCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate data-create-form>
+              <form name="CreateForm" bh-submit="PatientGroupCtrl.submit(CreateForm)" bh-form-defaults novalidate data-create-form>
 
                 <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                   <label class="control-label">
@@ -130,7 +130,7 @@
             </div>
 
             <div class="panel-body">
-              <form bh-submit="PatientGroupCtrl.submit(UpdateForm)" name="UpdateForm" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate data-update-form>
+              <form bh-submit="PatientGroupCtrl.submit(UpdateForm)" name="UpdateForm" bh-form-defaults novalidate data-update-form>
                 <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                   <label class="control-label">
                     {{ "FORM.LABELS.NAME" | translate }}
