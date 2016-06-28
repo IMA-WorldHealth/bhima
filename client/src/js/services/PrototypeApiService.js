@@ -36,6 +36,7 @@ PrototypeApiService.$inject = ['$http', 'util'];
  *
  * @requires $http
  * @requires util
+ * @fixme Please fix some examples below their refer often to the create method
  */
 function PrototypeApiService($http, util) {
 
@@ -58,6 +59,7 @@ function PrototypeApiService($http, util) {
   Api.prototype.search = search;
   Api.prototype.$http = $http;
   Api.prototype.util = util;
+  Api.prototype.report = report;
 
   // bind functions directly for ease of calling in services which need to
   // modify the functions before executing them.
@@ -66,6 +68,7 @@ function PrototypeApiService($http, util) {
   Api.update = update;
   Api.delete = remove;
   Api.search = search;
+  Api.report = report;
 
   /**
    * @method read
@@ -223,6 +226,34 @@ function PrototypeApiService($http, util) {
 
     // return the query to the controller
     return $http.get(target, { params : parameters })
+      .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method reports
+   *
+   * @description
+   * Sends an HTTP GET request to the url "/route/reports/:id"
+   * to get a document as a report.
+   *
+   * @param {String} param - A parameter for the URL route.
+   * @param {String} filetype - the report file type (pdf, json, html)
+   * @returns {Promise} - the promise
+   */
+  function report(param, filetype) {
+
+    // append the id to the base url
+    var target = this.url.concat('reports/', param);
+
+    // filetype setup
+    var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
+    var params = { renderer: filetype };
+
+    // send the GET request
+    return this.$http.get(target, {
+      params: params,
+      responseType: responseType
+    })
       .then(util.unwrapHttpResponse);
   }
 
