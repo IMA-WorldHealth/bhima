@@ -13,6 +13,8 @@
 * @requires lib/errors/NotFound
 */
 
+'use strict';
+
 const _    = require('lodash');
 const uuid = require('node-uuid');
 const util = require('../../lib/util');
@@ -72,7 +74,8 @@ function list(req, res, next) {
 * @method detail
 */
 function detail(req, res, next) {
-
+  'use strict';
+  
   getVouchers(req.params.uuid)
   .then(function (rows) {
     if (!rows.length) {
@@ -196,6 +199,8 @@ function report(req, res, next) {
  * @return promise
  */
 function getVouchers(uuid) {
+  'use strict';
+
   let sql =
     `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, BUID(vi.document_uuid) as document_uuid,
