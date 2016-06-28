@@ -10,8 +10,6 @@ const InvoiceRegistryPage = require('./invoiceRegistry.page.js');
 const modalPage = require('./modal.page.js');
 const ReceiptModalPage = require('../receipt_modal/receiptModal.page.js');
 
-
-
 describe('Invoice Registry page', function () {
   'use strict';
 
@@ -30,7 +28,6 @@ describe('Invoice Registry page', function () {
         noDistributableInvoiceNumber : 0
     };
 
-
   // This will be run before every single test ('it') - navigating the browser to the correct page.
   before(() => helpers.navigate(path));
 
@@ -42,7 +39,7 @@ describe('Invoice Registry page', function () {
     it('filters invoices of today correctly', function () {
         var invoiceRegistry = new InvoiceRegistryPage();
         var filterModal = new modalPage();
-        
+
         invoiceRegistry.showFilterDialog();
         filterModal.setRange('today');
         filterModal.submit();

@@ -1,4 +1,3 @@
-
 function InvoiceRegistryPage() {
   var page = this;
 
@@ -18,7 +17,9 @@ function InvoiceRegistryPage() {
 
   function showInvoiceProof(line) {
       var row = grid.element( by.css('.ui-grid-render-container-body')).element( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row( line ) );
-      row.element( by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(6)).click();
+
+      // click the <a> tag within the cell
+      row.element( by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(6)).element( by.tagName('a')).click();
   }
 
   function isInvoiceProofPresent() {
