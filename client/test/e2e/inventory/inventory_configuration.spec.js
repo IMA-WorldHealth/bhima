@@ -27,7 +27,7 @@ describe('Inventory Configuration ::', () => {
   const updateGroup = {
     name : '[E2E] Inventory Group updated',
     code : '2504',
-    sales_account : 'Test Inventory Accounts',
+    sales_account : 'Updated inventory accounts',
     stock_account : '',
     cogs_account  : ''
   };

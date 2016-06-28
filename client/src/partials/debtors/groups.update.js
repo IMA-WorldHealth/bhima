@@ -54,7 +54,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
       return;
     }
 
-    submitDebtorGroup = util.filterDirtyFormElements(debtorGroupForm);
+    submitDebtorGroup = util.filterFormElements(debtorGroupForm, true);
 
     // temporary work-around for displaying an entire account in the typeahead
     if (submitDebtorGroup.account_id) {

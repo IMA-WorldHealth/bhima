@@ -14,8 +14,8 @@ describe('Simple Vouchers', function () {
   const voucher = {
     date: yesterday,
     type: 'transfer',
-    toAccount: 'Test Debtor Accounts 1',
-    fromAccount: 'Test Inventory Accounts',
+    toAccount: 'Test Debtor Group Account',
+    fromAccount: 'Updated inventory accounts',
     description: 'Awesome description',
     amount: 100.12
   };

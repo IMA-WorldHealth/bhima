@@ -63,7 +63,7 @@ function StoreService() {
    * @method post
    *
    * @description
-   * This method inserts and object into the store.  If the object is missing
+   * This method inserts an object into the store.  If the object is missing
    * the store identifier property, an error is thrown.
    *
    * @param {Object} object - an object to be inserted into the store.

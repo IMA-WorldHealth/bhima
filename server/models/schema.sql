@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS `account_type`;
 CREATE TABLE `account_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(35) NOT NULL,
+  `translation_key` VARCHAR(35) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_type_1` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

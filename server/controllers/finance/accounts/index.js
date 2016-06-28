@@ -38,6 +38,7 @@ function create(req, res, next) {
   let sql = 'INSERT INTO account SET ?';
 
   delete data.id;
+  data.enterprise_id = req.session.enterprise.id;
 
   db.exec(sql, [data])
     .then(function (result) {
