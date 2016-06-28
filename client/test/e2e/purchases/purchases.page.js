@@ -11,7 +11,7 @@ function PurchaseOrderPage() {
   const btns = {
     submit : $('[data-method="submit"]'),
     add : element(by.id('btn-add-rows')),
-    clear : element(by.id('clear'))
+    clear : $('[data-method="clear"]')
   };
 
   const gridId = page.gridId = 'purchase-order-grid';
@@ -81,10 +81,6 @@ function PurchaseOrderPage() {
   // click the reset modal button
   page.reset = function reset() {
     $('[data-action="close"]').click();
-  };
-
-  page.clear = function clear() {
-    $('[data-action="clear"]').click();
   };
 
   // bind the buttons for external use
