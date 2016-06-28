@@ -9,8 +9,9 @@ function UtilService($filter, moment) {
   service.unwrapHttpResponse = function unwrapHttpResponse(response) {
     return response.data;
   };
-
-  service.filterDirtyFormElements = function filterDirtyFormElements(formDefinition) {
+  
+  /** @todo comments showing usage */
+  service.filterFormElements = function filterFormElements(formDefinition, requireDirty) {
     var response = {};
 
     angular.forEach(formDefinition, function (value, key) {
@@ -21,15 +22,16 @@ function UtilService($filter, moment) {
       if (!isAngularAttribute) {
 
         // Only format and assign dirty values that have changed
-        if (value.$dirty) {
-
-          // any standard ng-model element will provide an $modelValue, according
-          // to the latest 2.x standards more complex bhima components or bhima
-          // component wrappers will expose $bhValue
-
-          // accounts for empty string values
-          response[key] = angular.isDefined(value.$modelValue) ? value.$modelValue : value.$bhValue;
+        if (requireDirty && !value.$dirty) {
+          return;
         }
+        
+        // any standard ng-model element will provide an $modelValue, according
+        // to the latest 2.x standards more complex bhima components or bhima
+        // component wrappers will expose $bhValue
+
+        // accounts for empty string values
+        response[key] = angular.isDefined(value.$modelValue) ? value.$modelValue : value.$bhValue;
       }
     });
     return response;

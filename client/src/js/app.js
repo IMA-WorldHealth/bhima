@@ -1,17 +1,16 @@
 var bhima = angular.module('bhima', [
   'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters',
-  'bhima.components', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate',
+  'bhima.components', 'bhima.routes', 'ui.bootstrap', 'pascalprecht.translate',
   'ngStorage', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
-  'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns',
+  'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.treeView',
   'ui.grid.grouping', 'growlNotifications', 'ngAnimate', 'ngSanitize'
 ]);
 
-
 function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider) {
+
   // allow trailing slashes in routes
   $urlMatcherFactoryProvider.strictMode(false);
-
   /* misc routes */
 
   $stateProvider
@@ -83,11 +82,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     url : '/section_resultat',
     controller : 'sectionResultatController as sectionResultatCtrl',
     templateUrl : 'partials/section_resultat/section_resultat.html'
-  })
-  .state('accounts', {
-    url : '/accounts',
-    controller: 'AccountsController as AccountsCtrl',
-    templateUrl: 'partials/accounts/accounts.html'
   })
   .state('subsidies', {
     url : '/subsidies',
@@ -471,7 +465,7 @@ function localeConfig(tmhDynamicLocaleProvider) {
 }
 
 // redirect to login if not signed in.
-function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $location) {
+function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location) {
 
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
@@ -522,6 +516,10 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $lo
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
     }
 
+    // clean up any modals that are currently active, this allows modules to use onEnter state modals
+    // without considering all exit cases
+    $uibModalStack.dismissAll();
+
     var currentPath = $location.$$path;
     var paths = SessionService.path;
 
@@ -547,6 +545,19 @@ function startupConfig($rootScope, $state, SessionService, amMoment, Notify, $lo
 function localStorageConfig($localStorageProvider) {
   var PREFIX = 'bhima-';
   $localStorageProvider.setKeyPrefix(PREFIX);
+}
+
+/**
+ * @todo some of these constants are system standards, others should be
+ * populated according to the enterprise configuration
+ */
+function constantConfig() {
+  return {
+    accounts : {
+      ROOT : 0,
+      TITLE : 4
+    }
+  };
 }
 
 /**
@@ -577,6 +588,8 @@ function animateConfig($animateProvider) {
   $animateProvider.classNameFilter(/ng-animate-enabled/);
 }
 
+bhima.constant('bhConstants', constantConfig());
+
 // configure services, providers, factories
 bhima.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
@@ -586,4 +599,4 @@ bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
 
 // run the application
-bhima.run(['$rootScope', '$state', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig]);
+bhima.run(['$rootScope', '$state', '$uibModalStack', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig]);

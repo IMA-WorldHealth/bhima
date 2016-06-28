@@ -105,7 +105,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
       return;
     }
 
-    submitPatient = util.filterDirtyFormElements(patientDetailsForm);
+    submitPatient = util.filterFormElements(patientDetailsForm, true);
 
     if (submitPatient.dob) {
       submitPatient.dob = util.sqlDate(submitPatient.dob);

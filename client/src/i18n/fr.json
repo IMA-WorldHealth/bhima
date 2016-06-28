@@ -15,7 +15,12 @@
     "NEW"            : "Ajouter un Compte",
     "NOT_FOUND"      : "Aucun compte enregistrés...",
     "TITLE"          : "Gestion des Comptes",
-    "TITLE_ACCOUNT"  : "Comptes Titre"
+    "TITLE_ACCOUNT"  : "Comptes Titre",
+
+    "TYPES" : {
+      "TITLE" : "Titre",
+      "INCOME" : "Recettes"
+    }
   },
   "AUTH": {
     "CANNOT_RETURN_TO_LOGIN"     : "Vous êtes actuellement connecté. Pour revenir à la page de connexion, Veuillez vous déconnecter à l'aide de la page des paramètres.",
