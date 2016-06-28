@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  'PatientService', 'NotifyService', 'moment', 'ReceiptModal', 'AppCache', 'util'
+  'PatientService', 'NotifyService', 'moment', 'AppCache', 'util'
 ];
 
 /**
@@ -10,7 +10,7 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, Notify, moment, Receipt, AppCache, util) {
+function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
   var vm = this;
 
   var cache = AppCache('PatientRegistry');
@@ -27,7 +27,6 @@ function PatientRegistryController(Patients, Notify, moment, Receipt, AppCache, 
 
   vm.search = search;
 
-  vm.print = print;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
 
@@ -119,14 +118,6 @@ function PatientRegistryController(Patients, Notify, moment, Receipt, AppCache, 
   function clearFilters() {
     cacheFilters({});
     load();
-  }
-
-  // open a print modal to print all patient registrations to date
-  function print() {
-    var options = angular.copy(vm.filters || {});
-
-    // @todo(jniles): Make reports and receipts use the same rendering modal
-    Receipt.patientRegistrations(options);
   }
 
   // toggles the loading indicator on or off

@@ -2,148 +2,78 @@ angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
-  'AccountService', 'CostCenterService', 'ProfitCenterService', 'ReferenceService', 'AccountTypeService', 'util'
+  '$rootScope', 'AccountGridService', 'NotifyService', 'bhConstants'
 ];
 
-function AccountsController(accountService, costCenterService, profitCenterService, referenceService, accountTypeService, util) {
+/**
+ * @module AccountsController
+ *
+ * @todo there are performance issues on this page - this should be because of  row/ cell templates, investigate
+ *
+ * @description
+ * This controller is responsible for configuring the Accounts Management UI grid
+ * and connecting it with the Accounts data model.
+ */
+function AccountsController($rootScope, AccountGrid, Notify, Constants) {
   var vm = this;
-  vm.view = 'default';
+  vm.Constants = Constants;
 
-  // bind methods
-  vm.create = create;
-  vm.submit = submit;
-  vm.update = update;
-  vm.cancel = cancel;
-  vm.dataByTypes = dataByTypes;
-  vm.typeAccount = typeAccount;
-  vm.discareCC = discareCC;
-  vm.discarePC = discarePC;
+  // account title indent value in pixels
+  vm.indentTitleSpace = 20;
 
-  vm.maxLength = util.maxTextLength;
+  // this flag will determine if the grid should expand the rows on data change
+  vm.initialDataSet = true;
 
-  function handler(error) {
-    console.error(error);
-  }
+  vm.Accounts = new AccountGrid();
+  vm.Accounts.settup()
+    .then(bindGridData)
+    .catch(Notify.handleError);
 
-  // fired on startup
-  function startup() {
-    // start up loading indicator
-    vm.loading = true;
+  var columns = [
+    { field : 'number', displayName : '', cellClass : 'text-right', width : 70},
+    { field : 'label', displayName : 'FORM.LABELS.ACCOUNT', cellTemplate : '/partials/accounts/templates/grid.indentCell.tmpl.html', headerCellFilter : 'translate' },
+    { name : 'actions', displayName : '', cellTemplate : '/partials/accounts/templates/grid.actionsCell.tmpl.html', headerCellFilter : 'translate', width : 140 }
+  ];
 
-    // load Account Type
-    accountTypeService.getAccountType().then(function (data) {
-      vm.accountTypes = data;
-    }).catch(handler);
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableSorting : false,
+    showTreeExpandNoChildren : false,
+    enableColumnMenus : false,
+    rowTemplate : '/partials/accounts/templates/grid.leafRow.tmpl.html',
+    onRegisterApi : registerAccountEvents,
+    columnDefs : columns
+  };
 
-    // load Cost Center
-    costCenterService.read().then(function (data) {
-      vm.costCenters = data;
-    }).catch(handler);
+  // because the modal is instantiated on onEnter in the ui-router configuration the
+  // $parent $scope for the modal is $rootScope, it is impossible to inject the $scope of the
+  // parent state into the onEnter callback. for this reason $rootScope is used for now
+  $rootScope.$on('ACCOUNT_CREATED', vm.Accounts.updateViewInsert.bind(vm.Accounts));
+  $rootScope.$on('ACCOUNT_UPDATED', handleUpdatedAccount);
 
-    // load Profit Center
-    profitCenterService.read().then(function (data) {
-      vm.profitCenters = data;
-    }).catch(handler);
+  function handleUpdatedAccount(event, account) {
+    // check to see if the underlying accounts model requires a grid refresh
+    // it will return true if it is required
+    var forceRefresh = vm.Accounts.updateViewEdit(event, account);
 
-    // load Reference
-    referenceService.read().then(function (data) {
-      vm.references = data;
-    }).catch(handler);
-
-    // load accounts
-    refreshAccounts();
-  }
-
-  function cancel() {
-    vm.view = 'default';
-  }
-
-  //This function cancels the information that should not exist
-  //in the event of one or another type of accounts (balance or income/expense)
-  function dataByTypes(){
-    if(vm.account.type.type === 'balance'){
-      vm.account.is_charge = null;
-      vm.account.cc_id = null;
-      vm.account.pc_id = null;
-    } else if (vm.account.type.type === 'income/expense'){
-      vm.account.is_asset = null;
+    if (forceRefresh) {
+      vm.initialDataSet = true;
+      bindGridData();
     }
   }
 
-  //This function first looks up the name type of account with the ID
-  //and then cancels the information that should not exist in the event of one
-  //or another type of accounts (balance or operating account)
-  function typeAccount(typeId, accountTypes){
-    vm.account.type = accountTypeService.getTypeText(typeId, accountTypes);
+  function registerAccountEvents(api) {
+    api.grid.registerDataChangeCallback(expandOnSetData);
+  }
 
-    if(vm.account.type === 'balance'){
-      vm.account.is_charge = null;
-      vm.account.cc_id = null;
-      vm.account.pc_id = null;
-    } else if (vm.account.type === 'income/expense'){
-      vm.account.is_asset = null;
+  function expandOnSetData(grid) {
+    if (vm.initialDataSet && grid.options.data.length) {
+      grid.api.treeBase.expandAllRows();
+      vm.initialDataSet = false;
     }
   }
 
-  function discareCC() {
-    vm.account.cc_id = null;
+  function bindGridData() {
+    vm.gridOptions.data = vm.Accounts.data;
   }
-
-  function discarePC() {
-    vm.account.pc_id = null;
-  }
-
-  function create() {
-    vm.view = 'create';
-    vm.account = {
-      is_title : 0,
-      parent : 0,
-      locked : 0
-    };
-  }
-
-  // switch to update mode
-  // data is an object that contains all the information of a account
-  function update(data) {
-    data.title = data.label;
-    vm.view = 'update';
-    vm.account = data;
-  }
-
-
-  // refresh the displayed Accounts
-  function refreshAccounts() {
-    return accountService.read(null, { detailed : 1 })
-    .then(function (data) {
-      vm.accounts = data;
-      vm.loading = false;
-    });
-  }
-
-  // form submission
-  function submit(form) {
-
-    // stop submission if the form is invalid
-    if (form.$invalid) { return; }
-
-    var promise;
-    var creation = (vm.view === 'create');
-
-    var account = angular.copy(vm.account);
-
-    promise = (creation) ?
-      accountService.create(account) :
-      accountService.update(account.id, account);
-
-    promise
-      .then(function (response) {
-        return refreshAccounts();
-      })
-      .then(function () {
-        vm.view = creation ? 'create_success' : 'update_success';
-      })
-      .catch(handler);
-  }
-
-  startup();
 }

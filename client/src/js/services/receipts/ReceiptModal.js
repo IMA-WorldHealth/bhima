@@ -27,7 +27,6 @@ function ReceiptModal(Modal, Receipts) {
   service.invoice = invoice;
   service.patient = patient;
   service.purchase = purchase;
-  service.patientRegistrations = patientRegistrations;
 
   /**
    * Invokes a patient invoice receipt
@@ -78,28 +77,6 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var configuration = angular.extend(modalConfiguration, patientProvider);
-    var instance = Modal.open(configuration);
-    return instance.result;
-  }
-
-  // in this case, the options are actually all filters from the ui-grid
-  function patientRegistrations(options) {
-    var reportOptions = {
-      title: 'PATIENT_REG.PATIENT_REGISTRATIONS',
-      renderer: Receipts.renderers.PDF,
-    };
-
-    options.renderer = Receipts.renderers.PDF;
-
-    var reportRequest = Receipts.patientRegistrations(options);
-    var reportProvider = {
-      resolve : {
-        receipt       : function reportProvider () { return { promise : reportRequest }; },
-        options       : function optionsProvider() { return reportOptions; },
-      }
-    };
-
-    var configuration = angular.extend(modalConfiguration, reportProvider);
     var instance = Modal.open(configuration);
     return instance.result;
   }

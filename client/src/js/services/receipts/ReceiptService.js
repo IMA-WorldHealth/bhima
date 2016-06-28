@@ -23,7 +23,7 @@ function ReceiptService($http, util) {
   service.patient = patient;
   service.purchase = purchase;
   service.renderers = renderers;
-  service.patientRegistrations = patientRegistrations;
+  /** service.patientRegistrations = patientRegistrations; */
 
   /**
    * @method fetch
@@ -66,12 +66,6 @@ function ReceiptService($http, util) {
   // print the patient card
   function patient(uuid, options) {
     var route ='/reports/patient/'.concat(uuid);
-    return fetch(route, options);
-  }
-
-  // TODO - migrate this to a separate reports fetching method
-  function patientRegistrations(options) {
-    var route = '/reports/patient/registrations';
     return fetch(route, options);
   }
 

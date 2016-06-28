@@ -3,18 +3,36 @@
     "ACCOUNT_CHART"  : "Chart of Accounts",
     "ACCOUNT_COST"   : "Costs Accounts",
     "ACCOUNT_LIST"   : "Accounts list",
-    "ACCOUNT_NUMBER" : "Account Number",
+    "NUMBER" : "Account Number",
     "ADD"            : "Add Account",
+    "ADD_CHILD"      : "Add child account",
     "ALL_ACCOUNT"    : "All Accounts",
-    "CREATE"         : "Create Chart of Accounts",
+    "CREATE"         : "Create New Account",
+    "CREATE_ANOTHER" : "Create another account",
+    "CREATED"        : "Account record written",
+    "UPDATED"        : "Account record udpated",
     "GENERATE"       : "Generate Account Report",
     "HELP_TXT_1"     : "Chart of accounts for",
     "HELP_TXT_2"     : "Account information and relationships are shown in the table on the right",
     "HELP_TXT_3"     : "Click 'Add Account' to add an account",
     "NEW"            : "New Account",
+    "LABEL"          : "Account Label",
     "NOT_FOUND"      : "Not accounts found.",
     "TITLE"          : "Account Management",
-    "TITLE_ACCOUNT"  : "Title Account"
+    "TITLE_ACCOUNT"  : "Title Account",
+    "SET_ROOT"       : "Set as root account",
+    "ROOT_PARENT"    : "This account is set as a child of the root account. This means it will be at the highest level in the chart of accounts.",
+    "RECORD_SAME"    : "No changes have been made to the form. Update the account details and then press submit.",
+
+    "SUBMIT_CREATE"  : "Create Account",
+    "SUBMIT_UPDATE"  : "Update Account",
+
+    "TYPES" : {
+      "INCOME" : "Income",
+      "EXPENSE" : "Expense",
+      "BALANCE" : "Balance",
+      "TITLE" : "Title"
+    }
   },
   "AUTH": {
     "CANNOT_RETURN_TO_LOGIN"     : "You are currently logged in.  To return to the login page, please log out using the settings page.",
@@ -175,6 +193,7 @@
   "ERRORS": {
     "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network.",
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
+    "NOT_FOUND" : "This record could not be found",
     "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue.",
     "UNKNOWN" : "An error occurred."
   },
@@ -380,8 +399,9 @@
       "GROUPS_PATIENT_TITLE"   : "Patients Groups",
       "HOME_PAGE"              : "Default Home Page",
       "HOSPITAL_FILE_NR"       : "Hospital File Number",
+      "HOSPITAL_NO"            : "Hospital No.",
       "ID"                     : "ID",
-      "INTL"                   : "Internationale",
+      "INTL"                   : "International",
       "INVENTORY"              : "Inventory",
       "INVOICE"                : "Invoice Payment",
       "INVOICES_DETAILS"       : "Invoices Details",
@@ -422,6 +442,7 @@
       "ON_DELIVERY"            : "On Delivery",
       "ON_PURCHASE"            : "On Purchase",
       "OTHER"                  : "Other",
+      "PARENT_ACCOUNT"         : "Parent Account",
       "PASSIVE"                : "Passive",
       "PASSWORD"               : "Password",
       "PATIENT"                : "Patient",

@@ -47,7 +47,7 @@ function detail(req, res, next) {
  */
 function list(req, res, next) {
   let sql =
-    'SELECT `id`, `type` FROM account_type;';
+    'SELECT `id`, `type`, `translation_key` FROM account_type;';
 
   db.exec(sql)
     .then(function (rows) {
@@ -71,6 +71,9 @@ function create(req, res, next) {
   const sql = 'INSERT INTO account_type SET ?';
 
   delete record.id;
+
+  /** @todo design/ update account types to allow setting a translation_key - the implications of this are system wide */
+  record.translation_key = '';
 
   db.exec(sql, [record])
     .then(function (result) {
