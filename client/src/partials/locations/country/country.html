@@ -12,11 +12,11 @@
 <div class="flex-util">
   <a href="#/locations" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
-  </a> 
+  </a>
 
   <button class="btn btn-sm btn-default" id="create" ng-click="CountryCtrl.create()" data-method="create">
     <span class="glyphicon glyphicon-plus-sign"></span> {{'COUNTRY.NEW_COUNTRY' | translate}}
-  </button> 
+  </button>
 </div>
 
 
@@ -54,7 +54,7 @@
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
             <h4>{{ 'COUNTRY.CONFIGURATION' | translate }}</h4>
-            <p>{{ 'COUNTRY.DESCRIPTION' | translate }}</p>     
+            <p>{{ 'COUNTRY.DESCRIPTION' | translate }}</p>
           </div>
         </div>
 
@@ -76,16 +76,16 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'COUNTRY.REGISTER' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="CountryCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
-            
+            <form name="CreateForm" ng-submit="CountryCtrl.submit(CreateForm)" bh-form-defaults novalidate>
+
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_COUNTRY' | translate }}" ng-maxlength="CountryCtrl.countryLength" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
                 <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
-              
+
               <div class="form-group">
                 <button class="btn btn-default" id="submit-country" type="submit" data-method="submit">
                   {{ "FORM.BUTTONS.SAVE" | translate }}
@@ -93,24 +93,24 @@
                 <button class="btn btn-default" type="button" ng-click="CountryCtrl.cancel()" data-method="cancel">
                   {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
-              </div>             
+              </div>
             </form>
-          </div>        
+          </div>
         </div>
 
         <!-- Form for updating country -->
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'COUNTRY.EDIT' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="UpdateForm" ng-submit="CountryCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_COUNTRY' | translate }}" ng-maxlength="CountryCtrl.countryLength" class="form-control" name="country" ng-model="CountryCtrl.country.name" required>
                 <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
-              
+
               <div class="form-group">
                 <button class="btn btn-default" id="change_country" type="submit" data-method="submit">
                   {{ "FORM.BUTTONS.SAVE" | translate }}
@@ -118,12 +118,12 @@
                 <button class="btn btn-default" type="button" ng-click="CountryCtrl.cancel()" data-method="cancel">
                   {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
-              </div>               
+              </div>
             </form>
-          </div>         
+          </div>
         </div>
 
       </div>
     </div>
-  </div>  
+  </div>
 </div>

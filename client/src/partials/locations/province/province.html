@@ -12,11 +12,11 @@
 <div class="flex-util">
   <a href="#/locations" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
-  </a> 
+  </a>
 
   <button class="btn btn-sm btn-default" id="create" ng-click="ProvinceCtrl.create()" data-method="create">
     <span class="glyphicon glyphicon-plus-sign"></span> {{'PROVINCE.ADD' | translate}}
-  </button> 
+  </button>
 </div>
 
 
@@ -56,7 +56,7 @@
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
              <b>{{'PROVINCE.CONFIGURATION' | translate}} </b>
-             <p>{{'PROVINCE.DESCRIPTION' | translate}}     
+             <p>{{'PROVINCE.DESCRIPTION' | translate}}
           </div>
         </div>
 
@@ -78,15 +78,15 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'PROVINCE.REGISTER' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="ProvinceCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form class="panel-body" name="CreateForm" ng-submit="ProvinceCtrl.submit(CreateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="country" 
-                  ng-model="ProvinceCtrl.province.country_uuid" 
-                  id="country"  
+                <select
+                  class="form-control"
+                  name="country"
+                  ng-model="ProvinceCtrl.province.country_uuid"
+                  id="country"
                   ng-options="c.uuid as c.name for c in ProvinceCtrl.countries | orderBy:'name'"
                   ng-change="ProvinceCtrl.loadProvinces()"
                   required>
@@ -94,7 +94,7 @@
                 </select>
                 <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.province.$invalid }">
@@ -102,9 +102,9 @@
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_PROVINCE' | translate }}" ng-maxlength="ProvinceCtrl.maxLength" class="form-control" name="province" ng-model="ProvinceCtrl.province.name" required>
                 <div class="help-block" ng-messages="CreateForm.province.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                  
+                </div>
               </div>
-              
+
               <div class="form-group">
                 <button class="btn btn-default" id="submit-province" type="submit" data-method="submit">
                   {{ "FORM.BUTTONS.SAVE" | translate }}
@@ -114,21 +114,21 @@
                 </button>
               </div>
             </form>
-          </div>        
+          </div>
         </div>
 
         <!-- Form for updating Province -->
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'PROVINCE.EDIT' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="ProvinceCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form class="panel-body" name="UpdateForm" ng-submit="ProvinceCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="country" 
-                  ng-model="ProvinceCtrl.province.country_uuid" 
-                  id="country"  
+                <select
+                  class="form-control"
+                  name="country"
+                  ng-model="ProvinceCtrl.province.country_uuid"
+                  id="country"
                   ng-options="c.uuid as c.name for c in ProvinceCtrl.countries | orderBy:'name'"
                   ng-change="ProvinceCtrl.loadProvinces()"
                   required>
@@ -136,7 +136,7 @@
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.province.$invalid }">
@@ -144,9 +144,9 @@
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_PROVINCE' | translate }}" class="form-control" ng-maxlength="ProvinceCtrl.maxLength" name="province" ng-model="ProvinceCtrl.province.name" required>
                 <div class="help-block" ng-messages="UpdateForm.province.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
-              
+
               <div class="form-group">
                 <button class="btn btn-default" id="change_province" type="submit" data-method="submit">
                   {{ "FORM.BUTTONS.SAVE" | translate }}
@@ -156,10 +156,10 @@
                 </button>
               </div>
             </form>
-          </div>         
+          </div>
         </div>
 
       </div>
     </div>
-  </div>  
+  </div>
 </div>

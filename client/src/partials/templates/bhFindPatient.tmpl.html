@@ -5,13 +5,11 @@
     ng-switch-default
     ng-form="FindPatientForm"
     ng-class="{
-      'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
-      'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
-      }"
-    autocomplete="off"
-	autocapitalize="off"
-	autocorrect="off"
-	novalidate>
+    'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
+    'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
+    }"
+    bh-form-defaults
+    novalidate>
 
     <!-- inline input zone -->
     <div class="input-group" ng-if="$ctrl.showSearchView">
@@ -40,9 +38,6 @@
         type="text"
         class="form-control"
         placeholder="{{ $ctrl.selected.placeholder | translate }}...",
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
         ng-required="$ctrl.required">
 
       <!-- search by Name  -->
@@ -156,10 +151,7 @@
       <div class="form-group has-feedback"
         ng-class="{'has-success': $ctrl.loadStatus ==='loaded', 'has-error': $ctrl.loadStatus === 'error'}"
         ng-form="FindPatientForm"
-        autocomplete="off"
-		autocapitalize="off"
-		autocorrect="off"
-		novalidate>
+        novalidate>
 
         <!-- input zone -->
         <div class="input-group input-group-sm">
@@ -186,9 +178,6 @@
             name="idInput"
             type="text"
             class="form-control"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
             placeholder="{{ $ctrl.selected.placeholder | translate }}"
             ng-required="$ctrl.required">
 
@@ -205,9 +194,6 @@
             typeahead-loading="$ctrl.loadingPatients"
             typeahead-template-url="/partials/templates/patientListe.tmpl.html"
             typeahead-on-select="$ctrl.selectPatient($item)"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
             ng-required="$ctrl.required">
 
         </div>
