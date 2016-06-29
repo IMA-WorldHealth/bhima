@@ -104,7 +104,7 @@ function AccountService($http, util, Session) {
    * @returns {Array} - the flattened array
    */
   function flatten(tree, depth) {
-    var depth = isNaN(depth) ? -1 : depth;
+    depth = isNaN(depth) ? -1 : depth;
     depth += 1;
 
     return tree.reduce(function (array, node) {

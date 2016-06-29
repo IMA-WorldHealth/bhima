@@ -140,10 +140,10 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    */
   PurchaseOrderForm.prototype.digest = function digest() {
     var order = this;
-    var totals = this.totals;
+    var totals = order.totals;
 
     // loop through the items summing them into a total
-    totals.rows = this.store.data.reduce(function (value, unit) {
+    totals.rows = order.store.data.reduce(function (value, unit) {
 
       // compute validation
       unit.validate();
@@ -164,7 +164,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     var order = this;
 
     // copy the data so that forEach() doesn't get confused.
-    var cp = angular.copy(this.store.data);
+    var cp = angular.copy(order.store.data);
 
     // remove each item from the store
     cp.forEach(function (item) {

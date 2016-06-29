@@ -147,6 +147,7 @@ function create(req, res, next) {
 
   data.user_id = req.session.user.id;
   data.project_id = req.session.project.id;
+  data.currency_id = req.session.enterprise.currency_id;
 
   const sql =
     'INSERT INTO purchase SET ?';

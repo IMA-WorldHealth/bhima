@@ -371,7 +371,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
 
   .state('purchasesCreate', {
-    url : '/purchases/new',
+    url : '/purchases/create',
     controller : 'PurchaseOrderController as PurchaseCtrl',
     templateUrl : 'partials/purchases/create/create.html'
   })
@@ -566,6 +566,9 @@ function constantConfig() {
     accounts : {
       ROOT : 0,
       TITLE : 4
+    },
+    purchase : {
+      GRID_HEIGHT: 200
     }
   };
 }

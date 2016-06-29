@@ -41,9 +41,6 @@ function PurchaseOrderService(Api, Session) {
       return item;
     });
 
-    // automatically set the currency_id to the enterprise currency
-    data.currency_id = Session.enterprise.currency_id;
-
     return Api.create.call(service, data);
   }
 

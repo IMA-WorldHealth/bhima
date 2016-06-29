@@ -42,7 +42,5 @@ function ReportsModalController(Receipts, Instance, $sce, $window, Data) {
       $window.print();
     }
     Instance.close();
-  }
-
-
+  };
 }

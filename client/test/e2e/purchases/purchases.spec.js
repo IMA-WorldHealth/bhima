@@ -15,7 +15,7 @@ const components = require('../shared/components');
 describe('Purchase Orders', function () {
   'use strict';
 
-  const path = '#/purchases/new';
+  const path = '#/purchases/create';
 
   // navigate to the patient invoice page
   beforeEach(() => helpers.navigate(path));

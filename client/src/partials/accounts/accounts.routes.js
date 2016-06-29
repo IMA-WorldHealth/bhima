@@ -1,7 +1,7 @@
 
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) { 
-    
+  .config(['$stateProvider', function ($stateProvider) {
+
     $stateProvider
       .state('accounts', {
         abstract : true,
@@ -9,39 +9,39 @@ angular.module('bhima.routes')
         controller: 'AccountsController as AccountsCtrl',
         templateUrl: 'partials/accounts/accounts.html'
       })
-    
+
       .state('accounts.create', {
         url : '/create',
         params : {
           parentId : { squash : true, value : null }
         },
-        onEnter :['$state', '$uibModal', accountsModal] 
+        onEnter :['$state', '$uibModal', accountsModal]
       })
       .state('accounts.list', {
         url : '/:id',
-        params : { 
+        params : {
           id : { squash : true, value : null }
         }
       })
-    
-      .state('accounts.edit', { 
+
+      .state('accounts.edit', {
         url : '/:id/edit',
-        params : { 
+        params : {
           id : { squash : true, value : null }
         },
         onEnter :['$state', '$uibModal', accountsModal]
-      })
+      });
   }]);
 
-function accountsModal($state, $modal) { 
+function accountsModal($state, $modal) {
   var instance = $modal.open({
-              keyboard : false,
-              backdrop : 'static',
-              templateUrl: 'partials/accounts/edit/accounts.edit.modal.html',
-              controller: 'AccountEditController as AccountEditCtrl'
-            })
-            
-          instance.result.then(function (result) { 
-            // clean up action
-          });
+    keyboard : false,
+    backdrop : 'static',
+    templateUrl: 'partials/accounts/edit/accounts.edit.modal.html',
+    controller: 'AccountEditController as AccountEditCtrl'
+  });
+
+  instance.result.then(function (result) {
+    // clean up action
+  });
 }

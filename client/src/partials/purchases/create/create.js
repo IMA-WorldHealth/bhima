@@ -3,15 +3,16 @@ angular.module('bhima.controllers')
 
 PurchaseOrderController.$inject = [
   'PurchaseOrderService', 'PurchaseOrderForm', 'SupplierService', 'NotifyService',
-  'SessionService', 'util', 'ReceiptModal'
+  'SessionService', 'util', 'ReceiptModal', 'bhConstants'
 ];
 
 
-function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Session, util, Receipts) {
+function PurchaseOrderController(Purchases, PurchaseOrder, Suppliers, Notify, Session, util, Receipts, bhConstants) {
   var vm = this;
 
   // create a new purchase order form
   vm.order = new PurchaseOrder('PurchaseOrder');
+  vm.bhConstants = bhConstants;
 
   vm.itemIncrement = 1;
   vm.enterprise = Session.enterprise;

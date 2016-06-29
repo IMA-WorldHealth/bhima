@@ -161,7 +161,7 @@
       </div>
     </div>
 
-    <div id="purchase-order-grid" ui-grid="PurchaseCtrl.gridOptions" style="height : 230px; width : 100%;" ui-grid-auto-resize ui-grid-cellNav>
+    <div id="purchase-order-grid" ui-grid="PurchaseCtrl.gridOptions" style="height : {{ ::PurchaseCtrl.bhConstants.GRID_HEIGHT }}px; width : 100%;" ui-grid-auto-resize ui-grid-cellNav>
     </div>
 
     <div class="row" ng-if="PurchaseCtrl.supplier">
