@@ -23,7 +23,7 @@
     "SET_ROOT"       : "Set as root account",
     "ROOT_PARENT"    : "This account is set as a child of the root account. This means it will be at the highest level in the chart of accounts.",
     "RECORD_SAME"    : "No changes have been made to the form. Update the account details and then press submit.",
-
+    "SELECT_PARENT"  : "Select parent account...",
     "SUBMIT_CREATE"  : "Create Account",
     "SUBMIT_UPDATE"  : "Update Account",
 

@@ -65,14 +65,19 @@
       <label class="control-label">{{ "FORM.LABELS.PARENT_ACCOUNT" | translate }}</label>
       <a href ng-click="AccountEditCtrl.setRootAccount(AccountForm)"><i class="fa fa-level-up"></i> {{ "ACCOUNT.SET_ROOT" | translate }}</a>
       <p ng-show="AccountEditCtrl.account.parent.id === AccountEditCtrl.Constants.accounts.ROOT" class="text-info"><i class="fa fa-info-circle"></i> {{ "ACCOUNT.ROOT_PARENT" | translate }}</p>
-      <input
-        class="form-control"
+
+      <ui-select
         name="parent"
         ng-model="AccountEditCtrl.account.parent"
-        uib-typeahead="account as account.hrlabel for account in AccountEditCtrl.accounts | filter:$viewValue | limitTo:6 | filter : { type_id : AccountEditCtrl.Constants.accounts.TITLE }"
-        typeahead-editable="false"
-        typeahead-template-url="partials/templates/typeahead/accounts.html"
+        theme="bootstrap"
         required>
+        <ui-select-match placeholder="{{ 'ACCOUNT.SELECT_PARENT' | translate }}"><strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span></ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="account in AccountEditCtrl.accounts | filter:$select.search | filter : { type_id : AccountEditCtrl.Constants.accounts.TITLE }">
+          <span ng-bind-html="account.number | highlight:$select.search"></span>
+          <small ng-bind-html="account.label | highlight:$select.search"></small>
+        </ui-select-choices>
+      </ui-select>
+
       <div class="help-block" ng-messages="AccountForm.parent.$error" ng-show="AccountForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
