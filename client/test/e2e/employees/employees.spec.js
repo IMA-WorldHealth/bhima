@@ -53,7 +53,7 @@ describe('Employees', function () {
     FU.select('EmployeeCtrl.employee.grade_id', 'A1');
     FU.select('EmployeeCtrl.employee.fonction_id', 'Infirmier');
     FU.select('EmployeeCtrl.employee.creditor_group_uuid', 'Personnel');
-    FU.select('EmployeeCtrl.employee.debtor_group_uuid', 'Test Debtor Group');
+    FU.select('EmployeeCtrl.employee.debtor_group_uuid', 'Second Test Debtor Group');
     FU.input('EmployeeCtrl.employee.email', employee.email);
     FU.input('EmployeeCtrl.employee.adresse', employee.adresse);
 
@@ -67,7 +67,7 @@ describe('Employees', function () {
     FU.buttons.submit();
 
     // expect a nice validation message
-    FU.exists(by.id('create_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('edits an employee', function () {
@@ -81,7 +81,7 @@ describe('Employees', function () {
     element(by.id('change_employee')).click();
 
     // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('unlocks an employee', function () {
@@ -90,7 +90,7 @@ describe('Employees', function () {
     element(by.id('change_employee')).click();
 
     // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('blocks invalid form submission with relevant error classes', function () {
@@ -123,5 +123,7 @@ describe('Employees', function () {
     FU.validation.ok('EmployeeCtrl.employee.email');
     FU.validation.ok('EmployeeCtrl.employee.bank');
     FU.validation.ok('EmployeeCtrl.employee.bank_account');
+
+    components.notification.hasDanger();
   });
 });

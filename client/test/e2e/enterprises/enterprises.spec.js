@@ -67,7 +67,6 @@ describe('Enterprises', function () {
     // The following fields should be required
     FU.validation.error('EnterpriseCtrl.enterprise.name');
     FU.validation.error('EnterpriseCtrl.enterprise.abbr');
-    FU.validation.error('EnterpriseCtrl.enterprise.currency_id');
 
     // The following fields is not required
     FU.validation.ok('EnterpriseCtrl.enterprise.email');

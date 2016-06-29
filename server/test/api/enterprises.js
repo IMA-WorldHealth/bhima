@@ -9,7 +9,7 @@ helpers.configure(chai);
  * The /enterprises API endpoint
  * This test suite implements full CRUD on the /enterprises HTTP API endpoint.
  */
-describe('(/enterprises) The /enterprises API endpoint', function () {
+describe('(/enterprises) Enterprises API', function () {
   const agent = chai.request.agent(helpers.baseUrl);
 
   // ensure that the client is logged into the test suite
@@ -21,7 +21,7 @@ describe('(/enterprises) The /enterprises API endpoint', function () {
     email : 'enterprises@test.org',
     po_box : 'enterprises',
     phone : '2016',
-    location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     logo : null,
     currency_id : 2
   };
@@ -30,7 +30,7 @@ describe('(/enterprises) The /enterprises API endpoint', function () {
     name : 'updateEnterprises',
     abbr : 'upd',
     phone : '00904940950932016',
-    location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     currency_id : 1
   };
 

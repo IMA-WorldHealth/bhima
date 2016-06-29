@@ -8,7 +8,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Section Resultats Module', function () {
+describe('Section Resultats', function () {
   'use strict';
 
   const path = '#/section_resultat';
@@ -22,7 +22,7 @@ describe('Section Resultats Module', function () {
 
   const sectionResultatRank = 1;
 
-  it('successfully creates a new SectionResultat', function () {
+  it('creates a new SectionResultat', function () {
 
     // switch to the create form
     FU.buttons.create();
@@ -37,7 +37,7 @@ describe('Section Resultats Module', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('successfully edits an sectionResultat', function () {
+  it('edits an sectionResultat', function () {
 
     element(by.id('sectionResultat-upd-' + sectionResultatRank )).click();
     // modify the sectionResultat text
@@ -55,7 +55,7 @@ describe('Section Resultats Module', function () {
     // switch to the create form
     FU.buttons.create();
 
-    // verify form has not been successfully submitted
+    // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     element(by.id('submit-sectionResultat')).click();
@@ -63,10 +63,9 @@ describe('Section Resultats Module', function () {
     // the following fields should be required
     FU.validation.error('sectionResultatCtrl.sectionResultat.text');
     FU.validation.error('sectionResultatCtrl.sectionResultat.position');
-    FU.validation.error('sectionResultatCtrl.sectionResultat.is_charge');
   });
 
-  it('successfully delete a SectionResultat', function () {
+  it('delete a SectionResultat', function () {
     element(by.id('sectionResultat-del-' + sectionResultatRank )).click();
 
     // click the alert asking for permission

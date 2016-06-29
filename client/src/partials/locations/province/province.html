@@ -40,12 +40,12 @@
             </thead>
             <tbody>
               <tr ng-if="ProvinceCtrl.session.loading" class="text-center">
-                <td colspan="4"><loading-indicator></loading-indicator></td>
+                <td colspan="3"><loading-indicator></loading-indicator></td>
               </tr>
-              <tr ng-repeat="province in ProvinceCtrl.provinces | orderBy:'province' "  ng-class="{'rowSelected' : ProvinceCtrl.province.uuid === province.uuid}">
+              <tr ng-repeat="province in ProvinceCtrl.provinces | orderBy:'name'">
                 <td>{{ province.name }}</td>
                 <td>{{ province.country_name }}</td>
-                <td><a class="btn btn-xs btn-default" id="province-{{$index + 1}}" ng-click="ProvinceCtrl.update(province)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
+                <td><a class="btn btn-xs btn-default" data-province-name="{{::province.name}}" ng-click="ProvinceCtrl.update(province)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
               </tr>
             </tbody>
           </table>
@@ -78,7 +78,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'PROVINCE.REGISTER' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="ProvinceCtrl.submit(CreateForm)" bh-form-defaults novalidate>
+            <form name="CreateForm" ng-submit="ProvinceCtrl.submit(CreateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
@@ -121,7 +121,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'PROVINCE.EDIT' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="ProvinceCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
+            <form name="UpdateForm" ng-submit="ProvinceCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
                 <select
@@ -158,7 +158,6 @@
             </form>
           </div>
         </div>
-
       </div>
     </div>
   </div>

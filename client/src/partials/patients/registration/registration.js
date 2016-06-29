@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$location', 'PatientService', 'DebtorService',
-  'SessionService', 'util', 'NotifyService', 'ReceiptModal', 'ScrollService'
+  '$location', 'PatientService', 'DebtorService', 'SessionService', 'util',
+  'NotifyService', 'ReceiptModal', 'ScrollService', 'bhConstants'
 ];
 
 /**
@@ -16,7 +16,7 @@ PatientRegistrationController.$inject = [
  *
  * @module controllers/PatientRegistrationController
  */
-function PatientRegistrationController($location, Patients, Debtors, Session, util, Notify, Receipts, ScrollTo) {
+function PatientRegistrationController($location, Patients, Debtors, Session, util, Notify, Receipts, ScrollTo, bhConstants) {
   var vm = this;
 
   vm.submit = submit;
@@ -24,7 +24,7 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
   vm.calculateYOB = calculateYOB;
 
   // maxlength field for Patient Registration
-  vm.maxLength = util.maxTextLength;
+  vm.maxLength = bhConstants.lengths.maxTextLength;
   vm.length150 = util.length150;
   vm.length100 = util.length100;
   vm.length50 = util.length50;
@@ -39,8 +39,8 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
 
   // define limits for DOB
   vm.datepickerOptions = {
-    maxDate : util.maxDOB,
-    minDate : util.minDOB
+    maxDate : bhConstants.dates.maxDOB,
+    minDate : bhConstants.dates.minDOB
   };
 
   settupRegistration();

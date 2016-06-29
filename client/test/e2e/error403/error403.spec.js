@@ -1,15 +1,14 @@
 /* global element, by, inject, browser */
 const chai   = require('chai');
 const expect = chai.expect;
-
-const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
+const FU = require('../shared/FormUtils');
+
 describe('Error 403, Not Authorized', function () {
-  const path = '#/settings';  
+  const path = '#/settings';
   const pathUnAuthorized = '#/error403';
-  // navigate to the page
 
   // this function is called before all tests are run
   before(() => {
@@ -19,12 +18,11 @@ describe('Error 403, Not Authorized', function () {
     // click logout
     element(by.css('[data-logout-button]')).click();
 
-    // Login for Regular Userm, the regular User have the right on #/account and #/fiscal
+    // Login for Regular User, the regular User have the right on #/account and #/fiscal
     FU.input('LoginCtrl.credentials.username', 'RegularUser');
     FU.input('LoginCtrl.credentials.password', 'RegularUser');
 
-    element(by.id('submit')).click();
-
+    FU.buttons.submit();
   });
 
   it('Check Authorized and unauthorized Path of the user RegularUser:', function () {
@@ -60,12 +58,9 @@ describe('Error 403, Not Authorized', function () {
     // click logout
     element(by.css('[data-logout-button]')).click();
 
-    // Login for Regular Userm, the Super User 
+    // Login for Regular User, the Super User
     FU.input('LoginCtrl.credentials.username', 'superuser');
     FU.input('LoginCtrl.credentials.password', 'superuser');
-
-    element(by.id('submit')).click();
-
+    FU.buttons.submit();
   });
-
 });

@@ -114,7 +114,7 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
   // form submission
   function submit(form) {
     if (form.$invalid) {
-      // Notify.danger('FORM.ERRORS.HAS_ERRORS');
+      Notify.danger('FORM.ERRORS.HAS_ERRORS');
       return;
     }
 

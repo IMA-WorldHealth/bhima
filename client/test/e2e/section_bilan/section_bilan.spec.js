@@ -63,7 +63,6 @@ describe('Section Bilan Module', function () {
     // the following fields should be required
     FU.validation.error('sectionBilanCtrl.sectionBilan.text');
     FU.validation.error('sectionBilanCtrl.sectionBilan.position');
-    FU.validation.error('sectionBilanCtrl.sectionBilan.is_actif');
   });
 
   it('delete a sectionbilan', function () {

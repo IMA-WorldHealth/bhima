@@ -41,7 +41,7 @@ describe('(/employees) the employees API endpoint', function () {
     fonction_id : 1,
     locked : 0,
     service_id : 1,
-    location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
     debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
@@ -63,7 +63,7 @@ describe('(/employees) the employees API endpoint', function () {
     email : 'me@info.com',
     fonction_id : 1,
     service_id : 1,
-    location_id : 'ffe563ef-781c-4551-a080-7cec135351ff',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
     debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };

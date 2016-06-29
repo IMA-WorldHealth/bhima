@@ -28,7 +28,7 @@ describe('Subsidies', function () {
     FU.buttons.create();
     FU.input('SubsidyCtrl.subsidy.label', subsidy.label);
     FU.input('SubsidyCtrl.subsidy.value', subsidy.value);
-    FU.select('SubsidyCtrl.subsidy.account_id', 'Test Debtor Account');
+    FU.select('SubsidyCtrl.subsidy.account_id', 'Test Debtor Accounts2');
     FU.input('SubsidyCtrl.subsidy.description', subsidy.description);
 
     // submit the page to the server

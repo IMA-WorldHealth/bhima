@@ -3,14 +3,15 @@ angular.module('bhima.controllers')
 .controller('EmployeeController', EmployeeController);
 
 EmployeeController.$inject = [
-  'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService', 'CreditorGroupService', 'DebtorGroupService', 'util'
+  'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService',
+  'CreditorGroupService', 'DebtorGroupService', 'util', 'NotifyService',
+  'bhConstants'
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, DebtorGroups, util) {
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, DebtorGroups, util, Notify, bhConstants) {
   var vm = this;
-  var session = vm.session = {};
 
-  session.loading = false;  
+  vm.loading = false;
   vm.view = 'default';
 
   // bind methods
@@ -19,37 +20,30 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.cancel = cancel;
   vm.submit = submit;
 
-
-  // Define limits for DOB
-  vm.minDOB = util.minDOB;
-  vm.maxDOB = util.maxDOB;    
+  // Define limits for dates
+  vm.minDOB = bhConstants.dates.minDOB;
+  vm.maxDOB = bhConstants.dates.maxDOB;
   vm.maxDateEmbauche = Employees.maxDateEmbauche;
 
-  // Maxlength field for Employee Registration 
-  vm.maxLength = util.maxTextLength; 
+  // max length field for Employee Registration
+  vm.maxLength = bhConstants.maxTextLength;
   vm.length70 = util.length70;
   vm.length50 = util.length50;
   vm.length30 = util.length30;
-  vm.length20 = util.length20;    
-
-
-
-  function handler(error) {
-    console.error(error);
-  }
+  vm.length20 = util.length20;
 
   // fired on startup
   function startup() {
     // start up loading indicator
-    session.loading = true;
+    vm.loading = true;
 
     // load Employees
     refreshEmployees();
 
     // load Services
-    Services.read().then(function (data) {
-      vm.services = data;
-    }).catch(handler);
+    Services.read().then(function (services) {
+      vm.services = services;
+    }).catch(Notify.handleError);
 
     // load Grades
     Grades.read(null, { detailed : 1 }).then(function (data) {
@@ -57,22 +51,22 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
         g.format = g.code + ' - ' + g.text;
       });
       vm.grades = data;
-    }).catch(handler);
+    }).catch(Notify.handleError);
 
     // load Functions
     Functions.read().then(function (data) {
       vm.functions = data;
-    }).catch(handler);
+    }).catch(Notify.handleError);
 
     // load Creditor Groups
     CreditorGroups.read().then(function (data) {
       vm.creditorGroups = data;
-    }).catch(handler);
+    }).catch(Notify.handleError);
 
     // load Debtor Groups
     DebtorGroups.read().then(function (data) {
       vm.debtorGroups = data;
-    }).catch(handler);
+    }).catch(Notify.handleError);
 
   }
 
@@ -87,11 +81,11 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   }
 
   // switch to update mode
-  // data is an object that contains all the information of a employee 
+  // data is an object that contains all the information of a employee
   function update(data) {
-    // Sanitise DOB for HTML Date Input 
+    // Sanitise DOB for HTML Date Input
     data.dob = new Date(data.dob);
-    // Sanitise DATE_EMBAUCHE for HTML Date Input 
+    // Sanitise DATE_EMBAUCHE for HTML Date Input
     data.date_embauche = new Date(data.date_embauche);
     data.code = data.code_employee;
 
@@ -117,13 +111,16 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
       });
 
       vm.employees = data;
-      session.loading = false;
+      vm.loading = false;
     });
   }
 
   // form submission
   function submit(invalid) {
-    if (invalid) { return; }
+    if (invalid) {
+      Notify.danger('FORM.ERRORS.HAS_ERRORS');
+      return;
+    }
 
     var promise;
     var creation = (vm.view === 'create');
@@ -138,9 +135,9 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
         return refreshEmployees();
       })
       .then(function () {
-        vm.view = creation ? 'create_success' : 'update_success';
-      })      
-      .catch(handler);
+        Notify.success(creation ? 'FORM.INFOS.CREATE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
+      })
+      .catch(Notify.handleError);
   }
 
   startup();

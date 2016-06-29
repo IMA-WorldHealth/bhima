@@ -33,7 +33,7 @@ var config = {
 
       element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');
       element(by.model('LoginCtrl.credentials.password')).sendKeys('superuser');
-      element(by.id('submit')).click();
+      element(by.css('[data-method="submit"]')).click();
 
       // NOTE - you may need to play with the delay time to get this to work properly
       // Give this plenty of time to run
