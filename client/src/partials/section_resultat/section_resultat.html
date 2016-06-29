@@ -39,13 +39,13 @@
               <tr ng-if="sectionResultatCtrl.session.loading" class="text-center">
                 <td colspan="6"><loading-indicator></loading-indicator></td>
               </tr>
-              <tr 
-              ng-repeat="sectionResultat in sectionResultatCtrl.sectionResultats | orderBy:'number' | orderBy:'text' " 
+              <tr
+              ng-repeat="sectionResultat in sectionResultatCtrl.sectionResultats | orderBy:'number' | orderBy:'text' "
               ng-class="{'rowSelected' : sectionResultatCtrl.sectionResultat.id === sectionResultat.id}" >
                 <td>{{ $index+1 }}</td>
                 <td>{{ sectionResultat.text }}</td>
                 <td>{{sectionResultat.position}}</td>
-                <td>                  
+                <td>
                   <b ng-show="sectionResultat.is_charge">{{sectionResultatCtrl.doTranslate('TABLE.COLUMNS.CHARGE')}}</b>
                   <b ng-show="!sectionResultat.is_charge">{{sectionResultatCtrl.doTranslate('TABLE.COLUMNS.PROFIT')}}</b>
                 </td>
@@ -54,7 +54,7 @@
               </tr>
               <tr ng-if="!sectionResultatCtrl.sectionResultats.length">
                 <td colspan="6">{{ "SECTION_RESULTAT.NO_SECTION_RESULTAT" | translate }}</td>
-              </tr> 
+              </tr>
 
             </tbody>
           </table>
@@ -93,20 +93,20 @@
           <div class="alert alert-danger" id="delete_error">
             <h4>{{ sectionResultatCtrl.HTTPError.data.code | translate }} </h4>
           </div>
-        </div>        
+        </div>
 
         <!-- Form for adding sectionResultat -->
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "SECTION_RESULTAT.NEW" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="sectionResultatCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
-            
+            <form name="CreateForm" ng-submit="sectionResultatCtrl.submit(CreateForm)" bh-form-defaults novalidate>
+
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-maxlength="sectionResultatCtrl.maxLength" ng-model="sectionResultatCtrl.sectionResultat.text" required>
                 <div class="help-block" ng-messages="CreateForm.text.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.is_charge.$invalid }">
@@ -124,7 +124,7 @@
                 </div>
                 <div class="help-block" ng-messages="CreateForm.is_charge.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
               <hr>
 
@@ -133,7 +133,7 @@
                 <input type="number" class="form-control"  min="0" name="position" ng-model="sectionResultatCtrl.sectionResultat.position" required>
                 <div class="help-block" ng-messages="CreateForm.position.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group">
@@ -145,21 +145,21 @@
                 </button>
               </div>
             </form>
-          </div>        
+          </div>
         </div>
 
         <!-- Form for updating sectionResultat -->
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'SECTION_RESULTAT.EDIT' | translate }} </b> </div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="sectionResultatCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="UpdateForm" ng-submit="sectionResultatCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
                 <input type="text" class="form-control" name="text" ng-maxlength="sectionResultatCtrl.maxLength" ng-model="sectionResultatCtrl.sectionResultat.text" required>
                 <div class="help-block" ng-messages="UpdateForm.text.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.is_charge.$invalid }">
@@ -177,7 +177,7 @@
                 </div>
                 <div class="help-block" ng-messages="UpdateForm.is_charge.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
               <hr>
 
@@ -186,7 +186,7 @@
                 <input type="number" class="form-control"  min="0" name="position" ng-model="sectionResultatCtrl.sectionResultat.position" required>
                 <div class="help-block" ng-messages="UpdateForm.position.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group">
@@ -197,12 +197,12 @@
                   {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
               </div>
-              
+
             </form>
-          </div>         
+          </div>
         </div>
 
       </div>
     </div>
-  </div>  
+  </div>
 </div>

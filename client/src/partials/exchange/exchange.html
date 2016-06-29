@@ -43,69 +43,71 @@
           <div class="panel-heading">
             {{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }} {{ ExchangeCtrl.formatCurrency(ExchangeCtrl.enterprise.currency_id) }}
           </div>
+          <div class="panel-body">
 
-          <form name="RateForm" class="panel-body form-horizontal" ng-submit="ExchangeCtrl.submit(RateForm.$invalid)" autocomplete="off" novalidate>
+            <form name="RateForm" class="form-horizontal" ng-submit="ExchangeCtrl.submit(RateForm.$invalid)" bh-form-defaults novalidate>
 
-            <bh-date-editor
-              date-value="ExchangeCtrl.form.date"
-              max-date="ExchangeCtrl.today"
-              validation-trigger="RateForm.$submitted"
-              disabled="!ExchangeCtrl.form.previous"
-              >
-            </bh-date-editor>
+              <bh-date-editor
+                date-value="ExchangeCtrl.form.date"
+                max-date="ExchangeCtrl.today"
+                validation-trigger="RateForm.$submitted"
+                disabled="!ExchangeCtrl.form.previous"
+                >
+              </bh-date-editor>
 
-            <div class="form-group">
-              <div class="checkbox">
-                <label>
-                  <input name="previous" id="previous" type="checkbox" ng-model="ExchangeCtrl.form.previous">
-                  {{ "FORM.LABELS.PREVIOUS_DATE" | translate }}
-                </label>
-              </div>
-            </div>
-
-            <div class="form-group" ng-repeat="(id, row) in ExchangeCtrl.current">
-              <label class="control-label col-md-6">{{ ExchangeCtrl.formatCurrency(id) }} </label>
-              <div class="col-md-6">
-                {{ row.rate | currency:id }}
-                <a class="btn btn-warning text-right" id="current-{{ $index + 1 }}" ng-click="ExchangeCtrl.setExchangeRate(id, row)">{{ "FORM.BUTTONS.SUBMIT" | translate }}</a>
-              </div>
-            </div>
-            <div ng-if="!ExchangeCtrl.current">
-              <div  class="form-group" ng-repeat="currency in ExchangeCtrl.outCurrencies">
-                <label class="control-label col-md-6">{{ ExchangeCtrl.formatCurrency(currency.id) }} </label>
-                <div class="col-md-6">
-                  {{ 0 | currency:currency.id }}
-                  <a class="btn btn-warning text-right" id="current-{{ $index + 1 }}" ng-click="ExchangeCtrl.setExchangeRate(currency.id,'')">{{ "FORM.BUTTONS.SUBMIT" | translate }}</a>
+              <div class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input name="previous" id="previous" type="checkbox" ng-model="ExchangeCtrl.form.previous">
+                    {{ "FORM.LABELS.PREVIOUS_DATE" | translate }}
+                  </label>
                 </div>
               </div>
-            </div>
-            <span data-role="feedback" ng-switch="ExchangeCtrl.feedback">
-              <span ng-switch-default></span>
 
-              <span ng-switch-when="create_success" id="create_success" class="text-success">
-                <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.SAVE_SUCCESS" | translate }}
-              </span>
+              <div class="form-group" ng-repeat="(id, row) in ExchangeCtrl.current">
+                <label class="control-label col-md-6">{{ ExchangeCtrl.formatCurrency(id) }} </label>
+                <div class="col-md-6">
+                  {{ row.rate | currency:id }}
+                  <a class="btn btn-warning text-right" id="current-{{ $index + 1 }}" ng-click="ExchangeCtrl.setExchangeRate(id, row)">{{ "FORM.BUTTONS.SUBMIT" | translate }}</a>
+                </div>
+              </div>
+              <div ng-if="!ExchangeCtrl.current">
+                <div  class="form-group" ng-repeat="currency in ExchangeCtrl.outCurrencies">
+                  <label class="control-label col-md-6">{{ ExchangeCtrl.formatCurrency(currency.id) }} </label>
+                  <div class="col-md-6">
+                    {{ 0 | currency:currency.id }}
+                    <a class="btn btn-warning text-right" id="current-{{ $index + 1 }}" ng-click="ExchangeCtrl.setExchangeRate(currency.id,'')">{{ "FORM.BUTTONS.SUBMIT" | translate }}</a>
+                  </div>
+                </div>
+              </div>
+              <span data-role="feedback" ng-switch="ExchangeCtrl.feedback">
+                <span ng-switch-default></span>
 
-              <span ng-switch-when="update_success" id="update_success" class="text-success">
-                <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}
-              </span>
+                <span ng-switch-when="create_success" id="create_success" class="text-success">
+                  <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.SAVE_SUCCESS" | translate }}
+                </span>
 
-              <span ng-switch-when="delete_success" id="delete_success" class="text-success">
-                <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.DELETE_SUCCESS" | translate }}
-              </span>
+                <span ng-switch-when="update_success" id="update_success" class="text-success">
+                  <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.UPDATE_SUCCESS" | translate }}
+                </span>
 
-              <span ng-switch-when="invalid-date" id="invalid-date" class="text-danger">
-                <i class="glyphicon glyphicon-warning-sign"></i> {{ "FORM.VALIDATIONS.INVALID_DATE" | translate }}
+                <span ng-switch-when="delete_success" id="delete_success" class="text-success">
+                  <i class="glyphicon glyphicon-ok-sign"></i> {{ "FORM.INFOS.DELETE_SUCCESS" | translate }}
+                </span>
+
+                <span ng-switch-when="invalid-date" id="invalid-date" class="text-danger">
+                  <i class="glyphicon glyphicon-warning-sign"></i> {{ "FORM.VALIDATIONS.INVALID_DATE" | translate }}
+                </span>
               </span>
-            </span>
-          </form>
+            </form>
+          </div>
         </div>
 
         <div class="panel panel-default" ng-switch-when="update">
           <div class="panel-heading">
             {{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }} {{ ExchangeCtrl.formatCurrency(ExchangeCtrl.enterprise.currency_id) }}
           </div>
-          <form name="RateForm" class="panel-body form-horizontal" ng-submit="ExchangeCtrl.submit(RateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+          <form name="RateForm" class="panel-body form-horizontal" ng-submit="ExchangeCtrl.submit(RateForm.$invalid)" bh-form-defaults novalidate>
             <h3>{{ "EXCHANGE.REVIEW" | translate }} :</h3>
 
             <bh-date-editor
@@ -126,7 +128,7 @@
                   {{ "FORM.BUTTONS.SUBMIT" | translate }}
                 </button>
                 <button class="btn btn-danger" id="delete" type="button" ng-click="ExchangeCtrl.del(ExchangeCtrl.form.id)" data-method="delete">
-                  <i class="glyphicon glyphicon-trash"></i> {{ "FORM.BUTTONS.DELETE" | translate }} 
+                  <i class="glyphicon glyphicon-trash"></i> {{ "FORM.BUTTONS.DELETE" | translate }}
                 </button>
               </div>
             </div>

@@ -9,7 +9,7 @@
 
 <div class="flex-util">
   <button class="btn btn-sm btn-default" id="create" ng-click="PriceListCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW_PRICE_LIST" | translate }} 
+    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW_PRICE_LIST" | translate }}
   </button>
 </div>
 
@@ -28,7 +28,7 @@
             <thead>
               <tr ng-if="PriceListCtrl.loading" class="text-center">
                 <td colspan="3"><loading-indicator></loading-indicator></td>
-              </tr>            
+              </tr>
               <tr>
                 <th>{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
                 <th colspan="2" style="width: 20%;">{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
@@ -42,7 +42,7 @@
               </tr>
               <tr ng-if="PriceListCtrl.priceList.data.length===0">
                 <td colspan="3"><i>{{ 'PRICE_LIST.NO_RECORDS' | translate }}</i></tr>
-              </tr>            
+              </tr>
             </tbody>
           </table>
         </div>
@@ -56,7 +56,7 @@
             <ul style="list-style-type: none; padding-left: 15px;">
               <li><i class="glyphicon glyphicon-pencil"></i> {{ "PRICE_LIST.HELP_TXT_2" | translate }}</li>
               <li><i class="glyphicon glyphicon-trash"></i> {{ "PRICE_LIST.HELP_TXT_3" | translate }}</li>
-            </ul>      
+            </ul>
           </div>
         </div>
 
@@ -87,14 +87,14 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "PRICE_LIST.ADD_PRICE_LIST" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="PriceListCtrl.submit(CreateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="CreateForm" ng-submit="PriceListCtrl.submit(CreateForm.$invalid)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
                 <input type="text" class="form-control" ng-maxlength="PriceListCtrl.length250" name="label" ng-model="PriceListCtrl.priceList.label" required>
                 <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
@@ -102,15 +102,15 @@
                 <textarea class="form-control" name="description" ng-maxlength="PriceListCtrl.maxLength" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
                 <div class="help-block" ng-messages="CreateForm.description.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
-              
+
               <hr>
               <div class="form-group">
                   <a class="btn btn-xs btn-default" id="add_item" ng-click="PriceListCtrl.addItem()">
                     <span class="glyphicon glyphicon-plus"></span>{{'PRICE_LIST.ADD_ITEMS' | translate}}
                   </a>
-              </div> 
+              </div>
 
               <table class="table table-condensed">
                 <thead>
@@ -129,9 +129,9 @@
                     <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"></span> </td>
                     <td> {{ PriceListCtrl.getInventory(item.inventory_uuid) }} </td>
                     <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash"></i></a></td>
-                  </tr> 
+                  </tr>
                 </tbody>
-              </table>              
+              </table>
               <hr>
 
               <div class="form-group">
@@ -143,20 +143,20 @@
                 </button>
               </div>
             </form>
-          </div>        
+          </div>
         </div>
 
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'PRICE_LIST.UPDATE' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="PriceListCtrl.submit(UpdateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="UpdateForm" ng-submit="PriceListCtrl.submit(UpdateForm.$invalid)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.DESIGNATION' | translate }}</label>
                 <input type="text" class="form-control" name="label" ng-maxlength="PriceListCtrl.length250" ng-model="PriceListCtrl.priceList.label" required>
                 <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>               
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
@@ -164,16 +164,16 @@
                 <textarea class="form-control" name="description" ng-maxlength="PriceListCtrl.maxLength" id="description" ng-model="PriceListCtrl.priceList.description" rows="3"></textarea>
                 <div class="help-block" ng-messages="UpdateForm.description.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                  
+                </div>
               </div>
 
-              
+
               <hr>
               <div class="form-group">
                   <a class="btn btn-xs btn-default" id="add_item" ng-click="PriceListCtrl.addItem()">
                     <span class="glyphicon glyphicon-plus"></span>{{'PRICE_LIST.ADD_ITEMS' | translate}}
                   </a>
-              </div>            
+              </div>
               <table class="table table-condensed">
                 <thead>
                   <tr>
@@ -184,16 +184,16 @@
                     <th colspan="6">{{ "TABLE.COLUMNS.ACTION" | translate }}</th>
                   </tr>
                 </thead>
-                <tbody>                
+                <tbody>
                   <tr ng-repeat="item in PriceListCtrl.pricelistItems | orderBy:'label'">
                     <td> {{ item.label }} </td>
                     <td> {{ item.value }} </td>
                     <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.is_percentage}"></span> </td>
                     <td> {{ PriceListCtrl.getInventory(item.inventory_uuid) }} </td>
                     <td colspan="6"><a class="btn btn-xs btn-default" id="remove_item_{{$index+1}}" ng-click="PriceListCtrl.removeItem(item)" ><i class="glyphicon glyphicon-trash"></i></a></td>
-                  </tr> 
+                  </tr>
                 </tbody>
-              </table>              
+              </table>
               <hr>
 
               <div class="form-group">
@@ -205,9 +205,9 @@
                 </button>
               </div>
             </form>
-          </div>        
+          </div>
         </div>
       </div>
     </div>
-  </div>  
+  </div>
 </div>

@@ -3,11 +3,11 @@
     <h3>New Account</h3>
   </div>
   <div class="modal-body">
-    <form role="form" class="form-horizontal" name="accountForm" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+    <form role="form" class="form-horizontal" name="accountForm" bh-form-defaults novalidate>
       <div class="form-group">
         <label class="col-xs-2 control-label" for="coa-accn">Account Number:</label>
         <div class="col-xs-10">
-          <input 
+          <input
             class="form-control"
             placeholder="e.g. 100000"
             type="number"
@@ -38,7 +38,7 @@
             ng-options="a.id as a.type for a in types"
             id="coa-acctype"
             required
-            > 
+            >
           </select>
         </div>
       </div>
@@ -89,7 +89,7 @@
                 value="0"
                 model="account.fixed"
               >
-              Variable 
+              Variable
             </label>
           </div>
         </div>

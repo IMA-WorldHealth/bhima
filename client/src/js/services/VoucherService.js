@@ -18,6 +18,19 @@ function VoucherService(PrototypeApiService) {
   // inherit prototype API service methods
   angular.extend(service, PrototypeApiService);
 
+  // transfer type
+  service.transferType = [
+    { id: 0, text: 'VOUCHERS.SIMPLE.GENERIC_INCOME', incomeExpense: 'income', prefix: 'REC. GEN' },
+    { id: 1, text: 'VOUCHERS.SIMPLE.CASH_PAYMENT', incomeExpense: 'income', prefix: 'CASH' },
+    { id: 2, text: 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', incomeExpense: 'income', prefix: 'CONV' },
+    { id: 3, text: 'VOUCHERS.SIMPLE.SUPPORT_INCOME', incomeExpense: 'income', prefix: 'PEC' },
+    { id: 4, text: 'VOUCHERS.SIMPLE.TRANSFER', incomeExpense: 'income', prefix: 'TRANSF' },
+    { id: 5, text: 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', incomeExpense: 'expense', prefix: 'DEP. GEN' },
+    { id: 6, text: 'VOUCHERS.SIMPLE.SALARY_PAYMENT', incomeExpense: 'expense', prefix: 'SALAIRE' },
+    { id: 7, text: 'VOUCHERS.SIMPLE.CASH_RETURN', incomeExpense: 'expense', prefix: 'PAYBACK' },
+    { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' }
+  ];
+
   service.url = '/vouchers/';
   service.createSimple = createSimple;
   service.create = create;

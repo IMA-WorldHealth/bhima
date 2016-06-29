@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SimpleJournalVoucherController.$inject = [
   'AppCache', 'VoucherService', 'AccountService', 'SessionService', 'util',
-  'NotifyService'
+  'NotifyService', 'ModalService'
 ];
 
 /**
@@ -18,7 +18,7 @@ SimpleJournalVoucherController.$inject = [
  * @todo - Implement Voucher Templates to allow users to save pre-selected
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify) {
+function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify, Modal) {
   var vm = this;
 
   // cache to save work-in-progress data and pre-fabricated templates
@@ -30,8 +30,12 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     { label : 'VOUCHERS.SIMPLE.TITLE' }
   ];
 
-  // bind the submit method
+  // transfer type
+  vm.transferType = Vouchers.transferType;
+
+  // expose methods to the view
   vm.submit = submit;
+  vm.buildDescription = buildDescription;
 
   // load the list of accounts
   Accounts.read()
@@ -49,6 +53,9 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     vm.voucher = {};
     vm.voucher.date = new Date();
     vm.voucher.currency_id = Session.enterprise.currency_id;
+
+    // group the list of type
+    groupType();
   }
 
   function submit(form) {
@@ -59,19 +66,55 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
       return;
     }
 
+    // description prefix
+    vm.voucher.description =  String(vm.descriptionPrefix).concat('/', vm.voucher.description);
+
     // submit the voucher
     return Vouchers.createSimple(vm.voucher)
     .then(function (res) {
-      Notify.success('FORM.INFO.UPDATE_SUCCESS');
 
-      /* setup the voucher object to init state */
+      // Generate the document
+      return Vouchers.report(res.uuid, 'pdf');
+    })
+    .then(function (report) {
+
+      // handle the modal of the report
+      return Modal.openReports({ report: report, renderer: 'pdf' });
+    })
+    .then(function () {
+
+      // setup the voucher object to init state
       form.$setPristine();
+      vm.incomeExpense = undefined;
+      vm.descriptionPrefix = undefined;
+      vm.selectedType = undefined;
 
       // rerun the startup script
       startup();
     })
     .catch(Notify.handleError);
   }
+
+  function groupType() {
+    vm.incomes = vm.transferType.filter(function (item) {
+      return item.incomeExpense === 'income';
+    });
+    vm.expenses = vm.transferType.filter(function (item) {
+      return item.incomeExpense === 'expense';
+    });
+  }
+
+  function buildDescription() {
+    if (!vm.selectedType) { return; }
+
+    var current = new Date();
+    var selected = JSON.parse(vm.selectedType);
+    vm.incomeExpense = selected.incomeExpense;
+
+    vm.descriptionPrefix = String(Session.project.abbr)
+      .concat('/', selected.prefix, '/')
+      .concat(current.toDateString());
+  };
 
   startup();
 }

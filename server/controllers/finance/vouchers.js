@@ -13,10 +13,13 @@
 * @requires lib/errors/NotFound
 */
 
+'use strict';
+
 const _    = require('lodash');
 const uuid = require('node-uuid');
 const util = require('../../lib/util');
 const db   = require('../../lib/db');
+const rm   = require('../../lib/ReportManager');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 const journal = require('./journal/voucher');
@@ -29,6 +32,9 @@ exports.detail = detail;
 
 /** Create a new voucher record */
 exports.create = create;
+
+/** Get the voucher report */
+exports.report = report;
 
 /**
 * GET /vouchers
@@ -68,16 +74,9 @@ function list(req, res, next) {
 * @method detail
 */
 function detail(req, res, next) {
-  var query =
-    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.reference, v.currency_id, v.amount,
-      v.description, BUID(vi.document_uuid), v.user_id, BUID(vi.uuid) AS voucher_item_uuid,
-      vi.account_id, vi.debit, vi.credit
-    FROM voucher v JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
-    WHERE v.uuid = ?;`;
-
-  var id = db.bid(req.params.uuid);
-
-  db.exec(query, id)
+  'use strict';
+  
+  getVouchers(req.params.uuid)
   .then(function (rows) {
     if (!rows.length) {
       throw new NotFound(`Could not find a voucher with id ${req.params.id}`);
@@ -171,4 +170,52 @@ function create(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+/**
+* GET /vouchers/report/:uuid
+*
+* @method report
+*/
+function report(req, res, next) {
+  'use strict';
+
+  let reportUrl = './server/controllers/finance/reports/voucher.receipt.handlebars';
+  let reportOptions = { pageSize : 'A5', orientation: 'landscape' };
+
+  getVouchers(req.params.uuid)
+  .then(rows => rm.build(req, rows, reportUrl, reportOptions))
+  .spread((document, headers) => {
+    res.set(headers).send(document);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+ * @function getVouchers
+ * @param {null|string} uuid The voucher uuid, returns list of voucher according the uuid
+ * @param {null|object} query The req.query object, retunrs list of voucher according the query,
+ * @return promise
+ */
+function getVouchers(uuid) {
+  'use strict';
+
+  let sql =
+    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+      v.description, BUID(vi.document_uuid) as document_uuid,
+      v.user_id, BUID(vi.uuid) AS voucher_item_uuid,
+      vi.account_id, vi.debit, vi.credit,
+      a.number, a.label,
+      CONCAT(u.first, ' - ', u.last) AS user,
+      CONCAT(p.abbr, v.reference) AS reference
+    FROM voucher v
+    JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
+    JOIN project p ON p.id = v.project_id
+    JOIN user u ON u.id = v.user_id
+    JOIN account a ON a.id = vi.account_id `;
+
+  sql += uuid ? 'WHERE v.uuid = ?' : '';
+
+  return db.exec(sql, [db.bid(uuid)]);
 }

@@ -15,7 +15,7 @@
           </div>
 
           <div class="panel-body">
-            <form name="SimpleVoucherForm" bh-submit="SimpleVoucherCtrl.submit(SimpleVoucherForm)" autocomplete="off" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="SimpleVoucherForm" bh-submit="SimpleVoucherCtrl.submit(SimpleVoucherForm)" bh-form-defaults novalidate>
 
               <bh-date-editor
                 date-value="SimpleVoucherCtrl.voucher.date"
@@ -24,15 +24,44 @@
               >
               </bh-date-editor>
 
+              <div class="form-group">
+                <label for="">{{ 'FORM.LABELS.TRANSFER_TYPE' | translate }}</label>
+                <select class="form-control"
+                  ng-model="SimpleVoucherCtrl.selectedType"
+                  ng-change="SimpleVoucherCtrl.buildDescription()" required>
+                  <option value="" disabled>--- {{ 'FORM.SELECTS.SELECT_TRANSFER_TYPE' | translate }} ---</option>
+
+                  <!-- incomes  -->
+                  <optgroup label="{{ 'VOUCHERS.SIMPLE.INCOME' | translate }}">
+                    <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in SimpleVoucherCtrl.incomes">{{ item.text | translate }}</option>
+                  </optgroup>
+
+                  <!-- expenses  -->
+                  <optgroup label="{{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }}">
+                    <option value="{{ item }}" data-item="{{ item.id }}" ng-repeat="item in SimpleVoucherCtrl.expenses">{{ item.text | translate }}</option>
+                  </optgroup>
+                </select>
+              </div>
+
               <div
                 class="form-group"
                 ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.description.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.DESCRIPTION" | translate }}</label>
+                <label>
+                  {{ "FORM.LABELS.DESCRIPTION" | translate }}
+                  <span
+                    style="display: inline-block"
+                    class="label"
+                    ng-class="{'label-success': SimpleVoucherCtrl.incomeExpense==='income', 'label-warning': SimpleVoucherCtrl.incomeExpense==='expense'}">
+                    {{ SimpleVoucherCtrl.descriptionPrefix }}
+                    <span ng-if="SimpleVoucherCtrl.incomeExpense==='income'">({{ 'VOUCHERS.SIMPLE.INCOME' | translate }})</span>
+                    <span ng-if="SimpleVoucherCtrl.incomeExpense==='expense'">({{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }})</span>
+                  </span>
+                </label>
                 <textarea
                   class="form-control"
                   name="description"
                   ng-model="SimpleVoucherCtrl.voucher.description"
-                  placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_DESCRIPTION' | translate }}"
+                  placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_DESCRIPTION' | translate }}"
                   ng-maxlength="SimpleVoucherCtrl.maxLength"
                   required>
                 </textarea>
@@ -50,7 +79,7 @@
                  <input
                    class="form-control"
                    name="fromAccount"
-                   placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+                   placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
                    uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
                    typeahead-editable="false"
@@ -70,7 +99,7 @@
                  <input
                    class="form-control"
                    name="toAccount"
-                   placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_ACCOUNT' | translate }}..."
+                   placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
                    uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
                    typeahead-editable="false"

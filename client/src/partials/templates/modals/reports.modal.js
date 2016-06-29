@@ -8,7 +8,7 @@ ReportsModalController.$inject = [
 
 /**
  * Reports Modal Controller
- * This controller is responsible display document as report 
+ * This controller is responsible display document as report
  */
 function ReportsModalController(Receipts, Instance, $sce, $window, Data) {
   var vm = this;
