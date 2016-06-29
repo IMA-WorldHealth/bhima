@@ -1018,7 +1018,6 @@
   },
   "TREE": {
     "ACCOUNT"                    : "Account",
-    "ACCOUNTING"                 : "Accounting",
     "ACCOUNT_BALANCE_STATEMENT"  : "Account Balance Statement",
     "ACCOUNT_STATEMENT"          : "Account Statement",
     "ADMIN"                      : "Admin",
