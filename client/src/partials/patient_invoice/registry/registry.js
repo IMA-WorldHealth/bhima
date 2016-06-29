@@ -16,13 +16,16 @@ function InvoiceRegistryController(Invoices, Notify, util, Receipt) {
     var vm = this;
 
     var invoiceActionsTemplate =
-        '<div style="padding : 5px"><a ng-click="grid.appScope.showBill(row.entity.uuid)">' +
-        '<span class="glyphicon glyphicon-list-alt"></span> {{ "TABLE.COLUMNS.BILL" | translate }}</a></div>';
+      '<div class="ui-grid-cell-contents">' +
+      '<a href ng-click="grid.appScope.showBill(row.entity.uuid)">' +
+      '<span class="fa fa-file-pdf-o"></span> {{ "TABLE.COLUMNS.RECEIPT" | translate }}' +
+      '</a>' +
+      '</div>';
 
 
     vm.search = search;
     vm.showBill = showBill;
-    vm.momentAge = util.getMomentAge;    
+    vm.momentAge = util.getMomentAge;
 
     // track if module is making a HTTP request for invoices
     vm.loading = false;
