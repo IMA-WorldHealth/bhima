@@ -990,7 +990,6 @@
   },
   "TREE": {
     "ACCOUNT"                    : "Comptes",
-    "ACCOUNTING"                 : "Comptabilité",
     "ACCOUNT_BALANCE_STATEMENT"  : "Rapport Balance Compte",
     "ACCOUNT_STATEMENT"          : "Compte",
     "ADMIN"                      : "Admin",
