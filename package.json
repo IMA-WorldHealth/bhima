@@ -7,6 +7,7 @@
     "app": "gulp build && cd bin && NODE_ENV=production node server/app.js",
     "dev": "gulp build && cd bin && NODE_ENV=development node server/app.js",
     "start": "sh/deploy.sh",
+    "karma" : "./node_modules/.bin/karma start --single-run",
     "app_windows": "gulp build && cd bin && set NODE_ENV=production && node server/app.js",
     "dev_windows": "gulp build && cd bin && set NODE_ENV=development && node server/app.js",
     "watch": "./node_modules/.bin/gulp watch-client"

@@ -6,12 +6,9 @@ describe('Store', function () {
   let Store;
   let data;
 
+  beforeEach(module('bhima.services'));
 
-  beforeEach(() => {
-    module('bhima.services');
-  });
-
-  beforeEach(inject((_Store_) => {
+  beforeEach(inject(_Store_ => {
     Store = _Store_;
     data = [
       { id: 1, name: 'Bob' },
@@ -74,7 +71,7 @@ describe('Store', function () {
     expect(sarah.id).to.equal(2);
     expect(sarah.name).to.equal('Sarah');
 
-    // remove sarah
+    // remove Sarah
     store.remove(2);
     expect(store.data).to.have.length(1);
     let nonexistant = store.get(2);

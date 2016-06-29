@@ -6,11 +6,9 @@ describe('Pool', function () {
   let Pool;
   let data;
 
-  beforeEach(() => {
-    module('bhima.services');
-  });
+  beforeEach(module('bhima.services'));
 
-  beforeEach(inject((_Pool_) => {
+  beforeEach(inject(_Pool_ => {
     Pool = _Pool_;
 
     data = [

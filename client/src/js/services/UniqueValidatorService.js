@@ -31,7 +31,7 @@ function UniqueValidatorService($http, util) {
   /**
    * This method will make a request to a provided server end point to validate
    * if a value (also passed) results in true or false. This method is responsible
-   * for unwrapping the respons.
+   * for unwrapping the response.
    *
    * A URL is accepted to determine which server route should be requested to verify
    * the existence of the entity. This directive implements the `exists` API and
