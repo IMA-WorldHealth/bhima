@@ -1,53 +1,47 @@
 angular.module('bhima.services')
   .service('PurchaseOrderService', PurchaseOrderService);
 
-PurchaseOrderService.$inject = [ '$http', 'util' ];
+PurchaseOrderService.$inject = [
+  'PrototypeApiService', 'SessionService'
+];
 
 /**
- * Purchase Order Service
+ * @class PurchaseOrderService
+ * @extends PrototypeApiService
  *
+ * @description
  * Connects client controllers with the purchase order backend.
- *
- * @todo -- there is currently no backend for purchase orders to search by
- * reference.
  */
-function PurchaseOrderService($http, util) {
-  var service = this;
-  var baseUrl = '/purchases/';
+function PurchaseOrderService(Api, Session) {
+  var service = new Api('/purchases/');
 
-  /** @method read */
-  service.read = read;
-
-  /** @method reference */
-  service.reference = reference;
-
+  // bind public methods to the instance
+  service.create = create;
 
   /**
-   * Retrieves a purchase order by UUID or lists all purchases if no UUID is
-   * specified.
+   * @method create
    *
-   * @param {string} uuid (optional) - the uuid of the purchase order to look
-   * up in the database.
-   * @param {object} options (optional) - options to be passed as query string
-   * parameters to the HTTP request
-   * @returns {promise} promise - the result of the HTTP request
+   * @description
+   * Preprocesses purchase order data for submission to the server
    */
-  function read(uuid, options) {
-    var target = baseUrl.concat(uuid || '');
-    return $http.get(target, options)
-      .then(util.unwrapHttpResponse);
-  }
+  function create(data) {
 
-  /**
-   * Searches for a particular purchase order by its reference
-   *
-   * @param {string} ref - the reference to search for
-   * @returns {promise} promise - a resolved or rejected result from the server
-   */
-  function reference(ref) {
-    var target = baseUrl + 'references/' + ref;
-    return $http.get(target)
-      .then(util.unwrapHttpResponse);
+    // loop through the items ensuring that they are properly formatted for
+    // inserting into the database.  We only want to send minimal information
+    // to the server.
+    // Technically, this filtering is also done on the server, but this reduces
+    // bandwidth required for the POST request.
+    data.items = data.items.map(function (item) {
+      delete item._initialised;
+      delete item._invalid;
+      delete item._valid;
+      delete item.code;
+      delete item.description;
+      delete item.unit;
+      return item;
+    });
+
+    return Api.create.call(service, data);
   }
 
   return service;

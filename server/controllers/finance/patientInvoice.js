@@ -51,12 +51,12 @@ function list(req, res, next) {
 
   let invoiceListQuery =
     `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames, 
+      BUID(invoice.debtor_uuid) as debtor_uuid, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames,
       service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, user_id, date, is_distributable
-    FROM invoice 
+    FROM invoice
       LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
-      JOIN service ON service.id = invoice.service_id 
-      JOIN user ON user.id = invoice.user_id 
+      JOIN service ON service.id = invoice.service_id
+      JOIN user ON user.id = invoice.user_id
       JOIN project ON invoice.project_id = project.id;`;
 
   db.exec(invoiceListQuery)
@@ -354,11 +354,11 @@ function search(req, res, next) {
     `SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
       invoice.date, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames, invoice.cost,
        BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
-        service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy 
-    FROM invoice 
-    LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid 
-    JOIN service ON service.id = invoice.service_id 
-    JOIN user ON user.id = invoice.user_id 
+        service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy
+    FROM invoice
+    LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
+    JOIN service ON service.id = invoice.service_id
+    JOIN user ON user.id = invoice.user_id
     JOIN project ON project.id = invoice.project_id `;
 
   if(req.query.is_distributable && req.query.is_distributable === 'all'){

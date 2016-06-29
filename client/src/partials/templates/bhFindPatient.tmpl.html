@@ -1,13 +1,13 @@
 <div ng-switch="type" data-find-patient>
 
-  <!-- Inline Find Patient Directive UI  -->
+  <!-- inline Find Patient Directive UI  -->
   <div class="form-group has-feedback"
     ng-switch-default
     ng-form="FindPatientForm"
     ng-class="{
-    'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
-    'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
-    }"
+      'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
+      'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
+      }"
     bh-form-defaults
     novalidate>
 

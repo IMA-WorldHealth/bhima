@@ -97,12 +97,18 @@ module.exports = {
 
   // asserts whether an element exists or not
   exists: function exists(locator, bool) {
-    expect(element(locator).isPresent()).to.eventually.equal(bool);
+    expect(
+      element(locator).isPresent(),
+      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' ' }exist.`
+    ).to.eventually.equal(bool);
   },
 
   // asserts whether an element is visible on the page or not.
   visible: function visible(locator, bool) {
-    expect(element(locator).isDisplayed()).to.eventually.equal(bool);
+    expect(
+      element(locator).isDisplayed(),
+      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' ' }be visible.`
+    ).to.eventually.equal(bool);
   },
 
   /**

@@ -9,14 +9,9 @@ VoucherService.$inject = ['PrototypeApiService'];
  *
  * @description
  * This service manages posting data to the database via the /vouchers/ URL.
- *
- * @requires PrototypeApiService
  */
-function VoucherService(PrototypeApiService) {
-  var service = this;
-
-  // inherit prototype API service methods
-  angular.extend(service, PrototypeApiService);
+function VoucherService(Api) {
+  var service = new Api('/vouchers/');
 
   // transfer type
   service.transferType = [
@@ -31,7 +26,6 @@ function VoucherService(PrototypeApiService) {
     { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' }
   ];
 
-  service.url = '/vouchers/';
   service.createSimple = createSimple;
   service.create = create;
 
@@ -39,7 +33,7 @@ function VoucherService(PrototypeApiService) {
    * Wraps the prototype create method.
    */
   function create(voucher) {
-    return PrototypeApiService.create.call(service, { voucher : voucher });
+    return Api.create.call(service, { voucher : voucher });
   }
 
   /**
@@ -74,7 +68,7 @@ function VoucherService(PrototypeApiService) {
     // bind the voucher items
     clean.items = items;
 
-    return PrototypeApiService.create.call(service, { voucher : clean });
+    return Api.create.call(service, { voucher : clean });
   }
 
   return service;

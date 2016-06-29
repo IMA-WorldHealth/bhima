@@ -29,8 +29,8 @@
 
 'use strict';
 
-var db = require('../../lib/db'),
-    q  = require('q');
+const db = require('../../lib/db');
+const q  = require('q');
 
 var core        = require('./inventory/core'),
     consumption = require('./inventory/consumption'),
@@ -179,9 +179,7 @@ function getInventoryItemsById(req, res, next) {
 * @function getInventoryItemReport
 */
 function getInventoryItemReport(req, res, next) {
-  'use strict';
-
-  let request = {
+  const request = {
     query : req.query,
     enterprise : req.session.enterprise,
     project : req.session.project

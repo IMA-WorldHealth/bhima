@@ -367,6 +367,15 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl: '/partials/suppliers/suppliers.html'
   })
 
+  /* purchase routes */
+
+
+  .state('purchasesCreate', {
+    url : '/purchases/create',
+    controller : 'PurchaseOrderController as PurchaseCtrl',
+    templateUrl : 'partials/purchases/create/create.html'
+  })
+
   /* patients routes */
 
   .state('patientsRegister', {
@@ -443,7 +452,8 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/error404/error404.html'
   });
 
-  $urlRouterProvider.otherwise('error404');}
+  $urlRouterProvider.otherwise('error404');
+}
 
 function translateConfig($translateProvider) {
   //TODO Review i18n and determine if this it the right solution/grade_employers/
@@ -556,6 +566,9 @@ function constantConfig() {
     accounts : {
       ROOT : 0,
       TITLE : 4
+    },
+    purchase : {
+      GRID_HEIGHT: 200
     }
   };
 }

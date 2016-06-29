@@ -2,12 +2,12 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const helpers = require('../shared/helpers');
+const helpers = require('../../shared/helpers');
 helpers.configure(chai);
 
-const FU = require('../shared/FormUtils');
+const FU = require('../../shared/FormUtils');
 const PatientInvoicePage = require('./invoice.page.js');
-const components = require('../shared/components');
+const components = require('../../shared/components');
 
 /*
  * Simple Tests for Patient Invoicing

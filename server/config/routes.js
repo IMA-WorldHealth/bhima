@@ -43,8 +43,9 @@ const snis           = require('../controllers/medical/snis');
 const medicalReports = require('../controllers/medical/reports');
 
 // stock and inventory routes
-const inventory            = require('../controllers/stock/inventory');
-const depots               = require('../controllers/stock/depot');
+const inventory            = require('../controllers/inventory');
+const depots               = require('../controllers/inventory/depots');
+const inventoryReports     = require('../controllers/inventory/reports');
 
 // finance routes
 const trialbalance     = require('../controllers/finance/trialbalance');
@@ -344,6 +345,7 @@ exports.configure = function configure(app) {
   app.get('/reports/invoices/:uuid', invoiceReceipt.build);
   app.get('/reports/patient/registrations', medicalReports.patientRegistrations);
   app.get('/reports/patient/:uuid', medicalReports.patientReceipt);
+  app.get('/reports/purchases/:uuid', inventoryReports.purchaseReceipt);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);

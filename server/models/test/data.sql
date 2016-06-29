@@ -45,7 +45,8 @@ INSERT INTO unit VALUES
   (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 30, '/partials/vouchers/complex', '/vouchers/complex'),
   (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
-  (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration');
+  (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration'),
+  (141, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create');
 
 INSERT INTO `account_type` VALUES
 
@@ -213,6 +214,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- inventory configuration module
 (140, 1),
 
+-- purchase order creation
+(141, 1),
+
 -- Update permission for Regular user
 
 -- Account Management
@@ -319,6 +323,10 @@ INSERT INTO `creditor_group` VALUES
 INSERT INTO `creditor` VALUES
   (HUID('42d3756a-7770-4bb8-a899-7953cd859892'),HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'),'Personnel'),
   (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'),HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'),'Fournisseur');
+
+-- Supplier
+INSERT INTO `supplier` (uuid, creditor_uuid, name, address_1, address_2, email) VALUES
+  (HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), 'Test Supplier', '12th Avenue', 'New York City, NY 34305', 'supplier@test.org');
 
 -- Grade
 INSERT INTO `grade` VALUES

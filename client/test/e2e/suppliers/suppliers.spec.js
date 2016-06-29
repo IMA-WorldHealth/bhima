@@ -54,6 +54,7 @@ describe('Suppliers', function () {
 
     // modify the supplier note
     FU.input('SupplierCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
+    FU.input('SupplierCtrl.supplier.address_1', supplier.address_1);
 
     FU.buttons.submit();
     FU.exists(by.id('update_success'), true);

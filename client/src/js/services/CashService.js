@@ -7,18 +7,13 @@ CashService.$inject = [
 
 /**
  * @class CashService
+ * @extends PrototypeApiService
  *
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(PrototypeApiService, Exchange, Session, moment) {
-  var service = this;
-
-  // inherit prototype API methods
-  angular.extend(service, PrototypeApiService);
-
-  // bind the base url
-  service.url = '/cash/';
+function CashService(Api, Exchange, Session, moment) {
+  var service = new Api('/cash/');
 
   // custom methods
   service.create = create;
@@ -93,7 +88,7 @@ function CashService(PrototypeApiService, Exchange, Session, moment) {
     delete data.invoices;
 
     // call the prototype create method with the formatted data
-    return PrototypeApiService.create.call(service, { payment : data });
+    return Api.create.call(service, { payment : data });
   }
 
   /**
@@ -147,4 +142,6 @@ function CashService(PrototypeApiService, Exchange, Session, moment) {
   function generateTransferDescription (){
     return 'Transfer Voucher/'.concat(moment().format('YYYY-MM-DD'), '/', Session.user.id);
   }
+
+  return service;
 }

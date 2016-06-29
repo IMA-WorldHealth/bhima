@@ -10,7 +10,7 @@ helpers.configure(chai);
  *
  * This test suite implements full CRUD on the /purchases HTTP API endpoint.
  */
-describe('(/purchases) Purchasing', () => {
+describe('(/purchases) Purchases', () => {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
@@ -19,7 +19,7 @@ describe('(/purchases) Purchasing', () => {
     cost: 546.7520,
     date: new Date('2016-02-19'),
     currency_id: 1,
-    creditor_uuid: '7ac4e83c-65f2-45a1-8357-8b025003d794',
+    supplier_uuid: '3ac4e83c-65f2-45a1-8357-8b025003d793',
     project_id: 1,
     user_id: 2,
     items: [{
@@ -36,7 +36,7 @@ describe('(/purchases) Purchasing', () => {
   };
 
   const responseKeys = [
-    'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'creditor_uuid', 'note'
+    'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'supplier_uuid', 'note'
   ];
 
   it('GET /purchases should return an empty array', () => {

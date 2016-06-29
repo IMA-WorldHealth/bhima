@@ -114,7 +114,7 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     vm.descriptionPrefix = String(Session.project.abbr)
       .concat('/', selected.prefix, '/')
       .concat(current.toDateString());
-  };
+  }
 
   startup();
 }

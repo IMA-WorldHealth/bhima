@@ -7,7 +7,6 @@
  *
  * @requires path
  * @requires lodash
- * @requires moment
  * @requires BadRequest
  * @requires Patients
  * @requires renderers/json
@@ -18,7 +17,6 @@
 
 const path = require('path');
 const _ = require('lodash');
-const moment = require('moment');
 
 const BadRequest = require('../../../lib/errors/BadRequest');
 
@@ -76,7 +74,7 @@ function formatFilters(qs) {
  * the client.  This method will eventually use the Patients.search() method to
  * specify query conditions.
  *
- * GET /reports/registrations
+ * GET /reports/patient/registrations
  */
 function build(req, res, next) {
   const qs = req.query;
