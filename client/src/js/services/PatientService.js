@@ -1,7 +1,9 @@
 angular.module('bhima.services')
 .service('PatientService', PatientService);
 
-PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal', 'DocumentService', 'VisitService'];
+PatientService.$inject = [
+  '$http', 'util', 'SessionService', '$uibModal', 'DocumentService', 'VisitService'
+];
 
 /**
  * @module PatientService
@@ -16,7 +18,7 @@ PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal', 'Docu
  *
  *   // creates a patient
  *   Patients.create(medicalDetails, financeDetails).then(callback);
-*   }
+ *  }
  */
 function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   var service = this;
