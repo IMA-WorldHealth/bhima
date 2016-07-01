@@ -92,6 +92,8 @@ describe('Account Management', function () {
       number : parentNumber,
       label : 'End to End Test: '
     };
+    let select = $('body').element(by.model('AccountEditCtrl.account.type_id'));
+
 
     FU.buttons.create();
 
@@ -102,8 +104,7 @@ describe('Account Management', function () {
     FU.input('AccountEditCtrl.account.number', mockAccount.number);
     FU.input('AccountEditCtrl.account.label', mockAccount.label.concat(0));
 
-    // relies on french translation
-    FU.select('AccountEditCtrl.account.type_id', 'Titre').click();
+    select.element(by.css('[data-key="ACCOUNT.TYPES.TITLE"]')).click();
 
     FU.buttons.submit();
     addedAccounts += 1;
@@ -111,7 +112,8 @@ describe('Account Management', function () {
     // set to this parent
     FU.typeahead('AccountEditCtrl.account.parent', parentNumber);
     // set to income
-    FU.select('AccountEditCtrl.account.type_id', 'Recettes').click();
+    
+    select.element(by.css('[data-key="ACCOUNT.TYPES.INCOME"]')).click();
 
     for (var i = 1; i < numberOfAccounts; i++) {
       mockAccount.number += 20;
