@@ -27,6 +27,9 @@ function ReceiptModal(Modal, Receipts) {
   service.invoice = invoice;
   service.patient = patient;
   service.purchase = purchase;
+  service.cash = cash;
+  service.transaction = transaction;
+  service.payroll = payroll;
 
   /**
    * Invokes a patient invoice receipt
@@ -58,6 +61,12 @@ function ReceiptModal(Modal, Receipts) {
     return instance.result;
   }
 
+  /**
+   * Invokes a patient card for printing.
+   *
+   * @param {String} uuid             Target patient UUID
+   * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
+   */
   function patient(uuid, notifyCreated) {
 
     var options = {
@@ -71,8 +80,8 @@ function ReceiptModal(Modal, Receipts) {
     var patientRequest = Receipts.patient(uuid, { renderer : options.renderer });
     var patientProvider = {
       resolve : {
-        receipt       : function receiptProvider() { return { promise : patientRequest }; },
-        options       : function optionsProvider() { return options; },
+        receipt  : function receiptProvider() { return { promise : patientRequest }; },
+        options  : function optionsProvider() { return options; },
       }
     };
 
@@ -81,6 +90,13 @@ function ReceiptModal(Modal, Receipts) {
     return instance.result;
   }
 
+
+  /**
+   * Invokes a purchase order receipt
+   *
+   * @param {String} uuid             Target purchase order UUID
+   * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
+   */
   function purchase(uuid, notifyCreated) {
     var options = {
       title         : 'PURCHASES.PAGE_TITLE',
@@ -102,4 +118,18 @@ function ReceiptModal(Modal, Receipts) {
     var instance = Modal.open(configuration);
     return instance.result;
   }
+
+  function cash(uuid, notifyCreated) {
+    /* noop */
+  }
+
+  function transaction(uuid, notifyCreated) {
+    /* noop */
+  }
+
+  function payroll(uuid, notifyCreated) {
+    /* noop */
+  }
+
+  return service;
 }
