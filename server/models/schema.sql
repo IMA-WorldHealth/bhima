@@ -711,11 +711,15 @@ DROP TABLE IF EXISTS `event`;
 CREATE TABLE `event` (
   `timestamp`   TIMESTAMP NOT NULL,
   `user_id`     SMALLINT(5) UNSIGNED NOT NULL,
-  `channel`     TEXT NOT NULL,
-  `type`        TEXT NOT NULL,
+  `channel`     VARCHAR(25) NOT NULL,
+  `entity`      VARCHAR(25) NOT NULL,
+  `type`        VARCHAR(25) NOT NULL,
   `data`        TEXT NOT NULL, -- TODO, this should be JSON in newer MySQL
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  INDEX event_channel (channel),
+  INDEX event_entity (entity),
+  INDEX event_type (type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `exchange_rate`;
