@@ -98,10 +98,10 @@ function InvoiceRegistrySearch() {
 
   it('filters by radio buttons', () => {
     FU.buttons.search();
-    element(by.id('no'));
+    element(by.id('no')).click();
     FU.buttons.submit();
 
-    expectNumberOfGridRows(4);
+    expectNumberOfGridRows(0);
     expectNumberOfFilters(1);
 
     // make sure to clear the filters for the next test

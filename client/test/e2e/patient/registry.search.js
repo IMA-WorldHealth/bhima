@@ -27,12 +27,12 @@ function PatientRegistrySearch() {
   };
 
   const defaultVisibleRowNumber = 3;
+  const grid = element(by.id('patient-registry'));
+  const rows = grid.element(by.css('.ui-grid-render-container-body'))
+    .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+
 
   function expectNumberOfGridRows(number) {
-    const grid = element(by.id('patient-registry'));
-    const rows = grid.element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
-
     expect(rows.count(),
       `Expected Patient Registry ui-grid's row count to be ${number}.`
     ).to.eventually.equal(number);
