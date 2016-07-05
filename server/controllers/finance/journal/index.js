@@ -73,9 +73,6 @@ function lookReverseTransaction(uid, user_id) {
 
   return transaction.execute()
     .then(function (rows) {
-      console.log('JJJJJJJJJJJJJJJJJJJJJJJJJJ');
-      console.log(rows);
-
       return rows;
     });
 
@@ -119,10 +116,6 @@ function list(req, res, next) {
  * Reverse any transaction in the posting_journal
  */
 function reverse(req, res, next) {
-  console.log('JJJJJJJJJJJJJJJ');
-  console.log(req.params.uuid);
-  console.log('UUUUUUUUUUUUUU');
-
   const uid = db.bid(req.params.uuid); 
   var user_id = req.session.user.id;
 
