@@ -17,7 +17,6 @@ function PatientInvoiceService($http, Modal, util, Session) {
   var baseUrl = '/invoices/';
 
   service.read = read;
-  service.reference = reference;
   service.create = create;
   service.search = search;
   service.openSearchModal = openSearchModal;
@@ -38,21 +37,6 @@ function PatientInvoiceService($http, Modal, util, Session) {
    */
   function read(uuid, options) {
     var target = baseUrl.concat(uuid || '');
-    return $http.get(target)
-      .then(util.unwrapHttpResponse);
-  }
-
-  /**
-   * @method reference
-   *
-   * @description
-   * Searches for a particular patient invoice by its reference
-   *
-   * @param {String} ref - the reference to search for
-   * @returns {Promise} promise - a resolved or rejected result from the server
-   */
-  function reference(ref) {
-    var target = baseUrl + 'references/' + ref;
     return $http.get(target)
       .then(util.unwrapHttpResponse);
   }
@@ -97,7 +81,6 @@ function PatientInvoiceService($http, Modal, util, Session) {
    */
   function search (options) {
     var target = baseUrl.concat('search');
-
     return $http.get(target, { params : options })
         .then(util.unwrapHttpResponse);
   }
