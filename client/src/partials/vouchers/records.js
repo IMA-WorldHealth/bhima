@@ -23,7 +23,7 @@ function VouchersRecordsController(Vouchers, $translate, Notify, Filtering, uiGr
 
   /** paths in the headercrumb */
   vm.bcPaths = [
-    { label : 'TREE.ACCOUNTING' },
+    { label : 'TREE.FINANCE' },
     { label : 'TREE.VOUCHER_RECORDS' }
   ];
 
