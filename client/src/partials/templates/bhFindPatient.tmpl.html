@@ -1,14 +1,14 @@
 <div data-find-patient ng-form="FindPatientForm" bh-form-defaults novalidate>
 
-  <!-- inline Find Patient Directive UI  -->
   <div class="form-group has-feedback"
     ng-class="{
       'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
       'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
     }"
   >
+    <label class="control-label">{{ "FORM.LABELS.PATIENT" | translate }}</label>
 
-    <!-- inline input zone -->
+    <!-- input zone -->
     <div class="input-group" ng-if="$ctrl.showSearchView">
 
       <div class="input-group-btn" uib-dropdown tabindex=-1>
@@ -61,14 +61,14 @@
           ng-disabled="FindPatientForm.idInput.$invalid"
           ng-click="$ctrl.submit()"
           data-find-patient-submit>
-          <span>{{ "FORM.BUTTONS.SEARCH" | translate }}</span>
+          {{ "FORM.BUTTONS.SEARCH" | translate }}
         </button>
       </span>
     </div>
     <!-- /inline input zone -->
 
     <!-- inline notification -->
-    <p class="help-block text-right">
+    <p class="help-block text-right" ng-show="$ctrl.showSearchView">
       <span class="text-warning" ng-show="($ctrl.noPatients && $ctrl.nameInput)">
         <i class="fa fa-info-circle"></i> {{ "FORM.INFOS.PATIENT_NOT_FOUND" | translate }}
       </span>
@@ -78,40 +78,38 @@
     </p>
     <!-- /inline notification -->
 
-    <!-- notification zone for result  -->
-    <div ng-if="!$ctrl.showSearchView">
 
-      <div class="input-group">
+    <!-- notification zone  -->
+    <div class="input-group" ng-if="!$ctrl.showSearchView">
 
-        <span class="input-group-addon">
-           <span class="glyphicon glyphicon-user"></span>
-        </span>
+      <span class="input-group-addon">
+         <i class="fa fa-user"></i>
+      </span>
 
-        <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="[{{ $ctrl.patient.reference }}] {{ $ctrl.patient.name }}">
-        <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FORM.INFOS.PATIENT_NOT_FOUND' | translate }}">
+      <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="[{{ $ctrl.patient.reference }}] {{ $ctrl.patient.name }}">
+      <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FORM.INFOS.PATIENT_NOT_FOUND' | translate }}">
 
-        <div class="input-group-btn">
-          <a
-            ng-if="$ctrl.loadStatus=='loaded'"
-            class="btn btn-default"
-            uib-popover-template="'partials/templates/popover/patientinfo.tmpl.html'"
-            popover-title="Patient Record"
-            popover-placement="bottom"
-            popover-trigger="mouseenter"
-            popover-append-to-body="true">
-           <span class="glyphicon glyphicon-info-sign"></span>
-          </a>
+      <div class="input-group-btn">
+        <a
+          ng-if="$ctrl.loadStatus=='loaded'"
+          class="btn btn-default"
+          uib-popover-template="'partials/templates/popover/patientinfo.tmpl.html'"
+          popover-title="Patient Record"
+          popover-placement="bottom"
+          popover-trigger="mouseenter"
+          popover-append-to-body="true">
+         <span class="fa fa-info-circle"></span>
+        </a>
 
-          <!-- Only shown if the controller has not specified suppressReset -->
-          <a
-            ng-if="!$ctrl.suppressReset"
-            class="btn btn-default"
-            ng-click="$ctrl.reload()">
-           <span class="glyphicon glyphicon-refresh"></span>
-          </a>
-        </div>
+        <!-- Only shown if the controller has not specified suppressReset -->
+        <a
+          ng-if="!$ctrl.suppressReset"
+          class="btn btn-default"
+          ng-click="$ctrl.reload()">
+         <span class="fa fa-refresh"></span>
+        </a>
       </div>
     </div>
-    <!-- /notification zone  -->
   </div>
+  <!-- /notification zone  -->
 </div>

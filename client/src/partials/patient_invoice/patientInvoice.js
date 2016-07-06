@@ -27,6 +27,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.maxLength = util.maxTextLength;
   vm.minimumDate = util.minimumDate;
   vm.itemIncrement = 1;
+  vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
 
   // read in services and bind to the view
   Services.read()
@@ -138,6 +139,11 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     });
   }
 
+  // register the patient search api
+  function onPatientSearchApiCallback(api) {
+    vm.patientSearchApi = api;
+  }
+
   // reset everything in the controller - default values
   function clear(detailsForm) {
 
@@ -157,8 +163,9 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
       vm.Invoice.setService(vm.services[0]);
     }
 
-    if (vm.patientSearch) {
-      vm.patientSearch.reset();
+    // reset the find patient component
+    if (vm.patientSearchApi) {
+      vm.patientSearchApi.reset();
     }
   }
 

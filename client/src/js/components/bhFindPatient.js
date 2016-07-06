@@ -4,9 +4,9 @@ angular.module('bhima.components')
   templateUrl : 'partials/templates/bhFindPatient.tmpl.html',
   bindings: {
     onSearchComplete: '&',  // bind callback to call when data is available
+    onRegisterApi:    '&', // expose force refresh API
     required:         '<',  // bind the required (for ng-required)
     suppressReset:    '@',  // bind a string
-    api:              '=?'  // expose force refresh API
   }
 });
 
@@ -26,9 +26,9 @@ FindPatientComponent.$inject = [
  * which are presented to the user.
  *
  * SUPPORTED ATTRIBUTES:
- *   - on-search-complete : the callback function which get the returned patient
+ *   - on-search-complete : a callback function called with the found patient
  *   - suppress-reset: a boolean value to
- *   - api: an object which will be bound to the current scope.
+ *   - on-registry-api: a callback to be called with the component's api
  */
 function FindPatientComponent(Patients, AppCache, Notify) {
   var vm = this;
@@ -37,9 +37,9 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   var cache = AppCache('FindPatientComponent');
 
   /* @const the max number of records to fetch from the server */
-  var LIMIT = 20;
+  var LIMIT = 10;
 
-  /** supported searches: by name or by id */
+  /* supported searches: by name or by id */
   vm.options = {
     findById : {
       'label' : 'FORM.LABELS.PATIENT_ID',
@@ -81,7 +81,7 @@ function FindPatientComponent(Patients, AppCache, Notify) {
 
     var options = {
       reference : reference,
-      limit : LIMIT
+      limit : 1
     };
 
     // query the patient's search endpoint for the
@@ -94,15 +94,15 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   }
 
   /**
-  * @method searchByName
-  *
-  * @param {string} text Patient name (first_name, middle_name or last_name)
-  *
-  * @description This function make a call to BHIMA API for getting patients
-  * according the name (first_name, middle_name or last_name).
-  *
-  * @return {Array} An array of patients
-  */
+   * @method searchByName
+   *
+   * @param {string} text Patient name (first_name, middle_name or last_name)
+   *
+   * @description This function make a call to BHIMA API for getting patients
+   * according the name (first_name, middle_name or last_name).
+   *
+   * @return {Array} An array of patients
+   */
   function searchByName(text) {
     vm.loadStatus = 'loading';
 
@@ -173,15 +173,15 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   }
 
   /**
-  * @method formatPatient
-  *
-  * @param {object} patient The patient object
-  *
-  * @description This function is responsible for formatting the patient name
-  * to be more readable
-  *
-  * @returns {string} The formatted patient name
-  */
+   * @method formatPatient
+   *
+   * @param {object} patient The patient object
+   *
+   * @description This function is responsible for formatting the patient name
+   * to be more readable
+   *
+   * @returns {string} The formatted patient name
+   */
   function formatPatient(p) {
     return p ? p.first_name + ' ' + p.last_name + ' ' + p.middle_name : '';
   }
@@ -204,6 +204,8 @@ function FindPatientComponent(Patients, AppCache, Notify) {
       // parse patient metadata
       patient.name = formatPatient(patient);
       patient.sex = patient.sex.toUpperCase();
+
+      console.log(patient);
 
       // call the external function with patient
       vm.onSearchComplete({ patient : patient });
@@ -250,12 +252,8 @@ function FindPatientComponent(Patients, AppCache, Notify) {
     }
   }
 
-  // Expose reset method - this allows the controller to reset the state without
-  // forcing a page refresh
-  // TODO Discuss - This could be done by binding and watching objects
-  // the functionality required is forcing a reset on the directive from the controller
-  // TODO Force search if required?
-  vm.api = {
-    reset : reload
-  };
+  // call the onRegisterApi() callback with the
+  vm.onRegisterApi({
+    api : { reset : reload }
+  });
 }

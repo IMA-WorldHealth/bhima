@@ -136,9 +136,6 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
 
     var target = baseUrl.concat('search');
 
-    // ensure that the search returns detailed results
-    options.detailed = 1;
-
     return $http.get(target, { params : options })
       .then(util.unwrapHttpResponse);
   }

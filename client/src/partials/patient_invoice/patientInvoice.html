@@ -19,12 +19,10 @@
               <div class="col-md-6">
 
                 <div class="form-group">
-                  <label class="control-label">{{ "FORM.LABELS.RECIPIENT" | translate }}</label>
                   <bh-find-patient
-                    type="inline"
                     suppress-reset="true"
                     on-search-complete="PatientInvoiceCtrl.setPatient(patient)"
-                    api="PatientInvoiceCtrl.patientSearch">
+                    on-register-api="PatientInvoiceCtrl.onPatientSearchApiCallback(api)">
                   </bh-find-patient>
                 </div>
 
@@ -70,11 +68,11 @@
                   @todo - since we know this is a financial date, we could set min and max for periods etc.
                 -->
                 <bh-date-editor
-                    date-value="PatientInvoiceCtrl.Invoice.details.date"
-                    validation-trigger="detailsForm.$submitted"
-                    min-date="PatientInvoiceCtrl.minimumDate"
-                    max-date="PatientInvoiceCtrl.timestamp">
-                  </bh-date-editor>
+                  date-value="PatientInvoiceCtrl.Invoice.details.date"
+                  validation-trigger="detailsForm.$submitted"
+                  min-date="PatientInvoiceCtrl.minimumDate"
+                  max-date="PatientInvoiceCtrl.timestamp">
+                </bh-date-editor>
 
                 <div
                   class="form-group"
@@ -83,7 +81,7 @@
                   <textarea
                     ng-model="PatientInvoiceCtrl.Invoice.details.description"
                     name="notes"
-                    placeholder="{{"FORM.PLACEHOLDERS.NOTES}}..."
+                    placeholder="{{'FORM.PLACEHOLDERS.NOTES' | translate}}..."
                     class="form-control"
                     ng-maxlength="PatientInvoiceCtrl.maxLength"
                     rows="4"
