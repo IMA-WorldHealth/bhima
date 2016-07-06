@@ -350,7 +350,9 @@
       "CURRENT_LOCATION"       : "Localisation actuelle",
       "DATE"                   : "Date",
       "DATE_CREATED"           : "Date de création",
+      "DATE_FROM"              : "Debut",
       "DATE_REGISTRATION"      : "Date d'enregistrement",
+      "DATE_TO"                : "Fin",
       "DEBIT"                  : "Débit",
       "DEBITOR_GROUP"          : "Groupe Débiteur",
       "DEBTOR_GROUP"           : "Formulaire d'enregistrement de groupe débiteur",
@@ -425,6 +427,7 @@
       "NO_DISTRIBUTABLE"       : "Non distribuable",
       "OPTIONAL_INFO"          : "Informations optionnelles",
       "ORIGIN_LOCATION"        : "Localisation d'origine",
+      "OTHER"                  : "Autre",
       "PASSIVE"                : "Passive",
       "PASSWORD"               : "Mot de passe",
       "PATIENT"                : "patient",
@@ -478,8 +481,11 @@
       "SUBSIDIES"              : "Les subventions appliqués",
       "TEL"                    : "Tél",
       "TELEPHONE"              : "Téléphone",
+      "THIS_MONTH"             : "Ce Mois",
+      "THIS_WEEK"              : "Cette Semaine",
       "TITLE"                  : "Titre",
       "TITLE_ACCOUNT"          : "Comptes Titre",
+      "TODAY"                  : "Aujourd'hui",
       "TOTAL"                  : "Total",
       "TOTAL_BILLED"           : "Total Facture",
       "TOTAL_PAID"             : "Total paye",
@@ -489,6 +495,7 @@
       "TRANSFER_TYPE"          : "Type de Transfert",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Non configuree",
+      "UNDEFINED"              : "Non defini",
       "UNIT"                   : "Forme galenique",
       "UNIT_WEIGHT"            : "Poids",
       "UNIT_VOLUME"            : "Volume",
@@ -546,6 +553,7 @@
       "SELECT_COUNTRY"            : "Sélectionner pays",
       "SELECT_CREDITOR"           : "Sélectionner un Créditeur",
       "SELECT_CREDITOR_GROUP"     : "Sélectionner Groupe de créditeurs",
+      "SELECT_DATE_INTERVAL"      : "Sélectionner un intervalle de date",
       "SELECT_DEBITOR_GROUP"      : "Sélectionner Groupe de Débiteurs",
       "SELECT_ENTERPRISE"         : "Sélectionner entreprise",
       "SELECT_FUNCTION"           : "Sélectionner une fonction",
@@ -1146,7 +1154,8 @@
     "TRANSACTIONS_BY_ACCOUNT"    : "Transactions par Compte",
     "UPDATE_STOCK"               : "Mettre à Jour les Stocks",
     "USERS"                      : "Utilisateurs",
-    "VALIDATE_PURCHASE"          : "Validation"
+    "VALIDATE_PURCHASE"          : "Validation",
+    "VOUCHER_RECORDS"            : "Registre des Bordereaux"
   },
   "VILLAGE": {
     "CONFIG"       : "Configuration de Gestion des Villages",
@@ -1159,21 +1168,6 @@
     "TITLE"        : "Gestion des Villages"
   },
   "VOUCHERS": {
-    "SIMPLE": {
-      "CASH_PAYMENT"       : "Paiement des clients",
-      "CASH_RETURN"        : "Remboursement",
-      "CONVENTION_PAYMENT" : "Paiement des Conventions",
-      "EXPENSE"            : "Dépenses",
-      "INCOME"             : "Récettes",
-      "SALARY_PAYMENT"     : "Paiement des Salaires",
-      "GENERIC_EXPENSE"    : "Autres Depenses",
-      "GENERIC_INCOME"     : "Autres Recettes",
-      "PURCHASES"          : "Achats",
-      "SUPPORT_INCOME"     : "Paiement Prise en charge",
-      "TITLE"              : "Bordereau de transfert",
-      "TRANSFER"           : "Transfert d'argent"
-    },
-    "TITLE" : "Quittance",
     "COMPLEX": {
       "ADD_ITEMS"            : "Ajouter item(s)",
       "CASH_PAYMENT"         : "Paiement Caisse",
@@ -1195,6 +1189,24 @@
       "TITLE"                : "Ajout des transactions",
       "VALID_TOTALS"         : "Les transactions sont valides (Transactions balancées)",
       "VOUCHER"              : "Bordereau de Transfert"
+    },
+    "GLOBAL" : {
+      "REPORT" : "Rapport des Quittances",
+      "TITLE"  : "Quittance"
+    },
+    "SIMPLE": {
+      "CASH_PAYMENT"       : "Paiement des clients",
+      "CASH_RETURN"        : "Remboursement",
+      "CONVENTION_PAYMENT" : "Paiement des Conventions",
+      "EXPENSE"            : "Dépenses",
+      "INCOME"             : "Récettes",
+      "SALARY_PAYMENT"     : "Paiement des Salaires",
+      "GENERIC_EXPENSE"    : "Autres Depenses",
+      "GENERIC_INCOME"     : "Autres Recettes",
+      "PURCHASES"          : "Achats",
+      "SUPPORT_INCOME"     : "Paiement Prise en charge",
+      "TITLE"              : "Bordereau de transfert",
+      "TRANSFER"           : "Transfert d'argent"
     }
   }
 }

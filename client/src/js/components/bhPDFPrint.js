@@ -13,7 +13,7 @@ angular.module('bhima.components')
   controller : bhPDFPrintController
 });
 
-bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
+bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout', 'uuid'];
 
 /**
  * @class bhPDFPrintController
@@ -41,7 +41,7 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
  *   options="options">
  * </bh-pdf-print>
  */
-function bhPDFPrintController($window, $http, $sce, $timeout) {
+function bhPDFPrintController($window, $http, $sce, $timeout, uuid) {
   var cachedRequest;
   var component = this;
 
@@ -57,7 +57,7 @@ function bhPDFPrintController($window, $http, $sce, $timeout) {
   var loadingIndicatorDelay = 1000;
 
   component.$loading = false;
-  component.embeddedContentId = 'pdfdirect';
+  component.embeddedContentId = 'pdfdirect' + Date.now();
 
   // expose the print method to the view
   component.print = print;

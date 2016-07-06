@@ -364,7 +364,9 @@
       "CREATED"                : "Created",
       "DATE"                   : "Date",
       "DATE_CREATED"           : "Date Created",
+      "DATE_FROM"              : "Start",
       "DATE_REGISTRATION"      : "Registration Date",
+      "DATE_TO"                : "End",
       "DEBIT"                  : "Debit",
       "DEBITOR_GROUP"          : "Debtor Group",
       "DEBTOR_GROUP"           : "Form debtor group record",
@@ -440,6 +442,7 @@
       "NO_DISTRIBUTABLE"       : "Not distributable",
       "OPTIONAL_INFO"          : "Optional Information",
       "ORIGIN_LOCATION"        : "Origin Location",
+      "OTHER"                  : "Other",
       "PARENT_ACCOUNT"         : "Parent Account",
       "PASSIVE"                : "Passive",
       "PASSWORD"               : "Password",
@@ -494,8 +497,11 @@
       "SUBSIDIES"              : "Subsidies Applied",
       "TEL"                    : "TEL",
       "TELEPHONE"              : "Telephone",
+      "THIS_MONTH"             : "This Month",
+      "THIS_WEEK"              : "This week",
       "TITLE"                  : "Title",
       "TITLE_ACCOUNT"          : "Title Account",
+      "TODAY"                  : "Today",
       "TOTAL"                  : "Total",
       "TOTAL_BILLED"           : "Total Billed",
       "TOTAL_PAID"             : "Total Paid",
@@ -505,6 +511,7 @@
       "TRANSFER_TYPE"          : "Transfer Type",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Unconfigured",
+      "UNDEFINED"              : "Undefined",
       "UPDATE"                 : "UPDATE",
       "UPDATE_GROUP_DEBTOR"    : "Debtor group assignment updated",
       "UPDATE_PATIENT_GROUP"   : "Patient group membership updated",
@@ -562,6 +569,7 @@
       "SELECT_COUNTRY"            : "Select Country",
       "SELECT_CREDITOR"           : "Select a creditor",
       "SELECT_CREDITOR_GROUP"     : "Select a Creditor Group",
+      "SELECT_DATE_INTERVAL"      : "Select a date interval",
       "SELECT_DEBITOR_GROUP"      : "Select a Debtor Group",
       "SELECT_ENTERPRISE"         : "Select an Enterprise",
       "SELECT_FUNCTION"           : "Select function",
@@ -1154,7 +1162,8 @@
     "TRANSACTIONS_BY_ACCOUNT"    : "Transactions by Account",
     "UPDATE_STOCK"               : "Update stock",
     "USERS"                      : "Users",
-    "VALIDATE_PURCHASE"          : "Validation"
+    "VALIDATE_PURCHASE"          : "Validation",
+    "VOUCHER_RECORDS"            : "Voucher records"
   },
   "VILLAGE": {
     "CONFIG"       : "Village Manager Configuration",
@@ -1167,21 +1176,6 @@
     "TITLE"        : "Village Management"
   },
   "VOUCHERS": {
-    "SIMPLE": {
-      "CASH_PAYMENT"       : "Client Payment",
-      "CASH_RETURN"        : "Cash Return (Payback)",
-      "CONVENTION_PAYMENT" : "Convention Payment",
-      "EXPENSE"            : "Expenses",
-      "INCOME"             : "Incomes",
-      "SALARY_PAYMENT"     : "Salary Payment",
-      "GENERIC_EXPENSE"    : "Other Expenses",
-      "GENERIC_INCOME"     : "Other Incomes",
-      "PURCHASES"          : "Purchases",
-      "SUPPORT_INCOME"     : "Support Incomes",
-      "TITLE"              : "Simple Voucher",
-      "TRANSFER"           : "Money Transfer"
-    },
-    "TITLE" : "Voucher",
     "COMPLEX": {
       "ADD_ITEMS"            : "Add item(s)",
       "CASH_PAYMENT"         : "Cash Payment",
@@ -1203,6 +1197,24 @@
       "TITLE"                : "Advanced Journal Vouchers",
       "VALID_TOTALS"         : "Transactions are valid (balanced transaction)",
       "VOUCHER"              : "Voucher"
+    },
+    "GLOBAL" : {
+      "REPORT" : "Voucher Report",
+      "TITLE"  : "Voucher"
+    },
+    "SIMPLE": {
+      "CASH_PAYMENT"       : "Client Payment",
+      "CASH_RETURN"        : "Cash Return (Payback)",
+      "CONVENTION_PAYMENT" : "Convention Payment",
+      "EXPENSE"            : "Expenses",
+      "INCOME"             : "Incomes",
+      "SALARY_PAYMENT"     : "Salary Payment",
+      "GENERIC_EXPENSE"    : "Other Expenses",
+      "GENERIC_INCOME"     : "Other Incomes",
+      "PURCHASES"          : "Purchases",
+      "SUPPORT_INCOME"     : "Support Incomes",
+      "TITLE"              : "Simple Voucher",
+      "TRANSFER"           : "Money Transfer"
     }
   },
   "GRAPHS" : {

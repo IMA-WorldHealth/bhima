@@ -9,6 +9,7 @@
 
 /** The query string conditions builder */
 module.exports.queryCondition = queryCondition;
+module.exports.formatDate = formatDate;
 module.exports.take = take;
 
 /**
@@ -26,16 +27,31 @@ module.exports.take = take;
  * @todo - allow prexisting conditions to be passed in
  */
 
-function queryCondition(sql, params, excludeWhere) {
+function queryCondition(sql, params, excludeWhere, dateConditon) {
   let conditions = [];
+
+  let dateParams = {
+    dateFrom: new Date(params.dateFrom),
+    dateTo: new Date(params.dateTo)
+  };
+
+  if (Object.keys(params).length === 0) {
+    excludeWhere = true;
+  }
+
+  // remove date in params
+  delete params.dateFrom;
+  delete params.dateTo;
 
   let criteria = Object.keys(params).map(function (item) {
     conditions = conditions.concat(item, params[item]);
     return '?? = ?';
   }).join(' AND ');
 
-  if (Object.keys(params).length === 0) {
-    excludeWhere = true;
+  if (dateParams.dateFrom && dateParams.dateTo && dateConditon) {
+    criteria += conditions.length ? ' AND ' + dateConditon : dateConditon;
+    conditions.push(formatDate(dateParams.dateFrom));
+    conditions.push(formatDate(dateParams.dateTo));
   }
 
   sql += (excludeWhere ? '' : 'WHERE ') + criteria;
@@ -90,4 +106,15 @@ function take() {
       return object[key];
     });
   };
+}
+
+/**
+ * Date to MySQL format
+ */
+function formatDate(date) {
+  date = date ? new Date(date) : new Date();
+  
+  return date.getFullYear() + '-' +
+    (date.getMonth() < 9 ? '0' :'') + (date.getMonth()+1) + '-' +
+    (date.getDate() < 10 ? '0' : '') + date.getDate();
 }

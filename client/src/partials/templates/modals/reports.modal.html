@@ -1,6 +1,11 @@
 <div data-modal-box>
   <div class="modal-body bh-print">
 
+    <!-- loading indicator  -->
+    <h4 class="text-center" ng-show="$ctrl.loading === true">
+      <i class="fa fa-spinner fa-pulse"></i> {{ 'FORM.INFOS.LOADING' | translate }}
+    </h4>
+
     <!-- PDF -->
     <div ng-if="$ctrl.renderer === 'pdf'">
       <iframe

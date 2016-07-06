@@ -179,16 +179,31 @@ function PrototypeApiService($http, util) {
 
     // append the id to the base url
     var target = this.url.concat('reports/', param);
+    return reportBuilder(this, param, filetype);
+  }
 
+  /**
+   * Receipt
+   */
+  function report(param, filetype) {
+
+    // append the id to the base url
+    var target = this.url.concat('receipts/', param);
+    return reportBuilder(this, param, filetype);
+  }
+
+  /** report builder */
+  function reportBuilder(container, param, filetype) {
     // filetype setup
     var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
     var params = { renderer: filetype };
 
     // send the GET request
-    return this.$http.get(target, {
+    return container.$http.get(target, {
       params: params,
       responseType: responseType
     })
-      .then(util.unwrapHttpResponse);
+    .then(util.unwrapHttpResponse);
   }
+
 }

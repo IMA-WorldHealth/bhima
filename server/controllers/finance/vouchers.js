@@ -36,34 +36,49 @@ exports.create = create;
 /** Get the voucher report */
 exports.report = report;
 
+/** Get the voucher receipt */
+exports.receipt = receipt;
+
 /**
 * GET /vouchers
 *
 * @method list
 */
 function list(req, res, next) {
-  var query =
+  'use strict';
+
+  let dateConditon = null;
+  let query =
     `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, BUID(vi.document_uuid) as document_uuid,
       v.user_id, BUID(vi.uuid) AS voucher_item_uuid,
-      vi.account_id, vi.debit, vi.credit,
+      vi.account_id, vi.debit, vi.credit, v.origin_id,
+      a.number AS account_number, a.label AS account_label,
+      CONCAT(u.first, ' - ', u.last) AS user,
       CONCAT(p.abbr, v.reference) AS reference
     FROM voucher v
     JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
-    JOIN project p ON p.id = v.project_id `;
+    JOIN project p ON p.id = v.project_id
+    JOIN user u ON u.id = v.user_id
+    JOIN account a ON a.id = vi.account_id `;
 
   // convert binary params if they exist
   if (req.query.document_uuid) {
     req.query.document_uuid = db.bid(req.query.document_uuid);
   }
 
+  /**
+   * the date conditions string
+   */
+  if (req.query.dateFrom && req.query.dateTo) {
+    dateConditon = 'DATE(v.date) BETWEEN DATE(?) AND DATE(?)';
+  }
+
   // format query parameters appropriately
-  var builder = util.queryCondition(query, req.query);
+  let builder = util.queryCondition(query, req.query, null, dateConditon);
 
   db.exec(builder.query, builder.conditions)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
+  .then(rows => res.status(200).json(rows))
   .catch(next)
   .done();
 }
@@ -75,7 +90,7 @@ function list(req, res, next) {
 */
 function detail(req, res, next) {
   'use strict';
-  
+
   getVouchers(req.params.uuid)
   .then(function (rows) {
     if (!rows.length) {
@@ -173,11 +188,11 @@ function create(req, res, next) {
 }
 
 /**
-* GET /vouchers/report/:uuid
+* GET /vouchers/receipt/:uuid
 *
-* @method report
+* @method receipt
 */
-function report(req, res, next) {
+function receipt(req, res, next) {
   'use strict';
 
   let reportUrl = './server/controllers/finance/reports/voucher.receipt.handlebars';
@@ -193,12 +208,36 @@ function report(req, res, next) {
 }
 
 /**
+* GET /vouchers/reports
+*
+* @method report
+*/
+function report(req, res, next) {
+  'use strict';
+
+  let reportUrl = './server/controllers/finance/reports/voucher.report.handlebars';
+  let reportOptions = { pageSize : 'A4', orientation: 'landscape' };
+  let resolve = {
+    dateFrom: req.query.dateFrom,
+    dateTo: req.query.dateTo
+  };
+
+  getVouchers(null, req.query)
+  .then(rows => rm.build(req, rows, reportUrl, reportOptions, resolve))
+  .spread((document, headers) => {
+    res.set(headers).send(document);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
  * @function getVouchers
  * @param {null|string} uuid The voucher uuid, returns list of voucher according the uuid
  * @param {null|object} query The req.query object, retunrs list of voucher according the query,
  * @return promise
  */
-function getVouchers(uuid) {
+function getVouchers(uuid, request) {
   'use strict';
 
   let sql =
@@ -215,7 +254,38 @@ function getVouchers(uuid) {
     JOIN user u ON u.id = v.user_id
     JOIN account a ON a.id = vi.account_id `;
 
-  sql += uuid ? 'WHERE v.uuid = ?' : '';
+  let bid = uuid ? db.bid(uuid) : null;
+  let dateConditon = null;
+  let sqlParams = [];
+  let whereClause = false;
 
-  return db.exec(sql, [db.bid(uuid)]);
+  if (request && request.dateFrom !== 'null' && request.dateTo !== 'null' && uuid) {
+
+    sql += 'WHERE v.uuid = ? AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
+    sqlParams = [];
+    sqlParams.push(bid);
+    sqlParams.push(util.formatDate(request.dateFrom));
+    sqlParams.push(util.formatDate(request.dateTo));
+
+  } else if (request && request.dateFrom !== 'null' && request.dateTo !== 'null' && !uuid) {
+
+    sql += 'WHERE DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
+    sqlParams = [];
+    sqlParams.push(util.formatDate(request.dateFrom));
+    sqlParams.push(util.formatDate(request.dateTo));
+
+  } else if ((!request || request.dateFrom === 'null' || !request.dateTo === 'null') && uuid) {
+
+    sql += 'WHERE v.uuid = ?';
+    sqlParams = [];
+    sqlParams.push(bid);
+
+  } else {
+
+    sql += '';
+    sqlParams = [];
+
+  }
+
+  return db.exec(sql, sqlParams);
 }

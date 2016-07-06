@@ -45,7 +45,8 @@ INSERT INTO unit VALUES
   (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 30, '/partials/vouchers/complex', '/vouchers/complex'),
   (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
-  (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration');
+  (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration'),
+  (141, 'Vouchers Records', 'TREE.VOUCHER_RECORDS', 'Vouchers records module', 30, '/partials/vouchers/records', '/vouchers/records');
 
 INSERT INTO `account_type` VALUES
 
@@ -222,7 +223,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (13,2),
 
 -- [Folder] Accounting
-(30, 2);
+(30, 2),
+
+-- Voucher records
+(141, 1);
 
 
 

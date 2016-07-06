@@ -69,17 +69,15 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     // description prefix
     vm.voucher.description =  String(vm.descriptionPrefix).concat('/', vm.voucher.description);
 
+    // transfer type
+    vm.voucher.origin_id = vm.selectedType ? JSON.parse(vm.selectedType).id : null;
+
     // submit the voucher
     return Vouchers.createSimple(vm.voucher)
     .then(function (res) {
 
       // Generate the document
-      return Vouchers.report(res.uuid, 'pdf');
-    })
-    .then(function (report) {
-
-      // handle the modal of the report
-      return Modal.openReports({ report: report, renderer: 'pdf' });
+      return Modal.openReports({ url: '/vouchers/receipts/' + res.uuid, renderer: 'pdf' });
     })
     .then(function () {
 
