@@ -53,7 +53,9 @@
     <div ng-if="AccountEditCtrl.isCreateState" class="form-group"
          ng-class="{'has-error' : AccountForm.type_id.$invalid && AccountForm.$submitted}">
       <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label>
-      <select class="form-control" ng-model="AccountEditCtrl.account.type_id" ng-options="entry.id as (entry.translation_key | translate) for entry in AccountEditCtrl.types" name="type_id" required></select>
+      <select class="form-control" ng-model="AccountEditCtrl.account.type_id" name="type_id" required>
+        <option ng-repeat="entry in AccountEditCtrl.types" value="{{entry.id}}" data-key="{{entry.translation_key}}">{{entry.translation_key | translate}}</option>
+      </select>
       <div class="help-block" ng-messages="AccountForm.type_id.$error" ng-show="AccountForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
