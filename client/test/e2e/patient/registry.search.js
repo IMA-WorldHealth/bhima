@@ -55,7 +55,7 @@ function PatientRegistrySearch() {
   it(`should find one patient with name "${parameters.name}"`, () => {
     FU.buttons.search();
     FU.input('ModalCtrl.params.name', parameters.name);
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(1);
     expectNumberOfFilters(1);
@@ -67,7 +67,7 @@ function PatientRegistrySearch() {
     FU.buttons.search();
     FU.input('ModalCtrl.params.name', parameters.name1);
     element(by.id('male')).click();
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(2);
     expectNumberOfFilters(2);
@@ -79,7 +79,7 @@ function PatientRegistrySearch() {
     FU.buttons.search();
     FU.input('ModalCtrl.params.name', parameters.name1);
     $('[data-date-registration]').$('[data-date-range="week"]').click();
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(1);
     expectNumberOfFilters(3);
@@ -91,7 +91,7 @@ function PatientRegistrySearch() {
     FU.buttons.search();
     $('[data-date-registration]').$('[data-date-range="year"]').click();
     element(by.id('female')).click();
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(1);
     expectNumberOfFilters(3);
@@ -107,7 +107,7 @@ function PatientRegistrySearch() {
     FU.input('ModalCtrl.params.dateBirthFrom', parameters.dateBirthFrom);
     FU.input('ModalCtrl.params.dateBirthTo', parameters.dateBirthTo);
 
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(0);
     expectNumberOfFilters(4);
@@ -123,7 +123,7 @@ function PatientRegistrySearch() {
 
     element(by.id('male')).click();
 
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(2);
     expectNumberOfFilters(3);
@@ -136,7 +136,7 @@ function PatientRegistrySearch() {
     FU.buttons.search();
     $('[data-date-registration]').$('[data-date-range="year"]').click();
     element(by.id('male')).click();
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(2);
     expectNumberOfFilters(3);
@@ -158,7 +158,7 @@ function PatientRegistrySearch() {
     element(by.id('male')).click();
     FU.input('ModalCtrl.params.name', 'Some Non-Existant Patient');
 
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(0);
     expectNumberOfFilters(4);

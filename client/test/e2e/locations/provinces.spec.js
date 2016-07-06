@@ -13,16 +13,16 @@ describe('Provinces Management', function () {
 
   before(() => helpers.navigate(path));
 
-  const province = { name : 'Test Province' };
-
-  const numProvinces = 14;
-  const provinceRank  = 1;
+  const province = {
+    country : 'Test Hook Country',
+    name : 'New Province'
+  };
 
   it('creates a new province', function () {
     // switch to the create form
     FU.buttons.create();
 
-    FU.select('ProvinceCtrl.province.country_uuid', 'Test Country');
+    FU.select('ProvinceCtrl.province.country_uuid', province.country);
     FU.input('ProvinceCtrl.province.name', province.name);
 
     // submit the page to the server
@@ -33,9 +33,9 @@ describe('Provinces Management', function () {
   });
 
   it('edits a province', function () {
-    element(by.id('province-' + provinceRank)).click();
+    $(`[data-province-name="${province.name}"]`).click();
 
-    FU.select('ProvinceCtrl.province.country_uuid', 'Test Country');
+    FU.select('ProvinceCtrl.province.country_uuid', province.country);
     FU.input('ProvinceCtrl.province.name', 'Province Update');
 
     element(by.id('change_province')).click();

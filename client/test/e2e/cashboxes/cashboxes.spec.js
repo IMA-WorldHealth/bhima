@@ -93,7 +93,7 @@ describe('Cashboxes', function () {
     // confirm that the modal appears
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    FU.select('CashboxModalCtrl.data.account_id', 'Test Item Account');
+    FU.select('CashboxModalCtrl.data.account_id', 'First Test Item Account');
 
     // submit the modal
     FU.modal.submit();
@@ -138,8 +138,7 @@ describe('Cashboxes', function () {
     // everything should have error highlights
     FU.validation.error('CashCtrl.box.project_id');
     FU.validation.error('CashCtrl.box.label');
-    FU.validation.error('CashCtrl.box.type');
 
-    // components.notification.hasDanger();
+    components.notification.hasDanger();
   });
 });

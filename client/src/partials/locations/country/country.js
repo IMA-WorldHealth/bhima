@@ -16,7 +16,7 @@ function CountryController(locationService, util) {
   vm.submit = submit;
   vm.update = update;
   vm.cancel = cancel;
-  vm.countryLength = util.length45; 
+  vm.countryLength = util.length45;
 
   function handler(error) {
     console.error(error);
@@ -65,7 +65,7 @@ function CountryController(locationService, util) {
     vm.country = data;
   }
 
-  
+
   // refresh the displayed Countrys
   function refreshCountrys() {
     return locationService.countries({detailed : 1}).then(function (data) {
@@ -82,7 +82,7 @@ function CountryController(locationService, util) {
     var promise;
     var creation = (vm.view === 'create');
     var country = angular.copy(vm.country);
-    
+
     promise = (creation) ?
       locationService.create.country(country) :
       locationService.update.country(country.uuid, country);
@@ -93,9 +93,9 @@ function CountryController(locationService, util) {
       })
       .then(function () {
         vm.view = creation ? 'create_success' : 'update_success';
-      })      
+      })
       .catch(handler);
   }
 
-  startup();  
+  startup();
 }

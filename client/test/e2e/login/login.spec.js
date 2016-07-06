@@ -2,11 +2,11 @@
 /* global by, element, browser */
 const chai = require('chai');
 const expect = chai.expect;
+const helpers = require('../shared/helpers');
+helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
-const helpers = require('../shared/helpers');
 const components = require('../shared/components');
-helpers.configure(chai);
 
 /**
  * This tests the login page
@@ -30,16 +30,16 @@ describe('Login Page', function () {
   it('rejects an invalid username/password combo with (only) a growl notification', function () {
     FU.input('LoginCtrl.credentials.username', 'undefineds');
     FU.input('LoginCtrl.credentials.password', 'undefined1');
-    element(by.id('submit')).click();
+    FU.buttons.submit();
 
     FU.exists(by.css('.help-block'), false);
-    components.notification.verify();
+    components.notification.hasDanger();
   });
 
   it('rejects user missing a username with (only) a help block', function () {
     FU.input('LoginCtrl.credentials.username', 'username');
     element(by.model('LoginCtrl.credentials.password')).clear();
-    element(by.id('submit')).click();
+    FU.buttons.submit();
 
     FU.exists(by.css('.help-block'), true);
     FU.exists(by.css('[data-bh-growl-notification]'), false);
@@ -49,7 +49,7 @@ describe('Login Page', function () {
   it('rejects user missing a password with (only) a help block', function () {
     FU.input('LoginCtrl.credentials.password', 'password');
     element(by.model('LoginCtrl.credentials.username')).clear();
-    element(by.id('submit')).click();
+    FU.buttons.submit();
 
     FU.exists(by.css('.help-block'), true);
     FU.exists(by.css('[data-bh-growl-notification]'), false);
@@ -74,13 +74,13 @@ describe('Login Page', function () {
 
     // assert that we are still on the login page with a notification
     expect(helpers.getCurrentPath()).to.eventually.equal('#/login');
-    components.notification.verify();
+    components.notification.hasWarn();
   });
 
   it('allows a valid user to log in to the application', function () {
     FU.input('LoginCtrl.credentials.username', 'superuser');
     FU.input('LoginCtrl.credentials.password', 'superuser');
-    element(by.id('submit')).click();
+    FU.buttons.submit();
 
     expect(helpers.getCurrentPath()).to.eventually.equal('#/');
   });
@@ -103,7 +103,7 @@ describe('Login Page', function () {
     helpers.navigate(login);
 
     // assert that a growl notification was shown
-    components.notification.verify();
+    components.notification.hasWarn();
 
     // assert that we did not get to the login page
     expect(helpers.getCurrentPath()).to.eventually.equal('#/' + settings);

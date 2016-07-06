@@ -6,8 +6,8 @@ const helpers = require('./helpers');
 const uuid    = require('node-uuid');
 helpers.configure(chai);
 
-describe('(/debtor_groups) The debtor groups HTTP API', function () {
-  // Logs in before each test
+describe('(/debtor_groups) The debtor groups API', function () {
+
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
@@ -16,7 +16,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
     uuid : uuid.v4(),
     name : 'New Debtor Group (Test)',
     account_id : 3638,
-    location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -33,7 +33,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
     enterprise_id : 1,
     name : 'Updated Debtor Group (Test)',
     account_id : 3638,
-    location_id : '03b44338-a38b-4450-b12d-3acc4f3d3465',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0818061031',
     email : 'update@info.com',
     note : 'Updated debtor group de test',
@@ -51,7 +51,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
     uuid : uuid.v4(),
     name : 'Locked Debtor Group (Test)',
     account_id : 3638,
-    location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -69,7 +69,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
     uuid : uuid.v4(),
     name : 'Convention Debtor Group (Test)',
     account_id : 3638,
-    location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -87,7 +87,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
     uuid : uuid.v4(),
     name : 'Locked Convention Debtor Group (Test)',
     account_id : 3638,
-    location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -103,7 +103,7 @@ describe('(/debtor_groups) The debtor groups HTTP API', function () {
   var invalidGroup = {
     enterprise_id : 1,
     name : 'Invalid Debtor Group (Test)',
-    location_id : '03a329b2-03fe-4f73-b40f-56a2870cc7e6',
+    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test'

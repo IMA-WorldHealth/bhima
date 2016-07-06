@@ -17,10 +17,10 @@ describe('Complex Vouchers', function () {
       date : new Date(),
       description : 'Complex voucher test e2e',
       rows : [
-        { account : 'Test Debtor', debit: 17, credit: 0, entity : { type : 'D', name: 'Patient/2/Patient' }},
-        { account : 'Test Capital One', debit: 0, credit: 7, reference : { type : 'voucher', index : 0 }},
+        { account : 'Test Debtor Accounts1', debit: 18, credit: 0, entity : { type : 'D', name: 'Patient/2/Patient' }},
+        { account : 'Test Capital One', debit: 0, credit: 8, reference : { type : 'voucher', index : 0 }},
         { account : 'Test Capital Two', debit: 0, credit: 5, reference : { type : 'voucher', index : 2 }},
-        { account : 'Test Balance', debit: 0, credit: 5, reference : { type : 'voucher', index : 1 }}
+        { account : 'Test Balance Accounts', debit: 0, credit: 5, reference : { type : 'voucher', index : 1 }}
       ]
     };
 

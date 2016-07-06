@@ -42,11 +42,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-if="EmployeeCtrl.session.loading" class="text-center">
+              <tr ng-if="EmployeeCtrl.loading" class="text-center">
                 <td colspan="6"><loading-indicator></loading-indicator></td>
               </tr>
 
-              <tr ng-if="!EmployeeCtrl.session.loading && EmployeeCtrl.employees.data.length === 0">
+              <tr ng-if="!EmployeeCtrl.loading && EmployeeCtrl.employees.data.length === 0">
                 <td colspan="6">
                   <div class="alert alert-warning">
                     <i class="glyphicon glyphicon-inbox"></i> {{ 'EMPLOYEE.NONE_FOUND' | translate }}
@@ -75,18 +75,6 @@
           <div class="alert alert-info" id="default">
             <h4>{{ 'EMPLOYEE.TITLE' | translate }}</h4>
             <p>{{ 'EMPLOYEE.INFO' | translate }}</p>
-          </div>
-        </div>
-
-        <div ng-switch-when="create_success">
-          <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
-          </div>
-        </div>
-
-        <div ng-switch-when="update_success">
-          <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 

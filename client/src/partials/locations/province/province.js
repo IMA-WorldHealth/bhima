@@ -67,7 +67,7 @@ function ProvinceController(locationService, util) {
     vm.province.country_uuid = data.countryUuid;
   }
 
-  
+
   // refresh the displayed Provinces
   function refreshProvinces() {
     return locationService.provinces({detailed : 1}).then(function (data) {
@@ -84,7 +84,7 @@ function ProvinceController(locationService, util) {
     var promise;
     var creation = (vm.view === 'create');
     var province = angular.copy(vm.province);
-    
+
     promise = (creation) ?
       locationService.create.province(province) :
       locationService.update.province(province.uuid, province);
@@ -95,9 +95,9 @@ function ProvinceController(locationService, util) {
       })
       .then(function () {
         vm.view = creation ? 'create_success' : 'update_success';
-      })      
+      })
       .catch(handler);
   }
 
-  startup();  
+  startup();
 }

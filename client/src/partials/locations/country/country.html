@@ -39,11 +39,15 @@
             </thead>
             <tbody>
               <tr ng-if="CountryCtrl.session.loading" class="text-center">
-                <td colspan="4"><loading-indicator></loading-indicator></td>
+                <td colspan="2"><loading-indicator></loading-indicator></td>
               </tr>
-              <tr ng-repeat="country in CountryCtrl.countries | orderBy:'country' "  ng-class="{'rowSelected' : CountryCtrl.country.uuid === country.uuid}">
+              <tr ng-repeat="country in CountryCtrl.countries | orderBy:'name'">
                 <td>{{ country.name }}</td>
-                <td><a class="btn btn-xs btn-default" id="country-{{$index + 1}}" ng-click="CountryCtrl.update(country)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
+                <td>
+                  <a class="btn btn-xs btn-default" data-country-name="{{ country.name }}" ng-click="CountryCtrl.update(country)" >
+                    <i class="glyphicon glyphicon-pencil"></i>
+                  </a>
+                </td>
               </tr>
             </tbody>
           </table>
