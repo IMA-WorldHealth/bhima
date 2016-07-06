@@ -1,10 +1,8 @@
 {
-
   "ACCOUNT": {
     "ACCOUNT_CHART"  : "Plan Comptable",
     "ACCOUNT_COST"   : "Comptes des charges et pertes par nature",
     "ACCOUNT_LIST"   : "Liste des comptes",
-    "ACCOUNT_NUMBER" : "Numéro de Compte",
     "ADD"            : "Ajouter un Compte",
     "ADD_CHILD"      : "Ajouter un Compte fils",
     "ALL_ACCOUNT"    : "Tous les comptes",
@@ -17,21 +15,25 @@
     "HELP_TXT_3"     : "Cliquer 'Ajouter un Compte' pour l'ajout d'un compte",
     "LABEL"          : "Label",
     "NEW"            : "Ajouter un Compte",
+    "NUMBER"         : "Numéro de compte",
     "NOT_FOUND"      : "Aucun compte enregistrés...",
-    "RECORD_SAME"    : "Enregistre le meme",
-    "ROOT_PARENT"    : "Parent Racine",
-    "SET_ROOT"       : "Configurer parent",
-    "SUBMIT_CREATE"  : "Soumettre Création",
-    "SUBMIT_UPDATE"  : "Soumettre Modification",
+    "RECORD_SAME"    : "Aucun changement n'a été apporté au formulaire. Mettez à jour les informations du compte, puis appuyez sur Envoyer.",
+    "ROOT_PARENT"    : "Ce compte est défini comme un enfant du compte root. Cela signifie qu'il sera au plus haut niveau dans la hiérarchie des comptes.",
+    "SET_ROOT"       : "Définir comme un compte parent",
+    "SUBMIT_CREATE"  : "Créer un compte",
+    "SUBMIT_UPDATE"  : "Mettre à jour un compte",
     "TITLE"          : "Gestion des Comptes",
     "TITLE_ACCOUNT"  : "Comptes Titre",
     "UPDATED"        : "Modifié",
     "TYPES" : {
+      "BALANCE" : "Balance",
+      "EXPENSE" : "Frais",
       "TITLE" : "Titre",
       "INCOME" : "Produit",
       "BALANCE" : "Balance",
       "EXPENSE" : "Charge"
-    }
+    },
+    "UPDATED"        : "Les données du compte ont été mis à jour"
   },
   "AUTH": {
     "CANNOT_RETURN_TO_LOGIN"     : "Vous êtes actuellement connecté. Pour revenir à la page de connexion, Veuillez vous déconnecter à l'aide de la page des paramètres.",
@@ -192,7 +194,7 @@
   "ERRORS": {
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
-    "NOT_FOUND" : "Non trouvé",
+    "NOT_FOUND" : "Cet enregistrement n'a pas pu être trouvé",
     "UNAUTHORIZED"     : "Vous avez soumis une mauvais nom et mot de passe.  Entrez un nom et mot de passe valid pour continuer.",
     "UNKNOWN" : "Une erreur est survenue."
   },
@@ -298,7 +300,7 @@
       "NO_INVOICES_SELECTED" : "Aucune facture sélectionnée",
       "NO_RECIPIENT"         : "Une facture doit appartenir à une personne avant d'assigner les éléments.",
       "NO_RECORDS_DATABASE"  : "Il n'y a pas d'enregistrements dans la base de données correspondant à cette requête",
-      "NO_SUPPLIER"         : "Aucun Fournisseur",
+      "NO_SUPPLIER"          : "Un ordre d'achat doit avoir un fournisseur avant de préciser les éléments.",
       "OPERATION_SUCCESS"    : "Opération effectuée avec succès",
       "OTHER_ACTIONS"        : "Autres actions",
       "PATIENTS"             : "Patients",
@@ -403,6 +405,7 @@
       "GROUPS_DEBTOR_TITLE"    : "Groupe débiteur",
       "GROUPS_PATIENT_EMPTY"   : "Ce patient n'est membre d'aucun des groupes de patients",
       "GROUPS_PATIENT_TITLE"   : "Groupes de patients",
+      "HOSPITAL_NO"            : "N° d'hôpital.",
       "HOME_PAGE"              : "Page d'accueil par défaut",
       "HOSPITAL_NO"            : "Numero Fiche",
       "HOSPITAL_FILE_NR"       : "Numero Fiche",
@@ -457,7 +460,7 @@
       "PATIENT_ID"             : "ID Patient",
       "PATIENT_NAME"           : "Nom du Patient",
       "PAYMENT"                : "Paiement",
-      "PAYMENT_METHOD"         : "Methode paiement",
+      "PAYMENT_METHOD"         : "Mode de paiement",
       "PERIODS"                : "Périodes",
       "PHONE"                  : "Téléphone",
       "PHONE_NO"               : "Numéro de Téléphone",
@@ -560,7 +563,7 @@
       "ENTER_PRICE"        : "Entrer le prix",
       "ENTER_PROVINCE"     : "Enter province",
       "ENTER_SECTOR"       : "Entrer secteur",
-      "ENTER_SUPPLIER"     : "Entrer fournisseur",
+      "ENTER_SUPPLIER"     : "Entrer le fournisseur",
       "ENTER_UNIT_WEIGHT"  : "Entrer le poids",
       "ENTER_UNIT_VOLUME"  : "Entrer le volume",
       "ENTER_USERNAME"     : "Entrer le nom utilisateur",
@@ -826,20 +829,18 @@
     "REGISTERED"    : "Provinces Enregistrées",
     "TITLE"         : "GESTION DES PROVINCES"
   },
-  "PURCHASES":{
-    "ERRORS" : "Erruers",
-    "PAGE_TITLE" : "Achat",
-    "PAYMENT_METHOD" : "Methode paiement",
-    "PAYMENT_METHOD_EXPLANATION" : "Explication methode paiement",
-    "RECEIPT" : "Recu",
+  "PURCHASES" : {
+    "PAGE_TITLE" : "Achats",
+    "PAYMENT_METHOD" : "Mode de paiement",
+    "PAYMENT_METHOD_EXPLANATION" : "Ce champ fournit les conditions de paiement de l'ordre d'achat convenu. Un achat peut être payée à l'avant, à la livraison, ou dans une autre combinaison de paiements.",
     "ERRORS" : {
-      "INVALID_ITEMS":"Items Invalides"
+      "INVALID_ITEMS" : "Certains des postes de commande ont des erreurs. S'il vous plaît corriger ces erreurs et soumettre à nouveau l'ordre d'achat."
     },
     "RECEIPT" : {
-      "SUCCESS" : "Succes",
-      "TITLE"  : "Recu"
+      "TITLE" : "Bon de commande de réception",
+      "SUCCESS" : "Bon de commande créé."
     }
-  },
+  },  
   "REFERENCE": {
     "ADD"           : "Ajouter une référence",
     "ALERT"         : "Le module gestion de référence est un module qui a été conçu pour permettre l'administration des références existantes au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une référence ainsi que la suppression.",
@@ -1045,7 +1046,7 @@
     "ACCOUNT_STATEMENT"          : "Compte",
     "ADMIN"                      : "Admin",
     "ALL_TRANSACTIONS"           : "Toutes les Transactions",
-    "AUTHORIZE_PURCHASE"         : "Authorisation",
+    "AUTHORIZE_PURCHASE"         : "Autorisation",
     "BALANCE_MENSUELLE"          : "Balance Mensuelle",
     "BALANCE_SHEET"              : "Feuille de Balance",
     "BENEFICIARY"                : "Bénéficiaire",

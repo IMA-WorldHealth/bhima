@@ -14,8 +14,7 @@
 // module dependencies
 const db = require('../../../lib/db');
 const core = require('./core');
-
-var uuid = require('node-uuid');
+const uuid = require('node-uuid');
 
 // expose to the api
 exports.list = list;
@@ -37,8 +36,8 @@ function lookReverseTransaction(uid, user_id) {
       entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
     SELECT
       HUID(UUID()), p.project_id, @fiscalId, @periodId, @transId, p.trans_date,
-      p.record_uuid, 'Credit Note', p.account_id, p.debit * -1, p.credit * -1,
-      p.debit * @exchange * -1, p.credit * @exchange * -1, p.currency_id,
+      p.record_uuid, 'Credit Note', p.account_id, p.credit, p.debit,
+      p.credit * @exchange, p.debit * @exchange, p.currency_id,
       p.entity_uuid, 'C', p.reference_uuid, NULL, 1, p.user_id, NULL, NULL
     FROM posting_journal AS p
     WHERE p.record_uuid = ?;`;
@@ -72,10 +71,7 @@ function lookReverseTransaction(uid, user_id) {
     );
 
   return transaction.execute()
-    .then(function (rows) {
-      return rows;
-    });
-
+    .catch(core.handler);
 }
 
 /**

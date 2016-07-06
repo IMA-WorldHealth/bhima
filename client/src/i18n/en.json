@@ -4,6 +4,7 @@
     "ACCOUNT_COST"   : "Costs Accounts",
     "ACCOUNT_LIST"   : "Accounts list",
     "ACCOUNT_NUMBER" : "Account Number",
+    "NUMBER"         : "Account Number",
     "ADD"            : "Add Account",
     "ADD_CHILD"      : "Add child account",
     "ALL_ACCOUNT"    : "All Accounts",
@@ -624,8 +625,13 @@
       "NUMBER"         : "Must be a number",
       "PASSWORD_MATCH" : "The passwords do not match!",
       "REQUIRED"       : "This field cannot be empty.",
+<<<<<<< 662fe6e1654dfdd13fd4660c528d62460b38609b
       "UNIQUE"         : "This field must be unique. This value is already taken.",
       "REQUIRED_EMAIL" : "Required email"
+=======
+      "REQUIRED_EMAIL" : "required Email",
+      "UNIQUE"         : "This field must be unique. This value is already taken."
+>>>>>>> Complete translate file
     },
     "WARNNINGS": {
       "BAD_FILE_TYPE"   : "Bad file type",
@@ -1100,7 +1106,7 @@
     "GRADE_EMPLOYERS"            : "Grade Employees",
     "GRAND_LIVRE"                : "General Ledger",
     "GRAND_LIVRE_REPORT"         : "General Ledger",
-    "GRP_INVOICING"              : "Groupe Invoicing",
+    "GRP_INVOICING"              : "Support (Third)",
     "HOLIDAY_MANAGEMENT"         : "Holiday Management",
     "HOSPITAL"                   : "Hospital",
     "INCOME_EXPENSE"             : "Income/Expense",
