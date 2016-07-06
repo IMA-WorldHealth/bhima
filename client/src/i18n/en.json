@@ -625,13 +625,8 @@
       "NUMBER"         : "Must be a number",
       "PASSWORD_MATCH" : "The passwords do not match!",
       "REQUIRED"       : "This field cannot be empty.",
-<<<<<<< 662fe6e1654dfdd13fd4660c528d62460b38609b
-      "UNIQUE"         : "This field must be unique. This value is already taken.",
-      "REQUIRED_EMAIL" : "Required email"
-=======
       "REQUIRED_EMAIL" : "required Email",
       "UNIQUE"         : "This field must be unique. This value is already taken."
->>>>>>> Complete translate file
     },
     "WARNNINGS": {
       "BAD_FILE_TYPE"   : "Bad file type",
