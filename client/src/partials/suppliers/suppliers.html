@@ -81,7 +81,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ "SUPPLIER.NEW_SUPPLIER" | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="SupplierCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="CreateForm" ng-submit="SupplierCtrl.submit(CreateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
@@ -182,7 +182,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'SUPPLIER.EDIT_SUPPLIER' | translate }} </b> </div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="SupplierCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="UpdateForm" ng-submit="SupplierCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
                 <input type="text" class="form-control" name="name" ng-model="SupplierCtrl.supplier.name" required>

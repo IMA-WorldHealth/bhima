@@ -1453,24 +1453,25 @@ CREATE TABLE `province` (
 DROP TABLE IF EXISTS `purchase`;
 
 CREATE TABLE `purchase` (
-  `uuid`          BINARY(16) NOT NULL,
-  `project_id`    SMALLINT(5) UNSIGNED NOT NULL,
-  `reference`     INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `cost`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0,
-  `currency_id`   TINYINT(3) UNSIGNED NOT NULL,
-  `creditor_uuid` BINARY(16) DEFAULT NULL,
-  `date`          DATETIME NOT NULL,
-  `created_at`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `user_id`       SMALLINT(5) UNSIGNED NOT NULL,
-  `note`          TEXT,
+  `uuid`            BINARY(16) NOT NULL,
+  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `cost`            DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0,
+  `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
+  `supplier_uuid`   BINARY(16) DEFAULT NULL,
+  `date`            DATETIME NOT NULL,
+  `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  `payment_method`  TEXT,
+  `note`            TEXT,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_1` (`project_id`, `reference`),
   KEY `project_id` (`project_id`),
   KEY `reference` (`reference`),
-  KEY `creditor_uuid` (`creditor_uuid`),
+  KEY `supplier_uuid` (`supplier_uuid`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
+  FOREIGN KEY (`supplier_uuid`) REFERENCES `supplier` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

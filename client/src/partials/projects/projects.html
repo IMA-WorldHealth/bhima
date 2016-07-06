@@ -70,9 +70,7 @@
             <form
               name="CreateForm"
               bh-submit="ProjectCtrl.submit(CreateForm)"
-              autocomplete="off"
-              autocapitalize="off"
-              autocorrect="off"
+              bh-form-defaults
               novalidate>
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
@@ -148,9 +146,7 @@
             <form
               name="UpdateForm"
               bh-submit="ProjectCtrl.submit(UpdateForm)"
-              autocomplete="off"
-              autocapitalize="off"
-              autocorrect="off"
+              bh-form-defaults
               novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label">{

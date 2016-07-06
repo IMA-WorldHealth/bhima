@@ -1,8 +1,9 @@
-
+/* jshint expr:true */
+/* global element, by, browser */
 function InvoiceRegistryPage() {
   var page = this;
 
-  //journal page component
+  // journal page component
   var searchButton = element(by.id('filterButton'));
   var grid = element(by.id('invoice-registry'));
   var gridRows = grid.element( by.css('.ui-grid-render-container-body')).all( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
@@ -12,13 +13,15 @@ function InvoiceRegistryPage() {
     return gridRows.count();
   }
 
-    function showFilterDialog(){
-        searchButton.click();
-    }
+  function showFilterDialog(){
+    searchButton.click();
+  }
 
   function showInvoiceProof(line) {
-      var row = grid.element( by.css('.ui-grid-render-container-body')).element( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row( line ) );
-      row.element( by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(6)).click();
+    var row = grid.element( by.css('.ui-grid-render-container-body')).element( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row( line ) );
+
+    // click the <a> tag within the cell
+    row.element( by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(6)).element( by.tagName('a')).click();
   }
 
   function isInvoiceProofPresent() {
@@ -30,4 +33,5 @@ function InvoiceRegistryPage() {
   page.showInvoiceProof = showInvoiceProof;
   page.isInvoiceProofPresent = isInvoiceProofPresent;
 }
+
 module.exports = InvoiceRegistryPage;

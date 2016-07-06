@@ -15,13 +15,17 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
 
   var cache = AppCache('PatientRegistry');
 
-  var patientActionsTemplate =
-      '<div style="padding : 5px"> ' +
+  var patientDetailActionTemplate =
+      '<div class="ui-grid-cell-contents"> ' +
         '<a ui-sref="patientRecord.details({patientID : row.entity.uuid})"> ' +
-          '<span class="glyphicon glyphicon-list-alt"></span> {{ "PATIENT_REGISTRY.RECORD" | translate }} ' +
+          '<span class="fa fa-book"></span> {{ "PATIENT_REGISTRY.RECORD" | translate }} ' +
         '</a>' +
+      '</div>';
+
+  var patientEditActionTemplate =
+      '<div class="ui-grid-cell-contents"> ' +
         '<a ui-sref="patientEdit({uuid : row.entity.uuid})"> ' +
-          '<span class="glyphicon glyphicon-edit"></span> {{ "TABLE.COLUMNS.EDIT" | translate }} ' +
+          '<span class="fa fa-edit"></span> {{ "TABLE.COLUMNS.EDIT" | translate }} ' +
         '</a> ' +
       '</div>';
 
@@ -47,7 +51,8 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
       { field : 'registration_date', cellFilter:'date', displayName : 'TABLE.COLUMNS.DATE_REGISTERED', headerCellFilter : 'translate' },
       { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter : 'translate' },
       { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter : 'translate' },
-      { name : 'Actions', displayName : '', cellTemplate : patientActionsTemplate }
+      { name : 'actionsDetail', displayName : '', cellTemplate : patientDetailActionTemplate },
+      { name : 'actionsEdit', displayName : '', cellTemplate : patientEditActionTemplate }
     ],
     enableSorting : true
   };

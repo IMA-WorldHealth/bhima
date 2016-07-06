@@ -169,7 +169,6 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   vm.addItems = addItems;
   vm.handleChange = handleChange;
 
-
   // Set initial default values
   clear();
 }

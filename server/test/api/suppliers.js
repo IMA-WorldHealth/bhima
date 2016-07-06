@@ -11,7 +11,7 @@ helpers.configure(chai);
  *
  * This test suite implements full CRUD on the /supplier HTTP API endpoint.
  */
-describe('(/supplier) The supplier API endpoint', function () {
+describe('(/suppliers) The supplier API endpoint', function () {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
@@ -30,7 +30,7 @@ describe('(/supplier) The supplier API endpoint', function () {
     locked : 0
   };
 
-  var SUPPLIER_KEY = [
+  var responseKeys = [
     'uuid', 'creditor_uuid', 'name', 'address_1', 'address_2',
     'email', 'fax', 'note', 'phone', 'international', 'locked'
   ];
@@ -46,7 +46,7 @@ describe('(/supplier) The supplier API endpoint', function () {
   };
 
 
-  it('POST /supplier should create a new supplier ', function () {
+  it('POST /suppliers should create a new supplier ', function () {
     return agent.post('/suppliers')
       .send(supplier)
       .then(function (res) {
@@ -62,17 +62,17 @@ describe('(/supplier) The supplier API endpoint', function () {
   });
 
 
-  it('GET /supplier returns a list of supplier ', function () {
+  it('GET /suppliers returns a list of supplier ', function () {
     return agent.get('/suppliers')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body[0]).to.contain.all.keys(SUPPLIER_KEY);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /supplier/:id should return a 404 error for unknown id', function () {
+  it('GET /suppliers/:id should return a 404 error for unknown id', function () {
     return agent.get('/suppliers/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
@@ -81,12 +81,10 @@ describe('(/supplier) The supplier API endpoint', function () {
   });
 
 
-  it('GET /supplier/?locked=0 returns a complete list of unlocked supplier', function () {
+  it('GET /suppliers/?locked=0 returns a complete list of unlocked supplier', function () {
     return agent.get('/suppliers?locked=0')
       .then(function (res) {
-        helpers.api.listed(res, 1);
-        expect(res.body[0].locked).to.equal(0);
-        expect(res.body[0]).to.contain.all.keys(SUPPLIER_KEY);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
@@ -100,12 +98,12 @@ describe('(/supplier) The supplier API endpoint', function () {
   });
 
 
-  it('put /suppliers/:uuid should update an existing supplier', function () {
+  it('PUT /suppliers/:uuid should update an existing supplier', function () {
     return agent.put('/suppliers/' + supplier.uuid)
       .send({ name : 'SUPPLIER UPDATE' })
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res.body).to.have.keys(SUPPLIER_KEY);
+        expect(res.body).to.have.keys(responseKeys);
         expect(res.body.name).to.equal('SUPPLIER UPDATE');
       })
       .catch(helpers.handler);
@@ -121,13 +119,13 @@ describe('(/supplier) The supplier API endpoint', function () {
   });
 
   /*
-   * @todo - Theses tests dod not actually test anything.  A /search endpoint
+   * @todo - Theses tests does not actually test anything.  A /search endpoint
    * should always return 200 OK.  A better test will check that content
    * filtering happened.
    *
    * Furthermore, this isn't how you use .send();
    */
-  it('GET /supplier/search filtering the supplier list from the property name', function () {
+  it('GET /suppliers/search filtering the supplier list from the property name', function () {
     return agent.get('/suppliers/search')
       .send(FILTER)
       .then(function (res) {
@@ -138,7 +136,7 @@ describe('(/supplier) The supplier API endpoint', function () {
   });
 
   /* @todo - see above */
-  it('GET /supplier/search the filter returns an empty list because of key words to send to server', function () {
+  it('GET /suppliers/search the filter returns an empty list because of key words to send to server', function () {
     return agent.get('/suppliers/search')
       .send(NOT_FOUND)
       .then(function (res) {

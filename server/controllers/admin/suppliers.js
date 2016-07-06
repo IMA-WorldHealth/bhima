@@ -5,6 +5,7 @@
  * @description
  * This controller exposes an API to the client for reading and writing supplier
  */
+
 'use strict';
 
 const db = require('../../lib/db');
@@ -12,7 +13,7 @@ const uuid = require('node-uuid');
 const NotFound = require('../../lib/errors/NotFound');
 const Topic = require('../../lib/topic');
 
-function lookupSupplier(uuid) {
+function lookupSupplier(uid) {
   const sql = `
     SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
       supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note,
@@ -21,10 +22,10 @@ function lookupSupplier(uuid) {
     WHERE supplier.uuid = ?;
   `;
 
-  return db.exec(sql, [db.bid(uuid)])
+  return db.exec(sql, [db.bid(uid)])
     .then(function (rows) {
       if (!rows.length) {
-        throw new NotFound(`Could not find a supplier with uuid ${uuid}`);
+        throw new NotFound(`Could not find a supplier with uuid ${uid}.`);
       }
 
       return rows[0];
@@ -39,21 +40,20 @@ function lookupSupplier(uuid) {
  */
 function list(req, res, next) {
   let sql = `
-    SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid,
-      supplier.name, supplier.address_1, supplier.address_2, supplier.email,
-      supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
+    SELECT
+      BUID(supplier.uuid) AS uuid, BUID(supplier.creditor_uuid) AS creditor_uuid, supplier.name
     FROM supplier
   `;
 
-  if (req.query.locked === '0') {
-    sql += 'WHERE supplier.locked = 0 ';
+  const locked = Number(req.query.locked);
+  const params = [];
+
+  if (!isNaN(locked)) {
+    sql += 'WHERE supplier.locked = ?;';
+    params.push(locked);
   }
 
-  if (req.query.locked === '1') {
-    sql += 'WHERE supplier.locked = 1 ';
-  }
-
-  db.exec(sql)
+  db.exec(sql, params)
   .then(function (rows) {
     res.status(200).json(rows);
   })

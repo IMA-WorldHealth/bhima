@@ -4,12 +4,15 @@
 * This controller is mostly responsible for depot-dependent stock queries.  Most
 * routes require that a depot ID is specified.  Any route without a depot ID
 * might be better positioned in the /inventory/ controller.
+*
+* @todo(jniles) - review this module
 */
+'use strict';
 
-var uuid = require('node-uuid'),
-    db = require('../../lib/db'),
-    distributions = require('./depots/distributions'),
-	NotFound = require('../../lib/errors/NotFound');	
+const uuid = require('node-uuid');
+const db = require('../../../lib/db');
+const distributions = require('./distributions');
+const NotFound = require('../../../lib/errors/NotFound');
 
 /** expose depots routes */
 exports.list   = list;
@@ -37,7 +40,6 @@ exports.listStockExpirations = listStockExpirations;
 * @function create
 */
 function create(req, res, next) {
-  'use strict';
   var query = 'INSERT INTO depot SET ?';
 
   // prevent missing uuid by generating a new one
@@ -58,7 +60,6 @@ function create(req, res, next) {
 * @function remove
 */
 function remove(req, res, next) {
-  'use strict';
 
   var query = 'DELETE FROM depot WHERE uuid = ?';
   const uid = db.bid(req.params.uuid);
@@ -78,8 +79,6 @@ function remove(req, res, next) {
 * @function update
 */
 function update(req, res, next) {
-  'use strict';
-
   var query = 'UPDATE depot SET ? WHERE uuid = ?';
   const uid = db.bid(req.params.uuid);
 
@@ -89,9 +88,9 @@ function update(req, res, next) {
   db.exec(query, [req.body, uid])
   .then(selectDepot)
   .then(function (rows) {
-    if (!rows.length) { 
-	  throw new NotFound(`Could not find a depot with uuid ${uuid.unparse(uid)}`);
-	}
+    if (!rows.length) {
+      throw new NotFound(`Could not find a depot with uuid ${uuid.unparse(uid)}`);
+    }
     res.status(200).send(rows);
   })
   .catch(next)
@@ -112,8 +111,6 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  'use strict';
-
   var sql =
     `SELECT BUID(uuid) as uuid, text, is_warehouse
     FROM depot
@@ -134,7 +131,6 @@ function list(req, res, next) {
 * @function detail
 */
 function detail(req, res, next) {
-  'use strict';
 
   var uid = db.bid(req.params.uuid);
 
@@ -176,7 +172,6 @@ function detail(req, res, next) {
 * @function listDistributions
 */
 function listDistributions(req, res, next) {
-  'use strict';
 
   var sql,
       options = req.query;
@@ -288,7 +283,6 @@ function listDistributions(req, res, next) {
 }
 
 function detailDistributions(req, res, next) {
-  'use strict';
 
   var sql,
       uuid = req.params.uuid;
@@ -324,7 +318,6 @@ function detailDistributions(req, res, next) {
 * Creates a new distribution for services, patients, etc.
 */
 function createDistributions(req, res, next) {
-  'use strict';
 
   // FIXME
   // We need a better way of passing the project ID into the requests,
@@ -347,8 +340,6 @@ function createDistributions(req, res, next) {
 * @function listAvailableLots
 */
 function listAvailableLots(req, res, next) {
-  'use strict';
-
   var sql,
       depot = req.params.depotId;
 
@@ -386,8 +377,6 @@ function listAvailableLots(req, res, next) {
 * @function detailAvailableLots
 */
 function detailAvailableLots(req, res, next) {
-  'use strict';
-
   var sql,
       depot = req.params.depotId,
       uuid = req.params.uuid;
@@ -420,8 +409,6 @@ function detailAvailableLots(req, res, next) {
 * @function listExpiredLots
 */
 function listExpiredLots(req, res, next) {
-  'use strict';
-
   var sql,
       depot = req.params.depotId;
 
@@ -461,8 +448,6 @@ function listExpiredLots(req, res, next) {
 * @function listStockExpirations
 */
 function listStockExpirations(req, res, next) {
-  'use strict';
-
   var sql,
       depot = req.params.depotId,
       options = req.query;

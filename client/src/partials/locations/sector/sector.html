@@ -12,11 +12,11 @@
 <div class="flex-util">
   <a href="#/locations" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.LOCATION_MANAGER' | translate }}
-  </a> 
+  </a>
 
   <button class="btn btn-sm btn-default" id="create" ng-click="SectorCtrl.create()" data-method="create">
     <span class="glyphicon glyphicon-plus-sign"></span> {{'SECTOR.NEW_SECTOR' | translate}}
-  </button> 
+  </button>
 </div>
 
 
@@ -56,7 +56,7 @@
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
             <h4>{{ 'SECTOR.CONFIG' | translate }}</h4>
-            <p>{{ 'SECTOR.INFO' | translate }}</p>        
+            <p>{{ 'SECTOR.INFO' | translate }}</p>
           </div>
         </div>
 
@@ -78,15 +78,15 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'SECTOR.REGISTER' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="SectorCtrl.submit(CreateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="CreateForm" ng-submit="SectorCtrl.submit(CreateForm)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="country" 
-                  ng-model="SectorCtrl.sector.country_uuid" 
-                  id="country"  
+                <select
+                  class="form-control"
+                  name="country"
+                  ng-model="SectorCtrl.sector.country_uuid"
+                  id="country"
                   ng-options="c.uuid as c.name for c in SectorCtrl.countries | orderBy:'name'"
                   ng-change="SectorCtrl.loadProvinces()"
                   required>
@@ -94,23 +94,23 @@
                 </select>
                 <div class="help-block" ng-messages="CreateForm.country.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.province.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="province" 
-                  ng-model="SectorCtrl.sector.province_uuid" 
-                  id="province"  
+                <select
+                  class="form-control"
+                  name="province"
+                  ng-model="SectorCtrl.sector.province_uuid"
+                  id="province"
                   ng-options="p.uuid as p.name for p in SectorCtrl.provinces | orderBy:'name'"
                   required>
                   <option value="" disabled> -- {{ SectorCtrl.messages.province | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.province.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.sector.$invalid }">
@@ -118,9 +118,9 @@
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_SECTOR' | translate }}" ng-maxlength="SectorCtrl.maxLength" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
                 <div class="help-block" ng-messages="CreateForm.sector.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
-              
+
               <div class="form-group">
                 <button class="btn btn-default" id="submit-sector" type="submit" data-method="submit">
                   {{ "FORM.BUTTONS.SAVE" | translate }}
@@ -131,21 +131,21 @@
               </div>
 
             </form>
-          </div>        
+          </div>
         </div>
 
         <!-- Form for updating Sector -->
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'SECTOR.EDIT' | translate }}</div>
-          <div class="panel-body">        
-            <form class="panel-body" name="UpdateForm" ng-submit="SectorCtrl.submit(UpdateForm)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+          <div class="panel-body">
+            <form name="UpdateForm" ng-submit="SectorCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.COUNTRY" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="country" 
-                  ng-model="SectorCtrl.sector.country_uuid" 
-                  id="country"  
+                <select
+                  class="form-control"
+                  name="country"
+                  ng-model="SectorCtrl.sector.country_uuid"
+                  id="country"
                   ng-options="c.uuid as c.name for c in SectorCtrl.countries | orderBy:'name'"
                   ng-change="SectorCtrl.loadProvinces()"
                   required>
@@ -153,23 +153,23 @@
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.country.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                  
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.province.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
-                <select 
-                  class="form-control" 
-                  name="province" 
-                  ng-model="SectorCtrl.sector.province_uuid" 
-                  id="province"  
+                <select
+                  class="form-control"
+                  name="province"
+                  ng-model="SectorCtrl.sector.province_uuid"
+                  id="province"
                   ng-options="p.uuid as p.name for p in SectorCtrl.provinces | orderBy:'name'"
                   required>
                   <option value="" disabled> -- {{ SectorCtrl.messages.province | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.province.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.sector.$invalid }">
@@ -177,9 +177,9 @@
                 <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_SECTOR' | translate }}" ng-maxlength="SectorCtrl.maxLength" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
                 <div class="help-block" ng-messages="UpdateForm.sector.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
-              
+
               <div class="form-group">
                 <button class="btn btn-default" id="change_sector" type="submit" data-method="submit">
                   {{ "FORM.BUTTONS.SAVE" | translate }}
@@ -187,12 +187,12 @@
                 <button class="btn btn-default" type="button" ng-click="SectorCtrl.cancel()" data-method="cancel">
                   {{ "FORM.BUTTONS.RESET" | translate }}
                 </button>
-              </div>             
+              </div>
             </form>
-          </div>         
+          </div>
         </div>
 
       </div>
     </div>
-  </div>  
+  </div>
 </div>

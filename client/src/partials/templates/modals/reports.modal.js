@@ -68,6 +68,6 @@ function ReportsModalController($http, Instance, $sce, $window, Data, Notify, ut
       $window.print();
     }
     Instance.close();
-  }
-
+  };
+  
 }

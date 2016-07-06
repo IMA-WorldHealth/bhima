@@ -46,7 +46,7 @@
 
               <tr ng-if="!SubsidyCtrl.subsidies.length">
                 <td colspan="4">{{ "SUBSIDY.NO_SUBSIDY" | translate }}</td>
-              </tr>            
+              </tr>
             </tbody>
           </table>
         </div>
@@ -92,14 +92,14 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading">{{ 'SUBSIDY.ADDING_SUBSIDY' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="SubsidyCtrl.submit(CreateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="CreateForm" ng-submit="SubsidyCtrl.submit(CreateForm.$invalid)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
                 <input type="text" class="form-control" name="label" ng-maxlength="SubsidyCtrl.length250" ng-model="SubsidyCtrl.subsidy.label" required>
                 <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.value.$invalid }">
@@ -107,7 +107,7 @@
                 <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
                 <div class="help-block" ng-messages="CreateForm.value.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_id.$invalid }">
@@ -117,7 +117,7 @@
                 </select>
                 <div class="help-block" ng-messages="CreateForm.account_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                 
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
@@ -125,7 +125,7 @@
                 <textarea class="form-control" id="description" name="description" ng-maxlength="SubsidyCtrl.maxLength" ng-model="SubsidyCtrl.subsidy.description" rows="3"></textarea>
                 <div class="help-block" ng-messages="CreateForm.description.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -137,20 +137,20 @@
                 </button>
               </div>
             </form>
-          </div>        
+          </div>
         </div>
 
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading">{{ 'SUBSIDY.UPDATING_SUBSIDY' | translate }}</div>
           <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="SubsidyCtrl.submit(UpdateForm.$invalid)" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="UpdateForm" ng-submit="SubsidyCtrl.submit(UpdateForm.$invalid)" bh-form-defaults novalidate>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.label.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
                 <input type="text" class="form-control" name="label" ng-maxlength="SubsidyCtrl.length250" ng-model="SubsidyCtrl.subsidy.label" required>
                 <div class="help-block" ng-messages="UpdateForm.label.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.value.$invalid }">
@@ -158,7 +158,7 @@
                 <input type="number" class="form-control" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
                 <div class="help-block" ng-messages="UpdateForm.value.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.account_id.$invalid }">
@@ -168,7 +168,7 @@
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.account_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                                
+                </div>
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.description.$invalid }">
@@ -176,7 +176,7 @@
                 <textarea class="form-control" id="description" name="description" ng-maxlength="SubsidyCtrl.maxLength" ng-model="SubsidyCtrl.subsidy.description" rows="3"></textarea>
                 <div class="help-block" ng-messages="UpdateForm.description.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>                
+                </div>
               </div>
 
               <div class="form-group">
@@ -188,10 +188,10 @@
                 </button>
               </div>
             </form>
-          </div>        
+          </div>
         </div>
 
       </div>
     </div>
-  </div>  
+  </div>
 </div>

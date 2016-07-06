@@ -13,10 +13,10 @@ INSERT INTO unit VALUES
   (3,   'Invoice Registry','TREE.INVOICE_REGISTRY','Invoice Registry',5,'/partials/invoices/registry/','/invoices'),
   (4,   'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/user_permission/','/permissions'),
   (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
-  (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',30,'/partials/accounts/','/accounts'),
-  (9,   'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',30,'/partials/journal/','/journal'),
+  (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',5,'/partials/accounts/','/accounts'),
+  (9,   'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',5,'/partials/journal/','/journal'),
   (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
-  (13,  'Fiscal Year','TREE.FISCAL_YEAR','Fiscal year configuration page',30,'/partials/fiscal/','/fiscal'),
+  (13,  'Fiscal Year','TREE.FISCAL_YEAR','Fiscal year configuration page',5,'/partials/fiscal/','/fiscal'),
   (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register'),
   (15,  'Patient Registry','TREE.PATIENT_REGISTRY','Patient Registry',12,'/partials/patients/registry/','/patients'),
   (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/partials/patient_invoice/','/invoices/patient'),
@@ -26,7 +26,6 @@ INSERT INTO unit VALUES
   (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
   (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/partials/patient/group/','/patients/groups/'),
-  (30,  'Accounting','TREE.ACCOUNTING','',0,'/partials/accounting/index.html','/accounting/'),
   (42,  'Project','TREE.PROJECT','',1,'/partials/projects/','/projects'),
   (48,  'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
   (57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
@@ -35,18 +34,19 @@ INSERT INTO unit VALUES
   (105, 'Cashbox Management','TREE.CASHBOX_MANAGEMENT','',1,'/partials/cash/cashbox/','/cashboxes'),
   (106, 'Depot Management', 'TREE.DEPOTS_MANAGEMENT', 'Depot Management module', 1, '/partials/depots/', '/depots'),
   (107, 'Debtor Groups Management', 'TREE.DEBTOR_GRP', 'Debtor Groups Management module', 1, '/partials/debtors/groups/', '/debtors/groups'),
-  (109, 'Section du bilan','TREE.SECTION_BILAN','',30,'/partials/section_bilan/','/section_bilan'),
-  (110, 'Section resultat','TREE.SECTION_RESULTAT','',30,'/partials/section_resultat/','/section_resultat'),
-  (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',30,'/partials/references/groups','/references/groups'),
-  (112, 'Reference','TREE.REFERENCE','References',30,'/partials/references','/references'),
-  (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 30, '/partials/vouchers/simple', '/vouchers/simple'),
+  (109, 'Section du bilan','TREE.SECTION_BILAN','',5,'/partials/section_bilan/','/section_bilan'),
+  (110, 'Section resultat','TREE.SECTION_RESULTAT','',5,'/partials/section_resultat/','/section_resultat'),
+  (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',5,'/partials/references/groups','/references/groups'),
+  (112, 'Reference','TREE.REFERENCE','References',5,'/partials/references','/references'),
+  (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 5, '/partials/vouchers/simple', '/vouchers/simple'),
   (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services'),
   -- (136, 'Patient Documents', 'TREE.PATIENT_DOCUMENT', 'Patient Document Module', 12, '/partials/patients/documents', '/patients/documents'),
-  (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 30, '/partials/vouchers/complex', '/vouchers/complex'),
+  (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 5, '/partials/vouchers/complex', '/vouchers/complex'),
   (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
   (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration'),
-  (141, 'Vouchers Records', 'TREE.VOUCHER_RECORDS', 'Vouchers records module', 30, '/partials/vouchers/records', '/vouchers/records');
+  (141, 'Vouchers Records', 'TREE.VOUCHER_RECORDS', 'Vouchers records module', 30, '/partials/vouchers/records', '/vouchers/records'),
+  (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create');
 
 INSERT INTO `account_type` VALUES
 
@@ -151,9 +151,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Location Management
 (26,1),
 
--- [Folder] Accounting
-(30, 1),
-
 -- Projects
 (42,1),
 
@@ -214,20 +211,25 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- inventory configuration module
 (140, 1),
 
+-- Voucher records
+(141, 1),
+
+-- purchase order creation
+(142, 1),
+
 -- Update permission for Regular user
 
 -- Account Management
 (6,2),
 
--- Fiscal Year
-(13,2),
+-- [Folder] Finance
+(5,2),
 
 -- [Folder] Accounting
 (30, 2),
 
--- Voucher records
-(141, 1);
-
+-- Fiscal Year
+(13,2);
 
 
 -- testing financial transactions
@@ -323,6 +325,10 @@ INSERT INTO `creditor_group` VALUES
 INSERT INTO `creditor` VALUES
   (HUID('42d3756a-7770-4bb8-a899-7953cd859892'),HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'),'Personnel'),
   (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'),HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'),'Fournisseur');
+
+-- Supplier
+INSERT INTO `supplier` (uuid, creditor_uuid, name, address_1, address_2, email) VALUES
+  (HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), 'Test Supplier', '12th Avenue', 'New York City, NY 34305', 'supplier@test.org');
 
 -- Grade
 INSERT INTO `grade` VALUES

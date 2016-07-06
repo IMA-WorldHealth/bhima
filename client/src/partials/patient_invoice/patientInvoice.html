@@ -15,7 +15,7 @@
       <div class="col-xs-12">
         <div class="panel panel-default">
           <div class="panel-body">
-            <form name="detailsForm" autocomplete="off" autocapitalize="off" autocorrect="off" novalidate>
+            <form name="detailsForm" bh-form-defaults novalidate>
               <div class="col-md-6">
 
                 <div class="form-group">
@@ -46,13 +46,7 @@
 
                 <label class="control-label">
                   {{ "FORM.LABELS.TYPE" | translate }}
-                  <span
-                    class="text-info fa fa-info-circle"
-                    uib-popover-template="'typePopover.tmpl.html'"
-                    popover-placement="right"
-                    popover-append-to-body="true"
-                    popover-trigger="mouseenter">
-                  </span>
+                  <bh-info template="typePopover.tmpl.html" direction="right"></bh-info>
                 </label>
 
                 <!-- TODO distributable vs. non distributable sales or invoices should be designed/reviewed carefully -->
@@ -78,7 +72,6 @@
                 -->
                 <bh-date-editor
                     date-value="PatientInvoiceCtrl.Invoice.details.date"
-                    form="detailsForm"
                     validation-trigger="detailsForm.$submitted"
                     min-date="PatientInvoiceCtrl.minimumDate"
                     max-date="PatientInvoiceCtrl.timestamp">
@@ -189,29 +182,27 @@
 
             <h4>
               {{ "FORM.LABELS.BILLING_SERVICES" | translate }}
-
-              <!-- popover template definitions temporarily at the base of this file -->
               <span
-                class="text-info"
+                class="text-info fa fa-info-circle"
                 ng-show="PatientInvoiceCtrl.Invoice.billingServices.length > 0"
                 uib-popover-template="'billingServicesPopover.tmpl.html'"
                 popover-placement="right"
                 popover-append-to-body="true"
-                popover-trigger="mouseenter">
-                <span class="fa fa-info-circle"></span>
+                popover-trigger="mouseenter"
+                >
               </span>
             </h4>
 
             <h4>
               {{ "FORM.LABELS.SUBSIDIES" | translate }}
               <span
-                class="text-info"
+                class="text-info fa fa-info-circle"
                 ng-show="PatientInvoiceCtrl.Invoice.subsidies.length > 0"
                 uib-popover-template="'subsidiesPopover.tmpl.html'"
                 popover-placement="right"
                 popover-append-to-body="true"
-                popover-trigger="mouseenter">
-                <span class="fa fa-info-circle"></span>
+                popover-trigger="mouseenter"
+                >
               </span>
             </h4>
 

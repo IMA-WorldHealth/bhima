@@ -113,7 +113,7 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
 
   AccountGrid.prototype.insertDifference = function insertDifference(account, index) {
     this.data.splice(index, 0, account);
-  }
+  };
 
   return AccountGrid;
 }

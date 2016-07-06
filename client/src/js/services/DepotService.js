@@ -9,15 +9,8 @@ DepotService.$inject = ['PrototypeApiService'];
  *
  * @description
  * Encapsulates common requests to the /depots/ URL.
- *
- * @requires PrototypeApiService
  */
-function DepotService(PrototypeApiService) {
-  var service = this;
-
-  // inherit from PrototypeApiService
-  angular.extend(service, PrototypeApiService);
-
-  // the url target
-  service.url = '/depots/';
+function DepotService(Api) {
+  var service = new Api('/depots/');
+  return service;
 }

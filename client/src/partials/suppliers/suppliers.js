@@ -8,7 +8,7 @@ SupplierController.$inject = [
 
 function SupplierController(supplierService, creditorService, util) {
   var vm = this;
-  
+
   vm.view = 'default';
   vm.state = {};
 
@@ -16,10 +16,10 @@ function SupplierController(supplierService, creditorService, util) {
   vm.create = create;
   vm.submit = submit;
   vm.update = update;
-  vm.cancel = cancel; 
+  vm.cancel = cancel;
 
   vm.maxLength = util.maxTextLength;
-  
+
   function handler(error) {
     console.error(error);
   }
@@ -41,11 +41,11 @@ function SupplierController(supplierService, creditorService, util) {
   function cancel() {
     vm.view = 'default';
   }
-  
+
 
   function create() {
     vm.view = 'create';
-    vm.supplier = {};    
+    vm.supplier = {};
   }
 
   // switch to update mode
@@ -54,7 +54,7 @@ function SupplierController(supplierService, creditorService, util) {
     vm.view = 'update';
     vm.supplier = data;
   }
-  
+
   // refresh the displayed Suppliers
   function refreshSuppliers() {
     return supplierService.read(null,{ detailed : 1 })
@@ -68,16 +68,16 @@ function SupplierController(supplierService, creditorService, util) {
   function submit(form) {
 
      // stop submission if the form is invalid
-    if (form.$invalid) { 
+    if (form.$invalid) {
       vm.state.errored = true;
-      return; 
+      return;
     }
 
     var promise;
     var creation = (vm.view === 'create');
 
     var supplier = angular.copy(vm.supplier);
-    
+
     promise = (creation) ?
       supplierService.create(supplier) :
       supplierService.update(supplier.uuid, supplier);
@@ -88,9 +88,9 @@ function SupplierController(supplierService, creditorService, util) {
       })
       .then(function () {
         vm.view = creation ? 'create_success' : 'update_success';
-      })      
+      })
       .catch(handler);
   }
 
-  startup();  
+  startup();
 }

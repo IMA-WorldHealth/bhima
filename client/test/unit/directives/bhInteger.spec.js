@@ -1,55 +1,58 @@
-describe('Integer validation directive', function () { 
-  var $scope;
-  var form;
+/* global inject, expect */
+describe('(directive) bhInteger', function () {
+  'use strict';
+
+  let $scope;
+  let form;
 
   beforeEach(module('bhima.directives'));
-  
-  // $complile and $rootScope are injected using angular name based dependency 
+
+  // $complile and $rootScope are injected using angular name based dependency
   // injection
-  beforeEach(inject(function ($compile, $rootScope) { 
+  beforeEach(inject(($compile, $rootScope) => {
     $scope = $rootScope;
 
-    var element = angular.element(
-      '<form name="form">' + 
-      '<input ng-model="models.intValue" name="intValue" bh-integer />' + 
-      '</form>'
-    );
-    
+    const element = angular.element(`
+      <form name="form">
+        <input ng-model="models.intValue" name="intValue" bh-integer />
+      </form>
+    `);
+
     // initialise models that will be used
     $scope.models = {
       intValue : null
     };
-  
+
     // compile angular element in with the context of $rootScope
     $compile(element)($scope);
     form = $scope.form;
   }));
-  
 
-  it('validates an integer value', function () { 
-    var correctIntegerValue = 10;
+
+  it('validates an integer value', function () {
+    const correctIntegerValue = 10;
 
     form.intValue.$setViewValue(correctIntegerValue);
     $scope.$digest();
 
     expect($scope.models.intValue).to.equal(correctIntegerValue);
-    expect(form.intValue.$valid).to.be.true;
+    expect(form.intValue.$valid).to.equal(true);
   });
 
-  it('blocks non integer values (string/decimal)', function () { 
-    var incorrectDecimalValue = 10.23;
-    var incorrectStringValue = 'value';
+  it('blocks non integer values (string/decimal)', function () {
+    const incorrectDecimalValue = 10.23;
+    const incorrectStringValue = 'value';
 
     form.intValue.$setViewValue(incorrectDecimalValue);
     $scope.$digest();
 
-    expect($scope.models.intValue).to.be.undefined;
-    expect(form.intValue.$valid).to.be.false;
+    expect($scope.models.intValue).to.equal(undefined);
+    expect(form.intValue.$valid).to.equal(false);
 
     form.intValue.$setViewValue(incorrectStringValue);
     $scope.$digest();
 
-    expect($scope.models.intValue).to.be.undefined;
-    expect(form.intValue.$valid).to.be.false;
+    expect($scope.models.intValue).to.equal(undefined);
+    expect(form.intValue.$valid).to.equal(false);
   });
 });

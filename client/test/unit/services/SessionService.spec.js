@@ -26,12 +26,9 @@ describe('SessionService', function () {
   };
 
   // load bhima.services
-  beforeEach(() => {
-    module('pascalprecht.translate');
-    module('ngStorage');
-  module('angularMoment');
-    module('bhima.services');
-  });
+  beforeEach(
+    module('pascalprecht.translate', 'ngStorage', 'angularMoment', 'bhima.services')
+  );
 
   // bind the services as $injects
   beforeEach(inject((_SessionService_, $rootScope, $httpBackend) => {
