@@ -43,7 +43,7 @@ function lookReverseTransaction(uid, user_id) {
   .then(transactions => {
     var voucher = [],
       voucherItems = [],
-      vuid = uid,
+      vuid = db.bid(uuid.v4()),
       items;  
 
     transactions.forEach(function (transaction) {      
