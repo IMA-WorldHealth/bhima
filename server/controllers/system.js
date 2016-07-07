@@ -26,7 +26,6 @@ exports.events = events;
 // GET system/info
 exports.info = info;
 
-// event stream to be set to the client
 /**
  * @method stream
  *

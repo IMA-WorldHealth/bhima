@@ -43,6 +43,8 @@ const entities = {
   DEBTOR_GROUP: 'debtor_group',
   EMPLOYEE: 'employee',
   USER: 'user',
+  SERVICE: 'service',
+  SUPPLIER: 'supplier',
   PERMISSION: 'permission',
   LOCATION: 'location',
   CASHBOX: 'cashbox'
@@ -61,13 +63,21 @@ const channels = {
 // writes events into the event database table
 function databaseLogger(data) {
 
-  let record = {
+  if (!data.entity) {
+    throw new Error(
+      `[topic] The event ${data.event} expected an entity, but got ${data.entity} instead.`
+    );
+  }
+
+  const record = {
     timestamp: new Date(data.timestamp),
     user_id: data.user_id,
     channel: data.channel,
+    entity : data.entity.toUpperCase(),
     type: data.event,
     data: JSON.stringify(data)
   };
+
   db.exec('INSERT INTO event SET ?', [record])
   .catch(err => winston.error(err))
   .done();
