@@ -9,6 +9,8 @@
 
 // expose to the express router
 module.exports = {
-  patientReceipt: require('./patient.receipt').build,
+  receipts: {
+    patients: require('./patient.receipt').build,
+  },
   patientRegistrations : require('./registrations')
 };

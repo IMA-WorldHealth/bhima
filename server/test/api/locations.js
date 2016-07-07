@@ -21,28 +21,28 @@ describe('(/locations) Locations Interface', function () {
    * number of test villages, sectors, provinces, and countries in the test
    * dataset.
    */
-  const numVillages = 200;
-  const numSectors  = 208;
-  const numProvinces = 13;
-  const numCountries = 241;
+  const numVillages = 2;
+  const numSectors  = 2;
+  const numProvinces = 2;
+  const numCountries = 2;
 
   /*
    * Selected sector, province, and country uuids to test the query string
    * filtering of the dataset.
    */
-  const sectorUuid = '4c9d1f3d-d5af-47ca-80fd-357c2f1fa807'; // Luebo
-  const provinceUuid = '5cf83463-2718-4a65-abdd-f9ad2fe4e195'; // Kasai Occidental
+  const sectorUuid = '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'; // Tshikapa
+  const provinceUuid = 'f6fc7469-7e58-45cb-b87c-f08af93edade'; // Bas Congo
   const countryUuid = 'dbe330b6-5cde-4830-8c30-dc00eccd1a5f'; // DRC
 
   /*
    * the filtered record counts associated with the previous filters
    */
-  const numFilteredVillages = 13;
-  const numFilteredSectors = 11;
-  const numFilteredProvinces = 13;
+  const numFilteredVillages = 1;
+  const numFilteredSectors = 1;
+  const numFilteredProvinces = 1;
 
   /* the test enterprise's location uuid */
-  const detailUuid = 'a0a8998d-af22-4a73-9071-bd43a23f77e3';
+  const detailUuid = '1f162a10-9f67-4788-9eff-c1fea42fcc9b';
 
   it('GET /locations/villages should return a list of villages', function () {
     return agent.get('/locations/villages')

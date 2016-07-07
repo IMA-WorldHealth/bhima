@@ -14,10 +14,7 @@ describe('Countries Management', function () {
   // navigate to the page before the test suite
   before(() => helpers.navigate(path));
 
-  const country = { name : 'Test Country' };
-
-  const numCountries = 242;
-  const id = helpers.random(numCountries);
+  const country = { name : 'New Country' };
 
   it('creates a new country', function () {
     FU.buttons.create();
@@ -32,11 +29,11 @@ describe('Countries Management', function () {
   });
 
 
-  it('edits an country', function () {
-    element(by.id('country-' + id)).click();
+  it('edits a country', function () {
+    $(`[data-country-name="${country.name}"]`).click();
 
     // modify the country name
-    FU.input('CountryCtrl.country.name', 'Republique Of The Holy See');
+    FU.input('CountryCtrl.country.name', 'Country Update');
     element(by.id('change_country')).click();
 
     // make sure the success message appears

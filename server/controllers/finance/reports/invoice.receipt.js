@@ -11,34 +11,32 @@
  * @todo  get balance information on the invoice
  * @module finance/reports
  */
-var uuid        = require('node-uuid');
-var q           = require('q');
-var _           = require('lodash');
-var path        = require('path');
+const uuid        = require('node-uuid');
+const q           = require('q');
+const _           = require('lodash');
+const path        = require('path');
 
-var db          = require('../../../lib/db');
-var NotFound    = require('../../../lib/errors/NotFound');
-var BadRequest  = require('../../../lib/errors/BadRequest');
+const db          = require('../../../lib/db');
+const NotFound    = require('../../../lib/errors/NotFound');
+const BadRequest  = require('../../../lib/errors/BadRequest');
 
-var Invoices    = require('../patientInvoice');
-var Patients    = require('../../medical/patients');
-var Enterprises = require('../../admin/enterprises');
-
-var supportedRender = {};
-
-var wkhtmltopdf = require('wkhtmltopdf');
+const Invoices    = require('../patientInvoice');
+const Patients    = require('../../medical/patients');
+const Enterprises = require('../../admin/enterprises');
 
 // currently supports only JSON rendering
-supportedRender.json = require('../../../lib/renderers/json');
-supportedRender.html = require('../../../lib/renderers/html');
-supportedRender.pdf = require('../../../lib/renderers/pdf');
+const supportedRenderers = {
+  json: require('../../../lib/renderers/json'),
+  html: require('../../../lib/renderers/html'),
+  pdf: require('../../../lib/renderers/pdf')
+};
 
-var defaultRender = 'json';
+const defaultRender = 'json';
 
-var FLAG_TRUE = 1;
-var SUCCESS_STATUS = 200;
+const FLAG_TRUE = 1;
+const SUCCESS_STATUS = 200;
 
-var template = path.normalize('./server/controllers/finance/reports/invoice.receipt.handlebars');
+const template = path.normalize('./server/controllers/finance/reports/invoice.receipt.handlebars');
 
 exports.build = build;
 
@@ -73,17 +71,19 @@ function build(req, res, next) {
   var invoiceResponse = {};
 
   var renderTarget = queryString.renderer || defaultRender;
-  var renderer = supportedRender[renderTarget];
+  var renderer = supportedRenderers[renderTarget];
 
   /** @todo delegate to additional method */
   if (_.isUndefined(renderer)) {
-    throw new BadRequest('Render target provided is invalid or not supported by this report '.concat(renderTarget));
+    return next(
+      new BadRequest(`Render target ${renderTarget} is invalid or not supported by this report.`)
+    );
   }
 
   /** @todo Implement minimal flag */
   //if (queryString.minimal === FLAG_TRUE) {}
 
-  reportData(invoiceUuid)
+  Invoices.lookupInvoice(invoiceUuid)
     .then(function (reportResult) {
       var recipientUuid = reportResult.patient_uuid;
       _.extend(invoiceResponse, reportResult);
@@ -105,7 +105,7 @@ function build(req, res, next) {
     .done();
 }
 
-// function metaData
+// function headerData
 function headerData(patientUuid, enterpriseId) {
 
   /** @todo write utility method to map keys of request object to returned object */
@@ -121,8 +121,4 @@ function headerData(patientUuid, enterpriseId) {
 
       return header;
     });
-}
-
-function reportData(uuid) {
-  return Invoices.lookupInvoice(uuid);
 }

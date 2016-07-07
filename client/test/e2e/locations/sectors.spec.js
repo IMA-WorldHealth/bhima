@@ -11,29 +11,19 @@ describe('Sectors Management', function () {
 
   before(() => helpers.navigate('#/locations/sector'));
 
-  const sector = { name :'Test Sector' };
-
-  const locations = {
-    country :'République Démocratique du Congo',
-    province :'BANDUNDU'
+  const sector = {
+    country :'Test Hook Country',
+    province : 'Test Hook Province',
+    name : 'New Sector'
   };
-
-  const locationsUpdate = {
-    country :'République Démocratique du Congo',
-    province :'Bas Congo'
-  };
-
-  const sectorId = 1;
 
   it('creates a new sector', function () {
     // switch to the create form
     FU.buttons.create();
 
     // select an country
-    FU.select('SectorCtrl.sector.country_uuid', locations.country);
-    FU.select('SectorCtrl.sector.province_uuid', locations.province);
-
-    // set the sector name
+    FU.select('SectorCtrl.sector.country_uuid', sector.country);
+    FU.select('SectorCtrl.sector.province_uuid', sector.province);
     FU.input('SectorCtrl.sector.name', sector.name);
 
     // submit the page to the server
@@ -44,12 +34,10 @@ describe('Sectors Management', function () {
   });
 
   it('edits a sector', function () {
-    element(by.id('sector-' + sectorId )).click();
+    $(`[data-sector-name="${sector.name}"]`).click();
 
-    FU.select('SectorCtrl.sector.country_uuid', locationsUpdate.country);
-    FU.select('SectorCtrl.sector.province_uuid', locationsUpdate.province);
-
-    // modify the sector name
+    FU.select('SectorCtrl.sector.country_uuid', sector.country);
+    FU.select('SectorCtrl.sector.province_uuid', sector.province);
     FU.input('SectorCtrl.sector.name', 'Sector Update');
 
     element(by.id('change_sector')).click();

@@ -6,5 +6,7 @@
  * single location for easy access.
  */
 module.exports = {
-  purchaseReceipt : require('./purchases.receipt')
+  receipts: {
+    purchases: require('./purchases.receipt')
+  }
 };

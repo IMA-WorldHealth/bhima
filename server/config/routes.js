@@ -67,7 +67,7 @@ const profitCenter     = require('../controllers/finance/profitCenter');
 const reference        = require('../controllers/finance/reference');
 const subsidies        = require('../controllers/finance/subsidies');
 const patientInvoice   = require('../controllers/finance/patientInvoice');
-const invoiceReceipt   = require('../controllers/finance/reports/invoice.receipt');
+const financeReports   = require('../controllers/finance/reports');
 const discounts        = require('../controllers/finance/discounts');
 const payroll          = require('../controllers/finance/payroll');
 const debtorGroups     = require('../controllers/finance/debtors/groups');
@@ -135,7 +135,6 @@ exports.configure = function configure(app) {
   app.get('/accounts/:id/balance', accounts.getBalance);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
-
 
   // API for cost_center routes CRUD
   app.get('/cost_centers', costCenter.list);
@@ -342,10 +341,10 @@ exports.configure = function configure(app) {
   app.get('/invoices/references/:reference', patientInvoice.reference);
 
   // reports API: Invoices (receipts)
-  app.get('/reports/invoices/:uuid', invoiceReceipt.build);
+  app.get('/reports/invoices/:uuid', financeReports.receipts.invoices);
   app.get('/reports/patient/registrations', medicalReports.patientRegistrations);
-  app.get('/reports/patient/:uuid', medicalReports.patientReceipt);
-  app.get('/reports/purchases/:uuid', inventoryReports.purchaseReceipt);
+  app.get('/reports/patient/:uuid', medicalReports.receipts.patients);
+  app.get('/reports/purchases/:uuid', inventoryReports.receipts.purchases);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);

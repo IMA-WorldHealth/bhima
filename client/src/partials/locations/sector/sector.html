@@ -40,12 +40,14 @@
             </thead>
             <tbody>
               <tr ng-if="SectorCtrl.session.loading" class="text-center">
-                <td colspan="4"><loading-indicator></loading-indicator></td>
+                <td colspan="3"><loading-indicator></loading-indicator></td>
               </tr>
-              <tr ng-repeat="sector in SectorCtrl.sectors | orderBy:'sector' "  ng-class="{'rowSelected' : SectorCtrl.sector.uuid === sector.uuid}">
+              <tr ng-repeat="sector in SectorCtrl.sectors | orderBy:'name' ">
                 <td>{{ sector.name }}</td>
                 <td>{{ sector.province_name }}</td>
-                <td><a class="btn btn-xs btn-default" id="sector-{{$index + 1}}" ng-click="SectorCtrl.update(sector)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
+                <td>
+                  <a class="btn btn-xs btn-default" data-sector-name="{{::sector.name}}" ng-click="SectorCtrl.update(sector)" ><i class="glyphicon glyphicon-pencil"></i></a>
+                </td>
               </tr>
             </tbody>
           </table>
