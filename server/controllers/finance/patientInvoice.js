@@ -19,6 +19,8 @@ const journal = require('./journal/invoices');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
+const createInvoice = require('./invoice/patientInvoice.create');
+
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
 
@@ -154,6 +156,33 @@ function processInvoiceItems(invoice, items) {
   return items;
 }
 
+function create(req, res, next) {
+  // @sfount - The theory
+  // 1. all data that will be required by the posting is created by the server
+  //    controller in different prepared statements (i.e SET ?)
+  // 2. MySQL prepared statements are then used assuming that the data is already created
+  //    IDs are passed into generic procedures that are then used for posting from
+  //    tables in the posting journal and then the posting journal into the general ledger
+
+  let invoiceDetails = req.body.invoice;
+
+  /** @fixme */
+  // invoiceDetails.uuid = db.bid(invoiceDetails.uuid || uuid.v4());
+  invoiceDetails.user_id = req.session.user.id;
+
+  var preparedTransaction = createInvoice(invoiceDetails);
+
+  preparedTransaction.execute()
+    .then(function (result) {
+      // res.status(200).send(result);
+
+      res.status(201).json({
+        uuid : uuid.unparse(invoiceDetails.uuid)
+      });
+    })
+    .catch(next);
+}
+
 /**
  * POST /invoices
  *
@@ -181,7 +210,7 @@ function processInvoiceItems(invoice, items) {
  * @todo - change the API to pass in only an array of billingService and subsidy
  * ids.
  */
-function create(req, res, next) {
+function createPrevious(req, res, next) {
   let transaction;
 
   // alias body properties on local variables
