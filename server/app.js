@@ -17,7 +17,6 @@
  *
  * @requires config/express
  * @requires config/routes
- * @requires db
  * @requires PluginManager
  *
  * @license GPL-2.0
@@ -30,7 +29,6 @@ const fs = require('fs');
 const https = require('https');
 const express = require('express');
 const winston = require('winston');
-const db = require('./lib/db');
 
 let app = express();
 
@@ -120,9 +118,6 @@ function configureServer() {
 configureEnvironmentVariables();
 configureLogger();
 configureServer();
-
-// configure the database for use within the application
-db.initialise();
 
 // Configure application middleware stack, inject authentication session
 require('./config/express').configure(app);
