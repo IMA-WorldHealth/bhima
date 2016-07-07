@@ -15,6 +15,7 @@
 const db = require('../../../lib/db');
 const core = require('./core');
 const uuid = require('node-uuid');
+const journal = require('../journal/voucher');
 
 // expose to the api
 exports.list = list;
@@ -28,50 +29,54 @@ function lookReverseTransaction(uid, user_id) {
 
   let transaction = db.transaction();
 
-
   let sql = `
-    INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
-      trans_id, trans_date, record_uuid, description, account_id, debit,
-      credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
-      entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
-    SELECT
-      HUID(UUID()), p.project_id, @fiscalId, @periodId, @transId, p.trans_date,
-      p.record_uuid, 'Credit Note', p.account_id, p.credit, p.debit,
-      p.credit * @exchange, p.debit * @exchange, p.currency_id,
-      p.entity_uuid, 'C', p.reference_uuid, NULL, 1, p.user_id, NULL, NULL
-    FROM posting_journal AS p
-    WHERE p.record_uuid = ?;`;
+    SELECT p.uuid, p.project_id, p.fiscal_year_id, p.period_id,
+      p.trans_id, p.trans_date, p.record_uuid, p.description, p.account_id, p.debit,
+      p.credit, p.debit_equiv, p.credit_equiv, p.currency_id, p.entity_uuid,
+      p.entity_type, p.reference_uuid, p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id
+    FROM posting_journal AS p 
+    WHERE p.record_uuid = ?;
+  `;
 
-  transaction
+  // execute the query
+  return db.exec(sql, [uid])
+  .then(transactions => {
+    var voucher = [],
+      voucherItems = [],
+      vuid = uid,
+      items;  
 
-    // set up the SQL variables for core.js to consume
-    .addQuery(`
-      SELECT posting_journal.trans_date, enterprise.id, project.id, posting_journal.currency_id
-      INTO @date, @enterpriseId, @projectId, @currencyId
-      FROM posting_journal JOIN project JOIN enterprise ON
-        posting_journal.project_id = project.id AND
-        project.enterprise_id = enterprise.id
-      WHERE posting_journal.record_uuid = ? LIMIT 1;
-    `, [uid])
+    transactions.forEach(function (transaction) {      
+      if(transaction.entity_type === 'D'){
+        voucher = {
+          uuid          : vuid,
+          date          : new Date(),
+          project_id    : transaction.project_id,
+          currency_id   : transaction.currency_id,
+          amount        : transaction.debit,
+          description   : 'Credit Note',
+          user_id       : user_id
+        }
+      }
 
-    .addQuery(`
-      UPDATE invoice SET is_credit_note = 1, credit_note_by = ${user_id} 
-      WHERE uuid = ?
-    `, [uid]);
+      items = [
+        db.bid(uuid.v4()), 
+        transaction.account_id, 
+        transaction.credit, 
+        transaction.debit, 
+        vuid
+      ];
+      voucherItems.push(items); 
+    });   
 
+    // build the SQL query
+    transaction
+      .addQuery('INSERT INTO voucher SET ?', [ voucher ])
+      .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?', [ voucherItems ]);
 
-  // this function sets up the dates, fiscal year, and exchange rate for this
-  // posting session and ensures they all exist before attempting to write to
-  // the posting journal.
-  core.setup(transaction);
-
-  transaction
-    .addQuery(
-      sql,[uid]
-    );
-
-  return transaction.execute()
+    return journal(transaction, voucher.uuid)
     .catch(core.handler);
+  });
 }
 
 /**

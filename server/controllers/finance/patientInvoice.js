@@ -52,8 +52,7 @@ function list(req, res, next) {
   let invoiceListQuery =
     `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames, 
-      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, user_id, date, is_distributable,
-      invoice.is_credit_note, invoice.credit_note_by
+      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, user_id, date, is_distributable
     FROM invoice 
       LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
       JOIN service ON service.id = invoice.service_id
@@ -83,7 +82,7 @@ function lookupInvoice(invoiceUuid) {
   let invoiceDetailQuery =
     `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference, invoice.cost,
       BUID(invoice.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,
-      BUID(patient.uuid) as patient_uuid, user_id, date, invoice.is_distributable, invoice.is_credit_note, invoice.credit_note_by
+      BUID(patient.uuid) as patient_uuid, user_id, date, invoice.is_distributable
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
     JOIN project ON project.id = invoice.project_id

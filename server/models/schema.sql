@@ -1568,8 +1568,6 @@ CREATE TABLE `invoice` (
   `description`         TEXT NOT NULL,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `is_distributable`    TINYINT(1) NOT NULL ,
-  `is_credit_note`      TINYINT(1),
-  `credit_note_by`      SMALLINT(5) UNSIGNED,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `invoice_1` (`project_id`, `reference`),
   KEY `reference` (`reference`),
