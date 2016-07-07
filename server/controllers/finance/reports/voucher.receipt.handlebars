@@ -35,7 +35,7 @@
           </tr>
         </thead>
         <tbody>
-          {{#each model.data }}
+          {{#each model.data.rows }}
             {{#if @first}}
               <tr>
                 <td>{{ reference }}</td>
@@ -65,7 +65,7 @@
           </tr>
         </thead>
         <tbody>
-          {{#each model.data}}
+          {{#each model.data.rows}}
           <tr>
             <td>{{ number }}</td>
             <td>{{ label }}</td>

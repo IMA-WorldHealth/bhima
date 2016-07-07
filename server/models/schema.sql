@@ -1852,7 +1852,7 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   `description`     TEXT DEFAULT NULL,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `origin_id`       SMALLINT(5) UNSIGNED NULL,
+  `type_id`         SMALLINT(5) UNSIGNED NULL,
   KEY `project_id` (`project_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),

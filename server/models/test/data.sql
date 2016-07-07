@@ -45,7 +45,7 @@ INSERT INTO unit VALUES
   (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
   (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration'),
-  (141, 'Vouchers Records', 'TREE.VOUCHER_RECORDS', 'Vouchers records module', 5, '/partials/vouchers/records', '/vouchers/records'),
+  (141, 'Vouchers Records', 'TREE.VOUCHER_REGISTRY', 'Vouchers registry module', 5, '/partials/vouchers/index', '/vouchers'),
   (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create');
 
 INSERT INTO `account_type` VALUES
@@ -221,10 +221,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- [Folder] Finance
 (5,2),
-
--- FIXME these row below generate MySQL error, id = 30 doesnt exist
--- -- [Folder] Accounting
--- (30, 2),
 
 -- Fiscal Year
 (13,2);

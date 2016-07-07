@@ -1192,7 +1192,8 @@
     "UPDATE_STOCK"               : "Mettre à Jour les Stocks",
     "USERS"                      : "Utilisateurs",
     "VALIDATE_PURCHASE"          : "Validation",
-    "VOUCHER_RECORDS"            : "Registre des Bordereaux"
+    "VOUCHER_REGISTRY"           : "Registre des Bordereaux",
+    "VALIDATE_PURCHASE"          : "Validation Achat"
   },
   "VILLAGE": {
     "CONFIG"       : "Configuration de Gestion des Villages",

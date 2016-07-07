@@ -9,8 +9,9 @@
 
 /** The query string conditions builder */
 module.exports.queryCondition = queryCondition;
-module.exports.formatDate = formatDate;
 module.exports.take = take;
+module.exports.nullString = nullString;
+module.exports.stringToBool = stringToBool;
 
 /**
  * @function queryCondition
@@ -50,8 +51,8 @@ function queryCondition(sql, params, excludeWhere, dateConditon) {
 
   if (dateParams.dateFrom && dateParams.dateTo && dateConditon) {
     criteria += conditions.length ? ' AND ' + dateConditon : dateConditon;
-    conditions.push(formatDate(dateParams.dateFrom));
-    conditions.push(formatDate(dateParams.dateTo));
+    conditions.push(dateParams.dateFrom);
+    conditions.push(dateParams.dateTo);
   }
 
   sql += (excludeWhere ? '' : 'WHERE ') + criteria;
@@ -109,12 +110,26 @@ function take() {
 }
 
 /**
- * Date to MySQL format
+ * String to boolean
+ * @function stringToBool
+ * @param {string} value The string to evaluate
+ * @return {boolean}
  */
-function formatDate(date) {
-  date = date ? new Date(date) : new Date();
-  
-  return date.getFullYear() + '-' +
-    (date.getMonth() < 9 ? '0' :'') + (date.getMonth()+1) + '-' +
-    (date.getDate() < 10 ? '0' : '') + date.getDate();
+function stringToBool(value) {
+  return (value + '').toLowerCase() === 'true';
+}
+
+/**
+ * nullString
+ * @function nullString
+ * @param {string} value The string to evaluate
+ * @return {boolean}
+ */
+function nullString(value) {
+  value += '';
+  return value.toLowerCase() === 'null' ||
+    value.toLowerCase() === 'undefined' ||
+    value.toLowerCase() === 'false' ||
+    value.toLowerCase() === '0' ||
+    value.toLowerCase() === '';
 }

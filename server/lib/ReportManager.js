@@ -31,7 +31,7 @@ exports.build = build;
  * NOTE: the returned data are get by a spread(document, headers) function
  * and the result is sended with res.set(headers).send(document)
  */
-function build(req, data, templateUrl, options, resolve) {
+function build(req, data, templateUrl, options) {
   'use strict';
 
   // Requirement for report
@@ -45,8 +45,7 @@ function build(req, data, templateUrl, options, resolve) {
   let model = {
     enterprise : request.enterprise,
     project : request.project,
-    data : data,
-    resolve : resolve
+    data : data
   };
 
   /*

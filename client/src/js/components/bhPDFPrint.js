@@ -13,7 +13,7 @@ angular.module('bhima.components')
   controller : bhPDFPrintController
 });
 
-bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout', 'uuid'];
+bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
 
 /**
  * @class bhPDFPrintController

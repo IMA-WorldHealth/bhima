@@ -218,10 +218,10 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'ComplexJournalVoucherController as ComplexVoucherCtrl',
     templateUrl: 'partials/vouchers/complex.html'
   })
-  .state('vouchersRecords', {
-    url : '/vouchers/records',
-    controller: 'VouchersRecordsController as VouchersRecordsCtrl',
-    templateUrl: 'partials/vouchers/records.html'
+  .state('vouchers', {
+    url : '/vouchers',
+    controller: 'VoucherController as VoucherCtrl',
+    templateUrl: 'partials/vouchers/index.html'
   })
 
   /* 2.X Journal routes */

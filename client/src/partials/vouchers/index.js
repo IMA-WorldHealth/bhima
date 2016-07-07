@@ -1,19 +1,19 @@
 angular.module('bhima.controllers')
-.controller('VouchersRecordsController', VouchersRecordsController);
+.controller('VoucherController', VoucherController);
 
 // dependencies injection
-VouchersRecordsController.$inject = [
+VoucherController.$inject = [
   'VoucherService', '$translate', 'NotifyService',
   'JournalFilteringService', 'uiGridGroupingConstants',
-  'uiGridConstants', 'ModalService', 'util'
+  'uiGridConstants', 'ModalService', 'DateService'
 ];
 
 /**
  * Vouchers Records Controllers
- * This controller is responsible for display all vouchers made with BHIMA through
- * the simple voucher or complex voucher modules
+ * This controller is responsible for display all vouchers
+ * which are in the voucher table
  */
-function VouchersRecordsController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, util) {
+function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates) {
   var vm = this;
 
   /** gobal variables */
@@ -24,7 +24,7 @@ function VouchersRecordsController(Vouchers, $translate, Notify, Filtering, uiGr
   /** paths in the headercrumb */
   vm.bcPaths = [
     { label : 'TREE.FINANCE' },
-    { label : 'TREE.VOUCHER_RECORDS' }
+    { label : 'TREE.VOUCHER_REGISTRY' }
   ];
 
   /** buttons in the headercrumb */
@@ -40,26 +40,14 @@ function VouchersRecordsController(Vouchers, $translate, Notify, Filtering, uiGr
     }
   ];
 
+  /** search filters */
+  vm.searchFilter = [
+    { displayName: 'FORM.LABELS.DATE_FROM', values: vm.dateInterval ? vm.dateInterval.dateFrom : null, filter: 'moment' },
+    { displayName: 'FORM.LABELS.DATE_TO', values: vm.dateInterval ? vm.dateInterval.dateTo : null ,filter: 'moment'},
+  ];
+
   // init the filter service
   var filtering  = new Filtering(vm.gridOptions);
-
-  // link to the receipt
-  var linkReceiptTemplate = '<div style="padding: 5px;">' +
-    '<a href="" ' +
-    'ng-if="row.entity.uuid"' +
-    'ng-click="grid.appScope.showReceipt(row.entity.uuid)" ' +
-    'data-link-receipt="{{ row.entity.uuid }}">' +
-    '<i class="fa fa-file-pdf-o"></i> {{ "TABLE.COLUMNS.RECEIPT" | translate }}' +
-    '</a></div>';
-
-  // type template
-  var transferTypeTemplate = '<div style="padding: 5px;">' +
-    '<span ng-class="{\'label label-success\': grid.appScope.getType(row.entity.origin_id).incomeExpense == \'income\', \'label label-warning\': grid.appScope.getType(row.entity.origin_id).incomeExpense == \'expense\'}" href=""> ' +
-    '{{ grid.appScope.getType(row.entity.origin_id).text | translate }}' +
-    '<span ng-if="row.groupHeader">{{ COL_FIELD }}</span>' +
-    '</span>' +
-    '<a ng-if="grid.appScope.isDefined(row.entity)" class="label label-default">{{ "FORM.LABELS.UNDEFINED" | translate }}</a>' +
-    '</div>';
 
   // grid default options
   vm.gridOptions.appScopeProvider = vm;
@@ -69,10 +57,10 @@ function VouchersRecordsController(Vouchers, $translate, Notify, Filtering, uiGr
       { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate',
         groupingShowAggregationMenu: false
       },
-      { field : 'origin_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
+      { field : 'type_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
         sort: { priority: 0, direction : 'asc' },
         grouping: { groupPriority: 0},
-        cellTemplate: transferTypeTemplate,
+        cellTemplate: 'partials/templates/grid/voucherType.tmpl.html',
         treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
         customTreeAggregationFinalizerFn: typeAggregation,
         groupingShowAggregationMenu: false
@@ -94,7 +82,7 @@ function VouchersRecordsController(Vouchers, $translate, Notify, Filtering, uiGr
         groupingShowAggregationMenu: false
       },
       { field : 'action', displayName : '...',
-        cellTemplate: linkReceiptTemplate,
+        cellTemplate: 'partials/templates/grid/linkFilePDF.tmpl.html',
         enableFiltering: false,
         enableColumnMenu: false
       }
@@ -131,7 +119,7 @@ function VouchersRecordsController(Vouchers, $translate, Notify, Filtering, uiGr
 
   // isDefined Type
   function isDefined(row) {
-    return row.uuid && (row.origin_id === null || row.origin_id === undefined);
+    return row.uuid && (row.type_id === null || row.type_id === undefined);
   }
 
   // get vouchers type
@@ -159,20 +147,18 @@ function VouchersRecordsController(Vouchers, $translate, Notify, Filtering, uiGr
       return Vouchers.read(null, vm.dateInterval);
     })
     .then(function (list) {
-      // need only one line of the voucher transaction
-      vm.gridOptions.data = list.filter(function (item) {
-        return item.debit > 0;
-      });
+      vm.gridOptions.data = list;
     })
     .catch(Notify.errorHandler);
   }
 
   // print vouchers list
   function printList() {
-    var dateFrom = vm.dateInterval ? util.htmlDate(vm.dateInterval.dateFrom) : null;
-    var dateTo = vm.dateInterval ? util.htmlDate(vm.dateInterval.dateTo) : null;
-    var url = '/vouchers/reports?dateFrom=' + dateFrom + '&dateTo=' + dateTo;
-    Modal.openReports({ url: url, renderer: 'pdf' });
+    var dateFrom = vm.dateInterval ? Dates.util.str(vm.dateInterval.dateFrom) : null;
+    var dateTo = vm.dateInterval ? Dates.util.str(vm.dateInterval.dateTo) : null;
+    var url = '/vouchers/reports';
+    var params = { dateFrom: dateFrom, dateTo: dateTo, renderer: 'pdf' };
+    Modal.openReports({ url: url, params: params });
   }
 
   // showReceipt
@@ -185,10 +171,7 @@ function VouchersRecordsController(Vouchers, $translate, Notify, Filtering, uiGr
   function startup() {
     Vouchers.read()
     .then(function (list) {
-      // need only one line of the voucher transaction
-      vm.gridOptions.data = list.filter(function (item) {
-        return item.debit > 0;
-      });
+      vm.gridOptions.data = list;
     })
     .catch(Notify.errorHandler);
   }

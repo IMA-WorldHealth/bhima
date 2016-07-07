@@ -70,7 +70,7 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     vm.voucher.description =  String(vm.descriptionPrefix).concat('/', vm.voucher.description);
 
     // transfer type
-    vm.voucher.origin_id = vm.selectedType ? JSON.parse(vm.selectedType).id : null;
+    vm.voucher.type_id = vm.selectedType ? JSON.parse(vm.selectedType).id : null;
 
     // submit the voucher
     return Vouchers.createSimple(vm.voucher)

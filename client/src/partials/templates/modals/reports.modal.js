@@ -13,11 +13,12 @@ ReportsModalController.$inject = [
 function ReportsModalController($http, Instance, $sce, $window, Data, Notify, util) {
   var vm = this;
 
-  vm.renderer = Data.renderer;
   vm.loading  = true;
+  vm.params   = Data.params;
+  vm.renderer = Data.params && Data.params.renderer ? Data.params.renderer : Data.renderer;
 
   // Requesting the report
-  reportRequest(Data.url, Data.renderer)
+  reportRequest(Data.url, vm.renderer)
   .then(function (report) {
 
     if (vm.renderer === 'pdf') {
@@ -47,6 +48,7 @@ function ReportsModalController($http, Instance, $sce, $window, Data, Notify, ut
     // filetype setup
     var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
     var params = { renderer: filetype };
+    angular.extend(params, vm.params);
 
     // send the GET request
     return $http.get(url, {
@@ -69,5 +71,4 @@ function ReportsModalController($http, Instance, $sce, $window, Data, Notify, ut
     }
     Instance.close();
   };
-  
 }

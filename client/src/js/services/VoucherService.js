@@ -26,7 +26,6 @@ function VoucherService(Api) {
     { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' }
   ];
 
-  service.url = '/vouchers/';
   service.createSimple = createSimple;
   service.create = create;
 

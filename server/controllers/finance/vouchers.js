@@ -24,6 +24,10 @@ const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 const journal = require('./journal/voucher');
 
+/** Module constants */
+const receiptUrl = './server/controllers/finance/reports/voucher.receipt.handlebars';
+const reportUrl = './server/controllers/finance/reports/voucher.report.handlebars';
+
 /** Get list of vouchers */
 exports.list = list;
 
@@ -48,31 +52,20 @@ function list(req, res, next) {
   'use strict';
 
   let dateConditon = null;
-  let query =
-    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
-      v.description, BUID(vi.document_uuid) as document_uuid,
-      v.user_id, BUID(vi.uuid) AS voucher_item_uuid,
-      vi.account_id, vi.debit, vi.credit, v.origin_id,
-      a.number AS account_number, a.label AS account_label,
-      CONCAT(u.first, ' - ', u.last) AS user,
-      CONCAT(p.abbr, v.reference) AS reference
-    FROM voucher v
-    JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
-    JOIN project p ON p.id = v.project_id
-    JOIN user u ON u.id = v.user_id
-    JOIN account a ON a.id = vi.account_id `;
+  let query = getSql(req.query.detailed);
 
   // convert binary params if they exist
   if (req.query.document_uuid) {
     req.query.document_uuid = db.bid(req.query.document_uuid);
   }
 
-  /**
-   * the date conditions string
-   */
+  // the date conditions string
   if (req.query.dateFrom && req.query.dateTo) {
     dateConditon = 'DATE(v.date) BETWEEN DATE(?) AND DATE(?)';
   }
+
+  // remove detailed for queryCondition
+  delete req.query.detailed;
 
   // format query parameters appropriately
   let builder = util.queryCondition(query, req.query, null, dateConditon);
@@ -195,11 +188,17 @@ function create(req, res, next) {
 function receipt(req, res, next) {
   'use strict';
 
-  let reportUrl = './server/controllers/finance/reports/voucher.receipt.handlebars';
+  // page options
   let reportOptions = { pageSize : 'A5', orientation: 'landscape' };
 
-  getVouchers(req.params.uuid)
-  .then(rows => rm.build(req, rows, reportUrl, reportOptions))
+  // request for detailed receipt
+  req.query.detailed = true;
+
+  getVouchers(req.params.uuid, req.query)
+  .then(rows => {
+    const data = { rows: rows };
+    return rm.build(req, data, receiptUrl, reportOptions);
+  })
   .spread((document, headers) => {
     res.set(headers).send(document);
   })
@@ -215,15 +214,14 @@ function receipt(req, res, next) {
 function report(req, res, next) {
   'use strict';
 
-  let reportUrl = './server/controllers/finance/reports/voucher.report.handlebars';
+  // page options
   let reportOptions = { pageSize : 'A4', orientation: 'landscape' };
-  let resolve = {
-    dateFrom: req.query.dateFrom,
-    dateTo: req.query.dateTo
-  };
 
   getVouchers(null, req.query)
-  .then(rows => rm.build(req, rows, reportUrl, reportOptions, resolve))
+  .then(rows => {
+    const data = { rows: rows, dateFrom: req.query.dateFrom, dateTo: req.query.dateTo };
+    return rm.build(req, data, reportUrl, reportOptions);
+  })
   .spread((document, headers) => {
     res.set(headers).send(document);
   })
@@ -240,10 +238,78 @@ function report(req, res, next) {
 function getVouchers(uuid, request) {
   'use strict';
 
+  let detailed = request && request.detailed ? request.detailed : null;
+
+  // sql detailed or not for voucher
+  let sql = getSql(detailed);
+
+  // binary uuid
+  let bid = uuid ? db.bid(uuid) : null;
+
+  // sql params
+  let sqlParams = [];
+
+  if (request && (!util.nullString(request.dateFrom) && !util.nullString(request.dateTo)) && uuid) {
+
+    /**
+     * request is given but with dates, and uuid is also given :
+     * (request && (Boolean(request.dateFrom) && Boolean(request.dateTo)) && uuid)
+     */
+    sql += 'WHERE v.uuid = ? AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
+    sqlParams = [];
+    sqlParams.push(bid);
+    sqlParams.push(request.dateFrom);
+    sqlParams.push(request.dateTo);
+
+  } else if ((request && (util.nullString(request.dateFrom) || util.nullString(request.dateTo)) && uuid) || (!request && uuid)) {
+
+    /**
+     * request is given but without dates, and uuid is also given :
+     * (request && (!Boolean(request.dateFrom) || !Boolean(request.dateTo)) && uuid)
+     *
+     * request is not given, and uuid is given :
+     * (!request && uuid)
+     */
+    sql += 'WHERE v.uuid = ?';
+    sqlParams = [];
+    sqlParams.push(bid);
+
+  } else if (request && (!util.nullString(request.dateFrom) && !util.nullString(request.dateTo)) && !uuid) {
+
+    /**
+     * request is given with dates, and uuid is not given :
+     * (request && (request.dateFrom !== 'null' && request.dateTo !== 'null') && !uuid)
+     */
+    sql += 'WHERE DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
+    sqlParams = [];
+    sqlParams.push(request.dateFrom);
+    sqlParams.push(request.dateTo);
+
+  } else {
+
+    sql += '';
+    sqlParams = [];
+
+  }
+
+  return db.exec(sql, sqlParams);
+}
+
+function getSql(detailed) {
   let sql =
     `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
-      v.description, BUID(vi.document_uuid) as document_uuid,
-      v.user_id, BUID(vi.uuid) AS voucher_item_uuid,
+      v.description, v.user_id, v.type_id,
+      CONCAT(u.first, ' - ', u.last) AS user,
+      CONCAT(p.abbr, v.reference) AS reference
+    FROM voucher v
+    JOIN project p ON p.id = v.project_id
+    JOIN user u ON u.id = v.user_id `;
+
+  let detailedSql =
+    `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+      v.description, v.user_id, v.type_id,
+      BUID(vi.document_uuid) as document_uuid,
+      BUID(vi.uuid) AS voucher_item_uuid,
       vi.account_id, vi.debit, vi.credit,
       a.number, a.label,
       CONCAT(u.first, ' - ', u.last) AS user,
@@ -254,38 +320,5 @@ function getVouchers(uuid, request) {
     JOIN user u ON u.id = v.user_id
     JOIN account a ON a.id = vi.account_id `;
 
-  let bid = uuid ? db.bid(uuid) : null;
-  let dateConditon = null;
-  let sqlParams = [];
-  let whereClause = false;
-
-  if (request && request.dateFrom !== 'null' && request.dateTo !== 'null' && uuid) {
-
-    sql += 'WHERE v.uuid = ? AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
-    sqlParams = [];
-    sqlParams.push(bid);
-    sqlParams.push(util.formatDate(request.dateFrom));
-    sqlParams.push(util.formatDate(request.dateTo));
-
-  } else if (request && request.dateFrom !== 'null' && request.dateTo !== 'null' && !uuid) {
-
-    sql += 'WHERE DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
-    sqlParams = [];
-    sqlParams.push(util.formatDate(request.dateFrom));
-    sqlParams.push(util.formatDate(request.dateTo));
-
-  } else if ((!request || request.dateFrom === 'null' || !request.dateTo === 'null') && uuid) {
-
-    sql += 'WHERE v.uuid = ?';
-    sqlParams = [];
-    sqlParams.push(bid);
-
-  } else {
-
-    sql += '';
-    sqlParams = [];
-
-  }
-
-  return db.exec(sql, sqlParams);
+  return Boolean(detailed) ? detailedSql : sql;
 }

@@ -177,7 +177,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
   });
 
   it('GET /vouchers returns a list of vouchers', function () {
-    return agent.get('/vouchers')
+    return agent.get('/vouchers?detailed=1')
       .then(function (res) {
         helpers.api.listed(res, 12);
       })
@@ -204,14 +204,14 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
   });
 
   it('GET /vouchers returns a list of vouchers specified by query string', function () {
-    return agent.get('/vouchers/?reference=unknown')
+    return agent.get('/vouchers/?reference=unknown&detailed=1')
       .then(function (res) {
         helpers.api.listed(res, 0);
-        return agent.get('/vouchers/?account_id=0000');
+        return agent.get('/vouchers/?account_id=0000&detailed=1');
       })
       .then(function (res) {
         helpers.api.listed(res, 0);
-        return agent.get('/vouchers/?project_id=' + voucher.project_id + '&reference=1');
+        return agent.get('/vouchers/?project_id=' + voucher.project_id + '&reference=1&detailed=1');
       })
       .then(function (res) {
         helpers.api.listed(res, 2);

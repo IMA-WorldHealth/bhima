@@ -24,8 +24,8 @@
       <h1 style="margin:15px; font-weight:bold" class="text-center">
         {{uppercase (translate 'VOUCHERS.GLOBAL.REPORT') }}<br>
         <small>
-          {{#if  model.resolve.dateFrom }} {{date model.resolve.dateFrom }} {{/if}} -
-          {{#if  model.resolve.dateTo }} {{date model.resolve.dateTo }} {{/if}}
+          {{#if  model.data.dateFrom }} {{date model.data.dateFrom }} {{/if}} -
+          {{#if  model.data.dateTo }} {{date model.data.dateTo }} {{/if}}
         </small>
       </h1>
 
@@ -42,16 +42,14 @@
           </tr>
         </thead>
         <tbody>
-          {{#each model.data }}
-            {{#if debit}}
-              <tr>
-                <td>{{ reference }}</td>
-                <td>{{date date }}</td>
-                <td>{{ description }}</td>
-                <td class="text-right">{{currency amount }}</td>
-                <td>{{ user }}</td>
-              </tr>
-            {{/if}}
+          {{#each model.data.rows }}
+            <tr>
+              <td>{{ reference }}</td>
+              <td>{{date date }}</td>
+              <td>{{ description }}</td>
+              <td class="text-right">{{currency amount }}</td>
+              <td>{{ user }}</td>
+            </tr>
           {{/each}}
         </tbody>
       </table>

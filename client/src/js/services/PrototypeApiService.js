@@ -254,18 +254,18 @@ function PrototypeApiService($http, util) {
 
     // append the id to the base url
     var target = this.url.concat('receipts/', param);
-    return reportBuilder(this, param, filetype);
+    return reportBuilder(param, filetype);
   }
 
   /** report builder */
-  function reportBuilder(container, param, filetype) {
+  function reportBuilder(param, filetype) {
 
     // filetype setup
     var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
     var params = { renderer: filetype };
 
     // send the GET request
-    return container.$http.get(target, {
+    return $http.get(target, {
       params: params,
       responseType: responseType
     })

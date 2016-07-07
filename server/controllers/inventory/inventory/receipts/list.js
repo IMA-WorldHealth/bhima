@@ -9,7 +9,7 @@ const supportedRender = {
 };
 
 const defaultRender = 'pdf';
-const template = path.normalize('./server/controllers/stock/inventory/receipts/list.handlebars');
+const template = path.normalize('./server/controllers/inventory/inventory/receipts/list.handlebars');
 const receiptOptions = { pageSize : 'A4', orientation: 'landscape' };
 
 // export the receipt object

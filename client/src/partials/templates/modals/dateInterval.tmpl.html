@@ -1,40 +1,69 @@
-<form name="DateInterval" novalidate>
+<form name="DateInterval" bh-form-defaults novalidate>
   <div class="modal-header">
     <h4>
-      <i class="fa fa-search"></i> &nbsp;
+      <i class="fa fa-calendar-plus-o"></i> &nbsp;
       {{ 'FORM.SELECTS.SELECT_DATE_INTERVAL' | translate }}
       <span ng-if="$ctrl.selected" class="label label-warning">{{ $ctrl.selected | translate }}</span>
     </h4>
   </div>
 
   <div class="modal-body">
-    <label for=""></label>
-    <div class="form-group text-center">
-      <i class="fa fa-calendar"></i>
-      <div class="btn-group">
-        <button class="btn btn-default" type="button"
-          ng-repeat="option in $ctrl.options"
-          ng-click="$ctrl.search(option)">
-          {{ option.label | translate }}
-        </button>
-      </div>
-    </div>
 
-    <div class="text-left">
-      <div class="form-group">
-        <bh-date-editor
-          date-format="dd/MM/yyyy"
-          date-value="$ctrl.dateFrom"
-          label="{{ 'FORM.LABELS.DATE_FROM' | translate }}">
-        </bh-date-editor>
-      </div>
+      <ul class="list-inline" data-date-registration>
+        <li ng-repeat="(key, view) in $ctrl.options track by key">
+          <a ng-click="$ctrl.search(view)" data-date-range="{{ key }}" href>
+            {{ ::view.translateKey | translate }}
+          </a>
+        </li>
+        <li class="pull-right">
+          <a href ng-click="$ctrl.clear()" tabindex="-1">
+            <i class="fa fa-eraser"></i> {{ "FORM.BUTTONS.CLEAR" | translate }}
+          </a>
+        </li>
+      </ul>
 
-      <div class="form-group">
-        <bh-date-editor
-          date-format="dd/MM/yyyy"
-          date-value="$ctrl.dateTo"
-          label="{{ 'FORM.LABELS.DATE_TO' | translate }}">
-        </bh-date-editor>
+      <div class="row">
+        <div class="col-md-5">
+          <div class="input-group">
+            <input
+              id="modal-date-from"
+              type="text"
+              class="form-control"
+              ng-model="$ctrl.dateFrom"
+              uib-datepicker-popup="dd/MM/yyyy"
+              is-open="$ctrl.dateFromIsOpen"
+              show-button-bar="false"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="$ctrl.dateFromIsOpen =! $ctrl.dateFromIsOpen">
+                  <i class="fa fa-calendar-plus-o"></i>
+                </button>
+              </span>
+          </div>
+        </div>
+
+        <div class="col-md-2 text-center">
+          <hr />
+        </div>
+
+        <div class="col-md-5">
+          <div class="input-group">
+            <input
+              id="modal-date-to"
+              type="text"
+              class="form-control"
+              ng-model="$ctrl.dateTo"
+              uib-datepicker-popup="dd/MM/yyyy"
+              is-open="$ctrl.dateToIsOpen"
+              show-button-bar="false"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="$ctrl.dateToIsOpen =! $ctrl.dateToIsOpen">
+                  <i class="fa fa-calendar-plus-o"></i>
+                </button>
+              </span>
+          </div>
+        </div>
       </div>
 
     </div>
