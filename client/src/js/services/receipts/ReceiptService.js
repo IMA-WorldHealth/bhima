@@ -7,7 +7,14 @@ ReceiptService.$inject = ['$http', 'util'];
  * Receipts Service
  *
  * This service is responsible for interfacing with any receipts routes on the
- * server.
+ * server.  It is typically called from the ReceiptModal service.
+ *
+ * Each of the receipt methods take in:
+ *  1. `uuid` - the uuid of the record for which they will return a receipt.
+ *  2. `options` - an object of optional parameters to be passed to the HTTP
+ *      query.
+ *
+ * The methods each return a promise with the result from the database.
  *
  * @module services/receipts/ReciptService
  */
@@ -19,11 +26,16 @@ function ReceiptService($http, util) {
     JSON : 'json'
   };
 
+  // expose data
+  service.renderers = renderers;
+
+  // expose service methods
   service.invoice = invoice;
   service.patient = patient;
   service.purchase = purchase;
-  service.renderers = renderers;
-  /** service.patientRegistrations = patientRegistrations; */
+  service.cash = cash;
+  service.transaction = transaction;
+  service.payroll = payroll;
 
   /**
    * @method fetch
@@ -74,4 +86,22 @@ function ReceiptService($http, util) {
     var route ='/reports/purchases/'.concat(uuid);
     return fetch(route, options);
   }
+
+  // print a cash (point-of-sale) receipt
+  function cash(uuid, options) {
+    /* noop */
+  }
+
+  // print a generic transaction receipt
+  function transaction(uuid, options) {
+    /* noop */
+  }
+
+  // print a receipt of payroll payment
+  // TBD - is this really necessary to have as a separate receipt?
+  function payroll(uuid, options) {
+    /* noop */
+  }
+
+  return service;
 }
