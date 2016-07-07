@@ -7,19 +7,21 @@ helpers.configure(chai);
 /*
  * The /exchange API endpoint
  */
-describe('The /exchange API endpoint', function () {
+describe('(/exchange) The /exchange API endpoint', function () {
   const agent = chai.request.agent(helpers.baseUrl);
   before(helpers.login(agent));
 
   // constants
   const RATE = {
-    enterprise_id   :1,    // Enterprise ID
-    currency_id     :1,    // FC in test database
-    rate            :930,
-    date            :new Date('2015-10-10')
+    enterprise_id: 1,    // Enterprise ID
+    currency_id  : 1,    // FC in test database
+    rate         : 930,
+    date         : new Date('2015-10-10')
   };
 
-  const RATE_KEY = ['id', 'enterprise_id', 'currency_id', 'enterprise_currency_id', 'rate', 'date'];
+  const RATE_KEY = [
+    'id', 'enterprise_id', 'currency_id', 'enterprise_currency_id', 'rate', 'date'
+  ];
 
   it('GET /exchange returns a list of exchange rates', function () {
     return agent.get('/exchange')
