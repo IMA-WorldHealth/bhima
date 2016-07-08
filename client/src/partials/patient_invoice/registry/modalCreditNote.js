@@ -18,7 +18,7 @@ function ModalCreditNoteController( $uibModalInstance, Invoices, Util, data, Jou
     });
 
   function submit(uuid, creditNote) {
-    if (!uuid) { return; }
+    if (!uuid || !creditNote) { return; }
     var journal = JournalVoucher.reverse(uuid, creditNote);
     
     journal

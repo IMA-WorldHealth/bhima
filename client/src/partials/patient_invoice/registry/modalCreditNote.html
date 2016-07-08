@@ -35,19 +35,25 @@
               <td>{{ ModalCtrl.patientInvoice.cost | currency }}</td>
             </tr>
             <tr>
-              <th colspan="4" style="text-align: left;">{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
-            </tr>
-            <tr>
               <td colspan="4">
-                <textarea
-                  id="invoice-note"
-                  ng-model="ModalCtrl.creditNote.description"
-                  name="description"
-                  class="form-control"
-                  ng-maxlength="ModalCtrl.maxLength"
-                  rows="4"
-                  required>
-                </textarea>
+                <div
+                class="form-group"
+                ng-class="{'has-error' :ModalForm.$submitted && ModalForm.description.$invalid }"> 
+                  <label for="invoice-note">{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</label>
+                  <textarea
+                    id="invoice-note"
+                    ng-model="ModalCtrl.creditNote.description"
+                    name="description"
+                    class="form-control"
+                    ng-maxlength="ModalCtrl.maxLength"
+                    rows="4"
+                    required>
+                  </textarea>
+                  <div class="help-block" ng-messages="ModalForm.description.$error" 
+                    ng-show="ModalForm.$submitted">
+                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                  </div>                  
+                </div>  
               </td>
             </tr>            
           </tbody>
