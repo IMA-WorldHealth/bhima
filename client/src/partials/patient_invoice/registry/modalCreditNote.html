@@ -1,4 +1,4 @@
-<form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalCtrl.patientInvoice.uuid)" novalidate>
+<form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalCtrl.patientInvoice.uuid, ModalCtrl.creditNote)" novalidate>
   <div class="modal-header">
     <div class="bhima-title">
       <ol class="headercrumb">
@@ -34,6 +34,22 @@
               <th colspan="3" style="text-align: right;">{{ "TABLE.COLUMNS.TOTAL" | translate }}</th>
               <td>{{ ModalCtrl.patientInvoice.cost | currency }}</td>
             </tr>
+            <tr>
+              <th colspan="4" style="text-align: left;">{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <textarea
+                  id="invoice-note"
+                  ng-model="ModalCtrl.creditNote.description"
+                  name="description"
+                  class="form-control"
+                  ng-maxlength="ModalCtrl.maxLength"
+                  rows="4"
+                  required>
+                </textarea>
+              </td>
+            </tr>            
           </tbody>
         </table>
     </fieldset>    

@@ -10,16 +10,16 @@ function ModalCreditNoteController( $uibModalInstance, Invoices, Util, data, Jou
   vm.patientInvoice = data.invoice; 
   vm.submit = submit;
   vm.cancel = cancel;
+  vm.creditNote;
 
   Invoices.read(vm.patientInvoice.uuid)    
     .then(function (data){
       vm.patientInvoiceItems = data.items;
     });
 
-  function submit(uuid) {
+  function submit(uuid, creditNote) {
     if (!uuid) { return; }
-
-    var journal = JournalVoucher.reverse(uuid);
+    var journal = JournalVoucher.reverse(uuid, creditNote);
     
     journal
       .then(function (response) {

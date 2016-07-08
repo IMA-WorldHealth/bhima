@@ -19,8 +19,8 @@ function JournalVoucherService($http, util) {
    * any transaction in the posting_journal by creating a 
    * new transaction that is an exact duplicate of the original transaction with sign minous.
    */
-  function reverse(uuid) {
-    return $http.put(baseUrl.concat(uuid, '/reverse'))
+  function reverse(uuid, creditNote) {
+    return $http.put(baseUrl.concat(uuid, '/reverse'), creditNote)
       .then(util.unwrapHttpResponse);
   }
 
