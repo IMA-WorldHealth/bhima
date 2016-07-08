@@ -102,24 +102,18 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
           filter : { condition : filtering.byDate }
         },
       ];
-      /**
-       * @fixme: the voucher API returns two lines
-       * for credit and debit with the same amount; and we need
-       * only one line with the amount
-       * we choose to discare the credit line
-       */
+
+      // format data for the grid
       var data = [];
       list.forEach(function (item) {
-        if (item.credit === 0) {
-          data.push({
-            uuid          : item.uuid,
-            reference     : item.reference,
-            date          : item.date,
-            description   : item.description,
-            amount        : item.amount,
-            document_uuid : item.document_uuid
-          });
-        }
+        data.push({
+          uuid          : item.uuid,
+          reference     : item.reference,
+          date          : item.date,
+          description   : item.description,
+          amount        : item.amount,
+          document_uuid : item.document_uuid
+        });
       });
       vm.gridOptions.data = data;
     });

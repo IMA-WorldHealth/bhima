@@ -300,10 +300,13 @@ function getSql(detailed) {
     `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id,
       CONCAT(u.first, ' - ', u.last) AS user,
-      CONCAT(p.abbr, v.reference) AS reference
+      CONCAT(p.abbr, v.reference) AS reference,
+      BUID(vi.document_uuid) AS document_uuid 
     FROM voucher v
+    JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
     JOIN project p ON p.id = v.project_id
-    JOIN user u ON u.id = v.user_id `;
+    JOIN user u ON u.id = v.user_id
+    GROUP BY v.uuid `;
 
   let detailedSql =
     `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
@@ -320,5 +323,5 @@ function getSql(detailed) {
     JOIN user u ON u.id = v.user_id
     JOIN account a ON a.id = vi.account_id `;
 
-  return Boolean(detailed) ? detailedSql : sql;
+  return !util.nullString(detailed) ? detailedSql : sql;
 }
