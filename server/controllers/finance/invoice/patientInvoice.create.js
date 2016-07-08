@@ -33,8 +33,6 @@ function createInvoice(details) {
     subsidies = invoice.subsidies;
   }
 
-  console.log(billingServices);
-
   invoice.uuid = db.bid(invoice.uuid || uuid.v4());
 
   if (invoice.date) {
@@ -68,39 +66,26 @@ function createInvoice(details) {
   delete invoice.billingServices;
   delete invoice.subsidies;
 
-  console.log('billing services', billingServices);
-  console.log('subsidies', subsidies);
-
-  // move to function to prepare writing invoice
-
   let params = Object.keys(invoice).map(function (key) { return invoice[key]; });
 
   transaction.addQuery('CALL StageInvoice(?)', [params]);
 
-  items.forEach(function (item) {
-    // let itemParams = Object.keys(item).map(key => item[key]);
-
-    // console.log(Object.keys(item));
-    transaction.addQuery('CALL StageInvoiceItem(?)', [item]);
-  });
+  items.forEach(item =>
+        transaction.addQuery('CALL StageInvoiceItem(?)', [item]));
 
   /** @todo mutliple inserts during the staging process could have performance
    * implications on smaller data sets (larger seems to be more negligable), the
    * data that must be staged could be passed in through a string to be concatted
    * into a prepared statement */
-  billingServices.forEach(function (billingService) {
-    transaction.addQuery('CALL StageBillingService(?)', [billingService]);
-  });
-  subsidies.forEach(function (subsidy) {
-    transaction.addQuery('CALL StageSubsidy(?)', [subsidy]);
-  });
+  billingServices.forEach(billingService =>
+      transaction.addQuery('CALL StageBillingService(?)', [billingService]));
+  subsidies.forEach(subsidy =>
+      transaction.addQuery('CALL StageSubsidy(?)', [subsidy]));
 
-  transaction.addQuery('CALL WriteSale(?)', [invoice.uuid]);
+  transaction.addQuery('CALL WriteInvoice(?)', [invoice.uuid]);
 
-  transaction.addQuery('Select COUNT(*) from stage_invoice');
-  transaction.addQuery('Select COUNT(*) from stage_invoice_item');
-  transaction.addQuery('Select COUNT(*) from stage_billing_service');
-  transaction.addQuery('Select COUNT(*) from stage_subsidy');
+  transaction.addQuery('CALL PostInvoice(?)', [invoice.uuid]);
+
   return transaction;
 }
 

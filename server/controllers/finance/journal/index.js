@@ -85,6 +85,7 @@ function createReverseTransaction(uid, userId, creditNote) {
  * Grtting data from the posting journal
  */
 function list(req, res, next) {
+  // JOIN fiscal_year f ON f.id = p.fiscal_year_id
   let sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
@@ -102,7 +103,6 @@ function list(req, res, next) {
       JOIN period per ON per.id = p.period_id
       JOIN account a ON a.id = p.account_id
       JOIN user u ON u.id = p.user_id
-      JOIN fiscal_year f ON f.id = p.fiscal_year_id
     ORDER BY p.trans_date DESC;
     `;
 

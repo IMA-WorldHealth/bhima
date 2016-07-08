@@ -172,6 +172,7 @@ function create(req, res, next) {
 
   var preparedTransaction = createInvoice(invoiceDetails);
 
+  // journal(preparedTransaction, invoiceDetails.uuid)
   preparedTransaction.execute()
     .then(function (result) {
       // res.status(200).send(result);

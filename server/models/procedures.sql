@@ -18,31 +18,6 @@ BEGIN
 END
 $$
 
-DELIMITER $$
-CREATE PROCEDURE GetSomeData(IN theParams VARCHAR(255))
-BEGIN
-  drop temporary table if exists foo;
-  create temporary table foo 
-  SELECT * 
-  FROM patient 
-  WHERE first_name = theParams COLLATE utf8_unicode_ci;
-END $$
-
-CREATE PROCEDURE CheckTable ()
-BEGIN
-  DECLARE `no_invoice_stage` TINYINT(1) DEFAULT 0;
-  DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_invoice_stage` = 1;
-  SELECT NULL FROM `stage_invoice` LIMIT 0;
-  
-  IF (`no_invoice_stage` = 1) THEN 
-    set @new = 5;
-  ELSE 
-    set @new = 10;
-  END IF;
-
-  select @new;
-END $$
-
 CREATE PROCEDURE StageInvoice(
   IN is_distributable TINYINT(1),
   IN date DATETIME,
@@ -128,7 +103,7 @@ BEGIN
   END IF;
 END $$
 
-CREATE PROCEDURE WriteSale(
+CREATE PROCEDURE WriteInvoice(
   IN uuid BINARY(16)
 )
 BEGIN 
@@ -138,11 +113,9 @@ BEGIN
   DECLARE total_subsidy_cost decimal(19, 4);
   DECLARE total_subsidised_cost decimal(19, 4);
 
-  -- invoice 
   INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable)
   SELECT * from stage_invoice where stage_invoice.uuid = uuid;
 
-  -- invoice items
   INSERT INTO invoice_item (uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid)
   SELECT * from stage_invoice_item WHERE stage_invoice_item.invoice_uuid = uuid;
   
@@ -168,16 +141,101 @@ BEGIN
   select items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;  
 END $$
 
-CREATE PROCEDURE TotalNumberOfPatients(
-  IN targetName VARCHAR(255)
-  -- OUT total INT
+CREATE PROCEDURE PostInvoice(
+  -- @FIXME
+  IN uuid binary(16)
+  -- IN uuid VARCHAR(36)
 )
 BEGIN 
-  SELECT COUNT(*)
-  -- INTO total
-  FROM patient 
-  WHERE first_name = targetName COLLATE utf8_unicode_ci;
-  -- SELECT total;
+  -- Required posting values for this invoice
+  DECLARE date DATETIME; 
+  DECLARE enterprise_id SMALLINT(5);
+  DECLARE project_id SMALLINT(5);
+  DECLARE currency_id TINYINT(3) UNSIGNED;
+  
+  -- Variables to store core settup results
+  DECLARE current_fiscal_year_id MEDIUMINT(8) UNSIGNED;
+  DECLARE current_period_id MEDIUMINT(8) UNSIGNED;
+  DECLARE current_exchange_rate DECIMAL(19, 4) UNSIGNED;
+  DECLARE enterprise_currency_id TINYINT(3) UNSIGNED;
+  DECLARE transaction_id VARCHAR(100);
+  DECLARE gain_account_id INT UNSIGNED;
+  DECLARE loss_account_id INT UNSIGNED;
+
+  -- Populate initial values
+  SELECT invoice.date, enterprise.id, project.id, enterprise.currency_id
+  INTO date, enterprise_id, project_id, currency_id 
+  FROM invoice join project join enterprise on invoice.project_id = project.id AND project.enterprise_id = enterprise.id
+  WHERE invoice.uuid = uuid;
+  
+  CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, current_fiscal_year_id, current_period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
+  
+  CALL CopyInvoiceToPostingJournal(uuid, transaction_id, project_id, current_fiscal_year_id, current_period_id, currency_id);
+END $$
+
+CREATE PROCEDURE PostingSetupUtil(
+  IN date DATETIME,
+  IN enterprise_id SMALLINT(5),
+  IN project_id SMALLINT(5),
+  IN currency_id TINYINT(3) UNSIGNED,
+  OUT current_fiscal_year_id MEDIUMINT(8) UNSIGNED,
+  OUT current_period_id MEDIUMINT(8) UNSIGNED,
+  OUT current_exchange_rate DECIMAL(19, 4) UNSIGNED,
+  OUT enterprise_currency_id TINYINT(3) UNSIGNED,
+  OUT transaction_id VARCHAR(100),
+  OUT gain_account INT UNSIGNED,
+  OUT loss_account INT UNSIGNED
+)
+BEGIN 
+  SET current_fiscal_year_id = (
+    SELECT id FROM fiscal_year 
+    WHERE date BETWEEN start_date AND DATE(ADDDATE(start_date, INTERVAL number_of_months MONTH)) AND enterprise_id = enterprise_id);
+
+  SET current_period_id = (
+    SELECT id from period 
+    WHERE Date(date) BETWEEN Date(start_date) AND Date(end_date) AND fiscal_year_id = current_fiscal_year_id);
+  
+  SET enterprise_currency_id = (SELECT currency_id FROM enterprise WHERE id = enterprise_id);
+  
+  -- this uses the currency id passed in as a dependency
+  SET current_exchange_rate = (
+    SELECT rate FROM exchange_rate 
+    WHERE enterprise_id = enterprise_id AND currency_id = currency_id AND date <= date 
+    ORDER BY date DESC LIMIT 1
+  );
+
+  SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, 1/current_exchange_rate));
+  
+  SELECT gain_account_id, loss_account_id
+  INTO gain_account, loss_account
+  FROM enterprise WHERE id = enterprise_id;
+
+  SET transaction_id = GenerateTransactionId(project_id);
+
+  -- error handling 
+  CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, current_exchange_rate, date);
+END $$
+
+-- @TODO This should be a function
+CREATE FUNCTION GenerateTransactionId(
+  project_id SMALLINT(5)
+)
+RETURNS VARCHAR(100) DETERMINISTIC
+BEGIN
+
+DECLARE trans_id_length TINYINT(1) DEFAULT 4; 
+
+RETURN ( 
+SELECT CONCAT(abbr, IFNULL(MAX(increment), 1)) AS id 
+FROM (
+  SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, trans_id_length))) + 1 AS increment
+  FROM posting_journal JOIN project ON posting_journal.project_id = project.id
+  WHERE posting_journal.project_id = project_id
+UNION
+  SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, trans_id_length))) + 1 AS increment
+  FROM general_ledger JOIN project ON general_ledger.project_id = project.id
+  WHERE general_ledger.project_id = project_id)c
+);
 END $$
 
 -- detects MySQL Posting Journal Errors
@@ -229,7 +287,7 @@ END
 $$
 
 -- Credit For Cautions
-CREATE PROCEDURE PostPatientInvoice(
+CREATE PROCEDURE CopyInvoiceToPostingJournal(
   iuuid BINARY(16),  -- the UUID of the patient invoice
   transId TEXT,
   projectId INT,
