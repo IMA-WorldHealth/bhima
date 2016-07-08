@@ -17,9 +17,10 @@ const components = require('../../shared/components');
  *   - Test for price list
  *   - Test for discount
  */
-describe('Patient Invoice', function () {
+describe.only('Patient Invoice', function () {
   'use strict';
 
+  browser.ignoreSynchronization = true;
   const path = '#/invoices/patient';
 
   // navigate to the patient invoice page

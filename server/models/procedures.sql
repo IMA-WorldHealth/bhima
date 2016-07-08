@@ -35,8 +35,8 @@ BEGIN
   SELECT NULL FROM `stage_invoice` LIMIT 0;
 
   IF (`no_invoice_stage` = 1) THEN 
-    set @status = CONCAT('noinvoice', current_time());
-    create temporary table stage_invoice (select project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable);
+    create temporary table stage_invoice 
+    (select project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable);
   ELSE 
     insert into stage_invoice
     (select project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable);
@@ -72,17 +72,10 @@ CREATE PROCEDURE StageBillingService(
   IN invoice_uuid BINARY(16)
 )
 BEGIN 
-  DECLARE `no_billing_service_stage` TINYINT(1) DEFAULT 0;
-  DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_billing_service_stage` = 1;
-  SELECT NULL FROM `stage_billing_service` LIMIT 0;
+  CALL VerifyBillingServiceStageTable();
 
-  IF (`no_billing_service_stage` = 1) THEN 
-    create temporary table stage_billing_service 
-    (select id, invoice_uuid);
-  ELSE 
-    insert into stage_billing_service
-    (select id, invoice_uuid);
-  END IF;
+   insert into stage_billing_service
+  (select id, invoice_uuid);
 END $$
 
 CREATE PROCEDURE StageSubsidy(
@@ -90,18 +83,22 @@ CREATE PROCEDURE StageSubsidy(
   IN invoice_uuid BINARY(16)
 )
 BEGIN 
-  DECLARE `no_subsidy_stage` TINYINT(1) DEFAULT 0;
-  DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_subsidy_stage` = 1;
-  SELECT NULL FROM `stage_subsidy` LIMIT 0;
-
-  IF (`no_subsidy_stage` = 1) THEN 
-    create temporary table stage_subsidy 
-    (select id, invoice_uuid);
-  ELSE 
-    insert into stage_subsidy
-    (select id, invoice_uuid);
-  END IF;
+  CALL VerifySubsidyStageTable();
+  
+  insert into stage_subsidy
+  (select id, invoice_uuid);
 END $$
+
+CREATE PROCEDURE VerifySubsidyStageTable()
+BEGIN 
+  create table if not exists stage_subsidy (id INTEGER, invoice_uuid BINARY(16));
+END $$
+
+CREATE PROCEDURE VerifyBillingServiceStageTable()
+BEGIN 
+  create table if not exists stage_billing_service (id INTEGER, invoice_uuid BINARY(16));
+END $$
+
 
 CREATE PROCEDURE WriteInvoice(
   IN uuid BINARY(16)
@@ -112,6 +109,10 @@ BEGIN
   DECLARE total_cost_to_debtor decimal(19, 4);
   DECLARE total_subsidy_cost decimal(19, 4);
   DECLARE total_subsidised_cost decimal(19, 4);
+  
+  -- Workaround to ensure we can use this table to check if billing services are assigned to this invoice
+  CALL VerifySubsidyStageTable();
+  CALL VerifyBillingServiceStageTable();
 
   INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable)
   SELECT * from stage_invoice where stage_invoice.uuid = uuid;
