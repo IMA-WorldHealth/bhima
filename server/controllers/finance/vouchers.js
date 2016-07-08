@@ -10,7 +10,10 @@
 * @requires node-uuid
 * @requires lib/util
 * @requires lib/db
+* @requires lib/ReportManager
 * @requires lib/errors/NotFound
+* @requires lib/errors/BadRequest
+* @requires ./journal/voucher
 */
 
 'use strict';
@@ -52,7 +55,8 @@ function list(req, res, next) {
   'use strict';
 
   let dateConditon = null;
-  let query = getSql(req.query.detailed);
+  let detailed = !util.nullString(req.query.detailed) ? 1 : 0;
+  let query = getSql(detailed);
 
   // convert binary params if they exist
   if (req.query.document_uuid) {
@@ -67,8 +71,11 @@ function list(req, res, next) {
   // remove detailed for queryCondition
   delete req.query.detailed;
 
-  // format query parameters appropriately
+  // build query and parameters correctly
   let builder = util.queryCondition(query, req.query, null, dateConditon);
+
+  // grouping for avoid doublons of detailed request
+  builder.query += !detailed ? ' GROUP BY v.uuid ' : '';
 
   db.exec(builder.query, builder.conditions)
   .then(rows => res.status(200).json(rows))
@@ -238,7 +245,7 @@ function report(req, res, next) {
 function getVouchers(uuid, request) {
   'use strict';
 
-  let detailed = request && request.detailed ? request.detailed : null;
+  let detailed = request && !util.nullString(request.detailed) ? 1: 0;
 
   // sql detailed or not for voucher
   let sql = getSql(detailed);
@@ -292,6 +299,8 @@ function getVouchers(uuid, request) {
 
   }
 
+  sql += !detailed ? ' GROUP BY v.uuid ' : '';
+
   return db.exec(sql, sqlParams);
 }
 
@@ -301,12 +310,11 @@ function getSql(detailed) {
       v.description, v.user_id, v.type_id,
       CONCAT(u.first, ' - ', u.last) AS user,
       CONCAT(p.abbr, v.reference) AS reference,
-      BUID(vi.document_uuid) AS document_uuid 
+      BUID(vi.document_uuid) AS document_uuid
     FROM voucher v
     JOIN voucher_item vi ON vi.voucher_uuid = v.uuid
     JOIN project p ON p.id = v.project_id
-    JOIN user u ON u.id = v.user_id
-    GROUP BY v.uuid `;
+    JOIN user u ON u.id = v.user_id `;
 
   let detailedSql =
     `SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
