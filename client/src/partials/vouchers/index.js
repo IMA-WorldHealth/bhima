@@ -154,8 +154,8 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // print vouchers list
   function printList() {
-    var dateFrom = vm.dateInterval ? Dates.util.str(vm.dateInterval.dateFrom) : null;
-    var dateTo = vm.dateInterval ? Dates.util.str(vm.dateInterval.dateTo) : null;
+    var dateFrom = vm.dateInterval ? vm.dateInterval.dateFrom: null;
+    var dateTo = vm.dateInterval ? vm.dateInterval.dateTo : null;
     var url = '/vouchers/reports';
     var params = { dateFrom: dateFrom, dateTo: dateTo, renderer: 'pdf' };
     Modal.openReports({ url: url, params: params });

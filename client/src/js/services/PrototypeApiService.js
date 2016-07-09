@@ -244,7 +244,7 @@ function PrototypeApiService($http, util) {
 
     // append the id to the base url
     var target = this.url.concat('reports/', param);
-    return reportBuilder(this, param, filetype);
+    return reportBuilder(param, filetype);
   }
 
   /**

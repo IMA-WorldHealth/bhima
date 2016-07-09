@@ -104,16 +104,15 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
       ];
 
       // format data for the grid
-      var data = [];
-      list.forEach(function (item) {
-        data.push({
+      var data = list.map(function (item) {
+        return {
           uuid          : item.uuid,
           reference     : item.reference,
           date          : item.date,
           description   : item.description,
           amount        : item.amount,
           document_uuid : item.document_uuid
-        });
+        };
       });
       vm.gridOptions.data = data;
     });
