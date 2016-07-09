@@ -30,10 +30,8 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
       '</div>';
 
   vm.search = search;
-
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
-
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -63,7 +61,7 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
     Notify.handleError(error);
   }
 
-  // this uses function loads patients from the database with search parameters
+  // this function loads patients from the database with search parameters
   // if passed in.
   function load(parameters) {
 
@@ -129,7 +127,6 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
-
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {

@@ -341,17 +341,21 @@ function create(req, res, next) {
     .done();
 }
 
-/**
- * Searches for a invoice by query parameters provided.
- *
- * GET /invoices/search
- */
-function search(req, res, next) {
+function find(options) {
 
-  let additionalTokenQuery = [], additionalTokenCondition = [];
+  // remove the limit first thing, if it exists
+  let limit = Number(options.limit);
+  delete options.limit;
 
-  let sql =
-    `SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
+  // support flexible queries by keeping a growing list of conditions and
+  // statements
+  let conditions = {
+    statements: [],
+    parameters: []
+  };
+
+  let sql =`
+    SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
       invoice.date, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames, invoice.cost,
        BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
         service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy
@@ -359,52 +363,67 @@ function search(req, res, next) {
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     JOIN service ON service.id = invoice.service_id
     JOIN user ON user.id = invoice.user_id
-    JOIN project ON project.id = invoice.project_id `;
+    JOIN project ON project.id = invoice.project_id
+    WHERE
+  `;
 
-  if(req.query.is_distributable && req.query.is_distributable === 'all'){
-    //In this case it means not filterinf based on distibutable
-    delete req.query.is_distributable;
+  if (options.debtor_uuid) {
+    options.debtor_uuid = db.bid(options.debtor_uuid);
   }
 
-  //if there is parameter to filter on, we add the WHERE clause
-  if(Object.keys(req.query).length > 0) {sql += 'WHERE ';}
-
-
-  if (req.query.debtor_uuid) {
-    req.query.debtor_uuid = db.bid(req.query.debtor_uuid);
+  if (options.uuid) {
+    options.uuid = db.bid(options.uuid);
   }
 
-  if (req.query.uuid) {
-    req.query.uuid = db.bid(req.query.uuid);
+  if (options.reference) {
+    conditions.statements.push('CONCAT(project.abbr, invoice.reference) = ?');
+    conditions.parameters.push(options.reference);
+    delete options.reference;
   }
 
-  if(req.query.reference){
-    additionalTokenQuery.push(' CONCAT(project.abbr, invoice.reference) = ?');
-    additionalTokenCondition = additionalTokenCondition.concat(req.query.reference);
-    delete req.query.reference;
+  if (options.billingDateFrom) {
+    conditions.statements.push('DATE(invoice.date) >= DATE(?)');
+    conditions.parameters.push(options.billingDateFrom);
+    delete options.billingDateFrom;
   }
 
-  if(req.query.billingDateFrom && req.query.billingDateTo){
-
-      additionalTokenQuery.push(' DATE(invoice.date) >= DATE(?)');
-      additionalTokenCondition = additionalTokenCondition.concat(req.query.billingDateFrom);
-      delete req.query.billingDateFrom;
-
-      additionalTokenQuery.push(' DATE(invoice.date) <= DATE(?)');
-      additionalTokenCondition = additionalTokenCondition.concat(req.query.billingDateTo);
-      delete req.query.billingDateTo;
+  if (options.billingDateTo) {
+    conditions.statements.push('DATE(invoice.date) <= DATE(?)');
+    conditions.parameters.push(options.billingDateTo);
+    delete options.billingDateTo;
   }
 
+  sql += conditions.statements.join(' AND ');
+  if (conditions.statements.length && !_.isEmpty(options)) { sql += ' AND '; }
+  let query = util.queryCondition(sql, options, true);
 
-  let queryObject = util.queryCondition(sql, req.query, true);
+  sql = query.query;
+  let parameters = conditions.parameters.concat(query.conditions);
 
-  queryObject.query = (queryObject.conditions.length > 0 && additionalTokenQuery.length > 0) ?
-      queryObject.query.concat(' AND', additionalTokenQuery.join(' AND')) :
-      queryObject.query.concat(additionalTokenQuery.join(' AND'));
+  // finally, apply the LIMIT query
+  if (!isNaN(limit)) {
+    sql += 'LIMIT ?;';
+    parameters.push(limit);
+  }
 
-  queryObject.conditions = queryObject.conditions.concat(additionalTokenCondition);
+  // if nothing was submitted to the search, get all records
+  // this writes in WHERE 1; to the SQL query
+  if (!parameters.length) {
+    sql += ' 1;';
+  }
 
-  db.exec(queryObject.query, queryObject.conditions)
+  parameters = parameters.concat(conditions.parameters);
+
+  return db.exec(sql, parameters);
+}
+
+/**
+ * Searches for a invoice by query parameters provided.
+ *
+ * GET /invoices/search
+ */
+function search(req, res, next) {
+  find(req.query)
   .then(function (rows) {
     res.status(200).json(rows);
   })

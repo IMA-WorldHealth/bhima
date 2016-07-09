@@ -150,7 +150,7 @@
               novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
                 <label class="control-label">{
-                  { 'FORM.LABELS.NAME' | translate }}
+                  {{ 'FORM.LABELS.NAME' | translate }}
                 </label>
                 <input type="text" class="form-control" name="name" ng-maxlength="ProjectCtrl.maxLength" ng-model="ProjectCtrl.project.name" required>
                 <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">

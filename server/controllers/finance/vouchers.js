@@ -55,7 +55,7 @@ function list(req, res, next) {
   'use strict';
 
   let dateConditon = null;
-  let detailed = !util.nullString(req.query.detailed) ? 1 : 0;
+  let detailed = !util.isFalsy(req.query.detailed) ? 1 : 0;
   let query = getSql(detailed);
 
   // convert binary params if they exist
@@ -245,7 +245,7 @@ function report(req, res, next) {
 function getVouchers(uuid, request) {
   'use strict';
 
-  let detailed = request && !util.nullString(request.detailed) ? 1: 0;
+  let detailed = request && !util.isFalsy(request.detailed) ? 1: 0;
 
   // sql detailed or not for voucher
   let sql = getSql(detailed);
@@ -256,11 +256,16 @@ function getVouchers(uuid, request) {
   // sql params
   let sqlParams = [];
 
-  if (request && (!util.nullString(request.dateFrom) && !util.nullString(request.dateTo)) && uuid) {
+  // query condition variables
+  let hasRequest = !!request;
+  let hasDates =  !!request && !util.isFalsy(request.dateFrom) && !util.isFalsy(request.dateTo);
+  let hasUuid = !!uuid;
+
+  if (hasRequest && hasDates && hasUuid) {
 
     /**
      * request is given but with dates, and uuid is also given :
-     * (request && (Boolean(request.dateFrom) && Boolean(request.dateTo)) && uuid)
+     * (hasRequest && hasDates && hasUuid)
      */
     sql += 'WHERE v.uuid = ? AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
     sqlParams = [];
@@ -268,24 +273,24 @@ function getVouchers(uuid, request) {
     sqlParams.push(request.dateFrom);
     sqlParams.push(request.dateTo);
 
-  } else if ((request && (util.nullString(request.dateFrom) || util.nullString(request.dateTo)) && uuid) || (!request && uuid)) {
+  } else if ((hasRequest && !hasDates && hasUuid) || (!hasRequest && hasUuid)) {
 
     /**
      * request is given but without dates, and uuid is also given :
-     * (request && (!Boolean(request.dateFrom) || !Boolean(request.dateTo)) && uuid)
+     * (hasRequest && !hasDates && hasUuid)
      *
      * request is not given, and uuid is given :
-     * (!request && uuid)
+     * (!hasRequest && hasUuid)
      */
     sql += 'WHERE v.uuid = ?';
     sqlParams = [];
     sqlParams.push(bid);
 
-  } else if (request && (!util.nullString(request.dateFrom) && !util.nullString(request.dateTo)) && !uuid) {
+  } else if (hasRequest && hasDates && !hasUuid) {
 
     /**
      * request is given with dates, and uuid is not given :
-     * (request && (request.dateFrom !== 'null' && request.dateTo !== 'null') && !uuid)
+     * (hasRequest && hasDates && !hasUuid)
      */
     sql += 'WHERE DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)';
     sqlParams = [];
@@ -331,5 +336,5 @@ function getSql(detailed) {
     JOIN user u ON u.id = v.user_id
     JOIN account a ON a.id = vi.account_id `;
 
-  return !util.nullString(detailed) ? detailedSql : sql;
+  return !util.isFalsy(detailed) ? detailedSql : sql;
 }

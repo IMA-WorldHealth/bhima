@@ -10,8 +10,8 @@
 /** The query string conditions builder */
 module.exports.queryCondition = queryCondition;
 module.exports.take = take;
-module.exports.nullString = nullString;
-module.exports.stringToBool = stringToBool;
+module.exports.isTrueString = isTrueString;
+module.exports.isFalsy = isFalsy;
 
 /**
  * @function queryCondition
@@ -115,17 +115,17 @@ function take() {
  * @param {string} value The string to evaluate
  * @return {boolean}
  */
-function stringToBool(value) {
+function isTrueString(value) {
   return (value + '').toLowerCase() === 'true';
 }
 
 /**
- * nullString
- * @function nullString
+ * isFalsy
+ * @function isFalsy
  * @param {string} value The string to evaluate
  * @return {boolean}
  */
-function nullString(value) {
+function isFalsy(value) {
   value += '';
   return value.toLowerCase() === 'null' ||
     value.toLowerCase() === 'undefined' ||

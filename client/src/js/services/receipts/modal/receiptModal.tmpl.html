@@ -1,4 +1,4 @@
-<div class="modal-header">
+<div class="modal-header" data-modal="receipt">
   <div style="display : inline-block">
   <ol class="headercrumb">
     <li class="static">{{ ReceiptCtrl.title | translate }}</li>
@@ -14,15 +14,15 @@
       style="padding-top : 8px"
       class="pull-right">
     <span class="text-success">
-      <span class="glyphicon glyphicon-ok-circle"></span>
+      <span class="fa fa-check-circle-o"></span>
       {{ReceiptCtrl.createdKey | translate}}
     </span>
   </div>
 </div>
 
 <!-- Temporary Loading State -->
-<div style="padding : 10px;" ng-if="!ReceiptCtrl.receipt">
-  <p class="text-info"><span class="glyphicon glyphicon-hourglass"></span> {{"RECEIPTS.LOADING"}}</p>
+<div style="padding : 10px;" ng-if="!ReceiptCtrl.receipt" class="text-center">
+  <p class="text-info"><span class="fa fa-hourglass-end fa-spin"></span> {{ "RECEIPTS.LOADING" | translate }}</p>
 </div>
 
 <!-- ng-if used in favour of ng-switch to allow dynamic states -->
@@ -52,7 +52,11 @@
   <!-- Excel -->
 </div>
 
-<div class="modal-footer" id="receipt_modal_footer">
-  <button class="btn btn-default btn-sm" ng-click="ReceiptCtrl.close()" data-action="close" id="receipt_modal_close">Close</button>
-  <button class="btn btn-primary btn-sm" ng-click="ReceiptCtrl.print()" data-action="print"><span class="glyphicon glyphicon-print"></span> Print</button>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default btn-sm" ng-click="ReceiptCtrl.close()" data-action="close">
+    {{ "FORM.BUTTONS.CLOSE" | translate }}
+  </button>
+  <button class="btn btn-primary btn-sm" ng-click="ReceiptCtrl.print()" data-action="print">
+    <span class="fa fa-print"></span> {{ "FORM.BUTTONS.PRINT" | translate }}
+  </button>
 </div>

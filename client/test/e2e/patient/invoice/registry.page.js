@@ -1,37 +1,37 @@
 /* jshint expr:true */
 /* global element, by, browser */
-function InvoiceRegistryPage() {
-  var page = this;
 
-  // journal page component
-  var searchButton = element(by.id('filterButton'));
-  var grid = element(by.id('invoice-registry'));
-  var gridRows = grid.element( by.css('.ui-grid-render-container-body')).all( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
-  var invoiceProofReference = element(by.id('receipt_modal_footer')); //getting one off modal component here we have got the footer div
+const FU = require('../../shared/FormUtils');
+
+function InvoiceRegistryPage() {
+  const page = this;
+
+  //
+  const grid = element(by.id('invoice-registry'));
+  const gridRows = grid
+    .element(by.css('.ui-grid-render-container-body'))
+    .all( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
   function getInvoiceNumber() {
     return gridRows.count();
   }
 
-  function showFilterDialog(){
-    searchButton.click();
-  }
+  function showInvoiceProof(n) {
+    const receiptColumnNumber = 6;
 
-  function showInvoiceProof(line) {
-    var row = grid.element( by.css('.ui-grid-render-container-body')).element( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row( line ) );
+    const row = grid
+      .$('.ui-grid-render-container-body')
+      .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row(n));
 
     // click the <a> tag within the cell
-    row.element( by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(6)).element( by.tagName('a')).click();
-  }
-
-  function isInvoiceProofPresent() {
-    return invoiceProofReference.isPresent();
+    row
+      .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid').row(receiptColumnNumber))
+      .element(by.tagName('a'))
+      .click();
   }
 
   page.getInvoiceNumber = getInvoiceNumber;
-  page.showFilterDialog = showFilterDialog;
   page.showInvoiceProof = showInvoiceProof;
-  page.isInvoiceProofPresent = isInvoiceProofPresent;
 }
 
 module.exports = InvoiceRegistryPage;

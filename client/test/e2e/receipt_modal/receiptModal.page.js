@@ -5,7 +5,7 @@
 
 function ReceiptModalPage(){
     var page = this;
-    
+
     var closeButton = element(by.id('receipt_modal_close'));
 
 
