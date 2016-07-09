@@ -53,6 +53,9 @@ function ModalService(Modal) {
   // inventory list action : add or edit
   service.openInventoryListActions = openInventoryListActions;
 
+  // date interval modal
+  service.openDateInterval = openDateInterval;
+
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -266,6 +269,25 @@ function ModalService(Modal) {
       var params = angular.extend(modalParameters, {
         templateUrl  : 'partials/inventory/list/modals/actions.tmpl.html',
         controller   : 'InventoryListActionsModalController',
+        controllerAs : '$ctrl',
+        size         : 'xs',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    /** Find by Date interval modal */
+    function openDateInterval(request) {
+
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/templates/modals/dateInterval.tmpl.html',
+        controller   : 'DateIntervalModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
         backdrop     : 'static',

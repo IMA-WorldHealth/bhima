@@ -128,20 +128,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
 
   /** print inventory list */
   function printList() {
-    var buttonState = JSON.parse(JSON.stringify(vm.bcButtons[2]));
-    vm.bcButtons[2].disabled = true;
-    vm.bcButtons[2].icon = 'fa fa-spinner fa-pulse';
-
-    Inventory.report('pdf')
-    .then(function (result) {
-      vm.report = result;
-      return Modal.openReports({ report: vm.report, renderer: 'pdf' });
-    })
-    .then(function () {
-      vm.bcButtons[2] = JSON.parse(JSON.stringify(buttonState));
-      vm.bcButtons[2].action = printList;
-    })
-    .catch(Notify.errorHandler);
+    Modal.openReports({ url: '/inventory/reports/metadata', renderer: 'pdf' });
   }
 
   /** startup */

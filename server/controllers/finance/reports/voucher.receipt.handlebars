@@ -21,7 +21,7 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h1 style="margin:15px; font-weight:bold" class="text-center">{{uppercase (translate 'VOUCHERS.TITLE') }}</h1>
+      <h1 style="margin:15px; font-weight:bold" class="text-center">{{uppercase (translate 'VOUCHERS.GLOBAL.TITLE') }}</h1>
 
       <!-- voucher info  -->
       <table class="table table-condensed">
@@ -35,7 +35,7 @@
           </tr>
         </thead>
         <tbody>
-          {{#each model.data }}
+          {{#each model.data.rows }}
             {{#if @first}}
               <tr>
                 <td>{{ reference }}</td>
@@ -65,7 +65,7 @@
           </tr>
         </thead>
         <tbody>
-          {{#each model.data}}
+          {{#each model.data.rows}}
           <tr>
             <td>{{ number }}</td>
             <td>{{ label }}</td>

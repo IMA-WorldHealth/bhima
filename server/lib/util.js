@@ -10,6 +10,8 @@
 /** The query string conditions builder */
 module.exports.queryCondition = queryCondition;
 module.exports.take = take;
+module.exports.isTrueString = isTrueString;
+module.exports.isFalsy = isFalsy;
 
 /**
  * @function queryCondition
@@ -26,16 +28,31 @@ module.exports.take = take;
  * @todo - allow prexisting conditions to be passed in
  */
 
-function queryCondition(sql, params, excludeWhere) {
+function queryCondition(sql, params, excludeWhere, dateConditon) {
   let conditions = [];
+
+  let dateParams = {
+    dateFrom: new Date(params.dateFrom),
+    dateTo: new Date(params.dateTo)
+  };
+
+  if (Object.keys(params).length === 0) {
+    excludeWhere = true;
+  }
+
+  // remove date in params
+  delete params.dateFrom;
+  delete params.dateTo;
 
   let criteria = Object.keys(params).map(function (item) {
     conditions = conditions.concat(item, params[item]);
     return '?? = ?';
   }).join(' AND ');
 
-  if (Object.keys(params).length === 0) {
-    excludeWhere = true;
+  if (dateParams.dateFrom && dateParams.dateTo && dateConditon) {
+    criteria += conditions.length ? ' AND ' + dateConditon : dateConditon;
+    conditions.push(dateParams.dateFrom);
+    conditions.push(dateParams.dateTo);
   }
 
   sql += (excludeWhere ? '' : 'WHERE ') + criteria;
@@ -90,4 +107,29 @@ function take() {
       return object[key];
     });
   };
+}
+
+/**
+ * String to boolean
+ * @function stringToBool
+ * @param {string} value The string to evaluate
+ * @return {boolean}
+ */
+function isTrueString(value) {
+  return (value + '').toLowerCase() === 'true';
+}
+
+/**
+ * isFalsy
+ * @function isFalsy
+ * @param {string} value The string to evaluate
+ * @return {boolean}
+ */
+function isFalsy(value) {
+  value += '';
+  return value.toLowerCase() === 'null' ||
+    value.toLowerCase() === 'undefined' ||
+    value.toLowerCase() === 'false' ||
+    value.toLowerCase() === '0' ||
+    value.toLowerCase() === '';
 }

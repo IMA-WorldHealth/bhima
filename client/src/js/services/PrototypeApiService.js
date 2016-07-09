@@ -244,17 +244,32 @@ function PrototypeApiService($http, util) {
 
     // append the id to the base url
     var target = this.url.concat('reports/', param);
+    return reportBuilder(param, filetype);
+  }
+
+  /**
+   * Receipt
+   */
+  function receipt(param, filetype) {
+
+    // append the id to the base url
+    var target = this.url.concat('receipts/', param);
+    return reportBuilder(param, filetype);
+  }
+
+  /** report builder */
+  function reportBuilder(param, filetype) {
 
     // filetype setup
     var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
     var params = { renderer: filetype };
 
     // send the GET request
-    return this.$http.get(target, {
+    return $http.get(target, {
       params: params,
       responseType: responseType
     })
-      .then(util.unwrapHttpResponse);
+    .then(util.unwrapHttpResponse);
   }
 
   return Api;

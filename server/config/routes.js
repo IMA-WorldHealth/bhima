@@ -486,6 +486,8 @@ exports.configure = function configure(app) {
 
   // voucher api endpoint
   app.get('/vouchers', vouchers.list);
+  app.get('/vouchers/reports/', vouchers.report);
+  app.get('/vouchers/receipts/:uuid', vouchers.receipt);
   app.get('/vouchers/:uuid', vouchers.detail);
   app.get('/vouchers/reports/:uuid', vouchers.report);
   app.post('/vouchers', vouchers.create);

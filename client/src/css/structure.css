@@ -185,6 +185,7 @@
   border: none;
   max-height : 42px;
   border-bottom : 1px solid #ccc;
+  min-height: 35px;
 }
 
 .bhima-title {

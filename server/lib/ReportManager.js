@@ -27,8 +27,7 @@ exports.build = build;
  * @param {object} request the request which contains the renderer type (pdf, json, html, ...)
  * @param {string} templateUrl the handlebars template url for the report
  * @param {object} options the report page options
- * @return {object} document the document blob
- * @return {object} headers the document headers
+ * @return {object} resolve An object which contains variables for the handlebars file
  * NOTE: the returned data are get by a spread(document, headers) function
  * and the result is sended with res.set(headers).send(document)
  */
