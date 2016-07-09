@@ -1,7 +1,9 @@
 angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
-PatientInvoiceService.$inject = [ '$http', '$uibModal', 'util', 'SessionService', 'UserService', 'ServiceService' ];
+PatientInvoiceService.$inject = [
+  '$http', '$uibModal', 'util', 'SessionService'
+];
 
 /**
  * Patient Invoice Service
@@ -10,16 +12,15 @@ PatientInvoiceService.$inject = [ '$http', '$uibModal', 'util', 'SessionService'
  * through the PatientService, but for queries not tied to particular patients,
  * this service is particularly useful.
  */
-function PatientInvoiceService($http, $uibModal, util, Session, Users, Services) {
+function PatientInvoiceService($http, Modal, util, Session) {
   var service = this;
   var baseUrl = '/invoices/';
 
   service.read = read;
-  service.reference = reference;
   service.create = create;
   service.search = search;
   service.openSearchModal = openSearchModal;
-  service.invoiceFilters = invoiceFilters;
+  service.formatFilterParameters = formatFilterParameters;
 
   /**
    * @method read
@@ -36,21 +37,6 @@ function PatientInvoiceService($http, $uibModal, util, Session, Users, Services)
    */
   function read(uuid, options) {
     var target = baseUrl.concat(uuid || '');
-    return $http.get(target)
-      .then(util.unwrapHttpResponse);
-  }
-
-  /**
-   * @method reference
-   *
-   * @description
-   * Searches for a particular patient invoice by its reference
-   *
-   * @param {String} ref - the reference to search for
-   * @returns {Promise} promise - a resolved or rejected result from the server
-   */
-  function reference(ref) {
-    var target = baseUrl + 'references/' + ref;
     return $http.get(target)
       .then(util.unwrapHttpResponse);
   }
@@ -86,14 +72,15 @@ function PatientInvoiceService($http, $uibModal, util, Session, Users, Services)
    * @method search
    *
    * @description
-   * This method is reponsible of seaching for invoice(s) based on passed parameters
+   * This method is responsible for searching for invoice(s) based on passed parameters
+   *
+   * @param {Object} options - query string parameters to be passed to $http for
+   *   serialization.
    *
    * @returns {Promise} - a promise resolving to the HTTP result.
    */
-
   function search (options) {
     var target = baseUrl.concat('search');
-
     return $http.get(target, { params : options })
         .then(util.unwrapHttpResponse);
   }
@@ -112,83 +99,47 @@ function PatientInvoiceService($http, $uibModal, util, Session, Users, Services)
     return item;
   }
 
-  //open a dialog box to help user filtering invoices
-  function openSearchModal() {
-    return $uibModal.open({
-      templateUrl : 'partials/patient_invoice/registry/modal.html',
+  // open a dialog box to help user filtering invoices
+  function openSearchModal(filters) {
+    return Modal.open({
+      templateUrl : 'partials/patient_invoice/registry/search.modal.html',
       size : 'md',
       animation : true,
       keyboard  : false,
-      backdrop : 'static',
-      controller : 'InvoiceRegistryModalController as ModalCtrl'
-    }, true).result;
+      controller : 'InvoiceRegistrySearchModalController as ModalCtrl',
+      resolve: {
+        filters : function filtersProvider() { return filters; }
+      }
+    }).result;
   }
 
-
-  /*
-   * This function prepares the headers invoice properties which were filtered,
+  /**
+   * This function prepares the headers for invoice properties which were filtered,
    * Special treatment occurs when processing data related to the date
-   * @todo - this might be better in it's own service
+   * @todo - this might be better in its own service
    */
-  function invoiceFilters(invoice) {
-    var propertyInvoiceFilter = [];
-    var dataConfiguration;
+  function formatFilterParameters(params) {
+    var columns = [
+      { field: 'is_distributable', displayName: 'FORM.LABELS.DISTRIBUTABLE' },
+      { field: 'service_id', displayName: 'FORM.LABELS.SERVICE' },
+      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
+      { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
+      { field: 'billingDateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter:'date' },
+      { field: 'billingDateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter:'date' },
+    ];
 
-    if (invoice.billingDateFrom && invoice.billingDateTo) {
-      dataConfiguration = {
-        title : 'FORM.LABELS.BILLING_DATE',
-        reference1 : invoice.billingDateFrom,
-        reference2 : invoice.billingDateTo
-      };
-      propertyInvoiceFilter.push(dataConfiguration);
-    }
+    // returns columns from filters
+    return columns.filter(function (column) {
+      let value = params[column.field];
 
-    if (invoice.reference) {
-      dataConfiguration = {
-        title : 'FORM.LABELS.REFERENCE',
-        reference1 : invoice.reference,
-      };
-      propertyInvoiceFilter.push(dataConfiguration);
-    }
-    if (invoice.service_id) {
-        
-        Services.read(invoice.service_id)
-            .then(function (data) {
-                dataConfiguration = {
-                    title : 'FORM.LABELS.SERVICE',
-                    reference1 : data.name
-                };
-                propertyInvoiceFilter.push(dataConfiguration);
-            });      
-    }
-
-    if (invoice.user_id) {
-
-        Users.read(invoice.user_id)
-            .then(function (data) {
-                dataConfiguration = {
-                    title : 'FORM.LABELS.USER',
-                    reference1 : data.displayname
-                };
-                propertyInvoiceFilter.push(dataConfiguration);
-            });
-    }
-
-    if (invoice.is_distributable && invoice.is_distributable !== 'all') {
-        var isDistributableInvoice;
-        if (invoice.is_distributable === '1') {
-            isDistributableInvoice = 'FORM.LABELS.YES';
-        } else {
-            isDistributableInvoice = 'FORM.LABELS.NO';
-        }
-
-        dataConfiguration = {
-            title: 'FORM.LABELS.DISTRIBUTABLE',
-            reference1: invoice.is_distributable
-        };
-        propertyInvoiceFilter.push(dataConfiguration);
-    }
-    return propertyInvoiceFilter;
+      if (angular.isDefined(value)) {
+        column.value = value;
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
+
   return service;
 }

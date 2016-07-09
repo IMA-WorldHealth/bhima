@@ -1,47 +1,59 @@
 <div class="flex-header static">
-    <div class="bhima-title">
-        <ol class="headercrumb">
-            <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-            <li class="title">{{ "INVOICE_REGISTRY.TITLE" | translate }}</li>
-        </ol>
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">{{ "INVOICE_REGISTRY.TITLE" | translate }}</li>
+    </ol>
 
-        <div class="toolbar">
-            <div class="toolbar-item">
-                <button
-                    id="filterButton"
-                    ng-click="InvoiceRegistryCtrl.search()"
-                    data-method="search"
-                    class="btn btn-default btn-sm">
-                    <span class="glyphicon glyphicon-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
-                </button>
-            </div>
-        </div>
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          ng-click="InvoiceRegistryCtrl.search()"
+          data-method="search"
+          class="btn btn-default btn-sm">
+          <span class="fa fa-search"></span> {{ "FORM.BUTTONS.SEARCH" | translate }}
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- @todo remove hardcoded styles -->
-<div class="flex-util" style="min-height : 35px; padding-top : 7px">
-    <bh-filters-applied filters="InvoiceRegistryCtrl.filters">
-    </bh-filters-applied>
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="InvoiceRegistryCtrl.filtersFmt"
+    on-remove-filter="InvoiceRegistryCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-click="InvoiceRegistryCtrl.clearFilters()"
+    ng-show="InvoiceRegistryCtrl.filtersFmt.length > 0"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-ban text-danger"></i>
+    {{ "FORM.INFOS.CLEAR_FILTERS" | translate }}
+  </a>
 </div>
 
 <div class="flex-content">
-    <div class="container-fluid">
-        <div
-            id="invoice-registry"
-            ui-grid="InvoiceRegistryCtrl.uiGridOptions"
-            style="height : calc(100vh - 102px)"
-            ui-grid-auto-resize
-            ui-grid-resize-columns
-            ui-grid-move-columns>
+  <div class="container-fluid">
+    <div
+      id="invoice-registry"
+      ui-grid="InvoiceRegistryCtrl.uiGridOptions"
+      style="height : calc(100vh - 102px)"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-move-columns>
 
-            <bh-grid-loading-indicator
-                    loading-state="InvoiceRegistryCtrl.loading"
-                    empty-state="InvoiceRegistryCtrl.uiGridOptions.data.length === 0"
-                    error-state="InvoiceRegistryCtrl.hasError"
-            >
-            </bh-grid-loading-indicator>
-        </div>
-    </div>
+      <bh-grid-loading-indicator
+        loading-state="InvoiceRegistryCtrl.loading"
+        empty-state="InvoiceRegistryCtrl.uiGridOptions.data.length === 0"
+        error-state="InvoiceRegistryCtrl.hasError"
+      >
+      </bh-grid-loading-indicator>
+  </div>
+  </div>
 </div>
 

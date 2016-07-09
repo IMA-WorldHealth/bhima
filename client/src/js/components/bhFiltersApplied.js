@@ -8,7 +8,7 @@ angular.module('bhima.components')
   }
 });
 
-bhFiltersAppliedController.$inject = [ '$scope', '$filter' ];
+bhFiltersAppliedController.$inject = [ '$filter' ];
 
 /**
  * @class bhFiltersApplied
@@ -39,13 +39,14 @@ bhFiltersAppliedController.$inject = [ '$scope', '$filter' ];
  * //  on-remove-filter="SomeCtrl.removeFilter">
  * // </bh-filters-applied>
  */
-function bhFiltersAppliedController($scope, $filter) {
+function bhFiltersAppliedController($filter) {
+  var $ctrl = this;
 
-  $scope.$watch('$ctrl.filters', formatViewValues);
+  // formats the $viewValue according to any filters passed in
+  $ctrl.$onChanges = function onChanges(changes) {
+    if (!changes.filters) { return; }
 
-  // formats the viewValue according to any filters passed in
-  function formatViewValues(filters) {
-    if (!filters) { return; }
+    var filters = changes.filters.currentValue;
 
     filters.forEach(function (filter) {
       if (filter.ngFilter) {
@@ -54,5 +55,5 @@ function bhFiltersAppliedController($scope, $filter) {
         filter.viewValue = filter.value;
       }
     });
-  }
+  };
 }
