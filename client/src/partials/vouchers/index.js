@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 VoucherController.$inject = [
   'VoucherService', '$translate', 'NotifyService',
   'JournalFilteringService', 'uiGridGroupingConstants',
-  'uiGridConstants', 'ModalService', 'DateService'
+  'uiGridConstants', 'ModalService', 'DateService', 'LanguageService'
 ];
 
 /**
@@ -13,7 +13,7 @@ VoucherController.$inject = [
  * This controller is responsible for display all vouchers
  * which are in the voucher table
  */
-function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates) {
+function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, Languages) {
   var vm = this;
 
   /** gobal variables */
@@ -157,14 +157,15 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     var dateFrom = vm.dateInterval ? vm.dateInterval.dateFrom: null;
     var dateTo = vm.dateInterval ? vm.dateInterval.dateTo : null;
     var url = '/vouchers/reports';
-    var params = { dateFrom: dateFrom, dateTo: dateTo, renderer: 'pdf' };
+    var params = { dateFrom: dateFrom, dateTo: dateTo, renderer: 'pdf', lang: Languages.key };
     Modal.openReports({ url: url, params: params });
   }
 
   // showReceipt
   function showReceipt(uuid) {
     var url = '/vouchers/receipts/' + uuid;
-    Modal.openReports({ url: url, renderer: 'pdf' });
+    var params = { renderer: 'pdf', lang: Languages.key };
+    Modal.openReports({ url: url, params: params });
   }
 
   // initialize module

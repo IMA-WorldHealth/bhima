@@ -67,6 +67,9 @@ function LoginController(AppCache, Session, Languages, Projects, Notify) {
     // if the form is not valid, do not generate an $http request
     if (form.$invalid) { return; }
 
+    // send the client lang
+    vm.credentials.lang = Languages.key;
+
     // use the session service to log the user in
     return Session.login(vm.credentials)
     .then(function (session) {

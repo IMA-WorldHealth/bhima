@@ -21,6 +21,7 @@ const numeral = require('numeral');
 // this is very cheeky
 const moment = require('moment');
 const en = require('./../../client/i18n/en.json');
+const fr = require('./../../client/i18n/fr.json');
 
 const formatDollar = '$0,0.00';
 const formatFranc = '0.0,00 FC';
@@ -46,7 +47,7 @@ const hbs = exphbs.create({
  *  'FIRST_CATEGORY.SECOND_CATEGORY.ATTRIBUTE'
  */
 function translate(translateCode, languageKey) {
-  const DEFAULT_LANG = 'en';
+  languageKey = languageKey || 'en';
 
   const initialValue = null;
 
@@ -62,10 +63,13 @@ function translate(translateCode, languageKey) {
    */
   function lookupTranslation(a, b) {
     var initialValue = !a;
+    let translate;
 
     if (initialValue) {
-      // lookup the value from the reference object
-      return en[b];
+      // translate to French if given else use English as default
+      translate = languageKey === 'fr' ? fr : en;
+
+      return translate[b];
     } else {
       // nested value (not initial), select from the comparison object
       return a[b];

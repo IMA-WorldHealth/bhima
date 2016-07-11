@@ -34,17 +34,11 @@ exports.build = build;
 function build(req, data, templateUrl, options) {
   'use strict';
 
-  // Requirement for report
-  let request = {
-    query : req.query,
-    enterprise : req.session.enterprise,
-    project : req.session.project
-  };
-
   // The model to send to the view template
   let model = {
-    enterprise : request.enterprise,
-    project : request.project,
+    lang : req.query.lang,
+    enterprise : req.session.enterprise,
+    project : req.session.project,
     data : data
   };
 
@@ -53,7 +47,7 @@ function build(req, data, templateUrl, options) {
    * './server/controllers/stock/inventory/receipts/list.handlebars'
    */
   let template = path.normalize(templateUrl);
-  let queryString  = request.query;
+  let queryString  = req.query;
   let renderTarget = (queryString && queryString.renderer) ? queryString.renderer : defaultRender;
   let renderer     = supportedRender[renderTarget];
   let pageOptions  = options || defaultOptions;

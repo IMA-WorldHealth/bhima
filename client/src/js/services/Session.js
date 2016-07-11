@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('SessionService', SessionService);
 
 SessionService.$inject = [
-  '$sessionStorage', '$http', '$location', 'util', '$rootScope'
+  '$sessionStorage', 'LanguageService', '$http', '$location', 'util', '$rootScope'
 ];
 
 /**
@@ -19,7 +19,7 @@ SessionService.$inject = [
  *
  * @constructor
  */
-function SessionService($sessionStorage, $http, $location, util, $rootScope) {
+function SessionService($sessionStorage, Languages, $http, $location, util, $rootScope) {
   var service = this;
 
   // set up the storage instance
@@ -40,11 +40,12 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
 
   // set the user, enterprise, and project for the session
   // this should happen right after login
-  function create(user, enterprise, project, path) {
+  function create(user, enterprise, project, path, lang) {
     $storage.user = user;
     $storage.enterprise = enterprise;
     $storage.project = project;
     $storage.path = path;
+    $storage.lang = lang;
 
     // update bindings
     load();
@@ -56,6 +57,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     delete $storage.enterprise;
     delete $storage.project;
     delete $storage.path;
+    delete $storage.lang;
 
     // update bindings
     load();
@@ -76,7 +78,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
       .then(util.unwrapHttpResponse)
       .then(function (session) {
         // create the user session in the $storage
-        create(session.user, session.enterprise, session.project, session.path);
+        create(session.user, session.enterprise, session.project, session.path, Languages.key);
 
         // navigate to the main page
         $location.url('/');
@@ -114,6 +116,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     service.enterprise = $storage.enterprise;
     service.project = $storage.project;
     service.path = $storage.path;
+    service.lang = $storage.lang;
   }
 
   // if the $rootScope emits 'session.destroy', destroy the session

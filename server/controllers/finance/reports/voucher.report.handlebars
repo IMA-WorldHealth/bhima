@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
 
 <div class="container-fluid">
@@ -5,8 +6,8 @@
   <div class="row">
     <div class="col-xs-4">
       <h3 style="margin:2px;">{{ model.enterprise.name }} ({{ model.enterprise.abbr}})</h3>
-      <span>{{translate 'FORM.LABELS.PHONE'}}: {{ model.enterprise.phone }}</span><br>
-      <span>{{translate 'FORM.LABELS.EMAIL'}}: {{ model.enterprise.email }}</span><br>
+      <span>{{translate 'FORM.LABELS.PHONE' model.lang}}: {{ model.enterprise.phone }}</span><br>
+      <span>{{translate 'FORM.LABELS.EMAIL' model.lang}}: {{ model.enterprise.email }}</span><br>
     </div>
     <div class="col-xs-4">
       &nbsp;
@@ -22,7 +23,7 @@
 
       <!-- page title  -->
       <h1 style="margin:15px; font-weight:bold" class="text-center">
-        {{uppercase (translate 'VOUCHERS.GLOBAL.REPORT') }}<br>
+        {{uppercase (translate 'VOUCHERS.GLOBAL.REPORT' model.lang) }}<br>
         <small>
           {{#if  model.data.dateFrom }} {{date model.data.dateFrom }} {{/if}} -
           {{#if  model.data.dateTo }} {{date model.data.dateTo }} {{/if}}
@@ -34,11 +35,11 @@
       <table class="table table-condensed">
         <thead>
           <tr>
-            <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
-            <th>{{translate 'FORM.LABELS.DATE'}}</th>
-            <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
-            <th class="text-right">{{translate 'FORM.LABELS.AMOUNT'}}</th>
-            <th>{{translate 'FORM.LABELS.BY'}}</th>
+            <th>{{translate 'FORM.LABELS.REFERENCE' model.lang}}</th>
+            <th>{{translate 'FORM.LABELS.DATE' model.lang}}</th>
+            <th>{{translate 'FORM.LABELS.DESCRIPTION' model.lang}}</th>
+            <th class="text-right">{{translate 'FORM.LABELS.AMOUNT' model.lang}}</th>
+            <th>{{translate 'FORM.LABELS.BY' model.lang}}</th>
           </tr>
         </thead>
         <tbody>
