@@ -83,7 +83,7 @@ function lookupInvoice(invoiceUuid) {
   let invoiceDetailQuery =
     `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference, invoice.cost,
       BUID(invoice.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,
-      BUID(patient.uuid) as patient_uuid, user_id, date, invoice.is_distributable
+      BUID(patient.uuid) as patient_uuid, user_id, date, invoice.is_distributable, invoice.is_credit_note, invoice.credit_note_by
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
     JOIN project ON project.id = invoice.project_id

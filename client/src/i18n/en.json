@@ -311,6 +311,7 @@
       "SALE_DETAILS"                : "Sale Details",
       "SAVE_SUCCESS"                : "Save success",
       "SEARCH"                      : "Search",
+      "TRANSACTION_REVER_SUCCESS"   : "This transaction was reversed with success", 
       "UNAUTHORIZED"                : "Unauthorized",
       "UPDATE_SUCCESS"              : "Updated successfully",
       "UPLOAD_PICTURE_FAILED"       : "The selected file is not an picture",

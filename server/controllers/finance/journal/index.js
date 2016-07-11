@@ -37,7 +37,7 @@ function lookReverseTransaction(uid, user_id) {
       entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
     SELECT
       HUID(UUID()), p.project_id, @fiscalId, @periodId, @transId, p.trans_date,
-      p.record_uuid, p.description, p.account_id, p.debit * -1, p.credit * -1,
+      p.record_uuid, 'Credit Note', p.account_id, p.debit * -1, p.credit * -1,
       p.debit * @exchange * -1, p.credit * @exchange * -1, p.currency_id,
       p.entity_uuid, 'C', p.reference_uuid, NULL, 1, p.user_id, NULL, NULL
     FROM posting_journal AS p
@@ -73,6 +73,9 @@ function lookReverseTransaction(uid, user_id) {
 
   return transaction.execute()
     .then(function (rows) {
+      console.log('JJJJJJJJJJJJJJJJJJJJJJJJJJ');
+      console.log(rows);
+
       return rows;
     });
 
@@ -116,6 +119,10 @@ function list(req, res, next) {
  * Reverse any transaction in the posting_journal
  */
 function reverse(req, res, next) {
+  console.log('JJJJJJJJJJJJJJJ');
+  console.log(req.params.uuid);
+  console.log('UUUUUUUUUUUUUU');
+
   const uid = db.bid(req.params.uuid); 
   var user_id = req.session.user.id;
 
