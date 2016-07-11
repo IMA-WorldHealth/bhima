@@ -1306,10 +1306,10 @@ CREATE TABLE `posting_journal` (
   `record_uuid`       BINARY(16) NOT NULL, -- previously doc_num
   `description`       TEXT,
   `account_id`        INT(10) UNSIGNED NOT NULL,
-  `debit`             DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
-  `credit`            DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
-  `debit_equiv`       DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
-  `credit_equiv`      DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `debit`             DECIMAL(19,4) NOT NULL DEFAULT 0.00,
+  `credit`            DECIMAL(19,4) NOT NULL DEFAULT 0.00,
+  `debit_equiv`       DECIMAL(19,4) NOT NULL DEFAULT 0.00,
+  `credit_equiv`      DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
   `entity_uuid`       BINARY(16),    -- previously deb_cred_uuid
   `entity_type`       CHAR(1),     -- previously deb_cred_type
@@ -1568,6 +1568,8 @@ CREATE TABLE `invoice` (
   `description`         TEXT NOT NULL,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `is_distributable`    TINYINT(1) NOT NULL ,
+  `is_credit_note`      TINYINT(1),
+  `credit_note_by`      SMALLINT(5) UNSIGNED,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `invoice_1` (`project_id`, `reference`),
   KEY `reference` (`reference`),

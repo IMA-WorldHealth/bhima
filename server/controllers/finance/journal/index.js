@@ -13,9 +13,70 @@
 
 // module dependencies
 const db = require('../../../lib/db');
+const core = require('./core');
+
+var uuid = require('node-uuid');
 
 // expose to the api
 exports.list = list;
+
+exports.reverse = reverse;
+
+
+// GET /Grade
+function lookReverseTransaction(uid, user_id) {
+  'use strict';
+
+  let transaction = db.transaction();
+
+
+  let sql = `
+    INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
+      trans_id, trans_date, record_uuid, description, account_id, debit,
+      credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
+      entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
+    SELECT
+      HUID(UUID()), p.project_id, @fiscalId, @periodId, @transId, p.trans_date,
+      p.record_uuid, p.description, p.account_id, p.debit * -1, p.credit * -1,
+      p.debit * @exchange * -1, p.credit * @exchange * -1, p.currency_id,
+      p.entity_uuid, 'C', p.reference_uuid, NULL, 1, p.user_id, NULL, NULL
+    FROM posting_journal AS p
+    WHERE p.record_uuid = ?;`;
+
+  transaction
+
+    // set up the SQL variables for core.js to consume
+    .addQuery(`
+      SELECT posting_journal.trans_date, enterprise.id, project.id, posting_journal.currency_id
+      INTO @date, @enterpriseId, @projectId, @currencyId
+      FROM posting_journal JOIN project JOIN enterprise ON
+        posting_journal.project_id = project.id AND
+        project.enterprise_id = enterprise.id
+      WHERE posting_journal.record_uuid = ? LIMIT 1;
+    `, [uid])
+
+    .addQuery(`
+      UPDATE invoice SET is_credit_note = 1, credit_note_by = ${user_id} 
+      WHERE uuid = ?
+    `, [uid]);
+
+
+  // this function sets up the dates, fiscal year, and exchange rate for this
+  // posting session and ensures they all exist before attempting to write to
+  // the posting journal.
+  core.setup(transaction);
+
+  transaction
+    .addQuery(
+      sql,[uid]
+    );
+
+  return transaction.execute()
+    .then(function (rows) {
+      return rows;
+    });
+
+}
 
 /**
  * GET /journal
@@ -48,4 +109,22 @@ function list(req, res, next) {
     res.status(200).json(rows);
   })
   .catch(next);
+}
+
+/**
+ * PUT /journal/:UUID/reverse
+ * Reverse any transaction in the posting_journal
+ */
+function reverse(req, res, next) {
+  const uid = db.bid(req.params.uuid); 
+  var user_id = req.session.user.id;
+
+  lookReverseTransaction(uid, user_id)
+  .then(function (record) {
+
+    res.status(201).json(record);
+  })
+  .catch(next)
+  .done();
+
 }

@@ -1,0 +1,48 @@
+<form  name="ModalForm" ng-submit="ModalCtrl.submit(ModalCtrl.patientInvoice.uuid)" novalidate>
+  <div class="modal-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static">{{ "FORM.INFOS.INVOICES" | translate }}</li>
+        <li class="title">{{ "FORM.INFOS.CREDIT_NOTE" | translate }}</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="modal-body" style="overflow: auto; max-height: 2000px;">
+    <legend>{{ "FORM.INFOS.SALE_DETAILS" | translate }} :  {{ "TABLE.COLUMNS.INVOICE_ID" | translate}} : {{ ModalCtrl.patientInvoice.reference }} <small>{{ModalCtrl.patientInvoice.date | date}}</small></legend>
+    <fieldset>
+        <table class="table table-bordered table-condensed" style="width: 100%;">
+          <thead>
+            <tr>
+              <th colspan="4">{{ "TABLE.COLUMNS.PATIENT" | translate }} : {{ ModalCtrl.patientInvoice.patientNames }} </th>
+            </tr>
+            <tr>
+              <th>{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
+              <th>{{ "TABLE.COLUMNS.QUANTITY" | translate }}</th>
+              <th>{{ "TABLE.COLUMNS.PRICE" | translate }}</th>
+              <th>{{ "TABLE.COLUMNS.COST" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="item in ModalCtrl.patientInvoiceItems">
+              <td>{{item.text}}</td>
+              <td>{{item.quantity}}</td>
+              <td>{{item.transaction_price | currency}}</td>
+              <td>{{item.quantity * item.transaction_price | currency}}</td>
+            </tr>
+            <tr>
+              <th colspan="3" style="text-align: right;">{{ "TABLE.COLUMNS.TOTAL" | translate }}</th>
+              <td>{{ ModalCtrl.patientInvoice.cost | currency }}</td>
+            </tr>
+          </tbody>
+        </table>
+    </fieldset>    
+  </div>
+    
+  <div class="modal-footer">
+    <button  type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">{{ "FORM.BUTTONS.CLOSE" | translate }}</button>
+    <button id="submitButton" class="btn btn-default" type="submit" data-method="submit">
+      {{ "FORM.BUTTONS.SUBMIT_CREDIT_NOTE" | translate }}
+    </button>
+  </div>
+</form>

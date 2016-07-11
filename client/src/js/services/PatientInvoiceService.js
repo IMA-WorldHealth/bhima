@@ -21,6 +21,7 @@ function PatientInvoiceService($http, Modal, util, Session) {
   service.search = search;
   service.openSearchModal = openSearchModal;
   service.formatFilterParameters = formatFilterParameters;
+  service.openCreditNoteModal = openCreditNoteModal;  
 
   /**
    * @method read
@@ -111,6 +112,23 @@ function PatientInvoiceService($http, Modal, util, Session) {
         filters : function filtersProvider() { return filters; }
       }
     }).result;
+  }
+
+  //open a dialog box to Cancel Credit Note
+  function openCreditNoteModal(invoice) {
+    return $uibModal.open({
+      templateUrl : 'partials/patient_invoice/registry/modalCreditNote.html',
+      resolve : {
+        data : {
+          invoice : invoice
+        }
+      },    
+      size : 'md',
+      animation : true,
+      keyboard  : false,
+      backdrop : 'static',
+      controller : 'ModalCreditNoteController as ModalCtrl',
+    }, true).result;
   }
 
   /**

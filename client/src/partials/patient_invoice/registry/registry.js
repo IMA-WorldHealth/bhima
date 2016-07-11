@@ -20,6 +20,8 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
       '<a href ng-click="grid.appScope.openReceiptModal(row.entity.uuid)">' +
         '<span class="fa fa-file-pdf-o"></span> {{ "TABLE.COLUMNS.RECEIPT" | translate }}' +
       '</a>' +
+      '&nbsp;&nbsp;<a ng-click="grid.appScope.creditNote(row.entity)" class="text-danger">' +
+      '<span class="glyphicon glyphicon-remove-sign text-danger"></span> {{ "TABLE.COLUMNS.CREDIT_NOTE" | translate }}</a>' +
     '</div>';
 
   var costTemplate =
@@ -31,6 +33,7 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
   vm.openReceiptModal = Receipt.invoice;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
+  vm.creditNote = creditNote;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
@@ -128,6 +131,20 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
     vm.filters = cache.filters;
     vm.filtersFmt = Invoices.formatFilterParameters(cache.filters || {});
     load(vm.filters);
+  }
+
+  //Function for Credit Note cancel all Invoice
+  function creditNote(invoice){
+    vm.loading = true;
+    vm.hasError = false;
+    Invoices.openCreditNoteModal(invoice)
+    .then(function (data) {
+      var response = data.response;
+    })
+    .catch(handler)
+    .finally(function () {
+      vm.loading = false;
+    });
   }
 
   // fire up the module
