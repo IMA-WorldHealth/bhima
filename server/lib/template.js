@@ -47,7 +47,8 @@ const hbs = exphbs.create({
  *  'FIRST_CATEGORY.SECOND_CATEGORY.ATTRIBUTE'
  */
 function translate(translateCode, languageKey) {
-  languageKey = languageKey || 'en';
+  // set the translate keys database with English as default
+  let translate = languageKey === 'fr' ? fr : en;
 
   const initialValue = null;
 
@@ -63,12 +64,9 @@ function translate(translateCode, languageKey) {
    */
   function lookupTranslation(a, b) {
     var initialValue = !a;
-    let translate;
 
     if (initialValue) {
       // translate to French if given else use English as default
-      translate = languageKey === 'fr' ? fr : en;
-
       return translate[b];
     } else {
       // nested value (not initial), select from the comparison object

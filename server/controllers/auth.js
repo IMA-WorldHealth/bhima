@@ -122,16 +122,12 @@ function login(req, res, next) {
 
     session.project = rows[0];
 
-    // session language
-    session.lang = req.body.lang;
-
 
     // bind the session variables
     req.session.project = session.project;
     req.session.user = session.user;
     req.session.enterprise = session.enterprise;
     req.session.path = session.path;
-    req.session.lang = session.lang;
 
     // broadcast LOGIN event
     Topic.publish(Topic.channels.APP, {
