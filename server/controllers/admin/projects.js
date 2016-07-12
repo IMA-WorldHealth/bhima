@@ -1,14 +1,13 @@
 /**
-* The /projects HTTP API endpoint.
-*
-* This controller is responsible for implementing full CRUD on the
-* project table via the /projects endpoint.
-*
-* NOTE: this endpoint does not filter for enterprise ID.  We should probably
-* move to doing this in the future.
-*/
+ * The /projects HTTP API endpoint.
+ *
+ * This controller is responsible for implementing full CRUD on the
+ * project table via the /projects endpoint.
+ *
+ * NOTE: this endpoint does not filter for enterprise ID.  We should probably
+ * move to doing this in the future.
+ */
 'use strict';
-
 
 const db = require('../../lib/db');
 
@@ -18,8 +17,6 @@ const db = require('../../lib/db');
  * Returns an array of {id, name} for each project in the database.
  */
 exports.list = function list(req, res, next) {
-  'use strict';
-
   let sql;
 
   // send a larger response if complete is 1
@@ -64,12 +61,11 @@ exports.list = function list(req, res, next) {
 
 
 /**
-* GET /projects/:id
-*
-* Returns the details of a single project
-*/
+ * GET /projects/:id
+ *
+ * Returns the details of a single project
+ */
 exports.details = function details(req, res, next) {
-  'use strict';
 
   let sql =
     `SELECT project.id, project.enterprise_id, project.abbr,
@@ -95,13 +91,11 @@ exports.details = function details(req, res, next) {
 };
 
 /**
-* POST /projects
-*
-* Creates a new project.
-*/
+ * POST /projects
+ *
+ * Creates a new project.
+ */
 exports.create = function create(req, res, next) {
-  'use strict';
-
   let sql, data = req.body;
 
   sql =
@@ -116,13 +110,11 @@ exports.create = function create(req, res, next) {
 };
 
 /**
-* PUT /projects/:id
-*
-* Updates a new project.
-*/
+ * PUT /projects/:id
+ *
+ * Updates a new project.
+ */
 exports.update = function update(req, res, next) {
-  'use strict';
-
   let sql;
 
   sql =
@@ -148,13 +140,11 @@ exports.update = function update(req, res, next) {
 
 
 /**
-* DELETE /projects/:id
-*
-* Deletes a project.
-*/
+ * DELETE /projects/:id
+ *
+ * Deletes a project.
+ */
 exports.delete = function del(req, res, next) {
-  'use strict';
-
   let sql =
     'DELETE FROM project WHERE id = ?;';
 

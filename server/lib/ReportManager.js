@@ -32,7 +32,6 @@ exports.build = build;
  * and the result is sended with res.set(headers).send(document)
  */
 function build(req, data, templateUrl, options) {
-  'use strict';
 
   // The model to send to the view template
   let model = {

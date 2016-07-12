@@ -11,7 +11,6 @@ const gulpif  = require('gulp-if');
 const concat  = require('gulp-concat');
 const uglify  = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
-const jshint  = require('gulp-jshint');
 const flatten = require('gulp-flatten');
 const path    = require('path');
 const iife    = require('gulp-iife');
@@ -24,9 +23,6 @@ const exec = require('child_process').exec;
 
 // toggle client javascript minification
 const UGLIFY = false;
-
-// path to the jshintrc to use
-const JSHINT_PATH = '.jshintrc';
 
 // the output folder for built server files
 const SERVER_FOLDER = './bin/server/';
@@ -126,7 +122,6 @@ var paths = {
  * The client build process takes files from the client/src/ folder
  * and writes them to the /bin/client/ folder.  There are tasks to do
  * the following:
- *   - [client-lint-js]     lint the client javascript code (via jshint)
  *   - [client-minify-css]  minify (via css nano) the css
  *   - [client-compile-js]   minify (via uglify) the clientside js code
  *   - [client-lint-i18n]   compares translation files for missing values
@@ -138,12 +133,6 @@ var paths = {
  *   - [client-watch]       watch the client/src/ for changes and run the build
 */
 
-// run jshint on the client javascript code
-gulp.task('client-lint-js', function () {
-  return gulp.src(paths.client.javascript)
-    .pipe(jshint(JSHINT_PATH))
-    .pipe(jshint.reporter('default'));
-});
 
 // minify the client javascript code via uglify writes output to bhima.min.js
 gulp.task('client-compile-js', function () {
@@ -252,18 +241,10 @@ gulp.task('lint', function () {
  * folder for convenience.
  *
  * Building will run the following tasks:
- *   - [server-lint-js]    lint the server javascript code (via jshint)
  *   - [server-mv-files]   move the server files into the /bin/server folder
  *
  * To run all of the above, run the gulp task `gulp build-server`.
 */
-
-// run jshint on all server javascript files
-gulp.task('server-lint-js', function () {
-  return gulp.src(paths.server.javascript)
-    .pipe(jshint(JSHINT_PATH))
-    .pipe(jshint.reporter('default'));
-});
 
 // move the server files into /bin/server
 gulp.task('server-mv-files', function () {

@@ -1,4 +1,4 @@
-/* global element, by, inject, browser */
+/* global element, by, browser */
 'use strict';
 
 const uuid   = require('node-uuid');
@@ -12,7 +12,6 @@ const components = require('../shared/components');
 helpers.configure(chai);
 
 describe('Inventory List ::', () => {
-  'use strict';
 
   // navigate to the page
   before(() => helpers.navigate('#/inventory/list'));

@@ -15,12 +15,12 @@ services:
 language: node_js
 node_js:
   - node
-  - '6'
   - '5'
   - '4'
 
 before_script:
   - bash sh/install.sh
+  - npm run lint
 
 script:
   - bash sh/deploy.sh

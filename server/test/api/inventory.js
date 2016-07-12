@@ -70,8 +70,10 @@ describe('(/inventory) The inventory HTTP API :: ', () => {
         let group = res.body[0];
         updateGroup.uuid = inventoryGroup.uuid;
         expect(group).to.contain.all.keys(Object.keys(updateGroup));
-        for(var i in group) {
-          expect(group[i]).to.be.equals(updateGroup[i]);
+        for (const i in group) {
+          if (group.hasOwnProperty(i)) {
+            expect(group[i]).to.be.equals(updateGroup[i]);
+          }
         }
       })
       .catch(helpers.handler);
@@ -94,8 +96,10 @@ describe('(/inventory) The inventory HTTP API :: ', () => {
         let group = res.body[0];
         expect(group).to.contain.all.keys(Object.keys(inventoryGroup));
         // compare value to the last update of our request
-        for(var i in group) {
-          expect(group[i]).to.be.equals(updateGroup[i]);
+        for (const i in group) {
+          if (group.hasOwnProperty(i)) {
+            expect(group[i]).to.be.equals(updateGroup[i]);
+          }
         }
         helpers.api.listed(res, 1);
       })
