@@ -1,12 +1,9 @@
-/* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-var helpers = require('./helpers');
-helpers.configure(chai);
+const helpers = require('./helpers');
 
 describe('(/services) The Service API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
 
   var newService = {
     enterprise_id : 1,
@@ -35,8 +32,6 @@ describe('(/services) The Service API', function () {
   var responseKeys = [
     'id', 'cost_center_id', 'profit_center_id', 'name', 'enterprise_id'
   ];
-
-  before(helpers.login(agent));
 
   it('POST /services adds a services', function () {
     return agent.post('/services')

@@ -1,12 +1,9 @@
-/* jshint expr: true */
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
+
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 describe('(/reference_group) The Reference Group API', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-  beforeEach(helpers.login(agent));
 
   var newReferenceGroup = {
     reference_group   : 'AR',

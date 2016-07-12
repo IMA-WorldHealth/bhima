@@ -1,21 +1,14 @@
+/* global expect, chai, agent */
 /* jshint expr : true */
-const chai = require('chai');
-const expect = chai.expect;
 
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 // cheeky method to duplicate an array
 function clone(array) {
-  return array.filter(function (element) { return 1; });
+  return array.filter(() => true);
 }
 
 describe('(/accounts) Accounts', function () {
-
-  // login before the test suite
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
-
   var newAccount = {
     type_id : 1,
     enterprise_id : 1,

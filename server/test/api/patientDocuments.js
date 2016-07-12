@@ -1,17 +1,11 @@
-/* jshint expr:true */
-/* jshint -W079 */
-const chai = require('chai');
-const expect = chai.expect;
-const fs = require('fs');
+/* global expect, chai, agent */
+/* jshint expr : true */
 
 const helpers = require('./helpers');
-helpers.configure(chai);
+const fs = require('fs');
 
 describe('(patients/:uuid/documents) Patient Documents', () => {
   'use strict';
-
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
   let docId = null;

@@ -1,20 +1,13 @@
-/* jshint expr:true*/
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-// import test helpers
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /*
  * The /billing_services API endpoint
  */
 describe('(/billing_services) Billing Services API', function () {
   'use strict';
-
-  /* logs in at the beginning of the test suite */
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   const billingServiceA = {
     account_id:  3628,  // Test Capital Account Two

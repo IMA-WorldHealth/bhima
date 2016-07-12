@@ -1,9 +1,7 @@
-/* jshint expr:true */
-const chai = require('chai');
-const expect = chai.expect;
-const helpers = require('./helpers');
-helpers.configure(chai);
+/* global expect, chai, agent */
+/* jshint expr : true */
 
+const helpers = require('./helpers');
 
 /*
  * @todo - there are some tests missing:
@@ -11,8 +9,6 @@ helpers.configure(chai);
  *  - 404s on PUTs
  */
 describe('(/profit_centers) Profit Center', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   var newProfitCenter = {
     project_id : 1,

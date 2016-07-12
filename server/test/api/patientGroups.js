@@ -1,15 +1,9 @@
-/* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-var helpers = require('./helpers');
-helpers.configure(chai);
+const helpers = require('./helpers');
 
 describe('(/patients/groups) Patient Group API', function () {
-
-  // log in before test suite
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   var newPatientGroup = {
     enterprise_id : 1,

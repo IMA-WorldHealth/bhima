@@ -1,19 +1,12 @@
-// jshint expr: true
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-// import test helpers
 const helpers = require('./helpers');
-const uuid    = require('node-uuid');
-helpers.configure(chai);
+const uuid = require('node-uuid');
 
 // The /depots API endpoint
-// @desc This test suit is about the crud operation with depots
 describe('(/depots) The depots API ', function () {
   'use strict';
-
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   // new depot object
   var newDepot = {

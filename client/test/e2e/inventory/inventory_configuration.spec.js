@@ -11,7 +11,6 @@ const components = require('../shared/components');
 helpers.configure(chai);
 
 describe('Inventory Configuration ::', () => {
-  'use strict';
 
   // navigate to the page
   before(() => helpers.navigate('#/inventory/configuration'));

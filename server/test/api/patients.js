@@ -1,19 +1,13 @@
-/* jshint expr:true */
-const chai = require('chai');
-const expect = chai.expect;
-const q = require('q');
+/* global expect, chai, agent */
+/* jshint expr : true */
 
 const helpers = require('./helpers');
-helpers.configure(chai);
+const q = require('q');
 
 describe('(/patients) Patients', function () {
   'use strict';
 
-  // ensure the client is logged into before test suite
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
-
-  var patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
+  const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
 
   // TODO Should this import UUID library and track mock patient throughout?
   var mockPatientUuid = '85bf7a85-16d9-4ae5-b5c0-1fec9748d2f9';
@@ -326,10 +320,6 @@ describe('(/patients) Patients', function () {
 function PatientGroups() {
   'use strict';
 
-  // get an agent
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
-
   // shared constants
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
   const totalPatientGroups = 4;
@@ -368,10 +358,7 @@ function PatientGroups() {
 
 // Tests for /patients/hospital_number/:id/exists
 function HospitalNumber() {
-
-  // get an agent
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
+  'use strict';
 
   const existingNumber = 100;
   const absentNumber = 3.3;

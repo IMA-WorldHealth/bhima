@@ -1,18 +1,11 @@
-/* jshint expr:true */
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-/* import test helpers */
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /* The /cashboxes API endpoint */
 describe('(/cashboxes) The Cashboxes API endpoint', function () {
   'use strict';
-
-  /* login before the first request */
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   const numCashboxes = 3;
   const numAuxCashboxes = 2;

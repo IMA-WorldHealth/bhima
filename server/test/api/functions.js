@@ -1,17 +1,14 @@
-/* jshint expr:true*/
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
+
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /*
  * The /functions  API endpoint
  *
  * This test suite implements full CRUD on the /functions  HTTP API endpoint.
  */
-describe('The /functions  API endpoint', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
+describe('(/functions) The /functions  API endpoint', function () {
 
   // Function we will add during this test suite.
   const fonction = {

@@ -1,15 +1,10 @@
-/* jshint expr: true */
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
 const helpers = require('./helpers');
-const uuid    = require('node-uuid');
-helpers.configure(chai);
+const uuid = require('node-uuid');
 
 describe('(/debtor_groups) The debtor groups API', function () {
-
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   var debtorGroup = {
     enterprise_id : 1,

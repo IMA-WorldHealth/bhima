@@ -1,19 +1,11 @@
-/* jshint expr: true */
+/* global expect, chai, agent */
+/* jshint expr : true */
 'use strict';
-
-const chai = require('chai');
-const expect = chai.expect;
 
 const helpers = require('./helpers');
 const uuid    = require('node-uuid');
-helpers.configure(chai);
 
-describe('(/inventory) The inventory HTTP API :: ', () => {
-
-  // Logs in before each test
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
-
+describe('(/inventory) The Inventory HTTP API', () => {
   let inventoryList;
 
   let inventoryGroup = {
@@ -89,7 +81,7 @@ describe('(/inventory) The inventory HTTP API :: ', () => {
       .catch(helpers.handler);
   });
 
-  // detailS of inventory groups
+  // details of inventory groups
   it('GET /inventory/group returns details of an inventory group', () => {
     return agent.get('/inventory/groups/' + inventoryGroup.uuid)
       .then((res) => {
@@ -152,7 +144,7 @@ describe('(/inventory) The inventory HTTP API :: ', () => {
       .catch(helpers.handler);
   });
 
-  // detailS of inventory types
+  // details of inventory types
   it('GET /inventory/types returns details of an inventory type', () => {
     return agent.get('/inventory/types/' + inventoryType.id)
       .then((res) => {

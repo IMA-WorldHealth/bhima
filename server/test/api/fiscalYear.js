@@ -1,12 +1,9 @@
-/* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-var helpers = require('./helpers');
-helpers.configure(chai);
+const helpers = require('./helpers');
 
 describe('(/fiscal) The Fiscal Years API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
 
   var newFiscalYear = {
     label : 'A new Fiscal Year 2017',
@@ -16,8 +13,6 @@ describe('(/fiscal) The Fiscal Years API', function () {
   };
 
   var responseKeys = ['id', 'enterprise_id', 'number_of_months', 'label', 'start_date', 'previous_fiscal_year_id', 'locked', 'note'];
-
-  before(helpers.login(agent));
 
   it('POST /fiscal adds a fiscal year', function () {
     return agent.post('/fiscal')
