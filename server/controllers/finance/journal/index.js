@@ -55,7 +55,9 @@ function lookReverseTransaction(uid, user_id, creditNote) {
           currency_id   : transaction.currency_id,
           amount        : transaction.debit,
           description   : creditNote.description,
-          user_id       : user_id
+          user_id       : user_id,
+          type_id         : creditNote.type_id,
+          reference_uuid  : uid
         }
       }
 

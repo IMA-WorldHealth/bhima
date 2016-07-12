@@ -4,10 +4,10 @@
   ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"
   ui-grid-one-bind-id-grid="rowRenderIndex + '-' + col.uid + '-cell'"
   class="ui-grid-cell"
-  ng-class="{ 'ui-grid-row-header-cell': col.isRowHeader, 'strike' : row.entity.is_credit_note === 1 }"
+  ng-class="{ 'ui-grid-row-header-cell': col.isRowHeader, 'strike' : row.entity.type_id === 9 }"
   data-vals="{{col.isRowHeader}}"
   role="{{col.isRowHeader ? 'rowheader' : 'gridcell'}}"
-  ng-style="row.entity.is_credit_note ? {'text-decoration':'line-through'} : {'text-decoration':'none'}"
+  ng-style="row.entity.type_id === 9 ? {'text-decoration':'line-through'} : {'text-decoration':'none'}"
   ui-grid-cell> 
 </div>
 

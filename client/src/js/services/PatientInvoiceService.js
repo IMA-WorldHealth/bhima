@@ -116,7 +116,7 @@ function PatientInvoiceService($http, Modal, util, Session) {
 
   //open a dialog box to Cancel Credit Note
   function openCreditNoteModal(invoice) {
-    return $uibModal.open({
+    return Modal.open({
       templateUrl : 'partials/patient_invoice/registry/modalCreditNote.html',
       resolve : {
         data : {

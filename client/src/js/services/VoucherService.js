@@ -23,7 +23,8 @@ function VoucherService(Api) {
     { id: 5, text: 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', incomeExpense: 'expense', prefix: 'DEP. GEN' },
     { id: 6, text: 'VOUCHERS.SIMPLE.SALARY_PAYMENT', incomeExpense: 'expense', prefix: 'SALAIRE' },
     { id: 7, text: 'VOUCHERS.SIMPLE.CASH_RETURN', incomeExpense: 'expense', prefix: 'PAYBACK' },
-    { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' }
+    { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' },
+    { id: 9, text: 'VOUCHERS.SIMPLE.CREDIT_NOTE', incomeExpense: 'creditNote', prefix: 'CREDIT NOTE' },
   ];
 
   service.createSimple = createSimple;
