@@ -144,7 +144,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
    * Fetches all billing services subslected by a patient entity
    *
    * @param   {String} patientUuid    UUID of patient to select billing services for
-   * @returnl {Object}                Promise object returning an array of billing
+   * @return  {Object}                Promise object returning an array of billing
    *                                  services
    */
   function billingServices(patientUuid) {
@@ -157,7 +157,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
    * Fetches all subsidies subslected by a patient entity
    *
    * @param   {String} patientUuid    UUID of patient to select subsidies for
-   * @returnl {Object}                Promise object returning an array of subsidies
+   * @return  {Object}                Promise object returning an array of subsidies
    */
   function subsidies(patientUuid) {
     var path = patientAttributePath('subsidies', patientUuid);

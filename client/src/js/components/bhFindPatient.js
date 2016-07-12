@@ -39,6 +39,9 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   /* @const the max number of records to fetch from the server */
   var LIMIT = 10;
 
+  /* @const the enter key keycode */
+  var ENTER_KEY = 13;
+
   /* supported searches: by name or by id */
   vm.options = {
     findById : {
@@ -60,7 +63,7 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   vm.selectPatient      = selectPatient;
   vm.submit             = submit;
   vm.findBy             = findBy;
-  vm.reload             = reload;
+  vm.reset              = reset;
   vm.onKeyPress         = onKeyPress;
 
   vm.suppressReset = vm.suppressReset || false;
@@ -162,12 +165,12 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   }
 
   /**
-   * @method reload
+   * @method reset
    *
    * @description This function is responsible for enabling the user to input data
    * again for search by showing the inputs zones (search by ID or by name) again.
    */
-  function reload() {
+  function reset() {
     resetState();
     vm.showSearchView = true;
   }
@@ -204,8 +207,6 @@ function FindPatientComponent(Patients, AppCache, Notify) {
       // parse patient metadata
       patient.name = formatPatient(patient);
       patient.sex = patient.sex.toUpperCase();
-
-      console.log(patient);
 
       // call the external function with patient
       vm.onSearchComplete({ patient : patient });
@@ -244,8 +245,8 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   function onKeyPress(event) {
 
     // submit the find-patient form
-    if (event.keyCode === 13) {
-      submit();
+    if (event.keyCode === ENTER_KEY) {
+      vm.submit();
 
       // make sure we do not submit the parent form!
       event.preventDefault();
@@ -254,6 +255,6 @@ function FindPatientComponent(Patients, AppCache, Notify) {
 
   // call the onRegisterApi() callback with the
   vm.onRegisterApi({
-    api : { reset : reload }
+    api : { reset : vm.reset }
   });
 }
