@@ -22,9 +22,7 @@ exports.build = build;
  * @return {object} promise
  */
 function build(data, request) {
-  'use strict';
-
-  let queryString   = request.query;
+  let queryString  = request.query;
   let renderTarget = (queryString && queryString.renderer) ? queryString.renderer : defaultRender;
   let renderer     = supportedRender[renderTarget];
 

@@ -1,10 +1,11 @@
-var db = require('../../lib/db');
-var BadRequest = require('../../lib/errors/BadRequest');
-var NotFound = require('../../lib/errors/NotFound');
+
+'use strict';
+
+const db = require('../../lib/db');
+const BadRequest = require('../../lib/errors/BadRequest');
+const NotFound = require('../../lib/errors/NotFound');
 
 function lookupSubsidy(id) {
-  'use strict';
-
   var sql =
     'SELECT id, account_id, label, description, value, created_at, updated_at FROM subsidy WHERE id = ?';
 
@@ -18,8 +19,6 @@ function lookupSubsidy(id) {
 }
 
 function detail(req, res, next) {
-  'use strict';
-
   lookupSubsidy(req.params.id)
   .then(function (row) {
     res.status(200).json(row);
@@ -29,24 +28,20 @@ function detail(req, res, next) {
 }
 
 function list(req, res, next) {
-  'use strict';
-  var sql;
+  let sql;
 
   if (req.query.detailed === '1') {
-    sql = 
+    sql =
       `SELECT subsidy.id, subsidy.account_id, subsidy.label, subsidy.description, subsidy.value, subsidy.created_at,
       subsidy.updated_at, account.number
       FROM subsidy
-      JOIN account ON account.id = subsidy.account_id`;       
+      JOIN account ON account.id = subsidy.account_id`;
   } else {
     sql =
       'SELECT id, label, value FROM subsidy';
-  }  
+  }
 
-  var sql =
-
-
-   db.exec(sql)
+ db.exec(sql)
   .then(function (rows) {
     res.status(200).json(rows);
   })
@@ -55,8 +50,6 @@ function list(req, res, next) {
 }
 
 function create (req, res, next) {
-  'use strict';
-
   var record = req.body;
   var createSubsidyQuery = 'INSERT INTO subsidy SET ?';
 
@@ -77,8 +70,6 @@ function create (req, res, next) {
 }
 
 function update(req, res, next) {
-  'use strict';
-
   var queryData = req.body;
   var subsidyId = req.params.id;
   var updateSubsidyQuery = 'UPDATE subsidy SET ? WHERE id = ?';

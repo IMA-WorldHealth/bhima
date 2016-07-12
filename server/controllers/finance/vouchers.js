@@ -1,20 +1,20 @@
 /**
-* The /vouchers HTTP API endpoint
-*
-* @module finance/vouchers
-*
-* @description This module is responsible for handling CRUD operations
-* against the `voucher` table.
-*
-* @requires lodash
-* @requires node-uuid
-* @requires lib/util
-* @requires lib/db
-* @requires lib/ReportManager
-* @requires lib/errors/NotFound
-* @requires lib/errors/BadRequest
-* @requires ./journal/voucher
-*/
+ * The /vouchers HTTP API endpoint
+ *
+ * @module finance/vouchers
+ *
+ * @description This module is responsible for handling CRUD operations
+ * against the `voucher` table.
+ *
+ * @requires lodash
+ * @requires node-uuid
+ * @requires lib/util
+ * @requires lib/db
+ * @requires lib/ReportManager
+ * @requires lib/errors/NotFound
+ * @requires lib/errors/BadRequest
+ * @requires ./journal/voucher
+ */
 
 'use strict';
 
@@ -47,13 +47,11 @@ exports.report = report;
 exports.receipt = receipt;
 
 /**
-* GET /vouchers
-*
-* @method list
-*/
+ * GET /vouchers
+ *
+ * @method list
+ */
 function list(req, res, next) {
-  'use strict';
-
   let dateConditon = null;
   let detailed = !util.isFalsy(req.query.detailed) ? 1 : 0;
   let query = getSql(detailed);
@@ -84,13 +82,11 @@ function list(req, res, next) {
 }
 
 /**
-* GET /vouchers/:uuid
-*
-* @method detail
-*/
+ * GET /vouchers/:uuid
+ *
+ * @method detail
+ */
 function detail(req, res, next) {
-  'use strict';
-
   getVouchers(req.params.uuid)
   .then(function (rows) {
     if (!rows.length) {
@@ -104,10 +100,10 @@ function detail(req, res, next) {
 
 
 /**
-* POST /vouchers
-*
-* @method create
-*/
+ * POST /vouchers
+ *
+ * @method create
+ */
 function create(req, res, next) {
 
   // alias both the voucher and the voucher items
@@ -188,13 +184,11 @@ function create(req, res, next) {
 }
 
 /**
-* GET /vouchers/receipt/:uuid
-*
-* @method receipt
-*/
+ * GET /vouchers/receipt/:uuid
+ *
+ * @method receipt
+ */
 function receipt(req, res, next) {
-  'use strict';
-
   // page options
   let reportOptions = { pageSize : 'A5', orientation: 'landscape' };
 
@@ -214,13 +208,11 @@ function receipt(req, res, next) {
 }
 
 /**
-* GET /vouchers/reports
-*
-* @method report
-*/
+ * GET /vouchers/reports
+ *
+ * @method report
+ */
 function report(req, res, next) {
-  'use strict';
-
   // page options
   let reportOptions = { pageSize : 'A4', orientation: 'landscape' };
 
@@ -243,8 +235,6 @@ function report(req, res, next) {
  * @return promise
  */
 function getVouchers(uuid, request) {
-  'use strict';
-
   let detailed = request && !util.isFalsy(request.detailed) ? 1: 0;
 
   // sql detailed or not for voucher
