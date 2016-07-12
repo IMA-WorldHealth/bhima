@@ -122,6 +122,7 @@ function login(req, res, next) {
 
     session.project = rows[0];
 
+
     // bind the session variables
     req.session.project = session.project;
     req.session.user = session.user;

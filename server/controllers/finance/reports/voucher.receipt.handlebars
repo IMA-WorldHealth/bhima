@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
 
 <div class="container-fluid">
@@ -5,8 +6,8 @@
   <div class="row">
     <div class="col-xs-4">
       <h3 style="margin:2px;">{{ model.enterprise.name }} ({{ model.enterprise.abbr}})</h3>
-      <span>{{translate 'FORM.LABELS.PHONE'}}: {{ model.enterprise.phone }}</span><br>
-      <span>{{translate 'FORM.LABELS.EMAIL'}}: {{ model.enterprise.email }}</span><br>
+      <span>{{translate 'FORM.LABELS.PHONE' model.lang}}: {{ model.enterprise.phone }}</span><br>
+      <span>{{translate 'FORM.LABELS.EMAIL' model.lang}}: {{ model.enterprise.email }}</span><br>
     </div>
     <div class="col-xs-4">
       &nbsp;
@@ -21,17 +22,17 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h1 style="margin:15px; font-weight:bold" class="text-center">{{uppercase (translate 'VOUCHERS.GLOBAL.TITLE') }}</h1>
+      <h1 style="margin:15px; font-weight:bold" class="text-center">{{uppercase (translate 'VOUCHERS.GLOBAL.TITLE' model.lang) }}</h1>
 
       <!-- voucher info  -->
       <table class="table table-condensed">
         <thead>
           <tr>
-            <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
-            <th>{{translate 'FORM.LABELS.DATE'}}</th>
-            <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
-            <th class="text-right">{{translate 'FORM.LABELS.AMOUNT'}}</th>
-            <th>{{translate 'FORM.LABELS.BY'}}</th>
+            <th>{{translate 'FORM.LABELS.REFERENCE' model.lang}}</th>
+            <th>{{translate 'FORM.LABELS.DATE' model.lang}}</th>
+            <th>{{translate 'FORM.LABELS.DESCRIPTION' model.lang}}</th>
+            <th class="text-right">{{translate 'FORM.LABELS.AMOUNT' model.lang}}</th>
+            <th>{{translate 'FORM.LABELS.BY' model.lang}}</th>
           </tr>
         </thead>
         <tbody>
@@ -58,10 +59,10 @@
       <table class="table table-condensed">
         <thead>
           <tr>
-            <th>{{translate 'FORM.LABELS.ACCOUNT'}}</th>
-            <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
-            <th class="text-right">{{translate 'FORM.LABELS.DEBIT'}}</th>
-            <th class="text-right">{{translate 'FORM.LABELS.CREDIT'}}</th>
+            <th>{{translate 'FORM.LABELS.ACCOUNT' model.lang}}</th>
+            <th>{{translate 'FORM.LABELS.DESCRIPTION' model.lang}}</th>
+            <th class="text-right">{{translate 'FORM.LABELS.DEBIT' model.lang}}</th>
+            <th class="text-right">{{translate 'FORM.LABELS.CREDIT' model.lang}}</th>
           </tr>
         </thead>
         <tbody>
@@ -78,7 +79,7 @@
     </div>
   </div>
 
-  <small>{{translate 'FORM.LABELS.SIGNATURE'}}</small>
+  <small>{{translate 'FORM.LABELS.SIGNATURE' model.lang}}</small>
   <hr>
 
 </div>
