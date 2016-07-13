@@ -1243,6 +1243,7 @@
       "CASH_PAYMENT"       : "Paiement des clients",
       "CASH_RETURN"        : "Remboursement",
       "CONVENTION_PAYMENT" : "Paiement des Conventions",
+      "CREDIT_NOTE"        : "Note de crédit",
       "EXPENSE"            : "Dépenses",
       "INCOME"             : "Récettes",
       "SALARY_PAYMENT"     : "Paiement des Salaires",

@@ -1234,6 +1234,7 @@
       "CASH_PAYMENT"       : "Client Payment",
       "CASH_RETURN"        : "Cash Return (Payback)",
       "CONVENTION_PAYMENT" : "Convention Payment",
+      "CREDIT_NOTE"        : "Credit Note",
       "EXPENSE"            : "Expenses",
       "INCOME"             : "Incomes",
       "SALARY_PAYMENT"     : "Salary Payment",
