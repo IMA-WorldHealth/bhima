@@ -22,12 +22,6 @@ describe('Invoice Registry', () => {
   const page = new InvoiceRegistryPage();
   const numInvoices = 4;
 
-  it('Credit Note for reverse any transaction in the posting_journal', () => {
-    element(by.id('TPA1')).click();
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-  });
-
   it('displays all invoices loaded from the database', () => {
     expect(page.getInvoiceNumber()).to.eventually.equal(numInvoices);
   });
@@ -41,4 +35,12 @@ describe('Invoice Registry', () => {
   });
 
   describe('Searching', Search);
+
+  it('Credit Note for reverse any transaction in the posting_journal', () => {
+    element(by.id('TPA1')).click();
+    FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
+    FU.buttons.submit();
+    components.notification.hasSuccess();
+  });
+
 });
