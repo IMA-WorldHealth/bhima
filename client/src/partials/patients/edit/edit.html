@@ -141,12 +141,12 @@
                 <!-- First Name -->
                 <div
                   class="form-group has-feedback"
-                  ng-class="{'has-error' : patientDetails.firstName.$invalid && patientDetails.$submitted}">
+                  ng-class="{'has-error' : patientDetails.first_name.$invalid && patientDetails.$submitted}">
 
                   <label for="new-first-name" class="col-md-3 control-label">{{ "FORM.LABELS.FIRST_NAME" | translate }}</label>
                   <div class="col-md-9">
-                    <input id="new-first-name" class="form-control" name="firstName" ng-maxlength="PatientEditCtrl.length150" ng-model="PatientEditCtrl.medical.first_name">
-                    <div class="help-block" ng-messages="patientDetails.firstName.$error" ng-show="patientDetails.$submitted">
+                    <input id="new-first-name" class="form-control" name="first_name" ng-maxlength="PatientEditCtrl.length150" ng-model="PatientEditCtrl.medical.first_name">
+                    <div class="help-block" ng-messages="patientDetails.first_name.$error" ng-show="patientDetails.$submitted">
                       <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                     </div>
                   </div>
