@@ -3,7 +3,6 @@
     "ACCOUNT_CHART"  : "Chart of Accounts",
     "ACCOUNT_COST"   : "Costs Accounts",
     "ACCOUNT_LIST"   : "Accounts list",
-    "ACCOUNT_NUMBER" : "Account Number",
     "NUMBER"         : "Account Number",
     "ADD"            : "Add Account",
     "ADD_CHILD"      : "Add child account",
