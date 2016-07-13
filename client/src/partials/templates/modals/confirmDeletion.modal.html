@@ -1,0 +1,36 @@
+<form name="ConfirmDeletion" ng-submit="$ctrl.accept(ConfirmDeletion)" novalidate>
+
+  <div class="modal-header">
+    <button ng-click="$ctrl.close()" type="button" class="close">&times;</button>
+    <h4>
+      {{ 'FORM.DIALOGS.SURE_CONTINUE' | translate }}
+    </h4>
+  </div>
+
+  <div class="alert alert-warning">
+    {{ 'FORM.DIALOGS.PLEASE_READ' | translate }}
+  </div>
+
+  <div class="modal-body">
+    <p>
+      {{ 'FORM.DIALOGS.CANNOT_UNDONE_DELETION' | translate }}
+    </p>
+
+    <br>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : $ctrl.errorMessage, 'has-warning' : $ctrl.warningMessage }">
+      <label class="control-label">{{ $ctrl.message }}</label>
+      <input class="form-control" ng-model="$ctrl.text" ng-change="$ctrl.validate(ConfirmDeletion)" type="text" name="text" required>
+      <div class="help-block" ng-show="ConfirmDeletion.$submitted">
+        {{ $ctrl.noCorrespondancy }}
+      </div>
+    </div>
+
+    <button class="btn btn-block" type="submit">
+      <b class="text-danger">{{ 'FORM.DIALOGS.UNDERSTAND_ACTION' | translate }}</b>
+    </button>
+  </div>
+
+
+</form>

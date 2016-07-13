@@ -262,7 +262,13 @@
       "UPDATE"                : "Update"
     },
     "DIALOGS": {
-      "CONFIRM_DELETE" : "Do you confirm the deletion?"
+      "CONFIRM_DELETE"         : "Do you confirm the deletion?",
+      "CANNOT_UNDONE_DELETION" : "This action CANNOT BE CANCELED, the deletion will be definitive. You must be sure that you want to do this action",
+      "NO_CORRESPONDANCY"      : "No %ELEMENT% have the name ",
+      "PLEASE_TYPE_TEXT"       : "Please type in the %ELEMENT% name to confirm",
+      "PLEASE_READ"            : "Unexpected bad things will happen if you don't read this!",
+      "SURE_CONTINUE"          : "Are you ABSOLUTLY sure ?",
+      "UNDERSTAND_ACTION"      : "I ACCEPT the consequence of this action"
     },
     "ERRORS": {
       "CONNECTION"         : "Connection error",

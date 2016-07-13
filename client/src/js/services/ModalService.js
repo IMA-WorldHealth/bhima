@@ -56,6 +56,9 @@ function ModalService(Modal) {
   // date interval modal
   service.openDateInterval = openDateInterval;
 
+  // confirm deletion modal
+  service.openConfirmDeletion = openConfirmDeletion;
+
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -288,6 +291,36 @@ function ModalService(Modal) {
       var params = angular.extend(modalParameters, {
         templateUrl  : 'partials/templates/modals/dateInterval.tmpl.html',
         controller   : 'DateIntervalModalController',
+        controllerAs : '$ctrl',
+        size         : 'xs',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    /**
+     * confirm deletion modal
+     * @param {object} request
+     * The request parameter take :
+     *  pattern: the text to match,
+     *  elementName: the name translated of the element to delete (document, transaction)
+     * @example
+     * request = {
+     *   pattern: '#HBB17',
+     *   elementName: $translate.instant('FORM.LABELS.TRANSACTION')
+     *  }
+     */
+    function openConfirmDeletion(request) {
+
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/templates/modals/confirmDeletion.modal.html',
+        controller   : 'ConfirmDeletionModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
         backdrop     : 'static',

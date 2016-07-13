@@ -57,8 +57,10 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
   }
 
   /** delete document */
-  function deleteDocument(uuid) {
-    Modal.confirm($translate.instant('FORM.DIALOGS.CONFIRM_DELETE'))
+  function deleteDocument(uuid, pattern) {
+    var request = { pattern: pattern, elementName: 'document'};
+    
+    Modal.openConfirmDeletion(request)
     .then(function (ans) {
       if (!ans) { return; }
 
