@@ -83,4 +83,6 @@
 /* document upload thumbnail */
 .document-upload-thumbnail {
   width: 100%;
+  height: 300px;
+  overflow: hidden;
 }

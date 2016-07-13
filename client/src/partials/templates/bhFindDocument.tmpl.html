@@ -26,8 +26,7 @@
       <!-- heading  -->
       <div ng-if="$ctrl.session.enableOptionBar" class="heading">
         <div class="left">
-          <b><i class="fa fa-universal-access"></i> {{ $ctrl.session.patient.reference }} / </b>
-          {{ $ctrl.session.patient.first_name + ' ' + $ctrl.session.patient.last_name + ' ' + $ctrl.session.patient.middle_name }}
+          <i class="glyphicon glyphicon-paperclip"></i> {{ 'PATIENT_DOCUMENT.DOCUMENTS' | translate }}
           ({{ $ctrl.session.patientDocuments.length }})
         </div>
 
@@ -69,32 +68,11 @@
                   <i class="fa fa-3x" ng-class="{{ '$ctrl.mimeIcon(doc.mimetype).icon' }}"></i>
                 </a>
                 <div class="media-body">
-                  <b class="btn-sm pull-right">
-                    <i ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="fa fa-angle-up"></i>
-                    <i ng-hide="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="fa fa-angle-down"></i>
-                  </b>
 
-                  <h4 class="media-heading">{{ doc.label }}</h4>
-
-                  <div ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index">
-                    <i class="fa fa-file-o"></i>
-                    {{ $ctrl.mimeIcon(doc.mimetype).label }} (~{{ doc.size | bytes }})
-                  </div>
-
-                  <i class="fa fa-calendar-o"></i>
-                  {{ doc.timestamp | date }}, {{ 'FORM.LABELS.BY' | translate }}
-                  {{ doc.first + ' ' + doc.last }}
-
-                  <div ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="document-action" style="border-top:1px solid #ccc; padding-top:5px;">
-                    <button
-                      title="{{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}"
-                      type="button"
-                      class="btn btn-sm btn-default">
-                      <i class="fa fa-eye"></i>
-                    </button>
-
+                  <!-- actions buttons  -->
+                  <div class="pull-right">
                     <a
-                      ng-href="/{{ doc.link }}" download="{{ doc.label }}"
+                      ng-href="/{{ doc.link }}" download="{{ doc.label + $ctrl.mimeIcon(doc.mimetype).ext }}"
                       title="{{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}"
                       type="button"
                       class="btn btn-sm btn-default">
@@ -109,6 +87,18 @@
                       <i class="fa fa-trash"></i>
                     </button>
                   </div>
+
+                  <!-- title  -->
+                  <h4 class="media-heading">{{ doc.label }}</h4>
+
+                  <!-- file size  -->
+                  <i class="fa fa-file-o"></i>
+                  {{ $ctrl.mimeIcon(doc.mimetype).label }} (~{{ doc.size | bytes }}) <br>
+
+                  <!-- date and author  -->
+                  <i class="fa fa-calendar-o"></i>
+                  {{ doc.timestamp | date }}, {{ 'FORM.LABELS.BY' | translate }}
+                  {{ doc.first + ' ' + doc.last }}
                 </div>
               </li>
             </ul>
@@ -142,15 +132,8 @@
                 {{ doc.first + ' ' + doc.last }}
               </div>
               <div ng-show="$ctrl.session.showAction && $ctrl.selectedIndex === $index" class="document-actions">
-                <button
-                  title="{{ 'PATIENT_DOCUMENT.OVERVIEW' | translate }}"
-                  type="button"
-                  class="btn btn-sm btn-default">
-                  <i class="fa fa-eye"></i>
-                </button>
-
                 <a
-                  ng-href="/{{ doc.link }}" download="{{ doc.label }}"
+                  ng-href="/{{ doc.link }}" download="{{ doc.label + $ctrl.mimeIcon(doc.mimetype).ext }}"
                   title="{{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}"
                   type="button"
                   class="btn btn-sm btn-default">

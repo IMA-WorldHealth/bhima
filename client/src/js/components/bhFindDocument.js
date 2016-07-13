@@ -99,17 +99,22 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
     var result = {};
 
     if (mimetype.indexOf('image') > -1) {
-      result = { icon : 'fa-file-image-o', label : 'Image' };
+      var ext =
+        (mimetype.indexOf('jpg') > -1 || mimetype.indexOf('jpeg') > -1) ? '.jpg' :
+        (mimetype.indexOf('png') > -1) ? '.png' :
+        (mimetype.indexOf('gif') > -1) ? '.gif' : '';
+
+      result = { icon : 'fa-file-image-o', label : 'Image', ext: ext };
     } else if (mimetype.indexOf('pdf') > -1) {
-      result = { icon : 'fa-file-pdf-o', label : 'PDF' };
+      result = { icon : 'fa-file-pdf-o', label : 'PDF', ext: '.pdf' };
     } else if (mimetype.indexOf('word') > -1) {
-      result = { icon : 'fa-file-word-o', label : 'MS WORD' };
+      result = { icon : 'fa-file-word-o', label : 'MS WORD', ext: '.doc' };
     } else if (mimetype.indexOf('sheet') > -1) {
-      result = { icon : 'fa-file-excel-o', label : 'MS EXCEL' };
+      result = { icon : 'fa-file-excel-o', label : 'MS EXCEL', ext: '.xls' };
     } else if (mimetype.indexOf('presentation') > -1) {
-      result = { icon : 'fa-file-powerpoint-o', label : 'MS Power Point' };
+      result = { icon : 'fa-file-powerpoint-o', label : 'MS Power Point', ext: '.ppt' };
     } else {
-      result = { icon : 'fa-file-o', label : 'Fichier' };
+      result = { icon : 'fa-file-o', label : 'Fichier', ext: '' };
     }
 
     return result;
