@@ -25,7 +25,6 @@ exports.reverse = reverse;
 
 // Create Reverse Transaction for Credit Note
 function createReverseTransaction(uid, userId, creditNote) {
-  'use strict';
 
   let transaction = db.transaction();
 
@@ -58,7 +57,7 @@ function createReverseTransaction(uid, userId, creditNote) {
           user_id       : userId,
           type_id         : creditNote.type_id,
           reference_uuid  : uid
-        }
+        };
       }
 
       items = [
