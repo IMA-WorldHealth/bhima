@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
 .controller('ModalCreditNoteController', ModalCreditNoteController);
 
 ModalCreditNoteController.$inject = [
-  '$uibModalInstance', 'PatientInvoiceService', 'util', 'data', 'JournalVoucherService', 'VoucherService'
+  '$uibModalInstance', 'PatientInvoiceService', 'util', 'data', 'VoucherService'
 ];
 
-function ModalCreditNoteController( $uibModalInstance, Invoices, Util, data, JournalVoucher, Vouchers) {
+function ModalCreditNoteController( $uibModalInstance, Invoices, Util, data, Vouchers) {
   var vm = this;
   vm.patientInvoice = data.invoice; 
   vm.submit = submit;
@@ -31,7 +31,7 @@ function ModalCreditNoteController( $uibModalInstance, Invoices, Util, data, Jou
     creditNote.type_id = transferTypeId;
     
     if (!uuid || !creditNote) { return; }
-    var journal = JournalVoucher.reverse(uuid, creditNote);
+    var journal = Vouchers.reverse(uuid, creditNote);
     
     journal
       .then(function (response) {
