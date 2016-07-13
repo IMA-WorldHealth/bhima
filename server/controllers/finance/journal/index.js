@@ -23,8 +23,8 @@ exports.list = list;
 exports.reverse = reverse;
 
 
-// GET /Grade
-function lookReverseTransaction(uid, user_id, creditNote) {
+// Create Reverse Transaction for Credit Note
+function createReverseTransaction(uid, userId, creditNote) {
   'use strict';
 
   let transaction = db.transaction();
@@ -55,7 +55,7 @@ function lookReverseTransaction(uid, user_id, creditNote) {
           currency_id   : transaction.currency_id,
           amount        : transaction.debit,
           description   : creditNote.description,
-          user_id       : user_id,
+          user_id       : userId,
           type_id         : creditNote.type_id,
           reference_uuid  : uid
         }
@@ -120,9 +120,9 @@ function list(req, res, next) {
  */
 function reverse(req, res, next) {
   const uid = db.bid(req.params.uuid); 
-  var user_id = req.session.user.id;
+  var userId = req.session.user.id;
 
-  lookReverseTransaction(uid, user_id, req.body)
+  createReverseTransaction(uid, userId, req.body)
   .then(function (record) {
 
     res.status(201).json(record);

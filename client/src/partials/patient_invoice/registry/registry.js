@@ -136,12 +136,10 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
   function creditNote(invoice) {
     Invoices.openCreditNoteModal(invoice)
       .then(function (data) {
-        // no parameters means the modal was dismissed.
-        if (!data) { return; }
-        Notify.success('FORM.INFOS.TRANSACTION_REVER_SUCCESS');
-        
+        Notify.success('FORM.INFOS.TRANSACTION_REVER_SUCCESS');        
         return load();
-      });
+      })
+      .catch(Notify.handleError);
   }
 
   // fire up the module

@@ -13,7 +13,7 @@ describe('(/Journal) Credit notes to reverse invoice transactions', function () 
   before(helpers.login(agent));
 
   it('PUT /journal/:uuid/reverse Cancel an Invoice', function () {
-    return agent.put('/journal/' + fetchableInvoiceUuid + '/reverse')
+    return agent.post('/journal/' + fetchableInvoiceUuid + '/reverse')
       .send({ description : 'Credit Note', type_id: 9 })
       .then(function (res) {
         expect(res);

@@ -7,11 +7,12 @@ ModalCreditNoteController.$inject = [
 
 function ModalCreditNoteController( $uibModalInstance, Invoices, Util, data, Vouchers) {
   var vm = this;
-  vm.patientInvoice = data.invoice; 
+  vm.creditNote = {};
   vm.submit = submit;
   vm.cancel = cancel;
-  vm.creditNote;
 
+  vm.creditNote.uuid = data.invoice.uuid; 
+  vm.patientInvoice = data.invoice;
   // transfer type
   vm.transferType = Vouchers.transferType;
 
@@ -22,16 +23,17 @@ function ModalCreditNoteController( $uibModalInstance, Invoices, Util, data, Vou
   var transferTypeId = typeId[0].id;
 
 
-  Invoices.read(vm.patientInvoice.uuid)    
+  Invoices.read(vm.creditNote.uuid)    
     .then(function (data){
       vm.patientInvoiceItems = data.items;
     });
 
-  function submit(uuid, creditNote) {
-    creditNote.type_id = transferTypeId;
-    
-    if (!uuid || !creditNote) { return; }
-    var journal = Vouchers.reverse(uuid, creditNote);
+  function submit(form) {
+     // stop submission if the form is invalid
+    if (form.$invalid) { return; }
+    vm.creditNote.type_id = transferTypeId;
+
+    var journal = Vouchers.reverse(vm.creditNote);
     
     journal
       .then(function (response) {

@@ -200,7 +200,7 @@ exports.configure = function configure(app) {
   // trial balance routes
   app.post('/journal/trialbalance', trialbalance.postTrialBalance);
   app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
-  app.put('/journal/:uuid/reverse', journal.reverse);
+  app.post('/journal/:uuid/reverse', journal.reverse);
 
   // ledger routes
   // TODO : needs renaming

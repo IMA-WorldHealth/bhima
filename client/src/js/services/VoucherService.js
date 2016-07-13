@@ -80,8 +80,8 @@ function VoucherService(Api, $http, util) {
    * any transaction in the posting_journal by creating a 
    * new transaction that is an exact duplicate of the original transaction with sign minous.
    */
-  function reverse(uuid, creditNote) {
-    return $http.put(baseUrl.concat(uuid, '/reverse'), creditNote)
+  function reverse(creditNote) {
+    return $http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
       .then(util.unwrapHttpResponse);
   }
 
