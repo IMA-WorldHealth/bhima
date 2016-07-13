@@ -2,26 +2,27 @@ angular.module('bhima.controllers')
 .controller('PatientEdit', PatientEdit);
 
 PatientEdit.$inject = [
-  '$stateParams', 'PatientService', 'util', 'moment', 'NotifyService', 'ScrollService', 'PatientGroupModal'
+  '$stateParams', 'PatientService', 'util', 'moment', 'NotifyService',
+  'ScrollService', 'PatientGroupModal', 'DateService'
 ];
 
-function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, GroupModal) {
+function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, GroupModal, Dates) {
   var vm = this;
   var referenceId = $stateParams.uuid;
-  
+
   vm.patient = null;
   vm.unknownId = false;
   vm.minDOB = util.minDOB;
   vm.maxDOB = util.maxDOB;
 
-  // Maxlength field for Patient Registration 
-  vm.maxLength = util.maxTextLength; 
+  // Maxlength field for Patient Registration
+  vm.maxLength = util.maxTextLength;
   vm.length150 = util.length150;
   vm.length100 = util.length100;
   vm.length50 = util.length50;
   vm.length40 = util.length40;
   vm.length30 = util.length30;
-  vm.length16 = util.length16;  
+  vm.length16 = util.length16;
   vm.length12 = util.length12;
 
   if (referenceId) {
@@ -35,7 +36,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
         return collectGroups(patientId);
       })
       .catch(function (error) {
-        
+
         // handle error and update view to show no results - this could be improved
         Notify.handleError(error);
         vm.unknownId = true;
@@ -56,7 +57,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
   }
 
   function formatPatientAttributes(patient) {
-    
+
     // Sanitise DOB for HTML Date Input
     patient.dob = new Date(patient.dob);
 
@@ -108,7 +109,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
     submitPatient = util.filterFormElements(patientDetailsForm, true);
 
     if (submitPatient.dob) {
-      submitPatient.dob = util.sqlDate(submitPatient.dob);
+      submitPatient.dob = Dates.util.str(submitPatient.dob);
     }
 
     patients.update(vm.medical.uuid, submitPatient)
