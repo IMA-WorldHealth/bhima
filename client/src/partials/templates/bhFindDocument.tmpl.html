@@ -19,16 +19,11 @@
 </div>
 
 <!-- Documents  -->
-<div class="bh-panel bh-panel-default">
+<div class="panel panel-default clearfix">
 
   <!-- heading  -->
-  <div class="bh-panel-header" ng-if="$ctrl.session.enableOptionBar">
-    <div class="icon">
-      <i class="glyphicon glyphicon-paperclip"></i> {{ 'PATIENT_DOCUMENT.DOCUMENTS' | translate }}
-      ({{ $ctrl.session.patientDocuments.length }})
-    </div>
-
-    <div class="btn-group">
+  <div class="panel-heading" ng-if="$ctrl.session.enableOptionBar">
+    <div class="right btn-group">
       <button
         type="button"
         title="{{ 'PATIENT_DOCUMENT.DISPLAY_THUMBNAIL' | translate }}"
@@ -53,17 +48,22 @@
         <i class="fa fa-plus"></i>
       </button>
     </div>
+
+    <div>
+      <i class="glyphicon glyphicon-paperclip"></i> {{ 'PATIENT_DOCUMENT.DOCUMENTS' | translate }}
+      ({{ $ctrl.session.patientDocuments.length }})
+    </div>
   </div>
 
   <!-- content  -->
-  <div class="bh-panel-body" style="height: {{ $ctrl.session.height }}">
+  <div class="panel-body" style="overflow: auto; height: {{ $ctrl.session.height }}">
 
     <!-- list of documents  -->
     <ng-switch on="$ctrl.session.display">
       <!-- list dispaly mode  -->
       <div ng-switch-default>
         <ul class="media-list">
-            <li class="document media" ng-click="$ctrl.toggleAction($index)"
+            <li class="document media col-xs-12"
               ng-repeat="doc in $ctrl.session.patientDocuments | filter: $ctrl.searchByName">
               <a class="media-left">
                 <i class="fa fa-3x" ng-class="{{ '$ctrl.mimeIcon(doc.mimetype).icon' }}"></i>
@@ -94,7 +94,7 @@
 
                 <!-- file size  -->
                 <i class="fa fa-file-o"></i>
-                {{ $ctrl.mimeIcon(doc.mimetype).label }} (~{{ doc.size | bytes }}) <br>
+                {{ $ctrl.mimeIcon(doc.mimetype).label }} (~{{ doc.size | bytes }}) |
 
                 <!-- date and author  -->
                 <i class="fa fa-calendar-o"></i>
@@ -107,7 +107,7 @@
 
       <!-- thumbnail display mode  -->
       <div ng-switch-when="thumbnail">
-        <div class="document document-thumbnail col-xs-12 col-md-6" ng-click="$ctrl.toggleAction($index)"
+        <div class="document document-thumbnail col-xs-12 col-md-6"
             ng-repeat="doc in $ctrl.session.patientDocuments | filter: $ctrl.searchByName">
 
             <!-- the picture  -->

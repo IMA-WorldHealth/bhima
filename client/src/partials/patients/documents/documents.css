@@ -3,6 +3,11 @@
   display: block;
   margin: 7px auto;
 }
+.panel .panel-heading > .right {
+  position: relative;
+  float: right;
+  top: -5px;
+}
 /* =========================== End Generic Style ========================== */
 
 
@@ -10,7 +15,7 @@
 .document {
   cursor: pointer;
   padding: 5px;
-  margin-bottom: 15px;
+  margin: 3px auto;
   border: 1px solid #ddd;
 }
 .document:hover {
@@ -52,30 +57,6 @@
   margin-top: -25px;
 }
 /* ==================== End Document thumbnails style ====================== */
-
-/* ========================== New Bh-Panel style =========================== */
-.bh-panel.bh-panel-default {
-  border: 1px solid #ddd;
-}
-.bh-panel.bh-panel-default > .bh-panel-header {
-  background-color: #f5f5f5;
-  color: #333;
-  border-bottom: 1px solid #ddd;
-}
-.bh-panel > .bh-panel-header {
-  padding: 5px;
-  display: flex;
-  justify-content: space-between;
-}
-.bh-panel > .bh-panel-header > .icon {
-  padding-top: 5px;
-  padding-left: 7px;
-}
-.bh-panel > .bh-panel-body {
-  padding: 5px;
-  overflow: auto;
-}
-/* ========================== End New Bh-Panel style ======================= */
 
 
 /* ========================== Avatar thumbnail ============================= */

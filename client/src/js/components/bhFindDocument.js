@@ -38,7 +38,6 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
 
   /** expose to the view */
   vm.switchDisplay  = switchDisplay;
-  vm.toggleAction   = toggleAction;
   vm.addDocument    = addDocument;
   vm.deleteDocument = deleteDocument;
   vm.mimeIcon       = mimeIcon;
@@ -49,12 +48,6 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
   /** function switchDisplay */
   function switchDisplay(mode) {
     vm.session.display = mode;
-  }
-
-  /** toggle document actions */
-  function toggleAction(index) {
-    vm.selectedIndex = index;
-    vm.session.showAction = vm.session.showAction === true ? false : true;
   }
 
   /** function add documents modal */
