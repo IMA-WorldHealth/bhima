@@ -114,7 +114,7 @@ function list(req, res, next) {
 }
 
 /**
- * PUT /journal/:UUID/reverse
+ * POST /journal/:UUID/reverse
  * Reverse any transaction in the posting_journal
  */
 function reverse(req, res, next) {
