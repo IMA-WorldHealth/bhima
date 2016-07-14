@@ -63,12 +63,12 @@
               </div>
 
               <div class="col-sm-4">
-                <div style="border : 1px solid #ccc; height : 200px;">
-                  <div ng-if="!PatientRecordCtrl.patient.avatar" style="text-align : center;">
-                    <span style="font-size : 3em; color : #ccc; padding-top: 70px;" class="glyphicon glyphicon-picture"></span>
+                <div class="avatar-thumbnail">
+                  <div class="crop" ng-if="!PatientRecordCtrl.patient.avatar">
+                    <span class="glyphicon glyphicon-picture"></span>
                   </div>
-                  <div ng-if="PatientRecordCtrl.patient.avatar" style="text-align : center;">
-                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}" style="width: 100%; height: 200px; overflow: hidden;">
+                  <div class="crop" ng-if="PatientRecordCtrl.patient.avatar">
+                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}">
                   </div>
                 </div>
 
@@ -99,14 +99,15 @@
 
       <div class="row">
 
-        <div class="col-sm-6" style="height : 250px; overflow: auto;">
+        <div class="col-sm-6">
           <!-- find document  -->
           <bh-find-document
             patient-uuid="PatientRecordCtrl.patient.uuid"
             enable-patient-details="false"
             enable-search="false"
             enable-option-bar="true"
-            display="default">
+            display="default"
+            height="250px">
           </bh-find-document>
           <!-- end find document  -->
         </div>

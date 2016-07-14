@@ -1,27 +1,39 @@
+/* ============================ Generic Style ============================= */
+.document-section {
+  display: block;
+  margin: 7px auto;
+}
+/* =========================== End Generic Style ========================== */
+
+
+/* ============================ Document style ============================= */
 .document {
-  border: 1px solid #ddd;
+  cursor: pointer;
   padding: 5px;
   margin-bottom: 15px;
-  cursor: pointer;
+  border: 1px solid #ddd;
 }
 .document:hover {
   background-color: #eee;
 }
-.document h4 {
-  margin: 2px;
+/* ========================== End Document style ========================== */
+
+
+/* ==================== Document thumbnails style ========================= */
+.document-thumbnail {
+  display: inline-block;
 }
-.document-actions {
-  text-align: center;
-  width: 100%;
-  margin: auto;
-  margin-top: 5px;
-}
-.document .crop {
+.document-thumbnail > .crop {
   width: 100%;
   height: 150px;
   overflow: hidden;
 }
-.document .crop img.document-thumbnail {
+.document-thumbnail > .crop > .image {
+  text-align: center;
+  font-size: 10rem;
+  color: #337ab7;
+}
+.document-thumbnail > .crop > .image > img {
   display: block;
   width: 100%;
   margin: auto;
@@ -32,57 +44,62 @@
   -webkit-transition: margin-top 1s;
   transition: margin-top 1s;
 }
-.document:hover .crop img.document-thumbnail {
+.document-thumbnail:hover > .crop > .image > img {
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
   margin-top: -25px;
 }
-.document .crop .document-icon {
-  text-align: center;
-  font-size: 10rem;
-  color: #337ab7;
-}
-.patient-document .pd-patient {
-  padding: 7px;
-  margin-bottom: 5px;
-  border: 1px solid green;
-  color: green;
-  background-color: #e4f9ec;
-}
-.patient-document .pd-search {
-  margin-bottom: 5px;
-}
+/* ==================== End Document thumbnails style ====================== */
 
-/* patient document heading */
-.patient-document .pd-documents .heading {
+/* ========================== New Bh-Panel style =========================== */
+.bh-panel.bh-panel-default {
+  border: 1px solid #ddd;
+}
+.bh-panel.bh-panel-default > .bh-panel-header {
+  background-color: #f5f5f5;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+}
+.bh-panel > .bh-panel-header {
+  padding: 5px;
   display: flex;
   justify-content: space-between;
-  background-color: #337ab7;
-  color: #fff;
+}
+.bh-panel > .bh-panel-header > .icon {
+  padding-top: 5px;
+  padding-left: 7px;
+}
+.bh-panel > .bh-panel-body {
   padding: 5px;
-  margin-bottom: 5px;
+  overflow: auto;
 }
-.patient-document .pd-documents .heading > .left {
-  margin: 5px 10px;
-}
+/* ========================== End New Bh-Panel style ======================= */
 
-/* patient list thumbanil */
-.patient-document .display-thumbnail {
-  display: flex;
-  align-items: flex-start;
-  align-content: flex-start;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-}
-.patient-document .display-thumbnail > .document {
-  width: 50%;
-}
 
-/* document upload thumbnail */
-.document-upload-thumbnail {
+/* ========================== Avatar thumbnail ============================= */
+.avatar-thumbnail {
+  text-align: center;
+  border : 1px solid #ccc;
+}
+.avatar-thumbnail > .crop > img {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+.avatar-thumbnail > .crop > .glyphicon {
+  font-size : 3em;
+  color : #ccc;
+  padding-top: 70px;
+}
+/* ========================== End Avatar thumbnail ========================== */
+
+
+/* ============================= Upload thumbnail =========================== */
+.upload-thumbnail {
   width: 100%;
   height: 300px;
   overflow: hidden;
 }
+/* ========================== End Upload thumbnail ========================== */

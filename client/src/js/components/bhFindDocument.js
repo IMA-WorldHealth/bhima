@@ -8,6 +8,7 @@ angular.module('bhima.components')
     enableOptionBar      : '<',  // bind boolean (true|false) : Enable option for add, display list or display thumbnail in a bar
     enableSearch         : '<',  // bind boolean (true|false) : Enable search bar option
     display              : '@',  // bind (list|thumbnail)  : Display either in list or thumbnail mode
+    height               : '@',  // bind the height of list of contents
     patientUuid          : '<'  // Required patient uuid
   }
 });
@@ -31,6 +32,7 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
     enableOptionBar : Boolean(this.enableOptionBar),
     enableSearch    : Boolean(this.enableSearch),
     display         : this.display,
+    height          : this.height,
     showAction      : false
   };
 
