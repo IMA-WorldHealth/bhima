@@ -387,7 +387,7 @@ INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id,
 INSERT INTO invoice_item VALUES
   (HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'),HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000);
 
-SET @pjid = HUID(UUID());
+SET @pjid = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
 
 INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,1,'HBB1','2016-01-09 14:35:55',@pjid,NULL,3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),

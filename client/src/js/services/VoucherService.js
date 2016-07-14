@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('VoucherService', VoucherService);
 
-VoucherService.$inject = ['PrototypeApiService'];
+VoucherService.$inject = ['PrototypeApiService', '$http', 'util'];
 
 /**
  * @class VoucherService
@@ -10,8 +10,9 @@ VoucherService.$inject = ['PrototypeApiService'];
  * @description
  * This service manages posting data to the database via the /vouchers/ URL.
  */
-function VoucherService(Api) {
+function VoucherService(Api, $http, util) {
   var service = new Api('/vouchers/');
+  var baseUrl = '/journal/';
 
   // transfer type
   service.transferType = [
@@ -23,11 +24,13 @@ function VoucherService(Api) {
     { id: 5, text: 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', incomeExpense: 'expense', prefix: 'DEP. GEN' },
     { id: 6, text: 'VOUCHERS.SIMPLE.SALARY_PAYMENT', incomeExpense: 'expense', prefix: 'SALAIRE' },
     { id: 7, text: 'VOUCHERS.SIMPLE.CASH_RETURN', incomeExpense: 'expense', prefix: 'PAYBACK' },
-    { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' }
+    { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' },
+    { id: 9, text: 'VOUCHERS.SIMPLE.CREDIT_NOTE', incomeExpense: 'creditNote', prefix: 'CREDIT NOTE' },
   ];
 
   service.createSimple = createSimple;
   service.create = create;
+  service.reverse = reverse;
 
   /**
    * Wraps the prototype create method.
@@ -69,6 +72,17 @@ function VoucherService(Api) {
     clean.items = items;
 
     return Api.create.call(service, { voucher : clean });
+  }
+
+  /**
+   * This method facilitate annulling a transaction, 
+   * bhima should automatically be able to reverse 
+   * any transaction in the posting_journal by creating a 
+   * new transaction that is an exact duplicate of the original transaction with sign minous.
+   */
+  function reverse(creditNote) {
+    return $http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
+      .then(util.unwrapHttpResponse);
   }
 
   return service;
