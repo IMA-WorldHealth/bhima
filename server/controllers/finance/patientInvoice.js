@@ -50,17 +50,20 @@ exports.lookupInvoice = lookupInvoice;
 function list(req, res, next) {
 
   let invoiceListQuery =
-    `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
+    `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost, 
       BUID(invoice.debtor_uuid) as debtor_uuid, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames,
-      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, user_id, date, is_distributable
-    FROM invoice
+      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id, 
+      invoice.date, invoice.is_distributable
+    FROM invoice 
       LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
       JOIN service ON service.id = invoice.service_id
+      LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
       JOIN user ON user.id = invoice.user_id
       JOIN project ON invoice.project_id = project.id;`;
 
   db.exec(invoiceListQuery)
     .then(function (rows) {
+
       res.status(200).json(rows);
     })
     .catch(next)
@@ -82,9 +85,10 @@ function lookupInvoice(invoiceUuid) {
   let invoiceDetailQuery =
     `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference, invoice.cost,
       BUID(invoice.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,
-      BUID(patient.uuid) as patient_uuid, user_id, date, invoice.is_distributable
+      BUID(patient.uuid) as patient_uuid, invoice.user_id, invoice.date, invoice.is_distributable, voucher.type_id
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
+    LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
     JOIN project ON project.id = invoice.project_id
     WHERE invoice.uuid = ?`;
 
@@ -358,9 +362,10 @@ function find(options) {
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
       invoice.date, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames, invoice.cost,
        BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
-        service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy
+        service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
+    LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
     JOIN service ON service.id = invoice.service_id
     JOIN user ON user.id = invoice.user_id
     JOIN project ON project.id = invoice.project_id

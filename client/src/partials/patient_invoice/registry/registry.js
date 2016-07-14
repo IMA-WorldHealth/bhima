@@ -20,6 +20,12 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
       '<a href ng-click="grid.appScope.openReceiptModal(row.entity.uuid)">' +
         '<span class="fa fa-file-pdf-o"></span> {{ "TABLE.COLUMNS.RECEIPT" | translate }}' +
       '</a>' +
+      '&nbsp;&nbsp;' +
+        '<span ng-if="row.entity.type_id !== 9">' +
+          '<a href id="{{row.entity.reference}}" ng-click="grid.appScope.creditNote(row.entity)" class="text-danger">' +
+            '<span class="glyphicon glyphicon-remove-sign text-danger"></span> {{ "TABLE.COLUMNS.CREDIT_NOTE" | translate }}' +
+          '</a>' +
+        '</span>' + 
     '</div>';
 
   var costTemplate =
@@ -31,6 +37,7 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
   vm.openReceiptModal = Receipt.invoice;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
+  vm.creditNote = creditNote;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
@@ -49,7 +56,8 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
       { field : 'createdBy', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
       { name : 'Actions', displayName : '', cellTemplate : invoiceActionsTemplate }
     ],
-    enableSorting : true
+    enableSorting : true,
+    rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
   };
 
   function handler(error) {
@@ -77,11 +85,6 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
 
     // hook the returned patients up to the grid.
     request.then(function (invoices) {
-
-      invoices.forEach(function (invoice) {
-        invoice.date = util.getMomentAge(invoice.date);
-      });
-
       // put data in the grid
       vm.uiGridOptions.data = invoices;
     })
@@ -95,7 +98,6 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
   function search() {
     Invoices.openSearchModal(vm.filters)
       .then(function (parameters) {
-
         // no parameters means the modal was dismissed.
         if (!parameters) { return; }
 
@@ -130,7 +132,16 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
     load(vm.filters);
   }
 
+  // Function for Credit Note cancel all Invoice
+  function creditNote(invoice) {
+    Invoices.openCreditNoteModal(invoice)
+      .then(function (data) {
+        Notify.success('FORM.INFOS.TRANSACTION_REVER_SUCCESS');        
+        return load();
+      })
+      .catch(Notify.handleError);
+  }
+
   // fire up the module
   startup();
-
 }

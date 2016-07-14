@@ -71,6 +71,18 @@ function InvoiceRegistrySearch() {
     FU.buttons.clear();
   });
 
+  it('filters by radio buttons', () => {
+    FU.buttons.search();
+    element(by.id('no')).click();
+    FU.buttons.submit();
+
+    expectNumberOfGridRows(0);
+    expectNumberOfFilters(1);
+
+    // make sure to clear the filters for the next test
+    FU.buttons.clear();
+  });
+
   it('filters by reference should return a single result', () => {
     FU.buttons.search();
     FU.input('ModalCtrl.params.reference', 'TPA2');
@@ -83,30 +95,19 @@ function InvoiceRegistrySearch() {
     FU.buttons.clear();
   });
 
-  it('filters by <select> should return two results', () => {
+  it('filters by <select> should return Four results', () => {
     FU.buttons.search();
     FU.select('ModalCtrl.params.service_id', 'Test Service');
     FU.select('ModalCtrl.params.user_id', 'Super User');
     FU.buttons.submit();
 
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(4);
     expectNumberOfFilters(2);
 
     // make sure to clear the filters for the next test
     FU.buttons.clear();
   });
 
-  it('filters by radio buttons', () => {
-    FU.buttons.search();
-    element(by.id('no')).click();
-    FU.buttons.submit();
-
-    expectNumberOfGridRows(0);
-    expectNumberOfFilters(1);
-
-    // make sure to clear the filters for the next test
-    FU.buttons.clear();
-  });
 }
 
 module.exports = InvoiceRegistrySearch;

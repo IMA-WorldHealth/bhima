@@ -4,6 +4,7 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const helpers = require('../../shared/helpers');
+const components  = require('../../shared/components');
 helpers.configure(chai);
 
 const FU = require('../../shared/FormUtils');
@@ -34,4 +35,12 @@ describe('Invoice Registry', () => {
   });
 
   describe('Searching', Search);
+
+  it('Credit Note for reverse any transaction in the posting_journal', () => {
+    element(by.id('TPA1')).click();
+    FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
+    FU.buttons.submit();
+    components.notification.hasSuccess();
+  });
+
 });
