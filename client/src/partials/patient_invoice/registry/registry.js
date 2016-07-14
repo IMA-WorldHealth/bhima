@@ -25,7 +25,7 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
           '<a href id="{{row.entity.reference}}" ng-click="grid.appScope.creditNote(row.entity)" class="text-danger">' +
             '<span class="glyphicon glyphicon-remove-sign text-danger"></span> {{ "TABLE.COLUMNS.CREDIT_NOTE" | translate }}' +
           '</a>' +
-        '</span>'  
+        '</span>' + 
     '</div>';
 
   var costTemplate =
