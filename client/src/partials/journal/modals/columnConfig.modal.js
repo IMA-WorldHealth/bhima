@@ -1,36 +1,51 @@
 angular.module('bhima.controllers')
 .controller('ColumnsConfigModalController', ColumnsConfigModalController);
 
-ColumnsConfigModalController.$inject = [ '$uibModalInstance', 'columns', 'defaultVisibility', 'JournalColumnUtility'];
+ColumnsConfigModalController.$inject = [
+  '$uibModalInstance', 'Columns'
+];
 
 /**
  * @module journal/modals/columnConfig.modal
  *
- * @description This controller is responsible for showing or Hiding columns
-*/
-function ColumnsConfigModalController(ModalInstance, columns, defaultVisibility, Util) {
+ * @description
+ * This controller provides the column configuration for the posting journal
+ */
+function ColumnsConfigModalController(ModalInstance, Columns) {
   var vm = this;
 
-  vm.columns = columns;
-  vm.defaultvisibilityList = defaultVisibility;
+  // make sure we do not have any blank columns
+  vm.columns = Columns.getColumns().filter(function (column) {
+    return column.displayName !== '';
+  });
 
-  //the middle of the list to print element on two columns
-  vm.middle = Math.round( Object.keys(columns).length / 2 );
+  // visibility map
+  vm.map = Columns.getColumnVisibilityMap();
+
+  // the middle of the list to print elements in two columns
+  vm.middle = Math.round(Object.keys(vm.columns).length / 2);
 
   /**
-  * @function submit
-  * @description for submitting a dialog content
-  **/
-  function submit (){
-    ModalInstance.close({ configList : vm.columns });
+   * @function submit
+   * @description for submitting a dialog content
+   */
+  function submit() {
+    Columns.setVisibleColumns(vm.map);
+    ModalInstance.close();
   }
 
-  //reset the column visibilty to their default configuration
-  function reset (){ 
-    vm.columns = Util.toggleVisibility(vm.columns, vm.defaultvisibilityList);
+  // reset the column visibility to their default configuration
+  function resetDefaults() {
+    Columns.resetDefaultVisibility();
+    vm.map = Columns.getColumnVisibilityMap();
   }
 
-  /**expose function to the scope**/
+  // dismiss the modal, canceling column updates
+  function cancel() {
+    ModalInstance.dismiss();
+  }
+
   vm.submit = submit;
-  vm.reset = reset;
+  vm.cancel = cancel;
+  vm.resetDefaults = resetDefaults;
 }

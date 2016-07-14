@@ -1,38 +1,50 @@
-<form name="columnsConfigForm" ng-submit="ColumnsConfigModalCtrl.submit()" novalidate>
+<form name="ColumnConfigForm" ng-submit="ColumnsConfigModalCtrl.submit()" bh-form-defaults novalidate>
 
   <div class="modal-header">
-    <h4>{{ "POSTING_JOURNAL.COLUMNS_CONFIG.TITLE" | translate }}</h4>
+    <ol class="headercrumb">
+      <li class="static">{{ ::"TREE.POSTING_JOURNAL" | translate }}</li>
+      <li class="title">
+        {{ ::"POSTING_JOURNAL.CONFIGURATION.TITLE" | translate }}
+        <label class="label label-warning">
+          {{ ::"POSTING_JOURNAL.CONFIGURATION.COLUMNS" | translate }}
+        </label>
+      </li>
+    </ol>
   </div>
 
   <div class="modal-body">
-
-    <p class="text-info">
-      {{ "POSTING_JOURNAL.COLUMNS_CONFIG.HELP" | translate }}
-    </p>
-
-    <hr/>
+    <div class="row">
+      <div class="col-xs-6">
+        <b>{{ ::"FORM.LABELS.COLUMNS" | translate }}</b>
+      </div>
+      <div class="col-xs-6 text-right">
+        <a href ng-click="ColumnsConfigModalCtrl.resetDefaults()" data-method="reset">
+          <i class="fa fa-retweet"></i>
+          {{ ::"FORM.BUTTONS.RESET_DEFAULTS" | translate }}
+        </a>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-xs-6">
-        <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.middle : 0">
+        <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.middle : 0 track by col.field">
           <label>
             <input
               type="checkbox"
-              name="is_visible"
-              data-journal-column-option="{{ col.field }}"
-              ng-model="col.visible"> {{ col.displayName | translate }}
+              data-column="{{ col.field }}"
+              ng-model="ColumnsConfigModalCtrl.map[col.field]">
+              {{ ::col.displayName | translate }}
           </label>
         </div>
       </div>
 
       <div class="col-xs-6">
-        <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.middle : ColumnsConfigModalCtrl.middle">
+        <div class="checkbox" ng-repeat="col in ColumnsConfigModalCtrl.columns | limitTo : ColumnsConfigModalCtrl.columns.length : ColumnsConfigModalCtrl.middle track by col.field">
           <label>
             <input
               type="checkbox"
-              name="is_visible"
-              data-journal-column-option="{{ coll.field }}"
-              ng-model="col.visible"> {{ col.displayName | translate }}
+              data-column="{{ col.field }}"
+              ng-model="ColumnsConfigModalCtrl.map[col.field]"> {{ ::col.displayName | translate }}
           </label>
         </div>
       </div>
@@ -42,20 +54,15 @@
   <div class="modal-footer">
     <button
       type="button"
-      id="reset-config"
       class="btn btn-default"
-      ng-click="ColumnsConfigModalCtrl.reset()"
-      data-columns-config-cancel>
-      {{ "FORM.BUTTONS.RESET" | translate }}
+      ng-click="ColumnsConfigModalCtrl.cancel()">
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
 
     <button
       type="submit"
-      id="submit-config"
       class="btn btn-primary"
-      data-method="submit"
-      data-columns-config-submit
-      >
+      data-method="submit">
       {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </button>
   </div>
