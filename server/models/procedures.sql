@@ -30,6 +30,8 @@ CREATE PROCEDURE StageInvoice(
   IN uuid BINARY(16)
 )
 BEGIN 
+  -- verify if invoice stage already exists within this connection, if the 
+  -- stage already exists simply write to it, otherwise create it select into it
   DECLARE `no_invoice_stage` TINYINT(1) DEFAULT 0;
   DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_invoice_stage` = 1;
   SELECT NULL FROM `stage_invoice` LIMIT 0;
@@ -54,14 +56,18 @@ CREATE PROCEDURE StageInvoiceItem(
   IN invoice_uuid BINARY(16)
 )
 BEGIN 
+  -- verify if invoice item stage already exists within this connection, if the 
+  -- stage already exists simply write to it, otherwise create it select into it
   DECLARE `no_invoice_item_stage` TINYINT(1) DEFAULT 0;
   DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_invoice_item_stage` = 1;
   SELECT NULL FROM `stage_invoice_item` LIMIT 0;
 
-  IF (`no_invoice_item_stage` = 1) THEN 
+  IF (`no_invoice_item_stage` = 1) THEN
+    -- tables does not exist - create and enter data
     create temporary table stage_invoice_item 
     (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
-  ELSE 
+  ELSE
+    -- table exists - only enter data
     insert into stage_invoice_item
     (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
   END IF;
@@ -89,6 +95,9 @@ BEGIN
   (select id, invoice_uuid);
 END $$
 
+-- create a temporary staging table for the subsidies, this is done via a helper 
+-- method to ensure it has been created as sale writing time (subsidies are an 
+-- optional entity that may or may not have been called for staging) 
 CREATE PROCEDURE VerifySubsidyStageTable()
 BEGIN 
   create table if not exists stage_subsidy (id INTEGER, invoice_uuid BINARY(16));
@@ -103,58 +112,69 @@ END $$
 CREATE PROCEDURE WriteInvoice(
   IN uuid BINARY(16)
 )
-BEGIN 
+BEGIN
+  -- running calculation variables
   DECLARE items_cost decimal(19, 4);
   DECLARE billing_services_cost decimal(19, 4);
   DECLARE total_cost_to_debtor decimal(19, 4);
   DECLARE total_subsidy_cost decimal(19, 4);
   DECLARE total_subsidised_cost decimal(19, 4);
   
-  -- Workaround to ensure we can use this table to check if billing services are assigned to this invoice
+  -- ensure that all optional entities have staging tables available, it is 
+  -- possible that the invoice has not invoked methods to stage subsidies and 
+  -- billing services if they are not relevant - this makes sure the tables exist
+  -- for querries within this method
   CALL VerifySubsidyStageTable();
   CALL VerifyBillingServiceStageTable();
 
+  -- invoice details
   INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable)
   SELECT * from stage_invoice where stage_invoice.uuid = uuid;
 
+  -- invoice item details
   INSERT INTO invoice_item (uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid)
   SELECT * from stage_invoice_item WHERE stage_invoice_item.invoice_uuid = uuid;
-  
+
+  -- Total cost of all invoice items
   SET items_cost = (SELECT SUM(credit) as cost FROM invoice_item where invoice_uuid = uuid);
-  
+
+  -- calculate billing services based on total item cost
   INSERT INTO invoice_billing_service (invoice_uuid, value, billing_service_id)
   SELECT uuid, (billing_service.value / 100) * items_cost, billing_service.id
   FROM billing_service WHERE id in (SELECT id FROM stage_billing_service where invoice_uuid = uuid);
-  
+
+  -- total cost of all invoice items and billing services
   SET billing_services_cost = (SELECT IFNULL(SUM(value), 0) AS value from invoice_billing_service WHERE invoice_uuid = uuid);
   SET total_cost_to_debtor = items_cost + billing_services_cost;
-  
+
+  -- calculate subsidy cost based on total cost to debtor
   INSERT INTO invoice_subsidy (invoice_uuid, value, subsidy_id)
   SELECT uuid, (subsidy.value / 100) * total_cost_to_debtor, subsidy.id
   FROM subsidy WHERE id in (SELECT id FROM stage_subsidy where invoice_uuid = uuid);
-  
+
+  -- calculate final value debtor must pay based on subsidised costs
   SET total_subsidy_cost = (SELECT IFNULL(SUM(value), 0) AS value from invoice_subsidy WHERE invoice_uuid = uuid);
   SET total_subsidised_cost = total_cost_to_debtor - total_subsidy_cost;
-  
+
+  -- update relevant fields to represent final costs
   UPDATE invoice SET cost = total_subsidised_cost
   WHERE uuid = uuid;
 
+  -- return information relevant to the final calculated and written bill
   select items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;  
 END $$
 
 CREATE PROCEDURE PostInvoice(
-  -- @FIXME
   IN uuid binary(16)
-  -- IN uuid VARCHAR(36)
 )
 BEGIN 
-  -- Required posting values for this invoice
+  -- required posting values
   DECLARE date DATETIME; 
   DECLARE enterprise_id SMALLINT(5);
   DECLARE project_id SMALLINT(5);
   DECLARE currency_id TINYINT(3) UNSIGNED;
   
-  -- Variables to store core settup results
+  -- variables to store core set-up results
   DECLARE current_fiscal_year_id MEDIUMINT(8) UNSIGNED;
   DECLARE current_period_id MEDIUMINT(8) UNSIGNED;
   DECLARE current_exchange_rate DECIMAL(19, 4) UNSIGNED;
@@ -163,12 +183,13 @@ BEGIN
   DECLARE gain_account_id INT UNSIGNED;
   DECLARE loss_account_id INT UNSIGNED;
 
-  -- Populate initial values
+  -- populate initial values specifically for this invoice
   SELECT invoice.date, enterprise.id, project.id, enterprise.currency_id
   INTO date, enterprise_id, project_id, currency_id 
   FROM invoice join project join enterprise on invoice.project_id = project.id AND project.enterprise_id = enterprise.id
   WHERE invoice.uuid = uuid;
-  
+
+  -- populate core set-up values
   CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, current_fiscal_year_id, current_period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
   
   CALL CopyInvoiceToPostingJournal(uuid, transaction_id, project_id, current_fiscal_year_id, current_period_id, currency_id);
@@ -217,14 +238,13 @@ BEGIN
   CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, current_exchange_rate, date);
 END $$
 
--- @TODO This should be a function
+-- returns a formatted transaction ID based on a patients project abbreviation and the current transaction number
 CREATE FUNCTION GenerateTransactionId(
   project_id SMALLINT(5)
 )
 RETURNS VARCHAR(100) DETERMINISTIC
 BEGIN
-
-DECLARE trans_id_length TINYINT(1) DEFAULT 4; 
+DECLARE trans_id_length TINYINT(1) DEFAULT 4;
 
 RETURN ( 
 SELECT CONCAT(abbr, IFNULL(MAX(increment), 1)) AS id 
