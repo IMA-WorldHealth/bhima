@@ -63,17 +63,17 @@
               </div>
 
               <div class="col-sm-4">
-                <div style="border : 1px solid #ccc; height : 200px;">
-                  <div ng-if="!PatientRecordCtrl.patient.avatar" style="text-align : center;">
-                    <span style="font-size : 3em; color : #ccc; padding-top: 70px;" class="glyphicon glyphicon-picture"></span>
+                <div class="avatar-thumbnail">
+                  <div class="crop" ng-if="!PatientRecordCtrl.patient.avatar">
+                    <span class="glyphicon glyphicon-picture"></span>
                   </div>
-                  <div ng-if="PatientRecordCtrl.patient.avatar" style="text-align : center;">
-                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}" width="120"> 
+                  <div class="crop" ng-if="PatientRecordCtrl.patient.avatar">
+                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}">
                   </div>
                 </div>
 
                 <label class="btn btn-default btn-block">
-                    <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.uploadButtonText | translate }} 
+                    <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.uploadButtonText | translate }}
                     <input type="file" accept="image/*" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
                 </label>
 
@@ -100,24 +100,16 @@
       <div class="row">
 
         <div class="col-sm-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <span class="glyphicon glyphicon-paperclip"></span> Patient Documents
-            </div>
-            <div class="panel-body" style="height : 250px; overflow: auto;">
-
-              <!-- find document  -->
-              <bh-find-document
-                patient-uuid="PatientRecordCtrl.patient.uuid"
-                enable-patient-details="false"
-                enable-search="false"
-                enable-option-bar="false"
-                display="default">
-              </bh-find-document>
-              <!-- end find document  -->
-
-            </div>
-          </div>
+          <!-- find document  -->
+          <bh-find-document
+            patient-uuid="PatientRecordCtrl.patient.uuid"
+            enable-patient-details="false"
+            enable-search="false"
+            enable-option-bar="true"
+            display="default"
+            height="250px">
+          </bh-find-document>
+          <!-- end find document  -->
         </div>
 
         <!-- Patient Bill Panel -->

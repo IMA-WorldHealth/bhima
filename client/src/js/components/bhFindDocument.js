@@ -8,6 +8,7 @@ angular.module('bhima.components')
     enableOptionBar      : '<',  // bind boolean (true|false) : Enable option for add, display list or display thumbnail in a bar
     enableSearch         : '<',  // bind boolean (true|false) : Enable search bar option
     display              : '@',  // bind (list|thumbnail)  : Display either in list or thumbnail mode
+    height               : '@',  // bind the height of list of contents
     patientUuid          : '<'  // Required patient uuid
   }
 });
@@ -31,12 +32,12 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
     enableOptionBar : Boolean(this.enableOptionBar),
     enableSearch    : Boolean(this.enableSearch),
     display         : this.display,
+    height          : this.height,
     showAction      : false
   };
 
   /** expose to the view */
   vm.switchDisplay  = switchDisplay;
-  vm.toggleAction   = toggleAction;
   vm.addDocument    = addDocument;
   vm.deleteDocument = deleteDocument;
   vm.mimeIcon       = mimeIcon;
@@ -47,12 +48,6 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
   /** function switchDisplay */
   function switchDisplay(mode) {
     vm.session.display = mode;
-  }
-
-  /** toggle document actions */
-  function toggleAction(index) {
-    vm.selectedIndex = index;
-    vm.session.showAction = vm.session.showAction === true ? false : true;
   }
 
   /** function add documents modal */
@@ -90,6 +85,12 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
     Document.read(vm.session.patientUuid)
     .then(function (documents) {
       vm.session.patientDocuments = documents;
+
+      vm.session.patientDocuments.forEach(function (doc) {
+        doc.downloadLink = doc.label + mimeIcon(doc.mimetype).ext;
+        doc.icon = mimeIcon(doc.mimetype).icon;
+        doc.type = mimeIcon(doc.mimetype).label;
+      });
     })
     .catch(Notify.handleError);
   }
@@ -99,17 +100,22 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
     var result = {};
 
     if (mimetype.indexOf('image') > -1) {
-      result = { icon : 'fa-file-image-o', label : 'Image' };
+      var ext =
+        (mimetype.indexOf('jpg') > -1 || mimetype.indexOf('jpeg') > -1) ? '.jpg' :
+        (mimetype.indexOf('png') > -1) ? '.png' :
+        (mimetype.indexOf('gif') > -1) ? '.gif' : '';
+
+      result = { icon : 'fa-file-image-o', label : 'Image', ext: ext };
     } else if (mimetype.indexOf('pdf') > -1) {
-      result = { icon : 'fa-file-pdf-o', label : 'PDF' };
+      result = { icon : 'fa-file-pdf-o', label : 'PDF', ext: '.pdf' };
     } else if (mimetype.indexOf('word') > -1) {
-      result = { icon : 'fa-file-word-o', label : 'MS WORD' };
+      result = { icon : 'fa-file-word-o', label : 'MS WORD', ext: '.doc' };
     } else if (mimetype.indexOf('sheet') > -1) {
-      result = { icon : 'fa-file-excel-o', label : 'MS EXCEL' };
+      result = { icon : 'fa-file-excel-o', label : 'MS EXCEL', ext: '.xls' };
     } else if (mimetype.indexOf('presentation') > -1) {
-      result = { icon : 'fa-file-powerpoint-o', label : 'MS Power Point' };
+      result = { icon : 'fa-file-powerpoint-o', label : 'MS Power Point', ext: '.ppt' };
     } else {
-      result = { icon : 'fa-file-o', label : 'Fichier' };
+      result = { icon : 'fa-file-o', label : 'Fichier', ext: '' };
     }
 
     return result;
