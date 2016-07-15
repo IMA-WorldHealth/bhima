@@ -62,18 +62,18 @@
     <ng-switch on="$ctrl.session.display">
       <!-- list dispaly mode  -->
       <div ng-switch-default>
-        <ul class="media-list">
-            <li class="document media col-xs-12"
+        <div>
+            <div class="document media col-xs-12"
               ng-repeat="doc in $ctrl.session.patientDocuments | filter: $ctrl.searchByName">
               <a class="media-left">
-                <i class="fa fa-3x" ng-class="{{ '$ctrl.mimeIcon(doc.mimetype).icon' }}"></i>
+                <i class="fa fa-3x" ng-class="{{ 'doc.icon' }}"></i>
               </a>
               <div class="media-body">
 
                 <!-- actions buttons  -->
                 <div class="pull-right">
                   <a
-                    ng-href="/{{ doc.link }}" download="{{ doc.label + $ctrl.mimeIcon(doc.mimetype).ext }}"
+                    ng-href="/{{ doc.link }}" download="{{ doc.downloadLink }}"
                     title="{{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}"
                     type="button"
                     class="btn btn-sm btn-default">
@@ -94,15 +94,15 @@
 
                 <!-- file size  -->
                 <i class="fa fa-file-o"></i>
-                {{ $ctrl.mimeIcon(doc.mimetype).label }} (~{{ doc.size | bytes }}) |
+                {{ doc.type }} (~{{ doc.size | bytes }}) |
 
                 <!-- date and author  -->
                 <i class="fa fa-calendar-o"></i>
                 {{ doc.timestamp | date }}, {{ 'FORM.LABELS.BY' | translate }}
                 {{ doc.first + ' ' + doc.last }}
               </div>
-            </li>
-          </ul>
+            </div>
+          </div>
       </div>
 
       <!-- thumbnail display mode  -->
@@ -113,8 +113,8 @@
             <!-- the picture  -->
             <div class="crop">
               <div class="image">
-                <img ng-show="$ctrl.mimeIcon(doc.mimetype).icon === 'fa-file-image-o'" ng-src="{{ doc.link }}" />
-                <i ng-hide="$ctrl.mimeIcon(doc.mimetype).icon === 'fa-file-image-o'" class="fa" ng-class="{{ '$ctrl.mimeIcon(doc.mimetype).icon' }}"></i>
+                <img ng-show="doc.icon === 'fa-file-image-o'" ng-src="{{ doc.link }}" />
+                <i ng-hide="doc.icon === 'fa-file-image-o'" class="fa" ng-class="{{ 'doc.icon' }}"></i>
               </div>
             </div>
 
@@ -124,7 +124,7 @@
               <!-- actions buttons  -->
               <div class="pull-right">
                 <a
-                  ng-href="/{{ doc.link }}" download="{{ doc.label + $ctrl.mimeIcon(doc.mimetype).ext }}"
+                  ng-href="/{{ doc.link }}" download="{{ doc.downloadLink }}"
                   title="{{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}"
                   type="button"
                   class="btn btn-sm btn-default">
@@ -144,7 +144,7 @@
 
               <!-- file size  -->
               <i class="fa fa-file-o"></i>
-              {{ $ctrl.mimeIcon(doc.mimetype).label }} (~{{ doc.size | bytes }}) <br>
+              {{ doc.type }} (~{{ doc.size | bytes }}) <br>
 
               <!-- author  -->
               <i class="fa fa-calendar-o"></i>

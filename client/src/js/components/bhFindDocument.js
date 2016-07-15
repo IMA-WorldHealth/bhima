@@ -85,6 +85,12 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
     Document.read(vm.session.patientUuid)
     .then(function (documents) {
       vm.session.patientDocuments = documents;
+
+      vm.session.patientDocuments.forEach(function (doc) {
+        doc.downloadLink = doc.label + mimeIcon(doc.mimetype).ext;
+        doc.icon = mimeIcon(doc.mimetype).icon;
+        doc.type = mimeIcon(doc.mimetype).label;
+      });
     })
     .catch(Notify.handleError);
   }
