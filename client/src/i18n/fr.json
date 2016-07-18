@@ -699,6 +699,7 @@
     "DOCUMENT_LIST"  : "Liste des documents",
     "DOCUMENTS"      : "Documents du patient",
     "DOWNLOAD"       : "Telecharger",
+    "INVALID_DOCUMENT" : "Format du document invalide",
     "NO_DOCUMENT"    : "Aucun document trouvé",
     "OVERVIEW"       : "Aperçu",
     "POSTED_BY"      : "Posté par",
@@ -840,7 +841,7 @@
       "TITLE" : "Bon de commande de réception",
       "SUCCESS" : "Bon de commande créé."
     }
-  },  
+  },
   "REFERENCE": {
     "ADD"           : "Ajouter une référence",
     "ALERT"         : "Le module gestion de référence est un module qui a été conçu pour permettre l'administration des références existantes au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une référence ainsi que la suppression.",

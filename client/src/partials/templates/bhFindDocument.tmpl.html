@@ -28,6 +28,7 @@
         type="button"
         title="{{ 'PATIENT_DOCUMENT.DISPLAY_THUMBNAIL' | translate }}"
         class="btn btn-sm"
+        data-document-action="thumbnail"
         ng-click="$ctrl.switchDisplay('thumbnail')">
         <i class="fa fa-file-image-o"></i>
       </button>
@@ -36,6 +37,7 @@
         type="button"
         title="{{ 'PATIENT_DOCUMENT.DISPLAY_LIST' | translate }}"
         class="btn btn-sm"
+        data-document-action="list"
         ng-click="$ctrl.switchDisplay('list')">
         <i class="fa fa-list"></i>
       </button>
@@ -44,6 +46,7 @@
         type="button"
         title="{{ 'PATIENT_DOCUMENT.ADD' | translate }}"
         class="btn btn-sm"
+        data-document-action="add"
         ng-click="$ctrl.addDocument()">
         <i class="fa fa-plus"></i>
       </button>
@@ -61,7 +64,7 @@
     <!-- list of documents  -->
     <ng-switch on="$ctrl.session.display">
       <!-- list dispaly mode  -->
-      <div ng-switch-default>
+      <div data-view="list" ng-switch-default>
         <div class="document media col-xs-12"
           ng-repeat="doc in $ctrl.session.patientDocuments | filter: $ctrl.searchByName">
           <a class="media-left">
@@ -104,7 +107,7 @@
       </div>
 
       <!-- thumbnail display mode  -->
-      <div ng-switch-when="thumbnail">
+      <div data-view="thumbnail" ng-switch-when="thumbnail">
         <div class="document document-thumbnail col-xs-12 col-md-6"
           ng-repeat="doc in $ctrl.session.patientDocuments | filter: $ctrl.searchByName">
 

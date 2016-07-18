@@ -24,17 +24,19 @@ function PatientDocumentsModalController(Instance, Upload, patientUuid, PatientS
   })
   .catch(Notify.handleError);
 
-  /** close the modal */
-  function close() {
-    Instance.dismiss('cancel');
-  }
-
   /** submit data on server */
   function submit(form) {
     // send data only when a file is selected
     if (vm.file) {
       uploadFile(vm.file);
+    } else {
+      vm.documentError = true;
     }
+  }
+
+  /** close the modal */
+  function close() {
+    Instance.dismiss('cancel');
   }
 
   /** dismiss picture */
@@ -47,6 +49,7 @@ function PatientDocumentsModalController(Instance, Upload, patientUuid, PatientS
   /** set thumbnail for the selected image */
   function setThumbnail(file) {
     vm.thumbnail = file || 'assets/placeholder.gif';
+    vm.documentError = !file ? true : false;
   }
 
   /** upload the file to server */
