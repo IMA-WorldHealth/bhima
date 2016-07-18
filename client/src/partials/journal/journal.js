@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('JournalController', JournalController);
 
 JournalController.$inject = [
-  'TransactionService', 'JournalService', 'JournalSortingService', 'JournalGroupingService',
+  'TransactionService', 'JournalService', 'GridSortingService', 'JournalGroupingService',
   'JournalPaginationService', 'JournalFilteringService', 'GridColumnService', 'JournalConfigService',
   'NotifyService'
 ];
@@ -18,15 +18,12 @@ JournalController.$inject = [
  *   - Filter transactions
  *   - Group by transactions to show aggregates
  *   - Sort transactions
- *   - Show or Hide columns
+ *   - Show or hide columns
  *
  * - (Super user) Edit and update transactions
  * - Post one or more transactions to the general ledger to confirm they are complete
  *   - Tun trial balance validation on transactions
  *
- * @todo Propose design for services plugging in and configuring aspects of the grid
- * @todo Develop a mock transaction service to provide example data to test with
- * @todo Popoulate models/test/data.sql with test transactions data
  * @todo Propose utility bar view design
  *
  * @module bhima/controllers/JournalController
