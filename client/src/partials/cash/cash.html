@@ -36,10 +36,7 @@
 
               <fieldset ng-disabled="CashVoucherForm.$loading">
 
-                <div class="form-group" ng-class="{ 'has-error' : CashVoucherForm.$submitted && !CashCtrl.payment.debtor_uuid }">
-                  <label class="control-label">{{ "FORM.LABELS.PATIENT" | translate }}</label>
-                  <bh-find-patient type="inline" on-search-complete="CashCtrl.usePatient(patient)" required="1"></bh-find-patient>
-                </div>
+                <bh-find-patient on-search-complete="CashCtrl.usePatient(patient)" required="1"></bh-find-patient>
 
                 <bh-date-editor
                   date-value="CashCtrl.payment.date"

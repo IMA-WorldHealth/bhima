@@ -7,7 +7,6 @@ module.exports = function(config) {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
 
-
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha', 'chai-spies', 'chai'],
@@ -19,15 +18,12 @@ module.exports = function(config) {
       'client/vendor/angular-mocks/angular-mocks.js',
       'bin/client/js/vendor.min.js',
       'bin/client/js/bhima.min.js',
-      'client/test/unit/**/*.spec.js',
-      'bin/client/partials/**/*.html'
+      'bin/client/partials/**/*.html',
+      'client/test/unit/**/*.spec.js'
     ],
-
 
     // list of files to exclude
-    exclude: [
-    ],
-
+    exclude: [],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -43,7 +39,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots', 'progress'],
+    reporters: ['progress'],
 
     // web server port
     port: 9876,
@@ -57,7 +53,6 @@ module.exports = function(config) {
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher

@@ -1,7 +1,9 @@
 angular.module('bhima.services')
 .service('PatientService', PatientService);
 
-PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal', 'DocumentService', 'VisitService'];
+PatientService.$inject = [
+  '$http', 'util', 'SessionService', '$uibModal', 'DocumentService', 'VisitService'
+];
 
 /**
  * @module PatientService
@@ -16,7 +18,7 @@ PatientService.$inject = [ '$http', 'util', 'SessionService', '$uibModal', 'Docu
  *
  *   // creates a patient
  *   Patients.create(medicalDetails, financeDetails).then(callback);
-*   }
+ *  }
  */
 function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   var service = this;
@@ -134,9 +136,6 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
 
     var target = baseUrl.concat('search');
 
-    // ensure that the search returns detailed results
-    options.detailed = 1;
-
     return $http.get(target, { params : options })
       .then(util.unwrapHttpResponse);
   }
@@ -145,7 +144,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
    * Fetches all billing services subslected by a patient entity
    *
    * @param   {String} patientUuid    UUID of patient to select billing services for
-   * @returnl {Object}                Promise object returning an array of billing
+   * @return  {Object}                Promise object returning an array of billing
    *                                  services
    */
   function billingServices(patientUuid) {
@@ -158,7 +157,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
    * Fetches all subsidies subslected by a patient entity
    *
    * @param   {String} patientUuid    UUID of patient to select subsidies for
-   * @returnl {Object}                Promise object returning an array of subsidies
+   * @return  {Object}                Promise object returning an array of subsidies
    */
   function subsidies(patientUuid) {
     var path = patientAttributePath('subsidies', patientUuid);

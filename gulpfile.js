@@ -37,10 +37,7 @@ var paths = {
       'client/src/**/*.js',
       '!client/src/i18n/**/*.js'
     ],
-    css : [
-      'client/src/partials/**/*.css',
-      'client/src/css/*.css'
-    ],
+    css : [ 'client/src/css/*.css' ],
     vendorStyle : [
       'client/vendor/**/*.{css,ttf,woff,woff2,eot,svg}',
 
@@ -175,7 +172,6 @@ gulp.task('client-vendor-build-bootstrap', function () {
    * - compile with less
    * - copy CSS into static file folder
    */
-
   var bhimaDefinition = 'client/src/less/bhima-bootstrap.less';
 
   return gulp.src(bhimaDefinition)
