@@ -1,19 +1,12 @@
-/* jshint expr:true */
-const chai = require('chai');
-const expect = chai.expect;
-const uuid = require('node-uuid');
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-/* import test helpers */
+const uuid = require('node-uuid');
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /* The /invoices API endpoint */
 describe('The /invoices API', function () {
   'use strict';
-
-  // login at the start of the test */
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   /* total number of invoices in the database */
   const numInvoices = 2;
@@ -162,9 +155,6 @@ describe('The /invoices API', function () {
  */
 function BillingScenarios() {
   'use strict';
-
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   /*
    * A simple invoice that should be posted without issue.  This demonstrates

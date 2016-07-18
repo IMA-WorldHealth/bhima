@@ -1,16 +1,11 @@
-const chai = require('chai');
-const uuid = require('node-uuid');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
 const helpers = require('./helpers');
-helpers.configure(chai);
+const uuid = require('node-uuid');
 
 describe('(/debtors) The /debtors API', function () {
   'use strict';
-
-  // Logs in before test suite
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   const debtorKeys = ['uuid', 'group_uuid', 'text'];
 

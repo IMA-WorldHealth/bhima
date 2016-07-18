@@ -1,15 +1,9 @@
-/* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-var helpers = require('./helpers');
-helpers.configure(chai);
+const helpers = require('./helpers');
 
 describe('(/section_resultats) The section resultat API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
-
-  // log in before test suite
-  before(helpers.login(agent));
 
   var newSectionResultat = {
     text : 'A new Section Resultat',

@@ -1,18 +1,12 @@
-/* jshint expr:true*/
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-/* import test helpers */
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /*
  * The /prices API endpoint
  */
 describe('(/prices ) Price List', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
-
 
   // constants
   const emptyPriceList = {

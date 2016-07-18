@@ -1,13 +1,9 @@
-/* jshint expr:true */
-var chai = require('chai');
-var expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-var helpers = require('./helpers');
-helpers.configure(chai);
+const helpers = require('./helpers');
 
 describe('/reports/invoices Receipts Interface', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   // known data for requests and assertions
   const validInvoice        = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';

@@ -1,9 +1,8 @@
-/* jshint expr:true*/
-const chai = require('chai');
-const expect = chai.expect;
-const uuid    = require('node-uuid');
+/* global expect, chai, agent */
+/* jshint expr : true */
+
 const helpers = require('./helpers');
-helpers.configure(chai);
+const uuid = require('node-uuid');
 
 /*
  * The /creditor_groups API endpoint
@@ -11,10 +10,6 @@ helpers.configure(chai);
  * This test suite implements full CRUD on the /creditor_groups HTTP API endpoint.
  */
 describe('(/creditor_groups) Creditor Groups', function () {
-
-  // login before each request
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   // creditor group we will add during this test suite.
   var creditorGroup = {

@@ -1,15 +1,12 @@
-/* jshint expr: true */
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
+
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /*
  * The /exchange API endpoint
  */
 describe('(/exchange) The /exchange API endpoint', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   // constants
   const RATE = {

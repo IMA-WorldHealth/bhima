@@ -1,15 +1,10 @@
-/* jshint expr:true*/
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 describe('(/cash) Cash Payments', function () {
   'use strict';
-
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   var CASHBOX_ID  = 1;   // Test Primary Cashbox A
   var CURRENCY_ID = 2;   // Congolese Francs

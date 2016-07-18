@@ -1,12 +1,9 @@
-/* jshint expr:true*/
-var chai = require('chai');
-var expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-var helpers = require('./helpers');
-helpers.configure(chai);
+const helpers = require('./helpers');
 
-describe('(section_bilans) The section bilan API', function () {
-  var agent = chai.request.agent(helpers.baseUrl);
+describe('(/section_bilans) The section bilan API', function () {
 
   var newSectionBilan = {
     text : 'A new Section Bilan',
@@ -17,9 +14,6 @@ describe('(section_bilans) The section bilan API', function () {
   var responseKeys = [
     'id', 'text', 'position', 'is_actif'
   ];
-
-  // log in before the test suite executes
-  before(helpers.login(agent));
 
   it('POST /section_bilans adds a section bilan', function () {
     return agent.post('/section_bilans')

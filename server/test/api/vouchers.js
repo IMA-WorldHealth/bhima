@@ -1,9 +1,7 @@
-/* jshint expr: true */
-const chai = require('chai');
-const expect = chai.expect;
-const helpers = require('./helpers');
-helpers.configure(chai);
+/* global expect, chai, agent */
+/* jshint expr : true */
 
+const helpers = require('./helpers');
 const uuid = require('node-uuid');
 
 /*
@@ -13,9 +11,6 @@ const uuid = require('node-uuid');
  */
 describe('(/vouchers) The vouchers HTTP endpoint', function () {
   'use strict';
-
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   const date = new Date();
 

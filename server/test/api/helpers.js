@@ -3,31 +3,6 @@
 
 // import plugins
 const expect = require('chai').expect;
-const chaiHttp = require('chai-http');
-const chaiDatetime =  require('chai-datetime');
-
-/*
- * Configure NodeJS/Mocha to continue working even with invalid TLS certs
- * This explicitly disables cert errors for the parent Node process, and
- * should only be done for testing cases.
- */
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
-// base URL for all tests
-const port = process.env.PORT || '8080';
-exports.baseUrl = 'https://localhost:' + port;
-
-// login using the base URL and user
-exports.login = function login(agent) {
-  // base user defined in test data
-  var user = { username : 'superuser', password : 'superuser', project: 1};
-
-  return function () {
-    return agent
-      .post('/login')
-      .send(user);
-  };
-};
 
 /**
  * Clones the object and removes the field, to test if the field is required
@@ -41,19 +16,6 @@ exports.mask = function mask(object, field) {
   var clone = JSON.parse(JSON.stringify(object));
   delete clone[field];
   return clone;
-};
-
-// generic configuration for chai
-exports.configure = function configure(chai) {
-  // workaround for low node versions
-  if (!global.Promise) {
-    var q = require('q');
-    chai.request.addPromises(q.Promise);
-  }
-
-  // attach plugins
-  chai.use(chaiHttp);
-  chai.use(chaiDatetime);
 };
 
 // generic error handler

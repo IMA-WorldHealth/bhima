@@ -1,14 +1,9 @@
-/* jshint expr:true*/
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 describe('(/system) System Information', () => {
-
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   it('GET /system/events downloads a list of events', () => {
     agent.get('/system/events')

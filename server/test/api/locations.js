@@ -1,21 +1,14 @@
-/* jshint expr:true */
-const chai = require('chai');
-const expect = chai.expect;
-const uuid = require('node-uuid');
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-/* import test helpers */
 const helpers = require('./helpers');
-helpers.configure(chai);
+const uuid = require('node-uuid');
 
 
 /*
  * The /locations API endpoint
  */
 describe('(/locations) Locations Interface', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-
-  /* login before each request */
-  before(helpers.login(agent));
 
   /*
    * number of test villages, sectors, provinces, and countries in the test

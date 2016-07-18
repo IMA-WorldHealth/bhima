@@ -1,15 +1,12 @@
-/* jshint expr:true*/
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
+
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /*
  * The /discounts API endpoint
  */
 describe('(/discounts) Discounts Interface', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   var ACCOUNT_ID = 3636;  // Test Inventory Account
   var INVENTORY_UUID = '289cc0a1-b90f-11e5-8c73-159fdc73ab02'; // INV1

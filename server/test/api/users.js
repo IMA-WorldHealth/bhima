@@ -1,9 +1,7 @@
-/* jshint expr:true */
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /*
  * The /users API endpoint
@@ -11,8 +9,6 @@ helpers.configure(chai);
  * This test suite implements full CRUD on the /users HTTP API endpoint.
  */
 describe('(/users) Users and Permissions', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   var newUser = {
     username : 'newUser',

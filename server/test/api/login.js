@@ -1,33 +1,31 @@
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent, baseUrl */
+/* jshint expr : true */
 
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 describe('(/login) The login API', function () {
   'use strict';
 
-  var url = helpers.baseUrl;
+  const port = process.env.PORT || 8080;
+  const url = `https://localhost:${port}`;
 
   // set up valid user
-  var validUser = {
+  const validUser = {
     username : 'superuser',
     password : 'superuser',
     project: 1
   };
 
-  var invalidUser = {
+  const invalidUser = {
     username: 'unauthorized',
-    password : 'unauthorized'
+    password: 'unauthorized'
   };
 
   it('rejects access to non-existant routes', function () {
     return chai.request(url)
       .get('/non-existant')
       .then(function (res) {
-
         helpers.api.errored(res, 401);
-
         expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);
@@ -37,9 +35,7 @@ describe('(/login) The login API', function () {
     return chai.request(url)
       .get('/journal')
       .then(function (res) {
-
         helpers.api.errored(res, 401);
-
         expect(res.body.code).to.equal('ERRORS.UNAUTHORIZED');
       })
       .catch(helpers.handler);

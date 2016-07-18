@@ -1,19 +1,13 @@
-/* jshint expr:true*/
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
 
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /*
  * The /enterprises API endpoint
  * This test suite implements full CRUD on the /enterprises HTTP API endpoint.
  */
 describe('(/enterprises) Enterprises API', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-
-  // ensure that the client is logged into the test suite
-  before(helpers.login(agent));
 
   var enterprise = {
     name : 'enterprises',

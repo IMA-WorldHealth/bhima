@@ -1,8 +1,7 @@
-/* jshint expr:true*/
-const chai = require('chai');
-const expect = chai.expect;
+/* global expect, chai, agent */
+/* jshint expr : true */
+
 const helpers = require('./helpers');
-helpers.configure(chai);
 
 /*
  * The /employees API endpoint
@@ -11,9 +10,6 @@ helpers.configure(chai);
  */
 describe('(/employees) the employees API endpoint', function () {
   'use strict';
-
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
 
   const numEmployees = 1;
 

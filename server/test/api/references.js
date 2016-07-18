@@ -1,12 +1,9 @@
-/* jshint expr:true */
-const chai = require('chai');
-const expect = chai.expect;
-const helpers = require('./helpers');
-helpers.configure(chai);
+/* global expect, chai, agent */
+/* jshint expr : true */
 
-describe('(/reference) The Reference API', function () {
-  const agent = chai.request.agent(helpers.baseUrl);
-  before(helpers.login(agent));
+const helpers = require('./helpers');
+
+describe('(/references) The Reference API', function () {
 
   var newReference = {
     is_report : 0,
