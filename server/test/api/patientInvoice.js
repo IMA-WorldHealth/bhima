@@ -4,6 +4,10 @@
 const uuid = require('node-uuid');
 const helpers = require('./helpers');
 
+/** @todo passing the date as an object causes the invoice request object to
+ * be sent in a different order, breaking the staging/ writing process - this
+ * should be fixed and verified with tests */
+
 /* The /invoices API endpoint */
 describe('The /invoices API', function () {
   'use strict';
@@ -171,14 +175,14 @@ function BillingScenarios() {
    *  6) The 'user_id' should be ignored, and default to the logged in user.
    */
   const simpleInvoice = {
-    project_id: helpers.data.PROJECT,
-    // cost: 35,  // this cost should be calculated by the server (see test).
-    debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
-    date: new Date('2016-01-13'),
+    is_distributable: 1,
+    date: new Date('2016-01-28').toISOString(),
+    cost: 35,  // this cost should be calculated by the server (see test).
     description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
     service_id: helpers.data.ADMIN_SERVICE,
+    debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+    project_id: helpers.data.PROJECT,
     user_id : helpers.data.OTHERUSER,
-    is_distributable: true,
 
     /* @todo - change this API to not need credit/debit fields */
     items : [{
@@ -274,12 +278,13 @@ function BillingScenarios() {
    *  1) `user_id` is not required (default: current user)
    */
   const simpleBillingServiceInvoice = {
-    project_id: helpers.data.PROJECT,
-    debtor_uuid: '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
-    date: new Date('2016-01-28'),
+    is_distributable : true,
+    date: new Date('2016-01-28').toISOString(),
+    cost : 100,
     description: 'A simple billing service invoice',
     service_id: helpers.data.ADMIN_SERVICE,
-    is_distributable : true,
+    debtor_uuid: '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
+    project_id: helpers.data.PROJECT,
 
     /* @todo - change this API to not need credit/debit fields */
     items : [{
@@ -297,13 +302,9 @@ function BillingScenarios() {
     }],
 
     /* @todo - change this API to take in an array of billing service ids */
-    billingServices : {
-      items : [{
-        billing_service_id : 1
-        // value : 20, // this is not required by the API (unsafe), but useful
-                       // to see for the test scenario. This is a percentage.
-      }]
-    }
+    billingServices : [{
+      billing_service_id : 1
+    }]
   };
 
   it('creates and posts a patient invoice (simple + 1 billing service)', () => {
@@ -336,12 +337,13 @@ function BillingScenarios() {
    * supports a single subsidy per invoice.  See #343 for more information.
    */
   const simpleSubsidyInvoice = {
-    project_id: helpers.data.PROJECT,
-    debtor_uuid: '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
-    date: new Date('2016-01-28'),
+    is_distributable : true,
+    date: new Date('2016-01-28').toISOString(),
+    cost : 39.34,
     description: 'A simple subsidy invoice',
     service_id: helpers.data.ADMIN_SERVICE,
-    is_distributable : true,
+    debtor_uuid: '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
+    project_id: helpers.data.PROJECT,
 
     /* @todo - change this API to not need credit/debit fields */
     items : [{
@@ -365,13 +367,9 @@ function BillingScenarios() {
     }],
 
     /* @todo - change this API to take in an array of subsidy ids */
-    subsidies : {
-      items : [{
-        subsidy_id : 1
-        // value : 50, // this is not required by the API (unsafe), but useful
-                       // to see for the test scenario. This is a percentage.
-      }]
-    }
+    subsidies : [{
+      subsidy_id : 1
+    }]
   };
 
   it('creates and posts a patient invoice (simple + 1 subsidy)', () => {
