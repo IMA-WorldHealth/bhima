@@ -1,5 +1,4 @@
 /* jshint expr: true */
-
 'use strict';
 
 // import plugins
@@ -92,24 +91,24 @@ exports.identical = function identical(objectA, objectB) {
  * .catch(helpers.handler);
  */
 api.created = function created(res) {
+
   // make sure the response has correct HTTP headers
   expect(res).to.have.status(201);
   expect(res).to.be.json;
 
   // ensure that we received a correct uuid in return
-  expect(res.body).to.not.be.empty;
+  expect(res.body, `${res.req.method} ${res.req.path} returned an empty body.`).to.not.be.empty;
 
   // make sure that we either have a UUID or an ID
-  expect(res.body).to.satisfy(function (o) { return o.id || o.uuid; });
+  expect(res.body, `${res.req.method} ${res.req.path} did not return an id or uuid.`).to.satisfy(o => o.id || o.uuid);
 
   // id checks
   if (res.body.id) {
-    expect(res.body).to.have.property('id');
-    expect(res.body.id).to.be.a('number');
+    expect(res.body.id, `${res.req.method} ${res.req.path} returned a non-numeric id.`).to.be.a('number');
 
   // uuid checks
   } else {
-    expect(res.body).to.have.property('uuid');
+    expect(res.body, `${res.req.method} ${res.req.path} returned an invalid uuid.`).to.have.property('uuid');
     expect(res.body.uuid).to.be.a('string');
     expect(res.body.uuid).to.have.length(36);
   }
@@ -206,7 +205,7 @@ api.updated = function updated(res, original, changedKeys) {
 api.deleted = function deleted(res) {
   // make sure that the response has the correct HTTP headers
   expect(res).to.have.status(204);
-  expect(res.body).to.be.empty;
+  expect(res.body, `${res.req.method} ${res.req.path} was not empty.`).to.be.empty;
 };
 
 /**
@@ -229,11 +228,11 @@ api.deleted = function deleted(res) {
  */
 api.listed = function listed(res, len) {
   // make sure that the response has the correct HTTP headers
-  expect(res).to.have.status(200);
-  expect(res).to.be.json;
+  expect(res, `${res.req.method} ${res.req.path} returned ${res.res.statusCode} ${res.res.statusMesage}.`).to.have.status(200);
+  expect(res, `${res.req.method} ${res.req.path} did not return JSON.`).to.be.json;
 
   // assert that the length is the expected length.
-  expect(res.body).to.have.length(len);
+  expect(res.body, `${res.req.method} ${res.req.path} did not return an array of length ${len}.`).to.have.length(len);
 };
 
 /*

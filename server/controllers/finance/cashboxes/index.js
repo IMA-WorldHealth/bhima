@@ -39,9 +39,9 @@ exports.currencies = currencies;
  * to filter results appropriately.
  */
 function list(req, res, next) {
-  let possibleConditions = ['project_id', 'is_auxiliary'],
-      providedConditions = Object.keys(req.query),
-      conditions = [];
+  const possibleConditions = ['project_id', 'is_auxiliary'];
+  const providedConditions = Object.keys(req.query);
+  const conditions = [];
 
   let sql =
     'SELECT id, label FROM cash_box ';

@@ -11,8 +11,6 @@ const gulpif  = require('gulp-if');
 const concat  = require('gulp-concat');
 const uglify  = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
-const flatten = require('gulp-flatten');
-const path    = require('path');
 const iife    = require('gulp-iife');
 const rimraf  = require('rimraf');
 const gutil   = require('gulp-util');
@@ -123,7 +121,7 @@ var paths = {
  * and writes them to the /bin/client/ folder.  There are tasks to do
  * the following:
  *   - [client-minify-css]  minify (via css nano) the css
- *   - [client-compile-js]   minify (via uglify) the clientside js code
+ *   - [client-compile-js]  minify (via uglify) the client-side js code
  *   - [client-lint-i18n]   compares translation files for missing values
  *   - [client-mv-static]   moves the static files (html, img) to the client
  *                          folder
@@ -152,7 +150,7 @@ gulp.task('client-compile-vendor', function () {
 });
 
 
-// minify the client css styles via minifycss
+// minify the client css styles via cssnano
 // writes output to style.min.css
 gulp.task('client-minify-css', function () {
   return gulp.src(paths.client.css)
@@ -174,7 +172,7 @@ gulp.task('client-vendor-build-bootstrap', function () {
    * This build process should compile the latest bhima less definition with the
    * latest vendor files
    * - move less file to bootstrap vendor folder
-   * - compile with lessc
+   * - compile with less
    * - copy CSS into static file folder
    */
 
@@ -225,7 +223,7 @@ gulp.task('build-client', function () {
   gulp.start('client-compile-js', 'client-compile-vendor', 'client-minify-css', 'client-mv-vendor-style', 'client-vendor-build-bootstrap', 'client-mv-static', 'notify-lint-process');
 });
 
-// Lint client code seperately from build process
+// Lint client code separately from build process
 // TODO Processes for linting server code - requires uncategorised commit update
 gulp.task('lint', function () {
   gulp.start('client-lint-js', 'client-lint-i18n');
