@@ -246,6 +246,7 @@
       "RECOVER_ITEMS"         : "Recover Items",
       "REGISTER_PATIENT"      : "Register Patient",
       "RESET"                 : "Reset",
+      "RESET_DEFAULTS"        : "Reset Defaults",
       "SAVE"                  : "Save",
       "SEARCH"                : "Search",
       "SELECT_INVOICES"       : "Select Invoices",
@@ -355,6 +356,7 @@
       "CHARGE"                 : "Charge",
       "CLIENT_ID"              : "Client ID",
       "CODE"                   : "Code",
+      "COLUMNS"                : "Columns",
       "CONFIRMATION"           : "Confirmation",
       "CONTACT"                : "Contact",
       "COST_CENTER"            : "Cost Center",
@@ -779,11 +781,10 @@
     "UPDATING_USER" : "Edits a user's metadata"
   },
   "POSTING_JOURNAL" : {
-    "TITLE" : "Posting journal",
-    "SHOW_HIDE_COLUMNS" : "Show/Hide columns",
-    "COLUMNS_CONFIG" : {
-      "TITLE" : "Show or Hide columns",
-      "HELP" : "Check to show the column at journal grid"
+    "TITLE" : "Posting Journal",
+    "CONFIGURATION" : {
+      "TITLE" : "Configuration",
+      "COLUMNS" : "Columns"
     }
   },
   "PRICE_LIST": {

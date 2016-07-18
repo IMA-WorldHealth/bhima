@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 JournalController.$inject = [
   'TransactionService', 'JournalService', 'JournalSortingService', 'JournalGroupingService',
-  'JournalPaginationService', 'JournalFilteringService', 'JournalColumnConfigService',
+  'JournalPaginationService', 'JournalFilteringService', 'GridColumnService', 'JournalConfigService',
   'NotifyService'
 ];
 
@@ -31,15 +31,11 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Transactions, Journal, Sorting, Grouping, Pagination, Filtering, ColumnConfig, Notify) {
+function JournalController(Transactions, Journal, Sorting, Grouping, Pagination, Filtering, Columns, Config, Notify) {
   var vm = this;
 
   // Journal utilites
   var sorting, grouping, pagination, filtering, columnConfig;
-
-  //column list
-  var columns = null;
-
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
@@ -51,13 +47,10 @@ function JournalController(Transactions, Journal, Sorting, Grouping, Pagination,
   filtering  = new Filtering(vm.gridOptions);
   grouping   = new Grouping(vm.gridOptions);
   pagination = new Pagination(vm.gridOptions, Transactions.list.data);
-  columnConfig = new ColumnConfig(vm.gridOptions);
+  columnConfig = new Columns(vm.gridOptions, 'JournalColumns');
 
 
-
-  // bind the transactions service to populate the grid component
-
-  // Popoulate the grid with posting journal data
+  // Populate the grid with posting journal data
   Journal.read()
   .then(function (list) {
     vm.gridOptions.data = list;
@@ -65,31 +58,24 @@ function JournalController(Transactions, Journal, Sorting, Grouping, Pagination,
   .catch(Notify.errorHandler);
 
   /**
-   * Column defintions; specify the configuration and behaviour for each column
+   * Column definitions; specify the configuration and behaviour for each column
    * in the journal grid. Initialise each of the journal utilities,
    * providing them access to the journal
    * configuration options :
    *    sorting = new Sorting(vm.gridOptions);
    *    pagination = new Pagination(vm.gridOptions, Transactions.list.data);
    *    grouping = new Grouping(vm.gridOptions);
-   *    filtering  = new Filtering();
+   *    filtering  = new Filtering(vm.gridOptions);
    *
    * Note:
    *   1. Setting the grouping priority without sorting by the same column will
    *      cause unexpected behaviour (splitting up of groups) when sorting
    *      other columns. This can be avoided by setting default sort and group.
-   *
-   *   2. To avoid some unmeaningfull column, we are using column such as project_name,
-   *      account_number, ... instead of project_id, account_id so the request to fetch data
-   *      should be a join to get expected columns name
-   *
-   *  @todo using ui-grid internazation if necessary for columns label
-  */
-
-  columns = [
-    { field : 'uuid', displayName : 'TABLE.COLUMNS.ID', headerCellFilter: 'translate' },
-    { field : 'project_name', displayName : 'TABLE.COLUMNS.PROJECT', headerCellFilter: 'translate' },
-    { field : 'period_end', displayName : 'TABLE.COLUMNS.PERIOD', headerCellFilter: 'translate' , cellTemplate : 'partials/templates/bhPeriod.tmpl.html' },
+   */
+  var columns = [
+    { field : 'uuid', displayName : 'TABLE.COLUMNS.ID', headerCellFilter: 'translate', visible: false },
+    { field : 'project_name', displayName : 'TABLE.COLUMNS.PROJECT', headerCellFilter: 'translate', visible: false },
+    { field : 'period_end', displayName : 'TABLE.COLUMNS.PERIOD', headerCellFilter: 'translate' , cellTemplate : 'partials/templates/bhPeriod.tmpl.html', visible: false },
     { field : 'trans_date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate' , cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
@@ -104,27 +90,25 @@ function JournalController(Transactions, Journal, Sorting, Grouping, Pagination,
     },
 
     // @todo this should be formatted as a currency icon vs. an ID
-    { field : 'currency_id', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate' },
+    { field : 'currency_id', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate', visible: false },
 
-    // @todo this should be formatted showing the debitor/credior
-    { field : 'entity_uuid', displayName : 'TABLE.COLUMNS.RECIPIENT', headerCellFilter: 'translate' },
-    { field : 'entity_type', displayName : 'TABLE.COLUMNS.RECIPIENT_TYPE', headerCellFilter: 'translate' },
+    // @todo this should be formatted showing the debtor/creditor
+    { field : 'entity_uuid', displayName : 'TABLE.COLUMNS.RECIPIENT', headerCellFilter: 'translate', visible: false },
+    { field : 'entity_type', displayName : 'TABLE.COLUMNS.RECIPIENT_TYPE', headerCellFilter: 'translate', visible: false },
 
-    { field : 'reference_uuid', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-    { field : 'record_uuid', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate' },
-    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate' },
+    { field : 'reference_uuid', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate', visible: false },
+    { field : 'record_uuid', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: false },
+    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false },
 
     // @fixme this field should not come from the database as 'cc'
-    { field : 'cc_id', displayName : 'TABLE.COLUMNS.COST_CENTER', headerCellFilter: 'translate' },
-    { field : 'pc_id', displayName : 'TABLE.COLUMNS.PROFIT_CENTER', headerCellFilter: 'translate' }
+    { field : 'cc_id', displayName : 'TABLE.COLUMNS.COST_CENTER', headerCellFilter: 'translate', visible: false },
+    { field : 'pc_id', displayName : 'TABLE.COLUMNS.PROFIT_CENTER', headerCellFilter: 'translate', visible: false }
   ];
 
   vm.gridOptions.columnDefs = columns;
 
-
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
-    columnConfig.openColumnConfigModal();
+    Config.openColumnConfigModal(columnConfig);
   };
-
 }

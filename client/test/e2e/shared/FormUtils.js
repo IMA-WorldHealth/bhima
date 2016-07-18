@@ -16,6 +16,7 @@ const buttons =  {
   cancel: function cancel() { return $('[data-method="cancel"]').click(); },
   clear: function clear() { return $('[data-method="clear"]').click(); },
   back: function back() { return $('[data-method="back"]').click(); },
+  reset : function reset() { return $('[data-method="reset"]').click(); },
   delete: function delet() { return $('[data-method="delete"]').click(); }
 };
 
