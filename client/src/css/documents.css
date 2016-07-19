@@ -62,6 +62,7 @@
 /* ========================== Avatar thumbnail ============================= */
 .avatar-thumbnail {
   text-align: center;
+  height: 200px;
   border : 1px solid #ccc;
 }
 .avatar-thumbnail > .crop > img {
