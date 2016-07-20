@@ -158,7 +158,7 @@ BEGIN
 
   -- update relevant fields to represent final costs
   UPDATE invoice SET cost = total_subsidised_cost
-  WHERE uuid = uuid;
+  WHERE invoice.uuid = uuid;
 
   -- return information relevant to the final calculated and written bill
   select items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;  
