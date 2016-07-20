@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('JournalController', JournalController);
 
 JournalController.$inject = [
-  'TransactionService', 'JournalService', 'GridSortingService', 'GridGroupingService',
-  'JournalPaginationService', 'JournalFilteringService', 'GridColumnService', 'JournalConfigService',
+  'JournalService', 'GridSortingService', 'GridGroupingService',
+  'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'NotifyService'
 ];
 
@@ -28,26 +28,25 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Transactions, Journal, Sorting, Grouping, Pagination, Filtering, Columns, Config, Notify) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Notify) {
   var vm = this;
 
   // Journal utilities
-  var sorting, grouping, pagination, filtering, columnConfig;
+  var sorting, grouping, filtering, columnConfig;
+
+  /** @const the cache alias for this controller */
+  var cacheKey = 'Journal';
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {};
 
-  // Initialise each of the journal utilites, providing them access to the journal
+  // Initialise each of the journal utilities, providing them access to the journal
   // configuration options
-  sorting    = new Sorting(vm.gridOptions);
-  filtering  = new Filtering(vm.gridOptions);
-  grouping   = new Grouping(vm.gridOptions);
-  pagination = new Pagination(vm.gridOptions, Transactions.list.data);
-  columnConfig = new Columns(vm.gridOptions, 'JournalColumns');
-
-  console.log('Grouping:', grouping);
-
+  sorting   = new Sorting(vm.gridOptions);
+  filtering = new Filtering(vm.gridOptions, cacheKey);
+  grouping  = new Grouping(vm.gridOptions);
+  columnConfig = new Columns(vm.gridOptions, cacheKey);
 
   // Populate the grid with posting journal data
   Journal.read()
@@ -62,7 +61,6 @@ function JournalController(Transactions, Journal, Sorting, Grouping, Pagination,
    * providing them access to the journal
    * configuration options :
    *    sorting = new Sorting(vm.gridOptions);
-   *    pagination = new Pagination(vm.gridOptions, Transactions.list.data);
    *    grouping = new Grouping(vm.gridOptions);
    *    filtering  = new Filtering(vm.gridOptions);
    *

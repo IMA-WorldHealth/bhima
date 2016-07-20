@@ -1,23 +1,23 @@
 angular.module('bhima.services')
-.service('JournalPaginationService', JournalPaginationService);
+.service('GridPaginationService', GridPaginationService);
 
-JournalPaginationService.$inject = [];
+GridPaginationService.$inject = [];
 
 /**
- * Posting Journal Pagination Service
+ * Grid Pagination Service
  *
- * This service contains pagination configuration and utility methods for the
- * posting journal module. Custom pagination rules and functions are defined to
- * ensure that transactions are respected across pages (when grouped).
+ * This service contains pagination configuration and utility methods for any
+ * ui-grids. Custom pagination rules and functions are defined to ensure that
+ * transactions are respected across pages (when grouped).
  *
  * @todo  Discuss if pagination should be encapsulated by TransactionService; this
- *        logic could be incorperation whilst loading transactions however this may result
+ *        logic could be incorporated whilst loading transactions however this may result
  *        in too much responsibility.
  *
  * @todo  Discuss if pagination is required in an accountants workflow - how many
  *        rows are we expecting etc.
  */
-function JournalPaginationService() {
+function GridPaginationService() {
   var service = this;
 
   /**
@@ -103,7 +103,7 @@ function JournalPaginationService() {
         // bind external pagination method
         gridApi.pagination.on.paginationChanged(null, fetchPage);
 
-        // Settup initial page
+        // Setup initial page
         fetchPage(paginationOptions.pageNumber);
       }
 

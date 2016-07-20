@@ -26,7 +26,6 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     // used to render amounts in the aggregate columns
     // TODO - this should render the currency from the row set.
     customTreeAggregationFinalizerFn : function amountRenderer(aggregation) {
-      //console.log('aggregation:', aggregation);
       aggregation.rendered = $currency(aggregation.value, currencyId);
     },
 
