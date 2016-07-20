@@ -19,7 +19,7 @@
     <br>
 
     <div class="form-group"
-      ng-class="{ 'has-error' : $ctrl.errorMessage, 'has-warning' : $ctrl.warningMessage }">
+      ng-class="{ 'has-error' : $ctrl.hasErrorMessage, 'has-warning' : $ctrl.hasWarningMessage }">
       <label class="control-label">{{ $ctrl.message }}</label>
       <input class="form-control" ng-model="$ctrl.text" ng-change="$ctrl.validate(ConfirmDeletion)" type="text" name="text" required>
       <div class="help-block" ng-show="ConfirmDeletion.$submitted">

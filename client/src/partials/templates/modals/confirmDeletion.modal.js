@@ -10,24 +10,33 @@ ConfirmDeletionModalController.$inject = ['$uibModalInstance', '$translate', 'da
  * the deletion process
  */
 function ConfirmDeletionModalController (Instance, $translate, Data) {
-  var vm = this;
+  var vm = this, message;
 
-  // Global objects
-  vm.pattern = Data.pattern;
-  vm.elementName = Data.elementName;
-
-  // expose functions to the view
-  vm.close = close;
+  // expose to the view
   vm.accept = accept;
+  vm.close = Instance.close;
 
-  // startup
+  // initial setup
   startup();
 
-  /** actions at start */
+  /** startup */
   function startup() {
 
+    // Global objects
+    vm.pattern = Data.pattern;
+    vm.elementName = Data.elementName;
+
+    // make sure the modal isn't accidentally called with empty values
+    if (!Data.pattern || !Data.elementName) {
+      throw new Error(
+        'ConfirmDeletionModal requires both a pattern and an element name to be defined, but received:' +
+        'data.pattern = ' + Data.pattern + ' ' +
+        'data.elementName = ' + Data.elementName
+      );
+    }
+
     // Confirmation name message
-    var message = $translate.instant('FORM.DIALOGS.PLEASE_TYPE_TEXT');
+    message = $translate.instant('FORM.DIALOGS.PLEASE_TYPE_TEXT');
 
     vm.message = Data.elementName ?
       message.replace('%ELEMENT%', Data.elementName) :
@@ -39,15 +48,10 @@ function ConfirmDeletionModalController (Instance, $translate, Data) {
     return pattern && text === pattern;
   }
 
-  /** close the modal instance*/
-  function close() {
-    Instance.close();
-  }
-
   /** validation message */
   function validate(form) {
-    vm.errorMessage = form.text.$invalid && form.$submitted;
-    vm.warningMessage = form.text.$valid && form.$submitted && vm.noCorrespondancy;
+    vm.hasErrorMessage = form.text.$invalid && form.$submitted;
+    vm.hasWarningMessage = form.text.$valid && form.$submitted && vm.noCorrespondancy;
   }
 
   /** accept the action */
