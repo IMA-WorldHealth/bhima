@@ -261,7 +261,13 @@
       "UPDATE"                : "Mettre à jour"
     },
     "DIALOGS": {
-      "CONFIRM_DELETE" : "Confirmez vous la suppression ?"
+      "CONFIRM_DELETE"         : "Confirmez vous la suppression ?",
+      "CANNOT_UNDONE_DELETION" : "Cette action NE POURRA PAS ETRE ANNULER, la suppression sera definitive. Vous devez etre sure que vous voulez vraiment effectuer cette operation",
+      "NO_CORRESPONDANCY"      : "Aucun %ELEMENT% n'a le nom ",
+      "PLEASE_TYPE_TEXT"       : "Veuillez taper le nom de %ELEMENT% pour confirmer ",
+      "PLEASE_READ"            : "Vous risquez de perdre des donnees importantes si vous ne lisez pas ce message!",
+      "SURE_CONTINUE"          : "Etes-vous ABSOLUMENT sure ?",
+      "UNDERSTAND_ACTION"      : "J'ACCEPTE les consequences de cette action"
     },
     "ERRORS": {
       "CONNECTION"         : "Erreur de connexion",
@@ -273,7 +279,7 @@
       "MISSING_CASHBOX_ID" : "Caisse non definie",
       "MISSING_DEBTOR_ID"  : "Identifiant Debiteur manquant",
       "RECORD_ERROR"       : "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)",
-      "REQUIRED"           : "Cette valeur est requis."
+      "REQUIRED"           : "Cette valeur est requise."
     },
     "INFOS": {
       "BY"                   : "Par",
