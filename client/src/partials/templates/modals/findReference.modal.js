@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 FindReferenceModalController.$inject = [
   '$uibModalInstance', 'DebtorService',
-  'CreditorService', 'VoucherService', 'JournalFilteringService', 'entity'
+  'CreditorService', 'VoucherService', 'GridFilteringService', 'entity'
 ];
 
 /**
@@ -46,7 +46,6 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
   var filtering  = new Filtering(vm.gridOptions);
 
   vm.gridOptions.multiSelect     = false;
-  vm.gridOptions.enableFiltering = true;
   vm.gridOptions.onRegisterApi   = onRegisterApi;
 
   function onRegisterApi(gridApi) {

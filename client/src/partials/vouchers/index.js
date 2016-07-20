@@ -4,24 +4,26 @@ angular.module('bhima.controllers')
 // dependencies injection
 VoucherController.$inject = [
   'VoucherService', '$translate', 'NotifyService',
-  'JournalFilteringService', 'uiGridGroupingConstants',
+  'GridFilteringService', 'uiGridGroupingConstants',
   'uiGridConstants', 'ModalService', 'DateService', 'LanguageService'
 ];
 
 /**
  * Vouchers Records Controllers
- * This controller is responsible for display all vouchers
- * which are in the voucher table
+ *
+ * @description
+ * This controller is responsible for display all vouchers which are in the
+ * voucher table.
  */
 function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, Languages) {
   var vm = this;
 
-  /** gobal variables */
+  /* global variables */
   vm.filterEnabled = false;
   vm.gridOptions = {};
   vm.gridApi = {};
 
-  /** paths in the headercrumb */
+  /* paths in the headercrumb */
   vm.bcPaths = [
     { label : 'TREE.FINANCE' },
     { label : 'TREE.VOUCHER_REGISTRY' }
@@ -52,41 +54,40 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   // grid default options
   vm.gridOptions.appScopeProvider = vm;
   vm.gridOptions.enableFiltering  = vm.filterEnabled;
-  vm.gridOptions.columnDefs       =
-    [
-      { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate',
+  vm.gridOptions.columnDefs       = [
+    { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate',
+      groupingShowAggregationMenu: false
+    },
+    { field : 'type_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
+      sort: { priority: 0, direction : 'asc' },
+      grouping: { groupPriority: 0},
+      cellTemplate: 'partials/templates/grid/voucherType.tmpl.html',
+      treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
+      customTreeAggregationFinalizerFn: typeAggregation,
+      groupingShowAggregationMenu: false
+    },
+    { field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate',
+      cellFilter : 'date:"mediumDate"',
+      filter : { condition : filtering.byDate },
+      customTreeAggregationFinalizerFn: timeAggregation,
+      groupingShowAggregationMenu: false
+    },
+    { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate',
+      groupingShowAggregationMenu: false
+    },
+    { field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
+      treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
         groupingShowAggregationMenu: false
-      },
-      { field : 'type_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
-        sort: { priority: 0, direction : 'asc' },
-        grouping: { groupPriority: 0},
-        cellTemplate: 'partials/templates/grid/voucherType.tmpl.html',
-        treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-        customTreeAggregationFinalizerFn: typeAggregation,
-        groupingShowAggregationMenu: false
-      },
-      { field : 'date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate',
-        cellFilter : 'date:"mediumDate"',
-        filter : { condition : filtering.byDate },
-        customTreeAggregationFinalizerFn: timeAggregation,
-        groupingShowAggregationMenu: false
-      },
-      { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate',
-        groupingShowAggregationMenu: false
-      },
-      { field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
-        treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-          groupingShowAggregationMenu: false
-      },
-      { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate',
-        groupingShowAggregationMenu: false
-      },
-      { field : 'action', displayName : '...',
-        cellTemplate: 'partials/templates/grid/linkFilePDF.tmpl.html',
-        enableFiltering: false,
-        enableColumnMenu: false
-      }
-    ];
+    },
+    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate',
+      groupingShowAggregationMenu: false
+    },
+    { field : 'action', displayName : '...',
+      cellTemplate: 'partials/templates/grid/linkFilePDF.tmpl.html',
+      enableFiltering: false,
+      enableColumnMenu: false
+    }
+  ];
 
   // register API
   vm.gridOptions.onRegisterApi = onRegisterApi;
@@ -107,7 +108,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   // Grid Aggregation
   function typeAggregation(aggregation) {
     var type = getType(aggregation.groupVal);
-    aggregation.rendered = type ? $translate.instant(type.text) : $translate.instant('FORM.LABELS.UNDEFINED');
+    aggregation.rendered = $translate.instant(type ? type.text : 'FORM.LABELS.UNDEFINED');
   }
 
   // Time Aggregation
@@ -176,5 +177,4 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     })
     .catch(Notify.errorHandler);
   }
-
 }

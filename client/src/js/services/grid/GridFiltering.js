@@ -15,6 +15,8 @@ function GridFilteringService(AppCache, uiGridConstants) {
   var serviceKey = '-Filtering';
 
   function GridFiltering(gridOptions, cacheKey) {
+    var cacheGridApi = gridOptions.onRegisterApi;
+
     this.gridOptions = gridOptions;
 
     var cache = this.cache = AppCache(cacheKey + serviceKey);
@@ -25,6 +27,11 @@ function GridFilteringService(AppCache, uiGridConstants) {
 
     gridOptions.onRegisterApi = function onRegisterApi(api) {
       this.gridApi = api;
+
+      if (angular.isDefined(cacheGridApi)) {
+        cacheGridApi(api);
+      }
+
     }.bind(this);
   }
 

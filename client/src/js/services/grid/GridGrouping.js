@@ -132,6 +132,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     // global grouping configuration
     gridOptions.enableGroupHeaderSelection = true;
     gridOptions.treeRowHeaderAlwaysVisible = false;
+    gridOptions.showTreeExpandNoChildren = false;
 
     // register for the grid API
     gridOptions.onRegisterApi = function onRegisterApi(api) {
@@ -141,7 +142,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
       configureDefaultAggregators(gridOptions.columnDefs);
 
       // configure default grouping
-      configureDefaultGroupingOptions(api);
+      configureDefaultGroupingOptions.call(this, api);
 
       // call the method that had previously been registered to request the grid's API
       if (angular.isDefined(cacheGridApi)) {
