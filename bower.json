@@ -36,7 +36,7 @@
     "Chart.js": "^2.1.6",
     "angular-chart.js": "~1.0.0-beta1",
     "components-font-awesome": "^4.6.3",
-    "angular-ui-select": "^0.18.0"
+    "angular-ui-select": "^0.17.1"
   },
   "devDependencies": {
     "angular-mocks": "^1.5.6"

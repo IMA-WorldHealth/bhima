@@ -62,6 +62,9 @@ var paths = {
       'client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
       'client/vendor/angular-ui-grid/ui-grid.min.js',
 
+      // Angular UI Select
+      'client/vendor/angular-ui-select/dist/select.js',
+
       // ChartJS
       'client/vendor/Chart.js/dist/Chart.bundle.min.js',
       'client/vendor/angular-chart.js/dist/angular-chart.min.js',
