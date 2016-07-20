@@ -83,8 +83,10 @@ function GridSortingService() {
     gridOptions.enableSorting = true;
 
     // // Register for the Grid API
-    gridOptions.onRegisterApi = function (api) {
+    gridOptions.onRegisterApi = function onRegisterApi(api) {
       this.gridApi = api;
+
+      this.transactionIds = transactionIds.bind(this);
 
       // Call the method that had previously been registered to request the grid's API
       if (angular.isDefined(cacheGridApi)) {
@@ -92,7 +94,6 @@ function GridSortingService() {
       }
     }.bind(this);
 
-    this.transactionIds = transactionIds.bind(this);
   }
 
   return GridSorting;

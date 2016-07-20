@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('JournalController', JournalController);
 
 JournalController.$inject = [
-  'TransactionService', 'JournalService', 'GridSortingService', 'JournalGroupingService',
+  'TransactionService', 'JournalService', 'GridSortingService', 'GridGroupingService',
   'JournalPaginationService', 'JournalFilteringService', 'GridColumnService', 'JournalConfigService',
   'NotifyService'
 ];
@@ -31,7 +31,7 @@ JournalController.$inject = [
 function JournalController(Transactions, Journal, Sorting, Grouping, Pagination, Filtering, Columns, Config, Notify) {
   var vm = this;
 
-  // Journal utilites
+  // Journal utilities
   var sorting, grouping, pagination, filtering, columnConfig;
 
   // gridOptions is bound to the UI Grid and used to configure many of the
@@ -45,6 +45,8 @@ function JournalController(Transactions, Journal, Sorting, Grouping, Pagination,
   grouping   = new Grouping(vm.gridOptions);
   pagination = new Pagination(vm.gridOptions, Transactions.list.data);
   columnConfig = new Columns(vm.gridOptions, 'JournalColumns');
+
+  console.log('Grouping:', grouping);
 
 
   // Populate the grid with posting journal data
@@ -83,7 +85,6 @@ function JournalController(Transactions, Journal, Sorting, Grouping, Pagination,
       headerCellFilter: 'translate' ,
       sortingAlgorithm : sorting.transactionIds,
       sort : { priority : 0, direction : 'asc' },
-      grouping : { groupPriority : 0 }
     },
 
     // @todo this should be formatted as a currency icon vs. an ID

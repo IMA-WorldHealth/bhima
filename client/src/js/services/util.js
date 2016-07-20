@@ -77,4 +77,18 @@ function UtilService($filter, moment) {
   service.getMomentAge = function (date, duration) {
     return duration ? moment().diff(date, duration) : moment().diff(date);
   };
+
+  // ensure that a function is only called once.
+  service.once = function once(fn, context) {
+    var result;
+
+    return function () {
+
+      if (!fn) { return; }
+
+      // call the function only once
+      result = fn.apply(context || this, arguments);
+      fn = null;
+    };
+  };
 }
