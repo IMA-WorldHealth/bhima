@@ -1,14 +1,14 @@
 <div class="panel panel-default">
 
-  <div class="flex-heading">
-    <span class="flex-heading-label">
+  <div class="panel-heading" style="display: flex; justify-content: space-between;">
+    <span>
       <i class="fa fa-object-group"></i>
       {{ 'INVENTORY.LIST_GROUP' | translate }} ({{ GroupsCtrl.groupList.length }})
     </span>
 
     <button
       ng-click="GroupsCtrl.addInventoryGroup()"
-      class="pull-right btn btn-primary btn-sm"
+      class="pull-right btn btn-default btn-sm"
       type="button" data-create-group>
       <i class="fa fa-plus"></i> {{ 'FORM.LABELS.ADD' | translate }}
     </button>
