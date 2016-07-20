@@ -44,6 +44,16 @@
 .grid-full-height {
   width:  100%;
 
+  /* this is full height minus the header crumb*/
+  height : calc(100vh - 65px);
+}
+
+/*
+  This sets the grid to full height of the window minus the util bar.
+*/
+.grid-util-full-height {
+  width:  100%;
+
   /* this is full height minus the header crumb and util bar */
   height : calc(100vh - 65px - 35px);
 }
