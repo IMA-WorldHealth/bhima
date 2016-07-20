@@ -84,4 +84,7 @@
   height: 300px;
   overflow: hidden;
 }
+.upload-thumbnail img {
+  width: 100%;
+}
 /* ========================== End Upload thumbnail ========================== */

@@ -6,7 +6,7 @@
 
 <div class="flex-util">
   <label class="label label-primary" ng-show="VoucherCtrl.dateInterval">
-    <i class="fa fa-filter"></i> 
+    <i class="fa fa-filter"></i>
     {{ VoucherCtrl.dateInterval.dateFrom | date: 'dd MMM yyyy' }} -
     {{ VoucherCtrl.dateInterval.dateTo | date: 'dd MMM yyyy' }}
   </label>
@@ -17,7 +17,7 @@
 
     <!-- vouchers list  -->
     <div id="voucherGrid"
-      class="grid-full-height"
+      class="grid-util-full-height"
       ui-grid="VoucherCtrl.gridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns

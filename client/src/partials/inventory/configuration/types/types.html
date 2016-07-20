@@ -1,13 +1,13 @@
 <div class="panel panel-default">
-  <div class="flex-heading">
-    <span class="flex-heading-label">
+  <div class="panel-heading" style="display: flex; justify-content: space-between;">
+    <span>
       <i class="fa fa-list"></i>
       {{ 'INVENTORY.LIST_TYPE' | translate }} ({{ TypesCtrl.typeList.length }})
     </span>
 
     <button
       ng-click="TypesCtrl.addInventoryType()"
-      class="btn btn-primary btn-sm"
+      class="btn btn-default btn-sm"
       type="button"
       data-create-type><i class="fa fa-plus"></i>
     </button>
