@@ -143,7 +143,7 @@ function lowercase(value) {
 function sum(array, column, ponderation) {
   ponderation = typeof(ponderation) === 'string' ? ponderation : null;
 
-  if (!array || (array && !array.length)) return;
+  if (!array || (array && !array.length)) { return; }
 
   return array.reduce(function (a, b) {
     return ponderation ? b[column] * b[ponderation] + a : b[column] + a ;
