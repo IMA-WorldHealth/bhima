@@ -52,11 +52,11 @@ exports.lookupInvoice = lookupInvoice;
 function list(req, res, next) {
 
   let invoiceListQuery =
-    `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost, 
+    `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames,
-      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id, 
+      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id,
       invoice.date, invoice.is_distributable
-    FROM invoice 
+    FROM invoice
       LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
       JOIN service ON service.id = invoice.service_id
       LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
@@ -81,17 +81,20 @@ function list(req, res, next) {
  * @param {string} invoiceUuid - the uuid of the invoice in question
  */
 function lookupInvoice(invoiceUuid) {
-  let record;
+  let record = {};
   let buid = db.bid(invoiceUuid);
 
   let invoiceDetailQuery =
-    `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference, invoice.cost,
-      BUID(invoice.debtor_uuid) AS debtor_uuid, CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,
-      BUID(patient.uuid) as patient_uuid, invoice.user_id, invoice.date, invoice.is_distributable, voucher.type_id
+    `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference,
+      invoice.cost, invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
+      CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,   BUID(patient.uuid) as patient_uuid,
+      invoice.user_id, invoice.date, invoice.is_distributable, voucher.type_id,
+      CONCAT(user.first, ' - ', user.last) AS responsible
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
     LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
     JOIN project ON project.id = invoice.project_id
+    JOIN user ON user.id = invoice.user_id
     WHERE invoice.uuid = ?`;
 
   let invoiceItemsQuery =
@@ -100,6 +103,18 @@ function lookupInvoice(invoiceUuid) {
     FROM invoice_item
     LEFT JOIN inventory ON invoice_item.inventory_uuid = inventory.uuid
     WHERE invoice_uuid = ?`;
+
+  let invoiceBillingQuery =
+    `SELECT invoice_billing_service.value, billing_service.label, billing_service.value AS billing_value
+    FROM invoice_billing_service
+    JOIN billing_service ON billing_service.id = invoice_billing_service.billing_service_id
+    WHERE invoice_billing_service.invoice_uuid = ?`;
+
+  let invoiceSubsidyQuery =
+    `SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value  
+    FROM invoice_subsidy
+    JOIN subsidy ON subsidy.id = invoice_subsidy.subsidy_id
+    WHERE invoice_subsidy.invoice_uuid = ?`;
 
   return db.exec(invoiceDetailQuery, [buid])
     .then(function (rows) {
@@ -113,6 +128,17 @@ function lookupInvoice(invoiceUuid) {
     })
     .then(function (rows) {
       record.items = rows;
+
+      return db.exec(invoiceBillingQuery, [buid]);
+    })
+    .then(function (rows) {
+      record.billing = rows;
+
+      return db.exec(invoiceSubsidyQuery, [buid]);
+    })
+    .then(function (rows) {
+      record.subsidy = rows;
+
       return record;
     });
 }

@@ -14,7 +14,9 @@
  *
  * @returns {Function} handlebars render method, accepting a template and a context
 */
+
 'use strict';
+
 const exphbs = require('express-handlebars');
 const numeral = require('numeral');
 
@@ -29,13 +31,14 @@ const formatFranc = '0.0,00 FC';
 const hbs = exphbs.create({
   helpers : {
     translate : translate,
-    multiple : multiply,
+    multiply : multiply,
     currency : currency,
     date : date,
     timestamp : timestamp,
     age : age,
     uppercase : uppercase,
-    lowercase : lowercase
+    lowercase : lowercase,
+    sum : sum
   }
 });
 
@@ -128,6 +131,23 @@ function uppercase(value) {
 
 function lowercase(value) {
   return String(value).toLowerCase();
+}
+
+/**
+ * @function sum
+ * @desc Summation by column
+ * @param {array} array The array of element
+ * @param {string} column The column of summation
+ * @return {number} the summation
+ */
+function sum(array, column, ponderation) {
+  ponderation = typeof(ponderation) === 'string' ? ponderation : null;
+
+  if (!array || (array && !array.length)) return;
+
+  return array.reduce(function (a, b) {
+    return ponderation ? b[column] * b[ponderation] + a : b[column] + a ;
+  }, 0);
 }
 
 module.exports  = hbs;
