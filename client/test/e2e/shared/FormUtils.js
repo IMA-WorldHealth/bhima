@@ -159,6 +159,23 @@ module.exports = {
     return option.click();
   },
 
+  /**
+   * @method hasText
+   *
+   * @description
+   * Asserts that an element matching the locator contains the text passed
+   * in as a parameter.
+   *
+   * @param {Object} locator - a protractor web-driver locator
+   * @param {String} text - the text to search for within the element.
+   */
+  hasText: function hasText(locator, text) {
+    expect(
+      element(locator).getText(),
+      `Expected locator ${locator.toString()} to contain "${text}".`
+    ).to.eventually.equal(text);
+  },
+
 
   // bind commonly used form buttons  These require specific data tags to be
   // leveraged effectively.

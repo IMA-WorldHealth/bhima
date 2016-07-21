@@ -28,12 +28,12 @@ describe('Patient Record', function () {
   before(() => helpers.navigate(url));
 
   it('downloads and correctly displays patient information', function () {
-    expect(element(by.id('name')).getText()).to.eventually.equal(patient.name);
-    expect(element(by.id('patientID')).getText()).to.eventually.equal(patient.id);
-    expect(element(by.id('hospitalNo')).getText()).to.eventually.equal(patient.hospital_no);
-    expect(element(by.id('age')).getText()).to.eventually.equal(patient.age);
-    expect(element(by.id('gender')).getText()).to.eventually.equal(patient.gender);
-  });
+    FU.hasText(by.id('name'), patient.name);
+    FU.hasText(by.id('patientID'), patient.id);
+    FU.hasText(by.id('hospitalNo'), patient.hospital_no);
+    FU.hasText(by.id('age'), patient.age);
+    FU.hasText(by.id('gender'), patient.gender);
+ });
 
   // sub unit tests - these can be moved to individual files if they become too large
   it('displays the correct number of check ins', function () {
@@ -49,60 +49,61 @@ describe('Patient Record', function () {
   });
 
   // Upload patient documents
-  it('Upload a valid image as document', () => {
+  it('upload a valid image as document', () => {
     let title = '[e2e] New Image As Document';
-    let fileToUpload = 'client/test/e2e/shared/upload/file.jpg';
-    let absolutePath = path.resolve(fileToUpload);
+    let fileToUpload = '../shared/upload/file.jpg';
+    let absolutePath = path.resolve(__dirname, fileToUpload);
 
     element(by.css('[data-document-action="add"]')).click();
-    element(by.model('$ctrl.title')).clear().sendKeys(title);
-    element(by.css('input[type="file"]')).sendKeys(absolutePath);
+
+    FU.input('$ctrl.title', title);
+    FU.input('$ctrl.file', absolutePath);
 
     FU.modal.submit();
     components.notification.hasSuccess();
   });
 
-  // Upload patient documents
-  it('Upload a PDF document', () => {
+  // upload patient documents
+  it('upload a PDF document', () => {
     let title = '[e2e] New Document';
-    let fileToUpload = 'client/test/e2e/shared/upload/file.pdf';
-    let absolutePath = path.resolve(fileToUpload);
+    let fileToUpload = '../shared/upload/file.pdf';
+    let absolutePath = path.resolve(__dirname, fileToUpload);
 
     element(by.css('[data-document-action="add"]')).click();
-    element(by.model('$ctrl.title')).clear().sendKeys(title);
-    element(by.css('input[type="file"]')).sendKeys(absolutePath);
+    FU.input('$ctrl.title', title);
+    FU.input('$ctrl.file', absolutePath);
 
     FU.modal.submit();
     components.notification.hasSuccess();
   });
 
   // test invalid file upload
-  it('Cannot upload invalid document', () => {
+  it('cannot upload invalid document', () => {
     let title = '[e2e] Invalid Document';
-    let fileToUpload = 'client/test/e2e/shared/upload/file.virus';
+    let fileToUpload = '../shared/upload/file.virus';
     let absolutePath = path.resolve(fileToUpload);
 
     element(by.css('[data-document-action="add"]')).click();
-    element(by.model('$ctrl.title')).clear().sendKeys(title);
-    element(by.css('input[type="file"]')).sendKeys(absolutePath);
-    element(by.css('[data-error-message]')).isPresent();
 
+    FU.input('$ctrl.title', title);
+    FU.input('$ctrl.file', absolutePath);
+
+    FU.exists(by.css('[data-error-message]'), true);
     FU.modal.close();
   });
 
   // change document view
-  it('Change document view', () => {
+  it('change document view', () => {
     element(by.css('[data-document-action="thumbnail"]')).click();
-    element(by.css('[data-view="thumbnail"]')).isPresent();
+    FU.exists(by.css('[data-view="thumbnail"]'), true);
 
     element(by.css('[data-document-action="list"]')).click();
-    element(by.css('[data-view="list"]')).isPresent();
+    FU.exists(by.css('[data-view="list"]'), true);
   });
 
   it('informs the user that there is no patient for invalid request', function () {
     helpers.navigate(root.concat('invalidid'));
     components.notification.hasError();
-    expect(element(by.id('nopatient')).isPresent()).to.eventually.equal(true);
+    FU.exists(by.id('nopatient'), true);
   });
-
 });
