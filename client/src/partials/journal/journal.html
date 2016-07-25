@@ -32,6 +32,14 @@
           ui-grid-move-columns
           ui-grid-selection
           ui-grid-grouping>
+
+          <bh-grid-loading-indicator
+            loading-state="JournalCtrl.loading"
+            empty-state="JournalCtrl.gridOptions.data.length === 0"
+            error-state="JournalCtrl.hasError"
+          >
+        </bh-grid-loading-indicator>
+
         </div>
       </div>
     </div>

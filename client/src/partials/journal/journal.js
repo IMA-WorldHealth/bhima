@@ -8,11 +8,12 @@ JournalController.$inject = [
 ];
 
 /**
- * Posting Journal Controller
+ * @module JournalController
  *
+ * @description
  * This controller is responsible for initialising the core client side posting
  * journal, binding the UI Grid component with services that facilitate all
- * operations required by an accounted.
+ * operations required by an accountant.
  * - Displaying transactions in an easy to find and review format
  *   - Search for transactions
  *   - Filter transactions
@@ -59,9 +60,11 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   .then(function (records) {
     vm.gridOptions.data = records;
   })
-  .catch(Notify.errorHandler)
+  .catch(function (error) {
+    vm.hasError = true;
+    Notify.errorHandler(error);
+  })
   .finally(toggleLoadingIndicator);
-
 
   /**
    * @function toggleLoadingIndicator
@@ -73,7 +76,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
-
 
   /**
    * Column definitions; specify the configuration and behaviour for each column
