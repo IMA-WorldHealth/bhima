@@ -1,47 +1,82 @@
 angular.module('bhima.services')
-.service('TransactionService', TransactionService);
+  .service('TransactionService', TransactionService);
 
-// @todo uuid is currently only used for creating mock transactions - this should
-// be removed as soon as this is no longer needed
-TransactionService.$inject = ['$http', 'Store', 'uuid'];
+TransactionService.$inject = ['util'];
 
 /**
  * Transactions Service
  *
- * This service is responsible for fetching transactions from the posting journal
+ * This service is responsible for fetching transactions from a datasource
  * and providing a number of utility methods for manipulating and framing this
- * information. Data can be served in one go or using a custom pagination view
- * serving transactions in pages.
- *
- * @todo Discuss as a team how pages would be most logically demonstrated with
- * respect to transactions
- * @todo Update service to use the latest posting journal interface/ API
+ * information.
  */
-function TransactionService($http, Store, uuid) {
-  var service = this;
-  var source = '/journal';
-
-  // model to contain transactions - storing this information in a store
-  // allows us to perform gets/puts based on a transactions UUID locally
-  var transactionModel = new Store({
-    identifier : 'uuid'
-  });
-
-  transactionModel.setData([]);
+function TransactionService(util) {
 
   /**
-   * Fetch transactions from the server based on the controllers requirements,
-   * updates local transaction model.
-   *
-   * @todo This method currently just fetches all transactions - factor
-   * in pagination logic
+   * @constructor
    */
-  function fetchTransactions() {
-    return $http.get(source)
-      .then(function (response) {
-        var transactions = response.data;
+  function Transactions(gridOptions) {
+    this.gridOptions = gridOptions;
+    var cachedGridApiCallback = gridOptions.onRegisterApi;
 
-        transactions.map(function (item) { return transactionModel.post(item); });
-      });
+    util.before(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
+      this.gridApi = api;
+    }.bind(this));
   }
+
+  /**
+   * @method validate
+   *
+   * @description
+   * A method to validate individual transactions by their record uuid.  If no records
+   * uuids are passed in, it will validate all transactions in the grid.
+   */
+  Transactions.prototype.validate = function validate() {
+    // noop()
+  };
+
+  /**
+   * @method highlight
+   *
+   * @description
+   * This function sets the _hasHighlight property on all transactions matching
+   * the provided uuid.  This should
+   */
+  Transactions.prototype.highlight = function highlight(uuid, unsetPreviousHighlight) {
+    // noop()
+  };
+
+  /**
+   * @method edit
+   *
+   * @description
+   * This function sets the _editing property on all transactions matching the
+   * provided uuid.
+   */
+  Transactions.prototype.edit = function edit(uuid) {
+    // noop()
+  };
+
+  /**
+   * @method save
+   *
+   * @description
+   * This function unsets the _editing property on all transactions matching the
+   * provided uuid.  It validates the transaction before any other action is taken.
+   */
+  Transactions.prototype.save = function save(uuid) {
+    // noop()
+  };
+
+  /**
+   * @method print
+   *
+   * @description
+   * This function allows the controller to print the selected uuid.
+   */
+  Transactions.prototype.print = function print(uuid) {
+    // noop()
+  };
+
+  return Transactions;
 }

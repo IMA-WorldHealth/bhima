@@ -78,7 +78,16 @@ function UtilService($filter, moment) {
     return duration ? moment().diff(date, duration) : moment().diff(date);
   };
 
-  // ensure that a function is only called once.
+  /**
+   * @function once
+   *
+   * @description
+   * Ensure that a function only executes once.  Allows the caller to pass in a
+   * context to inject into `this`.
+   *
+   * @param {Function} fn - the function to only call once.
+   * @param {Object} context - sets the `this` variable in the called function
+   */
   service.once = function once(fn, context) {
     var result;
 
@@ -89,6 +98,74 @@ function UtilService($filter, moment) {
       // call the function only once
       result = fn.apply(context || this, arguments);
       fn = null;
+
+      return result;
+    };
+  };
+
+
+  /**
+   * @function before
+   *
+   * @description
+   * A function to intercept a method call on an object or class and call a
+   * function with the intercepted parameters
+   *
+   * @param {Object|Function} target - the target class or object.
+   * @param {String} methodName - the method name to intercept
+   * @param {Function} fn - the function to call before the intercepted method
+   *
+   * @example
+   * var o = { x : function (a, b, c) { console.log('I got:', a, b, c); };
+   * before(o, 'x', function (a, b, c) { console.log('Before ', a,b,c); });
+   * o(1,2,3)
+   * // this will log 'Before 123)' and then 'I got:1,2,3'
+   */
+  service.before = function before(target, methodName, fn) {
+    var callback = target[methodName] || angular.noop;
+
+    // replace with the injected function
+    target[methodName] = function intercept() {
+
+      // call the function before the cached callback
+      var result = fn.apply(this, arguments);
+
+      // fire the callback
+      callback.apply(this, arguments);
+
+      return result;
+    };
+  };
+
+  /**
+   * @function after
+   *
+   * @description
+   * A sister method to the `before()` function.  A function to intercept a
+   * method call on an object or class and call a function with the intercepted
+   * parameters after the original method call.
+   *
+   * @param {Object|Function} target - the target class or object.
+   * @param {String} methodName - the method name to intercept
+   * @param {Function} fn - the function to call after the intercepted method
+   *
+   * @example
+   * var o = { x : function (a, b, c) { console.log('I got:', a, b, c); };
+   * after(o, 'x', function (a, b, c) { console.log('after', a,b,c); });
+   * o(1,2,3)
+   * // this will log 'After 123' and then 'I got:1,2,3'
+   */
+  service.after = function after(target, methodName, fn) {
+    var callback = target[methodName] || angular.noop;
+
+    // replace with the injected function
+    target[methodName] = function intercept() {
+
+      // fire the callback
+      callback.apply(this, arguments);
+
+      // call the function after the cached callback
+      return fn.apply(this, arguments);
     };
   };
 }

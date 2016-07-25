@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
-  'SessionService', 'NotifyService'
+  'SessionService', 'NotifyService', 'TransactionService'
 ];
 
 /**
@@ -28,11 +28,11 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions) {
   var vm = this;
 
   // Journal utilities
-  var sorting, grouping, filtering, columnConfig;
+  var sorting, grouping, filtering, columnConfig, transactions;
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
@@ -52,13 +52,28 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   filtering = new Filtering(vm.gridOptions, cacheKey);
   grouping  = new Grouping(vm.gridOptions);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
+  transactions = new Transactions(vm.gridOptions);
 
-  // Populate the grid with posting journal data
+  vm.loading = true;
   Journal.read()
-  .then(function (list) {
-    vm.gridOptions.data = list;
+  .then(function (records) {
+    vm.gridOptions.data = records;
   })
-  .catch(Notify.errorHandler);
+  .catch(Notify.errorHandler)
+  .finally(toggleLoadingIndicator);
+
+
+  /**
+   * @function toggleLoadingIndicator
+   *
+   * @description
+   * Toggles the grid's loading indicator to eliminate the flash when rendering
+   * transactions and allow a better UX for slow loads.
+   */
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
+  }
+
 
   /**
    * Column definitions; specify the configuration and behaviour for each column
@@ -81,8 +96,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     { field : 'trans_date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate' , cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
-    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate', cellTemplate : '/partials/journal/templates/debit_equiv.html' },
-    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate', cellTemplate : '/partials/journal/templates/credit_equiv.html' },
+    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate', cellTemplate : '/partials/journal/templates/debit_equiv.cell.html' },
+    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate', cellTemplate : '/partials/journal/templates/credit_equiv.cell.html' },
     { field : 'trans_id',
       displayName : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter: 'translate' ,
