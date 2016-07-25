@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('ReceiptService', ReceiptService);
 
-ReceiptService.$inject = ['$http', 'util'];
+ReceiptService.$inject = ['$http', 'util' , 'LanguageService'];
 
 /**
  * Receipts Service
@@ -18,7 +18,7 @@ ReceiptService.$inject = ['$http', 'util'];
  *
  * @module services/receipts/ReciptService
  */
-function ReceiptService($http, util) {
+function ReceiptService($http, util, Language) {
   var service = this;
   var renderers = {
     PDF  : 'pdf',
@@ -52,6 +52,11 @@ function ReceiptService($http, util) {
    */
   function fetch(target, options) {
     var responseType = null;
+
+    options = options || {};
+
+    // set the session language
+    options.lang = Language.key;
 
     if (options.renderer === renderers.PDF) {
       responseType = 'arraybuffer';
