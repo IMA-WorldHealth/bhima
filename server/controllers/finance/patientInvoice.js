@@ -111,7 +111,7 @@ function lookupInvoice(invoiceUuid) {
     WHERE invoice_billing_service.invoice_uuid = ?`;
 
   let invoiceSubsidyQuery =
-    `SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value  
+    `SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value
     FROM invoice_subsidy
     JOIN subsidy ON subsidy.id = invoice_subsidy.subsidy_id
     WHERE invoice_subsidy.invoice_uuid = ?`;
@@ -138,7 +138,7 @@ function lookupInvoice(invoiceUuid) {
     })
     .then(function (rows) {
       record.subsidy = rows;
-
+      
       return record;
     });
 }

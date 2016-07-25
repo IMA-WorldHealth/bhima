@@ -1,5 +1,6 @@
 <head>
-  <title>{{translate "TREE.PATIENT_INVOICE"}} {{reference}}</title>
+  <meta charset="UTF-8">
+  <title>{{translate "TREE.PATIENT_INVOICE" lang}} {{reference}}</title>
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
 </head>
 
@@ -8,61 +9,78 @@
   <!-- header  -->
   <div class="row">
     <!-- enterprise  -->
-    <div class="col-xs-6">
-      <h3 style="margin:2px;">{{ enterprise.name }} ({{ enterprise.abbr}})</h3>
-      <span>{{translate 'FORM.LABELS.PHONE'}}: {{ enterprise.phone }}</span><br>
-      <span>{{translate 'FORM.LABELS.EMAIL'}}: {{ enterprise.email }}</span><br>
+    <div class="col-xs-4">
+      <h3 style="margin:2px;">{{ enterprise.name }}</h3>
+      <p style="margin:2px;">
+        {{translate 'FORM.LABELS.PROJECT' lang}}: {{ project.name }}<br>
+        {{translate 'FORM.LABELS.PHONE' lang}}: {{ enterprise.phone }}<br>
+        {{translate 'FORM.LABELS.EMAIL' lang}}: {{ enterprise.email }}<br>
+        {{translate 'FORM.LABELS.ADDRESS' lang}}: {{ enterprise.location }}
+      </p>
     </div>
 
-    <!-- invoice  -->
-    <div class="col-xs-3 col-xs-offset-3">
-      <div class="text-right" style="border:1px solid #ccc; padding-right: 10px;">
-        <h2 style="margin:2px;">{{translate "TREE.PATIENT_INVOICE"}}</h2>
-        <h3 style="margin:2px;">{{recipient.first_name}} {{recipient.middle_name}} {{recipient.last_name}}</h3>
-        <p>{{translate "TABLE.COLUMNS.TRANSACTION_ID"}} : {{reference}}</p>
+    <!-- invoice details  -->
+    <div class="col-xs-4">
+      <div class="text-right">
+        <h3 style="margin:2px;"><b>{{translate "FORM.LABELS.SALE_ID" lang}} : {{reference}}</b></h3>
+        <h3 style="margin:2px;">{{date date}}</h3>
       </div>
     </div>
+
+    <div class="col-xs-4">
+      <div class="text-right">
+        <h3 style="margin:2px;">{{translate "TREE.PATIENT_INVOICE" lang}}</h3>
+        <p style="margin:2px;">
+          {{recipient.first_name}} {{recipient.middle_name}} {{recipient.last_name}}<br>
+          {{translate 'FORM.LABELS.PATIENT_ID' lang}}: {{recipient.reference}}<br>
+          {{translate 'FORM.LABELS.GROUPS_DEBTOR_TITLE' lang}}: {{recipient.debtor_group_name}}<br>
+          {{translate 'FORM.LABELS.HOSPITAL_FILE_NR' lang}}: {{recipient.hospital_no}}
+        </p>
+      </div>
+    </div>
+
   </div>
 
   <!-- invoice  -->
   <h4>
-    <span style="border-radius: 100%; background-color: #ccc; display:inline-block; padding: 5px;">1</span>
-    {{translate 'FORM.LABELS.INVOICE'}}
+    <u>{{translate 'FORM.LABELS.INVOICE' lang}}</u>
   </h4>
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
-        <th>{{translate 'FORM.LABELS.CLIENT'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
-        <th class="text-right">{{translate 'TABLE.COLUMNS.AMOUNT'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.BY'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.REFERENCE' lang}}</th>
+        <th>{{translate 'TABLE.COLUMNS.DATE' lang}}</th>
+        <th>{{translate 'FORM.LABELS.CLIENT' lang}}</th>
+        <th>{{translate 'TABLE.COLUMNS.DESCRIPTION' lang}}</th>
+        <th class="text-right">{{translate 'TABLE.COLUMNS.AMOUNT' lang}}</th>
+        <th class="text-right">{{translate 'TABLE.COLUMNS.BY' lang}}</th>
       </tr>
     </thead>
     <tbody>
       <tr>
+        <td>{{reference}}</td>
         <td>{{date date}}</td>
         <td>{{debtor_name}}</td>
         <td>{{description}}</td>
         <td class="text-right">{{currency cost}}</td>
-        <td>{{responsible}}</td>
+        <td class="text-right">{{responsible}}</td>
       </tr>
     </tbody>
   </table>
 
   <!-- invoice details  -->
+  {{#if items.length}}
   <h4>
-    <span style="border-radius: 100%; background-color: #ccc; display:inline-block; padding: 5px;">2</span>
-    {{translate 'FORM.LABELS.INVOICES_DETAILS'}}
+    <u>{{translate 'FORM.LABELS.INVOICES_DETAILS' lang}}</u>
   </h4>
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th>{{translate 'TABLE.COLUMNS.CODE'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
-        <th class="text-right">{{translate 'TABLE.COLUMNS.UNIT_PRICE'}}</th>
-        <th class="text-right">{{translate 'TABLE.COLUMNS.QUANTITY'}}</th>
-        <th class="text-right">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.CODE' lang}}</th>
+        <th>{{translate 'TABLE.COLUMNS.DESCRIPTION' lang}}</th>
+        <th class="text-right">{{translate 'TABLE.COLUMNS.UNIT_PRICE' lang}}</th>
+        <th class="text-right">{{translate 'TABLE.COLUMNS.QUANTITY' lang}}</th>
+        <th class="text-right">{{translate 'TABLE.COLUMNS.TOTAL' lang}}</th>
       </tr>
     </thead>
     <tbody>
@@ -76,38 +94,82 @@
       </tr>
       {{/each}}
       <tr>
-        <td colspan="4" class="text-right">{{translate 'TABLE.COLUMNS.TOTAL'}}</td>
+        <td colspan="4" class="text-right">{{translate 'TABLE.COLUMNS.TOTAL' lang}}</td>
         <td class="text-right">{{currency (sum items 'transaction_price' 'quantity')}}</td>
       </tr>
     </tbody>
   </table>
+  {{/if}}
 
   <div class="row">
-    <div class="col-xs-5 col-xs-offset-7" >
+    <div class="col-xs-6 col-xs-offset-6" >
       <!-- billing service  -->
+      {{#if billing.length}}
       <h4>
-        <u>{{translate 'FORM.LABELS.BILLING_SERVICES'}}</u> :
+        <u>{{translate 'FORM.LABELS.BILLING_SERVICES' lang}}</u> :
       </h4>
-      <ul style="list-style: none; ">
+      <table style="width: 100%;">
         {{#each billing}}
-        <li>
-          + ({{this.label}} {{this.billing_value}}%
-          {{translate 'FORM.LABELS.OF'}}
-          {{currency (sum ../items 'transaction_price' 'quantity')}})= {{currency this.value}}
-        </li>
+        <tr>
+          <td class="text-right">
+            ({{this.label}} {{this.billing_value}}%
+            {{translate 'FORM.LABELS.OF' lang}}
+            {{currency (sum ../items 'transaction_price' 'quantity')}}) =
+          </td>
+          <td class="text-right">
+            +{{currency this.value}}
+          </td>
+        </tr>
         {{/each}}
-      </ul>
-
-      <br>
+        <tr style="font-weight: bold;">
+          <td class="text-right">{{translate 'FORM.LABELS.TOTAL' lang}} ({{translate 'FORM.LABELS.BILLING_SERVICES' lang}}) = </td>
+          <td class="text-right">+{{currency (sum billing 'value')}}</td>
+        </tr>
+      </table>
+      {{/if}}
 
       <!-- subsidies  -->
-      <h4>
-        <u>{{translate 'FORM.LABELS.SUBSIDIES'}}</u> ({{subsidy.length}}) : -{{currency (sum subsidy 'value')}}
-      </h4>
+      {{#if subsidy.length}}
+      <table style="width: 100%;">
+        <tr>
+          <td>
+            <h4><u>{{translate 'FORM.LABELS.SUBSIDIES' lang}}</u> ({{subsidy.length}}) :</h4>
+          </td>
+          <td class="text-right">
+            <b>-{{currency (sum subsidy 'value')}}</b>
+          </td>
+        </tr>
+      </table>
+      {{/if}}
 
+      <!-- general total  -->
+      <table style="width: 100%;">
+        <tr>
+          <td>
+            <h1>{{translate 'FORM.LABELS.TOTAL' lang}} : </h1>
+          </td>
+          <td class="text-right">
+            <h1><b>{{currency cost}}</b></h1>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h4>{{translate 'FORM.LABELS.SIGNATURE' lang}}</h4>
       <hr>
+    </div>
+  </div>
 
-      <h1>{{translate 'FORM.LABELS.TOTAL'}} : {{currency cost}}</h1>
+  <div class="row">
+    <div class="col-xs-6 text-left">
+      {{translate 'FORM.LABELS.SALE_RESPONSIBLE' lang}}
+    </div>
+    <div class="col-xs-6 text-right">
+      {{translate 'FORM.LABELS.CLIENT' lang}}
     </div>
   </div>
 

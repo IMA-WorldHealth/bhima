@@ -492,6 +492,8 @@
       "RESULT_ACCOUNT_SCT"     : "Section Compte de Résultat",
       "RETYPE"                 : "Retaper",
       "SALE"                   : "Vente",
+      "SALE_ID"                : "Vente ID",
+      "SALE_RESPONSIBLE"       : "Responsable des ventes",
       "SEARCH"                 : "Chercher",
       "SECOND_NAME"            : "Nom",
       "SECTOR"                 : "Secteur",

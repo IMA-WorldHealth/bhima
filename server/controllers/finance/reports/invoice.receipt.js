@@ -68,7 +68,11 @@ function build(req, res, next) {
   var invoiceUuid = req.params.uuid;
   var enterpriseId = req.session.enterprise.id;
 
-  var invoiceResponse = {};
+  var invoiceResponse = {
+    lang: req.query.lang,
+    project: req.session.project,
+    enterprise: req.session.enterprise
+  };
 
   var renderTarget = queryString.renderer || defaultRender;
   var renderer = supportedRenderers[renderTarget];
@@ -88,7 +92,7 @@ function build(req, res, next) {
       var recipientUuid = reportResult.patient_uuid;
       _.extend(invoiceResponse, reportResult);
 
-      return headerData(recipientUuid, enterpriseId);
+      return headerData(recipientUuid);
     })
     .then(function (headerResult) {
       _.extend(invoiceResponse, headerResult);
@@ -106,12 +110,11 @@ function build(req, res, next) {
 }
 
 // function headerData
-function headerData(patientUuid, enterpriseId) {
+function headerData(patientUuid) {
 
   /** @todo write utility method to map keys of request object to returned object */
   var headerRequests = {
-    recipient : Patients.lookupPatient(patientUuid),
-    enterprise : Enterprises.lookupEnterprise(enterpriseId)
+    recipient : Patients.lookupPatient(patientUuid)
   };
 
   return q.all(_.values(headerRequests))

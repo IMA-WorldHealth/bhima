@@ -492,6 +492,8 @@
       "RESULT_ACCOUNT_SCT"     : "Result Account section",
       "RETYPE"                 : "Retype",
       "SALE"                   : "Sale",
+      "SALE_ID"                : "Sale ID",
+      "SALE_RESPONSIBLE"       : "Sale Responsible",
       "SEARCH"                 : "Search",
       "SECOND_NAME"            : "Last Name",
       "SECTOR"                 : "Sector",
