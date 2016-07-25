@@ -56,7 +56,7 @@ function ReceiptService($http, util, Language) {
     options = options || {};
 
     // set the session language
-    options.lang = Language.key
+    options.lang = Language.key;
 
     if (options.renderer === renderers.PDF) {
       responseType = 'arraybuffer';

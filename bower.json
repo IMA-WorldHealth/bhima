@@ -15,10 +15,10 @@
     "src"
   ],
   "dependencies": {
-    "angular": "^1.5.6",
-    "angular-animate": "^1.5.6",
-    "angular-sanitize": "^1.5.6",
-    "angular-messages": "^1.5.6",
+    "angular": "1.5.7",
+    "angular-animate": "1.5.7",
+    "angular-sanitize": "1.5.7",
+    "angular-messages": "1.5.7",
     "angular-bootstrap": "^2.0.0",
     "angular-ui-router": "^0.2.18",
     "angular-ui-grid": "^3.1.1",
