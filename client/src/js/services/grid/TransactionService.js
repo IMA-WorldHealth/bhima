@@ -19,7 +19,7 @@ function TransactionService(util) {
     this.gridOptions = gridOptions;
     var cachedGridApiCallback = gridOptions.onRegisterApi;
 
-    util.before(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
+    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
     }.bind(this));
   }

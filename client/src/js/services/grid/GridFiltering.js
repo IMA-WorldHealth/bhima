@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('GridFilteringService', GridFilteringService);
+  .service('GridFilteringService', GridFilteringService);
 
-GridFilteringService.$inject = ['appcache', 'uiGridConstants'];
+GridFilteringService.$inject = ['appcache', 'uiGridConstants', 'util'];
 
 /**
  * Grid Filter Service
@@ -9,14 +9,12 @@ GridFilteringService.$inject = ['appcache', 'uiGridConstants'];
  * This service is responsible for defining the global configuration for
  * filtering for ui-grids.
  */
-function GridFilteringService(AppCache, uiGridConstants) {
+function GridFilteringService(AppCache, uiGridConstants, util) {
 
   /** @const service key */
   var serviceKey = '-Filtering';
 
   function GridFiltering(gridOptions, cacheKey) {
-    var cacheGridApi = gridOptions.onRegisterApi;
-
     this.gridOptions = gridOptions;
 
     var cache = this.cache = AppCache(cacheKey + serviceKey);
@@ -25,14 +23,10 @@ function GridFilteringService(AppCache, uiGridConstants) {
     cache.enableFiltering = cache.enableFiltering || true;
     gridOptions.enableFiltering = cache.enableFiltering;
 
-    gridOptions.onRegisterApi = function onRegisterApi(api) {
+    // bind the grid API to the service
+    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
-
-      if (angular.isDefined(cacheGridApi)) {
-        cacheGridApi(api);
-      }
-
-    }.bind(this);
+    }.bind(this));
   }
 
   /**
