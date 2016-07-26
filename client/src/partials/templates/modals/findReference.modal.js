@@ -38,10 +38,9 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
   vm.cancel  = cancel;
   vm.refresh = refresh;
 
-  /** Grid configurations */
+  /* ======================= Grid configurations ============================ */
   vm.gridOptions = {};
 
-  /** grid utilities */
   var filtering  = new Filtering(vm.gridOptions);
 
   vm.gridOptions.multiSelect     = false;
@@ -55,16 +54,12 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
   function rowSelectionCallback(row) {
     vm.selectedRow = row.entity;
   }
-  /** End grid configuration */
+  /* ======================= End Grid configurations ======================== */
 
   // startup the modal
   startup();
 
   function referencePatientInvoice() {
-    /**
-    * @fixme the balance value is not correct for the document references
-    * The correct value is the amount of the invoice in the receipt
-    */
     Invoices.read()
     .then(function (list) {
       var costTemplate =
