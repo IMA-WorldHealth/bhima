@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
 .controller('JournalController', JournalController);
 
 JournalController.$inject = [
-  'TransactionService', 'JournalService', 'JournalSortingService', 'JournalGroupingService',
-  'JournalPaginationService', 'JournalFilteringService', 'GridColumnService', 'JournalConfigService',
-  'NotifyService'
+  'JournalService', 'GridSortingService', 'GridGroupingService',
+  'GridFilteringService', 'GridColumnService', 'JournalConfigService',
+  'SessionService', 'NotifyService'
 ];
 
 /**
@@ -18,37 +18,40 @@ JournalController.$inject = [
  *   - Filter transactions
  *   - Group by transactions to show aggregates
  *   - Sort transactions
- *   - Show or Hide columns
+ *   - Show or hide columns
  *
  * - (Super user) Edit and update transactions
  * - Post one or more transactions to the general ledger to confirm they are complete
  *   - Tun trial balance validation on transactions
  *
- * @todo Propose design for services plugging in and configuring aspects of the grid
- * @todo Develop a mock transaction service to provide example data to test with
- * @todo Popoulate models/test/data.sql with test transactions data
  * @todo Propose utility bar view design
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Transactions, Journal, Sorting, Grouping, Pagination, Filtering, Columns, Config, Notify) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify) {
   var vm = this;
 
-  // Journal utilites
-  var sorting, grouping, pagination, filtering, columnConfig;
+  // Journal utilities
+  var sorting, grouping, filtering, columnConfig;
+
+  /** @const the cache alias for this controller */
+  var cacheKey = 'Journal';
+
+  vm.enterprise = Session.enterprise;
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
-  vm.gridOptions = {};
+  vm.gridOptions = {
+    enableColumnMenus : false,
+    appScopeProvider : vm
+  };
 
-  // Initialise each of the journal utilites, providing them access to the journal
+  // Initialise each of the journal utilities, providing them access to the journal
   // configuration options
-  sorting    = new Sorting(vm.gridOptions);
-  filtering  = new Filtering(vm.gridOptions);
-  grouping   = new Grouping(vm.gridOptions);
-  pagination = new Pagination(vm.gridOptions, Transactions.list.data);
-  columnConfig = new Columns(vm.gridOptions, 'JournalColumns');
-
+  sorting   = new Sorting(vm.gridOptions);
+  filtering = new Filtering(vm.gridOptions, cacheKey);
+  grouping  = new Grouping(vm.gridOptions);
+  columnConfig = new Columns(vm.gridOptions, cacheKey);
 
   // Populate the grid with posting journal data
   Journal.read()
@@ -63,7 +66,6 @@ function JournalController(Transactions, Journal, Sorting, Grouping, Pagination,
    * providing them access to the journal
    * configuration options :
    *    sorting = new Sorting(vm.gridOptions);
-   *    pagination = new Pagination(vm.gridOptions, Transactions.list.data);
    *    grouping = new Grouping(vm.gridOptions);
    *    filtering  = new Filtering(vm.gridOptions);
    *
@@ -79,14 +81,13 @@ function JournalController(Transactions, Journal, Sorting, Grouping, Pagination,
     { field : 'trans_date', displayName : 'TABLE.COLUMNS.DATE', headerCellFilter: 'translate' , cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
-    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate'  },
-    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate' },
+    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate', cellTemplate : '/partials/journal/templates/debit_equiv.html' },
+    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate', cellTemplate : '/partials/journal/templates/credit_equiv.html' },
     { field : 'trans_id',
       displayName : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter: 'translate' ,
       sortingAlgorithm : sorting.transactionIds,
       sort : { priority : 0, direction : 'asc' },
-      grouping : { groupPriority : 0 }
     },
 
     // @todo this should be formatted as a currency icon vs. an ID
@@ -98,11 +99,7 @@ function JournalController(Transactions, Journal, Sorting, Grouping, Pagination,
 
     { field : 'reference_uuid', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate', visible: false },
     { field : 'record_uuid', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: false },
-    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false },
-
-    // @fixme this field should not come from the database as 'cc'
-    { field : 'cc_id', displayName : 'TABLE.COLUMNS.COST_CENTER', headerCellFilter: 'translate', visible: false },
-    { field : 'pc_id', displayName : 'TABLE.COLUMNS.PROFIT_CENTER', headerCellFilter: 'translate', visible: false }
+    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false }
   ];
 
   vm.gridOptions.columnDefs = columns;

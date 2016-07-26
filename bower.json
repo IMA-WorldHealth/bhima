@@ -21,7 +21,7 @@
     "angular-messages": "1.5.7",
     "angular-bootstrap": "^2.0.0",
     "angular-ui-router": "^0.2.18",
-    "angular-ui-grid": "^3.1.1",
+    "angular-ui-grid": "^3.2.1",
     "angular-translate": "^2.11.0",
     "angular-translate-loader-static-files": "^2.11.0",
     "angular-translate-loader-url": "^2.11.0",

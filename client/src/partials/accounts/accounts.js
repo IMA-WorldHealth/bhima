@@ -8,7 +8,7 @@ AccountsController.$inject = [
 /**
  * @module AccountsController
  *
- * @todo there are performance issues on this page - this should be because of  row/ cell templates, investigate
+ * @todo there are performance issues on this page - this should be because of  row/cell templates, investigate
  *
  * @description
  * This controller is responsible for configuring the Accounts Management UI grid

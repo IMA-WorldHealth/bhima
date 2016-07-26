@@ -21,6 +21,9 @@ GridColumnService.$inject = [
  */
 function GridColumnService(uiGridConstants, AppCache, Modal) {
 
+  /** @const cache alias for this service */
+  var serviceKey = '-Columns';
+
   /**
    * @method cacheDefaultColumnVisibility
    *
@@ -82,7 +85,7 @@ function GridColumnService(uiGridConstants, AppCache, Modal) {
   function Columns(gridOptions, cacheKey) {
 
     // set up local storage for selected grid columns
-    this.cache = AppCache(cacheKey);
+    this.cache = AppCache(cacheKey + serviceKey);
 
     // bind access to the gridOptions
     this.gridOptions = gridOptions;
