@@ -42,19 +42,19 @@
     "dotenv": "^2.0.0",
     "express": "^4.13.3",
     "express-handlebars": "^3.0.0",
-    "express-session": "^1.11.3",
+    "express-session": "^1.14.0",
     "helmet": "^2.1.2",
     "ioredis": "^2.2.0",
     "lodash": "^4.14.1",
     "mkdirp": "^0.5.1",
-    "moment": "^2.13.0",
+    "moment": "^2.14.1",
     "morgan": "^1.6.1",
     "multer": "^1.1.0",
     "mysql": "^2.9.0",
     "node-uuid": "^1.4.7",
     "numeral": "^1.5.3",
     "q": "~1.4.1",
-    "stream-to-promise": "^2.1.1",
+    "stream-to-promise": "^2.2.0",
     "winston": "^2.1.1",
     "wkhtmltopdf": "^0.3.3"
   },
@@ -74,15 +74,21 @@
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
     "jshint": "^2.9.2",
-    "karma": "^1.1.1",
+    "karma": "^1.1.2",
     "karma-chai": "^0.1.0",
     "karma-chai-spies": "^0.1.4",
     "karma-chrome-launcher": "^1.0.1",
     "karma-mocha": "^1.1.0",
     "karma-ng-html2js-preprocessor": "^1.0.0",
+<<<<<<< 3eae206db64aeefa9e19dd335cab9be2d8e06969
     "mocha": "^3.0.0",
     "protractor": "^4.0.2",
     "rimraf": "^2.4.3"
+=======
+    "mocha": "^2.5.3",
+    "protractor": "^3.1.1",
+    "rimraf": "^2.5.4"
+>>>>>>> deps(pkg): version bump most greenkeeper packages
   },
   "homepage": "https://github.com/IMA-WorldHealth/bhima-2.X#readme",
   "directories": {
