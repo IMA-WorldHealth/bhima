@@ -1,0 +1,12 @@
+<div class="ui-grid-cell-contents">
+
+  <span ng-if="row.groupHeader">
+    <a href ng-if="!row._editing" ng-click="grid.appScope.transactions.edit(row)">
+      <i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
+    </a>
+
+    <a href ng-if="row._editing" style="color:#fff" ng-click="grid.appScope.transactions.save()">
+      <i class="fa fa-save"></i> {{ "FORM.BUTTONS.SAVE" | translate }}
+    </a>
+  </span>
+</div>

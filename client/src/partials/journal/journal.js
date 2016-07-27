@@ -45,7 +45,11 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.gridOptions = {
     enableColumnMenus : false,
     authenticateEdits : true,
-    appScopeProvider : vm
+    appScopeProvider : vm,
+    rowTemplate: '/partials/journal/templates/transaction.row.html',
+    cellEditableCondition: function ($scope) {
+      return $scope.row._editing;
+    }
   };
 
   // Initialise each of the journal utilities, providing them access to the journal
@@ -57,16 +61,20 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   transactions = new Transactions(vm.gridOptions);
   editors = new Editors(vm.gridOptions);
 
+  window.transactions = transactions;
+  vm.transactions = transactions;
+
   vm.loading = true;
   Journal.read()
-  .then(function (records) {
-    vm.gridOptions.data = records;
-  })
-  .catch(function (error) {
-    vm.hasError = true;
-    Notify.errorHandler(error);
-  })
-  .finally(toggleLoadingIndicator);
+    .then(function (records) {
+      vm.gridOptions.data = records;
+    })
+    .catch(function (error) {
+      vm.hasError = true;
+      Notify.errorHandler(error);
+    })
+    .finally(toggleLoadingIndicator);
+
 
   /**
    * @function toggleLoadingIndicator
@@ -127,7 +135,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
     { field : 'reference_uuid', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate', visible: false },
     { field : 'record_uuid', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: false },
-    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false, enableCellEdit: false }
+    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
+    { field : 'actions', displayName : '', headerCellFilter: 'translate', visible: true, enableCellEdit: false, cellTemplate: '/partials/journal/templates/actions.cell.html' }
   ];
 
   vm.gridOptions.columnDefs = columns;

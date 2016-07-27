@@ -2,7 +2,14 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-      <li class="title">{{ "POSTING_JOURNAL.TITLE" | translate }}</li>
+      <li class="title">
+        {{ "POSTING_JOURNAL.TITLE" | translate }}
+
+        <span class="badge badge-primary text-uppercase" ng-show="JournalCtrl.transactions.isEditing()">
+          <i class="fa fa-moon-o"></i>
+          Edit Mode
+        </span>
+      </li>
     </ol>
 
     <div class="toolbar">
