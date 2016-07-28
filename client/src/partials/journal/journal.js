@@ -118,7 +118,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       headerCellFilter: 'translate',
       sortingAlgorithm : sorting.transactionIds,
       sort : { priority : 0, direction : 'asc' },
-      enableCellEdit: false
+      enableCellEdit: false,
+      allowCellFocus: false
     },
 
     // @todo this should be formatted as a currency icon vs. an ID
@@ -131,7 +132,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     { field : 'reference_uuid', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate', visible: false },
     { field : 'record_uuid', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: false },
     { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
-    { field : 'actions', displayName : '', headerCellFilter: 'translate', visible: true, enableCellEdit: false, cellTemplate: '/partials/journal/templates/actions.cell.html' }
+    { field : 'actions', displayName : '', headerCellFilter: 'translate', visible: true, enableCellEdit: false, cellTemplate: '/partials/journal/templates/actions.cell.html', allowCellFocus: false }
   ];
 
   vm.gridOptions.columnDefs = columns;
