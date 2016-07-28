@@ -20,7 +20,8 @@ function GridFilteringService(AppCache, uiGridConstants, util) {
     var cache = this.cache = AppCache(cacheKey + serviceKey);
 
     // global filtering configuration
-    cache.enableFiltering = cache.enableFiltering || true;
+    // @FIXME(jniles): turned inline filtering off for the moment
+    cache.enableFiltering =  false;
     gridOptions.enableFiltering = cache.enableFiltering;
 
     // bind the grid API to the service
