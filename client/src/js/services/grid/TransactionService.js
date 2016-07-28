@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
-TransactionService.$inject = ['util', 'uiGridConstants'];
+TransactionService.$inject = ['util', 'uiGridConstants', 'bhConstants'];
 
 /**
  * Transactions Service
@@ -16,7 +16,11 @@ TransactionService.$inject = ['util', 'uiGridConstants'];
  * @requires util
  * @requires uiGridConstants
  */
-function TransactionService(util, uiGridConstants) {
+function TransactionService(util, uiGridConstants, bhConstants) {
+
+  var ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
+  var ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
+  var ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
 
   // convert arguments to an array
   function toArray(args) {
@@ -55,13 +59,13 @@ function TransactionService(util, uiGridConstants) {
    * @function cellEditableCondition
    *
    * @description
-   * Only allows rows to be edited if they have been marked by the _editing flag.
+   * Only allows rows to be edited if they have been marked by the ROW_EDIT_FLAG.
    * This should be bound to the cellEditableCondition of gridOptions.
    *
    * @private
    */
   function cellEditableCondition($scope) {
-    return $scope.row._editing;
+    return $scope.row[ROW_EDIT_FLAG];
   }
 
   /**
@@ -194,7 +198,7 @@ function TransactionService(util, uiGridConstants) {
    * @method highlight
    *
    * @description
-   * This function sets the _hasHighlight property on all transactions matching
+   * This function sets the ROW_HIGHLIGHT_FLAG property on all transactions matching
    * the provided uuid.  This is useful for scrolling transactions into view.
    *
    * @param {String} uuid - the record_uuid of the transaction to highlight.
@@ -203,15 +207,15 @@ function TransactionService(util, uiGridConstants) {
    */
   Transactions.prototype.highlight = function highlight(uuid, unsetPreviousHighlight) {
 
-    // remove the _editing property on all transactions
+    // remove the ROW_HIGHLIGHT_FLAG property on all transactions
     if (unsetPreviousHighlight) {
       this._highlights.forEach(function (uuid) {
-        setPropertyOnTransaction.call(this, uuid, '_hasHighlight', false);
+        setPropertyOnTransaction.call(this, uuid, ROW_HIGHLIGHT_FLAG, false);
       }.bind(this));
     }
 
     // set highlight on the provided transaction
-    setPropertyOnTransaction.call(this, uuid, '_hasHighlight', true);
+    setPropertyOnTransaction.call(this, uuid, ROW_HIGHLIGHT_FLAG, true);
     this._highlights.push(uuid);
   };
 
@@ -240,7 +244,7 @@ function TransactionService(util, uiGridConstants) {
    * @method edit
    *
    * @description
-   * This function sets the _editing property on all transactions matching the
+   * This function sets the ROW_EDIT_FLAG property on all transactions matching the
    * provided uuid.  It also scrolls the transaction into view if necessary.
    *
    * @param {String|Object} uuid - either a row or a record_uuid of the
@@ -256,7 +260,7 @@ function TransactionService(util, uiGridConstants) {
       uuid = getChildRecordUuid(uuid);
     }
 
-    setPropertyOnTransaction.call(this, uuid, '_editing', true);
+    setPropertyOnTransaction.call(this, uuid, ROW_EDIT_FLAG, true);
     this.scrollIntoView(uuid);
     this._edits.push(uuid);
   };
@@ -270,9 +274,9 @@ function TransactionService(util, uiGridConstants) {
   Transactions.prototype.save = function save() {
     // @TODO validate()
 
-    // remove the _editing property on all transactions
+    // remove the ROW_EDIT_FLAG property on all transactions
     this._edits.forEach(function (uuid) {
-      setPropertyOnTransaction.call(this, uuid, '_editing', false);
+      setPropertyOnTransaction.call(this, uuid, ROW_EDIT_FLAG, false);
     }.bind(this));
 
     // set the edits length to 0

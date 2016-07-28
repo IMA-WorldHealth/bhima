@@ -3,12 +3,12 @@
   class="ui-grid-cell"
   ng-class="{
     'ui-grid-row-header-cell': col.isRowHeader,
-    'transaction-highlight': row._hasHighlight,
-    'transaction-highlight-header': row._hasHighlight && row.groupHeader,
-    'transaction-edit': row._editing,
-    'transaction-edit-header': row._editing && row.groupHeader,
-    'transaction-invalid' : row._invalid,
-    'transaction-invalid-header': row._invalid && row.groupHeader
+    'transaction-highlight': row[grid.appScope.ROW_HIGHLIGHT_FLAG],
+    'transaction-highlight-header': row[grid.appScope.ROW_HIGHLIGHT_FLAG] && row.groupHeader,
+    'transaction-edit': row[grid.appScope.ROW_EDIT_FLAG],
+    'transaction-edit-header': row[grid.appScope.ROW_EDIT_FLAG] && row.groupHeader,
+    'transaction-invalid' : row[grid.appScope.ROW_INVALID_FLAG],
+    'transaction-invalid-header': row[grid.appScope.ROW_INVALID_FLAG] && row.groupHeader
   }"
   ui-grid-cell>
 </div>

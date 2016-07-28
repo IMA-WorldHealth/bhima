@@ -582,6 +582,11 @@ function constantConfig() {
     lengths : {
       maxTextLength : 1000
     },
+    transactions : {
+      ROW_EDIT_FLAG : '_edit',
+      ROW_HIGHLIGHT_FLAG : '_highlight',
+      ROW_INVALID_FLAG : '_invalid'
+    }
   };
 }
 

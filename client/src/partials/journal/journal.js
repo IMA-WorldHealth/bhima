@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
 JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
-  'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService'
+  'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
+  'bhConstants'
 ];
 
 /**
@@ -29,8 +30,13 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants) {
   var vm = this;
+
+  /** @constants */
+  vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
+  vm.ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
+  vm.ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
 
   // Journal utilities
   var sorting, grouping, filtering, columnConfig, transactions, editors;
