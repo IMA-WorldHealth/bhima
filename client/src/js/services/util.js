@@ -1,15 +1,17 @@
 angular.module('bhima.services')
 .service('util', UtilService);
 
-UtilService.$inject = ['$filter', 'moment' ];
+UtilService.$inject = ['moment' ];
 
 /**
  * @class util
  *
  * @description
  * Common utilities for the application
+ *
+ * @requires moment
  */
-function UtilService($filter, moment) {
+function UtilService(moment) {
   var service = this;
 
   service.unwrapHttpResponse = function unwrapHttpResponse(response) {

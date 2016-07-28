@@ -9,6 +9,12 @@ TransactionService.$inject = ['util', 'uiGridConstants'];
  * This service is responsible for fetching transactions from a datasource
  * and providing a number of utility methods for manipulating and framing this
  * information.
+ *
+ * NOTE: this requires that both cellNav and edit features are enabled on the
+ * ui-grid.
+ *
+ * @requires util
+ * @requires uiGridConstants
  */
 function TransactionService(util, uiGridConstants) {
 
@@ -21,7 +27,13 @@ function TransactionService(util, uiGridConstants) {
    * @function indexBy
    *
    * @description
-   * This function maps transaction row indexes to transaction record_uuids.
+   * Maps an array of objects to an object keyed by the particular property
+   * provided, mapping to indices in the array.  It's somewhat tied to ui-grid's
+   * implementation of rows entities.
+   *
+   * @param {Array} array - the array to index
+   * @param {String} property - the key to index the array's contents by.
+   * @returns {Object} - an object of value -> array indices
    *
    * @private
    */
@@ -40,6 +52,19 @@ function TransactionService(util, uiGridConstants) {
   }
 
   /**
+   * @function cellEditableCondition
+   *
+   * @description
+   * Only allows rows to be edited if they have been marked by the _editing flag.
+   * This should be bound to the cellEditableCondition of gridOptions.
+   *
+   * @private
+   */
+  function cellEditableCondition($scope) {
+    return $scope.row._editing;
+  }
+
+  /**
    * @constructor
    */
   function Transactions(gridOptions) {
@@ -52,6 +77,9 @@ function TransactionService(util, uiGridConstants) {
     // edited.
     this._highlights = [];
     this._edits = [];
+
+    gridOptions.cellEditableCondition = cellEditableCondition;
+    gridOptions.enableCellEditOnFocus = true;
 
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
@@ -114,7 +142,6 @@ function TransactionService(util, uiGridConstants) {
     var rows = this.getTransactionRows(uuid);
 
     // @TODO - custom logic to validate that debits/credits balance, etc
-
     return true;
   };
 
@@ -185,8 +212,15 @@ function TransactionService(util, uiGridConstants) {
 
     // set highlight on the provided transaction
     setPropertyOnTransaction.call(this, uuid, '_hasHighlight', true);
+    this._highlights.push(uuid);
   };
 
+  /**
+   * @method scrollIntoView
+   *
+   * @description
+   * Scrolls a transaction group into view by ensuring the last row is visible.
+   */
   Transactions.prototype.scrollIntoView = function scrollIntoView(uuid) {
     var rows = this.getTransactionRows(uuid);
     var lastRowInView = rows[rows.length - 1];
@@ -214,6 +248,8 @@ function TransactionService(util, uiGridConstants) {
    *   inferred from the child rows.
    */
   Transactions.prototype.edit = function edit(uuid) {
+
+    var api = this.gridApi;
 
     // if a row is passed in, resolve the row to the child record_uuid
     if (angular.isObject(uuid)) {

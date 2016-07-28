@@ -6,9 +6,16 @@
         {{ "POSTING_JOURNAL.TITLE" | translate }}
 
         <span class="badge badge-primary text-uppercase" ng-show="JournalCtrl.transactions.isEditing()">
-          <i class="fa fa-moon-o"></i>
+          <i class="fa fa-street-view"></i>
           Edit Mode
         </span>
+
+        <span class="badge badge-warning text-uppercase" ng-show="JournalCtrl.transactions._highlights.length > 0">
+          {{ JournalCtrl.transactions._highlights.length }}
+          <span ng-if="JournalCtrl.transactions._highlights.length == 1">Highlight</span>
+          <span ng-if="JournalCtrl.transactions._highlights.length > 1">Highlights</span>
+        </span>
+
       </li>
     </ol>
 
@@ -38,6 +45,7 @@
           ui-grid-resize-columns
           ui-grid-move-columns
           ui-grid-selection
+          ui-grid-cellNav
           ui-grid-edit
           ui-grid-grouping>
 

@@ -12,8 +12,8 @@ const FU = require('../shared/FormUtils');
 function JournalConfigurationModal() {
   'use strict';
 
-  const defaultVisibleColumnCount = 6;
-  const modifiedVisibleColumnCount = 2;
+  const defaultVisibleColumnCount = 7;
+  const modifiedVisibleColumnCount = 3;
   const page = new JournalCorePage();
 
   it('displays six visible columns by default', () => {
@@ -27,7 +27,7 @@ function JournalConfigurationModal() {
 
     FU.modal.submit();
 
-    page.expectHeaderColumns(['Debit', 'Credit']);
+    page.expectHeaderColumns(['Debit', 'Credit', '']);
   });
 
   it('remembers cached columns on browser refresh', () => {

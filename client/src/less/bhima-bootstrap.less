@@ -170,6 +170,12 @@ input[type=number] {-moz-appearance: textfield;}
   color: @btn-primary-color;
 }
 
+.transaction-edit-header  a {
+  color: @btn-primary-color;
+}
+
+/* highlight */
+
 .ui-grid-row .ui-grid-cell.transaction-highlight {
   border-color: @state-warning-border;
 }
@@ -178,4 +184,20 @@ input[type=number] {-moz-appearance: textfield;}
   background-color: @state-warning-bg;
   border-color: @state-warning-border;
   color: @state-warning-text;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-invalid {
+  background-color: @state-danger-bg;
+  border-color: @btn-danger-border;
+  color: @state-danger-text;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-invalid.transaction-invalid-header  {
+  background-color: @btn-danger-bg;
+  border-color: @btn-danger-border;
+  color: @btn-danger-color;
+}
+
+.transaction-invalid-header  a {
+  color: @btn-danger-color;
 }

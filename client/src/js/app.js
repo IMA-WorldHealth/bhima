@@ -3,7 +3,7 @@ var bhima = angular.module('bhima', [
   'bhima.components', 'bhima.routes', 'ui.bootstrap', 'pascalprecht.translate',
   'ngStorage', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
-  'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView',
+  'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
   'ui.grid.pagination', 'ui.grid.moveColumns', 'angularMoment', 'ngMessages',
   'growlNotifications', 'ngAnimate', 'ngSanitize'
 ]);

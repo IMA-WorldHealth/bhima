@@ -44,12 +44,8 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {
     enableColumnMenus : false,
-    authenticateEdits : true,
     appScopeProvider : vm,
     rowTemplate: '/partials/journal/templates/transaction.row.html',
-    cellEditableCondition: function ($scope) {
-      return $scope.row._editing;
-    }
   };
 
   // Initialise each of the journal utilities, providing them access to the journal
@@ -61,7 +57,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   transactions = new Transactions(vm.gridOptions);
   editors = new Editors(vm.gridOptions);
 
-  window.transactions = transactions;
   vm.transactions = transactions;
 
   vm.loading = true;

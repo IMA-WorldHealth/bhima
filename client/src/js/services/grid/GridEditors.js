@@ -17,17 +17,16 @@ function GridEditorService(util) {
       this.api = api;
 
       this.api.edit.on.beginCellEdit(null, function beginCellEdit(row, column) {
-        console.log('[external] beginCellEdit');
-        this.requestUserAuthentication();
+        // noop()
       }.bind(this));
 
       // notify that edits have been canceled
       this.api.edit.on.cancelCellEdit(null, function cancelCellEdit(row, column) {
-        console.log('[external] cancelCellEdit');
+        // noop()
       });
 
       this.api.edit.on.afterCellEdit(null, function afterCellEdit(row, column) {
-        console.log('[external] afterCellEdit');
+        // noop()
       });
 
     }.bind(this));
@@ -42,15 +41,6 @@ function GridEditorService(util) {
    * user's edit session.  It is currently unimplemented.
    */
   GridEditors.prototype.requestUserAuthentication = function requestUserAuthentication() {
-
-    // pretend we got authentication
-    //this.authenticated = true;
-
-    // if we are not authenticated, cancel the edit
-    if (!this.authenticated) {
-      this.api.edit.raise.cancelCellEdit();
-    }
-
     // noop()
   };
 

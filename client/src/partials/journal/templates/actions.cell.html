@@ -5,7 +5,7 @@
       <i class="fa fa-edit"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
     </a>
 
-    <a href ng-if="row._editing" style="color:#fff" ng-click="grid.appScope.transactions.save()">
+    <a href ng-if="row._editing" ng-click="grid.appScope.transactions.save()">
       <i class="fa fa-save"></i> {{ "FORM.BUTTONS.SAVE" | translate }}
     </a>
   </span>
