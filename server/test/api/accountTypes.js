@@ -8,7 +8,7 @@ describe('(/accounts/types) Account Types', function () {
     type : 'Test Account Type 1'
   };
 
-  var DELETABLE_ACCOUNT_TYPE_ID = 3;
+  var DELETABLE_ACCOUNT_TYPE_ID = 5;
   var FETCHABLE_ACCOUNT_TYPE_ID = 1;
   var numAccountTypes = 4;
 
@@ -61,8 +61,7 @@ describe('(/accounts/types) Account Types', function () {
       .catch(helpers.handler);
   });
 
-   /** @todo discuss business logic for deleting system account types */
-   it.skip('DELETE /accounts/types/:id deletes a account type', function () {
+  it('DELETE /accounts/types/:id deletes a account type', function () {
     return agent.delete('/accounts/types/' + DELETABLE_ACCOUNT_TYPE_ID)
       .then(function (res) {
         helpers.api.deleted(res);
