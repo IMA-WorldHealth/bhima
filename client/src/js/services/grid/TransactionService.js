@@ -281,6 +281,9 @@ function TransactionService(util, uiGridConstants, bhConstants) {
 
     // set the edits length to 0
     this._edits.length = 0;
+
+    // clear the focused element for a better UX
+    this.gridApi.grid.cellNav.clearFocus();
   };
 
   /**

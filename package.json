@@ -80,15 +80,9 @@
     "karma-chrome-launcher": "^1.0.1",
     "karma-mocha": "^1.1.0",
     "karma-ng-html2js-preprocessor": "^1.0.0",
-<<<<<<< 3eae206db64aeefa9e19dd335cab9be2d8e06969
     "mocha": "^3.0.0",
     "protractor": "^4.0.2",
-    "rimraf": "^2.4.3"
-=======
-    "mocha": "^2.5.3",
-    "protractor": "^3.1.1",
     "rimraf": "^2.5.4"
->>>>>>> deps(pkg): version bump most greenkeeper packages
   },
   "homepage": "https://github.com/IMA-WorldHealth/bhima-2.X#readme",
   "directories": {
