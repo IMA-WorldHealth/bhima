@@ -101,7 +101,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     return Modal.openInventoryListActions(request)
     .then(function (res) {
       startup();
-      Notify.success($translate.instant('FORM.INFOS.SAVE_SUCCESS'));
+      Notify.success($translate.instant('FORM.INFO.SAVE_SUCCESS'));
     })
     .catch(Notify.errorHandler);
   }
@@ -113,7 +113,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     return Modal.openInventoryListActions(request)
     .then(function (res) {
       startup();
-      Notify.success($translate.instant('FORM.INFOS.UPDATE_SUCCESS'));
+      Notify.success($translate.instant('FORM.INFO.UPDATE_SUCCESS'));
     })
     .catch(Notify.errorHandler);
   }

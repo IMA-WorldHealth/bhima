@@ -91,7 +91,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.enterprise_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
                 <select class="form-control" name="enterprise_id" ng-model="ProjectCtrl.project.enterprise_id"  ng-options="e.id as e.name for e in ProjectCtrl.enterprises | orderBy:'name'" required>
-                  <option value="" disabled>{{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }}</option>
+                  <option value="" disabled>{{ 'FORM.SELECT.ENTERPRISE' | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.enterprise_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -107,7 +107,7 @@
                   ng-model="ProjectCtrl.project.zs_id"
                   ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'"
                   required>
-                  <option value="" disabled>{{ 'FORM.SELECTS.SELECT_ZS' | translate }}</option>
+                  <option value="" disabled>{{ 'FORM.SELECT.ZS' | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.zs_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -169,7 +169,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.enterprise_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
                 <select class="form-control" name="enterprise_id" ng-model="ProjectCtrl.project.enterprise_id" ng-options="e.id as e.name for e in ProjectCtrl.enterprises | orderBy:'name'" required>
-                  <option value="" disabled>{{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }}</option>
+                  <option value="" disabled>{{ 'FORM.SELECT.ENTERPRISE' | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.enterprise_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -180,7 +180,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.zs_id.$invalid }">
                 <label class="control-label">{{ 'FORM.LABELS.ZS' | translate }}</label>
                 <select class="form-control" name="zs_id" ng-model="ProjectCtrl.project.zs_id" ng-options="zs.id as zs.format for zs in ProjectCtrl.zones | orderBy:'zone'" required>
-                  <option value="" disabled>{{ 'FORM.SELECTS.SELECT_ZS' | translate }}</option>
+                  <option value="" disabled>{{ 'FORM.SELECT.ZS' | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.zs_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

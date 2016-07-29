@@ -38,7 +38,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     Modal.openInventoryGroupActions(request)
     .then(function (res) {
       if (res.uuid) {
-        Notify.success('FORM.INFOS.CREATE_SUCCESS');
+        Notify.success('FORM.INFO.CREATE_SUCCESS');
       }
     })
     .then(startup)
@@ -51,7 +51,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
 
     Modal.openInventoryGroupActions(request)
     .then(function (res) {
-      Notify.success('FORM.INFOS.UPDATE_SUCCESS');
+      Notify.success('FORM.INFO.UPDATE_SUCCESS');
     })
     .then(startup)
     .catch(Notify.errorHandler);

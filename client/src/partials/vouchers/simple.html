@@ -29,7 +29,7 @@
                 <select class="form-control"
                   ng-model="SimpleVoucherCtrl.selectedType"
                   ng-change="SimpleVoucherCtrl.buildDescription()" required>
-                  <option value="" disabled>--- {{ 'FORM.SELECTS.SELECT_TRANSFER_TYPE' | translate }} ---</option>
+                  <option value="" disabled>--- {{ 'FORM.SELECT.TRANSFER_TYPE' | translate }} ---</option>
 
                   <!-- incomes  -->
                   <optgroup label="{{ 'VOUCHERS.SIMPLE.INCOME' | translate }}">
@@ -61,7 +61,7 @@
                   class="form-control"
                   name="description"
                   ng-model="SimpleVoucherCtrl.voucher.description"
-                  placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_DESCRIPTION' | translate }}"
+                  placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
                   ng-maxlength="SimpleVoucherCtrl.maxLength"
                   required>
                 </textarea>
@@ -79,7 +79,7 @@
                  <input
                    class="form-control"
                    name="fromAccount"
-                   placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
+                   placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
                    uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
                    typeahead-editable="false"
@@ -99,7 +99,7 @@
                  <input
                    class="form-control"
                    name="toAccount"
-                   placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
+                   placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
                    uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
                    typeahead-template-url="partials/templates/typeahead/accounts.html"
                    typeahead-editable="false"

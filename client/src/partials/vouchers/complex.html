@@ -26,7 +26,7 @@
                   class="form-control"
                   name="description"
                   ng-model="ComplexVoucherCtrl.voucher.description"
-                  placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_DESCRIPTION' | translate }}"
+                  placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
                   required>
                 </textarea>
                 <div class="help-block" ng-messages="ComplexVoucherForm.description.$error" ng-show="ComplexVoucherForm.$submitted">
@@ -125,7 +125,7 @@
                     <input
                       ng-model="row.account"
                       type="text"
-                      placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
+                      placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
                       uib-typeahead="account as account.hrlabel for account in ComplexVoucherCtrl.accounts | filter:$viewValue | limitTo:8 "
                       typeahead-editable="false"
                       typeahead-on-select="ComplexVoucherCtrl.checkRowValidity($index)"

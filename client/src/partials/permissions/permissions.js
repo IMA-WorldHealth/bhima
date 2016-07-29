@@ -169,9 +169,9 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
 
     var promise;
     var messages = {
-      'create' : 'FORM.INFOS.CREATE_SUCCESS',
-      'update' : 'FORM.INFOS.UPDATE_SUCCESS',
-      'permissions' : 'FORM.INFOS.UPDATE_SUCCESS'
+      'create' : 'FORM.INFO.CREATE_SUCCESS',
+      'update' : 'FORM.INFO.UPDATE_SUCCESS',
+      'permissions' : 'FORM.INFO.UPDATE_SUCCESS'
     };
 
     // decide how to submit data to the server based on state.

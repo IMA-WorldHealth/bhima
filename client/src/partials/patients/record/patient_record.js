@@ -13,7 +13,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
 
   function uploadFiles(file, invalidFiles) {
     if(invalidFiles.length){
-      Notify.danger('FORM.WARNNINGS.BAD_FILE_TYPE');
+      Notify.danger('FORM.WARNINGS.BAD_FILE_TYPE');
       return;
     }
 
@@ -26,7 +26,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
         });
 
         file.upload.then(function (response) {
-          Notify.success('FORM.INFOS.PATIENT_SUCC_TRANSFERRED');
+          Notify.success('FORM.INFO.PATIENT_SUCC_TRANSFERRED');
           $timeout(function () {
             vm.patient.avatar = response.data.link;
           });
@@ -35,7 +35,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
           Notify.handleError(error);
         });
       } else {
-        Notify.danger('FORM.INFOS.UPLOAD_PICTURE_FAILED');
+        Notify.danger('FORM.INFO.UPLOAD_PICTURE_FAILED');
       }
     }
   }

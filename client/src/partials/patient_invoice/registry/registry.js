@@ -136,7 +136,7 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
   function creditNote(invoice) {
     Invoices.openCreditNoteModal(invoice)
       .then(function (data) {
-        Notify.success('FORM.INFOS.TRANSACTION_REVER_SUCCESS');        
+        Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');        
         return load();
       })
       .catch(Notify.handleError);

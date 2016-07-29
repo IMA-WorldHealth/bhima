@@ -27,7 +27,7 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
     Modal.openInventoryUnitActions(request)
     .then(function (res) {
       if (res.id) {
-        Notify.success('FORM.INFOS.CREATE_SUCCESS');
+        Notify.success('FORM.INFO.CREATE_SUCCESS');
       }
     })
     .then(startup)
@@ -40,7 +40,7 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
 
     Modal.openInventoryUnitActions(request)
     .then(function (res) {
-      Notify.success('FORM.INFOS.UPDATE_SUCCESS');
+      Notify.success('FORM.INFO.UPDATE_SUCCESS');
     })
     .then(startup)
     .catch(Notify.errorHandler);

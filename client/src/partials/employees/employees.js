@@ -135,7 +135,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
         return refreshEmployees();
       })
       .then(function () {
-        Notify.success(creation ? 'FORM.INFOS.CREATE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
+        Notify.success(creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
       })
       .catch(Notify.handleError);
   }

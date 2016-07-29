@@ -27,7 +27,7 @@
                   <input
                     class="form-control"
                     ng-model="PurchaseCtrl.supplier"
-                    placeholder="{{ 'FORM.PLACE_HOLDERS.ENTER_SUPPLIER' | translate }}..."
+                    placeholder="{{ 'FORM.PLACE_HOLDERS.SUPPLIER' | translate }}..."
                     name="supplier"
                     uib-typeahead="supplier as supplier.name for supplier in PurchaseCtrl.suppliers | filter:$viewValue | limitTo:10"
                     typeahead-editable="false"
@@ -148,7 +148,7 @@
           class="text-warning"
           ng-show="PurchaseCtrl.order.inventory.size() > 0 && PurchaseCtrl.order.inventory.available.data.length === 0">
           <span class="fa fa-info-circle"></span>
-          {{ "FORM.INFOS.ITEMS_FULL" | translate }}
+          {{ "FORM.INFO.ITEMS_FULL" | translate }}
         </p>
 
         <p
@@ -156,7 +156,7 @@
           class="text-info"
           ng-show="!PurchaseCtrl.supplier">
           <span class="fa fa-info-circle"></span>
-          {{ "FORM.INFOS.NO_SUPPLIER" | translate }}
+          {{ "FORM.INFO.NO_SUPPLIER" | translate }}
         </p>
       </div>
     </div>
@@ -192,7 +192,7 @@
         <p
           class="text-danger"
           ng-show="PurchaseCtrl.order._invalid && PurchaseOrderForm.$submitted">
-          <span class="fa fa-exclamation-circle"></span> {{ "FORM.INFOS.INVALID_ITEMS" | translate }}
+          <span class="fa fa-exclamation-circle"></span> {{ "FORM.INFO.INVALID_ITEMS" | translate }}
         </p>
       </div>
     </div>
