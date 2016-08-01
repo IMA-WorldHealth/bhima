@@ -64,7 +64,8 @@ describe('Permissions Module', function () {
     FU.validation.error('PermissionsCtrl.user.passwordVerify');
   });
 
-  it.skip('edits the previously created user', function (done) {
+  /*
+  it('edits the previously created user', function (done) {
 
     // use the UI grid to select the previously created user
     //gridUtils.
@@ -84,5 +85,6 @@ describe('Permissions Module', function () {
 
     // submit the user
     element(by.id('submitCreate')).click();
-  });
+    });
+    */
 });

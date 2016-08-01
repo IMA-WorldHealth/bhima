@@ -145,6 +145,7 @@ describe('Cash Payments Module', function () {
     });
 
     /** @todo - once invoice posting is figured out, this test should be uncommented and work */
+    /*
     it.skip('should make a payment against previous invoices', function () {
       var gridId = 'debtorInvoicesGrid';
 
@@ -187,6 +188,7 @@ describe('Cash Payments Module', function () {
       // dismiss the modal
       element(by.css('[data-modal-action="dismiss"]')).click();
     });
+  */
   });
 
   describe('Cash Transfer ', function (){
