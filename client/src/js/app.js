@@ -3,8 +3,9 @@ var bhima = angular.module('bhima', [
   'bhima.components', 'bhima.routes', 'ui.bootstrap', 'pascalprecht.translate',
   'ngStorage', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
-  'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.treeView',
-  'ui.grid.grouping', 'growlNotifications', 'ngAnimate', 'ngSanitize'
+  'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns',
+  'ui.grid.treeView', 'ui.grid.grouping', 'growlNotifications', 'ngAnimate',
+  'ngSanitize'
 ]);
 
 function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider) {

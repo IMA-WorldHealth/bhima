@@ -114,5 +114,5 @@ describe('Patient Invoice', function () {
     components.notification.hasDanger();
   });
 
-  it('can calculate totals correctly');
+  //it('can calculate totals correctly');
 });

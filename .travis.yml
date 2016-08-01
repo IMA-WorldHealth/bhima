@@ -2,11 +2,14 @@ sudo: required
 dist: trusty
 
 before_install:
+  - export DISPLAY=:99.0
+  - export CHROME_BIN=/usr/bin/google-chrome
   - sudo apt-get update -qq
   - sudo apt-get install -qq mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6
-  - sudo apt-get install wkhtmltopdf
-  - export DISPLAY=:99.0
+  - sudo apt-get install -qq wkhtmltopdf
   - sh -e /etc/init.d/xvfb start
+  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  - sudo dpkg -i google-chrome*.deb
 
 services:
   - mysql
