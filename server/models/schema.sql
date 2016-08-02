@@ -1419,7 +1419,7 @@ CREATE TABLE `project` (
   `name` VARCHAR(60) NOT NULL,
   `abbr` CHAR(3) NOT NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
-  `zs_id` INT(11) NOT NULL DEFAULT 0,
+  `zs_id` INT(11) NULL,
   `locked` BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (`id`),
   UNIQUE KEY `project_1` (`name`),

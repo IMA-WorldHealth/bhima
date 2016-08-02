@@ -8,7 +8,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Enterprises', function () {
+describe('Enterprises ::', function () {
 
   const path = '#/enterprises';
   const enterpriseId = 1;
@@ -18,26 +18,49 @@ describe('Enterprises', function () {
     email : 'ima@imaworldhealth.com',
     po_box : 'POBOX USA 1',
     phone : '01500',
-    currency_id : 1
+    currency_id : 2,
+    gain_account : 'Test Gain Account',
+    loss_account : 'Test Expense Accounts'
+  };
+
+  // project
+  const abbr = suffix();
+  const project = {
+    name : 'Test Project ' + abbr,
+    abbr : abbr
+  };
+
+  // project update
+  const abbr_update = suffix();
+  const project_update = {
+    name : 'Test Project Update ' + abbr_update,
+    abbr : abbr_update
   };
 
   // navigate to the enterprise module before running tests
   before(() => helpers.navigate(path));
 
-
-  it('creates a new enterprise', function () {
-    FU.buttons.create();
+  /**
+   * The actual enterprise module doesn't need to create new one
+   * so we need only to update enterprise informations
+   */
+  it('set enterprise data', function () {
 
     FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
     FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
-    FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
+
+    // currency select
+    components.currencySelect.set(enterprise.currency_id);
+
+    FU.typeahead('EnterpriseCtrl.enterprise.gain_account', enterprise.gain_account);
+    FU.typeahead('EnterpriseCtrl.enterprise.loss_account', enterprise.loss_account);
+
     FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
+    FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
     FU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
 
     // select the locations specified
     components.locationSelect.set(helpers.data.locations);
-
-    FU.radio('EnterpriseCtrl.enterprise.currency_id', enterprise.currency_id);
 
     // submit the page to the server
     FU.buttons.submit();
@@ -45,20 +68,11 @@ describe('Enterprises', function () {
     components.notification.hasSuccess();
   });
 
-
-  it('edits an enterprise', function () {
-    element(by.id('enterprise-' + enterpriseId)).click();
-
-    FU.input('EnterpriseCtrl.enterprise.name', 'Test Enterprise Updated');
-    FU.input('EnterpriseCtrl.enterprise.abbr', 'TEU');
-
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-  });
-
-
   it('blocks invalid form submission with relevant error classes', function () {
-    FU.buttons.create();
+
+    FU.input('EnterpriseCtrl.enterprise.name', '');
+    FU.input('EnterpriseCtrl.enterprise.abbr', '');
+
     FU.buttons.submit();
 
     // verify form has not been submitted
@@ -73,4 +87,54 @@ describe('Enterprises', function () {
     FU.validation.ok('EnterpriseCtrl.enterprise.po_box');
     FU.validation.ok('EnterpriseCtrl.enterprise.phone');
   });
+
+  it('add new project for the enterprise', function () {
+    FU.buttons.create();
+
+    FU.input('$ctrl.project.name', project.name);
+    FU.input('$ctrl.project.abbr', project.abbr);
+
+    FU.buttons.submit();
+
+    components.notification.hasSuccess();
+  });
+
+  it('edit an existing project', function () {
+    element(by.css(`[data-update="${abbr}"]`)).click();
+
+    FU.input('$ctrl.project.name', project_update.name);
+    FU.input('$ctrl.project.abbr', project_update.abbr);
+
+    FU.buttons.submit();
+
+    components.notification.hasSuccess();
+  });
+
+  it('delete an existing project', function () {
+    element(by.css(`[data-delete="${abbr_update}"]`)).click();
+
+    FU.input('$ctrl.text', project_update.name);
+
+    FU.buttons.submit();
+
+    components.notification.hasSuccess();
+  });
+
+  /**
+   * @function suffix
+   * @desc This function returns a random 3 characters string as an abbreviation
+   */
+  function suffix() {
+    'use strict';
+    let a = String.fromCharCode(random(65, 90));
+    let b = String.fromCharCode(random(65, 90));
+    let c = String.fromCharCode(random(65, 90));
+
+    return a.concat(b, c);
+  }
+
+  function random(min,max) {
+    return Math.floor(Math.random()*(max-min+1)+min);
+  }
+
 });

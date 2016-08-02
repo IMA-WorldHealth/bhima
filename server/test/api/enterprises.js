@@ -45,7 +45,7 @@ describe('(/enterprises) Enterprises API', function () {
   /* response keys from a detailed query */
   var responseKeys = [
     'id', 'name', 'abbr', 'email', 'po_box', 'phone',
-    'location_id', 'logo', 'currency_id'
+    'location_id', 'logo', 'currency_id', 'gain_account_id', 'loss_account_id'
   ];
 
   it('POST /enterprises will register a valid enterprises', function () {
