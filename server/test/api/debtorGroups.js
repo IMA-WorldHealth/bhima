@@ -292,28 +292,36 @@ describe('(/debtor_groups) The debtor groups API', function () {
     .catch(helpers.handler);
   });
 
-  it.skip('GET /debtor_groups/:uuid/invoices returns all invoices for a debtor group', function () {
-    return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices')
-      .then(function (res) {
-        expect(res).to.have.status(200);
-      })
-      .catch(helpers.handler);
-  });
+  /**
+   * @todo: Need to be implemented at the server side in
+   * /server/controllers/debtors/groups/index.js  #function invoices
+   */
+  describe.skip(':: /debtor_groups/:uuid/invoices :: ', function () {
 
-  it.skip('GET /debtor_groups/:uuid/invoices returns a 404 for an unknown uuid', function () {
-    return agent.get('/debtor_groups/unknown/invoices')
-      .then(function (res) {
-        helpers.api.errored(res, 404);
-      })
-      .catch(helpers.handler);
-  });
+    it('GET /debtor_groups/:uuid/invoices returns all invoices for a debtor group', function () {
+      return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices')
+        .then(function (res) {
+          expect(res).to.have.status(200);
+        })
+        .catch(helpers.handler);
+    });
 
-  it.skip('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', function () {
-    return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices?balanced=1')
-      .then(function (res) {
-        helpers.api.listed(res, 0);
-      })
-      .catch(helpers.handler);
+    it('GET /debtor_groups/:uuid/invoices returns a 404 for an unknown uuid', function () {
+      return agent.get('/debtor_groups/unknown/invoices')
+        .then(function (res) {
+          helpers.api.errored(res, 404);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', function () {
+      return agent.get('/debtor_groups/' + debtorGroup.uuid + '/invoices?balanced=1')
+        .then(function (res) {
+          helpers.api.listed(res, 0);
+        })
+        .catch(helpers.handler);
+    });
+
   });
 
   /**

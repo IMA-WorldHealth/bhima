@@ -39,7 +39,6 @@ INSERT INTO unit VALUES
   (112, 'Reference','TREE.REFERENCE','References',5,'/partials/references','/references'),
   (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 5, '/partials/vouchers/simple', '/vouchers/simple'),
   (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services'),
-  -- (136, 'Patient Documents', 'TREE.PATIENT_DOCUMENT', 'Patient Document Module', 12, '/partials/patients/documents', '/patients/documents'),
   (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 5, '/partials/vouchers/complex', '/vouchers/complex'),
   (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
@@ -47,16 +46,23 @@ INSERT INTO unit VALUES
   (141, 'Vouchers Records', 'TREE.VOUCHER_REGISTRY', 'Vouchers registry module', 5, '/partials/vouchers/index', '/vouchers'),
   (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create');
 
-INSERT INTO `account_type` VALUES
-
 -- Reserved system account types
-(1, 'income', 'ACCOUNT.TYPES.INCOME'),
-(2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
-(3, 'balance', 'ACCOUNT.TYPES.BALANCE'),
-(4, 'title', 'ACCOUNT.TYPES.TITLE');
+INSERT INTO `account_type` VALUES
+  (1, 'income', 'ACCOUNT.TYPES.INCOME'),
+  (2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
+  (3, 'balance', 'ACCOUNT.TYPES.BALANCE'),
+  (4, 'title', 'ACCOUNT.TYPES.TITLE');
 
-INSERT INTO `language` VALUES (1,'Francais','fr', 'fr-be'), (2,'English','en', 'en-us'), (3,'Lingala','lg', 'fr-cd');
-INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES (1,'Congolese Francs','fc','Fc',NULL,50.00),(2,'United States Dollars','usd','$',NULL,0.01);
+-- Languages
+INSERT INTO `language` VALUES
+  (1,'Francais','fr', 'fr-be'),
+  (2,'English','en', 'en-us'),
+  (3,'Lingala','lg', 'fr-cd');
+
+-- Currencies
+INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES
+  (1,'Congolese Francs','fc','Fc',NULL,50.00),
+  (2,'United States Dollars','usd','$',NULL,0.01);
 
 -- locations (enterprise location only)
 INSERT INTO `country` VALUES (HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'),'République Démocratique du Congo'),(HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a51'), 'Test Hook Country');
@@ -64,11 +70,13 @@ INSERT INTO `province` VALUES (HUID('f6fc7469-7e58-45cb-b87c-f08af93edade'),'Bas
 INSERT INTO `sector` VALUES (HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'),'Tshikapa',HUID('f6fc7469-7e58-45cb-b87c-f08af93edade')), (HUID('dbe330b6-5cdf-4830-8c30-dc00eccd1a22'), 'Test Hook Sector', HUID('dbe330b6-5cdf-4830-8c30-dc00eccd1a21'));
 INSERT INTO `village` VALUES (HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'KELE2',HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450')), (HUID('dbe330b6-5cdf-4830-8c30-dc00eccd1a22'), 'Test Hook Village',HUID('dbe330b6-5cdf-4830-8c30-dc00eccd1a22'));
 
-INSERT INTO `enterprise` VALUES
-  (1,'Test Enterprise','TE','243 81 504 0540','enterprise@test.org',HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),NULL,2,103, NULL, NULL);
+-- Enterprise
+INSERT INTO `enterprise` VALUES (1,'Test Enterprise','TE','243 81 504 0540','enterprise@test.org',HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),NULL,2,103, NULL, NULL);
 
+-- Project
 INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,1,0),(2,'Test Project B','TPB',1,2,0),(3,'Test Project C','TPC',1,2,0);
 
+-- Accounts
 INSERT INTO `account` VALUES
   (3626,4,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 13:25:12',1,NULL,NULL,NULL,1,1),
   (3627,3,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 13:26:13',1,1,NULL,0,NULL,0),
@@ -375,19 +383,49 @@ INSERT INTO `patient_group_subsidy` VALUES
 INSERT INTO `debtor_group_subsidy` VALUES
   (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 1, CURRENT_TIMESTAMP);
 
+-- voucher sample data
+SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
+SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
+SET @third_voucher = HUID('3688e9ce-85ea-4b5c-9144-688177edcb63');
+
+INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, description, user_id) VALUES
+  (@first_voucher, CURRENT_TIMESTAMP, 1, 2, 100, 'Sample voucher data one', 1),
+  (@second_voucher, CURRENT_TIMESTAMP, 1, 2, 200, 'Sample voucher data two', 1),
+  (@third_voucher, CURRENT_TIMESTAMP, 1, 2, 300, 'Sample voucher data three', 1);
+
+-- voucher items sample data
+INSERT INTO `voucher_item` VALUES
+  (HUID(UUID()), 3627, 100, 0, @first_voucher, HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 100, @first_voucher, HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3627, 200, 0, @second_voucher, HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 200, @second_voucher, HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3627, 300, 0, @third_voucher, HUID(UUID()), HUID(UUID())),
+  (HUID(UUID()), 3628, 0, 300, @third_voucher, HUID(UUID()), HUID(UUID()));
+
 -- patient invoices
+SET @first_invoice = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
+SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
+
 INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at, is_distributable) VALUES
-  (1,2,HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'),75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
-  (1,1,HUID('c44619e0-3a88-4754-a750-a414fc9567bf'),25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
+  (1,2,@first_invoice,75.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:35:55','TPA_VENTE/Thu Jan 07 2016 15:35:46 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:35:55',1),
+  (1,1,@second_invoice,25.0000,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),1,1,'2016-01-07 14:34:35','TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient','2016-01-07 14:31:14',1);
 
 INSERT INTO invoice_item VALUES
-  (HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6'),HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000);
-
-SET @pjid = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
+  (@first_invoice,HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000),
+  (@second_invoice,HUID('ffb0350d-7d46-4204-b19d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,25.0000,25.0000,0.0000,25.0000);
 
 INSERT INTO `posting_journal` VALUES
-  (HUID(UUID()),1,1,1,'HBB1','2016-01-09 14:35:55',@pjid,NULL,3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'HBB1','2016-01-09 14:35:55',@pjid,NULL,3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL);
+  (HUID(UUID()),1,1,1,'TRANS1','2016-01-09 14:35:55',@first_invoice,NULL,3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS1','2016-01-09 14:35:55',@first_invoice,NULL,3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS2','2016-01-09 17:04:27',@second_invoice,NULL,3631,25.0000,0.0000,25.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS2','2016-01-09 17:04:27',@second_invoice,NULL,3638,0.0000,25.0000,0.0000,25.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  -- vouchers data
+  (HUID(UUID()),1,1,1,'TRANS3','2016-01-09 17:04:27',@first_voucher,NULL,3627,100.0000,0.0000,100.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS3','2016-01-09 17:04:27',@first_voucher,NULL,3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS4','2016-01-09 17:04:27',@second_voucher,NULL,3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS4','2016-01-09 17:04:27',@second_voucher,NULL,3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS5','2016-01-09 17:04:27',@third_voucher,NULL,3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS5','2016-01-09 17:04:27',@third_voucher,NULL,3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL);
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
@@ -411,18 +449,3 @@ INSERT INTO `price_list_item` VALUES
   (HUID(UUID()), HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 'label 2', 100, 1, CURRENT_TIMESTAMP);
 
 UPDATE debtor_group SET price_list_uuid = HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0') WHERE uuid = HUID('4de0fe47-177f-4d30-b95f-cff8166400b4');
-
--- voucher sample data
-INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, description, user_id) VALUES
-  (HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534'), CURRENT_TIMESTAMP, 1, 2, 100, 'Sample voucher data one', 1),
-  (HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), CURRENT_TIMESTAMP, 1, 2, 200, 'Sample voucher data two', 1),
-  (HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), CURRENT_TIMESTAMP, 1, 2, 300, 'Sample voucher data three', 1);
-
--- voucher items sample data
-INSERT INTO `voucher_item` VALUES
-  (HUID(UUID()), 3627, 100, 0, HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534'), HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3628, 0, 100, HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534'), HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3627, 200, 0, HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3628, 0, 200, HUID('304cfa94-0249-466c-9870-95eb3c221b0a'), HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3627, 300, 0, HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), HUID(UUID()), HUID(UUID())),
-  (HUID(UUID()), 3628, 0, 300, HUID('3688e9ce-85ea-4b5c-9144-688177edcb63'), HUID(UUID()), HUID(UUID()));

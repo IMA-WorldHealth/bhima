@@ -229,7 +229,7 @@ describe('(/patients) Patients', function () {
 
   });
 
-  it.skip('Simultaneous patient registration requests respect reference lock', function () {
+  it('Simultaneous patient registration requests respect reference lock', function () {
 
     // Custom timeout
     this.timeout(30000);
@@ -300,6 +300,7 @@ describe('(/patients) Patients', function () {
     setTimeout(function () {
 
       simultaneousRequest.medical.hospital_no = hospitalNo;
+      simultaneousRequest.medical.last_name += hospitalNo;
 
       agent.post('/patients')
         .send(simultaneousRequest)

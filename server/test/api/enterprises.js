@@ -108,8 +108,7 @@ describe('(/enterprises) Enterprises API', function () {
       .catch(helpers.handler);
   });
 
-  /* @todo - make this work; currently broken or unimplemented */
-  it.skip('GET /enterprises/:id returns a 404 error for unknown enterprises', function () {
+  it('GET /enterprises/:id returns a 404 error for unknown enterprises', function () {
     return agent.get('/enterprises/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
