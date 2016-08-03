@@ -129,7 +129,7 @@ function lookupDebtor(uid) {
  * procedures.sql for easy lookup
  */
 function invoices(req, res, next) {
-  const uid = req.params.uuid;
+  const uid = db.bid(req.params.uuid);
   var options = req.query;
 
   // get the debtor invoice uuids from the invoice table
@@ -144,18 +144,22 @@ function invoices(req, res, next) {
       return q.resolve([]);
     }
 
+    uuids = uuids.map(function (item) {
+      return item.uuid;
+    });
+
     // select all invoice and payments against invoices from the combined ledger
     sql =
       `SELECT BUID(i.uuid) as uuid, CONCAT(project.abbr, invoice.reference) as reference,
-        credit, debit, BUID(entity_uuid) as entity_uuid
+        credit, debit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
       FROM (
-        SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid '
+        SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
         FROM (
-          SELECT record_uuid as uuid, debit, credit
-          FROM combined_ledger '
+          SELECT record_uuid as uuid, debit, credit, entity_uuid
+          FROM combined_ledger
           WHERE record_uuid IN (?) AND entity_uuid = ?
-        UNION ALL '
-          SELECT reference_uuid as uuid, debit, credit
+        UNION ALL
+          SELECT reference_uuid as uuid, debit, credit, entity_uuid
           FROM  combined_ledger
           WHERE reference_uuid IN (?) AND entity_uuid = ?
         ) AS ledger
@@ -165,11 +169,11 @@ function invoices(req, res, next) {
 
     /**
      * @todo - put in balance
-    sql +=
-      (options.balanced === '1') ? ' HAVING balance = 0;' :
-      (options.balanced === '0') ? ' HAVING balance > 0;' :
-      ';';
-    */
+     */
+     sql +=
+       (options.balanced === '1') ? ' HAVING balance = 0;' :
+       (options.balanced === '0') ? ' HAVING balance > 0;' :
+       ';';
 
     return db.exec(sql, [uuids, uid, uuids, uid]);
   })

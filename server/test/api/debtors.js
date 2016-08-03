@@ -19,7 +19,7 @@ describe('(/debtors) The /debtors API', function () {
   };
 
 
- it.skip('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', function () {
+ it('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', function () {
     return agent.get('/debtors/:uuid/invoices'.replace(':uuid', debtorUuid))
       .then(function (res) {
         helpers.api.listed(res, 1);
@@ -27,7 +27,7 @@ describe('(/debtors) The /debtors API', function () {
       .catch(helpers.handler);
   });
 
-  it.skip('GET /debtors/:uuid/invoices?balanced=0 returns a list of unbalance invoices of a given debtor', function () {
+  it('GET /debtors/:uuid/invoices?balanced=0 returns a list of unbalance invoices of a given debtor', function () {
     return agent.get('/debtors/:uuid/invoices?balanced=0'.replace(':uuid', debtorUuid))
       .then(function (res) {
         helpers.api.listed(res, 1);

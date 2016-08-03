@@ -44,9 +44,9 @@ exports.deleteAll = removeAll;
  */
 function create(req, res, next) {
 
-  if (req.files.length === 0) {
+  if (!req.files || req.files.length === 0) {
     return next(
-      BadRequest('Expected at least one file upload but did not receive any files.')
+      new BadRequest('Expected at least one file upload but did not receive any files.')
     );
   }
 
