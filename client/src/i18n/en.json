@@ -1018,6 +1018,7 @@
       "TYPE"               : "Type",
       "UNIT"               : "Unit",
       "UNIT_PRICE"         : "Unit Price",
+      "USER"               : "User",
       "VALUE"              : "Value",
       "VILLAGE"            : "Village",
       "QUANTITY"           : "Quantity"

@@ -2,6 +2,7 @@ angular.module('bhima.components')
 .component('bhPdfPrint', {
   bindings : {
     pdfUrl : '@',
+    disableCache: '@',
     options : '<'
   },
   template :
@@ -16,7 +17,8 @@ angular.module('bhima.components')
 .component('bhPdfLink', {
   bindings : {
     pdfUrl : '@',
-    options : '<'
+    disableCache: '@',
+    options : '<',
   },
   transclude : true,
   template :
@@ -53,12 +55,16 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
  *
  * <bh-pdf-print
  *   pdf-url="url"
- *   options="options">
+ *   options="options"
+ *   disable-cache="false">
  * </bh-pdf-print>
  */
 function bhPDFPrintController($window, $http, $sce, $timeout) {
   var cachedRequest;
   var component = this;
+
+  // turn off caching via disable-cache="true".  Caching is enabled by default.
+  var enableCache = (component.disableCache !== 'true');
 
   /** @todo update all options (receipt modal + direct print directive to use bhConstants included in account management PR */
   var pdfOptions = {
@@ -81,8 +87,9 @@ function bhPDFPrintController($window, $http, $sce, $timeout) {
     var url = component.pdfUrl;
     var configuration = requestOptions();
 
-    // check to see if this request has been made before - if it has we will use the local resource
-    if (angular.equals(configuration, cachedRequest)) {
+    // check to see if this request has been made before - if it has and caching is enabled,
+    // we will use the local resource
+    if (enableCache && angular.equals(configuration, cachedRequest)) {
       printEmbeddedContent();
       return;
     }
