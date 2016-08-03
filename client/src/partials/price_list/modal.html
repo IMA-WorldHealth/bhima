@@ -30,7 +30,7 @@
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
       <label class="control-label">{{ "FORM.LABELS.INVENTORY" | translate }}</label>
       <select class="form-control" name="inventory_uuid" ng-model="ModalCtrl.data.inventory_uuid" id="inventory_uuid" ng-options="i.uuid as i.label for i in ModalCtrl.inventories | orderBy:'label'" required>
-        <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_INVENTORY' | translate }} -- </option>
+        <option value="" disabled> -- {{ 'FORM.SELECT.INVENTORY' | translate }} -- </option>
       </select>
       <div class="help-block" ng-messages="ModalForm.inventory_uuid.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

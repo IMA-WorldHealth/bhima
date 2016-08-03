@@ -36,7 +36,7 @@
                     type="text"
                     class="form-control"
                     ng-model="LoginCtrl.credentials.username"
-                    placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_USERNAME' | translate }}"
+                    placeholder="{{ 'FORM.PLACEHOLDERS.USERNAME' | translate }}"
                     autofocus
                     required />
                 </div>
@@ -55,7 +55,7 @@
                     type="password"
                     ng-model="LoginCtrl.credentials.password"
                     class="form-control"
-                    placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_PASSWORD' | translate }}"
+                    placeholder="{{ 'FORM.PLACEHOLDERS.PASSWORD' | translate }}"
                     required />
                 </div>
               </div>
@@ -76,7 +76,7 @@
                     ng-model="LoginCtrl.credentials.project"
                     ng-options="proj.id as proj.name for proj in LoginCtrl.projects"
                     required >
-                    <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
+                    <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
                   </select>
                 </div>
               </div>

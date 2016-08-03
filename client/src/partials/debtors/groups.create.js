@@ -77,7 +77,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
     DebtorGroups.create(submitGroup)
       .then(function (result) {
-        Notify.success('DEBTOR_GRP.CREATED');
+        Notify.success('DEBTOR_GROUP.CREATED');
 
         // Debtor group created
         if (vm.resetOnCompletion) {

@@ -63,7 +63,7 @@ function ProjectController(Projects, Enterprises, SnisService, ModalService, uti
 
       Projects.delete(id)
         .then(function () {
-          Notify.success('FORM.INFOS.DELETE_SUCCESS');
+          Notify.success('FORM.INFO.DELETE_SUCCESS');
           return refreshProjects();
         })
         .catch(Notify.handleError);
@@ -99,7 +99,7 @@ function ProjectController(Projects, Enterprises, SnisService, ModalService, uti
       })
       .then(function () {
         update(project.id);
-        Notify.success(creation ? 'FORM.INFOS.CREATE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
+        Notify.success(creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
       })
       .catch(Notify.handleError);
   }

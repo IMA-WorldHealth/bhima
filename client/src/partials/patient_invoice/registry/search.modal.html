@@ -7,8 +7,8 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static">{{ "FORM.INFOS.INVOICES" | translate }}</li>
-      <li class="title">{{ "FORM.INFOS.SEARCH" | translate }}</li>
+      <li class="static">{{ "FORM.INFO.INVOICES" | translate }}</li>
+      <li class="title">{{ "FORM.INFO.SEARCH" | translate }}</li>
     </ol>
   </div>
 
@@ -109,7 +109,7 @@
           name="service"
           ng-model="ModalCtrl.params.service_id"
           ng-options="s.id as s.name for s in ModalCtrl.services | orderBy:'name'">
-          <option value="" disabled>{{ 'FORM.SELECTS.SELECT_SERVICE' | translate }}</option>
+          <option value="" disabled>{{ 'FORM.SELECT.SERVICE' | translate }}</option>
         </select>
       </div>
 
@@ -125,7 +125,7 @@
           name="user"
           ng-model="ModalCtrl.params.user_id"
           ng-options="u.id as u.displayname for u in ModalCtrl.users | orderBy:'displayname'">
-          <option value="" disabled>{{ 'FORM.SELECTS.SELECT_USER' | translate }}</option>
+          <option value="" disabled>{{ 'FORM.SELECT.USER' | translate }}</option>
         </select>
       </div>
 

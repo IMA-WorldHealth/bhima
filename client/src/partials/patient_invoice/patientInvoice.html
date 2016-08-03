@@ -138,7 +138,7 @@
           class="text-warning"
           ng-show="PatientInvoiceCtrl.inventory.size() > 0 && PatientInvoiceCtrl.Invoice.inventory.available.data.length === 0">
           <span class="fa fa-info-circle"></span>
-          {{ "FORM.INFOS.ITEMS_FULL" | translate }}
+          {{ "FORM.INFO.ITEMS_FULL" | translate }}
         </p>
 
         <p
@@ -146,7 +146,7 @@
           class="text-info"
           ng-show="!PatientInvoiceCtrl.Invoice.recipient">
           <span class="fa fa-info-circle"></span>
-          {{ "FORM.INFOS.NO_RECIPIENT" | translate }}
+          {{ "FORM.INFO.NO_RECIPIENT" | translate }}
         </p>
       </div>
     </div>
@@ -248,7 +248,7 @@
         <p
           class="text-danger"
           ng-show="PatientInvoiceCtrl.Invoice._invalid && detailsForm.$submitted">
-          <span class="fa fa-exclamation-circle"></span> {{ "FORM.INFOS.INVALID_ITEMS" | translate }}
+          <span class="fa fa-exclamation-circle"></span> {{ "FORM.INFO.INVALID_ITEMS" | translate }}
         </p>
       </div>
     </div>

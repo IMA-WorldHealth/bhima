@@ -47,4 +47,3 @@ function JournalConfigurationModal() {
 }
 
 module.exports = JournalConfigurationModal;
-

@@ -19,14 +19,14 @@
             ng-change="SettingsCtrl.languageService.set(SettingsCtrl.settings.language)"
             ng-options="key as lang.name for (key, lang) in SettingsCtrl.languages"
             class="form-control">
-            <option value="" disabled="disabled" selected>{{ "FORM.SELECTS.SELECT_LANGUAGE" | translate }}</option>
+            <option value="" disabled="disabled" selected>{{ "FORM.SELECT.LANGUAGE" | translate }}</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="select-default">{{ "FORM.LABELS.HOME_PAGE" | translate }}</label>
           <select id="select-default" class="form-control">
-            <option selected>{{ "FORM.SELECTS.SELECT_LAST_PAGE" | translate }}</option>
+            <option selected>{{ "FORM.SELECT.LAST_PAGE" | translate }}</option>
           </select>
         </div>
 

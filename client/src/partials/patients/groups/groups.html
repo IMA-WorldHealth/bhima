@@ -91,7 +91,7 @@
                     name="priceList"
                     ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
                     ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists">
-                    <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
+                    <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
                   </select>
                   <div class="help-block" ng-messages="CreateForm.priceList.$error" ng-show="CreateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -150,7 +150,7 @@
                     name="priceList"
                     ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
                     ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists">
-                    <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
+                    <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
                   </select>
                   <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -182,7 +182,7 @@
 
           <div class="panel panel-warning">
             <div class="panel-heading">
-              <span class="glyphicon glyphicon-lock"></span> {{ "FORM.INFOS.DANGER_ZONE" | translate }}
+              <span class="glyphicon glyphicon-lock"></span> {{ "FORM.INFO.DANGER_ZONE" | translate }}
             </div>
             <div class="panel-body">
               <button class="btn btn-danger" type="button" ng-click="PatientGroupCtrl.remove()" data-method="delete">

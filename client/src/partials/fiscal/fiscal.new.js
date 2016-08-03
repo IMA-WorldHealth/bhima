@@ -48,7 +48,7 @@ function FiscalCreateController($state, fiscalService, Notify, util, moment) {
       return fiscalService.create(fiscalSubmit);    
     })
     .then(function (result) {  
-      Notify.success('FORM.INFOS.CREATE_SUCCESS');
+      Notify.success('FORM.INFO.CREATE_SUCCESS');
 
       // navigate back to list view
       $state.go('fiscal.list', null, {reload : true});      

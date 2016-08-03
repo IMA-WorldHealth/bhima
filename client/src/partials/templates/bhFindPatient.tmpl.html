@@ -70,10 +70,10 @@
     <!-- inline notification -->
     <p class="help-block text-right" ng-show="$ctrl.showSearchView">
       <span class="text-warning" ng-show="($ctrl.noPatients && $ctrl.nameInput)">
-        <i class="fa fa-info-circle"></i> {{ "FORM.INFOS.PATIENT_NOT_FOUND" | translate }}
+        <i class="fa fa-info-circle"></i> {{ "FORM.INFO.PATIENT_NOT_FOUND" | translate }}
       </span>
       <span class="text-info" ng-show="($ctrl.loadingPatients && $ctrl.nameInput)">
-        <i class="fa fa-hourglass-start fa-spin"></i> {{ "FORM.INFOS.LOADING" | translate }}
+        <i class="fa fa-hourglass-start fa-spin"></i> {{ "FORM.INFO.LOADING" | translate }}
       </span>
     </p>
     <!-- /inline notification -->
@@ -87,7 +87,7 @@
       </span>
 
       <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="[{{ $ctrl.patient.reference }}] {{ $ctrl.patient.name }}">
-      <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FORM.INFOS.PATIENT_NOT_FOUND' | translate }}">
+      <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FORM.INFO.PATIENT_NOT_FOUND' | translate }}">
 
       <div class="input-group-btn">
         <a

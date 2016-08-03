@@ -63,14 +63,14 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
@@ -99,7 +99,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.province.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_PROVINCE' | translate }}" ng-maxlength="ProvinceCtrl.maxLength" class="form-control" name="province" ng-model="ProvinceCtrl.province.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.PROVINCE' | translate }}" ng-maxlength="ProvinceCtrl.maxLength" class="form-control" name="province" ng-model="ProvinceCtrl.province.name" required>
                 <div class="help-block" ng-messages="CreateForm.province.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -141,7 +141,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.province.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.PROVINCE" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_PROVINCE' | translate }}" class="form-control" ng-maxlength="ProvinceCtrl.maxLength" name="province" ng-model="ProvinceCtrl.province.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.PROVINCE' | translate }}" class="form-control" ng-maxlength="ProvinceCtrl.maxLength" name="province" ng-model="ProvinceCtrl.province.name" required>
                 <div class="help-block" ng-messages="UpdateForm.province.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>

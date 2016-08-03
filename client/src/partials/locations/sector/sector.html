@@ -65,14 +65,14 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
           </div>
         </div>
 
@@ -117,7 +117,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.sector.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_SECTOR' | translate }}" ng-maxlength="SectorCtrl.maxLength" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.SECTOR' | translate }}" ng-maxlength="SectorCtrl.maxLength" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
                 <div class="help-block" ng-messages="CreateForm.sector.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -176,7 +176,7 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.sector.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.SECTOR" | translate }}</label>
-                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_SECTOR' | translate }}" ng-maxlength="SectorCtrl.maxLength" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
+                <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.SECTOR' | translate }}" ng-maxlength="SectorCtrl.maxLength" class="form-control" name="sector" ng-model="SectorCtrl.sector.name" required>
                 <div class="help-block" ng-messages="UpdateForm.sector.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>

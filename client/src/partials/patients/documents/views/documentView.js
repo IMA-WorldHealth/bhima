@@ -28,7 +28,7 @@ function DocumentViewController(Modal, $state, Document, Notify) {
   function deleteDocument(uuid) {
     Document.remove(vm.patientUuid, uuid)
     .then(function () {
-      Notify.success('FORM.INFOS.DELETE_SUCCESS');
+      Notify.success('FORM.INFO.DELETE_SUCCESS');
       listDocument();
     })
     .catch(Notify.handleError);

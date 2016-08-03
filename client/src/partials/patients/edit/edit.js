@@ -114,7 +114,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
 
     patients.update(vm.medical.uuid, submitPatient)
       .then(function (updatedPatient) {
-        Notify.success('FORM.INFOS.UPDATE_SUCCESS');
+        Notify.success('FORM.INFO.UPDATE_SUCCESS');
 
         // Update view
         formatPatientAttributes(updatedPatient);

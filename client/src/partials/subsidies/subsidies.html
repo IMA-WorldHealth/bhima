@@ -62,21 +62,21 @@
 
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'FORM.INFOS.DELETE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.DELETE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
@@ -113,7 +113,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_id.$invalid }">
                 <label class="col-md-3 control-label">{{ "FORM.LABELS.ACCOUNT" | translate }}</label>
                 <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ACCOUNT' | translate }} -- </option>
+                  <option value="" disabled> -- {{ 'FORM.SELECT.ACCOUNT' | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.account_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -164,7 +164,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.account_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.ACCOUNT" | translate }}</label>
                 <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ACCOUNT' | translate }} -- </option>
+                  <option value="" disabled> -- {{ 'FORM.SELECT.ACCOUNT' | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.account_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
