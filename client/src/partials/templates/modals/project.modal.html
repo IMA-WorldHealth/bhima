@@ -2,8 +2,8 @@
 
   <div class="modal-header">
     <i class="fa fa-hospital-o"></i> {{ 'FORM.LABELS.ENTERPRISE' | translate }} / {{ 'TREE.PROJECT' | translate }}
-    <span ng-if="$ctrl.action === 'edit'" class="label label-warning">{{ 'FORM.LABELS.EDIT' | translate | uppercase }}</span>
-    <span ng-if="$ctrl.action === 'create'" class="label label-info">{{ 'FORM.LABELS.CREATE' | translate | uppercase }}</span>
+    <span ng-if="$ctrl.action === 'edit'" class="label label-warning text-uppercase">{{ 'FORM.LABELS.EDIT' | translate }}</span>
+    <span ng-if="$ctrl.action === 'create'" class="label label-info text-uppercase">{{ 'FORM.LABELS.CREATE' | translate }}</span>
   </div>
 
   <div class="modal-body">
@@ -39,11 +39,11 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-sm btn-default"
+    <button type="button" class="btn btn-default"
       ng-click="$ctrl.close()">
       {{ 'FORM.BUTTONS.CLOSE' | translate }}
     </button>
-    <button type="submit" class="btn btn-sm btn-primary"
+    <button type="submit" class="btn btn-primary"
       data-method="submit">
       {{ 'FORM.BUTTONS.SUBMIT' | translate }}
     </button>

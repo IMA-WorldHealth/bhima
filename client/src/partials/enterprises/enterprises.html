@@ -21,7 +21,7 @@
     <div class="row">
 
       <!-- enterprise form  -->
-      <div class="col-xs-12 col-sm-6">
+      <div class="col-xs-12 col-md-6">
         <form
           name="EnterpriseForm"
           bh-submit="EnterpriseCtrl.submit(EnterpriseForm)"
@@ -100,13 +100,10 @@
 
             </div>
 
-            <div class="panel-footer clearfix">
-
-              <div class="pull-right">
-                <button class="btn btn-sm btn-primary" type="button" ng-click="EnterpriseCtrl.submit(EnterpriseForm)" data-method="submit">
-                  {{ "FORM.BUTTONS.UPDATE" | translate }}
-                </button>
-              </div>
+            <div class="panel-footer text-right">
+              <bh-loading-button loading-state="EnterpriseForm.$loading">
+                {{ "FORM.BUTTONS.UPDATE" | translate }}
+              </bh-loading-button>
             </div>
 
           </div>
@@ -156,7 +153,7 @@
               </bh-location-select>
 
 
-              <button class="btn btn-sm btn-block btn-default" type="button" ng-click="EnterpriseCtrl.submit(EnterpriseForm)" data-method="cancel">
+              <button class="btn btn-block btn-default" type="button" ng-click="EnterpriseCtrl.submit(EnterpriseForm)">
                 <i class="fa fa-save"></i> {{ "FORM.BUTTONS.UPDATE" | translate }}
               </button>
             </div>
@@ -167,9 +164,7 @@
       </div>
 
       <!-- project form  -->
-      <div class="col-xs-12 col-sm-6">
-        <form
-          name="ProjectForm" novalidate>
+      <div class="col-xs-12 col-md-6">
 
           <div class="panel panel-primary">
             <div class="panel-heading">
@@ -177,7 +172,7 @@
             </div>
 
             <ul class="list-group">
-              <li class="list-group-item" ng-repeat="p in EnterpriseCtrl.projects">
+              <li class="list-group-item" ng-repeat="p in EnterpriseCtrl.projects track by p.id">
                 <i class="fa fa-hospital-o"></i>
                 <span>{{ p.name }} ({{ p.abbr }})</span>
                 <a data-delete="{{ p.abbr }}" class="badge badge-danger" ng-click="EnterpriseCtrl.deleteProject(p.id, p.name)"><i class="fa fa-trash"></i> {{ 'FORM.BUTTONS.DELETE' | translate }}</a>
@@ -186,7 +181,7 @@
             </ul>
 
             <div class="panel-footer clearfix">
-              <button type="submit" class="pull-right btn btn-sm btn-default"
+              <button type="submit" class="pull-right btn btn-default"
                 data-method="create"
                 ng-click="EnterpriseCtrl.addProject()">
                 <i class="fa fa-plus"></i> {{ 'FORM.LABELS.ADD' | translate }}
@@ -194,7 +189,6 @@
             </div>
           </div>
 
-        </form>
       </div>
     </div>
   </div>

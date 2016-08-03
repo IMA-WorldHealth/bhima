@@ -12,12 +12,26 @@ describe('Enterprises ::', function () {
 
   const path = '#/enterprises';
   const enterpriseId = 1;
+
+  // enterprise
   const enterprise = {
     name : 'Interchurch Medical Assistance',
     abbr : 'IMA',
     email : 'ima@imaworldhealth.com',
     po_box : 'POBOX USA 1',
     phone : '01500',
+    currency_id : 2,
+    gain_account : 'Test Gain Account',
+    loss_account : 'Test Expense Accounts'
+  };
+
+  // default enterprise
+  const default_enterprise = {
+    name : 'Test Enterprise',
+    abbr : 'TE',
+    email : 'enterprise@test.org',
+    po_box : 'POBOX USA 1',
+    phone : '243 81 504 0540',
     currency_id : 2,
     gain_account : 'Test Gain Account',
     loss_account : 'Test Expense Accounts'
@@ -87,6 +101,33 @@ describe('Enterprises ::', function () {
     FU.validation.ok('EnterpriseCtrl.enterprise.po_box');
     FU.validation.ok('EnterpriseCtrl.enterprise.phone');
   });
+
+  /**
+   * Set default enterprise data for others tests
+   */
+   it('reset enterprise data to default', function () {
+
+     FU.input('EnterpriseCtrl.enterprise.name', default_enterprise.name);
+     FU.input('EnterpriseCtrl.enterprise.abbr', default_enterprise.abbr);
+
+     // currency select
+     components.currencySelect.set(default_enterprise.currency_id);
+
+     FU.typeahead('EnterpriseCtrl.enterprise.gain_account', default_enterprise.gain_account);
+     FU.typeahead('EnterpriseCtrl.enterprise.loss_account', default_enterprise.loss_account);
+
+     FU.input('EnterpriseCtrl.enterprise.po_box', default_enterprise.po_box);
+     FU.input('EnterpriseCtrl.enterprise.email', default_enterprise.email);
+     FU.input('EnterpriseCtrl.enterprise.phone', default_enterprise.phone);
+
+     // select the locations specified
+     components.locationSelect.set(helpers.data.locations);
+
+     // submit the page to the server
+     FU.buttons.submit();
+
+     components.notification.hasSuccess();
+   });
 
   it('add new project for the enterprise', function () {
     FU.buttons.create();
