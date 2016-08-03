@@ -71,22 +71,6 @@ function EnterpriseController($translate, Enterprises, Currencies, Accounts, uti
 
   }
 
-  // refresh the displayed Enterprises
-  function refreshEnterprises() {
-    return Enterprises.read(null, { detailed : 1 })
-      .then(function (enterprises) {
-        vm.enterprises = enterprises;
-      });
-  }
-
-  // refresh the displayed projects
-  function refreshProjects() {
-    return Projects.read(null, { complete : 1 })
-      .then(function (projects) {
-        vm.projects = projects;
-      });
-  }
-
   // form submission
   function submit(form) {
 
@@ -104,9 +88,6 @@ function EnterpriseController($translate, Enterprises, Currencies, Accounts, uti
       Enterprises.update(enterprise.id, enterprise);
 
     return promise
-      .then(function () {
-        return refreshEnterprises();
-      })
       .then(function () {
         Notify.success(creation ? 'FORM.INFOS.SAVE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
       })
@@ -133,6 +114,14 @@ function EnterpriseController($translate, Enterprises, Currencies, Accounts, uti
   vm.addProject = addProject;
   vm.editProject = editProject;
   vm.deleteProject = deleteProject;
+
+  // refresh the displayed projects
+  function refreshProjects() {
+    return Projects.read(null, { complete : 1 })
+      .then(function (projects) {
+        vm.projects = projects;
+      });
+  }
 
   /**
    * @function editProject
