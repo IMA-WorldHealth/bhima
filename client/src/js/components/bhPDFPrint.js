@@ -24,7 +24,7 @@ angular.module('bhima.components')
   template :
     '<a href ng-click="$ctrl.print()">' +
       '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
-      '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFOS.LOADING" | translate }}</span>' +
+      '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFO.LOADING" | translate }}</span>' +
     '</a>' +
     '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
   controller : bhPDFPrintController

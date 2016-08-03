@@ -61,9 +61,11 @@ function getReportData(uuid) {
       return db.exec(sql, [db.bid(uuid)]);
     })
     .then(checkins => {
-      //data.checkins = _.groupBy(checkins, 'year');
 
-      data.checkins = checkins;
+      // grouping by year allows pretty table groupings
+      data.checkins = _.groupBy(checkins, 'year');
+      data.total = checkins.length;
+
       return data;
     });
 }

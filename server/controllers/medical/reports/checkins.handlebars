@@ -46,13 +46,23 @@
         </tr>
 
         <!-- print a row for each checkin -->
-        {{#each checkins }}
-          <tr>
-            <td></td>
-            <td>{{date this.start_date}}</td>
-            <td>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
-            <td>{{this.displayName}}</td>
-          </tr>
+        {{#each checkins as |records year|}}
+          {{#each records}}
+            {{#if @first}}
+              <tr>
+                <td rowspan="{{records.length}}">{{ year }}</td>
+                <td>{{timestamp this.start_date}}</td>
+                <td>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
+                <td>{{this.displayName}}</td>
+              </tr>
+            {{else}}
+              <tr>
+                <td>{{timestamp this.start_date}}</td>
+                <td>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
+                <td>{{this.displayName}}</td>
+              </tr>
+            {{/if}}
+          {{/each}}
         {{else}}
           <tr>
             <td colspan="4" class="text-center">
@@ -63,7 +73,7 @@
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="4" class="text-right">{{translate "FORM.LABELS.TOTAL" }} {{ checkins.length }}</th>
+          <th colspan="4" class="text-right">{{translate "FORM.LABELS.TOTAL" }} {{ total }}</th>
         </tr>
       </tfoot>
     </table>
