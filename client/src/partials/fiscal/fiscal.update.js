@@ -58,7 +58,7 @@ function FiscalUpdateController($state, fiscalService, Notify, util, moment) {
       return fiscalService.update(fiscal.id, fiscal);    
     })
     .then(function (result) {
-      Notify.success('FORM.INFOS.UPDATE_SUCCESS');
+      Notify.success('FORM.INFO.UPDATE_SUCCESS');
 
       // navigate back to list view
       $state.go('fiscal.list', null, {reload : true});      

@@ -49,7 +49,7 @@ function FiscalController($state, fiscalService, ModalService, Notify) {
 
       fiscalService.delete(fiscal.id)
       .then(function () {
-        Notify.success('FORM.INFOS.DELETE_SUCCESS');
+        Notify.success('FORM.INFO.DELETE_SUCCESS');
         return refreshFiscalYear();
       })
       .catch(function (error) {

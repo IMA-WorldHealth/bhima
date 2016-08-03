@@ -20,7 +20,7 @@
         class="form-control"
         name="account"
         ng-model="BillingServicesFormCtrl.model.account"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}"
+        placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}"
         uib-typeahead="account as account.hrlabel for account in BillingServicesFormCtrl.accounts | filter:$viewValue | limitTo:6"
         typeahead-editable="false"
         typeahead-template-url="partials/templates/typeahead/accounts.html"
@@ -59,7 +59,7 @@
         class="form-control"
         name="description"
         ng-model="BillingServicesFormCtrl.model.description"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_DESCRIPTION' | translate }}"
+        placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
         ng-maxlength="BillingServicesFormCtrl.maxLength"
         required>
       </textarea>

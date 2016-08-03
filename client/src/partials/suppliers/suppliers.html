@@ -66,14 +66,14 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ "FORM.INFOS.SAVE_SUCCESS" | translate }}</h4>
+            <h4>{{ "FORM.INFO.SAVE_SUCCESS" | translate }}</h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ "FORM.INFOS.UPDATE_SUCCESS" | translate }} </h4>
+            <h4>{{ "FORM.INFO.UPDATE_SUCCESS" | translate }} </h4>
           </div>
         </div>
 
@@ -103,7 +103,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.creditor_uuid.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.GROUP" | translate }}</label>
                 <select class="form-control" name="creditor_uuid" ng-model="SupplierCtrl.supplier.creditor_uuid" id="creditor_uuid" ng-options="creditor.uuid as creditor.text for creditor in SupplierCtrl.creditors | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_CREDITOR" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.CREDITOR" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.creditor_uuid.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -203,7 +203,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.creditor_uuid.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.GROUP" | translate }}</label>
                 <select class="form-control" name="creditor_uuid" ng-model="SupplierCtrl.supplier.creditor_uuid" id="creditor_uuid" ng-options="creditor.uuid as creditor.text for creditor in SupplierCtrl.creditors | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_CREDITOR" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.CREDITOR" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.creditor_uuid.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

@@ -86,7 +86,7 @@ function EnterpriseController(Enterprises, Currencies, util, Notify) {
       })
       .then(function () {
         update(enterprise.id);
-        Notify.success(creation ? 'FORM.INFOS.SAVE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
+        Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
       })
       .catch(Notify.handleError);
   }

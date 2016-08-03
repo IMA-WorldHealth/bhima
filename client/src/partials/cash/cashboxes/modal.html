@@ -23,7 +23,7 @@
         ng-model="CashboxModalCtrl.data.account_id"
         ng-options="account.id as account.hrlabel disable when account.type === 'title' for account in ::CashboxModalCtrl.accounts"
         required>
-        <option value="" disabled>{{ "FORM.SELECTS.SELECT_ACCOUNT" | translate }}</option>
+        <option value="" disabled>{{ "FORM.SELECT.ACCOUNT" | translate }}</option>
       </select>
     </div>
 
@@ -35,7 +35,7 @@
         ng-model="CashboxModalCtrl.data.transfer_account_id"
         ng-options="account.id as account.hrlabel disable when account.type === 'title' for account in ::CashboxModalCtrl.accounts"
         required>
-        <option value="" disabled>{{ "FORM.SELECTS.SELECT_ACCOUNT" | translate }}</option>
+        <option value="" disabled>{{ "FORM.SELECT.ACCOUNT" | translate }}</option>
       </select>
     </div>
 

@@ -71,20 +71,20 @@
         <!-- Success saving Feed Back -->
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }}</h4>
+            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }}</h4>
           </div>
         </div>
 
         <!-- Success updating feedBack -->
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }}</h4>
+            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }}</h4>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'FORM.INFOS.DELETE_SUCCESS' | translate }}</h4>
+            <h4>{{ 'FORM.INFO.DELETE_SUCCESS' | translate }}</h4>
           </div>
         </div>
 
@@ -135,7 +135,7 @@
                   id="section_bilan_id"
                   ng-options="section.id as section.text for section in ReferenceGroupCtrl.sectionBilans"
                   required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_BALANCE_SECTION" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.BALANCE_SECTION" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.section_bilan_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

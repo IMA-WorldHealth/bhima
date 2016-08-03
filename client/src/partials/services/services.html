@@ -65,21 +65,21 @@
 
         <div ng-switch-when="create_success">
           <div class="alert alert-success" id="create_success">
-            <h4>{{ 'FORM.INFOS.SAVE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.SAVE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="update_success">
           <div class="alert alert-success" id="update_success">
-            <h4>{{ 'FORM.INFOS.UPDATE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.UPDATE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
 
         <div ng-switch-when="delete_success">
           <div class="alert alert-success" id="delete_success">
-            <h4>{{ 'FORM.INFOS.DELETE_SUCCESS' | translate }} </h4>
+            <h4>{{ 'FORM.INFO.DELETE_SUCCESS' | translate }} </h4>
             </p>
           </div>
         </div>
@@ -107,7 +107,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.enterprise_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
                 <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }} -- </option>
+                  <option value="" disabled> -- {{ 'FORM.SELECT.ENTERPRISE' | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.enterprise_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -118,7 +118,7 @@
                 <label class="control-label">{{ "FORM.LABELS.COST_CENTER" | translate }}</label>
                 <div>
                   <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cost_center_id" id="bhima-service-cost_center_id" ng-options="c.id as c.text for c in ServicesCtrl.costCenters | orderBy:'text'" >
-                    <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_COST_CENTER' | translate }} -- </option>
+                    <option value="" disabled> -- {{ 'FORM.SELECT.COST_CENTER' | translate }} -- </option>
                   </select>
                 </div>
               </div>
@@ -127,7 +127,7 @@
                 <label class="control-label">{{ "FORM.LABELS.PROFIT_CENTER" | translate }}</label>
                 <div>
                   <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.profit_center_id" id="bhima-service-profit_center_id" ng-options="p.id as p.text for p in ServicesCtrl.profitCenters | orderBy:'text'" >
-                    <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_PROFIT_CENTER' | translate }} -- </option>
+                    <option value="" disabled> -- {{ 'FORM.SELECT.PROFIT_CENTER' | translate }} -- </option>
                   </select>
                 </div>
               </div>
@@ -160,7 +160,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.enterprise_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.ENTERPRISE" | translate }}</label>
                 <select class="form-control" name="enterprise_id" ng-model="ServicesCtrl.service.enterprise_id" id="bhima-service-enterprise_id" ng-options="e.id as e.name for e in ServicesCtrl.enterprises | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECTS.SELECT_ENTERPRISE' | translate }} -- </option>
+                  <option value="" disabled> -- {{ 'FORM.SELECT.ENTERPRISE' | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.enterprise_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -171,7 +171,7 @@
                 <label class="control-label">{{ "FORM.LABELS.COST_CENTER" | translate }}</label>
                 <div>
                   <select class="form-control" name="cost_center_id" ng-model="ServicesCtrl.service.cost_center_id" id="bhima-service-cost_center_id" ng-options="c.id as c.text for c in ServicesCtrl.costCenters | orderBy:'text'">
-                    <option value=""> -- {{ 'FORM.SELECTS.SELECT_COST_CENTER' | translate }} -- </option>
+                    <option value=""> -- {{ 'FORM.SELECT.COST_CENTER' | translate }} -- </option>
                   </select>
                 </div>
               </div>
@@ -180,7 +180,7 @@
                 <label class="control-label">{{ "FORM.LABELS.PROFIT_CENTER" | translate }}</label>
                 <div>
                   <select class="form-control" name="profit_center_id" ng-model="ServicesCtrl.service.profit_center_id" id="bhima-service-profit_center_id" ng-options="p.id as p.text for p in ServicesCtrl.profitCenters | orderBy:'text'">
-                    <option value=""> -- {{ 'FORM.SELECTS.SELECT_PROFIT_CENTER' | translate }} -- </option>
+                    <option value=""> -- {{ 'FORM.SELECT.PROFIT_CENTER' | translate }} -- </option>
                   </select>
                 </div>
               </div>

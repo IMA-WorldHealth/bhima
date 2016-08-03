@@ -135,7 +135,7 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
         return refreshBoxes();
       })
       .then(function () {
-        Notify.success(creation ? 'FORM.INFOS.CREATE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
+        Notify.success(creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
         update(cashboxId);
       })
       .catch(Notify.handleError);
@@ -150,7 +150,7 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
       Boxes.delete(box.id)
       .then(function (message) {
         vm.view = 'default';
-        Notify.success('FORM.INFOS.DELETE_SUCCESS');
+        Notify.success('FORM.INFO.DELETE_SUCCESS');
         return refreshBoxes();
       })
       .catch(Notify.handleError);
@@ -186,7 +186,7 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
 
     instance.result
       .then(function () {
-        Notify.success('FORM.INFOS.UPDATE_SUCCESS');
+        Notify.success('FORM.INFO.UPDATE_SUCCESS');
         update(vm.box.id);
       })
       .catch(function (data) {

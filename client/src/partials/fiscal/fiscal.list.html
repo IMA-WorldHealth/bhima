@@ -35,7 +35,7 @@
           <div class="row">
             <div>
               <h4 style="margin-top : 0px;"><strong>{{fiscal.label}}</strong> 
-              <span ng-if="fiscal.locked" style="color : #ABABAB;" > [ {{"FORM.INFOS.CLOSED" | translate }} ]</span></h4>
+              <span ng-if="fiscal.locked" style="color : #ABABAB;" > [ {{"FORM.INFO.CLOSED" | translate }} ]</span></h4>
             </div>
           </div>
 
@@ -53,10 +53,10 @@
                     <span class="glyphicon glyphicon-remove"></span>
                   </a>&nbsp;
                   <span ng-if="fiscal.id === FiscalCtrl.current[0].previous_fiscal_year_id" class="label label-danger"> 
-                    {{ "FORM.INFOS.PREVIOUS" | translate }} 
+                    {{ "FORM.INFO.PREVIOUS" | translate }} 
                   </span>
                   <span ng-if="fiscal.id === FiscalCtrl.current[0].fiscal_year_id" class="label label-primary"> 
-                    {{ "FORM.INFOS.CURRENT" | translate }} 
+                    {{ "FORM.INFO.CURRENT" | translate }} 
                   </span>                  
                 </div>                
               </div>
@@ -65,8 +65,8 @@
 
           <div class="row">
             <div class="col-md-12">
-              <span class="glyphicon glyphicon-time"></span> {{ "FORM.INFOS.CREATED" | translate }} <span am-time-ago="fiscal.created_at"></span>
-              , {{ "FORM.INFOS.BY" | translate}} <span style="color:#337ab7; font-weight: bold; text-decoration:underline">{{ fiscal.first }} {{ fiscal.last }}</span>
+              <span class="glyphicon glyphicon-time"></span> {{ "FORM.INFO.CREATED" | translate }} <span am-time-ago="fiscal.created_at"></span>
+              , {{ "FORM.INFO.BY" | translate}} <span style="color:#337ab7; font-weight: bold; text-decoration:underline">{{ fiscal.first }} {{ fiscal.last }}</span>
             </div>
           </div>
         </div>

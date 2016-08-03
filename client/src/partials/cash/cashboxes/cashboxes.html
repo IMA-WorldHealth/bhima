@@ -105,7 +105,7 @@
                   ng-model="CashCtrl.box.project_id"
                   ng-options="project.id as project.name for project in CashCtrl.projects track by project.id"
                   required>
-                  <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
+                  <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.project.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -177,7 +177,7 @@
                       </a>
                     </p>
                     <p ng-if="!currency.configured" class="help-block">
-                      {{ "FORM.INFOS.NOT_CONFIGURED" | translate }}
+                      {{ "FORM.INFO.NOT_CONFIGURED" | translate }}
                     </p>
                   </div>
                 </div>
@@ -192,7 +192,7 @@
                     ng-model="CashCtrl.box.project_id"
                     ng-options="project.id as project.name for project in CashCtrl.projects"
                     required>
-                    <option value="" disabled>{{ "FORM.SELECTS.SELECT_PROJECT" | translate }}</option>
+                    <option value="" disabled>{{ "FORM.SELECT.PROJECT" | translate }}</option>
                   </select>
                   <div class="help-block" ng-messages="UpdateForm.project.$error" ng-show="UpdateForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>

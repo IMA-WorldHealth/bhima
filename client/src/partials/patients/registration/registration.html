@@ -106,7 +106,7 @@
                       <div class="input-group">
                         <input name="yob" type="text" class="form-control" ng-model="PatientRegCtrl.yob" ng-change="PatientRegCtrl.calculateYOB(DetailForm.yob.$modelValue)" required>
                         <span class="input-group-btn">
-                          <button class="btn btn-default" type="button" ng-click="PatientRegCtrl.enableFullDate()">{{ "FORM.BUTTONS.ENTER_FULL_DATE" | translate }}</button>
+                          <button class="btn btn-default" type="button" ng-click="PatientRegCtrl.enableFullDate()">{{ "FORM.BUTTONS.FULL_DATE" | translate }}</button>
                         </span>
                       </div>
                     </div>
@@ -204,7 +204,7 @@
                       {{ "FORM.LABELS.NO_DEBTOR_GROUPS" | translate }} <b>{{ "FORM.LABELS.CONTACT_ADMIN" | translate }}</b>
                     </uib-alert>
 
-                    <label class="col-md-3 control-label">{{ "FORM.LABELS.DEBITOR_GROUP" | translate }}</label>
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.DEBTOR_GROUP" | translate }}</label>
                     <div class="col-md-9">
                       <select
                         class="form-control"
@@ -212,7 +212,7 @@
                         ng-model="PatientRegCtrl.finance.debtor_group_uuid"
                         ng-options="g.uuid as g.name for g in PatientRegCtrl.debtorGroups | orderBy:'name'"
                         required>
-                        <option value="" disabled="disabled">{{ "FORM.SELECTS.SELECT_DEBITOR_GROUP" | translate }}</option>
+                        <option value="" disabled="disabled">{{ "FORM.SELECT.DEBTOR_GROUP" | translate }}</option>
                       </select>
 
                       <div class="help-block" ng-messages="DetailForm.debtorGroup.$error" ng-show="PatientRegistrationForm.$submitted">

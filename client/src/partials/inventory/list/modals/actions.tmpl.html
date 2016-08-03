@@ -14,7 +14,7 @@
         class="form-control"
         type="text"
         name="code"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_CODE' | translate }}..."
+        placeholder="{{ 'FORM.PLACEHOLDERS.CODE' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -28,7 +28,7 @@
         class="form-control"
         type="text"
         name="text"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_NAME' | translate }}..."
+        placeholder="{{ 'FORM.PLACEHOLDERS.NAME' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -49,7 +49,7 @@
       <label class="control-label">{{ 'FORM.LABELS.PRICE' | translate }}</label>
       <input class="form-control" type="text" name="price"
         ng-model="$ctrl.session.price"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_PRICE' | translate }}..."
+        placeholder="{{ 'FORM.PLACEHOLDERS.PRICE' | translate }}..."
         required>
       <div class="help-block" ng-messages="ActionForm.price.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -65,7 +65,7 @@
         ng-model="$ctrl.session.group"
         ng-options="ig as ig.name for ig in $ctrl.inventoryGroupList"
         required>
-        <option value="" disabled>-- {{ 'FORM.SELECTS.SELECT_INVENTORY_GROUP' | translate }} --</option>
+        <option value="" disabled>-- {{ 'FORM.SELECT.INVENTORY_GROUP' | translate }} --</option>
       </select>
       <div class="help-block" ng-messages="ActionForm.group.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -81,7 +81,7 @@
         ng-model="$ctrl.session.type"
         ng-options="type as type.text for type in $ctrl.inventoryTypeList"
         required>
-        <option value="" disabled>-- {{ 'FORM.SELECTS.SELECT_INVENTORY_TYPE' | translate }} --</option>
+        <option value="" disabled>-- {{ 'FORM.SELECT.INVENTORY_TYPE' | translate }} --</option>
       </select>
       <div class="help-block" ng-messages="ActionForm.type.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -97,7 +97,7 @@
         ng-model="$ctrl.session.unit"
         ng-options="unit as unit.text for unit in $ctrl.inventoryUnitList"
         required>
-        <option value="" disabled>-- {{ 'FORM.SELECTS.SELECT_INVENTORY_UNIT' | translate }} --</option>
+        <option value="" disabled>-- {{ 'FORM.SELECT.INVENTORY_UNIT' | translate }} --</option>
       </select>
       <div class="help-block" ng-messages="ActionForm.unit.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -108,14 +108,14 @@
       <label class="control-label">{{ 'FORM.LABELS.UNIT_WEIGHT' | translate }}</label>
       <input class="form-control" type="number" step="1" name="unit_weight"
         ng-model="$ctrl.session.unit_weight"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_UNIT_WEIGHT' | translate }}...">
+        placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_WEIGHT' | translate }}...">
     </div>
 
     <div class="form-group">
       <label class="control-label">{{ 'FORM.LABELS.UNIT_VOLUME' | translate }}</label>
       <input class="form-control" type="number" step="1" name="unit_volume"
         ng-model="$ctrl.session.unit_volume"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_UNIT_VOLUME' | translate }}...">
+        placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_VOLUME' | translate }}...">
     </div>
 
   </div>

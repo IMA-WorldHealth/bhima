@@ -119,7 +119,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.sexe.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.SEX" | translate }}</label>
                 <select class="form-control"name="sexe" ng-model="EmployeeCtrl.employee.sexe" id="bhima-employee-sexe" required>
-                  <option value="" disabled="disabled">-- {{ "FORM.SELECTS.SELECT_SEX" | translate }} --</option>
+                  <option value="" disabled="disabled">-- {{ "FORM.SELECT.SEX" | translate }} --</option>
                   <option ng-value='M'>{{ "FORM.LABELS.MALE" | translate }}</option>
                   <option ng-value='F'>{{ "FORM.LABELS.FEMALE" | translate }}</option>
                 </select>
@@ -162,7 +162,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.service_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.SERVICE" | translate }}</label>
                 <select class="form-control" name="service_id" ng-model="EmployeeCtrl.employee.service_id" id="bhima-employee-service_id" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_SERVICE" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.SERVICE" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.service_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -172,7 +172,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.grade_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.GRADE" | translate }}</label>
                 <select class="form-control" name="grade_id" ng-model="EmployeeCtrl.employee.grade_id" id="bhima-employee-grade_id" ng-options="g.uuid as g.format for g in EmployeeCtrl.grades | orderBy:'text'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_GRADE" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.GRADE" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.grade_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -182,7 +182,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.fonction_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.FUNCTION" | translate }}</label>
                 <select class="form-control" name="fonction_id" ng-model="EmployeeCtrl.employee.fonction_id" id="bhima-employee-fonction_id" ng-options="f.id as f.fonction_txt for f in EmployeeCtrl.functions | orderBy:'fonction_txt'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_FUNCTION" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.FUNCTION" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.fonction_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -192,7 +192,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.creditor_group_uuid.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.CREDITOR_GROUP" | translate }}</label>
                 <select class="form-control" name="creditor_group_uuid" ng-model="EmployeeCtrl.employee.creditor_group_uuid" id="bhima-employee-creditor_group_uuid" ng-options="cg.uuid as cg.name for cg in EmployeeCtrl.creditorGroups | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_CREDITOR_GROUP" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.CREDITOR_GROUP" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.creditor_group_uuid.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -200,9 +200,9 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.debtor_group_uuid.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.DEBITOR_GROUP" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.DEBTOR_GROUP" | translate }}</label>
                 <select class="form-control" name="debtor_group_uuid" ng-model="EmployeeCtrl.employee.debtor_group_uuid" id="bhima-employee-debtor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debtorGroups | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_DEBITOR_GROUP" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.DEBTOR_GROUP" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="CreateForm.debtor_group_uuid.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -306,7 +306,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.sexe.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.SEX" | translate }}</label>
                 <select class="form-control"name="sexe" ng-model="EmployeeCtrl.employee.sexe" id="bhima-employee-sexe" required>
-                  <option value="" disabled="disabled">-- {{ "FORM.SELECTS.EMPLOYEE_SEX" | translate }} --</option>
+                  <option value="" disabled="disabled">-- {{ "FORM.SELECT.EMPLOYEE_SEX" | translate }} --</option>
                   <option ng-value='M'>{{ "FORM.LABELS.MALE" | translate }}</option>
                   <option ng-value='F'>{{ "FORM.LABELS.FEMALE" | translate }}</option>
                 </select>
@@ -350,7 +350,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.service_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.SERVICE" | translate }}</label>
                 <select class="form-control" name="service_id" ng-model="EmployeeCtrl.employee.service_id" id="bhima-employee-service_id" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_SERVICE" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.SERVICE" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.service_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -360,7 +360,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.grade_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.GRADE" | translate }}</label>
                 <select class="form-control" name="grade_id" ng-model="EmployeeCtrl.employee.grade_id" id="bhima-employee-grade_id" ng-options="g.uuid as g.format for g in EmployeeCtrl.grades | orderBy:'text'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_EMPLOYEE_GRADE" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.EMPLOYEE_GRADE" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.grade_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -370,7 +370,7 @@
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.fonction_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.FUNCTION" | translate }}</label>
                 <select class="form-control" name="fonction_id" ng-model="EmployeeCtrl.employee.fonction_id" id="bhima-employee-fonction_id" ng-options="sv.id as sv.name for sv in EmployeeCtrl.services | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_EMPLOYEE_FUNCTION" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.EMPLOYEE_FUNCTION" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.fonction_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -380,7 +380,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && UpdateForm.creditor_group_uuid.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.CREDITOR_GROUP" | translate }}</label>
                 <select class="form-control" name="creditor_group_uuid" ng-model="EmployeeCtrl.employee.creditor_group_uuid" id="bhima-employee-creditor_group_uuid" ng-options="cg.uuid as cg.name for cg in EmployeeCtrl.creditorGroups | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_CREDITOR_GROUP" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.CREDITOR_GROUP" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.creditor_group_uuid.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -388,9 +388,9 @@
               </div>
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && UpdateForm.debtor_group_uuid.$invalid }">
-                <label class="control-label">{{ "FORM.LABELS.DEBITOR_GROUP" | translate }}</label>
+                <label class="control-label">{{ "FORM.LABELS.DEBTOR_GROUP" | translate }}</label>
                 <select class="form-control" name="debtor_group_uuid" ng-model="EmployeeCtrl.employee.debtor_group_uuid" id="bhima-employee-debtor_group_uuid" ng-options="dg.uuid as dg.name for dg in EmployeeCtrl.debtorGroups | orderBy:'name'" required>
-                  <option value="" disabled> -- {{ "FORM.SELECTS.SELECT_DEBITOR_GROUP" | translate }} -- </option>
+                  <option value="" disabled> -- {{ "FORM.SELECT.DEBTOR_GROUP" | translate }} -- </option>
                 </select>
                 <div class="help-block" ng-messages="UpdateForm.debtor_group_uuid.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
