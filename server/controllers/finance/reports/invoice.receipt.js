@@ -96,8 +96,8 @@ function build(req, res, next) {
     })
     .then(function (headerResult) {
       _.extend(invoiceResponse, headerResult);
-      
-      return renderer.render(invoiceResponse, template);
+
+      return renderer.render(invoiceResponse, template, { lang : req.query.lang });
     })
     .then(function (renderedResult) {
 

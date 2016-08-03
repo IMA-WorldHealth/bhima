@@ -744,6 +744,7 @@
       "ORIGINAL"  : "This patient has never been checked in.",
       "RECENT"  : "Recent Visits",
       "ITEM" : "Checked in",
+      "BY" : "by",
       "SUCCESS" : "Patient has been checked in"
     }
   },

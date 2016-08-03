@@ -4,14 +4,30 @@ angular.module('bhima.components')
     pdfUrl : '@',
     options : '<'
   },
-  transclude : true,
   template :
     '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()">' +
-    '<span><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
+      '<span><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
     '</bh-loading-button>' +
     '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
   controller : bhPDFPrintController
 });
+
+angular.module('bhima.components')
+.component('bhPdfLink', {
+  bindings : {
+    pdfUrl : '@',
+    options : '<'
+  },
+  transclude : true,
+  template :
+    '<a href ng-click="$ctrl.print()">' +
+      '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
+      '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFOS.LOADING" | translate }}</span>' +
+    '</a>' +
+    '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
+  controller : bhPDFPrintController
+});
+
 
 bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
 
@@ -30,7 +46,6 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
  * Options will be passed as params in the get request.
  *
  * @todo Investigate abstracting direct print to browser window functionality to allow export drop-down
- * @todo Namespace component so that more than one can be used on one page at a time
  *
  * @example
  * let url = '/reports/receipt/invoice';
@@ -41,7 +56,7 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
  *   options="options">
  * </bh-pdf-print>
  */
-function bhPDFPrintController($window, $http, $sce, $timeout, uuid) {
+function bhPDFPrintController($window, $http, $sce, $timeout) {
   var cachedRequest;
   var component = this;
 
@@ -57,7 +72,7 @@ function bhPDFPrintController($window, $http, $sce, $timeout, uuid) {
   var loadingIndicatorDelay = 1000;
 
   component.$loading = false;
-  component.embeddedContentId = 'pdfdirect' + Date.now();
+  component.embeddedContentId = 'pdfdirect-' + Date.now();
 
   // expose the print method to the view
   component.print = print;

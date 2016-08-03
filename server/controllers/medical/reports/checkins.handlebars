@@ -1,0 +1,68 @@
+<head>
+  <title>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</title>
+  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
+  <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
+  <style>
+    .table-mini {
+      font-size: 0.8em;
+    }
+
+    .table-mini tr td,
+    .table-mini tr th {
+      padding : 1px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h4>
+      {{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}
+      <small class="pull-right">
+        <i class="fa fa-calendar"></i> {{timestamp metadata.timestamp }}
+      </small>
+    </h4>
+  </header>
+
+  <section>
+    <table class="table table-bordered table-condensed table-mini">
+      <thead>
+        <tr class="text-capitalize text-center">
+          <th colspan="2">{{translate "TABLE.COLUMNS.DATE" }}</th>
+          <th>{{translate "TABLE.COLUMNS.ACTION" }}</th>
+          <th>{{translate "TABLE.COLUMNS.USER" }}</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- initial patient registration -->
+        <tr>
+          <td></td>
+          <td>{{date patient.registration_date }}</td>
+          <td>{{translate "FORM.LABELS.DATE_REGISTRATION" }}</td>
+          <td>{{ patient.displayName }}</td>
+        </tr>
+
+        <!-- print a row for each checkin -->
+        {{#each checkins }}
+          <tr>
+            <td></td>
+            <td>{{date this.start_date}}</td>
+            <td>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
+            <td>{{this.displayName}}</td>
+          </tr>
+        {{else}}
+          <tr>
+            <td colspan="4" class="text-center">
+              {{translate "TABLE.COLUMNS.EMPTY"}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="4" class="text-right">{{translate "FORM.LABELS.TOTAL" }} {{ checkins.length }}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+</body>
