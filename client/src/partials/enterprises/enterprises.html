@@ -6,12 +6,7 @@
     </ol>
 
     <div class="toolbar">
-      <div class="toolbar-item">
-        <!-- <button class="btn btn-default" ng-click="EnterpriseCtrl.create()" data-method="create">
-          <i class="fa fa-plus-circle"></i>
-          {{ "ENTERPRISE.ADD_ENTERPRISE" | translate }}
-        </button> -->
-      </div>
+      <div class="toolbar-item"></div>
     </div>
   </div>
 </div>
@@ -33,7 +28,7 @@
 
             <div class="panel-heading">
               <b><i class="fa fa-building"></i> {{ 'TREE.ENTERPRISE' | translate }} :
-                <span ng-if="EnterpriseCtrl.enterprise.name">{{ EnterpriseCtrl.enterprise.name | uppercase }}</span>
+                <span class="text-uppercase" ng-if="EnterpriseCtrl.enterprise.name">{{ EnterpriseCtrl.enterprise.name }}</span>
               </b>
             </div>
 
@@ -180,8 +175,8 @@
               </li>
             </ul>
 
-            <div class="panel-footer clearfix">
-              <button type="submit" class="pull-right btn btn-default"
+            <div class="panel-footer text-right">
+              <button type="submit" class="btn btn-default"
                 data-method="create"
                 ng-click="EnterpriseCtrl.addProject()">
                 <i class="fa fa-plus"></i> {{ 'FORM.LABELS.ADD' | translate }}
