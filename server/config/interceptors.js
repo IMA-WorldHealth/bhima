@@ -46,6 +46,7 @@ exports.handler = function handler(error, req, res, next) {
 
   // check if it is a database error and format the proper description if so.
   if (error.sqlState) {
+    console.log('error:', error);
     error = new BadRequest(map[error.code]);
   }
 

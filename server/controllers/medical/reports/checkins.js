@@ -20,7 +20,9 @@ const _ = require('lodash');
 
 const BadRequest = require('../../../lib/errors/BadRequest');
 const db = require('../../../lib/db');
+
 const Patients = require('../patients');
+const Locations = require('../../admin/locations');
 
 // group supported renderers
 const renderers = {
@@ -32,15 +34,24 @@ const renderers = {
 // default rendering parameters
 const defaults = {
   pageSize: 'A4',
-  renderer: 'pdf',
-  lang : 'en'
+  renderer: 'pdf'
 };
 
 // path to the template to render
 const template = path.normalize('./server/controllers/medical/reports/checkins.handlebars');
 
+/**
+ * @function getReportData
+ *
+ * @description
+ * Compiles the data for the checkin report from the patient table and previous
+ * checkins.
+ *
+ * @param {String} uuid - the patient uuid to look up
+ */
 function getReportData(uuid) {
 
+  // data to be passed to the report
   const data = {
     metadata : { timestamp : new Date() }
   };
@@ -48,6 +59,19 @@ function getReportData(uuid) {
   return Patients.lookupPatient(uuid)
     .then(patient => {
       data.patient = patient;
+
+      // make sure the patient year is set properly
+      data.patient.year = new Date(patient.registration_date).getFullYear();
+
+      // allow logical switches in patient sex
+      data.patient.isMale = patient.sex === 'M';
+
+      return Locations.lookupVillage(patient.origin_location_id);
+    })
+    .then(location => {
+
+      // bind location
+      data.location = location;
 
       const sql = `
         SELECT BUID(patient_uuid) AS patient_uuid, start_date, YEAR(start_date) AS year,
@@ -65,7 +89,6 @@ function getReportData(uuid) {
       // grouping by year allows pretty table groupings
       data.checkins = _.groupBy(checkins, 'year');
       data.total = checkins.length;
-
       return data;
     });
 }
@@ -97,12 +120,19 @@ function build(req, res, next) {
   _.defaults(context, defaults);
 
   getReportData(req.params.uuid)
-  .then(data => renderer.render(data, template, context))
-  .then(result => {
-    res.set(renderer.headers).send(result);
-  })
-  .catch(next)
-  .done();
+    .then(data => {
+
+      // attach session information as metadata
+      data.metadata.user = req.session.user;
+      data.metadata.enterprise = req.session.enterprise;
+      return data;
+    })
+    .then(data => renderer.render(data, template, context))
+    .then(result => {
+      res.set(renderer.headers).send(result);
+    })
+    .catch(next)
+    .done();
 }
 
 module.exports = build;

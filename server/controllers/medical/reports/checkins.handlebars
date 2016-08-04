@@ -2,13 +2,14 @@
   <title>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</title>
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
   <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
+  <meta charset="utf-8" /> 
   <style>
-    .table-mini {
+    .table-report{
       font-size: 0.8em;
     }
 
-    .table-mini tr td,
-    .table-mini tr th {
+    .table-report tr td,
+    .table-report tr th {
       padding : 1px;
     }
   </style>
@@ -17,32 +18,72 @@
 
   <!-- patient header -->
   <header>
-    <h4>
-      {{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}
-      <small class="pull-right">
-        <i class="fa fa-calendar"></i> {{timestamp metadata.timestamp }}
-      </small>
-    </h4>
+    <section class="row">
+      <!-- patient information -->
+      <div class="col-xs-6">
+        <div>
+          <strong>{{patient.first_name}} {{patient.middle_name}} {{patient.last_name}}</strong>
+
+          <!-- patient age/sex symbol -->
+          <span>
+            {{#if patient.isMale}}
+              <i class="fa fa-mars"></i>
+            {{else}}
+              <i class="fa fa-venus"></i>
+            {{/if}}
+            {{age patient.dob}}
+          </span>
+
+          <!-- patient locked indicator -->
+          {{#if patient.locked}}
+            <i class="fa fa-locked"></i>
+          {{/if}}
+        </div>
+
+        <!-- patient identifier & registration date -->
+        <div>{{patient.reference}} <span class="text-lowercase">{{translate "REPORT.SINCE"}}</span> {{date patient.registration_date}}</div>
+        <div><i class="fa fa-h-square"></i> {{patient.hospital_no}}</div>
+
+        <!-- patient group information -->
+        <div><i class="fa fa-group"></i> {{patient.debtor_group_name}}</div>
+
+        <!-- patient origin location information -->
+        <div><i class="fa fa-home"></i> {{location.name}}, {{location.sector_name}}, {{location.province_name}}, {{location.country_name}}</div>
+      </div>
+
+      <!-- Report Metadata -->
+      <div class="col-xs-6 text-right">
+        <div><strong>{{translate "PATIENT_RECORDS.CHECK_IN.REPORT_TITLE"}}</strong></div>
+        <div><i class="fa fa-hospital-o"></i> {{metadata.enterprise.name}}</div>
+        <div>{{metadata.enterprise.location}}</div>
+        <div><i class="fa fa-calendar"></i> {{translate "REPORT.PRODUCED_ON"}} {{timestamp metadata.timestamp}}</div>
+        <div><i class="fa fa-user"></i> {{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
+      </div>
+    </div>
   </header>
 
+  <section class="text-center">
+    <h4>{{translate "PATIENT_RECORDS.CHECK_IN.REPORT_TITLE"}}</h4>
+  </section>
+
   <section>
-    <table class="table table-bordered table-condensed table-mini">
+    <table class="table table-bordered table-condensed table-report">
       <thead>
-        <tr class="text-capitalize text-center">
-          <th></th>
-          <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
-          <th>{{translate "TABLE.COLUMNS.ACTION" }}</th>
-          <th>{{translate "TABLE.COLUMNS.USER" }}</th>
+        <tr class="text-capitalize">
+          <th class="text-center"><i class="fa fa-bookmark-o"></i></th>
+          <th class="text-center">{{translate "TABLE.COLUMNS.DATE"}}</th>
+          <th class="text-center">{{translate "TABLE.COLUMNS.ACTION"}}</th>
+          <th class="text-center">{{translate "TABLE.COLUMNS.USER"}}</th>
         </tr>
       </thead>
       <tbody>
 
         <!-- initial patient registration -->
         <tr>
-          <td></td>
-          <td>{{date patient.registration_date }}</td>
-          <td>{{translate "FORM.LABELS.DATE_REGISTRATION" }}</td>
-          <td>{{ patient.displayName }}</td>
+          <th class="text-center">{{patient.year}}</th>
+          <td>{{date patient.registration_date}}</td>
+          <td>{{translate "FORM.LABELS.DATE_REGISTRATION"}}</td>
+          <td>{{patient.displayName}}</td>
         </tr>
 
         <!-- print a row for each checkin -->
@@ -50,7 +91,7 @@
           {{#each records}}
             {{#if @first}}
               <tr>
-                <td rowspan="{{records.length}}">{{ year }}</td>
+                <th rowspan="{{records.length}}" class="text-center">{{year}}</th>
                 <td>{{timestamp this.start_date}}</td>
                 <td>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
                 <td>{{this.displayName}}</td>
@@ -66,16 +107,11 @@
         {{else}}
           <tr>
             <td colspan="4" class="text-center">
-              {{translate "TABLE.COLUMNS.EMPTY"}}
+              <i class="fa fa-warning"></i> {{translate "TABLE.COLUMNS.EMPTY"}}
             </td>
           </tr>
         {{/each}}
-      </tbody>
-      <tfoot>
-        <tr>
-          <th colspan="4" class="text-right">{{translate "FORM.LABELS.TOTAL" }} {{ total }}</th>
-        </tr>
-      </tfoot>
     </table>
+    <p class="text-right">{{translate "FORM.LABELS.TOTAL"}} {{total}}</p>
   </section>
 </body>
