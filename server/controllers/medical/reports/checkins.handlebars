@@ -2,15 +2,34 @@
   <title>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</title>
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
   <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
-  <meta charset="utf-8" /> 
+  <meta charset="utf-8" />
   <style>
-    .table-report{
+    .table-report {
       font-size: 0.8em;
     }
 
-    .table-report tr td,
-    .table-report tr th {
-      padding : 1px;
+    .table-report > thead > th {
+      font-size: 1.2em;
+    }
+
+
+    .table-report > tbody > tr > td,
+    .table-report > tbody > tr > th,
+    .table-report > thead > tr > th {
+      padding : 2px;
+    }
+
+    .table-report {
+      margin-bottom : 0;
+    }
+
+    .table-report > tbody > tr > td,
+    .table-report > tbody > tr > th {
+      border: 1px solid #ddd;
+    }
+
+    .table-report > thead > tr > th {
+      border-bottom : 1px solid #000;
     }
   </style>
 </head>
@@ -53,8 +72,7 @@
 
       <!-- Report Metadata -->
       <div class="col-xs-6 text-right">
-        <div><strong>{{translate "PATIENT_RECORDS.CHECK_IN.REPORT_TITLE"}}</strong></div>
-        <div><i class="fa fa-hospital-o"></i> {{metadata.enterprise.name}}</div>
+        <div><strong><i class="fa fa-hospital-o"></i> {{metadata.enterprise.name}}</strong></div>
         <div>{{metadata.enterprise.location}}</div>
         <div><i class="fa fa-calendar"></i> {{translate "REPORT.PRODUCED_ON"}} {{timestamp metadata.timestamp}}</div>
         <div><i class="fa fa-user"></i> {{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
@@ -67,7 +85,7 @@
   </section>
 
   <section>
-    <table class="table table-bordered table-condensed table-report">
+    <table class="table table-condensed table-report">
       <thead>
         <tr class="text-capitalize">
           <th class="text-center"><i class="fa fa-bookmark-o"></i></th>
@@ -81,9 +99,9 @@
         <!-- initial patient registration -->
         <tr>
           <th class="text-center">{{patient.year}}</th>
-          <td>{{date patient.registration_date}}</td>
-          <td>{{translate "FORM.LABELS.DATE_REGISTRATION"}}</td>
-          <td>{{patient.displayName}}</td>
+          <td class="text-center">{{date patient.registration_date}}</td>
+          <td class="text-center">{{translate "FORM.LABELS.DATE_REGISTRATION"}}</td>
+          <td class="text-center">{{patient.displayName}}</td>
         </tr>
 
         <!-- print a row for each checkin -->
@@ -92,15 +110,15 @@
             {{#if @first}}
               <tr>
                 <th rowspan="{{records.length}}" class="text-center">{{year}}</th>
-                <td>{{timestamp this.start_date}}</td>
-                <td>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
-                <td>{{this.displayName}}</td>
+                <td class="text-center">{{date this.start_date}}</td>
+                <td class="text-center">{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
+                <td class="text-center">{{this.displayName}}</td>
               </tr>
             {{else}}
               <tr>
-                <td>{{timestamp this.start_date}}</td>
-                <td>{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
-                <td>{{this.displayName}}</td>
+                <td class="text-center">{{date this.start_date}}</td>
+                <td class="text-center">{{translate "PATIENT_RECORDS.CHECK_IN.TITLE"}}</td>
+                <td class="text-center">{{this.displayName}}</td>
               </tr>
             {{/if}}
           {{/each}}
@@ -112,6 +130,5 @@
           </tr>
         {{/each}}
     </table>
-    <p class="text-right">{{translate "FORM.LABELS.TOTAL"}} {{total}}</p>
   </section>
 </body>

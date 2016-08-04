@@ -20,7 +20,6 @@
 const exphbs = require('express-handlebars');
 const numeral = require('numeral');
 
-// this is very cheeky
 const moment = require('moment');
 
 const formatDollar = '$0,0.00';
@@ -35,7 +34,8 @@ const hbs = exphbs.create({
     age : age,
     uppercase : uppercase,
     lowercase : lowercase,
-    sum : sum
+    sum : sum,
+    add : add
   }
 });
 
@@ -91,6 +91,10 @@ function uppercase(value) {
 
 function lowercase(value) {
   return String(value).toLowerCase();
+}
+
+function add(a, b) {
+  return a + b;
 }
 
 /**
