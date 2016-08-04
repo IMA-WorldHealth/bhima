@@ -240,7 +240,7 @@ describe('(/patients) Patients', function () {
     // var NUMBER_OF_PATIENTS = 200;
     // var timeoutInterval = 30;
 
-    var NUMBER_OF_PATIENTS = 2;
+    var NUMBER_OF_PATIENTS = 7;
     var timeoutInterval = 0;
 
     var timeout = 0;
@@ -294,7 +294,7 @@ describe('(/patients) Patients', function () {
 
   // TODO get information on the registered patient - ensure details route is correct
   function delayPatientRequest(timeout, hospitalNo) {
-    var deferred = q.defer();
+    const deferred = q.defer();
 
     setTimeout(function () {
 
@@ -304,7 +304,6 @@ describe('(/patients) Patients', function () {
       agent.post('/patients')
         .send(simultaneousRequest)
         .then(function (res) {
-          console.log('res:', res.body);
           deferred.resolve(res);
         })
         .catch(function (error) {

@@ -3,6 +3,9 @@
 const q = require('q');
 const winston = require('winston');
 
+/** @const the number of times a transaction is restarted in case of deadlock*/
+const MAX_TRANSACTION_DEADLOCK_RESTARTS = 3;
+
 // Uses an already existing connection to query the database, returning a promise
 function queryConnection(connection, sql, params) {
   const deferred = q.defer();
@@ -52,6 +55,7 @@ class Transaction {
   constructor(db) {
     this.queries = [];
     this.db = db;
+    this.restarts = 0;
   }
 
   /**
@@ -124,8 +128,29 @@ class Transaction {
             // individual query did not work - rollback transaction
             connection.rollback(() => {
               connection.destroy();
-              winston.debug(`[Transaction] Rollback due to : ${error}`);
+              winston.warn(
+                `[Transaction] Encountered error ${error.code}.  Rolling transaction back and recoverying database connections.`
+              );
             });
+
+            // restart transactions a set number of times if the error is due to table deadlocks
+            if (error.code === 'ER_LOCK_DEADLOCK' && this.restarts++ < MAX_TRANSACTION_DEADLOCK_RESTARTS) {
+              winston.warn(
+                `[Transaction] Transacton deadlock discovered. Attempting ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts.`
+              );
+
+              // restart transaction
+              return this.execute()
+                .then(results => deferred.resolve(results))
+                .catch(err => deferred.reject(err));
+            }
+
+            // if we get here, all attempted restarts failed.  Report an error in case tables are permanently locked.
+            if (error.code === 'ER_LOCK_DEADLOCK') {
+              winston.error(
+                `[Transaction] Unrecoverable deadlock error. Completed ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts.`
+              );
+            }
 
             return deferred.reject(error);
           });

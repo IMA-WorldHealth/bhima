@@ -1,3 +1,5 @@
+'use strict';
+
 const en = require('../../../client/i18n/en.json');
 const fr = require('../../../client/i18n/fr.json');
 
