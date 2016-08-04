@@ -7,15 +7,8 @@
 
         <span class="badge badge-primary text-uppercase" ng-show="JournalCtrl.transactions.isEditing()">
           <i class="fa fa-street-view"></i>
-          Edit Mode
+          {{ "POSTING_JOURNAL.EDIT_MODE" | translate }}
         </span>
-
-        <span class="badge badge-warning text-uppercase" ng-show="JournalCtrl.transactions._highlights.length > 0">
-          {{ JournalCtrl.transactions._highlights.length }}
-          <span ng-if="JournalCtrl.transactions._highlights.length == 1">Highlight</span>
-          <span ng-if="JournalCtrl.transactions._highlights.length > 1">Highlights</span>
-        </span>
-
       </li>
     </ol>
 

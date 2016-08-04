@@ -77,9 +77,7 @@ function TransactionService(util, uiGridConstants, bhConstants) {
     // a mapping of record_uuid -> array indices in the rendered row set
     this.transactionIndices = {};
 
-    // these arrays store the transactions ids currently being highlighted or
-    // edited.
-    this._highlights = [];
+    // this array stores the transactions ids currently being edited.
     this._edits = [];
 
     gridOptions.cellEditableCondition = cellEditableCondition;
@@ -194,30 +192,6 @@ function TransactionService(util, uiGridConstants, bhConstants) {
     this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  /**
-   * @method highlight
-   *
-   * @description
-   * This function sets the ROW_HIGHLIGHT_FLAG property on all transactions matching
-   * the provided uuid.  This is useful for scrolling transactions into view.
-   *
-   * @param {String} uuid - the record_uuid of the transaction to highlight.
-   * @param {Boolean} unsetPreviousHighlight - boolean to determine whether
-   *   previous highlights should persist.
-   */
-  Transactions.prototype.highlight = function highlight(uuid, unsetPreviousHighlight) {
-
-    // remove the ROW_HIGHLIGHT_FLAG property on all transactions
-    if (unsetPreviousHighlight) {
-      this._highlights.forEach(function (uuid) {
-        setPropertyOnTransaction.call(this, uuid, ROW_HIGHLIGHT_FLAG, false);
-      }.bind(this));
-    }
-
-    // set highlight on the provided transaction
-    setPropertyOnTransaction.call(this, uuid, ROW_HIGHLIGHT_FLAG, true);
-    this._highlights.push(uuid);
-  };
 
   /**
    * @method scrollIntoView
