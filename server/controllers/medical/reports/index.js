@@ -6,11 +6,11 @@
  * in the medical module.
  */
 
-
 // expose to the express router
 module.exports = {
   receipts: {
     patients: require('./patient.receipt').build,
   },
-  patientRegistrations : require('./registrations')
+  patientRegistrations : require('./registrations'),
+  patientCheckins : require('./checkins')
 };

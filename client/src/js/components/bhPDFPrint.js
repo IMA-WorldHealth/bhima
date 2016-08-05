@@ -2,16 +2,34 @@ angular.module('bhima.components')
 .component('bhPdfPrint', {
   bindings : {
     pdfUrl : '@',
+    disableCache: '@',
     options : '<'
   },
-  transclude : true,
   template :
     '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()">' +
-    '<span><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
+      '<span><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
     '</bh-loading-button>' +
     '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
   controller : bhPDFPrintController
 });
+
+angular.module('bhima.components')
+.component('bhPdfLink', {
+  bindings : {
+    pdfUrl : '@',
+    disableCache: '@',
+    options : '<',
+  },
+  transclude : true,
+  template :
+    '<a href ng-click="$ctrl.print()">' +
+      '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
+      '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFO.LOADING" | translate }}</span>' +
+    '</a>' +
+    '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
+  controller : bhPDFPrintController
+});
+
 
 bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
 
@@ -30,7 +48,6 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
  * Options will be passed as params in the get request.
  *
  * @todo Investigate abstracting direct print to browser window functionality to allow export drop-down
- * @todo Namespace component so that more than one can be used on one page at a time
  *
  * @example
  * let url = '/reports/receipt/invoice';
@@ -38,12 +55,16 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
  *
  * <bh-pdf-print
  *   pdf-url="url"
- *   options="options">
+ *   options="options"
+ *   disable-cache="false">
  * </bh-pdf-print>
  */
-function bhPDFPrintController($window, $http, $sce, $timeout, uuid) {
+function bhPDFPrintController($window, $http, $sce, $timeout) {
   var cachedRequest;
   var component = this;
+
+  // turn off caching via disable-cache="true".  Caching is enabled by default.
+  var enableCache = (component.disableCache !== 'true');
 
   /** @todo update all options (receipt modal + direct print directive to use bhConstants included in account management PR */
   var pdfOptions = {
@@ -57,7 +78,7 @@ function bhPDFPrintController($window, $http, $sce, $timeout, uuid) {
   var loadingIndicatorDelay = 1000;
 
   component.$loading = false;
-  component.embeddedContentId = 'pdfdirect' + Date.now();
+  component.embeddedContentId = 'pdfdirect-' + Date.now();
 
   // expose the print method to the view
   component.print = print;
@@ -66,8 +87,9 @@ function bhPDFPrintController($window, $http, $sce, $timeout, uuid) {
     var url = component.pdfUrl;
     var configuration = requestOptions();
 
-    // check to see if this request has been made before - if it has we will use the local resource
-    if (angular.equals(configuration, cachedRequest)) {
+    // check to see if this request has been made before - if it has and caching is enabled,
+    // we will use the local resource
+    if (enableCache && angular.equals(configuration, cachedRequest)) {
       printEmbeddedContent();
       return;
     }

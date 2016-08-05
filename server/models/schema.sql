@@ -1146,6 +1146,7 @@ CREATE TABLE `patient` (
   `middle_name`          VARCHAR(150),
   `hospital_no`          VARCHAR(150),
   `avatar`               VARCHAR(150),
+  `user_id`              SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_1` (`hospital_no`),
   UNIQUE KEY `patient_2` (`project_id`, `reference`),
@@ -1157,7 +1158,8 @@ CREATE TABLE `patient` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
-  FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE
+  FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TRIGGER patient_reference BEFORE INSERT ON patient

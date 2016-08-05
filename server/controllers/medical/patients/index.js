@@ -102,6 +102,8 @@ function create(req, res, next) {
   finance.uuid = finance.uuid || uuid.v4();
   medical.uuid = medical.uuid || uuid.v4();
 
+  medical.user_id = req.session.user.id;
+
   if (medical.dob) {
     medical.dob = new Date(medical.dob);
   }
@@ -109,6 +111,7 @@ function create(req, res, next) {
   if (medical.registration_date) {
     medical.registration_date = new Date(medical.registration_date);
   }
+
 
   finance = db.convert(finance, ['uuid', 'debtor_group_uuid']);
   medical = db.convert(medical, ['uuid', 'current_location_id', 'origin_location_id']);
@@ -213,9 +216,9 @@ function handleFetchPatient(patientUuid) {
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
-      dg.locked, dg.name as debtor_group_name
-    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg
-    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id
+      dg.locked, dg.name as debtor_group_name, u.username, CONCAT(u.first, ' ', u.last) AS displayName
+    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u
+    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id
     WHERE p.uuid = ?;`;
 
   return db.exec(patientDetailQuery, buid)

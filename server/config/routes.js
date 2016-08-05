@@ -345,6 +345,7 @@ exports.configure = function configure(app) {
   app.get('/reports/invoices/:uuid', financeReports.receipts.invoices);
   app.get('/reports/patient/registrations', medicalReports.patientRegistrations);
   app.get('/reports/patient/:uuid', medicalReports.receipts.patients);
+  app.get('/reports/patients/:uuid/checkins', medicalReports.patientCheckins);
   app.get('/reports/purchases/:uuid', inventoryReports.receipts.purchases);
 
   // patient group routes
