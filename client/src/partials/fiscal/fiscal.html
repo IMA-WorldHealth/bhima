@@ -3,13 +3,16 @@
 
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-      <li class="static">{{ "TREE.FISCAL_YEAR" | translate }}</li>
-      <li class="title" ng-if="FiscalCtrl.state.current.name==='fiscal.create'">
-        <span class="label label-success">{{ "FORM.LABELS.CREATE" | translate }}</span>
-      </li>
+      <li class="title">
+        {{ "TREE.FISCAL_YEAR" | translate }}
 
-      <li class="title" ng-if="FiscalCtrl.state.current.name==='fiscal.update'">
-        <span class="label label-danger">{{ "FORM.LABELS.UPDATE" | translate }}</span>
+        <span class="label label-success" ng-show="FiscalCtrl.state.current.name==='fiscal.create'">
+          {{ "FORM.LABELS.CREATE" | translate }}
+        </span>
+
+        <span class="label label-danger" ng-show="FiscalCtrl.state.current.name==='fiscal.update'">
+          {{ "FORM.LABELS.UPDATE" | translate }}
+        </span>
       </li>
     </ol>
 
@@ -17,25 +20,18 @@
       <div class="toolbar-item">
         <a
           ng-if="FiscalCtrl.state.current.name==='fiscal.list'"
+          class="btn btn-default"
           data-method="create"
-          ui-sref="fiscal.create"
-          class="btn btn-default btn-sm">
-          <span class="glyphicon glyphicon-plus"></span>
-          {{'FORM.BUTTONS.ENTITY' | translate}}
+          ui-sref="fiscal.create">
+          <i class="fa fa-plus"></i>
+          {{ 'FISCAL.CREATE_FISCAL_YEAR' | translate }}
         </a>
       </div>
     </div>
   </div>
 </div>
 
-<!--
-     Style adjusment is made for autoscroll which will scroll to the top of the
-     ui-view - because the padding is on the flex-content it will not consider this
-     the top resulting in 0 padding. This should be considered going forward with
-     the structure styles
--->
 <div style="padding-top : 0px;" class="flex-content">
-
-  <div id="anchor" style="padding-top : 5px;" ui-view autoscroll></div>
+  <div style="padding-top : 5px;" ui-view class="container-fluid">
+  </div>
 </div>
-

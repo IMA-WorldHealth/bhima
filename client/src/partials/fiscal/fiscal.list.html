@@ -1,83 +1,86 @@
-<div class="flex-util" style="text-align:center">
-  <div class="container">
-    <strong>{{"FISCAL.TITLE" | translate }}</strong>  
-  </div>  
-</div>
+<div class="container text-center">
+  <div class="row text-center">
+    <div class="col-md-8 col-md-offset-2">
 
-<div class="container-fluid">
-  <div class="container text-center">
-    <table style="width:75%; margin:auto" class="table table-condensed">
-      <thead>
-        <tr>
-          <th style="width:33%">
-            <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'label', order: FiscalCtrl.sortByName})">
-              {{"FORM.LABELS.NAME" | translate }} <span ng-if="FiscalCtrl.sorted === 'label'" class="glyphicon glyphicon-menu-{{FiscalCtrl.nameDesc}}"></span>
-            </a>
-          </th>
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th style="width:33%">
+              <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'label', order: FiscalCtrl.sortByName})">
+                {{"FORM.LABELS.NAME" | translate }} <span ng-if="FiscalCtrl.sorted === 'label'" class="fa fa-sort-{{FiscalCtrl.nameDesc}}"></span>
+              </a>
+            </th>
 
-          <th style="width:34%">
-            <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'created_at', order: FiscalCtrl.sortByDateCreated})">
-              {{"FORM.LABELS.DATE_CREATED" | translate }} <span ng-if="FiscalCtrl.sorted === 'created_at'" class="glyphicon glyphicon-menu-{{FiscalCtrl.dateDesc}}"></span>
-            </a>
-          </th>
-          <th style="width:33%">
-            <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'number_of_months', order: FiscalCtrl.sortByNumbrerOfMonth})">
-              {{"FORM.LABELS.NB_MONTH" | translate }} <span ng-if="FiscalCtrl.sorted === 'number_of_months'" class="glyphicon glyphicon-menu-{{FiscalCtrl.nbMonthDesc}}"></span>
-            </a>  
-          </th>
-        </tr>
-      </thead>
-    </table>
+            <th style="width:34%">
+              <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'created_at', order: FiscalCtrl.sortByDateCreated})">
+                {{"FORM.LABELS.DATE_CREATED" | translate }} <span ng-if="FiscalCtrl.sorted === 'created_at'" class="fa fa-sort-{{FiscalCtrl.dateDesc}}"></span>
+              </a>
+            </th>
+            <th style="width:33%">
+              <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'number_of_months', order: FiscalCtrl.sortByNumbrerOfMonth})">
+                {{"FORM.LABELS.NB_MONTH" | translate }} <span ng-if="FiscalCtrl.sorted === 'number_of_months'" class="fa fa-sort-{{FiscalCtrl.nbMonthDesc}}"></span>
+              </a>
+            </th>
+          </tr>
+        </thead>
+      </table>
 
-    <div ng-repeat="fiscal in FiscalCtrl.fiscalYears | limitTo : FiscalCtrl.pageSize : (FiscalCtrl.currentPage - 1)*FiscalCtrl.pageSize " data-row="{{ $index }}">
-      <div class="panel panel-default" style="margin-bottom : 3px !important;" data-group-entry>
-        <div class="panel-body text-left">
-          <div class="row">
-            <div>
-              <h4 style="margin-top : 0px;"><strong>{{fiscal.label}}</strong> 
-              <span ng-if="fiscal.locked" style="color : #ABABAB;" > [ {{"FORM.INFO.CLOSED" | translate }} ]</span></h4>
+      <div ng-repeat="fiscal in FiscalCtrl.fiscalYears | limitTo : FiscalCtrl.pageSize : (FiscalCtrl.currentPage - 1)*FiscalCtrl.pageSize track by fiscal.id" data-row="{{ $index }}" class="text-left">
+        <div class="panel panel-default" style="margin-bottom : 3px;" data-fiscal-entry>
+          <div class="panel-body">
+            <h4 style="margin-top : 0px;">
+              <strong>{{fiscal.label}}</strong>
+              <span ng-show="fiscal.locked" style="color : #ABABAB;">[{{ "FORM.INFO.CLOSED" | translate }}]</span>
+
+              <span ng-if="fiscal.id === FiscalCtrl.current[0].previous_fiscal_year_id" class="label label-warning">
+                {{ "FORM.INFO.PREVIOUS" | translate }}
+              </span>
+
+              <span ng-if="fiscal.id === FiscalCtrl.current[0].fiscal_year_id" class="label label-primary">
+                {{ "FORM.INFO.CURRENT" | translate }}
+              </span>
+
+
+              <span class="pull-right">
+                <a href data-method="update" ui-sref="fiscal.update({id : fiscal.id})">
+                  <span class="fa fa-pencil-square-o"></span>
+                </a>
+
+                <a href data-method="delete" ng-click="FiscalCtrl.del(fiscal)" class="text-danger">
+                  <span class="fa fa-trash-o"></span>
+                </a>
+              </span>
+            </h4>
+
+            <div class="row">
+              <span class="fa fa-calendar"></span>
+              {{ fiscal.start_date | date }} - {{ fiscal.end_date | date }} ({{ fiscal.number_of_months }}
+              {{ "FORM.LABELS.PERIODS" | translate }})
             </div>
-          </div>
 
-          <div class="row">
-            <div class="col-md-12">
-              <div class="row">
-                <div class="col-md-6 textflow">
-                  <span class="glyphicon glyphicon-calendar"></span> {{ fiscal.start_date | date: "y/MM" }} - {{ fiscal.end_date | date: "y/MM" }} ({{ fiscal.number_of_months }} {{ "FORM.LABELS.PERIODS" | translate }} ) 
-                </div>
-                <div class="col-md-6">
-                  <a data-method="update" ui-sref="fiscal.update({id : fiscal.id})" class="btn btn-xs btn-default">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                  </a>&nbsp; 
-                  <a data-method="delete" ng-click="FiscalCtrl.del(fiscal)" class="btn btn-xs btn-danger">
-                    <span class="glyphicon glyphicon-remove"></span>
-                  </a>&nbsp;
-                  <span ng-if="fiscal.id === FiscalCtrl.current[0].previous_fiscal_year_id" class="label label-danger"> 
-                    {{ "FORM.INFO.PREVIOUS" | translate }} 
-                  </span>
-                  <span ng-if="fiscal.id === FiscalCtrl.current[0].fiscal_year_id" class="label label-primary"> 
-                    {{ "FORM.INFO.CURRENT" | translate }} 
-                  </span>                  
-                </div>                
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-12">
-              <span class="glyphicon glyphicon-time"></span> {{ "FORM.INFO.CREATED" | translate }} <span am-time-ago="fiscal.created_at"></span>
-              , {{ "FORM.INFO.BY" | translate}} <span style="color:#337ab7; font-weight: bold; text-decoration:underline">{{ fiscal.first }} {{ fiscal.last }}</span>
+            <div class="row text-lowercase">
+              <i class="fa fa-clock-o"></i> {{ "FORM.INFO.CREATED" | translate }} <span am-time-ago="fiscal.created_at"></span>
+              {{ "FORM.INFO.BY" | translate }}
+              <a href="">
+                <i class="fa fa-user"></i> {{ fiscal.first }} {{ fiscal.last }}
+              </a>
             </div>
           </div>
         </div>
       </div>
-    </div>  
-    <div>
-      <uib-pagination total-items="FiscalCtrl.fiscalYears.length" ng-model='FiscalCtrl.currentPage' items-per-page='FiscalCtrl.pageSize' next-text="&rsaquo;" previous-text="&lsaquo;" first-text="&lsaquo;&lsaquo;" last-text="&rsaquo;&rsaquo;" boundary-links="true">
-      </uib-pagination>
+
+      <div>
+        <uib-pagination
+          total-items="FiscalCtrl.fiscalYears.length"
+          ng-model='FiscalCtrl.currentPage'
+          items-per-page='FiscalCtrl.pageSize'
+          next-text="&rsaquo;"
+          previous-text="&lsaquo;"
+          first-text="&lsaquo;&lsaquo;"
+          last-text="&rsaquo;&rsaquo;"
+          boundary-links="true">
+        </uib-pagination>
+      </div>
     </div>
-
   </div>
-
-  </div>  
 </div>

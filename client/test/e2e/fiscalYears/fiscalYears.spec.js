@@ -8,7 +8,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Fiscal year Module', function () {
+describe('Fiscal Year', function () {
   'use strict';
 
   const path = '#/fiscal';
@@ -36,7 +36,7 @@ describe('Fiscal year Module', function () {
     FU.validation.error('FiscalManageCtrl.fiscal.label');
     FU.validation.error('FiscalManageCtrl.fiscal.number_of_months');
 
-    components.notification.hasDanger();    
+    components.notification.hasDanger();
   });
 
   it('creates a new fiscalYear', function () {
@@ -47,30 +47,29 @@ describe('Fiscal year Module', function () {
     FU.input('FiscalManageCtrl.fiscal.number_of_months', fiscalYear.number_of_months);
     FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
     FU.buttons.submit();
-    
+
     components.notification.hasSuccess();
   });
 
 
   it('edits a fiscal Year', function () {
-    var updateButton = element.all(by.css('[data-group-entry]'));
+    var updateButton = element.all(by.css('[data-fiscal-entry]'));
     updateButton.all(by.css('[data-method="update"]')).last().click();
 
     // modify the fiscal year label and note
     FU.input('FiscalManageCtrl.fiscal.label', ' 2017 update Comm Annnnn');
     FU.input('FiscalManageCtrl.fiscal.note', ' Complement note');
-    
+
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
 
   it('delete a fiscal Year', function () {
-    var deleteButton = element.all(by.css('[data-group-entry]'));
+    var deleteButton = element.all(by.css('[data-fiscal-entry]'));
     deleteButton.all(by.css('[data-method="delete"]')).last().click();
 
     // click the alert asking for permission
     components.modalAction.confirm();
     components.notification.hasSuccess();
   });
-
 });
