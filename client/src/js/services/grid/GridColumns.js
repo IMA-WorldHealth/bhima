@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('GridColumnService', GridColumnService);
 
 GridColumnService.$inject = [
-  'uiGridConstants', 'AppCache', '$uibModal'
+  'uiGridConstants', 'AppCache', '$uibModal', 'util'
 ];
 
 /**
@@ -19,7 +19,7 @@ GridColumnService.$inject = [
  *
  * @todo - investigate using ui-grid-saveState for caching the column
  */
-function GridColumnService(uiGridConstants, AppCache, Modal) {
+function GridColumnService(uiGridConstants, AppCache, Modal, util) {
 
   /** @const cache alias for this service */
   var serviceKey = '-Columns';
@@ -92,20 +92,13 @@ function GridColumnService(uiGridConstants, AppCache, Modal) {
 
     this.defaults = {};
 
-    var cacheGridApi = gridOptions.onRegisterApi;
-
     // bind the exposed grid API
-    gridOptions.onRegisterApi = function onRegisterApi(api) {
+    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
 
       // when the rendering is complete, cache the default column visibility
       api.core.on.rowsRendered(null, cacheDefaultColumnVisibility.bind(this));
-
-      // Call the method that had previously been registered to request the grid's api
-      if (angular.isDefined(cacheGridApi)) {
-        cacheGridApi(api);
-      }
-    }.bind(this);
+    }.bind(this));
   }
 
   /**

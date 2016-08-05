@@ -773,6 +773,7 @@
   },
   "POSTING_JOURNAL" : {
     "TITLE" : "Posting Journal",
+    "EDIT_MODE" : "Edit Mode",
     "CONFIGURATION" : {
       "TITLE" : "Configuration",
       "COLUMNS" : "Columns"

@@ -3,16 +3,15 @@ var bhima = angular.module('bhima', [
   'bhima.components', 'bhima.routes', 'ui.bootstrap', 'pascalprecht.translate',
   'ngStorage', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid',
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
-  'angularMoment', 'ngMessages', 'ui.grid.pagination', 'ui.grid.moveColumns',
-  'ui.grid.treeView', 'ui.grid.grouping', 'growlNotifications', 'ngAnimate',
-  'ngSanitize'
+  'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
+  'ui.grid.pagination', 'ui.grid.moveColumns', 'angularMoment', 'ngMessages',
+  'growlNotifications', 'ngAnimate', 'ngSanitize'
 ]);
 
 function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider) {
 
   // allow trailing slashes in routes
   $urlMatcherFactoryProvider.strictMode(false);
-  /* misc routes */
 
   $stateProvider
   .state('index', {
@@ -583,6 +582,11 @@ function constantConfig() {
     lengths : {
       maxTextLength : 1000
     },
+    transactions : {
+      ROW_EDIT_FLAG : '_edit',
+      ROW_HIGHLIGHT_FLAG : '_highlight',
+      ROW_INVALID_FLAG : '_invalid'
+    }
   };
 }
 

@@ -1,5 +1,7 @@
 angular.module('bhima.services')
-.service('GridSortingService', GridSortingService);
+  .service('GridSortingService', GridSortingService);
+
+GridSortingService.$inject = ['util'];
 
 /**
  * Grid Sorting Service
@@ -8,7 +10,7 @@ angular.module('bhima.services')
  * sorting on the UI grids.  This the service provides a number
  * of utility methods used to sort on unique columns.
  */
-function GridSortingService() {
+function GridSortingService(util) {
 
   /**
    * This method is responsible for sorting transaction IDs that are generally
@@ -77,23 +79,14 @@ function GridSortingService() {
    * @returns {Function} - Expose all methods from within service
    */
   function GridSorting(gridOptions) {
-    var cacheGridApi = gridOptions.onRegisterApi;
-
-    // Global sorting configuration
+    // global sorting configuration
     gridOptions.enableSorting = true;
 
-    // // Register for the Grid API
-    gridOptions.onRegisterApi = function onRegisterApi(api) {
+    // register for the grid API
+    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
-
       this.transactionIds = transactionIds.bind(this);
-
-      // Call the method that had previously been registered to request the grid's API
-      if (angular.isDefined(cacheGridApi)) {
-        cacheGridApi(api);
-      }
-    }.bind(this);
-
+    }.bind(this));
   }
 
   return GridSorting;
