@@ -18,7 +18,10 @@ exports.list = function list(req, res, next) {
 
   if (req.query.detailed === '1'){
     sql =
-      'SELECT id, name, abbr, email, po_box, phone, BUID(location_id) AS location_id, logo, currency_id FROM enterprise;';
+      `SELECT id, name, abbr, email, po_box, phone,
+      BUID(location_id) AS location_id, logo, currency_id,
+      gain_account_id, loss_account_id
+      FROM enterprise;`;
   }
 
   db.exec(sql)
@@ -47,7 +50,8 @@ function lookupEnterprise(id) {
 
   let sql =
     `SELECT id, name, abbr, email, po_box, phone,
-      BUID(location_id) AS location_id, logo, currency_id
+      BUID(location_id) AS location_id, logo, currency_id,
+      gain_account_id, loss_account_id 
     FROM enterprise WHERE id = ?;`;
 
   return db.exec(sql, [id])

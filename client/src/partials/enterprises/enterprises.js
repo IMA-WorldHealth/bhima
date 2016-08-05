@@ -2,27 +2,26 @@ angular.module('bhima.controllers')
 .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService'
+  '$translate', 'EnterpriseService', 'CurrencyService', 'AccountStoreService',
+  'util', 'NotifyService', 'ProjectService', 'ModalService'
 ];
 
 /**
  * Enterprise Controller
  */
-function EnterpriseController(Enterprises, Currencies, util, Notify) {
+function EnterpriseController($translate, Enterprises, Currencies, Accounts, util, Notify, Projects, Modal) {
   var vm = this;
 
-  vm.view = 'default';
   vm.enterprises = [];
+  vm.enterprise = {};
   vm.maxLength = util.maxTextLength;
   vm.length50 = util.length50;
   vm.length20 = util.length20;
   vm.length100 = util.length100;
   vm.length30 = util.length30;
+  vm.hasEnterprise = false;
 
   // bind methods
-  vm.create = create;
-  vm.update = update;
-  vm.cancel = cancel;
   vm.submit = submit;
 
   // fired on startup
@@ -31,50 +30,58 @@ function EnterpriseController(Enterprises, Currencies, util, Notify) {
     // load enterprises
     Enterprises.read(null, { detailed : 1 })
     .then(function (enterprises) {
-      vm.enterprises = enterprises;
-    }).catch(Notify.handleError);
+      vm.hasEnterprise = enterprises.length ? true : false;
+      vm.enterprises = vm.hasEnterprise ? enterprises : [];
 
+      /**
+       * @note: set the enterprise to the first one
+       * this choice need the team point of view for to setting the default enterprise
+       */
+      vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
+    })
+    .then(Accounts.accounts)
+    .then(function (list) {
+      vm.accounts = list;
+
+      // gain account
+      vm.enterprise.gain_account = vm.accounts.get(vm.enterprise.gain_account_id);
+      // loss account
+      vm.enterprise.loss_account = vm.accounts.get(vm.enterprise.loss_account_id);
+    })
+    .then(refreshProjects)
+    .catch(Notify.handleError);
+
+    // load accounts
+    Accounts.accounts()
+    .then(function (list) {
+      vm.accounts = list;
+
+      // gain account
+      vm.enterprise.gain_account = vm.accounts.get(vm.enterprise.gain_account_id);
+      // loss account
+      vm.enterprise.loss_account = vm.accounts.get(vm.enterprise.loss_account_id);
+    })
+    .catch(Notify.handleError);
+
+    // load currencies
     Currencies.read()
     .then(function (currencies) {
       vm.currencies = currencies;
     }).catch(Notify.handleError);
 
-    vm.view = 'default';
-  }
-
-  function cancel() {
-    vm.view = 'default';
-  }
-
-  function create() {
-    vm.view = 'create';
-    vm.enterprise = {};
-  }
-
-  // switch to update mode
-  function update(id) {
-    vm.enterprise = id;
-    vm.view = 'update';
-  }
-
-  // refresh the displayed Enterprises
-  function refreshEnterprises() {
-    return Enterprises.read(null, { detailed : 1 })
-    .then(function (enterprises) {
-      vm.enterprises = enterprises;
-    });
   }
 
   // form submission
   function submit(form) {
+
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.HAS_ERRORS');
       return;
     }
 
     var promise;
-    var creation = (vm.view === 'create');
-    var enterprise = angular.copy(vm.enterprise);
+    var creation = (vm.hasEnterprise === false);
+    var enterprise = cleanEnterpriseForm(vm.enterprise);
 
     promise = (creation) ?
       Enterprises.create(enterprise) :
@@ -82,13 +89,101 @@ function EnterpriseController(Enterprises, Currencies, util, Notify) {
 
     return promise
       .then(function () {
-        return refreshEnterprises();
-      })
-      .then(function () {
-        update(enterprise.id);
-        Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
+        Notify.success(creation ? 'FORM.INFOS.SAVE_SUCCESS' : 'FORM.INFOS.UPDATE_SUCCESS');
       })
       .catch(Notify.handleError);
+  }
+
+  function cleanEnterpriseForm(enterprise) {
+    return {
+      id : enterprise.id,
+      name : enterprise.name,
+      abbr : enterprise.abbr,
+      phone : enterprise.phone,
+      email : enterprise.email,
+      location_id : enterprise.location_id,
+      currency_id : enterprise.currency_id,
+      po_box : enterprise.po_box,
+      gain_account_id : enterprise.gain_account.id,
+      loss_account_id : enterprise.loss_account.id
+    };
+  }
+
+  /* ================================ PROJECT ================================ */
+
+  vm.addProject = addProject;
+  vm.editProject = editProject;
+  vm.deleteProject = deleteProject;
+
+  // refresh the displayed projects
+  function refreshProjects() {
+    return Projects.read(null, { complete : 1 })
+      .then(function (projects) {
+        vm.projects = projects;
+      });
+  }
+
+  /**
+   * @function editProject
+   * @desc launch project modal for editing
+   */
+  function editProject(id) {
+    var params = {
+      action : 'edit',
+      identifier : id,
+      enterprise : vm.enterprise
+    };
+    Modal.openProjectActions(params)
+    .then(function (value) {
+      if (!value) { return; }
+
+      refreshProjects();
+      Notify.success('FORM.INFOS.UPDATE_SUCCESS');
+    })
+    .catch(Notify.handleError);
+  }
+
+  /**
+   * @function addProject
+   * @desc launch project modal for adding new
+   */
+  function addProject() {
+    var params = {
+      action : 'create',
+      enterprise : vm.enterprise
+    };
+    Modal.openProjectActions(params)
+    .then(function (value) {
+      if (!value) { return; }
+
+      refreshProjects();
+      Notify.success('FORM.INFOS.CREATE_SUCCESS');
+    })
+    .catch(Notify.handleError);
+  }
+
+  /**
+   * @function deleteProject
+   * @desc delete an existing project
+   * @param {number} id The project id
+   */
+  function deleteProject(id, pattern) {
+    var params = {
+      pattern: pattern,
+      elementName: $translate.instant('FORM.LABELS.PROJECT')
+    };
+
+    Modal.openConfirmDeletion(params)
+    .then(function (bool) {
+      if (!bool) { return; }
+
+      Projects.delete(id)
+        .then(function () {
+          Notify.success('FORM.INFOS.DELETE_SUCCESS');
+          return refreshProjects();
+        })
+        .catch(Notify.handleError);
+    });
   }
 
   startup();

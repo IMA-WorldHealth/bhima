@@ -34,11 +34,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'EnterpriseController as EnterpriseCtrl',
     templateUrl: 'partials/enterprises/enterprises.html'
   })
-  .state('projects', {
-    url : '/projects',
-    controller : 'ProjectController as ProjectCtrl',
-    templateUrl : 'partials/projects/projects.html'
-  })
   .state('exchange', {
     url : '/exchange',
     controller : 'ExchangeRateController as ExchangeCtrl',

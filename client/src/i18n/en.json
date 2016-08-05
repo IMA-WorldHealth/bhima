@@ -178,6 +178,7 @@
     "TITLE"                    : "Enterprise Management"
   },
   "ERRORS": {
+    "BAD_REQUEST" : "You are not allowed to perform this operation",
     "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network.",
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
     "NOT_FOUND" : "This record could not be found",
