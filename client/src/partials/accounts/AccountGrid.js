@@ -12,11 +12,12 @@ AccountGridService.$inject = ['AccountStoreService', 'AccountService', 'Store'];
  * adding and removing data.
  */
 function AccountGridService(AccountStore, Accounts, Store, Notify) {
+
   /**
    * @constructor
    *
    * @description
-   * Intialises a new Account Grid object, setting default values
+   * Initialises a new Account Grid object, setting default values
    */
   function AccountGrid() {
     this._store = null;

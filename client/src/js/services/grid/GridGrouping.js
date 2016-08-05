@@ -126,16 +126,17 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     }));
   }
 
+  /**
+   * @constructor
+   */
   function GridGrouping(gridOptions) {
-    var cacheGridApi = gridOptions.onRegisterApi;
 
     // global grouping configuration
     gridOptions.enableGroupHeaderSelection = true;
     gridOptions.treeRowHeaderAlwaysVisible = false;
     gridOptions.showTreeExpandNoChildren = false;
 
-    // register for the grid API
-    gridOptions.onRegisterApi = function onRegisterApi(api) {
+    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
 
       // attach custom renderers
@@ -143,14 +144,8 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
 
       // configure default grouping
       configureDefaultGroupingOptions.call(this, api);
-
-      // call the method that had previously been registered to request the grid's API
-      if (angular.isDefined(cacheGridApi)) {
-        cacheGridApi(api);
-      }
-    }.bind(this);
+    }.bind(this));
   }
-
 
   return GridGrouping;
 }

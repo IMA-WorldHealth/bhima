@@ -129,3 +129,75 @@ input[type=number] {-moz-appearance: textfield;}
 /* expert mode */
 /* @padding-base-vertical: 3px; */
 /* @padding-base-horizontal: 6px; */
+
+/* badges additions */
+.badge.badge-primary {
+  background-color: @label-primary-bg;
+  border-radius: @border-radius-base;
+}
+
+.badge.badge-danger {
+  background-color: @label-danger-bg;
+  border-radius: @border-radius-base;
+}
+
+.badge.badge-warning {
+  background-color: @label-warning-bg;
+  border-radius: @border-radius-base;
+}
+
+.badge.badge-success {
+  background-color: @label-success-bg;
+  border-radius: @border-radius-base;
+}
+
+.badge.badge-info {
+  background-color: @label-info-bg;
+  border-radius: @border-radius-base;
+}
+
+/** transaction things */
+
+.ui-grid-row .ui-grid-cell.transaction-edit {
+  background-color: @state-info-bg;
+  border-color: @btn-primary-border;
+  color: @state-info-text;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-edit.transaction-edit-header  {
+  background-color: @btn-primary-bg;
+  border-color: @btn-primary-border;
+  color: @btn-primary-color;
+}
+
+.transaction-edit-header  a {
+  color: @btn-primary-color;
+}
+
+/* highlight */
+
+.ui-grid-row .ui-grid-cell.transaction-highlight {
+  border-color: @state-warning-border;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-highlight.transaction-highlight-header {
+  background-color: @state-warning-bg;
+  border-color: @state-warning-border;
+  color: @state-warning-text;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-invalid {
+  background-color: @state-danger-bg;
+  border-color: @btn-danger-border;
+  color: @state-danger-text;
+}
+
+.ui-grid-row .ui-grid-cell.transaction-invalid.transaction-invalid-header  {
+  background-color: @btn-danger-bg;
+  border-color: @btn-danger-border;
+  color: @btn-danger-color;
+}
+
+.transaction-invalid-header  a {
+  color: @btn-danger-color;
+}
