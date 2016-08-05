@@ -20,17 +20,13 @@
 const exphbs = require('express-handlebars');
 const numeral = require('numeral');
 
-// this is very cheeky
 const moment = require('moment');
-const en = require('./../../client/i18n/en.json');
-const fr = require('./../../client/i18n/fr.json');
 
 const formatDollar = '$0,0.00';
 const formatFranc = '0.0,00 FC';
 
 const hbs = exphbs.create({
   helpers : {
-    translate : translate,
     multiply : multiply,
     currency : currency,
     date : date,
@@ -38,47 +34,11 @@ const hbs = exphbs.create({
     age : age,
     uppercase : uppercase,
     lowercase : lowercase,
-    sum : sum
+    sum : sum,
+    add : add
   }
 });
 
-/**
- * @function translate
- *
- * This helper method is responsible for looking up a translation value from
- * a JSON object. It allows the template to specify nested keys a string as follows
- *  'FIRST_CATEGORY.SECOND_CATEGORY.ATTRIBUTE'
- */
-function translate(translateCode, languageKey) {
-  // set the translate keys database with English as default
-  let translate = languageKey === 'fr' ? fr : en;
-
-  const initialValue = null;
-
-  if (!translateCode) {
-    return;
-  }
-
-  const codeList = translateCode.split('.');
-
-  /**
-   * This method performs a reduce on a list of object keys and returns the
-   * value stored in the object
-   */
-  function lookupTranslation(a, b) {
-    var initialValue = !a;
-
-    if (initialValue) {
-      // translate to French if given else use English as default
-      return translate[b];
-    } else {
-      // nested value (not initial), select from the comparison object
-      return a[b];
-    }
-  }
-
-  return codeList.reduce(lookupTranslation, initialValue) || translateCode;
-}
 
 function multiply(a, b) {
   return a * b;
@@ -131,6 +91,10 @@ function uppercase(value) {
 
 function lowercase(value) {
   return String(value).toLowerCase();
+}
+
+function add(a, b) {
+  return a + b;
 }
 
 /**

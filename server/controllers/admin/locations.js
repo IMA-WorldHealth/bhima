@@ -1,4 +1,5 @@
-/* The Location API
+/**
+ * The Location API
  *
  * routes:
  *   /locations/villages
@@ -20,6 +21,8 @@ const uuid = require('node-uuid');
 const NotFound = require('../../lib/errors/NotFound');
 const Topic = require('../../lib/topic');
 
+exports.lookupVillage = lookupVillage;
+
 /**
  * GET /locations/villages
  *
@@ -32,7 +35,7 @@ const Topic = require('../../lib/topic');
  * @return {Array} an array of (uuid, name)
  */
 exports.villages = function villages(req, res, next) {
-  var sql =
+  let sql =
     'SELECT BUID(village.uuid) as uuid, village.name FROM village ';
 
   sql += (req.query.sector) ?
@@ -63,7 +66,7 @@ exports.villages = function villages(req, res, next) {
  * @return {Array} an array of (uuid, name)
  */
 exports.sectors = function sectors(req, res, next) {
-  var sql;
+  let sql;
 
   // send a larger response if detailed is 1
   if (req.query.detailed === '1') {
@@ -108,7 +111,7 @@ exports.sectors = function sectors(req, res, next) {
  * @return {Array} an array of (uuid, name)
  */
 exports.provinces = function provinces(req, res, next) {
-  var sql;
+  let sql;
 
   // send a larger response if detailed is 1
   if (req.query.detailed === '1') {
@@ -147,7 +150,7 @@ exports.provinces = function provinces(req, res, next) {
  * @return {array} an array of (uuid, name)
  */
 exports.countries = function countries(req, res, next) {
-  var sql =
+  let sql =
     `SELECT BUID(country.uuid) as uuid, country.name FROM country
     ORDER BY country.name ASC;`;
 
@@ -164,7 +167,7 @@ function lookupVillage(uid) {
   // convert hex uuid into binary
   const bid = db.bid(uid);
 
-  var sql =
+  let sql =
     `SELECT BUID(village.uuid) as uuid, village.name, sector.name AS sector_name, BUID(sector.uuid) AS sector_uuid,
     province.name AS province_name, country.name AS country_name
     FROM village JOIN sector JOIN province JOIN country ON
@@ -173,21 +176,21 @@ function lookupVillage(uid) {
       province.country_uuid = country.uuid
     WHERE village.uuid = ?;`;
 
-  db.exec(sql, [bid])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a village with uuid ${uid}.`);
-    }
+  return db.exec(sql, [bid])
+    .then(function (rows) {
+      if (rows.length === 0) {
+        throw new NotFound(`Could not find a village with uuid ${uid}.`);
+      }
 
-    return rows[0];
-  });
+      return rows[0];
+    });
 }
 
 function lookupSector(uid) {
   // convert hex to binary
   const bid = db.bid(uid);
 
-  var sql =
+  let sql =
     `SELECT BUID(sector.uuid) as uuid, sector.name,
       province.name AS province_name, country.name AS country_name
     FROM sector JOIN province JOIN country ON
@@ -208,7 +211,7 @@ function lookupSector(uid) {
 function lookupProvince(uid) {
   const bid = db.bid(uid);
 
-  var sql =
+  let sql =
     `SELECT BUID(province.uuid) as uuid, province.name, country.name AS country_name
     FROM province JOIN country ON
       province.country_uuid = country.uuid
@@ -227,7 +230,7 @@ function lookupProvince(uid) {
 function lookupCountry(uid) {
   const bid = db.bid(uid);
 
-  var sql =
+  let sql =
     `SELECT BUID(country.uuid) as uuid, country.name
     FROM country
     WHERE country.uuid = ?;`;
@@ -255,7 +258,7 @@ function lookupCountry(uid) {
 exports.detail = function detail(req, res, next) {
   const bid = db.bid(req.params.uuid);
 
-  var sql =
+  let sql =
     `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
       BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
       country.name AS country, BUID(country.uuid) AS countryUuid
@@ -289,7 +292,7 @@ exports.detail = function detail(req, res, next) {
  * sector, countryUuid, country}
  */
 exports.list = function list(req, res, next) {
-  var sql =
+  let sql =
     `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
       BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
       country.name AS country, BUID(country.uuid) AS countryUuid
@@ -323,7 +326,7 @@ exports.create.country = function createCountry(req, res, next) {
   // create a UUID if not provided
   req.body.uuid = req.body.uuid || uuid.v4();
 
-  var sql =
+  let sql =
     'INSERT INTO country (uuid, name) VALUES (?, ?);';
 
   db.exec(sql, [ db.bid(req.body.uuid), req.body.name])
@@ -359,7 +362,7 @@ exports.create.province = function createProvince(req, res, next) {
   // create a UUID if not provided
   data.uuid = data.uuid || uuid.v4();
 
-  var sql =
+  let sql =
     'INSERT INTO province (uuid, name, country_uuid) VALUES (?);';
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.country_uuid]])
@@ -394,7 +397,7 @@ exports.create.sector = function createSector(req, res, next) {
   // create a UUID if not provided
   data.uuid = data.uuid || uuid.v4();
 
-  var sql =
+  let sql =
     'INSERT INTO sector (uuid, name, province_uuid) VALUES (?);';
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.province_uuid]])
@@ -428,7 +431,7 @@ exports.create.village = function createVillage(req, res, next) {
   // create a UUID if not provided
   data.uuid = data.uuid || uuid.v4();
 
-  var sql =
+  let sql =
     'INSERT INTO village (uuid, name, sector_uuid) VALUES (?);';
 
   db.exec(sql, [[ db.bid(data.uuid), data.name, data.sector_uuid ]])
@@ -488,7 +491,7 @@ exports.update.country = function updateCountry(req, res, next) {
  * @method updateProvince
  */
 exports.update.province = function updateProvince(req, res, next) {
-  var sql =
+  let sql =
     'UPDATE province SET ? WHERE uuid = ?;';
 
   // prevent updating the uuid
@@ -517,7 +520,7 @@ exports.update.province = function updateProvince(req, res, next) {
  * @method updateSector
  */
 exports.update.sector = function updateSector(req, res, next) {
-  var sql =
+  let sql =
     'UPDATE sector SET ? WHERE uuid = ?;';
 
   // prevent updating the uuid
@@ -546,7 +549,7 @@ exports.update.sector = function updateSector(req, res, next) {
  * @method updateVillage
  */
 exports.update.village = function updateVillage(req, res, next) {
-  var sql =
+  let sql =
     'UPDATE village SET ? WHERE uuid = ?;';
 
   // prevent updating the uuid

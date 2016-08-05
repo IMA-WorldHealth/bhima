@@ -9,6 +9,8 @@
  *
  * @module  lib/renderers/json
  */
+'use strict';
+
 var q = require('q');
 
 exports.render = renderJSON;

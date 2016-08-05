@@ -749,6 +749,7 @@
       "ORIGINAL"  : "Ce patient n'a jamais été vérifiée.",
       "RECENT"  : "Visites récentes",
       "ITEM" : "Vérifiée",
+      "BY" : "par",
       "SUCCESS" : "Le patient a déjà été vérifié"
     },
     "TITLE"              : "Patients",

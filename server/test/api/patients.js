@@ -240,13 +240,13 @@ describe('(/patients) Patients', function () {
     // var NUMBER_OF_PATIENTS = 200;
     // var timeoutInterval = 30;
 
-    var NUMBER_OF_PATIENTS = 2;
+    var NUMBER_OF_PATIENTS = 7;
     var timeoutInterval = 0;
 
     var timeout = 0;
     var baseHospitalNo = 1000;
 
-    // Settup all patient write requests
+    // Setup all patient write requests
     for (var i = 0; i < NUMBER_OF_PATIENTS; i++) {
       patientQuery.push(delayPatientRequest(timeout, baseHospitalNo + i));
       timeout += timeoutInterval;
@@ -258,7 +258,7 @@ describe('(/patients) Patients', function () {
         var detailsQuery = [];
 
 
-        // Settup all patient read requests
+        // Setup all patient read requests
         res.forEach(function (patient) {
           helpers.api.created(patient);
           detailsQuery.push(agent.get('/patients/'.concat(patient.body.uuid)));
@@ -293,9 +293,8 @@ describe('(/patients) Patients', function () {
   describe('(/:uuid/groups)', PatientGroups);
 
   // TODO get information on the registered patient - ensure details route is correct
-
   function delayPatientRequest(timeout, hospitalNo) {
-    var deferred = q.defer();
+    const deferred = q.defer();
 
     setTimeout(function () {
 

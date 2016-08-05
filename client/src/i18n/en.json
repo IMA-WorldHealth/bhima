@@ -744,6 +744,8 @@
       "ORIGINAL"  : "This patient has never been checked in.",
       "RECENT"  : "Recent Visits",
       "ITEM" : "Checked in",
+      "BY" : "by",
+      "REPORT_TITLE" : "Patient Checkin Report",
       "SUCCESS" : "Patient has been checked in"
     }
   },
@@ -843,6 +845,11 @@
     "REGISTERED"    : "Registered References Groups",
     "TITLE"         : "Reference group management",
     "UPD_REFERENCE" : "Update Reference Group"
+  },
+  "REPORT" : {
+    "SINCE": "Since",
+    "PRODUCED_BY" : "Produced by",
+    "PRODUCED_ON" : "Produced on"
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Add a bilan Section",
@@ -1018,6 +1025,7 @@
       "TYPE"               : "Type",
       "UNIT"               : "Unit",
       "UNIT_PRICE"         : "Unit Price",
+      "USER"               : "User",
       "VALUE"              : "Value",
       "VILLAGE"            : "Village",
       "QUANTITY"           : "Quantity"

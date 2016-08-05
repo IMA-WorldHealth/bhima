@@ -37,7 +37,7 @@ function renderPDF(context, template, options) {
   // pdf requires absolute path to be passed to templates to be picked up by wkhtmltopdf on windows
   context.absolutePath = path.join(process.cwd(), 'client');
 
-  return html.render(context, template)
+  return html.render(context, template, options)
     .then(function (htmlStringResult) {
 
       // only apply specific options for now

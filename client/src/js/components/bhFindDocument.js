@@ -59,7 +59,7 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
   /** delete document */
   function deleteDocument(uuid, pattern) {
     var request = { pattern: pattern, elementName: 'document'};
-    
+
     Modal.openConfirmDeletion(request)
     .then(function (ans) {
       if (!ans) { return; }
@@ -69,7 +69,6 @@ function FindDocumentComponent(Patient, Modal, Document, Notify, User, $translat
         Notify.success('FORM.INFOS.DELETE_SUCCESS');
         startup();
       });
-
     })
     .catch(Notify.handleError);
   }
