@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 ComplexJournalVoucherController.$inject = [
   'VoucherService', '$translate', 'AccountService',
   'CurrencyService', 'SessionService', 'FindEntityService',
-  'FindReferenceService', 'NotifyService'
+  'FindReferenceService', 'NotifyService', 'CashboxService'
 ];
 
 /**
@@ -19,7 +19,7 @@ ComplexJournalVoucherController.$inject = [
  * @todo - Implement Patient Invoices data and Cash Payment data for modal
  * @todo - Implement a mean to categorise transactions for cashflow reports
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify) {
+function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify, Cashbox) {
   var vm = this;
 
   // bread crumb paths
@@ -100,14 +100,16 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   /** clean and generate voucher correct data */
   function handleVoucher() {
     var voucher;
+    var voucherType = JSON.parse(vm.voucher.type_id);
     if (vm.sumCredit === vm.sumDebit) {
       voucher = {
         project_id  : Session.project.id,
         date        : vm.voucher.date,
-        description : vm.voucher.description,
+        description : vm.descriptionPrefix.concat('/', vm.voucher.description),
         currency_id : vm.voucher.currency_id,
         amount      : vm.sumDebit,
         user_id     : Session.user.id,
+        type_id     : voucherType.id
       };
     }
     return voucher;
@@ -182,6 +184,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   /** check validity and refresh all bonding data */
   function refreshState() {
     vm.posted = false;
+    vm.financialTransaction = false;
     vm.rowsInput = validRowsInput();
     vm.validInput = vm.rowsInput.validAmount && vm.rowsInput.validAccount && vm.rowsInput.validTotals && vm.rows.length > 1 ? true : false;
     vm.notifyMessage =
@@ -220,6 +223,12 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
      * -- the validity of missing values
      */
     refreshState();
+
+    /**
+     * Check financial account
+     */
+    isFinancial();
+
   }
 
   /** summation */
@@ -255,7 +264,83 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     // init sum debit and credit
     vm.sumDebit  = 0;
     vm.sumCredit = 0;
+
+    // init financial accounts
+    vm.financialAccount = [];
+
+    Cashbox.read(null, { detailed: 1 })
+    .then(function (list) {
+
+      list.forEach(function (item) {
+
+        if (!existInArray(item.account_id, vm.financialAccount)) {
+          vm.financialAccount.push(item.account_id);
+        }
+
+        if (!existInArray(item.transfer_account_id, vm.financialAccount)) {
+          vm.financialAccount.push(item.transfer_account_id);
+        }
+
+      });
+
+    })
+    .catch(Notify.handleError);
   }
+
+  /** check if an element exists in an array */
+  function existInArray(element, array) {
+    var exist = false;
+    for(var i = 0; i<array.length; i++) {
+      if (array[i] === element) {
+          exist = true;
+          break;
+      }
+    }
+    return exist;
+  }
+
+  /** check use of financial accounts */
+  function isFinancial() {
+
+    vm.financialTransaction = false;
+    for (var i = 0; i < vm.rows.length; i++) {
+      if (vm.rows[i].account && existInArray(vm.rows[i].account.id, vm.financialAccount)) {
+        vm.financialTransaction = true;
+        break;
+      }
+    }
+
+  }
+
+  /* ============================= Transfer Type ============================= */
+  vm.transferType = Vouchers.transferType;
+
+  vm.buildDescription = buildDescription;
+
+  function groupType() {
+    vm.incomes = vm.transferType.filter(function (item) {
+      return item.incomeExpense === 'income';
+    });
+    vm.expenses = vm.transferType.filter(function (item) {
+      return item.incomeExpense === 'expense';
+    });
+  }
+
+  function buildDescription() {
+    if (!vm.voucher.type_id) { return; }
+
+    var current = new Date();
+    var selected = JSON.parse(vm.voucher.type_id);
+    vm.incomeExpense = selected.incomeExpense;
+
+    vm.descriptionPrefix = String(Session.project.abbr)
+      .concat('/JOURNAL_VOUCHER')
+      .concat('/', selected.prefix)
+      .concat('/', current.toDateString());
+  }
+
+  groupType();
+  /* ============================= /Transfer Type ============================ */
 
   /** submit data */
   function submit(form) {
