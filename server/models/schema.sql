@@ -10,7 +10,7 @@ CREATE TABLE `account` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
-  `number` INT(11) NOT NULL,
+  `number` INT(11) UNSIGNED NOT NULL,
   `label` VARCHAR(200) NOT NULL,
   `parent` INT(10) UNSIGNED NOT NULL,
   `locked` TINYINT(1) UNSIGNED DEFAULT 0,
