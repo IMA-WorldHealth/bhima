@@ -1,3 +1,7 @@
-<div class="ui-grid-cell-contents">
+<div class="ui-grid-cell-contents" title="TOOLTIP" ng-if="!row.groupHeader">
   {{ row.entity.debit_equiv | currency:grid.appScope.enterprise.currency_id }}
+</div>
+
+<div class="ui-grid-cell-contents" title="TOOLTIP" ng-if="row.groupHeader">
+  {{ COL_FIELD CUSTOM_FILTERS }}
 </div>
