@@ -99,19 +99,25 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
   /** clean and generate voucher correct data */
   function handleVoucher() {
+
+    buildDescription();
+
     var voucher;
-    var voucherType = JSON.parse(vm.voucher.type_id);
+    var voucherTypeId = vm.voucher.type_id ? JSON.parse(vm.voucher.type_id).id : null;
+    var voucherDescription = vm.descriptionPrefix.concat('/', vm.voucher.description);
+
     if (vm.sumCredit === vm.sumDebit) {
       voucher = {
         project_id  : Session.project.id,
         date        : vm.voucher.date,
-        description : vm.descriptionPrefix.concat('/', vm.voucher.description),
+        description : voucherDescription,
         currency_id : vm.voucher.currency_id,
         amount      : vm.sumDebit,
         user_id     : Session.user.id,
-        type_id     : voucherType.id
+        type_id     : voucherTypeId
       };
     }
+
     return voucher;
   }
 
@@ -273,11 +279,11 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
       list.forEach(function (item) {
 
-        if (!existInArray(item.account_id, vm.financialAccount)) {
+        if (vm.financialAccount.indexOf(item.account_id) === -1) {
           vm.financialAccount.push(item.account_id);
         }
 
-        if (!existInArray(item.transfer_account_id, vm.financialAccount)) {
+        if (vm.financialAccount.indexOf(item.transfer_account_id) === -1) {
           vm.financialAccount.push(item.transfer_account_id);
         }
 
@@ -287,28 +293,19 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     .catch(Notify.handleError);
   }
 
-  /** check if an element exists in an array */
-  function existInArray(element, array) {
-    var exist = false;
-    for(var i = 0; i<array.length; i++) {
-      if (array[i] === element) {
-          exist = true;
-          break;
-      }
-    }
-    return exist;
-  }
-
   /** check use of financial accounts */
   function isFinancial() {
 
     vm.financialTransaction = false;
     for (var i = 0; i < vm.rows.length; i++) {
-      if (vm.rows[i].account && existInArray(vm.rows[i].account.id, vm.financialAccount)) {
+      if (vm.rows[i].account && vm.financialAccount.indexOf(vm.rows[i].account.id) !== -1) {
         vm.financialTransaction = true;
         break;
       }
     }
+
+    // prevent persistent value
+    vm.voucher.type_id = vm.financialTransaction ? vm.voucher.type_id : null;
 
   }
 
@@ -327,16 +324,26 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   }
 
   function buildDescription() {
-    if (!vm.voucher.type_id) { return; }
+    var type,
+        current = new Date(),
+        description = String(Session.project.abbr).concat('/VOUCHER');
 
-    var current = new Date();
-    var selected = JSON.parse(vm.voucher.type_id);
-    vm.incomeExpense = selected.incomeExpense;
+    if (vm.voucher.type_id) {
 
-    vm.descriptionPrefix = String(Session.project.abbr)
-      .concat('/JOURNAL_VOUCHER')
-      .concat('/', selected.prefix)
-      .concat('/', current.toDateString());
+      type = JSON.parse(vm.voucher.type_id);
+
+      vm.incomeExpense = type.incomeExpense;
+
+      vm.descriptionPrefix = description
+        .concat('/', type.prefix)
+        .concat('/', current.toDateString());
+
+    } else {
+
+      vm.descriptionPrefix = description.concat('/', current.toDateString());
+
+    }
+
   }
 
   groupType();
@@ -370,9 +377,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       refreshState();
       vm.posted = true;
     })
-    .catch(function (err) {
-      Notify.danger('VOUCHERS.COMPLEX.CREATE_ERROR');
-    });
+    .catch(Notify.handleError);
 
   }
 

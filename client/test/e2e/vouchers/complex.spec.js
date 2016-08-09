@@ -5,7 +5,7 @@ const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const ComplexVoucherPage = require('./complex.page');
 
-describe.only('Complex Vouchers', function () {
+describe('Complex Vouchers', function () {
 
   before(() => helpers.navigate('vouchers/complex'));
 
@@ -59,7 +59,11 @@ describe.only('Complex Vouchers', function () {
       }
     });
 
-    // set the transfer type
+    /*
+     * set the transfer type to one which have a specific Id
+     * (e.g. cash payment Id is 1)
+     * @see client/src/js/services/VoucherService.js
+     */
     page.transferType(1)
 
     // submit the page
