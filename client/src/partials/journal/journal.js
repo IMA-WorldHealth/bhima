@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
-  'GridFilteringService', 'GridColumnService', 'JournalConfigService',
+  'GridFilteringService', 'GridColumnService', 'GridRowService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
-  'bhConstants'
+  'bhConstants', 'JournalPosterService'
 ];
 
 /**
@@ -30,7 +30,7 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Rows, Config, Session, Notify, Transactions, Editors, bhConstants, PostingService) {
   var vm = this;
 
   /** @constants */
@@ -39,10 +39,13 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
 
   // Journal utilities
-  var sorting, grouping, filtering, columnConfig, transactions, editors;
+  var sorting, grouping, filtering, columnConfig, rowHandler, transactions, editors;
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
+
+  // a flag to determine if a posting is possible
+
 
   vm.enterprise = Session.enterprise;
 
@@ -60,8 +63,11 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   filtering = new Filtering(vm.gridOptions, cacheKey);
   grouping  = new Grouping(vm.gridOptions);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
+  vm.gridRows = new Rows(vm.gridOptions);
   transactions = new Transactions(vm.gridOptions);
   editors = new Editors(vm.gridOptions);
+
+  console.log(vm.gridRows.selectedRowCount);
 
   vm.transactions = transactions;
 
@@ -146,5 +152,11 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
     Config.openColumnConfigModal(columnConfig);
+  };
+
+  //This function opens a modal, to let the user posting transaction to the general ledger
+
+  vm.openTrialBalanceModal = function openTrialBalanceModal () {
+    PostingService.openTrialBalanceModal();
   };
 }

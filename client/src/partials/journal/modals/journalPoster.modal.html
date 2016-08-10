@@ -1,0 +1,47 @@
+<form name="JournalPosterForm" ng-submit="JournalPosterModalCtrl.submit()" bh-form-defaults novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static">{{ ::"TREE.POSTING_JOURNAL" | translate }}</li>
+      <li class="title">
+        {{ ::"POSTING_JOURNAL.CONFIGURATION.TITLE" | translate }}
+        <label class="label label-warning">
+          {{ ::"POSTING_JOURNAL.CONFIGURATION.COLUMNS" | translate }}
+        </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div
+      id="transaction-grid"
+      class="grid-full-height"
+      ui-grid="JournalPosterModalCtrl.gridOptions"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-move-columns
+      ui-grid-selection
+      ui-grid-cellNav
+      ui-grid-edit
+      ui-grid-grouping
+      >
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="ColumnsConfigModalCtrl.cancel()">
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
+    </button>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      data-method="submit">
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </button>
+  </div>
+</form>
