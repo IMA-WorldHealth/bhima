@@ -77,17 +77,17 @@ function PatientRegistryModalController(ModalInstance, Patients, Dates, params) 
     vm.range = range;
 
     switch (range) {
-      case 'today' :
+      case 'today':
         vm.params[key] = new Date();
         break;
-      case 'week' :
-        vm.params[key] = Dates.previous.week();
+      case 'week':
+        vm.params[key] = Dates.current.week();
         break;
-      case 'month' :
-        vm.params[key] = Dates.previous.month();
+      case 'month':
+        vm.params[key] = Dates.current.month();
         break;
       default:
-        vm.params[key] = Dates.previous.year();
+        vm.params[key] = Dates.current.year();
     }
   }
 

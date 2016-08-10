@@ -61,6 +61,10 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
     Notify.handleError(error);
   }
 
+  function isEmpty(object) {
+    return Object.keys(object).length === 0;
+  }
+
   // this function loads patients from the database with search parameters
   // if passed in.
   function load(parameters) {
@@ -71,7 +75,7 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
 
     // if we have search parameters, use search.  Otherwise, just read all
     // patients.
-    var request = angular.isDefined(parameters) ?
+    var request = angular.isDefined(parameters) && !isEmpty(parameters) ?
       Patients.search(parameters) :
       Patients.read();
 

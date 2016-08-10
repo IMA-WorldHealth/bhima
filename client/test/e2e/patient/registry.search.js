@@ -138,7 +138,7 @@ function PatientRegistrySearch() {
     element(by.id('male')).click();
     FU.modal.submit();
 
-    expectNumberOfGridRows(2);
+    expectNumberOfGridRows(1);
     expectNumberOfFilters(3);
 
     // click the "clear filters" button
