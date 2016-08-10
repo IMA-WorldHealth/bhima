@@ -1,9 +1,7 @@
 /* global element, by, browser */
 
-/*
- * @todo - this should have it's own Accounts Page Object.  It is complex enough.
- */
 'use strict';
+
 const chai = require('chai');
 const expect = chai.expect;
 const helpers = require('../shared/helpers');
@@ -14,6 +12,7 @@ const AccountsPage = require('./accounts.page.js');
 const components = require('../shared/components');
 
 describe('Account Management', function () {
+
   const path = '#/accounts';
   before(() => helpers.navigate(path));
 
@@ -38,7 +37,8 @@ describe('Account Management', function () {
     }
   };
 
-  var page = new AccountsPage();
+  const page = new AccountsPage();
+
   it('lists initial accounts', function () {
     page.expectGridRows(INITIAL_ACCOUNTS);
   });
@@ -53,9 +53,8 @@ describe('Account Management', function () {
   it('create state populates parent field through in-line create', function () {
     page.openAddChild(account.id);
 
-    // this relies on the account typeahead/ select to display the account with account number
-    // if this changes this test will have to be updated
-    expect(page.EditModal.parent()).to.eventually.contain(account.number);
+    // this relies on the account select to display the account with account number
+    expect(page.EditModal.parent()).to.eventually.include(account.number);
   });
 
   it('creates a single account', function () {
@@ -79,21 +78,22 @@ describe('Account Management', function () {
 
   it('updates an account title and parent', function () {
     FU.input('AccountEditCtrl.account.label', 'Updated inventory accounts');
-    FU.typeahead('AccountEditCtrl.account.parent', 'Test Income');
+    FU.uiSelect('AccountEditCtrl.account.parent', 'Test Income');
     FU.buttons.submit();
 
     components.notification.hasSuccess();
   });
 
-  var numberOfAccounts = 3;
+  const numberOfAccounts = 3;
+
   it('creates multiple accounts with the batch option selected', function () {
     var parentNumber = 70000;
     var mockAccount = {
       number : parentNumber,
       label : 'End to End Test: '
     };
-    let select = $('body').element(by.model('AccountEditCtrl.account.type_id'));
 
+    let select = $('body').element(by.model('AccountEditCtrl.account.type_id'));
 
     FU.buttons.create();
 
@@ -110,12 +110,11 @@ describe('Account Management', function () {
     addedAccounts += 1;
 
     // set to this parent
-    FU.typeahead('AccountEditCtrl.account.parent', parentNumber);
+    FU.uiSelect('AccountEditCtrl.account.parent', parentNumber);
     // set to income
-    
     select.element(by.css('[data-key="ACCOUNT.TYPES.INCOME"]')).click();
 
-    for (var i = 1; i < numberOfAccounts; i++) {
+    for (let i = 1; i < numberOfAccounts; i++) {
       mockAccount.number += 20;
       createAccount(mockAccount, i);
     }
