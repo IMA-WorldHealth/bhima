@@ -114,6 +114,13 @@ class ComplexVoucherPage {
     return this;
   }
 
+  // set the transfer type
+  transferType(id) {
+    element(by.model('ComplexVoucherCtrl.voucher.type_id')).click();
+    element(by.css(`[data-item="${id}"]`)).click();
+    return this;
+  }
+
   // submit the form
   submit() {
     FU.buttons.submit();

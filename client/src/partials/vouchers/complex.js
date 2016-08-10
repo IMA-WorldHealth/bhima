@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 ComplexJournalVoucherController.$inject = [
   'VoucherService', '$translate', 'AccountService',
   'CurrencyService', 'SessionService', 'FindEntityService',
-  'FindReferenceService', 'NotifyService'
+  'FindReferenceService', 'NotifyService', 'CashboxService'
 ];
 
 /**
@@ -19,7 +19,7 @@ ComplexJournalVoucherController.$inject = [
  * @todo - Implement Patient Invoices data and Cash Payment data for modal
  * @todo - Implement a mean to categorise transactions for cashflow reports
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify) {
+function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify, Cashbox) {
   var vm = this;
 
   // bread crumb paths
@@ -99,17 +99,25 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
   /** clean and generate voucher correct data */
   function handleVoucher() {
+
+    buildDescription();
+
     var voucher;
+    var voucherTypeId = vm.voucher.type_id ? JSON.parse(vm.voucher.type_id).id : null;
+    var voucherDescription = vm.descriptionPrefix.concat('/', vm.voucher.description);
+
     if (vm.sumCredit === vm.sumDebit) {
       voucher = {
         project_id  : Session.project.id,
         date        : vm.voucher.date,
-        description : vm.voucher.description,
+        description : voucherDescription,
         currency_id : vm.voucher.currency_id,
         amount      : vm.sumDebit,
         user_id     : Session.user.id,
+        type_id     : voucherTypeId
       };
     }
+
     return voucher;
   }
 
@@ -182,6 +190,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   /** check validity and refresh all bonding data */
   function refreshState() {
     vm.posted = false;
+    vm.financialTransaction = false;
     vm.rowsInput = validRowsInput();
     vm.validInput = vm.rowsInput.validAmount && vm.rowsInput.validAccount && vm.rowsInput.validTotals && vm.rows.length > 1 ? true : false;
     vm.notifyMessage =
@@ -220,6 +229,12 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
      * -- the validity of missing values
      */
     refreshState();
+
+    /**
+     * Check financial account
+     */
+    isFinancial();
+
   }
 
   /** summation */
@@ -255,7 +270,84 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     // init sum debit and credit
     vm.sumDebit  = 0;
     vm.sumCredit = 0;
+
+    // init financial accounts
+    vm.financialAccount = [];
+
+    Cashbox.read(null, { detailed: 1 })
+    .then(function (list) {
+
+      list.forEach(function (item) {
+
+        if (vm.financialAccount.indexOf(item.account_id) === -1) {
+          vm.financialAccount.push(item.account_id);
+        }
+
+        if (vm.financialAccount.indexOf(item.transfer_account_id) === -1) {
+          vm.financialAccount.push(item.transfer_account_id);
+        }
+
+      });
+
+    })
+    .catch(Notify.handleError);
   }
+
+  /** check use of financial accounts */
+  function isFinancial() {
+
+    vm.financialTransaction = false;
+    for (var i = 0; i < vm.rows.length; i++) {
+      if (vm.rows[i].account && vm.financialAccount.indexOf(vm.rows[i].account.id) !== -1) {
+        vm.financialTransaction = true;
+        break;
+      }
+    }
+
+    // prevent persistent value
+    vm.voucher.type_id = vm.financialTransaction ? vm.voucher.type_id : null;
+
+  }
+
+  /* ============================= Transfer Type ============================= */
+  vm.transferType = Vouchers.transferType;
+
+  vm.buildDescription = buildDescription;
+
+  function groupType() {
+    vm.incomes = vm.transferType.filter(function (item) {
+      return item.incomeExpense === 'income';
+    });
+    vm.expenses = vm.transferType.filter(function (item) {
+      return item.incomeExpense === 'expense';
+    });
+  }
+
+  function buildDescription() {
+    var type,
+        current = new Date(),
+        description = String(Session.project.abbr).concat('/VOUCHER');
+
+    if (vm.voucher.type_id) {
+
+      type = JSON.parse(vm.voucher.type_id);
+
+      vm.incomeExpense = type.incomeExpense;
+
+      vm.descriptionPrefix = description
+        .concat('/', type.prefix)
+        .concat('/', current.toDateString());
+
+    } else {
+
+      vm.descriptionPrefix = description.concat('/', current.toDateString());
+
+    }
+
+  }
+
+  groupType();
+  /* ============================= /Transfer Type ============================ */
 
   /** submit data */
   function submit(form) {
@@ -285,9 +377,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       refreshState();
       vm.posted = true;
     })
-    .catch(function (err) {
-      Notify.danger('VOUCHERS.COMPLEX.CREATE_ERROR');
-    });
+    .catch(Notify.handleError);
 
   }
 
