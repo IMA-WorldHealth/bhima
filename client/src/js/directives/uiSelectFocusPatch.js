@@ -17,6 +17,6 @@ angular.module('bhima.directives')
     link : function (scope, element, attrs) {
       $animate.enabled(element, false);
     }
-  }
+  };
 }]);
 

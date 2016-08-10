@@ -20,7 +20,7 @@ function AccountsPage() {
     var rows = grid.element(by.css('.ui-grid-render-container-body'))
         .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index')).count();
     return rows;
-  };
+  }
 
   page.expectGridRows = function expectGridRows(rows) {
     expect(getRowCount()).to.eventually.equal(rows);
@@ -39,13 +39,14 @@ function AccountsPage() {
   };
 
   page.EditModal = {
-    parent : function () { return element(by.model('AccountEditCtrl.account.parent')).getAttribute('value'); }
+    parent : function () {
+      return element(by.model('AccountEditCtrl.account.parent')).getText();
+    }
   };
 
   page.toggleBatchCreate = function toggleBatchCreate() {
-
     element(by.model('AccountEditCtrl.batchCreate')).click();
-  }
+  };
 }
 
 module.exports = AccountsPage;

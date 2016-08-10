@@ -137,6 +137,36 @@ module.exports = {
   },
 
   /**
+   * @method uiSelect
+   *
+   * @description
+   * Selects an option from the ui-select dropdown
+   *
+   * @param {String} model - the ng-model target to select
+   * @param {String} option - the text of the option element to choose
+   * @param {Element} anchor - a protractor element to search within
+   * @returns {Element} - a protractor option element
+   */
+  uiSelect: function uiSelect(model, label, anchor) {
+    anchor = anchor || $('body');
+
+    // get the HTML <div> element that will trigger the select input
+    let select = anchor ?
+      anchor.element(by.model(model)) :
+      element(by.model(model));
+
+    // trigger the <input> rendering
+    select.click();
+
+    // type into the <input> element the searchable value
+    this.input('$select.search', label, select);
+
+    // select the item of the dropdown menu matching the label
+    let option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
+    return option.click();
+  },
+
+  /**
    * @method dropdown
    *
    * @description
