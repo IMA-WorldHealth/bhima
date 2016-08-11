@@ -19,6 +19,6 @@ function PercentageFilter() {
     if (!angular.isNumber(value) || isNaN(value)) { return number; }
 
     // return the value + a percentage sign
-    return value + '%';
+    return (Math.round(value * 100) / 100) + '%';
   };
 }

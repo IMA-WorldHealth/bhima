@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/fiscal) The Fiscal Years API', function () {
+describe('(/fiscal) Fiscal Year', function () {
 
   var newFiscalYear = {
     label : 'A new Fiscal Year 2017',

@@ -642,7 +642,9 @@
     "PROJECT_NAME"   : "Project Name",
     "SYSTEM"         : "Hospital Management System",
     "TITLE"          : "Bhima",
-    "TODAY"          : "Date of day"
+    "TODAY"          : "Date of day",
+    "FISCAL_YEAR_INFO" : "Fiscal Year Timeline",
+    "FISCAL_YEAR_DESCRIPTION" : "This timeline shows progress made through the current fiscal year."
   },
   "INVENTORY" : {
     "ADD_GROUP"     : "Add inventory group",
