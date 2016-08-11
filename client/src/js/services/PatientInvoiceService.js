@@ -21,7 +21,7 @@ function PatientInvoiceService($http, Modal, util, Session) {
   service.search = search;
   service.openSearchModal = openSearchModal;
   service.formatFilterParameters = formatFilterParameters;
-  service.openCreditNoteModal = openCreditNoteModal;  
+  service.openCreditNoteModal = openCreditNoteModal;
 
   /**
    * @method read
@@ -60,10 +60,16 @@ function PatientInvoiceService($http, Modal, util, Session) {
     billingServices = billingServices || [];
     subsidies = subsidies || [];
 
-    // concat into a single object to send back to the client
+    // concatenate into a single object to send back to the client
     invoice.items = invoiceItems.map(filterInventorySource);
-    invoice.billingServices = billingServices;
-    invoice.subsidies = subsidies;
+
+    invoice.billingServices = billingServices.map(function (billingService) {
+      return billingService.billing_service_id;
+    });
+
+    invoice.subsidies = subsidies.map(function (subsidy) {
+      return subsidy.subsidy_id;
+    });
 
     return $http.post(baseUrl, { invoice : invoice })
       .then(util.unwrapHttpResponse);
@@ -119,10 +125,8 @@ function PatientInvoiceService($http, Modal, util, Session) {
     return Modal.open({
       templateUrl : 'partials/patient_invoice/registry/modalCreditNote.html',
       resolve : {
-        data : {
-          invoice : invoice
-        }
-      },    
+        data : { invoice : invoice }
+      },
       size : 'md',
       animation : true,
       keyboard  : false,

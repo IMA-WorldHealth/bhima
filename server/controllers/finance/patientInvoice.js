@@ -1,14 +1,16 @@
 'use strict';
+
 /**
  * Patient Invoice API Controller
- *.@module controllers/finance/patientInvoice
+ *
+ *@module controllers/finance/patientInvoice
  *
  * @todo (required) major bug - Invoice items are entered based on order or attributes sent from client - this doesn't seem to be consistent as of 2.X
  * @todo GET /invoices/patient/:uuid - retrieve all patient invoices for a specific patient
  *    - should this be /patients/:uuid/invoices?
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
- * @todo Credit note logic pending on clear design
  */
+
 const q    = require('q');
 const db   = require('../../lib/db');
 const uuid = require('node-uuid');
@@ -74,8 +76,9 @@ function list(req, res, next) {
 
 
 /**
- * lookupInvoice
+ * @method lookupInvoice
  *
+ * @description
  * Find an invoice by id in the database.
  *
  * @param {string} invoiceUuid - the uuid of the invoice in question
@@ -110,11 +113,12 @@ function lookupInvoice(invoiceUuid) {
     JOIN billing_service ON billing_service.id = invoice_billing_service.billing_service_id
     WHERE invoice_billing_service.invoice_uuid = ?`;
 
-  let invoiceSubsidyQuery =
-    `SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value
+  let invoiceSubsidyQuery = `
+    SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value
     FROM invoice_subsidy
     JOIN subsidy ON subsidy.id = invoice_subsidy.subsidy_id
-    WHERE invoice_subsidy.invoice_uuid = ?`;
+    WHERE invoice_subsidy.invoice_uuid = ?;
+  `;
 
   return db.exec(invoiceDetailQuery, [buid])
     .then(function (rows) {
@@ -128,7 +132,6 @@ function lookupInvoice(invoiceUuid) {
     })
     .then(function (rows) {
       record.items = rows;
-
       return db.exec(invoiceBillingQuery, [buid]);
     })
     .then(function (rows) {
@@ -138,7 +141,7 @@ function lookupInvoice(invoiceUuid) {
     })
     .then(function (rows) {
       record.subsidy = rows;
-      
+
       return record;
     });
 }
@@ -187,8 +190,8 @@ function find(options) {
   let sql =`
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
       invoice.date, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames, invoice.cost,
-       BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
-        service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id
+      BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
+      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid

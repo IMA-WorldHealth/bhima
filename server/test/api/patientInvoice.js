@@ -314,10 +314,7 @@ function BillingScenarios() {
       credit: 25
     }],
 
-    /* @todo - change this API to take in an array of billing service ids */
-    billingServices : [{
-      billing_service_id : 1
-    }]
+    billingServices : [ 1 ]
   };
 
   it('creates and posts a patient invoice (simple + 1 billing service)', () => {
@@ -379,10 +376,7 @@ function BillingScenarios() {
       credit: 40.95
     }],
 
-    /* @todo - change this API to take in an array of subsidy ids */
-    subsidies : [{
-      subsidy_id : 1
-    }]
+    subsidies : [ 1 ]
   };
 
   it('creates and posts a patient invoice (simple + 1 subsidy)', () => {

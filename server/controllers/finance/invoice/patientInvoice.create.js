@@ -1,4 +1,5 @@
 'use strict';
+
 /**
  * Patient Invoice - Create State
  * @module controllers/finance/patientInvoice
@@ -90,15 +91,41 @@ function processInvoice(invoiceUuid, invoice) {
   return _.values(invoice);
 }
 
-/** @todo there is a proposal to transition this API to accept an array of billing service IDs, this method will have to updated in this re-factor */
+/**
+ * @method processBillingServices
+ *
+ * @description
+ * Maps an array of billing service ids into billing service ids and invoice
+ * UUID tuples.
+ *
+ * @param {Buffer} invoiceUuid - the binary invoice UUID
+ * @param {Array|Undefined} subsidiesDetails - an array of billing service ids
+ *   if they exist.
+ * @returns {Array} - a possibly empty array billing service ids and invoice UUID pairs.
+ *
+ * @private
+ */
 function processBillingServices(invoiceUuid, billingServiceDetails) {
   let billingServices = billingServiceDetails || [];
-  return billingServices.map(billingService => [billingService.billing_service_id, invoiceUuid]);
+  return billingServices.map(billingServiceId => [billingServiceId, invoiceUuid]);
 }
 
+/**
+ * @method processSubsidies
+ *
+ * @description
+ * Maps an array of subsidy ids into subsidy id and invoice uuid tuples
+ *
+ * @param {Buffer} invoiceUuid - the binary invoice uuid
+ * @param {Array|Undefined} subsidiesDetails - an array of subsidy ids if they
+ *   exist.
+ * @returns {Array} - a possibly empty array subsidy ids and invoice UUID pairs.
+ *
+ * @private
+ */
 function processSubsidies(invoiceUuid, subsidiesDetails) {
   let subsidies = subsidiesDetails || [];
-  return subsidies.map(subsidy => [subsidy.subsidy_id, invoiceUuid]);
+  return subsidies.map(subsidyId => [subsidyId, invoiceUuid]);
 }
 
 // process invoice items, transforming UUIDs into binary.
@@ -117,7 +144,7 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
     item.debit = 0;
   });
 
-  // create a filter to align invoice item columns to the sql columns
+  // create a filter to align invoice item columns to the SQL columns
   let filter =
     util.take('uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'invoice_uuid');
 
