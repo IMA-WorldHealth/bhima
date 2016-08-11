@@ -37,25 +37,24 @@
 
               <dt>
                 {{ ::"TREE.FISCAL_YEAR" | translate }}
-                <a href>
-                  <span class="glyphicon glyphicon-info-sign text-info"></span>
-                </a>
+                <bh-info template="/partials/home/fiscal.popover.html"></bh-info>
               </dt>
               <dd>
-
-                <!--
-                  todo: this is very temporary.  Depends on having a fiscal year service to
-                  load information about the fiscal year (such as progress through it)
-                -->
-                <div class="progress">
-                  <div class="progress-bar" role="progressbar" style="width: 20%;">
-                    30%
+                <div class="progress" style="margin-bottom:0px;">
+                  <div class="progress-bar" role="progressbar" style="width:{{HomeCtrl.year.percentage}}%;">
+                    {{ HomeCtrl.year.percentage | percentage }}
                   </div>
                 </div>
-
+                <div class="row">
+                  <div class="col-xs-6">
+                    {{ HomeCtrl.year.start_date | date }}
+                  </div>
+                  <div class="col-xs-6 text-right">
+                    {{ HomeCtrl.year.end_date | date }}
+                  </div>
+                </div>
               </dd>
             </dl>
-
           </div>
         </div>
       </div>

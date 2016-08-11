@@ -17,6 +17,7 @@ function FiscalService(Api) {
   // extend the PrototypeApiService with fiscal routes
   var service = new Api('/fiscal/');
 
+  // TODO - rename this something like 'byDate()'
   service.fiscalYearDate = fiscalYearDate;
 
   /**

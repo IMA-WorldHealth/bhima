@@ -14,8 +14,8 @@
  */
 'use strict';
 
-const winston            = require('winston');
-const upload = require('../lib/uploader');
+const winston = require('winston');
+const upload  = require('../lib/uploader');
 
 // unclassified routes
 const auth                 = require('../controllers/auth');
