@@ -198,7 +198,7 @@ function lookupSector(uid) {
       province.country_uuid = country.uuid
     WHERE sector.uuid = ?;`;
 
-  db.exec(sql, [bid])
+  return db.exec(sql, [bid])
   .then(function (rows) {
     if (rows.length === 0) {
       throw new NotFound(`Could not find a sector with uuid ${uid}.`);
@@ -217,7 +217,7 @@ function lookupProvince(uid) {
       province.country_uuid = country.uuid
     WHERE province.uuid = ?;`;
 
-  db.exec(sql, [bid])
+  return db.exec(sql, [bid])
   .then(function (rows) {
     if (rows.length === 0) {
       throw new NotFound(`Could not find a province with uuid ${uid}.`);
@@ -235,7 +235,7 @@ function lookupCountry(uid) {
     FROM country
     WHERE country.uuid = ?;`;
 
-  db.exec(sql, [bid])
+  return db.exec(sql, [bid])
   .then(function (rows) {
     if (rows.length === 0) {
       throw new NotFound(`Could not find a country with uuid ${uid}.`);
@@ -462,6 +462,7 @@ exports.update = {};
  * @method updateCountry
  */
 exports.update.country = function updateCountry(req, res, next) {
+  const bid = db.bid(req.params.uuid);
   const sql =
     'UPDATE country SET ? WHERE uuid = ?;';
 
@@ -472,7 +473,7 @@ exports.update.country = function updateCountry(req, res, next) {
     'village_uuid', 'sector_uuid', 'province_uuid', 'country_uuid'
   ]);
 
-  db.exec(sql, [data, req.params.uuid])
+  db.exec(sql, [data, bid])
   .then(function () {
     return lookupCountry(req.params.uuid);
   })
@@ -491,6 +492,7 @@ exports.update.country = function updateCountry(req, res, next) {
  * @method updateProvince
  */
 exports.update.province = function updateProvince(req, res, next) {
+  const bid = db.bid(req.params.uuid);
   let sql =
     'UPDATE province SET ? WHERE uuid = ?;';
 
@@ -501,7 +503,7 @@ exports.update.province = function updateProvince(req, res, next) {
     'village_uuid', 'sector_uuid', 'province_uuid', 'country_uuid'
   ]);
 
-  db.exec(sql, [data, req.params.uuid])
+  db.exec(sql, [data, bid])
   .then(function () {
     return lookupProvince(req.params.uuid);
   })
@@ -520,6 +522,7 @@ exports.update.province = function updateProvince(req, res, next) {
  * @method updateSector
  */
 exports.update.sector = function updateSector(req, res, next) {
+  const bid = db.bid(req.params.uuid);
   let sql =
     'UPDATE sector SET ? WHERE uuid = ?;';
 
@@ -530,7 +533,7 @@ exports.update.sector = function updateSector(req, res, next) {
     'village_uuid', 'sector_uuid', 'province_uuid', 'country_uuid'
   ]);
 
-  db.exec(sql, [data, req.params.uuid])
+  db.exec(sql, [data, bid])
   .then(function () {
     return lookupSector(req.params.uuid);
   })
@@ -549,9 +552,11 @@ exports.update.sector = function updateSector(req, res, next) {
  * @method updateVillage
  */
 exports.update.village = function updateVillage(req, res, next) {
+  const bid = db.bid(req.params.uuid);
+
   let sql =
     'UPDATE village SET ? WHERE uuid = ?;';
-
+  
   // prevent updating the uuid
   delete req.body.uuid;
 
@@ -559,7 +564,7 @@ exports.update.village = function updateVillage(req, res, next) {
     'village_uuid', 'sector_uuid', 'province_uuid', 'country_uuid'
   ]);
 
-  db.exec(sql, [data, req.params.uuid])
+  db.exec(sql, [data, bid])
   .then(function () {
     return lookupVillage(req.params.uuid);
   })
