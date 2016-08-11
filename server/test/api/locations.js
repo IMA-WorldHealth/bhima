@@ -123,6 +123,22 @@ describe('(/locations) Locations Interface', function () {
     .catch(helpers.handler);
   });
 
+
+  it('GET /locations/detail/ Return a Global list of all locations with all information (Country, Province, District and Village) ', function () {
+    return agent.get('/locations/detail/')
+    .then(function (res) {
+      expect(res).to.have.status(200);
+      expect(res).to.be.json;
+      expect(res.body).to.have.length(numVillages);
+
+      expect(res.body[0]).to.have.keys([
+        'villageUuid', 'village', 'sector', 'sectorUuid',
+        'province', 'provinceUuid', 'country', 'countryUuid'
+      ]);
+    })
+    .catch(helpers.handler);
+  });
+
   /* CREATE methods */
 
   const country = {
@@ -183,4 +199,54 @@ describe('(/locations) Locations Interface', function () {
       })
       .catch(helpers.handler);
   });
+
+  it('PUT /locations/villages/:uuid should update a Village', function () {
+
+    return agent.put('/locations/villages/' + village.uuid)
+      .send({ name : 'Update Village'})
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body.name).to.equal('Update Village');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /locations/sectors/:uuid should update a Sector', function () {
+    return agent.put('/locations/sectors/' + sector.uuid)
+      .send({ name : 'Update New Sector'})
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body.name).to.equal('Update New Sector');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /locations/provinces/:uuid should update a Province', function () {
+    return agent.put('/locations/provinces/' + province.uuid)
+      .send({ name : 'Update New Province'})
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body.name).to.equal('Update New Province');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /locations/countries/:uuid should update a Country', function () {
+    return agent.put('/locations/countries/' + country.uuid)
+      .send({ name : 'Update New Country'})
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body.name).to.equal('Update New Country');
+      })
+      .catch(helpers.handler);
+  });
+
 });
