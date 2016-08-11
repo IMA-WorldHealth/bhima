@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
 PatientInvoiceService.$inject = [
-  '$http', '$uibModal', 'util', 'SessionService'
+  '$uibModal', 'util', 'SessionService', 'PrototypeApiService'
 ];
 
 /**
@@ -12,35 +12,13 @@ PatientInvoiceService.$inject = [
  * through the PatientService, but for queries not tied to particular patients,
  * this service is particularly useful.
  */
-function PatientInvoiceService($http, Modal, util, Session) {
-  var service = this;
-  var baseUrl = '/invoices/';
+function PatientInvoiceService(Modal, util, Session, Api) {
+  var service = new Api('/invoices/');
 
-  service.read = read;
   service.create = create;
-  service.search = search;
   service.openSearchModal = openSearchModal;
   service.formatFilterParameters = formatFilterParameters;
   service.openCreditNoteModal = openCreditNoteModal;
-
-  /**
-   * @method read
-   *
-   * @description
-   * Retrieves a particular invoice by UUID or a list of all invoices if no UUID is
-   * specified.
-   *
-   * @param {String} uuid (optional) - the uuid of the patient invoice to look
-   *   up in the database.
-   * @param {Object} options (optional) - options to be passed as query string
-   *   parameters to the http request
-   * @returns {Promise} promise - the result of the HTTP request
-   */
-  function read(uuid, options) {
-    var target = baseUrl.concat(uuid || '');
-    return $http.get(target)
-      .then(util.unwrapHttpResponse);
-  }
 
   /**
    * @method create
@@ -71,25 +49,7 @@ function PatientInvoiceService($http, Modal, util, Session) {
       return subsidy.subsidy_id;
     });
 
-    return $http.post(baseUrl, { invoice : invoice })
-      .then(util.unwrapHttpResponse);
-  }
-
-  /**
-   * @method search
-   *
-   * @description
-   * This method is responsible for searching for invoice(s) based on passed parameters
-   *
-   * @param {Object} options - query string parameters to be passed to $http for
-   *   serialization.
-   *
-   * @returns {Promise} - a promise resolving to the HTTP result.
-   */
-  function search (options) {
-    var target = baseUrl.concat('search');
-    return $http.get(target, { params : options })
-        .then(util.unwrapHttpResponse);
+    return Api.create.call(this, { invoice: invoice });
   }
 
   // utility methods
