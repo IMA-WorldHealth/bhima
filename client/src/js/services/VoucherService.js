@@ -11,6 +11,7 @@ VoucherService.$inject = [
  *
  * @description
  * This service manages posting data to the database via the /vouchers/ URL.
+ * @todo: Think about to move transferType into the database table
  */
 function VoucherService(Api, $http, util) {
   var service = new Api('/vouchers/');
@@ -35,6 +36,21 @@ function VoucherService(Api, $http, util) {
   service.createSimple = createSimple;
   service.create = create;
   service.reverse = reverse;
+  service.getTransferType = getTransferType;
+  service.getTransferText = getTransferText;
+
+  /** Get transfer type */
+  function getTransferType(id) {
+    return service.transferType.filter(function (item) {
+      return item.id === id;
+    })[0];
+  }
+
+  /** Get transfer type text */
+  function getTransferText(id) {
+    var result = getTransferType(id);
+    return result ? result.text : id;
+  }
 
   /**
    * Wraps the prototype create method.

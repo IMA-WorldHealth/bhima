@@ -12,6 +12,29 @@ module.exports.queryCondition = queryCondition;
 module.exports.take = take;
 module.exports.isTrueString = isTrueString;
 module.exports.isFalsy = isFalsy;
+module.exports.sqlDate = sqlDate;
+
+/**
+ * @function sqlDate
+ * @param {date} date A date
+ * @return {string} 
+ * @description convert a date in 'yyyy-mm-dd' format
+ */
+function sqlDate(date) {
+
+  // if we pass in a string, return it right away
+  if (typeof date === 'string') { return date; }
+
+  var d     = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day   = '' + d.getDate(),
+      year  = d.getFullYear();
+
+  if (month.length < 2) { month = '0' + month; }
+  if (day.length < 2) { day = '0' + day; }
+
+  return [year, month, day].join('-');
+};
 
 /**
  * @function queryCondition

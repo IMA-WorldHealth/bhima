@@ -398,6 +398,13 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
       }
     })
 
+  /* cashflow */
+  .state('cashflow', {
+    url : '/finance/cashflow',
+    controller : 'CashflowController as ReportCtrl',
+    templateUrl : 'partials/finance/cashflow/cashflow.html'
+  })
+
   /* cashbox routes */
   .state('cashboxes', {
     url : '/cashboxes',

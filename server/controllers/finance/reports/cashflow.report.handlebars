@@ -1,0 +1,212 @@
+<head>
+  <meta charset="UTF-8">
+  <title>{{translate "TREE.CASHFLOW"}}</title>
+  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
+</head>
+
+<div class="container-fluid">
+  <!-- heading  -->
+  <div class="row">
+    <div class="col-xs-4">
+      <h3 style="margin:2px;">{{ model.enterprise.name }}</h3>
+      <p style="margin:2px;">
+        {{translate 'FORM.LABELS.PROJECT'}}: {{ model.project.name }}<br>
+        {{translate 'FORM.LABELS.PHONE'}}: {{ model.enterprise.phone }}<br>
+        {{translate 'FORM.LABELS.EMAIL'}}: {{ model.enterprise.email }}<br>
+        {{translate 'FORM.LABELS.ADDRESS'}}: {{ model.enterprise.location }}
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- the generated report  -->
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h1 style="margin:15px; font-weight:bold" class="text-center">
+        {{uppercase (translate 'TREE.CASHFLOW') }}<br>
+        <small>{{ model.data.accountName }}</small>
+      </h1>
+
+      <!-- summary label  -->
+      <p><u>{{translate 'FORM.LABELS.SUMMARY'}}</u></p>
+
+      <!-- cashflow summary  -->
+      <table
+        class="table table-bordered table-condensed"
+        style="border: 2px solid #ccc;">
+        <!-- period start -->
+        <tr>
+          <td class="text-left">{{translate "REPORT.PERIOD_START" }}</td>
+          {{#each model.data.periodicData}}
+          <td class="text-right">
+            {{date this.period.start_date 'DD MMM YYYY'}}
+          </td>
+          {{/each}}
+        </tr>
+
+        <!-- period stop  -->
+        <tr>
+          <td class="text-left">{{translate "REPORT.PERIOD_STOP"}}</td>
+          {{#each model.data.periodicData}}
+          <td class="text-right">
+            {{date this.period.end_date 'DD MMM YYYY'}}
+          </td>
+          {{/each}}
+        </tr>
+
+        <!-- white line -->
+        <tr>
+          <td style="background-color: #efefef;" colspan="{{add model.data.periodicData.length 1 }}"></td>
+        </tr>
+
+        <!-- openning balance  -->
+        <tr>
+          <td class="text-left"><strong>{{translate 'REPORT.OPENNING_BALANCE'}}<strong></td>
+          {{#each model.data.periodStartArray as |period $index|}}
+          <td class="text-right">
+            {{currency (look ../model.data.periodicOpenningBalance period)}}
+          </td>
+          {{/each}}
+        </tr>
+
+        <!-- closing balance  -->
+        <tr>
+          <td class="text-left"><strong>{{translate 'REPORT.CLOSING_BALANCE'}}<strong></td>
+          {{#each model.data.periodStartArray as |period $index|}}
+          <td class="text-right">
+            {{currency (look ../model.data.periodicBalance period)}}
+          </td>
+          {{/each}}
+        </tr>
+      </table>
+
+      <!-- details labels  -->
+      <p><u>{{translate 'FORM.LABELS.DETAILS'}}</u></p>
+
+      <!-- Cashflow report -->
+      <table class="table table-condensed table-bordered">
+
+        <thead>
+          <!-- heading  -->
+          <tr>
+            <th class="text-left"></th>
+            {{#each model.data.periodStartArray as |period $index|}}
+            <th class="text-right text-uppercase">
+              {{date period 'MMMM'}}
+            </th>
+            {{/each}}
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- cash on hand (openning) -->
+          <tr>
+            <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{translate 'REPORT.OPENNING_BALANCE'}}<strong></td>
+            {{#each model.data.periodStartArray as |period $index|}}
+            <td class="text-right" style="background-color: #ccc;">
+              <strong>{{currency (look ../model.data.periodicOpenningBalance period)}}</strong>
+            </td>
+            {{/each}}
+          </tr>
+
+          <!-- cash incomes label  -->
+          <tr>
+            <td style="background-color: #efefef; letter-spacing: 5px;"
+              class="text-center text-uppercase"
+              colspan="{{add model.data.periodStartArray.length 1}}">
+              <strong>{{translate 'REPORT.CASH_INCOME'}}</strong>
+            </td>
+          </tr>
+
+          <!-- cash incomes  -->
+          {{#each model.data.incomesLabels as |label|}}
+          <tr>
+            <td class="text-left"><strong>{{label}}<strong></td>
+            {{#each ../model.data.periodStartArray as |period $index|}}
+            <td class="text-right">
+              {{currency (look ../../model.data.incomes period label)}}
+            </td>
+            {{/each}}
+          </tr>
+          {{/each}}
+
+          <!-- total incomes -->
+          <tr>
+            <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'FORM.LABELS.TOTAL'}}<strong></td>
+            {{#each model.data.periodStartArray as |period $index|}}
+            <td class="text-right" style="background-color: #efefef;">
+              <b>{{currency (look ../model.data.totalIncomes period)}}</b>
+            </td>
+            {{/each}}
+          </tr>
+
+          <!-- white line -->
+          <tr>
+            <td colspan="{{add model.data.periodicData.length 1}}"></td>
+          </tr>
+
+          <!-- cash expenses label  -->
+          <tr>
+            <td style="background-color: #efefef; letter-spacing: 5px;"
+              class="text-center text-uppercase"
+              colspan="{{add model.data.periodStartArray.length 1}}">
+              <strong>{{translate 'REPORT.CASH_EXPENSE'}}</strong>
+            </td>
+          </tr>
+
+          <!-- cash expenses  -->
+          {{#each model.data.expensesLabels as |label|}}
+          <tr>
+            <td class="text-left"><strong>{{label}}<strong></td>
+            {{#each ../model.data.periodStartArray as |period $index|}}
+            <td class="text-right">
+              {{currency (look ../../model.data.expenses period label)}}
+            </td>
+            {{/each}}
+          </tr>
+          {{/each}}
+
+          <!-- total expenses -->
+          <tr>
+            <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'FORM.LABELS.TOTAL'}}<strong></td>
+            {{#each model.data.periodStartArray as |period $index|}}
+            <td class="text-right" style="background-color: #efefef;">
+              <b>{{currency (look ../model.data.totalExpenses period)}}</b>
+            </td>
+            {{/each}}
+          </tr>
+
+          <!-- white line -->
+          <tr>
+            <td colspan="{{add model.data.periodicData.length 1}}"></td>
+          </tr>
+
+          <!-- montly balance -->
+          <tr>
+            <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{translate 'REPORT.MONTHLY_BALANCE'}}<strong></td>
+            {{#each model.data.periodStartArray as |period $index|}}
+            <td class="text-right" style="background-color: #efefef;">
+              <b>{{currency (substract (look ../model.data.totalIncomes period) (look ../model.data.totalExpenses period))}}</b>
+            </td>
+            {{/each}}
+          </tr>
+
+          <!-- balance (month closing) -->
+          <tr>
+            <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{translate 'REPORT.CLOSING_BALANCE'}}<strong></td>
+            {{#each model.data.periodStartArray as |period $index|}}
+            <td class="text-right" style="background-color: #ccc;">
+              {{currency (look ../model.data.periodicBalance period)}}
+            </td>
+            {{/each}}
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+</div>

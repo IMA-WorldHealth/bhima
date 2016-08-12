@@ -1,0 +1,239 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">
+        {{ "CASHFLOW.TITLE" | translate }}
+        <b ng-show="ReportCtrl.state !== 'generate'" class="label label-default">
+          <span class="fa fa-cogs"></span> {{ "REPORT.CONFIGURATION" | translate }}
+        </b>
+        <b ng-show="ReportCtrl.state === 'generate'" class="label label-info">
+          <span class="fa fa-check-circle-o"></span> {{ "REPORT.GENERATED" | translate }}
+        </b>
+      </li>
+    </ol>
+
+    <div ng-show="ReportCtrl.state === 'generate'" class="toolbar">
+      <div class="toolbar-item btn-group btn-group-sm">
+        <button type="button" class="btn btn-default" ng-click="ReportCtrl.print()">
+          <i class="fa fa-print"></i> {{ 'FORM.BUTTONS.PRINT' | translate }}
+        </button>
+        <button type="button" class="btn btn-default" ng-click="ReportCtrl.reconfigure()">
+          <i class="fa fa-repeat"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <div ng-switch="ReportCtrl.state">
+      <div class="row" ng-switch-default>
+
+        <!-- configuration panel  -->
+        <div class="col-xs-6 col-xs-offset-3 panel panel-default">
+          <div class="panel-body">
+            <form name="ConfigForm" bh-submit="ReportCtrl.generate()" bh-form-defaults novalidate>
+
+              <!-- Date interval  -->
+              <bh-date-interval
+                date-from="ReportCtrl.dateFrom"
+                date-to="ReportCtrl.dateTo">
+              </bh-date-interval>
+
+              <!-- cashbox selection  -->
+              <div class="form-group">
+                <label class="control-label">
+                  <span class="fa fa-briefcase"></span> {{ 'FORM.SELECT.CASHBOX' | translate }}
+                </label>
+                <select
+                  class="form-control"
+                  name="cashbox"
+                  ng-model="ReportCtrl.cashbox"
+                  ng-options="cash as cash.label + ' ' + cash.symbol for cash in ReportCtrl.cashboxes"
+                  required>
+                  <option value="" disabled>-- {{ 'FORM.SELECT.CASHBOX' | translate }} --</option>
+                </select>
+              </div>
+
+              <div class="text-right">
+                <bh-loading-button loading-state="ConfigForm.$loading"
+                  ng-disabled="ConfigForm.$invalid">
+                  {{ "FORM.BUTTONS.GENERATE" | translate }}
+                </bh-loading-button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row" ng-switch-when="generate">
+
+        <!-- the generated report  -->
+        <div class="bh-print col-xs-12">
+
+          <!-- cashflow summary  -->
+          <table
+            class="table table-bordered table-condensed"
+            style="border: 2px solid #ccc;">
+            <!-- period start -->
+            <tr>
+              <td class="text-left">{{ "REPORT.PERIOD_START" | translate }}</td>
+              <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
+                {{ flow.period.start_date | date }}
+              </td>
+            </tr>
+
+            <!-- period stop  -->
+            <tr>
+              <td class="text-left">{{ "REPORT.PERIOD_STOP" | translate }}</td>
+              <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
+                {{ flow.period.end_date | date }}
+              </td>
+            </tr>
+
+            <!-- white line -->
+            <tr>
+              <td style="background-color: #efefef;" colspan="{{ ReportCtrl.session.periodicData.length + 1 }}"></td>
+            </tr>
+
+            <!-- openning balance  -->
+            <tr>
+              <td class="text-left"><strong>{{ 'REPORT.OPENNING_BALANCE' | translate }}<strong></td>
+              <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
+                {{ ReportCtrl.session.periodicOpenningBalance[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}
+              </td>
+            </tr>
+
+            <!-- closing balance  -->
+            <tr>
+              <td class="text-left"><strong>{{ 'REPORT.CLOSING_BALANCE' | translate }}<strong></td>
+              <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
+                {{ ReportCtrl.session.periodicBalance[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}
+              </td>
+            </tr>
+
+          </table>
+
+          <!-- detail label  -->
+          <div class="hidden-print">
+            <span data-show-details="true" style="cursor: pointer; text-decoration: underline;" ng-click="ReportCtrl.toggleDetails()">
+              <i class="fa" ng-class="{'fa-caret-right': !ReportCtrl.showDetails, 'fa-caret-down': ReportCtrl.showDetails}"></i> {{ 'FORM.LABELS.DETAILS' | translate }}
+            </span>
+          </div>
+
+          <!-- Cashflow report -->
+          <table class="table table-condensed table-bordered"
+            ng-show="ReportCtrl.showDetails">
+
+            <thead>
+              <!-- heading  -->
+              <tr>
+                <th class="text-left"></th>
+                <th class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
+                  {{ flow.period.start_date | date: 'MMMM' | uppercase}}
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- cash on hand (openning) -->
+              <tr>
+                <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{ 'REPORT.OPENNING_BALANCE' | translate }}<strong></td>
+                <td class="text-right" style="background-color: #ccc;" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
+                  <strong>{{ ReportCtrl.session.periodicOpenningBalance[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}</strong>
+                </td>
+              </tr>
+
+              <!-- cash incomes label  -->
+              <tr>
+                <td style="background-color: #efefef; letter-spacing: 20px;"
+                  class="text-center text-uppercase"
+                  colspan="{{ ReportCtrl.session.periodicData.length + 1 }}">
+                  <strong>{{ 'REPORT.CASH_INCOME' | translate }}</strong>
+                </td>
+              </tr>
+
+              <!-- cash incomes  -->
+              <tr ng-repeat="label in ReportCtrl.session.incomesLabels track by $index">
+                <td class="text-left"><strong>{{ label | translate }}<strong></td>
+                <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
+                  {{ ReportCtrl.session.incomes[ReportCtrl.basicDate(flow.period.start_date)][label] || 0 | currency:ReportCtrl.session.currency_id }}
+                </td>
+              </tr>
+
+              <!-- total incomes -->
+              <tr>
+                <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{ 'FORM.LABELS.TOTAL' | translate }}<strong></td>
+                <td class="text-right" style="background-color: #efefef;" ng-repeat="flow in ReportCtrl.session.periodicData">
+                  <b>{{ ReportCtrl.session.totalIncomes[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}</b>
+                </td>
+              </tr>
+
+              <!-- white line -->
+              <tr>
+                <td colspan="{{ ReportCtrl.session.periodicData.length + 1 }}"></td>
+              </tr>
+
+              <!-- cash expenses label  -->
+              <tr>
+                <td style="background-color: #efefef; letter-spacing: 20px;"
+                  class="text-center text-uppercase"
+                  colspan="{{ ReportCtrl.session.periodicData.length + 1 }}">
+                  <strong>{{ 'REPORT.CASH_EXPENSE' | translate }}</strong>
+                </td>
+              </tr>
+
+              <!-- cash expenses  -->
+              <tr ng-repeat="label in ReportCtrl.session.expensesLabels track by $index">
+                <td class="text-left"><strong>{{ label | translate }}<strong></td>
+                <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
+                  {{ ReportCtrl.session.expenses[ReportCtrl.basicDate(flow.period.start_date)][label] || 0 | currency:ReportCtrl.session.currency_id }}
+                </td>
+              </tr>
+
+              <!-- total expenses -->
+              <tr>
+                <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{ 'FORM.LABELS.TOTAL' | translate }}<strong></td>
+                <td class="text-right" style="background-color: #efefef;" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
+                  <b>{{ ReportCtrl.session.totalExpenses[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}</b>
+                </td>
+              </tr>
+
+              <!-- white line -->
+              <tr>
+                <td colspan="{{ ReportCtrl.session.periodicData.length + 1 }}"></td>
+              </tr>
+
+              <!-- total income expenses -->
+              <tr>
+                <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{ 'REPORT.MONTHLY_BALANCE' | translate }}<strong></td>
+                <td class="text-right" style="background-color: #efefef;" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
+                  <b>{{ ReportCtrl.session.totalIncomes[ReportCtrl.basicDate(flow.period.start_date)] - ReportCtrl.session.totalExpenses[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}</b>
+                </td>
+              </tr>
+
+              <!-- balance (month closing) -->
+              <tr>
+                <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{ 'REPORT.CLOSING_BALANCE' | translate }}<strong></td>
+                <td class="text-right" style="background-color: #ccc;" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
+                  {{ ReportCtrl.session.periodicBalance[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}
+                </td>
+              </tr>
+
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

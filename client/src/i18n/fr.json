@@ -44,6 +44,9 @@
     "TOO_MANY_TRYS"              : "Avez-vous oublié votre login ou votre mot de passe? S'il vous plaît demander à l'administrateur du système pour le réinitialiser.",
     "UNAUTHENTICATED"            : "Vous avez été déconnecté. Veuillez vous reconnecté avec d'utiliser l'application."
   },
+  "CASHFLOW": {
+    "TITLE": "Cahflow"
+  },
   "BILLING_SERVICES": {
     "BTN": {
       "CREATE" : "Créer un service de facturation",
@@ -179,6 +182,7 @@
     "TITLE"                    : "Gestion des entreprises"
   },
   "ERRORS": {
+    "BAD_DATE_INTERVAL" : "Mauvais interval de date",
     "BAD_REQUEST" : "Vous n'etes pas authorisé à faire cette operation",
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
@@ -224,6 +228,7 @@
       "ENTER_FULL_DATE"       : "Saisie Date Exact",
       "ENTITY"                : "Entité",
       "FILTER"                : "Filtre",
+      "GENERATE"              : "Générer",
       "GROUPS_DEBTOR_UPDATE"  : "L'assignation au groupe débiteur est à jour",
       "GROUPS_PATIENT_UPDATE" : "Mettre à jour l'assignation à un groupe",
       "LOGOUT"                : "Déconnexion",
@@ -372,6 +377,7 @@
       "DEBTOR_GROUP"           : "Groupe Débiteur",
       "DEBTOR_GROUP_FORM"      : "Formulaire d'enregistrement de groupe débiteur",
       "DESCRIPTION"            : "Description",
+      "DETAILS"                : "Details",
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
       "DOB"                    : "Date de Naissance",
@@ -504,11 +510,13 @@
       "STATUS"                 : "Etat",
       "STOCK"                  : "Stock",
       "SUBSIDIES"              : "Les subventions appliqués",
+      "SUMMARY"                : "Résumé",
       "SUPPLIER"               : "Fournisseur",
       "TEL"                    : "Tél",
       "TELEPHONE"              : "Téléphone",
       "THIS_MONTH"             : "Ce Mois",
       "THIS_WEEK"              : "Cette Semaine",
+      "THIS_YEAR"              : "Cette Année",
       "TITLE"                  : "Titre",
       "TITLE_ACCOUNT"          : "Comptes Titre",
       "TODAY"                  : "Aujourd'hui",
@@ -576,12 +584,13 @@
       "ACCOUNT"            : "Sélectionner compte",
       "ACCOUNT_TYPE"       : "Sélectionner Type de Compte",
       "BALANCE_SECTION"    : "Sélectionner la section du bilan",
+      "CASHBOX"            : "Sélectionner une caisse",
       "COST_CENTER"        : "Sélectionner centre de cout",
       "COUNTRY"            : "Sélectionner pays",
       "CREDITOR"           : "Sélectionner un Créditeur",
       "CREDITOR_GROUP"     : "Sélectionner Groupe de créditeurs",
       "DATE_INTERVAL"      : "Sélectionner un intervalle de date",
-      "DEBTOR_GROUP"      : "Sélectionner Groupe de Débiteurs",
+      "DEBTOR_GROUP"       : "Sélectionner Groupe de Débiteurs",
       "ENTERPRISE"         : "Sélectionner entreprise",
       "FUNCTION"           : "Sélectionner une fonction",
       "GRADE"              : "Sélectionner un Grade",
@@ -850,6 +859,20 @@
     "TITLE"         : "Gestion de groupe de référence",
     "UPD_REFERENCE" : "Modifier un groupe de référence"
   },
+  "REPORT" : {
+    "CASH_EXPENSE"     : "Depenses",
+    "CASH_INCOME"      : "Recettes",
+    "CLOSING_BALANCE"  : "Balance à la cloture",
+    "CONFIGURATION"    : "Configuration rapport",
+    "GENERATED"        : "Rapport généré",
+    "MONTHLY_BALANCE"  : "Balance mensuelle",
+    "OPENNING_BALANCE" : "Balance d'ouverture",
+    "SINCE"            : "Depuis",
+    "PERIOD_START"     : "Debut",
+    "PERIOD_STOP"      : "Fin",
+    "PRODUCED_BY"      : "Produit par",
+    "PRODUCED_ON"      : "Produit sur"
+  },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Ajouter une section Bilan",
     "ALERT"             : "Bilan section management",
@@ -1047,6 +1070,7 @@
     "ADMIN"                      : "Admin",
     "BILLING_SERVICES"           : "Services de facturation",
     "CASHBOX_MANAGEMENT"         : "Caisses et Banques",
+    "CASHFLOW"                   : "Cashflow",
     "CASH_WINDOW"                : "Paiements",
     "COMPLEX_JOURNAL_VOUCHER"    : "Ajout de transactions",
     "COST_CENTER_MGMT"           : "Centres de coûts",

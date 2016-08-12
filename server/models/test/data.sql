@@ -44,7 +44,8 @@ INSERT INTO unit VALUES
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
   (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration'),
   (141, 'Vouchers Records', 'TREE.VOUCHER_REGISTRY', 'Vouchers registry module', 5, '/partials/vouchers/index', '/vouchers'),
-  (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create');
+  (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create'),
+  (143, 'Cashflow', 'TREE.CASHFLOW', 'the cashflow report', 5, '/partials/finance/cashflow', '/finance/cashflow');
 
 -- Reserved system account types
 INSERT INTO `account_type` VALUES
@@ -227,7 +228,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (5,2),
 
 -- Fiscal Year
-(13,2);
+(13,2),
+
+-- Cashflow
+(143,1);
 
 
 -- testing financial transactions
