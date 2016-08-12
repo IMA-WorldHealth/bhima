@@ -26,7 +26,6 @@ bhDateInterval.$inject = ['DateService'];
 // controller definition
 function bhDateInterval(Dates) {
   /* global moment */
-
   var vm = this;
 
   vm.options = [

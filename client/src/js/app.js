@@ -312,7 +312,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* creditor routes */
-
   .state('suppliers', {
     url : '/suppliers',
     controller: 'SupplierController as SupplierCtrl',
@@ -324,6 +323,26 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     url : '/purchases/create',
     controller : 'PurchaseOrderController as PurchaseCtrl',
     templateUrl : 'partials/purchases/create/create.html'
+  })
+
+  /* cashflow page */
+  .state('cashflow', {
+    url : '/finance/cashflow',
+    params: { dateFrom: null, dateTo: null, cashbox: null },
+    controller : 'CashflowController as IndexCtrl',
+    templateUrl : 'partials/finance/cashflow/index.html'
+  })
+
+  /* cashflow configuration */
+  .state('cashflow.configure', {
+    controller : 'CashflowConfigController as ConfigCtrl',
+    templateUrl : 'partials/finance/cashflow/config.html'
+  })
+
+  /* cashflow report */
+  .state('cashflow.report', {
+    controller : 'CashflowReportController as ReportCtrl',
+    templateUrl : 'partials/finance/cashflow/report.html'
   })
 
   /* cashbox routes */

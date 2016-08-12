@@ -18,5 +18,6 @@ module.exports = {
   findDebtorGroup: require('./bhFindDebtorGroup'),
   dateEditor:      require('./bhDateEditor'),
   modalAction:     require('./bhModalAction'),
-  notification:    require('./notify')
+  notification:    require('./notify'),
+  dateInterval:    require('./bhDateInterval')
 };

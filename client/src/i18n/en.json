@@ -106,6 +106,9 @@
     "NO_SUPPORTED_CURRENCIES" : "This cashbox does not have any supported currencies.",
     "SET_CURRENCY_ACCOUNTS" : "Set currency accounts for this cashbox."
   },
+  "CASHFLOW": {
+    "TITLE": "Cahflow"
+  },
   "COUNTRY": {
     "CONFIGURATION" : "Country Manager Configuration ",
     "DESCRIPTION"   : "This module will help you to manage countries. At the left you see available countries and their locations. Use this module to create, modify, and remove countries.",
@@ -185,6 +188,7 @@
     "TITLE"                    : "Enterprise Management"
   },
   "ERRORS": {
+    "BAD_DATE_INTERVAL" : "Bad date interval",
     "BAD_REQUEST" : "You are not allowed to perform this operation",
     "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network.",
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
@@ -234,6 +238,7 @@
       "FILTER"                : "Filter",
       "GROUP_BY_ACCOUNT"      : "Group by Account",
       "GROUP_BY_TRANSACTION"  : "Group By Transaction",
+      "GENERATE"              : "Generate",
       "GROUPS_DEBTOR_UPDATE"  : "Update Group Debtor",
       "GROUPS_PATIENT_UPDATE" : "Update Group Assignments",
       "LINK_SUBMISSION"       : "Link to Submission",
@@ -387,6 +392,7 @@
       "DEBTOR_GROUP_FORM"      : "Form debtor group record",
       "DESCRIPTION"            : "Description",
       "DESIGNATION"            : "Designation",
+      "DETAILS"                : "Details",
       "DISTRIBUTABLE"          : "Distributable",
       "DOB"                    : "Date of Birth",
       "DOCUMENT"               : "Document",
@@ -520,13 +526,14 @@
       "STATUS"                 : "Status",
       "STOCK"                  : "Stock",
       "SUBSIDIES"              : "Subsidies Applied",
+      "SUMMARY"                : "Summary",
       "SUPPLIER"               : "Supplier",
       "TEL"                    : "TEL",
       "TELEPHONE"              : "Telephone",
       "TEXT"                   : "Text",
       "THIS_MONTH"             : "This Month",
       "THIS_WEEK"              : "This week",
-      "THIS_YEAR"              : "This year",
+      "THIS_YEAR"              : "This Year",
       "TITLE"                  : "Title",
       "TITLE_ACCOUNT"          : "Title Account",
       "TODAY"                  : "Today",
@@ -596,6 +603,7 @@
       "ACCOUNT"            : "Select an Account",
       "ACCOUNT_TYPE"       : "Select Account Type",
       "BALANCE_SECTION"    : "Select Balance Sheet Section",
+      "CASHBOX"            : "Select a cashbox",
       "COST_CENTER"        : "Select a Cost Center",
       "COUNTRY"            : "Select Country",
       "CREDITOR"           : "Select a Creditor",
@@ -909,17 +917,26 @@
     "UPD_REFERENCE" : "Update Reference Group"
   },
   "REPORT" : {
-    "AGED_DEBTORS"  : {
+    "AGED_DEBTORS" : {
       "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Less Than 30 Days",
       "SIXTY_DAYS" : "Less Than 60 Days",
       "NINETY_DAYS" : "Less Than 90 Days",
       "OVER_NINETY_DAYS" : "Over 90 Days"
     },
-    "SINCE"         : "Since",
-    "PRODUCED_BY"   : "Produced by",
-    "PRODUCED_DATE" : "Production Date",
-    "PRODUCED_ON"   : "Produced on"
+    "CASH_EXPENSE"     : "Expenses",
+    "CASH_INCOME"      : "Incomes",
+    "CLOSING_BALANCE"  : "Closing Balance",
+    "CONFIGURATION"    : "Report Configuration",
+    "GENERATED"        : "Generated Report",
+    "MONTHLY_BALANCE"  : "Monthly Balance",
+    "OPENNING_BALANCE" : "Openning Balance",
+    "PERIOD_START"     : "Start",
+    "PERIOD_STOP"      : "Stop",
+    "PRODUCED_BY"      : "Produced by",
+    "PRODUCED_DATE"    : "Production Date",
+    "PRODUCED_ON"      : "Produced on",
+    "SINCE"            : "Since"
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Add a bilan Section",
@@ -1127,6 +1144,7 @@
     "ADMIN"                      : "Admin",
     "BILLING_SERVICES"           : "Billing Services",
     "CASHBOX_MANAGEMENT"         : "Cashbox Management",
+    "CASHFLOW"                   : "Cashflow",
     "CASH_WINDOW"                : "Cash Window",
     "COMPLEX_JOURNAL_VOUCHER"    : "Journal Vouchers",
     "COST_CENTER_MGMT"           : "Cost Center Management",
