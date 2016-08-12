@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
-  'GridFilteringService', 'GridColumnService', 'GridRowService', 'JournalConfigService',
+  'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
-  'bhConstants', 'JournalPosterService'
+  'bhConstants', 'JournalPostingService'
 ];
 
 /**
@@ -30,8 +30,10 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Rows, Config, Session, Notify, Transactions, Editors, bhConstants, PostingService) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, PostingService) {
   var vm = this;
+
+  console.log(PostingService);
 
   /** @constants */
   vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
@@ -39,7 +41,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Rows,
   vm.ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
 
   // Journal utilities
-  var sorting, grouping, filtering, columnConfig, rowHandler, transactions, editors;
+  var sorting, grouping, filtering, columnConfig, transactions, editors, posting;
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
@@ -61,14 +63,15 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Rows,
   // configuration options
   sorting   = new Sorting(vm.gridOptions);
   filtering = new Filtering(vm.gridOptions, cacheKey);
-  grouping  = new Grouping(vm.gridOptions);
+  grouping  = new Grouping(vm.gridOptions, true);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
-  vm.gridRows = new Rows(vm.gridOptions);
   transactions = new Transactions(vm.gridOptions);
   editors = new Editors(vm.gridOptions);
 
-  console.log(vm.gridRows.selectedRowCount);
+  //attaching the grouping object to the view
+  vm.grouping = grouping;
 
+  //Attaching the transcation to the view
   vm.transactions = transactions;
 
   vm.loading = true;
@@ -155,8 +158,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Rows,
   };
 
   //This function opens a modal, to let the user posting transaction to the general ledger
-
   vm.openTrialBalanceModal = function openTrialBalanceModal () {
-    PostingService.openTrialBalanceModal();
+    PostingService.openTrialBalanceModal(vm.grouping.getSelectedRows());
   };
 }
