@@ -58,6 +58,19 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
      'build': process.env.TRAVIS_BUILD_NUMBER,
   }];
+
+	// make Travis take screenshots!
+  config.mochaOpts = {
+		reporter: 'mochawesome-screenshots',
+		reporterOptions: {
+			reportDir: 'reports',
+			reportName: 'protractor-' + new Date().toDateString().replace(/\s/g,'-') + '-' + process.env.TRAVIS_BUILD_NUMBER,
+			reportTitle: 'Bhima End to End Tests',
+			takePassedScreenshot: false,
+			clearOldScreenshots: true
+		},
+    timeout : 30000
+  };
 }
 
 // expose to the outside world
