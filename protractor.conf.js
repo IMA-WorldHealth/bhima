@@ -10,7 +10,7 @@ var q = require('q');
 
 var config = {
 
-  specs: ['client/test/e2e/**/*.spec.js'],
+  specs: ['test/end-to-end/**/*.spec.js'],
 
   framework : 'mocha',
   baseUrl : 'https://localhost:8080/',
