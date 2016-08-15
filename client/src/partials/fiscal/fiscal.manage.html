@@ -1,12 +1,8 @@
-<form name="FiscalForm" ng-submit="FiscalManageCtrl.submit(FiscalForm)" bh-form-defaults novalidate>
-  <div class="row">
-    <div class="col-xs-12">
-      <p><a ng-href="#/fiscal">
-        <span class="glyphicon glyphicon-circle-arrow-left"></span>
-        {{ "FISCAL.BACK" | translate }}
-      </a></p>
-    </div>
-  </div>
+<form name="FiscalForm" bh-submit="FiscalManageCtrl.submit(FiscalForm)" bh-form-defaults novalidate>
+
+  <a href ui-sref="fiscal.list">
+    <i class="fa fa-arrow-circle-left"></i> {{ "FISCAL.BACK" | translate }}
+  </a>
 
   <div class="row">
     <div class="col-md-6">
@@ -16,7 +12,9 @@
         <div class="panel-body">
 
           <div class="form-group" ng-class="{ 'has-error' : FiscalForm.$submitted && FiscalForm.label.$invalid }">
-            <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
+            <label class="control-label">
+              {{ "FORM.LABELS.NAME" | translate }}
+            </label>
             <input type="text" class="form-control" ng-maxlength="FiscalManageCtrl.maxLength" name="label" ng-model="FiscalManageCtrl.fiscal.label" required>
             <div class="help-block" ng-messages="FiscalForm.label.$error" ng-show="FiscalForm.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -24,67 +22,59 @@
           </div>
 
           <!-- date editor component -->
+          <!-- TODO - this label should say "Start Date" -->
           <bh-date-editor
             id="start_date"
             date-value="FiscalManageCtrl.fiscal.start_date"
-            validation-trigger="details.$submitted"
+            validation-trigger="FiscalForm.$submitted"
             required="required">
           </bh-date-editor>
 
           <div class="form-group" ng-class="{ 'has-error' : FiscalForm.$submitted && FiscalForm.number_of_months.$invalid }">
             <label class="control-label">{{ "FORM.LABELS.NB_MONTH" | translate }}</label>
-            <input type="number" class="form-control" ng-keyup="FiscalManageCtrl.endDate()" max="12" min="1" name="number_of_months" ng-model="FiscalManageCtrl.fiscal.number_of_months" required>
+            <input type="number" class="form-control" ng-change="FiscalManageCtrl.endDate()" max="12" min="1" name="number_of_months" ng-model="FiscalManageCtrl.fiscal.number_of_months" required>
             <div class="help-block" ng-messages="FiscalForm.number_of_months.$error" ng-show="FiscalForm.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
-          <div ng-if="FiscalManageCtrl.fiscal.number_of_months && FiscalManageCtrl.fiscal.start_date" style="color:#bbb; font-weight: bold;">
-            {{ "FORM.LABELS.END_DATE" | translate}} : {{ FiscalManageCtrl.end_date | date:'yyyy-MM-dd' }} <span class="glyphicon glyphicon-calendar"></span>
+          <div class="form-group text-muted">
+            <i class="fa fa-calendar"></i>
+            {{ "FORM.LABELS.END_DATE" | translate}}:
+            <span ng-show="FiscalManageCtrl.fiscal.number_of_months && FiscalManageCtrl.fiscal.start_date">{{ FiscalManageCtrl.end_date | date }}</span>
           </div>
 
           <div class="form-group" ng-class="{ 'has-error' : FiscalForm.$submitted && FiscalForm.note.$invalid }">
-            <label class="control-label" for="note">{{ "FORM.LABELS.NOTES" | translate }}</label>
-            <textarea class="form-control" name="note" id="note" ng-maxlength="FiscalManageCtrl.maxLength" ng-model="FiscalManageCtrl.fiscal.note" rows="3"></textarea>
+            <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
+            <textarea class="form-control" name="note" ng-maxlength="FiscalManageCtrl.maxLength" ng-model="FiscalManageCtrl.fiscal.note" rows="3"></textarea>
             <div class="help-block" ng-messages="FiscalForm.note.$error" ng-show="FiscalForm.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
             </div>
           </div>
-          <div class="pull-right">
-            <button data-method="submit" type="submit" class="btn btn-primary btn-sm">{{ "FORM.BUTTONS.SUBMIT" | translate }}
-            </button>
-          </div>
+        </div>
+
+        <div class="panel-footer text-right">
+          <bh-loading-button loading-state="FiscalForm.$loading">
+            {{ "FORM.BUTTONS.SUBMIT" | translate }}
+          </bh-loading-button>
         </div>
       </div>
     </div>
 
     <div ng-if="FiscalCtrl.state.current.name==='fiscal.create'" class="col-md-6">
-      <div class="panel-heading">
-        <strong>{{ "FORM.INFO.NOTE" | translate }}</strong>
-      </div>
-      <div class="panel panel-body">
-        <div class="row">
-          <div class="col-md-12">
-            <b>{{ "FISCAL.MESSAGES" | translate }}</b><br>
-            <a>{{ "FISCAL.SET_OPENING_BALANCES" | translate}}</a>
-          </div>
-        </div>
-      </div>
+      <p><strong>{{ "FORM.INFO.NOTE" | translate }}</strong></p>
+      <p>
+        <i class="text-primary fa fa-info-circle"></i> {{ "FISCAL.MESSAGES" | translate }}
+        <a href>{{ "FISCAL.SET_OPENING_BALANCES" | translate}}</a>
+      </p>
     </div>
 
     <div ng-if="FiscalCtrl.state.current.name==='fiscal.update'" class="col-md-6">
-      <div class="panel-heading">
-        <strong>{{ "FORM.INFO.OTHER_ACTIONS" | translate }}</strong>
-      </div>
-      <div class="panel panel-body">
-        <div class="row">
-          <div class="col-md-12">
-            <a>{{ "FORM.INFO.CLOSE_FISCAL_YEAR" | translate }}</a><br>
-            <a>{{ "FORM.INFO.VIEW_BEGINNING_BALACE" | translate}}</a>
-          </div>
-        </div>
-      </div>
+      <p><strong>{{ "FORM.INFO.OTHER_ACTIONS" | translate }}</strong></p>
+      <p>
+        <a href>{{ "FORM.INFO.CLOSE_FISCAL_YEAR" | translate }}</a><br>
+        <a href>{{ "FORM.INFO.VIEW_BEGINNING_BALACE" | translate}}</a>
+      </p>
     </div>
-
   </div>
 </form>

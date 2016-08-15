@@ -1,7 +1,9 @@
 angular.module('bhima.controllers')
-.controller('FiscalController', FiscalController);
+  .controller('FiscalController', FiscalController);
 
-FiscalController.$inject = ['$state', 'FiscalService', 'ModalService', 'NotifyService'];
+FiscalController.$inject = [
+  '$state', 'FiscalService', 'ModalService', 'NotifyService'
+];
 
 function FiscalController($state, fiscalService, ModalService, Notify) {
   var vm = this;
@@ -20,9 +22,9 @@ function FiscalController($state, fiscalService, ModalService, Notify) {
 
   vm.sortByName = 'ASC';
   vm.sortByDateCreated = 'ASC';
-  vm.sortByNumbrerOfMonth = 'ASC';
+  vm.sortByNumberOfMonth = 'ASC';
 
-  // refreshFiscalYear
+  // refresh Fiscal Year
   function refreshFiscalYear() {
     return fiscalService.read(null,{ detailed : 1 })
     .then(function (fiscalYears) {
@@ -43,9 +45,7 @@ function FiscalController($state, fiscalService, ModalService, Notify) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
     .then(function (bool) {
        // if the user clicked cancel, reset the view and return
-      if (!bool) {
-        return;
-      }
+      if (!bool) { return; }
 
       fiscalService.delete(fiscal.id)
       .then(function () {
