@@ -20,12 +20,15 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
   // cache the currency filter for later lookup
   var $currency = $filter('currency');
 
+  // alias copy
+  var copy = angular.copy;
+
   /** @const renders any currencied amount */
   var DEFAULT_COST_AGGREGATOR = {
 
     // used to render amounts in the aggregate columns
     // TODO - this should render the currency from the row set.
-    customTreeAggregationFinalizerFn : function amountRenderer(aggregation) {
+    customTreeAggregationFinalizerFn : function (aggregation) {
       aggregation.rendered = $currency(aggregation.value, currencyId);
     },
 
@@ -33,17 +36,29 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
   };
 
   /** @const aggregates quantities as needed */
-  var DEFAULT_QUANTITY_AGGREGATOR= {
+  var DEFAULT_QUANTITY_AGGREGATOR = {
     treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
+  };
+
+  /** @const aggregates by choosing a single item to display */
+  /** @todo - this currently defaults to MAX, should be implemented as its own custom aggregator */
+  var DEFAULT_SINGLE_AGGREGATOR = {
+    treeAggregationType: uiGridGroupingConstants.aggregation.MAX,
+    customTreeAggregationFinalizerFn: function (aggregation) {
+      aggregation.rendered = aggregation.value;
+    }
   };
 
   /** @const aggregators assigned by column ids */
   var DEFAULT_AGGREGATORS = {
-    'debit_equiv' : DEFAULT_COST_AGGREGATOR,
-    'credit_equiv' : DEFAULT_COST_AGGREGATOR,
-    'cost' : DEFAULT_COST_AGGREGATOR,
-    'quantity' : DEFAULT_QUANTITY_AGGREGATOR,
-    'amount' : DEFAULT_QUANTITY_AGGREGATOR
+    'debit_equiv' : copy(DEFAULT_COST_AGGREGATOR),
+    'credit_equiv' : copy(DEFAULT_COST_AGGREGATOR),
+    'cost' : copy(DEFAULT_COST_AGGREGATOR),
+    'quantity' : copy(DEFAULT_QUANTITY_AGGREGATOR),
+    'amount' : copy(DEFAULT_QUANTITY_AGGREGATOR),
+    'description' : copy(DEFAULT_SINGLE_AGGREGATOR),
+    'date' : copy(DEFAULT_SINGLE_AGGREGATOR),
+    'trans_date' : copy(DEFAULT_SINGLE_AGGREGATOR), // TODO - eliminate this in favor of "date"
   };
 
   /**

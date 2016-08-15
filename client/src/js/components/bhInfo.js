@@ -6,7 +6,7 @@ angular.module('bhima.components')
       '  uib-popover-template="$ctrl.template" ' +
       '  popover-placement="right" ' +
       '  popover-append-to-body="true" ' +
-      '  popover-trigger="mouseenter"> ' +
+      '  popover-trigger="\'mouseenter\'"> ' +
       '</span> ',
     bindings : {
       template: '@',
