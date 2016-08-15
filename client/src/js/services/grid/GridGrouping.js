@@ -150,11 +150,32 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
 
     // hook into rows rendered call to ensure the grid is ready before expanding initial nodes
     gridApi.core.on.rowsRendered(null, util.once(function () {
-      gridApi.grouping.groupColumn('trans_id');
+      gridApi.grouping.groupColumn(this.column);
 
       // for the expandAllRows() to be fired last
-      $timeout(gridApi.treeBase.expandAllRows, 0, false);
-    }));
+      unfoldAll(gridApi);
+    }.bind(this)));
+  }
+
+  function unfoldAll(api) {
+    $timeout(api.treeBase.expandAllRows, 0, false);
+  }
+
+  function changeGrouping (column) {
+
+    this.gridApi.grouping.setGrouping(
+      {aggregations : [
+          {colName : 'debit_equiv', field : 'debit_equiv', aggregation : {label : 'total', type : 'sum'} },
+          {colName : 'credit_equiv', field : 'credit_equiv', aggregation : {label : 'total', type : 'sum'}}
+        ],
+
+        grouping : [
+          {colName : column, field : column, groupPriority : 0 }
+        ]
+      }
+    );
+
+    unfoldAll(this.gridApi);
   }
 
   /** return back the list of selected rows **/
@@ -169,7 +190,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
   /**
    * @constructor
    */
-  function GridGrouping(gridOptions, isGroupHeaderSelectable) {
+  function GridGrouping(gridOptions, isGroupHeaderSelectable, column) {
 
     /**
      * contains the number of selected rows
@@ -177,6 +198,9 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
      */
     this.selectedRowCount = 0;
     this.getSelectedRows = getSelectedRows.bind(this);
+    this.changeGrouping = changeGrouping.bind(this);
+    this.column = column || 'trans_id';
+    this.gridOptions = gridOptions;
 
     // global grouping configuration
     gridOptions.enableGroupHeaderSelection = isGroupHeaderSelectable || true;

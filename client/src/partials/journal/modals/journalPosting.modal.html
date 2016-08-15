@@ -13,6 +13,14 @@
   </div>
 
   <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-12 text-right">
+        <a href ng-click="JournalPosterModalCtrl.switchGroup()" data-method="switch">
+          <i class="fa fa-retweet"></i>
+          {{ ::"FORM.BUTTONS.GROUP_BY" | translate }}
+        </a>
+      </div>
+    </div>
     <div
       id="transaction-grid"
       ui-grid="JournalPosterModalCtrl.gridOptions"

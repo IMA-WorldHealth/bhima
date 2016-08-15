@@ -2,13 +2,15 @@ angular.module('bhima.services')
   .service('JournalPostingModalService', JournalPostingModalService);
 
 /** Dependencies injection */
-JournalPostingModalService.$inject = [];
+JournalPostingModalService.$inject = ['util'];
 
-function JournalPostingModalService() {
-
+function JournalPostingModalService(util) {
   var service = this;
 
   service.parseSelectedGridRecord = parseSelectedGridRecord;
+  service.postingModalService = postingModalService;
+  service.getCurrentGroupingColumn = getCurrentGroupingColumn;
+  service.switchGroup = switchGroup;
 
   function parseSelectedGridRecord (records){
     var parsed = [], processedTransactions = [];
@@ -26,6 +28,29 @@ function JournalPostingModalService() {
 
     return parsed;
   }
+
+  function  getCurrentGroupingColumn () {
+    var groupingDetail = this.gridApi.grouping.getGrouping();
+    return groupingDetail.grouping[0].colName;
+  }
+
+  /**
+   * @function switchGroup
+   *
+   * @description
+   * This function take the current grouping column and return a new column name for grouping
+   * **/
+  function  switchGroup(from) {
+    return from === 'trans_id' ? 'account_number' : 'trans_id';
+  }
+
+  function postingModalService (gridOptions){
+
+    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
+      this.gridApi = api;
+      getCurrentGroupingColumn.bind(this);
+    }.bind(this));   
+  }  
 
   return service;
 }
