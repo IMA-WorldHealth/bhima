@@ -81,6 +81,7 @@
     "karma-mocha": "^1.1.0",
     "karma-ng-html2js-preprocessor": "^1.0.0",
     "mocha": "^3.0.0",
+    "mochawesome-screenshots": "^1.4.1",
     "protractor": "^4.0.2",
     "rimraf": "^2.5.4"
   },

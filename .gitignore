@@ -1,5 +1,8 @@
 # ignore editor-specific working files
-*.swp,*.swo,*.swn,.idea/
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+.idea/*
+*~
 
 # ignore all compressed files
 *.gz, *.xz, *.zip
@@ -9,32 +12,18 @@
 
 # ignore npm/node modules
 node_modules/
-.npm-debug.log
 npm-debug.log
 
 # ignore bower installation target
 client/vendor/
 
 # ignore built files
-/*client/js/controllers/*/
-/*client/src/js/controllers/*/
-bin/*
-
-# ignore PDF reports
-/server/controllers/reports_proposed/out/
+bin/
 
 # ignore the upload folder
 client/src/upload/
+test/artifacts/
 
 # ignore configuration
 .env.production
 .env.development
-integrations.log
-
-#ignore the tmp file
-
-/utilities/tmp/
-
-#ignore webstorm files
-
-.idea/*

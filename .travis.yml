@@ -15,6 +15,7 @@ services:
   - mysql
   - redis-server
 
+
 language: node_js
 node_js:
   - node
@@ -28,7 +29,7 @@ before_script:
 script:
   - bash sh/deploy.sh
   - sleep 5
-  - ./node_modules/.bin/mocha server/test/api
+  - ./node_modules/.bin/mocha test/integration/
   - ./node_modules/.bin/karma start --single-run
   - bash sh/install.sh
   - ./node_modules/.bin/webdriver-manager update
@@ -40,11 +41,11 @@ git:
 before_cache:
   - rm -f npm-debug.log
 
-deploy:
-  provider: heroku
-  api_key:
-    secure: TUXHg9GvoKZKyQ4YJWg9WKJD0UqKO1341NBG88NR2dadYY38llRrG264gJgzpYHmvhfJLanG0htVtGnNZNVLpe7jiA50JY3dI4ZI4zdgO7MOS5XcHbgYVsaQkhlhdn2wcbwFrSZxG9BOPJ6Rny6t8cgobmGALWyMbn2uK23c1j3I+LKDOSu+XQq+Q4IlzjzOh+7Bj5gxRMm2ZIVKXt1vINLrUYLtumUPURjIrsLGRJpiQ5BdvR5Ijcp57rJSyvYvVY3ABOvo54vbAVX5cdkEvH5dW+nsIgYL7gqTxS8wZOaA7c9JEysbcNH7+Lq3Vg9OoqOKDJ0fB26woyaSYyW+o4NXlBGlyl1amuUTaalMinzgCdmQCuh+LisxSlzBlFYNlui1rgIBo90+IDzBCX6RmyjBaf8AEXNtle+oMTEAIirb+QzjLM1sBAphUahJ0K/t55tTbUTbXy/ae0weVgJkRUsjF+fMG3BT7FNorqzAoOydOR44RpN2HAoVbhplviqSI0kM5KK5Lj+iUugvvZOz+nxTE+appUu7QV9czzpQK3p8GiyyJI9F4/MRXFs2HP63bo8VCd6jiWegiz9xVoL1+fDQzpBMaN1plJYaN7WCuexlPkQ4wUQ4Ztw8CSeN+rVBR8RAJV0NEuA3BOgiINEoC93k3gCibRBx5eynSuR60/8=
-  app: bhima
-  on:
-    repo: IMA-WorldHealth/bhima-2.X
-    all_branches: true
+addons:
+  artifacts:
+    s3_region: "eu-central-1"
+    debug: true
+    paths:
+      - $(ls /var/log/*.log | tr "\n" ":")
+      - $(ls $HOME/test/artifacts/ | tr "\n" ":")
+

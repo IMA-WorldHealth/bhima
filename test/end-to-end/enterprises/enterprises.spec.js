@@ -129,13 +129,13 @@ describe('Enterprises ::', function () {
      components.notification.hasSuccess();
    });
 
-  it('add new project for the enterprise', function () {
+  it('add a new project for the enterprise', function () {
     FU.buttons.create();
 
     FU.input('$ctrl.project.name', project.name);
     FU.input('$ctrl.project.abbr', project.abbr);
 
-    FU.buttons.submit();
+    FU.modal.submit();
 
     components.notification.hasSuccess();
   });
@@ -146,7 +146,7 @@ describe('Enterprises ::', function () {
     FU.input('$ctrl.project.name', project_update.name);
     FU.input('$ctrl.project.abbr', project_update.abbr);
 
-    FU.buttons.submit();
+    FU.modal.submit();
 
     components.notification.hasSuccess();
   });
@@ -156,7 +156,7 @@ describe('Enterprises ::', function () {
 
     FU.input('$ctrl.text', project_update.name);
 
-    FU.buttons.submit();
+    FU.modal.submit();
 
     components.notification.hasSuccess();
   });
@@ -177,5 +177,4 @@ describe('Enterprises ::', function () {
   function random(min,max) {
     return Math.floor(Math.random()*(max-min+1)+min);
   }
-
 });
