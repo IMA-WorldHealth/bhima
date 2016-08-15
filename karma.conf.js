@@ -19,7 +19,7 @@ module.exports = function(config) {
       'bin/client/js/vendor.min.js',
       'bin/client/js/bhima.min.js',
       'bin/client/partials/**/*.html',
-      'client/test/unit/**/*.spec.js'
+      'test/client-unit/**/*.spec.js'
     ],
 
     // list of files to exclude

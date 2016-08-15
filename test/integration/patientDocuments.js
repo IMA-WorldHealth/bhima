@@ -3,6 +3,9 @@
 
 const helpers = require('./helpers');
 const fs = require('fs');
+const path = require('path');
+
+const fixtures = path.resolve(__dirname, '../fixtures');
 
 describe('(patients/:uuid/documents) Patient Documents', () => {
   'use strict';
@@ -17,7 +20,7 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
       // NOTE: the documentation for chai-http is wrong when it comes to multer.
       // You must use fs.createReadStream() to attach files as a multipart type
       // that multer can detect.
-      .attach('documents', fs.createReadStream(`${__dirname}/data/sample.pdf`))
+      .attach('documents', fs.createReadStream(`${fixtures}/sample.pdf`))
       .then(function (res) {
         expect(res).to.have.status(201);
         expect(res.body).to.have.property('uuids');
@@ -33,9 +36,9 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
       // NOTE: the documentation for chai-http is wrong when it comes to multer.
       // You must use fs.createReadStream() to attach files as a multipart type
       // that multer can detect.
-      .attach('documents', fs.createReadStream(`${__dirname}/data/sample.pdf`), 'first')
-      .attach('documents', fs.createReadStream(`${__dirname}/data/sample.pdf`), 'second')
-      .attach('documents', fs.createReadStream(`${__dirname}/data/sample.pdf`), 'third')
+      .attach('documents', fs.createReadStream(`${fixtures}/sample.pdf`), 'first')
+      .attach('documents', fs.createReadStream(`${fixtures}/sample.pdf`), 'second')
+      .attach('documents', fs.createReadStream(`${fixtures}/sample.pdf`), 'third')
       .then(function (res) {
         expect(res).to.have.status(201);
         expect(res.body).to.have.property('uuids');

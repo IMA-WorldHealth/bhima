@@ -1,6 +1,7 @@
 /* global by,browser, element */
+'use strict';
 
-var q = require('q');
+const q = require('q');
 
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
@@ -8,7 +9,7 @@ var q = require('q');
 // process.env.TRAVIS_BUILD_NUMBER and reconfigure for travis
 // as appropriate.
 
-var config = {
+const config = {
 
   specs: ['test/end-to-end/**/*.spec.js'],
 
@@ -54,21 +55,21 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
     //  'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
     //  'build': process.env.TRAVIS_BUILD_NUMBER,
   // }, {
-    'browserName': 'chrome',
-     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-     'build': process.env.TRAVIS_BUILD_NUMBER,
+    browserName: 'chrome',
+    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+    build: process.env.TRAVIS_BUILD_NUMBER,
   }];
 
-	// make Travis take screenshots!
+  // make Travis take screenshots!
   config.mochaOpts = {
-		reporter: 'mochawesome-screenshots',
-		reporterOptions: {
-			reportDir: 'reports',
-			reportName: 'protractor-' + new Date().toDateString().replace(/\s/g,'-') + '-' + process.env.TRAVIS_BUILD_NUMBER,
-			reportTitle: 'Bhima End to End Tests',
-			takePassedScreenshot: false,
-			clearOldScreenshots: true
-		},
+    reporter: 'mochawesome-screenshots',
+    reporterOptions: {
+      reportDir: `${__dirname}/test/artifacts/`,
+      reportName: 'protractor-' + new Date().toDateString().replace(/\s/g,'-') + '-' + process.env.TRAVIS_BUILD_NUMBER,
+      reportTitle: 'Bhima End to End Tests',
+      takePassedScreenshot: false,
+      clearOldScreenshots: true
+    },
     timeout : 30000
   };
 }

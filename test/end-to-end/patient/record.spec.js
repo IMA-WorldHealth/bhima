@@ -11,6 +11,9 @@ const helpers     = require('../shared/helpers');
 const FU          = require('../shared/FormUtils');
 helpers.configure(chai);
 
+// path to the fixtures directory
+const fixtures = path.resolve(__dirname, '../../fixtures/');
+
 describe('Patient Record', function () {
   const root = '#/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
@@ -51,8 +54,8 @@ describe('Patient Record', function () {
   // Upload patient documents
   it('upload a valid image as document', () => {
     let title = '[e2e] New Image As Document';
-    let fileToUpload = '../shared/upload/file.jpg';
-    let absolutePath = path.resolve(__dirname, fileToUpload);
+    let fileToUpload = 'file.jpg';
+    let absolutePath = path.resolve(fixtures, fileToUpload);
 
     element(by.css('[data-document-action="add"]')).click();
 
@@ -66,8 +69,8 @@ describe('Patient Record', function () {
   // upload patient documents
   it('upload a PDF document', () => {
     let title = '[e2e] New Document';
-    let fileToUpload = '../shared/upload/file.pdf';
-    let absolutePath = path.resolve(__dirname, fileToUpload);
+    let fileToUpload = 'file.pdf';
+    let absolutePath = path.resolve(fixtures, fileToUpload);
 
     element(by.css('[data-document-action="add"]')).click();
     FU.input('$ctrl.title', title);
