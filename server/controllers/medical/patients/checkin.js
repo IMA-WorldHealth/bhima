@@ -21,9 +21,11 @@ const db    = require('../../../lib/db');
 const topic = require('../../../lib/topic');
 
 const BadRequest = require('../../../lib/errors/BadRequest');
+const q     = require('q');
 
 exports.list = list;
 exports.create = create;
+exports.latest = latest;
 
 /**
  * @method list
@@ -102,3 +104,81 @@ function create(req, res, next) {
     .catch(next)
     .done();
 }
+
+/*
+Search for information about the latest bill
+*/
+function latest(req, res, next) {
+  const uid = db.bid(req.params.uuid);
+  var invoiceLatest;
+
+  let sql =
+    `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, CONCAT(user.first, user.last) as user,
+     invoice.cost
+    FROM invoice 
+    JOIN user ON user.id = invoice.user_id
+    WHERE debtor_uuid = ?
+    ORDER BY date DESC
+    LIMIT 1`;
+
+  db.exec(sql, [uid])
+    .then(function (result) {
+      invoiceLatest = result[0];
+      var uuid = invoiceLatest.uuid;
+
+    sql =
+      `SELECT BUID(i.uuid) as uid, CONCAT(project.abbr, invoice.reference) as reference,
+        credit, debit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
+      FROM (
+        SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
+        FROM (
+          SELECT record_uuid as uuid, debit, credit, entity_uuid
+          FROM combined_ledger
+          WHERE record_uuid IN (?) AND entity_uuid = ?
+        UNION ALL
+          SELECT reference_uuid as uuid, debit, credit, entity_uuid
+          FROM  combined_ledger
+          WHERE reference_uuid IN (?) AND entity_uuid = ?
+        ) AS ledger
+        GROUP BY entity_uuid
+      ) AS i JOIN invoice ON i.uuid = invoice.uuid
+      JOIN project ON invoice.project_id = project.id `;
+
+    var sql2 =
+      `SELECT COUNT(BUID(i.uuid)) as numberPayment
+      FROM (
+        SELECT uuid,  debit, credit, entity_uuid
+        FROM (
+          SELECT record_uuid as uuid, debit, credit, entity_uuid
+          FROM combined_ledger
+          WHERE record_uuid IN (?) AND entity_uuid = ? AND debit = 0
+        UNION ALL
+          SELECT reference_uuid as uuid, debit, credit, entity_uuid
+          FROM  combined_ledger
+          WHERE reference_uuid IN (?) AND entity_uuid = ? AND debit = 0
+        ) AS ledger
+      ) AS i JOIN invoice ON i.uuid = invoice.uuid
+      JOIN project ON invoice.project_id = project.id `;
+
+
+    var execSql = db.exec(sql, [uuid, uid, uuid, uid]);
+    var execSql2 = db.exec(sql2, [uuid, uid, uuid, uid]);
+
+    return q.all([execSql, execSql2]);
+  })
+  .then(function (results) {
+    var invoices = results[0];
+    var numberPayment = results[1][0].numberPayment;
+
+    invoices[0].uuid = invoiceLatest.uuid;
+    invoices[0].debtor_uuid = invoiceLatest.debtor_uuid;
+    invoices[0].user = invoiceLatest.user;
+    invoices[0].date = invoiceLatest.date;
+    invoices[0].cost = invoiceLatest.cost;
+    invoices[0].numberPayment = numberPayment;
+
+    res.status(200).send(invoices);
+  })
+  .catch(next)
+  .done();
+}  

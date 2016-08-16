@@ -117,13 +117,78 @@
         <div class="col-sm-12">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <span class="glyphicon glyphicon-file"></span> Latest Bill
+              <span class="glyphicon glyphicon-file"></span>
+                <strong>{{ "TABLE.COLUMNS.LAST_BILL" | translate }} </strong> 
+                  <span ng-if='PatientRecordCtrl.patientInvoice.invoicesLength'> 
+                  {{ "TABLE.COLUMNS.OF" | translate }} {{ PatientRecordCtrl.patientInvoice.invoicesLength }} {{ "TABLE.COLUMNS.INVOICES" | translate }}</span>
             </div>
             <div class="panel-body" style="height : 250px;">
 
               <!-- Placeholder - not implemented -->
-              <div style="text-align : center; font-size : 3em; color : #ccc; padding-top : 80px;">
-                <span class="glyphicon glyphicon-wrench"></span> Not Implemented
+              <div style="text-align : left; font-size : 1em; ">
+                <table ng-if="PatientRecordCtrl.patientInvoice" style="width:100%; vertical-align:top">
+                  <tr>
+                    <td style="width:10%"><strong>{{ "TABLE.COLUMNS.INVOICE_ID" | translate }}</strong></td>
+                    <td style="width:40%">{{ PatientRecordCtrl.patientInvoice.reference }} </td>
+                    <td style="width:50%">
+                      <strong>{{ "TABLE.COLUMNS.REMAINING_BALANCE" | translate }}</strong> 
+                      {{ PatientRecordCtrl.patientInvoice.balance | currency }}
+                    </td>
+                  </tr>
+              
+                  <tr>
+                    <td><strong>{{ "TABLE.COLUMNS.DATE" | translate }}</strong></td>
+                    <td>{{ PatientRecordCtrl.patientInvoice.date | date }}</td>
+                    <td>
+                      <span ng-if="PatientRecordCtrl.patientInvoice.credit === 0">
+                        <i class="fa fa-info-circle text-primary"></i> 
+                       {{ "TABLE.COLUMNS.NO_PAYMENTS" | translate }} </span>
+
+                      <span ng-if="PatientRecordCtrl.patientInvoice.numberPayment > 0">
+                        <i class="fa fa-info-circle text-primary"></i> 
+                       {{ PatientRecordCtrl.patientInvoice.numberPayment }} {{ "TABLE.COLUMNS.PAYMENT_INVOICE" | translate }} </span>
+
+                    </td>
+                  </tr>
+              
+                  <tr>
+                    <td><strong>{{ "TABLE.COLUMNS.TOTAL_COST" | translate }}</strong></td>
+                    <td>{{ PatientRecordCtrl.patientInvoice.cost | currency }}</td>
+                    <td>
+                      <span ng-if="PatientRecordCtrl.patientInvoice.balance !== 0">
+                        <i class="fa fa-warning text-danger"></i> 
+                          {{ "TABLE.COLUMNS.THIS_INVOICE_1" | translate }} 
+                          <strong>{{ PatientRecordCtrl.patientInvoice.durationDays }}</strong> 
+                          {{ "TABLE.COLUMNS.THIS_INVOICE_2" | translate }} 
+                       </span>
+
+                      <span ng-if="PatientRecordCtrl.patientInvoice.balance === 0"> 
+                        <i  class="fa fa-check-circle text-success"></i> 
+                        {{ "TABLE.COLUMNS.THIS_INVOICE_FULL" | translate }} 
+                      </span>
+
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>{{ "TABLE.COLUMNS.BILLED_BY" | translate }}</strong></td>
+                    <td>{{ PatientRecordCtrl.patientInvoice.user }}</td>
+                    <td></td>
+                  </tr>
+                </table>
+                <table ng-if="!PatientRecordCtrl.patientInvoice" style="width:100%; vertical-align:top">
+                  <tr>
+                    <td style="text-align: center; font-size: +16; width:100%;">
+                      <h3>
+                        <i class="fa fa-file-o"></i> 
+                        <strong>
+                          {{ "TABLE.COLUMNS.NO_RECORDED" | translate }} 
+                        </strong> 
+                      </h3>                      
+                    </td>  
+                  </tr>
+                </table>
+
               </div>
             </div>
           </div>
