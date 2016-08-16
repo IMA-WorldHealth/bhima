@@ -2,15 +2,16 @@ angular.module('bhima.services')
   .service('JournalPostingModalService', JournalPostingModalService);
 
 /** Dependencies injection */
-JournalPostingModalService.$inject = ['util'];
+JournalPostingModalService.$inject = ['util', '$http'];
 
-function JournalPostingModalService(util) {
+function JournalPostingModalService(util, $http) {
   var service = this;
 
   service.parseSelectedGridRecord = parseSelectedGridRecord;
   service.postingModalService = postingModalService;
   service.getCurrentGroupingColumn = getCurrentGroupingColumn;
   service.switchGroup = switchGroup;
+  service.getDataByAccount = getDataByAccount;
 
   function parseSelectedGridRecord (records){
     var parsed = [], processedTransactions = [];
@@ -32,6 +33,30 @@ function JournalPostingModalService(util) {
   function  getCurrentGroupingColumn () {
     var groupingDetail = this.gridApi.grouping.getGrouping();
     return groupingDetail.grouping[0].colName;
+  }
+
+  /**
+   * @function getDataByAccount
+   * @Description
+   *
+   * Takes a list of writings, and return data in this format
+   * {debit : x, credit : y, account_id : z, balance : xx, account_number : yy}
+   * by grouping account
+   **/
+  function getDataByAccount(lines) {
+
+    var transactions = [];
+
+    lines.forEach(function (line) {
+      if(transactions.indexOf(line.trans_id) === -1){
+        transactions.push(line.trans_id);
+      }
+    });
+    
+    
+
+    console.log(transactions);    
+    return [];
   }
 
   /**
