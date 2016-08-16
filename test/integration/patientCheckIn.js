@@ -7,6 +7,8 @@ describe('(/patients/:uuid/visits) Patient Check In', () => {
   'use strict';
 
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
+  const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
+
   it('GET /patients/:uuid/visits returns a list of all patient visits', () => {
     return agent.get(`/patients/${patientUuid}/visits`)
       .then(function (result) {
@@ -37,4 +39,19 @@ describe('(/patients/:uuid/visits) Patient Check In', () => {
         expect(result.body).to.have.keys('uuid');
       });
   });
+
+
+  it('GET patients/:uuid/invoices/latest :The latest bill should show the most recent bill of a patient', () => {
+    const LIMIT = 1;
+    return agent.get(`/patients/${debtorUuid}/invoices/latest`)
+      .then(function (result) {
+        expect(result).to.have.status(200);
+
+        expect(result.body[0]).to.have.keys('uid', 'reference', 'credit', 'debit', 
+          'balance', 'entity_uuid', 'uuid', 'debtor_uuid',
+          'user', 'date', 'cost', 'numberPayment');
+      })
+      .catch(helpers.api.help);
+  });
+
 });
