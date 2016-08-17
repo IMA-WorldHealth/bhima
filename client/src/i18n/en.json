@@ -1036,8 +1036,6 @@
         "TOTAL_ASC" : "Largest"
       },
       "TEXT"               : "Text",
-      "THIS_INVOICE_1"     : "This invoice has not been balanced in ",
-      "THIS_INVOICE_2"     : " days. Please make sure that the debtor has not made a payment and schedule a recovery ",
       "THIS_INVOICE_FULL"  : "This invoice is paid in full",
       "TITLE"              : "Title",
       "TOTAL"              : "Total",
@@ -1048,6 +1046,8 @@
       "TYPE"               : "Type",
       "UNIT"               : "Unit",
       "UNIT_PRICE"         : "Unit Price",
+      "UNPAID_INVOICE_1"   : "This invoice has not been balanced in ",
+      "UNPAID_INVOICE_2"   : " days. Please make sure that the debtor has not made a payment and schedule a recovery ",
       "USER"               : "User",
       "VALUE"              : "Value",
       "VILLAGE"            : "Village",

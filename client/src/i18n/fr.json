@@ -1025,8 +1025,6 @@
         "TOTAL_ASC" : "Le plus grand"
       },
       "TEXT"               : "Text",
-      "THIS_INVOICE_1"     : "Cette facture n'a pas été compensée en ",
-      "THIS_INVOICE_2"     : " jours. Veuillez vous rassuré que le débiteur n'a pas encore effectué un paiement ni même planifié une reprise.",
       "THIS_INVOICE_FULL"  : "Cette facture est payée en totalité",
       "TITLE"              : "Titre",
       "TOTAL"              : "Total",
@@ -1037,6 +1035,8 @@
       "TYPE"               : "Type",
       "UNIT"               : "Unité",
       "UNIT_PRICE"         : "Prix unitaire",
+      "UNPAID_INVOICE_1"   : "Cette facture n'a pas été compensée en ",
+      "UNPAID_INVOICE_2"   : " jours. Veuillez vous rassuré que le débiteur n'a pas encore effectué un paiement ni même planifié une reprise.",
       "VALUE"              : "Valeur",
       "VILLAGE"            : "Village"
     }
