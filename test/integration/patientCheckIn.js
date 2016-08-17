@@ -46,10 +46,9 @@ describe('(/patients/:uuid/visits) Patient Check In', () => {
     return agent.get(`/patients/${debtorUuid}/invoices/latest`)
       .then(function (result) {
         expect(result).to.have.status(200);
-
-        expect(result.body[0]).to.have.keys('uid', 'reference', 'credit', 'debit', 
-          'balance', 'entity_uuid', 'uuid', 'debtor_uuid',
-          'user', 'date', 'cost', 'numberPayment');
+        expect(result).to.be.json;
+        expect(result.body).to.have.keys('uid', 'reference', 'credit', 'debit', 'balance', 'entity_uuid', 'uuid', 'debtor_uuid', 'user', 'date', 'cost', 'numberPayment');        
+        expect(result.body.entity_uuid).to.equal(debtorUuid);
       })
       .catch(helpers.api.help);
   });

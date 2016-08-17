@@ -46,13 +46,6 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
       vm.patient = result;
       vm.loading = false;
 
-      // get the latest Invoice
-      Patients.latest(vm.patient.debtor_uuid)
-        .then(function (result){
-          vm.patientInvoice = result[0];          
-          vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
-        });
-
       if(vm.patient.avatar){
         vm.uploadButtonText = 'PATIENT_RECORDS.UPDATE_PICTURE';
       }
