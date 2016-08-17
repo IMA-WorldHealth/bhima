@@ -1,0 +1,103 @@
+<head>
+  <title>{{translate "REPORT.AGED_DEBTORS.TITLE"}}</title>
+  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
+  <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
+  <meta charset="utf-8" />
+  <style>
+    .table-report {
+      font-size: 0.8em;
+    }
+
+    .table-report > thead > th {
+      font-size: 1.2em;
+    }
+
+
+    .table-report > tbody > tr > td,
+    .table-report > tbody > tr > th,
+    .table-report > tfoot > tr > td,
+    .table-report > tfoot > tr > th,
+    .table-report > thead > tr > th {
+      padding : 2px;
+    }
+
+    .table-report {
+      margin-bottom : 0;
+    }
+
+    .table-report > tbody > tr > td,
+    .table-report > tbody > tr > th {
+      border: 1px solid #ddd;
+    }
+
+    .table-report > tbody > tr:last-child > td,
+    .table-report > tbody > tr:last-child > th {
+      border-bottom:none;
+    }
+
+    .table-report > thead > tr > th {
+      border-bottom : 1px solid #000;
+    }
+
+    .table-report > tfoot > tr > th {
+      border-top: 1px solid #000;
+    }
+
+    .clear-borders {
+      border: none !important;
+    }
+
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h4 class="text-center">{{translate "REPORT.AGED_DEBTORS.TITLE"}}</h4>
+
+    <!-- margin is the cell size -->
+    <section style="margin-right: 120px;">
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr class="text-capitalize">
+            <th class="text-center">{{translate "TABLE.COLUMNS.NAME"}}</th>
+            <th class="text-center" style="width:15%">{{translate "FORM.LABELS.ACCOUNT_NUMBER"}}</th>
+            <th class="text-center">{{translate "REPORT.AGED_DEBTORS.THIRTY_DAYS"}}</th>
+            <th class="text-center">{{translate "REPORT.AGED_DEBTORS.SIXTY_DAYS"}}</th>
+            <th class="text-center">{{translate "REPORT.AGED_DEBTORS.NINETY_DAYS"}}</th>
+            <th class="text-center">{{translate "REPORT.AGED_DEBTORS.OVER_NINETY_DAYS"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- print a row for each debtor -->
+          {{#each debtors}}
+            <tr>
+              <th>{{this.name}}</th>
+              <td class="text-left">{{this.number}}</td>
+              <td class="text-right">{{currency this.thirty ../metadata.currency_id}}</td>
+              <td class="text-right">{{currency this.sixty ../metadata.currency_id}}</td>
+              <td class="text-right">{{currency this.ninety ../metadata.currency_id}}</td>
+              <td class="text-right">{{currency this.excess ../metadata.currency_id}}</td>
+            </tr>
+          {{else}}
+            <tr>
+              <td colspan="6" class="text-center clear-borders">
+                <i class="fa fa-warning"></i> {{translate "TABLE.COLUMNS.EMPTY"}}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+        {{#if aggregates}}
+          <tfoot>
+            <tr>
+              <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
+              <th class="text-right">{{currency aggregates.thirty metadata.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.sixty metadata.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.ninety metadata.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.excess metadata.currency_id}}</th>
+            </tr>
+          </tfoot>
+        {{/if}}
+      </table>
+    </section>
+  </main>
+</body>

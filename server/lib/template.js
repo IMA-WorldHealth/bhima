@@ -48,7 +48,6 @@ function multiply(a, b) {
 function currency(value, currencyKey) {
   /**@todo this should be driven by currencyKey if provided */
   var formatExpression = formatDollar;
-
   return numeral(value).format(formatExpression);
 }
 

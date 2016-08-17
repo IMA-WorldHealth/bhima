@@ -13,5 +13,6 @@ module.exports = {
 
     /** @todo - make this voucher receipt be exposed in this method */
     voucher: require('./voucher.receipt')
-  }
+  },
+  agedDebtor: require('./agedDebtor')
 };
