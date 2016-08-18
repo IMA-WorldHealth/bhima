@@ -17,6 +17,7 @@
             <th class="text-center">{{translate "REPORT.AGED_DEBTORS.SIXTY_DAYS"}}</th>
             <th class="text-center">{{translate "REPORT.AGED_DEBTORS.NINETY_DAYS"}}</th>
             <th class="text-center">{{translate "REPORT.AGED_DEBTORS.OVER_NINETY_DAYS"}}</th>
+            <th class="text-center">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
           </tr>
         </thead>
         <tbody>
@@ -30,13 +31,10 @@
               <td class="text-right">{{currency this.sixty ../metadata.currency_id}}</td>
               <td class="text-right">{{currency this.ninety ../metadata.currency_id}}</td>
               <td class="text-right">{{currency this.excess ../metadata.currency_id}}</td>
+              <td class="text-right">{{currency this.all ../metadata.currency_id}}</td>
             </tr>
           {{else}}
-            <tr>
-              <td colspan="6" class="text-center clear-borders">
-                <i class="fa fa-warning"></i> {{translate "TABLE.COLUMNS.EMPTY"}}
-              </td>
-            </tr>
+            {{> emptyTable columns=7}}
           {{/each}}
         </tbody>
         {{#if aggregates}}
@@ -47,6 +45,7 @@
               <th class="text-right">{{currency aggregates.sixty metadata.currency_id}}</th>
               <th class="text-right">{{currency aggregates.ninety metadata.currency_id}}</th>
               <th class="text-right">{{currency aggregates.excess metadata.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.all metadata.currency_id}}</th>
             </tr>
           </tfoot>
         {{/if}}

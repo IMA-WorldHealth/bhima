@@ -70,7 +70,7 @@ function agedDebtorReport(req, res, next) {
   _.defaults(context, defaults);
 
   // makes the
-  const havingNonZeroValues = ' HAVING thirty + sixty + ninety + excess > 0 ';
+  const havingNonZeroValues = ' HAVING \'all\' > 0 ';
   const includeZeroes = Boolean(Number(qs.zeroes));
 
   // selects into columns of 30, 60, 90, and >90
@@ -79,7 +79,8 @@ function agedDebtorReport(req, res, next) {
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 0 AND 30, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess
+      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+      SUM(gl.debit_equiv - gl.credit_equiv) AS 'all'
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
@@ -94,7 +95,8 @@ function agedDebtorReport(req, res, next) {
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 0 AND 30, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess
+      SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+      SUM(gl.debit_equiv - gl.credit_equiv) AS 'all'
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
