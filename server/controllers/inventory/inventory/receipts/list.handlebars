@@ -1,65 +1,64 @@
-<link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
+{{> head title="INVENTORY.LIST"}}
 
-<div class="container-fluid">
-  <!-- header  -->
-  <div class="row">
-    <div class="col-xs-4">
-      <h3 style="margin:2px;">{{ model.enterprise.name }} ({{ model.enterprise.abbr}})</h3>
-      <span>{{translate 'FORM.LABELS.PHONE'}}: {{ model.enterprise.phone }}</span><br>
-      <span>{{translate 'FORM.LABELS.EMAIL'}}: {{ model.enterprise.email }}</span><br>
+<body>
+  <div class="container">
+    <!-- header  -->
+    <div class="row">
+      <div class="col-xs-4">
+        <h3 style="margin:2px;">{{model.enterprise.name}} ({{model.enterprise.abbr}})</h3>
+        <span>{{translate 'FORM.LABELS.PHONE'}}: {{model.enterprise.phone}}</span><br>
+        <span>{{translate 'FORM.LABELS.EMAIL'}}: {{model.enterprise.email}}</span><br>
+      </div>
+      <div class="col-xs-offset-4 col-xs-4 text-right">
+        <small>{{model.project.name}} ({{model.project.abbr}})</small>
+      </div>
     </div>
-    <div class="col-xs-4">
-      &nbsp;
-    </div>
-    <div class="col-xs-4 text-right">
-      <small>{{ model.project.name}} ({{ model.project.abbr }})</small>
-    </div>
-  </div>
 
-  <!-- body  -->
-  <div class="row">
-    <div class="col-xs-12">
+    <!-- body  -->
+    <div class="row">
+      <div class="col-xs-12">
 
-      <!-- page title  -->
-      <h1 style="margin:15px; font-weight:bold" class="text-center">{{uppercase (translate 'INVENTORY.LIST') }}</h1>
+        <!-- page title  -->
+        <h2 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+          {{translate 'INVENTORY.LIST'}}
+        </h2>
 
-      <!-- list of data  -->
-      <table class="table table-condensed table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>{{translate 'FORM.LABELS.CODE'}}</th>
-            <th>{{translate 'FORM.LABELS.LABEL'}}</th>
-            <th>{{translate 'FORM.LABELS.PRICE'}}</th>
-            <th>{{translate 'FORM.LABELS.UNIT'}}</th>
-            <th>{{translate 'FORM.LABELS.TYPE'}}</th>
-            <th>{{translate 'FORM.LABELS.GROUP'}}</th>
-            <th>{{translate 'FORM.LABELS.UNIT_WEIGHT'}}</th>
-            <th>{{translate 'FORM.LABELS.UNIT_VOLUME'}}</th>
-            <th>{{translate 'FORM.LABELS.CONSUMABLE'}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each model.data}}
+        <!-- list of data  -->
+        <table class="table table-condensed table-bordered table-striped">
+          <thead>
             <tr>
-              <td>{{ code }}</td>
-              <td>{{ label }}</td>
-              <td>{{currency price }}</td>
-              <td>{{ unit }}</td>
-              <td>{{ type }}</td>
-              <td>{{ groupName }}</td>
-              <td>{{ unit_weight }}</td>
-              <td>{{ unit_volume }}</td>
-              <td>
-                {{#if consumable}}
-                  <i class="glyphicon glyphicon-ok"></i>
-                {{/if}}
-              </td>
+              <th>{{translate 'FORM.LABELS.CODE'}}</th>
+              <th>{{translate 'FORM.LABELS.LABEL'}}</th>
+              <th>{{translate 'FORM.LABELS.PRICE'}}</th>
+              <th>{{translate 'FORM.LABELS.UNIT'}}</th>
+              <th>{{translate 'FORM.LABELS.TYPE'}}</th>
+              <th>{{translate 'FORM.LABELS.GROUP'}}</th>
+              <th>{{translate 'FORM.LABELS.UNIT_WEIGHT'}}</th>
+              <th>{{translate 'FORM.LABELS.UNIT_VOLUME'}}</th>
+              <th>{{translate 'FORM.LABELS.CONSUMABLE'}}</th>
             </tr>
-          {{/each}}
-        </tbody>
-      </table>
-
+          </thead>
+          <tbody>
+            {{#each model.data}}
+              <tr>
+                <td>{{code}}</td>
+                <td>{{label}}</td>
+                <td>{{currency price}}</td>
+                <td>{{unit}}</td>
+                <td>{{type}}</td>
+                <td>{{groupName}}</td>
+                <td>{{unit_weight}}</td>
+                <td>{{unit_volume}}</td>
+                <td>
+                  {{#if consumable}}
+                    <i class="glyphicon glyphicon-ok"></i>
+                  {{/if}}
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-
-</div>
+</body>

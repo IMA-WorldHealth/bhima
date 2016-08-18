@@ -107,8 +107,8 @@ function detail(req, res, next) {
 function create(req, res, next) {
 
   // alias both the voucher and the voucher items
-  var voucher = req.body.voucher;
-  var items = req.body.voucher.items || [];
+  const voucher = req.body.voucher;
+  let items = req.body.voucher.items || [];
 
   // a voucher without two items doesn't make any sense in double-entry
   // accounting.  Therefore, throw a bad data error if there are any fewer
@@ -165,7 +165,7 @@ function create(req, res, next) {
   items = _.map(items, util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid'));
 
   // initialise the transaction handler
-  var transaction = db.transaction();
+  const transaction = db.transaction();
 
   // build the SQL query
   transaction
@@ -190,21 +190,20 @@ function create(req, res, next) {
  */
 function receipt(req, res, next) {
   // page options
-  let reportOptions = { pageSize : 'A5', orientation: 'landscape' };
+  const reportOptions = { pageSize : 'A5', orientation: 'landscape' };
 
   // request for detailed receipt
   req.query.detailed = true;
 
   getVouchers(req.params.uuid, req.query)
-  .then(rows => {
-    const data = { rows: rows };
-    return rm.build(req, data, receiptUrl, reportOptions);
-  })
-  .spread((document, headers) => {
-    res.set(headers).send(document);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      return rm.build(req, { rows }, receiptUrl, reportOptions);
+    })
+    .spread((document, headers) => {
+      res.set(headers).send(document);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -214,18 +213,23 @@ function receipt(req, res, next) {
  */
 function report(req, res, next) {
   // page options
-  let reportOptions = { pageSize : 'A4', orientation: 'landscape' };
 
   getVouchers(null, req.query)
-  .then(rows => {
-    const data = { rows: rows, dateFrom: req.query.dateFrom, dateTo: req.query.dateTo };
-    return rm.build(req, data, reportUrl, reportOptions);
-  })
-  .spread((document, headers) => {
-    res.set(headers).send(document);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+
+      const data = {
+        rows: rows,
+        dateFrom: req.query.dateFrom,
+        dateTo: req.query.dateTo
+      };
+
+      return rm.build(req, data, reportUrl);
+    })
+    .spread((document, headers) => {
+      res.set(headers).send(document);
+    })
+    .catch(next)
+    .done();
 }
 
 /**

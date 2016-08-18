@@ -109,7 +109,7 @@ function build(req, res, next) {
   // choose the renderer
   const renderer = renderers[qs.renderer || defaults.renderer];
   if (_.isUndefined(renderer)) {
-    throw new BadRequest(`The application does not support rendering ${qs.renderer}.`);
+    return next(new BadRequest(`The application does not support rendering ${qs.renderer}.`));
   }
 
   // delete from the query string

@@ -1,27 +1,7 @@
-<head>
-  <title>{{translate "PATIENT_REG.PATIENT_REGISTRATIONS"}}</title>
-  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
-  <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
-  <style>
-    .table-mini {
-      font-size: 0.8em;
-    }
+{{> head title="PATIENT_REG.PATIENT_REGISTRATIONS"}}
 
-    .table-mini tr td,
-    .table-mini tr th {
-      padding : 1px;
-    }
-  </style>
-</head>
 <body>
-  <header>
-    <h4>
-      {{translate "PURCHASES.RECEIPT.TITLE" }}
-      <small class="pull-right">
-        <i class="fa fa-calendar"></i> {{timestamp purchase.date}}
-      </small>
-    </h4>
-  </header>
+  <h4 class="text-center">{{translate "PURCHASES.RECEIPT.TITLE" }}</h4>
 
   <section>
     <dl>

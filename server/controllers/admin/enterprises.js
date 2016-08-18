@@ -5,6 +5,8 @@
  *  Each Enterprise must necessarily have a name, an abbreviation, a geographical location as well as a currency
  *  And it is not possible to remove an Enterprise
  */
+'use strict';
+
 const db       = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
@@ -12,11 +14,10 @@ exports.lookupEnterprise = lookupEnterprise;
 
 // GET /enterprises
 exports.list = function list(req, res, next) {
-  'use strict';
 
   let sql = 'SELECT id, name, abbr FROM enterprise';
 
-  if (req.query.detailed === '1'){
+  if (req.query.detailed === '1') {
     sql =
       `SELECT id, name, abbr, email, po_box, phone,
       BUID(location_id) AS location_id, logo, currency_id,
@@ -35,7 +36,6 @@ exports.list = function list(req, res, next) {
 
 // GET /enterprises/:id
 exports.detail = function detail(req, res, next) {
-  'use strict';
   let enterpriseId = req.params.id;
   lookupEnterprise(enterpriseId)
     .then(function (enterprise) {
@@ -46,12 +46,10 @@ exports.detail = function detail(req, res, next) {
 };
 
 function lookupEnterprise(id) {
-  'use strict';
-
   let sql =
     `SELECT id, name, abbr, email, po_box, phone,
       BUID(location_id) AS location_id, logo, currency_id,
-      gain_account_id, loss_account_id 
+      gain_account_id, loss_account_id
     FROM enterprise WHERE id = ?;`;
 
   return db.exec(sql, [id])
@@ -67,8 +65,6 @@ function lookupEnterprise(id) {
 
 // POST /enterprises
 exports.create = function create(req, res, next) {
-  'use strict';
-
   let enterprise = db.convert(req.body.enterprise, ['location_id']);
   let sql =
     'INSERT INTO enterprise SET ?;';
@@ -83,8 +79,6 @@ exports.create = function create(req, res, next) {
 
 // PUT /enterprises/:id
 exports.update = function update(req, res, next) {
-  'use strict';
-
   let sql = 'UPDATE enterprise SET ? WHERE id = ?;';
   let data = db.convert(req.body, ['location_id']);
   delete data.id;

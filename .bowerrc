@@ -1,4 +1,7 @@
-{ 
+{
   "directory": "client/vendor",
-  "analytics": false
+  "analytics": false,
+  "resolvers": [
+    "bower-npm-resolver"
+  ]
 }

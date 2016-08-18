@@ -1,55 +1,27 @@
-<head>
-  <title>{{translate "PATIENT_REG.PATIENT_REGISTRATIONS"}}</title>
-  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
-  <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
-  <style>
-    .pills span {
-      margin : 1px 2px;
-    }
+{{> head title="PATIENT_REG.PATIENT_REGISTRATIONS" }}
 
-    .pills span:first {
-      margin-left: 0;
-    }
-
-
-    .table-mini {
-      font-size: 0.8em;
-    }
-
-    .table-mini tr td,
-    .table-mini tr th {
-      padding : 1px;
-    }
-
-  </style>
-</head>
 <body>
-  <header>
-    <h4>
-      {{translate "PATIENT_REG.PATIENT_REGISTRATIONS"}}
-      <small class="pull-right">
-        <i class="fa fa-calendar"></i> {{timestamp metadata.timestamp }}
-      </small>
-    </h4>
-  </header>
+
+  {{> header }}
+
+  <h4 class="text-center">{{translate "PATIENT_REG.PATIENT_REGISTRATIONS"}}</h4>
 
   <p class="pills">
     {{#each metadata.filters}}
       <span class="label label-primary text-capitalize">
-        {{! this madness is to make sure dates are properly formatted }}
-        <i class="fa fa-filter"></i> {{translate this.displayName}}:
+        <i class="fa fa-filter"></i> {{translate this.displayName}}
 
-        {{#if this.comparitor}} {{this.comparitor}} {{/if}}
+        {{#if this.comparitor}} {{this.comparitor}}
+        {{else}}: {{/if}}
 
         {{#if this.isDate}} {{date this.value}}
         {{else}} {{this.value}} {{/if}}
-
       </span>
     {{/each}}
   </p>
 
   <section>
-    <table class="table table-bordered table-condensed table-mini">
+    <table class="table table-condensed table-report table-bordered ">
       <thead>
         <tr class="text-capitalize text-center">
           <th>{{translate "TABLE.COLUMNS.REFERENCE" }}</th>

@@ -1330,6 +1330,11 @@ CREATE TABLE `posting_journal` (
   KEY `user_id` (`user_id`),
   KEY `cc_id` (`cc_id`),
   KEY `pc_id` (`pc_id`),
+  INDEX `trans_date` (`trans_date`),
+  INDEX `record_uuid` (`record_uuid`),
+  INDEX `reference_uuid` (`record_uuid`),
+  INDEX `entity_uuid` (`entity_uuid`),
+  INDEX `account_id` (`account_id`),
   FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   FOREIGN KEY (`origin_id`) REFERENCES `transaction_type` (`id`) ON UPDATE CASCADE,
@@ -1338,67 +1343,6 @@ CREATE TABLE `posting_journal` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `primary_cash`;
-
-CREATE TABLE `primary_cash` (
-  `reference` INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `uuid` BINARY(16) NOT NULL,
-  `project_id` smallint(5) unsigned NOT NULL,
-  `type` char(1) NOT NULL,
-  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `deb_cred_uuid` BINARY(16) DEFAULT NULL,
-  `deb_cred_type` varchar(1) DEFAULT NULL,
-  `currency_id` tinyint(3) unsigned NOT NULL,
-  `account_id` int(10) unsigned NOT NULL,
-  `cost` decimal(19,4) unsigned NOT NULL DEFAULT 0.0,
-  `user_id` smallint(5) unsigned NOT NULL,
-  `description` text,
-  `cash_box_id` mediumint(8) unsigned NOT NULL,
-  `origin_id` tinyint(3) unsigned NOT NULL,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `primary_cash_1` (`project_id`, `reference`),
-  KEY `project_id` (`project_id`),
-  KEY `reference` (`reference`),
-  KEY `currency_id` (`currency_id`),
-  KEY `user_id` (`user_id`),
-  KEY `cash_box_id` (`cash_box_id`),
-  KEY `account_id` (`account_id`),
-  KEY `origin_id` (`origin_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`),
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`origin_id`) REFERENCES `primary_cash_module` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TRIGGER primary_cash_reference BEFORE INSERT ON primary_cash
-FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM primary_cash WHERE primary_cash.project_id = new.project_id);
-
-DROP TABLE IF EXISTS `primary_cash_item`;
-
-CREATE TABLE `primary_cash_item` (
-  `uuid` varBINARY(16) NOT NULL,
-  `primary_cash_uuid` varBINARY(16) NOT NULL,
-  `debit` decimal(19,4) unsigned NOT NULL DEFAULT 0.0,
-  `credit` decimal(19,4) unsigned NOT NULL DEFAULT 0.0,
-  `inv_po_id` varBINARY(16) DEFAULT NULL,
-  `document_uuid` varBINARY(16) DEFAULT NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `primary_cash_uuid` (`primary_cash_uuid`),
-  FOREIGN KEY (`primary_cash_uuid`) REFERENCES `primary_cash` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `primary_cash_module`;
-
-CREATE TABLE `primary_cash_module` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `text` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `primary_cash_module_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `profit_center`;

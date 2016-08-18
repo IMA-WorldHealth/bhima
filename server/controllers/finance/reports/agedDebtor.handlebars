@@ -1,0 +1,55 @@
+{{> head title="REPORT.AGED_DEBTORS.TITLE"}}
+
+<body>
+  <main class="container">
+    {{> header }}
+
+    <h4 class="text-center">{{translate "REPORT.AGED_DEBTORS.TITLE"}}</h4>
+
+    <!-- margin is the cell size -->
+    <section>
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr class="text-capitalize">
+            <th class="text-center">{{translate "TABLE.COLUMNS.NAME"}}</th>
+            <th class="text-center" style="width:15%">{{translate "FORM.LABELS.ACCOUNT_NUMBER"}}</th>
+            <th class="text-center">{{translate "REPORT.AGED_DEBTORS.THIRTY_DAYS"}}</th>
+            <th class="text-center">{{translate "REPORT.AGED_DEBTORS.SIXTY_DAYS"}}</th>
+            <th class="text-center">{{translate "REPORT.AGED_DEBTORS.NINETY_DAYS"}}</th>
+            <th class="text-center">{{translate "REPORT.AGED_DEBTORS.OVER_NINETY_DAYS"}}</th>
+            <th class="text-center">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- print a row for each debtor -->
+          {{#each debtors}}
+            <tr>
+              <th>{{this.name}}</th>
+              <td class="text-left">{{this.number}}</td>
+              <td class="text-right">{{currency this.thirty ../metadata.currency_id}}</td>
+              <td class="text-right">{{currency this.sixty ../metadata.currency_id}}</td>
+              <td class="text-right">{{currency this.ninety ../metadata.currency_id}}</td>
+              <td class="text-right">{{currency this.excess ../metadata.currency_id}}</td>
+              <td class="text-right">{{currency this.all ../metadata.currency_id}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=7}}
+          {{/each}}
+        </tbody>
+        {{#if aggregates}}
+          <tfoot>
+            <tr>
+              <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
+              <th class="text-right">{{currency aggregates.thirty metadata.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.sixty metadata.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.ninety metadata.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.excess metadata.currency_id}}</th>
+              <th class="text-right">{{currency aggregates.all metadata.currency_id}}</th>
+            </tr>
+          </tfoot>
+        {{/if}}
+      </table>
+    </section>
+  </main>
+</body>

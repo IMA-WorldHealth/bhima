@@ -343,10 +343,12 @@ exports.configure = function configure(app) {
 
   // reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', financeReports.receipts.invoices);
+
   app.get('/reports/patient/registrations', medicalReports.patientRegistrations);
   app.get('/reports/patient/:uuid', medicalReports.receipts.patients);
   app.get('/reports/patients/:uuid/checkins', medicalReports.patientCheckins);
   app.get('/reports/purchases/:uuid', inventoryReports.receipts.purchases);
+  app.get('/reports/finance/aged_debtor', financeReports.agedDebtor);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);

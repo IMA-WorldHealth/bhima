@@ -33,6 +33,7 @@ const renderers = {
 const defaults = {
   pageSize: 'A4',
   renderer: 'pdf',
+  lang : 'en'
 };
 
 // path to the template to render
@@ -92,14 +93,20 @@ function build(req, res, next) {
 
   const metadata = {
     timestamp: new Date(),
+    user : req.session.user,
+    enterprise : req.session.enterprise,
     filters: formatFilters(qs)
   };
+
+  // set up the context
+  const context = { lang : qs.lang };
+  _.defaults(context, defaults);
 
   // enforced detailed
   params.detailed = 1;
 
   Patients.find(params)
-  .then(patients => renderer.render({ patients, metadata }, template, defaults))
+  .then(patients => renderer.render({ patients, metadata }, template, context))
   .then(result => {
     res.set(renderer.headers).send(result);
   })
