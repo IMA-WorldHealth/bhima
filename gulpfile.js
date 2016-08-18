@@ -66,7 +66,7 @@ var paths = {
       'client/vendor/angular-ui-select/dist/select.js',
 
       // ChartJS
-      'client/vendor/Chart.js/dist/Chart.bundle.min.js',
+      'client/vendor/chart.js/dist/Chart.min.js',
       'client/vendor/angular-chart.js/dist/angular-chart.min.js',
 
       // Angular Growl

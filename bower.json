@@ -33,8 +33,8 @@
     "moment": "^2.13.0",
     "angular-dynamic-locale": "^0.1.30",
     "ngstorage": "^0.3.10",
-    "Chart.js": "2.1.6",
-    "angular-chart.js": "^1.0.0",
+    "Chart.js": "^2.1.6",
+    "angular-chart.js": "^1.0.1",
     "components-font-awesome": "^4.6.3",
     "angular-ui-select": "^0.17.1"
   },
