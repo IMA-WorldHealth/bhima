@@ -33,8 +33,6 @@ JournalController.$inject = [
 function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, PostingService) {
   var vm = this;
 
-  console.log(PostingService);
-
   /** @constants */
   vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
   vm.ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;

@@ -6,12 +6,14 @@ JournalPostingModalService.$inject = ['util', '$http'];
 
 function JournalPostingModalService(util, $http) {
   var service = this;
+  var baseUrl = '/trial_balance/'
 
   service.parseSelectedGridRecord = parseSelectedGridRecord;
   service.postingModalService = postingModalService;
   service.getCurrentGroupingColumn = getCurrentGroupingColumn;
   service.switchGroup = switchGroup;
   service.getDataByAccount = getDataByAccount;
+  service.checkTransactions = checkTransactions;
 
   function parseSelectedGridRecord (records){
     var parsed = [], processedTransactions = [];
@@ -35,6 +37,37 @@ function JournalPostingModalService(util, $http) {
     return groupingDetail.grouping[0].colName;
   }
 
+  function getTransactionList (lines) {
+    var transactions = [];
+
+    /** extract only an unique trans_id property and put it in an array*/
+    lines.forEach(function (line) {
+      if(transactions.indexOf(line.trans_id) === -1){
+        transactions.push(line.trans_id);
+      }
+    });
+
+    return transactions;
+  }
+
+  /**
+   * @function checkTransactions
+   * @description
+   * This function takes a parsed record list (grid rows processed by the parseSelectedGridRecord function)
+   * and return back a list of object representing errors and warnings.
+   * an empty list returned means all transactions can be posted without
+   * error or warning
+   **/
+  function checkTransactions (lines) {
+    var transactions = getTransactionList(lines);
+    var url = baseUrl.concat('checks/');
+
+    console.log('mes transactions', transactions);
+
+    /** posting a list of transactions to the server **/
+    return $http.post(url, {transactions : transactions});
+  }
+
   /**
    * @function getDataByAccount
    * @Description
@@ -44,19 +77,12 @@ function JournalPostingModalService(util, $http) {
    * by grouping account
    **/
   function getDataByAccount(lines) {
+    var url = baseUrl.concat('data_per_account/');
+    var transactions = getTransactionList(lines);
 
-    var transactions = [];
-
-    lines.forEach(function (line) {
-      if(transactions.indexOf(line.trans_id) === -1){
-        transactions.push(line.trans_id);
-      }
-    });
-    
-    
-
-    console.log(transactions);    
-    return [];
+    /** Querying the database to get the data grouped per account**/    
+    return $http.get(url, { params : {transactions : transactions}})
+      .then(util.unwrapHttpResponse);
   }
 
   /**

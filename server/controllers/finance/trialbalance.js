@@ -1,53 +1,9 @@
-// scripts/controllerstrialbalance.js
-
-/*
+/**
  * The trial balance provides a description of what the general
- * ledger and balance sheet would look like after posting
- * data from the posting journal to the general ledger.  It also
- * submit errors back to the client.
+ * ledger would look like after posting data from the
+ * posting journal to the general ledger.
+ * It also submit errors back to the client.
  *
- * We perform various checks on the data to ensure that all
- * values are correct and present.  These checks include:
- *  1) Every transaction has an account [FATAL]
- *  2) Every account used is unlocked [FATAL]
- *  3) Every transaction has an currency [FATAL]
- *  4) Every transaction has a 0 balance (debits - credits, debit_equv - credit_equiv) [FATAL]
- *  5) Every transaction has the same fiscal year and period [FATAL]
- *  6) The fiscal year and period for each transaction is not in the future [FATAL]
- *  7) A deb_cred_type exists for each transaction with a deb_cred_uuid [FATAL]
- *  8) An exchange rate exists for each row/date in the transaction [WARNING]
- *  9) A doc_num exists for transactions involving a debtor/creditor [WARNING]
- *
- * If an error or warning is incurred, the controller responds
- * to the client with a 200 'OK' status header, however, it includes
- * information about the potential errors.  Since errors can be fatal
- * or non-fatal, it is inappropriate to use a '400 Bad Request' status. The
- * body returned to the client is in the following format:
- * {
- *   balances :  [{
- *     account_id : '',
- *     number :'',
- *     balance : 0,        // can be null or number
- *     credit : 0,         // sum of credit_equv
- *     debit : 0           // sum of debit_equiv
- *   }, etc ...  ],
- *   exceptions : [{
- *     code : '',          // e.g 'ERR_MISSING_ACCOUNT'  warning prefix is WARN_
- *     fatal : false,      // boolean if fatal (blocking) or not
- *     transactions : ['HBB1'],   // affected transaction ids
- *     affectedRows : 12          // number of affectedRows in the transaction
- *   },
- *   metadata : {
- *     maxdate : "2015-05-13",    // the largest date being posted
- *     mindate : "2015-01-14"     // the minumum date being posted
- *     rows : 12,                 // number of rows being posted
- *     transactions : 1           // number of transactions being posted
- *   }]
- * }
- *
- * If there is no error, we send back the trial balance report,
- * telling the state of the general ledger before the post and
- * after.
  */
 
 var q = require('q'),
@@ -55,8 +11,7 @@ var q = require('q'),
     uuid = require('node-uuid'),
     util = require('../../lib/util');
 
-// utility function to sum an array of objects
-// on a particular property
+// utility function to sum an array of objects on a particular property
 function aggregate(property, array) {
   return array.reduce(function (s, row) {
     return s + row[property];
@@ -73,15 +28,32 @@ function createErrorReport(code, isFatal, rows) {
   };
 }
 
+// Warning if the entity is null and entity_type is null also
+function checkEntityIsAlwaysDefined(transactions) {
 
-// Ensure no accounts are locked in the transactions
-function checkAccountsLocked(transactions) {
   var sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id
-    FROM posting_journal AS pj LEFT JOIN account
-      ON pj.account_id = account.id
-    WHERE account.locked = 1 AND pj.trans_id IN (?)
-    GROUP BY pj.trans_id;`;
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.entity_uuid, pj.entity_type FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?) AND pj.entity_type IS NULL 
+    GROUP BY trans_id HAVING pj.entity_uuid IS NULL;`;
+
+  return db.exec(sql, [transactions])
+    .then(function (rows) {
+
+      // if nothing is returned, skip error report
+      if (!rows.length) { return; }
+
+      // returns a error report
+      return createErrorReport('WARNING.MISSING_ENTITY', false, rows);
+    });
+}
+
+// make sure that a entity_uuid exists for each deb_cred_type
+function checkEntityExists(transactions) {
+
+  var sql =
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.entity_uuid FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?) AND (pj.entity_type = 'D' OR pj.entity_type = 'C')
+    GROUP BY trans_id HAVING pj.entity_uuid IS NULL;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -90,18 +62,15 @@ function checkAccountsLocked(transactions) {
     if (!rows.length) { return; }
 
     // returns a error report
-    return createErrorReport('ERROR.ERR_LOCKED_ACCOUNTS', true, rows);
+    return createErrorReport('ERROR.MISSING_ENTITY', true, rows);
   });
 }
 
-// make sure there are no missing accounts in the transactions
-function checkMissingAccounts(transactions) {
+// make sure that the document Id exist in each line of the transaction
+function checkDocumentIDExists(transactions) {
   var sql =
-    `SELECT COUNT(pj.uuid), pj.trans_id
-    FROM posting_journal AS pj LEFT JOIN account ON
-      pj.account_id = account.id
-    WHERE pj.trans_id IN (?) AND account.id IS NULL
-    GROUP BY pj.trans_id`;
+    `SELECT COUNT(pj.uuid) AS count, pj.record_uuid, pj.trans_id FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?) GROUP BY pj.trans_id HAVING pj.record_uuid IS NULL;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -110,27 +79,27 @@ function checkMissingAccounts(transactions) {
     if (!rows.length) { return; }
 
     // returns a error report
-    return createErrorReport('ERROR.ERROR_MISSING_ACCOUNTS', true, rows);
+    return createErrorReport('ERROR.MISSING_DOCUMENT_ID', true, rows);
   });
 }
 
 // make sure dates are in their correct period
 function checkDateInPeriod(transactions) {
   var sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.period_start, p.period_stop
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.start_date, p.end_date
     FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id
-    WHERE pj.trans_date NOT BETWEEN p.period_start AND p.period_stop AND
+    WHERE pj.trans_date NOT BETWEEN p.start_date AND p.end_date AND
       pj.trans_id IN (?)
     GROUP BY pj.trans_id;`;
 
   return db.exec(sql, [transactions])
-  .then(function (rows) {
-    // if nothing is returned, skip error report
-    if (!rows.length) { return; }
+    .then(function (rows) {
+      // if nothing is returned, skip error report
+      if (!rows.length) { return; }
 
-    // returns a error report
-    return createErrorReport('ERROR.ERR_DATE_IN_WRONG_PERIOD', true, rows);
-  });
+      // returns a error report
+      return createErrorReport('ERROR.DATE_IN_WRONG_PERIOD', true, rows);
+    });
 }
 
 // make sure fiscal years and periods exist for all transactions
@@ -142,19 +111,59 @@ function checkPeriodAndFiscalYearExists(transactions) {
     GROUP BY pj.trans_id;`;
 
   return db.exec(sql, [transactions])
-  .then(function (rows) {
+    .then(function (rows) {
 
-    // if nothing is returned, skip error report
-    if (!rows.length) { return; }
+      // if nothing is returned, skip error report
+      if (!rows.length) { return; }
 
-    // returns a error report
-    return createErrorReport('ERROR.ERR_MISSING_FISCAL_OR_PERIOD', true, rows);
-  });
+      // returns a error report
+      return createErrorReport('ERROR.MISSING_FISCAL_OR_PERIOD', true, rows);
+    });
 }
 
+// make sure there are no missing accounts in the transactions
+function checkMissingAccounts(transactions) {
+  var sql =
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id
+    FROM posting_journal AS pj LEFT JOIN account ON
+      pj.account_id = account.id
+    WHERE pj.trans_id IN (?) AND account.id IS NULL
+    GROUP BY pj.trans_id`;
+
+  return db.exec(sql, [transactions])
+    .then(function (rows) {
+
+      // if nothing is returned, skip error report
+      if (!rows.length) { return; }
+
+      // returns a error report
+      return createErrorReport('ERROR.MISSING_ACCOUNTS', true, rows);
+    });
+}
+
+// Ensure no accounts are locked in the transactions
+function checkAccountsLocked(transactions) {
+  var sql =
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id
+    FROM posting_journal AS pj LEFT JOIN account
+      ON pj.account_id = account.id
+    WHERE account.locked = 1 AND pj.trans_id IN (?)
+    GROUP BY pj.trans_id;`;
+
+  return db.exec(sql, [transactions])
+    .then(function (rows) {
+
+      // if nothing is returned, skip error report
+      if (!rows.length) { return; }
+
+      // returns a error report
+      return createErrorReport('ERROR.LOCKED_ACCOUNTS', true, rows);
+    });
+}
 
 // make sure the debit_equiv, credit_equiv are balanced
 function checkTransactionsBalanced(transactions) {
+  console.log('les transactions', transactions);
 
   var sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance
@@ -163,107 +172,44 @@ function checkTransactionsBalanced(transactions) {
     GROUP BY trans_id HAVING balance <> 0;`;
 
   return db.exec(sql, [transactions])
-  .then(function (rows) {
+    .then(function (rows) {
+      console.log('non balancee', rows);
 
-    // if nothing is returned, skip error report
-    if (rows.length === 0) { return; }
+      // if nothing is returned, skip error report
+      if (rows.length === 0) { return; }
 
-    // returns a error report
-    return createErrorReport('ERROR.ERR_UNBALANCED_TRANSACTIONS', true, rows);
-  });
+      // returns a error report
+      return createErrorReport('ERROR.UNBALANCED_TRANSACTIONS', true, rows);
+    });
 }
 
-// make sure that a deb_cred_uuid exists for each deb_cred_type
-function checkDebtorCreditorExists(transactions) {
-
+//Check if there is no transaction with one line to avoid single line with ero in debit and credit which is valuable
+function checkSingleLineTransaction (transactions){
   var sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = 'D' OR pj.deb_cred_type = 'C')
-    GROUP BY trans_id HAVING deb_cred_uuid IS NULL;`;
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?)
+    GROUP BY trans_id HAVING count = 1;`;
 
   return db.exec(sql, [transactions])
-  .then(function (rows) {
+    .then(function (rows) {
 
-    // if nothing is returned, skip error report
-    if (!rows.length) { return; }
+      // if nothing is returned, skip error report
+      if (rows.length === 0) { return; }
 
-    // returns a error report
-    return createErrorReport('ERROR.ERR_MISSING_DEBTOR_CREDITOR', true, rows);
-  });
+      // returns an error report
+      return createErrorReport('ERROR.SINGLE_LINE_TRANSACTIONS', true, rows);
+    });
 }
 
-// issue a warning if a transaction involving a debtor/creditor does not use a doc_num
-function checkDocumentNumberExists(transactions) {
-  var sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.doc_num, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = 'D' OR pj.deb_cred_type = 'C')
-    GROUP BY pj.trans_id HAVING pj.doc_num IS NULL;`;
-
-  return db.exec(sql, [transactions])
-  .then(function (rows) {
-
-    // if nothing is returned, skip error report
-    if (!rows.length) { return; }
-
-    // returns a error report
-    return createErrorReport('ERROR.WARN_MISSING_DOCUMENT_ID', false, rows);
-  });
-}
-
-// takes in an array of transactions and runs the trial
-// balance checks on them,
-function runAllChecks(transactions) {
-  return q.all([
-    checkAccountsLocked(transactions),
-    checkMissingAccounts(transactions),
-    checkDateInPeriod(transactions),
-    checkPeriodAndFiscalYearExists(transactions),
-    checkTransactionsBalanced(transactions),
-    checkDebtorCreditorExists(transactions),
-    checkDocumentNumberExists(transactions)
-  ]);
-}
-
-/* POST /journal/trialbalance
- *
- * Performs the trial balance.
- *
- * Initially, the checks described at the beginning of the module are
- * performed to catch errors.  Even if errors or warnings are incurred,
- * the balance proceeds to report the total number of rows in the
- * trailbalance and other details.
- *
- * This report is sent back to the client for processing.
- *
- * NOTE: though a user may choose to ignore the errors presented
- * in the trial balance, the posting operation will block posting
- * to the general ledger if there are any 'fatal' errors.
-*/
-exports.postTrialBalance = function (req, res, next) {
+exports.getDataPerAccount = function (req, res, next) {
   'use strict';
 
-  // parse the query string and retrieve the params
-  var transactions = req.body.transactions.map(function (t) { return t.toUpperCase(); }),
-      report = {};
-
-  // run the database checks
-  runAllChecks(transactions)
-  .then(function (results) {
-
-    // filter out the checks that passed
-    // (they will be null/undefined)
-    report.exceptions = results.filter(function (r) {
-      return !!r;
-    });
-
-    // attempt to calculate a summary of the before, credit, debit, and after
-    // state of each account in the posting journal
-    var sql =
-      `SELECT pt.debit, pt.credit,
-      pt.account_id, pt.balance, account.number
+  var requestString =
+    `SELECT pt.debit_equiv, pt.credit_equiv,
+      pt.account_id, pt.balance_before, account.number AS account_number
       FROM  account JOIN (
-        SELECT SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
-        posting_journal.account_id, (period_total.debit - period_total.credit) AS balance
+        SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv,
+        posting_journal.account_id, IFNULL((period_total.debit - period_total.credit), 0) AS balance_before 
         FROM posting_journal LEFT JOIN period_total
         ON posting_journal.account_id = period_total.account_id
         WHERE posting_journal.trans_id IN (?)
@@ -271,38 +217,60 @@ exports.postTrialBalance = function (req, res, next) {
         ) AS pt
       ON account.id = pt.account_id;`;
 
-    return db.exec(sql, [transactions]);
-  })
-  .then(function (balances) {
-
-    // attach the balances to the response
-    report.balances = balances;
-
-    // attempt to calculate the date range of the transactions
-    var sql =
-      `SELECT COUNT(trans_id) AS rows, COUNT(DISTINCT(trans_id)) AS transactions,
-        MIN(DATE(trans_date)) AS mindate, MAX(DATE(trans_date)) AS maxdate
-      FROM posting_journal WHERE trans_id IN (?);`;
-
-    return db.exec(sql, [transactions]);
-  })
-  .then(function (metadata) {
-
-    // attach the dates to the response
-    report.metadata = metadata[0];
-
-    // trial balance succeeded!  Send back the resulting report
-    res.status(200).send(report);
-  })
-  .catch(function (error) {
-    console.error(error.stack);
-
-    // whoops.  Still have either errors or warnings. Make sure
-    // that they are properly reported to the client.
-    res.status(500).send(error);
-  });
+  db.exec(requestString, [req.query.transactions])
+    .then(function (data) {
+      data.forEach(function (item) {item.balance_final = item.balance_before + (item.debit_equiv - item.credit_equiv);});
+      res.status(200).json(data);
+    })
+    .catch(function (error) {
+      next(error);
+      console.log('error', error);
+    });
 };
 
+/**
+ * @function checkTransactions
+ * @descriptions
+ * fires all check functions and return back an array of promisses containing the errors
+ * here are the list of checks [type of error]:
+ *
+ * 1. A transaction should have at least one line [FATAL]
+ * 2. A transaction must be balanced [FATAL]
+ * 3. A transaction must contain unlocked account only [FATAL]
+ * 4. A transaction must not miss a account [FATAL]
+ * 5. A transaction must not miss a period or a fiscal year [FATAL]
+ * 6. A transaction must have every date valid  [FATAL]
+ * 7. A transaction must have a ID for every line [FATAL]
+ * 8. A transaction must have an ID of an entity for every line which have a no null entity type [FATAL]
+ * 9. A transaction should have an entity ID if not a warning must be printed, but it is not critical [WARNING]
+ *
+ *
+ * Here is the format of error and warnings :
+ *
+ * exceptions : [{
+ *     code : '',          // e.g 'MISSING_ACCOUNT'
+ *     fatal : false,      // true for error (will block posting) and false for warning (will not block posting)
+ *     transactions : ['HBB1'],   // affected transaction ids list
+ *     affectedRows : 12          // number of affectedRows in the transaction
+ *   }]
+ **/
+exports.checkTransactions = function (req, res, next) {
+  var transactions =  req.body.transactions;
+
+  return q.all([
+    checkSingleLineTransaction(transactions), checkTransactionsBalanced(transactions), checkAccountsLocked(transactions),
+    checkMissingAccounts(transactions), checkPeriodAndFiscalYearExists(transactions), checkDateInPeriod(transactions),
+    checkDocumentIDExists(transactions), checkEntityExists(transactions), checkEntityIsAlwaysDefined(transactions)
+  ])
+  .then(function (errorReport){
+    console.log('error report', errorReport);
+    res.status(200).json(errorReport);
+  })
+  .catch(function (error) {
+    console.log('error', error);
+     next(error);
+  });
+};
 
 // POST /journal/togeneralledger
 // Posts data passing a valid trial balance to the general ledger
@@ -397,3 +365,99 @@ exports.postToGeneralLedger = function (req, res, next) {
     res.status(500).send(error);
   });
 };
+
+
+/* POST /journal/trialbalance
+ *
+ * Performs the trial balance.
+ *
+ * Initially, the checks described at the beginning of the module are
+ * performed to catch errors.  Even if errors or warnings are incurred,
+ * the balance proceeds to report the total number of rows in the
+ * trailbalance and other details.
+ *
+ * This report is sent back to the client for processing.
+ *
+ * NOTE: though a user may choose to ignore the errors presented
+ * in the trial balance, the posting operation will block posting
+ * to the general ledger if there are any 'fatal' errors.
+ */
+// exports.postTrialBalance = function (req, res, next) {
+//   'use strict';
+//
+//   // parse the query string and retrieve the params
+//   var transactions = req.body.transactions.map(function (t) { return t.toUpperCase(); }),
+//       report = {};
+//
+//   // run the database checks
+//   runAllChecks(transactions)
+//   .then(function (results) {
+//
+//     // filter out the checks that passed
+//     // (they will be null/undefined)
+//     report.exceptions = results.filter(function (r) {
+//       return !!r;
+//     });
+//
+//     // attempt to calculate a summary of the before, credit, debit, and after
+//     // state of each account in the posting journal
+//     var sql =
+//       `SELECT pt.debit, pt.credit,
+//       pt.account_id, pt.balance, account.number
+//       FROM  account JOIN (
+//         SELECT SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
+//         posting_journal.account_id, (period_total.debit - period_total.credit) AS balance
+//         FROM posting_journal LEFT JOIN period_total
+//         ON posting_journal.account_id = period_total.account_id
+//         WHERE posting_journal.trans_id IN (?)
+//         GROUP BY posting_journal.account_id
+//         ) AS pt
+//       ON account.id = pt.account_id;`;
+//
+//     return db.exec(sql, [transactions]);
+//   })
+//   .then(function (balances) {
+//
+//     // attach the balances to the response
+//     report.balances = balances;
+//
+//     // attempt to calculate the date range of the transactions
+//     var sql =
+//       `SELECT COUNT(trans_id) AS rows, COUNT(DISTINCT(trans_id)) AS transactions,
+//         MIN(DATE(trans_date)) AS mindate, MAX(DATE(trans_date)) AS maxdate
+//       FROM posting_journal WHERE trans_id IN (?);`;
+//
+//     return db.exec(sql, [transactions]);
+//   })
+//   .then(function (metadata) {
+//
+//     // attach the dates to the response
+//     report.metadata = metadata[0];
+//
+//     // trial balance succeeded!  Send back the resulting report
+//     res.status(200).send(report);
+//   })
+//   .catch(function (error) {
+//     console.error(error.stack);
+//
+//     // whoops.  Still have either errors or warnings. Make sure
+//     // that they are properly reported to the client.
+//     res.status(500).send(error);
+//   });
+// };
+
+/*
+ * takes in an array of transactions and runs the trial
+ * balance checks on them,
+ **/
+// function runAllChecks(transactions) {
+//   return q.all([
+//     checkAccountsLocked(transactions),
+//     checkMissingAccounts(transactions),
+//     checkDateInPeriod(transactions),
+//     checkPeriodAndFiscalYearExists(transactions),
+//     checkTransactionsBalanced(transactions),
+//     checkDebtorCreditorExists(transactions),
+//     checkDocumentNumberExists(transactions)
+//   ]);
+// }

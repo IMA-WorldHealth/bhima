@@ -27,6 +27,12 @@
       ui-grid-auto-resize
       ui-grid-grouping
       >
+      <bh-grid-loading-indicator
+        loading-state="!JournalPosterModalCtrl.errors"
+        empty-state="!JournalPosterModalCtrl.errors"
+        error-state="JournalPosterModalCtrl.hasError"
+      >
+      </bh-grid-loading-indicator>
     </div>
 
   </div>

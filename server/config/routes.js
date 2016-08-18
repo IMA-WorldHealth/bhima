@@ -48,7 +48,7 @@ const depots               = require('../controllers/inventory/depots');
 const inventoryReports     = require('../controllers/inventory/reports');
 
 // finance routes
-const trialbalance     = require('../controllers/finance/trialbalance');
+const trialBalance     = require('../controllers/finance/trialbalance');
 const ledger           = require('../controllers/finance/ledger');
 const fiscal           = require('../controllers/finance/fiscal');
 const gl               = require('../controllers/finance/ledgers/general');
@@ -195,13 +195,19 @@ exports.configure = function configure(app) {
   app.put('/subsidies/:id', subsidies.update);
   app.delete('/subsidies/:id', subsidies.remove);
 
-  // journal routes
+  // API for journal
   app.get('/journal', journal.list);
+  
+  //API for trial balance
+  
+  app.get('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
+  app.post('/trial_balance/checks', trialBalance.checkTransactions);
+  
 
   // trial balance routes
-  app.post('/journal/trialbalance', trialbalance.postTrialBalance);
-  app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
-  app.post('/journal/:uuid/reverse', journal.reverse);
+  // app.post('/journal/trialbalance', trialbalance.postTrialBalance);
+  // app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
+  // app.post('/journal/:uuid/reverse', journal.reverse);
 
   // ledger routes
   // TODO : needs renaming
