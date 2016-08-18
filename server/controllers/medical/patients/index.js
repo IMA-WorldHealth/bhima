@@ -614,27 +614,36 @@ function latestInvoice (req, res, next) {
       ) AS i JOIN invoice ON i.uuid = invoice.uuid
       JOIN project ON invoice.project_id = project.id `;
 
+    var sql3 =
+      `SELECT COUNT(invoice.uuid) as 'invoicesLength'
+       FROM invoice 
+       JOIN user ON user.id = invoice.user_id
+       WHERE debtor_uuid = ?
+       ORDER BY date DESC`;
+
 
     var execSql = db.exec(sql, [uuid, uid, uuid, uid]);
     var execSql2 = db.exec(sql2, [uuid, uid, uuid, uid]);
+    var execSql3 = db.exec(sql3, [uuid]);
 
-    return q.all([execSql, execSql2]);
+    return q.all([execSql, execSql2, execSql3]);
   })
-  .spread(function (invoices, payments){
+  .spread(function (invoices, payments, invoicesLength){
     var numberPayment = payments[0].numberPayment;
     invoice = {    
-      uuid          : invoiceLatest.uuid,
-      debtor_uuid   : invoiceLatest.debtor_uuid,
-      numberPayment : numberPayment,
-      date          : invoiceLatest.date,
-      cost          : invoiceLatest.cost,
-      user          : invoiceLatest.user,
-      uid           : invoices[0].uid,
-      reference     : invoices[0].reference,
-      credit        : invoices[0].credit,
-      debit         : invoices[0].debit,
-      balance       : invoices[0].balance,
-      entity_uuid   : invoices[0].entity_uuid 
+      uuid            : invoiceLatest.uuid,
+      debtor_uuid     : invoiceLatest.debtor_uuid,
+      numberPayment   : numberPayment,
+      date            : invoiceLatest.date,
+      cost            : invoiceLatest.cost,
+      user            : invoiceLatest.user,
+      uid             : invoices[0].uid,
+      reference       : invoices[0].reference,
+      credit          : invoices[0].credit,
+      debit           : invoices[0].debit,
+      balance         : invoices[0].balance,
+      entity_uuid     : invoices[0].entity_uuid,
+      invoicesLength  : invoicesLength[0].invoicesLength
     };
 
     res.status(200).send(invoice);
