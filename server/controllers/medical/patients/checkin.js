@@ -21,7 +21,6 @@ const db    = require('../../../lib/db');
 const topic = require('../../../lib/topic');
 
 const BadRequest = require('../../../lib/errors/BadRequest');
-const q     = require('q');
 
 exports.list = list;
 exports.create = create;
