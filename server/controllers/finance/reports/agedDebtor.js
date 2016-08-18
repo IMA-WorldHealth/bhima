@@ -45,7 +45,7 @@ const template = path.normalize('./server/controllers/finance/reports/agedDebtor
  * @description
  * The HTTP interface which actually creates the report.
  */
-module.exports = function agedDebtorReport(req, res, next) {
+function agedDebtorReport(req, res, next) {
 
   const qs = req.query;
 
@@ -59,7 +59,9 @@ module.exports = function agedDebtorReport(req, res, next) {
   const data = {
     metadata : {
       timestamp : new Date(),
-      currency_id : req.session.enterprise.currency_id
+      currency_id : req.session.enterprise.currency_id,
+      user : req.session.user,
+      enterprise : req.session.enterprise
     }
   };
 
@@ -113,5 +115,6 @@ module.exports = function agedDebtorReport(req, res, next) {
     })
     .catch(next)
     .done();
+}
 
-};
+module.exports = agedDebtorReport;

@@ -94,7 +94,7 @@ function login(req, res, next) {
     sql = `
       SELECT e.id, e.name, e.abbr, e.phone, e.email, BUID(e.location_id) as location_id, e.currency_id,
         c.symbol AS currencySymbol, e.po_box,
-        CONCAT(village.name, ' / ', sector.name, ' / ', province.name) AS location 
+        CONCAT(village.name, ' / ', sector.name, ' / ', province.name) AS location
       FROM enterprise AS e
       JOIN currency AS c ON e.currency_id = c.id
       JOIN village ON village.uuid = e.location_id
