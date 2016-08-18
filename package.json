@@ -78,7 +78,7 @@
     "karma": "^1.1.2",
     "karma-chai": "^0.1.0",
     "karma-chai-spies": "^0.1.4",
-    "karma-chrome-launcher": "^1.0.1",
+    "karma-chrome-launcher": "^2.0.0",
     "karma-mocha": "^1.1.0",
     "karma-ng-html2js-preprocessor": "^1.0.0",
     "mocha": "^3.0.0",
