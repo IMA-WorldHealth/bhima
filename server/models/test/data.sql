@@ -432,8 +432,6 @@ INSERT INTO `mod_snis_zs` VALUES
   (1,'Zone Sante A','Territoire A','Province A'),
   (2,'Zone Sante B','Territoire B','Province B');
 
-INSERT INTO `primary_cash_module` VALUES (1,'Transfert'),(3,'Convention');
-
 -- exchange rate for the current date
 INSERT INTO `exchange_rate` VALUES
   (1,1,1,930.0000, NOW());

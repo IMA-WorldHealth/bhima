@@ -27,7 +27,7 @@ const hbs = exphbs.create({
     date : dates.date,
     timestamp : dates.timestamp,
     age : dates.age,
-    mulitply : math.multiply,
+    multiply : math.multiply,
     sum : math.sum,
     add : math.add,
     currency : finance.currency,

@@ -111,7 +111,6 @@ CREATE TABLE `cash` (
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `user_id` (`user_id`),
   KEY `cashbox_id` (`cashbox_id`),
-  INDEX `debtor_uuid` (`debtor_uuid`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
