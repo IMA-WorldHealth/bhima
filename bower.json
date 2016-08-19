@@ -42,7 +42,6 @@
     "angular-mocks": "^1.5.6"
   },
   "resolutions": {
-    "angular": "1.5.8",
-    "Chart.js": "2.1.6"
+    "angular": "1.5.8"
   }
 }
