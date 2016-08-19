@@ -624,11 +624,16 @@ function latestInvoice (req, res, next) {
 
     var execSql = db.exec(sql, [uuid, uid, uuid, uid]);
     var execSql2 = db.exec(sql2, [uuid, uid, uuid, uid]);
-    var execSql3 = db.exec(sql3, [uuid]);
+    var execSql3 = db.exec(sql3, [uid]);
 
     return q.all([execSql, execSql2, execSql3]);
   })
   .spread(function (invoices, payments, invoicesLength){
+    console.log('DDDDDDDDDDDDDD');
+    console.log('JJJJJJJJJJJJJJ');
+    console.log(invoicesLength);
+    console.log('DDDDDDDDDDDDDD');
+
     var numberPayment = payments[0].numberPayment;
     invoice = {    
       uuid            : invoiceLatest.uuid,
