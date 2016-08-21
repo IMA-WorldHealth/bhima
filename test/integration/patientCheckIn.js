@@ -7,6 +7,7 @@ describe('(/patients/:uuid/visits) Patient Check In', () => {
   'use strict';
 
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
+
   it('GET /patients/:uuid/visits returns a list of all patient visits', () => {
     return agent.get(`/patients/${patientUuid}/visits`)
       .then(function (result) {
@@ -37,4 +38,5 @@ describe('(/patients/:uuid/visits) Patient Check In', () => {
         expect(result.body).to.have.keys('uuid');
       });
   });
+
 });

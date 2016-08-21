@@ -58,4 +58,5 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
       vm.loading = false;
       Notify.handleError(error);
     });
+
 }

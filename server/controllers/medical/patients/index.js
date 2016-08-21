@@ -77,6 +77,9 @@ exports.subsidies = subsidies;
 /** expose patient detail query internally */
 exports.lookupPatient = handleFetchPatient;
 
+// Get the latest patient Invoice 
+exports.latestInvoice = latestInvoice;
+
 /** @todo Method handles too many operations */
 function create(req, res, next) {
   var writeDebtorQuery, writePatientQuery;
@@ -553,3 +556,98 @@ function subsidies(req, res, next) {
     .catch(next)
     .done();
 }
+
+
+/*
+Search for information about the latest patient Invoice 
+*/
+function latestInvoice (req, res, next) {
+  const uid = db.bid(req.params.uuid);
+  var invoiceLatest,
+    invoice;
+
+  let sql =
+    `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, CONCAT(user.first, user.last) as user,
+     invoice.cost
+    FROM invoice 
+    JOIN user ON user.id = invoice.user_id
+    WHERE debtor_uuid = ?
+    ORDER BY date DESC
+    LIMIT 1`;
+
+  db.exec(sql, [uid])
+    .then(function (result) {
+      invoiceLatest = result[0];
+      var uuid = invoiceLatest.uuid;
+
+    sql =
+      `SELECT BUID(i.uuid) as uid, CONCAT(project.abbr, invoice.reference) as reference,
+        credit, debit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
+      FROM (
+        SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
+        FROM (
+          SELECT record_uuid as uuid, debit, credit, entity_uuid
+          FROM combined_ledger
+          WHERE record_uuid IN (?) AND entity_uuid = ?
+        UNION ALL
+          SELECT reference_uuid as uuid, debit, credit, entity_uuid
+          FROM  combined_ledger
+          WHERE reference_uuid IN (?) AND entity_uuid = ?
+        ) AS ledger
+        GROUP BY entity_uuid
+      ) AS i JOIN invoice ON i.uuid = invoice.uuid
+      JOIN project ON invoice.project_id = project.id `;
+
+    var sql2 =
+      `SELECT COUNT(i.uuid) as numberPayment
+      FROM (
+        SELECT uuid,  debit, credit, entity_uuid
+        FROM (
+          SELECT record_uuid as uuid, debit, credit, entity_uuid
+          FROM combined_ledger
+          WHERE record_uuid IN (?) AND entity_uuid = ? AND debit = 0
+        UNION ALL
+          SELECT reference_uuid as uuid, debit, credit, entity_uuid
+          FROM  combined_ledger
+          WHERE reference_uuid IN (?) AND entity_uuid = ? AND debit = 0
+        ) AS ledger
+      ) AS i JOIN invoice ON i.uuid = invoice.uuid
+      JOIN project ON invoice.project_id = project.id `;
+
+    var sql3 =
+      `SELECT COUNT(invoice.uuid) as 'invoicesLength'
+       FROM invoice 
+       JOIN user ON user.id = invoice.user_id
+       WHERE debtor_uuid = ?
+       ORDER BY date DESC`;
+
+
+    var execSql = db.exec(sql, [uuid, uid, uuid, uid]);
+    var execSql2 = db.exec(sql2, [uuid, uid, uuid, uid]);
+    var execSql3 = db.exec(sql3, [uid]);
+
+    return q.all([execSql, execSql2, execSql3]);
+  })
+  .spread(function (invoices, payments, invoicesLength){
+    var numberPayment = payments[0].numberPayment;
+    invoice = {    
+      uuid            : invoiceLatest.uuid,
+      debtor_uuid     : invoiceLatest.debtor_uuid,
+      numberPayment   : numberPayment,
+      date            : invoiceLatest.date,
+      cost            : invoiceLatest.cost,
+      user            : invoiceLatest.user,
+      uid             : invoices[0].uid,
+      reference       : invoices[0].reference,
+      credit          : invoices[0].credit,
+      debit           : invoices[0].debit,
+      balance         : invoices[0].balance,
+      entity_uuid     : invoices[0].entity_uuid,
+      invoicesLength  : invoicesLength[0].invoicesLength
+    };
+
+    res.status(200).send(invoice);
+  })
+  .catch(next)
+  .done();
+} 

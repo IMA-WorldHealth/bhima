@@ -381,6 +381,7 @@ exports.configure = function configure(app) {
 
   app.get('/patients/:uuid/visits', patients.checkin.list);
   app.post('/patients/:uuid/checkin', patients.checkin.create);
+  app.get('/patients/:uuid/invoices/latest', patients.latestInvoice);
 
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */

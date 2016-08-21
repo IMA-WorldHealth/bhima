@@ -41,6 +41,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   // document exposition definition
   service.Documents = Documents;
   service.Visits = Visits;
+  service.latest = latest;  
 
   /**
    * This method returns information on a patient given the patients UUID. This
@@ -51,6 +52,13 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
    */
   function read(uuid) {
     return $http.get(baseUrl.concat(uuid || ''))
+      .then(util.unwrapHttpResponse);
+  }
+
+
+  function latest(uuid) {
+    var path = 'patients/:uuid/invoices/latest';
+    return $http.get(path.replace(':uuid', uuid))
       .then(util.unwrapHttpResponse);
   }
 

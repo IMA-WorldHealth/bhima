@@ -16,6 +16,8 @@ describe('The /invoices API', function () {
   const numInvoices = 2;
   const numCreatedInvoices = 3;
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
+  const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
+
 
   /* a reference for one of the invoices in the database */
   const reference = 'TPA1';
@@ -51,6 +53,18 @@ describe('The /invoices API', function () {
     return agent.get('/invoices/unknown')
       .then(function (res) {
         helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET patients/:uuid/invoices/latest :The latest bill should show the most recent bill of a patient', () => {
+    const LIMIT = 1;
+    return agent.get(`/patients/${debtorUuid}/invoices/latest`)
+      .then(function (result) {
+        expect(result).to.have.status(200);
+        expect(result).to.be.json;
+        expect(result.body).to.have.keys('uid', 'reference', 'credit', 'debit', 'balance', 'entity_uuid', 'uuid', 'debtor_uuid', 'user', 'date', 'cost', 'numberPayment', 'invoicesLength');        
+        expect(result.body.entity_uuid).to.equal(debtorUuid);
       })
       .catch(helpers.handler);
   });
@@ -162,6 +176,8 @@ describe('The /invoices API', function () {
         .catch(helpers.handler);
     });
   });
+
+
 });
 
 /*
@@ -401,4 +417,5 @@ function BillingScenarios() {
       })
       .catch(helpers.handler);
   });
+
 }
