@@ -1,46 +1,43 @@
 <head>
   <title>{{patient.first_name}} {{patient.middle_name}} {{patient.last_name}}</title>
+  <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet"/>
+  <link href="{{absolutePath}}/css/style.min.css" rel="stylesheet"/>
+  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet"/>
 </head>
-<link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
-<style>
-  .key {
-    width : 250px;
-  }
-</style>
-<div style="text-align : right">
-<h1><b>{{patient.abbr}}{{patient.reference}}</b></h1>
-</div>
 
-<div style="margin-bottom : 40px">
-<h1 style="font-size : 70px">{{patient.first_name}} {{patient.middle_name}} {{patient.last_name}}</h1>
-</div>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-8">
+      <h2>
+        <strong> {{patient.first_name}} {{patient.middle_name}}  {{patient.last_name}} </strong>
+      </h2>
+    </div>
+    <div class="col-xs-4" style="text-align:right;">
+      <h2>
+        <strong> {{patient.reference}} </strong>
+      </h2>
+    </div>
+  </div>
 
-<table class="table table-bordered table-striped">
-  <tbody>
-  <tr>
-      <th class="key">{{translate "FORM.LABELS.HOSPITAL_FILE_NR"}}</th><td>{{patient.hospital_no}}</td>
-  </tr>
-  <tr>
-      <th class="key">{{translate "TABLE.COLUMNS.REFERENCE"}}</th><td>{{patient.abbr}}{{patient.reference}}</td>
-  </tr>
-  <tr>
-      <th class="key">{{translate "FORM.LABELS.DATE_REGISTRATION"}}</th><td>{{date patient.registration_date}}</td>
-  </tr>
-  </tbody>
-</table>
-<table class="table table-bordered table-striped">
-  <tbody>
-    <tr>
-      <th class="key">{{translate "TABLE.COLUMNS.AGE"}}</th><td>{{age patient.dob}}</td>
-    </tr>
-    <tr>
-      <th class="key">{{translate "TABLE.COLUMNS.GRADE"}}</td><td>{{patient.sex}}</td>
-    </tr>
-    <tr>
-      <th class="key">{{translate "FORM.LABELS.DOB"}}</td><td>{{date patient.dob}}</td>
-    </tr>
-    <tr>
-      <th class="key">{{translate "FORM.LABELS.ORIGIN_LOCATION"}}</th></td><td>-</td>
-    </tr>
-  </tbody>
-</table>
+  <div class="row">
+    <div class="col-xs-12">
+      <h4> <strong> {{patient.enterprise_name}} </strong> </h4>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h4> <strong> {{translate "TABLE.COLUMNS.REGISTERED_ON"}} {{date patient.registration_date }} </strong> </h4>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-7">
+      <h4> <strong> <i class="fa fa-{{patient.symbol}}"></i> {{date patient.dob }} </strong> </h4>
+    </div>
+    <div class="col-xs-5">
+     
+    </div>
+  </div>
+
+</div> 
