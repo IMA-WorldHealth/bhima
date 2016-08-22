@@ -5,27 +5,27 @@
 
 <table style="width:100%;">
   <tbody>
-  <tr colspan="2">
-      <th>
+  <tr>
+      <th class="key" style="width:65%;">
         <h1>
           <strong>
             {{patient.first_name}} {{patient.middle_name}}
           </strong>
         </h1>
       </th>
-  </tr>
-  <tr colspan="2">
-      <td class="key" style="width:65%;">
-        <h1>
-          <strong>
-            {{patient.last_name}} 
-          </strong>
-        </h1>
-      </td>
       <td style="width:35%; font-size : 70px">
         <h1>
           <strong>
             {{patient.abbr}}{{patient.reference}}
+          </strong>
+        </h1>
+      </td>
+  </tr>
+  <tr colspan="2">
+      <td>
+        <h1>
+          <strong>
+            {{patient.last_name}} 
           </strong>
         </h1>
       </td>
