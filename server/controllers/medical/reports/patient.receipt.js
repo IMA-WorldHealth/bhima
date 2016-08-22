@@ -37,6 +37,8 @@ function build(req, res, next) {
   Patients.lookupPatient(patientID)
     .then(function (patient) {
       patient.enterprise_name = req.session.enterprise.name;
+      patient.symbol = patient.sex === 'M' ? 'mars' : 'venus';
+
       return renderer.render({ patient }, template, receiptOptions);
     })
     .then(function (result) {      

@@ -1,8 +1,8 @@
 <head>
   <title>{{patient.first_name}} {{patient.middle_name}} {{patient.last_name}}</title>
 </head>
+<link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
 <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
-
 <table style="width:100%;">
   <tbody>
   <tr>
@@ -57,8 +57,7 @@
     <td style="width:65%; font-size : 70px">
       <h3>
         <strong>
-          <span class="glyphicon glyphicon-user"></span> 
-          {{date patient.dob }}
+          <i class="fa fa-{{patient.symbol}}"></i> {{date patient.dob }}
         </strong>
       </h3>    
     </td>
