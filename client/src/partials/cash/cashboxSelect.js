@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('CashboxSelectController', CashboxSelectController);
 
 CashboxSelectController.$inject = [
-  'CashboxService', 'appcache', '$location'
+  'CashboxService', 'appcache', '$state', 'Notify'
 ];
 
 /**
@@ -13,23 +13,12 @@ CashboxSelectController.$inject = [
  *
  * @module bhima/controllers/CashboxSelectController
  * @constructor
- *
- * @todo Migrate this code to an angular.component().
- * @todo Use toggleLoadingState() to govern loading.
  */
-function CashboxSelectController(Cashboxes, AppCache, $location) {
-
-  /** @const view-model alias */
+function CashboxSelectController(Cashboxes, AppCache, $state, Notify) {
   var vm = this;
 
-  /**
-  * @const persistent cashbox store
-  * This should be the same as in CashController
-  */
+  // NOTE: this should be the same as the cash window controller
   var cache = AppCache('CashPayments');
-
-  /** ui loading indicator control */
-  vm.loadingState = true;
 
   // bind methods
   vm.selectCashbox = selectCashbox;
@@ -37,20 +26,16 @@ function CashboxSelectController(Cashboxes, AppCache, $location) {
 
   /* ------------------------------------------------------------------------ */
 
-  function handler(error) {
-    throw error;
-  }
-
   // loads a new set of cashboxes from the server.
   function refreshCashboxList() {
+    vm.loading = true;
+
     Cashboxes.read()
     .then(function (cashboxes) {
       vm.cashboxes = cashboxes;
     })
-    .catch(handler)
-    .finally(function () {
-      vm.loadingState = true;
-    });
+    .catch(Notify.handleError)
+    .finally(toggleLoadingIndicator);
   }
 
   // fired when a user selects a cashbox from a list
@@ -59,27 +44,16 @@ function CashboxSelectController(Cashboxes, AppCache, $location) {
     .then(function (cashbox) {
       vm.cashbox = cashbox;
       cache.cashbox = cashbox;
-      navigate(vm.cashbox.id);
+
+      // go to the cash window
+      $state.$go('^.window');
     })
-    .catch(handler);
+    .catch(Notify.handleError);
   }
 
-  // expects a cashbox id as the first parameter
-  function navigate(id) {
-    var path = $location.path() + '/' + id;
-    $location.url(path);
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
   }
 
-  // fired on controller load
-  function startup() {
-
-    if (cache.cashbox) {
-      navigate(cache.cashbox.id);
-    } else {
-      refreshCashboxList();
-    }
-  }
-
-  // start up the module
-  startup();
+  refreshCashboxList();
 }

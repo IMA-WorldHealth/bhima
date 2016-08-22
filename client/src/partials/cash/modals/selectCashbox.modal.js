@@ -2,59 +2,50 @@ angular.module('bhima.controllers')
 .controller('SelectCashboxModalController', SelectCashboxModalController);
 
 SelectCashboxModalController.$inject = [
-  'SessionService', '$uibModalInstance', 'CashboxService', 'cashboxId'
+  'SessionService', '$uibModalInstance', 'CashboxService', '$stateParams',
+  'NotifyService', '$state'
 ];
 
 /**
  * This modal selects the active cashbox on the cash page
  */
-function SelectCashboxModalController(Session, Instance, Cashboxes, cashboxId) {
-
-  /** @const view-model alias */
+function SelectCashboxModalController(Session, Instance, Cashboxes, $stateParams, Notify, $state) {
   var vm = this;
 
   vm.selectCashbox = selectCashbox;
-  vm.dismiss = dismiss;
-  vm.close   = close;
-  vm.cashboxId = cashboxId;
+  var cashboxId = vm.cashboxId = $stateParams.id;
 
   /* ------------------------------------------------------------------------ */
 
-  function handler(error) {
-    throw error;
-  }
-
   // loads a new set of cashboxes from the server.
   function startup() {
+
+    toggleLoadingIndicator();
+
     Cashboxes.read(undefined, {
-      project_id : Session.project.id,
-      is_auxiliary: 1
+      project_id : Session.project.id
     })
     .then(function (cashboxes) {
       vm.cashboxes = cashboxes;
-    })
-    .catch(handler);
 
-    if (cashboxId) {
-      selectCashbox(cashboxId);
-    }
+      if (cashboxId) {
+        selectCashbox(cashboxId);
+      }
+    })
+    .catch(Notify.handleError)
+    .finally(toggleLoadingIndicator);
   }
 
   // fired when a user selects a cashbox from a list
   function selectCashbox(id) {
-    Cashboxes.read(id)
-    .then(function (cashbox) {
-      vm.selectedCashbox = cashbox;
-    })
-    .catch(handler);
+    vm.selectedCashbox = vm.cashboxes.reduce(function (selected, box) {
+      if (box.id === id) { selected = box; }
+      return selected;
+    }, null);
   }
 
-  function close() {
-    Instance.close(vm.selectedCashbox);
-  }
-
-  function dismiss() {
-    Instance.dismiss('cancel');
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
   }
 
   // start up the module

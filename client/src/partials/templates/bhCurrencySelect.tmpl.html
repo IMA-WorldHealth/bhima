@@ -28,9 +28,9 @@
 
     <!-- show danger message if all currencies are disabled -->
     <p class="help-block" ng-hide="$ctrl.valid">
-      <span class="glyphicon glyphicon-exclamation-sign"></span> {{ "CASHBOX.NO_SUPPORTED_CURRENCIES" | translate }}
-      <a ng-show="$ctrl.cashboxId" ng-href="#/cashboxes/{{$ctrl.cashboxId}}" class="text-danger">
-        <strong><span class="glyphicon glyphicon-link"></span> {{ "CASHBOX.SET_CURRENCY_ACCOUNTS" | translate }}</strong>
+      <i class="fa fa-exclamation-circle"></i> {{ "CASHBOX.NO_SUPPORTED_CURRENCIES" | translate }}
+      <a ng-show="$ctrl.cashboxId" ng-href="#/cashboxes/{{$ctrl.cashboxId}}/edit" class="text-danger">
+        <strong><i class="fa fa-link"></i> {{ "CASHBOX.SET_CURRENCY_ACCOUNTS" | translate }}</strong>
       </a>
     </p>
   </div>

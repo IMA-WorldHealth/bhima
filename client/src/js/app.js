@@ -324,15 +324,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   //   templateUrl: '/partials/invoices/invoices.html'
   // })
 
-  /* cash routes */
-  .state('cashId', {
-    url : '/cash/:id',
-    params : {
-      id : { squash: true, value: null }
-    },
-    controller: 'CashController as CashCtrl',
-    templateUrl: '/partials/cash/cash.html'
-  })
 
   /* creditor routes */
 

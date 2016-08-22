@@ -10,7 +10,7 @@ const components = require('../shared/components');
 const GU = require('../shared/gridTestUtils.spec.js');
 const FU = require('../shared/FormUtils');
 
-describe('Cash Payments Module', function () {
+describe.only('Cash Payments Module', function () {
 
   const path = '#/cash';
 
@@ -34,9 +34,6 @@ describe('Cash Payments Module', function () {
       // expect the 'cashbox selection' modal to appear
       FU.exists(by.css('[data-cashbox-modal]'), true);
 
-      // expect a notification error
-      // components.notification.hasError();
-
       // select a cashbox
       element(by.id('cashbox-3')).click();
       element(by.css('[data-cashbox-modal-submit]')).click();
@@ -51,12 +48,11 @@ describe('Cash Payments Module', function () {
       var target = path.concat('/' + cashboxB.id);
 
       // implicitly choose cashbox B by navigating to it directly
-      helpers.navigate(target);
+      browser.get(target);
 
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
 
-      // attempt to return to /cash manually
-      helpers.navigate(path);
+      browser.get(path);
 
       // the cashbox selection modal should not appear
       FU.exists(by.css('[data-cashbox-modal]'), false);
