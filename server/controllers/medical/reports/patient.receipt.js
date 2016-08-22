@@ -15,13 +15,15 @@ var template = path.normalize('./server/controllers/medical/reports/patient.rece
 
 /* @todo these can be overridden given the clients request if required */
 var receiptOptions = {
-  pageSize : 'A6',
+  pageSize : 'A5',
   orientation : 'landscape'
 };
 
 exports.build = build;
 
 function build(req, res, next) {
+
+
   var queryString = req.query;
   var patientID = req.params.uuid;
 
@@ -34,10 +36,10 @@ function build(req, res, next) {
 
   Patients.lookupPatient(patientID)
     .then(function (patient) {
+      patient.enterprise_name = req.session.enterprise.name;
       return renderer.render({ patient }, template, receiptOptions);
     })
-    .then(function (result) {
-
+    .then(function (result) {      
       res.set(renderer.headers).send(result);
     })
     .catch(next)

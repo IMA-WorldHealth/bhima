@@ -2,45 +2,67 @@
   <title>{{patient.first_name}} {{patient.middle_name}} {{patient.last_name}}</title>
 </head>
 <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
-<style>
-  .key {
-    width : 250px;
-  }
-</style>
-<div style="text-align : right">
-<h1><b>{{patient.abbr}}{{patient.reference}}</b></h1>
-</div>
 
-<div style="margin-bottom : 40px">
-<h1 style="font-size : 70px">{{patient.first_name}} {{patient.middle_name}} {{patient.last_name}}</h1>
-</div>
-
-<table class="table table-bordered table-striped">
+<table style="width:100%;">
   <tbody>
-  <tr>
-      <th class="key">{{translate "FORM.LABELS.HOSPITAL_FILE_NR"}}</th><td>{{patient.hospital_no}}</td>
+  <tr colspan="2">
+      <th>
+        <h1>
+          <strong>
+            {{patient.first_name}} {{patient.middle_name}}
+          </strong>
+        </h1>
+      </th>
   </tr>
-  <tr>
-      <th class="key">{{translate "TABLE.COLUMNS.REFERENCE"}}</th><td>{{patient.abbr}}{{patient.reference}}</td>
-  </tr>
-  <tr>
-      <th class="key">{{translate "FORM.LABELS.DATE_REGISTRATION"}}</th><td>{{date patient.registration_date}}</td>
+  <tr colspan="2">
+      <td class="key" style="width:65%;">
+        <h1>
+          <strong>
+            {{patient.last_name}} 
+          </strong>
+        </h1>
+      </td>
+      <td style="width:35%; font-size : 70px">
+        <h1>
+          <strong>
+            {{patient.abbr}}{{patient.reference}}
+          </strong>
+        </h1>
+      </td>
   </tr>
   </tbody>
 </table>
-<table class="table table-bordered table-striped">
-  <tbody>
-    <tr>
-      <th class="key">{{translate "TABLE.COLUMNS.AGE"}}</th><td>{{age patient.dob}}</td>
-    </tr>
-    <tr>
-      <th class="key">{{translate "TABLE.COLUMNS.GRADE"}}</td><td>{{patient.sex}}</td>
-    </tr>
-    <tr>
-      <th class="key">{{translate "FORM.LABELS.DOB"}}</td><td>{{date patient.dob}}</td>
-    </tr>
-    <tr>
-      <th class="key">{{translate "FORM.LABELS.ORIGIN_LOCATION"}}</th></td><td>-</td>
-    </tr>
-  </tbody>
+<br>
+<br>
+<table>
+  <tr>
+    <td colspan="2">
+      <h2>
+        <strong>
+          {{patient.enterprise_name}}
+        </strong>
+      </h2>          
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <h2>
+        <strong>
+          {{translate "TABLE.COLUMNS.REGISTERED_ON"}} {{date patient.registration_date }}
+        </strong>
+      </h2>    
+    </td>
+  </tr> 
+  <tr>
+    <td style="width:65%; font-size : 70px">
+      <h3>
+        <strong>
+          <span class="glyphicon glyphicon-user"></span> 
+          {{date patient.dob }}
+        </strong>
+      </h3>    
+    </td>
+    <td style="width:35%; font-size : 70px"></td>    
+  </tr>    
 </table>
+
