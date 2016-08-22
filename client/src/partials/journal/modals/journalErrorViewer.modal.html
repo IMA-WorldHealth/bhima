@@ -1,0 +1,30 @@
+<form name="JournalErrorViewerForm" ng-submit="JournalErrorViewerModalCtrl.close()" bh-form-defaults novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static">{{ ::"TREE.POSTING_JOURNAL" | translate }}</li>
+      <li class="title">
+        {{ ::"POSTING_JOURNAL.ERROR_REPORT.TITLE" | translate }}
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div
+      id="error-grid"
+      ui-grid="JournalErrorViewerModalCtrl.gridOptions"
+      ui-grid-auto-resize
+      ui-grid-grouping
+    >
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="submit"
+      class="btn {{JournalErrorViewerModalCtrl.params.cssClass}}"
+      data-method="submit">
+      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    </button>
+  </div>
+</form>

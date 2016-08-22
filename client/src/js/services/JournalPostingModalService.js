@@ -2,9 +2,9 @@ angular.module('bhima.services')
   .service('JournalPostingModalService', JournalPostingModalService);
 
 /** Dependencies injection */
-JournalPostingModalService.$inject = ['util', '$http'];
+JournalPostingModalService.$inject = ['util', '$http', '$uibModal'];
 
-function JournalPostingModalService(util, $http) {
+function JournalPostingModalService(util, $http, Modal) {
   var service = this;
   var baseUrl = '/trial_balance/'
 
@@ -14,6 +14,57 @@ function JournalPostingModalService(util, $http) {
   service.switchGroup = switchGroup;
   service.getDataByAccount = getDataByAccount;
   service.checkTransactions = checkTransactions;
+  service.getFeedBack = getFeedBack;
+  service.getCSSClass = getCSSClass;
+  service.openErrorViewerModal = openErrorViewerModal;
+
+  function openErrorViewerModal(errors, feedBack, cssClass) {
+
+    return Modal.open({
+      templateUrl: 'partials/journal/modals/journalErrorViewer.modal.html',
+      controller:  'JournalErrorViewerModalController as JournalErrorViewerModalCtrl',
+      size : 'lg',
+      resolve : {
+        params : function getParams() { return {errors : errors, feedBack : feedBack, cssClass : cssClass}; }
+      }
+    });
+
+  }
+
+  function  getCSSClass (feedBack) {
+    return feedBack.hasError ? 'error' : feedBack.hasWarning ? 'warning' : 'success';
+  }
+
+  function getFeedBack(errors) {
+    var feedBack = {};
+
+    feedBack.hasError = errors.some(function (error) {
+      if(error){
+        return error.fatal;
+      }else{
+        return false;
+      } 
+    });
+    
+    if(feedBack.hasError){
+      feedBack.hasWarning = false;
+      feedBack.hasSuccess = false;      
+      return feedBack;
+    }
+
+    feedBack.hasWarning = errors.some(function (error) {
+      return error
+    });
+
+    if(feedBack.hasWarning){
+      feedBack.hasSuccess = false;
+      return feedBack;
+    }
+    
+    feedBack.hasSuccess = true;
+    
+    return feedBack;
+  }
 
   function parseSelectedGridRecord (records){
     var parsed = [], processedTransactions = [];
@@ -61,8 +112,6 @@ function JournalPostingModalService(util, $http) {
   function checkTransactions (lines) {
     var transactions = getTransactionList(lines);
     var url = baseUrl.concat('checks/');
-
-    console.log('mes transactions', transactions);
 
     /** posting a list of transactions to the server **/
     return $http.post(url, {transactions : transactions});

@@ -4,28 +4,36 @@
     <ol class="headercrumb">
       <li class="static">{{ ::"TREE.POSTING_JOURNAL" | translate }}</li>
       <li class="title">
-        {{ ::"POSTING_JOURNAL.CONFIGURATION.TITLE" | translate }}
-        <label class="label label-warning">
-          {{ ::"POSTING_JOURNAL.CONFIGURATION.COLUMNS" | translate }}
-        </label>
+        {{ ::"POSTING_JOURNAL.TRIAL_BALANCE.TITLE" | translate }}
       </li>
     </ol>
   </div>
 
   <div class="modal-body">
-    <div class="row">
-      <div class="col-xs-12 text-right">
-        <a href ng-click="JournalPosterModalCtrl.switchGroup()" data-method="switch">
-          <i class="fa fa-retweet"></i>
-          {{ ::"FORM.BUTTONS.GROUP_BY" | translate }}
-        </a>
-      </div>
-    </div>
+      <p>
+        <div class="row">
+          <div class="col-xs-4 pull-left">
+            <button type="button" ng-show="JournalPosterModalCtrl.feedBack.hasError || JournalPosterModalCtrl.feedBack.hasWarning" class="btn {{JournalPosterModalCtrl.cssClass}}" ng-click="JournalPosterModalCtrl.openErrorViewerModal()" data-method="switch">
+              <i class="fa fa-bars"></i>
+              {{"FORM.BUTTONS.VIEW_ERRORS" | translate }}
+            </button>
+          </div>
+
+          <div class="pull-right">
+            <button type="button" class="btn btn-default" ng-click="JournalPosterModalCtrl.switchGroup()" data-method="switch">
+              <i class="fa fa-retweet"></i>
+              {{JournalPosterModalCtrl.groupingDetail.key | translate }}
+            </button>
+          </div>
+        </div>
+      </p>
+
     <div
       id="transaction-grid"
       ui-grid="JournalPosterModalCtrl.gridOptions"
       ui-grid-auto-resize
       ui-grid-grouping
+      ng-if="JournalPosterModalCtrl.errors"
       >
       <bh-grid-loading-indicator
         loading-state="!JournalPosterModalCtrl.errors"
@@ -47,7 +55,8 @@
 
     <button
       type="submit"
-      class="btn btn-primary"
+      class="btn {{JournalPosterModalCtrl.cssClass}}"
+      ng-disabled="JournalPosterModalCtrl.feedBack.hasError"
       data-method="submit">
       {{ "FORM.BUTTONS.SUBMIT" | translate }}
     </button>

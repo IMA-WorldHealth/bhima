@@ -43,7 +43,7 @@ function checkEntityIsAlwaysDefined(transactions) {
       if (!rows.length) { return; }
 
       // returns a error report
-      return createErrorReport('WARNING.MISSING_ENTITY', false, rows);
+      return createErrorReport('POSTING_JOURNAL.WARNINGS.MISSING_ENTITY', false, rows);
     });
 }
 
@@ -62,7 +62,7 @@ function checkEntityExists(transactions) {
     if (!rows.length) { return; }
 
     // returns a error report
-    return createErrorReport('ERROR.MISSING_ENTITY', true, rows);
+    return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_ENTITY', true, rows);
   });
 }
 
@@ -79,7 +79,7 @@ function checkDocumentIDExists(transactions) {
     if (!rows.length) { return; }
 
     // returns a error report
-    return createErrorReport('ERROR.MISSING_DOCUMENT_ID', true, rows);
+    return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_DOCUMENT_ID', true, rows);
   });
 }
 
@@ -98,7 +98,7 @@ function checkDateInPeriod(transactions) {
       if (!rows.length) { return; }
 
       // returns a error report
-      return createErrorReport('ERROR.DATE_IN_WRONG_PERIOD', true, rows);
+      return createErrorReport('POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD', true, rows);
     });
 }
 
@@ -117,7 +117,7 @@ function checkPeriodAndFiscalYearExists(transactions) {
       if (!rows.length) { return; }
 
       // returns a error report
-      return createErrorReport('ERROR.MISSING_FISCAL_OR_PERIOD', true, rows);
+      return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_FISCAL_OR_PERIOD', true, rows);
     });
 }
 
@@ -137,7 +137,7 @@ function checkMissingAccounts(transactions) {
       if (!rows.length) { return; }
 
       // returns a error report
-      return createErrorReport('ERROR.MISSING_ACCOUNTS', true, rows);
+      return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_ACCOUNTS', true, rows);
     });
 }
 
@@ -157,7 +157,7 @@ function checkAccountsLocked(transactions) {
       if (!rows.length) { return; }
 
       // returns a error report
-      return createErrorReport('ERROR.LOCKED_ACCOUNTS', true, rows);
+      return createErrorReport('POSTING_JOURNAL.ERRORS.LOCKED_ACCOUNT', true, rows);
     });
 }
 
@@ -173,13 +173,12 @@ function checkTransactionsBalanced(transactions) {
 
   return db.exec(sql, [transactions])
     .then(function (rows) {
-      console.log('non balancee', rows);
 
       // if nothing is returned, skip error report
       if (rows.length === 0) { return; }
 
       // returns a error report
-      return createErrorReport('ERROR.UNBALANCED_TRANSACTIONS', true, rows);
+      return createErrorReport('POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS', true, rows);
     });
 }
 
@@ -197,7 +196,7 @@ function checkSingleLineTransaction (transactions){
       if (rows.length === 0) { return; }
 
       // returns an error report
-      return createErrorReport('ERROR.SINGLE_LINE_TRANSACTIONS', true, rows);
+      return createErrorReport('POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSACTION', true, rows);
     });
 }
 
@@ -263,11 +262,9 @@ exports.checkTransactions = function (req, res, next) {
     checkDocumentIDExists(transactions), checkEntityExists(transactions), checkEntityIsAlwaysDefined(transactions)
   ])
   .then(function (errorReport){
-    console.log('error report', errorReport);
     res.status(200).json(errorReport);
   })
   .catch(function (error) {
-    console.log('error', error);
      next(error);
   });
 };
