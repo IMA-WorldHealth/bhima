@@ -15,7 +15,7 @@ var template = path.normalize('./server/controllers/medical/reports/patient.rece
 
 /* @todo these can be overridden given the clients request if required */
 var receiptOptions = {
-  pageSize : 'A5',
+  pageSize : 'A6',
   orientation : 'landscape'
 };
 
