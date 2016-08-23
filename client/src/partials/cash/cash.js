@@ -1,10 +1,10 @@
 angular.module('bhima.controllers')
-.controller('CashController', CashController);
+  .controller('CashController', CashController);
 
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
   'ExchangeRateService', 'SessionService', 'ModalService',
-  'NotifyService', '$state'
+  'NotifyService', '$state', 'ReceiptModal'
 ];
 
 /**
@@ -16,7 +16,7 @@ CashController.$inject = [
  * against previous invoices.  The cash payments module provides
  * functionality to pay both in multiple currencies.
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session, Modals, Notify, $state) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session, Modals, Notify, $state, Receipts) {
   var vm = this;
 
   // persist cash data across sessions
@@ -29,8 +29,8 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   if (!cashboxId) {
     $state.go('^.select', {}, { notify : false });
 
-    // if there is no URL id but one in localstorage, the state with the
-    // localstorage params
+  // if there is no URL id but one in localstorage, the state with the
+  // localstorage params
   } else if (cashboxId && !$state.params.id) {
     $state.go('^.window', { id : cashboxId }, { location: 'replace'});
   }
@@ -79,20 +79,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
       .catch(Notify.handleError);
   }
 
-  function calculateDisabledIds() {
-
-    // collect cashbox ids in an array
-    var cashboxCurrencyIds = vm.cashbox.currencies.reduce(function (array, currency) {
-      return array.concat(currency.currency_id);
-    }, []);
-
-    // find all ids that are not cashbox ids, to disable them
-    vm.disabledCurrencyIds = vm.currencies.reduce(function (array, currency) {
-      var bool = (cashboxCurrencyIds.indexOf(currency.id) === -1);
-      return array.concat(bool ? currency.id : []);
-    }, []);
-  }
-
   // clears the invoices field whenever the voucher type changes for a better UX
   function togglePaymentType() {
     delete vm.payment.invoices;
@@ -113,21 +99,22 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   function setCashboxSelection(cashbox) {
     vm.cashbox = cashbox;
     cache.cashbox = cashbox;
-    calculateDisabledIds();
+    vm.disabledCurrencyIds = Cash.calculateDisabledIds(vm.cashbox, vm.currencies);
   }
 
   /* Debtor Invoices Modal */
   function openInvoicesModal() {
     Modals.openDebtorInvoices({ debtorUuid: vm.payment.debtor_uuid, invoices: vm.payment.invoices })
-    .then(function (result) {
-      // bind the selected invoices
-      vm.payment.invoices = result.invoices;
+      .then(function (result) {
 
-      // the table of invoices shown to the client is name-spaced by 'slip'
-      vm.slip = {};
-      vm.slip.rawTotal = result.total;
-      digestExchangeRate();
-    });
+        // bind the selected invoices
+        vm.payment.invoices = result.invoices;
+
+        // the table of invoices shown to the client is name-spaced by 'slip'
+        vm.slip = {};
+        vm.slip.rawTotal = result.total;
+        digestExchangeRate();
+      });
   }
 
   // exchanges the payment at the bottom of the previous invoice slip.
@@ -155,12 +142,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     // submit the cash payment
     return Cash.create(vm.payment)
       .then(function (response) {
-
-        // open cash receipt
-        Modals.openPatientReceipt({
-          uuid: response.uuid,
-          patientUuid: vm.patient.uuid
-        });
+        return Receipts.cash(response.uuid, true);
       })
       .catch(Notify.handleError);
   }

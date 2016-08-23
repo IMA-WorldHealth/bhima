@@ -10,7 +10,7 @@ const components = require('../shared/components');
 const GU = require('../shared/gridTestUtils.spec.js');
 const FU = require('../shared/FormUtils');
 
-describe.only('Cash Payments Module', function () {
+describe('Cash Payments Module', function () {
 
   const path = '#/cash';
 
@@ -187,36 +187,37 @@ describe.only('Cash Payments Module', function () {
   */
   });
 
-  describe('Cash Transfer ', function (){
-
-    // navigate to the page before tests
-    before(() => helpers.navigate(path));
-
-    // This transfer should succeed
-    const mockTransfer = {
-      amount : 100
-    };
-
-    it('should make a transfer between selected auxiliary cash and a transfer account', function (){
-
-      // click the transfer button
-      var transferBtn = element(by.css('[data-perform-transfer]'));
-      transferBtn.click();
-
-      //choosing CDF as transfer currency
-      var CDFRadio = element(by.css('[data-transfer-currency-option="1"]'));
-      CDFRadio.click();
-
-      //set a value in the currency component by model to avoid conflict
-      components.currencyInput.set(mockTransfer.amount, 'transferCurrencyInput');
-
-      // submit the modal button
-      var transferSubmitBtn = element(by.id('submit-transfer'));
-      transferSubmitBtn.click();
-
-      FU.exists(by.id('succeed-label'), true);
-      element(by.css('[data-modal-action="dismiss"]')).click();
-    });
-  });
-
+  describe('Cash Transfer ', CashTransfer);
 });
+
+
+function CashTransfer() {
+  'use strict';
+
+  const path = '#/cash';
+
+  // navigate to the page before tests
+  before(() => helpers.navigate(path));
+
+  // this transfer should succeed
+  const mockTransfer = { amount : 100 };
+
+  it('should make a transfer between accounts', () => {
+
+    // click the transfer button
+    const transferBtn = element(by.css('[data-perform-transfer]'));
+    transferBtn.click();
+
+    // choose CDF as transfer currency
+    components.currencySelect.set(1, 'transfer-currency-select');
+
+    //set a value in the currency component by model to avoid conflict
+    components.currencyInput.set(mockTransfer.amount, 'transfer-currency-input');
+
+    // submit the modal button
+    FU.modal.submit();
+
+    // make sure we have a success notification shown
+    components.notification.hasSuccess();
+  });
+}

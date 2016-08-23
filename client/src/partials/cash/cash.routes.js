@@ -12,7 +12,7 @@ angular.module('bhima.routes')
       .state('cash.select', {
         url : '/selection',
         params : { id : { value: null } },
-        onEnter :['$state', '$uibModal', cashboxSelectionModal]
+        onEnter :['$uibModal', cashboxSelectionModal]
       })
 
       .state('cash.window', {
@@ -20,11 +20,17 @@ angular.module('bhima.routes')
         params : { id : { squash: true, value: null } },
         controller: 'CashController as CashCtrl',
         templateUrl: '/partials/cash/cash.html'
+      })
+
+      .state('cash.transfer', {
+        url : '/:id/transfer',
+        params : { id : { squash: true, value: null } },
+        onEnter :['$state', '$uibModal', transferModal]
       });
   }]);
 
 
-function cashboxSelectionModal($state, Modal) {
+function cashboxSelectionModal(Modal) {
   Modal.open({
     templateUrl: 'partials/cash/modals/selectCashbox.modal.html',
     controller: 'SelectCashboxModalController as $ctrl',
@@ -32,3 +38,14 @@ function cashboxSelectionModal($state, Modal) {
     keyboard: false
   });
 }
+
+function transferModal($state, Modal) {
+  Modal.open({
+    controller: 'CashTransferModalController as TransferCtrl',
+    templateUrl: 'partials/cash/modals/transfer.modal.html',
+    backdrop: 'static',
+    keyboard: false
+  });
+}
+
+

@@ -71,7 +71,7 @@
     },
     "TITLE"           : "Cash Window",
     "TRANSFER": {
-      "TITLE" : "Transfers"
+      "TITLE" : "New Cash Transfer"
     },
     "VOUCHER": {
       "CASHBOXES": {

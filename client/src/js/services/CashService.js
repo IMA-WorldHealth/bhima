@@ -17,8 +17,8 @@ function CashService(Api, Exchange, Session, moment) {
 
   // custom methods
   service.create = create;
-  service.reference = reference;
   service.getTransferRecord = getTransferRecord;
+  service.calculateDisabledIds = calculateDisabledIds;
 
   /**
    * Cash Payments can be made to multiple invoices.  This function loops
@@ -92,36 +92,18 @@ function CashService(Api, Exchange, Session, moment) {
   }
 
   /**
-   * Searches for a cash payment by its reference.
-   *
-   * @method reference
-   * @param {String} reference
-   * @returns {Promise} promise - a resolved or rejected promise with the
-   * result sent from the server.
-   */
-  function reference(ref) {
-    var target = service.url.concat('references/', ref);
-    return this.$http.get(target)
-      .then(this.util.unwrapHttpResponse);
-  }
-
-  /**
    * This method is responsible to create a voucher object and it back
    */
   function getTransferRecord(cashAccountCurrency, amount, currencyId) {
-    /**
-     * The date field is set at the server side
-     * @todo the date in timestamp type in the database
-     */
     var voucher = {
-      project_id : Session.project.id,
-      currency_id : currencyId,
-      amount : amount,
-      description : generateTransferDescription(),
-      user_id : Session.user.id,
+      project_id: Session.project.id,
+      currency_id: currencyId,
+      amount: amount,
+      description: generateTransferDescription(),
+      user_id: Session.user.id,
 
       // two lines (debit and credit) to be recorded in the database
-      items : [{
+      items: [{
         account_id : cashAccountCurrency.account_id,
         debit : 0,
         credit : amount,
@@ -132,7 +114,34 @@ function CashService(Api, Exchange, Session, moment) {
       }]
     };
 
-    return { voucher : voucher };
+    return voucher;
+  }
+
+  /**
+   * @method calculateDisabledIds
+   *
+   * @description
+   * For a given cashbox, determine which currencies should be unsupported and
+   * therefore disabled from selection.
+   *
+   * @param {Object} cashbox - the cashbox to read from.
+   * @param {Array} currencies - a list of application currencies
+   * @returns {Array} - the array of currency ids to disable
+   */
+  function calculateDisabledIds(cashbox, currencies) {
+
+    // collect cashbox ids in an array
+    var cashboxCurrencyIds = cashbox.currencies.reduce(function (array, currency) {
+      return array.concat(currency.currency_id);
+    }, []);
+
+    // find all ids that are not cashbox ids, to disable them
+    var disabledCurrencyIds = currencies.reduce(function (array, currency) {
+      var bool = (cashboxCurrencyIds.indexOf(currency.id) === -1);
+      return array.concat(bool ? currency.id : []);
+    }, []);
+
+    return disabledCurrencyIds;
   }
 
   /**

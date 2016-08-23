@@ -14,12 +14,12 @@
       <!-- Switch Cashbox Form and Transfer -->
       <div class="col-md-2">
 
-        <button class="btn btn-warning btn-block" ui-sref="cash.select({id : CashCtrl.cashbox.id })" data-change-cashbox>
+        <button class="btn btn-warning btn-block" ui-sref="cash.select({ id : CashCtrl.cashbox.id })" data-change-cashbox>
           <i class="fa fa-inbox"></i> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
         </button>
 
-        <button class="btn btn-primary btn-block" ng-click="CashCtrl.openTransferModal()" data-perform-transfer>
-          <span class="glyphicon glyphicon-export"></span> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
+        <button class="btn btn-primary btn-block" ui-sref="cash.transfer({ id: CashCtrl.cashbox.id })" data-perform-transfer>
+          <i class="fa fa-exchange"></i> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
         </button>
       </div>
 

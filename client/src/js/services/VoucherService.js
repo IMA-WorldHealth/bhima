@@ -1,7 +1,9 @@
 angular.module('bhima.services')
-.service('VoucherService', VoucherService);
+  .service('VoucherService', VoucherService);
 
-VoucherService.$inject = ['PrototypeApiService', '$http', 'util'];
+VoucherService.$inject = [
+  'PrototypeApiService', '$http', 'util'
+];
 
 /**
  * @class VoucherService
@@ -12,6 +14,8 @@ VoucherService.$inject = ['PrototypeApiService', '$http', 'util'];
  */
 function VoucherService(Api, $http, util) {
   var service = new Api('/vouchers/');
+
+  // @tdoo - remove this reference to baseUrl
   var baseUrl = '/journal/';
 
   // transfer type
@@ -47,6 +51,7 @@ function VoucherService(Api, $http, util) {
    * accounting.
    *
    * @param {object} voucher - the raw journal voucher
+   * @returns {Promise} - the $http promise object
    */
   function createSimple(voucher) {
 
@@ -75,9 +80,9 @@ function VoucherService(Api, $http, util) {
   }
 
   /**
-   * This method facilitate annulling a transaction, 
-   * bhima should automatically be able to reverse 
-   * any transaction in the posting_journal by creating a 
+   * This method facilitate annulling a transaction,
+   * bhima should automatically be able to reverse
+   * any transaction in the posting_journal by creating a
    * new transaction that is an exact duplicate of the original transaction with sign minous.
    */
   function reverse(creditNote) {

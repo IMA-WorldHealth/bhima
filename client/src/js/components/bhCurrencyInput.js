@@ -32,10 +32,10 @@ function CurrencyInputController(Currencies, $scope) {
 
     // load currency from the currency service
     Currencies.detail(ctrl.currencyId)
-    .then(function (currency) {
+      .then(function (currency) {
 
-      // bind the currency to the controller
-      ctrl.currency = currency;
-    });
+        // bind the currency to the controller
+        ctrl.currency = currency;
+      });
   }
 }
