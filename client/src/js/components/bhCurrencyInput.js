@@ -1,16 +1,15 @@
 angular.module('bhima.components')
-.component('bhCurrencyInput', {
-  templateUrl : 'partials/templates/bhCurrencyInput.tmpl.html',
-  controller: CurrencyInputController,
-  bindings : {
-    currencyId : '<',       // one-way binding
-    model : '=',            // two way binding
-    form : '<',             // one-way binding,
-    validationTrigger : '<' // one-way binding
-  }
-});
+  .component('bhCurrencyInput', {
+    templateUrl : 'partials/templates/bhCurrencyInput.tmpl.html',
+    controller: CurrencyInputController,
+    bindings : {
+      currencyId : '<',       // one-way binding
+      model : '=',            // two way binding
+      validationTrigger : '<' // one-way binding
+    }
+  });
 
-CurrencyInputController.$inject = [ 'CurrencyService', '$scope' ];
+CurrencyInputController.$inject = [ 'CurrencyService' ];
 
 /**
  * Currency Input Component
@@ -18,24 +17,24 @@ CurrencyInputController.$inject = [ 'CurrencyService', '$scope' ];
  * This is a currency input form based on <input type="number">, with specific
  * validation based on the currency being validated.
  */
-function CurrencyInputController(Currencies, $scope) {
-  var ctrl = this;
+function CurrencyInputController(Currencies) {
+  var $ctrl = this;
+  var isDefined = angular.isDefined;
 
-  // update bindings when someone changes the currency
-  $scope.$watch('$ctrl.currencyId', loadCurrency);
+  $ctrl.$onChanges = function onChanges(changes) {
+    if (changes.currencyId) {
+      loadCurrency(changes.currencyId.currentValue);
+    }
+  };
 
-  /** @private loads a particular currency from the server */
-  function loadCurrency() {
-
-    // if the currency id doesn't exist, exit
-    if (!ctrl.currencyId) { return; }
+  /* @private loads a particular currency from the server */
+  function loadCurrency(id) {
+    if (!isDefined(id)) { return; }
 
     // load currency from the currency service
-    Currencies.detail(ctrl.currencyId)
+    Currencies.detail(id)
       .then(function (currency) {
-
-        // bind the currency to the controller
-        ctrl.currency = currency;
+        $ctrl.currency = currency;
       });
   }
 }

@@ -68,9 +68,6 @@ function CashTransferModalController(Currencies, Vouchers, Cashboxes, Accounts, 
   }
 
   function loadAccountDetails() {
-
-    console.log('Loading Account Details...');
-
     var transferAccountId;
     var cashAccountId;
 
