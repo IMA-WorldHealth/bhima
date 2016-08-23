@@ -59,6 +59,8 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
    * @description for submitting a dialog content
    */
   function submit() {
+    journalPostingModalService.postToGeneralLedger(vm.dataByTrans);
+    
     ModalInstance.close();
   }
 

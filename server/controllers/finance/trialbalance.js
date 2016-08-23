@@ -48,12 +48,11 @@ function checkEntityIsAlwaysDefined(transactions) {
 }
 
 // make sure that a entity_uuid exists for each deb_cred_type
-function checkEntityExists(transactions) {
+function checkDescriptionExists(transactions) {
 
   var sql =
-    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.entity_uuid FROM posting_journal AS pj
-    WHERE pj.trans_id IN (?) AND (pj.entity_type = 'D' OR pj.entity_type = 'C')
-    GROUP BY trans_id HAVING pj.entity_uuid IS NULL;`;
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.description FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?) GROUP BY trans_id HAVING pj.description IS NULL;`;
 
   return db.exec(sql, [transactions])
   .then(function (rows) {
@@ -62,8 +61,27 @@ function checkEntityExists(transactions) {
     if (!rows.length) { return; }
 
     // returns a error report
-    return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_ENTITY', true, rows);
+    return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_DESCRIPTION', true, rows);
   });
+}
+
+// make sure that a entity_uuid exists for each deb_cred_type
+function checkEntityExists(transactions) {
+
+  var sql =
+    `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.entity_uuid FROM posting_journal AS pj
+    WHERE pj.trans_id IN (?) AND (pj.entity_type = 'D' OR pj.entity_type = 'C')
+    GROUP BY trans_id HAVING pj.entity_uuid IS NULL;`;
+
+  return db.exec(sql, [transactions])
+    .then(function (rows) {
+
+      // if nothing is returned, skip error report
+      if (!rows.length) { return; }
+
+      // returns a error report
+      return createErrorReport('POSTING_JOURNAL.ERRORS.MISSING_ENTITY', true, rows);
+    });
 }
 
 // make sure that the document Id exist in each line of the transaction
@@ -259,7 +277,8 @@ exports.checkTransactions = function (req, res, next) {
   return q.all([
     checkSingleLineTransaction(transactions), checkTransactionsBalanced(transactions), checkAccountsLocked(transactions),
     checkMissingAccounts(transactions), checkPeriodAndFiscalYearExists(transactions), checkDateInPeriod(transactions),
-    checkDocumentIDExists(transactions), checkEntityExists(transactions), checkEntityIsAlwaysDefined(transactions)
+    checkDocumentIDExists(transactions), checkEntityExists(transactions), checkEntityIsAlwaysDefined(transactions),
+    checkDescriptionExists(transactions)
   ])
   .then(function (errorReport){
     res.status(200).json(errorReport);
@@ -269,192 +288,78 @@ exports.checkTransactions = function (req, res, next) {
   });
 };
 
-// POST /journal/togeneralledger
-// Posts data passing a valid trial balance to the general ledger
+/**
+ * @function postToGeneralLedger
+ * @description
+ * This function can be called only when there is no fatal error
+ * It posts data to the general ledger.
+ **/
 exports.postToGeneralLedger = function (req, res, next) {
   'use strict';
+  var transaction =  db.transaction();
+  var transactionString = req.body.transactions.map(function (trans_id) {
+    return '"' + trans_id + '"';
+  }).join(',');
 
-  var sql,
-      transactions = req.body.transactions.map(function (t) { return t.toUpperCase(); });
+  transaction.addQuery('CALL postToGeneralLedger(?)', [transactionString]);
+  transaction.addQuery('CALL editPeriodTotal(?)', [transactionString]);
+  transaction.addQuery('CALL editPostingJournal(?)', [transactionString]);
 
-  // First check.  The post must pass a valid trial balance.  If it does
-  // not pass the trial balance, we error hard with a '400 Bad Request'
-  // error.
-  runAllChecks(transactions)
-  .then(function (results) {
+  transaction.execute()
+    .then(function (result) {
+      res.status(201).json({});
+    })
+    .catch(function(err){
+      console.log(err);
+    })
+    .done();
 
-    // filter out the checks that passed
-    // (they will be null/undefined)
-    var exceptions = results.filter(function (r) {
-      return !!r;
-    });
 
-    var hasErrors = exceptions.some(function (e) {
-      return e.fatal === true;
-    });
-
-    // we cannot post if there are fatal exceptions. Throw
-    // an error
-    if (hasErrors) {
-      throw { exceptions : exceptions };
-    }
-
-    // we assume from here on that trial balance checks have passed
-    // let's open up a posting session
-    sql =
-      `INSERT INTO posting_session
-      SELECT max(posting_session.id) + 1, ?, ?
-      FROM posting_session;`;
-
-    return db.exec(sql, [req.session.user.id, new Date()]);
-  })
-  .then(function (result) {
-
-    // recoup the sessionId from the posting session
-    var sessionId = result.insertId;
-
-    sql =
-      `INSERT INTO general_ledger ' +
-        (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num,
-        description, account_id, debit, credit, debit_equiv, credit_equiv,
-        currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, comment, cost_ctrl_id,
-        origin_id, user_id, cc_id, pc_id, session_id)
-      SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num,
-        description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-        deb_cred_uuid, deb_cred_type,inv_po_id, comment, cost_ctrl_id, origin_id, user_id, cc_id, pc_id, ?
-      FROM posting_journal WHERE trans_id IN (?);`;
-    return db.exec(sql, [sessionId, transactions]);
-  })
-  .then(function () {
-
-    // Sum all transactions for a given period from the PJ
-    // into period_total, updating old values if necessary.
-    sql =
-      `INSERT INTO period_total (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id)
-      SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id,
-        period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id
-        WHERE trans_id IN (?)
-      GROUP BY period_id, account_id
-      ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);`;
-
-    return db.exec(sql, [transactions]);
-  })
-  .then(function () {
-
-    // Finally, we can remove the data from the posting journal
-    sql = 'DELETE FROM posting_journal WHERE trans_id IN (?);';
-    return db.exec(sql, [transactions]);
-  })
-  .then(function () {
-    res.status(200).send();
-  })
-  .catch(function (error) {
-    console.error('error', error.stack);
-
-    // this was a generated error for failing the trial balance
-    // tell the client that
-    if (error.exceptions) {
-      return res.status(400).send({ exceptions: error.exceptions });
-    }
-
-    // whoops.  Still have either errors or warnings. Make sure
-    // that they are properly reported to the client.
-    res.status(500).send(error);
-  });
+  // var sql =
+  //   `INSERT INTO general_ledger
+  //   (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
+  //   description, account_id, debit, credit, debit_equiv, credit_equiv,
+  //   currency_id, entity_uuid, entity_type, reference_uuid, comment,
+  //   origin_id, user_id, cc_id, pc_id)
+  //   SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
+  //   description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+  //   entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
+  //   FROM posting_journal WHERE trans_id IN (?);`;
+  //
+  // db.exec(sql, [transactions])
+  //   .then(function () {
+  //     // Inserting to the period total table or update the record if necessary
+  //
+  //     sql =
+  //       `INSERT INTO period_total (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id)
+  //       SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id,
+  //       period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id
+  //       WHERE trans_id IN (?)
+  //       GROUP BY period_id, account_id
+  //       ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);`;
+  //
+  //     return db.exec(sql, [transactions]);
+  //   })
+  //   .then(function () {
+  //
+  //     // Finally, we can remove the data from the posting journal
+  //     sql = 'DELETE FROM posting_journal WHERE trans_id IN (?);';
+  //     return db.exec(sql, [transactions]);
+  //   })
+  //   .then(function () {
+  //     res.status(200).send();
+  //   })
+  //   .catch(function (error) {
+  //     console.error('error', error.stack);
+  //
+  //     // this was a generated error for failing the trial balance
+  //     // tell the client that
+  //     if (error.exceptions) {
+  //       return res.status(400).send({ exceptions: error.exceptions });
+  //     }
+  //
+  //     // whoops.  Still have either errors or warnings. Make sure
+  //     // that they are properly reported to the client.
+  //     res.status(500).send(error);
+  //   });
 };
-
-
-/* POST /journal/trialbalance
- *
- * Performs the trial balance.
- *
- * Initially, the checks described at the beginning of the module are
- * performed to catch errors.  Even if errors or warnings are incurred,
- * the balance proceeds to report the total number of rows in the
- * trailbalance and other details.
- *
- * This report is sent back to the client for processing.
- *
- * NOTE: though a user may choose to ignore the errors presented
- * in the trial balance, the posting operation will block posting
- * to the general ledger if there are any 'fatal' errors.
- */
-// exports.postTrialBalance = function (req, res, next) {
-//   'use strict';
-//
-//   // parse the query string and retrieve the params
-//   var transactions = req.body.transactions.map(function (t) { return t.toUpperCase(); }),
-//       report = {};
-//
-//   // run the database checks
-//   runAllChecks(transactions)
-//   .then(function (results) {
-//
-//     // filter out the checks that passed
-//     // (they will be null/undefined)
-//     report.exceptions = results.filter(function (r) {
-//       return !!r;
-//     });
-//
-//     // attempt to calculate a summary of the before, credit, debit, and after
-//     // state of each account in the posting journal
-//     var sql =
-//       `SELECT pt.debit, pt.credit,
-//       pt.account_id, pt.balance, account.number
-//       FROM  account JOIN (
-//         SELECT SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit,
-//         posting_journal.account_id, (period_total.debit - period_total.credit) AS balance
-//         FROM posting_journal LEFT JOIN period_total
-//         ON posting_journal.account_id = period_total.account_id
-//         WHERE posting_journal.trans_id IN (?)
-//         GROUP BY posting_journal.account_id
-//         ) AS pt
-//       ON account.id = pt.account_id;`;
-//
-//     return db.exec(sql, [transactions]);
-//   })
-//   .then(function (balances) {
-//
-//     // attach the balances to the response
-//     report.balances = balances;
-//
-//     // attempt to calculate the date range of the transactions
-//     var sql =
-//       `SELECT COUNT(trans_id) AS rows, COUNT(DISTINCT(trans_id)) AS transactions,
-//         MIN(DATE(trans_date)) AS mindate, MAX(DATE(trans_date)) AS maxdate
-//       FROM posting_journal WHERE trans_id IN (?);`;
-//
-//     return db.exec(sql, [transactions]);
-//   })
-//   .then(function (metadata) {
-//
-//     // attach the dates to the response
-//     report.metadata = metadata[0];
-//
-//     // trial balance succeeded!  Send back the resulting report
-//     res.status(200).send(report);
-//   })
-//   .catch(function (error) {
-//     console.error(error.stack);
-//
-//     // whoops.  Still have either errors or warnings. Make sure
-//     // that they are properly reported to the client.
-//     res.status(500).send(error);
-//   });
-// };
-
-/*
- * takes in an array of transactions and runs the trial
- * balance checks on them,
- **/
-// function runAllChecks(transactions) {
-//   return q.all([
-//     checkAccountsLocked(transactions),
-//     checkMissingAccounts(transactions),
-//     checkDateInPeriod(transactions),
-//     checkPeriodAndFiscalYearExists(transactions),
-//     checkTransactionsBalanced(transactions),
-//     checkDebtorCreditorExists(transactions),
-//     checkDocumentNumberExists(transactions)
-//   ]);
-// }

@@ -17,6 +17,7 @@ function JournalPostingModalService(util, $http, Modal) {
   service.getFeedBack = getFeedBack;
   service.getCSSClass = getCSSClass;
   service.openErrorViewerModal = openErrorViewerModal;
+  service.postToGeneralLedger = postToGeneralLedger;
 
   function openErrorViewerModal(errors, feedBack, cssClass) {
 
@@ -88,6 +89,17 @@ function JournalPostingModalService(util, $http, Modal) {
     return groupingDetail.grouping[0].colName;
   }
 
+  /**
+   * @function getTransactionList
+   * @description
+   * take an array of posting journal lines and return an
+   * array of distinct trans_id
+   *
+   * So here is the format of data which can be sent to
+   * this function :
+   *
+   * [{trans_id : xx, ...}, {trans_id : yy, ...}]
+   **/
   function getTransactionList (lines) {
     var transactions = [];
 
@@ -150,7 +162,25 @@ function JournalPostingModalService(util, $http, Modal) {
       this.gridApi = api;
       getCurrentGroupingColumn.bind(this);
     }.bind(this));   
-  }  
+  }
+
+  /**
+   * @function postToGeneralLedger
+   * @description
+   * This function takes a parsed record list (grid rows processed by the parseSelectedGridRecord function)
+   * and extract their transaction IDS uniquely through the getTransactionList method
+   * and post these transaction to the server
+   *
+   * This function is called only when every test are passed without a fatal error
+   **/
+  function postToGeneralLedger (records) {
+
+    var transactions = getTransactionList(records);
+    var url = baseUrl.concat('post_transactions/');
+
+    /** posting a list of transactions to the server to be stored to the general ledger **/
+    return $http.post(url, {transactions : transactions});
+  }
 
   return service;
 }

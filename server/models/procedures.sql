@@ -486,6 +486,64 @@ BEGIN
 END
 $$
 
+CREATE PROCEDURE postToGeneralLedger ( IN transactions TEXT )
+    BEGIN
+     SET @sql = concat(
+     "INSERT INTO general_ledger
+     (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
+      description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+       entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
+     SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
+         description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+          entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
+     FROM posting_journal
+     WHERE trans_id
+     IN (", transactions, ")");
+
+     PREPARE stmt FROM @sql;
+     EXECUTE stmt;
+    END
+$$
+
+CREATE PROCEDURE editPeriodTotal ( IN transactions TEXT )
+    BEGIN
+     SET @sql = concat(
+     "INSERT INTO period_total
+     (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id)
+     SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id,
+     period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id
+     WHERE trans_id
+     IN (", transactions, ")
+     GROUP BY period_id, account_id
+     ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit)");
+
+     PREPARE stmt FROM @sql;
+     EXECUTE stmt;
+    END
+$$
+
+CREATE PROCEDURE editPostingJournal ( IN transactions TEXT )
+    BEGIN
+     SET @sql = concat( "DELETE FROM posting_journal WHERE trans_id IN (", transactions, ")");
+
+     PREPARE stmt FROM @sql;
+     EXECUTE stmt;
+    END
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- Handles the Cash Table's Rounding
 -- CREATE PROCEDURE HandleCashRounding(
 --   uuid BINARY(16),

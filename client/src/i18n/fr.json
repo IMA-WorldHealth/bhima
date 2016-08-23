@@ -801,6 +801,7 @@
     },
     "ERRORS" : {
       "DATE_IN_WRONG_PERIOD" : "Date dans la mauvaise periode",
+      "MISSING_DESCRIPTION" : "Descriptions omises",
       "LOCKED_ACCOUNT" : "Compte(s) verrouille(s)",
       "UNBALANCED_TRANSACTIONS" : "Transaction(s) non balancee(s)",
       "MISSING_ACCOUNTS" : "Compte(s) omis",
