@@ -1,14 +1,14 @@
 angular.module('bhima.components')
-.component('bhFindPatient', {
-  controller: FindPatientComponent,
-  templateUrl : 'partials/templates/bhFindPatient.tmpl.html',
-  bindings: {
-    onSearchComplete: '&',  // bind callback to call when data is available
-    onRegisterApi:    '&', // expose force refresh API
-    required:         '<',  // bind the required (for ng-required)
-    suppressReset:    '@',  // bind a string
-  }
-});
+  .component('bhFindPatient', {
+    controller: FindPatientComponent,
+    templateUrl : 'partials/templates/bhFindPatient.tmpl.html',
+    bindings: {
+      onSearchComplete: '&',  // bind callback to call when data is available
+      onRegisterApi:    '&', // expose force refresh API
+      required:         '<',  // bind the required (for ng-required)
+      suppressReset:    '@',  // bind a string
+    }
+  });
 
 FindPatientComponent.$inject = [
   'PatientService', 'AppCache', 'NotifyService',
@@ -45,13 +45,25 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   /* supported searches: by name or by id */
   vm.options = {
     findById : {
-      'label' : 'FORM.LABELS.PATIENT_ID',
-      'placeholder' : 'FORM.PLACEHOLDERS.SEARCH_PATIENT_ID'
+      label : 'FORM.LABELS.PATIENT_ID',
+      placeholder : 'FORM.PLACEHOLDERS.SEARCH_PATIENT_ID'
     },
     findByName : {
-      'label' : 'FORM.LABELS.PATIENT_NAME',
-      'placeholder' : 'FORM.PLACEHOLDERS.SEARCH_NAME'
+      label : 'FORM.LABELS.PATIENT_NAME',
+      placeholder : 'FORM.PLACEHOLDERS.SEARCH_NAME'
     }
+  };
+
+  vm.$onInit = function onInit() {
+    vm.suppressReset = vm.suppressReset || false;
+
+    // fetch the initial setting for the component from appcache
+    loadDefaultOption(cache.optionKey);
+
+    // call the onRegisterApi() callback with the
+    vm.onRegisterApi({
+      api : { reset : vm.reset }
+    });
   };
 
   vm.showSearchView = true;
@@ -65,11 +77,6 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   vm.findBy             = findBy;
   vm.reset              = reset;
   vm.onKeyPress         = onKeyPress;
-
-  vm.suppressReset = vm.suppressReset || false;
-
-  /* fetch the initial setting for the component from appcache */
-  loadDefaultOption(cache.optionKey);
 
   /**
    * @method searchByReference
@@ -116,15 +123,15 @@ function FindPatientComponent(Patients, AppCache, Notify) {
     };
 
     return Patients.search(options)
-    .then(function (patients) {
+      .then(function (patients) {
 
-      // loop through each
-      patients.forEach(function (patient) {
-        patient.label = formatPatient(patient);
+        // loop through each
+        patients.forEach(function (patient) {
+          patient.label = formatPatient(patient);
+        });
+
+        return patients;
       });
-
-      return patients;
-    });
   }
 
   /**
@@ -252,9 +259,4 @@ function FindPatientComponent(Patients, AppCache, Notify) {
       event.preventDefault();
     }
   }
-
-  // call the onRegisterApi() callback with the
-  vm.onRegisterApi({
-    api : { reset : vm.reset }
-  });
 }
