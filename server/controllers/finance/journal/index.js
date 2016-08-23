@@ -65,6 +65,7 @@ function createReverseTransaction(uid, userId, creditNote) {
         transaction.account_id, 
         transaction.credit, 
         transaction.debit, 
+        transaction.entity_uuid, 
         vuid
       ];
       voucherItems.push(items); 
@@ -73,7 +74,7 @@ function createReverseTransaction(uid, userId, creditNote) {
     // build the SQL query
     transaction
       .addQuery('INSERT INTO voucher SET ?', [ voucher ])
-      .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?', [ voucherItems ]);
+      .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, entity_uuid, voucher_uuid) VALUES ?', [ voucherItems ]);
 
     return journal(transaction, voucher.uuid)
     .catch(core.handler);
