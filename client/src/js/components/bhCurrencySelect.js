@@ -1,17 +1,17 @@
 angular.module('bhima.components')
-.component('bhCurrencySelect', {
-  controller : bhCurrencySelect,
-  templateUrl : 'partials/templates/bhCurrencySelect.tmpl.html',
-  bindings : {
-    validationTrigger: '<',
-    currencyId: '=',
-    disableIds: '<?',
-    onChange: '&?',
-    cashboxId: '<?'
-  }
-});
+  .component('bhCurrencySelect', {
+    controller : bhCurrencySelect,
+    templateUrl : 'partials/templates/bhCurrencySelect.tmpl.html',
+    bindings : {
+      currencyId: '=',
+      validationTrigger: '<',
+      disableIds: '<?',
+      onChange: '&?',
+      cashboxId: '<?'
+    }
+  });
 
-bhCurrencySelect.$inject = [ '$scope', 'CurrencyService' ];
+bhCurrencySelect.$inject = ['CurrencyService'];
 
 /**
  * @class bhCurrencySelect
@@ -36,6 +36,7 @@ bhCurrencySelect.$inject = [ '$scope', 'CurrencyService' ];
  *
  *  - [disable-ids]
  *      an array of currency ids to be disabled as required.
+ *
  *  - [cashbox-id]
  *      the cashbox id of the bound cashbox
  *
@@ -57,45 +58,66 @@ bhCurrencySelect.$inject = [ '$scope', 'CurrencyService' ];
  *   validation-trigger="ParentForm.$submitted"
  *   >
  * </bh-currency-select>
+ *
+ * @requires services/CurrencyService
  */
-function bhCurrencySelect($scope, Currencies) {
+function bhCurrencySelect(Currencies) {
   var $ctrl = this;
+  var isArray = angular.isArray;
 
-  // bind the currency service to the view
-  $ctrl.service = Currencies;
   $ctrl.valid = true;
 
-  // default currencies to an empty list
-  $ctrl.currencies = [];
-
   // default to noop() if an onChange() method was not passed in
-  $ctrl.onChange = $ctrl.onChange || angular.noop();
+  $ctrl.onChange = $ctrl.onChange || angular.noop;
 
-  // load all the available currencies
-  Currencies.read()
-  .then(function (currencies) {
+  $ctrl.$onInit = function onInit() {
 
-    // cache a label for faster view rendering
-    currencies.forEach(function (currency) {
-      currency.label = Currencies.format(currency.id);
-    });
+    // load all the available currencies
+    Currencies.read()
+      .then(function (currencies) {
 
-    $ctrl.currencies = currencies;
-  });
+        // cache a label for faster view rendering
+        currencies.forEach(function (currency) {
+          currency.label = Currencies.format(currency.id);
+        });
 
-  // watch the disabledIds array for changes, and disable the ids in the the
-  // view based on which ids are present in it
-  $scope.$watchCollection('$ctrl.disableIds', function (array) {
-    if (!array) { return; }
+        $ctrl.currencies = currencies;
+      });
+  };
+
+  $ctrl.$onChanges = function onChanges(changes) {
+    if (changes.disableIds) {
+      digestDisableIds(changes.disableIds.currentValue);
+    }
+
+    if (changes.onChange) {
+      $ctrl.onChange = changes.onChange.currentValue;
+    }
+  };
+
+  function digestDisableIds(disabledIds) {
+
+    // make sure there is something to digest
+    if (!isArray(disabledIds)) { return; }
+    if (!isArray($ctrl.currencies)) { return; }
 
     // loop through the currencies, disabling the currencies with ids in the
-    // disabledIds array.
+    // disableIds array.
     $ctrl.currencies.forEach(function (currency) {
-      currency.disabled = array.indexOf(currency.id) > -1;
+      var disabled = disabledIds.indexOf(currency.id) > -1;
+      currency.disabled = disabled;
+      currency.title = disabled ?  'FORM.INFO.DISABLED_CURRENCY' : '';
     });
 
-    // if the two array lengths are equal, it means every currency is disabled
-    $ctrl.valid = ($ctrl.currencies.length !== array.length);
+    // make sure we haven't defaulted to a currency that is not allowed by this casbhox
+    // if so, delete it
+    if (disabledIds.indexOf($ctrl.currencyId) > -1) {
+      delete $ctrl.currencyId;
+    }
+
+    // if the two array lengths are equal, it means every currency is disabled.
+    // there is no possible $valid state.
+    $ctrl.valid = ($ctrl.currencies.length !== disabledIds.length);
     $ctrl.form.currency.$setValidity('currency', $ctrl.valid);
-  });
+  }
 }
