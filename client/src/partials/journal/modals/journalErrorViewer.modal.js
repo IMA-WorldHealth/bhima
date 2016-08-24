@@ -32,8 +32,6 @@ function JournalErrorViewerModalController (ModalInstance, Columns, Grouping, Jo
   vm.gridOptions.columnDefs = columns;
   vm.gridOptions.data = records;
   
-  console.log(Params);
-
   /**
    * @function cancel
    * @description

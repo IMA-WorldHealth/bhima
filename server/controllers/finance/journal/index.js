@@ -16,11 +16,64 @@ const db = require('../../../lib/db');
 const core = require('./core');
 const uuid = require('node-uuid');
 const journal = require('../journal/voucher');
+const NotFound   = require('../../../lib/errors/NotFound');
+const BadRequest = require('../../../lib/errors/BadRequest');
+const _ = require('lodash');
 
 // expose to the api
 exports.list = list;
-
+exports.getTransaction = getTransaction;
 exports.reverse = reverse;
+
+/**
+ * Looks up a transaction by trans_id.
+ *
+ * @param {String} trans_id - the transaction ID
+ * @returns {Promise} object - a promise resolvinng to the part of transaction object.
+ */
+
+function lookupTransaction(trans_id) {
+  'use strict';
+
+  let sql = `
+    SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
+      p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
+      p.description, p.account_id, p.debit, p.credit,
+      p.debit_equiv, p.credit_equiv, p.currency_id,
+      BUID(p.entity_uuid) AS entity_uuid, p.entity_type,
+      BUID(p.reference_uuid) AS reference_uuid, p.comment, p.origin_id,
+      p.user_id, p.cc_id, p.pc_id,
+      pro.abbr, pro.name AS project_name,
+      per.start_date AS period_start, per.end_date AS period_end,
+      a.number AS account_number,
+      CONCAT(u.first, ' - ', u.last) AS user
+    FROM posting_journal p
+      JOIN project pro ON pro.id = p.project_id
+      JOIN period per ON per.id = p.period_id
+      JOIN account a ON a.id = p.account_id
+      JOIN user u ON u.id = p.user_id
+    WHERE p.trans_id = ? 
+    ORDER BY p.trans_date DESC;
+    `;
+
+  return db.exec(sql, [ trans_id ])
+    .then(function (rows) {
+
+      // if no records matching, throw a 404
+      if (rows.length === 0) {
+        throw new NotFound(
+
+          /** @todo - replace with ES6 template strings */
+          _.template(
+            'Could not find a transaction with trans_id: ${trans_id}.'
+          )({ trans_id : trans_id })
+        );
+      }
+
+      // return a single JSON of the record
+      return rows;
+    });
+}
 
 
 // Create Reverse Transaction for Credit Note
@@ -112,6 +165,42 @@ function list(req, res, next) {
   })
   .catch(next);
 }
+
+
+/**
+ * GET /journal/:trans_id
+ * send back a set of lines which belong to the transaction : trans_id
+ */
+function getTransaction (req, res, next){
+  let sql = `
+    SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
+      p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
+      p.description, p.account_id, p.debit, p.credit,
+      p.debit_equiv, p.credit_equiv, p.currency_id,
+      BUID(p.entity_uuid) AS entity_uuid, p.entity_type,
+      BUID(p.reference_uuid) AS reference_uuid, p.comment, p.origin_id,
+      p.user_id, p.cc_id, p.pc_id,
+      pro.abbr, pro.name AS project_name,
+      per.start_date AS period_start, per.end_date AS period_end,
+      a.number AS account_number,
+      CONCAT(u.first, ' - ', u.last) AS user
+    FROM posting_journal p
+      JOIN project pro ON pro.id = p.project_id
+      JOIN period per ON per.id = p.period_id
+      JOIN account a ON a.id = p.account_id
+      JOIN user u ON u.id = p.user_id
+    WHERE p.trans_id = ? 
+    ORDER BY p.trans_date DESC;
+    `;
+
+  lookupTransaction(req.params.trans_id)
+    .then(function (transaction) {
+      res.status(200).json(transaction);
+    })
+    .catch(next)
+    .done();
+}
+
 
 /**
  * POST /journal/:UUID/reverse

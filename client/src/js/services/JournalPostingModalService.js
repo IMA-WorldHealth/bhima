@@ -151,14 +151,6 @@ function JournalPostingModalService(util, $http, Modal) {
     return from === 'trans_id' ? 'account_number' : 'trans_id';
   }
 
-  // function postingModalService (gridOptions){
-  //
-  //   util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
-  //     this.gridApi = api;
-  //     getCurrentGroupingColumn.bind(this);
-  //   }.bind(this));
-  // }
-
   /**
    * @function postToGeneralLedger
    * @description

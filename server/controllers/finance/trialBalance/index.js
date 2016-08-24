@@ -7,9 +7,12 @@
  */
 
 var q = require('q'),
-    db = require('../../lib/db'),
+    db = require('../../../lib/db'),
     uuid = require('node-uuid'),
-    util = require('../../lib/util');
+    util = require('../../../lib/util'),
+    NotFound   = require('../../../lib/errors/NotFound'),
+    BadRequest = require('../../../lib/errors/BadRequest'),
+    _ = require('lodash');
 
 // utility function to sum an array of objects on a particular property
 function aggregate(property, array) {
@@ -181,7 +184,6 @@ function checkAccountsLocked(transactions) {
 
 // make sure the debit_equiv, credit_equiv are balanced
 function checkTransactionsBalanced(transactions) {
-  console.log('les transactions', transactions);
 
   var sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance
@@ -221,6 +223,8 @@ function checkSingleLineTransaction (transactions){
 exports.getDataPerAccount = function (req, res, next) {
   'use strict';
 
+  var transactions = req.query.transactions;
+
   var requestString =
     `SELECT pt.debit_equiv, pt.credit_equiv,
       pt.account_id, pt.balance_before, account.number AS account_number
@@ -233,6 +237,12 @@ exports.getDataPerAccount = function (req, res, next) {
         GROUP BY posting_journal.account_id
         ) AS pt
       ON account.id = pt.account_id;`;
+
+  if(!transactions){ return next(new BadRequest('The transaction list is null or undefined'));}
+
+  if(!Array.isArray(transactions)){
+    return next(new BadRequest('The query is bad formatted'));
+  }
 
   db.exec(requestString, [req.query.transactions])
     .then(function (data) {
@@ -281,7 +291,7 @@ exports.checkTransactions = function (req, res, next) {
     checkDescriptionExists(transactions)
   ])
   .then(function (errorReport){
-    res.status(200).json(errorReport);
+    res.status(201).json(errorReport);
   })
   .catch(function (error) {
      next(error);
@@ -315,53 +325,4 @@ exports.postToGeneralLedger = function (req, res, next) {
       console.log(err);
     })
     .done();
-
-
-  // var sql =
-  //   `INSERT INTO general_ledger
-  //   (project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
-  //   description, account_id, debit, credit, debit_equiv, credit_equiv,
-  //   currency_id, entity_uuid, entity_type, reference_uuid, comment,
-  //   origin_id, user_id, cc_id, pc_id)
-  //   SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, record_uuid,
-  //   description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-  //   entity_uuid, entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
-  //   FROM posting_journal WHERE trans_id IN (?);`;
-  //
-  // db.exec(sql, [transactions])
-  //   .then(function () {
-  //     // Inserting to the period total table or update the record if necessary
-  //
-  //     sql =
-  //       `INSERT INTO period_total (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id)
-  //       SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id,
-  //       period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id
-  //       WHERE trans_id IN (?)
-  //       GROUP BY period_id, account_id
-  //       ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);`;
-  //
-  //     return db.exec(sql, [transactions]);
-  //   })
-  //   .then(function () {
-  //
-  //     // Finally, we can remove the data from the posting journal
-  //     sql = 'DELETE FROM posting_journal WHERE trans_id IN (?);';
-  //     return db.exec(sql, [transactions]);
-  //   })
-  //   .then(function () {
-  //     res.status(200).send();
-  //   })
-  //   .catch(function (error) {
-  //     console.error('error', error.stack);
-  //
-  //     // this was a generated error for failing the trial balance
-  //     // tell the client that
-  //     if (error.exceptions) {
-  //       return res.status(400).send({ exceptions: error.exceptions });
-  //     }
-  //
-  //     // whoops.  Still have either errors or warnings. Make sure
-  //     // that they are properly reported to the client.
-  //     res.status(500).send(error);
-  //   });
 };

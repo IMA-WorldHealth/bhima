@@ -6,7 +6,6 @@ angular.module('bhima.services')
 JournalErrorViewerService.$inject = ['$translate'];
 
 function JournalErrorViewerService($translate) {
-  console.log($translate);
   var service = this;
 
   service.parseGridRecord = parseGridRecord;
@@ -20,7 +19,6 @@ function JournalErrorViewerService($translate) {
       if(record){
 
         codeTranslated = $translate.instant(record.code);
-        console.log(codeTranslated);
         line = record.transactions.map(function (item) {
           return {code : codeTranslated, transaction : item};
         });
