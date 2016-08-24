@@ -44,7 +44,6 @@ exports.reference = reference;
 exports.lookup = lookup;
 
 // looks up a single cash record and associated cash_items
-// sets the "canceled" flag if a cash_discard record exists.
 function lookup(id) {
   'use strict';
 
@@ -219,7 +218,7 @@ function create(req, res, next) {
 /**
  * PUT /cash/:uuid
  * Updates the non-financial details associated with a cash payment.
- * NOTE - this will not update the cash_item or cash_discard tables.
+ * NOTE - this will not update the cash_item.
  *
  * @todo - remove protected fields check -- the database should do this
  * automatically
