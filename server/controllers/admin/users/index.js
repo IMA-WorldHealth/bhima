@@ -31,6 +31,8 @@ exports.update = update;
 exports.delete = remove;
 exports.password = password;
 
+exports.lookup = lookupUser;
+
 /**
  * @function lookupUser
  *
@@ -47,34 +49,35 @@ function lookupUser(id) {
 
   let sql = `
     SELECT user.id, user.username, user.email, user.first, user.last,
-      user.active, user.last_login AS lastLogin, CONCAT(user.first, ' ', user.last) AS displayname
+      user.active, user.last_login AS lastLogin,
+      CONCAT(user.first, ' ', user.last) AS displayName
     FROM user WHERE user.id = ?;
   `;
 
   return db.exec(sql, [id])
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound(`Could not find an user with id ${id}`);
-    }
+    .then(function (rows) {
+      if (!rows.length) {
+        throw new NotFound(`Could not find an user with id ${id}`);
+      }
 
-    // bind user data to ship back
-    data = rows[0];
+      // bind user data to ship back
+      data = rows[0];
 
-    // query project permissions
-    sql = `
-      SELECT pp.project_id FROM project_permission AS pp
-      WHERE user_id = ?;
-    `;
+      // query project permissions
+      sql = `
+        SELECT pp.project_id FROM project_permission AS pp
+        WHERE user_id = ?;
+      `;
 
-    return db.exec(sql, [id]);
-  })
-  .then(function (rows) {
-    return rows.map(row => row.project_id);
-  })
-  .then(function (projects) {
-    data.projects = projects;
-    return data;
-  });
+      return db.exec(sql, [id]);
+    })
+    .then(rows => {
+      return rows.map(row => row.project_id);
+    })
+    .then(projects => {
+      data.projects = projects;
+      return data;
+    });
 }
 
 
@@ -89,7 +92,7 @@ function lookupUser(id) {
  */
 function list(req, res, next) {
   let sql =
-    `SELECT user.id, CONCAT(user.first, ' ', user.last) AS displayname,
+    `SELECT user.id, CONCAT(user.first, ' ', user.last) AS displayName,
       user.username FROM user;`;
 
   db.exec(sql)

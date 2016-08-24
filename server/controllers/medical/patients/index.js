@@ -75,9 +75,12 @@ exports.billingServices = billingServices;
 exports.subsidies = subsidies;
 
 /** expose patient detail query internally */
-exports.lookupPatient = handleFetchPatient;
+exports.lookupPatient = lookupPatient;
 
-// Get the latest patient Invoice 
+/** expose custom method to lookup patients by their debtor uuid */
+exports.lookupByDebtorUuid = lookupByDebtorUuid;
+
+// Get the latest patient Invoice
 exports.latestInvoice = latestInvoice;
 
 /** @todo Method handles too many operations */
@@ -162,7 +165,7 @@ function generatePatientText(patient) {
  * Returns details associated to a patient directly and indirectly.
  */
 function detail(req, res, next) {
-  handleFetchPatient(req.params.uuid)
+  lookupPatient(req.params.uuid)
     .then(function(patient) {
       res.status(200).json(patient);
     })
@@ -190,7 +193,7 @@ function update(req, res, next) {
 
   db.exec(updatePatientQuery, [data, buid])
     .then(function (result) {
-      return handleFetchPatient(patientUuid);
+      return lookupPatient(patientUuid);
     })
     .then(function (updatedPatient) {
       res.status(200).json(updatedPatient);
@@ -207,12 +210,22 @@ function update(req, res, next) {
     .done();
 }
 
-function handleFetchPatient(patientUuid) {
+/**
+ * @method lookupPatient
+ *
+ * @description
+ * This function looks up a patient by its unique id.  If the patient doesn't
+ * exist, it throws a NOT FOUND error.
+ *
+ * @param {String} patientUuid - the patient's unique id hex string
+ * @returns {Promise} - the result of the database query
+ */
+function lookupPatient(patientUuid) {
 
   // convert uuid to database usable binary uuid
-  let buid = db.bid(patientUuid);
+  const buid = db.bid(patientUuid);
 
-  var patientDetailQuery =
+  const patientDetailQuery =
     `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
       p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
       BUID(p.origin_location_id) as origin_location_id, CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
@@ -229,6 +242,45 @@ function handleFetchPatient(patientUuid) {
       if (rows.length === 0) {
         throw new NotFound(`Could not find a patient with uuid ${patientUuid}`);
       }
+      return rows[0];
+    });
+}
+
+/**
+ * @method lookupByDebtorUuid
+ *
+ * @description
+ * This function looks up a patient by its debtor uuid.  Since uuids are
+ * globally unique, there should be a 1->1 map of debtor_uuids to patients.  If
+ * no record is found, it throws a NOT FOUND error.
+ *
+ * @param {String} debtorUuid - the patient's unique debtor id hex string
+ * @returns {Promise} - the result of the database query
+ */
+function lookupByDebtorUuid(debtorUuid) {
+
+  // convert uuid to database usable binary uuid
+  const buid = db.bid(debtorUuid);
+
+  const sql = `
+    SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
+      p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
+      BUID(p.origin_location_id) as origin_location_id, CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
+      p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
+      p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
+      dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
+      dg.locked, dg.name as debtor_group_name, u.username, CONCAT(u.first, ' ', u.last) AS displayName
+    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u
+    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id
+    WHERE p.debtor_uuid = ?;
+  `;
+
+  return db.exec(sql, buid)
+    .then(function (rows) {
+      if (!rows.length) {
+        throw new NotFound(`Could not find a patient with debtor uuid ${debtorUuid}`);
+      }
+
       return rows[0];
     });
 }
@@ -559,7 +611,7 @@ function subsidies(req, res, next) {
 
 
 /*
-Search for information about the latest patient Invoice 
+Search for information about the latest patient Invoice
 */
 function latestInvoice (req, res, next) {
   const uid = db.bid(req.params.uuid);
@@ -569,7 +621,7 @@ function latestInvoice (req, res, next) {
   let sql =
     `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, CONCAT(user.first, user.last) as user,
      invoice.cost
-    FROM invoice 
+    FROM invoice
     JOIN user ON user.id = invoice.user_id
     WHERE debtor_uuid = ?
     ORDER BY date DESC
@@ -616,7 +668,7 @@ function latestInvoice (req, res, next) {
 
     var sql3 =
       `SELECT COUNT(invoice.uuid) as 'invoicesLength'
-       FROM invoice 
+       FROM invoice
        JOIN user ON user.id = invoice.user_id
        WHERE debtor_uuid = ?
        ORDER BY date DESC`;
@@ -628,9 +680,9 @@ function latestInvoice (req, res, next) {
 
     return q.all([execSql, execSql2, execSql3]);
   })
-  .spread(function (invoices, payments, invoicesLength){
+  .spread(function (invoices, payments, invoicesLength) {
     var numberPayment = payments[0].numberPayment;
-    invoice = {    
+    invoice = {
       uuid            : invoiceLatest.uuid,
       debtor_uuid     : invoiceLatest.debtor_uuid,
       numberPayment   : numberPayment,
@@ -650,4 +702,4 @@ function latestInvoice (req, res, next) {
   })
   .catch(next)
   .done();
-} 
+}

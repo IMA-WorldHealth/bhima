@@ -119,6 +119,12 @@ function ReceiptModal(Modal, Receipts) {
     return instance.result;
   }
 
+  /**
+   * Invokes a cash payment receipt
+   *
+   * @param {String} uuid             Target cash payment UUID
+   * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
+   */
   function cash(uuid, notifyCreated) {
     var options = {
       title         : 'CASH.TITLE',
