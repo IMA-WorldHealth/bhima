@@ -80,6 +80,7 @@ const sectionBilans    = require('../controllers/finance/sectionBilan');
 const creditors        = require('../controllers/finance/creditors.js');
 const journal          = require('../controllers/finance/journal');
 const transactionType     = require('../controllers/admin/transactionType');
+const generalLedger    = require('../controllers/finance/generalLedger');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -197,6 +198,9 @@ exports.configure = function configure(app) {
 
   // API for journal
   app.get('/journal', journal.list);
+
+  //API for general ledger
+  app.get('/general_ledger', generalLedger.list);
   
   //API for trial balance
   

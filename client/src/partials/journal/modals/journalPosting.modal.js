@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 JournalPosterModalController.$inject = [ 
   '$uibModalInstance', 'SessionService', 'JournalPostingModalService',
-  'GridGroupingService', 'Records', 'GridColumnService', 'NotifyService'
+  'GridGroupingService', 'Records', 'GridColumnService', 'NotifyService',
+  '$location'
 ];
 
 /**
@@ -12,14 +13,14 @@ JournalPosterModalController.$inject = [
  * @description
  * This controller provides a tool to do trial balance
  */
-function JournalPosterModalController(ModalInstance, Session, journalPostingModalService, Grouping,  records, Columns, Notify) {
+function JournalPosterModalController(ModalInstance, Session, journalPostingModalService, Grouping,  records, Columns, Notify, $location) {
   var vm = this, cacheKey = 'trial_balance', feedBack = null;
   var columns = [
     { field : 'trans_id', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter: 'translate', enableCellEdit: false, allowCellFocus: false},
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate'},
     { field : 'balance_before', displayName : 'TABLE.COLUMNS.BEFORE', headerCellFilter : 'translate', enableCellEdit : false, allowCellFocus : false, visible : false},
-    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate', cellTemplate : '/partials/journal/templates/debit_equiv.cell.html' },
-    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate', cellTemplate : '/partials/journal/templates/credit_equiv.cell.html'},
+    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/debit_equiv.cell.html' },
+    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/credit_equiv.cell.html'},
     { field : 'balance_final', displayName : 'TABLE.COLUMNS.AFTER', headerCellFilter : 'translate', visible : false}
   ];
 
@@ -59,7 +60,12 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
    * @description for submitting a dialog content
    */
   function submit() {
-    journalPostingModalService.postToGeneralLedger(vm.dataByTrans);
+    journalPostingModalService.postToGeneralLedger(vm.dataByTrans)
+      .then(function () {
+        $location.path('/general_ledger');
+        
+        
+      })
     
     ModalInstance.close();
   }

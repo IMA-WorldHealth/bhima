@@ -297,6 +297,8 @@ exports.checkTransactions = function (req, res, next) {
 exports.postToGeneralLedger = function (req, res, next) {
   'use strict';
   var transaction =  db.transaction();
+
+  //Just a workaround because mysql does not have a type for array
   var transactionString = req.body.transactions.map(function (trans_id) {
     return '"' + trans_id + '"';
   }).join(',');
