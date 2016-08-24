@@ -134,10 +134,10 @@ describe('Cash Payments Module', function () {
       FU.buttons.submit();
 
       // expect the receipt modal to appear
-      FU.exists(by.css('[data-cash-receipt-modal]'), true);
+      FU.exists(by.id('receipt-confirm-created'), true);
 
       // dismiss the modal
-      element(by.css('[data-modal-action="dismiss"]')).click();
+      $('[data-action="close"]').click();
     });
 
     /** @todo - once invoice posting is figured out, this test should be uncommented and work */
