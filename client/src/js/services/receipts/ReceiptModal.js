@@ -119,8 +119,32 @@ function ReceiptModal(Modal, Receipts) {
     return instance.result;
   }
 
+  /**
+   * Invokes a cash payment receipt
+   *
+   * @param {String} uuid             Target cash payment UUID
+   * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
+   */
   function cash(uuid, notifyCreated) {
-    /* noop */
+    var options = {
+      title         : 'CASH.TITLE',
+      createdKey    : 'CASH.RECEIPT.SUCCESS',
+      identifier    : 'reference', // @todo - what does this do?
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated
+    };
+
+    var cashRequest = Receipts.cash(uuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt       : function receiptProvider() { return { promise : cashRequest }; },
+        options       : function optionsProvider() { return options; },
+      }
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
   }
 
   function transaction(uuid, notifyCreated) {

@@ -37,108 +37,103 @@ exports.create = create;
 /** modifies previous cash payments */
 exports.update = update;
 
-/** searchs for cash payment uuids by their human-readable reference */
+/** searches for a cash payment's uuid by their human-readable reference */
 exports.reference = reference;
 
-/** @todo - reverse a cash payment via a journal voucher */
-exports.debitNote = debitNote;
+/** lookup a cash payment by it's uuid */
+exports.lookup = lookup;
 
 // looks up a single cash record and associated cash_items
-// sets the "canceled" flag if a cash_discard record exists.
-function lookupCashRecord(id) {
+function lookup(id) {
   'use strict';
+
+  const bid = db.bid(id);
 
   let record;
 
-  const cashRecordSql =
-    `SELECT BUID(cash.uuid) as uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference,
-      cash.date, cash.debtor_uuid, cash.currency_id, cash.amount,
+  const cashRecordSql = `
+    SELECT BUID(cash.uuid) as uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference,
+      cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id
     FROM cash JOIN project ON cash.project_id = project.id
-    WHERE cash.uuid = ?;`;
+    WHERE cash.uuid = ?;
+  `;
 
-  const cashItemsRecordSql =
-    `SELECT BUID(cash_item.uuid) AS uuid, cash_item.amount, BUID(cash_item.invoice_uuid) as invoice_uuid
-    FROM cash_item WHERE cash_item.cash_uuid = ?;`;
+  const cashItemsRecordSql = `
+    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid,
+      CONCAT(p.abbr, i.reference) AS reference
+    FROM cash_item AS ci
+      JOIN invoice AS i ON ci.invoice_uuid = i.uuid
+      JOIN project AS p ON i.project_id = p.id
+    WHERE ci.cash_uuid = ?;
+  `;
 
-  const cashDiscardRecordSql =
-    'SELECT BUID(cash_uuid) AS uuid FROM cash_discard WHERE cash_uuid = ?;';
+  return db.exec(cashRecordSql, [ bid ])
+    .then(function (rows) {
 
-  return db.exec(cashRecordSql, [ id ])
-  .then(function (rows) {
+      if (!rows.length) {
+        throw new NotFound(`No cash record by uuid: ${id}`);
+      }
 
-    if (rows.length === 0) {
-      throw new NotFound(`No cash record by uuid: ${uuid.unparse(id)}`);
-    }
+      // store the record for return
+      record = rows[0];
 
-    // store the record for return
-    record = rows[0];
+      return db.exec(cashItemsRecordSql, bid);
+    })
+    .then(function (rows) {
 
-    return db.exec(cashItemsRecordSql, id);
-  })
-  .then(function (rows) {
+      // bind the cash items to the "items" property and return
+      record.items = rows;
 
-    // bind the cash items to the "items" property and return
-    record.items = rows;
-
-    return db.exec(cashDiscardRecordSql, id);
-  })
-  .then(function (rows) {
-
-    // if a linked cash_discard record exists, it means that this cash record
-    // has been reversed and we'll report that using a 'canceled' flag.
-    record.canceled = rows.length > 0;
-
-    return record;
-  });
+      return record;
+    });
 }
 
 /**
- * GET /cash
+ *
+ * @method list
+ *
+ * @description
  * Lists the cash payments with optional filtering parameters.
  *
- * @returns {array} payments - an array of { uuid, reference, date } JSONs
+ * GET /cash
+ *
+ * @returns {Array} payments - an array of { uuid, reference, date } JSONs
  */
 function list(req, res, next) {
   'use strict';
 
-  const sql =
-    `SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference,
+  const sql = `
+    SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference,
       cash.date, cash.amount
-    FROM cash JOIN project ON cash.project_id = project.id;`;
+    FROM cash JOIN project ON cash.project_id = project.id;
+  `;
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
+ * @method detail
+ *
+ * @description
  * GET /cash/:uuid
  *
- * Get the details of a particular cash payment.  This endpoint will return a
- * record in the following format:
- * {
- *   uuid : "..",
- *   items : [ {}, {} ]    // items hitting invoices, if applicable
- *   is_caution : true/false,
- *   canceled: true/false, // indicates if a cash_discard record exists
- *   ...
- *  }
+ * Get the details of a particular cash payment.
  */
 function detail(req, res, next) {
   'use strict';
 
-  const uid = db.bid(req.params.uuid);
-
-  lookupCashRecord(uid)
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+  lookup(req.params.uuid)
+    .then(function (record) {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -223,7 +218,7 @@ function create(req, res, next) {
 /**
  * PUT /cash/:uuid
  * Updates the non-financial details associated with a cash payment.
- * NOTE - this will not update the cash_item or cash_discard tables.
+ * NOTE - this will not update the cash_item.
  *
  * @todo - remove protected fields check -- the database should do this
  * automatically
@@ -231,7 +226,6 @@ function create(req, res, next) {
 function update(req, res, next) {
   'use strict';
 
-  const uid = db.bid(req.params.uuid);
   const sql = 'UPDATE cash SET ? WHERE uuid = ?;';
 
   // protected database fields that are unavailable for updates.
@@ -259,36 +253,25 @@ function update(req, res, next) {
   if (req.body.date) { req.body.date = new Date(req.body.date); }
 
   // if checks pass, we are free to continue with our updates to the db
-  lookupCashRecord(uid)
-  .then(function (record) {
+  lookup(req.params.uuid)
+    .then(function (record) {
 
-    // if we get here, we know we have a cash record by this UUID.
-    // we can try to update it.
-    return db.exec(sql, [ req.body, uid ]);
-  })
-  .then(function () {
+      // if we get here, we know we have a cash record by this UUID.
+      // we can try to update it.
+      return db.exec(sql, [ req.body, db.bid(req.params.uuid)]);
+    })
+    .then(function () {
 
-    // fetch the changed object from the database
-    return lookupCashRecord(uid);
-  })
-  .then(function (record) {
+      // fetch the changed object from the database
+      return lookup(req.params.uuid);
+    })
+    .then(function (record) {
 
-    // all updates completed successfully, return full object to client
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
-}
-
-/**
- * DELETE /cash/:uuid
- * Reverses a cash payment using the cash discard table
- * @TODO - should this be implemented as a separate API?
- */
-function debitNote(req, res, next) {
-  'use strict';
-  // TODO
-  next();
+      // all updates completed successfully, return full object to client
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -308,7 +291,7 @@ function reference(req, res, next) {
 
   db.exec(sql, [ ref ])
   .then(function (rows) {
-    if (rows.length === 0) {
+    if (!rows.length) {
       throw new NotFound(`No cash record with reference: ${ref}`);
     }
 

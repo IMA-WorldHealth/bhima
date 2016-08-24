@@ -7,10 +7,10 @@
     </ol>
   </div>
 </div>
+
 <div class="flex-content">
 
   <!-- Unknown patient state -->
-  <!-- @todo this should be made into a component, it is used in a number of different modules -->
   <div class="container-fluid" ng-if="!PatientRecordCtrl.patient && PatientRecordCtrl.loading===false">
     <div class="alert alert-danger" id="nopatient">
       <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_RECORDS.NOT_FOUND" | translate }}
@@ -20,7 +20,7 @@
   <div class="container">
 
     <div ng-if="PatientRecordCtrl.patient">
-      <!-- Patient deatils row -->
+      <!-- Patient details row -->
       <div class="row">
         <div class="col-md-12">
 

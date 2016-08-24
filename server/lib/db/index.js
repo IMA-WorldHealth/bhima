@@ -102,7 +102,7 @@ class DatabaseConnector {
    * Converts a (dash separated) string uuid to a binary buffer for insertion
    * into the database.
    *
-   * @param {String} hexUuid - a 36 character length string to be inserted into
+   * @param {String|Buffer} hexUuid - a 36 character length string to be inserted into
    * the database
    * @returns {Buffer} uuid - a 16-byte binary buffer for insertion into the
    * database
@@ -121,6 +121,12 @@ class DatabaseConnector {
    * db.exec('INSERT INTO table SET uuid = ?;', binary);
    */
   bid(hexUuid) {
+
+    // if already a buffer, no need to convert
+    if (hexUuid instanceof Buffer) {
+      return hexUuid;
+    }
+
     return new Buffer(uuid.parse(hexUuid));
   }
 

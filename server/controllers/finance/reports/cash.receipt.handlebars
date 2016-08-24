@@ -1,0 +1,70 @@
+{{> head title="CASH.TITLE" }}
+
+<div class="container" style="font-size: 0.8em;">
+
+  <!-- this partial requires binding the variable "metadata" -->
+  <header class="row">
+    <div class="col-xs-6">
+      <div><i class="fa fa-home"></i> {{enterprise.name}}</div>
+      <address style="margin-bottom: 0px;">
+         <i class="fa fa-map-marker"></i> {{enterprise.location}}
+      </address>
+      <div><i class="fa fa-envelope-o"></i> {{enterprise.email}}</div>
+      <div><i class="fa fa-phone"></i> {{enterprise.phone}}</div>
+      <div><i class="fa fa-user"></i> {{translate "REPORT.PRODUCED_BY"}} {{user.displayName}}</div>
+    </div>
+
+    <div class="col-xs-6 text-right">
+      {{patient.first_name}} {{patient.middle_name}} {{patient.last_name}} <br />
+      {{patient.reference}} <br />
+      {{patient.hospital_no}} <br />
+      {{patient.debtor_group_name}}
+    </div>
+  </header>
+
+  <!-- cash payment header -->
+  <h4 class="text-center">
+    <u>{{translate "CASH.TITLE"}}</u>
+  </h4>
+
+  <!-- list of items paid -->
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>{{translate "FORM.LABELS.INVOICE"}}</th>
+        <th class="text-right">{{translate "FORM.LABELS.AMOUNT"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each payment.items as |item| }}
+        <tr>
+          <td>{{item.reference}}</td>
+          <td class="text-right">{{currency item.amount ../enterprise.currency_id}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>{{translate "FORM.LABELS.TOTAL"}}</th>
+        <th class="text-right">{{currency payment.amount payment.currency_id}}</th>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h4>{{translate "FORM.LABELS.SIGNATURE"}}</h4>
+      <hr>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6 text-left">
+      {{translate "FORM.LABELS.CASHIER"}}
+    </div>
+    <div class="col-xs-6 text-right">
+      {{translate "FORM.LABELS.CLIENT"}}
+    </div>
+  </div>
+
+</div>

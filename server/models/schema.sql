@@ -133,25 +133,6 @@ CREATE TABLE `cash_item` (
   FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `cash_discard`;
-CREATE TABLE `cash_discard` (
-  `uuid`              BINARY(16) NOT NULL,
-  `project_id`        SMALLINT(5) UNSIGNED NOT NULL,
-  `reference`         INT(10) UNSIGNED NOT NULL,
-  `cash_uuid`         BINARY(16) NOT NULL,
-  `date`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `description`       text NOT NULL,
-  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `cash_discard_1` (`reference`, `project_id`),
-  KEY `project_id` (`project_id`),
-  KEY `user_id` (`user_id`),
-  KEY `cash_uuid` (`cash_uuid`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `cash_box`;
 CREATE TABLE `cash_box` (
   `id`            MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,

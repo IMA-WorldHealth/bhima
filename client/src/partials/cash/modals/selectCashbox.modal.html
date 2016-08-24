@@ -6,11 +6,10 @@
 
   <!-- link to cashboxes page if cashboxes not found -->
   <p class="text-info">
-    <span class="glyphicon glyphicon-question-sign"></span> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
+    <i class="fa fa-question-circle-o"></i> {{ "CASH.VOUCHER.CASHBOXES.MISSING" | translate }}
 
-    <!-- @fixme - this is kind of a hack to get the modal to close -->
-    <a href ui-sref="cashboxes" ng-click="$ctrl.dismiss()">
-      <span class="glyphicon glyphicon-link"></span> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
+    <a href ui-sref="cashboxes">
+      <i class="fa fa-link"></i> {{ "CASH.VOUCHER.CASHBOXES.LINK" | translate }}
     </a>
   </p>
 
@@ -25,11 +24,11 @@
       >
 
       <span id="cashbox-{{ cashbox.id }}">
-        <span class="glyphicon glyphicon-inbox"></span> {{ cashbox.label }}
+        <i class="fa fa-inbox"></i> {{ cashbox.label }}
       </span>
 
       <span ng-show="$ctrl.selectedCashbox.id === cashbox.id" class="badge">
-        <span class="glyphicon glyphicon-ok"></span>
+        <i class="fa fa-check"></i>
       </span>
     </li>
   </ul>
@@ -39,15 +38,18 @@
   <button
     type="button"
     class="btn btn-default"
-    ng-click="$ctrl.dismiss()"
+    ui-sref="^.window({ id: $ctrl.selectedCashbox.id })"
+    ui-sref-opts="{ reload : true }"
     ng-disabled="!$ctrl.cashboxId"
     data-cashbox-modal-cancel>
     {{ 'FORM.BUTTONS.CANCEL' | translate }}
   </button>
+
   <button
     type="button"
     class="btn btn-primary"
-    ng-click="$ctrl.close()"
+    ui-sref="^.window({ id: $ctrl.selectedCashbox.id })"
+    ui-sref-opts="{ reload : true }"
     ng-disabled="!$ctrl.cashboxId && !$ctrl.selectedCashbox.id"
     data-cashbox-modal-submit>
     {{ 'FORM.BUTTONS.SUBMIT' | translate }}

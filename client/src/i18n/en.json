@@ -70,8 +70,13 @@
       "TITLE"              : "Select a Cashbox"
     },
     "TITLE"           : "Cash Window",
+    "RECEIPT": {
+      "SUCCESS" : "Successfully created a Cash Payment"
+    },
     "TRANSFER": {
-      "TITLE" : "Transfers"
+      "TITLE" : "New Cash Transfer",
+      "ACTION" : "You are transferring funds out of the cashbox.",
+      "REMINDER" : "Please perform a cash count and indicate both the currency and amount to be transferred in the form below."
     },
     "VOUCHER": {
       "CASHBOXES": {
@@ -282,6 +287,7 @@
       "CREDIT_NOTE"          : "Credit Note",
       "DANGER_ZONE"          : "Danger Zone",
       "DELETE_SUCCESS"       : "Delete success",
+      "DISABLED_CURRENCY"    : "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",
       "FINANCIAL_DETAIL"     : "Financial details",
       "FOUND"                : "Found",
       "GROUPS_DEBTOR"        : "Assign a new debtor group from the options below. Press 'confirm' to permanently update the patient's debtor group",
@@ -395,6 +401,7 @@
       "FINANCIAL_DETAIL"       : "Current balance, the posting journal is included:",
       "FIRST_NAME"             : "First Name",
       "FROM_ACCOUNT"           : "From Account",
+      "FROM"                   : "From",
       "FUNCTION"               : "Function",
       "GAIN_ACCOUNT"           : "Gain on Exchange Rate Account",
       "GENDER"                 : "Sex",
@@ -516,6 +523,7 @@
       "TOTAL_BILLED"           : "Total Billed",
       "TOTAL_PAID"             : "Total Paid",
       "TO_ACCOUNT"             : "To Account",
+      "TO"                     : "To",
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "TRANSFER_TYPE"          : "Transfer Type",

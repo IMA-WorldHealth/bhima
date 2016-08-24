@@ -1,79 +1,64 @@
-<form name="TransferForm" ng-submit="CashTransferModalCtrl.submit(TransferForm.$invalid)" bh-form-defaults novalidate>
+<form name="TransferForm" bh-submit="TransferCtrl.submit(TransferForm)" bh-form-defaults novalidate>
 
   <div class="modal-header">
-    <h4>{{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}</h4>
+    <ol class="headercrumb">
+      <li class="static">
+        {{::TransferCtrl.cashbox.label}}
+      </li>
+      <li class="title">
+        {{ ::"CASH.TRANSFER.TITLE" | translate }}
+      </li>
+    </ol>
   </div>
 
   <div class="modal-body">
 
-    <p class="text-danger text-center" ng-hide="CashTransferModalCtrl.cashBox">
-      <span class="glyphicon glyphicon-alert"></span>
-      {{ "FORM.LABELS.MISSING_CASH_BOX_ID" | translate }}
-    </p>
+    <section ng-show="TransferCtrl.cashAccount.number">
+      <p>
+        <i class="fa fa-info-circle text-primary"></i> {{ "CASH.TRANSFER.ACTION" | translate }}
+      </p>
+      <dl class="dl-horizontal">
+        <dt>{{ "FORM.LABELS.FROM" | translate }}</dt>
+        <dd>[{{TransferCtrl.cashAccount.number}}] {{TransferCtrl.cashAccount.label }}</dd>
+        <dt>{{ "FORM.LABELS.TO" | translate }}</dt>
+        <dd>[{{TransferCtrl.transferAccount.number}}] {{TransferCtrl.transferAccount.label }}</dd>
+      </dl>
+      <p>{{ "CASH.TRANSFER.REMINDER" | translate }}</p>
+    </section>
 
-    <uib-alert type="info" ng-show="CashTransferModalCtrl.cashBox">
-      <p>{{ "FORM.LABELS.FINANCIAL_DETAIL" | translate }} </p>
-
-      <p>{{"FORM.LABELS.CASHBOX" | translate}} : <strong>{{ CashTransferModalCtrl.cashBox.label }}</strong> </p>
-      <div ng-if="CashTransferModalCtrl.currency_id">
-        <p>{{"FORM.LABELS.BALANCE" | translate}} : {{CashTransferModalCtrl.cashAccountBalance.balance | currency:CashTransferModalCtrl.currency_id}}</p>
-      </div>
-    </uib-alert>
-
-    <hr/>
-
-    <div class="radio" ng-class="{ 'has-error' : TransferForm.$submitted && TransferForm.currency.$invalid }">
-      <p><strong class="control-label">{{ "FORM.LABELS.CURRENCY" | translate }}</strong></p>
-      <label
-        ng-repeat="currency in CashTransferModalCtrl.cashBox.currencies track by currency.currency_id"
-        class="radio-inline">
-          <input
-            name="currency"
-            type="radio"
-            ng-model="CashTransferModalCtrl.currency_id"
-            ng-value="currency.currency_id"
-            data-transfer-currency-option="{{ currency.currency_id }}"
-            ng-change="CashTransferModalCtrl.handleCurrencyChange()"
-            required>
-          {{ CashTransferModalCtrl.currencyService.format(currency.currency_id); }}
-      </label>
-      <div class="help-block" ng-messages="TransferForm.currency.$error" ng-show="TransferForm.$submitted">
-        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+    <bh-currency-select
+      id="transfer-currency-select"
+      currency-id="TransferCtrl.record.currency_id"
+      validation-trigger="TransferForm.$submitted"
+      disable-ids="TransferCtrl.disabledCurrencyIds"
+      on-change="TransferCtrl.loadAccountDetails()"
+      cashbox-id="TransferCtrl.cashbox.id">
+    </bh-currency-select>
 
     <bh-currency-input
-      id="transferCurrencyInput"
-      currency-id="CashTransferModalCtrl.currency_id"
-      model="CashTransferModalCtrl.amount"
+      id="transfer-currency-input"
+      currency-id="TransferCtrl.record.currency_id"
+      model="TransferCtrl.record.amount"
       form="TransferForm"
-      validation-trigger="TransferForm.$submitted"
-      >
+      validation-trigger="TransferForm.$submitted">
     </bh-currency-input>
-
-    <span id="succeed-label" class="text-success" ng-show="TransferForm.$submitted && CashTransferModalCtrl.success">
-      <i class="glyphicon glyphicon-ok-sign"></i> {{ "CASH.VOUCHER.CASHBOXES.SUCCESS" | translate }}
-    </span>
   </div>
 
   <div class="modal-footer">
     <button
-      type="submit"
-      id="submit-transfer"
-      class="btn btn-primary"
-      data-method="submit"
-      ng-disabled="!CashTransferModalCtrl.cashBox"
-      data-modal-action="submit">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
-    </button>
-
-    <button
       type="button"
       class="btn btn-default"
-      ng-click="CashTransferModalCtrl.cancel()"
+      ui-sref="^.window({ id : TransferCtrl.cashbox.id })"
       data-modal-action="dismiss">
       {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
+
+    <bh-loading-button
+      loading-state="TransferForm.$loading"
+      ng-disabled="!TransferCtrl.cashbox"
+      >
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </bh-loading-button>
 
   </div>
 </form>

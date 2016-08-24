@@ -79,11 +79,11 @@ function list(req, res, next) {
   sql += ';';
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -104,28 +104,29 @@ function helperGetCashbox(id) {
   `;
 
   return db.exec(sql, [id])
-  .then(function (rows) {
+    .then(function (rows) {
 
-    if (!rows.length) {
-      throw new NotFound(`Could not find a cashbox with id ${id}.`);
-    }
+      if (!rows.length) {
+        throw new NotFound(`Could not find a cashbox with id ${id}.`);
+      }
 
-    cashbox = rows[0];
+      cashbox = rows[0];
 
-    // query the currencies supported by this cashbox
-    sql =
-      `SELECT currency_id FROM cash_box_account_currency
-      WHERE cash_box_id = ?;`;
+      // query the currencies supported by this cashbox
+      sql = `
+        SELECT currency_id, account_id, transfer_account_id
+        FROM cash_box_account_currency
+        WHERE cash_box_id = ?;
+      `;
 
-    return db.exec(sql, [cashbox.id]);
-  })
-  .then(function (rows) {
+      return db.exec(sql, [cashbox.id]);
+    })
+    .then(function (rows) {
 
-    // assign the currencies to the cashbox
-    cashbox.currencies = rows;
-
-    return cashbox;
-  });
+      // assign the currencies to the cashbox
+      cashbox.currencies = rows;
+      return cashbox;
+    });
 }
 
 /**

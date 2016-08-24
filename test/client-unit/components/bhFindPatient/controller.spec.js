@@ -49,6 +49,8 @@ function ControllerTests() {
 
     // trigger a digest
     $scope.$digest();
+
+    $controller.$onInit();
   }));
 
   // make sure $httpBackend is clean after each test completes
@@ -156,6 +158,8 @@ function ControllerTests() {
     $controller = $componentController('bhFindPatient', {
       $scope : $scope
     }, bindings);
+
+    $controller.$onInit();
 
     expect(controllerApi).to.be.an('object');
     expect(controllerApi).to.have.property('api');

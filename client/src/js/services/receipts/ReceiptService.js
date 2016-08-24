@@ -94,7 +94,8 @@ function ReceiptService($http, util, Language) {
 
   // print a cash (point-of-sale) receipt
   function cash(uuid, options) {
-    /* noop */
+    var route = '/reports/cash/'.concat(uuid);
+    return fetch(route, options);
   }
 
   // print a generic transaction receipt

@@ -34,9 +34,6 @@ describe('Cash Payments Module', function () {
       // expect the 'cashbox selection' modal to appear
       FU.exists(by.css('[data-cashbox-modal]'), true);
 
-      // expect a notification error
-      // components.notification.hasError();
-
       // select a cashbox
       element(by.id('cashbox-3')).click();
       element(by.css('[data-cashbox-modal-submit]')).click();
@@ -51,12 +48,11 @@ describe('Cash Payments Module', function () {
       var target = path.concat('/' + cashboxB.id);
 
       // implicitly choose cashbox B by navigating to it directly
-      helpers.navigate(target);
+      browser.get(target);
 
       expect(helpers.getCurrentPath()).to.eventually.equal(target);
 
-      // attempt to return to /cash manually
-      helpers.navigate(path);
+      browser.get(path);
 
       // the cashbox selection modal should not appear
       FU.exists(by.css('[data-cashbox-modal]'), false);
@@ -138,10 +134,10 @@ describe('Cash Payments Module', function () {
       FU.buttons.submit();
 
       // expect the receipt modal to appear
-      FU.exists(by.css('[data-cash-receipt-modal]'), true);
+      FU.exists(by.id('receipt-confirm-created'), true);
 
       // dismiss the modal
-      element(by.css('[data-modal-action="dismiss"]')).click();
+      $('[data-action="close"]').click();
     });
 
     /** @todo - once invoice posting is figured out, this test should be uncommented and work */
@@ -191,36 +187,37 @@ describe('Cash Payments Module', function () {
   */
   });
 
-  describe('Cash Transfer ', function (){
-
-    // navigate to the page before tests
-    before(() => helpers.navigate(path));
-
-    // This transfer should succeed
-    const mockTransfer = {
-      amount : 100
-    };
-
-    it('should make a transfer between selected auxiliary cash and a transfer account', function (){
-
-      // click the transfer button
-      var transferBtn = element(by.css('[data-perform-transfer]'));
-      transferBtn.click();
-
-      //choosing CDF as transfer currency
-      var CDFRadio = element(by.css('[data-transfer-currency-option="1"]'));
-      CDFRadio.click();
-
-      //set a value in the currency component by model to avoid conflict
-      components.currencyInput.set(mockTransfer.amount, 'transferCurrencyInput');
-
-      // submit the modal button
-      var transferSubmitBtn = element(by.id('submit-transfer'));
-      transferSubmitBtn.click();
-
-      FU.exists(by.id('succeed-label'), true);
-      element(by.css('[data-modal-action="dismiss"]')).click();
-    });
-  });
-
+  describe('Cash Transfer ', CashTransfer);
 });
+
+
+function CashTransfer() {
+  'use strict';
+
+  const path = '#/cash';
+
+  // navigate to the page before tests
+  before(() => helpers.navigate(path));
+
+  // this transfer should succeed
+  const mockTransfer = { amount : 100 };
+
+  it('should make a transfer between accounts', () => {
+
+    // click the transfer button
+    const transferBtn = element(by.css('[data-perform-transfer]'));
+    transferBtn.click();
+
+    // choose CDF as transfer currency
+    components.currencySelect.set(1, 'transfer-currency-select');
+
+    //set a value in the currency component by model to avoid conflict
+    components.currencyInput.set(mockTransfer.amount, 'transfer-currency-input');
+
+    // submit the modal button
+    FU.modal.submit();
+
+    // make sure we have a success notification shown
+    components.notification.hasSuccess();
+  });
+}

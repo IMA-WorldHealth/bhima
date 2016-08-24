@@ -14,12 +14,12 @@
       <!-- Switch Cashbox Form and Transfer -->
       <div class="col-md-2">
 
-        <button class="btn btn-warning btn-block" ng-click="CashCtrl.openSelectCashboxModal()" data-change-cashbox>
-          <span class="glyphicon glyphicon-inbox"></span> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
+        <button class="btn btn-warning btn-block" ui-sref="cash.select({ id : CashCtrl.cashbox.id })" data-change-cashbox>
+          <i class="fa fa-inbox"></i> {{ "CASH.VOUCHER.CASHBOXES.CHANGE_CASHBOX" | translate }}
         </button>
 
-        <button class="btn btn-primary btn-block" ng-click="CashCtrl.openTransferModal()" data-perform-transfer>
-          <span class="glyphicon glyphicon-export"></span> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
+        <button class="btn btn-primary btn-block" ui-sref="cash.transfer({ id: CashCtrl.cashbox.id })" data-perform-transfer>
+          <i class="fa fa-exchange"></i> {{ "CASH.VOUCHER.CASHBOXES.TRANSFER" | translate }}
         </button>
       </div>
 
@@ -27,16 +27,18 @@
       <div class="col-md-8">
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <span class="glyphicon glyphicon-barcode"></span>
+            <i class="fa fa-barcode"></i>
             {{ "CASH.VOUCHER.SLIP" | translate }} <span class="pull-right">{{ CashCtrl.cashbox.label }}</span>
           </div>
           <div class="panel-body">
-
             <form name="CashVoucherForm" bh-submit="CashCtrl.submit(CashVoucherForm)" bh-form-defaults novalidate>
 
               <fieldset ng-disabled="CashVoucherForm.$loading">
 
-                <bh-find-patient on-search-complete="CashCtrl.usePatient(patient)" required="1"></bh-find-patient>
+                <bh-find-patient
+                  on-search-complete="CashCtrl.usePatient(patient)"
+                  required="required">
+                </bh-find-patient>
 
                 <bh-date-editor
                   date-value="CashCtrl.payment.date"
@@ -58,11 +60,11 @@
                 <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
                   <p><strong class="control-label">{{ "FORM.LABELS.TYPE" | translate }}</strong></p>
                   <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="1" ng-change="CashCtrl.toggleVoucherType()" data-caution-option="1" required>
+                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="1" ng-change="CashCtrl.togglePaymentType()" data-caution-option="1" required>
                     {{ "FORM.LABELS.CAUTION" | translate }}
                   </label>
                   <label class="radio-inline">
-                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="0" ng-change="CashCtrl.toggleVoucherType()" data-caution-option="0" required>
+                    <input name="type" type="radio" ng-model="CashCtrl.payment.is_caution" ng-value="0" ng-change="CashCtrl.togglePaymentType()" data-caution-option="0" required>
                     {{ "FORM.LABELS.INVOICE" | translate }}
                   </label>
 

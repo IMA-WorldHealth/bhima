@@ -343,6 +343,7 @@ exports.configure = function configure(app) {
 
   // reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', financeReports.receipts.invoices);
+  app.get('/reports/cash/:uuid', financeReports.receipts.cash);
 
   app.get('/reports/patient/registrations', medicalReports.patientRegistrations);
   app.get('/reports/patient/:uuid', medicalReports.receipts.patients);
@@ -453,7 +454,6 @@ exports.configure = function configure(app) {
   app.get('/cash/:uuid', cash.detail);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
-  app.delete('/cash/:uuid', cash.debitNote);
   app.get('/cash/references/:reference', cash.reference);
 
   /** @todo - classify these */

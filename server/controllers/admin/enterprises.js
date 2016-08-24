@@ -11,6 +11,7 @@ const db       = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
 exports.lookupEnterprise = lookupEnterprise;
+exports.lookupByProjectId = lookupByProjectId;
 
 // GET /enterprises
 exports.list = function list(req, res, next) {
@@ -46,35 +47,63 @@ exports.detail = function detail(req, res, next) {
 };
 
 function lookupEnterprise(id) {
-  let sql =
-    `SELECT id, name, abbr, email, po_box, phone,
+  const sql = `
+    SELECT id, name, abbr, email, po_box, phone,
       BUID(location_id) AS location_id, logo, currency_id,
       gain_account_id, loss_account_id
-    FROM enterprise WHERE id = ?;`;
+    FROM enterprise WHERE id = ?;
+  `;
 
   return db.exec(sql, [id])
   .then(function (rows) {
     if (!rows.length) {
-      throw new NotFound(`Could not find an enterprise with id ${id}`);
+      throw new NotFound(`Could not find an enterprise with id ${id}.`);
     }
 
     return rows[0];
   });
 }
 
+/**
+ * @method lookupByProjectId
+ *
+ * @description
+ * Finds an enterprise via a project id.  This method is useful since most
+ * tables only store the project_id instead of the enterprise_id.
+ *
+ * @param {Number} id - the project id to lookup
+ * @returns {Promise} - the result of the database query.
+ */
+function lookupByProjectId(id) {
+  const sql = `
+    SELECT e.id, e.name, e.abbr, email, e.po_box, e.phone,
+      BUID(e.location_id) AS location_id, e.logo, e.currency_id,
+      e.gain_account_id, e.loss_account_id
+    FROM enterprise AS e JOIN project AS p ON e.id = p.enterprise_id
+    WHERE p.enterprise_id = ?;
+  `;
+
+  return db.exec(sql, [id])
+    .then(function (rows) {
+      if (!rows.length) {
+        throw new NotFound(`Could not find an enterprise with project id ${id}.`);
+      }
+
+      return rows[0];
+    });
+}
 
 // POST /enterprises
 exports.create = function create(req, res, next) {
-  let enterprise = db.convert(req.body.enterprise, ['location_id']);
-  let sql =
-    'INSERT INTO enterprise SET ?;';
+  const enterprise = db.convert(req.body.enterprise, ['location_id']);
+  const sql = 'INSERT INTO enterprise SET ?;';
 
   db.exec(sql, [ enterprise ])
-  .then(function (row) {
-    res.status(201).json({ id : row.insertId });
-  })
-  .catch(next)
-  .done();
+    .then(function (row) {
+      res.status(201).json({ id : row.insertId });
+    })
+    .catch(next)
+    .done();
 };
 
 // PUT /enterprises/:id

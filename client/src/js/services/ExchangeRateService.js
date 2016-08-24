@@ -1,31 +1,31 @@
 angular.module('bhima.services')
-.service('ExchangeRateService', ExchangeRateService);
+  .service('ExchangeRateService', ExchangeRateService);
 
 ExchangeRateService.$inject = [
-  '$http', '$q', 'util', 'CurrencyService', 'SessionService'
+  '$http', 'util', 'CurrencyService', 'SessionService'
 ];
 
 /**
-* Exchange Rate Service
-*
-* This goal of this service is to eventually replace the old `exchange` service,
-* which has a confusing API and is difficult to test, highly coupled to appstate,
-* and suffers from poorly written code.
-*
-* IMPORTANT:
-* The application no longer assumes that you need to have an exchange rate set
-* daily.  Instead, the previous valid rate will be used.  At startup, we check
-* first that we have defined at least one rate for every currency supported by
-* the application and throw a MISSING_EXCHANGE_RATES error if we are missing a base
-* rate for any of the currencies.
-*
-* @todo - How should we best handle errors such as looking up old dates before an
-* exchange rate is defined?  What happens when we call
-* service.convertToEnterpriseCurrency(someId, null, 100)?
-*
-* @todo - documentation improvements
-*/
-function ExchangeRateService($http, $q, util, Currencies, Session) {
+ * Exchange Rate Service
+ *
+ * This goal of this service is to eventually replace the old `exchange` service,
+ * which has a confusing API and is difficult to test, highly coupled to appstate,
+ * and suffers from poorly written code.
+ *
+ * IMPORTANT:
+ * The application no longer assumes that you need to have an exchange rate set
+ * daily.  Instead, the previous valid rate will be used.  At startup, we check
+ * first that we have defined at least one rate for every currency supported by
+ * the application and throw a MISSING_EXCHANGE_RATES error if we are missing a base
+ * rate for any of the currencies.
+ *
+ * @todo - How should we best handle errors such as looking up old dates before an
+ * exchange rate is defined?  What happens when we call
+ * service.convertToEnterpriseCurrency(someId, null, 100)?
+ *
+ * @todo - documentation improvements
+ */
+function ExchangeRateService($http, util, Currencies, Session) {
   var service = {};
   var cache;
 
@@ -117,7 +117,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
 
   function update(id, rate) {
     return $http.put('/exchange/' + id, rate)
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
 
@@ -145,20 +145,14 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
   // converts an {amount} of money from {currencyId} to the enterprise currency
   // using the exchange rate valid for the date {date}
   function convertToEnterpriseCurrency(currencyId, date, amount) {
-
-    // get the current exchange rate
     var rate = getExchangeRate(currencyId, date);
-
     return amount * (1 / rate);
   }
 
   // converts an {amount} of money to {currencyId} from the enterprise currency
   // using the exchange rate valid for the date {date}
   function convertFromEnterpriseCurrency(currencyId, date, amount) {
-
-    // get the current exchange rate
     var rate = getExchangeRate(currencyId, date);
-
     return amount * rate;
   }
 
@@ -190,7 +184,7 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
 
   function del(id) {
     return $http.delete('/exchange/' + id)
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
   return service;

@@ -1,16 +1,20 @@
 angular.module('bhima.services')
-.service('CurrencyService', CurrencyService);
+  .service('CurrencyService', CurrencyService);
 
-CurrencyService.$inject = [ '$http', '$q', 'util' ];
+CurrencyService.$inject = [
+  '$http', '$q', 'util'
+];
 
 /**
-* Currency Service
-*
-* This service is responsible for reading currencies from the database.  It
-* maintains a local cache so that currencies are not fetched multiple times.
-*
-* @module services/CurrencyService
-*/
+ * @module services/CurrencyService
+ *
+ * Currency Service
+ *
+ * @description
+ * This service is responsible for reading currencies from the database.  It
+ * maintains a local cache so that currencies are not fetched multiple times.
+ *
+ */
 function CurrencyService($http, $q, util) {
   var service = this;
   var baseUrl = '/currencies';
@@ -48,15 +52,15 @@ function CurrencyService($http, $q, util) {
     if (cache) { return $q.resolve(cache); }
 
     return $http.get(baseUrl)
-    .then(util.unwrapHttpResponse)
-    .then(function (currencies) {
+      .then(util.unwrapHttpResponse)
+      .then(function (currencies) {
 
-      // cache currencies to avoid future HTTP lookups.
-      cache = currencies;
-      map = buildMap(currencies);
+        // cache currencies to avoid future HTTP lookups.
+        cache = currencies;
+        map = buildMap(currencies);
 
-      return cache;
-    });
+        return cache;
+      });
   }
 
   /**
@@ -73,18 +77,18 @@ function CurrencyService($http, $q, util) {
 
     // fetch the currency from the server
     return $http.get(baseUrl.concat('/' + id))
-    .then(util.unwrapHttpResponse)
-    .then(function (currency) {
+      .then(util.unwrapHttpResponse)
+      .then(function (currency) {
 
-      // ensure that the map exists
-      if (!map) { map = {}; }
+        // ensure that the map exists
+        if (!map) { map = {}; }
 
-      // cache the currency for later
-      map[currency.id] = currency;
+        // cache the currency for later
+        map[currency.id] = currency;
 
-      // return the fetched currency
-      return currency;
-    });
+        // return the fetched currency
+        return currency;
+      });
   }
 
   function buildMap(currencies) {
