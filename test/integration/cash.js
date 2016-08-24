@@ -6,27 +6,20 @@ const helpers = require('./helpers');
 describe('(/cash) Cash Payments', function () {
   'use strict';
 
-  var CASHBOX_ID  = 1;   // Test Primary Cashbox A
-  var CURRENCY_ID = 2;   // Congolese Francs
-  var PROJECT_ID  = 1;   // Test Project
-  var DEBTOR_UUID =      // Patient/1/Patient
+  const CASHBOX_ID  = 1;   // Test Primary Cashbox A
+  const CURRENCY_ID = 2;   // Congolese Francs
+  const PROJECT_ID  = 1;   // Test Project
+  const DEBTOR_UUID =      // Patient/1/Patient
     'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
-  var USER_ID     = 1;   // Test User
-  var INVOICES    = [    // invoices defined in the database
+
+  const USER_ID     = 1;   // Test User
+  const INVOICES    = [    // invoices defined in the database
     { invoice_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6', amount : 75.0 },
     { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf', amount : 25.0 }
   ];
-  var REFERENCE = 'TPA1';
 
+  const REFERENCE = 'TPA1';
 
-  // no cash payments have been made yet
-  it('GET /cash returns an empty list with no cash payments', function () {
-    return agent.get('/cash')
-      .then(function (res) {
-        helpers.api.listed(res, 0);
-      })
-      .catch(helpers.handler);
-  });
 
   // can't find undefined cash payments
   it('GET /cash/undefined returns an error', function () {
@@ -40,7 +33,7 @@ describe('(/cash) Cash Payments', function () {
   // Tests for the Caution Payment Interface
   describe('Caution Payments ', function () {
 
-    var CAUTION_PAYMENT = {
+    const CAUTION_PAYMENT = {
       amount:      15000,
       currency_id: CURRENCY_ID,
       cashbox_id:  CASHBOX_ID,
@@ -76,7 +69,6 @@ describe('(/cash) Cash Payments', function () {
           expect(res.body.currency_id).to.equal(CAUTION_PAYMENT.currency_id);
           expect(res.body.cashbox_id).to.equal(CAUTION_PAYMENT.cashbox_id);
           expect(res.body.is_caution).to.equal(CAUTION_PAYMENT.is_caution);
-          expect(res.body.canceled).to.be.false;
         })
         .catch(helpers.handler);
     });
@@ -136,7 +128,6 @@ describe('(/cash) Cash Payments', function () {
           expect(res.body.is_caution).to.equal(INVOICE_PAYMENT.is_caution);
           expect(res.body.currency_id).to.equal(INVOICE_PAYMENT.currency_id);
           expect(res.body.cashbox_id).to.equal(INVOICE_PAYMENT.cashbox_id);
-          expect(res.body.canceled).to.be.false;
         })
         .catch(helpers.handler);
     });
@@ -173,7 +164,6 @@ describe('(/cash) Cash Payments', function () {
 
           expect(res.body.is_caution).to.equal(INVOICE_PAYMENT.is_caution);
           expect(res.body.description).to.equal(DESC);
-          expect(res.body.canceled).to.be.false;
         })
         .catch(helpers.handler);
     });
@@ -195,7 +185,7 @@ describe('(/cash) Cash Payments', function () {
           expect(res.body).to.not.be.empty;
           expect(res.body).to.have.keys(
             'uuid', 'reference', 'date', 'debtor_uuid', 'project_id', 'currency_id', 'items',
-            'cashbox_id', 'amount', 'user_id', 'description', 'is_caution', 'canceled'
+            'cashbox_id', 'amount', 'user_id', 'description', 'is_caution'
           );
         })
         .catch(helpers.handler);

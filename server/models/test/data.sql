@@ -414,6 +414,13 @@ INSERT INTO invoice_item VALUES
   (@first_invoice,HUID('2e1332a7-3e63-411e-827d-42ad585ff518'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),3,25.0000,25.0000,0.0000,75.0000),
   (@second_invoice,HUID('ffb0350d-7d46-4204-b19d-f2e0506b386c'),HUID('cf05da13-b477-11e5-b297-023919d3d5b0'),1,25.0000,25.0000,0.0000,25.0000);
 
+-- caution payment
+SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');
+
+-- @todo Make sure this is in the posting_journal
+INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution) VALUES
+  (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 1, "Some cool description", 1);
+
 INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,1,'TRANS1','2016-01-09 14:35:55',@first_invoice,NULL,3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
   (HUID(UUID()),1,1,1,'TRANS1','2016-01-09 14:35:55',@first_invoice,NULL,3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
