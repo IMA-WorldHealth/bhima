@@ -74,7 +74,9 @@
       "SUCCESS" : "Successfully created a Cash Payment"
     },
     "TRANSFER": {
-      "TITLE" : "New Cash Transfer"
+      "TITLE" : "New Cash Transfer",
+      "ACTION" : "You are transferring funds out of the cashbox.",
+      "REMINDER" : "Please perform a cash count and indicate both the currency and amount to be transferred in the form below."
     },
     "VOUCHER": {
       "CASHBOXES": {
@@ -399,6 +401,7 @@
       "FINANCIAL_DETAIL"       : "Current balance, the posting journal is included:",
       "FIRST_NAME"             : "First Name",
       "FROM_ACCOUNT"           : "From Account",
+      "FROM"                   : "From",
       "FUNCTION"               : "Function",
       "GAIN_ACCOUNT"           : "Gain on Exchange Rate Account",
       "GENDER"                 : "Sex",
@@ -520,6 +523,7 @@
       "TOTAL_BILLED"           : "Total Billed",
       "TOTAL_PAID"             : "Total Paid",
       "TO_ACCOUNT"             : "To Account",
+      "TO"                     : "To",
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "TRANSFER_TYPE"          : "Transfer Type",
