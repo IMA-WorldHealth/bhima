@@ -14,7 +14,7 @@ JournalPosterModalController.$inject = [
  * This controller provides a tool to do trial balance
  */
 function JournalPosterModalController(ModalInstance, Session, journalPostingModalService, Grouping,  records, Columns, Notify, $location) {
-  var vm = this, cacheKey = 'trial_balance', feedBack = null;
+  var vm = this;
   var columns = [
     { field : 'trans_id', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter: 'translate', enableCellEdit: false, allowCellFocus: false},
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate'},
@@ -25,34 +25,31 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
   ];
 
   vm.enterprise = Session.enterprise;
-  vm.errors = null; //while null the grid will not be shown
+  vm.errors = null;
   vm.cssClass = null;
   vm.feedBack = null;
-  vm.groupingDetail = { 'trans_id' : groupByTransaction, 'account_number' : groupByAccount, 'initial' : 'trans_id', 'selected' : 'trans_id', key : 'FORM.BUTTONS.GROUP_BY_TRANSACTION'};
+  vm.groupingDetail = { 'trans_id' : groupByTransaction, 'account_number' : groupByAccount, 'initial' : 'trans_id', key : 'FORM.BUTTONS.GROUP_BY_TRANSACTION'};
   vm.dataByTrans = journalPostingModalService.parseSelectedGridRecord(records); //parse grid row to printable format
 
 
-  function groupByTransaction(currenteGroupingColumn, newGroupingColumn) {
+  function groupByTransaction() {
     vm.columns.setVisibleColumns({trans_id : true, balance_before : false, balance_final : false});
     vm.gridOptions.data = vm.dataByTrans;
-    vm.groupingDetail.selected = newGroupingColumn;
     vm.groupingDetail.key = 'FORM.BUTTONS.GROUP_BY_TRANSACTION';
   }
 
-  function  groupByAccount(currenteGroupingColumn, newGroupingColumn) {
+  function  groupByAccount() {
     vm.columns.setVisibleColumns({trans_id : false, balance_before : true, balance_final : true});
 
     journalPostingModalService.getDataByAccount(vm.dataByTrans)
       .then(function (data) {
-        vm.dataByAccount = data;
-        vm.gridOptions.data = vm.dataByAccount;
-        vm.groupingDetail.selected = newGroupingColumn;
+        vm.gridOptions.data = data;
         vm.groupingDetail.key = 'FORM.BUTTONS.GROUP_BY_ACCOUNT';
       })
       .catch(function (error) {
         vm.hasError = true;
-        // Notify.errorHandler(error);
-    });
+        Notify.errorHandler(error);
+      });
   }
 
   /**
@@ -63,10 +60,7 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
     journalPostingModalService.postToGeneralLedger(vm.dataByTrans)
       .then(function () {
         $location.path('/general_ledger');
-        
-        
-      })
-    
+      });
     ModalInstance.close();
   }
 
@@ -76,7 +70,7 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
    * closes the modal and stop the posting process
    **/
   function cancel() {
-    ModalInstance.close();
+    ModalInstance.dismiss();
   }
 
   /**
@@ -85,10 +79,8 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
    * This method can change the grouping from by transaction to by account vice versa
    **/
   function switchGroup (){
-    
-    var currentGroupingColumn = journalPostingModalService.getCurrentGroupingColumn();
-    var newGroupingColumn = journalPostingModalService.switchGroup(currentGroupingColumn);
-    vm.groupingDetail[newGroupingColumn](currentGroupingColumn, newGroupingColumn);
+    var newGroupingColumn = journalPostingModalService.switchGroup(vm.grouping.getCurrentGroupingColumn());
+    vm.groupingDetail[newGroupingColumn]();
     vm.grouping.changeGrouping(newGroupingColumn);
   }
 
@@ -102,7 +94,7 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
   };
 
   journalPostingModalService.checkTransactions(vm.dataByTrans)
-    .then(function(errors){
+    .then(function(errors) {
       vm.errors = errors;
       vm.feedBack = journalPostingModalService.getFeedBack(errors.data); //getting a feedback object to customize the grid
       vm.cssClass = journalPostingModalService.getCSSClass(vm.feedBack);
@@ -112,15 +104,18 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
       });
 
       vm.gridOptions = {
-        enableColumnMenus : false,
+        enableColumnMenus: false,
         treeRowHeaderAlwaysVisible: false,
-        appScopeProvider : vm
+        appScopeProvider: vm
       };
-      vm.columns = new Columns(vm.gridOptions, cacheKey);
-      vm.grouping  = new Grouping(vm.gridOptions, false, vm.groupingDetail.initial);
+      vm.columns = new Columns(vm.gridOptions, null);
+      vm.grouping = new Grouping(vm.gridOptions, false);
       vm.gridOptions.columnDefs = columns;
       vm.gridOptions.data = vm.dataByTrans;
-      journalPostingModalService.postingModalService(vm.gridOptions);
+    })
+    .catch(function (err) {
+      console.log(err);
+      Notify.errorHandler(error);
     });
 
   vm.submit = submit;

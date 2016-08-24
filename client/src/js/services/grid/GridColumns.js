@@ -53,8 +53,10 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util) {
     });
 
     // if there is a cache defined, load it into the current view
-    if (Object.keys(cache).length > 0) {
-      this.setVisibleColumns(cache);
+    if(cache){
+      if (Object.keys(cache).length > 0) {
+        this.setVisibleColumns(cache);
+      }
     }
   }
 
@@ -85,7 +87,10 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util) {
   function Columns(gridOptions, cacheKey) {
 
     // set up local storage for selected grid columns
-    this.cache = AppCache(cacheKey + serviceKey);
+    if(cacheKey){
+      this.cache = AppCache(cacheKey + serviceKey);
+    }
+
 
     // bind access to the gridOptions
     this.gridOptions = gridOptions;
@@ -123,7 +128,10 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util) {
     });
 
     // store the selected columns in the cache
-    cacheColumnVisibility.call(this, columns);
+    if(this.cache){
+      cacheColumnVisibility.call(this, columns);
+    }
+
 
     // redraw the grid
     this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);

@@ -138,7 +138,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
    */
   function configureDefaultGroupingOptions(gridApi) {
 
-    //this instruction block can be executed if the grid involves selection functionnality
+    //this instruction block can be executed if the grid involves selection functionality
     if(gridApi.selection){
 
       // bind the group selection method
@@ -178,6 +178,13 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     unfoldAll(this.gridApi);
   }
 
+
+  // return the current grouping
+  function  getCurrentGroupingColumn () {
+    var groupingDetail = this.gridApi.grouping.getGrouping();
+    return groupingDetail.grouping[0].colName;
+  }
+
   /** return back the list of selected rows **/
 
   function getSelectedRows (){
@@ -199,6 +206,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     this.selectedRowCount = 0;
     this.getSelectedRows = getSelectedRows.bind(this);
     this.changeGrouping = changeGrouping.bind(this);
+    this.getCurrentGroupingColumn = getCurrentGroupingColumn.bind(this);
     this.column = column || 'trans_id';
     this.gridOptions = gridOptions;
 
@@ -209,6 +217,8 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
 
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
+
+
 
       // attach custom renderers
       configureDefaultAggregators(gridOptions.columnDefs);
