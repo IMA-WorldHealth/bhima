@@ -70,6 +70,9 @@
       "TITLE"              : "Select a Cashbox"
     },
     "TITLE"           : "Cash Window",
+    "RECEIPT": {
+      "SUCCESS" : "Successfully created a Cash Payment"
+    },
     "TRANSFER": {
       "TITLE" : "New Cash Transfer"
     },

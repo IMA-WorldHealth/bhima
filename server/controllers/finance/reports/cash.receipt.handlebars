@@ -15,11 +15,10 @@
     </div>
 
     <div class="col-xs-6 text-right">
-      <!-- this should have patient data in it -->
-        {{patient.first_name}} {{patient.middle_name}} {{patient.last_name}}<br>
-        {{translate "FORM.LABELS.PATIENT_ID"}}: {{patient.reference}}<br>
-        {{translate "FORM.LABELS.GROUPS_DEBTOR_TITLE"}}: {{patient.debtor_group_name}}<br>
-        {{translate "FORM.LABELS.HOSPITAL_FILE_NR"}}: {{patient.hospital_no}}
+      {{patient.first_name}} {{patient.middle_name}} {{patient.last_name}} <br />
+      {{patient.reference}} <br />
+      {{patient.hospital_no}} <br />
+      {{patient.debtor_group_name}}
     </div>
   </header>
 
@@ -39,7 +38,7 @@
     <tbody>
       {{#each payment.items as |item| }}
         <tr>
-          <td>{{item.invoice_uuid}}</td>
+          <td>{{item.reference}}</td>
           <td class="text-right">{{currency item.amount ../enterprise.currency_id}}</td>
         </tr>
       {{/each}}
@@ -47,7 +46,7 @@
     <tfoot>
       <tr>
         <th>{{translate "FORM.LABELS.TOTAL"}}</th>
-        <th class="text-right">{{currency payment.amount 1}}</th>
+        <th class="text-right">{{currency payment.amount payment.currency_id}}</th>
       </tr>
     </tfoot>
   </table>

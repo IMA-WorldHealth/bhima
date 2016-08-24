@@ -40,6 +40,7 @@ exports.update = update;
 /** searches for a cash payment's uuid by their human-readable reference */
 exports.reference = reference;
 
+/** lookup a cash payment by it's uuid */
 exports.lookup = lookup;
 
 // looks up a single cash record and associated cash_items
@@ -59,12 +60,14 @@ function lookup(id) {
     WHERE cash.uuid = ?;
   `;
 
-  const cashItemsRecordSql =
-    `SELECT BUID(cash_item.uuid) AS uuid, cash_item.amount, BUID(cash_item.invoice_uuid) as invoice_uuid
-    FROM cash_item WHERE cash_item.cash_uuid = ?;`;
-
-  const cashDiscardRecordSql =
-    'SELECT BUID(cash_uuid) AS uuid FROM cash_discard WHERE cash_uuid = ?;';
+  const cashItemsRecordSql = `
+    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid,
+      CONCAT(p.abbr, i.reference) AS reference
+    FROM cash_item AS ci
+      JOIN invoice AS i ON ci.invoice_uuid = i.uuid
+      JOIN project AS p ON i.project_id = p.id
+    WHERE ci.cash_uuid = ?;
+  `;
 
   return db.exec(cashRecordSql, [ bid ])
     .then(function (rows) {
@@ -83,62 +86,55 @@ function lookup(id) {
       // bind the cash items to the "items" property and return
       record.items = rows;
 
-      return db.exec(cashDiscardRecordSql, bid);
-    })
-    .then(function (rows) {
-
-      // if a linked cash_discard record exists, it means that this cash record
-      // has been reversed and we'll report that using a 'canceled' flag.
-      record.canceled = rows.length > 0;
-
       return record;
     });
 }
 
 /**
- * GET /cash
+ *
+ * @method list
+ *
+ * @description
  * Lists the cash payments with optional filtering parameters.
  *
- * @returns {array} payments - an array of { uuid, reference, date } JSONs
+ * GET /cash
+ *
+ * @returns {Array} payments - an array of { uuid, reference, date } JSONs
  */
 function list(req, res, next) {
   'use strict';
 
-  const sql =
-    `SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference,
+  const sql = `
+    SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference,
       cash.date, cash.amount
-    FROM cash JOIN project ON cash.project_id = project.id;`;
+    FROM cash JOIN project ON cash.project_id = project.id;
+  `;
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
+ * @method detail
+ *
+ * @description
  * GET /cash/:uuid
  *
- * Get the details of a particular cash payment.  This endpoint will return a
- * record in the following format:
- * {
- *   uuid : "..",
- *   items : [ {}, {} ]    // items hitting invoices, if applicable
- *   is_caution : true/false,
- *   canceled: true/false, // indicates if a cash_discard record exists
- *   ...
- *  }
+ * Get the details of a particular cash payment.
  */
 function detail(req, res, next) {
   'use strict';
 
   lookup(req.params.uuid)
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(function (record) {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 
