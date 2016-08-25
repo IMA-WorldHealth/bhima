@@ -17,7 +17,6 @@ const core = require('./core');
 const uuid = require('node-uuid');
 const journal = require('../journal/voucher');
 const NotFound   = require('../../../lib/errors/NotFound');
-const BadRequest = require('../../../lib/errors/BadRequest');
 const _ = require('lodash');
 
 // expose to the api
@@ -31,7 +30,6 @@ exports.reverse = reverse;
  * @param {String} trans_id - the transaction ID
  * @returns {Promise} object - a promise resolvinng to the part of transaction object.
  */
-
 function lookupTransaction(trans_id) {
   'use strict';
 
@@ -74,7 +72,6 @@ function lookupTransaction(trans_id) {
       return rows;
     });
 }
-
 
 // Create Reverse Transaction for Credit Note
 function createReverseTransaction(uid, userId, creditNote) {
@@ -166,12 +163,14 @@ function list(req, res, next) {
   .catch(next);
 }
 
-
 /**
  * GET /journal/:trans_id
  * send back a set of lines which belong to the transaction : trans_id
  */
 function getTransaction (req, res, next){
+
+  let trans_id = req.params.trans_id;
+
   let sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
@@ -193,14 +192,13 @@ function getTransaction (req, res, next){
     ORDER BY p.trans_date DESC;
     `;
 
-  lookupTransaction(req.params.trans_id)
+  lookupTransaction(trans_id)
     .then(function (transaction) {
       res.status(200).json(transaction);
     })
     .catch(next)
     .done();
 }
-
 
 /**
  * POST /journal/:UUID/reverse

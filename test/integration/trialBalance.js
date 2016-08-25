@@ -7,7 +7,7 @@ const uuid = require('node-uuid');
 /*
  * The /trial_balance API endpoint
  */
-describe.only('(/trial) API endpoint', function () {
+describe('(/trial) API endpoint', function () {
 
   /**
    * object containing different format of transaction to send to the
@@ -17,13 +17,11 @@ describe.only('(/trial) API endpoint', function () {
     goodTransaction : { params : { transactions : ['TRANS1', 'TRANS2'] }, number : 2},
     unknownTransactions : { params : { transactions : ['TS1', 'TS2'] }, number : 0},
     badParam : { params : { transactions : 'bad request' }, code : 400},
-    emptyparam : { params : { transactions : null }, code : 400},
+    emptyParam : { params : { transactions : null }, code : 400},
     warningTransaction : {params : {transactions : ['TRANS1']}},
     errorTransaction : {params : {transactions : ['TRANS5']}},
     postingTransaction : {params : {transactions : ['TRANS1']}}
   };
-
-  // const responseKeys = ['uuid', 'code', 'text', 'basic_salary'];
 
   it('GET /trial_balance/data_per_account : it returns data grouped by account ', function () {
     return agent.get('/trial_balance/data_per_account')
@@ -54,9 +52,9 @@ describe.only('(/trial) API endpoint', function () {
 
   it('GET /trial_balance/data_per_account : it returns an error message and 400 code if the request parameter is null or undefined ', function () {
     return agent.get('/trial_balance/data_per_account')
-      .query(transactionParameter.emptyparam.params)
+      .query(transactionParameter.emptyParam.params)
       .then(function (res) {
-        helpers.api.errored(res, transactionParameter.emptyparam.code);
+        helpers.api.errored(res, transactionParameter.emptyParam.code);
       })
       .catch(helpers.handler);
   });

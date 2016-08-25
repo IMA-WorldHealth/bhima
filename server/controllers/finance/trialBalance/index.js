@@ -284,6 +284,12 @@ exports.getDataPerAccount = function (req, res, next) {
 exports.checkTransactions = function (req, res, next) {
   var transactions =  req.body.transactions;
 
+  if(!transactions){ return next(new BadRequest('The transaction list is null or undefined'));}
+
+  if(!Array.isArray(transactions)){
+    return next(new BadRequest('The query is bad formatted'));
+  }
+
   return q.all([
     checkSingleLineTransaction(transactions), checkTransactionsBalanced(transactions), checkAccountsLocked(transactions),
     checkMissingAccounts(transactions), checkPeriodAndFiscalYearExists(transactions), checkDateInPeriod(transactions),
@@ -308,8 +314,16 @@ exports.postToGeneralLedger = function (req, res, next) {
   'use strict';
   var transaction =  db.transaction();
 
+  var transactions = req.body.transactions;
+
+  if(!transactions){ return next(new BadRequest('The transaction list is null or undefined'));}
+
+  if(!Array.isArray(transactions)){
+    return next(new BadRequest('The query is bad formatted'));
+  }
+
   //Just a workaround because mysql does not have a type for array
-  var transactionString = req.body.transactions.map(function (trans_id) {
+  var transactionString = transactions.map(function (trans_id) {
     return '"' + trans_id + '"';
   }).join(',');
 
