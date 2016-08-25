@@ -211,11 +211,16 @@ function document(req, res, next) {
 
   let session = {}, params = req.query;
 
+  let pageOptions = {
+    orientation: 'landscape',
+    lang: params.lang
+  };
+
   processingCashflowReport(params)
   .then(reporting)
   .then(labelization)
   .then(() => {
-    return rm.build(req, session, './server/controllers/finance/reports/cashflow.report.handlebars');
+    return rm.build(req, session, './server/controllers/finance/reports/cashflow.report.handlebars', pageOptions);
   })
   .spread((document, headers) => {
     res.set(headers).send(document);
@@ -427,7 +432,7 @@ function document(req, res, next) {
     session.summationIncome[period] = [];
     session.summationExpense[period] = [];
 
-    // pick the cashbox account name 
+    // pick the cashbox account name
     session.accountName = !session.accountName && incomes.length ? incomes[0].label :
       !session.accountName && expenses.lenght ? expenses[0].label : session.accountName;
 

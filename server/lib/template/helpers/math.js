@@ -4,6 +4,10 @@ function add(a, b) {
   return a + b;
 }
 
+function substract(a, b) {
+  return a - b;
+}
+
 function multiply(a, b) {
   return a * b;
 }
@@ -38,3 +42,4 @@ function sum(array, column, ponderation) {
 exports.multiply = multiply;
 exports.add = add;
 exports.sum = sum;
+exports.substract = substract;

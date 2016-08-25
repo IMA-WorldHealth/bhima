@@ -23,8 +23,7 @@ const config = {
       reportName: 'mochawesome-end-to-end',
       reportTitle: 'Bhima End to End Tests',
       takePassedScreenshot: false,
-      clearOldScreenshots: true,
-      inlineAssets: true,
+      clearOldScreenshots: true
     },
     timeout : 30000
   },

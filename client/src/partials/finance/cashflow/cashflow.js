@@ -7,7 +7,7 @@
   // dependencies injection
   CashflowController.$inject = [
     'CashboxService', 'CashflowService', 'NotifyService', 'DateService',
-    'ExchangeRateService', 'VoucherService', 'ModalService'
+    'ExchangeRateService', 'VoucherService', 'ModalService', 'LanguageService'
   ];
 
   /**
@@ -17,7 +17,7 @@
    * This controller is responsible of cash flow report, that report include
    * all incomes minus all depenses
    */
-  function CashflowController(Cashbox, Cashflow, Notify, Dates, Exchange, Voucher, Modal) {
+  function CashflowController(Cashbox, Cashflow, Notify, Dates, Exchange, Voucher, Modal, Languages) {
     var vm = this, session = vm.session = {};
 
     // global variables
@@ -44,7 +44,8 @@
       var params = {
         account_id: [vm.cashbox.account_id],
         dateFrom: Dates.util.str(vm.dateFrom),
-        dateTo: Dates.util.str(vm.dateTo)
+        dateTo: Dates.util.str(vm.dateTo),
+        lang: Languages.key
       };
       Cashflow.read(null, params)
       .then(reporting)
@@ -57,7 +58,8 @@
       var params = {
         account_id: [vm.cashbox.account_id],
         dateFrom: Dates.util.str(vm.dateFrom),
-        dateTo: Dates.util.str(vm.dateTo)
+        dateTo: Dates.util.str(vm.dateTo),
+        lang: Languages.key
       };
       Modal.openReports({ url: '/finance/cashflow/document', params: params, renderer: 'pdf' });
     }
