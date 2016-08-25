@@ -199,8 +199,8 @@ function LocationModalController(Locations, Instance, AppCache) {
         return;
     }
 
-    promise.then(function (data) {
-      Instance.close(data);
+    return promise.then(function (data) {
+      return Instance.close(data);
     })
     .catch(function (error) {
       vm.error = error;

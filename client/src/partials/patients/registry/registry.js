@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('PatientRegistryController', PatientRegistryController);
+  .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
   'PatientService', 'NotifyService', 'moment', 'AppCache', 'util'

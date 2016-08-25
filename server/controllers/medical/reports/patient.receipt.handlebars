@@ -1,43 +1,20 @@
-<head>
-  <title>{{patient.first_name}} {{patient.middle_name}} {{patient.last_name}}</title>
-  <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet"/>
-  <link href="{{absolutePath}}/css/style.min.css" rel="stylesheet"/>
-  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet"/>
-</head>
+{{> head title="PATIENT_REG.CARD" }}
 
-<div class="container">
+<body class="container">
   <div class="row">
     <div class="col-xs-8">
       <h2>
-        <strong> {{patient.first_name}} {{patient.middle_name}}  {{patient.last_name}} </strong>
+        <strong>{{patient.first_name}} {{patient.middle_name}}  {{patient.last_name}}</strong>
       </h2>
     </div>
     <div class="col-xs-4" style="text-align:right;">
       <h2>
-        <strong> {{patient.reference}} </strong>
+        <strong>{{patient.reference}}</strong>
       </h2>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xs-12">
-      <h4> <strong> {{patient.enterprise_name}} </strong> </h4>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-xs-12">
-      <h4> <strong> {{translate "TABLE.COLUMNS.REGISTERED_ON"}} {{date patient.registration_date }} </strong> </h4>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-xs-7">
-      <h4> <strong> <i class="fa fa-{{patient.symbol}}"></i> {{date patient.dob }} </strong> </h4>
-    </div>
-    <div class="col-xs-5">
-     
-    </div>
-  </div>
-
-</div> 
+  <h4>{{patient.enterprise_name}}</h4>
+  <h4>{{translate "TABLE.COLUMNS.REGISTERED_ON"}} {{date patient.registration_date }}</h4>
+  <h4><i class="fa fa-{{patient.symbol}}"></i> {{date patient.dob }}</h4>
+</body>
