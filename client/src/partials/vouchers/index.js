@@ -38,11 +38,14 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     },
     { icon: 'fa fa-search', label: $translate.instant('FORM.LABELS.SEARCH'),
       action: search, color: 'btn-default'
-    },
-    { icon: 'fa fa-print', label: $translate.instant('FORM.LABELS.PRINT'),
-      action: printList, color: 'btn-default'
     }
   ];
+
+  /** button Print */
+  vm.buttonPrint = { 
+    pdfUrl: '/vouchers/reports'
+  };
+  
 
   /** search filters */
   vm.searchFilter = [
@@ -151,15 +154,6 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       vm.gridOptions.data = list;
     })
     .catch(Notify.errorHandler);
-  }
-
-  // print vouchers list
-  function printList() {
-    var dateFrom = vm.dateInterval ? vm.dateInterval.dateFrom: null;
-    var dateTo = vm.dateInterval ? vm.dateInterval.dateTo : null;
-    var url = '/vouchers/reports';
-    var params = { dateFrom: dateFrom, dateTo: dateTo, renderer: 'pdf', lang: Languages.key };
-    Modal.openReports({ url: url, params: params });
   }
 
   // showReceipt

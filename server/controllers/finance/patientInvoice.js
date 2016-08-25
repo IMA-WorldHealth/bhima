@@ -22,6 +22,7 @@ const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 const createInvoice = require('./invoice/patientInvoice.create');
+const listReceipt = require('../finance/receipts/list');
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
@@ -42,6 +43,14 @@ exports.reference = reference;
 
 /** Expose lookup invoice for other controllers to use internally */
 exports.lookupInvoice = lookupInvoice;
+
+
+exports.getPatientInvoice = getPatientInvoice;
+
+
+/** Undo the financial effects of a invoice generating an equal and opposite credit note. */
+// exports.reverse = reverse;
+
 
 /**
  * list
@@ -289,4 +298,46 @@ function reference(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+
+/**
+* GET /invoices/patient/report
+* Returns a pdf file for Patient Invoice
+*
+* @function getPatientInvoice
+*/
+function getPatientInvoice(req, res, next) {
+  const request = {
+    query : req.query,
+    enterprise : req.session.enterprise,
+    project : req.session.project
+  };
+
+  let invoiceListQuery =
+    `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
+      BUID(invoice.debtor_uuid) as debtor_uuid, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames,
+      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id,
+      invoice.date, invoice.is_distributable
+    FROM invoice
+      LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
+      JOIN service ON service.id = invoice.service_id
+      LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
+      JOIN user ON user.id = invoice.user_id
+      JOIN project ON invoice.project_id = project.id
+    ORDER BY invoice.reference ASC, invoice.date ASC;`;
+
+  db.exec(invoiceListQuery)
+  .then(rows => listReceipt.build(rows, request))
+  .then(result => {
+    const renderer = {
+      'pdf'  : '"Content-Type" : "application/pdf"',
+      'html' : '"Content-Type" : "application/html"',
+      'json' : '"Content-Type" : "application/json"'
+    };
+    let headerKey = req.query.renderer || 'pdf';
+    let headers = renderer[headerKey];
+    res.set(headers).send(result);
+  })
+  .catch(next);
 }

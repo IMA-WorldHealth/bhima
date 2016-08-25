@@ -4,7 +4,8 @@ angular.module('bhima.components')
     path: '<',
     button: '<',
     label: '<',
-    dropdown: '<'
+    dropdown: '<',
+    print : '<'
   },
   templateUrl  : 'partials/templates/breadcrumb.tmpl.html',
   controller   : BreadcrumbController,
@@ -97,6 +98,9 @@ function BreadcrumbController() {
    * ];
    */
   vm.bcDropdowns = vm.dropdown || [];
+
+
+  vm.buttonPrint = vm.print || [];
 
 
   /** call the appropriate function and update the dropdown label **/
