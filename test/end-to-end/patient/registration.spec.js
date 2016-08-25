@@ -8,7 +8,7 @@ const components = require('../shared/components');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('patient registration', function () {
+describe('Patient Registration', function () {
   'use strict';
 
   const path = '#/patients/register';
@@ -45,7 +45,7 @@ describe('patient registration', function () {
     components.locationSelect.set(helpers.data.locations, 'current-location-id');
 
     // set the debtor group
-    FU.select('PatientRegCtrl.finance.debtor_group_uuid', 'Second Test Debtor Group');
+    FU.uiSelect('PatientRegCtrl.finance.debtor_group_uuid', 'Second Test Debtor Group');
 
     // submit the patient registration form
     FU.buttons.submit();
@@ -54,10 +54,10 @@ describe('patient registration', function () {
   });
 
   it('correctly updates date of birth given a valid year of birth', function () {
-    var validYear = '2000';
+    const validYear = '2000';
     FU.input('PatientRegCtrl.yob', validYear);
 
-    var calculatedDOB = element(by.model('PatientRegCtrl.medical.dob')).getText();
+    const calculatedDOB = element(by.model('PatientRegCtrl.medical.dob')).getText();
 
     expect(calculatedDOB).to.be.defined;
     expect(calculatedDOB).to.not.be.empty;
@@ -84,16 +84,15 @@ describe('patient registration', function () {
       FU.validation.error('PatientRegCtrl.medical.dob');
 
       // first name and title are optional
-      FU.validation.ok('PatientRegCtrl.medical.first_name');
       FU.validation.ok('PatientRegCtrl.medical.title');
 
       components.notification.hasDanger();
     });
 
     it('alerts for minimum and maximum dates', function () {
-      var testMaxYear = '9000';
-      var validYear = '2000';
-      var testMinYear = '1000';
+      const testMaxYear = '9000';
+      const validYear = '2000';
+      const testMinYear = '1000';
 
 
       FU.input('PatientRegCtrl.yob', testMaxYear);

@@ -1,14 +1,15 @@
 angular.module('bhima.controllers')
-.controller('PatientRegistrationController', PatientRegistrationController);
+  .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$location', 'PatientService', 'DebtorService', 'SessionService', 'util',
+  'PatientService', 'DebtorService', 'SessionService', 'util',
   'NotifyService', 'ReceiptModal', 'ScrollService', 'bhConstants'
 ];
 
 /**
  * Patient Registration Controller
  *
+ * @description
  * This controller is responsible for collecting data and providing utility
  * methods for the patient registration client side module. It provides basic
  * methods for handling dates of birth as well as wrappers to communicate with
@@ -16,24 +17,19 @@ PatientRegistrationController.$inject = [
  *
  * @module controllers/PatientRegistrationController
  */
-function PatientRegistrationController($location, Patients, Debtors, Session, util, Notify, Receipts, ScrollTo, bhConstants) {
+function PatientRegistrationController(Patients, Debtors, Session, util, Notify, Receipts, ScrollTo, bhConstants) {
   var vm = this;
 
   vm.submit = submit;
   vm.enableFullDate = enableFullDate;
   vm.calculateYOB = calculateYOB;
 
-  // maxlength field for Patient Registration
   vm.maxLength = bhConstants.lengths.maxTextLength;
-  vm.length150 = util.length150;
-  vm.length100 = util.length100;
-  vm.length50 = util.length50;
-  vm.length30 = util.length30;
 
   // Set up page elements data (debtor select data)
   Debtors.groups()
-    .then(function (results) {
-      vm.debtorGroups = results;
+    .then(function (debtorGroups) {
+      vm.debtorGroups = debtorGroups;
     })
     .catch(Notify.handleError);
 
@@ -43,14 +39,13 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
     minDate : bhConstants.dates.minDOB
   };
 
-  settupRegistration();
+  setupRegistration();
 
   function submit(RegistrationForm) {
 
+    // end propagation for invalid state - this could scroll to an $invalid element on the form
     if (RegistrationForm.$invalid) {
-      // end propagation for invalid state - this could scroll to an $invalid element on the form
-      Notify.danger('FORM.ERRORS.INVALID');
-      return;
+      return Notify.danger('FORM.ERRORS.INVALID');
     }
 
     return Patients.create(vm.medical, vm.finance)
@@ -60,14 +55,14 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
         // reset form state
         RegistrationForm.$setPristine();
         RegistrationForm.$setUntouched();
-        settupRegistration();
+        setupRegistration();
 
         ScrollTo('anchor');
       })
       .catch(Notify.handleError);
   }
 
-  function settupRegistration() {
+  function setupRegistration() {
     vm.finance = {};
     vm.medical = {};
 
@@ -86,6 +81,8 @@ function PatientRegistrationController($location, Patients, Debtors, Session, ut
   }
 
   function calculateYOB(value) {
-    vm.medical.dob = value && value.length === 4 ? new Date(value + '-' + util.defaultBirthMonth) : undefined;
+    vm.medical.dob = (value && value.length === 4) ?
+      new Date(value + '-' + util.defaultBirthMonth) :
+      undefined;
   }
 }

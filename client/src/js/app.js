@@ -50,24 +50,11 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'ServicesController as ServicesCtrl',
     templateUrl : 'partials/services/services.html'
   })
-  /**
-   * @fixme - this is to allow end to end testing of the patient invoice module
-   * @todo - replace this with a real receipt.
-   */
-  .state('invoiceMessage', {
-    url : '/invoice/sale/:invoiceId',
-    template: '<div id="temp-success-message">Successfully created a patient invoice!</div>'
-  })
 
   .state('invoiceRegistry', {
     url  : '/invoices',
     controller: 'InvoiceRegistryController as InvoiceRegistryCtrl',
     templateUrl: '/partials/patient_invoice/registry/registry.html'
-  })
-  .state('invoice', {
-    url : '/invoice/:originId/:invoiceId',
-    controller: 'receipts',
-    templateUrl: 'partials/receipts/receipts.html'
   })
   .state('configBilan', {
     url: '/section_bilan',
@@ -317,14 +304,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl: 'partials/price_list/pricelist.html'
   })
 
-  /* invoices routes */
-  // .state('invoices', {
-  //   url : '/invoices',
-  //   controller: 'invoices',
-  //   templateUrl: '/partials/invoices/invoices.html'
-  // })
-
-
   /* creditor routes */
 
   .state('suppliers', {
@@ -335,68 +314,11 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
 
   /* purchase routes */
 
-
   .state('purchasesCreate', {
     url : '/purchases/create',
     controller : 'PurchaseOrderController as PurchaseCtrl',
     templateUrl : 'partials/purchases/create/create.html'
   })
-
-  /* patients routes */
-
-  .state('patientsRegister', {
-    url : '/patients/register',
-    controller: 'PatientRegistrationController as PatientRegCtrl',
-    templateUrl: 'partials/patients/registration/registration.html'
-  })
-
-  /* Patient Edit */
-  .state('patientEdit', {
-    url : '/patients/:uuid/edit',
-    controller: 'PatientEdit as PatientEditCtrl',
-    templateUrl: 'partials/patients/edit/edit.html'
-  })
-
-  .state('patientDocuments', {
-    url    : '/patients/:patient_uuid/documents',
-    controller  : 'PatientDocumentsController as PatientDocCtrl',
-    templateUrl : 'partials/patients/documents/documents.html'
-  })
-
-  /* Patient Invoicing */
-  .state('patientInvoice', {
-    url : '/invoices/patient',
-    controller : 'PatientInvoiceController as PatientInvoiceCtrl',
-    templateUrl : 'partials/patient_invoice/patientInvoice.html'
-  })
-
-  .state('patientRegistry', {
-    url  : '/patients',
-    controller: 'PatientRegistryController as PatientRegistryCtrl',
-    templateUrl: '/partials/patients/registry/registry.html'
-  })
-  .state('patientGroups', {
-    url : '/patients/groups',
-    controller: 'PatientGroupController as PatientGroupCtrl',
-    templateUrl: 'partials/patients/groups/groups.html'
-  })
-
-  /* Patient record */
-  .state('patientRecord', {
-    abstract : true,
-    url : '/patients/:patientID',
-    templateUrl: 'partials/patients/record/patient_record.html',
-    controller: 'PatientRecordController as PatientRecordCtrl'
-  })
-    .state('patientRecord.details', {
-      url : '',
-      views : {
-        'checkin@patientRecord' : {
-          templateUrl : 'partials/patients/record/units/checkin.html',
-          controller : 'CheckInController as CheckInCtrl'
-        }
-      }
-    })
 
   /* cashflow */
   .state('cashflow', {
@@ -506,7 +428,9 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     var currentPath = $location.$$path;
     var paths = SessionService.path;
 
-    if(paths && currentPath !== '/' && currentPath !=='/settings' && currentPath !== '/login' && currentPath !== '/error404'){
+    var publicRoutes = ['/', '/settings', '/login', '/error404', '/error403'];
+
+    if (paths && publicRoutes.indexOf(currentPath) === -1) {
       var authorized = paths.some(function (data) {
         return currentPath.indexOf(data.path) === 0;
       });
