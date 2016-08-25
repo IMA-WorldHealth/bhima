@@ -7,7 +7,7 @@
 var db = require('../../lib/db');
 var NotFound = require('../../lib/errors/NotFound');
 
-// export list for server side 
+// export list for server side
 exports.exchangeRateList = exchangeRateList;
 
 // GET /exchange
@@ -37,7 +37,7 @@ function exchangeRateList(enterpriseId) {
     JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
     WHERE exchange_rate.enterprise_id = ?
     ORDER BY date;`;
-  return db.exec(sql, [ enterpriseId ])
+  return db.exec(sql, [enterpriseId]);
 }
 
 // POST /exchange

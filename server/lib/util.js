@@ -17,7 +17,7 @@ module.exports.sqlDate = sqlDate;
 /**
  * @function sqlDate
  * @param {date} date A date
- * @return {string} 
+ * @return {string}
  * @description convert a date in 'yyyy-mm-dd' format
  */
 function sqlDate(date) {
@@ -34,7 +34,7 @@ function sqlDate(date) {
   if (day.length < 2) { day = '0' + day; }
 
   return [year, month, day].join('-');
-};
+}
 
 /**
  * @function queryCondition

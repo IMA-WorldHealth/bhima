@@ -17,7 +17,7 @@ describe('Cashflow report generator :: ', () => {
     // set report configurations
     // date interval component admit date in this format : dd/MM/yyyy
     components.dateInterval.range('01/01/2016', '31/12/2016');
-    FU.select('ReportCtrl.cashbox', 'Cashbox A $');
+    FU.select('ReportCtrl.cashbox', 'Cashbox $');
     FU.buttons.submit();
 
     // cashflow report

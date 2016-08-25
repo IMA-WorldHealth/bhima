@@ -13,6 +13,9 @@
  * @requires lib/errors/BadRequest
  * @requires finance/journal/cash
  */
+
+'use strict';
+
 const uuid = require('node-uuid');
 const db   = require('../../lib/db');
 const util = require('../../lib/util');
@@ -29,9 +32,7 @@ exports.document = document;
  * @desc This function is responsible of generating the cashflow data for the report
  */
 function report (req, res, next) {
-  'use strict';
-
-  var params = req.query;
+  let params = req.query;
 
   processingCashflowReport(params)
   .then(result => {
@@ -42,8 +43,6 @@ function report (req, res, next) {
 
 /** processingCashflowReport */
 function processingCashflowReport(params) {
-  'use strict';
-
   let glb = {};
 
   // get all periods for the the current fiscal year
@@ -208,7 +207,6 @@ function getPeriods(dateFrom, dateTo) {
  * @description process and render the cashflow report document
  */
 function document(req, res, next) {
-
   let session = {}, params = req.query;
 
   let pageOptions = {
