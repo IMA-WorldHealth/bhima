@@ -40,6 +40,13 @@
         </button>
       </div>
 
+      <!-- buttons Print -->
+      <div class="toolbar-item btn-group btn-group-sm" ng-if="vm.buttonPrint.pdfUrl">
+        <bh-pdf-print
+          pdf-url="{{ vm.buttonPrint.pdfUrl }}">
+        </bh-pdf-print>
+      </div>
+
       <!-- labels -->
       <div class="toolbar-item" ng-if="vm.bcLabels.length">
         <label ng-repeat="l in vm.bcLabels" id="{{ vm.prefix + l.id }}" data-method="{{ l.dataMethod }}">

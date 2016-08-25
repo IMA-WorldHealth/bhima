@@ -33,11 +33,14 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     { icon: 'fa fa-plus', label: $translate.instant('FORM.LABELS.ADD'),
       action: addInventoryItem, color: 'btn-default',
       dataMethod: 'create'
-    },
-    { icon: 'fa fa-print', label: $translate.instant('FORM.LABELS.PRINT'),
-      action: printList, color: 'btn-default'
     }
   ];
+
+  /** button Print */
+  vm.buttonPrint = { 
+    pdfUrl: '/inventory/reports/metadata'
+  };
+
 
   // edit button template
   var editTemplate = '<div style="padding: 5px;">' +
@@ -89,7 +92,6 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   vm.addInventoryItem  = addInventoryItem;
   vm.editInventoryItem = editInventoryItem;
   vm.toggleFilter      = toggleFilter;
-  vm.printList = printList;
 
   /** initial setting start */
   startup();
@@ -124,11 +126,6 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
     vm.bcButtons[0].color = vm.filterEnabled ? 'btn-default active' : 'btn-default';
     vm.gridOptions.enableFiltering = vm.filterEnabled;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
-  }
-
-  /** print inventory list */
-  function printList() {
-    Modal.openReports({ url: '/inventory/reports/metadata', renderer: 'pdf' });
   }
 
   /** startup */
