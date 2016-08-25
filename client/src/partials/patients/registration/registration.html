@@ -65,7 +65,7 @@
                     ng-class="{'has-error' : DetailForm.firstName.$invalid && PatientRegistrationForm.$submitted}">
                     <label class="col-md-3 control-label">{{ "FORM.LABELS.FIRST_NAME" | translate }}</label>
                     <div class="col-md-9">
-                      <input class="form-control" name="firstName" ng-model="PatientRegCtrl.medical.first_name">
+                      <input class="form-control" name="firstName" ng-model="PatientRegCtrl.medical.first_name" required>
                       <div class="help-block" ng-messages="DetailForm.firstName.$error" ng-show="PatientRegistrationForm.$submitted">
                         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                       </div>
@@ -225,7 +225,7 @@
                 </div>
 
               <div class="panel-footer text-right">
-                <bh-loading-button loading-state="DetailForm.$loading">
+                <bh-loading-button loading-state="PatientRegistrationForm.$loading">
                   {{ "FORM.BUTTONS.REGISTER_PATIENT" | translate }}
                 </bh-loading-button>
               </div>

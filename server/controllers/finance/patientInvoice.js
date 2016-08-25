@@ -43,9 +43,6 @@ exports.reference = reference;
 /** Expose lookup invoice for other controllers to use internally */
 exports.lookupInvoice = lookupInvoice;
 
-/** Undo the financial effects of a invoice generating an equal and opposite credit note. */
-// exports.reverse = reverse;
-
 /**
  * list
  *
