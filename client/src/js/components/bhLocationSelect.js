@@ -78,7 +78,7 @@ function LocationSelectController(Locations, $scope, $timeout) {
    * variable.
    *
    * This is a convenience method as the controller is available to the $scope
-   * thorugh the $ctrl variable. It translates the template from:
+   * through the $ctrl variable. It translates the template from:
    *
    * `this[$ctrl.name].formVariable`
    *

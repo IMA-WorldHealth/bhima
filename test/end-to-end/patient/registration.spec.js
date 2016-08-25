@@ -84,7 +84,6 @@ describe('Patient Registration', function () {
       FU.validation.error('PatientRegCtrl.medical.dob');
 
       // first name and title are optional
-      FU.validation.ok('PatientRegCtrl.medical.first_name');
       FU.validation.ok('PatientRegCtrl.medical.title');
 
       components.notification.hasDanger();

@@ -1,4 +1,4 @@
-<ng-form name="LocationModalForm" data-location-modal bh-form-defaults novalidate>
+<form name="LocationModalForm" bh-submit="LocationModalCtrl.submit(LocationModalForm.$invalid)" data-location-modal bh-form-defaults novalidate>
   <div class="modal-header">
     <h4>{{ "FORM.LABELS.CONFIRMATION" | translate }}</h4>
   </div>
@@ -114,7 +114,7 @@
     </div>
 
     <p class="text-danger" ng-show="LocationModalForm.$submitted && LocationModalForm.$invalid">
-      <span class="glyphicon glyphicon-exclamation-sign"></span>
+      <span class="fa fa-warning"></span>
       {{ "FORM.ERRORS.GENERIC" | translate }}
     </p>
   </div>
@@ -122,14 +122,12 @@
 
   <div class="modal-footer">
     <!-- @todo - why does this not set the submitted state automatically? -->
-    <button
-      type="submit"
-      class="btn btn-primary"
-      ng-click="LocationModalCtrl.submit(LocationModalForm.$invalid); LocationModalForm.$setSubmitted();">
+    <bh-loading-button
+      loading-state="LocationModalForm.$loading">
       {{ "FORM.BUTTONS.SUBMIT" | translate }}
-    </button>
+    </bh-loading-button>
     <button type="button" ng-click="LocationModalCtrl.dismiss()" class="btn btn-default">
       {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
   </div>
-</ng-form>
+</form>
