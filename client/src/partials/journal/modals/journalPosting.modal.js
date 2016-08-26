@@ -91,7 +91,7 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
    */
   function openErrorViewerModal () {
     journalPostingModalService.openErrorViewerModal(vm.errors, vm.feedBack, vm.cssClass);
-  };
+  }
 
   journalPostingModalService.checkTransactions(vm.dataByTrans)
     .then(function(errors) {
@@ -114,8 +114,7 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
       vm.gridOptions.data = vm.dataByTrans;
     })
     .catch(function (err) {
-      console.log(err);
-      Notify.errorHandler(error);
+      Notify.errorHandler(err);
     });
 
   vm.submit = submit;
