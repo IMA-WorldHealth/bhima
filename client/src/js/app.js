@@ -460,6 +460,9 @@ function constantConfig() {
     purchase : {
       GRID_HEIGHT: 200
     },
+    settings: {
+      CONTACT_EMAIL : 'developers@imaworldhealth.org'
+    },
     dates : {
       minDOB : new Date('1900-01-01'),
       maxDOB : new Date(),
