@@ -31,7 +31,6 @@ exports.reverse = reverse;
  * @returns {Promise} object - a promise resolvinng to the part of transaction object.
  */
 function lookupTransaction(trans_id) {
-  'use strict';
 
   let sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,

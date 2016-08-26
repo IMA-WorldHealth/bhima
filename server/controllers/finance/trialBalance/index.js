@@ -221,8 +221,6 @@ function checkSingleLineTransaction (transactions){
 }
 
 exports.getDataPerAccount = function (req, res, next) {
-  'use strict';
-
   var transactions = req.query.transactions;
 
   var requestString =
@@ -307,7 +305,6 @@ exports.checkTransactions = function (req, res, next) {
  * It posts data to the general ledger.
  **/
 exports.postToGeneralLedger = function (req, res, next) {
-  'use strict';
   var transaction =  db.transaction();
 
   var transactions = req.body.transactions;
