@@ -18,7 +18,11 @@ function VoucherService(Api, $http, util) {
   // @tdoo - remove this reference to baseUrl
   var baseUrl = '/journal/';
 
-  // transfer type
+  /**
+   * transfer type
+   * @deprecated use transactionType in place...
+   * @todo remove securely this array i.e. be sure that no module use this element
+   */
   service.transferType = [
     { id: 0, text: 'VOUCHERS.SIMPLE.GENERIC_INCOME', incomeExpense: 'income', prefix: 'REC. GEN' },
     { id: 1, text: 'VOUCHERS.SIMPLE.CASH_PAYMENT', incomeExpense: 'income', prefix: 'CASH' },
@@ -35,6 +39,7 @@ function VoucherService(Api, $http, util) {
   service.createSimple = createSimple;
   service.create = create;
   service.reverse = reverse;
+  service.transactionType = transactionType;
 
   /**
    * Wraps the prototype create method.
@@ -87,6 +92,14 @@ function VoucherService(Api, $http, util) {
    */
   function reverse(creditNote) {
     return $http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
+      .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * This function returns transaction type from the db
+   */
+  function transactionType() {
+    return $http.get('/transaction_type')
       .then(util.unwrapHttpResponse);
   }
 

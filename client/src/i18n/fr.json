@@ -464,6 +464,7 @@
       "POSITION"               : "Position",
       "POST_OFFICE_BOX"        : "Boîte Postale",
       "PO_BOX"                 : "BP",
+      "PREFIX"                 : "Prefix",
       "PREVIOUS_DATE"          : "Date precedente",
       "PRICE"                  : "Prix",
       "PRICE_LIST"             : "Liste de Prix",
@@ -507,6 +508,7 @@
       "SUPPLIER"               : "Fournisseur",
       "TEL"                    : "Tél",
       "TELEPHONE"              : "Téléphone",
+      "TEXT"                   : "Texte",
       "THIS_MONTH"             : "Ce Mois",
       "THIS_WEEK"              : "Cette Semaine",
       "THIS_YEAR"              : "Cetter Année",
@@ -564,6 +566,7 @@
       "PROVINCE"     : "Enter province",
       "SECTOR"       : "Entrer secteur",
       "SUPPLIER"     : "Entrer le fournisseur",
+      "TYPE"         : "Entrer le type",
       "UNIT_WEIGHT"  : "Entrer le poids",
       "UNIT_VOLUME"  : "Entrer le volume",
       "USERNAME"     : "Entrer le nom utilisateur",
@@ -604,6 +607,7 @@
       "SERVICE"            : "Sélectionner un Service",
       "SEX"                : "Sélectionner le sexe",
       "TRANSFER_TYPE"      : "Sélectionner le type de transfert",
+      "TYPE"               : "Sélectionner un type",
       "USER"               : "Selectionner Utilisateur",
       "VILLAGE"            : "Sélectionner village",
       "ZS"                 : "Sélectionner zone de sante"
@@ -1045,6 +1049,9 @@
       "VILLAGE"            : "Village"
     }
   },
+  "TRANSACTION_TYPE" : {
+    "LIST" : "Liste des types de transaction"
+  },
   "TREE": {
     "ACCOUNT"                    : "Comptes",
     "ADMIN"                      : "Admin",
@@ -1100,6 +1107,7 @@
     "SERVICE"                    : "Services",
     "SIMPLE_VOUCHER"             : "Bordereau de transfert",
     "STOCK"                      : "Stock",
+    "TRANSACTION_TYPE"           : "Types de Transaction",
     "USERS"                      : "Utilisateurs",
     "VOUCHER_REGISTRY"           : "Registre des Bordereaux"
   },

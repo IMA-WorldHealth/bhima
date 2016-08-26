@@ -313,7 +313,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* purchase routes */
-
   .state('purchasesCreate', {
     url : '/purchases/create',
     controller : 'PurchaseOrderController as PurchaseCtrl',
@@ -331,6 +330,14 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'cash.cashbox_account',
     templateUrl : 'partials/cash/cashboxes/currencies/currencies.html'
   })
+
+  /* transaction type */
+  .state('transactionType', {
+    url: '/admin/transaction_type',
+    controller: 'TransactionTypeController as TypeCtrl',
+    templateUrl: 'partials/admin/transaction_type/transaction_type.html'
+  })
+
   .state('error403', {
     url : '/error403',
     templateUrl : 'partials/error403/error403.html'

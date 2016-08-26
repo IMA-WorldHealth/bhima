@@ -79,6 +79,7 @@ const sectionResultats = require('../controllers/finance/sectionResultat');
 const sectionBilans    = require('../controllers/finance/sectionBilan');
 const creditors        = require('../controllers/finance/creditors.js');
 const journal          = require('../controllers/finance/journal');
+const transactionType     = require('../controllers/admin/transactionType');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -532,4 +533,11 @@ exports.configure = function configure(app) {
 
   app.get('/creditors', creditors.list);
   app.get('/creditors/:uuid', creditors.detail);
+
+  // transfer type API
+  app.post('/transaction_type', transactionType.create);
+  app.get('/transaction_type', transactionType.list);
+  app.get('/transaction_type/:id', transactionType.detail);
+  app.put('/transaction_type/:id', transactionType.update);
+  app.delete('/transaction_type/:id', transactionType.remove);
 };

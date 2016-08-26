@@ -471,6 +471,7 @@
       "POSITION"               : "Position",
       "POST_OFFICE_BOX"        : "Post Office Box",
       "PO_BOX"                 : "PO Box",
+      "PREFIX"                 : "Prefix",
       "PREVIOUS_DATE"          : "Previous Date",
       "PRICE"                  : "Price",
       "PRICE_LIST"             : "Price List",
@@ -514,6 +515,7 @@
       "SUPPLIER"               : "Supplier",
       "TEL"                    : "TEL",
       "TELEPHONE"              : "Telephone",
+      "TEXT"                   : "Text",
       "THIS_MONTH"             : "This Month",
       "THIS_WEEK"              : "This week",
       "THIS_YEAR"              : "This year",
@@ -574,6 +576,7 @@
       "UNIT_VOLUME"  : "Enter volume",
       "USERNAME"     : "Enter your username",
       "PASSWORD"     : "Enter your password",
+      "TYPE"         : "Enter the type",
       "VILLAGE"      : "Enter village",
       "SUPPLIER"     : "Enter supplier",
       "FILTER_NAME"  : "Filter by name...",
@@ -612,6 +615,7 @@
       "SERVICE"            : "Select a Service",
       "SEX"                : "Select a sex",
       "TRANSFER_TYPE"      : "Select a transfer type",
+      "TYPE"               : "Select a type",
       "USER"               : "Select User",
       "VILLAGE"            : "Select village",
       "ZS"                 : "Select an health zone"
@@ -1068,6 +1072,9 @@
       "QUANTITY"           : "Quantity"
     }
   },
+  "TRANSACTION_TYPE" : {
+    "LIST" : "Transaction Types List"
+  },
   "TREE": {
     "ACCOUNT"                    : "Account",
     "ADMIN"                      : "Admin",
@@ -1126,6 +1133,7 @@
     "SIMPLE_VOUCHER"             : "Simple Voucher",
     "STOCK"                      : "Stock",
     "SUBSIDY"                    : "Subsidy Management",
+    "TRANSACTION_TYPE"           : "Transaction Types",
     "USERS"                      : "Users",
     "VOUCHER_REGISTRY"           : "Voucher Registry"
   },
