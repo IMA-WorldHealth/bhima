@@ -29,34 +29,34 @@ CREATE PROCEDURE StageInvoice(
   IN user_id SMALLINT(5),
   IN uuid BINARY(16)
 )
-BEGIN 
-  -- verify if invoice stage already exists within this connection, if the 
+BEGIN
+  -- verify if invoice stage already exists within this connection, if the
   -- stage already exists simply write to it, otherwise create it select into it
   DECLARE `no_invoice_stage` TINYINT(1) DEFAULT 0;
   DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_invoice_stage` = 1;
   SELECT NULL FROM `stage_invoice` LIMIT 0;
 
-  IF (`no_invoice_stage` = 1) THEN 
-    create temporary table stage_invoice 
+  IF (`no_invoice_stage` = 1) THEN
+    create temporary table stage_invoice
     (select project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable);
-  ELSE 
+  ELSE
     insert into stage_invoice
     (select project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, is_distributable);
   END IF;
 END $$
 
 CREATE PROCEDURE StageInvoiceItem(
-  IN uuid BINARY(16), 
+  IN uuid BINARY(16),
   IN inventory_uuid BINARY(16),
-  IN quantity INT(10) UNSIGNED, 
+  IN quantity INT(10) UNSIGNED,
   IN transaction_price decimal(19, 4),
-  IN inventory_price decimal(19, 4), 
-  IN debit decimal(19, 4), 
+  IN inventory_price decimal(19, 4),
+  IN debit decimal(19, 4),
   IN credit decimal(19, 4),
   IN invoice_uuid BINARY(16)
 )
-BEGIN 
-  -- verify if invoice item stage already exists within this connection, if the 
+BEGIN
+  -- verify if invoice item stage already exists within this connection, if the
   -- stage already exists simply write to it, otherwise create it select into it
   DECLARE `no_invoice_item_stage` TINYINT(1) DEFAULT 0;
   DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_invoice_item_stage` = 1;
@@ -64,12 +64,12 @@ BEGIN
 
   IF (`no_invoice_item_stage` = 1) THEN
     -- tables does not exist - create and enter data
-    create temporary table stage_invoice_item 
-    (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
+    create temporary table stage_invoice_item
+      (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
   ELSE
     -- table exists - only enter data
     insert into stage_invoice_item
-    (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
+      (select uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit, credit, invoice_uuid);
   END IF;
 END $$
 
@@ -77,7 +77,7 @@ CREATE PROCEDURE StageBillingService(
   IN id SMALLINT UNSIGNED,
   IN invoice_uuid BINARY(16)
 )
-BEGIN 
+BEGIN
   CALL VerifyBillingServiceStageTable();
 
    insert into stage_billing_service
@@ -88,26 +88,25 @@ CREATE PROCEDURE StageSubsidy(
   IN id SMALLINT UNSIGNED,
   IN invoice_uuid BINARY(16)
 )
-BEGIN 
+BEGIN
   CALL VerifySubsidyStageTable();
-  
+
   insert into stage_subsidy
   (select id, invoice_uuid);
 END $$
 
--- create a temporary staging table for the subsidies, this is done via a helper 
--- method to ensure it has been created as sale writing time (subsidies are an 
--- optional entity that may or may not have been called for staging) 
+-- create a temporary staging table for the subsidies, this is done via a helper
+-- method to ensure it has been created as sale writing time (subsidies are an
+-- optional entity that may or may not have been called for staging)
 CREATE PROCEDURE VerifySubsidyStageTable()
-BEGIN 
+BEGIN
   create table if not exists stage_subsidy (id INTEGER, invoice_uuid BINARY(16));
 END $$
 
 CREATE PROCEDURE VerifyBillingServiceStageTable()
-BEGIN 
+BEGIN
   create table if not exists stage_billing_service (id INTEGER, invoice_uuid BINARY(16));
 END $$
-
 
 CREATE PROCEDURE WriteInvoice(
   IN uuid BINARY(16)
@@ -119,11 +118,11 @@ BEGIN
   DECLARE total_cost_to_debtor decimal(19, 4);
   DECLARE total_subsidy_cost decimal(19, 4);
   DECLARE total_subsidised_cost decimal(19, 4);
-  
-  -- ensure that all optional entities have staging tables available, it is 
-  -- possible that the invoice has not invoked methods to stage subsidies and 
+
+  -- ensure that all optional entities have staging tables available, it is
+  -- possible that the invoice has not invoked methods to stage subsidies and
   -- billing services if they are not relevant - this makes sure the tables exist
-  -- for querries within this method
+  -- for queries within this method
   CALL VerifySubsidyStageTable();
   CALL VerifyBillingServiceStageTable();
 
@@ -161,19 +160,19 @@ BEGIN
   WHERE invoice.uuid = uuid;
 
   -- return information relevant to the final calculated and written bill
-  select items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;  
+  select items_cost, billing_services_cost, total_cost_to_debtor, total_subsidy_cost, total_subsidised_cost;
 END $$
 
 CREATE PROCEDURE PostInvoice(
   IN uuid binary(16)
 )
-BEGIN 
+BEGIN
   -- required posting values
-  DECLARE date DATETIME; 
+  DECLARE date DATETIME;
   DECLARE enterprise_id SMALLINT(5);
   DECLARE project_id SMALLINT(5);
   DECLARE currency_id TINYINT(3) UNSIGNED;
-  
+
   -- variables to store core set-up results
   DECLARE current_fiscal_year_id MEDIUMINT(8) UNSIGNED;
   DECLARE current_period_id MEDIUMINT(8) UNSIGNED;
@@ -185,14 +184,29 @@ BEGIN
 
   -- populate initial values specifically for this invoice
   SELECT invoice.date, enterprise.id, project.id, enterprise.currency_id
-  INTO date, enterprise_id, project_id, currency_id 
+    INTO date, enterprise_id, project_id, currency_id
   FROM invoice join project join enterprise on invoice.project_id = project.id AND project.enterprise_id = enterprise.id
   WHERE invoice.uuid = uuid;
 
   -- populate core set-up values
   CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, current_fiscal_year_id, current_period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
-  
+
   CALL CopyInvoiceToPostingJournal(uuid, transaction_id, project_id, current_fiscal_year_id, current_period_id, currency_id);
+END $$
+
+-- returns 'rate'
+CREATE PROCEDURE GetExchangeRate(
+  IN enterpriseId INT,
+  IN currencyId INT,
+  IN date TIMESTAMP,
+  OUT rate DECIMAL
+)
+BEGIN
+  SET rate = (
+    SELECT e.rate FROM exchange_rate AS e
+    WHERE e.enterprise_id = enterpriseId AND e.currency_id = currencyId AND e.date <= date
+    ORDER BY e.date DESC LIMIT 1
+  );
 END $$
 
 CREATE PROCEDURE PostingSetupUtil(
@@ -208,33 +222,33 @@ CREATE PROCEDURE PostingSetupUtil(
   OUT gain_account INT UNSIGNED,
   OUT loss_account INT UNSIGNED
 )
-BEGIN 
+BEGIN
   SET current_fiscal_year_id = (
-    SELECT id FROM fiscal_year 
+    SELECT id FROM fiscal_year
     WHERE date BETWEEN start_date AND DATE(ADDDATE(start_date, INTERVAL number_of_months MONTH)) AND enterprise_id = enterprise_id);
 
   SET current_period_id = (
-    SELECT id from period 
+    SELECT id from period
     WHERE Date(date) BETWEEN Date(start_date) AND Date(end_date) AND fiscal_year_id = current_fiscal_year_id);
-  
+
   SET enterprise_currency_id = (SELECT currency_id FROM enterprise WHERE id = enterprise_id);
-  
+
   -- this uses the currency id passed in as a dependency
   SET current_exchange_rate = (
-    SELECT rate FROM exchange_rate 
-    WHERE enterprise_id = enterprise_id AND currency_id = currency_id AND date <= date 
+    SELECT rate FROM exchange_rate
+    WHERE enterprise_id = enterprise_id AND currency_id = currency_id AND date <= date
     ORDER BY date DESC LIMIT 1
   );
 
   SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, 1/current_exchange_rate));
-  
+
   SELECT gain_account_id, loss_account_id
   INTO gain_account, loss_account
   FROM enterprise WHERE id = enterprise_id;
 
   SET transaction_id = GenerateTransactionId(project_id);
 
-  -- error handling 
+  -- error handling
   CALL PostingJournalErrorHandler(enterprise_id, project_id, current_fiscal_year_id, current_period_id, current_exchange_rate, date);
 END $$
 
@@ -246,8 +260,8 @@ RETURNS VARCHAR(100) DETERMINISTIC
 BEGIN
 DECLARE trans_id_length TINYINT(1) DEFAULT 4;
 
-RETURN ( 
-SELECT CONCAT(abbr, IFNULL(MAX(increment), 1)) AS id 
+RETURN (
+SELECT CONCAT(abbr, IFNULL(MAX(increment), 1)) AS id
 FROM (
   SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, trans_id_length))) + 1 AS increment
   FROM posting_journal JOIN project ON posting_journal.project_id = project.id
@@ -531,19 +545,6 @@ CREATE PROCEDURE removePostedTransactions ( IN transactions TEXT )
     END
 $$
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 -- Handles the Cash Table's Rounding
 -- CREATE PROCEDURE HandleCashRounding(
 --   uuid BINARY(16),
@@ -552,22 +553,411 @@ $$
 -- )
 -- BEGIN
 --
---   -- get the total amount paid
---   SELECT cash.amount, cash.currency_id, is_caution INTO
---     @amount, @currencyId, @isCaution
---   FROM cash WHERE cash.uuid = uuid;
+-- Post Cash Payments
 --
---   -- only continue if we are paying against a invoice in a different currency than
---   -- the enterprise currency
---   IF @isCaution IS NOT NULL AND @currencyId <> enterpriseCurrencyId THEN
---
---     -- NOTE: this should really take into account the balance of the invoices
---     -- including previous payments.
---     -- TODO: find a way to sum all previous patient invoices in the posting journal
---     -- after figuring out posting.
---
---   END IF;
--- END
--- $$
+CREATE PROCEDURE PostCash(
+  IN cashUuid binary(16)
+)
+BEGIN
+  -- required posting values
+  DECLARE cashDate DATETIME;
+  DECLARE cashEnterpriseId SMALLINT(5);
+  DECLARE cashProjectId SMALLINT(5);
+  DECLARE cashCurrencyId TINYINT(3) UNSIGNED;
+  DECLARE cashAmount DECIMAL;
+  DECLARE enterpriseCurrencyId INT;
+
+  -- variables to store core set-up results
+  DECLARE current_fiscal_year_id MEDIUMINT(8) UNSIGNED;
+  DECLARE current_period_id MEDIUMINT(8) UNSIGNED;
+  DECLARE current_exchange_rate DECIMAL(19, 4) UNSIGNED;
+  DECLARE enterprise_currency_id TINYINT(3) UNSIGNED;
+  DECLARE transaction_id VARCHAR(100);
+  DECLARE gain_account_id INT UNSIGNED;
+  DECLARE loss_account_id INT UNSIGNED;
+
+  DECLARE minMonentaryUnit DECIMAL;
+  DECLARE previousInvoiceBalances DECIMAL;
+  DECLARE currentExchangeRate DECIMAL;
+
+  DECLARE remainder DECIMAL;
+  DECLARE lastInvoiceUuid BINARY;
+
+  -- copy cash payment values into working variables
+  SELECT cash.amount, cash.date, cash.currency_id, enterprise.id, cash.project_id,
+    enterprise.currency_id, currency.min_monentary_unit
+  INTO  cashAmount, cashDate, cashCurrencyId, cashEnterpriseId, cashProjectId,
+    enterpriseCurrencyId, minMonentaryUnit
+  FROM cash
+    JOIN project ON cash.project_id = project.id
+    JOIN enterprise ON project.enterprise_id = enterprise.id
+    JOIN currency ON enterprise.currency_id = currency.id
+  WHERE cash.uuid = uuid;
+
+  /* Set the exchange rate up */
+  CALL GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate, currentExchangeRate);
+  SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, 1 / currentExchangeRate));
+
+  -- populate core setup values
+  CALL PostingSetupUtil(cashDate, cashEnterpriseId, cashProjectId, cashCurrencyId, current_fiscal_year_id, current_period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
+
+  /*
+    Begin the posting process.  We will first write the total value as moving into the cashbox
+    (a debit to the cashbox's cash account).  Then, we will loop through each cash_item and credit
+    the debtor for the amount they paid towards each invoice.
+  */
+
+  -- write the cash amount going into the cashbox to the posting_journal
+  INSERT INTO posting_journal (
+    uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+    record_uuid, description, account_id, debit, credit, debit_equiv,
+    credit_equiv, currency_id, user_id
+  ) SELECT
+    HUID(UUID()), projectId, fiscalYearId, periodId, transId, c.date, c.uuid, c.description,
+    cb.account_id, c.amount, 0, (c.amount*currentExchangeRate), 0, c.currency_id, c.user_id
+  FROM cash AS c
+    JOIN cash_box_account_currency AS cb ON cb.currency_id = c.currency_id AND cb.cash_box_id = c.cashbox_id
+  WHERE c.uuid = cashUuid;
+
+  -- write each cash_item into the posting_journal
+  INSERT INTO posting_journal (
+    uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+    record_uuid, description, account_id, debit, credit, debit_equiv,
+    credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+  ) SELECT
+    HUID(UUID()), projectId, fiscalYearId, periodId, transId, c.date, c.uuid, c.description,
+    dg.account_id, 0, ci.amount, 0, (ci.amount*currentExchangeRate), c.currency_id,
+    c.debtor_uuid, 'D', c.user_id, ci.invoice_uuid
+  FROM cash AS c
+    JOIN cash_item AS ci ON c.uuid = ci.cash_uuid
+    JOIN debtor AS d ON c.debtor_uuid = d.uuid
+    JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+  WHERE c.uuid = cashUuid;
+
+  /*
+    Finally, we have to see if there is any rounding to do.  If the absolute value of the balance
+    due minus the balance paid is less than the minMonentaryUnit, it means we should just round that
+    amount away.
+
+    If (cashAmount - previousInvoiceBalances) > 0 then the debtor overpaid and we should debit them and
+    credit the rounding account.  If the (cashAmount - previousInvoiceBalances) is negative, then the debtor
+    underpaid and we should credit them and debit the rounding account the remainder
+  */
+
+  /* populates the table stage_cash_invoice_balances */
+  CALL CalculateCashInvoiceBalances(cashUuid);
+
+  /* These values are in the original currency amount */
+  SET previousInvoiceBalances = (
+    SELECT SUM(invoices.balance) AS balance FROM stage_cash_invoice_balances AS invoice
+  );
+
+  -- this is date ASC to get the most recent invoice
+  SET lastInvoiceUuid = (
+    SELECT invoice.uuid FROM stage_cash_invoice_balances AS invoice ORDER BY invoice.date LIMIT 1
+  );
+
+  SET remainder = cashAmount - previousInvoiceBalances;
+
+  -- check if we should round or not
+  IF (minMonentaryUnit > ABS(remainder)) THEN
+
+    /*
+      A positive remainder means that the debtor overpaid slightly and we should debit
+      the difference to the debtor and credit the difference as a gain to the gain_account
+    */
+    IF (remainder > 0) THEN
+
+      -- debit the debtor
+      INSERT INTO posting_journal (
+        uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+        record_uuid, description, account_id, debit, credit, debit_equiv,
+        credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+      ) SELECT
+        HUID(UUID()), projectId, fiscalYearId, periodId, transId, c.date, c.uuid, c.description,
+        dg.account_id, remainder, 0, remainder * currentExchangeRate, 0, c.currency_id,
+        c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
+      FROM cash AS c
+        JOIN debtor AS d ON c.debtor_uuid = d.uuid
+        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+      WHERE c.uuid = cashUuid;
+
+      -- credit the rounding account
+      INSERT INTO posting_journal (
+        uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+        record_uuid, description, account_id, debit, credit, debit_equiv,
+        credit_equiv, currency_id, user_id
+      ) SELECT
+        HUID(UUID()), projectId, fiscalYearId, periodId, transId, c.date, c.uuid, c.description,
+        gain_account_id, 0, remainder, 0, remainder * currentExchangeRate, c.currency_id, c.user_id
+      FROM cash AS c
+        JOIN debtor AS d ON c.debtor_uuid = d.uuid
+        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+      WHERE c.uuid = cashUuid;
+
+    /*
+      A negative remainder means that the debtor underpaid slightly and we should credit
+      the difference to the debtor and debit the difference as a loss to the loss_account
+    */
+    ELSE
+
+      -- convert the remainder into the enterprise currency
+      SET remainder = (-1 * remainder);
+
+      -- credit the debtor
+      INSERT INTO posting_journal (
+        uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+        record_uuid, description, account_id, debit, credit, debit_equiv,
+        credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+      ) SELECT
+        HUID(UUID()), projectId, fiscalYearId, periodId, transId, c.date, c.uuid, c.description,
+        dg.account_id, 0, remainder, 0, remainder*currentExchangeRate, 0, c.currency_id,
+        c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
+      FROM cash AS c
+        JOIN debtor AS d ON c.debtor_uuid = d.uuid
+        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+      WHERE c.uuid = cashUuid;
+
+      -- debit the rounding account
+      INSERT INTO posting_journal (
+        uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+        record_uuid, description, account_id, debit, credit, debit_equiv,
+        credit_equiv, currency_id, user_id
+      ) SELECT
+        HUID(UUID()), projectId, fiscalYearId, periodId, transId, c.date, c.uuid, c.description,
+        loss_account_id, remainder, 0, remainder*currentExchangeRate, 0, c.currency_id, c.user_id
+      FROM cash AS c
+        JOIN debtor AS d ON c.debtor_uuid = d.uuid
+        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+      WHERE c.uuid = cashUuid;
+    END IF;
+  END IF;
+END $$
+
+CREATE PROCEDURE StageCash(
+  IN amount DECIMAL(19,4) UNSIGNED,
+  IN currency_id TINYINT(3),
+  IN cashbox_id MEDIUMINT(8) UNSIGNED,
+  IN debtor_uuid BINARY(16),
+  IN project_id SMALLINT(5) UNSIGNED,
+  IN date TIMESTAMP,
+  IN user_id SMALLINT(5) UNSIGNED,
+  IN is_caution BOOLEAN,
+  IN description TEXT,
+  IN uuid BINARY(16)
+)
+BEGIN
+  -- verify if cash stage already exists within this connection, if the
+  -- stage already exists simply write to it, otherwise create it select into it
+  DECLARE `no_cash_stage` TINYINT(1) DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_cash_stage` = 1;
+  SELECT NULL FROM `stage_cash` LIMIT 0;
+
+
+  IF (`no_cash_stage` = 1) THEN
+    CREATE TEMPORARY TABLE stage_cash
+      (SELECT uuid, project_id, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution);
+
+  ELSE
+    INSERT INTO stage_cash
+      (SELECT uuid, project_id, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution);
+  END IF;
+END $$
+
+CREATE PROCEDURE StageCashItem(
+  IN uuid BINARY(16),
+  IN cash_uuid BINARY(16),
+  IN amount DECIMAL(19,4) UNSIGNED,
+  IN invoice_uuid BINARY(16)
+)
+BEGIN
+  -- verify if cash_item stage already exists within this connection, if the
+  -- stage already exists simply write to it, otherwise create it select into it
+  DECLARE `no_cash_item_stage` TINYINT(1) DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_cash_item_stage` = 1;
+  SELECT NULL FROM `stage_cash_item` LIMIT 0;
+
+  IF (`no_cash_item_stage` = 1) THEN
+    CREATE TEMPORARY TABLE stage_cash_item
+      (SELECT uuid, cash_uuid, amount, invoice_uuid);
+
+  ELSE
+    INSERT INTO stage_cash_item
+      (SELECT uuid, cash_uuid, amount, invoice_uuid);
+  END IF;
+END $$
+
+-- This calculates the amount due on previous invoices based on what is being paid
+CREATE PROCEDURE CalculateCashInvoiceBalances(
+  IN cashUuid BINARY(16)
+)
+BEGIN
+  DECLARE cashEnterpriseId INT;
+  DECLARE cashCurrencyId INT;
+  DECLARE enterpriseCurrencyId INT;
+  DECLARE cashDate TIMESTAMP;
+  DECLARE currentExchangeRate DECIMAL;
+
+  -- copy cash payment values into working variables
+  SELECT cash.date, cash.currency_id, enterprise.id, enterprise.currency_id
+    INTO cashDate, cashCurrencyId, cashEnterpriseId, enterpriseCurrencyId
+  FROM cash
+    JOIN project ON cash.project_id = project.id
+    JOIN enterprise ON project.enterprise_id = enterprise.id
+  WHERE cash.uuid = cashUuid;
+
+  /* calculate the exchange rate for balances based on the stored cash currency */
+  CALL GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate, currentExchangeRate);
+  SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
+
+  /*
+    Two temporary tables to get around MySQL's restriction on referencing temporary tables.
+  */
+  CREATE TEMPORARY TABLE IF NOT EXISTS cash_invoices AS (SELECT invoice_uuid FROM stage_cash_item WHERE stage_cash_item.cash_uuid = cashUuid);
+  CREATE TEMPORARY TABLE IF NOT EXISTS cash_invoices_dup AS (SELECT invoice_uuid FROM stage_cash_item WHERE stage_cash_item.cash_uuid = cashUuid);
+
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances AS
+    SELECT ledger.uuid, (SUM(ledger.debit - ledger.credit) * currentExchangeRate) AS balance, ledger.date
+    FROM (
+      SELECT cl.record_uuid AS uuid, cl.debit, cl.credit, cl.entity_uuid, cl.date
+      FROM combined_ledger AS cl JOIN cash JOIN cash_invoices
+        ON cl.entity_uuid = cash.debtor_uuid AND cl.record_uuid = cash_invoices.invoice_uuid
+      WHERE cash.uuid = cashUuid
+    UNION ALL
+      SELECT cl.reference_uuid AS uuid, cl.debit, cl.credit, cl.entity_uuid, cl.date
+      FROM combined_ledger AS cl JOIN cash JOIN cash_invoices_dup
+        ON cl.entity_uuid = cash.debtor_uuid AND cl.reference_uuid = cash_invoices_dup.invoice_uuid
+      WHERE cash.uuid = cashUuid
+    ) AS ledger
+    GROUP BY ledger.uuid
+    ORDER BY ledger.date DESC;
+END $$
+
+/*
+  WriteCashItems
+
+  Allocates cash payment to invoices, making sure that the debtor does not
+  overpay the invoice amounts.
+*/
+CREATE PROCEDURE WriteCashItems(
+  IN cashUuid BINARY(16),
+  IN cashAmount DECIMAL,
+  IN currentExchangeRate DECIMAL,
+  IN minMonentaryUnit DECIMAL
+)
+BEGIN
+  DECLARE totalInvoiceCost DECIMAL;
+  DECLARE amountToAllocate DECIMAL;
+  DECLARE allocationAmount DECIMAL;
+  DECLARE invoiceUuid BINARY(16);
+  DECLARE invoiceBalance DECIMAL;
+  DECLARE done INT DEFAULT FALSE;
+
+  -- error condition states
+  DECLARE Overpaid CONDITION FOR SQLSTATE '45501';
+
+  -- CURSOR for allocation of payments to invoice costs.
+  DECLARE curse CURSOR FOR
+    SELECT invoices.uuid, invoices.balance
+    FROM stage_cash_invoice_balances AS invoices;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  /*
+    Calculate the balances on invoices to pay.
+  */
+  CALL CalculateCashInvoiceBalances(cashUuid);
+  SET totalInvoiceCost = (SELECT IFNULL(SUM(invoice.balance), 0) FROM stage_cash_invoice_balances AS invoice);
+
+  /*
+    If the difference between the paid amount and the totalInvoiceCost is greater than the
+    minMonentaryUnit, the client has overpaid.
+  */
+  IF ((cashAmount - totalInvoiceCost)  > minMonentaryUnit) THEN
+    SET @text = CONCAT(
+      'The invoices appear to be overpaid.  The total cost of all invoice is ',
+      CAST(totalInvoiceCost AS char), ' but the cash payment amount is ', CAST(cashAmount AS char)
+    );
+
+    SIGNAL Overpaid SET MESSAGE_TEXT = @text;
+  END IF;
+
+  /*
+   NOTE
+   It is possible to underpay.  This is never checked - the loop will
+   simply exit early and the other invoices will not be credited.
+
+   Loop through the table of invoice balances, allocating money from the total payment to
+   balance those invoices.
+  */
+  SET amountToAllocate = cashAmount;
+
+  OPEN curse;
+
+  allocateCashPayments: LOOP
+    FETCH curse INTO invoiceUuid, invoiceBalance;
+
+    IF done THEN
+      LEAVE allocateCashPayments;
+    END IF;
+
+    -- figure out how much to allocate
+    IF (amountToAllocate - invoiceBalance > 0) THEN
+      SET amountToAllocate = amountToAllocate - invoiceBalance;
+      SET allocationAmount = invoiceBalance;
+    ELSE
+      SET allocationAmount = amountToAllocate;
+      SET amountToAllocate = 0;
+      SET done = TRUE;
+    END IF;
+
+    INSERT INTO cash_item
+      SELECT stage_cash_item.uuid, stage_cash_item.cash_uuid, allocationAmount, invoiceUuid
+      FROM stage_cash_item
+      WHERE stage_cash_item.invoice_uuid = invoiceUuid AND stage_cash_item.cash_uuid = cashUuid LIMIT 1;
+
+  END LOOP allocateCashPayments;
+END $$
+
+CREATE PROCEDURE WriteCash(
+  IN uuid BINARY(16)
+)
+BEGIN
+  DECLARE isCaution BOOLEAN;
+
+  DECLARE cashAmount DECIMAL;
+  DECLARE cashDate TIMESTAMP;
+  DECLARE cashEnterpriseId INT;
+  DECLARE cashCurrencyId INT;
+
+  DECLARE currentExchangeRate DECIMAL;
+  DECLARE enterpriseCurrencyId INT;
+  DECLARE minMonentaryUnit INT;
+
+  -- cash details
+  INSERT INTO cash (uuid, project_id, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution)
+    SELECT * FROM stage_cash WHERE stage_cash.uuid = uuid;
+
+  -- copy cash payment values into working variables
+  SELECT cash.is_caution, cash.amount, cash.date, cash.currency_id, enterprise.id,
+    enterprise.currency_id, currency.min_monentary_unit
+  INTO isCaution, cashAmount, cashDate, cashCurrencyId, cashEnterpriseId,
+    enterpriseCurrencyId, minMonentaryUnit
+  FROM cash
+    JOIN project ON cash.project_id = project.id
+    JOIN enterprise ON project.enterprise_id = enterprise.id
+    JOIN currency ON enterprise.currency_id = currency.id
+  WHERE cash.uuid = uuid;
+
+  -- only do this if we are not paying a caution payment
+  IF NOT isCaution THEN
+    CALL GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate, currentExchangeRate);
+
+    -- if the currencies are equal, the currentExchangeRate should be set to 1
+    SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
+
+    CALL WriteCashItems(uuid, cashAmount, currentExchangeRate, minMonentaryUnit);
+  END IF;
+
+END $$
 
 DELIMITER ;

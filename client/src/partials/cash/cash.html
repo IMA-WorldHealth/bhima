@@ -50,7 +50,7 @@
                 <bh-currency-select
                   currency-id="CashCtrl.payment.currency_id"
                   validation-trigger="CashVoucherForm.$submitted"
-                  on-change="CashCtrl.digestExchangeRate()"
+                  on-change="CashCtrl.digestExchangeRate(currency)"
                   disable-ids="CashCtrl.disabledCurrencyIds"
                   cashbox-id="CashCtrl.cashbox.id"
                   >
@@ -95,7 +95,7 @@
                       <tr ng-repeat="invoice in CashCtrl.payment.invoices track by invoice.invoice_uuid">
                         <td>{{ invoice.reference }}</td>
                         <td>{{ invoice.date | date }}</td>
-                        <td class="text-right">{{ invoice.cost | currency:CashCtrl.enterprise.currency_id }}</td>
+                        <td class="text-right">{{ invoice.balance | currency:CashCtrl.enterprise.currency_id }}</td>
                       </tr>
                     </tbody>
 
@@ -110,7 +110,7 @@
 
                       <!-- only show this segment if using a foreign currency -->
                       <tr>
-                        <td colspan="2" class="text-right"><u>{{ "TABLE.COLUMNS.EXCHANGE_RATE" | translate }}</u></td>
+                        <td colspan="2" class="text-right"><b>{{ "TABLE.COLUMNS.EXCHANGE_RATE" | translate }}</b></td>
                         <td class="text-right">
                           <span ng-show="CashCtrl.payment.currency_id !== CashCtrl.enterprise.currency_id">
                             {{ CashCtrl.slip.rate | currency:CashCtrl.payment.currency_id }}
@@ -123,7 +123,7 @@
 
                       <!-- show a nice total row of what the payer owes today -->
                       <tr>
-                        <td colspan="2" class="text-right"><u>{{ "TABLE.COLUMNS.TOTAL" | translate }}</u></td>
+                        <th colspan="2" class="text-right">{{ "TABLE.COLUMNS.TOTAL" | translate }}</th>
                         <td class="text-right">{{ CashCtrl.slip.total | currency:CashCtrl.payment.currency_id }}</td>
                       </tr>
                     </tfoot>

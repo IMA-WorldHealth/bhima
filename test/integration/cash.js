@@ -3,14 +3,14 @@
 
 const helpers = require('./helpers');
 
-describe('(/cash) Cash Payments', function () {
+describe.only('(/cash) Cash Payments', function () {
   'use strict';
 
   const CASHBOX_ID  = 1;   // Test Primary Cashbox A
-  const CURRENCY_ID = 2;   // Congolese Francs
+  const CURRENCY_ID = 1;   // Congolese Francs
   const PROJECT_ID  = 1;   // Test Project
-  const DEBTOR_UUID =      // Patient/1/Patient
-    'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
+  const DEBTOR_UUID =      // Test Patient
+    '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
 
   const USER_ID     = 1;   // Test User
   const INVOICES    = [    // invoices defined in the database
@@ -79,7 +79,7 @@ describe('(/cash) Cash Payments', function () {
   describe('Patient Invoice Payments ', function () {
 
     var INVOICE_PAYMENT = {
-      amount:      1520,
+      amount:      70150,
       currency_id: CURRENCY_ID,
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
@@ -200,7 +200,7 @@ describe('(/cash) Cash Payments', function () {
         debtor_uuid: DEBTOR_UUID,
         items:       INVOICES,
         project_id:  PROJECT_ID,
-        date:        new Date('2015-01-01'),
+        date:        new Date('2015-05-01'),
         user_id:     USER_ID,
         is_caution:  1,
         description : 'This is a confused payment'

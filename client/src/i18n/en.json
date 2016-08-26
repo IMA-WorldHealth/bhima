@@ -60,9 +60,6 @@
   },
   "CASH": {
     "CURRENT_CASHBOX" : "Current Cashbox",
-    "DEBTOR_INVOICES": {
-      "TITLE" : "Debtor Invoices"
-    },
     "PAYMENT"         : "Payment",
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
@@ -88,10 +85,11 @@
         "TRANSFER"        : "Transfer Funds",
         "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue"
       },
-        "DEBTOR_INVOICES" : "Debtor Invoices",
-        "RECEIPTS_TITLE"  : "Cash Payment Receipt",
-        "SLIP"            : "Cash Voucher",
-        "TITLE"           : "Cash Window"
+      "DEBTOR_INVOICES" : "Debtor Invoices",
+      "RECEIPTS_TITLE"  : "Cash Payment Receipt",
+      "SLIP"            : "Cash Voucher",
+      "TITLE"           : "Cash Window",
+      "SELECTED" : "Selected Invoices"
     }
   },
   "CASHBOX": {

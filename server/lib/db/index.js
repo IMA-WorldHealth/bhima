@@ -165,7 +165,7 @@ class DatabaseConnector {
     keys.forEach(key => {
 
       // the key exists on the object and value is a string
-      if (data [key] && typeof data[key] === 'string') {
+      if (data[key] && typeof data[key] === 'string') {
         data[key] = this.bid(data[key]);
       }
     });

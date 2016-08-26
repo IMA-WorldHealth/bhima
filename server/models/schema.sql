@@ -704,13 +704,15 @@ CREATE TABLE `event` (
 DROP TABLE IF EXISTS `exchange_rate`;
 CREATE TABLE `exchange_rate` (
   `id`    MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `enterprise_id`   smallint(5) UNSIGNED NOT NULL,
+  `enterprise_id`   SMALLINT(5) UNSIGNED NOT NULL,
   `currency_id`   TINYINT(3) UNSIGNED NOT NULL,
   `rate`    DECIMAL(19,4) UNSIGNED NOT NULL,
   `date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `currency_id` (`currency_id`),
+  INDEX `rate` (`rate`),
+  INDEX `date` (`date`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

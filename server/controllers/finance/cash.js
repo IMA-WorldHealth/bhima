@@ -25,6 +25,8 @@ const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 const journal = require('./journal/cash');
 
+const cashCreate = require('./cash.create');
+
 /** retrieves the details of a cash payment */
 exports.detail = detail;
 
@@ -32,7 +34,7 @@ exports.detail = detail;
 exports.list = list;
 
 /** creates cash payments */
-exports.create = create;
+exports.create = cashCreate;
 
 /** modifies previous cash payments */
 exports.update = update;
@@ -135,85 +137,6 @@ function detail(req, res, next) {
     .catch(next)
     .done();
 }
-
-
-/**
- * POST /cash
- * Creates a cash payment against one or many previous invoices or a cautionary
- * payment.  If a UUID is not provided, one is automatically generated.
- */
-function create(req, res, next) {
-  'use strict';
-
-  // alias insertion data
-  let data = req.body.payment;
-
-  // generate a UUID if it not provided.
-  data.uuid = db.bid(data.uuid || uuid.v4());
-
-  // trust the server's session info over the client's
-  data.project_id = req.session.project.id;
-  data.user_id = req.session.user.id;
-
-  if (data.debtor_uuid) {
-    data.debtor_uuid = db.bid(data.debtor_uuid);
-  }
-
-  // format date for insertion into database
-  if (data.date) { data.date = new Date(data.date); }
-
-  // account for the cash items
-  let items = data.items;
-
-  // remove the cash items so that the SQL query is properly formatted
-  delete data.items;
-
-  // if items exist, transform them into an array of arrays for db formatting
-  if (items) {
-    items = items.map(function (item) {
-      item.cash_uuid = data.uuid;
-      return [
-        db.bid(item.uuid || uuid.v4()),
-        item.cash_uuid,
-        item.amount,
-        db.bid(item.invoice_uuid)
-      ];
-    });
-  }
-
-  // disallow invoice payments with empty items by returning a 400 to the client
-  if (!data.is_caution && (!items || !items.length)) {
-    return next(
-      new BadRequest('You must submit cash items with the cash items payment.')
-    );
-  }
-
-  const writeCashSql =
-    'INSERT INTO cash SET ?;';
-
-  const writeCashItemsSql =
-    `INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid)
-    VALUES ?;`;
-
-  let transaction = db.transaction();
-  transaction.addQuery(writeCashSql, [ data ]);
-
-  // only add the "items" query if we are NOT making a caution
-  // cautions do not have items
-  if (!data.is_caution) {
-    transaction.addQuery(writeCashItemsSql, [ items ]);
-  }
-
-  transaction.execute()
-  .then(function () {
-    res.status(201).json({
-      uuid : uuid.unparse(data.uuid)
-    });
-  })
-  .catch(next)
-  .done();
-}
-
 
 /**
  * PUT /cash/:uuid
