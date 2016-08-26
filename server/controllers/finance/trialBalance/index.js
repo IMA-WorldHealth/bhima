@@ -240,10 +240,6 @@ exports.getDataPerAccount = function (req, res, next) {
 
   if(!transactions){ return next(new BadRequest('The transaction list is null or undefined'));}
 
-  if(!Array.isArray(transactions)){
-    return next(new BadRequest('The query is bad formatted'));
-  }
-
   db.exec(requestString, [req.query.transactions])
     .then(function (data) {
       data.forEach(function (item) {item.balance_final = item.balance_before + (item.debit_equiv - item.credit_equiv);});

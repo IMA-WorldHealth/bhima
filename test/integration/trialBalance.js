@@ -16,7 +16,6 @@ describe('(/trial) API endpoint', function () {
   var transactionParameter = {
     goodTransaction : { params : { transactions : ['TRANS1', 'TRANS2'] }, number : 2},
     unknownTransactions : { params : { transactions : ['TS1', 'TS2'] }, number : 0},
-    badParam : { params : { transactions : 'bad request' }, code : 400},
     emptyParam : { params : { transactions : null }, code : 400},
     warningTransaction : {params : {transactions : ['TRANS1']}},
     errorTransaction : {params : {transactions : ['TRANS5']}},
@@ -37,15 +36,6 @@ describe('(/trial) API endpoint', function () {
       .query(transactionParameter.unknownTransactions.params)
       .then(function (res) {
         helpers.api.listed(res, transactionParameter.unknownTransactions.number);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /trial_balance/data_per_account : it returns an error message and 400 code if the request is bad formatted ', function () {
-    return agent.get('/trial_balance/data_per_account')
-      .query(transactionParameter.badParam.params)
-      .then(function (res) {
-        helpers.api.errored(res, transactionParameter.badParam.code);
       })
       .catch(helpers.handler);
   });

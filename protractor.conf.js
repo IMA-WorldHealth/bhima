@@ -25,6 +25,7 @@ const config = {
       takePassedScreenshot: false,
       clearOldScreenshots: true,
       jsonReport: false,
+      // inlineAssets: true,
     },
     timeout : 30000
   },

@@ -13,14 +13,14 @@
       <p>
         <div class="row">
           <div class="col-xs-4 pull-left">
-            <button type="button" ng-show="JournalPosterModalCtrl.feedBack.hasError || JournalPosterModalCtrl.feedBack.hasWarning" class="btn {{JournalPosterModalCtrl.cssClass}}" ng-click="JournalPosterModalCtrl.openErrorViewerModal()" data-method="switch">
+            <button type="button" ng-show="JournalPosterModalCtrl.feedBack.hasError || JournalPosterModalCtrl.feedBack.hasWarning" class="btn {{JournalPosterModalCtrl.cssClass}}" ng-click="JournalPosterModalCtrl.openErrorViewerModal()" data-method="show">
               <i class="fa fa-bars"></i>
               {{"FORM.BUTTONS.VIEW_ERRORS" | translate }}
             </button>
           </div>
 
           <div class="pull-right">
-            <button type="button" class="btn btn-default" ng-click="JournalPosterModalCtrl.switchGroup()" data-method="switch">
+            <button id="switchViewID" type="button" class="btn btn-default" ng-click="JournalPosterModalCtrl.switchGroup()" data-method="switch">
               <i class="fa fa-retweet"></i>
               {{JournalPosterModalCtrl.groupingDetail.key | translate }}
             </button>
@@ -47,6 +47,7 @@
 
   <div class="modal-footer">
     <button
+      id="cancelID"
       type="button"
       class="btn btn-default"
       ng-click="JournalPosterModalCtrl.cancel()">
