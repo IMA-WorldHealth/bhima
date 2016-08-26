@@ -6,7 +6,7 @@ JournalPostingModalService.$inject = ['util', '$http', '$uibModal'];
 
 function JournalPostingModalService(util, $http, Modal) {
   var service = this;
-  var baseUrl = '/trial_balance/'
+  var baseUrl = '/trial_balance/';
 
   service.parseSelectedGridRecord = parseSelectedGridRecord;
   // service.postingModalService = postingModalService;
@@ -54,7 +54,7 @@ function JournalPostingModalService(util, $http, Modal) {
     }
 
     feedBack.hasWarning = errors.some(function (error) {
-      return error
+      return error;
     });
 
     if(feedBack.hasWarning){

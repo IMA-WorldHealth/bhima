@@ -325,7 +325,7 @@ exports.postToGeneralLedger = function (req, res, next) {
   transaction.addQuery('CALL editPostingJournal(?)', [transactionString]);
 
   transaction.execute()
-    .then(function (result) {
+    .then(function () {
       res.status(201).json({});
     })
     .catch(function(err){
