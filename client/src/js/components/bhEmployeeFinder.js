@@ -17,7 +17,7 @@ function employeeFinderController (employeeService, Appcache){
 
  	ctrl.searchOptions = [
  		{key : 'code', label : 'EMPLOYEE.CODE', placeHolder : 'EMPLOYEE.SEARCH_BY_CODE'},
- 		{key : 'names', label : 'EMPLOYEE.NAME', placeHolder : 'EMPLOYEE.SEARCH_BY_NAME'}
+ 		{key : 'display_name', label : 'EMPLOYEE.NAME', placeHolder : 'EMPLOYEE.SEARCH_BY_NAME'}
  	]; 	
 
 	/**
@@ -68,7 +68,7 @@ function employeeFinderController (employeeService, Appcache){
 	*
 	*@param {String} text The token to use for research
 	*
-	* @description take a token and look the employee by code or names according to the option choosen
+	* @description take a token and look the employee by code or display_name according to the option choosen
 	*/
 
 	function search (text) {
