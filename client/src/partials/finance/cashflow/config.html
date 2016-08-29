@@ -1,0 +1,36 @@
+<!-- configuration panel  -->
+<div class="col-md-6 col-md-offset-3 panel panel-default">
+  <div class="panel-body">
+    <form name="ConfigForm" bh-submit="ConfigCtrl.generate()" bh-form-defaults novalidate>
+
+      <!-- Date interval  -->
+      <bh-date-interval
+        date-from="ConfigCtrl.dateFrom"
+        date-to="ConfigCtrl.dateTo">
+      </bh-date-interval>
+
+      <!-- cashbox selection  -->
+      <div class="form-group">
+        <label class="control-label">
+          <span class="fa fa-briefcase"></span> {{ 'FORM.SELECT.CASHBOX' | translate }}
+        </label>
+        <select
+          class="form-control"
+          name="cashbox"
+          ng-model="ConfigCtrl.cashbox"
+          ng-options="cash as cash.hrlabel for cash in ConfigCtrl.cashboxes"
+          required>
+          <option value="" disabled>-- {{ 'FORM.SELECT.CASHBOX' | translate }} --</option>
+        </select>
+      </div>
+
+      <div class="text-right">
+        <bh-loading-button loading-state="ConfigForm.$loading"
+          ng-disabled="ConfigForm.$invalid">
+          {{ "FORM.BUTTONS.GENERATE" | translate }}
+        </bh-loading-button>
+      </div>
+
+    </form>
+  </div>
+</div>

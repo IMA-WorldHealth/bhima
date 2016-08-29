@@ -170,4 +170,20 @@ function UtilService(moment) {
       return fn.apply(this, arguments);
     };
   };
+
+  /**
+   * @function uniquelize
+   * @param {array} array An array in which we want to get only unique values
+   * @description return an array which contain only unique values
+   */
+  service.uniquelize = function uniquelize (array) {
+    // the second param is the next value in the array.
+    return array.reduce(function (uniq, value) {
+
+      // if we haven't seen the value yet, add it to the array (otherwise, ignore it).
+      if (uniq.indexOf(value) === -1) { uniq.push(value); }
+      return uniq;
+
+    }, []);  // initialize with an empty array
+  };
 }

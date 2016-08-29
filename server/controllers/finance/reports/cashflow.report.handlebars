@@ -1,8 +1,4 @@
-<head>
-  <meta charset="UTF-8">
-  <title>{{translate "TREE.CASHFLOW"}}</title>
-  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
-</head>
+{{> head title="TREE.CASHFLOW" }}
 
 <div class="container-fluid">
   <!-- heading  -->
@@ -16,17 +12,18 @@
         {{translate 'FORM.LABELS.ADDRESS'}}: {{ model.enterprise.location }}
       </p>
     </div>
+
+    <div class="col-xs-4">
+      <h1 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+        {{translate 'TREE.CASHFLOW'}}<br>
+        <small>{{ model.data.accountName }}</small>
+      </h1>
+    </div>
   </div>
 
   <div class="row">
     <!-- the generated report  -->
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h1 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-        {{translate 'TREE.CASHFLOW'}}<br>
-        <small>{{ model.data.accountName }}</small>
-      </h1>
 
       <!-- summary label  -->
       <p><u>{{translate 'FORM.LABELS.SUMMARY'}}</u></p>

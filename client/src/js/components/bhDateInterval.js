@@ -31,8 +31,7 @@ function bhDateInterval(Dates) {
     { translateKey : 'FORM.LABELS.TODAY', fn : day },
     { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week },
     { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month },
-    { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year },
-    { translateKey : 'FORM.LABELS.OTHER', fn : other },
+    { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year }
   ];
 
   // expose to the viewe
@@ -59,19 +58,12 @@ function bhDateInterval(Dates) {
 
   function month() {
     vm.dateFrom = Dates.current.month();
-    vm.dateTo = new Date();
+    vm.dateTo = moment().endOf('month').toDate();
   }
 
   function year() {
     vm.dateFrom = Dates.current.year();
-    vm.dateTo = Dates.current.year();
-    vm.dateTo.setMonth(11);
-    vm.dateTo.setDate(31);
-  }
-
-  function other() {
-    vm.dateFrom = new Date(null); // start at the beginning
-    vm.dateTo = new Date();
+    vm.dateTo = moment().endOf('year').toDate();
   }
 
   function clear() {
@@ -80,7 +72,10 @@ function bhDateInterval(Dates) {
   }
 
   function startup() {
-    search(vm.options[0]);
+    // set today as default date plage value 
+    if (!vm.dateFrom && !vm.dateTo) {
+      search(vm.options[0]);
+    }
   }
 
 }

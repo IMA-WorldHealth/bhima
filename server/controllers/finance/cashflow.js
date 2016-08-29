@@ -81,25 +81,30 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
 		params.dateFrom = dateFrom;
 		params.dateTo = dateTo;
 	}
-	var requette =
-			'SELECT BUID(`t`.`uuid`) AS uuid, `t`.`trans_id`, `t`.`trans_date`, `a`.`number`, `a`.`label`, SUM(`t`.`debit_equiv`) AS debit_equiv,  ' +
-			'SUM(`t`.`credit_equiv`) AS credit_equiv, `t`.`debit`, `t`.`credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment`, BUID(`t`.`record_uuid`) AS record_uuid, `t`.`origin_id`, `u`.`first`, `u`.`last` ' +
-			'FROM (' +
-				'(' +
-					'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`record_uuid`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
-						'`posting_journal`.`credit_equiv`, `posting_journal`.`debit`, `posting_journal`.`credit`, `posting_journal`.`account_id`, `posting_journal`.`entity_uuid`, '+
-						'`posting_journal`.`currency_id`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment`, `posting_journal`.`origin_id`, `posting_journal`.`user_id` ' +
-					'FROM `posting_journal` ' +
-					'WHERE `posting_journal`.`account_id` IN (?) AND `posting_journal`.`trans_date` >= ? AND `posting_journal`.`trans_date` <= ? ' +
-				') UNION (' +
-					'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`record_uuid`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
-						'`general_ledger`.`credit_equiv`, `general_ledger`.`debit`, `general_ledger`.`credit`, `general_ledger`.`account_id`, `general_ledger`.`entity_uuid`, ' +
-						'`general_ledger`.`currency_id`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
-					'FROM `general_ledger` ' +
-					'WHERE `general_ledger`.`account_id` IN (?) AND `general_ledger`.`trans_date` >= ? AND `general_ledger`.`trans_date` <= ? ' +
-				')' +
-			') AS `t`, account AS a, user as u WHERE `t`.`account_id` = `a`.`id` AND  `t`.`user_id` = `u`.`id` ' +
-			'GROUP BY `t`.`trans_id` ;';
+	var requette = `
+      SELECT BUID(t.uuid) AS uuid, t.trans_id, t.trans_date, a.number, a.label,
+        SUM(t.debit_equiv) AS debit_equiv, SUM(t.credit_equiv) AS credit_equiv,
+        t.debit, t.credit, t.currency_id, t.description, t.comment,
+        BUID(t.record_uuid) AS record_uuid, t.origin_id, u.first, u.last
+			FROM
+      (
+  			(
+  				SELECT pj.project_id, pj.uuid, pj.record_uuid, pj.trans_date,
+            pj.debit_equiv, pj.credit_equiv, pj.debit, pj.credit,
+            pj.account_id, pj.entity_uuid, pj.currency_id, pj.trans_id,
+            pj.description, pj.comment, pj.origin_id, pj.user_id
+  				FROM posting_journal pj
+  				WHERE pj.account_id IN (?) AND pj.trans_date >= ? AND pj.trans_date <= ?
+  			) UNION (
+  				SELECT gl.project_id, gl.uuid, gl.record_uuid, gl.trans_date,
+            gl.debit_equiv, gl.credit_equiv, gl.debit, gl.credit,
+            gl.account_id, gl.entity_uuid, gl.currency_id, gl.trans_id,
+            gl.description, gl.comment, gl.origin_id, gl.user_id
+  				FROM general_ledger gl
+  				WHERE gl.account_id IN (?) AND gl.trans_date >= ? AND gl.trans_date <= ?
+  			)
+      ) AS t, account AS a, user as u
+      WHERE t.account_id = a.id AND  t.user_id = u.id GROUP BY t.trans_id ;` ;
 
 	return db.exec(requette, [params.account_id, params.dateFrom, params.dateTo, params.account_id, params.dateFrom, params.dateTo]);
 }
@@ -126,7 +131,7 @@ function groupingIncomeExpenseByPeriod(periodicFlows) {
 /**
  * @function groupingByMonth
  * @param {array} periods An array which contains all periods for the fiscal year
- * @param {array} flows The result of `queryIncomeExpense` i.e. all incomes and expense
+ * @param {array} flows The result of queryIncomeExpense i.e. all incomes and expense
  * @description This function help to group incomes or expenses by month
  */
 function groupingByMonth(periods, flows) {
@@ -153,20 +158,20 @@ function groupingByMonth(periods, flows) {
  * @desc This function help us to get the balance at cloture for a set of accounts
  */
 function closingBalance(accountId, periodStart) {
-	var query =
-    'SELECT SUM(`debit_equiv` - `credit_equiv`) as balance, `account_id` '+
-    'FROM ' +
-    '(' +
-	    '(' +
-	    	'SELECT `debit_equiv`, `credit_equiv`, `account_id`, `currency_id` ' +
-	    	'FROM `posting_journal` ' +
-	    	'WHERE `account_id` IN (?) AND `fiscal_year_id` = ? ' +
-	    ') UNION ALL (' +
-	    	'SELECT `debit_equiv`, `credit_equiv`, `account_id`, `currency_id` ' +
-	    	'FROM `general_ledger` ' +
-	    	'WHERE `account_id` IN (?) AND `fiscal_year_id` = ? ' +
-	    ')' +
-	  ') as `t` ';
+	var query = `
+      SELECT SUM(debit_equiv - credit_equiv) as balance, account_id
+      FROM
+      (
+        (
+          SELECT debit_equiv, credit_equiv, account_id, currency_id
+          FROM posting_journal
+          WHERE account_id IN (?) AND fiscal_year_id = ?
+        ) UNION ALL (
+          SELECT debit_equiv, credit_equiv, account_id, currency_id
+          FROM general_ledger
+          WHERE account_id IN (?) AND fiscal_year_id = ?
+        )
+      ) as t;`;
 
     return getFiscalYear(periodStart)
     .then(function (rows) {
@@ -247,16 +252,16 @@ function document(req, res, next) {
     session.openningBalance = rows.openningBalance.balance;
 
     session.periodicData.forEach(function (flow) {
-      groupingResult(flow.incomes, flow.expenses, util.sqlDate(flow.period.start_date));
+      groupingResult(flow.incomes, flow.expenses, moment(flow.period.start_date, 'YYYY-MM-DD'));
     });
 
     session.periodStartArray = session.periodicData.map(function (flow) {
-      return util.sqlDate(flow.period.start_date);
+      return moment(flow.period.start_date, 'YYYY-MM-DD');
     });
 
     /** openning balance by period */
     session.periodicData.forEach(function (flow) {
-      summarization(util.sqlDate(flow.period.start_date));
+      summarization(moment(flow.period.start_date, 'YYYY-MM-DD'));
     });
   }
 
@@ -339,7 +344,7 @@ function document(req, res, next) {
    * @description process to know the previous period of the given period
    */
   function previousPeriod(period) {
-    var currentIndex = session.periodStartArray.indexOf(util.sqlDate(period));
+    var currentIndex = session.periodStartArray.indexOf(moment(period, 'YYYY-MM-DD'));
     return (currentIndex !== 0) ? session.periodStartArray[currentIndex - 1] : session.periodStartArray[currentIndex];
   }
 
@@ -421,7 +426,7 @@ function document(req, res, next) {
    * @param {object} period An object wich reference a specific period
    * @param {array} incomes An array which contain incomes for the period
    * @param {array} expenses An array which contain expenses for the period
-   * @description group incomes and expenses by `origin_id` for each period
+   * @description group incomes and expenses by origin_id for each period
    */
   function groupingResult (incomes, expenses, period) {
     var tempIncome  = {},

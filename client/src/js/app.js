@@ -320,11 +320,24 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/purchases/create/create.html'
   })
 
-  /* cashflow */
+  /* cashflow page */
   .state('cashflow', {
     url : '/finance/cashflow',
-    controller : 'CashflowController as ReportCtrl',
-    templateUrl : 'partials/finance/cashflow/cashflow.html'
+    params: { dateFrom: null, dateTo: null, cashbox: null },
+    controller : 'CashflowController as IndexCtrl',
+    templateUrl : 'partials/finance/cashflow/index.html'
+  })
+
+  /* cashflow configuration */
+  .state('cashflow.configure', {
+    controller : 'CashflowConfigController as ConfigCtrl',
+    templateUrl : 'partials/finance/cashflow/config.html'
+  })
+
+  /* cashflow report */
+  .state('cashflow.report', {
+    controller : 'CashflowReportController as ReportCtrl',
+    templateUrl : 'partials/finance/cashflow/report.html'
   })
 
   /* cashbox routes */
