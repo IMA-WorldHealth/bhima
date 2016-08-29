@@ -45,7 +45,7 @@ function login(req, res, next) {
   const session = {};
 
   let sql = `
-    SELECT user.id, user.username, user.first, user.last, user.email, project.enterprise_id , project.id AS project_id
+    SELECT user.id, user.username, user.display_name, user.email, project.enterprise_id , project.id AS project_id
     FROM user JOIN project_permission JOIN project ON
       user.id = project_permission.user_id AND project.id = project_permission.project_id
     WHERE user.username = ? AND user.password = PASSWORD(?) AND project_permission.project_id = ?;

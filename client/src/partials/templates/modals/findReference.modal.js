@@ -73,7 +73,7 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
         { field : 'patientNames', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
         { field : 'cost', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate },
         { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
-        { field : 'createdBy', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' }
+        { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' }
       ];
 
       vm.gridOptions.data = list;

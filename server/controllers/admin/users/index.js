@@ -48,9 +48,8 @@ function lookupUser(id) {
   let data;
 
   let sql = `
-    SELECT user.id, user.username, user.email, user.first, user.last,
-      user.active, user.last_login AS lastLogin,
-      CONCAT(user.first, ' ', user.last) AS displayName
+    SELECT user.id, user.username, user.email, user.display_name,
+      user.active, user.last_login AS lastLogin
     FROM user WHERE user.id = ?;
   `;
 
@@ -92,7 +91,7 @@ function lookupUser(id) {
  */
 function list(req, res, next) {
   let sql =
-    `SELECT user.id, CONCAT(user.first, ' ', user.last) AS displayName,
+    `SELECT user.id, display_name,
       user.username FROM user;`;
 
   db.exec(sql)
@@ -146,13 +145,12 @@ function create(req, res, next) {
   let userId;
 
   let sql = `
-    INSERT INTO user (username, password, first, last, email) VALUES
-    (?, PASSWORD(?), ?, ?, ?);
+    INSERT INTO user (username, password, email, display_name) VALUES
+    (?, PASSWORD(?), ?, ?);
   `;
 
-  db.exec(sql, [data.username, data.password, data.first, data.last, data.email])
+  db.exec(sql, [data.username, data.password, data.email, data.display_name])
   .then(function (row) {
-
     // retain the insert id
     userId = row.insertId;
 

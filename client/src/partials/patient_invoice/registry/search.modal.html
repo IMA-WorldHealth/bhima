@@ -124,7 +124,7 @@
           class="form-control"
           name="user"
           ng-model="ModalCtrl.params.user_id"
-          ng-options="u.id as u.displayName for u in ModalCtrl.users | orderBy:'displayName'">
+          ng-options="u.id as u.display_name for u in ModalCtrl.users | orderBy:'display_name'">
           <option value="" disabled>{{ 'FORM.SELECT.USER' | translate }}</option>
         </select>
       </div>

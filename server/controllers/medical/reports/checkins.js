@@ -75,7 +75,7 @@ function getReportData(uuid) {
 
       const sql = `
         SELECT BUID(patient_uuid) AS patient_uuid, start_date, YEAR(start_date) AS year,
-          end_date, CONCAT(user.first, ' ' , user.last) AS displayName
+          end_date, user.display_name
         FROM patient_visit
         JOIN user ON patient_visit.user_id = user.id
         WHERE patient_uuid = ?

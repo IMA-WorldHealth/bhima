@@ -232,7 +232,7 @@ function lookupPatient(patientUuid) {
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
-      dg.locked, dg.name as debtor_group_name, u.username, CONCAT(u.first, ' ', u.last) AS displayName
+      dg.locked, dg.name as debtor_group_name, u.username, u.display_name
     FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u
     ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id
     WHERE p.uuid = ?;`;
@@ -269,7 +269,7 @@ function lookupByDebtorUuid(debtorUuid) {
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
-      dg.locked, dg.name as debtor_group_name, u.username, CONCAT(u.first, ' ', u.last) AS displayName
+      dg.locked, dg.name as debtor_group_name, u.username, u.display_name
     FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u
     ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id
     WHERE p.debtor_uuid = ?;
@@ -619,7 +619,7 @@ function latestInvoice (req, res, next) {
     invoice;
 
   let sql =
-    `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, CONCAT(user.first, user.last) as user,
+    `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name,
      invoice.cost
     FROM invoice
     JOIN user ON user.id = invoice.user_id
@@ -688,7 +688,7 @@ function latestInvoice (req, res, next) {
       numberPayment   : numberPayment,
       date            : invoiceLatest.date,
       cost            : invoiceLatest.cost,
-      user            : invoiceLatest.user,
+      display_name    : invoiceLatest.display_name,
       uid             : invoices[0].uid,
       reference       : invoices[0].reference,
       credit          : invoices[0].credit,

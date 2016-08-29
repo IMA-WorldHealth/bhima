@@ -1365,7 +1365,8 @@ CREATE TABLE `project_permission` (
   UNIQUE KEY `project_permission_1` (`user_id`,`project_id`),
   KEY `user_id` (`user_id`),
   KEY `project_id` (`project_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1746,15 +1747,14 @@ CREATE TABLE `unit` (
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
-  `id`          SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `username`    VARCHAR(80) NOT NULL,
-  `password`    VARCHAR(100) NOT NULL,
-  `first`       TEXT NOT NULL,
-  `last`        TEXT NOT NULL,
-  `email`       VARCHAR(100) DEFAULT NULL,
-  `active`      TINYINT(4) NOT NULL DEFAULT 0,
-  `pin`         CHAR(4) NOT NULL DEFAULT 0,
-  `last_login`  TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  `id`            SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username`      VARCHAR(80) NOT NULL,
+  `password`      VARCHAR(100) NOT NULL,
+  `display_name`  TEXT NOT NULL,
+  `email`         VARCHAR(100) DEFAULT NULL,
+  `active`        TINYINT(4) NOT NULL DEFAULT 0,
+  `pin`           CHAR(4) NOT NULL DEFAULT 0,
+  `last_login`    TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_1` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
