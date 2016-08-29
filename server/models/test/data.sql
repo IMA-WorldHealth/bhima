@@ -325,7 +325,7 @@ INSERT INTO `creditor` VALUES
   (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'),HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'),'Fournisseur');
 
 -- Supplier
-INSERT INTO `supplier` (uuid, creditor_uuid, name, address_1, address_2, email) VALUES
+INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2, email) VALUES
   (HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), 'Test Supplier', '12th Avenue', 'New York City, NY 34305', 'supplier@test.org');
 
 -- Grade

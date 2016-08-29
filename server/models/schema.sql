@@ -1646,7 +1646,7 @@ DROP TABLE IF EXISTS `supplier`;
 CREATE TABLE `supplier` (
   `uuid` BINARY(16) NOT NULL,
   `creditor_uuid` BINARY(16) NOT NULL,
-  `name` varchar(45) NOT NULL,
+  `display_name` varchar(45) NOT NULL,
   `address_1` text,
   `address_2` text,
   `email` varchar(45) DEFAULT NULL,

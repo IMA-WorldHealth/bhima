@@ -350,7 +350,7 @@ function create(req, res, next) {
  * @method search
  *
  * @description
- * This function is responsible for looking for employee by names or code
+ * This function is responsible for looking for employee by display_name or code
  *
  */
 function search(req, res, next) {
@@ -359,7 +359,7 @@ function search(req, res, next) {
 
   if (req.params.key === 'code') {
     searchOption = 'LOWER(employee.code)';
-  } else if (req.params.key === 'names') {
+  } else if (req.params.key === 'display_name') {
     searchOption = 'LOWER(employee.display_name)';
   } else {
     return next(
