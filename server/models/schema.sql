@@ -625,9 +625,7 @@ DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
   `id`            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code`          VARCHAR(20) NOT NULL,
-  `prenom`        TEXT ,
-  `name`          TEXT NOT NULL,
-  `postnom`       TEXT,
+  `display_name`  TEXT NOT NULL,
   `sexe`          VARCHAR(10) NOT NULL,
   `dob`           DATETIME NOT NULL,
   `date_embauche` DATETIME DEFAULT NULL,

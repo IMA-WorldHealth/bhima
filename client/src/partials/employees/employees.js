@@ -98,18 +98,6 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   function refreshEmployees() {
     return Employees.read()
     .then(function (data) {
-      data.forEach(function (employee) {
-        employee.displayName = employee.prenom;
-
-        if (employee.prenom) {
-          employee.displayName += ', ' + employee.name;
-        }
-
-        if (employee.postnom) {
-          employee.displayName += ' - ' + employee.postnom;
-        }
-      });
-
       vm.employees = data;
       vm.loading = false;
     });

@@ -93,9 +93,7 @@ function employeeFinderController (employeeService, Appcache){
 
 	function formatEmployee (employee) {
 		return [
-				employee.prenom,
-				employee.name,
-				employee.postnom,
+				employee.display_name,
 				'[' + employee.code_employee + ']'
 			].join('  ');
 	}
