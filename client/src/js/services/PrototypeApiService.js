@@ -105,7 +105,7 @@ function PrototypeApiService($http, util) {
    */
   function read(id, parameters) {
 
-    // default to empty object for paramters
+    // default to empty object for parameters
     parameters = parameters || {};
 
     // append the id to the target

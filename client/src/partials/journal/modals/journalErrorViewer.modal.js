@@ -15,8 +15,8 @@ function JournalErrorViewerModalController (ModalInstance, Columns, Grouping, Jo
   var vm = this;
   var cacheKey = 'errorReport';
   var columns = [
-    { field : 'code', displayName : 'TABLE.COLUMNS.ERROR_TYPE', headerCellFilter : 'translate', enableCellEdit : false, allowCellFocus : false},
-    {field : 'transaction', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter : 'translate', enableCellEdit : false, allowCellFocus : false}
+    { field : 'code', displayName : 'TABLE.COLUMNS.ERROR_TYPE', headerCellFilter : 'translate', headerCellClass : Params.cssClass},
+    {field : 'transaction', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter : 'translate', headerCellClass : Params.cssClass}
   ];
   var records = JournalErrorViewerService.parseGridRecord(Params.errors.data);
 
@@ -31,6 +31,7 @@ function JournalErrorViewerModalController (ModalInstance, Columns, Grouping, Jo
   vm.grouping  = new Grouping(vm.gridOptions, false, vm.groupingDetail.initial);
   vm.gridOptions.columnDefs = columns;
   vm.gridOptions.data = records;
+  vm.params = Params;
   
   /**
    * @function cancel

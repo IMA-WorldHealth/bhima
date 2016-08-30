@@ -18,6 +18,8 @@ describe('(/general_ledger) API endpoint', function () {
     allRecords : {number : 2},
   };
 
+  const NUM_ROW_ALL_RECORDS = 2;
+
   it('GET /general_ledger : it returns a set of records after receiving data from posting journal ', function () {
 
     return agent.post('/trial_balance/post_transactions')
@@ -26,7 +28,7 @@ describe('(/general_ledger) API endpoint', function () {
         return agent.get('/general_ledger');
       })
       .then(function (res) {
-        helpers.api.listed(res, parameters.allRecords.number);
+        helpers.api.listed(res, NUM_ROW_ALL_RECORDS);
       })
       .catch(helpers.handler);
   });

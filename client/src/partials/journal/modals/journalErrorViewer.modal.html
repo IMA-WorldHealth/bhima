@@ -22,7 +22,7 @@
   <div class="modal-footer">
     <button
       type="submit"
-      class="btn {{JournalErrorViewerModalCtrl.params.cssClass}}"
+      ng-class="{ 'btn btn-danger' : JournalErrorViewerModalCtrl.params.feedBack.hasError, 'btn btn-warning': JournalErrorViewerModalCtrl.params.feedBack.hasWarning, 'btn btn-primary' : JournalErrorViewerModalCtrl.params.feedBack.hasSuccess}"
       data-method="close">
       {{ "FORM.BUTTONS.CLOSE" | translate }}
     </button>

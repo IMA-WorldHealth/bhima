@@ -11,8 +11,7 @@ var q = require('q'),
     uuid = require('node-uuid'),
     util = require('../../../lib/util'),
     NotFound   = require('../../../lib/errors/NotFound'),
-    BadRequest = require('../../../lib/errors/BadRequest'),
-    _ = require('lodash');
+    BadRequest = require('../../../lib/errors/BadRequest');
 
 // utility function to sum an array of objects on a particular property
 function aggregate(property, array) {
@@ -87,8 +86,8 @@ function checkEntityExists(transactions) {
     });
 }
 
-// make sure that the document Id exist in each line of the transaction
-function checkDocumentIDExists(transactions) {
+// make sure that the record Id exist in each line of the transaction
+function checkRecordUuidExists(transactions) {
   var sql =
     `SELECT COUNT(pj.uuid) AS count, pj.record_uuid, pj.trans_id FROM posting_journal AS pj
     WHERE pj.trans_id IN (?) GROUP BY pj.trans_id HAVING pj.record_uuid IS NULL;`;
@@ -245,7 +244,6 @@ exports.getDataPerAccount = function (req, res, next) {
     })
     .catch(function (error) {
       next(error);
-      console.log('error', error);
     });
 };
 
@@ -287,7 +285,7 @@ exports.checkTransactions = function (req, res, next) {
   return q.all([
     checkSingleLineTransaction(transactions), checkTransactionsBalanced(transactions), checkAccountsLocked(transactions),
     checkMissingAccounts(transactions), checkPeriodAndFiscalYearExists(transactions), checkDateInPeriod(transactions),
-    checkDocumentIDExists(transactions), checkEntityExists(transactions), checkEntityIsAlwaysDefined(transactions),
+    checkRecordUuidExists(transactions), checkEntityExists(transactions), checkEntityIsAlwaysDefined(transactions),
     checkDescriptionExists(transactions)
   ])
   .then(function (errorReport){
@@ -309,11 +307,7 @@ exports.postToGeneralLedger = function (req, res, next) {
 
   var transactions = req.body.transactions;
 
-  if(!transactions){ return next(new BadRequest('The transaction list is null or undefined'));}
-
-  if(!Array.isArray(transactions)){
-    return next(new BadRequest('The query is bad formatted'));
-  }
+  if(!transactions || !Array.isArray(transactions)){ return next(new BadRequest('The transaction list is null or undefined otherwise The query is bad formatted'));}
 
   //Just a workaround because mysql does not have a type for array
   var transactionString = transactions.map(function (trans_id) {
@@ -321,15 +315,15 @@ exports.postToGeneralLedger = function (req, res, next) {
   }).join(',');
 
   transaction.addQuery('CALL postToGeneralLedger(?)', [transactionString]);
-  transaction.addQuery('CALL editPeriodTotal(?)', [transactionString]);
-  transaction.addQuery('CALL editPostingJournal(?)', [transactionString]);
+  transaction.addQuery('CALL writePeriodTotals(?)', [transactionString]);
+  transaction.addQuery('CALL removePostedTransactions(?)', [transactionString]);
 
   transaction.execute()
     .then(function () {
       res.status(201).json({});
     })
     .catch(function(err){
-      console.log(err);
+      next(err);
     })
     .done();
 };

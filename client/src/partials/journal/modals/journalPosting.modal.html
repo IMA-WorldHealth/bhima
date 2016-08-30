@@ -13,7 +13,7 @@
       <p>
         <div class="row">
           <div class="col-xs-4 pull-left">
-            <button type="button" ng-show="JournalPosterModalCtrl.feedBack.hasError || JournalPosterModalCtrl.feedBack.hasWarning" class="btn {{JournalPosterModalCtrl.cssClass}}" ng-click="JournalPosterModalCtrl.openErrorViewerModal()" data-method="show">
+            <button type="button" ng-show="JournalPosterModalCtrl.feedBack.hasError || JournalPosterModalCtrl.feedBack.hasWarning" ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}" ng-click="JournalPosterModalCtrl.openErrorViewerModal()" data-method="show">
               <i class="fa fa-bars"></i>
               {{"FORM.BUTTONS.VIEW_ERRORS" | translate }}
             </button>
@@ -28,21 +28,15 @@
         </div>
       </p>
 
-    <div
-      id="transaction-grid"
-      ui-grid="JournalPosterModalCtrl.gridOptions"
-      ui-grid-auto-resize
-      ui-grid-grouping
-      ng-if="JournalPosterModalCtrl.errors"
+    <div ng-if="JournalPosterModalCtrl.errors">
+      <div
+        id="transaction-grid"
+        ui-grid="JournalPosterModalCtrl.gridOptions"
+        ui-grid-auto-resize
+        ui-grid-grouping
       >
-      <bh-grid-loading-indicator
-        loading-state="!JournalPosterModalCtrl.errors"
-        empty-state="!JournalPosterModalCtrl.errors"
-        error-state="JournalPosterModalCtrl.hasError"
-      >
-      </bh-grid-loading-indicator>
+      </div>
     </div>
-
   </div>
 
   <div class="modal-footer">
@@ -56,7 +50,7 @@
 
     <button
       type="submit"
-      class="btn {{JournalPosterModalCtrl.cssClass}}"
+      ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}"
       ng-disabled="JournalPosterModalCtrl.feedBack.hasError"
       data-method="submit">
       {{ "FORM.BUTTONS.SUBMIT" | translate }}

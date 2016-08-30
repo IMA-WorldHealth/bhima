@@ -33,46 +33,40 @@ function JournalPostingModalService(util, $http, Modal) {
   }
 
   function  getCSSClass (feedBack) {
-    return feedBack.hasError ? 'error' : feedBack.hasWarning ? 'warning' : 'success';
+    return feedBack.hasError ? 'grid-error' : feedBack.hasWarning ? 'grid-warning' : 'grid-success';
   }
 
   function getFeedBack(errors) {
     var feedBack = {};
 
     feedBack.hasError = errors.some(function (error) {
-      if(error){
-        return error.fatal;
-      }else{
-        return false;
-      } 
+        return error && error.fatal;
     });
-    
-    if(feedBack.hasError){
-      feedBack.hasWarning = false;
-      feedBack.hasSuccess = false;      
-      return feedBack;
-    }
 
     feedBack.hasWarning = errors.some(function (error) {
-      return error;
+      return error && !error.fatal;
     });
 
-    if(feedBack.hasWarning){
-      feedBack.hasSuccess = false;
-      return feedBack;
-    }
-    
-    feedBack.hasSuccess = true;
-    
+    feedBack.hasSuccess = (!feedBack.hasWarning && !feedBack.hasError) ? true : false;
+
     return feedBack;
   }
 
+
+  /**
+   * @function parseSelectedGridRecord
+   * @description
+   * takes as parameter an array of record and send back a formatted array
+   * by making sure every transaction has the complete list of his lines
+   **/
   function parseSelectedGridRecord (records){
     var parsed = [], processedTransactions = [];
 
     records.forEach(function (record){
 
       if(processedTransactions.indexOf(record.entity.trans_id) === -1){
+
+        //take other children of the parent so that every line of the transaction will be present
         parsed = parsed.concat(record.treeNode.parentRow.treeNode.children.map(function (child){
           return child.row.entity;
         }));
@@ -147,8 +141,8 @@ function JournalPostingModalService(util, $http, Modal) {
    * @description
    * This function take the current grouping column and return a new column name for grouping
    * **/
-  function  switchGroup(from) {
-    return from === 'trans_id' ? 'account_number' : 'trans_id';
+  function  switchGroup(groupFrom) {
+    return groupFrom === 'trans_id' ? 'account_number' : 'trans_id';
   }
 
   /**

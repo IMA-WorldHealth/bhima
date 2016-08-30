@@ -76,7 +76,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     })
     .catch(function (error) {
       vm.hasError = true;
-      Notify.errorHandler(error);
+      Notify.handleError(error);
     })
     .finally(toggleLoadingIndicator);
 

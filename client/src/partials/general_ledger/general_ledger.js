@@ -36,9 +36,10 @@ function GeneralLedgerController(GeneralLedger, Sorting, Grouping, Filtering, Co
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {
+    enableFiltering: true,
+    fastWatch: true,
     enableColumnMenus : false,
-    appScopeProvider : vm,
-    rowTemplate: '/partials/templates/grid/transaction.row.html',
+    appScopeProvider : vm
   };
 
   // Initialise each of the general ledger utilities, providing them access to the general ledger

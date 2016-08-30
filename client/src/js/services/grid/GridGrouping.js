@@ -153,29 +153,21 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
       gridApi.grouping.groupColumn(this.column);
 
       // for the expandAllRows() to be fired last
-      unfoldAll(gridApi);
+      unfoldAllGroups(gridApi);
     }.bind(this)));
   }
 
-  function unfoldAll(api) {
+  function unfoldAllGroups(api) {
     $timeout(api.treeBase.expandAllRows, 0, false);
   }
 
   function changeGrouping (column) {
+    this.gridApi.grouping.clearGrouping();
+    this.gridApi.grouping.groupColumn(column);
+    this.gridApi.grouping.aggregateColumn('debit_equiv', uiGridGroupingConstants.aggregation.SUM);
+    this.gridApi.grouping.aggregateColumn('credit_equiv', uiGridGroupingConstants.aggregation.SUM);
 
-    this.gridApi.grouping.setGrouping(
-      {aggregations : [
-          {colName : 'debit_equiv', field : 'debit_equiv', aggregation : {label : 'total', type : 'sum'} },
-          {colName : 'credit_equiv', field : 'credit_equiv', aggregation : {label : 'total', type : 'sum'}}
-        ],
-
-        grouping : [
-          {colName : column, field : column, groupPriority : 0 }
-        ]
-      }
-    );
-
-    unfoldAll(this.gridApi);
+    unfoldAllGroups(this.gridApi);
   }
 
 
@@ -188,9 +180,6 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
   /** return back the list of selected rows **/
 
   function getSelectedRows (){
-
-    if(!this.gridApi.selection){ return [];}
-
     return this.gridApi.selection.getSelectedGridRows();
   }
 

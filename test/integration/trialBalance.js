@@ -14,19 +14,22 @@ describe('(/trial) API endpoint', function () {
   *server in order to get transactions grouped by account
   **/
   var transactionParameter = {
-    goodTransaction : { params : { transactions : ['TRANS1', 'TRANS2'] }, number : 2},
-    unknownTransactions : { params : { transactions : ['TS1', 'TS2'] }, number : 0},
-    emptyParam : { params : { transactions : null }, code : 400},
+    goodTransaction : { params : { transactions : ['TRANS1', 'TRANS2'] }},
+    unknownTransactions : { params : { transactions : ['TS1', 'TS2'] }},
+    emptyParam : { params : { transactions : null }},
     warningTransaction : {params : {transactions : ['TRANS1']}},
     errorTransaction : {params : {transactions : ['TRANS5']}},
     postingTransaction : {params : {transactions : ['TRANS1']}}
   };
 
+  const NUM_ROWS_GOOD_TRANSACTION = 2;
+  const NUM_ROWS_UNKNOWN_TRANSACTIONS = 0;
+
   it('GET /trial_balance/data_per_account : it returns data grouped by account ', function () {
     return agent.get('/trial_balance/data_per_account')
       .query(transactionParameter.goodTransaction.params)
       .then(function (res) {
-        helpers.api.listed(res, transactionParameter.goodTransaction.number);
+        helpers.api.listed(res, NUM_ROWS_GOOD_TRANSACTION);
       })
       .catch(helpers.handler);
   });
@@ -35,7 +38,7 @@ describe('(/trial) API endpoint', function () {
     return agent.get('/trial_balance/data_per_account')
       .query(transactionParameter.unknownTransactions.params)
       .then(function (res) {
-        helpers.api.listed(res, transactionParameter.unknownTransactions.number);
+        helpers.api.listed(res, NUM_ROWS_UNKNOWN_TRANSACTIONS);
       })
       .catch(helpers.handler);
   });
@@ -44,7 +47,7 @@ describe('(/trial) API endpoint', function () {
     return agent.get('/trial_balance/data_per_account')
       .query(transactionParameter.emptyParam.params)
       .then(function (res) {
-        helpers.api.errored(res, transactionParameter.emptyParam.code);
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });

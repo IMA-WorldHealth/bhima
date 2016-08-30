@@ -58,17 +58,17 @@
   height : calc(100vh - 65px - 35px);
 }
 
-.error {
+.grid-error {
   color: white;
   background-color: red;
 }
 
-.warning {
+.grid-warning {
   color : white;
   background-color: darkorange;
 }
 
-.success {
+.grid-success {
   color: white;
   background-color: blue;
 }

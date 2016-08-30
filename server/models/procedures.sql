@@ -505,7 +505,7 @@ CREATE PROCEDURE postToGeneralLedger ( IN transactions TEXT )
     END
 $$
 
-CREATE PROCEDURE editPeriodTotal ( IN transactions TEXT )
+CREATE PROCEDURE writePeriodTotals ( IN transactions TEXT )
     BEGIN
      SET @sql = concat(
      "INSERT INTO period_total
@@ -522,7 +522,7 @@ CREATE PROCEDURE editPeriodTotal ( IN transactions TEXT )
     END
 $$
 
-CREATE PROCEDURE editPostingJournal ( IN transactions TEXT )
+CREATE PROCEDURE removePostedTransactions ( IN transactions TEXT )
     BEGIN
      SET @sql = concat( "DELETE FROM posting_journal WHERE trans_id IN (", transactions, ")");
 

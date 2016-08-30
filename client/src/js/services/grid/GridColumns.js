@@ -53,10 +53,8 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util) {
     });
 
     // if there is a cache defined, load it into the current view
-    if(cache){
-      if (Object.keys(cache).length > 0) {
-        this.setVisibleColumns(cache);
-      }
+    if(cache && Object.keys(cache).length > 0){
+      this.setVisibleColumns(cache);
     }
   }
 
