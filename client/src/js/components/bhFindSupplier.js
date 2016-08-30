@@ -37,10 +37,10 @@ function FindSupplierComponent(SupplierService) {
   /**
   * @method searchByName
   *
-  * @param {string} text Supplier name
+  * @param {string} text Supplier display_name 
   *
   * @description This function make a call to BHIMA API for getting suppliers
-  * according the name of supplier.
+  * according the display_name  of supplier.
   *
   * @return {Array} An array of suppliers
   */
@@ -49,7 +49,7 @@ function FindSupplierComponent(SupplierService) {
 
     // format query string parameters
     var options = {
-      name : text.toLowerCase(),
+      display_name : text.toLowerCase(),
       limit : LIMIT
     };
 

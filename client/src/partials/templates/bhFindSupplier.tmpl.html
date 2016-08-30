@@ -21,7 +21,7 @@
       type="text"
       class="form-control"
       placeholder="{{ 'FIND.SEARCH_NAME' | translate }}..."
-      uib-typeahead="supplier as supplier.name for supplier in $ctrl.searchByName($viewValue)"
+      uib-typeahead="supplier as supplier.display_name for supplier in $ctrl.searchByName($viewValue)"
       typeahead-no-results="$ctrl.noSuppliers"
       typeahead-loading="$ctrl.loadingSuppliers"
       typeahead-template-url="/partials/templates/supplierListe.tmpl.html"
@@ -48,7 +48,7 @@
          <span class="glyphicon glyphicon-shopping-cart"></span>
       </span>
 
-      <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="{{ $ctrl.supplier.name }}">
+      <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="{{ $ctrl.supplier.display_name  }}">
       <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FIND.SUPPLIER_NOT_FOUND' | translate }}">
 
       <div class="input-group-btn">

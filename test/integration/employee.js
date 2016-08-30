@@ -111,8 +111,8 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /employees/names/:value should return a list of employees match the employee names token', function () {
-    return agent.get('/employees/names/' + employee.display_name.substring(0,2))
+  it('GET /employees/display_name/:value should return a list of employees match the employee display_name token', function () {
+    return agent.get('/employees/display_name/' + employee.display_name.substring(0,2))
       .then(function (res) {
         helpers.api.listed(res, numEmployees);
       })

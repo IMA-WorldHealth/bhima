@@ -15,7 +15,7 @@ describe('(/suppliers) The supplier API endpoint', function () {
   var supplier = {
     uuid : uuid.v4(),
     creditor_uuid : '7ac4e83c-65f2-45a1-8357-8b025003d794',
-    name : 'SUPPLIER TEST A',
+    display_name : 'SUPPLIER TEST A',
     address_1 : null,
     address_2 : null,
     email : null,
@@ -27,17 +27,17 @@ describe('(/suppliers) The supplier API endpoint', function () {
   };
 
   var responseKeys = [
-    'uuid', 'creditor_uuid', 'name', 'address_1', 'address_2',
+    'uuid', 'creditor_uuid', 'display_name', 'address_1', 'address_2',
     'email', 'fax', 'note', 'phone', 'international', 'locked'
   ];
 
   var FILTER = {
-    name : 'UPD',
+    display_name : 'UPD',
     limit : 20
   };
 
   var NOT_FOUND = {
-    name : 'TEST',
+    display_name : 'TEST',
     limit : 20
   };
 
@@ -52,7 +52,7 @@ describe('(/suppliers) The supplier API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.name).to.equal(supplier.name);
+        expect(res.body.display_name).to.equal(supplier.display_name);
       })
       .catch(helpers.handler);
   });
@@ -96,11 +96,11 @@ describe('(/suppliers) The supplier API endpoint', function () {
 
   it('PUT /suppliers/:uuid should update an existing supplier', function () {
     return agent.put('/suppliers/' + supplier.uuid)
-      .send({ name : 'SUPPLIER UPDATE' })
+      .send({ display_name : 'SUPPLIER UPDATE' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(responseKeys);
-        expect(res.body.name).to.equal('SUPPLIER UPDATE');
+        expect(res.body.display_name).to.equal('SUPPLIER UPDATE');
       })
       .catch(helpers.handler);
   });
@@ -121,7 +121,7 @@ describe('(/suppliers) The supplier API endpoint', function () {
    *
    * Furthermore, this isn't how you use .send();
    */
-  it('GET /suppliers/search filtering the supplier list from the property name', function () {
+  it('GET /suppliers/search filtering the supplier list from the property display_name', function () {
     return agent.get('/suppliers/search')
       .send(FILTER)
       .then(function (res) {

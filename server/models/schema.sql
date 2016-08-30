@@ -1656,7 +1656,7 @@ CREATE TABLE `supplier` (
   `international` tinyint(1) NOT NULL DEFAULT 0,
   `locked` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `supplier_1` (`name`),
+  UNIQUE KEY `supplier_1` (`display_name`),
   KEY `creditor_uuid` (`creditor_uuid`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
