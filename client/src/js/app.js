@@ -313,7 +313,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* purchase routes */
-
   .state('purchasesCreate', {
     url : '/purchases/create',
     controller : 'PurchaseOrderController as PurchaseCtrl',
@@ -351,6 +350,14 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'cash.cashbox_account',
     templateUrl : 'partials/cash/cashboxes/currencies/currencies.html'
   })
+
+  /* transaction type */
+  .state('transactionType', {
+    url: '/admin/transaction_type',
+    controller: 'TransactionTypeController as TypeCtrl',
+    templateUrl: 'partials/admin/transaction_type/transaction_type.html'
+  })
+
   .state('error403', {
     url : '/error403',
     templateUrl : 'partials/error403/error403.html'
@@ -494,6 +501,18 @@ function constantConfig() {
       ROW_EDIT_FLAG : '_edit',
       ROW_HIGHLIGHT_FLAG : '_highlight',
       ROW_INVALID_FLAG : '_invalid'
+    },
+    transactionType : {
+      GENERIC_INCOME     : 1,
+      CASH_PAYMENT       : 2,
+      CONVENTION_PAYMENT : 3,
+      SUPPORT_INCOME     : 4,
+      TRANSFER           : 5,
+      GENERIC_EXPENSE    : 6,
+      SALARY_PAYMENT     : 7,
+      CASH_RETURN        : 8,
+      PURCHASES          : 9,
+      CREDIT_NOTE        : 10
     }
   };
 }

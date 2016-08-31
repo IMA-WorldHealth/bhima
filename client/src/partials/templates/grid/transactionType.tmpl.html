@@ -1,0 +1,6 @@
+<div class="ui-grid-cell-contents">
+  <span ng-class="{'label label-success': row.entity.type === 'income', 'label label-danger': row.entity.type === 'expense'}">
+    <i class="fa" ng-class="{'fa-long-arrow-up': row.entity.type === 'income', 'fa-long-arrow-down': row.entity.type === 'expense'}"></i>
+    {{ row.entity.type }}
+  </span>
+</div>

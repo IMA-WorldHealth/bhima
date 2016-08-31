@@ -119,7 +119,7 @@
           <!-- cash incomes  -->
           {{#each model.data.incomesLabels as |label|}}
           <tr>
-            <td class="text-left"><strong>{{label}}<strong></td>
+            <td class="text-left"><strong>{{translate label}}<strong></td>
             {{#each ../model.data.periodStartArray as |period $index|}}
             <td class="text-right">
               {{currency (look ../../model.data.incomes period label)}}
@@ -155,7 +155,7 @@
           <!-- cash expenses  -->
           {{#each model.data.expensesLabels as |label|}}
           <tr>
-            <td class="text-left"><strong>{{label}}<strong></td>
+            <td class="text-left"><strong>{{translate label}}<strong></td>
             {{#each ../model.data.periodStartArray as |period $index|}}
             <td class="text-right">
               {{currency (look ../../model.data.expenses period label)}}

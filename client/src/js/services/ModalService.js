@@ -62,6 +62,9 @@ function ModalService(Modal) {
   // project actions : add or edit
   service.openProjectActions = openProjectActions;
 
+  // transaction type : add or edit
+  service.openTransactionTypeActions = openTransactionTypeActions;
+
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -342,6 +345,24 @@ function ModalService(Modal) {
       var params = angular.extend(modalParameters, {
         templateUrl  : 'partials/templates/modals/project.modal.html',
         controller   : 'ProjectModalController',
+        controllerAs : '$ctrl',
+        size         : 'xs',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    /** transaction type modal actions */
+    function openTransactionTypeActions(request) {
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/templates/modals/transactionType.modal.html',
+        controller   : 'TransactionTypeModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
         backdrop     : 'static',

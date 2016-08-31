@@ -186,9 +186,10 @@
     "BAD_REQUEST" : "Vous n'etes pas authorisé à faire cette operation",
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
-    "NOT_FOUND" : "Cet enregistrement n'a pas pu être trouvé",
+    "NOT_ALLOWED"      : "Vous n'etes pas authorisé à faire cette action",
+    "NOT_FOUND"        : "Cet enregistrement n'a pas pu être trouvé",
     "UNAUTHORIZED"     : "Vous avez soumis une mauvais nom et mot de passe.  Entrez un nom et mot de passe valid pour continuer.",
-    "UNKNOWN" : "Une erreur est survenue."
+    "UNKNOWN"          : "Une erreur est survenue."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Ajout d'un taux",
@@ -472,6 +473,7 @@
       "POSITION"               : "Position",
       "POST_OFFICE_BOX"        : "Boîte Postale",
       "PO_BOX"                 : "BP",
+      "PREFIX"                 : "Prefix",
       "PREVIOUS_DATE"          : "Date precedente",
       "PRICE"                  : "Prix",
       "PRICE_LIST"             : "Liste de Prix",
@@ -516,6 +518,7 @@
       "SUPPLIER"               : "Fournisseur",
       "TEL"                    : "Tél",
       "TELEPHONE"              : "Téléphone",
+      "TEXT"                   : "Texte",
       "THIS_MONTH"             : "Ce Mois",
       "THIS_WEEK"              : "Cette Semaine",
       "THIS_YEAR"              : "Cette Année",
@@ -573,6 +576,7 @@
       "PROVINCE"     : "Enter province",
       "SECTOR"       : "Entrer secteur",
       "SUPPLIER"     : "Entrer le fournisseur",
+      "TYPE"         : "Entrer le type",
       "UNIT_WEIGHT"  : "Entrer le poids",
       "UNIT_VOLUME"  : "Entrer le volume",
       "USERNAME"     : "Entrer le nom utilisateur",
@@ -614,6 +618,7 @@
       "SERVICE"            : "Sélectionner un Service",
       "SEX"                : "Sélectionner le sexe",
       "TRANSFER_TYPE"      : "Sélectionner le type de transfert",
+      "TYPE"               : "Sélectionner un type",
       "USER"               : "Selectionner Utilisateur",
       "VILLAGE"            : "Sélectionner village",
       "ZS"                 : "Sélectionner zone de sante"
@@ -1069,6 +1074,9 @@
       "VILLAGE"            : "Village"
     }
   },
+  "TRANSACTION_TYPE" : {
+    "LIST" : "Liste des types de transaction"
+  },
   "TREE": {
     "ACCOUNT"                    : "Comptes",
     "ADMIN"                      : "Admin",
@@ -1125,6 +1133,7 @@
     "SERVICE"                    : "Services",
     "SIMPLE_VOUCHER"             : "Bordereau de transfert",
     "STOCK"                      : "Stock",
+    "TRANSACTION_TYPE"           : "Types de Transaction",
     "USERS"                      : "Utilisateurs",
     "VOUCHER_REGISTRY"           : "Registre des Bordereaux"
   },

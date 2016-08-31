@@ -19,25 +19,31 @@ function VoucherService(Api, $http, util) {
   // @tdoo - remove this reference to baseUrl
   var baseUrl = '/journal/';
 
-  // transfer type
-  service.transferType = [
-    { id: 0, text: 'VOUCHERS.SIMPLE.GENERIC_INCOME', incomeExpense: 'income', prefix: 'REC. GEN' },
-    { id: 1, text: 'VOUCHERS.SIMPLE.CASH_PAYMENT', incomeExpense: 'income', prefix: 'CASH' },
-    { id: 2, text: 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', incomeExpense: 'income', prefix: 'CONV' },
-    { id: 3, text: 'VOUCHERS.SIMPLE.SUPPORT_INCOME', incomeExpense: 'income', prefix: 'PEC' },
-    { id: 4, text: 'VOUCHERS.SIMPLE.TRANSFER', incomeExpense: 'income', prefix: 'TRANSF' },
-    { id: 5, text: 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', incomeExpense: 'expense', prefix: 'DEP. GEN' },
-    { id: 6, text: 'VOUCHERS.SIMPLE.SALARY_PAYMENT', incomeExpense: 'expense', prefix: 'SALAIRE' },
-    { id: 7, text: 'VOUCHERS.SIMPLE.CASH_RETURN', incomeExpense: 'expense', prefix: 'PAYBACK' },
-    { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' },
-    { id: 9, text: 'VOUCHERS.SIMPLE.CREDIT_NOTE', incomeExpense: 'creditNote', prefix: 'CREDIT NOTE' },
-  ];
+  /**
+   * transfer type
+   * @deprecated use transactionType in place...
+   * @todo remove securely this array i.e. be sure that no module use this element
+   */
+   service.transferType = transactionType;
+  // service.transferType = [
+  //   { id: 0, text: 'VOUCHERS.SIMPLE.GENERIC_INCOME', incomeExpense: 'income', prefix: 'REC. GEN' },
+  //   { id: 1, text: 'VOUCHERS.SIMPLE.CASH_PAYMENT', incomeExpense: 'income', prefix: 'CASH' },
+  //   { id: 2, text: 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', incomeExpense: 'income', prefix: 'CONV' },
+  //   { id: 3, text: 'VOUCHERS.SIMPLE.SUPPORT_INCOME', incomeExpense: 'income', prefix: 'PEC' },
+  //   { id: 4, text: 'VOUCHERS.SIMPLE.TRANSFER', incomeExpense: 'income', prefix: 'TRANSF' },
+  //   { id: 5, text: 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', incomeExpense: 'expense', prefix: 'DEP. GEN' },
+  //   { id: 6, text: 'VOUCHERS.SIMPLE.SALARY_PAYMENT', incomeExpense: 'expense', prefix: 'SALAIRE' },
+  //   { id: 7, text: 'VOUCHERS.SIMPLE.CASH_RETURN', incomeExpense: 'expense', prefix: 'PAYBACK' },
+  //   { id: 8, text: 'VOUCHERS.SIMPLE.PURCHASES', incomeExpense: 'expense', prefix: 'ACHAT' },
+  //   { id: 9, text: 'VOUCHERS.SIMPLE.CREDIT_NOTE', incomeExpense: 'creditNote', prefix: 'CREDIT NOTE' },
+  // ];
 
   service.createSimple = createSimple;
   service.create = create;
   service.reverse = reverse;
   service.getTransferType = getTransferType;
   service.getTransferText = getTransferText;
+  service.transactionType = transactionType;
 
   /** Get transfer type */
   function getTransferType(id) {
@@ -103,6 +109,14 @@ function VoucherService(Api, $http, util) {
    */
   function reverse(creditNote) {
     return $http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
+      .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * This function returns transaction type from the db
+   */
+  function transactionType() {
+    return $http.get('/transaction_type')
       .then(util.unwrapHttpResponse);
   }
 
