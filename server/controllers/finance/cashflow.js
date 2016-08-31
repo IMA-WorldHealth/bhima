@@ -7,6 +7,7 @@
  * @module finance/cashflow
  *
  * @requires node-uuid
+ * @requires moment
  * @requires lib/db
  * @requires lib/util
  * @requires lib/errors/NotFound
@@ -16,11 +17,12 @@
 
 'use strict';
 
-const uuid = require('node-uuid');
-const db   = require('../../lib/db');
-const util = require('../../lib/util');
-const rm   = require('../../lib/ReportManager');
-const NotFound = require('../../lib/errors/NotFound');
+const uuid       = require('node-uuid');
+const moment     = require('moment');
+const db         = require('../../lib/db');
+const util       = require('../../lib/util');
+const rm         = require('../../lib/ReportManager');
+const NotFound   = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 // expose to the API
@@ -85,7 +87,7 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
       SELECT BUID(t.uuid) AS uuid, t.trans_id, t.trans_date, a.number, a.label,
         SUM(t.debit_equiv) AS debit_equiv, SUM(t.credit_equiv) AS credit_equiv,
         t.debit, t.credit, t.currency_id, t.description, t.comment,
-        BUID(t.record_uuid) AS record_uuid, t.origin_id, u.first, u.last
+        BUID(t.record_uuid) AS record_uuid, t.origin_id, u.display_name
 			FROM
       (
   			(
