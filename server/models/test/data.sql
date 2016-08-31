@@ -268,8 +268,6 @@ INSERT INTO `cash_box_account_currency` VALUES
   (3,1,2,3627,3627),
   (4,2,2,3627,3627);
 
--- INSERT INTO `transaction_type` VALUES (1,'pcash_transfert'), (2,'sale'), (8,'pcash_convention');
-
 INSERT INTO `inventory_group` VALUES
   (HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'),'Test inventory group','INVGRP',3636,NULL,NULL,NULL);
 
