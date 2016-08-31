@@ -62,9 +62,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
     patient.dob = new Date(patient.dob);
 
     // Assign name
-    patient.name = patient.first_name.concat(
-          ' ', patient.middle_name,
-          ' ', patient.last_name);
+    patient.name = patient.display_name;
 
     patient.displayGender = patient.sex;
     patient.displayAge = moment().diff(patient.dob, 'years');

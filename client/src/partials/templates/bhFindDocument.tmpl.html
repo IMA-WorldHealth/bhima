@@ -1,7 +1,7 @@
 <!-- Patient details informations  -->
 <div class="document-section" ng-if="$ctrl.session.enablePatientDetails">
   <b><i class="fa fa-universal-access"></i> {{ $ctrl.session.patient.reference }} / </b>
-  {{ $ctrl.session.patient.first_name + ' ' + $ctrl.session.patient.last_name + ' ' + $ctrl.session.patient.middle_name }}
+  {{ $ctrl.session.patient.display_name }}
 </div>
 
 <!-- Search Documents  -->

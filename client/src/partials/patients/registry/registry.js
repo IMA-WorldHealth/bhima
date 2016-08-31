@@ -42,7 +42,7 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
     enableColumnMenus : false,
     columnDefs : [
       { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-      { field : 'patientName', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter : 'translate' },
+      { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter : 'translate' },
       { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter : 'translate' },
       { field : 'sex', displayName : 'TABLE.COLUMNS.GENDER', headerCellFilter : 'translate'  },
       { field : 'hospital_no', displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR', headerCellFilter : 'translate'  },
