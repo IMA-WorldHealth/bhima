@@ -19,7 +19,7 @@ describe('Patient Record', function () {
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
   const patient = {
-    name : 'Test Patient 2',
+    name : 'Test 2 Patient',
     id : 'TPA1',
     hospital_no : '110',
     age : '26',

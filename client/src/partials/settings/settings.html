@@ -44,6 +44,12 @@
           data-logout-button>
           <span class="glyphicon glyphicon-log-out"></span> {{ "FORM.BUTTONS.LOGOUT" | translate }}
         </button>
+
+        <a ng-href="mailto:{{SettingsCtrl.bugLink}}" class="btn btn-default" data-bug-report-button>
+          <span class="text-danger">
+            <i class="fa fa-bug"></i> {{ "SETTINGS.BUG_LINK" | translate }}
+          </span>
+        </a>
       </div>
     </div>
   </div>

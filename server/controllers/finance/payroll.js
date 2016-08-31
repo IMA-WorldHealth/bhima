@@ -4,8 +4,8 @@ exports.listPaiementData = function (req, res, next) {
   var sql = 'SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement_period.dateFrom,' +
           ' paiement_period.dateTo, paiement.currency_id,' +
           ' paiement.net_before_tax, paiement.net_after_tax, paiement.net_after_tax, paiement.net_salary,' +
-          ' paiement.working_day, paiement.paiement_date, employee.code, employee.prenom, employee.name,' +
-          ' employee.postnom, employee.dob, employee.sexe, employee.nb_spouse, employee.nb_enfant,' +
+          ' paiement.working_day, paiement.paiement_date, employee.code, employee.display_name,' +
+          ' employee.dob, employee.sexe, employee.nb_spouse, employee.nb_enfant,' +
           ' employee.grade_id, grade.text, grade.code AS \'codegrade\', grade.basic_salary, exchange_rate.rate,' +
           ' exchange_rate.enterprise_id, enterprise.enterprise_currency_id' +
           ' FROM paiement' +
@@ -25,13 +25,13 @@ exports.listPaiementData = function (req, res, next) {
 };
 
 exports.listPaymentByEmployee = function (req, res, next) {
-  var sql = 'SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS \'other_account\', z.tax_id, z.value, z.posted' +
+  var sql = 'SELECT e.id, e.code, e.display_name, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS \'other_account\', z.tax_id, z.value, z.posted' +
           ' FROM employee e ' +
           ' JOIN paiement p ON e.id=p.employee_id ' +
           ' JOIN tax_paiement z ON z.paiement_uuid=p.uuid ' +
           ' JOIN tax t ON t.id=z.tax_id ' +
           ' WHERE p.paiement_period_id=' + db.escape(req.params.id) + ' AND t.is_employee=1 ' +
-          ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
+          ' ORDER BY e.display_name ASC';
 
   db.exec(sql)
   .then(function (result) {
@@ -42,13 +42,13 @@ exports.listPaymentByEmployee = function (req, res, next) {
 };
 
 exports.listPaymentByEnterprise = function (req, res, next) {
-  var sql = 'SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS \'other_account\', z.tax_id, z.value, z.posted' +
+  var sql = 'SELECT e.id, e.code, e.display_name, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS \'other_account\', z.tax_id, z.value, z.posted' +
           ' FROM employee e ' +
           ' JOIN paiement p ON e.id=p.employee_id ' +
           ' JOIN tax_paiement z ON z.paiement_uuid=p.uuid ' +
           ' JOIN tax t ON t.id=z.tax_id ' +
           ' WHERE p.paiement_period_id=' + db.escape(req.params.employee_id) + ' AND t.is_employee=0 ' +
-          ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
+          ' ORDER BY e.display_name ASC';
 
   db.exec(sql)
   .then(function (result) {
@@ -72,12 +72,12 @@ exports.setCotisationPayment = function (req, res, next) {
 };
 
 exports.listEmployeeCotisationPayments = function (req, res, next) {
-  var sql = 'SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS \'other_account\', z.cotisation_id, z.value, z.posted' +
+  var sql = 'SELECT e.id, e.code, e.display_name, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS \'other_account\', z.cotisation_id, z.value, z.posted' +
           ' FROM employee e ' +
           ' JOIN paiement p ON e.id=p.employee_id ' +
           ' JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid ' +
           ' JOIN cotisation t ON t.id=z.cotisation_id ' +
-          ' WHERE p.paiement_period_id=' + db.escape(req.params.id) + ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
+          ' WHERE p.paiement_period_id=' + db.escape(req.params.id) + ' ORDER BY e.display_name ASC';
 
   db.exec(sql)
   .then(function (result) {

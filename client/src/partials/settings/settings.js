@@ -1,8 +1,9 @@
 angular.module('bhima.controllers')
-.controller('settings', SettingsController);
+  .controller('settings', SettingsController);
 
 SettingsController.$inject = [
-  '$state', 'LanguageService', 'SessionService'
+  '$state', 'LanguageService', 'SessionService', 'bhConstants', '$translate',
+  'NotifyService'
 ];
 
 /**
@@ -13,7 +14,7 @@ SettingsController.$inject = [
  *
  * @constructor
  */
-function SettingsController($state, Languages, Session) {
+function SettingsController($state, Languages, Session, Constants, $translate, Notify) {
   var vm = this;
 
   // the url to return to (using the back button)
@@ -30,5 +31,25 @@ function SettingsController($state, Languages, Session) {
   Languages.read()
   .then(function (languages) {
     vm.languages = languages;
-  });
+  })
+  .catch(Notify.handleError);
+
+  // formatting or bug report
+  var emailAddress = Constants.settings.CONTACT_EMAIL;
+  var subject = '[BUG] ' + new Date().toLocaleDateString() + ' -  ' + Session.enterprise.name;
+
+  // get the translated bug report
+  $translate('SETTINGS.BUG_REPORT')
+    .then(function (body) {
+
+      var text =
+        Session.user.username + ' ' +
+        new Date().toLocaleDateString() + '\r\n\r\n' +
+        body;
+
+      // template in the bug link
+      vm.bugLink = encodeURI(emailAddress + '?subject=' + subject + '&body=' + text);
+    })
+    .catch(Notify.handleError);
+
 }

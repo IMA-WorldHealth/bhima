@@ -393,6 +393,7 @@
       "DUE"                    : "Payment Due",
       "EDIT"                   : "Edit",
       "EMAIL"                  : "Email",
+      "EMPLOYEE_NAME"          : "Employee name",
       "EMPLOYER"               : "Employer",
       "END"                    : "End",
       "END_DATE"               : "End Date",
@@ -440,6 +441,7 @@
       "LAST_PAGE"              : "Last Page Visited",
       "LOCATION_REGISTER"      : "Location Register",
       "LOCKED"                 : "Locked",
+      "LOGIN"                  : "Login",
       "LOSS_ACCOUNT"           : "Loss Account",
       "MALE"                   : "Male",
       "MARITAL_STATUS"         : "Martial Status",
@@ -523,7 +525,7 @@
       "TELEPHONE"              : "Telephone",
       "THIS_MONTH"             : "This Month",
       "THIS_WEEK"              : "This week",
-      "THIS_YEAR"              : "This Year",
+      "THIS_YEAR"              : "This year",
       "TITLE"                  : "Title",
       "TITLE_ACCOUNT"          : "Title Account",
       "TODAY"                  : "Today",
@@ -928,7 +930,9 @@
     "TITLE"               : "Service Management"
   },
   "SETTINGS": {
-    "TITLE" : "Settings"
+    "TITLE" : "Settings",
+    "BUG_LINK" : "Report an Issue",
+    "BUG_REPORT" : "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO"
   },
   "SUBSIDY": {
     "ADDING_SUBSIDY"   : "Adding subsidy",

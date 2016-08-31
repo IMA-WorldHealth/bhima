@@ -69,7 +69,7 @@ function list(req, res, next) {
     sql = `
       SELECT f.id, f.enterprise_id, f.number_of_months, f.label, f.start_date,
       f.previous_fiscal_year_id, f.locked, f.created_at, f.updated_at, f.note, DATE_ADD(start_date, INTERVAL number_of_months MONTH) AS end_date,
-      f.user_id, u.first, u.last
+      f.user_id, u.display_name
       FROM fiscal_year AS f
       JOIN user AS u ON u.id = f.user_id
       WHERE f.enterprise_id = ?

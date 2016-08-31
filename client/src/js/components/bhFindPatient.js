@@ -106,10 +106,10 @@ function FindPatientComponent(Patients, AppCache, Notify) {
   /**
    * @method searchByName
    *
-   * @param {string} text Patient name (first_name, middle_name or last_name)
+   * @param {string} text Patient name (display_name)
    *
    * @description This function make a call to BHIMA API for getting patients
-   * according the name (first_name, middle_name or last_name).
+   * according the name (display_name).
    *
    * @return {Array} An array of patients
    */
@@ -193,7 +193,7 @@ function FindPatientComponent(Patients, AppCache, Notify) {
    * @returns {string} The formatted patient name
    */
   function formatPatient(p) {
-    return p ? p.first_name + ' ' + p.last_name + ' ' + p.middle_name : '';
+    return p ? p.display_name : '';
   }
 
   /**

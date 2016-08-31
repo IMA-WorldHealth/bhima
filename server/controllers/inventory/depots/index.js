@@ -186,8 +186,7 @@ function listDistributions(req, res, next) {
     case 'patient':
       sql =
         `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
-          p.uuid AS patientId, p.first_name, p.last_name,
-          p.middle_name, d.text, d.uuid AS depotId,
+          p.uuid AS patientId, p.display_name, d.text, d.uuid AS depotId,
           CONCAT(pr.abbr, p.reference) AS patient, c.date, i.text as label,
           sale.invoice, cp.sale_uuid AS saleId, c.canceled
         FROM consumption_patient AS cp
@@ -204,7 +203,7 @@ function listDistributions(req, res, next) {
         ) AS sale ON sale.uuid = c.document_id
         WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
         GROUP BY c.document_id
-        ORDER BY c.date DESC, p.first_name ASC, p.last_name ASC;`;
+        ORDER BY c.date DESC, p.display_name ASC;`;
       break;
 
     // get distributions to services

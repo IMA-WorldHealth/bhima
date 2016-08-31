@@ -28,7 +28,7 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
     appScopeProvider : vm, // ensure that the controller's `this` variable is bound to appScope
     enableColumnMenus : false,
     columnDefs : [
-      { field : 'displayname', name : 'Display Name' },
+      { field : 'display_name', name : 'Display Name' },
       { field : 'username', name : 'User Name' },
       { name : 'edit', displayName : '', cellTemplate: editTemplate, enableSorting : false },
       { name : 'permission', displayName : '', cellTemplate: permissionTemplate, enableSorting : false }

@@ -12,11 +12,10 @@ describe('Permissions Module', function () {
   before(() => helpers.navigate('#/permissions'));
 
   const mockUser = {
-    first:    'Mock',
-    last:     'User',
-    username: 'mockuser',
-    email:    'mockuser@email.com',
-    password: 'cheese'
+    display_name:   'Mock User',
+    username:       'mockuser',
+    email:          'mockuser@email.com',
+    password:       'cheese'
   };
 
   // new user creation
@@ -26,8 +25,7 @@ describe('Permissions Module', function () {
     FU.buttons.create();
 
     // fill in user data
-    FU.input('PermissionsCtrl.user.first', mockUser.first);
-    FU.input('PermissionsCtrl.user.last', mockUser.last);
+    FU.input('PermissionsCtrl.user.display_name', mockUser.display_name);
     FU.input('PermissionsCtrl.user.username', mockUser.username);
     FU.input('PermissionsCtrl.user.email', mockUser.email);
 
@@ -55,8 +53,7 @@ describe('Permissions Module', function () {
     FU.buttons.submit();
 
     // check the validation messages
-    FU.validation.error('PermissionsCtrl.user.first');
-    FU.validation.error('PermissionsCtrl.user.last');
+    FU.validation.error('PermissionsCtrl.user.display_name');
     FU.validation.error('PermissionsCtrl.user.username');
     FU.validation.error('PermissionsCtrl.user.email');
     FU.validation.error('PermissionsCtrl.user.projects');

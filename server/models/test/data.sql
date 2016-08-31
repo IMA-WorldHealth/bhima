@@ -98,11 +98,11 @@ INSERT INTO `account` VALUES
 UPDATE enterprise SET `gain_account_id` = 3640, `loss_account_id` = 3641;
 
 -- create test users
-INSERT INTO user (id, username, password, first, last, email) VALUES
-  (1, 'superuser', PASSWORD('superuser'), 'Super', 'User', 'SuperUser@test.org'),
-  (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular', 'User', 'RegUser@test.org'),
-  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No', 'Permissrepertoireions', 'Invalid@test.org'),
-  (4, 'admin', PASSWORD('1'), 'Admin', 'User', 'admin@test.org');
+INSERT INTO user (id, username, password, display_name, email) VALUES
+  (1, 'superuser', PASSWORD('superuser'), 'Super User', 'SuperUser@test.org'),
+  (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular User', 'RegUser@test.org'),
+  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org'),
+  (4, 'admin', PASSWORD('1'), 'Admin User', 'admin@test.org');
 
 
 -- Only modules updated and written to 2X standards should be registered in the application tree
@@ -301,8 +301,8 @@ INSERT INTO `debtor` VALUES
 
 
 INSERT INTO `patient` VALUES
-  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'),1,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'Test','2','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'2015-11-14 07:04:49',NULL,NULL,'Patient','110', '', 1),
-  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'),1,1,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'Test','1','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'F',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'2016-03-14 07:04:49',NULL,NULL,'Patient','100', '', 2);
+  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'),1,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'Test 2 Patient','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'2015-11-14 07:04:49',NULL,NULL,'110', '', 1),
+  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'),1,1,HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'),'Test 1 Patient','1990-06-01 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'F',NULL,NULL,NULL,NULL,NULL,NULL,0,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'2016-03-14 07:04:49',NULL,NULL,'100', '', 2);
 
 INSERT INTO `patient_visit` VALUES
   (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', NULL, 1),
@@ -329,7 +329,7 @@ INSERT INTO `creditor` VALUES
   (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'),HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'),'Fournisseur');
 
 -- Supplier
-INSERT INTO `supplier` (uuid, creditor_uuid, name, address_1, address_2, email) VALUES
+INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2, email) VALUES
   (HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), 'Test Supplier', '12th Avenue', 'New York City, NY 34305', 'supplier@test.org');
 
 -- Grade
@@ -448,7 +448,7 @@ INSERT INTO `exchange_rate` VALUES
   (1,1,1,930.0000, NOW());
 
 INSERT INTO `employee` VALUES
-  (1,'E1','Dedrick','Kitamuka','Mvuezolo','M','1980-02-01 00:00:00','2016-02-02 00:00:00',1,3,HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),500,NULL,NULL,'kinshasa','0896611111','my@email.com',1,3,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('42d3756a-7770-4bb8-a899-7953cd859892'),HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),NULL);
+  (1,'E1','Dedrick Kitamuka Mvuezolo','M','1980-02-01 00:00:00','2016-02-02 00:00:00',1,3,HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),500,NULL,NULL,'kinshasa','0896611111','my@email.com',1,3,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('42d3756a-7770-4bb8-a899-7953cd859892'),HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),NULL);
 
 INSERT INTO `price_list` VALUES
   (HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 1, 'Test Price List', 'Price list for test purposes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

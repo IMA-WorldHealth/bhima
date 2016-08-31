@@ -52,8 +52,8 @@ function list(req, res, next) {
 
   let invoiceListQuery =
     `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames,
-      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id,
+      BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientNames,
+      service.name as serviceName, user.display_name, voucher.type_id,
       invoice.date, invoice.is_distributable
     FROM invoice
       LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
@@ -87,9 +87,9 @@ function lookupInvoice(invoiceUuid) {
   let invoiceDetailQuery =
     `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference,
       invoice.cost, invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
-      CONCAT(patient.first_name, " ", patient.last_name) AS debtor_name,   BUID(patient.uuid) as patient_uuid,
+      patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
       invoice.user_id, invoice.date, invoice.is_distributable, voucher.type_id,
-      CONCAT(user.first, ' - ', user.last) AS responsible
+      user.display_name
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
     LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
@@ -186,9 +186,9 @@ function find(options) {
 
   let sql =`
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
-      invoice.date, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames, invoice.cost,
+      invoice.date, patient.display_name as patientName, invoice.cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
-      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id
+      service.name as serviceName, user.display_name, voucher.type_id
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid

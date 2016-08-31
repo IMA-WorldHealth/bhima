@@ -28,8 +28,7 @@ describe('Patient Edit', function () {
   it('updates a patients details', function () {
 
     // required information
-    FU.input('PatientEditCtrl.medical.last_name', 'Updated Last Name');
-    FU.input('PatientEditCtrl.medical.middle_name', 'Updated Middle Name');
+    FU.input('PatientEditCtrl.medical.display_name', 'Updated Last Name');
 
     // optional information
     FU.input('PatientEditCtrl.medical.title', 'Mr.');

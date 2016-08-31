@@ -25,6 +25,8 @@ bhDateInterval.$inject = ['DateService'];
 
 // controller definition
 function bhDateInterval(Dates) {
+  /* global moment */
+
   var vm = this;
 
   vm.options = [
@@ -72,7 +74,7 @@ function bhDateInterval(Dates) {
   }
 
   function startup() {
-    // set today as default date plage value 
+    // set today as default date plage value
     if (!vm.dateFrom && !vm.dateTo) {
       search(vm.options[0]);
     }
