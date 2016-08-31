@@ -8,7 +8,7 @@ const supportedRender = {
 
 const defaultRender = 'pdf';
 const template = path.normalize('./server/controllers/finance/reports/list.handlebars');
-const receiptOptions = { pageSize : 'A4', orientation: 'landscape' };
+const receiptOptions = { pageSize : 'A4', orientation: 'portrait' };
 
 // export the receipt object
 exports.build = build;
