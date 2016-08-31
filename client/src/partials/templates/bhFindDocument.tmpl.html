@@ -1,7 +1,7 @@
 <!-- Patient details informations  -->
 <div class="document-section" ng-if="$ctrl.session.enablePatientDetails">
   <b><i class="fa fa-universal-access"></i> {{ $ctrl.session.patient.reference }} / </b>
-  {{ $ctrl.session.patient.first_name + ' ' + $ctrl.session.patient.last_name + ' ' + $ctrl.session.patient.middle_name }}
+  {{ $ctrl.session.patient.display_name }}
 </div>
 
 <!-- Search Documents  -->
@@ -101,7 +101,7 @@
             <!-- date and author  -->
             <i class="fa fa-calendar-o"></i>
             {{ doc.timestamp | date }}, {{ 'FORM.LABELS.BY' | translate }}
-            {{ doc.first + ' ' + doc.last }}
+            {{ doc.display_name }}
           </div>
         </div>
       </div>
@@ -150,7 +150,7 @@
             <!-- author  -->
             <i class="fa fa-calendar-o"></i>
             {{ doc.timestamp | date }}, {{ 'FORM.LABELS.BY' | translate }}
-            {{ doc.first + ' ' + doc.last }}
+            {{ doc.display_name }}
 
           </div>
 

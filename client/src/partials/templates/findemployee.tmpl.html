@@ -6,7 +6,7 @@
      </div>
      <div ng-switch-when="true">
        <!-- Style hack -->
-       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findEmployee.employee.name}} <small>({{findEmployee.employee.sexe}})</small>
+       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findEmployee.employee.display_name}} <small>({{findEmployee.employee.sexe}})</small>
        <div class="pull-right" ng-if="findEmployee.enableRefresh">
          <span ng-click="findEmployee.refresh()" class="glyphicon glyphicon-repeat"></span>
        </div>
@@ -15,13 +15,13 @@
   </div>
   <div class="panel-body find-collapse" ng-show="!findEmployee.submitSuccess">
     <div ng-switch on="findEmployee.state">
-      <div ng-switch-when="name">
+      <div ng-switch-when="display_name">
         <div class="input-group">
           <input
           id="findSearch"
           type="text"
           ng-model="findEmployee.selectedEmployee"
-          typeahead="employee as employee.name for employee in employeeList | filter:$viewValue | limitTo:8"
+          typeahead="employee as employee.display_name for employee in employeeList | filter:$viewValue | limitTo:8"
           placeholder="{{ 'EFIND.PLACEHOLDER' | translate }}"
           typeahead-on-select="loadEmployee(employee.id)"
           typeahead-template-url="/partials/templates/employeeListItem.tmpl.html"

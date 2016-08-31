@@ -15,9 +15,7 @@ describe('Patient Registration', function () {
   beforeEach(() => helpers.navigate(path));
 
   const mockPatient = {
-    first_name : 'Mock',
-    middle_name : 'Patient',
-    last_name : 'First',
+    display_name : 'Mock Patient First',
     yob : '1993',
     sex : 'M',
     project_id : 1,
@@ -29,9 +27,7 @@ describe('Patient Registration', function () {
   it('registers a valid patient', function (done) {
 
     // patient name
-    FU.input('PatientRegCtrl.medical.last_name', mockPatient.last_name);
-    FU.input('PatientRegCtrl.medical.middle_name', mockPatient.middle_name);
-    FU.input('PatientRegCtrl.medical.first_name', mockPatient.first_name);
+    FU.input('PatientRegCtrl.medical.display_name', mockPatient.display_name);
 
     // hospital number, etc
     FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
@@ -79,7 +75,7 @@ describe('Patient Registration', function () {
       expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
       // the following fields should be required
-      FU.validation.error('PatientRegCtrl.medical.last_name');
+      FU.validation.error('PatientRegCtrl.medical.display_name');
       FU.validation.error('PatientRegCtrl.finance.debtor_group_uuid');
       FU.validation.error('PatientRegCtrl.medical.dob');
 

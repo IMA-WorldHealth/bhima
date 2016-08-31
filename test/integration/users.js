@@ -11,12 +11,13 @@ const helpers = require('./helpers');
 describe('(/users) Users and Permissions', function () {
 
   var newUser = {
-    username : 'newUser',
-    password : 'newUser',
-    projects : [1],
-    email : 'newUser@test.org',
-    first: 'new',
-    last: 'user'
+    username      : 'newUser',
+    password      : 'newUser',
+    projects      : [1],
+    email         : 'newUser@test.org',
+    first         : 'new',
+    last          : 'user',
+    display_name  : 'New Utilisateur'
   };
 
   var badUser = {
@@ -75,11 +76,9 @@ describe('(/users) Users and Permissions', function () {
     return agent.get('/users/' + newUser.id)
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body.username).to.equal(newUser.username);
+        expect(res).to.be.json;      
         expect(res.body.email).to.equal(newUser.email);
-        expect(res.body.first).to.equal(newUser.first);
-        expect(res.body.last).to.equal(newUser.last);
+        expect(res.body.display_name).to.equal(newUser.display_name);
       })
       .catch(helpers.handler);
   });
@@ -194,25 +193,14 @@ describe('(/users) Users and Permissions', function () {
   });
 
 
-  it('DELETE /users/:id will delete the newly added user', function () {
+  it('DELETE /users/:id will not possible to delete the user who have Permissions', function () {
     return agent.delete('/users/' + newUser.id)
       .then(function (res) {
-        helpers.api.deleted(res);
-        return agent.get('/users/' + newUser.id);
-      })
-      .then(function (res) {
-        helpers.api.errored(res, 404);
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /users/:id will send back a 404 if the user does not exist', function () {
-    return agent.delete('/users/' + newUser.id)
-      .then(function (res) {
-        helpers.api.errored(res, 404);
-      })
-      .catch(helpers.handler);
-  });
 
   it('GET /users/:id/permissions will be empty for deleted user', function () {
     return agent.get('/users/' + newUser.id + '/permissions')

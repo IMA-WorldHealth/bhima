@@ -15,9 +15,7 @@ describe('Employees', function () {
 
   const employee = {
     code : 'HBB80',
-    prenom : 'Sherlock',
-    name : 'Holmes',
-    postnom : 'Doyle',
+    display_name : 'Sherlock Holmes Doyle',
     sexe : 'M',
     dob : new Date('1960-06-30'),
     date_embauche : new Date('1997-05-17'),
@@ -34,9 +32,7 @@ describe('Employees', function () {
   it('creates a new employee', function () {
     FU.buttons.create();
 
-    FU.input('EmployeeCtrl.employee.prenom', employee.prenom);
-    FU.input('EmployeeCtrl.employee.name', employee.name);
-    FU.input('EmployeeCtrl.employee.postnom', employee.postnom);
+    FU.input('EmployeeCtrl.employee.display_name', employee.display_name);
 
     // input the date of birth
     components.dateEditor.set(employee.dob, 'employee-dob');
@@ -73,8 +69,8 @@ describe('Employees', function () {
   it('edits an employee', function () {
     element(by.id('employee-upd-' + employeeId )).click();
 
-    // modify the employee name
-    FU.input('EmployeeCtrl.employee.name', ' Elementary');
+    // modify the employee display_name
+    FU.input('EmployeeCtrl.employee.display_name', ' Elementary');
     FU.input('EmployeeCtrl.employee.adresse', ' Blvd Lumumba');
 
     element(by.id('bhima-employee-locked')).click();
@@ -102,9 +98,7 @@ describe('Employees', function () {
     element(by.id('submit-employee')).click();
 
     // the following fields should be required
-    FU.validation.error('EmployeeCtrl.employee.prenom');
-    FU.validation.error('EmployeeCtrl.employee.name');
-    FU.validation.error('EmployeeCtrl.employee.postnom');
+    FU.validation.error('EmployeeCtrl.employee.display_name');
     FU.validation.error('EmployeeCtrl.employee.sexe');
     FU.validation.error('EmployeeCtrl.employee.code');
     FU.validation.error('EmployeeCtrl.employee.service_id');

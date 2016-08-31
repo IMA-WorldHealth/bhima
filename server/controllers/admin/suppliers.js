@@ -15,7 +15,7 @@ const Topic = require('../../lib/topic');
 
 function lookupSupplier(uid) {
   const sql = `
-    SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
+    SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.display_name,
       supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note,
       supplier.phone, supplier.international, supplier.locked
     FROM supplier
@@ -41,7 +41,9 @@ function lookupSupplier(uid) {
 function list(req, res, next) {
   let sql = `
     SELECT
-      BUID(supplier.uuid) AS uuid, BUID(supplier.creditor_uuid) AS creditor_uuid, supplier.name
+      BUID(supplier.uuid) AS uuid, BUID(supplier.creditor_uuid) AS creditor_uuid, supplier.display_name, 
+      supplier.display_name, supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note,
+      supplier.phone, supplier.international, supplier.locked
     FROM supplier
   `;
 
@@ -156,24 +158,24 @@ function update(req, res, next) {
  * @description
  * GET /suppliers/search
  *
- * This method search for a supplier by their name.
+ * This method search for a supplier by their display_name.
  */
 function search(req, res, next) {
   let limit = Number(req.query.limit);
 
   let sql = `
-    SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.name,
+    SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.display_name,
       supplier.address_1, supplier.address_2, supplier.email,
       supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
     FROM supplier
-    WHERE supplier.name LIKE "%?%"
+    WHERE supplier.display_name LIKE "%?%"
   `;
 
   if (limit) {
     sql += 'LIMIT ' + Math.floor(limit) + ';';
   }
 
-  db.exec(sql, [req.query.name])
+  db.exec(sql, [req.query.display_name])
   .then(function (rows) {
     res.status(200).json(rows);
   })

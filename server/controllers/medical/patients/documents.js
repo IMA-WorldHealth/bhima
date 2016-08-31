@@ -101,7 +101,7 @@ function list(req, res, next) {
 
   let sql = `
     SELECT BUID(d.uuid) AS uuid, d.label, d.link, d.timestamp, d.mimetype, d.size,
-    u.id AS user_id, u.first, u.last
+    u.id AS user_id, u.display_name
     FROM patient_document d JOIN user u ON u.id = d.user_id
     WHERE patient_uuid = ?;
   `;

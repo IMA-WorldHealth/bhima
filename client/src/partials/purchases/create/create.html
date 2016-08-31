@@ -29,7 +29,7 @@
                     ng-model="PurchaseCtrl.supplier"
                     placeholder="{{ 'FORM.PLACEHOLDERS.SUPPLIER' | translate }}..."
                     name="supplier"
-                    uib-typeahead="supplier as supplier.name for supplier in PurchaseCtrl.suppliers | filter:$viewValue | limitTo:10"
+                    uib-typeahead="supplier as supplier.display_name for supplier in PurchaseCtrl.suppliers | filter:$viewValue | limitTo:10"
                     typeahead-editable="false"
                     typeahead-on-select="PurchaseCtrl.order.setSupplier(PurchaseCtrl.supplier)"
                     required>

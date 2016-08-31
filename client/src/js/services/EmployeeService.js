@@ -30,7 +30,7 @@ function EmployeeService($http, util) {
 
   /**
    * @desc It search for employee from the database
-   * @param {String} key, can be code or names
+   * @param {String} key, can be code or display_name
    * @return {String} value a token taped by the user.
    * @example
    * service.search(code, value)

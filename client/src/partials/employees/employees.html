@@ -59,7 +59,7 @@
                 <td>
                   <i ng-if="!item.code_employees" class="glyphicon glyphicon-minus-sign"></i> {{ item.code_employees }}
                 </td>
-                <td>{{ item.displayName}} </td>
+                <td>{{ item.display_name}} </td>
                 <td>{{ item.fonction_txt }}</td>
                 <td>{{ item.code_grade }}</td>
                 <td><i class="glyphicon glyphicon-ok" ng-if="!!item.locked"></i></td>
@@ -83,26 +83,10 @@
           <div class="panel-body">
             <form class="panel-body" name="CreateForm" ng-submit="EmployeeCtrl.submit(CreateForm.$invalid)" bh-form-defaults novalidate>
 
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.prenom.$invalid }">
-                <label class="control-label" for="bhima-employee-prenom">{{ 'FORM.LABELS.FIRST_NAME' | translate }}</label>
-                <input type="text" class="form-control" name="prenom" ng-maxlength="EmployeeCtrl.maxLength" id="bhima-employee-prenom" ng-model="EmployeeCtrl.employee.prenom" required>
-                <div class="help-block" ng-messages="CreateForm.prenom.$error" ng-show="CreateForm.$submitted">
-                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
-                <label class="control-label" for="bhima-employee-prenom">{{ 'FORM.LABELS.NAME' | translate }}</label>
-                <input type="text" class="form-control" name="name" ng-maxlength="EmployeeCtrl.maxLength" id="bhima-employee-name" ng-model="EmployeeCtrl.employee.name" required>
-                <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
-                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.postnom.$invalid }">
-                <label class="control-label" for="bhima-employee-prenom">{{ 'FORM.LABELS.LAST_NAME' | translate }}</label>
-                <input type="text" class="form-control" name="postnom" ng-maxlength="EmployeeCtrl.maxLength" id="bhima-employee-postnom" ng-model="EmployeeCtrl.employee.postnom" required>
-                <div class="help-block" ng-messages="CreateForm.postnom.$error" ng-show="CreateForm.$submitted">
+              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.display_name.$invalid }">
+                <label class="control-label" for="bhima-employee-display_name">{{ 'FORM.LABELS.EMPLOYEE_NAME' | translate }}</label>
+                <input type="text" class="form-control" name="display_name" ng-maxlength="EmployeeCtrl.maxLength" id="bhima-employee-display_name" ng-model="EmployeeCtrl.employee.display_name" required>
+                <div class="help-block" ng-messages="CreateForm.display_name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
@@ -271,26 +255,10 @@
           <div class="panel-body">
             <form class="panel-body" name="UpdateForm" ng-submit="EmployeeCtrl.submit(UpdateForm.$invalid)" bh-form-defaults novalidate>
 
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.prenom.$invalid }">
-                <label class="control-label" for="bhima-employee-prenom">{{ 'FORM.LABELS.FIRST_NAME' | translate }}</label>
-                <input type="text" class="form-control" name="prenom" ng-maxlength="EmployeeCtrl.maxLength" id="bhima-employee-prenom" ng-model="EmployeeCtrl.employee.prenom" required>
-                <div class="help-block" ng-messages="UpdateForm.prenom.$error" ng-show="UpdateForm.$submitted">
-                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
-                <label class="control-label" for="bhima-employee-prenom">{{ 'FORM.LABELS.NAME' | translate }}</label>
-                <input type="text" class="form-control" name="name" ng-maxlength="EmployeeCtrl.maxLength" id="bhima-employee-name" ng-model="EmployeeCtrl.employee.name" required>
-                <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
-                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.postnom.$invalid }">
-                <label class="control-label" for="bhima-employee-prenom">{{ 'FORM.LABELS.LAST_NAME' | translate }}</label>
-                <input type="text" class="form-control" name="postnom" ng-maxlength="EmployeeCtrl.maxLength" id="bhima-employee-postnom" ng-model="EmployeeCtrl.employee.postnom" required>
-                <div class="help-block" ng-messages="UpdateForm.postnom.$error" ng-show="UpdateForm.$submitted">
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.display_name.$invalid }">
+                <label class="control-label" for="bhima-employee-display_name">{{ 'FORM.LABELS.EMPLOYEE_NAME' | translate }}</label>
+                <input type="text" class="form-control" name="display_name" ng-maxlength="EmployeeCtrl.maxLength" id="bhima-employee-display_name" ng-model="EmployeeCtrl.employee.display_name" required>
+                <div class="help-block" ng-messages="UpdateForm.display_name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>

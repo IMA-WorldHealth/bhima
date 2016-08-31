@@ -39,10 +39,10 @@
                 <td colspan="5"><loading-indicator></loading-indicator></td>
               </tr>
               <tr
-              ng-repeat="supplier in SupplierCtrl.suppliers | orderBy:'name' "
+              ng-repeat="supplier in SupplierCtrl.suppliers | orderBy:'display_name' "
               ng-class="{'rowSelected' : SupplierCtrl.supplier.uuid === supplier.uuid}" >
                 <td>{{ $index+1 }}</td>
-                <td>{{ supplier.name }}</td>
+                <td>{{ supplier.display_name }}</td>
                 <td>{{ supplier.phone }}</td>
                 <td><i class="glyphicon glyphicon-ok" ng-if="supplier.locked"></td>
                 <td><a class="btn btn-xs btn-default" id="supplier-upd-{{$index+1}}" ng-click="SupplierCtrl.update(supplier)"><span class="glyphicon glyphicon-pencil"></span></a></td>
@@ -85,8 +85,8 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-                <input type="text" class="form-control" name="name" ng-model="SupplierCtrl.supplier.name" required>
-                <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
+                <input type="text" class="form-control" name="display_name" ng-model="SupplierCtrl.supplier.display_name" required>
+                <div class="help-block" ng-messages="CreateForm.display_name.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>
@@ -180,13 +180,13 @@
 
         <!-- Form for updating supplier -->
         <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading">{{ 'SUPPLIER.EDIT_SUPPLIER' | translate }} </b> </div>
+          <div class="panel-heading"><b> {{ 'SUPPLIER.EDIT_SUPPLIER' | translate }} </b> </div>
           <div class="panel-body">
             <form name="UpdateForm" ng-submit="SupplierCtrl.submit(UpdateForm)" bh-form-defaults novalidate>
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
+              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.display_name.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-                <input type="text" class="form-control" name="name" ng-model="SupplierCtrl.supplier.name" required>
-                <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
+                <input type="text" class="form-control" name="display_name" ng-model="SupplierCtrl.supplier.display_name" required>
+                <div class="help-block" ng-messages="UpdateForm.display_name.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
               </div>

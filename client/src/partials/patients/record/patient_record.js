@@ -51,7 +51,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
       }
 
       /** @todo move to service or mysql query */
-      vm.patient.name = [vm.patient.first_name, vm.patient.middle_name, vm.patient.last_name].join(' ');
+      vm.patient.name = vm.patient.display_name;
       vm.patient.age = moment().diff(vm.patient.dob, 'years');
     })
     .catch(function (error) {

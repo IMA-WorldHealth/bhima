@@ -21,9 +21,7 @@ describe('(/employees) the employees API endpoint', function () {
   // employee we will add during this test suite.
   var employee = {
     code : 'x500',
-    prenom : 'Carolus',
-    name : 'Magnus',
-    postnom : 'Charlemagne',
+    display_name : 'Magnus Carolus Charlemagne',
     sexe : 'M',
     dob : dob1,
     date_embauche : embaucheDate,
@@ -44,9 +42,7 @@ describe('(/employees) the employees API endpoint', function () {
 
   var updateEmployee = {
     code : 'x500',
-    prenom : 'Charle',
-    name : 'Magne',
-    postnom : 'De France',
+    display_name : 'Charle Magne De France',
     sexe : 'M',
     dob : dob2,
     date_embauche : embaucheDate,
@@ -115,8 +111,8 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /employees/names/:value should return a list of employees match the employee names token', function () {
-    return agent.get('/employees/names/' + employee.name.substring(0,2))
+  it('GET /employees/display_name/:value should return a list of employees match the employee display_name token', function () {
+    return agent.get('/employees/display_name/' + employee.display_name.substring(0,2))
       .then(function (res) {
         helpers.api.listed(res, numEmployees);
       })
@@ -124,7 +120,7 @@ describe('(/employees) the employees API endpoint', function () {
   });
 
   it('GET /employees/unknown/:value should return an error for an unknown key', function () {
-    return agent.get('/employees/unknown/' + employee.name.substring(0,2))
+    return agent.get('/employees/unknown/' + employee.display_name.substring(0,2))
       .then(function (res) {
         helpers.api.errored(res, 400);
       })
