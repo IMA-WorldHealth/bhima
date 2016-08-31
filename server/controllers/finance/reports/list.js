@@ -23,8 +23,9 @@ function build(data, request) {
 
 
   let queryString  = request.query;
-  let renderTarget = (queryString && queryString.renderer) ? queryString.renderer : defaultRender;
-  let renderer     = supportedRender[renderTarget];
+  let renderTarget = queryString && queryString.renderer || defaultRender;
+
+  let renderer = supportedRender[renderTarget];
 
   if (!renderer) {
     throw new BadRequest('Render target provided is invalid or not supported by this report '.concat(renderTarget));
