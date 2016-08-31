@@ -44,7 +44,8 @@ INSERT INTO unit VALUES
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),
   (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/partials/inventory/configuration', '/inventory/configuration'),
   (141, 'Vouchers Records', 'TREE.VOUCHER_REGISTRY', 'Vouchers registry module', 5, '/partials/vouchers/index', '/vouchers'),
-  (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create');
+  (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create'),
+  (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/partials/admin/transaction_type', '/admin/transaction_type');
 
 -- Reserved system account types
 INSERT INTO `account_type` VALUES
@@ -227,7 +228,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (5,2),
 
 -- Fiscal Year
-(13,2);
+(13,2),
+
+-- transaction type
+(143, 1);
 
 
 -- testing financial transactions
@@ -263,11 +267,6 @@ INSERT INTO `cash_box_account_currency` VALUES
   (2,2,1,3627,3627),
   (3,1,2,3627,3627),
   (4,2,2,3627,3627);
-
-INSERT INTO `transaction_type` VALUES
-  (1,'pcash_transfert'),
-  (2,'sale'),
-  (8,'pcash_convention');
 
 INSERT INTO `inventory_group` VALUES
   (HUID('1410dfe0-b478-11e5-b297-023919d3d5b0'),'Test inventory group','INVGRP',3636,NULL,NULL,NULL);
@@ -454,3 +453,16 @@ INSERT INTO `price_list_item` VALUES
   (HUID(UUID()), HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 'label 2', 100, 1, CURRENT_TIMESTAMP);
 
 UPDATE debtor_group SET price_list_uuid = HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0') WHERE uuid = HUID('4de0fe47-177f-4d30-b95f-cff8166400b4');
+
+-- transaction type
+INSERT INTO `transaction_type` (`id`, `text`, `description`, `type`, `prefix`, `fixed`) VALUES
+  (1, 'VOUCHERS.SIMPLE.GENERIC_INCOME', 'Generic income transaction type', 'income', 'REC. GEN', 1),
+  (2, 'VOUCHERS.SIMPLE.CASH_PAYMENT', 'Cash payment transaction type', 'income', 'CASH', 1),
+  (3, 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', 'Convention payment transaction type', 'income', 'CONV', 1),
+  (4, 'VOUCHERS.SIMPLE.SUPPORT_INCOME', 'Support transaction type', 'income', 'PEC', 1),
+  (5, 'VOUCHERS.SIMPLE.TRANSFER', 'Transfer transaction type', 'income', 'TRANSF', 1),
+  (6, 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', 'Generic expense transaction type', 'expense', 'DEP. GEN', 1),
+  (7, 'VOUCHERS.SIMPLE.SALARY_PAYMENT', 'Salary payment transaction type', 'expense', 'SALAIRE', 1),
+  (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'Cash return transaction type', 'expense', 'PAYBACK', 1),
+  (9, 'VOUCHERS.SIMPLE.PURCHASES', 'Purchase transaction type', 'expense', 'ACHAT', 1),
+  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'Credit note transaction type', 'creditNote', 'CREDIT NOTE', 1);

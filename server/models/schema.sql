@@ -768,7 +768,7 @@ CREATE TABLE `general_ledger` (
   `entity_type`       CHAR(1),     -- previously deb_cred_type
   `reference_uuid`    BINARY(16),  -- previously inv_po_id
   `comment`           TEXT,
-  `origin_id`         TINYINT(3) UNSIGNED NOT NULL,
+  `origin_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `cc_id`             SMALLINT(6),
   `pc_id`             SMALLINT(6),
@@ -776,14 +776,12 @@ CREATE TABLE `general_ledger` (
   KEY `project_id` (`project_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
   KEY `period_id` (`period_id`),
-  KEY `origin_id` (`origin_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
   KEY `cc_id` (`cc_id`),
   KEY `pc_id` (`pc_id`),
   FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
-  FOREIGN KEY (`origin_id`) REFERENCES `transaction_type` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
@@ -1294,7 +1292,7 @@ CREATE TABLE `posting_journal` (
   `entity_type`       CHAR(1),     -- previously deb_cred_type
   `reference_uuid`    BINARY(16),  -- previously inv_po_id
   `comment`           TEXT,
-  `origin_id`         TINYINT(3) UNSIGNED NOT NULL,
+  `origin_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `cc_id`             SMALLINT(6),
   `pc_id`             SMALLINT(6),
@@ -1302,7 +1300,6 @@ CREATE TABLE `posting_journal` (
   KEY `project_id` (`project_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
   KEY `period_id` (`period_id`),
-  KEY `origin_id` (`origin_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
   KEY `cc_id` (`cc_id`),
@@ -1314,7 +1311,6 @@ CREATE TABLE `posting_journal` (
   INDEX `account_id` (`account_id`),
   FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
-  FOREIGN KEY (`origin_id`) REFERENCES `transaction_type` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
@@ -1720,9 +1716,13 @@ DROP TABLE IF EXISTS `transaction_type`;
 
 CREATE TABLE `transaction_type` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `service_txt` varchar(45) NOT NULL,
+  `text` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `type` varchar(30) NOT NULL,
+  `prefix` varchar(30) NOT NULL,
+  `fixed` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `transaction_type_1` (`service_txt`)
+  UNIQUE KEY `transaction_type_1` (`id`, `text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
