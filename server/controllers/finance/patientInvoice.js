@@ -22,7 +22,7 @@ const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 const createInvoice = require('./invoice/patientInvoice.create');
-const listReceipt = require('../finance/receipts/list');
+const listReceipt = require('../finance/reports/list');
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;

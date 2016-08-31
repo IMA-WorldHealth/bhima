@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const supportedRender = {
@@ -9,7 +7,7 @@ const supportedRender = {
 };
 
 const defaultRender = 'pdf';
-const template = path.normalize('./server/controllers/finance/receipts/list.handlebars');
+const template = path.normalize('./server/controllers/finance/reports/list.handlebars');
 const receiptOptions = { pageSize : 'A4', orientation: 'landscape' };
 
 // export the receipt object
