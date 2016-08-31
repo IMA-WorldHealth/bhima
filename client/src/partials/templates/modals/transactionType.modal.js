@@ -10,9 +10,9 @@ function TransactionTypeModalController(Instance, $translate, TransactionType, N
   var vm = this;
 
   vm.optionType = [
-    { label: $translate.instant('VOUCHERS.SIMPLE.INCOME'), value: 'income' },
-    { label: $translate.instant('VOUCHERS.SIMPLE.EXPENSE'), value: 'expense' },
-    { label: $translate.instant('FORM.LABELS.OTHER'), value: 'other' }
+    { label: 'VOUCHERS.SIMPLE.INCOME', value: 'income' },
+    { label: 'VOUCHERS.SIMPLE.EXPENSE', value: 'expense' },
+    { label: 'FORM.LABELS.OTHER', value: 'other' }
   ];
 
   vm.transactionType = {};
@@ -39,11 +39,6 @@ function TransactionTypeModalController(Instance, $translate, TransactionType, N
     var creation = (Data.action === 'create');
     var transactionType = angular.copy(vm.transactionType);
 
-    // set enterprise
-    if (creation) {
-      transactionType.id = vm.generatedIdentifier;
-    }
-
     promise = (creation) ?
       TransactionType.create(transactionType) :
       TransactionType.update(transactionType.id, transactionType);
@@ -52,7 +47,10 @@ function TransactionTypeModalController(Instance, $translate, TransactionType, N
     .then(function (response) {
       Instance.close(true);
     })
-    .catch(Notify.handleError);
+    .catch(function (err) {
+      Notify.handleError(err);
+      Instance.close(false);
+    });
   }
 
   /** check the transaction type */
@@ -64,14 +62,6 @@ function TransactionTypeModalController(Instance, $translate, TransactionType, N
 
   /** startup function */
   function startup() {
-
-    TransactionType.read()
-    .then(function (list) {
-      var lastId = list.length ? list[list.length - 1].id : 0;
-      vm.generatedIdentifier = lastId + 1;
-    })
-    .catch(Notify.handleError);
-
     if (Data.action === 'edit' && Data.identifier) {
       TransactionType.read(Data.identifier)
       .then(function (type) {

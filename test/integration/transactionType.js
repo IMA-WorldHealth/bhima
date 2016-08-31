@@ -10,14 +10,12 @@ describe('(/transaction_type) Transaction Type API :: ', () => {
   // default number of transaction type (TT)
   const TT_DEFAULT = 10;
 
-  let detailId = null;
-
   let newTT = {
-    id: 20,
     text: 'My New Transaction Type',
     description: 'Description for the new transaction type',
     type: 'income',
-    prefix: 'NEW_TT'
+    prefix: 'NEW_TT',
+    fixed: 0
   };
 
   let updateTT = {
@@ -39,14 +37,14 @@ describe('(/transaction_type) Transaction Type API :: ', () => {
     return agent.post('/transaction_type')
       .send(newTT)
       .then(res => {
-        detailId = res.body.id;
+        newTT.id = res.body.id;
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
   it('GET /transaction_type/:id returns a particular transaction type', () => {
-    return agent.get('/transaction_type/' + detailId)
+    return agent.get('/transaction_type/' + newTT.id)
       .then(res => {
         expect(helpers.identical(res.body, newTT)).to.be.true;
       })

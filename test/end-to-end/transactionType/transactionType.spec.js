@@ -16,9 +16,6 @@ describe('Transaction Types ::', () => {
   // navigate to the page
   before(() => helpers.navigate('#/admin/transaction_type'));
 
-  // after the creation the inserted id will be 11
-  let identifier = 11;
-
   let newType = {
     text: 'E2E Transaction Type',
     description: 'Test transaction type',
@@ -53,7 +50,7 @@ describe('Transaction Types ::', () => {
   });
 
   it('Successfully updates an existing transaction type', () => {
-    element(by.css('[data-edit-type="' + identifier + '"]')).click();
+    element(by.css('[data-edit-type="' + newType.text + '"]')).click();
     FU.input('$ctrl.transactionType.text', updateType.text);
     FU.input('$ctrl.transactionType.description', updateType.description);
     FU.input('$ctrl.transactionType.prefix', updateType.prefix);

@@ -186,9 +186,10 @@
     "BAD_REQUEST" : "You are not allowed to perform this operation",
     "ERR_INTERNET_DISCONNECTED" : "You are not connected to the network.",
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
-    "NOT_FOUND" : "This record could not be found",
+    "NOT_ALLOWED"      : "You are not allowed to perform this action",
+    "NOT_FOUND"        : "This record could not be found",
     "UNAUTHORIZED"     : "You have submitted a bad username and password combination.  Please login in with valid credentials to continue.",
-    "UNKNOWN" : "An error occurred."
+    "UNKNOWN"          : "An error occurred."
   },
   "EXCHANGE": {
     "ADDING_RATE"         : "Adding an exchange Rate",

@@ -1718,11 +1718,12 @@ CREATE TABLE `taxe_ipr` (
 DROP TABLE IF EXISTS `transaction_type`;
 
 CREATE TABLE `transaction_type` (
-  `id` tinyint(3) unsigned NOT NULL,
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `text` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `type` varchar(30) NOT NULL,
   `prefix` varchar(30) NOT NULL,
+  `fixed` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `transaction_type_1` (`id`, `text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

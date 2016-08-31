@@ -22,22 +22,16 @@ function TransactionTypeController(TransactionType, Notify, Modal, $translate) {
   var editTemplate = '<div class="ui-grid-cell-contents">' +
     '<a title="{{ \'FORM.LABELS.EDIT\' | translate }}" href="" ' +
     'ng-click="grid.appScope.editType(row.entity)" ' +
-    'data-edit-type="{{ row.entity.id }}">' +
+    'data-edit-type="{{ row.entity.text }}">' +
     '<i class="fa fa-edit"></i> ' +
     '</a></div>';
-
-  // text template
-  var textTemplate = '<div class="ui-grid-cell-contents">{{ row.entity.text | translate }}</div>';
 
   // grid default options
   vm.gridOptions.appScopeProvider = vm;
   vm.gridOptions.columnDefs       =
     [
-      { field : 'id', displayName : 'FORM.LABELS.CODE',
-        headerCellFilter: 'translate', width: 100},
-
       { field : 'text', displayName : 'FORM.LABELS.TEXT',
-        headerCellFilter: 'translate', cellTemplate: textTemplate},
+        headerCellFilter: 'translate', cellFilter: 'translate'},
 
       { field : 'description', displayName : 'FORM.LABELS.DESCRIPTION',
         headerCellFilter: 'translate'},
@@ -45,6 +39,10 @@ function TransactionTypeController(TransactionType, Notify, Modal, $translate) {
       { field : 'type', displayName : 'FORM.LABELS.TYPE',
         headerCellFilter: 'translate',
         cellTemplate: 'partials/templates/grid/transactionType.tmpl.html'},
+
+      { field : 'fixed', displayName : 'FORM.LABELS.STATUS',
+        headerCellFilter: 'translate', width: 70,
+        cellTemplate: 'partials/templates/grid/transactionType.fixed.tmpl.html'},
 
       { field : 'prefix', displayName : 'FORM.LABELS.PREFIX',
         headerCellFilter: 'translate'},
@@ -77,7 +75,7 @@ function TransactionTypeController(TransactionType, Notify, Modal, $translate) {
     .then(function (res) {
       if (!res) { return; }
       startup();
-      Notify.success($translate.instant('FORM.INFO.SAVE_SUCCESS'));
+      Notify.success('FORM.INFO.SAVE_SUCCESS');
     })
     .catch(Notify.errorHandler);
   }
@@ -90,7 +88,7 @@ function TransactionTypeController(TransactionType, Notify, Modal, $translate) {
     .then(function (res) {
       if (!res) { return; }
       startup();
-      Notify.success($translate.instant('FORM.INFO.UPDATE_SUCCESS'));
+      Notify.success('FORM.INFO.UPDATE_SUCCESS');
     })
     .catch(Notify.errorHandler);
   }

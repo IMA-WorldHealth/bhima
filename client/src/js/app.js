@@ -481,6 +481,18 @@ function constantConfig() {
       ROW_EDIT_FLAG : '_edit',
       ROW_HIGHLIGHT_FLAG : '_highlight',
       ROW_INVALID_FLAG : '_invalid'
+    },
+    transactionType : {
+      GENERIC_INCOME     : 1,
+      CASH_PAYMENT       : 2,
+      CONVENTION_PAYMENT : 3,
+      SUPPORT_INCOME     : 4,
+      TRANSFER           : 5,
+      GENERIC_EXPENSE    : 6,
+      SALARY_PAYMENT     : 7,
+      CASH_RETURN        : 8,
+      PURCHASES          : 9,
+      CREDIT_NOTE        : 10
     }
   };
 }

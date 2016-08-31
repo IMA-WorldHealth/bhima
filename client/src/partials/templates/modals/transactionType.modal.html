@@ -42,7 +42,7 @@
         name="type"
         ng-model="$ctrl.transactionType.type" required>
         <option value="" disabled>-- {{ 'FORM.SELECT.TYPE' | translate }} --</option>
-        <option value="{{opt.value}}" ng-repeat="opt in $ctrl.optionType">{{opt.label}}</option>
+        <option value="{{opt.value}}" ng-repeat="opt in $ctrl.optionType">{{opt.label | translate}}</option>
       </select>
       <div class="help-block" ng-messages="TransactionTypeForm.type.$error" ng-show="TransactionTypeForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -69,10 +69,9 @@
       ng-click="$ctrl.close()">
       {{ 'FORM.BUTTONS.CLOSE' | translate }}
     </button>
-    <button type="submit" class="btn btn-primary"
-      data-method="submit">
-      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
-    </button>
+    <bh-loading-button loading-state="TransactionTypeForm.$loading">
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </bh-loading-button>
   </div>
 
 </form>
