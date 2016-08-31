@@ -29,44 +29,17 @@
                   <!-- Last Name -->
                   <div
                     class="form-group"
-                    ng-class="{'has-error' : DetailForm.lastName.$invalid && PatientRegistrationForm.$submitted}">
+                    ng-class="{'has-error' : DetailForm.display_name.$invalid && PatientRegistrationForm.$submitted}">
 
-                    <label class="col-md-3 control-label">{{ "FORM.LABELS.SECOND_NAME" | translate }}</label>
+                    <label class="col-md-3 control-label">{{ "FORM.LABELS.PATIENT_NAME" | translate }}</label>
                     <div class="col-md-9">
                       <input
                         class="form-control"
                         ng-maxlength="PatientRegCtrl.length150"
-                        name="lastName"
-                        ng-model="PatientRegCtrl.medical.last_name"
+                        name="display_name"
+                        ng-model="PatientRegCtrl.medical.display_name"
                         required>
-                      <div class="help-block" ng-messages="DetailForm.lastName.$error" ng-show="PatientRegistrationForm.$submitted">
-                        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Middle Name -->
-                  <div
-                    class="form-group"
-                    ng-class="{'has-error' : DetailForm.middleName.$invalid && PatientRegistrationForm.$submitted}">
-
-                    <label class="col-md-3 control-label">{{ "FORM.LABELS.MIDDLE_NAME" | translate }}</label>
-                    <div class="col-md-9">
-                      <input class="form-control"  name="middleName" ng-model="PatientRegCtrl.medical.middle_name" required>
-                      <div class="help-block" ng-messages="DetailForm.middleName.$error" ng-show="PatientRegistrationForm.$submitted">
-                        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- First Name -->
-                  <div
-                    class="form-group"
-                    ng-class="{'has-error' : DetailForm.firstName.$invalid && PatientRegistrationForm.$submitted}">
-                    <label class="col-md-3 control-label">{{ "FORM.LABELS.FIRST_NAME" | translate }}</label>
-                    <div class="col-md-9">
-                      <input class="form-control" name="firstName" ng-model="PatientRegCtrl.medical.first_name" required>
-                      <div class="help-block" ng-messages="DetailForm.firstName.$error" ng-show="PatientRegistrationForm.$submitted">
+                      <div class="help-block" ng-messages="DetailForm.display_name.$error" ng-show="PatientRegistrationForm.$submitted">
                         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                       </div>
                     </div>

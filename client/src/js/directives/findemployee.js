@@ -94,10 +94,6 @@ angular.module('bhima.directives')
       }
 
       function extractMetaData(employeeData) {
-
-        employeeData.forEach(function(employee) {
-          employee.name = employee.prenom + ' ' + employee.name;
-        });
         return employeeData;
       }
 

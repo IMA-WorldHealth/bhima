@@ -20,9 +20,7 @@ describe('(/patients) Patients', function () {
   };
 
   var mockPatient = {
-    first_name:          'Mock',
-    middle_name:         'Patient',
-    last_name:           'First',
+    display_name:        'Mock Patient First',
     dob:                 new Date ('1993-06-01'),
     current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
@@ -34,8 +32,7 @@ describe('(/patients) Patients', function () {
 
   // missing last name, sex
   var missingParamsPatient = {
-    first_name:          'Mock',
-    middle_name:         'Patient',
+    display_name:          'Mock Patient',
     dob:                 new Date('1993-06-01'),
     current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
@@ -62,9 +59,7 @@ describe('(/patients) Patients', function () {
   };
 
   var simultaneousPatient = {
-    first_name:          'Simultaneous',
-    middle_name:         'Patient',
-    last_name:           'Last',
+    first_name:          'Simultaneous Patient Last',
     dob:                 new Date('1993-06-01'),
     current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
@@ -117,7 +112,7 @@ describe('(/patients) Patients', function () {
     });
 
     it('GET /patients/search should be composable', function () {
-      let conditions = { sex: 'M', last_name: 2 };
+      let conditions = { sex: 'M', name: 2 };
       return agent.get('/patients/search/')
         .query(conditions)
         .then(function (res) {
@@ -188,7 +183,7 @@ describe('(/patients) Patients', function () {
     return agent.get('/patients/' + mockPatientUuid)
       .then(function (res) {
         var retrievedDetails;
-        var expectedKeys = ['uuid', 'last_name', 'middle_name', 'sex', 'origin_location_id'];
+        var expectedKeys = ['uuid', 'display_name', 'sex', 'origin_location_id'];
 
         expect(res).to.have.status(200);
         retrievedDetails = res.body;
@@ -299,7 +294,7 @@ describe('(/patients) Patients', function () {
     setTimeout(function () {
 
       simultaneousRequest.medical.hospital_no = hospitalNo;
-      simultaneousRequest.medical.last_name += hospitalNo;
+      simultaneousRequest.medical.display_name += hospitalNo;
 
       agent.post('/patients')
         .send(simultaneousRequest)

@@ -84,7 +84,7 @@ function lookupPurchaseOrder(uid) {
 
   let sql = `
     SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
-      p.cost, p.date, s.name AS supplier, p.user_id,
+      p.cost, p.date, s.display_name  AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.note
     FROM purchase AS p
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
@@ -200,7 +200,7 @@ function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql = `
       SELECT BUID(p.uuid) AS uuid, CONCAT(pr.abbr, p.reference) AS reference,
-        p.cost, p.date, s.name AS supplier, p.user_id, p.note,
+        p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid

@@ -63,7 +63,7 @@ describe('The /invoices API', function () {
       .then(function (result) {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
-        expect(result.body).to.have.keys('uid', 'reference', 'credit', 'debit', 'balance', 'entity_uuid', 'uuid', 'debtor_uuid', 'user', 'date', 'cost', 'numberPayment', 'invoicesLength');        
+        expect(result.body).to.have.keys('uid', 'reference', 'credit', 'debit', 'balance', 'entity_uuid', 'uuid', 'display_name', 'debtor_uuid', 'date', 'cost', 'numberPayment', 'invoicesLength');        
         expect(result.body.entity_uuid).to.equal(debtorUuid);
       })
       .catch(helpers.handler);

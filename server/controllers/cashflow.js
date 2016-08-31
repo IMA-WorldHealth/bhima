@@ -24,7 +24,7 @@ function cashflowReport (req, res, next) {
 	function queryIncomeExpense () {
 		var requette =
 			`SELECT t.uuid, t.trans_id, t.trans_date, a.number, t.debit_equiv,
-			t.credit_equiv, SUM(t.debit) AS debit, SUM(t.credit) AS credit, t.currency_id, t.description, t.comment, t.primary_cash_uuid, t.document_uuid, t.inv_po_id, o.service_txt, u.first, u.last
+			t.credit_equiv, SUM(t.debit) AS debit, SUM(t.credit) AS credit, t.currency_id, t.description, t.comment, t.primary_cash_uuid, t.document_uuid, t.inv_po_id, o.service_txt, u.display_name
 			FROM (
 				(
 					SELECT posting_journal.project_id, posting_journal.uuid, primary_cash_item.primary_cash_uuid, primary_cash_item.document_uuid, posting_journal.inv_po_id, posting_journal.trans_date, posting_journal.debit_equiv,

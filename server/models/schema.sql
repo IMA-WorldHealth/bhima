@@ -625,9 +625,7 @@ DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
   `id`            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code`          VARCHAR(20) NOT NULL,
-  `prenom`        TEXT ,
-  `name`          TEXT NOT NULL,
-  `postnom`       TEXT,
+  `display_name`  TEXT NOT NULL,
   `sexe`          VARCHAR(10) NOT NULL,
   `dob`           DATETIME NOT NULL,
   `date_embauche` DATETIME DEFAULT NULL,
@@ -1100,9 +1098,8 @@ CREATE TABLE `patient` (
   `uuid`                 BINARY(16) NOT NULL,
   `project_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `reference`            INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `debtor_uuid`         BINARY(16) NOT NULL,
-  `first_name`           VARCHAR(150) NOT NULL,
-  `last_name`            VARCHAR(150) NOT NULL,
+  `debtor_uuid`          BINARY(16) NOT NULL,
+  `display_name`         VARCHAR(150) NOT NULL,
   `dob`                  DATETIME NOT NULL,
   `father_name`          VARCHAR(150),
   `mother_name`          VARCHAR(150),
@@ -1124,7 +1121,6 @@ CREATE TABLE `patient` (
   `registration_date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `title`                VARCHAR(30),
   `notes`                TEXT,
-  `middle_name`          VARCHAR(150),
   `hospital_no`          VARCHAR(150),
   `avatar`               VARCHAR(150),
   `user_id`              SMALLINT(5) UNSIGNED NOT NULL,
@@ -1365,7 +1361,8 @@ CREATE TABLE `project_permission` (
   UNIQUE KEY `project_permission_1` (`user_id`,`project_id`),
   KEY `user_id` (`user_id`),
   KEY `project_id` (`project_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1647,7 +1644,7 @@ DROP TABLE IF EXISTS `supplier`;
 CREATE TABLE `supplier` (
   `uuid` BINARY(16) NOT NULL,
   `creditor_uuid` BINARY(16) NOT NULL,
-  `name` varchar(45) NOT NULL,
+  `display_name` varchar(45) NOT NULL,
   `address_1` text,
   `address_2` text,
   `email` varchar(45) DEFAULT NULL,
@@ -1657,7 +1654,7 @@ CREATE TABLE `supplier` (
   `international` tinyint(1) NOT NULL DEFAULT 0,
   `locked` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `supplier_1` (`name`),
+  UNIQUE KEY `supplier_1` (`display_name`),
   KEY `creditor_uuid` (`creditor_uuid`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1746,15 +1743,14 @@ CREATE TABLE `unit` (
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
-  `id`          SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `username`    VARCHAR(80) NOT NULL,
-  `password`    VARCHAR(100) NOT NULL,
-  `first`       TEXT NOT NULL,
-  `last`        TEXT NOT NULL,
-  `email`       VARCHAR(100) DEFAULT NULL,
-  `active`      TINYINT(4) NOT NULL DEFAULT 0,
-  `pin`         CHAR(4) NOT NULL DEFAULT 0,
-  `last_login`  TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  `id`            SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username`      VARCHAR(80) NOT NULL,
+  `password`      VARCHAR(100) NOT NULL,
+  `display_name`  TEXT NOT NULL,
+  `email`         VARCHAR(100) DEFAULT NULL,
+  `active`        TINYINT(4) NOT NULL DEFAULT 0,
+  `pin`           CHAR(4) NOT NULL DEFAULT 0,
+  `last_login`    TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_1` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -155,7 +155,7 @@ function create(req, res, next) {
 // generate default text for the patient's debtor entity.
 function generatePatientText(patient) {
   var textLineDefault = 'Patient/';
-  return textLineDefault.concat(patient.last_name, '/', patient.middle_name);
+  return textLineDefault.concat(patient.display_name );
 }
 
 /**
@@ -226,13 +226,13 @@ function lookupPatient(patientUuid) {
   const buid = db.bid(patientUuid);
 
   const patientDetailQuery =
-    `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
-      p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
-      BUID(p.origin_location_id) as origin_location_id, CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
+    `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
+      p.sex, p.registration_date, p.email, p.phone, p.dob, BUID(p.origin_location_id) as origin_location_id, 
+      CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
-      dg.locked, dg.name as debtor_group_name, u.username, CONCAT(u.first, ' ', u.last) AS displayName
+      dg.locked, dg.name as debtor_group_name, u.username, u.display_name AS userName
     FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u
     ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id
     WHERE p.uuid = ?;`;
@@ -263,13 +263,13 @@ function lookupByDebtorUuid(debtorUuid) {
   const buid = db.bid(debtorUuid);
 
   const sql = `
-    SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.first_name,
-      p.last_name, p.middle_name, p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
+    SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name,
+      p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
       BUID(p.origin_location_id) as origin_location_id, CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
-      dg.locked, dg.name as debtor_group_name, u.username, CONCAT(u.first, ' ', u.last) AS displayName
+      dg.locked, dg.name as debtor_group_name, u.username, u.display_name
     FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u
     ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id
     WHERE p.debtor_uuid = ?;
@@ -289,14 +289,14 @@ function list(req, res, next) {
   var listPatientsQuery;
 
   listPatientsQuery =
-    `SELECT BUID(p.uuid) AS uuid, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName,
-      p.first_name, p.last_name, p.middle_name, CONCAT(pr.abbr, p.reference) AS reference, p.dob, p.sex,
+    `SELECT BUID(p.uuid) AS uuid, p.display_name, 
+      CONCAT(pr.abbr, p.reference) AS reference, p.dob, p.sex,
       p.registration_date, p.hospital_no, MAX(pv.start_date) AS last_visit
     FROM patient AS p
     JOIN project AS pr ON p.project_id = pr.id
     LEFT JOIN patient_visit AS pv ON pv.patient_uuid = p.uuid
     GROUP BY p.uuid
-    ORDER BY p.registration_date DESC, p.last_name ASC
+    ORDER BY p.registration_date DESC, p.display_name ASC
   `;
 
   db.exec(listPatientsQuery)
@@ -354,7 +354,6 @@ function hospitalNumberExists(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
-
   // remove the limit first thing, if it exists
   let limit = Number(options.limit);
   delete options.limit;
@@ -391,12 +390,11 @@ function find(options) {
 
   // build the main part of the SQL query
   let sql = `
-    SELECT BUID(q.uuid) AS uuid, q.project_id, q.reference, q.patientName, BUID(q.debtor_uuid) as debtor_uuid,
-      q.first_name, q.last_name, q.middle_name, q.sex, q.dob, q.registration_date ${detailedColumns}
+    SELECT BUID(q.uuid) AS uuid, q.project_id, q.reference, q.display_name, BUID(q.debtor_uuid) as debtor_uuid,
+      q.sex, q.dob, q.registration_date ${detailedColumns}
     FROM (
-      SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, CONCAT(p.first_name,' ', p.last_name,' ', p.middle_name) AS patientName, p.debtor_uuid AS debtor_uuid,
-        p.first_name, p.last_name, p.middle_name, p.sex, p.dob, p.father_name, p.mother_name,
-        p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer,
+      SELECT p.uuid, p.project_id, CONCAT(proj.abbr, p.reference) AS reference, p.display_name, p.debtor_uuid AS debtor_uuid,
+        p.sex, p.dob, p.father_name, p.mother_name, p.profession, p.employer, p.spouse, p.spouse_profession, p.spouse_employer,
         p.religion, p.marital_status, p.phone, p.email, p.address_1, p.address_2,
         p.renewal, p.origin_location_id, p.current_location_id, p.registration_date,
         p.title, p.notes, p.hospital_no, d.text, proj.abbr,
@@ -412,20 +410,10 @@ function find(options) {
 
   // this is every permutation of the first, last, and middle name combinations you can imagine.
   if (options.name) {
-    conditions.statements.push(`
-      (
-        LEFT(LOWER(CONCAT(q.last_name, ' ', q.middle_name, ' ', q.first_name )), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.last_name, ' ', q.first_name, ' ', q.middle_name)), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.first_name, ' ', q.middle_name, ' ', q.last_name)), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.first_name, ' ', q.last_name, ' ', q.middle_name)), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.middle_name, ' ', q.last_name, ' ', q.first_name)), CHAR_LENGTH(?)) = ? OR
-        LEFT(LOWER(CONCAT(q.middle_name, ' ', q.first_name, ' ', q.last_name)), CHAR_LENGTH(?)) = ?
-      )
-    `);
+      let keyValue = '%' + options.name + '%';
 
-    // repeat options.name twelve times
-    conditions.parameters =
-      conditions.parameters.concat(_.fill(Array(12), options.name));
+    conditions.statements.push('q.display_name LIKE  ? ');
+    conditions.parameters.push(keyValue);
 
     // remove options.name so that it cannot be used again
     delete options.name;
@@ -619,7 +607,7 @@ function latestInvoice (req, res, next) {
     invoice;
 
   let sql =
-    `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, CONCAT(user.first, user.last) as user,
+    `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name,
      invoice.cost
     FROM invoice
     JOIN user ON user.id = invoice.user_id
@@ -688,7 +676,7 @@ function latestInvoice (req, res, next) {
       numberPayment   : numberPayment,
       date            : invoiceLatest.date,
       cost            : invoiceLatest.cost,
-      user            : invoiceLatest.user,
+      display_name    : invoiceLatest.display_name,
       uid             : invoices[0].uid,
       reference       : invoices[0].reference,
       credit          : invoices[0].credit,

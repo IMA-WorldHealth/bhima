@@ -38,8 +38,7 @@ exports.search = search;
  */
 function list(req, res, next) {
   const sql = `
-    SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
-      employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
+    SELECT employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
       employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
@@ -53,7 +52,7 @@ function list(req, res, next) {
      JOIN debtor ON employee.debtor_uuid = debtor.uuid
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-     ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC;
+     ORDER BY employee.display_name ASC;
   `;
 
   db.exec(sql)
@@ -144,8 +143,7 @@ exports.checkOffday = function checkHoliday(req, res, next) {
  */
 function lookupEmployee(id) {
   let sql = `
-    SELECT employee.id, employee.code AS code_employee, employee.prenom, employee.name,
-      employee.postnom, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
+    SELECT employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
       employee.locked, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
@@ -213,19 +211,17 @@ function update(req, res, next) {
   let creditor = {
     uuid : employee.creditor_uuid,
     group_uuid : employee.creditor_group_uuid,
-    text : 'Crediteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
+    text : 'Crediteur [' + employee.display_name + ']'
   };
 
   let debtor = {
     uuid : employee.debtor_uuid,
     group_uuid : employee.debtor_group_uuid,
-    text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
+    text : 'Debiteur [' + employee.display_name + ']'
   };
 
   let clean = {
-    prenom : employee.prenom,
-    name : employee.name,
-    postnom : employee.postnom,
+    display_name : employee.display_name,
     sexe : employee.sexe,
     dob : employee.dob,
     date_embauche : employee.date_embauche,
@@ -308,13 +304,13 @@ function create(req, res, next) {
   let creditor = {
     uuid : employee.creditor_uuid,
     group_uuid : employee.creditor_group_uuid,
-    text : 'Crediteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
+    text : 'Crediteur [' + employee.display_name + ']'
   };
 
   let debtor = {
     uuid : employee.debtor_uuid,
     group_uuid : employee.debtor_group_uuid,
-    text : 'Debiteur [' + employee.prenom + ' - ' + employee.name + ' - ' + employee.postnom + ']'
+    text : 'Debiteur [' + employee.display_name + ']'
   };
 
   delete employee.debtor_group_uuid;
@@ -354,7 +350,7 @@ function create(req, res, next) {
  * @method search
  *
  * @description
- * This function is responsible for looking for employee by names or code
+ * This function is responsible for looking for employee by display_name or code
  *
  */
 function search(req, res, next) {
@@ -363,8 +359,8 @@ function search(req, res, next) {
 
   if (req.params.key === 'code') {
     searchOption = 'LOWER(employee.code)';
-  } else if (req.params.key === 'names') {
-    searchOption = 'LOWER(CONCAT(employee.prenom, employee.name, employee.postnom))';
+  } else if (req.params.key === 'display_name') {
+    searchOption = 'LOWER(employee.display_name)';
   } else {
     return next(
       new BadRequest('You sent a bad value for some parameters in research employee.')
@@ -373,8 +369,7 @@ function search(req, res, next) {
 
   sql = `
     SELECT
-      employee.id, employee.code AS code_employee, employee.prenom, employee.name,
-      employee.postnom, employee.locked, employee.bank, employee.bank_account,
+      employee.id, employee.code AS code_employee, employee.display_name, employee.locked, employee.bank, employee.bank_account,
       BUID(creditor.uuid) as creditor_uuid, BUID(creditor.group_uuid) as creditor_group_uuid,
       creditor_group.account_id
     FROM employee

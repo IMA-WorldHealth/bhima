@@ -13,7 +13,7 @@ describe('Suppliers', function () {
   before(() => helpers.navigate(path));
 
   const supplier = {
-    name : 'Alpha Lmtd',
+    display_name : 'Alpha Lmtd',
     address_1 : '45 Street Blvd',
     address_2 : '30 june Blvd',
     email : 'info@alpha.cd',
@@ -27,7 +27,7 @@ describe('Suppliers', function () {
   it('creates a new supplier', function () {
     FU.buttons.create();
 
-    FU.input('SupplierCtrl.supplier.name', supplier.name);
+    FU.input('SupplierCtrl.supplier.display_name', supplier.display_name);
 
     element(by.id('international')).click();
 
@@ -49,8 +49,8 @@ describe('Suppliers', function () {
   it('edits an supplier', function () {
     element(by.id('supplier-upd-' + supplierRank )).click();
 
-    // modify the supplier name
-    FU.input('SupplierCtrl.supplier.name', 'Updated');
+    // modify the supplier display_name
+    FU.input('SupplierCtrl.supplier.display_name', 'Updated');
 
     // modify the supplier note
     FU.input('SupplierCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
@@ -68,7 +68,7 @@ describe('Suppliers', function () {
     element(by.id('submit-supplier')).click();
 
     // the following fields should be required
-    FU.validation.error('SupplierCtrl.supplier.name');
+    FU.validation.error('SupplierCtrl.supplier.display_name');
     FU.validation.error('SupplierCtrl.supplier.creditor_uuid');
     FU.validation.error('SupplierCtrl.supplier.address_1');
 
