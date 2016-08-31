@@ -47,7 +47,6 @@ exports.lookupInvoice = lookupInvoice;
 
 exports.getPatientInvoice = getPatientInvoice;
 
-
 /** Undo the financial effects of a invoice generating an equal and opposite credit note. */
 // exports.reverse = reverse;
 
@@ -58,8 +57,24 @@ exports.getPatientInvoice = getPatientInvoice;
  * Retrieves a list of all patient invoices in the database
  */
 function list(req, res, next) {
+  listInvoices()
+  .then(function (invoices) {
+    res.status(200).json(invoices);
+  })
+  .catch(next)
+  .done();
+}
 
-  let invoiceListQuery =
+
+/**
+ * @method listInvoices
+ *
+ * @description
+ * Looks up all patients invoices in the data base
+ *
+ */
+function listInvoices() {
+  let sql = 
     `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientNames,
       service.name as serviceName, user.display_name, voucher.type_id,
@@ -69,17 +84,17 @@ function list(req, res, next) {
       JOIN service ON service.id = invoice.service_id
       LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
       JOIN user ON user.id = invoice.user_id
-      JOIN project ON invoice.project_id = project.id;`;
+      JOIN project ON invoice.project_id = project.id
+    ORDER BY invoice.reference ASC, invoice.date ASC;`;
 
-  db.exec(invoiceListQuery)
-    .then(function (rows) {
-
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  return db.exec(sql)
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw new NotFound(`Could not find Patient Invoice `);
+    }
+    return rows;
+  });
 }
-
 
 /**
  * @method lookupInvoice
@@ -314,21 +329,8 @@ function getPatientInvoice(req, res, next) {
     project : req.session.project
   };
 
-  let invoiceListQuery =
-    `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, CONCAT(patient.first_name, ' - ',  patient.last_name) as patientNames,
-      service.name as serviceName, CONCAT(user.first, ' - ', user.last) as createdBy, voucher.type_id,
-      invoice.date, invoice.is_distributable
-    FROM invoice
-      LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
-      JOIN service ON service.id = invoice.service_id
-      LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
-      JOIN user ON user.id = invoice.user_id
-      JOIN project ON invoice.project_id = project.id
-    ORDER BY invoice.reference ASC, invoice.date ASC;`;
-
-  db.exec(invoiceListQuery)
-  .then(rows => listReceipt.build(rows, request))
+  listInvoices()
+  .then(invoices => listReceipt.build(invoices, request))
   .then(result => {
     const renderer = {
       'pdf'  : '"Content-Type" : "application/pdf"',
