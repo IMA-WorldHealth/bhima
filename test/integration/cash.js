@@ -79,7 +79,7 @@ describe.only('(/cash) Cash Payments', function () {
   describe('Patient Invoice Payments ', function () {
 
     var INVOICE_PAYMENT = {
-      amount:      70150,
+      amount:      79000,
       currency_id: CURRENCY_ID,
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
@@ -87,7 +87,7 @@ describe.only('(/cash) Cash Payments', function () {
       project_id:  PROJECT_ID,
       user_id  :   USER_ID,
       is_caution:  0,
-      description : 'This is a description'
+      description : 'Test Cash Payment'
     };
 
     var INVALID_INVOICE_PAYMENT = {
