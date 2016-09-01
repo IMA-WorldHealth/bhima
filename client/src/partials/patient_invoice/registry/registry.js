@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('InvoiceRegistryController', InvoiceRegistryController);
 
 InvoiceRegistryController.$inject = [
-  'PatientInvoiceService', 'NotifyService', 'SessionService', 'util', 'ReceiptModal', 'appcache'
+  'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService', 'util', 'ReceiptModal', 'appcache'
 ];
 
 /**
@@ -10,7 +10,7 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, AppCache) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
@@ -21,11 +21,11 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
         '<span class="fa fa-file-pdf-o"></span> {{ "TABLE.COLUMNS.RECEIPT" | translate }}' +
       '</a>' +
       '&nbsp;&nbsp;' +
-        '<span ng-if="row.entity.type_id !== 9">' +
+        '<span ng-if="row.entity.type_id !== grid.appScope.bhConstants.transactionType.CREDIT_NOTE">' +
           '<a href id="{{row.entity.reference}}" ng-click="grid.appScope.creditNote(row.entity)" class="text-danger">' +
             '<span class="glyphicon glyphicon-remove-sign text-danger"></span> {{ "TABLE.COLUMNS.CREDIT_NOTE" | translate }}' +
           '</a>' +
-        '</span>' + 
+        '</span>' +
     '</div>';
 
   var costTemplate =
@@ -38,6 +38,7 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
   vm.creditNote = creditNote;
+  vm.bhConstants = bhConstants;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
@@ -136,7 +137,7 @@ function InvoiceRegistryController(Invoices, Notify, Session, util, Receipt, App
   function creditNote(invoice) {
     Invoices.openCreditNoteModal(invoice)
       .then(function (data) {
-        Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');        
+        Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
         return load();
       })
       .catch(Notify.handleError);

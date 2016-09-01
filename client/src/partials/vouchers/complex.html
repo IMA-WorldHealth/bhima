@@ -27,10 +27,10 @@
                     style="display: inline-block"
                     class="label"
                     ng-show="ComplexVoucherCtrl.financialTransaction"
-                    ng-class="{'label-success': ComplexVoucherCtrl.incomeExpense==='income', 'label-warning': ComplexVoucherCtrl.incomeExpense==='expense'}">
+                    ng-class="{'label-success': ComplexVoucherCtrl.type==='income', 'label-warning': ComplexVoucherCtrl.type==='expense'}">
                     {{ ComplexVoucherCtrl.descriptionPrefix }}
-                    <span ng-if="ComplexVoucherCtrl.incomeExpense==='income'">({{ 'VOUCHERS.SIMPLE.INCOME' | translate }})</span>
-                    <span ng-if="ComplexVoucherCtrl.incomeExpense==='expense'">({{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }})</span>
+                    <span ng-if="ComplexVoucherCtrl.type==='income'">({{ 'VOUCHERS.SIMPLE.INCOME' | translate }})</span>
+                    <span ng-if="ComplexVoucherCtrl.type==='expense'">({{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }})</span>
                   </span>
                   <textarea
                     class="form-control"

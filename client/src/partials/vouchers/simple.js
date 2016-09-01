@@ -24,24 +24,16 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
   // cache to save work-in-progress data and pre-fabricated templates
   var cache = AppCache('JournalVouchers');
 
+  // global variables
   vm.maxLength = util.maxTextLength;
   vm.paths = [
     { label : 'TREE.FINANCE' },
     { label : 'VOUCHERS.SIMPLE.TITLE' }
   ];
 
-  // transfer type
-  vm.transferType = Vouchers.transferType;
-
   // expose methods to the view
   vm.submit = submit;
   vm.buildDescription = buildDescription;
-
-  // load the list of accounts
-  Accounts.read()
-  .then(function (accounts) {
-    vm.accounts = accounts;
-  });
 
   /* run the module on startup and refresh */
   function startup() {
@@ -54,8 +46,20 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     vm.voucher.date = new Date();
     vm.voucher.currency_id = Session.enterprise.currency_id;
 
-    // group the list of type
-    groupType();
+    // transaction type
+    Vouchers.transactionType()
+    .then(function (list) {
+      groupType(list.data);
+    })
+    .catch(Notify.handleError);
+
+    // load the list of accounts
+    Accounts.read()
+    .then(function (accounts) {
+      vm.accounts = accounts;
+    })
+    .catch(Notify.handleError);
+
   }
 
   function submit(form) {
@@ -83,7 +87,7 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
 
       // setup the voucher object to init state
       form.$setPristine();
-      vm.incomeExpense = undefined;
+      vm.type = undefined;
       vm.descriptionPrefix = undefined;
       vm.selectedType = undefined;
 
@@ -93,12 +97,12 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     .catch(Notify.handleError);
   }
 
-  function groupType() {
-    vm.incomes = vm.transferType.filter(function (item) {
-      return item.incomeExpense === 'income';
+  function groupType(array) {
+    vm.incomes = array.filter(function (item) {
+      return item.type === 'income';
     });
-    vm.expenses = vm.transferType.filter(function (item) {
-      return item.incomeExpense === 'expense';
+    vm.expenses = array.filter(function (item) {
+      return item.type === 'expense';
     });
   }
 
@@ -107,7 +111,7 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
 
     var current = new Date();
     var selected = JSON.parse(vm.selectedType);
-    vm.incomeExpense = selected.incomeExpense;
+    vm.type = selected.type;
 
     vm.descriptionPrefix = String(Session.project.abbr)
       .concat('/', selected.prefix, '/')
