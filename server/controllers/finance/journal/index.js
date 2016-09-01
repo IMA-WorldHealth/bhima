@@ -42,8 +42,7 @@ function lookupTransaction(record_uuid) {
       p.user_id, p.cc_id, p.pc_id,
       pro.abbr, pro.name AS project_name,
       per.start_date AS period_start, per.end_date AS period_end,
-      a.number AS account_number,
-      CONCAT(u.first, ' - ', u.last) AS user
+      a.number AS account_number, u.display_name AS user 
     FROM posting_journal p
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id

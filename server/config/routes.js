@@ -79,7 +79,7 @@ const sectionResultats = require('../controllers/finance/sectionResultat');
 const sectionBilans    = require('../controllers/finance/sectionBilan');
 const creditors        = require('../controllers/finance/creditors.js');
 const journal          = require('../controllers/finance/journal');
-const transactionType     = require('../controllers/admin/transactionType');
+const transactionType  = require('../controllers/admin/transactionType');
 const generalLedger    = require('../controllers/finance/generalLedger');
 
 // expose routes to the server.
@@ -205,7 +205,6 @@ exports.configure = function configure(app) {
   app.get('/general_ledger', generalLedger.list);
   
   //API for trial balance
-  
   app.get('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
   app.post('/trial_balance/checks', trialBalance.checkTransactions);
   app.post('/trial_balance/post_transactions', trialBalance.postToGeneralLedger);

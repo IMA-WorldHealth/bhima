@@ -22,6 +22,7 @@ exports.list = list;
  * Getting data from the general ledger
  */
 function list(req, res, next) {
+  console.log('on est la');
 
   let sql = `
     SELECT BUID(gl.uuid) AS uuid, gl.project_id, gl.fiscal_year_id, gl.period_id,
@@ -34,7 +35,7 @@ function list(req, res, next) {
       pro.abbr, pro.name AS project_name,
       per.start_date AS period_start, per.end_date AS period_end,
       a.number AS account_number,
-      CONCAT(u.first, ' - ', u.last) AS user
+      u.display_name AS user
     FROM general_ledger gl
       JOIN project pro ON pro.id = gl.project_id
       JOIN period per ON per.id = gl.period_id
@@ -44,8 +45,8 @@ function list(req, res, next) {
     `;
 
   db.exec(sql)
-    .then(rows => {
-    res.status(200).json(rows);
-})
-.catch(next);
+    .then(function (rows) {
+        res.status(200).json(rows);
+    })
+    .catch(next);
 }
