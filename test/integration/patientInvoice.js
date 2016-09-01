@@ -57,13 +57,13 @@ describe('The /invoices API', function () {
       .catch(helpers.handler);
   });
 
-  it('GET patients/:uuid/invoices/latest :The latest bill should show the most recent bill of a patient', () => {
+  it('GET patients/:uuid/invoices/latest shows the most recent bill of a patient', () => {
     const LIMIT = 1;
     return agent.get(`/patients/${debtorUuid}/invoices/latest`)
       .then(function (result) {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
-        expect(result.body).to.have.keys('uid', 'reference', 'credit', 'debit', 'balance', 'entity_uuid', 'uuid', 'display_name', 'debtor_uuid', 'date', 'cost', 'numberPayment', 'invoicesLength');        
+        expect(result.body).to.have.keys('uid', 'reference', 'credit', 'debit', 'balance', 'entity_uuid', 'uuid', 'display_name', 'debtor_uuid', 'date', 'cost', 'numberPayment', 'invoicesLength');
         expect(result.body.entity_uuid).to.equal(debtorUuid);
       })
       .catch(helpers.handler);
@@ -205,7 +205,7 @@ function BillingScenarios() {
    */
   const simpleInvoice = {
     is_distributable: 1,
-    date: new Date('2016-01-28').toISOString(),
+    date: new Date(),
     cost: 35,  // this cost should be calculated by the server (see test).
     description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
     service_id: helpers.data.ADMIN_SERVICE,
@@ -417,5 +417,4 @@ function BillingScenarios() {
       })
       .catch(helpers.handler);
   });
-
 }

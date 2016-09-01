@@ -206,18 +206,14 @@ BEGIN
     WHERE DATE(date) BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND p.fiscal_year_id = current_fiscal_year_id
   );
 
-  -- this uses the currency id passed in as a dependency
-  SET current_exchange_rate = (
-    SELECT rate FROM exchange_rate AS ex
-    WHERE ex.enterprise_id = enterprise_id AND ex.currency_id = currency_id AND ex.date <= date
-    ORDER BY ex.date DESC LIMIT 1
-  );
-
-  SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate));
 
   SELECT e.gain_account_id, e.loss_account_id, e.currency_id
     INTO gain_account, loss_account, enterprise_currency_id
   FROM enterprise AS e WHERE e.id = enterprise_id;
+
+  -- this uses the currency id passed in as a dependency
+  SET current_exchange_rate = GetExchangeRate(enterprise_id, currency_id, date);
+  SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate));
 
   SET transaction_id = GenerateTransactionId(project_id);
 

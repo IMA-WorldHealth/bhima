@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe.only('(/cash) Cash Payments', function () {
+describe('(/cash) Cash Payments', function () {
   'use strict';
 
   const CASHBOX_ID  = 1;   // Test Primary Cashbox A

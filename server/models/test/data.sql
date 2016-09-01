@@ -444,7 +444,8 @@ INSERT INTO `mod_snis_zs` VALUES
 
 -- exchange rate for the current date
 INSERT INTO `exchange_rate` VALUES
-  (1,1,1,930.0000, NOW());
+  (1,1,1,900.0000, DATE('2016-01-01')),
+  (2,1,1,930.0000, NOW());
 
 INSERT INTO `employee` VALUES
   (1,'E1','Dedrick Kitamuka Mvuezolo','M','1980-02-01 00:00:00','2016-02-02 00:00:00',1,3,HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),500,NULL,NULL,'kinshasa','0896611111','my@email.com',1,3,HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),HUID('42d3756a-7770-4bb8-a899-7953cd859892'),HUID('be0096dd-2929-41d2-912e-fb2259356fb5'),NULL);
