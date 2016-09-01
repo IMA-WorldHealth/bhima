@@ -248,7 +248,7 @@ function CashflowReportController($stateParams, Cashflow, Notify, Dates, Exchang
             return b.origin_id === item.origin_id ? b.debit_equiv + a : a;
           }, 0);
           session.summationIncome[period].push({
-            'transfer_type' : Voucher.getTransferText(item.origin_id),
+            'transfer_type' : item.transactionType,
             'currency_id'   : item.currency_id,
             'value'         : value
           });
@@ -266,7 +266,7 @@ function CashflowReportController($stateParams, Cashflow, Notify, Dates, Exchang
             return b.origin_id === item.origin_id ? b.credit_equiv + a : a;
           }, 0);
           session.summationExpense[period].push({
-            'transfer_type' : Voucher.getTransferText(item.origin_id),
+            'transfer_type' : item.transactionType,
             'currency_id'   : item.currency_id,
             'value'         : value
           });
