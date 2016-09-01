@@ -170,6 +170,9 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     unfoldAllGroups(this.gridApi);
   }
 
+  function removeGrouping () {
+    this.gridApi.grouping.clearGrouping();
+  }
 
   // return the current grouping
   function  getCurrentGroupingColumn () {
@@ -195,6 +198,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     this.selectedRowCount = 0;
     this.getSelectedRows = getSelectedRows.bind(this);
     this.changeGrouping = changeGrouping.bind(this);
+    this.removeGrouping = removeGrouping.bind(this);
     this.getCurrentGroupingColumn = getCurrentGroupingColumn.bind(this);
     this.column = column || 'trans_id';
     this.gridOptions = gridOptions;
@@ -206,8 +210,6 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
 
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
-
-
 
       // attach custom renderers
       configureDefaultAggregators(gridOptions.columnDefs);

@@ -20,15 +20,15 @@
           </div>
 
           <div class="pull-right">
-            <button id="switchViewID" type="button" class="btn btn-default" ng-click="JournalPosterModalCtrl.switchGroup()" data-method="switch">
+            <button id="switchViewID" type="button" class="btn btn-default" ng-click="JournalPosterModalCtrl.switchView()" data-method="switch">
               <i class="fa fa-retweet"></i>
-              {{JournalPosterModalCtrl.groupingDetail.key | translate }}
+              {{JournalPosterModalCtrl.viewDetail.key | translate }}
             </button>
           </div>
         </div>
       </p>
 
-    <div ng-if="JournalPosterModalCtrl.errors">
+    <div ng-if="!JournalPosterModalCtrl.loading">
       <div
         id="transaction-grid"
         ui-grid="JournalPosterModalCtrl.gridOptions"

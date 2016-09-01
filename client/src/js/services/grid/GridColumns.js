@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('GridColumnService', GridColumnService);
 
 GridColumnService.$inject = [
-  'uiGridConstants', 'AppCache', '$uibModal', 'util'
+  'uiGridConstants', 'AppCache', '$uibModal', 'util', '$timeout'
 ];
 
 /**
@@ -19,7 +19,7 @@ GridColumnService.$inject = [
  *
  * @todo - investigate using ui-grid-saveState for caching the column
  */
-function GridColumnService(uiGridConstants, AppCache, Modal, util) {
+function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
 
   /** @const cache alias for this service */
   var serviceKey = '-Columns';
@@ -36,7 +36,6 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util) {
    * @private
    */
   function cacheDefaultColumnVisibility(api) {
-
     // ensure that this method doesn't get called multiple times by checking if
     // this.defaults is set.
     if (Object.keys(this.defaults).length > 0) { return; }

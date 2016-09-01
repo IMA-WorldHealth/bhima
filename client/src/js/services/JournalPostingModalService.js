@@ -11,7 +11,7 @@ function JournalPostingModalService(util, $http, Modal) {
   service.parseSelectedGridRecord = parseSelectedGridRecord;
   // service.postingModalService = postingModalService;
   // service.getCurrentGroupingColumn = getCurrentGroupingColumn;
-  service.switchGroup = switchGroup;
+  service.switchView = switchView;
   service.getDataByAccount = getDataByAccount;
   service.checkTransactions = checkTransactions;
   service.getFeedBack = getFeedBack;
@@ -136,13 +136,13 @@ function JournalPostingModalService(util, $http, Modal) {
   }
 
   /**
-   * @function switchGroup
+   * @function switchView
    *
    * @description
-   * This function take the current grouping column and return a new column name for grouping
+   * This function take the current view and return a new view
    * **/
-  function  switchGroup(groupFrom) {
-    return groupFrom === 'trans_id' ? 'account_number' : 'trans_id';
+  function switchView(viewFrom) {
+    return viewFrom === 'trans' ? 'account' : 'trans';
   }
 
   /**

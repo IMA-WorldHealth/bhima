@@ -39,7 +39,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
 
   // Journal utilities
-  var sorting, grouping, filtering, columnConfig, transactions, editors, posting;
+  var sorting, grouping, filtering, columnConfig, transactions, editors;
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
@@ -66,7 +66,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   //attaching the grouping object to the view
   vm.grouping = grouping;
 
-  //Attaching the transcation to the view
+  //Attaching the transaction to the view
   vm.transactions = transactions;
 
   vm.loading = true;
