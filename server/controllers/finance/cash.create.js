@@ -118,10 +118,7 @@ function create(req, res, next) {
   }
 
   transaction.addQuery('CALL WriteCash(?)', [cashUuid]);
-
-  if (!isCaution) {
-    transaction.addQuery('CALL PostCash(?)', [cashUuid]);
-  }
+  transaction.addQuery('CALL PostCash(?)', [cashUuid]);
 
   transaction.execute()
     .then(() => {

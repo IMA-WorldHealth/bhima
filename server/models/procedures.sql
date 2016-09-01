@@ -517,6 +517,7 @@ BEGIN
   DECLARE cashCurrencyId TINYINT(3) UNSIGNED;
   DECLARE cashAmount DECIMAL;
   DECLARE enterpriseCurrencyId INT;
+  DECLARE isCaution BOOLEAN;
 
   -- variables to store core set-up results
   DECLARE cashProjectId SMALLINT(5);
@@ -533,11 +534,9 @@ BEGIN
   DECLARE remainder DECIMAL;
   DECLARE lastInvoiceUuid BINARY(16);
 
-  CALL DebugLog('Calling PostCash()');
-
   -- copy cash payment values into working variables
-  SELECT cash.amount, cash.date, cash.currency_id, enterprise.id, cash.project_id, enterprise.currency_id
-    INTO  cashAmount, cashDate, cashCurrencyId, cashEnterpriseId, cashProjectId, enterpriseCurrencyId
+  SELECT cash.amount, cash.date, cash.currency_id, enterprise.id, cash.project_id, enterprise.currency_id, cash.is_caution
+    INTO  cashAmount, cashDate, cashCurrencyId, cashEnterpriseId, cashProjectId, enterpriseCurrencyId, isCaution
   FROM cash
     JOIN project ON cash.project_id = project.id
     JOIN enterprise ON project.enterprise_id = enterprise.id
@@ -551,10 +550,6 @@ BEGIN
   -- get the current exchange rate
   SET currentExchangeRate = GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate);
   SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
-
-  CALL DebugLog(CONCAT_WS(' ', 'currentExchangeRate:', CAST(currentExchangeRate AS char)));
-  CALL DebugLog(CONCAT_WS(' ', 'cashCurrencyId:', CAST(cashCurrencyId AS char)));
-  CALL DebugLog(CONCAT_WS(' ', 'enterpriseCurrencyId:', CAST(enterpriseCurrencyId AS char)));
 
   /*
     Begin the posting process.  We will first write the total value as moving into the cashbox
@@ -578,127 +573,151 @@ BEGIN
     JOIN cash_box_account_currency AS cb ON cb.currency_id = c.currency_id AND cb.cash_box_id = c.cashbox_id
   WHERE c.uuid = cashUuid;
 
-  -- write each cash_item into the posting_journal
-  INSERT INTO posting_journal (
-    uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
-    record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
-  ) SELECT
-    HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-    dg.account_id, 0, ci.amount, 0, (ci.amount / currentExchangeRate), c.currency_id,
-    c.debtor_uuid, 'D', c.user_id, ci.invoice_uuid
-  FROM cash AS c
-    JOIN cash_item AS ci ON c.uuid = ci.cash_uuid
-    JOIN debtor AS d ON c.debtor_uuid = d.uuid
-    JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-  WHERE c.uuid = cashUuid;
+  /*
+    If this is a caution payment, all we need to do is convert and write a single
+    line to the posting_journal.
+  */
+  IF isCaution THEN
+
+    INSERT INTO posting_journal (
+      uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+      record_uuid, description, account_id, debit, credit, debit_equiv,
+      credit_equiv, currency_id, entity_uuid, entity_type, user_id
+    ) SELECT
+      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
+      c.description, dg.account_id, 0, c.amount, 0, (c.amount / currentExchangeRate), c.currency_id,
+      c.debtor_uuid, 'D', c.user_id
+    FROM cash AS c
+      JOIN debtor AS d ON c.debtor_uuid = d.uuid
+      JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+    WHERE c.uuid = cashUuid;
 
   /*
-    Finally, we have to see if there is any rounding to do.  If the absolute value of the balance
-    due minus the balance paid is less than the minMonentaryUnit, it means we should just round that
-    amount away.
-
-    If (cashAmount - previousInvoiceBalances) > 0 then the debtor overpaid and we should debit them and
-    credit the rounding account.  If the (cashAmount - previousInvoiceBalances) is negative, then the debtor
-    underpaid and we should credit them and debit the rounding account the remainder
+    In this block, we are paying cash items.  We have to look through each cash item, recording the
+    amount paid as a new line in the posting_journal.  The `reference_uuid` is assigned to the
+    `invoice_uuid` of the cash_item table.
   */
+  ELSE
 
-  /* populates the table stage_cash_invoice_balances */
-  CALL CalculateCashInvoiceBalances(cashUuid);
-
-  /* These values are in the original currency amount */
-  SET previousInvoiceBalances = (
-    SELECT SUM(invoice.balance) AS balance FROM stage_cash_invoice_balances AS invoice
-  );
-
-  -- this is date ASC to get the most recent invoice
-  SET lastInvoiceUuid = (
-    SELECT invoice.uuid FROM stage_cash_invoice_balances AS invoice ORDER BY invoice.date LIMIT 1
-  );
-
-  SET minMonentaryUnit = (
-    SELECT currency.min_monentary_unit FROM currency WHERE currency.id = cashCurrencyId
-  );
-
-  SET remainder = cashAmount - previousInvoiceBalances;
-
-  -- check if we should round or not
-  IF (minMonentaryUnit > ABS(remainder)) THEN
-
-    CALL DebugLog(CONCAT_WS(' ', 'We have a remainder of:', CAST(remainder AS char)));
+    -- write each cash_item into the posting_journal
+    INSERT INTO posting_journal (
+      uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+      record_uuid, description, account_id, debit, credit, debit_equiv,
+      credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+    ) SELECT
+      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
+      c.description, dg.account_id, 0, ci.amount, 0, (ci.amount / currentExchangeRate), c.currency_id,
+      c.debtor_uuid, 'D', c.user_id, ci.invoice_uuid
+    FROM cash AS c
+      JOIN cash_item AS ci ON c.uuid = ci.cash_uuid
+      JOIN debtor AS d ON c.debtor_uuid = d.uuid
+      JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+    WHERE c.uuid = cashUuid;
 
     /*
-      A positive remainder means that the debtor overpaid slightly and we should debit
-      the difference to the debtor and credit the difference as a gain to the gain_account
+      Finally, we have to see if there is any rounding to do.  If the absolute value of the balance
+      due minus the balance paid is less than the minMonentaryUnit, it means we should just round that
+      amount away.
+
+      If (cashAmount - previousInvoiceBalances) > 0 then the debtor overpaid and we should debit them and
+      credit the rounding account.  If the (cashAmount - previousInvoiceBalances) is negative, then the debtor
+      underpaid and we should credit them and debit the rounding account the remainder
     */
-    IF (remainder > 0) THEN
 
-      -- debit the debtor
-      INSERT INTO posting_journal (
-        uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
-        record_uuid, description, account_id, debit, credit, debit_equiv,
-        credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
-      ) SELECT
-        HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-        dg.account_id, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id,
-        c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
-      FROM cash AS c
-        JOIN debtor AS d ON c.debtor_uuid = d.uuid
-        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-      WHERE c.uuid = cashUuid;
+    /* populates the table stage_cash_invoice_balances */
+    CALL CalculateCashInvoiceBalances(cashUuid);
 
-      -- credit the rounding account
-      INSERT INTO posting_journal (
-        uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
-        record_uuid, description, account_id, debit, credit, debit_equiv,
-        credit_equiv, currency_id, user_id
-      ) SELECT
-        HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-        gain_account_id, 0, remainder, 0, (remainder / currentExchangeRate), c.currency_id, c.user_id
-      FROM cash AS c
-        JOIN debtor AS d ON c.debtor_uuid = d.uuid
-        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-      WHERE c.uuid = cashUuid;
+    /* These values are in the original currency amount */
+    SET previousInvoiceBalances = (
+      SELECT SUM(invoice.balance) AS balance FROM stage_cash_invoice_balances AS invoice
+    );
 
-    /*
-      A negative remainder means that the debtor underpaid slightly and we should credit
-      the difference to the debtor and debit the difference as a loss to the loss_account
-    */
-    ELSE
+    -- this is date ASC to get the most recent invoice
+    SET lastInvoiceUuid = (
+      SELECT invoice.uuid FROM stage_cash_invoice_balances AS invoice ORDER BY invoice.date LIMIT 1
+    );
 
-      -- convert the remainder into the enterprise currency
-      SET remainder = (-1 * remainder);
+    SET minMonentaryUnit = (
+      SELECT currency.min_monentary_unit FROM currency WHERE currency.id = cashCurrencyId
+    );
 
-      -- credit the debtor
-      INSERT INTO posting_journal (
-        uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
-        record_uuid, description, account_id, debit, credit, debit_equiv,
-        credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
-      ) SELECT
-        HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-        dg.account_id, 0, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id,
-        c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
-      FROM cash AS c
-        JOIN debtor AS d ON c.debtor_uuid = d.uuid
-        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-      WHERE c.uuid = cashUuid;
+    SET remainder = cashAmount - previousInvoiceBalances;
 
-      -- debit the rounding account
-      INSERT INTO posting_journal (
-        uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
-        record_uuid, description, account_id, debit, credit, debit_equiv,
-        credit_equiv, currency_id, user_id
-      ) SELECT
-        HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-        loss_account_id, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id, c.user_id
-      FROM cash AS c
-        JOIN debtor AS d ON c.debtor_uuid = d.uuid
-        JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-      WHERE c.uuid = cashUuid;
+    -- check if we should round or not
+    IF (minMonentaryUnit > ABS(remainder)) THEN
+
+      /*
+        A positive remainder means that the debtor overpaid slightly and we should debit
+        the difference to the debtor and credit the difference as a gain to the gain_account
+      */
+      IF (remainder > 0) THEN
+
+        -- debit the debtor
+        INSERT INTO posting_journal (
+          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+          record_uuid, description, account_id, debit, credit, debit_equiv,
+          credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+        ) SELECT
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
+          dg.account_id, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id,
+          c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
+        FROM cash AS c
+          JOIN debtor AS d ON c.debtor_uuid = d.uuid
+          JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+        WHERE c.uuid = cashUuid;
+
+        -- credit the rounding account
+        INSERT INTO posting_journal (
+          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+          record_uuid, description, account_id, debit, credit, debit_equiv,
+          credit_equiv, currency_id, user_id
+        ) SELECT
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
+          gain_account_id, 0, remainder, 0, (remainder / currentExchangeRate), c.currency_id, c.user_id
+        FROM cash AS c
+          JOIN debtor AS d ON c.debtor_uuid = d.uuid
+          JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+        WHERE c.uuid = cashUuid;
+
+      /*
+        A negative remainder means that the debtor underpaid slightly and we should credit
+        the difference to the debtor and debit the difference as a loss to the loss_account
+      */
+      ELSE
+
+        -- convert the remainder into the enterprise currency
+        SET remainder = (-1 * remainder);
+
+        -- credit the debtor
+        INSERT INTO posting_journal (
+          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+          record_uuid, description, account_id, debit, credit, debit_equiv,
+          credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+        ) SELECT
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
+          dg.account_id, 0, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id,
+          c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
+        FROM cash AS c
+          JOIN debtor AS d ON c.debtor_uuid = d.uuid
+          JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+        WHERE c.uuid = cashUuid;
+
+        -- debit the rounding account
+        INSERT INTO posting_journal (
+          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+          record_uuid, description, account_id, debit, credit, debit_equiv,
+          credit_equiv, currency_id, user_id
+        ) SELECT
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
+          loss_account_id, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id, c.user_id
+        FROM cash AS c
+          JOIN debtor AS d ON c.debtor_uuid = d.uuid
+          JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+        WHERE c.uuid = cashUuid;
+      END IF;
     END IF;
-  END IF;
 
-  CALL FlushLog('Finished PostCash()');
+  END IF;
 END $$
 
 CREATE PROCEDURE StageCash(
@@ -835,8 +854,6 @@ BEGIN
   CALL CalculateCashInvoiceBalances(cashUuid);
   SET totalInvoiceCost = (SELECT IFNULL(SUM(invoice.balance), 0) FROM stage_cash_invoice_balances AS invoice);
 
-  CALL DebugLog(CONCAT_WS(' ', 'minMonentaryUnit:', CAST(minMonentaryUnit AS char)));
-
   /*
     If the difference between the paid amount and the totalInvoiceCost is greater than the
     minMonentaryUnit, the client has overpaid.
@@ -922,7 +939,6 @@ BEGIN
 
     CALL WriteCashItems(cashUuid, cashAmount, currentExchangeRate);
   END IF;
-
 END $$
 
 DELIMITER ;

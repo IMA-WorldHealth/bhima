@@ -39,7 +39,7 @@ describe.only('(/cash) Cash Payments', function () {
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
       project_id:  PROJECT_ID,
-      date:        new Date('2015-01-01'),
+      date:        new Date(),
       user_id:     USER_ID,
       is_caution:  1,
       description : 'A caution payment'
@@ -200,7 +200,7 @@ describe.only('(/cash) Cash Payments', function () {
         debtor_uuid: DEBTOR_UUID,
         items:       INVOICES,
         project_id:  PROJECT_ID,
-        date:        new Date('2015-05-01'),
+        date:        new Date(),
         user_id:     USER_ID,
         is_caution:  1,
         description : 'This is a confused payment'
