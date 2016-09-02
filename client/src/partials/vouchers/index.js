@@ -5,7 +5,8 @@ angular.module('bhima.controllers')
 VoucherController.$inject = [
   'VoucherService', '$translate', 'NotifyService',
   'GridFilteringService', 'uiGridGroupingConstants',
-  'uiGridConstants', 'ModalService', 'DateService', 'LanguageService'
+  'uiGridConstants', 'ModalService', 'DateService',
+  'LanguageService', 'bhConstants'
 ];
 
 /**
@@ -15,7 +16,7 @@ VoucherController.$inject = [
  * This controller is responsible for display all vouchers which are in the
  * voucher table.
  */
-function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, Languages) {
+function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, Languages, bhConstants) {
   var vm = this;
 
   /* global variables */
@@ -97,6 +98,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   vm.get = get;
   vm.isDefined = isDefined;
   vm.showReceipt = showReceipt;
+  vm.bhConstants = bhConstants;
 
   // startup
   startup();
