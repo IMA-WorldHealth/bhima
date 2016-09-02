@@ -8,6 +8,7 @@ helpers.configure(chai);
 
 const JournalCorePage = require('./journal.page.js');
 const JournalConfiguration = require('./journal.config.js');
+const TrialBalanceTest = require('./trial_balance/trialBalance.config.js');
 
 describe('Posting Journal Core', function () {
   'use strict';
@@ -25,4 +26,5 @@ describe('Posting Journal Core', function () {
   });
 
   describe('Configuration Modal', JournalConfiguration);
+  describe('Trial balance Process', TrialBalanceTest);
 });

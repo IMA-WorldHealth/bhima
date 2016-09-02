@@ -214,6 +214,13 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/journal/journal.html'
   })
 
+  /** General ledger routes**/
+  .state('generalLedger', {
+    url : '/general_ledger',
+    controller : 'GeneralLedgerController as GeneralLedgerCtrl',
+    templateUrl : 'partials/general_ledger/general_ledger.html'
+  })
+
   /* debtors routes */
   .state('debtorGroups', {
     url : '/debtors/groups/:uuid',

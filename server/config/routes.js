@@ -47,7 +47,7 @@ const depots               = require('../controllers/inventory/depots');
 const inventoryReports     = require('../controllers/inventory/reports');
 
 // finance routes
-const trialbalance     = require('../controllers/finance/trialbalance');
+const trialBalance     = require('../controllers/finance/trialBalance');
 const ledger           = require('../controllers/finance/ledger');
 const fiscal           = require('../controllers/finance/fiscal');
 const gl               = require('../controllers/finance/ledgers/general');
@@ -79,7 +79,8 @@ const sectionBilans    = require('../controllers/finance/sectionBilan');
 const creditors        = require('../controllers/finance/creditors.js');
 const journal          = require('../controllers/finance/journal');
 const cashflow         = require('../controllers/finance/cashflow');
-const transactionType     = require('../controllers/admin/transactionType');
+const transactionType  = require('../controllers/admin/transactionType');
+const generalLedger    = require('../controllers/finance/generalLedger');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -195,13 +196,18 @@ exports.configure = function configure(app) {
   app.put('/subsidies/:id', subsidies.update);
   app.delete('/subsidies/:id', subsidies.remove);
 
-  // journal routes
+  // API for journal
   app.get('/journal', journal.list);
-
-  // trial balance routes
-  app.post('/journal/trialbalance', trialbalance.postTrialBalance);
-  app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
+  app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
+
+  //API for general ledger
+  app.get('/general_ledger', generalLedger.list);
+
+  //API for trial balance
+  app.get('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
+  app.post('/trial_balance/checks', trialBalance.checkTransactions);
+  app.post('/trial_balance/post_transactions', trialBalance.postToGeneralLedger);
 
   // ledger routes
   // TODO : needs renaming

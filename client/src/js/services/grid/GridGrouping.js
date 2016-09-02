@@ -101,6 +101,8 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
   function selectAllGroupElements(rowChanged) {
     var gridApi = this.gridApi;
 
+    this.selectedRowCount = gridApi.selection.getSelectedCount();
+
     // determine that this selection is a header row
     if (angular.isDefined(rowChanged.treeLevel) && rowChanged.treeLevel > -1) {
 
@@ -113,6 +115,13 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
       });
     }
   }
+
+  function handleBatchSelection (){
+    var gridApi = this.gridApi;
+    this.selectedRowCount = gridApi.selection.getSelectedCount();
+  }
+
+  //handle the select batch event
 
   /**
    * @method configureDefaultGroupingOptions
@@ -129,25 +138,73 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
    */
   function configureDefaultGroupingOptions(gridApi) {
 
-    // bind the group selection method
-    gridApi.selection.on.rowSelectionChanged(null, selectAllGroupElements.bind(this));
+    //this instruction block can be executed if the grid involves selection functionality
+    if(gridApi.selection){
+
+      // bind the group selection method
+      gridApi.selection.on.rowSelectionChanged(null, selectAllGroupElements.bind(this));
+
+      gridApi.selection.on.rowSelectionChangedBatch(null, handleBatchSelection.bind(this));
+
+    }
 
     // hook into rows rendered call to ensure the grid is ready before expanding initial nodes
     gridApi.core.on.rowsRendered(null, util.once(function () {
-      gridApi.grouping.groupColumn('trans_id');
+      gridApi.grouping.groupColumn(this.column);
 
       // for the expandAllRows() to be fired last
-      $timeout(gridApi.treeBase.expandAllRows, 0, false);
-    }));
+      unfoldAllGroups(gridApi);
+    }.bind(this)));
+  }
+
+  function unfoldAllGroups(api) {
+    $timeout(api.treeBase.expandAllRows, 0, false);
+  }
+
+  function changeGrouping (column) {
+    this.gridApi.grouping.clearGrouping();
+    this.gridApi.grouping.groupColumn(column);
+    this.gridApi.grouping.aggregateColumn('debit_equiv', uiGridGroupingConstants.aggregation.SUM);
+    this.gridApi.grouping.aggregateColumn('credit_equiv', uiGridGroupingConstants.aggregation.SUM);
+
+    unfoldAllGroups(this.gridApi);
+  }
+
+  function removeGrouping () {
+    this.gridApi.grouping.clearGrouping();
+  }
+
+  // return the current grouping
+  function  getCurrentGroupingColumn () {
+    var groupingDetail = this.gridApi.grouping.getGrouping();
+    return groupingDetail.grouping[0].colName;
+  }
+
+  /** return back the list of selected rows **/
+
+  function getSelectedRows (){
+    return this.gridApi.selection.getSelectedGridRows();
   }
 
   /**
    * @constructor
    */
-  function GridGrouping(gridOptions) {
+  function GridGrouping(gridOptions, isGroupHeaderSelectable, column) {
+
+    /**
+     * contains the number of selected rows
+     * TODO : create a separate service to handle selection functionnality of the grid as grouping and selection are differents
+     */
+    this.selectedRowCount = 0;
+    this.getSelectedRows = getSelectedRows.bind(this);
+    this.changeGrouping = changeGrouping.bind(this);
+    this.removeGrouping = removeGrouping.bind(this);
+    this.getCurrentGroupingColumn = getCurrentGroupingColumn.bind(this);
+    this.column = column || 'trans_id';
+    this.gridOptions = gridOptions;
 
     // global grouping configuration
-    gridOptions.enableGroupHeaderSelection = true;
+    gridOptions.enableGroupHeaderSelection = isGroupHeaderSelectable || true;
     gridOptions.treeRowHeaderAlwaysVisible = false;
     gridOptions.showTreeExpandNoChildren = false;
 

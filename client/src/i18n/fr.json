@@ -230,6 +230,8 @@
       "ENTITY"                : "Entité",
       "FILTER"                : "Filtre",
       "GENERATE"              : "Générer",
+      "GROUP_BY_ACCOUNT"      : "Grouper Par Compte",
+      "GROUP_BY_TRANSACTION"  : "Grouper Par Transaction",
       "GROUPS_DEBTOR_UPDATE"  : "L'assignation au groupe débiteur est à jour",
       "GROUPS_PATIENT_UPDATE" : "Mettre à jour l'assignation à un groupe",
       "LOGOUT"                : "Déconnexion",
@@ -251,8 +253,10 @@
       "THIS_WEEK"             : "Cette semaine",
       "THIS_YEAR"             : "Cette année",
       "TODAY"                 : "Aujourd'hui",
+      "TRIAL_BALANCE"         : "Rapprochement",
       "UPDATE_PASSWORD"       : "Modifier mot de passe",
-      "UPDATE"                : "Mettre à jour"
+      "UPDATE"                : "Mettre à jour",
+      "VIEW_ERRORS"           : "Voir erreurs"
     },
     "DIALOGS": {
       "CONFIRM_DELETE"         : "Confirmez vous la suppression ?",
@@ -799,7 +803,30 @@
     "UPDATING_USER" : "Mise a jour utilisateur"
   },
   "POSTING_JOURNAL" : {
-    "TITLE" : "Journal de Saisie"
+    "TITLE" : "Journal de Saisie",
+    "CONFIGURATION" : {
+      "TITLE" : "Configuration colonnes"
+    },
+    "ERRORS" : {
+      "DATE_IN_WRONG_PERIOD" : "Date dans la mauvaise periode",
+      "MISSING_DESCRIPTION" : "Descriptions omises",
+      "LOCKED_ACCOUNT" : "Compte(s) verrouille(s)",
+      "UNBALANCED_TRANSACTIONS" : "Transaction(s) non balancee(s)",
+      "MISSING_ACCOUNTS" : "Compte(s) omis",
+      "MISSING_DOCUMENT_ID" : "Ligne(s) sans ID Document",
+      "MISSING_ENTITY" : "Ligne(s) sans ID entite",
+      "MISSING_FISCAL_OR_PERIOD" : "Annee fiscale ou periode omise",
+      "SINGLE_LINE_TRANSACTION" : "Transaction(s) avec une ligne"
+    },
+    "WARNINGS" : {
+      "MISSING_ENTITY" : "Ligne(s) sans type entite et ID entite"
+    },
+    "ERROR_REPORT" : {
+      "TITLE" : "Rapports D'erreurs"
+    },
+    "TRIAL_BALANCE" : {
+      "TITLE" : "Rapprochement Grand Livre"
+    }
   },
   "PRICE_LIST": {
     "ADD_ITEMS"        : "Ajouter un Item",
@@ -957,10 +984,12 @@
       "ABBREVIATION"       : "Abbreviation",
       "ACCOUNT"            : "Compte",
       "ACTION"             : "Action",
+      "AFTER"              : "Apres",
       "AGE"                : "Age",
       "AMOUNT"             : "Montant",
       "ASSET"              : "Actif",
       "BALANCE_SECTION"    : "Section du Bilan",
+      "BEFORE"             : "Avant",
       "BILL"               : "Facture",
       "BILLING_DATE"       : "Date Facturation",
       "BILLED_BY"          : "Facturé par",
@@ -983,6 +1012,7 @@
       "EMAIL"              : "Email",
       "EMPTY"              : "Il n'y a pas d'enregistrements à afficher.",
       "ENTERPRISE_ID"      : "ID enterprise",
+      "ERROR_TYPE"         : "Type d'erreur",
       "EXCHANGE_RATE"      : "Taux de change",
       "FILTERING": {
         "LABEL"   : "Filtre"
