@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('GridColumnService', GridColumnService);
 
 GridColumnService.$inject = [
-  'uiGridConstants', 'AppCache', '$uibModal', 'util'
+  'uiGridConstants', 'AppCache', '$uibModal', 'util', '$timeout'
 ];
 
 /**
@@ -19,7 +19,7 @@ GridColumnService.$inject = [
  *
  * @todo - investigate using ui-grid-saveState for caching the column
  */
-function GridColumnService(uiGridConstants, AppCache, Modal, util) {
+function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
 
   /** @const cache alias for this service */
   var serviceKey = '-Columns';
@@ -36,7 +36,6 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util) {
    * @private
    */
   function cacheDefaultColumnVisibility(api) {
-
     // ensure that this method doesn't get called multiple times by checking if
     // this.defaults is set.
     if (Object.keys(this.defaults).length > 0) { return; }
@@ -53,7 +52,7 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util) {
     });
 
     // if there is a cache defined, load it into the current view
-    if (Object.keys(cache).length > 0) {
+    if(cache && Object.keys(cache).length > 0){
       this.setVisibleColumns(cache);
     }
   }
@@ -85,7 +84,10 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util) {
   function Columns(gridOptions, cacheKey) {
 
     // set up local storage for selected grid columns
-    this.cache = AppCache(cacheKey + serviceKey);
+    if(cacheKey){
+      this.cache = AppCache(cacheKey + serviceKey);
+    }
+
 
     // bind access to the gridOptions
     this.gridOptions = gridOptions;
@@ -123,7 +125,10 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util) {
     });
 
     // store the selected columns in the cache
-    cacheColumnVisibility.call(this, columns);
+    if(this.cache){
+      cacheColumnVisibility.call(this, columns);
+    }
+
 
     // redraw the grid
     this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);

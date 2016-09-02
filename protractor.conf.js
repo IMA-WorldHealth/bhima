@@ -24,7 +24,7 @@ const config = {
       reportTitle: 'Bhima End to End Tests',
       takePassedScreenshot: false,
       clearOldScreenshots: true,
-      jsonReport: false,
+      jsonReport: false
     },
     timeout : 30000
   },

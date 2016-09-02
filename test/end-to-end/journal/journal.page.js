@@ -12,13 +12,13 @@ const GU = require('../shared/GridUtils');
 function JournalCorePage() {
   const page = this;
   const gridId = 'journal-grid';
+  // polyfill for array.includes on lower node versions
+  const includes = (array, value) => array.indexOf(value) > -1;
+  
 
   function openGridConfigurationModal() {
     return $('[data-method="configure"]').click();
   }
-
-  // polyfill for array.includes on lower node versions
-  const includes = (array, value) => array.indexOf(value) > -1;
 
   // toggle the column checkboxes to the following values
   // NOTE - these values come from the database column names, not the i18n text
@@ -49,11 +49,21 @@ function JournalCorePage() {
   function setDefaultColumnCheckboxes() {
     FU.buttons.reset();
   }
+  
+  function checkRow(n) {
+    var row = GU.selectRow(gridId, n);
+  }
+
+  function openTrialBalanceModal (){
+    return $('[data-method="trial"]').click();
+  }
 
   // expose methods
   page.openGridConfigurationModal = openGridConfigurationModal;
   page.setColumnCheckboxes = setColumnCheckboxes;
   page.setDefaultColumnCheckboxes = setDefaultColumnCheckboxes;
+  page.checkRow = checkRow;
+  page.openTrialBalanceModal = openTrialBalanceModal;
 
   // custom wrappers for GU functionality
   page.expectColumnCount = (number) => GU.expectColumnCount(gridId, number);

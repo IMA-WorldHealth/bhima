@@ -57,3 +57,20 @@
   /* this is full height minus the header crumb and util bar */
   height : calc(100vh - 65px - 35px);
 }
+
+.grid-error {
+  color: white;
+  background-color: red;
+}
+
+.grid-warning {
+  color : white;
+  background-color: darkorange;
+}
+
+.grid-success {
+  color: white;
+  background-color: blue;
+}
+
+

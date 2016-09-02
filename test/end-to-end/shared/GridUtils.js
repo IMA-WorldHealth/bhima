@@ -34,6 +34,25 @@ function expectColumnCount(gridId, number) {
   expect(columns.count()).to.eventually.equal(number);
 }
 
+/**
+ * Helper function for returning a row.
+ *
+ * @param gridId {string}
+ * @param rowNum {integer}
+ *
+ * @returns {ElementFinder|*}
+ *
+ * @example
+ * <pre>
+ *   var row = gridUtils.getRow( 'myGrid', 0); //or internally
+ *   var row = this.getRow( gridId, rowNum );
+ * </pre>
+ */
+function getRow( gridId, rowNum ) {
+  return getGrid( gridId )
+    .element( by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row( rowNum )  );
+}
+
 // takes in an array of column texts and asserts they are the column headers
 // @todo - migrate this to GridUtils
 function expectHeaderColumns(gridId, expectedColumns) {
@@ -54,8 +73,28 @@ function expectHeaderColumns(gridId, expectedColumns) {
   });
 }
 
+/**
+ * Helper function to select a row.
+ *
+ * @param gridId {string}
+ * @param rowNum {integer}
+ *
+ *
+ * @example
+ * <pre>
+ *   var row = gridUtils.selectRow( 'myGrid', 0 );
+ * </pre>
+ */
+function selectRow( gridId, rowNum ) {
+  // NOTE: Can't do .click() as it doesn't work when webdriving Firefox
+  var row = getRow( gridId, rowNum );
+  var btn = row.element( by.css('.ui-grid-selection-row-header-buttons') );
+  return browser.actions().mouseMove(btn).mouseDown(btn).mouseUp().perform();
+}
+
 exports.getRows = getRows;
 exports.getColumns = getColumns;
 exports.expectRowCount = expectRowCount;
 exports.expectColumnCount = expectColumnCount;
 exports.expectHeaderColumns = expectHeaderColumns;
+exports.selectRow = selectRow;

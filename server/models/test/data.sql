@@ -15,6 +15,7 @@ INSERT INTO unit VALUES
   (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
   (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',5,'/partials/accounts/','/accounts'),
   (9,   'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',5,'/partials/journal/','/journal'),
+  (10,  'General Ledger','TREE.GENERAL_LEDGER','Posted Journal Data', 5,'/partials/general_ledger/','/general_ledger'),
   (12,  'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,'/partials/hospital/index.html','/hospital'),
   (13,  'Fiscal Year','TREE.FISCAL_YEAR','Fiscal year configuration page',5,'/partials/fiscal/','/fiscal'),
   (14,  'Patient Registration','TREE.PATIENT_REGISTRATION','Register patients',12,'/partials/patient/register/','/patients/register'),
@@ -84,7 +85,7 @@ INSERT INTO `account` VALUES
   (3628,3,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 13:27:13',1,1,NULL,0,NULL,0),
   (3629,4,1,40000,'Test Balance Accounts',0,0,NULL,NULL,'2015-11-04 13:29:11',4,NULL,NULL,NULL,1,1),
   (3630,3,1,41001,'Test Debtor Accounts1',3629,0,NULL,NULL,'2015-11-04 13:30:46',4,NULL,NULL,NULL,NULL,0),
-  (3631,3,1,41002,'Test Debtor Accounts2',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
+  (3631,3,1,41002,'Test Debtor Accounts2',3629,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
   (3635,3,1,41003,'Test Debtor Accounts3',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
   (3636,4,1,46000,'Test Inventory Accounts',3629,1,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,1),
   (3637,3,1,46001,'First Test Item Account',3636,0,NULL,NULL,'2015-11-04 13:32:22',4,NULL,NULL,NULL,NULL,0),
@@ -128,6 +129,9 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- Posting Journal Management
 (9,1),
+
+-- General ledger
+(10,1),
 
 -- [Folder] Hospital
 (12,1),
@@ -421,17 +425,17 @@ INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, a
   (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1);
 
 INSERT INTO `posting_journal` VALUES
-  (HUID(UUID()),1,1,1,'TRANS1','2016-01-09 14:35:55',@first_invoice,NULL,3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'TRANS1','2016-01-09 14:35:55',@first_invoice,NULL,3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'TRANS2','2016-01-09 17:04:27',@second_invoice,NULL,3631,25.0000,0.0000,25.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'TRANS2','2016-01-09 17:04:27',@second_invoice,NULL,3638,0.0000,25.0000,0.0000,25.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS1','2016-01-09 14:35:55',@first_invoice,'description x',3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3631,25.0000,0.0000,25.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS2','2016-01-09 17:04:27',@second_invoice,'description x',3638,0.0000,25.0000,0.0000,25.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
   -- vouchers data
-  (HUID(UUID()),1,1,1,'TRANS3','2016-01-09 17:04:27',@first_voucher,NULL,3627,100.0000,0.0000,100.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'TRANS3','2016-01-09 17:04:27',@first_voucher,NULL,3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'TRANS4','2016-01-09 17:04:27',@second_voucher,NULL,3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'TRANS4','2016-01-09 17:04:27',@second_voucher,NULL,3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'TRANS5','2016-01-09 17:04:27',@third_voucher,NULL,3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'TRANS5','2016-01-09 17:04:27',@third_voucher,NULL,3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL);
+  (HUID(UUID()),1,1,1,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3627,100.0000,0.0000,100.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS5','2016-02-09 17:04:27',@third_voucher,'description x',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL);
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES

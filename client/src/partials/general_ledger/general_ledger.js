@@ -1,20 +1,19 @@
 angular.module('bhima.controllers')
-.controller('JournalController', JournalController);
+  .controller('GeneralLedgerController', GeneralLedgerController);
 
-JournalController.$inject = [
-  'JournalService', 'GridSortingService', 'GridGroupingService',
+GeneralLedgerController.$inject = [
+  'GeneralLedgerService', 'GridSortingService', 'GridGroupingService',
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
-  'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
-  'bhConstants', 'JournalPostingService'
+  'SessionService', 'NotifyService', 'TransactionService'
 ];
 
 /**
- * @module JournalController
+ * @module GeneralLedgerController
  *
  * @description
- * This controller is responsible for initialising the core client side posting
- * journal, binding the UI Grid component with services that facilitate all
- * operations required by an accountant.
+ * This controller is responsible for initialising the core client side general ledger,
+ * binding the UI Grid component with services that facilitate all
+ * operations required by an accountant without editing.
  * - Displaying transactions in an easy to find and review format
  *   - Search for transactions
  *   - Filter transactions
@@ -22,46 +21,34 @@ JournalController.$inject = [
  *   - Sort transactions
  *   - Show or hide columns
  *
- * - (Super user) Edit and update transactions
- * - Post one or more transactions to the general ledger to confirm they are complete
- *   - Tun trial balance validation on transactions
- *
- * @todo Propose utility bar view design
- *
- * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, PostingService) {
+function GeneralLedgerController(GeneralLedger, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions) {
   var vm = this;
 
-  /** @constants */
-  vm.ROW_EDIT_FLAG = bhConstants.transactions.ROW_EDIT_FLAG;
-  vm.ROW_HIGHLIGHT_FLAG = bhConstants.transactions.ROW_HIGHLIGHT_FLAG;
-  vm.ROW_INVALID_FLAG = bhConstants.transactions.ROW_INVALID_FLAG;
-
-  // Journal utilities
-  var sorting, grouping, filtering, columnConfig, transactions, editors;
+  // General Ledger utilities
+  var sorting, grouping, filtering, columnConfig, transactions;
 
   /** @const the cache alias for this controller */
-  var cacheKey = 'Journal';
+  var cacheKey = 'GeneralLedger';
 
   vm.enterprise = Session.enterprise;
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {
+    enableFiltering: true,
+    fastWatch: true,
     enableColumnMenus : false,
-    appScopeProvider : vm,
-    rowTemplate: '/partials/templates/grid/transaction.row.html',
+    appScopeProvider : vm
   };
 
-  // Initialise each of the journal utilities, providing them access to the journal
+  // Initialise each of the general ledger utilities, providing them access to the general ledger
   // configuration options
   sorting   = new Sorting(vm.gridOptions);
   filtering = new Filtering(vm.gridOptions, cacheKey);
   grouping  = new Grouping(vm.gridOptions, true);
   columnConfig = new Columns(vm.gridOptions, cacheKey);
   transactions = new Transactions(vm.gridOptions);
-  editors = new Editors(vm.gridOptions);
 
   //attaching the grouping object to the view
   vm.grouping = grouping;
@@ -70,13 +57,13 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.transactions = transactions;
 
   vm.loading = true;
-  Journal.read()
+  GeneralLedger.read()
     .then(function (records) {
       vm.gridOptions.data = records;
     })
     .catch(function (error) {
       vm.hasError = true;
-      Notify.handleError(error);
+      Notify.errorHandler(error);
     })
     .finally(toggleLoadingIndicator);
 
@@ -115,9 +102,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       displayName : 'TABLE.COLUMNS.DATE',
       headerCellFilter: 'translate',
       cellFilter : 'date:"mediumDate"',
-      filter : { condition : filtering.byDate },
-      editableCellTemplate: 'partials/journal/templates/date.edit.html',
-      enableCellEdit: true
+      filter : { condition : filtering.byDate }
     },
     { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
@@ -141,8 +126,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
     { field : 'reference_uuid', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate', visible: false },
     { field : 'record_uuid', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: false },
-    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
-    { field : 'actions', displayName : '', headerCellFilter: 'translate', visible: true, enableCellEdit: false, cellTemplate: '/partials/journal/templates/actions.cell.html', allowCellFocus: false }
+    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false, enableCellEdit: false }
   ];
 
   vm.gridOptions.columnDefs = columns;
@@ -150,10 +134,5 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   // This function opens a modal through column service to let the user show or Hide columns
   vm.openColumnConfigModal = function openColumnConfigModal() {
     Config.openColumnConfigModal(columnConfig);
-  };
-
-  //This function opens a modal, to let the user posting transaction to the general ledger
-  vm.openTrialBalanceModal = function openTrialBalanceModal () {
-    PostingService.openTrialBalanceModal(vm.grouping.getSelectedRows());
   };
 }
