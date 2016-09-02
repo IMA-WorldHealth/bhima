@@ -519,7 +519,9 @@ function constantConfig() {
       SALARY_PAYMENT     : 7,
       CASH_RETURN        : 8,
       PURCHASES          : 9,
-      CREDIT_NOTE        : 10
+      CREDIT_NOTE        : 10,
+      INCOME             : 'income',
+      EXPENSE            : 'expense'
     }
   };
 }

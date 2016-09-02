@@ -2,7 +2,8 @@ angular.module('bhima.services')
   .service('VoucherService', VoucherService);
 
 VoucherService.$inject = [
-  'PrototypeApiService', '$http', 'util'
+  'PrototypeApiService', '$http', 'util',
+  'TransactionTypeStoreService'
 ];
 
 /**
@@ -13,7 +14,7 @@ VoucherService.$inject = [
  * This service manages posting data to the database via the /vouchers/ URL.
  * @todo: Think about to move transferType into the database table
  */
-function VoucherService(Api, $http, util) {
+function VoucherService(Api, $http, util, TransactionTypeStore) {
   var service = new Api('/vouchers/');
 
   // @tdoo - remove this reference to baseUrl
@@ -112,11 +113,12 @@ function VoucherService(Api, $http, util) {
   }
 
   /**
-   * This function returns transaction type from the db
+   * @function transactionType
+   * @description return transaction type store object
+   * @return {object} Store transaction type store object { data: array, ...}
    */
   function transactionType() {
-    return $http.get('/transaction_type')
-      .then(util.unwrapHttpResponse);
+    return TransactionTypeStore.load();
   }
 
   return service;

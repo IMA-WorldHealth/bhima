@@ -6,12 +6,12 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 TransactionTypeController.$inject = [
-  'TransactionTypeService', 'NotifyService', 'ModalService',
-  '$translate'
+  'TransactionTypeService', 'TransactionTypeStoreService', 'NotifyService',
+  'ModalService', '$translate'
 ];
 
 /** Transaction Type Controller  */
-function TransactionTypeController(TransactionType, Notify, Modal, $translate) {
+function TransactionTypeController(TransactionType, TransactionTypeStore, Notify, Modal, $translate) {
   var vm = this;
 
   // global variables
@@ -97,6 +97,7 @@ function TransactionTypeController(TransactionType, Notify, Modal, $translate) {
     TransactionType.read()
     .then(function (list) {
       vm.gridOptions.data = list;
+      TransactionTypeStore.refresh();
     })
     .catch(Notify.handleError);
   }

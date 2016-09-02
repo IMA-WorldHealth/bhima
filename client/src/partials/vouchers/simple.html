@@ -51,10 +51,10 @@
                   <span
                     style="display: inline-block"
                     class="label"
-                    ng-class="{'label-success': SimpleVoucherCtrl.incomeExpense==='income', 'label-warning': SimpleVoucherCtrl.incomeExpense==='expense'}">
+                    ng-class="{'label-success': SimpleVoucherCtrl.type==='income', 'label-warning': SimpleVoucherCtrl.type==='expense'}">
                     {{ SimpleVoucherCtrl.descriptionPrefix }}
-                    <span ng-if="SimpleVoucherCtrl.incomeExpense==='income'">({{ 'VOUCHERS.SIMPLE.INCOME' | translate }})</span>
-                    <span ng-if="SimpleVoucherCtrl.incomeExpense==='expense'">({{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }})</span>
+                    <span ng-if="SimpleVoucherCtrl.type==='income'">({{ 'VOUCHERS.SIMPLE.INCOME' | translate }})</span>
+                    <span ng-if="SimpleVoucherCtrl.type==='expense'">({{ 'VOUCHERS.SIMPLE.EXPENSE' | translate }})</span>
                   </span>
                 </label>
                 <textarea
