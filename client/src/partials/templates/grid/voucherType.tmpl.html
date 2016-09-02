@@ -1,6 +1,6 @@
-<div style="padding: 5px;">
-  <span ng-class="{'label label-success': grid.appScope.getType(row.entity.type_id).incomeExpense == 'income', 'label label-warning': grid.appScope.getType(row.entity.type_id).incomeExpense == 'expense'}" href="">
-  {{ grid.appScope.getType(row.entity.type_id).text | translate }}
+<div class="ui-grid-cell-contents">
+  <span ng-class="{'label label-success': grid.appScope.get(row.entity.type_id).type == grid.appScope.bhConstants.transactionType.INCOME, 'label label-warning': grid.appScope.get(row.entity.type_id).type == grid.appScope.bhConstants.transactionType.EXPENSE}" href="">
+  {{ grid.appScope.get(row.entity.type_id).text | translate }}
   <span ng-if="row.groupHeader">{{ COL_FIELD }}</span>
   </span>
   <a ng-if="grid.appScope.isDefined(row.entity)" class="label label-default">{{ "FORM.LABELS.UNDEFINED" | translate }}</a>

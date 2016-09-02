@@ -2,28 +2,22 @@ angular.module('bhima.controllers')
 .controller('ModalCreditNoteController', ModalCreditNoteController);
 
 ModalCreditNoteController.$inject = [
-  '$uibModalInstance', 'PatientInvoiceService', 'util', 'data', 'VoucherService'
+  '$uibModalInstance', 'bhConstants', 'PatientInvoiceService', 'util', 'data', 'VoucherService'
 ];
 
-function ModalCreditNoteController( $uibModalInstance, Invoices, Util, data, Vouchers) {
+function ModalCreditNoteController($uibModalInstance, bhConstants, Invoices, Util, data, Vouchers) {
   var vm = this;
   vm.creditNote = {};
   vm.submit = submit;
   vm.cancel = cancel;
 
-  vm.creditNote.uuid = data.invoice.uuid; 
+  vm.creditNote.uuid = data.invoice.uuid;
   vm.patientInvoice = data.invoice;
-  // transfer type
-  vm.transferType = Vouchers.transferType;
 
-  var typeId = vm.transferType.filter(function (item) {
-    return item.incomeExpense === 'creditNote';
-  });
-
-  var transferTypeId = typeId[0].id;
+  var transferTypeId = bhConstants.transactionType.CREDIT_NOTE;
 
 
-  Invoices.read(vm.creditNote.uuid)    
+  Invoices.read(vm.creditNote.uuid)
     .then(function (data){
       vm.patientInvoiceItems = data.items;
     });
@@ -34,7 +28,7 @@ function ModalCreditNoteController( $uibModalInstance, Invoices, Util, data, Vou
     vm.creditNote.type_id = transferTypeId;
 
     var journal = Vouchers.reverse(vm.creditNote);
-    
+
     journal
       .then(function (response) {
         var data = {

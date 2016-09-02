@@ -5,7 +5,8 @@ angular.module('bhima.controllers')
 VoucherController.$inject = [
   'VoucherService', '$translate', 'NotifyService',
   'GridFilteringService', 'uiGridGroupingConstants',
-  'uiGridConstants', 'ModalService', 'DateService', 'LanguageService'
+  'uiGridConstants', 'ModalService', 'DateService',
+  'LanguageService', 'bhConstants'
 ];
 
 /**
@@ -15,11 +16,12 @@ VoucherController.$inject = [
  * This controller is responsible for display all vouchers which are in the
  * voucher table.
  */
-function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, Languages) {
+function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupingConstants, uiGridConstants, Modal, Dates, Languages, bhConstants) {
   var vm = this;
 
   /* global variables */
   vm.filterEnabled = false;
+  vm.transactionTypes = {};
   vm.gridOptions = {};
   vm.gridApi = {};
 
@@ -79,7 +81,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
       treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
         groupingShowAggregationMenu: false
     },
-    { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate',
+    { field : 'display_name', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate',
       groupingShowAggregationMenu: false
     },
     { field : 'action', displayName : '...',
@@ -93,9 +95,10 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   vm.gridOptions.onRegisterApi = onRegisterApi;
 
   // expose function
-  vm.getType = getType;
+  vm.get = get;
   vm.isDefined = isDefined;
   vm.showReceipt = showReceipt;
+  vm.bhConstants = bhConstants;
 
   // startup
   startup();
@@ -107,7 +110,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // Grid Aggregation
   function typeAggregation(aggregation) {
-    var type = getType(aggregation.groupVal);
+    var type = get(aggregation.groupVal);
     aggregation.rendered = $translate.instant(type ? type.text : 'FORM.LABELS.UNDEFINED');
   }
 
@@ -123,13 +126,10 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     return row.uuid && (row.type_id === null || row.type_id === undefined);
   }
 
-  // get vouchers type
-  function getType(originId) {
+  // get vouchers transaction
+  function get(originId) {
     if (originId === null || originId === undefined) { return {}; }
-
-    return Vouchers.transferType.filter(function (item) {
-      return item.id === originId;
-    })[0];
+    return vm.transactionTypes.get(originId);
   }
 
   // enable filter
@@ -171,6 +171,12 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // initialize module
   function startup() {
+    Vouchers.transactionType()
+    .then(function (result) {
+      vm.transactionTypes = result;
+    })
+    .catch(Notify.errorHandler);
+
     Vouchers.read()
     .then(function (list) {
       vm.gridOptions.data = list;

@@ -310,16 +310,20 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   }
 
   /* ============================= Transfer Type ============================= */
-  vm.transferType = Vouchers.transferType;
+  Vouchers.transactionType()
+  .then(function (list) {
+    groupType(list.data);
+  })
+  .catch(Notify.handleError);
 
   vm.buildDescription = buildDescription;
 
-  function groupType() {
-    vm.incomes = vm.transferType.filter(function (item) {
-      return item.incomeExpense === 'income';
+  function groupType(array) {
+    vm.incomes = array.filter(function (item) {
+      return item.type === 'income';
     });
-    vm.expenses = vm.transferType.filter(function (item) {
-      return item.incomeExpense === 'expense';
+    vm.expenses = array.filter(function (item) {
+      return item.type === 'expense';
     });
   }
 
@@ -332,7 +336,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
       type = JSON.parse(vm.voucher.type_id);
 
-      vm.incomeExpense = type.incomeExpense;
+      vm.type = type.type;
 
       vm.descriptionPrefix = description
         .concat('/', type.prefix)
@@ -345,8 +349,6 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     }
 
   }
-
-  groupType();
   /* ============================= /Transfer Type ============================ */
 
   /** submit data */
