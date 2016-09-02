@@ -7,18 +7,10 @@
     style="border: 2px solid #ccc;">
     <!-- period start -->
     <tr>
-      <td class="text-left">{{ "REPORT.PERIOD_START" | translate }}</td>
-      <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
-        {{ flow.period.start_date | date }}
-      </td>
-    </tr>
-
-    <!-- period stop  -->
-    <tr>
-      <td class="text-left">{{ "REPORT.PERIOD_STOP" | translate }}</td>
-      <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
-        {{ flow.period.end_date | date }}
-      </td>
+      <th style="width: 15%;"></th>
+      <th class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
+        {{ flow.period.start_date | date: 'MMMM' | uppercase}}
+      </th>
     </tr>
 
     <!-- white line -->
@@ -58,7 +50,7 @@
     <thead>
       <!-- heading  -->
       <tr>
-        <th class="text-left"></th>
+        <th style="width: 15%;"></th>
         <th class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
           {{ flow.period.start_date | date: 'MMMM' | uppercase}}
         </th>

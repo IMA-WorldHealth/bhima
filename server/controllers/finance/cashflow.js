@@ -256,16 +256,16 @@ function document(req, res, next) {
     session.openningBalance = rows.openningBalance.balance;
 
     session.periodicData.forEach(function (flow) {
-      groupingResult(flow.incomes, flow.expenses, moment(flow.period.start_date, 'YYYY-MM-DD'));
+      groupingResult(flow.incomes, flow.expenses, moment(flow.period.start_date).format('YYYY-MM-DD'));
     });
 
     session.periodStartArray = session.periodicData.map(function (flow) {
-      return moment(flow.period.start_date, 'YYYY-MM-DD');
+      return moment(flow.period.start_date).format('YYYY-MM-DD');
     });
 
     /** openning balance by period */
     session.periodicData.forEach(function (flow) {
-      summarization(moment(flow.period.start_date, 'YYYY-MM-DD'));
+      summarization(moment(flow.period.start_date).format('YYYY-MM-DD'));
     });
   }
 
@@ -348,7 +348,7 @@ function document(req, res, next) {
    * @description process to know the previous period of the given period
    */
   function previousPeriod(period) {
-    var currentIndex = session.periodStartArray.indexOf(moment(period, 'YYYY-MM-DD'));
+    var currentIndex = session.periodStartArray.indexOf(moment(period).format('YYYY-MM-DD'));
     return (currentIndex !== 0) ? session.periodStartArray[currentIndex - 1] : session.periodStartArray[currentIndex];
   }
 
@@ -359,8 +359,8 @@ function document(req, res, next) {
    */
   function labelization () {
     var uniqueIncomes = [], uniqueExpenses = [];
-    session.incomesLabels = uniquelize(session.incomesLabels);
-    session.expensesLabels = uniquelize(session.expensesLabels);
+    session.incomesLabels = util.uniquelize(session.incomesLabels);
+    session.expensesLabels = util.uniquelize(session.expensesLabels);
 
     /** incomes rows */
     session.periodStartArray.forEach(function (period) {
@@ -406,23 +406,6 @@ function document(req, res, next) {
       });
     });
 
-  }
-
-  /**
-   * @function uniquelize
-   * @param {array} array An array in which we want to get only unique values
-   * @description return an array which contain only unique values
-   */
-  function uniquelize (array) {
-    var u = {}, a = [];
-    for(var i = 0; i < array.length; i++){
-      if(u.hasOwnProperty(array[i])) {
-         continue;
-      }
-      a.push(array[i]);
-      u[array[i]] = 1;
-    }
-    return a;
   }
 
   /**

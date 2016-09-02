@@ -12,29 +12,7 @@ module.exports.queryCondition = queryCondition;
 module.exports.take = take;
 module.exports.isTrueString = isTrueString;
 module.exports.isFalsy = isFalsy;
-module.exports.sqlDate = sqlDate;
-
-/**
- * @function sqlDate
- * @param {date} date A date
- * @return {string}
- * @description convert a date in 'yyyy-mm-dd' format
- */
-function sqlDate(date) {
-
-  // if we pass in a string, return it right away
-  if (typeof date === 'string') { return date; }
-
-  var d     = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day   = '' + d.getDate(),
-      year  = d.getFullYear();
-
-  if (month.length < 2) { month = '0' + month; }
-  if (day.length < 2) { day = '0' + day; }
-
-  return [year, month, day].join('-');
-}
+module.exports.uniquelize = uniquelize;
 
 /**
  * @function queryCondition
@@ -156,3 +134,19 @@ function isFalsy(value) {
     value.toLowerCase() === '0' ||
     value.toLowerCase() === '';
 }
+
+/**
+ * @function uniquelize
+ * @param {array} array An array in which we want to get only unique values
+ * @description return an array which contain only unique values
+ */
+function uniquelize (array) {
+  // the second param is the next value in the array.
+  return array.reduce(function (uniq, value) {
+
+    // if we haven't seen the value yet, add it to the array (otherwise, ignore it).
+    if (uniq.indexOf(value) === -1) { uniq.push(value); }
+    return uniq;
+
+  }, []);  // initialize with an empty array
+};
