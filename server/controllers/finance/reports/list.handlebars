@@ -1,0 +1,54 @@
+{{> head title="INVOICE_REGISTRY.TITLE"}}  
+
+<body>
+  <div class="container">
+    <!-- header  -->
+    <div class="row">
+      <div class="col-xs-4">
+        <h3 style="margin:2px;">{{model.enterprise.name}} ({{model.enterprise.abbr}})</h3>
+        <span>{{translate 'FORM.LABELS.PHONE'}}: {{model.enterprise.phone}}</span><br>
+        <span>{{translate 'FORM.LABELS.EMAIL'}}: {{model.enterprise.email}}</span><br>
+      </div>
+      <div class="col-xs-offset-4 col-xs-4 text-right">
+        <small>{{model.project.name}} ({{model.project.abbr}})</small>
+      </div>
+    </div>
+
+    <!-- body  -->
+    <div class="row">
+      <div class="col-xs-12">
+
+        <!-- page title  -->
+        <h2 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+          {{translate 'INVOICE_REGISTRY.TITLE'}}
+        </h2>
+
+        <!-- list of data  -->
+        <table class="table table-condensed table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
+              <th>{{translate 'TABLE.COLUMNS.BILLING_DATE'}}</th>
+              <th>{{translate 'TABLE.COLUMNS.PATIENT'}}</th>
+              <th>{{translate 'TABLE.COLUMNS.COST'}}</th>
+              <th>{{translate 'TABLE.COLUMNS.SERVICE'}}</th>
+              <th>{{translate 'TABLE.COLUMNS.BY'}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each model.data}}
+              <tr>
+                <td>{{ reference }}</td>
+                <td>{{ date date }}</td>
+                <td>{{ patientNames }}</td>
+                <td>{{ currency cost currency_id }}</td>
+                <td>{{ serviceName }}</td>
+                <td>{{ createdBy }}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
