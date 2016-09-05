@@ -22,6 +22,7 @@
 'use strict';
 
 const db = require('../../../lib/db');
+const rm = require('../../../lib/ReportManager');
 const NotFound = require('../../../lib/errors/NotFound');
 const types = require('./types');
 
@@ -208,8 +209,9 @@ function lookupAccount(id) {
       a.classe, a.is_asset, a.reference_id, a.is_brut_link, a.is_charge,
       a.number, a.label, a.parent, a.type_id, a.is_title, at.type
     FROM account AS a JOIN account_type AS at ON a.type_id = at.id
-    WHERE a.id = ?;
-  `;
+    `;
+
+  sql += id ? ' WHERE a.id = ? ORDER BY CAST(a.number AS CHAR(15)) ASC;' : ' ORDER BY CAST(a.number AS CHAR(15)) ASC;';
 
   return db.exec(sql, id)
     .then(function(rows) {
@@ -217,8 +219,69 @@ function lookupAccount(id) {
         throw new NotFound(`Could not find account with id ${id}.`);
       }
 
-      return rows[0];
+      return id ? rows[0] : rows;
     });
+}
+
+/**
+ * @method document
+ * @description generate chart of account as a document
+ */
+function document(req, res, next) {
+  const reportUrl = './server/controllers/finance/reports/accounts.report.handlebars';
+
+  lookupAccount()
+  .then(processAccountDepth)
+  .then(accounts => {
+    return rm.build(req, accounts, reportUrl);
+  })
+  .spread((doc, header) => {
+    res.set(header).send(doc);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+ * @method processAccountDepth
+ * @description get the depth of an account
+ */
+function processAccountDepth(accounts) {
+
+  return accounts.map(acc => {
+    let depth = getDepth(acc, 0);
+    acc.depth = depth;
+    return acc;
+  });
+
+  // recursive parent
+  function getDepth(account, depth) {
+    if (account.parent === 0) {
+      return depth;
+    }
+    else {
+      let parent = getParent(account);
+      return getDepth(parent, ++depth);
+    }
+  }
+
+  // get parent
+  function getParent(account) {
+    return findAccount(account.parent);
+  }
+
+  // find account
+  function findAccount(accountId) {
+    let found = null;
+    for (var i = 0; i < accounts.length; i++) {
+      if (accounts[i].id === accountId) {
+        found = accounts[i];
+        break;
+      }
+    }
+    return found;
+  }
+
 }
 
 exports.list = list;
@@ -227,3 +290,4 @@ exports.update = update;
 exports.detail = detail;
 exports.getBalance = getBalance;
 exports.types = types;
+exports.document = document;

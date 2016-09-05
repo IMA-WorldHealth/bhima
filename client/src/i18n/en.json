@@ -868,16 +868,18 @@
     "UPD_REFERENCE" : "Update Reference Group"
   },
   "REPORT" : {
-    "SINCE": "Since",
-    "PRODUCED_BY" : "Produced by",
-    "PRODUCED_ON" : "Produced on",
-    "AGED_DEBTORS" : {
+    "AGED_DEBTORS"  : {
       "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Less Than 30 Days",
       "SIXTY_DAYS" : "Less Than 60 Days",
       "NINETY_DAYS" : "Less Than 90 Days",
       "OVER_NINETY_DAYS" : "Over 90 Days"
-    }
+    },
+    "CHART_ACCOUNT" : "Chart of Accounts",
+    "SINCE"         : "Since",
+    "PRODUCED_BY"   : "Produced by",
+    "PRODUCED_DATE" : "Production Date",
+    "PRODUCED_ON"   : "Produced on"
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Add a bilan Section",

@@ -79,7 +79,7 @@
     },
     "RECEIPT": {
       "SUCCESS" : "Créé avec succès un paiement en espèces"
-    },    
+    },
     "VOUCHER": {
       "CASHBOXES": {
         "AVAILABLE"       : "Caisse disponibles",
@@ -921,17 +921,18 @@
     "UPD_REFERENCE" : "Modifier un groupe de référence"
   },
   "REPORT" : {
-    "SINCE": "Depuis",
-    "PRODUCED_BY" : "Produit par",
-    "PRODUCED_ON" : "Produit sur",
-    "AGED_DEBTORS" : {
-      "TITLE": "Les débiteurs âgés",
+    "AGED_DEBTORS"  : {
+      "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Moins de 30 jours",
-      "SIXTY_DAYS" : "Moins de 60 jours",
-      "NINETY_DAYS" : "Moins de 90 jours",
-      "OVER_NINETY_DAYS" : "Plus de 90 jours"
-    }
-  },  
+      "SIXTY_DAYS"  : "Moins de 30 jours",
+      "NINETY_DAYS" : "Moins de 30 jours",
+      "OVER_NINETY_DAYS" : "Audela de 90 jours"
+    },
+    "SINCE"         : "Depuis",
+    "PRODUCED_BY"   : "Produit par",
+    "PRODUCED_DATE" : "Date de generation",
+    "PRODUCED_ON"   : "Produit sur"
+  },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Ajouter une section Bilan",
     "ALERT"             : "Bilan section management",
