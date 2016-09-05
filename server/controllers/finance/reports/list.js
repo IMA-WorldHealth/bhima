@@ -22,8 +22,6 @@ exports.build = build;
  * @return {object} promise
  */
 function build(data, request) {
-
-
   let queryString  = request.query;
   let renderTarget = queryString && queryString.renderer || defaultRender;
 

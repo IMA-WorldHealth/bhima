@@ -350,7 +350,7 @@ exports.configure = function configure(app) {
 
   // route for invoice Report
   app.get('/invoices/patient/report', patientInvoice.getPatientInvoice);
-  
+
   // reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', financeReports.receipts.invoices);
   app.get('/reports/cash/:uuid', financeReports.receipts.cash);
