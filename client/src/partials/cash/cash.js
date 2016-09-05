@@ -29,7 +29,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   if (!cashboxId) {
     $state.go('^.select', {}, { notify : false });
 
-  // if there is no URL id but one in localstorage, the state with the
+  // if there is no URL id but one in localstorage, update the state with the
   // localstorage params
   } else if (cashboxId && !$state.params.id) {
     $state.go('^.window', { id : cashboxId }, { location: 'replace'});
@@ -37,7 +37,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
 
   // bind methods
   vm.openInvoicesModal = openInvoicesModal;
-  vm.openTransferModal = openTransferModal;
   vm.usePatient = usePatient;
   vm.digestExchangeRate = digestExchangeRate;
   vm.togglePaymentType = togglePaymentType;
@@ -90,11 +89,6 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     vm.patient = patient;
   }
 
-  /** Transfer Modal */
-  function openTransferModal() {
-    Modals.openTransfer({ cashbox: vm.cashbox });
-  }
-
   // caches the cashbox
   function setCashboxSelection(cashbox) {
     vm.cashbox = cashbox;
@@ -113,23 +107,23 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
         // the table of invoices shown to the client is name-spaced by 'slip'
         vm.slip = {};
         vm.slip.rawTotal = result.total;
-        digestExchangeRate();
+        digestExchangeRate(vm.payment.currency_id);
       });
   }
 
   // exchanges the payment at the bottom of the previous invoice slip.
-  function digestExchangeRate() {
+  function digestExchangeRate(currencyId) {
 
     // make sure we have all the required data before attempting to exchange
     // any values
-    if (!vm.slip || !vm.payment.currency_id) { return; }
+    if (!(vm.slip && currencyId)) { return; }
 
     // bind the correct exchange rate
-    vm.slip.rate = Exchange.getCurrentRate(vm.payment.currency_id);
+    vm.slip.rate = Exchange.getCurrentRate(currencyId);
 
     // bind the correct exchanged total
     vm.slip.total =
-      Exchange.convertFromEnterpriseCurrency(vm.payment.currency_id, vm.payment.date, vm.slip.rawTotal);
+      Exchange.convertFromEnterpriseCurrency(currencyId, vm.payment.date, vm.slip.rawTotal);
   }
 
   // submits the form to the server

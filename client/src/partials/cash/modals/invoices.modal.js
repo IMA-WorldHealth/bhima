@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('CashInvoiceModalController', CashInvoiceModalController);
+  .controller('CashInvoiceModalController', CashInvoiceModalController);
 
 CashInvoiceModalController.$inject = [
   'DebtorService', 'debtorId', 'invoiceIds', '$uibModalInstance', 'SessionService',
-  '$timeout'
+  '$timeout', 'NotifyService'
 ];
 
 /**
@@ -12,13 +12,12 @@ CashInvoiceModalController.$inject = [
  * @description This controller is responsible for retrieving a list of debtor invoices
  * from the server, and allowing selection of any number of invoices.
  */
-function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance, Session, $timeout) {
+function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance, Session, $timeout, Notify) {
   var vm = this;
 
   // we start in a neutral state
-  vm.loadingState = false;
-  vm.loadingError = false;
-  vm.noData = false;
+  vm.loading = false;
+  vm.hasError = false;
 
   // defaults to value
   vm.missingId = !debtorId ;
@@ -27,26 +26,34 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
   vm.cancel = ModalInstance.dismiss;
   vm.submit = submit;
 
-  // ui-grid options
   vm.gridOptions = {
     appScopeProvider : vm,
-    enableSorting : false,
-    multiSelect : true,
-    showGridFooter : true,
-    onRegisterApi : bindGridApi,
+    multiSelect: true,
+    fastWatch: true,
+    flatEntityAccess: true,
+    onRegisterApi : onRegisterApi,
+    enableColumnMenus: false,
     columnDefs : [
-      { name : 'reference', enableHiding : false },
-      { name : 'balance', cellFilter: 'currency:' + Session.enterprise.currencyId, enableHiding : false, },
-      { name : 'date', cellFilter: 'date', enableHiding: false }
+      { name : 'reference'},
+      { name : 'balance', cellFilter: 'currency:' + Session.enterprise.currencyId},
+      { name : 'date', cellFilter: 'date' }
     ],
     minRowsToShow : 10
   };
 
+  function selectionChangeCallback() {
+    vm.rows = vm.getSelectedRows();
+  }
+
   // in order to use controllerAs syntax, we need to import the entire grid API
   // into the controller scope to bind the getSelectedRows method.
-  function bindGridApi(api) {
+  function onRegisterApi(api) {
     vm.getSelectedRows = api.selection.getSelectedRows;
     vm.selectRow = api.selection.selectRow;
+
+    // set up callbacks
+    api.selection.on.rowSelectionChanged(null, selectionChangeCallback);
+    api.selection.on.rowSelectionChangedBatch(null, selectionChangeCallback);
   }
 
   // starts up the modal
@@ -56,36 +63,32 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
     toggleLoadingState();
 
     // load debtor invoices
-    Debtors.invoices(debtorId).then(function (invoices) {
-      vm.gridOptions.data = invoices;
+    Debtors.invoices(debtorId)
+      .then(function (invoices) {
+        vm.gridOptions.data = invoices;
 
-      // requires timeout to bind angular ids to each row before selecting them.
-      $timeout(function () {
+        // requires timeout to bind angular ids to each row before selecting them.
+        $timeout(function () {
 
-        // loop through each invoice id passed in and reselect those that have
-        // previously been selected
-        vm.gridOptions.data.forEach(function (invoice) {
-          if (invoiceIds.indexOf(invoice.invoice_uuid) > -1) {
-            vm.selectRow(invoice);
-          }
+          // loop through each invoice id passed in and reselect those that have
+          // previously been selected
+          vm.gridOptions.data.forEach(function (invoice) {
+            if (invoiceIds.indexOf(invoice.invoice_uuid) > -1) {
+              vm.selectRow(invoice);
+            }
+          });
         });
-      });
-
-      // warn the user that there is no data
-      vm.noData = (vm.gridOptions.data.length === 0);
-    })
-    .catch(handler)
-    .finally(function () { toggleLoadingState(); });
+      })
+      .catch(function (error) {
+        vm.hasError = true;
+        Notify.handleError(error);
+      })
+      .finally(toggleLoadingState);
   }
 
-  /** generic error handler */
-  function handler(error) {
-    vm.loadingError = error;
-  }
-
-  /** toggles loading state (boolean) */
+  /* toggles loading state (boolean) */
   function toggleLoadingState() {
-    vm.loadingState = !vm.loadingState;
+    vm.loading = !vm.loading;
   }
 
   // resolve the modal with the selected invoices to add to the cash payment bills
@@ -94,7 +97,7 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
     // retrieve the outstanding patient invoices from the ui grid
     var invoices = vm.getSelectedRows();
 
-    // block the submission if there are no
+    // block the submission if there are no values selected
     vm.empty = (invoices.length === 0);
     if (vm.empty) { return; }
 

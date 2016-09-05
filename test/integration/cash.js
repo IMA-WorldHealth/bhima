@@ -7,10 +7,10 @@ describe('(/cash) Cash Payments', function () {
   'use strict';
 
   const CASHBOX_ID  = 1;   // Test Primary Cashbox A
-  const CURRENCY_ID = 2;   // Congolese Francs
+  const CURRENCY_ID = 1;   // Congolese Francs
   const PROJECT_ID  = 1;   // Test Project
-  const DEBTOR_UUID =      // Patient/1/Patient
-    'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
+  const DEBTOR_UUID =      // Test Patient
+    '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
 
   const USER_ID     = 1;   // Test User
   const INVOICES    = [    // invoices defined in the database
@@ -19,7 +19,6 @@ describe('(/cash) Cash Payments', function () {
   ];
 
   const REFERENCE = 'TPA1';
-
 
   // can't find undefined cash payments
   it('GET /cash/undefined returns an error', function () {
@@ -39,7 +38,7 @@ describe('(/cash) Cash Payments', function () {
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
       project_id:  PROJECT_ID,
-      date:        new Date('2015-01-01'),
+      date:        new Date(),
       user_id:     USER_ID,
       is_caution:  1,
       description : 'A caution payment'
@@ -79,15 +78,16 @@ describe('(/cash) Cash Payments', function () {
   describe('Patient Invoice Payments ', function () {
 
     var INVOICE_PAYMENT = {
-      amount:      1520,
+      amount:      79000,
       currency_id: CURRENCY_ID,
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
+      date : new Date(),
       items:       INVOICES,
       project_id:  PROJECT_ID,
       user_id  :   USER_ID,
       is_caution:  0,
-      description : 'This is a description'
+      description : 'Test Cash Payment'
     };
 
     var INVALID_INVOICE_PAYMENT = {
@@ -200,7 +200,7 @@ describe('(/cash) Cash Payments', function () {
         debtor_uuid: DEBTOR_UUID,
         items:       INVOICES,
         project_id:  PROJECT_ID,
-        date:        new Date('2015-01-01'),
+        date:        new Date(),
         user_id:     USER_ID,
         is_caution:  1,
         description : 'This is a confused payment'
@@ -210,40 +210,8 @@ describe('(/cash) Cash Payments', function () {
         .send({ payment : CONFUSED_PAYMENT })
         .then(function (res) {
 
-          // should have created successfully
-          helpers.api.created(res);
-
-          return agent.get('/cash/'.concat(res.body.uuid));
-        })
-        .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-
-          // make sure that there are no associated items
-          expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.property('items');
-          expect(res.body.items).to.have.length(0);
-        })
-        .catch(helpers.handler);
-    });
-  });
-
-  // the references API
-  describe('(/cash/references) references for finding cash payment uuids', function () {
-    it('GET /cash/references/unknown should return a 404 error', function () {
-      agent.get('/cash/references/unknown')
-        .then(function (res) {
-          helpers.api.errored(res, 404);
-        })
-        .catch(helpers.handler);
-    });
-
-    it('GET /cash/references/:reference should return a uuid for a valid payment', function () {
-      agent.get('/cash/references/'.concat(REFERENCE))
-        .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.have.property('uuid');
+          // should not have created the payment
+          helpers.api.errored(res, 400);
         })
         .catch(helpers.handler);
     });

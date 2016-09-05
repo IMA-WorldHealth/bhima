@@ -201,9 +201,9 @@ exports.configure = function configure(app) {
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
 
-  //API for general ledger
+  // API for general ledger
   app.get('/general_ledger', generalLedger.list);
-  
+
   //API for trial balance
   app.get('/trial_balance/data_per_account', trialBalance.getDataPerAccount);
   app.post('/trial_balance/checks', trialBalance.checkTransactions);
