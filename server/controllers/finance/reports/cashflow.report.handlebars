@@ -16,8 +16,14 @@
     <div class="col-xs-4">
       <h1 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
         {{translate 'TREE.CASHFLOW'}}<br>
-        <small>{{ model.data.accountName }}</small>
+        <small>{{date model.data.dateFrom }} - {{date model.data.dateTo }}</small>
       </h1>
+    </div>
+
+    <div class="col-xs-4">
+      <h2 style="margin:15px;" class="text-right text-uppercase">
+        {{ model.data.accountName }} <i class="fa fa-archive"></i>
+      </h2>
     </div>
   </div>
 

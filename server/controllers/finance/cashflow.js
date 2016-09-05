@@ -223,6 +223,9 @@ function document(req, res, next) {
     lang: params.lang
   };
 
+  session.dateFrom = params.dateFrom;
+  session.dateTo = params.dateTo;
+
   processingCashflowReport(params)
   .then(reporting)
   .then(labelization)
@@ -319,7 +322,7 @@ function document(req, res, next) {
       session.sum_incomes[period] - session.sum_expense[period] :
       session.periodicBalance[previousPeriod(period)] + session.sum_incomes[period] - session.sum_expense[period];
 
-    session.periodicOpenningBalance[period] = isFirstPeriod(period) ?
+    session.periodicOpenningBalance[period] = isFirstPeriod(period) ? 0 :
       session.openningBalance :
       session.periodicBalance[previousPeriod(period)];
 
@@ -436,7 +439,6 @@ function document(req, res, next) {
             return b.origin_id === item.origin_id ? b.debit_equiv + a : a;
           }, 0);
           session.summationIncome[period].push({
-            /** @fixme: transfer type must be a nome of transfer type not an id */
             'transfer_type' : item.transactionType,
             'currency_id'   : item.currency_id,
             'value'         : value
@@ -455,7 +457,6 @@ function document(req, res, next) {
             return b.origin_id === item.origin_id ? b.credit_equiv + a : a;
           }, 0);
           session.summationExpense[period].push({
-            /** @fixme: transfer type must be a nome of transfer type not an id */
             'transfer_type' : item.transactionType,
             'currency_id'   : item.currency_id,
             'value'         : value
