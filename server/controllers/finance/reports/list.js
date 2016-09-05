@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const supportedRender = {

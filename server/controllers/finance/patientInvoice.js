@@ -11,6 +11,7 @@
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
  */
 
+
 const q    = require('q');
 const db   = require('../../lib/db');
 const uuid = require('node-uuid');
@@ -74,7 +75,7 @@ function list(req, res, next) {
  *
  */
 function listInvoices() {
-  let sql = 
+  let sql =
     `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientNames,
       service.name as serviceName, user.display_name, voucher.type_id,
