@@ -20,7 +20,6 @@ describe('(/cash) Cash Payments', function () {
 
   const REFERENCE = 'TPA1';
 
-
   // can't find undefined cash payments
   it('GET /cash/undefined returns an error', function () {
     return agent.get('/cash/undefined')
@@ -83,6 +82,7 @@ describe('(/cash) Cash Payments', function () {
       currency_id: CURRENCY_ID,
       cashbox_id:  CASHBOX_ID,
       debtor_uuid: DEBTOR_UUID,
+      date : new Date(),
       items:       INVOICES,
       project_id:  PROJECT_ID,
       user_id  :   USER_ID,
@@ -210,40 +210,8 @@ describe('(/cash) Cash Payments', function () {
         .send({ payment : CONFUSED_PAYMENT })
         .then(function (res) {
 
-          // should have created successfully
-          helpers.api.created(res);
-
-          return agent.get('/cash/'.concat(res.body.uuid));
-        })
-        .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-
-          // make sure that there are no associated items
-          expect(res.body).to.not.be.empty;
-          expect(res.body).to.have.property('items');
-          expect(res.body.items).to.have.length(0);
-        })
-        .catch(helpers.handler);
-    });
-  });
-
-  // the references API
-  describe('(/cash/references) references for finding cash payment uuids', function () {
-    it('GET /cash/references/unknown should return a 404 error', function () {
-      agent.get('/cash/references/unknown')
-        .then(function (res) {
-          helpers.api.errored(res, 404);
-        })
-        .catch(helpers.handler);
-    });
-
-    it('GET /cash/references/:reference should return a uuid for a valid payment', function () {
-      agent.get('/cash/references/'.concat(REFERENCE))
-        .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.have.property('uuid');
+          // should not have created the payment
+          helpers.api.errored(res, 400);
         })
         .catch(helpers.handler);
     });

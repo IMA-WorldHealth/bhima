@@ -141,18 +141,21 @@ function invoices(req, res, next) {
     .then(function (uuids) {
 
       // if nothing found, return an empty array
-      if (!uuids.length) {
-        return q.resolve([]);
-      }
+      if (!uuids.length) { return []; }
 
       uuids = uuids.map(item => item.uuid);
+
+      let balance =
+         (options.balanced === '1') ? 'HAVING balance = 0' :
+         (options.balanced === '0') ? 'HAVING balance > 0' :
+         '';
 
       // select all invoice and payments against invoices from the combined ledger
       sql = `
         SELECT BUID(i.uuid) AS uuid, CONCAT(project.abbr, invoice.reference) AS reference,
-          credit, debit, (debit - credit) AS balance, BUID(entity_uuid) AS entity_uuid, invoice.date
+          credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
         FROM (
-          SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, entity_uuid
+          SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
           FROM (
             SELECT record_uuid AS uuid, debit, credit, entity_uuid
             FROM combined_ledger
@@ -162,17 +165,11 @@ function invoices(req, res, next) {
             FROM  combined_ledger
             WHERE reference_uuid IN (?) AND entity_uuid = ?
           ) AS ledger
-          GROUP BY entity_uuid
-        ) AS i JOIN invoice ON i.uuid = invoice.uuid
-        JOIN project ON invoice.project_id = project.id `;
-
-      /**
-       * @todo - put in balance
-       */
-       sql +=
-         (options.balanced === '1') ? ' HAVING balance = 0;' :
-         (options.balanced === '0') ? ' HAVING balance > 0;' :
-         ';';
+          GROUP BY ledger.uuid ${balance}
+        ) AS i
+          JOIN invoice ON i.uuid = invoice.uuid
+          JOIN project ON invoice.project_id = project.id;
+      `;
 
       return db.exec(sql, [uuids, uid, uuids, uid]);
     })

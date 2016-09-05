@@ -81,12 +81,13 @@ BEGIN
       SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, trans_id_length))) + 1 AS increment
       FROM posting_journal JOIN project ON posting_journal.project_id = project.id
       WHERE posting_journal.project_id = project_id
+      GROUP BY abbr
     UNION
       SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, trans_id_length))) + 1 AS increment
       FROM general_ledger JOIN project ON general_ledger.project_id = project.id
       WHERE general_ledger.project_id = project_id)c
+      GROUP BY abbr
   );
 END $$
-
 
 DELIMITER ;

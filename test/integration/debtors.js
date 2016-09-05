@@ -20,15 +20,15 @@ describe('(/debtors) The /debtors API', function () {
 
 
  it('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', function () {
-    return agent.get('/debtors/:uuid/invoices'.replace(':uuid', debtorUuid))
+    return agent.get(`/debtors/${debtorUuid}/invoices`)
       .then(function (res) {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtors/:uuid/invoices?balanced=0 returns a list of unbalance invoices of a given debtor', function () {
-    return agent.get('/debtors/:uuid/invoices?balanced=0'.replace(':uuid', debtorUuid))
+  it('GET /debtors/:uuid/invoices?balanced=0 returns a list of unbalanced invoices of a given debtor', function () {
+    return agent.get(`/debtors/${debtorUuid}/invoices?balanced=0`)
       .then(function (res) {
         helpers.api.listed(res, 1);
       })
@@ -36,15 +36,15 @@ describe('(/debtors) The /debtors API', function () {
   });
 
   it('GET /debtors/:uuid/invoices?balanced=1 returns a list of balanced invoices of a given debtor', function () {
-    return agent.get('/debtors/:uuid/invoices?balanced=1'.replace(':uuid', debtorUuid))
+    return agent.get(`/debtors/${debtorUuid}/invoices?balanced=1`)
       .then(function (res) {
-        helpers.api.listed(res, 0);
+        helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });
 
   it('GET /debtors/:uuid/invoice should return an empty list if the debtor does not have any invoices', function () {
-    return agent.get('/debtors/:uuid/invoices'.replace(':uuid', emptyDebtorUuid))
+    return agent.get(`/debtors/${emptyDebtorUuid}/invoices`)
       .then(function (res) {
         helpers.api.listed(res, 0);
       })
@@ -59,8 +59,10 @@ describe('(/debtors) The /debtors API', function () {
       .catch(helpers.handler);
   });
 
+  // FIXME - incredibly hard coded!!
   it('GET /debtors/:uuid should return detail of a specifying debtor', function () {
-    return agent.get('/debtors/:uuid'.replace(':uuid', '1fa862d0-2d30-4550-8052-e9aa6dbc467e'))
+    const debtorUuid = '1fa862d0-2d30-4550-8052-e9aa6dbc467e';
+    return agent.get(`/debtors/${debtorUuid}`)
       .then(function (res) {
         expect(res.body).to.contain.all.keys(debtorKeys);
         expect(res.body.uuid).to.be.equal('1fa862d0-2d30-4550-8052-e9aa6dbc467e');

@@ -22,8 +22,6 @@ exports.list = list;
  * Getting data from the general ledger
  */
 function list(req, res, next) {
-  console.log('on est la');
-
   let sql = `
     SELECT BUID(gl.uuid) AS uuid, gl.project_id, gl.fiscal_year_id, gl.period_id,
       gl.trans_id, gl.trans_date, BUID(gl.record_uuid) AS record_uuid,

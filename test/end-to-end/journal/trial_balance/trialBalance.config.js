@@ -42,7 +42,7 @@ function TrialBalanceTest(){
     journal.openTrialBalanceModal();
     expect(trialBalance.getLineCount()).to.eventually.equal(3);
     trialBalance.switchView(); //from group by transaction to account
-    expect(trialBalance.getLineCount()).to.eventually.equal(1);
+    expect(trialBalance.getLineCount()).to.eventually.equal(2);
     trialBalance.switchView(); //from group by account to transaction
     expect(trialBalance.getLineCount()).to.eventually.equal(3);
     trialBalance.closeTrialBalance();
@@ -52,7 +52,7 @@ function TrialBalanceTest(){
     journal.checkRow(1);
     journal.openTrialBalanceModal();
     trialBalance.openErrorModal();
-    expect(errorModal.getLineCount()).to.eventually.equal(2);
+    expect(errorModal.getLineCount()).to.eventually.equal(4);
     errorModal.closeErrorModal();
   });
 }

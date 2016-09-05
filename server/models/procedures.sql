@@ -296,19 +296,18 @@ BEGIN
   DECLARE cdate DATETIME;
   DECLARE cdescription TEXT;
 
-
  -- cursor for debtor's cautions
   DECLARE curse CURSOR FOR
     SELECT c.id, c.date, c.description, SUM(c.credit - c.debit) AS balance FROM (
-      SELECT debit, credit, combined_ledger.date, combined_ledger.description, record_uuid AS id
-      FROM combined_ledger JOIN cash
-        ON cash.uuid = combined_ledger.record_uuid
-      WHERE reference_uuid IS NULL AND entity_uuid = ientityId AND cash.is_caution = 0
+        SELECT debit, credit, combined_ledger.date, combined_ledger.description, record_uuid AS id
+        FROM combined_ledger JOIN cash
+          ON cash.uuid = combined_ledger.record_uuid
+        WHERE reference_uuid IS NULL AND entity_uuid = ientityId AND cash.is_caution = 0
       UNION
-      SELECT debit, credit, combined_ledger.date, combined_ledger.description, reference_uuid AS id
-      FROM combined_ledger JOIN cash
-        ON cash.uuid = combined_ledger.reference_uuid
-      WHERE entity_uuid = ientityId AND cash.is_caution = 0
+        SELECT debit, credit, combined_ledger.date, combined_ledger.description, reference_uuid AS id
+        FROM combined_ledger JOIN cash
+          ON cash.uuid = combined_ledger.reference_uuid
+        WHERE entity_uuid = ientityId AND cash.is_caution = 0
     ) AS c
     GROUP BY c.id
     HAVING balance > 0
@@ -370,7 +369,7 @@ BEGIN
         SET done = TRUE;
       ELSE
         -- subtract the caution's balance from the cost
-        SET icost := icost - cbalance;
+        SET icost = icost - cbalance;
 
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
@@ -539,7 +538,6 @@ BEGIN
   WHERE cash.uuid = cashUuid;
 
   /* Set the exchange rate up */
-
   -- populate core setup values
   CALL PostingSetupUtil(cashDate, cashEnterpriseId, cashProjectId, cashCurrencyId, currentFiscalYearId, currentPeriodId, currentExchangeRate, enterpriseCurrencyId, transactionId, gain_account_id, loss_account_id);
 
@@ -619,9 +617,6 @@ BEGIN
       credit the rounding account.  If the (cashAmount - previousInvoiceBalances) is negative, then the debtor
       underpaid and we should credit them and debit the rounding account the remainder
     */
-
-    /* populates the table stage_cash_invoice_balances */
-    CALL CalculateCashInvoiceBalances(cashUuid);
 
     /* These values are in the original currency amount */
     SET previousInvoiceBalances = (
@@ -733,7 +728,7 @@ BEGIN
   -- stage already exists simply write to it, otherwise create it select into it
   DECLARE `no_cash_stage` TINYINT(1) DEFAULT 0;
   DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_cash_stage` = 1;
-  SELECT NULL FROM `stage_cash` LIMIT 0;
+  SELECT NULL FROM stage_cash LIMIT 0;
 
 
   IF (`no_cash_stage` = 1) THEN
@@ -774,16 +769,20 @@ CREATE PROCEDURE CalculateCashInvoiceBalances(
   IN cashUuid BINARY(16)
 )
 BEGIN
-  DECLARE cashEnterpriseId INT;
+  DECLARE cashDate DATETIME;
   DECLARE cashCurrencyId INT;
+  DECLARE cashEnterpriseId INT;
+  DECLARE cashDebtorUuid BINARY(16);
   DECLARE enterpriseCurrencyId INT;
-  DECLARE cashDate TIMESTAMP;
   DECLARE currentExchangeRate DECIMAL;
 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION ROLLBACK;
+  DECLARE EXIT HANDLER FOR SQLWARNING ROLLBACK;
+
   -- copy cash payment values into working variables
-  SELECT cash.date, cash.currency_id, enterprise.id, enterprise.currency_id
-    INTO cashDate, cashCurrencyId, cashEnterpriseId, enterpriseCurrencyId
-  FROM cash
+  SELECT cash.date, cash.currency_id, enterprise.id, enterprise.currency_id, cash.debtor_uuid
+    INTO cashDate, cashCurrencyId, cashEnterpriseId, enterpriseCurrencyId, cashDebtorUuid
+  FROM stage_cash AS cash
     JOIN project ON cash.project_id = project.id
     JOIN enterprise ON project.enterprise_id = enterprise.id
   WHERE cash.uuid = cashUuid;
@@ -792,27 +791,43 @@ BEGIN
   SET currentExchangeRate = GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate);
   SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
 
-  /*
-    Two temporary tables to get around MySQL's restriction on referencing temporary tables.
-  */
-  CREATE TEMPORARY TABLE IF NOT EXISTS cash_invoices AS (SELECT invoice_uuid FROM stage_cash_item WHERE stage_cash_item.cash_uuid = cashUuid);
-  CREATE TEMPORARY TABLE IF NOT EXISTS cash_invoices_dup AS (SELECT invoice_uuid FROM stage_cash_item WHERE stage_cash_item.cash_uuid = cashUuid);
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+  );
 
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances AS
-    SELECT ledger.uuid, (SUM(ledger.debit - ledger.credit) * currentExchangeRate) AS balance, ledger.date
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_references (
+    uuid BINARY(16), debit DECIMAL(19,4), credit DECIMAL(19,4), entity_uuid BINARY(16), date TIMESTAMP
+  );
+
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_invoice_balances (
+    uuid BINARY(16), balance DECIMAL(19, 4), date TIMESTAMP
+  );
+
+  INSERT INTO stage_cash_records
+    SELECT cl.record_uuid AS uuid, cl.debit, cl.credit, cl.entity_uuid, cl.date
+    FROM combined_ledger AS cl
+    WHERE cl.record_uuid IN (
+      SELECT ci.invoice_uuid FROM stage_cash_item AS ci WHERE ci.cash_uuid = cashUuid
+    ) AND cl.entity_uuid = cashDebtorUuid;
+
+  INSERT INTO stage_cash_references
+    SELECT cl.reference_uuid AS uuid, cl.debit, cl.credit, cl.entity_uuid, cl.date
+    FROM combined_ledger AS cl
+    WHERE cl.reference_uuid IN (
+      SELECT ci.invoice_uuid FROM stage_cash_item AS ci WHERE ci.cash_uuid = cashUuid
+    ) AND cl.entity_uuid = cashDebtorUuid;
+
+  INSERT INTO stage_cash_invoice_balances
+    SELECT zz.uuid, zz.balance, zz.date
     FROM (
-      SELECT cl.record_uuid AS uuid, cl.debit, cl.credit, cl.entity_uuid, cl.date
-      FROM combined_ledger AS cl JOIN cash JOIN cash_invoices
-        ON cl.entity_uuid = cash.debtor_uuid AND cl.record_uuid = cash_invoices.invoice_uuid
-      WHERE cash.uuid = cashUuid
-    UNION ALL
-      SELECT cl.reference_uuid AS uuid, cl.debit, cl.credit, cl.entity_uuid, cl.date
-      FROM combined_ledger AS cl JOIN cash JOIN cash_invoices_dup
-        ON cl.entity_uuid = cash.debtor_uuid AND cl.reference_uuid = cash_invoices_dup.invoice_uuid
-      WHERE cash.uuid = cashUuid
-    ) AS ledger
-    GROUP BY ledger.uuid
-    ORDER BY ledger.date DESC;
+      SELECT ledger.uuid, (SUM(ledger.debit - ledger.credit) * currentExchangeRate) AS balance, MIN(ledger.date) AS date
+      FROM (
+        SELECT crec.uuid, crec.debit, crec.credit, crec.entity_uuid, crec.date FROM stage_cash_records AS crec
+      UNION ALL
+        SELECT cref.uuid, cref.debit, cref.credit, cref.entity_uuid, cref.date FROM stage_cash_references AS cref
+      ) AS ledger
+      GROUP BY ledger.uuid
+    ) AS zz ORDER BY zz.date;
 END $$
 
 /*
@@ -822,14 +837,15 @@ END $$
   overpay the invoice amounts.
 */
 CREATE PROCEDURE WriteCashItems(
-  IN cashUuid BINARY(16),
-  IN cashAmount DECIMAL,
-  IN currentExchangeRate DECIMAL
+  IN cashUuid BINARY(16)
 )
 BEGIN
+
+  DECLARE cashAmount DECIMAL;
+  DECLARE minMonentaryUnit DECIMAL;
+
   DECLARE totalInvoiceCost DECIMAL;
   DECLARE amountToAllocate DECIMAL;
-  DECLARE minMonentaryUnit DECIMAL;
   DECLARE allocationAmount DECIMAL;
   DECLARE invoiceUuid BINARY(16);
   DECLARE invoiceBalance DECIMAL;
@@ -839,15 +855,20 @@ BEGIN
   DECLARE Overpaid CONDITION FOR SQLSTATE '45501';
 
   -- CURSOR for allocation of payments to invoice costs.
-  DECLARE curse CURSOR FOR
-    SELECT invoice.uuid, invoice.balance
-    FROM stage_cash_invoice_balances AS invoice;
+  DECLARE curse CURSOR FOR SELECT invoice.uuid, invoice.balance FROM stage_cash_invoice_balances AS invoice;
+
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  -- set local variables
+  SELECT cash.amount, currency.min_monentary_unit
+    INTO cashAmount, minMonentaryUnit
+  FROM cash JOIN currency ON currency.id = cash.currency_id
+  WHERE cash.uuid = cashUuid;
 
   /*
     Calculate the balances on invoices to pay.
+    NOTE: this assumes that CalculateCashInvoiceBalances(cashUuid) has been called before this procedure
   */
-  CALL CalculateCashInvoiceBalances(cashUuid);
   SET totalInvoiceCost = (SELECT IFNULL(SUM(invoice.balance), 0) FROM stage_cash_invoice_balances AS invoice);
 
   /*
@@ -904,37 +925,10 @@ CREATE PROCEDURE WriteCash(
   IN cashUuid BINARY(16)
 )
 BEGIN
-  DECLARE isCaution BOOLEAN;
-
-  DECLARE cashAmount DECIMAL;
-  DECLARE cashDate TIMESTAMP;
-  DECLARE cashEnterpriseId INT;
-  DECLARE cashCurrencyId INT;
-
-  DECLARE currentExchangeRate DECIMAL;
-  DECLARE enterpriseCurrencyId INT;
 
   -- cash details
   INSERT INTO cash (uuid, project_id, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution)
     SELECT * FROM stage_cash WHERE stage_cash.uuid = cashUuid;
-
-  -- copy cash payment values into working variables
-  SELECT cash.is_caution, cash.amount, cash.date, cash.currency_id, enterprise.id, enterprise.currency_id
-    INTO isCaution, cashAmount, cashDate, cashCurrencyId, cashEnterpriseId, enterpriseCurrencyId
-  FROM cash
-    JOIN project ON cash.project_id = project.id
-    JOIN enterprise ON project.enterprise_id = enterprise.id
-  WHERE cash.uuid = cashUuid;
-
-  -- only do this if we are not paying a caution payment
-  IF NOT isCaution THEN
-
-    -- if the currencies are equal, the currentExchangeRate should be set to 1
-    SET currentExchangeRate = GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate);
-    SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
-
-    CALL WriteCashItems(cashUuid, cashAmount, currentExchangeRate);
-  END IF;
 END $$
 
 DELIMITER ;

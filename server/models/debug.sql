@@ -41,7 +41,7 @@ BEGIN
            call SetupDebugLog();
 
            INSERT INTO tmp_debuglog (connection_id, msg)
-               VALUES (connection_id(), '[RESET] Flushing Temporary Table');
+               VALUES (connection_id(), '[RESET]');
            INSERT INTO tmp_debuglog (connection_id, msg)
                 VALUES (connection_id(), logMsg);
      END;
