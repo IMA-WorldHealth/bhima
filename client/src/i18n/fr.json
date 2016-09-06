@@ -924,8 +924,8 @@
     "AGED_DEBTORS"  : {
       "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Moins de 30 jours",
-      "SIXTY_DAYS"  : "Moins de 30 jours",
-      "NINETY_DAYS" : "Moins de 30 jours",
+      "SIXTY_DAYS"  : "Moins de 60 jours",
+      "NINETY_DAYS" : "Moins de 90 jours",
       "OVER_NINETY_DAYS" : "Audela de 90 jours"
     },
     "SINCE"         : "Depuis",
