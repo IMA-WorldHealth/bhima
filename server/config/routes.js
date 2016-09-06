@@ -132,12 +132,12 @@ exports.configure = function configure(app) {
   app.delete('/accounts/types/:id', accounts.types.remove);
 
   // API for account routes crud
-  app.get('/accounts/document', accounts.document);
   app.get('/accounts', accounts.list);
   app.get('/accounts/:id', accounts.detail);
   app.get('/accounts/:id/balance', accounts.getBalance);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
+  app.get('/reports/finance/accounts/chart', accounts.document);
 
   // API for cost_center routes CRUD
   app.get('/cost_centers', costCenter.list);

@@ -26,13 +26,15 @@ function currency(value, currencyId) {
 
 /**
  * @function indentAccount
- * @description indent accounts based on the accunt depth for the chart of accounts
+ * @description indent with 40px accounts based on the account depth for the chart of accounts
  * @param {number} depth the account number
  * @return {number} number the processed indent
  */
 function indentAccount(depth) {
+  // indentation step is fixed arbitrary to 40 (40px)
+  const INDENTATION_STEP = 40;
   let number = Number(depth);
-  return number ? number * 40 : 0;
+  return number ? number * INDENTATION_STEP : 0;
 }
 
 exports.currency = currency;

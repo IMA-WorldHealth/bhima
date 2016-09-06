@@ -245,43 +245,59 @@ function document(req, res, next) {
 /**
  * @method processAccountDepth
  * @description get the depth of an account
+ * @param {array} accounts list of accounts
+ * @return {array} accounts the updated list of accounts with depths 
  */
 function processAccountDepth(accounts) {
-
   return accounts.map(acc => {
     let depth = getDepth(acc, 0);
     acc.depth = depth;
     return acc;
   });
+}
 
-  // recursive parent
-  function getDepth(account, depth) {
-    if (account.parent === 0) {
-      return depth;
-    }
-    else {
-      let parent = getParent(account);
-      return getDepth(parent, ++depth);
+/**
+ * @function getDepth
+ * @description return the depth of an account
+ * @param {object} account An account object
+ * @param {number} depth The default depth of the account given
+ * @return {number} depth The real depth
+ */
+function getDepth(account, depth) {
+  if (account.parent === 0) {
+    return depth;
+  }
+  else {
+    let parent = getParent(account);
+    return getDepth(parent, ++depth);
+  }
+}
+
+/**
+ * @function getParent
+ * @description return the parent account of an account given
+ * @param {object} account An account object
+ * @return {object} account The parent account object
+ */
+function getParent(account) {
+  return findAccount(account.parent);
+}
+
+/**
+ * @function findAccount
+ * @description return an account according his ID
+ * @param {number} accountId An account id
+ * @return {object} account An account object
+ */
+function findAccount(accountId) {
+  let found = null;
+  for (var i = 0; i < accounts.length; i++) {
+    if (accounts[i].id === accountId) {
+      found = accounts[i];
+      break;
     }
   }
-
-  // get parent
-  function getParent(account) {
-    return findAccount(account.parent);
-  }
-
-  // find account
-  function findAccount(accountId) {
-    let found = null;
-    for (var i = 0; i < accounts.length; i++) {
-      if (accounts[i].id === accountId) {
-        found = accounts[i];
-        break;
-      }
-    }
-    return found;
-  }
-
+  return found;
 }
 
 exports.list = list;
