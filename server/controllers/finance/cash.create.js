@@ -34,7 +34,7 @@ function processCashItems(cashUuid, items) {
   });
 
   // make sure the items are in an ordered array
-  const order = util.take('uuid', 'cash_uuid', 'amount', 'invoice_uuid');
+  const order = util.take('uuid', 'cash_uuid', 'invoice_uuid');
   return _.map(items, order);
 }
 

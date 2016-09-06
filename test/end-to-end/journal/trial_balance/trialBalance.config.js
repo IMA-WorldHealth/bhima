@@ -52,7 +52,7 @@ function TrialBalanceTest(){
     journal.checkRow(1);
     journal.openTrialBalanceModal();
     trialBalance.openErrorModal();
-    expect(errorModal.getLineCount()).to.eventually.equal(4);
+    expect(errorModal.getLineCount()).to.eventually.equal(2);
     errorModal.closeErrorModal();
   });
 }

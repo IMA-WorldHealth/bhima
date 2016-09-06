@@ -744,7 +744,6 @@ END $$
 CREATE PROCEDURE StageCashItem(
   IN uuid BINARY(16),
   IN cash_uuid BINARY(16),
-  IN amount DECIMAL(19,4) UNSIGNED,
   IN invoice_uuid BINARY(16)
 )
 BEGIN
@@ -756,11 +755,11 @@ BEGIN
 
   IF (`no_cash_item_stage` = 1) THEN
     CREATE TEMPORARY TABLE stage_cash_item
-      (SELECT uuid, cash_uuid, amount, invoice_uuid);
+      (SELECT uuid, cash_uuid, invoice_uuid);
 
   ELSE
     INSERT INTO stage_cash_item
-      (SELECT uuid, cash_uuid, amount, invoice_uuid);
+      (SELECT uuid, cash_uuid, invoice_uuid);
   END IF;
 END $$
 
@@ -841,7 +840,7 @@ CREATE PROCEDURE WriteCashItems(
 )
 BEGIN
 
-  DECLARE cashAmount DECIMAL;
+  DECLARE cashAmount DECIMAL(19, 4);
   DECLARE minMonentaryUnit DECIMAL;
 
   DECLARE totalInvoiceCost DECIMAL;
@@ -877,7 +876,7 @@ BEGIN
   */
   IF ((cashAmount - totalInvoiceCost)  > minMonentaryUnit) THEN
     SET @text = CONCAT(
-      'The invoices appear to be overpaid.  The total cost of all invoice is ',
+      'The invoices appear to be overpaid.  The total cost of all invoices are ',
       CAST(totalInvoiceCost AS char), ' but the cash payment amount is ', CAST(cashAmount AS char)
     );
 

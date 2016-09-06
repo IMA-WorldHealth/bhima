@@ -14,8 +14,8 @@ describe('(/cash) Cash Payments', function () {
 
   const USER_ID     = 1;   // Test User
   const INVOICES    = [    // invoices defined in the database
-    { invoice_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6', amount : 75.0 },
-    { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf', amount : 25.0 }
+    { invoice_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6' },
+    { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf' }
   ];
 
   const REFERENCE = 'TPA1';

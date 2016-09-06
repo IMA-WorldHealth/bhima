@@ -145,9 +145,9 @@ function invoices(req, res, next) {
 
       uuids = uuids.map(item => item.uuid);
 
-      let balance =
+      let balanced =
          (options.balanced === '1') ? 'HAVING balance = 0' :
-         (options.balanced === '0') ? 'HAVING balance > 0' :
+         (options.balanced === '0') ? 'HAVING balance <> 0' :
          '';
 
       // select all invoice and payments against invoices from the combined ledger
@@ -165,7 +165,7 @@ function invoices(req, res, next) {
             FROM  combined_ledger
             WHERE reference_uuid IN (?) AND entity_uuid = ?
           ) AS ledger
-          GROUP BY ledger.uuid ${balance}
+          GROUP BY ledger.uuid ${balanced}
         ) AS i
           JOIN invoice ON i.uuid = invoice.uuid
           JOIN project ON invoice.project_id = project.id;
@@ -174,7 +174,7 @@ function invoices(req, res, next) {
       return db.exec(sql, [uuids, uid, uuids, uid]);
     })
     .then(function (invoices) {
-      res.status(200).send(invoices);
+      res.status(200).json(invoices);
     })
     .catch(next)
     .done();

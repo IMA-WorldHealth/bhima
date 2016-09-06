@@ -138,6 +138,10 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
       .then(function (response) {
         return Receipts.cash(response.uuid, true);
       })
+      .then(function () {
+        vm.payment = { date : new Date() };
+        delete vm.slip;
+      })
       .catch(Notify.handleError);
   }
 
