@@ -10,7 +10,7 @@ const components = require('../shared/components');
 const GU = require('../shared/gridTestUtils.spec.js');
 const FU = require('../shared/FormUtils');
 
-describe('Cash Payments Module', function () {
+describe('Cash Payments', function () {
 
   const path = '#/cash';
 
@@ -91,10 +91,7 @@ describe('Cash Payments Module', function () {
   /* tests for the cash payments form page */
   describe('Cash Payments Form Page', function () {
 
-    /* navigate to the page before each function */
-    beforeEach(function () {
-      helpers.navigate(path);
-    });
+    beforeEach(() => helpers.navigate(path));
 
     // this code assumes that the find-patient directive is well tested.
     // we should be able to use a patient ID without thinking about the potential
@@ -128,7 +125,7 @@ describe('Cash Payments Module', function () {
       components.currencySelect.set(1);
 
       // enter the amount to pay for a caution
-      components.currencyInput.set(mockCautionPayment.amount, null);
+      components.currencyInput.set(mockCautionPayment.amount);
 
       // click the submit button
       FU.buttons.submit();
@@ -140,9 +137,7 @@ describe('Cash Payments Module', function () {
       $('[data-action="close"]').click();
     });
 
-    /** @todo - once invoice posting is figured out, this test should be uncommented and work */
-    /*
-    it.skip('should make a payment against previous invoices', function () {
+    it('should make a payment against previous invoices', function () {
       var gridId = 'debtorInvoicesGrid';
 
       // select the proper patient
@@ -163,28 +158,26 @@ describe('Cash Payments Module', function () {
       FU.exists(by.css('[data-debtor-invoices-modal]'), true);
 
       // inside the modal, we want to select the first row to pay against
-      var row = GU.selectRow(gridId, 0);
+      const row = GU.selectRow(gridId, 0);
 
       // submit the modal
-      var modalSubmit =  element(by.css('[data-debtor-invoices-modal-submit]'));
-      modalSubmit.click();
+      FU.modal.submit();
 
       // select the USD currency from the currency radio buttons
       components.currencySelect.set(2);
 
       // enter the amount to pay for an invoice
-      components.currencyInput.set(mockInvoicesPayment.amount, null);
+      components.currencyInput.set(mockInvoicesPayment.amount);
 
       // click the submit button
       FU.buttons.submit();
 
       // expect the receipt modal to appear
-      FU.exists(by.css('[data-cash-receipt-modal]'), true);
+      FU.exists(by.id('receipt-confirm-created'), true);
 
       // dismiss the modal
-      element(by.css('[data-modal-action="dismiss"]')).click();
+      $('[data-action="close"]').click();
     });
-  */
   });
 
   describe('Cash Transfer ', CashTransfer);

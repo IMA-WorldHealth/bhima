@@ -15,6 +15,11 @@ CashService.$inject = [
 function CashService(Api, Exchange, Session, moment) {
   var service = new Api('/cash/');
 
+  // templates for descriptions
+  var TRANSFER_DESCRIPTION = 'Transfer Voucher / :date / :user';
+  var PAYMENT_DESCRIPTION = 'Cash Payment/ :date / :user';
+  var CAUTION_DESCRIPTION = 'Caution Payment / :date / :user';
+
   // custom methods
   service.create = create;
   service.getTransferRecord = getTransferRecord;
@@ -64,13 +69,24 @@ function CashService(Api, Exchange, Session, moment) {
       data.items = allocatePaymentAmounts(data);
     }
 
-    data.description = 'Cash Payment to ' + payment.debtor_uuid;
+    data.description = formatCashDescription(payment.date, payment.is_caution);
 
     // remove data.invoices property before submission to the server
     delete data.invoices;
 
     // call the prototype create method with the formatted data
     return Api.create.call(service, { payment : data });
+  }
+
+  /*
+   * Nicely format the cash payment description
+   */
+  function formatCashDescription(date, isCaution) {
+    var tmpl = isCaution ? CAUTION_DESCRIPTION : PAYMENT_DESCRIPTION;
+
+    return tmpl
+      .replace(':date', moment(date).format('YYYY-MM-DD'))
+      .replace(':user', Session.user.display_name);
   }
 
   /**
@@ -130,8 +146,10 @@ function CashService(Api, Exchange, Session, moment) {
    * This method is responsible to generate a description for the transfer operation.
    * @private
    */
-  function generateTransferDescription (){
-    return 'Transfer Voucher/'.concat(moment().format('YYYY-MM-DD'), '/', Session.user.id);
+  function generateTransferDescription() {
+    return TRANSFER_DESCRIPTION
+      .replace(':date', moment().format('YYYY-MM-DD'))
+      .replace(':user', Session.user.display_name);
   }
 
   return service;

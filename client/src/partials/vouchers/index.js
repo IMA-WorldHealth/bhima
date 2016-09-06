@@ -42,10 +42,10 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   ];
 
   /** button Print */
-  vm.buttonPrint = { 
+  vm.buttonPrint = {
     pdfUrl: '/vouchers/reports'
   };
-  
+
 
   /** search filters */
   vm.searchFilter = [

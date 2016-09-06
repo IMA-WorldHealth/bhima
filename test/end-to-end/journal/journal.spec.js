@@ -22,7 +22,7 @@ describe('Posting Journal Core', function () {
   before(() => helpers.navigate(path));
 
   it('loads initial transactions from the database', function () {
-    journal.expectRowCount(initialTransactionRows);
+    journal.expectRowCountAbove(initialTransactionRows);
   });
 
   describe('Configuration Modal', JournalConfiguration);

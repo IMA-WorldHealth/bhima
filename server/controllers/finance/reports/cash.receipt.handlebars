@@ -39,7 +39,7 @@
       {{#each payment.items as |item| }}
         <tr>
           <td>{{item.reference}}</td>
-          <td class="text-right">{{currency item.amount ../enterprise.currency_id}}</td>
+          <td class="text-right">{{currency item.amount ../payment.currency_id}}</td>
         </tr>
       {{/each}}
     </tbody>
