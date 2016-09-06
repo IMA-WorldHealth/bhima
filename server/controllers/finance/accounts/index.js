@@ -21,6 +21,7 @@
 
 'use strict';
 
+const lodash = require('lodash');
 const db = require('../../../lib/db');
 const rm = require('../../../lib/ReportManager');
 const NotFound = require('../../../lib/errors/NotFound');
@@ -246,11 +247,13 @@ function document(req, res, next) {
  * @method processAccountDepth
  * @description get the depth of an account
  * @param {array} accounts list of accounts
- * @return {array} accounts the updated list of accounts with depths 
+ * @return {array} accounts the updated list of accounts with depths
  */
 function processAccountDepth(accounts) {
+  let indexedAccounts = lodash.keyBy(accounts, 'id');
+
   return accounts.map(acc => {
-    let depth = getDepth(acc, 0);
+    let depth = getDepth(acc, 0, indexedAccounts);
     acc.depth = depth;
     return acc;
   });
@@ -261,15 +264,16 @@ function processAccountDepth(accounts) {
  * @description return the depth of an account
  * @param {object} account An account object
  * @param {number} depth The default depth of the account given
+ * @param {array} accounts list of accounts
  * @return {number} depth The real depth
  */
-function getDepth(account, depth) {
+function getDepth(account, depth, accounts) {
   if (account.parent === 0) {
     return depth;
   }
   else {
-    let parent = getParent(account);
-    return getDepth(parent, ++depth);
+    let parent = getParent(account, accounts);
+    return getDepth(parent, ++depth, accounts);
   }
 }
 
@@ -277,27 +281,11 @@ function getDepth(account, depth) {
  * @function getParent
  * @description return the parent account of an account given
  * @param {object} account An account object
+ * @param {array} accounts list of accounts
  * @return {object} account The parent account object
  */
-function getParent(account) {
-  return findAccount(account.parent);
-}
-
-/**
- * @function findAccount
- * @description return an account according his ID
- * @param {number} accountId An account id
- * @return {object} account An account object
- */
-function findAccount(accountId) {
-  let found = null;
-  for (var i = 0; i < accounts.length; i++) {
-    if (accounts[i].id === accountId) {
-      found = accounts[i];
-      break;
-    }
-  }
-  return found;
+function getParent(account, accounts) {
+  return accounts[account.parent];
 }
 
 exports.list = list;
