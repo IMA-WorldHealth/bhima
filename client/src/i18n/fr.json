@@ -19,6 +19,7 @@
     "NOT_FOUND"      : "Aucun compte enregistrés...",
     "RECORD_SAME"    : "Aucun changement n'a été apporté au formulaire. Mettez à jour les informations du compte, puis appuyez sur Envoyer.",
     "ROOT_PARENT"    : "Ce compte est défini comme un enfant du compte root. Cela signifie qu'il sera au plus haut niveau dans la hiérarchie des comptes.",
+    "SELECT_PARENT"  : "Choisir le compte parent..",
     "SET_ROOT"       : "Définir comme un compte parent",
     "SUBMIT_CREATE"  : "Créer un compte",
     "SUBMIT_UPDATE"  : "Mettre à jour un compte",
@@ -72,8 +73,13 @@
     },
     "TITLE"           : "Caisse Auxilliaire",
     "TRANSFER": {
+      "ACTION" : "Vous avez transféré des fonds de la caisse.",
+      "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous.",
       "TITLE" : "Transfert"
     },
+    "RECEIPT": {
+      "SUCCESS" : "Créé avec succès un paiement en espèces"
+    },    
     "VOUCHER": {
       "CASHBOXES": {
         "AVAILABLE"       : "Caisse disponibles",
@@ -199,6 +205,7 @@
   },
   "FISCAL": {
     "CAN_NOT_DELETE_FY"     : "Impossible de supprimer cette année fiscal car il en existe des transanctions qui ont été faite",
+    "CREATE_FISCAL_YEAR"    : "Créer l'année fiscale",
     "FISCAL_YEAR"           : "Année Fiscale",
     "BACK"                  : "Retour vers la liste",
     "CONFIGURATION_PAGE"    : "Page de configuration",
@@ -238,6 +245,7 @@
       "RECOVER_ITEMS"         : "Retrouver un article",
       "REGISTER_PATIENT"      : "Enregistrer le Patient",
       "RESET"                 : "Reinitialiser",
+      "RESET_DEFAULTS"        : "Réinitialiser par défaut",
       "SAVE"                  : "Sauver",
       "SEARCH"                : "Rechercher",
       "SELECT_INVOICES"       : "Sélectionner la(les) Facture(s)",
@@ -285,6 +293,7 @@
       "CURRENT"              : "Actuel",
       "DANGER_ZONE"          : "Zone Dangereuse",
       "DELETE_SUCCESS"       : "Suppression avec succès",
+      "DISABLED_CURRENCY"    : "Cette monnaie est inutilisable car il n'y a pas de compte fixée pour elle. Utilisez le module Box Cash Management pour définir un compte pour cette monnaie et caisse.",
       "FINANCIAL_DETAIL"     : "Détails financieres",
       "FOUND"                : "Trouvée",
       "GROUPS_DEBTOR"        : "Attribuez un nouveau groupe de débiteur parmi les options ci-dessous. Appuyez sur 'confirmer' pour une mise à jour permanente du groupe de débiteur du patient",
@@ -399,6 +408,7 @@
       "FINANCIAL_DETAIL"       : "Balance actuelle, journal de saisie inclue :",
       "FIRST_NAME"             : "Prenom",
       "FROM_ACCOUNT"           : "Du compte",
+      "FROM"                   : "De",
       "FUNCTION"               : "Fonction",
       "GAIN_ACCOUNT"           : "Compte excedant",
       "GENDER"                 : "Sexe",
@@ -521,6 +531,7 @@
       "THIS_YEAR"              : "Cetter Année",
       "TITLE"                  : "Titre",
       "TITLE_ACCOUNT"          : "Comptes Titre",
+      "TO"                     : "à",
       "TODAY"                  : "Aujourd'hui",
       "TOTAL"                  : "Total",
       "TOTAL_BILLED"           : "Total Facture",
@@ -659,6 +670,8 @@
     "BHIMA"          : "Bhima",
     "CONNECTED_USER" : "Utilisateur Connecte",
     "EXCHANGE_RATE"  : "Taux d'echange",
+    "FISCAL_YEAR_INFO" : "Chronologie de l'année fiscale",
+    "FISCAL_YEAR_DESCRIPTION" : "Cette chronologie montre les progrès réalisés grâce à l'année fiscale.",
     "PROJECT_NAME"   : "Nom Project",
     "SYSTEM"         : "Hospital Management System",
     "TITLE"          : "Bhima",
@@ -763,6 +776,7 @@
       "RECENT"  : "Visites récentes",
       "ITEM" : "Vérifiée",
       "BY" : "par",
+      "REPORT_TITLE" : "Rapport de consultations des patients",
       "SUCCESS" : "Le patient a déjà été vérifié"
     },
     "TITLE"              : "Patients",
@@ -771,8 +785,10 @@
     "NOT_FOUND"          : "Impossible de trouver le patient ayant ce ID. Veuillez contacter votre administrateur systeme"
   },
   "PATIENT_REG": {
-    "PAGE_TITLE"           : "Enregistrement des Patients",
-    "PATIENT_DETAILS"      : "Détails Patient"
+    "CARD"                : "Fiche du patient",
+    "PAGE_TITLE"          : "Enregistrement des Patients",
+    "PATIENT_DETAILS"     : "Détails Patient",
+    "SUCCESS" : "Patient enregistré avec succès"
   },
   "PATIENT_REGISTRY" : {
     "DAY"                   : "jour",
@@ -794,32 +810,51 @@
     "TITLE"         : "Utilisateur et droits",
     "UPDATING_USER" : "Mise a jour utilisateur"
   },
-  "POSTING_JOURNAL" : {
-    "TITLE" : "Journal de Saisie",
-    "CONFIGURATION" : {
-      "TITLE" : "Configuration colonnes"
-    },
-    "ERRORS" : {
-      "DATE_IN_WRONG_PERIOD" : "Date dans la mauvaise periode",
-      "MISSING_DESCRIPTION" : "Descriptions omises",
-      "LOCKED_ACCOUNT" : "Compte(s) verrouille(s)",
-      "UNBALANCED_TRANSACTIONS" : "Transaction(s) non balancee(s)",
-      "MISSING_ACCOUNTS" : "Compte(s) omis",
-      "MISSING_DOCUMENT_ID" : "Ligne(s) sans ID Document",
-      "MISSING_ENTITY" : "Ligne(s) sans ID entite",
-      "MISSING_FISCAL_OR_PERIOD" : "Annee fiscale ou periode omise",
-      "SINGLE_LINE_TRANSACTION" : "Transaction(s) avec une ligne"
-    },
-    "WARNINGS" : {
-      "MISSING_ENTITY" : "Ligne(s) sans type entite et ID entite"
-    },
-    "ERROR_REPORT" : {
-      "TITLE" : "Rapports D'erreurs"
-    },
-    "TRIAL_BALANCE" : {
-      "TITLE" : "Rapprochement Grand Livre"
-    }
-  },
+"POSTING_JOURNAL": {
+   "ABOLISH_GROUPS"        : "Abolir les groupes",
+   "ACCOUNT"               : "Compte",
+   "ADD_ROW"               : "Add Row",
+   "ADD_TRANSACTION"       : "Ajouter une Transation",
+   "CONFIGURE"             : "Configurer",
+   "CREDIT"                : "Crédit",
+   "DEBIT"                 : "Débit",
+   "DEB_CRED"              : "Débiteur / Créditeur",
+   "DELETE_TRANSACTION"    : "Supprimer une transaction",
+   "EDIT": {
+      "ATTEMPTS_REMAINING" : "essais restants.",
+      "ID"                 : "ID Session",
+      "INVALID_PIN"        : "Ce PIN est invalide.",
+      "INVALID_SESSION"    : "La session  etait terminer à cause de authentification manquant. S'il vous plait, réessayer ou demander une administrateur remettre un place votre PIN.",
+      "JUSTIFICATION"      : "Enregistre une justification pour votre activites.",
+      "MIN_CHARS"          : "Minimum 10 caracteres",
+      "PIN"                : "Confirmer votre identite avec votre PIN",
+      "TITLE"              : "Commencer Session Edition"
+      },
+   "EDIT_MODE"             : "Mode Edition",
+   "EDIT_TRANSACTION"      : "Editer une transaction",
+   "ENTERPRISE"            : "Entreprise",
+   "ENTERPRISE_MANAGEMENT" : "Gestion de l'Entreprise",
+   "FISCAL_YEAR"           : "Année Fiscal",
+   "GENERAL_LEDGER"        : "Grand Livre",
+   "GROUP_BY"              : "Groupe Par",
+   "IN_PROGRESS"           : "En Cours",
+   "JUSTIFICATION"         : "Justification",
+   "LINES"                 : "Lignes",
+   "LIVE_TRANSACTION"      : "Transaction Vivant",
+   "RECORDS"               : "Données",
+   "REFRESH"               : "Rafraichir",
+   "SAVE_TRANSACTION"      : "Enregistrer une transaction",
+   "SPLIT"                 : "Diviser",
+   "SPLIT_TRANSACTION"     : "Split Transaction",
+   "TITLE"                 : "Journal de Saisie",
+   "TRANSACTION"           : "Transaction",
+   "TRANSACTION_DATE"      : "Date de Transaction",
+   "TRANSACTION_NUMBER"    : "Numéro de Transaction",
+   "TRANSACTION_SUCCESS"   : " Edition des transaction et logs enregistrés avec succès",
+   "TRIAL_BALANCE"         : "Rapprochement",
+   "UNKNOWN_ACCOUNT"     : "Compte Inconnu",
+   "VERIFY_TRANSACTION"    : "Verifier Transaction"
+   },
   "PRICE_LIST": {
     "ADD_ITEMS"        : "Ajouter un Item",
     "ADD_PRICE_LIST"   : "Ajouter une List",
@@ -885,6 +920,18 @@
     "TITLE"         : "Gestion de groupe de référence",
     "UPD_REFERENCE" : "Modifier un groupe de référence"
   },
+  "REPORT" : {
+    "SINCE": "Depuis",
+    "PRODUCED_BY" : "Produit par",
+    "PRODUCED_ON" : "Produit sur",
+    "AGED_DEBTORS" : {
+      "TITLE": "Les débiteurs âgés",
+      "THIRTY_DAYS" : "Moins de 30 jours",
+      "SIXTY_DAYS" : "Moins de 60 jours",
+      "NINETY_DAYS" : "Moins de 90 jours",
+      "OVER_NINETY_DAYS" : "Plus de 90 jours"
+    }
+  },  
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Ajouter une section Bilan",
     "ALERT"             : "Bilan section management",
@@ -1078,6 +1125,7 @@
       "UNIT_PRICE"         : "Prix unitaire",
       "UNPAID_INVOICE_1"   : "Cette facture n'a pas été compensée en ",
       "UNPAID_INVOICE_2"   : " jours. Veuillez vous rassuré que le débiteur n'a pas encore effectué un paiement ni même planifié une reprise.",
+      "USER"               : "Utilisateur",
       "VALUE"              : "Valeur",
       "VILLAGE"            : "Village"
     }
@@ -1095,6 +1143,7 @@
     "COST_CENTER_MGMT"           : "Centres de coûts",
     "CREDIT_NOTE"                : "Note de Crédit",
     "CURRENCY"                   : "Monnaie",
+    "DEBTOR_GROUP"               : "Gestion de groupes débiteurs",
     "EMPLOYEE"                   : "Gestion Employés",
     "ENTERPRISE"                 : "Entreprise",
     "EXCHANGE"                   : "Taux de change",
@@ -1115,6 +1164,7 @@
     "INVOICE_REGISTRY"           : "Registre des factures",
     "JOURNAL_VOUCHER"            : "Ajout Transactions",
     "LOCATION"                   : "Localisations",
+    "PHARMACY"                   : "Gestion de pharmacie",
     "PATIENT_DOCUMENT"           : "Documents de Patient",
     "PATIENT_GRP"                : "Groupe des Patients",
     "PATIENT_GRP_ASSIGNMENT"     : "Assignation Groupe",
@@ -1141,6 +1191,7 @@
     "SIMPLE_VOUCHER"             : "Bordereau de transfert",
     "STOCK"                      : "Stock",
     "TRANSACTION_TYPE"           : "Types de Transaction",
+    "SUBSIDY"                    : "Gestion des subventions",
     "USERS"                      : "Utilisateurs",
     "VOUCHER_REGISTRY"           : "Registre des Bordereaux"
   },
