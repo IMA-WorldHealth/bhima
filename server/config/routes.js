@@ -137,6 +137,7 @@ exports.configure = function configure(app) {
   app.get('/accounts/:id/balance', accounts.getBalance);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
+  app.get('/reports/finance/accounts/chart', accounts.document);
 
   // API for cost_center routes CRUD
   app.get('/cost_centers', costCenter.list);

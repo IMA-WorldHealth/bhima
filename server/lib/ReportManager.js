@@ -43,6 +43,7 @@ function build(req, data, templateUrl, options) {
   const model = {
     enterprise : req.session.enterprise,
     project : req.session.project,
+    user : req.session.user,
     data : data
   };
 
