@@ -28,6 +28,11 @@ function expectRowCount(gridId, number) {
   expect(rows.count()).to.eventually.equal(number);
 }
 
+function expectRowCountAbove(gridId, number) {
+  var rows = getRows(gridId);
+  expect(rows.count()).to.eventually.be.above(number);
+}
+
 // assert that the journal's column count is the number passed in
 function expectColumnCount(gridId, number) {
   var columns = getColumns(gridId);
@@ -95,6 +100,7 @@ function selectRow( gridId, rowNum ) {
 exports.getRows = getRows;
 exports.getColumns = getColumns;
 exports.expectRowCount = expectRowCount;
+exports.expectRowCountAbove = expectRowCountAbove;
 exports.expectColumnCount = expectColumnCount;
 exports.expectHeaderColumns = expectHeaderColumns;
 exports.selectRow = selectRow;

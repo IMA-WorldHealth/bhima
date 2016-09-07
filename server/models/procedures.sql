@@ -284,7 +284,7 @@ BEGIN
 
   -- invoice variables
   DECLARE idate DATETIME;
-  DECLARE icost DECIMAL;
+  DECLARE icost DECIMAL(19,4);
   DECLARE ientityId BINARY(16);
   DECLARE iuserId INT;
   DECLARE idescription TEXT;
@@ -292,7 +292,7 @@ BEGIN
 
   -- caution variables
   DECLARE cid BINARY(16);
-  DECLARE cbalance DECIMAL;
+  DECLARE cbalance DECIMAL(19,4);
   DECLARE cdate DATETIME;
   DECLARE cdescription TEXT;
 
@@ -510,7 +510,7 @@ BEGIN
   DECLARE cashDate DATETIME;
   DECLARE cashEnterpriseId SMALLINT(5);
   DECLARE cashCurrencyId TINYINT(3) UNSIGNED;
-  DECLARE cashAmount DECIMAL;
+  DECLARE cashAmount DECIMAL(19,4);
   DECLARE enterpriseCurrencyId INT;
   DECLARE isCaution BOOLEAN;
 
@@ -523,10 +523,10 @@ BEGIN
   DECLARE gain_account_id INT UNSIGNED;
   DECLARE loss_account_id INT UNSIGNED;
 
-  DECLARE minMonentaryUnit DECIMAL;
-  DECLARE previousInvoiceBalances DECIMAL;
+  DECLARE minMonentaryUnit DECIMAL(19,4);
+  DECLARE previousInvoiceBalances DECIMAL(19,4);
 
-  DECLARE remainder DECIMAL;
+  DECLARE remainder DECIMAL(19,4);
   DECLARE lastInvoiceUuid BINARY(16);
 
   -- copy cash payment values into working variables
@@ -707,7 +707,6 @@ BEGIN
         WHERE c.uuid = cashUuid;
       END IF;
     END IF;
-
   END IF;
 END $$
 
@@ -744,7 +743,6 @@ END $$
 CREATE PROCEDURE StageCashItem(
   IN uuid BINARY(16),
   IN cash_uuid BINARY(16),
-  IN amount DECIMAL(19,4) UNSIGNED,
   IN invoice_uuid BINARY(16)
 )
 BEGIN
@@ -756,11 +754,11 @@ BEGIN
 
   IF (`no_cash_item_stage` = 1) THEN
     CREATE TEMPORARY TABLE stage_cash_item
-      (SELECT uuid, cash_uuid, amount, invoice_uuid);
+      (SELECT uuid, cash_uuid, invoice_uuid);
 
   ELSE
     INSERT INTO stage_cash_item
-      (SELECT uuid, cash_uuid, amount, invoice_uuid);
+      (SELECT uuid, cash_uuid, invoice_uuid);
   END IF;
 END $$
 
@@ -774,7 +772,7 @@ BEGIN
   DECLARE cashEnterpriseId INT;
   DECLARE cashDebtorUuid BINARY(16);
   DECLARE enterpriseCurrencyId INT;
-  DECLARE currentExchangeRate DECIMAL;
+  DECLARE currentExchangeRate DECIMAL(19,4);
 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION ROLLBACK;
   DECLARE EXIT HANDLER FOR SQLWARNING ROLLBACK;
@@ -841,14 +839,14 @@ CREATE PROCEDURE WriteCashItems(
 )
 BEGIN
 
-  DECLARE cashAmount DECIMAL;
-  DECLARE minMonentaryUnit DECIMAL;
+  DECLARE cashAmount DECIMAL(19, 4);
+  DECLARE minMonentaryUnit DECIMAL(19,4);
 
-  DECLARE totalInvoiceCost DECIMAL;
-  DECLARE amountToAllocate DECIMAL;
-  DECLARE allocationAmount DECIMAL;
+  DECLARE totalInvoiceCost DECIMAL(19,4);
+  DECLARE amountToAllocate DECIMAL(19,4);
+  DECLARE allocationAmount DECIMAL(19,4);
   DECLARE invoiceUuid BINARY(16);
-  DECLARE invoiceBalance DECIMAL;
+  DECLARE invoiceBalance DECIMAL(19,4);
   DECLARE done INT DEFAULT FALSE;
 
   -- error condition states
@@ -877,7 +875,7 @@ BEGIN
   */
   IF ((cashAmount - totalInvoiceCost)  > minMonentaryUnit) THEN
     SET @text = CONCAT(
-      'The invoices appear to be overpaid.  The total cost of all invoice is ',
+      'The invoices appear to be overpaid.  The total cost of all invoices are ',
       CAST(totalInvoiceCost AS char), ' but the cash payment amount is ', CAST(cashAmount AS char)
     );
 

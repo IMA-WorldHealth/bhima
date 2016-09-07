@@ -51,7 +51,7 @@ module.exports = function post(transaction, uuid) {
         HUID(UUID()), v.project_id, @fiscalId, @periodId, @transId, v.date,
         v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
         vi.debit * @exchange, vi.credit * @exchange, v.currency_id,
-        vi.entity_uuid, 'D', vi.document_uuid, NULL, v.type_id, v.user_id, NULL, NULL
+        vi.entity_uuid, NULL, vi.document_uuid, NULL, v.type_id, v.user_id, NULL, NULL
       FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
       WHERE v.uuid = ?;`, [uuid]
     );

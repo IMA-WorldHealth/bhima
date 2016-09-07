@@ -15,6 +15,11 @@ CashService.$inject = [
 function CashService(Api, Exchange, Session, moment) {
   var service = new Api('/cash/');
 
+  // templates for descriptions
+  var TRANSFER_DESCRIPTION = 'Transfer Voucher / :date / :user';
+  var PAYMENT_DESCRIPTION = 'Cash Payment/ :date / :user';
+  var CAUTION_DESCRIPTION = 'Caution Payment / :date / :user';
+
   // custom methods
   service.create = create;
   service.getTransferRecord = getTransferRecord;
@@ -31,28 +36,12 @@ function CashService(Api, Exchange, Session, moment) {
     var totalAmount = data.amount;
 
     // default to an empty array if necessary -- the server will throw an error
-    /** @todo -- review this decision */
     var items = (data.invoices || [])
 
     // loop through the invoices, allocating a sum to the invoice until there
     // is no more left to allocate.
       .map(function (invoice) {
-
-        // the allocated amount depends on the amount remaining.
-        var allocatedAmount = (totalAmount > invoice.amount) ?
-            invoice.amount :
-            totalAmount;
-
-        // decrease the total amount by the allocated amount.
-        totalAmount -= allocatedAmount;
-
-        // return a slice of the data
-        return { invoice_uuid : invoice.invoice_uuid, amount : allocatedAmount };
-      })
-
-    // filter out invoices that do not have amounts allocated to them
-      .filter(function (invoice) {
-        return invoice.amount > 0;
+        return { invoice_uuid : invoice.uuid };
       });
 
     return items;
@@ -72,10 +61,6 @@ function CashService(Api, Exchange, Session, moment) {
     // create a temporary copy to send to the server
     var data = angular.copy(payment);
 
-    // a payment can be made in any currency.  Exchange the currency into the
-    // enterprise currency before any more calculations take place.
-    data.amount = Exchange.convertToEnterpriseCurrency(data.currency_id, data.date, data.amount);
-
     // ensure that the caution flag is a Number
     data.is_caution = Number(data.is_caution);
 
@@ -84,11 +69,24 @@ function CashService(Api, Exchange, Session, moment) {
       data.items = allocatePaymentAmounts(data);
     }
 
+    data.description = formatCashDescription(payment.date, payment.is_caution);
+
     // remove data.invoices property before submission to the server
     delete data.invoices;
 
     // call the prototype create method with the formatted data
     return Api.create.call(service, { payment : data });
+  }
+
+  /*
+   * Nicely format the cash payment description
+   */
+  function formatCashDescription(date, isCaution) {
+    var tmpl = isCaution ? CAUTION_DESCRIPTION : PAYMENT_DESCRIPTION;
+
+    return tmpl
+      .replace(':date', moment(date).format('YYYY-MM-DD'))
+      .replace(':user', Session.user.display_name);
   }
 
   /**
@@ -148,8 +146,10 @@ function CashService(Api, Exchange, Session, moment) {
    * This method is responsible to generate a description for the transfer operation.
    * @private
    */
-  function generateTransferDescription (){
-    return 'Transfer Voucher/'.concat(moment().format('YYYY-MM-DD'), '/', Session.user.id);
+  function generateTransferDescription() {
+    return TRANSFER_DESCRIPTION
+      .replace(':date', moment().format('YYYY-MM-DD'))
+      .replace(':user', Session.user.display_name);
   }
 
   return service;

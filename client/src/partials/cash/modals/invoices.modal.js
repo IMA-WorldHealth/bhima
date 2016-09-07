@@ -63,7 +63,7 @@ function CashInvoiceModalController(Debtors, debtorId, invoiceIds, ModalInstance
     toggleLoadingState();
 
     // load debtor invoices
-    Debtors.invoices(debtorId)
+    Debtors.invoices(debtorId, { balanced : 0 })
       .then(function (invoices) {
         vm.gridOptions.data = invoices;
 

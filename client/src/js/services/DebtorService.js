@@ -71,10 +71,10 @@ function DebtorService($http, util) {
       .then(util.unwrapHttpResponse);
   }
 
-  function invoices(uuid) {
+  function invoices(uuid, params) {
     var path = '/debtors/:uuid/invoices';
 
-    return $http.get(path.replace(':uuid', uuid))
+    return $http.get(path.replace(':uuid', uuid), { params : params })
       .then(util.unwrapHttpResponse);
   }
 

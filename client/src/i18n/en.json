@@ -68,6 +68,7 @@
     },
     "TITLE"           : "Cash Window",
     "RECEIPT": {
+      "TITLE" : "Cash Receipt",
       "SUCCESS" : "Successfully created a Cash Payment"
     },
     "TRANSFER": {

@@ -11,20 +11,24 @@
       </address>
       <div><i class="fa fa-envelope-o"></i> {{enterprise.email}}</div>
       <div><i class="fa fa-phone"></i> {{enterprise.phone}}</div>
-      <div><i class="fa fa-user"></i> {{translate "REPORT.PRODUCED_BY"}} {{user.displayName}}</div>
+      <div><i class="fa fa-user"></i> {{translate "REPORT.PRODUCED_BY"}} {{user.display_name}}</div>
     </div>
 
     <div class="col-xs-6 text-right">
-      {{patient.display_name}} <br />
-      {{patient.reference}} <br />
-      {{patient.hospital_no}} <br />
-      {{patient.debtor_group_name}}
+      <b>{{patient.display_name}} [{{patient.reference}}] </b> <br />
+      <i class="fa fa-h-square"></i> {{patient.hospital_no}} <br />
+      <i class="fa fa-users"></i> {{patient.debtor_group_name}} <br />
+      <i class="fa fa-calendar-o"></i> {{date payment.date}}
+      {{#if hasRate}}
+        <br />
+        <i class="fa fa-balance-scale"></i> {{currency rate payment.currency_id}}
+      {{/if}}
     </div>
   </header>
 
   <!-- cash payment header -->
   <h4 class="text-center">
-    <u>{{translate "CASH.TITLE"}}</u>
+     {{payment.reference}} - {{translate "CASH.RECEIPT.TITLE"}}
   </h4>
 
   <!-- list of items paid -->
@@ -39,7 +43,7 @@
       {{#each payment.items as |item| }}
         <tr>
           <td>{{item.reference}}</td>
-          <td class="text-right">{{currency item.amount ../enterprise.currency_id}}</td>
+          <td class="text-right">{{currency item.amount ../payment.currency_id}}</td>
         </tr>
       {{/each}}
     </tbody>
@@ -52,19 +56,15 @@
   </table>
 
   <div class="row">
-    <div class="col-xs-12">
-      <h4>{{translate "FORM.LABELS.SIGNATURE"}}</h4>
-      <hr>
+    <div class="col-xs-5">
+      {{translate "FORM.LABELS.CASHIER"}} <br />
+      <br />
+      <hr/>
+    </div>
+    <div class="col-xs-offset-2 col-xs-5">
+      {{translate "FORM.LABELS.CLIENT"}} <br />
+      <br />
+      <hr/>
     </div>
   </div>
-
-  <div class="row">
-    <div class="col-xs-6 text-left">
-      {{translate "FORM.LABELS.CASHIER"}}
-    </div>
-    <div class="col-xs-6 text-right">
-      {{translate "FORM.LABELS.CLIENT"}}
-    </div>
-  </div>
-
 </div>
