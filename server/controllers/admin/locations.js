@@ -164,6 +164,7 @@ exports.countries = function countries(req, res, next) {
 
 
 function lookupVillage(uid) {
+
   // convert hex uuid into binary
   const bid = db.bid(uid);
 
@@ -556,7 +557,7 @@ exports.update.village = function updateVillage(req, res, next) {
 
   let sql =
     'UPDATE village SET ? WHERE uuid = ?;';
-  
+
   // prevent updating the uuid
   delete req.body.uuid;
 

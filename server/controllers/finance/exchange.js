@@ -1,18 +1,30 @@
 /**
-* Exchange Rate Controller
-*
-* This controller exposes an API to the client for reading and writing exchange
-* rates.
-*/
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
+ * Exchange Rate Controller
+ *
+ * This controller exposes an API to the client for reading and writing exchange
+ * rates.
+ */
+'use strict';
+
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
+
+exports.getExchangeRate = getExchangeRate;
+
+// uses the mysql function getExchangeRate() to find
+// the correct exchange rate
+function getExchangeRate(enterpriseId, currencyId, date) {
+  const sql = 'SELECT GetExchangeRate(?, ?, ?) AS rate;';
+
+  return db.exec(sql, [enterpriseId, currencyId, new Date(date)])
+    .then(rows => rows[0]);
+}
+
 
 // GET /exchange
 //
 // The enterprise currency is assumed from the session.
 exports.list = function list(req, res, next) {
-  'use strict';
-
   var sql,
       enterprise = req.session.enterprise;
 
@@ -35,8 +47,6 @@ exports.list = function list(req, res, next) {
 
 // POST /exchange
 exports.create = function create(req, res, next) {
-  'use strict';
-
   var sql,
       data = req.body.rate;
 
@@ -60,8 +70,6 @@ exports.create = function create(req, res, next) {
 
 // PUT /exchange/:id
 exports.update = function update(req, res, next) {
-  'use strict';
-
   var sql;
 
   sql =
@@ -98,9 +106,7 @@ exports.update = function update(req, res, next) {
 
 // DELETE /exchange/:id
 exports.delete = function del(req, res, next) {
-  'use strict';
-
-  var sql =
+  const sql =
     'DELETE FROM exchange_rate WHERE id = ?;';
 
   db.exec(sql, [req.params.id])

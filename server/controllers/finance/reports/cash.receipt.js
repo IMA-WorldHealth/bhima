@@ -16,6 +16,7 @@ const CashPayments = require('../cash');
 const Users = require('../../admin/users');
 const Patients = require('../../medical/patients');
 const Enterprises = require('../../admin/enterprises');
+const Exchange = require('../../finance/exchange');
 
 // group supported renderers
 const renderers = {
@@ -68,7 +69,7 @@ function build(req, res, next) {
       return q.all([
         Users.lookup(payment.user_id),
         Patients.lookupByDebtorUuid(payment.debtor_uuid),
-        Enterprises.lookupByProjectId(payment.project_id)
+        Enterprises.lookupByProjectId(payment.project_id),
       ]);
     })
     .spread((user, patient, enterprise) => {
@@ -76,6 +77,11 @@ function build(req, res, next) {
       data.patient = patient;
       data.enterprise = enterprise;
 
+      return Exchange.getExchangeRate(enterprise.id, data.payment.currency_id, data.payment.date);
+    })
+    .then(exchange => {
+      data.rate = exchange.rate;
+      data.hasRate = (data.rate && !data.payment.is_caution);
       return renderer.render(data, template, context);
     })
     .then(result => {
