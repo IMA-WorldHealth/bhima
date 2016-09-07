@@ -1,0 +1,29 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
+      <li class="title">{{ "CASHFLOW.TITLE" | translate }}</li>
+    </ol>
+
+    <div ng-show="IndexCtrl.report" class="toolbar">
+      <div class="toolbar-item">
+        <bh-pdf-print
+          pdf-url="/finance/cashflow/document"
+          options="IndexCtrl.pdfParams">
+        </bh-pdf-print>
+
+        <button type="button" class="btn btn-default" ng-click="IndexCtrl.reconfigure()">
+          <i class="fa fa-repeat"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <ui-view></ui-view>
+
+  </div>
+</div>

@@ -21,8 +21,7 @@ const upload  = require('../lib/uploader');
 const auth                 = require('../controllers/auth');
 const tree                 = require('../controllers/tree');
 const units                = require('../controllers/units');
-const cashflow             = require('../controllers/cashflow');
-const system             = require('../controllers/system');
+const system               = require('../controllers/system');
 
 // admin routes
 const users        = require('../controllers/admin/users');
@@ -79,6 +78,7 @@ const sectionResultats = require('../controllers/finance/sectionResultat');
 const sectionBilans    = require('../controllers/finance/sectionBilan');
 const creditors        = require('../controllers/finance/creditors.js');
 const journal          = require('../controllers/finance/journal');
+const cashflow         = require('../controllers/finance/cashflow');
 const transactionType  = require('../controllers/admin/transactionType');
 const generalLedger    = require('../controllers/finance/generalLedger');
 
@@ -467,10 +467,6 @@ exports.configure = function configure(app) {
   app.put('/cash/:uuid', cash.update);
   app.get('/cash/references/:reference', cash.reference);
 
-  /** @todo - classify these */
-  app.get('/cashflow/report/', cashflow.getReport);
-  //app.get('/stock/entries?', depots.getStockEntry);
-
   // Enterprises api
   app.get('/enterprises', enterprises.list);
   app.get('/enterprises/:id', enterprises.detail);
@@ -543,6 +539,10 @@ exports.configure = function configure(app) {
 
   app.get('/creditors', creditors.list);
   app.get('/creditors/:uuid', creditors.detail);
+
+  // cashflow
+  app.get('/finance/cashflow', cashflow.report);
+  app.get('/finance/cashflow/document', cashflow.document);
 
   // transfer type API
   app.post('/transaction_type', transactionType.create);

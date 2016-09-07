@@ -21,6 +21,7 @@ const exphbs = require('express-handlebars');
 const math = require('./helpers/math');
 const dates = require('./helpers/dates');
 const finance = require('./helpers/finance');
+const objects = require('./helpers/objects');
 
 const hbs = exphbs.create({
   helpers : {
@@ -30,7 +31,9 @@ const hbs = exphbs.create({
     multiply : math.multiply,
     sum : math.sum,
     add : math.add,
+    substract : math.substract,
     currency : finance.currency,
+    look : objects.look,
     indentAccount : finance.indentAccount
   },
 

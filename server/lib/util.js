@@ -12,6 +12,8 @@ module.exports.queryCondition = queryCondition;
 module.exports.take = take;
 module.exports.isTrueString = isTrueString;
 module.exports.isFalsy = isFalsy;
+module.exports.uniquelize = uniquelize;
+module.exports.moduleExists = moduleExists;
 
 /**
  * @function queryCondition
@@ -133,3 +135,32 @@ function isFalsy(value) {
     value.toLowerCase() === '0' ||
     value.toLowerCase() === '';
 }
+
+/**
+ * @function uniquelize
+ * @param {array} array An array in which we want to get only unique values
+ * @description return an array which contain only unique values
+ */
+function uniquelize (array) {
+  // the second param is the next value in the array.
+  return array.reduce(function (uniq, value) {
+
+    // if we haven't seen the value yet, add it to the array (otherwise, ignore it).
+    if (uniq.indexOf(value) === -1) { uniq.push(value); }
+    return uniq;
+
+  }, []);  // initialize with an empty array
+};
+
+ /**
+  * @method moduleExists
+  * @description check if a module exist
+  */
+  function moduleExists(moduleName) {
+    try {
+        require(moduleName)
+    } catch (err) {
+        return false;
+    }
+    return true;
+  }
