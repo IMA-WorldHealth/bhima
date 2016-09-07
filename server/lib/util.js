@@ -13,6 +13,7 @@ module.exports.take = take;
 module.exports.isTrueString = isTrueString;
 module.exports.isFalsy = isFalsy;
 module.exports.uniquelize = uniquelize;
+module.exports.moduleExists = moduleExists;
 
 /**
  * @function queryCondition
@@ -150,3 +151,16 @@ function uniquelize (array) {
 
   }, []);  // initialize with an empty array
 };
+
+ /**
+  * @method moduleExists
+  * @description check if a module exist
+  */
+  function moduleExists(moduleName) {
+    try {
+        require(moduleName)
+    } catch (err) {
+        return false;
+    }
+    return true;
+  }

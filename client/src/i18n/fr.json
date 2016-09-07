@@ -189,7 +189,7 @@
   },
   "ERRORS": {
     "BAD_DATE_INTERVAL" : "Mauvais interval de date",
-    "BAD_REQUEST" : "Vous n'etes pas authorisé à faire cette operation",
+    "BAD_REQUEST"       : "Vous n'etes pas authorisé à faire cette operation",
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
     "NOT_ALLOWED"      : "Vous n'etes pas authorisé à faire cette action",

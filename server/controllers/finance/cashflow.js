@@ -47,6 +47,10 @@ function report (req, res, next) {
 function processingCashflowReport(params) {
   let glb = {};
 
+  if (!params.account_id) {
+    throw new BadRequest('Cashbox is missing', 'ERRORS.BAD_REQUEST');
+  }
+
   // get all periods for the the current fiscal year
 	return getPeriods(params.dateFrom, params.dateTo)
 	.then(function (periods) {
@@ -322,7 +326,7 @@ function document(req, res, next) {
       session.sum_incomes[period] - session.sum_expense[period] :
       session.periodicBalance[previousPeriod(period)] + session.sum_incomes[period] - session.sum_expense[period];
 
-    session.periodicOpenningBalance[period] = isFirstPeriod(period) ? 0 :
+    session.periodicOpenningBalance[period] = isFirstPeriod(period) ?
       session.openningBalance :
       session.periodicBalance[previousPeriod(period)];
 

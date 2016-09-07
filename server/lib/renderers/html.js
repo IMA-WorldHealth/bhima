@@ -8,7 +8,7 @@
 'use strict';
 
 const exhbs = require('express-handlebars');
-
+const util = require('../util');
 const hbs = require('../template');
 const translateHelperFactory = require('../helpers/translate');
 
@@ -24,6 +24,12 @@ exports.render = renderHTML;
 function renderHTML(data, template, options) {
 
   options = options || {};
+
+  // load local language for momentjs if possible
+  let languageDependencie = String().concat('moment/locale/', options.lang);
+  if (util.moduleExists(languageDependencie)) {
+    require(languageDependencie);
+  }
 
   // make sure that we have the appropriate language set.  If options.lang is
   // not specified, will default to English.  To change this behavior, see the
