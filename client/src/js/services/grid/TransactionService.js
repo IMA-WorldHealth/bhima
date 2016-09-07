@@ -68,6 +68,17 @@ function TransactionService(util, uiGridConstants, bhConstants) {
     return $scope.row[ROW_EDIT_FLAG];
   }
 
+  // sets the allowCellFocus parameter on grid's column definitions
+  function setColumnCellNav(column) {
+    column.allowCellFocus = this._cellNavEnabled;
+  }
+
+  // called after the cellNavigationEnabled trigger is fired
+  function registerCellNavChange() {
+    angular.forEach(this.gridOptions.columnDefs, setColumnCellNav.bind(this));
+    this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
   /**
    * @constructor
    */
@@ -80,6 +91,9 @@ function TransactionService(util, uiGridConstants, bhConstants) {
     // this array stores the transactions ids currently being edited.
     this._edits = [];
 
+    // cellNav is not enabled by default
+    this._cellNavEnabled = false;
+
     gridOptions.cellEditableCondition = cellEditableCondition;
     gridOptions.enableCellEditOnFocus = true;
 
@@ -90,6 +104,39 @@ function TransactionService(util, uiGridConstants, bhConstants) {
       api.core.on.rowsRendered(null, createTransactionIndexMap.bind(this));
     }.bind(this));
   }
+
+
+  /**
+   * @function enableCellNavigation
+   *
+   * @description
+   * Enables cell navigation on the underlying grid.
+   *
+   * @public
+   *
+   */
+  Transactions.prototype.enableCellNavigation = function enableCellNavigation() {
+    this._cellNavEnabled = true;
+    registerCellNavChange.call(this);
+  };
+
+  /**
+   * @function disableCellNavigation
+   *
+   * @description
+   * Disables and clears the focused cell navigation for a better UX while working
+   * with complex grids.
+   *
+   * @public
+   *
+   */
+  Transactions.prototype.disableCellNavigation = function disableCellNavigation() {
+    this._cellNavEnabled = false;
+    registerCellNavChange.call(this);
+
+    // clear the focused element for a better UX
+    this.gridApi.grid.cellNav.clearFocus();
+  };
 
   /**
    * @function createTransactionIndexMap
@@ -234,6 +281,10 @@ function TransactionService(util, uiGridConstants, bhConstants) {
       uuid = getChildRecordUuid(uuid);
     }
 
+    if (!this._cellNavEnabled) {
+      this.enableCellNavigation();
+    }
+
     setPropertyOnTransaction.call(this, uuid, ROW_EDIT_FLAG, true);
     this.scrollIntoView(uuid);
     this._edits.push(uuid);
@@ -256,8 +307,8 @@ function TransactionService(util, uiGridConstants, bhConstants) {
     // set the edits length to 0
     this._edits.length = 0;
 
-    // clear the focused element for a better UX
-    this.gridApi.grid.cellNav.clearFocus();
+    // disable cell navigation
+    this.disableCellNavigation();
   };
 
   /**

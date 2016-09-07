@@ -11,6 +11,7 @@
  * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
  */
 
+
 const q    = require('q');
 const db   = require('../../lib/db');
 const uuid = require('node-uuid');
@@ -22,6 +23,7 @@ const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 const createInvoice = require('./invoice/patientInvoice.create');
+const listReceipt = require('../finance/reports/list');
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
@@ -43,14 +45,37 @@ exports.reference = reference;
 /** Expose lookup invoice for other controllers to use internally */
 exports.lookupInvoice = lookupInvoice;
 
+
+exports.getPatientInvoice = getPatientInvoice;
+
+/** Undo the financial effects of a invoice generating an equal and opposite credit note. */
+// exports.reverse = reverse;
+
+
 /**
  * list
  *
  * Retrieves a list of all patient invoices in the database
  */
 function list(req, res, next) {
+  listInvoices()
+  .then(function (invoices) {
+    res.status(200).json(invoices);
+  })
+  .catch(next)
+  .done();
+}
 
-  let invoiceListQuery =
+
+/**
+ * @method listInvoices
+ *
+ * @description
+ * Looks up all patients invoices in the data base
+ *
+ */
+function listInvoices() {
+  let sql =
     `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientNames,
       service.name as serviceName, user.display_name, voucher.type_id,
@@ -60,17 +85,17 @@ function list(req, res, next) {
       JOIN service ON service.id = invoice.service_id
       LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
       JOIN user ON user.id = invoice.user_id
-      JOIN project ON invoice.project_id = project.id;`;
+      JOIN project ON invoice.project_id = project.id
+    ORDER BY invoice.reference ASC, invoice.date ASC;`;
 
-  db.exec(invoiceListQuery)
-    .then(function (rows) {
-
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  return db.exec(sql)
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw new NotFound(`Could not find Patient Invoice `);
+    }
+    return rows;
+  });
 }
-
 
 /**
  * @method lookupInvoice
@@ -289,4 +314,33 @@ function reference(req, res, next) {
   })
   .catch(next)
   .done();
+}
+
+
+/**
+* GET /invoices/patient/report
+* Returns a pdf file for Patient Invoice
+*
+* @function getPatientInvoice
+*/
+function getPatientInvoice(req, res, next) {
+  const request = {
+    query : req.query,
+    enterprise : req.session.enterprise,
+    project : req.session.project
+  };
+
+  listInvoices()
+  .then(invoices => listReceipt.build(invoices, request))
+  .then(result => {
+    const renderer = {
+      'pdf'  : '"Content-Type" : "application/pdf"',
+      'html' : '"Content-Type" : "application/html"',
+      'json' : '"Content-Type" : "application/json"'
+    };
+    let headerKey = req.query.renderer || 'pdf';
+    let headers = renderer[headerKey];
+    res.set(headers).send(result);
+  })
+  .catch(next);
 }

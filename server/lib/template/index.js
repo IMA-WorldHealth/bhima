@@ -33,7 +33,8 @@ const hbs = exphbs.create({
     add : math.add,
     substract : math.substract,
     currency : finance.currency,
-    look : objects.look
+    look : objects.look,
+    indentAccount : finance.indentAccount
   },
 
   // load partials from the partials sub-directory

@@ -21,7 +21,9 @@
 
 'use strict';
 
+const lodash = require('lodash');
 const db = require('../../../lib/db');
+const rm = require('../../../lib/ReportManager');
 const NotFound = require('../../../lib/errors/NotFound');
 const types = require('./types');
 
@@ -208,8 +210,9 @@ function lookupAccount(id) {
       a.classe, a.is_asset, a.reference_id, a.is_brut_link, a.is_charge,
       a.number, a.label, a.parent, a.type_id, a.is_title, at.type
     FROM account AS a JOIN account_type AS at ON a.type_id = at.id
-    WHERE a.id = ?;
-  `;
+    `;
+
+  sql += id ? ' WHERE a.id = ? ORDER BY CAST(a.number AS CHAR(15)) ASC;' : ' ORDER BY CAST(a.number AS CHAR(15)) ASC;';
 
   return db.exec(sql, id)
     .then(function(rows) {
@@ -217,8 +220,72 @@ function lookupAccount(id) {
         throw new NotFound(`Could not find account with id ${id}.`);
       }
 
-      return rows[0];
+      return id ? rows[0] : rows;
     });
+}
+
+/**
+ * @method document
+ * @description generate chart of account as a document
+ */
+function document(req, res, next) {
+  const reportUrl = './server/controllers/finance/reports/accounts.report.handlebars';
+
+  lookupAccount()
+  .then(processAccountDepth)
+  .then(accounts => {
+    return rm.build(req, accounts, reportUrl);
+  })
+  .spread((doc, header) => {
+    res.set(header).send(doc);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+ * @method processAccountDepth
+ * @description get the depth of an account
+ * @param {array} accounts list of accounts
+ * @return {array} accounts the updated list of accounts with depths
+ */
+function processAccountDepth(accounts) {
+  let indexedAccounts = lodash.keyBy(accounts, 'id');
+
+  return accounts.map(acc => {
+    let depth = getDepth(acc, 0, indexedAccounts);
+    acc.depth = depth;
+    return acc;
+  });
+}
+
+/**
+ * @function getDepth
+ * @description return the depth of an account
+ * @param {object} account An account object
+ * @param {number} depth The default depth of the account given
+ * @param {array} accounts list of accounts
+ * @return {number} depth The real depth
+ */
+function getDepth(account, depth, accounts) {
+  if (account.parent === 0) {
+    return depth;
+  }
+  else {
+    let parent = getParent(account, accounts);
+    return getDepth(parent, ++depth, accounts);
+  }
+}
+
+/**
+ * @function getParent
+ * @description return the parent account of an account given
+ * @param {object} account An account object
+ * @param {array} accounts list of accounts
+ * @return {object} account The parent account object
+ */
+function getParent(account, accounts) {
+  return accounts[account.parent];
 }
 
 exports.list = list;
@@ -227,3 +294,4 @@ exports.update = update;
 exports.detail = detail;
 exports.getBalance = getBalance;
 exports.types = types;
+exports.document = document;

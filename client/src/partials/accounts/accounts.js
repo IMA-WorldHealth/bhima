@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
-  '$rootScope', 'AccountGridService', 'NotifyService', 'bhConstants'
+  '$rootScope', 'AccountGridService', 'NotifyService', 'bhConstants',
+  'LanguageService'
 ];
 
 /**
@@ -14,7 +15,7 @@ AccountsController.$inject = [
  * This controller is responsible for configuring the Accounts Management UI grid
  * and connecting it with the Accounts data model.
  */
-function AccountsController($rootScope, AccountGrid, Notify, Constants) {
+function AccountsController($rootScope, AccountGrid, Notify, Constants, Language) {
   var vm = this;
   vm.Constants = Constants;
 
@@ -23,6 +24,9 @@ function AccountsController($rootScope, AccountGrid, Notify, Constants) {
 
   // this flag will determine if the grid should expand the rows on data change
   vm.initialDataSet = true;
+
+  // lang parameter for document
+  vm.parameter = { lang: Language.key };
 
   vm.Accounts = new AccountGrid();
   vm.Accounts.settup()

@@ -60,9 +60,6 @@
   },
   "CASH": {
     "CURRENT_CASHBOX" : "Current Cashbox",
-    "DEBTOR_INVOICES": {
-      "TITLE" : "Debtor Invoices"
-    },
     "PAYMENT"         : "Payment",
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
@@ -88,10 +85,11 @@
         "TRANSFER"        : "Transfer Funds",
         "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue"
       },
-        "DEBTOR_INVOICES" : "Debtor Invoices",
-        "RECEIPTS_TITLE"  : "Cash Payment Receipt",
-        "SLIP"            : "Cash Voucher",
-        "TITLE"           : "Cash Window"
+      "DEBTOR_INVOICES" : "Debtor Invoices",
+      "RECEIPTS_TITLE"  : "Cash Payment Receipt",
+      "SLIP"            : "Cash Voucher",
+      "TITLE"           : "Cash Window",
+      "SELECTED" : "Selected Invoices"
     }
   },
   "CASHBOX": {
@@ -878,7 +876,7 @@
     "UPD_REFERENCE" : "Update Reference Group"
   },
   "REPORT" : {
-    "AGED_DEBTORS" : {
+    "AGED_DEBTORS"  : {
       "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Less Than 30 Days",
       "SIXTY_DAYS" : "Less Than 60 Days",
@@ -896,6 +894,7 @@
     "PERIOD_START"     : "Start",
     "PERIOD_STOP"      : "Stop",
     "PRODUCED_BY"      : "Produced By",
+    "PRODUCED_DATE"    : "Production Date",
     "PRODUCED_ON"      : "Produced On"
   },
   "SECTION_BILAN": {

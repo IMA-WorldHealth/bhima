@@ -137,6 +137,7 @@ exports.configure = function configure(app) {
   app.get('/accounts/:id/balance', accounts.getBalance);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
+  app.get('/reports/finance/accounts/chart', accounts.document);
 
   // API for cost_center routes CRUD
   app.get('/cost_centers', costCenter.list);
@@ -201,7 +202,7 @@ exports.configure = function configure(app) {
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
 
-  //API for general ledger
+  // API for general ledger
   app.get('/general_ledger', generalLedger.list);
 
   //API for trial balance
@@ -347,6 +348,9 @@ exports.configure = function configure(app) {
   app.get('/invoices/search', patientInvoice.search);
   app.get('/invoices/:uuid', patientInvoice.details);
   app.get('/invoices/references/:reference', patientInvoice.reference);
+
+  // route for invoice Report
+  app.get('/invoices/patient/report', patientInvoice.getPatientInvoice);
 
   // reports API: Invoices (receipts)
   app.get('/reports/invoices/:uuid', financeReports.receipts.invoices);

@@ -8,20 +8,20 @@
 * There are also some specialized queries such as looking up imbalanced
 * invoices, and looking up the balance on a debtor's account.
 *
-*
 * @module controllers/finance/debtors
 *
 * @requires lib/db
 * @requires lib/errors/NotFound
 * @requires lib/errors/BadRequest
-*
-* @todo Patients currently responsible for setting debtor (one small line) - should this be delegated here?
 */
-var q = require('q');
-var db          = require('../../../lib/db');
-var uuid        = require('node-uuid');
-var NotFound    = require('../../../lib/errors/NotFound');
-var BadRequest  = require('../../../lib/errors/BadRequest');
+
+'use strict';
+
+const q = require('q');
+const db          = require('../../../lib/db');
+const uuid        = require('node-uuid');
+const NotFound    = require('../../../lib/errors/NotFound');
+const BadRequest  = require('../../../lib/errors/BadRequest');
 
 exports.list   = list;
 exports.detail = detail;
@@ -33,21 +33,21 @@ exports.balance = function() { /** @todo - noop */ };
  * List of debtors
  */
 function list(req, res, next) {
-  var sql =
-    `SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text FROM debtor`;
+  const sql =
+    'SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text FROM debtor;';
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).send(rows);
-  })
-  .catch(next);
+    .then(function (rows) {
+      res.status(200).send(rows);
+    })
+    .catch(next);
 }
 
-/**
+/*
  * Detail of debtors
  */
 function detail(req, res, next) {
-  var uid = db.bid(req.params.uuid);
+  const uid = db.bid(req.params.uuid);
 
   lookupDebtor(uid)
   .then(function (debtor) {
@@ -93,18 +93,19 @@ function update(req, res, next) {
  * @returns {Promise} promise resolving to the debtor object
  */
 function lookupDebtor(uid) {
-  var sql =
-    `SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text
+  const sql = `
+    SELECT BUID(uuid) AS uuid, BUID(group_uuid) AS group_uuid, text
     FROM debtor
-    WHERE uuid = ?`;
+    WHERE uuid = ?;
+  `;
 
-  return db.exec(sql, [uid])
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound(`Could not find a debtor with uuid ${uuid.unparse(uid)}`);
-    }
-    return rows[0];
-  });
+  return db.exec(sql, [db.bid(uid)])
+    .then(function (rows) {
+      if (!rows.length) {
+        throw new NotFound(`Could not find a debtor with uuid ${uuid.unparse(uid)}`);
+      }
+      return rows[0];
+    });
 }
 
 
@@ -130,58 +131,53 @@ function lookupDebtor(uid) {
  */
 function invoices(req, res, next) {
   const uid = db.bid(req.params.uuid);
-  var options = req.query;
+  const options = req.query;
 
   // get the debtor invoice uuids from the invoice table
-  var sql =
+  let sql =
     'SELECT uuid FROM invoice WHERE debtor_uuid = ?;';
 
   db.exec(sql, [uid])
-  .then(function (uuids) {
+    .then(function (uuids) {
 
-    // if nothing found, return an empty array
-    if (!uuids.length) {
-      return q.resolve([]);
-    }
+      // if nothing found, return an empty array
+      if (!uuids.length) { return []; }
 
-    uuids = uuids.map(function (item) {
-      return item.uuid;
-    });
+      uuids = uuids.map(item => item.uuid);
 
-    // select all invoice and payments against invoices from the combined ledger
-    sql =
-      `SELECT BUID(i.uuid) as uuid, CONCAT(project.abbr, invoice.reference) as reference,
-        credit, debit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
-      FROM (
-        SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
+      let balance =
+         (options.balanced === '1') ? 'HAVING balance = 0' :
+         (options.balanced === '0') ? 'HAVING balance > 0' :
+         '';
+
+      // select all invoice and payments against invoices from the combined ledger
+      sql = `
+        SELECT BUID(i.uuid) AS uuid, CONCAT(project.abbr, invoice.reference) AS reference,
+          credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
         FROM (
-          SELECT record_uuid as uuid, debit, credit, entity_uuid
-          FROM combined_ledger
-          WHERE record_uuid IN (?) AND entity_uuid = ?
-        UNION ALL
-          SELECT reference_uuid as uuid, debit, credit, entity_uuid
-          FROM  combined_ledger
-          WHERE reference_uuid IN (?) AND entity_uuid = ?
-        ) AS ledger
-        GROUP BY entity_uuid
-      ) AS i JOIN invoice ON i.uuid = invoice.uuid
-      JOIN project ON invoice.project_id = project.id `;
+          SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
+          FROM (
+            SELECT record_uuid AS uuid, debit, credit, entity_uuid
+            FROM combined_ledger
+            WHERE record_uuid IN (?) AND entity_uuid = ?
+          UNION ALL
+            SELECT reference_uuid AS uuid, debit, credit, entity_uuid
+            FROM  combined_ledger
+            WHERE reference_uuid IN (?) AND entity_uuid = ?
+          ) AS ledger
+          GROUP BY ledger.uuid ${balance}
+        ) AS i
+          JOIN invoice ON i.uuid = invoice.uuid
+          JOIN project ON invoice.project_id = project.id;
+      `;
 
-    /**
-     * @todo - put in balance
-     */
-     sql +=
-       (options.balanced === '1') ? ' HAVING balance = 0;' :
-       (options.balanced === '0') ? ' HAVING balance > 0;' :
-       ';';
-
-    return db.exec(sql, [uuids, uid, uuids, uid]);
-  })
-  .then(function (invoices) {
-    res.status(200).send(invoices);
-  })
-  .catch(next)
-  .done();
+      return db.exec(sql, [uuids, uid, uuids, uid]);
+    })
+    .then(function (invoices) {
+      res.status(200).send(invoices);
+    })
+    .catch(next)
+    .done();
 }
 
 /**

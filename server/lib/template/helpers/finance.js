@@ -24,4 +24,18 @@ function currency(value, currencyId) {
   return value ? accountingjs.formatMoney(value, fmt) : accountingjs.formatMoney(0, fmt);
 }
 
+/**
+ * @function indentAccount
+ * @description indent with 40px accounts based on the account depth for the chart of accounts
+ * @param {number} depth the account number
+ * @return {number} number the processed indent
+ */
+function indentAccount(depth) {
+  // indentation step is fixed arbitrary to 40 (40px)
+  const INDENTATION_STEP = 40;
+  let number = Number(depth);
+  return number ? number * INDENTATION_STEP : 0;
+}
+
 exports.currency = currency;
+exports.indentAccount = indentAccount;

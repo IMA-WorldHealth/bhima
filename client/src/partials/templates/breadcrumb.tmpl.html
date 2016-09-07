@@ -28,7 +28,7 @@
       </div>
 
       <!-- buttons -->
-      <div class="toolbar-item btn-group btn-group-sm" ng-show="vm.bcButtons.length">
+      <div class="toolbar-item btn-group" ng-show="vm.bcButtons.length">
         <button class="btn"
           id="{{ vm.prefix + a.id }}"
           ng-class="a.color"
@@ -38,6 +38,13 @@
           ng-disabled="a.disabled">
           <span class="{{ a.icon }}"></span> {{ a.label }}
         </button>
+      </div>
+
+      <!-- buttons Print -->
+      <div class="toolbar-item btn-group btn-group-sm" ng-if="vm.buttonPrint.pdfUrl">
+        <bh-pdf-print
+          pdf-url="{{ vm.buttonPrint.pdfUrl }}">
+        </bh-pdf-print>
       </div>
 
       <!-- labels -->
