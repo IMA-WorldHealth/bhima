@@ -14,7 +14,6 @@ function InvoiceRegistrySearch() {
   'use strict';
 
   const params = {
-    initialBillNumber : 4,
     monthBillNumber : 0,
     referenceValue : 'TPA2',
     serviceValue : 'Test Service',
@@ -38,17 +37,12 @@ function InvoiceRegistrySearch() {
     ).to.eventually.equal(number);
   }
 
-  it('displays all invoices loaded from database', () => {
-    expectNumberOfGridRows(params.initialBillNumber);
-    expectNumberOfFilters(0);
-  });
-
   it('filters invoices by clicking on date buttons', () => {
 
     // set the filters to month
     FU.buttons.search();
     $('[data-date-range="month"]').click();
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(params.monthBillNumber);
     expectNumberOfFilters(2);
@@ -62,7 +56,7 @@ function InvoiceRegistrySearch() {
     // set the date inputs manually
     FU.buttons.search();
     FU.input('ModalCtrl.params.billingDateTo', '2015-01-30');
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(0);
     expectNumberOfFilters(1);
@@ -74,7 +68,7 @@ function InvoiceRegistrySearch() {
   it('filters by radio buttons', () => {
     FU.buttons.search();
     element(by.id('no')).click();
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(0);
     expectNumberOfFilters(1);
@@ -86,7 +80,7 @@ function InvoiceRegistrySearch() {
   it('filters by reference should return a single result', () => {
     FU.buttons.search();
     FU.input('ModalCtrl.params.reference', 'TPA2');
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(1);
     expectNumberOfFilters(1);
@@ -99,7 +93,7 @@ function InvoiceRegistrySearch() {
     FU.buttons.search();
     FU.select('ModalCtrl.params.service_id', 'Test Service');
     FU.select('ModalCtrl.params.user_id', 'Super User');
-    FU.buttons.submit();
+    FU.modal.submit();
 
     expectNumberOfGridRows(4);
     expectNumberOfFilters(2);

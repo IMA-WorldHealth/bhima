@@ -17,7 +17,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
   var invoiceActionsTemplate =
     '<div class="ui-grid-cell-contents">' +
-      '<a href ng-click="grid.appScope.openReceiptModal(row.entity.uuid)">' +
+      '<a href ng-click="grid.appScope.openReceiptModal(row.entity.uuid)" data-method="receipt">' +
         '<span class="fa fa-file-pdf-o"></span> {{ "TABLE.COLUMNS.RECEIPT" | translate }}' +
       '</a>' +
       '&nbsp;&nbsp;' +

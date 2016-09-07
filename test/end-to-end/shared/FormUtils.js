@@ -1,4 +1,4 @@
-/* global browser, by, element, protractor */
+/* global browser, by, element */
 'use strict';
 
 const chai = require('chai');
@@ -22,7 +22,7 @@ const buttons =  {
 
 // This methods are for easily working with modals.  Works with the same custom
 // data tags used in form buttons.
-var modal = {
+const modal = {
   submit: function submit() { return $('[uib-modal-window] [data-method="submit"]').click(); },
   cancel: function cancel() { return $('[uib-modal-window] [data-method="cancel"]').click(); },
   close: function close() { return $('[uib-modal-window] [data-method="close"]').click(); },
@@ -30,7 +30,7 @@ var modal = {
 };
 
 // convenience methods to see if the form contains feedback text.  Returns locators.
-var feedback = {
+const feedback = {
   success: function success() { return by.css('[data-role="feedback"] > .text-success'); },
   error: function error() { return by.css('[data-role="feedback"] > .text-danger'); },
   warning: function warning() { return by.css('[data-role="feedback"] > .text-warning'); },
@@ -38,7 +38,7 @@ var feedback = {
 };
 
 // convenience methods to check form element validation states
-var validation = {
+const validation = {
 
   // an error state is present
   error : function error(model) {
@@ -205,7 +205,6 @@ module.exports = {
       `Expected locator ${locator.toString()} to contain "${text}".`
     ).to.eventually.equal(text);
   },
-
 
   // bind commonly used form buttons  These require specific data tags to be
   // leveraged effectively.

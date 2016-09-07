@@ -10,7 +10,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Inventory Configuration ::', () => {
+describe('Inventory Configuration', () => {
 
   // navigate to the page
   before(() => helpers.navigate('#/inventory/configuration'));
@@ -39,7 +39,7 @@ describe('Inventory Configuration ::', () => {
   const unit = { text : '[E2E] Inventory Unit' };
   const updateUnit = { text : '[E2E] Inventory Unit updated' };
 
-  describe('Groups ::', () => {
+  describe('Groups', () => {
     // navigate to the page
     before(() => helpers.navigate('#/inventory/configuration'));
 
@@ -68,7 +68,7 @@ describe('Inventory Configuration ::', () => {
   });
 
   // test inventory type
-  describe('Types ::', () => {
+  describe('Types', () => {
     // navigate to the page
     before(() => helpers.navigate('#/inventory/configuration'));
 
@@ -89,7 +89,7 @@ describe('Inventory Configuration ::', () => {
   });
 
   // test inventory unit
-  describe('Units ::', () => {
+  describe('Units', () => {
     // navigate to the page
     before(() => helpers.navigate('#/inventory/configuration'));
 

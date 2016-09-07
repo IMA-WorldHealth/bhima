@@ -16,7 +16,6 @@ describe('Account Management', function () {
   const path = '#/accounts';
   before(() => helpers.navigate(path));
 
-
   const INITIAL_ACCOUNTS = 14;
   let addedAccounts = 0;
 
@@ -63,7 +62,7 @@ describe('Account Management', function () {
 
     // relies on french translation
     FU.select('AccountEditCtrl.account.type_id', 'Titre').click();
-    FU.buttons.submit();
+    FU.modal.submit();
     addedAccounts += 1;
 
     components.notification.hasSuccess();
@@ -79,7 +78,7 @@ describe('Account Management', function () {
   it('updates an account title and parent', function () {
     FU.input('AccountEditCtrl.account.label', 'Updated inventory accounts');
     FU.uiSelect('AccountEditCtrl.account.parent', 'Test Income');
-    FU.buttons.submit();
+    FU.modal.submit();
 
     components.notification.hasSuccess();
   });
@@ -87,8 +86,8 @@ describe('Account Management', function () {
   const numberOfAccounts = 3;
 
   it('creates multiple accounts with the batch option selected', function () {
-    var parentNumber = 70000;
-    var mockAccount = {
+    const parentNumber = 70000;
+    const mockAccount = {
       number : parentNumber,
       label : 'End to End Test: '
     };
@@ -106,11 +105,12 @@ describe('Account Management', function () {
 
     select.element(by.css('[data-key="ACCOUNT.TYPES.TITLE"]')).click();
 
-    FU.buttons.submit();
+    FU.modal.submit();
     addedAccounts += 1;
 
     // set to this parent
     FU.uiSelect('AccountEditCtrl.account.parent', parentNumber);
+
     // set to income
     select.element(by.css('[data-key="ACCOUNT.TYPES.INCOME"]')).click();
 
@@ -128,13 +128,14 @@ describe('Account Management', function () {
 
   it('displays all created accounts with model refresh', function () {
     browser.refresh();
-    expect(page.getRowCount()).to.eventually.equal(INITIAL_ACCOUNTS + addedAccounts);
+    page.expectGridRows(INITIAL_ACCOUNTS + addedAccounts);
   });
 
+  // generic function to create an account in the modal
   function createAccount(account, index) {
     FU.input('AccountEditCtrl.account.number', account.number);
     FU.input('AccountEditCtrl.account.label', account.label.concat(index));
-    FU.buttons.submit();
+    FU.modal.submit();
     addedAccounts += 1;
   }
 });
