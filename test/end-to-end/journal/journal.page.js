@@ -14,7 +14,7 @@ function JournalCorePage() {
   const gridId = 'journal-grid';
   // polyfill for array.includes on lower node versions
   const includes = (array, value) => array.indexOf(value) > -1;
-  
+
 
   function openGridConfigurationModal() {
     return $('[data-method="configure"]').click();
@@ -49,7 +49,7 @@ function JournalCorePage() {
   function setDefaultColumnCheckboxes() {
     FU.buttons.reset();
   }
-  
+
   function checkRow(n) {
     var row = GU.selectRow(gridId, n);
   }
@@ -67,7 +67,7 @@ function JournalCorePage() {
 
   // custom wrappers for GU functionality
   page.expectColumnCount = (number) => GU.expectColumnCount(gridId, number);
-  page.expectRowCount = (number) => GU.expectRowCount(gridId, number);
+  page.expectRowCountAbove = (number) => GU.expectRowCountAbove(gridId, number);
   page.expectHeaderColumns = (headerColumns) => GU.expectHeaderColumns(gridId, headerColumns);
 }
 

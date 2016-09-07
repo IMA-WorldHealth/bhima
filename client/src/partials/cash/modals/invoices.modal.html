@@ -30,7 +30,7 @@
   </div>
 
   <div ng-show="CashInvoiceModalCtrl.empty" class="text-warning">
-    <i class="fa fa-info-circle"></i> {{ "FORM.WARNINGS.EMPTY_SELECTION" | translate }}
+    <i class="fa fa-info-circle"></i> {{ ::"FORM.WARNINGS.EMPTY_SELECTION" | translate }}
   </div>
 </div>
 
@@ -39,7 +39,7 @@
     type="button"
     class="btn btn-default"
     ng-click="CashInvoiceModalCtrl.cancel()"
-    data-debtor-invoices-modal-cancel>
+    data-method="cancel">
     {{ "FORM.BUTTONS.CANCEL" | translate }}
   </button>
   <button
@@ -47,7 +47,7 @@
     class="btn btn-primary"
     ng-click="CashInvoiceModalCtrl.submit()"
     ng-disabled="(CashInvoiceModalCtrl.missingId || CashInvoiceModalCtrl.hasError)"
-    data-debtor-invoices-modal-submit>
+    data-method="submit">
     {{ "FORM.BUTTONS.SUBMIT" | translate }}
   </button>
 </div>

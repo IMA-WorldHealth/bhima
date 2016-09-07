@@ -2,9 +2,10 @@
  * The Enterprises Controller
  *
  * This controller is responsible for creating and updating Enterprises.
- *  Each Enterprise must necessarily have a name, an abbreviation, a geographical location as well as a currency
- *  And it is not possible to remove an Enterprise
+ * Each enterprise must necessarily have a name, an abbreviation, a geographical
+ * location as well as a currency and it is not possible to remove an enterprise.
  */
+
 'use strict';
 
 const db       = require('../../lib/db');
@@ -37,8 +38,7 @@ exports.list = function list(req, res, next) {
 
 // GET /enterprises/:id
 exports.detail = function detail(req, res, next) {
-  let enterpriseId = req.params.id;
-  lookupEnterprise(enterpriseId)
+  lookupEnterprise(req.params.id)
     .then(function (enterprise) {
       res.status(200).json(enterprise);
     })
@@ -75,12 +75,18 @@ function lookupEnterprise(id) {
  * @returns {Promise} - the result of the database query.
  */
 function lookupByProjectId(id) {
+
   const sql = `
     SELECT e.id, e.name, e.abbr, email, e.po_box, e.phone,
       BUID(e.location_id) AS location_id, e.logo, e.currency_id,
-      e.gain_account_id, e.loss_account_id
+      e.gain_account_id, e.loss_account_id,
+      CONCAT_WS(' ', village.name, sector.name, province.name) AS location
     FROM enterprise AS e JOIN project AS p ON e.id = p.enterprise_id
-    WHERE p.enterprise_id = ?;
+      JOIN village ON e.location_id = village.uuid
+      JOIN sector ON village.sector_uuid = sector.uuid
+      JOIN province ON sector.province_uuid = province.uuid
+    WHERE p.enterprise_id = ?
+    LIMIT 1;
   `;
 
   return db.exec(sql, [id])

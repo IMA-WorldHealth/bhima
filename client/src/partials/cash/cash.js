@@ -41,6 +41,12 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   vm.digestExchangeRate = digestExchangeRate;
   vm.togglePaymentType = togglePaymentType;
   vm.submit = submit;
+  vm.onRegisterApiCallback = onRegisterApiCallback;
+
+  // fired when the bhFindPatient API becomes available
+  function onRegisterApiCallback(api) {
+    vm.bhFindPatient = api;
+  }
 
   // fired on controller start or form refresh
   function startup() {
@@ -137,6 +143,19 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     return Cash.create(vm.payment)
       .then(function (response) {
         return Receipts.cash(response.uuid, true);
+      })
+      .then(function () {
+
+        // reset the data
+        vm.payment = { date : new Date() };
+
+        // reset the bhFindPatient component
+        vm.bhFindPatient.reset();
+
+        // make sure the form is pristine
+        form.$setPristine();
+
+        delete vm.slip;
       })
       .catch(Notify.handleError);
   }
