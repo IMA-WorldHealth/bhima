@@ -9,7 +9,7 @@ const helpers = require('./helpers');
  * should be fixed and verified with tests */
 
 /* The /invoices API endpoint */
-describe('The /invoices API', function () {
+describe('(/invoices) Patient Invoices', function () {
   'use strict';
 
   /* total number of invoices in the database */
@@ -17,7 +17,6 @@ describe('The /invoices API', function () {
   const numCreatedInvoices = 3;
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
   const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
-
 
   /* a reference for one of the invoices in the database */
   const reference = 'TPA1';
@@ -34,7 +33,7 @@ describe('The /invoices API', function () {
   });
 
   it('GET /invoices/:uuid returns a valid patient invoice', function () {
-    return agent.get('/invoices/'.concat(fetchableInvoiceUuid))
+    return agent.get(`/invoices/${fetchableInvoiceUuid}`)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -76,7 +75,7 @@ describe('The /invoices API', function () {
     it('GET /invoices/search should return all invoices if no query string provided', function () {
       return agent.get('/invoices/search')
         .then(function (res) {
-          helpers.api.listed(res, numInvoices + numCreatedInvoices + 1);
+          helpers.api.listed(res, numInvoices + numCreatedInvoices);
         })
         .catch(helpers.handler);
     });
@@ -155,29 +154,6 @@ describe('The /invoices API', function () {
         .catch(helpers.handler);
     });
   });
-
-  describe('(/invoices/references) reference interface for the invoices table', function () {
-
-    it('GET /invoices/reference/:reference should return a uuid for a valid invoice reference', function () {
-      return agent.get('/invoices/references/'.concat(reference))
-        .then(function (res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.have.property('uuid');
-        })
-        .catch(helpers.handler);
-    });
-
-    it('GET /invoices/references/:reference should fail for an invalid invoice reference', function () {
-      return agent.get('/invoices/references/unknown')
-        .then(function (res) {
-          helpers.api.errored(res, 404);
-        })
-        .catch(helpers.handler);
-    });
-  });
-
-
 });
 
 /*
@@ -206,8 +182,8 @@ function BillingScenarios() {
   const simpleInvoice = {
     is_distributable: 1,
     date: new Date(),
-    cost: 35,  // this cost should be calculated by the server (see test).
-    description: 'TPA_VENTE/Wed Jan 13 2016 10:33:34 GMT+0100 (WAT)/Test 2 Patient',
+    cost: 35.14,  // this cost should be calculated by the server (see test).
+    description: 'A Simple Invoice of two items costing $35.14',
     service_id: helpers.data.ADMIN_SERVICE,
     debtor_uuid: '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
     project_id: helpers.data.PROJECT,
@@ -218,8 +194,8 @@ function BillingScenarios() {
       inventory_uuid: '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
       quantity: 1,
       inventory_price: 8,
-      transaction_price: 10,
-      credit: 10
+      transaction_price: 10.14,
+      credit: 10.14
     }, {
       inventory_uuid: 'cf05da13-b477-11e5-b297-023919d3d5b0',
       quantity: 1,
@@ -244,8 +220,8 @@ function BillingScenarios() {
 
         // ensure the data in the database is correct
         let invoice = res.body;
-        expect(invoice.cost).to.equal(35);
-        expect(invoice.items).to.have.length(2);
+        expect(invoice.cost).to.equal(simpleInvoice.cost);
+        expect(invoice.items).to.have.length(simpleInvoice.items.length);
 
         // NOTE - this is not what was sent, but the server has corrected it.
         expect(invoice.user_id).to.equal(helpers.data.SUPERUSER);
@@ -261,6 +237,7 @@ function BillingScenarios() {
 
     // test what happens when the debtor is missing
     let missingDebtorUuid = helpers.mask(simpleInvoice, 'debtor_uuid');
+    missingDebtorUuid.description = missingDebtorUuid.description.concat(' missing debtor_uuid');
 
     return agent.post('/invoices')
       .send({ invoice : missingDebtorUuid })
@@ -269,6 +246,7 @@ function BillingScenarios() {
 
         // what happens when there is no date sent to the server
         let missingDate = helpers.mask(simpleInvoice, 'date');
+        missingDate.description = missingDate.description.concat(' missing date');
         return agent.post('/invoices').send({ invoice : missingDate });
       })
       .then((res) => {
@@ -276,6 +254,7 @@ function BillingScenarios() {
 
         // what happens when no items are sent to the server
         let missingItems = helpers.mask(simpleInvoice, 'items');
+        missingItems.description = missingItems.description.concat(' missing items');
         return agent.post('/invoices').send({ invoice : missingItems });
       })
       .then((res) => {
@@ -310,7 +289,7 @@ function BillingScenarios() {
     is_distributable : true,
     date: new Date('2016-01-28').toISOString(),
     cost : 100,
-    description: 'A simple billing service invoice',
+    description: 'An invoice of two items costing $100 + a billing service',
     service_id: helpers.data.ADMIN_SERVICE,
     debtor_uuid: '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
     project_id: helpers.data.PROJECT,
@@ -366,7 +345,7 @@ function BillingScenarios() {
     is_distributable : true,
     date: new Date('2016-01-28').toISOString(),
     cost : 39.34,
-    description: 'A simple subsidy invoice',
+    description: 'An invoice of three items costing $39.34 + a subsidy',
     service_id: helpers.data.ADMIN_SERVICE,
     debtor_uuid: '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
     project_id: helpers.data.PROJECT,
@@ -402,7 +381,7 @@ function BillingScenarios() {
         helpers.api.created(res);
 
         // make sure we can locate the invoice in the database
-        return agent.get('/invoices/'.concat(res.body.uuid));
+        return agent.get(`/invoices/${res.body.uuid}`);
       })
       .then(function (res) {
         expect(res).to.have.status(200);

@@ -12,12 +12,10 @@
  */
 
 
-const q    = require('q');
 const db   = require('../../lib/db');
 const uuid = require('node-uuid');
 const _    = require('lodash');
 const util = require('../../lib/util');
-const journal = require('./journal/invoices');
 
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -48,10 +46,6 @@ exports.lookupInvoice = lookupInvoice;
 
 exports.getPatientInvoice = getPatientInvoice;
 
-/** Undo the financial effects of a invoice generating an equal and opposite credit note. */
-// exports.reverse = reverse;
-
-
 /**
  * list
  *
@@ -75,7 +69,7 @@ function list(req, res, next) {
  *
  */
 function listInvoices() {
-  let sql =
+  const sql =
     `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientNames,
       service.name as serviceName, user.display_name, voucher.type_id,
@@ -182,14 +176,23 @@ function details(req, res, next) {
 }
 
 function create(req, res, next) {
-  let invoiceDetails = req.body.invoice;
-  invoiceDetails.user_id = req.session.user.id;
+  const invoice = req.body.invoice;
+  invoice.user_id = req.session.user.id;
 
-  let preparedTransaction = createInvoice(invoiceDetails);
+  const hasInvoiceItems = (invoice.items && invoice.items.length > 0);
+
+  // detect missing items early and respond with an error
+  if (!hasInvoiceItems) {
+    return next(
+      new BadRequest(`An invoice must be submitted with invoice items.`)
+    );
+  }
+
+  const preparedTransaction = createInvoice(invoice);
   preparedTransaction.execute()
-    .then(function (result) {
+    .then(() => {
       res.status(201).json({
-        uuid : uuid.unparse(invoiceDetails.uuid)
+        uuid : uuid.unparse(invoice.uuid)
       });
     })
     .catch(next)

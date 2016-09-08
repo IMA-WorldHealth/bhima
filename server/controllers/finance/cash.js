@@ -15,15 +15,14 @@
  *
  * @requires node-uuid
  * @requires lib/db
+ * @requires cash.create
  * @requires lib/errors/NotFound
  * @requires lib/errors/BadRequest
- * @requires finance/journal/cash
  */
 const uuid = require('node-uuid');
 const db   = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
-const journal = require('./journal/cash');
 
 const cashCreate = require('./cash.create');
 

@@ -85,8 +85,7 @@ exports.latestInvoice = latestInvoice;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
-  var writeDebtorQuery, writePatientQuery;
-  var invalidParameters;
+  let writeDebtorQuery, writePatientQuery;
   var patientText;
 
   var createRequestData = req.body;
@@ -95,7 +94,7 @@ function create(req, res, next) {
   var finance = createRequestData.finance;
 
   // Debtor group required for financial modelling
-  invalidParameters = !finance || !medical;
+  let invalidParameters = !finance || !medical;
   if (invalidParameters) {
     return next(
       new BadRequest(
