@@ -81,6 +81,7 @@
       "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous."
     },
     "RECEIPT": {
+      "TITLE"   : "Recu",
       "SUCCESS" : "Créé avec succès un paiement en espèces"
     },
     "VOUCHER": {
@@ -91,13 +92,15 @@
         "LINK"            : "Cliquez ici pour l'ajouter.",
         "MISSING"         : "Vous ne trouvez pas votre caisse?",
         "NO_CASHBOX_SELECTED" : "Vous avez pas sélectionné une caisse. S'il vous plaît choisir une caisse pour continuer",
+        "SELECTED"        : "Selectionnée",
         "TRANSFER"        : "Transférer Fonds"
       },
       "DEBTOR_INVOICES" : "Factures des débiteurs",
       "REPORT"          : "Rapport",
       "RECEIPTS_TITLE"  : "Reçu de paiement des factures",
       "SLIP"            : "Caisse en espèces",
-      "TITLE"           : "Recu de caisse"
+      "TITLE"           : "Recu de caisse",
+      "SELECTED"        : "Facture selectionnée"
     }
   },
   "CASHBOX": {
@@ -1289,6 +1292,7 @@
   "REPORT" : {
     "SINCE": "Depuis",
     "PRODUCED_BY" : "Produit Par",
+    "PRODUCED_DATE" : "Date Production",
     "PRODUCED_ON" : "Produit le",
     "AGED_DEBTORS" : {
       "TITLE": "Age debiteur",
