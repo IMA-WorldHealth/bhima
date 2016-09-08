@@ -1,32 +1,24 @@
-<!-- leverage a form to get a loading indicator on the button -->
-<form name="ConfirmModalForm" ng-submit="ConfirmModalCtrl.submit()" data-confirm-modal bh-form-defaults novalidate>
+<form name="ConfirmModalForm" bh-submit="ConfirmModalCtrl.submit()" data-confirm-modal bh-form-defaults novalidate>
   <div class="modal-header">
-    <h4>{{ "FORM.LABELS.CONFIRMATION" | translate }}</h4>
+    <h4><i class="fa fa-warning text-warning"></i> {{ "FORM.DIALOGS.CONFIRM_MODAL" | translate }}</h4>
   </div>
 
   <div class="modal-body">
-
-    <!-- Error alert in case the server sends back an error -->
-    <div ng-show="ConfirmModalCtrl.error">
-      <uib-alert type="danger">
-        {{ ConfirmModalCtrl.error | translate }}
-      </uib-alert>
-    </div>
-
-    <!-- translatable prompt -->
-    <p class="text-left">
-      <span class="glyphicon glyphicon-info-sign text-primary"></span>
-      {{ (ConfirmModalCtrl.prompt || 'FORM.DIALOGS.CONFIRM_DELETE') | translate }}
-    </p>
+    <dl>
+      <dt>{{ ::"FORM.DIALOGS.WARNING" | translate }}</dt>
+      <dd>{{ ::ConfirmModalCtrl.prompt | translate }}</dd>
+    </dl>
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" id="confirm_modal" type="submit" data-method="submit">
-      {{ "FORM.BUTTONS.CONFIRM" | translate }}
-    </button>
-
-    <button type="button" class="btn btn-default" id="dismiss_modal" ng-click="ConfirmModalCtrl.dismiss()" data-model-cancel>
+    <button type="button" class="btn btn-default" ng-click="ConfirmModalCtrl.dismiss()" data-method="cancel">
       {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
+
+    <bh-loading-button
+      loading-state="ConfirmModalForm.$loading"
+      button-class="btn-warning">
+      {{ "FORM.BUTTONS.CONFIRM" | translate }}
+    </bh-loading-button>
   </div>
 </form>

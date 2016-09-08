@@ -10,7 +10,7 @@ AlertModalController.$inject = ['$uibModalInstance', 'prompt'];
  */
 function AlertModalController(Instance, prompt) {
   var vm = this;
-  
+
   vm.dismiss = Instance.dismiss;
 
   /**
