@@ -3,6 +3,9 @@
  *
  * This core module of the posting journal sets the posting session for
  * modules that will be posting data to the posting journal.
+ *
+ * @fixme/@todo - remove this module
+ * @deprecated
  */
 
 'use strict';

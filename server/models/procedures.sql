@@ -60,6 +60,7 @@ BEGIN
   END IF;
 END $$
 
+
 CREATE PROCEDURE StageBillingService(
   IN id SMALLINT UNSIGNED,
   IN invoice_uuid BINARY(16)

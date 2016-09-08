@@ -48,14 +48,14 @@ module.exports = createInvoice;
  * ids.
  */
 function createInvoice(invoiceDetails) {
-  let transaction = db.transaction();
-  let invoiceUuid = db.bid(invoiceDetails.uuid || uuid.v4());
+  const transaction = db.transaction();
+  const invoiceUuid = db.bid(invoiceDetails.uuid || uuid.v4());
 
   let billingServices = processBillingServices(invoiceUuid, invoiceDetails.billingServices);
   let subsidies = processSubsidies(invoiceUuid, invoiceDetails.subsidies);
   let items = processInvoiceItems(invoiceUuid, invoiceDetails.items);
 
-  let invoice = processInvoice(invoiceUuid, invoiceDetails);
+  const invoice = processInvoice(invoiceUuid, invoiceDetails);
 
   // 'stage' - make all data that will be required for writing an invoice available to the database procedures
   transaction.addQuery('CALL StageInvoice(?)', [invoice]);
