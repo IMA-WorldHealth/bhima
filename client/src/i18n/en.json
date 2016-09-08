@@ -60,6 +60,7 @@
   },
   "CASH": {
     "CURRENT_CASHBOX" : "Current Cashbox",
+    "DEBTOR_INVOICES" : "Debtor Invoices",
     "PAYMENT"         : "Payment",
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Go to Cashbox Page",
@@ -84,13 +85,15 @@
         "LINK"            : "Click here to add it.",
         "MISSING"         : "Don't see your cashbox?",
         "TRANSFER"        : "Transfer Funds",
-        "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue"
+        "NO_CASHBOX_SELECTED" : "You have no selected a cashbox. Please select a cashbox to continue",
+        "SELECTED"        : "Selected cash"
       },
-      "DEBTOR_INVOICES" : "Debtor Invoices",
-      "RECEIPTS_TITLE"  : "Cash Payment Receipt",
-      "SLIP"            : "Cash Voucher",
-      "TITLE"           : "Cash Window",
-      "SELECTED" : "Selected Invoices"
+        "DEBTOR_INVOICES" : "Debtor Invoices",
+        "RECEIPTS_TITLE"  : "Cash Payment Receipt",
+        "REPORT"          : "Rapport",
+        "SLIP"            : "Cash Voucher",
+        "TITLE"           : "Cash Window",
+        "SELECTED" : "Selected Invoices"
     }
   },
   "CASHBOX": {
@@ -229,6 +232,8 @@
       "ENTER_FULL_DATE"       : "Enter Full Date",
       "ENTITY"                : "Entity",
       "FILTER"                : "Filter",
+      "GROUP_BY_ACCOUNT"      : "Group by Account",
+      "GROUP_BY_TRANSACTION"  : "Group By Transaction",
       "GROUPS_DEBTOR_UPDATE"  : "Update Group Debtor",
       "GROUPS_PATIENT_UPDATE" : "Update Group Assignments",
       "LINK_SUBMISSION"       : "Link to Submission",
@@ -247,14 +252,14 @@
       "SUBMIT"                : "Submit",
       "SUBMIT_CHANGES"        : "Submit Changes",
       "SUBMIT_CREDIT_NOTE"    : "Submit Credit Note",
-      "THIS_MONTH"            : "This month",
       "THIS_WEEK"             : "This Week",
       "THIS_MONTH"            : "This Month",
       "THIS_YEAR"             : "This Year",
       "TODAY"                 : "Today",
       "TRIAL_BALANCE"         : "Trial Balance",
       "UPDATE_PASSWORD"       : "Update Password",
-      "UPDATE"                : "Update"
+      "UPDATE"                : "Update",
+      "VIEW_ERRORS"           : "View Errors"
     },
     "DIALOGS": {
       "CONFIRM_DELETE"         : "Do you confirm the deletion?",
@@ -796,12 +801,47 @@
     "UPDATING_USER" : "Edits a user's metadata"
   },
   "POSTING_JOURNAL" : {
+    "ABOLISH_GROUPS": "Abolishing Group",
+    "ACCOUNT" : "Account",
+    "ADD_ROW" : "Add Row",
+    "ADD_TRANSACTION" : "Add Transaction",
+    "CONFIGURE" : "Configure",
+    "CREDIT" : "Credit",
+    "DEBIT"  : "Debit",
+    "DEB_CRED" : "Deb Cred",
+    "DELETE_TRANSACTION" : "Delete Transaction",
+    "EDIT" : "Edit",
+    "EDIT_TRANSACTION" : "Edit transaction",
+    "ENTERPRISE" : "Enterprise",
+    "ENTERPRISE_MANAGEMENT" : "Enterprise Management",
+    "FISCAL_YEAR" : "Fiscal Year",
+    "GENERAL_LEDGER" : "General Ledger",
+    "GROUP_BY" : "Group By",
+    "IN_PROGRESS" : "In progress",
+    "JUSTIFICATION" : "Justification",
+    "LINES" : "Lines",
+    "LIVE_TRANSACTION" : "Live Transaction",
+    "RECORDS" : "records",
+    "REFRESH" : "Refresh",
+    "SAVE_TRANSACTION" : "Save Transaction",
+    "SPLIT" : "Split",
+    "SPLIT_TRANSACTION" : "Split transaction",
+    "TRANSACTION" : "Transaction",
+    "TRANSACTION_DATE" : "Transaction Date",
+    "TRANSACTION_NUMBER" : "Transaction Number",
+    "TRANSACTION_SUCCESS" : "Transaction success",
+    "UNKNOWN_ACCOUNT" : "Unknown Account",
+    "VERIFY_TRANSACTION": "Verify Transaction",
+    "ERRORS" : "Errors",
+    "ERROR_REPORT" : "Error Report",
     "TITLE" : "Posting Journal",
+    "TRIAL_BALANCE" : "Trial Balance",
     "EDIT_MODE" : "Edit Mode",
     "CONFIGURATION" : {
       "TITLE" : "Configuration",
       "COLUMNS" : "Columns"
-    }
+    },
+    "WARNINGS" : "Warnings"
   },
   "PRICE_LIST": {
     "ADD_ITEMS"        : "Add an Item",
@@ -958,10 +998,12 @@
       "ABBREVIATION"       : "Abbreviation",
       "ACCOUNT"            : "Account",
       "ACTION"             : "Action",
+      "AFTER"              : "After",
       "AGE"                : "Age",
       "AMOUNT"             : "Amount",
       "ASSET"              : "Asset",
       "BALANCE_SECTION"    : "Balance Sheet Section",
+      "BEFORE"             : "Before",
       "BILL"               : "Bill",
       "BILLED_BY"          : "Billed by",
       "BILLING_DATE"       : "Billing Date",
@@ -983,6 +1025,7 @@
       "EDIT"               : "Edit",
       "EMAIL"              : "Email",
       "EMPTY"              : "There are no records to display.",
+      "ERROR_TYPE"         : "Error Type",
       "ENTERPRISE_ID"      : "ID Enterprise",
       "EXCHANGE_RATE"      : "Exchange Rate",
       "FILTERING": {
@@ -1195,7 +1238,8 @@
       "SUPPORT_INCOME"     : "Support Incomes",
       "TITLE"              : "Simple Voucher",
       "TRANSFER"           : "Money Transfer"
-    }
+    },
+    "REPORT": "Rapport"
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Patient Registrations",

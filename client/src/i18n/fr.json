@@ -66,6 +66,9 @@
       "TITLE" : "Facture(s) debiteur"
     },
     "PAYMENT"         : "Paiement",
+    "RECEIPT"         : {
+      "SUCCESS" : "Succes"
+    },
     "SELECTION": {
       "GO_TO_CASHBOX_PAGE" : "Aller a la page de gestion de caisse",
       "MISSING_CASH"       : "Caisse manquante",
@@ -74,10 +77,11 @@
     "TITLE"           : "Caisse Auxilliaire",
     "TRANSFER": {
       "ACTION" : "Vous avez transféré des fonds de la caisse.",
-      "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous.",
-      "TITLE" : "Transfert"
+      "TITLE" : "Transfert",
+      "REMINDER" : "S'il vous plaît effectuer un comptage de caisse et indiquent à la fois la devise et le montant à transférer dans le formulaire ci-dessous."
     },
     "RECEIPT": {
+      "TITLE"   : "Recu",
       "SUCCESS" : "Créé avec succès un paiement en espèces"
     },
     "VOUCHER": {
@@ -88,12 +92,15 @@
         "LINK"            : "Cliquez ici pour l'ajouter.",
         "MISSING"         : "Vous ne trouvez pas votre caisse?",
         "NO_CASHBOX_SELECTED" : "Vous avez pas sélectionné une caisse. S'il vous plaît choisir une caisse pour continuer",
+        "SELECTED"        : "Selectionnée",
         "TRANSFER"        : "Transférer Fonds"
       },
       "DEBTOR_INVOICES" : "Factures des débiteurs",
+      "REPORT"          : "Rapport",
       "RECEIPTS_TITLE"  : "Reçu de paiement des factures",
       "SLIP"            : "Caisse en espèces",
-      "TITLE"           : "Recu de caisse"
+      "TITLE"           : "Recu de caisse",
+      "SELECTED"        : "Facture selectionnée"
     }
   },
   "CASHBOX": {
@@ -407,6 +414,7 @@
       "FEMALE"                 : "Femme",
       "FINANCIAL_DETAIL"       : "Balance actuelle, journal de saisie inclue :",
       "FIRST_NAME"             : "Prenom",
+      "FROM"                   : "Du",
       "FROM_ACCOUNT"           : "Du compte",
       "FROM"                   : "De",
       "FUNCTION"               : "Fonction",
@@ -774,6 +782,7 @@
       "NOT_RECENT" : "Ce patient n'a pas récemment été vérifiée, vérifier le patient pour la suivi de cette visite à l'hôpital.",
       "ORIGINAL"  : "Ce patient n'a jamais été vérifiée.",
       "RECENT"  : "Visites récentes",
+      "REPORT_TITLE" : "Titre du Rapport",
       "ITEM" : "Vérifiée",
       "BY" : "par",
       "REPORT_TITLE" : "Rapport de consultations des patients",
@@ -810,6 +819,7 @@
     "TITLE"         : "Utilisateur et droits",
     "UPDATING_USER" : "Mise a jour utilisateur"
   },
+
 "POSTING_JOURNAL": {
    "ABOLISH_GROUPS"        : "Abolir les groupes",
    "ACCOUNT"               : "Compte",
@@ -851,9 +861,32 @@
    "TRANSACTION_DATE"      : "Date de Transaction",
    "TRANSACTION_NUMBER"    : "Numéro de Transaction",
    "TRANSACTION_SUCCESS"   : " Edition des transaction et logs enregistrés avec succès",
-   "TRIAL_BALANCE"         : "Rapprochement",
    "UNKNOWN_ACCOUNT"     : "Compte Inconnu",
-   "VERIFY_TRANSACTION"    : "Verifier Transaction"
+   "VERIFY_TRANSACTION"    : "Verifier Transaction",
+  "CONFIGURATION" : {
+    "TITLE" : "Configuration colonnes",
+    "COLUMNS" : "Colonnes"
+  },
+  "ERRORS" : {
+    "DATE_IN_WRONG_PERIOD" : "Date dans la mauvaise periode",
+    "MISSING_DESCRIPTION" : "Descriptions omises",
+    "LOCKED_ACCOUNT" : "Compte(s) verrouille(s)",
+    "UNBALANCED_TRANSACTIONS" : "Transaction(s) non balancee(s)",
+    "MISSING_ACCOUNTS" : "Compte(s) omis",
+    "MISSING_DOCUMENT_ID" : "Ligne(s) sans ID Document",
+    "MISSING_ENTITY" : "Ligne(s) sans ID entite",
+    "MISSING_FISCAL_OR_PERIOD" : "Annee fiscale ou periode omise",
+    "SINGLE_LINE_TRANSACTION" : "Transaction(s) avec une ligne"
+  },
+  "WARNINGS" : {
+    "MISSING_ENTITY" : "Ligne(s) sans type entite et ID entite"
+  },
+  "ERROR_REPORT" : {
+    "TITLE" : "Rapports D'erreurs"
+  },
+  "TRIAL_BALANCE" : {
+    "TITLE" : "Rapprochement Grand Livre"
+  }
    },
   "PRICE_LIST": {
     "ADD_ITEMS"        : "Ajouter un Item",
@@ -1122,6 +1155,7 @@
       "TRANSACTION_ID"     : "ID de la transaction",
       "TRANSACTION_PRICE"  : "Coût de la Transaction",
       "TYPE"               : "Type",
+      "USER"               : "Utilisateur",
       "UNIT"               : "Unité",
       "UNIT_PRICE"         : "Prix unitaire",
       "UNPAID_INVOICE_1"   : "Cette facture n'a pas été compensée en ",
@@ -1175,6 +1209,7 @@
     "PATIENT_REGISTRATIONS"      : "Enregistrement Patients",
     "PATIENT_REGISTRY"           : "Registre des patients",
     "PAYROLL"                    : "Payroll",
+    "PHARMACY"                   : "Pharmacie",
     "POSTING_JOURNAL"            : "Journal de Saisie",
     "PRICE_LIST"                 : "Liste des Prix",
     "PROJECT"                    : "Projets",
@@ -1191,6 +1226,7 @@
     "SERVICE"                    : "Services",
     "SIMPLE_VOUCHER"             : "Bordereau de transfert",
     "STOCK"                      : "Stock",
+    "SUBSIDY"                    : "Subvention",
     "TRANSACTION_TYPE"           : "Types de Transaction",
     "SUBSIDY"                    : "Gestion des subventions",
     "USERS"                      : "Utilisateurs",
@@ -1250,6 +1286,20 @@
       "SUPPORT_INCOME"     : "Paiement Prise en charge",
       "TITLE"              : "Bordereau de transfert",
       "TRANSFER"           : "Transfert d'argent"
+    },
+    "REPORT" : "Rapport"
+  },
+  "REPORT" : {
+    "SINCE": "Depuis",
+    "PRODUCED_BY" : "Produit Par",
+    "PRODUCED_DATE" : "Date Production",
+    "PRODUCED_ON" : "Produit le",
+    "AGED_DEBTORS" : {
+      "TITLE": "Age debiteur",
+      "THIRTY_DAYS" : "Moins de 30 jours",
+      "SIXTY_DAYS" : "Moins de 60 jours",
+      "NINETY_DAYS" : "Moins de 90 jours",
+      "OVER_NINETY_DAYS" : "Plus de 90 jours"
     }
   }
 }
