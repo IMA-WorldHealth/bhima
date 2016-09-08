@@ -87,11 +87,12 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
 		params.dateFrom = dateFrom;
 		params.dateTo = dateTo;
 	}
-	var requette = `
+  var requette = `
       SELECT BUID(t.uuid) AS uuid, t.trans_id, t.trans_date, a.number, a.label,
         SUM(t.debit_equiv) AS debit_equiv, SUM(t.credit_equiv) AS credit_equiv,
         t.debit, t.credit, t.currency_id, t.description, t.comment,
-        BUID(t.record_uuid) AS record_uuid, t.origin_id, u.display_name
+        BUID(t.record_uuid) AS record_uuid, t.origin_id, u.display_name,
+        x.text AS transactionType
 			FROM
       (
   			(
@@ -109,8 +110,10 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
   				FROM general_ledger gl
   				WHERE gl.account_id IN (?) AND gl.trans_date >= ? AND gl.trans_date <= ?
   			)
-      ) AS t, account AS a, user as u
-      WHERE t.account_id = a.id AND  t.user_id = u.id GROUP BY t.trans_id ;` ;
+      ) AS t, account AS a, user as u, transaction_type as x
+      WHERE t.account_id = a.id AND t.user_id = u.id AND t.origin_id = x.id
+      GROUP BY t.trans_id ;` ;
+
 
 	return db.exec(requette, [params.account_id, params.dateFrom, params.dateTo, params.account_id, params.dateFrom, params.dateTo]);
 }
