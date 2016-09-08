@@ -6,24 +6,14 @@ const expect = chai.expect;
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-const GU = require('../shared/gridTestUtils.spec.js');
+const GU = require('../shared/GridUtils.js');
 
 function AccountsPage() {
   const page = this;
-
   const gridId = 'account-grid';
-  const grid = GU.getGrid(gridId);
 
-  page.getRowCount = getRowCount;
-
-  function getRowCount() {
-    var rows = grid.element(by.css('.ui-grid-render-container-body'))
-        .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index')).count();
-    return rows;
-  }
-
-  page.expectGridRows = function expectGridRows(rows) {
-    expect(getRowCount()).to.eventually.equal(rows);
+  page.expectGridRows = function expectGridRows(numRows) {
+    GU.expectRowCount(gridId, numRows);
   };
 
   page.toggleTitleRow = function toggleTitleRow(accountId) {

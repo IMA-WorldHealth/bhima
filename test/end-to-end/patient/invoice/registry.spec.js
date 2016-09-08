@@ -29,9 +29,7 @@ describe('Invoice Registry', () => {
   it('shows the proof of the invoice correctly', () => {
     page.showInvoiceProof(0);
     FU.exists(by.css('[data-modal="receipt"]'), true);
-
-    // close the modal
-    $('[data-action="close"]').click();
+    FU.modal.close();
   });
 
   describe('Searching', Search);
@@ -39,8 +37,7 @@ describe('Invoice Registry', () => {
   it('Credit Note for reverse any transaction in the posting_journal', () => {
     element(by.id('TPA1')).click();
     FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
-    FU.buttons.submit();
+    FU.modal.submit();
     components.notification.hasSuccess();
   });
-
 });

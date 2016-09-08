@@ -1,5 +1,7 @@
 /* global element, by, browser */
 
+'use strict';
+
 const chai = require('chai');
 const expect = chai.expect;
 
@@ -24,18 +26,18 @@ function getRows(gridId) {
 }
 
 function expectRowCount(gridId, number) {
-  var rows = getRows(gridId);
+  const rows = getRows(gridId);
   expect(rows.count()).to.eventually.equal(number);
 }
 
 function expectRowCountAbove(gridId, number) {
-  var rows = getRows(gridId);
+  const rows = getRows(gridId);
   expect(rows.count()).to.eventually.be.above(number);
 }
 
 // assert that the journal's column count is the number passed in
 function expectColumnCount(gridId, number) {
-  var columns = getColumns(gridId);
+  const columns = getColumns(gridId);
   expect(columns.count()).to.eventually.equal(number);
 }
 
@@ -49,8 +51,8 @@ function expectColumnCount(gridId, number) {
  *
  * @example
  * <pre>
- *   var row = gridUtils.getRow( 'myGrid', 0); //or internally
- *   var row = this.getRow( gridId, rowNum );
+ *   const row = gridUtils.getRow( 'myGrid', 0); //or internally
+ *   const row = this.getRow( gridId, rowNum );
  * </pre>
  */
 function getRow( gridId, rowNum ) {
@@ -87,16 +89,17 @@ function expectHeaderColumns(gridId, expectedColumns) {
  *
  * @example
  * <pre>
- *   var row = gridUtils.selectRow( 'myGrid', 0 );
+ *   const row = gridUtils.selectRow( 'myGrid', 0 );
  * </pre>
  */
 function selectRow( gridId, rowNum ) {
   // NOTE: Can't do .click() as it doesn't work when webdriving Firefox
-  var row = getRow( gridId, rowNum );
-  var btn = row.element( by.css('.ui-grid-selection-row-header-buttons') );
+  const row = getRow( gridId, rowNum );
+  const btn = row.element( by.css('.ui-grid-selection-row-header-buttons') );
   return browser.actions().mouseMove(btn).mouseDown(btn).mouseUp().perform();
 }
 
+exports.getGrid = getGrid;
 exports.getRows = getRows;
 exports.getColumns = getColumns;
 exports.expectRowCount = expectRowCount;
