@@ -91,14 +91,14 @@ function TransactionService(util, uiGridConstants, bhConstants) {
     // this array stores the transactions ids currently being edited.
     this._edits = [];
 
-    // cellNav is not enabled by default
-    this._cellNavEnabled = false;
-
     gridOptions.cellEditableCondition = cellEditableCondition;
     gridOptions.enableCellEditOnFocus = true;
 
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
+
+      // cellNav is not enabled by default
+      this.disableCellNavigation();
 
       // on each row rendering, recompute the transaction row indexes
       api.core.on.rowsRendered(null, createTransactionIndexMap.bind(this));
