@@ -112,7 +112,7 @@ function PatientInvoiceService(Modal, util, Session, Api) {
 
     // returns columns from filters
     return columns.filter(function (column) {
-      let value = params[column.field];
+      var value = params[column.field];
 
       if (angular.isDefined(value)) {
         column.value = value;

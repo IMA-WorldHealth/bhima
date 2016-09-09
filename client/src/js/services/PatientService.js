@@ -41,7 +41,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   // document exposition definition
   service.Documents = Documents;
   service.Visits = Visits;
-  service.latest = latest;  
+  service.latest = latest;
 
   /**
    * This method returns information on a patient given the patients UUID. This
@@ -223,7 +223,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
 
     // returns columns from filters
     return columns.filter(function (column) {
-      let value = params[column.field];
+      var value = params[column.field];
 
       if (angular.isDefined(value)) {
         column.value = value;
