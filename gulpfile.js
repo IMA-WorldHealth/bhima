@@ -1,4 +1,3 @@
-/*jshint -W079 */
 /**
  * Build Script
  * @TODO
@@ -13,7 +12,6 @@ const uglify  = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
 const iife    = require('gulp-iife');
 const rimraf  = require('rimraf');
-const gutil   = require('gulp-util');
 const less    = require('gulp-less');
 
 // child process for custom scripts
@@ -29,7 +27,7 @@ const SERVER_FOLDER = './bin/server/';
 const CLIENT_FOLDER = './bin/client/';
 
 // resource paths
-var paths = {
+const paths = {
   client : {
     javascript : [
       'client/src/js/define.js',
@@ -91,9 +89,6 @@ var paths = {
 
       // ngStorage
       'client/vendor/ngstorage/ngStorage.min.js'
-    ],
-    e2etest    : [
-      'client/test/e2e/**/*.spec.js'
     ],
 
     // these must be globs ("**" syntax) to retain their folder structures
@@ -175,7 +170,7 @@ gulp.task('client-vendor-build-bootstrap', function () {
    * - compile with less
    * - copy CSS into static file folder
    */
-  var bhimaDefinition = 'client/src/less/bhima-bootstrap.less';
+  const bhimaDefinition = 'client/src/less/bhima-bootstrap.less';
 
   return gulp.src(bhimaDefinition)
     .pipe(gulp.dest('client/vendor/bootstrap/less'))
@@ -212,14 +207,9 @@ gulp.task('watch-client', function () {
   gulp.watch(paths.client.vendor, ['client-mv-vendor-style', 'client-compile-vendor']);
 });
 
-// TODO This message can be removed once the lint/build process has been transitioned
-gulp.task('notify-lint-process', function () {
-  gutil.log(gutil.colors.yellow('REMINDER: Please ensure you have run the command `gulp lint` before submitting a pull request to github'));
-});
-
 // builds the client with all the options available
 gulp.task('build-client', function () {
-  gulp.start('client-compile-js', 'client-compile-vendor', 'client-minify-css', 'client-mv-vendor-style', 'client-vendor-build-bootstrap', 'client-mv-static', 'notify-lint-process');
+  gulp.start('client-compile-js', 'client-compile-vendor', 'client-minify-css', 'client-mv-vendor-style', 'client-vendor-build-bootstrap', 'client-mv-static');
 });
 
 // Lint client code separately from build process
@@ -264,10 +254,6 @@ gulp.task('clean', function (cb) {
 
 gulp.task('build', ['clean'], function () {
   gulp.start('build-client', 'build-server');
-});
-
-gulp.task('test', ['build'], function () {
-  gulp.start('client-test-e2e');
 });
 
 // run the build-client and build-server tasks when no arguments

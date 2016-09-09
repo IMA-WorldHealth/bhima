@@ -533,6 +533,23 @@ function animateConfig($animateProvider) {
   $animateProvider.classNameFilter(/ng-animate-enabled/);
 }
 
+/**
+ * Configure the $compiler with performance enhancing variables
+ */
+function compileConfig($compileProvider) {
+
+  // switch this variable when going into production for an easy performance win.
+  var PRODUCTION = false;
+
+  if (PRODUCTION) {
+    $compileProvider.debugInfoEnabled(false);
+
+    // available in angular:1.6.x
+    //$compileProvider.commentDirectivesEnabled(false);
+    //$compileProvider.cssClassDirectivesEnabled(false);
+  }
+}
+
 bhima.constant('bhConstants', constantConfig());
 
 // configure services, providers, factories
@@ -542,6 +559,7 @@ bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$localStorageProvider', localStorageConfig]);
 bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
+bhima.config(['$compileProvider', compileConfig]);
 
 // run the application
 bhima.run(['$rootScope', '$state', '$uibModalStack', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig]);
