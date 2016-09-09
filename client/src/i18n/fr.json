@@ -45,9 +45,6 @@
     "TOO_MANY_TRYS"              : "Avez-vous oublié votre login ou votre mot de passe? S'il vous plaît demander à l'administrateur du système pour le réinitialiser.",
     "UNAUTHENTICATED"            : "Vous avez été déconnecté. Veuillez vous reconnecté avec d'utiliser l'application."
   },
-  "CASHFLOW": {
-    "TITLE": "Cahflow"
-  },
   "BILLING_SERVICES": {
     "BTN": {
       "CREATE" : "Créer un service de facturation",
