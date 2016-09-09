@@ -20,8 +20,7 @@ function currency(value, currencyId) {
   // if currencyId is not defined, defaults to USD.
   // @TODO - super-hardcoded values for the moment.  Can we do better?
   const fmt = (currencyId === 1) ? FC_FMT : USD_FMT;
-
-  return accountingjs.formatMoney(value, fmt);
+  return accountingjs.formatMoney(value || 0, fmt);
 }
 
 /**

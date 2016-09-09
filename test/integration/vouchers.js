@@ -44,7 +44,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
   var items = [
     { account_id: 3631, debit: 11, credit: 0, document_uuid : uuid.v4(), entity_uuid : uuid.v4() },
     { account_id: 3637, debit: 0,  credit: 11, document_uuid : uuid.v4(), entity_uuid : uuid.v4() },
-    { account_id: 3627, debit: 0,  credit: 12 },
+    { account_id: 3631, debit: 0,  credit: 12 },
     { account_id: 3628, debit: 12, credit: 0 }
   ];
 

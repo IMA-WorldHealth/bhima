@@ -20,30 +20,31 @@ function getExchangeRate(enterpriseId, currencyId, date) {
     .then(rows => rows[0]);
 }
 
-
 // GET /exchange
 //
 // The enterprise currency is assumed from the session.
 exports.list = function list(req, res, next) {
-  var sql,
-      enterprise = req.session.enterprise;
+  var enterprise = req.session.enterprise;
 
-  sql =
-    `SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, exchange_rate.date,
-    enterprise.currency_id AS 'enterprise_currency_id'
-    FROM exchange_rate
-    JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
-    WHERE exchange_rate.enterprise_id = ?
-    ORDER BY date;`;
-
-  db.exec(sql, [ enterprise.id ])
+  exchangeRateList(enterprise.id)
   .then(function (rows) {
-
     res.status(200).json(rows);
   })
   .catch(next)
   .done();
 };
+
+// exchange rate list
+function exchangeRateList(enterpriseId) {
+  let sql =
+    `SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, exchange_rate.rate, exchange_rate.date,
+      enterprise.currency_id AS 'enterprise_currency_id'
+    FROM exchange_rate
+    JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
+    WHERE exchange_rate.enterprise_id = ?
+    ORDER BY date;`;
+  return db.exec(sql, [enterpriseId]);
+}
 
 // POST /exchange
 exports.create = function create(req, res, next) {
@@ -122,4 +123,3 @@ exports.delete = function del(req, res, next) {
   .catch(next)
   .done();
 };
-

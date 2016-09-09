@@ -312,7 +312,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* creditor routes */
-
   .state('suppliers', {
     url : '/suppliers',
     controller: 'SupplierController as SupplierCtrl',

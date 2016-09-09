@@ -192,7 +192,8 @@
     "TITLE"                    : "Gestion des entreprises"
   },
   "ERRORS": {
-    "BAD_REQUEST" : "Vous n'etes pas authorisé à faire cette operation",
+    "BAD_DATE_INTERVAL" : "Mauvais interval de date",
+    "BAD_REQUEST"       : "Vous n'etes pas authorisé à faire cette operation",
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini",
     "NOT_ALLOWED"      : "Vous n'etes pas authorisé à faire cette action",
@@ -239,6 +240,7 @@
       "ENTER_FULL_DATE"       : "Saisie Date Exact",
       "ENTITY"                : "Entité",
       "FILTER"                : "Filtre",
+      "GENERATE"              : "Générer",
       "GROUP_BY_ACCOUNT"      : "Grouper Par Compte",
       "GROUP_BY_TRANSACTION"  : "Grouper Par Transaction",
       "GROUPS_DEBTOR_UPDATE"  : "L'assignation au groupe débiteur est à jour",
@@ -393,6 +395,7 @@
       "DEBTOR_GROUP"           : "Groupe Débiteur",
       "DEBTOR_GROUP_FORM"      : "Formulaire d'enregistrement de groupe débiteur",
       "DESCRIPTION"            : "Description",
+      "DETAILS"                : "Details",
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
       "DOB"                    : "Date de Naissance",
@@ -530,13 +533,14 @@
       "STATUS"                 : "Etat",
       "STOCK"                  : "Stock",
       "SUBSIDIES"              : "Les subventions appliqués",
+      "SUMMARY"                : "Résumé",
       "SUPPLIER"               : "Fournisseur",
       "TEL"                    : "Tél",
       "TELEPHONE"              : "Téléphone",
       "TEXT"                   : "Texte",
       "THIS_MONTH"             : "Ce Mois",
       "THIS_WEEK"              : "Cette Semaine",
-      "THIS_YEAR"              : "Cetter Année",
+      "THIS_YEAR"              : "Cette Année",
       "TITLE"                  : "Titre",
       "TITLE_ACCOUNT"          : "Comptes Titre",
       "TO"                     : "à",
@@ -606,12 +610,13 @@
       "ACCOUNT"            : "Sélectionner compte",
       "ACCOUNT_TYPE"       : "Sélectionner Type de Compte",
       "BALANCE_SECTION"    : "Sélectionner la section du bilan",
+      "CASHBOX"            : "Sélectionner une caisse",
       "COST_CENTER"        : "Sélectionner centre de cout",
       "COUNTRY"            : "Sélectionner pays",
       "CREDITOR"           : "Sélectionner un Créditeur",
       "CREDITOR_GROUP"     : "Sélectionner Groupe de créditeurs",
       "DATE_INTERVAL"      : "Sélectionner un intervalle de date",
-      "DEBTOR_GROUP"      : "Sélectionner Groupe de Débiteurs",
+      "DEBTOR_GROUP"       : "Sélectionner Groupe de Débiteurs",
       "ENTERPRISE"         : "Sélectionner entreprise",
       "FUNCTION"           : "Sélectionner une fonction",
       "GRADE"              : "Sélectionner un Grade",
@@ -961,10 +966,19 @@
       "NINETY_DAYS" : "Moins de 90 jours",
       "OVER_NINETY_DAYS" : "Audela de 90 jours"
     },
-    "SINCE"         : "Depuis",
-    "PRODUCED_BY"   : "Produit par",
-    "PRODUCED_DATE" : "Date de generation",
-    "PRODUCED_ON"   : "Produit sur"
+    "CASH_EXPENSE"     : "Depenses",
+    "CASH_INCOME"      : "Recettes",
+    "CLOSING_BALANCE"  : "Balance à la cloture",
+    "CONFIGURATION"    : "Configuration rapport",
+    "GENERATED"        : "Rapport généré",
+    "MONTHLY_BALANCE"  : "Balance mensuelle",
+    "OPENNING_BALANCE" : "Balance d'ouverture",
+    "PERIOD_START"     : "Debut",
+    "PERIOD_STOP"      : "Fin",
+    "PRODUCED_BY"      : "Produit par",
+    "PRODUCED_DATE"    : "Date de generation",
+    "PRODUCED_ON"      : "Produit sur",
+    "SINCE"            : "Depuis"
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Ajouter une section Bilan",
@@ -1173,6 +1187,7 @@
     "ADMIN"                      : "Admin",
     "BILLING_SERVICES"           : "Services de facturation",
     "CASHBOX_MANAGEMENT"         : "Caisses et Banques",
+    "CASHFLOW"                   : "Cashflow",
     "CASH_WINDOW"                : "Paiements",
     "COMPLEX_JOURNAL_VOUCHER"    : "Ajout de transactions",
     "COST_CENTER_MGMT"           : "Centres de coûts",
@@ -1289,17 +1304,12 @@
     },
     "REPORT" : "Rapport"
   },
-  "REPORT" : {
-    "SINCE": "Depuis",
-    "PRODUCED_BY" : "Produit Par",
-    "PRODUCED_DATE" : "Date Production",
-    "PRODUCED_ON" : "Produit le",
-    "AGED_DEBTORS" : {
-      "TITLE": "Age debiteur",
-      "THIRTY_DAYS" : "Moins de 30 jours",
-      "SIXTY_DAYS" : "Moins de 60 jours",
-      "NINETY_DAYS" : "Moins de 90 jours",
-      "OVER_NINETY_DAYS" : "Plus de 90 jours"
-    }
+  "GRAPHS" : {
+    "PATIENT_REGISTRATIONS" : "Enregistrement des patients",
+    "PATIENT_INVOICES" : "Factation des patients",
+    "MEDICINE_DISTRIBUTIONS" : "Distribution des medicaments",
+    "LOGINS" : "Connexion",
+    "PURCHASES" : "Achats"
   }
+
 }
