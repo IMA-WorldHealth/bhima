@@ -12,7 +12,6 @@ VoucherService.$inject = [
  *
  * @description
  * This service manages posting data to the database via the /vouchers/ URL.
- * @todo: Think about to move transferType into the database table
  */
 function VoucherService(Api, $http, util, TransactionTypeStore) {
   var service = new Api('/vouchers/');

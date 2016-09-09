@@ -3,9 +3,13 @@
  *
  * @description
  * This module contains useful utility functions
+ *
+ * @required lodash
  */
 
 'use strict';
+
+const _ = require('lodash');
 
 /** The query string conditions builder */
 module.exports.queryCondition = queryCondition;
@@ -13,7 +17,7 @@ module.exports.take = take;
 module.exports.isTrueString = isTrueString;
 module.exports.isFalsy = isFalsy;
 module.exports.uniquelize = uniquelize;
-module.exports.moduleExists = moduleExists;
+module.exports.loadModuleIfExists = loadModuleIfExists;
 
 /**
  * @function queryCondition
@@ -142,21 +146,14 @@ function isFalsy(value) {
  * @description return an array which contain only unique values
  */
 function uniquelize (array) {
-  // the second param is the next value in the array.
-  return array.reduce(function (uniq, value) {
-
-    // if we haven't seen the value yet, add it to the array (otherwise, ignore it).
-    if (uniq.indexOf(value) === -1) { uniq.push(value); }
-    return uniq;
-
-  }, []);  // initialize with an empty array
+  return _.uniq(array); 
 }
 
  /**
-  * @method moduleExists
-  * @description check if a module exist
+  * @method loadModuleIfExists
+  * @description load a module if it exists
   */
-  function moduleExists(moduleName) {
+  function loadModuleIfExists(moduleName) {
     try {
         require(moduleName);
     } catch (err) {

@@ -39,7 +39,7 @@ sleep $TIMEOUT
 echo "Running tests ..."
 
 # run the tests
-../node_modules/.bin/mocha ../test/integration/
+../node_modules/.bin/mocha --recursive ../test/integration/
 
 echo "Cleaning up test instance"
 

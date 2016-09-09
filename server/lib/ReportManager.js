@@ -17,11 +17,6 @@ const defaultOptions = {
   orientation: 'portrait',
   lang: 'en'
 };
-const contentType = {
-  'pdf'  : '"Content-Type" : "application/pdf"',
-  'html' : '"Content-Type" : "application/html"',
-  'json' : '"Content-Type" : "application/json"'
-};
 
 // export the receipt object
 exports.build = build;
@@ -60,10 +55,6 @@ function build(req, data, templateUrl, options) {
   pageOptions.lang = req.query.lang;
   _.defaults(pageOptions, defaultOptions);
 
-  // header configurations
-  let headerKey = queryString.renderer || 'pdf';
-  let headers = contentType[headerKey];
-
   if (!renderer) {
     throw new BadRequest(
       `Render target provided is invalid or not supported by this report ${renderTarget}.`
@@ -72,5 +63,5 @@ function build(req, data, templateUrl, options) {
 
   const report = renderer.render({ model }, template, pageOptions);
 
-  return q.all([report, headers]);
+  return q.all([report, renderer.headers]);
 }

@@ -5,14 +5,14 @@
       <li class="title">{{ "TREE.CASHFLOW" | translate }}</li>
     </ol>
 
-    <div ng-show="IndexCtrl.report" class="toolbar">
+    <div ng-show="CashflowIndexCtrl.report" class="toolbar">
       <div class="toolbar-item">
         <bh-pdf-print
-          pdf-url="/finance/cashflow/document"
-          options="IndexCtrl.pdfParams">
+          pdf-url="reports/finance/cashflow"
+          options="CashflowIndexCtrl.pdfParams">
         </bh-pdf-print>
 
-        <button type="button" class="btn btn-default" ng-click="IndexCtrl.reconfigure()">
+        <button type="button" class="btn btn-default" ng-click="CashflowIndexCtrl.reconfigure()">
           <i class="fa fa-repeat"></i>
         </button>
       </div>

@@ -27,9 +27,7 @@ function renderHTML(data, template, options) {
 
   // load local language for momentjs if possible
   let languageDependencie = String().concat('moment/locale/', options.lang);
-  if (util.moduleExists(languageDependencie)) {
-    require(languageDependencie);
-  }
+  util.loadModuleIfExists(languageDependencie);
 
   // make sure that we have the appropriate language set.  If options.lang is
   // not specified, will default to English.  To change this behavior, see the

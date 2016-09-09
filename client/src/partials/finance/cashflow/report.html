@@ -8,29 +8,29 @@
     <!-- period start -->
     <tr>
       <th style="width: 15%;"></th>
-      <th class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
-        {{ flow.period.start_date | date: 'MMMM' | uppercase}}
+      <th class="text-right text-uppercase" ng-repeat="flow in CashflowReportCtrl.session.periodicData track by $index">
+        {{ flow.period.start_date | date: 'MMMM'}}
       </th>
     </tr>
 
     <!-- white line -->
     <tr>
-      <td style="background-color: #efefef;" colspan="{{ ReportCtrl.session.periodicData.length + 1 }}"></td>
+      <td style="background-color: #efefef;" colspan="{{ CashflowReportCtrl.session.periodicData.length + 1 }}"></td>
     </tr>
 
     <!-- openning balance  -->
     <tr>
       <td class="text-left"><strong>{{ 'REPORT.OPENNING_BALANCE' | translate }}<strong></td>
-      <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
-        {{ ReportCtrl.session.periodicOpenningBalance[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}
+      <td class="text-right" ng-repeat="flow in CashflowReportCtrl.session.periodicData">
+        {{ CashflowReportCtrl.session.periodicOpenningBalance[CashflowReportCtrl.basicDate(flow.period.start_date)] | currency:CashflowReportCtrl.session.currency_id }}
       </td>
     </tr>
 
     <!-- closing balance  -->
     <tr>
       <td class="text-left"><strong>{{ 'REPORT.CLOSING_BALANCE' | translate }}<strong></td>
-      <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
-        {{ ReportCtrl.session.periodicBalance[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}
+      <td class="text-right" ng-repeat="flow in CashflowReportCtrl.session.periodicData">
+        {{ CashflowReportCtrl.session.periodicBalance[CashflowReportCtrl.basicDate(flow.period.start_date)] | currency:CashflowReportCtrl.session.currency_id }}
       </td>
     </tr>
 
@@ -38,21 +38,21 @@
 
   <!-- detail label  -->
   <div class="hidden-print">
-    <span data-show-details="true" style="cursor: pointer; text-decoration: underline;" ng-click="ReportCtrl.toggleDetails()">
-      <i class="fa" ng-class="{'fa-caret-right': !ReportCtrl.showDetails, 'fa-caret-down': ReportCtrl.showDetails}"></i> {{ 'FORM.LABELS.DETAILS' | translate }}
+    <span data-show-details="true" style="cursor: pointer; text-decoration: underline;" ng-click="CashflowReportCtrl.toggleDetails()">
+      <i class="fa" ng-class="{'fa-caret-right': !CashflowReportCtrl.showDetails, 'fa-caret-down': CashflowReportCtrl.showDetails}"></i> {{ 'FORM.LABELS.DETAILS' | translate }}
     </span>
   </div>
 
   <!-- Cashflow report -->
   <table class="table table-condensed table-bordered"
-    ng-show="ReportCtrl.showDetails">
+    ng-show="CashflowReportCtrl.showDetails">
 
     <thead>
       <!-- heading  -->
       <tr>
         <th style="width: 15%;"></th>
-        <th class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
-          {{ flow.period.start_date | date: 'MMMM' | uppercase}}
+        <th class="text-right text-uppercase" ng-repeat="flow in CashflowReportCtrl.session.periodicData track by $index">
+          {{ flow.period.start_date | date: 'MMMM'}}
         </th>
       </tr>
     </thead>
@@ -61,8 +61,8 @@
       <!-- cash on hand (openning) -->
       <tr>
         <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{ 'REPORT.OPENNING_BALANCE' | translate }}<strong></td>
-        <td class="text-right" style="background-color: #ccc;" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
-          <strong>{{ ReportCtrl.session.periodicOpenningBalance[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}</strong>
+        <td class="text-right" style="background-color: #ccc;" ng-repeat="flow in CashflowReportCtrl.session.periodicData track by $index">
+          <strong>{{ CashflowReportCtrl.session.periodicOpenningBalance[CashflowReportCtrl.basicDate(flow.period.start_date)] | currency:CashflowReportCtrl.session.currency_id }}</strong>
         </td>
       </tr>
 
@@ -70,75 +70,75 @@
       <tr>
         <td style="background-color: #efefef; letter-spacing: 20px;"
           class="text-center text-uppercase"
-          colspan="{{ ReportCtrl.session.periodicData.length + 1 }}">
+          colspan="{{ CashflowReportCtrl.session.periodicData.length + 1 }}">
           <strong>{{ 'REPORT.CASH_INCOME' | translate }}</strong>
         </td>
       </tr>
 
       <!-- cash incomes  -->
-      <tr ng-repeat="label in ReportCtrl.session.incomesLabels track by $index">
+      <tr ng-repeat="label in CashflowReportCtrl.session.incomesLabels track by $index">
         <td class="text-left"><strong>{{ label | translate }}<strong></td>
-        <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData">
-          {{ ReportCtrl.session.incomes[ReportCtrl.basicDate(flow.period.start_date)][label] || 0 | currency:ReportCtrl.session.currency_id }}
+        <td class="text-right" ng-repeat="flow in CashflowReportCtrl.session.periodicData">
+          {{ CashflowReportCtrl.session.incomes[CashflowReportCtrl.basicDate(flow.period.start_date)][label] || 0 | currency:CashflowReportCtrl.session.currency_id }}
         </td>
       </tr>
 
       <!-- total incomes -->
       <tr>
         <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{ 'FORM.LABELS.TOTAL' | translate }}<strong></td>
-        <td class="text-right" style="background-color: #efefef;" ng-repeat="flow in ReportCtrl.session.periodicData">
-          <b>{{ ReportCtrl.session.totalIncomes[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}</b>
+        <td class="text-right" style="background-color: #efefef;" ng-repeat="flow in CashflowReportCtrl.session.periodicData">
+          <b>{{ CashflowReportCtrl.session.totalIncomes[CashflowReportCtrl.basicDate(flow.period.start_date)] | currency:CashflowReportCtrl.session.currency_id }}</b>
         </td>
       </tr>
 
       <!-- white line -->
       <tr>
-        <td colspan="{{ ReportCtrl.session.periodicData.length + 1 }}"></td>
+        <td colspan="{{ CashflowReportCtrl.session.periodicData.length + 1 }}"></td>
       </tr>
 
       <!-- cash expenses label  -->
       <tr>
         <td style="background-color: #efefef; letter-spacing: 20px;"
           class="text-center text-uppercase"
-          colspan="{{ ReportCtrl.session.periodicData.length + 1 }}">
+          colspan="{{ CashflowReportCtrl.session.periodicData.length + 1 }}">
           <strong>{{ 'REPORT.CASH_EXPENSE' | translate }}</strong>
         </td>
       </tr>
 
       <!-- cash expenses  -->
-      <tr ng-repeat="label in ReportCtrl.session.expensesLabels track by $index">
+      <tr ng-repeat="label in CashflowReportCtrl.session.expensesLabels track by $index">
         <td class="text-left"><strong>{{ label | translate }}<strong></td>
-        <td class="text-right" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
-          {{ ReportCtrl.session.expenses[ReportCtrl.basicDate(flow.period.start_date)][label] || 0 | currency:ReportCtrl.session.currency_id }}
+        <td class="text-right" ng-repeat="flow in CashflowReportCtrl.session.periodicData track by $index">
+          {{ CashflowReportCtrl.session.expenses[CashflowReportCtrl.basicDate(flow.period.start_date)][label] || 0 | currency:CashflowReportCtrl.session.currency_id }}
         </td>
       </tr>
 
       <!-- total expenses -->
       <tr>
         <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{ 'FORM.LABELS.TOTAL' | translate }}<strong></td>
-        <td class="text-right" style="background-color: #efefef;" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
-          <b>{{ ReportCtrl.session.totalExpenses[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}</b>
+        <td class="text-right" style="background-color: #efefef;" ng-repeat="flow in CashflowReportCtrl.session.periodicData track by $index">
+          <b>{{ CashflowReportCtrl.session.totalExpenses[CashflowReportCtrl.basicDate(flow.period.start_date)] | currency:CashflowReportCtrl.session.currency_id }}</b>
         </td>
       </tr>
 
       <!-- white line -->
       <tr>
-        <td colspan="{{ ReportCtrl.session.periodicData.length + 1 }}"></td>
+        <td colspan="{{ CashflowReportCtrl.session.periodicData.length + 1 }}"></td>
       </tr>
 
       <!-- total income expenses -->
       <tr>
         <td style="background-color: #efefef;" class="text-left text-uppercase"><strong>{{ 'REPORT.MONTHLY_BALANCE' | translate }}<strong></td>
-        <td class="text-right" style="background-color: #efefef;" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
-          <b>{{ ReportCtrl.session.totalIncomes[ReportCtrl.basicDate(flow.period.start_date)] - ReportCtrl.session.totalExpenses[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}</b>
+        <td class="text-right" style="background-color: #efefef;" ng-repeat="flow in CashflowReportCtrl.session.periodicData track by $index">
+          <b>{{ CashflowReportCtrl.session.totalIncomes[CashflowReportCtrl.basicDate(flow.period.start_date)] - CashflowReportCtrl.session.totalExpenses[CashflowReportCtrl.basicDate(flow.period.start_date)] | currency:CashflowReportCtrl.session.currency_id }}</b>
         </td>
       </tr>
 
       <!-- balance (month closing) -->
       <tr>
         <td style="background-color: #ccc;" class="text-left text-uppercase"><strong>{{ 'REPORT.CLOSING_BALANCE' | translate }}<strong></td>
-        <td class="text-right" style="background-color: #ccc;" ng-repeat="flow in ReportCtrl.session.periodicData track by $index">
-          {{ ReportCtrl.session.periodicBalance[ReportCtrl.basicDate(flow.period.start_date)] | currency:ReportCtrl.session.currency_id }}
+        <td class="text-right" style="background-color: #ccc;" ng-repeat="flow in CashflowReportCtrl.session.periodicData track by $index">
+          {{ CashflowReportCtrl.session.periodicBalance[CashflowReportCtrl.basicDate(flow.period.start_date)] | currency:CashflowReportCtrl.session.currency_id }}
         </td>
       </tr>
 

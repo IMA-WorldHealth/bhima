@@ -549,6 +549,6 @@ exports.configure = function configure(app) {
 
   // cashflow
   app.get('/finance/cashflow', cashflow.report);
-  app.get('/finance/cashflow/document', cashflow.document);
+  app.get('/reports/finance/cashflow', cashflow.document);
 
 };

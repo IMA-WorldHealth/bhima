@@ -17,7 +17,7 @@ describe('Cashflow report generator :: ', () => {
     // set report configurations
     // date interval component admit date in this format : dd/MM/yyyy
     components.dateInterval.range('01/01/2016', '31/12/2016');
-    FU.select('ConfigCtrl.cashbox', 'Cashbox $');
+    FU.select('CashflowConfigCtrl.cashbox', 'Cashbox $');
 
     // focus on the button zone
     let area = element(by.css('[data-submit-area]'));

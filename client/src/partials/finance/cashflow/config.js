@@ -19,6 +19,16 @@ function CashflowConfigController($state, Cashbox, Notify) {
   // expose to the view
   vm.generate = generate;
 
+  /** init */
+  Cashbox.read(null, { detailed: 1, is_auxiliary: 0})
+  .then(function (list) {
+    list.forEach(function (cashbox) {
+      cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
+    });
+    vm.cashboxes = list;
+  })
+  .catch(Notify.errorHandler);
+
   /** generate cashflow report */
   function generate() {
     if (!vm.cashbox || !vm.dateFrom || !vm.dateTo) { return ; }
@@ -29,17 +39,5 @@ function CashflowConfigController($state, Cashbox, Notify) {
     };
     $state.go('cashflow.report', params);
   }
-
-  /** init */
-  (function init() {
-    Cashbox.read(null, { detailed: 1, is_auxiliary: 0})
-    .then(function (list) {
-      list.forEach(function (cashbox) {
-        cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
-      });
-      vm.cashboxes = list;
-    })
-    .catch(Notify.errorHandler);
-  })();
 
 }

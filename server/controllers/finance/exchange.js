@@ -20,9 +20,6 @@ function getExchangeRate(enterpriseId, currencyId, date) {
     .then(rows => rows[0]);
 }
 
-// export list for server side
-exports.exchangeRateList = exchangeRateList;
-
 // GET /exchange
 //
 // The enterprise currency is assumed from the session.

@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('bhima.controllers')
 .controller('CashflowController', CashflowController);
 
@@ -22,24 +20,21 @@ function CashflowController($state, $stateParams, Modal, Languages, Dates) {
   // expose to the view
   vm.reconfigure = reconfigure;
 
+  // init
+  vm.pdfParams = {
+    account_id: $stateParams.cashbox ? [$stateParams.cashbox.account_id] : null,
+    dateFrom: Dates.util.str($stateParams.dateFrom),
+    dateTo: Dates.util.str($stateParams.dateTo),
+    lang: Languages.key
+  };
+
+  if (!vm.report) {
+    $state.go('cashflow.configure');
+  }
+
   /** reset report parameters */
   function reconfigure() {
     $state.go('cashflow.configure');
   }
-
-  /** init */
-  (function init() {
-
-    vm.pdfParams = {
-      account_id: $stateParams.cashbox ? [$stateParams.cashbox.account_id] : null,
-      dateFrom: Dates.util.str($stateParams.dateFrom),
-      dateTo: Dates.util.str($stateParams.dateTo),
-      lang: Languages.key
-    };
-
-    if (!vm.report) {
-        $state.go('cashflow.configure');
-    }
-  })();
 
 }
