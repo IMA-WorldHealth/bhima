@@ -37,7 +37,7 @@
   "dependencies": {
     "accounting-js": "^1.1.1",
     "body-parser": "^1.15.0",
-    "bower-npm-resolver": "^0.5.1",
+    "bower-npm-resolver": "^0.6.0",
     "compression": "^1.5.2",
     "connect-redis": "^3.0.2",
     "dot": "^1.0.3",
