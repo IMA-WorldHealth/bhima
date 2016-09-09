@@ -9,8 +9,6 @@ function JournalPostingModalService(util, $http, Modal) {
   var baseUrl = '/trial_balance/';
 
   service.parseSelectedGridRecord = parseSelectedGridRecord;
-  // service.postingModalService = postingModalService;
-  // service.getCurrentGroupingColumn = getCurrentGroupingColumn;
   service.switchView = switchView;
   service.getDataByAccount = getDataByAccount;
   service.checkTransactions = checkTransactions;
@@ -18,6 +16,7 @@ function JournalPostingModalService(util, $http, Modal) {
   service.getCSSClass = getCSSClass;
   service.openErrorViewerModal = openErrorViewerModal;
   service.postToGeneralLedger = postToGeneralLedger;
+  service.getRelatedTransaction = getRelatedTransaction;
 
   function openErrorViewerModal(errors, feedBack, cssClass) {
 
@@ -161,6 +160,29 @@ function JournalPostingModalService(util, $http, Modal) {
 
     /** posting a list of transactions to the server to be stored to the general ledger **/
     return $http.post(url, {transactions : transactions});
+  }
+
+  /**
+   * @function getRelatedTransaction
+   * @description
+   * This function gets an account_id with a list of transaction and send back
+   * a list of transaction related to this account
+   **/
+  function getRelatedTransaction(accountId, records){
+    var transactions = [], processed = [];
+
+    records.forEach(function (item) {
+      if(processed.indexOf(item.trans_id) === -1 && item.account_id === accountId){
+        transactions = transactions.concat(getTransaction(item.trans_id, records));
+      }
+    });
+    return transactions;
+  }
+
+  function getTransaction(transId, records){
+    return records.filter(function (record) {
+      return record.trans_id === transId;
+    });
   }
 
   return service;

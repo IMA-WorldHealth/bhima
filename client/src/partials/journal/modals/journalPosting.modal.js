@@ -30,11 +30,19 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
       headerCellFilter : 'translate',
       cellFilter : 'currency:' + Session.enterprise.currency_id,
       visible : false
+    },
+    { field : 'actions',
+      displayName : '',
+      headerCellFilter: 'translate',
+      visible: false,
+      enableCellEdit: false,
+      cellTemplate: '/partials/journal/templates/trial_balance_actions.cell.html',
+      allowCellFocus: false
     }
   ];
 
   vm.enterprise = Session.enterprise;
-  vm.viewDetail = { 'trans' : transactionView, 'account' : accountView, 'initial' : 'trans', key : 'FORM.BUTTONS.GROUP_BY_ACCOUNT', selected : 'trans'};
+  vm.viewDetail = { 'trans' : transactionView, 'account' : accountView, 'detail' : viewSelectedTransaction, key : 'FORM.BUTTONS.GROUP_BY_ACCOUNT', selected : 'trans'};
   vm.gridOptions = {
     enableColumnMenus: false,
     treeRowHeaderAlwaysVisible: false,
@@ -48,7 +56,7 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
   vm.loading = true;
 
   function transactionView() {
-    vm.columns.setVisibleColumns({trans_id : true, balance_before : false, balance_final : false});
+    vm.columns.setVisibleColumns({trans_id : true, balance_before : false, balance_final : false, actions : false});
     vm.gridOptions.data = vm.dataByTrans;
     vm.viewDetail.key = 'FORM.BUTTONS.GROUP_BY_ACCOUNT';
     vm.viewDetail.selected = 'trans';
@@ -56,7 +64,7 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
   }
 
   function accountView() {
-    vm.columns.setVisibleColumns({trans_id : false, balance_before : true, balance_final : true});
+    vm.columns.setVisibleColumns({trans_id : false, balance_before : true, balance_final : true, actions : true});
 
     journalPostingModalService.getDataByAccount(vm.dataByTrans)
       .then(function (data) {
@@ -69,6 +77,13 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
         vm.hasError = true;
         Notify.handleError(error);
       });
+  }
+
+  function viewSelectedTransaction(accountId) {
+    vm.columns.setVisibleColumns({trans_id : true, balance_before : false, balance_final : false, actions : false});
+    vm.gridOptions.data = journalPostingModalService.getRelatedTransaction(accountId, vm.dataByTrans);
+    vm.grouping.changeGrouping('trans_id');
+    vm.detailedView = true;
   }
 
   /**
@@ -90,6 +105,11 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
    **/
   function cancel() {
     ModalInstance.dismiss();
+  }
+
+  function resetView() {
+    accountView();
+    vm.detailedView = false;
   }
 
   /**
@@ -128,9 +148,10 @@ function JournalPosterModalController(ModalInstance, Session, journalPostingModa
       vm.loading = false;
     });
 
-
+  vm.resetView = resetView;
   vm.submit = submit;
   vm.cancel = cancel;
   vm.switchView = switchView;
   vm.openErrorViewerModal = openErrorViewerModal;
+  vm.viewSelectedTransaction = viewSelectedTransaction;
 }

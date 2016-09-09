@@ -20,7 +20,7 @@
           </div>
 
           <div class="pull-right">
-            <button id="switchViewID" type="button" class="btn btn-default" ng-click="JournalPosterModalCtrl.switchView()" data-method="switch">
+            <button ng-if="!JournalPosterModalCtrl.detailedView" id="switchViewID" type="button" class="btn btn-default" ng-click="JournalPosterModalCtrl.switchView()" data-method="switch">
               <i class="fa fa-retweet"></i>
               {{JournalPosterModalCtrl.viewDetail.key | translate }}
             </button>
@@ -40,7 +40,18 @@
   </div>
 
   <div class="modal-footer">
+
     <button
+      ng-if="JournalPosterModalCtrl.detailedView"
+      id="detailID"
+      type="button"
+      ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}"
+      ng-click="JournalPosterModalCtrl.resetView()">
+      {{ "FORM.BUTTONS.RESET" | translate }}
+    </button>
+
+    <button
+      ng-if="!JournalPosterModalCtrl.detailedView"
       id="cancelID"
       type="button"
       class="btn btn-default"
@@ -49,6 +60,7 @@
     </button>
 
     <button
+      ng-if="!JournalPosterModalCtrl.detailedView"
       type="submit"
       ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}"
       ng-disabled="JournalPosterModalCtrl.feedBack.hasError"
