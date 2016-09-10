@@ -13,7 +13,7 @@
       <p>
         <div class="row">
           <div class="col-xs-4 pull-left">
-            <button type="button" ng-show="JournalPosterModalCtrl.feedBack.hasError || JournalPosterModalCtrl.feedBack.hasWarning" ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}" ng-click="JournalPosterModalCtrl.openErrorViewerModal()" data-method="show">
+            <button type="button" ng-show="JournalPosterModalCtrl.feedBack.hasError || JournalPosterModalCtrl.feedBack.hasWarning" ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}" ng-click="JournalPosterModalCtrl.viewErrorReport()" data-method="show">
               <i class="fa fa-bars"></i>
               {{"FORM.BUTTONS.VIEW_ERRORS" | translate }}
             </button>

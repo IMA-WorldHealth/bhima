@@ -2,9 +2,9 @@ angular.module('bhima.services')
   .service('JournalPostingModalService', JournalPostingModalService);
 
 /** Dependencies injection */
-JournalPostingModalService.$inject = ['util', '$http', '$uibModal'];
+JournalPostingModalService.$inject = ['util', '$http', '$translate'];
 
-function JournalPostingModalService(util, $http, Modal) {
+function JournalPostingModalService(util, $http, $translate) {
   var service = this;
   var baseUrl = '/trial_balance/';
 
@@ -14,23 +14,36 @@ function JournalPostingModalService(util, $http, Modal) {
   service.checkTransactions = checkTransactions;
   service.getFeedBack = getFeedBack;
   service.getCSSClass = getCSSClass;
-  service.openErrorViewerModal = openErrorViewerModal;
   service.postToGeneralLedger = postToGeneralLedger;
   service.getRelatedTransaction = getRelatedTransaction;
+  service.parseErrorRecord = parseErrorRecord;
 
-  function openErrorViewerModal(errors, feedBack, cssClass) {
+  function parseErrorRecord (records){
+    var list = [];
 
-    return Modal.open({
-      templateUrl: 'partials/journal/modals/journalErrorViewer.modal.html',
-      controller:  'JournalErrorViewerModalController as JournalErrorViewerModalCtrl',
-      size : 'lg',
-      resolve : {
-        params : function getParams() { return {errors : errors, feedBack : feedBack, cssClass : cssClass}; }
+    /**
+     * records is an array of nine item representing nine checks,
+     * so if a check fails the item will be null but
+     * if there is an error or warning the item will be defined
+     */
+    records.forEach(function (record) {
+      var line = [];
+      var codeTranslated = null;
+
+      if(record){
+
+        codeTranslated = $translate.instant(record.code);
+        line = record.transactions.map(function (item) {
+          return {code : codeTranslated, transaction : item};
+        });
+
+        list = list.concat(line);
       }
     });
 
+    return list;
   }
-
+ 
   function  getCSSClass (feedBack) {
     return feedBack.hasError ? 'grid-error' : feedBack.hasWarning ? 'grid-warning' : 'grid-success';
   }
@@ -50,7 +63,6 @@ function JournalPostingModalService(util, $http, Modal) {
 
     return feedBack;
   }
-
 
   /**
    * @function parseSelectedGridRecord
