@@ -11,6 +11,7 @@ const concat  = require('gulp-concat');
 const uglify  = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
 const iife    = require('gulp-iife');
+const pump    = require('pump');
 const rimraf  = require('rimraf');
 const less    = require('gulp-less');
 
@@ -18,7 +19,7 @@ const less    = require('gulp-less');
 const exec = require('child_process').exec;
 
 // toggle client javascript minification
-const UGLIFY = false;
+const UGLIFY = (process.env.NODE_ENV === 'production');
 
 // the output folder for built server files
 const SERVER_FOLDER = './bin/server/';
@@ -128,12 +129,15 @@ const paths = {
 
 
 // minify the client javascript code via uglify writes output to bhima.min.js
-gulp.task('client-compile-js', function () {
-  return gulp.src(paths.client.javascript)
-    .pipe(gulpif(UGLIFY, uglify({ mangle: true })))
-    .pipe(concat('js/bhima.min.js'))
-    .pipe(iife())
-    .pipe(gulp.dest(CLIENT_FOLDER));
+gulp.task('client-compile-js', function (cb) {
+  pump([
+    gulp.src(paths.client.javascript),
+    gulpif(UGLIFY, uglify({ mangle: true })),
+    concat('js/bhima.min.js'),
+    iife(),
+    gulp.dest(CLIENT_FOLDER)
+  ], cb);
+
 });
 
 // minify the vendor JS code and compact into a vendor.min.js file.
