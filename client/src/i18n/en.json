@@ -264,13 +264,15 @@
       "VIEW_ERRORS"           : "View Errors"
     },
     "DIALOGS": {
-      "CONFIRM_DELETE"         : "Do you confirm the deletion?",
-      "CANNOT_UNDONE_DELETION" : "This action CANNOT BE REVERSED, the deletion will be definitive. You must be sure that you want to do this action",
+      "CONFIRM_DELETE"         : "You are about to delete a record.  This action is permanent and cannot be done.  Click \"Confirm\" to accept or \"Cancel\" to halt this action.",
+      "CANNOT_UNDONE_DELETION" : "This action CANNOT BE REVERSED, the deletion will be permanent. You must be sure that you want to do this action",
       "NO_CORRESPONDANCY"      : "No %ELEMENT% have the name ",
       "PLEASE_TYPE_TEXT"       : "Please type in the %ELEMENT% name to confirm",
       "PLEASE_READ"            : "Unexpected bad things will happen if you don't read this!",
-      "SURE_CONTINUE"          : "Are you ABSOLUTELY sure ?",
-      "UNDERSTAND_ACTION"      : "I ACCEPT the consequence of this action"
+      "SURE_CONTINUE"          : "Are you ABSOLUTELY sure?",
+      "UNDERSTAND_ACTION"      : "I accept the consequences of this action",
+      "WARNING"                : "Warning",
+      "CONFIRM_MODAL"          : "Confirmation Needed"
     },
     "ERRORS": {
       "CONNECTION"         : "Connection error",
