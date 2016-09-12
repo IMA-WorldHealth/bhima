@@ -19,13 +19,13 @@
           pdf-url="invoices/patient/report"
         >
         </bh-pdf-print>
-      </div>      
+      </div>
     </div>
   </div>
 </div>
 
 <!-- @todo remove hardcoded styles -->
-<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial" ng-show="InvoiceRegistryCtrl.filtersFmt.length > 0">
   <bh-filters-applied
     style="max-width:90%"
     filters="InvoiceRegistryCtrl.filtersFmt"

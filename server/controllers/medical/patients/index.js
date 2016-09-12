@@ -648,7 +648,6 @@ function loadLatestInvoice (latestInvoice){
 
   return q.all([execSql, execSql2, execSql3])
     .spread(function (invoices, payments, invoicesLength) {
-      console.log('resultas', invoices, payments, invoicesLength);
       var invoice = {
         uuid            : latestInvoice.uuid,
         debtor_uuid     : latestInvoice.debtor_uuid,
