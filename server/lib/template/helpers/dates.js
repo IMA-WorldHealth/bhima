@@ -17,7 +17,7 @@ const TIMESTAMP_FMT = 'DD/MM/YYYY HH:mm:ss';
  * @returns {String} - the formatted string for insertion into templates
  */
 function date(value, dateFormat) {
-  dateFormat = dateFormat.name === 'date' ? DATE_FMT : dateFormat;
+  dateFormat = (!dateFormat || dateFormat.name === 'date') ? DATE_FMT : dateFormat;
   let input = moment(value);
   return input.isValid() ? input.format(dateFormat) :  '';
 }
