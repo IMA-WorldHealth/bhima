@@ -788,6 +788,7 @@
     "CARD" : "Patient Card"
   },
   "PATIENT_REGISTRY" : {
+    "CARD"                  : "Card",
     "DAY"                   : "day",
     "DAYS"                  : "days",
     "MONTH"                 : "month",

@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  'PatientService', 'NotifyService', 'moment', 'AppCache', 'util'
+  'PatientService', 'NotifyService', 'moment', 'AppCache', 'util', 'ReceiptModal'
 ];
 
 /**
@@ -10,7 +10,7 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
+function PatientRegistryController(Patients, Notify, moment, AppCache, util, Receipts) {
   var vm = this;
 
   var cache = AppCache('PatientRegistry');
@@ -29,9 +29,17 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
         '</a> ' +
       '</div>';
 
+  var patientCardActionTemplate =
+      '<div class="ui-grid-cell-contents"> ' +
+        '<a href="" ng-click="grid.appScope.patientCard(row.entity.uuid)"> ' +
+          '<span class="fa fa-user"></span> {{ "PATIENT_REGISTRY.CARD" | translate }} ' +
+        '</a>' +
+      '</div>';
+
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
+  vm.patientCard = patientCard;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -49,6 +57,7 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
       { field : 'registration_date', cellFilter:'date', displayName : 'TABLE.COLUMNS.DATE_REGISTERED', headerCellFilter : 'translate' },
       { field : 'last_visit', cellFilter:'date', displayName : 'TABLE.COLUMNS.LAST_VISIT', headerCellFilter : 'translate' },
       { field : 'dob', cellFilter:'date', displayName : 'TABLE.COLUMNS.DOB', headerCellFilter : 'translate' },
+      { name : 'actionsCard', displayName : '', cellTemplate : patientCardActionTemplate },
       { name : 'actionsDetail', displayName : '', cellTemplate : patientDetailActionTemplate },
       { name : 'actionsEdit', displayName : '', cellTemplate : patientEditActionTemplate }
     ],
@@ -130,6 +139,11 @@ function PatientRegistryController(Patients, Notify, moment, AppCache, util) {
   // toggles the loading indicator on or off
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
+  }
+
+  // patient card
+  function patientCard(uuid) {
+    Receipts.patient(uuid);
   }
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
