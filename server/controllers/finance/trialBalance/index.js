@@ -227,7 +227,7 @@ exports.getDataPerAccount = function (req, res, next) {
       pt.account_id, pt.balance_before, account.number AS account_number
       FROM  account JOIN (
         SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv,
-        posting_journal.account_id, IFNULL((period_total.debit - period_total.credit), 0) AS balance_before
+        posting_journal.account_id, IFNULL(SUM(period_total.debit - period_total.credit), 0) AS balance_before
         FROM posting_journal LEFT JOIN period_total
         ON posting_journal.account_id = period_total.account_id
         WHERE posting_journal.trans_id IN (?)
