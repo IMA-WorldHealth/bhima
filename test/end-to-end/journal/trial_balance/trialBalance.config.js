@@ -54,7 +54,7 @@ function TrialBalanceTest(){
   });
 
   it('it should remember the last main view visited', function () {
-    journal.checkRow(0);
+    journal.checkRow(1);
     journal.openTrialBalanceModal();
     expect(trialBalance.getLineCount()).to.eventually.equal(2);
     trialBalance.switchView(); //list data by transaction
