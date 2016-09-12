@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  'PatientService', 'NotifyService', 'moment', 'AppCache', 'util', 'ReceiptModal'
+  'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal'
 ];
 
 /**
@@ -10,7 +10,7 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, Notify, moment, AppCache, util, Receipts) {
+function PatientRegistryController(Patients, Notify, AppCache, util, Receipts) {
   var vm = this;
 
   var cache = AppCache('PatientRegistry');

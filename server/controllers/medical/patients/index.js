@@ -603,7 +603,7 @@ Search for information about the latest patient Invoice
 function latestInvoice (req, res, next) {
   const uid = db.bid(req.params.uuid);
   var invoiceLatest,
-    invoice;
+    invoice = null;
 
   let sql =
     `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name,
@@ -617,6 +617,9 @@ function latestInvoice (req, res, next) {
   db.exec(sql, [uid])
     .then(function (result) {
       invoiceLatest = result[0];
+      if(!invoiceLatest){
+        return q.when([null, null, null]); //instead of querying the database server with null value
+      }
       var uuid = invoiceLatest.uuid;
 
     sql =
@@ -668,23 +671,25 @@ function latestInvoice (req, res, next) {
     return q.all([execSql, execSql2, execSql3]);
   })
   .spread(function (invoices, payments, invoicesLength) {
-    var numberPayment = payments[0].numberPayment;
-    invoice = {
-      uuid            : invoiceLatest.uuid,
-      debtor_uuid     : invoiceLatest.debtor_uuid,
-      numberPayment   : numberPayment,
-      date            : invoiceLatest.date,
-      cost            : invoiceLatest.cost,
-      display_name    : invoiceLatest.display_name,
-      uid             : invoices[0].uid,
-      reference       : invoices[0].reference,
-      credit          : invoices[0].credit,
-      debit           : invoices[0].debit,
-      balance         : invoices[0].balance,
-      entity_uuid     : invoices[0].entity_uuid,
-      invoicesLength  : invoicesLength[0].invoicesLength
-    };
+    var numberPayment = payments ? payments[0].numberPayment : 0; //what is his meaning?
+    if(invoices && invoicesLength){
 
+      invoice = {
+        uuid            : invoiceLatest.uuid,
+        debtor_uuid     : invoiceLatest.debtor_uuid,
+        numberPayment   : numberPayment,
+        date            : invoiceLatest.date,
+        cost            : invoiceLatest.cost,
+        display_name    : invoiceLatest.display_name,
+        uid             : invoices[0].uid,
+        reference       : invoices[0].reference,
+        credit          : invoices[0].credit,
+        debit           : invoices[0].debit,
+        balance         : invoices[0].balance,
+        entity_uuid     : invoices[0].entity_uuid,
+        invoicesLength  : invoicesLength[0].invoicesLength
+      };
+    }
     res.status(200).send(invoice);
   })
   .catch(next)

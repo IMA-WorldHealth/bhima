@@ -27,7 +27,7 @@ function LatestInvoice(Patient, moment) {
 
   /** getting patient document */
   function startup() {
-    if (!vm.debtorUuid) { return; }
+    if (!vm.debtorUuid || !vm.patientInvoice) { return; }
     Patient.latest(vm.debtorUuid)
     .then(function (patient) {
       vm.patientInvoice = patient;          
