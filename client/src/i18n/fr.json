@@ -805,6 +805,7 @@
     "SUCCESS" : "Patient enregistré avec succès"
   },
   "PATIENT_REGISTRY" : {
+    "CARD"                  : "Carte",
     "DAY"                   : "jour",
     "DAYS"                  : "jours",
     "MONTH"                 : "mois",
