@@ -42,9 +42,10 @@
   <div class="modal-footer">
 
     <button
-      ng-if="JournalPosterModalCtrl.detailedView"
+      ng-show="JournalPosterModalCtrl.detailedView"
       id="detailID"
       type="button"
+      data-method="reset"
       ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}"
       ng-click="JournalPosterModalCtrl.resetView()">
       {{ "FORM.BUTTONS.RESET" | translate }}
