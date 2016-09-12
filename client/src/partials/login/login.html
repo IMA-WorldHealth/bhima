@@ -81,17 +81,14 @@
                 </div>
               </div>
 
-              <div
-                class="form-group"
-                ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.$invalid }"
-                >
-                <button class="btn btn-default" type="submit" data-method="submit">
+              <div class="form-group" ng-class="{ 'has-error' : LoginForm.$submitted && LoginForm.$invalid }">
+                <bh-loading-button loading-state="LoginForm.$loading" button-class="btn-default">
                  {{ "FORM.BUTTONS.CONNECTION" | translate }}
-                </button>
+                </bh-loading-button>
 
-                  <!-- client-side validation error: requires username, password, and project -->
+                <!-- client-side validation error: requires username, password, and project -->
                 <p class="help-block" ng-if="LoginForm.$submitted && LoginForm.$invalid" style="margin-top:10px;">
-                  <span class="glyphicon glyphicon-exclamation-sign"></span> {{ "FORM.ERRORS.MISSING" | translate }}
+                  <i class="fa fa-exclamation-circle"></i> {{ "FORM.ERRORS.MISSING" | translate }}
                 </p>
               </div>
             </form>
