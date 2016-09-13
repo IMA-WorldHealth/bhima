@@ -8,7 +8,7 @@ Limitations of current templating structure:
 
     <!-- first level: unit -->
     <li ng-repeat="unit in $ctrl.units track by unit.id">
-      <a ng-click="$ctrl.toggleUnit(unit)">
+      <a ng-click="$ctrl.toggleUnit(unit)" data-unit-key="{{ ::unit.key }}">
         <span
           class="fa"
           ng-class="{
@@ -25,7 +25,7 @@ Limitations of current templating structure:
         <li ng-repeat="child in unit.children track by child.id" ng-class="{ 'selected' : child.selected }" class="subtree">
 
           <!-- if there is a subtree, this is the top level node -->
-          <a ng-click="$ctrl.toggleUnit(child)" ng-if="$ctrl.isParentNode(child)">
+          <a ng-click="$ctrl.toggleUnit(child)" ng-if="$ctrl.isParentNode(child)" data-unit-key="{{ ::child.key }}">
             <span
               class="fa"
               ng-class="{
@@ -37,8 +37,8 @@ Limitations of current templating structure:
           </a>
 
           <!-- otherwise, it is just a plan link -->
-          <a ng-click="$ctrl.navigate(child)"ng-if="$ctrl.isChildNode(child)">
-            <span class="fa fa-file"></span>
+          <a ng-click="$ctrl.navigate(child)" ng-if="$ctrl.isChildNode(child)" data-unit-key="{{ ::child.key }}">
+            <span class="fa fa-file-o"></span>
             <span class="tree-title">{{ child.key | translate }}</a></span>
           </a>
 
@@ -46,8 +46,8 @@ Limitations of current templating structure:
 
             <!-- third level: subchild -->
             <li ng-repeat="subchild in child.children track by subchild.id" ng-class="{ 'selected' : subchild.selected }" class="subtree">
-              <a ng-click="$ctrl.navigate(subchild)" ng-class="{ 'selected' : subchild.selected }">
-                <span class="fa fa-file"></span>
+              <a ng-click="$ctrl.navigate(subchild)" ng-class="{ 'selected' : subchild.selected }" data-unit-key="{{ subchild.key }}">
+                <span class="fa fa-file-o"></span>
                 <span class="tree-title">{{ subchild.key | translate }}</a></span>
               </a>
             </li>

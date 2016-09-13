@@ -16,7 +16,7 @@ NavigationController.$inject = [
  */
 function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
   var $ctrl = this;
-  var cache = AppCache('navigation');
+  var openedCache = AppCache('navigation.opened');
 
   /*
    * Object used to index unit ids and paths, this allows for very efficient
@@ -27,13 +27,16 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
   var unitsIndex = { id : {}, path : {} };
 
   Tree.units()
-    .then(function (result) {
+    .then(function (units) {
 
-      Tree.sortByTranslationKey(result);
-      $ctrl.units = result;
+      Tree.sortByTranslationKey(units);
+      $ctrl.units = units;
 
       calculateUnitIndex($ctrl.units);
       expandInitialUnits($ctrl.units);
+
+      // updates the tree selection on path change
+      updateSelectionOnPathChange();
     })
     .catch(Notify.handleError);
 
@@ -43,7 +46,7 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
     unit.open = !unit.open;
 
     // Update cached record of modules expansion
-    cache[unit.id] = { open : unit.open };
+    openedCache[unit.id] = unit.open;
   };
 
   $ctrl.navigate = function navigate(unit) {
@@ -70,9 +73,8 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
   /**
    * Select a unit in the tree given a specified URL.
    */
-  function trackPathChange(event, url) {
-    var path = url.split('/#')[1];
-    var normPath = normalisePath(path);
+  function updateSelectionOnPathChange() {
+    var path = $location.path();
 
     /**
      * loop through all paths, selecting those are match the selected url
@@ -80,10 +82,13 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
      * @todo - write test cases to be sure this works in all cases, probably
      * dependent on the ordering of unitsIndex.
      */
-    Object.keys(unitsIndex.path).forEach(function (key) {
+    var paths = Object.keys(unitsIndex.path);
+    paths.sort();
+
+    paths.forEach(function (key) {
       var node = unitsIndex.path[key];
-      if (normPath.includes(node.path)) {
-        selectUnit(path);
+      if (path.includes(node.path)) {
+        selectUnit(node);
       }
     });
   }
@@ -100,11 +105,6 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
     $ctrl.selectedUnit = unit;
   }
 
-  // Remove trailing path elements
-  function normalisePath(path) {
-    return path.replace(/\//g, '');
-  }
-
   /**
    * Set the open state on units that are registered as open in the app cache
    *
@@ -112,11 +112,11 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
    */
   function expandInitialUnits(units, states) {
 
-    var nodes = Object.keys(cache);
+    var nodes = Object.keys(openedCache);
 
     nodes.forEach(function (key) {
 
-      var node = cache[key];
+      var isOpen = openedCache[key];
 
       // Lookup the cached unit key in the current set of units
       var currentUnit = unitsIndex.id[key];
@@ -124,12 +124,12 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
       if (angular.isDefined(currentUnit)) {
 
         // Unit exists - set the relevant open state
-        currentUnit.open = node.open;
+        currentUnit.open = isOpen;
       } else {
 
         // Unit does not exist - potentially the permission has been revoked
         // Update the cache to reflect this
-        delete cache[key];
+        delete openedCache[key];
       }
     });
   }
@@ -141,7 +141,7 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
   function calculateUnitIndex(units) {
     units.forEach(function (unit) {
       unitsIndex.id[unit.id] = unit;
-      unitsIndex.path[normalisePath(unit.path)] = unit;
+      unitsIndex.path[unit.path] = unit;
       calculateUnitIndex(unit.children);
     });
   }
@@ -153,5 +153,5 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
    * page being refreshed
    */
   $rootScope.$on('$translateChangeSuccess', $ctrl.refreshTranslation);
-  $rootScope.$on('$locationChangeStart', trackPathChange);
+  $rootScope.$on('$stateChangeSuccess', updateSelectionOnPathChange);
 }

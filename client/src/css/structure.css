@@ -248,7 +248,6 @@
  * through definition
  */
 .sidebar-group {
-  border-top : 1px solid #ccc;
   margin-top : 6px;
   height : calc(100vh - 148px);
   width : 100%;

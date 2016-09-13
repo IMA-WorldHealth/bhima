@@ -7,10 +7,10 @@ const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('Cashflow report generator :: ', () => {
+describe('Cashflow report generator', () => {
   'use strict';
 
-  before(() => helpers.navigate('#/finance/cashflow'));
+  before(() => helpers.navigate('#/finance/reports/cashflow'));
 
   it('GET /finance/cashflow return cashflow report at the client', () => {
 
@@ -27,7 +27,5 @@ describe('Cashflow report generator :: ', () => {
     let locator = by.css('[data-show-details]');
     FU.exists(locator, true);
     element(locator).click();
-
   });
-
 });
