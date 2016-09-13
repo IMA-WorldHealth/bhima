@@ -1137,7 +1137,8 @@
     }
   },
   "TRANSACTION_TYPE" : {
-    "LIST" : "Transaction Types List"
+    "LIST" : "Transaction Types List",
+    "FIXED_INFO" : "This transaction type is fixed, you cannot update it"
   },
   "TREE": {
     "ACCOUNT"                    : "Account",
