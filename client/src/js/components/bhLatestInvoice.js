@@ -27,10 +27,10 @@ function LatestInvoice(Patient, moment) {
 
   /** getting patient document */
   function startup() {
-    if (!vm.debtorUuid || !vm.patientInvoice) { return; }
+    if (!vm.debtorUuid) { return; }
     Patient.latest(vm.debtorUuid)
-    .then(function (patient) {
-      vm.patientInvoice = patient;          
+    .then(function (patientInvoice) {
+      vm.patientInvoice = patientInvoice;
       vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
     });
   }
