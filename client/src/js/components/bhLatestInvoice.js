@@ -29,8 +29,8 @@ function LatestInvoice(Patient, moment) {
   function startup() {
     if (!vm.debtorUuid) { return; }
     Patient.latest(vm.debtorUuid)
-    .then(function (patient) {
-      vm.patientInvoice = patient;          
+    .then(function (patientInvoice) {
+      vm.patientInvoice = patientInvoice;
       vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
     });
   }

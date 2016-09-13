@@ -596,31 +596,12 @@ function subsidies(req, res, next) {
     .done();
 }
 
+function loadLatestInvoice (latestInvoice){
+  var debtorID = latestInvoice.debtor_uuid;
+  var invoiceID = latestInvoice.uuid;
 
-/*
-Search for information about the latest patient Invoice
-*/
-function latestInvoice (req, res, next) {
-  const uid = db.bid(req.params.uuid);
-  var invoiceLatest,
-    invoice;
-
-  let sql =
-    `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name,
-     invoice.cost
-    FROM invoice
-    JOIN user ON user.id = invoice.user_id
-    WHERE debtor_uuid = ?
-    ORDER BY date DESC
-    LIMIT 1`;
-
-  db.exec(sql, [uid])
-    .then(function (result) {
-      invoiceLatest = result[0];
-      var uuid = invoiceLatest.uuid;
-
-    sql =
-      `SELECT BUID(i.uuid) as uid, CONCAT(project.abbr, invoice.reference) as reference,
+  var sql =
+    `SELECT BUID(i.uuid) as uid, CONCAT(project.abbr, invoice.reference) as reference,
         credit, debit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
       FROM (
         SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
@@ -637,8 +618,8 @@ function latestInvoice (req, res, next) {
       ) AS i JOIN invoice ON i.uuid = invoice.uuid
       JOIN project ON invoice.project_id = project.id `;
 
-    var sql2 =
-      `SELECT COUNT(i.uuid) as numberPayment
+  var sql2 =
+    `SELECT COUNT(i.uuid) as numberPayment
       FROM (
         SELECT uuid,  debit, credit, entity_uuid
         FROM (
@@ -653,40 +634,64 @@ function latestInvoice (req, res, next) {
       ) AS i JOIN invoice ON i.uuid = invoice.uuid
       JOIN project ON invoice.project_id = project.id `;
 
-    var sql3 =
-      `SELECT COUNT(invoice.uuid) as 'invoicesLength'
+  var sql3 =
+    `SELECT COUNT(invoice.uuid) as 'invoicesLength'
        FROM invoice
        JOIN user ON user.id = invoice.user_id
        WHERE debtor_uuid = ?
        ORDER BY date DESC`;
 
 
-    var execSql = db.exec(sql, [uuid, uid, uuid, uid]);
-    var execSql2 = db.exec(sql2, [uuid, uid, uuid, uid]);
-    var execSql3 = db.exec(sql3, [uid]);
+  var execSql = db.exec(sql, [invoiceID, debtorID, invoiceID, debtorID]);
+  var execSql2 = db.exec(sql2, [invoiceID, debtorID, invoiceID, debtorID]);
+  var execSql3 = db.exec(sql3, [debtorID]);
 
-    return q.all([execSql, execSql2, execSql3]);
-  })
-  .spread(function (invoices, payments, invoicesLength) {
-    var numberPayment = payments[0].numberPayment;
-    invoice = {
-      uuid            : invoiceLatest.uuid,
-      debtor_uuid     : invoiceLatest.debtor_uuid,
-      numberPayment   : numberPayment,
-      date            : invoiceLatest.date,
-      cost            : invoiceLatest.cost,
-      display_name    : invoiceLatest.display_name,
-      uid             : invoices[0].uid,
-      reference       : invoices[0].reference,
-      credit          : invoices[0].credit,
-      debit           : invoices[0].debit,
-      balance         : invoices[0].balance,
-      entity_uuid     : invoices[0].entity_uuid,
-      invoicesLength  : invoicesLength[0].invoicesLength
-    };
+  return q.all([execSql, execSql2, execSql3])
+    .spread(function (invoices, payments, invoicesLength) {
+      console.log('resultas', invoices, payments, invoicesLength);
+      var invoice = {
+        uuid            : latestInvoice.uuid,
+        debtor_uuid     : latestInvoice.debtor_uuid,
+        numberPayment   : payments[0].numberPayment,
+        date            : latestInvoice.date,
+        cost            : latestInvoice.cost,
+        display_name    : latestInvoice.display_name,
+        uid             : invoices[0].uid,
+        reference       : invoices[0].reference,
+        credit          : invoices[0].credit,
+        debit           : invoices[0].debit,
+        balance         : invoices[0].balance,
+        entity_uuid     : invoices[0].entity_uuid,
+        invoicesLength  : invoicesLength[0].invoicesLength
+      };
 
-    res.status(200).send(invoice);
-  })
-  .catch(next)
-  .done();
+      return q.when(invoice);
+    });
+}
+/*
+ Search for information about the latest patient Invoice
+ */
+function latestInvoice (req, res, next) {
+  const uid = db.bid(req.params.uuid);
+
+  let sql =
+    `SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name, invoice.cost
+     FROM invoice
+     JOIN user ON user.id = invoice.user_id
+     WHERE debtor_uuid = ?
+     ORDER BY date DESC
+     LIMIT 1`;
+
+  db.exec(sql, [uid])
+    .then(function (results){
+      let hasLatestInvoice  = results.length > 0;
+      let skip = q({}); // fake promise to simply skip the latest invoice loading.
+
+      return hasLatestInvoice ? loadLatestInvoice(results[0]) : skip;
+    })
+    .then(function (invoice) {
+      res.status(200).send(invoice);
+    })
+    .catch(next)
+    .done();
 }
