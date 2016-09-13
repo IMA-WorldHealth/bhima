@@ -1,29 +1,31 @@
-/**
- * Top level application navigation component
- */
 angular.module('bhima.components')
-.component('bhNavigation', {
-  controller : NavigationController,
-  templateUrl : 'partials/templates/navigation.tmpl.html'
-});
+  .component('bhNavigation', {
+    controller : NavigationController,
+    templateUrl : 'partials/templates/navigation.tmpl.html'
+  });
 
 NavigationController.$inject = [
-  '$location', '$rootScope', 'Tree', 'AppCache'
+  '$location', '$rootScope', 'Tree', 'AppCache', 'NotifyService'
 ];
 
-function NavigationController($location, $rootScope, Tree, AppCache) {
+/**
+ * Navigation Controller
+ *
+ * @description
+ * This controller determines the
+ */
+function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
   var $ctrl = this;
   var cache = AppCache('navigation');
 
-  /**
+  /*
    * Object used to index unit ids and paths, this allows for very efficient
    * lookups during runtime and means that the units only have to be recursively
    * parsed once - every following method should use the index to point to the
-   * relevent unit
+   * relevant unit
    */
   var unitsIndex = { id : {}, path : {} };
 
-  /** @todo handle exception cases displayed at the top of the Tree directive */
   Tree.units()
     .then(function (result) {
 
@@ -32,7 +34,8 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
 
       calculateUnitIndex($ctrl.units);
       expandInitialUnits($ctrl.units);
-    });
+    })
+    .catch(Notify.handleError);
 
   // Tree Utility methods
   $ctrl.toggleUnit = function toggleUnit(unit) {
@@ -50,6 +53,18 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
 
   $ctrl.refreshTranslation = function refreshTranslation() {
     Tree.sortByTranslationKey($ctrl.units);
+  };
+
+  $ctrl.isParentNode = function isParentNode(node) {
+    return node.children && node.children.length > 0;
+  };
+
+  $ctrl.isChildNode = function isChildNode(node) {
+    return node.children && node.children.length === 0;
+  };
+
+  $ctrl.isOpen = function isOpen(node) {
+    return $ctrl.isParentNode(node) && node.open;
   };
 
   /**
@@ -108,7 +123,7 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
 
       if (angular.isDefined(currentUnit)) {
 
-        // Unit exists - set the relevent open state
+        // Unit exists - set the relevant open state
         currentUnit.open = node.open;
       } else {
 

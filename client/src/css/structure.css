@@ -356,7 +356,12 @@
 }
 
 .flex-tree li {
-  border-bottom : 1px solid #ccc;
+  border-top: 1px solid #ccc;
+}
+
+/* make sure the bottom node has a bottom border */
+.flex-tree > ul > li:last-child {
+  border-bottom: 1px solid #ccc;
 }
 
 .flex-tree a {
@@ -374,7 +379,7 @@
   cursor : pointer;
 }
 
-.file {
+.subtree {
   border-left : 5px solid #707070;
 }
 

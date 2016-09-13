@@ -1,11 +1,13 @@
 <!--
 Limitations of current templating structure:
 * Assumption is made children of the root node are folders
-* Only one level of depth is supported for children
+* Only two levels of depth is supported for children
 -->
 <div class="flex-tree">
   <ul>
-    <li ng-repeat-start="unit in $ctrl.units">
+
+    <!-- first level: unit -->
+    <li ng-repeat="unit in $ctrl.units track by unit.id">
       <a ng-click="$ctrl.toggleUnit(unit)">
         <span
           class="fa"
@@ -16,19 +18,42 @@ Limitations of current templating structure:
         </span>
         <span class="tree-title">{{ unit.key | translate }}</span>
       </a>
-    </li>
 
-    <!-- Naive one level child depth -->
-    <li
-      ng-repeat-end
-      ng-repeat="child in unit.children"
-      ng-show="unit.open"
-      class="file"
-      ng-class="{ 'selected' : child.selected }">
-      <a ng-click="$ctrl.navigate(child)">
-        <span class="fa fa-file"></span>
-        <span class="tree-title">{{ child.key | translate }}</a></span>
-      </a>
+      <ul ng-if="$ctrl.isOpen(unit)">
+
+        <!-- second level: child -->
+        <li ng-repeat="child in unit.children track by child.id" ng-class="{ 'selected' : child.selected }" class="subtree">
+
+          <!-- if there is a subtree, this is the top level node -->
+          <a ng-click="$ctrl.toggleUnit(child)" ng-if="$ctrl.isParentNode(child)">
+            <span
+              class="fa"
+              ng-class="{
+              'fa-exclamation-circle' : child.children.length === 0,
+              'fa-folder-open' : child.open && child.children.length > 0,
+              'fa-folder' : !child.open && child.children.length > 0}">
+            </span>
+            <span class="tree-title">{{ child.key | translate }}</span>
+          </a>
+
+          <!-- otherwise, it is just a plan link -->
+          <a ng-click="$ctrl.navigate(child)"ng-if="$ctrl.isChildNode(child)">
+            <span class="fa fa-file"></span>
+            <span class="tree-title">{{ child.key | translate }}</a></span>
+          </a>
+
+          <ul ng-if="$ctrl.isOpen(child)">
+
+            <!-- third level: subchild -->
+            <li ng-repeat="subchild in child.children track by subchild.id" ng-class="{ 'selected' : subchild.selected }" class="subtree">
+              <a ng-click="$ctrl.navigate(subchild)" ng-class="{ 'selected' : subchild.selected }">
+                <span class="fa fa-file"></span>
+                <span class="tree-title">{{ subchild.key | translate }}</a></span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </li>
   </ul>
 </div>
