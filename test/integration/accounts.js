@@ -33,7 +33,8 @@ describe('(/accounts) Accounts', function () {
   const responseKeys = [
     'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
     'reference_id', 'is_brut_link', 'is_charge', 'number',
-    'label', 'parent', 'type_id', 'is_title', 'type'
+    'label', 'parent', 'type_id', 'is_title', 'type', 'translation_key',
+    'cost_center_text', 'profit_center_text'
   ];
 
   it('GET /accounts?detailed=1 returns the full list of account', function () {
