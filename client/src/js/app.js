@@ -501,6 +501,10 @@ function constantConfig() {
       CREDIT_NOTE        : 10,
       INCOME             : 'income',
       EXPENSE            : 'expense'
+    },
+    reports : {
+      AGED_DEBTOR : 'AGED_DEBTOR',
+      CASHFLOW : 'CASHFLOW'
     }
   };
 }

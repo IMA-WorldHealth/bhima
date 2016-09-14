@@ -342,7 +342,6 @@ exports.configure = function configure(app) {
 
   // Patient invoice API
 
-  // TODO Decide if the route should be named patient invoice
   app.get('/invoices', patientInvoice.list);
   app.post('/invoices', patientInvoice.create);
   app.get('/invoices/search', patientInvoice.search);
@@ -501,7 +500,7 @@ exports.configure = function configure(app) {
   app.get('/vouchers/reports/', vouchers.report);
   app.get('/vouchers/receipts/:uuid', vouchers.receipt);
   app.get('/vouchers/:uuid', vouchers.detail);
-  app.get('/vouchers/reports/:uuid', vouchers.report);
+  // app.get('/vouchers/reports/:uuid', vouchers.report);
   app.post('/vouchers', vouchers.create);
 
   // suppliers api
