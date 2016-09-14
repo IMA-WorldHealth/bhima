@@ -42,9 +42,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   ];
 
   /** button Print */
-  vm.buttonPrint = {
-    pdfUrl: '/vouchers/reports'
-  };
+  vm.buttonPrint = { pdfUrl: '/reports/finance/vouchers' };
 
 
   /** search filters */

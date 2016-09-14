@@ -1,9 +1,9 @@
 /* global expect, chai, agent */
 /* jshint expr : true */
 
-const helpers = require('./helpers');
+const helpers = require('../../helpers');
 
-describe('/reports/cash Receipts Interface', function () {
+describe('/reports/finance/cash Receipts Interface', function () {
 
   // known data for requests and assertions
   const validPayment = '2e1332b7-3e63-411e-827d-42ad585ff517';
@@ -12,30 +12,30 @@ describe('/reports/cash Receipts Interface', function () {
   const pdfRenderTarget   = '?renderer=pdf';
   const invalidRenderTarget = '?renderer=unkownRender';
 
-  it('GET /reports/cash/:uuid should return not found for invalid uuid', function () {
-    return agent.get('/reports/cash/unknown')
+  it('GET /reports/finance/cash/:uuid should return not found for invalid uuid', function () {
+    return agent.get('/reports/finance/cash/unknown')
       .then(function (result) {
         helpers.api.errored(result, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /reports/cash/:uuid should return bad request for invalid renderer', function () {
-    return agent.get('/reports/cash/'.concat(validPayment, invalidRenderTarget))
+  it('GET /reports/finance/cash/:uuid should return bad request for invalid renderer', function () {
+    return agent.get('/reports/finance/cash/'.concat(validPayment, invalidRenderTarget))
       .then(function (result) {
         helpers.api.errored(result, 400);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /reports/cash/:uuid should return JSON data for `json` rendering target', function () {
-    return agent.get('/reports/cash/'.concat(validPayment, jsonRenderTarget))
+  it('GET /reports/finance/cash/:uuid should return JSON data for `json` rendering target', function () {
+    return agent.get('/reports/finance/cash/'.concat(validPayment, jsonRenderTarget))
       .then(expectReportJSONSuccess)
       .catch(helpers.handler);
   });
 
-  it('GET /reports/cash/:uuid should return HTML data for `html` rendering target', function () {
-    return agent.get('/reports/cash/'.concat(validPayment, htmlRenderTarget))
+  it('GET /reports/finance/cash/:uuid should return HTML data for `html` rendering target', function () {
+    return agent.get('/reports/finance/cash/'.concat(validPayment, htmlRenderTarget))
       .then(function (result) {
         expect(result.headers['content-type']).to.equal('text/html; charset=utf-8');
         expect(result.text).to.not.be.empty;
@@ -43,8 +43,8 @@ describe('/reports/cash Receipts Interface', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /reports/cash/:uuid should return PDF data for `pdf` rendering target', function () {
-    return agent.get('/reports/cash/'.concat(validPayment, pdfRenderTarget))
+  it('GET /reports/finance/cash/:uuid should return PDF data for `pdf` rendering target', function () {
+    return agent.get('/reports/finance/cash/'.concat(validPayment, pdfRenderTarget))
       .then(function (result) {
         expect(result.headers['content-type']).to.equal('application/pdf');
         expect(result.type).to.equal('application/pdf');

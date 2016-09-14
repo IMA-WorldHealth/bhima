@@ -37,9 +37,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   ];
 
   /** button Print */
-  vm.buttonPrint = {
-    pdfUrl: '/inventory/reports/metadata'
-  };
+  vm.buttonPrint = { pdfUrl: '/reports/finance/invoices' };
 
 
   // edit button template

@@ -1,14 +1,16 @@
 /* global expect, chai, agent */
+/* jshint expr: true */
 
-const helpers = require('../helpers');
+const helpers = require('../../helpers');
 
-describe('(/reports/finance/cashflow) Cashflow Reports :: ', function () {
+describe('(/reports/finance/cashflow) Cashflow Reports', function () {
 
   const parameters = {
     accountId: 3627,
     dateFrom: '2016-01-01',
     dateTo: '2016-12-31'
   };
+
   const keys = [
     'dateFrom', 'dateTo', 'incomes', 'expenses', 'summationIncome', 'summationExpense',
     'sum_incomes', 'sum_expense', 'periodicBalance', 'periodicOpenningBalance',
@@ -44,7 +46,7 @@ describe('(/reports/finance/cashflow) Cashflow Reports :: ', function () {
   it('GET /reports/finance/cashflow should return JSON data for `JSON` rendering target', function () {
 
     let param = `account_id=${parameters.accountId}&dateFrom=${parameters.dateFrom}&dateTo=${parameters.dateTo}`;
-    let renderer = '&renderer=json'
+    let renderer = '&renderer=json';
 
     return agent.get('/reports/finance/cashflow?' + param + renderer)
       .then(function (res) {
@@ -60,7 +62,7 @@ describe('(/reports/finance/cashflow) Cashflow Reports :: ', function () {
   it('GET /reports/finance/cashflow should return HTML data for `HTML` rendering target', function () {
 
     let param = `account_id=${parameters.accountId}&dateFrom=${parameters.dateFrom}&dateTo=${parameters.dateTo}`;
-    let renderer = '&renderer=html'
+    let renderer = '&renderer=html';
 
     return agent.get('/reports/finance/cashflow?' + param + renderer)
       .then(function (res) {
@@ -73,7 +75,7 @@ describe('(/reports/finance/cashflow) Cashflow Reports :: ', function () {
   it('GET /reports/finance/cashflow should return PDF data for `PDF` rendering target', function () {
 
     let param = `account_id=${parameters.accountId}&dateFrom=${parameters.dateFrom}&dateTo=${parameters.dateTo}`;
-    let renderer = '&renderer=pdf'
+    let renderer = '&renderer=pdf';
 
     return agent.get('/reports/finance/cashflow?' + param + renderer)
       .then(function (res) {
