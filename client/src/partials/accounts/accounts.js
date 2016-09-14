@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 AccountsController.$inject = [
   '$rootScope', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService'
+  'LanguageService', '$state'
 ];
 
 /**
@@ -15,7 +15,9 @@ AccountsController.$inject = [
  * This controller is responsible for configuring the Accounts Management UI grid
  * and connecting it with the Accounts data model.
  */
-function AccountsController($rootScope, AccountGrid, Notify, Constants, Language) {
+function AccountsController($rootScope, AccountGrid, Notify, Constants, Language, $state) {
+
+  console.log($state);
   var vm = this;
   vm.Constants = Constants;
 

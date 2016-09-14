@@ -825,7 +825,7 @@
     "YEARS_OLD"             : "ans",
     "TITLE"                 : "Registre des patients"
   },
-  "PERMISSIONS": {
+  "USERS": {
     "ADDING_USER"   : "Ajout utilisateur",
     "ADD_USER"      : "Ajouter utilisateur",
     "DESCRIPTION"   : "Module de gestion des utilisateur et leurs droits",

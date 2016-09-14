@@ -808,7 +808,7 @@
     "TITLE"                 : "Patients",
     "RECORD"                : "Record"
   },
-  "PERMISSIONS": {
+  "USERS": {
     "ADDING_USER"   : "Add a user",
     "ADD_USER"      : "Add a New User",
     "DESCRIPTION"   : "User management unit and rights",
