@@ -20,10 +20,14 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
 
   // edit button template
   var editTemplate = '<div class="ui-grid-cell-contents">' +
-    '<a title="{{ \'FORM.LABELS.EDIT\' | translate }}" href="" ' +
+    '<a href="" title="{{ \'FORM.LABELS.EDIT\' | translate }}" ' +
     'ng-click="grid.appScope.editType(row.entity)" ' +
+    'uib-popover="{{grid.appScope.notAllowed(row.entity.fixed) | translate }}" ' +
+    'popover-placement="left"' +
+    'popover-trigger="\'mouseenter\'"' +
+    'popover-append-to-body="true"' +
     'data-edit-type="{{ row.entity.text }}">' +
-    '<i class="fa fa-edit"></i> ' +
+    '<i class="fa" ng-class="{\'fa-info-circle\': row.entity.fixed === 1, \'fa-edit\': row.entity.fixed !== 1}"></i> ' +
     '</a></div>';
 
   // grid default options
@@ -39,10 +43,6 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
       { field : 'type', displayName : 'FORM.LABELS.TYPE',
         headerCellFilter: 'translate',
         cellTemplate: 'partials/templates/grid/transactionType.tmpl.html'},
-
-      { field : 'fixed', displayName : 'FORM.LABELS.STATUS',
-        headerCellFilter: 'translate', width: 70,
-        cellTemplate: 'partials/templates/grid/transactionType.fixed.tmpl.html'},
 
       { field : 'prefix', displayName : 'FORM.LABELS.PREFIX',
         headerCellFilter: 'translate'},
@@ -61,6 +61,12 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
   // expose to the view
   vm.addType = addType;
   vm.editType = editType;
+
+  // message for fixed transaction type
+  vm.notAllowed = function (fixed) {
+    if (!fixed) { return ; }
+    return 'TRANSACTION_TYPE.FIXED_INFO';
+  };
 
   /** API register function */
   function onRegisterApi(gridApi) {
@@ -82,6 +88,8 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
 
   // edit en existing transaction type
   function editType(transactionType) {
+    if (transactionType.fixed) { return ; }
+
     var request = { action : 'edit', identifier : transactionType.id };
 
     return Modal.openTransactionTypeActions(request)
