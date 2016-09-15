@@ -833,7 +833,9 @@
     "SET_PASSWORD"  : "Definir mot de passe",
     "SUPER"         : "super utilisateur",
     "TITLE"         : "Utilisateur et droits",
-    "UPDATING_USER" : "Mise a jour utilisateur"
+    "UPDATING_USER" : "Mise a jour utilisateur",
+    "CREATE"        : "Creer",
+    "UPDATE"        : "Editer"
   },
 
 "POSTING_JOURNAL": {

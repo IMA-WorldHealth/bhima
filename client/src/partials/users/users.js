@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 UsersController.$inject = [
   '$window', '$translate', '$http', '$uibModal', 'util', 'SessionService', 'UserService',
-  'ProjectService', 'NodeTreeService'
+  'ProjectService', 'NodeTreeService', '$state'
 ];
 
 /**
@@ -13,7 +13,7 @@ UsersController.$inject = [
  * of users 
  * 
  */
-function UsersController($window, $translate, $http, $uibModal, util, Session, Users, Projects, NT) {
+function UsersController($window, $translate, $http, $uibModal, util, Session, Users, Projects, NT, $state) {
   var vm = this;
 
   // options for the UI grid
@@ -32,13 +32,52 @@ function UsersController($window, $translate, $http, $uibModal, util, Session, U
   // the user object that is either edited or created
   vm.user = {};
 
-  // vm.state = 'default'; // this is default || create || update
-
   // bind methods
+  vm.addUser = addUser;
+  vm.edit = edit;
+
+  vm.maxLength = util.maxTextLength;
+  vm.userName = 80;
+  vm.length100 = util.length100;
+
+  function addUser(){
+    $state.go('users.create', {creating : true}, {reload : false});
+  }
+
+  function edit(user) {
+    $state.go('users.edit', {id : user.id, creating : false}, {reload : false});
+  }
+
+  // TODO
+  function handler(error) {
+    throw error;
+  }
+
+  // load user grid
+  function loadGrid() {
+    Users.read().then(function (users) {
+      vm.gridOptions.data = users;
+    });
+  }
+
+  // called on modules start
+  function startup() {
+
+    loadGrid();
+
+    // // load projects
+    // Projects.read().then(function (data) {
+    //   vm.projects = data;
+    // });
+  }
+
+  // fire up the module
+  startup();
+
+
   // vm.setState = setState;
   // vm.submit = submit;
   // vm.validPassword = validPassword;
-  // vm.edit = edit;
   // vm.editPermissions = editPermissions;
   // vm.setPasswordModal = setPasswordModal;
   // vm.checkboxOffset = checkboxOffset;
@@ -46,16 +85,6 @@ function UsersController($window, $translate, $http, $uibModal, util, Session, U
   // vm.toggleSuperUserPermissions = toggleSuperUserPermissions;
   // vm.toggleParents = toggleParents;
 
-  vm.maxLength = util.maxTextLength;
-  vm.userName = 80;
-  vm.length100 = util.length100;
-
-
-
-  // // TODO
-  // function handler(error) {
-  //   throw error;
-  // }
   //
   // // sets the module view state
   // function setState(state) {
@@ -66,17 +95,7 @@ function UsersController($window, $translate, $http, $uibModal, util, Session, U
   // }
   //
   // // this is the new user
-  // function edit(user) {
-  //
-  //   // load the user
-  //   Users.read(user.id)
-  //   .then(function (user) {
-  //     setState('update');
-  //     vm.user = user;
-  //   })
-  //   .catch(handler)
-  //   .finally();
-  // }
+  
   //
   // // loads the permissions tree for a given user.
   // function editPermissions(user) {
@@ -131,14 +150,7 @@ function UsersController($window, $translate, $http, $uibModal, util, Session, U
   //   };
   // }
   //
-  // // make sure that the passwords exist and match.
-  // function validPassword() {
-  //   return vm.user.password &&
-  //     vm.user.passwordVerify &&
-  //     vm.user.password.length &&
-  //     vm.user.passwordVerify.length &&
-  //     vm.user.password === vm.user.passwordVerify;
-  // }
+  // 
   //
   // // opens a new modal to let the user set a password
   // function setPasswordModal() {
@@ -153,73 +165,10 @@ function UsersController($window, $translate, $http, $uibModal, util, Session, U
   //   });
   // }
   //
-  // // submit the data to the server from all three forms (update, create,
-  // // permissions)
-  // function submit(invalid) {
-  //   if (invalid) { return; }
-  //
-  //   var promise;
-  //   var messages = {
-  //     'create' : 'FORM.INFO.CREATE_SUCCESS',
-  //     'update' : 'FORM.INFO.UPDATE_SUCCESS',
-  //     'permissions' : 'FORM.INFO.UPDATE_SUCCESS'
-  //   };
-  //
-  //   // decide how to submit data to the server based on state.
-  //   switch (vm.state) {
-  //     case 'create':
-  //       promise = Users.create(vm.user);
-  //       break;
-  //     case 'update':
-  //       promise = Users.update(vm.user.id, vm.user);
-  //       break;
-  //     case 'permissions':
-  //       var permissions = vm.units.filter(function (u) {
-  //         return u.checked;
-  //       })
-  //       .map(function (u) {
-  //         return u.id;
-  //       });
-  //
-  //       promise = Users.updatePermissions(vm.user.id, permissions);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  //
-  //   promise.then(function (data) {
-  //     var msg = messages[vm.state];
-  //
-  //     // go back to default state
-  //     setState('success');
-  //
-  //     // display the correct state-based success message
-  //     vm.formMessage = { code : msg };
-  //   })
-  //   .catch(function (res) {
-  //     vm.formMessage = res.data;
-  //   });
-  // }
-  //
-
-  // load user grid
-  function loadGrid() {
-    Users.read().then(function (users) {
-      vm.gridOptions.data = users;
-    });
-  }
+  
+  
 
 
-  // called on modules start
-  function startup() {
-
-    loadGrid();
-
-    // load projects
-    Projects.read().then(function (data) {
-      vm.projects = data;
-    });
-  }
 
   //
   // // loads tree units on demand  Used for assigning user's permissions
@@ -265,6 +214,5 @@ function UsersController($window, $translate, $http, $uibModal, util, Session, U
   //   });
   // }
 
-  // fire up the module
-  startup();
+
 }

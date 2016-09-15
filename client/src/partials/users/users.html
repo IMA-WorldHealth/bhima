@@ -10,10 +10,9 @@
         <button
           type="button"
           class="btn btn-default btn-sm"
-          ng-click="PermissionsCtrl.setState('create')"
-          ng-class="{ 'active' : PermissionsCtrl.state === 'create' }"
+          ng-click="UsersCtrl.addUser()"
           data-method="create">
-          <span class="fa fa-plus"></span> {{ "PERMISSIONS.ADD_USER" | translate }}
+          <span class="fa fa-plus"></span> {{ "USERS.ADD_USER" | translate }}
         </button>
       </div>
     </div>
@@ -28,7 +27,6 @@
           ui-grid="UsersCtrl.gridOptions"
           class="grid-full-height"
           ui-grid-auto-resize>
-
         </div>
       </div>
     </div>
