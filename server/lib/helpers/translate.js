@@ -1,14 +1,18 @@
 'use strict';
 
+const _ = require('lodash');
+
 const en = require('../../../client/i18n/en.json');
 const fr = require('../../../client/i18n/fr.json');
 
 /**
  * @function getTranslationHelper
  *
- * @param {String} languageKey - either
+ * @param {String} languageKey - either 'fr' or 'en'
  */
 function getTranslationHelper(languageKey) {
+
+  const dictionary = (String(languageKey).toLowerCase() === 'fr') ? fr : en;
 
   /**
    * @function translate
@@ -19,35 +23,10 @@ function getTranslationHelper(languageKey) {
    */
   return function translate(translateCode) {
 
-    // set the translate keys database with English as default
-    let translate = languageKey === 'fr' ? fr : en;
-
-
-    const initialValue = null;
-
-    if (!translateCode) {
-      return;
-    }
-
-    const codeList = translateCode.split('.');
-
-    /**
-     * This method performs a reduce on a list of object keys and returns the
-     * value stored in the object
-     */
-    function lookupTranslation(a, b) {
-      var initialValue = !a;
-
-      if (initialValue) {
-        // translate to French if given else use English as default
-        return translate[b];
-      } else {
-        // nested value (not initial), select from the comparison object
-        return a[b];
-      }
-    }
-
-    return codeList.reduce(lookupTranslation, initialValue) || translateCode;
+    // lodash's get() method returns an object's value corresponding to the path matched.
+    // If the path does not exist, it returns undefined.
+    // See https://lodash.com/docs/4.15.0#at
+    return  _.get(dictionary, translateCode) || translateCode;
   };
 }
 

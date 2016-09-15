@@ -1,67 +1,97 @@
+/**
+ * @overview ReportManager
+ *
+ * @description
+ * The report manager is a wrapper for bhima's reporting capabilities, providing
+ * easy ways to create JSON/HTML/PDF reports from templates and data.
+ *
+ * @todo - allow reports to be saved using the report manager.
+ */
 'use strict';
 
-const q = require('q');
-const path = require('path');
 const _ = require('lodash');
+const path = require('path');
 const BadRequest = require('./errors/BadRequest');
 
-const supportedRender = {
+const renderers = {
   json : require('./renderers/json'),
   html : require('./renderers/html'),
   pdf  : require('./renderers/pdf')
 };
 
-const defaultRender = 'pdf';
-const defaultOptions = {
-  pageSize : 'A4',
+const defaults = {
+  pageSize: 'A4',
   orientation: 'portrait',
-  lang: 'en'
+  lang: 'en',
+  renderer: 'pdf'
 };
 
-// export the receipt object
-exports.build = build;
 
-/**
- * @function build
- * @desc build a report for inventory list of metadata
- * @param {array} data inventory list of metadata
- * @param {object} request the request which contains the renderer type (pdf, json, html, ...)
- * @param {string} templateUrl the handlebars template url for the report
- * @param {object} options the report page options
- * @return {object} resolve An object which contains variables for the handlebars file
- * NOTE: the returned data are get by a spread(document, headers) function
- * and the result is sended with res.set(headers).send(document)
- */
-function build(req, data, templateUrl, options) {
+class ReportManager {
 
-  // The model to send to the view template
-  const model = {
-    enterprise : req.session.enterprise,
-    project : req.session.project,
-    user : req.session.user,
-    data : data
-  };
-
-  /*
-   * the template url is like this :
-   * './server/controllers/stock/inventory/receipts/list.handlebars'
+  /**
+   * @constructor
+   *
+   * @description
+   * The ReportManager takes in a template path information and rendering
+   * options.  It returns an instance of the report manager, ready to be
+   * prepared with session data and the rendered with data.
+   *
+   * @param {String} templatePath - the path to the template file
+   * @param {Object} metadata - any metadata that needs to appear in the report
+   * @param {Object} options - rendering + default options for the report
    */
-  const template = path.normalize(templateUrl);
-  let queryString  = req.query;
-  let renderTarget = (queryString && queryString.renderer) ? queryString.renderer : defaultRender;
-  let renderer     = supportedRender[renderTarget];
+  constructor(templatePath, metadata, options) {
+    this.options = _.clone(options || {});
 
-  let pageOptions  = options || {};
-  pageOptions.lang = req.query.lang;
-  _.defaults(pageOptions, defaultOptions);
+    // merge options into default options
+    _.defaults(this.options, defaults);
 
-  if (!renderer) {
-    throw new BadRequest(
-      `Render target provided is invalid or not supported by this report ${renderTarget}.`
-    );
+    // normalize the path for different operating systems
+    this.template = path.normalize(templatePath);
+
+    // set the renderer based on the provided options
+    this.renderer = renderers[this.options.renderer || this.defaults.renderer];
+
+    if (!this.renderer) {
+      throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
+    }
+
+    // remove render-specific options
+    delete options.renderer;
+    delete options.lang;
+
+    // set the metadata
+    this.metadata = metadata;
   }
 
-  const report = renderer.render({ model }, template, pageOptions);
+  /**
+   * @method render
+   *
+   * @description
+   * This method renders the final report as needed.
+   *
+   * @param {Object} data - the report data to be passed to the renderer's
+   *    render() function.
+   */
+  render(data) {
+    const metadata = this.metadata;
+    const renderer = this.renderer;
 
-  return q.all([report, renderer.headers]);
+    // set the render timestamp
+    metadata.timestamp = new Date();
+
+    // merge the data object before templating
+    _.merge(data, { metadata });
+
+    // render the report using the stored renderer
+    const promise = renderer.render(data, this.template, this.options);
+
+    // send back the headers and report
+    return promise.then(report => {
+      return { headers: renderer.headers, report };
+    });
+  }
 }
+
+module.exports = ReportManager;

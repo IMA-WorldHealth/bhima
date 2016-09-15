@@ -7,10 +7,10 @@
  * @module finance/reports/cash.receipt
  */
 const _    = require('lodash');
-const path = require('path');
 const q    = require('q');
 
 const BadRequest = require('../../../lib/errors/BadRequest');
+const ReportManager = require('../../../lib/ReportManager');
 
 const CashPayments = require('../cash');
 const Users = require('../../admin/users');
@@ -18,21 +18,7 @@ const Patients = require('../../medical/patients');
 const Enterprises = require('../../admin/enterprises');
 const Exchange = require('../../finance/exchange');
 
-// group supported renderers
-const renderers = {
-  'json': require('../../../lib/renderers/json'),
-  'html': require('../../../lib/renderers/html'),
-  'pdf': require('../../../lib/renderers/pdf'),
-};
-
-// default rendering parameters
-const defaults = {
-  pageSize: 'A6',
-  renderer: 'pdf',
-  lang: 'en'
-};
-
-const template = path.normalize('./server/controllers/finance/reports/cash.receipt.handlebars');
+const TEMPLATE = './server/controllers/finance/reports/cash.receipt.handlebars';
 
 /**
  * @method build
@@ -44,23 +30,18 @@ const template = path.normalize('./server/controllers/finance/reports/cash.recei
  * GET /reports/cash/:uuid
  */
 function build(req, res, next) {
-  const qs = req.query;
+  const options = req.query;
 
-  // choose the renderer
-  const renderer = renderers[qs.renderer || defaults.renderer];
-  if (_.isUndefined(renderer)) {
-    throw new BadRequest(`The application does not support rendering ${qs.renderer}.`);
+  let report;
+
+  // set up the report with report manager
+  try {
+    report = new ReportManager(TEMPLATE, req.session, options);
+  } catch (e) {
+    return next(e);
   }
 
-  // delete from the query string
-  delete qs.renderer;
-
-  // receipt data to be rendered
   const data = {};
-
-  // set up contextual variables
-  const context = {};
-  _.defaults(context, qs, defaults);
 
   CashPayments.lookup(req.params.uuid)
     .then(payment => {
@@ -73,19 +54,17 @@ function build(req, res, next) {
       ]);
     })
     .spread((user, patient, enterprise) => {
-      data.user = user;
-      data.patient = patient;
-      data.enterprise = enterprise;
-
+      _.assign(data, { user, patient, enterprise });
       return Exchange.getExchangeRate(enterprise.id, data.payment.currency_id, data.payment.date);
     })
     .then(exchange => {
       data.rate = exchange.rate;
       data.hasRate = (data.rate && !data.payment.is_caution);
-      return renderer.render(data, template, context);
+
+      return report.render(data);
     })
     .then(result => {
-      res.set(renderer.headers).send(result);
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();

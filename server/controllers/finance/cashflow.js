@@ -10,20 +10,21 @@
  * @requires moment
  * @requires lib/db
  * @requires lib/util
- * @requires lib/errors/NotFound
  * @requires lib/errors/BadRequest
  * @requires finance/journal/cash
  */
 
 'use strict';
 
+const _          = require('lodash');
 const uuid       = require('node-uuid');
 const moment     = require('moment');
 const db         = require('../../lib/db');
 const util       = require('../../lib/util');
-const rm         = require('../../lib/ReportManager');
-const NotFound   = require('../../lib/errors/NotFound');
+const ReportManager = require('../../lib/ReportManager');
 const BadRequest = require('../../lib/errors/BadRequest');
+
+const TEMPLATE = './server/controllers/finance/reports/cashflow.report.handlebars';
 
 // expose to the API
 exports.report = report;
@@ -221,26 +222,32 @@ function getPeriods(dateFrom, dateTo) {
  * @description process and render the cashflow report document
  */
 function document(req, res, next) {
-  let session = {}, params = req.query;
+  const session = {};
+  const params = req.query;
 
-  let pageOptions = {
-    orientation: 'landscape',
-    lang: params.lang
-  };
+  let report;
 
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
 
+  _.defaults(params, { orientation : 'landscape' });
+
+  try {
+    report = new ReportManager(TEMPLATE, req.session, params);
+  } catch (e) {
+    return next(e);
+  }
+
   processingCashflowReport(params)
-  .then(reporting)
-  .then(labelization)
-  .then(() => {
-    return rm.build(req, session, './server/controllers/finance/reports/cashflow.report.handlebars', pageOptions);
-  })
-  .spread((document, headers) => {
-    res.set(headers).send(document);
-  })
-  .catch(next);
+    .then(reporting)
+    .then(labelization)
+    .then(() => {
+      return report.render(session);
+    })
+    .then(result => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next);
 
   /**
    * @function reporting
@@ -470,5 +477,4 @@ function document(req, res, next) {
       });
     }
   }
-
 }
