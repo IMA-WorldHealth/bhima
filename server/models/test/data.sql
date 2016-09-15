@@ -26,7 +26,7 @@ INSERT INTO unit VALUES
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/partials/price_list/','/prices'),
   (22,  'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,'/partials/exchange_rate/','/exchange'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/partials/locations/locations.html','/locations'),
-  (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/partials/patient/group/','/patients/groups/'),
+  (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/partials/patients/groups/','/patients/groups'),
   (48,  'Service Management','TREE.SERVICE','',1,'partials/services/','/services'),
   (57,  'Payroll','TREE.PAYROLL','',0,'partials/payroll/','/payroll/'),
   (61,  'Employee','TREE.EMPLOYEE','Employees management',57,'partials/employees/','/employees'),

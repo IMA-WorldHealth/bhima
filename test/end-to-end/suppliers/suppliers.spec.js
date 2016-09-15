@@ -29,7 +29,7 @@ describe('Suppliers', function () {
 
     FU.input('SupplierCtrl.supplier.display_name', supplier.display_name);
 
-    element(by.id('international')).click();
+    element(by.model('SupplierCtrl.supplier.international')).click();
 
     // select an Creditor
     FU.select('SupplierCtrl.supplier.creditor_uuid', 'Fournisseur');
@@ -73,7 +73,6 @@ describe('Suppliers', function () {
     FU.validation.error('SupplierCtrl.supplier.address_1');
 
     // the following fields are not required
-    FU.validation.ok('SupplierCtrl.supplier.international');
     FU.validation.ok('SupplierCtrl.supplier.phone');
     FU.validation.ok('SupplierCtrl.supplier.email');
     FU.validation.ok('SupplierCtrl.supplier.locked');
