@@ -1,19 +1,13 @@
 angular.module('bhima.controllers')
 .controller('UsersController', UsersController);
 
-UsersController.$inject = [
-  '$window', '$translate', '$http', '$uibModal', 'util', 'SessionService', 'UserService',
-  'ProjectService', 'NodeTreeService', '$state'
-];
+UsersController.$inject = ['$state', 'UserService', 'NotifyService'];
 
 /**
  * Users Controller
- *
- * This module is responsible for handling the creation
- * of users 
- * 
+ * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($window, $translate, $http, $uibModal, util, Session, Users, Projects, NT, $state) {
+function UsersController($state, Users, Notify) {
   var vm = this;
 
   // options for the UI grid
@@ -33,17 +27,8 @@ function UsersController($window, $translate, $http, $uibModal, util, Session, U
   vm.user = {};
 
   // bind methods
-  vm.addUser = addUser;
   vm.edit = edit;
   vm.editPermissions = editPermissions;
-
-  vm.maxLength = util.maxTextLength;
-  vm.userName = 80;
-  vm.length100 = util.length100;
-
-  function addUser(){
-    $state.go('users.create');
-  }
 
   function edit(user) {
     $state.go('users.edit', {id : user.id, creating : false}, {reload : false});
@@ -53,14 +38,13 @@ function UsersController($window, $translate, $http, $uibModal, util, Session, U
     $state.go('users.editPermission', {id : user.id}, {reload : false});
   }
 
-  function handler(error) {
-    throw error;
-  }
-
   // load user grid
   function loadGrid() {
     Users.read().then(function (users) {
       vm.gridOptions.data = users;
+    })
+    .catch(function (err){
+      Notify(err);
     });
   }
 

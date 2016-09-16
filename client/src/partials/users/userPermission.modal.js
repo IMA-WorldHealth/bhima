@@ -2,12 +2,11 @@ angular.module('bhima.controllers')
   .controller('UserPermissionModalController', UserPermissionModalController);
 
 UserPermissionModalController.$inject = [
-  '$window', '$translate', '$http', '$uibModal', 'util', 'SessionService', 'UserService',
-  'ProjectService', 'NodeTreeService', '$state'
+  '$translate', '$http', '$state', 'util', 'UserService', 'NodeTreeService', 'NotifyService'
 ];
 
 
-function UserPermissionModalController($window, $translate, $http, $uibModal, util, Session, Users, Projects, NT, $state) {
+function UserPermissionModalController($translate, $http, $state, util, Users, NT, Notify) {
   var vm = this;
 
   vm.user = {};   // the user object that is either edited or created
@@ -57,11 +56,7 @@ function UserPermissionModalController($window, $translate, $http, $uibModal, ut
 
         vm.units = units;
       })
-      .catch(handler)
-  }
-
-  function handler(error) {
-    throw error;
+      .catch(function (err){Notify.handleError(err);});
   }
 
   // used in the view to set permission's tree padding based on depth
@@ -140,22 +135,4 @@ function UserPermissionModalController($window, $translate, $http, $uibModal, ut
       vm.user = user;
       editPermissions(user);
     });
-
-
-  // vm.validPassword = validPassword;
-  // vm.setPasswordModal = setPasswordModal;
-
-  // // opens a new modal to let the user set a password
-  // function setPasswordModal() {
-  //   $uibModal.open({
-  //     templateUrl: 'partials/permissions/permissionsPasswordModalTemplate.html',
-  //     size : 'md',
-  //     animation : true,
-  //     controller:  'PermissionsPasswordModalController as ModalCtrl',
-  //     resolve:     {
-  //       user:      vm.user
-  //     }
-  //   });
-  // }
-  //
 }

@@ -21,7 +21,7 @@ function UsersPasswordModalController($uibModalInstance, Users, user) {
 
   /* ------------------------------------------------------------------------ */
 
-  // checks if a vaid password exists
+  // checks if a valid password exists
   function validPassword() {
     return vm.user.password &&
       vm.user.passwordVerify &&

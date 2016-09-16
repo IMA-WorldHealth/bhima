@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
   .controller('UserModalController', UserModalController);
 
-UserModalController.$inject = ['$state', '$uibModal', 'ProjectService', 'UserService'];
+UserModalController.$inject = ['$state', '$uibModal', 'ProjectService', 'UserService', 'NotifyService'];
 
-function UserModalController($state, $uibModal, Projects, Users) {
+function UserModalController($state, $uibModal, Projects, Users, Notify) {
   var vm = this;
 
   // the user object that is either edited or created
@@ -18,6 +18,9 @@ function UserModalController($state, $uibModal, Projects, Users) {
 
   Projects.read().then(function (data) {
     vm.projects = data;
+  })
+  .catch(function(err){
+    Notify.handleError(err);
   });
 
   if(!vm.isCreating){
@@ -26,7 +29,9 @@ function UserModalController($state, $uibModal, Projects, Users) {
       .then(function (user) {
         vm.user = user;
       })
-      .catch(function (err){ throw err});
+      .catch(function (err){
+        Notify.handleError(err);
+      });
   }
 
   // submit the data to the server from all two forms (update, create)
@@ -38,21 +43,14 @@ function UserModalController($state, $uibModal, Projects, Users) {
     if (!userForm.$dirty) { return; }
 
     var promise;
-    var messages = {
-      'create' : 'FORM.INFO.CREATE_SUCCESS',
-      'update' : 'FORM.INFO.UPDATE_SUCCESS',
-      'permissions' : 'FORM.INFO.UPDATE_SUCCESS'
-    };
 
     promise = (vm.isCreating)? Users.create(vm.user) : Users.update(vm.user.id, vm.user);
-    var msg = (vm.isCreating) ? messages.create : messages.update;
 
     promise.then(function () {
           $state.go('users.list', null, {reload : true});
-          vm.formMessage = { code : msg };
         })
-        .catch(function (res) {
-          vm.formMessage = res.data;
+        .catch(function (err) {
+          Notify.handleError(err);
         });
   }
 
@@ -77,7 +75,7 @@ function UserModalController($state, $uibModal, Projects, Users) {
       animation : true,
       controller:  'UsersPasswordModalController as UsersPasswordModalCtrl',
       resolve:     {
-        user:      vm.user
+        user : vm.user
       }
     });
   }
