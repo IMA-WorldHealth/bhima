@@ -34,7 +34,7 @@ angular.module('bhima.routes')
   }]);
 
 function accountsModal($modal) {
-  var instance = $modal.open({
+  $modal.open({
     keyboard : false,
     backdrop : 'static',
     templateUrl: 'partials/accounts/edit/accounts.edit.modal.html',

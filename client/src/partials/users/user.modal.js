@@ -8,7 +8,6 @@ function UserModalController($state, Projects, Users) {
 
   // the user object that is either edited or created
   vm.user = {};
-  console.log($state.params.creating);
   vm.isCreating = $state.params.creating;
 
 
@@ -30,8 +29,7 @@ function UserModalController($state, Projects, Users) {
       .catch(function (err){ throw err});
   }
 
-  // submit the data to the server from all three forms (update, create,
-  // permissions)
+  // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
 
     userForm.$setSubmitted();
@@ -71,22 +69,5 @@ function UserModalController($state, Projects, Users) {
       vm.user.password === vm.user.passwordVerify;
   }
 }
-
-
-
-// switch (vm.state) {
-//   case 'permissions':
-//     var permissions = vm.units.filter(function (u) {
-//         return u.checked;
-//       })
-//       .map(function (u) {
-//         return u.id;
-//       });
-//
-//     promise = Users.updatePermissions(vm.user.id, permissions);
-//     break;
-//   default:
-//     break;
-// }
 
 
