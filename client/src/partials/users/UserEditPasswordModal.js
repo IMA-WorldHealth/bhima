@@ -1,16 +1,16 @@
 
 angular.module('bhima.controllers')
-.controller('PermissionsPasswordModalController', PermissionsModalController);
+.controller('UsersPasswordModalController', UsersPasswordModalController);
 
-PermissionsModalController.$inject = [ '$uibModalInstance', 'UserService', 'user' ];
+UsersPasswordModalController.$inject = [ '$uibModalInstance', 'UserService', 'user' ];
 
 /**
-* Permissions Passsword Modal Controller
+* User Passsword Modal Controller
 *
 * This controller is responsible for changing a user's password.  Provides a
 * simply modal interface to
 */
-function PermissionsModalController($uibModalInstance, Users, user) {
+function UsersPasswordModalController($uibModalInstance, Users, user) {
   var vm = this;
 
   vm.user = angular.copy(user);

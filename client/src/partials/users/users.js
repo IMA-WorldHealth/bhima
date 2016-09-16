@@ -64,19 +64,5 @@ function UsersController($window, $translate, $http, $uibModal, util, Session, U
     });
   }
 
-  loadGrid();
-
-  // // opens a new modal to let the user set a password
-  // function setPasswordModal() {
-  //   $uibModal.open({
-  //     templateUrl: 'partials/permissions/permissionsPasswordModalTemplate.html',
-  //     size : 'md',
-  //     animation : true,
-  //     controller:  'PermissionsPasswordModalController as ModalCtrl',
-  //     resolve:     {
-  //       user:      vm.user
-  //     }
-  //   });
-  // }
-  //
+  loadGrid();  
 }

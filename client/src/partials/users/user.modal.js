@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
   .controller('UserModalController', UserModalController);
 
-UserModalController.$inject = ['$state', 'ProjectService', 'UserService'];
+UserModalController.$inject = ['$state', '$uibModal', 'ProjectService', 'UserService'];
 
-function UserModalController($state, Projects, Users) {
+function UserModalController($state, $uibModal, Projects, Users) {
   var vm = this;
 
   // the user object that is either edited or created
@@ -14,6 +14,7 @@ function UserModalController($state, Projects, Users) {
   vm.submit = submit;
   vm.closeModal = closeModal;
   vm.validPassword = validPassword;
+  vm.setPasswordModal = setPasswordModal;
 
   Projects.read().then(function (data) {
     vm.projects = data;
@@ -67,6 +68,20 @@ function UserModalController($state, Projects, Users) {
       vm.user.passwordVerify.length &&
       vm.user.password === vm.user.passwordVerify;
   }
+
+  // opens a new modal to let the user set a password
+  function setPasswordModal() {
+    $uibModal.open({
+      templateUrl: 'partials/users/UserEditPasswordModal.html',
+      size : 'md',
+      animation : true,
+      controller:  'UsersPasswordModalController as UsersPasswordModalCtrl',
+      resolve:     {
+        user:      vm.user
+      }
+    });
+  }
+  
 }
 
 

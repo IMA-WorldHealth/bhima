@@ -54,6 +54,12 @@
         </div>
       </div>
 
+      <div ng-if="!UserModalCtrl.isCreating" class="form-group">
+        <button type="button" class="btn btn-warning btn-block" ng-click="UserModalCtrl.setPasswordModal()">
+          <i class="fa fa-lock"></i> {{ 'FORM.BUTTONS.UPDATE_PASSWORD' | translate }}
+        </button>
+      </div>
+
       <div ng-if="UserModalCtrl.isCreating" class="form-group has-feedback" ng-class="{ 'has-error' : UserForm.$submitted && !UserModalCtrl.validPassword() }">
         <label class="control-label">{{ "FORM.LABELS.PASSWORD" | translate }}</label>
         <input name="password" ng-model="UserModalCtrl.user.password" class="form-control" type="password" required>
