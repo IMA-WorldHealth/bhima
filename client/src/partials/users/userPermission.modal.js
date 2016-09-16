@@ -12,7 +12,6 @@ function UserPermissionModalController($window, $translate, $http, $uibModal, ut
 
   vm.user = {};   // the user object that is either edited or created
 
-
   // bind methods
   vm.submit = submit;
   vm.editPermissions = editPermissions;

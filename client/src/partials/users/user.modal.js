@@ -10,7 +10,6 @@ function UserModalController($state, Projects, Users) {
   vm.user = {};
   vm.isCreating = $state.params.creating;
 
-
   //exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
