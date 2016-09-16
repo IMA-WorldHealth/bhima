@@ -11,6 +11,7 @@ const GU = require('../shared/gridTestUtils.spec.js');
 const FU = require('../shared/FormUtils');
 
 describe('Cash Payments', function () {
+  'use strict';
 
   const path = '#/cash';
 

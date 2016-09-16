@@ -4,7 +4,7 @@
 const helpers = require('../helpers');
 
 // this makes render tests for reports the lazy way.  Just give it a target and it will write describe() tests for you.
-module.exports = function LazyTester(target) {
+module.exports = function LazyTester(target, keys) {
   return function LazyTest() {
 
     // renders
@@ -55,6 +55,11 @@ module.exports = function LazyTester(target) {
       expect(result).to.be.json;
       expect(result.headers['content-type']).to.equal('application/json; charset=utf-8');
       expect(result.body).to.not.be.empty;
+
+      // only assert keys if passed in to the function
+      if (keys) {
+        expect(result.body).to.contain.all.keys(keys);
+      }
     }
 
     // validate an HTML response

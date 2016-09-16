@@ -35,7 +35,6 @@ function ModalService(Modal) {
   service.alert = alert;
   service.confirm = confirm;
   service.openSelectCashbox = openSelectCashbox;
-  service.openPatientReceipt = openPatientReceipt;
   service.openDebtorInvoices = openDebtorInvoices;
   service.openTransfer = openTransfer;
   service.openUploadDocument = openUploadDocument;
@@ -119,23 +118,6 @@ function ModalService(Modal) {
     });
 
     return Modal.open(params).result;
-  }
-
-  /**
-   * Cash Receipt Modal
-   */
-  function openPatientReceipt(request) {
-
-    var params = angular.extend(modalParameters, {
-      templateUrl : 'partials/cash/modals/receipt.modal.html',
-      controller  : 'CashReceiptModalController as CashReceiptModalCtrl',
-      resolve     : {
-        uuid : function uuidProvider() { return request.uuid; },
-        patientUuid : function patientUuidProvider() { return request.patientUuid; }
-      }
-    });
-
-    var instance = Modal.open(params);
   }
 
   /**

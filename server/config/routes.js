@@ -352,7 +352,7 @@ exports.configure = function configure(app) {
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
   app.get('/reports/inventory/items', inventory.getInventoryItemReport);
 
-  app.get('/reports/finance/invoices', patientInvoice.getPatientInvoice);
+  app.get('/reports/finance/invoices', financeReports.invoices);
   app.get('/reports/finance/invoices/:uuid', financeReports.receipts.invoices);
   app.get('/reports/finance/cash/:uuid', financeReports.receipts.cash);
   app.get('/reports/finance/debtors/aged', financeReports.agedDebtor);

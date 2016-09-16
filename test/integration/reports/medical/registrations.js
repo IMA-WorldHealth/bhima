@@ -1,7 +1,4 @@
-/* global expect, chai, agent */
-/* jshint expr : true */
-
-const LazyReport = require('../lazy');
+const RenderingTests = require('../rendering');
 const target = '/reports/medical/patients';
 
-describe(`(${target}) Patient Registrations`, LazyReport(target));
+describe(`(${target}) Patient Registrations`, RenderingTests(target));

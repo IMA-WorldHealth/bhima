@@ -21,7 +21,6 @@ const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 const createInvoice = require('./invoice/patientInvoice.create');
-const listReceipt = require('../finance/reports/list');
 
 /** Retrieves a list of all patient invoices (accepts ?q delimiter). */
 exports.list = list;
@@ -43,8 +42,9 @@ exports.reference = reference;
 /** Expose lookup invoice for other controllers to use internally */
 exports.lookupInvoice = lookupInvoice;
 
-
-exports.getPatientInvoice = getPatientInvoice;
+// @todo - this is used by the invoices receipt which really should use
+// a .find() method
+exports.listInvoices = listInvoices;
 
 /**
  * list
@@ -317,33 +317,4 @@ function reference(req, res, next) {
   })
   .catch(next)
   .done();
-}
-
-
-/**
-* GET /invoices/patient/report
-* Returns a pdf file for Patient Invoice
-*
-* @function getPatientInvoice
-*/
-function getPatientInvoice(req, res, next) {
-  const request = {
-    query : req.query,
-    enterprise : req.session.enterprise,
-    project : req.session.project
-  };
-
-  listInvoices()
-  .then(invoices => listReceipt.build(invoices, request))
-  .then(result => {
-    const renderer = {
-      'pdf'  : '"Content-Type" : "application/pdf"',
-      'html' : '"Content-Type" : "application/html"',
-      'json' : '"Content-Type" : "application/json"'
-    };
-    let headerKey = req.query.renderer || 'pdf';
-    let headers = renderer[headerKey];
-    res.set(headers).send(result);
-  })
-  .catch(next);
 }

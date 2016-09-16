@@ -8,6 +8,7 @@ const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
 describe.skip('Tree Navigation', function () {
+  'use strict';
 
   it('toggles the tree open and closed', function () {
 

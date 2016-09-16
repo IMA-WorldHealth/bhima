@@ -10,10 +10,8 @@
 module.exports = {
   receipts : {
     invoices: require('./invoice.receipt').build,
-    cash : require('./cash.receipt'),
-
-    /** @todo - make this voucher receipt be exposed in this method */
-    voucher: require('./voucher.receipt')
+    cash : require('./cash.receipt')
   },
-  agedDebtor: require('./agedDebtor')
+  agedDebtor: require('./agedDebtor'),
+  invoices : require('./invoices')
 };

@@ -1,0 +1,43 @@
+{{> head title="INVOICE_REGISTRY.TITLE"}}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-capitalize">
+        {{translate 'INVOICE_REGISTRY.TITLE'}}
+      </h2>
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.BILLING_DATE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.PATIENT'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.COST'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.SERVICE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.USER'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr>
+              <td>{{reference}}</td>
+              <td class="text-right">{{date date}}</td>
+              <td>{{patientNames}}</td>
+              <td class="text-right">{{currency cost currency_id}}</td>
+              <td>{{serviceName}}</td>
+              <td>{{display_name}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

@@ -23,9 +23,11 @@
 
 const lodash = require('lodash');
 const db = require('../../../lib/db');
-const rm = require('../../../lib/ReportManager');
+const ReportManager = require('../../../lib/ReportManager');
 const NotFound = require('../../../lib/errors/NotFound');
 const types = require('./types');
+
+const reportUrl = './server/controllers/finance/reports/accounts.report.handlebars';
 
 /**
  * @method create
@@ -235,18 +237,25 @@ function lookupAccount(id) {
  * @description generate chart of account as a document
  */
 function document(req, res, next) {
-  const reportUrl = './server/controllers/finance/reports/accounts.report.handlebars';
+
+  let report;
+
+  try {
+    report = new ReportManager(reportUrl, req.session, req.query);
+  } catch(e) {
+    return next(e);
+  }
 
   lookupAccount()
-  .then(processAccountDepth)
-  .then(accounts => {
-    return rm.build(req, accounts, reportUrl);
-  })
-  .spread((doc, header) => {
-    res.set(header).send(doc);
-  })
-  .catch(next)
-  .done();
+    .then(processAccountDepth)
+    .then(accounts => {
+      return report.render({ accounts });
+    })
+    .then(result => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
 }
 
 /**

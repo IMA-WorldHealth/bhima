@@ -29,22 +29,22 @@
 
 'use strict';
 
-const db = require('../../lib/db');
 const q  = require('q');
+const ReportManager = require('../../lib/ReportManager');
+const db = require('../../lib/db');
+const _ = require('lodash');
 
-var core        = require('./inventory/core'),
-    consumption = require('./inventory/consumption'),
-    stock       = require('./inventory/stock'),
-    expirations = require('./inventory/expiration'),
-    leadtimes   = require('./inventory/leadtimes'),
-    lots        = require('./inventory/lots'),
-    donations   = require('./inventory/donations'),
-    stats       = require('./inventory/status'),
-    groups      = require('./inventory/groups'),
-    types       = require('./inventory/types'),
-    units       = require('./inventory/units');
-
-var listReceipt = require('./inventory/receipts/list');
+const core        = require('./inventory/core');
+const consumption = require('./inventory/consumption');
+const stock       = require('./inventory/stock');
+const expirations = require('./inventory/expiration');
+const leadtimes   = require('./inventory/leadtimes');
+const lots        = require('./inventory/lots');
+const donations   = require('./inventory/donations');
+const stats       = require('./inventory/status');
+const groups      = require('./inventory/groups');
+const types       = require('./inventory/types');
+const units       = require('./inventory/units');
 
 // exposed routes
 exports.createInventoryItems    = createInventoryItems;
@@ -173,31 +173,30 @@ function getInventoryItemsById(req, res, next) {
 }
 
 /**
-* GET /inventory/metadata/receipt
+* GET /reports/inventory/imtes
 * Returns a pdf file for inventory metadata
 *
 * @function getInventoryItemReport
 */
 function getInventoryItemReport(req, res, next) {
-  const request = {
-    query : req.query,
-    enterprise : req.session.enterprise,
-    project : req.session.project
-  };
+  const template = './server/controllers/inventory/reports/items.handlebars';
+  let report;
+
+  const context = _.defaults({orientation : 'landscape' }, req.query);
+
+  try {
+    report = new ReportManager(template, req.session, context);
+  } catch(e) {
+    return next(e);
+  }
 
   core.getItemsMetadata()
-  .then(rows => listReceipt.build(rows, request))
-  .then(result => {
-    const renderer = {
-      'pdf'  : '"Content-Type" : "application/pdf"',
-      'html' : '"Content-Type" : "application/html"',
-      'json' : '"Content-Type" : "application/json"'
-    };
-    let headerKey = req.query.renderer || 'pdf';
-    let headers = renderer[headerKey];
-    res.set(headers).send(result);
-  })
-  .catch(next);
+    .then(rows => report.render({ rows }))
+    .then(result => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
 }
 
 // ======================= inventory group =============================

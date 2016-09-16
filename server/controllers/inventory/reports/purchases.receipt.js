@@ -5,36 +5,16 @@
  * This module is responsible for printing the purchase receipt for a purchase
  * order.
  *
- * @requires path
- * @requires lodash
- * @requires BadRequest
+ * @requires lib/ReportManager
  * @requires inventory/purchases
  */
-
 'use strict';
 
-const path = require('path');
-const _ = require('lodash');
-
-const BadRequest = require('../../../lib/errors/BadRequest');
-
+const ReportManager = require('../../../lib/ReportManager');
 const Purchases = require('../../finance/purchases');
 
-// group supported renderers
-const renderers = {
-  'json': require('../../../lib/renderers/json'),
-  'html': require('../../../lib/renderers/html'),
-  'pdf': require('../../../lib/renderers/pdf'),
-};
-
-// default rendering parameters
-const defaults = {
-  pageSize: 'A4',
-  renderer: 'pdf',
-};
-
 // path to the template to render
-const template = path.normalize('./server/controllers/inventory/reports/purchases.receipt.handlebars');
+const template = './server/controllers/inventory/reports/purchases.receipt.handlebars';
 
 /**
  * @method build
@@ -46,22 +26,21 @@ const template = path.normalize('./server/controllers/inventory/reports/purchase
  * GET /reports/inventory/purchases/:uuid
  */
 function build(req, res, next) {
-  const qs = req.query;
+  const options = req.query;
 
-  // choose the renderer
-  const renderer = renderers[qs.renderer || defaults.renderer];
-  if (_.isUndefined(renderer)) {
-    throw new BadRequest(`The application does not support rendering ${qs.renderer}.`);
+  let report;
+
+  try {
+    report = new ReportManager(template, req.session, options);
+  } catch (e) {
+    return next(e);
   }
-
-  // delete from the query string
-  delete qs.renderer;
 
   // format the receipt and ship it off to the client
   Purchases.lookup(req.params.uuid)
-    .then(purchase => renderer.render({ purchase }, template, defaults))
+    .then(purchase => report.render({ purchase }))
     .then(result => {
-      res.set(renderer.headers).send(result);
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();

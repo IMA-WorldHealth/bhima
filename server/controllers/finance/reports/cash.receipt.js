@@ -6,6 +6,8 @@
  *
  * @module finance/reports/cash.receipt
  */
+'use strict';
+
 const _    = require('lodash');
 const q    = require('q');
 

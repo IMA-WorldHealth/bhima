@@ -11,32 +11,16 @@
  * @todo  get balance information on the invoice
  * @module finance/reports
  */
-const uuid        = require('node-uuid');
+'use strict';
+
 const q           = require('q');
 const _           = require('lodash');
-const path        = require('path');
-
-const db          = require('../../../lib/db');
-const NotFound    = require('../../../lib/errors/NotFound');
-const BadRequest  = require('../../../lib/errors/BadRequest');
+const ReportManager = require('../../../lib/ReportManager');
 
 const Invoices    = require('../patientInvoice');
 const Patients    = require('../../medical/patients');
-const Enterprises = require('../../admin/enterprises');
 
-// currently supports only JSON rendering
-const supportedRenderers = {
-  json: require('../../../lib/renderers/json'),
-  html: require('../../../lib/renderers/html'),
-  pdf: require('../../../lib/renderers/pdf')
-};
-
-const defaultRender = 'json';
-
-const FLAG_TRUE = 1;
-const SUCCESS_STATUS = 200;
-
-const template = path.normalize('./server/controllers/finance/reports/invoice.receipt.handlebars');
+const template = './server/controllers/finance/reports/invoice.receipt.handlebars';
 
 exports.build = build;
 
@@ -48,62 +32,48 @@ exports.build = build;
  * Request options:
  * ```
  * {
- *   minimal : {Boolean}  Determine if the report should include header or footer
- *                        information (False)
  *   renderer : {String}  Server core renderer to use; this report supports
- *                        ['pdf', 'json']
+ *                        ['pdf', 'json', 'html']
  * }
  * ```
  *
  * ```
  * {
- *   header :             Data relevent to the report header, this includes
+ *   header :             Data relevant to the report header, this includes
  *                        enterprise and recipient data
- *   data   :             Core report data, this includes all relevent invoice data
+ *   data   :             Core report data, this includes all relevant invoice data
  *   meta   :             Meta data to do with production of the report
  * }
  */
 function build(req, res, next) {
-  var queryString = req.query;
-  var invoiceUuid = req.params.uuid;
-  var enterpriseId = req.session.enterprise.id;
+  const options = req.query;
 
-  var invoiceResponse = {
-    lang: req.query.lang,
-    project: req.session.project,
-    enterprise: req.session.enterprise
-  };
+  let invoiceUuid = req.params.uuid;
+  let enterpriseId = req.session.enterprise.id;
+  let invoiceResponse = {};
 
-  var renderTarget = queryString.renderer || defaultRender;
-  var renderer = supportedRenderers[renderTarget];
+  let report;
 
-  /** @todo delegate to additional method */
-  if (_.isUndefined(renderer)) {
-    return next(
-      new BadRequest(`Render target ${renderTarget} is invalid or not supported by this report.`)
-    );
+  try {
+    report = new ReportManager(template, req.session, options);
+  } catch (e) {
+    return next(e);
   }
 
-  /** @todo Implement minimal flag */
-  //if (queryString.minimal === FLAG_TRUE) {}
-
   Invoices.lookupInvoice(invoiceUuid)
-    .then(function (reportResult) {
-      var recipientUuid = reportResult.patient_uuid;
+    .then(reportResult => {
+      let recipientUuid = reportResult.patient_uuid;
       _.extend(invoiceResponse, reportResult);
 
       return headerData(recipientUuid);
     })
-    .then(function (headerResult) {
+    .then(headerResult => {
       _.extend(invoiceResponse, headerResult);
 
-      return renderer.render(invoiceResponse, template, { lang : req.query.lang });
+      return report.render(invoiceResponse);
     })
-    .then(function (renderedResult) {
-
-      // send the final (rendered) object to the client
-      res.set(renderer.headers).send(renderedResult);
-      return;
+    .then(result => {
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();
@@ -113,12 +83,12 @@ function build(req, res, next) {
 function headerData(patientUuid) {
 
   /** @todo write utility method to map keys of request object to returned object */
-  var headerRequests = {
+  let headerRequests = {
     recipient : Patients.lookupPatient(patientUuid)
   };
 
   return q.all(_.values(headerRequests))
-    .then(function (results) {
+    .then(results => {
       var header = {};
        _.keys(headerRequests).forEach((key, index) => header[key] = results[index]);
 

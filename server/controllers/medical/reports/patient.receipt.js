@@ -8,59 +8,40 @@
  * the Patient Record page.
  *
  * @requires Patients
- * @requires path
  * @requires lodash
- * @requires lib/errors/BadRequest
+ * @requires lib/ReportManager
  */
+'use strict';
 
 const Patients = require ('../patients');
-const path = require('path');
 const _ = require('lodash');
+const ReportManager = require('../../../lib/ReportManager');
 
-const BadRequest = require('../../../lib/errors/BadRequest');
-
-// group supported renderers
-const renderers = {
-  'json': require('../../../lib/renderers/json'),
-  'html': require('../../../lib/renderers/html'),
-  'pdf': require('../../../lib/renderers/pdf'),
-};
-
-// default rendering parameters
-const defaults = {
-  pageSize: 'A6',
-  renderer: 'pdf',
-  orientation: 'landscape',
-  lang: 'en'
-};
-
-const template = path.normalize('./server/controllers/medical/reports/patient.receipt.handlebars');
+const template = './server/controllers/medical/reports/patient.receipt.handlebars';
 
 exports.build = build;
 
 function build(req, res, next) {
   const qs = req.query;
+  const options = _.defaults({ pageSize : 'A6', orientation: 'landscape' }, qs);
 
-  // choose the renderer
-  const renderer = renderers[qs.renderer || defaults.renderer];
-  if (_.isUndefined(renderer)) {
-    return next(new BadRequest(`The application does not support rendering ${qs.renderer}.`));
+  let report;
+
+  try {
+    report = new ReportManager(template, req.params, options);
+  } catch (e) {
+    return next(e);
   }
 
-  // delete from the query string
-  delete qs.renderer;
-
-  const context = { lang : qs.lang };
-  _.defaults(context, defaults);
-
   Patients.lookupPatient(req.params.uuid)
-    .then(function (patient) {
+    .then(patient => {
       patient.enterprise_name = req.session.enterprise.name;
       patient.symbol = (patient.sex === 'M') ? 'mars' : 'venus';
-      return renderer.render({ patient }, template, context);
+
+      return report.render({ patient });
     })
-    .then(function (result) {
-      res.set(renderer.headers).send(result);
+    .then(result => {
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();
