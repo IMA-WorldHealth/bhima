@@ -35,12 +35,6 @@ describe('(/purchases) Purchases', () => {
     'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'supplier_uuid', 'note'
   ];
 
-  it('GET /purchases should return an empty array', () => {
-    return agent.get('/purchases')
-      .then(res => helpers.api.listed(res, 0))
-      .catch(helpers.handler);
-  });
-
   it('POST /purchases should create a new purchase order', () => {
     return agent.post('/purchases')
       .send(purchaseOrder)

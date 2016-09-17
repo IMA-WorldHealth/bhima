@@ -1,38 +1,44 @@
-/**
- * Top level application navigation component
- */
 angular.module('bhima.components')
-.component('bhNavigation', {
-  controller : NavigationController,
-  templateUrl : 'partials/templates/navigation.tmpl.html'
-});
+  .component('bhNavigation', {
+    controller : NavigationController,
+    templateUrl : 'partials/templates/navigation.tmpl.html'
+  });
 
 NavigationController.$inject = [
-  '$location', '$rootScope', 'Tree', 'AppCache'
+  '$location', '$rootScope', 'Tree', 'AppCache', 'NotifyService'
 ];
 
-function NavigationController($location, $rootScope, Tree, AppCache) {
+/**
+ * Navigation Controller
+ *
+ * @description
+ * This controller determines the
+ */
+function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
   var $ctrl = this;
-  var cache = AppCache('navigation');
+  var openedCache = AppCache('navigation.opened');
 
-  /**
+  /*
    * Object used to index unit ids and paths, this allows for very efficient
    * lookups during runtime and means that the units only have to be recursively
    * parsed once - every following method should use the index to point to the
-   * relevent unit
+   * relevant unit
    */
   var unitsIndex = { id : {}, path : {} };
 
-  /** @todo handle exception cases displayed at the top of the Tree directive */
   Tree.units()
-    .then(function (result) {
+    .then(function (units) {
 
-      Tree.sortByTranslationKey(result);
-      $ctrl.units = result;
+      Tree.sortByTranslationKey(units);
+      $ctrl.units = units;
 
       calculateUnitIndex($ctrl.units);
       expandInitialUnits($ctrl.units);
-    });
+
+      // updates the tree selection on path change
+      updateSelectionOnPathChange();
+    })
+    .catch(Notify.handleError);
 
   // Tree Utility methods
   $ctrl.toggleUnit = function toggleUnit(unit) {
@@ -40,7 +46,7 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
     unit.open = !unit.open;
 
     // Update cached record of modules expansion
-    cache[unit.id] = { open : unit.open };
+    openedCache[unit.id] = unit.open;
   };
 
   $ctrl.navigate = function navigate(unit) {
@@ -52,12 +58,23 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
     Tree.sortByTranslationKey($ctrl.units);
   };
 
+  $ctrl.isParentNode = function isParentNode(node) {
+    return node.children && node.children.length > 0;
+  };
+
+  $ctrl.isChildNode = function isChildNode(node) {
+    return node.children && node.children.length === 0;
+  };
+
+  $ctrl.isOpen = function isOpen(node) {
+    return $ctrl.isParentNode(node) && node.open;
+  };
+
   /**
    * Select a unit in the tree given a specified URL.
    */
-  function trackPathChange(event, url) {
-    var path = url.split('/#')[1];
-    var normPath = normalisePath(path);
+  function updateSelectionOnPathChange() {
+    var path = $location.path();
 
     /**
      * loop through all paths, selecting those are match the selected url
@@ -65,10 +82,13 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
      * @todo - write test cases to be sure this works in all cases, probably
      * dependent on the ordering of unitsIndex.
      */
-    Object.keys(unitsIndex.path).forEach(function (key) {
+    var paths = Object.keys(unitsIndex.path);
+    paths.sort();
+
+    paths.forEach(function (key) {
       var node = unitsIndex.path[key];
-      if (normPath.includes(node.path)) {
-        selectUnit(path);
+      if (path.includes(node.path)) {
+        selectUnit(node);
       }
     });
   }
@@ -85,11 +105,6 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
     $ctrl.selectedUnit = unit;
   }
 
-  // Remove trailing path elements
-  function normalisePath(path) {
-    return path.replace(/\//g, '');
-  }
-
   /**
    * Set the open state on units that are registered as open in the app cache
    *
@@ -97,24 +112,24 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
    */
   function expandInitialUnits(units, states) {
 
-    var nodes = Object.keys(cache);
+    var nodes = Object.keys(openedCache);
 
     nodes.forEach(function (key) {
 
-      var node = cache[key];
+      var isOpen = openedCache[key];
 
       // Lookup the cached unit key in the current set of units
       var currentUnit = unitsIndex.id[key];
 
       if (angular.isDefined(currentUnit)) {
 
-        // Unit exists - set the relevent open state
-        currentUnit.open = node.open;
+        // Unit exists - set the relevant open state
+        currentUnit.open = isOpen;
       } else {
 
         // Unit does not exist - potentially the permission has been revoked
         // Update the cache to reflect this
-        delete cache[key];
+        delete openedCache[key];
       }
     });
   }
@@ -126,7 +141,7 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
   function calculateUnitIndex(units) {
     units.forEach(function (unit) {
       unitsIndex.id[unit.id] = unit;
-      unitsIndex.path[normalisePath(unit.path)] = unit;
+      unitsIndex.path[unit.path] = unit;
       calculateUnitIndex(unit.children);
     });
   }
@@ -138,5 +153,5 @@ function NavigationController($location, $rootScope, Tree, AppCache) {
    * page being refreshed
    */
   $rootScope.$on('$translateChangeSuccess', $ctrl.refreshTranslation);
-  $rootScope.$on('$locationChangeStart', trackPathChange);
+  $rootScope.$on('$stateChangeSuccess', updateSelectionOnPathChange);
 }

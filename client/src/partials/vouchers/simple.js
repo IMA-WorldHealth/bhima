@@ -81,7 +81,7 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
     .then(function (res) {
 
       // Generate the document
-      return Modal.openReports({ url: '/vouchers/receipts/' + res.uuid, renderer: 'pdf' });
+      return Modal.openReports({ url: '/reports/finance/vouchers/' + res.uuid, renderer: 'pdf' });
     })
     .then(function () {
 

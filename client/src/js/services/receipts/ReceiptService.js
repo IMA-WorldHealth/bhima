@@ -76,25 +76,25 @@ function ReceiptService($http, util, Language) {
    * @return {Promise}         Eventually returns report object from server
    */
   function invoice(uuid, options) {
-    var route = '/reports/invoices/'.concat(uuid);
+    var route = '/reports/finance/invoices/'.concat(uuid);
     return fetch(route, options);
   }
 
   // print the patient card
   function patient(uuid, options) {
-    var route ='/reports/patient/'.concat(uuid);
+    var route ='/reports/medical/patients/'.concat(uuid);
     return fetch(route, options);
   }
 
   // print a receipt modal
   function purchase(uuid, options) {
-    var route ='/reports/purchases/'.concat(uuid);
+    var route ='/reports/inventory/purchases/'.concat(uuid);
     return fetch(route, options);
   }
 
   // print a cash (point-of-sale) receipt
   function cash(uuid, options) {
-    var route = '/reports/cash/'.concat(uuid);
+    var route = '/reports/finance/cash/'.concat(uuid);
     return fetch(route, options);
   }
 

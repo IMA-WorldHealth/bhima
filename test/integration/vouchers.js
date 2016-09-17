@@ -14,7 +14,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
 
   const date = new Date();
 
-  var vUuid = uuid.v4();
+  let vUuid = uuid.v4();
 
   // balanced transaction with two lines (USD)
   var voucher = {

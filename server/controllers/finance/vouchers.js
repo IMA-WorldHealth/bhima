@@ -22,7 +22,7 @@ const _    = require('lodash');
 const uuid = require('node-uuid');
 const util = require('../../lib/util');
 const db   = require('../../lib/db');
-const rm   = require('../../lib/ReportManager');
+const ReportManager  = require('../../lib/ReportManager');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 const journal = require('./journal/voucher');
@@ -88,14 +88,14 @@ function list(req, res, next) {
  */
 function detail(req, res, next) {
   getVouchers(req.params.uuid)
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound(`Could not find a voucher with id ${req.params.id}`);
-    }
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      if (!rows.length) {
+        throw new NotFound(`Could not find a voucher with uuid ${req.params.uuid}`);
+      }
+      res.status(200).json(rows[0]);
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -189,30 +189,50 @@ function create(req, res, next) {
  * @method receipt
  */
 function receipt(req, res, next) {
+
   // page options
-  const reportOptions = { pageSize : 'A5', orientation: 'landscape' };
+  const options =
+    _.defaults({ pageSize : 'A5', orientation: 'landscape' }, req.query);
+
+  let report;
+  try {
+    report = new ReportManager(receiptUrl, req.session, options);
+  } catch (e) {
+    return next(e);
+  }
 
   // request for detailed receipt
   req.query.detailed = true;
 
   getVouchers(req.params.uuid, req.query)
     .then(rows => {
-      return rm.build(req, { rows }, receiptUrl, reportOptions);
+
+      if (!rows.length) {
+        throw new NotFound(`Could not find a voucher with uuid ${req.params.uuid}`);
+      }
+
+      return report.render({ rows });
     })
-    .spread((document, headers) => {
-      res.set(headers).send(document);
+    .then(result => {
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();
 }
 
 /**
- * GET /vouchers/reports
+ * GET reports/finance/vouchers
  *
  * @method report
  */
 function report(req, res, next) {
-  // page options
+
+  let report;
+  try  {
+    report = new ReportManager(reportUrl, req.session, req.query);
+  } catch(e) {
+    return next(e);
+  }
 
   getVouchers(null, req.query)
     .then(rows => {
@@ -223,10 +243,10 @@ function report(req, res, next) {
         dateTo: req.query.dateTo
       };
 
-      return rm.build(req, data, reportUrl);
+      return report.render(data);
     })
-    .spread((document, headers) => {
-      res.set(headers).send(document);
+    .then(result => {
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();

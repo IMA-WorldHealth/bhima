@@ -1,21 +1,17 @@
-<head>
-  <meta charset="UTF-8">
-  <title>{{translate "TREE.PATIENT_INVOICE"}} {{reference}}</title>
-  <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
-</head>
+{{> head title="TREE.PATIENT_INVOICE"}}
 
 <div class="container-fluid">
 
   <!-- header  -->
   <div class="row">
-    <!-- enterprise  -->
+
     <div class="col-xs-4">
-      <h3 style="margin:2px;">{{ enterprise.name }}</h3>
+      <h3 style="margin:2px;">{{ metadata.enterprise.name }}</h3>
       <p style="margin:2px;">
-        {{translate 'FORM.LABELS.PROJECT'}}: {{ project.name }}<br>
-        {{translate 'FORM.LABELS.PHONE'}}: {{ enterprise.phone }}<br>
-        {{translate 'FORM.LABELS.EMAIL'}}: {{ enterprise.email }}<br>
-        {{translate 'FORM.LABELS.ADDRESS'}}: {{ enterprise.location }}
+        {{translate 'FORM.LABELS.PROJECT'}}: {{ metadata.project.name }}<br>
+        {{translate 'FORM.LABELS.PHONE'}}: {{ metadata.enterprise.phone }}<br>
+        {{translate 'FORM.LABELS.EMAIL'}}: {{ metadata.enterprise.email }}<br>
+        {{translate 'FORM.LABELS.ADDRESS'}}: {{ metadata.enterprise.location }}
       </p>
     </div>
 
@@ -105,41 +101,41 @@
     <div class="col-xs-6 col-xs-offset-6" >
       <!-- billing service  -->
       {{#if billing.length}}
-      <h4>
-        <u>{{translate 'FORM.LABELS.BILLING_SERVICES'}}</u> :
-      </h4>
-      <table style="width: 100%;">
-        {{#each billing}}
-        <tr>
-          <td class="text-right">
-            ({{this.label}} {{this.billing_value}}%
-            {{translate 'FORM.LABELS.OF'}}
-            {{currency (sum ../items 'transaction_price' 'quantity')}}) =
-          </td>
-          <td class="text-right">
-            +{{currency this.value}}
-          </td>
-        </tr>
-        {{/each}}
-        <tr style="font-weight: bold;">
-          <td class="text-right">{{translate 'FORM.LABELS.TOTAL'}} ({{translate 'FORM.LABELS.BILLING_SERVICES'}}) = </td>
-          <td class="text-right">+{{currency (sum billing 'value')}}</td>
-        </tr>
-      </table>
+        <h4>
+          <u>{{translate 'FORM.LABELS.BILLING_SERVICES'}}</u> :
+        </h4>
+        <table style="width: 100%;">
+          {{#each billing}}
+            <tr>
+              <td class="text-right">
+                ({{this.label}} {{this.billing_value}}%
+                {{translate 'FORM.LABELS.OF'}}
+                {{currency (sum ../items 'transaction_price' 'quantity')}}) =
+              </td>
+              <td class="text-right">
+                +{{currency this.value}}
+              </td>
+            </tr>
+          {{/each}}
+          <tr style="font-weight: bold;">
+            <td class="text-right">{{translate 'FORM.LABELS.TOTAL'}} ({{translate 'FORM.LABELS.BILLING_SERVICES'}}) = </td>
+            <td class="text-right">+{{currency (sum billing 'value')}}</td>
+          </tr>
+        </table>
       {{/if}}
 
       <!-- subsidies  -->
       {{#if subsidy.length}}
-      <table style="width: 100%;">
-        <tr>
-          <td>
-            <h4><u>{{translate 'FORM.LABELS.SUBSIDIES'}}</u> ({{subsidy.length}}) :</h4>
-          </td>
-          <td class="text-right">
-            <b>-{{currency (sum subsidy 'value')}}</b>
-          </td>
-        </tr>
-      </table>
+        <table style="width: 100%;">
+          <tr>
+            <td>
+              <h4><u>{{translate 'FORM.LABELS.SUBSIDIES'}}</u> ({{subsidy.length}}) :</h4>
+            </td>
+            <td class="text-right">
+              <b>-{{currency (sum subsidy 'value')}}</b>
+            </td>
+          </tr>
+        </table>
       {{/if}}
 
       <!-- general total  -->
@@ -157,20 +153,18 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xs-12">
-      <h4>{{translate 'FORM.LABELS.SIGNATURE'}}</h4>
-      <hr>
-    </div>
-  </div>
+  <h4>{{translate 'FORM.LABELS.SIGNATURE'}}</h4>
 
   <div class="row">
-    <div class="col-xs-6 text-left">
-      {{translate 'FORM.LABELS.SALE_RESPONSIBLE'}}
+    <div class="col-xs-5">
+      {{translate 'FORM.LABELS.SALE_RESPONSIBLE'}} <br />
+      <br />
+      <hr/>
     </div>
-    <div class="col-xs-6 text-right">
-      {{translate 'FORM.LABELS.CLIENT'}}
+    <div class="col-xs-offset-2 col-xs-5">
+      {{translate "FORM.LABELS.CLIENT"}} <br />
+      <br />
+      <hr/>
     </div>
   </div>
-
 </div>

@@ -5,39 +5,19 @@
  * This file contains code to create a PDF report of all patient registrations,
  * matching query conditions passed from the patient registry UI grid.
  *
- * @requires path
  * @requires lodash
- * @requires BadRequest
  * @requires Patients
- * @requires renderers/json
- * @requires renderers/html
- * @requires renderers/pdf
+ * @requires ReportManager
  */
 'use strict';
 
-const path = require('path');
 const _ = require('lodash');
 
-const BadRequest = require('../../../lib/errors/BadRequest');
+const ReportManager = require('../../../lib/ReportManager');
 
 const Patients = require('../patients');
 
-// group supported renderers
-const renderers = {
-  'json': require('../../../lib/renderers/json'),
-  'html': require('../../../lib/renderers/html'),
-  'pdf': require('../../../lib/renderers/pdf'),
-};
-
-// default rendering parameters
-const defaults = {
-  pageSize: 'A4',
-  renderer: 'pdf',
-  lang : 'en'
-};
-
-// path to the template to render
-const template = path.normalize('./server/controllers/medical/reports/registrations.handlebars');
+const TEMPLATE = './server/controllers/medical/reports/registrations.handlebars';
 
 // translation key mappings for dynamic filters
 // Basically, to show a pretty filter bar, this will translate URL query params
@@ -78,40 +58,31 @@ function formatFilters(qs) {
  * GET /reports/patient/registrations
  */
 function build(req, res, next) {
-  const qs = req.query;
+  const options = req.query;
 
-  // choose the renderer
-  const renderer = renderers[qs.renderer || defaults.renderer];
-  if (_.isUndefined(renderer)) {
-    throw new BadRequest(`The application does not support rendering ${qs.renderer}.`);
+  let report;
+
+  // set up the report with report manager
+  try {
+    report = new ReportManager(TEMPLATE, req.session, options);
+  } catch (e) {
+    return next(e);
   }
 
-  // delete from the query string
-  delete qs.renderer;
+  const filters = formatFilters(options);
 
-  const params = _.clone(qs);
+  // enforce detailed columns
+  options.detailed = 1;
 
-  const metadata = {
-    timestamp: new Date(),
-    user : req.session.user,
-    enterprise : req.session.enterprise,
-    filters: formatFilters(qs)
-  };
-
-  // set up the context
-  const context = { lang : qs.lang };
-  _.defaults(context, defaults);
-
-  // enforced detailed
-  params.detailed = 1;
-
-  Patients.find(params)
-  .then(patients => renderer.render({ patients, metadata }, template, context))
-  .then(result => {
-    res.set(renderer.headers).send(result);
-  })
-  .catch(next)
-  .done();
+  Patients.find(options)
+    .then(patients => {
+      return report.render({ patients, filters });
+    })
+    .then(result => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
 }
 
 module.exports = build;

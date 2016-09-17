@@ -47,9 +47,10 @@ INSERT INTO unit VALUES
   (141, 'Vouchers Records', 'TREE.VOUCHER_REGISTRY', 'Vouchers registry module', 5, '/partials/vouchers/index', '/vouchers'),
   (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create'),
   (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/partials/admin/transaction_type', '/admin/transaction_type'),
-  (144, 'Cashflow', 'TREE.CASHFLOW', 'the cashflow report', 5, '/partials/finance/cashflow', '/finance/cashflow');
+  (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 5, '/partials/finance/reports', '/finance/reports'),
+  (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/finance/reports/cashflow');
 
--- Reserved system account types
+-- Reserved system account type
 INSERT INTO `account_type` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
   (2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
@@ -238,8 +239,11 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- transaction type
 (143, 1),
 
--- Cashflow
-(144,1);
+-- [Folder] Finance/Reports
+(144,1),
+
+-- Cashflow Report
+(145,1);
 
 
 -- testing financial transactions
@@ -475,3 +479,13 @@ INSERT INTO `transaction_type` (`id`, `text`, `description`, `type`, `prefix`, `
   (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'Cash return transaction type', 'expense', 'PAYBACK', 1),
   (9, 'VOUCHERS.SIMPLE.PURCHASES', 'Purchase transaction type', 'expense', 'ACHAT', 1),
   (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'Credit note transaction type', 'creditNote', 'CREDIT NOTE', 1);
+
+SET @purchase_order = HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588');
+INSERT INTO `purchase` VALUES
+  (@purchase_order, 1, 1, 300, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2016-02-19'), CURRENT_TIMESTAMP, 1, NULL, NULL);
+
+INSERT INTO `purchase_item` VALUES
+  (HUID(UUID()), @purchase_order, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 1, 200, 200),
+  (HUID(UUID()), @purchase_order, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 10, 10, 100);
+
+

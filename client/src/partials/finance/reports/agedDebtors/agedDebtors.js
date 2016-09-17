@@ -1,0 +1,36 @@
+angular.module('bhima.controllers')
+  .controller('AgedDebtorsController', AgedDebtorsController);
+
+AgedDebtorsController.$inject = [
+  'NotifyService', 'AgedDebtorReportService'
+];
+
+function AgedDebtorsController(Notify, AgedDebtorReports) {
+  var vm = this;
+
+  // basic grid options
+  vm.gridOptions = {
+    fastWatch: true,
+    flatEntityAccess: true,
+    appScopeProvider: vm
+  };
+
+  // report column definitions
+  vm.gridOptions.columnDefs = [
+    { field: 'label', displayName: 'FORM.LABELS.LABEL', headerCellFilter: 'translate' },
+    { field: 'timestamp', displayName: 'FORM.LABELS.DATE', headerCellFilter: 'translate', cellFilter: 'date' },
+    { field: 'user', displayName: 'FORM.LABELS.USER', headerCellFilter: 'translate' },
+    { field: 'actions', displayName: 'FORM.LABELS.ACTIONS', headerCellFilter: 'translate' }
+  ];
+
+  AgedDebtorReports.read()
+    .then(function (reports) {
+      vm.gridOptions.data = reports;
+    })
+    .catch(Notify.handleError);
+
+  // open the configuration modal for a new Aged Debtors report
+  vm.create = function create() {
+    AgedDebtorReports.openCreateModal();
+  };
+}

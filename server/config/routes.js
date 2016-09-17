@@ -137,7 +137,6 @@ exports.configure = function configure(app) {
   app.get('/accounts/:id/balance', accounts.getBalance);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
-  app.get('/reports/finance/accounts/chart', accounts.document);
 
   // API for cost_center routes CRUD
   app.get('/cost_centers', costCenter.list);
@@ -254,7 +253,6 @@ exports.configure = function configure(app) {
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
 
   // route for inventory list receipt
-  app.get('/inventory/reports/metadata', inventory.getInventoryItemReport);
 
   /**
    * @deprecated: /inventory/:uuid/metadata route
@@ -330,8 +328,6 @@ exports.configure = function configure(app) {
   app.get('/depots/:depotId/expired', depots.listExpiredLots);
   app.get('/depots/:depotId/expirations', depots.listStockExpirations);
 
-  /* continuing on ... */
-
   // general ledger controller
   // transitioning to a more traditional angular application architecture
   app.get('/ledgers/general', gl.route);
@@ -341,26 +337,29 @@ exports.configure = function configure(app) {
   app.get('/currencies/:id', currencies.detail);
 
   // Patient invoice API
-
-  // TODO Decide if the route should be named patient invoice
   app.get('/invoices', patientInvoice.list);
   app.post('/invoices', patientInvoice.create);
   app.get('/invoices/search', patientInvoice.search);
   app.get('/invoices/:uuid', patientInvoice.details);
-  app.get('/invoices/references/:reference', patientInvoice.reference);
 
   // route for invoice Report
-  app.get('/invoices/patient/report', patientInvoice.getPatientInvoice);
 
   // reports API: Invoices (receipts)
-  app.get('/reports/invoices/:uuid', financeReports.receipts.invoices);
-  app.get('/reports/cash/:uuid', financeReports.receipts.cash);
+  app.get('/reports/medical/patients', medicalReports.patientRegistrations);
+  app.get('/reports/medical/patients/:uuid', medicalReports.receipts.patients);
+  app.get('/reports/medical/patients/:uuid/checkins', medicalReports.patientCheckins);
 
-  app.get('/reports/patient/registrations', medicalReports.patientRegistrations);
-  app.get('/reports/patient/:uuid', medicalReports.receipts.patients);
-  app.get('/reports/patients/:uuid/checkins', medicalReports.patientCheckins);
-  app.get('/reports/purchases/:uuid', inventoryReports.receipts.purchases);
-  app.get('/reports/finance/aged_debtor', financeReports.agedDebtor);
+  app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
+  app.get('/reports/inventory/items', inventory.getInventoryItemReport);
+
+  app.get('/reports/finance/invoices', financeReports.invoices);
+  app.get('/reports/finance/invoices/:uuid', financeReports.receipts.invoices);
+  app.get('/reports/finance/cash/:uuid', financeReports.receipts.cash);
+  app.get('/reports/finance/debtors/aged', financeReports.agedDebtor);
+  app.get('/reports/finance/vouchers', vouchers.report);
+  app.get('/reports/finance/vouchers/:uuid', vouchers.receipt);
+  app.get('/reports/finance/accounts/chart', accounts.document);
+  app.get('/reports/finance/cashflow', cashflow.document);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
@@ -415,9 +414,9 @@ exports.configure = function configure(app) {
 
   // analytics for financial dashboard
   // cash flow analytics
-  app.get('/analytics/cashboxes', analytics.cashflow.getCashBoxes);
-  app.get('/analytics/cashboxes/:id/balance', analytics.cashflow.getCashBoxBalance);
-  app.get('/analytics/cashboxes/:id/history', analytics.cashflow.getCashBoxHistory);
+  //app.get('/analytics/cashboxes', analytics.cashflow.getCashBoxes);
+  //app.get('/analytics/cashboxes/:id/balance', analytics.cashflow.getCashBoxBalance);
+  //app.get('/analytics/cashboxes/:id/history', analytics.cashflow.getCashBoxHistory);
 
   // debtor analytics
   app.get('/analytics/debtorgroups/top', analytics.cashflow.getTopDebtorGroups);
@@ -473,11 +472,11 @@ exports.configure = function configure(app) {
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
 
-  // employees api
-
   // employees
   app.get('/employees', employees.list);
   app.get('/employees/:id', employees.detail);
+
+  // @todo - use query strings
   app.get('/employees/:key/:value', employees.search);
   app.put('/employees/:id', employees.update);
   app.post('/employees', employees.create);
@@ -498,10 +497,7 @@ exports.configure = function configure(app) {
 
   // voucher api endpoint
   app.get('/vouchers', vouchers.list);
-  app.get('/vouchers/reports/', vouchers.report);
-  app.get('/vouchers/receipts/:uuid', vouchers.receipt);
   app.get('/vouchers/:uuid', vouchers.detail);
-  app.get('/vouchers/reports/:uuid', vouchers.report);
   app.post('/vouchers', vouchers.create);
 
   // suppliers api
@@ -549,6 +545,5 @@ exports.configure = function configure(app) {
 
   // cashflow
   app.get('/finance/cashflow', cashflow.report);
-  app.get('/reports/finance/cashflow', cashflow.document);
 
 };

@@ -2,28 +2,10 @@
 
 <div class="container-fluid">
 
-  <!-- heading  -->
-  <div class="row">
-    <div class="col-xs-4">
-      <h3 style="margin:2px;">{{ model.enterprise.name }}</h3>
-      <p style="margin:2px;">
-        {{translate 'FORM.LABELS.PROJECT'}}: {{ model.project.name }}<br>
-        {{translate 'FORM.LABELS.PHONE'}}: {{ model.enterprise.phone }}<br>
-        {{translate 'FORM.LABELS.EMAIL'}}: {{ model.enterprise.email }}<br>
-        {{translate 'FORM.LABELS.ADDRESS'}}: {{ model.enterprise.location }}
-      </p>
-    </div>
-
-    <div class="col-xs-4 col-xs-offset-4">
-      <p style="margin:2px;" class="text-right">
-        {{translate 'REPORT.PRODUCED_BY' }} {{ model.user.display_name }}<br>
-        {{translate 'REPORT.PRODUCED_DATE' }} {{date }}
-      </p>
-    </div>
-  </div>
+  {{> header }}
 
   <!-- title  -->
-  <h1 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+  <h1 class="text-center text-uppercase">
     {{translate 'ACCOUNT.ACCOUNT_CHART'}}
   </h1>
 
@@ -40,7 +22,7 @@
     </thead>
 
     <tbody>
-      {{#each model.data}}
+      {{#each accounts}}
         {{#if this.is_title}}
           <tr>
             <td class="text-left"><strong>{{ this.number }}</strong></td>
@@ -75,6 +57,4 @@
       {{/each}}
     </tbody>
   </table>
-
-
 </div>

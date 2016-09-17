@@ -18,26 +18,11 @@
 'use strict';
 
 const _           = require('lodash');
-const path        = require('path');
-
+const ReportManager = require('../../../lib/ReportManager');
 const db          = require('../../../lib/db');
-const BadRequest  = require('../../../lib/errors/BadRequest');
-
-// group supported renderers
-const renderers = {
-  'json': require('../../../lib/renderers/json'),
-  'html': require('../../../lib/renderers/html'),
-  'pdf': require('../../../lib/renderers/pdf'),
-};
-
-// default rendering parameters
-const defaults = {
-  pageSize: 'A4',
-  renderer: 'pdf'
-};
 
 // path to the template to render
-const template = path.normalize('./server/controllers/finance/reports/agedDebtor.handlebars');
+const TEMPLATE = './server/controllers/finance/reports/agedDebtor.handlebars';
 
 /**
  * @method agedDebtorReport
@@ -49,29 +34,20 @@ function agedDebtorReport(req, res, next) {
 
   const qs = req.query;
 
-  // choose the renderer
-  const renderer = renderers[qs.renderer || defaults.renderer];
-  if (_.isUndefined(renderer)) {
-    return next(new BadRequest(`The application does not support rendering ${qs.renderer}.`));
+  const metadata = _.clone(req.session);
+  metadata.currency_id = req.session.enterprise.currency_id;
+
+  let report;
+  try {
+    report = new ReportManager(TEMPLATE, metadata, qs);
+  } catch(e) {
+    return next(e);
   }
 
-  // data to be passed to the report
-  const data = {
-    metadata : {
-      timestamp : new Date(),
-      currency_id : req.session.enterprise.currency_id,
-      user : req.session.user,
-      enterprise : req.session.enterprise
-    }
-  };
-
-  // make sure the language is set appropriately
-  const context = { lang : qs.lang };
-  _.defaults(context, defaults);
-
-  // makes the
   const havingNonZeroValues = ' HAVING \'all\' > 0 ';
   const includeZeroes = Boolean(Number(qs.zeroes));
+
+  let data = {};
 
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `
@@ -110,10 +86,10 @@ function agedDebtorReport(req, res, next) {
     })
     .then(aggregates => {
       data.aggregates = aggregates[0];
-      return renderer.render(data, template, context);
+      return report.render(data);
     })
     .then(result => {
-      res.set(renderer.headers).send(result);
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();

@@ -2,15 +2,16 @@
 
 <body>
   <div class="container">
+
     <!-- header  -->
     <div class="row">
       <div class="col-xs-4">
-        <h3 style="margin:2px;">{{model.enterprise.name}} ({{model.enterprise.abbr}})</h3>
-        <span>{{translate 'FORM.LABELS.PHONE'}}: {{model.enterprise.phone}}</span><br>
-        <span>{{translate 'FORM.LABELS.EMAIL'}}: {{model.enterprise.email}}</span><br>
+        <h3 style="margin:2px;">{{metadata.enterprise.name}} ({{metadata.enterprise.abbr}})</h3>
+        <span>{{translate 'FORM.LABELS.PHONE'}}: {{metadata.enterprise.phone}}</span><br>
+        <span>{{translate 'FORM.LABELS.EMAIL'}}: {{metadata.enterprise.email}}</span><br>
       </div>
       <div class="col-xs-offset-4 col-xs-4 text-right">
-        <small>{{model.project.name}} ({{model.project.abbr}})</small>
+        <small>{{metadata.project.name}} ({{metadata.project.abbr}})</small>
       </div>
     </div>
 
@@ -39,7 +40,7 @@
             </tr>
           </thead>
           <tbody>
-            {{#each model.data}}
+            {{#each rows}}
               <tr>
                 <td>{{code}}</td>
                 <td>{{label}}</td>
@@ -51,7 +52,7 @@
                 <td>{{unit_volume}}</td>
                 <td>
                   {{#if consumable}}
-                    <i class="glyphicon glyphicon-ok"></i>
+                    <i class="fa fa-check-circle-o"></i>
                   {{/if}}
                 </td>
               </tr>
