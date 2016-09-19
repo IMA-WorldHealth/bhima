@@ -21,10 +21,10 @@ describe('Purchase Orders', function () {
   beforeEach(() => helpers.navigate(path));
 
   it('supports single item purchase orders', () => {
-    var page = new PurchaseOrderPage();
+    let page = new PurchaseOrderPage();
 
     // prepare the page with default supplier, description, etc
-    FU.typeahead('PurchaseCtrl.supplier', 'Test Supplier');
+    FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
     FU.input('PurchaseCtrl.order.details.note', 'This is a brief description of what is going on');
     components.dateEditor.set(new Date('2016-03-03'));
 
@@ -45,10 +45,10 @@ describe('Purchase Orders', function () {
   });
 
   it('supports multi-item purchase orders', function () {
-    var page = new PurchaseOrderPage();
+    let page = new PurchaseOrderPage();
 
     // prepare the page with default supplier, description, etc
-    FU.typeahead('PurchaseCtrl.supplier', 'Test Supplier');
+    FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
     FU.input('PurchaseCtrl.order.details.note', 'We need more penicillin');
     components.dateEditor.set(new Date('2016-03-05'));
 
@@ -91,10 +91,8 @@ describe('Purchase Orders', function () {
   });
 
   it('blocks submission if no supplier is available', function () {
-    var page = new PurchaseOrderPage();
-
-    // no such supplier
-    FU.input('PurchaseCtrl.supplier', 'Harry Styles');
+    let page = new PurchaseOrderPage();
+    FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
 
     // make sure the "add rows" button is still disabled
     expect(page.btns.add.isEnabled()).to.eventually.equal(false);
@@ -104,11 +102,11 @@ describe('Purchase Orders', function () {
   });
 
   it('blocks submission for an invalid grid', function () {
-    var page = new PurchaseOrderPage();
+    let page = new PurchaseOrderPage();
     page.btns.clear.click();
 
     // prepare the page with default supplier, description, etc
-    FU.typeahead('PurchaseCtrl.supplier', 'Test Supplier');
+    FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
     FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
     components.dateEditor.set(new Date('2016-03-01'));
 
