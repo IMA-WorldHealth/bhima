@@ -29,7 +29,7 @@ echo "Building server ...."
 # build and start the server
 ./node_modules/.bin/gulp build
 cd bin
-NODE_ENV=development node server/app.js &
+NODE_ENV=development node --use_strict server/app.js &
 NODE_PID=$!
 
 # make sure we have enough time for the server to start
