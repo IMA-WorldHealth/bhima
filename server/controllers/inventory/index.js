@@ -271,7 +271,7 @@ function deleteInventoryGroups(req, res, next) {
 
   groups.remove(req.params.uuid)
   .then(() => {
-    res.status(204).send();
+    res.sendStatus(204);
   })
   .catch(function (error) {
     core.errorHandler(error, req, res, next);
@@ -368,7 +368,7 @@ function deleteInventoryTypes(req, res, next) {
 
   types.remove(req.params.id)
   .then(() => {
-    res.status(204).send();
+    res.sendStatus(204);
   })
   .catch(function (error) {
     core.errorHandler(error, req, res, next);
@@ -449,7 +449,7 @@ function deleteInventoryUnits(req, res, next) {
 
   units.remove(req.params.id)
   .then(() => {
-    res.status(204).send();
+    res.sendStatus(204);
   })
   .catch(function (error) {
     core.errorHandler(error, req, res, next);

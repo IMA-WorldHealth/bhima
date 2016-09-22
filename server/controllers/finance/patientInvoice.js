@@ -26,7 +26,7 @@ const createInvoice = require('./invoice/patientInvoice.create');
 exports.list = list;
 
 /** Retrieves details for a specific patient invoice. */
-exports.details = details;
+exports.detail = detail;
 
 /** Write a new patient invoice record and attempt to post it to the journal. */
 exports.create = create;
@@ -53,11 +53,11 @@ exports.listInvoices = listInvoices;
  */
 function list(req, res, next) {
   listInvoices()
-  .then(function (invoices) {
-    res.status(200).json(invoices);
-  })
-  .catch(next)
-  .done();
+    .then(function (invoices) {
+      res.status(200).json(invoices);
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -82,13 +82,14 @@ function listInvoices() {
       JOIN project ON invoice.project_id = project.id
     ORDER BY invoice.reference ASC, invoice.date ASC;`;
 
+  // TODO - this shouldn't throw an error...
   return db.exec(sql)
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find Patient Invoice `);
-    }
-    return rows;
-  });
+    .then(function (rows) {
+      if (rows.length === 0) {
+        throw new NotFound(`Could not find Patient Invoice `);
+      }
+      return rows;
+    });
 }
 
 /**
@@ -136,14 +137,9 @@ function lookupInvoice(invoiceUuid) {
     WHERE invoice_subsidy.invoice_uuid = ?;
   `;
 
-  return db.exec(invoiceDetailQuery, [buid])
-    .then(function (rows) {
-
-      if (!rows.length) {
-        throw new NotFound(`Could not find a invoice with uuid ${invoiceUuid}`);
-      }
-
-      record = rows[0];
+  return db.one(invoiceDetailQuery, [buid], invoiceUuid, 'invoice')
+    .then(function (invoice) {
+      record = invoice;
       return db.exec(invoiceItemsQuery, [buid]);
     })
     .then(function (rows) {
@@ -165,14 +161,15 @@ function lookupInvoice(invoiceUuid) {
 /**
  * @todo Read the balance remaining on the debtors account given the invoice as an auxiliary step
  */
-function details(req, res, next) {
+function detail(req, res, next) {
+
   // this assumes a value must be past for this route to initially match
   lookupInvoice(req.params.uuid)
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(function (record) {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 function create(req, res, next) {

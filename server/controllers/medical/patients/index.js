@@ -55,7 +55,7 @@ exports.pictures  = pictures;
 exports.create = create;
 
 // get details of a patient
-exports.details = detail;
+exports.detail = detail;
 
 // update patient informations
 exports.update = update;
@@ -224,8 +224,8 @@ function lookupPatient(patientUuid) {
   // convert uuid to database usable binary uuid
   const buid = db.bid(patientUuid);
 
-  const patientDetailQuery =
-    `SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
+  const sql = `
+    SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
       p.sex, p.registration_date, p.email, p.phone, p.dob, BUID(p.origin_location_id) as origin_location_id,
       CONCAT(proj.abbr, p.reference) AS reference, p.title, p.address_1, p.address_2,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
@@ -234,15 +234,10 @@ function lookupPatient(patientUuid) {
       dg.locked, dg.name as debtor_group_name, u.username, u.display_name AS userName
     FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u
     ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id
-    WHERE p.uuid = ?;`;
+    WHERE p.uuid = ?;
+  `;
 
-  return db.exec(patientDetailQuery, buid)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new NotFound(`Could not find a patient with uuid ${patientUuid}`);
-      }
-      return rows[0];
-    });
+  return db.one(sql, buid, patientUuid, 'patient');
 }
 
 /**

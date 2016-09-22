@@ -1,40 +1,30 @@
+'use strict';
+
 /**
  * Grade Controller
  *
  * This controller exposes an API to the client for reading and writing Grade
  */
-var db = require('../../lib/db');
-var uuid = require('node-uuid');
-var NotFound = require('../../lib/errors/NotFound');
+const  db = require('../../lib/db');
+const  uuid = require('node-uuid');
+const  NotFound = require('../../lib/errors/NotFound');
 
 // GET /Grade
 function lookupGrade(uid) {
-  'use strict';
+  const sql = `
+    SELECT BUID(uuid) as uuid, code, text, basic_salary
+    FROM grade
+    WHERE grade.uuid = ?;
+  `;
 
-  var sql =
-    `SELECT BUID(uuid) as uuid, code, text, basic_salary
-    FROM grade 
-    WHERE grade.uuid = ?`;
-
-  return db.exec(sql, [uid])
-  .then(function (rows) {
-
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a grade with uuid ${uuid.unparse(uid)}`);
-    }
-
-    return rows[0];
-  });
+  return db.one(sql, [db.bid(uid)], uid, 'grade');
 }
 
 
 // Lists of grades of hospital employees.
 function list(req, res, next) {
-  'use strict';
 
-  var sql;
-
-  sql =
+  let sql =
     'SELECT BUID(uuid) as uuid, text FROM grade ;';
 
   if (req.query.detailed === '1') {
@@ -43,11 +33,11 @@ function list(req, res, next) {
   }
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -56,22 +46,18 @@ function list(req, res, next) {
 * Returns the detail of a single Grade
 */
 function detail(req, res, next) {
-  'use strict';
 
-  const uid = db.bid(req.params.uuid);
-
-  lookupGrade(uid)
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+  lookupGrade(req.params.uuid)
+    .then(function (record) {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 
 // POST /grade
 function create(req, res, next) {
-  'use strict';
 
   var sql,
       data = req.body;
@@ -83,17 +69,16 @@ function create(req, res, next) {
     'INSERT INTO grade SET ? ';
 
   db.exec(sql, [data])
-  .then(function (row) {
-    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
-  })
-  .catch(next)
-  .done();
+    .then(function (row) {
+      res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+    })
+    .catch(next)
+    .done();
 }
 
 
 // PUT /grade /:uuid
 function update(req, res, next) {
-  'use strict';
 
   var sql =
     'UPDATE grade SET ? WHERE uuid = ?;';
@@ -104,19 +89,16 @@ function update(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   db.exec(sql, [req.body, uid])
-  .then(function () {
-    return lookupGrade(uid);
-  })
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(() => lookupGrade(req.params.uuid))
+    .then(record => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 // DELETE /grade/:uuid
 function del(req, res, next) {
-  'use strict';
 
   var sql =
     'DELETE FROM grade WHERE uuid = ?;';

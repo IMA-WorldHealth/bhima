@@ -54,14 +54,7 @@ function lookupEnterprise(id) {
     FROM enterprise WHERE id = ?;
   `;
 
-  return db.exec(sql, [id])
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound(`Could not find an enterprise with id ${id}.`);
-    }
-
-    return rows[0];
-  });
+  return db.one(sql, [id], id, 'enterprise');
 }
 
 /**

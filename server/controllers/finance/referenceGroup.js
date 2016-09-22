@@ -34,7 +34,7 @@ function list(req, res, next) {
   var sql;
 
   if (req.query.detailed === '1') {
-    sql = 
+    sql =
       `SELECT reference_group.id, reference_group.reference_group, reference_group.text, reference_group.position,
       reference_group.section_bilan_id, section_bilan.text AS sectionBilanText
       FROM reference_group
@@ -43,7 +43,7 @@ function list(req, res, next) {
    } else {
     sql =
       'SELECT id, text, reference_group FROM reference_group';
-  }  
+  }
 
    db.exec(sql)
   .then(function (rows) {
@@ -103,7 +103,7 @@ function remove(req, res, next) {
       return db.exec(sql, [sectionBilanId]);
     })
     .then(function () {
-      res.status(204).send();
+      res.sendStatus(204);
     })
     .catch(next)
     .done();

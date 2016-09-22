@@ -10,6 +10,7 @@
 'use strict';
 
 const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
 /**
  * GET /projects?complete={0|1}
@@ -52,11 +53,11 @@ exports.list = function list(req, res, next) {
   }
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -65,29 +66,20 @@ exports.list = function list(req, res, next) {
  *
  * Returns the details of a single project
  */
-exports.details = function details(req, res, next) {
+exports.detail = function detail(req, res, next) {
+  const id = req.params.id;
 
-  let sql =
-    `SELECT project.id, project.enterprise_id, project.abbr,
+  const sql = `
+    SELECT project.id, project.enterprise_id, project.abbr,
       project.zs_id, project.name, project.locked
     FROM project
-    WHERE project.id = ?;`;
+    WHERE project.id = ?;
+  `;
 
-  db.exec(sql, [ req.params.id ])
-  .then(function (rows) {
-
-    // send a 404 if rows is empty
-    if (!rows.length) {
-      return res.status(404).json({
-        code : 'ERR_NOT_FOUND',
-        reason : 'No project found by id ' + req.params.id,
-      });
-    }
-
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
+  db.one(sql, [id], id, 'project')
+    .then(project => res.status(200).json(project))
+    .catch(next)
+    .done();
 };
 
 /**
@@ -153,13 +145,10 @@ exports.delete = function del(req, res, next) {
 
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      return res.status(404).json({
-        code : 'ERR_NOT_FOUND',
-        reason : 'No project found by id ' + req.params.id
-      });
+      throw new NotFound(`No project found by id ${req.params.id}.`);
     }
 
-    res.status(204).send();
+    res.sendStatus(204);
   })
   .catch(next)
   .done();

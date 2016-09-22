@@ -45,11 +45,11 @@ function list(req, res, next) {
   sql += ' ORDER BY s.name;';
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -130,7 +130,7 @@ function update(req, res, next) {
  * Remove a service in the database.
  */
 function remove(req, res, next) {
-  let sql = 'DELETE FROM service WHERE id = ?;';
+  const sql = 'DELETE FROM service WHERE id = ?;';
 
   db.exec(sql, [req.params.id])
     .then(function (result) {
@@ -178,18 +178,12 @@ function detail(req, res, next) {
  * @returns {Promise} - returns the result of teh database query
  */
 function lookupService(id) {
-  let sql =`
+  const sql =`
     SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id
     FROM service AS s WHERE s.id = ?;
   `;
 
-  return db.exec(sql, id)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new NotFound(`Could not find a service with id ${id}.`);
-      }
-      return rows[0];
-    });
+  return db.one(sql, id, id, 'service');
 }
 
 exports.list = list;

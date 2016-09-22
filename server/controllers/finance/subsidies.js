@@ -106,7 +106,7 @@ function remove(req, res, next) {
       return db.exec(removeSubsidyQuery, [subsidyId]);
     })
     .then(function () {
-      res.status(204).send();
+      res.sendStatus(204);
     })
     .catch(next)
     .done();
