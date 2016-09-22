@@ -8,7 +8,7 @@
 </div>
 
 <div class="flex-content">
-  <div class="container-fluid">
+  <div class="container">
 
     <!--
       top note panel for the purchase order.details
@@ -24,15 +24,19 @@
                 <div class="form-group"
                   ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.supplier.$invalid }">
                   <label class="control-label">{{ "FORM.LABELS.SUPPLIER" | translate }}</label>
-                  <input
-                    class="form-control"
-                    ng-model="PurchaseCtrl.supplier"
-                    placeholder="{{ 'FORM.PLACEHOLDERS.SUPPLIER' | translate }}..."
+
+                  <ui-select
                     name="supplier"
-                    uib-typeahead="supplier as supplier.display_name for supplier in PurchaseCtrl.suppliers | filter:$viewValue | limitTo:10"
-                    typeahead-editable="false"
-                    typeahead-on-select="PurchaseCtrl.order.setSupplier(PurchaseCtrl.supplier)"
+                    ng-model="PurchaseCtrl.supplier"
+                    theme="bootstrap"
+                    on-select="PurchaseCtrl.order.setSupplier(PurchaseCtrl.supplier)"
                     required>
+                    <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.SUPPLIER' | translate }}"><span>{{$select.selected.display_name}}</span></ui-select-match>
+                    <ui-select-choices ui-select-focus-patch repeat="supplier in PurchaseCtrl.suppliers | filter:$select.search ">
+                      <span ng-bind-html="supplier.display_name| highlight:$select.search"></span>
+                    </ui-select-choices>
+                  </ui-select>
+
                   <div class="help-block" ng-messages="PurchaseOrderForm.supplier.$error" ng-show="PurchaseOrderForm.$submitted">
                     <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                   </div>
@@ -128,7 +132,7 @@
           <span class="input-group-btn">
             <button
               id="btn-add-rows"
-              class="btn btn-default btn-sm"
+              class="btn btn-default"
               ng-disabled="!PurchaseCtrl.supplier"
               ng-click="PurchaseCtrl.addItems(PurchaseCtrl.itemIncrement)">
               <span class="fa fa-plus-circle"></span> {{ "FORM.BUTTONS.ADD" | translate }}
@@ -136,7 +140,7 @@
           </span>
           <input
             type="number"
-            class="form-control input-sm"
+            class="form-control"
             ng-model="PurchaseCtrl.itemIncrement"
             style="max-width : 40px;"
             ng-disabled="!PurchaseCtrl.supplier">
@@ -161,7 +165,7 @@
       </div>
     </div>
 
-    <div id="purchase-order-grid" ui-grid="PurchaseCtrl.gridOptions" style="height : {{ ::PurchaseCtrl.bhConstants.GRID_HEIGHT }}px; width : 100%;" ui-grid-auto-resize ui-grid-cellNav>
+    <div id="purchase-order-grid" ui-grid="PurchaseCtrl.gridOptions" style="height : {{ ::PurchaseCtrl.bhConstants.GRID_HEIGHT }}px; width : 100%;">
     </div>
 
     <div class="row" ng-if="PurchaseCtrl.supplier">
