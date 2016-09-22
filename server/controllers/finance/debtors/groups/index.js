@@ -42,21 +42,15 @@ exports.invoices = invoices;
  * @private
  */
 function lookupDebtorGroup(uid) {
-  const sql =
-    `SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, BUID(location_id) as location_id,
+  const sql = `
+    SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, BUID(location_id) as location_id,
       phone, email, note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
       apply_subsidies, apply_discounts, apply_billing_services
     FROM debtor_group
-    WHERE uuid = ?;`;
+    WHERE uuid = ?;
+  `;
 
-  return db.exec(sql, [uid])
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound(`Could not find a debtor group with uuid ${uuid.unparse(uid)}`);
-    }
-
-    return rows[0];
-  });
+  return db.one(sql, [db.bid(uid)], uid, 'debtor group');
 }
 
 /**
@@ -126,7 +120,7 @@ function update(req, res, next) {
       );
     }
 
-    return lookupDebtorGroup(uid);
+    return lookupDebtorGroup(req.params.uuid);
   })
   .then(function (group) {
     res.status(200).json(group);
@@ -143,14 +137,10 @@ function update(req, res, next) {
 * @function detail
 */
 function detail(req, res, next) {
-  const uid = db.bid(req.params.uuid);
-
-  lookupDebtorGroup(uid)
-  .then(function (group) {
-    res.status(200).json(group);
-  })
-  .catch(next)
-  .done();
+  lookupDebtorGroup(req.params.uuid)
+    .then(group => res.status(200).json(group))
+    .catch(next)
+    .done();
 }
 
 /**

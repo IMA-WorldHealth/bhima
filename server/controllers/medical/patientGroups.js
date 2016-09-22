@@ -145,18 +145,18 @@ function remove(req, res, next) {
 }
 
 /**
- * @method details
+ * @method detail
  *
  * @description
  * Return a patient group details from the database
  */
 function detail(req, res, next) {
   lookupPatientGroup(req.params.uuid)
-  .then(function (row) {
-    res.status(200).json(row);
-  })
-  .catch(next)
-  .done();
+    .then(function (row) {
+      res.status(200).json(row);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -175,13 +175,7 @@ function lookupPatientGroup(uid) {
     FROM patient_group AS pg WHERE pg.uuid = ?;
   `;
 
-  return db.exec(sql, [db.bid(uid)])
-    .then(function (rows) {
-      if (!rows.length) {
-        throw new NotFound('No patient group found with id ' + uuid.unparse(uid));
-      }
-      return rows[0];
-    });
+  return db.one(sql, [db.bid(uid)], uid, 'patient group');
 }
 
 exports.list = list;

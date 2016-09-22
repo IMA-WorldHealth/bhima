@@ -34,12 +34,12 @@ function list(req, res, next) {
   var sql;
 
   if (req.query.detailed === '1') {
-    sql = 
-      'SELECT id, text, position, is_charge FROM section_resultat';       
+    sql =
+      'SELECT id, text, position, is_charge FROM section_resultat';
   } else {
     sql =
       'SELECT id, text FROM section_resultat';
-  }  
+  }
 
    db.exec(sql)
   .then(function (rows) {
@@ -98,7 +98,7 @@ function remove(req, res, next) {
       return db.exec(sql, [sectionResultatId]);
     })
     .then(function () {
-      res.status(204).send();
+      res.sendStatus(204);
     })
     .catch(next)
     .done();

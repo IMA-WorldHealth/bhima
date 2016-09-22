@@ -6,7 +6,7 @@ const helpers = require('./helpers');
 describe('(/system) System Information', () => {
 
   it('GET /system/events downloads a list of events', () => {
-    agent.get('/system/events')
+    return agent.get('/system/events')
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.length.above(1);
@@ -16,7 +16,7 @@ describe('(/system) System Information', () => {
 
 
   it('GET /system/information downloads the system architecture', () => {
-    agent.get('/system/information')
+    return agent.get('/system/information')
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(
@@ -24,7 +24,7 @@ describe('(/system) System Information', () => {
           'version'
         );
 
-        expect(res.body.memoryUsage).to.satisfy((x) => { return x > 0 && x < 1; });
+        expect(res.body.memoryUsage).to.satisfy((x) => { return x >= 0 && x <= 100; });
         expect(res.body.processUptime).to.be.above(0);
         expect(res.body.machineUptime).to.be.above(0);
       })

@@ -24,7 +24,7 @@ function list(req, res, next) {
       rg.text AS reference_group_text, sr.text AS section_resultat_text
       FROM reference AS r
       LEFT JOIN reference_group AS rg ON rg.id = r.reference_group_id
-      LEFT JOIN section_resultat AS sr ON sr.id = r.section_resultat_id`; 
+      LEFT JOIN section_resultat AS sr ON sr.id = r.section_resultat_id`;
 
   }
 
@@ -88,7 +88,7 @@ function remove (req, res, next) {
       return db.exec(removeReferenceQuery, [referenceId]);
     })
     .then(function () {
-      res.status(204).send();
+      res.sendStatus(204);
    })
     .catch(next)
     .done();
@@ -100,7 +100,7 @@ function lookupReference(id) {
     FROM reference AS r WHERE r.id = ?`;
 
   return db.exec(sql, id)
-    .then(function (rows) {      
+    .then(function (rows) {
       // Record Not Found !
       if (rows.length === 0) {
         throw new NotFound(`Could not find a reference with id ${id}`);

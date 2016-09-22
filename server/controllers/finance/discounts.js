@@ -179,7 +179,7 @@ exports.delete = function del(req, res, next) {
   }).then(function () {
 
     // return a 204 NOT CONTENT success message
-    res.status(204).send();
+    res.sendStatus(204);
   })
   .catch(next)
   .done();

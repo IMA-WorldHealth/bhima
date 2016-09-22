@@ -140,7 +140,7 @@ function remove (req, res, next) {
       return db.exec(removeCostCenterQuery, [costCenterId]);
     })
     .then(function () {
-      res.status(204).send();
+      res.sendStatus(204);
     })
     .catch(next)
     .done();
@@ -210,14 +210,14 @@ function getCostValue (req, res, next){
 
 
   lookupCostCenter(req.params.id)
-    .then(function (){   
-      sql = 
+    .then(function (){
+      sql =
         'SELECT ac.id FROM account AS ac WHERE ac.cc_id = ? AND ac.is_title=0';
 
       return db.exec(sql, req.params.id);
     })
     .then(function (rows){
-      
+
       if (rows.length > 0) {
         rows = rows.map(function (row) { return row.id;});
         optionalCondition = ' OR gl.account_id IN (' + rows.join(',') + ')';
@@ -225,13 +225,13 @@ function getCostValue (req, res, next){
 
       sql =
         `SELECT IFNULL(SUM(t.debit_equiv - t.credit_equiv), 0) AS cost
-        FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN 
+        FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN
         cost_center AS cc ON gl.cc_id = cc.id WHERE gl.cc_id=? '${optionalCondition}')
         AS t`;
 
       return db.exec(sql, req.params.id);
     })
-    .then(function (result){      
+    .then(function (result){
       res.status(200).json(result[0]);
     })
     .catch(next)

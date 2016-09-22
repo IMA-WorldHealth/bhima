@@ -340,7 +340,7 @@ exports.configure = function configure(app) {
   app.get('/invoices', patientInvoice.list);
   app.post('/invoices', patientInvoice.create);
   app.get('/invoices/search', patientInvoice.search);
-  app.get('/invoices/:uuid', patientInvoice.details);
+  app.get('/invoices/:uuid', patientInvoice.detail);
 
   // route for invoice Report
 
@@ -373,7 +373,7 @@ exports.configure = function configure(app) {
   // Patients API
   app.get('/patients', patients.list);
   app.post('/patients', patients.create);
-  app.get('/patients/:uuid', patients.details);
+  app.get('/patients/:uuid', patients.detail);
   app.put('/patients/:uuid', patients.update);
   app.get('/patients/:uuid/groups', patients.groups.list);
   app.post('/patients/:uuid/groups', patients.groups.update);
@@ -434,7 +434,7 @@ exports.configure = function configure(app) {
   app.put('/users/:id/password', users.password);
 
   // projects controller
-  app.get('/projects/:id', projects.details);
+  app.get('/projects/:id', projects.detail);
   app.put('/projects/:id', projects.update);
   app.post('/projects', projects.create);
   app.delete('/projects/:id', projects.delete);

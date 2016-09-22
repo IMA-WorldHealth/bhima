@@ -142,7 +142,7 @@ function remove(req, res, next) {
       return db.exec(removeProfitCenterQuery, [profitCenterId]);
     })
     .then(function () {
-      res.status(204).send();
+      res.sendStatus(204);
     })
     .catch(next)
     .done();
@@ -212,8 +212,8 @@ function getProfitValue (req, res, next){
   var sql = null, optionalCondition = '';
 
   lookupProfitCenter(req.params.id)
-    .then(function (){      
-      sql = 
+    .then(function (){
+      sql =
         'SELECT ac.id FROM account AS ac WHERE ac.pc_id = ? AND ac.is_title = 0';
 
       return db.exec(sql, req.params.id);
@@ -226,8 +226,8 @@ function getProfitValue (req, res, next){
 
       sql =
         `SELECT IFNULL(SUM(t.credit_equiv - t.debit_equiv), 0) as profit
-        FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN 
-        profit_center AS pc ON gl.pc_id = pc.id WHERE gl.pc_id = ? ${optionalCondition}) 
+        FROM (SELECT gl.debit_equiv, gl.credit_equiv FROM general_ledger AS gl LEFT JOIN
+        profit_center AS pc ON gl.pc_id = pc.id WHERE gl.pc_id = ? ${optionalCondition})
         AS t`;
 
       return db.exec(sql, req.params.id);

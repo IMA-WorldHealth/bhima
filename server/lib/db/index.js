@@ -6,6 +6,9 @@ const winston = require('winston');
 const uuid    = require('node-uuid');
 const Transaction = require('./transaction');
 
+const BadRequest = require('../errors/BadRequest');
+const NotFound = require('../errors/NotFound');
+
 /**
  * @class DatabaseConnector
  *
@@ -94,6 +97,43 @@ class DatabaseConnector {
   transaction() {
     return new Transaction(this);
   }
+
+  /**
+   * @method one
+   *
+   * @description
+   * A simply wrapper to make controllers DRY.  It wraps the exec() method in a
+   * rejection if the returned value is not exactly 1.
+   *
+   * @param {String} sql - the SQL template query to call the database with
+   * @param {Object|Array|Undefined} params - the parameter object to be
+   *   combined with the SQL statement before calling the database driver
+   * @param {String} id - the unique id sought
+   * @param {String|Undefined} entity - the entity targeted for pretty printing.
+   * @returns {Promise} the result of the database query
+   */
+  one(sql, params, id, entity) {
+
+    return this.exec(sql, params)
+      .then(rows => {
+
+        if (rows.length < 1) {
+          throw new NotFound(
+            `Expected ${entity || 'record'} to contain a single record with id ${id}, but none were found!`
+          );
+        }
+
+        if (rows.length > 1) {
+          throw new BadRequest(`
+            Expected ${entity || 'record'} to contain a single record with id ${id},
+            but found ${rows.length} records!
+          `);
+        }
+
+        return rows[0];
+      });
+  }
+
 
   /**
    * @function bid
