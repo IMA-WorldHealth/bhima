@@ -2,7 +2,7 @@
 angular.module('bhima.controllers')
 .controller('UsersPasswordModalController', UsersPasswordModalController);
 
-UsersPasswordModalController.$inject = [ '$uibModalInstance', 'UserService', 'user' ];
+UsersPasswordModalController.$inject = [ '$uibModalInstance', 'UserService', 'user', 'NotifyService' ];
 
 /**
 * User Passsword Modal Controller
@@ -10,7 +10,7 @@ UsersPasswordModalController.$inject = [ '$uibModalInstance', 'UserService', 'us
 * This controller is responsible for changing a user's password.  Provides a
 * simply modal interface to
 */
-function UsersPasswordModalController($uibModalInstance, Users, user) {
+function UsersPasswordModalController($uibModalInstance, Users, user, Notify) {
   var vm = this;
 
   vm.user = angular.copy(user);
@@ -31,16 +31,21 @@ function UsersPasswordModalController($uibModalInstance, Users, user) {
   }
 
   // submits the password form
-  function submit(invalid) {
-    if (invalid) { return; }
+  function submit(passwordForm) {
 
-    // try to update the user's passsword
+    passwordForm.$setSubmitted();
+
+    if (passwordForm.invalid) { return; }
+    if (!passwordForm.$dirty) { return; }
+
+
+    // try to update the user's password
     Users.updatePassword(vm.user.id, { password : vm.user.password })
-    .then(function () {
+    .then(function (res) {
       $uibModalInstance.close();
     })
-    .catch(function (error) {
-      console.log(error);
+    .catch(function (err) {
+      Notify.handleError(err);
     });
   }
 

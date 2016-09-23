@@ -55,7 +55,7 @@
       </div>
 
       <div ng-if="!UserModalCtrl.isCreating" class="form-group">
-        <button type="button" class="btn btn-warning btn-block" ng-click="UserModalCtrl.setPasswordModal()">
+        <button id="user-edit-password" type="button" class="btn btn-warning btn-block" ng-click="UserModalCtrl.setPasswordModal()">
           <i class="fa fa-lock"></i> {{ 'FORM.BUTTONS.UPDATE_PASSWORD' | translate }}
         </button>
       </div>
@@ -80,13 +80,13 @@
 </div>
 
 <div class="modal-footer">
-  <p ng-if="UserForm.$submitted && UserForm.$pristine && !UserModalCtrl.isCreating" class="text-warning"><i class="fa fa-warning"></i> {{ "USERS.RECORD_SAME" | translate }}</p>
+  <p id="user-same" ng-if="UserForm.$submitted && UserForm.$pristine && !UserModalCtrl.isCreating" class="text-warning"><i class="fa fa-warning"></i> {{ "USERS.RECORD_SAME" | translate }}</p>
   <p ng-if="UserForm.$submitted && UserForm.$invalid" class="text-danger"><i class="fa fa-exclamation-triangle"></i> {{ "FORM.ERRORS.RECORD_ERROR" | translate }}</p>
 
-  <button type="button" class="btn btn-default" ng-click="UserModalCtrl.closeModal()">
+  <button id="user-cancel" type="button" class="btn btn-default" ng-click="UserModalCtrl.closeModal()">
     <i class="fa fa-ban"></i> {{ 'FORM.BUTTONS.CANCEL' | translate }}
   </button>
-  <button class="btn btn-primary btn-sm" data-method="submit" ng-click="UserModalCtrl.submit(UserForm)" data-action="close">
+  <button id="user-submit" class="btn btn-primary btn-sm" data-method="submit" ng-click="UserModalCtrl.submit(UserForm)" data-action="close">
     <i class="fa fa-ok"></i> {{ 'FORM.BUTTONS.SUBMIT' | translate }}
   </button>
 </div>
