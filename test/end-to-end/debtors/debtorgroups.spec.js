@@ -22,8 +22,8 @@ describe('Debtor Groups Management', function () {
   it('creates a debtor group', function () {
     FU.buttons.create();
 
-    FU.typeahead('GroupEditCtrl.group.account_id', '47001');
     FU.input('GroupEditCtrl.group.name', 'E2E Debtor Group');
+    FU.typeahead('GroupEditCtrl.group.account_id', '47001');
     FU.input('GroupEditCtrl.group.max_credit', '1200');
     FU.input('GroupEditCtrl.group.note', 'This debtor group was created by an automated end to end test.');
     FU.input('GroupEditCtrl.group.phone', '+243 834 443');

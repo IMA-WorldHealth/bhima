@@ -6,12 +6,13 @@
  *
  * @module finance/cashflow
  *
+ * @requires lodash
  * @requires node-uuid
  * @requires moment
  * @requires lib/db
  * @requires lib/util
+ * @requires lib/ReportManager
  * @requires lib/errors/BadRequest
- * @requires finance/journal/cash
  */
 
 'use strict';
@@ -19,12 +20,13 @@
 const _          = require('lodash');
 const uuid       = require('node-uuid');
 const moment     = require('moment');
-const db         = require('../../lib/db');
-const util       = require('../../lib/util');
-const ReportManager = require('../../lib/ReportManager');
-const BadRequest = require('../../lib/errors/BadRequest');
 
-const TEMPLATE = './server/controllers/finance/reports/cashflow.report.handlebars';
+const db         = require('../../../../lib/db');
+const util       = require('../../../../lib/util');
+const ReportManager = require('../../../../lib/ReportManager');
+const BadRequest = require('../../../../lib/errors/BadRequest');
+
+const TEMPLATE = './server/controllers/finance/reports/cashflow/report.handlebars';
 
 // expose to the API
 exports.report = report;
@@ -34,14 +36,14 @@ exports.document = document;
  * @function report
  * @desc This function is responsible of generating the cashflow data for the report
  */
-function report (req, res, next) {
+function report(req, res, next) {
   let params = req.query;
 
   processingCashflowReport(params)
   .then(result => {
     res.status(200).json(result);
   })
-	.catch(next);
+  .catch(next);
 }
 
 /** processingCashflowReport */
@@ -53,27 +55,27 @@ function processingCashflowReport(params) {
   }
 
   // get all periods for the the current fiscal year
-	return getPeriods(params.dateFrom, params.dateTo)
-	.then(function (periods) {
-		// get the closing balance (previous fiscal year) for the selected cashbox
-    if (!periods.length) {
-      throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
-    }
-		glb.periods = periods;
-		return closingBalance(params.account_id, glb.periods[0].start_date);
-	})
-	.then(function (balance) {
-		if (!balance.length) { balance[0] = { balance: 0, account_id: params.account_id }; }
-		glb.openningBalance = balance[0];
-		return queryIncomeExpense(params);
-	})
-	.then(function (result) {
-		return groupingByMonth(glb.periods, result);
-	})
-	.then(groupingIncomeExpenseByPeriod)
-	.then(function (flows) {
-		return { openningBalance : glb.openningBalance, flows : flows };
-	});
+  return getPeriods(params.dateFrom, params.dateTo)
+    .then(function (periods) {
+      // get the closing balance (previous fiscal year) for the selected cashbox
+      if (!periods.length) {
+        throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
+      }
+      glb.periods = periods;
+      return closingBalance(params.account_id, glb.periods[0].start_date);
+    })
+    .then(function (balance) {
+      if (!balance.length) { balance[0] = { balance: 0, account_id: params.account_id }; }
+      glb.openningBalance = balance[0];
+      return queryIncomeExpense(params);
+    })
+    .then(function (result) {
+      return groupingByMonth(glb.periods, result);
+    })
+    .then(groupingIncomeExpenseByPeriod)
+    .then(function (flows) {
+      return { openningBalance : glb.openningBalance, flows : flows };
+    });
 }
 
 /**
@@ -84,39 +86,39 @@ function processingCashflowReport(params) {
  * @description returns incomes and expenses data in a promise
  */
 function queryIncomeExpense (params, dateFrom, dateTo) {
-	if (params && dateFrom && dateTo) {
-		params.dateFrom = dateFrom;
-		params.dateTo = dateTo;
-	}
+  if (params && dateFrom && dateTo) {
+    params.dateFrom = dateFrom;
+    params.dateTo = dateTo;
+  }
   var requette = `
       SELECT BUID(t.uuid) AS uuid, t.trans_id, t.trans_date, a.number, a.label,
         SUM(t.debit_equiv) AS debit_equiv, SUM(t.credit_equiv) AS credit_equiv,
         t.debit, t.credit, t.currency_id, t.description, t.comment,
         BUID(t.record_uuid) AS record_uuid, t.origin_id, u.display_name,
         x.text AS transactionType
-			FROM
+      FROM
       (
-  			(
-  				SELECT pj.project_id, pj.uuid, pj.record_uuid, pj.trans_date,
+        (
+          SELECT pj.project_id, pj.uuid, pj.record_uuid, pj.trans_date,
             pj.debit_equiv, pj.credit_equiv, pj.debit, pj.credit,
             pj.account_id, pj.entity_uuid, pj.currency_id, pj.trans_id,
             pj.description, pj.comment, pj.origin_id, pj.user_id
-  				FROM posting_journal pj
-  				WHERE pj.account_id IN (?) AND pj.trans_date >= ? AND pj.trans_date <= ?
-  			) UNION (
-  				SELECT gl.project_id, gl.uuid, gl.record_uuid, gl.trans_date,
+          FROM posting_journal pj
+          WHERE pj.account_id IN (?) AND pj.trans_date >= ? AND pj.trans_date <= ?
+        ) UNION (
+          SELECT gl.project_id, gl.uuid, gl.record_uuid, gl.trans_date,
             gl.debit_equiv, gl.credit_equiv, gl.debit, gl.credit,
             gl.account_id, gl.entity_uuid, gl.currency_id, gl.trans_id,
             gl.description, gl.comment, gl.origin_id, gl.user_id
-  				FROM general_ledger gl
-  				WHERE gl.account_id IN (?) AND gl.trans_date >= ? AND gl.trans_date <= ?
-  			)
+          FROM general_ledger gl
+          WHERE gl.account_id IN (?) AND gl.trans_date >= ? AND gl.trans_date <= ?
+        )
       ) AS t, account AS a, user as u, transaction_type as x
       WHERE t.account_id = a.id AND t.user_id = u.id AND t.origin_id = x.id
       GROUP BY t.trans_id ;` ;
 
 
-	return db.exec(requette, [params.account_id, params.dateFrom, params.dateTo, params.account_id, params.dateFrom, params.dateTo]);
+  return db.exec(requette, [params.account_id, params.dateFrom, params.dateTo, params.account_id, params.dateFrom, params.dateTo]);
 }
 
 /**
@@ -124,18 +126,18 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
  * @description This function help to group incomes or expenses by period
  */
 function groupingIncomeExpenseByPeriod(periodicFlows) {
-	var grouping = [];
-	periodicFlows.forEach(function (pf) {
-		var incomes, expenses;
-		incomes = pf.flows.filter(function (posting) {
-			return posting.debit_equiv > 0;
-		});
-		expenses = pf.flows.filter(function (posting) {
-			return posting.credit_equiv > 0;
-		});
-		grouping.push({ period: pf.period, incomes : incomes, expenses : expenses });
-	});
-	return grouping;
+  var grouping = [];
+  periodicFlows.forEach(function (pf) {
+    var incomes, expenses;
+    incomes = pf.flows.filter(function (posting) {
+      return posting.debit_equiv > 0;
+    });
+    expenses = pf.flows.filter(function (posting) {
+      return posting.credit_equiv > 0;
+    });
+    grouping.push({ period: pf.period, incomes : incomes, expenses : expenses });
+  });
+  return grouping;
 }
 
 /**
@@ -145,20 +147,20 @@ function groupingIncomeExpenseByPeriod(periodicFlows) {
  * @description This function help to group incomes or expenses by month
  */
 function groupingByMonth(periods, flows) {
-	var grouping = [];
-	periods.forEach(function (p) {
-		var data = [];
-		flows.forEach(function (f) {
-			var trans_date = new Date(f.trans_date);
-			var start_date = new Date(p.start_date);
-			var end_date = new Date(p.end_date);
-			if (trans_date <= end_date && trans_date >= start_date) {
-				data.push(f);
-			}
-		});
-		grouping.push({ period: p, flows : data });
-	});
-	return grouping;
+  var grouping = [];
+  periods.forEach(function (p) {
+    var data = [];
+    flows.forEach(function (f) {
+      var trans_date = new Date(f.trans_date);
+      var start_date = new Date(p.start_date);
+      var end_date = new Date(p.end_date);
+      if (trans_date <= end_date && trans_date >= start_date) {
+        data.push(f);
+      }
+    });
+    grouping.push({ period: p, flows : data });
+  });
+  return grouping;
 }
 
 /**
@@ -168,7 +170,7 @@ function groupingByMonth(periods, flows) {
  * @desc This function help us to get the balance at cloture for a set of accounts
  */
 function closingBalance(accountId, periodStart) {
-	var query = `
+  var query = `
       SELECT SUM(debit_equiv - credit_equiv) as balance, account_id
       FROM
       (
@@ -185,8 +187,8 @@ function closingBalance(accountId, periodStart) {
 
     return getFiscalYear(periodStart)
     .then(function (rows) {
-    	var fy = rows[0];
-    	return db.exec(query, [accountId, fy.previous_fiscal_year_id, accountId, fy.previous_fiscal_year_id]);
+      var fy = rows[0];
+      return db.exec(query, [accountId, fy.previous_fiscal_year_id, accountId, fy.previous_fiscal_year_id]);
     });
 }
 
@@ -198,11 +200,11 @@ function closingBalance(accountId, periodStart) {
  * according a date given
  */
 function getFiscalYear(date) {
-	var query =
-		'SELECT fy.id, fy.previous_fiscal_year_id FROM fiscal_year fy ' +
-		'JOIN period p ON p.fiscal_year_id = fy.id ' +
-		'WHERE ? BETWEEN p.start_date AND p.end_date';
-	return db.exec(query, [date]);
+  var query =
+    'SELECT fy.id, fy.previous_fiscal_year_id FROM fiscal_year fy ' +
+    'JOIN period p ON p.fiscal_year_id = fy.id ' +
+    'WHERE ? BETWEEN p.start_date AND p.end_date';
+  return db.exec(query, [date]);
 }
 
 /**
@@ -211,10 +213,10 @@ function getFiscalYear(date) {
  * @param {date} dateTo A stop date
  */
 function getPeriods(dateFrom, dateTo) {
-	var query =
-		'SELECT id, number, start_date, end_date ' +
-		'FROM period WHERE DATE(start_date) >= DATE(?) AND DATE(end_date) <= DATE(?)';
-	return db.exec(query, [dateFrom, dateTo]);
+  var query =
+    'SELECT id, number, start_date, end_date ' +
+    'FROM period WHERE DATE(start_date) >= DATE(?) AND DATE(end_date) <= DATE(?)';
+  return db.exec(query, [dateFrom, dateTo]);
 }
 
 /**
@@ -241,9 +243,7 @@ function document(req, res, next) {
   processingCashflowReport(params)
     .then(reporting)
     .then(labelization)
-    .then(() => {
-      return report.render(session);
-    })
+    .then(() => report.render(session))
     .then(result => {
       res.set(result.headers).send(result.report);
     })
@@ -253,7 +253,7 @@ function document(req, res, next) {
    * @function reporting
    * @param {array} rows all transactions of the given cashbox
    * @description
-   * processing data for the report, the process is as follow :
+   * processing data for the report, the process is as follow
    * step 1. initialization : initialize all global array and objects
    * step 2. openning balance : process for getting the openning balance
    * step 3. grouping : group incomes and expenses by periods
@@ -261,7 +261,6 @@ function document(req, res, next) {
    * step 5. labelization : define unique labels for incomes and expenses,
    * and process all totals needed
    * @todo: Must convert values with enterprise exchange rate
-   * @todo: Must use a date utility to format date into 'yyyy-mm-dd'
    */
   function reporting(rows) {
     initialization();

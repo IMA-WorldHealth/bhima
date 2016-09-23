@@ -1,4 +1,3 @@
-
 'use strict';
 
 const db = require('../../lib/db');
@@ -6,25 +5,21 @@ const BadRequest = require('../../lib/errors/BadRequest');
 const NotFound = require('../../lib/errors/NotFound');
 
 function lookupSubsidy(id) {
-  var sql =
-    'SELECT id, account_id, label, description, value, created_at, updated_at FROM subsidy WHERE id = ?';
+  const sql = `
+    SELECT id, account_id, label, description, value, created_at, updated_at
+    FROM subsidy WHERE id = ?;
+  `;
 
-  return db.exec(sql, id)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new NotFound(`Could not find a subsidy with id ${id}`);
-      }
-      return rows[0];
-    });
+  return db.one(sql, id, id, 'subsidy');
 }
 
 function detail(req, res, next) {
   lookupSubsidy(req.params.id)
-  .then(function (row) {
-    res.status(200).json(row);
-  })
-  .catch(next)
-  .done();
+    .then(function (row) {
+      res.status(200).json(row);
+    })
+    .catch(next)
+    .done();
 }
 
 function list(req, res, next) {
@@ -49,9 +44,9 @@ function list(req, res, next) {
   .done();
 }
 
-function create (req, res, next) {
-  var record = req.body;
-  var createSubsidyQuery = 'INSERT INTO subsidy SET ?';
+function create(req, res, next) {
+  let record = req.body;
+  let createSubsidyQuery = 'INSERT INTO subsidy SET ?';
 
   delete record.id;
 
@@ -70,9 +65,9 @@ function create (req, res, next) {
 }
 
 function update(req, res, next) {
-  var queryData = req.body;
-  var subsidyId = req.params.id;
-  var updateSubsidyQuery = 'UPDATE subsidy SET ? WHERE id = ?';
+  let queryData = req.body;
+  let subsidyId = req.params.id;
+  let updateSubsidyQuery = 'UPDATE subsidy SET ? WHERE id = ?';
 
   delete queryData.id;
 
@@ -97,17 +92,12 @@ function update(req, res, next) {
 }
 
 function remove(req, res, next) {
-
-  var subsidyId = req.params.id;
-  var removeSubsidyQuery = 'DELETE FROM subsidy WHERE id = ?';
+  const subsidyId = req.params.id;
+  const removeSubsidyQuery = 'DELETE FROM subsidy WHERE id = ?';
 
   lookupSubsidy(subsidyId)
-    .then(function () {
-      return db.exec(removeSubsidyQuery, [subsidyId]);
-    })
-    .then(function () {
-      res.sendStatus(204);
-    })
+    .then(() => db.exec(removeSubsidyQuery, [subsidyId]))
+    .then(() => res.sendStatus(204))
     .catch(next)
     .done();
 }

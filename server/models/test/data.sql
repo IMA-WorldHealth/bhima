@@ -48,7 +48,8 @@ INSERT INTO unit VALUES
   (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create'),
   (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/partials/admin/transaction_type', '/admin/transaction_type'),
   (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 5, '/partials/finance/reports', '/finance/reports'),
-  (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/finance/reports/cashflow');
+  (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/finance/reports/cashflow'),
+  (146, 'Aged Debtors', 'TREE.AGED_DEBTORS', 'The Aged Debtor Report', 144, '/partials/finance/reports/agedDebtors', 'finance/reports/debtors/aged');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES
@@ -243,8 +244,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (144,1),
 
 -- Cashflow Report
-(145,1);
+(145,1),
 
+-- Aged Debtor Report
+(146,1);
 
 -- testing financial transactions
 INSERT INTO `fiscal_year` (`enterprise_id`, `number_of_months`, `label`, `start_date`, `previous_fiscal_year_id`, `user_id`, `note`) VALUES

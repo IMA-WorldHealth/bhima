@@ -5,6 +5,11 @@ AgedDebtorsController.$inject = [
   'NotifyService', 'AgedDebtorReportService'
 ];
 
+/**
+ * Aged Debtor Report Page
+ *
+ * This page allows users to configure the aged debtor report options
+ */
 function AgedDebtorsController(Notify, AgedDebtorReports) {
   var vm = this;
 

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @overview finance/reports
  *
@@ -6,12 +8,11 @@
  * in the finance module.
  */
 
-// expose to the express router
-module.exports = {
-  receipts : {
-    invoices: require('./invoice.receipt').build,
-    cash : require('./cash.receipt')
-  },
-  agedDebtor: require('./agedDebtor'),
-  invoices : require('./invoices')
-};
+exports.debtors = require('./debtors');
+exports.accounts = require('./accounts');
+exports.invoices = require('./invoices');
+exports.vouchers = require('./vouchers');
+exports.cash = require('./cash');
+exports.cashflow = require('./cashflow');
+
+

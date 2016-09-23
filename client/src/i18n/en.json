@@ -1204,7 +1204,8 @@
     "SUBSIDY"                    : "Subsidy Management",
     "TRANSACTION_TYPE"           : "Transaction Types",
     "USERS"                      : "Users",
-    "VOUCHER_REGISTRY"           : "Voucher Registry"
+    "VOUCHER_REGISTRY"           : "Voucher Registry",
+    "AGED_DEBTORS"               : "Aged Debtors"
   },
   "VILLAGE": {
     "CONFIG"       : "Village Manager Configuration",

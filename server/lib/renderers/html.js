@@ -13,6 +13,7 @@ const hbs = require('../template');
 const translateHelperFactory = require('../helpers/translate');
 
 exports.render = renderHTML;
+exports.extension = '.html';
 
 /**
  *

@@ -6,12 +6,22 @@
  * easy ways to create JSON/HTML/PDF reports from templates and data.
  *
  * @todo - allow reports to be saved using the report manager.
+ *
+ * @requires lodash
+ * @requires path
+ * @requires fs
+ * @requires lib/errors/BadRequest
  */
 'use strict';
 
 const _ = require('lodash');
 const path = require('path');
+const fs = require('fs');
+const q = require('q');
+const mkdirp = require('mkdirp');
+
 const BadRequest = require('./errors/BadRequest');
+const db = require('./db');
 
 const renderers = {
   json : require('./renderers/json'),
@@ -91,6 +101,43 @@ class ReportManager {
     return promise.then(report => {
       return { headers: renderer.headers, report };
     });
+  }
+
+  /**
+   * @method save
+   *
+   * @description
+   * This method saves the report in the report directory to be looked up later.
+   */
+  save(report, fpath, options) {
+    const dfd = q.defer();
+    const parts = path.parse(fpath);
+    const sql = 'INSERT INTO report VALUES ?;';
+
+    mkdirp(parts.dir, (err) => {
+      if (err) { return dfd.reject(err); }
+
+      const fname = parts.name + parts.ext;
+
+      fs.writeFile(fname, report, (err) => {
+        if (err) { return dfd.reject(err); }
+
+        const data = {
+          uuid : parts.name,
+          title : options.title,
+          type : options.type,
+          link : fpath,
+          timestamp : new Date(),
+          user_id : options.user.id
+        };
+
+        db.exec(sql, [data])
+          .then(dfd.resolve)
+          .catch(dfd.reject);
+      });
+    });
+
+    return dfd.promise;
   }
 }
 

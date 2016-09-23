@@ -1,5 +1,5 @@
 /**
- * @overview agedDebtor
+ * @overview finance/reports/debtors/index.js
  *
  * @description
  * This report displays the amounts owed by debtor groups broken down by age of
@@ -18,11 +18,16 @@
 'use strict';
 
 const _           = require('lodash');
-const ReportManager = require('../../../lib/ReportManager');
-const db          = require('../../../lib/db');
+const ReportManager = require('../../../../lib/ReportManager');
+const ReportControllerFactory = require('../../../report');
+const db          = require('../../../../lib/db');
 
 // path to the template to render
-const TEMPLATE = './server/controllers/finance/reports/agedDebtor.handlebars';
+const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
+const REPORT_KEY = 'AGED_DEBTOR';
+
+// make a report controllers
+const controller = ReportControllerFactory(REPORT_KEY);
 
 /**
  * @method agedDebtorReport
@@ -95,4 +100,4 @@ function agedDebtorReport(req, res, next) {
     .done();
 }
 
-module.exports = agedDebtorReport;
+exports.aged = agedDebtorReport;
