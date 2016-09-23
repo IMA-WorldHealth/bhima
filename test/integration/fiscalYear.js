@@ -7,12 +7,13 @@ describe('(/fiscal) Fiscal Year', function () {
 
   var newFiscalYear = {
     label : 'A new Fiscal Year 2017',
-    start_date : new Date('2017-01-01'),
+    start_date : new Date('2017-01-01 01:00'),
+    end_date : new Date('2017-12-31 01:00'),
     number_of_months : 12,
     note : 'Fiscal Year for Integration Test'
   };
 
-  var responseKeys = ['id', 'enterprise_id', 'number_of_months', 'label', 'start_date', 'previous_fiscal_year_id', 'locked', 'note'];
+  var responseKeys = ['id', 'enterprise_id', 'number_of_months', 'label', 'start_date', 'end_date', 'previous_fiscal_year_id', 'locked', 'note'];
 
   it('POST /fiscal adds a fiscal year', function () {
     return agent.post('/fiscal')

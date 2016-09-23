@@ -1,0 +1,88 @@
+<style media="screen">
+  .text-bold { font-weight: bold; }
+  .bg-gray { background-color: #efefef; }
+</style>
+<div class="row">
+  <div class="col-md-12">
+
+    <form name="OpeningAccountForm" bh-submit="FiscalOBCtrl.submit(OpeningAccountForm)" bh-form-defaults novalidate>
+
+      <div class="panel panel-primary">
+
+        <!-- heading  -->
+        <div class="panel-heading" style="display: flex; justify-content: space-between;">
+          <span>
+            {{ "FISCAL.OPENING_BALANCE" | translate }} <strong>{{ FiscalOBCtrl.fiscal.label }}</strong>
+          </span>
+
+          <div>
+            <span style="cursor: pointer;" ng-click="FiscalOBCtrl.showFilter()">
+              {{ 'FORM.BUTTONS.SEARCH' | translate }} <i class="fa fa-search"></i>
+            </span>
+
+            <span ng-show="!FiscalOBCtrl.previousFiscalYearExist" style="margin-left: 15px; cursor: pointer;" ng-click="FiscalOBCtrl.editBalance()">
+              {{ 'FORM.BUTTONS.EDIT' | translate }} <i class="fa fa-edit"></i>
+            </span>
+          </div>
+
+        </div>
+
+        <!-- body  -->
+        <section style="max-height: 600px; overflow: auto;">
+
+          <!-- account filter  -->
+          <input
+            ng-model="FiscalOBCtrl.accountFilter"
+            ng-if="FiscalOBCtrl.showAccountFilter"
+            class="form-control"
+            type="text"
+            placeholder="{{ 'FORM.SELECT.ACCOUNT' | translate }}...">
+
+          <!-- TODO USE `ui-grid in place of an html table` -->
+          <table class="table table-condensed">
+            <!-- head  -->
+            <thead>
+              <th>{{ 'FORM.LABELS.ACCOUNT' | translate }}</th>
+              <th>{{ 'FORM.LABELS.LABEL' | translate }}</th>
+              <th class="text-center" style="width: 15%;">{{ 'FORM.LABELS.DEBIT' | translate }}</th>
+              <th class="text-center" style="width: 15%;">{{ 'FORM.LABELS.CREDIT' | translate }}</th>
+            </thead>
+
+            <!-- body  -->
+            <tbody>
+              <tr ng-repeat="acc in FiscalOBCtrl.accounts | filter: FiscalOBCtrl.accountFilter" ng-class="{'bg-gray': acc.type === 'title'}">
+                <td style="height: 30px; line-height: 30px;">{{ acc.number }}</td>
+                <td style="height: 30px; line-height: 30px;" ng-class="{'text-uppercase text-bold': acc.type === 'title'}">{{ acc.label }}</td>
+                <td style="width: 15%;">
+                  <input ng-hide="acc.type === 'title'" ng-disabled="!FiscalOBCtrl.editBalanceEnabled || FiscalOBCtrl.previousFiscalYearExist" ng-model="acc.debit" class="form-control input-sm text-right" type="number">
+                </td>
+                <td style="width: 15%;">
+                  <input ng-hide="acc.type === 'title'" ng-disabled="!FiscalOBCtrl.editBalanceEnabled || FiscalOBCtrl.previousFiscalYearExist" ng-model="acc.credit" class="form-control input-sm text-right" type="number">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- footer  -->
+        <div class="panel-footer" style="display: flex; justify-content: space-between;">
+          <div ng-class="{'text-success': FiscalOBCtrl.balanced, 'text-danger': !FiscalOBCtrl.balanced}">
+            <span ng-show="OpeningAccountForm.$submitted" >
+              <i class="fa" ng-class="{'fa-check': FiscalOBCtrl.balanced, 'fa-warning': !FiscalOBCtrl.balanced}"></i>
+              <span ng-show="FiscalOBCtrl.balanced">{{ 'ACCOUNT.BALANCED' | translate }}</span>
+              <span ng-show="!FiscalOBCtrl.balanced">{{ 'ACCOUNT.NOT_BALANCED' | translate }}</span>
+            </span>
+          </div>
+
+          <button type="submit" ng-disabled="!FiscalOBCtrl.editBalanceEnabled && !FiscalOBCtrl.previousFiscalYearExist" class="btn btn-primary">
+            <span ng-show="!FiscalOBCtrl.previousFiscalYearExist">{{ 'FORM.BUTTONS.SUBMIT' | translate }}</span>
+            <span ng-show="FiscalOBCtrl.previousFiscalYearExist">{{ 'FORM.BUTTONS.IMPORT' | translate }}</span>
+          </button>
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>

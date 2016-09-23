@@ -310,3 +310,4 @@ exports.detail = detail;
 exports.getBalance = getBalance;
 exports.types = types;
 exports.document = document;
+exports.lookupAccount = lookupAccount;

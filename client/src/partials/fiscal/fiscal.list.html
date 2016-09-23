@@ -1,35 +1,16 @@
-<div class="container text-center">
-  <div class="row text-center">
-    <div class="col-md-8 col-md-offset-2">
-
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <th style="width:33%">
-              <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'label', order: FiscalCtrl.sortByName})">
-                {{"FORM.LABELS.NAME" | translate }} <span ng-if="FiscalCtrl.sorted === 'label'" class="fa fa-sort-{{FiscalCtrl.nameDesc}}"></span>
-              </a>
-            </th>
-
-            <th style="width:34%">
-              <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'created_at', order: FiscalCtrl.sortByDateCreated})">
-                {{"FORM.LABELS.DATE_CREATED" | translate }} <span ng-if="FiscalCtrl.sorted === 'created_at'" class="fa fa-sort-{{FiscalCtrl.dateDesc}}"></span>
-              </a>
-            </th>
-            <th style="width:33%">
-              <a href uib-dropdown-toggle ng-click="FiscalCtrl.sort({by : 'number_of_months', order: FiscalCtrl.sortByNumbrerOfMonth})">
-                {{"FORM.LABELS.NB_MONTH" | translate }} <span ng-if="FiscalCtrl.sorted === 'number_of_months'" class="fa fa-sort-{{FiscalCtrl.nbMonthDesc}}"></span>
-              </a>
-            </th>
-          </tr>
-        </thead>
-      </table>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
 
       <div ng-repeat="fiscal in FiscalCtrl.fiscalYears | limitTo : FiscalCtrl.pageSize : (FiscalCtrl.currentPage - 1)*FiscalCtrl.pageSize track by fiscal.id" data-row="{{ $index }}" class="text-left">
         <div class="panel panel-default" style="margin-bottom : 3px;" data-fiscal-entry>
           <div class="panel-body">
             <h4 style="margin-top : 0px;">
-              <strong>{{fiscal.label}}</strong>
+              <strong>
+                <a style="text-decoration: none; color: #333; " href ui-sref="fiscal.update({id : fiscal.id})">
+                  {{fiscal.label}}
+                </a>
+              </strong>
               <span ng-show="fiscal.locked" style="color : #ABABAB;">[{{ "FORM.INFO.CLOSED" | translate }}]</span>
 
               <span ng-if="fiscal.id === FiscalCtrl.current[0].previous_fiscal_year_id" class="label label-warning">
@@ -42,7 +23,7 @@
 
 
               <span class="pull-right">
-                <a href data-method="update" ui-sref="fiscal.update({id : fiscal.id})">
+                <a style="text-decoration: none; " href data-method="update" ui-sref="fiscal.update({id : fiscal.id})">
                   <span class="fa fa-pencil-square-o"></span>
                 </a>
 

@@ -219,6 +219,8 @@ exports.configure = function configure(app) {
   app.get('/fiscal', fiscal.list);
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
+  app.get('/fiscal/:id/balance/:period_number', fiscal.getBalance);
+  app.put('/fiscal/:id/opening_balance', fiscal.setOpeningBalance);
   app.post('/fiscal', fiscal.create);
   app.put('/fiscal/:id', fiscal.update);
   app.delete('/fiscal/:id', fiscal.remove);

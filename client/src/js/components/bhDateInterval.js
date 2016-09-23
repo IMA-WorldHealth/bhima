@@ -15,8 +15,12 @@ angular.module('bhima.components').component('bhDateInterval', {
   templateUrl : '/partials/templates/bhDateInterval.tmpl.html',
   controller : bhDateInterval,
   bindings : {
-    dateFrom : '=',
-    dateTo : '='
+    validationTrigger : '<', // validation trigger action
+    dateFrom : '=',          // date from
+    dateTo : '=',            // date to
+    required : '<',          // true or false
+    onChange : '<',          // on change action
+    mode : '@'               // the date mode (day|month|year)
   }
 });
 
@@ -34,6 +38,11 @@ function bhDateInterval(Dates) {
     { translateKey : 'FORM.LABELS.THIS_MONTH', fn : month },
     { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year }
   ];
+
+  vm.pickerOptions = {
+    datepickerMode : vm.mode,
+    showWeeks : false
+  };
 
   // expose to the viewe
   vm.search = search;
@@ -77,6 +86,14 @@ function bhDateInterval(Dates) {
     if (!vm.dateFrom && !vm.dateTo) {
       search(vm.options[0]);
     }
+
+    var option = ['day', 'week', 'month', 'year'].indexOf(vm.mode);
+
+    // set the default option according the mode 
+    if (option > -1) {
+      search(vm.options[option]);
+    }
+
   }
 
 }
