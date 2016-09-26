@@ -33,20 +33,16 @@ function UsersPasswordModalController($uibModalInstance, Users, user, Notify) {
   // submits the password form
   function submit(passwordForm) {
 
-    passwordForm.$setSubmitted();
-
     if (passwordForm.invalid) { return; }
     if (!passwordForm.$dirty) { return; }
 
 
     // try to update the user's password
     Users.updatePassword(vm.user.id, { password : vm.user.password })
-    .then(function (res) {
+    .then(function () {
       $uibModalInstance.close();
     })
-    .catch(function (err) {
-      Notify.handleError(err);
-    });
+    .catch(Notify.handleError);
   }
 
   function cancel() {

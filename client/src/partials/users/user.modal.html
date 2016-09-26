@@ -1,4 +1,5 @@
-<div class="modal-header">
+<form name="UserForm" bh-submit="UserModalCtrl.submit(UserForm)" bh-form-defaults novalidate>
+  <div class="modal-header">
   <ol class="headercrumb">
     <li ng-if="UserModalCtrl.isCreating" class="title">
       {{ "USERS.ADDING_USER" | translate }}
@@ -11,63 +12,61 @@
   </ol>
 </div>
 
-<div class="modal-body">
-  <!-- user form -->
-  <div ng-form="UserForm" >
+  <div class="modal-body">
 
-      <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
-        <label class="control-label">{{ "FORM.LABELS.USERNAME" | translate }}</label>
-        <input name="display_name" ng-model="UserModalCtrl.user.display_name" ng-maxlength="UserModalCtrl.maxLength" class="form-control" required>
-        <div class="help-block" ng-messages="UserForm.display_name.$error" ng-show="UserForm.$submitted">
-          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>
+    <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
+      <label class="control-label">{{ "FORM.LABELS.USERNAME" | translate }}</label>
+      <input name="display_name" ng-model="UserModalCtrl.user.display_name" ng-maxlength="UserModalCtrl.maxLength" class="form-control" required>
+      <div class="help-block" ng-messages="UserForm.display_name.$error" ng-show="UserForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
+    </div>
 
-      <div class="form-group"  ng-class="{ 'has-error' : UserForm.$submitted && UserForm.username.$invalid }">
-        <label class="control-label">{{ "FORM.LABELS.LOGIN" | translate }}</label>
-        <input name="username" ng-maxlength="UserModalCtrl.userName" ng-model="UserModalCtrl.user.username" class="form-control" required>
-        <div class="help-block" ng-messages="UserForm.username.$error" ng-show="UserForm.$submitted">
-          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>
+    <div class="form-group"  ng-class="{ 'has-error' : UserForm.$submitted && UserForm.username.$invalid }">
+      <label class="control-label">{{ "FORM.LABELS.LOGIN" | translate }}</label>
+      <input name="username" ng-maxlength="UserModalCtrl.userName" ng-model="UserModalCtrl.user.username" class="form-control" required>
+      <div class="help-block" ng-messages="UserForm.username.$error" ng-show="UserForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
+    </div>
 
-      <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.email.$invalid }">
-        <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
-        <input name="email" ng-maxlength="UserModalCtrl.length100" ng-model="UserModalCtrl.user.email" class="form-control" type="email" required>
-        <div class="help-block" ng-messages="UserForm.email.$error" ng-show="UserForm.$submitted">
-          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>
+    <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.email.$invalid }">
+      <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
+      <input name="email" ng-maxlength="UserModalCtrl.length100" ng-model="UserModalCtrl.user.email" class="form-control" type="email" required>
+      <div class="help-block" ng-messages="UserForm.email.$error" ng-show="UserForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
+    </div>
 
-      <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.projects.$invalid }">
-        <label class="control-label">{{ "FORM.LABELS.PROJECT" | translate }}</label>
-        <select
-          name="projects"
-          ng-model="UserModalCtrl.user.projects"
-          class="form-control"
-          ng-options="project.id as project.name for project in UserModalCtrl.projects"
-          required
-          multiple>
-        </select>
-        <div class="help-block" ng-messages="UserForm.projects.$error" ng-show="UserForm.$submitted">
-          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>
+    <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.projects.$invalid }">
+      <label class="control-label">{{ "FORM.LABELS.PROJECT" | translate }}</label>
+      <select
+        name="projects"
+        ng-model="UserModalCtrl.user.projects"
+        class="form-control"
+        ng-options="project.id as project.name for project in UserModalCtrl.projects"
+        required
+        multiple>
+      </select>
+      <div class="help-block" ng-messages="UserForm.projects.$error" ng-show="UserForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
+    </div>
 
-      <div ng-if="!UserModalCtrl.isCreating" class="form-group">
-        <button id="user-edit-password" type="button" class="btn btn-warning btn-block" ng-click="UserModalCtrl.setPasswordModal()">
-          <i class="fa fa-lock"></i> {{ 'FORM.BUTTONS.UPDATE_PASSWORD' | translate }}
-        </button>
-      </div>
+    <div ng-if="!UserModalCtrl.isCreating" class="form-group">
+      <button id="user-edit-password" type="button" class="btn btn-warning btn-block" ng-click="UserModalCtrl.setPasswordModal()">
+        <i class="fa fa-lock"></i> {{ 'FORM.BUTTONS.UPDATE_PASSWORD' | translate }}
+      </button>
+    </div>
 
-      <div ng-if="UserModalCtrl.isCreating" class="form-group has-feedback" ng-class="{ 'has-error' : UserForm.$submitted && !UserModalCtrl.validPassword() }">
-        <label class="control-label">{{ "FORM.LABELS.PASSWORD" | translate }}</label>
-        <input name="password" ng-model="UserModalCtrl.user.password" class="form-control" type="password" required>
-        <i ng-if="!UserModalCtrl.validPassword()" class="fa fa-exclamation-triangle form-control-feedback" aria-hidden="true"></i>
-        <i ng-if="UserModalCtrl.validPassword()" class="fa fa-check-circle form-control-feedback" aria-hidden="true"></i>
-      </div>
+    <div ng-if="UserModalCtrl.isCreating" class="form-group has-feedback" ng-class="{ 'has-error' : UserForm.$submitted && !UserModalCtrl.validPassword() }">
+      <label class="control-label">{{ "FORM.LABELS.PASSWORD" | translate }}</label>
+      <input name="password" ng-model="UserModalCtrl.user.password" class="form-control" type="password" required>
+      <i ng-if="!UserModalCtrl.validPassword()" class="fa fa-exclamation-triangle form-control-feedback" aria-hidden="true"></i>
+      <i ng-if="UserModalCtrl.validPassword()" class="fa fa-check-circle form-control-feedback" aria-hidden="true"></i>
+    </div>
 
-      <div ng-if="UserModalCtrl.isCreating" class="form-group has-feedback" ng-class="{ 'has-error' : UserForm.$submitted && !UserModalCtrl.validPassword() }">
+    <div ng-if="UserModalCtrl.isCreating" class="form-group has-feedback" ng-class="{ 'has-error' : UserForm.$submitted && !UserModalCtrl.validPassword() }">
         <label class="control-label"> {{ "FORM.LABELS.PASSWORD" | translate }} ({{ "FORM.LABELS.RETYPE" | translate }})</label>
         <input name="passwordVerify" ng-model="UserModalCtrl.user.passwordVerify" class="form-control" type="password" required>
         <i ng-if="!UserModalCtrl.validPassword()" class="fa fa-exclamation-triangle form-control-feedback" aria-hidden="true"></i>
@@ -77,16 +76,16 @@
         </p>
       </div>
   </div>
-</div>
 
-<div class="modal-footer">
-  <p id="user-same" ng-if="UserForm.$submitted && UserForm.$pristine && !UserModalCtrl.isCreating" class="text-warning"><i class="fa fa-warning"></i> {{ "USERS.RECORD_SAME" | translate }}</p>
-  <p ng-if="UserForm.$submitted && UserForm.$invalid" class="text-danger"><i class="fa fa-exclamation-triangle"></i> {{ "FORM.ERRORS.RECORD_ERROR" | translate }}</p>
+  <div class="modal-footer">
+    <p id="user-same" ng-if="UserForm.$submitted && UserForm.$pristine && !UserModalCtrl.isCreating" class="text-warning"><i class="fa fa-warning"></i> {{ "USERS.RECORD_SAME" | translate }}</p>
+    <p ng-if="UserForm.$submitted && UserForm.$invalid" class="text-danger"><i class="fa fa-exclamation-triangle"></i> {{ "FORM.ERRORS.RECORD_ERROR" | translate }}</p>
 
-  <button id="user-cancel" type="button" class="btn btn-default" ng-click="UserModalCtrl.closeModal()">
-    <i class="fa fa-ban"></i> {{ 'FORM.BUTTONS.CANCEL' | translate }}
-  </button>
-  <button id="user-submit" class="btn btn-primary btn-sm" data-method="submit" ng-click="UserModalCtrl.submit(UserForm)" data-action="close">
-    <i class="fa fa-ok"></i> {{ 'FORM.BUTTONS.SUBMIT' | translate }}
-  </button>
-</div>
+    <button id="user-cancel" type="button" class="btn btn-default" ng-click="UserModalCtrl.closeModal()">
+      <i class="fa fa-ban"></i> {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    </button>
+    <bh-loading-button id="user-submit">
+      <i class="fa fa-ok"></i> {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+    </bh-loading-button>
+  </div>
+</form>

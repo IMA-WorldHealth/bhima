@@ -56,7 +56,7 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
 
         vm.units = units;
       })
-      .catch(function (err){Notify.handleError(err);});
+      .catch(Notify.handleError);
   }
 
   // used in the view to set permission's tree padding based on depth
@@ -121,9 +121,7 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
       .then(function () {
         $state.go('users.list', null, {reload : true});
       })
-      .catch(function (res) {
-        vm.formMessage = res.data;
-      });
+      .catch(Notify.handleError);
   }
 
   function closeModal (){

@@ -19,9 +19,7 @@ function UserModalController($state, $uibModal, Projects, Users, Notify) {
   Projects.read().then(function (data) {
     vm.projects = data;
   })
-  .catch(function(err){
-    Notify.handleError(err);
-  });
+  .catch(Notify.handleError);
 
   if(!vm.isCreating){
 
@@ -29,15 +27,11 @@ function UserModalController($state, $uibModal, Projects, Users, Notify) {
       .then(function (user) {
         vm.user = user;
       })
-      .catch(function (err){
-        Notify.handleError(err);
-      });
+      .catch(Notify.handleError);
   }
 
   // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
-
-    userForm.$setSubmitted();
 
     if (userForm.invalid) { return; }
     if (!userForm.$dirty) { return; }
@@ -49,9 +43,7 @@ function UserModalController($state, $uibModal, Projects, Users, Notify) {
     promise.then(function () {
           $state.go('users.list', null, {reload : true});
         })
-        .catch(function (err) {
-          Notify.handleError(err);
-        });
+        .catch(Notify.handleError);
   }
 
   function closeModal (){
@@ -79,7 +71,6 @@ function UserModalController($state, $uibModal, Projects, Users, Notify) {
       }
     });
   }
-  
 }
 
 
