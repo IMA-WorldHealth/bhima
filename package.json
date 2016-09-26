@@ -46,7 +46,7 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.1",
     "helmet": "^2.2.0",
-    "ioredis": "^2.3.0",
+    "ioredis": "^2.3.1",
     "lodash": "^4.14.1",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.0",
