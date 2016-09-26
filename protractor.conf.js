@@ -14,7 +14,7 @@ const config = {
   specs: ['test/end-to-end/**/*.spec.js'],
 
   framework : 'mocha',
-  baseUrl : 'https://localhost:8080/',
+  baseUrl : 'http://localhost:8080/',
 
   mochaOpts : {
     reporter: 'mochawesome-screenshots',
@@ -39,7 +39,7 @@ const config = {
   // this will log the user in to begin with
   onPrepare : function () {
     return q.fcall(function () {
-      browser.get('https://localhost:8080/#/login');
+      browser.get('http://localhost:8080/#/login');
 
       element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');
       element(by.model('LoginCtrl.credentials.password')).sendKeys('superuser');
