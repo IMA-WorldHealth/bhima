@@ -76,7 +76,6 @@ CREATE TABLE billing_service (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1448,11 +1447,13 @@ CREATE TABLE `reference_group` (
   FOREIGN KEY (`section_bilan_id`) REFERENCES `section_bilan` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 DROP TABLE IF EXISTS `report`;
 
 CREATE TABLE `report` (
   `uuid`                BINARY(16) NOT NULL,
   `label`               TEXT NOT NULL,
+  `type`                TEXT NOT NULL,
   `parameters`          TEXT, /* query string parameters, if they will be displayed on the report (such as filters, etc) */
   `link`                TEXT NOT NULL,
   `timestamp`           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1461,6 +1462,7 @@ CREATE TABLE `report` (
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS `rubric`;
 

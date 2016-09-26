@@ -245,7 +245,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Cashflow Report
 (145,1);
 
-
 -- testing financial transactions
 INSERT INTO `fiscal_year` (`enterprise_id`, `number_of_months`, `label`, `start_date`, `previous_fiscal_year_id`, `user_id`, `note`) VALUES
   (1,12,'Test Fiscal Year 2015', DATE('2015-01-01'), NULL, 1, 'Note for 2015'),

@@ -11,9 +11,10 @@
  */
 'use strict';
 
-var q = require('q');
+const q = require('q');
 
 exports.render = renderJSON;
+exports.extension = '.json';
 
 /**
  * JSON Render Method

@@ -4,7 +4,7 @@ angular.module('bhima.services')
 AgedDebtorReportService.$inject = [ 'PrototypeApiService', 'bhConstants' ];
 
 function AgedDebtorReportService(Api, bhConstants) {
-  var service = new Api('/finance/reports/');
+  var service = new Api('/finance/reports/debtors/aged');
 
   // bind the report type to the service
   service.REPORT_TYPE = bhConstants.reports.AGED_DEBTOR;

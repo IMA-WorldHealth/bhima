@@ -24,6 +24,7 @@ const headers = {
 
 exports.render = renderPDF;
 exports.headers = headers;
+exports.extension = '.pdf';
 
 /**
  *

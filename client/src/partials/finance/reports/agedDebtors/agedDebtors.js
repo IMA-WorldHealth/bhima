@@ -5,6 +5,11 @@ AgedDebtorsController.$inject = [
   'NotifyService', 'AgedDebtorReportService'
 ];
 
+/**
+ * Aged Debtor Report Page
+ *
+ * This page allows users to configure the aged debtor report options
+ */
 function AgedDebtorsController(Notify, AgedDebtorReports) {
   var vm = this;
 
@@ -23,11 +28,15 @@ function AgedDebtorsController(Notify, AgedDebtorReports) {
     { field: 'actions', displayName: 'FORM.LABELS.ACTIONS', headerCellFilter: 'translate' }
   ];
 
+  /*
   AgedDebtorReports.read()
     .then(function (reports) {
       vm.gridOptions.data = reports;
     })
     .catch(Notify.handleError);
+
+  */
+  vm.gridOptions.data = [];
 
   // open the configuration modal for a new Aged Debtors report
   vm.create = function create() {
