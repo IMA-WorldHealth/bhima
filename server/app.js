@@ -134,7 +134,11 @@ require('./lib/PluginManager')(app, []);
 
 // ensure the process terminates gracefully when an error occurs.
 process.on('uncaughtException', (exception) => {
-  console.error(exception);
+  winston.error(exception);
   process.exit(1);
 });
 
+process.on('warning', (warning) => {
+  winston.warn(warning.message);
+  winston.warn(warning.stack);
+});

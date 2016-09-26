@@ -19,15 +19,11 @@
 
 const _           = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
-const ReportControllerFactory = require('../../../report');
 const db          = require('../../../../lib/db');
 
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
 const REPORT_KEY = 'AGED_DEBTOR';
-
-// make a report controllers
-const controller = ReportControllerFactory(REPORT_KEY);
 
 /**
  * @method agedDebtorReport
@@ -49,10 +45,10 @@ function agedDebtorReport(req, res, next) {
     return next(e);
   }
 
-  const havingNonZeroValues = ' HAVING \'all\' > 0 ';
+  const havingNonZeroValues = ' HAVING total > 0 ';
   const includeZeroes = Boolean(Number(qs.zeroes));
 
-  let data = {};
+  const data = {};
 
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `
@@ -61,7 +57,7 @@ function agedDebtorReport(req, res, next) {
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
-      SUM(gl.debit_equiv - gl.credit_equiv) AS 'all'
+      SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
@@ -77,7 +73,7 @@ function agedDebtorReport(req, res, next) {
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 30 AND 60, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) BETWEEN 60 AND 90, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
       SUM(IF(DATEDIFF(CURRENT_TIMESTAMP(), gl.trans_date) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
-      SUM(gl.debit_equiv - gl.credit_equiv) AS 'all'
+      SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
@@ -85,7 +81,7 @@ function agedDebtorReport(req, res, next) {
 
   // fire the SQL for the report
   db.exec(debtorSql)
-    .then(function (debtors) {
+    .then(debtors => {
       data.debtors = debtors;
       return db.exec(aggregateSql);
     })
