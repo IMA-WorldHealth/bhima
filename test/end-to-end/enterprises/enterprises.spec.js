@@ -66,8 +66,8 @@ describe('Enterprises ::', function () {
     // currency select
     components.currencySelect.set(enterprise.currency_id);
 
-    FU.typeahead('EnterpriseCtrl.enterprise.gain_account', enterprise.gain_account);
-    FU.typeahead('EnterpriseCtrl.enterprise.loss_account', enterprise.loss_account);
+    FU.uiSelect('EnterpriseCtrl.enterprise.gain_account', enterprise.gain_account);
+    FU.uiSelect('EnterpriseCtrl.enterprise.loss_account', enterprise.loss_account);
 
     FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
     FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
@@ -113,8 +113,8 @@ describe('Enterprises ::', function () {
      // currency select
      components.currencySelect.set(default_enterprise.currency_id);
 
-     FU.typeahead('EnterpriseCtrl.enterprise.gain_account', default_enterprise.gain_account);
-     FU.typeahead('EnterpriseCtrl.enterprise.loss_account', default_enterprise.loss_account);
+     FU.uiSelect('EnterpriseCtrl.enterprise.gain_account', default_enterprise.gain_account);
+     FU.uiSelect('EnterpriseCtrl.enterprise.loss_account', default_enterprise.loss_account);
 
      FU.input('EnterpriseCtrl.enterprise.po_box', default_enterprise.po_box);
      FU.input('EnterpriseCtrl.enterprise.email', default_enterprise.email);

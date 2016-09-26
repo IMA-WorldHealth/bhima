@@ -28,7 +28,7 @@ describe('Subsidies', function () {
     FU.buttons.create();
     FU.input('SubsidyCtrl.subsidy.label', subsidy.label);
     FU.input('SubsidyCtrl.subsidy.value', subsidy.value);
-    FU.select('SubsidyCtrl.subsidy.account_id', 'Test Debtor Accounts2');
+    FU.uiSelect('SubsidyCtrl.subsidy.account_id', 'Test Debtor Accounts2');
     FU.input('SubsidyCtrl.subsidy.description', subsidy.description);
 
     // submit the page to the server
@@ -53,8 +53,8 @@ describe('Subsidies', function () {
   });
 
   it('blocks invalid form submission with relevant error classes', function () {
-    // switch to the create form
-    element(by.id('create')).click();
+
+    FU.buttons.create();
 
     // verify form has not been submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(path);

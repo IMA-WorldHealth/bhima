@@ -2,10 +2,12 @@
 
   <div class="row">
     <div class="col-xs-12">
-      <p><a ng-href="#/debtors/groups">
-        <span class="glyphicon glyphicon-circle-arrow-left"></span>
-        {{ "DEBTOR_GROUP.BACK" | translate }}
-      </a></p>
+      <p>
+        <a ng-href="#/debtors/groups">
+          <span class="glyphicon glyphicon-circle-arrow-left"></span>
+          {{ "DEBTOR_GROUP.BACK" | translate }}
+        </a>
+      </p>
     </div>
   </div>
 
@@ -30,19 +32,21 @@
         <!-- @todo this should be a directive - this controller should not have to consider accounts -->
         <div
           class="form-group has-feedback"
-          data-component-find-account
           ng-class="{'has-error' : debtorGroup.account_id.$invalid && debtorGroup.$submitted}">
 
           <label class="control-label">{{ "TABLE.COLUMNS.ACCOUNT" | translate }}</label>
-          <input
-            class="form-control"
+          <ui-select
             name="account_id"
-            placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
-            uib-typeahead="account as account.hrlabel for account in GroupEditCtrl.accounts | filter:$viewValue | limitTo:10"
-            typeahead-template-url="partials/templates/typeahead/accounts.html"
-            typeahead-editable="false"
             ng-model="GroupEditCtrl.group.account_id"
-            required>
+            theme="bootstrap">
+            <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+              <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+            </ui-select-match>
+            <ui-select-choices ui-select-focus-patch repeat="account.id as account in  GroupEditCtrl.accounts | filter:$select.search">
+              <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+              <span ng-bind-html="account.label | highlight:$select.search"></span>
+            </ui-select-choices>
+          </ui-select>
 
           <div class="help-block" ng-messages="debtorGroup.account_id.$error" ng-show="debtorGroup.$submitted">
             <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -126,8 +130,10 @@
             </label>
           </div>
 
-          <!-- <button class="btn btn-default btn-sm">Cancel</button> -->
-          <button data-method="submit" type="submit" ng-click="GroupEditCtrl.submit(debtorGroup)" class="btn btn-primary btn-sm">{{ "FORM.BUTTONS.SUBMIT" | translate }}</button>
+          <!-- <button class="btn btn-default">Cancel</button> -->
+          <button data-method="submit" type="submit" ng-click="GroupEditCtrl.submit(debtorGroup)" class="btn btn-primary">
+            {{ "FORM.BUTTONS.SUBMIT" | translate }}
+          </button>
         </div>
       </div>
     </div>

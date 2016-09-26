@@ -43,24 +43,24 @@ describe('Inventory Configuration', () => {
     // navigate to the page
     before(() => helpers.navigate('#/inventory/configuration'));
 
-    it('Successfully creates a new inventory group', () => {
+    it('successfully creates a new inventory group', () => {
       element(by.css('[data-create-group]')).click();
       FU.input('$ctrl.session.name', group.name);
       FU.input('$ctrl.session.code', group.code);
-      FU.typeahead('$ctrl.session.salesAccount', group.sales_account);
-      FU.typeahead('$ctrl.session.stockAccount', group.stock_account);
-      FU.typeahead('$ctrl.session.cogsAccount', group.cogs_account);
+      FU.uiSelect('$ctrl.session.salesAccount', group.sales_account);
+      FU.uiSelect('$ctrl.session.stockAccount', group.stock_account);
+      FU.uiSelect('$ctrl.session.cogsAccount', group.cogs_account);
       FU.buttons.submit();
       components.notification.hasSuccess();
     });
 
-    it('Successfully updates an existing inventory group', () => {
+    it('successfully updates an existing inventory group', () => {
       element(by.css('[data-edit-group="' + group.code +'"]')).click();
       FU.input('$ctrl.session.name', updateGroup.name);
       FU.input('$ctrl.session.code', updateGroup.code);
-      FU.typeahead('$ctrl.session.salesAccount', updateGroup.sales_account);
-      element(by.model('$ctrl.session.stockAccount')).clear();
-      element(by.model('$ctrl.session.cogsAccount')).clear();
+      FU.uiSelect('$ctrl.session.salesAccount', updateGroup.sales_account);
+      element(by.model('$ctrl.session.stockAccount')).$('[ng-click="$select.clear($event)"]').click();
+      element(by.model('$ctrl.session.cogsAccount')).$('[ng-click="$select.clear($event)"]').click();
       FU.buttons.submit();
       components.notification.hasSuccess();
     });

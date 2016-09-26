@@ -1,4 +1,4 @@
-<form name="ActionForm" method="post" novalidate>
+<form name="ActionForm" bh-form-defaults novalidate>
   <div class="modal-header">
     <i class="fa fa-list"></i>
     <span ng-if="$ctrl.action==='add'">{{ 'INVENTORY.ADD_GROUP' | translate }}</span>
@@ -40,54 +40,72 @@
       <label class="control-label">
         {{ 'FORM.SELECT.ACCOUNT' | translate }} ({{ 'FORM.LABELS.SALE' | translate }})
       </label>
-      <input class="form-control" type="text" name="salesAccount"
+
+      <ui-select
+        name="salesAccount"
         ng-model="$ctrl.session.salesAccount"
-        uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
-        typeahead-template-url="partials/templates/typeahead/accounts.html"
-        typeahead-editable="true"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
+        theme="bootstrap"
         required>
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="account in $ctrl.accountList | filter:$select.search">
+          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+          <span ng-bind-html="account.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+
       <div class="help-block" ng-messages="ActionForm.salesAccount.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="">
+      <label class="control-label">
         {{ 'FORM.SELECT.ACCOUNT' | translate }} ({{ 'FORM.LABELS.STOCK' | translate }})
       </label>
-      <input class="form-control" type="text"
+      <ui-select
+        name="stockAccount"
         ng-model="$ctrl.session.stockAccount"
-        uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
-        typeahead-template-url="partials/templates/typeahead/accounts.html"
-        typeahead-editable="true"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
-        >
+        theme="bootstrap">
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}"  allow-clear="true">
+          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="account in $ctrl.accountList | filter:$select.search">
+          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+          <span ng-bind-html="account.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
     </div>
 
     <div class="form-group">
-      <label for="">
+      <label class="control-label">
         {{ 'FORM.SELECT.ACCOUNT' | translate }} ({{ 'FORM.LABELS.CHARGE' | translate }})
       </label>
-      <input class="form-control" type="text"
-        ng-model="$ctrl.session.cogsAccount"
-        uib-typeahead="acc as acc.hrlabel for acc in $ctrl.accountList | filter:$viewValue | limitTo:8"
-        typeahead-template-url="partials/templates/typeahead/accounts.html"
-        typeahead-editable="true"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
-        >
-    </div>
 
+      <ui-select
+        name="cogsAccount"
+        ng-model="$ctrl.session.cogsAccount"
+        theme="bootstrap">
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}" allow-clear="true">
+          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="account in $ctrl.accountList | filter:$select.search">
+          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+          <span ng-bind-html="account.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
   </div>
 
   <div class="modal-footer">
     <button type="button"
-      class="btn btn-default btn-sm"
+      class="btn btn-default"
       ng-click="$ctrl.cancel()">
       {{ 'FORM.BUTTONS.CANCEL' | translate }}
     </button>
     <button type="submit"
-      class="btn btn-primary btn-sm"
+      class="btn btn-primary"
       ng-click="$ctrl.submit(ActionForm)"
       data-method="submit">
       {{ 'FORM.BUTTONS.SUBMIT' | translate }}

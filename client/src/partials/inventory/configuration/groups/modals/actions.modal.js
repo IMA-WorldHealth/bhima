@@ -43,10 +43,10 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
   /** edit inventory group */
   function editGroup(record, uuid) {
     return InventoryGroup.update(uuid, record)
-    .then(function (res) {
-      return res;
-    })
-    .catch(Notify.errorHandler);
+      .then(function (res) {
+        return res;
+      })
+      .catch(Notify.errorHandler);
   }
 
   /** cancel action */
@@ -67,7 +67,7 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
 
   /**
    * essential Account Detail
-   * This function affect a correct object to the uib typeahead input text
+   * This function affect a correct object to the ui-select input text
    */
   function essentialAccountDetail(account) {
     return {
@@ -85,10 +85,10 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
     vm.identifier = Data.identifier;
 
     Account.read()
-    .then(function (list) {
-      vm.accountList = list;
-    })
-    .catch(Notify.errorHandler);
+      .then(function (accounts) {
+        vm.accountList = accounts;
+      })
+      .catch(Notify.errorHandler);
 
     if (vm.identifier) {
       InventoryGroup.read(vm.identifier)
@@ -97,31 +97,36 @@ function InventoryGroupsActionsModalController(Account, InventoryGroup, Notify, 
 
         // if the account Id is undefined or null the Account Service returns an array or account
         // to fix it we assign a inexisting account Id 'undefinedIdentifier'
-        var sales_account = group[0].sales_account || 'undefinedIdentifier';
-        var stock_account = group[0].stock_account || 'undefinedIdentifier';
-        var cogs_account  = group[0].cogs_account || 'undefinedIdentifier';
+        var sales_account = group[0].sales_account || undefined;
+        var stock_account = group[0].stock_account || undefined;
+        var cogs_account  = group[0].cogs_account || undefined;
 
         // sales accounts
-        Account.read(sales_account)
-        .then(function (account) {
-          vm.session.salesAccount = essentialAccountDetail(account);
-        })
-        .catch(Notify.errorHandler);
+        if (sales_account) {
+          Account.read(sales_account)
+          .then(function (account) {
+            vm.session.salesAccount = essentialAccountDetail(account);
+          })
+          .catch(Notify.errorHandler);
+        }
 
         // stock accounts
-        Account.read(stock_account)
-        .then(function (account) {
-          vm.session.stockAccount = essentialAccountDetail(account);
-        })
-        .catch(Notify.errorHandler);
+        if (stock_account) {
+          Account.read(stock_account)
+          .then(function (account) {
+            vm.session.stockAccount = essentialAccountDetail(account);
+          })
+          .catch(Notify.errorHandler);
+        }
 
         // cogs accounts
-        Account.read(cogs_account)
-        .then(function (account) {
-          vm.session.cogsAccount = essentialAccountDetail(account);
-        })
-        .catch(Notify.errorHandler);
-
+        if (cogs_account) {
+          Account.read(cogs_account)
+          .then(function (account) {
+            vm.session.cogsAccount = essentialAccountDetail(account);
+          })
+          .catch(Notify.errorHandler);
+        }
       })
       .catch(Notify.errorHandler);
     }

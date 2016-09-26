@@ -15,7 +15,6 @@ module.exports = {
   locationSelect:  require('./bhLocationSelect'),
   currencyInput:   require('./bhCurrencyInput'),
   findPatient:     require('./bhFindPatient'),
-  findDebtorGroup: require('./bhFindDebtorGroup'),
   dateEditor:      require('./bhDateEditor'),
   modalAction:     require('./bhModalAction'),
   notification:    require('./notify'),

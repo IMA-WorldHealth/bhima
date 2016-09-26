@@ -108,8 +108,7 @@
                 Hack styles to make text behave look like class "btn".  This should be formalized into a class
               -->
               <span style="display: inline-block; padding: 6px 12px; vertical-align:middle;">
-                <span class="glyphicon glyphicon-list-alt"></span>
-                {{ 'FORM.LABELS.TRANSACTION' | translate }}
+                <i class="fa fa-list"></i> {{ 'FORM.LABELS.TRANSACTION' | translate }}
               </span>
 
               <button
@@ -117,8 +116,7 @@
                 class="btn btn-default pull-right"
                 ng-click="ComplexVoucherCtrl.addVoucherItem()"
                 data-button-add-item>
-                <span class="glyphicon glyphicon-plus"></span>
-                {{ 'VOUCHERS.COMPLEX.ADD_ITEMS' | translate }}
+                <i class="fa fa-plus"></i>{{ 'VOUCHERS.COMPLEX.ADD_ITEMS' | translate }}
               </button>
             </div>
 
@@ -137,31 +135,34 @@
               </thead>
 
               <tbody>
-                <tr
-                  class="normalRow"
-                  ng-repeat="row in ComplexVoucherCtrl.rows"
-                  ng-class="{'validRow': row.isValid, 'invalidRow': !row.isValid}"
-                  data-row="{{ $index }}">
-                  <td>
-                    <span ng-show="row.isValid" class="text-success iconRow">
-                      <span class="glyphicon glyphicon-ok-sign"></span>
+                <tr ng-repeat="row in ComplexVoucherCtrl.rows track by $index" data-row="{{ $index }}">
+
+                  <td class="text-center" style="vertical-align:middle">
+                    <span ng-show="row.isValid" class="text-success">
+                      <i class="fa fa-check-circle"></i>
                     </span>
 
-                    <span ng-hide="row.isValid" class="text-danger iconRow">
-                      <span class="glyphicon glyphicon-exclamation-sign"></span>
+                    <span ng-hide="row.isValid" class="text-danger">
+                      <i class="fa fa-exclamation-circle"></i>
                     </span>
                   </td>
                   <td>
-                    <input
-                      ng-model="row.account"
-                      type="text"
-                      placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
-                      uib-typeahead="account as account.hrlabel for account in ComplexVoucherCtrl.accounts | filter:$viewValue | limitTo:8 "
-                      typeahead-editable="false"
-                      typeahead-on-select="ComplexVoucherCtrl.checkRowValidity($index)"
-                      class="form-control input-sm"
-                      required>
-                  </td>
+                   <ui-select
+                     ng-model="row.account"
+                     name="account"
+                     theme="bootstrap"
+                     style="width:100%;"
+                     required>
+                     <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                       <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                     </ui-select-match>
+                     <ui-select-choices ui-select-focus-patch repeat="account in ComplexVoucherCtrl.accounts | filter:$select.search">
+                       <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                       <span ng-bind-html="account.label | highlight:$select.search"></span>
+                     </ui-select-choices>
+                   </ui-select>
+                 </td>
+
                   <td style="vertical-align: middle; text-align: center;">
                     {{ ComplexVoucherCtrl.currencySymbol(ComplexVoucherCtrl.voucher.currency_id) }}
                   </td>
@@ -170,7 +171,7 @@
                       ng-model="row.debit"
                       ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                       type="number"
-                      class="form-control input-sm text-right"
+                      class="form-control text-right"
                       required>
                   </td>
                   <td>
@@ -178,12 +179,12 @@
                       ng-model="row.credit"
                       ng-change="ComplexVoucherCtrl.checkRowValidity($index)"
                       type="number"
-                      class="form-control input-sm text-right"
+                      class="form-control text-right"
                       required>
                   </td>
                   <td>
                     <button
-                      class="btn btn-default btn-block btn-sm"
+                      class="btn btn-default btn-block"
                       type="button"
                       ng-click="ComplexVoucherCtrl.openEntityModal(row)"
                       ng-class="{'btn-success': row.entity.type=='D', 'btn-warning': row.entity.type=='C'}"
@@ -191,18 +192,18 @@
 
                       <!-- state: has entity -->
                       <span ng-show="row.entity.uuid">
-                        <span class="glyphicon glyphicon-user"></span> {{ row.entity.label }}
+                        <i class="fa fa-user"></i> {{ row.entity.label }}
                       </span>
 
                       <!-- state: no entity -->
                       <span ng-hide="row.entity.uuid">
-                        <span class="glyphicon glyphicon-plus"></span> {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}
+                        <i class="fa fa-plus"></i> {{ 'VOUCHERS.COMPLEX.ENTITY' | translate }}
                       </span>
                     </button>
                   </td>
                   <td>
                     <button
-                      class="btn btn-default btn-block btn-sm"
+                      class="btn btn-default btn-block"
                       type="button"
                       ng-click="ComplexVoucherCtrl.openReferenceModal(row)"
                       ng-class="{'btn-info': row.reference.uuid}"
@@ -210,21 +211,21 @@
 
                       <!-- state: has reference -->
                       <span ng-show="row.reference.uuid">
-                        <span class="glyphicon glyphicon-file"></span> {{ row.reference.reference }}
+                        <i class="fa fa-file-o"></i> {{ row.reference.reference }}
                       </span>
 
                       <!-- state: no reference -->
                       <span ng-hide="row.reference.uuid">
-                        <span class="glyphicon glyphicon-plus"></span> {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }}
+                        <i class="fa fa-plus"></i> {{ 'VOUCHERS.COMPLEX.REFERENCE' | translate }}
                       </span>
                     </button>
                   </td>
                   <td class="text-right">
                     <button
-                      class="btn btn-danger btn-sm"
+                      class="btn btn-danger"
                       type="button"
                       ng-click="ComplexVoucherCtrl.removeVoucherItem($index)">
-                      <span class="glyphicon glyphicon-trash"></span>
+                      <i class="fa fa-trash-o"></i>
                     </button>
                   </td>
                 </tr>

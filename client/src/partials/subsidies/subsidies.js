@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 .controller('SubsidyController', SubsidyController);
 
 SubsidyController.$inject = [
-  'SubsidyService', 'AccountService', '$translate', 'ModalService', 'util'
+  'SubsidyService', 'AccountService', '$translate', 'ModalService', 'util', 'NotifyService'
 ];
 
-function SubsidyController(Subsidy , Accounts, $translate, ModalService, util) {
+function SubsidyController(Subsidy , Accounts, $translate, ModalService, util, Notify) {
   var vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -21,21 +21,15 @@ function SubsidyController(Subsidy , Accounts, $translate, ModalService, util) {
   vm.length250 = 200;
   vm.maxLength = util.maxTextLength;
 
-  function handler(error) {
-    console.error(error);
-  }
-
   // fired on startup
   function startup() {
-    // start up loading indicator
-    vm.session.loading = true;
 
     // load accounts and properly formats their labels
     Accounts.read(null, { detailed : 1 })
-    .then(function (accounts) {
-      vm.accounts = accounts;
-    })
-    .catch(handler);
+      .then(function (accounts) {
+        vm.accounts = accounts;
+      })
+      .catch(Notify.handleError);
 
     // load Subsidies
     refreshSubsidies();
@@ -61,9 +55,9 @@ function SubsidyController(Subsidy , Accounts, $translate, ModalService, util) {
   // refresh the displayed Subsidies
   function refreshSubsidies() {
     return Subsidy.read(null, { detailed : 1 })
-    .then(function (data) {
-      vm.subsidies = data;
-    });
+      .then(function (data) {
+        vm.subsidies = data;
+      });
   }
 
   // form submission
@@ -85,31 +79,28 @@ function SubsidyController(Subsidy , Accounts, $translate, ModalService, util) {
       .then(function () {
         vm.view = creation ? 'create_success' : 'update_success';
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
   // switch to delete warning mode
-  function del(subsidy) {    
+  function del(subsidy) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool){
-       // if the user clicked cancel, reset the view and return
-       if (!bool) {
-          vm.view = 'default';
-          return;
-       }
+      .then(function (bool){
+         // if the user clicked cancel, reset the view and return
+         if (!bool) {
+            vm.view = 'default';
+            return;
+         }
 
-      // if we get there, the user wants to delete a subsidy
-      vm.view = 'delete_confirm';
-      Subsidy.delete(subsidy.id)
-      .then(function () {
-         vm.view = 'delete_success';
-         return refreshSubsidies();
-      })
-      .catch(function (error) {
-        vm.HTTPError = error;
-        vm.view = 'delete_error';
+        // if we get there, the user wants to delete a subsidy
+        vm.view = 'delete_confirm';
+        Subsidy.delete(subsidy.id)
+          .then(function () {
+             vm.view = 'delete_success';
+             return refreshSubsidies();
+          })
+          .catch(Notify.handleError);
       });
-    });  
   }
 
   startup();
