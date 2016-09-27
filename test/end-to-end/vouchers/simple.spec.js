@@ -30,8 +30,8 @@ describe('Simple Vouchers', function () {
     element(by.css('[data-item="1"]')).click();
 
     // select the appropriate accounts
-    FU.typeahead('SimpleVoucherCtrl.voucher.fromAccount', voucher.fromAccount);
-    FU.typeahead('SimpleVoucherCtrl.voucher.toAccount', voucher.toAccount);
+    FU.uiSelect('SimpleVoucherCtrl.voucher.fromAccount', voucher.fromAccount);
+    FU.uiSelect('SimpleVoucherCtrl.voucher.toAccount', voucher.toAccount);
 
     components.currencySelect.set(2);
     components.currencyInput.set(voucher.amount);

@@ -29,7 +29,7 @@ class Row {
 
   // account setter
   account(number) {
-    FU.typeahead('row.account', number, this._node);
+    FU.uiSelect('row.account', number, this._node);
   }
 
   // sets the debit value

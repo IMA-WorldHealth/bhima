@@ -10,21 +10,24 @@
     <!-- account input -->
     <div
       class="form-group"
-      ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.account.$invalid }"
-      data-component-find-account
-      >
+      ng-class="{ 'has-error' : BillingServicesForm.$submitted && BillingServicesForm.account.$invalid }">
       <label class="control-label">
         {{ "FORM.LABELS.ACCOUNT" | translate }}
       </label>
-      <input
-        class="form-control"
+
+      <ui-select
         name="account"
         ng-model="BillingServicesFormCtrl.model.account"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}"
-        uib-typeahead="account as account.hrlabel for account in BillingServicesFormCtrl.accounts | filter:$viewValue | limitTo:6"
-        typeahead-editable="false"
-        typeahead-template-url="partials/templates/typeahead/accounts.html"
-        required>
+        theme="bootstrap">
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="account in BillingServicesFormCtrl.accounts | filter:$select.search">
+          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+          <span ng-bind-html="account.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+
       <div class="help-block" ng-messages="BillingServicesForm.account.$error" ng-show="BillingServicesForm.$submitted">
         <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
       </div>

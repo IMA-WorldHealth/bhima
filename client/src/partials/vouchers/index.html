@@ -1,8 +1,8 @@
 <!-- breadcrumb header -->
 <bh-breadcrumb
-  path    = "VoucherCtrl.bcPaths"
-  button  = "VoucherCtrl.bcButtons"
-  print   = "VoucherCtrl.buttonPrint">
+  path   = "VoucherCtrl.bcPaths"
+  button = "VoucherCtrl.bcButtons"
+  print  = "VoucherCtrl.buttonPrint">
 </bh-breadcrumb>
 
 <div class="flex-util">
@@ -17,13 +17,13 @@
   <div class="container-fluid">
 
     <!-- vouchers list  -->
-    <div id="voucherGrid"
+    <div
+      id="voucherGrid"
       class="grid-util-full-height"
       ui-grid="VoucherCtrl.gridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns
-      ui-grid-grouping
-      ui-grid-pagination>
+      ui-grid-grouping>
     </div>
 
   </div>

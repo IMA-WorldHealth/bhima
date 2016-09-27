@@ -4,21 +4,22 @@
       <li class="static">{{ "TREE.ADMIN" | translate }}</li>
       <li class="active">{{ "SUBSIDY.TITLE" | translate }}</li>
     </ol>
+
+   <div class="toolbar">
+     <div class="toolbar-item">
+        <button class="btn btn-default" ng-click="SubsidyCtrl.create()" data-method="create">
+          <span class="glyphicon glyphicon-plus-sign"></span> {{ "SUBSIDY.ADD_SUBSIDY" | translate }}
+        </button>
+     </div>
+   </div>
   </div>
 </div>
-
-<div class="flex-util">
-  <button class="btn btn-sm btn-default" id="create" ng-click="SubsidyCtrl.create()" data-method="create">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ "SUBSIDY.ADD_SUBSIDY" | translate }}
-  </button>
-</div>
-
 
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
 
-      <div class="col-xs-6">
+      <div class="col-md-6">
         <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
           <div class="panel-heading">
             {{ "SUBSIDY.ALL_SUBSIDIES" | translate }}
@@ -52,7 +53,7 @@
         </div>
       </div>
 
-      <div class="col-xs-6" ng-switch="SubsidyCtrl.view">
+      <div class="col-md-6" ng-switch="SubsidyCtrl.view">
         <div ng-switch-default>
           <div class="alert alert-info" id="default">
             <h4>{{ "SUBSIDY.TITLE" | translate }}</h4>
@@ -112,9 +113,20 @@
 
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.account_id.$invalid }">
                 <label class="col-md-3 control-label">{{ "FORM.LABELS.ACCOUNT" | translate }}</label>
-                <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECT.ACCOUNT' | translate }} -- </option>
-                </select>
+                <ui-select
+                  name="account_id"
+                  ng-model="SubsidyCtrl.subsidy.account_id"
+                  theme="bootstrap"
+                  required>
+                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                  </ui-select-match>
+                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in SubsidyCtrl.accounts | filter:$select.search">
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                  </ui-select-choices>
+                </ui-select>
+
                 <div class="help-block" ng-messages="CreateForm.account_id.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -163,9 +175,20 @@
 
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.account_id.$invalid }">
                 <label class="control-label">{{ "FORM.LABELS.ACCOUNT" | translate }}</label>
-                <select class="form-control" name="account_id" ng-model="SubsidyCtrl.subsidy.account_id" id="account_id" ng-options="ac.id as ac.label for ac in SubsidyCtrl.accounts | orderBy:'account_number'" required>
-                  <option value="" disabled> -- {{ 'FORM.SELECT.ACCOUNT' | translate }} -- </option>
-                </select>
+                <ui-select
+                  name="account_id"
+                  ng-model="SubsidyCtrl.subsidy.account_id"
+                  theme="bootstrap"
+                  required>
+                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                  </ui-select-match>
+                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in SubsidyCtrl.accounts | filter:$select.search">
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                  </ui-select-choices>
+                </ui-select>
+
                 <div class="help-block" ng-messages="UpdateForm.account_id.$error" ng-show="UpdateForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -190,7 +213,6 @@
             </form>
           </div>
         </div>
-
       </div>
     </div>
   </div>
