@@ -1,14 +1,10 @@
 <form name="FiscalForm" bh-submit="FiscalManageCtrl.submit(FiscalForm)" bh-form-defaults novalidate>
 
-  <a href ui-sref="fiscal.list">
-    <i class="fa fa-arrow-circle-left"></i> {{ "FISCAL.BACK" | translate }}
-  </a>
-
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
       <div class="panel panel-primary">
-        <div ng-if="FiscalCtrl.state.current.name==='fiscal.create'" class="panel-heading">{{ "FISCAL.NEW_FISCAL_YEAR" | translate }}</div>
-        <div ng-if="FiscalCtrl.state.current.name==='fiscal.update'" class="panel-heading">{{ "FISCAL.UPDATE_FISCAL_YEAR" | translate }}</div>
+        <div ng-if="FiscalManageCtrl.isCreateState" class="panel-heading">{{ "FISCAL.NEW_FISCAL_YEAR" | translate }}</div>
+        <div ng-if="FiscalManageCtrl.isUpdateState" class="panel-heading">{{ "FISCAL.UPDATE_FISCAL_YEAR" | translate }}</div>
         <div class="panel-body">
 
           <div class="form-group" ng-class="{ 'has-error' : FiscalForm.$submitted && FiscalForm.label.$invalid }">
@@ -21,27 +17,31 @@
             </div>
           </div>
 
-          <!-- date editor component -->
-          <!-- TODO - this label should say "Start Date" -->
-          <bh-date-editor
-            id="start_date"
-            date-value="FiscalManageCtrl.fiscal.start_date"
+          <!-- date interval component  -->
+          <bh-date-interval
+            date-from="FiscalManageCtrl.fiscal.start_date"
+            date-to="FiscalManageCtrl.fiscal.end_date"
+            mode="year"
+            on-change="FiscalManageCtrl.numberOfMonths()"
             validation-trigger="FiscalForm.$submitted"
-            required="required">
-          </bh-date-editor>
+            required="true">
+          </bh-date-interval>
 
           <div class="form-group" ng-class="{ 'has-error' : FiscalForm.$submitted && FiscalForm.number_of_months.$invalid }">
             <label class="control-label">{{ "FORM.LABELS.NB_MONTH" | translate }}</label>
-            <input type="number" class="form-control" ng-change="FiscalManageCtrl.endDate()" max="12" min="1" name="number_of_months" ng-model="FiscalManageCtrl.fiscal.number_of_months" required>
+            <input type="number" class="form-control" ng-change="FiscalManageCtrl.numberOfMonths()" max="12" min="1" name="number_of_months" ng-model="FiscalManageCtrl.fiscal.number_of_months" required>
             <div class="help-block" ng-messages="FiscalForm.number_of_months.$error" ng-show="FiscalForm.$submitted">
               <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
-          <div class="form-group text-muted">
-            <i class="fa fa-calendar"></i>
-            {{ "FORM.LABELS.END_DATE" | translate}}:
-            <span ng-show="FiscalManageCtrl.fiscal.number_of_months && FiscalManageCtrl.fiscal.start_date">{{ FiscalManageCtrl.end_date | date }}</span>
+          <div class="form-group">
+            <label class="control-label">{{ "FORM.LABELS.PREVIOUS_FISCAL_YEAR" | translate }}</label>
+            <select class="form-control"
+              ng-model="FiscalManageCtrl.fiscal.previous_fiscal_year_id"
+              ng-options="fy.id as fy.hrLabel for fy in FiscalManageCtrl.previous_fiscal_year">
+              <option value="" disabled>--{{ 'FORM.SELECT.FISCAL_YEAR' | translate }}--</option>
+            </select>
           </div>
 
           <div class="form-group" ng-class="{ 'has-error' : FiscalForm.$submitted && FiscalForm.note.$invalid }">
@@ -61,19 +61,20 @@
       </div>
     </div>
 
-    <div ng-if="FiscalCtrl.state.current.name==='fiscal.create'" class="col-md-6">
-      <p><strong>{{ "FORM.INFO.NOTE" | translate }}</strong></p>
-      <p>
-        <i class="text-primary fa fa-info-circle"></i> {{ "FISCAL.MESSAGES" | translate }}
-        <a href>{{ "FISCAL.SET_OPENING_BALANCES" | translate}}</a>
-      </p>
-    </div>
-
-    <div ng-if="FiscalCtrl.state.current.name==='fiscal.update'" class="col-md-6">
+    <div ng-if="FiscalManageCtrl.isUpdateState" class="col-md-12">
       <p><strong>{{ "FORM.INFO.OTHER_ACTIONS" | translate }}</strong></p>
       <p>
-        <a href>{{ "FORM.INFO.CLOSE_FISCAL_YEAR" | translate }}</a><br>
-        <a href>{{ "FORM.INFO.VIEW_BEGINNING_BALACE" | translate}}</a>
+        <!-- close the fiscal year  -->
+        <a class="btn btn-default" href>
+          <i class="fa fa-lock"></i>
+          {{ "FORM.INFO.CLOSE_FISCAL_YEAR" | translate }}
+        </a>
+
+        <!-- opening balance  -->
+        <a class="btn btn-default" ui-sref="fiscal.openingBalance" href>
+          <i class="fa fa-balance-scale"></i>
+          {{ "FORM.INFO.VIEW_BEGINNING_BALACE" | translate}}
+        </a>
       </p>
     </div>
   </div>

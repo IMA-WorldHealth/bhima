@@ -245,24 +245,13 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Cashflow Report
 (145,1);
 
--- testing financial transactions
-INSERT INTO `fiscal_year` (`enterprise_id`, `number_of_months`, `label`, `start_date`, `previous_fiscal_year_id`, `user_id`, `note`) VALUES
-  (1,12,'Test Fiscal Year 2015', DATE('2015-01-01'), NULL, 1, 'Note for 2015'),
-  (1,12,'Test Fiscal Year 2016', DATE('2016-01-01'), 1, 1, 'Note for 2016');
+-- Fiscal Year 2015
+SET @fiscalYear2015 = 0;
+CALL CreateFiscalYear(1, NULL, 1, 'Test Fiscal Year 2015', 12, DATE('2015-01-01'), DATE('2015-12-31'), 'Note for 2015', @fiscalYear2015);
 
-INSERT INTO `period` VALUES
-  (1,2,1,'2016-01-01','2016-01-31',0),
-  (2,2,2,'2016-02-01','2016-02-29',0),
-  (3,2,3,'2016-03-01','2016-03-31',0),
-  (4,2,4,'2016-04-01','2016-04-30',0),
-  (5,2,5,'2016-05-01','2016-05-31',0),
-  (6,2,6,'2016-06-01','2016-06-30',0),
-  (7,2,7,'2016-07-01','2016-07-31',0),
-  (8,2,8,'2016-08-01','2016-08-31',0),
-  (9,2,9,'2016-09-01','2016-09-30',0),
-  (10,2,0,'2016-10-01','2016-10-31',0),
-  (11,2,1,'2016-11-01','2016-11-30',0),
-  (12,2,2,'2016-12-01','2016-12-31',0);
+-- Fiscal Year 2016
+SET @fiscalYear2016 = 0;
+CALL CreateFiscalYear(1, @fiscalYear2015, 1, 'Test Fiscal Year 2016', 12, DATE('2016-01-01'), DATE('2016-12-31'), 'Note for 2016', @fiscalYear2016);
 
 
 -- give test permission to both projects
@@ -441,7 +430,7 @@ INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,1,'TRANS3','2016-01-09 17:04:27',@first_voucher,'description x',3628,0.0000,100.0000,0.0000,100.0000,2,NULL,NULL,NULL,'Sample voucher data one',1,2,1,NULL),
   (HUID(UUID()),1,1,1,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3627,200.0000,0.0000,200.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
   (HUID(UUID()),1,1,1,'TRANS4','2016-01-09 17:04:27',@second_voucher,'description x',3628,0.0000,200.0000,0.0000,200.0000,2,NULL,NULL,NULL,'Sample voucher data two',1,2,1,NULL),
-  (HUID(UUID()),1,1,1,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL),
+  (HUID(UUID()),1,1,1,'TRANS5','2016-01-09 17:04:27',@third_voucher,'description x',3627,300.0000,0.0000,300.0000,0.0000,2,NULL,'D',NULL,'Sample voucher data three',1,2,1,NULL),
   (HUID(UUID()),1,1,1,'TRANS5','2016-02-09 17:04:27',@third_voucher,'description x',3628,0.0000,300.0000,0.0000,300.0000,2,NULL,NULL,NULL,'Sample voucher data three',1,2,1,NULL);
 
 -- zones des santes SNIS
@@ -486,5 +475,3 @@ INSERT INTO `purchase` VALUES
 INSERT INTO `purchase_item` VALUES
   (HUID(UUID()), @purchase_order, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 1, 200, 200),
   (HUID(UUID()), @purchase_order, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 10, 10, 100);
-
-

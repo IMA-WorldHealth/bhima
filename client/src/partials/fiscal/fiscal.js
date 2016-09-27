@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('FiscalController', FiscalController);
 
 FiscalController.$inject = [
-  '$state', 'FiscalService', 'ModalService', 'NotifyService'
+  '$state', 'FiscalService', 'ModalService', 'NotifyService', '$window'
 ];
 
-function FiscalController($state, fiscalService, ModalService, Notify) {
+function FiscalController($state, fiscalService, ModalService, Notify, $window) {
   var vm = this;
   var today = new Date();
 
@@ -19,6 +19,7 @@ function FiscalController($state, fiscalService, ModalService, Notify) {
 
   vm.sort = sort;
   vm.state = $state;
+  vm.back = back;
 
   vm.sortByName = 'ASC';
   vm.sortByDateCreated = 'ASC';
@@ -37,6 +38,8 @@ function FiscalController($state, fiscalService, ModalService, Notify) {
   fiscalService.fiscalYearDate({date : today})
   .then(function (current) {
     vm.current = current;
+    vm.currentFiscalYearId = vm.current[0].fiscal_year_id;
+    vm.previousFiscalYearId = vm.current[0].previous_fiscal_year_id;
   })
   .catch(Notify.handleError);
 
@@ -56,6 +59,10 @@ function FiscalController($state, fiscalService, ModalService, Notify) {
         Notify.danger('FISCAL.CAN_NOT_DELETE_FY');
       });
     });
+  }
+
+  function back() {
+    $window.history.back();
   }
 
   function sort(option) {

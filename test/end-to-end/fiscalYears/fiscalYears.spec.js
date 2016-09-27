@@ -12,15 +12,14 @@ describe('Fiscal Year', function () {
   'use strict';
 
   const path = '#/fiscal';
-  var pathNew = '#/fiscal/create/new';
+  var pathNew = '#/fiscal/create';
 
   before(() => helpers.navigate(path));
 
   const fiscalYear = {
     label : 'A Special Fiscal Year',
-    start_date : new Date('2017-01-01'),
-    number_of_months : 12,
-    note : 'Note for the new fiscal Year'
+    note : 'Note for the new fiscal Year',
+    previous : 'Test Fiscal Year 2016'
   };
 
   it('blocks invalid form submission with relevant error classes', function () {
@@ -29,6 +28,9 @@ describe('Fiscal Year', function () {
 
     // verify form has not been successfully submitted
     expect(helpers.getCurrentPath()).to.eventually.equal(pathNew);
+
+    // set invalid date range to test `number_of_months`
+    components.dateInterval.range('01/02/2016', '01/01/2016');
 
     FU.buttons.submit();
 
@@ -43,8 +45,8 @@ describe('Fiscal Year', function () {
     FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
-    components.dateEditor.set(fiscalYear.start_date, 'start_date');
-    FU.input('FiscalManageCtrl.fiscal.number_of_months', fiscalYear.number_of_months);
+    components.dateInterval.range('01/01/2018', '31/12/2018');
+    FU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
     FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
     FU.buttons.submit();
 
@@ -54,11 +56,12 @@ describe('Fiscal Year', function () {
 
   it('edits a fiscal Year', function () {
     var updateButton = element.all(by.css('[data-fiscal-entry]'));
-    updateButton.all(by.css('[data-method="update"]')).last().click();
+    updateButton.all(by.css('[data-method="update"]')).first().click();
 
     // modify the fiscal year label and note
-    FU.input('FiscalManageCtrl.fiscal.label', ' 2017 update Comm Annnnn');
-    FU.input('FiscalManageCtrl.fiscal.note', ' Complement note');
+    FU.input('FiscalManageCtrl.fiscal.label', 'Test Fiscal Year 2017 (update)');
+    components.dateInterval.range('01/01/2017', '31/12/2017');
+    FU.input('FiscalManageCtrl.fiscal.note', 'Test 2017 (update)');
 
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -66,7 +69,7 @@ describe('Fiscal Year', function () {
 
   it('delete a fiscal Year', function () {
     var deleteButton = element.all(by.css('[data-fiscal-entry]'));
-    deleteButton.all(by.css('[data-method="delete"]')).last().click();
+    deleteButton.all(by.css('[data-method="delete"]')).first().click();
 
     // click the alert asking for permission
     components.modalAction.confirm();
