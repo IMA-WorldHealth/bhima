@@ -10,6 +10,7 @@
 'use strict';
 
 const _ = require('lodash');
+const q = require('q');
 
 /** The query string conditions builder */
 module.exports.queryCondition = queryCondition;
@@ -17,7 +18,8 @@ module.exports.take = take;
 module.exports.isTrueString = isTrueString;
 module.exports.isFalsy = isFalsy;
 module.exports.uniquelize = uniquelize;
-module.exports.loadModuleIfExists = loadModuleIfExists;
+module.exports.loadModuleIfExists = requireModuleIfExists;
+exports.resolveObject = resolveObject;
 
 /**
  * @function queryCondition
@@ -146,18 +148,40 @@ function isFalsy(value) {
  * @description return an array which contain only unique values
  */
 function uniquelize (array) {
-  return _.uniq(array); 
+  return _.uniq(array);
 }
 
- /**
-  * @method loadModuleIfExists
-  * @description load a module if it exists
-  */
-  function loadModuleIfExists(moduleName) {
-    try {
-        require(moduleName);
-    } catch (err) {
-        return false;
-    }
-    return true;
+/**
+* @method requireModuleIfExists
+* @description load a module if it exists
+*/
+function requireModuleIfExists(moduleName) {
+  try {
+      require(moduleName);
+  } catch (err) {
+      return false;
   }
+  return true;
+}
+
+/**
+ * @function resolveObject
+ *
+ * @description
+ * This utility takes in an object of promise queries and returns the object
+ * with all values resolved when all promises have settled.  If any one is
+ * rejected, the promise is rejected.
+ *
+ * @param {Object} object - this is the object of keys mapped to promise
+ *   values.
+ * @returns {Promise} - one all promises resolve, the same object mapped to
+ */
+function resolveObject(object) {
+  const settled = {};
+
+  return q.all(_.values(object))
+    .then(results => {
+      _.keys(object).forEach((key, index) => settled[key] = results[index]);
+      return settled;
+    });
+}

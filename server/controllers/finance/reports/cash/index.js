@@ -1,29 +1,32 @@
 /**
- * Cash Receipt Controller
+ * @overview
+ * Cash Reports
  *
- * This controller is responsible to assembling the cash payment receipt and
- * rendering it for the client.
+ * This module is responsible for rendering reports of cash payments.  It supports
+ * the cash receipt.
  *
- * @module finance/reports/cash.receipt
+ * @todo - cash payments registry.
+ *
+ * @module finance/reports/cash
  */
 'use strict';
 
 const _    = require('lodash');
 const q    = require('q');
 
-const BadRequest = require('../../../lib/errors/BadRequest');
-const ReportManager = require('../../../lib/ReportManager');
+const BadRequest = require('../../../../lib/errors/BadRequest');
+const ReportManager = require('../../../../lib/ReportManager');
 
-const CashPayments = require('../cash');
-const Users = require('../../admin/users');
-const Patients = require('../../medical/patients');
-const Enterprises = require('../../admin/enterprises');
-const Exchange = require('../../finance/exchange');
+const CashPayments = require('../../cash');
+const Exchange = require('../../exchange');
+const Users = require('../../../admin/users');
+const Patients = require('../../../medical/patients');
+const Enterprises = require('../../../admin/enterprises');
 
-const TEMPLATE = './server/controllers/finance/reports/cash.receipt.handlebars';
+const TEMPLATE = './server/controllers/finance/reports/cash/receipt.handlebars';
 
 /**
- * @method build
+ * @method receipt
  *
  * @description
  * This method builds the cash payment receipt as either a JSON, PDF, or HTML
@@ -31,7 +34,7 @@ const TEMPLATE = './server/controllers/finance/reports/cash.receipt.handlebars';
  *
  * GET /reports/cash/:uuid
  */
-function build(req, res, next) {
+function receipt(req, res, next) {
   const options = req.query;
 
   let report;
@@ -72,4 +75,4 @@ function build(req, res, next) {
     .done();
 }
 
-module.exports = build;
+exports.receipt = receipt;

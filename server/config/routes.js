@@ -51,7 +51,6 @@ const trialBalance     = require('../controllers/finance/trialBalance');
 const ledger           = require('../controllers/finance/ledger');
 const fiscal           = require('../controllers/finance/fiscal');
 const gl               = require('../controllers/finance/ledgers/general');
-const analytics        = require('../controllers/finance/analytics');
 const purchases        = require('../controllers/finance/purchases');
 const taxPayment       = require('../controllers/finance/taxPayment');
 const debtors          = require('../controllers/finance/debtors');
@@ -80,7 +79,7 @@ const creditors        = require('../controllers/finance/creditors.js');
 const journal          = require('../controllers/finance/journal');
 const transactionType  = require('../controllers/admin/transactionType');
 const generalLedger    = require('../controllers/finance/generalLedger');
-const cashflow         = require('../controllers/finance/cashflow');
+const cashflow         = require('../controllers/finance/reports/cashflow');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -354,14 +353,14 @@ exports.configure = function configure(app) {
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
   app.get('/reports/inventory/items', inventory.getInventoryItemReport);
 
-  app.get('/reports/finance/invoices', financeReports.invoices);
-  app.get('/reports/finance/invoices/:uuid', financeReports.receipts.invoices);
-  app.get('/reports/finance/cash/:uuid', financeReports.receipts.cash);
-  app.get('/reports/finance/debtors/aged', financeReports.agedDebtor);
-  app.get('/reports/finance/vouchers', vouchers.report);
-  app.get('/reports/finance/vouchers/:uuid', vouchers.receipt);
-  app.get('/reports/finance/accounts/chart', accounts.document);
-  app.get('/reports/finance/cashflow', cashflow.document);
+  app.get('/reports/finance/invoices', financeReports.invoices.report);
+  app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);
+  app.get('/reports/finance/cash/:uuid', financeReports.cash.receipt);
+  app.get('/reports/finance/debtors/aged', financeReports.debtors.aged);
+  app.get('/reports/finance/vouchers', financeReports.vouchers.report);
+  app.get('/reports/finance/vouchers/:uuid', financeReports.vouchers.receipt);
+  app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);
+  app.get('/reports/finance/cashflow', financeReports.cashflow.document);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
@@ -413,16 +412,6 @@ exports.configure = function configure(app) {
   app.post('/debtor_groups', debtorGroups.create);
   app.put('/debtor_groups/:uuid', debtorGroups.update);
 
-
-  // analytics for financial dashboard
-  // cash flow analytics
-  //app.get('/analytics/cashboxes', analytics.cashflow.getCashBoxes);
-  //app.get('/analytics/cashboxes/:id/balance', analytics.cashflow.getCashBoxBalance);
-  //app.get('/analytics/cashboxes/:id/history', analytics.cashflow.getCashBoxHistory);
-
-  // debtor analytics
-  app.get('/analytics/debtorgroups/top', analytics.cashflow.getTopDebtorGroups);
-  app.get('/analytics/debtors/top', analytics.cashflow.getTopDebtors);
 
   // users controller
   app.get('/users', users.list);
@@ -545,7 +534,8 @@ exports.configure = function configure(app) {
   app.put('/transaction_type/:id', transactionType.update);
   app.delete('/transaction_type/:id', transactionType.remove);
 
-  // cashflow
-  app.get('/finance/cashflow', cashflow.report);
+  // @todo - this should use the JSON renderer instead of it's own route!
+  app.get('/finance/cashflow', financeReports.cashflow.report);
 
+  //app.get('/reports/saved/finance/debtors/aged');
 };

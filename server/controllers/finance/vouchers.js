@@ -22,14 +22,9 @@ const _    = require('lodash');
 const uuid = require('node-uuid');
 const util = require('../../lib/util');
 const db   = require('../../lib/db');
-const ReportManager  = require('../../lib/ReportManager');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 const journal = require('./journal/voucher');
-
-/** Module constants */
-const receiptUrl = './server/controllers/finance/reports/voucher.receipt.handlebars';
-const reportUrl = './server/controllers/finance/reports/voucher.report.handlebars';
 
 /** Get list of vouchers */
 exports.list = list;
@@ -40,11 +35,7 @@ exports.detail = detail;
 /** Create a new voucher record */
 exports.create = create;
 
-/** Get the voucher report */
-exports.report = report;
-
-/** Get the voucher receipt */
-exports.receipt = receipt;
+exports.getVouchers = getVouchers;
 
 /**
  * GET /vouchers
@@ -181,75 +172,6 @@ function create(req, res, next) {
   })
   .catch(next)
   .done();
-}
-
-/**
- * GET /vouchers/receipt/:uuid
- *
- * @method receipt
- */
-function receipt(req, res, next) {
-
-  // page options
-  const options =
-    _.defaults({ pageSize : 'A5', orientation: 'landscape' }, req.query);
-
-  let report;
-  try {
-    report = new ReportManager(receiptUrl, req.session, options);
-  } catch (e) {
-    return next(e);
-  }
-
-  // request for detailed receipt
-  req.query.detailed = true;
-
-  getVouchers(req.params.uuid, req.query)
-    .then(rows => {
-
-      if (!rows.length) {
-        throw new NotFound(`Could not find a voucher with uuid ${req.params.uuid}`);
-      }
-
-      return report.render({ rows });
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
-}
-
-/**
- * GET reports/finance/vouchers
- *
- * @method report
- */
-function report(req, res, next) {
-
-  let report;
-  try  {
-    report = new ReportManager(reportUrl, req.session, req.query);
-  } catch(e) {
-    return next(e);
-  }
-
-  getVouchers(null, req.query)
-    .then(rows => {
-
-      const data = {
-        rows: rows,
-        dateFrom: req.query.dateFrom,
-        dateTo: req.query.dateTo
-      };
-
-      return report.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
 }
 
 /**

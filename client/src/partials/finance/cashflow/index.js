@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('CashflowController', CashflowController);
+  .controller('CashflowController', CashflowController);
 
 // dependencies injection
 CashflowController.$inject = [ '$state', '$stateParams', 'ModalService', 'LanguageService', 'DateService'];

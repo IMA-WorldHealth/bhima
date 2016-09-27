@@ -23,11 +23,9 @@
 
 const lodash = require('lodash');
 const db = require('../../../lib/db');
-const ReportManager = require('../../../lib/ReportManager');
 const NotFound = require('../../../lib/errors/NotFound');
 const types = require('./types');
 
-const reportUrl = './server/controllers/finance/reports/accounts.report.handlebars';
 
 /**
  * @method create
@@ -232,31 +230,6 @@ function lookupAccount(id) {
     });
 }
 
-/**
- * @method document
- * @description generate chart of account as a document
- */
-function document(req, res, next) {
-
-  let report;
-
-  try {
-    report = new ReportManager(reportUrl, req.session, req.query);
-  } catch(e) {
-    return next(e);
-  }
-
-  lookupAccount()
-    .then(processAccountDepth)
-    .then(accounts => {
-      return report.render({ accounts });
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
-}
 
 /**
  * @method processAccountDepth
@@ -309,5 +282,5 @@ exports.update = update;
 exports.detail = detail;
 exports.getBalance = getBalance;
 exports.types = types;
-exports.document = document;
 exports.lookupAccount = lookupAccount;
+exports.processAccountDepth = processAccountDepth;
