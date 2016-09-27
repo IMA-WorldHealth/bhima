@@ -12,7 +12,7 @@ describe('Fiscal Year', function () {
   'use strict';
 
   const path = '#/fiscal';
-  var pathNew = '#/fiscal/create/new';
+  var pathNew = '#/fiscal/create';
 
   before(() => helpers.navigate(path));
 
