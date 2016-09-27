@@ -14,10 +14,10 @@ function FiscalOpeningBalanceController($state, AccountStore, Fiscal, Notify, ut
   var fiscalYearId = $state.params.id;
 
   // expose to the view
-  vm.showAccountFilter  = false;
-  vm.editBalanceEnabled = false;
-  vm.showFilter = showFilter;
-  vm.editBalance = editBalance;
+  vm.editBalanceEnabled  = false;
+  vm.showAccountFilter   = false;
+  vm.toggleEditBalance   = toggleEditBalance;
+  vm.toggleAccountFilter = toggleAccountFilter;
   vm.submit = submit;
 
   // get fiscal year
@@ -61,18 +61,18 @@ function FiscalOpeningBalanceController($state, AccountStore, Fiscal, Notify, ut
   }
 
   /**
-   * @function showFilter
+   * @function toggleAccountFilter
    * @description show a filter for finding an account
    */
-  function showFilter() {
+  function toggleAccountFilter() {
     vm.showAccountFilter = !vm.showAccountFilter;
   }
 
   /**
-   * @function editBalance
+   * @function toggleEditBalance
    * @description edit the opening Balance
    */
-  function editBalance() {
+  function toggleEditBalance() {
     vm.editBalanceEnabled = !vm.editBalanceEnabled;
   }
 
@@ -86,7 +86,8 @@ function FiscalOpeningBalanceController($state, AccountStore, Fiscal, Notify, ut
     });
     var debit = sumOf(cleanAccounts, 'debit');
     var credit = sumOf(cleanAccounts, 'credit');
-    return debit === credit;
+    vm.hasPositive = (debit >= 0 && credit >= 0);
+    return (debit === credit) && vm.hasPositive;
   }
 
   /**

@@ -3,7 +3,7 @@ angular.module('bhima.routes')
 
     $stateProvider
       .state('fiscal', {
-        url : '/fiscal/:id',
+        url : '/fiscal',
         abstract : true,
         params : {
           id : { squash : true, value : null }
@@ -16,7 +16,7 @@ angular.module('bhima.routes')
         templateUrl : 'partials/fiscal/fiscal.list.html'
       })
       .state('fiscal.create', {
-        url : '/create/new',
+        url : '/create',
         controller : 'FiscalManagementController as FiscalManageCtrl',
         templateUrl : 'partials/fiscal/fiscal.manage.html'
       })

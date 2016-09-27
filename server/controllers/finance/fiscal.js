@@ -331,7 +331,7 @@ function setOpeningBalance(req, res, next) {
     }
 
   })
-  .then(rows => res.status(201).send())
+  .then(rows => res.sendStatus(201))
   .catch(next)
   .done();
 

@@ -3,8 +3,8 @@
   <div class="row">
     <div class="col-md-12">
       <div class="panel panel-primary">
-        <div ng-if="FiscalCtrl.state.current.name==='fiscal.create'" class="panel-heading">{{ "FISCAL.NEW_FISCAL_YEAR" | translate }}</div>
-        <div ng-if="FiscalCtrl.state.current.name==='fiscal.update'" class="panel-heading">{{ "FISCAL.UPDATE_FISCAL_YEAR" | translate }}</div>
+        <div ng-if="FiscalManageCtrl.isCreateState" class="panel-heading">{{ "FISCAL.NEW_FISCAL_YEAR" | translate }}</div>
+        <div ng-if="FiscalManageCtrl.isUpdateState" class="panel-heading">{{ "FISCAL.UPDATE_FISCAL_YEAR" | translate }}</div>
         <div class="panel-body">
 
           <div class="form-group" ng-class="{ 'has-error' : FiscalForm.$submitted && FiscalForm.label.$invalid }">
@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <div ng-if="FiscalCtrl.state.current.name==='fiscal.update'" class="col-md-12">
+    <div ng-if="FiscalManageCtrl.isUpdateState" class="col-md-12">
       <p><strong>{{ "FORM.INFO.OTHER_ACTIONS" | translate }}</strong></p>
       <p>
         <!-- close the fiscal year  -->

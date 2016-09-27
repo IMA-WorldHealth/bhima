@@ -12,8 +12,14 @@ FiscalManagementController.$inject = [
 function FiscalManagementController($state, Fiscal, Notify, util, moment) {
   var vm = this;
 
+  // state variables
+  vm.isUpdateState = $state.current.name === 'fiscal.update';
+  vm.isListState = $state.current.name === 'fiscal.list';
+  vm.isCreateState = $state.current.name === 'fiscal.create';
+
   // identifier
   var id = $state.params.id;
+  var isUpdate = (id && vm.isUpdateState);
 
   // global variables
   vm.fiscal = {};
@@ -27,7 +33,7 @@ function FiscalManagementController($state, Fiscal, Notify, util, moment) {
    */
   function init() {
 
-    if (id && $state.current.name === 'fiscal.update') {
+    if (id && vm.isUpdateState) {
       // concerned fiscal year
       Fiscal.read(id)
       .then(function (fiscalYear) {
@@ -81,7 +87,6 @@ function FiscalManagementController($state, Fiscal, Notify, util, moment) {
     // get the number of months
     numberOfMonths();
 
-    var isUpdate = (id && $state.current.name === 'fiscal.update');
     var promise = isUpdate ? Fiscal.update(id, vm.fiscal) : Fiscal.create(vm.fiscal);
 
     return promise.then(function () {

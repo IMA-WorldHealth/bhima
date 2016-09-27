@@ -58,7 +58,7 @@ function FiscalService(Api) {
   function setOpeningBalance(params) {
     var url = service.url.concat(params.id, '/opening_balance/');
 
-    return service.$http.put(url, { params: params })
+    return service.$http.post(url, { params: params })
       .then(service.util.unwrapHttpResponse);
   }
 

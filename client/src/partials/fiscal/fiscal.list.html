@@ -13,11 +13,11 @@
               </strong>
               <span ng-show="fiscal.locked" style="color : #ABABAB;">[{{ "FORM.INFO.CLOSED" | translate }}]</span>
 
-              <span ng-if="fiscal.id === FiscalCtrl.current[0].previous_fiscal_year_id" class="label label-warning">
+              <span ng-if="fiscal.id === FiscalCtrl.previousFiscalYearId" class="label label-warning">
                 {{ "FORM.INFO.PREVIOUS" | translate }}
               </span>
 
-              <span ng-if="fiscal.id === FiscalCtrl.current[0].fiscal_year_id" class="label label-primary">
+              <span ng-if="fiscal.id === FiscalCtrl.currentFiscalYearId" class="label label-primary">
                 {{ "FORM.INFO.CURRENT" | translate }}
               </span>
 

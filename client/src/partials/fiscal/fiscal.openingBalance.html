@@ -1,7 +1,3 @@
-<style media="screen">
-  .text-bold { font-weight: bold; }
-  .bg-gray { background-color: #efefef; }
-</style>
 <div class="row">
   <div class="col-md-12">
 
@@ -16,11 +12,11 @@
           </span>
 
           <div>
-            <span style="cursor: pointer;" ng-click="FiscalOBCtrl.showFilter()">
+            <span class="text-action" ng-click="FiscalOBCtrl.toggleAccountFilter()">
               {{ 'FORM.BUTTONS.SEARCH' | translate }} <i class="fa fa-search"></i>
             </span>
 
-            <span ng-show="!FiscalOBCtrl.previousFiscalYearExist" style="margin-left: 15px; cursor: pointer;" ng-click="FiscalOBCtrl.editBalance()">
+            <span class="text-action" ng-show="!FiscalOBCtrl.previousFiscalYearExist" style="margin-left: 15px;" ng-click="FiscalOBCtrl.toggleEditBalance()">
               {{ 'FORM.BUTTONS.EDIT' | translate }} <i class="fa fa-edit"></i>
             </span>
           </div>
@@ -70,7 +66,8 @@
             <span ng-show="OpeningAccountForm.$submitted" >
               <i class="fa" ng-class="{'fa-check': FiscalOBCtrl.balanced, 'fa-warning': !FiscalOBCtrl.balanced}"></i>
               <span ng-show="FiscalOBCtrl.balanced">{{ 'ACCOUNT.BALANCED' | translate }}</span>
-              <span ng-show="!FiscalOBCtrl.balanced">{{ 'ACCOUNT.NOT_BALANCED' | translate }}</span>
+              <span ng-show="!FiscalOBCtrl.balanced && FiscalOBCtrl.hasPositive">{{ 'ACCOUNT.NOT_BALANCED' | translate }}</span>
+              <span ng-show="!FiscalOBCtrl.balanced && !FiscalOBCtrl.hasPositive">{{ 'ACCOUNT.NOT_POSITIVE' | translate }}</span>
             </span>
           </div>
 

@@ -38,6 +38,8 @@ function FiscalController($state, fiscalService, ModalService, Notify, $window) 
   fiscalService.fiscalYearDate({date : today})
   .then(function (current) {
     vm.current = current;
+    vm.currentFiscalYearId = vm.current[0].fiscal_year_id;
+    vm.previousFiscalYearId = vm.current[0].previous_fiscal_year_id;
   })
   .catch(Notify.handleError);
 
