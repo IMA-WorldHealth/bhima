@@ -25,6 +25,14 @@ function getRows(gridId) {
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 }
 
+function getCell(gridId, row, col) {
+  return getGrid(gridId)
+    .element(by.css('.ui-grid-render-container-body'))
+    .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row(row))
+    .element(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name').row(col));
+
+}
+
 function expectRowCount(gridId, number) {
   const rows = getRows(gridId);
   expect(rows.count()).to.eventually.equal(number);
@@ -102,6 +110,7 @@ function selectRow( gridId, rowNum ) {
 exports.getGrid = getGrid;
 exports.getRows = getRows;
 exports.getColumns = getColumns;
+exports.getCell = getCell;
 exports.expectRowCount = expectRowCount;
 exports.expectRowCountAbove = expectRowCountAbove;
 exports.expectColumnCount = expectColumnCount;

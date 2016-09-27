@@ -18,10 +18,10 @@ angular.module('bhima.routes')
       })
       .state('billingServices.create', {
         url: '/create',
-        onEnter : ['$state', '$uibModal', onEnterFactory('create')]
+        onEnter : ['$state', '$uibModal', 'NotifyService', onEnterFactory('create')]
       })
       .state('billingServices.list', {
-        url : '/:id',
+        url : '/{id:int}',
         params : {
           id : { squash : true, value : null },
           created : false,  // default for transitioning from child states
@@ -30,7 +30,7 @@ angular.module('bhima.routes')
       })
       .state('billingServices.update', {
         url: '/{id:int}/update',
-        onEnter : ['$state', '$uibModal', onEnterFactory('update')]
+        onEnter : ['$state', '$uibModal', 'NotifyService', onEnterFactory('update')]
       })
       .state('billingServices.delete', {
         url: '/{id:int}/delete',
@@ -42,6 +42,7 @@ angular.module('bhima.routes')
             templateUrl : '/partials/templates/modals/confirm.modal.html'
           }).result
             .then(function () {
+              Notify.success('FORM.INFO.DELETE_SUCCES');
 
               // go to the parent state (with refresh)
               $state.go('^.list', { id: null }, { reload : true });
@@ -71,12 +72,18 @@ function onEnterFactory(stateType) {
     'BillingServicesCreateController as BillingServicesFormCtrl' :
     'BillingServicesUpdateController as BillingServicesFormCtrl';
 
-  return function onEnter($state, Modal) {
+  var message = isCreateState ?
+    'FORM.INFO.CREATE_SUCCESS' :
+    'FORM.INFO.UPDATE_SUCCESS';
+
+
+  return function onEnter($state, Modal, Notify) {
       Modal.open({
         templateUrl : 'partials/billing_services/modal.html',
         controller : ctrl,
       }).result
         .then(function (id) {
+          Notify.success(message);
 
           var params = isCreateState ?
             { id : id, created : true } :
@@ -85,7 +92,12 @@ function onEnterFactory(stateType) {
           // go to the parent state (with refresh)
           $state.go('^.list', params, { reload : true });
         })
-        .catch(function () {
+        .catch(function (error) {
+
+          if (error) {
+            Notify.handleError(error);
+          }
+
           $state.go('^.list', { id : $state.params.id }, { notify: false });
         });
   };

@@ -241,3 +241,14 @@ input[type=number] {-moz-appearance: textfield;}
 .pills span:first {
   margin-left: 0;
 }
+
+/*  flash for newly edited or created rows */
+@keyframes highlight-flash {
+  from { background: @btn-info-bg; }
+  to { background: transparent; }
+}
+
+.ui-grid-row .ui-grid-cell.row-highlight {
+  animation-name: highlight-flash;
+  animation-duration: 1.5s;
+}

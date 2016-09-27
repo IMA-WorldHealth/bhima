@@ -416,6 +416,9 @@ function constantConfig() {
     lengths : {
       maxTextLength : 1000
     },
+    grid : {
+      ROW_HIGHLIGHT_FLAG : '_highlight'
+    },
     transactions : {
       ROW_EDIT_FLAG : '_edit',
       ROW_HIGHLIGHT_FLAG : '_highlight',
