@@ -20,6 +20,7 @@ function BillingServicesDeleteController($state, Instance, BillingServices) {
   // bind methods to the view
   vm.dismiss = Instance.dismiss;
   vm.submit = submit;
+  vm.prompt = 'FORM.DIALOGS.CONFIRM_DELETE';
 
   // submit a delete request to the server
   function submit() {
@@ -28,15 +29,10 @@ function BillingServicesDeleteController($state, Instance, BillingServices) {
 
     // attempt to delete the billing service
     return BillingServices.delete($state.params.id)
-    .then(function () {
-
-      // if successful, close the modal instance
-      Instance.close();
-    })
-    .catch(function (response) {
-
-      // bind the error to the view
-      vm.error = response.data;
-    });
+      .then(function () {
+        // if successful, close the modal instance
+        Instance.close();
+      })
+      .catch(Instance.dismiss);
   }
 }

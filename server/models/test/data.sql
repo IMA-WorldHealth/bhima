@@ -39,7 +39,7 @@ INSERT INTO unit VALUES
   (111, 'reference_group','TREE.REFERENCE_GROUP','Reference Group',5,'/partials/references/groups','/references/groups'),
   (112, 'Reference','TREE.REFERENCE','References',5,'/partials/references','/references'),
   (134, 'Simple Journal Vouchers', 'TREE.SIMPLE_VOUCHER', 'Creates a simple transfer slip between two accounts', 5, '/partials/vouchers/simple', '/vouchers/simple'),
-  (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/admin/billing_services'),
+  (135, 'Billing Services', 'TREE.BILLING_SERVICES', 'Configures billing services for bhima', 1, '/partials/billing_services', '/billing_services'),
   (137, 'complex Journal Vouchers', 'TREE.COMPLEX_JOURNAL_VOUCHER', 'Complex Journal vouchers module', 5, '/partials/vouchers/complex', '/vouchers/complex'),
   (138, 'Inventory Module', 'TREE.INVENTORY', 'Inventory management module', 0, '/partials/inventory/index', '/inventory'),
   (139, 'Inventory List', 'TREE.INVENTORY_LIST', 'Inventory list module', 138, '/partials/inventory/list', '/inventory/list'),

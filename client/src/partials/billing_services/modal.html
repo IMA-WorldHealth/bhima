@@ -2,7 +2,12 @@
 <form name="BillingServicesForm" bh-submit="BillingServicesFormCtrl.submit(BillingServicesForm)" bh-form-defaults novalidate>
 
   <div class="modal-header">
-    <h4>{{ BillingServicesFormCtrl.title | translate }}<span ng-show="BillingServicesFormCtrl.label">: {{ BillingServicesFormCtrl.label }}</span></h4>
+    <h4>
+      {{ BillingServicesFormCtrl.title | translate }}
+      <span ng-show="BillingServicesFormCtrl.label">
+        <span class="badge badge-primary">{{ BillingServicesFormCtrl.label }}</span>
+      </span>
+    </h4>
   </div>
 
   <div class="modal-body">
@@ -18,7 +23,8 @@
       <ui-select
         name="account"
         ng-model="BillingServicesFormCtrl.model.account"
-        theme="bootstrap">
+        theme="bootstrap"
+        required>
         <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
           <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
         </ui-select-match>
