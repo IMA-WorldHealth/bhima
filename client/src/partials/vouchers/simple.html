@@ -76,15 +76,21 @@
                  <label class="control-label">
                    {{ "FORM.LABELS.DEBIT" | translate }} (D)
                  </label>
-                 <input
-                   class="form-control"
+
+                 <ui-select
                    name="fromAccount"
-                   placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
-                   uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
-                   typeahead-template-url="partials/templates/typeahead/accounts.html"
-                   typeahead-editable="false"
                    ng-model="SimpleVoucherCtrl.voucher.fromAccount"
+                   theme="bootstrap"
                    required>
+                   <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                     <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                   </ui-select-match>
+                   <ui-select-choices ui-select-focus-patch repeat="account in SimpleVoucherCtrl.accounts | filter:$select.search">
+                     <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                     <span ng-bind-html="account.label | highlight:$select.search"></span>
+                   </ui-select-choices>
+                 </ui-select>
+
                  <div class="help-block" ng-messages="SimpleVoucherForm.fromAccount.$error" ng-show="SimpleVoucherForm.$submitted">
                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                  </div>
@@ -96,15 +102,20 @@
                  <label class="control-label">
                    {{ "FORM.LABELS.CREDIT" | translate }} (C)
                  </label>
-                 <input
-                   class="form-control"
-                   name="toAccount"
-                   placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}..."
-                   uib-typeahead="account as account.hrlabel for account in SimpleVoucherCtrl.accounts | filter:$viewValue | limitTo:10"
-                   typeahead-template-url="partials/templates/typeahead/accounts.html"
-                   typeahead-editable="false"
-                   ng-model="SimpleVoucherCtrl.voucher.toAccount"
-                   required>
+                <ui-select
+                  name="toAccount"
+                  ng-model="SimpleVoucherCtrl.voucher.toAccount"
+                  theme="bootstrap"
+                  required>
+                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                  </ui-select-match>
+                  <ui-select-choices ui-select-focus-patch repeat="account in SimpleVoucherCtrl.accounts | filter:$select.search">
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                  </ui-select-choices>
+                </ui-select>
+
                  <div class="help-block" ng-messages="SimpleVoucherForm.toAccount.$error" ng-show="SimpleVoucherForm.$submitted">
                    <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                  </div>

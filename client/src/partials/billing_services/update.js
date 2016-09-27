@@ -53,7 +53,7 @@ function BillingServicesUpdateController($state, BillingServices, Accounts, Moda
       vm.accounts = accounts;
 
       // loop through the accounts and select the correct account to display
-      // in the typeahead
+      // in the ui-select
       vm.model.account = accounts.reduce(function (value, account) {
 
         // if the value is not false, we have found the account, so return it

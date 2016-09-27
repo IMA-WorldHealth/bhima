@@ -16,7 +16,7 @@
     <div class="row">
 
       <!-- enterprise form  -->
-      <div class="col-xs-12 col-md-6">
+      <div class="col-md-6">
         <form
           name="EnterpriseForm"
           bh-submit="EnterpriseCtrl.submit(EnterpriseForm)"
@@ -64,13 +64,21 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.GAIN_ACCOUNT" | translate }}
                 </label>
-                <input type="text" class="form-control" name="gain_account"
+
+                <ui-select
+                  name="gain_account"
                   ng-model="EnterpriseCtrl.enterprise.gain_account"
-                  placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
-                  uib-typeahead="account as account.hrlabel for account in EnterpriseCtrl.accounts.data | filter:$viewValue | limitTo:10"
-                  typeahead-template-url="partials/templates/typeahead/accounts.html"
-                  typeahead-editable="false"
+                  theme="bootstrap"
                   required>
+                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                  </ui-select-match>
+                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in  EnterpriseCtrl.accounts.data | filter:$select.search">
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                  </ui-select-choices>
+                </ui-select>
+
                 <div class="help-block" ng-messages="EnterpriseForm.gain_account.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -81,13 +89,21 @@
                 <label class="control-label">
                   {{ "FORM.LABELS.LOSS_ACCOUNT" | translate }}
                 </label>
-                <input type="text" class="form-control" name="loss_account"
+
+                <ui-select
+                  name="loss_account"
                   ng-model="EnterpriseCtrl.enterprise.loss_account"
-                  placeholder="{{ 'FORM.PLACEHOLDERS.ENTER_ACCOUNT' | translate }}..."
-                  uib-typeahead="account as account.hrlabel for account in EnterpriseCtrl.accounts.data | filter:$viewValue | limitTo:10"
-                  typeahead-template-url="partials/templates/typeahead/accounts.html"
-                  typeahead-editable="false"
+                  theme="bootstrap"
                   required>
+                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                  </ui-select-match>
+                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in  EnterpriseCtrl.accounts.data | filter:$select.search">
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                  </ui-select-choices>
+                </ui-select>
+
                 <div class="help-block" ng-messages="EnterpriseForm.loss_account.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
                 </div>
@@ -159,7 +175,7 @@
       </div>
 
       <!-- project form  -->
-      <div class="col-xs-12 col-md-6">
+      <div class="col-md-6">
 
           <div class="panel panel-primary">
             <div class="panel-heading">

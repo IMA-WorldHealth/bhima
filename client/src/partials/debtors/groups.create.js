@@ -1,7 +1,8 @@
 angular.module('bhima.controllers')
-.controller('DebtorGroupCreateController', DebtorGroupCreateController);
+  .controller('DebtorGroupCreateController', DebtorGroupCreateController);
+
 DebtorGroupCreateController.$inject = [
-    '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', 'NotifyService', '$translate'
+  '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', 'NotifyService'
 ];
 
 /**
@@ -12,7 +13,7 @@ DebtorGroupCreateController.$inject = [
  *
  * @module debtor/groups/create
  */
-function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Accounts, Prices, Uuid, Notify, $translate) {
+function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Accounts, Prices, Uuid, Notify) {
   var vm = this;
 
   // default new group policies
@@ -26,14 +27,16 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   Accounts.read()
     .then(function (accounts) {
       vm.accounts = accounts;
-    });
+    })
+    .catch(Notify.handleError);
 
   /* @todo This controller should not be concerned about individual price lists */
   /* @todo All read/ list API methods should be uniform on the client */
   Prices.read()
     .then(function (priceLists) {
       vm.priceLists = priceLists;
-    });
+    })
+    .catch(Notify.handleError);
 
   // expose state for optional view elements
   vm.state = $state;
@@ -73,7 +76,6 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     // in order to display account correctly the entire account is stored in the
     // ng-model, we should extract this
     submitGroup = angular.copy(vm.group);
-    submitGroup.account_id = vm.group.account_id.id;
 
     DebtorGroups.create(submitGroup)
       .then(function (result) {
