@@ -1,0 +1,19 @@
+<div class="ui-grid-cell-contents">
+  <a
+    href
+    style="margin-right:1em;"
+    ui-sref="billingServices.update({id:row.entity.id})"
+    ui-sref-opts="{ notify: false }"
+    data-method="update">
+    <i class="fa fa-pencil-square-o"></i> {{ ::"FORM.BUTTONS.EDIT" | translate }}
+  </a>
+
+  <a
+    href
+    class="text-danger"
+    ui-sref="billingServices.delete({id:row.entity.id})"
+    ui-sref-opts="{ notify: false }"
+    data-method="delete">
+    <span class="fa fa-trash-o"></span> {{ ::"FORM.BUTTONS.DELETE" | translate }}
+  </a>
+</div>

@@ -118,12 +118,12 @@
   </div>
 
   <div class="modal-footer">
-    <bh-loading-button loading-state="BillingServicesForm.$loading">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
-    </bh-loading-button>
-
     <button type="button" class="btn btn-default" data-method="back" ng-click="BillingServicesFormCtrl.dismiss()">
       {{ "FORM.BUTTONS.BACK" | translate }}
     </button>
+
+    <bh-loading-button loading-state="BillingServicesForm.$loading">
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </bh-loading-button>
   </div>
 </form>
