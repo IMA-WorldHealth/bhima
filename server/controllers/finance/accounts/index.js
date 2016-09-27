@@ -238,42 +238,55 @@ function lookupAccount(id) {
  * @return {array} accounts the updated list of accounts with depths
  */
 function processAccountDepth(accounts) {
-  let indexedAccounts = lodash.keyBy(accounts, 'id');
+  // root node
+  const ROOT_NODE = 0;
 
-  return accounts.map(acc => {
-    let depth = getDepth(acc, 0, indexedAccounts);
-    acc.depth = depth;
-    return acc;
+  // build the account tree
+  let tree = getChildren(accounts, ROOT_NODE);
+
+  // return a flattened tree (in order)
+  accounts = flatten(tree);
+
+  return accounts;
+}
+
+/**
+ * @function getChildren
+ * @description return the children accounts of an account given
+ * @param {array} accounts list of accounts
+ * @param {number} parentId The parent id
+ */
+function getChildren(accounts, parentId) {
+  let children;
+
+  if (accounts.length === 0) { return null; }
+
+  children = accounts.filter(function (account) {
+    return account.parent === parentId;
   });
+
+  children.forEach(function (account) {
+    account.children = getChildren(accounts, account.id);
+  });
+
+  return children;
 }
 
 /**
- * @function getDepth
- * @description return the depth of an account
- * @param {object} account An account object
- * @param {number} depth The default depth of the account given
- * @param {array} accounts list of accounts
- * @return {number} depth The real depth
+ * @function flatten
+ * @description return a flatten array
+ * @param {array} tree list of accounts as tree
+ * @param {number} depth A depth
  */
-function getDepth(account, depth, accounts) {
-  if (account.parent === 0) {
-    return depth;
-  }
-  else {
-    let parent = getParent(account, accounts);
-    return getDepth(parent, ++depth, accounts);
-  }
-}
+function flatten(tree, depth) {
+  depth = isNaN(depth) ? -1 : depth;
+  depth += 1;
 
-/**
- * @function getParent
- * @description return the parent account of an account given
- * @param {object} account An account object
- * @param {array} accounts list of accounts
- * @return {object} account The parent account object
- */
-function getParent(account, accounts) {
-  return accounts[account.parent];
+  return tree.reduce(function (array, node) {
+    node.depth = depth;
+    var items = [node].concat(node.children ? flatten(node.children, depth) : []);
+    return array.concat(items);
+  }, []);
 }
 
 exports.list = list;
