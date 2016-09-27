@@ -2,13 +2,14 @@ angular.module('bhima.controllers')
   .controller('FiscalOpeningBalanceController', FiscalOpeningBalanceController);
 
 FiscalOpeningBalanceController.$inject = [
-  '$state', 'AccountStoreService', 'FiscalService', 'NotifyService', 'util', 'moment'
+  '$state', 'AccountService', 'AccountStoreService', 'FiscalService',
+  'NotifyService', 'util', 'moment', 'uiGridConstants'
 ];
 
 /**
  * This controller is responsible for handling the opening balance of the new fiscal year.
  */
-function FiscalOpeningBalanceController($state, AccountStore, Fiscal, Notify, util, moment) {
+function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal, Notify, util, moment, uiGridConstants) {
   var vm = this;
 
   var fiscalYearId = $state.params.id;
@@ -19,6 +20,55 @@ function FiscalOpeningBalanceController($state, AccountStore, Fiscal, Notify, ut
   vm.toggleEditBalance   = toggleEditBalance;
   vm.toggleAccountFilter = toggleAccountFilter;
   vm.submit = submit;
+
+  // grid options
+  vm.indentTitleSpace = 20;
+  vm.gridApi = {};
+
+  var columns = [
+    { field : 'number', displayName : '', cellClass : 'text-right', width : 100},
+    { field : 'label',
+      displayName : 'FORM.LABELS.ACCOUNT',
+      cellTemplate : '/partials/accounts/templates/grid.labelCell.tmpl.html',
+      headerCellFilter : 'translate',
+      enableFiltering: true,
+      enableColumnMenu: false
+    },
+    { field : 'debit',
+      displayName : 'FORM.LABELS.DEBIT',
+      headerCellClass : 'text-center',
+      headerCellFilter : 'translate',
+      cellTemplate : '/partials/fiscal/templates/balance.debit.tmpl.html',
+      width : 200,
+      enableFiltering: false,
+      enableColumnMenu: false
+    },
+    { field : 'credit',
+      displayName : 'FORM.LABELS.CREDIT',
+      headerCellClass : 'text-center',
+      headerCellFilter : 'translate',
+      cellTemplate : '/partials/fiscal/templates/balance.credit.tmpl.html',
+      width : 200,
+      enableFiltering: false,
+      enableColumnMenu: false
+    }
+  ];
+
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableSorting : false,
+    enableFiltering : vm.showAccountFilter,
+    showTreeExpandNoChildren : false,
+    enableColumnMenus : false,
+    rowTemplate : '/partials/accounts/templates/grid.titleRow.tmpl.html',
+    columnDefs : columns,
+    onRegisterApi : onRegisterApi
+  };
+
+  // API register function
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
 
   // get fiscal year
   Fiscal.read(fiscalYearId)
@@ -36,6 +86,7 @@ function FiscalOpeningBalanceController($state, AccountStore, Fiscal, Notify, ut
   })
   .then(function (list) {
     vm.accounts = list;
+    vm.gridOptions.data = Accounts.order(vm.accounts);
   })
   .catch(Notify.handleError);
 
@@ -66,6 +117,8 @@ function FiscalOpeningBalanceController($state, AccountStore, Fiscal, Notify, ut
    */
   function toggleAccountFilter() {
     vm.showAccountFilter = !vm.showAccountFilter;
+    vm.gridOptions.enableFiltering = vm.showAccountFilter;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
 
   /**

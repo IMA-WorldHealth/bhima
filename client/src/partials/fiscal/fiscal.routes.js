@@ -21,13 +21,13 @@ angular.module('bhima.routes')
         templateUrl : 'partials/fiscal/fiscal.manage.html'
       })
       .state('fiscal.update', {
-        url : '/update',
+        url : '/:id/update',
         controller : 'FiscalManagementController as FiscalManageCtrl',
         templateUrl : 'partials/fiscal/fiscal.manage.html',
         data : { label : null }
       })
       .state('fiscal.openingBalance', {
-        url : '/opening_balance',
+        url : '/:id/opening_balance',
         controller : 'FiscalOpeningBalanceController as FiscalOBCtrl',
         templateUrl : 'partials/fiscal/fiscal.openingBalance.html'
       });

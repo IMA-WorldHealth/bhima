@@ -1,0 +1,8 @@
+<div class="ui-grid-cell-contents">
+  <input
+    ng-hide="row.entity.type === 'title'"
+    ng-disabled="!grid.appScope.editBalanceEnabled || grid.appScope.previousFiscalYearExist"
+    ng-model="row.entity.credit"
+    class="form-control text-right"
+    type="number">
+</div>

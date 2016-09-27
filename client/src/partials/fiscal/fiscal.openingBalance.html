@@ -24,40 +24,14 @@
         </div>
 
         <!-- body  -->
-        <section style="max-height: 600px; overflow: auto;">
+        <section>
 
-          <!-- account filter  -->
-          <input
-            ng-model="FiscalOBCtrl.accountFilter"
-            ng-if="FiscalOBCtrl.showAccountFilter"
-            class="form-control"
-            type="text"
-            placeholder="{{ 'FORM.SELECT.ACCOUNT' | translate }}...">
+          <div
+            id="account-grid"
+            style="height : 600px;"
+            ui-grid="FiscalOBCtrl.gridOptions">
+          </div>
 
-          <!-- TODO USE `ui-grid in place of an html table` -->
-          <table class="table table-condensed">
-            <!-- head  -->
-            <thead>
-              <th>{{ 'FORM.LABELS.ACCOUNT' | translate }}</th>
-              <th>{{ 'FORM.LABELS.LABEL' | translate }}</th>
-              <th class="text-center" style="width: 15%;">{{ 'FORM.LABELS.DEBIT' | translate }}</th>
-              <th class="text-center" style="width: 15%;">{{ 'FORM.LABELS.CREDIT' | translate }}</th>
-            </thead>
-
-            <!-- body  -->
-            <tbody>
-              <tr ng-repeat="acc in FiscalOBCtrl.accounts | filter: FiscalOBCtrl.accountFilter" ng-class="{'bg-gray': acc.type === 'title'}">
-                <td style="height: 30px; line-height: 30px;">{{ acc.number }}</td>
-                <td style="height: 30px; line-height: 30px;" ng-class="{'text-uppercase text-bold': acc.type === 'title'}">{{ acc.label }}</td>
-                <td style="width: 15%;">
-                  <input ng-hide="acc.type === 'title'" ng-disabled="!FiscalOBCtrl.editBalanceEnabled || FiscalOBCtrl.previousFiscalYearExist" ng-model="acc.debit" class="form-control input-sm text-right" type="number">
-                </td>
-                <td style="width: 15%;">
-                  <input ng-hide="acc.type === 'title'" ng-disabled="!FiscalOBCtrl.editBalanceEnabled || FiscalOBCtrl.previousFiscalYearExist" ng-model="acc.credit" class="form-control input-sm text-right" type="number">
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </section>
 
         <!-- footer  -->
