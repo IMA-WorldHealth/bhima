@@ -3,13 +3,13 @@ angular.module('bhima.controllers')
 
 SelectCashboxModalController.$inject = [
   'SessionService', '$uibModalInstance', 'CashboxService', '$stateParams',
-  'NotifyService', '$state'
+  'NotifyService'
 ];
 
 /**
  * This modal selects the active cashbox on the cash page
  */
-function SelectCashboxModalController(Session, Instance, Cashboxes, $stateParams, Notify, $state) {
+function SelectCashboxModalController(Session, Instance, Cashboxes, $stateParams, Notify) {
   var vm = this;
 
   vm.selectCashbox = selectCashbox;
@@ -23,17 +23,18 @@ function SelectCashboxModalController(Session, Instance, Cashboxes, $stateParams
     toggleLoadingIndicator();
 
     Cashboxes.read(undefined, {
-      project_id : Session.project.id
+      project_id : Session.project.id,
+      is_auxiliary : 1
     })
-    .then(function (cashboxes) {
-      vm.cashboxes = cashboxes;
+      .then(function (cashboxes) {
+        vm.cashboxes = cashboxes;
 
-      if (cashboxId) {
-        selectCashbox(cashboxId);
-      }
-    })
-    .catch(Notify.handleError)
-    .finally(toggleLoadingIndicator);
+        if (cashboxId) {
+          selectCashbox(cashboxId);
+        }
+      })
+      .catch(Notify.handleError)
+      .finally(toggleLoadingIndicator);
   }
 
   // fired when a user selects a cashbox from a list
