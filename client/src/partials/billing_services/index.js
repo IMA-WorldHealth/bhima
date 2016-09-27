@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('BillingServicesController', BillingServicesController);
 
 BillingServicesController.$inject = [
-  '$state', 'BillingServicesService', 'AccountService', 'NotifyService'
+  '$state', 'BillingServicesService', 'AccountService', 'NotifyService', 'bhConstants', '$timeout'
 ];
 
 /**
@@ -11,11 +11,13 @@ BillingServicesController.$inject = [
  * This is the default controller for the billing services URL endpoint.  It
  * downloads and displays all billing services in the application via a ui-grid.
  */
-function BillingServicesController($state, BillingServices, Accounts, Notify) {
+function BillingServicesController($state, BillingServices, Accounts, Notify, bhConstants, $timeout) {
   var vm = this;
 
   var actionsTemplate =
     'partials/billing_services/templates/actions.link.html';
+
+  vm.ROW_HIGHLIGHT_FLAG = bhConstants.grid.ROW_HIGHLIGHT_FLAG;
 
   // these options are for the ui-grid
   vm.options = {
@@ -23,6 +25,7 @@ function BillingServicesController($state, BillingServices, Accounts, Notify) {
     enableSorting : true,
     enableColumnMenus: false,
     onRegisterApi: registerGridApi,
+    rowTemplate: '/partials/templates/grid/highlight.row.html',
     columnDefs : [{
       field : 'id',
       displayName : 'TABLE.COLUMNS.ID',
@@ -72,14 +75,18 @@ function BillingServicesController($state, BillingServices, Accounts, Notify) {
 
   /**
    * scrolls to a particular row in the view
+   * Also highlights the row to draw attention to itself
    */
   function scrollToId(id) {
+    var rows = vm.api.grid.rows;
 
     // find the matching row in the data
     var target;
-    vm.options.data.forEach(function (row) {
-      if (row.id === id) { target = row; }
+    rows.forEach(function (row) {
+      if (row.entity.id === id) { target = row; }
     });
+
+    target[vm.ROW_HIGHLIGHT_FLAG] = true;
 
     // scroll to the given row into view
     vm.api.core.scrollTo(target, vm.options.columnDefs[0]);
@@ -105,7 +112,7 @@ function BillingServicesController($state, BillingServices, Accounts, Notify) {
 
         // scroll to the indicated id in the grid an id was passed in
         if ($state.params.id) {
-          scrollToId($state.params.id);
+          $timeout(function () { scrollToId($state.params.id); });
         }
       })
       .catch(Notify.handleError)
