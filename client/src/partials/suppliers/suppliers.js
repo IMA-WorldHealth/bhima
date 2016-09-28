@@ -1,12 +1,11 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('SupplierController', SupplierController);
+  .controller('SupplierController', SupplierController);
 
 SupplierController.$inject = [
-  'SupplierService', 'CreditorService', 'util'
+  'SupplierService', 'CreditorGroupService', 'util', 'NotifyService'
 ];
 
-function SupplierController(supplierService, creditorService, util) {
+function SupplierController(Suppliers, CreditorGroups, util, Notify) {
   var vm = this;
 
   vm.view = 'default';
@@ -19,20 +18,17 @@ function SupplierController(supplierService, creditorService, util) {
   vm.cancel = cancel;
 
   vm.maxLength = util.maxTextLength;
-
-  function handler(error) {
-    console.error(error);
-  }
+  vm.loading = false;
 
   // fired on startup
   function startup() {
-    // start up loading indicator
-    vm.loading = true;
 
     // load Creditors
-    creditorService.read().then(function (data) {
-      vm.creditors = data;
-    }).catch(handler);
+    CreditorGroups.read()
+      .then(function (groups) {
+        vm.groups = groups;
+      })
+      .catch(Notify.handleError);
 
     // load suppliers
     refreshSuppliers();
@@ -41,7 +37,6 @@ function SupplierController(supplierService, creditorService, util) {
   function cancel() {
     vm.view = 'default';
   }
-
 
   function create() {
     vm.view = 'create';
@@ -55,13 +50,22 @@ function SupplierController(supplierService, creditorService, util) {
     vm.supplier = data;
   }
 
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
+  }
+
   // refresh the displayed Suppliers
   function refreshSuppliers() {
-    return supplierService.read(null,{ detailed : 1 })
-    .then(function (data) {
-      vm.suppliers = data;
-      vm.loading = false;
-    });
+
+    // start up loading indicator
+    toggleLoadingIndicator();
+
+    return Suppliers.read(null, { detailed : 1 })
+      .then(function (suppliers) {
+        vm.suppliers = suppliers;
+      })
+      .catch(Notify.handleError)
+      .finally(toggleLoadingIndicator);
   }
 
   // form submission
@@ -69,7 +73,7 @@ function SupplierController(supplierService, creditorService, util) {
 
      // stop submission if the form is invalid
     if (form.$invalid) {
-      vm.state.errored = true;
+      Notify.danger('FORM.ERRORS.HAS_ERRORS');
       return;
     }
 
@@ -79,17 +83,19 @@ function SupplierController(supplierService, creditorService, util) {
     var supplier = angular.copy(vm.supplier);
 
     promise = (creation) ?
-      supplierService.create(supplier) :
-      supplierService.update(supplier.uuid, supplier);
+      Suppliers.create(supplier) :
+      Suppliers.update(supplier.uuid, supplier);
 
     promise
       .then(function (response) {
         return refreshSuppliers();
       })
       .then(function () {
-        vm.view = creation ? 'create_success' : 'update_success';
+        var message = creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        Notify.success(message);
+        vm.view = 'default';
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
   startup();

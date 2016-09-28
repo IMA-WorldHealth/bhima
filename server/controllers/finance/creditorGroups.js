@@ -1,112 +1,97 @@
-/**
-* Creditor Groups  Controller
-*
-* This controller exposes an API to the client for reading and creditor_groups 
+'use strict';
 
-*/
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
+/**
+ * @overview CreditorGroups
+ *
+ * @description
+ * This controller exposes an API to the client for reading and creditor_groups
+ */
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 const uuid = require('node-uuid');
 
-// GET /creditor_groups 
+// GET /creditor_groups
 function lookupCreditorGroup(uuid) {
-  'use strict';
 
-  var sql =
-    `SELECT enterprise_id, BUID(uuid) as uuid, name, account_id, locked
+  const sql = `
+    SELECT enterprise_id, BUID(uuid) as uuid, name, account_id, locked
     FROM creditor_group
-    WHERE creditor_group.uuid = ? `;
+    WHERE creditor_group.uuid = ?;
+  `;
 
-  return db.exec(sql, [uuid])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a debtor with uuid ${uuid}`);
-    }
-    return rows[0];
-  });
+  return db.one(sql, [db.bid(uuid)], uuid, 'Creditor Group');
 }
 
 
 // Lists of Creditor Groups
 function list(req, res, next) {
-  'use strict';
-  
   let sql =
     'SELECT BUID(uuid) as uuid, name FROM creditor_group ;';
 
-  if (req.query.detailed === '1'){
+  if (req.query.detailed === '1') {
     sql =
       `SELECT enterprise_id, BUID(uuid) as uuid, name, account_id, locked
       FROM creditor_group ;`;
   }
 
   db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(function (rows) {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
 * GET /creditor_groups/:uuid
 *
-* Returns the detail of a single Creditor Group 
+* Returns the detail of a single Creditor Group
 */
 function detail(req, res, next) {
-  'use strict';
-
-  const uid = db.bid(req.params.uuid);
-
-  lookupCreditorGroup(uid)
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+  lookupCreditorGroup(req.params.uuid)
+    .then(function (record) {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 
-// POST/CREDITOR_GROUPS 
+// POST /creditor_groups
 function create(req, res, next) {
-  'use strict';
+  const data = req.body;
 
-  var sql,
-      data = req.body;
-   
-  // provide UUID if the client has not specified 
+  // provide UUID if the client has not specified
   data.uuid = db.bid(data.uuid || uuid.v4());
-    
-  sql =
+
+  const sql =
     'INSERT INTO creditor_group SET ? ';
 
   db.exec(sql, [data])
-  .then(function (row) {
-    res.status(201).json({ uuid : uuid.unparse(data.uuid) });
-  })
-  .catch(next)
-  .done();
+    .then(function (row) {
+      res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+    })
+    .catch(next)
+    .done();
 }
 
 
-// PUT /creditor_groups/:uuid 
+// PUT /creditor_groups/:uuid
 function update(req, res, next) {
-  'use strict';
-
   let sql =
     'UPDATE creditor_group SET ? WHERE uuid = ?;';
 
   const uid = db.bid(req.params.uuid);
 
   db.exec(sql, [req.body, uid])
-  .then(function () {
-    return lookupCreditorGroup(uid);
-  })
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(function () {
+      return lookupCreditorGroup(req.params.uuid);
+    })
+    .then(function (record) {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 // get list of creditor group

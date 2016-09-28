@@ -22,14 +22,7 @@ function lookupSupplier(uid) {
     WHERE supplier.uuid = ?;
   `;
 
-  return db.exec(sql, [db.bid(uid)])
-    .then(function (rows) {
-      if (!rows.length) {
-        throw new NotFound(`Could not find a supplier with uuid ${uid}.`);
-      }
-
-      return rows[0];
-    });
+  return db.one(sql, [db.bid(uid)], uid, 'supplier');
 }
 
 /**
@@ -41,10 +34,10 @@ function lookupSupplier(uid) {
 function list(req, res, next) {
   let sql = `
     SELECT
-      BUID(supplier.uuid) AS uuid, BUID(supplier.creditor_uuid) AS creditor_uuid, supplier.display_name, 
+      BUID(supplier.uuid) AS uuid, BUID(supplier.creditor_uuid) AS creditor_uuid, supplier.display_name,
       supplier.display_name, supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note,
-      supplier.phone, supplier.international, supplier.locked
-    FROM supplier
+      supplier.phone, supplier.international, supplier.locked, BUID(creditor.group_uuid) AS creditor_group_uuid
+    FROM supplier JOIN creditor ON supplier.creditor_uuid = creditor.uuid
   `;
 
   const locked = Number(req.query.locked);
@@ -90,31 +83,44 @@ function detail(req, res, next) {
  * creditor for the it.
  */
 function create(req, res, next) {
-  const data = db.convert(req.body, ['creditor_uuid']);
+  const data = req.body;
 
   // provide uuid if the client has not specified
-  const uid = data.uuid || uuid.v4();
-  data.uuid = db.bid(uid);
+  const recordUuid = data.uuid || uuid.v4();
+  const transaction = db.transaction();
 
-  let sql =
-    'INSERT INTO supplier SET ? ';
+  const creditorUuid = db.bid(uuid.v4());
+  const creditorGroupUuid = db.bid(data.creditor_group_uuid);
 
-  db.exec(sql, [data])
-  .then(function (row) {
+  delete data.creditor_group_uuid;
+  data.creditor_uuid = creditorUuid;
+  data.uuid = db.bid(recordUuid);
 
-    Topic.publish(Topic.channels.INVENTORY, {
-      event: Topic.events.CREATE,
-      entity: Topic.entities.SUPPLIER,
-      user_id: req.session.user.id,
-      uuid: uid
-    });
+  const writeCreditorQuery =
+    'INSERT INTO creditor VALUES (?, ?, ?);';
 
-    res.status(201).json({ uuid : uid });
-  })
-  .catch(next)
-  .done();
+  const writeSupplierQuery =
+    'INSERT INTO supplier SET ?;';
+
+  transaction
+    .addQuery(writeCreditorQuery, [creditorUuid, creditorGroupUuid, data.display_name ])
+    .addQuery(writeSupplierQuery, [data]);
+
+  transaction.execute()
+    .then(function () {
+
+      Topic.publish(Topic.channels.INVENTORY, {
+        event: Topic.events.CREATE,
+        entity: Topic.entities.SUPPLIER,
+        user_id: req.session.user.id,
+        uuid: recordUuid
+      });
+
+      res.status(201).json({ uuid : recordUuid });
+    })
+    .catch(next)
+    .done();
 }
-
 
 /**
  * @method update
@@ -122,34 +128,53 @@ function create(req, res, next) {
  * @description
  * PUT /suppliers/:uuid
  *
- * Updates a supplier in the datababase.
+ * Updates a supplier in the database.
  */
 function update(req, res, next) {
-  let sql =
+  const data = req.body;
+  delete data.uuid;
+  delete data.creditor_uuid;
+
+  let creditorGroupUuid;
+  if (data.creditor_group_uuid) {
+    creditorGroupUuid = db.bid(data.creditor_group_uuid);
+    delete data.creditor_group_uuid;
+  }
+
+  const updateSupplierQuery =
     'UPDATE supplier SET ? WHERE uuid = ?;';
 
-  const data = db.convert(req.body, ['creditor_uuid']);
+  const updateCreditorQuery = `
+    UPDATE creditor JOIN supplier ON creditor.uuid = supplier.creditor_uuid
+    SET group_uuid = ? WHERE supplier.uuid = ?;
+  `;
 
-  // prevent updating the uuid
-  delete data.uuid;
+  const transaction = db.transaction();
 
-  db.exec(sql, [data, db.bid(req.params.uuid)])
-  .then(function () {
-    return lookupSupplier(req.params.uuid);
-  })
-  .then(function (record) {
+  transaction
+    .addQuery(updateSupplierQuery, [data, db.bid(req.params.uuid)]);
 
-    Topic.publish(Topic.channels.INVENTORY, {
-      event: Topic.events.UPDATE,
-      entity: Topic.entities.SUPPLIER,
-      user_id: req.session.user.id,
-      uuid: req.params.uuid
-    });
+  if (creditorGroupUuid) {
+    transaction.addQuery(updateCreditorQuery, [creditorGroupUuid, db.bid(req.params.uuid)]);
+  }
 
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+  transaction.execute()
+    .then(() => {
+
+      Topic.publish(Topic.channels.INVENTORY, {
+        event: Topic.events.UPDATE,
+        entity: Topic.entities.SUPPLIER,
+        user_id: req.session.user.id,
+        uuid: req.params.uuid
+      });
+
+      return lookupSupplier(req.params.uuid);
+    })
+    .then(record => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -165,13 +190,13 @@ function search(req, res, next) {
 
   let sql = `
     SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.display_name,
-      supplier.address_1, supplier.address_2, supplier.email,
-      supplier.fax, supplier.note, supplier.phone, supplier.international, supplier.locked
-    FROM supplier
+      supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note, supplier.phone,
+      supplier.international, supplier.locked, BUID(creditor.group_uuid) AS creditor_group_uuid
+    FROM supplier JOIN creditor ON supplier.creditor_uuid = creditor.uuid
     WHERE supplier.display_name LIKE "%?%"
   `;
 
-  if (limit) {
+  if (!isNaN(limit)) {
     sql += 'LIMIT ' + Math.floor(limit) + ';';
   }
 
