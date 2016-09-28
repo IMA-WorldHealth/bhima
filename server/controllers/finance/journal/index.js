@@ -1,13 +1,13 @@
 /**
-* The /journal HTTP API endpoint
-*
-* @module finance/journal/
-*
-* @description This module is responsible for handling CRUD operations
-* against the `posting journal` table.
-*
-* @requires lib/db
-*/
+ * The /journal HTTP API endpoint
+ *
+ * @module finance/journal/
+ *
+ * @description This module is responsible for handling CRUD operations
+ * against the `posting journal` table.
+ *
+ * @requires lib/db
+ */
 
 'use strict';
 
@@ -71,20 +71,21 @@ function list(req, res, next) {
   const sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
-      p.description, p.account_id, p.debit, p.credit,
+      dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
       p.debit_equiv, p.credit_equiv, p.currency_id,
       BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
-      BUID(p.reference_uuid) AS reference_uuid, p.comment, p.origin_id,
-      p.user_id, p.cc_id, p.pc_id,
-      pro.abbr, pro.name AS project_name,
-      per.start_date AS period_start, per.end_date AS period_end,
-      a.number AS account_number, u.display_name
+      BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
+      p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+      pro.name AS project_name, per.start_date AS period_start,
+      per.end_date AS period_end, a.number AS account_number, u.display_name
     FROM posting_journal p
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id
       JOIN account a ON a.id = p.account_id
       JOIN user u ON u.id = p.user_id
       LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
+      LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
+      LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
     ORDER BY p.trans_date DESC;
   `;
 

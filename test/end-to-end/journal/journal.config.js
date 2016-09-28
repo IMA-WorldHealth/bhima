@@ -12,11 +12,11 @@ const FU = require('../shared/FormUtils');
 function JournalConfigurationModal() {
   'use strict';
 
-  const defaultVisibleColumnCount = 7;
+  const defaultVisibleColumnCount = 10;
   const modifiedVisibleColumnCount = 3;
   const page = new JournalCorePage();
 
-  it('displays six visible columns by default', () => {
+  it(`displays ${defaultVisibleColumnCount} visible columns by default`, () => {
     page.expectColumnCount(defaultVisibleColumnCount);
   });
 

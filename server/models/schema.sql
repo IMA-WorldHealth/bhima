@@ -594,8 +594,8 @@ CREATE TABLE `depot` (
   UNIQUE KEY `depot_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS discount;
 
+DROP TABLE IF EXISTS discount;
 CREATE TABLE discount (
   `id`                  SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `label`               VARCHAR(100) NOT NULL,
@@ -610,6 +610,14 @@ CREATE TABLE discount (
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `document_map`;
+CREATE TABLE `document_map` (
+  `uuid`              BINARY(16) NOT NULL,
+  `text`              TEXT NOT NULL,
+  PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `employee`;
