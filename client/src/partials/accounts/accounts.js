@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 AccountsController.$inject = [
   '$rootScope', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService', '$state'
+  'LanguageService'
 ];
 
 /**
