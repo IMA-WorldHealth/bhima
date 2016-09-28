@@ -15,12 +15,12 @@
         <div class="checkbox">
           <label>
             <input type="checkbox" ng-model="UserPermissionModalCtrl.super" ng-change="UserPermissionModalCtrl.toggleSuperUserPermissions(UserPermissionModalCtrl.super)">
-            {{ "USERS.SUPER" | translate }}
+            <b>{{ "USERS.SUPER" | translate }}</b>
           </label>
         </div>
       </li>
       <li ng-repeat="unit in UserPermissionModalCtrl.units" class="list-group-item">
-        <div class="checkbox" ng-style="UserPermissionModalCtrl.checkboxOffset(unit.depth)">
+        <div style="margin:0" class="checkbox" ng-style="UserPermissionModalCtrl.checkboxOffset(unit.depth)">
           <label>
             <input type="checkbox" ng-model="unit.checked" ng-change="UserPermissionModalCtrl.toggleUnitChildren(unit, unit.children)">
             {{ unit.key | translate }}
@@ -35,7 +35,7 @@
       <i class="fa fa-ban"></i> {{ 'FORM.BUTTONS.CANCEL' | translate }}
     </button>
     <bh-loading-button>
-      <i class="glyphicon glyphicon-floppy-disk"></i> {{ "FORM.BUTTONS.SAVE" | translate }}
+      <i class="fa fa-floppy-o"></i> {{ "FORM.BUTTONS.SAVE" | translate }}
     </bh-loading-button>
   </div>
 </form>

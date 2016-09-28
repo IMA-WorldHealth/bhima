@@ -835,7 +835,9 @@
     "TITLE"         : "Utilisateur et droits",
     "UPDATING_USER" : "Mise a jour utilisateur",
     "CREATE"        : "Creer",
-    "UPDATE"        : "Editer"
+    "UPDATE"        : "Editer",
+    "UPDATED"       : "Modifie avec succes",
+    "CREATED"       : "Creee avec succes"
   },
 
 "POSTING_JOURNAL": {

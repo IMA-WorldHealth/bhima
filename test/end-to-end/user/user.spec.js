@@ -14,7 +14,7 @@ helpers.configure(chai);
 
 const expect = chai.expect;
 
-describe('User management page', function () {
+describe.only('User management page', function () {
 
   'use strict';
   const path = '#/users';
@@ -33,7 +33,7 @@ describe('User management page', function () {
     userName : 'User test edit',
     login : 'Login test edit',
     email : 'test_edit@bhima.org',
-    project : 'Test Project B',
+    project : 'Test Project C',
     password : 'testtestedit'
   };
   const userCount = 4;
@@ -51,7 +51,7 @@ describe('User management page', function () {
     userCreateUpdatePage.setUserName(mockUserCreate.userName);
     userCreateUpdatePage.setLogin(mockUserCreate.login);
     userCreateUpdatePage.setEmail(mockUserCreate.email);
-    userCreateUpdatePage.setProjectValue(mockUserCreate.project);
+    userCreateUpdatePage.setProjectValue(mockUserCreate.project, false);
     userCreateUpdatePage.setPassword(mockUserCreate.password);
     userCreateUpdatePage.setPasswordConfirm(mockUserCreate.passwordConfirm);
     userCreateUpdatePage.submitUser();
@@ -60,10 +60,12 @@ describe('User management page', function () {
   
   it('edits a user successfully without changing the password', function () {
     userPage.editUser(4);
-    userCreateUpdatePage.setUserName(mockUserCreate.userName);
-    userCreateUpdatePage.setLogin(mockUserCreate.login);
-    userCreateUpdatePage.setEmail(mockUserCreate.email);
-    userCreateUpdatePage.setProjectValue(mockUserCreate.project);
+    userCreateUpdatePage.setUserName(mockUserEdit.userName);
+    userCreateUpdatePage.setLogin(mockUserEdit.login);
+    userCreateUpdatePage.setEmail(mockUserEdit.email);
+
+    userCreateUpdatePage.setProjectValue(mockUserEdit.project, true);
+
     userCreateUpdatePage.submitUser();
     /**
      * TODO : Use the page object correctly for the login page
@@ -87,6 +89,23 @@ describe('User management page', function () {
     expect(editPasswordPage.isDisplayed()).to.eventually.equal(false); //if every thing is good, the modal should disappear
     userCreateUpdatePage.close();
   });
+
+  it('refuses to update a user when no changes have been made', function () {
+    userPage.editUser(3);
+    userCreateUpdatePage.submitUser();
+    expect(userCreateUpdatePage.isSameUser()).to.eventually.equal(true);
+    userCreateUpdatePage.close();
+  });
+
+  it('validates from on editing password', function () {
+    userPage.editUser(3);
+    userCreateUpdatePage.editPassword();
+    editPasswordPage.submitPassword();
+    expect(editPasswordPage.isPasswordInvalid()).to.eventually.equal(true);
+    expect(editPasswordPage.isPasswordConfirmInvalid()).to.eventually.equal(true);
+    editPasswordPage.cancelEditing();
+    userCreateUpdatePage.close();
+  });
   
   it('validates form on creation', function () {
     userPage.createUser();
@@ -99,23 +118,7 @@ describe('User management page', function () {
     expect(userCreateUpdatePage.isPasswordConfirmInvalid()).to.eventually.equal(true);
     userCreateUpdatePage.close();
   });
-  
-  it('refuses to update the same user', function () {
-    userPage.editUser(3);
-    userCreateUpdatePage.submitUser();
-    expect(userCreateUpdatePage.isSameUser()).to.eventually.equal(true);
-    userCreateUpdatePage.close();
-  });
-  
-  it('validates from on editing password', function () {
-    userPage.editUser(3);
-    userCreateUpdatePage.editPassword();
-    editPasswordPage.submitPassword();
-    expect(editPasswordPage.isPasswordInvalid()).to.eventually.equal(true);
-    expect(editPasswordPage.isPasswordConfirmInvalid()).to.eventually.equal(true);
-    editPasswordPage.cancelEditing();
-    userCreateUpdatePage.close();
-  });
+
 });
 
 

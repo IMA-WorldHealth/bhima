@@ -36,7 +36,15 @@ angular.module('bhima.routes')
           id : null
         },
         onEnter :['$uibModal', userPermissionModal]
-      });
+      })
+      .state('users.editPassword', {
+        url : '/:id/edit/password',
+        params : {
+          id : null
+        },
+        onEnter :['$uibModal', userPasswordModal]
+      })
+      ;
   }]);
 
 function usersModal($modal) {
@@ -55,5 +63,15 @@ function userPermissionModal($modal) {
     backdrop : 'static',
     templateUrl: 'partials/users/userPermission.modal.html',
     controller: 'UserPermissionModalController as UserPermissionModalCtrl'
+  });
+}
+
+function userPasswordModal($modal) {
+  $modal.open({
+    keyboard : false,
+    size : 'md',
+    backdrop : 'static',
+    templateUrl: 'partials/users/UserEditPasswordModal.html',
+    controller:  'UsersPasswordModalController as UsersPasswordModalCtrl'
   });
 }

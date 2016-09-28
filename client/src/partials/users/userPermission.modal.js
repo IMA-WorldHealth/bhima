@@ -119,6 +119,7 @@ function UserPermissionModalController($translate, $http, $state, util, Users, N
 
     Users.updatePermissions(vm.user.id, permissions)
       .then(function () {
+        Notify.success('USERS.UPDATED');
         $state.go('users.list', null, {reload : true});
       })
       .catch(Notify.handleError);

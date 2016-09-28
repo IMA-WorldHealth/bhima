@@ -36,9 +36,15 @@ function CreateUpdateUserPage() {
   }
 
   /** set a project choice **/
-  function setProjectValue(value) {
-    return projects.element(by.cssContainingText('option', value))
-      .click();
+  function setProjectValue(value, append) {
+    projects.click();
+
+    if(append){
+      projects.element(by.model('$select.search')).sendKeys(value);
+    }else{
+      projects.element(by.model('$select.search')).clear().sendKeys(value);
+    }
+    return projects.element(by.cssContainingText('.dropdown-menu [role="option"]', value)).click();
   }
 
   /** show a dialog to edit password**/

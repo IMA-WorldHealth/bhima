@@ -43,9 +43,7 @@ function UsersController($state, Users, Notify) {
     Users.read().then(function (users) {
       vm.gridOptions.data = users;
     })
-    .catch(function (err){
-      Notify(err);
-    });
+    .catch(Notify.handleError);
   }
 
   loadGrid();  
