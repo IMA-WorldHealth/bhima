@@ -85,13 +85,12 @@ exports.latestInvoice = latestInvoice;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
-  let writeDebtorQuery, writePatientQuery;
-  var patientText;
+  let patientText;
 
-  var createRequestData = req.body;
+  const createRequestData = req.body;
 
-  var medical = createRequestData.medical;
-  var finance = createRequestData.finance;
+  let medical = createRequestData.medical;
+  let finance = createRequestData.finance;
 
   // Debtor group required for financial modelling
   let invalidParameters = !finance || !medical;
@@ -117,15 +116,12 @@ function create(req, res, next) {
     medical.registration_date = new Date(medical.registration_date);
   }
 
-
   finance = db.convert(finance, ['uuid', 'debtor_group_uuid']);
   medical = db.convert(medical, ['uuid', 'current_location_id', 'origin_location_id']);
   medical.debtor_uuid = finance.uuid;
 
-  writeDebtorQuery = 'INSERT INTO debtor (uuid, group_uuid, text) VALUES ' +
-    '(?, ?, ?)';
-
-  writePatientQuery = 'INSERT INTO patient SET ?';
+  let writeDebtorQuery = 'INSERT INTO debtor (uuid, group_uuid, text) VALUES (?, ?, ?)';
+  let writePatientQuery = 'INSERT INTO patient SET ?';
 
   let transaction = db.transaction();
 
@@ -179,15 +175,15 @@ function detail(req, res, next) {
  * Updates a patient group
  */
 function update(req, res, next) {
-  var updatePatientQuery;
-  var data = db.convert(req.body, ['debtor_uuid', 'current_location_id', 'origin_location_id']);
-  var patientUuid = req.params.uuid;
-  var buid = db.bid(patientUuid);
+  let data = db.convert(req.body, ['debtor_uuid', 'current_location_id', 'origin_location_id']);
+  let patientUuid = req.params.uuid;
+  let buid = db.bid(patientUuid);
 
   // prevent updating the patient's uuid
   delete data.uuid;
+  delete data.reference;
 
-  updatePatientQuery =
+  let updatePatientQuery =
     'UPDATE patient SET ? WHERE uuid = ?';
 
   db.exec(updatePatientQuery, [data, buid])

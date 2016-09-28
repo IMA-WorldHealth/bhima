@@ -142,7 +142,7 @@ exports.checkOffday = function checkHoliday(req, res, next) {
  * @returns {Promise} - the result of the database query.
  */
 function lookupEmployee(id) {
-  let sql = `
+  const sql = `
     SELECT employee.id, employee.code AS code_employee, employee.display_name, employee.sexe, employee.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_id) as grade_id,
       employee.locked, grade.text, grade.basic_salary,
@@ -162,14 +162,7 @@ function lookupEmployee(id) {
     WHERE employee.id = ?;
   `;
 
-  return db.exec(sql, [id])
-  .then(function (rows) {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find an employee with id ${id}.`);
-    }
-
-    return rows[0];
-  });
+  return db.one(sql, [id], id, 'employee');
 }
 
 /**
@@ -180,11 +173,11 @@ function lookupEmployee(id) {
  */
 function detail(req, res, next) {
   lookupEmployee(req.params.id)
-  .then(function (record) {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(function (record) {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -194,7 +187,7 @@ function detail(req, res, next) {
  * Update details of an employee referenced by an `id` in the database
  */
 function update(req, res, next) {
-  let employee = db.convert(req.body, [
+  const employee = db.convert(req.body, [
     'grade_id', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'location_id'
   ]);
 
