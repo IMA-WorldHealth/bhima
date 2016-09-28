@@ -3,6 +3,7 @@
     ng-hide="row.entity.type === 'title'"
     ng-disabled="!grid.appScope.editBalanceEnabled || grid.appScope.previousFiscalYearExist"
     ng-model="row.entity.debit"
+    data-debit-account="{{row.entity.id}}"
     class="form-control text-right"
     type="number">
 </div>

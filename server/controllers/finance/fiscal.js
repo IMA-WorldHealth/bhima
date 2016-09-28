@@ -321,7 +321,7 @@ function setOpeningBalance(req, res, next) {
   .then(hasPrevious => {
 
     if (hasPrevious) {
-      // load from the period N+1 into period 0
+      // load from the period N+1 of the year N-1 into period 0 of the year N
       return loadOpeningBalance(fiscalYear);
 
     } else {
