@@ -6,6 +6,8 @@ const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
+const components = require('../shared/components');
+
 describe('Suppliers', function () {
   'use strict';
 
@@ -32,7 +34,7 @@ describe('Suppliers', function () {
     element(by.model('SupplierCtrl.supplier.international')).click();
 
     // select an Creditor
-    FU.select('SupplierCtrl.supplier.creditor_uuid', 'Fournisseur');
+    FU.select('SupplierCtrl.supplier.creditor_group_uuid', 'Fournisseur');
 
     FU.input('SupplierCtrl.supplier.phone', supplier.phone);
     FU.input('SupplierCtrl.supplier.email', supplier.email);
@@ -43,7 +45,7 @@ describe('Suppliers', function () {
 
     // submit the page to the server
     FU.buttons.submit();
-    FU.exists(by.id('create_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('edits an supplier', function () {
@@ -57,19 +59,19 @@ describe('Suppliers', function () {
     FU.input('SupplierCtrl.supplier.address_1', supplier.address_1);
 
     FU.buttons.submit();
-    FU.exists(by.id('update_success'), true);
+    components.notification.hasSuccess();
   });
 
   it('blocks invalid form submission with relevant error classes', function () {
     FU.buttons.create();
 
     // verify form has not been submitted
+    FU.buttons.submit();
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
-    element(by.id('submit-supplier')).click();
 
     // the following fields should be required
     FU.validation.error('SupplierCtrl.supplier.display_name');
-    FU.validation.error('SupplierCtrl.supplier.creditor_uuid');
+    FU.validation.error('SupplierCtrl.supplier.creditor_group_uuid');
     FU.validation.error('SupplierCtrl.supplier.address_1');
 
     // the following fields are not required
@@ -79,5 +81,7 @@ describe('Suppliers', function () {
     FU.validation.ok('SupplierCtrl.supplier.address_2');
     FU.validation.ok('SupplierCtrl.supplier.fax');
     FU.validation.ok('SupplierCtrl.supplier.note');
+
+    components.notification.hasDanger();
   });
 });

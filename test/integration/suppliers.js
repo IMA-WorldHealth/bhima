@@ -1,6 +1,8 @@
 /* global expect, chai, agent */
 /* jshint expr : true */
 
+'use strict';
+
 const helpers = require('./helpers');
 const uuid    = require('node-uuid');
 
@@ -12,9 +14,9 @@ const uuid    = require('node-uuid');
 describe('(/suppliers) The supplier API endpoint', function () {
 
   // supplier we will add during this test suite.
-  var supplier = {
+  let supplier = {
     uuid : uuid.v4(),
-    creditor_uuid : '7ac4e83c-65f2-45a1-8357-8b025003d794',
+    creditor_group_uuid : '8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2',
     display_name : 'SUPPLIER TEST A',
     address_1 : null,
     address_2 : null,
@@ -26,17 +28,17 @@ describe('(/suppliers) The supplier API endpoint', function () {
     locked : 0
   };
 
-  var responseKeys = [
+  let responseKeys = [
     'uuid', 'creditor_uuid', 'display_name', 'address_1', 'address_2',
     'email', 'fax', 'note', 'phone', 'international', 'locked'
   ];
 
-  var FILTER = {
+  let FILTER = {
     display_name : 'UPD',
     limit : 20
   };
 
-  var NOT_FOUND = {
+  let NOT_FOUND = {
     display_name : 'TEST',
     limit : 20
   };
