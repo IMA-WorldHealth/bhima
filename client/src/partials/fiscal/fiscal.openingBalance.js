@@ -96,7 +96,13 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal, 
   function submit(form) {
     vm.balanced = hasBalancedAccount();
 
-    if (!vm.balanced) { return ; }
+    if (!vm.balanced && vm.hasPositive) {
+      Notify.danger('ACCOUNT.NOT_BALANCED');
+      return;
+    } else if (!vm.balanced && !vm.hasPositive) {
+      Notify.danger('ACCOUNT.NOT_POSITIVE');
+      return;
+    }
 
     // set the fiscal year opening balance
     Fiscal.setOpeningBalance({

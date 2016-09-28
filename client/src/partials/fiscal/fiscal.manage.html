@@ -65,13 +65,13 @@
       <p><strong>{{ "FORM.INFO.OTHER_ACTIONS" | translate }}</strong></p>
       <p>
         <!-- close the fiscal year  -->
-        <a class="btn btn-default" href>
+        <a class="btn btn-default" data-action="closing-fiscal-year" href>
           <i class="fa fa-lock"></i>
           {{ "FORM.INFO.CLOSE_FISCAL_YEAR" | translate }}
         </a>
 
         <!-- opening balance  -->
-        <a class="btn btn-default" ui-sref="fiscal.openingBalance" href>
+        <a class="btn btn-default" data-action="opening-balance" ui-sref="fiscal.openingBalance" href>
           <i class="fa fa-balance-scale"></i>
           {{ "FORM.INFO.VIEW_BEGINNING_BALACE" | translate}}
         </a>

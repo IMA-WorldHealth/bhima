@@ -16,7 +16,7 @@
               {{ 'FORM.BUTTONS.SEARCH' | translate }} <i class="fa fa-search"></i>
             </span>
 
-            <span class="text-action" ng-show="!FiscalOBCtrl.previousFiscalYearExist" style="margin-left: 15px;" ng-click="FiscalOBCtrl.toggleEditBalance()">
+            <span class="text-action" data-action="edit-opening-balance" ng-show="!FiscalOBCtrl.previousFiscalYearExist" style="margin-left: 15px;" ng-click="FiscalOBCtrl.toggleEditBalance()">
               {{ 'FORM.BUTTONS.EDIT' | translate }} <i class="fa fa-edit"></i>
             </span>
           </div>
@@ -27,7 +27,7 @@
         <section>
 
           <div
-            id="account-grid"
+            id="account-balance-grid"
             style="height : 600px;"
             ui-grid="FiscalOBCtrl.gridOptions">
           </div>
@@ -39,13 +39,13 @@
           <div ng-class="{'text-success': FiscalOBCtrl.balanced, 'text-danger': !FiscalOBCtrl.balanced}">
             <span ng-show="OpeningAccountForm.$submitted" >
               <i class="fa" ng-class="{'fa-check': FiscalOBCtrl.balanced, 'fa-warning': !FiscalOBCtrl.balanced}"></i>
-              <span ng-show="FiscalOBCtrl.balanced">{{ 'ACCOUNT.BALANCED' | translate }}</span>
-              <span ng-show="!FiscalOBCtrl.balanced && FiscalOBCtrl.hasPositive">{{ 'ACCOUNT.NOT_BALANCED' | translate }}</span>
-              <span ng-show="!FiscalOBCtrl.balanced && !FiscalOBCtrl.hasPositive">{{ 'ACCOUNT.NOT_POSITIVE' | translate }}</span>
+              <span data-status="balanced" ng-show="FiscalOBCtrl.balanced">{{ 'ACCOUNT.BALANCED' | translate }}</span>
+              <span data-status="not-balanced" ng-show="!FiscalOBCtrl.balanced && FiscalOBCtrl.hasPositive">{{ 'ACCOUNT.NOT_BALANCED' | translate }}</span>
+              <span data-status="not-positive" ng-show="!FiscalOBCtrl.balanced && !FiscalOBCtrl.hasPositive">{{ 'ACCOUNT.NOT_POSITIVE' | translate }}</span>
             </span>
           </div>
 
-          <button type="submit" ng-disabled="!FiscalOBCtrl.editBalanceEnabled && !FiscalOBCtrl.previousFiscalYearExist" class="btn btn-primary">
+          <button type="submit" data-method="submit" ng-disabled="!FiscalOBCtrl.editBalanceEnabled && !FiscalOBCtrl.previousFiscalYearExist" class="btn btn-primary">
             <span ng-show="!FiscalOBCtrl.previousFiscalYearExist">{{ 'FORM.BUTTONS.SUBMIT' | translate }}</span>
             <span ng-show="FiscalOBCtrl.previousFiscalYearExist">{{ 'FORM.BUTTONS.IMPORT' | translate }}</span>
           </button>

@@ -75,4 +75,88 @@ describe('Fiscal Year', function () {
     components.modalAction.confirm();
     components.notification.hasSuccess();
   });
+
+  it('set the opening balance for the first fiscal year', () => {
+    helpers.navigate(path);
+
+    // the last in the list is the oldest
+    var updateButton = element.all(by.css('[data-fiscal-entry]'));
+    updateButton.all(by.css('[data-method="update"]')).last().click();
+
+    // click on the opening balance button
+    element(by.css('[data-action="opening-balance"]')).click();
+
+    // activate the edition of the opening balance
+    element(by.css('[data-action="edit-opening-balance"]')).click();
+
+    // actions in the grid
+    let account1 = 3627;
+    let account2 = 3628;
+    let account3 = 3630;
+
+    element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
+    element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
+    element(by.css(`[data-credit-account="${account3}"]`)).clear().sendKeys(300);
+
+    FU.buttons.submit();
+    components.notification.hasSuccess();
+
+  });
+
+  it('forbid not balanced submission', () => {
+    helpers.navigate(path);
+
+    // the last in the list is the oldest
+    var updateButton = element.all(by.css('[data-fiscal-entry]'));
+    updateButton.all(by.css('[data-method="update"]')).last().click();
+
+    // click on the opening balance button
+    element(by.css('[data-action="opening-balance"]')).click();
+
+    // activate the edition of the opening balance
+    element(by.css('[data-action="edit-opening-balance"]')).click();
+
+    // actions in the grid
+    let account1 = 3627;
+    let account2 = 3628;
+    let account3 = 3630;
+
+    element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
+    element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
+    element(by.css(`[data-credit-account="${account3}"]`)).clear().sendKeys(200);
+
+    FU.buttons.submit();
+    components.notification.hasDanger();
+    expect(element(by.css('[data-status="not-balanced"]')).isPresent()).to.eventually.equal(true);
+
+  });
+
+  it('forbid negative value for total debit or total credit', () => {
+    helpers.navigate(path);
+
+    // the last in the list is the oldest
+    var updateButton = element.all(by.css('[data-fiscal-entry]'));
+    updateButton.all(by.css('[data-method="update"]')).last().click();
+
+    // click on the opening balance button
+    element(by.css('[data-action="opening-balance"]')).click();
+
+    // activate the edition of the opening balance
+    element(by.css('[data-action="edit-opening-balance"]')).click();
+
+    // actions in the grid
+    let account1 = 3627;
+    let account2 = 3628;
+    let account3 = 3630;
+
+    element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
+    element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
+    element(by.css(`[data-credit-account="${account3}"]`)).clear().sendKeys(-200);
+
+    FU.buttons.submit();
+    components.notification.hasDanger();
+    expect(element(by.css('[data-status="not-positive"]')).isPresent()).to.eventually.equal(true);
+
+  });
+
 });
