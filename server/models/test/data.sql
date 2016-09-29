@@ -11,7 +11,7 @@ INSERT INTO unit VALUES
   (1,   'Admin','TREE.ADMIN','The Administration Super-Category',0,'/partials/admin/index.html','/admin'),
   (2,   'Enterprise', 'TREE.ENTERPRISE', 'Manage the registered enterprises from here', 1, '/partials/enterprise/', '/enterprises'),
   (3,   'Invoice Registry','TREE.INVOICE_REGISTRY','Invoice Registry',5,'/partials/invoices/registry/','/invoices'),
-  (4,   'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/user_permission/','/permissions'),
+  (4,   'Users & Permissions','TREE.USERS','Manage user privileges and permissions',1,'/partials/users/','/users'),
   (5,   'Finance','TREE.FINANCE','The Finance Super-Category',0,'/partials/finance/','/finance'),
   (6,   'Account','TREE.ACCOUNT','Chart of Accounts management',5,'/partials/accounts/','/accounts'),
   (9,   'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',5,'/partials/journal/','/journal'),

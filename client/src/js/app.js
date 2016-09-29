@@ -25,11 +25,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'LoginController as LoginCtrl',
     templateUrl : 'partials/login/login.html'
   })
-  .state('permissions', {
-    url : '/permissions',
-    controller: 'PermissionsController as PermissionsCtrl',
-    templateUrl: 'partials/permissions/permissions.html'
-  })
   .state('enterprises', {
     url : '/enterprises',
     controller: 'EnterpriseController as EnterpriseCtrl',

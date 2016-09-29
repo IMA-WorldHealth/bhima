@@ -16,6 +16,7 @@ AccountsController.$inject = [
  * and connecting it with the Accounts data model.
  */
 function AccountsController($rootScope, AccountGrid, Notify, Constants, Language) {
+
   var vm = this;
   vm.Constants = Constants;
 
