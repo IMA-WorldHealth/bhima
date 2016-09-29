@@ -3,11 +3,11 @@
   <ol class="headercrumb">
     <li ng-if="UserModalCtrl.isCreating" class="title">
       {{ "USERS.ADDING_USER" | translate }}
-      <label class="label label-warning">{{ "USERS.CREATE" | translate }}</label>
+      <label class="badge badge-warning">{{ "USERS.CREATE" | translate }}</label>
     </li>
     <li ng-if="!UserModalCtrl.isCreating" class="title">
       {{ "USERS.UPDATING_USER" | translate }}
-      <label class="label label-warning">{{ "USERS.UPDATE" | translate }}</label>
+      <label class="badge badge-warning">{{ "USERS.UPDATE" | translate }}</label>
     </li>
   </ol>
 </div>
@@ -49,7 +49,7 @@
           <span>{{$item.name}}</span>
         </ui-select-match>
 
-        <ui-select-choices repeat="project.id as project in UserModalCtrl.projects| propsSearch:{name: $select.search}">
+        <ui-select-choices repeat="project.id as project in UserModalCtrl.projects| filter:{name: $select.search}">
           <span ng-bind-html="project.name | highlight: $select.search"></span>
         </ui-select-choices>
       </ui-select>
