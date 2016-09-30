@@ -2,14 +2,14 @@ angular.module('bhima.controllers')
   .controller('FiscalManagementController', FiscalManagementController);
 
 FiscalManagementController.$inject = [
-  '$state', 'FiscalService', 'NotifyService', 'util', 'moment'
+  '$state', 'FiscalService', 'NotifyService', 'ModalService', 'util', 'moment'
 ];
 
 /**
  * This controller is responsible for creating and updating a fiscal year. It provides
  * utility functions for submission and error handling.
  */
-function FiscalManagementController($state, Fiscal, Notify, util, moment) {
+function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment) {
   var vm = this;
 
   // state variables
@@ -26,6 +26,9 @@ function FiscalManagementController($state, Fiscal, Notify, util, moment) {
   vm.submit = submit;
   vm.maxLength = util.maxTextLength;
   vm.numberOfMonths = numberOfMonths;
+
+  // expose to the view
+  vm.closingFiscalYear = closingFiscalYear;
 
   /**
    * @function init
@@ -58,6 +61,23 @@ function FiscalManagementController($state, Fiscal, Notify, util, moment) {
 
     })
     .catch(Notify.handleError);
+  }
+
+  /**
+   * @method closingFiscalYear
+   * @description launch the modal for closing a fiscal year
+   */
+  function closingFiscalYear() {
+
+    if (!vm.isUpdateState) { return; }
+
+    Modal.openClosingFiscalYear(vm.fiscal)
+    .then(function (res) {
+      if (!res) { return; }
+
+      $state.go('fiscal.list', null, { reload: true });
+    });
+
   }
 
   /**

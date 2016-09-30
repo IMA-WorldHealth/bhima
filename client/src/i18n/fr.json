@@ -217,15 +217,20 @@
     "TITLE"               : "Gestion taux d'echange"
   },
   "FISCAL": {
-    "CAN_NOT_DELETE_FY"     : "Impossible de supprimer cette année fiscal car il en existe des transanctions qui ont été faite",
+    "ALREADY_CLOSED"        : "A déjà été cloturé",
+    "CAN_NOT_DELETE_FY"     : "Impossible de supprimer cette année fiscale car il en existe des transanctions qui ont été faite",
+    "CLOSING_FISCAL_YEAR"   : "Fermeture d'une année fiscal",
+    "CLOSING_SUCCESS"       : "L'année fiscale à été cloturé avec succès",
     "CREATE_FISCAL_YEAR"    : "Créer l'année fiscale",
     "FISCAL_YEAR"           : "Année Fiscale",
     "BACK"                  : "Retour",
     "CONFIGURATION_PAGE"    : "Page de configuration",
-    "MESSAGES"              : "Vous ne disposez pas des exercices précédents cette année fiscale sera ouvert avec zéro soldes d'ouverture. Si vous souhaitez modifier ce comportement, cliquez sur le lien ci-dessous",
+    "MESSAGES"              : "Vous ne disposez pas des exercices précédents, cette année fiscale sera ouvert avec zéro soldes d'ouverture. Si vous souhaitez modifier ce comportement, cliquez sur le lien ci-dessous",
     "NEW_FISCAL_YEAR"       : "Nouvelle année fiscale",
     "OPENING_BALANCE"       : "Balance d'ouverure",
+    "RESULT_AMOUNT"         : "Montant du resultat",
     "SET_OPENING_BALANCES"  : "Configuration de la balance d'ouverture",
+    "SOLD_DESCRIPTION"      : "Cette operation va solder tous les comptes d'exploitation (charge et profit), et le resultat sera verser vers le compte de resultat selectionné.",
     "TITLE"                 : "Années Fiscales",
     "UPDATE_FISCAL_YEAR"    : "Mettre à jour l'année fiscale"
   },
@@ -275,6 +280,7 @@
       "TRIAL_BALANCE"         : "Rapprochement",
       "UPDATE_PASSWORD"       : "Modifier mot de passe",
       "UPDATE"                : "Mettre à jour",
+      "VALIDATE"              : "Valider",
       "VIEW_ERRORS"           : "Voir erreurs"
     },
     "DIALOGS": {
@@ -517,6 +523,7 @@
       "REFERENCE"              : "Référence",
       "REFERENCE_GROUP"        : "Groupe de référence",
       "RELIGION"               : "Religion",
+      "RESULT"                 : "Resultats",
       "RESULT_ACCOUNT_SCT"     : "Section Compte de Résultat",
       "RETYPE"                 : "Retaper",
       "SALE"                   : "Vente",

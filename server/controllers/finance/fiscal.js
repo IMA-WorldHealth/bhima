@@ -12,10 +12,10 @@
 'use strict';
 
 const q  = require('q');
+const _ = require('lodash');
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
-const _ = require('lodash');
 
 // accounts list
 const AccountList = require('./accounts').lookupAccount();
@@ -24,6 +24,7 @@ exports.list = list;
 exports.getFiscalYearsByDate = getFiscalYearsByDate;
 exports.setOpeningBalance = setOpeningBalance;
 exports.getBalance = getBalance;
+exports.closing = closing;
 exports.create = create;
 exports.detail = detail;
 exports.update = update;
@@ -286,8 +287,9 @@ function lookupBalance(fiscalYearId, periodNumber) {
   })
   .then(rows => {
     let inlineAccount;
+    let allAccounts = rows;
 
-    glb.totalAccount = rows.map(item => {
+    glb.totalAccount = allAccounts.map(item => {
       inlineAccount = _.find(glb.existTotalAccount, { id: item.id });
 
       if (inlineAccount) {
@@ -456,4 +458,219 @@ function notNullBalance(array) {
   return array.filter(item => {
     return (item.debit !== 0 || item.credit !== 0);
   });
+}
+
+/**
+ * @function closing
+ * @description closing a fiscal year
+ */
+function closing(req, res, next) {
+  let id = req.params.id,
+      accountId = req.body.params.account_id,
+      exploitation = {},
+      resultat  = {},
+      fiscal = {},
+      period = {},
+      sql = null;
+
+  // query fiscal year
+  sql = `SELECT id, number_of_months, end_date FROM fiscal_year WHERE id = ?;`;
+
+  db.exec(sql, [id])
+  .then(rows => {
+    if (!rows) {
+      throw new NotFound(`Could not find the fiscal year with id ${id}.`);
+    }
+
+    fiscal = rows[0];
+
+    // query period
+    sql = `SELECT p.id FROM period p WHERE p.fiscal_year_id = ? AND p.number = ?;`;
+    return db.exec(sql, [id, fiscal.number_of_months]);
+  })
+  .then(rows => {
+    if (!rows) {
+      throw new NotFound(`Could not find the period for the fiscal year with id ${id} and number ${fiscal.number_of_months}.`);
+    }
+    period = rows[0];
+  })
+  .then(() => {
+
+    let sqlProfitAccounts = `
+      SELECT a.id, pt.credit, pt.debit
+      FROM period_total AS pt
+      JOIN account AS a ON pt.account_id = a.id
+      JOIN account_type AS at ON a.type_id = at.id
+      WHERE (pt.fiscal_year_id = ? AND pt.period_id = ?) AND at.type = 'income';
+    `;
+    let sqlChargeAccounts = `
+      SELECT a.id, pt.credit, pt.debit
+      FROM period_total AS pt
+      JOIN account AS a ON pt.account_id = a.id
+      JOIN account_type AS at ON a.type_id = at.id
+      WHERE (pt.fiscal_year_id = ? AND pt.period_id = ?) AND at.type = 'income';
+    `;
+
+    let dbPromise = [
+      db.exec(sqlProfitAccounts, [id, period.id]),
+      db.exec(sqlChargeAccounts, [id, period.id])
+    ];
+    return q.all(dbPromise);
+  })
+  .spread((profitAccounts, chargeAccounts) => {
+
+    exploitation.profit = notNullBalance(profitAccounts);
+    exploitation.charge = notNullBalance(chargeAccounts);
+
+    // profit
+    resultat.profit = exploitation.profit.reduce((a, b) => {
+      return a + b.credit - b.debit;
+    }, 0);
+
+    // charge
+    resultat.charge = exploitation.charge.reduce((a, b) => {
+      return a + b.debit - b.credit;
+    }, 0);
+
+    // result
+    resultat.global = resultat.profit - resultat.charge;
+
+    let sqlTransId = `SELECT GenerateTransactionId(?) AS transId;`;
+    return db.exec(sqlTransId, [req.session.project.id]);
+  })
+  .then((rows) => {
+
+    let transId = rows[0].transId;
+
+    let transaction;
+
+    const sqlInsertJournal = `
+      INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
+        trans_id, trans_date, record_uuid, description, account_id, debit,
+        credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
+        entity_type, reference_uuid, comment, origin_id, user_id, cc_id, pc_id)
+      SELECT
+        HUID(UUID()), ?, ?, ?, ?, ?,
+        HUID(UUID()), ?, ?, ?, ?, ?, ?, ?,
+        NULL, NULL, NULL, NULL, NULL, ?, NULL, NULL
+      `;
+
+    // util variables
+    let projectId  = req.session.project.id;
+    let currencyId = req.session.enterprise.currency_id;
+    let userId     = req.session.user.id;
+
+    // sold the profit exploitation
+    let soldProfits = exploitation.profit.map(item => {
+
+      transaction = new Transaction(db);
+
+      // profit has creditor sold
+      let value = item.credit - item.debit;
+
+      // inverted values for solding
+      let debit = value >= 0 ? value : 0;
+      let credit = value >= 0 ? 0 : value;
+
+      let profitParams = [
+        projectId,                      // project_id
+        fiscal.id,                      // fiscal_year_id
+        fiscal.number_of_months + 1,    // period_id
+        transId,                        // Transaction Id
+        fiscal.end_date,                // date : the last date of the fiscal year
+        'Ecriture de solde des profits pour la cloture',
+        item.account_id,                // account_id
+        debit, credit,                  // debit and credit
+        debit, credit,                  // debit_equiv and credit_equiv in enterprise currency
+        currencyId,                     // enterprise currency because data came from period total
+        userId                          // user id
+      ];
+
+      transaction.addQuery(sqlInsertJournal, profitParams);
+      return transaction.execute();
+    });
+
+    // sold the charge exploitation
+    let soldCharges = exploitation.charge.map(item => {
+
+      transaction = new Transaction(db);
+
+      // charge has debitor sold
+      let value = item.debit - item.credit;
+
+      // inverted values for solding
+      let debit = value >= 0 ? 0 : value;
+      let credit = value >= 0 ? value : 0;
+
+      let chargeParams = [
+        projectId,                      // project_id
+        fiscal.id,                      // fiscal_year_id
+        fiscal.number_of_months + 1,    // period_id
+        transId,                        // Transaction Id
+        fiscal.end_date,                // date : the last date of the fiscal year
+        'Ecriture de solde des charges pour la cloture',
+        item.account_id,                // account_id
+        debit, credit,                  // debit and credit
+        debit, credit,                  // debit_equiv and credit_equiv in enterprise currency
+        currencyId,                     // enterprise currency because data came from period total
+        userId                          // user id
+      ];
+
+      transaction.addQuery(sqlInsertJournal, chargeParams);
+      return transaction.execute();
+    });
+
+    // be sure to have accounts to sold, either profit or charge
+    let writeResult = [];
+    if (exploitation.profit.length || exploitation.charge.length) {
+      writeResult = [true].map(item => {
+
+        transaction = new Transaction(db);
+
+        // the resultat: profit - charge
+        let value = resultat.global;
+
+        // debit if benefits or credit if loss
+        let debit = value >= 0 ? value : 0;
+        let credit = value >= 0 ? 0 : value;
+
+        let resultParams = [
+          projectId,                      // project_id
+          fiscal.id,                      // fiscal_year_id
+          fiscal.number_of_months + 1,    // period_id
+          transId,                        // Transaction Id
+          fiscal.end_date,                // date : the last date of the fiscal year
+          'Ecriture du resultat lors de la cloture',
+          accountId,
+          debit, credit,                  // debit and credit
+          debit, credit,                  // debit_equiv and credit_equiv in enterprise currency
+          currencyId,                     // enterprise currency because data came from period total
+          userId                          // user id
+        ];
+
+        transaction.addQuery(sqlInsertJournal, resultParams);
+        return transaction.execute();
+      });
+    }
+
+    // concat queries
+    let dbPromise = []
+      .concat(soldProfits)
+      .concat(soldCharges)
+      .concat(writeResult);
+
+    return q.all(dbPromise);
+  })
+  .then(rows => {
+    // update the fiscal year
+    const sql = `UPDATE fiscal_year SET locked = 1 WHERE id = ?;`;
+    return db.exec(sql, [id]);
+  })
+  .then(rows => {
+    if (!rows.changedRows) { return next; }
+    res.status(200).send({ id: id });
+  })
+  .catch(next)
+  .done();
+
 }
