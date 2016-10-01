@@ -7,7 +7,7 @@ describe('(/login) The login API', function () {
   'use strict';
 
   const port = process.env.PORT || 8080;
-  const url = `https://localhost:${port}`;
+  const url = `http://localhost:${port}`;
 
   // set up valid user
   const validUser = {

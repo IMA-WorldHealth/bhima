@@ -9,13 +9,13 @@ const compress   = require('compression');
 const bodyParser = require('body-parser');
 const session    = require('express-session');
 const RedisStore = require('connect-redis')(session);
+const Redis      = require('ioredis');
 const morgan     = require('morgan');
 const fs         = require('fs');
 const winston    = require('winston');
 const _          = require('lodash');
 const helmet     = require('helmet');
 const path       = require('path');
-const Redis      = require('ioredis');
 
 const interceptors = require('./interceptors');
 const Unauthorized = require('../lib/errors/Unauthorized');
@@ -27,25 +27,34 @@ exports.configure = function configure(app) {
 
   winston.debug('Configuring middleware.');
 
-  app.use(compress());
-
   // helmet guards
   app.use(helmet());
+  app.use(compress());
 
   app.use(bodyParser.json({ limit : '8mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
 
+
   // stores session in a file store so that server restarts do not interrupt
   // client sessions.
-  app.use(session({
+  const sess = {
     store: new RedisStore({client: new Redis() }),
     secret: process.env.SESS_SECRET,
     resave: Boolean(process.env.SESS_RESAVE),
     saveUninitialized: Boolean(process.env.SESS_UNINITIALIZED),
     unset: process.env.SESS_UNSET,
-    cookie: { secure : true },
-    retries: 50
-  }));
+    cookie: { httpOnly : true },
+    retries: 20
+  };
+
+  // indicate that we are running behind a trust proxy and should use a secure cookie
+  if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', true);
+    sess.cookie.secure = true;
+  }
+
+  // bind the session to the middleware
+  app.use(session(sess));
 
   // provide a stream for morgan to write to
   winston.stream = {

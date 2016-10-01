@@ -10,7 +10,7 @@
  * the middleware is configured in {@link server/config/express}.
  *
  * @requires fs
- * @requires https
+ * @requires http
  * @requires dotenv
  * @requires express
  * @requires winston
@@ -26,7 +26,7 @@
 'use strict';
 
 const fs = require('fs');
-const https = require('https');
+const http = require('http');
 const express = require('express');
 const winston = require('winston');
 
@@ -51,7 +51,7 @@ function configureEnvironmentVariables() {
   // decode the file path for the environmental variables.
   let dotfile = `server/.env.${env}`.trim();
 
-  // load the environmnetal variables into process using the dotenv module
+  // load the environmental variables into process using the dotenv module
   console.log(`[app] Loading configuration from ${dotfile}.`);
   require('dotenv').config({ path : dotfile });
 }
@@ -73,7 +73,7 @@ function configureLogger() {
   // set logging levels to that found in the configuration file (default: warn)
   winston.level = process.env.LOG_LEVEL || 'warn';
 
-  let logFile = process.env.LOG_FILE;
+  const logFile = process.env.LOG_FILE;
 
   // allow logging to a file if needed
   if (logFile) {
@@ -92,22 +92,16 @@ function configureLogger() {
  * @function configureServer
  *
  * @description
- * Set up the HTTPS server by loading the correct SSL configuration from the
- * file system and listening on the required port.
+ * Set up the HTTP server to listen on the correct
  */
 function configureServer() {
-
-  // credentials
-  const key = fs.readFileSync(process.env.TLS_KEY, 'utf8');
-  const cert = fs.readFileSync(process.env.TLS_CERT, 'utf8');
-  const credentials = { key : key , cert : cert };
 
   // destruct the environmental variables
   const port = process.env.PORT;
   const mode = process.env.NODE_ENV;
 
   // create the server
-  https.createServer(credentials, app)
+  http.createServer(app)
     .listen(process.env.PORT, () => {
       winston.info(`Server started in mode ${mode} on port ${port}.`);
     });
@@ -133,10 +127,7 @@ require('./config/express').errorHandling(app);
 require('./lib/PluginManager')(app, []);
 
 // ensure the process terminates gracefully when an error occurs.
-process.on('uncaughtException', (exception) => {
-  winston.error(exception);
-  process.exit(1);
-});
+process.on('uncaughtException', () => process.exit(1));
 
 process.on('warning', (warning) => {
   winston.warn(warning.message);
