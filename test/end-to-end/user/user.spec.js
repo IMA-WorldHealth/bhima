@@ -14,9 +14,9 @@ helpers.configure(chai);
 
 const expect = chai.expect;
 
-describe.only('User management page', function () {
-
+describe('User management page', function () {
   'use strict';
+
   const path = '#/users';
   const userPage = new UserPage();
   const userCreateUpdatePage = new UserCreateUpdatePage();
@@ -57,7 +57,7 @@ describe.only('User management page', function () {
     userCreateUpdatePage.submitUser();
     expect(userPage.getUserCount()).to.eventually.equal(userCount + 1);
   });
-  
+
   it('edits a user successfully without changing the password', function () {
     userPage.editUser(4);
     userCreateUpdatePage.setUserName(mockUserEdit.userName);
@@ -74,7 +74,7 @@ describe.only('User management page', function () {
      **/
     expect(userCreateUpdatePage.isDisplayed()).to.eventually.equal(false); //if every thing is good, the modal should disappear
   });
-  
+
   it('edits a user password successfully', function () {
     userPage.editUser(4);
     userCreateUpdatePage.editPassword();
@@ -106,7 +106,7 @@ describe.only('User management page', function () {
     editPasswordPage.cancelEditing();
     userCreateUpdatePage.close();
   });
-  
+
   it('validates form on creation', function () {
     userPage.createUser();
     userCreateUpdatePage.submitUser();
