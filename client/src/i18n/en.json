@@ -275,7 +275,7 @@
       "CONFIRM_DELETE"         : "You are about to delete a record.  This action is permanent and cannot be done.  Click \"Confirm\" to accept or \"Cancel\" to halt this action.",
       "CANNOT_UNDONE_ACTION"   : "This action CANNOT BE REVERSED, this action will be permanent. You must be sure that you want to do this action",
       "NO_CORRESPONDANCY"      : "No correspondancy found for ",
-      "PLEASE_TYPE_TEXT"       : "Please type %ELEMENT% to confirm",
+      "PLEASE_TYPE_TEXT"       : "Please type {{value}} to confirm",
       "PLEASE_READ"            : "Unexpected bad things will happen if you don't read this!",
       "SURE_CONTINUE"          : "Are you ABSOLUTELY sure?",
       "UNDERSTAND_ACTION"      : "I accept the consequences of this action",
