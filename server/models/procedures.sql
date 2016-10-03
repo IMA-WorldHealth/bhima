@@ -1089,15 +1089,11 @@ END $$
 
 CREATE PROCEDURE ReverseTransaction(
   IN uuid BINARY(16),
-  IN userId INT,
-  IN description TEXT
+  IN user_id INT,
+  IN description TEXT,
+  IN voucher_uuid BINARY(16)
 )
 BEGIN
-  DECLARE voucherUuid BINARY(16);
-
-  -- set the voucher Uuid
-  SET voucherUuid = HUID(UUID());
-
   -- NOTE: someone should check that the record_uuid is not used as a reference_uuid somewhere
 
   -- the voucher type is credit note (id: 10)
@@ -1105,17 +1101,19 @@ BEGIN
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
 
   INSERT INTO voucher (uuid, date, project_id, currency_id, amount, description, user_id, type_id)
-    SELECT voucherUuid, NOW(), zz.project_id, enteprise.currency_id, 0, CONCAT_WS(' ', '[reversal]', description, '\n[original description]', zz.description), userId, 10
+    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '[reversal]', description, '\n[original description]', zz.description), user_id, 10
     FROM (
       SELECT pj.project_id, pj.description FROM posting_journal AS pj WHERE pj.record_uuid = uuid
       UNION
       SELECT gl.project_id, gl.description FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz
+      JOIN project ON zz.project_id = project.id
+      JOIN enterprise ON project.enterprise_id = enterprise.id
     LIMIT 1;
 
   -- NOTE: the debits and credits are swapped on purpose here
   INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid)
-    SELECT HUID(UUID()), zz.account_id, zz.credit, zz.debit, voucherUuid, zz.reference_uuid, zz.entity_uuid
+    SELECT HUID(UUID()), zz.account_id, zz.credit_equiv, zz.debit_equiv, voucher_uuid, zz.reference_uuid, zz.entity_uuid
     FROM (
       SELECT pj.account_id, pj.credit_equiv, pj.debit_equiv, pj.reference_uuid, pj.entity_uuid
       FROM posting_journal AS pj WHERE pj.record_uuid = uuid
@@ -1124,7 +1122,7 @@ BEGIN
       FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz;
 
-  CALL PostVoucher(voucherUuid);
+  CALL PostVoucher(voucher_uuid);
 END $$
 
 DELIMITER ;

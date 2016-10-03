@@ -84,9 +84,7 @@ function PatientInvoiceService(Modal, util, Session, Api) {
   function openCreditNoteModal(invoice) {
     return Modal.open({
       templateUrl : 'partials/patient_invoice/registry/modalCreditNote.html',
-      resolve : {
-        data : { invoice : invoice }
-      },
+      resolve : { data : { invoice : invoice } },
       size : 'md',
       animation : true,
       keyboard  : false,

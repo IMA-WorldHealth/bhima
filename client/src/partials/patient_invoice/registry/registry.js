@@ -21,11 +21,9 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
         '<span class="fa fa-file-pdf-o"></span> {{ "TABLE.COLUMNS.RECEIPT" | translate }}' +
       '</a>' +
       '&nbsp;&nbsp;' +
-        '<span ng-if="row.entity.type_id !== grid.appScope.bhConstants.transactionType.CREDIT_NOTE">' +
-          '<a href id="{{row.entity.reference}}" ng-click="grid.appScope.creditNote(row.entity)" class="text-danger">' +
-            '<span class="glyphicon glyphicon-remove-sign text-danger"></span> {{ "TABLE.COLUMNS.CREDIT_NOTE" | translate }}' +
-          '</a>' +
-        '</span>' +
+      '<a href id="{{row.entity.reference}}" ng-click="grid.appScope.creditNote(row.entity)" class="text-danger">' +
+        '<i class="fa fa-clone"></i> {{ "TABLE.COLUMNS.CREDIT_NOTE" | translate }}' +
+      '</a>' +
     '</div>';
 
   var costTemplate =
@@ -136,11 +134,12 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
   // Function for Credit Note cancel all Invoice
   function creditNote(invoice) {
     Invoices.openCreditNoteModal(invoice)
-      .then(function (data) {
-        Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-        return load();
-      })
-      .catch(Notify.handleError);
+      .then(function (success) {
+        if (success) {
+          Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
+          return load();
+        }
+      });
   }
 
   // fire up the module

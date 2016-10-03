@@ -10,6 +10,8 @@
  * @requires winston
  * @requires BadRequest
  */
+'use strict';
+
 const winston = require('winston');
 const BadRequest = require('../lib/errors/BadRequest');
 
