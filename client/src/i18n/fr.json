@@ -278,10 +278,11 @@
       "VIEW_ERRORS"           : "Voir erreurs"
     },
     "DIALOGS": {
+      "CONFIRM_ACTION"         : "Confirmez vous cette action ?",
       "CONFIRM_DELETE"         : "Confirmez vous la suppression ?",
-      "CANNOT_UNDONE_DELETION" : "Cette action NE POURRA PAS ETRE ANNULER, la suppression sera definitive. Vous devez etre sure que vous voulez vraiment effectuer cette operation",
-      "NO_CORRESPONDANCY"      : "Aucun %ELEMENT% n'a le nom ",
-      "PLEASE_TYPE_TEXT"       : "Veuillez taper le nom de %ELEMENT% pour confirmer ",
+      "CANNOT_UNDONE_ACTION"   : "Cette action NE POURRA PAS ETRE ANNULER, les consequences de cette action seront definitives. Vous devez etre sure que vous voulez vraiment effectuer cette action",
+      "NO_CORRESPONDANCY"      : "Aucune correspondance trouvée pour",
+      "PLEASE_TYPE_TEXT"       : "Veuillez saisir %ELEMENT% pour confirmer ",
       "PLEASE_READ"            : "Vous risquez de perdre des donnees importantes si vous ne lisez pas ce message!",
       "SURE_CONTINUE"          : "Etes-vous ABSOLUMENT sure ?",
       "UNDERSTAND_ACTION"      : "J'ACCEPTE les consequences de cette action"
@@ -584,6 +585,11 @@
     "LEGENDS": {
       "CREATION" : "Creation",
       "EDITION"  : "Edition"
+    },
+    "PATTERNS": {
+      "DOCUMENT_NAME"    : "le nom du document",
+      "FISCAL_YEAR_NAME" : "le nom de l'annee fiscale",
+      "PROJECT_NAME"     : "le nom du projet"
     },
     "PLACEHOLDERS": {
       "ACCOUNT"      : "Entrer le compte",
