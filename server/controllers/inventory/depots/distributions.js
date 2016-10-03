@@ -17,8 +17,10 @@
 
 var db      = require('../../../lib/db');
 var uuid    = require('node-uuid'),
-    q       = require('q'),
-    journal = require('../../finance/journal');
+  q       = require('q');
+
+// @fixme remove this file
+var journal = {};
 
 exports.createDistributions = createDistributions;
 

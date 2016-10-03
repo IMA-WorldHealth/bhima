@@ -207,7 +207,6 @@ BEGIN
     WHERE DATE(date) BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND p.fiscal_year_id = current_fiscal_year_id
   );
 
-
   SELECT e.gain_account_id, e.loss_account_id, e.currency_id
     INTO gain_account, loss_account, enterprise_currency_id
   FROM enterprise AS e WHERE e.id = enterprise_id;
@@ -502,7 +501,6 @@ $$
 -- BEGIN
 --
 -- Post Cash Payments
---
 CREATE PROCEDURE PostCash(
   IN cashUuid binary(16)
 )
@@ -538,7 +536,6 @@ BEGIN
     JOIN enterprise ON project.enterprise_id = enterprise.id
   WHERE cash.uuid = cashUuid;
 
-  /* Set the exchange rate up */
   -- populate core setup values
   CALL PostingSetupUtil(cashDate, cashEnterpriseId, cashProjectId, cashCurrencyId, currentFiscalYearId, currentPeriodId, currentExchangeRate, enterpriseCurrencyId, transactionId, gain_account_id, loss_account_id);
 
@@ -974,73 +971,160 @@ BEGIN
 END $$
 
 CREATE PROCEDURE GetPeriodRange(
-	IN fiscalYearStartDate DATE,
-	IN periodNumberIndex SMALLINT(5),
-	OUT periodStartDate DATE,
-	OUT periodEndDate DATE
+  IN fiscalYearStartDate DATE,
+  IN periodNumberIndex SMALLINT(5),
+  OUT periodStartDate DATE,
+  OUT periodEndDate DATE
 )
 BEGIN
-	DECLARE `innerDate` DATE;
+  DECLARE `innerDate` DATE;
 
-	SET innerDate = (SELECT DATE_ADD(fiscalYearStartDate, INTERVAL periodNumberIndex-1 MONTH));
-	SET periodStartDate = (SELECT CAST(DATE_FORMAT(innerDate ,'%Y-%m-01') as DATE));
-	SET periodEndDate = (SELECT LAST_DAY(innerDate));
+  SET innerDate = (SELECT DATE_ADD(fiscalYearStartDate, INTERVAL periodNumberIndex-1 MONTH));
+  SET periodStartDate = (SELECT CAST(DATE_FORMAT(innerDate ,'%Y-%m-01') as DATE));
+  SET periodEndDate = (SELECT LAST_DAY(innerDate));
 END $$
 
 CREATE PROCEDURE CreatePeriods(
-	IN fiscalYearId MEDIUMINT(8)
+  IN fiscalYearId MEDIUMINT(8)
 )
 BEGIN
-	DECLARE periodId MEDIUMINT(8);
-	DECLARE periodNumber SMALLINT(5);
-	DECLARE periodStartDate DATE;
-	DECLARE periodEndDate DATE;
-	DECLARE periodLocked TINYINT(1);
+  DECLARE periodId MEDIUMINT(8);
+  DECLARE periodNumber SMALLINT(5);
+  DECLARE periodStartDate DATE;
+  DECLARE periodEndDate DATE;
+  DECLARE periodLocked TINYINT(1);
 
-	DECLARE fyEnterpriseId SMALLINT(5);
-	DECLARE fyNumberOfMonths MEDIUMINT(8) DEFAULT 0;
-	DECLARE fyLabel VARCHAR(50);
-	DECLARE fyStartDate DATE;
-	DECLARE fyEndDate DATE;
-	DECLARE fyPreviousFYId SMALLINT(5);
-	DECLARE fyLocked TINYINT(1);
-	DECLARE fyCreatedAt TIMESTAMP;
-	DECLARE fyUpdatedAt TIMESTAMP;
-	DECLARE fyUserId MEDIUMINT(5);
-	DECLARE fyNote TEXT;
+  DECLARE fyEnterpriseId SMALLINT(5);
+  DECLARE fyNumberOfMonths MEDIUMINT(8) DEFAULT 0;
+  DECLARE fyLabel VARCHAR(50);
+  DECLARE fyStartDate DATE;
+  DECLARE fyEndDate DATE;
+  DECLARE fyPreviousFYId SMALLINT(5);
+  DECLARE fyLocked TINYINT(1);
+  DECLARE fyCreatedAt TIMESTAMP;
+  DECLARE fyUpdatedAt TIMESTAMP;
+  DECLARE fyUserId MEDIUMINT(5);
+  DECLARE fyNote TEXT;
 
-	DECLARE v_i INT DEFAULT 0;
+  DECLARE v_i INT DEFAULT 0;
 
-	-- get the fiscal year informations
-	SELECT
-		enterprise_id, number_of_months, label, start_date, end_date,
-		previous_fiscal_year_id, locked, created_at, updated_at, user_id, note
-		INTO
-		fyEnterpriseId, fyNumberOfMonths, fyLabel, fyStartDate, fyEndDate,
-		fyPreviousFYId, fyLocked, fyCreatedAt, fyUpdatedAt, fyUserId, fyNote
-	FROM fiscal_year WHERE id = fiscalYearId;
+  -- get the fiscal year informations
+  SELECT
+    enterprise_id, number_of_months, label, start_date, end_date,
+    previous_fiscal_year_id, locked, created_at, updated_at, user_id, note
+    INTO
+    fyEnterpriseId, fyNumberOfMonths, fyLabel, fyStartDate, fyEndDate,
+    fyPreviousFYId, fyLocked, fyCreatedAt, fyUpdatedAt, fyUserId, fyNote
+  FROM fiscal_year WHERE id = fiscalYearId;
 
-	-- insert N+2 period
-	WHILE v_i <= fyNumberOfMonths + 1 DO
+  -- insert N+2 period
+  WHILE v_i <= fyNumberOfMonths + 1 DO
 
-		IF v_i = 0 OR v_i = fyNumberOfMonths + 1 THEN
-			-- Extremum periods 0 and N+1
-			-- Insert periods with null dates
-			INSERT INTO period(`fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
-			VALUES (fiscalYearId, v_i, NULL, NULL, 0);
-		ELSE
-			-- Normal periods
-			-- Get period dates range
-			CALL GetPeriodRange(fyStartDate, v_i, periodStartDate, periodEndDate);
+    IF v_i = 0 OR v_i = fyNumberOfMonths + 1 THEN
+      -- Extremum periods 0 and N+1
+      -- Insert periods with null dates
+      INSERT INTO period(`fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
+      VALUES (fiscalYearId, v_i, NULL, NULL, 0);
+    ELSE
+      -- Normal periods
+      -- Get period dates range
+      CALL GetPeriodRange(fyStartDate, v_i, periodStartDate, periodEndDate);
 
-			-- Inserting periods
-			INSERT INTO period(`fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
-			VALUES (fiscalYearId, v_i, periodStartDate, periodEndDate, 0);
-		END IF;
+      -- Inserting periods
+      INSERT INTO period(`fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
+      VALUES (fiscalYearId, v_i, periodStartDate, periodEndDate, 0);
+    END IF;
 
-		SET v_i = v_i + 1;
-	END WHILE;
+    SET v_i = v_i + 1;
+  END WHILE;
+END $$
 
+CREATE PROCEDURE PostVoucher(
+  IN uuid BINARY(16)
+)
+BEGIN
+  DECLARE enterprise_id INT;
+  DECLARE project_id INT;
+  DECLARE currency_id INT;
+  DECLARE date TIMESTAMP;
+
+  -- variables to store core set-up results
+  DECLARE fiscal_year_id MEDIUMINT(8) UNSIGNED;
+  DECLARE period_id MEDIUMINT(8) UNSIGNED;
+  DECLARE current_exchange_rate DECIMAL(19, 4) UNSIGNED;
+  DECLARE enterprise_currency_id TINYINT(3) UNSIGNED;
+  DECLARE transaction_id VARCHAR(100);
+  DECLARE gain_account_id INT UNSIGNED;
+  DECLARE loss_account_id INT UNSIGNED;
+
+  --
+  SELECT p.enterprise_id, p.id, v.currency_id, v.date
+    INTO enterprise_id, project_id, currency_id, date
+  FROM voucher AS v JOIN project AS p ON v.project_id = p.id
+  WHERE v.uuid = uuid;
+
+  -- populate core setup values
+  CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, fiscal_year_id, period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
+
+  -- make sure the exchange rate is correct
+  SET current_exchange_rate = GetExchangeRate(enterprise_id, currency_id, date);
+  SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate));
+
+  -- POST to the posting journal
+  INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
+    trans_id, trans_date, record_uuid, description, account_id, debit,
+    credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
+    entity_type, reference_uuid, comment, origin_id, user_id)
+  SELECT
+    HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
+    v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
+    vi.debit * current_exchange_rate, vi.credit * current_exchange_rate, v.currency_id,
+    vi.entity_uuid, NULL, vi.document_uuid, NULL, v.type_id, v.user_id
+  FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
+  WHERE v.uuid = uuid;
+
+  -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
+END $$
+
+
+CREATE PROCEDURE ReverseTransaction(
+  IN uuid BINARY(16),
+  IN userId INT,
+  IN description TEXT
+)
+BEGIN
+  DECLARE voucherUuid BINARY(16);
+
+  -- set the voucher Uuid
+  SET voucherUuid = HUID(UUID());
+
+  -- NOTE: someone should check that the record_uuid is not used as a reference_uuid somewhere
+
+  -- the voucher type is credit note (id: 10)
+  -- @fixme - why do we have `amount` in the voucher table?
+  -- @todo - make only one type of reversal (not cash, credit, or voucher)
+
+  INSERT INTO voucher (uuid, date, project_id, currency_id, amount, description, user_id, type_id)
+    SELECT voucherUuid, NOW(), zz.project_id, enteprise.currency_id, 0, CONCAT_WS(' ', '[reversal]', description, '\n[original description]', zz.description), userId, 10
+    FROM (
+      SELECT pj.project_id, pj.description FROM posting_journal AS pj WHERE pj.record_uuid = uuid
+      UNION
+      SELECT gl.project_id, gl.description FROM general_ledger AS gl WHERE gl.record_uuid = uuid
+    ) AS zz
+    LIMIT 1;
+
+  -- NOTE: the debits and credits are swapped on purpose here
+  INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid)
+    SELECT HUID(UUID()), zz.account_id, zz.credit, zz.debit, voucherUuid, zz.reference_uuid, zz.entity_uuid
+    FROM (
+      SELECT pj.account_id, pj.credit_equiv, pj.debit_equiv, pj.reference_uuid, pj.entity_uuid
+      FROM posting_journal AS pj WHERE pj.record_uuid = uuid
+      UNION
+      SELECT gl.account_id, gl.credit_equiv, gl.debit_equiv, gl.reference_uuid, gl.entity_uuid
+      FROM general_ledger AS gl WHERE gl.record_uuid = uuid
+    ) AS zz;
+
+  CALL PostVoucher(voucherUuid);
 END $$
 
 DELIMITER ;

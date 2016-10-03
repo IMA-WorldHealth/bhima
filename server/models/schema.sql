@@ -1732,7 +1732,6 @@ CREATE TABLE `taxe_ipr` (
 
 
 DROP TABLE IF EXISTS `transaction_type`;
-
 CREATE TABLE `transaction_type` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `text` varchar(100) NOT NULL,
@@ -1787,6 +1786,7 @@ CREATE TABLE `village` (
   FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- NOTE: type_id is the transaction_type table.  FK not possible due to NULLs.
 DROP TABLE IF EXISTS `voucher`;
 CREATE TABLE IF NOT EXISTS `voucher` (
   `uuid`            BINARY(16) NOT NULL,

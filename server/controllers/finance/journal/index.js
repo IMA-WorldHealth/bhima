@@ -13,9 +13,7 @@
 
 // module dependencies
 const db = require('../../../lib/db');
-const core = require('./core');
 const uuid = require('node-uuid');
-const journal = require('../journal/voucher');
 const NotFound   = require('../../../lib/errors/NotFound');
 const _ = require('lodash');
 
@@ -121,10 +119,10 @@ function createReverseTransaction(uid, userId, creditNote) {
       // build the SQL query
       transaction
         .addQuery('INSERT INTO voucher SET ?', [ voucher ])
-        .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, entity_uuid, voucher_uuid) VALUES ?', [ voucherItems ]);
+        .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, entity_uuid, voucher_uuid) VALUES ?', [ voucherItems ])
+        .addQuery('CALL PostVoucher(?);', [ voucher.uuid ]);
 
-      return journal(transaction, voucher.uuid)
-      .catch(core.handler);
+      return transaction.execute();
     });
 }
 
@@ -151,7 +149,7 @@ function list(req, res, next) {
       JOIN account a ON a.id = p.account_id
       JOIN user u ON u.id = p.user_id
     ORDER BY p.trans_date DESC;
-    `;
+  `;
 
   db.exec(sql)
   .then(rows => {
@@ -190,5 +188,6 @@ function reverse(req, res, next) {
     })
     .catch(next)
     .done();
-
 }
+
+
