@@ -56,7 +56,7 @@ function ModalService(Modal) {
   service.openDateInterval = openDateInterval;
 
   // confirm deletion modal
-  service.openConfirmDeletion = openConfirmDeletion;
+  service.openConfirmDialog = openConfirmDialog;
 
   // project actions : add or edit
   service.openProjectActions = openProjectActions;
@@ -304,11 +304,11 @@ function ModalService(Modal) {
      *   elementName: $translate.instant('FORM.LABELS.TRANSACTION')
      *  }
      */
-    function openConfirmDeletion(request) {
+    function openConfirmDialog(request) {
 
       var params = angular.extend(modalParameters, {
-        templateUrl  : 'partials/templates/modals/confirmDeletion.modal.html',
-        controller   : 'ConfirmDeletionModalController',
+        templateUrl  : 'partials/templates/modals/confirmDialog.modal.html',
+        controller   : 'ConfirmDialogModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
         backdrop     : 'static',

@@ -1,16 +1,16 @@
 angular.module('bhima.controllers')
-.controller('ConfirmDeletionModalController', ConfirmDeletionModalController);
+.controller('ConfirmDialogModalController', ConfirmDialogModalController);
 
 // dependencies injection
-ConfirmDeletionModalController.$inject = ['$uibModalInstance', '$translate', 'data'];
+ConfirmDialogModalController.$inject = ['$uibModalInstance', '$translate', 'data'];
 
 /**
- * Confirm Deletion Controller
+ * Confirm Dialog Controller
  * This controller is responsible for check a match text given to continue
- * the deletion process
+ * with an action
  */
-function ConfirmDeletionModalController (Instance, $translate, Data) {
-  var vm = this, message;
+function ConfirmDialogModalController (Instance, $translate, Data) {
+  var vm = this;
 
   // expose to the view
   vm.accept = accept;
@@ -21,26 +21,26 @@ function ConfirmDeletionModalController (Instance, $translate, Data) {
 
   /** startup */
   function startup() {
+    var message, pattern;
 
     // Global objects
     vm.pattern = Data.pattern;
-    vm.elementName = Data.elementName;
+    vm.patternName = Data.patternName;
 
     // make sure the modal isn't accidentally called with empty values
-    if (!Data.pattern || !Data.elementName) {
+    if (!Data.pattern || !Data.patternName) {
       throw new Error(
-        'ConfirmDeletionModal requires both a pattern and an element name to be defined, but received:' +
+        'ConfirmDialogModal requires both a pattern and an element name to be defined, but received:' +
         'data.pattern = ' + Data.pattern + ' ' +
-        'data.elementName = ' + Data.elementName
+        'data.patternName = ' + Data.patternName
       );
     }
 
     // Confirmation name message
     message = $translate.instant('FORM.DIALOGS.PLEASE_TYPE_TEXT');
+    pattern = $translate.instant(Data.patternName);
 
-    vm.message = Data.elementName ?
-      message.replace('%ELEMENT%', Data.elementName) :
-      message.replace('%ELEMENT%', 'element');
+    vm.message = message.replace('%ELEMENT%', pattern);
   }
 
   /** matching */
@@ -64,8 +64,7 @@ function ConfirmDeletionModalController (Instance, $translate, Data) {
       Instance.close(result);
     } else if (!form.$invalid && !result) {
       vm.noCorrespondancy = $translate.instant('FORM.DIALOGS.NO_CORRESPONDANCY')
-        .replace('%ELEMENT%', vm.elementName)
-        .concat('"', vm.text, '"');
+        .concat(' "', vm.text, '"');
     } else {
       vm.noCorrespondancy = $translate.instant('FORM.ERRORS.REQUIRED');
     }

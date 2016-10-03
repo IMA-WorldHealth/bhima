@@ -170,10 +170,10 @@ function EnterpriseController($translate, Enterprises, Currencies, Accounts, uti
   function deleteProject(id, pattern) {
     var params = {
       pattern: pattern,
-      elementName: $translate.instant('FORM.LABELS.PROJECT')
+      patternName: 'FORM.PATTERNS.PROJECT_NAME'
     };
 
-    Modal.openConfirmDeletion(params)
+    Modal.openConfirmDialog(params)
     .then(function (bool) {
       if (!bool) { return; }
 
