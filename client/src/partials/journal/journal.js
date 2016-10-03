@@ -5,7 +5,7 @@ JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
-  'bhConstants', 'JournalPostingService'
+  'bhConstants', '$state'
 ];
 
 /**
@@ -30,7 +30,7 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, PostingService) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state) {
   var vm = this;
 
   /** @constants */
@@ -148,6 +148,6 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   //This function opens a modal, to let the user posting transaction to the general ledger
   vm.openTrialBalanceModal = function openTrialBalanceModal () {
-    PostingService.openTrialBalanceModal(vm.grouping.getSelectedRows());
+    $state.go('trialBalanceMain', {records : vm.grouping.getSelectedGroups()}, {reload : false});
   };
 }

@@ -1,0 +1,21 @@
+
+
+<button
+  id="cancelID"
+  type="button"
+  class="btn btn-default"
+  ng-click="TrialBalanceMainFooterCtrl.cancel()">
+    {{ "FORM.BUTTONS.CANCEL" | translate }}
+</button>
+
+<button
+  ng-if="TrialBalanceMainFooterCtrl.state.current.data.checked"
+  type="submit"
+  ng-class="{
+    'btn btn-danger' : TrialBalanceMainFooterCtrl.state.current.data.checkingData.feedBack.hasError,
+    'btn btn-warning': TrialBalanceMainFooterCtrl.state.current.data.checkingData.feedBack.hasWarning,
+    'btn btn-primary': TrialBalanceMainFooterCtrl.state.current.data.checkingData.feedBack.hasSuccess}"
+  ng-disabled="TrialBalanceMainFooterCtrl.state.current.data.checkingData.feedBack.hasError"
+  data-method="submit">
+    {{ "FORM.BUTTONS.SUBMIT" | translate }}
+</button>

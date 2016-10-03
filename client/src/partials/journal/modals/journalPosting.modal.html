@@ -1,72 +1,72 @@
-<form name="JournalPosterForm" ng-submit="JournalPosterModalCtrl.submit()" bh-form-defaults novalidate>
+<!--<form name="JournalPosterForm" ng-submit="JournalPosterModalCtrl.submit()" bh-form-defaults novalidate>-->
 
-  <div class="modal-header">
-    <ol class="headercrumb">
-      <li class="static">{{ ::"TREE.POSTING_JOURNAL" | translate }}</li>
-      <li class="title">
-        {{ ::"POSTING_JOURNAL.TRIAL_BALANCE.TITLE" | translate }}
-      </li>
-    </ol>
-  </div>
+  <!--<div class="modal-header">-->
+    <!--<ol class="headercrumb">-->
+      <!--<li class="static">{{ ::"TREE.POSTING_JOURNAL" | translate }}</li>-->
+      <!--<li class="title">-->
+        <!--{{ ::"POSTING_JOURNAL.TRIAL_BALANCE.TITLE" | translate }}-->
+      <!--</li>-->
+    <!--</ol>-->
+  <!--</div>-->
 
-  <div class="modal-body">
-      <p>
-        <div class="row">
-          <div class="col-xs-4 pull-left">
-            <button type="button" ng-show="JournalPosterModalCtrl.feedBack.hasError || JournalPosterModalCtrl.feedBack.hasWarning" ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}" ng-click="JournalPosterModalCtrl.viewErrorReport()" data-method="show">
-              <i class="fa fa-bars"></i>
-              {{"FORM.BUTTONS.VIEW_ERRORS" | translate }}
-            </button>
-          </div>
+  <!--<div class="modal-body">-->
+      <!--<p>-->
+        <!--<div class="row">-->
+          <!--<div class="col-xs-4 pull-left">-->
+            <!--<button type="button" ng-show="JournalPosterModalCtrl.feedBack.hasError || JournalPosterModalCtrl.feedBack.hasWarning" ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}" ng-click="JournalPosterModalCtrl.viewErrorReport()" data-method="show">-->
+              <!--<i class="fa fa-bars"></i>-->
+              <!--{{"FORM.BUTTONS.VIEW_ERRORS" | translate }}-->
+            <!--</button>-->
+          <!--</div>-->
 
-          <div class="pull-right">
-            <button ng-if="!JournalPosterModalCtrl.detailedView" id="switchViewID" type="button" class="btn btn-default" ng-click="JournalPosterModalCtrl.switchView()" data-method="switch">
-              <i class="fa fa-retweet"></i>
-              {{JournalPosterModalCtrl.viewDetail.key | translate }}
-            </button>
-          </div>
-        </div>
-      </p>
+          <!--<div class="pull-right">-->
+            <!--<button ng-if="!JournalPosterModalCtrl.detailedView" id="switchViewID" type="button" class="btn btn-default" ng-click="JournalPosterModalCtrl.switchView()" data-method="switch">-->
+              <!--<i class="fa fa-retweet"></i>-->
+              <!--{{JournalPosterModalCtrl.viewDetail.key | translate }}-->
+            <!--</button>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</p>-->
 
-    <div ng-if="!JournalPosterModalCtrl.loading">
-      <div
-        id="transaction-grid"
-        ui-grid="JournalPosterModalCtrl.gridOptions"
-        ui-grid-auto-resize
-        ui-grid-grouping
-      >
-      </div>
-    </div>
-  </div>
+    <!--<div ng-if="!JournalPosterModalCtrl.loading">-->
+      <!--<div-->
+        <!--id="transaction-grid"-->
+        <!--ui-grid="JournalPosterModalCtrl.gridOptions"-->
+        <!--ui-grid-auto-resize-->
+        <!--ui-grid-grouping-->
+      <!--&gt;-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
 
-  <div class="modal-footer">
+  <!--<div class="modal-footer">-->
 
-    <button
-      ng-show="JournalPosterModalCtrl.detailedView"
-      id="detailID"
-      type="button"
-      data-method="reset"
-      ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}"
-      ng-click="JournalPosterModalCtrl.resetView()">
-      {{ "FORM.BUTTONS.RESET" | translate }}
-    </button>
+    <!--<button-->
+      <!--ng-show="JournalPosterModalCtrl.detailedView"-->
+      <!--id="detailID"-->
+      <!--type="button"-->
+      <!--data-method="reset"-->
+      <!--ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}"-->
+      <!--ng-click="JournalPosterModalCtrl.resetView()">-->
+      <!--{{ "FORM.BUTTONS.RESET" | translate }}-->
+    <!--</button>-->
 
-    <button
-      ng-if="!JournalPosterModalCtrl.detailedView"
-      id="cancelID"
-      type="button"
-      class="btn btn-default"
-      ng-click="JournalPosterModalCtrl.cancel()">
-      {{ "FORM.BUTTONS.CANCEL" | translate }}
-    </button>
+    <!--<button-->
+      <!--ng-if="!JournalPosterModalCtrl.detailedView"-->
+      <!--id="cancelID"-->
+      <!--type="button"-->
+      <!--class="btn btn-default"-->
+      <!--ng-click="JournalPosterModalCtrl.cancel()">-->
+      <!--{{ "FORM.BUTTONS.CANCEL" | translate }}-->
+    <!--</button>-->
 
-    <button
-      ng-if="!JournalPosterModalCtrl.detailedView"
-      type="submit"
-      ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}"
-      ng-disabled="JournalPosterModalCtrl.feedBack.hasError"
-      data-method="submit">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
-    </button>
-  </div>
-</form>
+    <!--<button-->
+      <!--ng-if="!JournalPosterModalCtrl.detailedView"-->
+      <!--type="submit"-->
+      <!--ng-class="{ 'btn btn-danger' : JournalPosterModalCtrl.feedBack.hasError, 'btn btn-warning': JournalPosterModalCtrl.feedBack.hasWarning, 'btn btn-primary' : JournalPosterModalCtrl.feedBack.hasSuccess}"-->
+      <!--ng-disabled="JournalPosterModalCtrl.feedBack.hasError"-->
+      <!--data-method="submit">-->
+      <!--{{ "FORM.BUTTONS.SUBMIT" | translate }}-->
+    <!--</button>-->
+  <!--</div>-->
+<!--</form>-->
