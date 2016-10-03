@@ -36,11 +36,8 @@ function ConfirmDialogModalController (Instance, $translate, Data) {
       );
     }
 
-    // Confirmation name message
-    message = $translate.instant('FORM.DIALOGS.PLEASE_TYPE_TEXT');
-    pattern = $translate.instant(Data.patternName);
-
-    vm.message = message.replace('%ELEMENT%', pattern);
+    // value according context of the pattern 
+    vm.patternValue = { value: $translate.instant(Data.patternName) };
   }
 
   /** matching */
