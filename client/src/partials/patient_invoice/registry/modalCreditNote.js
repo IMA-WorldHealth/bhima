@@ -1,44 +1,34 @@
 angular.module('bhima.controllers')
-.controller('ModalCreditNoteController', ModalCreditNoteController);
+  .controller('ModalCreditNoteController', ModalCreditNoteController);
 
 ModalCreditNoteController.$inject = [
-  '$uibModalInstance', 'bhConstants', 'PatientInvoiceService', 'util', 'data', 'VoucherService'
+  '$uibModalInstance', 'PatientInvoiceService', 'data', 'VoucherService', 'NotifyService'
 ];
 
-function ModalCreditNoteController($uibModalInstance, bhConstants, Invoices, Util, data, Vouchers) {
+function ModalCreditNoteController(Instance, Invoices, data, Vouchers, Notify) {
   var vm = this;
+
   vm.creditNote = {};
   vm.submit = submit;
-  vm.cancel = cancel;
+  vm.cancel = function () { Instance.close(false); };
 
   vm.creditNote.uuid = data.invoice.uuid;
   vm.patientInvoice = data.invoice;
 
-  var transferTypeId = bhConstants.transactionType.CREDIT_NOTE;
-
-
-  Invoices.read(vm.creditNote.uuid)
-    .then(function (data){
-      vm.patientInvoiceItems = data.items;
-    });
+  Invoices.read(data.invoice.uuid)
+    .then(function (response) {
+      vm.patientInvoiceItems = response.items;
+    })
+    .catch(Notify.handleError);
 
   function submit(form) {
+
      // stop submission if the form is invalid
     if (form.$invalid) { return; }
-    vm.creditNote.type_id = transferTypeId;
 
-    var journal = Vouchers.reverse(vm.creditNote);
-
-    journal
-      .then(function (response) {
-        var data = {
-          response : response
-        };
-        return $uibModalInstance.close(data);
+    return Vouchers.reverse(vm.creditNote)
+      .then(function () {
+        return Instance.close(true);
       });
-  }
-
-  function cancel() {
-    $uibModalInstance.dismiss();
   }
 }

@@ -62,70 +62,6 @@ function lookupTransaction(record_uuid) {
     });
 }
 
-// Create Reverse Transaction for Credit Note
-function createReverseTransaction(uid, userId, creditNote) {
-
-  let transaction = db.transaction();
-
-  let sql = `
-    SELECT p.project_id, p.record_uuid, p.account_id, p.debit,
-      p.credit, p.debit_equiv, p.credit_equiv, p.currency_id, p.entity_uuid,
-      p.entity_type, p.reference_uuid
-    FROM posting_journal AS p
-    WHERE p.record_uuid = ?
-    UNION
-    SELECT g.project_id, g.record_uuid, g.account_id, g.debit,
-      g.credit, g.debit_equiv, g.credit_equiv, g.currency_id, g.entity_uuid,
-      g.entity_type, g.reference_uuid
-    FROM general_ledger AS g
-    WHERE g.record_uuid = ?;
-  `;
-
-  // execute the query
-  return db.exec(sql, [uid, uid])
-    .then(transactions => {
-      var voucher = [],
-        voucherItems = [],
-        vuid = db.bid(uuid.v4()),
-        items;
-
-      transactions.forEach(function (transaction) {
-        if (transaction.entity_type === 'D') {
-          voucher = {
-            uuid          : vuid,
-            date          : new Date(),
-            project_id    : transaction.project_id,
-            currency_id   : transaction.currency_id,
-            amount        : transaction.debit,
-            description   : creditNote.description,
-            user_id       : userId,
-            type_id        : creditNote.type_id,
-            reference_uuid : uid
-          };
-        }
-
-        items = [
-          db.bid(uuid.v4()),
-          transaction.account_id,
-          transaction.credit,
-          transaction.debit,
-          transaction.entity_uuid,
-          vuid
-        ];
-
-        voucherItems.push(items);
-      });
-
-      // build the SQL query
-      transaction
-        .addQuery('INSERT INTO voucher SET ?', [ voucher ])
-        .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, entity_uuid, voucher_uuid) VALUES ?', [ voucherItems ])
-        .addQuery('CALL PostVoucher(?);', [ voucher.uuid ]);
-
-      return transaction.execute();
-    });
-}
-
 /**
  * GET /journal
  * Getting data from the posting journal
@@ -162,7 +98,7 @@ function list(req, res, next) {
  * GET /journal/:record_uuid
  * send back a set of lines which have the same record_uuid the which provided by the user
  */
-function getTransaction (req, res, next){
+function getTransaction(req, res, next) {
 
   let record_uuid = req.params.record_uuid;
 
@@ -175,17 +111,27 @@ function getTransaction (req, res, next){
 }
 
 /**
- * POST /journal/:UUID/reverse
- * Reverse any transaction in the posting_journal
+ * @method reverse
+ *
+ * @description
+ * This is a generic wrapper for reversing any transaction in the posting
+ * journal or general ledger.  The
+ *
+ * POST /journal/:uuid/reverse
  */
 function reverse(req, res, next) {
-  const uid = db.bid(req.params.uuid);
-  var userId = req.session.user.id;
 
-  createReverseTransaction(uid, userId, req.body)
-    .then(function (record) {
-      res.status(201).json(record);
-    })
+  const voucherUuid = uuid.v4();
+  const params = [
+    db.bid(req.params.uuid), req.session.user.id, req.body.description,
+    db.bid(voucherUuid)
+  ];
+
+  // create and execute a transaction
+  db.transaction()
+    .addQuery('CALL ReverseTransaction(?, ?, ?, ?);', params)
+    .execute()
+    .then(() => res.status(201).json({ uuid : voucherUuid }))
     .catch(next)
     .done();
 }

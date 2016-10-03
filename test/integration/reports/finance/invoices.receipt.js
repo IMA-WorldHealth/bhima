@@ -12,7 +12,7 @@ describe(`(${target}) Invoice Receipt`, function () {
 
   const keys = [
     'billing', 'cost', 'date', 'debtor_name', 'debtor_uuid', 'description', 'display_name', 'is_distributable',
-    'items', 'metadata', 'patient_uuid', 'recipient', 'reference', 'subsidy', 'type_id', 'user_id', 'uuid'
+    'items', 'metadata', 'patient_uuid', 'recipient', 'reference', 'subsidy', 'user_id', 'uuid', 'currency_id'
   ];
 
   // set up the rendering test suite and execute it
