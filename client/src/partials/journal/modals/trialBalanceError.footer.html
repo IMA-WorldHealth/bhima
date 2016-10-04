@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<button
+  ng-if="TrialBalanceErrorFooterCtrl.stateParams.feedBack"
+  id="resetID"
+  type="button"
+  data-method="reset"
+  ng-class="{
+    'btn btn-danger' : TrialBalanceErrorFooterCtrl.stateParams.feedBack.hasError,
+    'btn btn-warning': TrialBalanceErrorFooterCtrl.stateParams.feedBack.hasWarning,
+    'btn btn-primary' : TrialBalanceErrorFooterCtrl.stateParams.feedBack.hasSuccess}"
+  ng-click="TrialBalanceErrorFooterCtrl.reset()">
+  {{ "FORM.BUTTONS.RETURN" | translate }}
+</button>

@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
   .controller('TrialBalanceErrorBodyController', TrialBalanceErrorBodyController);
 
 TrialBalanceErrorBodyController.$inject = [
-  'SessionService', 'JournalPostingModalService', 'GridGroupingService', 'GridColumnService',
-  'NotifyService', '$state', '$timeout'
+  'TrialBalanceService', 'GridGroupingService', '$stateParams'
 ];
 
 /**
@@ -13,11 +12,12 @@ TrialBalanceErrorBodyController.$inject = [
  * This controller provides a tool to view the main state of trial balance
  * The main state let you post transaction into the general ledger
  */
-function TrialBalanceErrorBodyController(Session, journalPostingModalService, Grouping, Columns, Notify, $state, $timeout) {
+function TrialBalanceErrorBodyController(trialBalanceService, Grouping, $stateParams) {
   var vm = this;
+  var cssClass = trialBalanceService.getCSSClass($stateParams.feedBack);
   var columns = [
-    { field : 'code', displayName : 'TABLE.COLUMNS.ERROR_TYPE', headerCellFilter : 'translate', visible : false},
-    {field : 'transaction', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter : 'translate', visible : false}
+    { field : 'code', displayName : 'TABLE.COLUMNS.ERROR_TYPE', headerCellFilter : 'translate', headerCellClass : cssClass},
+    {field : 'transaction', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter : 'translate', headerCellClass : cssClass}
   ];
 
   vm.gridOptions = {
@@ -26,18 +26,6 @@ function TrialBalanceErrorBodyController(Session, journalPostingModalService, Gr
     appScopeProvider: vm,
     columnDefs : columns
   };
-  vm.grouping = new Grouping(vm.gridOptions, false);
-
-  /**
-   * @function cancel
-   * @description
-   * closes the modal and stop the posting process
-   **/
-  function cancel() {
-    $state.transitionTo('journal');
-  }
-
-
-  vm.cancel = cancel;
-
+  vm.grouping = new Grouping(vm.gridOptions, false, 'code');
+  vm.gridOptions.data = $stateParams.lines;
 }

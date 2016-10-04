@@ -1,14 +1,12 @@
 angular.module('bhima.services')
-  .service('JournalPostingModalService', JournalPostingModalService);
+  .service('TrialBalanceService', TrialBalanceService);
 
-/** Dependencies injection */
-JournalPostingModalService.$inject = ['util', '$http', '$translate'];
+TrialBalanceService.$inject = ['util', '$http', '$translate'];
 
-function JournalPostingModalService(util, $http, $translate) {
+function TrialBalanceService(util, $http, $translate) {
   var service = this;
   var baseUrl = '/trial_balance/';
 
-  service.parseSelectedGridRecord = parseSelectedGridRecord;
   service.switchView = switchView;
   service.getDataByAccount = getDataByAccount;
   service.checkTransactions = checkTransactions;
@@ -62,31 +60,6 @@ function JournalPostingModalService(util, $http, $translate) {
     feedBack.hasSuccess = (!feedBack.hasWarning && !feedBack.hasError) ? true : false;
 
     return feedBack;
-  }
-
-  /**
-   * @function parseSelectedGridRecord
-   * @description
-   * takes as parameter an array of record and send back a formatted array
-   * by making sure every transaction has the complete list of his lines
-   **/
-  function parseSelectedGridRecord (records){
-    var parsed = [], processedTransactions = [];
-
-    records.forEach(function (record){
-
-      if(processedTransactions.indexOf(record.entity.trans_id) === -1){
-
-        //take other children of the parent so that every line of the transaction will be present
-        parsed = parsed.concat(record.treeNode.parentRow.treeNode.children.map(function (child){
-          return child.row.entity;
-        }));
-
-        processedTransactions.push(record.entity.trans_id);
-      }
-    });
-
-    return parsed;
   }
 
   /**

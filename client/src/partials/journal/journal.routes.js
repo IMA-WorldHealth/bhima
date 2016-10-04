@@ -29,11 +29,12 @@ angular.module('bhima.routes')
           records : null
         },
         data : {
-          feedBack : null
+          checkingData : null,
+          checked : null
         },
         views : {
           'modal-header@' : {
-            templateUrl : 'partials/journal/modals/trialBalance.header.html'
+            templateUrl : 'partials/journal/modals/trialBalanceMain.header.html'
           },
           'modal-body@' : {
             controller : 'TrialBalanceMainBodyController as TrialBalanceMainBodyCtrl',
@@ -50,11 +51,12 @@ angular.module('bhima.routes')
         params : {
           lines : null,
           feedBack : null,
-          records : null //original selected data from the journal
+          records : null, //original selected data from the journal
+          errors : null
         },
         views : {
           'modal-header@' : {
-            templateUrl : 'partials/journal/modals/trialBalance.header.html'
+            templateUrl : 'partials/journal/modals/trialBalanceDetail.header.html'
           },
           'modal-body@' : {
             controller : 'TrialBalanceDetailBodyController as TrialBalanceDetailBodyCtrl',
@@ -69,12 +71,13 @@ angular.module('bhima.routes')
       .state('trialBalanceErrors',{
         parent : 'journalModal',
         params : {
+          lines : null,
           feedBack : null,
-          errors : null
+          records : null
         },
         views : {
           'modal-header@' : {
-            templateUrl : 'partials/journal/modals/trialBalance.header.html'
+            templateUrl : 'partials/journal/modals/trialBalanceError.header.html'
           },
           'modal-body@' : {
             controller : 'TrialBalanceErrorBodyController as TrialBalanceErrorBodyCtrl',

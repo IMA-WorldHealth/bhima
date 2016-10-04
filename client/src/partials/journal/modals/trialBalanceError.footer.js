@@ -2,26 +2,26 @@
 angular.module('bhima.controllers')
   .controller('TrialBalanceErrorFooterController', TrialBalanceErrorFooterController);
 
-TrialBalanceErrorFooterController.$inject = ['$state'];
+TrialBalanceErrorFooterController.$inject = ['$state', '$stateParams'];
 
 /**
- * @module journal/modals/JournalPoster.modal
+ * @module journal/modals/trialBalanceError.footer.js
  *
  * @description
- * This controller provides a tool to do trial balance
+ * This controller handles the footer of the model in the trialBalanceError state
  */
-function TrialBalanceErrorFooterController($state) {
+function TrialBalanceErrorFooterController($state, $stateParams) {
   var vm = this;
-  vm.state = $state;
+  vm.stateParams = $stateParams;
 
   /**
-   * @function cancel
+   * @function reset
    * @description
-   * closes the modal and stop the posting process
+   * switch back to the trialBalanceMain state
    **/
-  function cancel() {
-    $state.transitionTo('journal');
+  function reset() {
+    $state.go('trialBalanceMain', {records : $stateParams.records}, {reload : false});
   }
 
-  vm.cancel = cancel;
+  vm.reset = reset;
 }

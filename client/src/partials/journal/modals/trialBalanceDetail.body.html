@@ -3,13 +3,13 @@
     <div class="col-xs-4 pull-left">
       <button
         type="button"
-        ng-show="TrialBalanceDetailBodyCtrl.params.feedBack.hasError || TrialBalanceDetailBodyCtrl.params.feedBack.hasWarning"
+        ng-show="TrialBalanceDetailBodyCtrl.stateParams.feedBack.hasError || TrialBalanceDetailBodyCtrl.stateParams.feedBack.hasWarning"
         ng-class="{
-          'btn btn-danger' : TrialBalanceDetailBodyCtrl.params.feedBack.hasError,
-          'btn btn-warning': TrialBalanceDetailBodyCtrl.params.feedBack.hasWarning,
-          'btn btn-primary' : TrialBalanceDetailBodyCtrl.params.feedBack.hasSuccess}"
-        ng-click="TrialBalanceDetailBodyCtrl.viewErrorReport()"
-        data-method="show">
+          'btn btn-danger' : TrialBalanceDetailBodyCtrl.stateParams.feedBack.hasError,
+          'btn btn-warning': TrialBalanceDetailBodyCtrl.stateParams.feedBack.hasWarning,
+          'btn btn-primary' : TrialBalanceDetailBodyCtrl.stateParams.feedBack.hasSuccess}"
+        ng-click="TrialBalanceDetailBodyCtrl.viewErrorList()"
+        data-method="show-error">
         <i class="fa fa-bars"></i>
         {{"FORM.BUTTONS.VIEW_ERRORS" | translate }}
       </button>

@@ -1,14 +1,27 @@
 <p>
   <div class="row">
     <div class="col-xs-4 pull-left">
-      <button type="button" ng-show="TrialBalanceMainBodyCtrl.feedBack.hasError || TrialBalanceMainBodyCtrl.feedBack.hasWarning" ng-class="{ 'btn btn-danger' : TrialBalanceMainBodyCtrl.feedBack.hasError, 'btn btn-warning': TrialBalanceMainBodyCtrl.feedBack.hasWarning, 'btn btn-primary' : TrialBalanceMainBodyCtrl.feedBack.hasSuccess}" ng-click="TrialBalanceMainBodyCtrl.viewErrorReport()" data-method="show">
+      <button
+        type="button"
+        ng-show="TrialBalanceMainBodyCtrl.feedBack.hasError || TrialBalanceMainBodyCtrl.feedBack.hasWarning"
+        ng-class="
+          { 'btn btn-danger' : TrialBalanceMainBodyCtrl.feedBack.hasError,
+            'btn btn-warning': TrialBalanceMainBodyCtrl.feedBack.hasWarning,
+            'btn btn-primary' : TrialBalanceMainBodyCtrl.feedBack.hasSuccess}"
+        ng-click="TrialBalanceMainBodyCtrl.viewErrorList()"
+        data-method="show-error">
         <i class="fa fa-bars"></i>
         {{"FORM.BUTTONS.VIEW_ERRORS" | translate }}
       </button>
     </div>
 
-    <div class="pull-right">
-      <button id="switchViewID" type="button" class="btn btn-default" ng-click="TrialBalanceMainBodyCtrl.switchView()" data-method="switch">
+    <div class="col-xs-3 pull-right">
+      <button
+        id="switchViewID"
+        type="button"
+        class="btn btn-default"
+        ng-click="TrialBalanceMainBodyCtrl.switchView()"
+        data-method="switch">
         <i class="fa fa-retweet"></i>
         {{TrialBalanceMainBodyCtrl.viewDetail.key | translate }}
       </button>

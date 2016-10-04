@@ -2,19 +2,18 @@ angular.module('bhima.controllers')
   .controller('TrialBalanceDetailBodyController', TrialBalanceDetailBodyController);
 
 TrialBalanceDetailBodyController.$inject = [
-  'SessionService', 'JournalPostingModalService', 'GridGroupingService', 'GridColumnService',
-  'NotifyService', '$state', '$timeout', '$stateParams'
+  'SessionService', 'TrialBalanceService', 'GridGroupingService', '$state', '$stateParams'
 ];
 
 /**
- * @module journal/modals/JournalPoster.modal
+ * @module journal/modals/trialBalanceDetail.body.js
  *
  * @description
- * This controller provides a tool to do trial balance
+ * handles the modal body in the trialBalanceDetail state
  */
-function TrialBalanceDetailBodyController(Session, journalPostingModalService, Grouping, Columns, Notify, $state, $timeout, $stateParams) {
+function TrialBalanceDetailBodyController(Session, trialBalanceService, Grouping, $state, $stateParams) {
   var vm = this;
-  var cssClass = journalPostingModalService.getCSSClass($stateParams.feedBack);
+  var cssClass = trialBalanceService.getCSSClass($stateParams.feedBack);
   var columns = [
     { field : 'trans_id', displayName : 'TABLE.COLUMNS.TRANSACTION', headerCellFilter: 'translate', headerCellClass : cssClass},
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate', headerCellClass : cssClass},
@@ -34,7 +33,7 @@ function TrialBalanceDetailBodyController(Session, journalPostingModalService, G
     }
   ];
 
-  vm.state = $state;
+  vm.stateParams = $stateParams;
   vm.gridOptions = {
     enableColumnMenus: false,
     treeRowHeaderAlwaysVisible: false,
@@ -46,14 +45,15 @@ function TrialBalanceDetailBodyController(Session, journalPostingModalService, G
   vm.gridOptions.data = $stateParams.lines;
 
   /**
-   * @function cancel
+   * @function viewErrorList
    * @description
-   * This function is responsible of switching the view from detail to main
+   * This function is responsible of switching the view from trialBalanceDetail to trialBalanceError
    **/
-  function cancel() {
+  function viewErrorList() {
     // FIX ME : what is the good way? storing original data in appcache?
-    $state.go('trialBalanceMain', {records : vm.state.params.records}, {reload : true});
+    var lines = trialBalanceService.parseErrorRecord($stateParams.errors);
+    $state.go('trialBalanceErrors', {lines : lines, feedBack : $stateParams.feedBack, records : $stateParams.records}, {reload : false});
   }
 
-  vm.cancel = cancel;
+  vm.viewErrorList = viewErrorList;
 }
