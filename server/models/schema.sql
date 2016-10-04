@@ -125,7 +125,7 @@ CREATE TABLE `cash_item` (
   `invoice_uuid`    BINARY(16) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `cash_uuid` (`cash_uuid`),
-  FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
+  FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `cash_box`;
@@ -414,7 +414,6 @@ CREATE TABLE `country` (
 
 
 DROP TABLE IF EXISTS `credit_note`;
-
 CREATE TABLE `credit_note` (
   `uuid`            BINARY(16) NOT NULL,
   `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
@@ -1530,7 +1529,7 @@ CREATE TABLE invoice_billing_service (
   UNIQUE KEY `invoice_billing_service_1` (`invoice_uuid`, `billing_service_id`),
   KEY `invoice_uuid` (`invoice_uuid`),
   KEY `billing_service_id` (`billing_service_id`),
-  FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`),
+  FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1563,7 +1562,7 @@ CREATE TABLE `invoice_subsidy` (
   UNIQUE KEY `invoice_subsidy_1` (`invoice_uuid`, `subsidy_id`),
   KEY `invoice_uuid` (`invoice_uuid`),
   KEY `subsidy_id` (`subsidy_id`),
-  FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`),
+  FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1822,7 +1821,7 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   KEY `account_id` (`account_id`),
   KEY `voucher_uuid` (`voucher_uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`)
+  FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- a view to make SQL statements look nicer.
