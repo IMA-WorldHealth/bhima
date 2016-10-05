@@ -82,13 +82,20 @@ function processInvoice(invoiceUuid, invoice) {
   if (invoice.debtor_uuid) {
     invoice.debtor_uuid = db.bid(invoice.debtor_uuid);
   }
+
   invoice.uuid = invoiceUuid;
 
   // cleanup details not directly tied to invoice
   delete invoice.items;
   delete invoice.billingServices;
   delete invoice.subsidies;
-  return _.values(invoice);
+
+  const keys = [
+    'is_distributable', 'date', 'cost', 'description', 'service_id',
+    'debtor_uuid', 'project_id', 'user_id', 'uuid'
+  ];
+
+  return keys.map(key => invoice[key]);
 }
 
 /**

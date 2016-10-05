@@ -23,7 +23,7 @@ describe('Patient Invoice', function () {
   const path = '#/invoices/patient';
 
   // navigate to the patient invoice page
-  beforeEach(() => helpers.navigate(path));
+  before(() => helpers.navigate(path));
 
   it('invoices a patient for a single item', function () {
     var page = new PatientInvoicePage();
@@ -112,6 +112,53 @@ describe('Patient Invoice', function () {
 
     // there should be a danger notification
     components.notification.hasDanger();
+  });
+
+  it('saves and loads cached items correctly', function () {
+    var page = new PatientInvoicePage();
+    page.btns.clear.click();
+
+    page.prepare();
+
+    // add a two rows to the grid
+    page.addRows(1);
+
+    // add two inventory items to each row (0-indexing)
+    page.addInventoryItem(0, 'INV0');
+    page.addInventoryItem(1, 'INV2');
+
+    // change the required quantities
+    page.adjustItemQuantity(0, 1);
+    page.adjustItemQuantity(1, 2);
+
+    // change the prices
+    page.adjustItemPrice(0, 1.11);
+    page.adjustItemPrice(1, 2.22);
+
+    const description = element(by.model('PatientInvoiceCtrl.Invoice.details.description'));
+
+    // make the form invalid by clearing the description
+    description.clear();
+
+    // submit the form and clear the error message
+    page.submit();
+    components.notification.hasDanger();
+
+    // refresh the browser
+    browser.refresh();
+
+    // need to have a patient to recover data
+    page.patient('TPA1');
+
+    // click recover cache button
+    page.recover();
+
+    // make sure that information was correctly recovered
+    page.expectRowCount(2);
+
+    description.sendKeys('A real description!');
+    page.submit();
+    FU.exists(by.id('receipt-confirm-created'), true);
   });
 
   //it('can calculate totals correctly');

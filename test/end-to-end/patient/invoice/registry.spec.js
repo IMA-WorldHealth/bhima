@@ -20,7 +20,7 @@ describe('Invoice Registry', () => {
   before(() => helpers.navigate(path));
 
   const page = new InvoiceRegistryPage();
-  const numInvoices = 4;
+  const numInvoices = 5;
 
   it('displays all invoices loaded from the database', () => {
     expect(page.getInvoiceNumber()).to.eventually.equal(numInvoices);

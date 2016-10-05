@@ -309,7 +309,7 @@ DROP TABLE IF EXISTS `consumption_service`;
 CREATE TABLE `consumption_service` (
   `uuid` BINARY(16) NOT NULL,
   `consumption_uuid` BINARY(16) NOT NULL,
-  `service_id` smallint(5) unsigned NOT NULL,
+  `service_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `consumption_service_1` (`consumption_uuid`, `service_id`),
   KEY `consumption_uuid` (`consumption_uuid`),

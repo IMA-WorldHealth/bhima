@@ -105,13 +105,14 @@
       <div class="col-xs-12">
 
         <!-- "Recover Items" button -->
-        <div class="btn-group pull-right" role="group">
+        <div class="pull-right">
           <button
             class="btn btn-default"
-            ng-class="{'btn-primary' : PatientInvoiceCtrl.Invoice.hasCacheAvailable() && PatientInvoiceCtrl.Invoice.recipient }"
+            id="recover"
+            ng-class="{ 'btn-primary' : PatientInvoiceCtrl.Invoice.hasCacheAvailable() && PatientInvoiceCtrl.Invoice.recipient }"
             ng-click="PatientInvoiceCtrl.Invoice.readCache()"
-            ng-disabled="!PatientInvoiceCtrl.Invoice.hasCacheAvailable() || !PatientInvoiceCtrl.Invoice.recipient">
-            <span class="fa fa-recycle"></span> {{ "FORM.BUTTONS.RECOVER_ITEMS" | translate }}
+            ng-disabled="!PatientInvoiceCtrl.Invoice.hasCacheAvailable() || !PatientInvoiceCtrl.Invoice.recipient || PatientInvoiceCtrl.Invoice.hasRecoveredCache || detailsForm.$submitted">
+            <i class="fa fa-recycle"></i> {{ "FORM.BUTTONS.RECOVER_ITEMS" | translate }}
           </button>
         </div>
 
@@ -120,15 +121,15 @@
           <span class="input-group-btn">
             <button
               id="btn-add-rows"
-              class="btn btn-default btn-sm"
+              class="btn btn-default"
               ng-disabled="!PatientInvoiceCtrl.Invoice.recipient"
               ng-click="PatientInvoiceCtrl.addItems(PatientInvoiceCtrl.itemIncrement)">
-              <span class="fa fa-plus-circle"></span> {{ "FORM.BUTTONS.ADD" | translate }}
+              <i class="fa fa-plus-circle"></i> {{ "FORM.BUTTONS.ADD" | translate }}
             </button>
           </span>
           <input
             type="number"
-            class="form-control input-sm"
+            class="form-control"
             ng-model="PatientInvoiceCtrl.itemIncrement"
             style="max-width : 40px;"
             ng-disabled="!PatientInvoiceCtrl.Invoice.recipient">

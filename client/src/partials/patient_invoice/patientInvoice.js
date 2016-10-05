@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientInvoiceController.$inject = [
   'PatientService', 'PatientInvoiceService', 'PatientInvoiceForm', 'util', 'ServiceService',
-  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService'
+  'SessionService', 'DateService', 'ReceiptModal', 'NotifyService', 'bhConstants'
 ];
 
 /**
@@ -16,12 +16,13 @@ PatientInvoiceController.$inject = [
  * @todo (required) Invoice made outside of fiscal year error should be handled and shown to user
  * @todo (requires) use a loading button for the form loading state.
  */
-function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify) {
+function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm, util, Services, Session, Dates, Receipts, Notify, Constants) {
   var vm = this;
 
   // bind the enterprise to get the enterprise currency id
   vm.enterprise = Session.enterprise;
   vm.Invoice = new PatientInvoiceForm('PatientInvoiceForm');
+  vm.ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
 
   // application constants
   vm.maxLength = util.maxTextLength;
@@ -31,17 +32,19 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
 
   // read in services and bind to the view
   Services.read()
-  .then(function (services) {
-    vm.services = services;
+    .then(function (services) {
+      vm.services = services;
 
-    // default to the first service
-    vm.Invoice.setService(services[0]);
-  });
+      // default to the first service
+      vm.Invoice.setService(services[0]);
+    })
+    .catch(Notify.handleError);
 
   var gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
+    rowTemplate: 'partials/templates/grid/error.row.html',
     columnDefs : [
       { field: 'status', width: 25, displayName : '', cellTemplate: 'partials/patient_invoice/templates/grid/status.tmpl.html' },
       { field: 'code', displayName: 'TABLE.COLUMNS.CODE', headerCellFilter: 'translate', cellTemplate:  'partials/patient_invoice/templates/grid/code.tmpl.html' },
@@ -71,18 +74,13 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
 
   // invoice total and items are successfully sent and written to the server
   function submit(detailsForm) {
+    vm.Invoice.writeCache();
 
     // update value for form validation
     detailsForm.$setSubmitted();
 
-    // if the form is invalid, return right away
-    if (detailsForm.$invalid) {
-      Notify.danger('FORM.ERRORS.RECORD_ERROR');
-      return;
-    }
-
     // ask service items to validate themselves - if anything is returned it is invalid
-    var invalidItems = vm.Invoice.validate();
+    var invalidItems = vm.Invoice.validate(true);
 
     if (invalidItems.length) {
       Notify.danger('PATIENT_INVOICE.INVALID_ITEMS');
@@ -91,6 +89,12 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
 
       // show the user where the error is
       vm.gridApi.core.scrollTo(firstInvalidItem);
+      return;
+    }
+
+    // if the form is invalid, return right away
+    if (detailsForm.$invalid) {
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return;
     }
 
@@ -125,18 +129,10 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   }
 
   function handleCompleteInvoice(invoice) {
-    // vm.Invoice.rows.removeCache();
+    vm.Invoice.clearCache();
 
     Receipts.invoice(invoice.uuid, true)
-    .then(function (result) {
-      clear();
-
-      // receipt closed fired
-    })
-    .catch(function (error) {
-
-      // receipt closed rejected
-    });
+    .then(function () { clear(); });
   }
 
   // register the patient search api
