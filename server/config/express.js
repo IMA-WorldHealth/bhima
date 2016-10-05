@@ -4,6 +4,8 @@
  *
  * @todo - this could probably be separated by functionality.
  */
+'use strict';
+
 const express    = require('express');
 const compress   = require('compression');
 const bodyParser = require('body-parser');
@@ -23,7 +25,7 @@ const uploads      = require('../lib/uploader');
 
 // accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
-  'use strict';
+  const isProduction = (process.env.NODE_ENV === 'production');
 
   winston.debug('Configuring middleware.');
 
@@ -48,7 +50,7 @@ exports.configure = function configure(app) {
   };
 
   // indicate that we are running behind a trust proxy and should use a secure cookie
-  if (process.env.NODE_ENV === 'production') {
+  if (isProduction) {
     app.set('trust proxy', true);
     sess.cookie.secure = true;
   }
@@ -68,7 +70,9 @@ exports.configure = function configure(app) {
   // public static directories include the entire client and the uploads
   // directory.
   const days = 1000 * 60 * 60 * 24;
-  app.use(express.static('client/', { maxAge : 7*days }));
+  const params = {};
+  params.maxAge = isProduction ? 7*days : 0;
+  app.use(express.static('client/', params));
   app.use(`/${uploads.directory}`, express.static(uploads.directory));
 
   // quick way to find out if a value is in an array

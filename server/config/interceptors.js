@@ -10,6 +10,8 @@
  * @requires winston
  * @requires BadRequest
  */
+'use strict';
+
 const winston = require('winston');
 const BadRequest = require('../lib/errors/BadRequest');
 
@@ -34,6 +36,16 @@ const map = {
     'The value provided is longer than the database record limit.'
 };
 
+// these are custom errors defined by
+const SQL_STATES = {
+  '45001' : 'ERRORS.NO_ENTERPRISE',
+  '45002' : 'ERRORS.NO_PROJECT',
+  '45003' : 'ERRORS.NO_FISCAL_YEAR',
+  '45004' : 'ERRORS.NO_PERIOD',
+  '45005' : 'ERRORS.NO_EXCHANGE_RATE',
+  '45501' : 'ERRORS.OVERPAID_INVOICE'
+};
+
 /**
  * Server Error Handler
  *
@@ -46,7 +58,19 @@ exports.handler = function handler(error, req, res, next) {
 
   // check if it is a database error and format the proper description if so.
   if (error.sqlState) {
-    error = new BadRequest(map[error.code]);
+    let key;
+    let description;
+
+    // todo(jniles) - unify this error handing
+    if (error.code === 'ER_SIGNAL_EXCEPTION') {
+      key = SQL_STATES[error.sqlState];
+      description = error.toString();
+    } else {
+      key = 'ERRORS.BAD_REQUEST';
+      description = map[error.code];
+    }
+
+    error = new BadRequest(description, key);
   }
 
   // prevent invalid http error codes.

@@ -13,7 +13,6 @@
  * @requires lib/ReportManager
  * @requires lib/errors/NotFound
  * @requires lib/errors/BadRequest
- * @requires ./journal/voucher
  */
 
 'use strict';
@@ -24,7 +23,6 @@ const util = require('../../lib/util');
 const db   = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
-const journal = require('./journal/voucher');
 
 /** Get list of vouchers */
 exports.list = list;
@@ -118,38 +116,27 @@ function create(req, res, next) {
   delete voucher.items;
 
   // convert dates to a date objects
-  if (voucher.date) {
-    voucher.date = new Date(voucher.date);
-  } else {
-    voucher.date = new Date();
-  }
+  voucher.date = voucher.date ? new Date(voucher.date) : new Date();
 
   // attach session information
   voucher.user_id = req.session.user.id;
   voucher.project_id = req.session.project.id;
 
   // make sure the voucher has an id
-  var vuid = voucher.uuid || uuid.v4();
+  const vuid = voucher.uuid || uuid.v4();
   voucher.uuid = db.bid(vuid);
 
   // preprocess the items so they have uuids as required
   items.forEach(function (item) {
 
     // if the item doesn't have a uuid, create one for it.
-    item.uuid = db.bid(item.uuid || uuid.v4());
+    item.uuid = item.uuid || uuid.v4();
 
     // make sure the items reference the voucher correctly
-    item.voucher_uuid = db.bid(item.voucher_uuid || vuid);
+    item.voucher_uuid = item.voucher_uuid || voucher.uuid;
 
-    // convert the document uuid if it exists
-    if (item.document_uuid) {
-      item.document_uuid = db.bid(item.document_uuid);
-    }
-
-    // convert the entity uuid if it exists
-    if (item.entity_uuid) {
-      item.entity_uuid = db.bid(item.entity_uuid);
-    }
+    // convert the item's binary uuids
+    item = db.convert(item, ['uuid', 'voucher_uuid', 'document_uuid', 'entity_uuid']);
   });
 
   // map items into an array of arrays
@@ -161,17 +148,13 @@ function create(req, res, next) {
   // build the SQL query
   transaction
     .addQuery('INSERT INTO voucher SET ?', [ voucher ])
-    .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?', [ items ]);
+    .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?', [ items ])
+    .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
 
-  // execute the transaction
-  journal(transaction, voucher.uuid)
-  .then(function (rows) {
-    res.status(201).json({
-      uuid: vuid
-    });
-  })
-  .catch(next)
-  .done();
+  transaction.execute()
+    .then(() => res.status(201).json({ uuid: vuid }))
+    .catch(next)
+    .done();
 }
 
 /**

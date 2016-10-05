@@ -34,11 +34,6 @@ exports.create = create;
 /** Filter the patient invoice table by any column via query strings */
 exports.search = search;
 
-/**
- * Retrieves an invoice uuid by searching for a human readable reference (e.g. HBB123)
- */
-exports.reference = reference;
-
 /** Expose lookup invoice for other controllers to use internally */
 exports.lookupInvoice = lookupInvoice;
 
@@ -69,27 +64,22 @@ function list(req, res, next) {
  *
  */
 function listInvoices() {
-  const sql =
-    `SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
+  const sql = `
+    SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientNames,
-      service.name as serviceName, user.display_name, voucher.type_id,
-      invoice.date, invoice.is_distributable
+      service.name as serviceName, user.display_name, invoice.date, invoice.is_distributable,
+      enterprise.currency_id
     FROM invoice
       LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
       JOIN service ON service.id = invoice.service_id
-      LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
       JOIN user ON user.id = invoice.user_id
       JOIN project ON invoice.project_id = project.id
-    ORDER BY invoice.reference ASC, invoice.date ASC;`;
+      JOIN enterprise ON enterprise.id = project.enterprise_id
+    ORDER BY invoice.reference ASC, invoice.date ASC;
+  `;
 
   // TODO - this shouldn't throw an error...
-  return db.exec(sql)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new NotFound(`Could not find Patient Invoice `);
-      }
-      return rows;
-    });
+  return db.exec(sql);
 }
 
 /**
@@ -108,12 +98,12 @@ function lookupInvoice(invoiceUuid) {
     `SELECT BUID(invoice.uuid) as uuid, CONCAT(project.abbr, invoice.reference) AS reference,
       invoice.cost, invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
       patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
-      invoice.user_id, invoice.date, invoice.is_distributable, voucher.type_id,
-      user.display_name
+      invoice.user_id, invoice.date, invoice.is_distributable, user.display_name,
+      enterprise.currency_id
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
-    LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
     JOIN project ON project.id = invoice.project_id
+    JOIN enterprise ON enterprise.id = project.enterprise_id
     JOIN user ON user.id = invoice.user_id
     WHERE invoice.uuid = ?`;
 
@@ -213,13 +203,13 @@ function find(options) {
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
       invoice.date, patient.display_name as patientName, invoice.cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
-      service.name as serviceName, user.display_name, voucher.type_id
+      service.name as serviceName, user.display_name, enterprise.currency_id
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
-    LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
     JOIN service ON service.id = invoice.service_id
     JOIN user ON user.id = invoice.user_id
     JOIN project ON project.id = invoice.project_id
+    JOIN enterprise ON enterprise.id = project.enterprise_id
     WHERE
   `;
 
@@ -282,35 +272,6 @@ function search(req, res, next) {
   find(req.query)
   .then(function (rows) {
     res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
-}
-
-/**
- * Searches for a particular invoice uuid by reference string.
- *
- * NOTE - this cannot be combined with the /search route since it would require
- * wrapping a MySQL query in an outer query to do the filtering.  This would be
- * highly inefficient in most cases, or lead to complex code.
- *
- * GET invoices/references/:reference
- */
-function reference(req, res, next) {
-  let sql =
-    `SELECT BUID(i.uuid) as uuid FROM (
-      SELECT invoice.uuid, CONCAT(project.abbr, invoice.reference) AS reference
-      FROM invoice JOIN project ON invoice.project_id = project.id
-    ) i WHERE i.reference = ?;`;
-
-  db.exec(sql, [ req.params.reference ])
-  .then(function (rows) {
-    if (!rows.length) {
-      throw new NotFound(`Could not find a invoice with reference ${req.params.reference}`);
-    }
-
-    // references should be unique -- send back only the first result
-    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
