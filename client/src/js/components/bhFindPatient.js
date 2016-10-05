@@ -3,10 +3,11 @@ angular.module('bhima.components')
     controller: FindPatientComponent,
     templateUrl : 'partials/templates/bhFindPatient.tmpl.html',
     bindings: {
-      onSearchComplete: '&',  // bind callback to call when data is available
-      onRegisterApi:    '&', // expose force refresh API
-      required:         '<',  // bind the required (for ng-required)
-      suppressReset:    '@',  // bind a string
+      onSearchComplete:  '&',  // bind callback to call when data is available
+      onRegisterApi:     '&',  // expose force refresh API
+      required:          '<',  // bind the required (for ng-required)
+      validationTrigger: '<',  // bind validation trigger
+      suppressReset:     '@'   // bind a string
     }
   });
 
@@ -27,8 +28,12 @@ FindPatientComponent.$inject = [
  *
  * SUPPORTED ATTRIBUTES:
  *   - on-search-complete : a callback function called with the found patient
- *   - suppress-reset: a boolean value to
+ *   - suppress-reset: a boolean value to suppress reset calls from the external
+ *     api
  *   - on-registry-api: a callback to be called with the component's api
+ *   - required: binds ng-required on the input.
+ *   - validationTrigger: binds a boolean to indicate if the components validation
+ *     should be run
  */
 function FindPatientComponent(Patients, AppCache, Notify) {
   var vm = this;

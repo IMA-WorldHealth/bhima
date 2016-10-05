@@ -38,7 +38,8 @@
                 <bh-find-patient
                   on-search-complete="CashCtrl.usePatient(patient)"
                   on-register-api="CashCtrl.onRegisterApiCallback(api)"
-                  required="required">
+                  validation-trigger="CashVoucherForm.$submitted"
+                  required="true">
                 </bh-find-patient>
 
                 <bh-date-editor
