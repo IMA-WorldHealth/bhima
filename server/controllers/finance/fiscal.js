@@ -572,7 +572,7 @@ function closing(req, res, next) {
         fiscal.number_of_months + 1,    // period_id
         fiscal.end_date,                // date : the last date of the fiscal year
         'Ecriture de solde des profits pour la cloture',
-        item.account_id,                // account_id
+        item.id,                        // account_id
         debit, credit,                  // debit and credit
         debit, credit,                  // debit_equiv and credit_equiv in enterprise currency
         currencyId,                     // enterprise currency because data came from period total
@@ -598,7 +598,7 @@ function closing(req, res, next) {
         fiscal.number_of_months + 1,    // period_id
         fiscal.end_date,                // date : the last date of the fiscal year
         'Ecriture de solde des charges pour la cloture',
-        item.account_id,                // account_id
+        item.id,                        // account_id
         debit, credit,                  // debit and credit
         debit, credit,                  // debit_equiv and credit_equiv in enterprise currency
         currencyId,                     // enterprise currency because data came from period total
@@ -614,8 +614,8 @@ function closing(req, res, next) {
       let value = resultat.global;
 
       // debit if benefits or credit if loss
-      let debit = value >= 0 ? value : 0;
-      let credit = value >= 0 ? 0 : value;
+      let debit = value >= 0 ? 0 : value;
+      let credit = value >= 0 ? value : 0;
 
       let resultParams = [
         projectId,                      // project_id
