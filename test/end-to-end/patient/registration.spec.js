@@ -54,7 +54,6 @@ describe('Patient Registration', function () {
     FU.input('PatientRegCtrl.yob', validYear);
 
     const calculatedDOB = element(by.model('PatientRegCtrl.medical.dob')).getText();
-
     expect(calculatedDOB).to.be.defined;
     expect(calculatedDOB).to.not.be.empty;
   });

@@ -35,7 +35,7 @@ function PatientRegistrationController(Patients, Debtors, Session, util, Notify,
 
   // define limits for DOB
   vm.datepickerOptions = {
-    maxDate : bhConstants.dates.maxDOB,
+    maxDate : new Date(),
     minDate : bhConstants.dates.minDOB
   };
 

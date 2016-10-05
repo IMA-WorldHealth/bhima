@@ -1,33 +1,34 @@
-<div class="modal-header">
-  <h3 class="modal-title">{{ "FORM.LABELS.UPDATE_GROUP_DEBTOR" | translate }}</h3>
-</div>
+<form name="groupForm" bh-submit="UpdateDebtorGroupCtrl.confirmGroup(groupForm)" bh-form-defaults novalidate>
 
-<div class="modal-body">
+  <div class="modal-header">
+    <h3 class="modal-title">{{ "FORM.LABELS.UPDATE_GROUP_DEBTOR" | translate }}</h3>
+  </div>
 
-  <p class="text-info">
-  {{ "FORM.INFO.GROUPS_DEBTOR" | translate }}
-  </p>
-  <form name="groupForm" bh-form-defaults novalidate>
+  <div class="modal-body">
+
+    <p class="text-info">
+      <i class="fa fa-info-circle"></i> {{ "FORM.INFO.GROUPS_DEBTOR" | translate }}
+    </p>
+
     <div class="form-group has-feedback">
-
-      <label for="debtor-group" class="control-label">{{ "FORM.LABELS.GROUPS_DEBTOR_TITLE" | translate }}</label>
+      <label class="control-label">{{ "FORM.LABELS.GROUPS_DEBTOR_TITLE" | translate }}</label>
       <select
         class="form-control"
         name="debtorGroup"
         ng-options="group.uuid as group.name for group in UpdateDebtorGroupCtrl.debtorGroups | orderBy :'name'"
-        ng-model="UpdateDebtorGroupCtrl.debtor_group_uuid">
+        ng-model="UpdateDebtorGroupCtrl.debtor_group_uuid"
+        required>
       </select>
-
     </div>
-  </form>
-</div>
+  </div>
 
-<div class="modal-footer">
-  <button
-    class="btn btn-default"
-    ng-click="UpdateDebtorGroupCtrl.closeModal()">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
-  <button
-    data-confirm-group
-    class="btn btn-default"
-    ng-click="UpdateDebtorGroupCtrl.confirmGroup()">{{ "FORM.BUTTONS.CONFIRM" | translate }}</button>
-</div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="UpdateDebtorGroupCtrl.closeModal()">
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
+    </button>
+
+    <bh-loading-button loading-state="groupForm.$loading">
+      {{ "FORM.BUTTONS.CONFIRM" | translate }}
+    </bh-loading-button>
+  </div>
+</form>
