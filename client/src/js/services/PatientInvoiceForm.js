@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 PatientInvoiceFormService.$inject = [
   'PatientService', 'PriceListService', 'InventoryService', 'AppCache', 'Store',
-  'Pool', 'PatientInvoiceItemService'
+  'Pool', 'PatientInvoiceItemService', 'bhConstants'
 ];
 
 /**
@@ -21,7 +21,9 @@ PatientInvoiceFormService.$inject = [
  *   specific debtors.
  *
  */
-function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem) {
+function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem, Constants) {
+
+  var ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
 
   // Reduce method - assigns the current billing services charge to the billing
   // service and adds to the running total
@@ -144,14 +146,19 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
    * @description
    * This method digests the invoice, then returns all invalid items in the
    * invoice to be dealt with by the user.
+   *
+   * @param {Boolean} highlight - determines if the ROW_ERROR_FLAG should be set
+   *   to highlight errors on the grid.
    */
-  PatientInvoiceForm.prototype.validate = function validate() {
+  PatientInvoiceForm.prototype.validate = function validate(highlight) {
     this.digest();
 
     // filters out valid items
     var invalidItems = this.store.data.filter(function (row) {
+      row[ROW_ERROR_FLAG] = highlight ? row._invalid : false;
       return row._invalid;
     });
+
 
     this._invalid = invalidItems.length > 0;
     this._valid = !this._invalid;
@@ -371,19 +378,26 @@ function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, St
 
     // set the details to the cached ones
     this.details = cp.details;
+    this.details.date = new Date(this.details.date);
 
     // set the patient
     this.setPatient(cp.recipient);
 
     // setPatient() adds an item.  Remove it before configuring data
-    this.store.clear();
+    this.clear();
 
     // loop through the cached items, configuring them
     cp.items.forEach(function (cacheItem) {
       var item = this.addItem();
+
       item.inventory_uuid = cacheItem.inventory_uuid;
       this.configureItem(item);
+
+      item.quantity = cacheItem.quantity;
+      item.transaction_price = cacheItem.transaction_price;
     }.bind(this));
+
+    this.hasRecoveredCache = true;
 
     // digest validation and totals
     this.digest();

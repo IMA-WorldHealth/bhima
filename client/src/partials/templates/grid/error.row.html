@@ -3,7 +3,7 @@
   class="ui-grid-cell"
   ng-class="{
     'ui-grid-row-header-cell': col.isRowHeader,
-    'row-highlight': row[grid.appScope.ROW_HIGHLIGHT_FLAG]
+    'row-error': row.entity[grid.appScope.ROW_ERROR_FLAG]
   }"
   ui-grid-cell>
 </div>

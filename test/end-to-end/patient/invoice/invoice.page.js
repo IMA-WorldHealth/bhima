@@ -3,7 +3,8 @@
 'use strict';
 
 const FU = require('../../shared/FormUtils');
-const GU = require('../../shared/gridTestUtils.spec.js');
+const GU = require('../../shared/GridUtils');
+
 const findPatient = require('../../shared/components/bhFindPatient');
 const dateEditor = require('../../shared/components/bhDateEditor');
 
@@ -15,11 +16,11 @@ function PatientInvoicePage() {
     add : element(by.id('btn-add-rows')),
     distributable : element(by.id('distributable')),
     notDistributable : element(by.id('not-distributable')),
-    clear : element(by.id('clear'))
+    clear : element(by.id('clear')),
+    recover : element(by.id('recover'))
   };
 
   const gridId = page.gridId = 'invoice-grid';
-  const grid = GU.getGrid(gridId);
 
   // sets a patient to the id passed in
   page.patient = function patient(id) {
@@ -53,6 +54,11 @@ function PatientInvoicePage() {
     btns.submit.click();
   };
 
+  // click the "recover cache" button
+  page.recover = function recover() {
+    btns.recover.click();
+  };
+
   // adds n rows to the grid
   page.addRows = function addRows(n) {
     FU.input('PatientInvoiceCtrl.itemIncrement', n);
@@ -61,16 +67,19 @@ function PatientInvoicePage() {
 
   // returns n rows
   page.getRows = function getRows() {
-    var rows = grid.element(by.css('.ui-grid-render-container-body'))
-        .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
-    return rows;
+    return GU.getRows(gridId);
+  };
+
+  // expect row count to be equal to a number
+  page.expectRowCount = function expectRowCount(n) {
+    GU.expectRowCount(gridId, n);
   };
 
   // add an inventory item to the grid
   page.addInventoryItem = function addInvoiceItem(rowNumber, itemLabel) {
 
     // first column of the nth row
-    const itemCell = GU.dataCell(gridId, rowNumber, 1);
+    const itemCell = GU.getCell(gridId, rowNumber, 1);
 
     // enter data into the typeahead input.  We cannot use FU.typeahead because it is appended to the body.
     FU.input('row.entity.inventory_uuid', itemLabel, itemCell);
@@ -90,7 +99,7 @@ function PatientInvoicePage() {
   page.adjustItemPrice = function adjustItemPrice(rowNumber, price) {
 
     // fourth column of the last nth row
-    const priceCell = GU.dataCell(gridId, rowNumber, 4);
+    const priceCell = GU.getCell(gridId, rowNumber, 4);
     FU.input('row.entity.transaction_price', price, priceCell);
   };
 
@@ -105,7 +114,7 @@ function PatientInvoicePage() {
   page.adjustItemQuantity = function adjustItemQuantity(rowNumber, quantity) {
 
     // third column column of the nth row
-    const quantityCell = GU.dataCell(gridId, rowNumber, 3);
+    const quantityCell = GU.getCell(gridId, rowNumber, 3);
     FU.input('row.entity.quantity', quantity, quantityCell);
   };
 

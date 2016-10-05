@@ -82,13 +82,18 @@ function PatientInvoiceItemService(uuid) {
    */
   PatientInvoiceItem.prototype.configure = function configure(inventoryItem) {
     this.quantity = 1;
-    this.code = inventoryItem.code;
-    this.description = inventoryItem.label;
-    this.transaction_price = inventoryItem.price;
-    this.inventory_price = inventoryItem.price;
-    this.inventory_uuid = inventoryItem.uuid;
 
-    // rest eh validation flags.
+    // when (empty) items are loaded from cache, not all of these codes are available.
+    // so we silently fail when there is an error.
+    try {
+      this.code = inventoryItem.code;
+      this.description = inventoryItem.label;
+      this.transaction_price = inventoryItem.price;
+      this.inventory_price = inventoryItem.price;
+      this.inventory_uuid = inventoryItem.uuid;
+    } catch (e) {}
+
+    // reset the validation flags.
     this.validate();
   };
 

@@ -252,3 +252,14 @@ input[type=number] {-moz-appearance: textfield;}
   animation-name: highlight-flash;
   animation-duration: 1.5s;
 }
+
+/*  flash for error rows */
+@keyframes error-flash {
+  from { background: @btn-danger-bg; }
+  to { background: transparent; }
+}
+
+.ui-grid-row .ui-grid-cell.row-error {
+  animation-name: error-flash;
+  animation-duration: 2s;
+}
