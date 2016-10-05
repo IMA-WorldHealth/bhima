@@ -18,8 +18,8 @@ const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
-// accounts list
-const AccountList = require('./accounts').lookupAccount();
+// Account Service
+const AccountService = require('./accounts');
 
 exports.list = list;
 exports.getFiscalYearsByDate = getFiscalYearsByDate;
@@ -284,7 +284,8 @@ function lookupBalance(fiscalYearId, periodNumber) {
   .then(rows => {
     glb.existTotalAccount = rows;
 
-    return AccountList;
+    // for to have an updated data in any time
+    return AccountService.lookupAccount();
   })
   .then(rows => {
     let inlineAccount;
@@ -563,8 +564,8 @@ function closing(req, res, next) {
       let value = item.credit - item.debit;
 
       // inverted values for solding
-      let debit = value >= 0 ? value : 0;
-      let credit = value >= 0 ? 0 : value;
+      let debit = value >= 0 ? Math.abs(value) : 0;
+      let credit = value >= 0 ? 0 : Math.abs(value);
 
       let profitParams = [
         projectId,                      // project_id
@@ -589,8 +590,8 @@ function closing(req, res, next) {
       let value = item.debit - item.credit;
 
       // inverted values for solding
-      let debit = value >= 0 ? 0 : value;
-      let credit = value >= 0 ? value : 0;
+      let debit = value >= 0 ? 0 : Math.abs(value);
+      let credit = value >= 0 ? Math.abs(value) : 0;
 
       let chargeParams = [
         projectId,                      // project_id
@@ -614,8 +615,8 @@ function closing(req, res, next) {
       let value = resultat.global;
 
       // debit if benefits or credit if loss
-      let debit = value >= 0 ? 0 : value;
-      let credit = value >= 0 ? value : 0;
+      let debit = value >= 0 ? 0 : Math.abs(value);
+      let credit = value >= 0 ? Math.abs(value) : 0;
 
       let resultParams = [
         projectId,                      // project_id
