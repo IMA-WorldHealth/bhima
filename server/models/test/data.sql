@@ -48,7 +48,8 @@ INSERT INTO unit VALUES
   (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create'),
   (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/partials/admin/transaction_type', '/admin/transaction_type'),
   (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 5, '/partials/finance/reports', '/finance/reports'),
-  (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/finance/reports/cashflow');
+  (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/finance/reports/cashflow'),
+  (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/partials/admin/creditor_groups/', '/admin/creditor_groups');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES
@@ -243,7 +244,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (144,1),
 
 -- Cashflow Report
-(145,1);
+(145,1),
+
+-- Creditor groups Management
+(146,1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;

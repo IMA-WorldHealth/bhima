@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+      <div ng-repeat="cg in CreditorGroupCtrl.creditorGroupList | orderBy : cg.name">
+
+        <div class="panel panel-default" style="margin-bottom: 5px;" data-group-entry>
+          <div class="panel-body">
+
+            <h4>
+              <span ng-if="cg.locked" class="fa fa-lock text-danger"></span> <b>{{ cg.name }}</b>
+              <a style="text-decoration: none;"
+                data-method="update"
+                ui-sref="creditorGroups.update({uuid : cg.uuid})">
+                <span class="fa fa-edit"></span> {{ "FORM.BUTTONS.EDIT" | translate }}
+              </a>
+              <a class="text-danger" style="text-decoration: none;"
+                data-method="delete"
+                ng-click="CreditorGroupCtrl.deleteGroup(cg.uuid)" href>
+                <span class="fa fa-trash"></span> {{ "FORM.BUTTONS.DELETE" | translate }}
+              </a>
+            </h4>
+            <span class="fa fa-list"></span> <b>{{ cg.total_creditors }}</b> {{ 'FORM.LABELS.CREDITOR_SUBCRIBED' | translate }}
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
