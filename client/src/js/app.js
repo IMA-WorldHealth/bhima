@@ -406,7 +406,6 @@ function constantConfig() {
     },
     dates : {
       minDOB : new Date('1900-01-01'),
-      maxDOB : new Date(),
     },
     lengths : {
       maxTextLength : 1000
