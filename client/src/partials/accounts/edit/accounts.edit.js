@@ -205,7 +205,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
 
   function close() {
     // transition to the overall UI grid state - this modal will be cleaned up on state change
-    $state.go('^.list');
+    $state.go('accounts.list');
   }
 
   /**

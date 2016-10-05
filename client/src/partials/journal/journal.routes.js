@@ -21,6 +21,9 @@ angular.module('bhima.routes')
             .catch(function () {
               $state.go('journal', null, { notify: false });
             });
+        }],
+        onExit : ['$uibModalStack', function (ModalStack) {
+          ModalStack.dismissAll();
         }]
       })
       .state('trialBalanceMain',{

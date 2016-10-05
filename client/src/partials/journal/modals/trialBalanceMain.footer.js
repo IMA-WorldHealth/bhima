@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
   .controller('TrialBalanceMainFooterController', TrialBalanceMainFooterController);
 
 TrialBalanceMainFooterController.$inject = [
-  '$state', '$uibModalStack', 'TrialBalanceService', 'NotifyService', '$timeout'
+  '$state', 'TrialBalanceService', 'NotifyService'
 ];
 
 /**
@@ -12,7 +12,7 @@ TrialBalanceMainFooterController.$inject = [
  * @description
  * This controller handles the view for the footer of the trial balance modal
  */
-function TrialBalanceMainFooterController($state, $uibModalStack, trialBalanceService, Notify, $timeout) {
+function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
   window.state = $state;
   var vm = this;
 
@@ -25,10 +25,6 @@ function TrialBalanceMainFooterController($state, $uibModalStack, trialBalanceSe
    **/
   function cancel() {
     $state.transitionTo('journal');
-    //FIX ME : can not get a provider for $uibModalInstance
-    $timeout(function () {
-      $uibModalStack.dismissAll();
-    });
   }
 
   /**
@@ -39,7 +35,6 @@ function TrialBalanceMainFooterController($state, $uibModalStack, trialBalanceSe
     trialBalanceService.postToGeneralLedger($state.params.records)
       .then(function () {
         $state.go('generalLedger', null, {notify : true});
-        $timeout(function () { $uibModalStack.dismissAll(); });
       })
       .catch(Notify.handleError);
   }

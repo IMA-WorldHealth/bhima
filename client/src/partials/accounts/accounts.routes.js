@@ -15,7 +15,8 @@ angular.module('bhima.routes')
         params : {
           parentId : { squash : true, value : null }
         },
-        onEnter :['$uibModal', accountsModal]
+        onEnter :['$uibModal', accountsModal],
+        onExit : ['$uibModalStack', closeModal]
       })
       .state('accounts.list', {
         url : '/:id',
@@ -29,7 +30,8 @@ angular.module('bhima.routes')
         params : {
           id : { squash : true, value : null }
         },
-        onEnter :['$uibModal', accountsModal]
+        onEnter :['$uibModal', accountsModal],
+        onExit : ['$uibModalStack', closeModal]
       });
   }]);
 
@@ -40,4 +42,8 @@ function accountsModal($modal) {
     templateUrl: 'partials/accounts/edit/accounts.edit.modal.html',
     controller: 'AccountEditController as AccountEditCtrl'
   });
+}
+
+function closeModal($uibModalStack) {
+  $uibModalStack.dismissAll();
 }
