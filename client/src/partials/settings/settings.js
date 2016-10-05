@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('settings', SettingsController);
 
 SettingsController.$inject = [
-  '$state', 'LanguageService', 'SessionService', 'bhConstants', '$translate',
-  'NotifyService'
+  'LanguageService', 'SessionService', 'bhConstants', '$translate',
+  'NotifyService', '$window'
 ];
 
 /**
@@ -14,11 +14,10 @@ SettingsController.$inject = [
  *
  * @constructor
  */
-function SettingsController($state, Languages, Session, Constants, $translate, Notify) {
+function SettingsController(Languages, Session, Constants, $translate, Notify, $window) {
   var vm = this;
 
-  // the url to return to (using the back button)
-  vm.previous = $state.params.previous;
+  vm.back = function () { $window.history.back(); };
 
   // load settings from services
   vm.settings = { language : Languages.key };
@@ -51,5 +50,4 @@ function SettingsController($state, Languages, Session, Constants, $translate, N
       vm.bugLink = encodeURI(emailAddress + '?subject=' + subject + '&body=' + text);
     })
     .catch(Notify.handleError);
-
 }

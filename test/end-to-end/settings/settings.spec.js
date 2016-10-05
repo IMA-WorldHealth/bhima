@@ -16,25 +16,23 @@ describe('Settings', function () {
     // ideally, we should check that the language changed, but this
     // test should only confirm that things are open.
     FU.select('SettingsCtrl.settings.language', 'Fr');
-
-    // make sure that the "back" button doesn't exist
-    FU.exists(by.css('[data-back-button]'), false);
   });
 
   it('uses the back button to return to previous state', function () {
+    const start = '#/';
+    const btn = by.css('[data-back-button]');
 
     // load the settings page w/o backwards navigation
-    helpers.navigate('#/settings?previous=index');
-
-    var btn = '[data-back-button]';
-
-    // make sure that the "back" button doesn't exist
-    FU.exists(by.css(btn), true);
-
-    // click the back button
-    element(by.css(btn)).click();
+    helpers.navigate(start);
+    helpers.navigate('#/settings');
 
     // ensure we navigate back to the main page.
-    expect(helpers.getCurrentPath()).to.eventually.equal('#/');
+    expect(helpers.getCurrentPath()).to.eventually.equal('#/settings');
+
+    // click the back button
+    element(btn).click();
+
+    // ensure we navigate back to the main page.
+    expect(helpers.getCurrentPath()).to.eventually.equal(start);
   });
 });
