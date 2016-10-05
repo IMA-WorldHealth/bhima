@@ -22,7 +22,9 @@
                   <bh-find-patient
                     suppress-reset="true"
                     on-search-complete="PatientInvoiceCtrl.setPatient(patient)"
-                    on-register-api="PatientInvoiceCtrl.onPatientSearchApiCallback(api)">
+                    on-register-api="PatientInvoiceCtrl.onPatientSearchApiCallback(api)"
+                    validation-trigger="detailsForm.$submitted"
+                    >
                   </bh-find-patient>
                 </div>
 

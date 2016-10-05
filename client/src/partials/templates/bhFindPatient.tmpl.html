@@ -3,7 +3,7 @@
   <div class="form-group has-feedback"
     ng-class="{
       'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
-      'has-error': !$ctrl.showSearchView && $ctrl.loadStatus=='error'
+      'has-error': (!$ctrl.showSearchView && $ctrl.loadStatus=='error') || ($ctrl.validationTrigger && $ctrl.loadStatus != 'loaded')
     }"
   >
     <label class="control-label text-capitalize">{{ "FORM.LABELS.PATIENT" | translate }}</label>
@@ -57,7 +57,7 @@
       <span class="input-group-btn" ng-if="$ctrl.selected == $ctrl.options.findById">
         <button
           type="button"
-          class="btn btn-success"
+          class="btn btn-default"
           ng-disabled="FindPatientForm.idInput.$invalid"
           ng-click="$ctrl.submit()"
           data-find-patient-submit>
