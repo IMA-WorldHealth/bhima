@@ -3,15 +3,16 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 ClosingFiscalYearModalController.$inject = [
-  'AccountService', 'NotifyService', 'FiscalService', 'ModalService', '$uibModalInstance', 'data'
+  'AccountService', 'NotifyService', 'FiscalService', 'ModalService',
+  'SessionService', '$uibModalInstance', 'data'
 ];
 
 // The closing fiscal year controller
-function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Instance, Data) {
+function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Session, Instance, Data) {
   var vm = this;
 
   // global variables
-  vm.steps  = 'default';
+  vm.currency_id = Session.enterprise.currency_id;
 
   // expose to the view
   vm.cancel = Instance.close;
@@ -36,41 +37,32 @@ function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Insta
   })
   .then(function (balance) {
 
-    vm.exploitation = { profit: [], charge: [] };
+    var map = { income: 'profit', expense: 'charge' };
 
-    balance.forEach(function (item) {
+    vm.exploitation = balance.reduce(function (previous, current) {
+      var key = map[current.type];
 
-      if (item.type === 'income') {
-        vm.exploitation.profit.push(item);
+      if (key) {
+        previous[key].push(current);
       }
 
-      if (item.type === 'expense') {
-        vm.exploitation.charge.push(item);
-      }
+      return previous;
+    }, { profit: [], charge: [] });
 
-    });
-
-    return vm.exploitation;
-
-  })
-  .then(exploitationStatus)
-  .catch(Notify.handleError);
-
-  // process sold of balance
-  function exploitationStatus(data) {
-    vm.profit = creditorSold(data.profit);
-    vm.charge = debitorSold(data.charge);
+    vm.profit = creditorSold(vm.exploitation.profit);
+    vm.charge = debitorSold(vm.exploitation.charge);
     vm.globalResult = vm.profit - vm.charge;
-  }
+  })
+  .catch(Notify.handleError);
 
   // step handler
   function stepForward(form) {
 
     if (form.$invalid) { return; }
 
-    if (vm.steps === 'default') {
+    if (vm.steps !== 'summary') {
       vm.steps = 'summary';
-    } else if (vm.steps === 'summary') {
+    } else {
       confirmClosing();
     }
 
@@ -97,7 +89,10 @@ function ClosingFiscalYearModalController(Accounts, Notify, Fiscal, Modal, Insta
       Instance.close(true);
       Notify.success('FISCAL.CLOSING_SUCCESS');
     })
-    .catch(Notify.handleError);
+    .catch(function (err) {
+      Instance.close(false);
+      Notify.handleError(err);
+    });
 
   }
 

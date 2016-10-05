@@ -222,6 +222,7 @@
     "CLOSING_FISCAL_YEAR"   : "Fermeture d'une année fiscal",
     "CLOSING_SUCCESS"       : "L'année fiscale à été cloturé avec succès",
     "CREATE_FISCAL_YEAR"    : "Créer l'année fiscale",
+    "FAILURE_CLOSING"       : "Echec de fermeture de l'annee fiscale",
     "FISCAL_YEAR"           : "Année Fiscale",
     "BACK"                  : "Retour",
     "CONFIGURATION_PAGE"    : "Page de configuration",

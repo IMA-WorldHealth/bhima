@@ -23,7 +23,7 @@
               <dt>{{ 'FORM.LABELS.PROFIT' | translate }}</dt>
               <dd>
                 <div class="text-right">
-                  {{ $ctrl.profit | currency }}
+                  {{ $ctrl.profit | currency: $ctrl.currency_id }}
                 </div>
               </dd>
             </h3>
@@ -33,7 +33,7 @@
               <dt>{{ 'FORM.LABELS.CHARGE' | translate }}</dt>
               <dd>
                 <div class="text-right">
-                  {{ $ctrl.charge | currency }}
+                  {{ $ctrl.charge | currency: $ctrl.currency_id }}
                 </div>
               </dd>
             </h3>
@@ -43,7 +43,7 @@
               <dt>{{ 'FORM.LABELS.RESULT' | translate }}</dt>
               <dd>
                 <div class="text-right" ng-class="{'text-danger' : $ctrl.globalResult < 0, 'text-success' : $ctrl.globalResult > 0 }">
-                  {{ $ctrl.globalResult | currency }}
+                  {{ $ctrl.globalResult | currency: $ctrl.currency_id }}
                 </div>
               </dd>
             </h3>
@@ -79,7 +79,7 @@
           <h3>
             {{ 'FISCAL.RESULT_AMOUNT' | translate }}:
             <span ng-class="{'text-danger' : $ctrl.globalResult < 0, 'text-success' : $ctrl.globalResult > 0 }">
-              {{ $ctrl.globalResult | currency }}
+              {{ $ctrl.globalResult | currency: $ctrl.currency_id }}
             </span>
           </h3>
         </div>
@@ -104,8 +104,8 @@
     </button>
 
     <!-- submit  -->
-    <button type="submit" class="btn btn-primary" ng-disabled="$ctrl.fiscal.locked">
-      {{ 'FORM.BUTTONS.VALIDATE' | translate }}
-    </button>
+    <bh-loading-button loading-state="ClosingFiscalYear.$loading" ng-disabled="$ctrl.fiscal.locked">
+      {{ "FORM.BUTTONS.VALIDATE" | translate }}
+    </bh-loading-button>
   </div>
 </form>
