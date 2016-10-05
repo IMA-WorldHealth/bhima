@@ -1,60 +1,69 @@
 angular.module('bhima.controllers')
-.controller('UpdateDebtorGroup', UpdateDebtorGroup);
+  .controller('UpdateDebtorGroup', UpdateDebtorGroup);
 
-UpdateDebtorGroup.$inject = ['$scope', '$uibModalInstance', 'DebtorService',  'patient', 'updateModel'];
+UpdateDebtorGroup.$inject = [
+  '$uibModalInstance', 'DebtorService',  'patient', 'updateModel', 'NotifyService'
+];
 
-function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateModel) { 
+function UpdateDebtorGroup($uibModalInstance, debtors, patient, updateModel, Notify) {
   var viewModel = this;
-  
-  // TODO Handle errors with generic modal exception display (inform system administrator)
+  var originalGroupUuid;
+
   debtors.groups()
-    .then(function (debtorGroups) { 
-  
+    .then(function (debtorGroups) {
+      originalGroupUuid = patient.debtor_group_uuid;
       viewModel.debtor_group_uuid = patient.debtor_group_uuid;
       viewModel.debtorGroups = debtorGroups;
-    });
+    })
+    .catch(Notify.handleError);
 
   // TODO Refactor - use stores?
-  function fetchGroupName(uuid) { 
+  function fetchGroupName(uuid) {
     var name;
-    viewModel.debtorGroups.some(function (debtorGroup) { 
-      if (debtorGroup.uuid === uuid) { 
-        name = debtorGroup.name;
-        return true;
+    var groups = viewModel.debtorGroups;
+    var i = groups.length;
+
+    while (i--) {
+      if (groups[i].uuid === uuid) {
+        name = groups[i].name;
+        break;
       }
-    });
+    }
+
     return name;
   }
 
-  viewModel.confirmGroup = function confirmGroup() { 
-    var formIsUpdated = $scope.groupForm.$dirty;
+  // form submission
+  viewModel.confirmGroup = function confirmGroup(groupForm) {
     var updateRequest;
+    var noGroupChange = (originalGroupUuid === viewModel.debtor_group_uuid);
 
-    // Simply exit the modal
-    if (!formIsUpdated) { 
-      closeModal(); 
+    // if there was no change in the groups, just close the modal.
+    if (noGroupChange) {
+      closeModal();
       return;
     }
-  
-    updateRequest = { 
+
+    updateRequest = {
       group_uuid : viewModel.debtor_group_uuid
     };
-    
-    debtors.update(patient.debtor_uuid, updateRequest)
-      .then(function () { 
-      
+
+    return debtors.update(patient.debtor_uuid, updateRequest)
+      .then(function () {
+
         updateModel(
           viewModel.debtor_group_uuid,
-          fetchGroupName(viewModel.debtor_group_uuid));
-        
+          fetchGroupName(viewModel.debtor_group_uuid)
+        );
+
         closeModal();
       });
-     
+
   };
-  
+
   viewModel.closeModal = closeModal;
 
-  function closeModal() { 
+  function closeModal() {
     $uibModalInstance.close();
   }
 }

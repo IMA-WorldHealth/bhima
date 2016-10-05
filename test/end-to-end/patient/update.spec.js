@@ -12,10 +12,8 @@ const components = require('../shared/components');
 helpers.configure(chai);
 
 describe('Patient Edit', function () {
-  const root = '#/patients/';
   const patient = '274c51ae-efcc-4238-98c6-f402bfb39866';
-
-  const path = root.concat(patient, '/edit');
+  const path = `#/patients/${patient}/edit`;
 
   before(() => browser.get(path));
 
@@ -40,13 +38,8 @@ describe('Patient Edit', function () {
 
     // opens update modal
     element(by.css('[data-update-group-debtor]')).click();
-
-    let select = element(by.model('UpdateDebtorGroupCtrl.debtor_group_uuid'));
-    let option = select.element(by.cssContainingText('option', 'Second Test Debtor Group'));
-    option.click();
-
-    element(by.css('[data-confirm-group]')).click();
-
+    FU.select('UpdateDebtorGroupCtrl.debtor_group_uuid','Second Test Debtor Group');
+    FU.modal.submit();
     components.notification.hasSuccess();
   });
 
@@ -54,7 +47,7 @@ describe('Patient Edit', function () {
     element(by.css('[data-update-group-patient]')).click();
 
     element.all(by.css('[data-group-option]')).get(1).click();
-    element(by.css('[data-confirm-group]')).click();
+    FU.modal.submit();
 
     components.notification.hasSuccess();
   });
