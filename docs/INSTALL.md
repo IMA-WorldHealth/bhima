@@ -11,6 +11,11 @@ Before you begin the installation process, please make sure you have all the bhi
  2. [Redis](redis.io)
  3. [NodeJS](https://nodejs.org/en/) (we recommend using [node version manager](https://github.com/creationix/nvm)).
 
+ We also use `node-canvas` to draw nice graphics in PDF reports.  See [node-canvas](https://github.com/Automattic/node-canvas) for complete installation details, but you can quickly install on linux like this:
+ ```sh
+ sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
+```
+
 
 ###### Getting the source
 Clone the source using git from the [bhima github repository] (https://github.com/IMA-WorldHealth/bhima-2.x).

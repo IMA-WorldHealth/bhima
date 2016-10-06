@@ -34,7 +34,8 @@ const hbs = exphbs.create({
     substract : math.substract,
     currency : finance.currency,
     indentAccount : finance.indentAccount,
-    look : objects.look
+    look : objects.look,
+    barcode : require('./helpers/barcode')
   },
 
   // load partials from the partials sub-directory

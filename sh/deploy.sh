@@ -19,4 +19,4 @@ npm install
 cd bin
 
 # start the application
-node server/app.js &
+node --use_strict server/app.js &
