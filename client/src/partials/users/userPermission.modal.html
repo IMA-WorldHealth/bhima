@@ -1,4 +1,4 @@
-<form name="PermissionForm" bh-submit="UserPermissionModalCtrl.submit()">
+<form name="PermissionForm" bh-submit="UserPermissionModalCtrl.submit()" bh-form-defaults>
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="title">
@@ -10,7 +10,7 @@
   </div>
 
   <div class="modal-body">
-    <ul class="list-group" style="max-height: 600px; overflow:auto;">
+    <ul class="list-group" style="max-height: 70vh; overflow:auto;">
       <li class="list-group-item">
         <div class="checkbox">
           <label>
@@ -34,7 +34,7 @@
     <button type="button" class="btn btn-default" ng-click="UserPermissionModalCtrl.closeModal()">
       <i class="fa fa-ban"></i> {{ 'FORM.BUTTONS.CANCEL' | translate }}
     </button>
-    <bh-loading-button>
+    <bh-loading-button loading-state="PermissionForm.$loading">
       <i class="fa fa-floppy-o"></i> {{ "FORM.BUTTONS.SAVE" | translate }}
     </bh-loading-button>
   </div>

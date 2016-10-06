@@ -19,27 +19,25 @@ function UsersPasswordModalController($state, Users, Notify) {
 
   // checks if a valid password exists
   function validPassword() {
-    return vm.user.password === vm.user.passwordVerify;
+    return vm.user.password && vm.user.password.length && vm.user.password === vm.user.passwordVerify;
   }
 
   // submits the password form
   function submit(passwordForm) {
-
     if (passwordForm.$invalid) { return; }
-    if (!passwordForm.$dirty) { return; }
+    if (!passwordForm.$dirty || !validPassword()) { return; }
 
     // try to update the user's password
     Users.updatePassword(vm.user.id, { password : vm.user.password })
-    .then(function () {
-      Notify.success('USERS.UPDATED');
-      $state.go('users.edit', {id : vm.user.id, creating : false}, {reload : false});
-    })
-    .catch(Notify.handleError);
+      .then(function () {
+        Notify.success('USERS.UPDATED');
+        $state.go('users.edit', {id : vm.user.id, creating : false}, {reload : false});
+      })
+      .catch(Notify.handleError);
   }
 
   function cancel() {
     $state.go('users.edit', {id : vm.user.id, creating : false}, {reload : false});
-    // $uibModalInstance.dismiss();
   }
 
   Users.read($state.params.id)

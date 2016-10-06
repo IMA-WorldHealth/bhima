@@ -14,7 +14,7 @@ helpers.configure(chai);
 
 const expect = chai.expect;
 
-describe('User management page', function () {
+describe('User Management Page', function () {
   'use strict';
 
   const path = '#/users';
@@ -42,11 +42,11 @@ describe('User management page', function () {
     return helpers.navigate(path);
   });
 
-  it('Displays all users loaded from the database', function () {
+  it('displays all users loaded from the database', function () {
     expect(userPage.getUserCount()).to.eventually.equal(userCount);
   });
 
-  it('Creates a user successfully', function () {
+  it('creates a user successfully', function () {
     userPage.createUser();
     userCreateUpdatePage.setUserName(mockUserCreate.userName);
     userCreateUpdatePage.setLogin(mockUserCreate.login);
@@ -99,10 +99,20 @@ describe('User management page', function () {
 
   it('validates from on editing password', function () {
     userPage.editUser(3);
+
+    // check that an empty form is not allowed
     userCreateUpdatePage.editPassword();
     editPasswordPage.submitPassword();
-    expect(editPasswordPage.isPasswordInvalid()).to.eventually.equal(true);
-    expect(editPasswordPage.isPasswordConfirmInvalid()).to.eventually.equal(true);
+
+    editPasswordPage.expectPasswordInvalid();
+    editPasswordPage.expectPasswordConfirmInvalid();
+
+    // check that the passwords must be equal
+    editPasswordPage.setPassword('1');
+    editPasswordPage.setPasswordConfirm('2');
+    editPasswordPage.submitPassword();
+    editPasswordPage.expectPasswordMismatch();
+
     editPasswordPage.cancelEditing();
     userCreateUpdatePage.close();
   });
@@ -116,12 +126,7 @@ describe('User management page', function () {
     expect(userCreateUpdatePage.isProjectInvalid()).to.eventually.equal(true);
     expect(userCreateUpdatePage.isPasswordInvalid()).to.eventually.equal(true);
     expect(userCreateUpdatePage.isPasswordConfirmInvalid()).to.eventually.equal(true);
+
     userCreateUpdatePage.close();
   });
-
 });
-
-
-
-
-

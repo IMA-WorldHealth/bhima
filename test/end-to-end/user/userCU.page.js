@@ -7,6 +7,8 @@
  * behaviour so it is a user creation page object
  **/
 function CreateUpdateUserPage() {
+  'use strict';
+
   const page = this;
 
   var userNameField = element(by.model('UserModalCtrl.user.display_name'));
@@ -14,24 +16,27 @@ function CreateUpdateUserPage() {
   var emailField = element(by.model('UserModalCtrl.user.email'));
   var projects = $('body').element(by.model('UserModalCtrl.user.projects'));
   var editPassWordButton = element(by.id('user-edit-password'));
+
   var password = element(by.model('UserModalCtrl.user.password'));
   var passwordConfirm = element(by.model('UserModalCtrl.user.passwordVerify'));
-  var submitButton = element(by.id('user-submit'));
+
+  var submitButton = $('[uib-modal-window] [data-method="submit"]');
   var cancelButton = element(by.id('user-cancel'));
+
   var sameUserPanel = element(by.id('user-same'));
-  
+
   /** set a user nama value**/
-  function setUserName(username){
+  function setUserName(username) {
     return userNameField.clear().sendKeys(username);
   }
 
   /** set a login value**/
-  function setLogin(login){
+  function setLogin(login) {
     return loginField.clear().sendKeys(login);
   }
-  
+
   /** set an email value**/
-  function setEmail(email){
+  function setEmail(email) {
     return emailField.clear().sendKeys(email);
   }
 
@@ -39,9 +44,9 @@ function CreateUpdateUserPage() {
   function setProjectValue(value, append) {
     projects.click();
 
-    if(append){
+    if (append) {
       projects.element(by.model('$select.search')).sendKeys(value);
-    }else{
+    } else {
       projects.element(by.model('$select.search')).clear().sendKeys(value);
     }
     return projects.element(by.cssContainingText('.dropdown-menu [role="option"]', value)).click();
@@ -53,12 +58,12 @@ function CreateUpdateUserPage() {
   }
 
   /** set a password value **/
-  function setPassword(pw){
+  function setPassword(pw) {
     return password.clear().sendKeys(pw);
   }
 
   /** set a password confirmation value **/
-  function setPasswordConfirm (pw){
+  function setPasswordConfirm (pw) {
     return passwordConfirm.clear().sendKeys(pw);
   }
 
@@ -84,7 +89,7 @@ function CreateUpdateUserPage() {
 
   /** check if the login field is invalid **/
   function isLoginInvalid() {
-    return isInvalid(loginField)
+    return isInvalid(loginField);
   }
 
   /** check if the email field is invalid **/

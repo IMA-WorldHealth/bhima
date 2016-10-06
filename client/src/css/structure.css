@@ -780,3 +780,8 @@ growl-notification.fading.ng-leave.ng-leave-active {
 .bg-gray {
   background-color: #efefef;
 }
+
+/* Fix for ui-select multiselect close icon */
+.ui-select-multiple.ui-select-bootstrap .ui-select-match .close {
+  line-height: 1;
+}

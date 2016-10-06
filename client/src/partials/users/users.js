@@ -46,5 +46,5 @@ function UsersController($state, Users, Notify) {
     .catch(Notify.handleError);
   }
 
-  loadGrid();  
+  loadGrid();
 }

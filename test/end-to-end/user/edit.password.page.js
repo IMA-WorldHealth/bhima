@@ -1,17 +1,25 @@
 /* jshint expr:true */
 /* global element, by, browser */
 
+const chai = require('chai');
+const helpers = require('../shared/helpers');
+
+/** configuring helpers**/
+helpers.configure(chai);
+const expect = chai.expect;
+
 /**
  * This class is represents a user password editing page in terms of structure and
  * behaviour so it is a user password editing page object
  **/
 function EditPasswordPage() {
   const page = this;
-  
+
   var password = element(by.model('UsersPasswordModalCtrl.user.password'));
   var passwordConfirm = element(by.model('UsersPasswordModalCtrl.user.passwordVerify'));
-  var submitButton = element(by.id('password-submit'));
-  var cancelButton = element(by.id('password-cancel'));
+  var submitButton = $('[uib-modal-window] [data-method="submit"]');
+  var cancelButton = $('[uib-modal-window] [data-method="cancel"]');
+  var modal = $('[data-edit-password-modal]');
 
   /** set a password value **/
   function setPassword(pw){
@@ -35,35 +43,36 @@ function EditPasswordPage() {
 
   /** check if the page is displayed **/
   function isDisplayed() {
-    return submitButton.isPresent();
+    return modal.isPresent();
   }
 
   /** check if the password field is invalid **/
-  function isPasswordInvalid() {
+  function expectPasswordInvalid() {
     return isInvalid(password);
   }
 
   /** check if the passwordConfirm field is invalid **/
-  function isPasswordConfirmInvalid() {
+  function expectPasswordConfirmInvalid() {
     return isInvalid(passwordConfirm);
+  }
+
+  function expectPasswordMismatch() {
+    return $('[data-no-password-match]').isPresent();
   }
 
   /** check if ng-invalid css class is applied on a component **/
   function isInvalid(component) {
-    return component.getAttribute('class').then(function (classes) {
-      return classes.split(' ').indexOf('ng-invalid') !== -1;
-    });
+    expect(component.getAttribute('class')).to.eventually.contain('ng-invalid');
   }
-
 
   page.setPassword = setPassword;
   page.setPasswordConfirm = setPasswordConfirm;
   page.submitPassword = submitPassword;
   page.cancelEditing = cancelEditing;
   page.isDisplayed = isDisplayed;
-  page.isPasswordInvalid = isPasswordInvalid;
-  page.isPasswordConfirmInvalid = isPasswordConfirmInvalid;
-
+  page.expectPasswordInvalid = expectPasswordInvalid;
+  page.expectPasswordConfirmInvalid = expectPasswordConfirmInvalid;
+  page.expectPasswordMismatch = expectPasswordMismatch;
 }
 
 module.exports = EditPasswordPage;

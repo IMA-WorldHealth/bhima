@@ -1,4 +1,3 @@
-
 /* jshint expr:true */
 /* global element, by, browser */
 
@@ -8,14 +7,15 @@
  **/
 
 function UserPage() {
+  'use strict';
 
   const page = this;
 
   var userGrid = element(by.id('users-grid'));
-  var addUserButon = element(by.id('user-create'));
+  var addUserButon = element(by.css('[data-method="create"]'));
 
   /** send back the number of user in the grid**/
-  function getUserCount(){
+  function getUserCount() {
     return userGrid
       .element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
@@ -25,7 +25,7 @@ function UserPage() {
   /**
    * simulate the add user button click to show the dialog of creation
    **/
-  function createUser (){
+  function createUser () {
     return addUserButon.click();
   }
 
