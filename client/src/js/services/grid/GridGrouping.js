@@ -231,7 +231,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.gridApi = api;
 
-      // attach custom renderer
+      // attach custom renderers
       configureDefaultAggregators(gridOptions.columnDefs);
 
       // configure default grouping

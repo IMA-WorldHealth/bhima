@@ -339,7 +339,7 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
   // if the test is positive, the current path is verified in the path list
   // if the current path does not exist in the path list in this case the user will rédirrigé to error403 page
 
-  $rootScope.$on('$stateChangeStart', function (event, next, nextParams) {
+  $rootScope.$on('$stateChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
     var isLoginState = next.name.indexOf('login') !== -1;
 
@@ -347,12 +347,6 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
       event.preventDefault();
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
     }
-
-    // clean up any modals that are currently active, this allows modules to use onEnter state modals
-    // without considering all exit cases
-
-    // dismiss modals in all cases, unless preserveModals is true
-    //$uibModalStack.dismissAll();
 
 
     var currentPath = $location.$$path;
