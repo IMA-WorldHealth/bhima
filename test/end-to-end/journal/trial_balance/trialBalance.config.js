@@ -21,6 +21,14 @@ function TrialBalanceTest(){
   const trialBalanceError = new TrialBalanceErrorPage();
   const trialBalanceDetail = new TrialBalanceDetailPage();
 
+  it('it should consider that the related transaction is selected even if you selected just one row', function () {
+    journal.checkRow(2);
+    journal.openTrialBalanceModal();
+    expect(trialBalance.getLineCount()).to.eventually.at.least(1);
+    expect(trialBalance.getLineCount()).to.eventually.below(3);
+    trialBalance.closeTrialBalance();
+  });
+
   it('it should switch the view successfully', function () {
     journal.checkRow(0);
     journal.openTrialBalanceModal();
@@ -44,16 +52,8 @@ function TrialBalanceTest(){
     trialBalance.closeTrialBalance();
   });
 
-  it('it should consider that the related transaction is selected even if you selected just one row', function () {
-    browser.refresh();
-    journal.checkRow(2);
-    journal.openTrialBalanceModal();
-    expect(trialBalance.getLineCount()).to.eventually.equal(2);
-    trialBalance.closeTrialBalance();
-  });
-
   it('it should post a transaction with success', function () {
-    journal.checkRow(2); //just to uncheck the line selected previewsly
+    browser.refresh(); //just to uncheck the line selected previewsly
     journal.checkRow(6);
     journal.openTrialBalanceModal();
     trialBalance.submitData();
