@@ -21,41 +21,43 @@ function TrialBalanceTest(){
   const trialBalanceError = new TrialBalanceErrorPage();
   const trialBalanceDetail = new TrialBalanceDetailPage();
 
-  it('it should consider that the related transaction is selected even if you selected just one row', function () {
-    journal.checkRow(1);
-    journal.openTrialBalanceModal();
-    expect(trialBalance.getLineCount()).to.eventually.equal(2);
-    trialBalance.closeTrialBalance();
-  });
-
   it('it should switch the view successfully', function () {
     journal.checkRow(0);
     journal.openTrialBalanceModal();
-    
+
     expect(trialBalance.getLineCount()).to.eventually.equal(2);
     trialBalance.switchView(); //from group by account to transaction
-    
+
     expect(trialBalance.getLineCount()).to.eventually.equal(3);
     trialBalance.switchView(); //from group by transaction to account
-    
+
     expect(trialBalance.getLineCount()).to.eventually.equal(2);
     trialBalance.viewErrorList(); //will print error grid
-    
+
     expect(trialBalanceError.getLineCount()).to.eventually.equal(2);
     trialBalanceError.reset(); //back to the group by account view
     expect(trialBalance.getLineCount()).to.eventually.equal(2);
-    
+
     trialBalance.showAccountDetailInTransaction(0); //will print list of transaction relative to selected account line(index 0 in occurrence)
     expect(trialBalanceDetail.getLineCount()).to.eventually.equal(3);
     trialBalanceDetail.reset();
     trialBalance.closeTrialBalance();
   });
 
+  it('it should consider that the related transaction is selected even if you selected just one row', function () {
+    browser.refresh();
+    journal.checkRow(2);
+    journal.openTrialBalanceModal();
+    expect(trialBalance.getLineCount()).to.eventually.equal(2);
+    trialBalance.closeTrialBalance();
+  });
+
   it('it should post a transaction with success', function () {
+    journal.checkRow(2); //just to uncheck the line selected previewsly
     journal.checkRow(6);
     journal.openTrialBalanceModal();
     trialBalance.submitData();
-    expect(generalLedger.getLineCount()).to.eventually.equal(6);
+    expect(generalLedger.getLineCount()).to.eventually.equal(3);
   });
 }
 
