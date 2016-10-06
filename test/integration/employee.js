@@ -14,9 +14,9 @@ describe('(/employees) the employees API endpoint', function () {
   const numEmployees = 1;
 
   // custom dates
-  var embaucheDate  = new Date('2016-01-01'),
-      dob1 = new Date('1987-04-17'),
-      dob2 = new Date('1993-04-25');
+  let embaucheDate  = new Date('2016-01-01');
+  let dob1 = new Date('1987-04-17');
+  let dob2 = new Date('1993-04-25');
 
   // employee we will add during this test suite.
   var employee = {

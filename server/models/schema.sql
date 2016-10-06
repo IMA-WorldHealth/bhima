@@ -117,10 +117,6 @@ CREATE TABLE `cash` (
   FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- triggers to manage creation of references
-CREATE TRIGGER cash_before_insert BEFORE INSERT ON cash
-FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM cash WHERE cash.project_id = new.project_id);
-
 DROP TABLE IF EXISTS `cash_item`;
 CREATE TABLE `cash_item` (
   `uuid`            BINARY(16) NOT NULL,
@@ -442,10 +438,6 @@ CREATE TABLE `credit_note` (
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- triggers to manage creation of references
-CREATE TRIGGER credit_note_before_insert BEFORE INSERT ON credit_note
-FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM credit_note WHERE credit_note.project_id = new.project_id);
-
 DROP TABLE IF EXISTS `creditor`;
 
 CREATE TABLE `creditor` (
@@ -602,8 +594,8 @@ CREATE TABLE `depot` (
   UNIQUE KEY `depot_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS discount;
 
+DROP TABLE IF EXISTS discount;
 CREATE TABLE discount (
   `id`                  SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `label`               VARCHAR(100) NOT NULL,
@@ -618,6 +610,14 @@ CREATE TABLE discount (
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `document_map`;
+CREATE TABLE `document_map` (
+  `uuid`              BINARY(16) NOT NULL,
+  `text`              TEXT NOT NULL,
+  PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `employee`;
@@ -641,7 +641,7 @@ CREATE TABLE `employee` (
   `service_id`    SMALLINT(5) UNSIGNED DEFAULT NULL,
   `location_id`   BINARY(16) NOT NULL,
   `creditor_uuid` BINARY(16) DEFAULT NULL,
-  `debtor_uuid`  BINARY(16) DEFAULT NULL,
+  `debtor_uuid`   BINARY(16) DEFAULT NULL,
   `locked`        TINYINT(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `employee_1` (`code`),
@@ -683,6 +683,13 @@ CREATE TABLE `enterprise` (
   FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
   FOREIGN KEY (`gain_account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `entity_map`;
+CREATE TABLE `entity_map` (
+  `uuid`              BINARY(16) NOT NULL,
+  `text`              TEXT NOT NULL,
+  PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `event`;
@@ -1139,9 +1146,6 @@ CREATE TABLE `patient` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TRIGGER patient_reference BEFORE INSERT ON patient
-FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM patient WHERE patient.project_id = new.project_id);
-
 DROP TABLE IF EXISTS `patient_document`;
 
 CREATE TABLE `patient_document` (
@@ -1401,9 +1405,6 @@ CREATE TABLE `purchase` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TRIGGER purchase_reference BEFORE INSERT ON purchase
-FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM purchase WHERE purchase.project_id = new.project_id);
-
 DROP TABLE IF EXISTS `purchase_item`;
 
 CREATE TABLE `purchase_item` (
@@ -1519,9 +1520,6 @@ CREATE TABLE `invoice` (
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TRIGGER invoice_reference BEFORE INSERT ON invoice
-FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM invoice WHERE invoice.project_id = new.project_id);
 
 DROP TABLE IF EXISTS invoice_billing_service;
 CREATE TABLE invoice_billing_service (
@@ -1657,17 +1655,18 @@ CREATE TABLE subsidy (
 
 DROP TABLE IF EXISTS `supplier`;
 CREATE TABLE `supplier` (
-  `uuid` BINARY(16) NOT NULL,
-  `creditor_uuid` BINARY(16) NOT NULL,
-  `display_name` varchar(45) NOT NULL,
-  `address_1` text,
-  `address_2` text,
-  `email` varchar(45) DEFAULT NULL,
-  `fax` varchar(45) DEFAULT NULL,
-  `note` text,
-  `phone` varchar(15) DEFAULT NULL,
-  `international` tinyint(1) NOT NULL DEFAULT 0,
-  `locked` tinyint(1) NOT NULL DEFAULT 0,
+  `uuid`            BINARY(16) NOT NULL,
+  `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `creditor_uuid`   BINARY(16) NOT NULL,
+  `display_name`    VARCHAR(45) NOT NULL,
+  `address_1`       TEXT,
+  `address_2`       TEXT,
+  `email`           VARCHAR(45) DEFAULT NULL,
+  `fax`             VARCHAR(45) DEFAULT NULL,
+  `note`            TEXT,
+  `phone`           VARCHAR(15) DEFAULT NULL,
+  `international`   TINYINT(1) NOT NULL DEFAULT 0,
+  `locked`          TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `supplier_1` (`display_name`),
   KEY `creditor_uuid` (`creditor_uuid`),
@@ -1809,9 +1808,6 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   UNIQUE KEY `voucher_1` (`project_id`, `reference`),
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TRIGGER voucher_before_insert BEFORE INSERT ON voucher
-FOR EACH ROW SET NEW.reference = (SELECT IFNULL(MAX(reference) + 1, 1) FROM voucher WHERE voucher.project_id = NEW.project_id);
 
 DROP TABLE IF EXISTS `voucher_item`;
 CREATE TABLE IF NOT EXISTS `voucher_item` (
