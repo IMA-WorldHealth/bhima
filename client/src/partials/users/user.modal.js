@@ -16,48 +16,49 @@ function UserModalController($state, Projects, Users, Notify) {
   vm.validPassword = validPassword;
   vm.editPassword = editPassword;
 
-  Projects.read().then(function (data) {
-    vm.projects = data;
-  })
-  .catch(Notify.handleError);
+  Projects.read()
+    .then(function (projects) {
+      vm.projects = projects;
+    })
+    .catch(Notify.handleError);
 
-  if(!vm.isCreating){
+  if (!vm.isCreating) {
 
     Users.read($state.params.id)
       .then(function (user) {
         vm.user = user;
       })
       .catch(Notify.handleError);
-  }else{
+  } else {
     vm.user.projects = [];
   }
 
   // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
+    var promise;
 
     if (userForm.$invalid) { return; }
     if (!userForm.$dirty) { return; }
 
-    var promise;
 
-    promise = (vm.isCreating)? Users.create(vm.user) : Users.update(vm.user.id, vm.user);
+    promise = (vm.isCreating) ? Users.create(vm.user) : Users.update(vm.user.id, vm.user);
 
-    promise.then(function () {
-          var translateKey = (vm.isCreating) ?  'USERS.CREATED' : 'USERS.UPDATED';
-
-          Notify.success(translateKey);
-          $state.go('users.list', null, {reload : true});
-        })
-        .catch(Notify.handleError);
+    promise
+      .then(function () {
+        var translateKey = (vm.isCreating) ?  'USERS.CREATED' : 'USERS.UPDATED';
+        Notify.success(translateKey);
+        $state.go('users.list', null, {reload : true});
+      })
+      .catch(Notify.handleError);
   }
 
-  function closeModal (){
+  function closeModal () {
     $state.transitionTo('users.list');
   }
 
   // make sure that the passwords exist and match.
   function validPassword() {
-    return vm.user.password === vm.user.passwordVerify;
+    return vm.user.password && vm.user.password.length && vm.user.password === vm.user.passwordVerify;
   }
 
   // opens a new modal to let the user set a password
