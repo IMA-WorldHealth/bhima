@@ -49,7 +49,7 @@ function TrialBalanceTest(){
     trialBalanceError.reset(); //back to the group by account view
     expect(trialBalance.getLineCount()).to.eventually.equal(2);
     
-    trialBalance.showAccountDetailInTransaction(1); //will print list of transaction relative to selected account line(index 0 in occurrence)
+    trialBalance.showAccountDetailInTransaction(0); //will print list of transaction relative to selected account line(index 0 in occurrence)
     expect(trialBalanceDetail.getLineCount()).to.eventually.equal(3);
     trialBalanceDetail.reset();
     trialBalance.closeTrialBalance();
