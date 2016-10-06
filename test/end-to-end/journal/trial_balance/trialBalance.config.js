@@ -20,10 +20,6 @@ function TrialBalanceTest(){
   const generalLedger = new GeneralLedgerPage();
   const trialBalanceError = new TrialBalanceErrorPage();
   const trialBalanceDetail = new TrialBalanceDetailPage();
-  const path = '#/journal';
-
-  // This will be run before every single test ('it') - navigating the browser to the correct page.
-  beforeEach(() => helpers.navigate(path));
 
   it('it should consider that the related transaction is selected even if you selected just one row', function () {
     journal.checkRow(1);
