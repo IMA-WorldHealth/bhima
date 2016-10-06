@@ -21,6 +21,13 @@ const BadRequest = require('../../lib/errors/BadRequest');
 // Account Service
 const AccountService = require('./accounts');
 
+// global errors
+const ERROR_FAILURE_CLOSING = {
+  status: 400,
+  code: 'FISCAL.FAILURE_CLOSING',
+  description: 'Failure occurs during the closing of the fiscal year'
+};
+
 exports.list = list;
 exports.getFiscalYearsByDate = getFiscalYearsByDate;
 exports.setOpeningBalance = setOpeningBalance;
@@ -634,22 +641,14 @@ function closing(req, res, next) {
       transaction.addQuery(sqlInsertJournal, resultParams);
     }
 
+    // lock the fiscal year
+    transaction.addQuery(`UPDATE fiscal_year SET locked = 1 WHERE id = ?;`, [id]);
+
     return transaction.execute();
   })
-  .then(() => {
-    // update the fiscal year
-    const sql = `UPDATE fiscal_year SET locked = 1 WHERE id = ?;`;
-    return db.exec(sql, [id]);
-  })
   .then(rows => {
-    if (!rows.changedRows) {
-      const errorDescription = {
-        status: 400,
-        code: 'FISCAL.FAILURE_CLOSING',
-        description: 'Failure occurs during the closing of the fiscal year'
-      };
-      throw errorDescription;
-    }
+    let queryUpdateFiscal = rows.pop();
+    if (!queryUpdateFiscal.changedRows) { throw ERROR_FAILURE_CLOSING; }
     res.status(200).json({ id: id });
   })
   .catch(next)

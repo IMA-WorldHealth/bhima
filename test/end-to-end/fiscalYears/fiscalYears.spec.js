@@ -159,4 +159,41 @@ describe('Fiscal Year', function () {
 
   });
 
+  it('closing a fiscal year in normal way', () => {
+    helpers.navigate(path);
+
+    // the last in the list is the oldest
+    let updateButton = element.all(by.css('[data-fiscal-entry]'));
+    updateButton.all(by.css('[data-method="update"]')).last().click();
+
+    // this fix multiple element found take first
+    let submitButton = element.all(by.css('[data-method="submit"]')).first();
+
+    // click on the opening balance button
+    element(by.css('[data-action="closing-fiscal-year"]')).click();
+
+    // inner variables
+    let resultAccount = 'Test Capital One';
+    let fiscalYearPattern = 'Test Fiscal Year 2015';
+
+    // set the result account
+    FU.uiSelect('$ctrl.resultAccount', resultAccount);
+
+    // submit to next step
+    submitButton.click()
+
+    // submit to confirm info
+    submitButton.click()
+
+    // set the pattern to confirm
+    element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
+
+    // submit to confirm the action
+    submitButton.click()
+
+    // check notification
+    components.notification.hasSuccess();
+
+  });
+
 });

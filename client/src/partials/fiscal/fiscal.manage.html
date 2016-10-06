@@ -68,7 +68,7 @@
       <p><strong>{{ "FORM.INFO.OTHER_ACTIONS" | translate }}</strong></p>
       <p>
         <!-- close the fiscal year  -->
-        <a class="btn btn-danger" href ng-click="FiscalManageCtrl.closingFiscalYear()">
+        <a class="btn btn-danger" data-action="closing-fiscal-year" href ng-click="FiscalManageCtrl.closingFiscalYear()">
           <i class="fa fa-lock"></i>
           {{ "FORM.INFO.CLOSE_FISCAL_YEAR" | translate }}
         </a>
