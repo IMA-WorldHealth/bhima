@@ -177,9 +177,9 @@ gulp.task('client-vendor-build-bootstrap', function () {
   const bhimaDefinition = 'client/src/less/bhima-bootstrap.less';
 
   return gulp.src(bhimaDefinition)
-    .pipe(gulp.dest('client/vendor/bootstrap/less'))
+    .pipe(gulp.dest('client/vendor/bootstrap/less/'))
     .pipe(less({
-      paths : ['./client/vendor/bootstrap/less/mixins']
+      paths : ['./client/vendor/bootstrap/less/']
     }))
     .pipe(gulp.dest(CLIENT_FOLDER + 'css'));
 });
@@ -200,7 +200,7 @@ gulp.task('client-lint-i18n', function (cb) {
     if (err) { throw err; }
     if (warning) { console.error(warning); }
     cb();
- 	});
+  });
 });
 
 // watches for any change and builds the appropriate route
