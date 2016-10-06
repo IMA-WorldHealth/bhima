@@ -15,8 +15,11 @@ describe('Creditor Groups Management', () => {
 
   const INITIAL_GROUP = 2;
 
+  let currentDate = new Date();
+  let uniqueIdentifier = currentDate.getTime().toString();
+
   const newCreditorGroup = {
-    name : 'E2E Creditor Group',
+    name : 'E2E Creditor Group ' + uniqueIdentifier,
     account : '41001'
   };
 
