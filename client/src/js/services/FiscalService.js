@@ -18,6 +18,7 @@ function FiscalService(Api) {
   var service = new Api('/fiscal/');
 
   // TODO - rename this something like 'byDate()'
+  service.closing = closing;
   service.fiscalYearDate = fiscalYearDate;
   service.periodicBalance = periodicBalance;
   service.setOpeningBalance = setOpeningBalance;
@@ -61,6 +62,19 @@ function FiscalService(Api) {
     return service.$http.post(url, { params: params })
       .then(service.util.unwrapHttpResponse);
   }
+
+  /**
+   * @method closing
+   *
+   * @description closing a fiscal year
+   */
+ function closing(params) {
+   var url = service.url.concat(params.id, '/closing');
+
+   return service.$http.put(url, { params: params })
+     .then(service.util.unwrapHttpResponse);
+ }
+
 
   return service;
 }

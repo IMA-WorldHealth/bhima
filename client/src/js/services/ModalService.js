@@ -64,6 +64,9 @@ function ModalService(Modal) {
   // transaction type : add or edit
   service.openTransactionTypeActions = openTransactionTypeActions;
 
+  // closing fiscal year
+  service.openClosingFiscalYear = openClosingFiscalYear;
+
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -347,6 +350,24 @@ function ModalService(Modal) {
         controller   : 'TransactionTypeModalController',
         controllerAs : '$ctrl',
         size         : 'xs',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    /** closing fiscal year modal */
+    function openClosingFiscalYear(request) {
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/fiscal/templates/modals/fiscal.closing.modal.html',
+        controller   : 'ClosingFiscalYearModalController',
+        controllerAs : '$ctrl',
+        size         : 'lg',
         backdrop     : 'static',
         animation    : false,
         resolve : {
