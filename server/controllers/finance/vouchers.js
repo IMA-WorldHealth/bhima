@@ -140,7 +140,7 @@ function create(req, res, next) {
   });
 
   // map items into an array of arrays
-  items = _.map(items, util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid'));
+  items = _.map(items, util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid', 'document_uuid', 'entity_uuid'));
 
   // initialise the transaction handler
   const transaction = db.transaction();
@@ -148,7 +148,7 @@ function create(req, res, next) {
   // build the SQL query
   transaction
     .addQuery('INSERT INTO voucher SET ?', [ voucher ])
-    .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid) VALUES ?', [ items ])
+    .addQuery('INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid) VALUES ?', [ items ])
     .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
 
   transaction.execute()

@@ -3,8 +3,8 @@ angular.module('bhima.controllers')
 
 FindReferenceModalController.$inject = [
   '$uibModalInstance', 'DebtorService', 'CreditorService',
-  'VoucherService', 'GridFilteringService', 'entity',
-  'PatientInvoiceService'
+  'VoucherService', 'CashService', 'GridFilteringService', 'entity',
+  'PatientInvoiceService', 'uiGridConstants'
 ];
 
 /**
@@ -13,7 +13,7 @@ FindReferenceModalController.$inject = [
  * This controller provides bindings for the find references modal.
  * @todo Implement the Cash Payment Data list for the references
  */
-function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filtering, Entity, Invoices) {
+function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Cash, Filtering, Entity, Invoices, uiGridConstants) {
   var vm = this;
 
   vm.result = {};
@@ -39,12 +39,15 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
   vm.refresh = refresh;
 
   /* ======================= Grid configurations ============================ */
+  vm.filterEnabled = false;
   vm.gridOptions = {};
 
   var filtering  = new Filtering(vm.gridOptions);
 
   vm.gridOptions.multiSelect     = false;
+  vm.gridOptions.enableFiltering = vm.filterEnabled;
   vm.gridOptions.onRegisterApi   = onRegisterApi;
+  vm.toggleFilter = toggleFilter;
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -53,6 +56,16 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
 
   function rowSelectionCallback(row) {
     vm.selectedRow = row.entity;
+
+    // update to selected document type
+    vm.selectedRow.document_type = vm.documentTypeLabel;
+  }
+
+  /** toggle filter */
+  function toggleFilter() {
+    vm.filterEnabled = !vm.filterEnabled;
+    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
   /* ======================= End Grid configurations ======================== */
 
@@ -81,11 +94,22 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
   }
 
   function referenceCashPayment() {
-    /**
-    * @fixme the balance value is not correct for the document references
-    * The correct value is the amount of the invoice in the receipt
-    */
-    return;
+    Cash.read()
+    .then(function (list) {
+      var costTemplate =
+        '<div class="ui-grid-cell-contents text-right">' +
+          '{{ row.entity.amount | currency: grid.appScope.enterprise.currency_id }}' +
+        '</div>';
+
+      vm.gridOptions.columnDefs = [
+        { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
+        { field : 'date', cellFilter:'date', filter : { condition : filtering.byDate }, displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate' },
+        { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
+        { field : 'amount', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate }
+      ];
+
+      vm.gridOptions.data = list;
+    });
   }
 
   function referenceVoucher() {
@@ -98,9 +122,9 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
 
       vm.gridOptions.columnDefs  = [
         { field : 'reference', displayName : 'Reference'},
-        { field : 'description', displayName : 'Description'},
-        { field : 'amount', displayName : 'Amount', cellTemplate: amountTemplate },
         { field : 'date', displayName : 'Date', cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
+        { field : 'description', displayName : 'Description'},
+        { field : 'amount', displayName : 'Amount', cellTemplate: amountTemplate }
       ];
 
       // format data for the grid
@@ -110,8 +134,7 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Filte
           reference     : item.reference,
           date          : item.date,
           description   : item.description,
-          amount        : item.amount,
-          document_uuid : item.document_uuid
+          amount        : item.amount
         };
       });
       vm.gridOptions.data = data;

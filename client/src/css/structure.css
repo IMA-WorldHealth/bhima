@@ -785,3 +785,8 @@ growl-notification.fading.ng-leave.ng-leave-active {
 .ui-select-multiple.ui-select-bootstrap .ui-select-match .close {
   line-height: 1;
 }
+
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}

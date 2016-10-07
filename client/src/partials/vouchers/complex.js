@@ -28,6 +28,10 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     current: true
   }];
 
+  // global variables
+  vm.gridOptions = {};
+  vm.gridApi = {};
+
   // bind the startup method as a reset method
   vm.submit = submit;
   vm.currencySymbol     = currencySymbol;
@@ -88,7 +92,9 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
   /** generate row element */
   function generateRow() {
+    var index = vm.rows.length || 0;
     return {
+      index         : index,
       account_id    : undefined,
       debit         : 0,
       credit        : 0,
@@ -132,7 +138,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
       account_id = row.account && row.account.id ? row.account.id : '';
       entity_uuid = row.entity && row.entity.uuid ? row.entity.uuid : '';
-      document_uuid = row.reference && row.reference.document_uuid ? row.reference.document_uuid : '';
+      document_uuid = row.reference && row.reference.uuid ? row.reference.uuid : '';
 
       return {
         account_id    : account_id,
@@ -214,10 +220,11 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
       (angular.isDefined(row.debit) && angular.isDefined(row.credit));
 
     /** must have an account defined */
-    var validAccount = (row.account && row.account.id);
+    var validAccount = (row.account && row.account.id) ? true : false;
 
     /** validity of the row */
     vm.rows[index].isValid = validAccount && validAmount;
+    vm.rows[index].hasAccount = validAccount;
 
     /**
      * refresh the ui to the real state
@@ -266,6 +273,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     vm.rows = [];
     vm.rows.push(generateRow());
     vm.rows.push(generateRow());
+    vm.gridOptions.data = vm.rows;
 
     // init sum debit and credit
     vm.sumDebit  = 0;
@@ -349,7 +357,68 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     }
 
   }
-  /* ============================= /Transfer Type ============================ */
+  /* ============================= End Transfer Type ========================= */
+
+
+  /* ============================= Grid ====================================== */
+
+  // grid default options
+  vm.gridOptions.appScopeProvider = vm;
+  vm.gridOptions.columnDefs       =
+    [
+      { field : 'isValid', displayName : '...',
+        headerCellFilter: 'translate', cellFilter: 'translate',
+        cellTemplate: 'partials/vouchers/templates/status.grid.tmpl.html',
+        enableFiltering: false,
+        enableColumnMenu: false,
+        width: 40
+      },
+
+      { field : 'account', displayName : 'FORM.LABELS.ACCOUNT',
+        headerCellFilter: 'translate',
+        cellTemplate: 'partials/vouchers/templates/account.grid.tmpl.html'
+      },
+
+      { field : 'debit', displayName : 'FORM.LABELS.DEBIT',
+        headerCellFilter: 'translate',
+        cellTemplate: 'partials/vouchers/templates/debit.grid.tmpl.html'
+      },
+
+      { field : 'credit', displayName : 'FORM.LABELS.CREDIT',
+        headerCellFilter: 'translate',
+        cellTemplate: 'partials/vouchers/templates/credit.grid.tmpl.html'
+      },
+
+      { field : 'entity', displayName : 'FORM.LABELS.DEBTOR_CREDITOR',
+        headerCellFilter: 'translate',
+        cellTemplate: 'partials/vouchers/templates/entity.grid.tmpl.html',
+        enableFiltering: false,
+        enableColumnMenu: false
+      },
+
+      { field : 'reference', displayName : 'FORM.LABELS.REFERENCE',
+        headerCellFilter: 'translate',
+        cellTemplate: 'partials/vouchers/templates/reference.grid.tmpl.html',
+        enableFiltering: false,
+        enableColumnMenu: false
+      },
+
+      { field : 'action', displayName : '...',
+        width: 25,
+        cellTemplate: 'partials/vouchers/templates/remove.grid.tmpl.html',
+        enableFiltering: false,
+        enableColumnMenu: false
+      }
+    ];
+
+  // register API
+  vm.gridOptions.onRegisterApi = onRegisterApi;
+
+  /** API register function */
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
+  /* ============================= End Grid ================================== */
 
   /** submit data */
   function submit(form) {

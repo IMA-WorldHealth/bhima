@@ -1,0 +1,18 @@
+<div class="ui-grid-cell-contents"
+  ng-class="{'bg-success': row.entity.entity.type=='D', 'bg-warning': row.entity.entity.type=='C'}">
+  <a
+    class="text-action"
+    ng-click="grid.appScope.openEntityModal(row.entity)"
+    data-entity-button>
+
+    <span
+      ng-show="row.entity.entity.uuid"
+      ng-class="{'text-success': row.entity.entity.type=='D', 'text-warning': row.entity.entity.type=='C'}">
+      <i class="fa fa-user"></i> {{ row.entity.entity.label }}
+    </span>
+
+    <span ng-hide="row.entity.entity.uuid">
+      <i class="fa fa-plus"></i> {{ 'FORM.LABELS.ENTITY' | translate }}
+    </span>
+  </a>
+</div>

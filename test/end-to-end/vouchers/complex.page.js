@@ -8,7 +8,7 @@ helpers.configure(chai);
 
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
-const GU = require('../shared/gridTestUtils.spec.js');
+const GU = require('../shared/GridUtils');
 
 /**
  * @class Row
@@ -20,60 +20,60 @@ const GU = require('../shared/gridTestUtils.spec.js');
  * @requires components
  * @requires FormUtils
  */
-class Row {
-  constructor(index) {
+ class Row {
+   constructor(index) {
 
-    // store a reference to the <tr> dom element
-    this._node = $(`[data-row="${index}"]`);
-  }
+     // store a reference of the row 
+     this._node = GU.getRow('voucherGridId', index);
+   }
 
-  // account setter
-  account(number) {
-    FU.uiSelect('row.account', number, this._node);
-  }
+   // account setter
+   account(number) {
+    FU.uiSelectAppended('row.entity.account', number, this._node);
+   }
 
-  // sets the debit value
-  debit(number) {
-    FU.input('row.debit', number, this._node);
-  }
+   // sets the debit value
+   debit(number) {
+     FU.input('row.entity.debit', number, this._node);
+   }
 
-  // sets the credit value
-  credit(number) {
-    FU.input('row.credit', number, this._node);
-  }
+   // sets the credit value
+   credit(number) {
+     FU.input('row.entity.credit', number, this._node);
+   }
 
-  // sets the entity
-  entity(type, name) {
-    // click the 'open entity modal' button
-    this._node.$('[data-entity-button]').click();
+   // sets the entity
+   entity(type, name) {
+     // click the 'open entity modal' button
+     this._node.$('[data-entity-button]').click();
 
-    // the modal is now open
+     // the modal is now open
 
-    // select the proper entity type (Debtor/Creditor)
-    FU.dropdown('[data-dropdown-target="entity"]', type);
+     // select the proper entity type (Debtor/Creditor)
+     FU.dropdown('[data-dropdown-target="entity"]', type);
 
-    // select the typeahead
-    FU.typeahead('$ctrl.entity', name);
+     // select the typeahead
+     FU.uiSelect('$ctrl.entity', name);
 
-    // click the 'submit' button
-    $('[data-modal="entity"]').$('[data-method="submit"]').click();
-  }
+     // click the 'submit' button
+     $('[data-modal="entity"]').$('[data-method="submit"]').click();
+   }
 
-  // sets the reference
-  reference(type, index) {
-    // click the 'open reference modal' button
-    this._node.$('[data-reference-button]').click();
+   // sets the reference
+   reference(type, index) {
+     // click the 'open reference modal' button
+     this._node.$('[data-reference-button]').click();
 
-    // select the type
-    // supported : 'voucher', 'cash-payment', 'patient-invoice'
-    $(`[data-button-${type}]`).click();
+     // select the type
+     // supported : 'voucher', 'cash-payment', 'patient-invoice'
+     $(`[data-button-${type}]`).click();
 
-    GU.selectRow('referenceGrid', index);
+     GU.selectRow('referenceGrid', index);
 
-    // submit the modal
-    $('[data-reference-modal]').$('[data-method="submit"]').click();
-  }
-}
+     // submit the modal
+     $('[data-reference-modal]').$('[data-method="submit"]').click();
+   }
+ }
 
 
 /**

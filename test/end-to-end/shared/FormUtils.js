@@ -143,7 +143,7 @@ module.exports = {
    * Selects an option from the ui-select dropdown
    *
    * @param {String} model - the ng-model target to select
-   * @param {String} option - the text of the option element to choose
+   * @param {String} label - the text of the option element to choose
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
@@ -163,6 +163,33 @@ module.exports = {
 
     // select the item of the dropdown menu matching the label
     let option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
+    return option.click();
+  },
+
+  /**
+   * @method uiSelectAppended
+   *
+   * @description
+   * Selects an option from the ui-select dropdown
+   * which have the `append-to-body` option set to true
+   *
+   * @param {String} model - the ng-model target to select
+   * @param {String} label - the text of the option element to choose
+   * @param {Element} anchor - a protractor element to search within
+   * @returns {Element} - a protractor option element
+   */
+  uiSelectAppended: function uiSelectAppended(model, label, anchor) {
+    const externalAnchor = $('body > div.ui-select-bootstrap.dropdown');
+
+    // click on the element
+    anchor = anchor || $('body');
+    anchor.element(by.model(model)).click();
+
+    // type into the <input> element the searchable value
+    this.input('$select.search', label, externalAnchor);
+
+    // select the item of the dropdown menu matching the label
+    let option = externalAnchor.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
     return option.click();
   },
 
