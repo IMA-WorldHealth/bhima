@@ -106,7 +106,7 @@ function list(req, res, next) {
 
   const sql = `
     SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference,
-      cash.date, cash.amount
+      cash.date, cash.amount, cash.description 
     FROM cash JOIN project ON cash.project_id = project.id;
   `;
 

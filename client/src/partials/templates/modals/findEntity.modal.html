@@ -38,14 +38,20 @@
         </div>
         <!-- /dropdown button -->
 
-        <input
-          type="text"
-          class="form-control"
+        <ui-select
+          name="text"
           ng-model="$ctrl.entity"
-          placeholder="{{ $ctrl.placeholder | translate }}..."
-          uib-typeahead="entity as entity.text for entity in $ctrl.entities | limitTo: 10"
-          typeahead-on-select="$ctrl.selectEntity($item)"
-          >
+          on-select="$ctrl.selectEntity($item)"
+          theme="bootstrap"
+          required>
+          <ui-select-match placeholder="{{ $ctrl.placeholder | translate }}...">
+            <span>{{$select.selected.text}}</span>
+          </ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="entity as entity in $ctrl.entities | filter:$select.search">
+            <strong ng-bind-html="entity.text | highlight:$select.search"></strong>
+          </ui-select-choices>
+        </ui-select>
+
       </div>
 
       <div ng-show="$ctrl.result.uuid" class="bg-success">

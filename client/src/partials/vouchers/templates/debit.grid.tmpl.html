@@ -1,0 +1,9 @@
+<div class="ui-grid-cell-contents">
+  <input
+    ng-model="row.entity.debit"
+    ng-change="grid.appScope.checkRowValidity(row.entity.index)"
+    ng-disabled="!row.entity.hasAccount"
+    type="number"
+    class="form-control text-right"
+    required>
+</div>

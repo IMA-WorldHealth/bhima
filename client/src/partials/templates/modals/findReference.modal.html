@@ -12,11 +12,20 @@
       {{ $ctrl.documentTypeLabel | translate }} /
       <b class="label label-primary">{{ $ctrl.selectedEntity.label }}</b>
 
-      <span
-        ng-click="$ctrl.refresh()"
-        class="btn btn-default pull-right">
-        <span class="glyphicon glyphicon-refresh"></span>
-      </span>
+      <div class="pull-right">
+        <span
+          ng-click="$ctrl.toggleFilter()"
+          class="btn btn-default">
+          <span class="fa fa-search"></span>
+        </span>
+
+        <span
+          ng-click="$ctrl.refresh()"
+          class="btn btn-default">
+          <span class="fa fa-refresh"></span>
+        </span>
+      </div>
+
     </span>
   </h4>
 </div>
@@ -67,6 +76,8 @@
         id="referenceGrid"
         class="journalGrid"
         ui-grid="$ctrl.gridOptions"
+        ui-grid-auto-resize
+        ui-grid-resize-columns
         ui-grid-selection>
       </div>
     </div>

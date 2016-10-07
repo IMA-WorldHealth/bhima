@@ -109,6 +109,7 @@ function selectRow( gridId, rowNum ) {
 
 exports.getGrid = getGrid;
 exports.getRows = getRows;
+exports.getRow  = getRow;
 exports.getColumns = getColumns;
 exports.getCell = getCell;
 exports.expectRowCount = expectRowCount;
