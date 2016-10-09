@@ -14,12 +14,14 @@ describe('Creditor Groups Management', () => {
   before(() => helpers.navigate(path));
 
   const INITIAL_GROUP = 2;
+  const USED_CREDITOR_GROUP = 'Personnel [Creditor Group Test]';
 
   let currentDate = new Date();
   let uniqueIdentifier = currentDate.getTime().toString();
 
-  const newCreditorGroup = {
+  const group = {
     name : 'E2E Creditor Group ' + uniqueIdentifier,
+    updated_name : 'E2E Creditor Group Updated ' + uniqueIdentifier,
     account : '41001'
   };
 
@@ -30,8 +32,8 @@ describe('Creditor Groups Management', () => {
   it('creates a creditor group', () => {
     FU.buttons.create();
 
-    FU.input('CreditorGroupCtrl.bundle.name', newCreditorGroup.name);
-    FU.uiSelect('CreditorGroupCtrl.bundle.account_id', newCreditorGroup.account);
+    FU.input('CreditorGroupCtrl.bundle.name', group.name);
+    FU.uiSelect('CreditorGroupCtrl.bundle.account_id', group.account);
 
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -39,10 +41,9 @@ describe('Creditor Groups Management', () => {
   });
 
   it('updates a creditor group', () => {
-    let updateGroup = element.all(by.css('[data-group-entry]'));
-    updateGroup.all(by.css('[data-method="update"]')).first().click();
+    element(by.css(`[data-update="${group.name}"]`)).click();
 
-    FU.input('CreditorGroupCtrl.bundle.name', newCreditorGroup.name + ' (updated)');
+    FU.input('CreditorGroupCtrl.bundle.name', group.updated_name);
     element(by.model('CreditorGroupCtrl.bundle.locked')).click();
 
     FU.buttons.submit();
@@ -50,19 +51,14 @@ describe('Creditor Groups Management', () => {
   });
 
   it('Cannot delete a used creditor group', () => {
-    // click on the bottom element ie old
-    let group = element.all(by.css('[data-group-entry]'));
-    group.all(by.css('[data-method="delete"]')).last().click();
+    element(by.css(`[data-delete="${USED_CREDITOR_GROUP}"]`)).click();
 
     FU.buttons.submit();
     components.notification.hasError();
   });
 
   it('Delete a creditor group', () => {
-
-    // click on tne new one
-    let group = element.all(by.css('[data-group-entry]'));
-    group.all(by.css('[data-method="delete"]')).first().click();
+    element(by.css(`[data-delete="${group.updated_name}"]`)).click();
 
     FU.buttons.submit();
     components.notification.hasSuccess();

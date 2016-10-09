@@ -104,7 +104,7 @@ function CreditorGroupController($state, CreditorGroup, Accounts, Notify, Modal)
       CreditorGroup.update(uuid, vm.bundle) :
       CreditorGroup.create(vm.bundle);
 
-    promise.then(function () {
+    return promise.then(function () {
       Notify.success(vm.isUpdateState ? 'FORM.INFO.UPDATE_SUCCESS' : 'FORM.INFO.CREATE_SUCCESS');
 
       // navigate back to list view

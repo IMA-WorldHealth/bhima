@@ -770,6 +770,7 @@ growl-notification.fading.ng-leave.ng-leave-active {
 
 .text-action {
   cursor : pointer;
+  text-decoration: none !important;
 }
 
 .text-bold {

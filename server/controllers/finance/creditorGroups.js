@@ -8,14 +8,8 @@
  */
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 const uuid = require('node-uuid');
-
-// global constants
-const FAILURE_DELETING_CREDITOR_GROUP = {
-  status: 400,
-  code: 'CREDITOR_GROUP.FAILURE_DELETE',
-  description: 'Cannot delete the creditor group, an error occured'
-};
 
 // GET /creditor_groups
 function lookupCreditorGroup(uuid) {
@@ -123,11 +117,10 @@ function remove(req, res, next) {
   const sql = 'DELETE FROM creditor_group WHERE uuid = ?;';
   const uid = db.bid(req.params.uuid);
   db.exec(sql, [uid])
-    .then(() => {
-      return db.exec('SELECT uuid FROM creditor_group WHERE uuid = ?', [uid]);
-    })
-    .then(record => {
-      if (record.legnth) { throw FAILURE_DELETING_CREDITOR_GROUP; }
+    .then(rows => {
+      if (!rows.affectedRows) {
+        throw new BadRequest(`Cannot delete the creditor group with id ${req.params.uuid}`, 'CREDITOR_GROUP.FAILURE_DELETE');
+      }
       res.sendStatus(203);
     })
     .catch(next)
