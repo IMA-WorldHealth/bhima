@@ -175,15 +175,20 @@ function detail(req, res, next) {
  * Updates a patient group
  */
 function update(req, res, next) {
-  let data = db.convert(req.body, ['debtor_uuid', 'current_location_id', 'origin_location_id']);
-  let patientUuid = req.params.uuid;
-  let buid = db.bid(patientUuid);
+  const data = db.convert(req.body, ['debtor_uuid', 'current_location_id', 'origin_location_id']);
+  const patientUuid = req.params.uuid;
+  const buid = db.bid(patientUuid);
+
+  // sanitize date
+  if (data.dob) {
+    data.dob = new Date(data.dob);
+  }
 
   // prevent updating the patient's uuid
   delete data.uuid;
   delete data.reference;
 
-  let updatePatientQuery =
+  const updatePatientQuery =
     'UPDATE patient SET ? WHERE uuid = ?';
 
   db.exec(updatePatientQuery, [data, buid])

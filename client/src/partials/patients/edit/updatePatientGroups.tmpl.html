@@ -1,46 +1,43 @@
-<div class="modal-header">
-  <h3 class="modal-title">{{ "FORM.LABELS.UPDATE_PATIENT_GROUP" | translate }}</h3>
-</div>
+<form name="groupForm" bh-submit="UpdatePatientGroupsCtrl.confirmGroups(groupForm)" bh-form-defaults novalidate>
+  <div class="modal-header">
+    <h3 class="modal-title">{{ ::"FORM.LABELS.UPDATE_PATIENT_GROUP" | translate }}</h3>
+  </div>
 
-<div class="modal-body">
+  <div class="modal-body">
+    <p class="text-info" ng-if="UpdatePatientGroupsCtrl.patientGroups.length > 0">
+      <i class="fa fa-info-circle"></i>  {{ "FORM.INFO.GROUPS_PATIENT" | translate }}
+    </p>
 
-  <p class="text-info">
-  {{ "FORM.INFO.GROUPS_PATIENT" | translate }}
-  </p>
-  <p class="text-warning" ng-if="UpdatePatientGroupsCtrl.patientGroups.length === 0">
-  {{ "PATIENT_EDIT.WARN" | translate }}
-  </p>
+    <p class="text-warning" ng-if="UpdatePatientGroupsCtrl.patientGroups.length === 0">
+      <i class="fa fa-warning"></i> {{ "PATIENT_EDIT.WARN" | translate }}
+    </p>
 
-  <form name="groupForm" bh-form-defaults novalidate>
-    <div class="form-group has-feedback">
-
-      <label class="control-label">{{ "FORM.LABELS.GROUPS_PATIENT_TITLE" | translate }}</label>
-
+    <div class="form-group has-feedback" ng-if="UpdatePatientGroupsCtrl.patientGroups.length > 0">
+      <label class="control-label">
+        {{ "FORM.LABELS.GROUPS_PATIENT_TITLE" | translate }}
+      </label>
       <div
         class="checkbox"
         ng-repeat="group in UpdatePatientGroupsCtrl.patientGroups | orderBy:'name'">
         <label>
-        <input
-          data-group-option
-          type="checkbox"
-          name="subscribedGroups"
-          ng-model="UpdatePatientGroupsCtrl.subscribedGroups[group.uuid]">
-        {{group.name}}
+          <input
+            data-group-option
+            type="checkbox"
+            name="subscribedGroups"
+            ng-model="UpdatePatientGroupsCtrl.subscribedGroups[group.uuid]">
+          {{group.name}}
         </label>
       </div>
     </div>
-  </form>
-</div>
+  </div>
 
-<div class="modal-footer">
-  <button
-    class="btn btn-default"
-    ng-click="UpdatePatientGroupsCtrl.closeModal()">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
-  <button
-    class="btn btn-default"
-    data-confirm-group
-    ng-click="UpdatePatientGroupsCtrl.confirmGroups()"
-    ng-disabled="UpdatePatientGroupsCtrl.patientGroups.length === 0">
-      {{ "FORM.BUTTONS.CONFIRM" | translate }}
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="UpdatePatientGroupsCtrl.closeModal()">
+      {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
-</div>
+
+    <bh-loading-button loading-state="groupForm.$loading">
+      {{ "FORM.BUTTONS.CONFIRM" | translate }}
+    </bh-loading-button>
+  </div>
+</form>

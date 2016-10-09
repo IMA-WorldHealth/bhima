@@ -1,33 +1,38 @@
 angular.module('bhima.controllers')
-.controller('PatientEdit', PatientEdit);
+  .controller('PatientEdit', PatientEdit);
 
 PatientEdit.$inject = [
   '$stateParams', 'PatientService', 'util', 'moment', 'NotifyService',
-  'ScrollService', 'PatientGroupModal', 'DateService'
+  'ScrollService', 'PatientGroupModal', 'DateService', 'bhConstants'
 ];
 
-function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, GroupModal, Dates) {
+function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, GroupModal, Dates, Constants) {
   var vm = this;
   var referenceId = $stateParams.uuid;
 
   vm.patient = null;
   vm.unknownId = false;
-  vm.minDOB = util.minDOB;
-  vm.maxDOB = util.maxDOB;
 
-  // Maxlength field for Patient Registration
+  // maxlength field for Patient Registration
+  // @todo - move this to a config param
   vm.maxLength = util.maxTextLength;
   vm.length150 = util.length150;
-  vm.length100 = util.length100;
   vm.length50 = util.length50;
   vm.length40 = util.length40;
   vm.length30 = util.length30;
-  vm.length16 = util.length16;
   vm.length12 = util.length12;
 
   if (referenceId) {
     buildPage(referenceId);
   }
+
+  // datepicker options
+  vm.datePickerOptions = {
+    maxDate : new Date(),
+    minDate : Constants.dates.minDob
+  };
+
+  vm.datePickerIsOpen = false;
 
   function buildPage(patientId) {
     collectPatient(patientId)
@@ -58,12 +63,11 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
 
   function formatPatientAttributes(patient) {
 
-    // Sanitise DOB for HTML Date Input
+    // Sanitise DOB for Date Input
     patient.dob = new Date(patient.dob);
 
     // Assign name
     patient.name = patient.display_name;
-
     patient.displayGender = patient.sex;
     patient.displayAge = moment().diff(patient.dob, 'years');
   }
@@ -92,7 +96,6 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
   // TODO Clearer naming conventions
   vm.updatePatient = function updatePatient(patientDetailsForm) {
     var submitPatient;
-    patientDetailsForm.$setSubmitted();
 
     if (patientDetailsForm.$pristine) {
       Notify.warn('PATIENT_EDIT.RECORD_SAME');
@@ -106,11 +109,7 @@ function PatientEdit($stateParams, patients, util, moment, Notify, ScrollTo, Gro
 
     submitPatient = util.filterFormElements(patientDetailsForm, true);
 
-    if (submitPatient.dob) {
-      submitPatient.dob = Dates.util.str(submitPatient.dob);
-    }
-
-    patients.update(vm.medical.uuid, submitPatient)
+    return patients.update(vm.medical.uuid, submitPatient)
       .then(function (updatedPatient) {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
 
