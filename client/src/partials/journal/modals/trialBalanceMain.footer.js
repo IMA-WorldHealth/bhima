@@ -13,10 +13,10 @@ TrialBalanceMainFooterController.$inject = [
  * This controller handles the view for the footer of the trial balance modal
  */
 function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
-  window.state = $state;
   var vm = this;
 
   vm.state = $state;
+  vm.feedback = $state.current.data.checkingData.feedBack;
 
   /**
    * @function cancel
@@ -34,7 +34,7 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
   function submit() {
     trialBalanceService.postToGeneralLedger($state.params.records)
       .then(function () {
-        $state.go('generalLedger', null, {notify : true});
+        $state.transitionTo('generalLedger');
       })
       .catch(Notify.handleError);
   }

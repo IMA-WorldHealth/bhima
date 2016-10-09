@@ -20,23 +20,20 @@ function TrialBalanceService(util, $http, $translate) {
     var list = [];
 
     /**
-     * records is an array of nine item representing nine checks,
-     * so if a check fails the item will be null but
+     * records is an array of items representing checks,
      * if there is an error or warning the item will be defined
+     * with some descriptions about the errors or warnings
      */
     records.forEach(function (record) {
       var line = [];
       var codeTranslated = null;
 
-      if(record){
+      codeTranslated = $translate.instant(record.code);
+      line = record.transactions.map(function (item) {
+        return {code : codeTranslated, transaction : item};
+      });
 
-        codeTranslated = $translate.instant(record.code);
-        line = record.transactions.map(function (item) {
-          return {code : codeTranslated, transaction : item};
-        });
-
-        list = list.concat(line);
-      }
+      list = list.concat(line);
     });
 
     return list;
@@ -153,21 +150,27 @@ function TrialBalanceService(util, $http, $translate) {
    * This function gets an account_id with a list of transaction and send back
    * a list of transaction related to this account
    **/
-  function getRelatedTransaction(accountId, records){
-    var transactions = [], processed = [];
+  function getRelatedTransaction(accountId, records) {
 
-    records.forEach(function (item) {
-      if(processed.indexOf(item.trans_id) === -1 && item.account_id === accountId){
-        transactions = transactions.concat(getTransaction(item.trans_id, records));
+    // these are transaction ids of transactions that we will keep.
+    var transIds = [];
+
+    // loop through all records, adding related rows to the  transIds array
+    records.forEach(function (row) {
+
+      // determine if we need to keep the transaction by checking the account id
+      var isRelated = (row.account_id === accountId);
+      if (isRelated) {
+        transIds.push(row.trans_id);
       }
     });
-    return transactions;
-  }
 
-  function getTransaction(transId, records){
-    return records.filter(function (record) {
-      return record.trans_id === transId;
+    // filter on the transactions
+    var transactions = records.filter(function (row) {
+      return transIds.indexOf(row.trans_id) > -1;
     });
+
+    return transactions;
   }
 
   return service;

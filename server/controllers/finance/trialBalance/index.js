@@ -288,8 +288,11 @@ exports.checkTransactions = function (req, res, next) {
     checkRecordUuidExists(transactions), checkEntityExists(transactions), checkEntityIsAlwaysDefined(transactions),
     checkDescriptionExists(transactions)
   ])
-  .then(function (errorReport){
-    res.status(201).json(errorReport);
+  .then(function (errorReports){
+    var errors = errorReports.filter(function (errorReport) {
+      return errorReport;
+    });
+    res.status(201).json(errors);
   })
   .catch(function (error) {
      next(error);
