@@ -524,6 +524,7 @@ exports.configure = function configure(app) {
   app.get('/creditor_groups', creditorGroups.list);
   app.get('/creditor_groups/:uuid', creditorGroups.detail);
   app.put('/creditor_groups/:uuid', creditorGroups.update);
+  app.delete('/creditor_groups/:uuid', creditorGroups.remove);
 
   app.get('/creditors', creditors.list);
   app.get('/creditors/:uuid', creditors.detail);

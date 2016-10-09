@@ -8,6 +8,7 @@
  */
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 const uuid = require('node-uuid');
 
 // GET /creditor_groups
@@ -29,9 +30,13 @@ function list(req, res, next) {
     'SELECT BUID(uuid) as uuid, name FROM creditor_group ;';
 
   if (req.query.detailed === '1') {
-    sql =
-      `SELECT enterprise_id, BUID(uuid) as uuid, name, account_id, locked
-      FROM creditor_group ;`;
+    sql = `
+      SELECT enterprise_id, BUID(creditor_group.uuid) AS uuid, creditor_group.name,
+        creditor_group.account_id, creditor_group.locked,
+        COUNT(creditor.uuid) AS total_creditors
+      FROM creditor_group
+      LEFT JOIN creditor ON creditor.group_uuid = creditor_group.uuid
+      GROUP BY creditor_group.uuid`;
   }
 
   db.exec(sql)
@@ -57,12 +62,17 @@ function detail(req, res, next) {
 }
 
 
-// POST /creditor_groups
+/**
+* POST /creditor_groups
+*
+* Insert new records in the creditor_group table
+*/
 function create(req, res, next) {
   const data = req.body;
 
   // provide UUID if the client has not specified
   data.uuid = db.bid(data.uuid || uuid.v4());
+  data.enterprise_id = req.session.enterprise.id;
 
   const sql =
     'INSERT INTO creditor_group SET ? ';
@@ -76,7 +86,11 @@ function create(req, res, next) {
 }
 
 
-// PUT /creditor_groups/:uuid
+/**
+* PUT /creditor_groups/:uuid
+*
+* Update a creditor group based on its uuid
+*/
 function update(req, res, next) {
   let sql =
     'UPDATE creditor_group SET ? WHERE uuid = ?;';
@@ -94,6 +108,25 @@ function update(req, res, next) {
     .done();
 }
 
+/**
+* DELETE /creditor_groups/:uuid
+*
+* Delete an existing creditor group
+*/
+function remove(req, res, next) {
+  const sql = 'DELETE FROM creditor_group WHERE uuid = ?;';
+  const uid = db.bid(req.params.uuid);
+  db.exec(sql, [uid])
+    .then(rows => {
+      if (!rows.affectedRows) {
+        throw new BadRequest(`Cannot delete the creditor group with id ${req.params.uuid}`, 'CREDITOR_GROUP.FAILURE_DELETE');
+      }
+      res.sendStatus(203);
+    })
+    .catch(next)
+    .done();
+}
+
 // get list of creditor group
 exports.list = list;
 
@@ -105,3 +138,6 @@ exports.create = create;
 
 // update creditor group informations
 exports.update = update;
+
+// delete the group
+exports.remove = remove;

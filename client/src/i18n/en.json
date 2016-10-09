@@ -120,6 +120,12 @@
     "REGISTERED"    : "Registered Countries",
     "TITLE"         : "Country Management"
   },
+  "CREDITOR_GROUP" : {
+    "BACK"           : "Back to creditor groups list",
+    "CREATE"         : "Create a creditor group",
+    "UPDATE"         : "Update a creditor group",
+    "FAILURE_DELETE" : "Failure of the deletion of the creditor group"
+  },
   "DB": {
     "ER_ROW_IS_REFERENCED_2" : "Cannot delete entry since it has been used in a transaction."
   },
@@ -254,6 +260,7 @@
       "LINK_SUBMISSION"       : "Link to Submission",
       "LOGOUT"                : "Logout",
       "NEXT"                  : "Next",
+      "NEW"                   : "New",
       "NOT_CONFIGURED"        : "Not Configured",
       "OK"                    : "OK",
       "PRINT"                 : "Print",
@@ -279,7 +286,7 @@
     },
     "DIALOGS": {
       "CONFIRM_ACTION"         : "Do you confirm this action ?",
-      "CONFIRM_DELETE"         : "You are about to delete a record.  This action is permanent and cannot be done.  Click \"Confirm\" to accept or \"Cancel\" to halt this action.",
+      "CONFIRM_DELETE"         : "You are about to delete a record.  This action is permanent and cannot be undone.  Click \"Confirm\" to accept or \"Cancel\" to halt this action.",
       "CANNOT_UNDONE_ACTION"   : "This action CANNOT BE REVERSED, this action will be permanent. You must be sure that you want to do this action",
       "NO_CORRESPONDANCY"      : "No correspondancy found for ",
       "PLEASE_TYPE_TEXT"       : "Please type {{value}} to confirm",
@@ -392,6 +399,7 @@
       "COUNTRY"                : "Country",
       "CREDIT"                 : "Credit",
       "CREDITOR_GROUP"         : "Creditor Group",
+      "CREDITOR_SUBCRIBED"     : "Subscribed Creditors",
       "CURRENCIES"             : "Currencies",
       "CURRENCY"               : "Currency",
       "CURRENT_LOCATION"       : "Current Location",
@@ -1174,6 +1182,7 @@
     "COMPLEX_JOURNAL_VOUCHER"    : "Journal Vouchers",
     "COST_CENTER_MGMT"           : "Cost Center Management",
     "CREDIT_NOTE"                : "Credit note",
+    "CREDITOR_GROUP"             : "Creditor Group Management",
     "CURRENCY"                   : "Currency",
     "DEBTOR_GROUP"               : "Debtor Group Management",
     "EMPLOYEE"                   : "Employee",

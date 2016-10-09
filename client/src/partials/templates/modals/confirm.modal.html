@@ -1,11 +1,11 @@
 <form name="ConfirmModalForm" bh-submit="ConfirmModalCtrl.submit()" data-confirm-modal bh-form-defaults novalidate>
   <div class="modal-header">
-    <h4><i class="fa fa-warning text-warning"></i> {{ "FORM.DIALOGS.CONFIRM_MODAL" | translate }}</h4>
+    <h4>{{ "FORM.DIALOGS.CONFIRM_ACTION" | translate }}</h4>
   </div>
 
   <div class="modal-body">
     <dl>
-      <dt>{{ ::"FORM.DIALOGS.WARNING" | translate }}</dt>
+      <dt><i class="fa fa-warning text-warning"></i> {{ ::"FORM.DIALOGS.WARNING" | translate }}</dt>
       <dd>{{ ::ConfirmModalCtrl.prompt | translate }}</dd>
     </dl>
   </div>

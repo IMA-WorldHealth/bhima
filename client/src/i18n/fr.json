@@ -127,6 +127,12 @@
     "REGISTERED"    : "Pays Enregistrées",
     "TITLE"         : "Gestion des Pays"
   },
+  "CREDITOR_GROUP" : {
+    "BACK"           : "Retour vers la liste des groupes crediteurs",
+    "CREATE"         : "Creation d'un groupe crediteur",
+    "UPDATE"         : "Mise à jour du groupe crediteur",
+    "FAILURE_DELETE" : "Echec de suppression du groupe crediteur"
+  },
   "DB": {
     "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
   },
@@ -261,6 +267,7 @@
       "LOGOUT"                : "Déconnexion",
       "LINK_SUBMISSION"       : "Lien vers l'envoie d'un formulaire",
       "NEXT"                  : "Suivant",
+      "NEW"                   : "Nouveau",
       "NOT_CONFIGURED"        : "Non configuree",
       "OK"                    : "OK",
       "PRINT"                 : "Imprimer",
@@ -286,13 +293,14 @@
     },
     "DIALOGS": {
       "CONFIRM_ACTION"         : "Confirmez vous cette action ?",
-      "CONFIRM_DELETE"         : "Confirmez vous la suppression ?",
+      "CONFIRM_DELETE"         : "Vous etes sur le point de supprimer un enregistrement. Cette action sera permanent et ne pourra etre annulé. Cliquer sur \"Confirmer\" pour accepter ou \"Annuler\" pour annuler cette action",
       "CANNOT_UNDONE_ACTION"   : "Cette action NE POURRA PAS ETRE ANNULER, les consequences de cette action seront definitives. Vous devez etre sure que vous voulez vraiment effectuer cette action",
       "NO_CORRESPONDANCY"      : "Aucune correspondance trouvée pour",
       "PLEASE_TYPE_TEXT"       : "Veuillez saisir {{value}} pour confirmer ",
       "PLEASE_READ"            : "Vous risquez de perdre des donnees importantes si vous ne lisez pas ce message!",
       "SURE_CONTINUE"          : "Etes-vous ABSOLUMENT sure ?",
-      "UNDERSTAND_ACTION"      : "J'ACCEPTE les consequences de cette action"
+      "UNDERSTAND_ACTION"      : "J'ACCEPTE les consequences de cette action",
+      "WARNING"                : "Attention"
     },
     "ERRORS": {
       "CONNECTION"         : "Erreur de connexion",
@@ -399,6 +407,7 @@
       "CREATED"                : "Crée",
       "CREDIT"                 : "Crédit",
       "CREDITOR_GROUP"         : "Groupe Créditeur",
+      "CREDITOR_SUBCRIBED"     : "Crediteur souscris",
       "CURRENCIES"             : "Monnaies",
       "CURRENCY"               : "Monnaie",
       "CURRENT_LOCATION"       : "Localisation actuelle",
@@ -468,7 +477,7 @@
       "LAST_NAME"              : "Nom",
       "LAST_PAGE"              : "La dernière page visitée",
       "LOCATION_REGISTER"      : "Enregistrer une localisation",
-      "LOCKED"                 : "Bloquée",
+      "LOCKED"                 : "Bloqué(e)",
       "LOGIN"                  : "Login",
       "LOSS_ACCOUNT"           : "Compte perte",
       "MALE"                   : "Homme",
@@ -1222,6 +1231,7 @@
     "COMPLEX_JOURNAL_VOUCHER"    : "Ajout de transactions",
     "COST_CENTER_MGMT"           : "Centres de coûts",
     "CREDIT_NOTE"                : "Note de Crédit",
+    "CREDITOR_GROUP"             : "Gestion de groupes crediteurs",
     "CURRENCY"                   : "Monnaie",
     "DEBTOR_GROUP"               : "Gestion de groupes débiteurs",
     "EMPLOYEE"                   : "Gestion Employés",

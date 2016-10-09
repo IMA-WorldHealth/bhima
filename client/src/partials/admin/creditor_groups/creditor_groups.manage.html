@@ -1,0 +1,84 @@
+<div class="container-fluid">
+    <!-- back to list  -->
+    <div class="row">
+      <div class="col-xs-12">
+        <p>
+          <a ui-sref="creditorGroups.list" ui-sref-opts="CreditorGroupCtrl.reload">
+            <span class="glyphicon glyphicon-circle-arrow-left"></span>
+            {{ 'CREDITOR_GROUP.BACK' | translate }}
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- form  -->
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <form name="CreditorGroupManager" bh-submit="CreditorGroupCtrl.submit(CreditorGroupManager)" bh-form-defaults novalidate>
+
+          <div class="panel panel-primary">
+
+            <div class="panel-heading">
+              <span ng-if="CreditorGroupCtrl.isUpdateState">{{ 'CREDITOR_GROUP.UPDATE' | translate }}</span>
+              <span ng-if="CreditorGroupCtrl.isCreateState">{{ 'CREDITOR_GROUP.CREATE' | translate }}</span>
+            </div>
+
+            <div class="panel-body">
+              <!-- name  -->
+              <div class="form-group" ng-class="{ 'has-error' : CreditorGroupManager.$submitted && CreditorGroupManager.name.$invalid }">
+                <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
+                <input class="form-control" name="name" type="text" ng-model="CreditorGroupCtrl.bundle.name" required>
+
+                <div class="help-block" ng-messages="CreditorGroupManager.name.$error" ng-show="CreditorGroupManager.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <!-- creditor group account  -->
+              <div class="form-group"
+                ng-class="{ 'has-error' : CreditorGroupManager.$submitted && CreditorGroupManager.account_id.$invalid }">
+                <label class="control-label">
+                  {{ "FORM.LABELS.ACCOUNT" | translate }}
+                </label>
+
+                <ui-select
+                  name="account_id"
+                  ng-model="CreditorGroupCtrl.bundle.account_id"
+                  theme="bootstrap"
+                  required>
+                  <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                    <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+                  </ui-select-match>
+                  <ui-select-choices ui-select-focus-patch repeat="account.id as account in CreditorGroupCtrl.accounts | filter:$select.search">
+                    <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                    <span ng-bind-html="account.label | highlight:$select.search"></span>
+                  </ui-select-choices>
+                </ui-select>
+
+                <div class="help-block" ng-messages="CreditorGroupManager.account.$error" ng-show="CreditorGroupManager.$submitted">
+                  <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
+              <!-- is locked ?  -->
+              <div class="form-group">
+                <label class="control-label">
+                  {{ "FORM.LABELS.LOCKED" | translate }}
+                  <input type="checkbox" ng-model="CreditorGroupCtrl.bundle.locked" ng-true-value="1" ng-false-value="0">
+                </label>
+              </div>
+
+            </div>
+
+            <div class="panel-footer text-right">
+              <bh-loading-button loading-state="CreditorGroupManager.$loading">
+                {{ "FORM.BUTTONS.SUBMIT" | translate }}
+              </bh-loading-button>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+    </div>
+</div>
