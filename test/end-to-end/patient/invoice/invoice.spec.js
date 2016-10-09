@@ -159,6 +159,7 @@ describe('Patient Invoice', function () {
     description.sendKeys('A real description!');
     page.submit();
     FU.exists(by.id('receipt-confirm-created'), true);
+    FU.modal.close();
   });
 
   //it('can calculate totals correctly');

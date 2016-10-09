@@ -16,7 +16,6 @@ function TrialBalanceMainFooterController($state, trialBalanceService, Notify) {
   var vm = this;
 
   vm.state = $state;
-  vm.feedback = $state.current.data.checkingData.feedBack;
 
   /**
    * @function cancel

@@ -15,12 +15,11 @@ describe('Invoice Registry', () => {
   'use strict';
 
   const path = '#/invoices';
+  const page = new InvoiceRegistryPage();
+  const numInvoices = 5;
 
   // This will be run before every single test ('it') - navigating the browser to the correct page.
   before(() => helpers.navigate(path));
-
-  const page = new InvoiceRegistryPage();
-  const numInvoices = 5;
 
   it('displays all invoices loaded from the database', () => {
     expect(page.getInvoiceNumber()).to.eventually.equal(numInvoices);
@@ -32,12 +31,14 @@ describe('Invoice Registry', () => {
     FU.modal.close();
   });
 
-  describe('Searching', Search);
+  describe('Searching functionnality of patient', Search);
 
   it('Credit Note for reverse any transaction in the posting_journal', () => {
+
     element(by.id('TPA1')).click();
     FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
     FU.modal.submit();
     components.notification.hasSuccess();
   });
+  
 });
