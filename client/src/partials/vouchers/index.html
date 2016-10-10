@@ -26,5 +26,12 @@
       ui-grid-grouping>
     </div>
 
+    <bh-grid-loading-indicator
+      loading-state="VoucherCtrl.loading"
+      empty-state="VoucherCtrl.gridOptions.data.length === 0"
+      error-state="VoucherCtrl.hasError"
+      >
+    </bh-grid-loading-indicator>
+
   </div>
 </div>
