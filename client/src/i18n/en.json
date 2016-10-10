@@ -271,6 +271,7 @@
       "REGISTER_PATIENT"      : "Register Patient",
       "RESET"                 : "Reset",
       "RESET_DEFAULTS"        : "Reset Defaults",
+      "RETURN"                : "Return",
       "SAVE"                  : "Save",
       "SEARCH"                : "Search",
       "SEE"                   : "See",
@@ -881,16 +882,35 @@
     "TRANSACTION_SUCCESS" : "Transaction success",
     "UNKNOWN_ACCOUNT" : "Unknown Account",
     "VERIFY_TRANSACTION": "Verify Transaction",
-    "ERRORS" : "Errors",
-    "ERROR_REPORT" : "Error Report",
-    "TITLE" : "Posting Journal",
-    "TRIAL_BALANCE" : "Trial Balance",
-    "EDIT_MODE" : "Edit Mode",
     "CONFIGURATION" : {
-      "TITLE" : "Configuration",
+      "TITLE" : "Columns configuration",
       "COLUMNS" : "Columns"
     },
-    "WARNINGS" : "Warnings"
+    "ERRORS" : {
+      "DATE_IN_WRONG_PERIOD" : "Dates in wrong period",
+      "MISSING_DESCRIPTION" : "Descriptions omitted",
+      "LOCKED_ACCOUNT" : "Locked account(s)",
+      "UNBALANCED_TRANSACTIONS" : "Unbalanced Transaction(s)",
+      "MISSING_ACCOUNTS" : "Accounts omitted",
+      "MISSING_DOCUMENT_ID" : "Records without document ID",
+      "MISSING_ENTITY" : "LRecord without entity ID",
+      "MISSING_FISCAL_OR_PERIOD" : "Fiscal year or period omitted",
+      "SINGLE_LINE_TRANSACTION" : "Transaction with a single line"
+    },
+    "WARNINGS" : {
+      "MISSING_ENTITY" : "Record without entity type and entity ID"
+    },
+    "ERROR_REPORT" : {
+      "TITLE" : "Error Report"
+    },
+    "TRIAL_BALANCE" : {
+      "TITLE" : "Trial Balance",
+      "MAIN" : "Main",
+      "DETAIL" : "Detail",
+      "ERROR_LIST"  : "Error List"
+    },
+    "TITLE" : "Posting Journal",
+    "EDIT_MODE" : "Edit Mode"
   },
   "PRICE_LIST": {
     "ADD_ITEMS"        : "Add an Item",

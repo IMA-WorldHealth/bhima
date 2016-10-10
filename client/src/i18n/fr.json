@@ -278,6 +278,7 @@
       "REGISTER_PATIENT"      : "Enregistrer le Patient",
       "RESET"                 : "Reinitialiser",
       "RESET_DEFAULTS"        : "Réinitialiser par défaut",
+      "RETURN"                : "Retourne",
       "SAVE"                  : "Sauver",
       "SEARCH"                : "Rechercher",
       "SEE"                   : "Voir",
@@ -917,7 +918,7 @@
     "COLUMNS" : "Colonnes"
   },
   "ERRORS" : {
-    "DATE_IN_WRONG_PERIOD" : "Date dans la mauvaise periode",
+    "DATE_IN_WRONG_PERIOD" : "Dates dans la mauvaise periode",
     "MISSING_DESCRIPTION" : "Descriptions omises",
     "LOCKED_ACCOUNT" : "Compte(s) verrouille(s)",
     "UNBALANCED_TRANSACTIONS" : "Transaction(s) non balancee(s)",
@@ -934,7 +935,10 @@
     "TITLE" : "Rapports D'erreurs"
   },
   "TRIAL_BALANCE" : {
-    "TITLE" : "Rapprochement Grand Livre"
+    "TITLE" : "Rapprochement Grand Livre",
+    "MAIN" : "Principal",
+    "DETAIL" : "Detail",
+    "ERROR_LIST" : "Liste Erreur"
   }
    },
   "PRICE_LIST": {
