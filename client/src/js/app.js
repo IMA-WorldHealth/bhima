@@ -107,18 +107,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller : 'CountryController as CountryCtrl',
     templateUrl: 'partials/locations/country/country.html'
   })
-
-
-  /* journal routes */
-
-  .state('journalPrint', {
-    controller : 'journal.print',
-    templateUrl : 'partials/journal/print.html'
-  })
-  .state('journalVoucher', {
-    controller: 'JournalVoucherController as JournalVoucherCtrl',
-    templateUrl: 'partials/journal/voucher/voucher.html'
-  })
   .state('simpleVouchers', {
     url : '/vouchers/simple',
     controller: 'SimpleJournalVoucherController as SimpleVoucherCtrl',

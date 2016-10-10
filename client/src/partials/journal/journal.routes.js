@@ -8,6 +8,14 @@ angular.module('bhima.routes')
         controller : 'JournalController as JournalCtrl',
         templateUrl : 'partials/journal/journal.html'
       })
+      .state('journalPrint', {
+        controller : 'journal.print',
+        templateUrl : 'partials/journal/print.html'
+      })
+      .state('journalVoucher', {
+        controller: 'JournalVoucherController as JournalVoucherCtrl',
+        templateUrl: 'partials/journal/voucher/voucher.html'
+      })
       .state('journalModal', {
         parent : 'journal',
         onEnter : ['$state', '$uibModal', function ($state, Modal) {
