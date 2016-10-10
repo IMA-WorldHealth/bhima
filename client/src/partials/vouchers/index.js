@@ -169,10 +169,27 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     })
     .catch(Notify.errorHandler);
 
+    vm.loading = true;
     Vouchers.read()
     .then(function (list) {
       vm.gridOptions.data = list;
     })
-    .catch(Notify.errorHandler);
+    .catch(function (error) {
+      vm.hasError = true;
+      Notify.errorHandler(error);
+    })
+    .finally(toggleLoadingIndicator);
+
+    /**
+     * @function toggleLoadingIndicator
+     *
+     * @description
+     * Toggles the grid's loading indicator to eliminate the flash when rendering
+     * transactions and allow a better UX for slow loads.
+     */
+    function toggleLoadingIndicator() {
+      vm.loading = !vm.loading;
+    }
+
   }
 }
