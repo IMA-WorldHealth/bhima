@@ -107,6 +107,12 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   // API register function
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
+    vm.gridApi.grid.registerDataChangeCallback(expandAllRows);
+  }
+
+  // expand all rows
+  function expandAllRows() {
+    vm.gridApi.treeBase.expandAllRows();
   }
 
   // Grid Aggregation
@@ -156,7 +162,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // showReceipt
   function showReceipt(uuid) {
-    var url = '/vouchers/receipts/' + uuid;
+    var url = '/reports/finance/vouchers/' + uuid;
     var params = { renderer: 'pdf', lang: Languages.key };
     Modal.openReports({ url: url, params: params });
   }
