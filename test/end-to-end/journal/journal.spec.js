@@ -1,7 +1,6 @@
 /* global element, by, browser */
 
 const chai = require('chai');
-const expect = chai.expect;
 
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
@@ -14,7 +13,7 @@ describe('Posting Journal Core', function () {
   'use strict';
 
   const path = '#/journal';
-  const initialTransactionRows = 21;
+  const initialTransactionRows = 14;
   const journal = new JournalCorePage();
 
   // this will be run before every single test ('it') - navigating the browser

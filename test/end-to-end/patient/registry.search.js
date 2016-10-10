@@ -2,11 +2,11 @@
 const chai = require('chai');
 const expect = chai.expect;
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 
-module.exports = PatientRegistrySearch;
 
 /*
  * Patient Search Tests
@@ -170,3 +170,6 @@ function PatientRegistrySearch() {
     FU.buttons.clear();
   });
 }
+
+module.exports = PatientRegistrySearch;
+

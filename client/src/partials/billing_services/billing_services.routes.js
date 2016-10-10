@@ -18,7 +18,8 @@ angular.module('bhima.routes')
       })
       .state('billingServices.create', {
         url: '/create',
-        onEnter : ['$state', '$uibModal', 'NotifyService', onEnterFactory('create')]
+        onEnter : ['$state', '$uibModal', 'NotifyService', onEnterFactory('create')],
+        onExit : ['$uibModalStack', closeModal]
       })
       .state('billingServices.list', {
         url : '/{id:int}',
@@ -30,7 +31,8 @@ angular.module('bhima.routes')
       })
       .state('billingServices.update', {
         url: '/{id:int}/update',
-        onEnter : ['$state', '$uibModal', 'NotifyService', onEnterFactory('update')]
+        onEnter : ['$state', '$uibModal', 'NotifyService', onEnterFactory('update')],
+        onExit : ['$uibModalStack', closeModal]
       })
       .state('billingServices.delete', {
         url: '/{id:int}/delete',
@@ -54,7 +56,8 @@ angular.module('bhima.routes')
 
               $state.go('^.list', { id : $state.params.id }, { notify: false });
             });
-        }]
+        }],
+        onExit : ['$uibModalStack', closeModal]
       });
   }]);
 
@@ -101,5 +104,9 @@ function onEnterFactory(stateType) {
           $state.go('^.list', { id : $state.params.id }, { notify: false });
         });
   };
+}
+
+function closeModal($uibModalStack) {
+  $uibModalStack.dismissAll();
 }
 

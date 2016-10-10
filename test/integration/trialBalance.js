@@ -59,9 +59,8 @@ describe('(/trial) API endpoint', function () {
         expect(res).to.have.status(201);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        var warningObjects = res.body.filter(function (item) { return item;});
-        expect(warningObjects).to.have.length(1);
-        expect(warningObjects[0].fatal).to.equal(false);
+        expect(res.body).to.have.length(1);
+        expect(res.body[0].fatal).to.equal(false);
       })
       .catch(helpers.handler);
   });
@@ -73,9 +72,8 @@ describe('(/trial) API endpoint', function () {
         expect(res).to.have.status(201);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        var errorObjects = res.body.filter(function (item) { return item && item.fatal === true; });
-        expect(errorObjects).to.have.length.at.least(1);
-        expect(errorObjects[0].fatal).to.equal(true);
+        expect(res.body).to.have.length.at.least(1);
+        expect(res.body[0].fatal).to.equal(true);
       })
       .catch(helpers.handler);
   });

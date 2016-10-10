@@ -103,3 +103,5 @@ function InvoiceRegistrySearch() {
   });
 
 }
+
+module.exports = InvoiceRegistrySearch;

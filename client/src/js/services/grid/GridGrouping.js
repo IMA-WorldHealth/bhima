@@ -180,10 +180,30 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
     return groupingDetail.grouping[0].colName;
   }
 
-  /** return back the list of selected rows **/
+  /**
+   * return back the list of selected rows,
+   * if one row is selected so all transaction row will be considered as selected
+   * TO DO : make it generic, any kind of group should used, not only trans_id
+   **/
+  function getSelectedGroups (){
 
-  function getSelectedRows (){
-    return this.gridApi.selection.getSelectedGridRows();
+    var parsed = [], processedTransactions = [];
+    var records = this.gridApi.selection.getSelectedGridRows();
+
+    records.forEach(function (record){
+
+      if(processedTransactions.indexOf(record.entity.trans_id) === -1){
+
+        //take other children of the parent so that every line of the transaction will be present
+        parsed = parsed.concat(record.treeNode.parentRow.treeNode.children.map(function (child){
+          return child.row.entity;
+        }));
+
+        processedTransactions.push(record.entity.trans_id);
+      }
+    });
+
+    return parsed;
   }
 
   /**
@@ -196,7 +216,7 @@ function GridGroupingService(uiGridGroupingConstants, $filter, Session, $timeout
      * TODO : create a separate service to handle selection functionnality of the grid as grouping and selection are differents
      */
     this.selectedRowCount = 0;
-    this.getSelectedRows = getSelectedRows.bind(this);
+    this.getSelectedGroups = getSelectedGroups.bind(this);
     this.changeGrouping = changeGrouping.bind(this);
     this.removeGrouping = removeGrouping.bind(this);
     this.getCurrentGroupingColumn = getCurrentGroupingColumn.bind(this);
