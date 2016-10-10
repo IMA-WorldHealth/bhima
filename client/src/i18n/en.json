@@ -134,6 +134,9 @@
     "CREATE"         : "Create Debtor Group",
     "CREATE_ANOTHER" : "Create another Debtor Group",
     "CREATED"        : "Debtor group recorded successfully",
+    "DEBTOR"         : {
+      "SUBSCRIBED"    : "Subcribed debtor"
+    },
     "EDIT"           : "Edit Debtor Group",
     "GROUPS"         : "Debtor Groups",
     "HELP_TXT_1"     : "This interface allows you to review, find, and configure debtor groups",
