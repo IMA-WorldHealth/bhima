@@ -5,40 +5,24 @@
  * This file contains code to create a PDF report of all patient checkins,
  * matching query conditions passed from the patient registry UI grid.
  *
- * @requires path
  * @requires lodash
- * @requires BadRequest
- * @requires db
- * @requires renderers/json
- * @requires renderers/html
- * @requires renderers/pdf
+ * @requires lib/db
+ * @requires lib/ReportManager
+ * @requires Patients
+ * @requires Locations
  */
 'use strict';
 
-const path = require('path');
 const _ = require('lodash');
 
-const BadRequest = require('../../../lib/errors/BadRequest');
 const db = require('../../../lib/db');
+const ReportManager = require('../../../lib/ReportManager');
 
-const Patients = require('../patients');
 const Locations = require('../../admin/locations');
-
-// group supported renderers
-const renderers = {
-  'json': require('../../../lib/renderers/json'),
-  'html': require('../../../lib/renderers/html'),
-  'pdf': require('../../../lib/renderers/pdf'),
-};
-
-// default rendering parameters
-const defaults = {
-  pageSize: 'A4',
-  renderer: 'pdf'
-};
+const Patients = require('../patients');
 
 // path to the template to render
-const template = path.normalize('./server/controllers/medical/reports/checkins.handlebars');
+const TEMPLATE = './server/controllers/medical/reports/checkins.handlebars';
 
 /**
  * @function getReportData
@@ -104,32 +88,21 @@ function getReportData(uuid) {
  * GET /reports/patients/:uuid/checkins
  */
 function build(req, res, next) {
-  const qs = req.query;
+  const options = req.query;
 
-  // choose the renderer
-  const renderer = renderers[qs.renderer || defaults.renderer];
-  if (_.isUndefined(renderer)) {
-    return next(new BadRequest(`The application does not support rendering ${qs.renderer}.`));
+  let report;
+
+  try {
+    report = new ReportManager(TEMPLATE, req.session, options);
+  } catch (e) {
+    return next(e);
   }
 
-  // delete from the query string
-  delete qs.renderer;
-
-  // create the correct context by setting the language and inheriting defaults
-  const context = { lang : qs.lang };
-  _.defaults(context, defaults);
-
+  // gather data and template into report
   getReportData(req.params.uuid)
-    .then(data => {
-
-      // attach session information as metadata
-      data.metadata.user = req.session.user;
-      data.metadata.enterprise = req.session.enterprise;
-      return data;
-    })
-    .then(data => renderer.render(data, template, context))
+    .then(data => report.render(data))
     .then(result => {
-      res.set(renderer.headers).send(result);
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();

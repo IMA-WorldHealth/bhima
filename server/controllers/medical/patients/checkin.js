@@ -82,7 +82,7 @@ function create(req, res, next) {
       INSERT INTO patient_visit
         (uuid, patient_uuid, start_date, user_id)
       VALUES
-        (?, ?, CURRENT_TIMESTAMP, ?)
+        (?, ?, CURRENT_TIMESTAMP, ?);
     `;
 
   db.exec(checkinQuery, [db.bid(uuid.v4()), db.bid(patientUuid), req.session.user.id])
