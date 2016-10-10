@@ -12,7 +12,8 @@ angular.module('bhima.routes')
       .state('cash.select', {
         url : '/selection',
         params : { id : { value: null } },
-        onEnter :['$uibModal', cashboxSelectionModal]
+        onEnter :['$uibModal', cashboxSelectionModal],
+        onExit : ['$uibModalStack', closeModal]
       })
 
       .state('cash.window', {
@@ -25,7 +26,8 @@ angular.module('bhima.routes')
       .state('cash.transfer', {
         url : '/:id/transfer',
         params : { id : { squash: true, value: null } },
-        onEnter :['$state', '$uibModal', transferModal]
+        onEnter :['$state', '$uibModal', transferModal],
+        onExit : ['$uibModalStack', closeModal]
       });
   }]);
 
@@ -46,6 +48,10 @@ function transferModal($state, Modal) {
     backdrop: 'static',
     keyboard: false
   });
+}
+
+function closeModal($uibModalStack) {
+  $uibModalStack.dismissAll();
 }
 
 

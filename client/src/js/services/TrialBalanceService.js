@@ -1,37 +1,44 @@
 angular.module('bhima.services')
-  .service('JournalPostingModalService', JournalPostingModalService);
+  .service('TrialBalanceService', TrialBalanceService);
 
-/** Dependencies injection */
-JournalPostingModalService.$inject = ['util', '$http', '$uibModal'];
+TrialBalanceService.$inject = ['util', '$http', '$translate'];
 
-function JournalPostingModalService(util, $http, Modal) {
+function TrialBalanceService(util, $http, $translate) {
   var service = this;
   var baseUrl = '/trial_balance/';
 
-  service.parseSelectedGridRecord = parseSelectedGridRecord;
-  // service.postingModalService = postingModalService;
-  // service.getCurrentGroupingColumn = getCurrentGroupingColumn;
   service.switchView = switchView;
   service.getDataByAccount = getDataByAccount;
   service.checkTransactions = checkTransactions;
   service.getFeedBack = getFeedBack;
   service.getCSSClass = getCSSClass;
-  service.openErrorViewerModal = openErrorViewerModal;
   service.postToGeneralLedger = postToGeneralLedger;
+  service.getRelatedTransaction = getRelatedTransaction;
+  service.parseErrorRecord = parseErrorRecord;
 
-  function openErrorViewerModal(errors, feedBack, cssClass) {
+  function parseErrorRecord (records){
+    var list = [];
 
-    return Modal.open({
-      templateUrl: 'partials/journal/modals/journalErrorViewer.modal.html',
-      controller:  'JournalErrorViewerModalController as JournalErrorViewerModalCtrl',
-      size : 'lg',
-      resolve : {
-        params : function getParams() { return {errors : errors, feedBack : feedBack, cssClass : cssClass}; }
-      }
+    /**
+     * records is an array of items representing checks,
+     * if there is an error or warning the item will be defined
+     * with some descriptions about the errors or warnings
+     */
+    records.forEach(function (record) {
+      var line = [];
+      var codeTranslated = null;
+
+      codeTranslated = $translate.instant(record.code);
+      line = record.transactions.map(function (item) {
+        return {code : codeTranslated, transaction : item};
+      });
+
+      list = list.concat(line);
     });
 
+    return list;
   }
-
+ 
   function  getCSSClass (feedBack) {
     return feedBack.hasError ? 'grid-error' : feedBack.hasWarning ? 'grid-warning' : 'grid-success';
   }
@@ -50,32 +57,6 @@ function JournalPostingModalService(util, $http, Modal) {
     feedBack.hasSuccess = (!feedBack.hasWarning && !feedBack.hasError) ? true : false;
 
     return feedBack;
-  }
-
-
-  /**
-   * @function parseSelectedGridRecord
-   * @description
-   * takes as parameter an array of record and send back a formatted array
-   * by making sure every transaction has the complete list of his lines
-   **/
-  function parseSelectedGridRecord (records){
-    var parsed = [], processedTransactions = [];
-
-    records.forEach(function (record){
-
-      if(processedTransactions.indexOf(record.entity.trans_id) === -1){
-
-        //take other children of the parent so that every line of the transaction will be present
-        parsed = parsed.concat(record.treeNode.parentRow.treeNode.children.map(function (child){
-          return child.row.entity;
-        }));
-
-        processedTransactions.push(record.entity.trans_id);
-      }
-    });
-
-    return parsed;
   }
 
   /**
@@ -161,6 +142,35 @@ function JournalPostingModalService(util, $http, Modal) {
 
     /** posting a list of transactions to the server to be stored to the general ledger **/
     return $http.post(url, {transactions : transactions});
+  }
+
+  /**
+   * @function getRelatedTransaction
+   * @description
+   * This function gets an account_id with a list of transaction and send back
+   * a list of transaction related to this account
+   **/
+  function getRelatedTransaction(accountId, records) {
+
+    // these are transaction ids of transactions that we will keep.
+    var transIds = [];
+
+    // loop through all records, adding related rows to the  transIds array
+    records.forEach(function (row) {
+
+      // determine if we need to keep the transaction by checking the account id
+      var isRelated = (row.account_id === accountId);
+      if (isRelated) {
+        transIds.push(row.trans_id);
+      }
+    });
+
+    // filter on the transactions
+    var transactions = records.filter(function (row) {
+      return transIds.indexOf(row.trans_id) > -1;
+    });
+
+    return transactions;
   }
 
   return service;

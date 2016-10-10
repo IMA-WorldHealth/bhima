@@ -15,7 +15,8 @@ angular.module('bhima.routes')
         params : {
           creating : { value : true }
         },
-        onEnter :['$uibModal', usersModal]
+        onEnter :['$uibModal', usersModal],
+        onExit : ['$uibModalStack', closeModal]
       })
       .state('users.list', {
         url : '/:id',
@@ -28,21 +29,24 @@ angular.module('bhima.routes')
         params : {
           id : null
         },
-        onEnter :['$uibModal', usersModal]
+        onEnter :['$uibModal', usersModal],
+        onExit : ['$uibModalStack', closeModal]
       })
       .state('users.editPermission', {
         url : '/:id/editPermission',
         params : {
           id : null
         },
-        onEnter :['$uibModal', userPermissionModal]
+        onEnter :['$uibModal', userPermissionModal],
+        onExit : ['$uibModalStack', closeModal]
       })
       .state('users.editPassword', {
         url : '/:id/edit/password',
         params : {
           id : null
         },
-        onEnter :['$uibModal', userPasswordModal]
+        onEnter :['$uibModal', userPasswordModal],
+        onExit : ['$uibModalStack', closeModal]
       })
       ;
   }]);
@@ -74,4 +78,8 @@ function userPasswordModal($modal) {
     templateUrl: 'partials/users/UserEditPasswordModal.html',
     controller:  'UsersPasswordModalController as UsersPasswordModalCtrl'
   });
+}
+
+function closeModal(ModalStack) {
+  ModalStack.dismissAll();
 }

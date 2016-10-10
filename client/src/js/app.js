@@ -134,14 +134,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'VoucherController as VoucherCtrl',
     templateUrl: 'partials/vouchers/index.html'
   })
-
-  /* 2.X Journal routes */
-  .state('journal', {
-    url : '/journal',
-    controller : 'JournalController as JournalCtrl',
-    templateUrl : 'partials/journal/journal.html'
-  })
-
+    
   /** General ledger routes**/
   .state('generalLedger', {
     url : '/general_ledger',
@@ -355,9 +348,6 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
     }
 
-    // clean up any modals that are currently active, this allows modules to use onEnter state modals
-    // without considering all exit cases
-    $uibModalStack.dismissAll();
 
     var currentPath = $location.$$path;
     var paths = SessionService.path;
