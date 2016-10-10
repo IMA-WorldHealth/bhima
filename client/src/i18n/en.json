@@ -839,7 +839,11 @@
     "SET_PASSWORD"  : "Set Password",
     "SUPER"         : "Super User",
     "TITLE"         : "Users and Permissions Management",
-    "UPDATING_USER" : "Edits a user's metadata"
+    "UPDATING_USER" : "Edits a user's metadata",
+    "CREATE"        : "Create",
+    "UPDATE"        : "Update",
+    "UPDATED"       : "Updated",
+    "CREATED"       : "Created"    
   },
   "POSTING_JOURNAL" : {
     "ABOLISH_GROUPS": "Abolishing Group",

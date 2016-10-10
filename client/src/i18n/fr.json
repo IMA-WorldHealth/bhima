@@ -300,7 +300,8 @@
       "PLEASE_READ"            : "Vous risquez de perdre des donnees importantes si vous ne lisez pas ce message!",
       "SURE_CONTINUE"          : "Etes-vous ABSOLUMENT sure ?",
       "UNDERSTAND_ACTION"      : "J'ACCEPTE les consequences de cette action",
-      "WARNING"                : "Attention"
+      "WARNING"                : "Attention",
+      "CONFIRM_MODAL"          : "La confirmation est nécessaire"
     },
     "ERRORS": {
       "CONNECTION"         : "Erreur de connexion",
@@ -667,6 +668,7 @@
       "REFERENCE_GROUP"    : "Sélectionner un groupe de référence",
       "RESULT_ACCOUNT_SCT" : "Section Compte Résultat",
       "ROOT_ACCOUNT"       : "Sélectionner le compte titre",
+      "PROJECTS"           : "Sélection des projets",
       "SECTOR"             : "Sélectionner secteur",
       "SERVICE"            : "Sélectionner un Service",
       "SEX"                : "Sélectionner le sexe",
@@ -1270,6 +1272,7 @@
     "PROJECT"                    : "Projets",
     "PURCHASING"                 : "Achat",
     "PURCHASE_ORDER"             : "Order d'Achats",
+    "REPORTS"                    : "Rapports",
     "REFERENCE"                  : "Référence",
     "REFERENCE_GROUP"            : "Groupe de référence",
     "REGISTER_SUPPLIER"          : "Fournisseurs",
@@ -1285,7 +1288,8 @@
     "TRANSACTION_TYPE"           : "Types de Transaction",
     "SUBSIDY"                    : "Gestion des subventions",
     "USERS"                      : "Utilisateurs",
-    "VOUCHER_REGISTRY"           : "Registre des Bordereaux"
+    "VOUCHER_REGISTRY"           : "Registre des Bordereaux",
+    "AGED_DEBTORS"               : "Les plus anciens débiteurs"
   },
   "VILLAGE": {
     "CONFIG"       : "Configuration de Gestion des Villages",
