@@ -56,6 +56,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
 
   // grid default options
   vm.gridOptions.appScopeProvider = vm;
+  vm.gridOptions.showColumnFooter  = true;
   vm.gridOptions.enableFiltering  = vm.filterEnabled;
   vm.gridOptions.columnDefs       = [
     { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate',
@@ -80,7 +81,7 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
     },
     { field : 'amount', displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate',
       treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-        groupingShowAggregationMenu: false
+      groupingShowAggregationMenu: false
     },
     { field : 'display_name', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate',
       groupingShowAggregationMenu: false

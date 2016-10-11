@@ -5,7 +5,7 @@ JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
-  'bhConstants', '$state'
+  'bhConstants', '$state', 'uiGridConstants'
 ];
 
 /**
@@ -30,7 +30,7 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants) {
   var vm = this;
 
   /** @constants */
@@ -50,6 +50,7 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   // options, it is also used by the grid to expose the API
   vm.gridOptions = {
     enableColumnMenus : false,
+    showColumnFooter : true,
     appScopeProvider : vm,
     rowTemplate: '/partials/templates/grid/transaction.row.html',
   };
@@ -117,20 +118,30 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
       cellFilter : 'date:"mediumDate"',
       filter : { condition : filtering.byDate },
       editableCellTemplate: 'partials/journal/templates/date.edit.html',
-      enableCellEdit: true
+      enableCellEdit: true,
+      footerCellTemplate:'<i></i>'
     },
     { field : 'hrRecord', displayName : 'TABLE.COLUMNS.RECORD', headerCellFilter: 'translate', visible: true },
-    { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
+    { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate', footerCellTemplate:'<i></i>' },
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
-    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/debit_equiv.cell.html' },
-    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/credit_equiv.cell.html' },
+    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate',
+      cellTemplate : '/partials/templates/grid/debit_equiv.cell.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
+    },
+    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate',
+      cellTemplate : '/partials/templates/grid/credit_equiv.cell.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
+    },
     { field : 'trans_id',
       displayName : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter: 'translate',
       sortingAlgorithm : sorting.transactionIds,
       sort : { priority : 0, direction : 'asc' },
       enableCellEdit: false,
-      allowCellFocus: false
+      allowCellFocus: false,
+      aggregationType : uiGridConstants.aggregationTypes.count
     },
     { field : 'currencyName', displayName : 'TABLE.COLUMNS.CURRENCY', headerCellFilter: 'translate', visible: false, enableCellEdit: false},
     { field : 'hrEntity', displayName : 'TABLE.COLUMNS.RECIPIENT', headerCellFilter: 'translate', visible: true},

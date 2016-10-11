@@ -59,17 +59,18 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   vm.gridOptions.enableFiltering  = vm.filterEnabled;
   vm.gridOptions.columnDefs       =
     [
-      { field : 'code', displayName : 'Code'},
-      { field : 'consumable', displayName : 'Consumable',
+      { field : 'code', displayName : 'FORM.LABELS.CODE', headerCellFilter : 'translate'
+      },
+      { field : 'consumable', displayName : 'FORM.LABELS.CONSUMABLE', headerCellFilter : 'translate',
         cellTemplate : iconTemplate
       },
-      { field : 'groupName', displayName : 'Groupe'},
-      { field : 'label', displayName : 'Label'},
-      { field : 'price', displayName : 'Price'},
-      { field : 'type', displayName : 'Type'},
-      { field : 'unit', displayName : 'Unit'},
-      { field : 'unit_weight', displayName : 'Weight'},
-      { field : 'unit_volume', displayName : 'Volume'},
+      { field : 'groupName', displayName : 'FORM.LABELS.GROUP', headerCellFilter : 'translate'},
+      { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate'},
+      { field : 'price', displayName : 'FORM.LABELS.PRICE', headerCellFilter : 'translate'},
+      { field : 'type', displayName : 'FORM.LABELS.TYPE', headerCellFilter : 'translate'},
+      { field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate'},
+      { field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate'},
+      { field : 'unit_volume', displayName : 'FORM.LABELS.VOLUME', headerCellFilter : 'translate'},
       { field : 'action', displayName : '...',
         width: 25,
         cellTemplate: editTemplate,

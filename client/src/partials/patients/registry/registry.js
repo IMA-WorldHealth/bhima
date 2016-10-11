@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal'
+  'PatientService', 'NotifyService', 'AppCache', 'util', 'ReceiptModal', 'uiGridConstants'
 ];
 
 /**
@@ -10,7 +10,7 @@ PatientRegistryController.$inject = [
  *
  * This module is responsible for the management of Patient Registry.
  */
-function PatientRegistryController(Patients, Notify, AppCache, util, Receipts) {
+function PatientRegistryController(Patients, Notify, AppCache, util, Receipts, uiGridConstants) {
   var vm = this;
 
   var cache = AppCache('PatientRegistry');
@@ -47,9 +47,14 @@ function PatientRegistryController(Patients, Notify, AppCache, util, Receipts) {
   /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
     appScopeProvider : vm,
+    showColumnFooter : true,
     enableColumnMenus : false,
     columnDefs : [
-      { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
+      { field : 'reference',
+        displayName : 'TABLE.COLUMNS.REFERENCE',
+        headerCellFilter: 'translate',
+        aggregationType: uiGridConstants.aggregationTypes.count
+      },
       { field : 'display_name', displayName : 'TABLE.COLUMNS.NAME', headerCellFilter : 'translate' },
       { field : 'patientAge', displayName : 'TABLE.COLUMNS.AGE', headerCellFilter : 'translate' },
       { field : 'sex', displayName : 'TABLE.COLUMNS.GENDER', headerCellFilter : 'translate'  },

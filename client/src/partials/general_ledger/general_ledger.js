@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 GeneralLedgerController.$inject = [
   'GeneralLedgerService', 'GridSortingService', 'GridGroupingService',
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
-  'SessionService', 'NotifyService', 'TransactionService'
+  'SessionService', 'NotifyService', 'TransactionService', 'uiGridConstants'
 ];
 
 /**
@@ -22,7 +22,7 @@ GeneralLedgerController.$inject = [
  *   - Show or hide columns
  *
  */
-function GeneralLedgerController(GeneralLedger, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions) {
+function GeneralLedgerController(GeneralLedger, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, uiGridConstants) {
   var vm = this;
 
   // General Ledger utilities
@@ -39,6 +39,7 @@ function GeneralLedgerController(GeneralLedger, Sorting, Grouping, Filtering, Co
     enableFiltering: true,
     fastWatch: true,
     enableColumnMenus : false,
+    showColumnFooter : true,
     appScopeProvider : vm
   };
 
@@ -102,12 +103,21 @@ function GeneralLedgerController(GeneralLedger, Sorting, Grouping, Filtering, Co
       displayName : 'TABLE.COLUMNS.DATE',
       headerCellFilter: 'translate',
       cellFilter : 'date:"mediumDate"',
-      filter : { condition : filtering.byDate }
+      filter : { condition : filtering.byDate },
+      footerCellTemplate:'<i></i>'
     },
-    { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
+    { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate', footerCellTemplate:'<i></i>' },
     { field : 'account_number', displayName : 'TABLE.COLUMNS.ACCOUNT', headerCellFilter: 'translate' },
-    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/debit_equiv.cell.html' },
-    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate', cellTemplate : '/partials/templates/grid/credit_equiv.cell.html' },
+    { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate',
+      cellTemplate : '/partials/templates/grid/debit_equiv.cell.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
+    },
+    { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate',
+      cellTemplate : '/partials/templates/grid/credit_equiv.cell.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
+    },
     { field : 'trans_id',
       displayName : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter: 'translate',
