@@ -11,14 +11,14 @@ angular.module('bhima.routes')
         controller: 'FiscalController as FiscalCtrl',
         templateUrl: 'partials/fiscal/fiscal.html'
       })
-      .state('fiscal.list', {
-        url : '',
-        templateUrl : 'partials/fiscal/fiscal.list.html'
-      })
       .state('fiscal.create', {
         url : '/create',
         controller : 'FiscalManagementController as FiscalManageCtrl',
         templateUrl : 'partials/fiscal/fiscal.manage.html'
+      })
+      .state('fiscal.list', {
+        url : '',
+        templateUrl : 'partials/fiscal/fiscal.list.html'
       })
       .state('fiscal.update', {
         url : '/:id/update',
