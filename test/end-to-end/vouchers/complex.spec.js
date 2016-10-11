@@ -5,7 +5,7 @@ const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const ComplexVoucherPage = require('./complex.page');
 
-describe.only('Complex Vouchers', function () {
+describe('Complex Vouchers', function () {
 
   before(() => helpers.navigate('vouchers/complex'));
 
