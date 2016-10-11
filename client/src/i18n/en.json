@@ -593,6 +593,8 @@
       "VILLAGE"                : "Village",
       "VILLAGE_NAME"           : "Village Name",
       "VILLE"                  : "Township/Commune",
+      "VOLUME"                 : "Volume",
+      "WEIGHT"                 : "Weight",
       "YES"                    : "Yes",
       "YOB"                    : "Year of Birth",
       "ZS"                     : "Select an health zone"
@@ -850,7 +852,7 @@
     "CREATE"        : "Create",
     "UPDATE"        : "Update",
     "UPDATED"       : "Updated",
-    "CREATED"       : "Created"    
+    "CREATED"       : "Created"
   },
   "POSTING_JOURNAL" : {
     "ABOLISH_GROUPS": "Abolishing Group",
