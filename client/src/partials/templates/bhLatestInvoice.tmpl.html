@@ -3,10 +3,17 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <span class="glyphicon glyphicon-file"></span>
-      <strong>{{ "TABLE.COLUMNS.LAST_BILL" | translate }} </strong> 
-        <span> 
-          {{ "TABLE.COLUMNS.OF" | translate }} {{ $ctrl.patientInvoice.invoicesLength }} {{ "TABLE.COLUMNS.INVOICES" | translate }}
-        </span>
+    <strong>{{ "TABLE.COLUMNS.LAST_BILL" | translate }} </strong> 
+    <span> 
+      {{ "TABLE.COLUMNS.OF" | translate }} {{ $ctrl.patientInvoice.invoicesLength || 0 }} {{ "TABLE.COLUMNS.INVOICES" | translate }}
+    </span>
+    <span class="pull-right">
+      <bh-pdf-link
+        pdf-url="/reports/finance/financialPatient/{{ $ctrl.debtorUuid }}"
+        disable-cache="true"
+      >
+      </bh-pdf-link>
+    </span>
   </div>
   <div class="panel-body" style="height : 250px;">
 

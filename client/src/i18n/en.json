@@ -821,7 +821,12 @@
       "BY" : "by",
       "REPORT_TITLE" : "Patient Checkin Report",
       "SUCCESS" : "Patient has been checked in"
-    }
+    },
+    "FINANCIAL_ACTIVITY" : {
+      "ACCOUNT"       : "Account Number",
+      "DEBTOR_GROUP"  : "Debtor Group",
+      "REPORT_TITLE"  : "Patient Financial Activity"
+    }    
   },
   "PATIENT_REG": {
     "PAGE_TITLE"           : "Patient Registration",

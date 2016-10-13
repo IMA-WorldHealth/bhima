@@ -362,6 +362,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/vouchers/:uuid', financeReports.vouchers.receipt);
   app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);
   app.get('/reports/finance/cashflow', financeReports.cashflow.document);
+  app.get('/reports/finance/financialPatient/:uuid', financeReports.financialPatient);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
