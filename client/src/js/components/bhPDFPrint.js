@@ -17,13 +17,14 @@ angular.module('bhima.components')
 .component('bhPdfLink', {
   bindings : {
     pdfUrl : '@',
+    buttonText : '@',
     disableCache: '@',
     options : '<',
   },
   transclude : true,
-  template :
+  template : 
     '<a href ng-click="$ctrl.print()">' +
-      '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
+      '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ $ctrl.buttonText | translate }}</span>' +
       '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFO.LOADING" | translate }}</span>' +
     '</a>' +
     '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',

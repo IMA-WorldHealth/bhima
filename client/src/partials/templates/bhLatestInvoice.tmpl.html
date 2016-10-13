@@ -6,11 +6,12 @@
     <strong>{{ "TABLE.COLUMNS.LAST_BILL" | translate }} </strong> 
     <span> 
       {{ "TABLE.COLUMNS.OF" | translate }} {{ $ctrl.patientInvoice.invoicesLength || 0 }} {{ "TABLE.COLUMNS.INVOICES" | translate }}
-    </span>
+    </span> 
     <span class="pull-right">
       <bh-pdf-link
         pdf-url="/reports/finance/financialPatient/{{ $ctrl.debtorUuid }}"
         disable-cache="true"
+        button-text="FORM.BUTTONS.PRINT_FINANCIAL_ACT"
       >
       </bh-pdf-link>
     </span>

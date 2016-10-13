@@ -266,7 +266,8 @@ function financialPatient(debtorUuid) {
       LEFT JOIN project ON invoice.project_id = project.id 
       WHERE general_ledger.entity_uuid = ? AND general_ledger.entity_type = 'D'
     ) as transaction
-    GROUP BY transaction.trans_id;`;
+    GROUP BY transaction.trans_id 
+    ORDER BY transaction.trans_date ASC;`;
 
   return db.exec(sql, [buid, buid]);
 }
