@@ -1,0 +1,72 @@
+{{> head title="CASH.TITLE" }}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-capitalize">
+        {{translate 'TREE.CASH_PAYMENT_REGISTRY'}}
+      </h2>
+
+      <br>
+
+      <!-- filters  -->
+      {{#if hasFilter}}
+      <div>
+        <i class="fa fa-filter"></i>
+        {{#if display.reference}}{{translate 'TABLE.COLUMNS.REFERENCE'}}: {{look display 'reference'}} /{{/if}}
+        {{#if display.dateFrom}} {{translate 'TABLE.COLUMNS.DATE'}}: {{date (look display 'dateFrom')}} - {{date (look display 'dateTo')}} /{{/if}}
+        {{#if display.debtor_uuid}} {{translate 'TABLE.COLUMNS.PATIENT'}}: {{look display 'debtor_uuid'}} /{{/if}}
+        {{#if display.cashbox_id}} {{translate 'TABLE.COLUMNS.CASHBOX'}}: {{look display 'cashbox_id'}} /{{/if}}
+        {{#if display.user_id}}{{translate 'TABLE.COLUMNS.USER'}}: {{look display 'user_id'}}/{{/if}}
+        {{#if display.is_caution}}{{translate 'FORM.LABELS.CAUTION'}}: <i class="fa fa-check"></i> {{/if}}
+      </div>
+      {{/if}}
+
+      <br>
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.PATIENT'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.AMOUNT'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.CASHBOX'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.USER'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr>
+              <td>{{reference}}</td>
+              <td class="text-right">{{date date}}</td>
+              <td>{{debtor_name}}</td>
+              <td class="text-right">{{currency amount currency_id}}</td>
+              <td>{{cashbox_label}}</td>
+              <td>{{display_name}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    <!--
+      display total only when filter by cashbox
+      TODO: display the currency and in monetary format according the cashbox
+    -->
+    {{#if display.cashbox_id}}
+    <div class="col-xs-12">
+      <span>{{translate 'FORM.LABELS.TOTAL'}}</span>:
+      <strong class="text-right">{{sum rows 'amount'}}</strong>
+    </div>
+    {{/if}}
+
+  </div>
+</body>

@@ -23,7 +23,8 @@ const Users = require('../../../admin/users');
 const Patients = require('../../../medical/patients');
 const Enterprises = require('../../../admin/enterprises');
 
-const TEMPLATE = './server/controllers/finance/reports/cash/receipt.handlebars';
+const RECEIPT_TEMPLATE = './server/controllers/finance/reports/cash/receipt.handlebars';
+const REPORT_TEMPLATE = './server/controllers/finance/reports/cash/report.handlebars';
 
 /**
  * @method receipt
@@ -41,7 +42,7 @@ function receipt(req, res, next) {
 
   // set up the report with report manager
   try {
-    report = new ReportManager(TEMPLATE, req.session, options);
+    report = new ReportManager(RECEIPT_TEMPLATE, req.session, options);
   } catch (e) {
     return next(e);
   }
@@ -75,4 +76,53 @@ function receipt(req, res, next) {
     .done();
 }
 
+/**
+ * @method report
+ *
+ * @description
+ * This method builds the cash payment report as either a JSON, PDF, or HTML
+ * file to be sent to the client.
+ *
+ * GET /reports/finance/cash
+ */
+function report(req, res, next) {
+  let options = {};
+  let display = {};
+  let hasFilter = false;
+
+  let report;
+  let lang = req.query.lang;
+  let enterprise = req.session.enterprise;
+  // set up the report with report manager
+  try {
+
+    if (req.query.identifiers && req.query.display) {
+      options = JSON.parse(req.query.identifiers);
+      display = JSON.parse(req.query.display);
+      hasFilter = Object.keys(display).length;
+    }
+
+    report = new ReportManager(REPORT_TEMPLATE, req.session, { lang: lang });
+  } catch (e) {
+    return next(e);
+  }
+
+  let data = {};
+
+  CashPayments.listPayment(options)
+    .then(rows => {
+      data.rows = rows;
+      data.display = display;
+      data.hasFilter = hasFilter;
+      data.enterprise = enterprise;
+      return report.render(data);
+    })
+    .then(result => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
+}
+
 exports.receipt = receipt;
+exports.report = report;

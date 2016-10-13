@@ -60,7 +60,8 @@ function VoucherController(Vouchers, $translate, Notify, Filtering, uiGridGroupi
   vm.gridOptions.enableFiltering  = vm.filterEnabled;
   vm.gridOptions.columnDefs       = [
     { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate',
-      groupingShowAggregationMenu: false
+      groupingShowAggregationMenu: false,
+      aggregationType: uiGridConstants.aggregationTypes.count
     },
     { field : 'type_id', displayName : 'TABLE.COLUMNS.TYPE', headerCellFilter: 'translate',
       sort: { priority: 0, direction : 'asc' },

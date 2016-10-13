@@ -62,7 +62,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
         headerCellFilter : 'translate',
         cellTemplate: costTemplate,
         aggregationType: uiGridConstants.aggregationTypes.sum,
-        footerCellFilter: 'currency:grid.appScope.enterprise.currency_id' 
+        footerCellFilter: 'currency:grid.appScope.enterprise.currency_id'
       },
       { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
       { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
