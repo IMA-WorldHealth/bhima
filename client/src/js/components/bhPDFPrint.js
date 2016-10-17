@@ -64,6 +64,9 @@ function bhPDFPrintController($window, $http, $sce, $timeout) {
   var cachedRequest;
   var component = this;
 
+  // Default value for buttonText
+  component.buttonText = component.buttonText || 'FORM.BUTTONS.PRINT';
+
   // turn off caching via disable-cache="true".  Caching is enabled by default.
   var enableCache = (component.disableCache !== 'true');
 
