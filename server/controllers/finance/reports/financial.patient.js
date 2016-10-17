@@ -49,7 +49,7 @@ function build(req, res, next) {
   Patients.lookupByDebtorUuid(req.params.uuid)
     .then(debtor => {
       debtorData.debtor = debtor;
-      return Debtors.financialPatient(req.params.uuid)    
+      return Debtors.financialPatient(req.params.uuid);  
     })
     .then(patients => {
       let sum = {
