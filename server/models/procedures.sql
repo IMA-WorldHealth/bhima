@@ -633,7 +633,8 @@ BEGIN
     SET remainder = cashAmount - previousInvoiceBalances;
 
     -- check if we should round or not
-    IF (minMonentaryUnit > ABS(remainder)) THEN
+    -- if the remainder is 0 the invoice is payed without need for rounding
+    IF (minMonentaryUnit > ABS(remainder) && remainder <> 0) THEN
 
       /*
         A positive remainder means that the debtor overpaid slightly and we should debit
