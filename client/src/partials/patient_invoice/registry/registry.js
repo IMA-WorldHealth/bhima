@@ -2,7 +2,9 @@ angular.module('bhima.controllers')
 .controller('InvoiceRegistryController', InvoiceRegistryController);
 
 InvoiceRegistryController.$inject = [
-  'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService', 'util', 'ReceiptModal', 'appcache'
+  'PatientInvoiceService', 'bhConstants', 'NotifyService',
+  'SessionService', 'util', 'ReceiptModal', 'appcache',
+  'uiGridConstants'
 ];
 
 /**
@@ -10,7 +12,7 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
@@ -45,12 +47,23 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
   //setting columns names
   vm.uiGridOptions = {
     appScopeProvider : vm,
+    showColumnFooter : true,
     enableColumnMenus : false,
     columnDefs : [
-      { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
+      { field : 'reference',
+        displayName : 'TABLE.COLUMNS.REFERENCE',
+        headerCellFilter: 'translate',
+        aggregationType: uiGridConstants.aggregationTypes.count
+      },
       { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate' },
       { field : 'patientNames', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
-      { field : 'cost', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate },
+      { field : 'cost',
+        displayName : 'TABLE.COLUMNS.COST',
+        headerCellFilter : 'translate',
+        cellTemplate: costTemplate,
+        aggregationType: uiGridConstants.aggregationTypes.sum,
+        footerCellFilter: 'currency:grid.appScope.enterprise.currency_id' 
+      },
       { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
       { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
       { name : 'Actions', displayName : '', cellTemplate : invoiceActionsTemplate }
