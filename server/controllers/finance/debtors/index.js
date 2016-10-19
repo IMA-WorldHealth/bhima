@@ -134,24 +134,19 @@ function invoices(req, res, next) {
   const uid = db.bid(req.params.uuid);
   const options = req.query;
 
-
   // get the debtor invoice uuids from the invoice table
   let sql =`
-    SELECT invoice.uuid, voucher.type_id
-    FROM invoice
-    LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
-    WHERE invoice.debtor_uuid = ?;`;
+    SELECT invoice.uuid 
+    FROM invoice 
+    WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10);`;
 
   db.exec(sql, [uid])
     .then(function (uuids) {
+
       // if nothing found, return an empty array
       if (!uuids.length) { return []; }
 
-      let validInvoices = uuids.filter(function (invoice) {
-        return invoice.type_id !== 10;
-      });
-
-      uuids = validInvoices.map(item => item.uuid);
+      uuids = uuids.map(item => item.uuid);
 
       let balanced =
          (options.balanced === '1') ? 'HAVING balance = 0' :
