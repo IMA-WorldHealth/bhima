@@ -19,7 +19,7 @@
   <div class="panel-body" style="height : 250px;">
 
     <div style="text-align : left; font-size : 1em; ">
-      <table ng-if="$ctrl.patientInvoice" style="width:100%; vertical-align:top">
+      <table ng-if="$ctrl.patientInvoice.invoicesLength" style="width:100%; vertical-align:top">
         <tr>
           <td style="width:10%"><strong>{{ "TABLE.COLUMNS.INVOICE_ID" | translate }}</strong></td>
           <td style="width:40%">{{ $ctrl.patientInvoice.reference }} </td>
@@ -69,7 +69,7 @@
           <td></td>
         </tr>
       </table>
-      <table ng-if="!$ctrl.patientInvoice" style="width:100%; vertical-align:top">
+      <table ng-if="!$ctrl.patientInvoice.invoicesLength" style="width:100%; vertical-align:top">
         <tr>
           <td style="text-align: center; font-size: +16; width:100%;">
             <h3>
