@@ -3,7 +3,7 @@ angular.module('bhima.routes')
     
     $stateProvider
       .state('cashboxes', { 
-        // abstract : true, 
+        abstract : true, 
         url : '/cashboxes', 
         controller : 'CashboxController as CashCtrl', 
         templateUrl : 'partials/cash/cashboxes/cashboxes.html'
@@ -16,8 +16,8 @@ angular.module('bhima.routes')
 
       .state('cashboxes.create', { 
         url : '/create',
-        onEnter : ['$uibModal', addModal], 
-        onExit : ['$uibModalStack', closeModal]
+        templateUrl : 'partials/cash/cashboxes/update/add.html', 
+        controller : 'CashboxUpdateController as UpdateCtrl'
       })
 
       .state('cashboxes.edit', {
@@ -35,7 +35,7 @@ function addModal($modal) {
   $modal.open({ 
     keyboard : false,
     backdrop : 'static', 
-    templateUrl : 'partials/cash/cashboxes/update/add.html', 
+    templateUrl : 'partials/cash/cashboxes/update/add.modal.html', 
     controller : 'CashboxUpdateController as UpdateCtrl'
   });
 }
