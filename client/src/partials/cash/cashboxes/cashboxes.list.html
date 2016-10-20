@@ -13,7 +13,7 @@
           <tr ng-repeat="box in CashCtrl.cashboxes track by box.id">
             <td>{{ box.label}}</td>
             <td class="text-right">
-              <a class="btn btn-xs btn-default" ng-click="CashCtrl.update(box.id)">
+              <a class="btn btn-xs btn-default" ui-sref="cashboxes.edit({ uuid : box.id })">
                 <i class="fa fa-pencil-square-o"></i> {{ "FORM.BUTTONS.EDIT" | translate }}
               </a>
             </td>

@@ -25,7 +25,7 @@ angular.module('bhima.routes')
         params : { 
           id : { squash : true, value : null }
         }, 
-        templateUrl : 'partials/cash/cashboxes/udpate/edit.html',
+        templateUrl : 'partials/cash/cashboxes/update/edit.html',
         controller : 'CashboxUpdateController as UpdateCtrl'
       });
 

@@ -1,23 +1,40 @@
 angular.module('bhima.controllers')
 .controller('CashboxUpdateController', CashboxUpdateController);
 
-CashboxUpdateController.$inject = ['$state', 'NotifyService', 'CashboxService'];
+CashboxUpdateController.$inject = ['$state', '$uibModal', 'ModalService', 'NotifyService', 'CashboxService', 'CurrencyService'];
 
-function CashboxUpdateController($state, Notify, Boxes) {
+function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Currencies) {
   var vm = this;
   console.log('update controller fired');
 
   console.log($state);
 
   vm.submit = submit;
+  vm.configureCurrency = configureCurrency;
 
   var CREATE_STATE = "cashboxes.create";
 
   // temporary method of determining if we're in create state
   var creating = $state.current.name === CREATE_STATE;
 
+  var cashboxUuid = $state.params.uuid;
+
+  // TODO this information could be shared by the parent controller
+  Currencies.read().then(function (currencies) {
+      vm.currencies = currencies;
+
+      // if we have a cashbox (and are subsequently in the edit state), load its information
+      if (angular.isDefined(cashboxUuid)) {
+        loadCashbox(cashboxUuid);
+      } else {
+        // FIXME remove convuluted logic
+        vm.box.type = 1;
+      }
+
+    }).catch(Notify.handleError);
+
+
   vm.box = {};
-  vm.box.type = "1";
 
   // form submission
   function submit(form) {
@@ -52,6 +69,82 @@ function CashboxUpdateController($state, Notify, Boxes) {
       })
       .catch(Notify.handleError);
   }
+
+  // asnychronously load a cashbox from the server
+  function loadCashbox(id) {
+    return Boxes.read(id)
+      .then(function (data) {
+
+        // workaround until we build a type column into the database.
+        // converts is_auxiliary into radio buttons
+
+        // data.type = (data.is_auxiliary) ? 'auxiliary' : 'primary';
+        data.type = data.is_auxiliary;
+
+        // bind the cashbox to the view
+        vm.box = data;
+
+        // calculate the currency difference
+        calculateCurrencyDiff();
+
+        console.log('loaded configruation', vm.box);
+        console.log(vm.currencies);
+      });
+  }
+
+  // check if a currency is in the data.currencies array
+  function hasCurrency(id) {
+    return vm.box.currencies.some(function (c) {
+      return c.currency_id === id;
+    });
+  }
+
+  function calculateCurrencyDiff() {
+    vm.currencies.forEach(function (currency) {
+      currency.configured = hasCurrency(currency.id);
+    });
+  }
+
+  /**
+   * configure the currency account for a cashbox
+   * @todo - should this be in it's own service?
+   */
+  function configureCurrency(currency) {
+
+    var instance = Modal.open({
+      templateUrl : 'partials/cash/cashboxes/configure_currency/modal.html',
+      controller : 'CashboxCurrencyModalController as CashboxModalCtrl',
+      size : 'md',
+      backdrop : 'static',
+      animation: false,
+      resolve : {
+        currency : function () {
+          return currency;
+        },
+        cashbox : function () {
+          return vm.box;
+        },
+        data : function () {
+          // catch in case of 404, none specified default to empty object
+          return Boxes.currencies.read(vm.box.id, currency.id)
+            .catch(function () { return {}; });
+        }
+      }
+    });
+
+    instance.result
+      .then(function () {
+        Notify.success('FORM.INFO.UPDATE_SUCCESS');
+
+        // TODO optimistically update without the need for additional connection (unless for verifcation)
+        loadCashbox(vm.box.id);
+      })
+      .catch(function (data) {
+        if (data) { Notify.handleError(data); }
+      });
+  }
+
+
 }
 
 

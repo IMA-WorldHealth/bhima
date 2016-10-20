@@ -28,7 +28,7 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
   vm.cancel = cancel;
   // vm.submit = submit;
   vm.delete = remove;
-  vm.configureCurrency = configureCurrency;
+  // vm.configureCurrency = configureCurrency;
 
   vm.maxLength = util.maxTextLength;
 
@@ -47,9 +47,9 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
       vm.cashboxes = cashboxes;
     }).catch(Notify.handleError);
 
-    Currencies.read().then(function (currencies) {
-      vm.currencies = currencies;
-    }).catch(Notify.handleError);
+    // Currencies.read().then(function (currencies) {
+    //   vm.currencies = currencies;
+    // }).catch(Notify.handleError);
 
     vm.view = 'default';
   }
@@ -65,22 +65,22 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
     calculateCurrencyDiff();
   }
 
-  // asnychronously load a cashbox from the server
-  function loadCashbox(id) {
-    return Boxes.read(id)
-      .then(function (data) {
+  // // asnychronously load a cashbox from the server
+  // function loadCashbox(id) {
+  //   return Boxes.read(id)
+  //     .then(function (data) {
 
-        // workaround until we build a type column into the database.
-        // converts is_auxiliary into radio buttons
-        data.type = (data.is_auxiliary) ? 'auxiliary' : 'primary';
+  //       // workaround until we build a type column into the database.
+  //       // converts is_auxiliary into radio buttons
+  //       data.type = (data.is_auxiliary) ? 'auxiliary' : 'primary';
 
-        // bind the cashbox to the view
-        vm.box = data;
+  //       // bind the cashbox to the view
+  //       vm.box = data;
 
-        // calculate the currency difference
-        calculateCurrencyDiff();
-      });
-  }
+  //       // calculate the currency difference
+  //       calculateCurrencyDiff();
+  //     });
+  // }
 
   // switch to update mode
   function update(id) {
@@ -92,18 +92,18 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
   }
 
   // check if a currency is in the data.currencies array
-  function hasCurrency(id) {
-    return vm.box.currencies.some(function (c) {
-      return c.currency_id === id;
-    });
-  }
+  // function hasCurrency(id) {
+  //   return vm.box.currencies.some(function (c) {
+  //     return c.currency_id === id;
+  //   });
+  // }
 
   // calculate what currency accounts are missing from the cashbox
-  function calculateCurrencyDiff() {
-    vm.currencies.forEach(function (currency) {
-      currency.configured = hasCurrency(currency.id);
-    });
-  }
+  // function calculateCurrencyDiff() {
+  //   vm.currencies.forEach(function (currency) {
+  //     currency.configured = hasCurrency(currency.id);
+  //   });
+  // }
 
   // refresh the displayed cashboxes
   function refreshBoxes() {
@@ -163,38 +163,38 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
    * configure the currency account for a cashbox
    * @todo - should this be in it's own service?
    */
-  function configureCurrency(currency) {
+  // function configureCurrency(currency) {
 
-    var instance = Modal.open({
-      templateUrl : 'partials/cash/cashboxes/modal.html',
-      controller : 'CashboxCurrencyModalController as CashboxModalCtrl',
-      size : 'md',
-      backdrop : 'static',
-      animation: false,
-      resolve : {
-        currency : function () {
-          return currency;
-        },
-        cashbox : function () {
-          return vm.box;
-        },
-        data : function () {
-          // catch in case of 404, none specified default to empty object
-          return Boxes.currencies.read(vm.box.id, currency.id)
-            .catch(function () { return {}; });
-        }
-      }
-    });
+  //   var instance = Modal.open({
+  //     templateUrl : 'partials/cash/cashboxes/modal.html',
+  //     controller : 'CashboxCurrencyModalController as CashboxModalCtrl',
+  //     size : 'md',
+  //     backdrop : 'static',
+  //     animation: false,
+  //     resolve : {
+  //       currency : function () {
+  //         return currency;
+  //       },
+  //       cashbox : function () {
+  //         return vm.box;
+  //       },
+  //       data : function () {
+  //         // catch in case of 404, none specified default to empty object
+  //         return Boxes.currencies.read(vm.box.id, currency.id)
+  //           .catch(function () { return {}; });
+  //       }
+  //     }
+  //   });
 
-    instance.result
-      .then(function () {
-        Notify.success('FORM.INFO.UPDATE_SUCCESS');
-        update(vm.box.id);
-      })
-      .catch(function (data) {
-        if (data) { Notify.handleError(data); }
-      });
-  }
+  //   instance.result
+  //     .then(function () {
+  //       Notify.success('FORM.INFO.UPDATE_SUCCESS');
+  //       update(vm.box.id);
+  //     })
+  //     .catch(function (data) {
+  //       if (data) { Notify.handleError(data); }
+  //     });
+  // }
 
   startup();
 }

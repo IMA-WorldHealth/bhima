@@ -103,6 +103,7 @@
   },
   "CASHBOX": {
     "ADD_CASHBOX"     : "Add cashbox",
+    "BACK"            : "Back to Cashboxes",
     "CASHBOX"         : "Cashbox",
     "CONFIG_ACCOUNTS" : "Configuration of Account",
     "DANGER_ZONE"     : "Danger Zone",
