@@ -204,16 +204,16 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
   })
 
   /* cashbox routes */
-  .state('cashboxes', {
-    url : '/cashboxes',
-    controller : 'CashboxController as CashCtrl',
-    templateUrl : 'partials/cash/cashboxes/cashboxes.html'
-  })
-  .state('cashboxes.currencies', {
-    url : '/cashboxes/:uuid/currencies',
-    controller : 'cash.cashbox_account',
-    templateUrl : 'partials/cash/cashboxes/currencies/currencies.html'
-  })
+  // .state('cashboxes', {
+  //   url : '/cashboxes',
+  //   controller : 'CashboxController as CashCtrl',
+  //   templateUrl : 'partials/cash/cashboxes/cashboxes.html'
+  // })
+  // .state('cashboxes.currencies', {
+  //   url : '/cashboxes/:uuid/currencies',
+  //   controller : 'cash.cashbox_account',
+  //   templateUrl : 'partials/cash/cashboxes/currencies/currencies.html'
+  // })
 
   /* transaction type */
   .state('transactionType', {
