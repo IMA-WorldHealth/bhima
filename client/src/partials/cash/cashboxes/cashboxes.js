@@ -16,6 +16,8 @@ CashboxController.$inject = [
 function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalService, util, Notify) {
   var vm = this;
 
+  console.log('Cashbox controller fired');
+
   // bind variables
   vm.enterprise = Session.enterprise;
   vm.project = Session.project;
@@ -24,7 +26,7 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
   vm.create = create;
   vm.update = update;
   vm.cancel = cancel;
-  vm.submit = submit;
+  // vm.submit = submit;
   vm.delete = remove;
   vm.configureCurrency = configureCurrency;
 
@@ -112,34 +114,34 @@ function CashboxController(Modal, Session, Projects, Boxes, Currencies, ModalSer
   }
 
   // form submission
-  function submit(form) {
-    if (form.$invalid) {
-      Notify.danger('FORM.ERRORS.HAS_ERRORS');
-      return;
-    }
+  // function submit(form) {
+  //   if (form.$invalid) {
+  //     Notify.danger('FORM.ERRORS.HAS_ERRORS');
+  //     return;
+  //   }
 
-    var cashboxId;
-    var promise;
-    var creation = (vm.view === 'create');
-    var box = angular.copy(vm.box);
+  //   var cashboxId;
+  //   var promise;
+  //   var creation = (vm.view === 'create');
+  //   var box = angular.copy(vm.box);
 
-    box.is_auxiliary = (box.type === 'auxiliary') ?  0 : 1;
+  //   box.is_auxiliary = (box.type === 'auxiliary') ?  0 : 1;
 
-    promise = (creation) ?
-      Boxes.create(box) :
-      Boxes.update(box.id, box);
+  //   promise = (creation) ?
+  //     Boxes.create(box) :
+  //     Boxes.update(box.id, box);
 
-    return promise
-      .then(function (response) {
-        cashboxId = response.id;
-        return refreshBoxes();
-      })
-      .then(function () {
-        Notify.success(creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
-        update(cashboxId);
-      })
-      .catch(Notify.handleError);
-  }
+  //   return promise
+  //     .then(function (response) {
+  //       cashboxId = response.id;
+  //       return refreshBoxes();
+  //     })
+  //     .then(function () {
+  //       Notify.success(creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
+  //       update(cashboxId);
+  //     })
+  //     .catch(Notify.handleError);
+  // }
 
   function remove(box) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
