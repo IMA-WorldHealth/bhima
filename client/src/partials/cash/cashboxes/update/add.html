@@ -38,14 +38,14 @@
             <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.type.$invalid }">
               <div class="radio">
                 <label>
-                  <input type="radio" name="type" ng-model="UpdateCtrl.box.type" value="1" required>
+                  <input type="radio" name="type" ng-model="UpdateCtrl.box.is_auxiliary" value="0" required>
                   {{ "FORM.LABELS.PRINCIPAL" | translate }}
                 </label>
               </div>
 
               <div class="radio">
                 <label>
-                  <input type="radio" name="type" ng-model="UpdateCtrl.box.type" value="0" required>
+                  <input type="radio" name="type" ng-model="UpdateCtrl.box.is_auxiliary" value="1" required>
                   {{ "FORM.LABELS.AUXILIARY" | translate }}
                 </label>
               </div>

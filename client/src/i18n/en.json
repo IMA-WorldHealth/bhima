@@ -102,6 +102,7 @@
     }
   },
   "CASHBOX": {
+    "ACTIONS"         : "Cashbox Actions",
     "ADD_CASHBOX"     : "Add cashbox",
     "BACK"            : "Back to Cashboxes",
     "CASHBOX"         : "Cashbox",

@@ -11,6 +11,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
 
   vm.submit = submit;
   vm.configureCurrency = configureCurrency;
+  vm.remove = remove;
 
   var CREATE_STATE = "cashboxes.create";
 
@@ -28,7 +29,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
         loadCashbox(cashboxUuid);
       } else {
         // FIXME remove convuluted logic
-        vm.box.type = 1;
+        vm.box.is_auxiliary = 1;
       }
 
     }).catch(Notify.handleError);
@@ -47,9 +48,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
     var promise;
     var box = angular.copy(vm.box);
 
-
         // box.is_auxiliary = (box.type === 'auxiliary') ?  0 : 1;
-    //
 
     promise = (creating) ?
       Boxes.create(box) :
@@ -79,7 +78,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
         // converts is_auxiliary into radio buttons
 
         // data.type = (data.is_auxiliary) ? 'auxiliary' : 'primary';
-        data.type = data.is_auxiliary;
+        // data.type = data.is_auxiliary;
 
         // bind the cashbox to the view
         vm.box = data;
@@ -143,6 +142,24 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
         if (data) { Notify.handleError(data); }
       });
   }
+
+  function remove(box) {
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool) {
+
+      if (!bool) { return; }
+
+      Boxes.delete(box.id)
+      .then(function (message) {
+        Notify.success('FORM.INFO.DELETE_SUCCESS');
+
+        $state.go('cashboxes.list', null, { reload : true });
+        return;
+      })
+      .catch(Notify.handleError);
+    });
+  }
+
 
 
 }

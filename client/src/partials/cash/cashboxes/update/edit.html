@@ -37,14 +37,14 @@
               </label>
               <div class="radio">
                 <label>
-                  <input type="radio" name="type" ng-model="UpdateCtrl.box.type" value="1" required>
+                  <input type="radio" name="type" ng-model="UpdateCtrl.box.is_auxiliary" value="0" required>
                   {{ "FORM.LABELS.PRINCIPAL" | translate }}
                 </label>
               </div>
 
               <div class="radio">
                 <label>
-                  <input type="radio" name="type" ng-model="UpdateCtrl.box.type" value="0" required>
+                  <input type="radio" name="type" ng-model="UpdateCtrl.box.is_auxiliary" value="1" required>
                   {{ "FORM.LABELS.AUXILIARY" | translate }}
                 </label>
               </div>
@@ -94,8 +94,22 @@
             </bh-loading-button>
           </div>
         </div>
-      </div>
       </form>
+      </div>
+
+    <div class="col-md-7">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-ellipsis-h"></i> {{ "CASHBOX.ACTIONS" | translate }}
+        </div>
+        <div class="panel-body">
+          <button class="btn btn-danger" type="button" ng-click="UpdateCtrl.remove(UpdateCtrl.box)" data-method="delete">
+            <i class="fa fa-trash-o"></i> {{ "FORM.BUTTONS.DELETE" | translate }} {{ "CASHBOX.CASHBOX" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     </div> <!-- Col -->
   </div> <!-- Row -->
 </div> <!--  Container fluid -->
