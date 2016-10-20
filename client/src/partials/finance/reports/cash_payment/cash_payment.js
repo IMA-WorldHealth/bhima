@@ -82,10 +82,10 @@ function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConst
   function onRemoveFilter(key) {
     if (key === 'dateFrom' ||  key === 'dateTo') {
       // remove all dates filters if one selected
-      delete vm.filters.identifiers['dateFrom'];
-      delete vm.filters.identifiers['dateTo'];
-      delete vm.filters.display['dateFrom'];
-      delete vm.filters.display['dateTo'];
+      delete vm.filters.identifiers.dateFrom;
+      delete vm.filters.identifiers.dateTo;
+      delete vm.filters.display.dateFrom;
+      delete vm.filters.display.dateTo;
     } else {
       // remove the key
       delete vm.filters.identifiers[key];

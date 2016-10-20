@@ -74,6 +74,8 @@ function SearchCashPaymentModalController(Debtors, Users, Cashboxes, Notify, Ins
     var out = { identifiers: {}, display: {} };
     for (var key in formatedFilters) {
 
+      if (!formatedFilters.hasOwnProperty(key)) { continue; }
+
       // get identifiers
       out.identifiers[key] = typeof(formatedFilters[key]) === 'object' ?
         formatedFilters[key].uuid || formatedFilters[key].id || formatedFilters[key] : formatedFilters[key];

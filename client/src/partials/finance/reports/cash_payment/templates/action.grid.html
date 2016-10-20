@@ -6,10 +6,11 @@
     <i class="fa fa-file-pdf-o"></i> {{ "TABLE.COLUMNS.RECEIPT" | translate }}
   </a>
 
-  <a class="text-action text-danger"
+  <!-- TODO implement the cancel operation  -->
+  <!-- <a class="text-action text-danger"
     ng-if="row.entity.uuid"
     ng-click="grid.appScope.discardPayment(row.entity.uuid)"
     data-link-receipt="{{ row.entity.uuid }}" href>
     <i class="fa fa-remove"></i> {{ "FORM.LABELS.CANCEL" | translate }}
-  </a>
+  </a> -->
 </div>
