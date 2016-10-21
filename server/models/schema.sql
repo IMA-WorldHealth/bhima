@@ -1452,17 +1452,28 @@ CREATE TABLE `reference_group` (
 DROP TABLE IF EXISTS `report`;
 
 CREATE TABLE `report` (
+  `id`                  tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `key`                 TEXT NOT NULL, 
+  `title_key`           TEXT NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `saved_report`;
+
+CREATE TABLE `saved_report` (
   `uuid`                BINARY(16) NOT NULL,
   `label`               TEXT NOT NULL,
-  `type`                TEXT NOT NULL,
+  `report_id`           tinyint(3) unsigned NOT NULL,
   `parameters`          TEXT, /* query string parameters, if they will be displayed on the report (such as filters, etc) */
   `link`                TEXT NOT NULL,
   `timestamp`           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id`             SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `report_id` (`report_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+) ENGINE= InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `rubric`;

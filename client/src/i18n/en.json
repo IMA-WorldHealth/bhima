@@ -264,6 +264,7 @@
       "LOGOUT"                : "Logout",
       "NEXT"                  : "Next",
       "NEW"                   : "New",
+      "NEW_REPORT"            : "Create new report",
       "NOT_CONFIGURED"        : "Not Configured",
       "OK"                    : "OK",
       "PRINT"                 : "Print",
