@@ -8,12 +8,11 @@
  * in the finance module.
  */
 
-exports.debtors = require('./debtors');
+exports.debtors  = require('./debtors');
 exports.accounts = require('./accounts');
 exports.invoices = require('./invoices');
 exports.vouchers = require('./vouchers');
-exports.cash = require('./cash');
+exports.cash     = require('./cash');
 exports.cashflow = require('./cashflow');
 exports.financialPatient = require('./financial.patient');
-
-
+exports.journal  = require('./journal');
