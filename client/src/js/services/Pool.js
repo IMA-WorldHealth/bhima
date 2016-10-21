@@ -50,7 +50,7 @@ function PoolService(Store) {
       this.unavailable.remove(id);
       this.available.post(item);
     }
-
+    
     return item;
   };
 
