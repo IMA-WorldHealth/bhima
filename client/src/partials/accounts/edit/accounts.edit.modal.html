@@ -98,6 +98,10 @@
     </label>
   </div>
   <button class="btn btn-default btn-sm" data-method="cancel" ng-click="AccountEditCtrl.close()" data-action="close">{{ "FORM.BUTTONS.CLOSE" | translate }}</button>
+  <button ng-if="!AccountEditCtrl.isCreateState" class="btn btn-danger btn-sm" data-method="cancel" ng-click="AccountEditCtrl.deleteAccount(AccountEditCtrl.account.id)" data-action="close">
+    {{ "ACCOUNT.SUBMIT_DELETE" | translate }}
+  </button>
+
   <button ng-disabled="AccountEditCtrl.accountNotFound || AccountEditCtrl.error" data-method="submit" class="btn btn-primary btn-sm" ng-click="AccountEditCtrl.updateAccount(AccountForm)" data-action="close">
     <span ng-if="AccountEditCtrl.isCreateState">{{ "ACCOUNT.SUBMIT_CREATE" | translate }}</span>
     <span ng-if="!AccountEditCtrl.isCreateState">{{ "ACCOUNT.SUBMIT_UPDATE" | translate }}</span>

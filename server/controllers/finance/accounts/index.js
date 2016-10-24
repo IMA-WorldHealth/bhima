@@ -10,6 +10,7 @@
  *  GET    /accounts/:id/balance/
  *  POST   /accounts
  *  PUT    /accounts/:id
+ *  DELETE    /accounts/:id
  *
  * @todo - move away from calling lookup() before action.  This is an
  * unnecessary database request.
@@ -78,6 +79,32 @@ function update(req, res, next) {
     .catch(next)
     .done();
 }
+
+
+/**
+ * @method remove
+ *
+ * @description
+ * Removes an account in the database.
+ *
+ * DELETE /accounts/:id
+ */
+function remove(req, res, next) {
+  const sql = 'DELETE FROM account WHERE id = ?;';
+
+  db.exec(sql, [req.params.id])
+    .then(function (result) {
+
+      if (!result.affectedRows) {
+        throw new NotFound(`Could not find an Account with id ${req.params.id}.`);
+      }
+
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
+}
+
 
 /**
  * @method list
@@ -297,3 +324,5 @@ exports.getBalance = getBalance;
 exports.types = types;
 exports.lookupAccount = lookupAccount;
 exports.processAccountDepth = processAccountDepth;
+exports.list = list;
+exports.remove = remove;
