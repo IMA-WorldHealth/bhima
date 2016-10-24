@@ -482,5 +482,5 @@ INSERT INTO `purchase_item` VALUES
   (HUID(UUID()), @purchase_order, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 10, 10, 100);
 
  -- core BHIMA reports 
- INSERT INTO `report` (`id`, `key`, `title_key`) VALUES 
+ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
   (1, 'cashflow', 'TREE.CASHFLOW');

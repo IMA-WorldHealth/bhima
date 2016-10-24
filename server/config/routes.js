@@ -367,6 +367,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/financialPatient/:uuid', financeReports.financialPatient);
 
   app.get('/reports/keys/:key', report.keys);
+  app.get('/reports/saved/:reportId', report.list);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);

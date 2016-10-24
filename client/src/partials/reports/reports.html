@@ -3,7 +3,7 @@
 
     <ol class="headercrumb">
       <li class="static">{{ "TREE.REPORTS" | translate }}</li>
-      <li class="title">{{ReportCtrl.report.title}}</li>
+      <li class="title">{{ReportCtrl.report.title_key | translate}}</li>
     </ol>
 
     <div class="toolbar">
@@ -11,7 +11,8 @@
         <a
           class="btn btn-default">
           <span class="fa fa-plus"></span>
-          {{ "FORM.BUTTONS.NEW_REPORT" | translate }}
+          {{ "FORM.BUTTONS.NEW" | translate }}
+          {{ReportCtrl.report.title_key | translate}}
         </a>
       </div>
     </div>

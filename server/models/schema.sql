@@ -1453,7 +1453,7 @@ DROP TABLE IF EXISTS `report`;
 
 CREATE TABLE `report` (
   `id`                  tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `key`                 TEXT NOT NULL, 
+  `report_key`          TEXT NOT NULL, 
   `title_key`           TEXT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
