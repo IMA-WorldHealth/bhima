@@ -18,6 +18,7 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   vm.updateAccount = updateAccount;
   vm.getTypeTitle = getTypeTitle;
   vm.close = close;
+  vm.deleteAccount = deleteAccount;
 
   vm.batchCreate = false;
   vm.account = null;
@@ -183,6 +184,20 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
         })
         .catch(handleModalError);
     }
+  }
+
+  /** Delete an used account */
+  function deleteAccount(accountId){
+    if (!accountId) {
+      return;
+    }
+
+    Accounts.delete(accountId)
+    .then(function (result){
+      Notify.success('ACCOUNT.DELETED');
+      close();
+    })
+    .catch(handleModalError);
   }
 
   function resetModal(accountForm) {

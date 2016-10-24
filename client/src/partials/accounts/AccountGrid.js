@@ -93,6 +93,11 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
    * @return {Boolean} This value reflects if the Grid must be refreshed or not
    */
   AccountGrid.prototype.updateViewEdit = function updateViewEdit(event, account) {
+    console.log('EVVVVVVVVVVVV');
+    console.log(event);
+    console.log(account);
+    console.log('HHHHHHHHHHHHHHH');
+
     var storeRecord = this._store.get(account.id);
     var parentHasChanged = account.parent !== storeRecord.parent;
 

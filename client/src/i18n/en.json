@@ -25,6 +25,7 @@
     "CREATE"         : "Create New Account",
     "CREATE_ANOTHER" : "Create another account",
     "CREATED"        : "Account record written",
+    "DELETED"        : "Deleted",
     "UPDATED"        : "Account record updated",
     "GENERATE"       : "Generate Account Report",
     "HELP_TXT_1"     : "Chart of accounts for",
@@ -44,6 +45,7 @@
     "RECORD_SAME"    : "No changes have been made to the form. Update the account details and then press submit.",
     "SELECT_PARENT"  : "Select parent account...",
     "SUBMIT_CREATE"  : "Create Account",
+    "SUBMIT_DELETE"  : "Delete Account",
     "SUBMIT_UPDATE"  : "Update Account",
 
     "TYPES" : {

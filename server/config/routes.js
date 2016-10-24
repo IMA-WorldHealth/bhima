@@ -133,6 +133,7 @@ exports.configure = function configure(app) {
   app.post('/accounts/types', accounts.types.create);
   app.put('/accounts/types/:id', accounts.types.update);
   app.delete('/accounts/types/:id', accounts.types.remove);
+  app.delete('/accounts/:id', accounts.remove);
 
   // API for account routes crud
   app.get('/accounts', accounts.list);
