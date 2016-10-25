@@ -45,6 +45,15 @@
       </div>
     </div>
 
+    <div class="form-group"
+         ng-class="{'has-error' : AccountForm.locked.$invalid && AccountForm.$submitted}">
+      <label class="control-label">{{ "FORM.LABELS.TO_LOCK" | translate }} </label>
+      <input type="checkbox" class="form-control" ng-model="AccountEditCtrl.account.locked" name="locked" ng-true-value="1" ng-false-value="0">
+      <div class="help-block" ng-messages="AccountForm.locked.$error" ng-show="AccountForm.$submitted">
+        <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
     <div ng-if="!AccountEditCtrl.isCreateState" class="form-group">
       <label class="control-label">{{ "FORM.LABELS.ACCOUNT_TYPE" | translate }}</label>
       <p class="form-control-static" ng-if="AccountEditCtrl.account" id="type-static">{{::AccountEditCtrl.getTypeTitle(AccountEditCtrl.account.type_id) | translate }}</p>

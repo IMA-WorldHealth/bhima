@@ -622,6 +622,7 @@
       "TOTAL_BILLED"           : "Total Facture",
       "TOTAL_PAID"             : "Total paye",
       "TO_ACCOUNT"             : "Au Compte",
+      "TO_LOCK"                : "Bloquer",
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Compte transfert",
       "TRANSFER_TYPE"          : "Type de Transfert",

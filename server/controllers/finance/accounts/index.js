@@ -99,7 +99,7 @@ function remove(req, res, next) {
     }
 
     let sqlDelete = 'DELETE FROM account WHERE id = ?;';
-    return db.exec(sqlDelete, [req.params.id])
+    return db.exec(sqlDelete, [req.params.id]);
   })
   .then(function (result) {
 

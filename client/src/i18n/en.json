@@ -617,6 +617,7 @@
       "TOTAL_PAID"             : "Total Paid",
       "TO_ACCOUNT"             : "To Account",
       "TO"                     : "To",
+      "TO_LOCK"                : "To lock",
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "TRANSFER_TYPE"          : "Transfer Type",
