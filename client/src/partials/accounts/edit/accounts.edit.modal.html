@@ -98,7 +98,7 @@
     </label>
   </div>
   <button class="btn btn-default btn-sm" data-method="cancel" ng-click="AccountEditCtrl.close()" data-action="close">{{ "FORM.BUTTONS.CLOSE" | translate }}</button>
-  <button ng-if="!AccountEditCtrl.isCreateState" class="btn btn-danger btn-sm" data-method="cancel" ng-click="AccountEditCtrl.deleteAccount(AccountEditCtrl.account)" data-action="close">
+  <button ng-if="!AccountEditCtrl.isCreateState" id="delete_account" class="btn btn-danger btn-sm" data-method="delete" ng-click="AccountEditCtrl.deleteAccount(AccountEditCtrl.account)" data-action="close">
     {{ "ACCOUNT.SUBMIT_DELETE" | translate }}
   </button>
 

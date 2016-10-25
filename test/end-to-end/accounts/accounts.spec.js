@@ -11,7 +11,7 @@ const FU = require('../shared/FormUtils');
 const AccountsPage = require('./accounts.page.js');
 const components = require('../shared/components');
 
-describe('Account Management', function () {
+describe.only('Account Management', function () {
 
   const path = '#/accounts';
   before(() => helpers.navigate(path));
@@ -35,6 +35,7 @@ describe('Account Management', function () {
       number : 40000
     }
   };
+  const deletingAccount = "3647";
 
   const page = new AccountsPage();
 
@@ -138,4 +139,23 @@ describe('Account Management', function () {
     FU.modal.submit();
     addedAccounts += 1;
   }
+
+  // Delete a specific Account
+  it('Delete specific account', function () {
+    page.openEdit(deletingAccount);
+    element(by.id('delete_account')).click();
+    components.modalAction.confirm();
+
+    components.notification.hasSuccess();
+  });
+
+  // Delete a specific Account
+  it('Impossible to remove an account parent who have children', function () {
+    page.openEdit(accountGroup.id);
+    element(by.id('delete_account')).click();
+    components.modalAction.confirm();
+    expect(element.all(by.css('[alert alert-danger]')));
+  });
+
+
 });
