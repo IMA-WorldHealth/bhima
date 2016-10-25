@@ -54,9 +54,11 @@ function AccountsController($rootScope, AccountGrid, Notify, Constants, Language
   // $parent $scope for the modal is $rootScope, it is impossible to inject the $scope of the
   // parent state into the onEnter callback. for this reason $rootScope is used for now
   $rootScope.$on('ACCOUNT_CREATED', vm.Accounts.updateViewInsert.bind(vm.Accounts));
+  $rootScope.$on('ACCOUNT_DELETED', handleDeletedAccount);
   $rootScope.$on('ACCOUNT_UPDATED', handleUpdatedAccount);
 
   function handleUpdatedAccount(event, account) {
+
     // check to see if the underlying accounts model requires a grid refresh
     // it will return true if it is required
     var forceRefresh = vm.Accounts.updateViewEdit(event, account);
@@ -66,6 +68,17 @@ function AccountsController($rootScope, AccountGrid, Notify, Constants, Language
       bindGridData();
     }
   }
+
+
+  function handleDeletedAccount(event, account) {
+
+    // check to see if the underlying accounts model requires a grid refresh
+    // it will return true if it is required
+    var accountsData = vm.Accounts.updateViewDelete(event, account);
+    vm.Accounts.data = accountsData;
+    bindGridData();
+  }
+
 
   function registerAccountEvents(api) {
     api.grid.registerDataChangeCallback(expandOnSetData);
