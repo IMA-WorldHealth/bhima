@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 .controller('cashflowController', CashflowConfigController);
 
 // dependencies injection
-CashflowConfigController.$inject = [ '$state', '$http', 'CashboxService', 'NotifyService', 'LanguageService' ];
+CashflowConfigController.$inject = [ '$state', '$http', '$uibModalInstance', 'CashboxService', 'NotifyService', 'LanguageService' ];
 
 /**
  * Cashflow config controller
@@ -13,10 +13,11 @@ CashflowConfigController.$inject = [ '$state', '$http', 'CashboxService', 'Notif
  * This controller is responsible of cash flow report, that report include
  * all incomes minus all depenses
  */
-function CashflowConfigController($state, $http, Cashbox, Notify, Languages) {
+function CashflowConfigController($state, $http, ModalInstance, Cashbox, Notify, Languages) {
   var vm = this;
   // expose to the view
   vm.generate = requestPDF;
+  vm.cancel = ModalInstance.dismiss;
 
   console.log('cashflow generate controller fired');
   console.log(Cashbox);
@@ -25,6 +26,8 @@ function CashflowConfigController($state, $http, Cashbox, Notify, Languages) {
   vm.reportId = 1;
   vm.reportKey = 'cashflow';
   vm.reportTitleKey = 'TREE.CASHFLOW';
+
+  vm.$loading = false;
 
   /** init */
   Cashbox.read(null, { detailed: 1, is_auxiliary: 0})
@@ -36,11 +39,14 @@ function CashflowConfigController($state, $http, Cashbox, Notify, Languages) {
   })
   .catch(Notify.errorHandler);
 
+  console.log($state);
   // TODO Move to service
   function requestPDF() {
     var url = 'reports/finance/cashflow';
 
-    if (!vm.cashbox || !vm.dateFrom || !vm.dateTo) { return ; }
+    if (!vm.cashbox || !vm.dateFrom || !vm.label || !vm.dateTo) { return ; }
+    vm.$loading = true;
+
     var pdfParams = {
       reportId : vm.reportId,
       account_id: vm.cashbox.account_id,
@@ -55,8 +61,12 @@ function CashflowConfigController($state, $http, Cashbox, Notify, Languages) {
     $http.get(url, { params : pdfParams })
       .then(function (result) {
         console.log('pdf document generated');
+        vm.$loading = false;
+        ModalInstance.dismiss();
+        $state.reload();
        })
       .catch(function (error) {
+        vm.$loading = false;
         throw error;
       });
   }
@@ -71,5 +81,4 @@ function CashflowConfigController($state, $http, Cashbox, Notify, Languages) {
     };
     $state.go('cashflow.report', params);
   }
-
 }
