@@ -25,6 +25,7 @@
 const lodash = require('lodash');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
+const BadRequest = require('../../../lib/errors/BadRequest');
 const types = require('./types');
 
 
@@ -90,19 +91,26 @@ function update(req, res, next) {
  * DELETE /accounts/:id
  */
 function remove(req, res, next) {
-  const sql = 'DELETE FROM account WHERE id = ?;';
-
+  const sql = `SELECT COUNT(id) AS childrens FROM account WHERE parent = ?`;
   db.exec(sql, [req.params.id])
-    .then(function (result) {
+  .then(function (rows) {
+    if(rows[0].childrens > 0){
+      throw new BadRequest(`Could not delete the Account Id ${req.params.id}. Because this Account is Parent`);
+    }
 
-      if (!result.affectedRows) {
-        throw new NotFound(`Could not find an Account with id ${req.params.id}.`);
-      }
+    let sqlDelete = 'DELETE FROM account WHERE id = ?;';
+    return db.exec(sqlDelete, [req.params.id])
+  })
+  .then(function (result) {
 
-      res.sendStatus(204);
-    })
-    .catch(next)
-    .done();
+    if (!result.affectedRows) {
+      throw new NotFound(`Could not find an Account with id ${req.params.id}.`);
+    }
+
+    res.sendStatus(204);
+  })
+  .catch(next)
+  .done();
 }
 
 
