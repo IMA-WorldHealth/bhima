@@ -174,5 +174,22 @@ describe('(/accounts) Accounts', function () {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
+  }); 
+
+  it('DELETE /accounts/:id Deletes the newly added account', function () {
+    return agent.delete('/accounts/'+ newAccount.id)
+      .then(function (res) {
+        helpers.api.deleted(res);
+       })
+      .catch(helpers.handler);
   });
+
+  it('DELETE /accounts/:id Imprevent the deletion Of Account Parent Who have Children ', function () {
+    return agent.delete('/accounts/'+ FETCHABLE_ACCOUNT_ID)
+      .then(function (res) {
+        expect(res).to.have.status(400);        
+       })
+      .catch(helpers.handler);
+  });
+
 });
