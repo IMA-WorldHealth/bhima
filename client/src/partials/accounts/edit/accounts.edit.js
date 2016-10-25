@@ -4,10 +4,10 @@
 angular.module('bhima.controllers')
 .controller('AccountEditController', AccountEditController);
 
-AccountEditController.$inject = ['$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util', 'bhConstants'];
+AccountEditController.$inject = ['$rootScope', '$state', 'AccountStoreService', 'AccountService', 'NotifyService', 'util', 'bhConstants', 'ModalService'];
 
 /** @todo use loading button */
-function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util, Constants) {
+function AccountEditController($rootScope, $state, AccountStore, Accounts, Notify, util, Constants, ModalService) {
   var accountStore, typeStore;
   var vm = this;
   var id = $state.params.id, parentId = $state.params.parentId;
@@ -177,7 +177,6 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
       Accounts.update(vm.account.id, submit)
         .then(function (result) {
           vm.fetchError = null;
-
           $rootScope.$broadcast('ACCOUNT_UPDATED', result);
           Notify.success('ACCOUNT.UPDATED');
           close();
@@ -187,17 +186,30 @@ function AccountEditController($rootScope, $state, AccountStore, Accounts, Notif
   }
 
   /** Delete an used account */
-  function deleteAccount(accountId){
-    if (!accountId) {
-      return;
-    }
+  function deleteAccount(account){
 
-    Accounts.delete(accountId)
-    .then(function (result){
-      Notify.success('ACCOUNT.DELETED');
-      close();
-    })
-    .catch(handleModalError);
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool){
+      // if the user clicked cancel, reset the view and return
+      if (!bool) {
+        vm.view = 'default';
+        return;
+      }
+
+      if (!account.id) {
+        return;
+      }
+      var accountId = account.id;
+
+      Accounts.delete(accountId)
+      .then(function (result){
+        $rootScope.$broadcast('ACCOUNT_DELETED', account);
+        Notify.success('ACCOUNT.DELETED');
+        close();
+      })
+      .catch(handleModalError);
+    });
+    
   }
 
   function resetModal(accountForm) {
