@@ -30,6 +30,7 @@ const TEMPLATE = './server/controllers/finance/reports/cashflow/report.handlebar
 
 // expose to the API
 exports.report = report;
+exports.weeklyReport = weeklyReport;
 exports.document = document;
 
 /**
@@ -70,7 +71,7 @@ function processingCashflowReport(params) {
       return queryIncomeExpense(params);
     })
     .then(function (result) {
-      return groupingByMonth(glb.periods, result);
+      return groupByPeriod(glb.periods, result);
     })
     .then(groupingIncomeExpenseByPeriod)
     .then(function (flows) {
@@ -141,12 +142,12 @@ function groupingIncomeExpenseByPeriod(periodicFlows) {
 }
 
 /**
- * @function groupingByMonth
+ * @function groupByPeriod
  * @param {array} periods An array which contains all periods for the fiscal year
  * @param {array} flows The result of queryIncomeExpense i.e. all incomes and expense
  * @description This function help to group incomes or expenses by month
  */
-function groupingByMonth(periods, flows) {
+function groupByPeriod(periods, flows) {
   var grouping = [];
   periods.forEach(function (p) {
     var data = [];
@@ -161,6 +162,71 @@ function groupingByMonth(periods, flows) {
     grouping.push({ period: p, flows : data });
   });
   return grouping;
+}
+
+/**
+ * =============================================================================
+ * Date Week Manipulations
+ * =============================================================================
+ */
+
+/** @function weeklyReport */
+function weeklyReport(req, res, next) {
+  let params = req.query;
+
+  processingWeekCashflow(params)
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(next);
+}
+
+/** @function processingWeekCashflow */
+function processingWeekCashflow(params) {
+  let glb = {};
+
+  if (!params.account_id) {
+    throw new BadRequest('Cashbox is missing', 'ERRORS.BAD_REQUEST');
+  }
+
+  glb.periods = getWeeks(params.dateFrom, params.dateTo);
+  glb.balance = { balance: 0, account_id: params.account_id };
+
+  if (!glb.periods.length) {
+    throw new BadRequest('Periods not found due to a bad date interval', 'ERRORS.BAD_DATE_INTERVAL');
+  }
+
+  // get all periods for the the current fiscal year
+  return queryIncomeExpense(params)
+    .then(function (result) {
+      return groupByPeriod(glb.periods, result);
+    })
+    .then(groupingIncomeExpenseByPeriod)
+    .then(function (flows) {
+      return { openningBalance : glb.balance, flows : flows };
+    });
+}
+
+/** @function getWeeks */
+function getWeeks(dateFrom, dateTo) {
+  let inc = 0;
+  let weeks = [];
+
+  let first = moment(dateFrom, 'YYYY-MM-DD');
+  let last = moment(dateTo, 'YYYY-MM-DD');
+
+  do {
+
+    first = moment(first).startOf('week');
+    last = moment(first).endOf('week');
+
+    weeks.push({ week: ++inc , start_date: first.toDate(), end_date: last.toDate() });
+
+    first = first.add(7, 'days');
+
+  } while (first.toDate() <= new Date(dateTo));
+
+  return weeks;
 }
 
 /**
@@ -232,6 +298,9 @@ function document(req, res, next) {
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
 
+  // weekly parameter
+  session.weekly = params.weekly;
+
   _.defaults(params, { orientation : 'landscape' });
 
   try {
@@ -239,8 +308,10 @@ function document(req, res, next) {
   } catch (e) {
     return next(e);
   }
+  
+  let promise = parseInt(params.weekly) ? processingWeekCashflow : processingCashflowReport;
 
-  processingCashflowReport(params)
+  promise(params)
     .then(reporting)
     .then(labelization)
     .then(() => report.render(session))
@@ -280,6 +351,11 @@ function document(req, res, next) {
     /** openning balance by period */
     session.periodicData.forEach(function (flow) {
       summarization(moment(flow.period.start_date).format('YYYY-MM-DD'));
+    });
+
+    // date range
+    session.periodRange = session.periodicData.map(flow => {
+      return { start: moment(flow.period.start_date).format('YYYY-MM-DD'),  end: moment(flow.period.end_date).format('YYYY-MM-DD') };
     });
   }
 

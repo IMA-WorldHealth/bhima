@@ -3,10 +3,11 @@ angular.module('bhima.components')
   bindings : {
     pdfUrl : '@',
     disableCache: '@',
-    options : '<'
+    options : '<',
+    disabled : '<'
   },
   template :
-    '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()">' +
+    '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()" disabled="$ctrl.disabled">' +
       '<span><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
     '</bh-loading-button>' +
     '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
@@ -19,7 +20,7 @@ angular.module('bhima.components')
     pdfUrl : '@',
     buttonText : '@',
     disableCache: '@',
-    options : '<',
+    options : '<'
   },
   transclude : true,
   template : 

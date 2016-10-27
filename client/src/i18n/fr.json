@@ -608,6 +608,8 @@
       "VILLE"                  : "Ville/Commune",
       "VOLUME"                 : "Volume",
       "WEIGHT"                 : "Poids",
+      "WEEK"                   : "Semaine",
+      "WEEKLY_REPORT"          : "Rapport par semaine",
       "YES"                    : "Oui",
       "YOB"                    : "Année de Naissance",
       "ZS"                     : "Zone de sante"

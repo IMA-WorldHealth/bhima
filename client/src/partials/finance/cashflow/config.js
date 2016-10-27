@@ -35,7 +35,8 @@ function CashflowConfigController($state, Cashbox, Notify) {
     var params = {
       dateFrom : vm.dateFrom,
       dateTo   : vm.dateTo,
-      cashbox  : vm.cashbox
+      cashbox  : vm.cashbox,
+      weekly   : vm.weekly
     };
     $state.go('cashflow.report', params);
   }

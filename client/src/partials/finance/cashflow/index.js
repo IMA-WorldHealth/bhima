@@ -25,7 +25,8 @@ function CashflowController($state, $stateParams, Modal, Languages, Dates) {
     account_id: $stateParams.cashbox ? [$stateParams.cashbox.account_id] : null,
     dateFrom: Dates.util.str($stateParams.dateFrom),
     dateTo: Dates.util.str($stateParams.dateTo),
-    lang: Languages.key
+    lang: Languages.key,
+    weekly: $stateParams.weekly
   };
 
   if (!vm.report) {
