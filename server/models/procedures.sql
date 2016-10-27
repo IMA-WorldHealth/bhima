@@ -640,7 +640,7 @@ BEGIN
         A positive remainder means that the debtor overpaid slightly and we should debit
         the difference to the debtor and credit the difference as a gain to the gain_account
       */
-      IF (remainder > 0) THEN
+      IF (remainder >= 0) THEN
 
         -- debit the debtor
         INSERT INTO posting_journal (
