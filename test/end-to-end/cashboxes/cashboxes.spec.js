@@ -7,7 +7,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Cashboxes', function () {
+describe.only('Cashboxes', function () {
 
   before(() => helpers.navigate('#/cashboxes'));
 
@@ -29,9 +29,9 @@ describe('Cashboxes', function () {
     // switch to the create form
     FU.buttons.create();
 
-    FU.input('CashCtrl.box.label', cashbox.label);
-    FU.radio('CashCtrl.box.type', cashbox.type);
-    FU.select('CashCtrl.box.project_id', 'Test Project A');
+    FU.input('UpdateCtrl.box.label', cashbox.label);
+    FU.radio('UpdateCtrl.box.is_auxiliary', cashbox.type);
+    FU.select('UpdateCtrl.box.project_id', 'Test Project A');
 
     // submit the page to the server
     FU.buttons.submit();
@@ -40,7 +40,7 @@ describe('Cashboxes', function () {
     components.notification.hasSuccess();
 
     // click the cancel button
-    FU.buttons.cancel();
+    // FU.buttons.cancel();
   });
 
   it('successfully edits a cashbox', function () {
@@ -48,8 +48,8 @@ describe('Cashboxes', function () {
     // navigate to the update form for the second item
     update(1);
 
-    FU.input('CashCtrl.box.label', 'New Cashbox Name');
-    FU.radio('CashCtrl.box.type', cashbox.type);
+    FU.input('UpdateCtrl.box.label', 'New Cashbox Name');
+    FU.radio('UpdateCtrl.box.is_auxiliary', cashbox.type);
 
     FU.buttons.submit();
 
@@ -83,6 +83,7 @@ describe('Cashboxes', function () {
   // forget to change the gain exchange account id
   it('rejects a missing account on the currency modal', function () {
 
+    helpers.navigate('#/cashboxes');
     // navigate to the update form for the second item
     update(3);
 
@@ -115,6 +116,7 @@ describe('Cashboxes', function () {
 
   it('allows you to delete a cashbox', function () {
 
+    helpers.navigate('#/cashboxes');
     // navigate to the update form for the second item
     update(2);
 
@@ -129,6 +131,7 @@ describe('Cashboxes', function () {
 
   it('performs form validation', function () {
 
+    helpers.navigate('#/cashboxes');
     // switch to the create form
     FU.buttons.create();
 
@@ -136,8 +139,8 @@ describe('Cashboxes', function () {
     FU.buttons.submit();
 
     // everything should have error highlights
-    FU.validation.error('CashCtrl.box.project_id');
-    FU.validation.error('CashCtrl.box.label');
+    FU.validation.error('UpdateCtrl.box.project_id');
+    FU.validation.error('UpdateCtrl.box.label');
 
     components.notification.hasDanger();
   });
