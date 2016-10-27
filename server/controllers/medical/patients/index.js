@@ -634,7 +634,7 @@ function loadLatestInvoice (latestInvoice){
     `SELECT COUNT(invoice.uuid) as 'invoicesLength'
        FROM invoice
        JOIN user ON user.id = invoice.user_id
-       WHERE debtor_uuid = ?
+       WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
        ORDER BY date DESC`;
 
 
@@ -674,6 +674,7 @@ function latestInvoice (req, res, next) {
      FROM invoice
      JOIN user ON user.id = invoice.user_id
      WHERE debtor_uuid = ?
+     AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
      ORDER BY date DESC
      LIMIT 1`;
 

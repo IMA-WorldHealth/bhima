@@ -133,12 +133,15 @@ function lookupDebtor(uid) {
 function invoices(req, res, next) {
   const uid = db.bid(req.params.uuid);
   const options = req.query;
+  const reversalVoucherType = 10;
 
   // get the debtor invoice uuids from the invoice table
-  let sql =
-    'SELECT uuid FROM invoice WHERE debtor_uuid = ?;';
+  let sql =`
+    SELECT invoice.uuid 
+    FROM invoice 
+    WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?);`;
 
-  db.exec(sql, [uid])
+  db.exec(sql, [uid, reversalVoucherType])
     .then(function (uuids) {
 
       // if nothing found, return an empty array

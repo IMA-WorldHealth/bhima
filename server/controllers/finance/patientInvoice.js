@@ -66,16 +66,17 @@ function list(req, res, next) {
 function listInvoices() {
   const sql = `
     SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientNames,
+      BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientName,
       service.name as serviceName, user.display_name, invoice.date, invoice.is_distributable,
-      enterprise.currency_id
+      enterprise.currency_id, voucher.type_id
     FROM invoice
       LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
+      LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
       JOIN service ON service.id = invoice.service_id
       JOIN user ON user.id = invoice.user_id
       JOIN project ON invoice.project_id = project.id
       JOIN enterprise ON enterprise.id = project.enterprise_id
-    ORDER BY invoice.reference ASC, invoice.date ASC;
+    ORDER BY invoice.date ASC, invoice.reference ASC;
   `;
 
   // TODO - this shouldn't throw an error...
@@ -203,9 +204,10 @@ function find(options) {
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, CONCAT(project.abbr, invoice.reference) AS reference,
       invoice.date, patient.display_name as patientName, invoice.cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, invoice.user_id, invoice.is_distributable,
-      service.name as serviceName, user.display_name, enterprise.currency_id
+      service.name as serviceName, user.display_name, enterprise.currency_id, voucher.type_id
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
+    LEFT JOIN voucher ON voucher.reference_uuid = invoice.uuid
     JOIN service ON service.id = invoice.service_id
     JOIN user ON user.id = invoice.user_id
     JOIN project ON project.id = invoice.project_id
