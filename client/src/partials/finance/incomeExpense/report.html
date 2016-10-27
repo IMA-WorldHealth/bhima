@@ -30,8 +30,6 @@
 
   </table>
 
-
-
   <!-- IncomeExpense report -->
   <!-- Income Report -->
   <table class="table table-condensed table-bordered" ng-if="IncomeExpenseReportCtrl.reportType === 1 || IncomeExpenseReportCtrl.reportType === 2">
@@ -45,7 +43,7 @@
       </tr>
     </thead>
 
-    <tbody  ng-if="IncomeExpenseReportCtrl.session.incomes.length">
+    <tbody  ng-if="IncomeExpenseReportCtrl.session.incomes.length"  id="income">
       <tr style="background-color: #efefef; font-weight: bold; text-align: center; ">
         <td style="width: 15%"> {{ 'TABLE.COLUMNS.TRANSACTION_ID' | translate }} </td>
         <td style="width: 45%"> {{ 'TABLE.COLUMNS.DESCRIPTION' | translate }} </td>
@@ -87,7 +85,7 @@
       </tr>
     </thead>
 
-    <tbody ng-if="IncomeExpenseReportCtrl.session.expenses.length">
+    <tbody ng-if="IncomeExpenseReportCtrl.session.expenses.length" id="expense">
       <!-- cash on hand (openning) -->
       <tr style="background-color: #efefef; font-weight: bold; text-align: center; ">
         <td style="width: 15%"> {{ 'TABLE.COLUMNS.TRANSACTION_ID' | translate }} </td>
