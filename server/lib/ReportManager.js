@@ -45,7 +45,7 @@ const defaults = {
 };
 
 // Constants
-const SAVE_DIR = path.resolve(path.join(__dirname, 'server/reports/'));
+const SAVE_DIR = path.resolve(path.join(__dirname, '../reports/'));
 const DETAIL_SQL = `
   SELECT r.uuid, r.label, r.type, r.parameters, r.link, r.timestamp, r.user_id
   FROM report AS r WHERE r.uuid = ?;
@@ -61,7 +61,7 @@ const UPDATE_SQL = `
    UPDATE report SET ? WHERE uuid = ?;
 `;
 const SAVE_SQL = `
-  INSERT INTO report VALUES ?;
+  INSERT INTO saved_report SET ?;
 `;
 
 
@@ -129,9 +129,24 @@ class ReportManager {
     const promise = renderer.render(data, this.template, this.options);
 
     // send back the headers and report
-    return promise.then(report => {
-      this.stream = report;
-      return { headers: renderer.headers, report };
+    return promise.then(reportStream => {
+      this.stream = reportStream;
+
+      let renderHeaders = renderer.headers;
+      let report = reportStream;
+
+      // FIXME this branching logic should be promised based
+      if (this.options.saveReport) {
+        // FIXME This is not correctly deferred
+        // FIXME PDF report is sent back to the client even though this is a save operation
+        // FIXME Errors are not propegated
+        return this.save()
+          .then(function (result) {
+            return { headers: renderHeaders, report };
+          });
+      } else {
+        return { headers: renderHeaders, report };
+      }
     });
   }
 
@@ -160,26 +175,22 @@ class ReportManager {
     const link = path.join(SAVE_DIR, fname);
 
     const data = {
-      uuid : reportId,
-      title : options.title,
-      type : options.type,
-      link : link,
+      uuid : db.bid(reportId),
+      label : options.label,
+      link : reportId,
       timestamp : new Date(),
-      user_id : options.user.id
+      user_id : options.user.id,
+      report_id : options.reportId
     };
 
-    dfd.resolve(reportId);
-
-    /*
-    fs.writeFile(fname, report, (err) => {
+    fs.writeFile(link, this.stream, (err) => {
       if (err) { return dfd.reject(err); }
 
-      db.exec(SAVE_SQL, [data])
+      db.exec(SAVE_SQL, data)
         .then(() => dfd.resolve({ uuid: reportId }))
         .catch(dfd.reject);
     });
 
-    */
     return dfd.promise;
   }
 

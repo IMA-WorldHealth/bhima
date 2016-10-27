@@ -264,6 +264,7 @@
       "LOGOUT"                : "Logout",
       "NEXT"                  : "Next",
       "NEW"                   : "New",
+      "NEW_REPORT"            : "Create new report",
       "NOT_CONFIGURED"        : "Not Configured",
       "OK"                    : "OK",
       "PRINT"                 : "Print",
@@ -992,6 +993,8 @@
     "UPD_REFERENCE" : "Update Reference Group"
   },
   "REPORT" : {
+    "DOWNLOAD"      : "Download",
+    "DELETE"        : "Delete Report",
     "AGED_DEBTORS" : {
       "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Less Than 30 Days",

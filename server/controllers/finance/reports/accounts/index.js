@@ -27,6 +27,8 @@ function chart(req, res, next) {
       return report.render({ accounts });
     })
     .then(result => {
+
+      console.log('render returned', result);
       res.set(result.headers).send(result.report);
     })
     .catch(next)

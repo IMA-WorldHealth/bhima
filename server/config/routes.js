@@ -22,6 +22,7 @@ const auth                 = require('../controllers/auth');
 const tree                 = require('../controllers/tree');
 const units                = require('../controllers/units');
 const system               = require('../controllers/system');
+const report               = require('../controllers/report');
 
 // admin routes
 const users        = require('../controllers/admin/users');
@@ -364,6 +365,14 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);
   app.get('/reports/finance/cashflow', financeReports.cashflow.document);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.financialPatient);
+
+  app.get('/reports/keys/:key', report.keys);
+
+  // list of saved reports
+  app.get('/reports/saved/:reportId', report.list);
+
+  // lookup saved report document
+  app.get('/reports/archive/:uuid', report.sendArchived);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
