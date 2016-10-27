@@ -274,6 +274,7 @@
       "NOT_CONFIGURED"        : "Non configuree",
       "OK"                    : "OK",
       "PRINT"                 : "Imprimer",
+      "PRINT_FINANCIAL_ACT"   : "Imprimer la situation financière",
       "RECOVER_ITEMS"         : "Retrouver un article",
       "REGISTER_PATIENT"      : "Enregistrer le Patient",
       "RESET"                 : "Reinitialiser",
@@ -839,6 +840,11 @@
       "REPORT_TITLE" : "Rapport de consultations des patients",
       "SUCCESS" : "Le patient a déjà été vérifié"
     },
+    "FINANCIAL_ACTIVITY" : {
+      "ACCOUNT"       : "Numéro de compte",
+      "DEBTOR_GROUP"  : "Groupe débiteur",
+      "REPORT_TITLE"  : "Activité financière du Patient"
+    },    
     "TITLE"              : "Patients",
     "UPDATE_PICTURE"     : "Mettre à jour la Photo",
     "UPLOAD_PICTURE"     : "Télécharger Photo Patient",

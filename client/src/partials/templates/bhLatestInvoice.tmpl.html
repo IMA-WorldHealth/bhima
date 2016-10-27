@@ -3,15 +3,23 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <span class="glyphicon glyphicon-file"></span>
-      <strong>{{ "TABLE.COLUMNS.LAST_BILL" | translate }} </strong> 
-        <span> 
-          {{ "TABLE.COLUMNS.OF" | translate }} {{ $ctrl.patientInvoice.invoicesLength }} {{ "TABLE.COLUMNS.INVOICES" | translate }}
-        </span>
+    <strong>{{ "TABLE.COLUMNS.LAST_BILL" | translate }} </strong> 
+    <span> 
+      {{ "TABLE.COLUMNS.OF" | translate }} {{ $ctrl.patientInvoice.invoicesLength || 0 }} {{ "TABLE.COLUMNS.INVOICES" | translate }}
+    </span> 
+    <span class="pull-right">
+      <bh-pdf-link
+        pdf-url="/reports/finance/financialPatient/{{ $ctrl.debtorUuid }}"
+        disable-cache="true"
+        button-text="FORM.BUTTONS.PRINT_FINANCIAL_ACT"
+      >
+      </bh-pdf-link>
+    </span>
   </div>
   <div class="panel-body" style="height : 250px;">
 
     <div style="text-align : left; font-size : 1em; ">
-      <table ng-if="$ctrl.patientInvoice" style="width:100%; vertical-align:top">
+      <table ng-if="$ctrl.patientInvoice.invoicesLength" style="width:100%; vertical-align:top">
         <tr>
           <td style="width:10%"><strong>{{ "TABLE.COLUMNS.INVOICE_ID" | translate }}</strong></td>
           <td style="width:40%">{{ $ctrl.patientInvoice.reference }} </td>
@@ -57,11 +65,11 @@
 
         <tr>
           <td><strong>{{ "TABLE.COLUMNS.BILLED_BY" | translate }}</strong></td>
-          <td>{{ $ctrl.patientInvoice.user }}</td>
+          <td>{{ $ctrl.patientInvoice.display_name }}</td>
           <td></td>
         </tr>
       </table>
-      <table ng-if="!$ctrl.patientInvoice" style="width:100%; vertical-align:top">
+      <table ng-if="!$ctrl.patientInvoice.invoicesLength" style="width:100%; vertical-align:top">
         <tr>
           <td style="text-align: center; font-size: +16; width:100%;">
             <h3>

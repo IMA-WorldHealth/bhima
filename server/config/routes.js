@@ -363,6 +363,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/vouchers/:uuid', financeReports.vouchers.receipt);
   app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);
   app.get('/reports/finance/cashflow', financeReports.cashflow.document);
+  app.get('/reports/finance/financialPatient/:uuid', financeReports.financialPatient);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
@@ -404,7 +405,7 @@ exports.configure = function configure(app) {
   app.get('/debtors/groups/:uuid', debtorGroups.detail);
   app.get('/debtors/:uuid/invoices', debtors.invoices);
   app.put('/debtors/:uuid', debtors.update);
-  app.get('/debtors/:uuid', debtors.detail);
+  app.get('/debtors/:uuid', debtors.detail);  
   app.get('/debtors', debtors.list);
 
   // Debtor Groups API

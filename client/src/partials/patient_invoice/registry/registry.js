@@ -56,7 +56,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
         aggregationType: uiGridConstants.aggregationTypes.count
       },
       { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate' },
-      { field : 'patientNames', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
+      { field : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
       { field : 'cost',
         displayName : 'TABLE.COLUMNS.COST',
         headerCellFilter : 'translate',

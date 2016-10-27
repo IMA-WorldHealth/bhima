@@ -17,13 +17,14 @@ angular.module('bhima.components')
 .component('bhPdfLink', {
   bindings : {
     pdfUrl : '@',
+    buttonText : '@',
     disableCache: '@',
     options : '<',
   },
   transclude : true,
-  template :
+  template : 
     '<a href ng-click="$ctrl.print()">' +
-      '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
+      '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ $ctrl.buttonText | translate }}</span>' +
       '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFO.LOADING" | translate }}</span>' +
     '</a>' +
     '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
@@ -62,6 +63,9 @@ bhPDFPrintController.$inject = ['$window', '$http', '$sce', '$timeout'];
 function bhPDFPrintController($window, $http, $sce, $timeout) {
   var cachedRequest;
   var component = this;
+
+  // Default value for buttonText
+  component.buttonText = component.buttonText || 'FORM.BUTTONS.PRINT';
 
   // turn off caching via disable-cache="true".  Caching is enabled by default.
   var enableCache = (component.disableCache !== 'true');
