@@ -356,6 +356,7 @@ exports.configure = function configure(app) {
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
   app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);
+  app.get('/reports/finance/cash', financeReports.cash.report);
   app.get('/reports/finance/cash/:uuid', financeReports.cash.receipt);
   app.get('/reports/finance/debtors/aged', financeReports.debtors.aged);
   app.get('/reports/finance/vouchers', financeReports.vouchers.report);
@@ -453,6 +454,7 @@ exports.configure = function configure(app) {
 
   // cash API
   app.get('/cash', cash.list);
+  app.get('/cash/search', cash.search);
   app.get('/cash/:uuid', cash.detail);
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);

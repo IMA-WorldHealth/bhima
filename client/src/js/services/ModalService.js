@@ -67,6 +67,9 @@ function ModalService(Modal) {
   // closing fiscal year
   service.openClosingFiscalYear = openClosingFiscalYear;
 
+  // search cash payment
+  service.openSearchCashPayment = openSearchCashPayment;
+
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -368,6 +371,24 @@ function ModalService(Modal) {
         controller   : 'ClosingFiscalYearModalController',
         controllerAs : '$ctrl',
         size         : 'lg',
+        backdrop     : 'static',
+        animation    : false,
+        resolve : {
+          data :  function dataProvider() { return request; }
+        }
+      });
+
+      var instance = Modal.open(params);
+      return instance.result;
+    }
+
+    /** searchCashPayment */
+    function openSearchCashPayment(request) {
+      var params = angular.extend(modalParameters, {
+        templateUrl  : 'partials/finance/reports/cash_payment/templates/search.modal.html',
+        controller   : 'SearchCashPaymentModalController',
+        controllerAs : '$ctrl',
+        size         : 'md',
         backdrop     : 'static',
         animation    : false,
         resolve : {

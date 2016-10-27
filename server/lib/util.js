@@ -54,7 +54,8 @@ function queryCondition(sql, params, excludeWhere, dateConditon) {
 
   let criteria = Object.keys(params).map(function (item) {
     conditions = conditions.concat(item, params[item]);
-    return '?? = ?';
+    return item === 'date' ? 'DATE(??) = DATE(?)' :
+      item.indexOf('uuid') > -1 ? '?? = HUID(?)'  : '?? = ?';
   }).join(' AND ');
 
   if (dateParams.dateFrom && dateParams.dateTo && dateConditon) {

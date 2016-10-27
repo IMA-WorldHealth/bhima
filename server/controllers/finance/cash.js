@@ -21,6 +21,7 @@
  */
 const uuid = require('node-uuid');
 const db   = require('../../lib/db');
+const util = require('../../lib/util');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
@@ -41,8 +42,14 @@ exports.update = update;
 /** searches for a cash payment's uuid by their human-readable reference */
 exports.reference = reference;
 
+/** search cash payment by filtering */
+exports.search = search;
+
 /** lookup a cash payment by it's uuid */
 exports.lookup = lookup;
+
+/** list all cash payment */
+exports.listPayment = listPayment;
 
 // looks up a single cash record and associated cash_items
 function lookup(id) {
@@ -104,18 +111,69 @@ function lookup(id) {
 function list(req, res, next) {
   'use strict';
 
-  const sql = `
-    SELECT BUID(cash.uuid) AS uuid, CONCAT(project.abbr, cash.reference) AS reference,
-      cash.date, cash.amount, cash.description 
-    FROM cash JOIN project ON cash.project_id = project.id;
-  `;
-
-  db.exec(sql)
+  listPayment()
     .then(function (rows) {
       res.status(200).json(rows);
     })
     .catch(next)
     .done();
+}
+
+/**
+ * @method search
+ * @description search cash payment by some filters given
+ */
+ function search(req, res, next) {
+   'use strict';
+
+   listPayment(req.query)
+     .then(function (rows) {
+       res.status(200).json(rows);
+     })
+     .catch(next)
+     .done();
+ }
+
+/**
+ * @method listPayment
+ * @description list all payment made
+ */
+function listPayment(params) {
+  'use strict';
+
+  const sql = `
+    SELECT BUID(cash.uuid) as uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference,
+      cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
+      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
+      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name
+    FROM cash
+      JOIN project ON cash.project_id = project.id
+      JOIN debtor d ON d.uuid = cash.debtor_uuid
+      JOIN cash_box cb ON cb.id = cash.cashbox_id
+      JOIN user u ON u.id = cash.user_id
+  `;
+
+  if (params) {
+    let reference = params.reference;
+
+    if (reference) {
+      delete params.reference;
+    }
+
+    let qc =
+      params.dateFrom && params.dateTo ?
+      util.queryCondition(sql, params, null, 'DATE(date) BETWEEN DATE(?) AND DATE(?)') :
+      util.queryCondition(sql, params);
+
+    if (reference) {
+      qc.query += ' HAVING reference = ? ';
+      qc.conditions.push(reference);
+    }
+
+    return db.exec(qc.query, qc.conditions);
+  }
+
+  return db.exec(sql);
 }
 
 /**

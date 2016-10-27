@@ -39,10 +39,7 @@ function bhDateInterval(Dates) {
     { translateKey : 'FORM.LABELS.THIS_YEAR', fn : year }
   ];
 
-  vm.pickerOptions = {
-    datepickerMode : vm.mode,
-    showWeeks : false
-  };
+  vm.pickerOptions = { showWeeks : false };
 
   // expose to the viewe
   vm.search = search;
@@ -89,9 +86,15 @@ function bhDateInterval(Dates) {
 
     var option = ['day', 'week', 'month', 'year'].indexOf(vm.mode);
 
-    // set the default option according the mode 
+    // set the default option according the mode
     if (option > -1) {
       search(vm.options[option]);
+      vm.pickerOptions = vm.mode;
+    }
+
+    // set clean mode
+    if (vm.mode === 'clean') {
+      clear();
     }
 
   }
