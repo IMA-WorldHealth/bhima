@@ -5,15 +5,12 @@ CashboxUpdateController.$inject = ['$state', '$uibModal', 'ModalService', 'Notif
 
 function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Currencies) {
   var vm = this;
-  console.log('update controller fired');
-
-  console.log($state);
 
   vm.submit = submit;
   vm.configureCurrency = configureCurrency;
   vm.remove = remove;
 
-  var CREATE_STATE = "cashboxes.create";
+  var CREATE_STATE = 'cashboxes.create';
 
   // temporary method of determining if we're in create state
   var creating = $state.current.name === CREATE_STATE;
@@ -73,21 +70,11 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
   function loadCashbox(id) {
     return Boxes.read(id)
       .then(function (data) {
-
-        // workaround until we build a type column into the database.
-        // converts is_auxiliary into radio buttons
-
-        // data.type = (data.is_auxiliary) ? 'auxiliary' : 'primary';
-        // data.type = data.is_auxiliary;
-
         // bind the cashbox to the view
         vm.box = data;
 
         // calculate the currency difference
         calculateCurrencyDiff();
-
-        console.log('loaded configruation', vm.box);
-        console.log(vm.currencies);
       });
   }
 
@@ -159,9 +146,6 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
       .catch(Notify.handleError);
     });
   }
-
-
-
 }
 
 
