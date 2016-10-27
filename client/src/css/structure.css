@@ -253,6 +253,9 @@
   width : 100%;
   overflow-y : auto;
   overflow-x : hidden;
+
+  /* underlines the nav header */
+  border-top : 1px solid #ccc;
 }
 
 .expanded .link-label {
@@ -356,6 +359,11 @@
 
 .flex-tree li {
   border-top: 1px solid #ccc;
+}
+
+/* remove border from the first child; this overlaps with the nav header */
+.flex-tree > ul > li:first-child {
+  border-top : none;
 }
 
 /* make sure the bottom node has a bottom border */
