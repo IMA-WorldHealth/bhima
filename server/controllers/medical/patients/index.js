@@ -547,7 +547,6 @@ function billingServices(req, res, next) {
 }
 
 function subsidies(req, res, next) {
-  console.log(req.params.uuid);
   const uid = db.bid(req.params.uuid);
 
   var patientsSubsidyQuery =
