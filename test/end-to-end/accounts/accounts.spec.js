@@ -11,7 +11,7 @@ const FU = require('../shared/FormUtils');
 const AccountsPage = require('./accounts.page.js');
 const components = require('../shared/components');
 
-describe.('Account Management', function () {
+describe('Account Management', function () {
 
   const path = '#/accounts';
   before(() => helpers.navigate(path));
