@@ -5,7 +5,7 @@ angular.module('bhima.routes')
   /* cashflow page */
   .state('cashflow', {
     url : '/finance/reports/cashflow',
-    params: { dateFrom: null, dateTo: null, cashbox: null },
+    params: { dateFrom: null, dateTo: null, cashbox: null, weekly: null },
     controller : 'CashflowController as CashflowIndexCtrl',
     templateUrl : 'partials/finance/cashflow/index.html'
   })

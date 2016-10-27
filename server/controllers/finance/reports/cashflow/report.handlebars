@@ -42,9 +42,15 @@
         <!-- heaging -->
         <tr>
           <th style="width: 20%;"></th>
-          {{#each periodStartArray as |period $index|}}
+          {{#each periodRange as |period $index|}}
           <th class="text-right text-uppercase">
-            {{date period 'MMMM'}}
+            {{date period.start 'MMMM'}}
+            {{#if ../weekly}}<br>
+              <small style="font-size: 10px;">
+                {{translate 'FORM.LABELS.WEEK'}} {{add $index 1}}:
+                {{date period.start 'DD/MM'}} - {{date period.end 'DD/MM'}}
+              </small>
+            {{/if}}
           </th>
           {{/each}}
         </tr>
@@ -85,9 +91,15 @@
           <!-- heading  -->
           <tr>
             <th style="width: 20%;"></th>
-            {{#each periodStartArray as |period $index|}}
+            {{#each periodRange as |period $index|}}
             <th class="text-right text-uppercase">
-              {{date period 'MMMM'}}
+              {{date period.start 'MMMM'}}
+              {{#if ../weekly}}<br>
+                <small style="font-size: 10px;">
+                  {{translate 'FORM.LABELS.WEEK'}} {{add $index 1}}:
+                  {{date period.start 'DD/MM'}} - {{date period.end 'DD/MM'}}
+                </small>
+              {{/if}}
             </th>
             {{/each}}
           </tr>

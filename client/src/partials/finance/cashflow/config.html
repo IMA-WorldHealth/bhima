@@ -9,6 +9,14 @@
         date-to="CashflowConfigCtrl.dateTo">
       </bh-date-interval>
 
+      <!-- by week  -->
+      <div class="form-group">
+        <label class="text-action">
+          <input type="checkbox" name="weekly" ng-model="CashflowConfigCtrl.weekly" ng-true-value="1" ng-false-value="0">
+          {{ 'FORM.LABELS.WEEKLY_REPORT' | translate }}
+        </label>
+      </div>
+
       <!-- cashbox selection  -->
       <div class="form-group"
         ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.cashbox.$invalid }">
