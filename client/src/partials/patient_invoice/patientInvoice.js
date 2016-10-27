@@ -100,9 +100,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
 
     // copy the rows for insertion
     var items = angular.copy(vm.Invoice.store.data);
-
-    console.log('invoice', vm.Invoice);
-
+    
     // invoice consists of
     // 1. Invoice details
     // 2. Invoice items
