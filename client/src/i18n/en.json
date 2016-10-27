@@ -832,7 +832,7 @@
       "ACCOUNT"       : "Account Number",
       "DEBTOR_GROUP"  : "Debtor Group",
       "REPORT_TITLE"  : "Patient Financial Activity"
-    }    
+    }
   },
   "PATIENT_REG": {
     "PAGE_TITLE"           : "Patient Registration",
@@ -1004,6 +1004,7 @@
     },
     "CASH_EXPENSE"     : "Expenses",
     "CASH_INCOME"      : "Incomes",
+    "CHART_OF_ACCOUNTS" : "Chart of Accounts",
     "CLOSING_BALANCE"  : "Closing Balance",
     "CONFIGURATION"    : "Report Configuration",
     "GENERATED"        : "Generated Report",

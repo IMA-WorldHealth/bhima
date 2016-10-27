@@ -47,8 +47,9 @@ INSERT INTO unit VALUES
   (141, 'Vouchers Records', 'TREE.VOUCHER_REGISTRY', 'Vouchers registry module', 5, '/partials/vouchers/index', '/vouchers'),
   (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/partials/purchases/create', '/purchases/create'),
   (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/partials/admin/transaction_type', '/admin/transaction_type'),
-  (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 5, '/partials/finance/reports', '/finance/reports'),
+  (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 0, '/partials/finance/reports', '/finance/reports'),
   (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/reports/cashflow'),
+  (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/partials/finance/chart_of_accounts', '/reports/accounts_chart'),
   (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/partials/admin/creditor_groups/', '/admin/creditor_groups'),
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/partials/finance/reports/cash_payemnt', '/finance/reports/cash_payment');
 
@@ -220,6 +221,8 @@ INSERT INTO permission (unit_id, user_id) VALUES
 
 -- inventory configuration module
 (140, 1),
+
+(148, 1),
 
 -- Voucher records
 (141, 1),
@@ -483,4 +486,5 @@ INSERT INTO `purchase_item` VALUES
 
  -- core BHIMA reports 
  INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
-  (1, 'cashflow', 'TREE.CASHFLOW');
+  (1, 'cashflow', 'TREE.CASHFLOW'), 
+  (2, 'accounts_chart', 'REPORT.CHART_OF_ACCOUNTS');
