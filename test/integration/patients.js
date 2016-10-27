@@ -287,6 +287,10 @@ describe('(/patients) Patients', function () {
   // patient group tests
   describe('(/:uuid/groups)', PatientGroups);
 
+  describe('patient billing service', billingServices);
+
+  describe('patient subsidies', subsidies);
+
   // TODO get information on the registered patient - ensure details route is correct
   function delayPatientRequest(timeout, hospitalNo) {
     const deferred = q.defer();
@@ -372,6 +376,40 @@ function HospitalNumber() {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.text).to.equal('false');
+      })
+      .catch(helpers.handler);
+  });
+}
+
+//testing billing service
+
+function billingServices() {
+  'use strict';
+
+  const patientUuid = '85bf7a85-16d9-4ae5-b5c0-1fec9748d2f9';
+  const billingServiceAttached = 1;
+
+  it('GET /patients/:uuid/services will return a list of the patients billing services', function () {
+    return agent.get(`/patients/${patientUuid}/services`)
+      .then(function (res) {
+        helpers.api.listed(res, billingServiceAttached);
+      })
+      .catch(helpers.handler);
+  });
+}
+
+//testing subsidies
+
+function subsidies() {
+  'use strict';
+
+  const patientUuid = '85bf7a85-16d9-4ae5-b5c0-1fec9748d2f9';
+  const subsidiesAttached = 1;
+
+  it('GET /patients/:uuid/subsidies will return a list of the patients subsidies', function () {
+    return agent.get(`/patients/${patientUuid}/subsidies`)
+      .then(function (res) {
+        helpers.api.listed(res, subsidiesAttached);
       })
       .catch(helpers.handler);
   });

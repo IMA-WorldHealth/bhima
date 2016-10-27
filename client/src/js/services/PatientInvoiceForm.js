@@ -19,7 +19,6 @@ PatientInvoiceFormService.$inject = [
  * @todo (required) only the maximum of the bill should be subsidised
  * @todo (required) billing services and subsidies should be ignored for
  *   specific debtors.
- *
  */
 function PatientInvoiceFormService(Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem, Constants) {
 

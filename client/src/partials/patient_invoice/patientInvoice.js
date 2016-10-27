@@ -100,7 +100,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
 
     // copy the rows for insertion
     var items = angular.copy(vm.Invoice.store.data);
-
+    
     // invoice consists of
     // 1. Invoice details
     // 2. Invoice items
@@ -153,10 +153,6 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     if (detailsForm) {
       detailsForm.$setPristine();
       detailsForm.$setUntouched();
-    }
-
-    if (vm.services) {
-      vm.Invoice.setService(vm.services[0]);
     }
 
     // reset the find patient component

@@ -527,9 +527,9 @@ function billingServices(req, res, next) {
       'WHERE debtor_group_uuid = ' +
 
         // find the debtor group uuid
-        '(SELECT debtor_group_uuid ' +
-        'FROM debtor ' +
-        'LEFT JOIN patient ' +
+        '(SELECT debtor.group_uuid ' +
+        'FROM patient ' +
+        'LEFT JOIN debtor ' +
         'ON patient.debtor_uuid = debtor.uuid ' +
         'WHERE patient.uuid = ?)' +
       ') AS patient_services ' +
@@ -573,14 +573,14 @@ function subsidies(req, res, next) {
       'WHERE debtor_group_uuid = ' +
 
         // find the debtor group uuid
-        '(SELECT debtor_group_uuid ' +
-        'FROM debtor ' +
-        'LEFT JOIN patient ' +
+        '(SELECT group_uuid ' +
+        'FROM patient ' +
+        'JOIN debtor ' +
         'ON patient.debtor_uuid = debtor.uuid ' +
         'WHERE patient.uuid = ?)' +
-      ') AS patient_services ' +
+      ') AS patient_subsidies ' +
 
-    // apply subsidy information to rows retrived from subsidy subscriptions
+    // apply subsidy information to rows retrieved from subsidy subscriptions
     'LEFT JOIN subsidy ' +
     'ON subsidy_id = subsidy.id';
 
