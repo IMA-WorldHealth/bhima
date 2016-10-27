@@ -14,7 +14,7 @@ IncomeExpenseReportController.$inject = [
  * IncomeExpense report controller
  *
  * @description
- * This controller is responsible of cash flow report, that report include
+ * This controller is responsible of Income Expense report, that report include
  * all incomes minus all depenses
  */
 function IncomeExpenseReportController($stateParams, IncomeExpense, Notify, Dates, Exchange, Voucher, util) {

@@ -148,7 +148,7 @@ function getIncomeReport(accountId, dateFrom, dateTo) {
   let query =`
     SELECT t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
     BUID(t.entity_uuid) AS entity_uuid,  BUID(t.reference_uuid) AS record_uuid, t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, t.user_id, u.username,
-    a.number, tr.text AS transactionType
+    a.number, tr.text AS transactionType, a.label 
     FROM 
     (
       (
@@ -183,7 +183,7 @@ function getExpenseReport(accountId, dateFrom, dateTo) {
   let query =`
     SELECT t.project_id, BUID(t.uuid) AS uuid, t.trans_date, t.debit_equiv, t.credit_equiv, t.debit, t.credit, t.account_id, BUID(t.record_uuid) AS record_uuid,
     BUID(t.entity_uuid) AS entity_uuid,  BUID(t.reference_uuid) AS record_uuid, t.currency_id, t.trans_id, t.description, t.comment, t.origin_id, t.user_id, u.username, 
-    a.number, tr.text AS transactionType
+    a.number, tr.text AS transactionType, a.label
     FROM 
     (
       (
@@ -218,9 +218,14 @@ function document(req, res, next) {
   const params = req.query;
 
   let report;
+  let sumIncome = 0;
+  let sumExpense = 0;
+
 
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
+  session.reportType = params.reportType;
+  
 
   _.defaults(params, { orientation : 'landscape' });
 
@@ -231,239 +236,48 @@ function document(req, res, next) {
   }
 
   processingIncomeExpenseReport(params)
-    .then(reporting)
-    .then(labelization)
-    .then(() => report.render(session))
+    .then(incomeExpense => {
+      
+      incomeExpense.reportIncome = false;
+      incomeExpense.reportExpense = false;
+      incomeExpense.dateFrom = session.dateFrom;
+      incomeExpense.dateTo = session.dateTo;
+
+
+      // pick the cashbox account name
+      incomeExpense.accountName = !incomeExpense.accountName && incomeExpense.incomes.length ? incomeExpense.incomes[0].label :
+      !incomeExpense.accountName  && incomeExpense.expenses ? incomeExpense.expenses[0].label : incomeExpense.accountName;
+
+      // pick the cashbox account Number
+      incomeExpense.accountNumber = !incomeExpense.accountNumber && incomeExpense.incomes.length ? incomeExpense.incomes[0].number :
+      !incomeExpense.accountNumber  && incomeExpense.expenses ? incomeExpense.expenses[0].number : incomeExpense.accountNumber;
+
+      session.reportType = parseInt(session.reportType);
+
+      if(session.reportType === 1 || session.reportType === 2){
+        incomeExpense.incomes.forEach(function (income) {
+          sumIncome += income.debit;
+        });   
+
+        incomeExpense.reportIncome = true;
+        incomeExpense.sumIncome = sumIncome;
+      }
+
+      if(session.reportType === 1 || session.reportType === 3){
+        incomeExpense.expenses.forEach(function (expense) {
+          sumExpense += expense.credit;
+        }); 
+
+        incomeExpense.reportExpense = true;
+        incomeExpense.sumExpense = sumExpense;     
+      }
+  
+      return report.render({ incomeExpense });
+    })
     .then(result => {
       res.set(result.headers).send(result.report);
     })
-    .catch(next);
+    .catch(next)
+    .done();
 
-  /**
-   * @function reporting
-   * @param {array} rows all transactions of the given cashbox
-   * @description
-   * processing data for the report, the process is as follow
-   * step 1. initialization : initialize all global array and objects
-   * step 2. openning balance : process for getting the openning balance
-   * step 3. grouping : group incomes and expenses by periods
-   * step 4. summarization : get all periodical openning balance
-   * step 5. labelization : define unique labels for incomes and expenses,
-   * and process all totals needed
-   * @todo: Must convert values with enterprise exchange rate
-   */
-  function reporting(rows) {
-    initialization();
-
-    session.periodicData = rows.flows;
-    /** @todo: convert into enterprise currency */
-    session.openningBalance = rows.openningBalance.balance;
-
-    session.periodicData.forEach(function (flow) {
-      groupingResult(flow.incomes, flow.expenses, moment(flow.period.start_date).format('YYYY-MM-DD'));
-    });
-
-    session.periodStartArray = session.periodicData.map(function (flow) {
-      return moment(flow.period.start_date).format('YYYY-MM-DD');
-    });
-
-    /** openning balance by period */
-    session.periodicData.forEach(function (flow) {
-      summarization(moment(flow.period.start_date).format('YYYY-MM-DD'));
-    });
-  }
-
-  /**
-   * @function initialization
-   * @description initialize global arrays and objects for the incomeExpense report
-   */
-  function initialization () {
-    session.incomes          = {};
-    session.expenses         = {};
-    session.summationIncome  = {};
-    session.summationExpense = {};
-    session.sum_incomes      = {};
-    session.sum_expense      = {};
-    session.periodicBalance  = {};
-    session.periodicOpenningBalance = {};
-    session.incomesLabels    = [];
-    session.expensesLabels   = [];
-    session.totalIncomes     = {};
-    session.totalExpenses    = {};
-  }
-
-  /**
-   * @function summarization
-   * @param {object} period An object wich reference a specific period
-   * @description process for getting openning balance for each periods
-   */
-  function summarization (period){
-    session.sum_incomes[period] = 0;
-    session.sum_expense[period] = 0;
-
-    if(session.summationIncome[period]) {
-      session.summationIncome[period].forEach(function (transaction) {
-        // if only cashes values must be in only enterprise currency
-        /** @todo: convert into enterprise currency */
-        session.sum_incomes[period] += transaction.value;
-        session.incomesLabels.push(transaction.transfer_type);
-      });
-    }
-
-    if(session.summationExpense[period]) {
-      session.summationExpense[period].forEach(function (transaction) {
-        // if only cashes values must be in only enterprise currency
-        /** @todo: convert into enterprise currency */
-        session.sum_expense[period] += transaction.value;
-        session.expensesLabels.push(transaction.transfer_type);
-      });
-    }
-
-    session.periodicBalance[period] = isFirstPeriod(period) ?
-      session.openningBalance + session.sum_incomes[period] - session.sum_expense[period] :
-      session.periodicBalance[previousPeriod(period)] + session.sum_incomes[period] - session.sum_expense[period];
-
-    session.periodicOpenningBalance[period] = isFirstPeriod(period) ?
-      session.openningBalance :
-      session.periodicBalance[previousPeriod(period)];
-
-  }
-
-  /**
-   * @function isFirstPeriod
-   * @param {object} period An object wich reference a specific period
-   * @description process to know the first period in the fiscal year
-   */
-  function isFirstPeriod(period) {
-    var reference = session.periodStartArray[0];
-
-    var bool = (new Date(reference).getDate() === 1 && new Date(reference).getMonth() === 0) ?
-      new Date(period).getDate() === 1 && new Date(period).getMonth() === 0 :
-      new Date(period).getDate() === new Date(reference).getDate() &&
-      new Date(period).getMonth() === new Date(reference).getMonth() &&
-      new Date(period).getYear() === new Date(reference).getYear();
-
-    return bool;
-  }
-
-  /**
-   * @function previousPeriod
-   * @param {object} period An object wich reference a specific period
-   * @description process to know the previous period of the given period
-   */
-  function previousPeriod(period) {
-    var currentIndex = session.periodStartArray.indexOf(moment(period).format('YYYY-MM-DD'));
-    return (currentIndex !== 0) ? session.periodStartArray[currentIndex - 1] : session.periodStartArray[currentIndex];
-  }
-
-  /**
-   * @function labelization
-   * @description process for getting unique labels for incomes and expenses,
-   * and all totals needed
-   */
-  function labelization () {
-    var uniqueIncomes = [], uniqueExpenses = [];
-    session.incomesLabels = util.uniquelize(session.incomesLabels);
-    session.expensesLabels = util.uniquelize(session.expensesLabels);
-
-    /** incomes rows */
-    session.periodStartArray.forEach(function (period) {
-      session.incomes[period] = {};
-      session.incomesLabels.forEach(function (label) {
-        session.summationIncome[period].forEach(function (transaction) {
-          if (transaction.transfer_type === label) {
-            /** @todo: convert into enterprise currency */
-            session.incomes[period][label] = transaction.value;
-          }
-        });
-      });
-    });
-
-    /** totals incomes rows */
-    session.periodStartArray.forEach(function (period) {
-      session.totalIncomes[period] = 0;
-      session.summationIncome[period].forEach(function (transaction) {
-        /** @todo: convert into enterprise currency */
-        session.totalIncomes[period] += transaction.value;
-      });
-    });
-
-    /** expense rows */
-    session.periodStartArray.forEach(function (period) {
-      session.expenses[period] = {};
-      session.expensesLabels.forEach(function (label) {
-        session.summationExpense[period].forEach(function (transaction) {
-          if (transaction.transfer_type === label) {
-            /** @todo: convert into enterprise currency */
-            session.expenses[period][label] = transaction.value;
-          }
-        });
-      });
-    });
-
-    /** totals expenses rows */
-    session.periodStartArray.forEach(function (period) {
-      session.totalExpenses[period] = 0;
-      session.summationExpense[period].forEach(function (transaction) {
-        /** @todo: convert into enterprise currency */
-        session.totalExpenses[period] += transaction.value;
-      });
-    });
-
-  }
-
-  /**
-   * @function groupingResult
-   * @param {object} period An object wich reference a specific period
-   * @param {array} incomes An array which contain incomes for the period
-   * @param {array} expenses An array which contain expenses for the period
-   * @description group incomes and expenses by origin_id for each period
-   */
-  function groupingResult (incomes, expenses, period) {
-    var tempIncome  = {},
-        tempExpense = {};
-
-    session.summationIncome[period] = [];
-    session.summationExpense[period] = [];
-
-    // pick the cashbox account name
-    session.accountName = !session.accountName && incomes.length ? incomes[0].label :
-      !session.accountName && expenses.lenght ? expenses[0].label : session.accountName;
-
-    // income
-    if (incomes) {
-      incomes.forEach(function (item, index) {
-        tempIncome[item.origin_id] = typeof tempIncome[item.origin_id] !== 'undefined' ? false : true;
-
-        if (tempIncome[item.origin_id] === true) {
-          var value = incomes.reduce(function (a, b) {
-            return b.origin_id === item.origin_id ? b.debit_equiv + a : a;
-          }, 0);
-          session.summationIncome[period].push({
-            'transfer_type' : item.transactionType,
-            'currency_id'   : item.currency_id,
-            'value'         : value
-          });
-        }
-      });
-    }
-
-    // Expense
-    if (expenses) {
-      expenses.forEach(function (item, index) {
-        tempExpense[item.origin_id] = typeof tempExpense[item.origin_id] !== 'undefined' ? false : true;
-
-        if (tempExpense[item.origin_id] === true) {
-          var value = expenses.reduce(function (a, b) {
-            return b.origin_id === item.origin_id ? b.credit_equiv + a : a;
-          }, 0);
-          session.summationExpense[period].push({
-            'transfer_type' : item.transactionType,
-            'currency_id'   : item.currency_id,
-            'value'         : value
-          });
-        }
-      });
-    }
-  }
 }
