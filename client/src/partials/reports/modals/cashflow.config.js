@@ -53,7 +53,8 @@ function CashflowConfigController($state, $http, ModalInstance, Cashbox, Notify,
       dateTo: vm.dateTo,
       lang: Languages.key,
       renderer : 'pdf',
-      saveReport : true
+      saveReport : true,
+      weekly : vm.weekly
     };
 
     $http.get(url, { params : pdfParams })
