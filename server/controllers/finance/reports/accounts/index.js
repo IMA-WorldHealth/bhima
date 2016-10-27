@@ -15,8 +15,11 @@ function chart(req, res, next) {
 
   let report;
 
+  let params = req.query;
+  params.user = req.session.user;
+
   try {
-    report = new ReportManager(TEMPLATE, req.session, req.query);
+    report = new ReportManager(TEMPLATE, req.session, params);
   } catch(e) {
     return next(e);
   }

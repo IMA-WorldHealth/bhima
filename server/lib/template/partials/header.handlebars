@@ -1,15 +1,15 @@
 <!-- this partial requires binding the variable 'metadata' -->
 <header class="row">
   <div class="col-xs-6">
-    <div><i class="fa fa-home"></i> {{metadata.enterprise.name}}</div>
+    <div>{{metadata.enterprise.name}}</div>
     <address style="margin-bottom: 0px;">
-       <i class="fa fa-map-marker"></i> {{metadata.enterprise.location}}
+      {{metadata.enterprise.location}}
     </address>
-    <div><i class="fa fa-envelope-o"></i> {{metadata.enterprise.email}}</div>
-    <div><i class="fa fa-phone"></i> {{metadata.enterprise.phone}}</div>
+    <div>{{metadata.enterprise.email}}</div>
+    <div>{{metadata.enterprise.phone}}</div>
   </div>
   <div class="col-xs-6 text-right">
-    <div><i class="fa fa-calendar"></i> {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time></div>
-    <div><i class="fa fa-user"></i> {{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
+    <div>{{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time></div>
+    <div>{{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
   </div>
 </header>

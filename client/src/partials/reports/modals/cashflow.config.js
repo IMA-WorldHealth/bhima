@@ -68,15 +68,4 @@ function CashflowConfigController($state, $http, ModalInstance, Cashbox, Notify,
         throw error;
       });
   }
-
-  /** generate cashflow report */
-  function generate() {
-    if (!vm.cashbox || !vm.dateFrom || !vm.dateTo) { return ; }
-    var params = {
-      dateFrom : vm.dateFrom,
-      dateTo   : vm.dateTo,
-      cashbox  : vm.cashbox
-    };
-    $state.go('cashflow.report', params);
-  }
 }
