@@ -128,35 +128,24 @@ class ReportManager {
     // render the report using the stored renderer
     const promise = renderer.render(data, this.template, this.options);
 
-
-    console.log('render options');
-    console.log(this.options);
-
     // send back the headers and report
-    return promise.then(report => {
-      this.stream = report;
+    return promise.then(reportStream => {
+      this.stream = reportStream;
 
       let renderHeaders = renderer.headers;
-      let respondReport = report;
+      let report = reportStream;
 
       // FIXME this branching logic should be promised based
-      console.log('after promise', this.options);
       if (this.options.saveReport) {
         // FIXME This is not correctly deferred
         // FIXME PDF report is sent back to the client even though this is a save operation
         // FIXME Errors are not propegated
-        console.log('attempting to save');
         return this.save()
           .then(function (result) {
-            console.log('something was saved');
-
-
-            return { headers: renderHeaders, respondReport };
+            return { headers: renderHeaders, report };
           });
-
       } else {
-        console.log('NOT SAVING');
-        return { headers: renderHeaders, respondReport };
+        return { headers: renderHeaders, report };
       }
     });
   }
@@ -185,7 +174,6 @@ class ReportManager {
     const fname = reportId + this.renderer.extension;
     const link = path.join(SAVE_DIR, fname);
 
-    console.log('using options', options);
     const data = {
       uuid : db.bid(reportId),
       label : options.label,
@@ -195,17 +183,12 @@ class ReportManager {
       report_id : options.reportId
     };
 
-    // dfd.resolve(reportId);
-
-    console.log(fname);
-    console.log('trying to write to link', link);
     fs.writeFile(link, this.stream, (err) => {
       if (err) { return dfd.reject(err); }
 
       db.exec(SAVE_SQL, data)
         .then(() => dfd.resolve({ uuid: reportId }))
         .catch(dfd.reject);
-        // dfd.resolve({ uuid : reportId });
     });
 
     return dfd.promise;

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const path = require('path');
 const fs = require('fs');
@@ -42,7 +42,7 @@ function sendArchived(req, res, next) {
 
   // TODO This will have to factor in the type of report - report uuid can be looked up in `saved_report` table
   let reportPath = path.resolve(path.join(__dirname, '../reports/'));
-  let extension = ".pdf";
+  let extension = '.pdf';
   let reportUuid = req.params.uuid;
 
   res.sendFile(reportPath.concat('/', reportUuid, extension));

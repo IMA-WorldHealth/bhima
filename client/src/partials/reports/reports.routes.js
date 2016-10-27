@@ -6,6 +6,6 @@ angular.module('bhima.routes')
         url : '/reports/:key',
         controller : 'ReportsController as ReportCtrl',
         templateUrl : 'partials/reports/reports.html'
-       })
+       });
  }]);
 

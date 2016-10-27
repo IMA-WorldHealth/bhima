@@ -15,12 +15,10 @@ CashflowConfigController.$inject = [ '$state', '$http', '$uibModalInstance', 'Ca
  */
 function CashflowConfigController($state, $http, ModalInstance, Cashbox, Notify, Languages) {
   var vm = this;
+
   // expose to the view
   vm.generate = requestPDF;
   vm.cancel = ModalInstance.dismiss;
-
-  console.log('cashflow generate controller fired');
-  console.log(Cashbox);
 
   // TODO This should be passed into the modal from the report controller
   vm.reportId = 1;
@@ -39,7 +37,6 @@ function CashflowConfigController($state, $http, ModalInstance, Cashbox, Notify,
   })
   .catch(Notify.errorHandler);
 
-  console.log($state);
   // TODO Move to service
   function requestPDF() {
     var url = 'reports/finance/cashflow';
@@ -47,6 +44,7 @@ function CashflowConfigController($state, $http, ModalInstance, Cashbox, Notify,
     if (!vm.cashbox || !vm.dateFrom || !vm.label || !vm.dateTo) { return ; }
     vm.$loading = true;
 
+    // TODO Very specific parameters, API should be carefully designed
     var pdfParams = {
       reportId : vm.reportId,
       account_id: vm.cashbox.account_id,
@@ -60,7 +58,6 @@ function CashflowConfigController($state, $http, ModalInstance, Cashbox, Notify,
 
     $http.get(url, { params : pdfParams })
       .then(function (result) {
-        console.log('pdf document generated');
         vm.$loading = false;
         ModalInstance.dismiss();
         $state.reload();

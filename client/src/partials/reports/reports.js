@@ -9,13 +9,9 @@ function ReportsController($state, SavedReports, Modal) {
   var keyTarget = $state.params.key;
 
   vm.report = {};
-
   vm.loading = true;
   vm.hasError = false;
-
   vm.createReport = createReport;
-
-  console.log(keyTarget);
 
   vm.gridOptions = {
     fastWatch : true,
@@ -45,7 +41,6 @@ function ReportsController($state, SavedReports, Modal) {
         .then(function (results) {
           vm.loading = false;
           vm.gridOptions.data = results;
-          console.log('got report list', results);
         });
     })
     .catch(function (error) {
@@ -63,7 +58,6 @@ function ReportsController($state, SavedReports, Modal) {
     var templateString = '/partials/reports/modals/'.concat(keyTarget, '.modal.html');
     var controllerString = keyTarget.concat('Controller as ReportConfigCtrl');
 
-    console.log('creating report');
     return Modal.open({
       templateUrl : templateString,
       controller : controllerString,

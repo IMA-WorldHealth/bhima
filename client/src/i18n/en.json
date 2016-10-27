@@ -993,6 +993,8 @@
     "UPD_REFERENCE" : "Update Reference Group"
   },
   "REPORT" : {
+    "DOWNLOAD"      : "Download",
+    "DELETE"        : "Delete Report",
     "AGED_DEBTORS" : {
       "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Less Than 30 Days",

@@ -7,47 +7,40 @@
 
 <form name="ConfigForm" bh-submit="ReportConfigCtrl.generate()" bh-form-defaults novalidate>
 <div class="modal-body">
-<!-- configuration panel  -->
-<!-- <div class="col-md-6 col-md-offset-3 panel panel-default"> -->
-  <!-- <div class="panel-body"> -->
-      <div class="form-group"
-        ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.label.$invalid }">
-        <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
-        <input class="form-control" id="label" name="label" ng-model="ReportConfigCtrl.label" autocomplete="off" required />
+  <div class="form-group"
+    ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.label.$invalid }">
+    <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
+    <input class="form-control" id="label" name="label" ng-model="ReportConfigCtrl.label" autocomplete="off" required />
 
-        <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted">
-          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>
+    <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
 
-      </div>
-      <!-- Date interval  -->
-      <bh-date-interval
-        date-from="ReportConfigCtrl.dateFrom"
-        date-to="ReportConfigCtrl.dateTo">
-      </bh-date-interval>
+  </div>
+  <!-- Date interval  -->
+  <bh-date-interval
+    date-from="ReportConfigCtrl.dateFrom"
+    date-to="ReportConfigCtrl.dateTo">
+  </bh-date-interval>
 
-      <!-- cashbox selection  -->
-      <div class="form-group"
-        ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.cashbox.$invalid }">
-        <label class="control-label">
-          <span class="fa fa-briefcase"></span> {{ 'FORM.SELECT.CASHBOX' | translate }}
-        </label>
-        <select
-          class="form-control"
-          name="cashbox"
-          ng-model="ReportConfigCtrl.cashbox"
-          ng-options="cash as cash.hrlabel for cash in ReportConfigCtrl.cashboxes"
-          required>
-          <option value="" disabled>-- {{ 'FORM.SELECT.CASHBOX' | translate }} --</option>
-        </select>
-        <div class="help-block" ng-messages="ConfigForm.cashbox.$error" ng-show="ConfigForm.$submitted">
-          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-        </div>
-      </div>
-
-
-  <!-- </div> -->
-<!-- </div> -->
+  <!-- cashbox selection  -->
+  <div class="form-group"
+    ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.cashbox.$invalid }">
+    <label class="control-label">
+      <span class="fa fa-briefcase"></span> {{ 'FORM.SELECT.CASHBOX' | translate }}
+    </label>
+    <select
+      class="form-control"
+      name="cashbox"
+      ng-model="ReportConfigCtrl.cashbox"
+      ng-options="cash as cash.hrlabel for cash in ReportConfigCtrl.cashboxes"
+      required>
+      <option value="" disabled>-- {{ 'FORM.SELECT.CASHBOX' | translate }} --</option>
+    </select>
+    <div class="help-block" ng-messages="ConfigForm.cashbox.$error" ng-show="ConfigForm.$submitted">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
 </div>
 
 <div class="modal-footer">
