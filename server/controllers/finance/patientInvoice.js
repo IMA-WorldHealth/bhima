@@ -66,7 +66,7 @@ function list(req, res, next) {
 function listInvoices() {
   const sql = `
     SELECT CONCAT(project.abbr, invoice.reference) AS reference, BUID(invoice.uuid) as uuid, cost,
-      BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientNames,
+      BUID(invoice.debtor_uuid) as debtor_uuid, patient.display_name as patientName,
       service.name as serviceName, user.display_name, invoice.date, invoice.is_distributable,
       enterprise.currency_id, voucher.type_id
     FROM invoice
