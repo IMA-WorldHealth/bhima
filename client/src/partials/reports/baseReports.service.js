@@ -62,15 +62,15 @@ function BaseReportService($http, Modal, util) {
    * Formats a reports configuration options with the PDF report API and returns
    * a request for the PDF document generation.
    */
-  function requestPDF(url, report, options) {
+  function requestPDF(url, report, reportOptions) {
     var pdfParams = {
       // @TODO This should be known by the server
       reportId : report.id,
       saveReport : true,
       renderer : 'pdf'
     };
-    var options = angular.merge(options, pdfParams);
+    var options = angular.merge(reportOptions, pdfParams);
 
-    return $http.get(url, { params : options })
+    return $http.get(url, { params : options });
   }
 }

@@ -32,7 +32,15 @@ function AccountChartController($state, ModalInstance, Notify, Languages, SavedR
         $state.reload();
        })
       .catch(function (error) {
+        var INTERNAL_SERVER_ERROR = 500;
         vm.$loading = false;
+
+        if (error.status === INTERNAL_SERVER_ERROR) {
+          ModalInstance.dismiss();
+        }
+
+        Notify.handleError(error);
+
         throw error;
       });
   }
