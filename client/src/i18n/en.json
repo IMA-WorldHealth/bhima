@@ -714,6 +714,9 @@
       "PAGE_NOT_FOUND"  : "The page you requested could not be found"
     }
   },
+  "GENERAL_LEDGER" : {
+    "TITLE" : "General Ledger"
+  },
   "HOME": {
     "BHIMA"          : "Bhima",
     "CONNECTED_USER" : "User Connected",

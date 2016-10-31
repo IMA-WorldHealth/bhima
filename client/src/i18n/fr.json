@@ -109,7 +109,9 @@
     }
   },
   "CASHBOX": {
+    "ACTIONS"         : "Actions sur caisse",
     "ADD_CASHBOX"     : "Ajout caisse",
+    "BACK"            : "Retour vers la caisse",
     "CASHBOX"         : "Caisse",
     "CONFIG_ACCOUNTS" : "Configuration comptes",
     "DANGER_ZONE"     : "Zone reservee",
@@ -271,6 +273,7 @@
       "LINK_SUBMISSION"       : "Lien vers l'envoie d'un formulaire",
       "NEXT"                  : "Suivant",
       "NEW"                   : "Nouveau",
+      "NEW_REPORT"            : "Nouveau Rapport",
       "NOT_CONFIGURED"        : "Non configuree",
       "OK"                    : "OK",
       "PRINT"                 : "Imprimer",
@@ -721,6 +724,9 @@
       "PAGE_NOT_FOUND"  : "La page demandée n'a pas été trouvée"
     }
   },
+  "GENERAL_LEDGER" : {
+    "TITLE" : "Grand Livre"
+  },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Enregistrement de patients",
     "PATIENT_INVOICES" : "Factures de patients",
@@ -846,7 +852,7 @@
       "ACCOUNT"       : "Numéro de compte",
       "DEBTOR_GROUP"  : "Groupe débiteur",
       "REPORT_TITLE"  : "Activité financière du Patient"
-    },    
+    },
     "TITLE"              : "Patients",
     "UPDATE_PICTURE"     : "Mettre à jour la Photo",
     "UPLOAD_PICTURE"     : "Télécharger Photo Patient",
@@ -1030,8 +1036,11 @@
     },
     "CASH_EXPENSE"     : "Depenses",
     "CASH_INCOME"      : "Recettes",
+    "CHART_OF_ACCOUNTS": "Plan comptable",
     "CLOSING_BALANCE"  : "Balance à la cloture",
     "CONFIGURATION"    : "Configuration rapport",
+    "DELETE"           : "Supprimer",
+    "DOWNLOAD"         : "Telecharger",
     "GENERATED"        : "Rapport généré",
     "MONTHLY_BALANCE"  : "Balance mensuelle",
     "OPENNING_BALANCE" : "Balance d'ouverture",
