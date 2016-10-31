@@ -55,6 +55,12 @@ function report(req, res, next) {
 function receipt(req, res, next) {
   const options = req.query;
 
+  let metadata = {
+    enterprise: req.session.enterprise,
+    project: req.session.project,
+    user: req.session.user
+  };
+
   let invoiceUuid = req.params.uuid;
   let enterpriseId = req.session.enterprise.id;
   let invoiceResponse = {};
@@ -79,7 +85,7 @@ function receipt(req, res, next) {
       return util.resolveObject(queries);
     })
     .then(headerResult => {
-      _.extend(invoiceResponse, headerResult);
+      _.extend(invoiceResponse, headerResult, metadata);
 
       return report.render(invoiceResponse);
     })
