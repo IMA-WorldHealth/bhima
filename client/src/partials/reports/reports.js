@@ -32,10 +32,12 @@ function ReportsController($state, SavedReports, Modal) {
     { field : 'actions', displayName : '', cellTemplate : '/partials/templates/actionsDropdown.html', width : 80 }
   ];
 
+  // Load report information based on key
   SavedReports.requestKey(keyTarget)
     .then(function (result) {
       vm.report = result[0];
 
+      // Load archived reports
       return SavedReports.listSavedReports(vm.report.id)
         .then(function (results) {
           vm.loading = false;
@@ -47,20 +49,8 @@ function ReportsController($state, SavedReports, Modal) {
       vm.hasError = true;
     });
 
-  // modal is not opened through $stateProvider to allow dynamic controller
-  // this should be updated if possible to allow deep linking
+
   function createReport() {
-
-    // controller and template are linked by convention
-    // template : /partials/reports/modals/:report_key:.modal.html
-    // controller : :report_key:Controller
-    var templateString = '/partials/reports/modals/'.concat(keyTarget, '.modal.html');
-    var controllerString = keyTarget.concat('Controller as ReportConfigCtrl');
-
-    return Modal.open({
-      templateUrl : templateString,
-      controller : controllerString,
-      size : 'md'
-    });
+    SavedReports.openConfiguration(vm.report);
   }
 }
