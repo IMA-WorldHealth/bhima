@@ -5,7 +5,6 @@ ReportsController.$inject = ['$state', 'BaseReportService', '$uibModal'];
 
 function ReportsController($state, SavedReports, Modal) {
   var vm = this;
-
   var keyTarget = $state.params.key;
 
   vm.report = {};
