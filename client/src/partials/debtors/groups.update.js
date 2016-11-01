@@ -16,7 +16,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
   vm.submit = submit;
   vm.state = $state;
 
-  vm.$loading = false;
+  vm.$loading = true;
   vm.$loaded = false;
 
   // reset name attribute to ensure no UI glitch
@@ -25,11 +25,8 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
   Prices.read()
     .then(function (priceLists) {
       vm.priceLists = priceLists;
-    });
-
-  vm.$loading = true;
-
-  Accounts.read()
+      return Accounts.read();
+    })
     .then(function (accounts) {
       vm.accounts = accounts;
       return DebtorGroups.read(target);
@@ -37,9 +34,9 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
     .then(function (result) {
       vm.group = result;
       vm.$loaded = true;
-      console.log(vm.group);
       $state.current.data.label = vm.group.name;
 
+      console.log(vm.group);
       /** @todo work around for checkboxes (use value='' instead) */
       vm.group.apply_billing_services = Boolean(vm.group.apply_billing_services);
       vm.group.apply_subsidies = Boolean(vm.group.apply_subsidies);
