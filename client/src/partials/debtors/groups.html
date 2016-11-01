@@ -3,8 +3,11 @@
 
     <ol class="headercrumb">
       <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-      <li class="title">{{ "DEBTOR_GROUP.TITLE" | translate }}</li>
-      <span class="label label-warning">{{GroupCtrl.state.current.data.label | translate}}</span>
+
+      <li ng-class="{'static' : GroupCtrl.state.current.name==='debtorGroups.update', 'title' : GroupCtrl.state.current.name!=='debtorGroups.update'}">{{ "DEBTOR_GROUP.TITLE" | translate }}</li>
+      <li class="title" ng-if="!GroupCtrl.state.current.data.label && GroupCtrl.state.current.name==='debtorGroups.update'"><i class="fa fa-spin fa-circle-o-notch"></i></li>
+      <li class="title" ng-if="GroupCtrl.state.current.data.label">{{GroupCtrl.state.current.data.label | translate}}</li>
+      <!-- <span class="label label-warning">{{GroupCtrl.state.current.data.label | translate}}</span> -->
     </ol>
 
 

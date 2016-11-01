@@ -23,20 +23,25 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     billingServices : false
   };
 
+  vm.$loading = true;
+  vm.$loaded = false;
+
   /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
   Accounts.read()
     .then(function (accounts) {
       vm.accounts = accounts;
+      return Prices.read();
     })
-    .catch(Notify.handleError);
-
   /* @todo This controller should not be concerned about individual price lists */
   /* @todo All read/ list API methods should be uniform on the client */
-  Prices.read()
     .then(function (priceLists) {
       vm.priceLists = priceLists;
+      vm.$loaded = true;
     })
-    .catch(Notify.handleError);
+    .catch(Notify.handleError)
+    .finally(function () {
+      vm.$loading = false;
+    });
 
   // expose state for optional view elements
   vm.state = $state;

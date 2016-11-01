@@ -1,14 +1,14 @@
 angular.module('bhima.services')
 .service('DebtorGroupService', DebtorGroupService);
 
-DebtorGroupService.$inject = ['$http', 'util', 'SessionService'];
+DebtorGroupService.$inject = ['$http', '$uibModal', 'util', 'SessionService'];
 
 /**
 * Debtor Group Service
 *
 * This service implements CRUD operations for the /debtor_groups API endpoint
 */
-function DebtorGroupService($http, util, SessionService) {
+function DebtorGroupService($http, Modal, util, SessionService) {
   var service = this;
   var baseUrl = '/debtor_groups/';
 
@@ -16,6 +16,8 @@ function DebtorGroupService($http, util, SessionService) {
   service.read = read;
   service.create = create;
   service.update = update;
+
+  service.manageSubscriptions = manageSubscriptions;
 
   /**
   * @method read
@@ -58,6 +60,23 @@ function DebtorGroupService($http, util, SessionService) {
 
     return $http.put(url, debtorGroup)
     .then(util.unwrapHttpResponse);
+  }
+
+  function manageSubscriptions(debtorGroup, subscriptions) {
+
+    return Modal.open({
+      templateUrl : '/partials/debtors/subscriptions.modal.html',
+      controller : 'ChargeSubscriptions as SubCtrl',
+      size : 'md',
+      resolve : {
+        Subscriptions : function Subscriptions() {
+          return subscriptions;
+        },
+        DebtorGroup : function DebtorGroup() {
+          return debtorGroup;
+        }
+      }
+    });
   }
 
   return service;
