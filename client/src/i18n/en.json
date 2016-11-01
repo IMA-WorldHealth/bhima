@@ -190,7 +190,9 @@
     },
     "TITLE"          : "Debtor Group Management",
     "SUBSCRIBED"     : "Debtors subscribed",
-    "UPDATED"        : "Debtor group record updated"
+    "UPDATED"        : "Debtor group record updated",
+    "LOADING"        : "Fetching Debtor Group",
+    "SUBSCRIPTIONS"  : "Subscriptions"
   },
   "DEPOT": {
     "ADD_DEPOT"   : "Add a Depot",
