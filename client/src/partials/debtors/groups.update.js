@@ -15,9 +15,12 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
   vm.submit = submit;
   vm.state = $state;
+  vm.subscriptions = subscriptions;
 
   vm.$loading = true;
   vm.$loaded = false;
+
+  console.log('state', $state);
 
   // reset name attribute to ensure no UI glitch
   $state.current.data.label = null;
@@ -74,5 +77,9 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
         $state.go('debtorGroups.list', null, {reload : true});
       })
       .catch(Notify.handleError);
+  }
+
+  function subscriptions() {
+    DebtorGroups.manageSubscriptions(vm.group);
   }
 }

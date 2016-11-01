@@ -1,0 +1,25 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static">{{ SubCtrl.group.name }}</li>
+    <li class="title">{{ "DEBTOR_GROUP.SUBSCRIPTIONS" | translate }}</li>
+  </div>
+</div>
+
+<div class="modal-body">
+  <div class="form-group">
+
+    <label class="control-label">Billing Services</label>
+    {{SubCtrl.subscriptions}}
+    <div class="checkbox" ng-repeat="billingService in SubCtrl.billingServices | orderBy:'label'">
+      <label>
+        <input data-group-option type="checkbox" ng-model="SubCtrl.subscriptions[billingService.id]">
+        {{billingService.label}}
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default">Cancel</button>
+  <button class="btn btn-primary">Confirm</button>
+</div>
