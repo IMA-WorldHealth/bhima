@@ -1,6 +1,9 @@
 <form name="groupForm" bh-submit="UpdatePatientGroupsCtrl.confirmGroups(groupForm)" bh-form-defaults novalidate>
   <div class="modal-header">
-    <h3 class="modal-title">{{ ::"FORM.LABELS.UPDATE_PATIENT_GROUP" | translate }}</h3>
+    <ol class="headercrumb">
+      <li class="static">{{UpdatePatientGroupsCtrl.patient.display_name}}</li>
+      <li class="title">{{ ::"FORM.LABELS.UPDATE_PATIENT_GROUP" | translate }}</li>
+    </ol>
   </div>
 
   <div class="modal-body">
