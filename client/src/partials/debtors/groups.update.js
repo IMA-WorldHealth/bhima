@@ -1,3 +1,7 @@
+/**
+ * @todo complex page should require loading resolve before displaying, a lot of
+ *       data is fetched per page load
+ */
 angular.module('bhima.controllers')
 .controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
 
@@ -12,6 +16,9 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
   vm.submit = submit;
   vm.state = $state;
 
+  vm.$loading = false;
+  vm.$loaded = false;
+
   // reset name attribute to ensure no UI glitch
   $state.current.data.label = null;
 
@@ -20,6 +27,8 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
       vm.priceLists = priceLists;
     });
 
+  vm.$loading = true;
+
   Accounts.read()
     .then(function (accounts) {
       vm.accounts = accounts;
@@ -27,7 +36,8 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
     })
     .then(function (result) {
       vm.group = result;
-
+      vm.$loaded = true;
+      console.log(vm.group);
       $state.current.data.label = vm.group.name;
 
       /** @todo work around for checkboxes (use value='' instead) */
@@ -35,7 +45,12 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
       vm.group.apply_subsidies = Boolean(vm.group.apply_subsidies);
       vm.group.apply_discounts = Boolean(vm.group.apply_discounts);
     })
-    .catch(Notify.handleError);
+    .catch(Notify.handleError)
+    .finally(function () {
+      vm.$loading = false;
+    })
+
+
 
   function submit(debtorGroupForm) {
     var submitDebtorGroup;
