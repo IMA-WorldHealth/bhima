@@ -2,12 +2,10 @@
 <form name="BillingServicesForm" bh-submit="BillingServicesFormCtrl.submit(BillingServicesForm)" bh-form-defaults novalidate>
 
   <div class="modal-header">
-    <h4>
-      {{ BillingServicesFormCtrl.title | translate }}
-      <span ng-show="BillingServicesFormCtrl.label">
-        <span class="badge badge-primary">{{ BillingServicesFormCtrl.label }}</span>
-      </span>
-    </h4>
+    <ol class="headercrumb">
+      <li class="static">{{ "TREE.BILLING_SERVICES" | translate }}</li>
+      <li class="title">{{ BillingServicesFormCtrl.title | translate }}</li>
+    </div>
   </div>
 
   <div class="modal-body">

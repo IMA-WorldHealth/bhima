@@ -9,6 +9,7 @@ function UpdateDebtorGroup($uibModalInstance, debtors, patient, updateModel, Not
   var viewModel = this;
   var originalGroupUuid;
 
+  viewModel.patient = patient;
   debtors.groups()
     .then(function (debtorGroups) {
       originalGroupUuid = patient.debtor_group_uuid;

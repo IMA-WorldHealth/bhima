@@ -11,6 +11,8 @@ function UpdatePatientGroups($uibModalInstance, patients, sessionPatient, sessio
 
   // TODO move to method
   viewModel.subscribedGroups = {};
+  viewModel.patient = sessionPatient;
+
   sessionGroups.forEach(function (patientGroup) {
     viewModel.subscribedGroups[patientGroup.uuid] = true;
   });
