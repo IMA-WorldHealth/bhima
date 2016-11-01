@@ -72,8 +72,9 @@ function lookupDebtorGroup(uid) {
 
 function lookupBillingServices(uid) {
   const sql = `
-    SELECT id, billing_service_id, created_at
+    SELECT billing_service_id, label, debtor_group_billing_service.created_at
     FROM debtor_group_billing_service
+    LEFT JOIN billing_service ON debtor_group_billing_service.billing_service_id = billing_service.id
     WHERE debtor_group_uuid = ?
   `;
 
@@ -82,8 +83,9 @@ function lookupBillingServices(uid) {
 
 function lookupSubsidies(uid) {
   const sql = `
-    SELECT id, subsidy_id, created_at
+    SELECT label, subsidy_id, debtor_group_subsidy.created_at
     FROM debtor_group_subsidy
+    LEFT JOIN subsidy ON debtor_group_subsidy.subsidy_id = subsidy.id
     WHERE debtor_group_uuid = ?
   `;
 
