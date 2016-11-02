@@ -39,21 +39,6 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
   /** button Print */
   vm.buttonPrint = { pdfUrl: '/reports/inventory/items' };
 
-
-  // edit button template
-  var editTemplate = '<div style="padding: 5px;">' +
-    '<a title="{{ \'FORM.LABELS.EDIT\' | translate }}" href="" ' +
-    'ng-click="grid.appScope.editInventoryItem(row.entity)" ' +
-    'data-edit-metadata="{{ row.entity.code }}">' +
-    '<i class="fa fa-edit"></i> ' +
-    '</a></div>';
-
-  // consumable icon template
-  var iconTemplate = '<div class="text-center">' +
-    '<i ng-show="row.entity.consumable === 1" class="text-success fa fa-check-circle-o fa-2x"></i>' +
-    '<i ng-show="row.entity.consumable === 0" class="text-warning fa fa-times-circle-o fa-2x"></i>' +
-    '</div>';
-
   // grid default options
   vm.gridOptions.appScopeProvider = vm;
   vm.gridOptions.enableFiltering  = vm.filterEnabled;
@@ -62,7 +47,7 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
       { field : 'code', displayName : 'FORM.LABELS.CODE', headerCellFilter : 'translate'
       },
       { field : 'consumable', displayName : 'FORM.LABELS.CONSUMABLE', headerCellFilter : 'translate',
-        cellTemplate : iconTemplate
+        cellTemplate : '/partials/inventory/list/templates/consumable.cell.tmpl.html'
       },
       { field : 'groupName', displayName : 'FORM.LABELS.GROUP', headerCellFilter : 'translate'},
       { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate'},
@@ -71,9 +56,8 @@ function InventoryListController ($translate, Inventory, Notify, uiGridConstants
       { field : 'unit', displayName : 'FORM.LABELS.UNIT', headerCellFilter : 'translate'},
       { field : 'unit_weight', displayName : 'FORM.LABELS.WEIGHT', headerCellFilter : 'translate'},
       { field : 'unit_volume', displayName : 'FORM.LABELS.VOLUME', headerCellFilter : 'translate'},
-      { field : 'action', displayName : '...',
-        width: 25,
-        cellTemplate: editTemplate,
+      { field : 'action', displayName : '',
+        cellTemplate: '/partials/inventory/list/templates/inventoryEdit.actions.tmpl.html',
         enableFiltering: false,
         enableColumnMenu: false
       }
