@@ -26,11 +26,18 @@ exports.report = report;
  */
 function receipt(req, res, next) {
 
-  // page options
-  const options =
-    _.defaults({ pageSize : 'A5', orientation: 'landscape' }, req.query);
+  const metadata = {
+    enterprise: req.session.enterprise,
+    project: req.session.project,
+    user: req.session.user
+  };
+
+  const options = req.query;
 
   let report;
+  let data = {};
+  let record = {};
+
   try {
     report = new ReportManager(RECEIPT_TEMPLATE, req.session, options);
   } catch (e) {
@@ -40,14 +47,23 @@ function receipt(req, res, next) {
   // request for detailed receipt
   req.query.detailed = true;
 
-  Vouchers.getVouchers(req.params.uuid, req.query)
+  Vouchers.getVouchers(req.params.uuid, options)
     .then(rows => {
 
       if (!rows.length) {
         throw new NotFound(`Could not find a voucher with uuid ${req.params.uuid}`);
       }
 
-      return report.render({ rows });
+      // voucher details
+      record.details = rows[0];
+
+      // voucher transaction rows
+      record.rows = rows;
+
+      // populate data for the view
+      _.extend(data, record, metadata);
+
+      return report.render(data);
     })
     .then(result => {
       res.set(result.headers).send(result.report);

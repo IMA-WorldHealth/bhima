@@ -1,41 +1,50 @@
 {{> head title="CASH.TITLE" }}
 
-<div class="container" style="font-size: 0.8em;">
+<div class="container" style="font-size: 0.9em;">
 
-  <!-- this partial requires binding the variable "metadata" -->
-  <header class="row">
-    <div class="col-xs-6">
-      <div><i class="fa fa-home"></i> {{enterprise.name}}</div>
-      <address style="margin-bottom: 0px;">
-         <i class="fa fa-map-marker"></i> {{enterprise.location}}
-      </address>
-      <div><i class="fa fa-envelope-o"></i> {{enterprise.email}}</div>
-      <div><i class="fa fa-phone"></i> {{enterprise.phone}}</div>
-      <div><i class="fa fa-user"></i> {{translate "REPORT.PRODUCED_BY"}} {{user.display_name}}</div>
+  <header>
+    <!-- headings  -->
+    <div class="row">
+      <div class="col-xs-6">
+  			<h3 style="margin: 0px;">{{enterprise.name}}</h3>
+  			<p>
+  				<span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
+  				<span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
+  				<span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
+  			</p>
+  		</div>
+  		<div class="col-xs-6 text-right">
+  			<h3 style="margin: 0px;">
+  				<span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE_PAYMENT'}}</span> <br>
+  				<strong>ID: {{payment.reference}}</strong> <br>
+  				<small>{{date payment.date}}</small> <br>
+  			</h3>
+  		</div>
     </div>
 
-    <div class="col-xs-6 text-right">
-      <b>{{patient.display_name}} [{{patient.reference}}] </b> <br />
-      <i class="fa fa-h-square"></i> {{patient.hospital_no}} <br />
-      <i class="fa fa-users"></i> {{patient.debtor_group_name}} <br />
-      <i class="fa fa-calendar-o"></i> {{date payment.date}}
-      {{#if hasRate}}
-        <br />
-        <i class="fa fa-balance-scale"></i> {{currency rate payment.currency_id}}
-      {{/if}}
-    </div>
+    <!-- client and user details  -->
+		<div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+			<div class="col-xs-6">
+				<span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{patient.reference}}</strong> <br>
+				<span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{patient.display_name}} <br>
+				<span class="text-capitalize">{{translate 'FORM.LABELS.GROUP'}}</span>: {{patient.debtor_group_name}} <br>
+				<span class="text-capitalize">{{translate 'FORM.LABELS.HOSPITAL_FILE_NR'}}</span>: <strong>{{patient.hospital_no}}</strong>
+			</div>
+			<div class="col-xs-6">
+				<span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{payment.reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency payment.amount payment.currency_id}}</strong> <br>
+				<span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date payment.date}} <br>
+        {{#if hasRate}} <i class="fa fa-balance-scale"></i> {{currency rate payment.currency_id}} <br>{{/if}}
+				<span class="text-capitalize">{{translate "REPORT.PRODUCED_BY"}}</span>: {{user.display_name}}
+			</div>
+		</div>
   </header>
-
-  <!-- cash payment header -->
-  <h4 class="text-center">
-     {{payment.reference}} - {{translate "CASH.RECEIPT.TITLE"}}
-  </h4>
 
   <!-- list of items paid -->
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th>{{translate "FORM.LABELS.INVOICE"}}</th>
+        <th>{{translate "FORM.LABELS.INVOICE"}}s</th>
         <th class="text-right">{{translate "FORM.LABELS.AMOUNT"}}</th>
       </tr>
     </thead>
@@ -54,6 +63,10 @@
       </tr>
     </tfoot>
   </table>
+
+  <h4>
+    <u>{{translate 'FORM.LABELS.SIGNATURE'}}s</u>
+  </h4>
 
   <div class="row">
     <div class="col-xs-5">

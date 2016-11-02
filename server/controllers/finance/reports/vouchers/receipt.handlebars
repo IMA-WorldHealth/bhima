@@ -1,86 +1,77 @@
 {{> head title="VOUCHERS.GLOBAL.TITLE"}}
 
-<body>
+<div class="container" style="font-size: 0.9em;">
 
-  <div class="container">
-    <!-- header  -->
+  <header>
+    <!-- headings  -->
     <div class="row">
-      <div class="col-xs-4">
-        <h3 style="margin:2px;">{{metadata.enterprise.name}} ({{metadata.enterprise.abbr}})</h3>
-        <span>{{translate 'FORM.LABELS.PHONE'}}: {{metadata.enterprise.phone}}</span><br>
-        <span>{{translate 'FORM.LABELS.EMAIL'}}: {{metadata.enterprise.email}}</span><br>
-      </div>
-      <div class="col-xs-offset-4 col-xs-4 text-right">
-        <small>{{metadata.project.name}} ({{metadata.project.abbr}})</small>
-      </div>
-    </div>
-
-    <!-- body  -->
-    <div class="row">
-      <div class="col-xs-12">
-
-        <!-- page title  -->
-        <h2 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-          {{translate 'VOUCHERS.GLOBAL.TITLE'}}
-        </h2>
-
-        <!-- voucher info  -->
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
-              <th>{{translate 'FORM.LABELS.DATE'}}</th>
-              <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
-              <th class="text-right">{{translate 'FORM.LABELS.AMOUNT'}}</th>
-              <th>{{translate 'FORM.LABELS.BY'}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each rows}}
-              {{#if @first}}
-                <tr>
-                  <td>{{reference}}</td>
-                  <td>{{date date}}</td>
-                  <td>{{description}}</td>
-                  <td class="text-right">{{currency amount}}</td>
-                  <td>{{user}}</td>
-                </tr>
-              {{/if}}
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="row">
-
       <div class="col-xs-6">
-        <!-- voucher items info  -->
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th>{{translate 'FORM.LABELS.ACCOUNT'}}</th>
-              <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
-              <th class="text-right">{{translate 'FORM.LABELS.DEBIT'}}</th>
-              <th class="text-right">{{translate 'FORM.LABELS.CREDIT'}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each rows}}
-            <tr>
-              <td>{{number}}</td>
-              <td>{{label}}</td>
-              <td class="text-right">{{currency debit}}</td>
-              <td class="text-right">{{currency credit}}</td>
-            </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
+  			<h3 style="margin: 0px;">{{enterprise.name}}</h3>
+  			<p>
+  				<span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
+  				<span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
+  				<span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
+  			</p>
+  		</div>
+  		<div class="col-xs-6 text-right">
+  			<h3 style="margin: 0px;">
+  				<span class="text-uppercase">{{translate 'FORM.LABELS.VOUCHER'}}</span> <br>
+  				<strong>ID: {{details.reference}}</strong> <br>
+  				<small>{{date details.date}}</small> <br>
+  			</h3>
+  		</div>
     </div>
 
-    <small>{{translate 'FORM.LABELS.SIGNATURE'}}</small>
-    <hr>
+    <!-- client and user details  -->
+		<div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+			<div class="col-xs-6">
+				<span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{details.reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency details.amount details.currency_id}}</strong> <br>
+				<span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date details.date}} <br>
+				<span class="text-capitalize">{{translate "REPORT.PRODUCED_BY"}}</span>: {{details.display_name}}
+			</div>
+		</div>
+  </header>
 
-  </div>
-</body>
+  <!-- description  -->
+  <h4>
+    <u>{{translate 'FORM.LABELS.DESCRIPTION'}}</u>
+  </h4>
+  <p>{{details.description}}</p>
+
+  <!-- voucher containt details  -->
+  <h4>
+    <u>{{translate 'FORM.LABELS.DETAILS'}}</u>
+  </h4>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>{{translate 'FORM.LABELS.ACCOUNT'}}</th>
+        <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
+        <th class="text-right">{{translate 'FORM.LABELS.DEBIT'}}</th>
+        <th class="text-right">{{translate 'FORM.LABELS.CREDIT'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rows}}
+      <tr>
+        <td>{{number}}</td>
+        <td>{{label}}</td>
+        <td class="text-right">{{currency debit currency_id}}</td>
+        <td class="text-right">{{currency credit currency_id}}</td>
+      </tr>
+      {{/each}}
+      <tr>
+        <td colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</td>
+        <td class="text-right">{{currency (sum rows 'debit') details.currency_id}}</td>
+        <td class="text-right">{{currency (sum rows 'credit') details.currency_id}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>
+    <u>{{translate 'FORM.LABELS.SIGNATURE'}}s</u>
+  </h4>
+  <hr>
+
+</div>

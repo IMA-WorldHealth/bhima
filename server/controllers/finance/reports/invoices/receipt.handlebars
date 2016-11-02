@@ -1,68 +1,49 @@
 {{> head title="TREE.PATIENT_INVOICE"}}
 
-<div class="container-fluid">
+<div class="container" style="font-size: 0.9em;">
 
-  <!-- header  -->
-  <div class="row">
-
-    <div class="col-xs-4">
-      <h3 style="margin:2px;">{{ metadata.enterprise.name }}</h3>
-      <p style="margin:2px;">
-        {{translate 'FORM.LABELS.PROJECT'}}: {{ metadata.project.name }}<br>
-        {{translate 'FORM.LABELS.PHONE'}}: {{ metadata.enterprise.phone }}<br>
-        {{translate 'FORM.LABELS.EMAIL'}}: {{ metadata.enterprise.email }}<br>
-        {{translate 'FORM.LABELS.ADDRESS'}}: {{ metadata.enterprise.location }}
-      </p>
-    </div>
-
-    <!-- invoice details  -->
-    <div class="col-xs-4">
-      <div class="text-right">
-        <h3 style="margin:2px;"><b>{{translate "FORM.LABELS.SALE_ID"}} : {{reference}}</b></h3>
-        <h3 style="margin:2px;">{{date date}}</h3>
-      </div>
-    </div>
-
-    <div class="col-xs-4">
-      <div class="text-right">
-        <h3 style="margin:2px;">{{translate "TREE.PATIENT_INVOICE"}}</h3>
-        <p style="margin:2px;">
-          {{recipient.display_name}}<br>
-          {{translate 'FORM.LABELS.PATIENT_ID'}}: {{recipient.reference}}<br>
-          {{translate 'FORM.LABELS.GROUPS_DEBTOR_TITLE'}}: {{recipient.debtor_group_name}}<br>
-          {{translate 'FORM.LABELS.HOSPITAL_FILE_NR'}}: {{recipient.hospital_no}}
+  <header>
+    <!-- headings  -->
+    <div class="row">
+      <div class="col-xs-6">
+        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
+        <p>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
         </p>
       </div>
+      <div class="col-xs-6 text-right">
+        <h3 style="margin: 0px;">
+          <span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE'}}</span> <br>
+          <strong>ID: {{reference}}</strong> <br>
+          <small>{{date date}}</small> <br>
+        </h3>
+      </div>
     </div>
 
-  </div>
+    <!-- client and user details  -->
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+      <div class="col-xs-6">
+        <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{recipient.reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{recipient.display_name}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.GROUP'}}</span>: {{recipient.debtor_group_name}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.HOSPITAL_FILE_NR'}}</span>: <strong>{{recipient.hospital_no}}</strong>
+      </div>
+      <div class="col-xs-6">
+        <span class="text-capitalize">{{translate 'FORM.LABELS.INVOICE'}}</span>: <strong>{{reference}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency cost}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date date}} <br>
+        <span class="text-capitalize">{{translate "REPORT.PRODUCED_BY"}}</span>: {{user.display_name}}
+      </div>
+    </div>
+  </header>
 
-  <!-- invoice  -->
+  <!-- description  -->
   <h4>
-    <u>{{translate 'FORM.LABELS.INVOICE'}}</u>
+    <u>{{translate 'FORM.LABELS.DESCRIPTION'}}</u>
   </h4>
-  <table class="table table-condensed">
-    <thead>
-      <tr>
-        <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
-        <th>{{translate 'FORM.LABELS.CLIENT'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
-        <th class="text-right">{{translate 'TABLE.COLUMNS.AMOUNT'}}</th>
-        <th class="text-right">{{translate 'TABLE.COLUMNS.BY'}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{reference}}</td>
-        <td>{{date date}}</td>
-        <td>{{debtor_name}}</td>
-        <td>{{description}}</td>
-        <td class="text-right">{{currency cost}}</td>
-        <td class="text-right">{{display_name}}</td>
-      </tr>
-    </tbody>
-  </table>
+  <p>{{description}}</p>
 
   <!-- invoice details  -->
   {{#if items.length}}
@@ -153,7 +134,9 @@
     </div>
   </div>
 
-  <h4>{{translate 'FORM.LABELS.SIGNATURE'}}</h4>
+  <h4>
+    <u>{{translate 'FORM.LABELS.SIGNATURE'}}s</u>
+  </h4>
 
   <div class="row">
     <div class="col-xs-5">
