@@ -17,22 +17,6 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
   var cache = AppCache('InvoiceRegistry');
 
-  var invoiceActionsTemplate =
-    '<div class="ui-grid-cell-contents">' +
-      '<a href ng-click="grid.appScope.openReceiptModal(row.entity.uuid)" data-method="receipt">' +
-        '<span class="fa fa-file-pdf-o"></span> {{ "TABLE.COLUMNS.RECEIPT" | translate }}' +
-      '</a>' +
-      '&nbsp;&nbsp;' +
-      '<a href id="{{row.entity.reference}}" ng-click="grid.appScope.creditNote(row.entity)" class="text-danger">' +
-        '<i class="fa fa-clone"></i> {{ "TABLE.COLUMNS.CREDIT_NOTE" | translate }}' +
-      '</a>' +
-    '</div>';
-
-  var costTemplate =
-    '<div class="ui-grid-cell-contents text-right">' +
-      '{{ row.entity.cost | currency: grid.appScope.enterprise.currency_id }}' +
-    '</div>';
-
   vm.search = search;
   vm.openReceiptModal = Receipt.invoice;
   vm.onRemoveFilter = onRemoveFilter;
@@ -60,13 +44,14 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
       { field : 'cost',
         displayName : 'TABLE.COLUMNS.COST',
         headerCellFilter : 'translate',
-        cellTemplate: costTemplate,
+        cellTemplate: '/partials/patient_invoice/registry/templates/cost.cell.tmpl.html',
         aggregationType: uiGridConstants.aggregationTypes.sum,
         footerCellFilter: 'currency:grid.appScope.enterprise.currency_id'
       },
       { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
       { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
-      { name : 'Actions', displayName : '', cellTemplate : invoiceActionsTemplate }
+      { name : 'receipt_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/invoiceReceipt.action.tmpl.html' },
+      { name : 'credit_action', displayName : '', cellTemplate : '/partials/patient_invoice/registry/templates/creditNote.action.tmpl.html' }
     ],
     enableSorting : true,
     rowTemplate : '/partials/patient_invoice/templates/grid.creditNote.tmpl.html'
