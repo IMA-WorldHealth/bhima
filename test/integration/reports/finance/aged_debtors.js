@@ -12,9 +12,6 @@ describe(`(${target}) Aged Debtors`, function () {
     untilDate : '2016-12-31'
   };
 
-  const keys = ['untilDate', 'debtorGroups', 'fiscalYear', 'previous', 'first', 'second', 'third'
-  ];
-
   const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
 
   const clone = (object) => JSON.parse(JSON.stringify(object));
