@@ -42,6 +42,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   service.Documents = Documents;
   service.Visits = Visits;
   service.latest = latest;
+  service.balance = balance;
 
   /**
    * This method returns information on a patient given the patients UUID. This
@@ -60,6 +61,16 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
     var path = 'patients/:uuid/invoices/latest';
     return $http.get(path.replace(':uuid', uuid))
       .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * This method returns the patient balance
+   * @param {String} uuid The patient's UUID
+   */
+  function balance(uuid) {
+    var path = 'patients/:uuid/finance/balance';
+    return $http.get(path.replace(':uuid', uuid))
+     .then(util.unwrapHttpResponse);
   }
 
   /**

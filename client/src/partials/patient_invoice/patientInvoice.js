@@ -69,6 +69,11 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     Patients.read(uuid)
     .then(function (patient) {
       vm.Invoice.setPatient(patient);
+
+      return Patients.balance(patient.debtor_uuid);
+    })
+    .then(function (balance) {
+      vm.patientBalance = balance;
     });
   }
 
@@ -100,7 +105,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
 
     // copy the rows for insertion
     var items = angular.copy(vm.Invoice.store.data);
-    
+
     // invoice consists of
     // 1. Invoice details
     // 2. Invoice items
@@ -159,6 +164,9 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     if (vm.patientSearchApi) {
       vm.patientSearchApi.reset();
     }
+
+    // reset client balance
+    vm.patientBalance = null;
   }
 
   vm.gridOptions = gridOptions;

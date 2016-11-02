@@ -14,5 +14,5 @@ exports.invoices = require('./invoices');
 exports.vouchers = require('./vouchers');
 exports.cash     = require('./cash');
 exports.cashflow = require('./cashflow');
-exports.financialPatient = require('./financial.patient');
+exports.financialPatient = require('./financial.patient').report;
 exports.journal  = require('./journal');

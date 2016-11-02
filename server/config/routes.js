@@ -81,6 +81,7 @@ const journal          = require('../controllers/finance/journal');
 const transactionType  = require('../controllers/admin/transactionType');
 const generalLedger    = require('../controllers/finance/generalLedger');
 const cashflow         = require('../controllers/finance/reports/cashflow');
+const financialPatient = require('../controllers/finance/patient');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -407,6 +408,8 @@ exports.configure = function configure(app) {
   app.get('/patients/:uuid/visits', patients.checkin.list);
   app.post('/patients/:uuid/checkin', patients.checkin.create);
   app.get('/patients/:uuid/invoices/latest', patients.latestInvoice);
+
+  app.get('/patients/:uuid/finance/balance', financialPatient.balance);
 
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */

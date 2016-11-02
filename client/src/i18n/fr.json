@@ -66,6 +66,10 @@
     "VIEW"      : "Voir tous les services de facturation."
   },
   "CASH": {
+    "CAUTION"         : "Caution",
+    "CAUTION_COVER"   : "Facture couvert par la caution",
+    "CAUTION_PAYMENT" : "Paiement Caution",
+    "CAUTION_REMAINING" : "Caution Restante",
     "CURRENT_CASHBOX" : "Caisse courante",
     "DEBTOR_INVOICES": {
       "TITLE" : "Facture(s) debiteur"

@@ -64,6 +64,10 @@
     "VIEW"      : "View all billing services."
   },
   "CASH": {
+    "CAUTION"         : "Caution",
+    "CAUTION_COVER"   : "Invoice covered by the caution",
+    "CAUTION_PAYMENT" : "Caution Payment",
+    "CAUTION_REMAINING" : "Remaining Caution",
     "CURRENT_CASHBOX" : "Current Cashbox",
     "DEBTOR_INVOICES" : "Debtor Invoices",
     "PAYMENT"         : "Payment",

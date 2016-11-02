@@ -15,7 +15,15 @@
   		</div>
   		<div class="col-xs-6 text-right">
   			<h3 style="margin: 0px;">
-  				<span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE_PAYMENT'}}</span> <br>
+  				<span class="text-uppercase">
+            {{#with payment}}
+              {{#if is_caution}}
+                {{translate "CASH.CAUTION_PAYMENT"}}
+              {{else}}
+                {{translate "FORM.LABELS.INVOICE_PAYMENT"}}
+              {{/if}}
+            {{/with}}
+          </span> <br>
   				<strong>ID: {{payment.reference}}</strong> <br>
   				<small>{{date payment.date}}</small> <br>
   			</h3>
@@ -44,7 +52,15 @@
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th>{{translate "FORM.LABELS.INVOICE"}}s</th>
+        <th>
+          {{#with payment}}
+            {{#if is_caution}}
+              {{translate "CASH.CAUTION"}}
+            {{else}}
+              {{translate "FORM.LABELS.INVOICE"}}
+            {{/if}}
+          {{/with}}
+        </th>
         <th class="text-right">{{translate "FORM.LABELS.AMOUNT"}}</th>
       </tr>
     </thead>

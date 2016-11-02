@@ -14,7 +14,7 @@ LatestInvoice.$inject = [
 
 /**
  * Find Document Component
- * This component is responsible for displaying the Latest Invoice 
+ * This component is responsible for displaying the Latest Invoice
  */
 function LatestInvoice(Patient, moment) {
   var vm = this;
@@ -32,6 +32,11 @@ function LatestInvoice(Patient, moment) {
     .then(function (patientInvoice) {
       vm.patientInvoice = patientInvoice;
       vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
+    });
+
+    Patient.balance(vm.debtorUuid)
+    .then(function (balance) {
+      vm.patientBalance = balance;
     });
   }
 
