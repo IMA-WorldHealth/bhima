@@ -21,6 +21,7 @@ const _ = require('lodash');
 exports.list = list;
 exports.getTransaction = getTransaction;
 exports.reverse = reverse;
+exports.journalEntryList = journalEntryList;
 
 /**
  * Looks up a transaction by record_uuid.
@@ -68,7 +69,24 @@ function lookupTransaction(record_uuid) {
  */
 function list(req, res, next) {
 
-  const sql = `
+  journalEntryList(req.query)
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next);
+}
+
+/**
+ * @method journalEntryList
+ * @description return a list of journal entries
+ */
+function journalEntryList(params) {
+  let uuids = [];
+  let conditions = [];
+  let whereTransactions;
+  let whereDates;
+
+  let sql = `
     SELECT BUID(p.uuid) AS uuid, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
       dm1.text AS hrRecord, p.description, p.account_id, p.debit, p.credit,
@@ -87,14 +105,38 @@ function list(req, res, next) {
       LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
       LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
-    ORDER BY p.trans_date DESC;
   `;
 
-  db.exec(sql)
-    .then(rows => {
-      res.status(200).json(rows);
-    })
-    .catch(next);
+  // get only transactions given
+  if (params && params.uuids && params.uuids.length) {
+    uuids = params.uuids.map(uuid => {
+      return db.bid(uuid);
+    });
+    whereTransactions = ' p.uuid IN (?) ';
+  }
+
+  // dates given
+  if (params && params.dateFrom && params.dateTo) {
+    params.dateFrom = new Date(params.dateFrom);
+    params.dateTo = new Date(params.dateTo);
+    whereDates = ' DATE(p.trans_date) BETWEEN DATE(?) AND DATE(?) ';
+  }
+
+  if (whereDates && whereTransactions) {
+    sql += ' WHERE ' + whereDates + ' AND ' + whereTransactions;
+    conditions.push(params.dateFrom, params.dateTo, uuids);
+
+  } else if (whereDates && !whereTransactions) {
+    sql += ' WHERE ' + whereDates;
+    conditions.push(params.dateFrom, params.dateTo);
+
+  } else if (!whereDates && whereTransactions) {
+    sql += ' WHERE ' + whereTransactions;
+    conditions.push(uuids);
+  }
+
+  sql += ' ORDER BY p.trans_date DESC;';
+  return db.exec(sql, conditions);
 }
 
 /**
@@ -135,5 +177,3 @@ function reverse(req, res, next) {
     .catch(next)
     .done();
 }
-
-

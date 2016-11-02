@@ -14,12 +14,24 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
+        <button class="btn btn-default" data-method="filter" ng-click="JournalCtrl.filtering.toggleInlineFiltering()">
+          <i class="fa fa-filter"></i>
+        </button>
+
+        <button class="btn btn-default" data-method="search" ng-click="JournalCtrl.openSearchModal()">
+          <i class="fa fa-search"></i> {{ "FORM.BUTTONS.SEARCH" | translate }}
+        </button>
+
         <button class="btn btn-default" data-method="configure" ng-click="JournalCtrl.openColumnConfigModal()">
           <i class="fa fa-cogs"></i> {{ "FORM.BUTTONS.CONFIGURE" | translate }}
         </button>
 
         <button class="btn btn-default" data-method="trial" ng-disabled="JournalCtrl.grouping.selectedRowCount < 1" ng-click="JournalCtrl.openTrialBalanceModal()">
           <i class="fa fa-adjust"></i> {{ "FORM.BUTTONS.TRIAL_BALANCE" | translate }}
+        </button>
+
+        <button class="btn btn-default" data-method="print" ng-disabled="JournalCtrl.grouping.selectedRowCount < 1" ng-click="JournalCtrl.openJournalReport()">
+          <i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}
         </button>
       </div>
     </div>
@@ -56,4 +68,3 @@
     </div>
   </div>
 </div>
-

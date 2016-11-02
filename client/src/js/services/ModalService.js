@@ -288,7 +288,7 @@ function ModalService(Modal) {
         controllerAs : '$ctrl',
         size         : 'xs',
         backdrop     : 'static',
-        animation    : false,
+        animation    : true,
         resolve : {
           data :  function dataProvider() { return request; }
         }

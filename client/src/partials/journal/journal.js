@@ -5,7 +5,7 @@ JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
-  'bhConstants', '$state', 'uiGridConstants'
+  'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService'
 ];
 
 /**
@@ -30,7 +30,7 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants, Modal, Languages) {
   var vm = this;
 
   /** @constants */
@@ -63,6 +63,9 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   columnConfig = new Columns(vm.gridOptions, cacheKey);
   transactions = new Transactions(vm.gridOptions);
   editors = new Editors(vm.gridOptions);
+
+  //attaching the filtering object to the view
+  vm.filtering = filtering;
 
   //attaching the grouping object to the view
   vm.grouping = grouping;
@@ -127,12 +130,14 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     { field : 'debit_equiv', displayName : 'TABLE.COLUMNS.DEBIT', headerCellFilter: 'translate',
       cellTemplate : '/partials/templates/grid/debit_equiv.cell.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
+      enableFiltering: false
     },
     { field : 'credit_equiv', displayName : 'TABLE.COLUMNS.CREDIT', headerCellFilter: 'translate',
       cellTemplate : '/partials/templates/grid/credit_equiv.cell.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id'
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
+      enableFiltering: false
     },
     { field : 'trans_id',
       displayName : 'TABLE.COLUMNS.TRANSACTION',
@@ -147,7 +152,12 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     { field : 'hrEntity', displayName : 'TABLE.COLUMNS.RECIPIENT', headerCellFilter: 'translate', visible: true},
     { field : 'hrReference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate', visible: true },
     { field : 'user', displayName : 'TABLE.COLUMNS.RESPONSIBLE', headerCellFilter: 'translate', visible: false, enableCellEdit: false },
-    { field : 'actions', displayName : '', headerCellFilter: 'translate', visible: true, enableCellEdit: false, cellTemplate: '/partials/journal/templates/actions.cell.html', allowCellFocus: false }
+    { field : 'actions', displayName : '', headerCellFilter: 'translate',
+      visible: true, enableCellEdit: false,
+      cellTemplate: '/partials/journal/templates/actions.cell.html',
+      allowCellFocus: false,
+      enableFiltering: false
+    }
   ];
 
   vm.gridOptions.columnDefs = columns;
@@ -161,4 +171,28 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   vm.openTrialBalanceModal = function openTrialBalanceModal () {
     $state.go('trialBalanceMain', {records : vm.grouping.getSelectedGroups()}, {reload : false});
   };
+
+  // display the journal printalble report of selected transactions
+  vm.openJournalReport = function openJournalReport() {
+    var uuids = vm.grouping.getSelectedGroups().map(function (trans) {
+      return trans.uuid;
+    });
+
+    var url = '/reports/finance/journal';
+    var params = { renderer: 'pdf', lang: Languages.key, uuids: uuids };
+    Modal.openReports({ url: url, params: params });
+  };
+
+  // search modal
+  vm.openSearchModal = function openSearchModal() {
+    Modal.openDateInterval()
+    .then(function (dateInterval) {
+      return Journal.read(null, dateInterval);
+    })
+    .then(function (list) {
+      vm.gridOptions.data = list;
+    })
+    .catch(Notify.errorHandler);
+  };
+
 }

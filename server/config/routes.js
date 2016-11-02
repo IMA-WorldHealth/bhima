@@ -373,6 +373,7 @@ exports.configure = function configure(app) {
 
   // lookup saved report document
   app.get('/reports/archive/:uuid', report.sendArchived);
+  app.get('/reports/finance/journal', financeReports.journal.report);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
@@ -414,7 +415,7 @@ exports.configure = function configure(app) {
   app.get('/debtors/groups/:uuid', debtorGroups.detail);
   app.get('/debtors/:uuid/invoices', debtors.invoices);
   app.put('/debtors/:uuid', debtors.update);
-  app.get('/debtors/:uuid', debtors.detail);  
+  app.get('/debtors/:uuid', debtors.detail);
   app.get('/debtors', debtors.list);
 
   // Debtor Groups API
