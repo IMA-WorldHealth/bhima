@@ -8,7 +8,7 @@ const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe.only('Aged Debtors report generator', () => {
+describe('Aged Debtors report generator', () => {
   'use strict';
 
   before(() => helpers.navigate('#/reports/agedDebtors'));
