@@ -1,0 +1,59 @@
+<!-- configuration panel  -->
+<div class="col-md-6 col-md-offset-3 panel panel-default">
+  <div class="panel-body">
+    <form name="ConfigForm" bh-submit="IncomeExpenseConfigCtrl.generate()" bh-form-defaults novalidate>
+
+      <!-- Date interval  -->
+      <bh-date-interval
+        date-from="IncomeExpenseConfigCtrl.dateFrom"
+        date-to="IncomeExpenseConfigCtrl.dateTo">
+      </bh-date-interval>
+
+      <!-- cashbox selection  -->
+      <div class="form-group"
+        ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.cashbox.$invalid }">
+        <label class="control-label">
+          <span class="fa fa-briefcase"></span> {{ 'FORM.SELECT.CASHBOX' | translate }}
+        </label>
+        <select
+          class="form-control"
+          name="cashbox"
+          ng-model="IncomeExpenseConfigCtrl.cashbox"
+          ng-options="cash as cash.hrlabel for cash in IncomeExpenseConfigCtrl.cashboxes"
+          required>
+          <option value="" disabled>-- {{ 'FORM.SELECT.CASHBOX' | translate }} --</option>
+        </select>
+        <div class="help-block" ng-messages="ConfigForm.cashbox.$error" ng-show="ConfigForm.$submitted">
+          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <!-- Report type selection  -->
+      <div class="form-group"
+        ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.report.$invalid }">
+        <label class="control-label">
+          <span class="fa fa-briefcase"></span> {{ 'FORM.SELECT.REPORT_TYPE' | translate }}
+        </label>
+        <select
+          class="form-control"
+          name="report"
+          ng-model="IncomeExpenseConfigCtrl.report"
+          ng-options="type as type.label for type in IncomeExpenseConfigCtrl.reportType"
+          required>
+          <option value="" disabled>-- {{ 'FORM.SELECT.REPORT_TYPE' | translate }} --</option>
+        </select>
+        <div class="help-block" ng-messages="ConfigForm.report.$error" ng-show="ConfigForm.$submitted">
+          <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div data-submit-area class="text-right">
+        <bh-loading-button loading-state="ConfigForm.$loading"
+          ng-disabled="ConfigForm.$invalid">
+          {{ "FORM.BUTTONS.GENERATE" | translate }}
+        </bh-loading-button>
+      </div>
+
+    </form>
+  </div>
+</div>

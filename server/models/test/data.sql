@@ -51,7 +51,8 @@ INSERT INTO unit VALUES
   (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/reports/cashflow'),
   (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/partials/finance/chart_of_accounts', '/reports/accounts_chart'),
   (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/partials/admin/creditor_groups/', '/admin/creditor_groups'),
-  (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/partials/finance/reports/cash_payemnt', '/finance/reports/cash_payment');
+  (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/partials/finance/reports/cash_payemnt', '/finance/reports/cash_payment'),
+  (148, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/partials/finance/incomeExpense', '/finance/reports/incomeExpense');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES
@@ -254,7 +255,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (146,1),
 
 -- Cash Payment Registry
-(147,1);
+(147,1),
+
+-- Income Expense Report
+(148,1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
