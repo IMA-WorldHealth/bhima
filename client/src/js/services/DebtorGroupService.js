@@ -16,6 +16,7 @@ function DebtorGroupService($http, Modal, util, SessionService) {
   service.read = read;
   service.create = create;
   service.update = update;
+  service.updateBillingServices = updateBillingServices;
 
   service.manageSubscriptions = manageSubscriptions;
 
@@ -60,6 +61,23 @@ function DebtorGroupService($http, Modal, util, SessionService) {
 
     return $http.put(url, debtorGroup)
     .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * @function updateBillingServices
+   *
+   * @description
+   * Replaces a debtor groups billing services subscriptions with a provided
+   * set of billing service IDs
+   *
+   * @param {string}  debtorGroupUuid   UUID of debtor group that will be updated
+   * @param {Array}   subscriptions     Array of billing service ids that this
+   *                                    debtor group will now be subscribed to
+   */
+  function updateBillingServices(debtorGroupUuid, subscriptions) {
+    var path = baseUrl.concat('groups/debtor_group_billing_services/', debtorGroupUuid);
+    return $http.post(path, subscriptions)
+      .then(util.unwrapHttpResponse);
   }
 
   function manageSubscriptions(debtorGroup, subscriptions) {

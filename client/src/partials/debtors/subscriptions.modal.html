@@ -6,20 +6,22 @@
 </div>
 
 <div class="modal-body">
-  <div class="form-group">
+  <form name="subscriptionForm">
+    <div class="form-group">
 
-    <label class="control-label">Billing Services</label>
-    {{SubCtrl.subscriptions}}
-    <div class="checkbox" ng-repeat="billingService in SubCtrl.billingServices | orderBy:'label'">
-      <label>
-        <input data-group-option type="checkbox" ng-model="SubCtrl.subscriptions[billingService.id]">
-        {{billingService.label}}
-      </label>
+      <label class="control-label">Billing Services</label>
+      {{SubCtrl.subscriptions}}
+      <div class="checkbox" ng-repeat="billingService in SubCtrl.billingServices | orderBy:'label'">
+        <label>
+          <input data-group-option type="checkbox" ng-model="SubCtrl.subscriptions[billingService.id]">
+          {{billingService.label}}
+        </label>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-default">Cancel</button>
-  <button class="btn btn-primary">Confirm</button>
+  <button ng-click="SubCtrl.close()" class="btn btn-default">Cancel</button>
+  <button ng-click="SubCtrl.confirmSubscription(subscriptionForm)" class="btn btn-primary">Confirm</button>
 </div>
