@@ -35,6 +35,7 @@ const functions    = require('../controllers/admin/functions');
 const grades       = require('../controllers/admin/grades');
 const languages    = require('../controllers/admin/languages');
 const locations    = require('../controllers/admin/locations');
+const groups       = require('../controllers/groups');
 
 // medical routes
 const patients       = require('../controllers/medical/patients');
@@ -123,6 +124,8 @@ exports.configure = function configure(app) {
   app.put('/locations/sectors/:uuid', locations.update.sector);
   app.put('/locations/provinces/:uuid', locations.update.province);
   app.put('/locations/countries/:uuid', locations.update.country);
+
+  app.post('/groups/:key/:id', groups.updateSubscriptions);
 
   // API for account type routes CRUD
   app.get('/accounts/types', accounts.types.list);
