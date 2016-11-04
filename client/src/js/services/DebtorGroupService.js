@@ -77,7 +77,6 @@ function DebtorGroupService($http, Modal, util, SessionService) {
   function updateBillingServices(debtorGroupUuid, subscriptions) {
     var path = '/groups/debtor_group_billing_service/'.concat(debtorGroupUuid);
     var options = { subscriptions : subscriptions };
-    console.log('sub', options);
     return $http.post(path, options)
       .then(util.unwrapHttpResponse);
   }

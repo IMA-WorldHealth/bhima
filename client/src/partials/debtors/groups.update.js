@@ -80,6 +80,15 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
   }
 
   function subscriptions() {
-    DebtorGroups.manageSubscriptions(vm.group);
+    var modal = DebtorGroups.manageSubscriptions(vm.group)
+    modal.result
+      .then(function (results) {
+
+        console.log('results', results);
+        // update UI
+        vm.group.billingServices = results;
+
+        console.log('group', vm.group);
+      });
   }
 }

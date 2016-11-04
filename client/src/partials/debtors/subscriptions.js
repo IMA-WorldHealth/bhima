@@ -1,31 +1,26 @@
 angular.module('bhima.controllers')
 .controller('ChargeSubscriptions', ChargeSubscriptions);
 
-ChargeSubscriptions.$inject = ['$uibModalInstance', 'DebtorGroup', 'BillingServicesService', 'DebtorGroupService'];
+ChargeSubscriptions.$inject = ['$uibModalInstance', 'DebtorGroup', 'BillingServicesService', 'DebtorGroupService', 'NotifyService'];
 
-function ChargeSubscriptions(ModalInstance, DebtorGroup, BillingServices, DebtorGroups) {
+function ChargeSubscriptions(ModalInstance, DebtorGroup, BillingServices, DebtorGroups, Notify) {
   var vm = this;
 
   vm.close = ModalInstance.dismiss;
   vm.confirmSubscription = confirmSubscription;
 
   vm.group = DebtorGroup;
+
   vm.subscriptions = {};
 
   initialiseSubscriptions();
 
   vm.billingServices = [];
 
-  console.log('vm.group', vm.group);
-
   BillingServices.read()
     .then(function (result) {
-      console.log(result);
-
       vm.billingServices = result;
     });
-
-  console.log(vm.group);
 
   function confirmSubscription(subscriptionForm) {
 
@@ -36,8 +31,31 @@ function ChargeSubscriptions(ModalInstance, DebtorGroup, BillingServices, Debtor
 
     DebtorGroups.updateBillingServices(vm.group.uuid, vm.subscriptions)
       .then(function (results) {
-        console.log('received');
-        console.log(results);
+        ModalInstance.close(formatSelection());
+      })
+      .catch(Notify.handleError);
+  }
+
+  /**
+   * @function formatSelection
+   *
+   * @description
+   * This function formats the newly selected/ subscribed billing services to
+   * update the parent states view.
+   */
+  function formatSelection() {
+    return vm.billingServices
+      .filter(function (billingService) {
+        var selectedOption = vm.subscriptions[billingService.id];
+
+        if (selectedOption) {
+          return billingService;
+        }
+      })
+      .map(function (billingService) {
+        // transform id to billing service specifically; routes could be updated to use id
+        billingService.billing_service_id = billingService.id;
+        return billingService;
       });
   }
 
@@ -53,6 +71,4 @@ function ChargeSubscriptions(ModalInstance, DebtorGroup, BillingServices, Debtor
       vm.subscriptions[billingService.billing_service_id] = true;
     });
   }
-
-  console.log('charge subscriptions fired');
 }

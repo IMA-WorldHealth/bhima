@@ -10,7 +10,6 @@
     <div class="form-group">
 
       <label class="control-label">Billing Services</label>
-      {{SubCtrl.subscriptions}}
       <div class="checkbox" ng-repeat="billingService in SubCtrl.billingServices | orderBy:'label'">
         <label>
           <input data-group-option type="checkbox" ng-model="SubCtrl.subscriptions[billingService.id]">
