@@ -8,7 +8,7 @@ AgedDebtorsConfigController.$inject = [ '$state', '$http', '$uibModalInstance', 
  * AgedDebtors config controller
  *
  * @description
- * This controller is responsible of cash flow report, that report include
+ * This controller is responsible of Aged Debtors report, that report include
  * all incomes minus all depenses
  */
 function AgedDebtorsConfigController($state, $http, ModalInstance, Cashbox, Notify, Languages) {

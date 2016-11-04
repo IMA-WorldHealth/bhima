@@ -141,6 +141,7 @@ function getFiscalYear(untilDate) {
 /**
  * @function getFiscalYear
  * @param {fiscalYear, untilDate} 
+ * @Desc this function research the debts and make a categorisation by Times and by fiscal year
  */
 function getPreviousDebts(fiscalYear, untilDate) {
   let query =`
