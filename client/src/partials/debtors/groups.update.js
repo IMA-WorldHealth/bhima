@@ -15,7 +15,8 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
   vm.submit = submit;
   vm.state = $state;
-  vm.subscriptions = subscriptions;
+  vm.billingServiceSubscriptions = billingServiceSubscriptions;
+  vm.subsidySubscriptions = subsidySubscriptions;
 
   vm.$loading = true;
   vm.$loaded = false;
@@ -79,16 +80,21 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
       .catch(Notify.handleError);
   }
 
-  function subscriptions() {
-    var modal = DebtorGroups.manageSubscriptions(vm.group)
+  function billingServiceSubscriptions() {
+    var modal = DebtorGroups.manageBillingServices(vm.group)
     modal.result
       .then(function (results) {
-
-        console.log('results', results);
         // update UI
         vm.group.billingServices = results;
+      });
+  }
 
-        console.log('group', vm.group);
+  function subsidySubscriptions() {
+    var modal = DebtorGroups.manageSubsidies(vm.group);
+    modal.result
+      .then(function (results) {
+        // update UI
+        vm.group.subsidies = results;
       });
   }
 }

@@ -7,6 +7,10 @@ let subscriptions = {
   debtor_group_billing_service : {
     entity  : 'debtor_group_uuid',
     map     : 'billing_service_id'
+  },
+  debtor_group_subsidy : {
+    entity  : 'debtor_group_uuid',
+    map     : 'subsidy_id '
   }
 };
 

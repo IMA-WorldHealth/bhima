@@ -217,7 +217,7 @@
           </div>
         </div>
 
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-if="GroupEditCtrl.state.current.name==='debtorGroups.update'">
           <div class="panel-heading">
             <i class="fa fa-list-alt"></i>
             {{ "DEBTOR_GROUP.SUBSCRIPTIONS" | translate }}
@@ -225,10 +225,10 @@
 
           <div class="panel-body">
             <div class="form-group">
-              <label>Billing Services</label>
+              <label>{{ "DEBTOR_GROUP.BILLING_SERVICES.TITLE" | translate }}</label>
 
               <p class="text-info form-control-static" ng-if="GroupEditCtrl.group.billingServices.length === 0">
-                <i class="fa fa-info-circle"></i> This debtor group is not subscribed to any billing services
+                <i class="fa fa-info-circle"></i>  {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.EMPTY" | translate }}
               </p>
               <ul>
                 <li
@@ -238,15 +238,15 @@
                 </li>
               </ul>
 
-              <button class="btn btn-block btn-warning" ng-click="GroupEditCtrl.subscriptions()">
-                Update Billing Services
+              <button class="btn btn-block btn-warning" ng-click="GroupEditCtrl.billingServiceSubscriptions()">
+                {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.UPDATE" | translate }}
               </button>
             </div>
             <div class="form-group">
-              <label>Subsidies</label>
+              <label>{{ "DEBTOR_GROUP.SUBSIDIES.TITLE" | translate }}</label>
 
               <p class="text-info form-control-static" ng-if="GroupEditCtrl.group.subsidies.length === 0">
-                <i class="fa fa-info-circle"></i> This debtor group is not subscribed to any subsidies
+              <i class="fa fa-info-circle"></i> {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.EMPTY" | translate }}
               </p>
               <ul>
                 <li
@@ -255,8 +255,8 @@
                   {{ subsidy.label }}
                 </li>
               </ul>
-              <button class="btn btn-block btn-warning">
-                Update Subsidies
+              <button class="btn btn-block btn-warning" ng-click="GroupEditCtrl.subsidySubscriptions()">
+                {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.UPDATE" | translate }}
               </button>
 
             </div>

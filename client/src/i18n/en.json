@@ -175,7 +175,9 @@
       "SUBSIDIES" : {
         "TITLE" : "Subsidies",
         "INFO"  : "With this configuration unchecked no member of this debtor group will qualify for any subsidies",
-        "LABEL" : "This group qualifies for subsidies"
+        "LABEL" : "This group qualifies for subsidies",
+        "UPDATE" : "Update Subsidies",
+        "EMPTY" : "This debtor group is not subscribed to any subsidies"
       },
       "DISCOUNTS" : {
         "TITLE" : "Discounts",
@@ -185,7 +187,9 @@
       "BILLING_SERVICES" : {
         "TITLE" : "Billing Services",
         "INFO" : "With this configuration option checked all members of this debtor group will be exempt from paying automatically applied billing services",
-        "LABEL" : "This group is exempt from paying billing services"
+        "LABEL" : "This group is exempt from paying billing services",
+        "UPDATE" : "Update Billing Services",
+        "EMPTY" : "This debtor group is not subscribed to any billing services"
       }
     },
     "TITLE"          : "Debtor Group Management",

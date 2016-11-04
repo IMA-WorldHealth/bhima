@@ -8,12 +8,11 @@
 <div class="modal-body">
   <form name="subscriptionForm">
     <div class="form-group">
-
-      <label class="control-label">Billing Services</label>
-      <div class="checkbox" ng-repeat="billingService in SubCtrl.billingServices | orderBy:'label'">
+      <label class="control-label">{{ SubCtrl.entityKey | translate }}</label>
+      <div class="checkbox" ng-repeat="entity in SubCtrl.entities | orderBy:'label'">
         <label>
-          <input data-group-option type="checkbox" ng-model="SubCtrl.subscriptions[billingService.id]">
-          {{billingService.label}}
+          <input data-group-option type="checkbox" ng-model="SubCtrl.subscriptions[entity.id]">
+          {{entity.label}}
         </label>
       </div>
     </div>
@@ -21,6 +20,6 @@
 </div>
 
 <div class="modal-footer">
-  <button ng-click="SubCtrl.close()" class="btn btn-default">Cancel</button>
-  <button ng-click="SubCtrl.confirmSubscription(subscriptionForm)" class="btn btn-primary">Confirm</button>
+  <button ng-click="SubCtrl.close()" class="btn btn-default">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
+  <button ng-click="SubCtrl.confirmSubscription(subscriptionForm)" class="btn btn-primary">{{ "FORM.BUTTONS.CONFIRM" | translate }}</button>
 </div>
