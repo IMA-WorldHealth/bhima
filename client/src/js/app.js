@@ -122,7 +122,7 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     controller: 'VoucherController as VoucherCtrl',
     templateUrl: 'partials/vouchers/index.html'
   })
-    
+
   /** General ledger routes**/
   .state('generalLedger', {
     url : '/general_ledger',
@@ -130,7 +130,6 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl : 'partials/general_ledger/general_ledger.html'
   })
 
-  
   /* references routes */
 
   .state('references', {
@@ -382,7 +381,8 @@ function constantConfig() {
     },
     reports : {
       AGED_DEBTOR : 'AGED_DEBTOR',
-      CASHFLOW : 'CASHFLOW'
+      CASHFLOW : 'CASHFLOW',
+      INCOME_EXPENSE : 'INCOME_EXPENSE'
     }
   };
 }

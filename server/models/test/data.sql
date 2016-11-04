@@ -51,7 +51,8 @@ INSERT INTO unit VALUES
   (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/partials/finance/cashflow', '/reports/cashflow'),
   (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/partials/finance/chart_of_accounts', '/reports/accounts_chart'),
   (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/partials/admin/creditor_groups/', '/admin/creditor_groups'),
-  (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/partials/finance/reports/cash_payemnt', '/finance/reports/cash_payment');
+  (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/partials/finance/reports/cash_payment', '/finance/reports/cash_payment'),
+  (149, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/partials/finance/income_expense', '/reports/income_expense');
 
 -- Reserved system account type
 INSERT INTO `account_type` VALUES
@@ -254,7 +255,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (146,1),
 
 -- Cash Payment Registry
-(147,1);
+(147,1),
+
+-- Income Expense Report
+(149,1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
@@ -484,7 +488,8 @@ INSERT INTO `purchase_item` VALUES
   (HUID(UUID()), @purchase_order, HUID('289cc0a1-b90f-11e5-8c73-159fdc73ab02'), 1, 200, 200),
   (HUID(UUID()), @purchase_order, HUID('c48a3c4b-c07d-4899-95af-411f7708e296'), 10, 10, 100);
 
- -- core BHIMA reports 
- INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
-  (1, 'cashflow', 'TREE.CASHFLOW'), 
-  (2, 'accounts_chart', 'REPORT.CHART_OF_ACCOUNTS');
+ -- core BHIMA reports
+ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+  (1, 'cashflow', 'TREE.CASHFLOW'),
+  (2, 'accounts_chart', 'REPORT.CHART_OF_ACCOUNTS'),
+  (3, 'income_expense', 'REPORT.INCOME_EXPENSE');
