@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('bhima.controllers')
 .controller('agedDebtorsController', AgedDebtorsConfigController);
 
