@@ -17,9 +17,10 @@ function DebtorGroupService($http, Modal, util, SessionService) {
   service.create = create;
   service.update = update;
   service.updateBillingServices = updateBillingServices;
+  service.updateSubsidies = updateSubsidies;
 
-  service.manageSubscriptions = manageSubscriptions;
-
+  service.manageBillingServices = manageBillingServices;
+  service.manageSubsidies = manageSubsidies;
   /**
   * @method read
   * @param {string} uuid The debtor group uuid
@@ -81,11 +82,33 @@ function DebtorGroupService($http, Modal, util, SessionService) {
       .then(util.unwrapHttpResponse);
   }
 
-  function manageSubscriptions(debtorGroup, subscriptions) {
+  function updateSubsidies(debtorGroupUuid, subscriptions) {
+    var path = '/groups/debtor_group_subsidy/'.concat(debtorGroupUuid);
+    var options = { subscriptions : subscriptions };
+    return $http.post(path, options)
+      .then(util.unwrapHttpResponse);
+  }
 
+  function manageBillingServices(debtorGroup, subscriptions) {
     return Modal.open({
       templateUrl : '/partials/debtors/subscriptions.modal.html',
-      controller : 'ChargeSubscriptions as SubCtrl',
+      controller : 'BillingServiceSubscriptions as SubCtrl',
+      size : 'md',
+      resolve : {
+        Subscriptions : function Subscriptions() {
+          return subscriptions;
+        },
+        DebtorGroup : function DebtorGroup() {
+          return debtorGroup;
+        }
+      }
+    });
+  }
+
+  function manageSubsidies(debtorGroup, subscriptions) {
+    return Modal.open({
+      templateUrl : '/partials/debtors/subscriptions.modal.html',
+      controller : 'SubsidySubscriptions as SubCtrl',
       size : 'md',
       resolve : {
         Subscriptions : function Subscriptions() {

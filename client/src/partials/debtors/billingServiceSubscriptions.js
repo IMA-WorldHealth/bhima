@@ -1,25 +1,25 @@
 angular.module('bhima.controllers')
-.controller('ChargeSubscriptions', ChargeSubscriptions);
+.controller('BillingServiceSubscriptions', BillingServiceSubscriptions);
 
-ChargeSubscriptions.$inject = ['$uibModalInstance', 'DebtorGroup', 'BillingServicesService', 'DebtorGroupService', 'NotifyService'];
+BillingServiceSubscriptions.$inject = ['$uibModalInstance', 'DebtorGroup', 'BillingServicesService', 'DebtorGroupService', 'NotifyService'];
 
-function ChargeSubscriptions(ModalInstance, DebtorGroup, BillingServices, DebtorGroups, Notify) {
+function BillingServiceSubscriptions(ModalInstance, DebtorGroup, BillingServices, DebtorGroups, Notify) {
   var vm = this;
 
   vm.close = ModalInstance.dismiss;
   vm.confirmSubscription = confirmSubscription;
 
   vm.group = DebtorGroup;
-
+  vm.entityKey = 'DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE';
   vm.subscriptions = {};
+  vm.billingServices = [];
 
   initialiseSubscriptions();
-
-  vm.billingServices = [];
 
   BillingServices.read()
     .then(function (result) {
       vm.billingServices = result;
+      vm.entities = vm.billingServices;
     });
 
   function confirmSubscription(subscriptionForm) {
