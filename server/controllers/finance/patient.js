@@ -1,13 +1,11 @@
 /**
- * @overview Patient Balance
+ * @overview server/controllers/finance/patient.js
  *
  * @description
  * Return patient balance
  *
  * @requires lodash
- * @requires Patients
- * @requires ReportManager
- * @requires Debtors
+ * @requires Patient
  */
 'use strict';
 

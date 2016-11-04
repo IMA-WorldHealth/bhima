@@ -1,5 +1,5 @@
 /**
- * @overview reports/finance/financePatient/{:uuid}
+ * @overview server/controllers/finance/reports/financial.patient.js
  *
  * @description
  * This file contains code to create a PDF report for financial activites of a patient

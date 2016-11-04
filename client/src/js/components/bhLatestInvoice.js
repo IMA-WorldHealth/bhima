@@ -9,17 +9,18 @@ angular.module('bhima.components')
 });
 
 LatestInvoice.$inject = [
-  'PatientService', 'moment'
+  'PatientService', 'moment', 'NotifyService', 'SessionService'
 ];
 
 /**
  * Find Document Component
  * This component is responsible for displaying the Latest Invoice
  */
-function LatestInvoice(Patient, moment) {
+function LatestInvoice(Patient, moment, Notify, Session) {
   var vm = this;
 
   /** global variables */
+  vm.enterprise = Session.enterprise;
   vm.debtorUuid =  this.debtorUuid;
 
   // startup the component
@@ -32,12 +33,14 @@ function LatestInvoice(Patient, moment) {
     .then(function (patientInvoice) {
       vm.patientInvoice = patientInvoice;
       vm.patientInvoice.durationDays = moment().diff(vm.patientInvoice.date, 'days');
-    });
+    })
+    .catch(Notify.handleError);
 
     Patient.balance(vm.debtorUuid)
     .then(function (balance) {
       vm.patientBalance = balance;
-    });
+    })
+    .catch(Notify.handleError);
   }
 
 }

@@ -152,7 +152,7 @@
                     </span>
                     <span ng-hide="CashCtrl.slip.rate">
                       <strong class="text-capitalize">{{ 'CASH.CAUTION_REMAINING' | translate }}</strong>:
-                      {{ CashCtrl.patientBalance * -1 | currency }}
+                      {{ CashCtrl.patientBalance * -1 | currency:CashCtrl.enterprise.currency_id }}
                     </span>
                   </div>
                 </div>

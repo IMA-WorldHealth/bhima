@@ -23,15 +23,15 @@
         <!-- caution info  -->
         <div class="form-group">
           <strong>{{ 'CASH.CAUTION_REMAINING' | translate }}:</strong>
-            <span ng-show="$ctrl.patientBalance < 0">{{ $ctrl.patientBalance * -1 | currency }}</span>
-            <span ng-hide="$ctrl.patientBalance < 0">{{ 0 | currency }}</span>
+            <span ng-show="$ctrl.patientBalance < 0">{{ $ctrl.patientBalance * -1 | currency:$ctrl.enterprise.currency_id }}</span>
+            <span ng-hide="$ctrl.patientBalance < 0">{{ 0 | currency:$ctrl.enterprise.currency_id }}</span>
         </div>
 
         <!-- debts info  -->
         <div class="form-group">
           <strong>{{ 'FORM.LABELS.TOTAL_DEBT' | translate }}:</strong>
-            <span ng-show="$ctrl.patientBalance > 0">{{ $ctrl.patientBalance | currency }}</span>
-            <span ng-hide="$ctrl.patientBalance > 0">{{ 0 | currency }}</span>
+            <span ng-show="$ctrl.patientBalance > 0">{{ $ctrl.patientBalance | currency:$ctrl.enterprise.currency_id }}</span>
+            <span ng-hide="$ctrl.patientBalance > 0">{{ 0 | currency:$ctrl.enterprise.currency_id }}</span>
         </div>
 
         <!-- total invoices  -->
@@ -51,10 +51,10 @@
           <!-- invoice details  -->
           <ul style="list-style: none; padding: 0px;">
             <li><strong>{{ "TABLE.COLUMNS.DATE" | translate }}</strong>: {{ $ctrl.patientInvoice.date | date }}</li>
-            <li><strong>{{ "TABLE.COLUMNS.TOTAL_COST" | translate }}</strong>: {{ $ctrl.patientInvoice.cost | currency }}</li>
+            <li><strong>{{ "TABLE.COLUMNS.TOTAL_COST" | translate }}</strong>: {{ $ctrl.patientInvoice.cost | currency:$ctrl.enterprise.currency_id }}</li>
             <li><strong>{{ "TABLE.COLUMNS.REMAINING_BALANCE" | translate }}</strong>:
-              <span ng-show="$ctrl.patientBalance < 0">{{ 0 | currency }}</span>
-              <span ng-hide="$ctrl.patientBalance < 0">{{ $ctrl.patientInvoice.balance | currency }}</span>
+              <span ng-show="$ctrl.patientBalance < 0">{{ 0 | currency:$ctrl.enterprise.currency_id }}</span>
+              <span ng-hide="$ctrl.patientBalance < 0">{{ $ctrl.patientInvoice.balance | currency:$ctrl.enterprise.currency_id }}</span>
             </li>
             <li><strong>{{ "TABLE.COLUMNS.BILLED_BY" | translate }}</strong>: {{ $ctrl.patientInvoice.display_name }}</li>
           </ul>

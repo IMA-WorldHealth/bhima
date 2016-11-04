@@ -141,16 +141,29 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   function submit(form) {
     if (form.$invalid) { return; }
 
-    // patient invoices are covered by caution
-    if (vm.slip && vm.patientBalance < 0) {
-      Notify.danger('CASH.CAUTION_COVER');
-      return;
-    }
-
     // add in the cashbox id
     vm.payment.cashbox_id = vm.cashbox.id;
 
+    // patient invoices are covered by caution
+    var hascaution = (vm.slip && vm.patientBalance < 0) ? true : false;
+
     // submit the cash payment
+    if (hascaution) {
+      return Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION')
+        .then(function (ans) {
+          if (!ans) { return; }
+          return submitPayment(form);
+        })
+        .catch(Notify.handleError);
+
+    } else {
+      return submitPayment(form);
+    }
+
+  }
+
+  // submit payment
+  function submitPayment(form) {
     return Cash.create(vm.payment)
       .then(function (response) {
         return Receipts.cash(response.uuid, true);
