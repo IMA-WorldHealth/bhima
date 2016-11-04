@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
   'ExchangeRateService', 'SessionService', 'ModalService',
-  'NotifyService', '$state', 'ReceiptModal'
+  'NotifyService', '$state', 'ReceiptModal', 'PatientService'
 ];
 
 /**
@@ -16,7 +16,7 @@ CashController.$inject = [
  * against previous invoices.  The cash payments module provides
  * functionality to pay both in multiple currencies.
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session, Modals, Notify, $state, Receipts) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session, Modals, Notify, $state, Receipts, Patient) {
   var vm = this;
 
   // persist cash data across sessions
@@ -93,6 +93,11 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   function usePatient(patient) {
     vm.payment.debtor_uuid = patient.debtor_uuid;
     vm.patient = patient;
+
+    Patient.balance(vm.patient.debtor_uuid)
+    .then(function (balance) {
+      vm.patientBalance = balance;
+    });
   }
 
   // caches the cashbox
@@ -135,6 +140,12 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   // submits the form to the server
   function submit(form) {
     if (form.$invalid) { return; }
+
+    // patient invoices are covered by caution
+    if (vm.slip && vm.patientBalance < 0) {
+      Notify.danger('CASH.CAUTION_COVER');
+      return;
+    }
 
     // add in the cashbox id
     vm.payment.cashbox_id = vm.cashbox.id;
