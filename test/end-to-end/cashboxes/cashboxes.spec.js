@@ -13,7 +13,7 @@ describe('Cashboxes', function () {
 
   const cashbox = {
     label: 'Test Principal Cashbox',
-    type: 1,
+    type: 0,
     project: 'Test Project A'
   };
 

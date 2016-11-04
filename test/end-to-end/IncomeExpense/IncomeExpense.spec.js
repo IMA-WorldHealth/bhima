@@ -20,7 +20,7 @@ describe('Income Expense report generator', () => {
 
     // date interval component admit date in this format : dd/MM/yyyy    
     components.dateInterval.range('01/01/2016', '31/12/2016');
-    FU.select('ReportConfigCtrl.cashbox', 'Main Cashbox');
+    FU.select('ReportConfigCtrl.cashbox', 'Test Principal Cashbox');
     FU.select('ReportConfigCtrl.reportType', 'Recettes et dépenses');
 
     // focus on the button zone
