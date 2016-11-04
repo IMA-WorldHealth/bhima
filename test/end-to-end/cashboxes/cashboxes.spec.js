@@ -7,7 +7,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe.only('Cashboxes', function () {
+describe('Cashboxes', function () {
 
   before(() => helpers.navigate('#/cashboxes'));
 
