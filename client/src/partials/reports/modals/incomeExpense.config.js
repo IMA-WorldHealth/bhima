@@ -36,6 +36,10 @@ function IncomeExpenseConfigController($state, $http, ModalInstance, Languages, 
   Cashbox.read(null, { detailed: 1, is_auxiliary: 0})
   .then(function (list) {
     list.forEach(function (cashbox) {
+      console.log('JJJJJJJJJJJJJJJJJJJJJ');
+      console.log(cashbox);
+
+
       cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
     });
     vm.cashboxes = list;

@@ -11,22 +11,22 @@ helpers.configure(chai);
 describe('Income Expense report generator', () => {
   'use strict';
 
-  before(() => helpers.navigate('#/finance/reports/incomeExpense'));
+  before(() => helpers.navigate('#/reports/incomeExpense'));
 
-  it('GET /finance/incomeExpense return incomeExpense report at the client', () => {
-
+  it('GET /reports/incomeExpense return incomeExpense report at the client', () => {
+    element(by.id('create-report')).click();
     // set report configurations
-    // date interval component admit date in this format : dd/MM/yyyy
+    FU.input('ReportConfigCtrl.label', 'Report income Expense for 2016');
+
+    // date interval component admit date in this format : dd/MM/yyyy    
     components.dateInterval.range('01/01/2016', '31/12/2016');
-    FU.select('IncomeExpenseConfigCtrl.cashbox', 'Test Primary Cashbox A $');
-    FU.select('IncomeExpenseConfigCtrl.report', 'Recettes et dépenses');
+    FU.select('ReportConfigCtrl.cashbox', 'Main Cashbox');
+    FU.select('ReportConfigCtrl.reportType', 'Recettes et dépenses');
 
     // focus on the button zone
-    let area = element(by.css('[data-submit-area]'));
-    area.element(by.css('[data-method="submit"]')).click();
+    FU.buttons.submit();
 
-    // Income Expense report
-    FU.exists(by.id('income'), true);
-    FU.exists(by.id('expense'), false);
+    // FIX ME HOW TO CHECK THAT THE REPORT IS IN THE GRID
+    
   });
 });
