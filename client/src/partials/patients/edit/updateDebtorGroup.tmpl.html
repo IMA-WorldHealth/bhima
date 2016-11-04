@@ -1,7 +1,10 @@
 <form name="groupForm" bh-submit="UpdateDebtorGroupCtrl.confirmGroup(groupForm)" bh-form-defaults novalidate>
 
   <div class="modal-header">
-    <h3 class="modal-title">{{ "FORM.LABELS.UPDATE_GROUP_DEBTOR" | translate }}</h3>
+    <ol class="headercrumb">
+      <li class="static">{{UpdateDebtorGroupCtrl.patient.display_name}}</li>
+      <li class="title">{{ "FORM.LABELS.UPDATE_GROUP_DEBTOR" | translate }}</li>
+    </ol>
   </div>
 
   <div class="modal-body">

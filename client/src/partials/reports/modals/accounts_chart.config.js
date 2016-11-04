@@ -1,50 +1,49 @@
 angular.module('bhima.controllers')
 .controller('accounts_chartController', AccountChartController);
 
-AccountChartController.$inject = [ '$state', '$http', '$uibModalInstance', 'NotifyService', 'LanguageService' ];
+AccountChartController.$inject = [ '$state', '$uibModalInstance', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails' ];
 
-function AccountChartController($state, $http, ModalInstance, Notify, Languages) {
+function AccountChartController($state, ModalInstance, Notify, Languages, SavedReports, reportDetails) {
   var vm = this;
+  var report = reportDetails;
 
   // expose to the view
-  vm.generate = requestPDF;
+  vm.generate = generate;
   vm.cancel = ModalInstance.dismiss;
-
-  // TODO This should be passed into the modal from the report controller
-  vm.reportId = 2;
-  vm.reportKey = 'accounts_chart';
-  vm.reportTitleKey = 'REPORT.CHART_OF_ACCOUNTS';
+  vm.report = report;
 
   vm.$loading = false;
 
-  // TODO Move to service
-  function requestPDF() {
+  function generate() {
     var url = 'reports/finance/accounts/chart';
 
     if (!vm.label) { return ; }
     vm.$loading = true;
 
-    // TODO Very specific parameters, API should be carefully designed
-    var pdfParams = {
-      reportId : vm.reportId,
+    var options = {
       label : vm.label,
-      lang: Languages.key,
-      renderer : 'pdf',
-      saveReport : true
+      lang: Languages.key
     };
 
-    $http.get(url, { params : pdfParams })
+    SavedReports.requestPDF(url, report, options)
       .then(function (result) {
         vm.$loading = false;
         ModalInstance.dismiss();
         $state.reload();
        })
       .catch(function (error) {
+        var INTERNAL_SERVER_ERROR = 500;
         vm.$loading = false;
+
+        if (error.status === INTERNAL_SERVER_ERROR) {
+          ModalInstance.dismiss();
+        }
+
+        Notify.handleError(error);
+
         throw error;
       });
   }
-
 }
 
 

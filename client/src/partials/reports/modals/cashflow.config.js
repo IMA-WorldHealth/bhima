@@ -3,31 +3,26 @@
 angular.module('bhima.controllers')
 .controller('cashflowController', CashflowConfigController);
 
-// dependencies injection
-CashflowConfigController.$inject = [ '$state', '$http', '$uibModalInstance', 'CashboxService', 'NotifyService', 'LanguageService' ];
+CashflowConfigController.$inject = [ '$state', '$uibModalInstance', 'CashboxService', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails' ];
 
 /**
  * Cashflow config controller
  *
  * @description
- * This controller is responsible of cash flow report, that report include
- * all incomes minus all depenses
+ * This controller is responsible for the configuration of the cashflow report. All report
+ * settings are sent to the server to generate a report document.
  */
-function CashflowConfigController($state, $http, ModalInstance, Cashbox, Notify, Languages) {
+function CashflowConfigController($state, ModalInstance, Cashbox, Notify, Languages, SavedReports, reportDetails) {
   var vm = this;
+  var report = reportDetails;
 
   // expose to the view
-  vm.generate = requestPDF;
+  vm.generate = generate;
   vm.cancel = ModalInstance.dismiss;
-
-  // TODO This should be passed into the modal from the report controller
-  vm.reportId = 1;
-  vm.reportKey = 'cashflow';
-  vm.reportTitleKey = 'TREE.CASHFLOW';
+  vm.report = report;
 
   vm.$loading = false;
 
-  /** init */
   Cashbox.read(null, { detailed: 1, is_auxiliary: 0})
   .then(function (list) {
     list.forEach(function (cashbox) {
@@ -37,27 +32,22 @@ function CashflowConfigController($state, $http, ModalInstance, Cashbox, Notify,
   })
   .catch(Notify.errorHandler);
 
-  // TODO Move to service
-  function requestPDF() {
+  function generate() {
     var url = 'reports/finance/cashflow';
-
     if (!vm.cashbox || !vm.dateFrom || !vm.label || !vm.dateTo) { return ; }
+
     vm.$loading = true;
 
-    // TODO Very specific parameters, API should be carefully designed
-    var pdfParams = {
-      reportId : vm.reportId,
+    var options = {
       account_id: vm.cashbox.account_id,
       dateFrom: vm.dateFrom,
       label : vm.label,
       dateTo: vm.dateTo,
       lang: Languages.key,
-      renderer : 'pdf',
-      saveReport : true,
       weekly : vm.weekly
     };
 
-    $http.get(url, { params : pdfParams })
+    SavedReports.requestPDF(url, report, options)
       .then(function (result) {
         vm.$loading = false;
         ModalInstance.dismiss();

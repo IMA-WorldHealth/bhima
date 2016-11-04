@@ -27,6 +27,7 @@ const mkdirp = require('mkdirp');
 const uuid = require('node-uuid');
 
 const BadRequest = require('./errors/BadRequest');
+const InternalServerError = require('./errors/InternalServerError');
 const db = require('./db');
 
 // renderers
@@ -95,6 +96,13 @@ class ReportManager {
 
     if (!this.renderer) {
       throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
+    }
+
+    // @TODO user information could be determined by report manager, removing the need for this check
+    if (this.options.saveReport && !this.options.user) {
+      let invalidSaveDescription = 'Report cannot be saved without providing a `user` entity to ReportManager';
+      console.error(invalidSaveDescription);
+      throw new InternalServerError(invalidSaveDescription);
     }
 
     // remove render-specific options

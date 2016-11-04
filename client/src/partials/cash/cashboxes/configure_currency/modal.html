@@ -1,6 +1,9 @@
 <form name="CashboxModalForm" bh-submit="CashboxModalCtrl.submit(CashboxModalForm)" bh-form-defaults novalidate>
   <div class="modal-header">
-    <h4>{{ "CASHBOX.CONFIG_ACCOUNTS" | translate }} <small>{{ CashboxModalCtrl.cashbox.text }}</small></h4>
+    <ol class="headercrumb">
+      <li class="static">{{ "CASHBOX.TITLE" | translate }}</li>
+      <li class="title">{{ "CASHBOX.CONFIG_ACCOUNTS" | translate }} <small>{{ CashboxModalCtrl.cashbox.text }}</small></li>
+    </ol>
   </div>
 
   <div class="modal-body">
@@ -42,12 +45,12 @@
   </div>
 
   <div class="modal-footer">
-    <bh-loading-button loading-state="CashboxModalForm.$loading">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
-    </bh-loading-button>
     <button type="button" class="btn btn-default" ng-click="CashboxModalCtrl.dismiss()" data-method="cancel">
       {{ "FORM.BUTTONS.CANCEL" | translate }}
     </button>
+    <bh-loading-button loading-state="CashboxModalForm.$loading">
+      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+    </bh-loading-button>
 
     <span data-role="feedback">
       <span ng-if="CashboxModalForm.$submitted && CashboxModalForm.$invalid" class="text-danger">
