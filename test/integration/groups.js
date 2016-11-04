@@ -3,7 +3,8 @@
 
 const helpers = require('./helpers');
 
-describe.only('(/groups) Group subscriptions API', function () {
+describe('(/groups) Group subscriptions API', function () {
+  'use strict';
 
   let invalidKey = 'notakey';
   let validKey = 'debtor_group_billing_service';
