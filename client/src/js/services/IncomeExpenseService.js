@@ -1,9 +1,7 @@
-'use strict';
-
 /**
- * @name CashflowService
+ * @name IncomeExpenseService
  * @description
- * The `IncomeExpenseService` component provide a mean to get IncomeExpense data by requesting
+ * The `IncomeExpenseService` Service provide a mean to get IncomeExpense data by requesting
  * to the /finance/incomeExpense API
  */
 angular.module('bhima.services')
