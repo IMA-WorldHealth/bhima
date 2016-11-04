@@ -32,6 +32,12 @@ const TEMPLATE      = './server/controllers/finance/reports/agedDebtors/reports.
 exports.document = document;
 
 /** processingAgedDebtorsReport */
+/*  @desc This function recovers up to date returned by the client side 
+/*  and then retrieves the list of debtors, information about the current fiscal year, 
+/*  but then research the balance of accounts of each Debtor groups with respect to by dates, 
+/*  there are less than 3 months, between 3 months and 6 months, 
+/*  over 6 months but also last fiscal Year
+*/
 function processingAgedDebtorsReport(params) {
   let glb = {};
 
