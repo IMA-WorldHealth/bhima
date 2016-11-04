@@ -57,7 +57,7 @@ describe('Billing Services', function () {
   it('can delete a billing service', function () {
 
     // get the cell with the delete button and click it
-    var cell = GU.getCell(gridId, 1, 7);
+    var cell = GU.getCell(gridId, 0, 7);
     cell.element(by.css('[data-method="delete"]')).click();
 
     // expect the modal to appear
