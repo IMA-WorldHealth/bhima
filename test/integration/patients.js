@@ -387,7 +387,7 @@ function billingServices() {
   'use strict';
 
   const patientUuid = '85bf7a85-16d9-4ae5-b5c0-1fec9748d2f9';
-  const billingServiceAttached = 1;
+  const billingServiceAttached = 2;
 
   it('GET /patients/:uuid/services will return a list of the patients billing services', function () {
     return agent.get(`/patients/${patientUuid}/services`)

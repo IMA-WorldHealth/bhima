@@ -21,5 +21,5 @@
 
 <div class="modal-footer">
   <button ng-click="SubCtrl.close()" class="btn btn-default">{{ "FORM.BUTTONS.CANCEL" | translate }}</button>
-  <button ng-click="SubCtrl.confirmSubscription(subscriptionForm)" class="btn btn-primary">{{ "FORM.BUTTONS.CONFIRM" | translate }}</button>
+  <button data-method="submit" ng-click="SubCtrl.confirmSubscription(subscriptionForm)" class="btn btn-primary">{{ "FORM.BUTTONS.CONFIRM" | translate }}</button>
 </div>

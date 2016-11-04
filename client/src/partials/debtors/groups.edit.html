@@ -23,8 +23,6 @@
           <div
             class="form-group has-feedback"
             ng-class="{'has-error' : debtorGroup.name.$invalid && debtorGroup.$submitted}">
-
-
             <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
             <input name="name" ng-model="GroupEditCtrl.group.name" class="form-control" required>
 
@@ -225,7 +223,7 @@
 
           <div class="panel-body">
             <div class="form-group">
-              <label>{{ "DEBTOR_GROUP.BILLING_SERVICES.TITLE" | translate }}</label>
+              <label>{{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE" | translate }}</label>
 
               <p class="text-info form-control-static" ng-if="GroupEditCtrl.group.billingServices.length === 0">
                 <i class="fa fa-info-circle"></i>  {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.EMPTY" | translate }}
@@ -238,12 +236,12 @@
                 </li>
               </ul>
 
-              <button class="btn btn-block btn-warning" ng-click="GroupEditCtrl.billingServiceSubscriptions()">
+              <button id="subsidySubscription" class="btn btn-block btn-warning" ng-click="GroupEditCtrl.billingServiceSubscriptions()">
                 {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.UPDATE" | translate }}
               </button>
             </div>
             <div class="form-group">
-              <label>{{ "DEBTOR_GROUP.SUBSIDIES.TITLE" | translate }}</label>
+              <label>{{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.TITLE" | translate }}</label>
 
               <p class="text-info form-control-static" ng-if="GroupEditCtrl.group.subsidies.length === 0">
               <i class="fa fa-info-circle"></i> {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.EMPTY" | translate }}
@@ -255,7 +253,7 @@
                   {{ subsidy.label }}
                 </li>
               </ul>
-              <button class="btn btn-block btn-warning" ng-click="GroupEditCtrl.subsidySubscriptions()">
+              <button id="billingServiceSubscription" class="btn btn-block btn-warning" ng-click="GroupEditCtrl.subsidySubscriptions()">
                 {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.UPDATE" | translate }}
               </button>
 

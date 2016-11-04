@@ -50,4 +50,21 @@ describe('Debtor Groups Management', function () {
 
     components.notification.hasSuccess();
   });
+
+  it('updates debtor group billing service subscriptions', function () {
+    let updateGroup = element.all(by.css('[data-group-entry]'));
+    updateGroup.all(by.css('[data-method="update"]')).first().click();
+
+    element(by.css('#billingServiceSubscription')).click();
+    element.all(by.css('[data-group-option]')).get(1).click();
+    FU.modal.submit();
+    components.notification.hasSuccess();
+  });
+
+  it('updates debtor group subsidy subscriptions', function () {
+    element(by.css('#subsidySubscription')).click();
+    element.all(by.css('[data-group-option]')).get(1).click();
+    FU.modal.submit();
+    components.notification.hasSuccess();
+  });
 });
