@@ -81,7 +81,7 @@ function getAverageStockLevels(options) {
   // TODO - figure out dates
 
   sql =
-    `SELECT s.inventory_uuid AS uuid, 
+    `SELECT s.inventory_uuid AS uuid,
       SUM(s.quantity - c.quantity) AS quantity
     FROM stock AS s LEFT JOIN consumption AS c ON
       s.tracking_number = c.tracking_number

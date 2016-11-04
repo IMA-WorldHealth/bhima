@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('bhima.controllers')
 .controller('cashflowController', CashflowConfigController);
 
@@ -49,13 +47,14 @@ function CashflowConfigController($state, ModalInstance, Cashbox, Notify, Langua
 
     SavedReports.requestPDF(url, report, options)
       .then(function (result) {
-        vm.$loading = false;
         ModalInstance.dismiss();
         $state.reload();
-       })
+      })
       .catch(function (error) {
-        vm.$loading = false;
         throw error;
+      })
+      .finally(function () {
+        vm.$loading = false;
       });
   }
 }

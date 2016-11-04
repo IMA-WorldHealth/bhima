@@ -3,7 +3,6 @@
 'use strict';
 
 const helpers = require('../../helpers');
-
 const target = '/reports/finance/cashflow';
 
 describe(`(${target}) Cashflow Reports`, function () {

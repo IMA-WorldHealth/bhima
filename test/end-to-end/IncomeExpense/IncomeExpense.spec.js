@@ -8,7 +8,7 @@ const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 helpers.configure(chai);
 
-describe('Income Expense report generator', () => {
+describe.skip('Income Expense report generator', () => {
   'use strict';
 
   before(() => helpers.navigate('#/finance/reports/incomeExpense'));
