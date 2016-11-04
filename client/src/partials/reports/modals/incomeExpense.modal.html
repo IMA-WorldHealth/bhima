@@ -1,0 +1,82 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static">{{ ReportConfigCtrl.reportTitleKey | translate }}</li>
+    <li class="title">{{ "FORM.LABELS.CREATE" | translate }}</li>
+  </ol>
+</div>
+
+<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate()" bh-form-defaults novalidate>
+<div class="modal-body">
+  <div class="form-group"
+    ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.label.$invalid }">
+    <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
+    <input class="form-control" id="label" name="label" ng-model="ReportConfigCtrl.label" autocomplete="off" required />
+
+    <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+  <!-- Date interval  -->
+  <bh-date-interval
+    date-from="ReportConfigCtrl.dateFrom"
+    date-to="ReportConfigCtrl.dateTo">
+  </bh-date-interval>
+
+  <!-- cashbox selection  -->
+  <div class="form-group"
+    ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.cashbox.$invalid }">
+    <label class="control-label">
+      <span class="fa fa-briefcase"></span> {{ 'FORM.SELECT.CASHBOX' | translate }}
+    </label>
+    <select
+      class="form-control"
+      name="cashbox"
+      ng-model="ReportConfigCtrl.cashbox"
+      ng-options="cash as cash.hrlabel for cash in ReportConfigCtrl.cashboxes"
+      required>
+      <option value="" disabled>-- {{ 'FORM.SELECT.CASHBOX' | translate }} --</option>
+    </select>
+    <div class="help-block" ng-messages="ConfigForm.cashbox.$error" ng-show="ConfigForm.$submitted">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+  <!-- Report type selection  -->
+  <div class="form-group"
+    ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.report.$invalid }">
+    <label class="control-label">
+      <span class="fa fa-list-ol"></span> {{ 'FORM.SELECT.REPORT_TYPE' | translate }}
+    </label>
+    <select
+      class="form-control"
+      name="report"
+      ng-model="ReportConfigCtrl.reportType"
+      ng-options="type as type.label for type in ReportConfigCtrl.reportTypes"
+      required>
+      <option value="" disabled>-- {{ 'FORM.SELECT.REPORT_TYPE' | translate }} --</option>
+    </select>
+    <div class="help-block" ng-messages="ConfigForm.report.$error" ng-show="ConfigForm.$submitted">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="ReportConfigCtrl.cancel()"
+    data-method="cancel">
+    {{ "FORM.BUTTONS.CANCEL" | translate }}
+  </button>
+
+  <!-- <div data-submit-area> -->
+    <bh-loading-button loading-state="ReportConfigCtrl.$loading"
+      ng-disabled="ConfigForm.$invalid">
+      {{ "FORM.BUTTONS.GENERATE" | translate }}
+    </bh-loading-button>
+  <!-- </div> -->
+</div>
+</form>

@@ -1,10 +1,10 @@
 /**
- * IncomeExpense Controller
+ * AgedDebtors Controller
  *
  *
- * This controller is responsible for processing incomeExpense report.
+ * This controller is responsible for processing agedDebtors report.
  *
- * @module finance/incomeExpense
+ * @module finance/aged Debtors
  *
  * @requires lodash
  * @requires node-uuid
@@ -17,65 +17,19 @@
 
 'use strict';
 
-const _          = require('lodash');
-const uuid       = require('node-uuid');
-const moment     = require('moment');
-
-const db         = require('../../../../lib/db');
-const util       = require('../../../../lib/util');
+const _             = require('lodash');
+const uuid          = require('node-uuid');
+const moment        = require('moment');
+const db            = require('../../../../lib/db');
+const transaction   = db.transaction();
+const util          = require('../../../../lib/util');
 const ReportManager = require('../../../../lib/ReportManager');
-const BadRequest = require('../../../../lib/errors/BadRequest');
+const BadRequest    = require('../../../../lib/errors/BadRequest');
 
 const TEMPLATE = './server/controllers/finance/reports/incomeExpense/report.handlebars';
 
 // expose to the API
-exports.report = report;
 exports.document = document;
-
-/**
- * @function report
- * @desc This function is responsible of generating the incomeExpense data for the report
- */
-function report(req, res, next) {
-  let params = req.query;
-
-  /**
-  * For allow the select of all transaction who are saved during the Date
-  * Because the field trans_date is type DATETIME
-  */  
-  params.dateTo += ' 23:59:59';
-
-  params.reportType = parseInt(params.reportType);
-
-
-  if(params.reportType === 1){
-    // Income and expense report
-    processingIncomeExpenseReport(params)
-    .then(result => {
-      res.status(200).json(result);
-    })
-    .catch(next);
-
-  } else if (params.reportType === 2){
-    // Income Report
-    processingIncomeReport(params)
-    .then(result => {
-      res.status(200).json(result);
-    })
-    .catch(next);
-
-  } else if (params.reportType === 3){
-    // Expense Report
-    processingExpenseReport(params)
-    .then(result => {
-      res.status(200).json(result);
-    })
-    .catch(next);
-  } else {
-    throw new BadRequest('Report Type is missing', 'ERRORS.BAD_REQUEST');
-  }
-
-}
 
 /** processingIncomeExpenseReport */
 function processingIncomeExpenseReport(params) {
@@ -96,47 +50,7 @@ function processingIncomeExpenseReport(params) {
 
       return glb;
     });
-
 }
-
-
-/** processingIncomeReport */
-function processingIncomeReport(params) {
-  let glb = {};
-
-  if (!params.account_id) {
-    throw new BadRequest('Cashbox is missing', 'ERRORS.BAD_REQUEST');
-  }
-
-  // get income report
-  return getIncomeReport(params.account_id, params.dateFrom, params.dateTo)
-    .then(function (incomes) {
-      glb.incomes = incomes;
-
-      return glb;      
-    });
-
-}
-
-/** processingExpenseReport */
-function processingExpenseReport(params) {
-  let glb = {};
-
-  if (!params.account_id) {
-    throw new BadRequest('Cashbox is missing', 'ERRORS.BAD_REQUEST');
-  }
-
-  // get income report
-  return getExpenseReport(params.account_id, params.dateFrom, params.dateTo)
-    .then(function (expenses) {
-      glb.expenses = expenses;
-
-      return glb;      
-    });
-
-}
-
-
 
 /**
  * @function getIncomeReport
@@ -211,16 +125,16 @@ function getExpenseReport(accountId, dateFrom, dateTo) {
 
 /**
  * @function document
- * @description process and render the incomeExpense report document
+ * @description process and render the agedDebtors report document
  */
 function document(req, res, next) {
   const session = {};
   const params = req.query;
+  params.user = req.session.user;
 
   let report;
   let sumIncome = 0;
   let sumExpense = 0;
-
 
   session.dateFrom = params.dateFrom;
   session.dateTo = params.dateTo;
@@ -237,13 +151,6 @@ function document(req, res, next) {
 
   processingIncomeExpenseReport(params)
     .then(incomeExpense => {
-      
-      incomeExpense.reportIncome = false;
-      incomeExpense.reportExpense = false;
-      incomeExpense.dateFrom = session.dateFrom;
-      incomeExpense.dateTo = session.dateTo;
-
-
       // pick the cashbox account name
       incomeExpense.accountName = !incomeExpense.accountName && incomeExpense.incomes.length ? incomeExpense.incomes[0].label :
       !incomeExpense.accountName  && incomeExpense.expenses ? incomeExpense.expenses[0].label : incomeExpense.accountName;
@@ -271,7 +178,9 @@ function document(req, res, next) {
         incomeExpense.reportExpense = true;
         incomeExpense.sumExpense = sumExpense;     
       }
-  
+      console.log('KKKKKKKKKK');
+      console.log(incomeExpense);
+
       return report.render({ incomeExpense });
     })
     .then(result => {
