@@ -37,8 +37,10 @@ function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, L
     })
     .catch(Notify.errorHandler);
 
-  function generate() {
+  function generate(form) {
     var url = 'reports/finance/income_expense';
+
+    if (form.$invalid) { return; }
 
     var options = {
       account_id: vm.cashbox.account_id,
@@ -46,7 +48,7 @@ function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, L
       label : vm.label,
       dateTo: vm.dateTo,
       lang: Languages.key,
-      reportType: vm.type,
+      reportType: vm.type
     };
 
     return SavedReports.requestPDF(url, report, options)

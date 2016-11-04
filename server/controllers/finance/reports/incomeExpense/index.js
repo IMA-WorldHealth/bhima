@@ -216,7 +216,7 @@ function document(req, res, next) {
   session.dateTo = params.dateTo;
   session.reportType = params.reportType;
 
-  _.defaults(params, { orientation : 'landscape' });
+  _.defaults(params, { orientation : 'landscape', user : req.session.user });
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);

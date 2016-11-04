@@ -1,11 +1,11 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static">{{ ReportConfigCtrl.report.title_key | translate }}</li>
+    <li class="static">{{ ::ReportConfigCtrl.report.title_key | translate }}</li>
     <li class="title">{{ "FORM.LABELS.CREATE" | translate }}</li>
   </ol>
 </div>
 
-<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate()" bh-form-defaults novalidate>
+<form name="ConfigForm" bh-submit="ReportConfigCtrl.generate(ConfigForm)" bh-form-defaults novalidate>
 <div class="modal-body">
   <div class="form-group"
     ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.label.$invalid }">
@@ -43,7 +43,7 @@
       ng-model="ReportConfigCtrl.cashbox"
       ng-options="cash as cash.hrlabel for cash in ReportConfigCtrl.cashboxes track by cash.id"
       required>
-      <option value="" disabled>{{ 'FORM.SELECT.CASHBOX' | translate }}</option>
+      <option value="" disabled>{{ "FORM.SELECT.CASHBOX" | translate }}</option>
     </select>
     <div class="help-block" ng-messages="ConfigForm.cashbox.$error" ng-show="ConfigForm.$submitted">
       <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -53,15 +53,15 @@
   <div class="form-group"
     ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.type.$invalid }">
     <label class="control-label">
-      <i class="fa fa-briefcase"></i> {{ 'FORM.SELECT.REPORT_TYPE' | translate }}
+      <i class="fa fa-briefcase"></i> {{ "FORM.SELECT.REPORT_TYPE" | translate }}
     </label>
     <select
       class="form-control"
       name="type"
       ng-model="ReportConfigCtrl.type"
-      ng-options="type as (type.label | translate) for type in ReportConfigCtrl.reportType track by type.id"
+      ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.reportType track by type.id"
       required>
-      <option value="" disabled>{{ 'FORM.SELECT.REPORT_TYPE' | translate }}<option>
+      <option value="" disabled>{{ "FORM.SELECT.REPORT_TYPE" | translate }}<option>
     </select>
     <div class="help-block" ng-messages="ConfigForm.type.$error" ng-show="ConfigForm.$submitted">
       <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
