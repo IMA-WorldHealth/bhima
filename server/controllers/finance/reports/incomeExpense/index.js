@@ -178,8 +178,6 @@ function document(req, res, next) {
         incomeExpense.reportExpense = true;
         incomeExpense.sumExpense = sumExpense;     
       }
-      console.log('KKKKKKKKKK');
-      console.log(incomeExpense);
 
       return report.render({ incomeExpense });
     })

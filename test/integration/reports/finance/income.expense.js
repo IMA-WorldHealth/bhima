@@ -16,8 +16,7 @@ describe(`(${target}) Income Expense Reports`, function () {
     renderer : 'json'
   };
 
-  const keys = ['incomes', 'expenses', 'reportIncome', 'reportExpense', 'dateFrom',
-    'dateTo', 'accountName', 'accountNumber', 'sumIncome', 'sumExpense'
+  const keys = ['accountName', 'accountNumber', 'expenses', 'incomes','reportExpense', 'sumExpense', 'sumIncome','reportIncome'
   ];
 
   const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
