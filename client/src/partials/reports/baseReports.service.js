@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('BaseReportService', BaseReportService);
+  .service('BaseReportService', BaseReportService);
 
 BaseReportService.$inject = ['$http', '$uibModal', 'util'];
 
@@ -69,6 +69,7 @@ function BaseReportService($http, Modal, util) {
       saveReport : true,
       renderer : 'pdf'
     };
+
     var options = angular.merge(reportOptions, pdfParams);
 
     return $http.get(url, { params : options });

@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('ReportsController', ReportsController);
+  .controller('ReportsController', ReportsController);
 
 ReportsController.$inject = ['$state', 'BaseReportService', '$uibModal'];
 
