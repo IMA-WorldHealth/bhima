@@ -500,6 +500,7 @@
       "CHARGE"                 : "Charge",
       "CLIENT"                 : "Client",
       "CLIENT_ID"              : "Identifiant client",
+      "CLIENT_TO_IGNORE"       : "Client(s) à ignorer",
       "CODE"                   : "Code",
       "COLUMNS"                : "Colonnes",
       "CONFIRMATION"           : "Confirmation",
@@ -533,6 +534,7 @@
       "DESCRIPTION"            : "Description",
       "DETAILS"                : "Details",
       "DEFAULT_QUANTITY"       : "Quantité par Défaut",
+      "DETAIL_PREVIOUS"        : "Detailler Année Précédente",
       "DESIGNATION"            : "Désignation",
       "DISTRIBUTABLE"          : "Distribuable",
       "DISABLED"               : "Désactivée",
@@ -1280,7 +1282,8 @@
     "EXPENSE_REPORT"   : "Rapport des dépenses",
     "SINCE"            : "Depuis",
     "VIEW_RECEIPT"     : "Voir le document",
-    "VIEW_CREDIT_NOTE" : "Voir la note de credit"
+    "VIEW_CREDIT_NOTE" : "Voir la note de credit",
+    "CLIENTS_REPORT"   : "Rapport Clients"
   },
   "SECTION_BILAN": {
     "ADD_SECTION_BILAN" : "Ajouter une section Bilan",
