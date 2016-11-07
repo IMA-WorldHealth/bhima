@@ -42,6 +42,8 @@ function IncomeExpenseConfigController($state, ModalInstance, Cashbox, Notify, L
 
     if (form.$invalid) { return; }
 
+    vm.$loading = true;
+
     var options = {
       account_id: vm.cashbox.account_id,
       dateFrom: vm.dateFrom,
