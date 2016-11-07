@@ -9,7 +9,7 @@ const helpers = require('../../shared/helpers');
 const moment = require('moment');
 helpers.configure(chai);
 
-describe.only('Balance Report Generation', () => {
+describe('Balance Report Generation', () => {
   'use strict';
 
   before(() => helpers.navigate('#/reports/balance'));
