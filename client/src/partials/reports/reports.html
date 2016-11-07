@@ -8,13 +8,14 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <a
+        <button
           class="btn btn-default"
+          data-method="create"
           ng-click="ReportCtrl.createReport()">
           <span class="fa fa-plus"></span>
           {{ "FORM.BUTTONS.NEW" | translate }}
           {{ReportCtrl.report.title_key | translate}}
-        </a>
+        </button>
       </div>
     </div>
   </div>

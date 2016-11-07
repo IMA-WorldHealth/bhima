@@ -366,6 +366,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/cashflow', financeReports.cashflow.document);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.financialPatient);
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
+  app.get('/reports/finance/balance', financeReports.balance.document);
 
   app.get('/reports/keys/:key', report.keys);
 

@@ -1,12 +1,26 @@
 {
   "ACCOUNT": {
-    "ACCOUNT_CHART"  : "Chart of Accounts",
-    "ACCOUNT_COST"   : "Costs Accounts",
-    "ACCOUNT_LIST"   : "Accounts list",
+    "ASSET"          : "Asset Accounts",
+    "CHART"          : "Chart of Accounts",
+    "COST"           : "Costs Accounts",
+    "EQUITY"         : "Accounts of equity and borrowing more than a year",
+    "EXP_PROD"       : "Accounts other expenses and other products",
+    "FINC"           : "Financial Accounts",
+    "GROUP"          : "Account Group (Title Account)",
+    "LIST"           : "Accounts list",
+    "REV"            : "Revenues Accounts",
+    "STOCKS"         : "Stocks Accounts",
+    "THPART"         : "Third-party accounts and regularize",
+    "TITLE"          : "Account Text",
+    "TYPE"           : "Account Type",
+    "CHART"          : "Chart of Accounts",
+    "COST"           : "Costs Accounts",
+    "LIST"           : "Accounts list",
     "BALANCED"       : "Accounts are balanced",
     "ADD"            : "Add Account",
     "ADD_CHILD"      : "Add child account",
     "ALL_ACCOUNT"    : "All Accounts",
+    "CLASS"          : "Accounts class",
     "COST_CENTER"    : "Cost Center",
     "CREATE"         : "Create New Account",
     "CREATE_ANOTHER" : "Create another account",
@@ -47,6 +61,14 @@
     "LOGIN"                      : "Login",
     "TOO_MANY_TRYS"              : "Forgot your username or password? Please ask the system administrator to reset it.",
     "UNAUTHENTICATED"            : "You have been logged off.  Please sign back in to resume using the application."
+  },
+  "BALANCE" : {
+    "MONTH_SOLD"    : "Month Movement",
+    "NEW_SOLD"      : "New Balance",
+    "OLD_SOLD"      : "Old Balance",
+    "PERIOD_CHOICE" : "Period choice",
+    "DATE_RANGE"    : "Date range",
+    "DATE_UNTIL"    : "Until a date"
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -1004,6 +1026,7 @@
     "UPD_REFERENCE" : "Update Reference Group"
   },
   "REPORT" : {
+    "BALANCE"       : "Balance Report",
     "DOWNLOAD"      : "Download",
     "DELETE"        : "Delete Report",
     "AGED_DEBTORS" : {
@@ -1241,6 +1264,7 @@
   "TREE": {
     "ACCOUNT"                    : "Account",
     "ADMIN"                      : "Admin",
+    "BALANCE"                    : "Balance",
     "BILLING_SERVICES"           : "Billing Services",
     "CASHBOX_MANAGEMENT"         : "Cashbox Management",
     "CASHFLOW"                   : "Cashflow",

@@ -1,13 +1,27 @@
 {
   "ACCOUNT": {
-    "ACCOUNT_CHART"  : "Plan Comptable",
-    "ACCOUNT_COST"   : "Comptes des charges et pertes par nature",
-    "ACCOUNT_LIST"   : "Liste des comptes",
+    "ASSET"          : "Comptes des valeurs immobilisées",
+    "CHART"          : "Plan Comptable",
+    "COST"           : "Comptes des charges et pertes par nature",
+    "EQUITY"         : "Comptes des fonds propres et emprunts a plus d'un an",
+    "EXP_PROD"       : "Comptes des autres charges et autres produits",
+    "FINC"           : "Comptes financiers",
+    "GROUP"          : "Groupe des Comptes (Comptes Titres)",
+    "LIST"           : "Liste des comptes",
+    "REV"            : "Comptes de produits",
+    "STOCKS"         : "Comptes des stocks",
+    "THPART"         : "Comptes de tiers et à régulariser",
+    "TITLE"          : "Libelle de Compte",
+    "TYPE"           : "Type de Compte",
+    "CHART"          : "Plan Comptable",
+    "COST"           : "Comptes des charges et pertes par nature",
+    "LIST"           : "Liste des comptes",
     "ADD"            : "Ajouter un Compte",
     "ADD_CHILD"      : "Ajouter un Compte fils",
     "ALL_ACCOUNT"    : "Tous les comptes",
     "BALANCED"       : "Comptes balancés",
     "COST_CENTER"    : "Centre des couts",
+    "CLASS"          : "Classe de compte",
     "CREATE"         : "Créer un plan Comptable",
     "CREATED"        : "Crée",
     "CREATE_ANOTHER" : "Crée un autre",
@@ -49,6 +63,14 @@
     "LOGIN"                      : "Se connecter",
     "TOO_MANY_TRYS"              : "Avez-vous oublié votre login ou votre mot de passe? S'il vous plaît demander à l'administrateur du système pour le réinitialiser.",
     "UNAUTHENTICATED"            : "Vous avez été déconnecté. Veuillez vous reconnecté avec d'utiliser l'application."
+  },
+  "BALANCE" : {
+    "MONTH_SOLD"    : "Mouvement du mois",
+    "NEW_SOLD"      : "Nouveau solde",
+    "OLD_SOLD"      : "Ancien solde",
+    "PERIOD_CHOICE" : "Choix de la period",
+    "DATE_RANGE"    : "Intervalle de date",
+    "DATE_UNTIL"    : "Jusqu'a la date"
   },
   "BILLING_SERVICES": {
     "BTN": {
@@ -1033,6 +1055,9 @@
     "UPD_REFERENCE" : "Modifier un groupe de référence"
   },
   "REPORT" : {
+    "BALANCE"       : "Rapport de la Balance",
+    "DOWNLOAD"      : "Telecharger",
+    "DELETE"        : "Supprimer rapport",
     "AGED_DEBTORS"  : {
       "TITLE": "Aged Debtors",
       "THIRTY_DAYS" : "Moins de 30 jours",
@@ -1270,6 +1295,7 @@
   "TREE": {
     "ACCOUNT"                    : "Comptes",
     "ADMIN"                      : "Admin",
+    "BALANCE"                    : "Balance",
     "BILLING_SERVICES"           : "Services de facturation",
     "CASHBOX_MANAGEMENT"         : "Caisses et Banques",
     "CASHFLOW"                   : "Cashflow",
