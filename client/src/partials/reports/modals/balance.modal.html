@@ -10,7 +10,7 @@
   <div class="form-group"
     ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.label.$invalid }">
     <label class="control-label">{{ "FORM.LABELS.LABEL" | translate }}</label>
-    <input class="form-control" id="label" name="label" ng-model="ReportConfigCtrl.label" autocomplete="off" required />
+    <input class="form-control" id="label" name="label" ng-model="ReportConfigCtrl.label" required />
 
     <div class="help-block" ng-messages="ConfigForm.label.$error" ng-show="ConfigForm.$submitted">
       <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
@@ -18,8 +18,9 @@
   </div>
 
   <!-- account class  -->
-  <div class="form-group">
-    <label>{{ 'ACCOUNT.CLASS' | translate }}</label>
+  <div class="form-group"
+    ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.classe.$invalid }">
+    <label class="control-label">{{ 'ACCOUNT.CLASS' | translate }}</label>
 
     <ui-select
       name="classe"
@@ -34,6 +35,10 @@
         <span ng-bind-html="c.name | translate | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
+
+    <div class="help-block" ng-messages="ConfigForm.classe.$error" ng-show="ConfigForm.$submitted">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
   </div>
 
   <!-- period option choosen -->
@@ -53,7 +58,10 @@
   <div ng-if="ReportConfigCtrl.dateOption === 'date-range'" class="form-group">
     <bh-date-interval
       date-from="ReportConfigCtrl.dateFrom"
-      date-to="ReportConfigCtrl.dateTo">
+      date-to="ReportConfigCtrl.dateTo"
+      validation-trigger="!$ReportConfigCtrl.validDateRange"
+      on-change="$ReportConfigCtrl.validate()"
+      required="true">
     </bh-date-interval>
   </div>
 

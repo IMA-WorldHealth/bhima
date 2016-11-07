@@ -144,28 +144,30 @@ function processAccounts(balances, accounts, totals) {
 
 /**
  * @function getSold
- * @description return the sold of an account
- * @param {object} account An objec
+ * @description return the balance of an account
+ * @param {object} object An object from the array returned by balanceReporting function
  */
 function getSold (item){
-  var result = {debit : 0, credit : 0}, sold = 0;
+  let debit  = 0;
+  let credit = 0;
+  let sold   = 0;
 
   if(item.is_asset === 1 || item.is_charge === 1){
     sold = item.debit - item.credit;
     if(sold < 0){
-      result.credit = sold * -1 ;
+      credit = sold * -1 ;
     }else{
-      result.debit = sold;
+      debit = sold;
     }
   }else{
     sold = item.credit - item.debit;
     if(sold < 0){
-      result.debit = sold * -1;
+      debit = sold * -1;
     } else{
-      result.credit = sold;
+      credit = sold;
     }
   }
-  return result;
+  return { debit, credit };
 }
 
 /**
@@ -174,12 +176,12 @@ function getSold (item){
  * @param {object} params An object which contains dates range and the account class
  */
 function balanceReporting(params) {
-  let sql, hasClasse, periodPlage, queryParameters,
+  let sql, hasClasse, dateRange, queryParameters,
       query = params,
       data = {};
 
   hasClasse = (query.classe !== '*');
-  periodPlage = (query.dateFrom && query.dateTo);
+  dateRange = (query.dateFrom && query.dateTo);
 
   // gets the amount up to the current period
   sql =
@@ -190,7 +192,7 @@ function balanceReporting(params) {
      (hasClasse ? 'AND a.classe = ? ' : '') +
     'GROUP BY a.id;';
 
-  if (periodPlage) {
+  if (dateRange) {
     sql =
     'SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
     'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
@@ -200,7 +202,7 @@ function balanceReporting(params) {
     'GROUP BY a.id;';
   }
 
-  queryParameters = (periodPlage) ? [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] : [query.date, query.enterpriseId, query.classe];
+  queryParameters = (dateRange) ? [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] : [query.date, query.enterpriseId, query.classe];
 
   return db.exec(sql, queryParameters)
   .then(function (rows) {
@@ -214,7 +216,7 @@ function balanceReporting(params) {
        (hasClasse ? 'AND a.classe = ? ' : '') +
       'GROUP BY a.id;';
 
-    query.date = (periodPlage) ? query.dateTo : query.date;
+    query.date = (dateRange) ? query.dateTo : query.date;
 
     return db.exec(sql, [query.date, query.enterpriseId, query.classe]);
   })

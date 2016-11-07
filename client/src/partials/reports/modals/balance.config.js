@@ -17,24 +17,32 @@ function BalanceReportConfigController($state, ModalInstance, Notify, Languages,
 
   // global variables
   vm.classes = [
-    { number : 1, name : 'ACCOUNT.ACCOUNT_EQUITY' },
-    { number : 2, name : 'ACCOUNT.ACCOUNT_ASSET' },
-    { number : 3, name : 'ACCOUNT.ACCOUNT_STOCKS' },
-    { number : 4, name : 'ACCOUNT.ACCOUNT_THPART' },
-    { number : 5, name : 'ACCOUNT.ACCOUNT_FINC' },
-    { number : 6, name : 'ACCOUNT.ACCOUNT_COST' },
-    { number : 7, name : 'ACCOUNT.ACCOUNT_REV' },
-    { number : 8, name : 'ACCOUNT.ACCOUNT_EXP_PROD' },
+    { number : 1, name : 'ACCOUNT.EQUITY' },
+    { number : 2, name : 'ACCOUNT.ASSET' },
+    { number : 3, name : 'ACCOUNT.STOCKS' },
+    { number : 4, name : 'ACCOUNT.THPART' },
+    { number : 5, name : 'ACCOUNT.FINC' },
+    { number : 6, name : 'ACCOUNT.COST' },
+    { number : 7, name : 'ACCOUNT.REV' },
+    { number : 8, name : 'ACCOUNT.EXP_PROD' },
     { number : '*', name : 'ACCOUNT.ALL_ACCOUNT' }
   ];
 
   // init date
+  vm.dateOption = 'date-until'
   vm.date = new Date();
 
   // expose to the view
+  vm.validate = validate;
   vm.generate = generate;
   vm.cancel = ModalInstance.dismiss;
   vm.report = report;
+
+  // validate date range 
+  function validate() {
+    var noMissingDatePart = (vm.dateFrom && vm.dateTo) || (!vm.dateFrom && !vm.dateTo);
+    vm.validDateRange = noMissingDatePart ? true : false;
+  }
 
   // generate the document
   function generate(form) {
