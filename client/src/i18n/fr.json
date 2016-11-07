@@ -684,7 +684,7 @@
     },
     "SELECT": {
       "EMPTY"              : "Vide",
-      "ACCOUNT"            : "Sélectionner compte",
+      "ACCOUNT"            : "Sélectionner un compte",
       "ACCOUNT_TYPE"       : "Sélectionner Type de Compte",
       "BALANCE_SECTION"    : "Sélectionner la section du bilan",
       "CASHBOX"            : "Sélectionner une caisse",
@@ -1081,6 +1081,7 @@
     "PRODUCED_BY"      : "Produit par",
     "PRODUCED_DATE"    : "Date de generation",
     "PRODUCED_ON"      : "Produit sur",
+    "REPORT_ACCOUNTS"  : "Rapport de comptes",
     "INCOME_REPORT"    : "Rapport des recettes",
     "EXPENSE_REPORT"   : "Rapport des dépenses",
     "SINCE"            : "Depuis"
@@ -1345,6 +1346,7 @@
     "PURCHASING"                 : "Achat",
     "PURCHASE_ORDER"             : "Order d'Achats",
     "REPORTS"                    : "Rapports",
+    "REPORT_ACCOUNTS"            : "Rapport de comptes",
     "REFERENCE"                  : "Référence",
     "REFERENCE_GROUP"            : "Groupe de référence",
     "REGISTER_SUPPLIER"          : "Fournisseurs",
