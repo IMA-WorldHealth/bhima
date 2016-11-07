@@ -1,62 +1,54 @@
-{{> head title="ACCOUNT.ACCOUNT_CHART"}}
+{{> head title="PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE" }}
 
-<div class="container-fluid">
+<body>
 
   {{> header }}
 
-  <!-- title  -->
-  <h1 class="text-center text-uppercase">
-    {{translate 'ACCOUNT.ACCOUNT_CHART'}}
-  </h1>
+  <h3 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE"}}</h3>
+  <h4 class="text-center">{{ debtor.display_name }}</h4>
+  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.DEBTOR_GROUP"}} :  </h4>
+  <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.ACCOUNT"}} :  </h4>
 
-  <br>
-
-  <!-- content  -->
-  <table class="table table-condensed table-striped table-bordered">
-    <thead>
-      <tr>
-        <th class="text-left" style="width: 15%;"></th>
-        <th>{{translate 'ACCOUNT.LABEL'}}</th>
-        <th>{{translate 'FORM.LABELS.TYPE'}}</th>
-        <th>{{translate 'ACCOUNT.COST_CENTER'}}</th>
-        <th>{{translate 'ACCOUNT.PROFIT_CENTER'}}</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {{#each accounts}}
-        {{#if this.is_title}}
+  <section>
+    <table class="table table-condensed table-report table-bordered ">
+      <thead>
+        <tr class="text-capitalize text-center">
+          <th style="width: 15%;">{{translate "TABLE.COLUMNS.INVOICE_ID" }}</th>
+          <th style="width: 15%;">{{translate "TABLE.COLUMNS.TRANSACTION_ID" }}</th>
+          <th style="width: 15%;">{{translate "TABLE.COLUMNS.DATE" }}</th>
+          <th style="width: 25%;">{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
+          <th style="width: 15%;">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
+          <th style="width: 15%;">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each accounts}}
           <tr>
-            <td class="text-left"><strong>{{ this.number }}</strong></td>
-            <td class="text-left">
-              <strong style="margin-left: {{indentAccount this.depth}};">
-                {{#if this.locked}}
-                  <i class="fa fa-lock"></i>
-                {{/if}}
-                {{ this.label }}
-              </strong>
-            </td>
-            <td>{{translate this.translation_key }}</td>
-            <td>{{ this.cost_center_text }}</td>
-            <td>{{ this.profit_center_text }}</td>
+            <td>{{this.abbr}}{{this.reference}}</td>
+            <td>{{this.trans_id}}</td>
+            <td>{{date this.date}}</td>
+            <td>{{this.description}}</td>
+            <td>{{currency this.debit currency_id}}</td>
+            <td>{{currency this.credit currency_id}}</td>
           </tr>
-        {{else}}
+        {{else}}       
           <tr>
-            <td class="text-left">{{ this.number }}</td>
-            <td class="text-left">
-              <span  style="margin-left: {{indentAccount this.depth}};">
-                {{#if this.locked}}
-                  <i class="fa fa-lock"></i>
-                {{/if}}
-                {{ this.label }}
-              </span>
+            <td colspan="6" class="text-center">
+              {{translate "TABLE.COLUMNS.EMPTY"}}
             </td>
-            <td>{{translate this.translation_key }}</td>
-            <td>{{ this.cost_center_text }}</td>
-            <td>{{ this.profit_center_text }}</td>
           </tr>
-        {{/if}}
-      {{/each}}
-    </tbody>
-  </table>
-</div>
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4">{{translate "FORM.LABELS.TOTAL" }}</td>
+          <td>{{currency sum.debit currency_id}}</td>
+          <td>{{currency sum.credit currency_id}}</td>
+        </tr>       
+        <tr>
+          <th colspan="6" class="text-right">{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance currency_id}}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+</body>
