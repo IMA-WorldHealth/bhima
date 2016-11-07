@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('agedDebtorsController', AgedDebtorsConfigController);
 
 // dependencies injection
-AgedDebtorsConfigController.$inject = [ '$state', '$http', '$uibModalInstance', 'CashboxService', 'NotifyService', 'LanguageService' ];
+AgedDebtorsConfigController.$inject = [ '$state', '$http', '$uibModalInstance', 'CashboxService', 'NotifyService', 'LanguageService', 'reportDetails' ];
 
 /**
  * AgedDebtors config controller
@@ -11,17 +11,13 @@ AgedDebtorsConfigController.$inject = [ '$state', '$http', '$uibModalInstance', 
  * This controller is responsible of Aged Debtors report, that report include
  * all incomes minus all depenses
  */
-function AgedDebtorsConfigController($state, $http, ModalInstance, Cashbox, Notify, Languages) {
+function AgedDebtorsConfigController($state, $http, ModalInstance, Cashbox, Notify, Languages, reportDetails) {
   var vm = this;
 
   // expose to the view
   vm.generate = requestPDF;
   vm.cancel = ModalInstance.dismiss;
-
-  // TODO This should be passed into the modal from the report controller
-  vm.reportId = 3;
-  vm.reportKey = 'agedDebtors';
-  vm.reportTitleKey = 'TREE.CUSTOMER_DEBTS';
+  vm.report = reportDetails;
 
   vm.$loading = false;
 
@@ -34,7 +30,7 @@ function AgedDebtorsConfigController($state, $http, ModalInstance, Cashbox, Noti
 
     // TODO Very specific parameters, API should be carefully designed
     var pdfParams = {
-      reportId    : vm.reportId,
+      reportId    : vm.report.id,
       label       : vm.label,
       lang        : Languages.key,
       untilDate   : vm.untilDate,
