@@ -29,7 +29,7 @@ function BalanceReportConfigController($state, ModalInstance, Notify, Languages,
   ];
 
   // init date
-  vm.dateOption = 'date-until'
+  vm.dateOption = 'date-until';
   vm.date = new Date();
 
   // expose to the view
@@ -38,7 +38,7 @@ function BalanceReportConfigController($state, ModalInstance, Notify, Languages,
   vm.cancel = ModalInstance.dismiss;
   vm.report = report;
 
-  // validate date range 
+  // validate date range
   function validate() {
     var noMissingDatePart = (vm.dateFrom && vm.dateTo) || (!vm.dateFrom && !vm.dateTo);
     vm.validDateRange = noMissingDatePart ? true : false;
@@ -71,6 +71,7 @@ function BalanceReportConfigController($state, ModalInstance, Notify, Languages,
         vm.$loading = false;
         ModalInstance.dismiss();
         $state.reload();
+        Notify.success('FORM.INFO.CREATE_SUCCESS');
       });
   }
 }
