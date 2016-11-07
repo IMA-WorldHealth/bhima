@@ -96,7 +96,11 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
 
     Patient.balance(vm.patient.debtor_uuid)
     .then(function (balance) {
-      vm.patientBalance = balance;
+      /**
+       * balance < 0 means that enterprise must money to the patient (creditor balance)
+       * multiply by -1 means we want work with positive value if the patient has a creditor balance
+       */
+      vm.patientBalance = balance * -1;
     });
   }
 
@@ -145,7 +149,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     vm.payment.cashbox_id = vm.cashbox.id;
 
     // patient invoices are covered by caution
-    var hascaution = (vm.slip && vm.patientBalance < 0) ? true : false;
+    var hascaution = vm.slip && vm.patientBalance > 0;
 
     // submit the cash payment
     if (hascaution) {
