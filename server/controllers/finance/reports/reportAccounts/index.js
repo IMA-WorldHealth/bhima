@@ -3,6 +3,8 @@
 const ReportManager = require('../../../../lib/ReportManager');
 const db            = require('../../../../lib/db');
 const TEMPLATE      = './server/controllers/finance/reports/reportAccounts/report.handlebars';
+const BadRequest    = require('../../../../lib/errors/BadRequest');
+
 
 /**
  * @method document
@@ -15,8 +17,12 @@ function document(req, res, next) {
   let report;
 
   let params = req.query;
-
   params.user = req.session.user;
+
+  if (!params.account_id) {
+    throw new BadRequest('Account ID missing', 'ERRORS.BAD_REQUEST');
+  }
+
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
