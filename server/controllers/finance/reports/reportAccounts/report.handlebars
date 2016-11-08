@@ -12,10 +12,9 @@
     <table class="table table-condensed table-striped table-report table-bordered">
       <thead>
         <tr class="text-capitalize text-center" style="background-color: #ddd;">
-          <th style="width: 10%;">{{translate "TABLE.COLUMNS.INVOICE_ID" }}</th>
           <th style="width: 15%;">{{translate "TABLE.COLUMNS.TRANSACTION_ID" }}</th>
           <th style="width: 15%;">{{translate "TABLE.COLUMNS.DATE" }}</th>
-          <th style="width: 30%;">{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
+          <th style="width: 40%;">{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
           <th style="width: 15%;">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
           <th style="width: 15%;">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
         </tr>
@@ -23,7 +22,6 @@
       <tbody>
         {{#each accounts}}
           <tr>
-            <td>{{this.abbr}}{{this.reference}}</td>
             <td>{{this.trans_id}}</td>
             <td>{{date this.date}}</td>
             <td>{{this.description}}</td>
@@ -32,7 +30,7 @@
           </tr>
         {{else}}       
           <tr>
-            <td colspan="6" class="text-center">
+            <td colspan="5" class="text-center">
               {{translate "TABLE.COLUMNS.EMPTY"}}
             </td>
           </tr>
@@ -40,12 +38,12 @@
       </tbody>
       <tfoot>
         <tr style="background-color: #ddd;">
-          <td colspan="4"><strong>{{translate "FORM.LABELS.TOTAL" }}</strong></td>
+          <td colspan="3"><strong>{{translate "FORM.LABELS.TOTAL" }}</strong></td>
           <td><strong>{{currency sum.debit currency_id}}</strong></td>
           <td><strong>{{currency sum.credit currency_id}}</strong></td>
         </tr>       
         <tr>
-          <th colspan="6" class="text-right"><h3><strong>
+          <th colspan="5" class="text-right"><h3><strong>
             {{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance currency_id}}</strong></h3></th>
         </tr>
       </tfoot>
