@@ -37,6 +37,8 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
 
     var options = {
       account_id: vm.account.id,
+      account_label: vm.account.label,
+      account_number: vm.account.number,
       label : vm.label,
       lang: Languages.key,
       reportType: vm.type

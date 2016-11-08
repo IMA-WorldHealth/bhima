@@ -1026,6 +1026,7 @@
     "UPD_REFERENCE" : "Update Reference Group"
   },
   "REPORT" : {
+    "ACCOUNT"       : "Report of Account",
     "BALANCE"       : "Balance Report",
     "DOWNLOAD"      : "Download",
     "DELETE"        : "Delete Report",

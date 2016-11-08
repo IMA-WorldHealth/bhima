@@ -501,6 +501,6 @@ INSERT INTO `purchase_item` VALUES
   (1, 'cashflow', 'TREE.CASHFLOW'),
   (2, 'accounts_chart', 'REPORT.CHART_OF_ACCOUNTS'),
   (3, 'income_expense', 'REPORT.INCOME_EXPENSE'),
-  (4, 'balance', 'REPORT.BALANCE');
+  (4, 'balance', 'REPORT.BALANCE'),
   (6, 'report_accounts', 'REPORT.REPORT_ACCOUNTS');
 

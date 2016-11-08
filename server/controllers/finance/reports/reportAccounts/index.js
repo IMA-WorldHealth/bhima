@@ -2,19 +2,20 @@
 
 const ReportManager = require('../../../../lib/ReportManager');
 const db            = require('../../../../lib/db');
-const TEMPLATE      = './server/controllers/finance/reports/reportAccounts/chart.handlebars';
+const TEMPLATE      = './server/controllers/finance/reports/reportAccounts/report.handlebars';
 
 /**
  * @method document
  *
  * @description
- * generate chart of account as a document
+ * generate Report of accounts as a document
  */
 function document(req, res, next) {
 
   let report;
 
   let params = req.query;
+
   params.user = req.session.user;
 
   try {
@@ -32,12 +33,20 @@ function document(req, res, next) {
         balance: 0
       };
 
+      let title = {
+        accountNumber : params.account_number,
+        accountLabel : params.account_label
+      };
+
       accounts.forEach(function (account) {
         sum.debit += account.debit;
         sum.credit += account.credit; 
         sum.balance = sum.debit - sum.credit;
       });
-      return report.render({ accounts, sum });
+
+
+
+      return report.render({ accounts, title, sum });
 
     })
     .then(result => {
@@ -50,6 +59,7 @@ function document(req, res, next) {
 
 /**
  * @function queryReportAccount
+ * This feature select all transactions for a specific account
 */ 
 function queryReportAccount(accountId){
   let sql = `
@@ -72,7 +82,6 @@ function queryReportAccount(accountId){
     ) as transaction
     GROUP BY transaction.trans_id 
     ORDER BY transaction.trans_date ASC;`;
-
   return db.exec(sql, [accountId, accountId]);
 }
 

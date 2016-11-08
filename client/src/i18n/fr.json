@@ -1055,6 +1055,7 @@
     "UPD_REFERENCE" : "Modifier un groupe de référence"
   },
   "REPORT" : {
+    "ACCOUNT"       : "Rapport du Compte",
     "BALANCE"       : "Rapport de la Balance",
     "DOWNLOAD"      : "Telecharger",
     "DELETE"        : "Supprimer rapport",
