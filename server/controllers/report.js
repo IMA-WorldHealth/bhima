@@ -19,6 +19,11 @@ const db = require('../lib/db');
 exports.keys = keys;
 exports.list = list;
 exports.sendArchived = sendArchived;
+exports.deleteArchived = deleteArchived;
+
+// the global report path
+// @TODO This will have to factor in the type of report - report uuid can be looked up in `saved_report` table
+const REPORT_PATH = path.resolve(path.join(__dirname, '../reports/'));
 
 /**
  * @function keys
@@ -31,7 +36,7 @@ exports.sendArchived = sendArchived;
  */
 function keys(req, res, next) {
   let key = req.params.key;
-  let sql = 'SELECT * FROM report WHERE report_key = ?';
+  let sql = 'SELECT * FROM report WHERE report_key = ?;';
 
   db.exec(sql, [key])
     .then(function (keyDetail) {
@@ -39,6 +44,16 @@ function keys(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+function fetchReport(uuid) {
+  let sql = `
+    SELECT BUID(saved_report.uuid) AS uuid, label, report_id, parameters, saved_report.link, timestamp, user_id, user.display_name
+    FROM saved_report LEFT JOIN user ON saved_report.user_id = user.id
+    WHERE report_id = ?;
+  `;
+
+  return db.exec(sql, [uuid]);
 }
 
 /**
@@ -62,6 +77,25 @@ function list(req, res, next) {
 }
 
 /**
+ * @function lookupArchivedReport
+ *
+ * @description
+ * Finds an archived report by it's UUID.
+ *
+ * @param {String} uuid - the report's uuid.
+ * @returns {Promise} - the report record
+ */
+function lookupArchivedReport(uuid) {
+  let sql = `
+    SELECT BUID(saved_report.uuid) as uuid, label, report_id, parameters, link,
+      timestamp, user_id, user.display_name
+    FROM saved_report left join user on saved_report.user_id = user.id
+    WHERE uuid = ?;
+  `;
+  return db.one(sql, [db.bid(uuid)]);
+}
+
+/**
  * @function sendArchived
  *
  * @description
@@ -71,10 +105,38 @@ function list(req, res, next) {
  * GET /reports/archive/:uuid
  */
 function sendArchived(req, res, next) {
-  // @TODO This will have to factor in the type of report - report uuid can be looked up in `saved_report` table
-  let reportPath = path.resolve(path.join(__dirname, '../reports/'));
-  let extension = '.pdf';
-  let reportUuid = req.params.uuid;
+  lookupArchivedReport(req.params.uuid)
+    .then(report => {
+      res.sendFile(report.link);
+    })
+    .catch(next)
+    .done();
+}
 
-  res.sendFile(reportPath.concat('/', reportUuid, extension));
+
+/**
+ * @function deleteArchived
+ *
+ * @description
+ * Deletes a report from the server.  This cleans up both the record of the
+ * report stored in saved_report and the file stored on the disk.
+ *
+ * DELETE /reports/archive/:uuid
+ */
+function deleteArchived(req, res, next) {
+  let filePath;
+
+  lookupArchivedReport(req.params.uuid)
+    .then(report => {
+      filePath = report.link;
+      return db.exec('DELETE FROM saved_report WHERE uuid = ?;', [ db.bid(req.params.uuid) ]);
+    })
+    .then(() => {
+      fs.unlink(filePath, err => {
+        if (err) { return next(err); }
+        res.sendStatus(204);
+      });
+    })
+    .catch(next)
+    .done();
 }

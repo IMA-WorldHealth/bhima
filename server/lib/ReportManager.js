@@ -47,20 +47,7 @@ const defaults = {
 
 // Constants
 const SAVE_DIR = path.resolve(path.join(__dirname, '../reports/'));
-const DETAIL_SQL = `
-  SELECT r.uuid, r.label, r.type, r.parameters, r.link, r.timestamp, r.user_id
-  FROM report AS r WHERE r.uuid = ?;
-`;
-const LIST_SQL = `
-  SELECT r.uuid, r.label, r.type, r.parameters, r.link, r.timestamp, r.user_id
-  FROM report AS r WHERE r.type = ?;
-`;
-const DELETE_SQL = `
-  DELETE FROM report WHERE uuid = ?;
-`;
-const UPDATE_SQL = `
-   UPDATE report SET ? WHERE uuid = ?;
-`;
+
 const SAVE_SQL = `
   INSERT INTO saved_report SET ?;
 `;
@@ -147,7 +134,7 @@ class ReportManager {
       if (this.options.saveReport) {
         // FIXME This is not correctly deferred
         // FIXME PDF report is sent back to the client even though this is a save operation
-        // FIXME Errors are not propegated
+        // FIXME Errors are not propagated
         return this.save()
           .then(function (result) {
             return { headers: renderHeaders, report };
@@ -185,7 +172,7 @@ class ReportManager {
     const data = {
       uuid : db.bid(reportId),
       label : options.label,
-      link : reportId,
+      link : link,
       timestamp : new Date(),
       user_id : options.user.id,
       report_id : options.reportId
@@ -196,23 +183,11 @@ class ReportManager {
 
       db.exec(SAVE_SQL, data)
         .then(() => dfd.resolve({ uuid: reportId }))
-        .catch(dfd.reject);
+        .catch(dfd.reject)
+        .done();
     });
 
     return dfd.promise;
-  }
-
-  // crud operations on reports
-  list(type) {
-    return db.exec(LIST_SQL, [type]);
-  }
-
-  remove(uuid) {
-    return db.exec(DELETE_SQL, [uuid]);
-  }
-
-  update(uuid, data) {
-    return db.exec(UPDATE_SQL, [data, uuid]);
   }
 }
 
