@@ -36,11 +36,17 @@ exports.configure = function configure(app) {
   app.use(bodyParser.json({ limit : '8mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
 
+  // this will disable the session from expiring on the server (redis-session)
+  // during development
+  const disableTTL = !isProduction;
 
   // stores session in a file store so that server restarts do not interrupt
   // client sessions.
   const sess = {
-    store: new RedisStore({client: new Redis() }),
+    store: new RedisStore({
+      client: new Redis(),
+      disableTTL: disableTTL
+    }),
     secret: process.env.SESS_SECRET,
     resave: Boolean(process.env.SESS_RESAVE),
     saveUninitialized: Boolean(process.env.SESS_UNINITIALIZED),
