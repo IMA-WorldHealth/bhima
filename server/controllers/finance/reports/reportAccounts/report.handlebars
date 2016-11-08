@@ -42,17 +42,19 @@
           <td><strong>{{currency sum.debit currency_id}}</strong></td>
           <td><strong>{{currency sum.credit currency_id}}</strong></td>
         </tr>       
-        <tr>
-          <th colspan="5" class="text-right">
-            <strong>{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance currency_id}}</strong>
-          </th>
-        </tr>
-        <tr>
-          <th colspan="5" class="text-right">
-            <embed>{{translate "TABLE.COLUMNS.DATA_SOURCE" }} : {{translate title.source }}</embed> 
-          </th>
-        </tr>        
       </tfoot>
+    </table>  
+    <table class="table table-condensed">
+      <tr>
+        <th colspan="5" class="text-right">
+          <strong>{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance currency_id}}</strong>
+        </th>
+      </tr>
+      <tr>
+        <th colspan="5" class="text-right">
+          <i>{{translate "TABLE.COLUMNS.DATA_SOURCE" }} : {{translate title.source }}</i> 
+        </th>
+      </tr>        
     </table>
   </section>
 </body>
