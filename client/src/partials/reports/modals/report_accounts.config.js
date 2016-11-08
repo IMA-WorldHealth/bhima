@@ -42,7 +42,7 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
     .catch(Notify.errorHandler);
 
   function generate(form) {
-    var url = 'reports/finance/report_accounts';
+    var url = 'reports/finance/account';
     if (form.$invalid) { return; }
 
     var options = {

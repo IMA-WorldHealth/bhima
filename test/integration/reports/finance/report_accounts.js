@@ -4,7 +4,7 @@
 
 const helpers = require('../../helpers');
 
-const target = '/reports/finance/report_accounts';
+const target = '/reports/finance/account';
 
 describe(`(${target}) Report Account`, function () {
 
@@ -18,7 +18,7 @@ describe(`(${target}) Report Account`, function () {
   const clone = (object) => JSON.parse(JSON.stringify(object));
 
   it(`GET ${target} should return a BAD_REQUEST response`, function () {
-    return agent.get('/reports/finance/report_accounts')
+    return agent.get('/reports/finance/account')
       .then(res => {
         expect(res).to.have.status(400);
         expect(res).to.be.json;
