@@ -16,6 +16,7 @@
 const Patients = require ('../patients');
 const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
+const Locations = require('../../admin/locations');
 
 const template = './server/controllers/medical/reports/patient.receipt.handlebars';
 
@@ -33,12 +34,19 @@ function build(req, res, next) {
     return next(e);
   }
 
+  const data = {};
+
   Patients.lookupPatient(req.params.uuid)
     .then(patient => {
       patient.enterprise_name = req.session.enterprise.name;
       patient.symbol = (patient.sex === 'M') ? 'mars' : 'venus';
 
-      return report.render({ patient });
+      data.patient = patient;
+      return Locations.lookupVillage(patient.origin_location_id);
+    })
+    .then(village => {
+      data.village = village;
+      return report.render(data);
     })
     .then(result => {
       res.set(result.headers).send(result.report);

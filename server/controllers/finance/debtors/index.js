@@ -137,8 +137,8 @@ function invoices(req, res, next) {
 
   // get the debtor invoice uuids from the invoice table
   let sql =`
-    SELECT invoice.uuid 
-    FROM invoice 
+    SELECT invoice.uuid
+    FROM invoice
     WHERE debtor_uuid = ? AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ?);`;
 
   db.exec(sql, [uid, reversalVoucherType])
@@ -261,15 +261,15 @@ function financialPatient(debtorUuid) {
       LEFT JOIN invoice ON invoice.uuid = posting_journal.record_uuid
       LEFT JOIN project ON invoice.project_id = project.id
       WHERE posting_journal.entity_uuid = ? AND posting_journal.entity_type = 'D'
-      UNION 
+      UNION
       SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
       general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv, invoice.reference, project.abbr
       FROM general_ledger
       LEFT JOIN invoice ON invoice.uuid = general_ledger.record_uuid
-      LEFT JOIN project ON invoice.project_id = project.id 
+      LEFT JOIN project ON invoice.project_id = project.id
       WHERE general_ledger.entity_uuid = ? AND general_ledger.entity_type = 'D'
     ) as transaction
-    GROUP BY transaction.trans_id 
+    GROUP BY transaction.trans_id
     ORDER BY transaction.trans_date ASC;`;
 
   return db.exec(sql, [buid, buid]);
