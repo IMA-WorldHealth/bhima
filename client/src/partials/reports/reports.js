@@ -1,22 +1,22 @@
 angular.module('bhima.controllers')
   .controller('ReportsController', ReportsController);
 
-ReportsController.$inject = ['$state', 'BaseReportService', '$uibModal'];
+ReportsController.$inject = ['$state', 'BaseReportService', '$uibModal', 'NotifyService'];
 
-function ReportsController($state, SavedReports, Modal) {
+function ReportsController($state, SavedReports, Modal, Notify) {
   var vm = this;
   var keyTarget = $state.params.key;
 
   vm.report = {};
-  vm.loading = true;
-  vm.hasError = false;
   vm.createReport = createReport;
+  vm.deleteReport = deleteReport;
 
   vm.gridOptions = {
     fastWatch : true,
     flatEntityAccess : true,
     enableColumnMenus : false,
-    enableSorting : false
+    enableSorting : false,
+    appScopeProvider : vm
   };
 
   var typeTemplate = '<div class="ui-grid-cell-contents"><i class="fa fa-file-pdf-o"></i></div>';
@@ -32,25 +32,42 @@ function ReportsController($state, SavedReports, Modal) {
     { field : 'actions', displayName : '', cellTemplate : '/partials/templates/actionsDropdown.html', width : 80 }
   ];
 
-  // Load report information based on key
-  SavedReports.requestKey(keyTarget)
-    .then(function (result) {
-      vm.report = result[0];
 
-      // Load archived reports
-      return SavedReports.listSavedReports(vm.report.id)
-        .then(function (results) {
+  function loadSavedReports() {
+    vm.loading = true;
+    vm.hasError = false;
+
+    // Load report information based on key
+    SavedReports.requestKey(keyTarget)
+      .then(function (result) {
+        vm.report = result[0];
+
+        // Load archived reports
+        return SavedReports.listSavedReports(vm.report.id)
+          .then(function (results) {
+            vm.gridOptions.data = results;
+          });
+        })
+        .catch(function (error) {
+          vm.hasError = true;
+        })
+        .finally(function () {
           vm.loading = false;
-          vm.gridOptions.data = results;
         });
-    })
-    .catch(function (error) {
-      vm.loading = false;
-      vm.hasError = true;
-    });
-
+  }
 
   function createReport() {
     SavedReports.openConfiguration(vm.report);
   }
+
+  function deleteReport(uuid) {
+    SavedReports.deleteReport(uuid)
+      .then(function () {
+        Notify.success('FORM.INFO.DELETE_SUCCESS');
+        loadSavedReports();
+      })
+      .catch(Notify.handleError);
+  }
+
+  loadSavedReports();
 }

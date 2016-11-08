@@ -368,7 +368,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/account', financeReports.reportAccounts.document);
-
+  app.get('/reports/finance/journal', financeReports.journal.report);
 
   app.get('/reports/keys/:key', report.keys);
 
@@ -377,7 +377,7 @@ exports.configure = function configure(app) {
 
   // lookup saved report document
   app.get('/reports/archive/:uuid', report.sendArchived);
-  app.get('/reports/finance/journal', financeReports.journal.report);
+  app.delete('/reports/archive/:uuid', report.deleteArchived);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);

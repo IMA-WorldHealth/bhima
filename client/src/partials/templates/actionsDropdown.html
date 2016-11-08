@@ -5,8 +5,7 @@
     <ul class="dropdown-menu-right" uib-dropdown-menu>
       <li><a href="/reports/archive/{{row.entity.uuid}}" download><i class="fa fa-cloud-download"></i> {{ "REPORT.DOWNLOAD" | translate }}</a></li>
       <li><a href><span class="text-muted"><i class="fa fa-envelope"></i> {{ "TABLE.COLUMNS.EMAIL" | translate }}</span></a></li>
-      <li><a style="color : #a94442" href><i class="fa fa-trash"></i> {{ "REPORT.DELETE" | translate }}</a></li>
+      <li><a href ng-click="grid.appScope.deleteReport(row.entity.uuid)"><span class="text-danger"><i class="fa fa-trash"></i> {{ "REPORT.DELETE" | translate }}</span></a></li>
      </ul>
-
   </span>
 </div>
