@@ -21,6 +21,16 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
   vm.cancel = ModalInstance.dismiss;
   vm.report = report;
 
+  //Default value for General Ledger
+  vm.source = 1;
+
+  vm.reportSource = [
+    {id: 1, label : 'FORM.LABELS.GENERAL_LEDGER'},
+    {id: 2, label : 'FORM.LABELS.POSTING_JOURNAL'},   
+    {id: 3, label : 'FORM.LABELS.ALL'}
+  ];
+
+
   Accounts.read(null, { detailed: 1, is_auxiliary: 0})
     .then(function (accounts) {
       accounts.forEach(function (account) {
@@ -36,12 +46,14 @@ function ReportAccountsConfigController($state, ModalInstance, Accounts, Notify,
     if (form.$invalid) { return; }
 
     var options = {
-      account_id: vm.account.id,
-      account_label: vm.account.label,
-      account_number: vm.account.number,
-      label : vm.label,
-      lang: Languages.key,
-      reportType: vm.type
+      account_id      : vm.account.id,
+      account_label   : vm.account.label,
+      account_number  : vm.account.number,
+      sourceId        : vm.source.id,
+      sourceLabel     : vm.source.label,
+      label           : vm.label,
+      lang            : Languages.key,
+      reportType      : vm.type
     };
 
     return SavedReports.requestPDF(url, report, options)

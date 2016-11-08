@@ -28,6 +28,8 @@ describe('Report Accounts generator', () => {
     
     FU.select('ReportConfigCtrl.account', '1100');
 
+    FU.select('ReportConfigCtrl.source',  'Tous');
+
     // focus on the button zone
     FU.buttons.submit();
 

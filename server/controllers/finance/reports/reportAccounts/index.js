@@ -30,7 +30,7 @@ function document(req, res, next) {
     return next(e);
   }
 
-  return queryReportAccount(params.account_id)
+  return queryReportAccount(params.account_id, params.sourceId)
     .then(accounts => {
 
       let sum = {
@@ -41,7 +41,8 @@ function document(req, res, next) {
 
       let title = {
         accountNumber : params.account_number,
-        accountLabel : params.account_label
+        accountLabel : params.account_label,
+        source       : params.sourceLabel
       };
 
       accounts.forEach(function (account) {
@@ -67,25 +68,53 @@ function document(req, res, next) {
  * @function queryReportAccount
  * This feature select all transactions for a specific account
 */ 
-function queryReportAccount(accountId){
-  let sql = `
-    SELECT transaction.trans_id, transaction.entity_uuid, transaction.description, transaction.trans_date, sum(transaction.credit_equiv) as credit, sum(transaction.debit_equiv) as debit
-    FROM(
-      SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
-      posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv
-      FROM posting_journal
-      WHERE posting_journal.account_id = ?
-      UNION 
+function queryReportAccount(accountId, source){
+  source = parseInt(source);
+
+  if(source === 1){
+
+    let sql = `
       SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
-      general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv
+      general_ledger.trans_date, general_ledger.debit_equiv as debit, general_ledger.credit_equiv as credit
       FROM general_ledger
       WHERE general_ledger.account_id = ?
-    ) as transaction
-    GROUP BY transaction.trans_id 
-    ORDER BY transaction.trans_date ASC;`;
+      GROUP BY general_ledger.trans_id
+      ORDER BY general_ledger.trans_date ASC;`;
 
-  return db.exec(sql, [accountId, accountId]);
+    return db.exec(sql, [accountId]);
+      
+  } else if(source === 2) {
+
+    let sql = `
+      SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
+      posting_journal.trans_date, posting_journal.debit_equiv as debit, posting_journal.credit_equiv as credit
+      FROM posting_journal
+      WHERE posting_journal.account_id = ?
+      GROUP BY posting_journal.trans_id
+      ORDER BY posting_journal.trans_date ASC;`;
+
+    return db.exec(sql, [accountId]);
+
+  } else if(source === 3){
+    let sql = `
+      SELECT transaction.trans_id, transaction.entity_uuid, transaction.description, transaction.trans_date, sum(transaction.credit_equiv) as credit, sum(transaction.debit_equiv) as debit
+      FROM(
+        SELECT posting_journal.trans_id, BUID(posting_journal.entity_uuid) AS entity_uuid, posting_journal.description,
+        posting_journal.trans_date, posting_journal.debit_equiv, posting_journal.credit_equiv
+        FROM posting_journal
+        WHERE posting_journal.account_id = ?
+        UNION 
+        SELECT general_ledger.trans_id, BUID(general_ledger.entity_uuid) AS entity_uuid, general_ledger.description,
+        general_ledger.trans_date, general_ledger.debit_equiv, general_ledger.credit_equiv
+        FROM general_ledger
+        WHERE general_ledger.account_id = ?
+      ) as transaction
+      GROUP BY transaction.trans_id 
+      ORDER BY transaction.trans_date ASC;`;
+
+    return db.exec(sql, [accountId, accountId]);
+  }
+
 }
-
 
 exports.document = document;

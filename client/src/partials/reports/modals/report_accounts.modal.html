@@ -35,6 +35,24 @@
       <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
     </div>
   </div>
+
+  <div class="form-group"
+    ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.source.$invalid }">
+    <label class="control-label">
+      <i class="fa fa-briefcase"></i> {{ "FORM.SELECT.SOURCE" | translate }}
+    </label>
+    <select
+      class="form-control"
+      name="source"
+      ng-model="ReportConfigCtrl.source"
+      ng-options="source as (source.label | translate) for source in ReportConfigCtrl.reportSource track by source.id"
+      required>
+      <option value="" disabled>{{ "FORM.SELECT.SOURCE" | translate }}<option>
+    </select>
+    <div class="help-block" ng-messages="ConfigForm.source.$error" ng-show="ConfigForm.$submitted">
+      <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
 </div>
 
 <div class="modal-footer">

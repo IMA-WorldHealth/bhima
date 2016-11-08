@@ -9,7 +9,8 @@ const target = '/reports/finance/report_accounts';
 describe(`(${target}) Report Account`, function () {
 
   const parameters = {
-    account_id : '3627'
+    account_id : '3627',
+    sourceId : 2
   };
 
   const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
