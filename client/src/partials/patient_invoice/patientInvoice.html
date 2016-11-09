@@ -28,7 +28,9 @@
                   </bh-find-patient>
                 </div>
 
-                <div class="form-group">
+                <div
+                  class="form-group"
+                  ng-class="{'has-error' : detailsForm.$submitted && detailsForm.service.$invalid }">
                   <label class="control-label">{{ "FORM.LABELS.SERVICE" | translate }}</label>
                   <select
                     class="form-control"
