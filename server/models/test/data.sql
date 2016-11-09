@@ -268,7 +268,7 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (150, 1),
 
 -- The Report accounts
-(152,1);
+(152,1),
 
 
 -- Report Customer Debts
