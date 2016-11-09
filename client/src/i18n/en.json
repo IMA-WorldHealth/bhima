@@ -117,7 +117,7 @@
       },
         "DEBTOR_INVOICES" : "Debtor Invoices",
         "RECEIPTS_TITLE"  : "Cash Payment Receipt",
-        "REPORT"          : "Rapport",
+        "REPORT"          : "Report",
         "SLIP"            : "Cash Voucher",
         "TITLE"           : "Cash Window",
         "SELECTED" : "Selected Invoices"
@@ -429,14 +429,14 @@
       "COST_CENTER"            : "Cost Center",
       "CONSUMABLE"             : "Consumable",
       "COUNTRY"                : "Country",
+      "CREATE"                 : "Create",
+      "CREATED"                : "Created",
       "CREDIT"                 : "Credit",
       "CREDITOR_GROUP"         : "Creditor Group",
       "CREDITOR_SUBCRIBED"     : "Subscribed Creditors",
       "CURRENCIES"             : "Currencies",
       "CURRENCY"               : "Currency",
       "CURRENT_LOCATION"       : "Current Location",
-      "CREATE"                 : "CREATE",
-      "CREATED"                : "Created",
       "DATE"                   : "Date",
       "DATE_CREATED"           : "Date Created",
       "DATE_FROM"              : "Start",
@@ -703,7 +703,7 @@
       "PROVINCE"           : "Select a Province",
       "REFERENCE"          : "Select a Reference",
       "REFERENCE_GROUP"    : "Select a Reference Group",
-      "REPORT_TYPE"        : "Select Report type",
+      "REPORT_TYPE"        : "Select a Report Type",
       "RESULT_ACCOUNT_SCT" : "Select a Result Account section",
       "ROOT_ACCOUNT"       : "Select a Root Account",
       "SECTOR"             : "Select a sector",
@@ -1392,7 +1392,7 @@
       "TITLE"              : "Simple Voucher",
       "TRANSFER"           : "Money Transfer"
     },
-    "REPORT": "Rapport"
+    "REPORT": "Report"
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Patient Registrations",

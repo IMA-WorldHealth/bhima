@@ -1,7 +1,9 @@
 angular.module('bhima.controllers')
 .controller('accounts_chartController', AccountChartController);
 
-AccountChartController.$inject = [ '$state', '$uibModalInstance', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails' ];
+AccountChartController.$inject = [
+  '$state', '$uibModalInstance', 'NotifyService', 'LanguageService', 'BaseReportService', 'reportDetails'
+];
 
 function AccountChartController($state, ModalInstance, Notify, Languages, SavedReports, reportDetails) {
   var vm = this;
@@ -27,13 +29,12 @@ function AccountChartController($state, ModalInstance, Notify, Languages, SavedR
 
     SavedReports.requestPDF(url, report, options)
       .then(function (result) {
-        vm.$loading = false;
         ModalInstance.dismiss();
+        Notify.success('FORM.INFO.CREATE_SUCCESS');
         $state.reload();
        })
       .catch(function (error) {
         var INTERNAL_SERVER_ERROR = 500;
-        vm.$loading = false;
 
         if (error.status === INTERNAL_SERVER_ERROR) {
           ModalInstance.dismiss();
@@ -42,6 +43,9 @@ function AccountChartController($state, ModalInstance, Notify, Languages, SavedR
         Notify.handleError(error);
 
         throw error;
+      })
+      .finally(function () {
+        vm.$loading = false;
       });
   }
 }
