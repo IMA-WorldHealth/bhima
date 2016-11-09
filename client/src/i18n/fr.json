@@ -355,6 +355,7 @@
     },
     "INFO": {
       "BY"                   : "Par",
+      "CANCEL_CASH"          : "Annulation du paiement",
       "CLEAR_FILTERS"        : "Rafraîchir le filtre",
       "CLOSE_FISCAL_YEAR"    : "Clôturer l'année fiscale",
       "CLOSED"               : "Fermée",
@@ -1190,6 +1191,7 @@
       "BILLING_DATE"       : "Date Facturation",
       "BILLED_BY"          : "Facturé par",
       "BY"                 : "Par",
+      "CANCEL_CASH"        : "Annuler le paiement",
       "CASHBOX"            : "Caisse",
       "CHARGE"             : "Charge",
       "CLIENT"             : "Client",

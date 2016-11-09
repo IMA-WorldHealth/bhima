@@ -29,6 +29,7 @@ function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConst
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
   vm.clearFilters = clearFilters;
+  vm.cancelCash = cancelCash;
 
   // grid default options
   vm.gridOptions.appScopeProvider  = vm;
@@ -64,7 +65,11 @@ function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConst
     { field : 'action', displayName : '...',
       cellTemplate: 'partials/finance/reports/cash_payment/templates/action.grid.html',
       enableFiltering: false
-    }
+    },
+    { field : 'action', displayName : '',
+      cellTemplate: 'partials/finance/reports/cash_payment/templates/cancelCash.action.tmpl.html',
+      enableFiltering: false
+    }    
   ];
 
   // search
@@ -127,6 +132,17 @@ function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConst
       vm.gridOptions.data = list;
     })
     .catch(Notify.handleError);
+  }
+
+  // Function for Cancel Cash cancel all Invoice
+  function cancelCash(invoice) {
+    Cash.openCancelCashModal(invoice)
+      .then(function (success) {
+        if (success) {
+          Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
+          return load();
+        }
+      });
   }
 
   // startup

@@ -353,6 +353,7 @@
     },
     "INFO": {
       "BY"                   : "By",
+      "CANCEL_CASH"          : "Cancellation of payment",
       "CLOSE_FISCAL_YEAR"    : "Close fiscal year",
       "CLOSED"               : "Closed",
       "CREATED"              : "Created",
@@ -1165,6 +1166,7 @@
       "BILLED_BY"          : "Billed by",
       "BILLING_DATE"       : "Billing Date",
       "BY"                 : "By",
+      "CANCEL_CASH"        : "Cancel Cash Payment",
       "CASHBOX"            : "Cashbox",
       "CHARGE"             : "Charge",
       "CLIENT"             : "Client",
