@@ -1312,6 +1312,7 @@
     "CREDIT_NOTE"                : "Note de Crédit",
     "CREDITOR_GROUP"             : "Gestion de groupes crediteurs",
     "CURRENCY"                   : "Monnaie",
+    "CUSTOMER_DEBTS"             : "Dettes des clients",
     "DEBTOR_GROUP"               : "Gestion de groupes débiteurs",
     "EMPLOYEE"                   : "Gestion Employés",
     "ENTERPRISE"                 : "Entreprise",

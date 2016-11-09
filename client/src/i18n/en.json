@@ -1281,6 +1281,7 @@
     "CREDIT_NOTE"                : "Credit note",
     "CREDITOR_GROUP"             : "Creditor Group Management",
     "CURRENCY"                   : "Currency",
+    "CUSTOMER_DEBTS"             : "Customer Debts",
     "DEBTOR_GROUP"               : "Debtor Group Management",
     "EMPLOYEE"                   : "Employee",
     "ENTERPRISE"                 : "Enterprise",
