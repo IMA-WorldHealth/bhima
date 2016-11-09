@@ -230,24 +230,67 @@ function list(req, res, next) {
 /**
  * GET /debtor_groups/{:uuid}/invoices?balanced=1
  *
- * This function is responsible for getting all invoices of a specified debtor group
- *
  * @function invoices
- * @todo - implement this following the design in debtors/index.js
+ *
+ * @description This function is responsible for getting all invoices of a specified debtor group
+ *
  */
 function invoices(req, res, next) {
   var options = req.query;
 
-  if (options.balanced) { options.balanced = Boolean(options.balanced); }
-
-  res.status(500).send('Unimplemented..');
-
-  /*
-  invoices(req.params.uuid, options)
+  loadInvoices(req.params.uuid)
   .then(function (rows) {
-    res.status(200).json(rows);
+    let data = rows;
+
+    if (options.balanced) {
+      data = rows.filter(item => {
+        return item.balance === 0;
+      });
+    }
+
+    if (options.unpaid) {
+      data = rows.filter(item => {
+        return item.balance !== 0;
+      });
+    }
+
+    res.status(200).json(data);
   })
   .catch(next)
   .done();
-  */
+}
+
+/**
+ * @method loadInvoices
+ * @description This method returns invoices of a debtor group
+ * @param {string} debtor_uuid A debtor group uuid
+ */
+function loadInvoices(debtor_uuid) {
+  // get debtors of the group
+  let sqlDebtors =
+    `SELECT uuid FROM debtor WHERE debtor.group_uuid = ?;`;
+
+  // get invoices balance for each debtor
+  let sqlInvoices =
+    `SELECT BUID(i.uuid) as uuid, i.date, CONCAT(project.abbr, i.reference) as reference,
+      debit, credit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
+    FROM (
+      SELECT record_uuid as uuid, combined_ledger.date, SUM(debit) as debit, SUM(credit) as credit,
+        entity_uuid, invoice.reference, invoice.project_id
+      FROM combined_ledger
+      JOIN invoice ON combined_ledger.record_uuid = invoice.uuid OR combined_ledger.reference_uuid = invoice.uuid
+      WHERE entity_uuid IN (?) AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
+      GROUP BY uuid
+    ) AS i
+    JOIN project ON i.project_id = project.id
+    WHERE i.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
+    HAVING balance <> 0`;
+
+  let bid = db.bid(debtor_uuid);
+
+  return db.exec(sqlDebtors, [bid])
+  .then(result => {
+    let uuids = result.map(item => item.uuid);
+    return db.exec(sqlInvoices, [uuids]);
+  });
 }

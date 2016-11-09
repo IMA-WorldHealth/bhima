@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
 ComplexJournalVoucherController.$inject = [
   'VoucherService', '$translate', 'AccountService',
   'CurrencyService', 'SessionService', 'FindEntityService',
-  'FindReferenceService', 'NotifyService', 'CashboxService'
+  'FindReferenceService', 'NotifyService', 'CashboxService',
+  'VoucherToolkitService'
 ];
 
 /**
@@ -19,7 +20,7 @@ ComplexJournalVoucherController.$inject = [
  * @todo - Implement Patient Invoices data and Cash Payment data for modal
  * @todo - Implement a mean to categorise transactions for cashflow reports
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify, Cashbox) {
+function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify, Cashbox, Toolkit) {
   var vm = this;
 
   // bread crumb paths
@@ -27,6 +28,54 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     label : $translate.instant('VOUCHERS.COMPLEX.TITLE'),
     current: true
   }];
+
+  // breadcrumb dropdown
+  vm.dropdown = [
+    {
+      label: 'VOUCHERS.GLOBAL.TOOLS',
+      color: 'btn-default',
+      icon: 'fa-cogs',
+      option: Toolkit.options
+    }
+  ];
+
+  /** ======================== voucher tools ========================== */
+
+  // toolkit action definition
+  var conventionPaymentTool = Toolkit.tools.convention_payment;
+
+  // action on convention payment tool
+  conventionPaymentTool.action = openConventionPaymentTool;
+
+  // open convention payment function
+  function openConventionPaymentTool() {
+    Toolkit.open(conventionPaymentTool)
+    .then(function (result) {
+      if (!result.rows) { return; }
+
+      vm.rows = result.rows;
+      vm.rows.forEach(function (item) {
+        checkRowValidity(item.index);
+      });
+      vm.gridOptions.data = vm.rows;
+      refreshState();
+      conventionPaymentDetails(result.convention);
+    });
+  }
+
+  // set convention payment details
+  function conventionPaymentDetails(convention) {
+    vm.financialTransaction = true;
+    let conventionType = vm.incomes.filter(function (item) {
+      return item.id === 3;
+    })[0];
+    vm.voucher.type_id = JSON.stringify(conventionType);
+    vm.voucher.description = convention.name;
+    vm.defaultIncomeTypeId = 3;
+    buildDescription();
+  }
+
+  /** ======================== end voucher tools ======================= */
 
   // global variables
   vm.gridOptions = {};
@@ -336,13 +385,13 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   }
 
   function buildDescription() {
-    var type,
+    var type = vm.voucher.type_id,
         current = new Date(),
         description = String(Session.project.abbr).concat('/VOUCHER');
 
-    if (vm.voucher.type_id) {
+    if (type) {
 
-      type = JSON.parse(vm.voucher.type_id);
+      type = JSON.parse(type);
 
       vm.type = type.type;
 
