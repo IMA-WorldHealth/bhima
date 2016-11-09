@@ -8,11 +8,11 @@ ModalCancelCashController.$inject = [
 function ModalCancelCashController(Instance, Cash, data, Vouchers, Notify) {
   var vm = this;
 
-  vm.creditNote = {};
+  vm.cancelCash = {};
   vm.submit = submit;
   vm.cancel = function () { Instance.close(false); };
 
-  vm.creditNote.uuid = data.invoice.uuid;
+  vm.cancelCash.uuid = data.invoice.uuid;
   vm.patientInvoice = data.invoice;
 
   Cash.read(data.invoice.uuid)
@@ -22,11 +22,10 @@ function ModalCancelCashController(Instance, Cash, data, Vouchers, Notify) {
     .catch(Notify.handleError);
 
   function submit(form) {
-
      // stop submission if the form is invalid
     if (form.$invalid) { return; }
 
-    return Vouchers.reverse(vm.creditNote)
+    return Vouchers.reverse(vm.cancelCash)
       .then(function () {
         return Instance.close(true);
       });

@@ -11,14 +11,13 @@
   <div class="modal-body">
     <legend>
       {{ "TABLE.COLUMNS.INVOICE_ID" | translate}} : {{ ModalCtrl.patientInvoice.reference }}
-      <small>{{ModalCtrl.patientInvoice.date | date}}</small>
     </legend>
     <fieldset>
       <table class="table table-bordered table-condensed">
         <thead>
           <tr>
             <th colspan="4">
-              {{ "TABLE.COLUMNS.PATIENT" | translate }}:: {{ ModalCtrl.patientInvoice.debtor_name }}
+              {{ ModalCtrl.patientInvoice.debtor_name }}
             </th>
           </tr>
           <tr>

@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 CashPaymentRegistryController.$inject = [
-  'CashService', 'NotifyService', 'SessionService', 'ModalService',
+  'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'ModalService',
   'uiGridConstants',  'uiGridGroupingConstants', 'LanguageService'
 ];
 
@@ -12,7 +12,7 @@ CashPaymentRegistryController.$inject = [
  * This controller is responsible to display all cash payment made and provides
  * print and search utilities for the registry
  */
-function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConstants, uiGridGroupingConstants, Languages) {
+function CashPaymentRegistryController(Cash, bhConstants, Notify, Session, Modal, uiGridConstants, uiGridGroupingConstants, Languages) {
   var vm = this;
 
   var initFilter = { identifiers: {}, display: {} };
@@ -23,6 +23,7 @@ function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConst
   vm.gridOptions = {};
   vm.loading = false;
   vm.enterprise = Session.enterprise;
+  vm.bhConstants = bhConstants;
 
   // expose to the view
   vm.showReceipt = showReceipt;
@@ -71,6 +72,7 @@ function CashPaymentRegistryController(Cash, Notify, Session, Modal, uiGridConst
       enableFiltering: false
     }    
   ];
+  vm.gridOptions.rowTemplate = '/partials/finance/reports/cash_payment/templates/grid.canceled.tmpl.html';
 
   // search
   function search() {

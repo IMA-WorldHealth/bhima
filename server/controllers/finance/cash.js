@@ -145,8 +145,9 @@ function listPayment(params) {
     SELECT BUID(cash.uuid) as uuid, cash.project_id, CONCAT(project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
-      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name
+      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name, v.type_id
     FROM cash
+      LEFT JOIN voucher v ON v.reference_uuid = cash.uuid
       JOIN project ON cash.project_id = project.id
       JOIN debtor d ON d.uuid = cash.debtor_uuid
       JOIN cash_box cb ON cb.id = cash.cashbox_id
