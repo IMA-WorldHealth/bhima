@@ -132,7 +132,7 @@ function getFiscalYear(untilDate) {
     SELECT fiscal_year.id, fiscal_year.previous_fiscal_year_id, period.id AS period_id, period.start_date, period.end_date
     FROM fiscal_year
     JOIN period ON period.fiscal_year_id = fiscal_year.id
-    WHERE period.start_date <= ? AND period.end_date >= ?;`;
+    WHERE DATE(period.start_date) <= ? AND DATE(period.end_date) >= ?;`;
 
   return db.exec(query, [untilDate, untilDate]);
 }
