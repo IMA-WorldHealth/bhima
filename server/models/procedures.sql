@@ -639,6 +639,11 @@ BEGIN
       /*
         A positive remainder means that the debtor overpaid slightly and we should debit
         the difference to the debtor and credit the difference as a gain to the gain_account
+
+        - The debtor entity an invoice reference are not included on the gain
+          account transaction. In this case the debtor covered MORE than the 
+          invoiced amount and so referencing them on the enterprise gain will 
+          actually debit them the additional amount. 
       */
       IF (remainder > 0) THEN
 
@@ -646,11 +651,10 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
+          credit_equiv, currency_id, user_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          dg.account_id, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id,
-          c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
+          dg.account_id, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id, c.user_id
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
           JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
@@ -672,6 +676,11 @@ BEGIN
       /*
         A negative remainder means that the debtor underpaid slightly and we should credit
         the difference to the debtor and debit the difference as a loss to the loss_account
+
+        - The debtor and invoice are referenced on the loss account transaction 
+          make up for the amount that is loss. In this case the debtor has not 
+          actually paid enough money to cover the amount of the invoice. If this 
+          is not referenced his balance will not be zero.
       */
       ELSE
 
@@ -685,7 +694,7 @@ BEGIN
           credit_equiv, currency_id, entity_uuid, entity_type, user_id, reference_uuid
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          dg.account_id, 0, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id,
+          dg.account_id, 0, remainder, 0, (remainder / currentExchangeRate), c.currency_id,
           c.debtor_uuid, 'D', c.user_id, lastInvoiceUuid
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
