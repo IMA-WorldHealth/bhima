@@ -108,7 +108,7 @@ function checkDateInPeriod(transactions) {
   var sql =
     `SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.start_date, p.end_date
     FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id
-    WHERE pj.trans_date NOT BETWEEN p.start_date AND p.end_date AND
+    WHERE DATE(pj.trans_date) NOT BETWEEN DATE(p.start_date) AND DATE(p.end_date) AND
       pj.trans_id IN (?)
     GROUP BY pj.trans_id;`;
 

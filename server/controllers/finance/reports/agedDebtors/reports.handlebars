@@ -1,0 +1,66 @@
+{{> head title="TREE.CUSTOMER_DEBTS"}}
+
+<div class="container-fluid">
+
+  {{> header }}
+
+  <!-- title  -->
+  <h1 class="text-center text-uppercase">
+    {{translate 'TREE.CUSTOMER_DEBTS'}} <br>
+     <small>{{translate 'FORM.LABELS.UNTIL_DATE'}} {{date agedDebtors.untilDate}} </small>
+  </h1>
+
+  <br>
+
+  <!-- content  -->
+  <table class="table table-condensed table-striped table-bordered">
+    <thead>
+      <tr>
+        <th class="text-left" colspan="2">
+          <span>
+            <strong>{{translate 'TABLE.COLUMNS.DEBTOR_GROUPS'}}</strong>
+          </span>
+        </th>
+        <th>{{translate 'TABLE.COLUMNS.QUARTER_FOUR'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.QUARTER_THREE'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.QUARTER_TWO'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.QUARTER_ONE'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{#each  agedDebtors.debtorGroups}}
+        <tr>
+          <td class="text-left"><strong> {{ @index }} </strong></td>
+          <td class="text-left">
+            <strong>
+              {{ nameDebtorGroup }}
+            </strong>
+          </td>
+          <td> {{ currency balancePrevious ../metadata.currency_id}} </td>
+          <td> {{ currency balanceFirst ../metadata.currency_id}} </td>
+          <td> {{ currency balanceSecond ../metadata.currency_id}} </td>
+          <td> {{ currency balanceThird ../metadata.currency_id}} </td>
+          <td> {{ currency total ../metadata.currency_id}} </td>
+        </tr>
+      {{/each}}
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <td class="text-right text-uppercase" colspan="6">
+          <strong>
+            {{translate 'TABLE.COLUMNS.TOTAL'}}
+          </strong>
+        </td>
+        <td class="text-left" colspan="1">
+          <strong>
+            {{ currency agedDebtors.grandTotal ../metadata.currency_id}}
+          </strong>
+        </td>
+      </tr>
+    </tfoot>
+
+  </table>
+</div>
