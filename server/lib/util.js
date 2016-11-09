@@ -14,6 +14,7 @@ const q = require('q');
 
 /** The query string conditions builder */
 module.exports.queryCondition = queryCondition;
+module.exports.parseQueryStringToSQL = parseQueryStringToSQL;
 module.exports.take = take;
 module.exports.isTrueString = isTrueString;
 module.exports.isFalsy = isFalsy;
@@ -66,6 +67,25 @@ function queryCondition(sql, params, excludeWhere, dateConditon) {
 
   sql += (excludeWhere ? '' : 'WHERE ') + criteria;
   return { query: sql, conditions : conditions };
+}
+
+// prefix is a string
+function parseQueryStringToSQL(options, tablePrefix) {
+  let conditions = {
+    statements: [],
+    parameters: []
+  };
+
+  tablePrefix = tablePrefix || '';
+
+  let escapedKeys = _.mapKeys(options, (value, key) => tablePrefix.concat('.', key));
+
+  _.forEach(escapedKeys, (value, key) => {
+    conditions.statements.push(`${key} = ?`);
+    conditions.parameters.push(value);
+  });
+
+  return conditions;
 }
 
 

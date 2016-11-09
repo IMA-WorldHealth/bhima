@@ -44,12 +44,14 @@ function SystemService($http, util) {
     console.log('Connection was open.');
   }
 
+  /*
   // set up event stream
   var source = new EventSource(baseUrl.concat('/stream'));
 
   source.addEventListener('open', handleOpenEvent, false);
   source.addEventListener('message', handleServerSentEvent, false);
   source.addEventListener('error', handleErrorEvent, false);
+  */
 
   return service;
 }
