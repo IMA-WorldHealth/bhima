@@ -18,3 +18,4 @@ exports.financialPatient = require('./financial.patient');
 exports.incomeExpense = require('./incomeExpense');
 exports.journal  = require('./journal');
 exports.balance  = require('./balance');
+exports.reportAccounts  = require('./reportAccounts');
