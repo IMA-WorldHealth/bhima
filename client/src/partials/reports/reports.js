@@ -7,7 +7,9 @@ function ReportsController($state, SavedReports, Modal, Notify) {
   var vm = this;
   var keyTarget = $state.params.key;
 
+  // report configuratoion
   vm.report = {};
+
   vm.createReport = createReport;
   vm.deleteReport = deleteReport;
 
