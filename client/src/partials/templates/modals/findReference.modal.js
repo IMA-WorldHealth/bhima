@@ -82,7 +82,14 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Cash,
 
       vm.gridOptions.columnDefs = [
         { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-        { field : 'date', cellFilter:'date', filter : { condition : filtering.byDate }, displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate' },
+        {
+          field : 'date',
+          cellFilter:'date',
+          filter : { condition : filtering.byDate },
+          displayName : 'TABLE.COLUMNS.BILLING_DATE',
+          headerCellFilter : 'translate',
+          sort : { priority : 0, direction : 'desc'}
+        },
         { field : 'patientNames', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
         { field : 'cost', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate },
         { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
@@ -103,7 +110,14 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Cash,
 
       vm.gridOptions.columnDefs = [
         { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-        { field : 'date', cellFilter:'date', filter : { condition : filtering.byDate }, displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate' },
+        {
+          field : 'date',
+          cellFilter:'date',
+          filter : { condition : filtering.byDate },
+          displayName : 'TABLE.COLUMNS.BILLING_DATE',
+          headerCellFilter : 'translate',
+          sort : { priority : 0, direction : 'desc'}
+        },
         { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
         { field : 'amount', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate }
       ];
@@ -122,7 +136,13 @@ function FindReferenceModalController(Instance, Debtor, Creditor, Voucher, Cash,
 
       vm.gridOptions.columnDefs  = [
         { field : 'reference', displayName : 'Reference'},
-        { field : 'date', displayName : 'Date', cellFilter : 'date:"mediumDate"', filter : { condition : filtering.byDate } },
+        {
+          field : 'date',
+          displayName : 'Date',
+          cellFilter : 'date:"mediumDate"',
+          filter : { condition : filtering.byDate },
+          sort : { priority : 0, direction : 'desc'}
+        },
         { field : 'description', displayName : 'Description'},
         { field : 'amount', displayName : 'Amount', cellTemplate: amountTemplate }
       ];
