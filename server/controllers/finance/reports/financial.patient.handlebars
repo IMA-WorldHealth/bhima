@@ -10,13 +10,13 @@
   <h4 class="text-center">{{translate "PATIENT_RECORDS.FINANCIAL_ACTIVITY.ACCOUNT"}} : {{ debtor.number }} </h4>
 
   <section>
-    <table class="table table-condensed table-report table-bordered ">
+    <table class="table table-condensed table-striped table-report table-bordered ">
       <thead>
-        <tr class="text-capitalize text-center">
-          <th style="width: 15%;">{{translate "TABLE.COLUMNS.INVOICE_ID" }}</th>
+        <tr class="text-capitalize text-center" style="background-color: #ccc;">
+          <th style="width: 5%;">{{translate "TABLE.COLUMNS.INVOICE_ID" }}</th>
           <th style="width: 15%;">{{translate "TABLE.COLUMNS.TRANSACTION_ID" }}</th>
           <th style="width: 15%;">{{translate "TABLE.COLUMNS.DATE" }}</th>
-          <th style="width: 25%;">{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
+          <th style="width: 35%;">{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
           <th style="width: 15%;">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
           <th style="width: 15%;">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
         </tr>
@@ -40,12 +40,12 @@
         {{/each}}
       </tbody>
       <tfoot>
-        <tr>
+        <tr style="background-color: #ededed;">
           <td colspan="4">{{translate "FORM.LABELS.TOTAL" }}</td>
           <td>{{currency sum.debit currency_id}}</td>
           <td>{{currency sum.credit currency_id}}</td>
         </tr>       
-        <tr>
+        <tr style="background-color: #ededed;">
           <th colspan="6" class="text-right">{{translate "FORM.LABELS.BALANCE" }} {{currency sum.balance currency_id}}</th>
         </tr>
       </tfoot>
