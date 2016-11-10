@@ -646,20 +646,11 @@ BEGIN
           actually debit them the additional amount. 
       */
       IF (remainder > 0) THEN
-
-        -- debit the debtor
-        INSERT INTO posting_journal (
-          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
-          record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, user_id
-        ) SELECT
-          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
-          dg.account_id, remainder, 0, (remainder / currentExchangeRate), 0, c.currency_id, c.user_id
-        FROM cash AS c
-          JOIN debtor AS d ON c.debtor_uuid = d.uuid
-          JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-        WHERE c.uuid = cashUuid;
-
+  
+        -- The debtor is not debited in this transaction. They have already 
+        -- balanced the invoice and their debt according to the invoice (the 
+        -- exact amount). The additional payment can just be put in a gain account.
+        
         -- credit the rounding account
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
