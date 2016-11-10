@@ -1,30 +1,54 @@
 /* global expect, chai, agent */
-/* jshint expr : true */
+/* jshint expr: true */
+'use strict';
 
 const helpers = require('../../helpers');
 
-const RenderingTests = require('../rendering');
-const target = '/reports/finance/debtors/aged';
+const target = '/reports/finance/agedDebtors';
 
-describe(`(${target} Aged Debtor Report`, function () {
+describe(`(${target}) Aged Debtors`, function () {
 
-  // debtor groups that do not have debtors registered to them will not show up
-  const numDebtorGroups = 1;
-  const keys = ['metadata', 'debtors'];
+  const parameters = {
+    untilDate : '2016-12-31'
+  };
 
-  // run the rendering test suite
-  const suite = RenderingTests(target, keys);
-  suite();
+  const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
 
-  it('GET /reports/finance/debtors/aged?zeroes=1 should return a JSON report', function () {
-    return agent.get('/reports/finance/debtors/aged')
-      .query({ zeroes : 1, renderer : 'json' })
+  const clone = (object) => JSON.parse(JSON.stringify(object));
+
+  it(`GET ${target} should return a BAD_REQUEST response`, function () {
+    return agent.get('/reports/finance/agedDebtors')
       .then(res => {
-        const keys = ['metadata', 'debtors', 'aggregates'];
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(400);
         expect(res).to.be.json;
-        expect(res.body).to.contain.all.keys(keys);
-        expect(res.body.debtors).to.have.length(numDebtorGroups);
+        expect(res.body.code).to.equal(BAD_REQUEST);
+      })
+      .catch(helpers.handler);
+  });
+
+  it(`GET ${target} should return HTML data for HTML rendering target`, function () {
+    let copy = clone(parameters);
+    copy.renderer = 'html';
+
+    return agent.get(target)
+      .query(copy)
+      .then(function (res) {
+        expect(res.headers['content-type']).to.equal('text/html; charset=utf-8');
+        expect(res.text).to.not.be.empty;
+      })
+      .catch(helpers.handler);
+  });
+
+  it(`GET ${target} should return PDF data for PDF rendering target`, function () {
+
+    let copy = clone(parameters);
+    copy.renderer = 'pdf';
+
+    return agent.get(target)
+      .query(copy)
+      .then(function (res) {
+        expect(res.headers['content-type']).to.equal('application/pdf');
+        expect(res.type).to.equal('application/pdf');
       })
       .catch(helpers.handler);
   });
