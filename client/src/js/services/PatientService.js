@@ -74,7 +74,7 @@ function PatientService($http, util, Session, $uibModal, Documents, Visits) {
   }
 
   /**
-   * This method accepts infromation recorded by a controllers form, formats it
+   * This method accepts information recorded by a controllers form, formats it
    * for submission and forwards it to the server /patients/create API. It can
    * be used for creating new patient records in the database.
    *

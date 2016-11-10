@@ -5,7 +5,8 @@ JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService',
   'GridFilteringService', 'GridColumnService', 'JournalConfigService',
   'SessionService', 'NotifyService', 'TransactionService', 'GridEditorService',
-  'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService'
+  'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
+  'AppCache'
 ];
 
 /**
@@ -30,7 +31,7 @@ JournalController.$inject = [
  *
  * @module bhima/controllers/JournalController
  */
-function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants, Modal, Languages) {
+function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Config, Session, Notify, Transactions, Editors, bhConstants, $state, uiGridConstants, Modal, Languages, AppCache) {
   var vm = this;
 
   /** @constants */
@@ -43,6 +44,9 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   /** @const the cache alias for this controller */
   var cacheKey = 'Journal';
+
+  // filter cache
+  var cache = AppCache(cacheKey + '-filters');
 
   vm.enterprise = Session.enterprise;
 
@@ -64,26 +68,17 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
   transactions = new Transactions(vm.gridOptions);
   editors = new Editors(vm.gridOptions);
 
-  //attaching the filtering object to the view
+  // attaching the filtering object to the view
   vm.filtering = filtering;
 
-  //attaching the grouping object to the view
+  // attaching the grouping object to the view
   vm.grouping = grouping;
 
-  //Attaching the transaction to the view
+  // Attaching the transaction to the view
   vm.transactions = transactions;
 
-  vm.loading = true;
-  Journal.read()
-    .then(function (records) {
-      vm.gridOptions.data = records;
-    })
-    .catch(function (error) {
-      vm.hasError = true;
-      Notify.handleError(error);
-    })
-    .finally(toggleLoadingIndicator);
-
+  vm.onRemoveFilter = onRemoveFilter;
+  vm.clearFilters = clearFilters;
 
   /**
    * @function toggleLoadingIndicator
@@ -169,10 +164,10 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
 
   //This function opens a modal, to let the user posting transaction to the general ledger
   vm.openTrialBalanceModal = function openTrialBalanceModal () {
-    $state.go('trialBalanceMain', {records : vm.grouping.getSelectedGroups()}, {reload : false});
+    $state.go('trialBalanceMain', { records : vm.grouping.getSelectedGroups() });
   };
 
-  // display the journal printalble report of selected transactions
+  // display the journal printable report of selected transactions
   vm.openJournalReport = function openJournalReport() {
     var uuids = vm.grouping.getSelectedGroups().map(function (trans) {
       return trans.uuid;
@@ -183,16 +178,74 @@ function JournalController(Journal, Sorting, Grouping, Filtering, Columns, Confi
     Modal.openReports({ url: url, params: params });
   };
 
-  // search modal
+  function errorHandler(error) {
+    vm.hasError = true;
+    Notify.handleError(error);
+  }
+
+  // loads data for the journal
+  function load(options) {
+    vm.loading = true;
+    vm.hasError = false;
+
+    Journal.read(null, options)
+      .then(function (records) {
+        vm.gridOptions.data = records;
+
+        // try to unfold groups
+        try { grouping.unfoldAllGroups(); } catch (e) {}
+      })
+      .catch(errorHandler)
+      .finally(toggleLoadingIndicator);
+  }
+
+  // open search modal
   vm.openSearchModal = function openSearchModal() {
-    Modal.openDateInterval()
-    .then(function (dateInterval) {
-      return Journal.read(null, dateInterval);
-    })
-    .then(function (list) {
-      vm.gridOptions.data = list;
-    })
-    .catch(Notify.errorHandler);
+    var parameters = angular.copy(vm.filters);
+    Config.openSearchModal(parameters)
+      .then(function (options) {
+
+        // if the options are not returned or have not changed, do not refresh
+        // the data source
+        if (angular.equals(options, vm.filters)) { return; }
+
+        // bind filters to the view and format appropriate
+        cacheFilters(options);
+
+        // turn loading on
+        toggleLoadingIndicator();
+
+        return load(options);
+      });
   };
 
+  // save the parameters to use later.  Formats the parameters in filtersFmt for the filter toolbar.
+  function cacheFilters(filters) {
+    vm.filters = cache.filters = filters;
+    vm.filtersFmt = Journal.formatFilterParameters(filters);
+    vm.filterBarHeight = (vm.filtersFmt.length > 0) ?
+      { 'height' : 'calc(100vh - 102px)' } : {};
+  }
+
+  // remove a filter with from the filter object, save the filters and reload
+  function onRemoveFilter(key) {
+    delete vm.filters[key];
+    cacheFilters(vm.filters);
+    load(vm.filters);
+  }
+
+  // clears the filters by forcing a cache of an empty array
+  function clearFilters() {
+    cacheFilters({});
+    load({});
+  }
+
+  // runs on startup
+  function startup() {
+    vm.filters = cache.filters;
+    vm.filtersFmt = Journal.formatFilterParameters(cache.filters || {});
+    load(vm.filters);
+  }
+
+  startup();
 }

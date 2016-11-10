@@ -798,3 +798,7 @@ growl-notification.fading.ng-leave.ng-leave-active {
   display: flex;
   justify-content: space-between;
 }
+
+.modal-tall {
+  max-height: 80vh;
+}
