@@ -11,25 +11,25 @@
  * </bh-date-interval>
  * ```
  */
-angular.module('bhima.components').component('bhDateInterval', {
-  templateUrl : '/partials/templates/bhDateInterval.tmpl.html',
-  controller : bhDateInterval,
-  bindings : {
-    validationTrigger : '<', // validation trigger action
-    dateFrom : '=',          // date from
-    dateTo : '=',            // date to
-    required : '<',          // true or false
-    onChange : '<',          // on change action
-    mode : '@'               // the date mode (day|month|year)
-  }
-});
+angular.module('bhima.components')
+  .component('bhDateInterval', {
+    templateUrl : '/partials/templates/bhDateInterval.tmpl.html',
+    controller : bhDateInterval,
+    bindings : {
+      validationTrigger : '<', // validation trigger action
+      dateFrom : '=',          // date from
+      dateTo : '=',            // date to
+      required : '<',          // true or false
+      onChange : '<',          // on change action
+      mode : '@'               // the date mode (day|month|year)
+    }
+  });
 
 // dependencies injection
-bhDateInterval.$inject = ['DateService'];
+bhDateInterval.$inject = ['DateService', 'moment'];
 
 // controller definition
-function bhDateInterval(Dates) {
-  /* global moment */
+function bhDateInterval(Dates, moment) {
   var vm = this;
 
   vm.options = [
@@ -48,7 +48,7 @@ function bhDateInterval(Dates) {
   // start up the modal
   startup();
 
-  function search (selection) {
+  function search(selection) {
     vm.selected = selection.translateKey;
     selection.fn();
   }
@@ -74,11 +74,12 @@ function bhDateInterval(Dates) {
   }
 
   function clear() {
-    vm.dateFrom = null;
-    vm.dateTo = null;
+    delete vm.dateFrom;
+    delete vm.dateTo;
   }
 
   function startup() {
+
     // set today as default date plage value
     if (!vm.dateFrom && !vm.dateTo) {
       search(vm.options[0]);
@@ -96,7 +97,5 @@ function bhDateInterval(Dates) {
     if (vm.mode === 'clean') {
       clear();
     }
-
   }
-
 }

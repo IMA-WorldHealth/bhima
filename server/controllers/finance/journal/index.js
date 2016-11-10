@@ -177,9 +177,9 @@ function find(options) {
   // this accounts for currency_id, user_id, trans_id, account_id, etc ..
 
   // assign query parameters as needed
-  let { statements, parameters } = util.parseQueryStringToSQL(options, 'p');
-  conditions.statements = _.concat(conditions.statements, statements);
-  conditions.parameters = _.concat(conditions.parameters, parameters);
+  let destruct = util.parseQueryStringToSQL(options, 'p');
+  conditions.statements = _.concat(conditions.statements, destruct.statements);
+  conditions.parameters = _.concat(conditions.parameters, destruct.parameters);
 
   sql = sql.replace('SQL_CONDITIONS', conditions.statements.join(' AND '));
 
