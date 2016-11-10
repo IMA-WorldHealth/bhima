@@ -2,7 +2,7 @@ angular.module('bhima.services')
 .service('CashService', CashService);
 
 CashService.$inject = [
-  '$uibModal' ,'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment'
+  '$uibModal' ,'PrototypeApiService', 'ExchangeRateService', 'SessionService', 'moment', '$http', 'util'
 ];
 
 /**
@@ -12,8 +12,9 @@ CashService.$inject = [
  * @description
  * A service to interact with the server-side /cash API.
  */
-function CashService(Modal, Api, Exchange, Session, moment) {
+function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
   var service = new Api('/cash/');
+  var baseUrl = '/cash/';
 
   // templates for descriptions
   var TRANSFER_DESCRIPTION = 'Transfer Voucher / :date / :user';
@@ -26,6 +27,7 @@ function CashService(Modal, Api, Exchange, Session, moment) {
   service.calculateDisabledIds = calculateDisabledIds;
   service.formatFilterParameters = formatFilterParameters;
   service.openCancelCashModal = openCancelCashModal;
+  service.checkCashPayment = checkCashPayment;
 
   /**
    * Cash Payments can be made to multiple invoices.  This function loops
@@ -193,6 +195,22 @@ function CashService(Modal, Api, Exchange, Session, moment) {
       backdrop : 'static',
       controller : 'ModalCancelCashController as ModalCtrl',
     }, true).result;
+  }
+
+  /**
+   * @desc It checkCashPayment the invoice from the database
+   * @param {String} project, is the Id of project
+   * @return {String} reference is the number of Invoice's project.
+   * @example
+   * service.checkCashPayment(project, reference)
+   * .then(function (res){
+   *   your code here
+   *  });
+   */
+  function checkCashPayment (project, reference){
+    var url = baseUrl + project + '/' + reference;
+    return $http.get(url)
+      .then(util.unwrapHttpResponse);
   }
 
   return service;

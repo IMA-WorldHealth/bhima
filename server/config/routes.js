@@ -482,6 +482,7 @@ exports.configure = function configure(app) {
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
   app.get('/cash/references/:reference', cash.reference);
+  app.get('/cash/:project/:reference', cash.checkin);
 
   // Enterprises api
   app.get('/enterprises', enterprises.list);

@@ -51,6 +51,9 @@ exports.lookup = lookup;
 /** list all cash payment */
 exports.listPayment = listPayment;
 
+/** Checkin if the invoice is paid */
+exports.checkin = checkin;
+
 // looks up a single cash record and associated cash_items
 function lookup(id) {
   'use strict';
@@ -278,6 +281,27 @@ function reference(req, res, next) {
 
     // references should be unique - return the first one
     res.status(200).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+ * GET /cash/:project/:reference
+ * Check if the invoice is paid 
+ */
+function checkin(req, res, next) {
+  var project = req.params.project;
+  var reference = req.params.reference;
+
+  const sql =
+    `SELECT BUID(uuid) AS uuid 
+     FROM cash
+     WHERE cash.project_id = ? AND cash.reference = ?`;
+
+  db.exec(sql, [project, reference])
+  .then(function (rows) {
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();

@@ -331,6 +331,7 @@
     },
     "DIALOGS": {
       "CONFIRM_ACTION"         : "Confirmez vous cette action ?",
+      "CONFIRM_CREDIT_NOTE"    : "La facture dont vous voulez annuler a déjà été payé, voulez-vous vraiment annuler cette facture ",
       "CONFIRM_DELETE"         : "Vous etes sur le point de supprimer un enregistrement. Cette action sera permanent et ne pourra etre annulé. Cliquer sur \"Confirmer\" pour accepter ou \"Annuler\" pour annuler cette action",
       "CANNOT_UNDONE_ACTION"   : "Cette action NE POURRA PAS ETRE ANNULER, les consequences de cette action seront definitives. Vous devez etre sure que vous voulez vraiment effectuer cette action",
       "NO_CORRESPONDANCY"      : "Aucune correspondance trouvée pour",

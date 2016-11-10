@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'appcache',
-  'uiGridConstants'
+  'uiGridConstants', 'ModalService', 'CashService'
 ];
 
 /**
@@ -12,7 +12,7 @@ InvoiceRegistryController.$inject = [
  *
  * This module is responsible for the management of Invoice Registry.
  */
-function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants) {
+function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util, Receipt, AppCache, uiGridConstants, ModalService, Cash) {
   var vm = this;
 
   var cache = AppCache('InvoiceRegistry');
@@ -133,15 +133,35 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     load(vm.filters);
   }
 
+  //Call the opening of Modal
+  function openModal(invoice){
+    Invoices.openCreditNoteModal(invoice)
+    .then(function (success) {
+      if (success) {
+        Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
+        return load();
+      }
+    });
+  }
+
   // Function for Credit Note cancel all Invoice
   function creditNote(invoice) {
-    Invoices.openCreditNoteModal(invoice)
-      .then(function (success) {
-        if (success) {
-          Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-          return load();
-        }
-      });
+    Cash.checkCashPayment(invoice.project_id, invoice.ref).
+    then(function (res){
+      var numberPayment = res.length;
+      if(numberPayment > 0){
+        ModalService.confirm('FORM.DIALOGS.CONFIRM_CREDIT_NOTE')
+        .then(function (bool){
+          if(bool){
+            openModal(invoice);
+          }
+        });
+      } else {
+        openModal(invoice);
+      }
+
+    });
+
   }
 
   // fire up the module
