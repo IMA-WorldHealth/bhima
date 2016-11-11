@@ -38,9 +38,6 @@ describe('Cashboxes', function () {
 
     // make sure the success message shows
     components.notification.hasSuccess();
-
-    // click the cancel button
-    // FU.buttons.cancel();
   });
 
   it('successfully edits a cashbox', function () {
@@ -70,8 +67,8 @@ describe('Cashboxes', function () {
     FU.exists(by.css('[uib-modal-window]'), true);
     FU.exists(by.name('CashboxModalForm'), true);
 
-    FU.select('CashboxModalCtrl.data.account_id', 'Test Gain Account');
-    FU.select('CashboxModalCtrl.data.transfer_account_id', 'Test Loss Account');
+    FU.uiSelect('CashboxModalCtrl.data.account_id', 'Test Gain Account');
+    FU.uiSelect('CashboxModalCtrl.data.transfer_account_id', 'Test Loss Account');
 
     // submit the modal
     FU.modal.submit();
@@ -94,7 +91,7 @@ describe('Cashboxes', function () {
     // confirm that the modal appears
     FU.exists(by.css('[uib-modal-window]'), true);
 
-    FU.select('CashboxModalCtrl.data.account_id', 'First Test Item Account');
+    FU.uiSelect('CashboxModalCtrl.data.account_id', 'First Test Item Account');
 
     // submit the modal
     FU.modal.submit();
@@ -106,7 +103,7 @@ describe('Cashboxes', function () {
     FU.validation.ok('CashboxModalCtrl.data.account_id');
     FU.validation.error('CashboxModalCtrl.data.transfer_account_id');
 
-    FU.select('CashboxModalCtrl.data.transfer_account_id', 'Test Expense Accounts');
+    FU.uiSelect('CashboxModalCtrl.data.transfer_account_id', 'Test Debtor Group Account');
 
     // submit the modal
     FU.modal.submit();

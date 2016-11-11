@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CashboxCurrencyModalController.$inject = [
   '$uibModalInstance', 'AccountService', 'CashboxService',
-  'currency', 'cashbox', 'data'
+  'currency', 'cashbox', 'data', 'bhConstants'
 ];
 
 /**
@@ -13,13 +13,15 @@ CashboxCurrencyModalController.$inject = [
  * cashboxes.  Each cashbox must have a currencied account defined for each currency
  * supported by the application.
  */
-function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data) {
+function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data, bhConstants) {
   var vm = this;
 
   // if a currency matches, we are updating.  Otherwise, we are creating.
   var currencyIds = cashbox.currencies.map(function (row) {
     return row.currency_id;
   });
+
+  vm.bhConstants = bhConstants;
 
   // determine whether we will send a POST or a PUT request to the server
   var method = (currencyIds.indexOf(currency.id) > -1) ?
