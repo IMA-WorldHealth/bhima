@@ -11,7 +11,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe.only('Reports Cash Payment', () => {
+describe('Reports Cash Payment', () => {
 
   // navigate to the page
   before(() => helpers.navigate('#/finance/reports/cash_payment'));
