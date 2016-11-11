@@ -15,7 +15,7 @@ module.exports = {
   // it might be clearer to do this in two steps.
     var root = element(id ? by.id(id) : by.css(this.selector));
     var elm  = root.element(by.model('$ctrl.model'));
-    elm.sendKeys(value);
+    elm.clear().sendKeys(value);
   },
 
   /**

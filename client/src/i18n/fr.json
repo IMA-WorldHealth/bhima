@@ -125,7 +125,8 @@
         "CURRENT_CASHBOX" : "Caisse auxilliare courant",
         "LINK"            : "Cliquez ici pour l'ajouter.",
         "MISSING"         : "Vous ne trouvez pas votre caisse?",
-        "NO_CASHBOX_SELECTED" : "Vous avez pas sélectionné une caisse. S'il vous plaît choisir une caisse pour continuer",
+        "NO_INVOICES_ASSIGNED" : "Vous n'avez pas sélectionné des factures!  S'il vous plaît choisir des factures pour continuer.",
+        "NO_CASHBOX_SELECTED" : "Vous n'avez pas sélectionné une caisse. S'il vous plaît choisir une caisse pour continuer.",
         "SELECTED"        : "Selectionnée",
         "TRANSFER"        : "Transférer Fonds"
       },
