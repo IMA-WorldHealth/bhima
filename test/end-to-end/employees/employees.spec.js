@@ -7,7 +7,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Employees', function () {
+describe.skip('Employees', function () {
   'use strict';
 
   const path = '#/employees';

@@ -8,7 +8,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Section Resultats', function () {
+describe.skip('Section Resultats', function () {
   'use strict';
 
   const path = '#/section_resultat';

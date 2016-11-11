@@ -7,7 +7,7 @@ const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 helpers.configure(chai);
 
-describe('Reference Module', function () {
+describe.skip('Reference Module', function () {
   'use strict';
 
   const path = '#/references';

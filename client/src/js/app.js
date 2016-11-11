@@ -300,22 +300,13 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
       next.name.indexOf('403') !== -1
     );
 
-    // pass through
+    // pass through to error state
     if (isErrorState) {
-      console.log('Going to Error State');
       return;
     }
 
-    console.log('checking state...', next);
-
     // verify that the user is authorized to go to the next state
-
-    // get the current hash
-
-    // strip the question mark
     var path = $location.path();
-
-    console.log('path', path);
 
     var paths = SessionService.paths;
     var publicRoutes = ['/', '/settings', '/login'];
@@ -325,14 +316,15 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     // pass through
     if (!paths || isPublicPath) { return; }
 
-    // check authorization
+    // check if the user is authorized to access this route.
     var authorized = paths.some(function (data) {
       return path.indexOf(data.path) === 0 && data.authorized;
     });
 
+    // if the user is not authorized, go to the 403 state instead
     if (!authorized) {
       event.preventDefault();
-      $state.go('403', {}, { location : 'replace' });
+      $state.go('403');
     }
   });
 

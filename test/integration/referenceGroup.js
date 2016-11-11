@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/reference_group) The Reference Group API', function () {
+describe.skip('(/reference_group) The Reference Group API', function () {
 
   var newReferenceGroup = {
     reference_group   : 'AR',
