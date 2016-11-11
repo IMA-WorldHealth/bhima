@@ -17,7 +17,8 @@ describe('(/cash) Cash Payments', function () {
     { invoice_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6' },
     { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf' }
   ];
-
+  const INVOICE_REF = 1;
+  const INVOICE_REF_2 = 4;
   const REFERENCE = 'TPA1';
 
   // can't find undefined cash payments
@@ -28,6 +29,28 @@ describe('(/cash) Cash Payments', function () {
       })
       .catch(helpers.handler);
   });
+
+  // Check if the invoice is paid 
+  it('GET /cash/:projet/reference sould found one invoice paid', function () {
+    return agent.get(`/cash/${PROJECT_ID}/${INVOICE_REF}`)
+      .then(function (res) {
+        expect(res).to.be.json;
+        expect(res).to.have.status(200);
+        expect(res.body.length).to.equal(1);
+      })
+     .catch(helpers.handler);
+  });  
+
+  // Check if the invoice is not paid
+  it('GET /cash/:projet/reference sould found zero invoice paid', function () {
+    return agent.get(`/cash/${PROJECT_ID}/${INVOICE_REF_2}`)
+      .then(function (res) {
+        expect(res).to.be.json;
+        expect(res).to.have.status(200);
+        expect(res.body.length).to.equal(0);
+      })
+     .catch(helpers.handler);
+  });  
 
   // Tests for the Caution Payment Interface
   describe('Caution Payments ', function () {
