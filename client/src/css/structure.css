@@ -802,3 +802,11 @@ growl-notification.fading.ng-leave.ng-leave-active {
 .modal-tall {
   max-height: 80vh;
 }
+
+/* 403 and 404 error pages */
+.content-error {
+  margin-top : calc(50vh - 190px);
+  max-width: 400px;
+  margin-right: auto;
+  margin-left: auto
+}
