@@ -138,6 +138,31 @@ describe('Cash Payments', function () {
       $('[data-action="close"]').click();
     });
 
+    it('should block invoice payments without invoices', function () {
+
+      // select the proper patient
+      components.findPatient.findByName(mockCautionPayment.patientName);
+
+      // we will leave the date input as default
+
+      // select the proper is caution type
+      var cautionOption = element(by.css('[data-caution-option="0"]'));
+      cautionOption.click();
+
+      // select the FC currency from the currency select
+      components.currencySelect.set(1);
+
+      // enter the amount to pay for a caution
+      components.currencyInput.set(mockCautionPayment.amount);
+
+      // click the submit button
+      FU.buttons.submit();
+
+      // expect a danger notification
+      components.notification.hasDanger();
+      components.findPatient.reset();
+    });
+
     it('should make a payment against previous invoices', function () {
       var gridId = 'debtorInvoicesGrid';
 

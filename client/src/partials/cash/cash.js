@@ -149,17 +149,24 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     vm.payment.cashbox_id = vm.cashbox.id;
 
     // patient invoices are covered by caution
-    var hascaution = vm.slip && vm.patientBalance > 0;
+    var hasCaution = vm.slip && vm.patientBalance > 0;
+    var isCaution = Number(vm.payment.is_caution);
+    var hasInvoices = vm.payment.invoices && vm.payment.invoices.length > 0;
+
+    // if the this is not a caution payment, but no invoices are selected,
+    // raise an error.
+    if (!isCaution && !hasInvoices) {
+      return Notify.danger('CASH.VOUCHER.NO_INVOICES_ASSIGNED');
+    }
 
     // submit the cash payment
-    if (hascaution) {
+    if (hasCaution) {
       return Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION')
         .then(function (ans) {
           if (!ans) { return; }
           return submitPayment(form);
         })
         .catch(Notify.handleError);
-
     } else {
       return submitPayment(form);
     }

@@ -56,5 +56,9 @@ module.exports = {
     // submit the id to the server
     var submit = element(by.css('[data-find-patient-submit]'));
     submit.click();
+  },
+
+  reset : function reset() {
+    $('[ng-click="$ctrl.reset()"]').click();
   }
 };
