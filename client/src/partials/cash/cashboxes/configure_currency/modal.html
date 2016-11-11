@@ -20,28 +20,41 @@
 
     <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.account_id.$invalid }">
       <label class="control-label">{{ "FORM.LABELS.CASH_ACCOUNT" | translate }}</label>
-      <select
-        class="form-control"
+      <ui-select
         name="account_id"
         ng-model="CashboxModalCtrl.data.account_id"
-        ng-options="account.id as account.hrlabel disable when account.type === 'title' for account in ::CashboxModalCtrl.accounts"
         required>
-        <option value="" disabled>{{ "FORM.SELECT.ACCOUNT" | translate }}</option>
-      </select>
+        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNT' | translate }}">
+          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices
+          ui-select-focus-patch
+          ui-disable-choice="account.type_id === CashboxModalCtrl.bhConstants.accounts.TITLE"
+          repeat="account.id as account in ::CashboxModalCtrl.accounts | filter:$select.search">
+          <span ng-bind-html="account.number | highlight:$select.search"></span>
+          <small ng-bind-html="account.label | highlight:$select.search"></small>
+        </ui-select-choices>
+      </ui-select>
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : CashboxModalForm.$submitted && CashboxModalForm.transfer_account_id.$invalid }">
       <label class="control-label">{{ "FORM.LABELS.TRANSFER_ACCOUNT" | translate }}</label>
-      <select
-        class="form-control"
+      <ui-select
         name="transfer_account_id"
         ng-model="CashboxModalCtrl.data.transfer_account_id"
-        ng-options="account.id as account.hrlabel disable when account.type === 'title' for account in ::CashboxModalCtrl.accounts"
         required>
-        <option value="" disabled>{{ "FORM.SELECT.ACCOUNT" | translate }}</option>
-      </select>
+        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNT' | translate }}">
+          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices
+          ui-select-focus-patch
+          ui-disable-choice="account.type_id === CashboxModalCtrl.bhConstants.accounts.TITLE"
+          repeat="account.id as account in ::CashboxModalCtrl.accounts | filter:$select.search">
+          <span ng-bind-html="account.number | highlight:$select.search"></span>
+          <small ng-bind-html="account.label | highlight:$select.search"></small>
+        </ui-select-choices>
+      </ui-select>
     </div>
-
   </div>
 
   <div class="modal-footer">

@@ -124,7 +124,7 @@ function remove(req, res, next) {
  */
 function list(req, res, next) {
   let sql =
-    'SELECT a.id, a.number, a.label, a.locked FROM account AS a';
+    'SELECT a.id, a.number, a.label, a.locked, a.type_id FROM account AS a';
 
   let locked;
 
