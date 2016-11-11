@@ -9,7 +9,7 @@ var bhima = angular.module('bhima', [
   'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select'
 ]);
 
-function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider) {
+function bhimaConfig($stateProvider, $urlMatcherFactoryProvider) {
 
   // allow trailing slashes in routes
   $urlMatcherFactoryProvider.strictMode(false);
@@ -221,16 +221,15 @@ function bhimaConfig($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvi
     templateUrl: 'partials/admin/transaction_type/transaction_type.html'
   })
 
-  .state('error403', {
-    url : '/error403',
-    templateUrl : 'partials/error403/error403.html'
+  .state('403', {
+    templateUrl : 'partials/errors/403.html'
   })
-  .state('error404', {
-    url : '/error404',
-    templateUrl : 'partials/error404/error404.html'
-  });
 
-  $urlRouterProvider.otherwise('error404');
+  // this is a catch-all state.  It matches all URLs and preserves the URL in the top bar.
+  .state('404', {
+    url: '{path:.*}',
+    templateUrl : 'partials/errors/404.html'
+  });
 }
 
 function translateConfig($translateProvider) {
@@ -261,10 +260,6 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     var isLoggedIn = !!SessionService.user;
     var isLoginState = next.indexOf('#/login') !== -1;
 
-    if (next.indexOf('/error403') !== -1) {
-      $state.go('/error403');
-    }
-
     // if the user is logged in and trying to access the login state, deny the
     // attempt with a message "Cannot return to login.  Please log out from the
     // Settings Page."
@@ -289,12 +284,6 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
   // trigger a $state.go() to the login state, it will not be stopped - the
   // $locationChangeStart event will only prevent the URL from changing ... not
   // the actual state transition!  So, we need this to stop $stateChange events.
-
-  // var paths recovered all the path that the user is allowed to enter
-  // Tests if the path has elements and other common paths are not called
-  // if the test is positive, the current path is verified in the path list
-  // if the current path does not exist in the path list in this case the user will rédirrigé to error403 page
-
   $rootScope.$on('$stateChangeStart', function (event, next) {
     var isLoggedIn = !!SessionService.user;
     var isLoginState = next.name.indexOf('login') !== -1;
@@ -302,22 +291,48 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     if (isLoggedIn && isLoginState) {
       event.preventDefault();
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
+      return;
     }
 
+    // check if we are going to an error state;
+    var isErrorState = (
+      next.name.indexOf('404') !== -1 ||
+      next.name.indexOf('403') !== -1
+    );
 
-    var currentPath = $location.$$path;
-    var paths = SessionService.path;
+    // pass through
+    if (isErrorState) {
+      console.log('Going to Error State');
+      return;
+    }
 
-    var publicRoutes = ['/', '/settings', '/login', '/error404', '/error403'];
+    console.log('checking state...', next);
 
-    if (paths && publicRoutes.indexOf(currentPath) === -1) {
-      var authorized = paths.some(function (data) {
-        return currentPath.indexOf(data.path) === 0;
-      });
+    // verify that the user is authorized to go to the next state
 
-      if (!authorized) {
-        $location.path('/error403');
-      }
+    // get the current hash
+
+    // strip the question mark
+    var path = $location.path();
+
+    console.log('path', path);
+
+    var paths = SessionService.paths;
+    var publicRoutes = ['/', '/settings', '/login'];
+
+    var isPublicPath = publicRoutes.indexOf(path) > -1;
+
+    // pass through
+    if (!paths || isPublicPath) { return; }
+
+    // check authorization
+    var authorized = paths.some(function (data) {
+      return path.indexOf(data.path) === 0 && data.authorized;
+    });
+
+    if (!authorized) {
+      event.preventDefault();
+      $state.go('403', {}, { location : 'replace' });
     }
   });
 
@@ -443,7 +458,7 @@ function uiSelectConfig(uiSelectConfig) {
 bhima.constant('bhConstants', constantConfig());
 
 // configure services, providers, factories
-bhima.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', bhimaConfig]);
+bhima.config(['$stateProvider', '$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
 bhima.config(['uiSelectConfig', uiSelectConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);

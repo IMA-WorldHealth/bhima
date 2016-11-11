@@ -90,11 +90,11 @@ describe('(/login) The login API', function () {
       .send(validUser)
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res.body).to.have.keys('enterprise', 'user', 'project', 'path');
+        expect(res.body).to.have.keys('enterprise', 'user', 'project', 'paths');
         expect(res.body.user).to.contain.all.keys('id', 'enterprise_id', 'display_name', 'project_id', 'username', 'email');
         expect(res.body.enterprise).to.contain.all.keys('id', 'currency_id', 'currencySymbol');
         expect(res.body.project).to.contain.all.keys('id', 'name', 'abbr', 'enterprise_id');
-        expect(res.body.path[0]).to.contain.all.keys('path', 'unit_id', 'user_id');
+        expect(res.body.paths[0]).to.contain.all.keys('path', 'authorized');
       })
       .catch(helpers.handler);
   });

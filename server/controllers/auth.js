@@ -63,22 +63,24 @@ function login(req, res, next) {
     session.user = rows[0];
 
     // next make sure this user has permissions
-    sql =
-      `SELECT p.user_id, p.unit_id, u.path
-        FROM permission AS p
-        JOIN unit AS u ON u.id = p.unit_id
-        WHERE p.user_id = ? `;
+    sql = `
+      SELECT IF(permission.user_id = ?, 1, 0) authorized, unit.path
+      FROM unit LEFT JOIN permission
+        ON unit.id = permission.unit_id;
+    `;
 
     return db.exec(sql, [session.user.id]);
   })
-  .then(function (rows) {
+  .then(modules => {
+
+    let unauthorized = modules.every(mod => !mod.authorized);
 
     // if no permissions, notify the user that way
-    if (rows.length === 0) {
+    if (unauthorized) {
       throw new Unauthorized('This user does not have any permissions.');
     }
 
-    session.path = rows;
+    session.paths = modules;
 
     // update the database for when the user logged in
     sql =
@@ -86,7 +88,7 @@ function login(req, res, next) {
 
     return db.exec(sql, [new Date(), session.user.id]);
   })
-  .then(function () {
+  .then(() => {
 
     // we need to construct the session on the client side, including:
     //   the current enterprise
@@ -105,9 +107,9 @@ function login(req, res, next) {
 
     return db.exec(sql, [session.user.enterprise_id]);
   })
-  .then(function (rows) {
+  .then(rows => {
 
-    if (rows.length === 0) {
+    if (!rows.length) {
       throw new InternalServerError('There are no enterprises registered in the database!');
     }
 
@@ -120,19 +122,18 @@ function login(req, res, next) {
 
     return db.exec(sql, [session.user.project_id]);
   })
-  .then(function (rows) {
-    if (rows.length === 0) {
+  .then(rows => {
+    if (!rows.length) {
       throw new Unauthorized('No project matching the provided id.');
     }
 
     session.project = rows[0];
 
-
     // bind the session variables
     req.session.project = session.project;
     req.session.user = session.user;
     req.session.enterprise = session.enterprise;
-    req.session.path = session.path;
+    req.session.paths = session.paths;
 
     // broadcast LOGIN event
     Topic.publish(Topic.channels.APP, {
