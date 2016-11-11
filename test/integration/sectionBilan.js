@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/section_bilans) The section bilan API', function () {
+describe.skip('(/section_bilans) The section bilan API', function () {
 
   var newSectionBilan = {
     text : 'A new Section Bilan',

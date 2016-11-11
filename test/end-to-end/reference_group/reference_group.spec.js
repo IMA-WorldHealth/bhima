@@ -7,7 +7,7 @@ helpers.configure(chai);
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Reference Group', function () {
+describe.skip('Reference Group', function () {
   'use strict';
 
   const path = '#/references/groups';
