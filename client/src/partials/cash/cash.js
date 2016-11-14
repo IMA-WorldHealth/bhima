@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
   'ExchangeRateService', 'SessionService', 'ModalService',
-  'NotifyService', '$state', 'ReceiptModal'
+  'NotifyService', '$state', 'ReceiptModal', 'PatientService'
 ];
 
 /**
@@ -16,7 +16,7 @@ CashController.$inject = [
  * against previous invoices.  The cash payments module provides
  * functionality to pay both in multiple currencies.
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session, Modals, Notify, $state, Receipts) {
+function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session, Modals, Notify, $state, Receipts, Patient) {
   var vm = this;
 
   // persist cash data across sessions
@@ -93,6 +93,15 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
   function usePatient(patient) {
     vm.payment.debtor_uuid = patient.debtor_uuid;
     vm.patient = patient;
+
+    Patient.balance(vm.patient.debtor_uuid)
+    .then(function (balance) {
+      /**
+       * balance < 0 means that enterprise must money to the patient (creditor balance)
+       * multiply by -1 means we want work with positive value if the patient has a creditor balance
+       */
+      vm.patientBalance = balance * -1;
+    });
   }
 
   // caches the cashbox
@@ -139,7 +148,26 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Exchange, Session
     // add in the cashbox id
     vm.payment.cashbox_id = vm.cashbox.id;
 
+    // patient invoices are covered by caution
+    var hascaution = vm.slip && vm.patientBalance > 0;
+
     // submit the cash payment
+    if (hascaution) {
+      return Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION')
+        .then(function (ans) {
+          if (!ans) { return; }
+          return submitPayment(form);
+        })
+        .catch(Notify.handleError);
+
+    } else {
+      return submitPayment(form);
+    }
+
+  }
+
+  // submit payment
+  function submitPayment(form) {
     return Cash.create(vm.payment)
       .then(function (response) {
         return Receipts.cash(response.uuid, true);

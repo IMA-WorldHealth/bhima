@@ -102,6 +102,15 @@
       </div><!-- End (12) columns -->
     </div><!-- End row -->
 
+    <div ng-show="PatientInvoiceCtrl.patientBalance < 0" class="row">
+      <div class="col-xs-12">
+        <div class="alert alert-warning">
+          <strong class="text-capitalize">{{ 'CASH.CAUTION_REMAINING' | translate }}</strong>:
+          {{PatientInvoiceCtrl.patientBalance * -1 | currency:PatientInvoiceCtrl.enterprise.currency_id}}
+        </div>
+      </div>
+    </div>
+
     <!-- TODO Move padding to generic CSS class -->
     <div class="row" style="padding-bottom : 5px;">
       <div class="col-xs-12">

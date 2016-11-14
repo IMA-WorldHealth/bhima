@@ -82,6 +82,7 @@ const journal          = require('../controllers/finance/journal');
 const transactionType  = require('../controllers/admin/transactionType');
 const generalLedger    = require('../controllers/finance/generalLedger');
 const cashflow         = require('../controllers/finance/reports/cashflow');
+const financialPatient = require('../controllers/finance/patient');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -368,8 +369,8 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/vouchers/:uuid', financeReports.vouchers.receipt);
   app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);
   app.get('/reports/finance/cashflow', financeReports.cashflow.document);
+  app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/agedDebtors', financeReports.agedDebtors.document);
-  app.get('/reports/finance/financialPatient/:uuid', financeReports.financialPatient);
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/account', financeReports.reportAccounts.document);
@@ -416,6 +417,8 @@ exports.configure = function configure(app) {
   app.get('/patients/:uuid/visits', patients.checkin.list);
   app.post('/patients/:uuid/checkin', patients.checkin.create);
   app.get('/patients/:uuid/invoices/latest', patients.latestInvoice);
+
+  app.get('/patients/:uuid/finance/balance', financialPatient.balance);
 
   // Debtors API
   /** @deprecated `/debtors/groups` please use `/debtor_groups` at the client side */
@@ -561,5 +564,5 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
   app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
-  
+
 };

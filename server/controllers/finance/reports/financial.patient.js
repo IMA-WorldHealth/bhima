@@ -1,13 +1,13 @@
 /**
- * @overview reports/registrations
+ * @overview server/controllers/finance/reports/financial.patient.js
  *
  * @description
- * This file contains code to create a PDF report of all patient registrations,
- * matching query conditions passed from the patient registry UI grid.
+ * This file contains code to create a PDF report for financial activites of a patient
  *
  * @requires lodash
  * @requires Patients
  * @requires ReportManager
+ * @requires Debtors
  */
 'use strict';
 
@@ -25,11 +25,9 @@ const TEMPLATE = './server/controllers/finance/reports/financial.patient.handleb
  * @method build
  *
  * @description
- * This method builds the report of patient registrations to be shipped back to
- * the client.  This method will eventually use the Patients.search() method to
- * specify query conditions.
+ * This method builds the report of financial activites of a patient
  *
- * GET /reports/patient/registrations
+ * GET reports/finance/financePatient/{:uuid}
  */
 function build(req, res, next) {
   const options = req.query;
@@ -42,30 +40,12 @@ function build(req, res, next) {
   } catch (e) {
     return next(e);
   }
-  
+
   // enforce detailed columns
   options.detailed = 1;
 
-  Patients.lookupByDebtorUuid(req.params.uuid)
-    .then(debtor => {
-      debtorData.debtor = debtor;
-      return Debtors.financialPatient(req.params.uuid);  
-    })
-    .then(patients => {
-      let sum = {
-        credit : 0,
-        debit : 0,
-        balance: 0
-      };
-
-      patients.forEach(function (patient) {
-        sum.debit += patient.debit;
-        sum.credit += patient.credit; 
-        sum.balance = sum.debit - sum.credit;
-      });
-      const debtor = debtorData.debtor;
-      return report.render({ patients, debtor, sum });
-    })
+  financialActivities(req.params.uuid)
+    .then(result => report.render(result))
     .then(result => {
       res.set(result.headers).send(result.report);
     })
@@ -73,4 +53,33 @@ function build(req, res, next) {
     .done();
 }
 
-module.exports = build;
+/**
+ * @method financialActivities
+ * Return details of financial activites of a given patient
+ */
+function financialActivities(patientUuid) {
+  let glb = {};
+
+  return Patients.lookupByDebtorUuid(patientUuid)
+    .then(debtor => {
+      glb.debtor = debtor;
+      return Debtors.financialPatient(patientUuid);
+    })
+    .then(patients => {
+      let sum = {
+        credit : 0,
+        debit : 0,
+        balance: 0
+      };
+      patients.forEach(function (patient) {
+        sum.debit += patient.debit;
+        sum.credit += patient.credit;
+        sum.balance = sum.debit - sum.credit;
+      });
+      const debtor = glb.debtor;
+      return { patients, debtor, sum };
+    });
+}
+
+exports.financialActivities = financialActivities;
+exports.report = build;

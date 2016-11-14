@@ -143,6 +143,20 @@
 
                 <hr />
 
+                <div ng-show="CashCtrl.patientBalance > 0" class="form-group">
+                  <div class="alert alert-info">
+                    <span ng-show="CashCtrl.slip.rate">
+                      <strong>{{ 'CASH.CAUTION_COVER' | translate }}</strong> -
+                      <strong>{{ 'FORM.LABELS.SOLD' | translate }}</strong>:
+                      {{ CashCtrl.patientBalance * CashCtrl.slip.rate | currency:CashCtrl.payment.currency_id }}
+                    </span>
+                    <span ng-hide="CashCtrl.slip.rate">
+                      <strong class="text-capitalize">{{ 'CASH.CAUTION_REMAINING' | translate }}</strong>:
+                      {{ CashCtrl.patientBalance | currency:CashCtrl.enterprise.currency_id }}
+                    </span>
+                  </div>
+                </div>
+
                 <!-- use the currency input component for currency validation-->
                 <bh-currency-input
                   data-payment-currency-input
