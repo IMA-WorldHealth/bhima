@@ -295,9 +295,10 @@ function checkin(req, res, next) {
   var reference = req.params.reference;
 
   const sql =
-    `SELECT BUID(uuid) AS uuid 
-     FROM cash
-     WHERE cash.project_id = ? AND cash.reference = ?`;
+    `SELECT BUID(cash.uuid) AS uuid 
+      FROM cash
+    WHERE cash.project_id = ? AND cash.reference = ? AND
+    cash.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)`;
 
   db.exec(sql, [project, reference])
   .then(function (rows) {

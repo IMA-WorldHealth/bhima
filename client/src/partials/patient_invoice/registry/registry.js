@@ -159,9 +159,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
       } else {
         openModal(invoice);
       }
-
     });
-
   }
 
   // fire up the module
