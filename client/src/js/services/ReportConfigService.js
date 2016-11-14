@@ -21,7 +21,7 @@ function ReportConfigService(sessionService, $translate) {
       ]
     },
     format : {
-      options : [ 
+      options : [
         { value : 'compact', label : 'Compact' },
         { value : 'standard', label : 'Standard' }
       ]

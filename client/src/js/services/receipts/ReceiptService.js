@@ -34,6 +34,7 @@ function ReceiptService($http, util, Language) {
   service.patient = patient;
   service.purchase = purchase;
   service.cash = cash;
+  service.voucher = voucher;
   service.transaction = transaction;
   service.payroll = payroll;
 
@@ -86,7 +87,7 @@ function ReceiptService($http, util, Language) {
     return fetch(route, options);
   }
 
-  // print a receipt modal
+  // print a receipt modal for a purchase order
   function purchase(uuid, options) {
     var route ='/reports/inventory/purchases/'.concat(uuid);
     return fetch(route, options);
@@ -95,6 +96,12 @@ function ReceiptService($http, util, Language) {
   // print a cash (point-of-sale) receipt
   function cash(uuid, options) {
     var route = '/reports/finance/cash/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // print a complex voucher receipt
+  function voucher(uuid, options) {
+    var route = '/reports/finance/vouchers/'.concat(uuid);
     return fetch(route, options);
   }
 

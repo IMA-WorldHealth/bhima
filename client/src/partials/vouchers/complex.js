@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 ComplexJournalVoucherController.$inject = [
   'VoucherService', '$translate', 'AccountService',
   'CurrencyService', 'SessionService', 'FindEntityService',
-  'FindReferenceService', 'NotifyService', 'CashboxService'
+  'FindReferenceService', 'NotifyService', 'CashboxService', 'ReceiptModal'
 ];
 
 /**
@@ -19,7 +19,7 @@ ComplexJournalVoucherController.$inject = [
  * @todo - Implement Patient Invoices data and Cash Payment data for modal
  * @todo - Implement a mean to categorise transactions for cashflow reports
  */
-function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify, Cashbox) {
+function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify, Cashbox, Receipts) {
   var vm = this;
 
   // bread crumb paths
@@ -43,9 +43,10 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
 
   // load the list of accounts
   Accounts.read()
-  .then(function (accounts) {
-    vm.accounts = accounts;
-  });
+    .then(function (accounts) {
+      vm.accounts = accounts;
+    })
+    .catch(Notify.handleError);
 
   // load the available currencies
   Currencies.read()
@@ -59,17 +60,17 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   /** Entity modal */
   function openEntityModal(row) {
     FindEntity.openModal()
-    .then(function (entity) {
-      row.entity = entity;
-    });
+      .then(function (entity) {
+        row.entity = entity;
+      });
   }
 
   /** Reference modal */
   function openReferenceModal(row) {
     FindReference.openModal(row.entity)
-    .then(function (reference) {
-      row.reference = reference;
-    });
+      .then(function (reference) {
+        row.reference = reference;
+      });
   }
 
   /** Get the selected currency symbol */
@@ -441,14 +442,16 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
     }
 
     return Vouchers.create(voucher)
-    .then(function (result) {
-      Notify.success('VOUCHERS.COMPLEX.CREATE_SUCCESS');
-      form.$setPristine();
-      startup();
-      refreshState();
-      vm.posted = true;
-    })
-    .catch(Notify.handleError);
+      .then(function (result) {
+        Notify.success('VOUCHERS.COMPLEX.CREATE_SUCCESS');
+        form.$setPristine();
+        startup();
+        refreshState();
+        vm.posted = true;
+
+        Receipts.voucher(result.uuid, true);
+      })
+      .catch(Notify.handleError);
 
   }
 
