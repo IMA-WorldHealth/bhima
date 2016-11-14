@@ -13,8 +13,9 @@ CashService.$inject = [
  * A service to interact with the server-side /cash API.
  */
 function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
-  var service = new Api('/cash/');
-  var baseUrl = '/cash/';
+  var service     = new Api('/cash/');
+  var baseUrl     = '/cash/';
+  var urlCheckin  = '/cash/checkin/';
 
   // templates for descriptions
   var TRANSFER_DESCRIPTION = 'Transfer Voucher / :date / :user';
@@ -194,21 +195,20 @@ function CashService(Modal, Api, Exchange, Session, moment, $http, util) {
       keyboard  : false,
       backdrop : 'static',
       controller : 'ModalCancelCashController as ModalCtrl',
-    }, true).result;
+    }).result;
   }
 
   /**
    * @desc It checkCashPayment the invoice from the database
-   * @param {String} project, is the Id of project
-   * @return {String} reference is the number of Invoice's project.
+   * @param {String} invoiceUuid, is the uuid of invoice
    * @example
-   * service.checkCashPayment(project, reference)
+   * service.checkCashPayment(invoiceUuid)
    * .then(function (res){
    *   your code here
    *  });
    */
-  function checkCashPayment (project, reference){
-    var url = baseUrl + project + '/' + reference;
+  function checkCashPayment (invoiceUuid){
+    var url = urlCheckin + invoiceUuid;
     return $http.get(url)
       .then(util.unwrapHttpResponse);
   }

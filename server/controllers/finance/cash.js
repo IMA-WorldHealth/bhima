@@ -291,16 +291,14 @@ function reference(req, res, next) {
  * Check if the invoice is paid 
  */
 function checkin(req, res, next) {
-  var project = req.params.project;
-  var reference = req.params.reference;
-
+  const bid = db.bid(req.params.invoiceUuid);
   const sql =
-    `SELECT BUID(cash.uuid) AS uuid 
-      FROM cash
-    WHERE cash.project_id = ? AND cash.reference = ? AND
-    cash.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)`;
+    `SELECT cash_item.cash_uuid, cash_item.invoice_uuid
+      FROM cash_item
+    WHERE cash_item.invoice_uuid = ?
+    AND cash_item.cash_uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10);`;
 
-  db.exec(sql, [project, reference])
+  db.exec(sql, [bid])
   .then(function (rows) {
     res.status(200).json(rows);
   })

@@ -445,6 +445,10 @@ INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, a
   (@cash_payment, 1, 1, '2016-01-09 14:33:13', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1),
   (@cash_payment2, 1, 3, '2016-11-11 14:33:13', HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), 2, 30.0000, 1, 2, "Cash Paiement", 1);
 
+-- @cash_item
+INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
+  (HUID(UUID()), @cash_payment, 100, @first_invoice);
+
 INSERT INTO `posting_journal` VALUES
   (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice, 'description x',3631,75.0000,0.0000,75.0000,0.0000,2,HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),'D',NULL,NULL,1,2,1,NULL),
   (HUID(UUID()),1,1,16,'TRANS1','2016-01-09 14:35:55',@first_invoice,'description x',3638,0.0000,75.0000,0.0000,75.0000,2,NULL,NULL,NULL,NULL,1,2,1,NULL),
