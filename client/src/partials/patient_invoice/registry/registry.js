@@ -146,7 +146,7 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
 
   // Function for Credit Note cancel all Invoice
   function creditNote(invoice) {
-    Cash.checkCashPayment(invoice.invoiceUuid).
+    Cash.checkCashPayment(invoice.uuid).
     then(function (res){
       var numberPayment = res.length;
       if(numberPayment > 0){

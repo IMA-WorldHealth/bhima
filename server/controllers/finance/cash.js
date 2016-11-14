@@ -51,8 +51,8 @@ exports.lookup = lookup;
 /** list all cash payment */
 exports.listPayment = listPayment;
 
-/** Checkin if the invoice is paid */
-exports.checkin = checkin;
+/** checkInvoicePayment if the invoice is paid */
+exports.checkInvoicePayment = checkInvoicePayment;
 
 // looks up a single cash record and associated cash_items
 function lookup(id) {
@@ -287,10 +287,10 @@ function reference(req, res, next) {
 }
 
 /**
- * GET /cash/:project/:reference
+ * GET /cash/:checkin/:invoiceUuid
  * Check if the invoice is paid 
  */
-function checkin(req, res, next) {
+function checkInvoicePayment(req, res, next) {
   const bid = db.bid(req.params.invoiceUuid);
   const sql =
     `SELECT cash_item.cash_uuid, cash_item.invoice_uuid
