@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SimpleJournalVoucherController.$inject = [
   'AppCache', 'VoucherService', 'AccountService', 'SessionService', 'util',
-  'NotifyService', 'ModalService'
+  'NotifyService',  'ReceiptModal'
 ];
 
 /**
@@ -18,7 +18,7 @@ SimpleJournalVoucherController.$inject = [
  * @todo - Implement Voucher Templates to allow users to save pre-selected
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify, Modal) {
+function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify, Receipts) {
   var vm = this;
 
   // cache to save work-in-progress data and pre-fabricated templates
@@ -48,18 +48,17 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
 
     // transaction type
     Vouchers.transactionType()
-    .then(function (list) {
-      groupType(list.data);
-    })
-    .catch(Notify.handleError);
+      .then(function (list) {
+        groupType(list.data);
+      })
+      .catch(Notify.handleError);
 
     // load the list of accounts
     Accounts.read()
-    .then(function (accounts) {
-      vm.accounts = accounts;
-    })
-    .catch(Notify.handleError);
-
+      .then(function (accounts) {
+        vm.accounts = accounts;
+      })
+      .catch(Notify.handleError);
   }
 
   function submit(form) {
@@ -78,23 +77,21 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
 
     // submit the voucher
     return Vouchers.createSimple(vm.voucher)
-    .then(function (res) {
+      .then(function (res) {
+        return Receipts.voucher(res.uuid, true);
+      })
+      .then(function () {
 
-      // Generate the document
-      return Modal.openReports({ url: '/reports/finance/vouchers/' + res.uuid, renderer: 'pdf' });
-    })
-    .then(function () {
+        // setup the voucher object to init state
+        form.$setPristine();
+        vm.type = undefined;
+        vm.descriptionPrefix = undefined;
+        vm.selectedType = undefined;
 
-      // setup the voucher object to init state
-      form.$setPristine();
-      vm.type = undefined;
-      vm.descriptionPrefix = undefined;
-      vm.selectedType = undefined;
-
-      // rerun the startup script
-      startup();
-    })
-    .catch(Notify.handleError);
+        // rerun the startup script
+        startup();
+      })
+      .catch(Notify.handleError);
   }
 
   function groupType(array) {

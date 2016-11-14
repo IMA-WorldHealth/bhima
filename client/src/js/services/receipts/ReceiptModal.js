@@ -30,6 +30,7 @@ function ReceiptModal(Modal, Receipts) {
   service.cash = cash;
   service.transaction = transaction;
   service.payroll = payroll;
+  service.voucher = voucher;
 
   /**
    * Invokes a patient invoice receipt
@@ -138,6 +139,38 @@ function ReceiptModal(Modal, Receipts) {
     var reportProvider = {
       resolve : {
         receipt       : function receiptProvider() { return { promise : cashRequest }; },
+        options       : function optionsProvider() { return options; },
+      }
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+
+  /**
+   * @method voucher
+   *
+   * @description
+   * Invokes a journal voucher receipt.
+   *
+   * @param {String} uuid             Target journal voucher UUID
+   * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
+   */
+  function voucher(uuid, notifyCreated) {
+    var options = {
+      title         : 'VOUCHERS.GLOBAL.TITLE',
+      createdKey    : 'VOUCHERS.GLOBAL.RECEIPT.SUCCESS',
+      identifier    : 'reference', // @todo - what does this do?
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated
+    };
+
+    var voucherRequest = Receipts.voucher(uuid, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt       : function receiptProvider() { return { promise : voucherRequest }; },
         options       : function optionsProvider() { return options; },
       }
     };
