@@ -1,3 +1,4 @@
+'use strict';
 /**
 * The Debtor Groups Controllers
 *
@@ -42,6 +43,8 @@ exports.invoices = invoices;
  * @private
  */
 function lookupDebtorGroup(uid) {
+  let debtorGroup = {};
+
   const sql = `
     SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, BUID(location_id) as location_id,
       phone, email, note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
@@ -50,7 +53,44 @@ function lookupDebtorGroup(uid) {
     WHERE uuid = ?;
   `;
 
-  return db.one(sql, [db.bid(uid)], uid, 'debtor group');
+  return db.one(sql, [db.bid(uid)], uid, 'debtor group')
+    .then(function (group) {
+      debtorGroup = group;
+
+      return lookupBillingServices(uid);
+    })
+    .then(function (billingServices) {
+      debtorGroup.billingServices = billingServices;
+
+      return lookupSubsidies(uid);
+    })
+    .then(function (subsidies) {
+      debtorGroup.subsidies = subsidies;
+
+      return debtorGroup;
+    });
+}
+
+function lookupBillingServices(uid) {
+  const sql = `
+    SELECT billing_service_id, label, debtor_group_billing_service.created_at
+    FROM debtor_group_billing_service
+    LEFT JOIN billing_service ON debtor_group_billing_service.billing_service_id = billing_service.id
+    WHERE debtor_group_uuid = ?
+  `;
+
+  return db.exec(sql, [db.bid(uid)]);
+}
+
+function lookupSubsidies(uid) {
+  const sql = `
+    SELECT label, subsidy_id, debtor_group_subsidy.created_at
+    FROM debtor_group_subsidy
+    LEFT JOIN subsidy ON debtor_group_subsidy.subsidy_id = subsidy.id
+    WHERE debtor_group_uuid = ?
+  `;
+
+  return db.exec(sql, [db.bid(uid)]);
 }
 
 /**

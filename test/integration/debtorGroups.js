@@ -285,6 +285,11 @@ describe('(/debtor_groups) The debtor groups API', function () {
     .send(updateGroup)
     .then(function (res) {
       updateGroup.uuid = debtorGroup.uuid;
+
+      // data provided by the server; always blank for new debtor groups
+      updateGroup.billingServices = [];
+      updateGroup.subsidies = [];
+
       expect(res).to.have.status(200);
       expect(res.body).to.be.an('object');
       expect(res.body).to.have.deep.equal(updateGroup);

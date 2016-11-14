@@ -1,212 +1,262 @@
 <div class="container-fluid" ng-form="debtorGroup" bh-form-defaults novalidate>
-
-  <div class="row">
+  <div class="row" ng-if="GroupEditCtrl.$loading">
     <div class="col-xs-12">
-      <p>
-        <a ng-href="#/debtors/groups">
-          <span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
-          {{ "DEBTOR_GROUP.BACK" | translate }}
-        </a>
-      </p>
+      <i class="fa fa-circle-o-notch fa-spin"></i> {{ "DEBTOR_GROUP.LOADING" | translate }}
     </div>
   </div>
-
-  <div class="row">
-    <div class="col-md-5">
-      <!-- Debtor group details form elements -->
-      <div>
-        <div
-          class="form-group has-feedback"
-          ng-class="{'has-error' : debtorGroup.name.$invalid && debtorGroup.$submitted}">
-
-
-          <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
-          <input name="name" ng-model="GroupEditCtrl.group.name" class="form-control" required>
-
-          <div class="help-block" ng-messages="debtorGroup.name.$error" ng-show="debtorGroup.$submitted">
-            <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
-
-        <!-- @todo this should be a directive - this controller should not have to consider accounts -->
-        <div
-          class="form-group has-feedback"
-          ng-class="{'has-error' : debtorGroup.account_id.$invalid && debtorGroup.$submitted}">
-
-          <label class="control-label">{{ "TABLE.COLUMNS.ACCOUNT" | translate }}</label>
-          <ui-select
-            name="account_id"
-            ng-model="GroupEditCtrl.group.account_id"
-            theme="bootstrap">
-            <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-              <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-            </ui-select-match>
-            <ui-select-choices ui-select-focus-patch repeat="account.id as account in  GroupEditCtrl.accounts | filter:$select.search">
-              <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-              <span ng-bind-html="account.label | highlight:$select.search"></span>
-            </ui-select-choices>
-          </ui-select>
-
-          <div class="help-block" ng-messages="debtorGroup.account_id.$error" ng-show="debtorGroup.$submitted">
-            <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
-
-        <!-- @todo The UI should show an option that allows you apply a price list, if this is checked then you can select an option -->
-        <div
-          class="form-group has-feedback"
-          ng-class="{'has-error' : debtorGroup.price_list.$invalid && debtorGroup.$submitted}">
-
-          <label class="control-label">{{ "TABLE.COLUMNS.PRICE_LIST" | translate }}</label>
-          <select
-            name="price_list_uuid"
-            ng-model="GroupEditCtrl.group.price_list_uuid"
-            ng-options="priceList.uuid as priceList.label for priceList in GroupEditCtrl.priceLists"
-            class="form-control">
-            <option value="">{{ "PRICE_LIST.NONE" | translate }}</option>
-          </select>
-
-          <div class="help-block" ng-messages="debtorGroup.price_list.$error" ng-show="debtorGroup.$submitted">
-            <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
-
-        <div
-          class="form-group has-feedback"
-          ng-class="{'has-error' : debtorGroup.max_credit.$invalid && debtorGroup.$submitted}">
-
-          <label class="control-label">{{ "FORM.LABELS.MAX_CREDIT" | translate }}</label>
-          <p class="text-info"><span class="fa fa-info-circle" aria-hidden="true"></span> {{ "FORM.LABELS.MAX_CREDIT_INFO" | translate }}</p>
-          <input type="number" ng-model="GroupEditCtrl.group.max_credit" name="max_credit" class="form-control" bh-integer required>
-
-          <div class="help-block" ng-messages="debtorGroup.max_credit.$error" ng-show="debtorGroup.$submitted">
-            <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
-
-        <div class="form-group" ng-class="{ 'has-error' : debtorGroup.$submitted && debtorGroup.note.$invalid }">
-          <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
-          <textarea class="form-control" ng-model="GroupEditCtrl.group.note" name="note"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
-          <input name="phone" ng-model="GroupEditCtrl.group.phone" class="form-control">
-        </div>
-
-        <div
-          class="form-group"
-          ng-class="{'has-error' : debtorGroup.email.$invalid && debtorGroup.$submitted}">
-          <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
-          <input name="email" ng-model="GroupEditCtrl.group.email" type="email" class="form-control">
-
-          <div class="help-block" ng-messages="debtorGroup.email.$error" ng-show="debtorGroup.$submitted">
-            <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
-          </div>
-
-        </div>
-
-        <div class="form-group">
-          <!-- required -->
-          <bh-location-select
-            id="location"
-            name="location_id"
-            validation-trigger="debtorGroup.$submitted"
-            location-uuid="GroupEditCtrl.group.location_id"
-            required></bh-location-select>
-        </div>
-      </div>
-
-      <!-- @todo remove temporary style hack -->
-      <div class="clearfix" style="margin-bottom : 5px">
-        <div class="pull-right" style="text-align : right">
-
-          <!-- @todo remove temporary style hack -->
-          <div ng-if="GroupEditCtrl.state.current.name==='debtorGroups.create'" class="checkbox" style="display : inline-block; padding-right : 5px;">
-            <label>
-              <input type="checkbox" ng-model="GroupEditCtrl.resetOnCompletion">
-              {{ "DEBTOR_GROUP.CREATE_ANOTHER" | translate }}
-            </label>
-          </div>
-
-          <!-- <button class="btn btn-default">Cancel</button> -->
-          <button data-method="submit" type="submit" ng-click="GroupEditCtrl.submit(debtorGroup)" class="btn btn-primary">
-            {{ "FORM.BUTTONS.SUBMIT" | translate }}
-          </button>
-        </div>
+  <div ng-if="GroupEditCtrl.$loaded">
+    <div class="row">
+      <div class="col-xs-12">
+        <p>
+          <a ng-href="#/debtors/groups">
+            <span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
+            {{ "DEBTOR_GROUP.BACK" | translate }}
+          </a>
+        </p>
       </div>
     </div>
 
-    <div class="col-md-7">
+    <div class="row">
+      <div class="col-md-5">
+        <!-- Debtor group details form elements -->
+        <div>
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : debtorGroup.name.$invalid && debtorGroup.$submitted}">
+            <label class="control-label">{{ "FORM.LABELS.NAME" | translate }}</label>
+            <input name="name" ng-model="GroupEditCtrl.group.name" class="form-control" required>
 
-      <hr class="visible-sm"></hr>
+            <div class="help-block" ng-messages="debtorGroup.name.$error" ng-show="debtorGroup.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
 
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <span class="fa fa-book" aria-hidden="true"></span>
-          {{ "DEBTOR_GROUP.POLICIES.TITLE" | translate }}
+          <!-- @todo this should be a directive - this controller should not have to consider accounts -->
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : debtorGroup.account_id.$invalid && debtorGroup.$submitted}">
+
+            <label class="control-label">{{ "TABLE.COLUMNS.ACCOUNT" | translate }}</label>
+            <ui-select
+              name="account_id"
+              ng-model="GroupEditCtrl.group.account_id"
+              theme="bootstrap">
+              <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
+                <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="account.id as account in  GroupEditCtrl.accounts | filter:$select.search">
+                <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+                <span ng-bind-html="account.label | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+
+            <div class="help-block" ng-messages="debtorGroup.account_id.$error" ng-show="debtorGroup.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- @todo The UI should show an option that allows you apply a price list, if this is checked then you can select an option -->
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : debtorGroup.price_list.$invalid && debtorGroup.$submitted}">
+
+            <label class="control-label">{{ "TABLE.COLUMNS.PRICE_LIST" | translate }}</label>
+            <select
+              name="price_list_uuid"
+              ng-model="GroupEditCtrl.group.price_list_uuid"
+              ng-options="priceList.uuid as priceList.label for priceList in GroupEditCtrl.priceLists"
+              class="form-control">
+              <option value="">{{ "PRICE_LIST.NONE" | translate }}</option>
+            </select>
+
+            <div class="help-block" ng-messages="debtorGroup.price_list.$error" ng-show="debtorGroup.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : debtorGroup.max_credit.$invalid && debtorGroup.$submitted}">
+
+            <label class="control-label">{{ "FORM.LABELS.MAX_CREDIT" | translate }}</label>
+            <p class="text-info"><span class="fa fa-info-circle" aria-hidden="true"></span> {{ "FORM.LABELS.MAX_CREDIT_INFO" | translate }}</p>
+            <input type="number" ng-model="GroupEditCtrl.group.max_credit" name="max_credit" class="form-control" bh-integer required>
+
+            <div class="help-block" ng-messages="debtorGroup.max_credit.$error" ng-show="debtorGroup.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : debtorGroup.$submitted && debtorGroup.note.$invalid }">
+            <label class="control-label">{{ "FORM.LABELS.NOTES" | translate }}</label>
+            <textarea class="form-control" ng-model="GroupEditCtrl.group.note" name="note"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">{{ "FORM.LABELS.PHONE" | translate }}</label>
+            <input name="phone" ng-model="GroupEditCtrl.group.phone" class="form-control">
+          </div>
+
+          <div
+            class="form-group"
+            ng-class="{'has-error' : debtorGroup.email.$invalid && debtorGroup.$submitted}">
+            <label class="control-label">{{ "FORM.LABELS.EMAIL" | translate }}</label>
+            <input name="email" ng-model="GroupEditCtrl.group.email" type="email" class="form-control">
+
+            <div class="help-block" ng-messages="debtorGroup.email.$error" ng-show="debtorGroup.$submitted">
+              <div ng-messages-include="partials/templates/messages.tmpl.html"></div>
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <!-- required -->
+            <bh-location-select
+              id="location"
+              name="location_id"
+              validation-trigger="debtorGroup.$submitted"
+              location-uuid="GroupEditCtrl.group.location_id"
+              required></bh-location-select>
+          </div>
         </div>
-        <div class="panel panel-body">
 
-          <div class="row">
-            <div class="col-md-12">
-              <h5><b>{{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.TITLE" | translate }}</b></h5>
+        <!-- @todo remove temporary style hack -->
+        <div class="clearfix" style="margin-bottom : 5px">
+          <div class="pull-right" style="text-align : right">
 
-              <!-- Only show if the subsidies option is unchecked -->
-              <p ng-if="GroupEditCtrl.group.apply_subsidies===false" class="text-info">
-                <span class="glyphicon glyphicon-info-sign"></span> {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.INFO" | translate }}
-              </p>
-              <div class="checkbox">
-                <label>
-                  <input ng-model="GroupEditCtrl.group.apply_subsidies" name="apply_subsidies" type="checkbox">
-                  {{"DEBTOR_GROUP.POLICIES.SUBSIDIES.LABEL" | translate }}
-                </label>
+            <!-- @todo remove temporary style hack -->
+            <div ng-if="GroupEditCtrl.state.current.name==='debtorGroups.create'" class="checkbox" style="display : inline-block; padding-right : 5px;">
+              <label>
+                <input type="checkbox" ng-model="GroupEditCtrl.resetOnCompletion">
+                {{ "DEBTOR_GROUP.CREATE_ANOTHER" | translate }}
+              </label>
+            </div>
+
+            <!-- <button class="btn btn-default">Cancel</button> -->
+            <button data-method="submit" type="submit" ng-click="GroupEditCtrl.submit(debtorGroup)" class="btn btn-primary">
+              {{ "FORM.BUTTONS.SUBMIT" | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-7">
+
+        <hr class="visible-sm"></hr>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <span class="fa fa-book" aria-hidden="true"></span>
+            {{ "DEBTOR_GROUP.POLICIES.TITLE" | translate }}
+          </div>
+          <div class="panel panel-body">
+
+            <div class="row">
+              <div class="col-md-12">
+                <h5><b>{{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.TITLE" | translate }}</b></h5>
+
+                <!-- Only show if the subsidies option is unchecked -->
+                <p ng-if="GroupEditCtrl.group.apply_subsidies===false" class="text-info">
+                  <span class="glyphicon glyphicon-info-sign"></span> {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.INFO" | translate }}
+                </p>
+                <div class="checkbox">
+                  <label>
+                    <input ng-model="GroupEditCtrl.group.apply_subsidies" name="apply_subsidies" type="checkbox">
+                    {{"DEBTOR_GROUP.POLICIES.SUBSIDIES.LABEL" | translate }}
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h5><b>{{"DEBTOR_GROUP.POLICIES.DISCOUNTS.TITLE" | translate }}</b></h5>
+                <p ng-if="GroupEditCtrl.group.apply_discounts===false" class="text-info">
+                  <span class="fa fa-info-circle" aria-hidden="true"></span> {{"DEBTOR_GROUP.POLICIES.DISCOUNTS.INFO" | translate }}
+                </p>
+                <div class="checkbox">
+                  <label>
+                    <input ng-model="GroupEditCtrl.group.apply_discounts" name="apply_discounts" type="checkbox">
+                    {{"DEBTOR_GROUP.POLICIES.DISCOUNTS.LABEL" | translate }}
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h5><b>{{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE" | translate }}</b></h5>
+                <p ng-if="GroupEditCtrl.group.apply_billing_services===false" class="text-info">
+                  <span class="fa fa-info-circle" aria-hidden="true"></span> {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.INFO" | translate }}
+                </p>
+                <div class="checkbox">
+                  <label>
+                    <input ng-model="GroupEditCtrl.group.apply_billing_services" name="apply_billing_services" ng-true-value="false" ng-false-value="true" type="checkbox">
+                    {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.LABEL" | translate }}
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!-- These operations should be hidden for a new account -->
+            <div class="row">
+              <div class="col-md-12">
+                <!-- @todo -->
+                <!-- Placeholder - these features are not yet supported in 2.x -->
+                <!--
+                <hr>
+
+                <button class="btn btn-default">
+                  <span class="glyphicon glyphicon-lock"></span>
+                  Lock Debtor Group
+                </button>
+
+                <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete Debtor Group</button>
+                -->
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-12">
-              <h5><b>{{"DEBTOR_GROUP.POLICIES.DISCOUNTS.TITLE" | translate }}</b></h5>
-              <p ng-if="GroupEditCtrl.group.apply_discounts===false" class="text-info">
-                <span class="fa fa-info-circle" aria-hidden="true"></span> {{"DEBTOR_GROUP.POLICIES.DISCOUNTS.INFO" | translate }}
-              </p>
-              <div class="checkbox">
-                <label>
-                  <input ng-model="GroupEditCtrl.group.apply_discounts" name="apply_discounts" type="checkbox">
-                  {{"DEBTOR_GROUP.POLICIES.DISCOUNTS.LABEL" | translate }}
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <h5><b>{{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE" | translate }}</b></h5>
-              <p ng-if="GroupEditCtrl.group.apply_billing_services===false" class="text-info">
-                <span class="fa fa-info-circle" aria-hidden="true"></span> {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.INFO" | translate }}
-              </p>
-              <div class="checkbox">
-                <label>
-                  <input ng-model="GroupEditCtrl.group.apply_billing_services" name="apply_billing_services" ng-true-value="false" ng-false-value="true" type="checkbox">
-                  {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.LABEL" | translate }}
-                </label>
-              </div>
-            </div>
-          </div>
-          <!-- These operations should be hidden for a new account -->
-          <div class="row">
-            <div class="col-md-12">
-              <!-- @todo -->
-              <!-- Placeholder - these features are not yet supported in 2.x -->
-              <!--
-              <hr>
+        </div>
 
-              <button class="btn btn-default">
-                <span class="glyphicon glyphicon-lock"></span>
-                Lock Debtor Group
+        <div class="panel panel-default" ng-if="GroupEditCtrl.state.current.name==='debtorGroups.update'">
+          <div class="panel-heading">
+            <i class="fa fa-list-alt"></i>
+            {{ "DEBTOR_GROUP.SUBSCRIPTIONS" | translate }}
+          </div>
+
+          <div class="panel-body">
+            <div class="form-group">
+              <label>{{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE" | translate }}</label>
+
+              <p class="text-info form-control-static" ng-if="GroupEditCtrl.group.billingServices.length === 0">
+                <i class="fa fa-info-circle"></i>  {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.EMPTY" | translate }}
+              </p>
+              <ul>
+                <li
+                  ng-repeat="billingService in GroupEditCtrl.group.billingServices | orderBy:'label'"
+                  class="form-control-static">
+                  {{ billingService.label }}
+                </li>
+              </ul>
+
+              <button id="subsidySubscription" class="btn btn-block btn-warning" ng-click="GroupEditCtrl.billingServiceSubscriptions()">
+                {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.UPDATE" | translate }}
+              </button>
+            </div>
+            <div class="form-group">
+              <label>{{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.TITLE" | translate }}</label>
+
+              <p class="text-info form-control-static" ng-if="GroupEditCtrl.group.subsidies.length === 0">
+              <i class="fa fa-info-circle"></i> {{ "DEBTOR_GROUP.POLICIES.SUBSIDIES.EMPTY" | translate }}
+              </p>
+              <ul>
+                <li
+                  ng-repeat="subsidy in GroupEditCtrl.group.subsidies | orderBy:'label'"
+                  class="form-control-static">
+                  {{ subsidy.label }}
+                </li>
+              </ul>
+              <button id="billingServiceSubscription" class="btn btn-block btn-warning" ng-click="GroupEditCtrl.subsidySubscriptions()">
+                {{ "DEBTOR_GROUP.POLICIES.BILLING_SERVICES.UPDATE" | translate }}
               </button>
 
-              <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete Debtor Group</button>
-              -->
             </div>
           </div>
         </div>

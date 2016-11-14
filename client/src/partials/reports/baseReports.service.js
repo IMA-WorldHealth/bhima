@@ -10,6 +10,7 @@ function BaseReportService($http, Modal, util) {
   service.listSavedReports = listSavedReports;
   service.openConfiguration = openConfiguration;
   service.requestPDF = requestPDF;
+  service.deleteReport = deleteReport;
 
   function requestKey(key) {
     var url = '/reports/keys/';
@@ -73,5 +74,11 @@ function BaseReportService($http, Modal, util) {
     var options = angular.merge(reportOptions, pdfParams);
 
     return $http.get(url, { params : options });
+  }
+
+  function deleteReport(uuid) {
+    var url = '/reports/archive/'.concat(uuid);
+    return $http.delete(url)
+      .then(util.unwrapHttpResponse);
   }
 }

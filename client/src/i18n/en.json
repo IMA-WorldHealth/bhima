@@ -25,6 +25,7 @@
     "CREATE"         : "Create New Account",
     "CREATE_ANOTHER" : "Create another account",
     "CREATED"        : "Account record written",
+    "DELETED"        : "Deleted",
     "UPDATED"        : "Account record updated",
     "GENERATE"       : "Generate Account Report",
     "HELP_TXT_1"     : "Chart of accounts for",
@@ -44,6 +45,7 @@
     "RECORD_SAME"    : "No changes have been made to the form. Update the account details and then press submit.",
     "SELECT_PARENT"  : "Select parent account...",
     "SUBMIT_CREATE"  : "Create Account",
+    "SUBMIT_DELETE"  : "Delete Account",
     "SUBMIT_UPDATE"  : "Update Account",
 
     "TYPES" : {
@@ -122,7 +124,7 @@
       },
         "DEBTOR_INVOICES" : "Debtor Invoices",
         "RECEIPTS_TITLE"  : "Cash Payment Receipt",
-        "REPORT"          : "Rapport",
+        "REPORT"          : "Report",
         "SLIP"            : "Cash Voucher",
         "TITLE"           : "Cash Window",
         "SELECTED" : "Selected Invoices"
@@ -180,7 +182,9 @@
       "SUBSIDIES" : {
         "TITLE" : "Subsidies",
         "INFO"  : "With this configuration unchecked no member of this debtor group will qualify for any subsidies",
-        "LABEL" : "This group qualifies for subsidies"
+        "LABEL" : "This group qualifies for subsidies",
+        "UPDATE" : "Update Subsidies",
+        "EMPTY" : "This debtor group is not subscribed to any subsidies"
       },
       "DISCOUNTS" : {
         "TITLE" : "Discounts",
@@ -190,12 +194,16 @@
       "BILLING_SERVICES" : {
         "TITLE" : "Billing Services",
         "INFO" : "With this configuration option checked all members of this debtor group will be exempt from paying automatically applied billing services",
-        "LABEL" : "This group is exempt from paying billing services"
+        "LABEL" : "This group is exempt from paying billing services",
+        "UPDATE" : "Update Billing Services",
+        "EMPTY" : "This debtor group is not subscribed to any billing services"
       }
     },
     "TITLE"          : "Debtor Group Management",
     "SUBSCRIBED"     : "Debtors subscribed",
-    "UPDATED"        : "Debtor group record updated"
+    "UPDATED"        : "Debtor group record updated",
+    "LOADING"        : "Fetching Debtor Group",
+    "SUBSCRIPTIONS"  : "Subscriptions"
   },
   "DEPOT": {
     "ADD_DEPOT"   : "Add a Depot",
@@ -434,14 +442,14 @@
       "COST_CENTER"            : "Cost Center",
       "CONSUMABLE"             : "Consumable",
       "COUNTRY"                : "Country",
+      "CREATE"                 : "Create",
+      "CREATED"                : "Created",
       "CREDIT"                 : "Credit",
       "CREDITOR_GROUP"         : "Creditor Group",
       "CREDITOR_SUBCRIBED"     : "Subscribed Creditors",
       "CURRENCIES"             : "Currencies",
       "CURRENCY"               : "Currency",
       "CURRENT_LOCATION"       : "Current Location",
-      "CREATE"                 : "CREATE",
-      "CREATED"                : "Created",
       "DATE"                   : "Date",
       "DATE_CREATED"           : "Date Created",
       "DATE_FROM"              : "Start",
@@ -450,6 +458,7 @@
       "DEBIT"                  : "Debit",
       "DEBTOR_GROUP"           : "Debtor Group",
       "DEBTOR_GROUP_FORM"      : "Form debtor group record",
+      "DEFINE_UNTIL_DATE"      : "Define a limit date",
       "DESCRIPTION"            : "Description",
       "DESIGNATION"            : "Designation",
       "DETAILS"                : "Details",
@@ -482,6 +491,7 @@
       "FUNCTION"               : "Function",
       "GAIN_ACCOUNT"           : "Gain on Exchange Rate Account",
       "GENDER"                 : "Sex",
+      "GENERAL_LEDGER"         : "General Ledger",
       "GRADE"                  : "Grade",
       "GROUP"                  : "Group",
       "GROUPS_DEBTOR_TITLE"    : "Debtor Group",
@@ -552,6 +562,7 @@
       "PHONE_NO"               : "Phone Number",
       "POSITION"               : "Position",
       "POST_OFFICE_BOX"        : "Post Office Box",
+      "POSTING_JOURNAL"        : "Posting Journal",
       "PO_BOX"                 : "PO Box",
       "PREFIX"                 : "Prefix",
       "PREVIOUS_DATE"          : "Previous Date",
@@ -614,12 +625,14 @@
       "TOTAL_PAID"             : "Total Paid",
       "TO_ACCOUNT"             : "To Account",
       "TO"                     : "To",
+      "TO_LOCK"                : "To lock",
       "TRANSACTION"            : "Transaction",
       "TRANSFER_ACCOUNT"       : "Transfer Account",
       "TRANSFER_TYPE"          : "Transfer Type",
       "TYPE"                   : "Type",
       "UNCONFIGURED"           : "Unconfigured",
       "UNDEFINED"              : "Undefined",
+      "UNTIL_DATE"             : "Until the date",
       "UPDATE"                 : "UPDATE",
       "UPDATE_GROUP_DEBTOR"    : "Update Debtor Group",
       "UPDATE_PATIENT_GROUP"   : "Update Patient Group Subscription",
@@ -709,12 +722,13 @@
       "PROVINCE"           : "Select a Province",
       "REFERENCE"          : "Select a Reference",
       "REFERENCE_GROUP"    : "Select a Reference Group",
-      "REPORT_TYPE"        : "Select Report type",
+      "REPORT_TYPE"        : "Select a Report Type",
       "RESULT_ACCOUNT_SCT" : "Select a Result Account section",
       "ROOT_ACCOUNT"       : "Select a Root Account",
       "SECTOR"             : "Select a sector",
       "SERVICE"            : "Select a Service",
       "SEX"                : "Select a Sex",
+      "SOURCE"             : "Select source",
       "TRANSFER_TYPE"      : "Select a Transfer type",
       "TYPE"               : "Select a Type",
       "USER"               : "Select User",
@@ -1034,6 +1048,7 @@
     "UPD_REFERENCE" : "Update Reference Group"
   },
   "REPORT" : {
+    "ACCOUNT"       : "Report of Account",
     "BALANCE"       : "Balance Report",
     "DOWNLOAD"      : "Download",
     "DELETE"        : "Delete Report",
@@ -1058,6 +1073,7 @@
     "PRODUCED_BY"      : "Produced by",
     "PRODUCED_DATE"    : "Production Date",
     "PRODUCED_ON"      : "Produced on",
+    "REPORT_ACCOUNTS"  : "Report accounts",
     "INCOME_REPORT"    : "Incomes Report",
     "EXPENSE_REPORT"   : "Expenses Report",
     "SINCE"            : "Since",
@@ -1159,10 +1175,12 @@
       "COUNTRY"            : "Country",
       "CREDIT"             : "Credit",
       "CURRENCY"           : "Currency",
+      "DATA_SOURCE"        : "Data Source",
       "DATE"               : "Date",
       "DATE_REGISTERED"    : "Date Registered",
       "DEBIT"              : "Debit",
       "DEBTOR"             : "Debtor",
+      "DEBTOR_GROUPS"      : "Debtor Groups",
       "DESCRIPTION"        : "Description",
       "DETAIL"             : "Detail",
       "DOCUMENT"           : "Document",
@@ -1221,6 +1239,10 @@
       "PROFIT_CENTER"      : "Profit Center",
       "PROJECT"            : "Project",
       "PROVINCE"           : "Province",
+      "QUARTER_FOUR"       : "Previous Exercises",
+      "QUARTER_ONE"        : "Less than 3 months",
+      "QUARTER_THREE"      : "More than 6 months",
+      "QUARTER_TWO"        : "Between 3 and 6 months",
       "RATE"               : "Rate",
       "RECEIPT"            : "Receipt",
       "RECIPIENT"          : "Recipient",
@@ -1283,6 +1305,7 @@
     "CREDIT_NOTE"                : "Credit note",
     "CREDITOR_GROUP"             : "Creditor Group Management",
     "CURRENCY"                   : "Currency",
+    "CUSTOMER_DEBTS"             : "Customer Debts",
     "DEBTOR_GROUP"               : "Debtor Group Management",
     "EMPLOYEE"                   : "Employee",
     "ENTERPRISE"                 : "Enterprise",
@@ -1324,6 +1347,7 @@
     "REFERENCE_GROUP"            : "Reference Group",
     "REGISTER_SUPPLIER"          : "Supplier",
     "REPORTS"                    : "Reports",
+    "REPORT_ACCOUNTS"            : "Report accounts",
     "ROOT"                       : "Root",
     "RUBRIC_MANAGEMENT"          : "Rubrics Management",
     "INVOICES"                   : "Invoices",
@@ -1393,7 +1417,7 @@
       "TITLE"              : "Simple Voucher",
       "TRANSFER"           : "Money Transfer"
     },
-    "REPORT": "Rapport"
+    "REPORT": "Report"
   },
   "GRAPHS" : {
     "PATIENT_REGISTRATIONS" : "Patient Registrations",

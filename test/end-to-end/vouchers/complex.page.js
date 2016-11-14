@@ -23,7 +23,7 @@ const GU = require('../shared/GridUtils');
  class Row {
    constructor(index) {
 
-     // store a reference of the row 
+     // store a reference of the row
      this._node = GU.getRow('voucherGridId', index);
    }
 

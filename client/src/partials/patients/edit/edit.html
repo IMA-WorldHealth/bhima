@@ -45,10 +45,12 @@
                 <label class="control-label">{{ "FORM.LABELS.GROUPS_PATIENT_TITLE" | translate }}</label>
 
                 <!-- Iterate through patient groups -->
-                 <ul
-                 class="form-control-static"
-                 ng-repeat="group in PatientEditCtrl.finance.patientGroups | orderBy:'name'">
-                 <li>{{group.name}}</li>
+                 <ul>
+                  <li
+                    class="form-control-static"
+                    ng-repeat="group in PatientEditCtrl.finance.patientGroups | orderBy:'name'">
+                    {{group.name}}
+                  </li>
                  </ul>
 
                  <p class="text-info form-control-static" ng-if="PatientEditCtrl.finance.patientGroups.length === 0">

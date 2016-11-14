@@ -1,14 +1,14 @@
 angular.module('bhima.services')
 .service('DebtorGroupService', DebtorGroupService);
 
-DebtorGroupService.$inject = ['$http', 'util', 'SessionService'];
+DebtorGroupService.$inject = ['$http', '$uibModal', 'util', 'SessionService'];
 
 /**
 * Debtor Group Service
 *
 * This service implements CRUD operations for the /debtor_groups API endpoint
 */
-function DebtorGroupService($http, util, SessionService) {
+function DebtorGroupService($http, Modal, util, SessionService) {
   var service = this;
   var baseUrl = '/debtor_groups/';
 
@@ -16,7 +16,11 @@ function DebtorGroupService($http, util, SessionService) {
   service.read = read;
   service.create = create;
   service.update = update;
+  service.updateBillingServices = updateBillingServices;
+  service.updateSubsidies = updateSubsidies;
 
+  service.manageBillingServices = manageBillingServices;
+  service.manageSubsidies = manageSubsidies;
   /**
   * @method read
   * @param {string} uuid The debtor group uuid
@@ -58,6 +62,63 @@ function DebtorGroupService($http, util, SessionService) {
 
     return $http.put(url, debtorGroup)
     .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * @function updateBillingServices
+   *
+   * @description
+   * Replaces a debtor groups billing services subscriptions with a provided
+   * set of billing service IDs
+   *
+   * @param {string}  debtorGroupUuid   UUID of debtor group that will be updated
+   * @param {Array}   subscriptions     Array of billing service ids that this
+   *                                    debtor group will now be subscribed to
+   */
+  function updateBillingServices(debtorGroupUuid, subscriptions) {
+    var path = '/groups/debtor_group_billing_service/'.concat(debtorGroupUuid);
+    var options = { subscriptions : subscriptions };
+    return $http.post(path, options)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function updateSubsidies(debtorGroupUuid, subscriptions) {
+    var path = '/groups/debtor_group_subsidy/'.concat(debtorGroupUuid);
+    var options = { subscriptions : subscriptions };
+    return $http.post(path, options)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function manageBillingServices(debtorGroup, subscriptions) {
+    return Modal.open({
+      templateUrl : '/partials/debtors/subscriptions.modal.html',
+      controller : 'BillingServiceSubscriptions as SubCtrl',
+      size : 'md',
+      resolve : {
+        Subscriptions : function Subscriptions() {
+          return subscriptions;
+        },
+        DebtorGroup : function DebtorGroup() {
+          return debtorGroup;
+        }
+      }
+    });
+  }
+
+  function manageSubsidies(debtorGroup, subscriptions) {
+    return Modal.open({
+      templateUrl : '/partials/debtors/subscriptions.modal.html',
+      controller : 'SubsidySubscriptions as SubCtrl',
+      size : 'md',
+      resolve : {
+        Subscriptions : function Subscriptions() {
+          return subscriptions;
+        },
+        DebtorGroup : function DebtorGroup() {
+          return debtorGroup;
+        }
+      }
+    });
   }
 
   return service;

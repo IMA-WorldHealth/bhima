@@ -79,6 +79,22 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
     this.insertDifference(account, insertedIndex);
   };
 
+
+  AccountGrid.prototype.updateViewDelete = function updateViewDelete(event, account) {
+    findAndRemove(this._store.data, 'id', account.id);
+
+    function findAndRemove(array, property, value) {
+      array.forEach(function(result, index) {
+        if(result[property] === value) {
+          array.splice(index, 1);
+        }    
+      });
+    }
+
+    return this._store.data;
+  };
+
+
   /**
    * @method updateViewEdit
    *

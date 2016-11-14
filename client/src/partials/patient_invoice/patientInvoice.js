@@ -34,9 +34,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
   Services.read()
     .then(function (services) {
       vm.services = services;
-
-      // default to the first service
-      vm.Invoice.setService(services[0]);
+      setDefaultService();
     })
     .catch(Notify.handleError);
 
@@ -145,6 +143,15 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     vm.patientSearchApi = api;
   }
 
+  function setDefaultService() {
+    // select service based on criteria (currently 0th element)
+    var SERVICE_INDEX = 0;
+
+    if (angular.isDefined(vm.services) && vm.services.length) {
+      vm.Invoice.setService(vm.services[SERVICE_INDEX]);
+    }
+  }
+
   // reset everything in the controller - default values
   function clear(detailsForm) {
 
@@ -152,7 +159,7 @@ function PatientInvoiceController(Patients, PatientInvoices, PatientInvoiceForm,
     vm.timestamp = Dates.current.day();
 
     vm.Invoice.setup();
-
+    setDefaultService();
     /** @todo this is a bad pattern, clean this up */
 
     if (detailsForm) {

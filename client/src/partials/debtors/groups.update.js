@@ -1,3 +1,7 @@
+/**
+ * @todo complex page should require loading resolve before displaying, a lot of
+ *       data is fetched per page load
+ */
 angular.module('bhima.controllers')
 .controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
 
@@ -11,6 +15,11 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
 
   vm.submit = submit;
   vm.state = $state;
+  vm.billingServiceSubscriptions = billingServiceSubscriptions;
+  vm.subsidySubscriptions = subsidySubscriptions;
+
+  vm.$loading = true;
+  vm.$loaded = false;
 
   // reset name attribute to ensure no UI glitch
   $state.current.data.label = null;
@@ -18,16 +27,15 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
   Prices.read()
     .then(function (priceLists) {
       vm.priceLists = priceLists;
-    });
-
-  Accounts.read()
+      return Accounts.read();
+    })
     .then(function (accounts) {
       vm.accounts = accounts;
       return DebtorGroups.read(target);
     })
     .then(function (result) {
       vm.group = result;
-
+      vm.$loaded = true;
       $state.current.data.label = vm.group.name;
 
       /** @todo work around for checkboxes (use value='' instead) */
@@ -35,7 +43,10 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
       vm.group.apply_subsidies = Boolean(vm.group.apply_subsidies);
       vm.group.apply_discounts = Boolean(vm.group.apply_discounts);
     })
-    .catch(Notify.handleError);
+    .catch(Notify.handleError)
+    .finally(function () {
+      vm.$loading = false;
+    });
 
   function submit(debtorGroupForm) {
     var submitDebtorGroup;
@@ -62,5 +73,25 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
         $state.go('debtorGroups.list', null, {reload : true});
       })
       .catch(Notify.handleError);
+  }
+
+  function billingServiceSubscriptions() {
+    var modal = DebtorGroups.manageBillingServices(vm.group);
+    modal.result
+      .then(function (results) {
+        // update UI
+        vm.group.billingServices = results;
+        Notify.success('FORM.INFO.UPDATE_SUCCESS');
+      });
+  }
+
+  function subsidySubscriptions() {
+    var modal = DebtorGroups.manageSubsidies(vm.group);
+    modal.result
+      .then(function (results) {
+        // update UI
+        vm.group.subsidies = results;
+        Notify.success('FORM.INFO.UPDATE_SUCCESS');
+      });
   }
 }

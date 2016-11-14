@@ -24,6 +24,7 @@ function AccountService($http, util, Session) {
   service.order = order;
   service.create = create;
   service.update = update;
+  service.delete = del;
 
   /**
    * The read() method loads data from the api endpoint. If an id is provided,
@@ -166,6 +167,16 @@ function AccountService($http, util, Session) {
     return $http.put(baseUrl.concat(id), account)
       .then(util.unwrapHttpResponse);
   }
+
+  /**
+  * @methode del an account
+  * Delete the account in the Data Base
+  */
+  function del(accountId){
+    return $http.delete(baseUrl.concat(accountId))
+    .then(util.unwrapHttpResponse);    
+  }
+
 
   return service;
 }

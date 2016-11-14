@@ -1,3 +1,4 @@
+'use strict';
 /* global expect, chai, agent */
 /* jshint expr : true */
 

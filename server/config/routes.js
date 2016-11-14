@@ -35,6 +35,7 @@ const functions    = require('../controllers/admin/functions');
 const grades       = require('../controllers/admin/grades');
 const languages    = require('../controllers/admin/languages');
 const locations    = require('../controllers/admin/locations');
+const groups       = require('../controllers/groups');
 
 // medical routes
 const patients       = require('../controllers/medical/patients');
@@ -125,12 +126,15 @@ exports.configure = function configure(app) {
   app.put('/locations/provinces/:uuid', locations.update.province);
   app.put('/locations/countries/:uuid', locations.update.country);
 
+  app.post('/groups/:key/:id', groups.updateSubscriptions);
+
   // API for account type routes CRUD
   app.get('/accounts/types', accounts.types.list);
   app.get('/accounts/types/:id', accounts.types.detail);
   app.post('/accounts/types', accounts.types.create);
   app.put('/accounts/types/:id', accounts.types.update);
   app.delete('/accounts/types/:id', accounts.types.remove);
+  app.delete('/accounts/:id', accounts.remove);
 
   // API for account routes crud
   app.get('/accounts', accounts.list);
@@ -366,8 +370,11 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);
   app.get('/reports/finance/cashflow', financeReports.cashflow.document);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
+  app.get('/reports/finance/agedDebtors', financeReports.agedDebtors.document);
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
+  app.get('/reports/finance/account', financeReports.reportAccounts.document);
+  app.get('/reports/finance/journal', financeReports.journal.report);
 
   app.get('/reports/keys/:key', report.keys);
 
@@ -376,7 +383,7 @@ exports.configure = function configure(app) {
 
   // lookup saved report document
   app.get('/reports/archive/:uuid', report.sendArchived);
-  app.get('/reports/finance/journal', financeReports.journal.report);
+  app.delete('/reports/archive/:uuid', report.deleteArchived);
 
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
@@ -557,4 +564,5 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
   app.get('/finance/incomeExpense', financeReports.incomeExpense.report);
+
 };

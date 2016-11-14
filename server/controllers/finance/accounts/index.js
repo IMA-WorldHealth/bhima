@@ -10,6 +10,7 @@
  *  GET    /accounts/:id/balance/
  *  POST   /accounts
  *  PUT    /accounts/:id
+ *  DELETE    /accounts/:id
  *
  * @todo - move away from calling lookup() before action.  This is an
  * unnecessary database request.
@@ -24,6 +25,7 @@
 const lodash = require('lodash');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
+const BadRequest = require('../../../lib/errors/BadRequest');
 const types = require('./types');
 
 
@@ -79,6 +81,39 @@ function update(req, res, next) {
     .done();
 }
 
+
+/**
+ * @method remove
+ *
+ * @description
+ * Removes an account in the database.
+ *
+ * DELETE /accounts/:id
+ */
+function remove(req, res, next) {
+  const sql = `SELECT COUNT(id) AS childrens FROM account WHERE parent = ?`;
+  db.exec(sql, [req.params.id])
+  .then(function (rows) {
+    if(rows[0].childrens > 0){
+      throw new BadRequest(`Could not delete the Account Id ${req.params.id}. Because this Account is Parent`);
+    }
+
+    let sqlDelete = 'DELETE FROM account WHERE id = ?;';
+    return db.exec(sqlDelete, [req.params.id]);
+  })
+  .then(function (result) {
+
+    if (!result.affectedRows) {
+      throw new NotFound(`Could not find an Account with id ${req.params.id}.`);
+    }
+
+    res.sendStatus(204);
+  })
+  .catch(next)
+  .done();
+}
+
+
 /**
  * @method list
  *
@@ -89,7 +124,7 @@ function update(req, res, next) {
  */
 function list(req, res, next) {
   let sql =
-    'SELECT a.id, a.number, a.label, a.locked FROM account AS a';
+    'SELECT a.id, a.number, a.label, a.locked, a.type_id FROM account AS a';
 
   let locked;
 
@@ -297,3 +332,5 @@ exports.getBalance = getBalance;
 exports.types = types;
 exports.lookupAccount = lookupAccount;
 exports.processAccountDepth = processAccountDepth;
+exports.list = list;
+exports.remove = remove;
