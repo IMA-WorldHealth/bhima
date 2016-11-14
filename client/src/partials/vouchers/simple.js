@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SimpleJournalVoucherController.$inject = [
   'AppCache', 'VoucherService', 'AccountService', 'SessionService', 'util',
-  'NotifyService',  'ReceiptModal'
+  'NotifyService',  'ReceiptModal','bhConstants'
 ];
 
 /**
@@ -18,11 +18,13 @@ SimpleJournalVoucherController.$inject = [
  * @todo - Implement Voucher Templates to allow users to save pre-selected
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify, Receipts) {
+function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, util, Notify, Receipts, bhConstants) {
   var vm = this;
 
   // cache to save work-in-progress data and pre-fabricated templates
   var cache = AppCache('JournalVouchers');
+
+  vm.bhConstants = bhConstants;
 
   // global variables
   vm.maxLength = util.maxTextLength;
@@ -74,6 +76,12 @@ function SimpleJournalVoucherController(AppCache, Vouchers, Accounts, Session, u
 
     // transfer type
     vm.voucher.type_id = vm.selectedType ? JSON.parse(vm.selectedType).id : null;
+
+    // make sure we are not using the same accounts for both fields
+    if (vm.voucher.toAccount.id === vm.voucher.fromAccount.id) {
+      Notify.danger('VOUCHERS.GLOBAL.ERROR_SAME_ACCOUNT');
+      return;
+    }
 
     // submit the voucher
     return Vouchers.createSimple(vm.voucher)
