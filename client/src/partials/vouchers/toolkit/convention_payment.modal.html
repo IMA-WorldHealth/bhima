@@ -66,7 +66,7 @@
     <div ng-show="ToolCtrl.convention">
       <div
         id="invoiceGrid"
-        style="height: 300px; margin-bottom: 20px;"
+        style="height: 40vh; margin-bottom: 20px;"
         ui-grid="ToolCtrl.gridOptions"
         ui-grid-filtering
         ui-grid-auto-resize
@@ -91,7 +91,7 @@
     </button>
 
     <bh-loading-button loading-state="ToolCtrl.$loading"
-      ng-disabled="ToolCtrl.$invalid">
+      disabled="ToolCtrl.$invalid || !ToolCtrl.selectedRows.length">
       {{ "FORM.BUTTONS.GENERATE" | translate }}
     </bh-loading-button>
   </div>

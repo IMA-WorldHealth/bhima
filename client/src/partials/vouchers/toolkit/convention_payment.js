@@ -25,19 +25,22 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   // accounts from store
   AccountStore.accounts().then(function (data) {
     vm.accounts = data;
-  });
+  })
+  .catch(Notify.handleError);
 
   // debtors from store
-  // FIXME: need auto refresh
-   Debtors.store.then(function (data) {
+   Debtors.store()
+   .then(function (data) {
      vm.debtors = data;
-   });
+   })
+   .catch(Notify.handleError);
 
   //  optimization with `Store` will be well
    Invoices.read()
    .then(function (data) {
      vm.invoices = data;
-   });
+   })
+   .catch(Notify.handleError);
 
   // load debtors
   Debtors.read()
@@ -120,10 +123,15 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
 
   // get invoice reference
   function getInvoiceReference(uuid) {
-    return vm.invoices.filter(function (item) {
-      item.document_type = 'VOUCHERS.COMPLEX.PATIENT_INVOICE';
+    var invoice = vm.invoices.filter(function (item) {
       return item.uuid === uuid;
     })[0];
+
+    if (invoice) {
+      invoice.document_type = 'VOUCHERS.COMPLEX.PATIENT_INVOICE';
+    }
+
+    return invoice;
   }
 
   // FIXME: duplicated function
@@ -141,13 +149,17 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   }
 
   /* ================ Invoice grid parameters ===================== */
-  vm.gridOptions.enableFiltering = true;
-  vm.gridOptions.onRegisterApi   = onRegisterApi;
+  vm.gridOptions.appScopeProvider = vm;
+  vm.gridOptions.enableFiltering  = true;
+  vm.gridOptions.onRegisterApi    = onRegisterApi;
 
   vm.gridOptions.columnDefs = [
     { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
     { field : 'date', cellFilter:'date', displayName : 'TABLE.COLUMNS.BILLING_DATE', headerCellFilter : 'translate', enableFiltering: false },
-    { field : 'balance', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', enableFiltering: false }
+    { field : 'balance', displayName : 'TABLE.COLUMNS.COST',
+      headerCellFilter : 'translate', enableFiltering: false,
+      cellTemplate: '/partials/templates/grid/balance.cell.html'
+    }
   ];
 
   function onRegisterApi(gridApi) {
@@ -165,7 +177,9 @@ function ConventionPaymentKitController(Instance, DebtorGroup, Notify, Cashbox, 
   /* ================ End Invoice grid parameters ===================== */
 
   // submission
-  function submit() {
+  function submit(form) {
+    if (form.$invalid) { return; }
+
     var bundle = generateTransactionRows({
       cashbox: vm.cashbox,
       convention: vm.convention,

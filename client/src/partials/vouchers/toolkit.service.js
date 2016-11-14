@@ -34,13 +34,12 @@ function VoucherToolkitService($http, Modal, util) {
   function open(option) {
     if (!option.controller || !option.templateUrl) { return; }
 
-    var controllerString = option.controller.concat(' as ToolCtrl');
-
     var instance = Modal.open({
-      templateUrl : option.templateUrl,
-      controller  : controllerString,
-      size        : 'md',
-      resolve     : { data : function () { return option; } }
+      templateUrl  : option.templateUrl,
+      controller   : option.controller,
+      controllerAs : 'ToolCtrl',
+      size         : 'md',
+      resolve      : { data : function () { return option; } }
     });
 
     return instance.result;

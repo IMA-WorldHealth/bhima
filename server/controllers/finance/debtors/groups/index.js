@@ -238,23 +238,11 @@ function list(req, res, next) {
 function invoices(req, res, next) {
   var options = req.query;
 
-  loadInvoices(req.params.uuid)
+  options.debtor_uuid = req.params.uuid;
+
+  loadInvoices(options)
   .then(function (rows) {
-    let data = rows;
-
-    if (options.balanced) {
-      data = rows.filter(item => {
-        return item.balance === 0;
-      });
-    }
-
-    if (options.unpaid) {
-      data = rows.filter(item => {
-        return item.balance !== 0;
-      });
-    }
-
-    res.status(200).json(data);
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
@@ -263,9 +251,16 @@ function invoices(req, res, next) {
 /**
  * @method loadInvoices
  * @description This method returns invoices of a debtor group
- * @param {string} debtor_uuid A debtor group uuid
+ * @param {string} params A object which contains :
+ * {
+ *  debtor_uuid : ... // required
+ *  balanced: ... // for balanced invoices
+ * }
  */
-function loadInvoices(debtor_uuid) {
+function loadInvoices(params) {
+  // cancelled transaction type
+  const CANCELED_TRANSACTION_TYPE = 10;
+
   // get debtors of the group
   let sqlDebtors =
     `SELECT uuid FROM debtor WHERE debtor.group_uuid = ?;`;
@@ -283,10 +278,13 @@ function loadInvoices(debtor_uuid) {
       GROUP BY uuid
     ) AS i
     JOIN project ON i.project_id = project.id
-    WHERE i.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = 10)
-    HAVING balance <> 0`;
+    WHERE i.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE})
+    `;
 
-  let bid = db.bid(debtor_uuid);
+  // balanced or not
+  sqlInvoices += params.balanced ? ' HAVING balance = 0 ' : ' HAVING balance <> 0 ';
+
+  let bid = db.bid(params.debtor_uuid);
 
   return db.exec(sqlDebtors, [bid])
   .then(result => {

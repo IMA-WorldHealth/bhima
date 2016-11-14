@@ -44,9 +44,7 @@ function DebtorService($q, $http, util, Store) {
   service.invoices = invoices;
 
   // load debtors
-  service.store = read().then(function (data) {
-    return new Store({ identifier: 'uuid', data: data });
-  });
+  service.store = store;
 
   function read(uuid) {
     var path = '/debtors/';
@@ -81,6 +79,12 @@ function DebtorService($q, $http, util, Store) {
 
     return $http.get(path.replace(':uuid', uuid), { params : params })
       .then(util.unwrapHttpResponse);
+  }
+
+  function store() {
+    return read().then(function (data) {
+      return new Store({ identifier: 'uuid', data: data });
+    });
   }
 
   return service;
