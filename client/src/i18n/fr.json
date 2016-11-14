@@ -90,6 +90,11 @@
     "VIEW"      : "Voir tous les services de facturation."
   },
   "CASH": {
+    "CAUTION"         : "Caution",
+    "CAUTION_COVER"   : "Facture(s) couvert par la caution",
+    "CAUTION_PAYMENT" : "Paiement Caution",
+    "CAUTION_REMAINING" : "Caution Restante",
+    "CONFIRM_PAYMENT_WHEN_CAUTION" : "Procéder au paiement alors que le patient dispose d'une caution ?",
     "CURRENT_CASHBOX" : "Caisse courante",
     "DEBTOR_INVOICES": {
       "TITLE" : "Facture(s) debiteur"
@@ -482,6 +487,7 @@
       "FAX"                    : "Fax",
       "FEMALE"                 : "Femme",
       "FINANCIAL_DETAIL"       : "Balance actuelle, journal de saisie inclue :",
+      "FINANCIAL_STATUS"       : "Situation Financière",
       "FIRST_NAME"             : "Prenom",
       "FROM"                   : "Du",
       "FROM_ACCOUNT"           : "Du compte",
@@ -600,6 +606,7 @@
       "SIZE_GB"                : "Go",
       "SIZE_TB"                : "To",
       "SIZE_PB"                : "Po",
+      "SOLD"                   : "Solde",
       "SPOUSE"                 : "Nom de l'époux(se)",
       "SPOUSE_EMPLOYER"        : "Employeur(époux(se))",
       "SPOUSE_PROFESSION"      : "Profession (époux(se))",
@@ -621,6 +628,7 @@
       "TODAY"                  : "Aujourd'hui",
       "TOTAL"                  : "Total",
       "TOTAL_BILLED"           : "Total Facture",
+      "TOTAL_DEBT"             : "Total des dettes",
       "TOTAL_PAID"             : "Total paye",
       "TOTAL_SELECTED_INVOICES": "Total des factures selectionnées",
       "TO_ACCOUNT"             : "Au Compte",
@@ -1243,7 +1251,7 @@
       "NO_RECORDED"        : "Aucune facture",
       "CREDIT_NOTE"        : "Note de Crédit",
       "NR"                 : "N°",
-      "NO_PAYMENTS"        : "Aucun paiement n'effectué sur cette facture.",
+      "NO_PAYMENTS"        : "Aucun paiement n'a été effectué sur cette facture.",
       "NUM"                : "Numéro",
       "OF"                 : "sur",
       "PASSIVE"            : "Passive",
