@@ -139,7 +139,8 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt       : function receiptProvider() { return { promise : cashRequest }; },
         options       : function optionsProvider() { return options; },
-      }
+      },
+      keyboard      : false
     };
 
     var configuration = angular.extend(modalConfiguration, reportProvider);
