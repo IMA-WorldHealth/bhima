@@ -183,14 +183,17 @@
     "HELP_TXT_3"     : "Bloquer le Groupe de debiteur sélectionné. Aucune transaction ne pourra etre Effectuée avec ce groupe",
     "HELP_TXT_4"     : "Crée un nouveau groupe de debiteur",
     "INFO"           : "Information du Groupe",
+    "LOADING"        : "Téléchargement des groupes débiteurs",
     "NEW"            : "Ajouter un Groupe Débiteur",
     "NEW_DEBTOR_GROUP" : "Nouveau Groupe de Débiteur",
-    "POLICIES" : {
+    "POLICIES" : {      
       "TITLE" : "Les stratégies de groupe",
       "SUBSIDIES" : {
         "TITLE" : "Subventions",
         "INFO"  : "Avec cette configuration, aucun membre de ce groupe débiteur ne sera subventionné",
-        "LABEL" : "Ce groupe est qualifié pour les subventions"
+        "LABEL" : "Ce groupe est qualifié pour les subventions",
+        "UPDATE" : "Mettre à jour les subventions",
+        "EMPTY" : "Ce groupe de débiteurs n'est pas souscrit à des subventions"        
       },
       "DISCOUNTS" : {
         "TITLE" : "Réductions",
@@ -200,11 +203,14 @@
       "BILLING_SERVICES" : {
         "TITLE" : "Services des facturations",
         "INFO" : "Avec cette configuration, tous les membres de ce groupe débiteur sera exonéré de paiement des services de facturation appliqués automatiquement",
-        "LABEL" : "Ce groupe est exempté du paiement des services de facturation"
+        "LABEL" : "Ce groupe est exempté du paiement des services de facturation",
+        "UPDATE" : "Mettre à jour les services de facturation",
+        "EMPTY" : "Ce groupe de débiteurs n'est pas abonné à des services de facturation"      
       }
     },
     "TITLE"          : "Gestion des Groupes des Débiteurs",
     "SUBSCRIBED"     : "Débiteurs abonnés",
+    "SUBSCRIPTIONS"  : "Abonnements",
     "UPDATED"        : "Enregistrement du groupe débiteur mis à jour"
   },
   "DEPOT": {
