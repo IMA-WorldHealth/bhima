@@ -25,7 +25,7 @@ describe('Complex Vouchers', function () {
         { account : 'Test Debtor Accounts1', debit: 18, credit: 0, entity : { type : 'D', name: 'Patient/2/Patient' }},
         { account : 'Test Capital One', debit: 0, credit: 8, reference : { type : 'voucher', index : 0 }},
         { account : 'Test Capital Two', debit: 0, credit: 5, reference : { type : 'voucher', index : 2 }},
-        { account : 'Test Balance Accounts', debit: 0, credit: 5, reference : { type : 'voucher', index : 1 }},
+        { account : 'First Test Item Account', debit: 0, credit: 5, reference : { type : 'voucher', index : 1 }},
         { account : 'Test Capital One', debit: 7, credit: 0, entity : { type : 'C', name : 'Fournisseur' }},
         { account : 'Test Capital Two', debit: 0, credit: 7, reference : { type : 'patient-invoice', index : 1 }}
       ]

@@ -24,6 +24,8 @@ ComplexJournalVoucherController.$inject = [
 function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currencies, Session, FindEntity, FindReference, Notify, Cashbox, Receipts, bhConstants) {
   var vm = this;
 
+  vm.bhConstants = bhConstants;
+
   // bread crumb paths
   vm.paths = [{
     label : $translate.instant('VOUCHERS.COMPLEX.TITLE'),

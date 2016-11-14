@@ -1405,7 +1405,8 @@
       "USE_FINANCIAL_ACCOUNT" : "Use of cashes or banks accounts in this transaction",
       "RECEIPT" :  {
         "SUCCESS" : "Voucher Payment recorded successfully."
-      }
+      },
+      "ERROR_SAME_ACCOUNT" : "You cannot use the same account twice to in this transaction. Please select two different accounts."
     },
     "SIMPLE": {
       "CASH_PAYMENT"       : "Client Payment",
