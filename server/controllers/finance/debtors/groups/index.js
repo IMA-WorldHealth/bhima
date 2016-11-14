@@ -290,6 +290,7 @@ function loadInvoices(debtor_uuid) {
 
   return db.exec(sqlDebtors, [bid])
   .then(result => {
+    if (!result.length) { return []; }
     let uuids = result.map(item => item.uuid);
     return db.exec(sqlInvoices, [uuids]);
   });

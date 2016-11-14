@@ -51,7 +51,7 @@ function ComplexJournalVoucherController(Vouchers, $translate, Accounts, Currenc
   function openConventionPaymentTool() {
     Toolkit.open(conventionPaymentTool)
     .then(function (result) {
-      if (!result.rows) { return; }
+      if (!result) { return; }
 
       vm.rows = result.rows;
       vm.rows.forEach(function (item) {

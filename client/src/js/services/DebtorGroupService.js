@@ -22,6 +22,7 @@ function DebtorGroupService($http, Modal, util, SessionService) {
 
   service.manageBillingServices = manageBillingServices;
   service.manageSubsidies = manageSubsidies;
+
   /**
   * @method read
   * @param {string} uuid The debtor group uuid
@@ -120,6 +121,7 @@ function DebtorGroupService($http, Modal, util, SessionService) {
         }
       }
     });
+  }
 
   /**
    * @method invoices
