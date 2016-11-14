@@ -348,13 +348,14 @@ function constantConfig() {
       GRID_HEIGHT: 200
     },
     settings: {
-      CONTACT_EMAIL : 'developers@imaworldhealth.org'
+      CONTACT_EMAIL : 'developers@imaworldhealth.org',
     },
     dates : {
       minDOB : new Date('1900-01-01'),
     },
     lengths : {
-      maxTextLength : 1000
+      maxTextLength : 1000,
+      minDecimalValue: 0.0001
     },
     grid : {
       ROW_HIGHLIGHT_FLAG : '_highlight',
