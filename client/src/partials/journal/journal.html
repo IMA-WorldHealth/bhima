@@ -38,6 +38,24 @@
   </div>
 </div>
 
+<!-- @todo remove hardcoded styles -->
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial" ng-if="JournalCtrl.filtersFmt.length > 0">
+  <bh-filters-applied
+    style="max-width:90%"
+    filters="JournalCtrl.filtersFmt"
+    on-remove-filter="JournalCtrl.onRemoveFilter(filter)">
+  </bh-filters-applied>
+
+  <a
+    href
+    ng-click="JournalCtrl.clearFilters()"
+    class="text-danger"
+    data-method="clear">
+    <i class="fa fa-ban text-danger"></i>
+    {{ "FORM.INFO.CLEAR_FILTERS" | translate }}
+  </a>
+</div>
+
 <div class="flex-content">
   <div class="container-fluid">
 
@@ -47,6 +65,7 @@
         <div
           id="journal-grid"
           class="grid-full-height"
+          ng-style="JournalCtrl.filterBarHeight"
           ui-grid="JournalCtrl.gridOptions"
           ui-grid-auto-resize
           ui-grid-resize-columns
@@ -61,7 +80,7 @@
             empty-state="JournalCtrl.gridOptions.data.length === 0"
             error-state="JournalCtrl.hasError"
           >
-        </bh-grid-loading-indicator>
+          </bh-grid-loading-indicator>
 
         </div>
       </div>

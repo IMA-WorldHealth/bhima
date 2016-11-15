@@ -432,11 +432,19 @@ function compileConfig($compileProvider) {
   }
 }
 
+/**
+ * Configure global properties about ui-select
+ */
+function uiSelectConfig(uiSelectConfig) {
+  uiSelectConfig.theme = 'bootstrap';
+}
+
 bhima.constant('bhConstants', constantConfig());
 
 // configure services, providers, factories
 bhima.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', bhimaConfig]);
 bhima.config(['$translateProvider', translateConfig]);
+bhima.config(['uiSelectConfig', uiSelectConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$localStorageProvider', localStorageConfig]);
 bhima.config(['$httpProvider', httpConfig]);

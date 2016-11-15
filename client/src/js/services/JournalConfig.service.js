@@ -8,6 +8,7 @@ function JournalConfigService(Modal) {
   var service = this;
 
   service.openColumnConfigModal = openColumnConfigModal;
+  service.openSearchModal = openSearchModal;
 
   function openColumnConfigModal(Columns) {
     return Modal.open({
@@ -18,6 +19,16 @@ function JournalConfigService(Modal) {
         Columns : function columnsProvider() { return Columns; }
       }
     });
+  }
+
+  function openSearchModal(options) {
+    return Modal.open({
+      templateUrl: 'partials/journal/modals/search.modal.html',
+      controller:  'JournalSearchModalController as ModalCtrl',
+      resolve : {
+        options : function () { return options; }
+      }
+    }).result;
   }
 
   return service;
