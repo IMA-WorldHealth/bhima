@@ -74,8 +74,12 @@ function InvoiceRegistryController(Invoices, bhConstants, Notify, Session, util,
     vm.hasError = false;
     toggleLoadingIndicator();
 
+    if(parameters){
+      delete parameters.patientNames;
+    }
+
     // if we have search parameters, use search.  Otherwise, just read all
-    // invoices.
+    // invoices.    
     var request = angular.isDefined(parameters) ?
       Invoices.search(parameters) :
       Invoices.read();
